@@ -77,7 +77,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      * @param snapped if given, determines if a segment has been snapped
      * @param allLayers if true, override snapping mode
      */
-    QList<QgsPoint> snapSegment( SnappingMode snappingMode, bool* snapped = 0, bool allLayers = false ) const;
+    QList<QgsPoint> snapSegment( SnappingMode snappingMode, bool* snapped = nullptr, bool allLayers = false ) const;
 
     /**
      * Returns true if there is a snapped point cached.

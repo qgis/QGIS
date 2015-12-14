@@ -34,7 +34,7 @@ class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
     Q_OBJECT
 
   public:
-    QgsColorSwatchDelegate( QWidget *parent = 0 );
+    QgsColorSwatchDelegate( QWidget *parent = nullptr );
     void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
     QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
     bool editorEvent( QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index ) override;
@@ -67,7 +67,7 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
      * @param baseColor base color for color scheme
      * @param parent parent object
      */
-    explicit QgsColorSchemeModel( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject* parent = 0 );
+    explicit QgsColorSchemeModel( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject* parent = nullptr );
 
     ~QgsColorSchemeModel();
 
@@ -155,7 +155,7 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      * @param context context string provided to color scheme
      * @param baseColor base color for color scheme
      */
-    QgsColorSchemeList( QWidget *parent = 0, QgsColorScheme* scheme = 0, const QString &context = QString(), const QColor &baseColor = QColor() );
+    QgsColorSchemeList( QWidget *parent = nullptr, QgsColorScheme* scheme = nullptr, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     virtual ~QgsColorSchemeList();
 

@@ -42,7 +42,7 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
      */
     QgsAuthSslErrorsDialog( QNetworkReply *reply,
                             const QList<QSslError>& sslErrors,
-                            QWidget *parent = 0 ,
+                            QWidget *parent = nullptr ,
                             const QString &digest = QString(),
                             const QString &hostport = QString() );
     ~QgsAuthSslErrorsDialog();

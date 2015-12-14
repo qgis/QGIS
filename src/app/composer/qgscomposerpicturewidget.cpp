@@ -32,7 +32,7 @@
 #include <QSettings>
 #include <QSvgRenderer>
 
-QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QgsComposerItemBaseWidget( 0, picture ), mPicture( picture ), mPreviewsLoaded( false )
+QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QgsComposerItemBaseWidget( nullptr, picture ), mPicture( picture ), mPreviewsLoaded( false )
 {
   setupUi( this );
 
@@ -100,7 +100,7 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
   QFileInfo fileInfo( filePath );
   if ( !fileInfo.exists() || !fileInfo.isReadable() )
   {
-    QMessageBox::critical( 0, "Invalid file", "Error, file does not exist or is not readable" );
+    QMessageBox::critical( nullptr, "Invalid file", "Error, file does not exist or is not readable" );
     return;
   }
 

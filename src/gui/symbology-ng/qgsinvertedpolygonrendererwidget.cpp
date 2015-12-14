@@ -41,7 +41,7 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
        layer->wkbType() != QGis::WKBMultiPolygon25D )
   {
     //setup blank dialog
-    mRenderer.reset( 0 );
+    mRenderer.reset( nullptr );
     QGridLayout* layout = new QGridLayout( this );
     QLabel* label = new QLabel( tr( "The inverted polygon renderer only applies to polygon and multipolygon layers. \n"
                                     "'%1' is not a polygon layer and then cannot be displayed" )

@@ -23,7 +23,7 @@
 
 QgsSnappingUtils::QgsSnappingUtils( QObject* parent )
     : QObject( parent )
-    , mCurrentLayer( 0 )
+    , mCurrentLayer( nullptr )
     , mSnapToMapMode( SnapCurrentLayer )
     , mStrategy( IndexHybrid )
     , mDefaultType( QgsPointLocator::Vertex )
@@ -44,7 +44,7 @@ QgsSnappingUtils::~QgsSnappingUtils()
 QgsPointLocator* QgsSnappingUtils::locatorForLayer( QgsVectorLayer* vl )
 {
   if ( !vl )
-    return 0;
+    return nullptr;
 
   if ( !mLocators.contains( vl ) )
   {
@@ -167,7 +167,7 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint& p
     }
   }
 
-  return QgsPointLocator::Match( QgsPointLocator::Vertex, 0, 0, sqrt( minSqrDist ), minP );
+  return QgsPointLocator::Match( QgsPointLocator::Vertex, nullptr, 0, sqrt( minSqrDist ), minP );
 }
 
 
@@ -274,7 +274,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
   else if ( mSnapToMapMode == SnapAllLayers )
   {
     // data from project
-    double tolerance = QgsTolerance::toleranceInProjectUnits( mDefaultTolerance, 0, mMapSettings, mDefaultUnit );
+    double tolerance = QgsTolerance::toleranceInProjectUnits( mDefaultTolerance, nullptr, mMapSettings, mDefaultUnit );
     int type = mDefaultType;
 
     QList<QgsVectorLayer*> layers;
@@ -387,7 +387,7 @@ void QgsSnappingUtils::defaultSettings( int& type, double& tolerance, QgsToleran
 
 const QgsCoordinateReferenceSystem* QgsSnappingUtils::destCRS()
 {
-  return mMapSettings.hasCrsTransformEnabled() ? &mMapSettings.destinationCrs() : 0;
+  return mMapSettings.hasCrsTransformEnabled() ? &mMapSettings.destinationCrs() : nullptr;
 }
 
 

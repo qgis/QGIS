@@ -89,7 +89,7 @@ QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QSty
     return le;
   }
 
-  return 0;
+  return nullptr;
 }
 
 void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
@@ -121,7 +121,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
     : QDialog( parent, fl )
     , mManagerMode( managerMode )
     , mEmbeddedMode( embeddedMode )
-    , mColumnTypeThread( NULL )
+    , mColumnTypeThread( nullptr )
     , mUseEstimatedMetadata( false )
 {
   setupUi( this );
@@ -642,7 +642,7 @@ void QgsMssqlSourceSelect::finishList()
 void QgsMssqlSourceSelect::columnThreadFinished()
 {
   delete mColumnTypeThread;
-  mColumnTypeThread = 0;
+  mColumnTypeThread = nullptr;
   btnConnect->setText( tr( "Connect" ) );
 
   finishList();

@@ -28,7 +28,7 @@
 #include <QTextEdit>
 
 QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent )
-    : QDialog( parent ), mRamp( ramp ), mCurrentItem( 0 )
+    : QDialog( parent ), mRamp( ramp ), mCurrentItem( nullptr )
 {
   setupUi( this );
 #ifdef Q_OS_MAC
@@ -91,7 +91,7 @@ void QgsVectorGradientColorRampV2Dialog::on_btnInformation_pressed()
     return;
 
   QgsDialog *dlg = new QgsDialog( this );
-  QLabel *label = 0;
+  QLabel *label = nullptr;
 
   // information table
   QTableWidget *tableInfo = new QTableWidget( dlg );
@@ -295,7 +295,7 @@ void QgsVectorGradientColorRampV2Dialog::stopDoubleClicked( QTreeWidgetItem* ite
                   item->data( 0, StopColorRole ).value<QColor>(), this, SLOT( setItemStopColor( const QColor& ) ),
                   this, tr( "Edit Stop Color" ), true );
       }
-      mCurrentItem = 0;
+      mCurrentItem = nullptr;
     }
     else
     {

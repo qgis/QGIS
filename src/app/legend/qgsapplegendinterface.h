@@ -81,7 +81,7 @@ class QgsAppLegendInterface : public QgsLegendInterface
   public slots:
 
     //! Add a new group
-    int addGroup( const QString& name, bool expand = true, QTreeWidgetItem* parent = 0 ) override;
+    int addGroup( const QString& name, bool expand = true, QTreeWidgetItem* parent = nullptr ) override;
 
     //! Add a new group at a specified index
     int addGroup( const QString& name, bool expand, int groupIndex ) override;

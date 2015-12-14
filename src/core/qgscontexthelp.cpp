@@ -27,7 +27,7 @@
 #include "qgslogger.h"
 
 
-QgsContextHelp *QgsContextHelp::gContextHelp = 0;  // Singleton instance
+QgsContextHelp *QgsContextHelp::gContextHelp = nullptr;  // Singleton instance
 
 void QgsContextHelp::run( const QString& context )
 {
@@ -103,5 +103,5 @@ void QgsContextHelp::processExited()
 {
   // Delete this object if the process terminates
   delete gContextHelp;
-  gContextHelp = NULL;
+  gContextHelp = nullptr;
 }

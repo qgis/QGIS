@@ -38,7 +38,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
     ~QgsCustomizationDialog();
 
     // get item by path
-    QTreeWidgetItem *item( const QString& thePath, QTreeWidgetItem *theItem = 0 );
+    QTreeWidgetItem *item( const QString& thePath, QTreeWidgetItem *theItem = nullptr );
 
     //
 

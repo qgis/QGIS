@@ -181,7 +181,7 @@ class CORE_EXPORT QgsComposerObject: public QObject
      * @param context expression context for evaluating data defined expressions
      * @note this method was added in version 2.5
     */
-    virtual void refreshDataDefinedProperty( const DataDefinedProperty property = AllProperties, const QgsExpressionContext* context = 0 );
+    virtual void refreshDataDefinedProperty( const DataDefinedProperty property = AllProperties, const QgsExpressionContext* context = nullptr );
 
   protected:
 

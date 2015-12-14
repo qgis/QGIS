@@ -170,7 +170,7 @@ class CORE_EXPORT QgsFeatureIterator
 ////////
 
 inline QgsFeatureIterator::QgsFeatureIterator()
-    : mIter( NULL )
+    : mIter( nullptr )
 {
 }
 

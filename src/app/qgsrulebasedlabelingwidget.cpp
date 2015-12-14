@@ -14,8 +14,8 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, Q
     : QWidget( parent )
     , mLayer( layer )
     , mCanvas( canvas )
-    , mRootRule( 0 )
-    , mModel( 0 )
+    , mRootRule( nullptr )
+    , mModel( nullptr )
 {
   setupUi( this );
 
@@ -50,7 +50,7 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, Q
   }
   else
   {
-    mRootRule = new QgsRuleBasedLabeling::Rule( 0 );
+    mRootRule = new QgsRuleBasedLabeling::Rule( nullptr );
   }
 
   mModel = new QgsRuleBasedLabelingModel( mRootRule );
@@ -159,7 +159,7 @@ QgsRuleBasedLabeling::Rule* QgsRuleBasedLabelingWidget::currentRule()
   QItemSelectionModel* sel = viewRules->selectionModel();
   QModelIndex idx = sel->currentIndex();
   if ( !idx.isValid() )
-    return NULL;
+    return nullptr;
   return mModel->ruleForIndex( idx );
 }
 
@@ -525,7 +525,7 @@ void QgsRuleBasedLabelingModel::updateRule( const QModelIndex& parent, int row )
 /////////
 
 QgsLabelingRulePropsDialog::QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Rule* rule, QgsVectorLayer* layer, QWidget* parent, QgsMapCanvas* mapCanvas )
-    : QDialog( parent ), mRule( rule ), mLayer( layer ), mLabelingGui( 0 ), mSettings( 0 ), mMapCanvas( mapCanvas )
+    : QDialog( parent ), mRule( rule ), mLayer( layer ), mLabelingGui( nullptr ), mSettings( nullptr ), mMapCanvas( mapCanvas )
 {
   setupUi( this );
 #ifdef Q_OS_MAC
@@ -597,7 +597,7 @@ void QgsLabelingRulePropsDialog::testFilter()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 );
+  << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
   {
     context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
@@ -642,7 +642,7 @@ void QgsLabelingRulePropsDialog::buildExpression()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 );
+  << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
   {
     context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
@@ -667,7 +667,7 @@ void QgsLabelingRulePropsDialog::accept()
   // caution: rule uses scale denom, scale widget uses true scales
   mRule->setScaleMinDenom( groupScale->isChecked() ? mScaleRangeWidget->minimumScaleDenom() : 0 );
   mRule->setScaleMaxDenom( groupScale->isChecked() ? mScaleRangeWidget->maximumScaleDenom() : 0 );
-  mRule->setSettings( groupSettings->isChecked() ? new QgsPalLayerSettings( mLabelingGui->layerSettings() ) : 0 );
+  mRule->setSettings( groupSettings->isChecked() ? new QgsPalLayerSettings( mLabelingGui->layerSettings() ) : nullptr );
 
   QDialog::accept();
 }

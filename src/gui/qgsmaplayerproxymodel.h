@@ -48,7 +48,7 @@ class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * @brief QgsMapLayerProxModel creates a proxy model with a QgsMapLayerModel as source model.
      * It can be used to filter the layers list in a widget.
      */
-    explicit QgsMapLayerProxyModel( QObject *parent = 0 );
+    explicit QgsMapLayerProxyModel( QObject *parent = nullptr );
 
     /**
      * @brief layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel

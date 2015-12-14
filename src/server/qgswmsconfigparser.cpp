@@ -50,7 +50,7 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
   QgsComposition* c = initComposition( composerTemplate, mapRenderer, composerMaps, composerLegends, composerLabels, composerHtmls );
   if ( !c )
   {
-    return 0;
+    return nullptr;
   }
 
   QString dpi = parameterMap.value( "DPI" );

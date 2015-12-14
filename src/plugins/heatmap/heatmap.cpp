@@ -70,7 +70,7 @@ Heatmap::Heatmap( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mDecay( 1. )
     , mQGisIface( theQgisInterface )
-    , mQActionPointer( 0 )
+    , mQActionPointer( nullptr )
 {
 }
 
@@ -146,14 +146,14 @@ void Heatmap::run()
   GDALDriver *myDriver;
 
   myDriver = GetGDALDriverManager()->GetDriverByName( d.outputFormat().toUtf8() );
-  if ( myDriver == NULL )
+  if ( myDriver == nullptr )
   {
     mQGisIface->messageBar()->pushMessage( tr( "GDAL driver error" ), tr( "Cannot open the driver for the specified format" ), QgsMessageBar::WARNING, mQGisIface->messageTimeout() );
     return;
   }
 
   double geoTransform[6] = { myBBox.xMinimum(), cellsize, 0, myBBox.yMinimum(), 0, cellsize };
-  emptyDataset = myDriver->Create( d.outputFilename().toUtf8(), columns, rows, 1, GDT_Float32, NULL );
+  emptyDataset = myDriver->Create( d.outputFilename().toUtf8(), columns, rows, 1, GDT_Float32, nullptr );
   emptyDataset->SetGeoTransform( geoTransform );
   // Set the projection on the raster destination to match the input layer
   emptyDataset->SetProjection( inputLayer->crs().toWkt().toLocal8Bit().data() );

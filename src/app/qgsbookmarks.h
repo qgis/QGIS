@@ -27,7 +27,7 @@ class APP_EXPORT QgsBookmarks : public QDockWidget, private Ui::QgsBookmarksBase
     Q_OBJECT
 
   public:
-    QgsBookmarks( QWidget *parent = 0 );
+    QgsBookmarks( QWidget *parent = nullptr );
     ~QgsBookmarks();
 
   public slots:

@@ -71,7 +71,7 @@ QgsAbstractGeometryV2 *QgsGeometryCheckError::geometry()
   QgsFeature f;
   if ( mCheck->getFeaturePool()->get( featureId(), f ) && f.geometry() )
     return f.geometry()->geometry()->clone();
-  return 0;
+  return nullptr;
 }
 
 bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes& changes )

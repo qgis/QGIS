@@ -49,7 +49,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
       ~RasterInfo();
 
       //! Check whether the given path is a valid raster
-      bool isValid() const { return mDataset != 0; }
+      bool isValid() const { return mDataset != nullptr; }
 
       //! Return CRS in WKT format
       QString crs() const { return mCrsWkt; }
@@ -218,7 +218,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     bool createAndWarp( const Item& raster );
 
     //! Determine suggested output of raster warp to a different CRS. Returns true on success
-    static bool suggestedWarpOutput( const RasterInfo& info, const QString& destWkt, QSizeF* cellSize = 0, QPointF* gridOffset = 0, QgsRectangle* rect = 0 );
+    static bool suggestedWarpOutput( const RasterInfo& info, const QString& destWkt, QSizeF* cellSize = nullptr, QPointF* gridOffset = nullptr, QgsRectangle* rect = nullptr );
 
   protected:
 

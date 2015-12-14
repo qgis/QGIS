@@ -26,7 +26,7 @@
 
 QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>( source, ownSource, request )
-    , sqliteStatement( NULL )
+    , sqliteStatement( nullptr )
     , mExpressionCompiled( false )
 {
 
@@ -128,7 +128,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   if ( !success )
   {
     // some error occurred
-    sqliteStatement = NULL;
+    sqliteStatement = nullptr;
     close();
   }
 }
@@ -146,7 +146,7 @@ bool QgsSpatiaLiteFeatureIterator::fetchFeature( QgsFeature& feature )
 
   feature.setValid( false );
 
-  if ( sqliteStatement == NULL )
+  if ( sqliteStatement == nullptr )
   {
     QgsDebugMsg( "Invalid current SQLite statement" );
     close();
@@ -156,7 +156,7 @@ bool QgsSpatiaLiteFeatureIterator::fetchFeature( QgsFeature& feature )
   if ( !getFeature( sqliteStatement, feature ) )
   {
     sqlite3_finalize( sqliteStatement );
-    sqliteStatement = NULL;
+    sqliteStatement = nullptr;
     close();
     return false;
   }
@@ -200,11 +200,11 @@ bool QgsSpatiaLiteFeatureIterator::close()
   if ( sqliteStatement )
   {
     sqlite3_finalize( sqliteStatement );
-    sqliteStatement = NULL;
+    sqliteStatement = nullptr;
   }
 
   QgsSpatiaLiteConnPool::instance()->releaseConnection( mHandle );
-  mHandle = 0;
+  mHandle = nullptr;
 
   mClosed = true;
   return true;
@@ -255,7 +255,7 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString& whereClause,
     if ( limit >= 0 )
       sql += QString( " LIMIT %1" ).arg( limit );
 
-    if ( sqlite3_prepare_v2( mHandle->handle(), sql.toUtf8().constData(), -1, &sqliteStatement, NULL ) != SQLITE_OK )
+    if ( sqlite3_prepare_v2( mHandle->handle(), sql.toUtf8().constData(), -1, &sqliteStatement, nullptr ) != SQLITE_OK )
     {
       // some error occurred
       QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( mHandle->handle() ) ), QObject::tr( "SpatiaLite" ) );
@@ -393,7 +393,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
   if ( !mFetchGeometry )
   {
     // no geometry was required
-    feature.setGeometry( 0 );
+    feature.setGeometry( nullptr );
   }
 
   feature.initAttributes( mSource->mFields.count() );
@@ -481,7 +481,7 @@ void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt* stmt, int i
 {
   if ( sqlite3_column_type( stmt, ic ) == SQLITE_BLOB )
   {
-    unsigned char *featureGeom = NULL;
+    unsigned char *featureGeom = nullptr;
     size_t geom_size = 0;
     const void *blob = sqlite3_column_blob( stmt, ic );
     size_t blob_size = sqlite3_column_bytes( stmt, ic );
@@ -494,12 +494,12 @@ void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt* stmt, int i
       feature.setGeometry( g );
     }
     else
-      feature.setGeometry( 0 );
+      feature.setGeometry( nullptr );
   }
   else
   {
     // NULL geometry
-    feature.setGeometry( 0 );
+    feature.setGeometry( nullptr );
   }
 }
 

@@ -44,19 +44,19 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
 
   if ( elem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   QString uri = elem.attribute( "uri", "not found" );
   if ( uri == "not found" )
   {
     QgsDebugMsg( "Uri not found" );
-    return 0;
+    return nullptr;
   }
   else
   {
     QgsDebugMsg( "Trying to get hostedrds layer from cache with uri: " + uri );
-    QgsRasterLayer* rl = 0;
+    QgsRasterLayer* rl = nullptr;
     if ( allowCaching )
     {
       rl = dynamic_cast<QgsRasterLayer*>( QgsMSLayerCache::instance()->searchLayer( uri, layerName ) );

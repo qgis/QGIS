@@ -65,7 +65,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     *                otherwise we contact the host directly.
     *
     */
-    QgsGdalProvider( QString const & uri = 0, bool update = false );
+    QgsGdalProvider( QString const & uri = nullptr, bool update = false );
 
     /** Create invalid provider with error */
     QgsGdalProvider( QString const & uri, QgsError error );

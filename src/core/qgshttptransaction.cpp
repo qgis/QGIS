@@ -43,13 +43,13 @@ QgsHttpTransaction::QgsHttpTransaction( const QString& uri,
                                         QNetworkProxy::ProxyType proxyType,
                                         const QString& userName,
                                         const QString& password )
-    : http( NULL )
+    : http( nullptr )
     , httpid( 0 )
     , httpactive( false )
     , httpurl( uri )
     , httphost( proxyHost )
     , httpredirections( 0 )
-    , mWatchdogTimer( NULL )
+    , mWatchdogTimer( nullptr )
 {
   Q_UNUSED( proxyPort );
   Q_UNUSED( proxyUser );
@@ -62,11 +62,11 @@ QgsHttpTransaction::QgsHttpTransaction( const QString& uri,
 }
 
 QgsHttpTransaction::QgsHttpTransaction()
-    : http( NULL )
+    : http( nullptr )
     , httpid( 0 )
     , httpactive( false )
     , httpredirections( 0 )
-    , mWatchdogTimer( NULL )
+    , mWatchdogTimer( nullptr )
 {
   QSettings s;
   mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt();
@@ -216,7 +216,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
 #endif
 
   delete http;
-  http = 0;
+  http = nullptr;
 
   // Did we get an error? If so, bail early
   if ( !mError.isEmpty() )

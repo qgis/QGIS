@@ -96,13 +96,13 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
      * the feature's original geometry will be used as an obstacle for labels. Ownership of obstacleGeometry
      * is transferred.
      */
-    virtual void registerFeature( QgsFeature& feature, QgsRenderContext &context, QgsGeometry* obstacleGeometry = 0 );
+    virtual void registerFeature( QgsFeature& feature, QgsRenderContext &context, QgsGeometry* obstacleGeometry = nullptr );
 
   protected:
     //! initialization method - called from constructors
     void init();
     //! helper method to register one diagram feautre
-    QgsLabelFeature* registerDiagram( QgsFeature& feat, QgsRenderContext& context, QgsGeometry* obstacleGeometry = 0 );
+    QgsLabelFeature* registerDiagram( QgsFeature& feat, QgsRenderContext& context, QgsGeometry* obstacleGeometry = nullptr );
 
   protected:
 

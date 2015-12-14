@@ -27,7 +27,7 @@ static QgsMapLayer* _rasterLayer( const QString& filename )
     if ( layer->type() == QgsMapLayer::RasterLayer && layer->source() == filename )
       return layer;
   }
-  return 0;
+  return nullptr;
 }
 
 static QString _rasterLayerName( const QString& filename )

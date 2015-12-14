@@ -62,7 +62,7 @@ class GUI_EXPORT QgsColorButtonV2 : public QToolButton
      * @param registry a color scheme registry for color swatch grids to show in the drop down menu. If not
      * specified, the button will use the global color scheme registry
      */
-    QgsColorButtonV2( QWidget *parent = 0, const QString& cdt = "", QgsColorSchemeRegistry* registry = 0 );
+    QgsColorButtonV2( QWidget *parent = nullptr, const QString& cdt = "", QgsColorSchemeRegistry* registry = nullptr );
 
     virtual ~QgsColorButtonV2();
 

@@ -48,7 +48,7 @@ QList<QAction*> QgsSLLayerItem::actions()
 
 void QgsSLLayerItem::deleteLayer()
 {
-  if ( QMessageBox::question( 0, QObject::tr( "Delete Object" ),
+  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Object" ),
                               QObject::tr( "Are you sure you want to delete %1?" ).arg( mName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
@@ -58,11 +58,11 @@ void QgsSLLayerItem::deleteLayer()
   bool res = ::deleteLayer( uri.database(), uri.table(), errCause );
   if ( !res )
   {
-    QMessageBox::warning( 0, tr( "Delete Layer" ), errCause );
+    QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
   }
   else
   {
-    QMessageBox::information( 0, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
+    QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
     mParent->refresh();
   }
 }
@@ -172,7 +172,7 @@ void QgsSLConnectionItem::editConnection()
 
 void QgsSLConnectionItem::deleteConnection()
 {
-  if ( QMessageBox::question( 0, QObject::tr( "Delete Connection" ),
+  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Connection" ),
                               QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( mName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
@@ -244,7 +244,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
   }
   else
   {
-    QMessageBox::information( 0, tr( "Import to SpatiaLite database" ), tr( "Import was successful." ) );
+    QMessageBox::information( nullptr, tr( "Import to SpatiaLite database" ), tr( "Import was successful." ) );
     refresh();
   }
 
@@ -294,7 +294,7 @@ QList<QAction*> QgsSLRootItem::actions()
 
 QWidget * QgsSLRootItem::paramWidget()
 {
-  QgsSpatiaLiteSourceSelect *select = new QgsSpatiaLiteSourceSelect( 0, 0, true );
+  QgsSpatiaLiteSourceSelect *select = new QgsSpatiaLiteSourceSelect( nullptr, nullptr, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }
@@ -306,7 +306,7 @@ void QgsSLRootItem::connectionsChanged()
 
 void QgsSLRootItem::newConnection()
 {
-  if ( QgsSpatiaLiteSourceSelect::newConnection( NULL ) )
+  if ( QgsSpatiaLiteSourceSelect::newConnection( nullptr ) )
   {
     refresh();
   }
@@ -319,7 +319,7 @@ void QgsSLRootItem::createDatabase()
   QSettings settings;
   QString lastUsedDir = settings.value( "/UI/lastSpatiaLiteDir", QDir::homePath() ).toString();
 
-  QString filename = QFileDialog::getSaveFileName( 0, tr( "New SpatiaLite Database File" ),
+  QString filename = QFileDialog::getSaveFileName( nullptr, tr( "New SpatiaLite Database File" ),
                      lastUsedDir,
                      tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)" );
   if ( filename.isEmpty() )
@@ -328,7 +328,7 @@ void QgsSLRootItem::createDatabase()
   QString errCause;
   if ( ::createDb( filename, errCause ) )
   {
-    QMessageBox::information( 0, tr( "Create SpatiaLite database" ), tr( "The database has been created" ) );
+    QMessageBox::information( nullptr, tr( "Create SpatiaLite database" ), tr( "The database has been created" ) );
 
     // add connection
     settings.setValue( "/SpatiaLite/connections/" + QFileInfo( filename ).fileName() + "/sqlitepath", filename );
@@ -337,7 +337,7 @@ void QgsSLRootItem::createDatabase()
   }
   else
   {
-    QMessageBox::critical( 0, tr( "Create SpatiaLite database" ), tr( "Failed to create the database:\n" ) + errCause );
+    QMessageBox::critical( nullptr, tr( "Create SpatiaLite database" ), tr( "Failed to create the database:\n" ) + errCause );
   }
 }
 

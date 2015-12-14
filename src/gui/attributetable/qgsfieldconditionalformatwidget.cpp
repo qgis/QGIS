@@ -8,10 +8,10 @@
 
 QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent )
     : QWidget( parent )
-    , mLayer( 0 )
+    , mLayer( nullptr )
     , mEditIndex( 0 )
     , mEditing( false )
-    , mSymbol( 0 )
+    , mSymbol( nullptr )
 {
   setupUi( this );
   mDeleteButton->hide();
@@ -47,7 +47,7 @@ void QgsFieldConditionalFormatWidget::updateIcon()
 {
   mSymbol = QgsSymbolV2::defaultSymbol( QGis::Point );
 
-  QgsSymbolV2SelectorDialog dlg( mSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  QgsSymbolV2SelectorDialog dlg( mSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
   if ( !dlg.exec() )
   {
     return;
@@ -135,7 +135,7 @@ void QgsFieldConditionalFormatWidget::setFormattingFromStyle( const QgsCondition
   }
   else
   {
-    mSymbol = 0;
+    mSymbol = nullptr;
   }
   QFont font = style.font();
   mFontBoldBtn->setChecked( font.bold() );
@@ -194,7 +194,7 @@ void QgsFieldConditionalFormatWidget::addNewRule()
 
 void QgsFieldConditionalFormatWidget::reset()
 {
-  mSymbol = 0;
+  mSymbol = nullptr;
   mNameEdit->clear();
   mRuleEdit->clear();
   if ( fieldRadio->isChecked() )
@@ -291,7 +291,7 @@ void QgsFieldConditionalFormatWidget::saveRule()
   }
   else
   {
-    style.setSymbol( 0 );
+    style.setSymbol( nullptr );
   }
   if ( mEditing )
   {

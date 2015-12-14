@@ -30,7 +30,7 @@ QgsRasterNuller::~QgsRasterNuller()
 QgsRasterNuller* QgsRasterNuller::clone() const
 {
   QgsDebugMsg( "Entered" );
-  QgsRasterNuller * nuller = new QgsRasterNuller( 0 );
+  QgsRasterNuller * nuller = new QgsRasterNuller( nullptr );
   nuller->mNoData = mNoData;
   nuller->mOutputNoData = mOutputNoData;
   nuller->mHasOutputNoData = mHasOutputNoData;
@@ -89,7 +89,7 @@ QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & exten
     return inputBlock;
   }
 
-  QgsRasterBlock *outputBlock = 0;
+  QgsRasterBlock *outputBlock = nullptr;
 
   if ( mHasOutputNoData.value( bandNo - 1 ) || inputBlock->hasNoDataValue() )
   {

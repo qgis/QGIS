@@ -27,7 +27,7 @@ class GUI_EXPORT QgsVectorColorBrewerColorRampV2Dialog : public QDialog, private
     Q_OBJECT
 
   public:
-    QgsVectorColorBrewerColorRampV2Dialog( QgsVectorColorBrewerColorRampV2* ramp, QWidget* parent = NULL );
+    QgsVectorColorBrewerColorRampV2Dialog( QgsVectorColorBrewerColorRampV2* ramp, QWidget* parent = nullptr );
 
   public slots:
     void setSchemeName();

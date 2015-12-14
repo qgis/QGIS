@@ -145,11 +145,11 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   {
     if ( check->getCheckType() == QgsGeometryCheck::LayerCheck )
     {
-      check->collectErrors( recheckErrors, mMessages, 0, recheckAreaFeatures );
+      check->collectErrors( recheckErrors, mMessages, nullptr, recheckAreaFeatures );
     }
     else
     {
-      check->collectErrors( recheckErrors, mMessages, 0, recheckFeatures );
+      check->collectErrors( recheckErrors, mMessages, nullptr, recheckFeatures );
     }
   }
 
@@ -183,7 +183,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
     }
 
     // Check if this error now matches one found when rechecking the feature/area
-    QgsGeometryCheckError* matchErr = 0;
+    QgsGeometryCheckError* matchErr = nullptr;
     int nMatch = 0;
     Q_FOREACH ( QgsGeometryCheckError* recheckErr, recheckErrors )
     {

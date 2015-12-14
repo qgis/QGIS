@@ -326,7 +326,7 @@ void QgsEditFormConfig::writeXml( QDomNode& node ) const
 
 QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent )
 {
-  QgsAttributeEditorElement* newElement = NULL;
+  QgsAttributeEditorElement* newElement = nullptr;
 
   if ( elem.tagName() == "attributeEditorContainer" )
   {

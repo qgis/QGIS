@@ -28,7 +28,7 @@ class GUI_EXPORT QgsDataDefinedSymbolDialog: public QDialog, private Ui::QgsData
     };
 
     //! @deprecated will be removed in QGIS 3.0
-    Q_DECL_DEPRECATED QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent = 0, const Qt::WindowFlags& f = 0 );
+    Q_DECL_DEPRECATED QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent = nullptr, const Qt::WindowFlags& f = nullptr );
     ~QgsDataDefinedSymbolDialog();
 
     //! @deprecated will be removed in QGIS 3.0

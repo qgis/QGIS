@@ -29,7 +29,7 @@
 
 QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
-    , mRubberBand( 0 )
+    , mRubberBand( nullptr )
 {
   mToolName = tr( "Move feature" );
 }
@@ -55,7 +55,7 @@ void QgsMapToolMoveFeature::canvasMoveEvent( QgsMapMouseEvent* e )
 void QgsMapToolMoveFeature::canvasPressEvent( QgsMapMouseEvent* e )
 {
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 
   QgsVectorLayer* vlayer = currentVectorLayer();
   if ( !vlayer )
@@ -165,7 +165,7 @@ void QgsMapToolMoveFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
     vlayer->translateFeature( id, dx, dy );
   }
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mCanvas->refresh();
   vlayer->endEditCommand();
 }
@@ -175,7 +175,7 @@ void QgsMapToolMoveFeature::deactivate()
 {
   //delete rubber band
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 
   QgsMapTool::deactivate();
 }

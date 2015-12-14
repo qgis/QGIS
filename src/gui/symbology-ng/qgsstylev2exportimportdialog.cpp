@@ -55,11 +55,11 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
   mTempStyle = new QgsStyleV2();
   // TODO validate
   mFileName = "";
-  mProgressDlg = NULL;
-  mGroupSelectionDlg = NULL;
-  mTempFile = NULL;
+  mProgressDlg = nullptr;
+  mGroupSelectionDlg = nullptr;
+  mTempFile = nullptr;
   mNetManager = new QNetworkAccessManager( this );
-  mNetReply = NULL;
+  mNetReply = nullptr;
 
   if ( mDialogMode == Import )
   {
@@ -214,7 +214,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
 {
   QString symbolName;
   QgsSymbolV2* symbol;
-  QgsVectorColorRampV2 *ramp = 0;
+  QgsVectorColorRampV2 *ramp = nullptr;
   QModelIndex index;
   bool isSymbol = true;
   bool prompt = true;
@@ -273,7 +273,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
     index = selection->at( i );
     symbolName = index.model()->data( index, 0 ).toString();
     symbol = src->symbol( symbolName );
-    if ( symbol == NULL )
+    if ( symbol == nullptr )
     {
       isSymbol = false;
       ramp = src->colorRamp( symbolName );
@@ -533,7 +533,7 @@ void QgsStyleV2ExportImportDialog::downloadStyleXML( const QUrl& url )
     if ( mProgressDlg )
     {
       QProgressDialog *dummy = mProgressDlg;
-      mProgressDlg = NULL;
+      mProgressDlg = nullptr;
       delete dummy;
     }
     mProgressDlg = new QProgressDialog();
@@ -546,7 +546,7 @@ void QgsStyleV2ExportImportDialog::downloadStyleXML( const QUrl& url )
     if ( mNetReply )
     {
       QNetworkReply *dummyReply = mNetReply;
-      mNetReply = NULL;
+      mNetReply = nullptr;
       delete dummyReply;
     }
     mNetReply = mNetManager->get( QNetworkRequest( url ) );

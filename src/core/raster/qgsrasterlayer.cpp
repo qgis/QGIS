@@ -82,7 +82,7 @@ QgsRasterLayer::QgsRasterLayer()
     : QgsMapLayer( RasterLayer )
     , QSTRING_NOT_SET( "Not Set" )
     , TRSTRING_NOT_SET( tr( "Not Set" ) )
-    , mDataProvider( 0 )
+    , mDataProvider( nullptr )
 {
   init();
   mValid = false;
@@ -95,7 +95,7 @@ QgsRasterLayer::QgsRasterLayer(
     : QgsMapLayer( RasterLayer, baseName, path )
     , QSTRING_NOT_SET( "Not Set" )
     , TRSTRING_NOT_SET( tr( "Not Set" ) )
-    , mDataProvider( 0 )
+    , mDataProvider( nullptr )
 {
   QgsDebugMsg( "Entered" );
 
@@ -128,7 +128,7 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
     // Constant that signals property not used.
     , QSTRING_NOT_SET( "Not Set" )
     , TRSTRING_NOT_SET( tr( "Not Set" ) )
-    , mDataProvider( 0 )
+    , mDataProvider( nullptr )
     , mProviderKey( providerKey )
 {
   QgsDebugMsg( "Entered" );
@@ -637,7 +637,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   mValid = false; // assume the layer is invalid until we determine otherwise
 
   mPipe.remove( mDataProvider ); // deletes if exists
-  mDataProvider = 0;
+  mDataProvider = nullptr;
 
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
@@ -853,7 +853,7 @@ void QgsRasterLayer::closeDataProvider()
 {
   mValid = false;
   mPipe.remove( mDataProvider );
-  mDataProvider = 0;
+  mDataProvider = nullptr;
 }
 
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, QgsRaster::ContrastEnhancementLimits theLimits, const QgsRectangle& theExtent, int theSampleSize, bool theGenerateLookupTableFlag )
@@ -866,8 +866,8 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
 
   QList<int> myBands;
   QList<QgsContrastEnhancement*> myEnhancements;
-  QgsSingleBandGrayRenderer* myGrayRenderer = 0;
-  QgsMultiBandColorRenderer* myMultiBandRenderer = 0;
+  QgsSingleBandGrayRenderer* myGrayRenderer = nullptr;
+  QgsMultiBandColorRenderer* myMultiBandRenderer = nullptr;
   QString rendererType  = mPipe.renderer()->type();
   if ( rendererType == "singlebandgray" )
   {
@@ -922,7 +922,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     }
     else
     {
-      myEnhancements.append( 0 );
+      myEnhancements.append( nullptr );
     }
   }
 

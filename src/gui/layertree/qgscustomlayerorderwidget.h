@@ -40,7 +40,7 @@ class GUI_EXPORT QgsCustomLayerOrderWidget : public QWidget
 {
     Q_OBJECT
   public:
-    explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge* bridge, QWidget *parent = 0 );
+    explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge* bridge, QWidget *parent = nullptr );
 
   signals:
 
@@ -67,7 +67,7 @@ class CustomLayerOrderModel : public QAbstractListModel
     Q_OBJECT
 
   public:
-    CustomLayerOrderModel( QgsLayerTreeMapCanvasBridge* bridge, QObject* parent = 0 );
+    CustomLayerOrderModel( QgsLayerTreeMapCanvasBridge* bridge, QObject* parent = nullptr );
 
     int rowCount( const QModelIndex & ) const override;
 

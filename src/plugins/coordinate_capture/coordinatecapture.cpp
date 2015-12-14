@@ -68,15 +68,15 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  */
 CoordinateCapture::CoordinateCapture( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mpMapTool( NULL )
-    , mpTrackMouseButton( NULL )
-    , mpCaptureButton( NULL )
-    , mypUserCrsToolButton( NULL )
-    , mypCRSLabel( NULL )
+    , mpMapTool( nullptr )
+    , mpTrackMouseButton( nullptr )
+    , mpCaptureButton( nullptr )
+    , mypUserCrsToolButton( nullptr )
+    , mypCRSLabel( nullptr )
     , mCanvasDisplayPrecision( 5 )
     , mUserCrsDisplayPrecision( 5 )
     , mQGisIface( theQgisInterface )
-    , mQActionPointer( NULL )
+    , mQActionPointer( nullptr )
 {
 }
 
@@ -272,11 +272,11 @@ void CoordinateCapture::unload()
   mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   mpMapTool->deactivate();
   delete mpMapTool;
-  mpMapTool = 0;
+  mpMapTool = nullptr;
   delete mpDockWidget;
-  mpDockWidget = 0;
+  mpDockWidget = nullptr;
   delete mQActionPointer;
-  mQActionPointer = 0;
+  mQActionPointer = nullptr;
 }
 
 // Set icons to the current theme

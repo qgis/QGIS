@@ -53,7 +53,7 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
     , mFeatureList( features )
     , mVectorLayer( vl )
     , mMapCanvas( canvas )
-    , mSelectionRubberBand( 0 )
+    , mSelectionRubberBand( nullptr )
 {
   setupUi( this );
   createTableWidgetContents();
@@ -77,9 +77,9 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog()
     : QDialog()
-    , mVectorLayer( NULL )
-    , mMapCanvas( NULL )
-    , mSelectionRubberBand( NULL )
+    , mVectorLayer( nullptr )
+    , mMapCanvas( nullptr )
+    , mSelectionRubberBand( nullptr )
 {
   setupUi( this );
 
@@ -148,7 +148,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
       QTableWidgetItem* attributeValItem = new QTableWidgetItem( attrs.at( idx ).toString() );
       attributeValItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       mTableWidget->setItem( i + 1, j, attributeValItem );
-      mTableWidget->setCellWidget( i + 1, j, QgsAttributeEditor::createAttributeEditor( mTableWidget, NULL, mVectorLayer, idx, attrs.at( idx ) ) );
+      mTableWidget->setCellWidget( i + 1, j, QgsAttributeEditor::createAttributeEditor( mTableWidget, nullptr, mVectorLayer, idx, attrs.at( idx ) ) );
     }
   }
 
@@ -226,7 +226,7 @@ void QgsMergeAttributesDialog::selectedRowChanged()
   if ( selectionList.isEmpty() )
   {
     delete mSelectionRubberBand;
-    mSelectionRubberBand = 0;
+    mSelectionRubberBand = nullptr;
     return;
   }
 
@@ -250,7 +250,7 @@ void QgsMergeAttributesDialog::selectedRowChanged()
   {
     //the merge result row was selected
     delete mSelectionRubberBand;
-    mSelectionRubberBand = 0;
+    mSelectionRubberBand = nullptr;
     return;
   }
   createRubberBandForFeature( featureIdToSelect );

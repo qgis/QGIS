@@ -30,7 +30,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGML( const QDomNode& geometryNode )
     QDomNode geometryChild = geometryNode.firstChild();
     if ( geometryChild.isNull() )
     {
-      return 0;
+      return nullptr;
     }
     geometryTypeElement = geometryChild.toElement();
     geomType = geometryTypeElement.tagName();
@@ -39,7 +39,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGML( const QDomNode& geometryNode )
   if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" ||
           geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon" ||
           geomType == "Box" || geomType == "Envelope" ) )
-    return 0;
+    return nullptr;
 
   if ( geomType == "Point" )
   {
@@ -75,7 +75,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGML( const QDomNode& geometryNode )
   }
   else //unknown type
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -85,7 +85,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGML( const QString& xmlString )
   QString xml = QString( "<tmp xmlns=\"%1\" xmlns:gml=\"%1\">%2</tmp>" ).arg( GML_NAMESPACE, xmlString );
   QDomDocument doc;
   if ( !doc.setContent( xml, true ) )
-    return 0;
+    return nullptr;
 
   return geometryFromGML( doc.documentElement().firstChildElement() );
 }
@@ -101,7 +101,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLPoint( const QDomElement& geometryEleme
     QDomElement coordElement = coordList.at( 0 ).toElement();
     if ( readGMLCoordinates( pointCoordinate, coordElement ) != 0 )
     {
-      return 0;
+      return nullptr;
     }
   }
   else
@@ -109,18 +109,18 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLPoint( const QDomElement& geometryEleme
     QDomNodeList posList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, "pos" );
     if ( posList.size() < 1 )
     {
-      return 0;
+      return nullptr;
     }
     QDomElement posElement = posList.at( 0 ).toElement();
     if ( readGMLPositions( pointCoordinate, posElement ) != 0 )
     {
-      return 0;
+      return nullptr;
     }
   }
 
   if ( pointCoordinate.size() < 1 )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsPolyline::const_iterator point_it = pointCoordinate.begin();
@@ -156,7 +156,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLLineString( const QDomElement& geometry
     QDomElement coordElement = coordList.at( 0 ).toElement();
     if ( readGMLCoordinates( lineCoordinates, coordElement ) != 0 )
     {
-      return 0;
+      return nullptr;
     }
   }
   else
@@ -164,12 +164,12 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLLineString( const QDomElement& geometry
     QDomNodeList posList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, "posList" );
     if ( posList.size() < 1 )
     {
-      return 0;
+      return nullptr;
     }
     QDomElement posElement = posList.at( 0 ).toElement();
     if ( readGMLPositions( lineCoordinates, posElement ) != 0 )
     {
-      return 0;
+      return nullptr;
     }
   }
 
@@ -220,11 +220,11 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLPolygon( const QDomElement& geometryEle
     QDomElement coordinatesElement = outerBoundaryList.at( 0 ).firstChild().firstChild().toElement();
     if ( coordinatesElement.isNull() )
     {
-      return 0;
+      return nullptr;
     }
     if ( readGMLCoordinates( exteriorPointList, coordinatesElement ) != 0 )
     {
-      return 0;
+      return nullptr;
     }
     ringCoordinates.push_back( exteriorPointList );
 
@@ -236,11 +236,11 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLPolygon( const QDomElement& geometryEle
       coordinatesElement = innerBoundaryList.at( i ).firstChild().firstChild().toElement();
       if ( coordinatesElement.isNull() )
       {
-        return 0;
+        return nullptr;
       }
       if ( readGMLCoordinates( interiorPointList, coordinatesElement ) != 0 )
       {
-        return 0;
+        return nullptr;
       }
       ringCoordinates.push_back( interiorPointList );
     }
@@ -251,16 +251,16 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLPolygon( const QDomElement& geometryEle
     QDomNodeList exteriorList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, "exterior" );
     if ( exteriorList.size() < 1 ) //outer ring is necessary
     {
-      return 0;
+      return nullptr;
     }
     QDomElement posElement = exteriorList.at( 0 ).firstChild().firstChild().toElement();
     if ( posElement.isNull() )
     {
-      return 0;
+      return nullptr;
     }
     if ( readGMLPositions( exteriorPointList, posElement ) != 0 )
     {
-      return 0;
+      return nullptr;
     }
     ringCoordinates.push_back( exteriorPointList );
 
@@ -272,11 +272,11 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLPolygon( const QDomElement& geometryEle
       QDomElement posElement = interiorList.at( i ).firstChild().firstChild().toElement();
       if ( posElement.isNull() )
       {
-        return 0;
+        return nullptr;
       }
       if ( readGMLPositions( interiorPointList, posElement ) != 0 )
       {
-        return 0;
+        return nullptr;
       }
       ringCoordinates.push_back( interiorPointList );
     }
@@ -285,7 +285,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLPolygon( const QDomElement& geometryEle
   //calculate number of bytes to allocate
   int nrings = ringCoordinates.size();
   if ( nrings < 1 )
-    return 0;
+    return nullptr;
 
   int npoints = 0;//total number of points
   for ( QgsMultiPolyline::const_iterator it = ringCoordinates.begin(); it != ringCoordinates.end(); ++it )
@@ -341,7 +341,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiPoint( const QDomElement& geometry
   QDomNodeList pointMemberList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, "pointMember" );
   if ( pointMemberList.size() < 1 )
   {
-    return 0;
+    return nullptr;
   }
   QDomNodeList pointNodeList;
   // coordinates or pos element
@@ -394,7 +394,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiPoint( const QDomElement& geometry
 
   int nPoints = pointList.size(); //number of points
   if ( nPoints < 1 )
-    return 0;
+    return nullptr;
 
   //calculate the required wkb size
   int size = 1 + 2 * sizeof( int ) + pointList.size() * ( 2 * sizeof( double ) + 1 + sizeof( int ) );
@@ -456,7 +456,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement& geo
       QDomNodeList lineStringNodeList = lineStringMemberList.at( i ).toElement().elementsByTagNameNS( GML_NAMESPACE, "LineString" );
       if ( lineStringNodeList.size() < 1 )
       {
-        return 0;
+        return nullptr;
       }
       currentLineStringElement = lineStringNodeList.at( 0 ).toElement();
       currentCoordList = currentLineStringElement.elementsByTagNameNS( GML_NAMESPACE, "coordinates" );
@@ -465,7 +465,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement& geo
         QgsPolyline currentPointList;
         if ( readGMLCoordinates( currentPointList, currentCoordList.at( 0 ).toElement() ) != 0 )
         {
-          return 0;
+          return nullptr;
         }
         lineCoordinates.push_back( currentPointList );
       }
@@ -474,12 +474,12 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement& geo
         currentPosList = currentLineStringElement.elementsByTagNameNS( GML_NAMESPACE, "posList" );
         if ( currentPosList.size() < 1 )
         {
-          return 0;
+          return nullptr;
         }
         QgsPolyline currentPointList;
         if ( readGMLPositions( currentPointList, currentPosList.at( 0 ).toElement() ) != 0 )
         {
-          return 0;
+          return nullptr;
         }
         lineCoordinates.push_back( currentPointList );
       }
@@ -499,22 +499,22 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement& geo
           QgsPolyline currentPointList;
           if ( readGMLCoordinates( currentPointList, currentCoordList.at( 0 ).toElement() ) != 0 )
           {
-            return 0;
+            return nullptr;
           }
           lineCoordinates.push_back( currentPointList );
-          return 0;
+          return nullptr;
         }
         else
         {
           currentPosList = currentLineStringElement.elementsByTagNameNS( GML_NAMESPACE, "posList" );
           if ( currentPosList.size() < 1 )
           {
-            return 0;
+            return nullptr;
           }
           QgsPolyline currentPointList;
           if ( readGMLPositions( currentPointList, currentPosList.at( 0 ).toElement() ) != 0 )
           {
-            return 0;
+            return nullptr;
           }
           lineCoordinates.push_back( currentPointList );
         }
@@ -522,13 +522,13 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement& geo
     }
     else
     {
-      return 0;
+      return nullptr;
     }
   }
 
   int nLines = lineCoordinates.size();
   if ( nLines < 1 )
-    return 0;
+    return nullptr;
 
   //calculate the required wkb size
   int size = ( lineCoordinates.size() + 1 ) * ( 1 + 2 * sizeof( int ) );
@@ -720,7 +720,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement& geomet
 
   int nPolygons = multiPolygonPoints.size();
   if ( nPolygons < 1 )
-    return 0;
+    return nullptr;
 
   int size = 1 + 2 * sizeof( int );
   //calculate the wkb size
@@ -1445,7 +1445,7 @@ QColor QgsOgcUtils::colorFromOgcFill( const QDomElement& fillElement )
 QgsExpression* QgsOgcUtils::expressionFromOgcFilter( const QDomElement& element )
 {
   if ( element.isNull() || !element.hasChildNodes() )
-    return NULL;
+    return nullptr;
 
   QgsExpression *expr = new QgsExpression();
 
@@ -1540,7 +1540,7 @@ static bool isSpatialOperator( const QString& tagName )
 QgsExpression::Node* QgsOgcUtils::nodeFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
   if ( element.isNull() )
-    return NULL;
+    return nullptr;
 
   // check for binary operators
   if ( isBinaryOperator( element.tagName() ) )
@@ -1582,7 +1582,7 @@ QgsExpression::Node* QgsOgcUtils::nodeFromOgcFilter( QDomElement &element, QStri
   }
 
   errorMessage += QString( "unable to convert '%1' element to a valid expression: it is not supported yet or it has invalid arguments" ).arg( element.tagName() );
-  return NULL;
+  return nullptr;
 }
 
 
@@ -1590,14 +1590,14 @@ QgsExpression::Node* QgsOgcUtils::nodeFromOgcFilter( QDomElement &element, QStri
 QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
   if ( element.isNull() )
-    return NULL;
+    return nullptr;
 
   int op = binaryOperatorFromTagName( element.tagName() );
   if ( op < 0 )
   {
     if ( errorMessage.isEmpty() )
       errorMessage = QString( "'%1' binary operator not supported." ).arg( element.tagName() );
-    return NULL;
+    return nullptr;
   }
 
   QDomElement operandElem = element.firstChildElement();
@@ -1606,7 +1606,7 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
   {
     if ( errorMessage.isEmpty() )
       errorMessage = QString( "invalid left operand for '%1' binary operator" ).arg( element.tagName() );
-    return NULL;
+    return nullptr;
   }
 
   for ( operandElem = operandElem.nextSiblingElement(); !operandElem.isNull(); operandElem = operandElem.nextSiblingElement() )
@@ -1617,7 +1617,7 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
       if ( errorMessage.isEmpty() )
         errorMessage = QString( "invalid right operand for '%1' binary operator" ).arg( element.tagName() );
       delete expr;
-      return NULL;
+      return nullptr;
     }
 
     expr = new QgsExpression::NodeBinaryOperator(( QgsExpression::BinaryOperator ) op, expr, opRight );
@@ -1628,7 +1628,7 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
     if ( errorMessage.isEmpty() )
       errorMessage = QString( "only one operand for '%1' binary operator" ).arg( element.tagName() );
     delete expr;
-    return NULL;
+    return nullptr;
   }
 
   QgsExpression::NodeBinaryOperator *ret = dynamic_cast< QgsExpression::NodeBinaryOperator * >( expr );
@@ -1664,7 +1664,7 @@ QgsExpression::NodeFunction* QgsOgcUtils::nodeSpatialOperatorFromOgcFilter( QDom
   {
     errorMessage = "No OGC Geometry found";
     delete gml2Args;
-    return NULL;
+    return nullptr;
   }
 
   QgsExpression::NodeList *opArgs = new QgsExpression::NodeList();
@@ -1678,7 +1678,7 @@ QgsExpression::NodeFunction* QgsOgcUtils::nodeSpatialOperatorFromOgcFilter( QDom
 QgsExpression::NodeUnaryOperator* QgsOgcUtils::nodeNotFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
   if ( element.tagName() != "Not" )
-    return NULL;
+    return nullptr;
 
   QDomElement operandElem = element.firstChildElement();
   QgsExpression::Node* operand = nodeFromOgcFilter( operandElem, errorMessage );
@@ -1686,7 +1686,7 @@ QgsExpression::NodeUnaryOperator* QgsOgcUtils::nodeNotFromOgcFilter( QDomElement
   {
     if ( errorMessage.isEmpty() )
       errorMessage = QString( "invalid operand for '%1' unary operator" ).arg( element.tagName() );
-    return NULL;
+    return nullptr;
   }
 
   return new QgsExpression::NodeUnaryOperator( QgsExpression::uoNot, operand );
@@ -1698,7 +1698,7 @@ QgsExpression::NodeFunction* QgsOgcUtils::nodeFunctionFromOgcFilter( QDomElement
   if ( element.isNull() || element.tagName() != "Function" )
   {
     errorMessage = QString( "ogc:Function expected, got %1" ).arg( element.tagName() );
-    return NULL;
+    return nullptr;
   }
 
   for ( int i = 0; i < QgsExpression::Functions().size(); i++ )
@@ -1717,7 +1717,7 @@ QgsExpression::NodeFunction* QgsOgcUtils::nodeFunctionFromOgcFilter( QDomElement
       if ( !op )
       {
         delete args;
-        return NULL;
+        return nullptr;
       }
       args->append( op );
 
@@ -1727,7 +1727,7 @@ QgsExpression::NodeFunction* QgsOgcUtils::nodeFunctionFromOgcFilter( QDomElement
     return new QgsExpression::NodeFunction( i, args );
   }
 
-  return NULL;
+  return nullptr;
 }
 
 
@@ -1737,16 +1737,16 @@ QgsExpression::Node* QgsOgcUtils::nodeLiteralFromOgcFilter( QDomElement &element
   if ( element.isNull() || element.tagName() != "Literal" )
   {
     errorMessage = QString( "ogc:Literal expected, got %1" ).arg( element.tagName() );
-    return NULL;
+    return nullptr;
   }
 
-  QgsExpression::Node *root = 0;
+  QgsExpression::Node *root = nullptr;
 
   // the literal content can have more children (e.g. CDATA section, text, ...)
   QDomNode childNode = element.firstChild();
   while ( !childNode.isNull() )
   {
-    QgsExpression::Node* operand = 0;
+    QgsExpression::Node* operand = nullptr;
 
     if ( childNode.nodeType() == QDomNode::ElementNode )
     {
@@ -1759,7 +1759,7 @@ QgsExpression::Node* QgsOgcUtils::nodeLiteralFromOgcFilter( QDomElement &element
           delete root;
 
         errorMessage = QString( "'%1' is an invalid or not supported content for ogc:Literal" ).arg( operandElem.tagName() );
-        return NULL;
+        return nullptr;
       }
     }
     else
@@ -1795,7 +1795,7 @@ QgsExpression::Node* QgsOgcUtils::nodeLiteralFromOgcFilter( QDomElement &element
   if ( root )
     return root;
 
-  return NULL;
+  return nullptr;
 }
 
 
@@ -1804,7 +1804,7 @@ QgsExpression::NodeColumnRef* QgsOgcUtils::nodeColumnRefFromOgcFilter( QDomEleme
   if ( element.isNull() || element.tagName() != "PropertyName" )
   {
     errorMessage = QString( "ogc:PropertyName expected, got %1" ).arg( element.tagName() );
-    return NULL;
+    return nullptr;
   }
 
   return new QgsExpression::NodeColumnRef( element.firstChild().nodeValue() );
@@ -1814,8 +1814,8 @@ QgsExpression::NodeColumnRef* QgsOgcUtils::nodeColumnRefFromOgcFilter( QDomEleme
 QgsExpression::Node* QgsOgcUtils::nodeIsBetweenFromOgcFilter( QDomElement& element, QString& errorMessage )
 {
   // <ogc:PropertyIsBetween> encode a Range check
-  QgsExpression::Node *operand = 0, *lowerBound = 0;
-  QgsExpression::Node *operand2 = 0, *upperBound = 0;
+  QgsExpression::Node *operand = nullptr, *lowerBound = nullptr;
+  QgsExpression::Node *operand2 = nullptr, *upperBound = nullptr;
 
   QDomElement operandElem = element.firstChildElement();
   while ( !operandElem.isNull() )
@@ -1857,7 +1857,7 @@ QgsExpression::Node* QgsOgcUtils::nodeIsBetweenFromOgcFilter( QDomElement& eleme
       delete upperBound;
 
     errorMessage = "missing some required sub-elements in ogc:PropertyIsBetween";
-    return NULL;
+    return nullptr;
   }
 
   QgsExpression::Node *geOperator = new QgsExpression::NodeBinaryOperator( QgsExpression::boGE, operand, lowerBound );
@@ -1871,13 +1871,13 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodePropertyIsNullFromOgcFilter(
   // convert ogc:PropertyIsNull to IS operator with NULL right operand
   if ( element.tagName() != "PropertyIsNull" )
   {
-    return NULL;
+    return nullptr;
   }
 
   QDomElement operandElem = element.firstChildElement();
   QgsExpression::Node* opLeft = nodeFromOgcFilter( operandElem, errorMessage );
   if ( !opLeft )
-    return NULL;
+    return nullptr;
 
   QgsExpression::Node* opRight = new QgsExpression::NodeLiteral( QVariant() );
   return new QgsExpression::NodeBinaryOperator( QgsExpression::boIs, opLeft, opRight );
@@ -2151,7 +2151,7 @@ static QgsGeometry* geometryFromConstExpr( const QgsExpression::Node* node )
       }
     }
   }
-  return 0;
+  return nullptr;
 }
 
 
@@ -2194,7 +2194,7 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
     QList<QgsExpression::Node*> argNodes = node->args()->list();
     Q_ASSERT( argNodes.count() == 2 ); // binary spatial ops must have two args
 
-    QgsExpression::Node* otherNode = 0;
+    QgsExpression::Node* otherNode = nullptr;
     if ( isGeometryColumn( argNodes[0] ) )
       otherNode = argNodes[1];
     else if ( isGeometryColumn( argNodes[1] ) )

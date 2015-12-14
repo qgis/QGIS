@@ -59,8 +59,8 @@ QgsDecorationGrid::QgsDecorationGrid( QObject* parent )
 {
   setName( "Grid" );
 
-  mLineSymbol = 0;
-  mMarkerSymbol = 0;
+  mLineSymbol = nullptr;
+  mMarkerSymbol = nullptr;
   projectRead();
 
   connect( QgisApp::instance()->mapCanvas(), SIGNAL( mapUnitsChanged() ),
@@ -129,7 +129,7 @@ void QgsDecorationGrid::projectRead()
   QString xml;
 
   if ( mLineSymbol )
-    setLineSymbol( 0 );
+    setLineSymbol( nullptr );
   xml = QgsProject::instance()->readEntry( mNameConfig, "/LineSymbol" );
   if ( xml != "" )
   {
@@ -141,7 +141,7 @@ void QgsDecorationGrid::projectRead()
     mLineSymbol = new QgsLineSymbolV2();
 
   if ( mMarkerSymbol )
-    setMarkerSymbol( 0 );
+    setMarkerSymbol( nullptr );
   xml = QgsProject::instance()->readEntry( mNameConfig, "/MarkerSymbol" );
   if ( xml != "" )
   {
@@ -234,7 +234,7 @@ void QgsDecorationGrid::render( QPainter * p )
 
     QgsRenderContext context = QgsRenderContext::fromMapSettings( QgisApp::instance()->mapCanvas()->mapSettings() );
     context.setPainter( p );
-    mLineSymbol->startRender( context, 0 );
+    mLineSymbol->startRender( context, nullptr );
 
     for ( ; vIt != verticalLines.constEnd(); ++vIt )
     {
@@ -242,7 +242,7 @@ void QgsDecorationGrid::render( QPainter * p )
       // need to convert QLineF to QPolygonF ...
       QVector<QPointF> poly;
       poly << vIt->second.p1() << vIt->second.p2();
-      mLineSymbol->renderPolyline( QPolygonF( poly ), 0, context );
+      mLineSymbol->renderPolyline( QPolygonF( poly ), nullptr, context );
     }
 
     for ( ; hIt != horizontalLines.constEnd(); ++hIt )
@@ -251,7 +251,7 @@ void QgsDecorationGrid::render( QPainter * p )
       // need to convert QLineF to QPolygonF ...
       QVector<QPointF> poly;
       poly << hIt->second.p1() << hIt->second.p2();
-      mLineSymbol->renderPolyline( QPolygonF( poly ), 0, context );
+      mLineSymbol->renderPolyline( QPolygonF( poly ), nullptr, context );
     }
 
     mLineSymbol->stopRender( context );
@@ -312,7 +312,7 @@ void QgsDecorationGrid::render( QPainter * p )
 
     QgsRenderContext context = QgsRenderContext::fromMapSettings( QgisApp::instance()->mapCanvas()->mapSettings() );
     context.setPainter( p );
-    mMarkerSymbol->startRender( context, 0 );
+    mMarkerSymbol->startRender( context, nullptr );
 
     QPointF intersectionPoint;
     for ( ; vIt != verticalLines.constEnd(); ++vIt )
@@ -323,7 +323,7 @@ void QgsDecorationGrid::render( QPainter * p )
       {
         if ( hIt->second.intersect( vIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
         {
-          mMarkerSymbol->renderPoint( intersectionPoint, 0, context );
+          mMarkerSymbol->renderPoint( intersectionPoint, nullptr, context );
         }
       }
     }
@@ -819,18 +819,18 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double* values )
   QgsMapLayer* layer = QgisApp::instance()->mapCanvas()->currentLayer();
   if ( ! layer )
   {
-    QMessageBox::warning( 0, tr( "Error" ), tr( "No active layer" ) );
+    QMessageBox::warning( nullptr, tr( "Error" ), tr( "No active layer" ) );
     return false;
   }
   if ( layer->type() != QgsMapLayer::RasterLayer )
   {
-    QMessageBox::warning( 0, tr( "Error" ), tr( "Please select a raster layer" ) );
+    QMessageBox::warning( nullptr, tr( "Error" ), tr( "Please select a raster layer" ) );
     return false;
   }
   QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>( layer );
   if ( !rlayer || rlayer->width() == 0 || rlayer->height() == 0 )
   {
-    QMessageBox::warning( 0, tr( "Error" ), tr( "Invalid raster layer" ) );
+    QMessageBox::warning( nullptr, tr( "Error" ), tr( "Invalid raster layer" ) );
     return false;
   }
   const QgsCoordinateReferenceSystem& layerCRS = layer->crs();
@@ -840,7 +840,7 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double* values )
   // TODO calculate transformed values if necessary
   if ( layerCRS != mapCRS )
   {
-    QMessageBox::warning( 0, tr( "Error" ), tr( "Layer CRS must be equal to project CRS" ) );
+    QMessageBox::warning( nullptr, tr( "Error" ), tr( "Layer CRS must be equal to project CRS" ) );
     return false;
   }
 

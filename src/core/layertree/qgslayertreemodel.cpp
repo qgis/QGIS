@@ -288,7 +288,7 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
 {
   if ( !index.isValid() )
   {
-    Qt::ItemFlags rootFlags = 0;
+    Qt::ItemFlags rootFlags = nullptr;
     if ( testFlag( AllowNodeReorder ) )
       rootFlags |= Qt::ItemIsDropEnabled;
     return rootFlags;
@@ -444,13 +444,13 @@ QList<QgsLayerTreeNode*> QgsLayerTreeModel::indexes2nodes( const QModelIndexList
 
 bool QgsLayerTreeModel::isIndexSymbologyNode( const QModelIndex& index ) const
 {
-  return index2legendNode( index ) != 0;
+  return index2legendNode( index ) != nullptr;
 }
 
 QgsLayerTreeLayer* QgsLayerTreeModel::layerNodeForSymbologyNode( const QModelIndex& index ) const
 {
   QgsLayerTreeModelLegendNode* symNode = index2legendNode( index );
-  return symNode ? symNode->layerNode() : 0;
+  return symNode ? symNode->layerNode() : nullptr;
 }
 
 QgsLayerTreeGroup*QgsLayerTreeModel::rootGroup() const
@@ -837,7 +837,7 @@ static int _numLayerCount( QgsLayerTreeGroup* group, const QString& layerId )
 
 void QgsLayerTreeModel::disconnectFromLayer( QgsLayerTreeLayer* nodeLayer )
 {
-  disconnect( nodeLayer, 0, this, 0 ); // disconnect from delayed load of layer
+  disconnect( nodeLayer, nullptr, this, nullptr ); // disconnect from delayed load of layer
 
   if ( !nodeLayer->layer() )
     return; // we were never connected
@@ -850,7 +850,7 @@ void QgsLayerTreeModel::disconnectFromLayer( QgsLayerTreeLayer* nodeLayer )
   if ( _numLayerCount( mRootNode, nodeLayer->layerId() ) == 1 )
   {
     // last instance of the layer in the tree: disconnect from all signals from layer!
-    disconnect( nodeLayer->layer(), 0, this, 0 );
+    disconnect( nodeLayer->layer(), nullptr, this, nullptr );
   }
 }
 
@@ -893,7 +893,7 @@ void QgsLayerTreeModel::connectToRootNode()
 
 void QgsLayerTreeModel::disconnectFromRootNode()
 {
-  disconnect( mRootNode, 0, this, 0 );
+  disconnect( mRootNode, nullptr, this, nullptr );
 
   disconnectFromLayers( mRootNode );
 }
@@ -935,7 +935,7 @@ QMimeData* QgsLayerTreeModel::mimeData( const QModelIndexList& indexes ) const
   QList<QgsLayerTreeNode*> nodesFinal = indexes2nodes( sortedIndexes, true );
 
   if ( nodesFinal.isEmpty() )
-    return 0;
+    return nullptr;
 
   QMimeData *mimeData = new QMimeData();
 
@@ -1138,13 +1138,13 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer* nodeL )
   LayerLegendData data;
   data.originalNodes = lstNew;
   data.activeNodes = filteredLstNew;
-  data.tree = 0;
+  data.tree = nullptr;
 
   // maybe the legend nodes form a tree - try to create a tree structure from the list
   if ( testFlag( ShowLegendAsTree ) )
     tryBuildLegendTree( data );
 
-  int count = data.tree ? data.tree->children[0].count() : filteredLstNew.count();
+  int count = data.tree ? data.tree->children[nullptr].count() : filteredLstNew.count();
 
   if ( ! isEmbedded ) beginInsertRows( node2index( nodeL ), 0, count - 1 );
 
@@ -1178,7 +1178,7 @@ void QgsLayerTreeModel::tryBuildLegendTree( LayerLegendData& data )
 
   // make mapping from rules to nodes and do some sanity checks
   QHash<QString, QgsLayerTreeModelLegendNode*> rule2node;
-  rule2node[QString()] = 0;
+  rule2node[QString()] = nullptr;
   Q_FOREACH ( QgsLayerTreeModelLegendNode* n, data.activeNodes )
   {
     QString ruleKey = n->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
@@ -1194,7 +1194,7 @@ void QgsLayerTreeModel::tryBuildLegendTree( LayerLegendData& data )
   Q_FOREACH ( QgsLayerTreeModelLegendNode* n, data.activeNodes )
   {
     QString parentRuleKey = n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString();
-    QgsLayerTreeModelLegendNode* parent = rule2node.value( parentRuleKey, 0 );
+    QgsLayerTreeModelLegendNode* parent = rule2node.value( parentRuleKey, nullptr );
     data.tree->parents[n] = parent;
     data.tree->children[parent] << n;
   }
@@ -1221,7 +1221,7 @@ QModelIndex QgsLayerTreeModel::legendNode2index( QgsLayerTreeModelLegendNode* le
     else
     {
       QModelIndex parentIndex = node2index( legendNode->layerNode() );
-      int row = data.tree->children[0].indexOf( legendNode );
+      int row = data.tree->children[nullptr].indexOf( legendNode );
       return index( row, 0, parentIndex );
     }
   }
@@ -1255,7 +1255,7 @@ int QgsLayerTreeModel::legendRootRowCount( QgsLayerTreeLayer* nL ) const
 
   const LayerLegendData& data = mLegend[nL];
   if ( data.tree )
-    return data.tree->children[0].count();
+    return data.tree->children[nullptr].count();
 
   return data.activeNodes.count();
 }
@@ -1266,7 +1266,7 @@ QModelIndex QgsLayerTreeModel::legendRootIndex( int row, int column, QgsLayerTre
   Q_ASSERT( mLegend.contains( nL ) );
   const LayerLegendData& data = mLegend[nL];
   if ( data.tree )
-    return createIndex( row, column, static_cast<QObject*>( data.tree->children[0].at( row ) ) );
+    return createIndex( row, column, static_cast<QObject*>( data.tree->children[nullptr].at( row ) ) );
 
   return createIndex( row, column, static_cast<QObject*>( data.activeNodes.at( row ) ) );
 }
@@ -1354,7 +1354,7 @@ QgsLayerTreeModelLegendNode* QgsLayerTreeModel::findLegendNode( const QString& l
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 void QgsLayerTreeModel::legendInvalidateMapBasedData()

@@ -67,8 +67,8 @@ void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName,
   QgsMSLayerCacheEntry newEntry;
   newEntry.layerPointer = layer;
   newEntry.url = url;
-  newEntry.creationTime = time( NULL );
-  newEntry.lastUsedTime = time( NULL );
+  newEntry.creationTime = time( nullptr );
+  newEntry.lastUsedTime = time( nullptr );
   newEntry.temporaryFiles = tempFiles;
   newEntry.configFile = configFile;
 
@@ -96,7 +96,7 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
   if ( !mEntries.contains( urlNamePair ) )
   {
     QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " not found in layer cache'", "Server", QgsMessageLog::INFO );
-    return 0;
+    return nullptr;
   }
   else
   {
@@ -106,13 +106,13 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
     {
       if ( configFile.isEmpty() || layerIt->configFile == configFile )
       {
-        layerIt->lastUsedTime = time( NULL );
+        layerIt->lastUsedTime = time( nullptr );
         QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " found in layer cache", "Server", QgsMessageLog::INFO );
         return layerIt->layerPointer;
       }
     }
     QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " not found in layer cache'", "Server", QgsMessageLog::INFO );
-    return 0;
+    return nullptr;
   }
 }
 

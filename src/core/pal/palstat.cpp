@@ -38,8 +38,8 @@ namespace pal
     nbLayers = 0;
     nbObjects = 0;
     nbLabelledObjects = 0;
-    layersNbObjects = NULL;
-    layersNbLabelledObjects = NULL;
+    layersNbObjects = nullptr;
+    layersNbLabelledObjects = nullptr;
   }
 
   PalStat::~PalStat()

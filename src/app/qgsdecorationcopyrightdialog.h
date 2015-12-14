@@ -24,7 +24,7 @@ class APP_EXPORT QgsDecorationCopyrightDialog : public QDialog, private Ui::QgsD
     Q_OBJECT
 
   public:
-    QgsDecorationCopyrightDialog( QgsDecorationCopyright& deco, QWidget* parent = 0 );
+    QgsDecorationCopyrightDialog( QgsDecorationCopyright& deco, QWidget* parent = nullptr );
     ~QgsDecorationCopyrightDialog();
 
   private slots:

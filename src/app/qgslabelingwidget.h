@@ -17,7 +17,7 @@ class QgsLabelingWidget : public QWidget, private Ui::QgsLabelingWidget
 {
     Q_OBJECT
   public:
-    QgsLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent = 0 );
+    QgsLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent = nullptr );
 
   public slots:
     //! save config to layer

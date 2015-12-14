@@ -44,7 +44,7 @@ void QgsRasterIterator::startRasterRead( int bandNumber, int nCols, int nRows, c
   pInfo.nRows = nRows;
   pInfo.currentCol = 0;
   pInfo.currentRow = 0;
-  pInfo.prj = 0;
+  pInfo.prj = nullptr;
   mRasterPartInfos.insert( bandNumber, pInfo );
 }
 
@@ -54,7 +54,7 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
     int& topLeftCol, int& topLeftRow )
 {
   QgsDebugMsg( "Entered" );
-  *block = 0;
+  *block = nullptr;
   //get partinfo
   QMap<int, RasterPartInfo>::iterator partIt = mRasterPartInfos.find( bandNumber );
   if ( partIt == mRasterPartInfos.end() )
@@ -72,7 +72,7 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
 
   //remove last data block
   delete pInfo.prj;
-  pInfo.prj = 0;
+  pInfo.prj = nullptr;
 
   //already at end
   if ( pInfo.currentCol == pInfo.nCols && pInfo.currentRow == pInfo.nRows )

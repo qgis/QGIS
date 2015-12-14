@@ -21,7 +21,7 @@
 #include <QWidget>
 
 QgsSearchWidgetWrapper::QgsSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsWidgetWrapper( vl, 0, parent )
+    : QgsWidgetWrapper( vl, nullptr, parent )
     , mExpression( QString() )
     , mFieldIdx( fieldIdx )
 {

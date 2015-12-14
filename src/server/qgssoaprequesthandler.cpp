@@ -738,7 +738,7 @@ int QgsSOAPRequestHandler::setUrlToFile( QImage* img )
 
   //create a random folder under /tmp with map.jpg/png in it
   //and return the link to the client
-  srand( time( NULL ) );
+  srand( time( nullptr ) );
   int randomNumber = rand();
   QString folderName = QString::number( randomNumber );
   if ( !QFile::exists( tmpDir.absolutePath() + "/mas_tmp" ) )

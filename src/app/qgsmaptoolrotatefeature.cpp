@@ -130,12 +130,12 @@ void QgsAngleMagnetWidget::angleSpinBoxValueChanged( double angle )
 
 QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
-    , mRubberBand( 0 )
+    , mRubberBand( nullptr )
     , mRotation( 0 )
     , mRotationOffset( 0 )
-    , mAnchorPoint( 0 )
+    , mAnchorPoint( nullptr )
     , mRotationActive( false )
-    , mRotationWidget( 0 )
+    , mRotationWidget( nullptr )
 {
 }
 
@@ -440,7 +440,7 @@ void QgsMapToolRotateFeature::activate()
 void QgsMapToolRotateFeature::deleteRubberband()
 {
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 }
 
 void QgsMapToolRotateFeature::deactivate()
@@ -448,7 +448,7 @@ void QgsMapToolRotateFeature::deactivate()
   deleteRotationWidget();
   mRotationActive = false;
   delete mAnchorPoint;
-  mAnchorPoint = 0;
+  mAnchorPoint = nullptr;
   mRotationOffset = 0;
   deleteRubberband();
   QgsMapTool::deactivate();
@@ -480,7 +480,7 @@ void QgsMapToolRotateFeature::deleteRotationWidget()
     mRotationWidget->releaseKeyboard();
     mRotationWidget->deleteLater();
   }
-  mRotationWidget = 0;
+  mRotationWidget = nullptr;
 }
 
 

@@ -31,10 +31,10 @@ QgsOptionsDialogBase::QgsOptionsDialogBase( const QString& settingsKey, QWidget*
     : QDialog( parent, fl )
     , mOptsKey( settingsKey )
     , mInit( false )
-    , mOptListWidget( NULL )
-    , mOptStackedWidget( NULL )
-    , mOptSplitter( NULL )
-    , mOptButtonBox( NULL )
+    , mOptListWidget( nullptr )
+    , mOptStackedWidget( nullptr )
+    , mOptSplitter( nullptr )
+    , mOptButtonBox( nullptr )
     , mDialogTitle( "" )
     , mIconOnly( false )
     , mSettings( settings )
@@ -56,7 +56,7 @@ QgsOptionsDialogBase::~QgsOptionsDialogBase()
     delete mSettings;
   }
 
-  mSettings = 0; // null the pointer (in case of outside settings obj)
+  mSettings = nullptr; // null the pointer (in case of outside settings obj)
 }
 
 void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString& title )
@@ -285,7 +285,7 @@ void QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved( int indx )
 
 void QgsOptionsDialogBase::warnAboutMissingObjects()
 {
-  QMessageBox::warning( 0, tr( "Missing objects" ),
+  QMessageBox::warning( nullptr, tr( "Missing objects" ),
                         tr( "Base options dialog could not be initialized.\n\n"
                             "Missing some of the .ui template objects:\n" )
                         + " mOptionsListWidget,\n mOptionsStackedWidget,\n mOptionsSplitter",

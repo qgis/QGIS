@@ -106,7 +106,7 @@ bool QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId atFeatureId, int atVert
   if ( geometry.geometry() && geometry.geometry()->nCoordinates() == 0 )
   {
     //last vertex deleted, set geometry to null
-    geometry.setGeometry( 0 );
+    geometry.setGeometry( nullptr );
   }
 
 
@@ -347,7 +347,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
     }
     QList<QgsGeometry*> newGeometries;
     QList<QgsPoint> topologyTestPoints;
-    QgsGeometry* newGeometry = 0;
+    QgsGeometry* newGeometry = nullptr;
     splitFunctionReturn = feat.geometry()->splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
     if ( splitFunctionReturn == 0 )
     {

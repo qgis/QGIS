@@ -43,26 +43,26 @@
 DL_Dxf::DL_Dxf() {
     version = DL_VERSION_2000;
 
-    vertices = NULL;
+    vertices = nullptr;
     maxVertices = 0;
     vertexIndex = 0;
 
-    knots = NULL;
+    knots = nullptr;
     maxKnots = 0;
     knotIndex = 0;
 
-    weights = NULL;
+    weights = nullptr;
     weightIndex = 0;
 
-    controlPoints = NULL;
+    controlPoints = nullptr;
     maxControlPoints = 0;
     controlPointIndex = 0;
 
-    fitPoints = NULL;
+    fitPoints = nullptr;
     maxFitPoints = 0;
     fitPointIndex = 0;
 
-    leaderVertices = NULL;
+    leaderVertices = nullptr;
     maxLeaderVertices = 0;
     leaderVertexIndex = 0;
 }
@@ -73,22 +73,22 @@ DL_Dxf::DL_Dxf() {
  * Destructor.
  */
 DL_Dxf::~DL_Dxf() {
-    if (vertices!=NULL) {
+    if (vertices!=nullptr) {
         delete[] vertices;
     }
-    if (knots!=NULL) {
+    if (knots!=nullptr) {
         delete[] knots;
     }
-    if (controlPoints!=NULL) {
+    if (controlPoints!=nullptr) {
         delete[] controlPoints;
     }
-    if (fitPoints!=NULL) {
+    if (fitPoints!=nullptr) {
         delete[] fitPoints;
     }
-    if (weights!=NULL) {
+    if (weights!=nullptr) {
         delete[] weights;
     }
-    if (leaderVertices!=NULL) {
+    if (leaderVertices!=nullptr) {
         delete[] leaderVertices;
     }
 }
@@ -238,7 +238,7 @@ bool DL_Dxf::getStrippedLine(std::string& s, unsigned int size, FILE *fp) {
 
         line = fgets(wholeLine, size, fp);
 
-        if (line!=NULL && line[0] != '\0') { // Evaluates to fgets() retval
+        if (line!=nullptr && line[0] != '\0') { // Evaluates to fgets() retval
             // line == wholeLine at this point.
             // Both guaranteed to be NULL terminated.
 
@@ -1416,7 +1416,7 @@ bool DL_Dxf::handleLWPolylineData(DL_CreationInterface* /*creationInterface*/) {
     if (groupCode==90) {
         maxVertices = toInt(groupValue);
         if (maxVertices>0) {
-            if (vertices!=NULL) {
+            if (vertices!=nullptr) {
                 delete[] vertices;
             }
             vertices = new double[4*maxVertices];
@@ -1461,7 +1461,7 @@ bool DL_Dxf::handleSplineData(DL_CreationInterface* /*creationInterface*/) {
     if (groupCode==72) {
         maxKnots = toInt(groupValue);
         if (maxKnots>0) {
-            if (knots!=NULL) {
+            if (knots!=nullptr) {
                 delete[] knots;
             }
             knots = new double[maxKnots];
@@ -1477,10 +1477,10 @@ bool DL_Dxf::handleSplineData(DL_CreationInterface* /*creationInterface*/) {
     else if (groupCode==73) {
         maxControlPoints = toInt(groupValue);
         if (maxControlPoints>0) {
-            if (controlPoints!=NULL) {
+            if (controlPoints!=nullptr) {
                 delete[] controlPoints;
             }
-            if (weights!=NULL) {
+            if (weights!=nullptr) {
                 delete[] weights;
             }
             controlPoints = new double[3*maxControlPoints];
@@ -1501,7 +1501,7 @@ bool DL_Dxf::handleSplineData(DL_CreationInterface* /*creationInterface*/) {
     else if (groupCode==74) {
         maxFitPoints = toInt(groupValue);
         if (maxFitPoints>0) {
-            if (fitPoints!=NULL) {
+            if (fitPoints!=nullptr) {
                 delete[] fitPoints;
             }
             fitPoints = new double[3*maxFitPoints];
@@ -1575,7 +1575,7 @@ bool DL_Dxf::handleLeaderData(DL_CreationInterface* /*creationInterface*/) {
     if (groupCode==76) {
         maxLeaderVertices = toInt(groupValue);
         if (maxLeaderVertices>0) {
-            if (leaderVertices!=NULL) {
+            if (leaderVertices!=nullptr) {
                 delete[] leaderVertices;
             }
             leaderVertices = new double[3*maxLeaderVertices];
@@ -2272,7 +2272,7 @@ DL_WriterA* DL_Dxf::out(const char* file, DL_Codes::version version) {
     if (dw->openFailed()) {
         delete dw;
         delete[] f;
-        return NULL;
+        return nullptr;
     } else {
         delete[] f;
         return dw;

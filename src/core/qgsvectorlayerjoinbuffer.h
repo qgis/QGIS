@@ -33,7 +33,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
 {
     Q_OBJECT
   public:
-    QgsVectorLayerJoinBuffer( QgsVectorLayer* layer = 0 );
+    QgsVectorLayerJoinBuffer( QgsVectorLayer* layer = nullptr );
     ~QgsVectorLayerJoinBuffer();
 
     /** Joins another vector layer to this layer

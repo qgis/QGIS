@@ -257,8 +257,8 @@ class CORE_EXPORT QgsExpression
     */
     Q_DECL_DEPRECATED static QString replaceExpressionText( const QString &action, const QgsFeature *feat,
         QgsVectorLayer *layer,
-        const QMap<QString, QVariant> *substitutionMap = 0,
-        const QgsDistanceArea* distanceArea = 0
+        const QMap<QString, QVariant> *substitutionMap = nullptr,
+        const QgsDistanceArea* distanceArea = nullptr
                                                           );
 
     /** This function replaces each expression between [% and %]
@@ -273,8 +273,8 @@ class CORE_EXPORT QgsExpression
        @note added in QGIS 2.12
     */
     static QString replaceExpressionText( const QString &action, const QgsExpressionContext* context,
-                                          const QMap<QString, QVariant> *substitutionMap = 0,
-                                          const QgsDistanceArea* distanceArea = 0
+                                          const QMap<QString, QVariant> *substitutionMap = nullptr,
+                                          const QgsDistanceArea* distanceArea = nullptr
                                         );
 
     /** Attempts to evaluate a text string as an expression to a resultant double
@@ -467,7 +467,7 @@ class CORE_EXPORT QgsExpression
                                           bool handlesNull = false )
             : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
             , mFnc( fcn )
-            , mContextFnc( 0 )
+            , mContextFnc( nullptr )
             , mAliases( aliases )
         {}
 
@@ -486,7 +486,7 @@ class CORE_EXPORT QgsExpression
                         const QStringList& aliases = QStringList(),
                         bool handlesNull = false )
             : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
-            , mFnc( 0 )
+            , mFnc( nullptr )
             , mContextFnc( fcn )
             , mAliases( aliases )
         {}
@@ -903,7 +903,7 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeCondition : public Node
     {
       public:
-        NodeCondition( WhenThenList* conditions, Node* elseExp = NULL ) : mConditions( *conditions ), mElseExp( elseExp ) { delete conditions; }
+        NodeCondition( WhenThenList* conditions, Node* elseExp = nullptr ) : mConditions( *conditions ), mElseExp( elseExp ) { delete conditions; }
         ~NodeCondition() { delete mElseExp; qDeleteAll( mConditions ); }
 
         virtual NodeType nodeType() const override { return ntCondition; }
@@ -964,7 +964,7 @@ class CORE_EXPORT QgsExpression
     /**
      * Used by QgsOgcUtils to create an empty
      */
-    QgsExpression() : mRootNode( 0 ), mRowNumber( 0 ), mScale( 0.0 ), mCalc( 0 ) {}
+    QgsExpression() : mRootNode( nullptr ), mRowNumber( 0 ), mScale( 0.0 ), mCalc( nullptr ) {}
 
     void initGeomCalculator();
 

@@ -167,7 +167,7 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation& relation, c
   {
     QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
 
-    mDualView->init( mRelation.referencingLayer(), 0, myRequest, mEditorContext );
+    mDualView->init( mRelation.referencingLayer(), nullptr, myRequest, mEditorContext );
   }
 }
 
@@ -510,11 +510,11 @@ void QgsRelationEditorWidget::updateUi()
 
       nmRequest.setFilterExpression( filters.join( " OR " ) );
 
-      mDualView->init( mNmRelation.referencedLayer(), 0, nmRequest, mEditorContext );
+      mDualView->init( mNmRelation.referencedLayer(), nullptr, nmRequest, mEditorContext );
     }
     else
     {
-      mDualView->init( mRelation.referencingLayer(), 0, myRequest, mEditorContext );
+      mDualView->init( mRelation.referencingLayer(), nullptr, myRequest, mEditorContext );
     }
   }
 }

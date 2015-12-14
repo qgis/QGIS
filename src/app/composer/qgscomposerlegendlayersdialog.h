@@ -26,7 +26,7 @@ class QgsComposerLegendLayersDialog: public QDialog, private Ui::QgsComposerLege
     Q_OBJECT
 
   public:
-    QgsComposerLegendLayersDialog( QList<QgsMapLayer*> layers, QWidget* parent = 0 );
+    QgsComposerLegendLayersDialog( QList<QgsMapLayer*> layers, QWidget* parent = nullptr );
     ~QgsComposerLegendLayersDialog();
     QgsMapLayer* selectedLayer();
 

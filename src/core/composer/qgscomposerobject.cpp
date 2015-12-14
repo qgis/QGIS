@@ -29,7 +29,7 @@
 #endif
 
 QgsComposerObject::QgsComposerObject( QgsComposition* composition )
-    : QObject( 0 )
+    : QObject( nullptr )
     , mComposition( composition )
 {
 
@@ -96,7 +96,7 @@ QgsDataDefined *QgsComposerObject::dataDefinedProperty( const QgsComposerObject:
   if ( property == QgsComposerObject::AllProperties || property == QgsComposerObject::NoProperty )
   {
     //bad property requested, don't return anything
-    return 0;
+    return nullptr;
   }
 
   //find corresponding QgsDataDefined and return it
@@ -107,7 +107,7 @@ QgsDataDefined *QgsComposerObject::dataDefinedProperty( const QgsComposerObject:
   }
 
   //could not find matching QgsDataDefined
-  return 0;
+  return nullptr;
 }
 
 void QgsComposerObject::setDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const bool active, const bool useExpression, const QString &expression, const QString &field )
@@ -195,7 +195,7 @@ QStringList QgsComposerObject::customProperties() const
 
 QgsExpressionContext* QgsComposerObject::createExpressionContext() const
 {
-  QgsExpressionContext* context = 0;
+  QgsExpressionContext* context = nullptr;
   if ( mComposition )
   {
     context = mComposition->createExpressionContext();

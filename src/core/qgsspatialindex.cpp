@@ -62,7 +62,7 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
     {
       SpatialIndex::IShape* shape;
       d.getShape( &shape );
-      mNewIndex->insertData( 0, 0, *shape, d.getIdentifier() );
+      mNewIndex->insertData( 0, nullptr, *shape, d.getIdentifier() );
       delete shape;
     }
 
@@ -81,7 +81,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
     //! constructor - needs to load all data to a vector for later access when bulk loading
     explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator& fi )
         : mFi( fi )
-        , mNextData( 0 )
+        , mNextData( nullptr )
     {
       readNextEntry();
     }
@@ -95,13 +95,13 @@ class QgsFeatureIteratorDataStream : public IDataStream
     virtual IData* getNext() override
     {
       RTree::Data* ret = mNextData;
-      mNextData = 0;
+      mNextData = nullptr;
       readNextEntry();
       return ret;
     }
 
     //! returns true if there are more items in the stream.
-    virtual bool hasNext() override { return mNextData != 0; }
+    virtual bool hasNext() override { return mNextData != nullptr; }
 
     //! returns the total number of entries available in the stream.
     virtual uint32_t size() override { Q_ASSERT( 0 && "not available" ); return 0; }
@@ -119,7 +119,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
       {
         if ( QgsSpatialIndex::featureInfo( f, r, id ) )
         {
-          mNextData = new RTree::Data( 0, 0, r, id );
+          mNextData = new RTree::Data( 0, nullptr, r, id );
           return;
         }
       }
@@ -165,7 +165,7 @@ class QgsSpatialIndexData : public QSharedData
       delete mStorage;
     }
 
-    void initTree( IDataStream* inputStream = 0 )
+    void initTree( IDataStream* inputStream = nullptr )
     {
       // for now only memory manager
       mStorage = StorageManager::createNewMemoryStorageManager();
@@ -257,7 +257,7 @@ bool QgsSpatialIndex::insertFeature( const QgsFeature& f )
   // TODO: handle possible exceptions correctly
   try
   {
-    d->mRTree->insertData( 0, 0, r, FID_TO_NUMBER( id ) );
+    d->mRTree->insertData( 0, nullptr, r, FID_TO_NUMBER( id ) );
     return true;
   }
   catch ( Tools::Exception &e )

@@ -232,7 +232,7 @@ void QgsAnnotationItem::drawMarkerSymbol( QPainter* p )
   if ( mMarkerSymbol )
   {
     mMarkerSymbol->startRender( renderContext );
-    mMarkerSymbol->renderPoint( QPointF( 0, 0 ), 0, renderContext );
+    mMarkerSymbol->renderPoint( QPointF( 0, 0 ), nullptr, renderContext );
     mMarkerSymbol->stopRender( renderContext );
   }
 }

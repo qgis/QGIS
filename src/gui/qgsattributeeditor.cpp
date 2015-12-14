@@ -55,7 +55,7 @@ QWidget* QgsAttributeEditor::createAttributeEditor( QWidget* parent, QWidget* ed
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 

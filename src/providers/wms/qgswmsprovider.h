@@ -120,7 +120,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     * \param   capabilities   Optionally existing parsed capabilities for the given URI
     *
     */
-    QgsWmsProvider( QString const & uri = 0, const QgsWmsCapabilities* capabilities = 0 );
+    QgsWmsProvider( QString const & uri = nullptr, const QgsWmsCapabilities* capabilities = nullptr );
 
     //! Destructor
     virtual ~QgsWmsProvider();
@@ -237,7 +237,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *
      * \note visibleExtent parameter added in 2.8
      */
-    QImage getLegendGraphic( double scale = 0.0, bool forceRefresh = false, const QgsRectangle * visibleExtent = 0 ) override;
+    QImage getLegendGraphic( double scale = 0.0, bool forceRefresh = false, const QgsRectangle * visibleExtent = nullptr ) override;
 
     /**
      * \class Get an image downloader for the raster legend

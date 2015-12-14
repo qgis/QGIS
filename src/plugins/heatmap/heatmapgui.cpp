@@ -87,7 +87,7 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WindowFlags fl, QMap<QString, QVari
     char** driverMetadata = nthDriver->GetMetadata();
     // Only formats which allow creation of Float32 data types are valid
     if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) &&
-         QString( nthDriver->GetMetadataItem( GDAL_DMD_CREATIONDATATYPES, NULL ) ).contains( "Float32" ) )
+         QString( nthDriver->GetMetadataItem( GDAL_DMD_CREATIONDATATYPES, nullptr ) ).contains( "Float32" ) )
     {
       ++myIndex;
       QString myLongName = nthDriver->GetMetadataItem( GDAL_DMD_LONGNAME );
@@ -243,7 +243,7 @@ void HeatmapGui::on_mBrowseButton_clicked()
   QSettings s;
   QString lastDir = s.value( "/Heatmap/lastOutputDir", QDir::homePath() ).toString();
 
-  QString outputFilename = QFileDialog::getSaveFileName( 0, tr( "Save Heatmap as:" ), lastDir );
+  QString outputFilename = QFileDialog::getSaveFileName( nullptr, tr( "Save Heatmap as:" ), lastDir );
   if ( !outputFilename.isEmpty() )
   {
     mOutputRasterLineEdit->setText( outputFilename );
@@ -270,7 +270,7 @@ void HeatmapGui::on_mAdvancedGroupBox_toggled( bool enabled )
     // if there are no layers point layers then show error dialog and toggle
     if ( mInputLayerCombo->count() == 0 )
     {
-      QMessageBox::information( 0, tr( "No valid layers found!" ), tr( "Advanced options cannot be enabled." ) );
+      QMessageBox::information( nullptr, tr( "No valid layers found!" ), tr( "Advanced options cannot be enabled." ) );
       mAdvancedGroupBox->setChecked( false );
       return;
     }
@@ -578,7 +578,7 @@ QString HeatmapGui::outputFilename() const
   QFileInfo myFileInfo( outputFileName );
   if ( outputFileName.isEmpty() || !myFileInfo.dir().exists() )
   {
-    QMessageBox::information( 0, tr( "Invalid output filename" ), tr( "Please enter a valid output file path and name." ) );
+    QMessageBox::information( nullptr, tr( "Invalid output filename" ), tr( "Please enter a valid output file path and name." ) );
     return QString::null;
   }
 

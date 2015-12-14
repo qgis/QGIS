@@ -26,7 +26,7 @@ QgsLocaleNumC::QgsLocaleNumC()
 {
   sLocaleLock.lock();
 
-  mOldlocale = setlocale( LC_NUMERIC, NULL );
+  mOldlocale = setlocale( LC_NUMERIC, nullptr );
   if ( mOldlocale )
     mOldlocale = qstrdup( mOldlocale );
 

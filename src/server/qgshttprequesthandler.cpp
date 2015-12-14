@@ -36,7 +36,7 @@
 QgsHttpRequestHandler::QgsHttpRequestHandler( const bool captureOutput /*= FALSE*/ )
     : QgsRequestHandler( )
 {
-  mException = 0;
+  mException = nullptr;
   mHeadersSent = FALSE;
   mCaptureOutput = captureOutput;
 }
@@ -641,9 +641,9 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
 QString QgsHttpRequestHandler::readPostBody() const
 {
   QgsMessageLog::logMessage( "QgsHttpRequestHandler::readPostBody" );
-  char* lengthString = 0;
+  char* lengthString = nullptr;
   int length = 0;
-  char* input = 0;
+  char* input = nullptr;
   QString inputString;
   QString lengthQString;
 
@@ -786,7 +786,7 @@ void QgsHttpRequestHandler::imageColors( QHash<QRgb, int>& colors, const QImage&
   int width = image.width();
   int height = image.height();
 
-  const QRgb* currentScanLine = 0;
+  const QRgb* currentScanLine = nullptr;
   QHash<QRgb, int>::iterator colorIt;
   for ( int i = 0; i < height; ++i )
   {

@@ -37,7 +37,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 
 QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsEditorConfigWidget( vl, fieldIdx, parent )
-    , mReferencedLayer( 0 )
+    , mReferencedLayer( nullptr )
 {
   setupUi( this );
 

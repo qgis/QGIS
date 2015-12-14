@@ -18,7 +18,7 @@
 
 #include <QTextStream>
 
-QgsCredentials *QgsCredentials::smInstance = 0;
+QgsCredentials *QgsCredentials::smInstance = nullptr;
 
 void QgsCredentials::setInstance( QgsCredentials *theInstance )
 {

@@ -138,7 +138,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param keepbackup Whether to keep the generated backup of current database
      * @param backuppath Where the backup is located, if kept
      */
-    bool resetMasterPassword( const QString& newpass, const QString& oldpass, bool keepbackup, QString *backuppath = 0 );
+    bool resetMasterPassword( const QString& newpass, const QString& oldpass, bool keepbackup, QString *backuppath = nullptr );
 
     /** Whether there is a scheduled opitonal erase of authentication database */
     bool scheduledAuthDbErase() { return mScheduledDbErase; }
@@ -279,7 +279,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Close connection to current authentication database and back it up
      * @return Path to backup
      */
-    bool backupAuthenticationDatabase( QString *backuppath = 0 );
+    bool backupAuthenticationDatabase( QString *backuppath = nullptr );
 
     /**
      * Erase all rows from all tables in authentication database
@@ -287,7 +287,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param backuppath Where the backup is locate
      * @return Whether operation succeeded
      */
-    bool eraseAuthenticationDatabase( bool backup, QString *backuppath = 0 );
+    bool eraseAuthenticationDatabase( bool backup, QString *backuppath = nullptr );
 
 
     ////////////////// Auth Method calls ///////////////////////

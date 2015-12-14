@@ -27,8 +27,8 @@
 
 QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
-    , vlayer( NULL )
-    , mRubberBand( 0 )
+    , vlayer( nullptr )
+    , mRubberBand( nullptr )
     , mPressedFid( 0 )
     , mPressedPartNum( 0 )
 {
@@ -51,7 +51,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent* e )
   mPressedFid = -1;
   mPressedPartNum = -1;
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 
   QgsMapLayer* currentLayer = mCanvas->currentLayer();
   if ( !currentLayer )
@@ -88,7 +88,7 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent* e )
   Q_UNUSED( e );
 
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 
   if ( !vlayer || !vlayer->isEditable() )
   {

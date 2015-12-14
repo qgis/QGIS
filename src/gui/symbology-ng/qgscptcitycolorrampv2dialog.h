@@ -36,7 +36,7 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
     Q_OBJECT
 
   public:
-    QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2* ramp, QWidget* parent = NULL );
+    QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2* ramp, QWidget* parent = nullptr );
     ~QgsCptCityColorRampV2Dialog();
 
     QString selectedName() const

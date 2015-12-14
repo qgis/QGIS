@@ -192,7 +192,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   grpProjectScales->setChecked( QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" ) );
 
-  QgsMapLayer* currentLayer = 0;
+  QgsMapLayer* currentLayer = nullptr;
 
   QStringList noIdentifyLayerIdList = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
 
@@ -1448,7 +1448,7 @@ void QgsProjectProperties::populateStyles()
   {
     QString name = symbolNames[i];
     QgsSymbolV2* symbol = mStyle->symbol( name );
-    QComboBox* cbo = 0;
+    QComboBox* cbo = nullptr;
     switch ( symbol->type() )
     {
       case QgsSymbolV2::Marker :
@@ -1558,7 +1558,7 @@ void QgsProjectProperties::editSymbol( QComboBox* cbo )
   }
 
   // let the user edit the symbol and update list when done
-  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, 0, this );
+  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, nullptr, this );
   if ( dlg.exec() == 0 )
   {
     delete symbol;
@@ -1605,7 +1605,7 @@ void QgsProjectProperties::populateEllipsoidList()
   mEllipsoidList.append( myItem );
 
   //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
+  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
   if ( myResult )
   {
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
@@ -1774,7 +1774,7 @@ void QgsProjectProperties::on_mButtonImportColors_clicked()
   QFileInfo fileInfo( filePath );
   if ( !fileInfo.exists() || !fileInfo.isReadable() )
   {
-    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
+    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
     return;
   }
 
@@ -1783,7 +1783,7 @@ void QgsProjectProperties::on_mButtonImportColors_clicked()
   bool importOk = mTreeProjectColors->importColorsFromGpl( file );
   if ( !importOk )
   {
-    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "Error, no colors found in palette file" ) );
+    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, no colors found in palette file" ) );
     return;
   }
 }
@@ -1812,7 +1812,7 @@ void QgsProjectProperties::on_mButtonExportColors_clicked()
   bool exportOk = mTreeProjectColors->exportColorsToGpl( file );
   if ( !exportOk )
   {
-    QMessageBox::critical( 0, tr( "Error exporting" ), tr( "Error writing palette file" ) );
+    QMessageBox::critical( nullptr, tr( "Error exporting" ), tr( "Error writing palette file" ) );
     return;
   }
 }

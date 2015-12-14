@@ -40,7 +40,7 @@
 
 QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode )
     : QDialog( parent, fl )
-    , mCapabilities( NULL )
+    , mCapabilities( nullptr )
 {
   setupUi( this );
 
@@ -207,7 +207,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
       default: tr( "Error" ); break;
     }
     // handle errors
-    QMessageBox::critical( 0, title, mCapabilities->errorMessage() );
+    QMessageBox::critical( nullptr, title, mCapabilities->errorMessage() );
 
     mAddButton->setEnabled( false );
     return;
@@ -264,7 +264,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
   }
   else
   {
-    QMessageBox::information( 0, tr( "No Layers" ), tr( "capabilities document contained no layers." ) );
+    QMessageBox::information( nullptr, tr( "No Layers" ), tr( "capabilities document contained no layers." ) );
     mAddButton->setEnabled( false );
     mBuildQueryButton->setEnabled( false );
   }
@@ -272,7 +272,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
 
 void QgsWFSSourceSelect::addEntryToServerList()
 {
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-wfs/" );
+  QgsNewHttpConnection nc( nullptr, "/Qgis/connections-wfs/" );
   nc.setWindowTitle( tr( "Create a new WFS connection" ) );
 
   if ( nc.exec() )
@@ -284,7 +284,7 @@ void QgsWFSSourceSelect::addEntryToServerList()
 
 void QgsWFSSourceSelect::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-wfs/", cmbConnections->currentText() );
+  QgsNewHttpConnection nc( nullptr, "/Qgis/connections-wfs/", cmbConnections->currentText() );
   nc.setWindowTitle( tr( "Modify WFS connection" ) );
 
   if ( nc.exec() )
@@ -443,7 +443,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
   }
 
   //show expression builder
-  QgsExpressionBuilderDialog d( 0, filterIndex.data().toString() );
+  QgsExpressionBuilderDialog d( nullptr, filterIndex.data().toString() );
 
   //add available attributes to expression builder
   QgsExpressionBuilderWidget* w = d.expressionBuilder();

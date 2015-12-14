@@ -79,7 +79,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
     GDALPaletteInterp myPaletteInterpretation  = GDALGetPaletteInterpretation( myGdalColorTable );
     QgsDebugMsg( "Palette Interpretation: " + QString::number(( int )myPaletteInterpretation ) );
 
-    const GDALColorEntry* myColorEntry = 0;
+    const GDALColorEntry* myColorEntry = nullptr;
     for ( int myIterator = 0; myIterator < myEntryCount; myIterator++ )
     {
       myColorEntry = GDALGetColorEntry( myGdalColorTable, myIterator );

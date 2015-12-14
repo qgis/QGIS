@@ -46,20 +46,20 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
     , mContext( context )
     , mLayer( layer )
     , mFields( layer->fields() )
-    , mRendererV2( 0 )
-    , mCache( 0 )
+    , mRendererV2( nullptr )
+    , mCache( nullptr )
     , mLabeling( false )
     , mDiagrams( false )
-    , mLabelProvider( 0 )
-    , mDiagramProvider( 0 )
+    , mLabelProvider( nullptr )
+    , mDiagramProvider( nullptr )
     , mLayerTransparency( 0 )
 {
   mSource = new QgsVectorLayerFeatureSource( layer );
 
-  mRendererV2 = layer->rendererV2() ? layer->rendererV2()->clone() : 0;
+  mRendererV2 = layer->rendererV2() ? layer->rendererV2()->clone() : nullptr;
   mSelectedFeatureIds = layer->selectedFeaturesIds();
 
-  mDrawVertexMarkers = ( layer->editBuffer() != 0 );
+  mDrawVertexMarkers = ( layer->editBuffer() != nullptr );
 
   mGeometryType = layer->geometryType();
 
@@ -352,14 +352,14 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
     }
   }
 
-  stopRendererV2( 0 );
+  stopRendererV2( nullptr );
 }
 
 void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
 {
   QHash< QgsSymbolV2*, QList<QgsFeature> > features; // key = symbol, value = array of features
 
-  QgsSingleSymbolRendererV2* selRenderer = 0;
+  QgsSingleSymbolRendererV2* selRenderer = nullptr;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
     selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( mGeometryType ) );
@@ -525,7 +525,7 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QStringList
           if ( !mLabelProvider->prepare( mContext, attributeNames ) )
           {
             engine2->removeProvider( mLabelProvider );
-            mLabelProvider = 0; // deleted by engine
+            mLabelProvider = nullptr; // deleted by engine
           }
         }
       }
@@ -581,7 +581,7 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList
         if ( !mDiagramProvider->prepare( mContext, attributeNames ) )
         {
           engine2->removeProvider( mDiagramProvider );
-          mDiagramProvider = 0;  // deleted by engine
+          mDiagramProvider = nullptr;  // deleted by engine
         }
       }
     }

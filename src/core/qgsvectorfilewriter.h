@@ -186,14 +186,14 @@ class CORE_EXPORT QgsVectorFileWriter
                                             const QgsCoordinateReferenceSystem *destCRS,
                                             const QString& driverName = "ESRI Shapefile",
                                             bool onlySelected = false,
-                                            QString *errorMessage = 0,
+                                            QString *errorMessage = nullptr,
                                             const QStringList &datasourceOptions = QStringList(),
                                             const QStringList &layerOptions = QStringList(),
                                             bool skipAttributeCreation = false,
-                                            QString *newFilename = 0,
+                                            QString *newFilename = nullptr,
                                             SymbologyExport symbologyExport = NoSymbology,
                                             double symbologyScale = 1.0,
-                                            const QgsRectangle* filterExtent = 0,
+                                            const QgsRectangle* filterExtent = nullptr,
                                             QgsWKBTypes::Type overrideGeometryType = QgsWKBTypes::Unknown,
                                             bool forceMulti = false,
                                             bool includeZ = false
@@ -226,14 +226,14 @@ class CORE_EXPORT QgsVectorFileWriter
                                             const QgsCoordinateTransform* ct,
                                             const QString& driverName = "ESRI Shapefile",
                                             bool onlySelected = false,
-                                            QString *errorMessage = 0,
+                                            QString *errorMessage = nullptr,
                                             const QStringList &datasourceOptions = QStringList(),
                                             const QStringList &layerOptions = QStringList(),
                                             bool skipAttributeCreation = false,
-                                            QString *newFilename = 0,
+                                            QString *newFilename = nullptr,
                                             SymbologyExport symbologyExport = NoSymbology,
                                             double symbologyScale = 1.0,
-                                            const QgsRectangle* filterExtent = 0,
+                                            const QgsRectangle* filterExtent = nullptr,
                                             QgsWKBTypes::Type overrideGeometryType = QgsWKBTypes::Unknown,
                                             bool forceMulti = false,
                                             bool includeZ = false
@@ -248,7 +248,7 @@ class CORE_EXPORT QgsVectorFileWriter
                          const QString& driverName = "ESRI Shapefile",
                          const QStringList &datasourceOptions = QStringList(),
                          const QStringList &layerOptions = QStringList(),
-                         QString *newFilename = 0,
+                         QString *newFilename = nullptr,
                          SymbologyExport symbologyExport = NoSymbology
                        );
 
@@ -277,7 +277,7 @@ class CORE_EXPORT QgsVectorFileWriter
     QString errorMessage();
 
     /** Add feature to the currently opened shapefile */
-    bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = 0, QGis::UnitType outputUnit = QGis::Meters );
+    bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = nullptr, QGis::UnitType outputUnit = QGis::Meters );
 
     //! @note not available in python bindings
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsVectorFileWriter
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
 
     /** Writes features considering symbol level order*/
-    WriterError exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit, const QgsCoordinateTransform* ct, QString* errorMessage = 0 );
+    WriterError exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit, const QgsCoordinateTransform* ct, QString* errorMessage = nullptr );
     double mmScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
     double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
 

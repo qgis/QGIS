@@ -115,8 +115,8 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
       @param scaledHeight optional height
       @param f optional feature to render (0 if no data defined rendering)
      */
-    void preparePath( const QString& symbolName, QgsSymbolV2RenderContext& context, double* scaledWidth = 0, double* scaledHeight = 0, const QgsFeature* f = 0 );
-    QSizeF calculateSize( QgsSymbolV2RenderContext& context, double* scaledWidth = 0, double* scaledHeight = 0 );
+    void preparePath( const QString& symbolName, QgsSymbolV2RenderContext& context, double* scaledWidth = nullptr, double* scaledHeight = nullptr, const QgsFeature* f = nullptr );
+    QSizeF calculateSize( QgsSymbolV2RenderContext& context, double* scaledWidth = nullptr, double* scaledHeight = nullptr );
     void calculateOffsetAndRotation( QgsSymbolV2RenderContext& context, double scaledWidth, double scaledHeight, bool& hasDataDefinedRotation, QPointF& offset, double& angle ) const;
 };
 

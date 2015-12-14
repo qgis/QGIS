@@ -25,8 +25,8 @@
 
 QgsMapToolDeleteRing::QgsMapToolDeleteRing( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
-    , vlayer( 0 )
-    , mRubberBand( 0 )
+    , vlayer( nullptr )
+    , mRubberBand( nullptr )
     , mPressedFid( 0 )
     , mPressedPartNum( 0 )
     , mPressedRingNum( 0 )
@@ -48,7 +48,7 @@ void QgsMapToolDeleteRing::canvasMoveEvent( QgsMapMouseEvent* e )
 void QgsMapToolDeleteRing::canvasPressEvent( QgsMapMouseEvent* e )
 {
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mPressedFid = -1;
   mPressedPartNum = -1;
   mPressedRingNum = -1;
@@ -91,7 +91,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QgsMapMouseEvent* e )
   }
 
   delete ringGeom;
-  ringGeom = 0;
+  ringGeom = nullptr;
 }
 
 void QgsMapToolDeleteRing::canvasReleaseEvent( QgsMapMouseEvent* e )
@@ -99,7 +99,7 @@ void QgsMapToolDeleteRing::canvasReleaseEvent( QgsMapMouseEvent* e )
   Q_UNUSED( e );
 
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 
   if ( mPressedFid == -1 )
     return;

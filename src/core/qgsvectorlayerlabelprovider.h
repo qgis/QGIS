@@ -33,7 +33,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
   public:
 
     //! Convenience constructor to initialize the provider from given vector layer
-    explicit QgsVectorLayerLabelProvider( QgsVectorLayer* layer, bool withFeatureLoop = true, const QgsPalLayerSettings* settings = 0, const QString& layerName = QString() );
+    explicit QgsVectorLayerLabelProvider( QgsVectorLayer* layer, bool withFeatureLoop = true, const QgsPalLayerSettings* settings = nullptr, const QString& layerName = QString() );
 
     //! Construct diagram provider with all the necessary configuration parameters
     QgsVectorLayerLabelProvider( const QgsPalLayerSettings& settings,
@@ -42,7 +42,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
                                  const QgsCoordinateReferenceSystem& crs,
                                  QgsAbstractFeatureSource* source,
                                  bool ownsSource,
-                                 QgsFeatureRendererV2* renderer = 0 );
+                                 QgsFeatureRendererV2* renderer = nullptr );
 
     ~QgsVectorLayerLabelProvider();
 
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
      * the feature's original geometry will be used as an obstacle for labels.
      */
-    virtual void registerFeature( QgsFeature& feature, QgsRenderContext &context, QgsGeometry* obstacleGeometry = 0 );
+    virtual void registerFeature( QgsFeature& feature, QgsRenderContext &context, QgsGeometry* obstacleGeometry = nullptr );
 
     /** Returns the geometry for a point feature which should be used as an obstacle for labels. This
      * obstacle geometry will respect the dimensions and offsets of the symbol used to render the

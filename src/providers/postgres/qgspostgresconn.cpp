@@ -45,7 +45,7 @@ QgsPostgresResult::~QgsPostgresResult()
 {
   if ( mRes )
     ::PQclear( mRes );
-  mRes = 0;
+  mRes = nullptr;
 }
 
 QgsPostgresResult &QgsPostgresResult::operator=( PGresult * theRes )
@@ -161,7 +161,7 @@ QgsPostgresConn *QgsPostgresConn::connectDb( QString conninfo, bool readonly, bo
   if ( conn->mRef == 0 )
   {
     delete conn;
-    return 0;
+    return nullptr;
   }
 
   if ( shared )
@@ -295,7 +295,7 @@ QgsPostgresConn::QgsPostgresConn( const QString& conninfo, bool readOnly, bool s
     QgsDebugMsg( "Topology support available!" );
   }
 
-  PQsetNoticeProcessor( mConn, noticeProcessor, 0 );
+  PQsetNoticeProcessor( mConn, noticeProcessor, nullptr );
 }
 
 QgsPostgresConn::~QgsPostgresConn()
@@ -303,7 +303,7 @@ QgsPostgresConn::~QgsPostgresConn()
   Q_ASSERT( mRef == 0 );
   if ( mConn )
     ::PQfinish( mConn );
-  mConn = 0;
+  mConn = nullptr;
 }
 
 void QgsPostgresConn::unref()
@@ -949,7 +949,7 @@ PGresult *QgsPostgresConn::PQexec( const QString& query, bool logError )
                    .arg( query ).arg( PQstatus() ).arg( PQerrorMessage() ) );
     }
 
-    return 0;
+    return nullptr;
   }
 
   QgsDebugMsgLevel( QString( "Executing SQL: %1" ).arg( query ), 3 );
@@ -1096,12 +1096,12 @@ PGresult *QgsPostgresConn::PQexecPrepared( const QString& stmtName, const QStrin
     qparam << params[i].toUtf8();
 
     if ( params[i].isNull() )
-      param[i] = 0;
+      param[i] = nullptr;
     else
       param[i] = qparam[i];
   }
 
-  PGresult *res = ::PQexecPrepared( mConn, stmtName.toUtf8(), params.size(), param, NULL, NULL, 0 );
+  PGresult *res = ::PQexecPrepared( mConn, stmtName.toUtf8(), params.size(), param, nullptr, nullptr, 0 );
 
   delete [] param;
 
@@ -1112,7 +1112,7 @@ void QgsPostgresConn::PQfinish()
 {
   Q_ASSERT( mConn );
   ::PQfinish( mConn );
-  mConn = 0;
+  mConn = nullptr;
 }
 
 int QgsPostgresConn::PQstatus()

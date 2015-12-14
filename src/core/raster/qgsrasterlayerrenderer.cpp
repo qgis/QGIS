@@ -23,8 +23,8 @@
 
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRenderContext& rendererContext )
     : QgsMapLayerRenderer( layer->id() )
-    , mRasterViewPort( 0 )
-    , mPipe( 0 )
+    , mRasterViewPort( nullptr )
+    , mPipe( nullptr )
 {
 
   mPainter = rendererContext.painter();

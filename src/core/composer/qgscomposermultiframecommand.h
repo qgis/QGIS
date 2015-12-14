@@ -26,7 +26,7 @@ class QgsComposerMultiFrame;
 class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
 {
   public:
-    QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent = 0 );
+    QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent = nullptr );
     ~QgsComposerMultiFrameCommand();
 
     void undo() override;

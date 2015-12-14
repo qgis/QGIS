@@ -135,7 +135,7 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
 
 void QgsOgrProvider::repack()
 {
-  if ( ogrDriverName != "ESRI Shapefile" || ogrOrigLayer == 0 )
+  if ( ogrDriverName != "ESRI Shapefile" || ogrOrigLayer == nullptr )
     return;
 
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
@@ -143,7 +143,7 @@ void QgsOgrProvider::repack()
   // run REPACK on shape files
   QByteArray sql = QByteArray( "REPACK " ) + layerName;   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
   QgsDebugMsg( QString( "SQL: %1" ).arg( FROM8( sql ) ) );
-  OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), NULL, NULL );
+  OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), nullptr, nullptr );
 
   if ( mFilePath.endsWith( ".shp", Qt::CaseInsensitive ) || mFilePath.endsWith( ".dbf", Qt::CaseInsensitive ) )
   {
@@ -153,9 +153,9 @@ void QgsOgrProvider::repack()
       QgsMessageLog::logMessage( tr( "Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF." ).arg( packedDbf ), tr( "OGR" ), QgsMessageLog::CRITICAL );
 
       OGR_DS_Destroy( ogrDataSource );
-      ogrLayer = ogrOrigLayer = 0;
+      ogrLayer = ogrOrigLayer = nullptr;
 
-      ogrDataSource = OGROpen( TO8F( mFilePath ), true, NULL );
+      ogrDataSource = OGROpen( TO8F( mFilePath ), true, nullptr );
       if ( ogrDataSource )
       {
         if ( mLayerName.isNull() )
@@ -267,14 +267,14 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer(
 
 QgsOgrProvider::QgsOgrProvider( QString const & uri )
     : QgsVectorDataProvider( uri )
-    , ogrDataSource( 0 )
-    , extent_( 0 )
-    , ogrLayer( 0 )
-    , ogrOrigLayer( 0 )
+    , ogrDataSource( nullptr )
+    , extent_( nullptr )
+    , ogrLayer( nullptr )
+    , ogrOrigLayer( nullptr )
     , mLayerIndex( 0 )
     , mIsSubLayer( false )
     , mOgrGeometryTypeFilter( wkbUnknown )
-    , ogrDriver( 0 )
+    , ogrDriver( nullptr )
     , mValid( false )
     , geomType( wkbUnknown )
     , mFeaturesCounted( -1 )
@@ -284,7 +284,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   QgsApplication::registerOgrDrivers();
 
   QSettings settings;
-  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() ? "" : 0 );
+  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() ? "" : nullptr );
 
   // make connection to the data source
 
@@ -473,12 +473,12 @@ QgsOgrProvider::~QgsOgrProvider()
   {
     OGR_DS_Destroy( ogrDataSource );
   }
-  ogrDataSource = 0;
+  ogrDataSource = nullptr;
 
   if ( extent_ )
   {
     free( extent_ );
-    extent_ = 0;
+    extent_ = nullptr;
   }
 
   QgsOgrConnPool::unrefS( mFilePath );
@@ -561,7 +561,7 @@ bool QgsOgrProvider::setSubsetString( const QString& theSQL, bool updateFeatureC
   if ( extent_ )
   {
     free( extent_ );
-    extent_ = 0;
+    extent_ = nullptr;
   }
 
   emit dataChanged();
@@ -864,7 +864,7 @@ void QgsOgrUtils::setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fe
     if ( !fetchGeometry )
       ignoredFields.append( "OGR_GEOMETRY" );
     ignoredFields.append( "OGR_STYLE" ); // not used by QGIS
-    ignoredFields.append( NULL );
+    ignoredFields.append( nullptr );
 
     OGR_L_SetIgnoredFields( ogrLayer, ignoredFields.data() );
   }
@@ -884,10 +884,10 @@ QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest& request
 unsigned char * QgsOgrProvider::getGeometryPointer( OGRFeatureH fet )
 {
   OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
-  unsigned char *gPtr = 0;
+  unsigned char *gPtr = nullptr;
 
   if ( !geom )
-    return 0;
+    return nullptr;
 
   // get the wkb representation
   gPtr = new unsigned char[OGR_G_WkbSize( geom )];
@@ -955,7 +955,7 @@ void QgsOgrProvider::updateExtents()
   if ( extent_ )
   {
     free( extent_ );
-    extent_ = 0;
+    extent_ = nullptr;
   }
 }
 
@@ -1005,11 +1005,11 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
   if ( f.constGeometry() && f.constGeometry()->wkbSize() > 0 )
   {
     const unsigned char* wkb = f.constGeometry()->asWkb();
-    OGRGeometryH geom = NULL;
+    OGRGeometryH geom = nullptr;
 
     if ( wkb )
     {
-      if ( OGR_G_CreateFromWkb( const_cast<unsigned char *>( wkb ), NULL, &geom, f.constGeometry()->wkbSize() ) != OGRERR_NONE )
+      if ( OGR_G_CreateFromWkb( const_cast<unsigned char *>( wkb ), nullptr, &geom, f.constGeometry()->wkbSize() ) != OGRERR_NONE )
       {
         pushError( tr( "OGR error creating wkb for feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
         return false;
@@ -1312,8 +1312,8 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
 bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 {
-  OGRFeatureH theOGRFeature = 0;
-  OGRGeometryH theNewGeometry = 0;
+  OGRFeatureH theOGRFeature = nullptr;
+  OGRGeometryH theNewGeometry = nullptr;
 
   setRelevantFields( ogrLayer, true, attributeIndexes() );
 
@@ -1340,7 +1340,7 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     {
       pushError( tr( "OGR error creating geometry for feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
       OGR_G_DestroyGeometry( theNewGeometry );
-      theNewGeometry = 0;
+      theNewGeometry = nullptr;
       continue;
     }
 
@@ -1355,7 +1355,7 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     {
       pushError( tr( "OGR error setting geometry of feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
       OGR_G_DestroyGeometry( theNewGeometry );
-      theNewGeometry = 0;
+      theNewGeometry = nullptr;
       continue;
     }
 
@@ -1364,7 +1364,7 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
       OGR_G_DestroyGeometry( theNewGeometry );
-      theNewGeometry = 0;
+      theNewGeometry = nullptr;
       continue;
     }
     mShapefileMayBeCorrupted = true;
@@ -1432,7 +1432,7 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
   if ( extent_ )
   {
     free( extent_ );
-    extent_ = 0;
+    extent_ = nullptr;
   }
 
   return returnvalue;
@@ -2154,7 +2154,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
                                        const QString &encoding,
                                        QGis::WkbType vectortype,
                                        const QList< QPair<QString, QString> > &attributes,
-                                       const QgsCoordinateReferenceSystem *srs = NULL )
+                                       const QgsCoordinateReferenceSystem *srs = nullptr )
 {
   QgsDebugMsg( QString( "Creating empty vector layer with format: %1" ).arg( format ) );
 
@@ -2198,7 +2198,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   }
 
   OGRDataSourceH dataSource;
-  dataSource = OGR_Dr_CreateDataSource( driver, TO8F( uri ), NULL );
+  dataSource = OGR_Dr_CreateDataSource( driver, TO8F( uri ), nullptr );
   if ( !dataSource )
   {
     QgsMessageLog::logMessage( QObject::tr( "Creating the data source %1 failed: %2" ).arg( uri, QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );
@@ -2206,7 +2206,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   }
 
   //consider spatial reference system
-  OGRSpatialReferenceH reference = NULL;
+  OGRSpatialReferenceH reference = nullptr;
 
   QgsCoordinateReferenceSystem mySpatialRefSys;
   if ( srs )
@@ -2254,7 +2254,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     }
   }
 
-  char **papszOptions = NULL;
+  char **papszOptions = nullptr;
   if ( driverName == "ESRI Shapefile" )
   {
     papszOptions = CSLSetNameValue( papszOptions, "ENCODING", QgsVectorFileWriter::convertCodecNameForEncodingOption( encoding ).toLocal8Bit().data() );
@@ -2270,7 +2270,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   QSettings settings;
   if ( !settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() )
   {
-    CPLSetConfigOption( "SHAPE_ENCODING", 0 );
+    CPLSetConfigOption( "SHAPE_ENCODING", nullptr );
   }
 
   if ( !layer )
@@ -2416,7 +2416,7 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
     QgsDebugMsg( pszProj4 );
     OGRFree( pszProj4 );
 
-    char *pszWkt = NULL;
+    char *pszWkt = nullptr;
     OSRExportToWkt( mySpatialRefSys, &pszWkt );
 
     srs.createFromWkt( pszWkt );
@@ -2458,15 +2458,15 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   sql += " ORDER BY " + mEncoding->fromUnicode( fld.name() ) + " ASC";  // quoting of fieldname produces a syntax error
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
-  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), NULL, "SQL" );
-  if ( l == 0 )
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), nullptr, "SQL" );
+  if ( l == nullptr )
   {
     QgsDebugMsg( "Failed to execute SQL" );
     return QgsVectorDataProvider::uniqueValues( index, uniqueValues, limit );
   }
 
   OGRFeatureH f;
-  while ( 0 != ( f = OGR_L_GetNextFeature( l ) ) )
+  while ( nullptr != ( f = OGR_L_GetNextFeature( l ) ) )
   {
     uniqueValues << ( OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() ) );
     OGR_F_Destroy( f );
@@ -2496,15 +2496,15 @@ QVariant QgsOgrProvider::minimumValue( int index )
     sql += " WHERE " + mEncoding->fromUnicode( mSubsetString );
   }
 
-  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), NULL, "SQL" );
-  if ( l == 0 )
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), nullptr, "SQL" );
+  if ( l == nullptr )
   {
     QgsDebugMsg( QString( "Failed to execute SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
     return QgsVectorDataProvider::minimumValue( index );
   }
 
   OGRFeatureH f = OGR_L_GetNextFeature( l );
-  if ( f == 0 )
+  if ( f == nullptr )
   {
     OGR_DS_ReleaseResultSet( ogrDataSource, l );
     return QVariant();
@@ -2535,15 +2535,15 @@ QVariant QgsOgrProvider::maximumValue( int index )
     sql += " WHERE " + mEncoding->fromUnicode( mSubsetString );
   }
 
-  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), NULL, "SQL" );
-  if ( l == 0 )
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), nullptr, "SQL" );
+  if ( l == nullptr )
   {
     QgsDebugMsg( QString( "Failed to execute SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
     return QgsVectorDataProvider::maximumValue( index );
   }
 
   OGRFeatureH f = OGR_L_GetNextFeature( l );
-  if ( f == 0 )
+  if ( f == nullptr )
   {
     OGR_DS_ReleaseResultSet( ogrDataSource, l );
     return QVariant();
@@ -2653,7 +2653,7 @@ void QgsOgrProvider::recalculateFeatureCount()
   if ( filter )
   {
     filter = OGR_G_Clone( filter );
-    OGR_L_SetSpatialFilter( ogrLayer, 0 );
+    OGR_L_SetSpatialFilter( ogrLayer, nullptr );
   }
 
   // feature count returns number of features within current spatial filter
@@ -2734,7 +2734,7 @@ OGRLayerH QgsOgrUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTex
   sql += " WHERE " + encoding->fromUnicode( subsetString );
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
-  return OGR_DS_ExecuteSQL( ds, sql.constData(), NULL, NULL );
+  return OGR_DS_ExecuteSQL( ds, sql.constData(), nullptr, nullptr );
 }
 
 // ---------------------------------------------------------------------------

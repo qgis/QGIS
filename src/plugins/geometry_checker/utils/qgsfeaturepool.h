@@ -39,7 +39,7 @@ class QgsFeaturePool
     QgsVectorLayer* getLayer() const { return mLayer; }
     const QgsFeatureIds& getFeatureIds() const { return mFeatureIds; }
     bool getSelectedOnly() const { return mSelectedOnly; }
-    void clearLayer() { mLayer = 0; }
+    void clearLayer() { mLayer = nullptr; }
 
   private:
     struct MapEntry

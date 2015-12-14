@@ -42,7 +42,7 @@ QgsHueSaturationFilter::~QgsHueSaturationFilter()
 QgsHueSaturationFilter* QgsHueSaturationFilter::clone() const
 {
   QgsDebugMsg( "Entered hue/saturation filter" );
-  QgsHueSaturationFilter * filter = new QgsHueSaturationFilter( 0 );
+  QgsHueSaturationFilter * filter = new QgsHueSaturationFilter( nullptr );
   filter->setSaturation( mSaturation );
   filter->setGrayscaleMode( mGrayscaleMode );
   filter->setColorizeOn( mColorizeOn );

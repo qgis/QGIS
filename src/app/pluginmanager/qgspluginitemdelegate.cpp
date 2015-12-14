@@ -45,7 +45,7 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
   int pixelsHigh = QApplication::fontMetrics().height();
 
   // Draw the background
-  style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, NULL );
+  style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, nullptr );
 
   // Draw the checkbox
   if ( index.flags() & Qt::ItemIsUserCheckable )

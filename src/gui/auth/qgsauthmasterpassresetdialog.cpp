@@ -28,8 +28,8 @@ QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
     : QDialog( parent )
     , mPassCurOk( false )
     , mPassNewOk( false )
-    , mAuthNotifyLayout( 0 )
-    , mAuthNotify( 0 )
+    , mAuthNotifyLayout( nullptr )
+    , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

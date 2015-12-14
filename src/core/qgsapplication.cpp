@@ -768,7 +768,7 @@ void QgsApplication::exitQgis()
   //Ensure that all remaining deleteLater QObjects are actually deleted before we exit.
   //This isn't strictly necessary (since we're exiting anyway) but doing so prevents a lot of
   //LeakSanitiser noise which hides real issues
-  QgsApplication::sendPostedEvents( 0, QEvent::DeferredDelete );
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
 
   //delete all registered functions from expression engine (see above comment)
   QgsExpression::cleanRegisteredFunctions();
@@ -1159,7 +1159,7 @@ bool QgsApplication::createDB( QString *errorMessage )
     }
 
     char *errmsg;
-    int res = sqlite3_exec( db, "SELECT epsg FROM tbl_srs LIMIT 0", 0, 0, &errmsg );
+    int res = sqlite3_exec( db, "SELECT epsg FROM tbl_srs LIMIT 0", nullptr, nullptr, &errmsg );
     if ( res == SQLITE_OK )
     {
       // epsg column exists => need migration
@@ -1178,7 +1178,7 @@ bool QgsApplication::createDB( QString *errorMessage )
                          "deprecated boolean);"
                          "CREATE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);"
                          "INSERT INTO tbl_srs(srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) SELECT srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,'','',is_geo,0 FROM tbl_srs_bak;"
-                         "DROP TABLE tbl_srs_bak", 0, 0, &errmsg ) != SQLITE_OK
+                         "DROP TABLE tbl_srs_bak", nullptr, nullptr, &errmsg ) != SQLITE_OK
          )
       {
         if ( errorMessage )
@@ -1195,7 +1195,7 @@ bool QgsApplication::createDB( QString *errorMessage )
       sqlite3_free( errmsg );
     }
 
-    if ( sqlite3_exec( db, "DROP VIEW vw_srs", 0, 0, &errmsg ) != SQLITE_OK )
+    if ( sqlite3_exec( db, "DROP VIEW vw_srs", nullptr, nullptr, &errmsg ) != SQLITE_OK )
     {
       QgsDebugMsg( QString( "vw_srs didn't exists in private qgis.db: %1" ).arg( errmsg ) );
     }
@@ -1213,7 +1213,7 @@ bool QgsApplication::createDB( QString *errorMessage )
                        ",a.deprecated AS deprecated"
                        " FROM tbl_srs a"
                        " LEFT OUTER JOIN tbl_projection b ON a.projection_acronym=b.acronym"
-                       " ORDER BY coalesce(b.name,a.projection_acronym),a.description", 0, 0, &errmsg ) != SQLITE_OK
+                       " ORDER BY coalesce(b.name,a.projection_acronym),a.description", nullptr, nullptr, &errmsg ) != SQLITE_OK
        )
     {
       if ( errorMessage )

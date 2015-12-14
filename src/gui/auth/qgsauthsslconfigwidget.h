@@ -45,7 +45,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
      * @param hostport Unique host:port to associate with the server certificate
      * @param connectionCAs List of trusted Certificate Authorities objects
      */
-    explicit QgsAuthSslConfigWidget( QWidget *parent = 0,
+    explicit QgsAuthSslConfigWidget( QWidget *parent = nullptr,
                                      const QSslCertificate &cert = QSslCertificate(),
                                      const QString &hostport = QString(),
                                      const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
@@ -194,7 +194,7 @@ class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
      * @param cert SSL server certificate object
      * @param hostport Unique host:port to associate with the server certificate
      */
-    explicit QgsAuthSslConfigDialog( QWidget *parent = 0,
+    explicit QgsAuthSslConfigDialog( QWidget *parent = nullptr,
                                      const QSslCertificate& cert = QSslCertificate(),
                                      const QString &hostport = QString() );
     ~QgsAuthSslConfigDialog();

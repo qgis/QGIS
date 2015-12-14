@@ -83,7 +83,7 @@ void Builder::addPoint( const DL_PointData& data )
   }
 
   double x = data.x, y = data.y, z = data.z;
-  shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, NULL, NULL, 1, &x, &y, &z, NULL );
+  shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, nullptr, nullptr, 1, &x, &y, &z, nullptr );
 }
 
 void Builder::addLine( const DL_LineData& data )
@@ -112,7 +112,7 @@ void Builder::addLine( const DL_LineData& data )
   double yv[2] = { data.y1, data.y2 };
   double zv[2] = { data.z1, data.z2 };
 
-  shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, NULL, NULL, 2, xv, yv, zv, NULL );
+  shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, nullptr, nullptr, 2, xv, yv, zv, nullptr );
 }
 
 
@@ -160,7 +160,7 @@ void Builder::addPolyline( const DL_PolylineData& data )
       zv[i] = polyVertex[i].z;
     }
 
-    shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, NULL, NULL, dim, xv.data(), yv.data(), zv.data(), NULL );
+    shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, nullptr, nullptr, dim, xv.data(), yv.data(), zv.data(), nullptr );
 
     polyVertex.clear();
 
@@ -289,7 +289,7 @@ void Builder::addArc( const DL_ArcData& data )
 
   }
 
-  shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, NULL, NULL, dim, xv.data(), yv.data(), zv.data(), NULL );
+  shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, nullptr, nullptr, dim, xv.data(), yv.data(), zv.data(), nullptr );
   arcPoints.clear();
 }
 
@@ -337,7 +337,7 @@ void Builder::addCircle( const DL_CircleData& data )
     zv[i] = circlePoints[i].z;
   }
 
-  shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, NULL, NULL, dim, xv.data(), yv.data(), zv.data(), NULL );
+  shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, nullptr, nullptr, dim, xv.data(), yv.data(), zv.data(), nullptr );
 
   circlePoints.clear();
 }
@@ -395,7 +395,7 @@ void Builder::FinalizeAnyPolyline()
       zv[i] = polyVertex[i].z;
     }
 
-    shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, NULL, NULL, dim, xv.data(), yv.data(), zv.data(), NULL );
+    shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, nullptr, nullptr, dim, xv.data(), yv.data(), zv.data(), nullptr );
     polyVertex.clear();
 
     QgsDebugMsg( QString( "Finalized adding of polyline shape %1" ).arg( shpObjects.size() - 1 ) );
@@ -477,7 +477,7 @@ void Builder::print_shpObjects()
       double x = textObjects[i].ipx;
       double y = textObjects[i].ipy;
       double z = textObjects[i].ipz;
-      psObject = SHPCreateObject( SHPT_POINT, i, 0, NULL, NULL, 1, &x, &y, &z, NULL );
+      psObject = SHPCreateObject( SHPT_POINT, i, 0, nullptr, nullptr, 1, &x, &y, &z, nullptr );
 
       SHPWriteObject( thSHP, -1, psObject );
 
@@ -537,7 +537,7 @@ void Builder::print_shpObjects()
       double &x = insertObjects[i].ipx;
       double &y = insertObjects[i].ipy;
       double &z = insertObjects[i].ipz;
-      psObject = SHPCreateObject( SHPT_POINT, i, 0, NULL, NULL, 1, &x, &y, &z, NULL );
+      psObject = SHPCreateObject( SHPT_POINT, i, 0, nullptr, nullptr, 1, &x, &y, &z, nullptr );
 
       SHPWriteObject( ihSHP, -1, psObject );
 

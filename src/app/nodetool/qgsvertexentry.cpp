@@ -23,7 +23,7 @@ QgsVertexEntry::QgsVertexEntry( QgsMapCanvas *canvas, QgsMapLayer *layer, const 
     , mPenWidth( penWidth )
     , mToolTip( tooltip )
     , mType( type )
-    , mMarker( 0 )
+    , mMarker( nullptr )
     , mCanvas( canvas )
     , mLayer( layer )
 {
@@ -64,7 +64,7 @@ void QgsVertexEntry::placeMarker()
   else if ( mMarker )
   {
     delete mMarker;
-    mMarker = 0;
+    mMarker = nullptr;
   }
 }
 

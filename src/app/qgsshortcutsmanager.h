@@ -30,7 +30,7 @@ class APP_EXPORT QgsShortcutsManager : public QObject
   public:
 
     //! return instance of the manager
-    static QgsShortcutsManager* instance( QObject *parent = NULL );
+    static QgsShortcutsManager* instance( QObject *parent = nullptr );
 
     //! register all actions which are children of the passed object
     void registerAllChildrenActions( QObject* object );

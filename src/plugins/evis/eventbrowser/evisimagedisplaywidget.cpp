@@ -140,7 +140,7 @@ void eVisImageDisplayWidget::resizeEvent( QResizeEvent *event )
 */
 void eVisImageDisplayWidget::displayImage( const QString& path )
 {
-  mImageLoaded = mImage->load( path, 0, Qt::AutoColor );
+  mImageLoaded = mImage->load( path, nullptr, Qt::AutoColor );
   setToolTip( path );
 
   mCurrentZoomStep = 0;

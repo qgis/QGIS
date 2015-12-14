@@ -30,9 +30,9 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings()
     , priority( 5 )
     , obstacle( false )
     , dist( 0.0 )
-    , renderer( 0 )
-    , ct( 0 )
-    , xform( 0 )
+    , renderer( nullptr )
+    , ct( nullptr )
+    , xform( nullptr )
     , xPosColumn( -1 )
     , yPosColumn( -1 )
     , showAll( true )
@@ -295,7 +295,7 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc,
 }
 
 QgsDiagramRendererV2::QgsDiagramRendererV2()
-    : mDiagram( 0 )
+    : mDiagram( nullptr )
 {
 }
 
@@ -311,7 +311,7 @@ void QgsDiagramRendererV2::setDiagram( QgsDiagram* d )
 }
 
 QgsDiagramRendererV2::QgsDiagramRendererV2( const QgsDiagramRendererV2& other )
-    : mDiagram( other.mDiagram ? other.mDiagram->clone() : 0 )
+    : mDiagram( other.mDiagram ? other.mDiagram->clone() : nullptr )
 {
 }
 
@@ -392,7 +392,7 @@ void QgsDiagramRendererV2::_readXML( const QDomElement& elem, const QgsVectorLay
   }
   else
   {
-    mDiagram = 0;
+    mDiagram = nullptr;
   }
 }
 
@@ -553,7 +553,7 @@ QList< QgsLayerTreeModelLegendNode* > QgsDiagramSettings::legendItems( QgsLayerT
   {
     QPixmap pix( 16, 16 );
     pix.fill( categoryColors[i] );
-    list << new QgsSimpleLegendNode( nodeLayer, categoryLabels[i], QIcon( pix ), 0, QString( "diagram_%1" ).arg( QString::number( i ) ) );
+    list << new QgsSimpleLegendNode( nodeLayer, categoryLabels[i], QIcon( pix ), nullptr, QString( "diagram_%1" ).arg( QString::number( i ) ) );
   }
   return list;
 }

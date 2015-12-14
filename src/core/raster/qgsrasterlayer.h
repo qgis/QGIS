@@ -275,7 +275,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap */
     void draw( QPainter * theQPainter,
                QgsRasterViewPort * myRasterViewPort,
-               const QgsMapToPixel* theQgsMapToPixel = 0 );
+               const QgsMapToPixel* theQgsMapToPixel = nullptr );
 
     /** Returns a list with classification items (Text and color) */
     QgsLegendColorList legendSymbologyItems() const;

@@ -44,7 +44,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
         QWidget* editor,
         QgsMapCanvas* canvas,
         QgsMessageBar* messageBar,
-        QWidget* parent = 0 );
+        QWidget* parent = nullptr );
 
     virtual QWidget* createWidget( QWidget* parent ) override;
     virtual void initWidget( QWidget* editor ) override;

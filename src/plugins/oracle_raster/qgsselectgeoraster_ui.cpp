@@ -183,7 +183,7 @@ void QgsOracleSelectGeoraster::showSelection( const QString & line )
 {
   QString identification = line;
 
-  GDALDatasetH hDS = NULL;
+  GDALDatasetH hDS = nullptr;
   GDALAccess eAccess = GA_ReadOnly;
 
   /*
@@ -202,7 +202,7 @@ void QgsOracleSelectGeoraster::showSelection( const QString & line )
   hDS = GDALOpenShared( TO8F( identification ), eAccess );
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  if ( hDS == NULL )
+  if ( hDS == nullptr )
   {
     QMessageBox::information( this,
                               tr( "Open failed" ),
@@ -216,7 +216,7 @@ void QgsOracleSelectGeoraster::showSelection( const QString & line )
    *  Get subdataset list
    */
 
-  char **papszMetadata = NULL;
+  char **papszMetadata = nullptr;
   papszMetadata = GDALGetMetadata( hDS, "SUBDATASETS" );
   int nSubDatasets = CSLCount( papszMetadata );
 

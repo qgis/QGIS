@@ -57,7 +57,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
     , mID( "" )
     , mLayerType( type )
     , mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
-    , mLegend( 0 )
+    , mLegend( nullptr )
     , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
   mCRS = new QgsCoordinateReferenceSystem();
@@ -383,7 +383,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   // Do not validate any projections in children, they will be overwritten anyway.
   // No need to ask the user for a projections when it is overwritten, is there?
   savedValidation = QgsCoordinateReferenceSystem::customSrsValidation();
-  QgsCoordinateReferenceSystem::setCustomSrsValidation( NULL );
+  QgsCoordinateReferenceSystem::setCustomSrsValidation( nullptr );
 
   // now let the children grab what they need from the Dom node.
   layerError = !readXml( layerElement );
@@ -777,7 +777,7 @@ QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document )
 
     QString type = layerElem.attribute( "type" );
     QgsDebugMsg( type );
-    QgsMapLayer *layer = 0;
+    QgsMapLayer *layer = nullptr;
 
     if ( type == "vector" )
     {
@@ -1061,7 +1061,7 @@ bool QgsMapLayer::loadNamedStyleFromDb( const QString &db, const QString &theURI
   if ( db.isEmpty() || !QFile( db ).exists() )
     return false;
 
-  myResult = sqlite3_open_v2( db.toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
+  myResult = sqlite3_open_v2( db.toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
   if ( myResult != SQLITE_OK )
   {
     return false;

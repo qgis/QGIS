@@ -37,10 +37,10 @@ static bool _initRenderer( const QString& name, QgsRendererV2WidgetFunc f, const
 {
   QgsRendererV2Registry* reg = QgsRendererV2Registry::instance();
   QgsRendererV2AbstractMetadata* am = reg->rendererMetadata( name );
-  if ( am == NULL )
+  if ( am == nullptr )
     return false;
   QgsRendererV2Metadata* m = dynamic_cast<QgsRendererV2Metadata*>( am );
-  if ( m == NULL )
+  if ( m == nullptr )
     return false;
 
   m->setWidgetFunction( f );
@@ -76,9 +76,9 @@ static void _initRendererWidgetFunctions()
 QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded )
     : mLayer( layer )
     , mStyle( style )
-    , mActiveWidget( NULL )
-    , mPaintEffect( 0 )
-    , mMapCanvas( 0 )
+    , mActiveWidget( nullptr )
+    , mPaintEffect( nullptr )
+    , mMapCanvas( nullptr )
 {
   setupUi( this );
 
@@ -186,16 +186,16 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
     stackedWidget->removeWidget( mActiveWidget );
 
     delete mActiveWidget;
-    mActiveWidget = NULL;
+    mActiveWidget = nullptr;
   }
 
-  QgsRendererV2Widget* w = NULL;
+  QgsRendererV2Widget* w = nullptr;
   QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererName );
-  if ( m != NULL )
+  if ( m != nullptr )
     w = m->createRendererWidget( mLayer, mStyle, oldRenderer );
   delete oldRenderer;
 
-  if ( w != NULL )
+  if ( w != nullptr )
   {
     // instantiate the widget and set as active
     mActiveWidget = w;

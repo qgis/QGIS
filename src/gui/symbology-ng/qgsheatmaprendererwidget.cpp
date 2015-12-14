@@ -39,7 +39,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 );
+  << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( widget->mapCanvas() )
   {
@@ -59,7 +59,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 
 QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
-    , mRenderer( NULL )
+    , mRenderer( nullptr )
 {
   if ( !layer )
   {
@@ -69,7 +69,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
   if ( layer->geometryType() != QGis::Point )
   {
     //setup blank dialog
-    mRenderer = NULL;
+    mRenderer = nullptr;
     QGridLayout* layout = new QGridLayout( this );
     QLabel* label = new QLabel( tr( "The heatmap renderer only applies to point and multipoint layers. \n"
                                     "'%1' is not a point layer and cannot be rendered as a heatmap." )
@@ -145,7 +145,7 @@ void QgsHeatmapRendererWidget::applyColorRamp()
   }
 
   QgsVectorColorRampV2* ramp = mRampComboBox->currentColorRamp();
-  if ( ramp == NULL )
+  if ( ramp == nullptr )
     return;
 
   mRenderer->setColorRamp( ramp );

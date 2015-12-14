@@ -30,7 +30,7 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
 {
     Q_OBJECT
   public:
-    QgsBrowserTreeView( QWidget *parent = 0 );
+    QgsBrowserTreeView( QWidget *parent = nullptr );
     ~QgsBrowserTreeView();
 
     virtual void setModel( QAbstractItemModel* model ) override;

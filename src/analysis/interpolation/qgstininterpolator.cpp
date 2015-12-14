@@ -29,8 +29,8 @@
 
 QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData>& inputData, TIN_INTERPOLATION interpolation, bool showProgressDialog )
     : QgsInterpolator( inputData )
-    , mTriangulation( 0 )
-    , mTriangleInterpolator( 0 )
+    , mTriangulation( nullptr )
+    , mTriangleInterpolator( nullptr )
     , mIsInitialized( false )
     , mShowProgressDialog( showProgressDialog )
     , mExportTriangulationToFile( false )
@@ -67,7 +67,7 @@ int QgsTINInterpolator::interpolatePoint( double x, double y, double& result )
 
 void QgsTINInterpolator::initialize()
 {
-  DualEdgeTriangulation* theDualEdgeTriangulation = new DualEdgeTriangulation( 100000, 0 );
+  DualEdgeTriangulation* theDualEdgeTriangulation = new DualEdgeTriangulation( 100000, nullptr );
   if ( mInterpolation == CloughTocher )
   {
     NormVecDecorator* dec = new NormVecDecorator();
@@ -94,10 +94,10 @@ void QgsTINInterpolator::initialize()
     }
   }
 
-  QProgressDialog* theProgressDialog = 0;
+  QProgressDialog* theProgressDialog = nullptr;
   if ( mShowProgressDialog )
   {
-    theProgressDialog = new QProgressDialog( QObject::tr( "Building triangulation..." ), QObject::tr( "Abort" ), 0, nFeatures, 0 );
+    theProgressDialog = new QProgressDialog( QObject::tr( "Building triangulation..." ), QObject::tr( "Abort" ), 0, nFeatures, nullptr );
     theProgressDialog->setWindowModality( Qt::WindowModal );
   }
 
@@ -140,7 +140,7 @@ void QgsTINInterpolator::initialize()
     NormVecDecorator* dec = dynamic_cast<NormVecDecorator*>( mTriangulation );
     if ( dec )
     {
-      QProgressDialog* progressDialog = 0;
+      QProgressDialog* progressDialog = nullptr;
       if ( mShowProgressDialog ) //show a progress dialog because it can take a long time...
       {
         progressDialog = new QProgressDialog();
@@ -203,7 +203,7 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
   double x, y, z;
   QgsConstWkbPtr currentWkbPtr( g->asWkb() + 1 + sizeof( int ) );
   //maybe a structure or break line
-  Line3D* line = 0;
+  Line3D* line = nullptr;
 
   QGis::WkbType wkbType = g->wkbType();
   switch ( wkbType )

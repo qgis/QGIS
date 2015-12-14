@@ -195,9 +195,9 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
 {
   // first get list of supported SRID from the selected Spatialite database
   // to build filter for projection selector
-  sqlite3 *db = 0;
+  sqlite3 *db = nullptr;
   bool status = true;
-  int rc = sqlite3_open_v2( mDatabaseComboBox->currentText().toUtf8(), &db, SQLITE_OPEN_READONLY, NULL );
+  int rc = sqlite3_open_v2( mDatabaseComboBox->currentText().toUtf8(), &db, SQLITE_OPEN_READONLY, nullptr );
   if ( rc != SQLITE_OK )
   {
     QMessageBox::warning( this, tr( "SpatiaLite Database" ), tr( "Unable to open the database" ) );
@@ -224,7 +224,7 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
   else
   {
     // XXX query failed -- warn the user some how
-    QMessageBox::warning( 0, tr( "Error" ), tr( "Failed to load SRIDS: %1" ).arg( sqlite3_errmsg( db ) ) );
+    QMessageBox::warning( nullptr, tr( "Error" ), tr( "Failed to load SRIDS: %1" ).arg( sqlite3_errmsg( db ) ) );
     status = false;
   }
   // close the statement
@@ -300,7 +300,7 @@ bool QgsNewSpatialiteLayerDialog::createDb()
 
     if ( !res )
     {
-      QMessageBox::warning( 0, tr( "SpatiaLite Database" ), errCause );
+      QMessageBox::warning( nullptr, tr( "SpatiaLite Database" ), errCause );
       pbnFindSRID->setEnabled( false );
     }
   }
@@ -320,7 +320,7 @@ bool QgsNewSpatialiteLayerDialog::createDb()
     settings.setValue( "/SpatiaLite/connections/selected", fi.fileName() + tr( "@" ) + fi.canonicalFilePath() );
     settings.setValue( key, fi.canonicalFilePath() );
 
-    QMessageBox::information( 0, tr( "SpatiaLite Database" ), tr( "Registered new database!" ) );
+    QMessageBox::information( nullptr, tr( "SpatiaLite Database" ), tr( "Registered new database!" ) );
   }
 
   pbnFindSRID->setEnabled( true );
@@ -390,7 +390,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
   else
   {
     char * errmsg;
-    rc = sqlite3_exec( db, sql.toUtf8(), NULL, NULL, &errmsg );
+    rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, &errmsg );
     if ( rc != SQLITE_OK )
     {
       QMessageBox::warning( this,
@@ -401,7 +401,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
     else
     {
       // create the geometry column and the spatial index
-      rc = sqlite3_exec( db, sqlAddGeom.toUtf8(), NULL, NULL, &errmsg );
+      rc = sqlite3_exec( db, sqlAddGeom.toUtf8(), nullptr, nullptr, &errmsg );
       if ( rc != SQLITE_OK )
       {
         QMessageBox::warning( this,
@@ -412,7 +412,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
       else
       {
         // create the spatial index
-        rc = sqlite3_exec( db, sqlCreateIndex.toUtf8(), NULL, NULL, &errmsg );
+        rc = sqlite3_exec( db, sqlCreateIndex.toUtf8(), nullptr, nullptr, &errmsg );
         if ( rc != SQLITE_OK )
         {
           QMessageBox::warning( this,

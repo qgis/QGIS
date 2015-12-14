@@ -44,11 +44,11 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
 
   const QgsVectorLayerAndAttributeModel *m = qobject_cast< const QgsVectorLayerAndAttributeModel *>( index.model() );
   if ( !m )
-    return 0;
+    return nullptr;
 
   QgsVectorLayer *vl = m->vectorLayer( index );
   if ( !vl )
-    return 0;
+    return nullptr;
 
 
   QgsFieldComboBox *w = new QgsFieldComboBox( parent );
@@ -123,7 +123,7 @@ QgsVectorLayer *QgsVectorLayerAndAttributeModel::vectorLayer( const QModelIndex 
 {
   QgsLayerTreeNode *n = index2node( idx );
   if ( !n || !QgsLayerTree::isLayer( n ) )
-    return 0;
+    return nullptr;
 
   return dynamic_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( n )->layer() );
 }
@@ -358,7 +358,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
 
 void QgsVectorLayerAndAttributeModel::applyVisibility( QSet<QString> &visibleLayers, QgsLayerTreeNode *node )
 {
-  QgsLayerTreeGroup *group = QgsLayerTree::isGroup( node ) ? QgsLayerTree::toGroup( node ) : 0;
+  QgsLayerTreeGroup *group = QgsLayerTree::isGroup( node ) ? QgsLayerTree::toGroup( node ) : nullptr;
   if ( !group )
     return;
 
@@ -428,7 +428,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mTreeView->setItemDelegate( mFieldSelectorDelegate );
 
   QgsLayerTreeModel *model = new QgsVectorLayerAndAttributeModel( mLayerTreeGroup, this );
-  model->setFlags( 0 );
+  model->setFlags( nullptr );
   mTreeView->setModel( model );
   mTreeView->resizeColumnToContents( 0 );
   mTreeView->header()->show();
@@ -477,7 +477,7 @@ void QgsDxfExportDialog::on_mVisibilityPresets_currentIndexChanged( int index )
 
 void QgsDxfExportDialog::cleanGroup( QgsLayerTreeNode *node )
 {
-  QgsLayerTreeGroup *group = QgsLayerTree::isGroup( node ) ? QgsLayerTree::toGroup( node ) : 0;
+  QgsLayerTreeGroup *group = QgsLayerTree::isGroup( node ) ? QgsLayerTree::toGroup( node ) : nullptr;
   if ( !group )
     return;
 
@@ -553,7 +553,7 @@ void QgsDxfExportDialog::on_mFileSelectionButton_clicked()
   QSettings s;
   QString lastSavePath = s.value( "qgis/lastDxfDir", QDir::homePath() ).toString();
 
-  QString filePath = QFileDialog::getSaveFileName( 0, tr( "Export as DXF" ), lastSavePath, tr( "DXF files *.dxf *.DXF" ) );
+  QString filePath = QFileDialog::getSaveFileName( nullptr, tr( "Export as DXF" ), lastSavePath, tr( "DXF files *.dxf *.DXF" ) );
   if ( !filePath.isEmpty() )
   {
     mFileLineEdit->setText( filePath );

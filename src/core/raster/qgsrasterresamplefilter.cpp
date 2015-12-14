@@ -34,8 +34,8 @@
 
 QgsRasterResampleFilter::QgsRasterResampleFilter( QgsRasterInterface* input )
     : QgsRasterInterface( input )
-    , mZoomedInResampler( 0 )
-    , mZoomedOutResampler( 0 )
+    , mZoomedInResampler( nullptr )
+    , mZoomedOutResampler( nullptr )
     , mMaxOversampling( 2.0 )
 {
 }
@@ -49,7 +49,7 @@ QgsRasterResampleFilter::~QgsRasterResampleFilter()
 QgsRasterResampleFilter* QgsRasterResampleFilter::clone() const
 {
   QgsDebugMsg( "Entered" );
-  QgsRasterResampleFilter * resampler = new QgsRasterResampleFilter( 0 );
+  QgsRasterResampleFilter * resampler = new QgsRasterResampleFilter( nullptr );
   if ( mZoomedInResampler )
   {
     resampler->setZoomedInResampler( mZoomedInResampler->clone() );

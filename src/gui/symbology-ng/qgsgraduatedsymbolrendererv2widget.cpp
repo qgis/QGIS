@@ -43,7 +43,7 @@
 //not part of public API
 
 QgsGraduatedSymbolRendererV2Model::QgsGraduatedSymbolRendererV2Model( QObject * parent ) : QAbstractItemModel( parent )
-    , mRenderer( 0 )
+    , mRenderer( nullptr )
     , mMimeFormat( "application/x-qgsgraduatedsymbolrendererv2model" )
 {
 }
@@ -53,7 +53,7 @@ void QgsGraduatedSymbolRendererV2Model::setRenderer( QgsGraduatedSymbolRendererV
   if ( mRenderer )
   {
     beginRemoveRows( QModelIndex(), 0, mRenderer->ranges().size() - 1 );
-    mRenderer = 0;
+    mRenderer = nullptr;
     endRemoveRows();
   }
   if ( renderer )
@@ -392,7 +392,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 );
+  << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( widget->mapCanvas() )
   {
@@ -412,8 +412,8 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 
 QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
-    , mRenderer( 0 )
-    , mModel( 0 )
+    , mRenderer( nullptr )
+    , mModel( nullptr )
 {
 
 
@@ -655,7 +655,7 @@ void QgsGraduatedSymbolRendererV2Widget::on_methodComboBox_currentIndexChanged( 
     mRenderer->setGraduatedMethod( QgsGraduatedSymbolRendererV2::GraduatedColor );
     QgsVectorColorRampV2* ramp = cboGraduatedColorRamp->currentColorRamp();
 
-    if ( ramp == NULL )
+    if ( ramp == nullptr )
     {
       if ( cboGraduatedColorRamp->count() == 0 )
         QMessageBox::critical( this, tr( "Error" ), tr( "There are no available color ramps. You can add them in Style Manager." ) );
@@ -726,7 +726,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   {
     QgsVectorColorRampV2* ramp = cboGraduatedColorRamp->currentColorRamp();
 
-    if ( ramp == NULL )
+    if ( ramp == nullptr )
     {
       if ( cboGraduatedColorRamp->count() == 0 )
         QMessageBox::critical( this, tr( "Error" ), tr( "There are no available color ramps. You can add them in Style Manager." ) );
@@ -738,7 +738,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   }
   else
   {
-    mRenderer->setSourceColorRamp( NULL );
+    mRenderer->setSourceColorRamp( nullptr );
   }
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -757,7 +757,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
 void QgsGraduatedSymbolRendererV2Widget::reapplyColorRamp()
 {
   QgsVectorColorRampV2* ramp = cboGraduatedColorRamp->currentColorRamp();
-  if ( ramp == NULL )
+  if ( ramp == nullptr )
     return;
 
   mRenderer->updateColorRamp( ramp, cbxInvertedColorRamp->isChecked() );
@@ -1086,7 +1086,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2Widget::findSymbolForRange( double lowe
       return it->symbol();
     }
   }
-  return 0;
+  return nullptr;
 }
 
 void QgsGraduatedSymbolRendererV2Widget::refreshSymbolView()

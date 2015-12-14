@@ -59,10 +59,10 @@ class CORE_EXPORT QgsVectorLayerImport
                                     const QString& providerKey,
                                     const QgsCoordinateReferenceSystem *destCRS,
                                     bool onlySelected = false,
-                                    QString *errorMessage = 0,
+                                    QString *errorMessage = nullptr,
                                     bool skipAttributeCreation = false,
-                                    QMap<QString, QVariant> *options = 0,
-                                    QProgressDialog *progress = 0
+                                    QMap<QString, QVariant> *options = nullptr,
+                                    QProgressDialog *progress = nullptr
                                   );
 
     /** Create a empty layer and add fields to it */
@@ -72,8 +72,8 @@ class CORE_EXPORT QgsVectorLayerImport
                           QGis::WkbType geometryType,
                           const QgsCoordinateReferenceSystem* crs,
                           bool overwrite = false,
-                          const QMap<QString, QVariant> *options = 0,
-                          QProgressDialog *progress = 0
+                          const QMap<QString, QVariant> *options = nullptr,
+                          QProgressDialog *progress = nullptr
                         );
 
     /** Checks whether there were any errors */

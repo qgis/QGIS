@@ -128,7 +128,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
 
     virtual bool equal( const QgsCptCityDataItem *other );
 
-    virtual QWidget *paramWidget() { return 0; }
+    virtual QWidget *paramWidget() { return nullptr; }
 
     // list of actions provided by this item - usually used for popup menu on right-click
     virtual QList<QAction*> actions() { return QList<QAction*>(); }
@@ -312,7 +312,7 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
       List = 2 // not used anymore
     };
 
-    QgsCptCityBrowserModel( QObject* parent = 0,
+    QgsCptCityBrowserModel( QObject* parent = nullptr,
                             QgsCptCityArchive* archive = QgsCptCityArchive::defaultArchive(),
                             ViewType Type = Authors );
     ~QgsCptCityBrowserModel();
@@ -343,7 +343,7 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     /** Returns the index of the item in the model specified by the given row, column and parent index. */
     virtual QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const override;
 
-    QModelIndex findItem( QgsCptCityDataItem *item, QgsCptCityDataItem *parent = 0 ) const;
+    QModelIndex findItem( QgsCptCityDataItem *item, QgsCptCityDataItem *parent = nullptr ) const;
 
     /** Returns the parent of the model item with the given index.
      * If the item has no parent, an invalid QModelIndex is returned.

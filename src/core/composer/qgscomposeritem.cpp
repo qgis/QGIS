@@ -46,11 +46,11 @@
 
 QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue )
     : QgsComposerObject( composition )
-    , QGraphicsRectItem( 0 )
+    , QGraphicsRectItem( nullptr )
     , mRemovedFromComposition( false )
-    , mBoundingResizeRectangle( 0 )
-    , mHAlignSnapItem( 0 )
-    , mVAlignSnapItem( 0 )
+    , mBoundingResizeRectangle( nullptr )
+    , mHAlignSnapItem( nullptr )
+    , mVAlignSnapItem( nullptr )
     , mFrame( false )
     , mBackground( true )
     , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
@@ -75,11 +75,11 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
 
 QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue )
     : QgsComposerObject( composition )
-    , QGraphicsRectItem( 0, 0, width, height, 0 )
+    , QGraphicsRectItem( 0, 0, width, height, nullptr )
     , mRemovedFromComposition( false )
-    , mBoundingResizeRectangle( 0 )
-    , mHAlignSnapItem( 0 )
-    , mVAlignSnapItem( 0 )
+    , mBoundingResizeRectangle( nullptr )
+    , mHAlignSnapItem( nullptr )
+    , mVAlignSnapItem( nullptr )
     , mFrame( false )
     , mBackground( true )
     , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
@@ -1301,7 +1301,7 @@ QGraphicsLineItem* QgsComposerItem::hAlignSnapItem()
 {
   if ( !mHAlignSnapItem )
   {
-    mHAlignSnapItem = new QGraphicsLineItem( 0 );
+    mHAlignSnapItem = new QGraphicsLineItem( nullptr );
     mHAlignSnapItem->setPen( QPen( QColor( Qt::red ) ) );
     scene()->addItem( mHAlignSnapItem );
     mHAlignSnapItem->setZValue( 90 );
@@ -1313,7 +1313,7 @@ QGraphicsLineItem* QgsComposerItem::vAlignSnapItem()
 {
   if ( !mVAlignSnapItem )
   {
-    mVAlignSnapItem = new QGraphicsLineItem( 0 );
+    mVAlignSnapItem = new QGraphicsLineItem( nullptr );
     mVAlignSnapItem->setPen( QPen( QColor( Qt::red ) ) );
     scene()->addItem( mVAlignSnapItem );
     mVAlignSnapItem->setZValue( 90 );
@@ -1327,7 +1327,7 @@ void QgsComposerItem::deleteHAlignSnapItem()
   {
     scene()->removeItem( mHAlignSnapItem );
     delete mHAlignSnapItem;
-    mHAlignSnapItem = 0;
+    mHAlignSnapItem = nullptr;
   }
 }
 
@@ -1337,7 +1337,7 @@ void QgsComposerItem::deleteVAlignSnapItem()
   {
     scene()->removeItem( mVAlignSnapItem );
     delete mVAlignSnapItem;
-    mVAlignSnapItem = 0;
+    mVAlignSnapItem = nullptr;
   }
 }
 

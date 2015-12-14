@@ -37,7 +37,7 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
      * Widget for editing authentication configurations directly in database
      * @param parent Parent widget
      */
-    explicit QgsAuthIdentitiesEditor( QWidget *parent = 0 );
+    explicit QgsAuthIdentitiesEditor( QWidget *parent = nullptr );
     ~QgsAuthIdentitiesEditor();
 
   private slots:
@@ -85,11 +85,11 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
 
     void appendIdentitiesToGroup( const QList<QSslCertificate>& certs,
                                   QgsAuthIdentitiesEditor::IdentityType identype,
-                                  QTreeWidgetItem *parent = 0 );
+                                  QTreeWidgetItem *parent = nullptr );
 
     void appendIdentitiesToItem( const QList<QSslCertificate>& certs,
                                  QgsAuthIdentitiesEditor::IdentityType identype,
-                                 QTreeWidgetItem *parent = 0 );
+                                 QTreeWidgetItem *parent = nullptr );
 
     QgsMessageBar * messageBar();
     int messageTimeout();

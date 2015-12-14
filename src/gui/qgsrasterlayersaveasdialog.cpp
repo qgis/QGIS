@@ -550,14 +550,14 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
     {
       case QGis::Float32:
       case QGis::Float64:
-        lineEdit->setValidator( new QDoubleValidator( 0 ) );
+        lineEdit->setValidator( new QDoubleValidator( nullptr ) );
         if ( !qIsNaN( value ) )
         {
           valueString = QgsRasterBlock::printValue( value );
         }
         break;
       default:
-        lineEdit->setValidator( new QIntValidator( 0 ) );
+        lineEdit->setValidator( new QIntValidator( nullptr ) );
         if ( !qIsNaN( value ) )
         {
           valueString = QString::number( static_cast<int>( value ) );

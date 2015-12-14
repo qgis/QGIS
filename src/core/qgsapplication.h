@@ -224,7 +224,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void initQgis();
 
     //! initialise qgis.db
-    static bool createDB( QString* errorMessage = 0 );
+    static bool createDB( QString* errorMessage = nullptr );
 
     //! Create the users theme folder
     static bool createThemeFolder( );

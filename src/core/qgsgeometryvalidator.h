@@ -25,7 +25,7 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
 
   public:
     //! Constructor
-    QgsGeometryValidator( const QgsGeometry *g, QList<QgsGeometry::Error> *errors = 0 );
+    QgsGeometryValidator( const QgsGeometry *g, QList<QgsGeometry::Error> *errors = nullptr );
     ~QgsGeometryValidator();
 
     void run() override;

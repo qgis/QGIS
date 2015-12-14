@@ -37,7 +37,7 @@ class QgsBrowserPropertiesWrapLabel : public QTextEdit
 {
     Q_OBJECT
   public:
-    QgsBrowserPropertiesWrapLabel( const QString& text, QWidget* parent = 0 );
+    QgsBrowserPropertiesWrapLabel( const QString& text, QWidget* parent = nullptr );
 
   private slots:
     void adjustHeight( const QSizeF& size );
@@ -47,8 +47,8 @@ class QgsBrowserPropertiesWidget : public QWidget
 {
     Q_OBJECT
   public:
-    explicit QgsBrowserPropertiesWidget( QWidget* parent = 0 );
-    static QgsBrowserPropertiesWidget* createWidget( QgsDataItem* item, QWidget* parent = 0 );
+    explicit QgsBrowserPropertiesWidget( QWidget* parent = nullptr );
+    static QgsBrowserPropertiesWidget* createWidget( QgsDataItem* item, QWidget* parent = nullptr );
     virtual void setItem( QgsDataItem* item ) { Q_UNUSED( item ) }
     /** Set content widget, usually item paramWidget. Takes ownership. */
     virtual void setWidget( QWidget* widget );
@@ -65,7 +65,7 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
 {
     Q_OBJECT
   public:
-    explicit QgsBrowserLayerProperties( QWidget* parent = 0 );
+    explicit QgsBrowserLayerProperties( QWidget* parent = nullptr );
     void setItem( QgsDataItem* item ) override;
 
     virtual void setCondensedMode( bool condensedMode ) override;
@@ -78,7 +78,7 @@ class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget , privat
 {
     Q_OBJECT
   public:
-    explicit QgsBrowserDirectoryProperties( QWidget* parent = 0 );
+    explicit QgsBrowserDirectoryProperties( QWidget* parent = nullptr );
 
     void setItem( QgsDataItem* item ) override;
   private:
@@ -90,7 +90,7 @@ class QgsBrowserPropertiesDialog : public QDialog , private Ui::QgsBrowserProper
 {
     Q_OBJECT
   public:
-    QgsBrowserPropertiesDialog( const QString& settingsSection, QWidget* parent = 0 );
+    QgsBrowserPropertiesDialog( const QString& settingsSection, QWidget* parent = nullptr );
     ~QgsBrowserPropertiesDialog();
 
     void setItem( QgsDataItem* item );
@@ -104,7 +104,7 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
 {
     Q_OBJECT
   public:
-    explicit QgsBrowserDockWidget( const QString& name, QWidget *parent = 0 );
+    explicit QgsBrowserDockWidget( const QString& name, QWidget *parent = nullptr );
     ~QgsBrowserDockWidget();
     void addFavouriteDirectory( const QString& favDir );
 

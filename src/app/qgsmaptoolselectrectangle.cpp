@@ -36,7 +36,7 @@ QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas* canvas )
   mToolName = tr( "Select features" );
   QPixmap mySelectQPixmap = QPixmap(( const char ** ) select_cursor );
   mCursor = QCursor( mySelectQPixmap, 1, 1 );
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mFillColor = QColor( 254, 178, 76, 63 );
   mBorderColour = QColor( 254, 58, 29, 100 );
 }
@@ -71,10 +71,10 @@ void QgsMapToolSelectFeatures::canvasMoveEvent( QgsMapMouseEvent* e )
 void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-  if ( vlayer == NULL )
+  if ( vlayer == nullptr )
   {
     delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand = nullptr;
     mDragging = false;
     return;
   }
@@ -115,7 +115,7 @@ void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent* e )
     delete selectGeom;
 
     delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand = nullptr;
   }
 
   mDragging = false;

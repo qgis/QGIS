@@ -97,7 +97,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError* error, int method
   }
 
   // Search which overlap part this error parametrizes (using fuzzy-matching of the area and centroid...)
-  QgsAbstractGeometryV2* interPart = 0;
+  QgsAbstractGeometryV2* interPart = nullptr;
   for ( int iPart = 0, nParts = interGeom->partCount(); iPart < nParts; ++iPart )
   {
     QgsAbstractGeometryV2* part = QgsGeomUtils::getGeomPart( interGeom, iPart );
@@ -128,7 +128,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError* error, int method
     if ( !diff1 || diff1->isEmpty() )
     {
       delete diff1;
-      diff1 = 0;
+      diff1 = nullptr;
     }
     else
     {
@@ -140,7 +140,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError* error, int method
     if ( !diff2 || diff2->isEmpty() )
     {
       delete diff2;
-      diff2 = 0;
+      diff2 = nullptr;
     }
     else
     {

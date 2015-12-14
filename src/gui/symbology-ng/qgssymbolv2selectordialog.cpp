@@ -50,10 +50,10 @@
 static const int SymbolLayerItemType = QStandardItem::UserType + 1;
 
 DataDefinedRestorer::DataDefinedRestorer( QgsSymbolV2* symbol, const QgsSymbolLayerV2* symbolLayer )
-    : mMarker( NULL )
-    , mMarkerSymbolLayer( NULL )
-    , mLine( NULL )
-    , mLineSymbolLayer( NULL )
+    : mMarker( nullptr )
+    , mMarkerSymbolLayer( nullptr )
+    , mLine( nullptr )
+    , mLineSymbolLayer( nullptr )
 {
   if ( symbolLayer->type() == QgsSymbolV2::Marker && symbol->type() == QgsSymbolV2::Marker )
   {
@@ -64,7 +64,7 @@ DataDefinedRestorer::DataDefinedRestorer( QgsSymbolV2* symbol, const QgsSymbolLa
     mDDAngle = mMarker->dataDefinedAngle();
     // check if restore is actually needed
     if ( mDDSize == QgsDataDefined() && mDDAngle == QgsDataDefined() )
-      mMarker = NULL;
+      mMarker = nullptr;
   }
   else if ( symbolLayer->type() == QgsSymbolV2::Line && symbol->type() == QgsSymbolV2::Line )
   {
@@ -73,7 +73,7 @@ DataDefinedRestorer::DataDefinedRestorer( QgsSymbolV2* symbol, const QgsSymbolLa
     mDDWidth = mLine->dataDefinedWidth();
     // check if restore is actually needed
     if ( mDDWidth == QgsDataDefined() )
-      mLine = NULL;
+      mLine = nullptr;
   }
   save();
 }
@@ -132,7 +132,7 @@ class SymbolLayerItem : public QStandardItem
     {
       mLayer = layer;
       mIsLayer = true;
-      mSymbol = 0;
+      mSymbol = nullptr;
       updatePreview();
     }
 
@@ -140,7 +140,7 @@ class SymbolLayerItem : public QStandardItem
     {
       mSymbol = symbol;
       mIsLayer = false;
-      mLayer = 0;
+      mLayer = nullptr;
       updatePreview();
     }
 
@@ -181,9 +181,9 @@ class SymbolLayerItem : public QStandardItem
         {
           switch ( mSymbol->type() )
           {
-            case QgsSymbolV2::Marker : return QCoreApplication::translate( "SymbolLayerItem", "Marker", 0, QCoreApplication::UnicodeUTF8 );
-            case QgsSymbolV2::Fill   : return QCoreApplication::translate( "SymbolLayerItem", "Fill", 0, QCoreApplication::UnicodeUTF8 );
-            case QgsSymbolV2::Line   : return QCoreApplication::translate( "SymbolLayerItem", "Line", 0, QCoreApplication::UnicodeUTF8 );
+            case QgsSymbolV2::Marker : return QCoreApplication::translate( "SymbolLayerItem", "Marker", nullptr, QCoreApplication::UnicodeUTF8 );
+            case QgsSymbolV2::Fill   : return QCoreApplication::translate( "SymbolLayerItem", "Fill", nullptr, QCoreApplication::UnicodeUTF8 );
+            case QgsSymbolV2::Line   : return QCoreApplication::translate( "SymbolLayerItem", "Line", nullptr, QCoreApplication::UnicodeUTF8 );
             default: return "Symbol";
           }
         }
@@ -207,16 +207,16 @@ class SymbolLayerItem : public QStandardItem
 
 QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent, bool embedded )
     : QDialog( parent )
-    , mAdvancedMenu( NULL )
+    , mAdvancedMenu( nullptr )
     , mVectorLayer( vl )
-    , mMapCanvas( 0 )
+    , mMapCanvas( nullptr )
 {
 #ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
   mStyle = style;
   mSymbol = symbol;
-  mPresentWidget = NULL;
+  mPresentWidget = nullptr;
 
   setupUi( this );
 
@@ -285,7 +285,7 @@ void QgsSymbolV2SelectorDialog::keyPressEvent( QKeyEvent * e )
 
 QMenu* QgsSymbolV2SelectorDialog::advancedMenu()
 {
-  if ( mAdvancedMenu == NULL )
+  if ( mAdvancedMenu == nullptr )
   {
     mAdvancedMenu = new QMenu( this );
     // Brute force method to activate the Advanced menu
@@ -392,11 +392,11 @@ SymbolLayerItem* QgsSymbolV2SelectorDialog::currentLayerItem()
 {
   QModelIndex idx = layersTree->currentIndex();
   if ( !idx.isValid() )
-    return 0;
+    return nullptr;
 
   SymbolLayerItem *item = static_cast<SymbolLayerItem*>( model->itemFromIndex( idx ) );
   if ( !item->isLayer() )
-    return 0;
+    return nullptr;
 
   return item;
 }
@@ -405,13 +405,13 @@ QgsSymbolLayerV2* QgsSymbolV2SelectorDialog::currentLayer()
 {
   QModelIndex idx = layersTree->currentIndex();
   if ( !idx.isValid() )
-    return NULL;
+    return nullptr;
 
   SymbolLayerItem *item = static_cast<SymbolLayerItem*>( model->itemFromIndex( idx ) );
   if ( item->isLayer() )
     return item->layer();
 
-  return NULL;
+  return nullptr;
 }
 
 void QgsSymbolV2SelectorDialog::layerChanged()
@@ -419,7 +419,7 @@ void QgsSymbolV2SelectorDialog::layerChanged()
   updateUi();
 
   SymbolLayerItem *currentItem = static_cast<SymbolLayerItem*>( model->itemFromIndex( layersTree->currentIndex() ) );
-  if ( currentItem == NULL )
+  if ( currentItem == nullptr )
     return;
 
   if ( currentItem->isLayer() )
@@ -454,7 +454,7 @@ void QgsSymbolV2SelectorDialog::layerChanged()
 void QgsSymbolV2SelectorDialog::symbolChanged()
 {
   SymbolLayerItem *currentItem = static_cast<SymbolLayerItem*>( model->itemFromIndex( layersTree->currentIndex() ) );
-  if ( currentItem == NULL || currentItem->isLayer() )
+  if ( currentItem == nullptr || currentItem->isLayer() )
     return;
   // disconnect to avoid recreating widget
   disconnect( layersTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( layerChanged() ) );
@@ -582,7 +582,7 @@ void QgsSymbolV2SelectorDialog::moveLayerUp()
 void QgsSymbolV2SelectorDialog::moveLayerByOffset( int offset )
 {
   SymbolLayerItem *item = currentLayerItem();
-  if ( item == NULL )
+  if ( item == nullptr )
     return;
   int row = item->row();
 

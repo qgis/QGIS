@@ -31,7 +31,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initia
     , mExiting( existing )
     , mExtensions( extensions )
     , mCaseSensitivity( cs )
-    , mNamesLabel( 0 )
+    , mNamesLabel( nullptr )
     , mRegexp( regexp )
     , mOverwriteEnabled( true )
 {
@@ -141,7 +141,7 @@ void QgsNewNameDialog::nameChanged()
   if ( !conflicts.isEmpty() )
   {
     QString warning = !mConflictingNameWarning.isEmpty() ? mConflictingNameWarning
-                      : tr( "%n Name(s) %1 exists", 0, conflicts.size() ).arg( conflicts.join( ", " ) );
+                      : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( ", " ) );
     mErrorLabel->setText( highlightText( warning ) );
     if ( mOverwriteEnabled )
     {

@@ -75,9 +75,9 @@ checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
   mRBFeature2->setWidth( 5 );
   mRBConflict->setWidth( 5 );
 
-  mVMConflict = 0;
-  mVMFeature1 = 0;
-  mVMFeature2 = 0;
+  mVMConflict = nullptr;
+  mVMFeature1 = nullptr;
+  mVMFeature2 = nullptr;
 
   connect( actionConfigure, SIGNAL( triggered() ), this, SLOT( configure() ) );
   connect( actionValidateAll, SIGNAL( triggered() ), this, SLOT( validateAll() ) );
@@ -111,17 +111,17 @@ void checkDock::clearVertexMarkers()
   if ( mVMConflict )
   {
     delete mVMConflict;
-    mVMConflict = 0;
+    mVMConflict = nullptr;
   }
   if ( mVMFeature1 )
   {
     delete mVMFeature1;
-    mVMFeature1 = 0;
+    mVMFeature1 = nullptr;
   }
   if ( mVMFeature2 )
   {
     delete mVMFeature2;
-    mVMFeature2 = 0;
+    mVMFeature2 = nullptr;
   }
 }
 
@@ -337,7 +337,7 @@ void checkDock::runTests( ValidateType type )
     }
 
     QgsVectorLayer* layer1 = ( QgsVectorLayer* )mLayerRegistry->mapLayers()[layer1Str];
-    QgsVectorLayer* layer2 = 0;
+    QgsVectorLayer* layer2 = nullptr;
 
     if (( QgsVectorLayer* )mLayerRegistry->mapLayers().contains( layer2Str ) )
       layer2 = ( QgsVectorLayer* )mLayerRegistry->mapLayers()[layer2Str];
@@ -353,7 +353,7 @@ void checkDock::runTests( ValidateType type )
 
     QList<TopolError*>::Iterator it;
 
-    QgsRubberBand* rb = 0;
+    QgsRubberBand* rb = nullptr;
     for ( it = errors.begin(); it != errors.end(); ++it )
     {
       TopolError* te = *it;

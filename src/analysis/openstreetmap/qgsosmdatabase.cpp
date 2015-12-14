@@ -21,13 +21,13 @@
 
 QgsOSMDatabase::QgsOSMDatabase( const QString& dbFileName )
     : mDbFileName( dbFileName )
-    , mDatabase( 0 )
-    , mStmtNode( 0 )
-    , mStmtNodeTags( 0 )
-    , mStmtWay( 0 )
-    , mStmtWayNode( 0 )
-    , mStmtWayNodePoints( 0 )
-    , mStmtWayTags( 0 )
+    , mDatabase( nullptr )
+    , mStmtNode( nullptr )
+    , mStmtNodeTags( nullptr )
+    , mStmtWay( nullptr )
+    , mStmtWayNode( nullptr )
+    , mStmtWayNodePoints( nullptr )
+    , mStmtWayTags( nullptr )
 {
 }
 
@@ -39,14 +39,14 @@ QgsOSMDatabase::~QgsOSMDatabase()
 
 bool QgsOSMDatabase::isOpen() const
 {
-  return mDatabase != 0;
+  return mDatabase != nullptr;
 }
 
 
 bool QgsOSMDatabase::open()
 {
   // open database
-  int res = QgsSLConnect::sqlite3_open_v2( mDbFileName.toUtf8().data(), &mDatabase, SQLITE_OPEN_READWRITE, 0 );
+  int res = QgsSLConnect::sqlite3_open_v2( mDbFileName.toUtf8().data(), &mDatabase, SQLITE_OPEN_READWRITE, nullptr );
   if ( res != SQLITE_OK )
   {
     mError = QString( "Failed to open database [%1]: %2" ).arg( res ).arg( mDbFileName );
@@ -69,7 +69,7 @@ void QgsOSMDatabase::deleteStatement( sqlite3_stmt*& stmt )
   if ( stmt )
   {
     sqlite3_finalize( stmt );
-    stmt = 0;
+    stmt = nullptr;
   }
 }
 
@@ -83,7 +83,7 @@ bool QgsOSMDatabase::close()
   deleteStatement( mStmtWayNodePoints );
   deleteStatement( mStmtWayTags );
 
-  Q_ASSERT( mStmtNode == 0 );
+  Q_ASSERT( mStmtNode == nullptr );
 
   // close database
   if ( QgsSLConnect::sqlite3_close( mDatabase ) != SQLITE_OK )
@@ -91,7 +91,7 @@ bool QgsOSMDatabase::close()
     //mError = ( char * ) "Closing SQLite3 database failed.";
     //return false;
   }
-  mDatabase = 0;
+  mDatabase = nullptr;
   return true;
 }
 
@@ -99,7 +99,7 @@ bool QgsOSMDatabase::close()
 int QgsOSMDatabase::runCountStatement( const char* sql ) const
 {
   sqlite3_stmt* stmt;
-  int res = sqlite3_prepare_v2( mDatabase, sql, -1, &stmt, 0 );
+  int res = sqlite3_prepare_v2( mDatabase, sql, -1, &stmt, nullptr );
   if ( res != SQLITE_OK )
     return -1;
 
@@ -183,7 +183,7 @@ QList<QgsOSMTagCountPair> QgsOSMDatabase::usedTags( bool ways ) const
   QString sql = QString( "SELECT k, count(k) FROM %1_tags GROUP BY k" ).arg( ways ? "ways" : "nodes" );
 
   sqlite3_stmt* stmt;
-  if ( sqlite3_prepare_v2( mDatabase, sql.toUtf8().data(), -1, &stmt, 0 ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( mDatabase, sql.toUtf8().data(), -1, &stmt, nullptr ) != SQLITE_OK )
     return pairs;
 
   while ( sqlite3_step( stmt ) == SQLITE_ROW )
@@ -278,7 +278,7 @@ bool QgsOSMDatabase::prepareStatements()
 
   for ( int i = 0; i < count; ++i )
   {
-    if ( sqlite3_prepare_v2( mDatabase, sql[i], -1, sqlite[i], 0 ) != SQLITE_OK )
+    if ( sqlite3_prepare_v2( mDatabase, sql[i], -1, sqlite[i], nullptr ) != SQLITE_OK )
     {
       const char* errMsg = sqlite3_errmsg( mDatabase ); // does not require free
       mError = QString( "Error preparing SQL command:\n%1\nSQL:\n%2" )
@@ -309,7 +309,7 @@ bool QgsOSMDatabase::exportSpatiaLite( ExportType type, const QString& tableName
 
   // import data
 
-  int retX = sqlite3_exec( mDatabase, "BEGIN", NULL, NULL, 0 );
+  int retX = sqlite3_exec( mDatabase, "BEGIN", nullptr, nullptr, nullptr );
   Q_ASSERT( retX == SQLITE_OK );
   Q_UNUSED( retX );
 
@@ -320,7 +320,7 @@ bool QgsOSMDatabase::exportSpatiaLite( ExportType type, const QString& tableName
   else
     Q_ASSERT( false && "Unknown export type" );
 
-  int retY = sqlite3_exec( mDatabase, "COMMIT", NULL, NULL, 0 );
+  int retY = sqlite3_exec( mDatabase, "COMMIT", nullptr, nullptr, nullptr );
   Q_ASSERT( retY == SQLITE_OK );
   Q_UNUSED( retY );
 
@@ -338,8 +338,8 @@ bool QgsOSMDatabase::createSpatialTable( const QString& tableName, const QString
     sqlCreateTable += QString( ", %1 TEXT" ).arg( quotedIdentifier( tagKeys[i] ) );
   sqlCreateTable += ')';
 
-  char *errMsg = NULL;
-  int ret = sqlite3_exec( mDatabase, sqlCreateTable.toUtf8().constData(), NULL, NULL, &errMsg );
+  char *errMsg = nullptr;
+  int ret = sqlite3_exec( mDatabase, sqlCreateTable.toUtf8().constData(), nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     mError = "Unable to create table:\n" + QString::fromUtf8( errMsg );
@@ -350,7 +350,7 @@ bool QgsOSMDatabase::createSpatialTable( const QString& tableName, const QString
   QString sqlAddGeomColumn = QString( "SELECT AddGeometryColumn(%1, 'geometry', 4326, %2, 'XY')" )
                              .arg( quotedValue( tableName ),
                                    quotedValue( geometryType ) );
-  ret = sqlite3_exec( mDatabase, sqlAddGeomColumn.toUtf8().constData(), NULL, NULL, &errMsg );
+  ret = sqlite3_exec( mDatabase, sqlAddGeomColumn.toUtf8().constData(), nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     mError = "Unable to add geometry column:\n" + QString::fromUtf8( errMsg );
@@ -365,8 +365,8 @@ bool QgsOSMDatabase::createSpatialTable( const QString& tableName, const QString
 bool QgsOSMDatabase::createSpatialIndex( const QString& tableName )
 {
   QString sqlSpatialIndex = QString( "SELECT CreateSpatialIndex(%1, 'geometry')" ).arg( quotedValue( tableName ) );
-  char *errMsg = NULL;
-  int ret = sqlite3_exec( mDatabase, sqlSpatialIndex.toUtf8().constData(), NULL, NULL, &errMsg );
+  char *errMsg = nullptr;
+  int ret = sqlite3_exec( mDatabase, sqlSpatialIndex.toUtf8().constData(), nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     mError = "Unable to create spatial index:\n" + QString::fromUtf8( errMsg );
@@ -385,7 +385,7 @@ void QgsOSMDatabase::exportSpatiaLiteNodes( const QString& tableName, const QStr
     sqlInsertPoint += QString( ",?" );
   sqlInsertPoint += ", GeomFromWKB(?, 4326))";
   sqlite3_stmt* stmtInsert;
-  if ( sqlite3_prepare_v2( mDatabase, sqlInsertPoint.toUtf8().constData(), -1, &stmtInsert, 0 ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( mDatabase, sqlInsertPoint.toUtf8().constData(), -1, &stmtInsert, nullptr ) != SQLITE_OK )
   {
     mError = "Prepare SELECT FROM nodes failed.";
     return;
@@ -453,7 +453,7 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
     sqlInsertLine += QString( ",?" );
   sqlInsertLine += ", GeomFromWKB(?, 4326))";
   sqlite3_stmt* stmtInsert;
-  if ( sqlite3_prepare_v2( mDatabase, sqlInsertLine.toUtf8().constData(), -1, &stmtInsert, 0 ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( mDatabase, sqlInsertLine.toUtf8().constData(), -1, &stmtInsert, nullptr ) != SQLITE_OK )
   {
     mError = "Prepare SELECT FROM ways failed.";
     return;
@@ -547,10 +547,10 @@ QString QgsOSMDatabase::quotedValue( QString value )
 
 
 QgsOSMNodeIterator::QgsOSMNodeIterator( sqlite3* handle )
-    : mStmt( 0 )
+    : mStmt( nullptr )
 {
   const char* sql = "SELECT id,lon,lat FROM nodes";
-  if ( sqlite3_prepare_v2( handle, sql, -1, &mStmt, 0 ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( handle, sql, -1, &mStmt, nullptr ) != SQLITE_OK )
   {
     qDebug( "OSMNodeIterator: error prepare" );
   }
@@ -585,7 +585,7 @@ void QgsOSMNodeIterator::close()
   if ( mStmt )
   {
     sqlite3_finalize( mStmt );
-    mStmt = 0;
+    mStmt = nullptr;
   }
 }
 
@@ -593,10 +593,10 @@ void QgsOSMNodeIterator::close()
 
 
 QgsOSMWayIterator::QgsOSMWayIterator( sqlite3* handle )
-    : mStmt( 0 )
+    : mStmt( nullptr )
 {
   const char* sql = "SELECT id FROM ways";
-  if ( sqlite3_prepare_v2( handle, sql, -1, &mStmt, 0 ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( handle, sql, -1, &mStmt, nullptr ) != SQLITE_OK )
   {
     qDebug( "OSMWayIterator: error prepare" );
   }
@@ -629,6 +629,6 @@ void QgsOSMWayIterator::close()
   if ( mStmt )
   {
     sqlite3_finalize( mStmt );
-    mStmt = 0;
+    mStmt = nullptr;
   }
 }

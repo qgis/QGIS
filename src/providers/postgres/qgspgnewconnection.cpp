@@ -27,7 +27,7 @@
 
 QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
     : QDialog( parent, fl ), mOriginalConnName( connName )
-    , mAuthConfigSelect( 0 )
+    , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
 

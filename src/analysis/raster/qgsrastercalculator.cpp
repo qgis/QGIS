@@ -86,7 +86,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
       return 2;
     }
 
-    QgsRasterBlock* block = 0;
+    QgsRasterBlock* block = nullptr;
     // if crs transform needed
     if ( it->raster->crs() != mOutputCrs )
     {
@@ -106,7 +106,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
 
   //open output dataset for writing
   GDALDriverH outputDriver = openOutputDriver();
-  if ( outputDriver == NULL )
+  if ( outputDriver == nullptr )
   {
     return 1;
   }
@@ -194,15 +194,15 @@ GDALDriverH QgsRasterCalculator::openOutputDriver()
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );
 
-  if ( outputDriver == NULL )
+  if ( outputDriver == nullptr )
   {
     return outputDriver; //return NULL, driver does not exist
   }
 
-  driverMetadata = GDALGetMetadata( outputDriver, NULL );
+  driverMetadata = GDALGetMetadata( outputDriver, nullptr );
   if ( !CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
   {
-    return NULL; //driver exist, but it does not support the create operation
+    return nullptr; //driver exist, but it does not support the create operation
   }
 
   return outputDriver;
@@ -211,9 +211,9 @@ GDALDriverH QgsRasterCalculator::openOutputDriver()
 GDALDatasetH QgsRasterCalculator::openOutputFile( GDALDriverH outputDriver )
 {
   //open output file
-  char **papszOptions = NULL;
+  char **papszOptions = nullptr;
   GDALDatasetH outputDataset = GDALCreate( outputDriver, TO8F( mOutputFile ), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions );
-  if ( outputDataset == NULL )
+  if ( outputDataset == nullptr )
   {
     return outputDataset;
   }

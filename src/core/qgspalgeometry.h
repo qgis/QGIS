@@ -18,7 +18,7 @@ class QgsTextLabelFeature : public QgsLabelFeature
     //! Construct text label feature
     QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size )
         : QgsLabelFeature( id, geometry, size )
-        , mFontMetrics( NULL )
+        , mFontMetrics( nullptr )
     {
       mDefinedFont = QFont();
     }

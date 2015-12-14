@@ -28,8 +28,8 @@
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter )
     : QgsMapRendererJob( settings )
     , mPainter( painter )
-    , mLabelingEngine( 0 )
-    , mLabelingEngineV2( 0 )
+    , mLabelingEngine( nullptr )
+    , mLabelingEngineV2( nullptr )
     , mActive( false )
     , mRenderSynchronously( false )
 {
@@ -43,10 +43,10 @@ QgsMapRendererCustomPainterJob::~QgsMapRendererCustomPainterJob()
   //cancel();
 
   delete mLabelingEngine;
-  mLabelingEngine = 0;
+  mLabelingEngine = nullptr;
 
   delete mLabelingEngineV2;
-  mLabelingEngineV2 = 0;
+  mLabelingEngineV2 = nullptr;
 }
 
 void QgsMapRendererCustomPainterJob::start()
@@ -77,10 +77,10 @@ void QgsMapRendererCustomPainterJob::start()
   Q_ASSERT_X( thePaintDevice->logicalDpiX() == mSettings.outputDpi(), "Job::startRender()", errMsg.toAscii().data() );
 
   delete mLabelingEngine;
-  mLabelingEngine = 0;
+  mLabelingEngine = nullptr;
 
   delete mLabelingEngineV2;
-  mLabelingEngineV2 = 0;
+  mLabelingEngineV2 = nullptr;
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
@@ -173,7 +173,7 @@ QgsLabelingResults* QgsMapRendererCustomPainterJob::takeLabelingResults()
   else if ( mLabelingEngineV2 )
     return mLabelingEngineV2->takeResults();
   else
-    return 0;
+    return nullptr;
 }
 
 
@@ -291,7 +291,7 @@ void QgsMapRendererJob::drawLabeling( const QgsMapSettings& settings, QgsRenderC
   {
     // set correct extent
     renderContext.setExtent( settings.visibleExtent() );
-    renderContext.setCoordinateTransform( NULL );
+    renderContext.setCoordinateTransform( nullptr );
 
     labelingEngine2->run( renderContext );
   }
@@ -324,7 +324,7 @@ void QgsMapRendererJob::drawOldLabeling( const QgsMapSettings& settings, QgsRend
     if ( ml->hasScaleBasedVisibility() && ( settings.scale() < ml->minimumScale() || settings.scale() > ml->maximumScale() ) )
       continue;
 
-    const QgsCoordinateTransform* ct = 0;
+    const QgsCoordinateTransform* ct = nullptr;
     QgsRectangle r1 = settings.visibleExtent(), r2;
 
     if ( settings.hasCrsTransformEnabled() )
@@ -348,7 +348,7 @@ void QgsMapRendererJob::drawNewLabeling( const QgsMapSettings& settings, QgsRend
   {
     // set correct extent
     renderContext.setExtent( settings.visibleExtent() );
-    renderContext.setCoordinateTransform( NULL );
+    renderContext.setCoordinateTransform( nullptr );
 
     labelingEngine->drawLabeling( renderContext );
     labelingEngine->exit();

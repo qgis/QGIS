@@ -44,7 +44,7 @@ QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QStr
 
 QgsZonalStatistics::QgsZonalStatistics()
     : mRasterBand( 0 )
-    , mPolygonLayer( 0 )
+    , mPolygonLayer( nullptr )
     , mInputNodataValue( -1 )
     , mStatistics( QgsZonalStatistics::All )
 {
@@ -72,7 +72,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   //open the raster layer and the raster band
   GDALAllRegister();
   GDALDatasetH inputDataset = GDALOpen( TO8F( mRasterFilePath ), GA_ReadOnly );
-  if ( inputDataset == NULL )
+  if ( inputDataset == nullptr )
   {
     return 3;
   }
@@ -84,12 +84,12 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   }
 
   GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset, mRasterBand );
-  if ( rasterBand == NULL )
+  if ( rasterBand == nullptr )
   {
     GDALClose( inputDataset );
     return 5;
   }
-  mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, NULL );
+  mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, nullptr );
 
   //get geometry info about raster layer
   int nCellsXGDAL = GDALGetRasterXSize( inputDataset );
@@ -431,8 +431,8 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, const QgsGeo
     return;
   }
 
-  GEOSCoordSequence* cellCenterCoords = 0;
-  GEOSGeometry* currentCellCenter = 0;
+  GEOSCoordSequence* cellCenterCoords = nullptr;
+  GEOSGeometry* currentCellCenter = nullptr;
 
   for ( int i = 0; i < nCellsY; ++i )
   {
@@ -472,7 +472,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const Qg
 
   double currentY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
   float* pixelData = ( float * ) CPLMalloc( sizeof( float ) );
-  QgsGeometry* pixelRectGeometry = 0;
+  QgsGeometry* pixelRectGeometry = nullptr;
 
   double hCellSizeX = cellSizeX / 2.0;
   double hCellSizeY = cellSizeY / 2.0;
@@ -504,7 +504,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const Qg
           delete intersectGeometry;
         }
         delete pixelRectGeometry;
-        pixelRectGeometry = 0;
+        pixelRectGeometry = nullptr;
       }
       currentX += cellSizeX;
     }

@@ -59,7 +59,7 @@ class GUI_EXPORT QgsAuthMethodEdit : public QWidget
      * @note Non-public since this is an abstract base class
      * @param parent Parent widget
      */
-    explicit QgsAuthMethodEdit( QWidget *parent = 0 )
+    explicit QgsAuthMethodEdit( QWidget *parent = nullptr )
         : QWidget( parent )
     {}
 

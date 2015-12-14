@@ -37,17 +37,17 @@
 QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
     : QgsComposerMultiFrame( c, createUndoCommands )
     , mContentMode( QgsComposerHtml::Url )
-    , mWebPage( 0 )
+    , mWebPage( nullptr )
     , mLoaded( false )
     , mHtmlUnitsToMM( 1.0 )
-    , mRenderedPage( 0 )
+    , mRenderedPage( nullptr )
     , mEvaluateExpressions( true )
     , mUseSmartBreaks( true )
     , mMaxBreakDistance( 10 )
-    , mExpressionLayer( 0 )
-    , mDistanceArea( 0 )
+    , mExpressionLayer( nullptr )
+    , mDistanceArea( nullptr )
     , mEnableUserStylesheet( false )
-    , mFetcher( 0 )
+    , mFetcher( nullptr )
 {
   mDistanceArea = new QgsDistanceArea();
   mHtmlUnitsToMM = htmlUnitsToMM();
@@ -176,7 +176,7 @@ void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext 
   //evaluate expressions
   if ( mEvaluateExpressions )
   {
-    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, evalContext, 0, mDistanceArea );
+    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, evalContext, nullptr, mDistanceArea );
   }
 
   mLoaded = false;
@@ -544,7 +544,7 @@ void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVector
 
 void QgsComposerHtml::refreshExpressionContext()
 {
-  QgsVectorLayer * vl = 0;
+  QgsVectorLayer * vl = nullptr;
   QgsFeature feature;
 
   if ( mComposition->atlasComposition().enabled() )

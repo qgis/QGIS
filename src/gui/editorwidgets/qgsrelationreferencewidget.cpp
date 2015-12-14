@@ -56,23 +56,23 @@ bool orderByLessThan( const QgsRelationReferenceWidget::ValueRelationItem& p1
 QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
     : QWidget( parent )
     , mEditorContext( QgsAttributeEditorContext() )
-    , mCanvas( NULL )
-    , mMessageBar( NULL )
+    , mCanvas( nullptr )
+    , mMessageBar( nullptr )
     , mForeignKey( QVariant() )
     , mReferencedFieldIdx( -1 )
     , mReferencingFieldIdx( -1 )
     , mAllowNull( true )
-    , mHighlight( NULL )
-    , mMapTool( NULL )
-    , mMessageBarItem( NULL )
+    , mHighlight( nullptr )
+    , mMapTool( nullptr )
+    , mMessageBarItem( nullptr )
     , mRelationName( "" )
-    , mReferencedAttributeForm( NULL )
-    , mReferencedLayer( NULL )
-    , mReferencingLayer( NULL )
-    , mMasterModel( 0 )
-    , mFilterModel( 0 )
-    , mFeatureListModel( 0 )
-    , mWindowWidget( NULL )
+    , mReferencedAttributeForm( nullptr )
+    , mReferencedLayer( nullptr )
+    , mReferencingLayer( nullptr )
+    , mMasterModel( nullptr )
+    , mFilterModel( nullptr )
+    , mFeatureListModel( nullptr )
+    , mWindowWidget( nullptr )
     , mShown( false )
     , mIsEditable( true )
     , mEmbedForm( false )
@@ -645,7 +645,7 @@ void QgsRelationReferenceWidget::deleteHighlight()
     mHighlight->hide();
     delete mHighlight;
   }
-  mHighlight = NULL;
+  mHighlight = nullptr;
 }
 
 void QgsRelationReferenceWidget::mapIdentification()
@@ -756,7 +756,7 @@ void QgsRelationReferenceWidget::mapToolDeactivated()
   {
     mMessageBar->popWidget( mMessageBarItem );
   }
-  mMessageBarItem = NULL;
+  mMessageBarItem = nullptr;
 }
 
 void QgsRelationReferenceWidget::filterChanged()
@@ -772,10 +772,10 @@ void QgsRelationReferenceWidget::filterChanged()
 
   if ( mChainFilters )
   {
-    QComboBox* ccb = 0;
+    QComboBox* ccb = nullptr;
     Q_FOREACH ( QComboBox* cb, mFilterComboBoxes )
     {
-      if ( ccb == 0 )
+      if ( ccb == nullptr )
       {
         if ( cb != scb )
           continue;

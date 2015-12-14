@@ -214,13 +214,13 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see setUrl
      * @see url
      */
-    void loadHtml( const bool useCache = false, const QgsExpressionContext* context = 0 );
+    void loadHtml( const bool useCache = false, const QgsExpressionContext* context = nullptr );
 
     /** Recalculates the frame sizes for the current viewport dimensions*/
     void recalculateFrameSizes() override;
     void refreshExpressionContext();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = 0 ) override;
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
 
   private slots:
     void frameLoaded( bool ok = true );

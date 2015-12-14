@@ -89,12 +89,12 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     , mHasSize( false )
     , mBandCount( 0 )
     , mCoverageCrs()
-    , mCachedMemFile( 0 )
-    , mCachedGdalDataset( 0 )
+    , mCachedMemFile( nullptr )
+    , mCachedGdalDataset( nullptr )
     , mCachedViewExtent( 0 )
     , mCachedViewWidth( 0 )
     , mCachedViewHeight( 0 )
-    , mCoordinateTransform( 0 )
+    , mCoordinateTransform( nullptr )
     , mExtentDirty( true )
     , mGetFeatureInfoUrlBase( "" )
     , mErrors( 0 )
@@ -459,7 +459,7 @@ QgsWcsProvider::~QgsWcsProvider()
   if ( mCoordinateTransform )
   {
     delete mCoordinateTransform;
-    mCoordinateTransform = 0;
+    mCoordinateTransform = nullptr;
   }
 
 }
@@ -498,7 +498,7 @@ void QgsWcsProvider::setCoverageCrs( QString const & crs )
     if ( mCoordinateTransform )
     {
       delete mCoordinateTransform;
-      mCoordinateTransform = 0;
+      mCoordinateTransform = nullptr;
     }
 
     mExtentDirty = true;
@@ -897,14 +897,14 @@ void QgsWcsProvider::clearCache()
   {
     QgsDebugMsg( "Close mCachedGdalDataset" );
     GDALClose( mCachedGdalDataset );
-    mCachedGdalDataset = 0;
+    mCachedGdalDataset = nullptr;
     QgsDebugMsg( "Closed" );
   }
   if ( mCachedMemFile )
   {
     QgsDebugMsg( "Close mCachedMemFile" );
     VSIFCloseL( mCachedMemFile );
-    mCachedMemFile = 0;
+    mCachedMemFile = nullptr;
     QgsDebugMsg( "Closed" );
   }
   QgsDebugMsg( "Clear mCachedData" );
@@ -1675,7 +1675,7 @@ QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorizati
     : mNAM( new QgsNetworkAccessManager )
     , mAuth( auth )
     , mEventLoop( new QEventLoop )
-    , mCacheReply( 0 )
+    , mCacheReply( nullptr )
     , mCachedData( cachedData )
     , mWcsVersion( wcsVersion )
     , mCachedError( cachedError )
@@ -1707,7 +1707,7 @@ void QgsWcsDownloadHandler::blockingDownload()
 {
   mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
 
-  Q_ASSERT( mCacheReply == 0 );
+  Q_ASSERT( mCacheReply == nullptr );
 }
 
 void QgsWcsDownloadHandler::cacheReplyFinished()
@@ -1747,7 +1747,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
                                        mCacheReply->url().toString() ), tr( "WCS" ) );
 
       mCacheReply->deleteLater();
-      mCacheReply = 0;
+      mCacheReply = nullptr;
 
       finish();
       return;
@@ -1786,7 +1786,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
       }
 
       mCacheReply->deleteLater();
-      mCacheReply = 0;
+      mCacheReply = nullptr;
 
       finish();
       return;
@@ -1802,7 +1802,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
       {
         QgsMessageLog::logMessage( tr( "Cannot parse multipart response: %1" ).arg( parser.error() ), tr( "WCS" ) );
         mCacheReply->deleteLater();
-        mCacheReply = 0;
+        mCacheReply = nullptr;
 
         finish();
         return;
@@ -1812,7 +1812,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
       {
         QgsMessageLog::logMessage( tr( "Expected 2 parts, %1 received" ).arg( parser.parts() ), tr( "WCS" ) );
         mCacheReply->deleteLater();
-        mCacheReply = 0;
+        mCacheReply = nullptr;
 
         finish();
         return;
@@ -1847,7 +1847,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
         }
 
         mCacheReply->deleteLater();
-        mCacheReply = 0;
+        mCacheReply = nullptr;
 
         finish();
         return;
@@ -1877,7 +1877,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
     }
 
     mCacheReply->deleteLater();
-    mCacheReply = 0;
+    mCacheReply = nullptr;
 
     finish();
   }
@@ -1910,7 +1910,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
     }
 
     mCacheReply->deleteLater();
-    mCacheReply = 0;
+    mCacheReply = nullptr;
 
     finish();
   }

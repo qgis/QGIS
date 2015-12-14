@@ -11,7 +11,7 @@ class APP_EXPORT QgsRelationAddDlg : public QDialog, private Ui::QgsRelationAddD
     Q_OBJECT
 
   public:
-    explicit QgsRelationAddDlg( QWidget *parent = 0 );
+    explicit QgsRelationAddDlg( QWidget *parent = nullptr );
 
     void addLayers( const QList<QgsVectorLayer*>& layers );
 

@@ -78,7 +78,7 @@ class CORE_EXPORT QgsOgcUtils
      * @return valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
      */
-    static QDomElement expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage = 0 );
+    static QDomElement expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage = nullptr );
 
   private:
     /** Static method that creates geometry from GML Point */

@@ -65,7 +65,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
        3 ring not valid,
        4 ring crosses existing rings,
        5 no feature found where ring can be inserted*/
-    int addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = 0 );
+    int addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
 
     /** Adds a ring to polygon/multipolygon features
      * @param ring ring to add
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
            3 ring not valid,
            4 ring crosses existing rings,
            5 no feature found where ring can be inserted*/
-    int addRing( QgsCurveV2* ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = 0 );
+    int addRing( QgsCurveV2* ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
 
     /** Adds a new part polygon to a multipart feature
      @return

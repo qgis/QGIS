@@ -276,7 +276,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
       * @param ramp color ramp. Ownership is transferred to the renderer
       * @param inverted set to true to invert ramp colors
       */
-    void updateColorRamp( QgsVectorColorRampV2* ramp = 0, bool inverted = false );
+    void updateColorRamp( QgsVectorColorRampV2* ramp = nullptr, bool inverted = false );
 
     /** Update all the symbols but leave breaks and colors. */
     void updateSymbols( QgsSymbolV2* sym );

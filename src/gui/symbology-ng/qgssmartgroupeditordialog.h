@@ -23,7 +23,7 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
     Q_OBJECT
 
   public:
-    QgsSmartGroupCondition( int id,  QWidget *parent = NULL );
+    QgsSmartGroupCondition( int id,  QWidget *parent = nullptr );
 
     //! returns the constraint key
     QString constraint();
@@ -64,7 +64,7 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     Q_OBJECT
 
   public:
-    QgsSmartGroupEditorDialog( QgsStyleV2* style, QWidget* parent = NULL );
+    QgsSmartGroupEditorDialog( QgsStyleV2* style, QWidget* parent = nullptr );
     ~QgsSmartGroupEditorDialog();
 
     //! returns the value from mNameLineEdit

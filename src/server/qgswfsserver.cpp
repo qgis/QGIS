@@ -91,13 +91,13 @@ QgsWFSServer::QgsWFSServer()
     : QgsOWSServer(
       QString()
       , QMap<QString, QString>()
-      , 0
+      , nullptr
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      , NULL
+      , nullptr
 #endif
     )
     , mWithGeom( true )
-    , mConfigParser( 0 )
+    , mConfigParser( nullptr )
 {
 }
 
@@ -402,7 +402,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   QStringList wfsLayersId = mConfigParser->wfsLayers();
 
   QList<QgsMapLayer*> layerList;
-  QgsMapLayer* currentLayer = 0;
+  QgsMapLayer* currentLayer = nullptr;
   QgsCoordinateReferenceSystem layerCrs;
   QgsRectangle searchRect( 0, 0, 0, 0 );
 
@@ -1461,7 +1461,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
   QStringList wfsLayersId = mConfigParser ? mConfigParser->wfsLayers() : QStringList();
 
   QList<QgsMapLayer*> layerList;
-  QgsMapLayer* currentLayer = 0;
+  QgsMapLayer* currentLayer = nullptr;
 
   // Loop through the layer transaction elements
   docChildNodes = mDocElem.childNodes();

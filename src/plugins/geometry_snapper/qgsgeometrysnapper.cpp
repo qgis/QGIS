@@ -111,8 +111,8 @@ void QgsGeometrySnapper::processFeature( const QgsFeatureId &id )
       for ( int iVert = 0, nVerts = polyLineSize( subjGeom, iPart, iRing ); iVert < nVerts; ++iVert )
       {
 
-        QgsSnapIndex::PointSnapItem* snapPoint = 0;
-        QgsSnapIndex::SegmentSnapItem* snapSegment = 0;
+        QgsSnapIndex::PointSnapItem* snapPoint = nullptr;
+        QgsSnapIndex::SegmentSnapItem* snapSegment = nullptr;
         QgsVertexId vidx( iPart, iRing, iVert );
         QgsPointV2 p = subjGeom->vertexAt( vidx );
         if ( !refSnapIndex.getSnapItem( p, snapTolerance, &snapPoint, &snapSegment ) )
@@ -155,8 +155,8 @@ void QgsGeometrySnapper::processFeature( const QgsFeatureId &id )
         for ( int iVert = 0, nVerts = polyLineSize( refGeom, iPart, iRing ); iVert < nVerts; ++iVert )
         {
 
-          QgsSnapIndex::PointSnapItem* snapPoint = 0;
-          QgsSnapIndex::SegmentSnapItem* snapSegment = 0;
+          QgsSnapIndex::PointSnapItem* snapPoint = nullptr;
+          QgsSnapIndex::SegmentSnapItem* snapSegment = nullptr;
           QgsPointV2 point = refGeom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
           if ( subjSnapIndex->getSnapItem( point, snapTolerance, &snapPoint, &snapSegment ) )
           {

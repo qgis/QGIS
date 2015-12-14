@@ -23,8 +23,8 @@
 
 QgsUniqueValuesWidgetWrapper::QgsUniqueValuesWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( NULL )
-    , mLineEdit( NULL )
+    , mComboBox( nullptr )
+    , mLineEdit( nullptr )
 {
 }
 

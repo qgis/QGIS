@@ -45,7 +45,7 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
     : QWidget( parent )
     , mLayer( vl )
     , mContext( context )
-    , mButtonBox( 0 )
+    , mButtonBox( nullptr )
     , mFormNr( sFormCounter++ )
     , mIsSaving( false )
     , mIsAddDialog( false )
@@ -387,7 +387,7 @@ void QgsAttributeForm::init()
   QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
 
   // Cleanup of any previously shown widget, we start from scratch
-  QWidget* formWidget = 0;
+  QWidget* formWidget = nullptr;
 
   bool buttonBoxVisible = true;
   // Cleanup button box but preserve visibility
@@ -395,7 +395,7 @@ void QgsAttributeForm::init()
   {
     buttonBoxVisible = mButtonBox->isVisible();
     delete mButtonBox;
-    mButtonBox = 0;
+    mButtonBox = nullptr;
   }
 
   qDeleteAll( mWidgets );
@@ -504,7 +504,7 @@ void QgsAttributeForm::init()
 
       // This will also create the widget
       QWidget *l = new QLabel( fieldName );
-      QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, idx, widgetConfig, 0, this, mContext );
+      QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, idx, widgetConfig, nullptr, this, mContext );
       QWidget *w = eww ? eww->widget() : new QLabel( QString( "<p style=\"color: red; font-style: italic;\">Failed to create widget with type '%1'</p>" ).arg( widgetType ) );
 
       if ( w )
@@ -527,7 +527,7 @@ void QgsAttributeForm::init()
 
     Q_FOREACH ( const QgsRelation& rel, QgsProject::instance()->relationManager()->referencedRelations( mLayer ) )
     {
-      QgsRelationWidgetWrapper* rww = new QgsRelationWidgetWrapper( mLayer, rel, 0, this );
+      QgsRelationWidgetWrapper* rww = new QgsRelationWidgetWrapper( mLayer, rel, nullptr, this );
       QgsEditorWidgetConfig cfg = mLayer->editFormConfig()->widgetConfig( rel.id() );
       rww->setConfig( cfg );
       rww->setContext( mContext );
@@ -685,7 +685,7 @@ void QgsAttributeForm::initPython()
 
 QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement *widgetDef, QWidget *parent, QgsVectorLayer *vl, QgsAttributeEditorContext &context, QString &labelText, bool &labelOnTop )
 {
-  QWidget *newWidget = 0;
+  QWidget *newWidget = nullptr;
 
   switch ( widgetDef->type() )
   {
@@ -701,7 +701,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
         const QString widgetType = mLayer->editFormConfig()->widgetType( fldIdx );
         const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( fldIdx );
 
-        QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, fldIdx, widgetConfig, 0, this, mContext );
+        QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, fldIdx, widgetConfig, nullptr, this, mContext );
         newWidget = eww->widget();
         addWidgetWrapper( eww );
 
@@ -718,7 +718,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
     {
       const QgsAttributeEditorRelation* relDef = dynamic_cast<const QgsAttributeEditorRelation*>( widgetDef );
 
-      QgsRelationWidgetWrapper* rww = new QgsRelationWidgetWrapper( mLayer, relDef->relation(), 0, this );
+      QgsRelationWidgetWrapper* rww = new QgsRelationWidgetWrapper( mLayer, relDef->relation(), nullptr, this );
       QgsEditorWidgetConfig cfg = mLayer->editFormConfig()->widgetConfig( relDef->relation().id() );
       rww->setConfig( cfg );
       rww->setContext( context );

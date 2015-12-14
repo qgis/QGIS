@@ -120,7 +120,7 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeome
     QgsCurveV2* curve = dynamic_cast<QgsCurveV2*>( part );
     if ( curve && curve->isClosed() && curve->numPoints() >= 4 )
     {
-      QgsCurvePolygonV2 *poly = 0;
+      QgsCurvePolygonV2 *poly = nullptr;
       if ( curve->geometryType() == "LineString" )
       {
         poly = new QgsPolygonV2();
@@ -221,7 +221,7 @@ QgsAbstractGeometryV2* QgsGeometryEditUtils::avoidIntersections( const QgsAbstra
   QScopedPointer<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( &geom ) );
   if ( geomEngine.isNull() )
   {
-    return 0;
+    return nullptr;
   }
   QgsWKBTypes::Type geomTypeBeforeModification = geom.wkbType();
 
@@ -229,19 +229,19 @@ QgsAbstractGeometryV2* QgsGeometryEditUtils::avoidIntersections( const QgsAbstra
   //check if g has polygon type
   if ( QgsWKBTypes::geometryType( geomTypeBeforeModification ) != QgsWKBTypes::PolygonGeometry )
   {
-    return 0;
+    return nullptr;
   }
 
   //read avoid intersections list from project properties
   bool listReadOk;
   QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", QStringList(), &listReadOk );
   if ( !listReadOk )
-    return 0; //no intersections stored in project does not mean error
+    return nullptr; //no intersections stored in project does not mean error
 
   QList< const QgsAbstractGeometryV2* > nearGeometries;
 
   //go through list, convert each layer to vector layer and call QgsVectorLayer::removePolygonIntersections for each
-  QgsVectorLayer* currentLayer = 0;
+  QgsVectorLayer* currentLayer = nullptr;
   QStringList::const_iterator aIt = avoidIntersectionsList.constBegin();
   for ( ; aIt != avoidIntersectionsList.constEnd(); ++aIt )
   {
@@ -272,7 +272,7 @@ QgsAbstractGeometryV2* QgsGeometryEditUtils::avoidIntersections( const QgsAbstra
 
   if ( nearGeometries.isEmpty() )
   {
-    return 0;
+    return nullptr;
   }
 
 
@@ -280,7 +280,7 @@ QgsAbstractGeometryV2* QgsGeometryEditUtils::avoidIntersections( const QgsAbstra
   qDeleteAll( nearGeometries );
   if ( !combinedGeometries )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsAbstractGeometryV2* diffGeom = geomEngine.data()->difference( *combinedGeometries );

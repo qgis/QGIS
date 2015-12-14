@@ -38,7 +38,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
       CustomValue
     };
 
-    explicit QgsDoubleSpinBox( QWidget *parent = 0 );
+    explicit QgsDoubleSpinBox( QWidget *parent = nullptr );
 
     //! determines if the widget will show a clear button
     //! @note the clear button will set the widget to its minimum value

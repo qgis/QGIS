@@ -663,7 +663,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
     return errorList;
   }
 
-  GEOSGeometry* collection = 0;
+  GEOSGeometry* collection = nullptr;
   collection = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTIPOLYGON, geomArray, geomList.size() );
 
 
@@ -1657,7 +1657,7 @@ QgsSpatialIndex* topolTest::createIndex( QgsVectorLayer* layer, const QgsRectang
     if ( testCancelled() )
     {
       delete index;
-      return 0;
+      return nullptr;
     }
 
     if ( f.constGeometry() )

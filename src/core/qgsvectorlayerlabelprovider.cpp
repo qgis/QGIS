@@ -66,7 +66,7 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer,
   }
   else
   {
-    mSource = 0;
+    mSource = nullptr;
     mOwnsSource = false;
   }
 
@@ -228,7 +228,7 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QStr
   lyr.fieldIndex = mFields.fieldNameIndex( lyr.fieldName );
 
   lyr.xform = &mapSettings.mapToPixel();
-  lyr.ct = 0;
+  lyr.ct = nullptr;
   if ( mapSettings.hasCrsTransformEnabled() )
   {
     if ( context.coordinateTransform() )
@@ -301,7 +301,7 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
 
 void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, QgsRenderContext& context, QgsGeometry* obstacleGeometry )
 {
-  QgsLabelFeature* label = 0;
+  QgsLabelFeature* label = nullptr;
   mSettings.registerFeature( feature, context, QString(), &label, obstacleGeometry );
   if ( label )
     mLabels << label;
@@ -310,13 +310,13 @@ void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, QgsRende
 QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, QgsFeatureRendererV2* renderer )
 {
   if ( !fet.constGeometry() || fet.constGeometry()->isEmpty() || fet.constGeometry()->type() != QGis::Point || !renderer )
-    return 0;
+    return nullptr;
 
   //calculate bounds for symbols for feature
   QgsSymbolV2List symbols = renderer->originalSymbolsForFeature( fet, context );
 
   bool isMultiPoint = fet.constGeometry()->geometry()->nCoordinates() > 1;
-  QgsAbstractGeometryV2* obstacleGeom = 0;
+  QgsAbstractGeometryV2* obstacleGeom = nullptr;
   if ( isMultiPoint )
     obstacleGeom = new QgsMultiPolygonV2();
 

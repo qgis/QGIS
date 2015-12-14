@@ -177,12 +177,12 @@ QSqlQuery* eVisDatabaseConnection::query( const QString& sqlStatement )
     else
     {
       setLastError( mQuery.lastError().text() );
-      return 0;
+      return nullptr;
     }
   }
 
   setLastError( "Database connection was not open." );
-  return 0;
+  return nullptr;
 }
 
 /**

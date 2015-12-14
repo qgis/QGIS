@@ -216,14 +216,14 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
 }
 
 QgsRasterDataProvider::QgsRasterDataProvider()
-    : QgsRasterInterface( 0 )
+    : QgsRasterInterface( nullptr )
     , mDpi( -1 )
 {
 }
 
 QgsRasterDataProvider::QgsRasterDataProvider( QString const & uri )
     : QgsDataProvider( uri )
-    , QgsRasterInterface( 0 )
+    , QgsRasterInterface( nullptr )
     , mDpi( -1 )
 {
 }
@@ -442,7 +442,7 @@ QgsRasterDataProvider* QgsRasterDataProvider::create( const QString &providerKey
     QgsDebugMsg( "Cannot resolve 'create' function in " + providerKey + " provider" );
     // TODO: it would be good to return invalid QgsRasterDataProvider
     // with QgsError set, but QgsRasterDataProvider has pure virtual methods
-    return 0;
+    return nullptr;
   }
   return createFn( uri, format, nBands, type, width, height, geoTransform, crs, createOptions );
 }

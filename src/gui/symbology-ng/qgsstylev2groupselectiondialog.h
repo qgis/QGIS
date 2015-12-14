@@ -29,7 +29,7 @@ class GUI_EXPORT QgsStyleV2GroupSelectionDialog : public QDialog, private Ui::Sy
     Q_OBJECT
 
   public:
-    QgsStyleV2GroupSelectionDialog( QgsStyleV2* style, QWidget *parent = 0 );
+    QgsStyleV2GroupSelectionDialog( QgsStyleV2* style, QWidget *parent = nullptr );
     ~QgsStyleV2GroupSelectionDialog();
     //! Set bold font for item
     void setBold( QStandardItem *item );

@@ -54,7 +54,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
       DB,
     };
 
-    QgsVectorLayerProperties( QgsVectorLayer *lyr = 0, QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsVectorLayerProperties( QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsVectorLayerProperties();
     /** Returns the display name entered in the dialog*/
     QString displayName();

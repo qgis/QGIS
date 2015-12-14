@@ -148,7 +148,7 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
   }
 
   const QgsGeometry* featureGeometry = f.constGeometry();
-  QgsGeometry* intersectGeometry = 0;
+  QgsGeometry* intersectGeometry = nullptr;
   QgsFeature overlayFeature;
 
   QList<QgsFeatureId> intersects;

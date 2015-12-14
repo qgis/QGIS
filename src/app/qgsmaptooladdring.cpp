@@ -89,7 +89,7 @@ void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
     bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
     bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
-    QgsCurveV2* curveToAdd = 0;
+    QgsCurveV2* curveToAdd = nullptr;
     if ( hasCurvedSegments && providerSupportsCurvedSegments )
     {
       curveToAdd = captureCurve()->clone();

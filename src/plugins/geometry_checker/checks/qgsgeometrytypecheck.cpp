@@ -80,7 +80,7 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
     // Check if corresponding multi type is allowed
     else if ( QgsWKBTypes::isSingleType( type ) && (( 1 << QgsWKBTypes::multiType( type ) ) & mAllowedTypes ) != 0 )
     {
-      QgsGeometryCollectionV2* geomCollection = 0;
+      QgsGeometryCollectionV2* geomCollection = nullptr;
       switch ( QgsWKBTypes::multiType( type ) )
       {
         case QgsWKBTypes::MultiPoint:

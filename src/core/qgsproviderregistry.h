@@ -80,7 +80,7 @@ class CORE_EXPORT QgsProviderRegistry
     int providerCapabilities( const QString& providerKey ) const;
 
     QWidget *selectWidget( const QString & providerKey,
-                           QWidget * parent = 0, const Qt::WindowFlags& fl = 0 );
+                           QWidget * parent = nullptr, const Qt::WindowFlags& fl = nullptr );
 
 #if QT_VERSION >= 0x050000
     /** Get pointer to provider function

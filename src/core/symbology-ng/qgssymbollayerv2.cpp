@@ -100,20 +100,20 @@ const QgsExpression* QgsSymbolLayerV2::dataDefinedProperty( const QString& prope
 QgsDataDefined *QgsSymbolLayerV2::getDataDefinedProperty( const QString &property ) const
 {
   if ( mDataDefinedProperties.isEmpty() )
-    return 0;
+    return nullptr;
 
   QMap< QString, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.find( property );
   if ( it != mDataDefinedProperties.constEnd() )
   {
     return it.value();
   }
-  return 0;
+  return nullptr;
 }
 
 QgsExpression* QgsSymbolLayerV2::expression( const QString& property ) const
 {
   QgsDataDefined* dd = getDataDefinedProperty( property );
-  return dd ? dd->expression() : 0;
+  return dd ? dd->expression() : nullptr;
 }
 
 QString QgsSymbolLayerV2::dataDefinedPropertyString( const QString& property ) const
@@ -333,7 +333,7 @@ QgsSymbolLayerV2::QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked )
     : mType( type )
     , mLocked( locked )
     , mRenderingPass( 0 )
-    , mPaintEffect( 0 )
+    , mPaintEffect( nullptr )
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
@@ -721,7 +721,7 @@ void QgsFillSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, Q
 {
   QPolygonF poly = QRectF( QPointF( 0, 0 ), QPointF( size.width(), size.height() ) );
   startRender( context );
-  renderPolygon( poly, NULL, context );
+  renderPolygon( poly, nullptr, context );
   stopRender( context );
 }
 

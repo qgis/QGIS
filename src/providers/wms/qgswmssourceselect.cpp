@@ -59,7 +59,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WindowFlags fl, bo
     , mManagerMode( managerMode )
     , mEmbeddedMode( embeddedMode )
     , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
-    , mCurrentTileset( 0 )
+    , mCurrentTileset( nullptr )
 {
   setupUi( this );
 
@@ -513,7 +513,7 @@ void QgsWMSSourceSelect::addClicked()
 
     uri.setParam( "tileMatrixSet", item->data( Qt::UserRole + 3 ).toStringList() );
 
-    const QgsWmtsTileLayer *layer = 0;
+    const QgsWmtsTileLayer *layer = nullptr;
 
     Q_FOREACH ( const QgsWmtsTileLayer &l, mTileLayers )
     {
@@ -665,8 +665,8 @@ void QgsWMSSourceSelect::applySelectionConstraints( QTreeWidgetItem *item )
       return;
     }
 
-    QTreeWidgetItem *style = 0;
-    QTreeWidgetItem *firstNewStyle = 0;
+    QTreeWidgetItem *style = nullptr;
+    QTreeWidgetItem *firstNewStyle = nullptr;
     for ( int i = 0; i < item->childCount(); i++ )
     {
       QTreeWidgetItem *child = item->child( i );
@@ -876,7 +876,7 @@ void QgsWMSSourceSelect::on_lstTilesets_itemClicked( QTableWidgetItem *item )
   }
   else
   {
-    mCurrentTileset = 0;
+    mCurrentTileset = nullptr;
   }
   lstTilesets->blockSignals( false );
 

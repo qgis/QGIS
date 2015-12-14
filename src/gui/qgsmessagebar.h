@@ -52,7 +52,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
       SUCCESS = 3
     };
 
-    QgsMessageBar( QWidget *parent = 0 );
+    QgsMessageBar( QWidget *parent = nullptr );
     ~QgsMessageBar();
 
     /**
@@ -80,11 +80,11 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     bool popWidget( QgsMessageBarItem *item );
 
     //! make out a widget containing a message to be displayed on the bar
-    static QgsMessageBarItem* createMessage( const QString &text, QWidget *parent = 0 );
+    static QgsMessageBarItem* createMessage( const QString &text, QWidget *parent = nullptr );
     //! make out a widget containing title and message to be displayed on the bar
-    static QgsMessageBarItem* createMessage( const QString &title, const QString &text, QWidget *parent = 0 );
+    static QgsMessageBarItem* createMessage( const QString &title, const QString &text, QWidget *parent = nullptr );
     //! make out a widget containing title and message to be displayed on the bar
-    static QgsMessageBarItem* createMessage( QWidget *widget, QWidget *parent = 0 );
+    static QgsMessageBarItem* createMessage( QWidget *widget, QWidget *parent = nullptr );
 
     //! convenience method for pushing a message to the bar
     void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 0 ) { return pushMessage( QString::null, text, level, duration ); }

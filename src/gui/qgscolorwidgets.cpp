@@ -372,9 +372,9 @@ QgsColorWheel::QgsColorWheel( QWidget *parent )
     , mMargin( 4 )
     , mWheelThickness( 18 )
     , mClickedPart( QgsColorWheel::None )
-    , mWheelImage( 0 )
-    , mTriangleImage( 0 )
-    , mWidgetImage( 0 )
+    , mWheelImage( nullptr )
+    , mTriangleImage( nullptr )
+    , mWidgetImage( nullptr )
     , mWheelDirty( true )
     , mTriangleDirty( true )
 {
@@ -750,7 +750,7 @@ void QgsColorWheel::createTriangle()
 QgsColorBox::QgsColorBox( QWidget *parent, const ColorComponent component )
     : QgsColorWidget( parent, component )
     , mMargin( 2 )
-    , mBoxImage( 0 )
+    , mBoxImage( nullptr )
     , mDirty( true )
 {
   setFocusPolicy( Qt::StrongFocus );
@@ -1260,14 +1260,14 @@ void QgsColorRampWidget::setColorFromPoint( const QPointF &point )
 
 QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponent component )
     : QgsColorWidget( parent, component )
-    , mRampWidget( 0 )
-    , mSpinBox( 0 )
+    , mRampWidget( nullptr )
+    , mSpinBox( nullptr )
 {
   QHBoxLayout* hLayout = new QHBoxLayout();
   hLayout->setMargin( 0 );
   hLayout->setSpacing( 5 );
 
-  mRampWidget = new QgsColorRampWidget( 0, component );
+  mRampWidget = new QgsColorRampWidget( nullptr, component );
   mRampWidget->setColor( mCurrentColor );
   hLayout->addWidget( mRampWidget, 1 );
 
@@ -1393,15 +1393,15 @@ int QgsColorSliderWidget::convertDisplayToReal( const int displayValue ) const
 
 QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
     : QgsColorWidget( parent )
-    , mLineEdit( 0 )
-    , mMenuButton( 0 )
+    , mLineEdit( nullptr )
+    , mMenuButton( nullptr )
     , mFormat( QgsColorTextWidget::HexRgb )
 {
   QHBoxLayout* hLayout = new QHBoxLayout();
   hLayout->setMargin( 0 );
   hLayout->setSpacing( 0 );
 
-  mLineEdit = new QLineEdit( 0 );
+  mLineEdit = new QLineEdit( nullptr );
   hLayout->addWidget( mLineEdit );
 
   mMenuButton = new QToolButton( mLineEdit );
@@ -1496,13 +1496,13 @@ void QgsColorTextWidget::showMenu()
 {
   QMenu colorContextMenu;
 
-  QAction* hexRgbAction = new QAction( tr( "#RRGGBB" ), 0 );
+  QAction* hexRgbAction = new QAction( tr( "#RRGGBB" ), nullptr );
   colorContextMenu.addAction( hexRgbAction );
-  QAction* hexRgbaAction = new QAction( tr( "#RRGGBBAA" ), 0 );
+  QAction* hexRgbaAction = new QAction( tr( "#RRGGBBAA" ), nullptr );
   colorContextMenu.addAction( hexRgbaAction );
-  QAction* rgbAction = new QAction( tr( "rgb( r, g, b )" ), 0 );
+  QAction* rgbAction = new QAction( tr( "rgb( r, g, b )" ), nullptr );
   colorContextMenu.addAction( rgbAction );
-  QAction* rgbaAction = new QAction( tr( "rgba( r, g, b, a )" ), 0 );
+  QAction* rgbaAction = new QAction( tr( "rgba( r, g, b, a )" ), nullptr );
   colorContextMenu.addAction( rgbaAction );
 
   QAction* selectedAction = colorContextMenu.exec( QCursor::pos() );

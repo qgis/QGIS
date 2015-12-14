@@ -10,7 +10,7 @@ QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canva
     : QWidget( parent )
     , mLayer( layer )
     , mCanvas( canvas )
-    , mWidget( 0 )
+    , mWidget( nullptr )
 {
   setupUi( this );
 
@@ -84,7 +84,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
     mStackedWidget->removeWidget( mWidget );
 
   delete mWidget;
-  mWidget = 0;
+  mWidget = nullptr;
 
   if ( index == 3 )
   {
@@ -92,7 +92,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
   }
   else
   {
-    QgsLabelingGui* w = new QgsLabelingGui( mLayer, mCanvas, 0, this );
+    QgsLabelingGui* w = new QgsLabelingGui( mLayer, mCanvas, nullptr, this );
     w->setLabelMode(( QgsLabelingGui::LabelMode ) index );
     w->init();
     mWidget = w;

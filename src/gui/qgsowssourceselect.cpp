@@ -59,7 +59,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString& service, QWidget * parent
     , mService( service )
     , mManagerMode( managerMode )
     , mEmbeddedMode( embeddedMode )
-    , mCurrentTileset( 0 )
+    , mCurrentTileset( nullptr )
 {
   setupUi( this );
 
@@ -479,7 +479,7 @@ void QgsOWSSourceSelect::on_mTilesetsTableWidget_itemClicked( QTableWidgetItem *
   }
   else
   {
-    mCurrentTileset = 0;
+    mCurrentTileset = nullptr;
   }
   mTilesetsTableWidget->blockSignals( false );
 

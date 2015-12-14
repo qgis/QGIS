@@ -44,7 +44,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     /** Constructor
      * @param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned
      */
-    QgsInvertedPolygonRenderer( const QgsFeatureRendererV2* embeddedRenderer = 0 );
+    QgsInvertedPolygonRenderer( const QgsFeatureRendererV2* embeddedRenderer = nullptr );
     virtual ~QgsInvertedPolygonRenderer();
 
     /** Used to clone this feature renderer.*/

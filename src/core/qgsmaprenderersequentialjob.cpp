@@ -22,9 +22,9 @@
 
 QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings& settings )
     : QgsMapRendererQImageJob( settings )
-    , mInternalJob( 0 )
-    , mPainter( 0 )
-    , mLabelingResults( 0 )
+    , mInternalJob( nullptr )
+    , mPainter( nullptr )
+    , mLabelingResults( nullptr )
 {
   QgsDebugMsg( "SEQUENTIAL construct" );
 
@@ -43,10 +43,10 @@ QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
     cancel();
   }
 
-  Q_ASSERT( mInternalJob == 0 && mPainter == 0 );
+  Q_ASSERT( mInternalJob == nullptr && mPainter == nullptr );
 
   delete mLabelingResults;
-  mLabelingResults = 0;
+  mLabelingResults = nullptr;
 }
 
 
@@ -61,7 +61,7 @@ void QgsMapRendererSequentialJob::start()
 
   QgsDebugMsg( "SEQUENTIAL START" );
 
-  Q_ASSERT( mInternalJob == 0  && mPainter == 0 );
+  Q_ASSERT( mInternalJob == nullptr  && mPainter == nullptr );
 
   mPainter = new QPainter( &mImage );
 
@@ -82,7 +82,7 @@ void QgsMapRendererSequentialJob::cancel()
   QgsDebugMsg( "sequential - cancel internal" );
   mInternalJob->cancel();
 
-  Q_ASSERT( mInternalJob == 0 && mPainter == 0 );
+  Q_ASSERT( mInternalJob == nullptr && mPainter == nullptr );
 }
 
 void QgsMapRendererSequentialJob::waitForFinished()
@@ -95,13 +95,13 @@ void QgsMapRendererSequentialJob::waitForFinished()
 
 bool QgsMapRendererSequentialJob::isActive() const
 {
-  return mInternalJob != 0;
+  return mInternalJob != nullptr;
 }
 
 QgsLabelingResults* QgsMapRendererSequentialJob::takeLabelingResults()
 {
   QgsLabelingResults* tmp = mLabelingResults;
-  mLabelingResults = 0;
+  mLabelingResults = nullptr;
   return tmp;
 }
 
@@ -122,7 +122,7 @@ void QgsMapRendererSequentialJob::internalFinished()
 
   mPainter->end();
   delete mPainter;
-  mPainter = 0;
+  mPainter = nullptr;
 
   mLabelingResults = mInternalJob->takeLabelingResults();
 
@@ -131,7 +131,7 @@ void QgsMapRendererSequentialJob::internalFinished()
   // now we are in a slot called from mInternalJob - do not delete it immediately
   // so the class is still valid when the execution returns to the class
   mInternalJob->deleteLater();
-  mInternalJob = 0;
+  mInternalJob = nullptr;
 
   mRenderingTime = mRenderingStart.elapsed();
 

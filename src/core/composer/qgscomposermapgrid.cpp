@@ -170,7 +170,7 @@ QgsComposerMapGrid::QgsComposerMapGrid( const QString& name, QgsComposerMap* map
 }
 
 QgsComposerMapGrid::QgsComposerMapGrid()
-    : QgsComposerMapItem( QString(), 0 )
+    : QgsComposerMapItem( QString(), nullptr )
 {
   init();
 }
@@ -213,8 +213,8 @@ void QgsComposerMapGrid::init()
   mRightFrameDivisions = QgsComposerMapGrid::ShowAll;
   mTopFrameDivisions = QgsComposerMapGrid::ShowAll;
   mBottomFrameDivisions = QgsComposerMapGrid::ShowAll;
-  mGridLineSymbol = 0;
-  mGridMarkerSymbol = 0;
+  mGridLineSymbol = nullptr;
+  mGridMarkerSymbol = nullptr;
   mGridUnit = MapUnit;
   mBlendMode = QPainter::CompositionMode_SourceOver;
 
@@ -816,19 +816,19 @@ void QgsComposerMapGrid::drawGridFrame( QPainter* p, const QList< QPair< double,
 
   if ( testFrameSideFlag( QgsComposerMapGrid::FrameLeft ) )
   {
-    drawGridFrameBorder( p, leftGridFrame, QgsComposerMapGrid::Left, extension ? &extension->left : 0 );
+    drawGridFrameBorder( p, leftGridFrame, QgsComposerMapGrid::Left, extension ? &extension->left : nullptr );
   }
   if ( testFrameSideFlag( QgsComposerMapGrid::FrameRight ) )
   {
-    drawGridFrameBorder( p, rightGridFrame, QgsComposerMapGrid::Right, extension ? &extension->right : 0 );
+    drawGridFrameBorder( p, rightGridFrame, QgsComposerMapGrid::Right, extension ? &extension->right : nullptr );
   }
   if ( testFrameSideFlag( QgsComposerMapGrid::FrameTop ) )
   {
-    drawGridFrameBorder( p, topGridFrame, QgsComposerMapGrid::Top, extension ? &extension->top : 0 );
+    drawGridFrameBorder( p, topGridFrame, QgsComposerMapGrid::Top, extension ? &extension->top : nullptr );
   }
   if ( testFrameSideFlag( QgsComposerMapGrid::FrameBottom ) )
   {
-    drawGridFrameBorder( p, bottomGridFrame, QgsComposerMapGrid::Bottom, extension ? &extension->bottom : 0 );
+    drawGridFrameBorder( p, bottomGridFrame, QgsComposerMapGrid::Bottom, extension ? &extension->bottom : nullptr );
   }
   if ( p )
     p->restore();
@@ -849,7 +849,7 @@ void QgsComposerMapGrid::drawGridLine( const QPolygonF& line, QgsRenderContext& 
   }
 
   mGridLineSymbol->startRender( context );
-  mGridLineSymbol->renderPolyline( line, 0, context );
+  mGridLineSymbol->renderPolyline( line, nullptr, context );
   mGridLineSymbol->stopRender( context );
 }
 
@@ -861,7 +861,7 @@ void QgsComposerMapGrid::drawGridMarker( const QPointF& point, QgsRenderContext&
   }
 
   mGridMarkerSymbol->startRender( context );
-  mGridMarkerSymbol->renderPoint( point, 0, context );
+  mGridMarkerSymbol->renderPoint( point, nullptr, context );
   mGridMarkerSymbol->stopRender( context );
 }
 
@@ -2115,12 +2115,12 @@ void QgsComposerMapGrid::calculateMaxExtension( double& top, double& right, doub
 
   if ( mGridFrameStyle != QgsComposerMapGrid::NoFrame )
   {
-    drawGridFrame( 0, horizontalLines, verticalLines, &extension );
+    drawGridFrame( nullptr, horizontalLines, verticalLines, &extension );
   }
 
   if ( mShowGridAnnotation )
   {
-    drawCoordinateAnnotations( 0, horizontalLines, verticalLines, context.expressionContext(), &extension );
+    drawCoordinateAnnotations( nullptr, horizontalLines, verticalLines, context.expressionContext(), &extension );
   }
 
   top = extension.top;

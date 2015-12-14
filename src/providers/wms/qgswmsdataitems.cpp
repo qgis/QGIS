@@ -27,7 +27,7 @@
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
     : QgsDataCollectionItem( parent, name, path )
     , mUri( uri )
-    , mCapabilitiesDownload( 0 )
+    , mCapabilitiesDownload( nullptr )
 {
   mIconName = "mIconConnect.png";
   mCapabilitiesDownload = new QgsWmsCapabilitiesDownload( false );
@@ -196,7 +196,7 @@ QList<QAction*> QgsWMSConnectionItem::actions()
 
 void QgsWMSConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-wms/", mName );
+  QgsNewHttpConnection nc( nullptr, "/Qgis/connections-wms/", mName );
 
   if ( nc.exec() )
   {
@@ -375,7 +375,7 @@ QList<QAction*> QgsWMSRootItem::actions()
 
 QWidget * QgsWMSRootItem::paramWidget()
 {
-  QgsWMSSourceSelect *select = new QgsWMSSourceSelect( 0, 0, true, true );
+  QgsWMSSourceSelect *select = new QgsWMSSourceSelect( nullptr, nullptr, true, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }
@@ -387,7 +387,7 @@ void QgsWMSRootItem::connectionsChanged()
 
 void QgsWMSRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( 0 );
+  QgsNewHttpConnection nc( nullptr );
 
   if ( nc.exec() )
   {
@@ -432,6 +432,6 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     }
   }
 
-  return 0;
+  return nullptr;
 }
 

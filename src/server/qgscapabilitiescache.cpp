@@ -38,7 +38,7 @@ const QDomDocument* QgsCapabilitiesCache::searchCapabilitiesDocument( const QStr
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 

@@ -29,9 +29,9 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::Messag
     , mText( text )
     , mLevel( level )
     , mDuration( duration )
-    , mWidget( 0 )
+    , mWidget( nullptr )
     , mUserIcon( QIcon() )
-    , mLayout( 0 )
+    , mLayout( nullptr )
 {
   writeContent();
 }
@@ -42,9 +42,9 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
     , mText( text )
     , mLevel( level )
     , mDuration( duration )
-    , mWidget( 0 )
+    , mWidget( nullptr )
     , mUserIcon( QIcon() )
-    , mLayout( 0 )
+    , mLayout( nullptr )
 {
   writeContent();
 }
@@ -57,7 +57,7 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
     , mDuration( duration )
     , mWidget( widget )
     , mUserIcon( QIcon() )
-    , mLayout( 0 )
+    , mLayout( nullptr )
 {
   writeContent();
 }
@@ -70,7 +70,7 @@ QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLev
     , mDuration( duration )
     , mWidget( widget )
     , mUserIcon( QIcon() )
-    , mLayout( 0 )
+    , mLayout( nullptr )
 {
   writeContent();
 }
@@ -81,16 +81,16 @@ QgsMessageBarItem::~QgsMessageBarItem()
 
 void QgsMessageBarItem::writeContent()
 {
-  if ( mLayout == 0 )
+  if ( mLayout == nullptr )
   {
     mLayout = new QHBoxLayout( this );
     mLayout->setContentsMargins( 0, 0, 0, 0 );
-    mTextEdit = 0;
-    mLblIcon = 0;
+    mTextEdit = nullptr;
+    mLblIcon = nullptr;
   }
 
   // ICON
-  if ( mLblIcon == 0 )
+  if ( mLblIcon == nullptr )
   {
     mLblIcon = new QLabel( this );
     mLayout->addWidget( mLblIcon );
@@ -124,15 +124,15 @@ void QgsMessageBarItem::writeContent()
   // TITLE AND TEXT
   if ( mTitle.isEmpty() && mText.isEmpty() )
   {
-    if ( mTextEdit != 0 )
+    if ( mTextEdit != nullptr )
     {
       delete mTextEdit;
-      mTextEdit = 0;
+      mTextEdit = nullptr;
     }
   }
   else
   {
-    if ( mTextEdit == 0 )
+    if ( mTextEdit == nullptr )
     {
       mTextEdit = new QTextEdit( this );
       mTextEdit->setObjectName( "textEdit" );
@@ -160,7 +160,7 @@ void QgsMessageBarItem::writeContent()
   }
 
   // WIDGET
-  if ( mWidget != 0 )
+  if ( mWidget != nullptr )
   {
     QLayoutItem *item = mLayout->itemAt( 2 );
     if ( !item || item->widget() != mWidget )
@@ -217,7 +217,7 @@ QgsMessageBarItem *QgsMessageBarItem::setLevel( QgsMessageBar::MessageLevel leve
 
 QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
 {
-  if ( mWidget != 0 )
+  if ( mWidget != nullptr )
   {
     QLayoutItem *item;
     item = mLayout->itemAt( 2 );

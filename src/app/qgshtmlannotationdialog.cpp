@@ -20,7 +20,7 @@
 #include <QGraphicsScene>
 
 QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsHtmlAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
-    : QDialog( parent, f ), mItem( item ), mEmbeddedWidget( 0 )
+    : QDialog( parent, f ), mItem( item ), mEmbeddedWidget( nullptr )
 {
   setupUi( this );
   setWindowTitle( tr( "HTML annotation" ) );
@@ -78,7 +78,7 @@ void QgsHtmlAnnotationDialog::on_mBrowseToolButton_clicked()
   {
     directory = QDir::homePath();
   }
-  QString filename = QFileDialog::getOpenFileName( 0, tr( "html" ), directory, "HTML (*.html *.htm);;All files (*.*)" );
+  QString filename = QFileDialog::getOpenFileName( nullptr, tr( "html" ), directory, "HTML (*.html *.htm);;All files (*.*)" );
   mFileLineEdit->setText( filename );
 }
 
@@ -90,6 +90,6 @@ void QgsHtmlAnnotationDialog::deleteItem()
     scene->removeItem( mItem );
   }
   delete mItem;
-  mItem = 0;
+  mItem = nullptr;
 }
 

@@ -161,7 +161,7 @@ class CORE_EXPORT QgsDistanceArea
       @return distance in meters
      */
     double computeDistanceBearing( const QgsPoint& p1, const QgsPoint& p2,
-                                   double* course1 = NULL, double* course2 = NULL ) const;
+                                   double* course1 = nullptr, double* course2 = nullptr ) const;
 
     //! uses flat / planimetric / Euclidean distance
     double computeDistanceFlat( const QgsPoint& p1, const QgsPoint& p2 ) const;

@@ -123,19 +123,19 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
 //QgsPaperItem
 
 QgsPaperItem::QgsPaperItem( QgsComposition* c ): QgsComposerItem( c, false ),
-    mPageGrid( 0 )
+    mPageGrid( nullptr )
 {
   initialize();
 }
 
 QgsPaperItem::QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition, false ),
-    mPageGrid( 0 ), mPageMargin( 0 )
+    mPageGrid( nullptr ), mPageMargin( 0 )
 {
   initialize();
 }
 
-QgsPaperItem::QgsPaperItem(): QgsComposerItem( 0, false ),
-    mPageGrid( 0 ), mPageMargin( 0 )
+QgsPaperItem::QgsPaperItem(): QgsComposerItem( nullptr, false ),
+    mPageGrid( nullptr ), mPageMargin( 0 )
 {
   initialize();
 }
@@ -197,7 +197,7 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
                                      ( rect().width() - 2 * mPageMargin ) * dotsPerMM, ( rect().height() - 2 * mPageMargin ) * dotsPerMM ) );
   QList<QPolygonF> rings; //empty list
 
-  mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, 0, context );
+  mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, nullptr, context );
   mComposition->pageStyleSymbol()->stopRender( context );
   painter->restore();
 }

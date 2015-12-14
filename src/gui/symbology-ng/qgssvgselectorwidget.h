@@ -70,10 +70,10 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     Q_OBJECT
 
   public:
-    QgsSvgSelectorWidget( QWidget* parent = 0 );
+    QgsSvgSelectorWidget( QWidget* parent = nullptr );
     ~QgsSvgSelectorWidget();
 
-    static QgsSvgSelectorWidget* create( QWidget* parent = 0 ) { return new QgsSvgSelectorWidget( parent ); }
+    static QgsSvgSelectorWidget* create( QWidget* parent = nullptr ) { return new QgsSvgSelectorWidget( parent ); }
 
     QString currentSvgPath() const;
     QString currentSvgPathToName() const;
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
 {
     Q_OBJECT
   public:
-    QgsSvgSelectorDialog( QWidget* parent = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags,
+    QgsSvgSelectorDialog( QWidget* parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags,
                           const QDialogButtonBox::StandardButtons& buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
     ~QgsSvgSelectorDialog();

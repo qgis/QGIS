@@ -23,7 +23,7 @@
 #include <QFontDialog>
 #include <QWidget>
 
-QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar ): QgsComposerItemBaseWidget( 0, scaleBar ), mComposerScaleBar( scaleBar )
+QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar ): QgsComposerItemBaseWidget( nullptr, scaleBar ), mComposerScaleBar( scaleBar )
 {
   setupUi( this );
   connectUpdateSignal();

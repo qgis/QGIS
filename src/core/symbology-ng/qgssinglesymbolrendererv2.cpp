@@ -237,12 +237,12 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
 {
   QDomElement symbolsElem = element.firstChildElement( "symbols" );
   if ( symbolsElem.isNull() )
-    return NULL;
+    return nullptr;
 
   QgsSymbolV2Map symbolMap = QgsSymbolLayerV2Utils::loadSymbols( symbolsElem );
 
   if ( !symbolMap.contains( "0" ) )
-    return NULL;
+    return nullptr;
 
   QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( symbolMap.take( "0" ) );
 
@@ -276,7 +276,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
   if ( ruleElem.isNull() )
   {
     QgsDebugMsg( "no Rule elements found!" );
-    return NULL;
+    return nullptr;
   }
 
   QString label, description;
@@ -328,7 +328,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
   }
 
   if ( layers.isEmpty() )
-    return NULL;
+    return nullptr;
 
   // now create the symbol
   QgsSymbolV2 *symbol;
@@ -348,7 +348,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
 
     default:
       QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
-      return NULL;
+      return nullptr;
   }
 
   // and finally return the new renderer
@@ -416,11 +416,11 @@ QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
       QgsScaleExpression scaleExp( sizeDD.expressionString() );
       if ( scaleExp.type() != QgsScaleExpression::Unknown )
       {
-        QgsLegendSymbolItemV2 title( NULL, scaleExp.baseExpression(), 0 );
+        QgsLegendSymbolItemV2 title( nullptr, scaleExp.baseExpression(), nullptr );
         lst << title;
         Q_FOREACH ( double v, QgsSymbolLayerV2Utils::prettyBreaks( scaleExp.minValue(), scaleExp.maxValue(), 4 ) )
         {
-          QgsLegendSymbolItemV2 si( mSymbol.data(), QString::number( v ), 0 );
+          QgsLegendSymbolItemV2 si( mSymbol.data(), QString::number( v ), nullptr );
           QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
           s->setDataDefinedSize( 0 );
           s->setSize( scaleExp.size( v ) );
@@ -431,7 +431,7 @@ QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
     }
   }
 
-  lst << QgsLegendSymbolItemV2( mSymbol.data(), QString(), 0 );
+  lst << QgsLegendSymbolItemV2( mSymbol.data(), QString(), nullptr );
   return lst;
 }
 
@@ -460,5 +460,5 @@ QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::convertFromRenderer( const
   {
     return new QgsSingleSymbolRendererV2( symbols.at( 0 )->clone() );
   }
-  return 0;
+  return nullptr;
 }

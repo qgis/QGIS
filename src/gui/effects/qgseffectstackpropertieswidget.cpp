@@ -96,7 +96,7 @@ class EffectItem : public QStandardItem
 QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent )
     : QWidget( parent )
     , mStack( stack )
-    , mPreviewPicture( 0 )
+    , mPreviewPicture( nullptr )
 {
 
 // TODO
@@ -104,7 +104,7 @@ QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *
   //setWindowModality( Qt::WindowModal );
 #endif
 
-  mPresentWidget = NULL;
+  mPresentWidget = nullptr;
 
   setupUi( this );
 
@@ -226,7 +226,7 @@ EffectItem* QgsEffectStackPropertiesWidget::currentEffectItem()
 {
   QModelIndex idx = mEffectsList->currentIndex();
   if ( !idx.isValid() )
-    return NULL;
+    return nullptr;
 
   EffectItem *item = static_cast<EffectItem*>( mModel->itemFromIndex( idx ) );
   return item;
@@ -351,7 +351,7 @@ void QgsEffectStackPropertiesWidget::changeEffect( QgsPaintEffect* newEffect )
 
 QgsEffectStackPropertiesDialog::QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent, const Qt::WindowFlags& f )
     : QgsDialog( parent, f, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
-    , mPropertiesWidget( 0 )
+    , mPropertiesWidget( nullptr )
 {
   setWindowTitle( tr( "Effect Properties" ) );
   mPropertiesWidget = new QgsEffectStackPropertiesWidget( stack, this );
@@ -379,9 +379,9 @@ void QgsEffectStackPropertiesDialog::setPreviewPicture( const QPicture &picture 
 
 QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent , QgsPaintEffect *effect )
     : QWidget( parent )
-    , mEnabledCheckBox( 0 )
-    , mButton( 0 )
-    , mPreviewPicture( 0 )
+    , mEnabledCheckBox( nullptr )
+    , mButton( nullptr )
+    , mPreviewPicture( nullptr )
 {
   QHBoxLayout* layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -418,7 +418,7 @@ void QgsEffectStackCompactWidget::setPaintEffect( QgsPaintEffect *effect )
     mEnabledCheckBox->setChecked( false );
     mEnabledCheckBox->setEnabled( false );
     mButton->setEnabled( false );
-    mStack = 0;
+    mStack = nullptr;
     return;
   }
 

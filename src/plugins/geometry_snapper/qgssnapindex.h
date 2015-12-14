@@ -70,7 +70,7 @@ class QgsSnapIndex
     ~QgsSnapIndex();
     void addGeometry( const QgsAbstractGeometryV2 *geom );
     QgsPointV2 getClosestSnapToPoint( const QgsPointV2& p, const QgsPointV2& q );
-    SnapItem *getSnapItem( const QgsPointV2& pos, double tol, PointSnapItem **pSnapPoint = 0, SegmentSnapItem **pSnapSegment = 0 ) const;
+    SnapItem *getSnapItem( const QgsPointV2& pos, double tol, PointSnapItem **pSnapPoint = nullptr, SegmentSnapItem **pSnapSegment = nullptr ) const;
 
   private:
     typedef QList<SnapItem*> Cell;

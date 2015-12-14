@@ -97,7 +97,7 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
 
 QgsGPSDetector::QgsGPSDetector( const QString& portName )
 {
-  mConn = 0;
+  mConn = nullptr;
   mBaudList << BAUD4800 << BAUD9600 << BAUD38400 << BAUD57600 << BAUD115200;  //add 57600 for SXBlueII GPS unit
 
   if ( portName.isEmpty() )
@@ -126,7 +126,7 @@ void QgsGPSDetector::advance()
     delete mConn;
   }
 
-  mConn = 0;
+  mConn = nullptr;
 
   while ( !mConn )
   {
@@ -203,7 +203,7 @@ void QgsGPSDetector::detected( const QgsGPSInformation& info )
   {
     // signal detection
     QgsGPSConnection *conn = mConn;
-    mConn = 0;
+    mConn = nullptr;
     emit detected( conn );
     deleteLater();
   }
@@ -213,6 +213,6 @@ void QgsGPSDetector::connDestroyed( QObject *obj )
 {
   if ( obj == mConn )
   {
-    mConn = 0;
+    mConn = nullptr;
   }
 }

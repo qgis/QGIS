@@ -33,14 +33,14 @@
 
 QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
-    , mSelectRubberBand( 0 )
-    , mSelectedFeature( 0 )
-    , mNodeEditor( 0 )
+    , mSelectRubberBand( nullptr )
+    , mSelectedFeature( nullptr )
+    , mNodeEditor( nullptr )
     , mMoving( true )
     , mSelectAnother( false )
     , mAnother( 0 )
-    , mSelectionRubberBand( 0 )
-    , mRect( 0 )
+    , mSelectionRubberBand( nullptr )
+    , mRect( nullptr )
     , mIsPoint( false )
     , mDeselectOnRelease( -1 )
 {
@@ -403,9 +403,9 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QgsMapMouseEvent* e )
   if ( mRect )
   {
     delete mSelectionRubberBand;
-    mSelectionRubberBand = 0;
+    mSelectionRubberBand = nullptr;
     delete mRect;
-    mRect = 0;
+    mRect = nullptr;
   }
 
   if ( mPressCoordinates == e->pos() )
@@ -495,7 +495,7 @@ void QgsMapToolNodeTool::deactivate()
 {
   cleanTool();
 
-  mSelectionRubberBand = 0;
+  mSelectionRubberBand = nullptr;
   mSelectAnother = false;
   mMoving = true;
 
@@ -516,7 +516,7 @@ void QgsMapToolNodeTool::cleanTool( bool deleteSelectedFeature )
   if ( mSelectRubberBand )
   {
     delete mSelectRubberBand;
-    mSelectRubberBand = 0;
+    mSelectRubberBand = nullptr;
   }
 
   if ( mSelectedFeature )
@@ -531,13 +531,13 @@ void QgsMapToolNodeTool::cleanTool( bool deleteSelectedFeature )
     if ( deleteSelectedFeature )
       delete mSelectedFeature;
 
-    mSelectedFeature = 0;
+    mSelectedFeature = nullptr;
   }
 
   if ( mNodeEditor )
   {
     delete mNodeEditor;
-    mNodeEditor = 0;
+    mNodeEditor = nullptr;
   }
 }
 

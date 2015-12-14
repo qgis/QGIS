@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! paint function called by map canvas
     virtual void paint( QPainter * painter,
                         const QStyleOptionGraphicsItem * option,
-                        QWidget * widget = 0 ) override;
+                        QWidget * widget = nullptr ) override;
 
     //! schedules map canvas for repaint
     void updateCanvas();

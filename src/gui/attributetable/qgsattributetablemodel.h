@@ -62,7 +62,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param layerCache  A layer cache to use as backend
      * @param parent      The parent QObject (owner)
      */
-    QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = 0 );
+    QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = nullptr );
 
     /**
      * Returns the number of rows
@@ -160,7 +160,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Returns the layer this model uses as backend. Retrieved from the layer cache.
      */
-    inline QgsVectorLayer* layer() const { return mLayerCache ? mLayerCache->layer() : NULL; }
+    inline QgsVectorLayer* layer() const { return mLayerCache ? mLayerCache->layer() : nullptr; }
 
     /**
      * Returns the layer cache this model uses as backend.

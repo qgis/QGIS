@@ -19,7 +19,7 @@ class APP_EXPORT QgsSaveStyleToDbDialog : public QDialog, private Ui::QgsSaveToD
     QString mUIFileContent;
     Q_OBJECT
   public:
-    explicit QgsSaveStyleToDbDialog( QWidget *parent = 0 );
+    explicit QgsSaveStyleToDbDialog( QWidget *parent = nullptr );
 
     ~QgsSaveStyleToDbDialog();
 

@@ -233,7 +233,7 @@ QgsRenderContext * QgsSymbolV2LegendNode::createTemporaryRenderContext() const
   context->setScaleFactor( dpi / 25.4 );
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
-  return validData ? context.take() : 0;
+  return validData ? context.take() : nullptr;
 }
 
 void QgsSymbolV2LegendNode::checkAll( bool state )
@@ -357,7 +357,7 @@ QSizeF QgsSymbolV2LegendNode::drawSymbol( const QgsLegendSettings& settings, Ite
   context.setRendererScale( settings.mapScale() );
   context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
   context.setForceVectorOutput( true );
-  context.setPainter( ctx ? ctx->painter : 0 );
+  context.setPainter( ctx ? ctx->painter : nullptr );
 
   //Consider symbol size for point markers
   double height = settings.symbolSize().height();

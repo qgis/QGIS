@@ -59,7 +59,7 @@ class ANALYSIS_EXPORT TriDecorator : public Triangulation
     Triangulation* mTIN;
 };
 
-inline TriDecorator::TriDecorator(): mTIN( 0 )
+inline TriDecorator::TriDecorator(): mTIN( nullptr )
 {
 
 }

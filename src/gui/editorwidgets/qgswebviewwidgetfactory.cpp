@@ -41,8 +41,8 @@ QgsEditorWidgetConfig QgsWebViewWidgetFactory::readConfig( const QDomElement& co
 
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( "Height", configElement.attribute( "Height", 0 ).toInt() );
-  cfg.insert( "Width", configElement.attribute( "Width", 0 ).toInt() );
+  cfg.insert( "Height", configElement.attribute( "Height", nullptr ).toInt() );
+  cfg.insert( "Width", configElement.attribute( "Width", nullptr ).toInt() );
 
   return cfg;
 }

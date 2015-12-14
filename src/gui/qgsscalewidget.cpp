@@ -21,7 +21,7 @@
 
 QgsScaleWidget::QgsScaleWidget( QWidget *parent )
     : QWidget( parent )
-    , mCanvas( NULL )
+    , mCanvas( nullptr )
     , mShowCurrentScaleButton( false )
 {
   QHBoxLayout* layout = new QHBoxLayout( this );

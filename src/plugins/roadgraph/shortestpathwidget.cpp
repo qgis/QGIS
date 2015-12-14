@@ -64,8 +64,8 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   setWidget( myWidget );
 
   QVBoxLayout *v = new QVBoxLayout( myWidget );
-  QHBoxLayout *h = NULL;
-  QLabel *l = NULL;
+  QHBoxLayout *h = nullptr;
+  QLabel *l = nullptr;
 
   l = new QLabel( tr( "Start" ), myWidget );
   v->addWidget( l );
@@ -237,7 +237,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
   if ( mFrontPointLineEdit->text().isNull() || mBackPointLineEdit->text().isNull() )
   {
     QMessageBox::critical( this, tr( "Point not selected" ), tr( "First, select start and stop points." ) );
-    return NULL;
+    return nullptr;
   }
 
   QgsGraphBuilder builder(
@@ -246,10 +246,10 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
     mPlugin->topologyToleranceFactor() );
   {
     const QgsGraphDirector *director = mPlugin->director();
-    if ( director == NULL )
+    if ( director == nullptr )
     {
       QMessageBox::critical( this, tr( "Plugin isn't configured" ), tr( "Plugin isn't configured!" ) );
-      return NULL;
+      return nullptr;
     }
     connect( director, SIGNAL( buildProgress( int, int ) ), mPlugin->iface()->mainWindow(), SLOT( showProgress( int, int ) ) );
     connect( director, SIGNAL( buildMessage( QString ) ), mPlugin->iface()->mainWindow(), SLOT( showStatusMessage( QString ) ) );
@@ -270,12 +270,12 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
   if ( p1 == QgsPoint( 0.0, 0.0 ) )
   {
     QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Start point doesn't tie to the road!" ) );
-    return NULL;
+    return nullptr;
   }
   if ( p2 == QgsPoint( 0.0, 0.0 ) )
   {
     QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Stop point doesn't tie to the road!" ) );
-    return NULL;
+    return nullptr;
   }
 
   QgsGraph *graph = builder.graph();
@@ -291,7 +291,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
     );
 
     delete graph;
-    return NULL;
+    return nullptr;
   }
 
   int criterionNum = 0;
@@ -308,7 +308,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
     );
 
     delete graph;
-    return NULL;
+    return nullptr;
   }
 
 
@@ -319,7 +319,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
   {
     delete shortestpathTree;
     QMessageBox::critical( this, tr( "Path not found" ), tr( "Path not found" ) );
-    return NULL;
+    return nullptr;
   }
   return shortestpathTree;
 }
@@ -328,7 +328,7 @@ void RgShortestPathWidget::findingPath()
 {
   QgsPoint p1, p2;
   QgsGraph *path = getPath( p1, p2 );
-  if ( path == NULL )
+  if ( path == nullptr )
     return;
 
   mrbPath->reset( QGis::Line );
@@ -391,12 +391,12 @@ void RgShortestPathWidget::exportPath()
     return;
 
   QgsVectorLayer *vl = dlg.mapLayer();
-  if ( vl == NULL )
+  if ( vl == nullptr )
     return;
 
   QgsPoint p1, p2;
   QgsGraph *path = getPath( p1, p2 );
-  if ( path == NULL )
+  if ( path == nullptr )
     return;
 
   QgsCoordinateTransform ct( mPlugin->iface()->mapCanvas()->mapSettings().destinationCrs(),

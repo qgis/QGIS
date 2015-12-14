@@ -52,7 +52,7 @@ class CORE_EXPORT QgsRasterInterface
       IdentifyFeature  = 1 << 9, // WMS GML -> feature
     };
 
-    QgsRasterInterface( QgsRasterInterface * input = 0 );
+    QgsRasterInterface( QgsRasterInterface * input = nullptr );
 
     virtual ~QgsRasterInterface();
 

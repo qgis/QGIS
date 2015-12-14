@@ -21,7 +21,7 @@
 #include "qgis.h"
 
 QgsPostgresTransaction::QgsPostgresTransaction( const QString &connString )
-    : QgsTransaction( connString ), mConn( 0 )
+    : QgsTransaction( connString ), mConn( nullptr )
 {
 
 }
@@ -39,7 +39,7 @@ bool QgsPostgresTransaction::commitTransaction( QString &error )
   if ( executeSql( "COMMIT TRANSACTION", error ) )
   {
     mConn->unref();
-    mConn = 0;
+    mConn = nullptr;
     return true;
   }
   return false;
@@ -50,7 +50,7 @@ bool QgsPostgresTransaction::rollbackTransaction( QString &error )
   if ( executeSql( "ROLLBACK TRANSACTION", error ) )
   {
     mConn->unref();
-    mConn = 0;
+    mConn = nullptr;
     return true;
   }
   return false;

@@ -49,7 +49,7 @@ void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
 
 QgsSingleBandPseudoColorRenderer* QgsSingleBandPseudoColorRenderer::clone() const
 {
-  QgsRasterShader *shader = 0;
+  QgsRasterShader *shader = nullptr;
 
   if ( mShader )
   {
@@ -68,11 +68,11 @@ QgsSingleBandPseudoColorRenderer* QgsSingleBandPseudoColorRenderer::clone() cons
       shader->setRasterShaderFunction( colorRampShader );
     }
   }
-  QgsSingleBandPseudoColorRenderer * renderer = new QgsSingleBandPseudoColorRenderer( 0, mBand, shader );
+  QgsSingleBandPseudoColorRenderer * renderer = new QgsSingleBandPseudoColorRenderer( nullptr, mBand, shader );
 
   renderer->setOpacity( mOpacity );
   renderer->setAlphaBand( mAlphaBand );
-  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : 0 );
+  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : nullptr );
 
   return renderer;
 }
@@ -87,11 +87,11 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& 
 {
   if ( elem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   int band = elem.attribute( "band", "-1" ).toInt();
-  QgsRasterShader* shader = 0;
+  QgsRasterShader* shader = nullptr;
   QDomElement rasterShaderElem = elem.firstChildElement( "rastershader" );
   if ( !rasterShaderElem.isNull() )
   {
@@ -132,7 +132,7 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
   //rendering is faster without considering user-defined transparency
   bool hasTransparency = usesTransparency();
 
-  QgsRasterBlock *alphaBlock = 0;
+  QgsRasterBlock *alphaBlock = nullptr;
   if ( mAlphaBand > 0 && mAlphaBand != mBand )
   {
     alphaBlock = mInput->block( mAlphaBand, extent, width, height );

@@ -81,14 +81,14 @@ QgsAtlasComposition* QgsComposerItemBaseWidget::atlasComposition() const
 {
   if ( !mComposerObject )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsComposition* composition = mComposerObject->composition();
 
   if ( !composition )
   {
-    return 0;
+    return nullptr;
   }
 
   return &composition->atlasComposition();
@@ -103,7 +103,7 @@ QgsVectorLayer* QgsComposerItemBaseWidget::atlasCoverageLayer() const
     return atlasMap->coverageLayer();
   }
 
-  return 0;
+  return nullptr;
 }
 
 
@@ -185,8 +185,8 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
 }
 
 QgsComposerItemWidget::QgsComposerItemWidget()
-    : QgsComposerItemBaseWidget( 0, 0 )
-    , mItem( NULL )
+    : QgsComposerItemBaseWidget( nullptr, nullptr )
+    , mItem( nullptr )
     , mFreezeXPosSpin( false )
     , mFreezeYPosSpin( false )
     , mFreezeWidthSpin( false )

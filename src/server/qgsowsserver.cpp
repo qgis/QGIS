@@ -31,7 +31,7 @@ void QgsOWSServer::applyAccessControlLayerFilters( QgsMapLayer* mapLayer, QMap<Q
     if ( layer->setSubsetString( "" ) )
     {
       QString sql = mAccessControl->extraSubsetString( layer );
-      if ( sql != NULL )
+      if ( sql != nullptr )
       {
         if ( !originalLayerFilters.contains( layer->id() ) )
         {

@@ -91,7 +91,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
       ActiveUntilMouseRelease
     };
 
-    QgsComposerView( QWidget* parent = 0, const char* name = 0, const Qt::WindowFlags& f = 0 );
+    QgsComposerView( QWidget* parent = nullptr, const char* name = nullptr, const Qt::WindowFlags& f = nullptr );
 
     /** Add an item group containing the selected items*/
     void groupItems();

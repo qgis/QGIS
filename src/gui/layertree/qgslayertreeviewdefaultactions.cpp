@@ -49,7 +49,7 @@ QAction* QgsLayerTreeViewDefaultActions::actionShowInOverview( QObject* parent )
 {
   QgsLayerTreeNode* node = mView->currentNode();
   if ( !node )
-    return 0;
+    return nullptr;
 
   QAction* a = new QAction( tr( "&Show in Overview" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( showInOverview() ) );
@@ -69,7 +69,7 @@ QAction* QgsLayerTreeViewDefaultActions::actionShowFeatureCount( QObject* parent
 {
   QgsLayerTreeNode* node = mView->currentNode();
   if ( !node )
-    return 0;
+    return nullptr;
 
   QAction* a = new QAction( tr( "Show Feature Count" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( showFeatureCount() ) );
@@ -114,7 +114,7 @@ QAction* QgsLayerTreeViewDefaultActions::actionMutuallyExclusiveGroup( QObject* 
 {
   QgsLayerTreeNode* node = mView->currentNode();
   if ( !node || !QgsLayerTree::isGroup( node ) )
-    return 0;
+    return nullptr;
 
   QAction* a = new QAction( tr( "Mutually Exclusive Group" ), parent );
   a->setCheckable( true );

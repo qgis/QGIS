@@ -144,7 +144,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
         @param dpi scene dpi
         @param forceWidthScale force wysiwyg line widths / marker sizes
     */
-    void draw( QPainter *painter, const QgsRectangle& extent, const QSizeF& size, double dpi, double* forceWidthScale = 0 );
+    void draw( QPainter *painter, const QgsRectangle& extent, const QSizeF& size, double dpi, double* forceWidthScale = nullptr );
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
@@ -819,7 +819,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** @deprecated use QgsComposerMapOverview::overviewExtentChanged instead*/
     void overviewExtentChanged() {}
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = 0 ) override;
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
 
   protected slots:
 
@@ -922,7 +922,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void updateToolTip();
 
     /** Returns a list of the layers to render for this map item*/
-    QStringList layersToRender( const QgsExpressionContext* context = 0 ) const;
+    QStringList layersToRender( const QgsExpressionContext* context = nullptr ) const;
 
     /** Returns current layer style overrides for this map item*/
     QMap<QString, QString> layerStyleOverridesToRender( const QgsExpressionContext& context ) const;
@@ -959,7 +959,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @param context expression context for evaluating data defined map parameters
      * @note this method was added in version 2.5
      */
-    void refreshMapExtents( const QgsExpressionContext* context = 0 );
+    void refreshMapExtents( const QgsExpressionContext* context = nullptr );
 
     friend class QgsComposerMapOverview; //to access mXOffset, mYOffset
     friend class TestQgsComposerMap;

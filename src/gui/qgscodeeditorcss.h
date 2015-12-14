@@ -29,7 +29,7 @@ class GUI_EXPORT QgsCodeEditorCSS : public QgsCodeEditor
     Q_OBJECT
 
   public:
-    QgsCodeEditorCSS( QWidget *parent = 0 );
+    QgsCodeEditorCSS( QWidget *parent = nullptr );
     ~QgsCodeEditorCSS();
 
   private:

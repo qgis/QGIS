@@ -119,14 +119,14 @@ QgsVectorLayerUndoCommandChangeGeometry::QgsVectorLayerUndoCommandChangeGeometry
   {
     QgsFeatureMap::const_iterator it = mBuffer->mAddedFeatures.find( mFid );
     Q_ASSERT( it != mBuffer->mAddedFeatures.end() );
-    mOldGeom = ( it.value().constGeometry() ? new QgsGeometry( *it.value().constGeometry() ) : 0 );
+    mOldGeom = ( it.value().constGeometry() ? new QgsGeometry( *it.value().constGeometry() ) : nullptr );
   }
   else
   {
     bool changedAlready = mBuffer->mChangedGeometries.contains( mFid );
     QgsGeometry geom;
     bool cachedGeom = cache()->geometry( mFid, geom );
-    mOldGeom = ( changedAlready && cachedGeom ) ? new QgsGeometry( geom ) : 0;
+    mOldGeom = ( changedAlready && cachedGeom ) ? new QgsGeometry( geom ) : nullptr;
   }
 
   mNewGeom = new QgsGeometry( *newGeom );
@@ -151,7 +151,7 @@ bool QgsVectorLayerUndoCommandChangeGeometry::mergeWith( const QUndoCommand *oth
 
   delete mNewGeom;
   mNewGeom = merge->mNewGeom;
-  merge->mNewGeom = 0;
+  merge->mNewGeom = nullptr;
 
   return true;
 }

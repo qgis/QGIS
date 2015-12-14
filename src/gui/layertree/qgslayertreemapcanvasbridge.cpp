@@ -142,7 +142,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
       {
         if ( layerNode->layer() &&
              (
-               qobject_cast<QgsVectorLayer *>( layerNode->layer() ) == 0 ||
+               qobject_cast<QgsVectorLayer *>( layerNode->layer() ) == nullptr ||
                qobject_cast<QgsVectorLayer *>( layerNode->layer() )->geometryType() != QGis::NoGeometry
              )
            )
@@ -225,7 +225,7 @@ void QgsLayerTreeMapCanvasBridge::readProject( const QDomDocument& doc )
       itemElem = itemElem.nextSiblingElement( "item" );
     }
 
-    setHasCustomLayerOrder( customOrderElem.attribute( "enabled", 0 ).toInt() );
+    setHasCustomLayerOrder( customOrderElem.attribute( "enabled", nullptr ).toInt() );
     setCustomLayerOrder( order );
   }
 }

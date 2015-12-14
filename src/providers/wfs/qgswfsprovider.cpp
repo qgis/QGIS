@@ -74,7 +74,7 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
     , mInitGro( false )
 #endif
 {
-  mSpatialIndex = 0;
+  mSpatialIndex = nullptr;
   if ( uri.isEmpty() )
   {
     mValid = false;
@@ -691,7 +691,7 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
   connect( &dataReader, SIGNAL( dataProgressAndSteps( int, int ) ), this, SLOT( handleWFSProgressMessage( int, int ) ) );
 
   //also connect to statusChanged signal of qgisapp (if it exists)
-  QWidget* mainWindow = 0;
+  QWidget* mainWindow = nullptr;
 
   QWidgetList topLevelWidgets = qApp->topLevelWidgets();
   for ( QWidgetList::iterator it = topLevelWidgets.begin(); it != topLevelWidgets.end(); ++it )
@@ -1205,7 +1205,7 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
   QDomElement layerNameElem;
   QDomNode currentAttributeChild;
   QDomElement currentAttributeElement;
-  QgsFeature* f = 0;
+  QgsFeature* f = nullptr;
   mFeatureCount = 0;
 
   for ( int i = 0; i < featureTypeNodeList.size(); ++i )

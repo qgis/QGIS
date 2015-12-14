@@ -58,7 +58,7 @@ class ANALYSIS_EXPORT ParametricLine
 
 //-----------------------------------------constructors and destructor----------------------
 
-inline ParametricLine::ParametricLine() : mDegree( 0 ), mParent( 0 ), mControlPoly( 0 )
+inline ParametricLine::ParametricLine() : mDegree( 0 ), mParent( nullptr ), mControlPoly( nullptr )
 {
 
 }

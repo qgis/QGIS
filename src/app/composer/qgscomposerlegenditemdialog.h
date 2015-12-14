@@ -31,7 +31,7 @@ class QgsComposerLegendItemDialog: public QDialog, private Ui::QgsComposerLegend
     Q_OBJECT
 
   public:
-    QgsComposerLegendItemDialog( const QStandardItem* item, QWidget* parent = 0 );
+    QgsComposerLegendItemDialog( const QStandardItem* item, QWidget* parent = nullptr );
     ~QgsComposerLegendItemDialog();
 
     /** Returns the item text inserted by user*/

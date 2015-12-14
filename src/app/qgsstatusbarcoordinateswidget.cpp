@@ -30,8 +30,8 @@
 
 QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
     : QWidget( parent )
-    , mDizzyTimer( 0 )
-    , mMapCanvas( 0 )
+    , mDizzyTimer( nullptr )
+    , mMapCanvas( nullptr )
     , mMousePrecisionDecimalPlaces( 0 )
 {
   // add a label to show current position

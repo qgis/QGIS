@@ -82,13 +82,13 @@
 
 QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
     : QDialog( parent )
-    , mSocket( 0 )
+    , mSocket( nullptr )
     , mExecErrorsDialog( false )
-    , mTimer( 0 )
+    , mTimer( nullptr )
     , mSslErrors( QList<QSslError>() )
     , mTrustedCAs( QList<QSslCertificate>() )
-    , mAuthNotifyLayout( 0 )
-    , mAuthNotify( 0 )
+    , mAuthNotifyLayout( nullptr )
+    , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -302,7 +302,7 @@ void QgsAuthSslImportDialog::destroySocket()
   }
   mSocket->disconnectFromHost();
   mSocket->deleteLater();
-  mSocket = 0;
+  mSocket = nullptr;
 }
 
 void QgsAuthSslImportDialog::sslErrors( const QList<QSslError> &errors )

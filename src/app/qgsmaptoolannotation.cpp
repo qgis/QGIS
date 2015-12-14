@@ -45,14 +45,14 @@ QgsMapToolAnnotation::~QgsMapToolAnnotation()
 QgsAnnotationItem* QgsMapToolAnnotation::createItem( QMouseEvent *e )
 {
   Q_UNUSED( e );
-  return 0;
+  return nullptr;
 }
 
 QDialog* QgsMapToolAnnotation::createItemEditor( QgsAnnotationItem *item )
 {
   if ( !item )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsTextAnnotationItem* tItem = dynamic_cast<QgsTextAnnotationItem*>( item );
@@ -79,7 +79,7 @@ QDialog* QgsMapToolAnnotation::createItemEditor( QgsAnnotationItem *item )
     return new QgsSvgAnnotationDialog( sItem );
   }
 
-  return 0;
+  return nullptr;
 }
 
 void QgsMapToolAnnotation::canvasReleaseEvent( QgsMapMouseEvent* e )
@@ -258,7 +258,7 @@ QgsAnnotationItem* QgsMapToolAnnotation::itemAtPos( const QPointF& pos )
 {
   if ( !mCanvas )
   {
-    return 0;
+    return nullptr;
   }
 
   QList<QGraphicsItem *> graphicItems = mCanvas->items( pos.toPoint() );
@@ -271,14 +271,14 @@ QgsAnnotationItem* QgsMapToolAnnotation::itemAtPos( const QPointF& pos )
       return annotationItem;
     }
   }
-  return 0;
+  return nullptr;
 }
 
 QgsAnnotationItem* QgsMapToolAnnotation::selectedItem()
 {
   if ( !mCanvas || !mCanvas->scene() )
   {
-    return 0;
+    return nullptr;
   }
   QList<QGraphicsItem *> gItemList = mCanvas->scene()->selectedItems();
   QList<QGraphicsItem *>::iterator it = gItemList.begin();
@@ -290,7 +290,7 @@ QgsAnnotationItem* QgsMapToolAnnotation::selectedItem()
       return aItem;
     }
   }
-  return 0;
+  return nullptr;
 }
 
 QList<QgsAnnotationItem*> QgsMapToolAnnotation::annotationItems()

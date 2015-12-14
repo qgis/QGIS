@@ -55,19 +55,19 @@
 
 
 // Static initialisers, default values for fcgi server
-QgsApplication* QgsServer::mQgsApplication = NULL;
+QgsApplication* QgsServer::mQgsApplication = nullptr;
 bool QgsServer::mInitialised = false;
 QString QgsServer::mServerName( "qgis_server" );
 bool QgsServer::mCaptureOutput = false;
 char* QgsServer::mArgv[1];
 int QgsServer::mArgc = 1;
 QString QgsServer::mConfigFilePath;
-QgsMapRenderer* QgsServer::mMapRenderer = NULL;
+QgsMapRenderer* QgsServer::mMapRenderer = nullptr;
 QgsCapabilitiesCache* QgsServer::mCapabilitiesCache;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 bool QgsServer::mInitPython = true;
-QgsServerInterfaceImpl* QgsServer::mServerInterface = NULL;
+QgsServerInterfaceImpl* QgsServer::mServerInterface = nullptr;
 #endif
 
 
@@ -94,7 +94,7 @@ void QgsServer::setupNetworkAccessManager()
 {
   QSettings settings;
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
-  QNetworkDiskCache *cache = new QNetworkDiskCache( 0 );
+  QNetworkDiskCache *cache = new QNetworkDiskCache( nullptr );
   QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
   qint64 cacheSize = settings.value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
   QgsMessageLog::logMessage( QString( "setCacheDirectory: %1" ).arg( cacheDirectory ), "Server", QgsMessageLog::INFO );
@@ -113,9 +113,9 @@ void QgsServer::setupNetworkAccessManager()
  */
 QgsRequestHandler* QgsServer::createRequestHandler( const bool captureOutput /*= false*/ )
 {
-  QgsRequestHandler* requestHandler = 0;
+  QgsRequestHandler* requestHandler = nullptr;
   char* requestMethod = getenv( "REQUEST_METHOD" );
-  if ( requestMethod != NULL )
+  if ( requestMethod != nullptr )
   {
     if ( strcmp( requestMethod, "POST" ) == 0 )
     {
@@ -181,43 +181,43 @@ void QgsServer::printRequestParameters( const QMap< QString, QString>& parameter
 void QgsServer::printRequestInfos()
 {
   QgsMessageLog::logMessage( "********************new request***************", "Server", QgsMessageLog::INFO );
-  if ( getenv( "REMOTE_ADDR" ) != NULL )
+  if ( getenv( "REMOTE_ADDR" ) != nullptr )
   {
     QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_ADDR" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "REMOTE_HOST" ) != NULL )
+  if ( getenv( "REMOTE_HOST" ) != nullptr )
   {
     QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_HOST" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "REMOTE_USER" ) != NULL )
+  if ( getenv( "REMOTE_USER" ) != nullptr )
   {
     QgsMessageLog::logMessage( "remote user: " + QString( getenv( "REMOTE_USER" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "REMOTE_IDENT" ) != NULL )
+  if ( getenv( "REMOTE_IDENT" ) != nullptr )
   {
     QgsMessageLog::logMessage( "REMOTE_IDENT: " + QString( getenv( "REMOTE_IDENT" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "CONTENT_TYPE" ) != NULL )
+  if ( getenv( "CONTENT_TYPE" ) != nullptr )
   {
     QgsMessageLog::logMessage( "CONTENT_TYPE: " + QString( getenv( "CONTENT_TYPE" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "AUTH_TYPE" ) != NULL )
+  if ( getenv( "AUTH_TYPE" ) != nullptr )
   {
     QgsMessageLog::logMessage( "AUTH_TYPE: " + QString( getenv( "AUTH_TYPE" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "HTTP_USER_AGENT" ) != NULL )
+  if ( getenv( "HTTP_USER_AGENT" ) != nullptr )
   {
     QgsMessageLog::logMessage( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "HTTP_PROXY" ) != NULL )
+  if ( getenv( "HTTP_PROXY" ) != nullptr )
   {
     QgsMessageLog::logMessage( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "HTTPS_PROXY" ) != NULL )
+  if ( getenv( "HTTPS_PROXY" ) != nullptr )
   {
     QgsMessageLog::logMessage( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "NO_PROXY" ) != NULL )
+  if ( getenv( "NO_PROXY" ) != nullptr )
   {
     QgsMessageLog::logMessage( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ), "Server", QgsMessageLog::INFO );
   }
@@ -492,7 +492,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   // Copy the parameters map
   QMap<QString, QString> parameterMap( theRequestHandler->parameterMap() );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  const QgsAccessControl* accessControl = NULL;
+  const QgsAccessControl* accessControl = nullptr;
   accessControl = mServerInterface->accessControls();
 #endif
 

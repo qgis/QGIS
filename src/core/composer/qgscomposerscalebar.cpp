@@ -38,13 +38,13 @@
 
 QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition )
     : QgsComposerItem( composition )
-    , mComposerMap( 0 )
+    , mComposerMap( nullptr )
     , mNumUnitsPerSegment( 0 )
     , mSegmentSizeMode( SegmentSizeFixed )
     , mMinBarWidth( 50 )
     , mMaxBarWidth( 150 )
     , mFontColor( QColor( 0, 0, 0 ) )
-    , mStyle( 0 )
+    , mStyle( nullptr )
     , mSegmentMillimeters( 0.0 )
     , mAlignment( Left )
     , mUnits( MapUnits )
@@ -221,7 +221,7 @@ void QgsComposerScaleBar::invalidateCurrentMap()
 
   disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
   disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
-  mComposerMap = 0;
+  mComposerMap = nullptr;
 }
 
 // nextNiceNumber(4573.23, d) = 5000 (d=1) -> 4600 (d=10) -> 4580 (d=100) -> 4574 (d=1000) -> etc
@@ -589,7 +589,7 @@ void QgsComposerScaleBar::segmentPositions( QList<QPair<double, double> >& posWi
 void QgsComposerScaleBar::setStyle( const QString& styleName )
 {
   delete mStyle;
-  mStyle = 0;
+  mStyle = nullptr;
 
   //switch depending on style name
   if ( styleName == "Single Box" )
@@ -866,7 +866,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
 
   //style
   delete mStyle;
-  mStyle = 0;
+  mStyle = nullptr;
   QString styleString = itemElem.attribute( "style", "" );
   setStyle( tr( styleString.toLocal8Bit().data() ) );
 

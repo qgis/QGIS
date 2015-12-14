@@ -264,7 +264,7 @@ void QgsComposerManager::on_mAddButton_clicked()
     }
   }
 
-  QgsComposer* newComposer = 0;
+  QgsComposer* newComposer = nullptr;
   bool loadedOK = false;
 
   QString title;
@@ -296,12 +296,12 @@ void QgsComposerManager::on_mAddButton_clicked()
       dlg->show();
 
       newComposer->hide();
-      loadedOK = newComposer->composition()->loadFromTemplate( templateDoc, 0, false );
+      loadedOK = newComposer->composition()->loadFromTemplate( templateDoc, nullptr, false );
       newComposer->activate();
 
       dlg->close();
       delete dlg;
-      dlg = 0;
+      dlg = nullptr;
     }
   }
 
@@ -309,7 +309,7 @@ void QgsComposerManager::on_mAddButton_clicked()
   {
     newComposer->close();
     QgisApp::instance()->deleteComposer( newComposer );
-    newComposer = 0;
+    newComposer = nullptr;
     QMessageBox::warning( this, tr( "Template error" ), tr( "Error, could not load template file" ) );
   }
 }
@@ -435,7 +435,7 @@ void QgsComposerManager::show_clicked()
     QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.find( item );
     if ( it != mItemComposerMap.constEnd() )
     {
-      QgsComposer* c = 0;
+      QgsComposer* c = nullptr;
       if ( it.value() ) //a normal composer
       {
         c = it.value();
@@ -464,7 +464,7 @@ void QgsComposerManager::duplicate_clicked()
     return;
   }
 
-  QgsComposer* currentComposer = 0;
+  QgsComposer* currentComposer = nullptr;
   QString currentTitle;
 
   QListWidgetItem* item = mComposerListWidget->selectedItems().at( 0 );
@@ -494,7 +494,7 @@ void QgsComposerManager::duplicate_clicked()
 
   dlg->close();
   delete dlg;
-  dlg = 0;
+  dlg = nullptr;
 
   if ( newComposer )
   {
@@ -516,7 +516,7 @@ void QgsComposerManager::rename_clicked()
   }
 
   QString currentTitle;
-  QgsComposer* currentComposer = 0;
+  QgsComposer* currentComposer = nullptr;
 
   QListWidgetItem* item = mComposerListWidget->selectedItems().at( 0 );
   QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
@@ -596,7 +596,7 @@ void QgsComposerNameDelegate::setModelData( QWidget *editor, QAbstractItemModel 
   if ( changed && cNames.contains( value ) )
   {
     //name exists!
-    QMessageBox::warning( 0, tr( "Rename composer" ), tr( "There is already a composer named \"%1\"" ).arg( value ) );
+    QMessageBox::warning( nullptr, tr( "Rename composer" ), tr( "There is already a composer named \"%1\"" ).arg( value ) );
     return;
   }
 

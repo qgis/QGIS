@@ -272,7 +272,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @param context expression context for evaluating data defined picture sources
      * @note added in 2.3
      */
-    void refreshPicture( const QgsExpressionContext* context = 0 );
+    void refreshPicture( const QgsExpressionContext* context = nullptr );
 
     /** Prepares the picture's source expression after it is altered or the compositions
      * atlas coverage layer changes.
@@ -286,7 +286,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      */
     void recalculateSize();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = 0 ) override;
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
   signals:
     /** Is emitted on picture rotation change*/

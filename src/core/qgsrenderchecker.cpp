@@ -409,7 +409,7 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
   {
     const QRgb* expectedScanline = ( const QRgb* )myExpectedImage.constScanLine( y );
     const QRgb* resultScanline = ( const QRgb* )myResultImage.constScanLine( y );
-    const QRgb* maskScanline = hasMask ? ( const QRgb* )maskImage->constScanLine( y ) : 0;
+    const QRgb* maskScanline = hasMask ? ( const QRgb* )maskImage->constScanLine( y ) : nullptr;
     QRgb* diffScanline = ( QRgb* )myDifferenceImage.scanLine( y );
 
     for ( int x = 0; x < maxWidth; ++x )

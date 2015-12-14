@@ -89,11 +89,11 @@ QWidget* QgsVariantDelegate::createEditor( QWidget* parent,
 {
   Q_UNUSED( option )
   if ( index.column() != 2 )
-    return 0;
+    return nullptr;
 
   QVariant originalValue = index.model()->data( index, Qt::UserRole );
   if ( !isSupportedType( QgsVariantDelegate::type( originalValue ) ) )
-    return 0;
+    return nullptr;
 
   QLineEdit* lineEdit = new QLineEdit( parent );
   lineEdit->setFrame( false );

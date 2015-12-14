@@ -26,7 +26,7 @@ QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
     , mVectorFieldType( Cartesian )
     , mAngleOrientation( ClockwiseFromNorth )
     , mAngleUnits( Degrees )
-    , mLineSymbol( 0 )
+    , mLineSymbol( nullptr )
     , mXIndex( -1 )
     , mYIndex( -1 )
 {
@@ -157,7 +157,7 @@ void QgsVectorFieldSymbolLayer::renderPoint( const QPointF& point, QgsSymbolV2Re
     QPolygonF line;
     line << QPointF( 0, 50 );
     line << QPointF( 100, 50 );
-    mLineSymbol->renderPolyline( line, 0, context.renderContext() );
+    mLineSymbol->renderPolyline( line, nullptr, context.renderContext() );
   }
 
   double xComponent = 0;
@@ -269,7 +269,7 @@ void QgsVectorFieldSymbolLayer::toSld( QDomDocument& doc, QDomElement &element, 
 QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::createFromSld( QDomElement &element )
 {
   Q_UNUSED( element );
-  return NULL;
+  return nullptr;
 }
 
 void QgsVectorFieldSymbolLayer::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )

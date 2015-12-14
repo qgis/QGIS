@@ -930,7 +930,7 @@ QList<int>* DualEdgeTriangulation::getSurroundingTriangles( int pointno )
 
   if ( firstedge == -1 )//an error occured
   {
-    return 0;
+    return nullptr;
   }
 
   QList<int>* vlist = new QList<int>();//create the value list on the heap
@@ -3070,13 +3070,13 @@ QList<int>* DualEdgeTriangulation::getPointsAroundEdge( double x, double y )
     else
     {
       QgsDebugMsg( "warning: null pointer" );
-      return 0;
+      return nullptr;
     }
   }
   else
   {
     QgsDebugMsg( "Edge number negative" );
-    return 0;
+    return nullptr;
   }
 }
 
@@ -3102,7 +3102,7 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
     }
   }
 
-  QgsVectorFileWriter writer( shapeFileName, "Utf-8", fields, QGis::WKBLineString, 0 );
+  QgsVectorFileWriter writer( shapeFileName, "Utf-8", fields, QGis::WKBLineString, nullptr );
   if ( writer.hasError() != QgsVectorFileWriter::NoError )
   {
     return false;

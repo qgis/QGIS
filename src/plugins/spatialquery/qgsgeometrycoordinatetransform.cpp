@@ -21,8 +21,8 @@
 #include "qgscoordinatereferencesystem.h"
 
 QgsGeometryCoordinateTransform::QgsGeometryCoordinateTransform()
-    : mCoordTransform( NULL )
-    , mFuncTransform( NULL )
+    : mCoordTransform( nullptr )
+    , mFuncTransform( nullptr )
 {
 
 }

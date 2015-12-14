@@ -227,7 +227,7 @@ QWidget * QgsOWSRootItem::paramWidget()
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 #endif
-  return 0;
+  return nullptr;
 }
 void QgsOWSRootItem::connectionsChanged()
 {
@@ -263,7 +263,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   {
     return new QgsOWSRootItem( parentItem, "OWS", "ows:" );
   }
-  return 0;
+  return nullptr;
 }
 
 //QGISEXTERN QgsOWSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
@@ -272,5 +272,5 @@ QGISEXTERN QDialog * selectWidget( QWidget * parent, Qt::WindowFlags fl )
   Q_UNUSED( parent );
   Q_UNUSED( fl );
   //return new QgsOWSSourceSelect( parent, fl );
-  return 0;
+  return nullptr;
 }

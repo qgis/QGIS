@@ -55,7 +55,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     , mProgress( progress )
 
 {
-  mProvider = NULL;
+  mProvider = nullptr;
 
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
 
@@ -214,10 +214,10 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
                                    QProgressDialog *progress )
 {
   const QgsCoordinateReferenceSystem* outputCRS;
-  QgsCoordinateTransform* ct = 0;
+  QgsCoordinateTransform* ct = nullptr;
   bool shallTransform = false;
 
-  if ( layer == NULL )
+  if ( layer == nullptr )
   {
     return ErrInvalidLayer;
   }
@@ -322,7 +322,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   }
 
   // Check for failure
-  if ( ct == NULL )
+  if ( ct == nullptr )
   {
     shallTransform = false;
   }

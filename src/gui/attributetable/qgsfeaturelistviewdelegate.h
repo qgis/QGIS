@@ -24,7 +24,7 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
       SelectionElement
     };
 
-    explicit QgsFeatureListViewDelegate( QgsFeatureListModel* listModel, QObject *parent = 0 );
+    explicit QgsFeatureListViewDelegate( QgsFeatureListModel* listModel, QObject *parent = nullptr );
 
     void setEditSelectionModel( QItemSelectionModel* editSelectionModel );
 

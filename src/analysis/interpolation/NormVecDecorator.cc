@@ -518,7 +518,7 @@ bool NormVecDecorator::estimateFirstDerivatives( QProgressDialog* d )
   {
     d->setMinimum( 0 );
     d->setMaximum( getNumberOfPoints() );
-    d->setCancelButton( 0 ); //we cannot cancel derivative estimation
+    d->setCancelButton( nullptr ); //we cannot cancel derivative estimation
     d->show();
   }
 

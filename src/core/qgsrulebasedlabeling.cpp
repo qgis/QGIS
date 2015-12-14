@@ -43,12 +43,12 @@ QList<QgsAbstractLabelProvider*> QgsRuleBasedLabelProvider::subProviders()
 ////////////////////
 
 QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings* settings, int scaleMinDenom, int scaleMaxDenom, const QString& filterExp, const QString& description, bool elseRule )
-    : mParent( 0 ), mSettings( settings )
+    : mParent( nullptr ), mSettings( settings )
     , mScaleMinDenom( scaleMinDenom ), mScaleMaxDenom( scaleMaxDenom )
     , mFilterExp( filterExp ), mDescription( description )
     , mElseRule( elseRule )
     , mIsActive( true )
-    , mFilter( 0 )
+    , mFilter( nullptr )
 {
   initFilter();
 }
@@ -75,7 +75,7 @@ void QgsRuleBasedLabeling::Rule::initFilter()
   if ( mElseRule || mFilterExp.compare( "ELSE", Qt::CaseInsensitive ) == 0 )
   {
     mElseRule = true;
-    mFilter = 0;
+    mFilter = nullptr;
   }
   else if ( !mFilterExp.isEmpty() )
   {
@@ -84,7 +84,7 @@ void QgsRuleBasedLabeling::Rule::initFilter()
   }
   else
   {
-    mFilter = 0;
+    mFilter = nullptr;
   }
 }
 
@@ -123,7 +123,7 @@ void QgsRuleBasedLabeling::Rule::removeChildAt( int i )
 
 QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::clone() const
 {
-  QgsPalLayerSettings* s = mSettings ? new QgsPalLayerSettings( *mSettings ) : 0;
+  QgsPalLayerSettings* s = mSettings ? new QgsPalLayerSettings( *mSettings ) : nullptr;
   Rule* newrule = new Rule( s, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mDescription );
   newrule->setActive( mIsActive );
   // clone children
@@ -134,7 +134,7 @@ QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::clone() const
 
 QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::create( const QDomElement& ruleElem )
 {
-  QgsPalLayerSettings* settings = 0;
+  QgsPalLayerSettings* settings = nullptr;
   QDomElement settingsElem = ruleElem.firstChildElement( "settings" );
   if ( !settingsElem.isNull() )
   {
@@ -335,7 +335,7 @@ QgsRuleBasedLabeling*QgsRuleBasedLabeling::create( const QDomElement& element )
 
   Rule* root = Rule::create( rulesElem );
   if ( !root )
-    return 0;
+    return nullptr;
 
   QgsRuleBasedLabeling* rl = new QgsRuleBasedLabeling( root );
   return rl;

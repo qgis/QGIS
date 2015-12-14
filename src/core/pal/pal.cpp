@@ -64,8 +64,8 @@ namespace pal
     // do not init and exit GEOS - we do it inside QGIS
     //initGEOS( geosNotice, geosError );
 
-    fnIsCancelled = 0;
-    fnIsCancelledContext = 0;
+    fnIsCancelled = nullptr;
+    fnIsCancelledContext = nullptr;
 
     ejChainDeg = 50;
     tenure = 10;
@@ -97,7 +97,7 @@ namespace pal
       return;
 
     mMutex.lock();
-    if ( QgsAbstractLabelProvider* key = mLayers.key( layer, 0 ) )
+    if ( QgsAbstractLabelProvider* key = mLayers.key( layer, nullptr ) )
     {
       mLayers.remove( key );
       delete layer;
@@ -172,7 +172,7 @@ namespace pal
       // valid features are added to fFeats
       Feats *ft = new Feats();
       ft->feature = ft_ptr;
-      ft->shape = NULL;
+      ft->shape = nullptr;
       ft->lPos = lPos;
       ft->priority = ft_ptr->calculatePriority();
       context->fFeats->append( ft );
@@ -332,7 +332,7 @@ namespace pal
       delete fFeats;
       delete prob;
       delete obstacles;
-      return NULL;
+      return nullptr;
     }
 
     prob->nbft = fFeats->size();
@@ -367,7 +367,7 @@ namespace pal
       delete fFeats;
       delete prob;
       delete obstacles;
-      return 0;
+      return nullptr;
     }
 
     int idlp = 0;
@@ -432,7 +432,7 @@ namespace pal
         delete fFeats;
         delete prob;
         delete obstacles;
-        return 0;
+        return nullptr;
       }
 
       feat = fFeats->takeFirst();
@@ -505,7 +505,7 @@ namespace pal
     t.start();
 
     // First, extract the problem
-    if (( prob = extract( bbox[0], bbox[1], bbox[2], bbox[3] ) ) == NULL )
+    if (( prob = extract( bbox[0], bbox[1], bbox[2], bbox[3] ) ) == nullptr )
     {
       // nothing to be done => return an empty result set
       if ( stats )
@@ -585,7 +585,7 @@ namespace pal
 
   std::list<LabelPosition*>* Pal::solveProblem( Problem* prob, bool displayAll )
   {
-    if ( prob == NULL )
+    if ( prob == nullptr )
       return new std::list<LabelPosition*>();
 
     prob->reduce();

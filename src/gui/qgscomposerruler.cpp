@@ -12,10 +12,10 @@ const unsigned int COUNT_VALID_MAGNITUDES = 5;
 const int QgsComposerRuler::validScaleMultiples[] = {1, 2, 5};
 const int QgsComposerRuler::validScaleMagnitudes[] = {1, 10, 100, 1000, 10000};
 
-QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ) : QWidget( 0 ),
+QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ) : QWidget( nullptr ),
     mDirection( d ),
-    mComposition( 0 ),
-    mLineSnapItem( 0 ),
+    mComposition( nullptr ),
+    mLineSnapItem( nullptr ),
     mScaleMinPixelsWidth( 0 )
 {
   setMouseTracking( true );
@@ -408,7 +408,7 @@ void QgsComposerRuler::mouseReleaseEvent( QMouseEvent* event )
     mComposition->removeSnapLine( mLineSnapItem );
     mSnappedItems.clear();
   }
-  mLineSnapItem = 0;
+  mLineSnapItem = nullptr;
 }
 
 void QgsComposerRuler::mousePressEvent( QMouseEvent* event )

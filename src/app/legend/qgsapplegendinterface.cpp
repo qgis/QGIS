@@ -122,7 +122,7 @@ static QgsLayerTreeGroup* _groupIndexToNode( int groupIndex, QgsLayerTreeGroup* 
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 QgsLayerTreeGroup* QgsAppLegendInterface::groupIndexToNode( int itemIndex )
@@ -237,7 +237,7 @@ QList< GroupLayerInfo > QgsAppLegendInterface::groupLayerRelationship()
 
 bool QgsAppLegendInterface::groupExists( int groupIndex )
 {
-  return groupIndexToNode( groupIndex ) != 0;
+  return groupIndexToNode( groupIndex ) != nullptr;
 }
 
 bool QgsAppLegendInterface::isGroupExpanded( int groupIndex )

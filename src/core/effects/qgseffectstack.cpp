@@ -114,7 +114,7 @@ void QgsEffectStack::draw( QgsRenderContext &context )
     }
   }
   delete sourcePic;
-  sourcePic = 0;
+  sourcePic = nullptr;
 
   context.setPainter( destPainter );
   //then, we render all the results in the opposite order
@@ -237,7 +237,7 @@ bool QgsEffectStack::changeEffect( const int index, QgsPaintEffect *effect )
 QgsPaintEffect *QgsEffectStack::takeEffect( const int index )
 {
   if ( index < 0 || index >= mEffectList.count() )
-    return NULL;
+    return nullptr;
 
   return mEffectList.takeAt( index );
 }
@@ -255,6 +255,6 @@ QgsPaintEffect *QgsEffectStack::effect( int index ) const
   }
   else
   {
-    return NULL;
+    return nullptr;
   }
 }

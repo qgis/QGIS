@@ -26,8 +26,8 @@
 
 QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
     : QTreeView( parent )
-    , mDefaultActions( 0 )
-    , mMenuProvider( 0 )
+    , mDefaultActions( nullptr )
+    , mMenuProvider( nullptr )
 {
   setHeaderHidden( true );
 
@@ -243,7 +243,7 @@ QgsMapLayer* QgsLayerTreeView::layerForIndex( const QModelIndex& index ) const
       return legendNode->layerNode()->layer();
   }
 
-  return 0;
+  return nullptr;
 }
 
 QgsLayerTreeNode* QgsLayerTreeView::currentNode() const
@@ -270,7 +270,7 @@ QgsLayerTreeGroup* QgsLayerTreeView::currentGroupNode() const
       return QgsLayerTree::toGroup( parent->parent() );
   }
 
-  return 0;
+  return nullptr;
 }
 
 QgsLayerTreeModelLegendNode* QgsLayerTreeView::currentLegendNode() const

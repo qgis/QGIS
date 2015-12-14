@@ -113,7 +113,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     enum WheelAction { WheelZoom, WheelZoomAndRecenter, WheelZoomToMouseCursor, WheelNothing };
 
     //! Constructor
-    QgsMapCanvas( QWidget * parent = 0, const char *name = 0 );
+    QgsMapCanvas( QWidget * parent = nullptr, const char *name = nullptr );
 
     //! Destructor
     ~QgsMapCanvas();
@@ -238,10 +238,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /** Zoom to the extent of the selected features of current (vector) layer.
       @param layer optionally specify different than current layer */
-    void zoomToSelected( QgsVectorLayer* layer = NULL );
+    void zoomToSelected( QgsVectorLayer* layer = nullptr );
 
     /** Pan to the selected features of current (vector) layer keeping same extent. */
-    void panToSelected( QgsVectorLayer* layer = NULL );
+    void panToSelected( QgsVectorLayer* layer = nullptr );
 
     /** \brief Sets the map tool currently being used on the canvas */
     void setMapTool( QgsMapTool* mapTool );
@@ -337,7 +337,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Zoom with the factor supplied. Factor > 1 zooms out, interval (0,1) zooms in
     //! If point is given, re-center on it
-    void zoomByFactor( double scaleFactor, const QgsPoint *center = 0 );
+    void zoomByFactor( double scaleFactor, const QgsPoint *center = nullptr );
 
     //! Zooms in/out with a given center
     void zoomWithCenter( int x, int y, bool zoomIn );
@@ -443,7 +443,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void selectionChangedSlot();
 
     //! Save the convtents of the map canvas to disk as an image
-    void saveAsImage( const QString& theFileName, QPixmap * QPixmap = 0, const QString& = "PNG" );
+    void saveAsImage( const QString& theFileName, QPixmap * QPixmap = nullptr, const QString& = "PNG" );
 
     //! This slot is connected to the visibility change of one or more layers
     void layerStateChange();

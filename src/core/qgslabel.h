@@ -96,7 +96,7 @@ class CORE_EXPORT QgsLabel
      *  \param selected feature is selected
      *  \param classAttributes attributes to create the label from
      */
-    void renderLabel( QgsRenderContext &renderContext, QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0 );
+    void renderLabel( QgsRenderContext &renderContext, QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = nullptr );
 
     /** Reads the renderer configuration from an XML file
      @param node the Dom node to read

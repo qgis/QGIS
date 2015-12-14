@@ -40,7 +40,7 @@ CoordinateCaptureMapTool::CoordinateCaptureMapTool( QgsMapCanvas* thepCanvas )
 
 CoordinateCaptureMapTool::~CoordinateCaptureMapTool()
 {
-  if ( mpRubberBand != 0 )
+  if ( mpRubberBand != nullptr )
     delete mpRubberBand;
 }
 

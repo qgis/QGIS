@@ -95,7 +95,7 @@ void QgsAtlasCompositionWidget::changeCoverageLayer( QgsMapLayer *layer )
 
   if ( !vl )
   {
-    atlasMap->setCoverageLayer( 0 );
+    atlasMap->setCoverageLayer( nullptr );
   }
   else
   {
@@ -227,7 +227,7 @@ void QgsAtlasCompositionWidget::updateAtlasFeatures()
   bool updated = atlasMap->updateFeatures();
   if ( !updated )
   {
-    QMessageBox::warning( 0, tr( "Atlas preview" ),
+    QMessageBox::warning( nullptr, tr( "Atlas preview" ),
                           tr( "No matching atlas features found!" ),
                           QMessageBox::Ok,
                           QMessageBox::Ok );

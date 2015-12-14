@@ -43,8 +43,8 @@ PyThreadState* _mainState;
 
 QgsPythonUtilsImpl::QgsPythonUtilsImpl()
 {
-  mMainModule = NULL;
-  mMainDict = NULL;
+  mMainModule = nullptr;
+  mMainDict = nullptr;
   mPythonEnabled = false;
 }
 
@@ -266,8 +266,8 @@ bool QgsPythonUtilsImpl::startServerPlugin( QString packageName )
 void QgsPythonUtilsImpl::exitPython()
 {
   Py_Finalize();
-  mMainModule = NULL;
-  mMainDict = NULL;
+  mMainModule = nullptr;
+  mMainDict = nullptr;
   mPythonEnabled = false;
 }
 
@@ -300,7 +300,7 @@ bool QgsPythonUtilsImpl::runStringUnsafe( const QString& command, bool single )
   // (non-unicode strings can be mangled)
   PyRun_String( command.toUtf8().data(), single ? Py_single_input : Py_file_input, mMainDict, mMainDict );
 
-  bool res = ( PyErr_Occurred() == 0 );
+  bool res = ( PyErr_Occurred() == nullptr );
 
   // we are done calling python API, release global interpreter lock
   PyGILState_Release( gstate );
@@ -353,10 +353,10 @@ QString QgsPythonUtilsImpl::getTraceback()
   QString errMsg;
   QString result;
 
-  PyObject *modStringIO = NULL;
-  PyObject *modTB = NULL;
-  PyObject *obStringIO = NULL;
-  PyObject *obResult = NULL;
+  PyObject *modStringIO = nullptr;
+  PyObject *modTB = nullptr;
+  PyObject *obStringIO = nullptr;
+  PyObject *obResult = nullptr;
 
   PyObject *type, *value, *traceback;
 
@@ -370,17 +370,17 @@ QString QgsPythonUtilsImpl::getTraceback()
 #endif
 
   modStringIO = PyImport_ImportModule( iomod );
-  if ( modStringIO == NULL )
+  if ( modStringIO == nullptr )
     TRACEBACK_FETCH_ERROR( QString( "can't import %1" ).arg( iomod ) );
 
-  obStringIO = PyObject_CallMethod( modStringIO, ( char* ) "StringIO", NULL );
+  obStringIO = PyObject_CallMethod( modStringIO, ( char* ) "StringIO", nullptr );
 
   /* Construct a cStringIO object */
-  if ( obStringIO == NULL )
+  if ( obStringIO == nullptr )
     TRACEBACK_FETCH_ERROR( "cStringIO.StringIO() failed" );
 
   modTB = PyImport_ImportModule( "traceback" );
-  if ( modTB == NULL )
+  if ( modTB == nullptr )
     TRACEBACK_FETCH_ERROR( "can't import traceback" );
 
   obResult = PyObject_CallMethod( modTB, ( char* ) "print_exception",
@@ -390,12 +390,12 @@ QString QgsPythonUtilsImpl::getTraceback()
                                   Py_None,
                                   obStringIO );
 
-  if ( obResult == NULL )
+  if ( obResult == nullptr )
     TRACEBACK_FETCH_ERROR( "traceback.print_exception() failed" );
   Py_DECREF( obResult );
 
-  obResult = PyObject_CallMethod( obStringIO, ( char* ) "getvalue", NULL );
-  if ( obResult == NULL )
+  obResult = PyObject_CallMethod( obStringIO, ( char* ) "getvalue", nullptr );
+  if ( obResult == nullptr )
     TRACEBACK_FETCH_ERROR( "getvalue() failed." );
 
   /* And it should be a string all ready to go - duplicate it. */
@@ -435,7 +435,7 @@ done:
 QString QgsPythonUtilsImpl::getTypeAsString( PyObject* obj )
 {
   if ( !obj )
-    return 0;
+    return nullptr;
 
 #ifdef PYTHON2
   if ( PyClass_Check( obj ) )
@@ -480,7 +480,7 @@ bool QgsPythonUtilsImpl::getError( QString& errorClassName, QString& errorText )
   errorClassName = getTypeAsString( err_type );
 
   // get exception's text
-  if ( err_value != NULL && err_value != Py_None )
+  if ( err_value != nullptr && err_value != Py_None )
   {
     errorText = PyObjectToQString( err_value );
   }
@@ -573,7 +573,7 @@ bool QgsPythonUtilsImpl::evalString( const QString& command, QString& result )
   gstate = PyGILState_Ensure();
 
   PyObject* res = PyRun_String( command.toUtf8().data(), Py_eval_input, mMainDict, mMainDict );
-  bool success = ( res != NULL );
+  bool success = ( res != nullptr );
 
   // TODO: error handling
 
@@ -620,7 +620,7 @@ QString QgsPythonUtilsImpl::homePluginsPath()
 QStringList QgsPythonUtilsImpl::extraPluginsPaths()
 {
   const char* cpaths = getenv( "QGIS_PLUGINPATH" );
-  if ( cpaths == NULL )
+  if ( cpaths == nullptr )
     return QStringList();
 
   QString paths = QString::fromLocal8Bit( cpaths );

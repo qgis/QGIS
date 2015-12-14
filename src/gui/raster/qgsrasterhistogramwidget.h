@@ -39,14 +39,14 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
     Q_OBJECT
 
   public:
-    QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent = 0 );
+    QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent = nullptr );
     ~QgsRasterHistogramWidget();
 
     /** Save the histogram as an image to disk */
     bool histoSaveAsImage( const QString& theFilename, int width = 600, int height = 600, int quality = -1 );
 
     /** Set the renderer widget (or just its name if there is no widget) */
-    void setRendererWidget( const QString& name, QgsRasterRendererWidget* rendererWidget = NULL );
+    void setRendererWidget( const QString& name, QgsRasterRendererWidget* rendererWidget = nullptr );
 
     /** Activate the histogram widget */
     void setActive( bool theActiveFlag );

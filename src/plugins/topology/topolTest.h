@@ -59,7 +59,7 @@ class TopologyRule
      * Constructor
      * initializes the test to use both layers and not to use the tolerance
      */
-    explicit TopologyRule( testFunction f0 = 0,
+    explicit TopologyRule( testFunction f0 = nullptr,
                            bool useSecondLayer0 = true,
                            bool useTolerance0 = false,
                            bool useSpatialIndex0 = false,

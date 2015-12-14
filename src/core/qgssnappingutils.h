@@ -42,7 +42,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 {
     Q_OBJECT
   public:
-    QgsSnappingUtils( QObject* parent = 0 );
+    QgsSnappingUtils( QObject* parent = nullptr );
     ~QgsSnappingUtils();
 
     // main actions
@@ -51,11 +51,11 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     QgsPointLocator* locatorForLayer( QgsVectorLayer* vl );
 
     /** Snap to map according to the current configuration (mode). Optional filter allows to discard unwanted matches. */
-    QgsPointLocator::Match snapToMap( const QPoint& point, QgsPointLocator::MatchFilter* filter = 0 );
-    QgsPointLocator::Match snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter = 0 );
+    QgsPointLocator::Match snapToMap( const QPoint& point, QgsPointLocator::MatchFilter* filter = nullptr );
+    QgsPointLocator::Match snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter = nullptr );
 
     /** Snap to current layer */
-    QgsPointLocator::Match snapToCurrentLayer( const QPoint& point, int type, QgsPointLocator::MatchFilter* filter = 0 );
+    QgsPointLocator::Match snapToCurrentLayer( const QPoint& point, int type, QgsPointLocator::MatchFilter* filter = nullptr );
 
     // environment setup
 

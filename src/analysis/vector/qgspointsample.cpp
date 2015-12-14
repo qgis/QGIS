@@ -13,7 +13,7 @@ QgsPointSample::QgsPointSample( QgsVectorLayer* inputLayer, const QString& outpu
 }
 
 QgsPointSample::QgsPointSample()
-    : mInputLayer( NULL )
+    : mInputLayer( nullptr )
     , mNCreatedPoints( 0 )
 {
 }

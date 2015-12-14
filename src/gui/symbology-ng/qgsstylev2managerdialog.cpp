@@ -209,7 +209,7 @@ void QgsStyleV2ManagerDialog::on_tabItemType_currentChanged( int )
     {
       disconnect( btnAddItem->menu(), SIGNAL( triggered( QAction* ) ),
                   this, SLOT( addColorRamp( QAction* ) ) );
-      btnAddItem->setMenu( 0 );
+      btnAddItem->setMenu( nullptr );
     }
   }
 
@@ -358,7 +358,7 @@ bool QgsStyleV2ManagerDialog::addSymbol()
   //        that, it is being called by Style Manager, so recursive calling
   //        of style manager and symbol selector can be arrested
   //        See also: editSymbol()
-  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, NULL, this );
+  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, nullptr, this );
   if ( dlg.exec() == 0 )
   {
     delete symbol;
@@ -428,7 +428,7 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
 
   QString name = tr( "new ramp" );
 
-  QgsVectorColorRampV2 *ramp = NULL;
+  QgsVectorColorRampV2 *ramp = nullptr;
   if ( rampType == tr( "Gradient" ) )
   {
     QgsVectorGradientColorRampV2* gradRamp = new QgsVectorGradientColorRampV2();
@@ -541,7 +541,7 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
 
 bool QgsStyleV2ManagerDialog::addColorRamp()
 {
-  return addColorRamp( 0 );
+  return addColorRamp( nullptr );
 }
 
 bool QgsStyleV2ManagerDialog::addColorRamp( QAction* action )
@@ -588,7 +588,7 @@ bool QgsStyleV2ManagerDialog::editSymbol()
   QgsSymbolV2* symbol = mStyle->symbol( symbolName );
 
   // let the user edit the symbol and update list when done
-  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, NULL, this );
+  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, nullptr, this );
   if ( dlg.exec() == 0 )
   {
     delete symbol;

@@ -80,7 +80,7 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
 }
 
 QgsComposerTableV2::QgsComposerTableV2()
-    : QgsComposerMultiFrame( 0, false )
+    : QgsComposerMultiFrame( nullptr, false )
     , mCellMargin( 1.0 )
     , mEmptyTableMode( HeadersOnly )
     , mShowEmptyRows( false )
@@ -818,7 +818,7 @@ void QgsComposerTableV2::setCellStyle( QgsComposerTableV2::CellStyleGroup group,
 const QgsComposerTableStyle* QgsComposerTableV2::cellStyle( QgsComposerTableV2::CellStyleGroup group ) const
 {
   if ( !mCellStyles.contains( group ) )
-    return 0;
+    return nullptr;
 
   return mCellStyles.value( group );
 }

@@ -33,7 +33,7 @@ QMap< QString, QStringList > QgsRasterFormatSaveOptionsWidget::mBuiltinProfiles;
 
 QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* parent, const QString& format,
     QgsRasterFormatSaveOptionsWidget::Type type, const QString& provider )
-    : QWidget( parent ), mFormat( format ), mProvider( provider ), mRasterLayer( 0 )
+    : QWidget( parent ), mFormat( format ), mProvider( provider ), mRasterLayer( nullptr )
     , mRasterFileName( QString() ), mPyramids( false )
     , mPyramidsFormat( QgsRaster::PyramidsGTiff )
 
@@ -582,7 +582,7 @@ bool QgsRasterFormatSaveOptionsWidget::eventFilter( QObject *obj, QEvent *event 
     QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
     if ( mouseEvent && ( mouseEvent->button() == Qt::RightButton ) )
     {
-      QMenu* menu = 0;
+      QMenu* menu = nullptr;
       QString text;
       if ( mOptionsStackedWidget->currentIndex() == 0 )
         text = tr( "Use simple interface" );

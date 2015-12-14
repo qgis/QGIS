@@ -34,7 +34,7 @@
 QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapCanvas )
     : QWidget( parent )
     , mMapCanvas( mapCanvas )
-    , mJob( 0 )
+    , mJob( nullptr )
 {
   setAutoFillBackground( true );
   setObjectName( "theOverviewCanvas" );
@@ -194,7 +194,7 @@ void QgsMapOverviewCanvas::mapRenderingFinished()
   mPixmap = QPixmap::fromImage( mJob->renderedImage() );
 
   delete mJob;
-  mJob = 0;
+  mJob = nullptr;
 
   // schedule repaint
   update();

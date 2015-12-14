@@ -46,7 +46,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     Q_OBJECT
 
   public:
-    QgsAttributeTableView( QWidget* parent = 0 );
+    QgsAttributeTableView( QWidget* parent = nullptr );
     virtual ~QgsAttributeTableView();
 
     virtual void setModel( QgsAttributeTableFilterModel* filterModel );

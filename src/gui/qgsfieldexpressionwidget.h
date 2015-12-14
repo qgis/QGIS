@@ -48,7 +48,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     /**
      * @brief QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
      */
-    explicit QgsFieldExpressionWidget( QWidget *parent = 0 );
+    explicit QgsFieldExpressionWidget( QWidget *parent = nullptr );
 
     //! define the title used in the expression dialog
     void setExpressionDialogTitle( const QString& title );
@@ -72,12 +72,12 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * @param isExpression determines if the string returned is the name of a field or an expression
      * @param isValid determines if the expression (or field) returned is valid
      */
-    QString currentField( bool *isExpression = 0, bool *isValid = 0 ) const;
+    QString currentField( bool *isExpression = nullptr, bool *isValid = nullptr ) const;
 
     /**
       * Return true if the current expression is valid
       */
-    bool isValidExpression( QString *expressionError = 0 ) const;
+    bool isValidExpression( QString *expressionError = nullptr ) const;
 
     bool isExpression() const;
     /**

@@ -25,7 +25,7 @@ QgsScaleBarStyle::QgsScaleBarStyle( const QgsComposerScaleBar* bar ):  mScaleBar
 
 }
 
-QgsScaleBarStyle::QgsScaleBarStyle(): mScaleBar( 0 )
+QgsScaleBarStyle::QgsScaleBarStyle(): mScaleBar( nullptr )
 {
 
 }

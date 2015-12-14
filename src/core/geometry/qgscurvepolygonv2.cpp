@@ -26,7 +26,7 @@
 #include <QPainter>
 #include <QPainterPath>
 
-QgsCurvePolygonV2::QgsCurvePolygonV2(): QgsSurfaceV2(), mExteriorRing( 0 )
+QgsCurvePolygonV2::QgsCurvePolygonV2(): QgsSurfaceV2(), mExteriorRing( nullptr )
 {
 
 }
@@ -36,7 +36,7 @@ QgsCurvePolygonV2::~QgsCurvePolygonV2()
   clear();
 }
 
-QgsCurvePolygonV2::QgsCurvePolygonV2( const QgsCurvePolygonV2& p ) : QgsSurfaceV2( p ), mExteriorRing( 0 )
+QgsCurvePolygonV2::QgsCurvePolygonV2( const QgsCurvePolygonV2& p ) : QgsSurfaceV2( p ), mExteriorRing( nullptr )
 {
   if ( p.mExteriorRing )
   {
@@ -75,7 +75,7 @@ QgsCurvePolygonV2* QgsCurvePolygonV2::clone() const
 void QgsCurvePolygonV2::clear()
 {
   delete mExteriorRing;
-  mExteriorRing = 0;
+  mExteriorRing = nullptr;
   qDeleteAll( mInteriorRings );
   mInteriorRings.clear();
   mWkbType = QgsWKBTypes::Unknown;
@@ -99,7 +99,7 @@ bool QgsCurvePolygonV2::fromWkb( const unsigned char* wkb )
 
   int nRings;
   wkbPtr >> nRings;
-  QgsCurveV2* currentCurve = 0;
+  QgsCurveV2* currentCurve = nullptr;
   int currentCurveSize = 0;
   for ( int i = 0; i < nRings; ++i )
   {
@@ -236,7 +236,7 @@ unsigned char* QgsCurvePolygonV2::asWkb( int& binarySize ) const
   QgsWkbPtr wkb( geomPtr );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
-  wkb << static_cast<quint32>(( mExteriorRing != 0 ) + mInteriorRings.size() );
+  wkb << static_cast<quint32>(( mExteriorRing != nullptr ) + mInteriorRings.size() );
   if ( mExteriorRing )
   {
     int curveWkbLen = 0;
@@ -415,7 +415,7 @@ QgsPolygonV2* QgsCurvePolygonV2::toPolygon() const
 {
   if ( !mExteriorRing )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsPolygonV2* poly = new QgsPolygonV2();
@@ -445,7 +445,7 @@ QgsCurveV2* QgsCurvePolygonV2::interiorRing( int i ) const
 {
   if ( i < 0 || i >= mInteriorRings.size() )
   {
-    return 0;
+    return nullptr;
   }
   return mInteriorRings.at( i );
 }
@@ -692,7 +692,7 @@ bool QgsCurvePolygonV2::deleteVertex( const QgsVertexId& vId )
     if ( vId.ring == 0 )
     {
       delete mExteriorRing;
-      mExteriorRing = 0;
+      mExteriorRing = nullptr;
       if ( !mInteriorRings.isEmpty() )
       {
         mExteriorRing = mInteriorRings.takeFirst();

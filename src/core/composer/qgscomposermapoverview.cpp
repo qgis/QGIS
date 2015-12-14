@@ -26,7 +26,7 @@
 QgsComposerMapOverview::QgsComposerMapOverview( const QString& name, QgsComposerMap* map )
     : QgsComposerMapItem( name, map )
     , mFrameMapId( -1 )
-    , mFrameSymbol( 0 )
+    , mFrameSymbol( nullptr )
     , mBlendMode( QPainter::CompositionMode_SourceOver )
     , mInverted( false )
     , mCentered( false )
@@ -35,9 +35,9 @@ QgsComposerMapOverview::QgsComposerMapOverview( const QString& name, QgsComposer
 }
 
 QgsComposerMapOverview::QgsComposerMapOverview()
-    : QgsComposerMapItem( QString(), 0 )
+    : QgsComposerMapItem( QString(), nullptr )
     , mFrameMapId( -1 )
-    , mFrameSymbol( 0 )
+    , mFrameSymbol( nullptr )
     , mBlendMode( QPainter::CompositionMode_SourceOver )
     , mInverted( false )
     , mCentered( false )
@@ -127,7 +127,7 @@ void QgsComposerMapOverview::draw( QPainter *painter )
   if ( !mInverted )
   {
     //Render the intersecting map extent
-    mFrameSymbol->renderPolygon( intersectPolygon, &rings, 0, context );
+    mFrameSymbol->renderPolygon( intersectPolygon, &rings, nullptr, context );
   }
   else
   {
@@ -142,7 +142,7 @@ void QgsComposerMapOverview::draw( QPainter *painter )
 
     //Intersecting extent is an inner ring for the shaded area
     rings.append( intersectPolygon );
-    mFrameSymbol->renderPolygon( outerPolygon, &rings, 0, context );
+    mFrameSymbol->renderPolygon( outerPolygon, &rings, nullptr, context );
   }
 
   mFrameSymbol->stopRender( context );

@@ -35,7 +35,7 @@ void QgsDial::paintEvent( QPaintEvent *event )
   QRect rect = geometry();
   painter.setPen( QPen( palette().color( QPalette::WindowText ) ) );
   painter.drawText( QRectF( 0, rect.height() * 0.65, rect.width(), rect.height() ),
-                    Qt::AlignHCenter, variantValue().toString(), 0 );
+                    Qt::AlignHCenter, variantValue().toString(), nullptr );
   painter.end();
 }
 

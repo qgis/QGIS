@@ -29,7 +29,7 @@ QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndo
 }
 
 QgsComposerMultiFrame::QgsComposerMultiFrame()
-    : QgsComposerObject( 0 )
+    : QgsComposerObject( nullptr )
     , mResizeMode( UseExistingFrames )
     , mCreateUndoCommands( false )
     , mIsRecalculatingSize( false )
@@ -84,7 +84,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
 
   double currentY = 0;
   double currentHeight = 0;
-  QgsComposerFrame* currentItem = 0;
+  QgsComposerFrame* currentItem = nullptr;
 
   for ( int i = 0; i < mFrameItems.size(); ++i )
   {
@@ -201,7 +201,7 @@ QgsComposerFrame* QgsComposerMultiFrame::createNewFrame( QgsComposerFrame* curre
 {
   if ( !currentFrame )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, pos.x(),
@@ -349,7 +349,7 @@ QgsComposerFrame* QgsComposerMultiFrame::frame( int i ) const
 {
   if ( i >= mFrameItems.size() )
   {
-    return 0;
+    return nullptr;
   }
   return mFrameItems.at( i );
 }

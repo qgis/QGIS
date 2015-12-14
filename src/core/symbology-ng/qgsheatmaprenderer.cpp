@@ -39,7 +39,7 @@ QgsHeatmapRenderer::QgsHeatmapRenderer( )
     , mRadiusSquared( 0 )
     , mRadiusUnit( QgsSymbolV2::MM )
     , mWeightAttrNum( -1 )
-    , mGradientRamp( 0 )
+    , mGradientRamp( nullptr )
     , mInvertRamp( false )
     , mExplicitMax( 0.0 )
     , mRenderQuality( 3 )
@@ -142,7 +142,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
   int height = context.painter()->device()->height() / mRenderQuality;
 
   //transform geometry if required
-  QgsGeometry* transformedGeom = 0;
+  QgsGeometry* transformedGeom = nullptr;
   const QgsCoordinateTransform* xform = context.coordinateTransform();
   if ( xform )
   {
@@ -154,7 +154,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
   QgsMultiPoint multiPoint = convertToMultipoint( transformedGeom ? transformedGeom : feature.constGeometry() );
 
   delete transformedGeom;
-  transformedGeom = 0;
+  transformedGeom = nullptr;
 
   //loop through all points in multipoint
   for ( QgsMultiPoint::const_iterator pointIt = multiPoint.constBegin(); pointIt != multiPoint.constEnd(); ++pointIt )
@@ -371,7 +371,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument& doc )
 QgsSymbolV2* QgsHeatmapRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& )
 {
   Q_UNUSED( feature );
-  return 0;
+  return nullptr;
 }
 
 QgsSymbolV2List QgsHeatmapRenderer::symbols( QgsRenderContext& )

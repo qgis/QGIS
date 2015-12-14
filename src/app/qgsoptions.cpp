@@ -912,7 +912,7 @@ void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
     QString fileName = QgsApplication::qgisSettingsDirPath() + QLatin1String( "project_default.qgs" );
     if ( ! QFile::exists( fileName ) )
     {
-      QMessageBox::information( 0, tr( "Save default project" ), tr( "You must set a default project" ) );
+      QMessageBox::information( nullptr, tr( "Save default project" ), tr( "You must set a default project" ) );
       cbxProjectDefaultNew->setChecked( false );
     }
   }
@@ -923,11 +923,11 @@ void QgsOptions::on_pbnProjectDefaultSetCurrent_clicked()
   QString fileName = QgsApplication::qgisSettingsDirPath() + QLatin1String( "project_default.qgs" );
   if ( QgsProject::instance()->write( QFileInfo( fileName ) ) )
   {
-    QMessageBox::information( 0, tr( "Save default project" ), tr( "Current project saved as default" ) );
+    QMessageBox::information( nullptr, tr( "Save default project" ), tr( "Current project saved as default" ) );
   }
   else
   {
-    QMessageBox::critical( 0, tr( "Save default project" ), tr( "Error saving current project as default" ) );
+    QMessageBox::critical( nullptr, tr( "Save default project" ), tr( "Error saving current project as default" ) );
   }
 }
 
@@ -943,7 +943,7 @@ void QgsOptions::on_pbnProjectDefaultReset_clicked()
 
 void QgsOptions::on_pbnTemplateFolderBrowse_pressed()
 {
-  QString newDir = QFileDialog::getExistingDirectory( 0, tr( "Choose a directory to store project template files" ),
+  QString newDir = QFileDialog::getExistingDirectory( nullptr, tr( "Choose a directory to store project template files" ),
                    leTemplateFolder->text() );
   if ( ! newDir.isNull() )
   {
@@ -1498,7 +1498,7 @@ void QgsOptions::editGdalDriver( const QString& driverName )
   if ( driverName.isEmpty() )
     return;
 
-  QgsDialog dlg( this, 0, QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  QgsDialog dlg( this, nullptr, QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
   QVBoxLayout *layout = dlg.layout();
   QString title = tr( "Create Options - %1 Driver" ).arg( driverName );
   if ( driverName == "_pyramids" )
@@ -1815,17 +1815,17 @@ void QgsOptions::loadGdalDriverList()
 
     // get driver R/W flags, taken from GDALGeneralCmdLineProcessor()
     const char *pszRWFlag, *pszVirtualIO;
-    if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATE, NULL ) )
+    if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATE, nullptr ) )
     {
       myGdalWriteDrivers << myGdalDriverDescription;
       pszRWFlag = "rw+";
     }
     else if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATECOPY,
-                                   NULL ) )
+                                   nullptr ) )
       pszRWFlag = "rw";
     else
       pszRWFlag = "ro";
-    if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_VIRTUALIO, NULL ) )
+    if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_VIRTUALIO, nullptr ) )
       pszVirtualIO = "v";
     else
       pszVirtualIO = "";
@@ -2108,7 +2108,7 @@ void QgsOptions::on_mButtonImportColors_clicked()
   QFileInfo fileInfo( filePath );
   if ( !fileInfo.exists() || !fileInfo.isReadable() )
   {
-    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
+    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
     return;
   }
 
@@ -2117,7 +2117,7 @@ void QgsOptions::on_mButtonImportColors_clicked()
   bool importOk = mTreeCustomColors->importColorsFromGpl( file );
   if ( !importOk )
   {
-    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "Error, no colors found in palette file" ) );
+    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, no colors found in palette file" ) );
     return;
   }
 }
@@ -2146,7 +2146,7 @@ void QgsOptions::on_mButtonExportColors_clicked()
   bool exportOk = mTreeCustomColors->exportColorsToGpl( file );
   if ( !exportOk )
   {
-    QMessageBox::critical( 0, tr( "Error exporting" ), tr( "Error writing palette file" ) );
+    QMessageBox::critical( nullptr, tr( "Error exporting" ), tr( "Error writing palette file" ) );
     return;
   }
 }

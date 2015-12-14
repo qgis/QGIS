@@ -43,9 +43,9 @@
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent )
     : QWidget( parent )
     , mLayer( layer )
-    , mDesignerTree( 0 )
-    , mFieldsList( 0 )
-    , mRelationsList( 0 )
+    , mDesignerTree( nullptr )
+    , mFieldsList( nullptr )
+    , mRelationsList( nullptr )
 {
   if ( !layer )
     return;
@@ -156,7 +156,7 @@ void QgsFieldsProperties::onAttributeSelectionChanged()
 
 QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent )
 {
-  QTreeWidgetItem* newWidget = 0;
+  QTreeWidgetItem* newWidget = nullptr;
   switch ( widgetDef->type() )
   {
     case QgsAttributeEditorElement::AeTypeField:
@@ -746,7 +746,7 @@ void QgsFieldsProperties::updateExpression()
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope();
 
-  QgsExpressionBuilderDialog dlg( mLayer, exp, 0, "generic", context );
+  QgsExpressionBuilderDialog dlg( mLayer, exp, nullptr, "generic", context );
 
   if ( dlg.exec() )
   {
@@ -808,7 +808,7 @@ QString QgsFieldsProperties::editTypeButtonText( QgsVectorLayer::EditType type )
 
 QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent )
 {
-  QgsAttributeEditorElement *widgetDef = 0;
+  QgsAttributeEditorElement *widgetDef = nullptr;
 
   DesignerTreeItemData itemData = item->data( 0, DesignerTreeRole ).value<DesignerTreeItemData>();
   switch ( itemData.type() )
@@ -973,12 +973,12 @@ QgsFieldsProperties::FieldConfig::FieldConfig()
     : mEditable( true )
     , mEditableEnabled( true )
     , mLabelOnTop( false )
-    , mButton( 0 )
+    , mButton( nullptr )
 {
 }
 
 QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
-    : mButton( 0 )
+    : mButton( nullptr )
 {
   mEditable = !layer->editFormConfig()->readOnly( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin
@@ -1001,12 +1001,12 @@ QStringList DragList::mimeTypes() const
 QMimeData* DragList::mimeData( const QList<QTableWidgetItem*> items ) const
 {
   if ( items.count() <= 0 )
-    return 0;
+    return nullptr;
 
   QStringList types = mimeTypes();
 
   if ( types.isEmpty() )
-    return 0;
+    return nullptr;
 
   QMimeData* data = new QMimeData();
   QString format = types.at( 0 );
@@ -1171,12 +1171,12 @@ QStringList DesignerTree::mimeTypes() const
 QMimeData* DesignerTree::mimeData( const QList<QTreeWidgetItem*> items ) const
 {
   if ( items.count() <= 0 )
-    return 0;
+    return nullptr;
 
   QStringList types = mimeTypes();
 
   if ( types.isEmpty() )
-    return 0;
+    return nullptr;
 
   QMimeData* data = new QMimeData();
   QString format = types.at( 0 );

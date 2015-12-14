@@ -77,8 +77,8 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 RoadGraphPlugin::RoadGraphPlugin( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
-    , mQSettingsAction( 0 )
-    , mQShortestPathDock( 0 )
+    , mQSettingsAction( nullptr )
+    , mQShortestPathDock( nullptr )
 {
   mSettings = new RgLineVectorLayerSettings();
   mTimeUnitName = "h";
@@ -200,7 +200,7 @@ QgisInterface* RoadGraphPlugin::iface()
 const QgsGraphDirector* RoadGraphPlugin::director() const
 {
   QString layerId;
-  QgsVectorLayer *layer = NULL;
+  QgsVectorLayer *layer = nullptr;
   QMap< QString, QgsMapLayer* > mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
   QMap< QString, QgsMapLayer* >::const_iterator it;
   for ( it = mapLayers.begin(); it != mapLayers.end(); ++it )
@@ -210,14 +210,14 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
     layer = dynamic_cast< QgsVectorLayer* >( it.value() );
     break;
   }
-  if ( layer == NULL )
-    return NULL;
+  if ( layer == nullptr )
+    return nullptr;
   if ( layer->wkbType() == QGis::WKBLineString
        || layer->wkbType() == QGis::WKBMultiLineString )
   {
     QgsVectorDataProvider *provider = layer->dataProvider();
-    if ( provider == NULL )
-      return NULL;
+    if ( provider == nullptr )
+      return nullptr;
     SpeedUnit speedUnit = SpeedUnit::byName( mSettings->mSpeedUnitName );
 
     QgsLineVectorLayerDirector * director =
@@ -233,7 +233,7 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
                             mSettings->mDefaultSpeed, speedUnit.multipler() ) );
     return director;
   }
-  return NULL;
+  return nullptr;
 }
 
 QString RoadGraphPlugin::timeUnitName()

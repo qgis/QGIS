@@ -82,7 +82,7 @@ class QgsPointLocator_Stream : public IDataStream
 class QgsPointLocator_VisitorNearestVertex : public IVisitor
 {
   public:
-    QgsPointLocator_VisitorNearestVertex( QgsPointLocator* pl, QgsPointLocator::Match& m, const QgsPoint& srcPoint, QgsPointLocator::MatchFilter* filter = 0 )
+    QgsPointLocator_VisitorNearestVertex( QgsPointLocator* pl, QgsPointLocator::Match& m, const QgsPoint& srcPoint, QgsPointLocator::MatchFilter* filter = nullptr )
         : mLocator( pl ), mBest( m ), mSrcPoint( srcPoint ), mFilter( filter ) {}
 
     void visitNode( const INode& n ) override { Q_UNUSED( n ); }
@@ -120,7 +120,7 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
 class QgsPointLocator_VisitorNearestEdge : public IVisitor
 {
   public:
-    QgsPointLocator_VisitorNearestEdge( QgsPointLocator* pl, QgsPointLocator::Match& m, const QgsPoint& srcPoint, QgsPointLocator::MatchFilter* filter = 0 )
+    QgsPointLocator_VisitorNearestEdge( QgsPointLocator* pl, QgsPointLocator::Match& m, const QgsPoint& srcPoint, QgsPointLocator::MatchFilter* filter = nullptr )
         : mLocator( pl ), mBest( m ), mSrcPoint( srcPoint ), mFilter( filter ) {}
 
     void visitNode( const INode& n ) override { Q_UNUSED( n ); }
@@ -132,7 +132,7 @@ class QgsPointLocator_VisitorNearestEdge : public IVisitor
       QgsGeometry* geom = mLocator->mGeoms.value( id );
       QgsPoint pt;
       int afterVertex;
-      double sqrDist = geom->closestSegmentWithContext( mSrcPoint, pt, afterVertex, 0, POINT_LOC_EPSILON );
+      double sqrDist = geom->closestSegmentWithContext( mSrcPoint, pt, afterVertex, nullptr, POINT_LOC_EPSILON );
       if ( sqrDist < 0 )
         return;
 
@@ -492,7 +492,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry* geom, co
 class QgsPointLocator_VisitorEdgesInRect : public IVisitor
 {
   public:
-    QgsPointLocator_VisitorEdgesInRect( QgsPointLocator* pl, QgsPointLocator::MatchList& lst, const QgsRectangle& srcRect, QgsPointLocator::MatchFilter* filter = 0 )
+    QgsPointLocator_VisitorEdgesInRect( QgsPointLocator* pl, QgsPointLocator::MatchList& lst, const QgsRectangle& srcRect, QgsPointLocator::MatchFilter* filter = nullptr )
         : mLocator( pl ), mList( lst ), mSrcRect( srcRect ), mFilter( filter ) {}
 
     void visitNode( const INode& n ) override { Q_UNUSED( n ); }
@@ -572,12 +572,12 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
 
 
 QgsPointLocator::QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS, const QgsRectangle* extent )
-    : mStorage( 0 )
-    , mRTree( 0 )
+    : mStorage( nullptr )
+    , mRTree( nullptr )
     , mIsEmptyLayer( false )
-    , mTransform( 0 )
+    , mTransform( nullptr )
     , mLayer( layer )
-    , mExtent( 0 )
+    , mExtent( nullptr )
 {
   if ( destCRS )
   {
@@ -613,7 +613,7 @@ bool QgsPointLocator::init( int maxFeaturesToIndex )
 
 bool QgsPointLocator::hasIndex() const
 {
-  return mRTree != 0 || mIsEmptyLayer;
+  return mRTree != nullptr || mIsEmptyLayer;
 }
 
 
@@ -669,7 +669,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     }
 
     SpatialIndex::Region r( rect2region( f.constGeometry()->boundingBox() ) );
-    dataList << new RTree::Data( 0, 0, r, f.id() );
+    dataList << new RTree::Data( 0, nullptr, r, f.id() );
 
     if ( mGeoms.contains( f.id() ) )
       delete mGeoms.take( f.id() );
@@ -708,7 +708,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 void QgsPointLocator::destroyIndex()
 {
   delete mRTree;
-  mRTree = 0;
+  mRTree = nullptr;
 
   mIsEmptyLayer = false;
 
@@ -750,7 +750,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
     if ( !bbox.isNull() )
     {
       SpatialIndex::Region r( rect2region( bbox ) );
-      mRTree->insertData( 0, 0, r, f.id() );
+      mRTree->insertData( 0, nullptr, r, f.id() );
 
       if ( mGeoms.contains( f.id() ) )
         delete mGeoms.take( f.id() );

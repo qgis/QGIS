@@ -94,7 +94,7 @@ void QgsConfigureShortcutsDialog::populateActions()
   treeActions->resizeColumnToContents( 0 );
   treeActions->sortItems( 0, Qt::AscendingOrder );
 
-  actionChanged( treeActions->currentItem(), NULL );
+  actionChanged( treeActions->currentItem(), nullptr );
 }
 
 void QgsConfigureShortcutsDialog::saveShortcuts()
@@ -255,8 +255,8 @@ void QgsConfigureShortcutsDialog::setNoShortcut()
 
 QAction* QgsConfigureShortcutsDialog::currentAction()
 {
-  if ( treeActions->currentItem() == NULL )
-    return NULL;
+  if ( treeActions->currentItem() == nullptr )
+    return nullptr;
 
   QObject* action = treeActions->currentItem()->data( 0, Qt::UserRole ).value<QObject*>();
   return qobject_cast<QAction*>( action );
@@ -397,7 +397,7 @@ void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence& 
 
   // first check whether this action is not taken already
   QAction* otherAction = QgsShortcutsManager::instance()->actionForShortcut( s );
-  if ( otherAction != NULL )
+  if ( otherAction != nullptr )
   {
     QString otherActionText = otherAction->text();
     otherActionText.remove( '&' ); // remove the accelerator
@@ -422,5 +422,5 @@ void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence& 
   // update gui
   treeActions->currentItem()->setText( 1, s.toString() );
 
-  actionChanged( treeActions->currentItem(), NULL );
+  actionChanged( treeActions->currentItem(), nullptr );
 }

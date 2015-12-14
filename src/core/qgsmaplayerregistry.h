@@ -285,7 +285,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
 
   private:
     //! private singleton constructor
-    QgsMapLayerRegistry( QObject * parent = 0 );
+    QgsMapLayerRegistry( QObject * parent = nullptr );
 
     QMap<QString, QgsMapLayer*> mMapLayers;
     QSet<QgsMapLayer*> mOwnedLayers;

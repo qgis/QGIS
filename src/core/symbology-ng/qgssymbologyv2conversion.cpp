@@ -131,7 +131,7 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QGis::GeometryType ge
   {
     case QGis::Point:
     {
-      QgsMarkerSymbolLayerV2* sl = NULL;
+      QgsMarkerSymbolLayerV2* sl = nullptr;
       double size = readMarkerSymbolSize( synode );
       double angle = 0; // rotation only from classification field
       QString symbolName = readMarkerSymbolName( synode );
@@ -181,7 +181,7 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QGis::GeometryType ge
     }
 
     default:
-      return NULL;
+      return nullptr;
   }
 }
 
@@ -191,7 +191,7 @@ static QgsFeatureRendererV2* readOldSingleSymbolRenderer( const QDomNode& rnode,
 {
   QDomNode synode = rnode.namedItem( "symbol" );
   if ( synode.isNull() )
-    return 0;
+    return nullptr;
 
   QgsSymbolV2* sy2 = readOldSymbol( synode, geomType );
   QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( sy2 );
@@ -297,14 +297,14 @@ QgsFeatureRendererV2* QgsSymbologyV2Conversion::readOldRenderer( const QDomNode&
   }
   else if ( !continuousnode.isNull() )
   {
-    return 0;
+    return nullptr;
   }
   else if ( !uniquevaluenode.isNull() )
   {
     return readOldUniqueValueRenderer( uniquevaluenode, geomType );
   }
 
-  return 0;
+  return nullptr;
 }
 
 

@@ -39,7 +39,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     /** Constructor for QgsFieldConditionalFormatWidget.
      * @param parent parent widget
      */
-    explicit QgsFieldConditionalFormatWidget( QWidget *parent = 0 );
+    explicit QgsFieldConditionalFormatWidget( QWidget *parent = nullptr );
 
     ~QgsFieldConditionalFormatWidget();
 

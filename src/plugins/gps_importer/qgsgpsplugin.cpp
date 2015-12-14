@@ -65,8 +65,8 @@ static const QString icon_ = ":/gps_importer.png";
 QgsGPSPlugin::QgsGPSPlugin( QgisInterface * theQgisInterFace )
     : QgisPlugin( name_, description_, category_, version_, type_ )
     , mQGisInterface( theQgisInterFace )
-    , mQActionPointer( 0 )
-    , mCreateGPXAction( 0 )
+    , mQActionPointer( nullptr )
+    , mCreateGPXAction( nullptr )
 {
   setupBabel();
 }
@@ -182,7 +182,7 @@ void QgsGPSPlugin::createGPX()
     std::ofstream ofs( fileName.toUtf8() );
     if ( !ofs )
     {
-      QMessageBox::warning( NULL, tr( "Could not create file" ),
+      QMessageBox::warning( nullptr, tr( "Could not create file" ),
                             tr( "Unable to create a GPX file with the given name. "
                                 "Try again with another name or in another "
                                 "directory." ) );
@@ -218,7 +218,7 @@ void QgsGPSPlugin::unload()
   mQGisInterface->removePluginVectorMenu( tr( "&GPS" ), mQActionPointer );
   mQGisInterface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
-  mQActionPointer = 0;
+  mQActionPointer = nullptr;
 }
 
 void QgsGPSPlugin::loadGPXFile( const QString& fileName, bool loadWaypoints, bool loadRoutes,
@@ -228,7 +228,7 @@ void QgsGPSPlugin::loadGPXFile( const QString& fileName, bool loadWaypoints, boo
   QFileInfo fileInfo( fileName );
   if ( !fileInfo.isReadable() )
   {
-    QMessageBox::warning( NULL, tr( "GPX Loader" ),
+    QMessageBox::warning( nullptr, tr( "GPX Loader" ),
                           tr( "Unable to read the selected file.\n"
                               "Please reselect a valid file." ) );
     return;
@@ -273,7 +273,7 @@ void QgsGPSPlugin::importGPSFile( const QString& inputFileName, QgsBabelFormat* 
   babelProcess.start( babelArgs.join( " " ) );
   if ( !babelProcess.waitForStarted() )
   {
-    QMessageBox::warning( NULL, tr( "Could not start process" ),
+    QMessageBox::warning( nullptr, tr( "Could not start process" ),
                           tr( "Could not start GPSBabel!" ) );
     return;
   }
@@ -297,7 +297,7 @@ void QgsGPSPlugin::importGPSFile( const QString& inputFileName, QgsBabelFormat* 
     QString errorMsg( tr( "Could not import data from %1!\n\n" )
                       .arg( inputFileName ) );
     errorMsg += babelError;
-    QMessageBox::warning( NULL, tr( "Error importing data" ), errorMsg );
+    QMessageBox::warning( nullptr, tr( "Error importing data" ), errorMsg );
     return;
   }
 
@@ -344,7 +344,7 @@ void QgsGPSPlugin::convertGPSFile( const QString& inputFileName,
   babelProcess.start( babelArgs.join( " " ) );
   if ( !babelProcess.waitForStarted() )
   {
-    QMessageBox::warning( NULL, tr( "Could not start process" ),
+    QMessageBox::warning( nullptr, tr( "Could not start process" ),
                           tr( "Could not start GPSBabel!" ) );
     return;
   }
@@ -366,7 +366,7 @@ void QgsGPSPlugin::convertGPSFile( const QString& inputFileName,
     QString errorMsg( tr( "Could not convert data from %1!\n\n" )
                       .arg( inputFileName ) );
     errorMsg += babelError;
-    QMessageBox::warning( NULL, tr( "Error converting data" ), errorMsg );
+    QMessageBox::warning( nullptr, tr( "Error converting data" ), errorMsg );
     return;
   }
 
@@ -423,7 +423,7 @@ void QgsGPSPlugin::downloadFromGPS( const QString& device, const QString& port,
                                      port, outputFileName );
   if ( babelArgs.isEmpty() )
   {
-    QMessageBox::warning( NULL, tr( "Not supported" ),
+    QMessageBox::warning( nullptr, tr( "Not supported" ),
                           tr( "This device does not support downloading of %1." )
                           .arg( features ) );
     return;
@@ -435,7 +435,7 @@ void QgsGPSPlugin::downloadFromGPS( const QString& device, const QString& port,
   babelProcess.start( babelArgs.join( " " ) );
   if ( !babelProcess.waitForStarted() )
   {
-    QMessageBox::warning( NULL, tr( "Could not start process" ),
+    QMessageBox::warning( nullptr, tr( "Could not start process" ),
                           tr( "Could not start GPSBabel!" ) );
     return;
   }
@@ -456,7 +456,7 @@ void QgsGPSPlugin::downloadFromGPS( const QString& device, const QString& port,
     QString babelError( babelProcess.readAllStandardError() );
     QString errorMsg( tr( "Could not download data from GPS!\n\n" ) );
     errorMsg += babelError;
-    QMessageBox::warning( NULL, tr( "Error downloading data" ), errorMsg );
+    QMessageBox::warning( nullptr, tr( "Error downloading data" ), errorMsg );
     return;
   }
 
@@ -513,7 +513,7 @@ void QgsGPSPlugin::uploadToGPS( QgsVectorLayer* gpxLayer, const QString& device,
                                      source.left( source.lastIndexOf( '?' ) ), port );
   if ( babelArgs.isEmpty() )
   {
-    QMessageBox::warning( NULL, tr( "Not supported" ),
+    QMessageBox::warning( nullptr, tr( "Not supported" ),
                           tr( "This device does not support uploading of %1." )
                           .arg( features ) );
     return;
@@ -525,7 +525,7 @@ void QgsGPSPlugin::uploadToGPS( QgsVectorLayer* gpxLayer, const QString& device,
   babelProcess.start( babelArgs.join( " " ) );
   if ( !babelProcess.waitForStarted() )
   {
-    QMessageBox::warning( NULL, tr( "Could not start process" ),
+    QMessageBox::warning( nullptr, tr( "Could not start process" ),
                           tr( "Could not start GPSBabel!" ) );
     return;
   }
@@ -546,7 +546,7 @@ void QgsGPSPlugin::uploadToGPS( QgsVectorLayer* gpxLayer, const QString& device,
     QString babelError( babelProcess.readAllStandardError() );
     QString errorMsg( tr( "Error while uploading data to GPS!\n\n" ) );
     errorMsg += babelError;
-    QMessageBox::warning( NULL, tr( "Error uploading data" ), errorMsg );
+    QMessageBox::warning( nullptr, tr( "Error uploading data" ), errorMsg );
     return;
   }
 

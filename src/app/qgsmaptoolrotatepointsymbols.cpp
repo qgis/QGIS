@@ -29,12 +29,12 @@
 
 QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas ),
-    mActiveLayer( 0 ),
+    mActiveLayer( nullptr ),
     mFeatureNumber( 0 ),
     mCurrentMouseAzimut( 0.0 ),
     mCurrentRotationFeature( 0.0 ),
     mRotating( false ),
-    mRotationItem( 0 ),
+    mRotationItem( nullptr ),
     mCtrlPressed( false )
 {
 
@@ -123,7 +123,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QgsMapMouseEvent* e )
   renderer->startRender( context, mActiveLayer->fields() );
 
   //find all rotation fields used by renderer for feature
-  QgsMarkerSymbolV2* markerSymbol = 0;
+  QgsMarkerSymbolV2* markerSymbol = nullptr;
   if ( renderer->capabilities() & QgsFeatureRendererV2::MoreSymbolsPerFeature )
   {
     //could be multiple symbols for this feature, so check them all
@@ -265,7 +265,7 @@ void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QgsMapMouseEvent* e )
   }
   mRotating = false;
   delete mRotationItem;
-  mRotationItem = 0;
+  mRotationItem = nullptr;
   mCanvas->refresh();
 }
 

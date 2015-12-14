@@ -89,7 +89,7 @@ void QgsCustomProjectionDialog::populateList()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
+  myResult = sqlite3_open_v2( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
   if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
@@ -463,7 +463,7 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
 
   QgsDebugMsg( QString( "My proj: %1" ).arg( teParameters->toPlainText() ) );
 
-  if ( myProj == NULL )
+  if ( myProj == nullptr )
   {
     QMessageBox::information( this, tr( "QGIS Custom Projection" ),
                               tr( "This proj4 projection definition is not valid." ) );
@@ -490,7 +490,7 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
 
   projPJ wgs84Proj = pj_init_plus( GEOPROJ4.toLocal8Bit().data() ); //defined in qgis.h
 
-  if ( wgs84Proj == NULL )
+  if ( wgs84Proj == nullptr )
   {
     QMessageBox::information( this, tr( "QGIS Custom Projection" ),
                               tr( "Internal Error (source projection invalid?)" ) );

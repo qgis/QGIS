@@ -60,7 +60,7 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt
     : QgsOptionsDialogBase( "PluginManager", parent, fl )
 {
   // initialize pointer
-  mPythonUtils = NULL;
+  mPythonUtils = nullptr;
 
   setupUi( this );
 
@@ -912,7 +912,7 @@ const QMap<QString, QString> * QgsPluginManager::pluginMetadata( const QString& 
   {
     return &it.value();
   }
-  return NULL;
+  return nullptr;
 }
 
 

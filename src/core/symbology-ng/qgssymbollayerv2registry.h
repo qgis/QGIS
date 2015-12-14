@@ -42,9 +42,9 @@ class CORE_EXPORT QgsSymbolLayerV2AbstractMetadata
     /** Create a symbol layer of this type given the map of properties. */
     virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) = 0;
     /** Create widget for symbol layer of this type. Can return NULL if there's no GUI */
-    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer * ) { return NULL; }
+    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer * ) { return nullptr; }
     /** Create a symbol layer of this type given the map of properties. */
-    virtual QgsSymbolLayerV2* createSymbolLayerFromSld( QDomElement & ) { return NULL; }
+    virtual QgsSymbolLayerV2* createSymbolLayerFromSld( QDomElement & ) { return nullptr; }
 
 
   protected:
@@ -67,11 +67,11 @@ class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMeta
     QgsSymbolLayerV2Metadata( const QString& name, const QString& visibleName,
                               QgsSymbolV2::SymbolType type,
                               QgsSymbolLayerV2CreateFunc pfCreate,
-                              QgsSymbolLayerV2WidgetFunc pfWidget = NULL )
+                              QgsSymbolLayerV2WidgetFunc pfWidget = nullptr )
         : QgsSymbolLayerV2AbstractMetadata( name, visibleName, type )
         , mCreateFunc( pfCreate )
         , mWidgetFunc( pfWidget )
-        , mCreateFromSldFunc( NULL )
+        , mCreateFromSldFunc( nullptr )
     {}
 
     //! not available in python bindings
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMeta
                               QgsSymbolV2::SymbolType type,
                               QgsSymbolLayerV2CreateFunc pfCreate,
                               QgsSymbolLayerV2CreateFromSldFunc pfCreateFromSld,
-                              QgsSymbolLayerV2WidgetFunc pfWidget = NULL )
+                              QgsSymbolLayerV2WidgetFunc pfWidget = nullptr )
         : QgsSymbolLayerV2AbstractMetadata( name, visibleName, type )
         , mCreateFunc( pfCreate )
         , mWidgetFunc( pfWidget )
@@ -96,9 +96,9 @@ class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMeta
     //! not available in python bindings
     void setWidgetFunction( QgsSymbolLayerV2WidgetFunc f ) { mWidgetFunc = f; }
 
-    virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) override { return mCreateFunc ? mCreateFunc( map ) : NULL; }
-    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer* vl ) override { return mWidgetFunc ? mWidgetFunc( vl ) : NULL; }
-    virtual QgsSymbolLayerV2* createSymbolLayerFromSld( QDomElement& elem ) override { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ) : NULL; }
+    virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
+    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer* vl ) override { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
+    virtual QgsSymbolLayerV2* createSymbolLayerFromSld( QDomElement& elem ) override { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ) : nullptr; }
 
   protected:
     QgsSymbolLayerV2CreateFunc mCreateFunc;

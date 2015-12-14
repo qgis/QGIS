@@ -216,12 +216,12 @@ class CORE_EXPORT QgsProject : public QObject
 
     */
     //@{
-    QStringList readListEntry( const QString & scope, const QString & key, const QStringList& def = QStringList(), bool *ok = 0 ) const;
+    QStringList readListEntry( const QString & scope, const QString & key, const QStringList& def = QStringList(), bool *ok = nullptr ) const;
 
-    QString readEntry( const QString & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
-    int readNumEntry( const QString & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
-    double readDoubleEntry( const QString & scope, const QString & key, double def = 0, bool * ok = 0 ) const;
-    bool readBoolEntry( const QString & scope, const QString & key, bool def = false, bool * ok = 0 ) const;
+    QString readEntry( const QString & scope, const QString & key, const QString & def = QString::null, bool * ok = nullptr ) const;
+    int readNumEntry( const QString & scope, const QString & key, int def = 0, bool * ok = nullptr ) const;
+    double readDoubleEntry( const QString & scope, const QString & key, double def = 0, bool * ok = nullptr ) const;
+    bool readBoolEntry( const QString & scope, const QString & key, bool def = false, bool * ok = nullptr ) const;
     //@}
 
 

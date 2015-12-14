@@ -37,7 +37,7 @@ class QgsNodeEditorModel : public QAbstractTableModel
 
     QgsNodeEditorModel( QgsVectorLayer* layer,
                         QgsSelectedFeature* selectedFeature,
-                        QgsMapCanvas* canvas, QObject* parent = 0 );
+                        QgsMapCanvas* canvas, QObject* parent = nullptr );
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;

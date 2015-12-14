@@ -27,10 +27,10 @@
 
 QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
-    , mLabelRubberBand( 0 )
-    , mFeatureRubberBand( 0 )
-    , mFixPointRubberBand( 0 )
-    , mCurrentLayer( 0 )
+    , mLabelRubberBand( nullptr )
+    , mFeatureRubberBand( nullptr )
+    , mFixPointRubberBand( nullptr )
+    , mCurrentLayer( nullptr )
 {
 }
 
@@ -118,9 +118,9 @@ void QgsMapToolLabel::createRubberBands()
 
 void QgsMapToolLabel::deleteRubberBands()
 {
-  delete mLabelRubberBand; mLabelRubberBand = 0;
-  delete mFeatureRubberBand; mFeatureRubberBand = 0;
-  delete mFixPointRubberBand; mFixPointRubberBand = 0;
+  delete mLabelRubberBand; mLabelRubberBand = nullptr;
+  delete mFeatureRubberBand; mFeatureRubberBand = nullptr;
+  delete mFixPointRubberBand; mFixPointRubberBand = nullptr;
 }
 
 QgsVectorLayer* QgsMapToolLabel::currentLayer()

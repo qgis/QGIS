@@ -208,7 +208,7 @@ const QgsSnapIndex::Cell* QgsSnapIndex::GridRow::getCell( int col ) const
 {
   if ( col < mColStartIdx || col >= mColStartIdx + mCells.size() )
   {
-    return 0;
+    return nullptr;
   }
   else
   {
@@ -247,7 +247,7 @@ const QgsSnapIndex::Cell *QgsSnapIndex::getCell( int col, int row ) const
 {
   if ( row < mRowsStartIdx || row >= mRowsStartIdx + mGridRows.size() )
   {
-    return 0;
+    return nullptr;
   }
   else
   {
@@ -386,8 +386,8 @@ QgsSnapIndex::SnapItem* QgsSnapIndex::getSnapItem( const QgsPointV2& pos, double
 
   double minDistSegment = std::numeric_limits<double>::max();
   double minDistPoint = std::numeric_limits<double>::max();
-  QgsSnapIndex::SegmentSnapItem* snapSegment = 0;
-  QgsSnapIndex::PointSnapItem* snapPoint = 0;
+  QgsSnapIndex::SegmentSnapItem* snapSegment = nullptr;
+  QgsSnapIndex::PointSnapItem* snapPoint = nullptr;
 
   Q_FOREACH ( QgsSnapIndex::SnapItem* item, items )
   {
@@ -415,8 +415,8 @@ QgsSnapIndex::SnapItem* QgsSnapIndex::getSnapItem( const QgsPointV2& pos, double
       }
     }
   }
-  snapPoint = minDistPoint < tol * tol ? snapPoint : 0;
-  snapSegment = minDistSegment < tol * tol ? snapSegment : 0;
+  snapPoint = minDistPoint < tol * tol ? snapPoint : nullptr;
+  snapSegment = minDistSegment < tol * tol ? snapSegment : nullptr;
   if ( pSnapPoint ) *pSnapPoint = snapPoint;
   if ( pSnapSegment ) *pSnapSegment = snapSegment;
   return minDistPoint < minDistSegment ? static_cast<QgsSnapIndex::SnapItem*>( snapPoint ) : static_cast<QgsSnapIndex::SnapItem*>( snapSegment );

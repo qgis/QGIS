@@ -86,7 +86,7 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
 }
 
 QgsServerProjectParser::QgsServerProjectParser()
-    : mXMLDoc( 0 )
+    : mXMLDoc( nullptr )
     , mUseLayerIDs( false )
 {
 }
@@ -167,7 +167,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
 {
   if ( elem.isNull() || !mXMLDoc )
   {
-    return 0;
+    return nullptr;
   }
 
   addJoinLayersForElement( elem );
@@ -227,7 +227,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
   }
 
   QString id = layerId( elem );
-  QgsMapLayer* layer = 0;
+  QgsMapLayer* layer = nullptr;
   if ( useCache )
   {
     layer = QgsMSLayerCache::instance()->searchLayer( absoluteUri, id, mProjectPath );
@@ -258,7 +258,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
     QgsServerProjectParser* otherConfig = QgsConfigCache::instance()->serverConfiguration( project );
     if ( !otherConfig )
     {
-      return 0;
+      return nullptr;
     }
     return otherConfig->mapLayerFromLayerId( elem.attribute( "id" ), useCache );
   }
@@ -299,7 +299,7 @@ QgsMapLayer* QgsServerProjectParser::mapLayerFromLayerId( const QString& lId, bo
   {
     return createLayerFromElement( layerIt.value(), useCache );
   }
-  return 0;
+  return nullptr;
 }
 
 QString QgsServerProjectParser::layerIdFromLegendLayer( const QDomElement& legendLayer ) const
@@ -1204,7 +1204,7 @@ QStringList QgsServerProjectParser::wfsLayerNames() const
   QMap<QString, QgsMapLayer*> layerMap;
   projectLayerMap( layerMap );
 
-  QgsMapLayer* currentLayer = 0;
+  QgsMapLayer* currentLayer = nullptr;
   QStringList wfsIdList = wfsLayers();
   QStringList::const_iterator wfsIdIt = wfsIdList.constBegin();
   for ( ; wfsIdIt != wfsIdList.constEnd(); ++wfsIdIt )
@@ -1230,7 +1230,7 @@ QStringList QgsServerProjectParser::wcsLayerNames() const
   QMap<QString, QgsMapLayer*> layerMap;
   projectLayerMap( layerMap );
 
-  QgsMapLayer* currentLayer = 0;
+  QgsMapLayer* currentLayer = nullptr;
   QStringList wcsIdList = wcsLayers();
   QStringList::const_iterator wcsIdIt = wcsIdList.constBegin();
   for ( ; wcsIdIt != wcsIdList.constEnd(); ++wcsIdIt )
@@ -1465,7 +1465,7 @@ void QgsServerProjectParser::addGetFeatureLayers( const QDomElement& layerElem )
   while (( idx = rx.indexIn( str, idx ) ) != -1 )
   {
     QString name = rx.cap( 1 );
-    QgsMapLayer* ml = 0;
+    QgsMapLayer* ml = nullptr;
     QHash< QString, QDomElement >::const_iterator layerElemIt = mProjectLayerElementsById.find( name );
     if ( layerElemIt != mProjectLayerElementsById.constEnd() )
     {

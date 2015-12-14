@@ -48,7 +48,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
   QgsDebugMsg( layerProperty.toString() );
 
   // is there already a root item with the given scheme Name?
-  QStandardItem *schemaItem = 0;
+  QStandardItem *schemaItem = nullptr;
 
   for ( int i = 0; i < layerProperty.size(); i++ )
   {

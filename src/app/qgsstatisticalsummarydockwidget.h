@@ -35,7 +35,7 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QDockWidget, private U
     Q_OBJECT
 
   public:
-    QgsStatisticalSummaryDockWidget( QWidget *parent = 0 );
+    QgsStatisticalSummaryDockWidget( QWidget *parent = nullptr );
     ~QgsStatisticalSummaryDockWidget();
 
     /** Returns the currently active layer for the widget

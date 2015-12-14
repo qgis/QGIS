@@ -51,20 +51,20 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, const Qt::W
     : QGraphicsView( parent )
     , mCurrentTool( Select )
     , mPreviousTool( Select )
-    , mRubberBandItem( 0 )
-    , mRubberBandLineItem( 0 )
-    , mMoveContentItem( 0 )
+    , mRubberBandItem( nullptr )
+    , mRubberBandLineItem( nullptr )
+    , mMoveContentItem( nullptr )
     , mMarqueeSelect( false )
     , mMarqueeZoom( false )
     , mTemporaryZoomStatus( QgsComposerView::Inactive )
     , mPaintingEnabled( true )
-    , mHorizontalRuler( 0 )
-    , mVerticalRuler( 0 )
+    , mHorizontalRuler( nullptr )
+    , mVerticalRuler( nullptr )
     , mToolPanning( false )
     , mMousePanning( false )
     , mKeyPanning( false )
     , mMovingItemContent( false )
-    , mPreviewEffect( 0 )
+    , mPreviewEffect( nullptr )
 {
   Q_UNUSED( f );
   Q_UNUSED( name );
@@ -194,8 +194,8 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         }
       }
 
-      QgsComposerItem* selectedItem = 0;
-      QgsComposerItem* previousSelectedItem = 0;
+      QgsComposerItem* selectedItem = nullptr;
+      QgsComposerItem* previousSelectedItem = nullptr;
 
       if ( e->modifiers() & Qt::ControlModifier )
       {
@@ -479,7 +479,7 @@ void QgsComposerView::removeRubberBand()
   {
     scene()->removeItem( mRubberBandItem );
     delete mRubberBandItem;
-    mRubberBandItem = 0;
+    mRubberBandItem = nullptr;
   }
 }
 
@@ -730,7 +730,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         composition()->beginCommand( mMoveContentItem, tr( "Move item content" ) );
         mMoveContentItem->moveContent( -moveX, -moveY );
         composition()->endCommand();
-        mMoveContentItem = 0;
+        mMoveContentItem = nullptr;
         mMovingItemContent = false;
       }
       break;
@@ -740,7 +740,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       {
         scene()->removeItem( mRubberBandLineItem );
         delete mRubberBandLineItem;
-        mRubberBandLineItem = 0;
+        mRubberBandLineItem = nullptr;
         return;
       }
       else
@@ -754,7 +754,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 
         scene()->removeItem( mRubberBandLineItem );
         delete mRubberBandLineItem;
-        mRubberBandLineItem = 0;
+        mRubberBandLineItem = nullptr;
         emit actionFinished();
         composition()->pushAddRemoveCommand( composerArrow, tr( "Arrow added" ) );
       }
@@ -1243,7 +1243,7 @@ void QgsComposerView::pasteItems( PasteMode mode )
           pt = mapToScene( viewport()->rect().center() );
         }
         bool pasteInPlace = ( mode == PasteModeInPlace );
-        composition()->addItemsFromXML( docElem, doc, 0, true, &pt, pasteInPlace );
+        composition()->addItemsFromXML( docElem, doc, nullptr, true, &pt, pasteInPlace );
       }
     }
   }
@@ -1775,7 +1775,7 @@ QgsComposition* QgsComposerView::composition()
       return c;
     }
   }
-  return 0;
+  return nullptr;
 }
 
 void QgsComposerView::groupItems()
@@ -1821,7 +1821,7 @@ void QgsComposerView::ungroupItems()
 
 QMainWindow* QgsComposerView::composerWindow()
 {
-  QMainWindow* composerObject = 0;
+  QMainWindow* composerObject = nullptr;
   QObject* currentObject = parent();
   if ( !currentObject )
   {
@@ -1831,12 +1831,12 @@ QMainWindow* QgsComposerView::composerWindow()
   while ( true )
   {
     composerObject = qobject_cast<QMainWindow*>( currentObject );
-    if ( composerObject || currentObject->parent() == 0 )
+    if ( composerObject || currentObject->parent() == nullptr )
     {
       return composerObject;
     }
     currentObject = currentObject->parent();
   }
 
-  return 0;
+  return nullptr;
 }

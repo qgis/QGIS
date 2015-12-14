@@ -44,7 +44,7 @@
 //not part of public API
 
 QgsCategorizedSymbolRendererV2Model::QgsCategorizedSymbolRendererV2Model( QObject * parent ) : QAbstractItemModel( parent )
-    , mRenderer( 0 )
+    , mRenderer( nullptr )
     , mMimeFormat( "application/x-qgscategorizedsymbolrendererv2model" )
 {
 }
@@ -54,7 +54,7 @@ void QgsCategorizedSymbolRendererV2Model::setRenderer( QgsCategorizedSymbolRende
   if ( mRenderer )
   {
     beginRemoveRows( QModelIndex(), 0, mRenderer->categories().size() - 1 );
-    mRenderer = 0;
+    mRenderer = nullptr;
     endRemoveRows();
   }
   if ( renderer )
@@ -384,7 +384,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 );
+  << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( widget->mapCanvas() )
   {
@@ -404,8 +404,8 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 
 QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
-    , mRenderer( 0 )
-    , mModel( 0 )
+    , mRenderer( nullptr )
+    , mModel( nullptr )
 {
 
   // try to recognize the previous renderer
@@ -665,7 +665,7 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
 QgsVectorColorRampV2* QgsCategorizedSymbolRendererV2Widget::getColorRamp()
 {
   QgsVectorColorRampV2* ramp = cboCategorizedColorRamp->currentColorRamp();
-  if ( ramp == NULL )
+  if ( ramp == nullptr )
   {
     if ( cboCategorizedColorRamp->count() == 0 )
       QMessageBox::critical( this, tr( "Error" ), tr( "There are no available color ramps. You can add them in Style Manager." ) );
@@ -688,7 +688,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
     << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::atlasScope( 0 )
+    << QgsExpressionContextUtils::atlasScope( nullptr )
     << QgsExpressionContextUtils::layerScope( mLayer );
 
     expression->prepare( &context );
@@ -711,7 +711,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   // ask to abort if too many classes
   if ( unique_vals.size() >= 1000 )
   {
-    int res = QMessageBox::warning( 0, tr( "High number of classes!" ),
+    int res = QMessageBox::warning( nullptr, tr( "High number of classes!" ),
                                     tr( "Classification would yield %1 entries which might not be expected. Continue?" ).arg( unique_vals.size() ),
                                     QMessageBox::Ok | QMessageBox::Cancel,
                                     QMessageBox::Cancel );

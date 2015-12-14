@@ -62,16 +62,16 @@ class GUI_EXPORT QgsAuthGuiUtils
     static void clearCachedMasterPassword( QgsMessageBar *msgbar, int timeout = 0 );
 
     /** Reset the cached master password, updating its hash in authentication database and reseting all existing configs to use it */
-    static void resetMasterPassword( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = 0 );
+    static void resetMasterPassword( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = nullptr );
 
     /** Clear all cached authentication configs for session */
     static void clearCachedAuthenticationConfigs( QgsMessageBar *msgbar, int timeout = 0 );
 
     /** Remove all authentication configs */
-    static void removeAuthenticationConfigs( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = 0 );
+    static void removeAuthenticationConfigs( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = nullptr );
 
     /** Completely clear out the authentication database (configs and master password) */
-    static void eraseAuthenticationDatabase( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = 0 );
+    static void eraseAuthenticationDatabase( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = nullptr );
 
     /** Color a widget via a stylesheet if a file path is found or not */
     static void fileFound( bool found, QWidget * widget );

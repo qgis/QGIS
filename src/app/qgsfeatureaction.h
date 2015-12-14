@@ -34,11 +34,11 @@ class APP_EXPORT QgsFeatureAction : public QAction
     Q_OBJECT
 
   public:
-    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, int action = -1, int defaultAttr = -1, QObject *parent = NULL );
+    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, int action = -1, int defaultAttr = -1, QObject *parent = nullptr );
 
   public slots:
     void execute();
-    bool viewFeatureForm( QgsHighlight *h = 0 );
+    bool viewFeatureForm( QgsHighlight *h = nullptr );
     bool editFeature( bool showModal = true );
 
     /**

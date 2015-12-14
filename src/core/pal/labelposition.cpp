@@ -58,7 +58,7 @@ namespace pal
       , alpha( alpha )
       , w( w )
       , h( h )
-      , nextPart( NULL )
+      , nextPart( nullptr )
       , partId( -1 )
       , reversed( isReversed )
       , upsideDown( false )
@@ -182,7 +182,7 @@ namespace pal
     if ( other.nextPart )
       nextPart = new LabelPosition( *other.nextPart );
     else
-      nextPart = NULL;
+      nextPart = nullptr;
     partId = other.partId;
     upsideDown = other.upsideDown;
     reversed = other.reversed;
@@ -258,7 +258,7 @@ namespace pal
     if ( this->probFeat == lp->probFeat ) // bugfix #1
       return false; // always overlaping itself !
 
-    if ( nextPart == NULL && lp->nextPart == NULL )
+    if ( nextPart == nullptr && lp->nextPart == nullptr )
       return isInConflictSinglePart( lp );
     else
       return isInConflictMultiPart( lp );

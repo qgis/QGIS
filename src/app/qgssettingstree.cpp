@@ -61,7 +61,7 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
   header()->resizeSection( 1, 100 );
   header()->resizeSection( 2, 100 );
 
-  settings = 0;
+  settings = nullptr;
   refreshTimer.setInterval( 2000 );
   autoRefresh = false;
 
@@ -154,7 +154,7 @@ void QgsSettingsTree::refresh()
     }
   }
 
-  updateChildItems( 0 );
+  updateChildItems( nullptr );
 
   connect( this, SIGNAL( itemChanged( QTreeWidgetItem*, int ) ),
            this, SLOT( updateSetting( QTreeWidgetItem* ) ) );
@@ -255,7 +255,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
 QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
     QTreeWidgetItem *parent, int index )
 {
-  QTreeWidgetItem *after = 0;
+  QTreeWidgetItem *after = nullptr;
   if ( index != 0 )
     after = childAt( parent, index - 1 );
 

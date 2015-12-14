@@ -220,7 +220,7 @@ void QgsHistogramWidget::drawHistogram()
                                        !mRanges.isEmpty() ? QBrush( mHistoColors.at( 0 ) ) : mBrush,
                                        !mRanges.isEmpty() ? Qt::NoPen : mPen );
 #else
-  HistogramItem *plotHistogramItem = 0;
+  HistogramItem *plotHistogramItem = nullptr;
   plotHistogramItem = createHistoItem( !mRanges.isEmpty() > 0 ? mRanges.at( 0 ).label() : QString(),
                                        !mRanges.isEmpty() > 0 ? QBrush( mHistoColors.at( 0 ) ) : mBrush,
                                        !mRanges.isEmpty() > 0 ? Qt::NoPen : mPen );

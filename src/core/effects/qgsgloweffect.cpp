@@ -24,7 +24,7 @@ QgsGlowEffect::QgsGlowEffect()
     : QgsPaintEffect()
     , mSpread( 2.0 )
     , mSpreadUnit( QgsSymbolV2::MM )
-    , mRamp( NULL )
+    , mRamp( nullptr )
     , mBlurLevel( 3 )
     , mTransparency( 0.5 )
     , mColor( Qt::white )
@@ -39,7 +39,7 @@ QgsGlowEffect::QgsGlowEffect( const QgsGlowEffect &other )
     , mSpread( other.spread() )
     , mSpreadUnit( other.spreadUnit() )
     , mSpreadMapUnitScale( other.spreadMapUnitScale() )
-    , mRamp( NULL )
+    , mRamp( nullptr )
     , mBlurLevel( other.blurLevel() )
     , mTransparency( other.transparency() )
     , mColor( other.color() )
@@ -64,7 +64,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
 
   QImage im = sourceAsImage( context )->copy();
 
-  QgsVectorColorRampV2* ramp = 0;
+  QgsVectorColorRampV2* ramp = nullptr;
   if ( mColorType == ColorRamp && mRamp )
   {
     ramp = mRamp;
@@ -192,7 +192,7 @@ QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect & rhs )
   delete mRamp;
 
   mSpread = rhs.spread();
-  mRamp = rhs.ramp() ? rhs.ramp()->clone() : NULL;
+  mRamp = rhs.ramp() ? rhs.ramp()->clone() : nullptr;
   mBlurLevel = rhs.blurLevel();
   mTransparency = rhs.transparency();
   mColor = rhs.color();

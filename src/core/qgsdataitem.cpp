@@ -46,7 +46,7 @@
 QgsAnimatedIcon::QgsAnimatedIcon( const QString & iconPath )
     : QObject()
     , mCount( 0 )
-    , mMovie( 0 )
+    , mMovie( nullptr )
 {
   // QApplication as parent to ensure that it is deleted before QApplication
   mMovie = new QMovie( QApplication::instance() );
@@ -204,7 +204,7 @@ const QIcon &QgsZipItem::iconZip()
 
 QMap<QString, QIcon> QgsDataItem::mIconMap = QMap<QString, QIcon>();
 
-QgsAnimatedIcon * QgsDataItem::mPopulatingIcon = 0;
+QgsAnimatedIcon * QgsDataItem::mPopulatingIcon = nullptr;
 
 QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, const QString& name, const QString& path )
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
@@ -217,7 +217,7 @@ QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, const QSt
     , mName( name )
     , mPath( path )
     , mDeferredDelete( false )
-    , mFutureWatcher( 0 )
+    , mFutureWatcher( nullptr )
 {
 }
 
@@ -251,7 +251,7 @@ QString QgsDataItem::pathComponent( const QString &string )
 void QgsDataItem::deleteLater()
 {
   QgsDebugMsg( "path = " + path() );
-  setParent( 0 ); // also disconnects parent
+  setParent( nullptr ); // also disconnects parent
   Q_FOREACH ( QgsDataItem *child, mChildren )
   {
     if ( !child ) // should not happen
@@ -290,7 +290,7 @@ void QgsDataItem::moveToThread( QThread * targetThread )
     if ( !child ) // should not happen
       continue;
     QgsDebugMsg( "moveToThread child " + child->path() );
-    child->QObject::setParent( 0 ); // to be sure
+    child->QObject::setParent( nullptr ); // to be sure
     child->moveToThread( targetThread );
   }
   QObject::moveToThread( targetThread );
@@ -527,7 +527,7 @@ void QgsDataItem::setParent( QgsDataItem* parent )
 {
   if ( mParent )
   {
-    disconnect( this, 0, mParent, 0 );
+    disconnect( this, nullptr, mParent, nullptr );
   }
   if ( parent )
   {
@@ -600,7 +600,7 @@ QgsDataItem * QgsDataItem::removeChildItem( QgsDataItem * child )
   emit beginRemoveItems( this, i, i );
   mChildren.remove( i );
   emit endRemoveItems();
-  child->setParent( 0 );
+  child->setParent( nullptr );
   return child;
 }
 
@@ -741,7 +741,7 @@ Q_NOWARN_DEPRECATED_POP
 QgsDirectoryItem::QgsDirectoryItem( QgsDataItem* parent, const QString& name, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
     , mDirPath( path )
-    , mFileSystemWatcher( 0 )
+    , mFileSystemWatcher( nullptr )
     , mRefreshLater( false )
 {
   mType = Directory;
@@ -751,7 +751,7 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem* parent, const QString& name, co
 QgsDirectoryItem::QgsDirectoryItem( QgsDataItem* parent, const QString& name, const QString& dirPath, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
     , mDirPath( dirPath )
-    , mFileSystemWatcher( 0 )
+    , mFileSystemWatcher( nullptr )
     , mRefreshLater( false )
 {
   mType = Directory;
@@ -872,7 +872,7 @@ void QgsDirectoryItem::setState( State state )
     if ( mFileSystemWatcher )
     {
       delete mFileSystemWatcher;
-      mFileSystemWatcher = 0;
+      mFileSystemWatcher = nullptr;
     }
   }
 }
@@ -1251,9 +1251,9 @@ QgsZipItem::~QgsZipItem()
 char **VSIReadDirRecursive1( const char *pszPath )
 {
   // CPLStringList oFiles = NULL;
-  char **papszOFiles = NULL;
-  char **papszFiles1 = NULL;
-  char **papszFiles2 = NULL;
+  char **papszOFiles = nullptr;
+  char **papszFiles1 = nullptr;
+  char **papszFiles2 = nullptr;
   VSIStatBufL psStatBuf;
   CPLString osTemp1, osTemp2;
   int i, j;
@@ -1262,7 +1262,7 @@ char **VSIReadDirRecursive1( const char *pszPath )
   // get listing
   papszFiles1 = VSIReadDir( pszPath );
   if ( ! papszFiles1 )
-    return NULL;
+    return nullptr;
 
   // get files and directories inside listing
   nCount1 = CSLCount( papszFiles1 );
@@ -1398,18 +1398,18 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, const QString& fileP
   QStringList zipFileList;
   QFileInfo fileInfo( filePath );
   QString vsiPrefix = QgsZipItem::vsiPrefix( filePath );
-  QgsZipItem * zipItem = 0;
+  QgsZipItem * zipItem = nullptr;
   bool populated = false;
 
   QgsDebugMsgLevel( QString( "path = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4" ).arg( path, name, scanZipSetting, vsiPrefix ), 3 );
 
   // don't scan if scanZipBrowser == no
   if ( scanZipSetting == "no" )
-    return 0;
+    return nullptr;
 
   // don't scan if this file is not a /vsizip/ or /vsitar/ item
   if (( vsiPrefix != "/vsizip/" && vsiPrefix != "/vsitar/" ) )
-    return 0;
+    return nullptr;
 
   zipItem = new QgsZipItem( parent, name, filePath, path );
 
@@ -1471,7 +1471,7 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, const QString& fileP
       dataItem_t *dataItem = mDataItemPtr[i];
       if ( dataItem )
       {
-        QgsDataItem *item = 0;
+        QgsDataItem *item = nullptr;
         // try first with normal path (Passthru)
         // this is to simplify .qml handling, and without this some tests will fail
         // (e.g. testZipItemVectorTransparency(), second test)
@@ -1487,7 +1487,7 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, const QString& fileP
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 const QStringList &QgsZipItem::getZipFileList()

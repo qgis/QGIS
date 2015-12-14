@@ -41,7 +41,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
      * @brief QgsFieldComboBox creates a combo box to display the fields of a layer.
      * The layer can be either manually given or dynamically set by connecting the signal QgsMapLayerComboBox::layerChanged to the slot setLayer.
      */
-    explicit QgsFieldComboBox( QWidget *parent = 0 );
+    explicit QgsFieldComboBox( QWidget *parent = nullptr );
 
     //! setFilters allows fitering according to the type of field
     void setFilters( const QgsFieldProxyModel::Filters& filters );

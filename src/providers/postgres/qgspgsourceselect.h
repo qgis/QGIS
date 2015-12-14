@@ -40,7 +40,7 @@ class QgsPgSourceSelectDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsPgSourceSelectDelegate( QObject *parent = NULL )
+    explicit QgsPgSourceSelectDelegate( QObject *parent = nullptr )
         : QItemDelegate( parent )
     {}
 
@@ -63,7 +63,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
   public:
     //! Constructor
-    QgsPgSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsPgSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsPgSourceSelect();
     //! Populate the connection list combo box

@@ -290,7 +290,7 @@ struct QgsWmtsTheme
   QgsWmtsTheme *subTheme;
   QStringList layerRefs;
 
-  QgsWmtsTheme() : subTheme( 0 ) {}
+  QgsWmtsTheme() : subTheme( nullptr ) {}
   ~QgsWmtsTheme() { delete subTheme; }
 };
 
@@ -600,7 +600,7 @@ class QgsWmsCapabilities
     void parseCapability( QDomElement const & e, QgsWmsCapabilityProperty& capabilityProperty );
     void parseRequest( QDomElement const & e, QgsWmsRequestProperty& requestProperty );
     void parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlProperty &legendUrlProperty );
-    void parseLayer( QDomElement const & e, QgsWmsLayerProperty& layerProperty, QgsWmsLayerProperty *parentProperty = 0 );
+    void parseLayer( QDomElement const & e, QgsWmsLayerProperty& layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
     void parseStyle( QDomElement const & e, QgsWmsStyleProperty& styleProperty );
 
     void parseOperationType( QDomElement const & e, QgsWmsOperationType& operationType );
@@ -696,9 +696,9 @@ class QgsWmsCapabilitiesDownload : public QObject
     Q_OBJECT
 
   public:
-    explicit QgsWmsCapabilitiesDownload( bool forceRefresh, QObject* parent = 0 );
+    explicit QgsWmsCapabilitiesDownload( bool forceRefresh, QObject* parent = nullptr );
 
-    QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, bool forceRefresh, QObject* parent = 0 );
+    QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, bool forceRefresh, QObject* parent = nullptr );
 
     virtual ~QgsWmsCapabilitiesDownload();
 

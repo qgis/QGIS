@@ -49,8 +49,8 @@ static bool cmpByDataItemName_( QgsDataItem* a, QgsDataItem* b )
 
 QgsBrowserModel::QgsBrowserModel( QObject *parent )
     : QAbstractItemModel( parent )
-    , mFavourites( 0 )
-    , mProjectHome( 0 )
+    , mFavourites( nullptr )
+    , mProjectHome( nullptr )
 {
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
@@ -78,7 +78,7 @@ void QgsBrowserModel::updateProjectHome()
     endRemoveRows();
   }
   delete mProjectHome;
-  mProjectHome = home.isNull() ? 0 : new QgsDirectoryItem( NULL, tr( "Project home" ), home, "project:" + home );
+  mProjectHome = home.isNull() ? nullptr : new QgsDirectoryItem( nullptr, tr( "Project home" ), home, "project:" + home );
   if ( mProjectHome )
   {
     connectItem( mProjectHome );
@@ -94,7 +94,7 @@ void QgsBrowserModel::addRootItems()
   updateProjectHome();
 
   // give the home directory a prominent second place
-  QgsDirectoryItem *item = new QgsDirectoryItem( NULL, tr( "Home" ), QDir::homePath(), "home:" + QDir::homePath() );
+  QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(), "home:" + QDir::homePath() );
   QStyle *style = QApplication::style();
   QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
   item->setIcon( homeIcon );
@@ -102,7 +102,7 @@ void QgsBrowserModel::addRootItems()
   mRootItems << item;
 
   // add favourite directories
-  mFavourites = new QgsFavouritesItem( NULL, tr( "Favourites" ) );
+  mFavourites = new QgsFavouritesItem( nullptr, tr( "Favourites" ) );
   if ( mFavourites )
   {
     connectItem( mFavourites );
@@ -117,7 +117,7 @@ void QgsBrowserModel::addRootItems()
     if ( QgsDirectoryItem::hiddenPath( path ) )
       continue;
 
-    QgsDirectoryItem *item = new QgsDirectoryItem( NULL, path, path );
+    QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path );
 
     connectItem( item );
     mRootItems << item;
@@ -142,7 +142,7 @@ void QgsBrowserModel::addRootItems()
       continue;
     }
 
-    QgsDataItem *item = pr->createDataItem( "", NULL );  // empty path -> top level
+    QgsDataItem *item = pr->createDataItem( "", nullptr );  // empty path -> top level
     if ( item )
     {
       QgsDebugMsg( "Add new top level item : " + item->name() );
@@ -181,7 +181,7 @@ void QgsBrowserModel::removeRootItems()
 Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex & index ) const
 {
   if ( !index.isValid() )
-    return 0;
+    return nullptr;
 
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
@@ -339,7 +339,7 @@ QModelIndex QgsBrowserModel::index( int row, int column, const QModelIndex &pare
 {
   QgsDataItem *p = dataItem( parent );
   const QVector<QgsDataItem*> &items = p ? p->children() : mRootItems;
-  QgsDataItem *item = items.value( row, 0 );
+  QgsDataItem *item = items.value( row, nullptr );
   return item ? createIndex( row, column, item ) : QModelIndex();
 }
 

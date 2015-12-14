@@ -427,14 +427,14 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
   QDomElement compositionElem = composerElem.firstChildElement( "Composition" );
   if ( compositionElem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsComposition* composition = new QgsComposition( mapRenderer->mapSettings() ); //set resolution, paper size from composer element attributes
   if ( !composition->readXML( compositionElem, *( mProjectParser->xmlDocument() ) ) )
   {
     delete composition;
-    return 0;
+    return nullptr;
   }
 
   composition->addItemsFromXML( compositionElem, *( mProjectParser->xmlDocument() ) );
@@ -2065,18 +2065,18 @@ QgsLayerTreeGroup* QgsWMSProjectParser::projectLayerTreeGroup() const
   const QDomDocument* projectDoc = mProjectParser->xmlDocument();
   if ( !projectDoc )
   {
-    return 0;
+    return nullptr;
   }
 
   QDomElement qgisElem = projectDoc->documentElement();
   if ( qgisElem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
   QDomElement layerTreeElem = qgisElem.firstChildElement( "layer-tree-group" );
   if ( layerTreeElem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
   return QgsLayerTreeGroup::readXML( layerTreeElem );
 }

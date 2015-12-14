@@ -36,7 +36,7 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
      * @param authcfg Authentication configuration ID
      * @param allowEmpty Whether to allow no ID to be set, even when editing, e.g. Add config functions
      */
-    explicit QgsAuthConfigIdEdit( QWidget *parent = 0, const QString &authcfg = QString(), bool allowEmpty = true );
+    explicit QgsAuthConfigIdEdit( QWidget *parent = nullptr, const QString &authcfg = QString(), bool allowEmpty = true );
     ~QgsAuthConfigIdEdit();
 
     /** The authentication configuration ID, if valid, otherwise null QString */

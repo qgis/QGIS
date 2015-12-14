@@ -31,7 +31,7 @@ QgsMapToolZoom::QgsMapToolZoom( QgsMapCanvas* canvas, bool zoomOut )
     : QgsMapTool( canvas )
     , mZoomOut( zoomOut )
     , mDragging( false )
-    , mRubberBand( 0 )
+    , mRubberBand( nullptr )
 {
   mToolName = tr( "Zoom" );
   // set the cursor
@@ -90,14 +90,14 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent* e )
   {
     mDragging = false;
     delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand = nullptr;
   }
 
   if ( mDragging )
   {
     mDragging = false;
     delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand = nullptr;
 
     // store the rectangle
     mZoomRect.setRight( e->pos().x() );
@@ -131,7 +131,7 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent* e )
 void QgsMapToolZoom::deactivate()
 {
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 
   QgsMapTool::deactivate();
 }

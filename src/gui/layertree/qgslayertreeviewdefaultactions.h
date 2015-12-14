@@ -39,21 +39,21 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
   public:
     QgsLayerTreeViewDefaultActions( QgsLayerTreeView* view );
 
-    QAction* actionAddGroup( QObject* parent = 0 );
-    QAction* actionRemoveGroupOrLayer( QObject* parent = 0 );
-    QAction* actionShowInOverview( QObject* parent = 0 );
-    QAction* actionRenameGroupOrLayer( QObject* parent = 0 );
-    QAction* actionShowFeatureCount( QObject* parent = 0 );
+    QAction* actionAddGroup( QObject* parent = nullptr );
+    QAction* actionRemoveGroupOrLayer( QObject* parent = nullptr );
+    QAction* actionShowInOverview( QObject* parent = nullptr );
+    QAction* actionRenameGroupOrLayer( QObject* parent = nullptr );
+    QAction* actionShowFeatureCount( QObject* parent = nullptr );
 
-    QAction* actionZoomToLayer( QgsMapCanvas* canvas, QObject* parent = 0 );
-    QAction* actionZoomToGroup( QgsMapCanvas* canvas, QObject* parent = 0 );
+    QAction* actionZoomToLayer( QgsMapCanvas* canvas, QObject* parent = nullptr );
+    QAction* actionZoomToGroup( QgsMapCanvas* canvas, QObject* parent = nullptr );
     // TODO: zoom to selected
 
-    QAction* actionMakeTopLevel( QObject* parent = 0 );
-    QAction* actionGroupSelected( QObject* parent = 0 );
+    QAction* actionMakeTopLevel( QObject* parent = nullptr );
+    QAction* actionGroupSelected( QObject* parent = nullptr );
     //! Action to enable/disable mutually exclusive flag of a group (only one child node may be checked)
     //! @note added in 2.12
-    QAction* actionMutuallyExclusiveGroup( QObject* parent = 0 );
+    QAction* actionMutuallyExclusiveGroup( QObject* parent = nullptr );
 
     void zoomToLayer( QgsMapCanvas* canvas );
     void zoomToGroup( QgsMapCanvas* canvas );

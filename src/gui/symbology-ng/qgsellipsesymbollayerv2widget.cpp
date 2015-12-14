@@ -21,7 +21,7 @@
 
 QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
-    , mLayer( NULL )
+    , mLayer( nullptr )
 {
   setupUi( this );
 

@@ -30,7 +30,7 @@ class FeatureLayer
 {
   public:
     FeatureLayer() :
-        layer( 0 ), feature( QgsFeature() ) {}
+        layer( nullptr ), feature( QgsFeature() ) {}
     /**
      * Constructor
      * @param theLayer layer pointer

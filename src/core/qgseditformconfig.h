@@ -52,7 +52,7 @@ class CORE_EXPORT QgsAttributeEditorElement : public QObject
      * @param name
      * @param parent
      */
-    QgsAttributeEditorElement( AttributeEditorType type, const QString& name, QObject *parent = NULL )
+    QgsAttributeEditorElement( AttributeEditorType type, const QString& name, QObject *parent = nullptr )
         : QObject( parent ), mType( type ), mName( name ) {}
 
     //! Destructor
@@ -578,7 +578,7 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     /**
      * Create a new edit form config. Normally invoked by QgsVectorLayer
      */
-    explicit QgsEditFormConfig( QObject* parent = 0 );
+    explicit QgsEditFormConfig( QObject* parent = nullptr );
 
   private:
 

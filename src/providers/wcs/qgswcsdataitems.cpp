@@ -100,7 +100,7 @@ QList<QAction*> QgsWCSConnectionItem::actions()
 
 void QgsWCSConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-wcs/", mName );
+  QgsNewHttpConnection nc( nullptr, "/Qgis/connections-wcs/", mName );
 
   if ( nc.exec() )
   {
@@ -255,7 +255,7 @@ QList<QAction*> QgsWCSRootItem::actions()
 
 QWidget * QgsWCSRootItem::paramWidget()
 {
-  QgsWCSSourceSelect *select = new QgsWCSSourceSelect( 0, 0, true, true );
+  QgsWCSSourceSelect *select = new QgsWCSSourceSelect( nullptr, nullptr, true, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }
@@ -267,7 +267,7 @@ void QgsWCSRootItem::connectionsChanged()
 
 void QgsWCSRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-wcs/" );
+  QgsNewHttpConnection nc( nullptr, "/Qgis/connections-wcs/" );
 
   if ( nc.exec() )
   {
@@ -306,7 +306,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 QGISEXTERN QgsWCSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )

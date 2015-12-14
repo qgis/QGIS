@@ -33,7 +33,7 @@ class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDia
 
   public:
 
-    QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent = NULL );
+    QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent = nullptr );
 
     void updateStatusText();
     void enableOkButton( bool enabled );

@@ -54,9 +54,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     , mUseEstimatedMetadata( false )
     , mSelectAtIdDisabled( false )
     , mEnabledCapabilities( 0 )
-    , mConnectionRO( 0 )
-    , mConnectionRW( 0 )
-    , mTransaction( 0 )
+    , mConnectionRO( nullptr )
+    , mConnectionRW( nullptr )
+    , mTransaction( nullptr )
 {
 
   QgsDebugMsg( QString( "URI: %1 " ).arg( uri ) );
@@ -269,13 +269,13 @@ void QgsPostgresProvider::disconnectDb()
   if ( mConnectionRO )
   {
     mConnectionRO->unref();
-    mConnectionRO = 0;
+    mConnectionRO = nullptr;
   }
 
   if ( mConnectionRW )
   {
     mConnectionRW->unref();
-    mConnectionRW = 0;
+    mConnectionRW = nullptr;
   }
 }
 
@@ -1893,7 +1893,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     insert += values + ')';
 
     QgsDebugMsg( QString( "prepare addfeatures: %1" ).arg( insert ) );
-    QgsPostgresResult stmt( conn->PQprepare( "addfeatures", insert, fieldId.size() + offset - 1, NULL ) );
+    QgsPostgresResult stmt( conn->PQprepare( "addfeatures", insert, fieldId.size() + offset - 1, nullptr ) );
     if ( stmt.PQresultStatus() != PGRES_COMMAND_OK )
       throw PGException( stmt );
 
@@ -2348,7 +2348,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
       QgsDebugMsg( "getting old topogeometry id: " + getid );
 
-      result = connectionRO()->PQprepare( "getid", getid, 1, NULL );
+      result = connectionRO()->PQprepare( "getid", getid, 1, nullptr );
       if ( result.PQresultStatus() != PGRES_COMMAND_OK )
       {
         QgsDebugMsg( QString( "Exception thrown due to PQprepare of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
@@ -2363,7 +2363,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
                               quotedIdentifier( mGeometryColumn ),
                               pkParamWhereClause( 2 ) );
       QgsDebugMsg( "TopoGeom swap: " + replace );
-      result = conn->PQprepare( "replacetopogeom", replace, 2, NULL );
+      result = conn->PQprepare( "replacetopogeom", replace, 2, nullptr );
       if ( result.PQresultStatus() != PGRES_COMMAND_OK )
       {
         QgsDebugMsg( QString( "Exception thrown due to PQprepare of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
@@ -2383,7 +2383,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
     QgsDebugMsg( "updating: " + update );
 
-    result = conn->PQprepare( "updatefeatures", update, 2, NULL );
+    result = conn->PQprepare( "updatefeatures", update, 2, nullptr );
     if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
     {
       QgsDebugMsg( QString( "Exception thrown due to PQprepare of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
@@ -3725,7 +3725,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   res = conn->PQexec( checkQuery );
   if ( res.PQntuples() > 0 )
   {
-    if ( QMessageBox::question( 0, QObject::tr( "Save style in database" ),
+    if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
                                 QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
                                 .arg( styleName.isEmpty() ? dsUri.table() : styleName ),
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )

@@ -22,18 +22,18 @@
 
 QgsRangeWidgetWrapper::QgsRangeWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mIntSpinBox( 0 )
-    , mDoubleSpinBox( 0 )
-    , mSlider( 0 )
-    , mDial( 0 )
-    , mQgsSlider( 0 )
-    , mQgsDial( 0 )
+    , mIntSpinBox( nullptr )
+    , mDoubleSpinBox( nullptr )
+    , mSlider( nullptr )
+    , mDial( nullptr )
+    , mQgsSlider( nullptr )
+    , mQgsDial( nullptr )
 {
 }
 
 QWidget* QgsRangeWidgetWrapper::createWidget( QWidget* parent )
 {
-  QWidget* editor = 0;
+  QWidget* editor = nullptr;
 
   if ( config( "Style" ).toString() == "Dial" )
   {

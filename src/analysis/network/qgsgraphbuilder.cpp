@@ -29,7 +29,7 @@ QgsGraphBuilder::QgsGraphBuilder( const QgsCoordinateReferenceSystem& crs, bool 
 
 QgsGraphBuilder::~QgsGraphBuilder()
 {
-  if ( mGraph != NULL )
+  if ( mGraph != nullptr )
     delete mGraph;
 }
 
@@ -46,6 +46,6 @@ void QgsGraphBuilder::addArc( int pt1id, const QgsPoint&, int pt2id, const QgsPo
 QgsGraph* QgsGraphBuilder::graph()
 {
   QgsGraph* res = mGraph;
-  mGraph = NULL;
+  mGraph = nullptr;
   return res;
 }

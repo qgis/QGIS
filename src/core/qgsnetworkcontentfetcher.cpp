@@ -24,7 +24,7 @@
 #include <QTextCodec>
 
 QgsNetworkContentFetcher::QgsNetworkContentFetcher()
-    : mReply( 0 )
+    : mReply( nullptr )
     , mContentLoaded( false )
 {
 
@@ -56,7 +56,7 @@ void QgsNetworkContentFetcher::fetchContent( const QUrl& url )
     //cancel any in progress requests
     mReply->abort();
     mReply->deleteLater();
-    mReply = 0;
+    mReply = nullptr;
   }
 
   mReply = QgsNetworkAccessManager::instance()->get( request );
@@ -67,7 +67,7 @@ QNetworkReply *QgsNetworkContentFetcher::reply()
 {
   if ( !mContentLoaded )
   {
-    return 0;
+    return nullptr;
   }
 
   return mReply;
@@ -94,7 +94,7 @@ QTextCodec* QgsNetworkContentFetcher::codecForHtml( QByteArray& array ) const
   //so test for that ourselves
 
   //basic check
-  QTextCodec* codec = QTextCodec::codecForUtfText( array, 0 );
+  QTextCodec* codec = QTextCodec::codecForUtfText( array, nullptr );
   if ( codec )
   {
     return codec;

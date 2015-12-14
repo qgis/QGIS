@@ -47,9 +47,9 @@ QgsBrowser::QgsBrowser( QWidget *parent, const Qt::WindowFlags& flags )
     , mDirtyMetadata( true )
     , mDirtyPreview( true )
     , mDirtyAttributes( true )
-    , mLayer( 0 )
-    , mParamWidget( 0 )
-    , mAttributeTableFilterModel( 0 )
+    , mLayer( nullptr )
+    , mParamWidget( nullptr )
+    , mAttributeTableFilterModel( nullptr )
 {
   setupUi( this );
 
@@ -131,7 +131,7 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
   mDirtyAttributes = true;
 
   // clear the previous stuff
-  setLayer( 0 );
+  setLayer( nullptr );
 
   QList<QgsMapCanvasLayer> nolayers;
   mapCanvas->setLayerSet( nolayers );
@@ -141,13 +141,13 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
     paramLayout->removeWidget( mParamWidget );
     mParamWidget->hide();
     delete mParamWidget;
-    mParamWidget = 0;
+    mParamWidget = nullptr;
   }
 
   // QgsMapLayerRegistry deletes the previous layer(s) for us
   // TODO: in future we could cache the layers in the registry
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
-  mLayer = 0;
+  mLayer = nullptr;
 
   // this should probably go to the model and only emit signal when a layer is clicked
   mParamWidget = item->paramWidget();
@@ -462,7 +462,7 @@ void QgsBrowser::updateCurrentTab()
     }
     else
     {
-      setLayer( 0 );
+      setLayer( nullptr );
     }
     mDirtyAttributes = false;
   }
@@ -519,13 +519,13 @@ void QgsBrowser::refresh( const QModelIndex& index )
 
 void QgsBrowser::setLayer( QgsVectorLayer* vLayer )
 {
-  attributeTable->setModel( NULL );
+  attributeTable->setModel( nullptr );
 
   if ( mAttributeTableFilterModel )
   {
     // Cleanup
     delete mAttributeTableFilterModel;
-    mAttributeTableFilterModel = NULL;
+    mAttributeTableFilterModel = nullptr;
   }
 
   if ( vLayer )
@@ -538,7 +538,7 @@ void QgsBrowser::setLayer( QgsVectorLayer* vLayer )
 
     QgsAttributeTableModel *tableModel = new QgsAttributeTableModel( layerCache );
 
-    mAttributeTableFilterModel = new QgsAttributeTableFilterModel( NULL, tableModel, this );
+    mAttributeTableFilterModel = new QgsAttributeTableFilterModel( nullptr, tableModel, this );
 
     // Let Qt do the garbage collection
     layerCache->setParent( tableModel );

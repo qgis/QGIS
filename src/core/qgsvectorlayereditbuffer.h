@@ -134,7 +134,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
   protected:
 
-    QgsVectorLayerEditBuffer() : L( NULL ) {}
+    QgsVectorLayerEditBuffer() : L( nullptr ) {}
 
     void updateFields( QgsFields& fields );
 

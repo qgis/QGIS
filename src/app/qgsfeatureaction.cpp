@@ -60,7 +60,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   context.setDistanceArea( myDa );
   context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
 
-  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, NULL, true, context );
+  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, nullptr, true, context );
 
   if ( mLayer->actions()->size() > 0 )
   {
@@ -201,7 +201,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
     {
       setParent( dialog ); // keep dialog until the dialog is closed and destructed
       dialog->show(); // will also delete the dialog on close (show() is overridden)
-      mFeature = 0;
+      mFeature = nullptr;
       return true;
     }
 

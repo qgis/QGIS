@@ -61,7 +61,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , mLayerValid( false )
     , mValid( false )
-    , mFile( 0 )
+    , mFile( nullptr )
     , mGeomRep( GeomNone )
     , mFieldCount( 0 )
     , mXFieldIndex( -1 )
@@ -71,7 +71,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
     , mWktHasPrefix( false )
     , mXyDms( false )
     , mSubsetString( "" )
-    , mSubsetExpression( 0 )
+    , mSubsetExpression( nullptr )
     , mBuildSubsetIndex( true )
     , mUseSubsetIndex( false )
     , mMaxInvalidLines( 50 )
@@ -81,7 +81,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
     , mWkbType( QGis::WKBNoGeometry )
     , mGeometryType( QGis::UnknownGeometry )
     , mBuildSpatialIndex( false )
-    , mSpatialIndex( 0 )
+    , mSpatialIndex( nullptr )
 {
 
   // Add supported types to enable creating expression fields in field calculator
@@ -179,18 +179,18 @@ QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
   if ( mFile )
   {
     delete mFile;
-    mFile = 0;
+    mFile = nullptr;
   }
 
   if ( mSubsetExpression )
   {
     delete mSubsetExpression;
-    mSubsetExpression = 0;
+    mSubsetExpression = nullptr;
   }
   if ( mSpatialIndex )
   {
     delete mSpatialIndex;
-    mSpatialIndex = 0;
+    mSpatialIndex = nullptr;
   }
 }
 
@@ -295,7 +295,7 @@ void QgsDelimitedTextProvider::resetIndexes()
 
   mSubsetIndex.clear();
   if ( mSpatialIndex ) delete mSpatialIndex;
-  mSpatialIndex = 0;
+  mSpatialIndex = nullptr;
   if ( mBuildSpatialIndex && mGeomRep != GeomNone ) mSpatialIndex = new QgsSpatialIndex();
 }
 
@@ -338,7 +338,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   // Initiallize indexes
 
   resetIndexes();
-  bool buildSpatialIndex = buildIndexes && mSpatialIndex != 0;
+  bool buildSpatialIndex = buildIndexes && mSpatialIndex != nullptr;
 
   // No point building a subset index if there is no geometry, as all
   // records will be included.
@@ -444,7 +444,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         // if compatible with the rest of file, add to the extents
 
         QString sWkt = parts[mWktFieldIndex];
-        QgsGeometry *geom = 0;
+        QgsGeometry *geom = nullptr;
         if ( !mWktHasPrefix && sWkt.indexOf( WktPrefixRegexp ) >= 0 )
           mWktHasPrefix = true;
         if ( !mWktHasZM && sWkt.indexOf( WktZMRegexp ) >= 0 )
@@ -481,7 +481,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
                 mSpatialIndex->insertFeature( f );
                 // Feature now has ownership of geometry, so set to null
                 // here to avoid deleting twice.
-                geom = 0;
+                geom = nullptr;
               }
             }
             else
@@ -723,7 +723,7 @@ void QgsDelimitedTextProvider::rescanFile()
   mRescanRequired = false;
   resetIndexes();
 
-  bool buildSpatialIndex = mSpatialIndex != 0;
+  bool buildSpatialIndex = mSpatialIndex != nullptr;
   bool buildSubsetIndex = mBuildSubsetIndex && ( mSubsetExpression || mGeomRep != GeomNone );
 
   // In case file has been rewritten check that it is still valid
@@ -814,7 +814,7 @@ void QgsDelimitedTextProvider::rescanFile()
 
 QgsGeometry *QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp, bool wktHasZM )
 {
-  QgsGeometry *geom = 0;
+  QgsGeometry *geom = nullptr;
   try
   {
     if ( wktHasPrefixRegexp )
@@ -830,7 +830,7 @@ QgsGeometry *QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPr
   }
   catch ( ... )
   {
-    geom = 0;
+    geom = nullptr;
   }
   return geom;
 }
@@ -1000,7 +1000,7 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString& subset, bool upda
 
   // If there is a new subset string then encode it..
 
-  QgsExpression *expression = 0;
+  QgsExpression *expression = nullptr;
   if ( ! nonNullSubset.isEmpty() )
   {
 
@@ -1023,7 +1023,7 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString& subset, bool upda
     {
       valid = false;
       delete expression;
-      expression = 0;
+      expression = nullptr;
       QString tag( "DelimitedText" );
       QgsMessageLog::logMessage( tr( "Invalid subset string %1 for %2" ).arg( nonNullSubset, mFile->fileName() ), tag );
     }

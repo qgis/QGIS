@@ -37,7 +37,7 @@ QgsLegendRenderer::QgsLegendRenderer( QgsLayerTreeModel* legendModel, const QgsL
 
 QSizeF QgsLegendRenderer::minimumSize()
 {
-  return paintAndDetermineSize( 0 );
+  return paintAndDetermineSize( nullptr );
 }
 
 void QgsLegendRenderer::drawLegend( QPainter* painter )
@@ -500,7 +500,7 @@ QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItem( QgsLayerTreeModelL
   ctx.point = point;
   ctx.labelXOffset = labelXOffset;
 
-  QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, painter ? &ctx : 0 );
+  QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, painter ? &ctx : nullptr );
 
   Nucleon nucleon;
   nucleon.item = symbolItem;

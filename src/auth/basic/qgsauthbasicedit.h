@@ -29,7 +29,7 @@ class QgsAuthBasicEdit : public QgsAuthMethodEdit, private Ui::QgsAuthBasicEdit
     Q_OBJECT
 
   public:
-    explicit QgsAuthBasicEdit( QWidget *parent = 0 );
+    explicit QgsAuthBasicEdit( QWidget *parent = nullptr );
     virtual ~QgsAuthBasicEdit();
 
     bool validateConfig() override;

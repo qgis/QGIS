@@ -20,8 +20,8 @@
 QgsGeometrySnapperPlugin::QgsGeometrySnapperPlugin( QgisInterface* iface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mIface( iface )
-    , mDialog( 0 )
-    , mMenuAction( 0 )
+    , mDialog( nullptr )
+    , mMenuAction( nullptr )
 {
 }
 
@@ -36,9 +36,9 @@ void QgsGeometrySnapperPlugin::initGui()
 void QgsGeometrySnapperPlugin::unload()
 {
   delete mDialog;
-  mDialog = 0;
+  mDialog = nullptr;
   delete mMenuAction;
-  mMenuAction = 0;
+  mMenuAction = nullptr;
   mIface->removePluginVectorMenu( QApplication::translate( "QgsGeometrySnapperPlugin", "G&eometry Tools" ), mMenuAction );
 }
 

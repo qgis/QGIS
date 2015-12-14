@@ -80,14 +80,14 @@ using namespace pal;
 
 QgsPalLayerSettings::QgsPalLayerSettings()
     : upsidedownLabels( Upright )
-    , mCurFeat( 0 )
-    , xform( NULL )
-    , ct( NULL )
-    , extentGeom( NULL )
+    , mCurFeat( nullptr )
+    , xform( nullptr )
+    , ct( nullptr )
+    , extentGeom( nullptr )
     , mFeaturesToLabel( 0 )
     , mFeatsSendingToPal( 0 )
     , mFeatsRegPal( 0 )
-    , expression( 0 )
+    , expression( nullptr )
 {
   enabled = false;
   drawLabels = true;
@@ -321,16 +321,16 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
-    : mCurFeat( NULL )
+    : mCurFeat( nullptr )
     , fieldIndex( 0 )
-    , xform( NULL )
-    , ct( NULL )
-    , extentGeom( NULL )
+    , xform( nullptr )
+    , ct( nullptr )
+    , extentGeom( nullptr )
     , mFeaturesToLabel( 0 )
     , mFeatsSendingToPal( 0 )
     , mFeatsRegPal( 0 )
     , showingShadowRects( false )
-    , expression( NULL )
+    , expression( nullptr )
 {
   *this = s;
 }
@@ -473,7 +473,7 @@ QgsPalLayerSettings& QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator it = s.dataDefinedProperties.constBegin();
   for ( ; it != s.dataDefinedProperties.constEnd(); ++it )
   {
-    dataDefinedProperties.insert( it.key(), it.value() ? new QgsDataDefined( *it.value() ) : 0 );
+    dataDefinedProperties.insert( it.key(), it.value() ? new QgsDataDefined( *it.value() ) : nullptr );
   }
   mDataDefinedNames = s.mDataDefinedNames;
 
@@ -507,7 +507,7 @@ QgsPalLayerSettings QgsPalLayerSettings::fromLayer( QgsVectorLayer* layer )
 
 QgsExpression* QgsPalLayerSettings::getLabelExpression()
 {
-  if ( expression == NULL )
+  if ( expression == nullptr )
   {
     expression = new QgsExpression( fieldName );
   }
@@ -972,7 +972,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   obstacleFactor = layer->customProperty( "labeling/obstacleFactor", QVariant( 1.0 ) ).toDouble();
   obstacleType = ( ObstacleType )layer->customProperty( "labeling/obstacleType", QVariant( PolygonInterior ) ).toUInt();
 
-  readDataDefinedPropertyMap( layer, 0, dataDefinedProperties );
+  readDataDefinedPropertyMap( layer, nullptr, dataDefinedProperties );
 }
 
 void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
@@ -1125,7 +1125,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/obstacleFactor", obstacleFactor );
   layer->setCustomProperty( "labeling/obstacleType", ( unsigned int )obstacleType );
 
-  writeDataDefinedPropertyMap( layer, 0, dataDefinedProperties );
+  writeDataDefinedPropertyMap( layer, nullptr, dataDefinedProperties );
 }
 
 
@@ -1326,7 +1326,7 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   obstacleType = ( ObstacleType )renderingElem.attribute( "obstacleType", QString::number( PolygonInterior ) ).toUInt();
 
   QDomElement ddElem = elem.firstChildElement( "data-defined" );
-  readDataDefinedPropertyMap( 0, &ddElem, dataDefinedProperties );
+  readDataDefinedPropertyMap( nullptr, &ddElem, dataDefinedProperties );
 }
 
 
@@ -1485,7 +1485,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   renderingElem.setAttribute( "obstacleType", ( unsigned int )obstacleType );
 
   QDomElement ddElem = doc.createElement( "data-defined" );
-  writeDataDefinedPropertyMap( 0, &ddElem, dataDefinedProperties );
+  writeDataDefinedPropertyMap( nullptr, &ddElem, dataDefinedProperties );
 
   QDomElement elem = doc.createElement( "settings" );
   elem.appendChild( textStyleElem );
@@ -1539,7 +1539,7 @@ void QgsPalLayerSettings::removeAllDataDefinedProperties()
   for ( ; it != dataDefinedProperties.constEnd(); ++it )
   {
     delete( it.value() );
-    it.value() = 0;
+    it.value() = nullptr;
   }
   dataDefinedProperties.clear();
 }
@@ -1564,14 +1564,14 @@ QString QgsPalLayerSettings::updateDataDefinedString( const QString& value )
 QgsDataDefined* QgsPalLayerSettings::dataDefinedProperty( DataDefinedProperties p )
 {
   if ( dataDefinedProperties.isEmpty() )
-    return 0;
+    return nullptr;
 
   QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator it = dataDefinedProperties.find( p );
   if ( it != dataDefinedProperties.constEnd() )
   {
     return it.value();
   }
-  return 0;
+  return nullptr;
 }
 
 QMap<QString, QString> QgsPalLayerSettings::dataDefinedMap( DataDefinedProperties p ) const
@@ -1602,7 +1602,7 @@ QVariant QgsPalLayerSettings::dataDefinedValue( DataDefinedProperties p, QgsFeat
   }
   const QgsExpressionContext* ec = context ? context : scopedEc.data();
 
-  QgsDataDefined* dd = 0;
+  QgsDataDefined* dd = nullptr;
   QMap< DataDefinedProperties, QgsDataDefined* >::const_iterator it = dataDefinedProperties.find( p );
   if ( it != dataDefinedProperties.constEnd() )
   {
@@ -2241,12 +2241,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     doClip = true;
   }
 
-  const GEOSGeometry* geos_geom = 0;
+  const GEOSGeometry* geos_geom = nullptr;
   const QgsGeometry* preparedGeom = geom;
   QScopedPointer<QgsGeometry> scopedPreparedGeom;
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : 0 ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : nullptr ) )
   {
-    scopedPreparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : 0 ) );
+    scopedPreparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : nullptr ) );
     if ( !scopedPreparedGeom.data() )
       return;
     preparedGeom = scopedPreparedGeom.data();
@@ -2256,13 +2256,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   {
     geos_geom = geom->asGeos();
   }
-  const GEOSGeometry* geosObstacleGeom = 0;
+  const GEOSGeometry* geosObstacleGeom = nullptr;
   QScopedPointer<QgsGeometry> scopedObstacleGeom;
   if ( isObstacle )
   {
-    if ( obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : 0 ) )
+    if ( obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : nullptr ) )
     {
-      scopedObstacleGeom.reset( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : 0 ) );
+      scopedObstacleGeom.reset( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : nullptr ) );
       geosObstacleGeom = scopedObstacleGeom.data()->asGeos();
     }
     else if ( obstacleGeometry )
@@ -2274,7 +2274,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   if ( minFeatureSize > 0 && !checkMinimumSizeMM( context, preparedGeom, minFeatureSize ) )
     return;
 
-  if ( geos_geom == NULL )
+  if ( geos_geom == nullptr )
     return; // invalid geometry
 
   // likelihood exists label will be registered with PAL and may be drawn
@@ -2311,7 +2311,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   {
     geos_geom_clone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
   }
-  GEOSGeometry* geosObstacleGeomClone = 0;
+  GEOSGeometry* geosObstacleGeomClone = nullptr;
   if ( geosObstacleGeom )
   {
     geosObstacleGeomClone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geosObstacleGeom );
@@ -2734,7 +2734,7 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderConte
 
   mCurFeat = &f;
 
-  const QgsGeometry* geom = 0;
+  const QgsGeometry* geom = nullptr;
   if ( obstacleGeometry )
   {
     geom = obstacleGeometry;
@@ -2749,7 +2749,7 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderConte
     return;
   }
 
-  const GEOSGeometry* geos_geom = 0;
+  const GEOSGeometry* geos_geom = nullptr;
   QScopedPointer<QgsGeometry> scopedPreparedGeom;
 
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, extentGeom ) )
@@ -2764,7 +2764,7 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderConte
     geos_geom = geom->asGeos();
   }
 
-  if ( geos_geom == NULL )
+  if ( geos_geom == nullptr )
     return; // invalid geometry
 
   GEOSGeometry* geos_geom_clone;
@@ -3633,7 +3633,7 @@ QgsPalLabeling::QgsPalLabeling()
 QgsPalLabeling::~QgsPalLabeling()
 {
   delete mEngine;
-  mEngine = 0;
+  mEngine = nullptr;
 }
 
 bool QgsPalLabeling::willUseLayer( QgsVectorLayer* layer )
@@ -3728,7 +3728,7 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLaye
 void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, QgsRenderContext &context, const QString& dxfLayer )
 {
   Q_UNUSED( dxfLayer ); // now handled by QgsDxfLabelProvider
-  if ( QgsVectorLayerLabelProvider* provider = mLabelProviders.value( layerID, 0 ) )
+  if ( QgsVectorLayerLabelProvider* provider = mLabelProviders.value( layerID, nullptr ) )
     provider->registerFeature( f, context );
 }
 
@@ -3796,7 +3796,7 @@ QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, QgsRe
 {
   if ( !geometry )
   {
-    return 0;
+    return nullptr;
   }
 
   //don't modify the feature's geometry so that geometry based expressions keep working
@@ -3814,7 +3814,7 @@ QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, QgsRe
     {
       Q_UNUSED( cse );
       QgsDebugMsgLevel( QString( "Ignoring feature due to transformation exception" ), 4 );
-      return 0;
+      return nullptr;
     }
   }
 
@@ -3834,19 +3834,19 @@ QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, QgsRe
       {
         Q_UNUSED( cse );
         QgsDebugMsgLevel( QString( "Ignoring feature due to transformation exception" ), 4 );
-        return 0;
+        return nullptr;
       }
     }
 
     if ( geom->rotate( m2p.mapRotation(), center ) )
     {
       QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom->exportToWkt() ) );
-      return 0;
+      return nullptr;
     }
   }
 
   if ( !geom->asGeos() )
-    return 0;  // there is something really wrong with the geometry
+    return nullptr;  // there is something really wrong with the geometry
 
   // fix invalid polygons
   if ( geom->type() == QGis::Polygon && !geom->isGeosValid() )
@@ -3854,7 +3854,7 @@ QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, QgsRe
     QgsGeometry* bufferGeom = geom->buffer( 0, 0 );
     if ( !bufferGeom )
     {
-      return 0;
+      return nullptr;
     }
     geom = bufferGeom;
     clonedGeometry.reset( geom );
@@ -3865,7 +3865,7 @@ QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, QgsRe
     QgsGeometry* clipGeom = geom->intersection( clipGeometry ); // creates new geometry
     if ( !clipGeom )
     {
-      return 0;
+      return nullptr;
     }
     geom = clipGeom;
     clonedGeometry.reset( geom );
@@ -3914,7 +3914,7 @@ bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext& context, const 
 
 void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext &context )
 {
-  if ( QgsVectorLayerDiagramProvider* provider = mDiagramProviders.value( layerID, 0 ) )
+  if ( QgsVectorLayerDiagramProvider* provider = mDiagramProviders.value( layerID, nullptr ) )
     provider->registerFeature( feat, context );
 }
 
@@ -4617,7 +4617,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
       p->restore();
 
       delete svgShdwM;
-      svgShdwM = 0;
+      svgShdwM = nullptr;
     }
 
     // draw the actual symbol
@@ -4642,7 +4642,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     p->restore();
 
     delete svgM;
-    svgM = 0;
+    svgM = nullptr;
 
   }
   else  // Generated Shapes
@@ -4965,7 +4965,7 @@ QgsLabelingResults::QgsLabelingResults()
 QgsLabelingResults::~QgsLabelingResults()
 {
   delete mLabelSearchTree;
-  mLabelSearchTree = NULL;
+  mLabelSearchTree = nullptr;
 }
 
 QList<QgsLabelPosition> QgsLabelingResults::labelsAtPosition( const QgsPoint& p ) const

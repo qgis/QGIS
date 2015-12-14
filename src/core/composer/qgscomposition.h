@@ -487,7 +487,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
         atlas properties from the template. Set to false to only add new items from the template, without
         overwriting the existing items or composition settings.
       */
-    bool loadFromTemplate( const QDomDocument& doc, QMap<QString, QString>* substitutionMap = 0,
+    bool loadFromTemplate( const QDomDocument& doc, QMap<QString, QString>* substitutionMap = nullptr,
                            bool addUndoCommands = false, const bool clearComposition = true );
 
     /** Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
@@ -499,8 +499,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
       @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
       @note parameters mapsToRestore, addUndoCommands pos and pasteInPlace not available in python bindings
      */
-    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore = 0,
-                          bool addUndoCommands = false, QPointF* pos = 0, bool pasteInPlace = false );
+    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore = nullptr,
+                          bool addUndoCommands = false, QPointF* pos = nullptr, bool pasteInPlace = false );
 
     /** Adds item to z list. Usually called from constructor of QgsComposerItem*/
     void addItemToZList( QgsComposerItem* item );
@@ -865,7 +865,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @param context expression context for evaluating data defined expressions
      * @note this method was added in version 2.5
     */
-    void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = 0 );
+    void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr );
 
     /** Creates an expression context relating to the compositions's current state. The context includes
      * scopes for global, project, composition and atlas properties.
@@ -990,7 +990,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /** Recalculates the page size using data defined page settings
      * @param context expression context for data defined page sizes
     */
-    void refreshPageSize( const QgsExpressionContext* context = 0 );
+    void refreshPageSize( const QgsExpressionContext* context = nullptr );
 
     /** Evaluate a data defined property and return the calculated value
      * @returns true if data defined property could be successfully evaluated

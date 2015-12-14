@@ -33,7 +33,7 @@ class APP_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroup
     typedef QPair<QString, QTreeWidgetItem*> TabPair;
 
   public:
-    QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList<TabPair>& tabList, QWidget *parent = 0 );
+    QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList<TabPair>& tabList, QWidget *parent = nullptr );
     ~QgsAddTabOrGroup();
 
     QString name();

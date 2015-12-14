@@ -130,7 +130,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
 {
   QgsVectorLayer *vl = mVectorLayer;
 
-  if ( vl == NULL )
+  if ( vl == nullptr )
     return;
 
   int featureCount = ( int ) vl->featureCount() * 2;
