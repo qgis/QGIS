@@ -125,10 +125,15 @@ class QgsExpression
 
     double scale();
 
-    //! Alias for dump()
-    const QString expression() const;
+    //! Return the original, unmodified expression string.
+    //! If there was none supplied because it was constructed by sole
+    //! API calls, dump() will be used to create one instead.
+    QString expression() const;
 
-    //! Return the expression string that represents this QgsExpression.
+    //! Return an expression string, constructed from the internal
+    //! abstract syntax tree. This does not contain any nice whitespace
+    //! formatting or comments. In general it is preferrable to use
+    //! expression() instead.
     QString dump() const;
 
     //! Return calculator used for distance and area calculations
@@ -435,6 +440,15 @@ class QgsExpression
 
         virtual QString dump() const = 0;
 
+        /**
+         * Generate a clone of this node.
+         * Make sure that the clone does not contain any information which is
+         * generated in prepare and context related.
+         * Ownership is transferred to the caller.
+         *
+         * @return a deep copy of this node.
+         */
+        virtual QgsExpression::Node* clone() const = 0;
         virtual QStringList referencedColumns() const = 0;
         virtual bool needsGeometry() const = 0;
 
@@ -451,6 +465,8 @@ class QgsExpression
         void append( QgsExpression::Node* node /Transfer/ );
         int count();
         const QList<QgsExpression::Node*>& list();
+        /** Creates a deep copy of this list. Ownership is transferred to the caller */
+        QgsExpression::NodeList* clone() const;
 
         virtual QString dump() const;
 
@@ -494,6 +510,7 @@ class QgsExpression
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
         virtual void accept( QgsExpression::Visitor& v ) const;
+        virtual QgsExpression::Node* clone() const;
     };
 
     class NodeBinaryOperator : QgsExpression::Node
@@ -514,6 +531,7 @@ class QgsExpression
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
         virtual void accept( QgsExpression::Visitor& v ) const;
+        virtual QgsExpression::Node* clone() const;
 
         int precedence() const;
         bool leftAssociative() const;
@@ -537,6 +555,7 @@ class QgsExpression
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
         virtual void accept( QgsExpression::Visitor& v ) const;
+        virtual QgsExpression::Node* clone() const;
     };
 
     class NodeFunction : QgsExpression::Node
@@ -557,6 +576,7 @@ class QgsExpression
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
         virtual void accept( QgsExpression::Visitor& v ) const;
+        virtual QgsExpression::Node* clone() const;
     };
 
     class NodeLiteral : QgsExpression::Node
@@ -570,6 +590,7 @@ class QgsExpression
         virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context );
 	    virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
+        virtual QgsExpression::Node* clone() const;
 
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
@@ -592,6 +613,7 @@ class QgsExpression
         virtual bool needsGeometry() const;
 
         virtual void accept( QgsExpression::Visitor& v ) const;
+        virtual QgsExpression::Node* clone() const;
     };
 
     class WhenThen
@@ -619,6 +641,7 @@ class QgsExpression
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
         virtual void accept( QgsExpression::Visitor& v ) const;
+        virtual QgsExpression::Node* clone() const;
     };
 
     //////
@@ -661,8 +684,4 @@ class QgsExpression
 
   protected:
     void initGeomCalculator();
-
-  private:
-    QgsExpression( const QgsExpression& );
-    QgsExpression & operator=( const QgsExpression& );
 };
