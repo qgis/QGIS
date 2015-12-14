@@ -734,9 +734,11 @@ class SiteList(object):
 
     class Iterator(object):
 
-        def __init__(this, lst): this.generator = (s for s in lst)
+        def __init__(this, lst):
+            this.generator = (s for s in lst)
 
-        def __iter__(this): return this
+        def __iter__(this):
+            return this
 
         def next(this):
             try:
@@ -753,13 +755,17 @@ class SiteList(object):
     def __len__(self):
         return len(self.__sites)
 
-    def _getxmin(self): return self.__xmin
+    def _getxmin(self):
+        return self.__xmin
 
-    def _getymin(self): return self.__ymin
+    def _getymin(self):
+        return self.__ymin
 
-    def _getxmax(self): return self.__xmax
+    def _getxmax(self):
+        return self.__xmax
 
-    def _getymax(self): return self.__ymax
+    def _getymax(self):
+        return self.__ymax
 
     xmin = property(_getxmin)
     ymin = property(_getymin)
