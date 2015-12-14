@@ -31,7 +31,7 @@ QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl ):
     mTiledMode( false ), mMaxTileWidth( 500 ), mMaxTileHeight( 500 ),
     mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo ),
     mPyramidsFormat( QgsRaster::PyramidsGTiff ),
-    mProgressDialog( 0 ), mPipe( 0 ), mInput( 0 )
+    mProgressDialog( nullptr ), mPipe( nullptr ), mInput( nullptr )
 {
 
 }
@@ -45,9 +45,9 @@ QgsRasterFileWriter::QgsRasterFileWriter()
     , mMaxTileHeight( 500 )
     , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
     , mPyramidsFormat( QgsRaster::PyramidsGTiff )
-    , mProgressDialog( 0 )
-    , mPipe( 0 )
-    , mInput( 0 )
+    , mProgressDialog( nullptr )
+    , mPipe( nullptr )
+    , mInput( nullptr )
 {
 
 }
@@ -119,12 +119,12 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
   if ( mMode == Image )
   {
     WriterError e = writeImageRaster( &iter, nCols, nRows, outputExtent, crs, progressDialog );
-    mProgressDialog = 0;
+    mProgressDialog = nullptr;
     return e;
   }
   else
   {
-    mProgressDialog = 0;
+    mProgressDialog = nullptr;
     WriterError e = writeDataRaster( pipe, &iter, nCols, nRows, outputExtent, crs, progressDialog );
     return e;
   }
@@ -262,7 +262,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
   }
 
   //create destProvider for whole dataset here
-  QgsRasterDataProvider* destProvider = 0;
+  QgsRasterDataProvider* destProvider = nullptr;
   double pixelSize;
   double geoTransform[6];
   globalOutputParameters( outputExtent, nCols, nRows, geoTransform, pixelSize );
@@ -279,7 +279,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     {
       destProvider->remove();
       delete destProvider;
-      destProvider = 0;
+      destProvider = nullptr;
     }
     else // VRT
     {
@@ -339,7 +339,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
   for ( int i = 1; i <= nBands; ++i )
   {
     iter->startRasterRead( i, nCols, nRows, outputExtent );
-    blockList.push_back( 0 );
+    blockList.push_back( nullptr );
     if ( destProvider ) // no tiles
     {
       destProvider->setNoDataValue( i, destNoDataValueList.value( i - 1 ) );
@@ -419,7 +419,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
         blockList[i-1]->convert( destDataType );
         destBlockList.push_back( blockList[i-1] );
       }
-      blockList[i-1] = 0;
+      blockList[i-1] = nullptr;
     }
 
     if ( mTiledMode ) //write to file
@@ -489,7 +489,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   int fileIndex = 0;
 
   //create destProvider for whole dataset here
-  QgsRasterDataProvider* destProvider = 0;
+  QgsRasterDataProvider* destProvider = nullptr;
   double pixelSize;
   double geoTransform[6];
   globalOutputParameters( outputExtent, nCols, nRows, geoTransform, pixelSize );
@@ -509,7 +509,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     progressDialog->setLabelText( QObject::tr( "Reading raster part %1 of %2" ).arg( fileIndex + 1 ).arg( nParts ) );
   }
 
-  QgsRasterBlock *inputBlock = 0;
+  QgsRasterBlock *inputBlock = nullptr;
   while ( iter->readNextRasterPart( 1, iterCols, iterRows, &inputBlock, iterLeft, iterTop ) )
   {
     if ( !inputBlock )
@@ -758,7 +758,7 @@ void QgsRasterFileWriter::buildPyramids( const QString& filename )
       title = QObject::tr( "Building pyramids failed." );
       message = QObject::tr( "Building pyramid overviews is not supported on this type of raster." );
     }
-    QMessageBox::warning( 0, title, message );
+    QMessageBox::warning( nullptr, title, message );
     QgsDebugMsg( res + " - " + message );
   }
   delete destProvider;
@@ -913,7 +913,7 @@ QgsRasterDataProvider* QgsRasterFileWriter::initOutput( int nCols, int nRows, co
   if ( mTiledMode )
   {
     createVRT( nCols, nRows, crs, geoTransform, type, destHasNoDataValueList, destNoDataValueList );
-    return 0;
+    return nullptr;
   }
   else
   {

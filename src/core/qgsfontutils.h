@@ -49,7 +49,7 @@ class CORE_EXPORT QgsFontUtils
      * @param match Whether the family [foundry] returned by system is a match
      * @returns Whether family was found on system
      */
-    static bool fontFamilyMatchOnSystem( const QString& family, QString* chosen = 0, bool* match = 0 );
+    static bool fontFamilyMatchOnSystem( const QString& family, QString* chosen = nullptr, bool* match = nullptr );
 
     /** Updates font with named style and retain all font properties
      * @param f The font to update

@@ -23,7 +23,7 @@
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
     : QgsLayerTreeNode( NodeLayer )
     , mLayerId( layer->id() )
-    , mLayer( 0 )
+    , mLayer( nullptr )
     , mVisible( Qt::Checked )
 {
   Q_ASSERT( QgsMapLayerRegistry::instance()->mapLayer( mLayerId ) == layer );
@@ -34,7 +34,7 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QString& layerId, const QString& nam
     : QgsLayerTreeNode( NodeLayer )
     , mLayerId( layerId )
     , mLayerName( name )
-    , mLayer( 0 )
+    , mLayer( nullptr )
     , mVisible( Qt::Checked )
 {
   attachToLayer();
@@ -44,7 +44,7 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer& other )
     : QgsLayerTreeNode( other )
     , mLayerId( other.mLayerId )
     , mLayerName( other.mLayerName )
-    , mLayer( 0 )
+    , mLayer( nullptr )
     , mVisible( other.mVisible )
 {
   attachToLayer();
@@ -96,14 +96,14 @@ void QgsLayerTreeLayer::setVisible( Qt::CheckState state )
 QgsLayerTreeLayer* QgsLayerTreeLayer::readXML( QDomElement& element )
 {
   if ( element.tagName() != "layer-tree-layer" )
-    return 0;
+    return nullptr;
 
   QString layerID = element.attribute( "id" );
   QString layerName = element.attribute( "name" );
   Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( "checked" ) );
   bool isExpanded = ( element.attribute( "expanded", "1" ) == "1" );
 
-  QgsLayerTreeLayer* nodeLayer = 0;
+  QgsLayerTreeLayer* nodeLayer = nullptr;
 
   QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
 
@@ -167,6 +167,6 @@ void QgsLayerTreeLayer::registryLayersWillBeRemoved( const QStringList& layerIds
     disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( registryLayersWillBeRemoved( QStringList ) ) );
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( registryLayersAdded( QList<QgsMapLayer*> ) ) );
 
-    mLayer = 0;
+    mLayer = nullptr;
   }
 }

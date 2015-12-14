@@ -39,7 +39,7 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
      * @param parent Parent widget
      * @param trustedCAs List of trusted Certificate Authorities objects
      */
-    explicit QgsAuthTrustedCAsDialog( QWidget *parent = 0,
+    explicit QgsAuthTrustedCAsDialog( QWidget *parent = nullptr,
                                       const QList<QSslCertificate>& trustedCAs = QList<QSslCertificate>() );
     ~QgsAuthTrustedCAsDialog();
 
@@ -82,11 +82,11 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
 
     void appendCertsToGroup( const QList<QSslCertificate>& certs,
                              QgsAuthTrustedCAsDialog::CaType catype,
-                             QTreeWidgetItem *parent = 0 );
+                             QTreeWidgetItem *parent = nullptr );
 
     void appendCertsToItem( const QList<QSslCertificate>& certs,
                             QgsAuthTrustedCAsDialog::CaType catype,
-                            QTreeWidgetItem *parent = 0 );
+                            QTreeWidgetItem *parent = nullptr );
 
     QgsMessageBar * messageBar();
     int messageTimeout();

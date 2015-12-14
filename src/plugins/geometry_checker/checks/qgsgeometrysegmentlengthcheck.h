@@ -17,7 +17,7 @@ class QgsGeometrySegmentLengthCheck : public QgsGeometryCheck
   public:
     QgsGeometrySegmentLengthCheck( QgsFeaturePool* featurePool, double minLength )
         : QgsGeometryCheck( FeatureNodeCheck, featurePool ), mMinLength( minLength ) {}
-    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = 0, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
+    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Minimal segment length" ); }

@@ -132,7 +132,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual bool equal( const QgsDataItem *other );
 
-    virtual QWidget *paramWidget() { return 0; }
+    virtual QWidget *paramWidget() { return nullptr; }
 
     // list of actions provided by this item - usually used for popup menu on right-click
     virtual QList<QAction*> actions() { return QList<QAction*>(); }
@@ -466,7 +466,7 @@ class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
     Q_OBJECT
 
   public:
-    QgsDirectoryParamWidget( const QString& path, QWidget* parent = NULL );
+    QgsDirectoryParamWidget( const QString& path, QWidget* parent = nullptr );
 
   protected:
     void mousePressEvent( QMouseEvent* event ) override;

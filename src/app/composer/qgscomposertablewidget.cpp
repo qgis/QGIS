@@ -26,7 +26,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgisgui.h"
 
-QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table ): QgsComposerItemBaseWidget( 0, table ), mComposerTable( table )
+QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table ): QgsComposerItemBaseWidget( nullptr, table ), mComposerTable( table )
 {
   setupUi( this );
   //add widget for general composer item properties

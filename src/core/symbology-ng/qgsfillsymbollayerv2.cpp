@@ -450,7 +450,7 @@ QgsGradientFillSymbolLayerV2::QgsGradientFillSymbolLayerV2( const QColor& color,
     GradientColorType colorType, GradientType gradientType,
     GradientCoordinateMode coordinateMode, GradientSpread spread )
     : mGradientColorType( colorType )
-    , mGradientRamp( NULL )
+    , mGradientRamp( nullptr )
     , mGradientType( gradientType )
     , mCoordinateMode( coordinateMode )
     , mGradientSpread( spread )
@@ -941,8 +941,8 @@ QgsShapeburstFillSymbolLayerV2::QgsShapeburstFillSymbolLayerV2( const QColor& co
     mDistanceUnit( QgsSymbolV2::MM ),
     mColorType( colorType ),
     mColor2( color2 ),
-    mGradientRamp( NULL ),
-    mTwoColorGradientRamp( 0 ),
+    mGradientRamp( nullptr ),
+    mTwoColorGradientRamp( nullptr ),
     mIgnoreRings( false ),
     mOffsetUnit( QgsSymbolV2::MM )
 {
@@ -1223,7 +1223,7 @@ void QgsShapeburstFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QLi
     imgPainter.setPen( QPen( Qt::black ) );
     imgPainter.translate( -points.boundingRect().left() + sideBuffer, - points.boundingRect().top() + sideBuffer );
     imgPainter.scale( context.renderContext().rasterScaleFactor(), context.renderContext().rasterScaleFactor() );
-    _renderPolygon( &imgPainter, points, NULL, context );
+    _renderPolygon( &imgPainter, points, nullptr, context );
   }
   imgPainter.end();
 
@@ -1550,7 +1550,7 @@ QgsImageFillSymbolLayer::QgsImageFillSymbolLayer()
     : mNextAngle( 0.0 )
     , mOutlineWidth( 0.0 )
     , mOutlineWidthUnit( QgsSymbolV2::MM )
-    , mOutline( 0 )
+    , mOutline( nullptr )
 {
   setSubSymbol( new QgsLineSymbolV2() );
 }
@@ -1613,7 +1613,7 @@ bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
   if ( !symbol ) //unset current outline
   {
     delete mOutline;
-    mOutline = 0;
+    mOutline = nullptr;
     return true;
   }
 
@@ -1724,7 +1724,7 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double
   mSvgOutlineColor = QColor( 0, 0, 0 );
   mSvgOutlineWidth = 0.2;
   setDefaultSvgParams();
-  mSvgPattern = 0;
+  mSvgPattern = nullptr;
 }
 
 QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double width, double angle ): QgsImageFillSymbolLayer(),
@@ -1741,7 +1741,7 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double 
   mSvgOutlineWidth = 0.2;
   setSubSymbol( new QgsLineSymbolV2() );
   setDefaultSvgParams();
-  mSvgPattern = 0;
+  mSvgPattern = nullptr;
 }
 
 QgsSVGFillSymbolLayer::~QgsSVGFillSymbolLayer()
@@ -1817,7 +1817,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
     angle = properties["angle"].toDouble();
   }
 
-  QgsSVGFillSymbolLayer* symbolLayer = 0;
+  QgsSVGFillSymbolLayer* symbolLayer = nullptr;
   if ( !svgFilePath.isEmpty() )
   {
     symbolLayer = new QgsSVGFillSymbolLayer( svgFilePath, width, angle );
@@ -1915,7 +1915,7 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFileP
   }
 
   delete mSvgPattern;
-  mSvgPattern = 0;
+  mSvgPattern = nullptr;
   double size = patternWidth * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context.renderContext(), patternWidthUnit, patternWidthMapUnitScale );
 
   if (( int )size < 1.0 || 10000.0 < size )
@@ -2016,7 +2016,7 @@ QgsStringMap QgsSVGFillSymbolLayer::properties() const
 
 QgsSVGFillSymbolLayer* QgsSVGFillSymbolLayer::clone() const
 {
-  QgsSVGFillSymbolLayer* clonedLayer = 0;
+  QgsSVGFillSymbolLayer* clonedLayer = nullptr;
   if ( !mSvgFilePath.isEmpty() )
   {
     clonedLayer = new QgsSVGFillSymbolLayer( mSvgFilePath, mPatternWidth, mAngle );
@@ -2113,21 +2113,21 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
 
   QDomElement fillElem = element.firstChildElement( "Fill" );
   if ( fillElem.isNull() )
-    return NULL;
+    return nullptr;
 
   QDomElement graphicFillElem = fillElem.firstChildElement( "GraphicFill" );
   if ( graphicFillElem.isNull() )
-    return NULL;
+    return nullptr;
 
   QDomElement graphicElem = graphicFillElem.firstChildElement( "Graphic" );
   if ( graphicElem.isNull() )
-    return NULL;
+    return nullptr;
 
   if ( !QgsSymbolLayerV2Utils::externalGraphicFromSld( graphicElem, path, mimeType, fillColor, size ) )
-    return NULL;
+    return nullptr;
 
   if ( mimeType != "image/svg+xml" )
-    return NULL;
+    return nullptr;
 
   QgsSymbolLayerV2Utils::lineFromSld( graphicElem, penStyle, borderColor, borderWidth );
 
@@ -2290,10 +2290,10 @@ QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer()
     , mLineAngle( 45.0 )
     , mOffset( 0.0 )
     , mOffsetUnit( QgsSymbolV2::MM )
-    , mFillLineSymbol( 0 )
+    , mFillLineSymbol( nullptr )
 {
   setSubSymbol( new QgsLineSymbolV2() );
-  QgsImageFillSymbolLayer::setSubSymbol( 0 ); //no outline
+  QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no outline
 }
 
 void QgsLinePatternFillSymbolLayer::setLineWidth( double w )
@@ -2945,21 +2945,21 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &ele
 
   QDomElement fillElem = element.firstChildElement( "Fill" );
   if ( fillElem.isNull() )
-    return NULL;
+    return nullptr;
 
   QDomElement graphicFillElem = fillElem.firstChildElement( "GraphicFill" );
   if ( graphicFillElem.isNull() )
-    return NULL;
+    return nullptr;
 
   QDomElement graphicElem = graphicFillElem.firstChildElement( "Graphic" );
   if ( graphicElem.isNull() )
-    return NULL;
+    return nullptr;
 
   if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, lineColor, lineStyle, lineWidth, size ) )
-    return NULL;
+    return nullptr;
 
   if ( name != "horline" )
-    return NULL;
+    return nullptr;
 
   double angle = 0.0;
   QString angleFunc;
@@ -3004,7 +3004,7 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &ele
 
 ////////////////////////
 
-QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer(): QgsImageFillSymbolLayer(), mMarkerSymbol( 0 ), mDistanceX( 15 ),
+QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer(): QgsImageFillSymbolLayer(), mMarkerSymbol( nullptr ), mDistanceX( 15 ),
     mDistanceXUnit( QgsSymbolV2::MM ), mDistanceY( 15 ), mDistanceYUnit( QgsSymbolV2::MM ), mDisplacementX( 0 ), mDisplacementXUnit( QgsSymbolV2::MM ),
     mDisplacementY( 0 ), mDisplacementYUnit( QgsSymbolV2::MM )
 {
@@ -3013,7 +3013,7 @@ QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer(): QgsImageFillSy
   mDisplacementX = 0;
   mDisplacementY = 0;
   setSubSymbol( new QgsMarkerSymbolV2() );
-  QgsImageFillSymbolLayer::setSubSymbol( 0 ); //no outline
+  QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no outline
 }
 
 QgsPointPatternFillSymbolLayer::~QgsPointPatternFillSymbolLayer()
@@ -3291,7 +3291,7 @@ void QgsPointPatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &elem
 QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::createFromSld( QDomElement &element )
 {
   Q_UNUSED( element );
-  return NULL;
+  return nullptr;
 }
 
 bool QgsPointPatternFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
@@ -3364,7 +3364,7 @@ QSet<QString> QgsPointPatternFillSymbolLayer::usedAttributes() const
 //////////////
 
 
-QgsCentroidFillSymbolLayerV2::QgsCentroidFillSymbolLayerV2(): mMarker( NULL ), mPointOnSurface( false )
+QgsCentroidFillSymbolLayerV2::QgsCentroidFillSymbolLayerV2(): mMarker( nullptr ), mPointOnSurface( false )
 {
   setSubSymbol( new QgsMarkerSymbolV2() );
 }
@@ -3446,7 +3446,7 @@ QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2::createFromSld( QDomElement &elem
 
   QgsSymbolLayerV2 *l = QgsSymbolLayerV2Utils::createMarkerLayerFromSld( element );
   if ( !l )
-    return NULL;
+    return nullptr;
 
   QgsSymbolLayerV2List layers;
   layers.append( l );
@@ -3465,7 +3465,7 @@ QgsSymbolV2* QgsCentroidFillSymbolLayerV2::subSymbol()
 
 bool QgsCentroidFillSymbolLayerV2::setSubSymbol( QgsSymbolV2* symbol )
 {
-  if ( symbol == NULL || symbol->type() != QgsSymbolV2::Marker )
+  if ( symbol == nullptr || symbol->type() != QgsSymbolV2::Marker )
   {
     delete symbol;
     return false;
@@ -3533,7 +3533,7 @@ QgsRasterFillSymbolLayer::QgsRasterFillSymbolLayer( const QString &imageFilePath
     , mWidth( 0.0 )
     , mWidthUnit( QgsSymbolV2::Pixel )
 {
-  QgsImageFillSymbolLayer::setSubSymbol( 0 ); //disable sub symbol
+  QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //disable sub symbol
 }
 
 QgsRasterFillSymbolLayer::~QgsRasterFillSymbolLayer()

@@ -29,7 +29,7 @@ class QgsSelectLayerTreeModel : public QgsLayerTreeModel
 {
     Q_OBJECT
   public:
-    QgsSelectLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
+    QgsSelectLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
     ~QgsSelectLayerTreeModel();
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
@@ -41,7 +41,7 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     Q_OBJECT
 
   public:
-    QgsOfflineEditingPluginGui( QWidget* parent = 0, Qt::WindowFlags fl = 0 );
+    QgsOfflineEditingPluginGui( QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
     virtual ~QgsOfflineEditingPluginGui();
 
     QString offlineDataPath();

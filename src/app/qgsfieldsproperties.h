@@ -91,7 +91,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     };
 
   public:
-    QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent = 0 );
+    QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent = nullptr );
 
     ~QgsFieldsProperties();
 
@@ -225,7 +225,7 @@ class DragList : public QTableWidget
     Q_OBJECT
 
   public:
-    explicit DragList( QWidget* parent = 0 )
+    explicit DragList( QWidget* parent = nullptr )
         : QTableWidget( parent )
     {}
 
@@ -244,7 +244,7 @@ class DesignerTree : public QTreeWidget
     Q_OBJECT
 
   public:
-    explicit DesignerTree( QWidget* parent = 0 )
+    explicit DesignerTree( QWidget* parent = nullptr )
         : QTreeWidget( parent )
     {}
     QTreeWidgetItem* addItem( QTreeWidgetItem* parent, QgsFieldsProperties::DesignerTreeItemData data );

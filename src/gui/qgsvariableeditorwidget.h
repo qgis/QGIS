@@ -47,7 +47,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
     /** Constructor for QgsVariableEditorWidget.
      * @param parent parent widget
      */
-    QgsVariableEditorWidget( QWidget *parent = 0 );
+    QgsVariableEditorWidget( QWidget *parent = nullptr );
 
     ~QgsVariableEditorWidget();
 
@@ -156,7 +156,7 @@ class QgsVariableEditorTree : public QTreeWidget
       RowBaseColor
     };
 
-    explicit QgsVariableEditorTree( QWidget *parent = 0 );
+    explicit QgsVariableEditorTree( QWidget *parent = nullptr );
 
     QTreeWidgetItem *indexToItem( const QModelIndex &index ) const { return itemFromIndex( index ); }
     QModelIndex itemToIndex( QTreeWidgetItem* item ) const { return indexFromItem( item ); }
@@ -207,7 +207,7 @@ class VariableEditorDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    VariableEditorDelegate( QObject *parent = 0, QgsVariableEditorTree *tree = 0 )
+    VariableEditorDelegate( QObject *parent = nullptr, QgsVariableEditorTree *tree = nullptr )
         : QItemDelegate( parent )
         , mParentTree( tree )
     {}

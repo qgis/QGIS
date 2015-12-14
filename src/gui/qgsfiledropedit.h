@@ -26,7 +26,7 @@ class GUI_EXPORT QgsFileDropEdit: public QLineEdit
     Q_OBJECT
 
   public:
-    QgsFileDropEdit( QWidget *parent = 0 );
+    QgsFileDropEdit( QWidget *parent = nullptr );
     virtual ~QgsFileDropEdit();
 
     bool isDirOnly() const { return mDirOnly; }

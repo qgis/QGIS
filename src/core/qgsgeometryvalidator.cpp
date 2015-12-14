@@ -201,7 +201,7 @@ void QgsGeometryValidator::run()
   QSettings settings;
   if ( settings.value( "/qgis/digitizing/validate_geometries", 1 ).toInt() == 2 )
   {
-    char *r = 0;
+    char *r = nullptr;
     const GEOSGeometry *g0 = mG.asGeos();
     GEOSContextHandle_t handle = QgsGeometry::getGEOSHandler();
     if ( !g0 )
@@ -210,7 +210,7 @@ void QgsGeometryValidator::run()
     }
     else
     {
-      GEOSGeometry *g1 = 0;
+      GEOSGeometry *g1 = nullptr;
       if ( GEOSisValidDetail_r( handle, g0, GEOSVALID_ALLOW_SELFTOUCHING_RING_FORMING_HOLE, &r, &g1 ) != 1 )
       {
         if ( g1 )

@@ -29,7 +29,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
 {
     Q_OBJECT
   public:
-    QgsProjectionSelector( QWidget* parent, const char *name = "", const Qt::WindowFlags& fl = 0 );
+    QgsProjectionSelector( QWidget* parent, const char *name = "", const Qt::WindowFlags& fl = nullptr );
 
     ~QgsProjectionSelector();
 
@@ -42,7 +42,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
      *
      * \todo Should this be public?
      */
-    void loadUserCrsList( QSet<QString> *crsFilter = 0 );
+    void loadUserCrsList( QSet<QString> *crsFilter = nullptr );
 
     /**
      * \brief Populate the proj tree view with system projection names...
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
      *
      * \todo Should this be public?
      */
-    void loadCrsList( QSet<QString> *crsFilter = 0 );
+    void loadCrsList( QSet<QString> *crsFilter = nullptr );
 
     /*!
      * \brief Make the string safe for use in SQL statements.

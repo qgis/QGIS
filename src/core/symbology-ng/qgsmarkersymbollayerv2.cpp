@@ -785,7 +785,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::createFromSld( QDomElement &elem
 
   QDomElement graphicElem = element.firstChildElement( "Graphic" );
   if ( graphicElem.isNull() )
-    return NULL;
+    return nullptr;
 
   QString name = "square";
   QColor color, borderColor;
@@ -793,7 +793,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::createFromSld( QDomElement &elem
   Qt::PenStyle borderStyle;
 
   if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, color, borderColor, borderStyle, borderWidth, size ) )
-    return NULL;
+    return nullptr;
 
   double angle = 0.0;
   QString angleFunc;
@@ -1619,17 +1619,17 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::createFromSld( QDomElement &element
 
   QDomElement graphicElem = element.firstChildElement( "Graphic" );
   if ( graphicElem.isNull() )
-    return NULL;
+    return nullptr;
 
   QString path, mimeType;
   QColor fillColor;
   double size;
 
   if ( !QgsSymbolLayerV2Utils::externalGraphicFromSld( graphicElem, path, mimeType, fillColor, size ) )
-    return NULL;
+    return nullptr;
 
   if ( mimeType != "image/svg+xml" )
-    return NULL;
+    return nullptr;
 
   double angle = 0.0;
   QString angleFunc;
@@ -1870,7 +1870,7 @@ QRectF QgsSvgMarkerSymbolLayerV2::bounds( const QPointF& point, QgsSymbolV2Rende
 //////////
 
 QgsFontMarkerSymbolLayerV2::QgsFontMarkerSymbolLayerV2( const QString& fontFamily, QChar chr, double pointSize, const QColor& color, double angle )
-    : mFontMetrics( 0 )
+    : mFontMetrics( nullptr )
     , mChrWidth( 0 )
 {
   mFontFamily = fontFamily;
@@ -2201,7 +2201,7 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::createFromSld( QDomElement &elemen
 
   QDomElement graphicElem = element.firstChildElement( "Graphic" );
   if ( graphicElem.isNull() )
-    return NULL;
+    return nullptr;
 
   QString name, format;
   QColor color;
@@ -2209,10 +2209,10 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::createFromSld( QDomElement &elemen
   int chr;
 
   if ( !QgsSymbolLayerV2Utils::externalMarkerFromSld( graphicElem, name, format, chr, color, size ) )
-    return NULL;
+    return nullptr;
 
   if ( !name.startsWith( "ttf://" ) || format != "ttf" )
-    return NULL;
+    return nullptr;
 
   QString fontFamily = name.mid( 6 );
 

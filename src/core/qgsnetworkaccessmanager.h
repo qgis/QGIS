@@ -50,7 +50,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     // and creates that instance on the first call.
     static QgsNetworkAccessManager* instance();
 
-    QgsNetworkAccessManager( QObject *parent = 0 );
+    QgsNetworkAccessManager( QObject *parent = nullptr );
 
     //! destructor
     ~QgsNetworkAccessManager();
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void abortRequest();
 
   protected:
-    virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 ) override;
+    virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
 
   private:
     QList<QNetworkProxyFactory*> mProxyFactories;

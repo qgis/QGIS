@@ -109,7 +109,7 @@ QgsMapLayerRegistry::addMapLayer( QgsMapLayer* theMapLayer,
 {
   QList<QgsMapLayer *> addedLayers;
   addedLayers = addMapLayers( QList<QgsMapLayer*>() << theMapLayer, addToLegend, takeOwnership );
-  return addedLayers.isEmpty() ? 0 : addedLayers[0];
+  return addedLayers.isEmpty() ? nullptr : addedLayers[0];
 }
 
 

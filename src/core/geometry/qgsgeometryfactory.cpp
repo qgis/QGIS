@@ -33,13 +33,13 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( const unsigned char* wkb
 {
   if ( !wkb )
   {
-    return 0;
+    return nullptr;
   }
 
   //find out type (bytes 2-5)
   int type;
   memcpy( &type, wkb + 1, sizeof( int ) );
-  QgsAbstractGeometryV2* geom = 0;
+  QgsAbstractGeometryV2* geom = nullptr;
 
   geom = geomFromWkbType( QgsWKBTypes::Type( type ) );
 
@@ -52,7 +52,7 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( const unsigned char* wkb
 
 QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkt( const QString& text )
 {
-  QgsAbstractGeometryV2* geom = 0;
+  QgsAbstractGeometryV2* geom = nullptr;
   if ( text.startsWith( "Point", Qt::CaseInsensitive ) )
   {
     geom = new QgsPointV2();
@@ -106,7 +106,7 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkt( const QString& text )
   {
     if ( !geom->fromWkt( text ) )
     {
-      delete geom; return 0;
+      delete geom; return nullptr;
     }
   }
   return geom;
@@ -236,6 +236,6 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkbType( QgsWKBTypes::Type t 
     case QgsWKBTypes::GeometryCollection:
       return new QgsGeometryCollectionV2();
     default:
-      return 0;
+      return nullptr;
   }
 }

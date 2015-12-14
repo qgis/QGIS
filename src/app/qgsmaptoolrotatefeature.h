@@ -33,7 +33,7 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
 
   public:
 
-    explicit QgsAngleMagnetWidget( const QString& label = QString(), QWidget *parent = 0 );
+    explicit QgsAngleMagnetWidget( const QString& label = QString(), QWidget *parent = nullptr );
 
     ~QgsAngleMagnetWidget();
 

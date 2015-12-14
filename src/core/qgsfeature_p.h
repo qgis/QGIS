@@ -43,7 +43,7 @@ class QgsFeaturePrivate : public QSharedData
 
     explicit QgsFeaturePrivate( QgsFeatureId id )
         : fid( id )
-        , geometry( 0 )
+        , geometry( nullptr )
         , ownsGeometry( false )
         , valid( false )
     {

@@ -25,9 +25,9 @@
 
 QgsSpatialQuery::QgsSpatialQuery( MngProgressBar *pb )
     : mPb( pb )
-    , mReaderFeaturesTarget( NULL )
-    , mLayerTarget( NULL )
-    , mLayerReference( NULL )
+    , mReaderFeaturesTarget( nullptr )
+    , mLayerTarget( nullptr )
+    , mLayerReference( nullptr )
 {
   mUseTargetSelection = mUseReferenceSelection = false;
 } // QgsSpatialQuery::QgsSpatialQuery(MngProgressBar *pb)
@@ -179,7 +179,7 @@ bool QgsSpatialQuery::hasValidGeometry( QgsFeature &feature )
 
   const QgsGeometry *geom = feature.constGeometry();
 
-  if ( NULL == geom )
+  if ( nullptr == geom )
   {
     return false;
   }

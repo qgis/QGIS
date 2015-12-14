@@ -29,7 +29,7 @@ class QgsAuthIdentCertEdit : public QgsAuthMethodEdit, private Ui::QgsAuthIdentC
     Q_OBJECT
 
   public:
-    explicit QgsAuthIdentCertEdit( QWidget *parent = 0 );
+    explicit QgsAuthIdentCertEdit( QWidget *parent = nullptr );
     virtual ~QgsAuthIdentCertEdit();
 
     bool validateConfig() override;

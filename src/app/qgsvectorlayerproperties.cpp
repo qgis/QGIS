@@ -77,14 +77,14 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     , layer( lyr )
     , mMetadataFilled( false )
     , mOriginalSubsetSQL( lyr->subsetString() )
-    , mSaveAsMenu( 0 )
-    , mLoadStyleMenu( 0 )
-    , mRendererDialog( 0 )
-    , labelingDialog( 0 )
-    , labelDialog( 0 )
-    , actionDialog( 0 )
-    , diagramPropertiesDialog( 0 )
-    , mFieldsPropertiesDialog( 0 )
+    , mSaveAsMenu( nullptr )
+    , mLoadStyleMenu( nullptr )
+    , mRendererDialog( nullptr )
+    , labelingDialog( nullptr )
+    , labelDialog( nullptr )
+    , actionDialog( nullptr )
+    , diagramPropertiesDialog( nullptr )
+    , mFieldsPropertiesDialog( nullptr )
 {
   setupUi( this );
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -147,8 +147,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   }
   else
   {
-    labelingDialog = 0;
-    labelDialog = 0;
+    labelingDialog = nullptr;
+    labelDialog = nullptr;
     mOptsPage_Labels->setEnabled( false ); // disable labeling item
     mOptsPage_LabelsOld->setEnabled( false ); // disable labeling (deprecated) item
   }
@@ -349,7 +349,7 @@ void QgsVectorLayerProperties::insertExpression()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
+  << QgsExpressionContextUtils::atlasScope( nullptr )
   << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
   << QgsExpressionContextUtils::layerScope( layer );
 
@@ -500,7 +500,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
         disconnect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
       }
       delete mOptsPage_LabelsOld;
-      mOptsPage_LabelsOld = 0;
+      mOptsPage_LabelsOld = nullptr;
     }
   }
 
@@ -1241,7 +1241,7 @@ void QgsVectorLayerProperties::updateSymbologyPage()
 
   //find out the type of renderer in the vectorlayer, create a dialog with these settings and add it to the form
   delete mRendererDialog;
-  mRendererDialog = 0;
+  mRendererDialog = nullptr;
 
   if ( layer->rendererV2() )
   {

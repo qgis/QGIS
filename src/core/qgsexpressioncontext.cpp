@@ -170,7 +170,7 @@ bool QgsExpressionContextScope::hasFunction( const QString& name ) const
 
 QgsExpression::Function* QgsExpressionContextScope::function( const QString& name ) const
 {
-  return mFunctions.contains( name ) ? mFunctions.value( name ) : 0;
+  return mFunctions.contains( name ) ? mFunctions.value( name ) : nullptr;
 }
 
 QStringList QgsExpressionContextScope::functionNames() const
@@ -261,7 +261,7 @@ const QgsExpressionContextScope* QgsExpressionContext::activeScopeForVariable( c
     if (( *it )->hasVariable( name ) )
       return ( *it );
   }
-  return 0;
+  return nullptr;
 }
 
 QgsExpressionContextScope* QgsExpressionContext::activeScopeForVariable( const QString& name )
@@ -274,13 +274,13 @@ QgsExpressionContextScope* QgsExpressionContext::activeScopeForVariable( const Q
     if (( *it )->hasVariable( name ) )
       return ( *it );
   }
-  return 0;
+  return nullptr;
 }
 
 QgsExpressionContextScope* QgsExpressionContext::scope( int index )
 {
   if ( index < 0 || index >= mStack.count() )
-    return 0;
+    return nullptr;
 
   return mStack[index];
 }
@@ -288,7 +288,7 @@ QgsExpressionContextScope* QgsExpressionContext::scope( int index )
 QgsExpressionContextScope *QgsExpressionContext::lastScope()
 {
   if ( mStack.count() < 1 )
-    return 0;
+    return nullptr;
 
   return mStack.last();
 }
@@ -369,7 +369,7 @@ QgsExpression::Function *QgsExpressionContext::function( const QString &name ) c
     if (( *it )->hasFunction( name ) )
       return ( *it )->function( name );
   }
-  return 0;
+  return nullptr;
 }
 
 int QgsExpressionContext::scopeCount() const

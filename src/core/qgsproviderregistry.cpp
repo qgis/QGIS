@@ -262,7 +262,7 @@ QgsProviderMetadata * findMetadata_( QgsProviderRegistry::Providers const & meta
     return i->second;
   }
 
-  return 0x0;
+  return nullptr;
 } // findMetadata_
 
 
@@ -370,14 +370,14 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
   if ( !myLib.load() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Failed to load %1: %2" ).arg( lib, myLib.errorString() ) );
-    return 0;
+    return nullptr;
   }
 
   classFactoryFunction_t *classFactory = ( classFactoryFunction_t * ) cast_to_fptr( myLib.resolve( "classFactory" ) );
   if ( !classFactory )
   {
     QgsDebugMsg( QString( "Failed to load %1: no classFactory method" ).arg( lib ) );
-    return 0;
+    return nullptr;
   }
 
   QgsDataProvider *dataProvider = classFactory( &dataSource );
@@ -385,7 +385,7 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
   {
     QgsMessageLog::logMessage( QObject::tr( "Unable to instantiate the data provider plugin %1" ).arg( lib ) );
     myLib.unload();
-    return 0;
+    return nullptr;
   }
 
   QgsDebugMsg( QString( "Instantiated the data provider plugin: %1" ).arg( dataProvider->name() ) );
@@ -419,7 +419,7 @@ QWidget* QgsProviderRegistry::selectWidget( const QString & providerKey,
     ( selectFactoryFunction_t * ) cast_to_fptr( function( providerKey, "selectWidget" ) );
 
   if ( !selectFactory )
-    return 0;
+    return nullptr;
 
   return selectFactory( parent, fl );
 }
@@ -457,7 +457,7 @@ void *QgsProviderRegistry::function( QString const & providerKey,
   else
   {
     QgsDebugMsg( "Cannot load library: " + myLib.errorString() );
-    return 0;
+    return nullptr;
   }
 }
 #endif
@@ -475,7 +475,7 @@ QLibrary *QgsProviderRegistry::providerLibrary( QString const & providerKey ) co
 
   delete myLib;
 
-  return 0;
+  return nullptr;
 }
 
 void QgsProviderRegistry::registerGuis( QWidget *parent )

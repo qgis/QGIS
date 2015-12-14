@@ -222,7 +222,7 @@ QgsRasterInterface * QgsRasterPipe::interface( Role role ) const
     {
       return mInterfaces.value( mRoleMap.value( role ) );
     }
-    return 0;
+    return nullptr;
   }
 
 QgsRasterDataProvider * QgsRasterPipe::provider() const

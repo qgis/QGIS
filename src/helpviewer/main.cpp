@@ -70,7 +70,7 @@ int main( int argc, char ** argv )
 
   /* Translation file for QGIS.
    */
-  QTranslator qgistor( 0 );
+  QTranslator qgistor( nullptr );
   if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )
   {
     a.installTranslator( &qgistor );
@@ -81,7 +81,7 @@ int main( int argc, char ** argv )
    * the About, Preferences and Quit items to the Mac Application menu.
    * These items must be translated identically in both qt_ and qgis_ files.
    */
-  QTranslator qttor( 0 );
+  QTranslator qttor( nullptr );
   if ( qttor.load( QString( "qt_" ) + myTranslationCode, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
   {
     a.installTranslator( &qttor );

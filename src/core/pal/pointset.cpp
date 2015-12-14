@@ -46,34 +46,34 @@ namespace pal
 {
 
   PointSet::PointSet()
-      : mGeos( 0 )
+      : mGeos( nullptr )
       , mOwnsGeom( false )
-      , holeOf( NULL )
-      , parent( NULL )
+      , holeOf( nullptr )
+      , parent( nullptr )
       , xmin( DBL_MAX )
       , xmax( -DBL_MAX )
       , ymin( DBL_MAX )
       , ymax( -DBL_MAX )
-      , mPreparedGeom( 0 )
+      , mPreparedGeom( nullptr )
   {
     nbPoints = cHullSize =  0;
-    x = NULL;
-    y = NULL;
-    cHull = NULL;
+    x = nullptr;
+    y = nullptr;
+    cHull = nullptr;
     type = -1;
   }
 
   PointSet::PointSet( int nbPoints, double *x, double *y )
-      : mGeos( 0 )
+      : mGeos( nullptr )
       , mOwnsGeom( false )
       , cHullSize( 0 )
-      , holeOf( NULL )
-      , parent( NULL )
+      , holeOf( nullptr )
+      , parent( nullptr )
       , xmin( DBL_MAX )
       , xmax( -DBL_MAX )
       , ymin( DBL_MAX )
       , ymax( -DBL_MAX )
-      , mPreparedGeom( 0 )
+      , mPreparedGeom( nullptr )
   {
     this->nbPoints = nbPoints;
     this->x = new double[nbPoints];
@@ -86,17 +86,17 @@ namespace pal
       this->y[i] = y[i];
     }
     type = GEOS_POLYGON;
-    cHull = NULL;
+    cHull = nullptr;
   }
 
   PointSet::PointSet( double aX, double aY )
-      : mGeos( 0 )
+      : mGeos( nullptr )
       , mOwnsGeom( false )
       , xmin( aX )
       , xmax( aY )
       , ymin( aX )
       , ymax( aY )
-      , mPreparedGeom( 0 )
+      , mPreparedGeom( nullptr )
   {
     nbPoints = cHullSize = 1;
     x = new double[1];
@@ -104,22 +104,22 @@ namespace pal
     x[0] = aX;
     y[0] = aY;
 
-    cHull = NULL;
-    parent = NULL;
-    holeOf = NULL;
+    cHull = nullptr;
+    parent = nullptr;
+    holeOf = nullptr;
 
     type = GEOS_POINT;
   }
 
   PointSet::PointSet( const PointSet &ps )
-      : mGeos( 0 )
+      : mGeos( nullptr )
       , mOwnsGeom( false )
-      , parent( 0 )
+      , parent( nullptr )
       , xmin( ps.xmin )
       , xmax( ps.xmax )
       , ymin( ps.ymin )
       , ymax( ps.ymax )
-      , mPreparedGeom( 0 )
+      , mPreparedGeom( nullptr )
   {
     int i;
 
@@ -140,7 +140,7 @@ namespace pal
     }
     else
     {
-      cHull = NULL;
+      cHull = nullptr;
       cHullSize = 0;
     }
 
@@ -182,7 +182,7 @@ namespace pal
     switch ( type )
     {
       case GEOS_POLYGON:
-        mGeos = GEOSGeom_createPolygon_r( geosctxt, GEOSGeom_createLinearRing_r( geosctxt, coord ), 0, 0 );
+        mGeos = GEOSGeom_createPolygon_r( geosctxt, GEOSGeom_createLinearRing_r( geosctxt, coord ), nullptr, 0 );
         break;
 
       case GEOS_LINESTRING:
@@ -216,8 +216,8 @@ namespace pal
       GEOSGeom_destroy_r( geosctxt, mGeos );
     GEOSPreparedGeom_destroy_r( geosctxt, mPreparedGeom );
     mOwnsGeom = false;
-    mGeos = 0;
-    mPreparedGeom = 0;
+    mGeos = nullptr;
+    mPreparedGeom = nullptr;
   }
 
   PointSet::~PointSet()
@@ -227,7 +227,7 @@ namespace pal
     if ( mGeos && mOwnsGeom )
     {
       GEOSGeom_destroy_r( geosctxt, mGeos );
-      mGeos = NULL;
+      mGeos = nullptr;
     }
     GEOSPreparedGeom_destroy_r( geosctxt, mPreparedGeom );
 
@@ -241,8 +241,8 @@ namespace pal
   {
     delete[] x;
     delete[] y;
-    x = NULL;
-    y = NULL;
+    x = nullptr;
+    y = nullptr;
   }
 
   PointSet* PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty )
@@ -908,7 +908,7 @@ namespace pal
       GEOSGeometry* geosPt = GEOSGeom_createPoint_r( geosctxt, coord );
 
       int type = GEOSGeomTypeId_r( geosctxt, mGeos );
-      const GEOSGeometry* extRing = 0;
+      const GEOSGeometry* extRing = nullptr;
       if ( type != GEOS_POLYGON )
       {
         extRing = mGeos;

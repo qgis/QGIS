@@ -24,7 +24,7 @@
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer* vl, const QgsRelation& relation, QWidget* editor, QWidget* parent )
     : QgsWidgetWrapper( vl, editor, parent )
     , mRelation( relation )
-    , mWidget( NULL )
+    , mWidget( nullptr )
 {
 }
 

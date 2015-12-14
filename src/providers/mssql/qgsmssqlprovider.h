@@ -234,8 +234,8 @@ class QgsMssqlProvider : public QgsVectorDataProvider
       const QgsCoordinateReferenceSystem *srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = 0,
-      const QMap<QString, QVariant> *options = 0
+      QString *errorMessage = nullptr,
+      const QMap<QString, QVariant> *options = nullptr
     );
 
     virtual QgsCoordinateReferenceSystem crs() override;

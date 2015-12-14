@@ -54,7 +54,7 @@ int QgsInterpolator::cacheBaseData()
 
   for ( ; v_it != mLayerData.end(); ++v_it )
   {
-    if ( v_it->vectorLayer == 0 )
+    if ( v_it->vectorLayer == nullptr )
     {
       continue;
     }

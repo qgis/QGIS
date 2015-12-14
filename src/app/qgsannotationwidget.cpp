@@ -24,7 +24,7 @@
 #include <QColorDialog>
 
 
-QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QWidget( parent, f ), mItem( item ), mMarkerSymbol( 0 )
+QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QWidget( parent, f ), mItem( item ), mMarkerSymbol( nullptr )
 {
   setupUi( this );
 
@@ -79,7 +79,7 @@ void QgsAnnotationWidget::apply()
     mItem->setFrameColor( mFrameColorButton->color() );
     mItem->setFrameBackgroundColor( mBackgroundColorButton->color() );
     mItem->setMarkerSymbol( mMarkerSymbol );
-    mMarkerSymbol = 0; //item takes ownership
+    mMarkerSymbol = nullptr; //item takes ownership
     mItem->update();
   }
 }
@@ -99,7 +99,7 @@ void QgsAnnotationWidget::on_mMapMarkerButton_clicked()
     return;
   }
   QgsMarkerSymbolV2* markerSymbol = mMarkerSymbol->clone();
-  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;

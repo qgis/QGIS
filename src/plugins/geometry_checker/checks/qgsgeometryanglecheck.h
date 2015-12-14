@@ -17,7 +17,7 @@ class QgsGeometryAngleCheck : public QgsGeometryCheck
   public:
     QgsGeometryAngleCheck( QgsFeaturePool* featurePool, double minAngle )
         : QgsGeometryCheck( FeatureNodeCheck, featurePool ), mMinAngle( minAngle ) {}
-    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter = 0, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
+    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Minimal angle" ); }

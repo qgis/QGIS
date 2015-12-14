@@ -44,7 +44,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface* iface, 
   mErrorCount = 0;
   mFixedCount = 0;
   mCloseable = true;
-  mAttribTableDialog = 0;
+  mAttribTableDialog = nullptr;
 
   for ( int i = 0, n = mFeaturePool->getLayer()->fields().count(); i < n; ++i )
   {
@@ -333,7 +333,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
     {
       // QgsGeometry above takes ownership of geometry and deletes it when it goes out of scope
       delete geometry;
-      geometry = 0;
+      geometry = nullptr;
     }
 
     if ( ui.radioButtonError->isChecked() || current || error->status() == QgsGeometryCheckError::StatusFixed )

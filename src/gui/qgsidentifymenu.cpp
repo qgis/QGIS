@@ -129,7 +129,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
   {
     addSeparator();
     QAction* allAction = new QAction( QgsApplication::getThemeIcon( "/mActionIdentify.svg" ), tr( "%1 all (%2)" ).arg( mDefaultActionName ).arg( idResults.count() ), this );
-    allAction->setData( QVariant::fromValue<ActionData>( ActionData( 0 ) ) );
+    allAction->setData( QVariant::fromValue<ActionData>( ActionData( nullptr ) ) );
     connect( allAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
     addAction( allAction );
   }
@@ -163,7 +163,7 @@ void QgsIdentifyMenu::closeEvent( QCloseEvent* e )
 void QgsIdentifyMenu::addRasterLayer( QgsMapLayer* layer )
 {
   QAction* layerAction;
-  QMenu* layerMenu = 0;
+  QMenu* layerMenu = nullptr;
 
   QList<QgsMapLayerAction*> separators = QList<QgsMapLayerAction*>();
   QList<QgsMapLayerAction*> layerActions = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::Layer );
@@ -225,8 +225,8 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer* layer )
 
 void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapToolIdentify::IdentifyResult>& results, bool singleLayer )
 {
-  QAction* layerAction = 0;
-  QMenu* layerMenu = 0;
+  QAction* layerAction = nullptr;
+  QMenu* layerMenu = nullptr;
 
   // do not add actions with MultipleFeatures as target if only 1 feature is found for this layer
   // targets defines which actions will be shown
@@ -341,9 +341,9 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
       break;
     ++count;
 
-    QAction* featureAction = 0;
-    QMenu* featureMenu = 0;
-    QgsActionMenu* featureActionMenu = 0;
+    QAction* featureAction = nullptr;
+    QMenu* featureMenu = nullptr;
+    QgsActionMenu* featureActionMenu = nullptr;
 
     QList<QgsMapLayerAction*> customFeatureActions = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature );
     if ( mShowFeatureActions )

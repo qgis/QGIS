@@ -26,7 +26,7 @@ QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerIt
     mShape( Ellipse ),
     mCornerRadius( 0 ),
     mUseSymbolV2( false ), //default to not using SymbolV2 for shapes, to preserve 2.0 api
-    mShapeStyleSymbol( 0 ),
+    mShapeStyleSymbol( nullptr ),
     mMaxSymbolBleed( 0 )
 {
   setFrameEnabled( true );
@@ -45,7 +45,7 @@ QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height,
     mShape( Ellipse ),
     mCornerRadius( 0 ),
     mUseSymbolV2( false ), //default to not using SymbolV2 for shapes, to preserve 2.0 api
-    mShapeStyleSymbol( 0 ),
+    mShapeStyleSymbol( nullptr ),
     mMaxSymbolBleed( 0 )
 {
   setSceneRect( QRectF( x, y, width, height ) );
@@ -236,7 +236,7 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
   }
 
   mShapeStyleSymbol->startRender( context );
-  mShapeStyleSymbol->renderPolygon( shapePolygon, &rings, 0, context );
+  mShapeStyleSymbol->renderPolygon( shapePolygon, &rings, nullptr, context );
   mShapeStyleSymbol->stopRender( context );
 
   p->restore();

@@ -61,7 +61,7 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon )
 }
 
 QgsRubberBand::QgsRubberBand()
-    : QgsMapCanvasItem( 0 )
+    : QgsMapCanvasItem( nullptr )
     , mIconSize( 5 )
     , mIconType( ICON_CIRCLE )
     , mGeometryType( QGis::Polygon )
@@ -619,12 +619,12 @@ const QgsPoint *QgsRubberBand::getPoint( int i, int j ) const
   if ( i < mPoints.size() && j < mPoints[i].size() )
     return &mPoints[i][j];
   else
-    return 0;
+    return nullptr;
 }
 
 QgsGeometry *QgsRubberBand::asGeometry()
 {
-  QgsGeometry *geom = NULL;
+  QgsGeometry *geom = nullptr;
 
   switch ( mGeometryType )
   {

@@ -36,7 +36,7 @@ QgsComposerArrow::QgsComposerArrow( QgsComposition* c )
     , mArrowHeadOutlineColor( Qt::black )
     , mArrowHeadFillColor( Qt::black )
     , mBoundsBehaviour( 24 )
-    , mLineSymbol( 0 )
+    , mLineSymbol( nullptr )
 {
   init();
 }
@@ -50,7 +50,7 @@ QgsComposerArrow::QgsComposerArrow( const QPointF& startPoint, const QPointF& st
     , mArrowHeadOutlineColor( Qt::black )
     , mArrowHeadFillColor( Qt::black )
     , mBoundsBehaviour( 24 )
-    , mLineSymbol( 0 )
+    , mLineSymbol( nullptr )
 {
   mStartXIdx = mStopPoint.x() < mStartPoint.x();
   mStartYIdx = mStopPoint.y() < mStartPoint.y();
@@ -196,7 +196,7 @@ void QgsComposerArrow::drawLine( QPainter *painter )
   << QPointF( mStopPoint.x() - pos().x(), mStopPoint.y() - pos().y() ) * dotsPerMM;
 
   mLineSymbol->startRender( context );
-  mLineSymbol->renderPolyline( line, 0, context );
+  mLineSymbol->renderPolyline( line, nullptr, context );
   mLineSymbol->stopRender( context );
   painter->restore();
 

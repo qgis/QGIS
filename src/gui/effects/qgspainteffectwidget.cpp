@@ -31,7 +31,7 @@
 
 QgsDrawSourceWidget::QgsDrawSourceWidget( QWidget *parent )
     : QgsPaintEffectWidget( parent )
-    , mEffect( NULL )
+    , mEffect( nullptr )
 {
   setupUi( this );
   initGui();
@@ -119,7 +119,7 @@ void QgsDrawSourceWidget::on_mTransparencySlider_valueChanged( int value )
 
 QgsBlurWidget::QgsBlurWidget( QWidget *parent )
     : QgsPaintEffectWidget( parent )
-    , mEffect( NULL )
+    , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -246,7 +246,7 @@ void QgsBlurWidget::on_mTransparencySlider_valueChanged( int value )
 
 QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
     : QgsPaintEffectWidget( parent )
-    , mEffect( NULL )
+    , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -411,7 +411,7 @@ void QgsShadowEffectWidget::on_mShadowBlendCmbBx_currentIndexChanged( int index 
 
 QgsGlowWidget::QgsGlowWidget( QWidget *parent )
     : QgsPaintEffectWidget( parent )
-    , mEffect( NULL )
+    , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -595,7 +595,7 @@ void QgsGlowWidget::applyColorRamp()
   }
 
   QgsVectorColorRampV2* ramp = mRampComboBox->currentColorRamp();
-  if ( ramp == NULL )
+  if ( ramp == nullptr )
     return;
 
   mEffect->setRamp( ramp );
@@ -608,7 +608,7 @@ void QgsGlowWidget::applyColorRamp()
 
 QgsTransformWidget::QgsTransformWidget( QWidget *parent )
     : QgsPaintEffectWidget( parent )
-    , mEffect( NULL )
+    , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -785,7 +785,7 @@ void QgsTransformWidget::on_mRotationSpinBox_valueChanged( double value )
 
 QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
     : QgsPaintEffectWidget( parent )
-    , mEffect( NULL )
+    , mEffect( nullptr )
 {
   setupUi( this );
 

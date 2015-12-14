@@ -168,7 +168,7 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog, private Ui::QgsRen
     Q_OBJECT
 
   public:
-    QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = 0, QgsMapCanvas* mapCanvas = 0 );
+    QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
     ~QgsRendererRulePropsDialog();
 
     QgsRuleBasedRendererV2::Rule* rule() { return mRule; }

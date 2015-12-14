@@ -73,7 +73,7 @@ QgsSymbolLayerV2Registry::~QgsSymbolLayerV2Registry()
 
 bool QgsSymbolLayerV2Registry::addSymbolLayerType( QgsSymbolLayerV2AbstractMetadata* metadata )
 {
-  if ( metadata == NULL || mMetadata.contains( metadata->name() ) )
+  if ( metadata == nullptr || mMetadata.contains( metadata->name() ) )
     return false;
 
   mMetadata[metadata->name()] = metadata;
@@ -106,17 +106,17 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Registry::defaultSymbolLayer( QgsSymbolV2::Sym
       return QgsSimpleFillSymbolLayerV2::create();
 
     case QgsSymbolV2::Hybrid:
-      return 0;
+      return nullptr;
   }
 
-  return 0;
+  return nullptr;
 }
 
 
 QgsSymbolLayerV2* QgsSymbolLayerV2Registry::createSymbolLayer( const QString& name, const QgsStringMap& properties ) const
 {
   if ( !mMetadata.contains( name ) )
-    return NULL;
+    return nullptr;
 
   return mMetadata[name]->createSymbolLayer( properties );
 }
@@ -124,7 +124,7 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Registry::createSymbolLayer( const QString& na
 QgsSymbolLayerV2* QgsSymbolLayerV2Registry::createSymbolLayerFromSld( const QString& name, QDomElement& element ) const
 {
   if ( !mMetadata.contains( name ) )
-    return NULL;
+    return nullptr;
 
   return mMetadata[name]->createSymbolLayerFromSld( element );
 }

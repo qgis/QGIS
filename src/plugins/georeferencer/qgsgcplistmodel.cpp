@@ -52,8 +52,8 @@ class QgsStandardItem : public QStandardItem
 
 QgsGCPListModel::QgsGCPListModel( QObject *parent )
     : QStandardItemModel( parent )
-    , mGCPList( 0 )
-    , mGeorefTransform( 0 )
+    , mGCPList( nullptr )
+    , mGeorefTransform( nullptr )
 {
   // Use data provided by Qt::UserRole as sorting key (needed for numerical sorting).
   setSortRole( Qt::UserRole );

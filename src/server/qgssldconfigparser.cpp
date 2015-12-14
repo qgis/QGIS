@@ -62,7 +62,7 @@ QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, Q
     , mParameterMap( parameters )
     , mSLDNamespace( "http://www.opengis.net/sld" )
     , mOutputUnits( QgsMapRenderer::Pixels )
-    , mFallbackParser( 0 )
+    , mFallbackParser( nullptr )
 {
 
   //set output units
@@ -292,7 +292,7 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
     return resultList;
   }
 
-  QgsFeatureRendererV2* theRenderer = 0;
+  QgsFeatureRendererV2* theRenderer = nullptr;
 
   QgsRasterLayer* theRasterLayer = dynamic_cast<QgsRasterLayer*>( theMapLayer );
   if ( theRasterLayer )
@@ -714,7 +714,7 @@ QgsComposition* QgsSLDConfigParser::createPrintComposition( const QString& compo
   {
     return mFallbackParser->createPrintComposition( composerTemplate, mapRenderer, parameterMap );
   }
-  return 0;
+  return nullptr;
 }
 
 QgsComposition* QgsSLDConfigParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const
@@ -723,7 +723,7 @@ QgsComposition* QgsSLDConfigParser::initComposition( const QString& composerTemp
   {
     return mFallbackParser->initComposition( composerTemplate, mapRenderer, mapList, legendList, labelList, htmlFrameList );
   }
-  return 0;
+  return nullptr;
 }
 
 void QgsSLDConfigParser::printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
@@ -846,7 +846,7 @@ QgsFeatureRendererV2* QgsSLDConfigParser::rendererFromUserStyle( const QDomEleme
 {
   if ( !vec || userStyleElement.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsDebugMsg( "Entering" );
@@ -1320,20 +1320,20 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
 
   if ( !rasterLayer )
   {
-    return 0;
+    return nullptr;
   }
 
   //get <ContourSymbolizer> element
   QDomNodeList contourNodeList = userStyleElem.elementsByTagName( "ContourSymbolizer" );
   if ( contourNodeList.size() < 1 )
   {
-    return 0;
+    return nullptr;
   }
 
   QDomElement contourSymbolizerElem = contourNodeList.item( 0 ).toElement();
   if ( contourSymbolizerElem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   double equidistance, minValue, maxValue, offset;
@@ -1347,7 +1347,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
 
   if ( equidistance <= 0.0 )
   {
-    return 0;
+    return nullptr;
   }
 
   QTemporaryFile* tmpFile1 = new QTemporaryFile();
@@ -1399,14 +1399,14 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   int /* b3D = FALSE, */ bNoDataSet = FALSE, bIgnoreNoData = FALSE;
 
   hSrcDS = GDALOpen( TO8( rasterLayer->source() ), GA_ReadOnly );
-  if ( hSrcDS == NULL )
+  if ( hSrcDS == nullptr )
   {
     delete [] adfFixedLevels;
     throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a file not available on the server." );
   }
 
   hBand = GDALGetRasterBand( hSrcDS, nBandIn );
-  if ( hBand == NULL )
+  if ( hBand == nullptr )
   {
     CPLError( CE_Failure, CPLE_AppDefined,
               "Band %d does not exist on dataset.",
@@ -1419,11 +1419,11 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   /* -------------------------------------------------------------------- */
   /*      Try to get a coordinate system from the raster.                 */
   /* -------------------------------------------------------------------- */
-  OGRSpatialReferenceH hSRS = NULL;
+  OGRSpatialReferenceH hSRS = nullptr;
 
   const char *pszWKT = GDALGetProjectionRef( hBand );
 
-  if ( pszWKT != NULL && strlen( pszWKT ) != 0 )
+  if ( pszWKT != nullptr && strlen( pszWKT ) != 0 )
     hSRS = OSRNewSpatialReference( pszWKT );
 
   /* -------------------------------------------------------------------- */
@@ -1435,15 +1435,15 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   OGRLayerH hLayer;
   int nElevField = -1;
 
-  if ( hDriver == NULL )
+  if ( hDriver == nullptr )
   {
     //fprintf( FCGI_stderr, "Unable to find format driver named 'ESRI Shapefile'.\n" );
     delete [] adfFixedLevels;
     throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a file not available on the server." );
   }
 
-  hDS = OGR_Dr_CreateDataSource( hDriver, TO8( tmpFileName ), NULL );
-  if ( hDS == NULL )
+  hDS = OGR_Dr_CreateDataSource( hDriver, TO8( tmpFileName ), nullptr );
+  if ( hDS == nullptr )
   {
     delete [] adfFixedLevels;
     throw QgsMapServiceException( "LayerNotDefined", "Operation request cannot create data source." );
@@ -1451,8 +1451,8 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
 
   hLayer = OGR_DS_CreateLayer( hDS, "contour", hSRS,
                                /* b3D ? wkbLineString25D : */ wkbLineString,
-                               NULL );
-  if ( hLayer == NULL )
+                               nullptr );
+  if ( hLayer == nullptr )
   {
     delete [] adfFixedLevels;
     throw QgsMapServiceException( "LayerNotDefined", "Operation request could not create contour file." );
@@ -1480,7 +1480,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
                        nFixedLevelCount, adfFixedLevels,
                        bNoDataSet, dfNoData,
                        hLayer, 0, nElevField,
-                       GDALTermProgress, NULL );
+                       GDALTermProgress, nullptr );
 
   delete [] adfFixedLevels;
 
@@ -1534,7 +1534,7 @@ QDomElement QgsSLDConfigParser::findUserLayerElement( const QString& layerName )
 QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userLayerElem, const QString& layerName, bool allowCaching ) const
 {
   QgsDebugMsg( "Entering." );
-  QgsMSLayerBuilder* layerBuilder = 0;
+  QgsMSLayerBuilder* layerBuilder = nullptr;
   QDomElement builderRootElement;
 
   //hosted vector data?
@@ -1595,7 +1595,7 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
 
   if ( !layerBuilder )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsMapLayer* theMapLayer = layerBuilder->createMapLayer( builderRootElement, layerName, mFilesToRemove, mLayersToRemove, allowCaching );

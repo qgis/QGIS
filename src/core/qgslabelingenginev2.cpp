@@ -39,7 +39,7 @@ QgsLabelingEngineV2::QgsLabelingEngineV2()
     , mCandPoint( 8 )
     , mCandLine( 8 )
     , mCandPolygon( 8 )
-    , mResults( 0 )
+    , mResults( nullptr )
 {
   mResults = new QgsLabelingResults;
 }
@@ -304,7 +304,7 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
 QgsLabelingResults* QgsLabelingEngineV2::takeResults()
 {
   QgsLabelingResults* res = mResults;
-  mResults = 0;
+  mResults = nullptr;
   return res;
 }
 
@@ -318,7 +318,7 @@ void QgsLabelingEngineV2::readSettingsFromProject()
   mCandLine = prj->readNumEntry( "PAL", "/CandidatesLine", 8, &saved );
   mCandPolygon = prj->readNumEntry( "PAL", "/CandidatesPolygon", 8, &saved );
 
-  mFlags = 0;
+  mFlags = nullptr;
   if ( prj->readBoolEntry( "PAL", "/ShowingCandidates", false, &saved ) ) mFlags |= DrawCandidates;
   if ( prj->readBoolEntry( "PAL", "/DrawRectOnly", false, &saved ) ) mFlags |= DrawLabelRectOnly;
   if ( prj->readBoolEntry( "PAL", "/ShowingShadowRects", false, &saved ) ) mFlags |= DrawShadowRects;
@@ -349,10 +349,10 @@ void QgsLabelingEngineV2::writeSettingsToProject()
 
 
 QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size )
-    : mLayer( 0 )
+    : mLayer( nullptr )
     , mId( id )
     , mGeometry( geometry )
-    , mObstacleGeometry( 0 )
+    , mObstacleGeometry( nullptr )
     , mSize( size )
     , mPriority( -1 )
     , mHasFixedPosition( false )
@@ -364,7 +364,7 @@ QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const
     , mAlwaysShow( false )
     , mIsObstacle( false )
     , mObstacleFactor( 1 )
-    , mInfo( 0 )
+    , mInfo( nullptr )
 {
 }
 
@@ -389,12 +389,12 @@ void QgsLabelFeature::setObstacleGeometry( GEOSGeometry* obstacleGeom )
 
 QgsAbstractLabelProvider*QgsLabelFeature::provider() const
 {
-  return mLayer ? mLayer->provider() : 0;
+  return mLayer ? mLayer->provider() : nullptr;
 
 }
 
 QgsAbstractLabelProvider::QgsAbstractLabelProvider()
-    : mEngine( 0 )
+    : mEngine( nullptr )
     , mFlags( DrawLabels )
     , mPlacement( QgsPalLayerSettings::AroundPoint )
     , mLinePlacementFlags( 0 )

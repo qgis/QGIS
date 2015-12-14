@@ -65,7 +65,7 @@
 
 QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri )
     : mUri( theUri )
-    , mCapabilitiesReply( NULL )
+    , mCapabilitiesReply( nullptr )
     , mCoverageCount( 0 )
     , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
@@ -78,7 +78,7 @@ QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri )
 
 QgsWcsCapabilities::QgsWcsCapabilities()
     : mCapabilities()
-    , mCapabilitiesReply( NULL )
+    , mCapabilitiesReply( nullptr )
     , mCoverageCount( 0 )
     , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
@@ -416,7 +416,7 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
   }
 
   mCapabilitiesReply->deleteLater();
-  mCapabilitiesReply = 0;
+  mCapabilitiesReply = nullptr;
 }
 
 void QgsWcsCapabilities::capabilitiesReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
@@ -1231,7 +1231,7 @@ QgsWcsCoverageSummary* QgsWcsCapabilities::coverageSummary( QString const & theI
       }
     }
   }
-  return 0;
+  return nullptr;
 }
 
 QList<QgsWcsCoverageSummary> QgsWcsCapabilities::coverages()

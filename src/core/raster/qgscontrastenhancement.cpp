@@ -30,8 +30,8 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 
 QgsContrastEnhancement::QgsContrastEnhancement( QGis::DataType theDataType )
 {
-  mLookupTable = 0;
-  mContrastEnhancementFunction = 0;
+  mLookupTable = nullptr;
+  mContrastEnhancementFunction = nullptr;
   mEnhancementDirty = false;
   mContrastEnhancementAlgorithm = NoEnhancement;
   mRasterDataType = theDataType;
@@ -54,8 +54,8 @@ QgsContrastEnhancement::QgsContrastEnhancement( QGis::DataType theDataType )
 
 QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement& ce )
 {
-  mLookupTable = 0;
-  mContrastEnhancementFunction = 0;
+  mLookupTable = nullptr;
+  mContrastEnhancementFunction = nullptr;
   mEnhancementDirty = true;
   mRasterDataType = ce.mRasterDataType;
 
@@ -253,7 +253,7 @@ bool QgsContrastEnhancement::generateLookupTable()
 bool QgsContrastEnhancement::isValueInDisplayableRange( double theValue )
 {
 
-  if ( 0 != mContrastEnhancementFunction )
+  if ( nullptr != mContrastEnhancementFunction )
   {
     return mContrastEnhancementFunction->isValueInDisplayableRange( theValue );
   }
@@ -315,7 +315,7 @@ void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancem
 {
   QgsDebugMsg( "called" );
 
-  if ( 0 != theFunction )
+  if ( nullptr != theFunction )
   {
     delete mContrastEnhancementFunction;
     mContrastEnhancementFunction = theFunction;
@@ -343,7 +343,7 @@ void QgsContrastEnhancement::setMaximumValue( double theValue, bool generateTabl
     mMaximumValue = theValue;
   }
 
-  if ( 0 != mContrastEnhancementFunction )
+  if ( nullptr != mContrastEnhancementFunction )
   {
     mContrastEnhancementFunction->setMaximumValue( theValue );
   }
@@ -375,7 +375,7 @@ void QgsContrastEnhancement::setMinimumValue( double theValue, bool generateTabl
     mMinimumValue = theValue;
   }
 
-  if ( 0 != mContrastEnhancementFunction )
+  if ( nullptr != mContrastEnhancementFunction )
   {
     mContrastEnhancementFunction->setMinimumValue( theValue );
   }

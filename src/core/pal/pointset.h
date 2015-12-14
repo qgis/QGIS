@@ -108,7 +108,7 @@ namespace pal
        * @param ry pointer to y coorinates of the nearest point (can be NULL)
        * @returns minimum distance
        */
-      double minDistanceToPoint( double px, double py, double *rx = 0, double *ry = 0 ) const;
+      double minDistanceToPoint( double px, double py, double *rx = nullptr, double *ry = nullptr ) const;
 
       void getCentroid( double &px, double &py, bool forceInside = false ) const;
 

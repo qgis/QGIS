@@ -211,7 +211,7 @@ static void dumpBacktrace( unsigned int depth )
       }
 
       close( fd[1] );        // close writing end
-      execl( "/usr/bin/c++filt", "c++filt", ( char * ) 0 );
+      execl( "/usr/bin/c++filt", "c++filt", ( char * ) nullptr );
       perror( "could not start c++filt" );
       exit( 1 );
     }
@@ -456,7 +456,7 @@ int main( int argc, char *argv[] )
 #endif
 
   // initialize random number seed
-  qsrand( time( NULL ) );
+  qsrand( time( nullptr ) );
 
   /////////////////////////////////////////////////////////////////
   // Command line options 'behaviour' flag setup
@@ -720,7 +720,7 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC) && !defined(ANDROID)
-  bool myUseGuiFlag = getenv( "DISPLAY" ) != 0;
+  bool myUseGuiFlag = getenv( "DISPLAY" ) != nullptr;
 #else
   bool myUseGuiFlag = true;
 #endif
@@ -934,8 +934,8 @@ int main( int argc, char *argv[] )
     }
   }
 
-  QTranslator qgistor( 0 );
-  QTranslator qttor( 0 );
+  QTranslator qgistor( nullptr );
+  QTranslator qttor( nullptr );
   if ( myTranslationCode != "C" )
   {
     if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )

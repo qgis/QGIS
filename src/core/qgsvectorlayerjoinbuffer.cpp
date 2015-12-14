@@ -369,14 +369,14 @@ int QgsVectorLayerJoinBuffer::joinedFieldsOffset( const QgsVectorJoinInfo* info,
 const QgsVectorJoinInfo* QgsVectorLayerJoinBuffer::joinForFieldIndex( int index, const QgsFields& fields, int& sourceFieldIndex ) const
 {
   if ( fields.fieldOrigin( index ) != QgsFields::OriginJoin )
-    return 0;
+    return nullptr;
 
   int originIndex = fields.fieldOriginIndex( index );
   int sourceJoinIndex = originIndex / 1000;
   sourceFieldIndex = originIndex % 1000;
 
   if ( sourceJoinIndex < 0 || sourceJoinIndex >= mVectorJoins.count() )
-    return 0;
+    return nullptr;
 
   return &( mVectorJoins[sourceJoinIndex] );
 }

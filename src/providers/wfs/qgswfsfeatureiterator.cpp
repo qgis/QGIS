@@ -52,7 +52,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
     return false;
   }
 
-  const QgsFeature *fet = 0;
+  const QgsFeature *fet = nullptr;
 
   for ( ;; )
   {
@@ -126,7 +126,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature* f, QgsFeature& featur
   }
   else
   {
-    feature.setGeometry( 0 );
+    feature.setGeometry( nullptr );
   }
 
   //and the attributes
@@ -153,7 +153,7 @@ QgsWFSFeatureSource::QgsWFSFeatureSource( const QgsWFSProvider* p )
     : QObject(( QgsWFSProvider* ) p )
     , mFields( p->mFields )
     , mFeatures( p->mFeatures )
-    , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : 0 )  // just shallow copy
+    , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : nullptr )  // just shallow copy
 {
 }
 

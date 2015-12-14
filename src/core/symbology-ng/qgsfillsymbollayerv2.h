@@ -618,7 +618,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     virtual double estimateMaxBleed() const override;
 
     //override QgsImageFillSymbolLayer's support for sub symbols
-    virtual QgsSymbolV2* subSymbol() override { return 0; }
+    virtual QgsSymbolV2* subSymbol() override { return nullptr; }
     virtual bool setSubSymbol( QgsSymbolV2* symbol ) override;
 
     /** Sets the path to the raster image used for the fill.

@@ -49,7 +49,7 @@ QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString& label
     , mCircleColor( QColor( 125, 125, 125 ) )
     , mCircleRadiusAddition( 0 )
     , mMaxLabelScaleDenominator( -1 )
-    , mSpatialIndex( NULL )
+    , mSpatialIndex( nullptr )
 {
   mRenderer = QgsFeatureRendererV2::defaultRenderer( QGis::Point );
   mCenterSymbol = new QgsMarkerSymbolV2(); //the symbol for the center of a displacement group
@@ -255,7 +255,7 @@ QgsSymbolV2* QgsPointDisplacementRenderer::symbolForFeature( QgsFeature& feature
 {
   if ( !mRenderer )
   {
-    return 0;
+    return nullptr;
   }
   return mRenderer->symbolForFeature( feature, context );
 }
@@ -263,7 +263,7 @@ QgsSymbolV2* QgsPointDisplacementRenderer::symbolForFeature( QgsFeature& feature
 QgsSymbolV2* QgsPointDisplacementRenderer::originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mRenderer )
-    return 0;
+    return nullptr;
   return mRenderer->originalSymbolForFeature( feat, context );
 }
 
@@ -339,7 +339,7 @@ void QgsPointDisplacementRenderer::stopRender( QgsRenderContext& context )
   mDisplacementGroups.clear();
   mGroupIndex.clear();
   delete mSpatialIndex;
-  mSpatialIndex = 0;
+  mSpatialIndex = nullptr;
   mSelectedFeatures.clear();
 
   mRenderer->stopRender( context );
@@ -632,13 +632,13 @@ QgsSymbolV2* QgsPointDisplacementRenderer::firstSymbolForFeature( QgsFeatureRend
 {
   if ( !r )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsSymbolV2List symbolList = r->symbolsForFeature( f, context );
   if ( symbolList.size() < 1 )
   {
-    return 0;
+    return nullptr;
   }
 
   return symbolList.at( 0 );
@@ -660,5 +660,5 @@ QgsPointDisplacementRenderer* QgsPointDisplacementRenderer::convertFromRenderer(
     pointRenderer->setEmbeddedRenderer( renderer->clone() );
     return pointRenderer;
   }
-  return 0;
+  return nullptr;
 }

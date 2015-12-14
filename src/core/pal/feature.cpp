@@ -66,7 +66,7 @@ namespace pal
 
     extractCoords( geom );
 
-    holeOf = NULL;
+    holeOf = nullptr;
     for ( int i = 0; i < mHoles.count(); i++ )
     {
       mHoles.at( i )->holeOf = this;
@@ -111,7 +111,7 @@ namespace pal
         {
           const GEOSGeometry* interior =  GEOSGetInteriorRingN_r( geosctxt, geom, i );
           FeaturePart* hole = new FeaturePart( mLF, interior );
-          hole->holeOf = NULL;
+          hole->holeOf = nullptr;
           // possibly not needed. it's not done for the exterior ring, so I'm not sure
           // why it's just done here...
           reorderPolygon( hole->nbPoints, hole->x, hole->y );
@@ -676,7 +676,7 @@ namespace pal
 
     if ( index <= 1 && distance < 0 ) // We've gone off the start, fail out
     {
-      return NULL;
+      return nullptr;
     }
 
     // Same thing, checking if we go off the end
@@ -687,7 +687,7 @@ namespace pal
     }
     if ( index >= path_positions->nbPoints )
     {
-      return NULL;
+      return nullptr;
     }
 
     LabelInfo* li = mLF->curvedLabelInfo();
@@ -710,11 +710,11 @@ namespace pal
     if ( segment_length == 0 )
     {
       // Not allowed to place across on 0 length segments or discontinuities
-      return NULL;
+      return nullptr;
     }
 
-    LabelPosition* slp = NULL;
-    LabelPosition* slp_tmp = NULL;
+    LabelPosition* slp = nullptr;
+    LabelPosition* slp_tmp = nullptr;
     // current_placement = placement_result()
     double angle = atan2( -dy, dx );
 
@@ -736,7 +736,7 @@ namespace pal
       {
         // Not allowed to place across on 0 length segments or discontinuities
         delete slp;
-        return NULL;
+        return nullptr;
       }
 
       double start_x = old_x + dx * distance / segment_length;
@@ -765,7 +765,7 @@ namespace pal
           if ( index >= path_positions->nbPoints ) // Bail out if we run off the end of the shape
           {
             delete slp;
-            return NULL;
+            return nullptr;
           }
           new_x = path_positions->x[index];
           new_y = path_positions->y[index];
@@ -802,7 +802,7 @@ namespace pal
                && angle_delta < li->max_char_angle_outside*( M_PI / 180 ) ) )
       {
         delete slp;
-        return NULL;
+        return nullptr;
       }
 
       double render_angle = angle;
@@ -825,7 +825,7 @@ namespace pal
       //std::cerr << "adding part: " << render_x << "  " << render_y << std::endl;
       LabelPosition* tmp = new LabelPosition( 0, render_x /*- xBase*/, render_y /*- yBase*/, ci.width, string_height, -render_angle, 0.0001, this );
       tmp->setPartId( orientation > 0 ? i : li->char_num - i - 1 );
-      if ( slp == NULL )
+      if ( slp == nullptr )
         slp = tmp;
       else
         slp_tmp->setNextPart( tmp );
@@ -857,7 +857,7 @@ namespace pal
       {
         // Otherwise we have failed to find a placement
         delete slp;
-        return NULL;
+        return nullptr;
       }
     }
 
@@ -876,7 +876,7 @@ namespace pal
     LabelInfo* li = mLF->curvedLabelInfo();
 
     // label info must be present
-    if ( li == NULL || li->char_num == 0 )
+    if ( li == nullptr || li->char_num == 0 )
       return 0;
 
     // distance calculation
@@ -1025,7 +1025,7 @@ namespace pal
     QLinkedList<PointSet*> shapes_toProcess;
     QLinkedList<PointSet*> shapes_final;
 
-    mapShape->parent = NULL;
+    mapShape->parent = nullptr;
 
     shapes_toProcess.append( mapShape );
 

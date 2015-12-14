@@ -44,7 +44,7 @@
 #include <QMessageBox>
 
 QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
-    : QgsComposerItemBaseWidget( 0, composerMap )
+    : QgsComposerItemBaseWidget( nullptr, composerMap )
     , mComposerMap( composerMap )
 {
   setupUi( this );
@@ -1194,7 +1194,7 @@ void QgsComposerMapWidget::on_mAddGridPushButton_clicked()
 
   addGridListItem( grid->id(), grid->name() );
   mGridListWidget->setCurrentRow( 0 );
-  on_mGridListWidget_currentItemChanged( mGridListWidget->currentItem(), 0 );
+  on_mGridListWidget_currentItemChanged( mGridListWidget->currentItem(), nullptr );
 }
 
 void QgsComposerMapWidget::on_mRemoveGridPushButton_clicked()
@@ -1256,13 +1256,13 @@ QgsComposerMapGrid* QgsComposerMapWidget::currentGrid()
 {
   if ( !mComposerMap )
   {
-    return 0;
+    return nullptr;
   }
 
   QListWidgetItem* item = mGridListWidget->currentItem();
   if ( !item )
   {
-    return 0;
+    return nullptr;
   }
 
   return mComposerMap->grids()->grid( item->data( Qt::UserRole ).toString() );
@@ -1566,7 +1566,7 @@ void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
   }
 
   QgsLineSymbolV2* newSymbol = static_cast<QgsLineSymbolV2*>( grid->lineSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -1591,7 +1591,7 @@ void QgsComposerMapWidget::on_mGridMarkerStyleButton_clicked()
   }
 
   QgsMarkerSymbolV2* newSymbol = static_cast<QgsMarkerSymbolV2*>( grid->markerSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -2029,7 +2029,7 @@ void QgsComposerMapWidget::on_mAnnotationFormatButton_clicked()
 
   QScopedPointer< QgsExpressionContext> expressionContext( grid->createExpressionContext() );
 
-  QgsExpressionBuilderDialog exprDlg( 0, grid->annotationExpression(), this, "generic", *expressionContext );
+  QgsExpressionBuilderDialog exprDlg( nullptr, grid->annotationExpression(), this, "generic", *expressionContext );
   exprDlg.setWindowTitle( tr( "Expression based annotation" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -2186,7 +2186,7 @@ void QgsComposerMapWidget::on_mCoordinatePrecisionSpinBox_valueChanged( int valu
 
 QListWidgetItem* QgsComposerMapWidget::addGridListItem( const QString& id, const QString& name )
 {
-  QListWidgetItem* item = new QListWidgetItem( name, 0 );
+  QListWidgetItem* item = new QListWidgetItem( name, nullptr );
   item->setData( Qt::UserRole, id );
   item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
   mGridListWidget->insertItem( 0, item );
@@ -2225,11 +2225,11 @@ void QgsComposerMapWidget::loadGridEntries()
 
   if ( mGridListWidget->currentItem() )
   {
-    on_mGridListWidget_currentItemChanged( mGridListWidget->currentItem(), 0 );
+    on_mGridListWidget_currentItemChanged( mGridListWidget->currentItem(), nullptr );
   }
   else
   {
-    on_mGridListWidget_currentItemChanged( 0, 0 );
+    on_mGridListWidget_currentItemChanged( nullptr, nullptr );
   }
 }
 
@@ -2331,13 +2331,13 @@ QgsComposerMapOverview* QgsComposerMapWidget::currentOverview()
 {
   if ( !mComposerMap )
   {
-    return 0;
+    return nullptr;
   }
 
   QListWidgetItem* item = mOverviewListWidget->currentItem();
   if ( !item )
   {
-    return 0;
+    return nullptr;
   }
 
   return mComposerMap->overviews()->overview( item->data( Qt::UserRole ).toString() );
@@ -2440,7 +2440,7 @@ void QgsComposerMapWidget::updateOverviewFrameSymbolMarker( const QgsComposerMap
 
 QListWidgetItem* QgsComposerMapWidget::addOverviewListItem( const QString& id, const QString& name )
 {
-  QListWidgetItem* item = new QListWidgetItem( name, 0 );
+  QListWidgetItem* item = new QListWidgetItem( name, nullptr );
   item->setData( Qt::UserRole, id );
   item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
   mOverviewListWidget->insertItem( 0, item );
@@ -2479,11 +2479,11 @@ void QgsComposerMapWidget::loadOverviewEntries()
 
   if ( mOverviewListWidget->currentItem() )
   {
-    on_mOverviewListWidget_currentItemChanged( mOverviewListWidget->currentItem(), 0 );
+    on_mOverviewListWidget_currentItemChanged( mOverviewListWidget->currentItem(), nullptr );
   }
   else
   {
-    on_mOverviewListWidget_currentItemChanged( 0, 0 );
+    on_mOverviewListWidget_currentItemChanged( nullptr, nullptr );
   }
 }
 
@@ -2570,7 +2570,7 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
   }
 
   QgsFillSymbolV2* newSymbol = static_cast<QgsFillSymbolV2*>( overview->frameSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
 
   if ( d.exec() == QDialog::Accepted )
   {

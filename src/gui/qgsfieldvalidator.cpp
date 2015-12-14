@@ -80,7 +80,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
       break;
 
     default:
-      mValidator = 0;
+      mValidator = nullptr;
   }
 
   QSettings settings;

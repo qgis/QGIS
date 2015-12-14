@@ -108,7 +108,7 @@ class CORE_EXPORT QgsImageOperation
           : shadeExterior( true )
           , useMaxDistance( true )
           , spread( 10.0 )
-          , ramp( NULL )
+          , ramp( nullptr )
       { }
 
       /** Set to true to perform the distance transform on transparent pixels

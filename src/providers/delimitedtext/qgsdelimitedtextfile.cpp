@@ -33,10 +33,10 @@
 QgsDelimitedTextFile::QgsDelimitedTextFile( const QString& url ) :
     mFileName( QString() ),
     mEncoding( "UTF-8" ),
-    mFile( 0 ),
-    mStream( 0 ),
+    mFile( nullptr ),
+    mStream( nullptr ),
     mUseWatcher( true ),
-    mWatcher( 0 ),
+    mWatcher( nullptr ),
     mDefinitionValid( false ),
     mUseHeader( true ),
     mDiscardEmptyFields( false ),
@@ -71,17 +71,17 @@ void QgsDelimitedTextFile::close()
   if ( mStream )
   {
     delete mStream;
-    mStream = 0;
+    mStream = nullptr;
   }
   if ( mFile )
   {
     delete mFile;
-    mFile = 0;
+    mFile = nullptr;
   }
   if ( mWatcher )
   {
     delete mWatcher;
-    mWatcher = 0;
+    mWatcher = nullptr;
   }
   mLineNumber = -1;
   mRecordLineNumber = -1;
@@ -100,7 +100,7 @@ bool QgsDelimitedTextFile::open()
     {
       QgsDebugMsg( "Data file " + mFileName + " could not be opened" );
       delete mFile;
-      mFile = 0;
+      mFile = nullptr;
     }
     if ( mFile )
     {
@@ -118,7 +118,7 @@ bool QgsDelimitedTextFile::open()
       }
     }
   }
-  return mFile != 0;
+  return mFile != nullptr;
 }
 
 void QgsDelimitedTextFile::updateFile()

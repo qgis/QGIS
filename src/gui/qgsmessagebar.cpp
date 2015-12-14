@@ -31,7 +31,7 @@
 #include <QLabel>
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
-    : QFrame( parent ), mCurrentItem( NULL )
+    : QFrame( parent ), mCurrentItem( nullptr )
 {
   QPalette pal = palette();
   pal.setBrush( backgroundRole(), pal.window() );
@@ -135,7 +135,7 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
       mCurrentItem->hide();
       disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
       delete mCurrentItem;
-      mCurrentItem = 0;
+      mCurrentItem = nullptr;
     }
 
     if ( !mItems.isEmpty() )
@@ -230,7 +230,7 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
 {
   Q_ASSERT( item );
 
-  if ( mCurrentItem != 0 )
+  if ( mCurrentItem != nullptr )
     disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
 
   if ( item == mCurrentItem )
@@ -342,6 +342,6 @@ void QgsMessageBar::updateItemCount()
   mItemCount->setText( !mItems.isEmpty() ? tr( "%n more", "unread messages", mItems.count() ) : QString() );
 
   // do not show the down arrow for opening menu with "close all" if there is just one message
-  mCloseBtn->setMenu( !mItems.isEmpty() ? mCloseMenu : 0 );
+  mCloseBtn->setMenu( !mItems.isEmpty() ? mCloseMenu : nullptr );
   mCloseBtn->setPopupMode( !mItems.isEmpty() ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
 }

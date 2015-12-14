@@ -125,13 +125,13 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
                                 const QString& providerKey,
                                 bool loadDefaultStyleFlag )
     : QgsMapLayer( VectorLayer, baseName, vectorLayerPath )
-    , mDataProvider( NULL )
+    , mDataProvider( nullptr )
     , mProviderKey( providerKey )
     , mReadOnly( false )
     , mEditFormConfig( new QgsEditFormConfig( this ) )
     , mWkbType( QGis::WKBUnknown )
-    , mRendererV2( NULL )
-    , mLabel( 0 )
+    , mRendererV2( nullptr )
+    , mLabel( nullptr )
     , mLabelOn( false )
     , mLabeling( new QgsVectorLayerSimpleLabeling )
     , mLabelFontNotFoundNotified( false )
@@ -139,11 +139,11 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
     , mLayerTransparency( 0 )
     , mVertexMarkerOnlyForSelection( false )
     , mCache( new QgsGeometryCache() )
-    , mEditBuffer( 0 )
-    , mJoinBuffer( 0 )
-    , mExpressionFieldBuffer( 0 )
-    , mDiagramRenderer( 0 )
-    , mDiagramLayerSettings( 0 )
+    , mEditBuffer( nullptr )
+    , mJoinBuffer( nullptr )
+    , mExpressionFieldBuffer( nullptr )
+    , mDiagramRenderer( nullptr )
+    , mDiagramLayerSettings( nullptr )
     , mValidExtent( false )
     , mLazyExtent( true )
     , mSymbolFeatureCounted( false )
@@ -202,7 +202,7 @@ QString QgsVectorLayer::storageType() const
   {
     return mDataProvider->storageType();
   }
-  return 0;
+  return nullptr;
 }
 
 
@@ -212,7 +212,7 @@ QString QgsVectorLayer::capabilitiesString() const
   {
     return mDataProvider->capabilitiesString();
   }
-  return 0;
+  return nullptr;
 }
 
 QString QgsVectorLayer::dataComment() const
@@ -354,7 +354,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
         if ( mRendererV2->willRenderFeature( fet, rendererContext ) )
         {
           bool sel = mSelectedFeatureIds.contains( fet.id() );
-          mLabel->renderLabel( rendererContext, fet, sel, 0 );
+          mLabel->renderLabel( rendererContext, fet, sel, nullptr );
         }
         featureCount++;
       }
@@ -884,7 +884,7 @@ QString QgsVectorLayer::subsetString()
   if ( !mValid || !mDataProvider )
   {
     QgsDebugMsg( "invoked with invalid layer or null mDataProvider" );
-    return 0;
+    return nullptr;
   }
   return mDataProvider->subsetString();
 }
@@ -1738,7 +1738,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
 
     //diagram renderer and diagram layer settings
-    delete mDiagramRenderer; mDiagramRenderer = 0;
+    delete mDiagramRenderer; mDiagramRenderer = nullptr;
     QDomElement singleCatDiagramElem = node.firstChildElement( "SingleCategoryDiagramRenderer" );
     if ( !singleCatDiagramElem.isNull() )
     {
@@ -2233,7 +2233,7 @@ bool QgsVectorLayer::commitChanges()
   if ( success )
   {
     delete mEditBuffer;
-    mEditBuffer = 0;
+    mEditBuffer = nullptr;
     undoStack()->clear();
     emit editingStopped();
   }
@@ -2283,7 +2283,7 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
   if ( deleteBuffer )
   {
     delete mEditBuffer;
-    mEditBuffer = 0;
+    mEditBuffer = nullptr;
     undoStack()->clear();
   }
   emit editingStopped();
@@ -2505,7 +2505,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
   {
     if ( geometryType() != QGis::Point ) // cannot snap to segment for points/multipoints
     {
-      sqrDistSegmentSnap = geom->closestSegmentWithContext( startPoint, snappedPoint, afterVertex, NULL, crs().geographicFlag() ? 1e-12 : 1e-8 );
+      sqrDistSegmentSnap = geom->closestSegmentWithContext( startPoint, snappedPoint, afterVertex, nullptr, crs().geographicFlag() ? 1e-12 : 1e-8 );
 
       if ( sqrDistSegmentSnap < sqrSnappingTolerance )
       {

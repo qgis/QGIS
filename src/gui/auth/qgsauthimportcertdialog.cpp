@@ -36,8 +36,8 @@ QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent ,
     , mFilter( filter )
     , mInput( input )
     , mDisabled( false )
-    , mAuthNotifyLayout( 0 )
-    , mAuthNotify( 0 )
+    , mAuthNotifyLayout( nullptr )
+    , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

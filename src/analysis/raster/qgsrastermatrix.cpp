@@ -22,7 +22,7 @@
 QgsRasterMatrix::QgsRasterMatrix()
     : mColumns( 0 )
     , mRows( 0 )
-    , mData( 0 )
+    , mData( nullptr )
     , mNodataValue( -1 )
 {
 }
@@ -38,7 +38,7 @@ QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, double* data, double nod
 QgsRasterMatrix::QgsRasterMatrix( const QgsRasterMatrix& m )
     : mColumns( 0 )
     , mRows( 0 )
-    , mData( 0 )
+    , mData( nullptr )
 {
   operator=( m );
 }
@@ -72,7 +72,7 @@ void QgsRasterMatrix::setData( int cols, int rows, double* data, double nodataVa
 double* QgsRasterMatrix::takeData()
 {
   double* data = mData;
-  mData = 0; mColumns = 0; mRows = 0;
+  mData = nullptr; mColumns = 0; mRows = 0;
   return data;
 }
 

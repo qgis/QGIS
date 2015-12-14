@@ -24,7 +24,7 @@ class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerV2Widget,
 {
     Q_OBJECT
   public:
-    QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = 0 );
+    QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
     ~QgsVectorFieldSymbolLayerWidget();
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsVectorFieldSymbolLayerWidget( vl ); }

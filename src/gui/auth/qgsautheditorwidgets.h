@@ -33,7 +33,7 @@ class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMetho
      * Construct a dialog for viewing available authentication method plugins
      * @param parent Parent widget
      */
-    explicit QgsAuthMethodPlugins( QWidget *parent = 0 );
+    explicit QgsAuthMethodPlugins( QWidget *parent = nullptr );
 
     ~QgsAuthMethodPlugins();
 
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
      * Construct a widget to contain various authentication editors
      * @param parent Parent widget
      */
-    explicit QgsAuthEditorWidgets( QWidget *parent = 0 );
+    explicit QgsAuthEditorWidgets( QWidget *parent = nullptr );
 
     ~QgsAuthEditorWidgets();
 

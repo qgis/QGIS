@@ -58,7 +58,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * @param layer source vector layer
      * @param fieldOrExp field name or expression string
      */
-    QgsHistogramWidget( QWidget *parent = 0, QgsVectorLayer* layer = 0, const QString& fieldOrExp = QString() );
+    QgsHistogramWidget( QWidget *parent = nullptr, QgsVectorLayer* layer = nullptr, const QString& fieldOrExp = QString() );
 
     ~QgsHistogramWidget();
 

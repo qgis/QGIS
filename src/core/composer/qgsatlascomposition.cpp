@@ -35,7 +35,7 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition )
     , mEnabled( false )
     , mHideCoverage( false )
     , mFilenamePattern( "'output_'||@atlas_featurenumber" )
-    , mCoverageLayer( 0 )
+    , mCoverageLayer( nullptr )
     , mSingleFile( false )
     , mSortFeatures( false )
     , mSortAscending( true )
@@ -76,7 +76,7 @@ void QgsAtlasComposition::removeLayers( const QStringList& layers )
     if ( layerId == mCoverageLayer->id() )
     {
       //current coverage layer removed
-      mCoverageLayer = 0;
+      mCoverageLayer = nullptr;
       setEnabled( false );
       return;
     }
@@ -118,7 +118,7 @@ QgsComposerMap* QgsAtlasComposition::composerMap() const
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 void QgsAtlasComposition::setComposerMap( QgsComposerMap* map )
@@ -227,7 +227,7 @@ int QgsAtlasComposition::updateFeatures()
     nameExpression.reset( new QgsExpression( mPageNameExpression ) );
     if ( nameExpression->hasParserError() )
     {
-      nameExpression.reset( 0 );
+      nameExpression.reset( nullptr );
     }
     nameExpression->prepare( &expressionContext );
   }
@@ -312,7 +312,7 @@ void QgsAtlasComposition::endRender()
     return;
   }
 
-  emit featureChanged( 0 );
+  emit featureChanged( nullptr );
 
   updateAtlasMaps();
 
@@ -688,7 +688,7 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
   }
 
   // look for stored layer name
-  mCoverageLayer = 0;
+  mCoverageLayer = nullptr;
   QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::const_iterator it = layers.begin(); it != layers.end(); ++it )
   {
@@ -738,7 +738,7 @@ void QgsAtlasComposition::readXMLMapSettings( const QDomElement &elem, const QDo
   Q_UNUSED( doc );
   //look for stored composer map, to upgrade pre 2.1 projects
   int composerMapNo = elem.attribute( "composerMap", "-1" ).toInt();
-  QgsComposerMap * composerMap = 0;
+  QgsComposerMap * composerMap = nullptr;
   if ( composerMapNo != -1 )
   {
     QList<QgsComposerMap*> maps;

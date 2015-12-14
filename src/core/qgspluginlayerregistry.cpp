@@ -37,13 +37,13 @@ QString QgsPluginLayerType::name()
 
 QgsPluginLayer* QgsPluginLayerType::createLayer()
 {
-  return NULL;
+  return nullptr;
 }
 
 QgsPluginLayer* QgsPluginLayerType::createLayer( const QString& uri )
 {
   Q_UNUSED( uri );
-  return NULL;
+  return nullptr;
 }
 
 bool QgsPluginLayerType::showLayerProperties( QgsPluginLayer *layer )
@@ -55,10 +55,10 @@ bool QgsPluginLayerType::showLayerProperties( QgsPluginLayer *layer )
 //=============================================================================
 
 /** Static calls to enforce singleton behaviour */
-QgsPluginLayerRegistry* QgsPluginLayerRegistry::_instance = NULL;
+QgsPluginLayerRegistry* QgsPluginLayerRegistry::_instance = nullptr;
 QgsPluginLayerRegistry* QgsPluginLayerRegistry::instance()
 {
-  if ( _instance == NULL )
+  if ( _instance == nullptr )
   {
     _instance = new QgsPluginLayerRegistry();
   }
@@ -87,7 +87,7 @@ QStringList QgsPluginLayerRegistry::pluginLayerTypes()
 
 bool QgsPluginLayerRegistry::addPluginLayerType( QgsPluginLayerType* type )
 {
-  if ( type == NULL )
+  if ( type == nullptr )
     return false;
   if ( mPluginLayerTypes.contains( type->name() ) )
     return false;
@@ -123,7 +123,7 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString& typeName )
 
 QgsPluginLayerType* QgsPluginLayerRegistry::pluginLayerType( const QString& typeName )
 {
-  return mPluginLayerTypes.value( typeName, NULL );
+  return mPluginLayerTypes.value( typeName, nullptr );
 }
 
 
@@ -133,7 +133,7 @@ QgsPluginLayer* QgsPluginLayerRegistry::createLayer( const QString& typeName, co
   if ( !type )
   {
     QgsDebugMsg( "Unknown plugin layer type: " + typeName );
-    return NULL;
+    return nullptr;
   }
 
   if ( !uri.isEmpty() )

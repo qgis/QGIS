@@ -943,7 +943,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Draws the map grid. If extension is specified, then no grid will be drawn and instead the maximum extension
      * for the grid outside of the map frame will be calculated.
     */
-    void drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, GridExtension* extension = 0 ) const;
+    void drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, GridExtension* extension = nullptr ) const;
 
     /** Draw coordinates for mGridAnnotationType Coordinate
         @param p drawing painter
@@ -953,12 +953,12 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
         @param extension optional. If specified, nothing will be drawn and instead the maximum extension for the grid
         annotations will be stored in this variable.
     */
-    void drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QgsExpressionContext& expressionContext, GridExtension* extension = 0 ) const;
+    void drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QgsExpressionContext& expressionContext, GridExtension* extension = nullptr ) const;
 
     /** Draw an annotation. If optional extension argument is specified, nothing will be drawn and instead
      * the extension of the annotation outside of the map frame will be stored in this variable.
      */
-    void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension = 0 ) const;
+    void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension = nullptr ) const;
 
     /** Draws a single annotation
      * @param p drawing painter
@@ -992,7 +992,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Draw the grid frame's border. If optional extension argument is specified, nothing will be drawn and instead
      * the maximum extension of the frame border outside of the map frame will be stored in this variable.
      */
-    void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, BorderSide border, double* extension = 0 ) const;
+    void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, BorderSide border, double* extension = nullptr ) const;
 
     /** Returns the item border of a point (in item coordinates)
      * @param p point
@@ -1019,11 +1019,11 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     void drawGridMarker( const QPointF &point, QgsRenderContext &context ) const;
 
-    void drawGridFrameZebraBorder( QPainter *p, const QMap<double, double> &borderPos, BorderSide border, double* extension = 0 ) const;
+    void drawGridFrameZebraBorder( QPainter *p, const QMap<double, double> &borderPos, BorderSide border, double* extension = nullptr ) const;
 
-    void drawGridFrameTicks( QPainter *p, const QMap<double, double> &borderPos, BorderSide border, double* extension = 0 ) const;
+    void drawGridFrameTicks( QPainter *p, const QMap<double, double> &borderPos, BorderSide border, double* extension = nullptr ) const;
 
-    void drawGridFrameLineBorder( QPainter *p, BorderSide border, double* extension = 0 ) const;
+    void drawGridFrameLineBorder( QPainter *p, BorderSide border, double* extension = nullptr ) const;
 
     void calculateCRSTransformLines();
 

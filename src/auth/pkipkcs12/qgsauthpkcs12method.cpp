@@ -123,7 +123,7 @@ void QgsAuthPkcs12Method::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 
 QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &authcfg )
 {
-  QgsPkiConfigBundle * bundle = 0;
+  QgsPkiConfigBundle * bundle = nullptr;
 
   // check if it is cached
   if ( mPkiConfigBundleCache.contains( authcfg ) )
@@ -191,7 +191,7 @@ void QgsAuthPkcs12Method::removePkiConfigBundle( const QString &authcfg )
   {
     QgsPkiConfigBundle * pkibundle = mPkiConfigBundleCache.take( authcfg );
     delete pkibundle;
-    pkibundle = 0;
+    pkibundle = nullptr;
     QgsDebugMsg( QString( "Removed PKI bundle for authcfg: %1" ).arg( authcfg ) );
   }
 }

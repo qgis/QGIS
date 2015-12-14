@@ -33,7 +33,7 @@ const int RADIUS_SEGMENTS = 40;
 QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas* canvas )
     : QgsMapTool( canvas ), mDragging( false )
 {
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
   mFillColor = QColor( 254, 178, 76, 63 );
   mBorderColour = QColor( 254, 58, 29, 100 );
@@ -62,7 +62,7 @@ void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent* e )
   }
   if ( !mDragging )
   {
-    if ( mRubberBand == NULL )
+    if ( mRubberBand == nullptr )
     {
       mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
       mRubberBand->setFillColor( mFillColor );
@@ -83,7 +83,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
   }
   if ( !mDragging )
   {
-    if ( mRubberBand == NULL )
+    if ( mRubberBand == nullptr )
     {
       mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
       mRubberBand->setFillColor( mFillColor );
@@ -98,7 +98,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
   delete radiusGeometry;
   mRubberBand->reset( QGis::Polygon );
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mDragging = false;
 }
 

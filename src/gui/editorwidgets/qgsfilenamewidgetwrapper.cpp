@@ -24,9 +24,9 @@
 
 QgsFileNameWidgetWrapper::QgsFileNameWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mLineEdit( NULL )
-    , mPushButton( NULL )
-    , mLabel( NULL )
+    , mLineEdit( nullptr )
+    , mPushButton( nullptr )
+    , mLabel( nullptr )
 {
 }
 

@@ -89,7 +89,7 @@ void QgsAttributeTypeLoadDialog::fillComboBoxes( int layerIndex )
   keyComboBox->clear();
   valueComboBox->clear();
 
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layerIndex < 0 ? 0 : QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->itemData( layerIndex ).toString() ) );
+  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layerIndex < 0 ? nullptr : QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->itemData( layerIndex ).toString() ) );
   if ( vLayer )
   {
     QMap<QString, int> fieldMap = vLayer->dataProvider()->fieldNameMap();
@@ -101,8 +101,8 @@ void QgsAttributeTypeLoadDialog::fillComboBoxes( int layerIndex )
     }
   }
 
-  keyComboBox->setEnabled( vLayer != 0 );
-  valueComboBox->setEnabled( vLayer != 0 );
+  keyComboBox->setEnabled( vLayer != nullptr );
+  valueComboBox->setEnabled( vLayer != nullptr );
 
   keyComboBox->setCurrentIndex( -1 );
   valueComboBox->setCurrentIndex( -1 );

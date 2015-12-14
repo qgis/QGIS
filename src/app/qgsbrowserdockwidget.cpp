@@ -76,7 +76,7 @@ void QgsBrowserPropertiesWidget::setWidget( QWidget* paramWidget )
 
 QgsBrowserPropertiesWidget* QgsBrowserPropertiesWidget::createWidget( QgsDataItem* item, QWidget* parent )
 {
-  QgsBrowserPropertiesWidget* propertiesWidget = 0;
+  QgsBrowserPropertiesWidget* propertiesWidget = nullptr;
   // In general, we would like to show all items' paramWidget, but top level items like
   // WMS etc. have currently too large widgets which do not fit well to browser properties widget
   if ( item->type() == QgsDataItem::Directory )
@@ -141,7 +141,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem* item )
     QgsDebugMsg( "creating raster layer" );
     // should copy code from addLayer() to split uri ?
     QgsRasterLayer* layer = new QgsRasterLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() );
-    if ( layer != NULL )
+    if ( layer != nullptr )
     {
       if ( layer->isValid() )
       {
@@ -155,7 +155,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem* item )
   {
     QgsDebugMsg( "creating vector layer" );
     QgsVectorLayer* layer = new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
-    if ( layer != NULL )
+    if ( layer != nullptr )
     {
       if ( layer->isValid() )
       {
@@ -217,7 +217,7 @@ void QgsBrowserLayerProperties::setCondensedMode( bool condensedMode )
 
 QgsBrowserDirectoryProperties::QgsBrowserDirectoryProperties( QWidget* parent ) :
     QgsBrowserPropertiesWidget( parent )
-    , mDirectoryWidget( 0 )
+    , mDirectoryWidget( nullptr )
 {
   setupUi( this );
 
@@ -238,7 +238,7 @@ void QgsBrowserDirectoryProperties::setItem( QgsDataItem* item )
 
 QgsBrowserPropertiesDialog::QgsBrowserPropertiesDialog( const QString& settingsSection, QWidget* parent ) :
     QDialog( parent )
-    , mPropertiesWidget( 0 )
+    , mPropertiesWidget( nullptr )
     , mSettingsSection( settingsSection )
 {
   setupUi( this );
@@ -264,8 +264,8 @@ void QgsBrowserPropertiesDialog::setItem( QgsDataItem* item )
 
 QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QWidget * parent ) :
     QDockWidget( parent )
-    , mModel( 0 )
-    , mProxyModel( 0 )
+    , mModel( nullptr )
+    , mProxyModel( nullptr )
     , mPropertiesWidgetEnabled( false )
     , mPropertiesWidgetHeight( 0 )
 {
@@ -511,7 +511,7 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
 
 void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
 {
-  if ( layerItem == NULL )
+  if ( layerItem == nullptr )
     return;
 
   QString uri = QgisApp::instance()->crsAndFormatAdjustedLayerUri( layerItem->uri(), layerItem->supportedCRS(), layerItem->supportedFormats() );
@@ -541,20 +541,20 @@ void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex& index )
   QgsDebugMsg( QString( "rowCount() = %1" ).arg( mModel->rowCount( mProxyModel->mapToSource( index ) ) ) );
   QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
 
-  if ( item != NULL && item->type() == QgsDataItem::Project )
+  if ( item != nullptr && item->type() == QgsDataItem::Project )
   {
     QgsProjectItem *projectItem = qobject_cast<QgsProjectItem*>( item );
-    if ( projectItem != NULL )
+    if ( projectItem != nullptr )
     {
       QApplication::setOverrideCursor( Qt::WaitCursor );
       QgisApp::instance()->openFile( projectItem->path() );
       QApplication::restoreOverrideCursor();
     }
   }
-  if ( item != NULL && item->type() == QgsDataItem::Layer )
+  if ( item != nullptr && item->type() == QgsDataItem::Layer )
   {
     QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( item );
-    if ( layerItem != NULL )
+    if ( layerItem != nullptr )
     {
       QApplication::setOverrideCursor( Qt::WaitCursor );
       addLayer( layerItem );
@@ -808,7 +808,7 @@ void QgsDockBrowserTreeView::dragMoveEvent( QDragMoveEvent* e )
 //
 
 QgsBrowserTreeFilterProxyModel::QgsBrowserTreeFilterProxyModel( QObject* parent )
-    : QSortFilterProxyModel( parent ), mModel( 0 )
+    : QSortFilterProxyModel( parent ), mModel( nullptr )
     , mFilter( "" ), mPatternSyntax( "normal" ), mCaseSensitivity( Qt::CaseInsensitive )
 {
   setDynamicSortFilter( true );

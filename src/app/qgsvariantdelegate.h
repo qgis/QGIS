@@ -49,7 +49,7 @@ class QgsVariantDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsVariantDelegate( QObject* parent = 0 );
+    explicit QgsVariantDelegate( QObject* parent = nullptr );
 
     void paint( QPainter* painter, const QStyleOptionViewItem& option,
                 const QModelIndex& index ) const override;

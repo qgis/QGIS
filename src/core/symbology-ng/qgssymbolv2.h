@@ -155,7 +155,7 @@ class CORE_EXPORT QgsSymbolV2
     //! delete layer at specified index and set a new one
     bool changeSymbolLayer( int index, QgsSymbolLayerV2 *layer );
 
-    void startRender( QgsRenderContext& context, const QgsFields* fields = 0 );
+    void startRender( QgsRenderContext& context, const QgsFields* fields = nullptr );
     void stopRender( QgsRenderContext& context );
 
     void setColor( const QColor& color );
@@ -164,19 +164,19 @@ class CORE_EXPORT QgsSymbolV2
     //! Draw icon of the symbol that occupyies area given by size using the painter.
     //! Optionally custom context may be given in order to get rendering of symbols that use map units right.
     //! @note customContext parameter added in 2.6
-    void drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext* customContext = 0 );
+    void drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext* customContext = nullptr );
 
     //! export symbol as image format. PNG and SVG supported
     void exportImage( const QString& path, const QString& format, const QSize& size );
 
     //! Generate symbol as image
-    QImage asImage( QSize size, QgsRenderContext* customContext = 0 );
+    QImage asImage( QSize size, QgsRenderContext* customContext = nullptr );
 
     /** Returns a large (roughly 100x100 pixel) preview image for the symbol.
      * @param expressionContext optional expression context, for evaluation of
      * data defined symbol properties
      */
-    QImage bigSymbolPreviewImage( QgsExpressionContext* expressionContext = 0 );
+    QImage bigSymbolPreviewImage( QgsExpressionContext* expressionContext = nullptr );
 
     QString dump() const;
 
@@ -307,7 +307,7 @@ class CORE_EXPORT QgsSymbolV2
 class CORE_EXPORT QgsSymbolV2RenderContext
 {
   public:
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields* fields = 0, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = nullptr, const QgsFields* fields = nullptr, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext() { return mRenderContext; }

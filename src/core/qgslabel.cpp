@@ -567,10 +567,10 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
   Q_ASSERT( sizeof( QGis::WkbType ) == 4 );
   Q_ASSERT( sizeof( double ) == 8 );
 
-  if ( geom == NULL )
+  if ( geom == nullptr )
   {
     QgsDebugMsg( "empty wkb" );
-    return NULL;
+    return nullptr;
   }
 
   QGis::WkbType wkbType;
@@ -699,7 +699,7 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
       // To get here is a bug because our caller should be filtering
       // on wkb type.
       QgsDebugMsg( "unsupported wkb type" );
-      return NULL;
+      return nullptr;
   }
 
   return geom;

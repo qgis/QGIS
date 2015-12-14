@@ -48,7 +48,7 @@
 #include <QUrl>
 
 // canonical project instance
-QgsProject *QgsProject::theProject_ = 0;
+QgsProject *QgsProject::theProject_ = nullptr;
 
 /**
     Take the given scope and key and convert them to a string list of key
@@ -150,23 +150,23 @@ QgsProperty *findKey_( QString const &scope,
         else
         {
           // QgsPropertyValue not Key, so return null
-          return 0;
+          return nullptr;
         }
       }
       else
       {
         // if the next key down isn't found
         // then the overall key sequence doesn't exist
-        return 0;
+        return nullptr;
       }
     }
     else
     {
-      return 0;
+      return nullptr;
     }
   }
 
-  return 0;
+  return nullptr;
 } // findKey_
 
 
@@ -225,7 +225,7 @@ QgsProperty *addKey_( QString const &scope,
         }
         else            // QgsPropertyValue not Key, so return null
         {
-          return 0;
+          return nullptr;
         }
       }
       else                // the next subkey doesn't exist, so add it
@@ -239,11 +239,11 @@ QgsProperty *addKey_( QString const &scope,
     }
     else
     {
-      return 0;
+      return nullptr;
     }
   }
 
-  return 0;
+  return nullptr;
 
 } // addKey_
 
@@ -256,8 +256,8 @@ void removeKey_( QString const &scope,
 {
   QgsPropertyKey *currentProperty = &rootProperty;
 
-  QgsProperty *nextProperty = 0;   // link to next property down hiearchy
-  QgsPropertyKey *previousQgsPropertyKey = 0; // link to previous property up hiearchy
+  QgsProperty *nextProperty = nullptr;   // link to next property down hiearchy
+  QgsPropertyKey *previousQgsPropertyKey = nullptr; // link to previous property up hiearchy
 
   QStringList keySequence = makeKeyTokens_( scope, key );
 
@@ -724,7 +724,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 {
   QString type = layerElem.attribute( "type" );
   QgsDebugMsg( "Layer type is " + type );
-  QgsMapLayer *mapLayer = 0;
+  QgsMapLayer *mapLayer = nullptr;
 
   if ( type == "vector" )
   {
@@ -1777,13 +1777,13 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   QFile projectFile( projectFilePath );
   if ( !projectFile.open( QIODevice::ReadOnly ) )
   {
-    return 0;
+    return nullptr;
   }
 
   QDomDocument projectDocument;
   if ( !projectDocument.setContent( &projectFile ) )
   {
-    return 0;
+    return nullptr;
   }
 
   // store identify disabled layers of the embedded project
@@ -1815,13 +1815,13 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   {
     // embedded groups cannot be embedded again
     delete root;
-    return 0;
+    return nullptr;
   }
 
   // clone the group sub-tree (it is used already in a tree, we cannot just tear it off)
   QgsLayerTreeGroup *newGroup = QgsLayerTree::toGroup( group->clone() );
   delete root;
-  root = 0;
+  root = nullptr;
 
   newGroup->setCustomProperty( "embedded", 1 );
   newGroup->setCustomProperty( "embedded_project", projectFilePath );

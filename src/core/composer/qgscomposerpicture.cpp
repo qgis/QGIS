@@ -41,7 +41,7 @@ QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
     : QgsComposerItem( composition )
     , mMode( Unknown )
     , mPictureRotation( 0 )
-    , mRotationMap( 0 )
+    , mRotationMap( nullptr )
     , mResizeMode( QgsComposerPicture::Zoom )
     , mPictureAnchor( UpperLeft )
     , mHasExpressionError( false )
@@ -50,10 +50,10 @@ QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
   init();
 }
 
-QgsComposerPicture::QgsComposerPicture() : QgsComposerItem( 0 ),
+QgsComposerPicture::QgsComposerPicture() : QgsComposerItem( nullptr ),
     mMode( Unknown ),
     mPictureRotation( 0 ),
-    mRotationMap( 0 ),
+    mRotationMap( nullptr ),
     mResizeMode( QgsComposerPicture::Zoom ),
     mPictureAnchor( UpperLeft ),
     mHasExpressionError( false )
@@ -631,7 +631,7 @@ void QgsComposerPicture::setRotationMap( int composerMapId )
   if ( composerMapId == -1 ) //disable rotation from map
   {
     QObject::disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( setPictureRotation( double ) ) );
-    mRotationMap = 0;
+    mRotationMap = nullptr;
   }
 
   const QgsComposerMap* map = mComposition->getComposerMapById( composerMapId );
@@ -803,7 +803,7 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   int rotationMapId = itemElem.attribute( "mapId", "-1" ).toInt();
   if ( rotationMapId == -1 )
   {
-    mRotationMap = 0;
+    mRotationMap = nullptr;
   }
   else if ( mComposition )
   {

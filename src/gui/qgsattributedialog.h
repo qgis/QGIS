@@ -49,7 +49,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      *
      * @deprecated
      */
-    Q_DECL_DEPRECATED QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, const QgsDistanceArea& myDa, QWidget* parent = 0, bool showDialogButtons = true );
+    Q_DECL_DEPRECATED QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, const QgsDistanceArea& myDa, QWidget* parent = nullptr, bool showDialogButtons = true );
 
     /**
      * Create an attribute dialog for a given layer and feature
@@ -62,7 +62,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      * @param context           The context in which this dialog is created
      *
      */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget* parent = 0, bool showDialogButtons = true, const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget* parent = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
     ~QgsAttributeDialog();
 

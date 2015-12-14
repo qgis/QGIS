@@ -28,7 +28,7 @@
 
 QgsMapCanvasSnapper::QgsMapCanvasSnapper( QgsMapCanvas* canvas )
     : mMapCanvas( canvas )
-    , mSnapper( 0 )
+    , mSnapper( nullptr )
 {
   if ( !canvas )
     return;
@@ -36,7 +36,7 @@ QgsMapCanvasSnapper::QgsMapCanvasSnapper( QgsMapCanvas* canvas )
   mSnapper = new QgsSnapper( canvas->mapSettings() );
 }
 
-QgsMapCanvasSnapper::QgsMapCanvasSnapper(): mMapCanvas( 0 ), mSnapper( 0 )
+QgsMapCanvasSnapper::QgsMapCanvasSnapper(): mMapCanvas( nullptr ), mSnapper( nullptr )
 {
 }
 
@@ -55,7 +55,7 @@ void QgsMapCanvasSnapper::setMapCanvas( QgsMapCanvas* canvas )
   }
   else
   {
-    mSnapper = 0;
+    mSnapper = nullptr;
   }
 }
 

@@ -32,13 +32,13 @@
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
     : QTableView( parent )
-    , mMasterModel( NULL )
-    , mFilterModel( NULL )
-    , mFeatureSelectionModel( NULL )
-    , mFeatureSelectionManager( NULL )
-    , mModel( NULL )
-    , mActionPopup( NULL )
-    , mLayerCache( NULL )
+    , mMasterModel( nullptr )
+    , mFilterModel( nullptr )
+    , mFeatureSelectionModel( nullptr )
+    , mFeatureSelectionManager( nullptr )
+    , mModel( nullptr )
+    , mActionPopup( nullptr )
+    , mLayerCache( nullptr )
     , mRowSectionAnchor( 0 )
     , mCtrlDragSelectionFlag( QItemSelectionModel::Select )
 {
@@ -104,7 +104,7 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
   connect( mFilterModel, SIGNAL( destroyed() ), this, SLOT( modelDeleted() ) );
 
   delete mFeatureSelectionModel;
-  mFeatureSelectionModel = 0;
+  mFeatureSelectionModel = nullptr;
 
   if ( filterModel )
   {
@@ -205,7 +205,7 @@ void QgsAttributeTableView::selectAll()
 void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent* event )
 {
   delete mActionPopup;
-  mActionPopup = 0;
+  mActionPopup = nullptr;
 
   QModelIndex idx = indexAt( event->pos() );
   if ( !idx.isValid() )
@@ -242,9 +242,9 @@ void QgsAttributeTableView::_q_selectRow( int row )
 
 void QgsAttributeTableView::modelDeleted()
 {
-  mFilterModel = 0;
-  mFeatureSelectionManager = 0;
-  mFeatureSelectionModel = 0;
+  mFilterModel = nullptr;
+  mFeatureSelectionManager = nullptr;
+  mFeatureSelectionModel = nullptr;
 }
 
 void QgsAttributeTableView::selectRow( int row, bool anchor )

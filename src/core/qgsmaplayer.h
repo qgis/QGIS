@@ -131,7 +131,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * @note added in 2.4
      */
-    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) { Q_UNUSED( rendererContext ); return 0; }
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) { Q_UNUSED( rendererContext ); return nullptr; }
 
     /** This is the method that does the actual work of
      * drawing the layer onto a paint device.
@@ -380,7 +380,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString legendUrlFormat() const { return mLegendUrlFormat; }
 
     /** @deprecated since 2.4 - returns NULL */
-    Q_DECL_DEPRECATED QImage *cacheImage() { return 0; }
+    Q_DECL_DEPRECATED QImage *cacheImage() { return nullptr; }
     /** @deprecated since 2.4 - caches listen to repaintRequested() signal to invalidate the cached image */
     Q_DECL_DEPRECATED void setCacheImage( QImage * );
     /** @deprecated since 2.4 - does nothing */

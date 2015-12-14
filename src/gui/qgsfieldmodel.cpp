@@ -25,7 +25,7 @@
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
     : QAbstractItemModel( parent )
-    , mLayer( NULL )
+    , mLayer( nullptr )
     , mAllowExpression( false )
 {
 }
@@ -90,7 +90,7 @@ void QgsFieldModel::setLayer( QgsVectorLayer *layer )
 
 void QgsFieldModel::layerDeleted()
 {
-  mLayer = 0;
+  mLayer = nullptr;
   updateModel();
 }
 

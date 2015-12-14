@@ -97,7 +97,7 @@ struct DXFLIB_EXPORT DL_LinetypeData {
         int flags,
         int numberOfDashes,
         double patternLength,
-        double* pattern = NULL
+        double* pattern = nullptr
         )
         : name(name),
         description(description),

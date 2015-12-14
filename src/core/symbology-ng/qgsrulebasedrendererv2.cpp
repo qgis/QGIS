@@ -36,12 +36,12 @@
 
 
 QgsRuleBasedRendererV2::Rule::Rule( QgsSymbolV2* symbol, int scaleMinDenom, int scaleMaxDenom, const QString& filterExp, const QString& label, const QString& description, bool elseRule )
-    : mParent( NULL ), mSymbol( symbol )
+    : mParent( nullptr ), mSymbol( symbol )
     , mScaleMinDenom( scaleMinDenom ), mScaleMaxDenom( scaleMaxDenom )
     , mFilterExp( filterExp ), mLabel( label ), mDescription( description )
     , mElseRule( elseRule )
     , mIsActive( true )
-    , mFilter( NULL )
+    , mFilter( nullptr )
 {
   mRuleKey = QUuid::createUuid().toString();
   initFilter();
@@ -60,7 +60,7 @@ void QgsRuleBasedRendererV2::Rule::initFilter()
   if ( mElseRule || mFilterExp.compare( "ELSE", Qt::CaseInsensitive ) == 0 )
   {
     mElseRule = true;
-    mFilter = NULL;
+    mFilter = nullptr;
   }
   else if ( !mFilterExp.isEmpty() )
   {
@@ -69,7 +69,7 @@ void QgsRuleBasedRendererV2::Rule::initFilter()
   }
   else
   {
-    mFilter = NULL;
+    mFilter = nullptr;
   }
 }
 
@@ -105,14 +105,14 @@ void QgsRuleBasedRendererV2::Rule::removeChildAt( int i )
 void QgsRuleBasedRendererV2::Rule::takeChild( Rule* rule )
 {
   mChildren.removeAll( rule );
-  rule->mParent = NULL;
+  rule->mParent = nullptr;
   updateElseRules();
 }
 
 QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::takeChildAt( int i )
 {
   Rule* rule = mChildren.takeAt( i );
-  rule->mParent = NULL;
+  rule->mParent = nullptr;
   return rule;
   // updateElseRules();
 }
@@ -130,7 +130,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::findRuleByKey( const
     if ( r )
       return r;
   }
-  return 0;
+  return nullptr;
 }
 
 void QgsRuleBasedRendererV2::Rule::updateElseRules()
@@ -259,7 +259,7 @@ bool QgsRuleBasedRendererV2::Rule::isScaleOK( double scale ) const
 
 QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::clone() const
 {
-  QgsSymbolV2* sym = mSymbol ? mSymbol->clone() : NULL;
+  QgsSymbolV2* sym = mSymbol ? mSymbol->clone() : nullptr;
   Rule* newrule = new Rule( sym, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mLabel, mDescription );
   newrule->setActive( mIsActive );
   // clone children
@@ -628,7 +628,7 @@ void QgsRuleBasedRendererV2::Rule::stopRender( QgsRenderContext& context )
 QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::create( QDomElement& ruleElem, QgsSymbolV2Map& symbolMap )
 {
   QString symbolIdx = ruleElem.attribute( "symbol" );
-  QgsSymbolV2* symbol = NULL;
+  QgsSymbolV2* symbol = nullptr;
   if ( !symbolIdx.isEmpty() )
   {
     if ( symbolMap.contains( symbolIdx ) )
@@ -677,7 +677,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
   if ( ruleElem.localName() != "Rule" )
   {
     QgsDebugMsg( QString( "invalid element: Rule element expected, %1 found!" ).arg( ruleElem.tagName() ) );
-    return NULL;
+    return nullptr;
   }
 
   QString label, description, filterExp;
@@ -760,7 +760,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
   }
 
   // now create the symbol
-  QgsSymbolV2 *symbol = 0;
+  QgsSymbolV2 *symbol = nullptr;
   if ( !layers.isEmpty() )
   {
     switch ( geomType )
@@ -779,7 +779,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
 
       default:
         QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
-        return NULL;
+        return nullptr;
     }
   }
 
@@ -798,7 +798,7 @@ QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsRuleBasedRendererV2::Rule* ro
 QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol )
     : QgsFeatureRendererV2( "RuleRenderer" )
 {
-  mRootRule = new Rule( NULL ); // root has no symbol, no filter etc - just a container
+  mRootRule = new Rule( nullptr ); // root has no symbol, no filter etc - just a container
   mRootRule->appendChild( new Rule( defaultSymbol ) );
 }
 
@@ -811,7 +811,7 @@ QgsRuleBasedRendererV2::~QgsRuleBasedRendererV2()
 QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& , QgsRenderContext& )
 {
   // not used at all
-  return 0;
+  return nullptr;
 }
 
 bool QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
@@ -1015,15 +1015,15 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::create( QDomElement& element )
   // load symbols
   QDomElement symbolsElem = element.firstChildElement( "symbols" );
   if ( symbolsElem.isNull() )
-    return NULL;
+    return nullptr;
 
   QgsSymbolV2Map symbolMap = QgsSymbolLayerV2Utils::loadSymbols( symbolsElem );
 
   QDomElement rulesElem = element.firstChildElement( "rules" );
 
   Rule* root = Rule::create( rulesElem, symbolMap );
-  if ( root == NULL )
-    return NULL;
+  if ( root == nullptr )
+    return nullptr;
 
   QgsRuleBasedRendererV2* r = new QgsRuleBasedRendererV2( root );
 
@@ -1036,7 +1036,7 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::create( QDomElement& element )
 QgsFeatureRendererV2* QgsRuleBasedRendererV2::createFromSld( QDomElement& element, QGis::GeometryType geomType )
 {
   // retrieve child rules
-  Rule* root = 0;
+  Rule* root = nullptr;
 
   QDomElement ruleElem = element.firstChildElement( "Rule" );
   while ( !ruleElem.isNull() )
@@ -1046,7 +1046,7 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::createFromSld( QDomElement& elemen
     {
       // create the root rule if not done before
       if ( !root )
-        root = new Rule( 0 );
+        root = new Rule( nullptr );
 
       root->appendChild( child );
     }
@@ -1057,7 +1057,7 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::createFromSld( QDomElement& elemen
   if ( !root )
   {
     // no valid rules was found
-    return NULL;
+    return nullptr;
   }
 
   // create and return the new renderer
@@ -1180,7 +1180,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
   {
     const QgsSingleSymbolRendererV2* singleSymbolRenderer = dynamic_cast<const QgsSingleSymbolRendererV2*>( renderer );
     if ( !singleSymbolRenderer )
-      return 0;
+      return nullptr;
 
     QgsSymbolV2* origSymbol = singleSymbolRenderer->symbol()->clone();
     convertToDataDefinedSymbology( origSymbol, singleSymbolRenderer->sizeScaleField() );
@@ -1191,9 +1191,9 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
   {
     const QgsCategorizedSymbolRendererV2* categorizedRenderer = dynamic_cast<const QgsCategorizedSymbolRendererV2*>( renderer );
     if ( !categorizedRenderer )
-      return 0;
+      return nullptr;
 
-    QgsRuleBasedRendererV2::Rule* rootrule = new QgsRuleBasedRendererV2::Rule( NULL );
+    QgsRuleBasedRendererV2::Rule* rootrule = new QgsRuleBasedRendererV2::Rule( nullptr );
 
     QString expression;
     QString value;
@@ -1201,7 +1201,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
     for ( int i = 0; i < categorizedRenderer->categories().size(); ++i )
     {
       category = categorizedRenderer->categories().value( i );
-      QgsRuleBasedRendererV2::Rule* rule = new QgsRuleBasedRendererV2::Rule( NULL );
+      QgsRuleBasedRendererV2::Rule* rule = new QgsRuleBasedRendererV2::Rule( nullptr );
 
       rule->setLabel( category.label() );
 
@@ -1246,16 +1246,16 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
 
     const QgsGraduatedSymbolRendererV2* graduatedRenderer = dynamic_cast<const QgsGraduatedSymbolRendererV2*>( renderer );
     if ( !graduatedRenderer )
-      return 0;
+      return nullptr;
 
-    QgsRuleBasedRendererV2::Rule* rootrule = new QgsRuleBasedRendererV2::Rule( NULL );
+    QgsRuleBasedRendererV2::Rule* rootrule = new QgsRuleBasedRendererV2::Rule( nullptr );
 
     QString expression;
     QgsRendererRangeV2 range;
     for ( int i = 0; i < graduatedRenderer->ranges().size();++i )
     {
       range = graduatedRenderer->ranges().value( i );
-      QgsRuleBasedRendererV2::Rule* rule = new QgsRuleBasedRendererV2::Rule( NULL );
+      QgsRuleBasedRendererV2::Rule* rule = new QgsRuleBasedRendererV2::Rule( nullptr );
       rule->setLabel( range.label() );
       if ( i == 0 )//The lower boundary of the first range is included, while it is excluded for the others
       {
@@ -1297,7 +1297,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
   }
 
-  return NULL;
+  return nullptr;
 }
 
 void QgsRuleBasedRendererV2::convertToDataDefinedSymbology( QgsSymbolV2* symbol, const QString& sizeScaleField, const QString& rotationField )

@@ -39,7 +39,7 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
     /** Removes the items but does not delete them*/
     void removeItems() override;
     /** Draw outline and ev. selection handles*/
-    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 ) override;
+    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr ) override;
     /** Sets this items bound in scene coordinates such that 1 item size units
        corresponds to 1 scene size unit*/
     void setSceneRect( const QRectF& rectangle ) override;

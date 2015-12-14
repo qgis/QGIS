@@ -53,7 +53,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      *  @arg destCRS if not null, will do the searches on data reprojected to the given CRS
      *  @arg extent  if not null, will index only a subset of the layer
      */
-    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS = 0, const QgsRectangle* extent = 0 );
+    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS = nullptr, const QgsRectangle* extent = nullptr );
 
     ~QgsPointLocator();
 
@@ -80,9 +80,9 @@ class CORE_EXPORT QgsPointLocator : public QObject
     struct Match
     {
       //! consruct invalid match
-      Match() : mType( Invalid ), mDist( 0 ), mPoint(), mLayer( 0 ), mFid( 0 ), mVertexIndex( 0 ) {}
+      Match() : mType( Invalid ), mDist( 0 ), mPoint(), mLayer( nullptr ), mFid( 0 ), mVertexIndex( 0 ) {}
 
-      Match( Type t, QgsVectorLayer* vl, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0, QgsPoint* edgePoints = 0 )
+      Match( Type t, QgsVectorLayer* vl, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0, QgsPoint* edgePoints = nullptr )
           : mType( t ), mDist( dist ), mPoint( pt ), mLayer( vl ), mFid( fid ), mVertexIndex( vertexIndex )
       {
         if ( edgePoints )
@@ -147,15 +147,15 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     //! Find nearest vertex to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
-    Match nearestVertex( const QgsPoint& point, double tolerance, MatchFilter* filter = 0 );
+    Match nearestVertex( const QgsPoint& point, double tolerance, MatchFilter* filter = nullptr );
     //! Find nearest edges to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
-    Match nearestEdge( const QgsPoint& point, double tolerance, MatchFilter* filter = 0 );
+    Match nearestEdge( const QgsPoint& point, double tolerance, MatchFilter* filter = nullptr );
     //! Find edges within a specified recangle
     //! Optional filter may discard unwanted matches.
-    MatchList edgesInRect( const QgsRectangle& rect, MatchFilter* filter = 0 );
+    MatchList edgesInRect( const QgsRectangle& rect, MatchFilter* filter = nullptr );
     //! Override of edgesInRect that construct rectangle from a center point and tolerance
-    MatchList edgesInRect( const QgsPoint& point, double tolerance, MatchFilter* filter = 0 );
+    MatchList edgesInRect( const QgsPoint& point, double tolerance, MatchFilter* filter = nullptr );
 
     // point-in-polygon query
 

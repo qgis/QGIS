@@ -79,7 +79,7 @@ class CORE_EXPORT QgsRectangle
     //! Center point of the rectangle
     QgsPoint center() const;
     //! Scale the rectangle around its center point
-    void scale( double scaleFactor, const QgsPoint *c = 0 );
+    void scale( double scaleFactor, const QgsPoint *c = nullptr );
     void scale( double scaleFactor, double centerX, double centerY );
     //! Grow the rectangle by the specified amount
     void grow( double delta );

@@ -25,16 +25,16 @@
 
 QgsRenderContext::QgsRenderContext()
     : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
-    , mPainter( 0 )
-    , mCoordTransform( 0 )
+    , mPainter( nullptr )
+    , mCoordTransform( nullptr )
     , mRenderingStopped( false )
     , mScaleFactor( 1.0 )
     , mRasterScaleFactor( 1.0 )
     , mRendererScale( 1.0 )
-    , mLabelingEngine( 0 )
-    , mLabelingEngine2( 0 )
-    , mGeometry( 0 )
-    , mFeatureFilterProvider( 0 )
+    , mLabelingEngine( nullptr )
+    , mLabelingEngine2( nullptr )
+    , mGeometry( nullptr )
+    , mFeatureFilterProvider( nullptr )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 }
@@ -42,7 +42,7 @@ QgsRenderContext::QgsRenderContext()
 QgsRenderContext::~QgsRenderContext()
 {
   delete mFeatureFilterProvider;
-  mFeatureFilterProvider = 0;
+  mFeatureFilterProvider = nullptr;
 }
 
 void QgsRenderContext::setFlags( const QgsRenderContext::Flags& flags )
@@ -77,7 +77,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings& mapSet
   ctx.setFlag( ForceVectorOutput, mapSettings.testFlag( QgsMapSettings::ForceVectorOutput ) );
   ctx.setFlag( UseAdvancedEffects, mapSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) );
   ctx.setFlag( UseRenderingOptimization, mapSettings.testFlag( QgsMapSettings::UseRenderingOptimization ) );
-  ctx.setCoordinateTransform( 0 );
+  ctx.setCoordinateTransform( nullptr );
   ctx.setSelectionColor( mapSettings.selectionColor() );
   ctx.setFlag( DrawSelection, mapSettings.testFlag( QgsMapSettings::DrawSelection ) );
   ctx.setFlag( DrawSymbolBounds, mapSettings.testFlag( QgsMapSettings::DrawSymbolBounds ) );
@@ -151,7 +151,7 @@ void QgsRenderContext::setUseRenderingOptimization( bool enabled )
 void QgsRenderContext::setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp )
 {
   delete mFeatureFilterProvider;
-  mFeatureFilterProvider = 0;
+  mFeatureFilterProvider = nullptr;
 
   if ( ffp )
   {

@@ -110,7 +110,7 @@ QTreeWidgetItem * QgsCustomizationDialog::item( const QString& thePath, QTreeWid
     }
   }
   QgsDebugMsg( "not found" );
-  return 0;
+  return nullptr;
 }
 
 bool QgsCustomizationDialog::itemChecked( const QString& thePath )
@@ -314,19 +314,19 @@ QTreeWidgetItem * QgsCustomizationDialog::createTreeItemWidgets()
   QFile myFile( QgsApplication::pkgDataPath() +  "/resources/customization.xml" );
   if ( !myFile.open( QIODevice::ReadOnly ) )
   {
-    return NULL;
+    return nullptr;
   }
   if ( !myDoc.setContent( &myFile ) )
   {
     myFile.close();
-    return NULL;
+    return nullptr;
   }
   myFile.close();
 
   QDomElement myRoot = myDoc.documentElement();
   if ( myRoot.tagName() != "qgiswidgets" )
   {
-    return NULL;
+    return nullptr;
   }
   QTreeWidgetItem *myItem = readWidgetsXmlNode( myRoot );
   // Do not translate "Widgets", currently it is also used as path
@@ -615,10 +615,10 @@ void QgsCustomization::createTreeItemStatus()
 
 QStringList QgsCustomization::mInternalWidgets = QStringList() <<  "qt_tabwidget_stackedwidget" << "qt_tabwidget_tabbar";
 
-QgsCustomization *QgsCustomization::pinstance = 0;
+QgsCustomization *QgsCustomization::pinstance = nullptr;
 QgsCustomization *QgsCustomization::instance()
 {
-  if ( pinstance == 0 )
+  if ( pinstance == nullptr )
   {
     pinstance = new QgsCustomization();
   }
@@ -626,9 +626,9 @@ QgsCustomization *QgsCustomization::instance()
 }
 
 QgsCustomization::QgsCustomization()
-    : pDialog( 0 )
+    : pDialog( nullptr )
     , mEnabled( false )
-    , mSettings( NULL )
+    , mSettings( nullptr )
     , mStatusPath( "/Customization/status" )
 {
   QgsDebugMsg( "Entered" );

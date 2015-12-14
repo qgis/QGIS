@@ -59,7 +59,7 @@ int QgsGmlFeatureClass::fieldIndex( const QString & name )
 // --------------------------- QgsGmlSchema -------------------------------
 QgsGmlSchema::QgsGmlSchema()
     : QObject()
-    , mCurrentFeature( NULL )
+    , mCurrentFeature( nullptr )
     , mFeatureCount( 0 )
     , mLevel( 0 )
     , mSkipLevel( std::numeric_limits<int>::max() )
@@ -77,7 +77,7 @@ QgsGmlSchema::~QgsGmlSchema()
 QString QgsGmlSchema::readAttribute( const QString& attributeName, const XML_Char** attr ) const
 {
   int i = 0;
-  while ( attr[i] != NULL )
+  while ( attr[i] != nullptr )
   {
     if ( attributeName.compare( attr[i] ) == 0 )
     {
@@ -337,7 +337,7 @@ bool QgsGmlSchema::guessSchema( const QByteArray &data )
   QgsDebugMsg( "Entered" );
   mLevel = 0;
   mSkipLevel = std::numeric_limits<int>::max();
-  XML_Parser p = XML_ParserCreateNS( NULL, NS_SEPARATOR );
+  XML_Parser p = XML_ParserCreateNS( nullptr, NS_SEPARATOR );
   XML_SetUserData( p, this );
   XML_SetElementHandler( p, QgsGmlSchema::start, QgsGmlSchema::end );
   XML_SetCharacterDataHandler( p, QgsGmlSchema::chars );

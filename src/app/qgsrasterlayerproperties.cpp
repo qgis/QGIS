@@ -77,11 +77,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     , mDefaultGreenBand( 0 )
     , mDefaultBlueBand( 0 )
     , mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) )
-    , mRendererWidget( 0 )
+    , mRendererWidget( nullptr )
     , mGradientHeight( 0.0 )
     , mGradientWidth( 0.0 )
     , mMapCanvas( theCanvas )
-    , mHistogramWidget( NULL )
+    , mHistogramWidget( nullptr )
 {
   mGrayMinimumMaximumEstimated = true;
   mRGBMinimumMaximumEstimated = true;
@@ -154,7 +154,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   pbnImportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.svg" ) );
   pbnExportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.svg" ) );
 
-  mPixelSelectorTool = 0;
+  mPixelSelectorTool = nullptr;
   if ( mMapCanvas )
   {
     mPixelSelectorTool = new QgsMapToolEmitPoint( theCanvas );
@@ -343,7 +343,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   }
 
   // create histogram widget
-  mHistogramWidget = NULL;
+  mHistogramWidget = nullptr;
   if ( mOptsPage_Histogram->isEnabled() )
   {
     mHistogramWidget = new QgsRasterHistogramWidget( mRasterLayer, mOptsPage_Histogram );
@@ -589,21 +589,21 @@ void QgsRasterLayerProperties::sync()
   // TODO: Wouldn't it be better to just removeWidget() the tabs than delete them? [LS]
   if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::BuildPyramids ) )
   {
-    if ( mOptsPage_Pyramids != NULL )
+    if ( mOptsPage_Pyramids != nullptr )
     {
       delete mOptsPage_Pyramids;
-      mOptsPage_Pyramids = NULL;
+      mOptsPage_Pyramids = nullptr;
     }
   }
 
   if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size ) )
   {
-    if ( mOptsPage_Histogram != NULL )
+    if ( mOptsPage_Histogram != nullptr )
     {
       delete mOptsPage_Histogram;
-      mOptsPage_Histogram = NULL;
+      mOptsPage_Histogram = nullptr;
       delete mHistogramWidget;
-      mHistogramWidget = NULL;
+      mHistogramWidget = nullptr;
     }
   }
 
@@ -890,7 +890,7 @@ void QgsRasterLayerProperties::apply()
   QgsRasterResampleFilter* resampleFilter = mRasterLayer->resampleFilter();
   if ( resampleFilter )
   {
-    QgsRasterResampler *zoomedInResampler = 0;
+    QgsRasterResampler *zoomedInResampler = nullptr;
     QString zoomedInResamplingMethod = mZoomedInResamplingComboBox->currentText();
     if ( zoomedInResamplingMethod == tr( "Bilinear" ) )
     {
@@ -904,7 +904,7 @@ void QgsRasterLayerProperties::apply()
     resampleFilter->setZoomedInResampler( zoomedInResampler );
 
     //raster resampling
-    QgsRasterResampler *zoomedOutResampler = 0;
+    QgsRasterResampler *zoomedOutResampler = nullptr;
     QString zoomedOutResamplingMethod = mZoomedOutResamplingComboBox->currentText();
     if ( zoomedOutResamplingMethod == tr( "Average" ) )
     {
@@ -1155,7 +1155,7 @@ void QgsRasterLayerProperties::setTransparencyCell( int row, int column, double 
   {
     // transparency
     // Who needs transparency as floating point?
-    lineEdit->setValidator( new QIntValidator( 0 ) );
+    lineEdit->setValidator( new QIntValidator( nullptr ) );
     lineEdit->setText( QString::number( static_cast<int>( value ) ) );
   }
   else
@@ -1166,14 +1166,14 @@ void QgsRasterLayerProperties::setTransparencyCell( int row, int column, double 
     {
       case QGis::Float32:
       case QGis::Float64:
-        lineEdit->setValidator( new QDoubleValidator( 0 ) );
+        lineEdit->setValidator( new QDoubleValidator( nullptr ) );
         if ( !qIsNaN( value ) )
         {
           valueString = QgsRasterBlock::printValue( value );
         }
         break;
       default:
-        lineEdit->setValidator( new QIntValidator( 0 ) );
+        lineEdit->setValidator( new QIntValidator( nullptr ) );
         if ( !qIsNaN( value ) )
         {
           valueString = QString::number( static_cast<int>( value ) );
@@ -1373,7 +1373,7 @@ void QgsRasterLayerProperties::setTransparencyToEdited( int row )
 
 void QgsRasterLayerProperties::mOptionsStackedWidget_CurrentChanged( int indx )
 {
-  if ( mHistogramWidget == 0 ) return;
+  if ( mHistogramWidget == nullptr ) return;
 
   if ( indx == 5 )
   {
@@ -1764,7 +1764,7 @@ void QgsRasterLayerProperties::on_mResetColorRenderingBtn_clicked()
 
 bool QgsRasterLayerProperties::rasterIsMultiBandColor()
 {
-  return mRasterLayer && dynamic_cast<QgsMultiBandColorRenderer*>( mRasterLayer->renderer() ) != 0;
+  return mRasterLayer && dynamic_cast<QgsMultiBandColorRenderer*>( mRasterLayer->renderer() ) != nullptr;
 }
 
 

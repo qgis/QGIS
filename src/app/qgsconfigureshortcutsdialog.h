@@ -25,7 +25,7 @@ class APP_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     Q_OBJECT
 
   public:
-    QgsConfigureShortcutsDialog( QWidget* parent = NULL );
+    QgsConfigureShortcutsDialog( QWidget* parent = nullptr );
     ~QgsConfigureShortcutsDialog();
 
     void populateActions();

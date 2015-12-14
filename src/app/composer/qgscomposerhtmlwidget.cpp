@@ -26,7 +26,7 @@
 
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame )
-    : QgsComposerItemBaseWidget( 0, html )
+    : QgsComposerItemBaseWidget( nullptr, html )
     , mHtml( html )
     , mFrame( frame )
 {
@@ -80,11 +80,11 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
 }
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget()
-    : QgsComposerItemBaseWidget( 0, 0 )
-    , mHtml( NULL )
-    , mFrame( NULL )
-    , mHtmlEditor( NULL )
-    , mStylesheetEditor( NULL )
+    : QgsComposerItemBaseWidget( nullptr, nullptr )
+    , mHtml( nullptr )
+    , mFrame( nullptr )
+    , mHtmlEditor( nullptr )
+    , mStylesheetEditor( nullptr )
 {
 }
 

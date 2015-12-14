@@ -35,13 +35,13 @@
 QgsDualView::QgsDualView( QWidget* parent )
     : QStackedWidget( parent )
     , mEditorContext()
-    , mMasterModel( 0 )
-    , mFilterModel( 0 )
-    , mFeatureListModel( 0 )
-    , mAttributeForm( 0 )
-    , mLayerCache( 0 )
-    , mProgressDlg( 0 )
-    , mFeatureSelectionManager( 0 )
+    , mMasterModel( nullptr )
+    , mFilterModel( nullptr )
+    , mFeatureListModel( nullptr )
+    , mAttributeForm( nullptr )
+    , mLayerCache( nullptr )
+    , mProgressDlg( nullptr )
+    , mFeatureSelectionManager( nullptr )
 {
   setupUi( this );
 
@@ -441,7 +441,7 @@ void QgsDualView::progress( int i, bool& cancel )
 void QgsDualView::finished()
 {
   delete mProgressDlg;
-  mProgressDlg = 0;
+  mProgressDlg = nullptr;
 }
 
 /*

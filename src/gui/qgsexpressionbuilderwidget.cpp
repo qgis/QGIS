@@ -37,8 +37,8 @@
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     : QWidget( parent )
     , mAutoSave( true )
-    , mLayer( NULL )
-    , highlighter( NULL )
+    , mLayer( nullptr )
+    , highlighter( nullptr )
     , mExpressionValid( false )
 {
   setupUi( this );
@@ -269,7 +269,7 @@ void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked( const QModelIn
 {
   QModelIndex idx = mProxyModel->mapToSource( index );
   QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>( mModel->itemFromIndex( idx ) );
-  if ( item == 0 )
+  if ( item == nullptr )
     return;
 
   // Don't handle the double click it we are on a header node.

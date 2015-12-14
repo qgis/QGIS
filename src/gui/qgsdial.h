@@ -24,7 +24,7 @@ class GUI_EXPORT QgsDial : public QDial
 {
     Q_OBJECT
   public:
-    QgsDial( QWidget *parent = 0 );
+    QgsDial( QWidget *parent = nullptr );
 
     void setMinimum( const QVariant &min );
     void setMaximum( const QVariant &max );

@@ -55,9 +55,9 @@ static const QString icon_ = ":/icons/spatialquery.png";
 */
 QgsSpatialQueryPlugin::QgsSpatialQueryPlugin( QgisInterface* iface )
     : QgisPlugin( name_, description_, category_, version_, type_ )
-    , mDialog( 0 )
+    , mDialog( nullptr )
     , mIface( iface )
-    , mSpatialQueryAction( 0 )
+    , mSpatialQueryAction( nullptr )
 {
 }
 
@@ -97,9 +97,9 @@ void QgsSpatialQueryPlugin::unload()
   mIface->removePluginVectorMenu( tr( "&Spatial Query" ), mSpatialQueryAction );
 
   delete mSpatialQueryAction;
-  mSpatialQueryAction = 0;
+  mSpatialQueryAction = nullptr;
   delete mDialog;
-  mDialog = NULL;
+  mDialog = nullptr;
 }
 
 void QgsSpatialQueryPlugin::run()
@@ -121,7 +121,7 @@ void QgsSpatialQueryPlugin::run()
     if ( !mDialog->isVisible() )
     {
       delete mDialog;
-      mDialog = NULL;
+      mDialog = nullptr;
       run();
     }
     else
@@ -157,7 +157,7 @@ QIcon QgsSpatialQueryPlugin::getThemeIcon( const QString &theName )
 
 void QgsSpatialQueryPlugin::MsgDEBUG( QString sMSg )
 {
-  QMessageBox::warning( 0, tr( "DEBUG" ), sMSg, QMessageBox::Ok );
+  QMessageBox::warning( nullptr, tr( "DEBUG" ), sMSg, QMessageBox::Ok );
 }
 
 

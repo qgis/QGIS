@@ -24,7 +24,7 @@
 QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache ) :
     mCapabilitiesCache( capCache )
 {
-  mRequestHandler = NULL;
+  mRequestHandler = nullptr;
   mAccessControls = new QgsAccessControl();
 }
 
@@ -44,7 +44,7 @@ QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
 
 void QgsServerInterfaceImpl::clearRequestHandler( )
 {
-  mRequestHandler = NULL;
+  mRequestHandler = nullptr;
 }
 
 void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler * requestHandler )

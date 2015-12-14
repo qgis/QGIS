@@ -375,7 +375,7 @@ QgsGPSData* QgsGPSData::getData( const QString& fileName )
     if ( !file.open( QIODevice::ReadOnly ) )
     {
       QgsLogger::warning( QObject::tr( "Couldn't open the data source: %1" ).arg( fileName ) );
-      return 0;
+      return nullptr;
     }
     QgsGPSData* data = new QgsGPSData;
     QgsDebugMsg( "Loading file " + fileName );
@@ -383,7 +383,7 @@ QgsGPSData* QgsGPSData::getData( const QString& fileName )
     bool failed = false;
 
     // SAX parsing
-    XML_Parser p = XML_ParserCreate( NULL );
+    XML_Parser p = XML_ParserCreate( nullptr );
     XML_SetUserData( p, &handler );
     XML_SetElementHandler( p, QgsGPXHandler::start, QgsGPXHandler::end );
     XML_SetCharacterDataHandler( p, QgsGPXHandler::chars );
@@ -407,7 +407,7 @@ QgsGPSData* QgsGPSData::getData( const QString& fileName )
     delete [] buffer;
     XML_ParserFree( p );
     if ( failed )
-      return 0;
+      return nullptr;
 
     data->setNoDataExtent();
 
@@ -464,7 +464,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
   {
     parseModes.push( ParsingWaypoint );
     mWpt = QgsWaypoint();
-    for ( int i = 0; attr[2*i] != NULL; ++i )
+    for ( int i = 0; attr[2*i] != nullptr; ++i )
     {
       if ( !std::strcmp( attr[2*i], "lat" ) )
         mWpt.lat = QString( attr[2*i+1] ).toDouble();
@@ -614,7 +614,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingRoute )
     {
       mRtept = QgsRoutepoint();
-      for ( int i = 0; attr[2*i] != NULL; ++i )
+      for ( int i = 0; attr[2*i] != nullptr; ++i )
       {
         if ( !std::strcmp( attr[2*i], "lat" ) )
           mRtept.lat = QString( attr[2*i+1] ).toDouble();
@@ -643,7 +643,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingTrackSegment )
     {
       mTrkpt = QgsTrackpoint();
-      for ( int i = 0; attr[2*i] != NULL; ++i )
+      for ( int i = 0; attr[2*i] != nullptr; ++i )
       {
         if ( !std::strcmp( attr[2*i], "lat" ) )
           mTrkpt.lat = QString( attr[2*i+1] ).toDouble();

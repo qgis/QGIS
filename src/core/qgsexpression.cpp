@@ -361,7 +361,7 @@ static QgsExpression::Node* getNode( const QVariant& value, QgsExpression* paren
     return value.value<QgsExpression::Node*>();
 
   parent->setEvalErrorString( "Cannot convert to Node" );
-  return 0;
+  return nullptr;
 }
 
 // this handles also NULL values
@@ -2706,7 +2706,7 @@ QList<QgsExpression::Function*> QgsExpression::specialColumns()
   {
     //check for special column group name
     QString group = gmSpecialColumnGroups.value( it.key(), "Record" );
-    defs << new StaticFunction( it.key(), 0, ( FcnEvalContext )0, group );
+    defs << new StaticFunction( it.key(), 0, ( FcnEvalContext )nullptr, group );
   }
   return defs;
 }
@@ -2783,7 +2783,7 @@ QgsExpression::QgsExpression( const QString& expr )
     : mRowNumber( 0 )
     , mScale( 0 )
     , mExp( expr )
-    , mCalc( 0 )
+    , mCalc( nullptr )
 {
   mRootNode = ::parseExpression( expr, mParserErrorString );
 
@@ -2918,7 +2918,7 @@ QVariant QgsExpression::evaluate()
     return QVariant();
   }
 
-  return mRootNode->eval( this, ( QgsExpressionContext* )0 );
+  return mRootNode->eval( this, ( QgsExpressionContext* )nullptr );
 }
 
 QVariant QgsExpression::evaluate( const QgsExpressionContext *context )

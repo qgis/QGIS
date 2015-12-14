@@ -27,9 +27,9 @@
 QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture* parentTool, QgsMapCanvas* canvas, CaptureMode mode )
     : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
     , mParentTool( parentTool )
-    , mRubberBand( 0 )
+    , mRubberBand( nullptr )
     , mShowCenterPointRubberBand( false )
-    , mCenterPointRubberBand( 0 )
+    , mCenterPointRubberBand( nullptr )
 {
   if ( mCanvas )
   {
@@ -39,10 +39,10 @@ QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture* par
 
 QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapCanvas* canvas )
     : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
-    , mParentTool( 0 )
-    , mRubberBand( 0 )
+    , mParentTool( nullptr )
+    , mRubberBand( nullptr )
     , mShowCenterPointRubberBand( false )
-    , mCenterPointRubberBand( 0 )
+    , mCenterPointRubberBand( nullptr )
 {
   if ( mCanvas )
   {
@@ -115,7 +115,7 @@ void QgsMapToolAddCircularString::deactivate()
   c->setPoints( mPoints );
   mParentTool->addCurve( c );
   mPoints.clear();
-  delete mRubberBand; mRubberBand = 0;
+  delete mRubberBand; mRubberBand = nullptr;
   removeCenterPointRubberBand();
   QgsMapToolCapture::deactivate();
 }
@@ -196,5 +196,5 @@ void QgsMapToolAddCircularString::updateCenterPointRubberBand( const QgsPointV2&
 
 void QgsMapToolAddCircularString::removeCenterPointRubberBand()
 {
-  delete mCenterPointRubberBand; mCenterPointRubberBand = 0;
+  delete mCenterPointRubberBand; mCenterPointRubberBand = nullptr;
 }

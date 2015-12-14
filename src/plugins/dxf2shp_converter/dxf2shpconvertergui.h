@@ -26,7 +26,7 @@ class dxf2shpConverterGui: public QDialog, private Ui::dxf2shpConverterGui
     Q_OBJECT
 
   public:
-    dxf2shpConverterGui( QWidget *parent = 0, Qt::WindowFlags fl = 0 );
+    dxf2shpConverterGui( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
     ~dxf2shpConverterGui();
 
   private:

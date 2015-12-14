@@ -57,7 +57,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * @param parent parent QWidget for the widget
      * @param component color component the widget alters
      */
-    QgsColorWidget( QWidget* parent = 0, const ColorComponent component = Multiple );
+    QgsColorWidget( QWidget* parent = nullptr, const ColorComponent component = Multiple );
 
     virtual ~QgsColorWidget();
 
@@ -201,7 +201,7 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
      * @param menu parent menu
      * @param parent parent widget
      */
-    QgsColorWidgetAction( QgsColorWidget* colorWidget, QMenu* menu = 0, QWidget *parent = 0 );
+    QgsColorWidgetAction( QgsColorWidget* colorWidget, QMenu* menu = nullptr, QWidget *parent = nullptr );
 
     virtual ~QgsColorWidgetAction();
 
@@ -269,7 +269,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
     /** Constructs a new color wheel widget.
      * @param parent parent QWidget for the widget
      */
-    QgsColorWheel( QWidget* parent = 0 );
+    QgsColorWheel( QWidget* parent = nullptr );
 
     virtual ~QgsColorWheel();
 
@@ -362,7 +362,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
      * which vary along the horizontal and vertical axis are automatically assigned
      * based on this constant color component.
      */
-    QgsColorBox( QWidget* parent = 0, const ColorComponent component = Value );
+    QgsColorBox( QWidget* parent = nullptr, const ColorComponent component = Value );
 
     virtual ~QgsColorBox();
 
@@ -455,7 +455,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * @param component color component which varies along the ramp
      * @param orientation orientation for widget
      */
-    QgsColorRampWidget( QWidget* parent = 0,
+    QgsColorRampWidget( QWidget* parent = nullptr,
                         const ColorComponent component = QgsColorWidget::Red,
                         const Orientation orientation = QgsColorRampWidget::Horizontal );
 
@@ -559,7 +559,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
      * @param parent parent QWidget for the widget
      * @param component color component which is controlled by the slider
      */
-    QgsColorSliderWidget( QWidget* parent = 0, const ColorComponent component = QgsColorWidget::Red );
+    QgsColorSliderWidget( QWidget* parent = nullptr, const ColorComponent component = QgsColorWidget::Red );
 
     virtual ~QgsColorSliderWidget();
 
@@ -623,7 +623,7 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
     /** Construct a new color line edit widget.
      * @param parent parent QWidget for the widget
      */
-    QgsColorTextWidget( QWidget* parent = 0 );
+    QgsColorTextWidget( QWidget* parent = nullptr );
 
     virtual ~QgsColorTextWidget();
 
@@ -683,7 +683,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     /** Construct a new color preview widget.
      * @param parent parent QWidget for the widget
      */
-    QgsColorPreviewWidget( QWidget* parent = 0 );
+    QgsColorPreviewWidget( QWidget* parent = nullptr );
 
     virtual ~QgsColorPreviewWidget();
 

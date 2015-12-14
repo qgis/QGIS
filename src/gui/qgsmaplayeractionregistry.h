@@ -129,7 +129,7 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
 
   protected:
     //! protected constructor
-    QgsMapLayerActionRegistry( QObject * parent = 0 );
+    QgsMapLayerActionRegistry( QObject * parent = nullptr );
 
     QList< QgsMapLayerAction* > mMapLayerActionList;
 

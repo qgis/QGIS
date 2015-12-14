@@ -28,7 +28,7 @@
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 
 QgsWFSCapabilities::QgsWFSCapabilities( const QString& theUri )
-    : mCapabilitiesReply( 0 )
+    : mCapabilitiesReply( nullptr )
     , mErrorCode( QgsWFSCapabilities::NoError )
 {
   mUri.setEncodedUri( theUri );
@@ -189,7 +189,7 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
 {
   QNetworkReply *reply = mCapabilitiesReply;
   reply->deleteLater();
-  mCapabilitiesReply = 0;
+  mCapabilitiesReply = nullptr;
 
   // handle network errors
   if ( reply->error() != QNetworkReply::NoError )

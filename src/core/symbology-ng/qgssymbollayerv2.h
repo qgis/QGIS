@@ -103,7 +103,7 @@ class CORE_EXPORT QgsSymbolLayerV2
 
     virtual void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) = 0;
 
-    virtual QgsSymbolV2* subSymbol() { return 0; }
+    virtual QgsSymbolV2* subSymbol() { return nullptr; }
     //! set layer's subsymbol. takes ownership of the passed symbol
     virtual bool setSubSymbol( QgsSymbolV2* symbol ) { delete symbol; return false; }
 
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsSymbolLayerV2
      * @note added in QGIS 2.9
      * @deprecated use variant which takes QgsSymbolV2RenderContext instead
      */
-    Q_DECL_DEPRECATED virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsFeature* feature, const QVariant& defaultVal = QVariant(), bool *ok = 0 ) const;
+    Q_DECL_DEPRECATED virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsFeature* feature, const QVariant& defaultVal = QVariant(), bool *ok = nullptr ) const;
 
     /** Evaluates the matching data defined property and returns the calculated
      * value. Prior to evaluation the data defined property must be prepared
@@ -235,7 +235,7 @@ class CORE_EXPORT QgsSymbolLayerV2
      * @see getDataDefinedProperty
      * @note added in QGIS 2.12
      */
-    virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsSymbolV2RenderContext& context, const QVariant& defaultVal = QVariant(), bool *ok = 0 ) const;
+    virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsSymbolV2RenderContext& context, const QVariant& defaultVal = QVariant(), bool *ok = nullptr ) const;
 
     virtual bool writeDxf( QgsDxfExport& e,
                            double mmMapUnitScaleFactor,

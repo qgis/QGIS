@@ -36,7 +36,7 @@ class QgsAuthPkcs12Edit : public QgsAuthMethodEdit, private Ui::QgsAuthPkcs12Edi
       Unknown
     };
 
-    explicit QgsAuthPkcs12Edit( QWidget *parent = 0 );
+    explicit QgsAuthPkcs12Edit( QWidget *parent = nullptr );
     virtual ~QgsAuthPkcs12Edit();
 
     bool validateConfig() override;

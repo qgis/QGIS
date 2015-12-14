@@ -35,7 +35,7 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
   public:
 
     //! Constructor
-    QgsDecorationCopyright( QObject* parent = NULL );
+    QgsDecorationCopyright( QObject* parent = nullptr );
     //! Destructor
     virtual ~QgsDecorationCopyright();
 

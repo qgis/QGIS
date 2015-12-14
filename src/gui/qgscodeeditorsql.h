@@ -29,7 +29,7 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
     Q_OBJECT
 
   public:
-    QgsCodeEditorSQL( QWidget *parent = 0 );
+    QgsCodeEditorSQL( QWidget *parent = nullptr );
     ~QgsCodeEditorSQL();
 
   private:

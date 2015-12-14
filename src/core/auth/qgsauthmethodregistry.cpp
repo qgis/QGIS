@@ -185,7 +185,7 @@ static QgsAuthMethodMetadata * findMetadata_( QgsAuthMethodRegistry::AuthMethods
     return i->second;
   }
 
-  return 0x0;
+  return nullptr;
 } // findMetadata_
 
 
@@ -289,14 +289,14 @@ QgsAuthMethod *QgsAuthMethodRegistry::authMethod( const QString &authMethodKey )
   if ( !myLib.load() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Failed to load %1: %2" ).arg( lib, myLib.errorString() ) );
-    return 0;
+    return nullptr;
   }
 
   classFactoryFunction_t *classFactory = ( classFactoryFunction_t * ) cast_to_fptr( myLib.resolve( "classFactory" ) );
   if ( !classFactory )
   {
     QgsDebugMsg( QString( "Failed to load %1: no classFactory method" ).arg( lib ) );
-    return 0;
+    return nullptr;
   }
 
   QgsAuthMethod *authMethod = classFactory();
@@ -304,7 +304,7 @@ QgsAuthMethod *QgsAuthMethodRegistry::authMethod( const QString &authMethodKey )
   {
     QgsMessageLog::logMessage( QObject::tr( "Unable to instantiate the auth method plugin %1" ).arg( lib ) );
     myLib.unload();
-    return 0;
+    return nullptr;
   }
 
   QgsDebugMsg( QString( "Instantiated the auth method plugin: %1" ).arg( authMethod->key() ) );
@@ -319,7 +319,7 @@ QWidget *QgsAuthMethodRegistry::editWidget( const QString &authMethodKey, QWidge
     ( editFactoryFunction_t * ) cast_to_fptr( function( authMethodKey, "editWidget" ) );
 
   if ( !editFactory )
-    return 0;
+    return nullptr;
 
   return editFactory( parent );
 }
@@ -357,7 +357,7 @@ void *QgsAuthMethodRegistry::function( QString const & authMethodKey,
   else
   {
     QgsDebugMsg( "Cannot load library: " + myLib.errorString() );
-    return 0;
+    return nullptr;
   }
 }
 #endif
@@ -375,7 +375,7 @@ QLibrary *QgsAuthMethodRegistry::authMethodLibrary( const QString &authMethodKey
 
   delete myLib;
 
-  return 0;
+  return nullptr;
 }
 
 QStringList QgsAuthMethodRegistry::authMethodList() const

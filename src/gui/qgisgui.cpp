@@ -38,11 +38,11 @@ namespace QgisGui
     QgsDebugMsg( "Opening file dialog with filters: " + filters );
     if ( !cancelAll )
     {
-      selectedFiles = QFileDialog::getOpenFileNames( 0, title, lastUsedDir, filters, &lastUsedFilter );
+      selectedFiles = QFileDialog::getOpenFileNames( nullptr, title, lastUsedDir, filters, &lastUsedFilter );
     }
     else //we have to use non-native dialog to add cancel all button
     {
-      QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( 0, title, lastUsedDir, filters, QString() );
+      QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( nullptr, title, lastUsedDir, filters, QString() );
 
       // allow for selection of more than one file
       openFileDialog->setFileMode( QFileDialog::ExistingFiles );
@@ -197,7 +197,7 @@ namespace QgisGui
     // Native Mac dialog works only for Qt Carbon
     return QFontDialog::getFont( &ok, initial, 0, title, QFontDialog::DontUseNativeDialog );
 #else
-    return QFontDialog::getFont( &ok, initial, 0, title );
+    return QFontDialog::getFont( &ok, initial, nullptr, title );
 #endif
   }
 

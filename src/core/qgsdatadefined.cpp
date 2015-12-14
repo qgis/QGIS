@@ -56,7 +56,7 @@ QgsDataDefined* QgsDataDefined::fromMap( const QgsStringMap &map, const QString 
   if ( !map.contains( QString( "%1expression" ).arg( prefix ) ) )
   {
     //requires at least the expression value
-    return 0;
+    return nullptr;
   }
 
   bool active = ( map.value( QString( "%1active" ).arg( prefix ), "1" ) != QLatin1String( "0" ) );

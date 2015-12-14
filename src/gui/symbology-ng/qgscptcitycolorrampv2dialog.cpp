@@ -36,7 +36,7 @@
 
 QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2* ramp, QWidget* parent )
     : QDialog( parent )
-    , mRamp( 0 )
+    , mRamp( nullptr )
     , mArchiveViewType( QgsCptCityBrowserModel::Selections )
 {
   setupUi( this );
@@ -48,8 +48,8 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
   mSplitter->setSizes( QList<int>() << 250 << 550 );
   mSplitter->restoreState( settings.value( "/Windows/CptCityColorRampV2Dialog/splitter" ).toByteArray() );
 
-  mModel = mAuthorsModel = mSelectionsModel = 0; //mListModel = 0;
-  mTreeFilter = 0;
+  mModel = mAuthorsModel = mSelectionsModel = nullptr; //mListModel = 0;
+  mTreeFilter = nullptr;
 
   QgsCptCityArchive::initDefaultArchive();
   mArchive = QgsCptCityArchive::defaultArchive();
@@ -59,7 +59,7 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
   {
     // QgsDialog dlg( this );
     // dlg.setWindowTitle( tr( "cpt-city gradient files not found" ) );
-    QTextEdit *edit = new QTextEdit( 0 );
+    QTextEdit *edit = new QTextEdit( nullptr );
     edit->setReadOnly( true );
     // not sure if we want this long string to be translated
     QString helpText = tr( "Error - cpt-city gradient files not found.\n\n"
@@ -357,7 +357,7 @@ void QgsCptCityColorRampV2Dialog::on_pbtnLicenseDetails_pressed()
   descFile = mArchive->descFileName( path );
 
   // prepare dialog
-  QgsDialog dlg( this, 0, QDialogButtonBox::Close );
+  QgsDialog dlg( this, nullptr, QDialogButtonBox::Close );
   QVBoxLayout *layout = dlg.layout();
   dlg.setWindowTitle( title );
   QTextEdit *textEdit = new QTextEdit( &dlg );

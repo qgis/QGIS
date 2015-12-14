@@ -68,7 +68,7 @@ class CORE_EXPORT QgsLegendModel : public QStandardItemModel
       @param parentItem parent item
       @returns a pointer to the added group
       */
-    QStandardItem *addGroup( QString text = QString::null, int position = -1, QStandardItem* parentItem = 0 );
+    QStandardItem *addGroup( QString text = QString::null, int position = -1, QStandardItem* parentItem = nullptr );
 
     /** Tries to automatically update a model entry (e.g. a whole layer or only a single item)*/
     void updateItem( QStandardItem* item );
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsLegendModel : public QStandardItemModel
 
   public slots:
     void removeLayer( const QString& layerId );
-    void addLayer( QgsMapLayer* theMapLayer, double scaleDenominator = -1, const QString& rule = "", QStandardItem* parentItem = 0 );
+    void addLayer( QgsMapLayer* theMapLayer, double scaleDenominator = -1, const QString& rule = "", QStandardItem* parentItem = nullptr );
 
   private slots:
     void updateLayer();

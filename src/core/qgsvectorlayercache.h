@@ -79,7 +79,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     };
 
   public:
-    QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, QObject* parent = NULL );
+    QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, QObject* parent = nullptr );
     ~QgsVectorLayerCache();
 
     /**

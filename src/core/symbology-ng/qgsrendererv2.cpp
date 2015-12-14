@@ -216,7 +216,7 @@ QgsFeatureRendererV2::QgsFeatureRendererV2( const QString& type )
     , mUsingSymbolLevels( false )
     , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
     , mCurrentVertexMarkerSize( 3 )
-    , mPaintEffect( 0 )
+    , mPaintEffect( nullptr )
     , mForceRaster( false )
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
@@ -269,7 +269,7 @@ void QgsFeatureRendererV2::startRender( QgsRenderContext& context, const QgsVect
 bool QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
   QgsSymbolV2* symbol = symbolForFeature( feature, context );
-  if ( symbol == NULL )
+  if ( symbol == nullptr )
     return false;
 
   renderFeatureWithSymbol( feature, symbol, context, layer, selected, drawVertexMarker );
@@ -308,14 +308,14 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
   // <renderer-v2 type=""> ... </renderer-v2>
 
   if ( element.isNull() )
-    return NULL;
+    return nullptr;
 
   // load renderer
   QString rendererType = element.attribute( "type" );
 
   QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererType );
-  if ( m == NULL )
-    return NULL;
+  if ( m == nullptr )
+    return nullptr;
 
   QgsFeatureRendererV2* r = m->createRenderer( element );
   if ( r )
@@ -349,7 +349,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis:
 {
   QDomElement element = node.toElement();
   if ( element.isNull() )
-    return NULL;
+    return nullptr;
 
   // get the UserStyle element
   QDomElement userStyleElem = element.firstChildElement( "UserStyle" );
@@ -357,7 +357,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis:
   {
     // UserStyle element not found, nothing will be rendered
     errorMessage = "Info: UserStyle element not found.";
-    return NULL;
+    return nullptr;
   }
 
   // get the FeatureTypeStyle element
@@ -365,7 +365,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis:
   if ( featTypeStyleElem.isNull() )
   {
     errorMessage = "Info: FeatureTypeStyle element not found.";
-    return NULL;
+    return nullptr;
   }
 
   // use the RuleRenderer when more rules are present or the rule
@@ -424,10 +424,10 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis:
 
   // create the renderer and return it
   QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererType );
-  if ( m == NULL )
+  if ( m == nullptr )
   {
     errorMessage = QString( "Error: Unable to get metadata for '%1' renderer." ).arg( rendererType );
-    return NULL;
+    return nullptr;
   }
 
   QgsFeatureRendererV2* r = m->createRendererFromSld( featTypeStyleElem, geomType );
@@ -512,13 +512,13 @@ void QgsFeatureRendererV2::setVertexMarkerAppearance( int type, int size )
 bool QgsFeatureRendererV2::willRenderFeature( QgsFeature &feat )
 {
   Q_NOWARN_DEPRECATED_PUSH
-  return symbolForFeature( feat ) != NULL;
+  return symbolForFeature( feat ) != nullptr;
   Q_NOWARN_DEPRECATED_POP
 }
 
 bool QgsFeatureRendererV2::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )
 {
-  return symbolForFeature( feat, context ) != NULL;
+  return symbolForFeature( feat, context ) != nullptr;
 }
 
 void QgsFeatureRendererV2::renderVertexMarker( const QPointF &pt, QgsRenderContext& context )

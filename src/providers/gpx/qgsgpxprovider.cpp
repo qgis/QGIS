@@ -69,7 +69,7 @@ const QString GPX_DESCRIPTION = QObject::tr( "GPS eXchange format provider" );
 
 QgsGPXProvider::QgsGPXProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
-    , data( 0 )
+    , data( nullptr )
     , mFeatureType( WaypointType )
     , mValid( false ) // assume that it won't work
 {
@@ -102,7 +102,7 @@ QgsGPXProvider::QgsGPXProvider( const QString& uri )
 
   // parse the file
   data = QgsGPSData::getData( mFileName );
-  if ( data == 0 )
+  if ( data == nullptr )
   {
     return;
   }
@@ -218,12 +218,12 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   const unsigned char* geo = f.constGeometry()->asWkb();
   QGis::WkbType wkbType = f.constGeometry()->wkbType();
   bool success = false;
-  QgsGPSObject* obj = NULL;
+  QgsGPSObject* obj = nullptr;
   QgsAttributes attrs = f.attributes();
   QgsAttributeMap::const_iterator it;
 
   // is it a waypoint?
-  if ( mFeatureType == WaypointType && geo != NULL && wkbType == QGis::WKBPoint )
+  if ( mFeatureType == WaypointType && geo != nullptr && wkbType == QGis::WKBPoint )
   {
 
     // add geometry
@@ -253,7 +253,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   }
 
   // is it a route?
-  if ( mFeatureType == RouteType && geo != NULL && wkbType == QGis::WKBLineString )
+  if ( mFeatureType == RouteType && geo != nullptr && wkbType == QGis::WKBLineString )
   {
 
     QgsRoute rte;
@@ -300,7 +300,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   }
 
   // is it a track?
-  if ( mFeatureType == TrackType && geo != NULL && wkbType == QGis::WKBLineString )
+  if ( mFeatureType == TrackType && geo != nullptr && wkbType == QGis::WKBLineString )
   {
 
     QgsTrack trk;
@@ -463,7 +463,7 @@ void QgsGPXProvider::changeAttributeValues( QgsGPSObject& obj, const QgsAttribut
     }
 
     // waypoint-specific attributes
-    if ( wpt != NULL )
+    if ( wpt != nullptr )
     {
       if ( indexToAttr[i] == SymAttr )
         wpt->sym = v.toString();
@@ -477,7 +477,7 @@ void QgsGPXProvider::changeAttributeValues( QgsGPSObject& obj, const QgsAttribut
     }
 
     // route- and track-specific attributes
-    if ( ext != NULL )
+    if ( ext != nullptr )
     {
       if ( indexToAttr[i] == NumAttr )
       {

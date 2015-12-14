@@ -51,9 +51,9 @@ static const QString sPluginIcon = ":/topology/mActionTopologyChecker.svg";
 Topol::Topol( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
-    , mQActionPointer( 0 )
+    , mQActionPointer( nullptr )
 {
-  mDock = 0;
+  mDock = nullptr;
 }
 
 Topol::~Topol()

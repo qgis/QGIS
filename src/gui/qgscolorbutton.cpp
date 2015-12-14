@@ -70,7 +70,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString& cdt, const QColo
     , mColor( Qt::black )
     , mColorDialogOptions( cdo )
     , mAcceptLiveUpdates( true )
-    , mTempPNG( NULL )
+    , mTempPNG( nullptr )
     , mColorSet( false )
     , mPickingColor( false )
 {
@@ -126,7 +126,7 @@ void QgsColorButton::onButtonClicked()
     }
     else
     {
-      QgsColorDialogV2 dialog( this, 0, color() );
+      QgsColorDialogV2 dialog( this, nullptr, color() );
       dialog.setTitle( mColorDialogTitle );
       dialog.setAllowAlpha( mColorDialogOptions & QColorDialog::ShowAlphaChannel );
 
@@ -338,16 +338,16 @@ void QgsColorButton::showContextMenu( QMouseEvent *event )
 {
   QMenu colorContextMenu;
 
-  QAction* copyColorAction = new QAction( tr( "Copy color" ), 0 );
+  QAction* copyColorAction = new QAction( tr( "Copy color" ), nullptr );
   colorContextMenu.addAction( copyColorAction );
-  QAction* pasteColorAction = new QAction( tr( "Paste color" ), 0 );
+  QAction* pasteColorAction = new QAction( tr( "Paste color" ), nullptr );
   pasteColorAction->setEnabled( false );
   colorContextMenu.addAction( pasteColorAction );
 #ifndef Q_OS_MAC
   //disabled for OSX, as it is impossible to grab the mouse under OSX
   //see note for QWidget::grabMouse() re OSX Cocoa
   //http://qt-project.org/doc/qt-4.8/qwidget.html#grabMouse
-  QAction* pickColorAction = new QAction( tr( "Pick color" ), 0 );
+  QAction* pickColorAction = new QAction( tr( "Pick color" ), nullptr );
   colorContextMenu.addSeparator();
   colorContextMenu.addAction( pickColorAction );
 #endif

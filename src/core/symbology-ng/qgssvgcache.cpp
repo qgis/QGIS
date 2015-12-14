@@ -44,10 +44,10 @@ QgsSvgCacheEntry::QgsSvgCacheEntry()
     , rasterScaleFactor( 1.0 )
     , fill( Qt::black )
     , outline( Qt::black )
-    , image( 0 )
-    , picture( 0 )
-    , nextEntry( 0 )
-    , previousEntry( 0 )
+    , image( nullptr )
+    , picture( nullptr )
+    , nextEntry( nullptr )
+    , previousEntry( nullptr )
 {
 }
 
@@ -60,10 +60,10 @@ QgsSvgCacheEntry::QgsSvgCacheEntry( const QString& f, double s, double ow, doubl
     , rasterScaleFactor( rsf )
     , fill( fi )
     , outline( ou )
-    , image( 0 )
-    , picture( 0 )
-    , nextEntry( 0 )
-    , previousEntry( 0 )
+    , image( nullptr )
+    , picture( nullptr )
+    , nextEntry( nullptr )
+    , previousEntry( nullptr )
 {
 }
 
@@ -103,8 +103,8 @@ QgsSvgCache* QgsSvgCache::instance()
 QgsSvgCache::QgsSvgCache( QObject *parent )
     : QObject( parent )
     , mTotalSize( 0 )
-    , mLeastRecentEntry( 0 )
-    , mMostRecentEntry( 0 )
+    , mLeastRecentEntry( nullptr )
+    , mMostRecentEntry( nullptr )
 {
   mMissingSvg = QString( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toAscii();
 }
@@ -145,7 +145,7 @@ const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const Q
     {
       fitsInCache = false;
       delete currentEntry->image;
-      currentEntry->image = 0;
+      currentEntry->image = nullptr;
       //currentEntry->image = new QImage( 0, 0 );
 
       // instead cache picture
@@ -218,13 +218,13 @@ QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, cons
   {
     mLeastRecentEntry = entry;
     mMostRecentEntry = entry;
-    entry->previousEntry = 0;
-    entry->nextEntry = 0;
+    entry->previousEntry = nullptr;
+    entry->nextEntry = nullptr;
   }
   else
   {
     entry->previousEntry = mMostRecentEntry;
-    entry->nextEntry = 0;
+    entry->nextEntry = nullptr;
     mMostRecentEntry->nextEntry = entry;
     mMostRecentEntry = entry;
   }
@@ -428,7 +428,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
   }
 
   // the url points to a remote resource, download it!
-  QNetworkReply *reply = 0;
+  QNetworkReply *reply = nullptr;
 
   // The following code blocks until the file is downloaded...
   // TODO: use signals to get reply finished notification, in this moment
@@ -506,7 +506,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
   }
 
   delete entry->image;
-  entry->image = 0;
+  entry->image = nullptr;
 
   QSvgRenderer r( entry->svgContent );
   double hwRatio = 1.0;
@@ -556,7 +556,7 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
   }
 
   delete entry->picture;
-  entry->picture = 0;
+  entry->picture = nullptr;
 
   //correct QPictures dpi correction
   QPicture* picture = new QPicture();
@@ -584,7 +584,7 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, con
     double widthScaleFactor, double rasterScaleFactor )
 {
   //search entries in mEntryLookup
-  QgsSvgCacheEntry* currentEntry = 0;
+  QgsSvgCacheEntry* currentEntry = nullptr;
   QList<QgsSvgCacheEntry*> entries = mEntryLookup.values( file );
 
   QList<QgsSvgCacheEntry*>::iterator entryIt = entries.begin();
@@ -617,7 +617,7 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, con
     {
       mMostRecentEntry->nextEntry = currentEntry;
       currentEntry->previousEntry = mMostRecentEntry;
-      currentEntry->nextEntry = 0;
+      currentEntry->nextEntry = nullptr;
       mMostRecentEntry = currentEntry;
     }
   }

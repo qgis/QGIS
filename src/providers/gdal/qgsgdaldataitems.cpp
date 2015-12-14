@@ -84,7 +84,7 @@ QVector<QgsDataItem*> QgsGdalLayerItem::createChildren()
   // get children from sublayers
   if ( !sublayers.isEmpty() )
   {
-    QgsDataItem * childItem = NULL;
+    QgsDataItem * childItem = nullptr;
     QgsDebugMsg( QString( "got %1 sublayers" ).arg( sublayers.count() ) );
     for ( int i = 0; i < sublayers.count(); i++ )
     {
@@ -139,7 +139,7 @@ QGISEXTERN int dataCapabilities()
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
   if ( thePath.isEmpty() )
-    return 0;
+    return nullptr;
 
   QgsDebugMsgLevel( "thePath = " + thePath, 2 );
 
@@ -182,7 +182,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   // allow only normal files or VSIFILE items to continue
   if ( !info.isFile() && vsiPrefix == "" )
-    return 0;
+    return nullptr;
 
   // get supported extensions
   if ( extensions.isEmpty() )
@@ -203,13 +203,13 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // unless that extension is in the list (*.xml might be though)
   if ( thePath.endsWith( ".aux.xml", Qt::CaseInsensitive ) &&
        !extensions.contains( "aux.xml" ) )
-    return 0;
+    return nullptr;
   if ( thePath.endsWith( ".shp.xml", Qt::CaseInsensitive ) &&
        !extensions.contains( "shp.xml" ) )
-    return 0;
+    return nullptr;
   if ( thePath.endsWith( ".tif.xml", Qt::CaseInsensitive ) &&
        !extensions.contains( "tif.xml" ) )
-    return 0;
+    return nullptr;
 
   // Filter files by extension
   if ( !extensions.contains( suffix ) )
@@ -225,7 +225,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       }
     }
     if ( !matches )
-      return 0;
+      return nullptr;
   }
 
   // fix vsifile path and name
@@ -257,11 +257,11 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       // do not print errors, but write to debug
       CPLPushErrorHandler( CPLQuietErrorHandler );
       CPLErrorReset();
-      if ( ! GDALIdentifyDriver( TO8F( thePath ), 0 ) )
+      if ( ! GDALIdentifyDriver( TO8F( thePath ), nullptr ) )
       {
         QgsDebugMsgLevel( "Skipping VRT file because root is not a GDAL VRT", 2 );
         CPLPopErrorHandler();
-        return 0;
+        return nullptr;
       }
       CPLPopErrorHandler();
     }
@@ -284,7 +284,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( ! hDS )
   {
     QgsDebugMsg( QString( "GDALOpen error # %1 : %2 " ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
-    return 0;
+    return nullptr;
   }
 
   QStringList sublayers = QgsGdalProvider::subLayers( hDS );

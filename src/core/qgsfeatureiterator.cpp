@@ -23,7 +23,7 @@ QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest&
     , mClosed( false )
     , refs( 0 )
     , mFetchedCount( 0 )
-    , mGeometrySimplifier( NULL )
+    , mGeometrySimplifier( nullptr )
     , mLocalSimplification( false )
 {
 }
@@ -31,7 +31,7 @@ QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest&
 QgsAbstractFeatureIterator::~QgsAbstractFeatureIterator()
 {
   delete mGeometrySimplifier;
-  mGeometrySimplifier = NULL;
+  mGeometrySimplifier = nullptr;
 }
 
 bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
@@ -117,13 +117,13 @@ bool QgsAbstractFeatureIterator::prepareSimplification( const QgsSimplifyMethod&
   mLocalSimplification = false;
 
   delete mGeometrySimplifier;
-  mGeometrySimplifier = NULL;
+  mGeometrySimplifier = nullptr;
 
   // setup the simplification of geometries to fetch
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && ( simplifyMethod.forceLocalOptimization() || !providerCanSimplify( simplifyMethod.methodType() ) ) )
   {
     mGeometrySimplifier = QgsSimplifyMethod::createGeometrySimplifier( simplifyMethod );
-    mLocalSimplification = mGeometrySimplifier != NULL;
+    mLocalSimplification = mGeometrySimplifier != nullptr;
     return mLocalSimplification;
   }
   return false;

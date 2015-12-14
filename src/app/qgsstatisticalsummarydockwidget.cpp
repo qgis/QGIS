@@ -58,7 +58,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 
 QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *parent )
     : QDockWidget( parent )
-    , mLayer( 0 )
+    , mLayer( nullptr )
 {
   setupUi( this );
 
@@ -126,7 +126,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
   }
 
   QList< QgsStatisticalSummary::Statistic > statsToDisplay;
-  QgsStatisticalSummary::Statistics statsToCalc = 0;
+  QgsStatisticalSummary::Statistics statsToCalc = nullptr;
   Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
   {
     if ( mStatsActions.value( stat )->isChecked() )
@@ -235,7 +235,7 @@ void QgsStatisticalSummaryDockWidget::layersRemoved( const QStringList& layers )
   if ( mLayer && layers.contains( mLayer->id() ) )
   {
     disconnect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
-    mLayer = 0;
+    mLayer = nullptr;
   }
 }
 

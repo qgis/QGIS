@@ -16,7 +16,7 @@ class APP_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-    QgsRuleBasedLabelingModel( QgsRuleBasedLabeling::Rule* rootRule, QObject* parent = 0 );
+    QgsRuleBasedLabelingModel( QgsRuleBasedLabeling::Rule* rootRule, QObject* parent = nullptr );
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
@@ -63,7 +63,7 @@ class QgsRuleBasedLabelingWidget : public QWidget, private Ui::QgsRuleBasedLabel
 {
     Q_OBJECT
   public:
-    QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent = 0 );
+    QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent = nullptr );
     ~QgsRuleBasedLabelingWidget();
 
     //! save config to layer
@@ -106,7 +106,7 @@ class APP_EXPORT QgsLabelingRulePropsDialog : public QDialog, private Ui::QgsLab
     Q_OBJECT
 
   public:
-    QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Rule* rule, QgsVectorLayer* layer, QWidget* parent = 0, QgsMapCanvas* mapCanvas = 0 );
+    QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Rule* rule, QgsVectorLayer* layer, QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
     ~QgsLabelingRulePropsDialog();
 
     QgsRuleBasedLabeling::Rule* rule() { return mRule; }

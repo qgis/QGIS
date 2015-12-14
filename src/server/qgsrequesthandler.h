@@ -52,7 +52,7 @@ class QgsRequestHandler
 
     QgsRequestHandler( )
         : mHeadersSent( false )
-        , mException( 0 )
+        , mException( nullptr )
     {}
     virtual ~QgsRequestHandler( ) {}
     /** Parses the input and creates a request neutral Parameter/Value map*/

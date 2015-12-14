@@ -24,7 +24,7 @@
 #include "qgssymbollayerv2utils.h"
 #include <QColorDialog>
 
-QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape ): QgsComposerItemBaseWidget( 0, composerShape ), mComposerShape( composerShape )
+QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape ): QgsComposerItemBaseWidget( nullptr, composerShape ), mComposerShape( composerShape )
 {
   setupUi( this );
 

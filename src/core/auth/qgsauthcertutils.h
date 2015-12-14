@@ -113,7 +113,7 @@ class CORE_EXPORT QgsAuthCertUtils
      */
     static QSslKey keyFromFile( const QString &keypath,
                                 const QString &keypass = QString(),
-                                QString *algtype = 0 );
+                                QString *algtype = nullptr );
 
     /** Return list of concatenated certs from a PEM Base64 text block */
     static QList<QSslCertificate> certsFromString( const QString &pemtext );

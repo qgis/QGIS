@@ -59,7 +59,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 );
+  << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( widget->mapCanvas() )
   {
@@ -154,7 +154,7 @@ QString QgsSymbolLayerV2Widget::dataDefinedPropertyLabel( const QString &entryNa
 QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
 {
-  mLayer = NULL;
+  mLayer = nullptr;
 
   setupUi( this );
   mPenWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
@@ -399,7 +399,7 @@ void QgsSimpleLineSymbolLayerV2Widget::updatePatternIcon()
 QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
 {
-  mLayer = NULL;
+  mLayer = nullptr;
 
   setupUi( this );
   mSizeUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
@@ -666,7 +666,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::updateAssistantSymbol()
 QgsSimpleFillSymbolLayerV2Widget::QgsSimpleFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
 {
-  mLayer = NULL;
+  mLayer = nullptr;
 
   setupUi( this );
   mBorderWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
@@ -815,7 +815,7 @@ void QgsSimpleFillSymbolLayerV2Widget::on_mOffsetUnitWidget_changed()
 QgsGradientFillSymbolLayerV2Widget::QgsGradientFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
 {
-  mLayer = NULL;
+  mLayer = nullptr;
 
   setupUi( this );
   mOffsetUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
@@ -1028,7 +1028,7 @@ void QgsGradientFillSymbolLayerV2Widget::colorModeChanged()
 void QgsGradientFillSymbolLayerV2Widget::applyColorRamp()
 {
   QgsVectorColorRampV2* ramp = cboGradientColorRamp->currentColorRamp();
-  if ( ramp == NULL )
+  if ( ramp == nullptr )
     return;
 
   mLayer->setColorRamp( ramp );
@@ -1146,7 +1146,7 @@ void QgsGradientFillSymbolLayerV2Widget::on_mOffsetUnitWidget_changed()
 QgsShapeburstFillSymbolLayerV2Widget::QgsShapeburstFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
 {
-  mLayer = NULL;
+  mLayer = nullptr;
 
   setupUi( this );
   mDistanceUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
@@ -1356,7 +1356,7 @@ void QgsShapeburstFillSymbolLayerV2Widget::on_mRadioUseWholeShape_toggled( bool 
 void QgsShapeburstFillSymbolLayerV2Widget::applyColorRamp()
 {
   QgsVectorColorRampV2* ramp = cboGradientColorRamp->currentColorRamp();
-  if ( ramp == NULL )
+  if ( ramp == nullptr )
     return;
 
   mLayer->setColorRamp( ramp );
@@ -1395,7 +1395,7 @@ void QgsShapeburstFillSymbolLayerV2Widget::on_mIgnoreRingsCheckBox_stateChanged(
 QgsMarkerLineSymbolLayerV2Widget::QgsMarkerLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
 {
-  mLayer = NULL;
+  mLayer = nullptr;
 
   setupUi( this );
   mIntervalUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
@@ -1559,7 +1559,7 @@ void QgsMarkerLineSymbolLayerV2Widget::on_mOffsetAlongLineUnitWidget_changed()
 QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
 {
-  mLayer = NULL;
+  mLayer = nullptr;
 
   setupUi( this );
   mSizeUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
@@ -1814,7 +1814,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::setOffset()
 void QgsSvgMarkerSymbolLayerV2Widget::on_mFileToolButton_clicked()
 {
   QSettings s;
-  QString file = QFileDialog::getOpenFileName( 0,
+  QString file = QFileDialog::getOpenFileName( nullptr,
                  tr( "Select SVG file" ),
                  s.value( "/UI/lastSVGMarkerDir", QDir::homePath() ).toString(),
                  tr( "SVG files" ) + " (*.svg)" );
@@ -1942,7 +1942,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mVerticalAnchorComboBox_currentIndexCha
 
 QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerV2Widget( parent, vl )
 {
-  mLayer = 0;
+  mLayer = nullptr;
   setupUi( this );
   mTextureWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
   mSvgOutlineWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
@@ -2016,7 +2016,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayerWidget::symbolLayer()
 
 void QgsSVGFillSymbolLayerWidget::on_mBrowseToolButton_clicked()
 {
-  QString filePath = QFileDialog::getOpenFileName( 0, tr( "Select SVG texture file" ), QDir::homePath(), tr( "SVG file" ) + " (*.svg);;" + tr( "All files" ) + " (*.*)" );
+  QString filePath = QFileDialog::getOpenFileName( nullptr, tr( "Select SVG texture file" ), QDir::homePath(), tr( "SVG file" ) + " (*.svg);;" + tr( "All files" ) + " (*.*)" );
   if ( !filePath.isNull() )
   {
     mSVGLineEdit->setText( filePath );
@@ -2220,7 +2220,7 @@ void QgsSVGFillSymbolLayerWidget::on_mSvgOutlineWidthUnitWidget_changed()
 /////////////
 
 QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ):
-    QgsSymbolLayerV2Widget( parent, vl ), mLayer( 0 )
+    QgsSymbolLayerV2Widget( parent, vl ), mLayer( nullptr )
 {
   setupUi( this );
   mDistanceUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
@@ -2319,7 +2319,7 @@ void QgsLinePatternFillSymbolLayerWidget::on_mOffsetUnitWidget_changed()
 /////////////
 
 QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ):
-    QgsSymbolLayerV2Widget( parent, vl ), mLayer( 0 )
+    QgsSymbolLayerV2Widget( parent, vl ), mLayer( nullptr )
 {
   setupUi( this );
   mHorizontalDistanceUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
@@ -2459,7 +2459,7 @@ void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDisplacementUnitWidget_ch
 QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
 {
-  mLayer = NULL;
+  mLayer = nullptr;
 
   setupUi( this );
   mSizeUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
@@ -2659,7 +2659,7 @@ void QgsFontMarkerSymbolLayerV2Widget::updateAssistantSymbol()
 QgsCentroidFillSymbolLayerV2Widget::QgsCentroidFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
 {
-  mLayer = NULL;
+  mLayer = nullptr;
 
   setupUi( this );
 }
@@ -2694,7 +2694,7 @@ void QgsCentroidFillSymbolLayerV2Widget::on_mDrawInsideCheckBox_stateChanged( in
 QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
     : QgsSymbolLayerV2Widget( parent, vl )
 {
-  mLayer = 0;
+  mLayer = nullptr;
   setupUi( this );
 
   mWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::Pixel << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
@@ -2800,14 +2800,14 @@ void QgsRasterFillSymbolLayerWidget::on_mBrowseToolButton_clicked()
   }
 
   //show file dialog
-  QString filePath = QFileDialog::getOpenFileName( 0, tr( "Select image file" ), openDir );
+  QString filePath = QFileDialog::getOpenFileName( nullptr, tr( "Select image file" ), openDir );
   if ( !filePath.isNull() )
   {
     //check if file exists
     QFileInfo fileInfo( filePath );
     if ( !fileInfo.exists() || !fileInfo.isReadable() )
     {
-      QMessageBox::critical( 0, "Invalid file", "Error, file does not exist or is not readable" );
+      QMessageBox::critical( nullptr, "Invalid file", "Error, file does not exist or is not readable" );
       return;
     }
 

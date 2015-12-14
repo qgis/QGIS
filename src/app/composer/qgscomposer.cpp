@@ -107,10 +107,10 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
     : QMainWindow()
     , mTitle( title )
     , mQgis( qgis )
-    , mPrinter( 0 )
+    , mPrinter( nullptr )
     , mSetPageOrientation( false )
-    , mUndoView( 0 )
-    , mAtlasFeatureAction( 0 )
+    , mUndoView( nullptr )
+    , mAtlasFeatureAction( nullptr )
 {
   setupUi( this );
   setWindowTitle( mTitle );
@@ -455,7 +455,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mStatusZoomCombo = new QComboBox( mStatusBar );
   mStatusZoomCombo->setEditable( true );
   mStatusZoomCombo->setInsertPolicy( QComboBox::NoInsert );
-  mStatusZoomCombo->setCompleter( 0 );
+  mStatusZoomCombo->setCompleter( nullptr );
   mStatusZoomCombo->setMinimumWidth( 100 );
   //zoom combo box accepts decimals in the range 1-9999, with an optional decimal point and "%" sign
   QRegExp zoomRx( "\\s*\\d{1,4}(\\.\\d?)?\\s*%?" );
@@ -494,7 +494,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mStatusBar->addWidget( mStatusAtlasLabel );
 
   //create composer view and layout with rulers
-  mView = 0;
+  mView = nullptr;
   mViewLayout = new QGridLayout();
   mViewLayout->setSpacing( 0 );
   mViewLayout->setMargin( 0 );
@@ -951,7 +951,7 @@ void QgsComposer::showItemOptions( QgsComposerItem* item )
 
   if ( !item )
   {
-    mItemDock->setWidget( 0 );
+    mItemDock->setWidget( nullptr );
     return;
   }
 
@@ -1052,7 +1052,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
   if ( checked && !atlasMap->enabled() )
   {
     //no atlas current enabled
-    QMessageBox::warning( 0, tr( "Enable atlas preview" ),
+    QMessageBox::warning( nullptr, tr( "Enable atlas preview" ),
                           tr( "Atlas in not currently enabled for this composition!" ),
                           QMessageBox::Ok,
                           QMessageBox::Ok );
@@ -1079,7 +1079,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
   if ( !previewEnabled )
   {
     //something went wrong, eg, no matching features
-    QMessageBox::warning( 0, tr( "Enable atlas preview" ),
+    QMessageBox::warning( nullptr, tr( "Enable atlas preview" ),
                           tr( "No matching atlas features found!" ),
                           QMessageBox::Ok,
                           QMessageBox::Ok );
@@ -1643,7 +1643,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
   {
     if ( atlasMap->filenamePattern().isEmpty() )
     {
-      int res = QMessageBox::warning( 0, tr( "Empty filename pattern" ),
+      int res = QMessageBox::warning( nullptr, tr( "Empty filename pattern" ),
                                       tr( "The filename pattern is empty. A default one will be used." ),
                                       QMessageBox::Ok | QMessageBox::Cancel,
                                       QMessageBox::Ok );
@@ -1667,7 +1667,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     // test directory (if it exists and is writable)
     if ( !QDir( outputDir ).exists() || !QFileInfo( outputDir ).isWritable() )
     {
-      QMessageBox::warning( 0, tr( "Unable to write into the directory" ),
+      QMessageBox::warning( nullptr, tr( "Unable to write into the directory" ),
                             tr( "The given output directory is not writable. Cancelling." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
@@ -1845,7 +1845,7 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
   //set printer page orientation
   setPrinterPageOrientation();
 
-  QPrintDialog printDialog( printer(), 0 );
+  QPrintDialog printDialog( printer(), nullptr );
   if ( printDialog.exec() != QDialog::Accepted )
   {
     return;
@@ -1965,7 +1965,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
   if ( memuse > 200 )   // about 4500x4500
   {
-    int answer = QMessageBox::warning( 0, tr( "Big image" ),
+    int answer = QMessageBox::warning( nullptr, tr( "Big image" ),
                                        tr( "To create image %1x%2 requires about %3 MB of memory. Proceed?" )
                                        .arg( width ).arg( height ).arg( memuse ),
                                        QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok );
@@ -2070,7 +2070,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
       if ( image.isNull() )
       {
-        QMessageBox::warning( 0, tr( "Memory Allocation Error" ),
+        QMessageBox::warning( nullptr, tr( "Memory Allocation Error" ),
                               tr( "Trying to create image #%1( %2x%3 @ %4dpi ) "
                                   "may result in a memory overflow.\n"
                                   "Please try a lower resolution or a smaller papersize" )
@@ -2129,7 +2129,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     // else, it has an atlas to render, so a directory must first be selected
     if ( atlasMap->filenamePattern().isEmpty() )
     {
-      int res = QMessageBox::warning( 0, tr( "Empty filename pattern" ),
+      int res = QMessageBox::warning( nullptr, tr( "Empty filename pattern" ),
                                       tr( "The filename pattern is empty. A default one will be used." ),
                                       QMessageBox::Ok | QMessageBox::Cancel,
                                       QMessageBox::Ok );
@@ -2194,7 +2194,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     // test directory (if it exists and is writable)
     if ( !QDir( dir ).exists() || !QFileInfo( dir ).isWritable() )
     {
-      QMessageBox::warning( 0, tr( "Unable to write into the directory" ),
+      QMessageBox::warning( nullptr, tr( "Unable to write into the directory" ),
                             tr( "The given output directory is not writable. Cancelling." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
@@ -2486,7 +2486,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     // If we have an Atlas
     if ( atlasMap->filenamePattern().isEmpty() )
     {
-      int res = QMessageBox::warning( 0, tr( "Empty filename pattern" ),
+      int res = QMessageBox::warning( nullptr, tr( "Empty filename pattern" ),
                                       tr( "The filename pattern is empty. A default one will be used." ),
                                       QMessageBox::Ok | QMessageBox::Cancel,
                                       QMessageBox::Ok );
@@ -2513,7 +2513,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     // test directory (if it exists and is writable)
     if ( !QDir( outputDir ).exists() || !QFileInfo( outputDir ).isWritable() )
     {
-      QMessageBox::warning( 0, tr( "Unable to write into the directory" ),
+      QMessageBox::warning( nullptr, tr( "Unable to write into the directory" ),
                             tr( "The given output directory is not writable. Cancelling." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
@@ -2787,7 +2787,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
             QString errorMsg;
             int errorLine;
             if ( ! doc.setContent( &svgBuffer, false, &errorMsg, &errorLine ) )
-              QMessageBox::warning( 0, tr( "SVG error" ), tr( "There was an error in SVG output for SVG layer " ) + layerName + tr( " on page " ) + QString::number( i + 1 ) + '(' + errorMsg + ')' );
+              QMessageBox::warning( nullptr, tr( "SVG error" ), tr( "There was an error in SVG output for SVG layer " ) + layerName + tr( " on page " ) + QString::number( i + 1 ) + '(' + errorMsg + ')' );
             if ( 1 == svgLayerId )
             {
               svg = QDomDocument( doc.doctype() );
@@ -2977,7 +2977,7 @@ void QgsComposer::on_mActionDuplicateComposer_triggered()
 
   dlg->close();
   delete dlg;
-  dlg = 0;
+  dlg = nullptr;
 
   if ( !newComposer )
   {
@@ -3031,7 +3031,7 @@ void QgsComposer::on_mActionSaveAsTemplate_triggered()
 
   if ( templateFile.write( saveDocument.toByteArray() ) == -1 )
   {
-    QMessageBox::warning( 0, tr( "Save error" ), tr( "Error, could not save file" ) );
+    QMessageBox::warning( nullptr, tr( "Save error" ), tr( "Error, could not save file" ) );
   }
 }
 
@@ -3044,7 +3044,7 @@ void QgsComposer::loadTemplate( const bool newComposer )
 {
   QSettings settings;
   QString openFileDir = settings.value( "UI/lastComposerTemplateDir", QDir::homePath() ).toString();
-  QString openFileString = QFileDialog::getOpenFileName( 0, tr( "Load template" ), openFileDir, "*.qpt" );
+  QString openFileString = QFileDialog::getOpenFileName( nullptr, tr( "Load template" ), openFileDir, "*.qpt" );
 
   if ( openFileString.isEmpty() )
   {
@@ -3061,8 +3061,8 @@ void QgsComposer::loadTemplate( const bool newComposer )
     return;
   }
 
-  QgsComposer* c = 0;
-  QgsComposition* comp = 0;
+  QgsComposer* c = nullptr;
+  QgsComposition* comp = nullptr;
 
   if ( newComposer )
   {
@@ -3096,12 +3096,12 @@ void QgsComposer::loadTemplate( const bool newComposer )
       dlg->show();
 
       c->setUpdatesEnabled( false );
-      comp->loadFromTemplate( templateDoc, 0, false, newComposer );
+      comp->loadFromTemplate( templateDoc, nullptr, false, newComposer );
       c->setUpdatesEnabled( true );
 
       dlg->close();
       delete dlg;
-      dlg = 0;
+      dlg = nullptr;
     }
   }
 }
@@ -3538,7 +3538,7 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   if ( mComposition->generateWorldFile() )
   {
     QDomElement compositionElem = compositionNodeList.at( 0 ).toElement();
-    QgsComposerMap* worldFileMap = 0;
+    QgsComposerMap* worldFileMap = nullptr;
     QList<const QgsComposerMap*> maps = mComposition->composerMapItems();
     for ( QList<const QgsComposerMap*>::const_iterator it = maps.begin(); it != maps.end(); ++it )
     {
@@ -3776,8 +3776,8 @@ void QgsComposer::setSelectionTool()
 bool QgsComposer::containsWMSLayer() const
 {
   QMap<QgsComposerItem*, QWidget*>::const_iterator item_it = mItemWidgetMap.constBegin();
-  QgsComposerItem* currentItem = 0;
-  QgsComposerMap* currentMap = 0;
+  QgsComposerItem* currentItem = nullptr;
+  QgsComposerMap* currentMap = nullptr;
 
   for ( ; item_it != mItemWidgetMap.constEnd(); ++item_it )
   {
@@ -3798,8 +3798,8 @@ bool QgsComposer::containsAdvancedEffects() const
 {
   // Check if composer contains any blend modes or flattened layers for transparency
   QMap<QgsComposerItem*, QWidget*>::const_iterator item_it = mItemWidgetMap.constBegin();
-  QgsComposerItem* currentItem = 0;
-  QgsComposerMap* currentMap = 0;
+  QgsComposerItem* currentItem = nullptr;
+  QgsComposerMap* currentMap = nullptr;
 
   for ( ; item_it != mItemWidgetMap.constEnd(); ++item_it )
   {
@@ -4085,7 +4085,7 @@ void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )
   if ( mAtlasFeatureAction )
   {
     delete mAtlasFeatureAction;
-    mAtlasFeatureAction = 0;
+    mAtlasFeatureAction = nullptr;
   }
 
   if ( coverageLayer )
@@ -4129,7 +4129,7 @@ void QgsComposer::updateAtlasMapLayerAction( bool atlasEnabled )
   if ( mAtlasFeatureAction )
   {
     delete mAtlasFeatureAction;
-    mAtlasFeatureAction = 0;
+    mAtlasFeatureAction = nullptr;
   }
 
   if ( atlasEnabled )

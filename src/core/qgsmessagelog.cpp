@@ -21,7 +21,7 @@
 
 class QgsMessageLogConsole;
 
-QgsMessageLog *QgsMessageLog::sInstance = 0;
+QgsMessageLog *QgsMessageLog::sInstance = nullptr;
 
 QgsMessageLog::QgsMessageLog()
     : QObject()

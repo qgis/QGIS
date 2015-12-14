@@ -31,9 +31,9 @@ QgsSelectedFeature::QgsSelectedFeature( QgsFeatureId featureId,
                                         QgsVectorLayer *vlayer,
                                         QgsMapCanvas *canvas )
     : mFeatureId( featureId )
-    , mGeometry( 0 )
+    , mGeometry( nullptr )
     , mChangingGeometry( false )
-    , mValidator( 0 )
+    , mValidator( nullptr )
 {
   QgsDebugCall;
   setSelectedFeature( featureId, vlayer, canvas );
@@ -55,7 +55,7 @@ QgsSelectedFeature::~QgsSelectedFeature()
     mValidator->stop();
     mValidator->wait();
     mValidator->deleteLater();
-    mValidator = 0;
+    mValidator = nullptr;
   }
 
   delete mGeometry;
@@ -93,7 +93,7 @@ void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLa
   mCanvas = canvas;
 
   delete mGeometry;
-  mGeometry = 0;
+  mGeometry = nullptr;
 
   // signal changing of current layer
   connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
@@ -177,7 +177,7 @@ void QgsSelectedFeature::validateGeometry( QgsGeometry *g )
     mValidator->stop();
     mValidator->wait();
     mValidator->deleteLater();
-    mValidator = 0;
+    mValidator = nullptr;
   }
 
   mGeomErrors.clear();
@@ -319,7 +319,7 @@ void QgsSelectedFeature::moveSelectedVertexes( const QgsVector &v )
   QMultiMap<double, QgsSnappingResult> currentResultList;
   for ( int i = mVertexMap.size() - 1; i > -1 && nUpdates > 0; i-- )
   {
-    QgsVertexEntry *entry = mVertexMap.value( i, 0 );
+    QgsVertexEntry *entry = mVertexMap.value( i, nullptr );
     if ( !entry || !entry->isSelected() )
       continue;
 
@@ -400,7 +400,7 @@ void QgsSelectedFeature::createVertexMap()
   if ( !mGeometry )
   {
     QgsDebugMsg( "Loading feature" );
-    updateGeometry( 0 );
+    updateGeometry( nullptr );
   }
 
   if ( !mGeometry )

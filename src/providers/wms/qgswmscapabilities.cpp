@@ -593,7 +593,7 @@ void QgsWmsCapabilities::parseCapability( QDomElement const & e, QgsWmsCapabilit
       QgsWmsDcpTypeProperty dcp;
       dcp.http.get.onlineResource.xlinkHref = href;
 
-      QgsWmsOperationType *ot = 0;
+      QgsWmsOperationType *ot = nullptr;
       if ( href.isNull() )
       {
         QgsDebugMsg( QString( "http get missing from ows:Operation '%1'" ).arg( name ) );
@@ -1748,7 +1748,7 @@ void QgsWmsCapabilities::parseTheme( const QDomElement &e, QgsWmtsTheme &t )
   }
   else
   {
-    t.subTheme = 0;
+    t.subTheme = nullptr;
   }
 
   t.layerRefs.clear();
@@ -1867,7 +1867,7 @@ int QgsWmsCapabilities::identifyCapabilities() const
 
 QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( bool forceRefresh, QObject *parent )
     : QObject( parent )
-    , mCapabilitiesReply( 0 )
+    , mCapabilitiesReply( nullptr )
     , mIsAborted( false )
     , mForceRefresh( forceRefresh )
 {
@@ -1878,7 +1878,7 @@ QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString& baseUrl, 
     : QObject( parent )
     , mBaseUrl( baseUrl )
     , mAuth( auth )
-    , mCapabilitiesReply( 0 )
+    , mCapabilitiesReply( nullptr )
     , mIsAborted( false )
     , mForceRefresh( forceRefresh )
 {
@@ -1978,7 +1978,7 @@ void QgsWmsCapabilitiesDownload::abort()
   if ( mCapabilitiesReply )
   {
     emit deleteReply( mCapabilitiesReply );
-    mCapabilitiesReply = 0;
+    mCapabilitiesReply = nullptr;
   }
 }
 
@@ -2025,7 +2025,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
           mCapabilitiesReply->deleteLater();
-          mCapabilitiesReply = 0;
+          mCapabilitiesReply = nullptr;
 
           QgsDebugMsg( QString( "redirected getcapabilities: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ) );
           //mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
@@ -2090,7 +2090,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
   if ( mCapabilitiesReply )
   {
     mCapabilitiesReply->deleteLater();
-    mCapabilitiesReply = 0;
+    mCapabilitiesReply = nullptr;
   }
 
   emit downloadFinished();

@@ -44,7 +44,7 @@ class QgsComposerColumnAlignmentDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsComposerColumnAlignmentDelegate( QObject *parent = 0 );
+    explicit QgsComposerColumnAlignmentDelegate( QObject *parent = nullptr );
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
@@ -61,7 +61,7 @@ class QgsComposerColumnSourceDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject *parent = 0, const QgsComposerObject* composerObject = 0 );
+    QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject *parent = nullptr, const QgsComposerObject* composerObject = nullptr );
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
@@ -81,7 +81,7 @@ class QgsComposerColumnWidthDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsComposerColumnWidthDelegate( QObject *parent = 0 );
+    explicit QgsComposerColumnWidthDelegate( QObject *parent = nullptr );
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
@@ -98,7 +98,7 @@ class QgsComposerColumnSortOrderDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsComposerColumnSortOrderDelegate( QObject *parent = 0 );
+    explicit QgsComposerColumnSortOrderDelegate( QObject *parent = nullptr );
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
@@ -114,10 +114,10 @@ class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelec
 {
     Q_OBJECT
   public:
-    QgsAttributeSelectionDialog( QgsComposerAttributeTableV2* table, QgsVectorLayer* vLayer, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsAttributeSelectionDialog( QgsComposerAttributeTableV2* table, QgsVectorLayer* vLayer, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
 
     //todo - remove for QGIS 3.0
-    QgsAttributeSelectionDialog( QgsComposerAttributeTable* table, QgsVectorLayer* vLayer, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsAttributeSelectionDialog( QgsComposerAttributeTable* table, QgsVectorLayer* vLayer, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
 
 
     ~QgsAttributeSelectionDialog();

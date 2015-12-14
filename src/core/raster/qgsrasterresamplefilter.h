@@ -31,7 +31,7 @@ class QDomElement;
 class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 {
   public:
-    QgsRasterResampleFilter( QgsRasterInterface *input = 0 );
+    QgsRasterResampleFilter( QgsRasterInterface *input = nullptr );
     ~QgsRasterResampleFilter();
 
     QgsRasterResampleFilter * clone() const override;

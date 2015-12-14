@@ -66,24 +66,24 @@ namespace pal
       , all_nblp( 0 )
       , nbft( 0 )
       , displayAll( false )
-      , labelPositionCost( NULL )
-      , nbOlap( NULL )
-      , featStartId( NULL )
-      , featNbLp( NULL )
-      , inactiveCost( NULL )
-      , sol( NULL )
+      , labelPositionCost( nullptr )
+      , nbOlap( nullptr )
+      , featStartId( nullptr )
+      , featNbLp( nullptr )
+      , inactiveCost( nullptr )
+      , sol( nullptr )
       , nbActive( 0 )
       , nbOverlap( 0.0 )
-      , pal( NULL )
+      , pal( nullptr )
   {
     bbox[0] = 0;
     bbox[1] = 0;
     bbox[2] = 0;
     bbox[3] = 0;
-    featWrap = NULL;
+    featWrap = nullptr;
     candidates = new RTree<LabelPosition*, double, 2, double>();
     candidates_sol = new RTree<LabelPosition*, double, 2, double>();
-    candidates_subsol = NULL;
+    candidates_subsol = nullptr;
   }
 
   Problem::~Problem()
@@ -265,7 +265,7 @@ namespace pal
 
 
     FalpContext *context = new FalpContext();
-    context->candidates = NULL;
+    context->candidates = nullptr;
     context->list = list;
     double amin[2];
     double amax[2];
@@ -387,7 +387,7 @@ namespace pal
     {
       int nbOverlap;
       int start_p;
-      LabelPosition* retainedLabel = NULL;
+      LabelPosition* retainedLabel = nullptr;
       int p;
 
       for ( i = 0; i < nbft; i++ ) // forearch hidden feature
@@ -451,7 +451,7 @@ namespace pal
     clock_t search_time;
 #endif
 
-    SubPart *current = NULL;
+    SubPart *current = nullptr;
 
 #if _VERBOSE_
     int subPartTotalSize = 0;
@@ -513,7 +513,7 @@ namespace pal
 
       if ( i == seed && ok[seed] )
       {
-        current = NULL; // everything is OK :-)
+        current = nullptr; // everything is OK :-)
         break;
       }
       else
@@ -1311,7 +1311,7 @@ namespace pal
       std::cout << "    Conflictual..." << std::endl;
 #endif
       int feat, rfeat;
-      bool sub = ctx->featWrap != NULL;
+      bool sub = ctx->featWrap != nullptr;
 
       feat = lp->getProblemFeatureId();
       if ( sub )
@@ -1382,7 +1382,7 @@ namespace pal
 
     int next_seed;
     int retainedLabel;
-    Chain *retainedChain = NULL;
+    Chain *retainedChain = nullptr;
 
     int max_degree = pal->ejChainDeg;
 
@@ -1403,7 +1403,7 @@ namespace pal
     context.borderSize = borderSize;
     context.tmpsol = tmpsol;
     context.inactiveCost = inactiveCost;
-    context.feat = NULL;
+    context.feat = nullptr;
     context.currentChain = currentChain;
     context.conflicts = conflicts;
     context.delta_tmp = &delta_tmp;
@@ -1678,7 +1678,7 @@ namespace pal
 
     int next_seed;
     int retainedLabel;
-    Chain *retainedChain = NULL;
+    Chain *retainedChain = nullptr;
 
     int max_degree = pal->ejChainDeg;
 
@@ -1695,11 +1695,11 @@ namespace pal
     double amax[2];
 
     ChainContext context;
-    context.featWrap = NULL;
+    context.featWrap = nullptr;
     context.borderSize = 0;
     context.tmpsol = tmpsol;
     context.inactiveCost = inactiveCost;
-    context.feat = NULL;
+    context.feat = nullptr;
     context.currentChain = currentChain;
     context.conflicts = conflicts;
     context.delta_tmp = &delta_tmp;
@@ -1985,7 +1985,7 @@ namespace pal
 
     int *tabu_list = new int[subSize];
 
-    Chain *current_chain = NULL;
+    Chain *current_chain = nullptr;
 
     //int itC;
 
@@ -2134,8 +2134,8 @@ namespace pal
 
     int *tabu_list = new int[subSize];
 
-    Chain *retainedChain = NULL;
-    Chain *current_chain = NULL;
+    Chain *retainedChain = nullptr;
+    Chain *current_chain = nullptr;
 
     int itC;
 
@@ -2199,7 +2199,7 @@ namespace pal
 #endif
     while ( it < stop_it )
     {
-      retainedChain = NULL;
+      retainedChain = nullptr;
 
 #ifdef _DEBUG_FULL_
       std::cout << std::endl << std::endl << candidateListSize << std::endl;
@@ -2481,11 +2481,11 @@ namespace pal
     NokContext context;
 
     context.ok = ok;
-    context.wrap = NULL;
+    context.wrap = nullptr;
 
     Chain *retainedChain;
 
-    featWrap = NULL;
+    featWrap = nullptr;
 
     for ( i = 0; i < nbft; i++ )
     {

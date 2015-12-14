@@ -420,7 +420,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
 
   QDomElement graphicElem = element.firstChildElement( "Graphic" );
   if ( graphicElem.isNull() )
-    return NULL;
+    return nullptr;
 
   QString name = "circle";
   QColor fillColor, borderColor;
@@ -441,7 +441,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
   }
 
   if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderStyle, borderWidth, size ) )
-    return NULL;
+    return nullptr;
 
   double angle = 0.0;
   QString angleFunc;

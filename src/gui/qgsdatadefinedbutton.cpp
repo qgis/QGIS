@@ -42,8 +42,8 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
     const DataTypes& datatypes,
     const QString& description )
     : QToolButton( parent )
-    , mExpressionContextCallback( 0 )
-    , mExpressionContextCallbackContext( 0 )
+    , mExpressionContextCallback( nullptr )
+    , mExpressionContextCallbackContext( nullptr )
 {
   // set up static icons
   if ( mIconDataDefine.isNull() )
@@ -86,7 +86,7 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
   mActionDescription = new QAction( tr( "Description..." ), this );
 
   mActionExpDialog = new QAction( tr( "Edit..." ), this );
-  mActionExpression = 0;
+  mActionExpression = nullptr;
   mActionPasteExpr = new QAction( tr( "Paste" ), this );
   mActionCopyExpr = new QAction( tr( "Copy" ), this );
   mActionClearExpr = new QAction( tr( "Clear" ), this );

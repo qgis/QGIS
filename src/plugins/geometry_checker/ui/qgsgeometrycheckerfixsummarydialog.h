@@ -41,7 +41,7 @@ class QgsGeometryCheckerFixSummaryDialog : public QDialog
       }
     };
 
-    QgsGeometryCheckerFixSummaryDialog( QgisInterface *iface, QgsVectorLayer *layer, const Statistics& stats, const QStringList& messages, QWidget* parent = 0 );
+    QgsGeometryCheckerFixSummaryDialog( QgisInterface *iface, QgsVectorLayer *layer, const Statistics& stats, const QStringList& messages, QWidget* parent = nullptr );
 
   signals:
     void errorSelected( QgsGeometryCheckError* error );

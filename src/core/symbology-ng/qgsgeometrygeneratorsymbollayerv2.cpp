@@ -51,10 +51,10 @@ QgsSymbolLayerV2* QgsGeometryGeneratorSymbolLayerV2::create( const QgsStringMap&
 QgsGeometryGeneratorSymbolLayerV2::QgsGeometryGeneratorSymbolLayerV2( const QString& expression )
     : QgsSymbolLayerV2( QgsSymbolV2::Hybrid )
     , mExpression( new QgsExpression( expression ) )
-    , mFillSymbol( 0 )
-    , mLineSymbol( 0 )
-    , mMarkerSymbol( 0 )
-    , mSymbol( 0 )
+    , mFillSymbol( nullptr )
+    , mLineSymbol( nullptr )
+    , mMarkerSymbol( nullptr )
+    , mSymbol( nullptr )
 {
 
 }

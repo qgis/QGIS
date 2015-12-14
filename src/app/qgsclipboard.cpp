@@ -255,7 +255,7 @@ void QgsClipboard::setData( const QString& mimeType, const QByteArray& data, con
 
 void QgsClipboard::setData( const QString& mimeType, const QByteArray& data )
 {
-  setData( mimeType, data, 0 );
+  setData( mimeType, data, nullptr );
 }
 
 bool QgsClipboard::hasFormat( const QString& mimeType )

@@ -36,7 +36,7 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
      *
      * @param parent The parent QWidget
      */
-    QgsLegendFilterButton( QWidget* parent = 0 );
+    QgsLegendFilterButton( QWidget* parent = nullptr );
     ~QgsLegendFilterButton();
 
     /**

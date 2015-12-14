@@ -161,7 +161,7 @@ void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
 
 void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 {
-  QString fileName = QFileDialog::getOpenFileName( 0, tr( "Select a file" ), QDir::homePath() );
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Select a file" ), QDir::homePath() );
   if ( fileName.isNull() )
     return;
 
@@ -169,7 +169,7 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 
   if ( !f.open( QIODevice::ReadOnly ) )
   {
-    QMessageBox::information( NULL,
+    QMessageBox::information( nullptr,
                               tr( "Error" ),
                               tr( "Could not open file %1\nError was:%2" ).arg( fileName, f.errorString() ),
                               QMessageBox::Cancel );

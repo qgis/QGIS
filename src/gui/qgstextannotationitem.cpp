@@ -33,7 +33,7 @@ QTextDocument* QgsTextAnnotationItem::document() const
 {
   if ( !mDocument )
   {
-    return 0;
+    return nullptr;
   }
 
   return mDocument->clone();

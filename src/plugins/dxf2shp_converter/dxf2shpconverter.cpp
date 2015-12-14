@@ -54,7 +54,7 @@ static const QString sPluginIcon = ":/dxf2shp_converter.png";
 dxf2shpConverter::dxf2shpConverter( QgisInterface *theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
-    , mQActionPointer( 0 )
+    , mQActionPointer( nullptr )
 {}
 
 dxf2shpConverter::~dxf2shpConverter()
@@ -119,7 +119,7 @@ void dxf2shpConverter::unload()
   mQGisIface->removePluginVectorMenu( tr( "&Dxf2Shp" ), mQActionPointer );
   mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
-  mQActionPointer = 0;
+  mQActionPointer = nullptr;
 }
 
 void dxf2shpConverter::addMyLayer( const QString& myfname, const QString& mytitle )

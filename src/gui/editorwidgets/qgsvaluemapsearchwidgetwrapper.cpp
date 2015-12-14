@@ -24,7 +24,7 @@
 
 QgsValueMapSearchWidgetWrapper::QgsValueMapSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsSearchWidgetWrapper( vl, fieldIdx, parent ),
-    mComboBox( NULL )
+    mComboBox( nullptr )
 {
 }
 

@@ -288,7 +288,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
     while ( tokens.size() < mSource->mFieldCount )
       tokens.append( QString::null );
 
-    QgsGeometry *geom = 0;
+    QgsGeometry *geom = nullptr;
 
     // Load the geometry if required
 
@@ -368,12 +368,12 @@ bool QgsDelimitedTextFeatureIterator::setNextFeatureId( qint64 fid )
 
 QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList& tokens, bool &isNull )
 {
-  QgsGeometry* geom = 0;
+  QgsGeometry* geom = nullptr;
   QString sWkt = tokens[mSource->mWktFieldIndex];
   if ( sWkt.isEmpty() )
   {
     isNull = true;
-    return 0;
+    return nullptr;
   }
 
   isNull = false;
@@ -382,12 +382,12 @@ QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList
   if ( geom && geom->type() != mSource->mGeometryType )
   {
     delete geom;
-    geom = 0;
+    geom = nullptr;
   }
   if ( geom && ! wantGeometry( geom ) )
   {
     delete geom;
-    geom = 0;
+    geom = nullptr;
   }
   return geom;
 }
@@ -399,7 +399,7 @@ QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList&
   if ( sX.isEmpty() && sY.isEmpty() )
   {
     isNull = true;
-    return 0;
+    return nullptr;
   }
   isNull = false;
   QgsPoint pt;
@@ -409,7 +409,7 @@ QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList&
   {
     return QgsGeometry::fromPoint( pt );
   }
-  return 0;
+  return nullptr;
 }
 
 
@@ -470,13 +470,13 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int f
 
 QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p )
     : mGeomRep( p->mGeomRep )
-    , mSubsetExpression( p->mSubsetExpression ? new QgsExpression( p->mSubsetExpression->expression() ) : 0 )
+    , mSubsetExpression( p->mSubsetExpression ? new QgsExpression( p->mSubsetExpression->expression() ) : nullptr )
     , mExtent( p->mExtent )
     , mUseSpatialIndex( p->mUseSpatialIndex )
-    , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : 0 )
+    , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : nullptr )
     , mUseSubsetIndex( p->mUseSubsetIndex )
     , mSubsetIndex( p->mSubsetIndex )
-    , mFile( 0 )
+    , mFile( nullptr )
     , mFields( p->attributeFields )
     , mFieldCount( p->mFieldCount )
     , mXFieldIndex( p->mXFieldIndex )

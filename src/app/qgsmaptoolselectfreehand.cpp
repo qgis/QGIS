@@ -27,7 +27,7 @@ QgsMapToolSelectFreehand::QgsMapToolSelectFreehand( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
     , mDragging( false )
 {
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
   mFillColor = QColor( 254, 178, 76, 63 );
   mBorderColour = QColor( 254, 58, 29, 100 );
@@ -44,7 +44,7 @@ void QgsMapToolSelectFreehand::canvasPressEvent( QgsMapMouseEvent* e )
   {
     return;
   }
-  if ( mRubberBand == NULL )
+  if ( mRubberBand == nullptr )
   {
     mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
     mRubberBand->setFillColor( mFillColor );
@@ -57,7 +57,7 @@ void QgsMapToolSelectFreehand::canvasPressEvent( QgsMapMouseEvent* e )
 
 void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent* e )
 {
-  if ( !mDragging || mRubberBand == NULL )
+  if ( !mDragging || mRubberBand == nullptr )
   {
     return;
   }
@@ -67,7 +67,7 @@ void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent* e )
 
 void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
-  if ( mRubberBand == NULL )
+  if ( mRubberBand == nullptr )
   {
     return;
   }
@@ -79,6 +79,6 @@ void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent* e )
   }
   mRubberBand->reset( QGis::Polygon );
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mDragging = false;
 }

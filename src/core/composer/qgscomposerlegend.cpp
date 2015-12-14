@@ -36,8 +36,8 @@
 
 QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     : QgsComposerItem( composition )
-    , mCustomLayerTree( 0 )
-    , mComposerMap( 0 )
+    , mCustomLayerTree( nullptr )
+    , mComposerMap( nullptr )
     , mLegendFilterByMap( false )
     , mFilterOutAtlas( false )
     , mFilterAskedForUpdate( false )
@@ -58,10 +58,10 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
 }
 
 QgsComposerLegend::QgsComposerLegend()
-    : QgsComposerItem( 0 )
-    , mLegendModel2( 0 )
-    , mCustomLayerTree( 0 )
-    , mComposerMap( 0 )
+    : QgsComposerItem( nullptr )
+    , mLegendModel2( nullptr )
+    , mCustomLayerTree( nullptr )
+    , mComposerMap( nullptr )
     , mLegendFilterByMap( false )
     , mLegendFilterByExpression( false )
     , mFilterOutAtlas( false )
@@ -196,7 +196,7 @@ void QgsComposerLegend::setAutoUpdateModel( bool autoUpdate )
   if ( autoUpdate == autoUpdateModel() )
     return;
 
-  setCustomLayerTree( autoUpdate ? 0 : QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() ) );
+  setCustomLayerTree( autoUpdate ? nullptr : QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() ) );
   adjustBoxSize();
   updateItem();
 }
@@ -592,7 +592,7 @@ void QgsComposerLegend::setComposerMap( const QgsComposerMap* map )
 
 void QgsComposerLegend::invalidateCurrentMap()
 {
-  setComposerMap( 0 );
+  setComposerMap( nullptr );
 }
 
 void QgsComposerLegend::mapLayerStyleOverridesChanged()
@@ -659,7 +659,7 @@ void QgsComposerLegend::doUpdateFilterByMap()
     mLegendModel2->setLegendFilter( &ms, /* useExtent */ mInAtlas || mLegendFilterByMap, filterPolygon, /* useExpressions */ true );
   }
   else
-    mLegendModel2->setLegendFilterByMap( 0 );
+    mLegendModel2->setLegendFilterByMap( nullptr );
 }
 
 void QgsComposerLegend::setLegendFilterOutAtlas( bool doFilter )

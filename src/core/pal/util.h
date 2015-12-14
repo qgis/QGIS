@@ -52,8 +52,8 @@ namespace pal
   {
     public:
       Feats()
-          : feature( 0 )
-          , shape( 0 )
+          : feature( nullptr )
+          , shape( nullptr )
           , priority( 0 )
       {}
 

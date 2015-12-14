@@ -36,7 +36,7 @@ class GUI_EXPORT QgsDetailedItemDelegate :
 {
     Q_OBJECT
   public:
-    QgsDetailedItemDelegate( QObject * parent = 0 );
+    QgsDetailedItemDelegate( QObject * parent = nullptr );
     ~QgsDetailedItemDelegate();
     /** Reimplement for parent class */
     void paint( QPainter * thePainter,

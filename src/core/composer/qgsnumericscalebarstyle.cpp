@@ -26,7 +26,7 @@ QgsNumericScaleBarStyle::QgsNumericScaleBarStyle( QgsComposerScaleBar* bar ): Qg
 
 }
 
-QgsNumericScaleBarStyle::QgsNumericScaleBarStyle(): QgsScaleBarStyle( 0 ), mLastScaleBarWidth( 0 )
+QgsNumericScaleBarStyle::QgsNumericScaleBarStyle(): QgsScaleBarStyle( nullptr ), mLastScaleBarWidth( 0 )
 {
 
 }

@@ -54,7 +54,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @param composition composition to attach to
      * @param parent parent object
      */
-    explicit QgsComposerModel( QgsComposition* composition, QObject* parent = 0 );
+    explicit QgsComposerModel( QgsComposition* composition, QObject* parent = nullptr );
 
     ~QgsComposerModel();
 

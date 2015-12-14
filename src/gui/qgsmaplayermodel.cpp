@@ -218,7 +218,7 @@ Qt::ItemFlags QgsMapLayerModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
   {
-    return 0;
+    return nullptr;
   }
 
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;

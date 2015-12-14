@@ -33,9 +33,9 @@ email                : jpalmer at linz dot govt dot nz
 
 QgsVectorLayer* QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas* canvas )
 {
-  QgsVectorLayer* vlayer = NULL;
+  QgsVectorLayer* vlayer = nullptr;
   if ( !canvas->currentLayer()
-       || ( vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() ) ) == NULL )
+       || ( vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() ) ) == nullptr )
   {
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "No active vector layer" ),
@@ -97,7 +97,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
     return;
   }
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
-  if ( vlayer == NULL )
+  if ( vlayer == nullptr )
   {
     return;
   }

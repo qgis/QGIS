@@ -85,8 +85,8 @@ int main( int argc, char ** argv )
   QString myUserLocale = settings.value( "locale/userLocale", "" ).toString();
   QString myTranslationCode = !myLocaleOverrideFlag || myUserLocale.isEmpty() ? QLocale::system().name() : myUserLocale;
 
-  QTranslator qgistor( 0 );
-  QTranslator qttor( 0 );
+  QTranslator qgistor( nullptr );
+  QTranslator qttor( nullptr );
   if ( myTranslationCode != "C" )
   {
     if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )

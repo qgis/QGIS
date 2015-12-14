@@ -50,7 +50,7 @@ template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryAngleCheck>::cr
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -80,7 +80,7 @@ template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryAreaCheck>::cre
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -108,7 +108,7 @@ template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryContainedCheck>
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -136,7 +136,7 @@ template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryDegeneratePolyg
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -164,7 +164,7 @@ template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryDuplicateCheck>
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -192,7 +192,7 @@ template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryDuplicateNodesC
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -223,7 +223,7 @@ template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryGapCheck>::crea
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -251,7 +251,7 @@ template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryHoleCheck>::cre
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -278,7 +278,7 @@ template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -309,7 +309,7 @@ template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryOverlapCheck>::
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -340,7 +340,7 @@ template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometrySegmentLengthCh
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -368,7 +368,7 @@ template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometrySelfIntersectio
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -405,7 +405,7 @@ template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometrySliverPolygonCh
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -468,7 +468,7 @@ template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::cre
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 

@@ -72,7 +72,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     /** Starts the calculation and writes new raster
       @param p progress bar (or 0 if called from non-gui code)
       @return 0 in case of success*/
-    int processCalculation( QProgressDialog* p = 0 );
+    int processCalculation( QProgressDialog* p = nullptr );
 
   private:
     //default constructor forbidden. We need formula, output file, output format and output raster resolution obligatory

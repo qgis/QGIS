@@ -45,7 +45,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
 
   QString tableName = index.sibling( index.row(), QgsPgTableModel::dbtmTable ).data( Qt::DisplayRole ).toString();
   if ( tableName.isEmpty() )
-    return 0;
+    return nullptr;
 
   if ( index.column() == QgsPgTableModel::dbtmSql )
   {
@@ -104,7 +104,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
     return le;
   }
 
-  return 0;
+  return nullptr;
 }
 
 void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
@@ -197,7 +197,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
     : QDialog( parent, fl )
     , mManagerMode( managerMode )
     , mEmbeddedMode( embeddedMode )
-    , mColumnTypeThread( 0 )
+    , mColumnTypeThread( nullptr )
     , mUseEstimatedMetadata( false )
 {
   setupUi( this );
@@ -572,7 +572,7 @@ void QgsPgSourceSelect::finishList()
 void QgsPgSourceSelect::columnThreadFinished()
 {
   delete mColumnTypeThread;
-  mColumnTypeThread = 0;
+  mColumnTypeThread = nullptr;
   btnConnect->setText( tr( "Connect" ) );
 
   finishList();

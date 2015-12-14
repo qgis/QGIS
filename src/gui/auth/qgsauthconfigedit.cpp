@@ -29,8 +29,8 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent , const QString& authcfg ,
     : QDialog( parent )
     , mAuthCfg( authcfg )
     , mDataProvider( dataprovider )
-    , mAuthNotifyLayout( 0 )
-    , mAuthNotify( 0 )
+    , mAuthNotifyLayout( nullptr )
+    , mAuthNotify( nullptr )
 {
   bool disabled = QgsAuthManager::instance()->isDisabled();
   bool idok = true;

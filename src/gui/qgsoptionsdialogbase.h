@@ -56,7 +56,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * @param fl widget flags
      * @param settings custom QSettings pointer
      */
-    QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent = 0, const Qt::WindowFlags& fl = 0, QSettings* settings = 0 );
+    QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent = nullptr, const Qt::WindowFlags& fl = nullptr, QSettings* settings = nullptr );
     ~QgsOptionsDialogBase();
 
     /** Set up the base ui connections for vertical tabs.

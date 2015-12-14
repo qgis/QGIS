@@ -269,7 +269,7 @@ void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
     openDir = openDirFileInfo.path();
   }
 
-  QString file = QFileDialog::getOpenFileName( 0,
+  QString file = QFileDialog::getOpenFileName( nullptr,
                  tr( "Select SVG file" ),
                  openDir,
                  tr( "SVG files" ) + " (*.svg *.SVG)" );

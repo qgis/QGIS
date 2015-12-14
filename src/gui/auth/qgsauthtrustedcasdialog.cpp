@@ -32,9 +32,9 @@ QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent,
     : QDialog( parent )
     , mTrustedCAs( trustedCAs )
     , mDisabled( false )
-    , mAuthNotifyLayout( 0 )
-    , mAuthNotify( 0 )
-    , mRootCaSecItem( 0 )
+    , mAuthNotifyLayout( nullptr )
+    , mAuthNotify( nullptr )
+    , mRootCaSecItem( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

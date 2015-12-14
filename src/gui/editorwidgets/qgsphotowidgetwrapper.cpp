@@ -25,13 +25,13 @@
 
 QgsPhotoWidgetWrapper::QgsPhotoWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mPhotoLabel( 0 )
-    , mPhotoPixmapLabel( 0 )
-    , mLineEdit( 0 )
-    , mButton( 0 )
+    , mPhotoLabel( nullptr )
+    , mPhotoPixmapLabel( nullptr )
+    , mLineEdit( nullptr )
+    , mButton( nullptr )
 {
 #ifdef WITH_QTWEBKIT
-  mWebView = 0;
+  mWebView = nullptr;
 #endif
 }
 
@@ -40,7 +40,7 @@ void QgsPhotoWidgetWrapper::selectFileName()
   if ( !mLineEdit )
     return;
 
-  QString fileName = QFileDialog::getOpenFileName( 0, tr( "Select a picture" ), QFileInfo( mLineEdit->text() ).absolutePath() );
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Select a picture" ), QFileInfo( mLineEdit->text() ).absolutePath() );
 
   if ( fileName.isNull() )
     return;

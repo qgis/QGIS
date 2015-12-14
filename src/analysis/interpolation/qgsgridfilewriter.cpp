@@ -35,7 +35,7 @@ QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator* i, const QString& outputP
 }
 
 QgsGridFileWriter::QgsGridFileWriter()
-    : mInterpolator( 0 )
+    : mInterpolator( nullptr )
     , mNumColumns( 0 )
     , mNumRows( 0 )
     , mCellSizeX( 0 )
@@ -72,10 +72,10 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   double currentXValue;
   double interpolatedValue;
 
-  QProgressDialog* progressDialog = 0;
+  QProgressDialog* progressDialog = nullptr;
   if ( showProgressDialog )
   {
-    progressDialog = new QProgressDialog( QObject::tr( "Interpolating..." ), QObject::tr( "Abort" ), 0, mNumRows, 0 );
+    progressDialog = new QProgressDialog( QObject::tr( "Interpolating..." ), QObject::tr( "Abort" ), 0, mNumRows, nullptr );
     progressDialog->setWindowModality( Qt::WindowModal );
   }
 

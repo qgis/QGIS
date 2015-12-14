@@ -41,7 +41,7 @@ QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem,
   Q_UNUSED( filesToRemove );
   if ( elem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   QString providerType = elem.attribute( "providerType", "not found" );
@@ -50,10 +50,10 @@ QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem,
   if ( providerType == "not found" || uri == "not found" )
   {
     QgsDebugMsg( "error, provider type not found" );
-    return 0;
+    return nullptr;
   }
 
-  QgsMapLayer* ml = 0;
+  QgsMapLayer* ml = nullptr;
 
   if ( allowCaching ) //take layer from cache if allowed
   {
@@ -70,7 +70,7 @@ QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem,
     {
       QgsDebugMsg( "error, VectorLayer is 0 or invalid" );
       delete ml;
-      return 0;
+      return nullptr;
     }
 
     if ( allowCaching )

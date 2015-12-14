@@ -27,7 +27,7 @@ class GUI_EXPORT QgsVectorRandomColorRampV2Dialog : public QDialog, private Ui::
     Q_OBJECT
 
   public:
-    QgsVectorRandomColorRampV2Dialog( QgsVectorRandomColorRampV2* ramp, QWidget* parent = NULL );
+    QgsVectorRandomColorRampV2Dialog( QgsVectorRandomColorRampV2* ramp, QWidget* parent = nullptr );
 
   public slots:
     void setCount( int val );

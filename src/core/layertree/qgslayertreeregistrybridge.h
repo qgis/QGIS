@@ -40,7 +40,7 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup* root, QObject *parent = 0 );
+    explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup* root, QObject *parent = nullptr );
 
     void setEnabled( bool enabled ) { mEnabled = enabled; }
     bool isEnabled() const { return mEnabled; }

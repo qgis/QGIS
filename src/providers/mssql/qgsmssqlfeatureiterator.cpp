@@ -31,7 +31,7 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource* source,
     , mExpressionCompiled( false )
 {
   mClosed = false;
-  mQuery = NULL;
+  mQuery = nullptr;
 
   mParser.IsGeography = mSource->mIsGeography;
 
@@ -297,7 +297,7 @@ bool QgsMssqlFeatureIterator::rewind()
     QString msg = mQuery->lastError().text();
     QgsDebugMsg( msg );
     delete mQuery;
-    mQuery = 0;
+    mQuery = nullptr;
     if ( mDatabase.isOpen() )
       mDatabase.close();
 
@@ -329,7 +329,7 @@ bool QgsMssqlFeatureIterator::close()
   if ( mQuery )
   {
     delete mQuery;
-    mQuery = 0;
+    mQuery = nullptr;
   }
 
   if ( mDatabase.isOpen() )

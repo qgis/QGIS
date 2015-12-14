@@ -89,7 +89,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
           HardLock
         };
 
-        CadConstraint( QLineEdit* lineEdit, QToolButton* lockerButton, QToolButton* relativeButton = 0 )
+        CadConstraint( QLineEdit* lineEdit, QToolButton* lockerButton, QToolButton* relativeButton = nullptr )
             : mLineEdit( lineEdit )
             , mLockerButton( lockerButton )
             , mRelativeButton( relativeButton )
@@ -164,7 +164,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
      * @param canvas The map canvas on which the widget operates
      * @param parent The parent
      */
-    explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas* canvas, QWidget *parent = 0 );
+    explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas* canvas, QWidget *parent = nullptr );
 
     /**
      * Disables the CAD tools when hiding the dock
@@ -243,21 +243,21 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
      */
-    QgsPoint currentPoint( bool* exists  = 0 ) const;
+    QgsPoint currentPoint( bool* exists  = nullptr ) const;
 
     /**
      * The previous point.
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
      */
-    QgsPoint previousPoint( bool* exists = 0 ) const;
+    QgsPoint previousPoint( bool* exists = nullptr ) const;
 
     /**
      * The penultimate point.
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
      */
-    QgsPoint penultimatePoint( bool* exists = 0 ) const;
+    QgsPoint penultimatePoint( bool* exists = nullptr ) const;
 
     /**
      * The number of points in the CAD point helper list

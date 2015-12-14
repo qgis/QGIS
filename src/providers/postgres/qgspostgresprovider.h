@@ -61,8 +61,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       const QgsCoordinateReferenceSystem *srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = 0,
-      const QMap<QString, QVariant> *options = 0
+      QString *errorMessage = nullptr,
+      const QMap<QString, QVariant> *options = nullptr
     );
 
     /**
@@ -320,7 +320,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * @param offset specifies offset to use for the pk value parameter
      * @param alias specifies an optional alias given to the subject table
      */
-    QString pkParamWhereClause( int offset, const char* alias = 0 ) const;
+    QString pkParamWhereClause( int offset, const char* alias = nullptr ) const;
     QString whereClause( QgsFeatureId featureId ) const;
     QString whereClause( QgsFeatureIds featureIds ) const;
     QString filterWhereClause() const;
@@ -334,7 +334,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool loadFields();
 
     /** Convert a QgsField to work with PG */
-    static bool convertField( QgsField &field, const QMap<QString, QVariant> *options = 0 );
+    static bool convertField( QgsField &field, const QMap<QString, QVariant> *options = nullptr );
 
     /** Parses the enum_range of an attribute and inserts the possible values into a stringlist
     @param enumValues the stringlist where the values are appended

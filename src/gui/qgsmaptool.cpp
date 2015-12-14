@@ -26,8 +26,8 @@ QgsMapTool::QgsMapTool( QgsMapCanvas* canvas )
     : QObject( canvas )
     , mCanvas( canvas )
     , mCursor( Qt::CrossCursor )
-    , mAction( NULL )
-    , mButton( NULL )
+    , mAction( nullptr )
+    , mButton( nullptr )
     , mToolName( QString() )
 {
 }
@@ -118,7 +118,7 @@ void QgsMapTool::setAction( QAction* action )
 void QgsMapTool::actionDestroyed()
 {
   if ( mAction == sender() )
-    mAction = 0;
+    mAction = nullptr;
 }
 
 QAction* QgsMapTool::action()

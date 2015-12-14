@@ -42,7 +42,7 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-    explicit QgsPluginSortFilterProxyModel( QObject *parent = 0 );
+    explicit QgsPluginSortFilterProxyModel( QObject *parent = nullptr );
 
     //! (Re)configire the status filter
     void setAcceptedStatuses( const QStringList& statuses );

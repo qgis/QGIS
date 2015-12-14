@@ -34,7 +34,7 @@ class FieldSelectorDelegate : public QItemDelegate
 {
     Q_OBJECT
   public:
-    explicit FieldSelectorDelegate( QObject *parent = 0 );
+    explicit FieldSelectorDelegate( QObject *parent = nullptr );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
@@ -45,7 +45,7 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
 {
     Q_OBJECT
   public:
-    QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
+    QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
     ~QgsVectorLayerAndAttributeModel();
 
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -77,7 +77,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
 {
     Q_OBJECT
   public:
-    QgsDxfExportDialog( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsDxfExportDialog( QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsDxfExportDialog();
 
     QList< QPair<QgsVectorLayer *, int> > layers() const;

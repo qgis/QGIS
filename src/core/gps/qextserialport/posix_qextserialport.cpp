@@ -14,7 +14,7 @@
 void QextSerialPort::platformSpecificInit()
 {
     fd = 0;
-    readNotifier = 0;
+    readNotifier = nullptr;
 }
 
 /*!
@@ -750,7 +750,7 @@ void QextSerialPort::close()
         ::close(fd);
         if(readNotifier) {
             delete readNotifier;
-            readNotifier = 0;
+            readNotifier = nullptr;
         }
     }
 }

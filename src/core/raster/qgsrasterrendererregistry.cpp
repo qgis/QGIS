@@ -31,7 +31,7 @@ QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString& t
 {
 }
 
-QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry(): rendererCreateFunction( 0 ), widgetCreateFunction( 0 )
+QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry(): rendererCreateFunction( nullptr ), widgetCreateFunction( nullptr )
 {
 }
 
@@ -45,14 +45,14 @@ QgsRasterRendererRegistry::QgsRasterRendererRegistry()
 {
   // insert items in a particular order, which is returned in renderersList()
   insert( QgsRasterRendererRegistryEntry( "multibandcolor", QObject::tr( "Multiband color" ),
-                                          QgsMultiBandColorRenderer::create, 0 ) );
-  insert( QgsRasterRendererRegistryEntry( "paletted", QObject::tr( "Paletted" ), QgsPalettedRasterRenderer::create, 0 ) );
+                                          QgsMultiBandColorRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( "paletted", QObject::tr( "Paletted" ), QgsPalettedRasterRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( "singlebandgray", QObject::tr( "Singleband gray" ),
-                                          QgsSingleBandGrayRenderer::create, 0 ) );
+                                          QgsSingleBandGrayRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( "singlebandpseudocolor", QObject::tr( "Singleband pseudocolor" ),
-                                          QgsSingleBandPseudoColorRenderer::create, 0 ) );
+                                          QgsSingleBandPseudoColorRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( "singlebandcolordata", QObject::tr( "Singleband color data" ),
-                                          QgsSingleBandColorDataRenderer::create, 0 ) );
+                                          QgsSingleBandColorDataRenderer::create, nullptr ) );
 }
 
 QgsRasterRendererRegistry::~QgsRasterRendererRegistry()
@@ -106,11 +106,11 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
 {
   if ( !provider || provider->bandCount() < 1 )
   {
-    return 0;
+    return nullptr;
   }
 
 
-  QgsRasterRenderer* renderer = 0;
+  QgsRasterRenderer* renderer = nullptr;
   switch ( theDrawingStyle )
   {
     case QgsRaster::PalettedColor:
@@ -204,7 +204,7 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
       break;
     }
     default:
-      return 0;
+      return nullptr;
   }
 
   QgsRasterTransparency* tr = new QgsRasterTransparency(); //renderer takes ownership

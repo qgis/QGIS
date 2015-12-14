@@ -39,7 +39,7 @@ class QgsGuiVectorLayerTools : public QObject, public QgsVectorLayerTools
      *
      * @return                True in case of success, False if the operation failed/was aborted
      */
-    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap& defaultValues, const QgsGeometry &defaultGeometry, QgsFeature* feat = 0 ) const override;
+    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap& defaultValues, const QgsGeometry &defaultGeometry, QgsFeature* feat = nullptr ) const override;
 
     /**
      * This should be called, whenever a vector layer should be switched to edit mode. If successful

@@ -56,7 +56,7 @@ QColor QgsColorDialog::getLiveColor( const QColor& initialColor, QObject* update
     returnColor = liveDialog->currentColor();
   }
   delete liveDialog;
-  liveDialog = 0;
+  liveDialog = nullptr;
 
   return returnColor;
 }
@@ -305,7 +305,7 @@ void QgsColorDialogV2::setAllowAlpha( const bool allowAlpha )
 QColor QgsColorDialogV2::getLiveColor( const QColor &initialColor, QObject *updateObject, const char *updateSlot, QWidget *parent, const QString &title, const bool allowAlpha )
 {
   QColor returnColor( initialColor );
-  QgsColorDialogV2* liveDialog = new QgsColorDialogV2( parent, 0, initialColor );
+  QgsColorDialogV2* liveDialog = new QgsColorDialogV2( parent, nullptr, initialColor );
   liveDialog->setWindowTitle( title.isEmpty() ? tr( "Select Color" ) : title );
   if ( !allowAlpha )
   {
@@ -320,7 +320,7 @@ QColor QgsColorDialogV2::getLiveColor( const QColor &initialColor, QObject *upda
     returnColor = liveDialog->color();
   }
   delete liveDialog;
-  liveDialog = 0;
+  liveDialog = nullptr;
 
   return returnColor;
 }
@@ -338,7 +338,7 @@ QColor QgsColorDialogV2::getColor( const QColor &initialColor, QWidget *parent, 
   }
   else
   {
-    QgsColorDialogV2* dialog = new QgsColorDialogV2( parent, 0, initialColor );
+    QgsColorDialogV2* dialog = new QgsColorDialogV2( parent, nullptr, initialColor );
     dialog->setWindowTitle( dialogTitle );
     dialog->setAllowAlpha( allowAlpha );
 
@@ -391,7 +391,7 @@ void QgsColorDialogV2::importColors()
   QFileInfo fileInfo( filePath );
   if ( !fileInfo.exists() || !fileInfo.isReadable() )
   {
-    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
+    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
     return;
   }
 
@@ -400,7 +400,7 @@ void QgsColorDialogV2::importColors()
   bool importOk = mSchemeList->importColorsFromGpl( file );
   if ( !importOk )
   {
-    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "Error, no colors found in palette file" ) );
+    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, no colors found in palette file" ) );
     return;
   }
 }
@@ -433,7 +433,7 @@ void QgsColorDialogV2::importPalette()
   QFileInfo fileInfo( filePath );
   if ( !fileInfo.exists() || !fileInfo.isReadable() )
   {
-    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
+    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
     return;
   }
 
@@ -446,14 +446,14 @@ void QgsColorDialogV2::importPalette()
   importedColors = QgsSymbolLayerV2Utils::importColorsFromGpl( file, ok, paletteName );
   if ( !ok )
   {
-    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "Palette file is not readable" ) );
+    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Palette file is not readable" ) );
     return;
   }
 
   if ( importedColors.length() == 0 )
   {
     //no imported colors
-    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "No colors found in palette file" ) );
+    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "No colors found in palette file" ) );
     return;
   }
 
@@ -584,7 +584,7 @@ void QgsColorDialogV2::exportColors()
   bool exportOk = mSchemeList->exportColorsToGpl( file );
   if ( !exportOk )
   {
-    QMessageBox::critical( 0, tr( "Error exporting" ), tr( "Error writing palette file" ) );
+    QMessageBox::critical( nullptr, tr( "Error exporting" ), tr( "Error writing palette file" ) );
     return;
   }
 }

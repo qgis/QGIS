@@ -28,7 +28,7 @@ class APP_EXPORT QgsDecorationItem: public QObject
     Q_OBJECT
   public:
     //! Constructor
-    QgsDecorationItem( QObject* parent = NULL );
+    QgsDecorationItem( QObject* parent = nullptr );
     //! Destructor
     virtual ~ QgsDecorationItem();
 

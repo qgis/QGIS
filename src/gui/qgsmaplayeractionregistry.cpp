@@ -19,7 +19,7 @@
 QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, const Targets& targets, const QIcon& icon )
     : QAction( icon, name, parent )
     , mSingleLayer( false )
-    , mActionLayer( 0 )
+    , mActionLayer( nullptr )
     , mSpecificLayerType( false )
     , mLayerType( QgsMapLayer::VectorLayer )
     , mTargets( targets )
@@ -41,7 +41,7 @@ QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, QgsM
 QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, QgsMapLayer::LayerType layerType, const Targets& targets, const QIcon& icon )
     : QAction( icon, name, parent )
     , mSingleLayer( false )
-    , mActionLayer( 0 )
+    , mActionLayer( nullptr )
     , mSpecificLayerType( true )
     , mLayerType( layerType )
     , mTargets( targets )
@@ -95,10 +95,10 @@ void QgsMapLayerAction::triggerForLayer( QgsMapLayer* layer )
 //
 // Static calls to enforce singleton behaviour
 //
-QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::mInstance = 0;
+QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::mInstance = nullptr;
 QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::instance()
 {
-  if ( mInstance == 0 )
+  if ( mInstance == nullptr )
   {
     mInstance = new QgsMapLayerActionRegistry();
   }
@@ -152,7 +152,7 @@ bool QgsMapLayerActionRegistry::removeMapLayerAction( QgsMapLayerAction* action 
     {
       if ( defaultIt.value() == action )
       {
-        defaultIt.value() = 0;
+        defaultIt.value() = nullptr;
       }
     }
     emit changed();
@@ -171,7 +171,7 @@ QgsMapLayerAction * QgsMapLayerActionRegistry::defaultActionForLayer( QgsMapLaye
 {
   if ( !mDefaultLayerActionMap.contains( layer ) )
   {
-    return 0;
+    return nullptr;
   }
 
   return mDefaultLayerActionMap[ layer ];

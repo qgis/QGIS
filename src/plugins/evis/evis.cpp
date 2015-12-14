@@ -85,11 +85,11 @@ static const QString sIcon = ":/evis/eVisEventBrowser.png";
 eVis::eVis( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
-    , mDatabaseConnectionActionPointer( 0 )
-    , mEventIdToolActionPointer( 0 )
-    , mEventBrowserActionPointer( 0 )
+    , mDatabaseConnectionActionPointer( nullptr )
+    , mEventIdToolActionPointer( nullptr )
+    , mEventBrowserActionPointer( nullptr )
 {
-  mIdTool = 0;
+  mIdTool = nullptr;
 }
 
 eVis::~eVis()
@@ -150,7 +150,7 @@ void eVis::launchDatabaseConnection()
 
 void eVis::launchEventIdTool()
 {
-  if ( 0 == mIdTool )
+  if ( nullptr == mIdTool )
   {
     mIdTool = new eVisEventIdTool( mQGisIface->mapCanvas() );
     mIdTool->setAction( mEventIdToolActionPointer );
@@ -187,7 +187,7 @@ void eVis::unload()
     delete( mTemporaryFileList.takeLast() );
   }
 
-  if ( 0 != mIdTool )
+  if ( nullptr != mIdTool )
   {
     delete mIdTool;
   }

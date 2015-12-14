@@ -343,7 +343,7 @@ void QgsComposerUtils::readDataDefinedProperty( const QgsComposerObject::DataDef
 
   QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = dataDefinedProperties->constFind( property );
 
-  QgsDataDefined* dd = 0;
+  QgsDataDefined* dd = nullptr;
   if ( it != dataDefinedProperties->constEnd() )
   {
     dd = it.value();

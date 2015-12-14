@@ -22,7 +22,7 @@ class QgsNonEditableDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsNonEditableDelegate( QWidget *parent = 0 );
+    explicit QgsNonEditableDelegate( QWidget *parent = nullptr );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
                            const QModelIndex &index ) const override
@@ -30,7 +30,7 @@ class QgsNonEditableDelegate : public QStyledItemDelegate
       Q_UNUSED( parent );
       Q_UNUSED( option );
       Q_UNUSED( index );
-      return 0;
+      return nullptr;
     }
 };
 
@@ -39,7 +39,7 @@ class QgsDmsAndDdDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsDmsAndDdDelegate( QWidget *parent = 0 );
+    explicit QgsDmsAndDdDelegate( QWidget *parent = nullptr );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
                            const QModelIndex &index ) const override;
@@ -60,7 +60,7 @@ class QgsCoordDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsCoordDelegate( QWidget *parent = 0 );
+    explicit QgsCoordDelegate( QWidget *parent = nullptr );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
                            const QModelIndex &index ) const override;

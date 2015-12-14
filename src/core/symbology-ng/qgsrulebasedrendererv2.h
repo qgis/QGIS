@@ -126,7 +126,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
          * @param context   The context in which the rendering happens
          * @return          True if the feature shall be rendered
          */
-        bool isFilterOK( QgsFeature& f, QgsRenderContext *context = 0 ) const;
+        bool isFilterOK( QgsFeature& f, QgsRenderContext *context = nullptr ) const;
 
         /**
          * Check if this rule applies for a given scale
@@ -258,13 +258,13 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         RenderResult renderFeature( FeatureToRender& featToRender, QgsRenderContext& context, RenderQueue& renderQueue );
 
         //! only tell whether a feature will be rendered without actually rendering it
-        bool willRenderFeature( QgsFeature& feat, QgsRenderContext* context = 0 );
+        bool willRenderFeature( QgsFeature& feat, QgsRenderContext* context = nullptr );
 
         //! tell which symbols will be used to render the feature
-        QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext* context = 0 );
+        QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext* context = nullptr );
 
         //! tell which rules will be used to render the feature
-        RuleList rulesForFeature( QgsFeature& feat, QgsRenderContext* context = 0 );
+        RuleList rulesForFeature( QgsFeature& feat, QgsRenderContext* context = nullptr );
 
         /**
          * Stop a rendering process. Used to clean up the internal state of this rule

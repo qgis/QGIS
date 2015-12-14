@@ -35,7 +35,7 @@
 
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings& settings )
     : mSettings( settings )
-    , mCache( 0 )
+    , mCache( nullptr )
     , mRenderingTime( 0 )
 {
 }
@@ -214,7 +214,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
     }
 
     QgsRectangle r1 = mSettings.visibleExtent(), r2;
-    const QgsCoordinateTransform* ct = 0;
+    const QgsCoordinateTransform* ct = nullptr;
 
     if ( mSettings.hasCrsTransformEnabled() )
     {
@@ -243,7 +243,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
     layerJobs.append( LayerRenderJob() );
     LayerRenderJob& job = layerJobs.last();
     job.cached = false;
-    job.img = 0;
+    job.img = nullptr;
     job.blendMode = ml->blendMode();
     job.layerId = ml->id();
 
@@ -259,8 +259,8 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
     {
       job.cached = true;
       job.img = new QImage( mCache->cacheImage( ml->id() ) );
-      job.renderer = 0;
-      job.context.setPainter( 0 );
+      job.renderer = nullptr;
+      job.context.setPainter( nullptr );
       continue;
     }
 
@@ -270,7 +270,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
     if ( mCache || !painter || needTemporaryImage( ml ) )
     {
       // Flattened image for drawing when a blending mode is set
-      QImage * mypFlattenedImage = 0;
+      QImage * mypFlattenedImage = nullptr;
       mypFlattenedImage = new QImage( mSettings.outputSize().width(),
                                       mSettings.outputSize().height(),
                                       mSettings.outputImageFormat() );
@@ -320,7 +320,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
     if ( job.img )
     {
       delete job.context.painter();
-      job.context.setPainter( 0 );
+      job.context.setPainter( nullptr );
 
       if ( mCache && !job.cached && !job.context.renderingStopped() )
       {
@@ -329,7 +329,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
       }
 
       delete job.img;
-      job.img = 0;
+      job.img = nullptr;
     }
 
     if ( job.renderer )
@@ -338,7 +338,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
         mErrors.append( Error( job.renderer->layerID(), message ) );
 
       delete job.renderer;
-      job.renderer = 0;
+      job.renderer = nullptr;
     }
   }
 
@@ -361,7 +361,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const La
 
     painter.setCompositionMode( job.blendMode );
 
-    Q_ASSERT( job.img != 0 );
+    Q_ASSERT( job.img != nullptr );
     painter.drawImage( 0, 0, *job.img );
   }
 

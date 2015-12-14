@@ -30,8 +30,8 @@
 
 QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
     : QDialog( parent )
-    , mAuthNotifyLayout( 0 )
-    , mAuthNotify( 0 )
+    , mAuthNotifyLayout( nullptr )
+    , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -104,13 +104,13 @@ void QgsAuthMethodPlugins::populateTable()
 
 QgsAuthEditorWidgets::QgsAuthEditorWidgets( QWidget *parent )
     : QWidget( parent )
-    , mAuthUtilitiesMenu( 0 )
-    , mActionSetMasterPassword( 0 )
-    , mActionClearCachedMasterPassword( 0 )
-    , mActionResetMasterPassword( 0 )
-    , mActionClearCachedAuthConfigs( 0 )
-    , mActionRemoveAuthConfigs( 0 )
-    , mActionEraseAuthDatabase( 0 )
+    , mAuthUtilitiesMenu( nullptr )
+    , mActionSetMasterPassword( nullptr )
+    , mActionClearCachedMasterPassword( nullptr )
+    , mActionResetMasterPassword( nullptr )
+    , mActionClearCachedAuthConfigs( nullptr )
+    , mActionRemoveAuthConfigs( nullptr )
+    , mActionEraseAuthDatabase( nullptr )
 {
   setupUi( this );
   if ( !QgsAuthManager::instance()->isDisabled() )

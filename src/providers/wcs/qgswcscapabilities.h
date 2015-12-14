@@ -221,10 +221,10 @@ class QgsWcsCapabilities : public QObject
     void parseUri();
 
     //! Get coverage summary for identifier
-    QgsWcsCoverageSummary * coverageSummary( QString const & theIdentifier, QgsWcsCoverageSummary* parent = 0 );
+    QgsWcsCoverageSummary * coverageSummary( QString const & theIdentifier, QgsWcsCoverageSummary* parent = nullptr );
 
     // ! Get list of all sub coverages
-    QList<QgsWcsCoverageSummary> coverageSummaries( QgsWcsCoverageSummary* parent = 0 );
+    QList<QgsWcsCoverageSummary> coverageSummaries( QgsWcsCoverageSummary* parent = nullptr );
 
     void initCoverageSummary( QgsWcsCoverageSummary &coverageSummary );
 
@@ -261,12 +261,12 @@ class QgsWcsCapabilities : public QObject
 
     //! parse the WCS Layer XML element
     void parseCoverageOfferingBrief( QDomElement const &e, QgsWcsCoverageSummary &coverageSummary,
-                                     QgsWcsCoverageSummary *parent = 0 );
+                                     QgsWcsCoverageSummary *parent = nullptr );
 
     // ------------- 1.1 --------------------
     //! parse the WCS Layer XML element
     void parseCoverageSummary( QDomElement const &e, QgsWcsCoverageSummary &coverageSummary,
-                               QgsWcsCoverageSummary *parent = 0 );
+                               QgsWcsCoverageSummary *parent = nullptr );
 
     //! Data source uri
     QgsDataSourceURI mUri;

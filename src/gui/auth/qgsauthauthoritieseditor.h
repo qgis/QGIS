@@ -39,7 +39,7 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
      * Widget for viewing and editing certificate authorities directly in database
      * @param parent Parent widget
      */
-    explicit QgsAuthAuthoritiesEditor( QWidget *parent = 0 );
+    explicit QgsAuthAuthoritiesEditor( QWidget *parent = nullptr );
     ~QgsAuthAuthoritiesEditor();
 
   private slots:
@@ -105,11 +105,11 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
     void appendCertsToGroup( const QList<QSslCertificate>& certs,
                              QgsAuthAuthoritiesEditor::CaType catype,
-                             QTreeWidgetItem *parent = 0 );
+                             QTreeWidgetItem *parent = nullptr );
 
     void appendCertsToItem( const QList<QSslCertificate>& certs,
                             QgsAuthAuthoritiesEditor::CaType catype,
-                            QTreeWidgetItem *parent = 0 );
+                            QTreeWidgetItem *parent = nullptr );
 
     void updateCertTrustPolicyCache();
 

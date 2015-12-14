@@ -17,7 +17,7 @@
 
 QgsColorWidgetWrapper::QgsColorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mColorButton( NULL )
+    , mColorButton( nullptr )
 {
 }
 

@@ -39,7 +39,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
     /** QgsGraduatedHistogramWidget constructor
      * @param parent parent widget
      */
-    QgsGraduatedHistogramWidget( QWidget *parent = 0 );
+    QgsGraduatedHistogramWidget( QWidget *parent = nullptr );
     ~QgsGraduatedHistogramWidget();
 
     /** Sets the QgsGraduatedSymbolRendererV2 renderer associated with the histogram.

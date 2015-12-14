@@ -41,7 +41,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
+  << QgsExpressionContextUtils::atlasScope( nullptr )
   << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
 
   const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
@@ -584,7 +584,7 @@ void QgsDiagramProperties::on_mDiagramAttributesTreeWidget_itemDoubleClicked( QT
 {
   if ( column == 1 ) //change color
   {
-    QColor newColor = QgsColorDialogV2::getColor( item->background( 1 ).color(), 0 );
+    QColor newColor = QgsColorDialogV2::getColor( item->background( 1 ).color(), nullptr );
     if ( newColor.isValid() )
     {
       item->setBackground( 1, QBrush( newColor ) );
@@ -602,7 +602,7 @@ void QgsDiagramProperties::apply()
 {
   bool diagramsEnabled = mEnableDiagramsCheckBox->isChecked();
 
-  QgsDiagram* diagram = 0;
+  QgsDiagram* diagram = nullptr;
   int index = mDiagramTypeComboBox->currentIndex();
   QString diagramType = mDiagramTypeComboBox->itemData( index ).toString();
 
@@ -800,7 +800,7 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
+  << QgsExpressionContextUtils::atlasScope( nullptr )
   << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );
 

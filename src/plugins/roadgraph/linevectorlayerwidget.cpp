@@ -190,7 +190,7 @@ QgsVectorLayer* RgLineVectorLayerSettingsWidget::selectedLayer()
       return vl;
   }
 
-  return NULL;
+  return nullptr;
 } // RgLineVectorLayerSettingsWidget::setlectedLayer()
 
 void RgLineVectorLayerSettingsWidget::on_mcbLayers_selectItem()

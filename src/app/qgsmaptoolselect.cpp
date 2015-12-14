@@ -40,7 +40,7 @@ QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
 void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-  if ( vlayer == NULL )
+  if ( vlayer == nullptr )
   {
     return;
   }

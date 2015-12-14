@@ -28,7 +28,7 @@ class QgsGCPListModel : public QStandardItemModel
     Q_OBJECT
 
   public:
-    explicit QgsGCPListModel( QObject *parent = 0 );
+    explicit QgsGCPListModel( QObject *parent = nullptr );
 
     void setGCPList( QgsGCPList *theGCPList );
     void setGeorefTransform( QgsGeorefTransform *theGeorefTransform );

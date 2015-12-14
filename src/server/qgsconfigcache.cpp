@@ -28,7 +28,7 @@
 
 QgsConfigCache* QgsConfigCache::instance()
 {
-  static QgsConfigCache *instance = 0;
+  static QgsConfigCache *instance = nullptr;
 
   if ( !instance )
     instance = new QgsConfigCache();
@@ -50,7 +50,7 @@ QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& file
   QDomDocument* doc = xmlDocument( filePath );
   if ( !doc )
   {
-    return 0;
+    return nullptr;
   }
   return new QgsServerProjectParser( doc, filePath );
 }
@@ -68,7 +68,7 @@ QgsWCSProjectParser *QgsConfigCache::wcsConfiguration(
     QDomDocument* doc = xmlDocument( filePath );
     if ( !doc )
     {
-      return 0;
+      return nullptr;
     }
     p = new QgsWCSProjectParser(
       filePath
@@ -98,7 +98,7 @@ QgsWFSProjectParser *QgsConfigCache::wfsConfiguration(
     QDomDocument* doc = xmlDocument( filePath );
     if ( !doc )
     {
-      return 0;
+      return nullptr;
     }
     p = new QgsWFSProjectParser(
       filePath
@@ -129,7 +129,7 @@ QgsWMSConfigParser *QgsConfigCache::wmsConfiguration(
     QDomDocument* doc = xmlDocument( filePath );
     if ( !doc )
     {
-      return 0;
+      return nullptr;
     }
 
     //sld or QGIS project file?
@@ -164,13 +164,13 @@ QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
   if ( !configFile.exists() )
   {
     QgsMessageLog::logMessage( "Error, configuration file '" + filePath + "' does not exist", "Server", QgsMessageLog::CRITICAL );
-    return 0;
+    return nullptr;
   }
 
   if ( !configFile.open( QIODevice::ReadOnly ) )
   {
     QgsMessageLog::logMessage( "Error, cannot open configuration file '" + filePath + "'", "Server", QgsMessageLog::CRITICAL );
-    return 0;
+    return nullptr;
   }
 
   // first get cache
@@ -186,7 +186,7 @@ QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
       QgsMessageLog::logMessage( "Error parsing file '" + filePath +
                                  QString( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), "Server", QgsMessageLog::CRITICAL );
       delete xmlDoc;
-      return 0;
+      return nullptr;
     }
     mXmlDocumentCache.insert( filePath, xmlDoc );
     mFileSystemWatcher.addPath( filePath );

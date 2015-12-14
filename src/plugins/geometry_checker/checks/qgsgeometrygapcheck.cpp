@@ -33,7 +33,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, 
     return;
   }
 
-  QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( 0, QgsGeometryCheckPrecision::tolerance() );
+  QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( nullptr, QgsGeometryCheckPrecision::tolerance() );
 
   // Create union of geometry
   QString errMsg;

@@ -32,7 +32,7 @@ QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas* canvas )
     : QgsMapToolLabel( canvas )
     , mDragging( false )
     , mShowPinned( false )
-    , mRubberBand( 0 )
+    , mRubberBand( nullptr )
 {
   mToolName = tr( "Pin labels" );
 
@@ -107,7 +107,7 @@ void QgsMapToolPinLabels::canvasReleaseEvent( QgsMapMouseEvent* e )
 
     mRubberBand->reset( QGis::Polygon );
     delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand = nullptr;
   }
 
   mDragging = false;

@@ -28,7 +28,7 @@ class APP_EXPORT QgsLabelDialog: public QWidget, private Ui::QgsLabelDialogBase
     Q_OBJECT
 
   public:
-    QgsLabelDialog( QgsLabel *label, QWidget * parent = 0 );
+    QgsLabelDialog( QgsLabel *label, QWidget * parent = nullptr );
     ~QgsLabelDialog();
     int itemNoForField( const QString& theFieldName, const QStringList& theFieldList );
 

@@ -27,7 +27,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     : QDialog( parent, fl )
     , mBaseKey( baseKey )
     , mOriginalConnName( connName )
-    , mAuthConfigSelect( 0 )
+    , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
 

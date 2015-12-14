@@ -46,7 +46,7 @@ class GUI_EXPORT QgsColorButton: public QPushButton
      * @param cdo Options for the color chooser dialog
      * @note changed in 1.9
      */
-    QgsColorButton( QWidget *parent = 0, const QString& cdt = "", const QColorDialog::ColorDialogOptions& cdo = 0 );
+    QgsColorButton( QWidget *parent = nullptr, const QString& cdt = "", const QColorDialog::ColorDialogOptions& cdo = nullptr );
     ~QgsColorButton();
 
     /**

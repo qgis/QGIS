@@ -36,7 +36,7 @@ QgsBrightnessContrastFilter::~QgsBrightnessContrastFilter()
 QgsBrightnessContrastFilter* QgsBrightnessContrastFilter::clone() const
 {
   QgsDebugMsg( "Entered" );
-  QgsBrightnessContrastFilter * filter = new QgsBrightnessContrastFilter( 0 );
+  QgsBrightnessContrastFilter * filter = new QgsBrightnessContrastFilter( nullptr );
   filter->setBrightness( mBrightness );
   filter->setContrast( mContrast );
   return filter;

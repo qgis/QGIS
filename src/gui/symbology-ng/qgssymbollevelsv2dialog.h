@@ -29,7 +29,7 @@ class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbol
     Q_OBJECT
   public:
     // @note not available in python bindings
-    QgsSymbolLevelsV2Dialog( const QgsLegendSymbolList& list, bool usingSymbolLevels, QWidget* parent = NULL );
+    QgsSymbolLevelsV2Dialog( const QgsLegendSymbolList& list, bool usingSymbolLevels, QWidget* parent = nullptr );
 
     ~QgsSymbolLevelsV2Dialog();
 
@@ -64,7 +64,7 @@ class SpinBoxDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit SpinBoxDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) {}
+    explicit SpinBoxDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) {}
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &/*index*/ ) const override;
 

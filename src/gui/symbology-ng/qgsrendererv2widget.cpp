@@ -28,7 +28,7 @@ QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* sty
     : QWidget()
     , mLayer( layer )
     , mStyle( style )
-    , mMapCanvas( 0 )
+    , mMapCanvas( nullptr )
 {
   contextMenu = new QMenu( tr( "Renderer Options" ), this );
 
@@ -327,7 +327,7 @@ void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, const QString& fi
 
 void QgsRendererV2DataDefinedMenus::rotationFieldSelected( QAction* a )
 {
-  if ( a == NULL )
+  if ( a == nullptr )
     return;
 
   QString fldName = a->text();
@@ -354,7 +354,7 @@ void QgsRendererV2DataDefinedMenus::rotationFieldSelected( QAction* a )
 
 void QgsRendererV2DataDefinedMenus::sizeScaleFieldSelected( QAction* a )
 {
-  if ( a == NULL )
+  if ( a == nullptr )
     return;
 
   QString fldName = a->text();
@@ -381,7 +381,7 @@ void QgsRendererV2DataDefinedMenus::sizeScaleFieldSelected( QAction* a )
 
 void QgsRendererV2DataDefinedMenus::scaleMethodSelected( QAction* a )
 {
-  if ( a == NULL )
+  if ( a == nullptr )
     return;
 
   if ( a->text() == tr( "Scale area" ) )
@@ -406,7 +406,7 @@ void QgsRendererV2DataDefinedMenus::updateMenu( QActionGroup* actionGroup, QStri
 QgsDataDefinedValueDialog::QgsDataDefinedValueDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer, const QString & label )
     : mSymbolList( symbolList )
     , mLayer( layer )
-    , mMapCanvas( 0 )
+    , mMapCanvas( nullptr )
 {
   setupUi( this );
   setWindowFlags( Qt::WindowStaysOnTopHint );
@@ -438,7 +438,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 );
+  << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( widget->mapCanvas() )
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )

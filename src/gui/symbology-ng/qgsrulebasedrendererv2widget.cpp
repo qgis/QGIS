@@ -46,7 +46,7 @@ QgsRendererV2Widget* QgsRuleBasedRendererV2Widget::create( QgsVectorLayer* layer
 QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
 {
-  mRenderer = 0;
+  mRenderer = nullptr;
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
 
@@ -160,7 +160,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2Widget::currentRule()
   QItemSelectionModel* sel = viewRules->selectionModel();
   QModelIndex idx = sel->currentIndex();
   if ( !idx.isValid() )
-    return NULL;
+    return nullptr;
   return mModel->ruleForIndex( idx );
 }
 
@@ -257,7 +257,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( const QModelIndexLis
   QDialog dlg;
   dlg.setWindowTitle( tr( "Refine a rule to categories" ) );
   QVBoxLayout* l = new QVBoxLayout();
-  QgsCategorizedSymbolRendererV2Widget* w = new QgsCategorizedSymbolRendererV2Widget( mLayer, mStyle, NULL );
+  QgsCategorizedSymbolRendererV2Widget* w = new QgsCategorizedSymbolRendererV2Widget( mLayer, mStyle, nullptr );
   w->setMapCanvas( mMapCanvas );
   l->addWidget( w );
   QDialogButtonBox* bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
@@ -288,7 +288,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& i
   QDialog dlg;
   dlg.setWindowTitle( tr( "Refine a rule to ranges" ) );
   QVBoxLayout* l = new QVBoxLayout();
-  QgsGraduatedSymbolRendererV2Widget* w = new QgsGraduatedSymbolRendererV2Widget( mLayer, mStyle, NULL );
+  QgsGraduatedSymbolRendererV2Widget* w = new QgsGraduatedSymbolRendererV2Widget( mLayer, mStyle, nullptr );
   w->setMapCanvas( mMapCanvas );
   l->addWidget( w );
   QDialogButtonBox* bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
@@ -318,7 +318,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& i
     QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
 
     // If any of the rules don't have a symbol let the user know and exit.
-    if ( initialRule->symbol() == NULL )
+    if ( initialRule->symbol() == nullptr )
     {
       QMessageBox::warning( this, tr( "Scale refinement" ), tr( "Parent rule %1 must have a symbol for this operation." ).arg( initialRule->label() ) );
       return;
@@ -512,7 +512,7 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 );
+  << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
   {
     context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
@@ -590,7 +590,7 @@ void QgsRuleBasedRendererV2Widget::selectedRulesChanged()
 ///////////
 
 QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent , QgsMapCanvas* mapCanvas )
-    : QDialog( parent ), mRule( rule ), mLayer( layer ), mSymbolSelector( NULL ), mSymbol( NULL ), mMapCanvas( mapCanvas )
+    : QDialog( parent ), mRule( rule ), mLayer( layer ), mSymbolSelector( nullptr ), mSymbol( nullptr ), mMapCanvas( mapCanvas )
 {
   setupUi( this );
 #ifdef Q_OS_MAC
@@ -653,7 +653,7 @@ void QgsRendererRulePropsDialog::buildExpression()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 );
+  << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
   {
     context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
@@ -683,7 +683,7 @@ void QgsRendererRulePropsDialog::testFilter()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 );
+  << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
   {
     context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
@@ -731,7 +731,7 @@ void QgsRendererRulePropsDialog::accept()
   // caution: rule uses scale denom, scale widget uses true scales
   mRule->setScaleMinDenom( groupScale->isChecked() ? mScaleRangeWidget->minimumScaleDenom() : 0 );
   mRule->setScaleMaxDenom( groupScale->isChecked() ? mScaleRangeWidget->maximumScaleDenom() : 0 );
-  mRule->setSymbol( groupSymbol->isChecked() ? mSymbol->clone() : NULL );
+  mRule->setSymbol( groupSymbol->isChecked() ? mSymbol->clone() : nullptr );
 
   QDialog::accept();
 }

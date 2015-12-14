@@ -27,7 +27,7 @@
 
 QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
     : QTableView( parent )
-    , mGCPList( 0 )
+    , mGCPList( nullptr )
     , mGCPListModel( new QgsGCPListModel( this ) )
     , mNonEditableDelegate( new QgsNonEditableDelegate( this ) )
     , mDmsAndDdDelegate( new QgsDmsAndDdDelegate( this ) )

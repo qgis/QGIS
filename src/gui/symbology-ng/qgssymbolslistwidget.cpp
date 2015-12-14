@@ -44,11 +44,11 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
     : QWidget( parent )
     , mSymbol( symbol )
     , mStyle( style )
-    , mAdvancedMenu( 0 )
-    , mClipFeaturesAction( 0 )
+    , mAdvancedMenu( nullptr )
+    , mClipFeaturesAction( nullptr )
     , mLayer( layer )
-    , mMapCanvas( 0 )
-    , mPresetExpressionContext( 0 )
+    , mMapCanvas( nullptr )
+    , mPresetExpressionContext( nullptr )
 {
   setupUi( this );
 
@@ -407,7 +407,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 );
+  << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( widget->mapCanvas() )
   {

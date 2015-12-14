@@ -35,7 +35,7 @@
 QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas )
     : QDialog( parent )
     , mMapCanvas( canvas )
-    , mDock( 0 )
+    , mDock( nullptr )
 {
   setupUi( this );
 
@@ -89,8 +89,8 @@ QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas )
 }
 
 QgsSnappingDialog::QgsSnappingDialog()
-    : mMapCanvas( NULL )
-    , mDock( NULL )
+    : mMapCanvas( nullptr )
+    , mDock( nullptr )
 {
 }
 
@@ -361,7 +361,7 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
   cbxUnits->setCurrentIndex( defaultSnappingUnit );
   mLayerTreeWidget->setItemWidget( item, 4, cbxUnits );
 
-  QCheckBox *cbxAvoidIntersection = 0;
+  QCheckBox *cbxAvoidIntersection = nullptr;
   if ( currentVectorLayer->geometryType() == QGis::Polygon )
   {
     cbxAvoidIntersection = new QCheckBox( mLayerTreeWidget );
@@ -443,14 +443,14 @@ void QgsSnappingDialog::layersWillBeRemoved( const QStringList& thelayers )
 {
   Q_FOREACH ( const QString& theLayerId, thelayers )
   {
-    QTreeWidgetItem *item = 0;
+    QTreeWidgetItem *item = nullptr;
 
     for ( int i = 0; i < mLayerTreeWidget->topLevelItemCount(); ++i )
     {
       item = mLayerTreeWidget->topLevelItem( i );
       if ( item && item->data( 0, Qt::UserRole ).toString() == theLayerId )
         break;
-      item = 0;
+      item = nullptr;
     }
 
     if ( item )

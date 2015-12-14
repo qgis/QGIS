@@ -28,7 +28,7 @@ class QgsComposerMultiFrame;
 class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 {
   public:
-    QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent = 0 );
+    QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent = nullptr );
     virtual ~QgsComposerItemCommand();
 
     /** Reverses the command*/

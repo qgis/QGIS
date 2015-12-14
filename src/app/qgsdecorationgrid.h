@@ -34,7 +34,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     Q_OBJECT
   public:
     //! Constructor
-    QgsDecorationGrid( QObject* parent = NULL );
+    QgsDecorationGrid( QObject* parent = nullptr );
     //! Destructor
     virtual ~ QgsDecorationGrid();
 

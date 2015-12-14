@@ -64,10 +64,10 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 
 QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFlags flags )
     : QDialog( parent, flags )
-    , mDock( 0 )
+    , mDock( nullptr )
     , mLayer( theLayer )
-    , mRubberBand( 0 )
-    , mCurrentSearchWidgetWrapper( 0 )
+    , mRubberBand( nullptr )
+    , mCurrentSearchWidgetWrapper( nullptr )
 {
   setupUi( this );
 
@@ -275,7 +275,7 @@ void QgsAttributeTableDialog::closeEvent( QCloseEvent* event )
 {
   QDialog::closeEvent( event );
 
-  if ( mDock == NULL )
+  if ( mDock == nullptr )
   {
     QSettings settings;
     settings.setValue( "/Windows/BetterAttributeTable/geometry", saveGeometry() );
@@ -412,7 +412,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, const 
 
   if ( !calculationSuccess )
   {
-    QMessageBox::critical( 0, tr( "Error" ), tr( "An error occured while evaluating the calculation string:\n%1" ).arg( error ) );
+    QMessageBox::critical( nullptr, tr( "Error" ), tr( "An error occured while evaluating the calculation string:\n%1" ).arg( error ) );
     mLayer->destroyEditCommand();
     return;
   }
@@ -424,7 +424,7 @@ void QgsAttributeTableDialog::replaceSearchWidget( QWidget* oldw, QWidget* neww 
 {
   mFilterLayout->removeWidget( oldw );
   oldw->setVisible( false );
-  mFilterLayout->addWidget( neww, 0, 0, 0 );
+  mFilterLayout->addWidget( neww, 0, 0, nullptr );
   neww->setVisible( true );
 }
 
@@ -434,7 +434,7 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
   // replace the search line edit with a search widget that is suited to the selected field
   // delete previous widget
-  if ( mCurrentSearchWidgetWrapper != 0 )
+  if ( mCurrentSearchWidgetWrapper != nullptr )
   {
     mCurrentSearchWidgetWrapper->widget()->setVisible( false );
     delete mCurrentSearchWidgetWrapper;
@@ -491,7 +491,7 @@ void QgsAttributeTableDialog::filterShowAll()
   mFilterButton->setDefaultAction( mActionShowAllFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
   mFilterQuery->setVisible( false );
-  if ( mCurrentSearchWidgetWrapper != 0 )
+  if ( mCurrentSearchWidgetWrapper != nullptr )
   {
     mCurrentSearchWidgetWrapper->widget()->setVisible( false );
   }
@@ -747,7 +747,7 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
 void QgsAttributeTableDialog::filterQueryAccepted()
 {
   if (( mFilterQuery->isVisible() && mFilterQuery->text().isEmpty() ) ||
-      ( mCurrentSearchWidgetWrapper != 0 && mCurrentSearchWidgetWrapper->widget()->isVisible()
+      ( mCurrentSearchWidgetWrapper != nullptr && mCurrentSearchWidgetWrapper->widget()->isVisible()
         && mCurrentSearchWidgetWrapper->expression().isEmpty() ) )
   {
     filterShowAll();
@@ -763,14 +763,14 @@ void QgsAttributeTableDialog::openConditionalStyles()
 
 void QgsAttributeTableDialog::setFilterExpression( const QString& filterString )
 {
-  if ( mCurrentSearchWidgetWrapper == 0 || !mCurrentSearchWidgetWrapper->applyDirectly() )
+  if ( mCurrentSearchWidgetWrapper == nullptr || !mCurrentSearchWidgetWrapper->applyDirectly() )
   {
     mFilterQuery->setText( filterString );
     mFilterButton->setDefaultAction( mActionAdvancedFilter );
     mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
     mFilterQuery->setVisible( true );
     mApplyFilterButton->setVisible( true );
-    if ( mCurrentSearchWidgetWrapper != 0 )
+    if ( mCurrentSearchWidgetWrapper != nullptr )
     {
       // replace search widget widget with the normal filter query line edit
       replaceSearchWidget( mCurrentSearchWidgetWrapper->widget(), mFilterQuery );

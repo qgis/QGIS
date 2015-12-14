@@ -89,7 +89,7 @@ QgsFeatureIterator QgsVectorLayerFeatureSource::getFeatures( const QgsFeatureReq
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
     , mFetchedFid( false )
-    , mEditGeometrySimplifier( 0 )
+    , mEditGeometrySimplifier( nullptr )
 {
   prepareExpressions();
 
@@ -168,7 +168,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
 QgsVectorLayerFeatureIterator::~QgsVectorLayerFeatureIterator()
 {
   delete mEditGeometrySimplifier;
-  mEditGeometrySimplifier = NULL;
+  mEditGeometrySimplifier = nullptr;
 
   qDeleteAll( mExpressionFieldInfo );
 
@@ -602,13 +602,13 @@ void QgsVectorLayerFeatureIterator::addVirtualAttributes( QgsFeature& f )
 bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
 {
   delete mEditGeometrySimplifier;
-  mEditGeometrySimplifier = NULL;
+  mEditGeometrySimplifier = nullptr;
 
   // setup simplification for edited geometries to fetch
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && mSource->mCanBeSimplified )
   {
     mEditGeometrySimplifier = QgsSimplifyMethod::createGeometrySimplifier( simplifyMethod );
-    return mEditGeometrySimplifier != NULL;
+    return mEditGeometrySimplifier != nullptr;
   }
   return false;
 }

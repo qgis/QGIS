@@ -45,7 +45,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
     /**
      * @brief QgsFieldModel creates a model to display the fields of a given layer
      */
-    explicit QgsFieldModel( QObject *parent = 0 );
+    explicit QgsFieldModel( QObject *parent = nullptr );
 
     //! return the index corresponding to a given fieldName
     QModelIndex indexFromName( const QString &fieldName );

@@ -357,8 +357,8 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
           // Mac doesn't have '&' keyboard shortcuts.
           menuName.remove( QChar( '&' ) );
 #endif
-          QAction* before = 0;
-          QMenu* newMenu = 0;
+          QAction* before = nullptr;
+          QMenu* newMenu = nullptr;
           QString dst = menuName;
           dst.remove( QChar( '&' ) );
           Q_FOREACH ( QMenu* menu, theMenus )

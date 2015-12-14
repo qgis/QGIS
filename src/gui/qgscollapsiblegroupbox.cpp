@@ -57,8 +57,8 @@ void QgsCollapsibleGroupBoxBasic::init()
   mInitFlatChecked = false;
   mScrollOnExpand = true;
   mShown = false;
-  mParentScrollArea = 0;
-  mSyncParent = 0;
+  mParentScrollArea = nullptr;
+  mSyncParent = nullptr;
   mSyncGroup = "";
   mAltDown = false;
   mShiftDown = false;
@@ -108,7 +108,7 @@ void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent * event )
   if ( parent() && parent()->parent() )
     mParentScrollArea = dynamic_cast<QScrollArea*>( parent()->parent()->parent() );
   else
-    mParentScrollArea = 0;
+    mParentScrollArea = nullptr;
   if ( mParentScrollArea )
   {
     QgsDebugMsg( "found a QScrollArea parent: " + mParentScrollArea->objectName() );
@@ -262,7 +262,7 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
     }
     else
     {
-      mSyncParent = 0;
+      mSyncParent = nullptr;
     }
 
     if ( mSyncParent )
@@ -500,7 +500,7 @@ QgsCollapsibleGroupBox::~QgsCollapsibleGroupBox()
   saveState();
   if ( mDelSettings ) // local settings obj to delete
     delete mSettings;
-  mSettings = 0; // null the pointer (in case of outside settings obj)
+  mSettings = nullptr; // null the pointer (in case of outside settings obj)
 }
 
 void QgsCollapsibleGroupBox::setSettings( QSettings* settings )

@@ -49,8 +49,8 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
     , mFontColor( QColor( 0, 0, 0 ) )
     , mHAlignment( Qt::AlignLeft )
     , mVAlignment( Qt::AlignTop )
-    , mExpressionLayer( 0 )
-    , mDistanceArea( 0 )
+    , mExpressionLayer( nullptr )
+    , mDistanceArea( nullptr )
 {
   mDistanceArea = new QgsDistanceArea();
   mHtmlUnitsToMM = htmlUnitsToMM();
@@ -233,7 +233,7 @@ void QgsComposerLabel::setHtmlState( int state )
 
 void QgsComposerLabel::setExpressionContext( QgsFeature *feature, QgsVectorLayer* layer, const QMap<QString, QVariant>& substitutions )
 {
-  mExpressionFeature.reset( feature ? new QgsFeature( *feature ) : 0 );
+  mExpressionFeature.reset( feature ? new QgsFeature( *feature ) : nullptr );
   mExpressionLayer = layer;
   mSubstitutions = substitutions;
 
@@ -264,13 +264,13 @@ void QgsComposerLabel::setSubstitutions( const QMap<QString, QVariant>& substitu
 
 void QgsComposerLabel::refreshExpressionContext()
 {
-  mExpressionLayer = 0;
+  mExpressionLayer = nullptr;
   mExpressionFeature.reset();
 
   if ( !mComposition )
     return;
 
-  QgsVectorLayer* layer = 0;
+  QgsVectorLayer* layer = nullptr;
   if ( mComposition->atlasComposition().enabled() )
   {
     layer = mComposition->atlasComposition().coverageLayer();

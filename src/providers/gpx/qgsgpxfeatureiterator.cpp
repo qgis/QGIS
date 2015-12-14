@@ -431,7 +431,7 @@ QgsGeometry* QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack& trk )
   // TODO: support multi line string for segments
 
   if ( trk.segments.isEmpty() )
-    return 0;
+    return nullptr;
 
   // A track consists of several segments. Add all those segments into one.
   int totalPoints = 0;
@@ -440,7 +440,7 @@ QgsGeometry* QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack& trk )
     totalPoints += trk.segments[i].points.size();
   }
   if ( totalPoints == 0 )
-    return 0;
+    return nullptr;
   //QgsDebugMsg( "GPX feature track total points: " + QString::number( totalPoints ) );
 
   // some wkb voodoo
@@ -448,7 +448,7 @@ QgsGeometry* QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack& trk )
   if ( !geo )
   {
     QgsDebugMsg( "Too large track!!!" );
-    return 0;
+    return nullptr;
   }
   std::memset( geo, 0, 9 + 16 * totalPoints );
   geo[0] = QgsApplication::endian();

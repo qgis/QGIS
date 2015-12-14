@@ -35,7 +35,7 @@
 
 QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
     : QWidget( parent )
-    , mContext( 0 )
+    , mContext( nullptr )
     , mEditableScopeIndex( -1 )
     , mShown( false )
 {
@@ -127,7 +127,7 @@ QgsExpressionContextScope* QgsVariableEditorWidget::editableScope() const
 {
   if ( !mContext || mEditableScopeIndex < 0 || mEditableScopeIndex >= mContext->scopeCount() )
   {
-    return 0;
+    return nullptr;
   }
   return mContext->scope( mEditableScopeIndex );
 }
@@ -251,9 +251,9 @@ QIcon QgsVariableEditorTree::mExpandIcon;
 
 QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
     : QTreeWidget( parent )
-    , mEditorDelegate( 0 )
+    , mEditorDelegate( nullptr )
     , mEditableScopeIndex( -1 )
-    , mContext( 0 )
+    , mContext( nullptr )
 {
   // init icons
   if ( mExpandIcon.isNull() )
@@ -282,16 +282,16 @@ QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
 QgsExpressionContextScope* QgsVariableEditorTree::scopeFromItem( QTreeWidgetItem *item ) const
 {
   if ( !item )
-    return 0;
+    return nullptr;
 
   bool ok;
   int contextIndex = item->data( 0, ContextIndex ).toInt( &ok );
   if ( !ok )
-    return 0;
+    return nullptr;
 
   if ( !mContext )
   {
-    return 0;
+    return nullptr;
   }
   else if ( mContext->scopeCount() > contextIndex )
   {
@@ -299,7 +299,7 @@ QgsExpressionContextScope* QgsVariableEditorTree::scopeFromItem( QTreeWidgetItem
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -307,7 +307,7 @@ QTreeWidgetItem* QgsVariableEditorTree::itemFromVariable( QgsExpressionContextSc
 {
   int contextIndex = mContext ? mContext->indexOfScope( scope ) : 0;
   if ( contextIndex < 0 )
-    return 0;
+    return nullptr;
   return mVariableToItem.value( qMakePair( contextIndex, name ) );
 }
 
@@ -315,7 +315,7 @@ QgsExpressionContextScope* QgsVariableEditorTree::editableScope()
 {
   if ( !mContext || mEditableScopeIndex < 0 || mEditableScopeIndex >= mContext->scopeCount() )
   {
-    return 0;
+    return nullptr;
   }
 
   return mContext->scope( mEditableScopeIndex );
@@ -359,7 +359,7 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope* sc
 
     bool readOnly = scope->isReadOnly( name );
     bool isActive = true;
-    QgsExpressionContextScope* activeScope = 0;
+    QgsExpressionContextScope* activeScope = nullptr;
     if ( mContext )
     {
       activeScope = mContext->activeScopeForVariable( name );
@@ -670,22 +670,22 @@ QWidget* VariableEditorDelegate::createEditor( QWidget *parent,
     const QModelIndex &index ) const
 {
   if ( !mParentTree )
-    return 0;
+    return nullptr;
 
   //no editing for top level items
   if ( !index.parent().isValid() )
-    return 0;
+    return nullptr;
 
   QTreeWidgetItem *item = mParentTree->indexToItem( index );
   QgsExpressionContextScope* scope = mParentTree->scopeFromItem( item );
   if ( !item || !scope )
-    return 0;
+    return nullptr;
 
   QString variableName = mParentTree->variableNameFromIndex( index );
 
   //no editing inherited or read-only variables
   if ( scope != mParentTree->editableScope() || scope->isReadOnly( variableName ) )
-    return 0;
+    return nullptr;
 
   QLineEdit *lineEdit = new QLineEdit( parent );
   lineEdit->setText( index.column() == 0 ? variableName : mParentTree->editableScope()->variable( variableName ).toString() );

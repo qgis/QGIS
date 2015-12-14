@@ -44,7 +44,7 @@ class CORE_EXPORT QgsLegendModelV2 : public QgsLayerTreeModel
     Q_OBJECT
 
   public:
-    QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
+    QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
 
     QVariant data( const QModelIndex& index, int role ) const override;
 

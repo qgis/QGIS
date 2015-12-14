@@ -9,7 +9,7 @@
 QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObject* parent )
     : QgsSnappingUtils( parent )
     , mCanvas( canvas )
-    , mProgress( NULL )
+    , mProgress( nullptr )
 {
   connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
   connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
@@ -45,7 +45,7 @@ void QgsMapCanvasSnappingUtils::prepareIndexProgress( int index )
   if ( index == mProgress->maximum() )
   {
     delete mProgress;
-    mProgress = 0;
+    mProgress = nullptr;
     QApplication::restoreOverrideCursor();
   }
 }

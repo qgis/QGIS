@@ -31,7 +31,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     Q_PROPERTY( QString nullValue READ nullValue WRITE setNullValue )
 
   public:
-    QgsFilterLineEdit( QWidget* parent = 0, const QString& nullValue = QString::null );
+    QgsFilterLineEdit( QWidget* parent = nullptr, const QString& nullValue = QString::null );
 
     void setNullValue( const QString& nullValue ) { mNullValue = nullValue; }
 

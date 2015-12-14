@@ -56,7 +56,7 @@ QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry *geom, Qg
     , mBuffer( 0 )
     , mMinWidth( 0 )
 {
-  mGeometry = geom ? new QgsGeometry( *geom ) : 0;
+  mGeometry = geom ? new QgsGeometry( *geom ) : nullptr;
   init();
 }
 
@@ -66,13 +66,13 @@ QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry *geom, Qg
     , mBuffer( 0 )
     , mMinWidth( 0 )
 {
-  mGeometry = geom ? new QgsGeometry( *geom ) : 0;
+  mGeometry = geom ? new QgsGeometry( *geom ) : nullptr;
   init();
 }
 
 QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsFeature& feature, QgsVectorLayer *layer )
     : QgsMapCanvasItem( mapCanvas )
-    , mGeometry( 0 )
+    , mGeometry( nullptr )
     , mLayer( static_cast<QgsMapLayer *>( layer ) )
     , mFeature( feature )
     , mBuffer( 0 )
@@ -127,7 +127,7 @@ void QgsHighlight::setFillColor( const QColor & fillColor )
 
 QgsFeatureRendererV2 * QgsHighlight::getRenderer( QgsRenderContext & context, const QColor & color, const QColor & fillColor )
 {
-  QgsFeatureRendererV2 *renderer = 0;
+  QgsFeatureRendererV2 *renderer = nullptr;
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayer );
   if ( layer && layer->rendererV2() )
   {

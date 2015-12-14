@@ -40,7 +40,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     /**
      * @param parent parent widget
      */
-    QgsRelationEditorWidget( QWidget* parent = NULL );
+    QgsRelationEditorWidget( QWidget* parent = nullptr );
 
     //! Define the view mode for the dual view
     void setViewMode( QgsDualView::ViewMode mode );

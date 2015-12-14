@@ -44,7 +44,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     QgsNewNameDialog( const QString& source = QString::null, const QString& initial = QString::null,
                       const QStringList& extensions = QStringList(), const QStringList& existing = QStringList(),
                       const QRegExp& regexp = QRegExp(), Qt::CaseSensitivity cs = Qt::CaseSensitive,
-                      QWidget *parent = 0, const Qt::WindowFlags& flags = QgisGui::ModalDialogFlags );
+                      QWidget *parent = nullptr, const Qt::WindowFlags& flags = QgisGui::ModalDialogFlags );
 
     /** Sets the hint string for the dialog (the text shown above the name
      * input box).

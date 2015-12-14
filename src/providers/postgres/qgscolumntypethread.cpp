@@ -23,7 +23,7 @@ email                : jef at norbit dot de
 
 QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( QString name, bool useEstimatedMetaData, bool allowGeometrylessTables )
     : QThread()
-    , mConn( 0 )
+    , mConn( nullptr )
     , mName( name )
     , mUseEstimatedMetadata( useEstimatedMetaData )
     , mAllowGeometrylessTables( allowGeometrylessTables )
@@ -64,7 +64,7 @@ void QgsGeomColumnTypeThread::run()
        layerProperties.isEmpty() )
   {
     mConn->unref();
-    mConn = 0;
+    mConn = nullptr;
     return;
   }
 
@@ -110,5 +110,5 @@ void QgsGeomColumnTypeThread::run()
   emit progressMessage( tr( "Table retrieval finished." ) );
 
   mConn->unref();
-  mConn = 0;
+  mConn = nullptr;
 }

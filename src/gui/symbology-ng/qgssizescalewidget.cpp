@@ -102,7 +102,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 );
+  << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( widget->mapCanvas() )
   {
@@ -124,8 +124,8 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsS
     : mSymbol( symbol )
     // we just use the minimumValue and maximumValue from the layer, unfortunately they are
     // non const, so we get the layer from the registry instead
-    , mLayer( layer ? dynamic_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( layer->id() ) ) : 0 )
-    , mMapCanvas( 0 )
+    , mLayer( layer ? dynamic_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( layer->id() ) ) : nullptr )
+    , mMapCanvas( nullptr )
 {
   setupUi( this );
   setWindowFlags( Qt::WindowStaysOnTopHint );
@@ -139,7 +139,7 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsS
   }
   else
   {
-    mLayerTreeLayer = 0;
+    mLayerTreeLayer = nullptr;
   }
 
   treeView->setModel( &mPreviewList );
@@ -247,14 +247,14 @@ void QgsSizeScaleWidget::updatePreview()
       symbol->setDataDefinedSize( QgsDataDefined() );
       symbol->setDataDefinedAngle( QgsDataDefined() ); // to avoid symbol not beeing drawn
       symbol->setSize( expr->size( breaks[i] ) );
-      node.reset( new QgsSymbolV2LegendNode( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), 0 ) ) );
+      node.reset( new QgsSymbolV2LegendNode( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), nullptr ) ) );
     }
     else if ( dynamic_cast<const QgsLineSymbolV2*>( mSymbol ) )
     {
       QScopedPointer< QgsLineSymbolV2 > symbol( static_cast<QgsLineSymbolV2*>( mSymbol->clone() ) );
       symbol->setDataDefinedWidth( QgsDataDefined() );
       symbol->setWidth( expr->size( breaks[i] ) );
-      node.reset( new QgsSymbolV2LegendNode( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), 0 ) ) );
+      node.reset( new QgsSymbolV2LegendNode( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), nullptr ) ) );
 
     }
 
@@ -290,7 +290,7 @@ void QgsSizeScaleWidget::computeFromLayerTriggered()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
+  << QgsExpressionContextUtils::atlasScope( nullptr )
   << QgsExpressionContextUtils::layerScope( mLayer );
 
   if ( ! expression.prepare( &context ) )

@@ -119,7 +119,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static void drawStippledBackground( QPainter* painter, QRect rect );
 
     //! @note customContext parameter added in 2.6
-    static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size, QgsRenderContext* customContext = 0 );
+    static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size, QgsRenderContext* customContext = nullptr );
     static QPixmap colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size );
 
     /** Returns the maximum estimated bleed for the symbol */
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
       {
         //could not cast
         delete tmpSymbol;
-        return NULL;
+        return nullptr;
       }
     }
 
@@ -189,12 +189,12 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     //! @note not available in python bindings
     static void lineToSld( QDomDocument &doc, QDomElement &element,
                            Qt::PenStyle penStyle, const QColor& color, double width = -1,
-                           const Qt::PenJoinStyle *penJoinStyle = 0, const Qt::PenCapStyle *penCapStyle = 0,
-                           const QVector<qreal> *customDashPattern = 0, double dashOffset = 0.0 );
+                           const Qt::PenJoinStyle *penJoinStyle = nullptr, const Qt::PenCapStyle *penCapStyle = nullptr,
+                           const QVector<qreal> *customDashPattern = nullptr, double dashOffset = 0.0 );
     static bool lineFromSld( QDomElement &element,
                              Qt::PenStyle &penStyle, QColor &color, double &width,
-                             Qt::PenJoinStyle *penJoinStyle = 0, Qt::PenCapStyle *penCapStyle = 0,
-                             QVector<qreal> *customDashPattern = 0, double *dashOffset = 0 );
+                             Qt::PenJoinStyle *penJoinStyle = nullptr, Qt::PenCapStyle *penCapStyle = nullptr,
+                             QVector<qreal> *customDashPattern = nullptr, double *dashOffset = nullptr );
 
     static void externalGraphicToSld( QDomDocument &doc, QDomElement &element,
                                       const QString& path, const QString& mime,
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
                                         double &borderWidth, double &size );
 
     static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
-                                     const QString& path, const QString& format, int *markIndex = 0,
+                                     const QString& path, const QString& format, int *markIndex = nullptr,
                                      const QColor& color = QColor(), double size = -1 );
     static bool externalMarkerFromSld( QDomElement &element,
                                        QString &path, QString &format, int &markIndex,
@@ -236,7 +236,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
                                        Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
                                        Qt::PenCapStyle capStyle = Qt::FlatCap,
                                        double offset = 0.0,
-                                       const QVector<qreal>* dashPattern = 0 );
+                                       const QVector<qreal>* dashPattern = nullptr );
     /** Create ogr feature style string for brush
      @param fillColr fill color*/
     static QString ogrFeatureStyleBrush( const QColor& fillColr );

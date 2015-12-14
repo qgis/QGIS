@@ -27,7 +27,7 @@ QgsVectorLayerLabelProvider* QgsVectorLayerSimpleLabeling::provider( QgsVectorLa
   if ( layer->customProperty( "labeling" ).toString() == QLatin1String( "pal" ) && layer->labelsEnabled() )
     return new QgsVectorLayerLabelProvider( layer, false );
 
-  return 0;
+  return nullptr;
 }
 
 QString QgsVectorLayerSimpleLabeling::type() const

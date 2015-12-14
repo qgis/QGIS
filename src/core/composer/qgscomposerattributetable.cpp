@@ -93,8 +93,8 @@ bool QgsComposerAttributeTableCompare::operator()( const QgsAttributeMap& m1, co
 
 QgsComposerAttributeTable::QgsComposerAttributeTable( QgsComposition* composition )
     : QgsComposerTable( composition )
-    , mVectorLayer( 0 )
-    , mComposerMap( 0 )
+    , mVectorLayer( nullptr )
+    , mComposerMap( nullptr )
     , mMaximumNumberOfFeatures( 5 )
     , mShowOnlyVisibleFeatures( false )
     , mFilterFeatures( false )
@@ -482,7 +482,7 @@ void QgsComposerAttributeTable::removeLayer( const QString& layerId )
   {
     if ( layerId == mVectorLayer->id() )
     {
-      mVectorLayer = 0;
+      mVectorLayer = nullptr;
       //remove existing columns
       qDeleteAll( mColumns );
       mColumns.clear();
@@ -609,7 +609,7 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
   int composerMapId = itemElem.attribute( "composerMap", "-1" ).toInt();
   if ( composerMapId == -1 )
   {
-    mComposerMap = 0;
+    mComposerMap = nullptr;
   }
 
   if ( composition() )
@@ -618,7 +618,7 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
   }
   else
   {
-    mComposerMap = 0;
+    mComposerMap = nullptr;
   }
 
   if ( mComposerMap )
@@ -631,7 +631,7 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
   QString layerId = itemElem.attribute( "vectorLayer", "not_existing" );
   if ( layerId == "not_existing" )
   {
-    mVectorLayer = 0;
+    mVectorLayer = nullptr;
   }
   else
   {

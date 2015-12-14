@@ -79,7 +79,7 @@ double QgsTolerance::vertexSearchRadius( const QgsMapSettings& mapSettings )
   UnitType units = ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt();
   if ( units == LayerUnits )
     units = ProjectUnits;
-  return toleranceInProjectUnits( tolerance, 0, mapSettings, units );
+  return toleranceInProjectUnits( tolerance, nullptr, mapSettings, units );
 }
 
 double QgsTolerance::vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings )

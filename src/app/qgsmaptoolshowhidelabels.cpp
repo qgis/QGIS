@@ -32,7 +32,7 @@ QgsMapToolShowHideLabels::QgsMapToolShowHideLabels( QgsMapCanvas* canvas )
     , mDragging( false )
 {
   mToolName = tr( "Show/hide labels" );
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 }
 
 QgsMapToolShowHideLabels::~QgsMapToolShowHideLabels()
@@ -96,7 +96,7 @@ void QgsMapToolShowHideLabels::canvasReleaseEvent( QgsMapMouseEvent* e )
 
     mRubberBand->reset( QGis::Polygon );
     delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand = nullptr;
   }
 
   mDragging = false;

@@ -832,7 +832,7 @@ void QgsDxfExport::writeBlocks()
       continue;
 
     // if point symbol layer and no data defined properties: write block
-    QgsSymbolV2RenderContext ctx( ct, QgsSymbolV2::MapUnit, slIt->second->alpha(), false, slIt->second->renderHints(), 0 );
+    QgsSymbolV2RenderContext ctx( ct, QgsSymbolV2::MapUnit, slIt->second->alpha(), false, slIt->second->renderHints(), nullptr );
     ml->startRender( ctx );
 
     // markers with data defined properties are inserted inline
@@ -863,7 +863,7 @@ void QgsDxfExport::writeBlocks()
     writeGroup( 1, "" );
 
     // maplayer 0 -> block receives layer from INSERT statement
-    ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ), "0", &ctx, 0 );
+    ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ), "0", &ctx, nullptr );
 
     writeGroup( 0, "ENDBLK" );
     writeHandle();
@@ -924,7 +924,7 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
-    QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM, 1.0, false, 0, 0 );
+    QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM, 1.0, false, 0, nullptr );
     QgsFeatureRendererV2* renderer = vl->rendererV2();
     if ( !renderer )
     {
@@ -945,7 +945,7 @@ void QgsDxfExport::writeEntities()
     if ( !lp->prepare( ctx, attributes ) )
     {
       engine.removeProvider( lp );
-      lp = 0;
+      lp = nullptr;
     }
 
     if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology &&
@@ -973,7 +973,7 @@ void QgsDxfExport::writeEntities()
       sctx.setFeature( &fet );
       if ( mSymbologyExport == NoSymbology )
       {
-        addFeature( sctx, lName, 0, 0 ); // no symbology at all
+        addFeature( sctx, lName, nullptr, nullptr ); // no symbology at all
       }
       else
       {
@@ -1040,7 +1040,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
   ctx.expressionContext() << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( layer );
-  QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM, 1.0, false, 0, 0 );
+  QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM, 1.0, false, 0, nullptr );
   renderer->startRender( ctx, layer->fields() );
 
   // get iterator
@@ -1058,7 +1058,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
 
   // fetch features
   QgsFeature fet;
-  QgsSymbolV2* featureSymbol = 0;
+  QgsSymbolV2* featureSymbol = nullptr;
   while ( fit.nextFeature( fet ) )
   {
     ctx.expressionContext().setFeature( fet );

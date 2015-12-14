@@ -32,7 +32,7 @@ class QgsGeometryCheckerResultTab : public QWidget
 {
     Q_OBJECT
   public:
-    QgsGeometryCheckerResultTab( QgisInterface* iface, QgsGeometryChecker* checker, QgsFeaturePool *featurePool, QTabWidget *tabWidget, QWidget* parent = 0 );
+    QgsGeometryCheckerResultTab( QgisInterface* iface, QgsGeometryChecker* checker, QgsFeaturePool *featurePool, QTabWidget *tabWidget, QWidget* parent = nullptr );
     ~QgsGeometryCheckerResultTab();
     void showCheckMessages();
     bool isCloseable() const { return mCloseable; }
@@ -71,7 +71,7 @@ class QgsGeometryCheckerResultTab : public QWidget
     void setDefaultResolutionMethods();
     void storeDefaultResolutionMethod( int ) const;
     void checkRemovedLayer( const QStringList &ids );
-    void clearAttribTableDialog() { mAttribTableDialog = 0; }
+    void clearAttribTableDialog() { mAttribTableDialog = nullptr; }
 };
 
 #endif // QGS_GEOMETRY_CHECKER_RESULT_TAB_H

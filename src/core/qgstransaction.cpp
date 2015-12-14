@@ -32,13 +32,13 @@ QgsTransaction* QgsTransaction::create( const QString& connString, const QString
   QLibrary* lib = QgsProviderRegistry::instance()->providerLibrary( providerKey );
   if ( !lib )
   {
-    return 0;
+    return nullptr;
   }
 
   createTransaction_t* createTransaction = ( createTransaction_t* ) cast_to_fptr( lib->resolve( "createTransaction" ) );
   if ( !createTransaction )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsTransaction* ts = createTransaction( connString );
@@ -52,13 +52,13 @@ QgsTransaction* QgsTransaction::create( const QStringList& layerIds )
 {
   if ( layerIds.isEmpty() )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerIds.first() ) );
   if ( !layer )
   {
-    return 0;
+    return nullptr;
   }
 
   QString connStr = QgsDataSourceURI( layer->source() ).connectionInfo();
@@ -66,7 +66,7 @@ QgsTransaction* QgsTransaction::create( const QStringList& layerIds )
   QgsTransaction* ts = QgsTransaction::create( connStr, providerKey );
   if ( !ts )
   {
-    return 0;
+    return nullptr;
   }
 
   Q_FOREACH ( const QString& layerId, layerIds )
@@ -74,7 +74,7 @@ QgsTransaction* QgsTransaction::create( const QStringList& layerIds )
     if ( !ts->addLayer( layerId ) )
     {
       delete ts;
-      return 0;
+      return nullptr;
     }
   }
   return ts;
@@ -88,7 +88,7 @@ QgsTransaction::QgsTransaction( const QString& connString )
 
 QgsTransaction::~QgsTransaction()
 {
-  setLayerTransactionIds( 0 );
+  setLayerTransactionIds( nullptr );
 }
 
 bool QgsTransaction::addLayer( const QString& layerId )
@@ -125,7 +125,7 @@ bool QgsTransaction::addLayer( QgsVectorLayer* layer )
     return false;
   }
 
-  if ( layer->dataProvider()->transaction() != 0 )
+  if ( layer->dataProvider()->transaction() != nullptr )
   {
     return false;
   }
@@ -182,7 +182,7 @@ bool QgsTransaction::commit( QString& errorMsg )
     return false;
   }
 
-  setLayerTransactionIds( 0 );
+  setLayerTransactionIds( nullptr );
   mTransactionActive = false;
   return true;
 }
@@ -207,7 +207,7 @@ bool QgsTransaction::rollback( QString& errorMsg )
     return false;
   }
 
-  setLayerTransactionIds( 0 );
+  setLayerTransactionIds( nullptr );
   mTransactionActive = false;
 
   emit afterRollback();

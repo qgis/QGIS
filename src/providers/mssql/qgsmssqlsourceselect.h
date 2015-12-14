@@ -39,7 +39,7 @@ class QgsMssqlSourceSelectDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsMssqlSourceSelectDelegate( QObject *parent = NULL )
+    explicit QgsMssqlSourceSelectDelegate( QObject *parent = nullptr )
         : QItemDelegate( parent )
     {}
 
@@ -95,7 +95,7 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     static void deleteConnection( const QString& key );
 
     //! Constructor
-    QgsMssqlSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsMssqlSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsMssqlSourceSelect();
     //! Populate the connection list combo box

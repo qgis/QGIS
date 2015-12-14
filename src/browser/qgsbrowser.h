@@ -30,7 +30,7 @@ class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
 {
     Q_OBJECT
   public:
-    QgsBrowser( QWidget *parent = 0, const Qt::WindowFlags& flags = 0 );
+    QgsBrowser( QWidget *parent = nullptr, const Qt::WindowFlags& flags = nullptr );
     ~QgsBrowser();
 
     // Expand to given path

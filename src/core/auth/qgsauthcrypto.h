@@ -41,13 +41,13 @@ class CORE_EXPORT QgsAuthCrypto
     static void passwordKeyHash( const QString &pass,
                                  QString *salt,
                                  QString *hash,
-                                 QString *cipheriv = 0 );
+                                 QString *cipheriv = nullptr );
 
     /** Verify existing master password hash to a re-generated one */
     static bool verifyPasswordKeyHash( const QString& pass,
                                        const QString& salt,
                                        const QString& hash,
-                                       QString *hashderived = 0 );
+                                       QString *hashderived = nullptr );
 
   private:
     static QString encryptdecrypt( const QString& passstr,

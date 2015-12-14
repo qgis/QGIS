@@ -261,7 +261,7 @@ bool QgsPostgresFeatureIterator::close()
   {
     mConn->unlock();
   }
-  mConn = 0;
+  mConn = nullptr;
 
   while ( !mFeatureQueue.empty() )
   {
@@ -585,7 +585,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
     }
     else
     {
-      feature.setGeometry( 0 );
+      feature.setGeometry( nullptr );
     }
 
     col++;
@@ -693,7 +693,7 @@ QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider* p
   }
   else
   {
-    mTransactionConnection = 0;
+    mTransactionConnection = nullptr;
   }
 }
 

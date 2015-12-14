@@ -142,7 +142,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   blockSignals( false );
 }
 
-QgsCompositionWidget::QgsCompositionWidget(): QWidget( 0 ), mComposition( 0 )
+QgsCompositionWidget::QgsCompositionWidget(): QWidget( nullptr ), mComposition( nullptr )
 {
   setupUi( this );
 }
@@ -171,7 +171,7 @@ void QgsCompositionWidget::populateDataDefinedButtons()
     return;
   }
 
-  QgsVectorLayer* vl = 0;
+  QgsVectorLayer* vl = nullptr;
   QgsAtlasComposition* atlas = &mComposition->atlasComposition();
 
   if ( atlas && atlas->enabled() )
@@ -570,7 +570,7 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
     return;
   }
 
-  QgsVectorLayer* coverageLayer = 0;
+  QgsVectorLayer* coverageLayer = nullptr;
   // use the atlas coverage layer, if any
   if ( mComposition->atlasComposition().enabled() )
   {
@@ -704,7 +704,7 @@ void QgsCompositionWidget::onItemRemoved( QgsComposerItem* item )
   }
   if ( mWorldFileMapComboBox->count() == 0 )
   {
-    mComposition->setWorldFileMap( 0 );
+    mComposition->setWorldFileMap( nullptr );
   }
 }
 
@@ -716,7 +716,7 @@ void QgsCompositionWidget::on_mWorldFileMapComboBox_currentIndexChanged( int ind
   }
   if ( index == -1 )
   {
-    mComposition->setWorldFileMap( 0 );
+    mComposition->setWorldFileMap( nullptr );
   }
   else
   {

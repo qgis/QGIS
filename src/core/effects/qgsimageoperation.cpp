@@ -675,7 +675,7 @@ void QgsImageOperation::GaussianBlurOperation::operator()( QgsImageOperation::Im
   int sourceBpl = block.image->bytesPerLine();
 
   unsigned char* outputLineRef = mDestImage->scanLine( block.beginLine );
-  QRgb* destRef = 0;
+  QRgb* destRef = nullptr;
   if ( mDirection == ByRow )
   {
     unsigned char* sourceFirstLine = block.image->scanLine( 0 );

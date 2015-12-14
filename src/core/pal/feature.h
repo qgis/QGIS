@@ -108,7 +108,7 @@ namespace pal
        * @param mapShape optional geometry of source polygon
        * @returns the number of generated candidates
        */
-      int setPositionForPoint( double x, double y, QList<LabelPosition *> &lPos, double angle, PointSet *mapShape = 0 );
+      int setPositionForPoint( double x, double y, QList<LabelPosition *> &lPos, double angle, PointSet *mapShape = nullptr );
 
       /** Generate one candidate over or offset the specified point.
        * @param x x coordinate of the point
@@ -118,7 +118,7 @@ namespace pal
        * @param mapShape optional geometry of source polygon
        * @returns the number of generated candidates (always 1)
        */
-      int setPositionOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle, PointSet *mapShape = 0 );
+      int setPositionOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle, PointSet *mapShape = nullptr );
 
       /** Generate candidates for line feature.
        * @param lPos pointer to an array of candidates, will be filled by generated candidates

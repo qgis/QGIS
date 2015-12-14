@@ -23,7 +23,7 @@
 
 QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, const QgsPoint &pixelCoords, QWidget* parent )
     : QDialog( parent, Qt::Dialog )
-    , mPrevMapTool( NULL )
+    , mPrevMapTool( nullptr )
     , mQgisCanvas( qgisCanvas )
     , mPixelCoords( pixelCoords )
 {
@@ -131,7 +131,7 @@ void QgsMapCoordsDialog::setToolEmitPoint( bool isEnable )
   {
     parentWidget()->showMinimized();
 
-    assert( parentWidget()->parentWidget() != 0 );
+    assert( parentWidget()->parentWidget() != nullptr );
     parentWidget()->parentWidget()->activateWindow();
     parentWidget()->parentWidget()->raise();
 

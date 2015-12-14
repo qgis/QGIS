@@ -27,7 +27,7 @@ class QgsPixmapLabel : public QLabel
     Q_OBJECT
 
   public:
-    explicit QgsPixmapLabel( QWidget *parent = 0 );
+    explicit QgsPixmapLabel( QWidget *parent = nullptr );
     /**
      * Calculates the height for the given width.
      *

@@ -15,14 +15,14 @@
 #include "qgspythonrunner.h"
 #include "qgslogger.h"
 
-QgsPythonRunner* QgsPythonRunner::mInstance = NULL;
+QgsPythonRunner* QgsPythonRunner::mInstance = nullptr;
 
 ///////////////////////////
 // static methods
 
 bool QgsPythonRunner::isValid()
 {
-  return mInstance != NULL;
+  return mInstance != nullptr;
 }
 
 bool QgsPythonRunner::run( const QString& command, const QString& messageOnError )

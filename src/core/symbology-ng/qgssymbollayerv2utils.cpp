@@ -581,7 +581,7 @@ QPicture QgsSymbolLayerV2Utils::symbolLayerPreviewPicture( QgsSymbolLayerV2* lay
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = createRenderContext( &painter );
   renderContext.setForceVectorOutput( true );
-  QgsSymbolV2RenderContext symbolContext( renderContext, units, 1.0, false, 0, 0, 0, scale );
+  QgsSymbolV2RenderContext symbolContext( renderContext, units, 1.0, false, 0, nullptr, nullptr, scale );
   layer->drawPreviewIcon( symbolContext, size );
   painter.end();
   return picture;
@@ -595,7 +595,7 @@ QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, Qg
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = createRenderContext( &painter );
-  QgsSymbolV2RenderContext symbolContext( renderContext, u, 1.0, false, 0, 0, 0, scale );
+  QgsSymbolV2RenderContext symbolContext( renderContext, u, 1.0, false, 0, nullptr, nullptr, scale );
   layer->drawPreviewIcon( symbolContext, size );
   painter.end();
   return QIcon( pixmap );
@@ -768,7 +768,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QGis::GeometryType
   {
     int quadSegments = 0; // we want mitre joins, not round joins
     double mitreLimit = 2.0; // the default value in GEOS (5.0) allows for fairly sharp endings
-    QgsGeometry* offsetGeom = 0;
+    QgsGeometry* offsetGeom = nullptr;
     if ( geometryType == QGis::Polygon )
       offsetGeom = tempGeometry->buffer( -dist, quadSegments, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, mitreLimit );
     else
@@ -905,7 +905,7 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( const QDomElement &element )
       {
         QgsSymbolLayerV2* layer = loadSymbolLayer( e );
 
-        if ( layer != NULL )
+        if ( layer != nullptr )
         {
           // Dealing with sub-symbols nested into a layer
           QDomElement s = e.firstChildElement( "symbol" );
@@ -928,12 +928,12 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( const QDomElement &element )
   if ( layers.isEmpty() )
   {
     QgsDebugMsg( "no layers for symbol" );
-    return NULL;
+    return nullptr;
   }
 
   QString symbolType = element.attribute( "type" );
 
-  QgsSymbolV2* symbol = 0;
+  QgsSymbolV2* symbol = nullptr;
   if ( symbolType == "line" )
     symbol = new QgsLineSymbolV2( layers );
   else if ( symbolType == "fill" )
@@ -943,7 +943,7 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( const QDomElement &element )
   else
   {
     QgsDebugMsg( "unknown symbol type " + symbolType );
-    return NULL;
+    return nullptr;
   }
 
   if ( element.hasAttribute( "outputUnit" ) )
@@ -990,7 +990,7 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Utils::loadSymbolLayer( QDomElement& element )
   else
   {
     QgsDebugMsg( "unknown class " + layerClass );
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -1027,7 +1027,7 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( const QString& name, QgsSymbolV2*
     if ( !QgsPaintEffectRegistry::isDefaultStack( layer->paintEffect() ) )
       layer->paintEffect()->saveProperties( doc, layerEl );
 
-    if ( layer->subSymbol() != NULL )
+    if ( layer->subSymbol() != nullptr )
     {
       QString subname = QString( "@%1@%2" ).arg( name ).arg( i );
       QDomElement subEl = saveSymbol( subname, layer->subSymbol(), doc );
@@ -1058,7 +1058,7 @@ bool QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( QDomElement& element
   if ( element.isNull() )
     return false;
 
-  QgsSymbolLayerV2 *l = 0;
+  QgsSymbolLayerV2 *l = nullptr;
 
   QString symbolizerName = element.localName();
 
@@ -1151,7 +1151,7 @@ bool QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( QDomElement& element
     }
     else
     {
-      QgsSymbolLayerV2 *l = 0;
+      QgsSymbolLayerV2 *l = nullptr;
 
       switch ( geomType )
       {
@@ -1205,10 +1205,10 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Utils::createFillLayerFromSld( QDomElement &el
   if ( fillElem.isNull() )
   {
     QgsDebugMsg( "Fill element not found" );
-    return NULL;
+    return nullptr;
   }
 
-  QgsSymbolLayerV2 *l = 0;
+  QgsSymbolLayerV2 *l = nullptr;
 
   if ( needLinePatternFill( element ) )
     l = QgsSymbolLayerV2Registry::instance()->createSymbolLayerFromSld( "LinePatternFill", element );
@@ -1228,10 +1228,10 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Utils::createLineLayerFromSld( QDomElement &el
   if ( strokeElem.isNull() )
   {
     QgsDebugMsg( "Stroke element not found" );
-    return NULL;
+    return nullptr;
   }
 
-  QgsSymbolLayerV2 *l = 0;
+  QgsSymbolLayerV2 *l = nullptr;
 
   if ( needMarkerLine( element ) )
     l = QgsSymbolLayerV2Registry::instance()->createSymbolLayerFromSld( "MarkerLine", element );
@@ -1247,10 +1247,10 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Utils::createMarkerLayerFromSld( QDomElement &
   if ( graphicElem.isNull() )
   {
     QgsDebugMsg( "Graphic element not found" );
-    return NULL;
+    return nullptr;
   }
 
-  QgsSymbolLayerV2 *l = 0;
+  QgsSymbolLayerV2 *l = nullptr;
 
   if ( needFontMarker( element ) )
     l = QgsSymbolLayerV2Registry::instance()->createSymbolLayerFromSld( "FontMarker", element );
@@ -1493,7 +1493,7 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
     QVector<qreal> customDashPattern;
 
     if ( lineFromSld( strokeElem, borderStyle, borderColor, borderWidth,
-                      0, 0, &customDashPattern, &dashOffset ) )
+                      nullptr, nullptr, &customDashPattern, &dashOffset ) )
       validBorder = true;
 
     if ( validFill || validBorder )
@@ -1637,7 +1637,7 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
 
           QDomElement markStrokeElem = graphicChildElem.firstChildElement( "Stroke" );
           if ( lineFromSld( markStrokeElem, borderStyle, borderColor, borderWidth,
-                            0, 0, &customDashPattern, &dashOffset ) )
+                            nullptr, nullptr, &customDashPattern, &dashOffset ) )
             validBorder = true;
         }
 
@@ -2673,7 +2673,7 @@ QgsSymbolV2Map QgsSymbolLayerV2Utils::loadSymbols( QDomElement& element )
     if ( e.tagName() == "symbol" )
     {
       QgsSymbolV2* symbol = QgsSymbolLayerV2Utils::loadSymbol( e );
-      if ( symbol != NULL )
+      if ( symbol != nullptr )
         symbols.insert( e.attribute( "name" ), symbol );
     }
     else
@@ -2781,7 +2781,7 @@ QgsVectorColorRampV2* QgsSymbolLayerV2Utils::loadColorRamp( QDomElement& element
   else
   {
     QgsDebugMsg( "unknown colorramp type " + rampType );
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -3836,7 +3836,7 @@ bool QgsSymbolLayerV2Utils::pointInPolygon( const QPolygonF &points, const QPoin
 QgsExpression* QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( const QString& fieldOrExpression )
 {
   if ( fieldOrExpression.isEmpty() )
-    return 0;
+    return nullptr;
 
   QgsExpression* expr = new QgsExpression( fieldOrExpression );
   if ( !expr->hasParserError() )

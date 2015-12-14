@@ -117,7 +117,7 @@ static CPLErr rescalePostWarpChunkProcessor( void* pKern, void* pArg )
 
 
 QgsAlignRaster::QgsAlignRaster()
-    : mProgressHandler( 0 )
+    : mProgressHandler( nullptr )
 {
   // parameters
   mCellSizeX = mCellSizeY = 0;
@@ -267,7 +267,7 @@ bool QgsAlignRaster::checkInputParameters()
 
     QSizeF cs;
     QgsRectangle extent;
-    if ( !suggestedWarpOutput( info, mCrsWkt, &cs, 0, &extent ) )
+    if ( !suggestedWarpOutput( info, mCrsWkt, &cs, nullptr, &extent ) )
     {
       mErrorMessage = QString( "Failed to get suggested warp output.\n\n"
                                "File:\n%1\n\n"
@@ -444,7 +444,7 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
   // Create the output file.
   GDALDatasetH hDstDS;
   hDstDS = GDALCreate( hDriver, raster.outputFilename.toLocal8Bit().constData(), mXSize, mYSize,
-                       bandCount, eDT, NULL );
+                       bandCount, eDT, nullptr );
   if ( !hDstDS )
   {
     GDALClose( hSrcDS );
@@ -458,7 +458,7 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
 
   // Copy the color table, if required.
   GDALColorTableH hCT = GDALGetRasterColorTable( GDALGetRasterBand( hSrcDS, 1 ) );
-  if ( hCT != NULL )
+  if ( hCT != nullptr )
     GDALSetRasterColorTable( GDALGetRasterBand( hDstDS, 1 ), hCT );
 
   // -----------------------------------------------------------------------
@@ -522,7 +522,7 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo& info
   // to destination georeferenced coordinates (not destination
   // pixel line).  We do that by omitting the destination dataset
   // handle (setting it to NULL).
-  void* hTransformArg = GDALCreateGenImgProjTransformer( info.mDataset, info.mCrsWkt.toAscii().constData(), NULL, destWkt.toAscii().constData(), FALSE, 0, 1 );
+  void* hTransformArg = GDALCreateGenImgProjTransformer( info.mDataset, info.mCrsWkt.toAscii().constData(), nullptr, destWkt.toAscii().constData(), FALSE, 0, 1 );
   if ( !hTransformArg )
     return false;
 

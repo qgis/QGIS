@@ -104,14 +104,14 @@ bool QgsConditionalLayerStyles::readXml( const QDomNode &node )
 
 QgsConditionalStyle::QgsConditionalStyle()
     : mValid( false )
-    , mSymbol( 0 )
+    , mSymbol( nullptr )
     , mBackColor( QColor( 0, 0, 0, 0 ) )
     , mTextColor( QColor( 0, 0, 0, 0 ) )
 {}
 
 QgsConditionalStyle::QgsConditionalStyle( const QString& rule )
     : mValid( false )
-    , mSymbol( 0 )
+    , mSymbol( nullptr )
     , mBackColor( QColor( 0, 0, 0, 0 ) )
     , mTextColor( QColor( 0, 0, 0, 0 ) )
 {

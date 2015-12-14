@@ -58,7 +58,7 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* th
 
   //Initialize varaibles
   mQueryDefinitionMap = new QMap<int, eVisQueryDefinition>;
-  mDatabaseConnection = 0;
+  mDatabaseConnection = nullptr;
 
   //Create a new instance of the file selector
   mDatabaseLayerFieldSelector = new eVisDatabaseLayerFieldSelectionGui( this, fl );
@@ -129,18 +129,18 @@ void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString& layerName, co
 void eVisDatabaseConnectionGui::on_buttonBox_accepted()
 {
   //Deallocate memory, basically a predescructor
-  if ( 0 != mDatabaseConnection )
+  if ( nullptr != mDatabaseConnection )
   {
     mDatabaseConnection->close();
     delete( mDatabaseConnection );
   }
 
-  if ( 0 != mDatabaseLayerFieldSelector )
+  if ( nullptr != mDatabaseLayerFieldSelector )
   {
     delete( mDatabaseLayerFieldSelector );
   }
 
-  if ( 0 != mQueryDefinitionMap )
+  if ( nullptr != mQueryDefinitionMap )
   {
     mQueryDefinitionMap->clear();
     delete mQueryDefinitionMap;
@@ -273,7 +273,7 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
     }
 
     //If there is aready a database connection object, reset with the current parameters
-    if ( 0 != mDatabaseConnection )
+    if ( nullptr != mDatabaseConnection )
     {
       mDatabaseConnection->resetConnectionParameters( leDatabaseHost->text(), leDatabasePort->text().toInt(), leDatabaseName->text(), leDatabaseUsername->text(), leDatabasePassword->text(), myDatabaseType );
     }
@@ -467,11 +467,11 @@ void eVisDatabaseConnectionGui::on_pbtnRunQuery_clicked()
   if ( !teditSqlStatement->toPlainText().isEmpty() )
   {
     //Verify that we have an active database connection
-    if ( 0 != mDatabaseConnection )
+    if ( nullptr != mDatabaseConnection )
     {
       //Execute query
       QSqlQuery* myResults = mDatabaseConnection->query( teditSqlStatement->toPlainText() );
-      if ( 0 == myResults )
+      if ( nullptr == myResults )
       {
         teditConsole->append( tr( "Error: Query failed: %1" ).arg( mDatabaseConnection->lastError() ) );
       }

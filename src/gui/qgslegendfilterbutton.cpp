@@ -23,8 +23,8 @@
 
 QgsLegendFilterButton::QgsLegendFilterButton( QWidget* parent ) :
     QToolButton( parent )
-    , mMenu( 0 )
-    , mLayer( 0 )
+    , mMenu( nullptr )
+    , mLayer( nullptr )
 {
   mMenu = new QMenu( this );
   mSetExpressionAction = new QAction( tr( "Edit filter expression" ), mMenu );

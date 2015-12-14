@@ -17,7 +17,7 @@
 
 #include <QSettings>
 
-QgsShortcutsManager* QgsShortcutsManager::mInstance = NULL;
+QgsShortcutsManager* QgsShortcutsManager::mInstance = nullptr;
 
 QgsShortcutsManager::QgsShortcutsManager( QObject *parent ) : QObject( parent )
 {
@@ -25,7 +25,7 @@ QgsShortcutsManager::QgsShortcutsManager( QObject *parent ) : QObject( parent )
 
 QgsShortcutsManager::~QgsShortcutsManager()
 {
-  mInstance = 0;
+  mInstance = nullptr;
 }
 
 QgsShortcutsManager* QgsShortcutsManager::instance( QObject *parent )
@@ -87,7 +87,7 @@ bool QgsShortcutsManager::setActionShortcut( QAction* action, const QString& sho
 QAction* QgsShortcutsManager::actionForShortcut( const QKeySequence& s )
 {
   if ( s.isEmpty() )
-    return NULL;
+    return nullptr;
 
   for ( ActionsHash::iterator it = mActions.begin(); it != mActions.end(); ++it )
   {
@@ -95,7 +95,7 @@ QAction* QgsShortcutsManager::actionForShortcut( const QKeySequence& s )
       return it.key();
   }
 
-  return NULL;
+  return nullptr;
 }
 
 QAction* QgsShortcutsManager::actionByName( const QString& name )
@@ -106,7 +106,7 @@ QAction* QgsShortcutsManager::actionByName( const QString& name )
       return it.key();
   }
 
-  return NULL;
+  return nullptr;
 }
 
 void QgsShortcutsManager::registerAllChildrenActions( QObject* object )

@@ -25,8 +25,8 @@ const QString QgsFeatureRequest::AllAttributes = QString( "#!allattributes!#" );
 QgsFeatureRequest::QgsFeatureRequest()
     : mFilter( FilterNone )
     , mFilterFid( -1 )
-    , mFilterExpression( 0 )
-    , mFlags( 0 )
+    , mFilterExpression( nullptr )
+    , mFlags( nullptr )
     , mLimit( -1 )
 {
 }
@@ -34,8 +34,8 @@ QgsFeatureRequest::QgsFeatureRequest()
 QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
     : mFilter( FilterFid )
     , mFilterFid( fid )
-    , mFilterExpression( 0 )
-    , mFlags( 0 )
+    , mFilterExpression( nullptr )
+    , mFlags( nullptr )
     , mLimit( -1 )
 {
 }
@@ -44,8 +44,8 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
     : mFilter( FilterRect )
     , mFilterRect( rect )
     , mFilterFid( -1 )
-    , mFilterExpression( 0 )
-    , mFlags( 0 )
+    , mFilterExpression( nullptr )
+    , mFlags( nullptr )
     , mLimit( -1 )
 {
 }
@@ -55,7 +55,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr, const QgsExpres
     , mFilterFid( -1 )
     , mFilterExpression( new QgsExpression( expr.expression() ) )
     , mExpressionContext( context )
-    , mFlags( 0 )
+    , mFlags( nullptr )
     , mLimit( -1 )
 {
 }
@@ -78,7 +78,7 @@ QgsFeatureRequest& QgsFeatureRequest::operator=( const QgsFeatureRequest & rh )
   }
   else
   {
-    mFilterExpression = 0;
+    mFilterExpression = nullptr;
   }
   mExpressionContext = rh.mExpressionContext;
   mAttrs = rh.mAttrs;

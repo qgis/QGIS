@@ -49,7 +49,7 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QWidget, private Ui::Qg
      * @param stack QgsEffectStack to modify in the widget
      * @param parent parent widget
      */
-    QgsEffectStackPropertiesWidget( QgsEffectStack* stack, QWidget* parent = 0 );
+    QgsEffectStackPropertiesWidget( QgsEffectStack* stack, QWidget* parent = nullptr );
 
     ~QgsEffectStackPropertiesWidget();
 
@@ -152,7 +152,7 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
      * @param parent parent widget
      * @param f window flags
      */
-    QgsEffectStackPropertiesDialog( QgsEffectStack* stack, QWidget* parent = 0, const Qt::WindowFlags& f = 0 );
+    QgsEffectStackPropertiesDialog( QgsEffectStack* stack, QWidget* parent = nullptr, const Qt::WindowFlags& f = nullptr );
     ~QgsEffectStackPropertiesDialog();
 
     /** Returns effect stack attached to the dialog
@@ -195,7 +195,7 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QWidget
      * is not a QgsEffectStack, it will be automatically converted to an effect
      * stack consisting of the original effect
      */
-    QgsEffectStackCompactWidget( QWidget* parent = 0, QgsPaintEffect* effect = 0 );
+    QgsEffectStackCompactWidget( QWidget* parent = nullptr, QgsPaintEffect* effect = nullptr );
     ~QgsEffectStackCompactWidget();
 
     /** Sets paint effect attached to the widget

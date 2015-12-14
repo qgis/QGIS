@@ -30,7 +30,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Model : public QAbstractItemModel
 {
     Q_OBJECT
   public:
-    QgsGraduatedSymbolRendererV2Model( QObject * parent = 0 );
+    QgsGraduatedSymbolRendererV2Model( QObject * parent = nullptr );
     Qt::ItemFlags flags( const QModelIndex & index ) const override;
     Qt::DropActions supportedDropActions() const override;
     QVariant data( const QModelIndex &index, int role ) const override;
@@ -69,9 +69,9 @@ class QgsGraduatedSymbolRendererV2ViewStyle: public QProxyStyle
     Q_OBJECT
 
   public:
-    explicit QgsGraduatedSymbolRendererV2ViewStyle( QStyle* style = 0 );
+    explicit QgsGraduatedSymbolRendererV2ViewStyle( QStyle* style = nullptr );
 
-    void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0 ) const override;
+    void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = nullptr ) const override;
 };
 
 ///@endcond

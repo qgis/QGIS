@@ -79,14 +79,14 @@ QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget
     , mMousePrecisionDecimalPlaces( 0 )
     , mTransformParam( QgsGeorefTransform::InvalidTransform )
     , mIface( theQgisInterface )
-    , mLayer( 0 )
+    , mLayer( nullptr )
     , mAgainAddRaster( false )
-    , mMovingPoint( 0 )
-    , mMovingPointQgis( 0 )
-    , mMapCoordsDialog( 0 )
+    , mMovingPoint( nullptr )
+    , mMovingPointQgis( nullptr )
+    , mMapCoordsDialog( nullptr )
     , mUseZeroForTrans( false )
     , mLoadInQgis( false )
-    , mDock( 0 )
+    , mDock( nullptr )
 {
   setupUi( this );
 
@@ -135,9 +135,9 @@ void QgsGeorefPluginGui::dockThisWindow( bool dock )
     show();
 
     mIface->removeDockWidget( mDock );
-    mDock->setWidget( 0 );
+    mDock->setWidget( nullptr );
     delete mDock;
-    mDock = 0;
+    mDock = nullptr;
   }
 
   if ( dock )
@@ -575,11 +575,11 @@ void QgsGeorefPluginGui::releasePoint( const QPoint &p )
   // Get Map Sender
   if ( sender() == mToolMovePoint )
   {
-    mMovingPoint = 0;
+    mMovingPoint = nullptr;
   }
   else
   {
-    mMovingPointQgis = 0;
+    mMovingPointQgis = nullptr;
   }
 }
 
@@ -827,7 +827,7 @@ void QgsGeorefPluginGui::extentsChanged()
     }
     else
     {
-      mLayer = 0;
+      mLayer = nullptr;
       mAgainAddRaster = false;
     }
   }
@@ -1011,7 +1011,7 @@ void QgsGeorefPluginGui::createMenus()
 {
   // Get platform for menu layout customization (Gnome, Kde, Mac, Win)
   QDialogButtonBox::ButtonLayout layout =
-    QDialogButtonBox::ButtonLayout( style()->styleHint( QStyle::SH_DialogButtonLayout, 0, this ) );
+    QDialogButtonBox::ButtonLayout( style()->styleHint( QStyle::SH_DialogButtonLayout, nullptr, this ) );
 
   mPanelMenu = new QMenu( tr( "Panels" ) );
   mPanelMenu->setObjectName( "mPanelMenu" );
@@ -1120,7 +1120,7 @@ void QgsGeorefPluginGui::removeOldLayer()
   {
     QgsMapLayerRegistry::instance()->removeMapLayers(
       ( QStringList() << mLayer->id() ) );
-    mLayer = NULL;
+    mLayer = nullptr;
   }
   mCanvas->refresh();
 }
@@ -1645,11 +1645,11 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   composerMap->setMapCanvas( mCanvas );
   composition->addItem( composerMap );
 
-  QgsComposerTextTableV2* parameterTable = 0;
+  QgsComposerTextTableV2* parameterTable = nullptr;
   double scaleX, scaleY, rotation;
   QgsPoint origin;
 
-  QgsComposerLabel* parameterLabel = 0;
+  QgsComposerLabel* parameterLabel = nullptr;
   //transformation that involves only scaling and rotation (linear or helmert) ?
   bool wldTransform = transform.getOriginScaleRotation( origin, scaleX, scaleY, rotation );
 

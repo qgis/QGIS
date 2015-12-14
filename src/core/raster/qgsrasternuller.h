@@ -30,7 +30,7 @@
 class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
 {
   public:
-    QgsRasterNuller( QgsRasterInterface* input = 0 );
+    QgsRasterNuller( QgsRasterInterface* input = nullptr );
     ~QgsRasterNuller();
 
     struct NoData

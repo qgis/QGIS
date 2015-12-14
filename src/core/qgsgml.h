@@ -62,7 +62,7 @@ class CORE_EXPORT QgsGml : public QObject
      */
     int getFeatures( const QString& uri,
                      QGis::WkbType* wkbType,
-                     QgsRectangle* extent = 0,
+                     QgsRectangle* extent = nullptr,
                      const QString& userName = QString(),
                      const QString& password = QString(),
                      const QString& authcfg = QString() );
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsGml : public QObject
     /** Read from GML data. Constructor uri param is ignored
      *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
      */
-    int getFeatures( const QByteArray &data, QGis::WkbType* wkbType, QgsRectangle* extent = 0 );
+    int getFeatures( const QByteArray &data, QGis::WkbType* wkbType, QgsRectangle* extent = nullptr );
 
     /** Get parsed features for given type name */
     QMap<QgsFeatureId, QgsFeature* > featuresMap() const { return mFeatures; }

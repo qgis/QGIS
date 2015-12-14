@@ -27,8 +27,8 @@
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings& settings )
     : QgsMapRendererQImageJob( settings )
     , mStatus( Idle )
-    , mLabelingEngine( 0 )
-    , mLabelingEngineV2( 0 )
+    , mLabelingEngine( nullptr )
+    , mLabelingEngineV2( nullptr )
 {
 }
 
@@ -40,10 +40,10 @@ QgsMapRendererParallelJob::~QgsMapRendererParallelJob()
   }
 
   delete mLabelingEngine;
-  mLabelingEngine = 0;
+  mLabelingEngine = nullptr;
 
   delete mLabelingEngineV2;
-  mLabelingEngineV2 = 0;
+  mLabelingEngineV2 = nullptr;
 }
 
 void QgsMapRendererParallelJob::start()
@@ -56,10 +56,10 @@ void QgsMapRendererParallelJob::start()
   mStatus = RenderingLayers;
 
   delete mLabelingEngine;
-  mLabelingEngine = 0;
+  mLabelingEngine = nullptr;
 
   delete mLabelingEngineV2;
-  mLabelingEngineV2 = 0;
+  mLabelingEngineV2 = nullptr;
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
@@ -74,7 +74,7 @@ void QgsMapRendererParallelJob::start()
 #endif
   }
 
-  mLayerJobs = prepareJobs( 0, mLabelingEngine, mLabelingEngineV2 );
+  mLayerJobs = prepareJobs( nullptr, mLabelingEngine, mLabelingEngineV2 );
 
   QgsDebugMsg( QString( "QThreadPool max thread count is %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
 
@@ -168,7 +168,7 @@ QgsLabelingResults* QgsMapRendererParallelJob::takeLabelingResults()
   else if ( mLabelingEngineV2 )
     return mLabelingEngineV2->takeResults();
   else
-    return 0;
+    return nullptr;
 }
 
 QImage QgsMapRendererParallelJob::renderedImage()

@@ -20,7 +20,7 @@ bool QgsOgrConnPool::sInstanceDestroyed = false;
 
 QgsOgrConnPool* QgsOgrConnPool::instance()
 {
-  return sInstanceDestroyed ? 0 : &sInstance;
+  return sInstanceDestroyed ? nullptr : &sInstance;
 }
 
 QgsOgrConnPool::QgsOgrConnPool() : QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup>()

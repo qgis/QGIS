@@ -36,9 +36,9 @@
 
 QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>( source, ownSource, request )
-    , ogrLayer( 0 )
+    , ogrLayer( nullptr )
     , mSubsetStringSet( false )
-    , mGeometrySimplifier( NULL )
+    , mGeometrySimplifier( nullptr )
     , mExpressionCompiled( false )
 {
   mFeatureFetched = false;
@@ -81,7 +81,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
   }
   else
   {
-    OGR_L_SetSpatialFilter( ogrLayer, 0 );
+    OGR_L_SetSpatialFilter( ogrLayer, nullptr );
   }
 
   if ( request.filterType() == QgsFeatureRequest::FilterExpression
@@ -102,12 +102,12 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
     }
     else
     {
-      OGR_L_SetAttributeFilter( ogrLayer, 0 );
+      OGR_L_SetAttributeFilter( ogrLayer, nullptr );
     }
   }
   else
   {
-    OGR_L_SetAttributeFilter( ogrLayer, 0 );
+    OGR_L_SetAttributeFilter( ogrLayer, nullptr );
   }
 
   //start with first feature
@@ -117,7 +117,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
 QgsOgrFeatureIterator::~QgsOgrFeatureIterator()
 {
   delete mGeometrySimplifier;
-  mGeometrySimplifier = NULL;
+  mGeometrySimplifier = nullptr;
 
   close();
 }
@@ -125,7 +125,7 @@ QgsOgrFeatureIterator::~QgsOgrFeatureIterator()
 bool QgsOgrFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
 {
   delete mGeometrySimplifier;
-  mGeometrySimplifier = NULL;
+  mGeometrySimplifier = nullptr;
 
   // setup simplification of OGR-geometries fetched
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !simplifyMethod.forceLocalOptimization() )
@@ -254,7 +254,7 @@ bool QgsOgrFeatureIterator::close()
   }
 
   QgsOgrConnPool::instance()->releaseConnection( mConn );
-  mConn = 0;
+  mConn = nullptr;
 
   mClosed = true;
   return true;
@@ -343,7 +343,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
       }
     }
     else
-      feature.setGeometry( 0 );
+      feature.setGeometry( nullptr );
 
     if (( useIntersect && ( !feature.constGeometry() || !feature.constGeometry()->intersects( mRequest.filterRect() ) ) )
         || ( geometryTypeFilter && ( !feature.constGeometry() || QgsOgrProvider::ogrWkbSingleFlatten(( OGRwkbGeometryType )feature.constGeometry()->wkbType() ) != mSource->mOgrGeometryTypeFilter ) ) )
@@ -355,7 +355,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 
   if ( !mFetchGeometry )
   {
-    feature.setGeometry( 0 );
+    feature.setGeometry( nullptr );
   }
 
   // fetch attributes

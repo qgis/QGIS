@@ -36,10 +36,10 @@
 
 QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget, CaptureMode mode )
     : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
-    , mRubberBand( 0 )
-    , mTempRubberBand( 0 )
-    , mValidator( 0 )
-    , mSnappingMarker( 0 )
+    , mRubberBand( nullptr )
+    , mTempRubberBand( nullptr )
+    , mValidator( nullptr )
+    , mSnappingMarker( nullptr )
 #ifdef Q_OS_WIN
     , mSkipNextContextMenuEvent( 0 )
 #endif
@@ -71,14 +71,14 @@ QgsMapToolCapture::~QgsMapToolCapture()
   if ( mValidator )
   {
     mValidator->deleteLater();
-    mValidator = 0;
+    mValidator = nullptr;
   }
 }
 
 void QgsMapToolCapture::deactivate()
 {
   delete mSnappingMarker;
-  mSnappingMarker = 0;
+  mSnappingMarker = nullptr;
 
   QgsMapToolAdvancedDigitizing::deactivate();
 }
@@ -132,7 +132,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent * e )
   if ( !snapped )
   {
     delete mSnappingMarker;
-    mSnappingMarker = 0;
+    mSnappingMarker = nullptr;
   }
   else
   {
@@ -352,13 +352,13 @@ void QgsMapToolCapture::stopCapturing()
   if ( mRubberBand )
   {
     delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand = nullptr;
   }
 
   if ( mTempRubberBand )
   {
     delete mTempRubberBand;
-    mTempRubberBand = 0;
+    mTempRubberBand = nullptr;
   }
 
   while ( !mGeomErrorMarkers.isEmpty() )
@@ -391,7 +391,7 @@ void QgsMapToolCapture::deleteTempRubberBand()
   if ( mTempRubberBand )
   {
     delete mTempRubberBand;
-    mTempRubberBand = 0;
+    mTempRubberBand = nullptr;
   }
 }
 
@@ -409,7 +409,7 @@ void QgsMapToolCapture::validateGeometry()
   if ( mValidator )
   {
     mValidator->deleteLater();
-    mValidator = 0;
+    mValidator = nullptr;
   }
 
   mValidationWarnings.clear();

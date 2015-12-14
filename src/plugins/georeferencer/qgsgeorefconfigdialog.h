@@ -22,7 +22,7 @@ class QgsGeorefConfigDialog : public QDialog, private Ui::QgsGeorefConfigDialogB
 {
     Q_OBJECT
   public:
-    explicit QgsGeorefConfigDialog( QWidget *parent = 0 );
+    explicit QgsGeorefConfigDialog( QWidget *parent = nullptr );
     ~QgsGeorefConfigDialog();
 
   protected:

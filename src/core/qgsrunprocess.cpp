@@ -26,7 +26,7 @@
 #include <QMessageBox>
 
 QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
-    : mProcess( NULL ), mOutput( NULL )
+    : mProcess( nullptr ), mOutput( nullptr )
 {
   // Make up a string from the command and arguments that we'll use
   // for display purposes
@@ -67,7 +67,7 @@ QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
   {
     if ( ! mProcess->startDetached( action ) ) // let the program run by itself
     {
-      QMessageBox::critical( 0, tr( "Action" ),
+      QMessageBox::critical( nullptr, tr( "Action" ),
                              tr( "Unable to run command\n%1" ).arg( action ),
                              QMessageBox::Ok, Qt::NoButton );
     }
@@ -113,7 +113,7 @@ void QgsRunProcess::processExit( int, QProcess::ExitStatus )
   // (unless it was never created in the first case, which is what the
   // test against 0 is for).
 
-  if ( mOutput != 0 )
+  if ( mOutput != nullptr )
   {
     mOutput->appendMessage( "<b>" + tr( "Done" ) + "</b>" );
   }
@@ -133,7 +133,7 @@ void QgsRunProcess::dialogGone()
   // class being called after it has been deleted (Qt seems not to be
   // disconnecting them itself)
 
-  mOutput = 0;
+  mOutput = nullptr;
 
   disconnect( mProcess, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( processError( QProcess::ProcessError ) ) );
   disconnect( mProcess, SIGNAL( readyReadStandardOutput() ), this, SLOT( stdoutAvailable() ) );

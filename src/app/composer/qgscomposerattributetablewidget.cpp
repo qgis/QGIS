@@ -32,7 +32,7 @@
 #include "qgscomposertablebackgroundcolorsdialog.h"
 
 QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame )
-    : QgsComposerItemBaseWidget( 0, table )
+    : QgsComposerItemBaseWidget( nullptr, table )
     , mComposerTable( table )
     , mFrame( frame )
 {

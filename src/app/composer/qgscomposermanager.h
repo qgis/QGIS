@@ -30,7 +30,7 @@ class QgsComposerNameDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsComposerNameDelegate( QObject *parent = 0 );
+    explicit QgsComposerNameDelegate( QObject *parent = nullptr );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
                            const QModelIndex &index ) const override;
@@ -49,7 +49,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 {
     Q_OBJECT
   public:
-    QgsComposerManager( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsComposerManager( QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsComposerManager();
 
     void addTemplates( const QMap<QString, QString>& templates );

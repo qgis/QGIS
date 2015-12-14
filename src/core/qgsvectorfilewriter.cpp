@@ -67,12 +67,12 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   QString *newFilename,
   SymbologyExport symbologyExport
 )
-    : mDS( NULL )
-    , mLayer( NULL )
-    , mOgrRef( NULL )
-    , mGeom( NULL )
+    : mDS( nullptr )
+    , mLayer( nullptr )
+    , mOgrRef( nullptr )
+    , mGeom( nullptr )
     , mError( NoError )
-    , mCodec( 0 )
+    , mCodec( nullptr )
     , mWkbType( geometryType )
     , mSymbologyExport( symbologyExport )
     , mSymbologyScaleDenominator( 1.0 )
@@ -111,7 +111,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     {
       layOptions.append( "SHPT=NULL" );
     }
-    srs = 0;
+    srs = nullptr;
   }
   else
   {
@@ -211,7 +211,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     QFile::remove( vectorFileName );
   }
 
-  char **options = NULL;
+  char **options = nullptr;
   if ( !dsOptions.isEmpty() )
   {
     options = new char *[ dsOptions.size()+1 ];
@@ -219,7 +219,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     {
       options[i] = CPLStrdup( dsOptions[i].toLocal8Bit().data() );
     }
-    options[ dsOptions.size()] = NULL;
+    options[ dsOptions.size()] = nullptr;
   }
 
   // create the data source
@@ -230,10 +230,10 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     for ( int i = 0; i < dsOptions.size(); i++ )
       CPLFree( options[i] );
     delete [] options;
-    options = NULL;
+    options = nullptr;
   }
 
-  if ( mDS == NULL )
+  if ( mDS == nullptr )
   {
     mError = ErrCreateDataSource;
     mErrorMessage = QObject::tr( "creation of data source failed (OGR error:%1)" )
@@ -279,7 +279,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     {
       options[i] = CPLStrdup( layOptions[i].toLocal8Bit().data() );
     }
-    options[ layOptions.size()] = NULL;
+    options[ layOptions.size()] = nullptr;
   }
 
   // disable encoding conversion of OGR Shapefile layer
@@ -292,13 +292,13 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     for ( int i = 0; i < layOptions.size(); i++ )
       CPLFree( options[i] );
     delete [] options;
-    options = NULL;
+    options = nullptr;
   }
 
   QSettings settings;
   if ( !settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() )
   {
-    CPLSetConfigOption( "SHAPE_ENCODING", 0 );
+    CPLSetConfigOption( "SHAPE_ENCODING", nullptr );
   }
 
   if ( srs )
@@ -320,7 +320,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     }
   }
 
-  if ( mLayer == NULL )
+  if ( mLayer == nullptr )
   {
     mErrorMessage = QObject::tr( "creation of layer failed (OGR error:%1)" )
                     .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
@@ -1715,7 +1715,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
                               attrValue.toString() );
         QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
         mError = ErrFeatureWriteFailed;
-        return 0;
+        return nullptr;
     }
   }
 
@@ -1733,7 +1733,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
 
     if ( geom && geom->wkbType() != mWkbType )
     {
-      OGRGeometryH mGeom2 = NULL;
+      OGRGeometryH mGeom2 = nullptr;
 
       // If requested WKB type is 25D and geometry WKB type is 3D,
       // we must force the use of 25D.
@@ -1771,7 +1771,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         mError = ErrFeatureWriteFailed;
         QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
         OGR_F_Destroy( poFeature );
-        return 0;
+        return nullptr;
       }
 
       OGRErr err = OGR_G_ImportFromWkb( mGeom2, const_cast<unsigned char *>( geom->asWkb() ), ( int ) geom->wkbSize() );
@@ -1782,7 +1782,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         mError = ErrFeatureWriteFailed;
         QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
         OGR_F_Destroy( poFeature );
-        return 0;
+        return nullptr;
       }
 
       // pass ownership to geometry
@@ -1798,7 +1798,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         mError = ErrFeatureWriteFailed;
         QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
         OGR_F_Destroy( poFeature );
-        return 0;
+        return nullptr;
       }
 
       // set geometry (ownership is not passed to OGR)
@@ -1862,7 +1862,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     bool forceMulti,
     bool includeZ )
 {
-  QgsCoordinateTransform* ct = 0;
+  QgsCoordinateTransform* ct = nullptr;
   if ( destCRS && layer )
   {
     ct = new QgsCoordinateTransform( layer->crs(), *destCRS );
@@ -1898,7 +1898,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   }
 
   bool shallTransform = false;
-  const QgsCoordinateReferenceSystem* outputCRS = 0;
+  const QgsCoordinateReferenceSystem* outputCRS = nullptr;
   if ( ct )
   {
     // This means we should transform
@@ -2223,7 +2223,7 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
           QString option = "SPATIALITE=YES";
           char **options =  new char *[2];
           options[0] = CPLStrdup( option.toLocal8Bit().data() );
-          options[1] = NULL;
+          options[1] = nullptr;
           OGRSFDriverH poDriver;
           QgsApplication::registerOgrDrivers();
           poDriver = OGRGetDriverByName( drvName.toLocal8Bit().data() );
@@ -2570,7 +2570,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
 
   //fetch features
   QgsFeature fet;
-  QgsSymbolV2* featureSymbol = 0;
+  QgsSymbolV2* featureSymbol = nullptr;
   while ( fit.nextFeature( fet ) )
   {
     if ( ct )
@@ -2744,11 +2744,11 @@ QgsFeatureRendererV2* QgsVectorFileWriter::symbologyRenderer( QgsVectorLayer* vl
 {
   if ( mSymbologyExport == NoSymbology )
   {
-    return 0;
+    return nullptr;
   }
   if ( !vl )
   {
-    return 0;
+    return nullptr;
   }
 
   return vl->rendererV2();

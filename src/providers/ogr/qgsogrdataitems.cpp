@@ -75,7 +75,7 @@ bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
   // save ordinary .prj file
   OGRSpatialReferenceH hSRS = OSRNewSpatialReference( wkt.toLocal8Bit().data() );
   OSRMorphToESRI( hSRS ); // this is the important stuff for shapefile .prj
-  char* pszOutWkt = NULL;
+  char* pszOutWkt = nullptr;
   OSRExportToWkt( hSRS, &pszOutWkt );
   QFile prjFile( layerName + ".prj" );
   if ( prjFile.open( QIODevice::WriteOnly ) )
@@ -220,7 +220,7 @@ QGISEXTERN int dataCapabilities()
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
   if ( thePath.isEmpty() )
-    return 0;
+    return nullptr;
 
   QgsDebugMsgLevel( "thePath: " + thePath, 2 );
 
@@ -263,7 +263,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   // allow only normal files or VSIFILE items to continue
   if ( !info.isFile() && vsiPrefix == "" )
-    return 0;
+    return nullptr;
 
   QStringList myExtensions = fileExtensions();
 
@@ -272,13 +272,13 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // unless that extension is in the list (*.xml might be though)
   if ( thePath.endsWith( ".aux.xml", Qt::CaseInsensitive ) &&
        !myExtensions.contains( "aux.xml" ) )
-    return 0;
+    return nullptr;
   if ( thePath.endsWith( ".shp.xml", Qt::CaseInsensitive ) &&
        !myExtensions.contains( "shp.xml" ) )
-    return 0;
+    return nullptr;
   if ( thePath.endsWith( ".tif.xml", Qt::CaseInsensitive ) &&
        !myExtensions.contains( "tif.xml" ) )
-    return 0;
+    return nullptr;
 
   // We have to filter by extensions, otherwise e.g. all Shapefile files are displayed
   // because OGR drive can open also .dbf, .shx.
@@ -295,7 +295,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       }
     }
     if ( !matches )
-      return 0;
+      return nullptr;
   }
 
   // .dbf should probably appear if .shp is not present
@@ -303,7 +303,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   {
     QString pathShp = thePath.left( thePath.count() - 4 ) + ".shp";
     if ( QFileInfo( pathShp ).exists() )
-      return 0;
+      return nullptr;
   }
 
   // fix vsifile path and name
@@ -343,7 +343,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
         if ( ! hDataSource )
         {
           QgsDebugMsgLevel( "Skipping VRT file because root is not a OGR VRT", 2 );
-          return 0;
+          return nullptr;
         }
         OGR_DS_Destroy( hDataSource );
       }
@@ -367,7 +367,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( ! hDataSource )
   {
     QgsDebugMsg( QString( "OGROpen error # %1 : %2 " ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
-    return 0;
+    return nullptr;
   }
 
   QString  driverName = OGR_Dr_GetName( hDriver );
@@ -375,7 +375,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   int numLayers = OGR_DS_GetLayerCount( hDataSource );
 
-  QgsDataItem* item = 0;
+  QgsDataItem* item = nullptr;
 
   if ( numLayers == 1 )
   {

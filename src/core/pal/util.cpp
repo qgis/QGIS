@@ -66,7 +66,7 @@ namespace pal
 
     unsigned int n = ( unsigned int ) N, i = n / 2, parent, child;
 
-    void *t = NULL;
+    void *t = nullptr;
 
     for ( ;; )
     {
@@ -144,7 +144,7 @@ namespace pal
         default:
           delete final_queue;
           delete queue;
-          return NULL;
+          return nullptr;
       }
     }
     delete queue;

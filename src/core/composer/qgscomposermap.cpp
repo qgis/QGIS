@@ -47,14 +47,14 @@
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
     : QgsComposerItem( x, y, width, height, composition )
-    , mGridStack( 0 )
-    , mOverviewStack( 0 )
+    , mGridStack( nullptr )
+    , mOverviewStack( nullptr )
     , mMapRotation( 0 )
     , mEvaluatedMapRotation( 0 )
     , mKeepLayerSet( false )
     , mKeepLayerStyles( false )
     , mUpdatesEnabled( true )
-    , mMapCanvas( 0 )
+    , mMapCanvas( nullptr )
     , mDrawCanvasItems( true )
     , mAtlasDriven( false )
     , mAtlasScalingMode( Auto )
@@ -92,14 +92,14 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     : QgsComposerItem( 0, 0, 10, 10, composition )
-    , mGridStack( 0 )
-    , mOverviewStack( 0 )
+    , mGridStack( nullptr )
+    , mOverviewStack( nullptr )
     , mMapRotation( 0 )
     , mEvaluatedMapRotation( 0 )
     , mKeepLayerSet( false )
     , mKeepLayerStyles( false )
     , mUpdatesEnabled( true )
-    , mMapCanvas( 0 )
+    , mMapCanvas( nullptr )
     , mDrawCanvasItems( true )
     , mAtlasDriven( false )
     , mAtlasScalingMode( Auto )
@@ -1145,7 +1145,7 @@ bool QgsComposerMap::containsWMSLayer() const
   QStringList layers = mComposition->mapSettings().layers();
 
   QStringList::const_iterator layer_it = layers.constBegin();
-  QgsMapLayer* currentLayer = 0;
+  QgsMapLayer* currentLayer = nullptr;
 
   for ( ; layer_it != layers.constEnd(); ++layer_it )
   {
@@ -1155,7 +1155,7 @@ bool QgsComposerMap::containsWMSLayer() const
       QgsRasterLayer* currentRasterLayer = qobject_cast<QgsRasterLayer *>( currentLayer );
       if ( currentRasterLayer )
       {
-        const QgsRasterDataProvider* rasterProvider = 0;
+        const QgsRasterDataProvider* rasterProvider = nullptr;
         if (( rasterProvider = currentRasterLayer->dataProvider() ) )
         {
           if ( rasterProvider->name() == "wms" )
@@ -1190,7 +1190,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
   QStringList layers = mComposition->mapSettings().layers();
 
   QStringList::const_iterator layer_it = layers.constBegin();
-  QgsMapLayer* currentLayer = 0;
+  QgsMapLayer* currentLayer = nullptr;
 
   for ( ; layer_it != layers.constEnd(); ++layer_it )
   {
@@ -1484,7 +1484,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mapGrid->setFrameFillColor2( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "frameFillColor2", "0,0,0,255" ) ) );
     mapGrid->setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "gridBlendMode", "0" ).toUInt() ) );
     QDomElement gridSymbolElem = gridElem.firstChildElement( "symbol" );
-    QgsLineSymbolV2* lineSymbol = 0;
+    QgsLineSymbolV2* lineSymbol = nullptr;
     if ( gridSymbolElem.isNull() )
     {
       //old project file, read penWidth /penColorRed, penColorGreen, penColorBlue
@@ -1537,7 +1537,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mapOverview->setInverted( overviewFrameElem.attribute( "overviewInverted" ).compare( "true", Qt::CaseInsensitive ) == 0 );
     mapOverview->setCentered( overviewFrameElem.attribute( "overviewCentered" ).compare( "true", Qt::CaseInsensitive ) == 0 );
 
-    QgsFillSymbolV2* fillSymbol = 0;
+    QgsFillSymbolV2* fillSymbol = nullptr;
     QDomElement overviewFrameSymbolElem = overviewFrameElem.firstChildElement( "symbol" );
     if ( !overviewFrameSymbolElem.isNull() )
     {
@@ -2333,7 +2333,7 @@ void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraph
   {
     return;
   }
-  QGraphicsItem* currentItem = 0;
+  QGraphicsItem* currentItem = nullptr;
 
   for ( int i = itemList.size() - 1; i >= 0; --i )
   {
@@ -2384,7 +2384,7 @@ void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, con
 
   //a little trick to let the item know that the paint request comes from the composer
   item->setData( 1, "composer" );
-  item->paint( painter, itemStyle, 0 );
+  item->paint( painter, itemStyle, nullptr );
   item->setData( 1, "" );
   painter->restore();
 }

@@ -49,7 +49,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * @param parent   owner
      */
-    explicit QgsFeatureListView( QWidget* parent = 0 );
+    explicit QgsFeatureListView( QWidget* parent = nullptr );
 
     /**
      * Destructor

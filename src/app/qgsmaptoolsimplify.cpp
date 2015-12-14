@@ -58,7 +58,7 @@ void QgsSimplifyDialog::enableOkButton( bool enabled )
 
 QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
-    , mSelectionRubberBand( 0 )
+    , mSelectionRubberBand( nullptr )
     , mDragging( false )
     , mOriginalVertexCount( 0 )
     , mReducedVertexCount( 0 )
@@ -238,7 +238,7 @@ void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent* e )
     return;
 
   delete mSelectionRubberBand;
-  mSelectionRubberBand = 0;
+  mSelectionRubberBand = nullptr;
 
   if ( mDragging && ( mSelectionRect.topLeft() != mSelectionRect.bottomRight() ) )
   {
@@ -337,7 +337,7 @@ void QgsMapToolSimplify::clearSelection()
 void QgsMapToolSimplify::deactivate()
 {
   delete mSelectionRubberBand;
-  mSelectionRubberBand = 0;
+  mSelectionRubberBand = nullptr;
 
   if ( mSimplifyDialog->isVisible() )
     mSimplifyDialog->close();

@@ -40,7 +40,7 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
     typedef QVector < ValueRelationItem > ValueRelationCache;
 
   public:
-    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = 0 );
+    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
     bool applyDirectly() override;
     QString expression() override;
     bool valid() const override;

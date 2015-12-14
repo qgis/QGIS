@@ -25,7 +25,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 
-QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QgsComposerItemBaseWidget( 0, arrow ), mArrow( arrow )
+QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QgsComposerItemBaseWidget( nullptr, arrow ), mArrow( arrow )
 {
   setupUi( this );
   mRadioButtonGroup = new QButtonGroup( this );
@@ -310,7 +310,7 @@ void QgsComposerArrowWidget::on_mLineStyleButton_clicked()
   }
 
   QgsLineSymbolV2* newSymbol = mArrow->lineSymbol()->clone();
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
   d.setExpressionContext( mArrow->createExpressionContext() );
 
   if ( d.exec() == QDialog::Accepted )

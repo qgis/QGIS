@@ -30,7 +30,7 @@
 #include <QSettings>
 
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid& deco, QWidget* parent )
-    : QDialog( parent ), mDeco( deco ), mLineSymbol( 0 ), mMarkerSymbol( 0 )
+    : QDialog( parent ), mDeco( deco ), mLineSymbol( nullptr ), mMarkerSymbol( nullptr )
 {
   setupUi( this );
 
@@ -211,7 +211,7 @@ void QgsDecorationGridDialog::on_mLineSymbolButton_clicked()
     return;
 
   QgsLineSymbolV2* lineSymbol = mLineSymbol->clone();
-  QgsSymbolV2SelectorDialog dlg( lineSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  QgsSymbolV2SelectorDialog dlg( lineSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete lineSymbol;
@@ -234,7 +234,7 @@ void QgsDecorationGridDialog::on_mMarkerSymbolButton_clicked()
     return;
 
   QgsMarkerSymbolV2* markerSymbol = mMarkerSymbol->clone();
-  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;

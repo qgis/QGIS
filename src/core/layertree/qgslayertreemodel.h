@@ -52,7 +52,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
   public:
     //! Construct a new tree model with given layer tree (root node must not be null pointer).
     //! The root node is not transferred by the model.
-    explicit QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
+    explicit QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
     ~QgsLayerTreeModel();
 
     // Implementation of virtual functions from QAbstractItemModel

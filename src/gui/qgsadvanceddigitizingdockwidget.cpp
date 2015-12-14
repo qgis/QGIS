@@ -96,7 +96,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
     , mCommonAngleConstraint( QSettings().value( "/Cad/CommonAngle", 90 ).toInt() )
     , mSnappedToVertex( false )
     , mSessionActive( false )
-    , mErrorMessage( 0 )
+    , mErrorMessage( nullptr )
 {
   setupUi( this );
 
@@ -303,7 +303,7 @@ void QgsAdvancedDigitizingDockWidget::emit pointChanged()
 void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default true */ )
 {
   QObject* obj = sender();
-  CadConstraint* constraint = NULL;
+  CadConstraint* constraint = nullptr;
   if ( obj == mAngleLineEdit || obj == mLockAngleButton )
   {
     constraint = mAngleConstraint;
@@ -381,7 +381,7 @@ void QgsAdvancedDigitizingDockWidget::lockAdditionalConstraint( AdditionalConstr
 
 void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange )
 {
-  CadCapacities newCapacities = 0;
+  CadCapacities newCapacities = nullptr;
   // first point is the mouse point (it doesn't count)
   if ( mCadPointList.count() > 1 )
   {

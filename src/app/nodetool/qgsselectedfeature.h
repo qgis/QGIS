@@ -194,7 +194,7 @@ class QgsSelectedFeature: public QObject
     /**
      * Validates the geometry
      */
-    void validateGeometry( QgsGeometry *g = 0 );
+    void validateGeometry( QgsGeometry *g = nullptr );
 
     QgsFeatureId mFeatureId;
     QgsGeometry *mGeometry;

@@ -44,7 +44,7 @@
 
 
 QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
-    : QgsComposerItemBaseWidget( 0, legend )
+    : QgsComposerItemBaseWidget( nullptr, legend )
     , mLegend( legend )
 {
   setupUi( this );
@@ -88,7 +88,7 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
            this, SLOT( selectedChanged( const QModelIndex &, const QModelIndex & ) ) );
 }
 
-QgsComposerLegendWidget::QgsComposerLegendWidget(): QgsComposerItemBaseWidget( 0, 0 ), mLegend( 0 )
+QgsComposerLegendWidget::QgsComposerLegendWidget(): QgsComposerItemBaseWidget( nullptr, nullptr ), mLegend( nullptr )
 {
   setupUi( this );
 }
@@ -575,7 +575,7 @@ void QgsComposerLegendWidget::on_mMapComboBox_currentIndexChanged( int index )
   int mapNr = itemData.toInt();
   if ( mapNr < 0 )
   {
-    mLegend->setComposerMap( 0 );
+    mLegend->setComposerMap( nullptr );
   }
   else
   {
@@ -797,7 +797,7 @@ void QgsComposerLegendWidget::resetLayerNodeToDefaults()
     return;
   }
 
-  QgsLayerTreeLayer* nodeLayer = 0;
+  QgsLayerTreeLayer* nodeLayer = nullptr;
   if ( QgsLayerTreeNode* node = mItemTreeView->layerTreeModel()->index2node( currentIndex ) )
   {
     if ( QgsLayerTree::isLayer( node ) )
@@ -1066,10 +1066,10 @@ QgsComposerLegendMenuProvider::QgsComposerLegendMenuProvider( QgsLayerTreeView* 
 QMenu*QgsComposerLegendMenuProvider::createContextMenu()
 {
   if ( !mView->currentNode() )
-    return 0;
+    return nullptr;
 
   if ( mWidget->legend()->autoUpdateModel() )
-    return 0; // no editing allowed
+    return nullptr; // no editing allowed
 
   QMenu* menu = new QMenu();
 

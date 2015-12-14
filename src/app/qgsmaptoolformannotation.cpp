@@ -35,7 +35,7 @@ QgsMapToolFormAnnotation::~QgsMapToolFormAnnotation()
 QgsAnnotationItem* QgsMapToolFormAnnotation::createItem( QMouseEvent* e )
 {
   //try to associate the current vector layer and a feature to the form item
-  QgsVectorLayer* currentVectorLayer = 0;
+  QgsVectorLayer* currentVectorLayer = nullptr;
   if ( mCanvas )
   {
     QgsMapLayer* mLayer = mCanvas->currentLayer();

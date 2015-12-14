@@ -34,7 +34,7 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
   QgsNewMemoryLayerDialog dialog( parent );
   if ( dialog.exec() == QDialog::Rejected )
   {
-    return 0;
+    return nullptr;
   }
 
   QGis::WkbType geometrytype = dialog.selectedType();

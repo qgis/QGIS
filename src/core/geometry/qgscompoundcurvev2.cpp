@@ -102,7 +102,7 @@ bool QgsCompoundCurveV2::fromWkb( const unsigned char* wkb )
 
   int nCurves;
   wkbPtr >> nCurves;
-  QgsCurveV2* currentCurve = 0;
+  QgsCurveV2* currentCurve = nullptr;
   int currentCurveSize = 0;
   for ( int i = 0; i < nCurves; ++i )
   {
@@ -348,7 +348,7 @@ QgsLineStringV2* QgsCompoundCurveV2::curveToLine() const
 {
   QList< QgsCurveV2* >::const_iterator curveIt = mCurves.constBegin();
   QgsLineStringV2* line = new QgsLineStringV2();
-  QgsLineStringV2* currentLine = 0;
+  QgsLineStringV2* currentLine = nullptr;
   for ( ; curveIt != mCurves.constEnd(); ++curveIt )
   {
     currentLine = ( *curveIt )->curveToLine();
@@ -362,7 +362,7 @@ const QgsCurveV2* QgsCompoundCurveV2::curveAt( int i ) const
 {
   if ( i >= mCurves.size() )
   {
-    return 0;
+    return nullptr;
   }
   return mCurves.at( i );
 }
@@ -399,13 +399,13 @@ void QgsCompoundCurveV2::addVertex( const QgsPointV2& pt )
   }
 
   //is last curve QgsLineStringV2
-  QgsCurveV2* lastCurve = 0;
+  QgsCurveV2* lastCurve = nullptr;
   if ( !mCurves.isEmpty() )
   {
     lastCurve = mCurves.at( mCurves.size() - 1 );
   }
 
-  QgsLineStringV2* line = 0;
+  QgsLineStringV2* line = nullptr;
   if ( !lastCurve || lastCurve->geometryType() != "LineString" )
   {
     line = new QgsLineStringV2();

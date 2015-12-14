@@ -55,7 +55,7 @@ void QgsInvertedPolygonRenderer::setEmbeddedRenderer( const QgsFeatureRendererV2
   }
   else
   {
-    mSubRenderer.reset( 0 );
+    mSubRenderer.reset( nullptr );
   }
 }
 
@@ -111,7 +111,7 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
   if ( context.coordinateTransform() )
   {
     // disable projection
-    mContext.setCoordinateTransform( 0 );
+    mContext.setCoordinateTransform( nullptr );
     // recompute extent so that polygon clipping is correct
     QRect v( context.painter()->viewport() );
     mContext.setExtent( QgsRectangle( mtp.toMapCoordinates( v.topLeft() ), mtp.toMapCoordinates( v.bottomRight() ) ) );
@@ -337,7 +337,7 @@ QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::clone() const
   QgsInvertedPolygonRenderer* newRenderer;
   if ( mSubRenderer.isNull() )
   {
-    newRenderer = new QgsInvertedPolygonRenderer( 0 );
+    newRenderer = new QgsInvertedPolygonRenderer( nullptr );
   }
   else
   {
@@ -386,7 +386,7 @@ QgsSymbolV2* QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature& feature, 
 {
   if ( !mSubRenderer )
   {
-    return 0;
+    return nullptr;
   }
   return mSubRenderer->symbolForFeature( feature, context );
 }
@@ -394,7 +394,7 @@ QgsSymbolV2* QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature& feature, 
 QgsSymbolV2* QgsInvertedPolygonRenderer::originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mSubRenderer )
-    return 0;
+    return nullptr;
   return mSubRenderer->originalSymbolForFeature( feat, context );
 }
 
@@ -482,6 +482,6 @@ QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::convertFromRenderer( con
   {
     return new QgsInvertedPolygonRenderer( renderer->clone() );
   }
-  return 0;
+  return nullptr;
 }
 

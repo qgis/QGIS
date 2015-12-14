@@ -41,7 +41,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     Q_OBJECT
 
   public:
-    QgsMapOverviewCanvas( QWidget * parent = 0, QgsMapCanvas* mapCanvas = NULL );
+    QgsMapOverviewCanvas( QWidget * parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
 
     ~QgsMapOverviewCanvas();
 

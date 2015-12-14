@@ -370,7 +370,7 @@ namespace pal
 
       RTFileStream()
       {
-        m_file = NULL;
+        m_file = nullptr;
       }
 
       ~RTFileStream()
@@ -409,7 +409,7 @@ namespace pal
         if ( m_file )
         {
           fclose( m_file );
-          m_file = NULL;
+          m_file = nullptr;
         }
       }
 
@@ -952,10 +952,10 @@ namespace pal
       newRoot->m_level = ( *a_root )->m_level + 1;
       branch.m_rect = NodeCover( *a_root );
       branch.m_child = *a_root;
-      AddBranch( &branch, newRoot, NULL );
+      AddBranch( &branch, newRoot, nullptr );
       branch.m_rect = NodeCover( newNode );
       branch.m_child = newNode;
-      AddBranch( &branch, newRoot, NULL );
+      AddBranch( &branch, newRoot, nullptr );
       *a_root = newRoot;
       return true;
     }
@@ -1322,11 +1322,11 @@ namespace pal
 
       if ( a_parVars->m_partition[index] == 0 )
       {
-        AddBranch( &a_parVars->m_branchBuf[index], a_nodeA, NULL );
+        AddBranch( &a_parVars->m_branchBuf[index], a_nodeA, nullptr );
       }
       else if ( a_parVars->m_partition[index] == 1 )
       {
-        AddBranch( &a_parVars->m_branchBuf[index], a_nodeB, NULL );
+        AddBranch( &a_parVars->m_branchBuf[index], a_nodeB, nullptr );
       }
     }
   }
@@ -1416,7 +1416,7 @@ namespace pal
     ASSERT( *a_root );
 
     Node* tempNode;
-    ListNode* reInsertList = NULL;
+    ListNode* reInsertList = nullptr;
 
     if ( !RemoveRectRec( a_rect, a_id, *a_root, &reInsertList ) )
     {

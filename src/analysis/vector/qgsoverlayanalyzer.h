@@ -46,7 +46,7 @@ class ANALYSIS_EXPORT QgsOverlayAnalyzer
       */
     bool intersection( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
                        const QString& shapefileName, bool onlySelectedFeatures = false,
-                       QProgressDialog* p = 0 );
+                       QProgressDialog* p = nullptr );
 
   private:
 

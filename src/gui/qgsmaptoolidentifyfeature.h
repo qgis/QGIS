@@ -33,7 +33,7 @@ class GUI_EXPORT QgsMapToolIdentifyFeature : public QgsMapToolIdentify
      * @param canvas the map canvas
      * @param vl the vector layer. The map tool can be initialized without any layer and can be set afterward.
      */
-    QgsMapToolIdentifyFeature( QgsMapCanvas* canvas, QgsVectorLayer* vl = 0 );
+    QgsMapToolIdentifyFeature( QgsMapCanvas* canvas, QgsVectorLayer* vl = nullptr );
 
     ~QgsMapToolIdentifyFeature();
 

@@ -39,7 +39,7 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
       GrayscaleAverage
     };
 
-    QgsHueSaturationFilter( QgsRasterInterface *input = 0 );
+    QgsHueSaturationFilter( QgsRasterInterface *input = nullptr );
     ~QgsHueSaturationFilter();
 
     QgsHueSaturationFilter * clone() const override;

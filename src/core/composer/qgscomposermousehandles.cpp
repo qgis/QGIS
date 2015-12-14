@@ -31,10 +31,10 @@
 #include "qgsproject.h"
 
 QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition )
-    : QObject( 0 )
-    , QGraphicsRectItem( 0 )
+    : QObject( nullptr )
+    , QGraphicsRectItem( nullptr )
     , mComposition( composition )
-    , mGraphicsView( 0 )
+    , mGraphicsView( nullptr )
     , mCurrentMouseMoveAction( NoAction )
     , mBeginHandleWidth( 0 )
     , mBeginHandleHeight( 0 )
@@ -42,8 +42,8 @@ QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition )
     , mResizeMoveY( 0 )
     , mIsDragging( false )
     , mIsResizing( false )
-    , mHAlignSnapItem( 0 )
-    , mVAlignSnapItem( 0 )
+    , mHAlignSnapItem( nullptr )
+    , mVAlignSnapItem( nullptr )
 {
   //listen for selection changes, and update handles accordingly
   QObject::connect( mComposition, SIGNAL( selectionChanged() ), this, SLOT( selectionChanged() ) );
@@ -77,7 +77,7 @@ QGraphicsView* QgsComposerMouseHandles::graphicsView()
   }
 
   //no view attached to composition
-  return 0;
+  return nullptr;
 }
 
 void QgsComposerMouseHandles::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
@@ -218,10 +218,10 @@ void QgsComposerMouseHandles::selectionChanged()
       }
       else
       {
-        QObject::disconnect( item, SIGNAL( sizeChanged() ), this, 0 );
-        QObject::disconnect( item, SIGNAL( itemRotationChanged( double ) ), this, 0 );
-        QObject::disconnect( item, SIGNAL( frameChanged() ), this, 0 );
-        QObject::disconnect( item, SIGNAL( lockChanged() ), this, 0 );
+        QObject::disconnect( item, SIGNAL( sizeChanged() ), this, nullptr );
+        QObject::disconnect( item, SIGNAL( itemRotationChanged( double ) ), this, nullptr );
+        QObject::disconnect( item, SIGNAL( frameChanged() ), this, nullptr );
+        QObject::disconnect( item, SIGNAL( lockChanged() ), this, nullptr );
       }
     }
   }
@@ -1132,7 +1132,7 @@ QGraphicsLineItem* QgsComposerMouseHandles::hAlignSnapItem()
 {
   if ( !mHAlignSnapItem )
   {
-    mHAlignSnapItem = new QGraphicsLineItem( 0 );
+    mHAlignSnapItem = new QGraphicsLineItem( nullptr );
     mHAlignSnapItem->setPen( QPen( QColor( Qt::red ) ) );
     scene()->addItem( mHAlignSnapItem );
     mHAlignSnapItem->setZValue( 90 );
@@ -1144,7 +1144,7 @@ QGraphicsLineItem* QgsComposerMouseHandles::vAlignSnapItem()
 {
   if ( !mVAlignSnapItem )
   {
-    mVAlignSnapItem = new QGraphicsLineItem( 0 );
+    mVAlignSnapItem = new QGraphicsLineItem( nullptr );
     mVAlignSnapItem->setPen( QPen( QColor( Qt::red ) ) );
     scene()->addItem( mVAlignSnapItem );
     mVAlignSnapItem->setZValue( 90 );
@@ -1158,7 +1158,7 @@ void QgsComposerMouseHandles::deleteHAlignSnapItem()
   {
     scene()->removeItem( mHAlignSnapItem );
     delete mHAlignSnapItem;
-    mHAlignSnapItem = 0;
+    mHAlignSnapItem = nullptr;
   }
 }
 
@@ -1168,7 +1168,7 @@ void QgsComposerMouseHandles::deleteVAlignSnapItem()
   {
     scene()->removeItem( mVAlignSnapItem );
     delete mVAlignSnapItem;
-    mVAlignSnapItem = 0;
+    mVAlignSnapItem = nullptr;
   }
 }
 
@@ -1308,11 +1308,11 @@ void QgsComposerMouseHandles::collectAlignCoordinates( QMap< double, const QgsCo
       double y = ( *sIt )->line().y1();
       if ( qgsDoubleNear( y, 0.0 ) )
       {
-        alignCoordsX.insert( x, 0 );
+        alignCoordsX.insert( x, nullptr );
       }
       else
       {
-        alignCoordsY.insert( y, 0 );
+        alignCoordsY.insert( y, nullptr );
       }
     }
   }

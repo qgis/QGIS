@@ -23,18 +23,18 @@
 
 #include <cstdlib>
 
-QgsServerLogger* QgsServerLogger::mInstance = 0;
+QgsServerLogger* QgsServerLogger::mInstance = nullptr;
 
 QgsServerLogger* QgsServerLogger::instance()
 {
-  if ( mInstance == 0 )
+  if ( mInstance == nullptr )
   {
     mInstance = new QgsServerLogger();
   }
   return mInstance;
 }
 
-QgsServerLogger::QgsServerLogger(): mLogFile( 0 )
+QgsServerLogger::QgsServerLogger(): mLogFile( nullptr )
 {
   //logfile
   QString filePath = getenv( "QGIS_SERVER_LOG_FILE" );

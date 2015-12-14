@@ -236,7 +236,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \param visibleExtent Visible extent for providers supporting contextual legends, in layer CRS
      * \note visibleExtent parameter added in 2.8 (no available in python bindings)
      */
-    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle * visibleExtent = 0 )
+    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle * visibleExtent = nullptr )
     {
       Q_UNUSED( scale );
       Q_UNUSED( forceRefresh );
@@ -260,7 +260,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QgsImageFetcher* getLegendGraphicFetcher( const QgsMapSettings* mapSettings )
     {
       Q_UNUSED( mapSettings );
-      return 0;
+      return nullptr;
     }
 
     /** \brief Create pyramid overviews */

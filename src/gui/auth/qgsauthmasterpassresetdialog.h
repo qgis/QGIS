@@ -35,7 +35,7 @@ class GUI_EXPORT QgsMasterPasswordResetDialog : public QDialog, private Ui::QgsM
     Q_OBJECT
 
   public:
-    explicit QgsMasterPasswordResetDialog( QWidget *parent = 0 );
+    explicit QgsMasterPasswordResetDialog( QWidget *parent = nullptr );
     ~QgsMasterPasswordResetDialog();
 
     bool requestMasterPasswordReset( QString *newpass, QString *oldpass, bool *keepbackup );

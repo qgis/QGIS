@@ -59,16 +59,16 @@ QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate& cert,
     , mTrustCacheRebuilt( false )
     , mDefaultTrustPolicy( QgsAuthCertUtils::DefaultTrust )
     , mCurrentTrustPolicy( QgsAuthCertUtils::DefaultTrust )
-    , mSecGeneral( 0 )
-    , mSecDetails( 0 )
-    , mSecPemText( 0 )
-    , mGrpSubj( 0 )
-    , mGrpIssu( 0 )
-    , mGrpCert( 0 )
-    , mGrpPkey( 0 )
-    , mGrpExts( 0 )
-    , mAuthNotifyLayout( 0 )
-    , mAuthNotify( 0 )
+    , mSecGeneral( nullptr )
+    , mSecDetails( nullptr )
+    , mSecPemText( nullptr )
+    , mGrpSubj( nullptr )
+    , mGrpIssu( nullptr )
+    , mGrpCert( nullptr )
+    , mGrpPkey( nullptr )
+    , mGrpExts( nullptr )
+    , mAuthNotifyLayout( nullptr )
+    , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -230,8 +230,8 @@ void QgsAuthCertInfo::setCertHierarchy()
   QListIterator<QSslCertificate> it( mQCertChain );
   it.toBack();
   int i = mQCertChain.size();
-  QTreeWidgetItem * item = 0;
-  QTreeWidgetItem * previtem = 0;
+  QTreeWidgetItem * item = nullptr;
+  QTreeWidgetItem * previtem = nullptr;
   while ( it.hasPrevious() )
   {
     QSslCertificate cert( it.previous() );
@@ -851,7 +851,7 @@ void QgsAuthCertInfo::on_btnSaveTrust_clicked()
     QgsDebugMsg( "Could not set trust policy for certificate" );
   }
   mCurrentTrustPolicy = newpolicy;
-  decorateCertTreeItem( mCurrentQCert, newpolicy, 0 );
+  decorateCertTreeItem( mCurrentQCert, newpolicy, nullptr );
   btnSaveTrust->setEnabled( false );
 
   // rebuild trust cache
@@ -921,7 +921,7 @@ QgsAuthCertInfoDialog::QgsAuthCertInfoDialog( const QSslCertificate& cert,
     QWidget *parent ,
     const QList<QSslCertificate>& connectionCAs )
     : QDialog( parent )
-    , mCertInfoWdgt( 0 )
+    , mCertInfoWdgt( nullptr )
 {
   setWindowTitle( tr( "Certificate Information" ) );
   QVBoxLayout *layout = new QVBoxLayout( this );

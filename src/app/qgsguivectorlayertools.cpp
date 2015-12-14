@@ -29,7 +29,7 @@
 
 
 QgsGuiVectorLayerTools::QgsGuiVectorLayerTools()
-    : QObject( NULL )
+    : QObject( nullptr )
 {}
 
 bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer* layer, const QgsAttributeMap& defaultValues, const QgsGeometry& defaultGeometry, QgsFeature* feat ) const
@@ -106,7 +106,7 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowCance
     if ( allowCancel )
       buttons |= QMessageBox::Cancel;
 
-    switch ( QMessageBox::information( 0,
+    switch ( QMessageBox::information( nullptr,
                                        tr( "Stop editing" ),
                                        tr( "Do you want to save the changes to layer %1?" ).arg( layer->name() ),
                                        buttons ) )

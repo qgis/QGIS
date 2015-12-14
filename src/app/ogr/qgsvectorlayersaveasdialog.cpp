@@ -119,7 +119,7 @@ QList<QPair<QLabel*, QWidget*> > QgsVectorLayerSaveAsDialog::createControls( con
   {
     QgsVectorFileWriter::Option *option = it.value();
     QLabel *label = new QLabel( it.key() );
-    QWidget *control = 0;
+    QWidget *control = nullptr;
     switch ( option->type )
     {
       case QgsVectorFileWriter::Int:
@@ -170,7 +170,7 @@ QList<QPair<QLabel*, QWidget*> > QgsVectorLayerSaveAsDialog::createControls( con
       }
 
       case QgsVectorFileWriter::Hidden:
-        control = 0;
+        control = nullptr;
         break;
     }
 
@@ -293,7 +293,7 @@ void QgsVectorLayerSaveAsDialog::on_browseFilename_clicked()
   QSettings settings;
   QString dirName = leFilename->text().isEmpty() ? settings.value( "/UI/lastVectorFileFilterDir", QDir::homePath() ).toString() : leFilename->text();
   QString filterString = QgsVectorFileWriter::filterForDriver( format() );
-  QString outputFile = QFileDialog::getSaveFileName( 0, tr( "Save layer as..." ), dirName, filterString );
+  QString outputFile = QFileDialog::getSaveFileName( nullptr, tr( "Save layer as..." ), dirName, filterString );
   if ( !outputFile.isNull() )
   {
     leFilename->setText( outputFile );

@@ -22,7 +22,7 @@ QgsUserInputDockWidget::QgsUserInputDockWidget( QWidget *parent )
     : QDockWidget( tr( "User Input Panel" ), parent )
     , mLayoutHorizontal( true )
 {
-  QWidget* w = new QWidget( 0 );
+  QWidget* w = new QWidget( nullptr );
   mLayout = new QBoxLayout( QBoxLayout::LeftToRight );
   mLayout->setAlignment( Qt::AlignLeft | Qt::AlignTop );
   w->setLayout( mLayout );
@@ -39,7 +39,7 @@ QgsUserInputDockWidget::~QgsUserInputDockWidget()
 
 void QgsUserInputDockWidget::addUserInputWidget( QWidget *widget )
 {
-  QFrame* line = 0;
+  QFrame* line = nullptr;
   if ( mWidgetList.count() > 0 )
   {
     line = new QFrame( this );

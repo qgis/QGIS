@@ -31,7 +31,7 @@ class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog, private Ui::QgsMapUnitS
     Q_OBJECT
 
   public:
-    QgsMapUnitScaleDialog( QWidget* parent = 0 );
+    QgsMapUnitScaleDialog( QWidget* parent = nullptr );
 
     /** Returns the map unit scale */
     QgsMapUnitScale getMapUnitScale() const;
@@ -62,7 +62,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
     int mMapUnitIdx;
 
   public:
-    QgsUnitSelectionWidget( QWidget* parent = 0 );
+    QgsUnitSelectionWidget( QWidget* parent = nullptr );
 
     /** Sets the units which the user can choose from in the combobox.
      * @param units list of strings for custom units to display in the widget

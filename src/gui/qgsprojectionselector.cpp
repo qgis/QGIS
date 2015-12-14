@@ -28,9 +28,9 @@
 
 QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name, const Qt::WindowFlags& fl )
     : QWidget( parent, fl )
-    , mUserProjList( NULL )
-    , mGeoList( NULL )
-    , mProjList( NULL )
+    , mUserProjList( nullptr )
+    , mGeoList( nullptr )
+    , mProjList( nullptr )
     , mProjListDone( false )
     , mUserProjListDone( false )
     , mRecentProjListDone( false )
@@ -318,7 +318,7 @@ QString QgsProjectionSelector::selectedProj4String()
   QgsDebugMsg( "db = " + databaseFileName );
 
   sqlite3 *database;
-  int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
+  int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( rc )
   {
     showDBMissingWarning( databaseFileName );
@@ -361,7 +361,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   // not a top-level projection node
   QTreeWidgetItem *lvi = lstCoordinateSystems->currentItem();
   if ( !lvi || lvi->text( QGIS_CRS_ID_COLUMN ).isEmpty() )
-    return 0;
+    return nullptr;
 
   //
   // Determine if this is a user projection or a system on
@@ -373,7 +373,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
     databaseFileName = QgsApplication::qgisUserDbFilePath();
     if ( !QFileInfo( databaseFileName ).exists() )
     {
-      return 0;
+      return nullptr;
     }
   }
   else
@@ -387,11 +387,11 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   // assuming that it will never be used anywhere else. Given the low overhead,
   // opening it each time seems to be a reasonable approach at this time.
   sqlite3 *database;
-  int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
+  int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( rc )
   {
     showDBMissingWarning( databaseFileName );
-    return 0;
+    return nullptr;
   }
 
   // prepare the sql statement
@@ -493,7 +493,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   const char   *tail;
   sqlite3_stmt *stmt;
   //check the db is available
-  int result = sqlite3_open_v2( databaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, NULL );
+  int result = sqlite3_open_v2( databaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( result )
   {
     // XXX This will likely never happen since on open, sqlite creates the
@@ -573,7 +573,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
 
   // open the database containing the spatial reference data
   sqlite3 *database;
-  int rc = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
+  int rc = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( rc )
   {
     // XXX This will likely never happen since on open, sqlite creates the
@@ -598,7 +598,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
     // Cache some stuff to speed up creating of the list of projected
     // spatial reference systems
     QString previousSrsType( "" );
-    QTreeWidgetItem* previousSrsTypeNode = 0;
+    QTreeWidgetItem* previousSrsTypeNode = nullptr;
 
     while ( sqlite3_step( stmt ) == SQLITE_ROW )
     {
@@ -854,7 +854,7 @@ long QgsProjectionSelector::getLargestCRSIDMatch( const QString& theSql )
   QString databaseFileName = QgsApplication::qgisUserDbFilePath();
   if ( QFileInfo( databaseFileName ).exists() ) //only bother trying to open if the file exists
   {
-    result = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
+    result = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
     if ( result )
     {
       // XXX This will likely never happen since on open, sqlite creates the
@@ -880,7 +880,7 @@ long QgsProjectionSelector::getLargestCRSIDMatch( const QString& theSql )
   else
   {
     //only bother looking in srs.db if it wasnt found above
-    result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
+    result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
     if ( result )
     {
       QgsDebugMsg( QString( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( database ) ) );
@@ -910,7 +910,7 @@ QStringList QgsProjectionSelector::authorities()
   const char   *tail;
   sqlite3_stmt *stmt;
 
-  int result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
+  int result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( result )
   {
     QgsDebugMsg( QString( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( database ) ) );

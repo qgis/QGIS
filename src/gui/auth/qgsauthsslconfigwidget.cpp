@@ -43,19 +43,19 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
     const QString &hostport,
     const QList<QSslCertificate> &connectionCAs )
     : QWidget( parent )
-    , mCert( 0 )
+    , mCert( nullptr )
     , mConnectionCAs( connectionCAs )
-    , mProtocolItem( 0 )
-    , mProtocolCmbBx( 0 )
-    , mIgnoreErrorsItem( 0 )
-    , mVerifyModeItem( 0 )
-    , mVerifyPeerCmbBx( 0 )
-    , mVerifyDepthItem( 0 )
-    , mVerifyDepthSpnBx( 0 )
+    , mProtocolItem( nullptr )
+    , mProtocolCmbBx( nullptr )
+    , mIgnoreErrorsItem( nullptr )
+    , mVerifyModeItem( nullptr )
+    , mVerifyPeerCmbBx( nullptr )
+    , mVerifyDepthItem( nullptr )
+    , mVerifyDepthSpnBx( nullptr )
     , mCanSave( false )
     , mDisabled( false )
-    , mAuthNotifyLayout( 0 )
-    , mAuthNotify( 0 )
+    , mAuthNotifyLayout( nullptr )
+    , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -96,7 +96,7 @@ QGroupBox *QgsAuthSslConfigWidget::certificateGroupBox()
 {
   if ( mDisabled )
   {
-    return 0;
+    return nullptr;
   }
   return grpbxCert;
 }
@@ -105,7 +105,7 @@ QGroupBox *QgsAuthSslConfigWidget::sslConfigGroupBox()
 {
   if ( mDisabled )
   {
-    return 0;
+    return nullptr;
   }
   return grpbxSslConfig;
 }
@@ -599,7 +599,7 @@ void QgsAuthSslConfigWidget::on_btnCertInfo_clicked()
 
 QgsAuthSslConfigDialog::QgsAuthSslConfigDialog( QWidget *parent , const QSslCertificate& cert , const QString &hostport )
     : QDialog( parent )
-    , mSslConfigWdgt( 0 )
+    , mSslConfigWdgt( nullptr )
 {
   setWindowTitle( tr( "Custom Certificate Configuration" ) );
   QVBoxLayout *layout = new QVBoxLayout( this );

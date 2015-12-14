@@ -34,7 +34,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
     Q_PROPERTY( bool showCurrentScaleButton READ showCurrentScaleButton WRITE setShowCurrentScaleButton )
 
   public:
-    explicit QgsScaleWidget( QWidget *parent = 0 );
+    explicit QgsScaleWidget( QWidget *parent = nullptr );
 
     virtual ~QgsScaleWidget();
 
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
     // be expected.
     static QString toString( double scale ) { return QgsScaleComboBox::toString( scale ); }
     //! Helper function to convert a scale string to double
-    static double toDouble( const QString& scaleString, bool *ok = 0 ) { return QgsScaleComboBox::toDouble( scaleString, ok ); }
+    static double toDouble( const QString& scaleString, bool *ok = nullptr ) { return QgsScaleComboBox::toDouble( scaleString, ok ); }
 
   public slots:
     void updateScales( const QStringList &scales = QStringList() ) { return mScaleComboBox->updateScales( scales ); }

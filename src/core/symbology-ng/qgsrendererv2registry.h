@@ -51,10 +51,10 @@ class CORE_EXPORT QgsRendererV2AbstractMetadata
     virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) = 0;
     /** Return new instance of settings widget for the renderer. Returns NULL on error. */
     virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    { Q_UNUSED( layer ); Q_UNUSED( style ); Q_UNUSED( renderer ); return NULL; }
+    { Q_UNUSED( layer ); Q_UNUSED( style ); Q_UNUSED( renderer ); return nullptr; }
 
     virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QGis::GeometryType geomType )
-    { Q_UNUSED( elem ); Q_UNUSED( geomType ); return NULL; }
+    { Q_UNUSED( elem ); Q_UNUSED( geomType ); return nullptr; }
 
   protected:
     //! name used within QGIS for identification (the same what renderer's type() returns)
@@ -83,11 +83,11 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
                            const QString& visibleName,
                            QgsRendererV2CreateFunc pfCreate,
                            const QIcon& icon = QIcon(),
-                           QgsRendererV2WidgetFunc pfWidget = NULL )
+                           QgsRendererV2WidgetFunc pfWidget = nullptr )
         : QgsRendererV2AbstractMetadata( name, visibleName, icon )
         , mCreateFunc( pfCreate )
         , mWidgetFunc( pfWidget )
-        , mCreateFromSldFunc( NULL )
+        , mCreateFromSldFunc( nullptr )
     {}
 
     //! @note not available in python bindings
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
                            QgsRendererV2CreateFunc pfCreate,
                            QgsRendererV2CreateFromSldFunc pfCreateFromSld,
                            const QIcon& icon = QIcon(),
-                           QgsRendererV2WidgetFunc pfWidget = NULL )
+                           QgsRendererV2WidgetFunc pfWidget = nullptr )
         : QgsRendererV2AbstractMetadata( name, visibleName, icon )
         , mCreateFunc( pfCreate )
         , mWidgetFunc( pfWidget )
@@ -105,11 +105,11 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
 
     virtual ~QgsRendererV2Metadata();
 
-    virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) override { return mCreateFunc ? mCreateFunc( elem ) : NULL; }
+    virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) override { return mCreateFunc ? mCreateFunc( elem ) : nullptr; }
     virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) override
-      { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : NULL; }
+      { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : nullptr; }
     virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QGis::GeometryType geomType ) override
-      { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : NULL; }
+      { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr; }
 
     //! @note not available in python bindings
     QgsRendererV2CreateFunc createFunction() const { return mCreateFunc; }

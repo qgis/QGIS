@@ -29,8 +29,8 @@ class GUI_EXPORT QgsGenericFeatureSelectionManager : public QgsIFeatureSelection
     Q_OBJECT
 
   public:
-    explicit QgsGenericFeatureSelectionManager( QObject *parent = NULL );
-    QgsGenericFeatureSelectionManager( const QgsFeatureIds& initialSelection, QObject *parent = NULL );
+    explicit QgsGenericFeatureSelectionManager( QObject *parent = nullptr );
+    QgsGenericFeatureSelectionManager( const QgsFeatureIds& initialSelection, QObject *parent = nullptr );
 
     // QgsIFeatureSelection interface
     virtual int selectedFeatureCount() override;

@@ -114,7 +114,7 @@ QgsVectorLayer* QgsGeometrySnapperDialog::getInputLayer()
   int idx = comboBoxInputLayer->currentIndex();
   if ( idx < 0 )
   {
-    return 0;
+    return nullptr;
   }
   QString inputLayerId = comboBoxInputLayer->itemData( idx ).toString();
   return static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( inputLayerId ) );
@@ -125,7 +125,7 @@ QgsVectorLayer* QgsGeometrySnapperDialog::getReferenceLayer()
   int idx = comboBoxReferenceLayer->currentIndex();
   if ( idx < 0 )
   {
-    return 0;
+    return nullptr;
   }
   QString inputLayerId = comboBoxReferenceLayer->itemData( idx ).toString();
   return static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( inputLayerId ) );
@@ -136,7 +136,7 @@ void QgsGeometrySnapperDialog::validateInput()
   QgsVectorLayer* inLayer = getInputLayer();
   QgsVectorLayer* refLayer = getReferenceLayer();
   bool outputOk = radioButtonOuputModifyInput->isChecked() || !lineEditOutput->text().isEmpty();
-  mRunButton->setEnabled( inLayer != 0 && refLayer != 0 && inLayer != refLayer &&
+  mRunButton->setEnabled( inLayer != nullptr && refLayer != nullptr && inLayer != refLayer &&
                           refLayer->geometryType() == inLayer->geometryType() && outputOk );
 }
 
@@ -184,7 +184,7 @@ void QgsGeometrySnapperDialog::run()
   /** Get layers **/
   QgsVectorLayer* layer = getInputLayer();
   QgsVectorLayer* referenceLayer = getReferenceLayer();
-  if ( layer == 0 || referenceLayer == 0 )
+  if ( layer == nullptr || referenceLayer == nullptr )
   {
     return;
   }

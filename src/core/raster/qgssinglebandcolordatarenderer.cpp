@@ -34,10 +34,10 @@ QgsSingleBandColorDataRenderer::~QgsSingleBandColorDataRenderer()
 
 QgsSingleBandColorDataRenderer* QgsSingleBandColorDataRenderer::clone() const
 {
-  QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( 0, mBand );
+  QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( nullptr, mBand );
   renderer->setOpacity( mOpacity );
   renderer->setAlphaBand( mAlphaBand );
-  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : 0 );
+  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : nullptr );
   return renderer;
 }
 
@@ -45,7 +45,7 @@ QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& el
 {
   if ( elem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   int band = elem.attribute( "band", "-1" ).toInt();

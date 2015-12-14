@@ -100,9 +100,9 @@ bool QgsComposerAttributeTableCompareV2::operator()( const QgsComposerTableRow& 
 QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* composition, bool createUndoCommands )
     : QgsComposerTableV2( composition, createUndoCommands )
     , mSource( LayerAttributes )
-    , mVectorLayer( 0 )
-    , mCurrentAtlasLayer( 0 )
-    , mComposerMap( 0 )
+    , mVectorLayer( nullptr )
+    , mCurrentAtlasLayer( nullptr )
+    , mComposerMap( nullptr )
     , mMaximumNumberOfFeatures( 30 )
     , mShowUniqueRowsOnly( false )
     , mShowOnlyVisibleFeatures( false )
@@ -620,7 +620,7 @@ QgsVectorLayer *QgsComposerAttributeTableV2::sourceLayer()
       return relation.referencingLayer();
     }
   }
-  return 0;
+  return nullptr;
 }
 
 void QgsComposerAttributeTableV2::removeLayer( const QString& layerId )
@@ -629,7 +629,7 @@ void QgsComposerAttributeTableV2::removeLayer( const QString& layerId )
   {
     if ( layerId == mVectorLayer->id() )
     {
-      mVectorLayer = 0;
+      mVectorLayer = nullptr;
       //remove existing columns
       qDeleteAll( mColumns );
       mColumns.clear();
@@ -757,7 +757,7 @@ bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QD
   int composerMapId = itemElem.attribute( "composerMap", "-1" ).toInt();
   if ( composerMapId == -1 )
   {
-    mComposerMap = 0;
+    mComposerMap = nullptr;
   }
 
   if ( composition() )
@@ -766,7 +766,7 @@ bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QD
   }
   else
   {
-    mComposerMap = 0;
+    mComposerMap = nullptr;
   }
 
   if ( mComposerMap )
@@ -779,7 +779,7 @@ bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QD
   QString layerId = itemElem.attribute( "vectorLayer", "not_existing" );
   if ( layerId == "not_existing" )
   {
-    mVectorLayer = 0;
+    mVectorLayer = nullptr;
   }
   else
   {

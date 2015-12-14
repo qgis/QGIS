@@ -46,7 +46,7 @@ QgsComposerItem* QgsComposerModel::itemFromIndex( const QModelIndex &index ) con
   //try to return the QgsComposerItem corresponding to a QModelIndex
   if ( !index.isValid() )
   {
-    return 0;
+    return nullptr;
   }
 
   QgsComposerItem * item = static_cast<QgsComposerItem*>( index.internalPointer() );
@@ -881,7 +881,7 @@ QgsComposerItem* QgsComposerModel::getComposerItemAbove( QgsComposerItem* item )
       it.previous();
     }
   }
-  return 0;
+  return nullptr;
 }
 
 QgsComposerItem* QgsComposerModel::getComposerItemBelow( QgsComposerItem* item ) const
@@ -900,7 +900,7 @@ QgsComposerItem* QgsComposerModel::getComposerItemBelow( QgsComposerItem* item )
       it.next();
     }
   }
-  return 0;
+  return nullptr;
 }
 
 QList<QgsComposerItem *>* QgsComposerModel::zOrderList()

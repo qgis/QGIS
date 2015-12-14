@@ -56,7 +56,7 @@ namespace pal
       , mCentroidInside( false )
       , mFitInPolygon( false )
       , mArrangement( arrangement )
-      , mArrangementFlags( 0 )
+      , mArrangementFlags( nullptr )
       , mMode( LabelPerFeature )
       , mMergeLines( false )
       , mUpsidedownLabels( Upright )
@@ -121,11 +121,11 @@ namespace pal
     bool addedFeature = false;
 
     double geom_size = -1, biggest_size = -1;
-    FeaturePart* biggest_part = NULL;
+    FeaturePart* biggest_part = nullptr;
 
     // break the (possibly multi-part) geometry into simple geometries
     QLinkedList<const GEOSGeometry*>* simpleGeometries = unmulti( lf->geometry() );
-    if ( simpleGeometries == NULL ) // unmulti() failed?
+    if ( simpleGeometries == nullptr ) // unmulti() failed?
     {
       mMutex.unlock();
       throw InternalException::UnknownGeometry();
@@ -185,7 +185,7 @@ namespace pal
         else
         {
           addObstaclePart( fpart );
-          fpart = 0;
+          fpart = nullptr;
         }
       }
 
@@ -227,7 +227,7 @@ namespace pal
     {
       //do the same for the obstacle geometry
       simpleGeometries = unmulti( lf->obstacleGeometry() );
-      if ( simpleGeometries == NULL ) // unmulti() failed?
+      if ( simpleGeometries == nullptr ) // unmulti() failed?
       {
         mMutex.unlock();
         throw InternalException::UnknownGeometry();
@@ -277,7 +277,7 @@ namespace pal
     mMutex.unlock();
 
     // if using only biggest parts...
-    if (( mMode == LabelPerFeature || lf->hasFixedPosition() ) && biggest_part != NULL )
+    if (( mMode == LabelPerFeature || lf->hasFixedPosition() ) && biggest_part != nullptr )
     {
       addFeaturePart( biggest_part, lf->labelText() );
       addedFeature = true;
@@ -351,7 +351,7 @@ namespace pal
       ++p;
     }
 
-    return NULL; // no connected part found...
+    return nullptr; // no connected part found...
   }
 
   void Layer::joinConnectedFeatures()

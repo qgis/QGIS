@@ -65,7 +65,7 @@ class QgsConnectionPoolGroup
     QgsConnectionPoolGroup( const QString& ci )
         : connInfo( ci )
         , sem( CONN_POOL_MAX_CONCURRENT_CONNS )
-        , expirationTimer( 0 )
+        , expirationTimer( nullptr )
     {
     }
 
@@ -114,7 +114,7 @@ class QgsConnectionPoolGroup
       {
         // we didn't get connection for some reason, so release the lock
         sem.release();
-        return 0;
+        return nullptr;
       }
 
       connMutex.lock();

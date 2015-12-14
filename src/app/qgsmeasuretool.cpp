@@ -82,7 +82,7 @@ void QgsMeasureTool::activate()
        ( mCanvas->extent().height() > 360 ||
          mCanvas->extent().width() > 720 ) )
   {
-    QMessageBox::warning( NULL, tr( "Incorrect measure results" ),
+    QMessageBox::warning( nullptr, tr( "Incorrect measure results" ),
                           tr( "<p>This map is defined with a geographic coordinate system "
                               "(latitude/longitude) "
                               "but the map extents suggests that it is actually a projected "

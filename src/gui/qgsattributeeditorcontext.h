@@ -51,16 +51,16 @@ class GUI_EXPORT QgsAttributeEditorContext
     };
 
     QgsAttributeEditorContext()
-        : mParentContext( 0 )
-        , mLayer( 0 )
-        , mVectorLayerTools( 0 )
+        : mParentContext( nullptr )
+        , mLayer( nullptr )
+        , mVectorLayerTools( nullptr )
         , mRelationMode( Undefined )
         , mFormMode( Embed )
     {}
 
     QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, FormMode formMode )
         : mParentContext( &parentContext )
-        , mLayer( 0 )
+        , mLayer( nullptr )
         , mVectorLayerTools( parentContext.mVectorLayerTools )
         , mDistanceArea( parentContext.mDistanceArea )
         , mRelationMode( Undefined )
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsAttributeEditorContext
 
     QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, const QgsRelation& relation, RelationMode relationMode, FormMode widgetMode )
         : mParentContext( &parentContext )
-        , mLayer( 0 )
+        , mLayer( nullptr )
         , mVectorLayerTools( parentContext.mVectorLayerTools )
         , mDistanceArea( parentContext.mDistanceArea )
         , mRelation( relation )

@@ -68,7 +68,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @brief Constructor
      * @param parent  The parent widget
      */
-    explicit QgsDualView( QWidget* parent = 0 );
+    explicit QgsDualView( QWidget* parent = nullptr );
 
     /**
      * Has to be called to initialize the dual view.

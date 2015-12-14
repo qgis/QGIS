@@ -908,7 +908,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Deletes the selected features
      *  @return true in case of success and false otherwise
      */
-    bool deleteSelectedFeatures( int *deletedCount = 0 );
+    bool deleteSelectedFeatures( int *deletedCount = nullptr );
 
     /** Adds a ring to polygon/multipolygon features
      * @param ring ring to add
@@ -921,7 +921,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
        4 ring crosses existing rings,
        5 no feature found where ring can be inserted
        6 layer not editable */
-    int addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureId = 0 );
+    int addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureId = nullptr );
 
     /** Adds a ring to polygon/multipolygon features (takes ownership)
      * @param ring ring to add
@@ -933,7 +933,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
             6 layer not editable
        @note available in python as addCurvedRing
      */
-    int addRing( QgsCurveV2* ring, QgsFeatureId* featureId = 0 );
+    int addRing( QgsCurveV2* ring, QgsFeatureId* featureId = nullptr );
 
     /** Adds a new part polygon to a multipart feature
      @return
@@ -1572,7 +1572,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in QGIS 2.9
      * @see getValues
      */
-    QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int* nullCount = 0 );
+    QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int* nullCount = nullptr );
 
     /** Set the blending mode used for rendering each feature */
     void setFeatureBlendMode( const QPainter::CompositionMode &blendMode );

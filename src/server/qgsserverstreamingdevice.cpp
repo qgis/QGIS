@@ -20,7 +20,7 @@ QgsServerStreamingDevice::QgsServerStreamingDevice( const QString& formatName, Q
 {
 }
 
-QgsServerStreamingDevice::QgsServerStreamingDevice(): QIODevice( 0 ), mRequestHandler( 0 )
+QgsServerStreamingDevice::QgsServerStreamingDevice(): QIODevice( nullptr ), mRequestHandler( nullptr )
 {
 
 }

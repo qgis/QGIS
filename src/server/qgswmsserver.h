@@ -94,7 +94,7 @@ class QgsWMSServer: public QgsOWSServer
     /** Returns the map as an image (or a null pointer in case of error). The caller takes ownership
     of the image object). If an instance to existing hit test structure is passed, instead of rendering
     it will fill the structure with symbols that would be used for rendering */
-    QImage* getMap( HitTest* hitTest = 0 );
+    QImage* getMap( HitTest* hitTest = nullptr );
     /** GetMap request with vector format output. This output is usually symbolized (difference to WFS GetFeature)*/
     void getMapAsDxf();
     /** Returns an SLD file with the style of the requested layer. Exception is raised in case of troubles :-)*/
@@ -160,7 +160,7 @@ class QgsWMSServer: public QgsOWSServer
                                     QgsRenderContext& renderContext,
                                     const QString& version,
                                     const QString& infoFormat,
-                                    QgsRectangle* featureBBox = 0 ) const;
+                                    QgsRectangle* featureBBox = nullptr ) const;
     /** Appends feature info xml for the layer to the layer element of the dom document*/
     int featureInfoFromRasterLayer( QgsRasterLayer* layer,
                                     const QgsPoint* infoPoint,
@@ -260,7 +260,7 @@ class QgsWMSServer: public QgsOWSServer
       const QString& typeName,
       bool withGeom,
       int version,
-      QStringList* attributes = NULL ) const;
+      QStringList* attributes = nullptr ) const;
 
     /** Replaces attribute value with ValueRelation or ValueRelation if defined. Otherwise returns the original value*/
     static QString replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, const QString& attributeVal );
