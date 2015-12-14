@@ -4098,7 +4098,7 @@ QString QgsDxfExport::dxfLayerName( const QString& name )
   layerName.replace( "=", "_" );
   layerName.replace( "\'", "_" );
 
-  return layerName;
+  return layerName.trimmed();
 }
 
 bool QgsDxfExport::layerIsScaleBasedVisible( const QgsMapLayer* layer ) const
