@@ -38,7 +38,7 @@ except:
 # (changes which lower this threshold are welcomed though!)
 
 ACCEPTABLE_MISSING_CLASSES = 69
-ACCEPTABLE_MISSING_MEMBERS = 264
+ACCEPTABLE_MISSING_MEMBERS = 245
 
 
 class TestQgsSipCoverage(TestCase):
@@ -70,6 +70,9 @@ class TestQgsSipCoverage(TestCase):
         for m in parser.bindable_members:
             if m[0] in bound_objects:
                 obj = bound_objects[m[0]]
+                if "::" in m[0] and m[0].split("::")[1] == m[1]:
+                    # skip constructors of nested classes
+                    continue
 
                 # try two different methods of checking for member existence
                 try:
