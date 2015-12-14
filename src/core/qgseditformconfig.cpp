@@ -140,8 +140,8 @@ void QgsEditFormConfig::readXml( const QDomNode& node )
   if ( dotPos >= 0 ) // It's a module
   {
     setInitCodeSource( QgsEditFormConfig::CodeSourceDialog );
-    setInitFunction( mInitFunction.mid( dotPos + 1 ) );
     setInitCode( QString( "from %1 import %2\n" ).arg( mInitFunction.left( dotPos ), mInitFunction.mid( dotPos + 1 ) ) );
+    setInitFunction( mInitFunction.mid( dotPos + 1 ) );
   }
 
   QDomNode editFormInitFilePathNode = node.namedItem( "editforminitfilepath" );
