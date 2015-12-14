@@ -721,6 +721,8 @@ void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWid
 
 void QgsProjectionSelector::on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column )
 {
+  Q_UNUSED( column );
+
   QgsDebugMsg( "Entered." );
 
   if ( !current )
@@ -754,6 +756,8 @@ void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *cu
 
 void QgsProjectionSelector::on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column )
 {
+  Q_UNUSED( column );
+
   QgsDebugMsg( "Entered." );
 
   if ( !current )
