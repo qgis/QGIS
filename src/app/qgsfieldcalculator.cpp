@@ -420,13 +420,25 @@ void QgsFieldCalculator::on_mOutputFieldTypeComboBox_activated( int index )
   if ( mOutputFieldWidthSpinBox->value() > mOutputFieldWidthSpinBox->maximum() )
     mOutputFieldWidthSpinBox->setValue( mOutputFieldWidthSpinBox->maximum() );
 
-  mOutputFieldPrecisionSpinBox->setMinimum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 4 ).toInt() );
-  mOutputFieldPrecisionSpinBox->setMaximum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 5 ).toInt() );
-  mOutputFieldPrecisionSpinBox->setEnabled( mOutputFieldPrecisionSpinBox->minimum() < mOutputFieldPrecisionSpinBox->maximum() );
-  if ( mOutputFieldPrecisionSpinBox->value() < mOutputFieldPrecisionSpinBox->minimum() )
-    mOutputFieldPrecisionSpinBox->setValue( mOutputFieldPrecisionSpinBox->minimum() );
-  if ( mOutputFieldPrecisionSpinBox->value() > mOutputFieldPrecisionSpinBox->maximum() )
-    mOutputFieldPrecisionSpinBox->setValue( mOutputFieldPrecisionSpinBox->maximum() );
+  // Once set, set field precision
+  setPrecisionMinMax();
+}
+
+
+void QgsFieldCalculator::on_mOutputFieldWidthSpinBox_editingFinished()
+{
+  setPrecisionMinMax();
+}
+
+// Make precision lesser or equal to field width
+void QgsFieldCalculator::setPrecisionMinMax()
+{
+  int idx = mOutputFieldTypeComboBox->currentIndex();
+  int minPrecType = mOutputFieldTypeComboBox->itemData( idx, Qt::UserRole + 4 ).toInt();
+  int maxPrecType = mOutputFieldTypeComboBox->itemData( idx, Qt::UserRole + 5 ).toInt();
+  mOutputFieldPrecisionSpinBox->setEnabled( minPrecType < maxPrecType );
+  mOutputFieldPrecisionSpinBox->setMinimum( minPrecType );
+  mOutputFieldPrecisionSpinBox->setMaximum( qMax( minPrecType, qMin( maxPrecType, mOutputFieldWidthSpinBox->value() ) ) );
 }
 
 void QgsFieldCalculator::populateFields()
