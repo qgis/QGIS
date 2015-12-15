@@ -644,7 +644,59 @@ void QgsGrassModuleInputComboBox::hidePopup()
 
 QgsGrassModuleInputComboBox::~QgsGrassModuleInputComboBox()
 {
+}
 
+void QgsGrassModuleInputComboBox::setCurrent( const QModelIndex & proxyIndex )
+{
+  setRootModelIndex( proxyIndex.parent() );
+  setModelColumn( proxyIndex.column() );
+  setCurrentIndex( proxyIndex.row() );
+  setRootModelIndex( QModelIndex() );
+  view()->setCurrentIndex( proxyIndex );
+}
+
+bool QgsGrassModuleInputComboBox::setCurrent( const QString &map, const QString &mapset )
+{
+  QString ms = mapset.isEmpty() ? QgsGrass::getDefaultMapset() : mapset;
+  QgsDebugMsg( " map = " + map + " mapset = " + mapset + " ms = " + ms );
+  mTreeView->selectionModel()->clear();
+  for ( int i = 0; i < mProxy->rowCount(); i++ )
+  {
+    QModelIndex mapsetIndex = mProxy->index( i, 0 );
+    if ( mProxy->data( mapsetIndex, QgsGrassModuleInputModel::MapsetRole ).toString() == ms )
+    {
+      for ( int j = 0; j < mProxy->rowCount( mapsetIndex ); j++ )
+      {
+        QModelIndex mapIndex = mProxy->index( j, 0, mapsetIndex );
+        if ( mProxy->data( mapIndex, QgsGrassModuleInputModel::MapRole ).toString() == map )
+        {
+          mTreeView->scrollTo( mapIndex ); // expand
+          setCurrent( mapIndex );
+          return true;
+        }
+      }
+      break;
+    }
+  }
+  return false;
+}
+
+bool QgsGrassModuleInputComboBox::setFirst()
+{
+  int index = 0;
+  for ( int i = 0; i < mProxy->rowCount(); i++ )
+  {
+    QModelIndex mapsetIndex = mProxy->index( i, 0 );
+    if ( mProxy->rowCount( mapsetIndex ) > 0 )
+    {
+      QModelIndex mapIndex = mProxy->index( 0, 0, mapsetIndex );
+      mTreeView->scrollTo( mapIndex ); // expand
+      setCurrent( mapIndex );
+      return true;
+    }
+    index++;
+  }
+  return false;
 }
 
 /******************** QgsGrassModuleInputSelectedDelegate *********************/

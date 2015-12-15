@@ -173,6 +173,15 @@ class QgsGrassModuleInputComboBox : public QComboBox
     virtual void showPopup() override;
     virtual void hidePopup() override;
 
+    // set current index
+    void setCurrent( const QModelIndex & proxyIndex );
+
+    // set current item to map/mapset if exists
+    bool setCurrent( const QString &map, const QString &mapset = QString() );
+
+    // set to first map if exists
+    bool setFirst();
+
   protected:
     QgsGrassObject::Type mType;
     QgsGrassModuleInputModel *mModel;
