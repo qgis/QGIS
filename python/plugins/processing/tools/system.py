@@ -38,8 +38,7 @@ numExported = 1
 
 
 def userFolder():
-    userDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() \
-        + '/processing'
+    userDir = os.path.join(QgsApplication.qgisSettingsDirPath(), 'processing')
     if not QDir(userDir).exists():
         QDir().mkpath(userDir)
 
@@ -47,8 +46,7 @@ def userFolder():
 
 
 def defaultOutputFolder():
-    folder = os.path.join(os.path.dirname(QgsApplication.qgisUserDbFilePath()),
-                          "processing", "outputs")
+    folder = os.path.join(userFolder(), "outputs")
     if not QDir(folder).exists():
         QDir().mkpath(folder)
 
