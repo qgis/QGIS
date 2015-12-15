@@ -173,7 +173,7 @@ class TestQgsServer(unittest.TestCase):
         project = self.testdata_path + "test+project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.1.0&REQUEST=%s' % (urllib.quote(project), request)
+        query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.quote(project), request)
         header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
         self.assert_headers(header, body)
         response = header + body
