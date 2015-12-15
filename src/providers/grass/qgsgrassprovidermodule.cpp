@@ -70,6 +70,23 @@ QList<QAction*> QgsGrassItemActions::actions()
     list << openMapsetAction;
   }
 
+  if ( mGrassObject.type() == QgsGrassObject::Mapset && mGrassObject.locationIdentical( QgsGrass::getDefaultLocationObject() )
+       && mGrassObject.mapset() != QgsGrass::getDefaultMapset() )
+  {
+    if ( !QgsGrass::instance()->isMapsetInSearchPath( mGrassObject.mapset() ) )
+    {
+      QAction* openMapsetAction = new QAction( tr( "Add mapset to search path" ), this );
+      connect( openMapsetAction, SIGNAL( triggered() ), SLOT( addMapsetToSearchPath() ) );
+      list << openMapsetAction;
+    }
+    else
+    {
+      QAction* openMapsetAction = new QAction( tr( "Remove mapset from search path" ), this );
+      connect( openMapsetAction, SIGNAL( triggered() ), SLOT( removeMapsetFromSearchPath() ) );
+      list << openMapsetAction;
+    }
+  }
+
   if (( mGrassObject.type() == QgsGrassObject::Raster || mGrassObject.type() == QgsGrassObject::Vector
         ||  mGrassObject.type() == QgsGrassObject::Group ) && isMapsetOwner )
   {
@@ -136,6 +153,30 @@ void QgsGrassItemActions::openMapset()
     return;
   }
   QgsGrass::saveMapset();
+}
+
+void QgsGrassItemActions::addMapsetToSearchPath()
+{
+  QgsDebugMsg( "entered" );
+  QString error;
+  QgsGrass::instance()->addMapsetToSearchPath( mGrassObject.mapset(), error );
+  if ( !error.isEmpty() )
+  {
+    QgsGrass::warning( error );
+    return;
+  }
+}
+
+void QgsGrassItemActions::removeMapsetFromSearchPath()
+{
+  QgsDebugMsg( "entered" );
+  QString error;
+  QgsGrass::instance()->removeMapsetFromSearchPath( mGrassObject.mapset(), error );
+  if ( !error.isEmpty() )
+  {
+    QgsGrass::warning( error );
+    return;
+  }
 }
 
 void QgsGrassItemActions::renameGrassObject()

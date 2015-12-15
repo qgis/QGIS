@@ -234,6 +234,12 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      *  @return true if in search path */
     bool isMapsetInSearchPath( QString mapset );
 
+    /** Add mapset to search path of currently open mapset */
+    void addMapsetToSearchPath( const QString & mapset, QString& error );
+
+    /** Add mapset to search path of currently open mapset */
+    void removeMapsetFromSearchPath( const QString & mapset, QString& error );
+
     //! Error codes returned by error()
     enum GERROR
     {

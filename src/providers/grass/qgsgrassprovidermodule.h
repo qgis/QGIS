@@ -41,6 +41,8 @@ class QgsGrassItemActions : public QObject
   public slots:
     void newMapset();
     void openMapset();
+    void addMapsetToSearchPath();
+    void removeMapsetFromSearchPath();
     void renameGrassObject();
     void deleteGrassObject();
     void newPointLayer();

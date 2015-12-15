@@ -649,6 +649,52 @@ bool QgsGrass::isMapsetInSearchPath( QString mapset )
   return mMapsetSearchPath.contains( mapset );
 }
 
+void QgsGrass::addMapsetToSearchPath( const QString & mapset, QString& error )
+{
+  QgsDebugMsg( "entered" );
+  QString cmd = gisbase() + "/bin/g.mapsets";
+  QStringList arguments;
+
+#if GRASS_VERSION_MAJOR < 7
+  arguments << "addmapset=" + mapset;
+#else
+  arguments << "operation=add" << "mapset=" + mapset;
+#endif
+
+  try
+  {
+    int timeout = -1; // What timeout to use? It can take long time on network or database
+    runModule( getDefaultGisdbase(), getDefaultLocation(), getDefaultMapset(), cmd, arguments, timeout, false );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    error = tr( "Cannot add mapset %1 to search path:" ).arg( mapset ) + " " + e.what();
+  }
+}
+
+void QgsGrass::removeMapsetFromSearchPath( const QString & mapset, QString& error )
+{
+  QgsDebugMsg( "entered" );
+  QString cmd = gisbase() + "/bin/g.mapsets";
+  QStringList arguments;
+
+#if GRASS_VERSION_MAJOR < 7
+  arguments << "removemapset=" + mapset;
+#else
+  arguments << "operation=remove" << "mapset=" + mapset;
+#endif
+
+  try
+  {
+    int timeout = -1; // What timeout to use? It can take long time on network or database
+    runModule( getDefaultGisdbase(), getDefaultLocation(), getDefaultMapset(), cmd, arguments, timeout, false );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    error = tr( "Cannot remove mapset %1 from search path:" ).arg( mapset ) + " " + e.what();
+  }
+}
+
 void QgsGrass::loadMapsetSearchPath()
 {
   QgsDebugMsg( "entered" );
