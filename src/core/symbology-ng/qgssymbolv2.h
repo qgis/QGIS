@@ -21,6 +21,7 @@
 #include <QMap>
 #include "qgsmapunitscale.h"
 #include "qgsgeometry.h"
+#include "qgspointv2.h"
 
 class QColor;
 class QImage;
@@ -243,14 +244,21 @@ class CORE_EXPORT QgsSymbolV2
     QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers ); // can't be instantiated
 
     /**
-     * Creates a point in screen coordinates from a QgsPoint in map coordinates
+     * Creates a point in screen coordinates from a QgsPointV2 in map coordinates
      */
-    static inline void _getPoint( QPointF& pt, QgsRenderContext& context, const QgsPoint& point )
+    static inline void _getPoint( QPointF& pt, QgsRenderContext& context, const QgsPointV2* point )
     {
       if ( context.coordinateTransform() )
-        pt = context.coordinateTransform()->transform( point ).toQPointF();
+      {
+        double x = point->x();
+        double y = point->y();
+        double z = 0.0;
+        context.coordinateTransform()->transformInPlace( x, y, z );
+        pt = QPointF( x, y );
+
+      }
       else
-        pt = point.toQPointF();
+        pt = point->toQPointF();
 
       context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
     }

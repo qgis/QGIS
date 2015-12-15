@@ -491,6 +491,12 @@ void TestQgsGeometry::pointV2()
   QCOMPARE( p11.x(), 0.0 );
   QCOMPARE( p11.y(), 0.0 );
 
+  //toQPointF
+  QgsPointV2 p11a( 5.0, 9.0 );
+  QPointF result = p11a.toQPointF();
+  QVERIFY( qgsDoubleNear( result.x(), 5.0 ) );
+  QVERIFY( qgsDoubleNear( result.y(), 9.0 ) );
+
   //to/from WKB
   QgsPointV2 p12( QgsWKBTypes::PointZM, 1.0, 2.0, 3.0, -4.0 );
   int size = 0;

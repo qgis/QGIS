@@ -134,6 +134,11 @@ class QgsPointV2: public QgsAbstractGeometryV2
      */
     void setM( double m );
 
+    /** Returns the point as a QPointF.
+     * @note added in QGIS 2.14
+     */
+    QPointF toQPointF() const;
+
     //implementation of inherited methods
     virtual QString geometryType() const;
     virtual int dimension() const;

@@ -32,6 +32,7 @@
 #include "qgsdatadefined.h"
 
 #include "qgsgeometry.h"
+#include "qgsmultipointv2.h"
 #include "qgswkbptr.h"
 #include "qgsgeometrycollectionv2.h"
 #include "qgsclipper.h"
@@ -693,7 +694,9 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
         break;
       }
 
-      _getPoint( pt, context, segmentizedGeometry->asPoint() );
+      const QgsPointV2* point = static_cast< const QgsPointV2* >( segmentizedGeometry->geometry() );
+
+      _getPoint( pt, context, point );
       ( static_cast<QgsMarkerSymbolV2*>( this ) )->renderPoint( pt, &feature, context, layer, selected );
 
       if ( context.testFlag( QgsRenderContext::DrawSymbolBounds ) )
@@ -741,10 +744,11 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
         break;
       }
 
-      QgsMultiPoint multiPoint = segmentizedGeometry->asMultiPoint();
+      QgsMultiPointV2* mp = static_cast< QgsMultiPointV2* >( segmentizedGeometry->geometry() );
 
-      Q_FOREACH ( const QgsPoint& point, multiPoint )
+      for ( int i = 0; i < mp->numGeometries(); ++i )
       {
+        const QgsPointV2* point = static_cast< const QgsPointV2* >( mp->geometryN( i ) );
         _getPoint( pt, context, point );
         static_cast<QgsMarkerSymbolV2*>( this )->renderPoint( pt, &feature, context, layer, selected );
       }

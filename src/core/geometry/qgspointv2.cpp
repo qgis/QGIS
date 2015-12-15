@@ -410,3 +410,9 @@ bool QgsPointV2::convertTo( QgsWKBTypes::Type type )
   }
   return false;
 }
+
+
+QPointF QgsPointV2::toQPointF() const
+{
+  return QPointF( mX, mY );
+}

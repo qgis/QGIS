@@ -145,6 +145,11 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
      */
     void setM( double m ) { mM = m; }
 
+    /** Returns the point as a QPointF.
+     * @note added in QGIS 2.14
+     */
+    QPointF toQPointF() const;
+
     //implementation of inherited methods
     virtual QString geometryType() const override { return "Point"; }
     virtual int dimension() const override { return 0; }
