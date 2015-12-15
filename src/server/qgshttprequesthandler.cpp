@@ -84,7 +84,7 @@ void QgsHttpRequestHandler::setDefaultHeaders()
 
   //length
   int contentLength = mBody.size();
-  if ( contentLength > 0 ) // size is not known when streaming
+  if ( !mStreamingResponse && contentLength > 0 ) // size is not known when streaming
   {
     setHeader( "Content-Length", QString::number( contentLength ) );
   }
@@ -191,6 +191,12 @@ void QgsHttpRequestHandler::setPluginFilters( QgsServerFiltersMap pluginFilters 
   mPluginFilters = pluginFilters;
 }
 #endif
+
+void QgsHttpRequestHandler::startStreamingResponse()
+{
+    mStreamingResponse = true;
+    sendResponse();
+}
 
 void QgsHttpRequestHandler::sendResponse()
 {
@@ -505,6 +511,8 @@ bool QgsHttpRequestHandler::startGetFeatureResponse( QByteArray* ba, const QStri
     format = "text/xml";
 
   setInfoFormat( format );
+  startStreamingResponse();
+
   appendBody( *ba );
   // Streaming
   sendResponse();
