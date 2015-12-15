@@ -632,7 +632,7 @@ class DoxygenParser():
 
         # ignore certain obvious operators
         try:
-            if name.text in ('operator=', 'operator=='):
+            if name.text in ('operator=', 'operator==', 'operator!='):
                 return False
         except:
             pass
