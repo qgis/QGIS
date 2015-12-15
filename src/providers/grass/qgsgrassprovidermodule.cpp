@@ -353,7 +353,27 @@ QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QS
   mGrassObject = QgsGrassObject( gisdbase, location, mName, "", QgsGrassObject::Mapset );
   mActions = new QgsGrassItemActions( mGrassObject, true, this );
 
+  // emit data changed to possibly change icon
+  connect( QgsGrass::instance(), SIGNAL( mapsetChanged() ), this, SLOT( emitDataChanged() ) );
+  connect( QgsGrass::instance(), SIGNAL( mapsetSearchPathChanged() ), this, SLOT( emitDataChanged() ) );
+
   mIconName = "grass_mapset.png";
+}
+
+QIcon QgsGrassMapsetItem::icon()
+{
+  if ( mGrassObject == QgsGrass::getDefaultMapsetObject() )
+  {
+    return QgsApplication::getThemeIcon( "/grass_mapset_open.png" );
+  }
+  else if ( mGrassObject.locationIdentical( QgsGrass::getDefaultLocationObject() ) )
+  {
+    if ( QgsGrass::instance()->isMapsetInSearchPath( mName ) )
+    {
+      return QgsApplication::getThemeIcon( "/grass_mapset_search.png" );
+    }
+  }
+  return QgsDataItem::icon();
 }
 
 void QgsGrassMapsetItem::setState( State state )

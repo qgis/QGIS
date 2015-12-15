@@ -92,6 +92,8 @@
         <file>themes/default/gpsicons/polarchart.svg</file>
         <file>themes/default/grass_location.png</file>
         <file>themes/default/grass_mapset.png</file>
+        <file>themes/default/grass_mapset_open.png</file>
+        <file>themes/default/grass_mapset_search.png</file>
         <file>themes/default/histogram.png</file>
         <file>themes/default/join_bevel.png</file>
         <file>themes/default/join_miter.png</file>

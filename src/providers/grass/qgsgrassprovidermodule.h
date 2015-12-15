@@ -90,7 +90,7 @@ class QgsGrassMapsetItem : public QgsDirectoryItem, public QgsGrassObjectItemBas
 
     virtual void setState( State state ) override;
 
-    QIcon icon() override { return QgsDataItem::icon(); }
+    QIcon icon() override;
 
     QVector<QgsDataItem*> createChildren() override;
     virtual QList<QAction*> actions() override { return mActions->actions(); }
