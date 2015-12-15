@@ -500,22 +500,32 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
           item->setData( pixmap, Qt::DecorationRole );
           item->setCheckable( false );
           item->setEditable( false );
-          QStandardItem * listItem = item->clone();
-          listItem->setText( name + "\n" + description.label );
-
           appendItem( treeModel, parent, item );
 
-          // setData in the delegate with a variantised QgsDetailedItemData
-          QgsDetailedItemData myData;
-          myData.setTitle( name );
-          myData.setDetail( label );
-          myData.setIcon( pixmap );
-          myData.setCheckable( false );
-          myData.setRenderAsWidget( false );
-          QVariant myVariant = qVariantFromValue( myData );
-          listItem->setData( myVariant, Qt::UserRole );
-
-          modulesListModel->appendRow( listItem );
+          bool exists = false;
+          for ( int i = 0; i < modulesListModel->rowCount(); i++ )
+          {
+            if ( modulesListModel->item( i )->data( Qt::UserRole + Name ).toString() == name )
+            {
+              exists = true;
+              break;
+            }
+          }
+          if ( !exists )
+          {
+            QStandardItem * listItem = item->clone();
+            listItem->setText( name + "\n" + description.label );
+            // setData in the delegate with a variantised QgsDetailedItemData
+            QgsDetailedItemData myData;
+            myData.setTitle( name );
+            myData.setDetail( label );
+            myData.setIcon( pixmap );
+            myData.setCheckable( false );
+            myData.setRenderAsWidget( false );
+            QVariant myVariant = qVariantFromValue( myData );
+            listItem->setData( myVariant, Qt::UserRole );
+            modulesListModel->appendRow( listItem );
+          }
         }
       }
     }
