@@ -133,7 +133,7 @@ class Algorithm():
                 if isinstance(v, (ValueFromInput, ValueFromOutput)):
                     return v.asPythonParameter()
                 elif isinstance(v, basestring):
-                    return "'%s'" % v
+                    return "\\n".join(("'%s'" % v).splitlines())
                 elif isinstance(v, list):
                     return "[%s]" % ",".join([_toString(val) for val in v])
                 else:
