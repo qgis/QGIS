@@ -73,6 +73,7 @@ class Cover(FusionAlgorithm):
             commands.append('/ground:' + unicode(ground))
         outFile = self.getOutputValue(self.OUTPUT) + '.dtm'
         commands.append(outFile)
+        commands.append(unicode(self.getParameterValue(self.HEIGHTBREAK)))
         commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.UNITS[self.getParameterValue(self.XYUNITS)][0])
         commands.append(self.UNITS[self.getParameterValue(self.ZUNITS)][0])
@@ -87,7 +88,7 @@ class Cover(FusionAlgorithm):
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
         FusionUtils.runFusion(commands, progress)
-        commands = [os.path.join(FusionUtils.FusionPath(), 'DTM2TIF.exe')]
+        commands = [os.path.join(FusionUtils.FusionPath(), 'DTM2ASCII.exe')]
         commands.append(outFile)
         commands.append(self.getOutputValue(self.OUTPUT))
         p = subprocess.Popen(commands, shell=True)
