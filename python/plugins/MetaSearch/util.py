@@ -120,6 +120,8 @@ def highlight_xml(context, xml):
 
     hformat = HtmlFormatter()
     css = hformat.get_style_defs('.highlight')
+    if isinstance(xml, bytearray):
+        xml = xml.decode("utf-8")
     body = highlight(prettify_xml(xml), XmlLexer(), hformat)
 
     env = Environment(loader=FileSystemLoader(context.ppath))

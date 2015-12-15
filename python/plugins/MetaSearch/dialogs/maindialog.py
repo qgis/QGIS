@@ -590,6 +590,14 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             wfs_link_types = map(str.upper, link_types.WFS_LINK_TYPES)
             wcs_link_types = map(str.upper, link_types.WCS_LINK_TYPES)
 
+            #If link type is missing and there is an URL, try our best to guess the resoucre type
+            if link_type is None and link['url'] != '':
+                if "wms" in link['url'].lower():
+                    link_type = 'OGC:WMS'
+                if "wfs" in link['url'].lower():
+                    link_type = 'OGC:WFS'
+                if "wcs" in link['url'].lower():
+                    link_type = 'OGC:WCS'
             # if the link type exists, and it is one of the acceptable
             # interactive link types, then set
             if all([link_type is not None,
@@ -707,7 +715,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # check for duplicates
         if sname in keys:  # duplicate found
             if self.radioTitleAsk.isChecked():  # ask to overwrite
-                msg = self.tr('Connection %s exists. Overwrite?') % sname
+                msg = self.tr('Connection '+sname+' exists. Overwrite?')
                 res = QMessageBox.warning(self, self.tr('Saving server'), msg,
                                           QMessageBox.Yes | QMessageBox.No)
                 if res != QMessageBox.Yes:  # assign new name with serial
