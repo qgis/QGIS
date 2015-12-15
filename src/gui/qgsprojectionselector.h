@@ -192,8 +192,12 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     //! Most recently used projections (trimmed at 25 entries)
     QStringList mRecentProjections;
 
-    //! hide deprecated CRSes
+    //! Hide deprecated CRSes
     void hideDeprecated( QTreeWidgetItem *item );
+
+    //! Apply projection on double click
+    void on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column );
+    void on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
 
   private slots:
     //! get list of authorities
@@ -208,6 +212,9 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     //! Notify others that the widget is now fully initialized, including deferred selection of projection
     //! @note added in 2.4
     void initialized();
+    //! Apply projection on double click
+    //! @note added in 2.14
+    void projectionDoubleClicked();
 };
 
 #endif
