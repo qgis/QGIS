@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsmessagelog.h"
 
 //qt includes
 #include <QFileInfo>
@@ -718,6 +719,24 @@ void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWid
   }
 }
 
+void QgsProjectionSelector::on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column )
+{
+  Q_UNUSED( column );
+
+  QgsDebugMsg( "Entered." );
+
+  if ( !current )
+  {
+    QgsDebugMsg( "no current item" );
+    return;
+  }
+
+  // If the item has children, it's not an end node in the tree, and
+  // hence is just a grouping thingy, not an actual CRS.
+  if ( current->childCount() == 0 )
+    emit projectionDoubleClicked();
+}
+
 void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
   QgsDebugMsg( "Entered." );
@@ -733,6 +752,23 @@ void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *cu
   QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( current->text( QGIS_CRS_ID_COLUMN ), Qt::MatchExactly | Qt::MatchRecursive, QGIS_CRS_ID_COLUMN );
   if ( !nodes.isEmpty() )
     lstCoordinateSystems->setCurrentItem( nodes.first() );
+}
+
+void QgsProjectionSelector::on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column )
+{
+  Q_UNUSED( column );
+
+  QgsDebugMsg( "Entered." );
+
+  if ( !current )
+  {
+    QgsDebugMsg( "no current item" );
+    return;
+  }
+
+  QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( current->text( QGIS_CRS_ID_COLUMN ), Qt::MatchExactly | Qt::MatchRecursive, QGIS_CRS_ID_COLUMN );
+  if ( !nodes.isEmpty() )
+    emit projectionDoubleClicked();
 }
 
 void QgsProjectionSelector::hideDeprecated( QTreeWidgetItem *item )
