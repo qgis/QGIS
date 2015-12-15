@@ -139,6 +139,18 @@ class QgsDualView : QStackedWidget
      * Is emitted, whenever the filter changes
      */
     void filterChanged();
+
+    /**
+     * @brief Called when the loading of features has been completed
+     */
+    void loadFinished();
+
+    /**
+     * @brief Called when features loading starts
+     * @param numFeatures total number of features
+     */
+    void loadStarted( long numFeatures );
+
 };
 
 class QgsAttributeTableAction : QAction

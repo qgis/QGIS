@@ -30,6 +30,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsattributetableloadworker.h"
 
 #include <QVariant>
 
@@ -40,8 +41,12 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
     , mLayerCache( layerCache )
     , mFieldCount( 0 )
     , mCachedField( -1 )
+    , mLoadWorker( 0 )
 {
   QgsDebugMsg( "entered." );
+
+  // Debug check: must be running in the GUI thread
+  Q_ASSERT( qApp->thread() == QThread::currentThread() );
 
   mExpressionContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
@@ -68,6 +73,23 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
   connect( mLayerCache, SIGNAL( cachedLayerDeleted() ), this, SLOT( layerDeleted() ) );
 }
 
+QgsAttributeTableModel::~QgsAttributeTableModel()
+{
+  loadWorkerStop();
+}
+
+void QgsAttributeTableModel::loadWorkerStop()
+{
+  Q_ASSERT( qApp->thread() == QThread::currentThread() );
+  if ( mLoadWorker )
+  {
+    emit loadStopped();
+    mLoadWorkerThread.quit();
+    mLoadWorkerThread.wait();
+    mLoadWorker = 0;
+  }
+}
+
 bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
 {
   QgsDebugMsgLevel( QString( "loading feature %1" ).arg( fid ), 3 );
@@ -82,6 +104,13 @@ bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
 
 void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds& fids )
 {
+
+  // Wait for the loader thread to complete
+  // FIXME: Do we really need to block?
+  // We risk that the deleted feature is in the featuresReady pool
+  // or has not been loaded yet.
+  waitLoader();
+
   QList<int> rows;
 
   Q_FOREACH ( const QgsFeatureId& fid, fids )
@@ -100,10 +129,10 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds& fids )
   int currentRowCount = 0;
   int removedRows = 0;
   bool reset = false;
-
   Q_FOREACH ( int row, rows )
   {
 #if 0
+
     qDebug() << "Row: " << row << ", begin " << beginRow << ", last " << lastRow << ", current " << currentRowCount << ", removed " << removedRows;
 #endif
     if ( lastRow == -1 )
@@ -129,7 +158,6 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds& fids )
 
     lastRow = row;
   }
-
   if ( !reset )
     removeRows( beginRow - removedRows, currentRowCount );
   else
@@ -150,6 +178,7 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   // clean old references
   for ( int i = row; i < row + count; i++ )
   {
+    //QgsDebugMsg(QString("Cleaning row: %1").arg(i));
     mFieldCache.remove( mRowIdMap[i] );
     mIdRowMap.remove( mRowIdMap[i] );
     mRowIdMap.remove( i );
@@ -159,6 +188,7 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   int n = mRowIdMap.size() + count;
   for ( int i = row + count; i < n; i++ )
   {
+    //QgsDebugMsg(QString("Updating row: %1").arg(i));
     QgsFeatureId id = mRowIdMap[i];
     mIdRowMap[id] -= count;
     mRowIdMap[i-count] = id;
@@ -177,17 +207,18 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
     for ( QHash<int, QgsFeatureId>::iterator it = mRowIdMap.begin(); it != mRowIdMap.end(); ++it )
       QgsDebugMsgLevel( QString( "%1->%2" ).arg( it.key() ).arg( FID_TO_STRING( *it ) ), 4 );
   }
+  QgsDebugMsg( QString( "mRowIdMap.size(%1) == mIdRowMap.size(%2)" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ) );
 #endif
 
-  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
-
   endRemoveRows();
-
+  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
   return true;
 }
 
 void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 {
+  // Wait for the loader to finish
+  waitLoader();
   QgsDebugMsgLevel( QString( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
   bool featOk = true;
 
@@ -208,6 +239,7 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 
     reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
   }
+  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
 }
 
 void QgsAttributeTableModel::updatedFields()
@@ -341,9 +373,70 @@ void QgsAttributeTableModel::loadAttributes()
   }
 }
 
+
+void QgsAttributeTableModel::loadLayerFinished()
+{
+  QgsDebugMsg( "loadLayerFinished" );
+  endResetModel();
+  emit loadFinished();
+}
+
+
+
+void QgsAttributeTableModel::featuresReady( const QgsFeatureList features, const int loadedCount )
+{
+  QgsDebugMsg( "featuresReady" );
+  Q_ASSERT( qApp->thread() == QThread::currentThread() );
+  bool cancel = false;
+  emit loadProgress( loadedCount, cancel );
+  if ( cancel )
+  {
+    loadWorkerStop();
+    return;
+  }
+  QgsFeatureId fid;
+  int n = mRowIdMap.size();
+  int m = n + features.count() - 1;
+  beginInsertRows( QModelIndex(), n, m );
+  Q_FOREACH ( const QgsFeature &f, features )
+  {
+    mFeat = f;
+    fid = f.id();
+    // Is this check really necessary?
+    if ( mFeatureRequest.acceptFeature( mFeat ) )
+    {
+      // Don't insert twice the same feature!
+      if ( !mIdRowMap.contains( fid ) )
+      {
+        mFieldCache[ fid ] = mFeat.attribute( mCachedField );
+        mIdRowMap.insert( fid, n );
+        mRowIdMap.insert( n, fid );
+        n++;
+      }
+      else
+      {
+        qDebug() << "Skipping feature (alreay indexed)" << f.id();
+      }
+    }
+    else
+    {
+      qDebug() << "Skipping feature (not accepted)" << f.id();
+    }
+  }
+  endInsertRows();
+  QgsDebugMsg( QString( "mRowIdMap.size(%1) == mIdRowMap.size(%2)" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ) );
+  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
+  reload( index( rowCount() - 1, 0 ), index( rowCount() + features.count() - 1, columnCount() ) );
+}
+
+
 void QgsAttributeTableModel::loadLayer()
 {
   QgsDebugMsg( "entered." );
+  Q_ASSERT( qApp->thread() == QThread::currentThread() );
+
+  // Stop old thread
+  loadWorkerStop();
 
   // make sure attributes are properly updated before caching the data
   // (emit of progress() signal may enter event loop and thus attribute
@@ -358,38 +451,31 @@ void QgsAttributeTableModel::loadLayer()
     removeRows( 0, rowCount() );
   }
 
-  QgsFeatureIterator features = mLayerCache->getFeatures( mFeatureRequest );
+  // Set up the loader worker with a (default) batch size of 1000
+  mLoadWorker = new QgsAttributeTableLoadWorker( mLayerCache->getFeatures( mFeatureRequest ) );
+  mLoadWorker->moveToThread( &mLoadWorkerThread );
 
-  int i = 0;
+  connect( &mLoadWorkerThread, SIGNAL( started() ), mLoadWorker, SLOT( startJob() ) );
+  qRegisterMetaType<QgsFeatureList>( "QgsFeatureList" );
+  connect( mLoadWorker, SIGNAL( featuresReady( QgsFeatureList, int ) ), this, SLOT( featuresReady( QgsFeatureList, int ) ) );
 
-  QTime t;
-  t.start();
+  // Quit the thread when the worker finishes
+  connect( mLoadWorker, SIGNAL( finished() ), &mLoadWorkerThread, SLOT( quit() ) );
+  // Stop the worker job when loadStopped is emitted, this connection
+  // is used to stop the loader gracefully before stopping the thread
+  connect( this, SIGNAL( loadStopped() ), mLoadWorker, SLOT( stopJob() ) );
 
-  QgsFeature feat;
-  while ( features.nextFeature( feat ) )
-  {
-    ++i;
-
-    QgsDebugMsg( QString( "Next feature %1" ).arg( i ) );
-
-    if ( t.elapsed() > 1000 )
-    {
-      bool cancel = false;
-      emit progress( i, cancel );
-      if ( cancel )
-        break;
-
-      t.restart();
-    }
-    mFeat = feat;
-    featureAdded( feat.id() );
-  }
-
-  emit finished();
+  // Local
+  connect( mLoadWorker, SIGNAL( finished() ), this, SLOT( loadLayerFinished() ) );
+  connect( mLoadWorker, SIGNAL( finished() ), mLoadWorker, SLOT( deleteLater() ) );
 
   connect( mLayerCache, SIGNAL( invalidated() ), this, SLOT( loadLayer() ), Qt::UniqueConnection );
 
-  endResetModel();
+  mLoadWorkerThread.start();
+
+  // Pass the total number of features as a maximum for the progress bar
+  emit loadStarted( mLayerCache->layer()->featureCount() );
+
 }
 
 void QgsAttributeTableModel::fieldConditionalStyleChanged( const QString &fieldName )
@@ -440,7 +526,6 @@ int QgsAttributeTableModel::idToRow( QgsFeatureId id ) const
     QgsDebugMsg( QString( "idToRow: id %1 not in the map" ).arg( id ) );
     return -1;
   }
-
   return mIdRowMap[id];
 }
 
@@ -488,7 +573,6 @@ int QgsAttributeTableModel::fieldCol( int idx ) const
 
 int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
 {
-  QgsDebugMsg( QString( "Row Count %1" ).arg( mRowIdMap.size() ) );
   Q_UNUSED( parent );
   return mRowIdMap.size();
 }
@@ -727,6 +811,14 @@ QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
 
 void QgsAttributeTableModel::prefetchColumnData( int column )
 {
+
+  // FIXME: not sure about this blocking call:
+  // if we don't block, the risk is that the field cache will be
+  // filled with incomplete values.
+  // Maybe disabling sort operations while loading would be a better
+  // idea.
+  //waitLoader();
+
   mFieldCache.clear();
 
   if ( column == -1 )
@@ -762,7 +854,10 @@ void QgsAttributeTableModel::setRequest( const QgsFeatureRequest& request )
     mFeatureRequest.setFlags( mFeatureRequest.flags() | QgsFeatureRequest::NoGeometry );
 }
 
-const QgsFeatureRequest &QgsAttributeTableModel::request() const
+void QgsAttributeTableModel::waitLoader()
 {
-  return mFeatureRequest;
+  while ( mLoadWorkerThread.isRunning() )
+  {
+    QCoreApplication::processEvents();
+  }
 }

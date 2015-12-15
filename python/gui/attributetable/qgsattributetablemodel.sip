@@ -71,6 +71,11 @@ class QgsAttributeTableModel : QAbstractTableModel
     void reload( const QModelIndex &index1, const QModelIndex &index2 );
 
     /**
+     * Wait until the loader thread has finished, mainly used for testing
+     */
+    void waitLoader();
+
+    /**
      * Remove rows
      */
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
@@ -193,14 +198,28 @@ class QgsAttributeTableModel : QAbstractTableModel
     void fieldConditionalStyleChanged( const QString& fieldName );
 
   signals:
+
     /**
      * Model has been changed
      */
     void modelChanged();
 
-    //! @note not available in python bindings
-    // void progress( int i, bool &cancel );
-    void finished();
+    /**
+     * @brief Called when the loading of features has been completed
+     */
+    void loadFinished();
+
+    /**
+     * @brief Called when the loading of features starts
+     * @param numFeatures number of features to be loaded
+     */
+    void loadStarted( long numFeatures );
+
+    /**
+     * @brief Called when the loading of features is stopped
+     */
+    void loadStopped( );
+
 
   protected slots:
     /**

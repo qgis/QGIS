@@ -23,11 +23,14 @@
 #include <QHash>
 #include <QQueue>
 #include <QMap>
+#include <QThread>
 
 #include "qgsvectorlayer.h" // QgsAttributeList
 #include "qgsvectorlayercache.h"
 #include "qgsconditionalstyle.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgsattributetableloadworker.h"
+
 
 class QgsMapCanvas;
 class QgsMapLayerAction;
@@ -63,6 +66,11 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param parent      The parent QObject (owner)
      */
     QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = 0 );
+
+    /**
+     * Destructor
+     */
+    ~QgsAttributeTableModel( );
 
     /**
      * Returns the number of rows
@@ -113,7 +121,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void reload( const QModelIndex &index1, const QModelIndex &index2 );
 
     /**
-     * Remove rows
+     * Removes count rows starting with the given row under parent parent from the model.
      */
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
@@ -204,7 +212,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Get the the feature request
      */
-    const QgsFeatureRequest &request() const;
+    const QgsFeatureRequest &request( ) const { return mFeatureRequest; }
 
     /**
      * Sets the context in which this table is shown.
@@ -221,6 +229,13 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @return The context
      */
     const QgsAttributeEditorContext& editorContext() const { return mEditorContext; }
+
+    /**
+     * Wait until the loader thread has finished, mainly used internally
+     * and for testing purposes. It blocks the calling thread until the
+     * loader thread has finished.
+     */
+    void waitLoader();
 
   public slots:
     /**
@@ -241,11 +256,33 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     void modelChanged();
 
-    //! @note not available in python bindings
-    void progress( int i, bool &cancel );
-    void finished();
+    /**
+     * Called while the features are loaded
+     * @note not available in python bindings
+     */
+    void loadProgress( int featuresLoaded, bool &cancel );
+
+    /**
+     * @brief Called when the loading of features has been completed
+     * This signal can be used in the GUI thread to update the GUI
+     * and inform the user that the loading has been completed
+     */
+    void loadFinished();
+
+    /**
+     * @brief Called when the loading of features starts
+     * @param numFeatures number of features to be loaded
+     */
+    void loadStarted( long numFeatures );
+
+    /**
+     * @brief Called when the loading of features is stopped
+     */
+    void loadStopped( );
+
 
   private slots:
+
     /**
      * Launched whenever the number of fields has changed
      */
@@ -263,6 +300,20 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void attributeDeleted( int idx );
 
+    /**
+     * Launched from the load worker when a feature is ready to be added
+     * adds a batch of features to the model
+     * @param features feature list
+     * @param loadedCount number of loaded features
+     */
+    virtual void featuresReady( const QgsFeatureList features , const int loadedCount );
+
+    /**
+     * Called when the load worker has finished its job
+     */
+    virtual void loadLayerFinished();
+
+
   protected slots:
     /**
      * Launched when attribute value has been changed
@@ -276,6 +327,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param fids feature ids
      */
     virtual void featuresDeleted( const QgsFeatureIds& fids );
+
     /**
      * Launched when a feature has been added
      * @param fid feature id
@@ -287,6 +339,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void layerDeleted();
 
+
   protected:
     QgsVectorLayerCache *mLayerCache;
     int mFieldCount;
@@ -297,10 +350,6 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QVector<QgsEditorWidgetFactory*> mWidgetFactories;
     QVector<QVariant> mAttributeWidgetCaches;
     QVector<QgsEditorWidgetConfig> mWidgetConfigs;
-
-    QHash<QgsFeatureId, int> mIdRowMap;
-    QHash<int, QgsFeatureId> mRowIdMap;
-    mutable QHash<int, QList<QgsConditionalStyle> > mRowStylesMap;
 
     mutable QgsExpressionContext mExpressionContext;
 
@@ -319,12 +368,22 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual bool loadFeatureAtId( QgsFeatureId fid ) const;
 
+    /**
+     * @brief loadWorkerStop: stop the load worker and the thread
+     */
+    void loadWorkerStop();
+
     QgsFeatureRequest mFeatureRequest;
 
     /** The currently cached column */
     int mCachedField;
     /** Allows caching of one specific column (used for sorting) */
     QHash<QgsFeatureId, QVariant> mFieldCache;
+
+    /** Indexes */
+    QHash<QgsFeatureId, int> mIdRowMap;
+    QHash<int, QgsFeatureId> mRowIdMap;
+    mutable QHash<int, QList<QgsConditionalStyle> > mRowStylesMap;
 
     /**
      * Holds the bounds of changed cells while an update operation is running
@@ -336,6 +395,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QRect mChangedCellBounds;
 
     QgsAttributeEditorContext mEditorContext;
+    QgsAttributeTableLoadWorker* mLoadWorker;
+    QThread mLoadWorkerThread;
+    QgsVectorLayerCache* mLoadWorkerLayerCache;
 };
 
 

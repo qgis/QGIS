@@ -71,6 +71,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 {
   setupUi( this );
 
+  mLoadAborted =  false;
+
   // Fix selection color on loosing focus (Windows)
   setStyleSheet( QgisApp::instance()->styleSheet() );
 
@@ -107,6 +109,11 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
     mActionShowAllFilter->setText( tr( "Show All Features In Initial Canvas Extent" ) );
   }
+
+  // Connect models signals for progress bar
+  connect( mMainView, SIGNAL( loadProgress( int, bool & ) ), this, SLOT( loadProgress( int, bool & ) ) );
+  connect( mMainView, SIGNAL( loadFinished() ), this, SLOT( loadFinished() ) );
+  connect( mMainView, SIGNAL( loadStarted( long ) ), this, SLOT( loadStarted( long ) ) );
 
   // Initialize dual view
   mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, context );
@@ -236,6 +243,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mUpdateExpressionText, SIGNAL( fieldChanged( QString, bool ) ), this, SLOT( updateButtonStatus( QString, bool ) ) );
   mUpdateExpressionText->setLayer( mLayer );
   mUpdateExpressionText->setLeftHandButtonStyle( true );
+
   editingToggled();
 }
 
@@ -857,4 +865,35 @@ void QgsAttributeTableDock::closeEvent( QCloseEvent* ev )
 {
   Q_UNUSED( ev );
   deleteLater();
+}
+
+
+void QgsAttributeTableDialog::on_mLoadAbortButton_clicked()
+{
+  mLoadAborted = true;
+}
+
+
+void QgsAttributeTableDialog::loadStarted( long numFeatures )
+{
+  mLoadProgressBar->setFormat( "%v / %m" );
+  mLoadProgressBar->setMaximum( numFeatures );
+  mLoadAborted = false;
+  mLoadProgressBar->show();
+  mLoadAbortButton->show();
+}
+
+
+void QgsAttributeTableDialog::loadProgress( int featuresLoaded, bool& cancel )
+{
+  cancel = mLoadAborted;
+  mLoadProgressBar->setValue( featuresLoaded );
+  updateTitle();
+}
+
+void QgsAttributeTableDialog::loadFinished()
+{
+  mLoadProgressBar->hide();
+  mLoadAbortButton->hide();
+  updateTitle();
 }

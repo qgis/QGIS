@@ -89,16 +89,18 @@ void TestQgsDualView::cleanup()
   delete mDualView;
 }
 
+
 void TestQgsDualView::testSelectAll()
 {
   mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowVisible );
   // Only show parts of the canvas, so only one selected feature is visible
   mCanvas->setExtent( QgsRectangle( -139, 23, -100, 48 ) );
+  mDualView->masterModel()->waitLoader();
   mDualView->mTableView->selectAll();
   QVERIFY( mPointsLayer->selectedFeatureCount() == 10 );
-
   mPointsLayer->setSelectedFeatures( QgsFeatureIds() );
   mCanvas->setExtent( QgsRectangle( -110, 40, -100, 48 ) );
+  mDualView->masterModel()->waitLoader();
   mDualView->mTableView->selectAll();
   QVERIFY( mPointsLayer->selectedFeatureCount() == 1 );
 }
