@@ -52,6 +52,7 @@ class QgsRequestHandler
 
     QgsRequestHandler( )
         : mHeadersSent( false )
+        , mStreamingResponse( false )
         , mException( nullptr )
     {}
     virtual ~QgsRequestHandler( ) {}
@@ -89,6 +90,8 @@ class QgsRequestHandler
     virtual bool responseReady() const = 0;
     /** Send out HTTP headers and flush output buffer*/
     virtual void sendResponse( ) = 0;
+    /** Send out HTTP headers indicating streaming response and flush output buffer*/
+    virtual void startStreamingResponse( ) = 0;
     /** Pointer to last raised exception*/
     virtual bool exceptionRaised() const = 0;
     /** Return a copy of the parsed parameters as a key-value pair, to modify
@@ -108,6 +111,8 @@ class QgsRequestHandler
     QString infoFormat() const { return mInfoFormat; }
     /** Return true if the HTTP headers were already sent to the client*/
     bool headersSent() { return mHeadersSent; }
+    /** Return true if the response is streamed to the client */
+    bool streamingReponse(){ return mStreamingResponse; }
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     /** Allow core services to call plugin hooks through sendResponse()
     * @note: not in the bindings
@@ -127,6 +132,7 @@ class QgsRequestHandler
     QString mFormat;
     QString mFormatString; //format string as it is passed in the request (with base)
     bool mHeadersSent;
+    bool mStreamingResponse;
     QString mService;
     QString mInfoFormat;
     QgsMapServiceException* mException; // Stores the exception
