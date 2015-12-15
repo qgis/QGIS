@@ -16,6 +16,8 @@ import os
 import re
 import unittest
 import urllib
+from mimetools import Message
+from StringIO import StringIO
 from qgis.server import QgsServer
 from qgis.core import QgsMessageLog
 from utilities import unitTestDataPath
@@ -165,6 +167,79 @@ class TestQgsServer(unittest.TestCase):
         """Test some WMS request"""
         for request in ('GetCapabilities', 'GetProjectSettings'):
             self.wms_request_compare(request)
+
+    # WFS tests
+    def wfs_request_compare(self, request):
+        project = self.testdata_path + "test+project_wfs.qgs"
+        assert os.path.exists(project), "Project file not found: " + project
+
+        query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.1.0&REQUEST=%s' % (urllib.quote(project), request)
+        header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
+        self.assert_headers(header, body)
+        response = header + body
+        f = open(self.testdata_path + 'wfs_'+ request.lower() + '.txt')
+        expected = f.read()
+        f.close()
+        # Store the output for debug or to regenerate the reference documents:
+        """
+        f = open(os.path.dirname(__file__) + '/wfs_' +  request.lower() + '_expected.txt', 'w+')
+        f.write(expected)
+        f.close()
+        f = open(os.path.dirname(__file__) + '/wfs_' +  request.lower() + '_response.txt', 'w+')
+        f.write(response)
+        f.close()
+        """
+        response = re.sub(RE_STRIP_PATH, '', response)
+        expected = re.sub(RE_STRIP_PATH, '', expected)
+        self.assertEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected, response))
+
+    def test_project_wfs(self):
+        """Test some WMS request"""
+        for request in ('GetCapabilities', 'DescribeFeatureType'):
+            self.wfs_request_compare(request)
+
+    def wfs_getfeature_compare(self, requestid, request):
+        project = self.testdata_path + "test+project_wfs.qgs"
+        assert os.path.exists(project), "Project file not found: " + project
+
+        query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.quote(project), request)
+        header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
+        self.assert_headers(header, body)
+        response = header + body
+        f = open(self.testdata_path + 'wfs_getfeature_'+ requestid + '.txt')
+        expected = f.read()
+        f.close()
+        # Store the output for debug or to regenerate the reference documents:
+        """
+        f = open(os.path.dirname(__file__) + '/wfs_getfeature_' +  requestid + '_expected.txt', 'w+')
+        f.write(expected)
+        f.close()
+        f = open(os.path.dirname(__file__) + '/wfs_getfeature_' +  requestid + '_response.txt', 'w+')
+        f.write(response)
+        f.close()
+        """
+        response = re.sub(RE_STRIP_PATH, '', response)
+        expected = re.sub(RE_STRIP_PATH, '', expected)
+        self.assertEqual(response, expected, msg=u"request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s"
+                                                 % (query_string,
+                                                    request,
+                                                    unicode(expected, errors='replace'),
+                                                    unicode(response, errors='replace')))
+
+    def test_getfeature(self):
+        tests = []
+        tests.append(('nobbox', u'GetFeature&TYPENAME=testlayer&SRSNAME=EPSG:4326'))
+
+        for id, req in tests:
+            self.wfs_getfeature_compare(id, req)
+
+    def assert_headers(self, header, body):
+        headers = Message(StringIO(header))
+        if headers.has_key('content-length'):
+            content_length = int(headers['content-length'])
+            body_length = len(body)
+            self.assertEqual(content_length, body_length, msg= "Header reported content-length: %d Actual body length was: %d" %(content_length, body_length) )
+
 
     # The following code was used to test type conversion in python bindings
     # def test_qpair(self):
