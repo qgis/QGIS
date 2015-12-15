@@ -100,9 +100,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
      */
     void setOgcWmsCrsFilter( const QSet<QString>& crsFilter );
     void on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
-    void on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column );
     void on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
-    void on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
     void on_cbxHideDeprecated_stateChanged();
     void on_leSearch_textChanged( const QString & );
 
@@ -194,8 +192,12 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     //! Most recently used projections (trimmed at 25 entries)
     QStringList mRecentProjections;
 
-    //! hide deprecated CRSes
+    //! Hide deprecated CRSes
     void hideDeprecated( QTreeWidgetItem *item );
+
+    //! Apply projection on double click
+    void on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column );
+    void on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
 
   private slots:
     //! get list of authorities
