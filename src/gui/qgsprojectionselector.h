@@ -195,13 +195,13 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     //! Hide deprecated CRSes
     void hideDeprecated( QTreeWidgetItem *item );
 
-    //! Apply projection on double click
-    void on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column );
-    void on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
-
   private slots:
     //! get list of authorities
     QStringList authorities();
+
+    //! Apply projection on double click
+    void on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column );
+    void on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
 
   signals:
     void sridSelected( const QString& theSRID );
