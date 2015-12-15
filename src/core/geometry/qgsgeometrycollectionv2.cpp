@@ -82,20 +82,12 @@ int QgsGeometryCollectionV2::numGeometries() const
 
 const QgsAbstractGeometryV2* QgsGeometryCollectionV2::geometryN( int n ) const
 {
-  if ( n >= mGeometries.size() )
-  {
-    return nullptr;
-  }
-  return mGeometries.at( n );
+  return mGeometries.value( n );
 }
 
 QgsAbstractGeometryV2* QgsGeometryCollectionV2::geometryN( int n )
 {
-  if ( n < 0 || n >= mGeometries.size() )
-  {
-    return nullptr;
-  }
-  return mGeometries.at( n );
+  return mGeometries.value( n );
 }
 
 bool QgsGeometryCollectionV2::addGeometry( QgsAbstractGeometryV2* g )
