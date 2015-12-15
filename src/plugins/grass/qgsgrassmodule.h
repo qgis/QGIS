@@ -31,7 +31,7 @@ class QDomElement;
  *  \brief Interface to GRASS modules.
  *
  */
-class QgsGrassModule : public QDialog, private  Ui::QgsGrassModuleBase
+class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
 {
     Q_OBJECT
 

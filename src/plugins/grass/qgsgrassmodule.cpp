@@ -172,7 +172,7 @@ QProcessEnvironment QgsGrassModule::processEnvironment( bool direct )
 
 QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
                                 bool direct, QWidget *parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
+    : QWidget( parent, f )
     , QgsGrassModuleBase()
     , mOptions( 0 )
     , mSuccess( false )
