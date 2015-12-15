@@ -28,6 +28,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
@@ -65,7 +66,7 @@ class CanopyModel(FusionAlgorithm):
         self.addParameter(ParameterSelection(
             self.ZUNITS, self.tr('Z Units'), self.UNITS))
         self.addOutput(OutputFile(
-            self.OUTPUT_DTM, self.tr('DTM Output Surface'), 'dtm'))
+            self.OUTPUT_DTM, self.tr('.dtm output surface'), 'dtm'))
         ground = ParameterFile(
             self.GROUND, self.tr('Input ground DTM layer'), False, True)
         ground.isAdvanced = True
