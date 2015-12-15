@@ -141,6 +141,7 @@
 %Include qgsvectorlayerfeatureiterator.sip
 %Include qgsvisibilitypresetcollection.sip
 %Include qgslayerdefinition.sip
+%Include qgsvirtuallayerdefinition.sip
 
 %Include auth/qgsauthcertutils.sip
 %Include auth/qgsauthconfig.sip

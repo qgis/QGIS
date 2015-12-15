@@ -202,6 +202,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerundocommand.cpp
   qgsvectorsimplifymethod.cpp
   qgsvisibilitypresetcollection.cpp
+  qgsvirtuallayerdefinition.cpp
   qgsxmlutils.cpp
   qgsslconnect.cpp
   qgslocalec.cpp
