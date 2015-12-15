@@ -236,14 +236,14 @@ QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
   connect( mRadioGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( radioChanged() ) );
 
   // Connect entries
-  connect( mNorth, SIGNAL( editingFinished() ), this, SLOT( northChanged() ) );
-  connect( mSouth, SIGNAL( editingFinished() ), this, SLOT( southChanged() ) );
-  connect( mEast, SIGNAL( editingFinished() ), this, SLOT( eastChanged() ) );
-  connect( mWest, SIGNAL( editingFinished() ), this, SLOT( westChanged() ) );
-  connect( mNSRes, SIGNAL( editingFinished() ), this, SLOT( NSResChanged() ) );
-  connect( mEWRes, SIGNAL( editingFinished() ), this, SLOT( EWResChanged() ) );
-  connect( mRows, SIGNAL( editingFinished() ), this, SLOT( rowsChanged() ) );
-  connect( mCols, SIGNAL( editingFinished() ), this, SLOT( colsChanged() ) );
+  connect( mNorth, SIGNAL( textEdited( const QString & ) ), this, SLOT( northChanged() ) );
+  connect( mSouth, SIGNAL( textEdited( const QString & ) ), this, SLOT( southChanged() ) );
+  connect( mEast, SIGNAL( textEdited( const QString & ) ), this, SLOT( eastChanged() ) );
+  connect( mWest, SIGNAL( textEdited( const QString & ) ), this, SLOT( westChanged() ) );
+  connect( mNSRes, SIGNAL( textEdited( const QString & ) ), this, SLOT( NSResChanged() ) );
+  connect( mEWRes, SIGNAL( textEdited( const QString & ) ), this, SLOT( EWResChanged() ) );
+  connect( mRows, SIGNAL( textEdited( const QString & ) ), this, SLOT( rowsChanged() ) );
+  connect( mCols, SIGNAL( textEdited( const QString & ) ), this, SLOT( colsChanged() ) );
 
   connect( QgsGrass::instance(), SIGNAL( regionChanged() ), SLOT( reloadRegion() ) );
   connect( mCanvas, SIGNAL( mapToolSet( QgsMapTool * ) ), SLOT( canvasMapToolSet( QgsMapTool * ) ) );
@@ -431,12 +431,22 @@ void QgsGrassRegion::colsChanged()
 
 void QgsGrassRegion::adjust()
 {
+  QgsDebugMsg( "entered" );
+  mButtonBox->button( QDialogButtonBox::Apply )->setDisabled( false );
   int rc = 0;
   if ( mRowsColsRadio->isChecked() )
   {
     rc = 1;
   }
-  G_adjust_Cell_head( &mWindow, rc, rc );
+  G_TRY
+  {
+    G_adjust_Cell_head( &mWindow, rc, rc );
+  }
+  G_CATCH( QgsGrass::Exception &e )
+  {
+    QgsGrass::warning( e );
+    mButtonBox->button( QDialogButtonBox::Apply )->setDisabled( true );
+  }
 }
 
 void QgsGrassRegion::radioChanged()
