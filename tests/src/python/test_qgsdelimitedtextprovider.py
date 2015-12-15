@@ -280,9 +280,13 @@ def runTest(file, requests, **params):
         failures.append(msg)
     wanted_data = wanted['data']
     for id in sorted(wanted_data.keys()):
+        print('getting wanted data')
         wrec = wanted_data[id]
+        print('getting received data')
         trec = data.get(id, {})
+        print('getting description')
         description = wrec['description']
+        print('getting difference')
         difference = recordDifference(wrec, trec)
         if not difference:
             print '    {0}: Passed'.format(description)
