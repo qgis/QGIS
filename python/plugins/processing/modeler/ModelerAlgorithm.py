@@ -273,7 +273,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             alg.outputs[out].pos = (alg.outputs[out].pos or
                                     alg.pos + QPointF(
                 ModelerGraphicItem.BOX_WIDTH,
-                        (i + 1.5) * ModelerGraphicItem.BOX_HEIGHT))
+                (i + 1.5) * ModelerGraphicItem.BOX_HEIGHT))
 
     def removeAlgorithm(self, name):
         """Returns True if the algorithm could be removed, False if
@@ -355,7 +355,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                         if isinstance(v, ValueFromOutput) and v.alg == name:
                             algs.update(self.getDependentAlgorithms(alg.name))
                 elif isinstance(value, ValueFromOutput) and value.alg == name:
-                            algs.update(self.getDependentAlgorithms(alg.name))
+                    algs.update(self.getDependentAlgorithms(alg.name))
 
         return algs
 
@@ -618,7 +618,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     line = lines.readline().strip('\n')
                     tokens = line.split(',')
                     model.addParameter(ModelerParameter(param,
-                                       QPointF(float(tokens[0]), float(tokens[1]))))
+                                                        QPointF(float(tokens[0]), float(tokens[1]))))
                     modelParameters.append(param.name)
                 elif line.startswith('VALUE:'):
                     valueLine = line[len('VALUE:'):]
