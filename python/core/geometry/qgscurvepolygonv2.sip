@@ -39,8 +39,15 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     QgsCurveV2* interiorRing( int i ) const;
     virtual QgsPolygonV2* toPolygon() const;
 
-    /** Sets exterior ring (takes ownership)*/
-    void setExteriorRing( QgsCurveV2* ring /Transfer/ );
+    /** Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality
+     * of the exterior ring. For instance, setting a 2D exterior ring on a 3D CurvePolygon will drop the z dimension
+     * from the CurvePolygon and all interior rings.
+     * @param ring new exterior ring. Ownership is transferred to the CurvePolygon.
+     * @see setInteriorRings()
+     * @see exteriorRing()
+    */
+    virtual void setExteriorRing( QgsCurveV2* ring /Transfer/ );
+
     /** Sets interior rings (takes ownership)*/
     void setInteriorRings( const QList<QgsCurveV2*>& rings );
     virtual void addInteriorRing( QgsCurveV2* ring /Transfer/ );

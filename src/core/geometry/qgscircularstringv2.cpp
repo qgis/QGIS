@@ -36,6 +36,20 @@ QgsCircularStringV2::~QgsCircularStringV2()
 
 }
 
+bool QgsCircularStringV2::operator==( const QgsCurveV2& other ) const
+{
+  const QgsCircularStringV2* otherLine = dynamic_cast< const QgsCircularStringV2* >( &other );
+  if ( !otherLine )
+    return false;
+
+  return *otherLine == *this;
+}
+
+bool QgsCircularStringV2::operator!=( const QgsCurveV2& other ) const
+{
+  return !operator==( other );
+}
+
 QgsCircularStringV2 *QgsCircularStringV2::clone() const
 {
   return new QgsCircularStringV2( *this );

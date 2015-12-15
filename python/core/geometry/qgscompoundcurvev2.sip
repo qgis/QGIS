@@ -10,6 +10,9 @@ class QgsCompoundCurveV2: public QgsCurveV2
     //QgsCompoundCurveV2 &operator=( const QgsCompoundCurveV2 & curve );
     ~QgsCompoundCurveV2();
 
+    virtual bool operator==( const QgsCurveV2& other ) const;
+    virtual bool operator!=( const QgsCurveV2& other ) const;
+
     virtual QString geometryType() const;
     virtual int dimension() const;
     virtual QgsCompoundCurveV2* clone() const;

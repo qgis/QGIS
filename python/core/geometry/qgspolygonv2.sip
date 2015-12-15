@@ -7,6 +7,9 @@ class QgsPolygonV2: public QgsCurvePolygonV2
   public:
     QgsPolygonV2();
 
+    bool operator==( const QgsPolygonV2& other ) const;
+    bool operator!=( const QgsPolygonV2& other ) const;
+
     virtual QString geometryType() const;
     virtual QgsPolygonV2* clone() const;
 
@@ -23,4 +26,6 @@ class QgsPolygonV2: public QgsCurvePolygonV2
     QgsPolygonV2* surfaceToPolygon() const;
 
     void addInteriorRing( QgsCurveV2* ring /Transfer/ );
+    //overridden to handle LineString25D rings
+    virtual void setExteriorRing( QgsCurveV2* ring /Transfer/ );
 };

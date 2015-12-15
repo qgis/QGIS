@@ -77,7 +77,7 @@ bool QgsCurveV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
   return pointAt( id.vertex, vertex, id.type );
 }
 
-QgsAbstractGeometryV2* QgsCurveV2::segmentize() const
+QgsCurveV2* QgsCurveV2::segmentize() const
 {
   return curveToLine();
 }

@@ -35,6 +35,20 @@ QgsCompoundCurveV2::~QgsCompoundCurveV2()
   clear();
 }
 
+bool QgsCompoundCurveV2::operator==( const QgsCurveV2& other ) const
+{
+  const QgsCompoundCurveV2* otherCurve = dynamic_cast< const QgsCompoundCurveV2* >( &other );
+  if ( !otherCurve )
+    return false;
+
+  return *otherCurve == *this;
+}
+
+bool QgsCompoundCurveV2::operator!=( const QgsCurveV2& other ) const
+{
+  return !operator==( other );
+}
+
 QgsCompoundCurveV2::QgsCompoundCurveV2( const QgsCompoundCurveV2& curve ): QgsCurveV2( curve )
 {
   Q_FOREACH ( const QgsCurveV2* c, curve.mCurves )

@@ -35,6 +35,11 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
     QgsCurveV2();
     virtual ~QgsCurveV2();
 
+    virtual bool operator==( const QgsCurveV2& other ) const = 0;
+    virtual bool operator!=( const QgsCurveV2& other ) const = 0;
+
+    virtual QgsCurveV2* clone() const override = 0;
+
     /** Returns the starting point of the curve.
      * @see endPoint
      */
@@ -96,7 +101,7 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
      */
     virtual QgsCurveV2* reversed() const = 0;
 
-    QgsAbstractGeometryV2* segmentize() const override;
+    QgsCurveV2* segmentize() const override;
 
     virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return numPoints(); }
     virtual int ringCount( int /*part*/ = 0 ) const override { return numPoints() > 0 ? 1 : 0; }

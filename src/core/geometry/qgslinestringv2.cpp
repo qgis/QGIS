@@ -41,31 +41,35 @@ QgsLineStringV2::QgsLineStringV2(): QgsCurveV2()
 QgsLineStringV2::~QgsLineStringV2()
 {}
 
-bool QgsLineStringV2::operator==( const QgsLineStringV2& other ) const
+bool QgsLineStringV2::operator==( const QgsCurveV2& other ) const
 {
-  if ( mWkbType != other.mWkbType )
+  const QgsLineStringV2* otherLine = dynamic_cast< const QgsLineStringV2* >( &other );
+  if ( !otherLine )
     return false;
 
-  if ( mX.count() != other.mX.count() )
+  if ( mWkbType != otherLine->mWkbType )
+    return false;
+
+  if ( mX.count() != otherLine->mX.count() )
     return false;
 
   for ( int i = 0; i < mX.count(); ++i )
   {
-    if ( !qgsDoubleNear( mX.at( i ), other.mX.at( i ) )
-         || !qgsDoubleNear( mY.at( i ), other.mY.at( i ) ) )
+    if ( !qgsDoubleNear( mX.at( i ), otherLine->mX.at( i ) )
+         || !qgsDoubleNear( mY.at( i ), otherLine->mY.at( i ) ) )
       return false;
 
-    if ( is3D() && !qgsDoubleNear( mZ.at( i ), other.mZ.at( i ) ) )
+    if ( is3D() && !qgsDoubleNear( mZ.at( i ), otherLine->mZ.at( i ) ) )
       return false;
 
-    if ( isMeasure() && !qgsDoubleNear( mM.at( i ), other.mM.at( i ) ) )
+    if ( isMeasure() && !qgsDoubleNear( mM.at( i ), otherLine->mM.at( i ) ) )
       return false;
   }
 
   return true;
 }
 
-bool QgsLineStringV2::operator!=( const QgsLineStringV2& other ) const
+bool QgsLineStringV2::operator!=( const QgsCurveV2& other ) const
 {
   return !operator==( other );
 }

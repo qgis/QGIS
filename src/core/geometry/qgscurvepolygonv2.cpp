@@ -291,14 +291,18 @@ QDomElement QgsCurvePolygonV2::asGML2( QDomDocument& doc, int precision, const Q
   QDomElement elemPolygon = doc.createElementNS( ns, "Polygon" );
   QDomElement elemOuterBoundaryIs = doc.createElementNS( ns, "outerBoundaryIs" );
   QgsLineStringV2* exteriorLineString = exteriorRing()->curveToLine();
-  elemOuterBoundaryIs.appendChild( exteriorLineString->asGML2( doc, precision, ns ) );
+  QDomElement outerRing = exteriorLineString->asGML2( doc, precision, ns );
+  outerRing.toElement().setTagName( "LinearRing" );
+  elemOuterBoundaryIs.appendChild( outerRing );
   delete exteriorLineString;
   elemPolygon.appendChild( elemOuterBoundaryIs );
   QDomElement elemInnerBoundaryIs = doc.createElementNS( ns, "innerBoundaryIs" );
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
     QgsLineStringV2* interiorLineString = interiorRing( i )->curveToLine();
-    elemInnerBoundaryIs.appendChild( interiorLineString->asGML2( doc, precision, ns ) );
+    QDomElement innerRing = interiorLineString->asGML2( doc, precision, ns );
+    innerRing.toElement().setTagName( "LinearRing" );
+    elemInnerBoundaryIs.appendChild( innerRing );
     delete interiorLineString;
   }
   elemPolygon.appendChild( elemInnerBoundaryIs );
@@ -309,12 +313,16 @@ QDomElement QgsCurvePolygonV2::asGML3( QDomDocument& doc, int precision, const Q
 {
   QDomElement elemCurvePolygon = doc.createElementNS( ns, "Polygon" );
   QDomElement elemExterior = doc.createElementNS( ns, "exterior" );
-  elemExterior.appendChild( exteriorRing()->asGML2( doc, precision, ns ) );
+  QDomElement outerRing = exteriorRing()->asGML2( doc, precision, ns );
+  outerRing.toElement().setTagName( "LinearRing" );
+  elemExterior.appendChild( outerRing );
   elemCurvePolygon.appendChild( elemExterior );
   QDomElement elemInterior = doc.createElementNS( ns, "interior" );
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
-    elemInterior.appendChild( interiorRing( i )->asGML2( doc, precision, ns ) );
+    QDomElement innerRing = interiorRing( i )->asGML2( doc, precision, ns );
+    innerRing.toElement().setTagName( "LinearRing" );
+    elemInterior.appendChild( innerRing );
   }
   elemCurvePolygon.appendChild( elemInterior );
   return elemCurvePolygon;
@@ -467,6 +475,20 @@ void QgsCurvePolygonV2::setExteriorRing( QgsCurveV2* ring )
   else if ( geometryType() == "CurvePolygon" )
   {
     setZMTypeFromSubGeometry( ring, QgsWKBTypes::CurvePolygon );
+  }
+
+  //match dimensionality for rings
+  Q_FOREACH ( QgsCurveV2* ring, mInteriorRings )
+  {
+    if ( is3D() )
+      ring->addZValue();
+    else
+      ring->dropZValue();
+
+    if ( isMeasure() )
+      ring->addMValue();
+    else
+      ring->dropMValue();
   }
 }
 

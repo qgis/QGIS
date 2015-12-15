@@ -8,6 +8,9 @@ class QgsCircularStringV2: public QgsCurveV2
     QgsCircularStringV2();
     ~QgsCircularStringV2();
 
+    virtual bool operator==( const QgsCurveV2& other ) const;
+    virtual bool operator!=( const QgsCurveV2& other ) const;
+
     virtual QString geometryType() const;
     virtual int dimension() const;
     virtual QgsCircularStringV2* clone() const;
