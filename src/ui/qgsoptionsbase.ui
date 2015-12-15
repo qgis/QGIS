@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>780</width>
+    <width>1139</width>
     <height>629</height>
    </rect>
   </property>
@@ -290,7 +290,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>8</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -310,8 +310,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>607</width>
-                <height>582</height>
+                <width>553</width>
+                <height>660</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -948,8 +948,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>601</width>
-                <height>1014</height>
+                <width>569</width>
+                <height>1061</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1376,8 +1376,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>618</width>
-                <height>702</height>
+                <width>514</width>
+                <height>656</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1739,8 +1739,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>548</width>
-                <height>675</height>
+                <width>725</width>
+                <height>790</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -2378,8 +2378,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>129</width>
-                <height>231</height>
+                <width>156</width>
+                <height>259</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2474,8 +2474,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>453</width>
-                <height>281</height>
+                <width>509</width>
+                <height>328</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2803,8 +2803,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>538</width>
-                <height>527</height>
+                <width>709</width>
+                <height>656</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3289,8 +3289,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>381</width>
-                <height>271</height>
+                <width>629</width>
+                <height>312</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3484,9 +3484,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>374</width>
-                <height>537</height>
+                <y>-66</y>
+                <width>954</width>
+                <height>643</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4014,8 +4014,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>345</width>
-                <height>350</height>
+                <width>436</width>
+                <height>368</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4144,8 +4144,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>416</width>
-                <height>595</height>
+                <width>527</width>
+                <height>633</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4381,8 +4381,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>225</width>
-                <height>201</height>
+                <width>289</width>
+                <height>222</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4481,8 +4481,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>389</width>
-                <height>634</height>
+                <width>546</width>
+                <height>726</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5142,6 +5142,7 @@
   <tabstop>mValidateGeometries</tabstop>
   <tabstop>mLineWidthSpinBox</tabstop>
   <tabstop>mLineColorToolButton</tabstop>
+  <tabstop>mFillColorToolButton</tabstop>
   <tabstop>cbxSnappingOptionsDocked</tabstop>
   <tabstop>mDefaultSnapModeComboBox</tabstop>
   <tabstop>mDefaultSnappingToleranceSpinBox</tabstop>
@@ -5154,8 +5155,6 @@
   <tabstop>mOffsetJoinStyleComboBox</tabstop>
   <tabstop>mOffsetQuadSegSpinBox</tabstop>
   <tabstop>mCurveOffsetMiterLimitComboBox</tabstop>
-  <tabstop>mOptionsScrollArea_02</tabstop>
-  <tabstop>cmbEditCreateOptions</tabstop>
   <tabstop>pbnEditCreateOptions</tabstop>
   <tabstop>pbnEditPyramidsOptions</tabstop>
   <tabstop>lstGdalDrivers</tabstop>
@@ -5196,6 +5195,15 @@
   <tabstop>mAddUrlPushButton</tabstop>
   <tabstop>mRemoveUrlPushButton</tabstop>
   <tabstop>mAdvancedSettingsEnableButton</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>mBtnAddTemplatePath</tabstop>
+  <tabstop>mBtnRemoveTemplatePath</tabstop>
+  <tabstop>mListComposerTemplatePaths</tabstop>
+  <tabstop>mListHiddenBrowserPaths</tabstop>
+  <tabstop>mBtnRemoveHiddenPath</tabstop>
+  <tabstop>cmbEditCreateOptions</tabstop>
+  <tabstop>mOptionsScrollArea_02</tabstop>
+  <tabstop>mDefaultCapabilitiesExpirySpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
