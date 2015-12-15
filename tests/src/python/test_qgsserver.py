@@ -228,7 +228,7 @@ class TestQgsServer(unittest.TestCase):
 
     def test_getfeature(self):
         tests = []
-        tests.append(('nobbox', u'GetFeature&TYPENAME=testlayer&SRSNAME=EPSG:4326'))
+        tests.append(('nobbox', u'GetFeature&TYPENAME=testlayer'))
 
         for id, req in tests:
             self.wfs_getfeature_compare(id, req)
