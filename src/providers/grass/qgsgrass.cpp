@@ -368,9 +368,11 @@ bool QgsGrass::init( void )
     return false;
   }
 
-  // I think that mask should not be used in QGIS as it can only confuses people,
+  // I think that mask should not be used in QGIS as it can confuse users,
   // anyway, I don't think anybody is using MASK
   // TODO7: Rast_suppress_masking (see G_suppress_masking() macro above) needs MAPSET
+  // (it should not be necessary, because rasters are read by modules qgis.g.info and qgis.d.rast
+  //  where masking is suppressed)
 #if GRASS_VERSION_MAJOR < 7
   G_suppress_masking();
 #endif
