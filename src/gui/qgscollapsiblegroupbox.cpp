@@ -408,6 +408,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
 
 void QgsCollapsibleGroupBoxBasic::setCollapsed( bool collapse )
 {
+  bool changed = collapse != mCollapsed;
   mCollapsed = collapse;
 
   if ( !isVisible() )
@@ -444,7 +445,8 @@ void QgsCollapsibleGroupBoxBasic::setCollapsed( bool collapse )
     mParentScrollArea->setUpdatesEnabled( true );
   }
   // emit signal for connections using collapsed state
-  emit collapsedStateChanged( isCollapsed() );
+  if ( changed )
+    emit collapsedStateChanged( isCollapsed() );
 }
 
 void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
