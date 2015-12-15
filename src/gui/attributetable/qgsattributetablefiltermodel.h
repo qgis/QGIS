@@ -161,12 +161,6 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
     /**
-     * Updates the list of currently visible features on the map canvas.
-     * Is called automatically when the filter mode is adjusted or the extents changed.
-     */
-    void generateListOfVisibleFeatures();
-
-    /**
      * Used by the sorting algorithm. Compares the two model indices. Will also consider the
      * selection state of the feature in case selected features are to be shown on top.
      */
@@ -179,6 +173,14 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      *
      */
     void extentsChanged();
+
+  protected slots:
+    /**
+     * Updates the list of currently visible features on the map canvas.
+     * Is called automatically when the filter mode is adjusted or the extents changed.
+     */
+    void generateListOfVisibleFeatures();
+
 
   private slots:
     void selectionChanged();

@@ -237,6 +237,11 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     void waitLoader();
 
+    /**
+     * Return true if the model is still fetching features from the cache
+     */
+    bool isLoading();
+
   public slots:
     /**
      * Loads the layer into the model

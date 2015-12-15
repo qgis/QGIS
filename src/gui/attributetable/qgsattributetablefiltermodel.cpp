@@ -209,6 +209,7 @@ void QgsAttributeTableFilterModel::extentsChanged()
   invalidateFilter();
 }
 
+
 void QgsAttributeTableFilterModel::selectionChanged()
 {
   if ( ShowSelected == mFilterMode )
@@ -227,6 +228,14 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
 {
   if ( !layer() )
     return;
+
+  // If the master model is still fetching features from the provider,
+  // delay this call until it's finished
+  if ( masterModel()->isLoading() )
+  {
+    connect( masterModel(), SIGNAL( loadFinished() ), this,  SLOT( generateListOfVisibleFeatures( ) ), Qt::UniqueConnection );
+    return;
+  }
 
   bool filter = false;
   QgsRectangle rect = mCanvas->mapSettings().mapToLayerCoordinates( layer(), mCanvas->extent() );

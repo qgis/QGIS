@@ -861,3 +861,8 @@ void QgsAttributeTableModel::waitLoader()
     QCoreApplication::processEvents();
   }
 }
+
+bool QgsAttributeTableModel::isLoading()
+{
+  return mLoadWorkerThread.isRunning();
+}
