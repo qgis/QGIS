@@ -1,0 +1,17 @@
+v.net.centrality
+Computes degree, centrality, betweeness, closeness and eigenvector centrality measures in the network.
+Vector (v.*)
+ParameterVector|input|Input vector line layer (network)|1|False
+ParameterString|degree|Name of degree centrality column|degree|False|True
+ParameterString|closeness|Name of closeness centrality column|closeness|False|True
+ParameterString|betweenness|Name of betweenness centrality column||False|True
+ParameterString|eigenvector|Name of eigenvector centrality column||False|True
+*ParameterNumber|iterations|Maximum number of iterations to compute eigenvector centrality|1|None|1000|True
+*ParameterNumber|error|Cumulative error tolerance for eigenvector centrality|0.001|None|0.1|True
+*ParameterString|cats|Category values||False|True
+*ParameterString|where|WHERE conditions of SQL statement without 'where' keyword||True|True
+*ParameterTableField|arc_column|Arc forward/both direction(s) cost column (number)|input|0|True
+*ParameterTableField|arc_backward_column|Arc backward direction cost column (number)|input|0|True
+*ParameterBoolean|-a|Add points on nodes|True|True
+*ParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
+OutputVector|output|Network_Centrality

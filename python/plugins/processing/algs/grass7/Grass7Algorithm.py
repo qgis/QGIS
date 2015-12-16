@@ -69,6 +69,14 @@ class Grass7Algorithm(GeoAlgorithm):
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
+        self.uniqueSufix = unicode(uuid.uuid4()).replace('-', '')
+
+        # Use the ext mechanism
+        name = self.commandLineName().replace('.', '_')[len('grass7:'):]
+        try:
+            self.module = importlib.import_module('processing.algs.grass7.ext.' + name)
+        except ImportError:
+            self.module = None
 
     def getCopy(self):
         newone = Grass7Algorithm(self.descriptionFile)
@@ -214,10 +222,11 @@ class Grass7Algorithm(GeoAlgorithm):
                 raise GeoAlgorithmExecutionException(
                     self.tr('GRASS GIS 7 folder is not configured. Please '
                             'configure it before running GRASS GIS 7 algorithms.'))
-
-        commands = []
+            
+        # Create brand new commands lists
+        self.commands = []
+        self.outputCommands = []
         self.exportedLayers = {}
-        outputCommands = []
 
         # If GRASS session has been created outside of this algorithm then
         # get the list of layers loaded in GRASS otherwise start a new
@@ -228,8 +237,57 @@ class Grass7Algorithm(GeoAlgorithm):
         else:
             Grass7Utils.startGrass7Session()
 
-        # 1: Export layer to grass mapset
+        # Handle ext functions for inputs/command/outputs
+        if self.module:
+            if hasattr(self.module, 'processInputs'):
+                func = getattr(self.module, 'processInputs')
+                func(self)
+            else:
+                self.processInputs()
+                
+            if hasattr(self.module, 'processCommand'):
+                func = getattr(self.module, 'processCommand')
+                func(self)
+            else:
+                self.processCommand()
+                
+            if hasattr(self.module, 'processOutputs'):
+                func = getattr(self.module, 'processOutputs')
+                func(self)
+            else:
+                self.processOutputs()
+        else:
+            self.processInputs()
+            self.processCommand()
+            self.processOutputs()
 
+        # Run GRASS
+        loglines = []
+        loglines.append(self.tr('GRASS GIS 7 execution self.commands'))
+        for line in self.commands:
+            progress.setCommand(line)
+            loglines.append(line)
+        if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_COMMANDS):
+            ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+
+        Grass7Utils.executeGrass7(self.commands, progress, self.outputCommands)
+
+        for out in self.outputs:
+            if isinstance(out, OutputHTML):
+                with open(self.getOutputFromName("rawoutput").value) as f:
+                    rawOutput = "".join(f.readlines())
+                with open(out.value, "w") as f:
+                    f.write("<pre>%s</pre>" % rawOutput)
+
+        # If the session has been created outside of this algorithm, add
+        # the new GRASS GIS 7 layers to it otherwise finish the session
+        if existingSession:
+            Grass7Utils.addSessionLayers(self.exportedLayers)
+        else:
+            Grass7Utils.endGrass7Session()
+
+    def processInputs(self):
+        """Prepare the GRASS import commands"""
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
                 if param.value is None:
@@ -241,8 +299,8 @@ class Grass7Algorithm(GeoAlgorithm):
                 if value in self.exportedLayers.keys():
                     continue
                 else:
-                    self.setSessionProjectionFromLayer(value, commands)
-                    commands.append(self.exportRasterLayer(value))
+                    self.setSessionProjectionFromLayer(value, self.commands)
+                    self.commands.append(self.exportRasterLayer(value))
             if isinstance(param, ParameterVector):
                 if param.value is None:
                     continue
@@ -250,8 +308,8 @@ class Grass7Algorithm(GeoAlgorithm):
                 if value in self.exportedLayers.keys():
                     continue
                 else:
-                    self.setSessionProjectionFromLayer(value, commands)
-                    commands.append(self.exportVectorLayer(value))
+                    self.setSessionProjectionFromLayer(value, self.commands)
+                    self.commands.append(self.exportVectorLayer(value))
             if isinstance(param, ParameterTable):
                 pass
             if isinstance(param, ParameterMultipleInput):
@@ -265,17 +323,17 @@ class Grass7Algorithm(GeoAlgorithm):
                         if layer in self.exportedLayers.keys():
                             continue
                         else:
-                            self.setSessionProjectionFromLayer(layer, commands)
-                            commands.append(self.exportRasterLayer(layer))
+                            self.setSessionProjectionFromLayer(layer, self.commands)
+                            self.commands.append(self.exportRasterLayer(layer))
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     for layer in layers:
                         if layer in self.exportedLayers.keys():
                             continue
                         else:
-                            self.setSessionProjectionFromLayer(layer, commands)
-                            commands.append(self.exportVectorLayer(layer))
+                            self.setSessionProjectionFromLayer(layer, self.commands)
+                            self.commands.append(self.exportVectorLayer(layer))
 
-        self.setSessionProjectionFromProject(commands)
+        self.setSessionProjectionFromProject(self.commands)
 
         region = \
             unicode(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
@@ -295,13 +353,14 @@ class Grass7Algorithm(GeoAlgorithm):
             self.getParameterValue(self.GRASS_REGION_ALIGN_TO_RESOLUTION)
         if alignToResolution:
             command += ' -a'
-        commands.append(command)
+        self.commands.append(command)
 
-        # 2: Set parameters and outputs
-
+    def processCommand(self):
+        """Prepare the GRASS algorithm command"""
         command = self.grass7Name
         command += ' ' + ' '.join(self.hardcodedStrings)
 
+        # Add algorithm command
         for param in self.parameters:
             if param.value is None or param.value == '':
                 continue
@@ -330,15 +389,14 @@ class Grass7Algorithm(GeoAlgorithm):
                 command += ' ' + param.name + '="' + unicode(param.value) + '"'
             else:
                 command += ' ' + param.name + '="' + unicode(param.value) + '"'
-
-        uniqueSufix = unicode(uuid.uuid4()).replace('-', '')
+        
         for out in self.outputs:
             if isinstance(out, OutputFile):
                 command += ' > ' + out.value
             elif not isinstance(out, OutputHTML):
                 # We add an output name to make sure it is unique if the session
                 # uses this algorithm several times.
-                uniqueOutputName = out.name + uniqueSufix
+                uniqueOutputName = out.name + self.uniqueSufix
                 command += ' ' + out.name + '=' + uniqueOutputName
 
                 # Add output file to exported layers, to indicate that
@@ -346,55 +404,55 @@ class Grass7Algorithm(GeoAlgorithm):
                 self.exportedLayers[out.value] = uniqueOutputName
 
         command += ' --overwrite'
-        commands.append(command)
-
-        # 3: Export resulting layers to a format that qgis can read
-
+        self.commands.append(command)
+        
+    def processOutputs(self):
+        """Prepare the GRASS v.out.ogr commands"""
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 filename = out.value
 
                 # Raster layer output: adjust region to layer before
                 # exporting
-                commands.append('g.region raster=' + out.name + uniqueSufix)
-                outputCommands.append('g.region raster=' + out.name
-                                      + uniqueSufix)
+                self.commands.append('g.region raster=' + out.name + self.uniqueSufix)
+                self.outputCommands.append('g.region raster=' + out.name
+                                      + self.uniqueSufix)
 
                 if self.grass7Name == 'r.statistics':
                     # r.statistics saves its results in a non-qgis compatible
                     # way. Post-process them with r.mapcalc.
-                    calcExpression = 'correctedoutput' + uniqueSufix
-                    calcExpression += '=@' + out.name + uniqueSufix
+                    calcExpression = 'correctedoutput' + self.uniqueSufix
+                    calcExpression += '=@' + out.name + self.uniqueSufix
                     command = 'r.mapcalc expression="' + calcExpression + '"'
-                    commands.append(command)
-                    outputCommands.append(command)
+                    self.commands.append(command)
+                    self.outputCommands.append(command)
 
                     command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
-                    command += 'correctedoutput' + uniqueSufix
+                    command += 'correctedoutput' + self.uniqueSufix
                     command += ' output="' + filename + '"'
                 elif self.grass7Name == 'r.composite':
                     command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
-                    command += 'correctedoutput' + uniqueSufix
+                    command += 'correctedoutput' + self.uniqueSufix
                     command += ' output="' + filename + '"'
                 else:
                     command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
 
                 if self.grass7Name == 'r.horizon':
-                    command += out.name + uniqueSufix + '_0'
+                    command += out.name + self.uniqueSufix + '_0'
                 elif self.grass7Name == 'r.composite':
-                    commands.append(command)
-                    outputCommands.append(command)
+                    self.commands.append(command)
+                    self.outputCommands.append(command)
                 elif self.grass7Name == 'r.statistics':
-                    commands.append(command)
-                    outputCommands.append(command)
+                    self.commands.append(command)
+                    self.outputCommands.append(command)
                 else:
-                    command += out.name + uniqueSufix
+                    command += out.name + self.uniqueSufix
                     command += ' output="' + filename + '"'
-                    commands.append(command)
-                    outputCommands.append(command)
+                    self.commands.append(command)
+                    self.outputCommands.append(command)
 
             if isinstance(out, OutputVector):
                 filename = out.value
@@ -402,50 +460,24 @@ class Grass7Algorithm(GeoAlgorithm):
                 outtype = ('auto' if typeidx
                            is None else self.OUTPUT_TYPES[typeidx])
                 if self.grass7Name == 'r.flow':
-                    command = 'v.out.ogr type=line layer=0 -s -e input=' + out.name + uniqueSufix
+                    command = 'v.out.ogr type=line layer=0 -s -e input=' + out.name + self.uniqueSufix
                 elif self.grass7Name == 'v.voronoi':
-                    if '-l' in command:
-                        command = 'v.out.ogr type=line layer=0 -s -e input=' + out.name + uniqueSufix
+                    if '-l' in self.commands[-1]:
+                        command = 'v.out.ogr type=line layer=0 -s -e input=' + out.name + self.uniqueSufix
                     else:
-                        command = 'v.out.ogr -s -e input=' + out.name + uniqueSufix
+                        command = 'v.out.ogr -s -e input=' + out.name + self.uniqueSufix
                         command += ' type=' + outtype
                 elif self.grass7Name == 'v.sample':
-                    command = 'v.out.ogr type=point -s -e input=' + out.name + uniqueSufix
+                    command = 'v.out.ogr type=point -s -e input=' + out.name + self.uniqueSufix
                 else:
-                    command = 'v.out.ogr -s -e input=' + out.name + uniqueSufix
+                    command = 'v.out.ogr -s -e input=' + out.name + self.uniqueSufix
                     command += ' type=' + outtype
                 command += ' output="' + os.path.dirname(out.value) + '"'
                 command += ' format=ESRI_Shapefile'
                 command += ' output_layer=' + os.path.basename(out.value)[:-4]
-                commands.append(command)
-                outputCommands.append(command)
-
-        # 4: Run GRASS
-
-        loglines = []
-        loglines.append(self.tr('GRASS GIS 7 execution commands'))
-        for line in commands:
-            progress.setCommand(line)
-            loglines.append(line)
-        if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_COMMANDS):
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
-
-        Grass7Utils.executeGrass7(commands, progress, outputCommands)
-
-        for out in self.outputs:
-            if isinstance(out, OutputHTML):
-                with open(self.getOutputFromName("rawoutput").value) as f:
-                    rawOutput = "".join(f.readlines())
-                with open(out.value, "w") as f:
-                    f.write("<pre>%s</pre>" % rawOutput)
-
-        # If the session has been created outside of this algorithm, add
-        # the new GRASS GIS 7 layers to it otherwise finish the session
-        if existingSession:
-            Grass7Utils.addSessionLayers(self.exportedLayers)
-        else:
-            Grass7Utils.endGrass7Session()
-
+                self.commands.append(command)
+                self.outputCommands.append(command)
+    
     def exportVectorLayer(self, orgFilename):
 
         # TODO: improve this. We are now exporting if it is not a shapefile,
@@ -485,7 +517,7 @@ class Grass7Algorithm(GeoAlgorithm):
             command = 'g.proj'
             command += ' -c'
             command += ' proj4="' + proj4 + '"'
-            commands.append(command)
+            self.commands.append(command)
             Grass7Utils.projectionSet = True
 
     def setSessionProjectionFromLayer(self, layer, commands):
@@ -496,7 +528,7 @@ class Grass7Algorithm(GeoAlgorithm):
                 command = 'g.proj'
                 command += ' -c'
                 command += ' proj4="' + proj4 + '"'
-                commands.append(command)
+                self.commands.append(command)
                 Grass7Utils.projectionSet = True
 
     def exportRasterLayer(self, layer):
@@ -523,11 +555,8 @@ class Grass7Algorithm(GeoAlgorithm):
             return msg
 
     def checkParameterValuesBeforeExecuting(self):
-        name = self.commandLineName().replace('.', '_')[len('grass7:'):]
-        try:
-            module = importlib.import_module('processing.algs.grass7.ext.' + name)
-        except ImportError:
-            return
-        if hasattr(module, 'checkParameterValuesBeforeExecuting'):
-            func = getattr(module, 'checkParameterValuesBeforeExecuting')
-            return func(self)
+        if self.module:
+            if hasattr(self.module, 'checkParameterValuesBeforeExecuting'):
+                func = getattr(self.module, 'checkParameterValuesBeforeExecuting')
+                return func(self)
+        return

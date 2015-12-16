@@ -1,0 +1,11 @@
+v.net
+Performs network maintenance
+Vector (v.*)
+ParameterVector|input|Input vector line layer (arcs)|1|False
+ParameterVector|points|Input vector point layer (nodes)|0|True
+ParameterFile|file|Name of input file (required for operation 'arcs')|False|True
+ParameterSelection|operation|Operation to be performed|nodes;connect;arcs;report;nreport|1
+ParameterNumber|threshold|Threshold (for operation 'connect')|None|None|50.0
+*ParameterBoolean|-c|Assign unique categories to new points (for operation 'nodes')|False|True
+*ParameterBoolean|-s|Snap points to network (for operation 'connect')|False|True
+OutputVector|output|Network
