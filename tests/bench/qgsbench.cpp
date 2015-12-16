@@ -91,7 +91,7 @@ int getrusage( int who, struct rusage * rusage )
     return -1;
   }
 
-  if ( rusage == ( struct rusage * ) NULL )
+  if ( !rusage )
   {
     errno = EFAULT;
     return -1;

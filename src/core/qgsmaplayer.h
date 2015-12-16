@@ -379,7 +379,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setLegendUrlFormat( const QString& legendUrlFormat ) { mLegendUrlFormat = legendUrlFormat; }
     QString legendUrlFormat() const { return mLegendUrlFormat; }
 
-    /** @deprecated since 2.4 - returns NULL */
+    /** @deprecated since 2.4 - returns nullptr */
     Q_DECL_DEPRECATED QImage *cacheImage() { return nullptr; }
     /** @deprecated since 2.4 - caches listen to repaintRequested() signal to invalidate the cached image */
     Q_DECL_DEPRECATED void setCacheImage( QImage * );

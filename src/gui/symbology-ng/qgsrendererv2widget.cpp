@@ -327,7 +327,7 @@ void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, const QString& fi
 
 void QgsRendererV2DataDefinedMenus::rotationFieldSelected( QAction* a )
 {
-  if ( a == nullptr )
+  if ( !a )
     return;
 
   QString fldName = a->text();
@@ -354,7 +354,7 @@ void QgsRendererV2DataDefinedMenus::rotationFieldSelected( QAction* a )
 
 void QgsRendererV2DataDefinedMenus::sizeScaleFieldSelected( QAction* a )
 {
-  if ( a == nullptr )
+  if ( !a )
     return;
 
   QString fldName = a->text();
@@ -381,7 +381,7 @@ void QgsRendererV2DataDefinedMenus::sizeScaleFieldSelected( QAction* a )
 
 void QgsRendererV2DataDefinedMenus::scaleMethodSelected( QAction* a )
 {
-  if ( a == nullptr )
+  if ( !a )
     return;
 
   if ( a->text() == tr( "Scale area" ) )

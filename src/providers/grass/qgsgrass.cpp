@@ -1931,7 +1931,7 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,
 #if GRASS_VERSION_MAJOR < 7
     if ( G__get_window( window, ( char * ) "windows",
                         map.toUtf8().data(),
-                        mapset.toUtf8().data() ) != NULL )
+                        mapset.toUtf8().data() ) )
     {
       warning( tr( "Cannot read region" ) );
       return false;
@@ -2916,7 +2916,7 @@ void QgsGrass::sleep( int ms )
   Sleep( uint( ms ) );
 #else
   struct timespec ts = { ms / 1000, ( ms % 1000 ) * 1000 * 1000 };
-  nanosleep( &ts, NULL );
+  nanosleep( &ts, nullptr );
 #endif
 }
 

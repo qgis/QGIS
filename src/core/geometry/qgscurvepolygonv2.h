@@ -106,7 +106,7 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     double vertexAngle( const QgsVertexId& vertex ) const override;
 
     virtual int vertexCount( int /*part*/ = 0, int ring = 0 ) const override;
-    virtual int ringCount( int /*part*/ = 0 ) const override { return ( mExteriorRing != nullptr ) + mInteriorRings.size(); }
+    virtual int ringCount( int /*part*/ = 0 ) const override { return ( nullptr != mExteriorRing ) + mInteriorRings.size(); }
     virtual int partCount() const override { return ringCount() > 0 ? 1 : 0; }
     virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const override;
 

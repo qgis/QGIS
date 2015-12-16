@@ -608,7 +608,7 @@ int QgsDataItem::findItem( QVector<QgsDataItem*> items, QgsDataItem * item )
 {
   for ( int i = 0; i < items.size(); i++ )
   {
-    Q_ASSERT_X( items[i], "findItem", QString( "item %1 is NULL" ).arg( i ).toAscii() );
+    Q_ASSERT_X( items[i], "findItem", QString( "item %1 is nullptr" ).arg( i ).toAscii() );
     QgsDebugMsgLevel( QString::number( i ) + " : " + items[i]->mPath + " x " + item->mPath, 2 );
     if ( items[i]->equal( item ) )
       return i;
@@ -1250,7 +1250,7 @@ QgsZipItem::~QgsZipItem()
 // but use char ** and CSLAddString, because CPLStringList was added in gdal-1.9
 char **VSIReadDirRecursive1( const char *pszPath )
 {
-  // CPLStringList oFiles = NULL;
+  // CPLStringList oFiles = nullptr;
   char **papszOFiles = nullptr;
   char **papszFiles1 = nullptr;
   char **papszFiles2 = nullptr;

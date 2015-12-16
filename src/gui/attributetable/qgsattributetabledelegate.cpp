@@ -83,7 +83,7 @@ QWidget *QgsAttributeTableDelegate::createEditor(
 void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QgsVectorLayer *vl = layer( model );
-  if ( vl == nullptr )
+  if ( !vl )
     return;
 
   int fieldIdx = model->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();

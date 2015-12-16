@@ -2159,7 +2159,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   mAccessControl->filterFeatures( layer, fReq );
   if ( ! searchRect.isEmpty() )
   {
-    if ( fReq.filterExpression() != nullptr )
+    if ( fReq.filterExpression() )
     {
       fReq.setFilterExpression( QString( "intersects( $geometry , geomFromWKT( '%1' ) ) AND ( %2 )" ).
                                 arg( searchRect.asWktPolygon() ).arg( fReq.filterExpression()->expression() ) );
@@ -3225,7 +3225,7 @@ QDomElement QgsWMSServer::createFeatureGML(
       continue;
     }
     //skip attribute if it is excluded by access control
-    if ( attributes != nullptr && !attributes->contains( attributeName ) )
+    if ( attributes && !attributes->contains( attributeName ) )
     {
       continue;
     }

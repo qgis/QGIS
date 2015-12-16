@@ -730,9 +730,9 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   myWarpOptions->pTransformerArg =
     GDALCreateGenImgProjTransformer(
       mGdalDataset,
-      NULL,
+      nullptr,
       myGdalMemDataset,
-      NULL,
+      nullptr,
       false, 0.0, 1
     );
 #if 0
@@ -740,7 +740,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
     GDALCreateGenImgProjTransformer2(
       mGdalDataset,
       myGdalMemDataset,
-      NULL
+      nullptr
     );
 #endif
   if ( !myWarpOptions->pTransformerArg )
@@ -752,7 +752,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   }
 
-  //CPLAssert( myWarpOptions->pTransformerArg  != NULL );
+  //CPLAssert( myWarpOptions->pTransformerArg );
   myWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
   myWarpOptions->padfDstNoDataReal = ( double * ) qgsMalloc( myWarpOptions->nBandCount * sizeof( double ) );
@@ -1208,7 +1208,7 @@ QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
 
   if ( !dataset )
   {
-    QgsDebugMsg( "dataset is NULL" );
+    QgsDebugMsg( "dataset is nullptr" );
     return subLayers;
   }
 
@@ -1216,7 +1216,7 @@ QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
 
   if ( metadata )
   {
-    for ( int i = 0; metadata[i] != nullptr; i++ )
+    for ( int i = 0; metadata[i]; i++ )
     {
       QString layer = QString::fromUtf8( metadata[i] );
       int pos = layer.indexOf( "_NAME=" );
@@ -1283,7 +1283,7 @@ bool QgsGdalProvider::hasHistogram( int theBandNo,
   GUIntBig* myHistogramArray = 0;
   CPLErr myError = GDALGetDefaultHistogramEx( myGdalBand, &myMinVal, &myMaxVal,
                    &myBinCount, &myHistogramArray, false,
-                   NULL, NULL );
+                   nullptr, nullptr );
 #else
   int* myHistogramArray = nullptr;
 
@@ -1418,7 +1418,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
 
 #if 0
   const char* pszPixelType = GDALGetMetadataItem( myGdalBand, "PIXELTYPE", "IMAGE_STRUCTURE" );
-  int bSignedByte = ( pszPixelType != NULL && EQUAL( pszPixelType, "SIGNEDBYTE" ) );
+  int bSignedByte = ( pszPixelType && EQUAL( pszPixelType, "SIGNEDBYTE" ) );
 
   if ( GDALGetRasterDataType( myGdalBand ) == GDT_Byte && !bSignedByte )
   {
@@ -1429,7 +1429,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   {
     CPLErr eErr = CE_Failure;
     double dfHalfBucket = 0;
-    eErr = GDALGetRasterStatistics( myGdalBand, true, true, &myMinVal, &myMaxVal, NULL, NULL );
+    eErr = GDALGetRasterStatistics( myGdalBand, true, true, &myMinVal, &myMaxVal, nullptr, nullptr );
     if ( eErr != CE_None )
     {
       delete [] myHistogramArray;
@@ -1543,7 +1543,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
     // see https://trac.osgeo.org/qgis/ticket/1357
     const char* pszGTiffCreationOptions =
       GDALGetMetadataItem( GDALGetDriverByName( "GTiff" ), GDAL_DMD_CREATIONOPTIONLIST, "" );
-    if ( strstr( pszGTiffCreationOptions, "BIGTIFF" ) == nullptr )
+    if ( !strstr( pszGTiffCreationOptions, "BIGTIFF" ) )
     {
       QString myCompressionType = QString( GDALGetMetadataItem( mGdalDataset, "COMPRESSION", "IMAGE_STRUCTURE" ) );
       if ( "JPEG" == myCompressionType )
@@ -1629,7 +1629,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
    * panOverviewList : the list of overview decimation factors to build.
    * nListBands : number of bands to build overviews for in panBandList. Build for all bands if this is 0.
    * panBandList : list of band numbers.
-   * pfnProgress : a function to call to report progress, or NULL.
+   * pfnProgress : a function to call to report progress, or nullptr.
    * pProgressData : application data to pass to the progress function.
    */
 
@@ -2010,7 +2010,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
     // TODO also make sure drivers are not loaded unnecessarily (as GDALAllRegister() and OGRRegisterAll load all drivers)
 #ifdef GDAL_COMPUTE_VERSION
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
-    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, NULL ) ) != "YES" )
+    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) != "YES" )
       continue;
 #endif
 #endif
@@ -2286,7 +2286,7 @@ bool QgsGdalProvider::hasStatistics( int theBandNo,
     }
   }
 
-  // Params in GDALGetRasterStatistics must not be NULL otherwise GDAL returns
+  // Params in GDALGetRasterStatistics must not be nullptr otherwise GDAL returns
   // without error even if stats are not cached
   double dfMin, dfMax, dfMean, dfStdDev;
   double *pdfMin = &dfMin;
@@ -2501,7 +2501,7 @@ void QgsGdalProvider::initBaseDataset()
       GDALAutoCreateWarpedVRT( mGdalBaseDataset, nullptr, nullptr,
                                GRA_NearestNeighbour, 0.2, nullptr );
 
-    if ( mGdalDataset == nullptr )
+    if ( !mGdalDataset )
     {
       QgsLogger::warning( "Warped VRT Creation failed." );
       mGdalDataset = mGdalBaseDataset;
@@ -2535,7 +2535,7 @@ void QgsGdalProvider::initBaseDataset()
   // check if this file has bands or subdatasets
   CPLErrorReset();
   GDALRasterBandH myGDALBand = GDALGetRasterBand( mGdalDataset, 1 ); //just use the first band
-  if ( myGDALBand == nullptr )
+  if ( !myGDALBand )
   {
     QString msg = QString::fromUtf8( CPLGetLastErrorMsg() );
 
@@ -2748,7 +2748,7 @@ QGISEXTERN QgsGdalProvider * create(
   char **papszOptions = papszFromStringList( createOptions );
   GDALDatasetH dataset = GDALCreate( driver, TO8F( uri ), width, height, nBands, ( GDALDataType )type, papszOptions );
   CSLDestroy( papszOptions );
-  if ( dataset == nullptr )
+  if ( !dataset )
   {
     QgsError error( QString( "Cannot create new dataset  %1:\n%2" ).arg( uri, QString::fromUtf8( CPLGetLastErrorMsg() ) ), "GDAL provider" );
     QgsDebugMsg( error.summary() );

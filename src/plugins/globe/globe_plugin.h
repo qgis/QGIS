@@ -84,7 +84,7 @@ class GlobePlugin : public QObject, public QgisPlugin
     void imageLayersChanged();
     //! Called when a new set of elevation layers has been received
     void elevationLayersChanged();
-    //! Set a different base map (QString::NULL will disable the base map)
+    //! Set a different base map (QString::null will disable the base map)
     void setBaseMap( QString url );
     //! Called when the extents of the map change
     void setSkyParameters( bool enabled, const QDateTime& dateTime, bool autoAmbience );
@@ -258,7 +258,7 @@ namespace osgEarth
       class NavigationControl : public ImageControl
       {
         public:
-          explicit NavigationControl( osg::Image* image = 0L ) : ImageControl( image ), _mouse_down_event( NULL ) {}
+          explicit NavigationControl( osg::Image* image = nullptr ) : ImageControl( image ), _mouse_down_event( nullptr ) {}
 
         protected:
           virtual bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, ControlContext& cx ) override;

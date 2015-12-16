@@ -101,8 +101,8 @@ void QgsAttributeTypeLoadDialog::fillComboBoxes( int layerIndex )
     }
   }
 
-  keyComboBox->setEnabled( vLayer != nullptr );
-  valueComboBox->setEnabled( vLayer != nullptr );
+  keyComboBox->setEnabled( nullptr != vLayer );
+  valueComboBox->setEnabled( nullptr != vLayer );
 
   keyComboBox->setCurrentIndex( -1 );
   valueComboBox->setCurrentIndex( -1 );

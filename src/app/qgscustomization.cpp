@@ -618,7 +618,7 @@ QStringList QgsCustomization::mInternalWidgets = QStringList() <<  "qt_tabwidget
 QgsCustomization *QgsCustomization::pinstance = nullptr;
 QgsCustomization *QgsCustomization::instance()
 {
-  if ( pinstance == nullptr )
+  if ( !pinstance )
   {
     pinstance = new QgsCustomization();
   }

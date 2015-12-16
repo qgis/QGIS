@@ -325,7 +325,7 @@ bool QgsStyleV2::load( const QString& filename )
 
     QDomElement symElement = doc.documentElement();
     QgsSymbolV2 *symbol = QgsSymbolLayerV2Utils::loadSymbol( symElement );
-    if ( symbol != nullptr )
+    if ( symbol )
       mSymbols.insert( symbol_name, symbol );
   }
 

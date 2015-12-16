@@ -129,18 +129,18 @@ void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString& layerName, co
 void eVisDatabaseConnectionGui::on_buttonBox_accepted()
 {
   //Deallocate memory, basically a predescructor
-  if ( nullptr != mDatabaseConnection )
+  if ( mDatabaseConnection )
   {
     mDatabaseConnection->close();
     delete( mDatabaseConnection );
   }
 
-  if ( nullptr != mDatabaseLayerFieldSelector )
+  if ( mDatabaseLayerFieldSelector )
   {
     delete( mDatabaseLayerFieldSelector );
   }
 
-  if ( nullptr != mQueryDefinitionMap )
+  if ( mQueryDefinitionMap )
   {
     mQueryDefinitionMap->clear();
     delete mQueryDefinitionMap;
@@ -273,7 +273,7 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
     }
 
     //If there is aready a database connection object, reset with the current parameters
-    if ( nullptr != mDatabaseConnection )
+    if ( mDatabaseConnection )
     {
       mDatabaseConnection->resetConnectionParameters( leDatabaseHost->text(), leDatabasePort->text().toInt(), leDatabaseName->text(), leDatabaseUsername->text(), leDatabasePassword->text(), myDatabaseType );
     }
@@ -467,11 +467,11 @@ void eVisDatabaseConnectionGui::on_pbtnRunQuery_clicked()
   if ( !teditSqlStatement->toPlainText().isEmpty() )
   {
     //Verify that we have an active database connection
-    if ( nullptr != mDatabaseConnection )
+    if ( mDatabaseConnection )
     {
       //Execute query
       QSqlQuery* myResults = mDatabaseConnection->query( teditSqlStatement->toPlainText() );
-      if ( nullptr == myResults )
+      if ( !myResults )
       {
         teditConsole->append( tr( "Error: Query failed: %1" ).arg( mDatabaseConnection->lastError() ) );
       }

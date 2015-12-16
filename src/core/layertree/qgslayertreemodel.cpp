@@ -444,7 +444,7 @@ QList<QgsLayerTreeNode*> QgsLayerTreeModel::indexes2nodes( const QModelIndexList
 
 bool QgsLayerTreeModel::isIndexSymbologyNode( const QModelIndex& index ) const
 {
-  return index2legendNode( index ) != nullptr;
+  return nullptr != index2legendNode( index );
 }
 
 QgsLayerTreeLayer* QgsLayerTreeModel::layerNodeForSymbologyNode( const QModelIndex& index ) const

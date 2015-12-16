@@ -59,7 +59,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
   mRendererV2 = layer->rendererV2() ? layer->rendererV2()->clone() : nullptr;
   mSelectedFeatureIds = layer->selectedFeaturesIds();
 
-  mDrawVertexMarkers = ( layer->editBuffer() != nullptr );
+  mDrawVertexMarkers = nullptr != layer->editBuffer();
 
   mGeometryType = layer->geometryType();
 

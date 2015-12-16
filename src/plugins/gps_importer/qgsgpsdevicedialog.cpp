@@ -119,7 +119,7 @@ void QgsGPSDeviceDialog::slotUpdateDeviceList( const QString& selection )
     }
   }
 
-  if ( lbDeviceList->currentItem() == nullptr && lbDeviceList->count() > 0 )
+  if ( !lbDeviceList->currentItem() && lbDeviceList->count() > 0 )
     lbDeviceList->setCurrentRow( 0 );
 
   // Update the display and reconnect the selection changed signal

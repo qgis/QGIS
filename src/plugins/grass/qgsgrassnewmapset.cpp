@@ -128,7 +128,7 @@ QgsGrassNewMapset::~QgsGrassNewMapset()
 /*************************** DATABASE *******************************/
 void QgsGrassNewMapset::browseDatabase()
 {
-  QString selectedDir = QFileDialog::getExistingDirectory( this, NULL, mDatabaseLineEdit->text() );
+  QString selectedDir = QFileDialog::getExistingDirectory( this, nullptr, mDatabaseLineEdit->text() );
   if ( selectedDir.isEmpty() )
   {
     return;
@@ -404,8 +404,8 @@ void QgsGrassNewMapset::setGrassProjection()
   {
     QgsDebugMsg( QString( "proj4 = %1" ).arg( proj4.toLocal8Bit().constData() ) );
 
-    OGRSpatialReferenceH hCRS = NULL;
-    hCRS = OSRNewSpatialReference( NULL );
+    OGRSpatialReferenceH hCRS = nullptr;
+    hCRS = OSRNewSpatialReference( nullptr );
     int errcode;
 
     {
@@ -424,7 +424,7 @@ void QgsGrassNewMapset::setGrassProjection()
     }
     else
     {
-      char *wkt = NULL;
+      char *wkt = nullptr;
 
       QgsDebugMsg( QString( "OSRIsGeographic = %1" ).arg( OSRIsGeographic( hCRS ) ) );
       QgsDebugMsg( QString( "OSRIsProjected = %1" ).arg( OSRIsProjected( hCRS ) ) );

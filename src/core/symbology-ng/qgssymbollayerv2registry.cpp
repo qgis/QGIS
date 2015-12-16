@@ -73,7 +73,7 @@ QgsSymbolLayerV2Registry::~QgsSymbolLayerV2Registry()
 
 bool QgsSymbolLayerV2Registry::addSymbolLayerType( QgsSymbolLayerV2AbstractMetadata* metadata )
 {
-  if ( metadata == nullptr || mMetadata.contains( metadata->name() ) )
+  if ( !metadata || mMetadata.contains( metadata->name() ) )
     return false;
 
   mMetadata[metadata->name()] = metadata;

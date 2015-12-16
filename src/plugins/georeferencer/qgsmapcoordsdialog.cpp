@@ -131,7 +131,7 @@ void QgsMapCoordsDialog::setToolEmitPoint( bool isEnable )
   {
     parentWidget()->showMinimized();
 
-    assert( parentWidget()->parentWidget() != nullptr );
+    Q_ASSERT( parentWidget()->parentWidget() );
     parentWidget()->parentWidget()->activateWindow();
     parentWidget()->parentWidget()->raise();
 

@@ -72,7 +72,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   //open the raster layer and the raster band
   GDALAllRegister();
   GDALDatasetH inputDataset = GDALOpen( TO8F( mRasterFilePath ), GA_ReadOnly );
-  if ( inputDataset == nullptr )
+  if ( !inputDataset )
   {
     return 3;
   }
@@ -84,7 +84,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   }
 
   GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset, mRasterBand );
-  if ( rasterBand == nullptr )
+  if ( !rasterBand )
   {
     GDALClose( inputDataset );
     return 5;

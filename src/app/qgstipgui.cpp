@@ -25,7 +25,7 @@
 
 #ifdef Q_OS_MACX
 QgsTipGui::QgsTipGui()
-    : QDialog( NULL, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
+    : QDialog( nullptr, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
 #else
 QgsTipGui::QgsTipGui()
     : QDialog( nullptr )  // Normal dialog in non Mac-OS

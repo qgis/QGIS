@@ -865,7 +865,7 @@ QVector< QgsCptCityDataItem* > QgsCptCityCollectionItem::childrenRamps( bool rec
   {
     QgsCptCityCollectionItem* collectionItem = dynamic_cast<QgsCptCityCollectionItem*>( childItem );
     QgsCptCityColorRampItem* rampItem = dynamic_cast<QgsCptCityColorRampItem*>( childItem );
-    QgsDebugMsgLevel( QString( "child path= %1 coll= %2 ramp = %3" ).arg( childItem->path() ).arg( collectionItem != nullptr ).arg( rampItem != nullptr ), 2 );
+    QgsDebugMsgLevel( QString( "child path= %1 coll= %2 ramp = %3" ).arg( childItem->path() ).arg( nullptr != collectionItem ).arg( nullptr != rampItem ), 2 );
     if ( collectionItem && recursive )
     {
       collectionItem->populate();
@@ -1330,7 +1330,7 @@ QgsCptCityBrowserModel::QgsCptCityBrowserModel( QObject *parent,
     QgsCptCityArchive* archive, ViewType viewType )
     : QAbstractItemModel( parent ), mArchive( archive ), mViewType( viewType )
 {
-  Q_ASSERT( mArchive != nullptr );
+  Q_ASSERT( mArchive );
   QgsDebugMsg( "archiveName = " + archive->archiveName() + " viewType=" + ( int ) viewType );
   // keep iconsize for now, but not effectively used
   mIconSize = QSize( 100, 15 );
@@ -1410,7 +1410,7 @@ QVariant QgsCptCityBrowserModel::data( const QModelIndex &index, int role ) cons
     return item->icon( mIconSize );
   }
   else if ( role == Qt::FontRole &&
-            ( dynamic_cast< QgsCptCityCollectionItem* >( item ) != nullptr ) )
+            dynamic_cast< QgsCptCityCollectionItem* >( item ) )
   {
     // collectionitems are larger and bold
     QFont font;

@@ -237,7 +237,7 @@ QList< GroupLayerInfo > QgsAppLegendInterface::groupLayerRelationship()
 
 bool QgsAppLegendInterface::groupExists( int groupIndex )
 {
-  return groupIndexToNode( groupIndex ) != nullptr;
+  return nullptr != groupIndexToNode( groupIndex );
 }
 
 bool QgsAppLegendInterface::isGroupExpanded( int groupIndex )

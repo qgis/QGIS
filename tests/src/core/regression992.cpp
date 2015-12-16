@@ -60,7 +60,7 @@ class Regression992 : public QObject
 };
 
 Regression992::Regression992()
-    : mpRasterLayer( NULL )
+    : mpRasterLayer( nullptr )
 {
 
 }

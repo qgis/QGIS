@@ -269,7 +269,7 @@ void QgsFeatureRendererV2::startRender( QgsRenderContext& context, const QgsVect
 bool QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
   QgsSymbolV2* symbol = symbolForFeature( feature, context );
-  if ( symbol == nullptr )
+  if ( !symbol )
     return false;
 
   renderFeatureWithSymbol( feature, symbol, context, layer, selected, drawVertexMarker );
@@ -314,7 +314,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
   QString rendererType = element.attribute( "type" );
 
   QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererType );
-  if ( m == nullptr )
+  if ( !m )
     return nullptr;
 
   QgsFeatureRendererV2* r = m->createRenderer( element );
@@ -424,7 +424,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis:
 
   // create the renderer and return it
   QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererType );
-  if ( m == nullptr )
+  if ( !m )
   {
     errorMessage = QString( "Error: Unable to get metadata for '%1' renderer." ).arg( rendererType );
     return nullptr;
@@ -512,13 +512,13 @@ void QgsFeatureRendererV2::setVertexMarkerAppearance( int type, int size )
 bool QgsFeatureRendererV2::willRenderFeature( QgsFeature &feat )
 {
   Q_NOWARN_DEPRECATED_PUSH
-  return symbolForFeature( feat ) != nullptr;
+  return nullptr != symbolForFeature( feat );
   Q_NOWARN_DEPRECATED_POP
 }
 
 bool QgsFeatureRendererV2::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )
 {
-  return symbolForFeature( feat, context ) != nullptr;
+  return nullptr != symbolForFeature( feat, context );
 }
 
 void QgsFeatureRendererV2::renderVertexMarker( const QPointF &pt, QgsRenderContext& context )

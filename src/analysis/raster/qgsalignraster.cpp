@@ -458,7 +458,7 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
 
   // Copy the color table, if required.
   GDALColorTableH hCT = GDALGetRasterColorTable( GDALGetRasterBand( hSrcDS, 1 ) );
-  if ( hCT != nullptr )
+  if ( hCT )
     GDALSetRasterColorTable( GDALGetRasterBand( hDstDS, 1 ), hCT );
 
   // -----------------------------------------------------------------------
@@ -521,7 +521,7 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo& info
   // Create a transformer that maps from source pixel/line coordinates
   // to destination georeferenced coordinates (not destination
   // pixel line).  We do that by omitting the destination dataset
-  // handle (setting it to NULL).
+  // handle (setting it to nullptr).
   void* hTransformArg = GDALCreateGenImgProjTransformer( info.mDataset, info.mCrsWkt.toAscii().constData(), nullptr, destWkt.toAscii().constData(), FALSE, 0, 1 );
   if ( !hTransformArg )
     return false;

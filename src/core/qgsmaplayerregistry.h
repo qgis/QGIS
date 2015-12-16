@@ -95,7 +95,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      *                      If you specify false here, you have take care of deleting
      *                      the layer yourself. Not available in python.
      *
-     * @return NULL if unable to add layer, otherwise pointer to newly added layer
+     * @return nullptr if unable to add layer, otherwise pointer to newly added layer
      *
      * @see addMapLayers
      *

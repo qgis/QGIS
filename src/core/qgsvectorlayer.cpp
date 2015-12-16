@@ -3877,7 +3877,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFl
         qml = loadStyleExternalMethod( mDataSource, errorMsg );
         if ( !qml.isEmpty() )
         {
-          theResultFlag = this->applyNamedStyle( qml, errorMsg );
+          theResultFlag = applyNamedStyle( qml, errorMsg );
           return QObject::tr( "Loaded from Provider" );
         }
       }

@@ -22,7 +22,7 @@ QgsPythonRunner* QgsPythonRunner::mInstance = nullptr;
 
 bool QgsPythonRunner::isValid()
 {
-  return mInstance != nullptr;
+  return nullptr != mInstance;
 }
 
 bool QgsPythonRunner::run( const QString& command, const QString& messageOnError )

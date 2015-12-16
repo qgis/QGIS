@@ -1831,7 +1831,7 @@ QMainWindow* QgsComposerView::composerWindow()
   while ( true )
   {
     composerObject = qobject_cast<QMainWindow*>( currentObject );
-    if ( composerObject || currentObject->parent() == nullptr )
+    if ( composerObject || !currentObject->parent() )
     {
       return composerObject;
     }

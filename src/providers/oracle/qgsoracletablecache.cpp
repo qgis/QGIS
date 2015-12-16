@@ -28,7 +28,7 @@ email                : wonder.sk at gmail dot com
 static bool _executeSqliteStatement( sqlite3* db, const QString& sql )
 {
   sqlite3_stmt* stmt;
-  if ( sqlite3_prepare_v2( db, sql.toUtf8().data(), -1, &stmt, NULL ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( db, sql.toUtf8().data(), -1, &stmt, nullptr ) != SQLITE_OK )
     return false;
 
   return sqlite3_step( stmt ) == SQLITE_DONE;
@@ -72,7 +72,7 @@ static bool _hasCache( sqlite3* db, const QString& connName, int flags = -1 ) //
 
   char **results;
   int rows, columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
   bool res = sqlite3_get_table( db, sqlCacheForConn.toUtf8(), &results, &rows, &columns, &errMsg ) == SQLITE_OK;
   bool hasCache = ( res && rows == 1 );
   sqlite3_free_table( results );
@@ -202,7 +202,7 @@ bool QgsOracleTableCache::loadFromCache( const QString& connName, CacheFlags fla
 
   sqlite3_stmt* stmt;
   QString sql = QString( "SELECT * FROM %1" ).arg( QgsOracleConn::quotedIdentifier( "oracle_" + connName ) );
-  if ( sqlite3_prepare_v2( db, sql.toUtf8().data(), -1, &stmt, NULL ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( db, sql.toUtf8().data(), -1, &stmt, nullptr ) != SQLITE_OK )
   {
     sqlite3_close( db );
     return false;

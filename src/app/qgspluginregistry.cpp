@@ -44,7 +44,7 @@ typedef int type_t();
 QgsPluginRegistry *QgsPluginRegistry::_instance = nullptr;
 QgsPluginRegistry *QgsPluginRegistry::instance()
 {
-  if ( _instance == nullptr )
+  if ( !_instance )
   {
     _instance = new QgsPluginRegistry();
   }

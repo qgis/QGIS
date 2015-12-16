@@ -146,7 +146,7 @@ bool QgsSpatiaLiteFeatureIterator::fetchFeature( QgsFeature& feature )
 
   feature.setValid( false );
 
-  if ( sqliteStatement == nullptr )
+  if ( !sqliteStatement )
   {
     QgsDebugMsg( "Invalid current SQLite statement" );
     close();

@@ -589,7 +589,7 @@ void QgsRasterLayerProperties::sync()
   // TODO: Wouldn't it be better to just removeWidget() the tabs than delete them? [LS]
   if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::BuildPyramids ) )
   {
-    if ( mOptsPage_Pyramids != nullptr )
+    if ( mOptsPage_Pyramids )
     {
       delete mOptsPage_Pyramids;
       mOptsPage_Pyramids = nullptr;
@@ -598,7 +598,7 @@ void QgsRasterLayerProperties::sync()
 
   if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size ) )
   {
-    if ( mOptsPage_Histogram != nullptr )
+    if ( mOptsPage_Histogram )
     {
       delete mOptsPage_Histogram;
       mOptsPage_Histogram = nullptr;
@@ -1373,7 +1373,8 @@ void QgsRasterLayerProperties::setTransparencyToEdited( int row )
 
 void QgsRasterLayerProperties::mOptionsStackedWidget_CurrentChanged( int indx )
 {
-  if ( mHistogramWidget == nullptr ) return;
+  if ( !mHistogramWidget )
+    return;
 
   if ( indx == 5 )
   {
@@ -1764,7 +1765,7 @@ void QgsRasterLayerProperties::on_mResetColorRenderingBtn_clicked()
 
 bool QgsRasterLayerProperties::rasterIsMultiBandColor()
 {
-  return mRasterLayer && dynamic_cast<QgsMultiBandColorRenderer*>( mRasterLayer->renderer() ) != nullptr;
+  return mRasterLayer && nullptr != dynamic_cast<QgsMultiBandColorRenderer*>( mRasterLayer->renderer() );
 }
 
 

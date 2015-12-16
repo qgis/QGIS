@@ -232,7 +232,7 @@ bool QgsOSMXmlImport::closeDatabase()
   deleteStatement( mStmtInsertWayNode );
   deleteStatement( mStmtInsertWayTag );
 
-  Q_ASSERT( mStmtInsertNode == nullptr );
+  Q_ASSERT( !mStmtInsertNode );
 
   QgsSLConnect::sqlite3_close( mDatabase );
   mDatabase = nullptr;

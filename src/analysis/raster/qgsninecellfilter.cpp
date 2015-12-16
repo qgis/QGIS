@@ -60,27 +60,27 @@ int QgsNineCellFilter::processRaster( QProgressDialog* p )
   //open input file
   int xSize, ySize;
   GDALDatasetH  inputDataset = openInputFile( xSize, ySize );
-  if ( inputDataset == nullptr )
+  if ( !inputDataset )
   {
     return 1; //opening of input file failed
   }
 
   //output driver
   GDALDriverH outputDriver = openOutputDriver();
-  if ( outputDriver == nullptr )
+  if ( !outputDriver )
   {
     return 2;
   }
 
   GDALDatasetH outputDataset = openOutputFile( inputDataset, outputDriver );
-  if ( outputDataset == nullptr )
+  if ( !outputDataset )
   {
     return 3; //create operation on output file failed
   }
 
   //open first raster band for reading (operation is only for single band raster)
   GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset, 1 );
-  if ( rasterBand == nullptr )
+  if ( !rasterBand )
   {
     GDALClose( inputDataset );
     GDALClose( outputDataset );
@@ -89,7 +89,7 @@ int QgsNineCellFilter::processRaster( QProgressDialog* p )
   mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, nullptr );
 
   GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset, 1 );
-  if ( outputRasterBand == nullptr )
+  if ( !outputRasterBand )
   {
     GDALClose( inputDataset );
     GDALClose( outputDataset );
@@ -209,7 +209,7 @@ int QgsNineCellFilter::processRaster( QProgressDialog* p )
 GDALDatasetH QgsNineCellFilter::openInputFile( int& nCellsX, int& nCellsY )
 {
   GDALDatasetH inputDataset = GDALOpen( TO8F( mInputFile ), GA_ReadOnly );
-  if ( inputDataset != nullptr )
+  if ( inputDataset )
   {
     nCellsX = GDALGetRasterXSize( inputDataset );
     nCellsY = GDALGetRasterYSize( inputDataset );
@@ -231,9 +231,9 @@ GDALDriverH QgsNineCellFilter::openOutputDriver()
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );
 
-  if ( outputDriver == nullptr )
+  if ( !outputDriver )
   {
-    return outputDriver; //return NULL, driver does not exist
+    return outputDriver; //return nullptr, driver does not exist
   }
 
   driverMetadata = GDALGetMetadata( outputDriver, nullptr );
@@ -247,7 +247,7 @@ GDALDriverH QgsNineCellFilter::openOutputDriver()
 
 GDALDatasetH QgsNineCellFilter::openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver )
 {
-  if ( inputDataset == nullptr )
+  if ( !inputDataset )
   {
     return nullptr;
   }
@@ -258,7 +258,7 @@ GDALDatasetH QgsNineCellFilter::openOutputFile( GDALDatasetH inputDataset, GDALD
   //open output file
   char **papszOptions = nullptr;
   GDALDatasetH outputDataset = GDALCreate( outputDriver, TO8F( mOutputFile ), xSize, ySize, 1, GDT_Float32, papszOptions );
-  if ( outputDataset == nullptr )
+  if ( !outputDataset )
   {
     return outputDataset;
   }

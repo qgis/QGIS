@@ -58,7 +58,7 @@ bool QgsPluginLayerType::showLayerProperties( QgsPluginLayer *layer )
 QgsPluginLayerRegistry* QgsPluginLayerRegistry::_instance = nullptr;
 QgsPluginLayerRegistry* QgsPluginLayerRegistry::instance()
 {
-  if ( _instance == nullptr )
+  if ( !_instance )
   {
     _instance = new QgsPluginLayerRegistry();
   }
@@ -87,8 +87,9 @@ QStringList QgsPluginLayerRegistry::pluginLayerTypes()
 
 bool QgsPluginLayerRegistry::addPluginLayerType( QgsPluginLayerType* type )
 {
-  if ( type == nullptr )
+  if ( !type )
     return false;
+
   if ( mPluginLayerTypes.contains( type->name() ) )
     return false;
 

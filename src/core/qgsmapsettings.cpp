@@ -510,7 +510,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
   while ( it != mLayers.end() )
   {
     QgsMapLayer * lyr = registry->mapLayer( *it );
-    if ( lyr == nullptr )
+    if ( !lyr )
     {
       QgsDebugMsg( QString( "WARNING: layer '%1' not found in map layer registry!" ).arg( *it ) );
     }

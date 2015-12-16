@@ -32,13 +32,13 @@ static bool _initWidgetFunction( const QString& name, QgsPaintEffectWidgetFunc f
   QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
 
   QgsPaintEffectAbstractMetadata* abstractMetadata = registry->effectMetadata( name );
-  if ( abstractMetadata == nullptr )
+  if ( !abstractMetadata )
   {
     QgsDebugMsg( QString( "Failed to find paint effect entry in registry: %1" ).arg( name ) );
     return false;
   }
   QgsPaintEffectMetadata* metadata = dynamic_cast<QgsPaintEffectMetadata*>( abstractMetadata );
-  if ( metadata == nullptr )
+  if ( !metadata )
   {
     QgsDebugMsg( QString( "Failed to cast paint effect's metadata: " ) .arg( name ) );
     return false;
@@ -148,13 +148,13 @@ void QgsPaintEffectPropertiesWidget::effectTypeChanged()
   // get creation function for new effect from registry
   QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
   QgsPaintEffectAbstractMetadata* am = registry->effectMetadata( newEffectType );
-  if ( am == nullptr ) // check whether the metadata is assigned
+  if ( !am ) // check whether the metadata is assigned
     return;
 
   // change effect to a new (with different type)
   // base new effect on existing effect's properties
   QgsPaintEffect* newEffect = am->createPaintEffect( effect->properties() );
-  if ( newEffect == nullptr )
+  if ( !newEffect )
     return;
 
   updateEffectWidget( newEffect );

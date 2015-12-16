@@ -320,7 +320,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForValue( double value )
 QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature, QgsRenderContext &context )
 {
   QgsSymbolV2* symbol = originalSymbolForFeature( feature, context );
-  if ( symbol == nullptr )
+  if ( !symbol )
     return nullptr;
 
   if ( !mRotation.data() && !mSizeScale.data() )

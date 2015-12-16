@@ -665,7 +665,7 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
 QgsVectorColorRampV2* QgsCategorizedSymbolRendererV2Widget::getColorRamp()
 {
   QgsVectorColorRampV2* ramp = cboCategorizedColorRamp->currentColorRamp();
-  if ( ramp == nullptr )
+  if ( !ramp )
   {
     if ( cboCategorizedColorRamp->count() == 0 )
       QMessageBox::critical( this, tr( "Error" ), tr( "There are no available color ramps. You can add them in Style Manager." ) );

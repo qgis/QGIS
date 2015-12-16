@@ -39,7 +39,7 @@ Node& Node::operator=( const Node & n )
   if ( n.getPoint() )//mPoint of n is not a null pointer
   {
     mPoint = new Point3D( n.getPoint()->getX(), n.getPoint()->getY(), n.getPoint()->getZ() );
-    if ( mPoint == nullptr )//no memory
+    if ( !mPoint )//no memory
     {
       mPoint = tmp;
       mNext = n.getNext();
@@ -47,7 +47,7 @@ Node& Node::operator=( const Node & n )
     }
 
   }
-  else//mPoint of n is a null pointer
+  else//mPoint of n is a nullptr
   {
     mPoint = nullptr;
   }

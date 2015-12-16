@@ -68,7 +68,7 @@ class TestQgsRasterSubLayer : public QObject
 };
 
 TestQgsRasterSubLayer::TestQgsRasterSubLayer()
-    : mpRasterLayer( NULL )
+    : mpRasterLayer( nullptr )
     , mHasNetCDF( false )
 {
 

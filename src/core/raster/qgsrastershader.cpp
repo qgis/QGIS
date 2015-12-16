@@ -48,7 +48,7 @@ QgsRasterShader::~QgsRasterShader()
 */
 bool QgsRasterShader::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int *theReturnAlpha )
 {
-  if ( nullptr != mRasterShaderFunction )
+  if ( mRasterShaderFunction )
   {
     return mRasterShaderFunction->shade( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue, theReturnAlpha );
   }
@@ -71,7 +71,7 @@ bool QgsRasterShader::shade( double theValue, int* theReturnRedValue, int* theRe
 */
 bool QgsRasterShader::shade( double theRedValue, double theGreenValue, double theBlueValue, double theAlphaValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int* theReturnAlphaValue )
 {
-  if ( nullptr != mRasterShaderFunction )
+  if ( mRasterShaderFunction )
   {
     return mRasterShaderFunction->shade( theRedValue, theGreenValue, theBlueValue, theAlphaValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue, theReturnAlphaValue );
   }
@@ -91,7 +91,7 @@ void QgsRasterShader::setRasterShaderFunction( QgsRasterShaderFunction* theFunct
   if ( mRasterShaderFunction == theFunction )
     return;
 
-  if ( nullptr != theFunction )
+  if ( theFunction )
   {
     delete mRasterShaderFunction;
     mRasterShaderFunction = theFunction;
@@ -108,7 +108,7 @@ void QgsRasterShader::setMaximumValue( double theValue )
   QgsDebugMsg( "Value = " + QString::number( theValue ) );
 
   mMaximumValue = theValue;
-  if ( nullptr != mRasterShaderFunction )
+  if ( mRasterShaderFunction )
   {
     mRasterShaderFunction->setMaximumValue( theValue );
   }
@@ -124,7 +124,7 @@ void QgsRasterShader::setMinimumValue( double theValue )
   QgsDebugMsg( "Value = " + QString::number( theValue ) );
 
   mMinimumValue = theValue;
-  if ( nullptr != mRasterShaderFunction )
+  if ( mRasterShaderFunction )
   {
     mRasterShaderFunction->setMinimumValue( theValue );
   }

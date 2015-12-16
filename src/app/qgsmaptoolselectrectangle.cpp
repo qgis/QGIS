@@ -71,7 +71,7 @@ void QgsMapToolSelectFeatures::canvasMoveEvent( QgsMapMouseEvent* e )
 void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-  if ( vlayer == nullptr )
+  if ( !vlayer )
   {
     delete mRubberBand;
     mRubberBand = nullptr;

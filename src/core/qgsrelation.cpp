@@ -48,7 +48,7 @@ QgsRelation QgsRelation::createFromXML( const QDomNode &node )
   QgsMapLayer* referencingLayer = mapLayers[referencingLayerId];
   QgsMapLayer* referencedLayer = mapLayers[referencedLayerId];
 
-  if ( nullptr == referencingLayer )
+  if ( !referencingLayer )
   {
     QgsLogger::warning( QApplication::translate( "QgsRelation", "Relation defined for layer '%1' which does not exist." ).arg( referencingLayerId ) );
   }
@@ -57,7 +57,7 @@ QgsRelation QgsRelation::createFromXML( const QDomNode &node )
     QgsLogger::warning( QApplication::translate( "QgsRelation", "Relation defined for layer '%1' which is not of type VectorLayer." ).arg( referencingLayerId ) );
   }
 
-  if ( nullptr == referencedLayer )
+  if ( !referencedLayer )
   {
     QgsLogger::warning( QApplication::translate( "QgsRelation", "Relation defined for layer '%1' which does not exist." ).arg( referencedLayerId ) );
   }

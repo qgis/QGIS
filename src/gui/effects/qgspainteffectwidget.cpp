@@ -595,7 +595,7 @@ void QgsGlowWidget::applyColorRamp()
   }
 
   QgsVectorColorRampV2* ramp = mRampComboBox->currentColorRamp();
-  if ( ramp == nullptr )
+  if ( !ramp )
     return;
 
   mEffect->setRamp( ramp );

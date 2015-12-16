@@ -145,7 +145,7 @@ void QgsHeatmapRendererWidget::applyColorRamp()
   }
 
   QgsVectorColorRampV2* ramp = mRampComboBox->currentColorRamp();
-  if ( ramp == nullptr )
+  if ( !ramp )
     return;
 
   mRenderer->setColorRamp( ramp );

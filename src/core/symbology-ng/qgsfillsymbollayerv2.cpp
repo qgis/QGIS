@@ -3465,7 +3465,7 @@ QgsSymbolV2* QgsCentroidFillSymbolLayerV2::subSymbol()
 
 bool QgsCentroidFillSymbolLayerV2::setSubSymbol( QgsSymbolV2* symbol )
 {
-  if ( symbol == nullptr || symbol->type() != QgsSymbolV2::Marker )
+  if ( !symbol || symbol->type() != QgsSymbolV2::Marker )
   {
     delete symbol;
     return false;

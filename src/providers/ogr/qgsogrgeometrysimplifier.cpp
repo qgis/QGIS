@@ -65,7 +65,7 @@ bool QgsOgrTopologyPreservingSimplifier::simplifyGeometry( OGRGeometryH geometry
 
 QgsOgrMapToPixelSimplifier::QgsOgrMapToPixelSimplifier( int simplifyFlags, double tolerance )
     : QgsMapToPixelSimplifier( simplifyFlags, tolerance )
-    , mPointBufferPtr( NULL )
+    , mPointBufferPtr( nullptr )
     , mPointBufferCount( 0 )
 {
 }
@@ -75,7 +75,7 @@ QgsOgrMapToPixelSimplifier::~QgsOgrMapToPixelSimplifier()
   if ( mPointBufferPtr )
   {
     OGRFree( mPointBufferPtr );
-    mPointBufferPtr = NULL;
+    mPointBufferPtr = nullptr;
   }
 }
 
@@ -85,7 +85,7 @@ QgsPoint* QgsOgrMapToPixelSimplifier::mallocPoints( int numPoints )
   if ( mPointBufferPtr && mPointBufferCount < numPoints )
   {
     OGRFree( mPointBufferPtr );
-    mPointBufferPtr = NULL;
+    mPointBufferPtr = nullptr;
   }
   if ( !mPointBufferPtr )
   {
@@ -98,7 +98,7 @@ QgsPoint* QgsOgrMapToPixelSimplifier::mallocPoints( int numPoints )
 //! Returns a point buffer of the specified envelope
 QgsPoint* QgsOgrMapToPixelSimplifier::getEnvelopePoints( const QgsRectangle& envelope, int& numPoints, bool isaLinearRing )
 {
-  QgsPoint* points = NULL;
+  QgsPoint* points = nullptr;
 
   double x1 = envelope.xMinimum();
   double y1 = envelope.yMinimum();
@@ -206,7 +206,7 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometryH geometry, boo
       QgsPoint* points = mallocPoints( numPoints );
       double* xptr = ( double* )points;
       double* yptr = xptr + 1;
-      OGR_G_GetPoints( geometry, xptr, 16, yptr, 16, NULL, 0 );
+      OGR_G_GetPoints( geometry, xptr, 16, yptr, 16, nullptr, 0 );
 
       if ( simplifyOgrGeometry( geometryType, xptr, 16, yptr, 16, numPoints, numSimplifiedPoints ) )
       {
@@ -257,7 +257,7 @@ void QgsOgrMapToPixelSimplifier::setGeometryPoints( OGRGeometryH geometry, QgsPo
   double* xptr = ( double* )points;
   double* yptr = xptr + 1;
 
-  OGR_G_SetPoints( geometry, numPoints, xptr, 16, yptr, 16, NULL, 0 );
+  OGR_G_SetPoints( geometry, numPoints, xptr, 16, yptr, 16, nullptr, 0 );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////

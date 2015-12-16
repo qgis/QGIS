@@ -115,7 +115,7 @@ QgsRequestHandler* QgsServer::createRequestHandler( const bool captureOutput /*=
 {
   QgsRequestHandler* requestHandler = nullptr;
   char* requestMethod = getenv( "REQUEST_METHOD" );
-  if ( requestMethod != nullptr )
+  if ( requestMethod )
   {
     if ( strcmp( requestMethod, "POST" ) == 0 )
     {
@@ -181,43 +181,43 @@ void QgsServer::printRequestParameters( const QMap< QString, QString>& parameter
 void QgsServer::printRequestInfos()
 {
   QgsMessageLog::logMessage( "********************new request***************", "Server", QgsMessageLog::INFO );
-  if ( getenv( "REMOTE_ADDR" ) != nullptr )
+  if ( getenv( "REMOTE_ADDR" ) )
   {
     QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_ADDR" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "REMOTE_HOST" ) != nullptr )
+  if ( getenv( "REMOTE_HOST" ) )
   {
     QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_HOST" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "REMOTE_USER" ) != nullptr )
+  if ( getenv( "REMOTE_USER" ) )
   {
     QgsMessageLog::logMessage( "remote user: " + QString( getenv( "REMOTE_USER" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "REMOTE_IDENT" ) != nullptr )
+  if ( getenv( "REMOTE_IDENT" ) )
   {
     QgsMessageLog::logMessage( "REMOTE_IDENT: " + QString( getenv( "REMOTE_IDENT" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "CONTENT_TYPE" ) != nullptr )
+  if ( getenv( "CONTENT_TYPE" ) )
   {
     QgsMessageLog::logMessage( "CONTENT_TYPE: " + QString( getenv( "CONTENT_TYPE" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "AUTH_TYPE" ) != nullptr )
+  if ( getenv( "AUTH_TYPE" ) )
   {
     QgsMessageLog::logMessage( "AUTH_TYPE: " + QString( getenv( "AUTH_TYPE" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "HTTP_USER_AGENT" ) != nullptr )
+  if ( getenv( "HTTP_USER_AGENT" ) )
   {
     QgsMessageLog::logMessage( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "HTTP_PROXY" ) != nullptr )
+  if ( getenv( "HTTP_PROXY" ) )
   {
     QgsMessageLog::logMessage( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "HTTPS_PROXY" ) != nullptr )
+  if ( getenv( "HTTPS_PROXY" ) )
   {
     QgsMessageLog::logMessage( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ), "Server", QgsMessageLog::INFO );
   }
-  if ( getenv( "NO_PROXY" ) != nullptr )
+  if ( getenv( "NO_PROXY" ) )
   {
     QgsMessageLog::logMessage( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ), "Server", QgsMessageLog::INFO );
   }

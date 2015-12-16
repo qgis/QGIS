@@ -943,7 +943,7 @@ void QgsMapRenderer::updateFullExtent()
   Q_FOREACH ( const QString layerId, mLayerSet )
   {
     QgsMapLayer * lyr = registry->mapLayer( layerId );
-    if ( lyr == nullptr )
+    if ( !lyr )
     {
       QgsDebugMsg( QString( "WARNING: layer '%1' not found in map layer registry!" ).arg( layerId ) );
     }

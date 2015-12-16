@@ -40,7 +40,7 @@ void QgsRasterChangeCoords::setRaster( const QString &fileRaster )
   GDALAllRegister();
   GDALDatasetH hDS = GDALOpen( TO8F( fileRaster ), GA_ReadOnly );
   double adfGeoTransform[6];
-  if ( GDALGetProjectionRef( hDS ) != nullptr && GDALGetGeoTransform( hDS, adfGeoTransform ) == CE_None )
+  if ( GDALGetProjectionRef( hDS ) && GDALGetGeoTransform( hDS, adfGeoTransform ) == CE_None )
     //if ( false )
   {
     mHasCrs = true;

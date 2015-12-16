@@ -253,7 +253,7 @@ bool QgsContrastEnhancement::generateLookupTable()
 bool QgsContrastEnhancement::isValueInDisplayableRange( double theValue )
 {
 
-  if ( nullptr != mContrastEnhancementFunction )
+  if ( mContrastEnhancementFunction )
   {
     return mContrastEnhancementFunction->isValueInDisplayableRange( theValue );
   }
@@ -315,7 +315,7 @@ void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancem
 {
   QgsDebugMsg( "called" );
 
-  if ( nullptr != theFunction )
+  if ( theFunction )
   {
     delete mContrastEnhancementFunction;
     mContrastEnhancementFunction = theFunction;
@@ -343,7 +343,7 @@ void QgsContrastEnhancement::setMaximumValue( double theValue, bool generateTabl
     mMaximumValue = theValue;
   }
 
-  if ( nullptr != mContrastEnhancementFunction )
+  if ( mContrastEnhancementFunction )
   {
     mContrastEnhancementFunction->setMaximumValue( theValue );
   }
@@ -375,7 +375,7 @@ void QgsContrastEnhancement::setMinimumValue( double theValue, bool generateTabl
     mMinimumValue = theValue;
   }
 
-  if ( nullptr != mContrastEnhancementFunction )
+  if ( mContrastEnhancementFunction )
   {
     mContrastEnhancementFunction->setMinimumValue( theValue );
   }

@@ -3491,7 +3491,7 @@ void QgisApp::loadGDALSublayers( const QString& uri, const QStringList& list )
 }
 
 // This method is the method that does the real job. If the layer given in
-// parameter is NULL, then the method tries to act on the activeLayer.
+// parameter is nullptr, then the method tries to act on the activeLayer.
 void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
 {
   if ( !layer )
@@ -4559,15 +4559,11 @@ void QgisApp::openLayerDefinition( const QString & path )
 void QgisApp::openProject( QAction *action )
 {
   // possibly save any pending work before opening a different project
-  QString debugme;
-  assert( action != nullptr );
+  Q_ASSERT( action );
 
-  debugme = action->data().toString();
-
+  QString debugme = action->data().toString();
   if ( saveDirty() )
-  {
     addProject( debugme );
-  }
 
   //set the projections enabled icon in the status bar
   int myProjectionEnabledFlag =
@@ -8217,8 +8213,8 @@ void QgisApp::openURL( QString url, bool useQgisDocDirectory )
    */
   CFURLRef urlRef = CFURLCreateWithBytes( kCFAllocatorDefault,
                                           reinterpret_cast<const UInt8*>( url.toUtf8().data() ), url.length(),
-                                          kCFStringEncodingUTF8, NULL );
-  OSStatus status = LSOpenCFURLRef( urlRef, NULL );
+                                          kCFStringEncodingUTF8, nullptr );
+  OSStatus status = LSOpenCFURLRef( urlRef, nullptr );
   status = 0; //avoid compiler warning
   CFRelease( urlRef );
 #elif defined(Q_OS_WIN)
@@ -9840,7 +9836,7 @@ void QgisApp::refreshActionFeatureAction()
 {
   QgsMapLayer* layer = activeLayer();
 
-  if ( layer == nullptr || layer->type() != QgsMapLayer::VectorLayer )
+  if ( !layer || layer->type() != QgsMapLayer::VectorLayer )
   {
     return;
   }
@@ -10279,7 +10275,7 @@ void QgisApp::oldProjectVersionWarning( const QString& oldVersion )
 
 #ifdef ANDROID
     //this is needed to deal with https://hub.qgis.org/issues/4573
-    QMessageBox box( QMessageBox::Warning, title, tr( "This project file was saved by an older version of QGIS" ), QMessageBox::Ok, NULL );
+    QMessageBox box( QMessageBox::Warning, title, tr( "This project file was saved by an older version of QGIS" ), QMessageBox::Ok, nullptr );
     box.setDetailedText(
       text.remove( 0, 3 )
       .replace( QString( "<p>" ), QString( "\n\n" ) )
@@ -10408,7 +10404,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
   if ( ml->type() == QgsMapLayer::RasterLayer )
   {
 #if 0 // See note above about reusing this
-    QgsRasterLayerProperties *rlp = NULL;
+    QgsRasterLayerProperties *rlp = nullptr;
     if ( rlp )
     {
       rlp->sync();
@@ -10430,7 +10426,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( ml );
 
 #if 0 // See note above about reusing this
-    QgsVectorLayerProperties *vlp = NULL;
+    QgsVectorLayerProperties *vlp = nullptr;
     if ( vlp )
     {
       vlp->syncToLayer();
@@ -10906,7 +10902,7 @@ LONG WINAPI QgisApp::qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
     ExpParam.ExceptionPointers = ExceptionInfo;
     ExpParam.ClientPointers = TRUE;
 
-    if ( MiniDumpWriteDump( GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpWithDataSegs, ExceptionInfo ? &ExpParam : NULL, NULL, NULL ) )
+    if ( MiniDumpWriteDump( GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpWithDataSegs, ExceptionInfo ? &ExpParam : nullptr, nullptr, nullptr ) )
     {
       msg = QObject::tr( "minidump written to %1" ).arg( dumpName );
     }

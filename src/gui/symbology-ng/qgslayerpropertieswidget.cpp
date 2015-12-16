@@ -37,13 +37,13 @@ static bool _initWidgetFunction( const QString& name, QgsSymbolLayerV2WidgetFunc
   QgsSymbolLayerV2Registry* reg = QgsSymbolLayerV2Registry::instance();
 
   QgsSymbolLayerV2AbstractMetadata* abstractMetadata = reg->symbolLayerMetadata( name );
-  if ( abstractMetadata == nullptr )
+  if ( !abstractMetadata )
   {
     QgsDebugMsg( "Failed to find symbol layer's entry in registry: " + name );
     return false;
   }
   QgsSymbolLayerV2Metadata* metadata = dynamic_cast<QgsSymbolLayerV2Metadata*>( abstractMetadata );
-  if ( metadata == nullptr )
+  if ( !metadata )
   {
     QgsDebugMsg( "Failed to cast symbol layer's metadata: " + name );
     return false;
@@ -201,13 +201,13 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
   // get creation function for new layer from registry
   QgsSymbolLayerV2Registry* pReg = QgsSymbolLayerV2Registry::instance();
   QgsSymbolLayerV2AbstractMetadata* am = pReg->symbolLayerMetadata( newLayerType );
-  if ( am == nullptr ) // check whether the metadata is assigned
+  if ( !am ) // check whether the metadata is assigned
     return;
 
   // change layer to a new (with different type)
   // base new layer on existing layer's properties
   QgsSymbolLayerV2* newLayer = am->createSymbolLayer( layer->properties() );
-  if ( newLayer == nullptr )
+  if ( !newLayer )
     return;
 
   updateSymbolLayerWidget( newLayer );

@@ -414,7 +414,7 @@ void QgsGlobePluginDialog::updatePointLayers()
 QgsVectorLayer* QgsGlobePluginDialog::modelLayer()
 {
   QList<QgsVectorLayer*> layers = pointLayers();
-  return ( modelLayerCombo->currentIndex() == -1 ) ? NULL : layers.at( modelLayerCombo->currentIndex() );
+  return ( modelLayerCombo->currentIndex() == -1 ) ? nullptr : layers.at( modelLayerCombo->currentIndex() );
 }
 
 void QgsGlobePluginDialog::on_modelBrowse_clicked()

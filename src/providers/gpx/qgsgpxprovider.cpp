@@ -102,10 +102,8 @@ QgsGPXProvider::QgsGPXProvider( const QString& uri )
 
   // parse the file
   data = QgsGPSData::getData( mFileName );
-  if ( data == nullptr )
-  {
+  if ( !data )
     return;
-  }
 
   mValid = true;
 }
@@ -223,7 +221,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   QgsAttributeMap::const_iterator it;
 
   // is it a waypoint?
-  if ( mFeatureType == WaypointType && geo != nullptr && wkbType == QGis::WKBPoint )
+  if ( mFeatureType == WaypointType && geo && wkbType == QGis::WKBPoint )
   {
 
     // add geometry
@@ -253,7 +251,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   }
 
   // is it a route?
-  if ( mFeatureType == RouteType && geo != nullptr && wkbType == QGis::WKBLineString )
+  if ( mFeatureType == RouteType && geo && wkbType == QGis::WKBLineString )
   {
 
     QgsRoute rte;
@@ -300,7 +298,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   }
 
   // is it a track?
-  if ( mFeatureType == TrackType && geo != nullptr && wkbType == QGis::WKBLineString )
+  if ( mFeatureType == TrackType && geo && wkbType == QGis::WKBLineString )
   {
 
     QgsTrack trk;
@@ -463,7 +461,7 @@ void QgsGPXProvider::changeAttributeValues( QgsGPSObject& obj, const QgsAttribut
     }
 
     // waypoint-specific attributes
-    if ( wpt != nullptr )
+    if ( wpt )
     {
       if ( indexToAttr.at( i ) == SymAttr )
         wpt->sym = v.toString();
@@ -477,7 +475,7 @@ void QgsGPXProvider::changeAttributeValues( QgsGPSObject& obj, const QgsAttribut
     }
 
     // route- and track-specific attributes
-    if ( ext != nullptr )
+    if ( ext )
     {
       if ( indexToAttr.at( i ) == NumAttr )
       {

@@ -64,15 +64,11 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
 
   QFileInfo fi( mPath );
   if ( !fi.exists() )
-  {
     return NotExists;
-  }
 
   sqlite3 *handle = openSpatiaLiteDb( fi.canonicalFilePath() );
-  if ( handle == nullptr )
-  {
+  if ( !handle )
     return FailedToOpen;
-  }
 
   int ret = checkHasMetadataTables( handle );
   if ( !mErrorMsg.isNull() || ret == LayoutUnknown )
@@ -115,15 +111,11 @@ bool QgsSpatiaLiteConnection::updateStatistics()
 #ifdef SPATIALITE_VERSION_GE_4_0_0
   QFileInfo fi( mPath );
   if ( !fi.exists() )
-  {
     return false;
-  }
 
   sqlite3* handle = openSpatiaLiteDb( fi.canonicalFilePath() );
-  if ( handle == nullptr )
-  {
+  if ( !handle )
     return false;
-  }
 
   bool ret = update_layer_statistics( handle, nullptr, nullptr );
 
@@ -297,10 +289,10 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, b
 
 // attempting to load the VectorLayersList
   list = gaiaGetVectorLayersList( handle, nullptr, nullptr, GAIA_VECTORS_LIST_FAST );
-  if ( list != nullptr )
+  if ( list )
   {
     gaiaVectorLayerPtr lyr = list->First;
-    while ( lyr != nullptr )
+    while ( lyr )
     {
       // populating the QGIS own Layers List
       if ( lyr->AuthInfos )
@@ -377,7 +369,7 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, b
 error:
   // unexpected IO error
   mErrorMsg = tr( "unknown error cause" );
-  if ( errMsg != nullptr )
+  if ( errMsg )
   {
     mErrorMsg = errMsg;
     sqlite3_free( errMsg );
@@ -481,7 +473,7 @@ bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 * handle, bool loadGeometryl
 error:
   // unexpected IO error
   mErrorMsg = tr( "unknown error cause" );
-  if ( errMsg != nullptr )
+  if ( errMsg )
   {
     mErrorMsg = errMsg;
     sqlite3_free( errMsg );
@@ -519,7 +511,7 @@ bool QgsSpatiaLiteConnection::checkGeometryColumnsAuth( sqlite3 * handle )
   {
     for ( i = 1; i <= rows; i++ )
     {
-      if ( results[( i * columns ) + 0] != nullptr )
+      if ( results[( i * columns ) + 0] )
       {
         const char *name = results[( i * columns ) + 0];
         if ( name )
@@ -553,7 +545,7 @@ bool QgsSpatiaLiteConnection::checkViewsGeometryColumns( sqlite3 * handle )
   {
     for ( i = 1; i <= rows; i++ )
     {
-      if ( results[( i * columns ) + 0] != nullptr )
+      if ( results[( i * columns ) + 0] )
       {
         const char *name = results[( i * columns ) + 0];
         if ( name )
@@ -586,7 +578,7 @@ bool QgsSpatiaLiteConnection::checkVirtsGeometryColumns( sqlite3 * handle )
   {
     for ( i = 1; i <= rows; i++ )
     {
-      if ( results[( i * columns ) + 0] != nullptr )
+      if ( results[( i * columns ) + 0] )
       {
         const char *name = results[( i * columns ) + 0];
         if ( name )
@@ -634,7 +626,7 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 * handle, const c
   {
     for ( i = 1; i <= rows; i++ )
     {
-      if ( results[( i * columns ) + 0] != nullptr )
+      if ( results[( i * columns ) + 0] )
       {
         const char *name = results[( i * columns ) + 0];
         if ( name )
@@ -672,7 +664,7 @@ bool QgsSpatiaLiteConnection::isDeclaredHidden( sqlite3 * handle, const QString&
   {
     for ( i = 1; i <= rows; i++ )
     {
-      if ( results[( i * columns ) + 0] != nullptr )
+      if ( results[( i * columns ) + 0] )
       {
         if ( atoi( results[( i * columns ) + 0] ) != 0 )
           isHidden = true;
@@ -761,7 +753,7 @@ QgsSqliteHandle* QgsSqliteHandle::openDb( const QString & dbPath, bool shared )
     return nullptr;
   }
   // activating Foreign Key constraints
-  ( void )sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", nullptr, 0, NULL );
+  ( void )sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", nullptr, 0, nullptr );
 
   QgsDebugMsg( "Connection to the database was successful" );
 

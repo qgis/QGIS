@@ -105,9 +105,8 @@ QgsVectorLayer* QgsGeometryCheckerSetupTab::getSelectedLayer()
 {
   int inputIdx = ui.comboBoxInputLayer->currentIndex();
   if ( inputIdx < 0 )
-  {
     return nullptr;
-  }
+
   QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer*>( ui.comboBoxInputLayer->currentLayer() );
   return layer;
 }
@@ -116,7 +115,7 @@ void QgsGeometryCheckerSetupTab::validateInput()
 {
   QgsVectorLayer* layer = getSelectedLayer();
   int nApplicable = 0;
-  if ( layer != nullptr )
+  if ( layer )
   {
     Q_FOREACH ( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
     {
@@ -124,7 +123,7 @@ void QgsGeometryCheckerSetupTab::validateInput()
     }
   }
   bool outputOk = ui.radioButtonOuputModifyInput->isChecked() || !ui.lineEditOutput->text().isEmpty();
-  mRunButton->setEnabled( layer != nullptr && nApplicable > 0 && outputOk );
+  mRunButton->setEnabled( layer && nApplicable > 0 && outputOk );
 }
 
 void QgsGeometryCheckerSetupTab::selectOutputFile()
@@ -170,10 +169,8 @@ void QgsGeometryCheckerSetupTab::runChecks()
 {
   /** Get selected layer **/
   QgsVectorLayer* layer = getSelectedLayer();
-  if ( layer == nullptr )
-  {
+  if ( !layer )
     return;
-  }
 
   if ( layer->isEditable() )
   {

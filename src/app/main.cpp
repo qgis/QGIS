@@ -256,7 +256,7 @@ static void dumpBacktrace( unsigned int depth )
   SymSetOptions( SYMOPT_DEFERRED_LOADS | SYMOPT_INCLUDE_32BIT_MODULES | SYMOPT_UNDNAME );
   SymInitialize( GetCurrentProcess(), "http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore", TRUE );
 
-  unsigned short nFrames = CaptureStackBackTrace( 1, depth, buffer, NULL );
+  unsigned short nFrames = CaptureStackBackTrace( 1, depth, buffer, nullptr );
   SYMBOL_INFO *symbol = ( SYMBOL_INFO * ) qgsMalloc( sizeof( SYMBOL_INFO ) + 256 );
   symbol->MaxNameLen = 255;
   symbol->SizeOfStruct = sizeof( SYMBOL_INFO );
@@ -307,7 +307,7 @@ void qgisCrash( int signal )
       if ( gdbpid == 0 )
       {
         // attach, backtrace and continue
-        execl( "/usr/bin/gdb", "gdb", "-q", "-batch", "-n", pidstr, "-ex", "thread", "-ex", "bt full", exename, NULL );
+        execl( "/usr/bin/gdb", "gdb", "-q", "-batch", "-n", pidstr, "-ex", "thread", "-ex", "bt full", exename, nullptr );
         perror( "cannot exec gdb" );
         exit( 1 );
       }
@@ -720,7 +720,7 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC) && !defined(ANDROID)
-  bool myUseGuiFlag = getenv( "DISPLAY" ) != nullptr;
+  bool myUseGuiFlag = nullptr != getenv( "DISPLAY" );
 #else
   bool myUseGuiFlag = true;
 #endif

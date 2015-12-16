@@ -113,7 +113,7 @@ void QgsRunProcess::processExit( int, QProcess::ExitStatus )
   // (unless it was never created in the first case, which is what the
   // test against 0 is for).
 
-  if ( mOutput != nullptr )
+  if ( mOutput )
   {
     mOutput->appendMessage( "<b>" + tr( "Done" ) + "</b>" );
   }

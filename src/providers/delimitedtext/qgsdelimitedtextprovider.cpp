@@ -338,7 +338,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   // Initiallize indexes
 
   resetIndexes();
-  bool buildSpatialIndex = buildIndexes && mSpatialIndex != nullptr;
+  bool buildSpatialIndex = buildIndexes && nullptr != mSpatialIndex;
 
   // No point building a subset index if there is no geometry, as all
   // records will be included.
@@ -723,7 +723,7 @@ void QgsDelimitedTextProvider::rescanFile()
   mRescanRequired = false;
   resetIndexes();
 
-  bool buildSpatialIndex = mSpatialIndex != nullptr;
+  bool buildSpatialIndex = nullptr != mSpatialIndex;
   bool buildSubsetIndex = mBuildSubsetIndex && ( mSubsetExpression || mGeomRep != GeomNone );
 
   // In case file has been rewritten check that it is still valid

@@ -115,7 +115,7 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode*
 
   Q_FOREACH ( QgsLayerTreeNode *node, nodes )
   {
-    Q_ASSERT( node->mParent == nullptr );
+    Q_ASSERT( !node->mParent );
     node->mParent = this;
   }
 

@@ -595,7 +595,7 @@ void QgsGml::setAttribute( const QString& name, const QString& value )
 int QgsGml::readEpsgFromAttribute( int& epsgNr, const XML_Char** attr ) const
 {
   int i = 0;
-  while ( attr[i] != nullptr )
+  while ( attr[i] )
   {
     if ( strcmp( attr[i], "srsName" ) == 0 )
     {
@@ -626,7 +626,7 @@ int QgsGml::readEpsgFromAttribute( int& epsgNr, const XML_Char** attr ) const
 QString QgsGml::readAttribute( const QString& attributeName, const XML_Char** attr ) const
 {
   int i = 0;
-  while ( attr[i] != nullptr )
+  while ( attr[i] )
   {
     if ( attributeName.compare( attr[i] ) == 0 )
     {

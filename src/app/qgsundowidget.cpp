@@ -45,7 +45,7 @@ QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
 
 void QgsUndoWidget::layerChanged( QgsMapLayer * layer )
 {
-  if ( layer != nullptr )
+  if ( layer )
   {
     setUndoStack( layer->undoStack() );
   }
@@ -59,12 +59,12 @@ void QgsUndoWidget::layerChanged( QgsMapLayer * layer )
 
 void QgsUndoWidget::destroyStack()
 {
-  if ( mUndoStack != nullptr )
+  if ( mUndoStack )
   {
     // do not clear undo stack here, just null pointer
     mUndoStack = nullptr;
   }
-  if ( mUndoView != nullptr )
+  if ( mUndoView )
   {
     mUndoView->close();
     delete mUndoView;
@@ -141,7 +141,7 @@ void QgsUndoWidget::redo()
 
 void QgsUndoWidget::setUndoStack( QUndoStack* undoStack )
 {
-  if ( mUndoView != nullptr )
+  if ( mUndoView )
   {
     mUndoView->close();
     delete mUndoView;

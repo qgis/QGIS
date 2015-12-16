@@ -64,10 +64,10 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     /** Opens the input file and returns the dataset handle and the number of pixels in x-/y- direction*/
     GDALDatasetH openInputFile( int& nCellsX, int& nCellsY );
     /** Opens the output driver and tests if it supports the creation of a new dataset
-      @return NULL on error and the driver handle on success*/
+      @return nullptr on error and the driver handle on success*/
     GDALDriverH openOutputDriver();
     /** Opens the output file and sets the same geotransform and CRS as the input data
-      @return the output dataset or NULL in case of error*/
+      @return the output dataset or nullptr in case of error*/
     GDALDatasetH openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver );
 
   protected:

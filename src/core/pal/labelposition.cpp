@@ -258,7 +258,7 @@ namespace pal
     if ( this->probFeat == lp->probFeat ) // bugfix #1
       return false; // always overlaping itself !
 
-    if ( nextPart == nullptr && lp->nextPart == nullptr )
+    if ( !nextPart && !lp->nextPart )
       return isInConflictSinglePart( lp );
     else
       return isInConflictMultiPart( lp );

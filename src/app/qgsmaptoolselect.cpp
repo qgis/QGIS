@@ -40,10 +40,9 @@ QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
 void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-  if ( vlayer == nullptr )
-  {
+  if ( !vlayer )
     return;
-  }
+
   QgsRubberBand rubberBand( mCanvas, QGis::Polygon );
   rubberBand.setFillColor( mFillColor );
   rubberBand.setBorderColor( mBorderColour );

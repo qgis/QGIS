@@ -27,7 +27,7 @@ QgsServerLogger* QgsServerLogger::mInstance = nullptr;
 
 QgsServerLogger* QgsServerLogger::instance()
 {
-  if ( mInstance == nullptr )
+  if ( !mInstance )
   {
     mInstance = new QgsServerLogger();
   }

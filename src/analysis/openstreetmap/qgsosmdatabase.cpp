@@ -39,7 +39,7 @@ QgsOSMDatabase::~QgsOSMDatabase()
 
 bool QgsOSMDatabase::isOpen() const
 {
-  return mDatabase != nullptr;
+  return nullptr != mDatabase;
 }
 
 
@@ -83,7 +83,7 @@ bool QgsOSMDatabase::close()
   deleteStatement( mStmtWayNodePoints );
   deleteStatement( mStmtWayTags );
 
-  Q_ASSERT( mStmtNode == nullptr );
+  Q_ASSERT( !mStmtNode );
 
   // close database
   if ( QgsSLConnect::sqlite3_close( mDatabase ) != SQLITE_OK )

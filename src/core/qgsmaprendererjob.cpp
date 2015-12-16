@@ -361,7 +361,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const La
 
     painter.setCompositionMode( job.blendMode );
 
-    Q_ASSERT( job.img != nullptr );
+    Q_ASSERT( job.img );
     painter.drawImage( 0, 0, *job.img );
   }
 

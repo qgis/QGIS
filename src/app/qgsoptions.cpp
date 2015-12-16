@@ -1818,7 +1818,7 @@ void QgsOptions::loadGdalDriverList()
     // TODO add same UI for vector drivers
 #ifdef GDAL_COMPUTE_VERSION
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
-    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, NULL ) ) != "YES" )
+    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) != "YES" )
       continue;
 #endif
 #endif

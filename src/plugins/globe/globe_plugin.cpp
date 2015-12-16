@@ -1004,7 +1004,7 @@ void GlobePlugin::placeNode( osg::Node* node, double lat, double lon, double alt
   // get elevation
   double elevation = 0.0;
   double resolution = 0.0;
-  mElevationManager->getElevation( lon, lat, 0, NULL, elevation, resolution );
+  mElevationManager->getElevation( lon, lat, 0, nullptr, elevation, resolution );
 
   // place model
   osg::Matrix mat;
@@ -1071,7 +1071,7 @@ bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActi
           handler->onClick( this, ea.getButtonMask(), ea, aa );
         }
       }
-      _mouse_down_event = NULL;
+      _mouse_down_event = nullptr;
       break;
     default:
       /* ignore */
@@ -1268,7 +1268,7 @@ osg::Vec3d QueryCoordinatesHandler::getCoords( float x, float y, osgViewer::View
       if ( _elevMan->getPlacementMatrix(
              lon_deg, lat_deg, 0,
              query_resolution, _mapSRS,
-             //query_resolution, NULL,
+             //query_resolution, nullptr,
              out_mat, elevation, out_resolution ) )
       {
         OE_NOTICE << "Elevation at " << lon_deg << ", " << lat_deg
