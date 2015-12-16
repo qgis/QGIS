@@ -85,6 +85,83 @@ class CORE_EXPORT QgsFeatureRequest
     };
 
     /**
+     * The OrderByClause class represents an order by clause for a QgsFeatureRequest.
+     *
+     * It can be a simple field or an expression. Multiple order by clauses can be added to
+     * a QgsFeatureRequest to fine tune the behavior if a single field or expression is not
+     * enough to completely specify the required behavior.
+     *
+     * If expression compilation is activated in the settings and the expression can be
+     * translated for the provider in question, it will be evaluated on provider side.
+     * If one of these two premises does not apply, the ordering will take place locally
+     * which results in increased memory and CPU usage.
+     *
+     * If the ordering is done on strings, the order depends on the system's locale if the
+     * local fallback implementation is used. The order depends on the server system's locale
+     * and implementation if ordering is done on the server.
+     *
+     * In case the fallback code needs to be used, a limit set on the request will be respected
+     * for the features returned by the iterator but internally all features will be requested
+     * from the provider.
+     *
+     * @note added in QGIS 2.14
+     */
+    class OrderByClause
+    {
+      public:
+        /**
+         * Creates a new OrderByClause for a QgsFeatureRequest
+         *
+         * @param expression The expression to use for ordering
+         * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         *                   If the order is ascending, by default nulls are last
+         *                   If the order is descending, by default nulls are first
+         */
+        OrderByClause( const QString &expression, bool ascending = true );
+        /**
+         * Creates a new OrderByClause for a QgsFeatureRequest
+         *
+         * @param expression The expression to use for ordering
+         * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         * @param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+         */
+        OrderByClause( const QString &expression, bool ascending, bool nullsfirst );
+
+        /**
+         * The expression
+         * @return the expression
+         */
+        QgsExpression expression() const;
+
+        /**
+         * Order ascending
+         * @return If ascending order is requested
+         */
+        bool ascending() const;
+
+        /**
+         * Set if ascending order is requested
+         */
+        void setAscending( bool ascending );
+
+        /**
+         * Set if NULLS should be returned first
+         * @return if NULLS should be returned first
+         */
+        bool nullsFirst() const;
+
+        /**
+         * Set if NULLS should be returned first
+         */
+        void setNullsFirst( bool nullsFirst );
+
+      private:
+        QgsExpression mExpression;
+        bool mAscending;
+        bool mNullsFirst;
+    };
+
+    /**
      * A special attribute that if set matches all attributes
      */
     static const QString AllAttributes;
@@ -175,6 +252,39 @@ class CORE_EXPORT QgsFeatureRequest
      */
     QgsFeatureRequest& disableFilter() { mFilter = FilterNone; return *this; }
 
+    /**
+     * Adds a new OrderByClause, appending it as the least important one.
+     *
+     * @param expression The expression to use for ordering
+     * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+     *                   If the order is ascending, by default nulls are last
+     *                   If the order is descending, by default nulls are first
+     *
+     * @note added in QGIS 2.14
+     */
+
+    QgsFeatureRequest& addOrderBy( const QString &expression, bool ascending = true );
+    /**
+     * Adds a new OrderByClause, appending it as the least important one.
+     *
+     * @param expression The expression to use for ordering
+     * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+     * @param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+     *
+     * @note added in QGIS 2.14
+     */
+    QgsFeatureRequest& addOrderBy( const QString &expression, bool ascending, bool nullsfirst );
+
+    /**
+     * Return a list of order by clauses specified for this feature request.
+     */
+    QList<OrderByClause> orderBys() const;
+
+    /**
+     * Set a list of order by clauses.
+     */
+    void setOrderBys( const QList<OrderByClause>& orderBys );
+
     /** Set the maximum number of features to request.
      * @param limit maximum number of features, or -1 to request all features.
      * @see limit()
@@ -224,7 +334,6 @@ class CORE_EXPORT QgsFeatureRequest
 
     // TODO: in future
     // void setFilterNativeExpression(con QString& expr);   // using provider's SQL (if supported)
-    // void setLimit(int limit);
 
   protected:
     FilterType mFilter;
@@ -237,6 +346,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsAttributeList mAttrs;
     QgsSimplifyMethod mSimplifyMethod;
     long mLimit;
+    QList<OrderByClause> mOrderBys;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
