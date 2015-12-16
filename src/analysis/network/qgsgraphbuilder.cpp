@@ -29,8 +29,7 @@ QgsGraphBuilder::QgsGraphBuilder( const QgsCoordinateReferenceSystem& crs, bool 
 
 QgsGraphBuilder::~QgsGraphBuilder()
 {
-  if ( mGraph != nullptr )
-    delete mGraph;
+  delete mGraph;
 }
 
 void QgsGraphBuilder::addVertex( int, const QgsPoint& pt )

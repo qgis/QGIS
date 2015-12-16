@@ -125,7 +125,7 @@ namespace pal
 
     // break the (possibly multi-part) geometry into simple geometries
     QLinkedList<const GEOSGeometry*>* simpleGeometries = unmulti( lf->geometry() );
-    if ( simpleGeometries == nullptr ) // unmulti() failed?
+    if ( !simpleGeometries ) // unmulti() failed?
     {
       mMutex.unlock();
       throw InternalException::UnknownGeometry();
@@ -227,7 +227,7 @@ namespace pal
     {
       //do the same for the obstacle geometry
       simpleGeometries = unmulti( lf->obstacleGeometry() );
-      if ( simpleGeometries == nullptr ) // unmulti() failed?
+      if ( !simpleGeometries ) // unmulti() failed?
       {
         mMutex.unlock();
         throw InternalException::UnknownGeometry();
@@ -277,7 +277,7 @@ namespace pal
     mMutex.unlock();
 
     // if using only biggest parts...
-    if (( mMode == LabelPerFeature || lf->hasFixedPosition() ) && biggest_part != nullptr )
+    if (( mMode == LabelPerFeature || lf->hasFixedPosition() ) && biggest_part )
     {
       addFeaturePart( biggest_part, lf->labelText() );
       addedFeature = true;

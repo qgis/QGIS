@@ -233,7 +233,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     options = nullptr;
   }
 
-  if ( mDS == nullptr )
+  if ( !mDS )
   {
     mError = ErrCreateDataSource;
     mErrorMessage = QObject::tr( "creation of data source failed (OGR error:%1)" )
@@ -320,7 +320,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     }
   }
 
-  if ( mLayer == nullptr )
+  if ( !mLayer )
   {
     mErrorMessage = QObject::tr( "creation of layer failed (OGR error:%1)" )
                     .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );

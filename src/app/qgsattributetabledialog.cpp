@@ -275,7 +275,7 @@ void QgsAttributeTableDialog::closeEvent( QCloseEvent* event )
 {
   QDialog::closeEvent( event );
 
-  if ( mDock == nullptr )
+  if ( !mDock )
   {
     QSettings settings;
     settings.setValue( "/Windows/BetterAttributeTable/geometry", saveGeometry() );
@@ -434,7 +434,7 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
   // replace the search line edit with a search widget that is suited to the selected field
   // delete previous widget
-  if ( mCurrentSearchWidgetWrapper != nullptr )
+  if ( mCurrentSearchWidgetWrapper )
   {
     mCurrentSearchWidgetWrapper->widget()->setVisible( false );
     delete mCurrentSearchWidgetWrapper;
@@ -491,7 +491,7 @@ void QgsAttributeTableDialog::filterShowAll()
   mFilterButton->setDefaultAction( mActionShowAllFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
   mFilterQuery->setVisible( false );
-  if ( mCurrentSearchWidgetWrapper != nullptr )
+  if ( mCurrentSearchWidgetWrapper )
   {
     mCurrentSearchWidgetWrapper->widget()->setVisible( false );
   }
@@ -747,7 +747,7 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
 void QgsAttributeTableDialog::filterQueryAccepted()
 {
   if (( mFilterQuery->isVisible() && mFilterQuery->text().isEmpty() ) ||
-      ( mCurrentSearchWidgetWrapper != nullptr && mCurrentSearchWidgetWrapper->widget()->isVisible()
+      ( mCurrentSearchWidgetWrapper && mCurrentSearchWidgetWrapper->widget()->isVisible()
         && mCurrentSearchWidgetWrapper->expression().isEmpty() ) )
   {
     filterShowAll();
@@ -763,14 +763,14 @@ void QgsAttributeTableDialog::openConditionalStyles()
 
 void QgsAttributeTableDialog::setFilterExpression( const QString& filterString )
 {
-  if ( mCurrentSearchWidgetWrapper == nullptr || !mCurrentSearchWidgetWrapper->applyDirectly() )
+  if ( !mCurrentSearchWidgetWrapper || !mCurrentSearchWidgetWrapper->applyDirectly() )
   {
     mFilterQuery->setText( filterString );
     mFilterButton->setDefaultAction( mActionAdvancedFilter );
     mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
     mFilterQuery->setVisible( true );
     mApplyFilterButton->setVisible( true );
-    if ( mCurrentSearchWidgetWrapper != nullptr )
+    if ( mCurrentSearchWidgetWrapper )
     {
       // replace search widget widget with the normal filter query line edit
       replaceSearchWidget( mCurrentSearchWidgetWrapper->widget(), mFilterQuery );

@@ -143,7 +143,7 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature& featu
     cachedFeature = mCache[ featureId ];
   }
 
-  if ( cachedFeature != nullptr )
+  if ( cachedFeature )
   {
     feature = QgsFeature( *cachedFeature->feature() );
     featureFound = true;
@@ -195,7 +195,7 @@ void QgsVectorLayerCache::onAttributeValueChanged( QgsFeatureId fid, int field, 
 {
   QgsCachedFeature* cachedFeat = mCache[ fid ];
 
-  if ( nullptr != cachedFeat )
+  if ( cachedFeat )
   {
     cachedFeat->mFeature->setAttribute( field, value );
   }
@@ -248,7 +248,7 @@ void QgsVectorLayerCache::geometryChanged( QgsFeatureId fid, QgsGeometry& geom )
 {
   QgsCachedFeature* cachedFeat = mCache[ fid ];
 
-  if ( cachedFeat != nullptr )
+  if ( cachedFeat )
   {
     cachedFeat->mFeature->setGeometry( geom );
   }

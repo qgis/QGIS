@@ -81,7 +81,7 @@ QgsMessageBarItem::~QgsMessageBarItem()
 
 void QgsMessageBarItem::writeContent()
 {
-  if ( mLayout == nullptr )
+  if ( !mLayout )
   {
     mLayout = new QHBoxLayout( this );
     mLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -90,7 +90,7 @@ void QgsMessageBarItem::writeContent()
   }
 
   // ICON
-  if ( mLblIcon == nullptr )
+  if ( !mLblIcon )
   {
     mLblIcon = new QLabel( this );
     mLayout->addWidget( mLblIcon );
@@ -124,7 +124,7 @@ void QgsMessageBarItem::writeContent()
   // TITLE AND TEXT
   if ( mTitle.isEmpty() && mText.isEmpty() )
   {
-    if ( mTextEdit != nullptr )
+    if ( mTextEdit )
     {
       delete mTextEdit;
       mTextEdit = nullptr;
@@ -132,7 +132,7 @@ void QgsMessageBarItem::writeContent()
   }
   else
   {
-    if ( mTextEdit == nullptr )
+    if ( !mTextEdit )
     {
       mTextEdit = new QTextEdit( this );
       mTextEdit->setObjectName( "textEdit" );
@@ -160,7 +160,7 @@ void QgsMessageBarItem::writeContent()
   }
 
   // WIDGET
-  if ( mWidget != nullptr )
+  if ( mWidget )
   {
     QLayoutItem *item = mLayout->itemAt( 2 );
     if ( !item || item->widget() != mWidget )
@@ -217,7 +217,7 @@ QgsMessageBarItem *QgsMessageBarItem::setLevel( QgsMessageBar::MessageLevel leve
 
 QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
 {
-  if ( mWidget != nullptr )
+  if ( mWidget )
   {
     QLayoutItem *item;
     item = mLayout->itemAt( 2 );

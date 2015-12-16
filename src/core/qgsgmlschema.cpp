@@ -77,7 +77,7 @@ QgsGmlSchema::~QgsGmlSchema()
 QString QgsGmlSchema::readAttribute( const QString& attributeName, const XML_Char** attr ) const
 {
   int i = 0;
-  while ( attr[i] != nullptr )
+  while ( attr[i] )
   {
     if ( attributeName.compare( attr[i] ) == 0 )
     {

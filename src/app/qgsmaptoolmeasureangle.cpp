@@ -91,7 +91,7 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent* e )
 
   if ( mAnglePoints.size() < 1 )
   {
-    if ( mResultDisplay == nullptr )
+    if ( !mResultDisplay )
     {
       mResultDisplay = new QgsDisplayAngle( this, Qt::WindowStaysOnTopHint );
       QObject::connect( mResultDisplay, SIGNAL( rejected() ), this, SLOT( stopMeasuring() ) );

@@ -123,7 +123,7 @@ bool QgsAbstractFeatureIterator::prepareSimplification( const QgsSimplifyMethod&
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && ( simplifyMethod.forceLocalOptimization() || !providerCanSimplify( simplifyMethod.methodType() ) ) )
   {
     mGeometrySimplifier = QgsSimplifyMethod::createGeometrySimplifier( simplifyMethod );
-    mLocalSimplification = mGeometrySimplifier != nullptr;
+    mLocalSimplification = nullptr != mGeometrySimplifier;
     return mLocalSimplification;
   }
   return false;

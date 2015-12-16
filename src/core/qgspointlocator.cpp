@@ -611,11 +611,11 @@ bool QgsPointLocator::init( int maxFeaturesToIndex )
   return hasIndex() ? true : rebuildIndex( maxFeaturesToIndex );
 }
 
+
 bool QgsPointLocator::hasIndex() const
 {
-  return mRTree != nullptr || mIsEmptyLayer;
+  return mRTree || mIsEmptyLayer;
 }
-
 
 
 bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )

@@ -385,7 +385,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 {
   QTreeWidgetItem *layItem = layerItem( vlayer );
 
-  if ( layItem == nullptr )
+  if ( !layItem )
   {
     layItem = new QTreeWidgetItem( QStringList() << vlayer->name() );
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( vlayer ) ) );
@@ -674,7 +674,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
   QgsRaster::IdentifyFormat currentFormat = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( "identify/format" ).toString() );
 
-  if ( layItem == nullptr )
+  if ( !layItem )
   {
     layItem = new QTreeWidgetItem( QStringList() << QString::number( lstResults->topLevelItemCount() ) << layer->name() );
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
@@ -933,7 +933,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
   QgsMapLayer *layer = vectorLayer( item );
   QgsVectorLayer *vlayer = vectorLayer( item );
   QgsRasterLayer *rlayer = rasterLayer( item );
-  if ( vlayer == nullptr && rlayer == nullptr )
+  if ( !vlayer && !rlayer )
   {
     QgsDebugMsg( "Item does not belong to a layer." );
     return;
@@ -1333,7 +1333,7 @@ void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *curren
   for ( int i = 0; i < current->childCount(); i++ )
   {
     QgsIdentifyResultsWebViewItem *wv = dynamic_cast<QgsIdentifyResultsWebViewItem*>( current->child( i ) );
-    if ( wv != nullptr )
+    if ( wv )
     {
       mActionPrint->setEnabled( true );
       break;

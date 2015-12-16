@@ -217,10 +217,8 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   QgsCoordinateTransform* ct = nullptr;
   bool shallTransform = false;
 
-  if ( layer == nullptr )
-  {
+  if ( !layer )
     return ErrInvalidLayer;
-  }
 
   if ( destCRS && destCRS->isValid() )
   {
@@ -317,15 +315,11 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
 
   // Create our transform
   if ( destCRS )
-  {
     ct = new QgsCoordinateTransform( layer->crs(), *destCRS );
-  }
 
   // Check for failure
-  if ( ct == nullptr )
-  {
+  if ( !ct )
     shallTransform = false;
-  }
 
   int n = 0;
 

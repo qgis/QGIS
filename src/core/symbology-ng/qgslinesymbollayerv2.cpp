@@ -252,7 +252,7 @@ void QgsSimpleLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, 
     QPainterPath clipPath;
     clipPath.addPolygon( points );
 
-    if ( rings != nullptr )
+    if ( rings )
     {
       //add polygon rings
       QList<QPolygonF>::const_iterator it = rings->constBegin();
@@ -1343,7 +1343,7 @@ QgsSymbolV2* QgsMarkerLineSymbolLayerV2::subSymbol()
 
 bool QgsMarkerLineSymbolLayerV2::setSubSymbol( QgsSymbolV2* symbol )
 {
-  if ( symbol == nullptr || symbol->type() != QgsSymbolV2::Marker )
+  if ( !symbol || symbol->type() != QgsSymbolV2::Marker )
   {
     delete symbol;
     return false;

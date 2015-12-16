@@ -593,7 +593,7 @@ void QgsGrassModule::run()
         QMessageBox questionBox( QMessageBox::Question, tr( "Warning" ),
                                  tr( "Input %1 outside current region!" ).arg( outsideRegion.join( "," ) ),
                                  QMessageBox::Ok | QMessageBox::Cancel );
-        QPushButton *resetButton = NULL;
+        QPushButton *resetButton = nullptr;
         if ( QgsGrass::versionMajor() > 6 || ( QgsGrass::versionMajor() == 6 && QgsGrass::versionMinor() >= 1 ) )
         {
           resetButton = questionBox.addButton( tr( "Use Input Region" ), QMessageBox::DestructiveRole );

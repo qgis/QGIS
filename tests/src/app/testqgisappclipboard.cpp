@@ -51,7 +51,7 @@ class TestQgisAppClipboard : public QObject
 };
 
 TestQgisAppClipboard::TestQgisAppClipboard()
-    : mQgisApp( NULL )
+    : mQgisApp( nullptr )
 {
 
 }

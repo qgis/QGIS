@@ -104,7 +104,7 @@ QString QgsProjectLayerGroupDialog::selectedProjectFile() const
 
 bool QgsProjectLayerGroupDialog::isValid() const
 {
-  return mTreeView->layerTreeModel() != nullptr;
+  return nullptr != mTreeView->layerTreeModel();
 }
 
 void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()

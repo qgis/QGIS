@@ -52,7 +52,7 @@ bool QgsFeaturePool::get( const QgsFeatureId& id , QgsFeature& feature )
 {
   QMutexLocker lock( &mLayerMutex );
   QgsFeature* pfeature = mFeatureCache.object( id );
-  if ( pfeature == nullptr )
+  if ( !pfeature )
   {
     // Get new feature
     pfeature = new QgsFeature();

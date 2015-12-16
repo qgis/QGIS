@@ -285,7 +285,7 @@ void QgsSymbolV2SelectorDialog::keyPressEvent( QKeyEvent * e )
 
 QMenu* QgsSymbolV2SelectorDialog::advancedMenu()
 {
-  if ( mAdvancedMenu == nullptr )
+  if ( !mAdvancedMenu )
   {
     mAdvancedMenu = new QMenu( this );
     // Brute force method to activate the Advanced menu
@@ -419,7 +419,7 @@ void QgsSymbolV2SelectorDialog::layerChanged()
   updateUi();
 
   SymbolLayerItem *currentItem = static_cast<SymbolLayerItem*>( model->itemFromIndex( layersTree->currentIndex() ) );
-  if ( currentItem == nullptr )
+  if ( !currentItem )
     return;
 
   if ( currentItem->isLayer() )
@@ -454,7 +454,7 @@ void QgsSymbolV2SelectorDialog::layerChanged()
 void QgsSymbolV2SelectorDialog::symbolChanged()
 {
   SymbolLayerItem *currentItem = static_cast<SymbolLayerItem*>( model->itemFromIndex( layersTree->currentIndex() ) );
-  if ( currentItem == nullptr || currentItem->isLayer() )
+  if ( !currentItem || currentItem->isLayer() )
     return;
   // disconnect to avoid recreating widget
   disconnect( layersTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( layerChanged() ) );
@@ -582,7 +582,7 @@ void QgsSymbolV2SelectorDialog::moveLayerUp()
 void QgsSymbolV2SelectorDialog::moveLayerByOffset( int offset )
 {
   SymbolLayerItem *item = currentLayerItem();
-  if ( item == nullptr )
+  if ( !item )
     return;
   int row = item->row();
 

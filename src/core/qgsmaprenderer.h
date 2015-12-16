@@ -306,7 +306,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! Accessor for render context
     QgsRenderContext* rendererContext() {return &mRenderContext;}
 
-    //! Labeling engine (NULL if there's no custom engine)
+    //! Labeling engine (nullptr if there's no custom engine)
     QgsLabelingEngineInterface* labelingEngine() { return mLabelingEngine; }
 
     //! Set labeling engine. Previous engine (if any) is deleted.
@@ -445,7 +445,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //!Output units
     OutputUnits mOutputUnits;
 
-    //! Labeling engine (NULL by default)
+    //! Labeling engine (nullptr by default)
     QgsLabelingEngineInterface* mLabelingEngine;
 
     //! Locks rendering loop for concurrent draws

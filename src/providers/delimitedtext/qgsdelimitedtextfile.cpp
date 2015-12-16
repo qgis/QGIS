@@ -118,7 +118,7 @@ bool QgsDelimitedTextFile::open()
       }
     }
   }
-  return mFile != nullptr;
+  return nullptr != mFile;
 }
 
 void QgsDelimitedTextFile::updateFile()

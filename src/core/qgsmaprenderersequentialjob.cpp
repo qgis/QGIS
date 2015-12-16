@@ -43,7 +43,7 @@ QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
     cancel();
   }
 
-  Q_ASSERT( mInternalJob == nullptr && mPainter == nullptr );
+  Q_ASSERT( !mInternalJob && !mPainter );
 
   delete mLabelingResults;
   mLabelingResults = nullptr;
@@ -61,7 +61,7 @@ void QgsMapRendererSequentialJob::start()
 
   QgsDebugMsg( "SEQUENTIAL START" );
 
-  Q_ASSERT( mInternalJob == nullptr  && mPainter == nullptr );
+  Q_ASSERT( !mInternalJob && !mPainter );
 
   mPainter = new QPainter( &mImage );
 
@@ -82,7 +82,7 @@ void QgsMapRendererSequentialJob::cancel()
   QgsDebugMsg( "sequential - cancel internal" );
   mInternalJob->cancel();
 
-  Q_ASSERT( mInternalJob == nullptr && mPainter == nullptr );
+  Q_ASSERT( !mInternalJob && !mPainter );
 }
 
 void QgsMapRendererSequentialJob::waitForFinished()
@@ -95,7 +95,7 @@ void QgsMapRendererSequentialJob::waitForFinished()
 
 bool QgsMapRendererSequentialJob::isActive() const
 {
-  return mInternalJob != nullptr;
+  return nullptr != mInternalJob;
 }
 
 QgsLabelingResults* QgsMapRendererSequentialJob::takeLabelingResults()

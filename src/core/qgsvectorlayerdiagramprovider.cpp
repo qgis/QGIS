@@ -194,7 +194,7 @@ bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext& context, QS
   }
 
   const QgsLinearlyInterpolatedDiagramRenderer* linearlyInterpolatedDiagramRenderer = dynamic_cast<const QgsLinearlyInterpolatedDiagramRenderer*>( diagRenderer );
-  if ( linearlyInterpolatedDiagramRenderer != nullptr )
+  if ( linearlyInterpolatedDiagramRenderer )
   {
     if ( linearlyInterpolatedDiagramRenderer->classificationAttributeIsExpression() )
     {
@@ -280,10 +280,9 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     geos_geom = geom->asGeos();
   }
 
-  if ( geos_geom == nullptr )
-  {
+  if ( !geos_geom )
     return nullptr; // invalid geometry
-  }
+
   GEOSGeometry* geomCopy = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
 
   const GEOSGeometry* geosObstacleGeom = nullptr;

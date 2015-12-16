@@ -505,7 +505,7 @@ namespace pal
     t.start();
 
     // First, extract the problem
-    if (( prob = extract( bbox[0], bbox[1], bbox[2], bbox[3] ) ) == nullptr )
+    if ( !( prob = extract( bbox[0], bbox[1], bbox[2], bbox[3] ) ) )
     {
       // nothing to be done => return an empty result set
       if ( stats )
@@ -585,7 +585,7 @@ namespace pal
 
   std::list<LabelPosition*>* Pal::solveProblem( Problem* prob, bool displayAll )
   {
-    if ( prob == nullptr )
+    if ( !prob )
       return new std::list<LabelPosition*>();
 
     prob->reduce();

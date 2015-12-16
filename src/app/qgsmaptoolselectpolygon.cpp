@@ -39,7 +39,7 @@ QgsMapToolSelectPolygon::~QgsMapToolSelectPolygon()
 
 void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent* e )
 {
-  if ( mRubberBand == nullptr )
+  if ( !mRubberBand )
   {
     mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
     mRubberBand->setFillColor( mFillColor );
@@ -65,10 +65,9 @@ void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent* e )
 
 void QgsMapToolSelectPolygon::canvasMoveEvent( QgsMapMouseEvent* e )
 {
-  if ( mRubberBand == nullptr )
-  {
+  if ( !mRubberBand )
     return;
-  }
+
   if ( mRubberBand->numberOfVertices() > 0 )
   {
     mRubberBand->removeLastPoint( 0 );

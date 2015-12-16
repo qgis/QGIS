@@ -775,15 +775,12 @@ void QgsRelationReferenceWidget::filterChanged()
     QComboBox* ccb = nullptr;
     Q_FOREACH ( QComboBox* cb, mFilterComboBoxes )
     {
-      if ( ccb == nullptr )
+      if ( !ccb )
       {
-        if ( cb != scb )
-          continue;
-        else
-        {
+        if ( cb == scb )
           ccb = cb;
-          continue;
-        }
+
+        continue;
       }
 
       if ( ccb->currentIndex() == 0 )

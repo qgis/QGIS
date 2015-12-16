@@ -1028,7 +1028,7 @@ void QgsGradientFillSymbolLayerV2Widget::colorModeChanged()
 void QgsGradientFillSymbolLayerV2Widget::applyColorRamp()
 {
   QgsVectorColorRampV2* ramp = cboGradientColorRamp->currentColorRamp();
-  if ( ramp == nullptr )
+  if ( !ramp )
     return;
 
   mLayer->setColorRamp( ramp );
@@ -1356,7 +1356,7 @@ void QgsShapeburstFillSymbolLayerV2Widget::on_mRadioUseWholeShape_toggled( bool 
 void QgsShapeburstFillSymbolLayerV2Widget::applyColorRamp()
 {
   QgsVectorColorRampV2* ramp = cboGradientColorRamp->currentColorRamp();
-  if ( ramp == nullptr )
+  if ( !ramp )
     return;
 
   mLayer->setColorRamp( ramp );

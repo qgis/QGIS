@@ -135,7 +135,7 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
 
 void QgsOgrProvider::repack()
 {
-  if ( ogrDriverName != "ESRI Shapefile" || ogrOrigLayer == nullptr )
+  if ( ogrDriverName != "ESRI Shapefile" || !ogrOrigLayer )
     return;
 
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
@@ -2459,14 +2459,14 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
   OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), nullptr, "SQL" );
-  if ( l == nullptr )
+  if ( !l )
   {
     QgsDebugMsg( "Failed to execute SQL" );
     return QgsVectorDataProvider::uniqueValues( index, uniqueValues, limit );
   }
 
   OGRFeatureH f;
-  while ( nullptr != ( f = OGR_L_GetNextFeature( l ) ) )
+  while (( f = OGR_L_GetNextFeature( l ) ) )
   {
     uniqueValues << ( OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() ) );
     OGR_F_Destroy( f );
@@ -2497,14 +2497,14 @@ QVariant QgsOgrProvider::minimumValue( int index )
   }
 
   OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), nullptr, "SQL" );
-  if ( l == nullptr )
+  if ( !l )
   {
     QgsDebugMsg( QString( "Failed to execute SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
     return QgsVectorDataProvider::minimumValue( index );
   }
 
   OGRFeatureH f = OGR_L_GetNextFeature( l );
-  if ( f == nullptr )
+  if ( !f )
   {
     OGR_DS_ReleaseResultSet( ogrDataSource, l );
     return QVariant();
@@ -2536,14 +2536,14 @@ QVariant QgsOgrProvider::maximumValue( int index )
   }
 
   OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), nullptr, "SQL" );
-  if ( l == nullptr )
+  if ( !l )
   {
     QgsDebugMsg( QString( "Failed to execute SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
     return QgsVectorDataProvider::maximumValue( index );
   }
 
   OGRFeatureH f = OGR_L_GetNextFeature( l );
-  if ( f == nullptr )
+  if ( !f )
   {
     OGR_DS_ReleaseResultSet( ogrDataSource, l );
     return QVariant();

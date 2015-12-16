@@ -65,7 +65,7 @@ class TestQgsInvertedPolygon : public QObject
 
 TestQgsInvertedPolygon::TestQgsInvertedPolygon()
     : mTestHasError( false )
-    , mpPolysLayer( NULL )
+    , mpPolysLayer( nullptr )
 {
 
 }

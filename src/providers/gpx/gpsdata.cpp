@@ -464,7 +464,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
   {
     parseModes.push( ParsingWaypoint );
     mWpt = QgsWaypoint();
-    for ( int i = 0; attr[2*i] != nullptr; ++i )
+    for ( int i = 0; attr[2*i]; ++i )
     {
       if ( !std::strcmp( attr[2*i], "lat" ) )
         mWpt.lat = QString( attr[2*i+1] ).toDouble();
@@ -614,7 +614,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingRoute )
     {
       mRtept = QgsRoutepoint();
-      for ( int i = 0; attr[2*i] != nullptr; ++i )
+      for ( int i = 0; attr[2*i]; ++i )
       {
         if ( !std::strcmp( attr[2*i], "lat" ) )
           mRtept.lat = QString( attr[2*i+1] ).toDouble();
@@ -643,7 +643,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingTrackSegment )
     {
       mTrkpt = QgsTrackpoint();
-      for ( int i = 0; attr[2*i] != nullptr; ++i )
+      for ( int i = 0; attr[2*i]; ++i )
       {
         if ( !std::strcmp( attr[2*i], "lat" ) )
           mTrkpt.lat = QString( attr[2*i+1] ).toDouble();

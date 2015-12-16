@@ -80,7 +80,7 @@ QgsVectorLayer* RgExportDlg::mapLayer() const
     myLayer = new QgsVectorLayer( QString( "LineString?crs=epsg:4326&memoryid=%1" ).arg( QUuid::createUuid().toString() ), "shortest path", "memory" );
 
     QgsVectorDataProvider *prov = myLayer->dataProvider();
-    if ( prov == nullptr )
+    if ( !prov )
       return nullptr;
 
     QList<QgsField> attrList;

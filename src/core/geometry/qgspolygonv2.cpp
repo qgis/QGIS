@@ -152,7 +152,7 @@ unsigned char* QgsPolygonV2::asWkb( int& binarySize ) const
   QgsWkbPtr wkb( geomPtr );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
-  wkb << static_cast<quint32>(( mExteriorRing != nullptr ) + mInteriorRings.size() );
+  wkb << static_cast<quint32>(( nullptr != mExteriorRing ) + mInteriorRings.size() );
   if ( mExteriorRing )
   {
     QList<QgsPointV2> pts;

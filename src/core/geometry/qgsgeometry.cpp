@@ -447,7 +447,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
     return static_cast< QgsGeometryCollectionV2* >( d->geometry )->removeGeometry( atVertex );
   }
 
-  //if it is a point, set the geometry to NULL
+  //if it is a point, set the geometry to nullptr
   if ( QgsWKBTypes::flatType( d->geometry->wkbType() ) == QgsWKBTypes::Point )
   {
     detach( false );

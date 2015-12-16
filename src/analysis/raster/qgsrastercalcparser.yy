@@ -148,7 +148,7 @@ QgsRasterCalcNode* localParseRasterCalcString(const QString& str, QString& parse
     // remove nodes without parents - to prevent memory leaks
     while (gTmpNodes.size() > 0)
       delete gTmpNodes.takeFirst();
-    return NULL;
+    return nullptr;
   }
 }
 

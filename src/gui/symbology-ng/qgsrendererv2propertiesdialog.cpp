@@ -37,10 +37,10 @@ static bool _initRenderer( const QString& name, QgsRendererV2WidgetFunc f, const
 {
   QgsRendererV2Registry* reg = QgsRendererV2Registry::instance();
   QgsRendererV2AbstractMetadata* am = reg->rendererMetadata( name );
-  if ( am == nullptr )
+  if ( !am )
     return false;
   QgsRendererV2Metadata* m = dynamic_cast<QgsRendererV2Metadata*>( am );
-  if ( m == nullptr )
+  if ( !m )
     return false;
 
   m->setWidgetFunction( f );
@@ -191,11 +191,11 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
 
   QgsRendererV2Widget* w = nullptr;
   QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererName );
-  if ( m != nullptr )
+  if ( m )
     w = m->createRendererWidget( mLayer, mStyle, oldRenderer );
   delete oldRenderer;
 
-  if ( w != nullptr )
+  if ( w )
   {
     // instantiate the widget and set as active
     mActiveWidget = w;

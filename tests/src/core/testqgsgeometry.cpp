@@ -135,11 +135,11 @@ class TestQgsGeometry : public QObject
 };
 
 TestQgsGeometry::TestQgsGeometry()
-    : mpPolylineGeometryD( NULL )
-    , mpPolygonGeometryA( NULL )
-    , mpPolygonGeometryB( NULL )
-    , mpPolygonGeometryC( NULL )
-    , mpPainter( NULL )
+    : mpPolylineGeometryD( nullptr )
+    , mpPolygonGeometryA( nullptr )
+    , mpPolygonGeometryB( nullptr )
+    , mpPolygonGeometryC( nullptr )
+    , mpPainter( nullptr )
 {
 
 }

@@ -113,7 +113,7 @@ class GEOSGeomScopedPtr
     explicit GEOSGeomScopedPtr( GEOSGeometry* geom = nullptr ) : mGeom( geom ) {}
     ~GEOSGeomScopedPtr() { GEOSGeom_destroy_r( geosinit.ctxt, mGeom ); }
     GEOSGeometry* get() const { return mGeom; }
-    operator bool() const { return mGeom != nullptr; }
+    operator bool() const { return nullptr != mGeom; }
     void reset( GEOSGeometry* geom )
     {
       GEOSGeom_destroy_r( geosinit.ctxt, mGeom );
@@ -673,7 +673,7 @@ int QgsGeos::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeo
     intersectGeometry = GEOSIntersection_r( geosinit.ctxt, mGeos, polygon );
     if ( !intersectGeometry )
     {
-      QgsDebugMsg( "intersectGeometry is NULL" );
+      QgsDebugMsg( "intersectGeometry is nullptr" );
       continue;
     }
 

@@ -33,9 +33,8 @@ email                : jpalmer at linz dot govt dot nz
 
 QgsVectorLayer* QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas* canvas )
 {
-  QgsVectorLayer* vlayer = nullptr;
-  if ( !canvas->currentLayer()
-       || ( vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() ) ) == nullptr )
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() );
+  if ( !vlayer )
   {
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "No active vector layer" ),
@@ -93,14 +92,11 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
     bool singleSelect )
 {
   if ( selectGeometry->type() != QGis::Polygon )
-  {
     return;
-  }
+
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
-  if ( vlayer == nullptr )
-  {
+  if ( !vlayer )
     return;
-  }
 
   // toLayerCoordinates will throw an exception for any 'invalid' points in
   // the rubber band.

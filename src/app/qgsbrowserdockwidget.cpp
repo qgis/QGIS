@@ -141,7 +141,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem* item )
     QgsDebugMsg( "creating raster layer" );
     // should copy code from addLayer() to split uri ?
     QgsRasterLayer* layer = new QgsRasterLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() );
-    if ( layer != nullptr )
+    if ( layer )
     {
       if ( layer->isValid() )
       {
@@ -155,7 +155,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem* item )
   {
     QgsDebugMsg( "creating vector layer" );
     QgsVectorLayer* layer = new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
-    if ( layer != nullptr )
+    if ( layer )
     {
       if ( layer->isValid() )
       {
@@ -511,7 +511,7 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
 
 void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
 {
-  if ( layerItem == nullptr )
+  if ( !layerItem )
     return;
 
   QString uri = QgisApp::instance()->crsAndFormatAdjustedLayerUri( layerItem->uri(), layerItem->supportedCRS(), layerItem->supportedFormats() );
@@ -541,20 +541,20 @@ void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex& index )
   QgsDebugMsg( QString( "rowCount() = %1" ).arg( mModel->rowCount( mProxyModel->mapToSource( index ) ) ) );
   QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
 
-  if ( item != nullptr && item->type() == QgsDataItem::Project )
+  if ( item && item->type() == QgsDataItem::Project )
   {
     QgsProjectItem *projectItem = qobject_cast<QgsProjectItem*>( item );
-    if ( projectItem != nullptr )
+    if ( projectItem )
     {
       QApplication::setOverrideCursor( Qt::WaitCursor );
       QgisApp::instance()->openFile( projectItem->path() );
       QApplication::restoreOverrideCursor();
     }
   }
-  if ( item != nullptr && item->type() == QgsDataItem::Layer )
+  if ( item && item->type() == QgsDataItem::Layer )
   {
     QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( item );
-    if ( layerItem != nullptr )
+    if ( layerItem )
     {
       QApplication::setOverrideCursor( Qt::WaitCursor );
       addLayer( layerItem );

@@ -117,14 +117,14 @@ eVisGenericEventBrowserGui::~eVisGenericEventBrowserGui()
   settings.setValue( "/eVis/browser-geometry", saveGeometry() );
 
   //Clean up, disconnect the highlighting routine and refesh the canvase to clear highlighting symbol
-  if ( nullptr != mCanvas )
+  if ( mCanvas )
   {
     disconnect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderSymbol( QPainter * ) ) );
     mCanvas->refresh();
   }
 
   //On close, clear selected feature
-  if ( nullptr != mVectorLayer )
+  if ( mVectorLayer )
   {
     mVectorLayer->removeSelection();
   }
@@ -199,7 +199,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
   pbtnDeleteFileType->setIcon( QIcon( QPixmap( myThemePath + "/mActionDeleteAttribute.png" ) ) );
 
   //Check to for interface, not null when launched from plugin toolbar, otherwise expect map canvas
-  if ( nullptr != mInterface )
+  if ( mInterface )
   {
     //check for active layer
     if ( mInterface->activeLayer() )
@@ -223,7 +223,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
     }
   }
   //check for map canvas, if map canvas is null, throw error
-  else if ( nullptr != mCanvas )
+  else if ( mCanvas )
   {
     //check for active layer
     if ( mCanvas->currentLayer() )
@@ -468,7 +468,7 @@ void eVisGenericEventBrowserGui::accept()
   while ( myIterator < tableFileTypeAssociations->rowCount() )
   {
     myQSettings.setArrayIndex( myIndex );
-    if ( nullptr != tableFileTypeAssociations->item( myIterator, 0 ) && nullptr != tableFileTypeAssociations->item( myIterator, 1 ) )
+    if ( tableFileTypeAssociations->item( myIterator, 0 ) && tableFileTypeAssociations->item( myIterator, 1 ) )
     {
       myQSettings.setValue( "extension", tableFileTypeAssociations->item( myIterator, 0 )->text() );
       myQSettings.setValue( "application", tableFileTypeAssociations->item( myIterator, 1 )->text() );
@@ -540,7 +540,7 @@ void eVisGenericEventBrowserGui::displayImage()
       //get a copy of the feature
       QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
-      if ( nullptr == myFeature )
+      if ( !myFeature )
         return;
 
       QgsPoint myPoint = myFeature->constGeometry()->asPoint();
@@ -588,7 +588,7 @@ void eVisGenericEventBrowserGui::loadRecord()
   QgsFeature* myFeature;
   myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
-  if ( nullptr == myFeature )
+  if ( !myFeature )
     return;
 
   QString myCompassBearingField = cboxCompassBearingField->currentText();
@@ -839,7 +839,7 @@ void eVisGenericEventBrowserGui::on_cboxEventImagePathField_currentIndexChanged(
     const QgsFields& myFields = mDataProvider->fields();
     QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
-    if ( nullptr == myFeature )
+    if ( !myFeature )
       return;
 
     QgsAttributes myAttrs = myFeature->attributes();
@@ -867,7 +867,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassBearingField_currentIndexChanged(
     const QgsFields& myFields = mDataProvider->fields();
     QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
-    if ( nullptr == myFeature )
+    if ( !myFeature )
       return;
 
     QgsAttributes myAttrs = myFeature->attributes();
@@ -895,7 +895,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassOffsetField_currentIndexChanged( 
     const QgsFields& myFields = mDataProvider->fields();
     QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
-    if ( nullptr == myFeature )
+    if ( !myFeature )
       return;
 
     QgsAttributes myAttrs = myFeature->attributes();
@@ -1118,12 +1118,12 @@ void eVisGenericEventBrowserGui::on_tableFileTypeAssociations_cellDoubleClicked(
 void eVisGenericEventBrowserGui::renderSymbol( QPainter* thePainter )
 {
 
-  if ( !mFeatureIds.isEmpty() && mVectorLayer != nullptr )
+  if ( !mFeatureIds.isEmpty() && mVectorLayer )
   {
     //Get a pointer to the current feature
     QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
-    if ( nullptr == myFeature )
+    if ( !myFeature )
       return;
 
     QgsPoint myPoint = myFeature->constGeometry()->asPoint();

@@ -825,7 +825,7 @@ namespace pal
       //std::cerr << "adding part: " << render_x << "  " << render_y << std::endl;
       LabelPosition* tmp = new LabelPosition( 0, render_x /*- xBase*/, render_y /*- yBase*/, ci.width, string_height, -render_angle, 0.0001, this );
       tmp->setPartId( orientation > 0 ? i : li->char_num - i - 1 );
-      if ( slp == nullptr )
+      if ( !slp )
         slp = tmp;
       else
         slp_tmp->setNextPart( tmp );
@@ -876,7 +876,7 @@ namespace pal
     LabelInfo* li = mLF->curvedLabelInfo();
 
     // label info must be present
-    if ( li == nullptr || li->char_num == 0 )
+    if ( !li || li->char_num == 0 )
       return 0;
 
     // distance calculation

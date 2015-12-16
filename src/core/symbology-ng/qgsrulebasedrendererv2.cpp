@@ -1011,7 +1011,7 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::create( QDomElement& element )
   QDomElement rulesElem = element.firstChildElement( "rules" );
 
   Rule* root = Rule::create( rulesElem, symbolMap );
-  if ( root == nullptr )
+  if ( !root )
     return nullptr;
 
   QgsRuleBasedRendererV2* r = new QgsRuleBasedRendererV2( root );

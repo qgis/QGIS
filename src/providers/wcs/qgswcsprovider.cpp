@@ -1707,7 +1707,7 @@ void QgsWcsDownloadHandler::blockingDownload()
 {
   mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
 
-  Q_ASSERT( mCacheReply == nullptr );
+  Q_ASSERT( !mCacheReply );
 }
 
 void QgsWcsDownloadHandler::cacheReplyFinished()

@@ -49,7 +49,7 @@ eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* theCanvas )
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
 
   //set the current tool to this object
-  if ( nullptr != mCanvas )
+  if ( mCanvas )
   {
     mCanvas->setMapTool( this );
   }
@@ -61,10 +61,10 @@ eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* theCanvas )
 */
 void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent* theMouseEvent )
 {
-  if ( nullptr == mCanvas || nullptr == theMouseEvent )
+  if ( !mCanvas || !theMouseEvent )
     return;
 
-  //Check to see if there is a layer selected
+//Check to see if there is a layer selected
   if ( mCanvas->currentLayer() )
   {
     //Check to see if the current layer is a vector layer
@@ -90,7 +90,7 @@ void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent* theMouseEvent )
 void eVisEventIdTool::select( const QgsPoint& thePoint )
 {
 
-  if ( nullptr == mCanvas )
+  if ( !mCanvas )
     return;
 
   QgsVectorLayer* myLayer = ( QgsVectorLayer* )mCanvas->currentLayer();

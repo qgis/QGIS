@@ -335,7 +335,7 @@ void TestQgsImageOperation::distanceTransformMisc()
   QImage image( mSampleImage );
   QgsImageOperation::DistanceTransformProperties props;
   props.useMaxDistance = true;
-  props.ramp = NULL;
+  props.ramp = nullptr;
   props.shadeExterior = false;
   QgsImageOperation::distanceTransform( image, props );
   bool result = imageCheck( QString( "imageop_nochange" ), image, 0 );

@@ -365,7 +365,8 @@ bool QgsSymbolV2::insertSymbolLayer( int index, QgsSymbolLayerV2* layer )
 {
   if ( index < 0 || index > mLayers.count() ) // can be added also after the last index
     return false;
-  if ( layer == nullptr || !layer->isCompatibleWithSymbol( this ) )
+
+  if ( !layer || !layer->isCompatibleWithSymbol( this ) )
     return false;
 
   mLayers.insert( index, layer );
@@ -375,7 +376,7 @@ bool QgsSymbolV2::insertSymbolLayer( int index, QgsSymbolLayerV2* layer )
 
 bool QgsSymbolV2::appendSymbolLayer( QgsSymbolLayerV2* layer )
 {
-  if ( layer == nullptr || !layer->isCompatibleWithSymbol( this ) )
+  if ( !layer || !layer->isCompatibleWithSymbol( this ) )
     return false;
 
   mLayers.append( layer );
@@ -898,7 +899,7 @@ QgsSymbolV2RenderContext& QgsSymbolV2RenderContext::operator=( const QgsSymbolV2
 QgsMarkerSymbolV2* QgsMarkerSymbolV2::createSimple( const QgsStringMap& properties )
 {
   QgsSymbolLayerV2* sl = QgsSimpleMarkerSymbolLayerV2::create( properties );
-  if ( sl == nullptr )
+  if ( !sl )
     return nullptr;
 
   QgsSymbolLayerV2List layers;
@@ -909,7 +910,7 @@ QgsMarkerSymbolV2* QgsMarkerSymbolV2::createSimple( const QgsStringMap& properti
 QgsLineSymbolV2* QgsLineSymbolV2::createSimple( const QgsStringMap& properties )
 {
   QgsSymbolLayerV2* sl = QgsSimpleLineSymbolLayerV2::create( properties );
-  if ( sl == nullptr )
+  if ( !sl )
     return nullptr;
 
   QgsSymbolLayerV2List layers;
@@ -920,7 +921,7 @@ QgsLineSymbolV2* QgsLineSymbolV2::createSimple( const QgsStringMap& properties )
 QgsFillSymbolV2* QgsFillSymbolV2::createSimple( const QgsStringMap& properties )
 {
   QgsSymbolLayerV2* sl = QgsSimpleFillSymbolLayerV2::create( properties );
-  if ( sl == nullptr )
+  if ( !sl )
     return nullptr;
 
   QgsSymbolLayerV2List layers;

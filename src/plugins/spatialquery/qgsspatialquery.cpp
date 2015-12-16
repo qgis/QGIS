@@ -172,22 +172,13 @@ void QgsSpatialQuery::setQuery( QgsVectorLayer *layerTarget, QgsVectorLayer *lay
 
 bool QgsSpatialQuery::hasValidGeometry( QgsFeature &feature )
 {
-  if ( ! feature.isValid() )
-  {
+  if ( !feature.isValid() )
     return false;
-  }
 
   const QgsGeometry *geom = feature.constGeometry();
 
-  if ( nullptr == geom )
-  {
+  if ( !geom || geom->isGeosEmpty() )
     return false;
-  }
-
-  if ( geom->isGeosEmpty() )
-  {
-    return false;
-  }
 
   return true;
 
@@ -202,7 +193,7 @@ void QgsSpatialQuery::setSpatialIndexReference( QgsFeatureIds &qsetIndexInvalidR
   {
     mPb->step( step++ );
 
-    if ( ! hasValidGeometry( feature ) )
+    if ( !hasValidGeometry( feature ) )
     {
       qsetIndexInvalidReference.insert( feature.id() );
       continue;
@@ -265,7 +256,7 @@ void QgsSpatialQuery::execQuery( QgsFeatureIds &qsetIndexResult, QgsFeatureIds &
   {
     mPb->step( step++ );
 
-    if ( ! hasValidGeometry( featureTarget ) )
+    if ( !hasValidGeometry( featureTarget ) )
     {
       qsetIndexInvalidTarget.insert( featureTarget.id() );
       continue;

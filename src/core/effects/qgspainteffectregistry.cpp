@@ -76,7 +76,7 @@ QgsPaintEffectAbstractMetadata *QgsPaintEffectRegistry::effectMetadata( const QS
 
 bool QgsPaintEffectRegistry::addEffectType( QgsPaintEffectAbstractMetadata *metadata )
 {
-  if ( metadata == nullptr || mMetadata.contains( metadata->name() ) )
+  if ( !metadata || mMetadata.contains( metadata->name() ) )
     return false;
 
   mMetadata[metadata->name()] = metadata;

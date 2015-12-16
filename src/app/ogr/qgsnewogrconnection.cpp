@@ -89,7 +89,7 @@ void QgsNewOgrConnection::testConnection()
   OGRSFDriverH         pahDriver;
   CPLErrorReset();
   poDS = OGROpen( TO8F( uri ), false, &pahDriver );
-  if ( poDS == nullptr )
+  if ( !poDS )
   {
     QMessageBox::information( this, tr( "Test connection" ), tr( "Connection failed - Check settings and try again.\n\nExtended error information:\n%1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }

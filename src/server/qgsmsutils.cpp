@@ -27,7 +27,7 @@ QString QgsMSUtils::createTempFilePath()
   //save the content of the file into a temporary location
   //generate a name considering the current time
   //struct timeval currentTime;
-  //gettimeofday(&currentTime, NULL);
+  //gettimeofday(&currentTime, nullptr);
 
   time_t seconds;
   time( &seconds );

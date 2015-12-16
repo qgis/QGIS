@@ -559,12 +559,12 @@ QString QgsCollapsibleGroupBox::saveKey() const
   // currently QgsCollapsibleGroupBox/window()/object
   QString saveKey = '/' + objectName();
   // QObject* parentWidget = parent();
-  // while ( parentWidget != NULL )
+  // while ( parentWidget )
   // {
   //   saveKey = "/" + parentWidget->objectName() + saveKey;
   //   parentWidget = parentWidget->parent();
   // }
-  // if ( parent() != NULL )
+  // if ( parent() )
   //   saveKey = "/" + parent()->objectName() + saveKey;
   QString setgrp = mSettingGroup.isEmpty() ? window()->objectName() : mSettingGroup;
   saveKey = '/' + setgrp + saveKey;

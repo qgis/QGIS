@@ -679,8 +679,8 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   }
   else
   {
-    Q_ASSERT( mSourceProjection != nullptr );
-    Q_ASSERT( mDestinationProjection != nullptr );
+    Q_ASSERT( mSourceProjection );
+    Q_ASSERT( mDestinationProjection );
     projResult = pj_transform( mSourceProjection, mDestinationProjection, numPoints, 0, x, y, z );
   }
 

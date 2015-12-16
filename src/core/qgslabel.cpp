@@ -567,7 +567,7 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
   Q_ASSERT( sizeof( QGis::WkbType ) == 4 );
   Q_ASSERT( sizeof( double ) == 8 );
 
-  if ( geom == nullptr )
+  if ( !geom )
   {
     QgsDebugMsg( "empty wkb" );
     return nullptr;

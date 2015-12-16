@@ -295,7 +295,7 @@ QgsMapCanvas::~QgsMapCanvas()
   if ( mJob )
   {
     mJob->cancel();
-    Q_ASSERT( mJob == nullptr );
+    Q_ASSERT( !mJob );
   }
 
   delete mCache;
@@ -360,13 +360,10 @@ bool QgsMapCanvas::isDirty() const
   return false;
 }
 
-
-
 bool QgsMapCanvas::isDrawing()
 {
-  return mJob != nullptr;
+  return nullptr != mJob;
 } // isDrawing
-
 
 // return the current coordinate transform based on the extents and
 // device size
@@ -573,7 +570,7 @@ void QgsMapCanvas::setCachingEnabled( bool enabled )
 
 bool QgsMapCanvas::isCachingEnabled() const
 {
-  return mCache != nullptr;
+  return nullptr != mCache;
 }
 
 void QgsMapCanvas::clearCache()
@@ -668,7 +665,7 @@ void QgsMapCanvas::refreshMap()
   mSettings.setExpressionContext( expressionContext );
 
   // create the renderer job
-  Q_ASSERT( mJob == nullptr );
+  Q_ASSERT( !mJob );
   mJobCancelled = false;
   if ( mUseParallelRendering )
     mJob = new QgsMapRendererParallelJob( mSettings );
@@ -781,7 +778,7 @@ void QgsMapCanvas::stopRendering()
     QgsDebugMsg( "CANVAS stop rendering!" );
     mJobCancelled = true;
     mJob->cancel();
-    Q_ASSERT( mJob == nullptr ); // no need to delete here: already deleted in finished()
+    Q_ASSERT( !mJob ); // no need to delete here: already deleted in finished()
   }
 }
 
@@ -795,7 +792,7 @@ void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap
   //
   //check if the optional QPaintDevice was supplied
   //
-  if ( theQPixmap != nullptr )
+  if ( theQPixmap )
   {
     // render
     QPainter painter;
@@ -1035,21 +1032,14 @@ bool QgsMapCanvas::hasCrsTransformEnabled()
 
 void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
 {
-  if ( layer == nullptr )
+  if ( !layer )
   {
     // use current layer by default
     layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
   }
 
-  if ( layer == nullptr )
-  {
+  if ( !layer || layer->selectedFeatureCount() == 0 )
     return;
-  }
-
-  if ( layer->selectedFeatureCount() == 0 )
-  {
-    return;
-  }
 
   QgsRectangle rect = mapSettings().layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
 
@@ -1077,21 +1067,14 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
 
 void QgsMapCanvas::panToSelected( QgsVectorLayer* layer )
 {
-  if ( layer == nullptr )
+  if ( !layer )
   {
     // use current layer by default
     layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
   }
 
-  if ( layer == nullptr )
-  {
+  if ( !layer || layer->selectedFeatureCount() == 0 )
     return;
-  }
-
-  if ( layer->selectedFeatureCount() == 0 )
-  {
-    return;
-  }
 
   QgsRectangle rect = mapSettings().layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
   setExtent( QgsRectangle( rect.center(), rect.center() ) );

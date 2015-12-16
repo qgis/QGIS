@@ -258,7 +258,7 @@ void *qgsMalloc( size_t size )
     return nullptr;
   }
   void *p = malloc( size );
-  if ( p == nullptr )
+  if ( !p )
   {
     QgsDebugMsg( QString( "Allocation of %1 bytes failed." ).arg( size ) );
   }
@@ -273,7 +273,7 @@ void *qgsCalloc( size_t nmemb, size_t size )
     return nullptr;
   }
   void *p = qgsMalloc( nmemb * size );
-  if ( p != nullptr )
+  if ( p )
   {
     memset( p, 0, nmemb * size );
   }

@@ -27,7 +27,7 @@
 QgsColorSchemeRegistry *QgsColorSchemeRegistry::mInstance = nullptr;
 QgsColorSchemeRegistry *QgsColorSchemeRegistry::instance()
 {
-  if ( mInstance == nullptr )
+  if ( !mInstance )
   {
     mInstance = new QgsColorSchemeRegistry();
 

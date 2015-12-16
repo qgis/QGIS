@@ -75,7 +75,7 @@ QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( DisplayMode mode
   for ( int i = 0; i < nDrivers; ++i )
   {
     GDALDriverH driver = GDALGetDriver( i );
-    if ( driver != nullptr )
+    if ( driver )
     {
       char** driverMetadata = GDALGetMetadata( driver, nullptr );
       if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )

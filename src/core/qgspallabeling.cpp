@@ -507,7 +507,7 @@ QgsPalLayerSettings QgsPalLayerSettings::fromLayer( QgsVectorLayer* layer )
 
 QgsExpression* QgsPalLayerSettings::getLabelExpression()
 {
-  if ( expression == nullptr )
+  if ( !expression )
   {
     expression = new QgsExpression( fieldName );
   }
@@ -2269,7 +2269,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   if ( minFeatureSize > 0 && !checkMinimumSizeMM( context, preparedGeom, minFeatureSize ) )
     return;
 
-  if ( geos_geom == nullptr )
+  if ( !geos_geom )
     return; // invalid geometry
 
   // likelihood exists label will be registered with PAL and may be drawn
@@ -2759,7 +2759,7 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderConte
     geos_geom = geom->asGeos();
   }
 
-  if ( geos_geom == nullptr )
+  if ( !geos_geom )
     return; // invalid geometry
 
   GEOSGeometry* geos_geom_clone;

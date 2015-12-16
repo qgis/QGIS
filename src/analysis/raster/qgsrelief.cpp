@@ -88,20 +88,20 @@ int QgsRelief::processRaster( QProgressDialog* p )
   //open input file
   int xSize, ySize;
   GDALDatasetH  inputDataset = openInputFile( xSize, ySize );
-  if ( inputDataset == nullptr )
+  if ( !inputDataset )
   {
     return 1; //opening of input file failed
   }
 
   //output driver
   GDALDriverH outputDriver = openOutputDriver();
-  if ( outputDriver == nullptr )
+  if ( !outputDriver )
   {
     return 2;
   }
 
   GDALDatasetH outputDataset = openOutputFile( inputDataset, outputDriver );
-  if ( outputDataset == nullptr )
+  if ( !outputDataset )
   {
     return 3; //create operation on output file failed
   }
@@ -125,7 +125,7 @@ int QgsRelief::processRaster( QProgressDialog* p )
 
   //open first raster band for reading (operation is only for single band raster)
   GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset, 1 );
-  if ( rasterBand == nullptr )
+  if ( !rasterBand )
   {
     GDALClose( inputDataset );
     GDALClose( outputDataset );
@@ -142,7 +142,7 @@ int QgsRelief::processRaster( QProgressDialog* p )
   GDALRasterBandH outputGreenBand = GDALGetRasterBand( outputDataset, 2 );
   GDALRasterBandH outputBlueBand = GDALGetRasterBand( outputDataset, 3 );
 
-  if ( outputRedBand == nullptr || outputGreenBand == nullptr || outputBlueBand == nullptr )
+  if ( !outputRedBand || !outputGreenBand || !outputBlueBand )
   {
     GDALClose( inputDataset );
     GDALClose( outputDataset );
@@ -398,7 +398,7 @@ bool QgsRelief::setElevationColor( double elevation, int* red, int* green, int* 
 GDALDatasetH QgsRelief::openInputFile( int& nCellsX, int& nCellsY )
 {
   GDALDatasetH inputDataset = GDALOpen( TO8F( mInputFile ), GA_ReadOnly );
-  if ( inputDataset != nullptr )
+  if ( inputDataset )
   {
     nCellsX = GDALGetRasterXSize( inputDataset );
     nCellsY = GDALGetRasterYSize( inputDataset );
@@ -420,9 +420,9 @@ GDALDriverH QgsRelief::openOutputDriver()
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );
 
-  if ( outputDriver == nullptr )
+  if ( !outputDriver )
   {
-    return outputDriver; //return NULL, driver does not exist
+    return outputDriver; //return nullptr, driver does not exist
   }
 
   driverMetadata = GDALGetMetadata( outputDriver, nullptr );
@@ -436,7 +436,7 @@ GDALDriverH QgsRelief::openOutputDriver()
 
 GDALDatasetH QgsRelief::openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver )
 {
-  if ( inputDataset == nullptr )
+  if ( !inputDataset )
   {
     return nullptr;
   }
@@ -452,7 +452,7 @@ GDALDatasetH QgsRelief::openOutputFile( GDALDatasetH inputDataset, GDALDriverH o
 
   //create three band raster (reg, green, blue)
   GDALDatasetH outputDataset = GDALCreate( outputDriver, TO8F( mOutputFile ), xSize, ySize, 3, GDT_Byte, papszOptions );
-  if ( outputDataset == nullptr )
+  if ( !outputDataset )
   {
     return outputDataset;
   }
@@ -489,14 +489,14 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString& file )
 {
   int nCellsX, nCellsY;
   GDALDatasetH inputDataset = openInputFile( nCellsX, nCellsY );
-  if ( inputDataset == nullptr )
+  if ( !inputDataset )
   {
     return false;
   }
 
   //open first raster band for reading (elevation raster is always single band)
   GDALRasterBandH elevationBand = GDALGetRasterBand( inputDataset, 1 );
-  if ( elevationBand == nullptr )
+  if ( !elevationBand )
   {
     GDALClose( inputDataset );
     return false;
@@ -572,14 +572,14 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
 
   int nCellsX, nCellsY;
   GDALDatasetH inputDataset = openInputFile( nCellsX, nCellsY );
-  if ( inputDataset == nullptr )
+  if ( !inputDataset )
   {
     return resultList;
   }
 
   //open first raster band for reading (elevation raster is always single band)
   GDALRasterBandH elevationBand = GDALGetRasterBand( inputDataset, 1 );
-  if ( elevationBand == nullptr )
+  if ( !elevationBand )
   {
     GDALClose( inputDataset );
     return resultList;

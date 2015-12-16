@@ -118,7 +118,7 @@ class CORE_EXPORT QgsRenderContext
 
     QgsLabelingEngineInterface* labelingEngine() const { return mLabelingEngine; }
 
-    //! Get access to new labeling engine (may be NULL)
+    //! Get access to new labeling engine (may be nullptr)
     QgsLabelingEngineV2* labelingEngineV2() const { return mLabelingEngine2; }
 
     QColor selectionColor() const { return mSelectionColor; }
@@ -238,10 +238,10 @@ class CORE_EXPORT QgsRenderContext
     /** Map scale*/
     double mRendererScale;
 
-    /** Labeling engine (can be NULL)*/
+    /** Labeling engine (can be nullptr)*/
     QgsLabelingEngineInterface* mLabelingEngine;
 
-    /** Newer labeling engine implementation (can be NULL) */
+    /** Newer labeling engine implementation (can be nullptr) */
     QgsLabelingEngineV2* mLabelingEngine2;
 
     /** Color used for features that are marked as selected */

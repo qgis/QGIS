@@ -905,7 +905,7 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( const QDomElement &element )
       {
         QgsSymbolLayerV2* layer = loadSymbolLayer( e );
 
-        if ( layer != nullptr )
+        if ( layer )
         {
           // Dealing with sub-symbols nested into a layer
           QDomElement s = e.firstChildElement( "symbol" );
@@ -1027,7 +1027,7 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( const QString& name, QgsSymbolV2*
     if ( !QgsPaintEffectRegistry::isDefaultStack( layer->paintEffect() ) )
       layer->paintEffect()->saveProperties( doc, layerEl );
 
-    if ( layer->subSymbol() != nullptr )
+    if ( layer->subSymbol() )
     {
       QString subname = QString( "@%1@%2" ).arg( name ).arg( i );
       QDomElement subEl = saveSymbol( subname, layer->subSymbol(), doc );
@@ -2673,7 +2673,7 @@ QgsSymbolV2Map QgsSymbolLayerV2Utils::loadSymbols( QDomElement& element )
     if ( e.tagName() == "symbol" )
     {
       QgsSymbolV2* symbol = QgsSymbolLayerV2Utils::loadSymbol( e );
-      if ( symbol != nullptr )
+      if ( symbol )
         symbols.insert( e.attribute( "name" ), symbol );
     }
     else

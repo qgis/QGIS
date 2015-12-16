@@ -246,7 +246,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
     mPlugin->topologyToleranceFactor() );
   {
     const QgsGraphDirector *director = mPlugin->director();
-    if ( director == nullptr )
+    if ( !director )
     {
       QMessageBox::critical( this, tr( "Plugin isn't configured" ), tr( "Plugin isn't configured!" ) );
       return nullptr;
@@ -328,7 +328,7 @@ void RgShortestPathWidget::findingPath()
 {
   QgsPoint p1, p2;
   QgsGraph *path = getPath( p1, p2 );
-  if ( path == nullptr )
+  if ( !path )
     return;
 
   mrbPath->reset( QGis::Line );
@@ -391,12 +391,12 @@ void RgShortestPathWidget::exportPath()
     return;
 
   QgsVectorLayer *vl = dlg.mapLayer();
-  if ( vl == nullptr )
+  if ( !vl )
     return;
 
   QgsPoint p1, p2;
   QgsGraph *path = getPath( p1, p2 );
-  if ( path == nullptr )
+  if ( !path )
     return;
 
   QgsCoordinateTransform ct( mPlugin->iface()->mapCanvas()->mapSettings().destinationCrs(),

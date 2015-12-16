@@ -190,8 +190,8 @@ int main( int argc, char **argv )
   fields.append( QgsField( key, QVariant::Int ) );
   fields.extend( srcFields );
 
-  struct field_info *fieldInfo = Vect_default_field_info( finalMap, 1, NULL, GV_1TABLE );
-  if ( Vect_map_add_dblink( finalMap, 1, NULL, fieldInfo->table, key.toLatin1().data(),
+  struct field_info *fieldInfo = Vect_default_field_info( finalMap, 1, nullptr, GV_1TABLE );
+  if ( Vect_map_add_dblink( finalMap, 1, nullptr, fieldInfo->table, key.toLatin1().data(),
                             fieldInfo->database, fieldInfo->driver ) != 0 )
   {
     G_fatal_error( "Cannot add link" );
@@ -332,20 +332,20 @@ int main( int argc, char **argv )
 
     if ( snapTreshold > 0 )
     {
-      Vect_snap_lines( map, GV_BOUNDARY, snapTreshold, NULL );
+      Vect_snap_lines( map, GV_BOUNDARY, snapTreshold, nullptr );
     }
     G_message( "Breaking polygons" );
-    Vect_break_polygons( map, GV_BOUNDARY, NULL );
+    Vect_break_polygons( map, GV_BOUNDARY, nullptr );
     G_message( "Removing duplicates" );
-    Vect_remove_duplicates( map, GV_BOUNDARY | GV_CENTROID, NULL );
+    Vect_remove_duplicates( map, GV_BOUNDARY | GV_CENTROID, nullptr );
     for ( int i = 0; i < 3; i++ )
     {
       G_message( "Breaking lines" );
-      Vect_break_lines( map, GV_BOUNDARY, NULL );
+      Vect_break_lines( map, GV_BOUNDARY, nullptr );
       G_message( "Removing duplicates" );
-      Vect_remove_duplicates( map, GV_BOUNDARY, NULL );
+      Vect_remove_duplicates( map, GV_BOUNDARY, nullptr );
       G_message( "Cleaning small dangles at nodes" );
-      if ( Vect_clean_small_angles_at_nodes( map, GV_BOUNDARY, NULL ) == 0 )
+      if ( Vect_clean_small_angles_at_nodes( map, GV_BOUNDARY, nullptr ) == 0 )
       {
         break;
       }
@@ -361,7 +361,7 @@ int main( int argc, char **argv )
         continue;
       }
 
-      int type = Vect_read_line( map, line, NULL, i );
+      int type = Vect_read_line( map, line, nullptr, i );
       if ( !( type & GV_BOUNDARY ) )
       {
         continue;
@@ -374,13 +374,13 @@ int main( int argc, char **argv )
     }
 
     G_message( "Merging lines" );
-    Vect_merge_lines( map, GV_BOUNDARY, NULL, NULL );
+    Vect_merge_lines( map, GV_BOUNDARY, nullptr, nullptr );
     G_message( "Removing bridges" );
 #if GRASS_VERSION_MAJOR < 7
-    Vect_remove_bridges( map, NULL );
+    Vect_remove_bridges( map, nullptr );
 #else
     int linesRemoved, bridgesRemoved;
-    Vect_remove_bridges( map, NULL, &linesRemoved, &bridgesRemoved );
+    Vect_remove_bridges( map, nullptr, &linesRemoved, &bridgesRemoved );
 #endif
     G_message( "Attaching islands" );
     Vect_build_partial( map, GV_BUILD_ATTACH_ISLES );

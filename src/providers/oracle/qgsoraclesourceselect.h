@@ -40,14 +40,14 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsOracleSourceSelectDelegate( QObject *parent = NULL )
+    explicit QgsOracleSourceSelectDelegate( QObject *parent = nullptr )
         : QItemDelegate( parent )
-        , mConn( 0 )
+        , mConn( nullptr )
     {}
 
     ~QgsOracleSourceSelectDelegate()
     {
-      setConn( 0 );
+      setConn( nullptr );
     }
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;

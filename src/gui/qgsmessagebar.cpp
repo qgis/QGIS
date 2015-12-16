@@ -230,7 +230,7 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
 {
   Q_ASSERT( item );
 
-  if ( mCurrentItem != nullptr )
+  if ( mCurrentItem )
     disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
 
   if ( item == mCurrentItem )

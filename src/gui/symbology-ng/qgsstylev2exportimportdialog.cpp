@@ -273,7 +273,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
     index = selection->at( i );
     symbolName = index.model()->data( index, 0 ).toString();
     symbol = src->symbol( symbolName );
-    if ( symbol == nullptr )
+    if ( !symbol )
     {
       isSymbol = false;
       ramp = src->colorRamp( symbolName );

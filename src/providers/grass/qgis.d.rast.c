@@ -105,7 +105,7 @@ int main( int argc, char **argv )
   /* Make sure map is available */
 #if GRASS_VERSION_MAJOR < 7
   mapset = G_find_cell2( name, "" );
-  if ( mapset == NULL )
+  if ( !mapset )
     G_fatal_error(( "Raster map <%s> not found" ), name );
 #else
   mapset = "";

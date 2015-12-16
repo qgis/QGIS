@@ -146,7 +146,7 @@ void Heatmap::run()
   GDALDriver *myDriver;
 
   myDriver = GetGDALDriverManager()->GetDriverByName( d.outputFormat().toUtf8() );
-  if ( myDriver == nullptr )
+  if ( !myDriver )
   {
     mQGisIface->messageBar()->pushMessage( tr( "GDAL driver error" ), tr( "Cannot open the driver for the specified format" ), QgsMessageBar::WARNING, mQGisIface->messageTimeout() );
     return;

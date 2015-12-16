@@ -683,10 +683,8 @@ void QgsRasterHistogramWidget::refreshHistogram()
 
 void QgsRasterHistogramWidget::on_mSaveAsImageButton_clicked()
 {
-  if ( mpPlot == nullptr )
-  {
+  if ( !mpPlot )
     return;
-  }
 
   QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   QFileInfo myInfo( myFileNameAndFilter.first );
@@ -760,12 +758,12 @@ void QgsRasterHistogramWidget::on_cboHistoBand_currentIndexChanged( int index )
 
   // get the current index value, index can be -1
   index = cboHistoBand->currentIndex();
-  if ( mHistoPicker != nullptr )
+  if ( mHistoPicker )
   {
     mHistoPicker->setEnabled( false );
     mHistoPicker->setRubberBandPen( QPen( mHistoColors.at( index + 1 ) ) );
   }
-  if ( mHistoZoomer != nullptr )
+  if ( mHistoZoomer )
     mHistoZoomer->setEnabled( true );
   btnHistoMin->setEnabled( true );
   btnHistoMax->setEnabled( true );
@@ -1016,7 +1014,7 @@ void QgsRasterHistogramWidget::applyHistoMax()
 
 void QgsRasterHistogramWidget::on_btnHistoMin_toggled()
 {
-  if ( mpPlot != nullptr && mHistoPicker != nullptr )
+  if ( mpPlot && mHistoPicker )
   {
     if ( QApplication::overrideCursor() )
       QApplication::restoreOverrideCursor();
@@ -1025,7 +1023,7 @@ void QgsRasterHistogramWidget::on_btnHistoMin_toggled()
       btnHistoMax->setChecked( false );
       QApplication::setOverrideCursor( Qt::PointingHandCursor );
     }
-    if ( mHistoZoomer != nullptr )
+    if ( mHistoZoomer )
       mHistoZoomer->setEnabled( ! btnHistoMin->isChecked() );
     mHistoPicker->setEnabled( btnHistoMin->isChecked() );
   }
@@ -1034,7 +1032,7 @@ void QgsRasterHistogramWidget::on_btnHistoMin_toggled()
 
 void QgsRasterHistogramWidget::on_btnHistoMax_toggled()
 {
-  if ( mpPlot != nullptr && mHistoPicker != nullptr )
+  if ( mpPlot && mHistoPicker )
   {
     if ( QApplication::overrideCursor() )
       QApplication::restoreOverrideCursor();
@@ -1043,7 +1041,7 @@ void QgsRasterHistogramWidget::on_btnHistoMax_toggled()
       btnHistoMin->setChecked( false );
       QApplication::setOverrideCursor( Qt::PointingHandCursor );
     }
-    if ( mHistoZoomer != nullptr )
+    if ( mHistoZoomer )
       mHistoZoomer->setEnabled( ! btnHistoMax->isChecked() );
     mHistoPicker->setEnabled( btnHistoMax->isChecked() );
   }
@@ -1122,7 +1120,7 @@ void QgsRasterHistogramWidget::updateHistoMarkers()
   if ( leHistoMin->signalsBlocked() )
     return;
   // todo error checking
-  if ( mpPlot == nullptr || mHistoMarkerMin == nullptr || mHistoMarkerMax == nullptr )
+  if ( !mpPlot || !mHistoMarkerMin || !mHistoMarkerMax )
     return;
 
   int theBandNo = cboHistoBand->currentIndex() + 1;

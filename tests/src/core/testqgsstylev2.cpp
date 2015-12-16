@@ -69,7 +69,7 @@ class TestStyleV2 : public QObject
 };
 
 TestStyleV2::TestStyleV2()
-    : mStyle( NULL )
+    : mStyle( nullptr )
 {
 
 }

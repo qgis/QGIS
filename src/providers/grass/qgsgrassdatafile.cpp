@@ -78,7 +78,7 @@ qint64 QgsGrassDataFile::readData( char * data, qint64 len )
       struct timeval tv;
       tv.tv_sec = 0;
       tv.tv_usec = 10000; // we could also wait for ever
-      int sel = select( 0, &readFds, NULL, NULL, &tv );
+      int sel = select( 0, &readFds, nullptr, nullptr, &tv );
       Q_UNUSED( sel );
       //fprintf(stderr, "sel = %d", sel);
     }

@@ -60,7 +60,7 @@ class TestQgsRuleBasedRenderer: public QObject
       QDomElement elem = doc.documentElement();
 
       QSharedPointer<QgsRuleBasedRendererV2> r( static_cast<QgsRuleBasedRendererV2*>( QgsRuleBasedRendererV2::create( elem ) ) );
-      QVERIFY( r == NULL );
+      QVERIFY( !r );
     }
 
     void test_willRenderFeature_symbolsForFeature()
@@ -76,7 +76,7 @@ class TestQgsRuleBasedRenderer: public QObject
       // prepare renderer
       QgsSymbolV2* s1 = QgsSymbolV2::defaultSymbol( QGis::Point );
       QgsSymbolV2* s2 = QgsSymbolV2::defaultSymbol( QGis::Point );
-      RRule* rootRule = new RRule( NULL );
+      RRule* rootRule = new RRule( nullptr );
       rootRule->appendChild( new RRule( s1, 0, 0, "fld >= 5 and fld <= 20" ) );
       rootRule->appendChild( new RRule( s2, 0, 0, "fld <= 10" ) );
       QgsRuleBasedRendererV2 r( rootRule );
@@ -155,7 +155,7 @@ class TestQgsRuleBasedRenderer: public QObject
       // root must always exist (although it does not have children)
       QVERIFY( root );
       // and does not have a parent
-      QVERIFY( root->parent() == NULL );
+      QVERIFY( !root->parent() );
 
       Q_FOREACH ( QgsRuleBasedRendererV2::Rule* node, root->children() )
         check_non_root_rule( node );
@@ -164,7 +164,7 @@ class TestQgsRuleBasedRenderer: public QObject
     void check_non_root_rule( QgsRuleBasedRendererV2::Rule* node )
     {
       qDebug() << node->dump();
-      // children must not be NULL
+      // children must not be nullptr
       QVERIFY( node );
       // and must have a parent
       QVERIFY( node->parent() );

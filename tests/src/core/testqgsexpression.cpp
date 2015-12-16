@@ -175,10 +175,10 @@ class TestQgsExpression: public QObject
     {
       // check that parsing of numbers works correctly even when using some other locale
 
-      char* old_locale = setlocale( LC_NUMERIC, NULL );
+      char* old_locale = setlocale( LC_NUMERIC, nullptr );
       qDebug( "Old locale: %s", old_locale );
       setlocale( LC_NUMERIC, "de_DE.UTF8" );
-      char* new_locale = setlocale( LC_NUMERIC, NULL );
+      char* new_locale = setlocale( LC_NUMERIC, nullptr );
       qDebug( "New locale: %s", new_locale );
 
       QgsExpression exp( "1.23 + 4.56" );

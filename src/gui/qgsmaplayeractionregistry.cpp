@@ -98,7 +98,7 @@ void QgsMapLayerAction::triggerForLayer( QgsMapLayer* layer )
 QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::mInstance = nullptr;
 QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::instance()
 {
-  if ( mInstance == nullptr )
+  if ( !mInstance )
   {
     mInstance = new QgsMapLayerActionRegistry();
   }

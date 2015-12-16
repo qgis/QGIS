@@ -1361,7 +1361,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
                                 nFixedLevelCount, adfFixedLevels,
                                 bNoDataSet, dfNoData,
                                 hLayer, 0, nElevField,
-                                GDALTermProgress, NULL );*/
+                                GDALTermProgress, nullptr );*/
 
 
   //do the stuff that is also done in the main method of gdal_contour...
@@ -1399,14 +1399,14 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   int /* b3D = FALSE, */ bNoDataSet = FALSE, bIgnoreNoData = FALSE;
 
   hSrcDS = GDALOpen( TO8( rasterLayer->source() ), GA_ReadOnly );
-  if ( hSrcDS == nullptr )
+  if ( !hSrcDS )
   {
     delete [] adfFixedLevels;
     throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a file not available on the server." );
   }
 
   hBand = GDALGetRasterBand( hSrcDS, nBandIn );
-  if ( hBand == nullptr )
+  if ( !hBand )
   {
     CPLError( CE_Failure, CPLE_AppDefined,
               "Band %d does not exist on dataset.",
@@ -1423,7 +1423,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
 
   const char *pszWKT = GDALGetProjectionRef( hBand );
 
-  if ( pszWKT != nullptr && strlen( pszWKT ) != 0 )
+  if ( pszWKT && strlen( pszWKT ) != 0 )
     hSRS = OSRNewSpatialReference( pszWKT );
 
   /* -------------------------------------------------------------------- */
@@ -1435,7 +1435,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   OGRLayerH hLayer;
   int nElevField = -1;
 
-  if ( hDriver == nullptr )
+  if ( !hDriver )
   {
     //fprintf( FCGI_stderr, "Unable to find format driver named 'ESRI Shapefile'.\n" );
     delete [] adfFixedLevels;
@@ -1443,7 +1443,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   }
 
   hDS = OGR_Dr_CreateDataSource( hDriver, TO8( tmpFileName ), nullptr );
-  if ( hDS == nullptr )
+  if ( !hDS )
   {
     delete [] adfFixedLevels;
     throw QgsMapServiceException( "LayerNotDefined", "Operation request cannot create data source." );
@@ -1452,7 +1452,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   hLayer = OGR_DS_CreateLayer( hDS, "contour", hSRS,
                                /* b3D ? wkbLineString25D : */ wkbLineString,
                                nullptr );
-  if ( hLayer == nullptr )
+  if ( !hLayer )
   {
     delete [] adfFixedLevels;
     throw QgsMapServiceException( "LayerNotDefined", "Operation request could not create contour file." );

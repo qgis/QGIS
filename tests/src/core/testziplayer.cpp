@@ -102,7 +102,7 @@ QgsMapLayer *TestZipLayer::getLayer( const QString& myPath, const QString& myNam
     QFileInfo myFileInfo( myPath );
     fullName = myFileInfo.completeBaseName();
   }
-  QgsMapLayer *myLayer = NULL;
+  QgsMapLayer *myLayer = nullptr;
 
   if ( myProviderKey == "ogr" )
   {
@@ -112,15 +112,15 @@ QgsMapLayer *TestZipLayer::getLayer( const QString& myPath, const QString& myNam
   {
     myLayer = new QgsRasterLayer( myPath, fullName, QString( "gdal" ) );
   }
-  // item should not have other provider key, but if it does will return NULL
 
+  // item should not have other provider key, but if it does will return nullptr
   return myLayer;
 }
 
 QgsMapLayer *TestZipLayer::getZipLayer( const QString& myPath, const QString& myName )
 {
-  QgsMapLayer *myLayer = NULL;
-  QgsDirectoryItem *dirItem = new QgsDirectoryItem( NULL, "/", "" );
+  QgsMapLayer *myLayer = nullptr;
+  QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, "/", "" );
   QgsDataItem* myItem = QgsZipItem::itemFromPath( dirItem, myPath, myName );
   if ( myItem )
   {
@@ -147,7 +147,7 @@ bool TestZipLayer::testZipItem( const QString& myFileName, const QString& myChil
   QgsDebugMsg( QString( "\n=======================================\nfile = %1 name = %2 provider = %3"
                       ).arg( myFileName, myChildName, myProviderName ) );
   QFileInfo myFileInfo( myFileName );
-  QgsZipItem *myZipItem = new QgsZipItem( NULL, myFileInfo.fileName(), myFileName );
+  QgsZipItem *myZipItem = new QgsZipItem( nullptr, myFileInfo.fileName(), myFileName );
   myZipItem->populate();
   // wait until populated in separate thread
   QTime time;
@@ -175,7 +175,7 @@ bool TestZipLayer::testZipItem( const QString& myFileName, const QString& myChil
         if ( myChildName == "" || myChildName == item->name() )
         {
           QgsMapLayer* layer = getLayer( layerItem->path(), layerItem->name(), layerItem->providerKey() );
-          if ( layer != NULL )
+          if ( layer )
           {
             // we got a layer, check if it is valid and exit
             // if no child name given in argument, then pass to next one (unless current child is invalid)
@@ -232,7 +232,7 @@ int TestZipLayer::getLayerTransparency( const QString& myFileName, const QString
   if ( myScanZipSetting != settings.value( mSettingsKey ).toString() )
     return myTransparency;
 
-  QgsMapLayer * myLayer = NULL;
+  QgsMapLayer * myLayer = nullptr;
   if ( myFileName.endsWith( ".gz", Qt::CaseInsensitive ) )
     myLayer = getLayer( myFileName, "", myProviderKey );
   else

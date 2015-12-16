@@ -427,7 +427,7 @@ bool QgsWmsProvider::setImageCrs( QString const & crs )
 
     setProperty( "resolutions", resolutions );
 
-    if ( mTileLayer == nullptr || mTileMatrixSet == nullptr )
+    if ( !mTileLayer || !mTileMatrixSet )
     {
       appendError( ERR( tr( "Tile layer or tile matrix set not found" ) ) );
       return false;
@@ -3213,7 +3213,7 @@ void QgsWmsImageDownloadHandler::downloadBlocking()
 {
   mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
 
-  Q_ASSERT( mCacheReply == nullptr );
+  Q_ASSERT( !mCacheReply );
 }
 
 void QgsWmsImageDownloadHandler::cacheReplyFinished()

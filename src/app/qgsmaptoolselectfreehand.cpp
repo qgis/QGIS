@@ -41,10 +41,9 @@ QgsMapToolSelectFreehand::~QgsMapToolSelectFreehand()
 void QgsMapToolSelectFreehand::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
-  {
     return;
-  }
-  if ( mRubberBand == nullptr )
+
+  if ( !mRubberBand )
   {
     mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
     mRubberBand->setFillColor( mFillColor );
@@ -57,20 +56,18 @@ void QgsMapToolSelectFreehand::canvasPressEvent( QgsMapMouseEvent* e )
 
 void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent* e )
 {
-  if ( !mDragging || mRubberBand == nullptr )
-  {
+  if ( !mDragging || !mRubberBand )
     return;
-  }
+
   mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
 }
 
 
 void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
-  if ( mRubberBand == nullptr )
-  {
+  if ( !mRubberBand )
     return;
-  }
+
   if ( mRubberBand->numberOfVertices() > 2 )
   {
     QgsGeometry* shapeGeom = mRubberBand->asGeometry();

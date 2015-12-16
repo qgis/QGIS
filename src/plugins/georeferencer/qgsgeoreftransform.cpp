@@ -373,10 +373,8 @@ int QgsLinearGeorefTransform::linear_transform( void *pTransformerArg, int bDstT
 {
   Q_UNUSED( z );
   LinearParameters* t = static_cast<LinearParameters*>( pTransformerArg );
-  if ( t == nullptr )
-  {
+  if ( !t )
     return false;
-  }
 
   if ( !bDstToSrc )
   {
@@ -448,10 +446,8 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
 {
   Q_UNUSED( z );
   HelmertParameters* t = static_cast<HelmertParameters*>( pTransformerArg );
-  if ( t == nullptr )
-  {
+  if ( !t )
     return false;
-  }
 
   double a = cos( t->angle ), b = sin( t->angle ), x0 = t->origin.x(), y0 = t->origin.y(), s = t->scale;
   if ( !bDstToSrc )
@@ -540,6 +536,7 @@ bool QgsGDALGeorefTransform::updateParametersFromGCPs( const std::vector<QgsPoin
     delete [] GCPList[i].pszId;
   }
   delete [] GCPList;
+
   return nullptr != mGDALTransformerArgs;
 }
 
@@ -638,10 +635,8 @@ int QgsProjectiveGeorefTransform::projective_transform( void *pTransformerArg, i
 {
   Q_UNUSED( z );
   ProjectiveParameters* t = static_cast<ProjectiveParameters*>( pTransformerArg );
-  if ( t == nullptr )
-  {
+  if ( !t )
     return false;
-  }
 
   double *H;
   if ( !bDstToSrc )

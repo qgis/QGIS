@@ -150,7 +150,7 @@ void eVis::launchDatabaseConnection()
 
 void eVis::launchEventIdTool()
 {
-  if ( nullptr == mIdTool )
+  if ( !mIdTool )
   {
     mIdTool = new eVisEventIdTool( mQGisIface->mapCanvas() );
     mIdTool->setAction( mEventIdToolActionPointer );
@@ -187,7 +187,7 @@ void eVis::unload()
     delete( mTemporaryFileList.takeLast() );
   }
 
-  if ( nullptr != mIdTool )
+  if ( mIdTool )
   {
     delete mIdTool;
   }

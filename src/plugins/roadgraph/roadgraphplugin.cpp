@@ -210,14 +210,17 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
     layer = dynamic_cast< QgsVectorLayer* >( it.value() );
     break;
   }
-  if ( layer == nullptr )
+
+  if ( !layer )
     return nullptr;
+
   if ( layer->wkbType() == QGis::WKBLineString
        || layer->wkbType() == QGis::WKBMultiLineString )
   {
     QgsVectorDataProvider *provider = layer->dataProvider();
-    if ( provider == nullptr )
+    if ( !provider )
       return nullptr;
+
     SpeedUnit speedUnit = SpeedUnit::byName( mSettings->mSpeedUnitName );
 
     QgsLineVectorLayerDirector * director =

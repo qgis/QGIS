@@ -75,7 +75,7 @@ QgsRendererV2Registry* QgsRendererV2Registry::instance()
 
 bool QgsRendererV2Registry::addRenderer( QgsRendererV2AbstractMetadata* metadata )
 {
-  if ( metadata == nullptr || mRenderers.contains( metadata->name() ) )
+  if ( !metadata || mRenderers.contains( metadata->name() ) )
     return false;
 
   mRenderers[metadata->name()] = metadata;

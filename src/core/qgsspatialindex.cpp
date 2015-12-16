@@ -101,7 +101,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
     }
 
     //! returns true if there are more items in the stream.
-    virtual bool hasNext() override { return mNextData != nullptr; }
+    virtual bool hasNext() override { return nullptr != mNextData; }
 
     //! returns the total number of entries available in the stream.
     virtual uint32_t size() override { Q_ASSERT( 0 && "not available" ); return 0; }

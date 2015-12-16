@@ -1311,7 +1311,7 @@ namespace pal
       std::cout << "    Conflictual..." << std::endl;
 #endif
       int feat, rfeat;
-      bool sub = ctx->featWrap != nullptr;
+      bool sub = nullptr != ctx->featWrap;
 
       feat = lp->getProblemFeatureId();
       if ( sub )

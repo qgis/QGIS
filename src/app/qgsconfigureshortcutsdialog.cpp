@@ -255,7 +255,7 @@ void QgsConfigureShortcutsDialog::setNoShortcut()
 
 QAction* QgsConfigureShortcutsDialog::currentAction()
 {
-  if ( treeActions->currentItem() == nullptr )
+  if ( !treeActions->currentItem() )
     return nullptr;
 
   QObject* action = treeActions->currentItem()->data( 0, Qt::UserRole ).value<QObject*>();
@@ -397,7 +397,7 @@ void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence& 
 
   // first check whether this action is not taken already
   QAction* otherAction = QgsShortcutsManager::instance()->actionForShortcut( s );
-  if ( otherAction != nullptr )
+  if ( otherAction )
   {
     QString otherActionText = otherAction->text();
     otherActionText.remove( '&' ); // remove the accelerator

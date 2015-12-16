@@ -202,7 +202,7 @@ void QgsOracleSelectGeoraster::showSelection( const QString & line )
   hDS = GDALOpenShared( TO8F( identification ), eAccess );
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  if ( hDS == nullptr )
+  if ( !hDS )
   {
     QMessageBox::information( this,
                               tr( "Open failed" ),

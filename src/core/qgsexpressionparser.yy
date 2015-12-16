@@ -38,7 +38,7 @@ extern int exp_lex_destroy(yyscan_t scanner);
 extern int exp_lex(YYSTYPE* yylval_param, yyscan_t yyscanner);
 extern YY_BUFFER_STATE exp__scan_string(const char* buffer, yyscan_t scanner);
 
-/** returns parsed tree, otherwise returns NULL and sets parserErrorMsg
+/** returns parsed tree, otherwise returns nullptr and sets parserErrorMsg
     (interface function to be called from QgsExpression)
   */
 QgsExpression::Node* parseExpression(const QString& str, QString& parserErrorMsg);
@@ -253,7 +253,7 @@ expression:
           }
           else
           {
-            $$ = new QgsExpression::NodeFunction( fnIndex, NULL );
+            $$ = new QgsExpression::NodeFunction( fnIndex, nullptr );
           }
           delete $1;
         }
@@ -294,7 +294,7 @@ when_then_clause:
 %%
 
 
-// returns parsed tree, otherwise returns NULL and sets parserErrorMsg
+// returns parsed tree, otherwise returns nullptr and sets parserErrorMsg
 QgsExpression::Node* parseExpression(const QString& str, QString& parserErrorMsg)
 {
   expression_parser_context ctx;
@@ -314,7 +314,7 @@ QgsExpression::Node* parseExpression(const QString& str, QString& parserErrorMsg
   {
     parserErrorMsg = ctx.errorMsg;
     delete ctx.rootNode;
-    return NULL;
+    return nullptr;
   }
 }
 

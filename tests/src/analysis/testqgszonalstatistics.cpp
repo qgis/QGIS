@@ -45,7 +45,7 @@ class TestQgsZonalStatistics : public QObject
 };
 
 TestQgsZonalStatistics::TestQgsZonalStatistics()
-    : mVectorLayer( NULL )
+    : mVectorLayer( nullptr )
 {
 
 }
@@ -84,7 +84,7 @@ void TestQgsZonalStatistics::cleanupTestCase()
 void TestQgsZonalStatistics::testStatistics()
 {
   QgsZonalStatistics zs( mVectorLayer, mRasterPath, "", 1 );
-  zs.calculateStatistics( NULL );
+  zs.calculateStatistics( nullptr );
 
   QgsFeature f;
   QgsFeatureRequest request;
@@ -111,7 +111,7 @@ void TestQgsZonalStatistics::testStatistics()
 
   // same with long prefix to ensure that field name truncation handled correctly
   QgsZonalStatistics zsl( mVectorLayer, mRasterPath, "myqgis2_", 1 );
-  zsl.calculateStatistics( NULL );
+  zsl.calculateStatistics( nullptr );
 
   request.setFilterFid( 0 );
   fetched = mVectorLayer->getFeatures( request ).nextFeature( f );

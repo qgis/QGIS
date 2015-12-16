@@ -608,7 +608,7 @@ bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMeth
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && mSource->mCanBeSimplified )
   {
     mEditGeometrySimplifier = QgsSimplifyMethod::createGeometrySimplifier( simplifyMethod );
-    return mEditGeometrySimplifier != nullptr;
+    return nullptr != mEditGeometrySimplifier;
   }
   return false;
 }

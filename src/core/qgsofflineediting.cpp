@@ -196,10 +196,8 @@ void QgsOfflineEditing::synchronize()
 {
   // open logging db
   sqlite3* db = openLoggingDb();
-  if ( db == nullptr )
-  {
+  if ( !db )
     return;
-  }
 
   emit progressStarted();
 
@@ -455,10 +453,8 @@ void QgsOfflineEditing::createLoggingTables( sqlite3* db )
 
 QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, const QString& offlineDbPath )
 {
-  if ( layer == nullptr )
-  {
+  if ( !layer )
     return nullptr;
-  }
 
   QString tableName = layer->id();
 
@@ -1141,10 +1137,8 @@ QgsOfflineEditing::GeometryChanges QgsOfflineEditing::sqlQueryGeometryChanges( s
 void QgsOfflineEditing::committedAttributesAdded( const QString& qgisLayerId, const QList<QgsField>& addedAttributes )
 {
   sqlite3* db = openLoggingDb();
-  if ( db == nullptr )
-  {
+  if ( !db )
     return;
-  }
 
   // insert log
   int layerId = getOrCreateLayerId( db, qgisLayerId );
@@ -1171,10 +1165,8 @@ void QgsOfflineEditing::committedAttributesAdded( const QString& qgisLayerId, co
 void QgsOfflineEditing::committedFeaturesAdded( const QString& qgisLayerId, const QgsFeatureList& addedFeatures )
 {
   sqlite3* db = openLoggingDb();
-  if ( db == nullptr )
-  {
+  if ( !db )
     return;
-  }
 
   // insert log
   int layerId = getOrCreateLayerId( db, qgisLayerId );
@@ -1200,10 +1192,8 @@ void QgsOfflineEditing::committedFeaturesAdded( const QString& qgisLayerId, cons
 void QgsOfflineEditing::committedFeaturesRemoved( const QString& qgisLayerId, const QgsFeatureIds& deletedFeatureIds )
 {
   sqlite3* db = openLoggingDb();
-  if ( db == nullptr )
-  {
+  if ( !db )
     return;
-  }
 
   // insert log
   int layerId = getOrCreateLayerId( db, qgisLayerId );
@@ -1231,10 +1221,8 @@ void QgsOfflineEditing::committedFeaturesRemoved( const QString& qgisLayerId, co
 void QgsOfflineEditing::committedAttributeValuesChanges( const QString& qgisLayerId, const QgsChangedAttributesMap& changedAttrsMap )
 {
   sqlite3* db = openLoggingDb();
-  if ( db == nullptr )
-  {
+  if ( !db )
     return;
-  }
 
   // insert log
   int layerId = getOrCreateLayerId( db, qgisLayerId );
@@ -1268,10 +1256,8 @@ void QgsOfflineEditing::committedAttributeValuesChanges( const QString& qgisLaye
 void QgsOfflineEditing::committedGeometriesChanges( const QString& qgisLayerId, const QgsGeometryMap& changedGeometries )
 {
   sqlite3* db = openLoggingDb();
-  if ( db == nullptr )
-  {
+  if ( !db )
     return;
-  }
 
   // insert log
   int layerId = getOrCreateLayerId( db, qgisLayerId );

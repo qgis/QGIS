@@ -318,7 +318,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& i
     QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
 
     // If any of the rules don't have a symbol let the user know and exit.
-    if ( initialRule->symbol() == nullptr )
+    if ( !initialRule->symbol() )
     {
       QMessageBox::warning( this, tr( "Scale refinement" ), tr( "Parent rule %1 must have a symbol for this operation." ).arg( initialRule->label() ) );
       return;
