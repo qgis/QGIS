@@ -20,6 +20,14 @@
 
 class QgsAbstractGeometrySimplifier;
 
+// Temporarily used structure to cache order by information
+class QgsIndexedFeature
+{
+  public:
+    QVector<QVariant> mIndexes;
+    QgsFeature mFeature;
+};
+
 /** \ingroup core
  * Internal feature iterator to be implemented within data providers
  */
@@ -99,11 +107,33 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! this iterator runs local simplification
     bool mLocalSimplification;
 
+    bool mUseCachedFeatures;
+    QList<QgsIndexedFeature> mCachedFeatures;
+    QList<QgsIndexedFeature>::ConstIterator mFeatureIterator;
+
     //! returns whether the iterator supports simplify geometries on provider side
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const;
 
     //! simplify the specified geometry if it was configured
     virtual bool simplify( QgsFeature& feature );
+
+    /**
+     * Should be overwritten by providers which implement an own order by strategy
+     * If the own order by strategy is successful, return true, if not, return false
+     * and a local order by will be triggered instead.
+     * By default returns false
+     *
+     * @note added in QGIS 2.14
+     */
+    virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys );
+
+    /**
+     * Setup the orderby. Internally calls prepareOrderBy and if false is returned will
+     * cache all features and order them with local expression evaluation.
+     *
+     * @note added in QGIS 2.14
+     */
+    void setupOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys );
 };
 
 
