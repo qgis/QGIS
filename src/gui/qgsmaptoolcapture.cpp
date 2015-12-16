@@ -75,8 +75,19 @@ QgsMapToolCapture::~QgsMapToolCapture()
   }
 }
 
+void QgsMapToolCapture::activate()
+{
+  if ( mTempRubberBand )
+    mTempRubberBand->show();
+
+  QgsMapToolAdvancedDigitizing::activate();
+}
+
 void QgsMapToolCapture::deactivate()
 {
+  if ( mTempRubberBand )
+    mTempRubberBand->hide();
+
   delete mSnappingMarker;
   mSnappingMarker = nullptr;
 
