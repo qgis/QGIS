@@ -530,7 +530,7 @@ void QgsVectorLayerFeatureIterator::prepareExpressions()
            || mRequest.subsetOfAttributes().contains( i ) )
       {
         int oi = mSource->mFields.fieldOriginIndex( i );
-        QgsExpression* exp = new QgsExpression( exps[oi].expression );
+        QgsExpression* exp = new QgsExpression( exps[oi].cachedExpression );
         exp->prepare( mExpressionContext.data() );
         mExpressionFieldInfo.insert( i, exp );
 
