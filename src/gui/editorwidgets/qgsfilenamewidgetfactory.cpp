@@ -15,8 +15,11 @@
 
 #include "qgsfilenamewidgetfactory.h"
 
-QgsFileNameWidgetFactory::QgsFileNameWidgetFactory( const QString& name )
-  : QgsEditorWidgetFactory( name )
+#include "qgsfilenamewidgetwrapper.h"
+#include "qgsdummyconfigdlg.h"
+
+QgsFileNameWidgetFactory::QgsFileNameWidgetFactory( const QString& name ) :
+    QgsEditorWidgetFactory( name )
 {
 }
 
@@ -27,63 +30,5 @@ QgsEditorWidgetWrapper* QgsFileNameWidgetFactory::create( QgsVectorLayer* vl, in
 
 QgsEditorConfigWidget* QgsFileNameWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
-  return new QgsFileNameConfigDlg( vl, fieldIdx, parent );
-}
-
-void QgsFileNameWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( doc )
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  // Non mandatory options are not saved into project file (to save some space).
-  if ( config.contains( "UseLink" ) )
-    configElement.setAttribute( "UseLink", config.value( "UseLink" ).toBool() );
-
-  if ( config.contains( "FullUrl" ) )
-    configElement.setAttribute( "FullUrl", config.value( "FullUrl" ).toBool() );
-  
-  if ( config.contains( "DefaultRoot" ) )
-    configElement.setAttribute( "DefaultRoot", config.value( "DefaultRoot" ).toString() );
-  
-  if ( config.contains( "RelativeStorage" ) )
-    configElement.setAttribute( "RelativeStorage" , config.value( "RelativeStorage" ).toString() );
-  
-  configElement.setAttribute( "StorageMode", config.value( "StorageMode" ).toString() );
-}
-
-QgsEditorWidgetConfig QgsFileNameWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  QgsEditorWidgetConfig cfg;
-
-  if ( configElement.hasAttribute( "UseLink" ) )
-    cfg.insert( "UseLink", configElement.attribute( "UseLink" ) == "1" );
-  
-  if ( configElement.hasAttribute( "FullUrl" ) )
-    cfg.insert( "FullUrl", configElement.attribute( "FullUrl" ) == "1" );
-
-  if ( configElement.hasAttribute( "DefaultRoot" ) )
-    cfg.insert( "DefaultRoot", configElement.attribute( "DefaultRoot" ) );
-
-  if ( configElement.hasAttribute( "RelativeStorage" ) )
-  {
-    if ( ( configElement.attribute( "RelativeStorage" ) == "Default" && configElement.hasAttribute( "DefaultRoot" ) ) ||
-	 configElement.attribute( "RelativeStorage" ) == "Project" )
-      cfg.insert( "RelativeStorage" , configElement.attribute( "RelativeStorage" ) );
-  }
-  
-  cfg.insert( "StorageMode", configElement.attribute( "StorageMode", "Files" ) );
-						      
-  return cfg;
-}
-
-bool QgsFileNameWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )
-{
-  if ( vl->fields().at( fieldIdx ).type() == QVariant::String )
-      return true;
-  
-  return false;
+  return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "Simplifies file selection by adding a file chooser dialog." ) );
 }

@@ -1,0 +1,117 @@
+/***************************************************************************
+  qgsfilepickerwidget.h
+
+ ---------------------
+ begin                : 17.12.2015
+ copyright            : (C) 2015 by Denis Rouzaud
+ email                : denis.rouzaud@gmail.com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSFILEPICKERWIDGET_H
+#define QGSFILEPICKERWIDGET_H
+
+class QLabel;
+class QToolButton;
+class QVariant;
+
+class QgsFilterLineEdit;
+
+#include <QWidget>
+
+class GUI_EXPORT QgsFilePickerWidget : public QWidget
+{
+    Q_OBJECT
+    Q_PROPERTY( bool filePickerButtonVisible READ filePickerButtonVisible WRITE setFilePickerButtonVisible )
+    Q_PROPERTY( bool useLink READ useLink WRITE setUseLink )
+    Q_PROPERTY( bool fullUrl READ fullUrl WRITE setFullUrl )
+    Q_PROPERTY( QString defaultRoot READ defaultRoot WRITE setDefaultRoot )
+    Q_PROPERTY( StorageMode storageMode READ storageMode WRITE setStorageMode )
+    Q_PROPERTY( RelativeStorage relativeStorage READ relativeStorage WRITE setRelativeStorage )
+
+  public:
+    enum StorageMode
+    {
+      File,
+      Directory
+    };
+
+    enum RelativeStorage
+    {
+      Absolute,
+      RelativeProject,
+      RelativeDefaultPath
+    };
+
+  public:
+    explicit QgsFilePickerWidget( QWidget *parent = 0 );
+
+    //! Returns the current file path
+    QString filePath();
+
+    //! Sets the file path
+    void setFilePath( QString path );
+
+    //! defines if the widget is readonly
+    void setReadOnly( bool readOnly );
+
+    //! determines if the tool button is shown
+    bool filePickerButtonVisible() const;
+    //! determines if the tool button is shown
+    void setFilePickerButtonVisible( bool visible );
+
+    //! determines if the file path will be shown as a link
+    bool useLink() const;
+    //! determines if the file path will be shown as a link
+    void setUseLink( bool useLink );
+
+    //! determines if the links shows the full path or not
+    bool fullUrl() const;
+    void setFullUrl( bool fullUrl );
+
+    //! determinies the default root path
+    QString defaultRoot() const;
+    void setDefaultRoot( QString defaultRoot );
+
+    //! determines the storage mode (i.e. file or directory)
+    QgsFilePickerWidget::StorageMode storageMode() const;
+    void setStorageMode( QgsFilePickerWidget::StorageMode storageMode );
+
+    //! determines if the relative path is with respect to the project path or the default path
+    QgsFilePickerWidget::RelativeStorage relativeStorage();
+    void setRelativeStorage( QgsFilePickerWidget::RelativeStorage relativeStorage );
+
+  signals:
+    void fileChanged( QString );
+
+  private slots:
+    void openFileDialog();
+    void textEdited( QString path );
+
+  private:
+    QString mFilePath;
+    bool mButtonVisible;
+    bool mUseLink;
+    bool mFullUrl;
+    QString mDefaultRoot;
+    StorageMode mStorageMode;
+    RelativeStorage mRelativeStorage;
+
+    QLabel* mLinkLabel;
+    QgsFilterLineEdit* mLineEdit;
+    QToolButton* mFilePickerButton;
+
+    //! returns a HTML code with a link to the given file path
+    QString toUrl( const QString& value );
+
+    //! Returns a filePath with relative path options applied (or not) !
+    QString relativePath( QString filePath, bool removeRelative );
+};
+
+#endif // QGSFILEPICKERWIDGET_H
