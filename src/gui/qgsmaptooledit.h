@@ -49,7 +49,7 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     */
     QgsRubberBand* createRubberBand( QGis::GeometryType geometryType = QGis::Line, bool alternativeBand = false );
 
-    QgsGeometryRubberBand* createGeometryRubberBand( QGis::GeometryType geometryType = QGis::Line ) const;
+    QgsGeometryRubberBand* createGeometryRubberBand( QGis::GeometryType geometryType = QGis::Line , bool alternativeBand = false ) const;
 
     /** Returns the current vector layer of the map canvas or 0*/
     QgsVectorLayer* currentVectorLayer();
