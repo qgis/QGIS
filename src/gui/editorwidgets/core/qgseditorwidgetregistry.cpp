@@ -24,23 +24,25 @@
 
 // Editors
 #include "qgsclassificationwidgetwrapperfactory.h"
-#include "qgsrangewidgetfactory.h"
-#include "qgsuniquevaluewidgetfactory.h"
-#include "qgsfilenamewidgetfactory.h"
-#include "qgsvaluemapwidgetfactory.h"
-#include "qgsenumerationwidgetfactory.h"
-#include "qgshiddenwidgetfactory.h"
 #include "qgscheckboxwidgetfactory.h"
-#include "qgstexteditwidgetfactory.h"
-#include "qgsvaluerelationwidgetfactory.h"
-#include "qgsuuidwidgetfactory.h"
+#include "qgscolorwidgetfactory.h"
+#include "qgsdatetimeeditfactory.h"
+#include "qgsenumerationwidgetfactory.h"
+#include "qgsexternalresourcewidgetfactory.h"
+#include "qgsfilenamewidgetfactory.h"
+#include "qgshiddenwidgetfactory.h"
 #include "qgsphotowidgetfactory.h"
+#include "qgsrangewidgetfactory.h"
+#include "qgsrelationreferencefactory.h"
+#include "qgstexteditwidgetfactory.h"
+#include "qgsuniquevaluewidgetfactory.h"
+#include "qgsuuidwidgetfactory.h"
+#include "qgsvaluemapwidgetfactory.h"
+#include "qgsvaluerelationwidgetfactory.h"
 #ifdef WITH_QTWEBKIT
 #include "qgswebviewwidgetfactory.h"
 #endif
-#include "qgscolorwidgetfactory.h"
-#include "qgsrelationreferencefactory.h"
-#include "qgsdatetimeeditfactory.h"
+
 
 QgsEditorWidgetRegistry* QgsEditorWidgetRegistry::instance()
 {
@@ -69,6 +71,7 @@ void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBa
   reg->registerWidget( "Color", new QgsColorWidgetFactory( tr( "Color" ) ) );
   reg->registerWidget( "RelationReference", new QgsRelationReferenceFactory( tr( "Relation Reference" ), mapCanvas, messageBar ) );
   reg->registerWidget( "DateTime", new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
+  reg->registerWidget( "ExternalResource", new QgsExternalResourceWidgetFactory( tr( "External Resource" ) ) );
 }
 
 QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()

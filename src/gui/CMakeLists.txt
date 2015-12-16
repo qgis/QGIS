@@ -103,7 +103,9 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsdummyconfigdlg.cpp
   editorwidgets/qgsenumerationwidgetwrapper.cpp
   editorwidgets/qgsenumerationwidgetfactory.cpp
-  editorwidgets/qgsfilenameconfigdlg.cpp
+  editorwidgets/qgsexternalresourceconfigdlg.cpp
+  editorwidgets/qgsexternalresourcewidgetwrapper.cpp
+  editorwidgets/qgsexternalresourcewidgetfactory.cpp
   editorwidgets/qgsfilenamewidgetwrapper.cpp
   editorwidgets/qgsfilenamewidgetfactory.cpp
   editorwidgets/qgshiddenwidgetwrapper.cpp
@@ -190,6 +192,7 @@ SET(QGIS_GUI_SRCS
   qgsexpressionhighlighter.cpp
   qgsexpressionselectiondialog.cpp
   qgsextentgroupbox.cpp
+  qgsexternalresourcewidget.cpp
   qgsfeatureselectiondlg.cpp
   qgsfieldcombobox.cpp
   qgsfieldexpressionwidget.cpp
@@ -197,6 +200,7 @@ SET(QGIS_GUI_SRCS
   qgsfieldvalidator.cpp
   qgsfieldproxymodel.cpp
   qgsfiledropedit.cpp
+  qgsfilepickerwidget.cpp
   qgsfilterlineedit.cpp
   qgsformannotationitem.cpp
   qgsgenericprojectionselector.cpp
@@ -326,6 +330,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsexpressionhighlighter.h
   qgsexpressionselectiondialog.h
   qgsextentgroupbox.h
+  qgsexternalresourcewidget.h
   qgsfeatureselectiondlg.h
   qgsfieldcombobox.h
   qgsfieldexpressionwidget.h
@@ -333,6 +338,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfieldproxymodel.h
   qgsfieldvalidator.h
   qgsfiledropedit.h
+  qgsfilepickerwidget.h
   qgsfilterlineedit.h
   qgsformannotationitem.h
   qgsgenericprojectionselector.h
@@ -496,7 +502,8 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsdoublespinbox.h
   editorwidgets/qgsdummyconfigdlg.h
   editorwidgets/qgsenumerationwidgetwrapper.h
-  editorwidgets/qgsfilenameconfigdlg.h
+  editorwidgets/qgsexternalresourceconfigdlg.h
+  editorwidgets/qgsexternalresourcewidgetwrapper.h
   editorwidgets/qgsfilenamewidgetwrapper.h
   editorwidgets/qgshiddenwidgetwrapper.h
   editorwidgets/qgsphotoconfigdlg.h
@@ -599,6 +606,7 @@ SET(QGIS_GUI_HDRS
   editorwidgets/qgscolorwidgetfactory.h
   editorwidgets/qgsdatetimeeditfactory.h
   editorwidgets/qgsenumerationwidgetfactory.h
+  editorwidgets/qgsexternalresourcewidgetfactory.h
   editorwidgets/qgsfilenamewidgetfactory.h
   editorwidgets/qgshiddenwidgetfactory.h
   editorwidgets/qgsphotowidgetfactory.h

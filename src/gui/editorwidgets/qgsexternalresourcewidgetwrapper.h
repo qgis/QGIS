@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgsfilenamewidgetwrapper.h
+    qgsexternalresourcewidgetwrapper.h
      --------------------------------------
-    Date                 : 5.1.2014
-    Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias at opengis dot ch
+ begin                : 16.12.2015
+ copyright            : (C) 2015 by Denis Rouzaud
+ email                : denis.rouzaud@gmail.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,14 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSFILENAMEWIDGETWRAPPER_H
-#define QGSFILENAMEWIDGETWRAPPER_H
+#ifndef QGSEXTERNALRESOURCEWIDGETWRAPPER_H
+#define QGSEXTERNALRESOURCEWIDGETWRAPPER_H
+
+class QgsExternalResourceWidget;
+
+class QLabel;
+class QLineEdit;
 
 #include "qgseditorwidgetwrapper.h"
 
-#include <QLineEdit>
-#include <QPushButton>
-#include <QLabel>
 
 
 /**
@@ -28,31 +30,33 @@
  * \note not available in Python bindings
  */
 
-class GUI_EXPORT QgsFileNameWidgetWrapper : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsFileNameWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
+    explicit QgsExternalResourceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
 
-  private slots:
-    void selectFileName();
+
 
     // QgsEditorWidgetWrapper interface
   public:
     QVariant value() const override;
-    bool valid() const override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
+    bool valid() const override;
 
   public slots:
     void setValue( const QVariant& value ) override;
+    void setEnabled( bool enabled ) override;
 
   private:
     QLineEdit* mLineEdit;
-    QPushButton* mPushButton;
     QLabel* mLabel;
+    QgsExternalResourceWidget* mQgsWidget;
+
+
 };
 
-#endif // QGSFILENAMEWIDGETWRAPPER_H
+#endif // QGSEXTERNALRESOURCEWIDGETWRAPPER_H
