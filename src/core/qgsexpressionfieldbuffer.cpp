@@ -36,6 +36,7 @@ void QgsExpressionFieldBuffer::removeExpression( int index )
 void QgsExpressionFieldBuffer::updateExpression( int index, const QString& exp )
 {
   mExpressions[index].expression = exp;
+  mExpressions[index].cachedExpression = QgsExpression( exp );
 }
 
 void QgsExpressionFieldBuffer::writeXml( QDomNode& layerNode, QDomDocument& document ) const

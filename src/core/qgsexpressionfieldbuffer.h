@@ -23,6 +23,7 @@
 #include <QDomNode>
 
 #include "qgsfield.h"
+#include "qgsexpression.h"
 
 /**
  * Buffers information about expression fields for a vector layer.
@@ -34,10 +35,14 @@ class CORE_EXPORT QgsExpressionFieldBuffer
   public:
     typedef struct ExpressionField
     {
-      ExpressionField() {}
-      ExpressionField( const QString& exp, const QgsField& fld ) : expression( exp ), field( fld ) {}
+      ExpressionField() : cachedExpression( expression ) {}
+      ExpressionField( const QString& exp, const QgsField& fld ) : expression( exp ), cachedExpression( exp ), field( fld ) {}
 
+      /**
+       * @deprecated use cachedExpression instead
+       */
       QString expression;
+      QgsExpression cachedExpression;
       QgsField field;
     } ExpressionField;
 
