@@ -35,6 +35,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     , mFetched( 0 )
     , mFetchGeometry( false )
     , mExpressionCompiled( false )
+    , mOrderByCompiled( false )
     , mLastFetch( false )
 {
   if ( !source->mTransactionConnection )
@@ -111,12 +112,40 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     }
   }
 
-  bool success = declareCursor( whereClause, limitAtProvider ? mRequest.limit() : -1, false );
+  QStringList orderByParts;
+
+  mOrderByCompiled = true;
+
+  Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBys() )
+  {
+    QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
+    QgsExpression expression = clause.expression();
+    if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
+    {
+      QString part;
+      part = compiler.result();
+      part += clause.ascending() ? " ASC" : " DESC";
+      part += clause.nullsFirst() ? " NULLS FIRST" : " NULLS LAST";
+      orderByParts << part;
+    }
+    else
+    {
+      // Bail out on first non-complete compilation.
+      // Most important clauses at the beginning of the list
+      // will still be sent and used to pre-sort so the local
+      // CPU can use its cycles for fine-tuning.
+      mOrderByCompiled = false;
+      limitAtProvider = false;
+      break;
+    }
+  }
+
+  bool success = declareCursor( whereClause, limitAtProvider ? mRequest.limit() : -1, false, orderByParts.join( "," ) );
   if ( !success && useFallbackWhereClause )
   {
     //try with the fallback where clause, eg for cases when using compiled expression failed to prepare
     mExpressionCompiled = false;
-    success = declareCursor( fallbackWhereClause, -1, false );
+    success = declareCursor( fallbackWhereClause, -1, false, orderByParts.join( "," ) );
   }
 
   if ( !success )
@@ -230,6 +259,13 @@ bool QgsPostgresFeatureIterator::prepareSimplification( const QgsSimplifyMethod&
 bool QgsPostgresFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
 {
   return methodType == QgsSimplifyMethod::OptimizeForRendering || methodType == QgsSimplifyMethod::PreserveTopology;
+}
+
+bool QgsPostgresFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys )
+{
+  Q_UNUSED( orderBys )
+  // Preparation has already been done in the constructor, so we just communicate the result
+  return mOrderByCompiled;
 }
 
 bool QgsPostgresFeatureIterator::rewind()
@@ -347,7 +383,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 
 
 
-bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long limit, bool closeOnFail )
+bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long limit, bool closeOnFail, const QString& orderBy )
 {
   mFetchGeometry = !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && !mSource->mGeometryColumn.isNull();
 #if 0
@@ -508,6 +544,9 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long
 
   if ( limit >= 0 )
     query += QString( " LIMIT %1" ).arg( limit );
+
+  if ( !orderBy.isEmpty() )
+    query += QString( " ORDER BY %1 " ).arg( orderBy );
 
   if ( !mConn->openCursor( mCursorName, query ) )
   {
