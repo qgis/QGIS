@@ -300,7 +300,7 @@ bool QgsPythonUtilsImpl::runStringUnsafe( const QString& command, bool single )
   // (non-unicode strings can be mangled)
   PyRun_String( command.toUtf8().data(), single ? Py_single_input : Py_file_input, mMainDict, mMainDict );
 
-  bool res = nullptr != PyErr_Occurred();
+  bool res = nullptr == PyErr_Occurred();
 
   // we are done calling python API, release global interpreter lock
   PyGILState_Release( gstate );
