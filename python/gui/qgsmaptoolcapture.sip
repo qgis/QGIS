@@ -77,10 +77,12 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     void startCapturing();
     bool isCapturing() const;
-    void stopCapturing();
 
     int size();
     QList<QgsPoint> points();
     void setPoints( const QList<QgsPoint>& pointList );
     void closePolygon();
+
+  protected slots:
+    void stopCapturing();
 };

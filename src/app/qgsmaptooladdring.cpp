@@ -29,6 +29,8 @@ QgsMapToolAddRing::QgsMapToolAddRing( QgsMapCanvas* canvas )
     : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
 {
   mToolName = tr( "Add ring" );
+  connect( QgisApp::instance(), SIGNAL( newProject() ), this, SLOT( stopCapturing() ) );
+  connect( QgisApp::instance(), SIGNAL( projectRead() ), this, SLOT( stopCapturing() ) );
 }
 
 QgsMapToolAddRing::~QgsMapToolAddRing()
