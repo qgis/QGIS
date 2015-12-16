@@ -24,6 +24,63 @@ class QgsFeatureRequest
       FilterFids        //!< Filter using feature IDs
     };
 
+    /**
+     * @brief The OrderByClause class represents an order by clause for a QgsFeatureRequest
+     */
+    class OrderByClause
+    {
+      public:
+        /**
+         * Creates a new OrderByClause for a QgsFeatureRequest
+         *
+         * @param expression The expression to use for ordering
+         * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         *                   If thr order is ascending, by default nulls are last
+         *                   If thr order is descending, by default nulls are first
+         */
+        OrderByClause( const QString &expression, bool ascending = true );
+        /**
+         * Creates a new OrderByClause for a QgsFeatureRequest
+         *
+         * @param expression The expression to use for ordering
+         * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         * @param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+         */
+        OrderByClause( const QString &expression, bool ascending, bool nullsfirst );
+
+        /**
+         * The expression
+         * @return the expression
+         */
+        QgsExpression expression() const;
+
+        /**
+         * Order ascending
+         * @return If ascending order is requested
+         */
+        bool ascending() const;
+
+        /**
+         * Set if ascending order is requested
+         */
+        void setAscending( bool ascending );
+
+        /**
+         * Set if NULLS should be returned first
+         * @return if NULLS should be returned first
+         */
+        bool nullsFirst() const;
+
+        /**
+         * Set if NULLS should be returned first
+         */
+        void setNullsFirst( bool nullsFirst );
+
+    };
+
+    /**
+     * A special attribute that if set matches all attributes
+     */
     static const QString AllAttributes;
 
     //! construct a default request: for all features get attributes and geometries
@@ -91,6 +148,39 @@ class QgsFeatureRequest
      * @note Added in 2.12
      */
     QgsFeatureRequest& disableFilter();
+
+    /**
+     * Adds a new OrderByClause
+     *
+     * @param expression The expression to use for ordering
+     * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+     *                   If the order is ascending, by default nulls are last
+     *                   If the order is descending, by default nulls are first
+     *
+     * @added in QGIS 2.14
+     */
+
+    QgsFeatureRequest& addOrderBy( const QString &expression, bool ascending = true );
+    /**
+     * Adds a new OrderByClause, appending it as the least important one.
+     *
+     * @param expression The expression to use for ordering
+     * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+     * @param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+     *
+     * @added in QGIS 2.14
+     */
+    QgsFeatureRequest& addOrderBy( const QString &expression, bool ascending, bool nullsfirst );
+
+    /**
+     * Return a list of order by clauses specified for this feature request.
+     */
+    QList<QgsFeatureRequest::OrderByClause> orderBys() const;
+
+    /**
+     * Set a list of order by clauses.
+     */
+    void setOrderBys(const QList<QgsFeatureRequest::OrderByClause>& orderBys );
 
     /** Set the maximum number of features to request.
      * @param limit maximum number of features, or -1 to request all features.

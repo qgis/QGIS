@@ -84,6 +84,7 @@ QgsFeatureRequest& QgsFeatureRequest::operator=( const QgsFeatureRequest & rh )
   mAttrs = rh.mAttrs;
   mSimplifyMethod = rh.mSimplifyMethod;
   mLimit = rh.mLimit;
+  mOrderBys = rh.mOrderBys;
   return *this;
 }
 
@@ -139,6 +140,28 @@ QgsFeatureRequest &QgsFeatureRequest::setExpressionContext( const QgsExpressionC
 {
   mExpressionContext = context;
   return *this;
+}
+
+QgsFeatureRequest& QgsFeatureRequest::addOrderBy( const QString& expression, bool ascending )
+{
+  mOrderBys.append( OrderByClause( expression, ascending ) );
+  return *this;
+}
+
+QgsFeatureRequest& QgsFeatureRequest::addOrderBy( const QString& expression, bool ascending, bool nullsfirst )
+{
+  mOrderBys.append( OrderByClause( expression, ascending, nullsfirst ) );
+  return *this;
+}
+
+QList<QgsFeatureRequest::OrderByClause> QgsFeatureRequest::orderBys() const
+{
+  return mOrderBys;
+}
+
+void QgsFeatureRequest::setOrderBys( const QList<QgsFeatureRequest::OrderByClause>& orderBys )
+{
+  mOrderBys = orderBys;
 }
 
 QgsFeatureRequest& QgsFeatureRequest::setLimit( long limit )
@@ -228,6 +251,7 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature& feature )
   return true;
 }
 
+
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 
@@ -252,3 +276,43 @@ void QgsAbstractFeatureSource::iteratorClosed( QgsAbstractFeatureIterator* it )
 }
 
 
+
+QgsFeatureRequest::OrderByClause::OrderByClause( const QString& expression, bool ascending )
+    : mExpression( expression )
+    , mAscending( ascending )
+{
+  // postgres behavior: default for ASC: NULLS LAST, default for DESC: NULLS FIRST
+  mNullsFirst = !ascending;
+}
+
+QgsFeatureRequest::OrderByClause::OrderByClause( const QString& expression, bool ascending, bool nullsfirst )
+    : mExpression( expression )
+    , mAscending( ascending )
+    , mNullsFirst( nullsfirst )
+{
+}
+
+bool QgsFeatureRequest::OrderByClause::ascending() const
+{
+  return mAscending;
+}
+
+void QgsFeatureRequest::OrderByClause::setAscending( bool ascending )
+{
+  mAscending = ascending;
+}
+
+bool QgsFeatureRequest::OrderByClause::nullsFirst() const
+{
+  return mNullsFirst;
+}
+
+void QgsFeatureRequest::OrderByClause::setNullsFirst( bool nullsFirst )
+{
+  mNullsFirst = nullsFirst;
+}
+
+QgsExpression QgsFeatureRequest::OrderByClause::expression() const
+{
+  return mExpression;
+}
