@@ -170,11 +170,11 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   {
     QgsDebugMsgLevel( QString( "after removal rows %1, ids %2" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 4 );
     QgsDebugMsgLevel( "id->row", 4 );
-    for ( QHash<QgsFeatureId, int>::iterator it = mIdRowMap.begin(); it != mIdRowMap.end(); ++it )
+    for ( QHash<QgsFeatureId, int>::const_iterator it = mIdRowMap.constBegin(); it != mIdRowMap.constEnd(); ++it )
       QgsDebugMsgLevel( QString( "%1->%2" ).arg( FID_TO_STRING( it.key() ) ).arg( *it ), 4 );
 
     QgsDebugMsgLevel( "row->id", 4 );
-    for ( QHash<int, QgsFeatureId>::iterator it = mRowIdMap.begin(); it != mRowIdMap.end(); ++it )
+    for ( QHash<int, QgsFeatureId>::const_iterator it = mRowIdMap.constBegin(); it != mRowIdMap.constEnd(); ++it )
       QgsDebugMsgLevel( QString( "%1->%2" ).arg( it.key() ).arg( FID_TO_STRING( *it ) ), 4 );
   }
 #endif
@@ -737,7 +737,7 @@ void QgsAttributeTableModel::prefetchColumnData( int column )
   {
     if ( column >= mAttributes.count() )
       return;
-    int fieldId = mAttributes[column];
+    int fieldId = mAttributes.at( column );
     const QgsFields& fields = layer()->fields();
     QStringList fldNames;
     fldNames << fields[fieldId].name();

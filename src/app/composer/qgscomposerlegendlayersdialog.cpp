@@ -46,7 +46,7 @@ QgsMapLayer* QgsComposerLegendLayersDialog::selectedLayer()
     return nullptr;
   }
 
-  QMap<QListWidgetItem*, QgsMapLayer*>::iterator it = mItemLayerMap.find( item );
+  QMap<QListWidgetItem*, QgsMapLayer*>::const_iterator it = mItemLayerMap.constFind( item );
   QgsMapLayer* c = nullptr;
   c = it.value();
   return c;

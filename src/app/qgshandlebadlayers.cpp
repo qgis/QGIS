@@ -254,7 +254,7 @@ void QgsHandleBadLayers::browseClicked()
 
   if ( mRows.size() == 1 )
   {
-    int row = mRows[0];
+    int row = mRows.at( 0 );
     QString type = mLayerList->item( row, 1 )->text();
 
     QString memoryQualifier, fileFilter;

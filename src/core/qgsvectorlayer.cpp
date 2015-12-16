@@ -839,7 +839,7 @@ QgsRectangle QgsVectorLayer::extent()
 
     if ( mEditBuffer )
     {
-      for ( QgsFeatureMap::iterator it = mEditBuffer->mAddedFeatures.begin(); it != mEditBuffer->mAddedFeatures.end(); ++it )
+      for ( QgsFeatureMap::const_iterator it = mEditBuffer->mAddedFeatures.constBegin(); it != mEditBuffer->mAddedFeatures.constEnd(); ++it )
       {
         if ( it->constGeometry() )
         {

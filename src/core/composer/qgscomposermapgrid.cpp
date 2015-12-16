@@ -100,7 +100,7 @@ QList<QgsComposerMapGrid *> QgsComposerMapGridStack::asList() const
 
 QgsComposerMapGrid &QgsComposerMapGridStack::operator[]( int idx )
 {
-  QgsComposerMapItem* item = mItems[idx];
+  QgsComposerMapItem* item = mItems.at( idx );
   QgsComposerMapGrid* grid = dynamic_cast<QgsComposerMapGrid*>( item );
   return *grid;
 }

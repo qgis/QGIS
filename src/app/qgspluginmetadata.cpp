@@ -28,12 +28,12 @@ QgsPluginMetadata::QgsPluginMetadata( const QString& _libraryPath,
 
 }
 
-QString QgsPluginMetadata::name()
+QString QgsPluginMetadata::name() const
 {
   return m_name;
 }
 
-QString QgsPluginMetadata::library()
+QString QgsPluginMetadata::library() const
 {
   return libraryPath;
 }

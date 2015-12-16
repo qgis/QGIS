@@ -384,8 +384,8 @@ QDomDocument QgsWFSServer::describeFeatureType()
   else
   {
     //read TYPENAME
-    QMap<QString, QString>::const_iterator type_name_it = mParameters.find( "TYPENAME" );
-    if ( type_name_it != mParameters.end() )
+    QMap<QString, QString>::const_iterator type_name_it = mParameters.constFind( "TYPENAME" );
+    if ( type_name_it != mParameters.constEnd() )
     {
       typeName = type_name_it.value();
     }
@@ -724,8 +724,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   //read FEATUREDID
   bool featureIdOk = false;
   QStringList featureIdList;
-  QMap<QString, QString>::const_iterator feature_id_it = mParameters.find( "FEATUREID" );
-  if ( feature_id_it != mParameters.end() )
+  QMap<QString, QString>::const_iterator feature_id_it = mParameters.constFind( "FEATUREID" );
+  if ( feature_id_it != mParameters.constEnd() )
   {
     featureIdOk = true;
     featureIdList = feature_id_it.value().split( "," );
@@ -747,8 +747,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   if ( !featureIdOk )
   {
     //read TYPENAME
-    QMap<QString, QString>::const_iterator type_name_it = mParameters.find( "TYPENAME" );
-    if ( type_name_it != mParameters.end() )
+    QMap<QString, QString>::const_iterator type_name_it = mParameters.constFind( "TYPENAME" );
+    if ( type_name_it != mParameters.constEnd() )
     {
       mTypeName = type_name_it.value();
     }
@@ -758,8 +758,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     }
 
     //read FILTER
-    QMap<QString, QString>::const_iterator filterIt = mParameters.find( "FILTER" );
-    if ( filterIt != mParameters.end() )
+    QMap<QString, QString>::const_iterator filterIt = mParameters.constFind( "FILTER" );
+    if ( filterIt != mParameters.constEnd() )
     {
       QString errorMsg;
       if ( !filter.setContent( filterIt.value(), true, &errorMsg ) )
@@ -775,8 +775,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     //read EXP_FILTER
     if ( !filterOk )
     {
-      QMap<QString, QString>::const_iterator expFilterIt = mParameters.find( "EXP_FILTER" );
-      if ( expFilterIt != mParameters.end() )
+      QMap<QString, QString>::const_iterator expFilterIt = mParameters.constFind( "EXP_FILTER" );
+      if ( expFilterIt != mParameters.constEnd() )
       {
         expFilterOk = true;
         expFilter = expFilterIt.value();
@@ -786,8 +786,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     //read BBOX
     if ( !filterOk )
     {
-      QMap<QString, QString>::const_iterator bbIt = mParameters.find( "BBOX" );
-      if ( bbIt == mParameters.end() )
+      QMap<QString, QString>::const_iterator bbIt = mParameters.constFind( "BBOX" );
+      if ( bbIt == mParameters.constEnd() )
       {
         minx = 0; miny = 0; maxx = 0; maxy = 0;
       }
@@ -809,8 +809,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   }
 
   //read MAXFEATURES
-  QMap<QString, QString>::const_iterator mfIt = mParameters.find( "MAXFEATURES" );
-  if ( mfIt != mParameters.end() )
+  QMap<QString, QString>::const_iterator mfIt = mParameters.constFind( "MAXFEATURES" );
+  if ( mfIt != mParameters.constEnd() )
   {
     QString mfString = mfIt.value();
     bool mfOk;
@@ -819,8 +819,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   }
 
   //read STARTINDEX
-  QMap<QString, QString>::const_iterator siIt = mParameters.find( "STARTINDEX" );
-  if ( siIt != mParameters.end() )
+  QMap<QString, QString>::const_iterator siIt = mParameters.constFind( "STARTINDEX" );
+  if ( siIt != mParameters.constEnd() )
   {
     QString siString = siIt.value();
     bool siOk;
@@ -830,14 +830,14 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   //read PROPERTYNAME
   mWithGeom = true;
   mPropertyName = "*";
-  QMap<QString, QString>::const_iterator pnIt = mParameters.find( "PROPERTYNAME" );
-  if ( pnIt != mParameters.end() )
+  QMap<QString, QString>::const_iterator pnIt = mParameters.constFind( "PROPERTYNAME" );
+  if ( pnIt != mParameters.constEnd() )
   {
     mPropertyName = pnIt.value();
   }
   mGeometryName = "";
-  QMap<QString, QString>::const_iterator gnIt = mParameters.find( "GEOMETRYNAME" );
-  if ( gnIt != mParameters.end() )
+  QMap<QString, QString>::const_iterator gnIt = mParameters.constFind( "GEOMETRYNAME" );
+  if ( gnIt != mParameters.constEnd() )
   {
     mGeometryName = gnIt.value().toUpper();
   }

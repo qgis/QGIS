@@ -504,10 +504,9 @@ void QgsComposerAttributeTable::setSceneRect( const QRectF& rectangle )
 void QgsComposerAttributeTable::setSortAttributes( const QList<QPair<int, bool> >& att )
 {
   //first, clear existing sort by ranks
-  QList<QgsComposerTableColumn*>::iterator columnIt = mColumns.begin();
-  for ( ; columnIt != mColumns.end(); ++columnIt )
+  Q_FOREACH ( QgsComposerTableColumn* column, mColumns )
   {
-    ( *columnIt )->setSortByRank( 0 );
+    column->setSortByRank( 0 );
   }
 
   //now, update sort rank of specified columns
@@ -519,8 +518,8 @@ void QgsComposerAttributeTable::setSortAttributes( const QList<QPair<int, bool> 
     {
       continue;
     }
-    mColumns[( *sortedColumnIt ).first ]->setSortByRank( rank );
-    mColumns[( *sortedColumnIt ).first ]->setSortOrder(( *sortedColumnIt ).second ? Qt::AscendingOrder : Qt::DescendingOrder );
+    mColumns.at(( *sortedColumnIt ).first )->setSortByRank( rank );
+    mColumns.at(( *sortedColumnIt ).first )->setSortOrder(( *sortedColumnIt ).second ? Qt::AscendingOrder : Qt::DescendingOrder );
     rank++;
   }
 
@@ -696,13 +695,12 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
       int attribute = columnElem.attribute( "index" ).toInt();
       Qt::SortOrder order = columnElem.attribute( "ascending" ) == "true" ? Qt::AscendingOrder : Qt::DescendingOrder;
       //find corresponding column
-      QList<QgsComposerTableColumn*>::iterator columnIt = mColumns.begin();
-      for ( ; columnIt != mColumns.end(); ++columnIt )
+      Q_FOREACH ( QgsComposerTableColumn* column, mColumns )
       {
-        if (( *columnIt )->attribute() == fields[attribute].name() )
+        if ( column->attribute() == fields[attribute].name() )
         {
-          ( *columnIt )->setSortByRank( i + 1 );
-          ( *columnIt )->setSortOrder( order );
+          column->setSortByRank( i + 1 );
+          column->setSortOrder( order );
           break;
         }
       }

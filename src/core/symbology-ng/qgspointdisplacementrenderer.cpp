@@ -333,8 +333,10 @@ void QgsPointDisplacementRenderer::stopRender( QgsRenderContext& context )
 
   //printInfoDisplacementGroups(); //just for debugging
 
-  for ( QList<DisplacementGroup>::const_iterator it = mDisplacementGroups.begin(); it != mDisplacementGroups.end(); ++it )
-    drawGroup( *it, context );
+  Q_FOREACH ( const DisplacementGroup& group, mDisplacementGroups )
+  {
+    drawGroup( group, context );
+  }
 
   mDisplacementGroups.clear();
   mGroupIndex.clear();

@@ -485,9 +485,7 @@ void QgsCptCityArchive::initArchives( bool loadAll )
 
 void QgsCptCityArchive::clearArchives()
 {
-  for ( QMap< QString, QgsCptCityArchive* >::iterator it = mArchiveRegistry.begin();
-        it != mArchiveRegistry.end(); ++it )
-    delete it.value();
+  qDeleteAll( mArchiveRegistry );
   mArchiveRegistry.clear();
 }
 
@@ -588,8 +586,8 @@ void QgsCptCityDataItem::addChildItem( QgsCptCityDataItem * child, bool refresh 
     for ( i = 0; i < mChildren.size(); i++ )
     {
       // sort items by type, so directories are after data items
-      if ( mChildren[i]->mType == child->mType &&
-           mChildren[i]->mName.localeAwareCompare( child->mName ) >= 0 )
+      if ( mChildren.at( i )->mType == child->mType &&
+           mChildren.at( i )->mName.localeAwareCompare( child->mName ) >= 0 )
         break;
     }
   }
@@ -597,7 +595,7 @@ void QgsCptCityDataItem::addChildItem( QgsCptCityDataItem * child, bool refresh 
   {
     for ( i = 0; i < mChildren.size(); i++ )
     {
-      if ( mChildren[i]->mName.localeAwareCompare( child->mName ) >= 0 )
+      if ( mChildren.at( i )->mName.localeAwareCompare( child->mName ) >= 0 )
         break;
     }
   }

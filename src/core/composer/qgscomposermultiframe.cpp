@@ -189,11 +189,10 @@ void QgsComposerMultiFrame::recalculateFrameRects()
     return;
   }
 
-  QList<QgsComposerFrame*>::iterator frameIt = mFrameItems.begin();
-  for ( ; frameIt != mFrameItems.end(); ++frameIt )
+  Q_FOREACH ( QgsComposerFrame* frame, mFrameItems )
   {
-    ( *frameIt )->setSceneRect( QRectF(( *frameIt )->scenePos().x(), ( *frameIt )->scenePos().y(),
-                                       ( *frameIt )->rect().width(), ( *frameIt )->rect().height() ) );
+    frame->setSceneRect( QRectF( frame->scenePos().x(), frame->scenePos().y(),
+                                 frame->rect().width(), frame->rect().height() ) );
   }
 }
 
@@ -270,7 +269,7 @@ void QgsComposerMultiFrame::handlePageChange()
   //remove items beginning on non-existing pages
   for ( int i = mFrameItems.size() - 1; i >= 0; --i )
   {
-    QgsComposerFrame* frame = mFrameItems[i];
+    QgsComposerFrame* frame = mFrameItems.at( i );
     int page = frame->pos().y() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
     if ( page > ( mComposition->numPages() - 1 ) )
     {
@@ -303,7 +302,7 @@ void QgsComposerMultiFrame::removeFrame( int i, const bool removeEmptyPages )
     return;
   }
 
-  QgsComposerFrame* frameItem = mFrameItems[i];
+  QgsComposerFrame* frameItem = mFrameItems.at( i );
   if ( mComposition )
   {
     mIsRecalculatingSize = true;
@@ -322,10 +321,9 @@ void QgsComposerMultiFrame::removeFrame( int i, const bool removeEmptyPages )
 
 void QgsComposerMultiFrame::update()
 {
-  QList<QgsComposerFrame*>::iterator frameIt = mFrameItems.begin();
-  for ( ; frameIt != mFrameItems.end(); ++frameIt )
+  Q_FOREACH ( QgsComposerFrame* frame, mFrameItems )
   {
-    ( *frameIt )->update();
+    frame->update();
   }
 }
 
@@ -334,11 +332,10 @@ void QgsComposerMultiFrame::deleteFrames()
   ResizeMode bkResizeMode = mResizeMode;
   mResizeMode = UseExistingFrames;
   QObject::disconnect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( handleFrameRemoval( QgsComposerItem* ) ) );
-  QList<QgsComposerFrame*>::iterator frameIt = mFrameItems.begin();
-  for ( ; frameIt != mFrameItems.end(); ++frameIt )
+  Q_FOREACH ( QgsComposerFrame* frame, mFrameItems )
   {
-    mComposition->removeComposerItem( *frameIt, false );
-    delete *frameIt;
+    mComposition->removeComposerItem( frame, false );
+    delete frame;
   }
   QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( handleFrameRemoval( QgsComposerItem* ) ) );
   mFrameItems.clear();

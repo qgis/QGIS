@@ -115,7 +115,7 @@ bool QgsRasterPipe::replace( int idx, QgsRasterInterface* theInterface )
   if ( connect( interfaces ) )
   {
     success = true;
-    delete mInterfaces[idx];
+    delete mInterfaces.at( idx );
     mInterfaces[idx] = theInterface;
     setRole( theInterface, idx );
     QgsDebugMsg( "replaced ok" );
@@ -275,8 +275,8 @@ bool QgsRasterPipe::remove( int idx )
   if ( connect( interfaces ) )
   {
     success = true;
-    unsetRole( mInterfaces[idx] );
-    delete mInterfaces[idx];
+    unsetRole( mInterfaces.at( idx ) );
+    delete mInterfaces.at( idx );
     mInterfaces.remove( idx );
     QgsDebugMsg( "removed ok" );
   }
@@ -300,15 +300,15 @@ bool QgsRasterPipe::canSetOn( int idx, bool on )
 
   // Because setting interface on/off may change its output we must check if
   // connection is OK after such switch
-  bool onOrig =  mInterfaces[idx]->on();
+  bool onOrig =  mInterfaces.at( idx )->on();
 
   if ( onOrig == on ) return true;
 
-  mInterfaces[idx]->setOn( on );
+  mInterfaces.at( idx )->setOn( on );
 
   bool success = connect( mInterfaces );
 
-  mInterfaces[idx]->setOn( onOrig );
+  mInterfaces.at( idx )->setOn( onOrig );
   connect( mInterfaces );
   return success;
 }
@@ -318,15 +318,15 @@ bool QgsRasterPipe::setOn( int idx, bool on )
   QgsDebugMsg( QString( "idx = %1 on = %2" ).arg( idx ).arg( on ) );
   if ( !checkBounds( idx ) ) return false;
 
-  bool onOrig =  mInterfaces[idx]->on();
+  bool onOrig =  mInterfaces.at( idx )->on();
 
   if ( onOrig == on ) return true;
 
-  mInterfaces[idx]->setOn( on );
+  mInterfaces.at( idx )->setOn( on );
 
   if ( connect( mInterfaces ) ) return true;
 
-  mInterfaces[idx]->setOn( onOrig );
+  mInterfaces.at( idx )->setOn( onOrig );
   connect( mInterfaces );
 
   return false;

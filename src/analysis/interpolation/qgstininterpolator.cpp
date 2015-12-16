@@ -84,12 +84,11 @@ void QgsTINInterpolator::initialize()
   int nProcessedFeatures = 0;
   if ( mShowProgressDialog )
   {
-    QList<LayerData>::iterator layerDataIt = mLayerData.begin();
-    for ( ; layerDataIt != mLayerData.end(); ++layerDataIt )
+    Q_FOREACH ( const LayerData& layer, mLayerData )
     {
-      if ( layerDataIt->vectorLayer )
+      if ( layer.vectorLayer )
       {
-        nFeatures += layerDataIt->vectorLayer->featureCount();
+        nFeatures += layer.vectorLayer->featureCount();
       }
     }
   }
@@ -103,18 +102,17 @@ void QgsTINInterpolator::initialize()
 
 
   QgsFeature f;
-  QList<LayerData>::iterator layerDataIt = mLayerData.begin();
-  for ( ; layerDataIt != mLayerData.end(); ++layerDataIt )
+  Q_FOREACH ( const LayerData& layer, mLayerData )
   {
-    if ( layerDataIt->vectorLayer )
+    if ( layer.vectorLayer )
     {
       QgsAttributeList attList;
-      if ( !layerDataIt->zCoordInterpolation )
+      if ( !layer.zCoordInterpolation )
       {
-        attList.push_back( layerDataIt->interpolationAttribute );
+        attList.push_back( layer.interpolationAttribute );
       }
 
-      QgsFeatureIterator fit = layerDataIt->vectorLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
+      QgsFeatureIterator fit = layer.vectorLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
 
       while ( fit.nextFeature( f ) )
       {
@@ -126,7 +124,7 @@ void QgsTINInterpolator::initialize()
           }
           theProgressDialog->setValue( nProcessedFeatures );
         }
-        insertData( &f, layerDataIt->zCoordInterpolation, layerDataIt->interpolationAttribute, layerDataIt->mInputType );
+        insertData( &f, layer.zCoordInterpolation, layer.interpolationAttribute, layer.mInputType );
         ++nProcessedFeatures;
       }
     }

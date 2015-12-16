@@ -202,8 +202,8 @@ void QgsVectorGradientColorRampV2::convertToDiscrete( bool discrete )
     // re-arrange stops offset
     int numStops = mStops.count() + 2;
     int i = 1;
-    for ( QgsGradientStopsList::const_iterator it = mStops.begin();
-          it != mStops.end(); ++it )
+    for ( QgsGradientStopsList::const_iterator it = mStops.constBegin();
+          it != mStops.constEnd(); ++it )
     {
       newStops.append( QgsGradientStop(( double ) i / numStops, it->color ) );
       if ( i == numStops - 1 )
@@ -218,8 +218,8 @@ void QgsVectorGradientColorRampV2::convertToDiscrete( bool discrete )
     // re-arrange stops offset, remove duplicate last color
     int numStops = mStops.count() + 2;
     int i = 1;
-    for ( QgsGradientStopsList::const_iterator it = mStops.begin();
-          it != mStops.end(); ++it )
+    for ( QgsGradientStopsList::const_iterator it = mStops.constBegin();
+          it != mStops.constEnd(); ++it )
     {
       newStops.append( QgsGradientStop(( double ) i / ( numStops - 2 ), it->color ) );
       if ( i == numStops - 3 )
@@ -244,8 +244,8 @@ void QgsVectorGradientColorRampV2::addStopsToGradient( QGradient* gradient, doub
   gradient->setColorAt( 0, color1 );
   gradient->setColorAt( 1, color2 );
 
-  for ( QgsGradientStopsList::const_iterator it = mStops.begin();
-        it != mStops.end(); ++it )
+  for ( QgsGradientStopsList::const_iterator it = mStops.constBegin();
+        it != mStops.constEnd(); ++it )
   {
     QColor rampColor = it->color;
     if ( alpha < 1 )
@@ -709,7 +709,7 @@ bool QgsCptCityColorRampV2::loadFile()
   }
 
   // remove first and last items (mColor1 and mColor2)
-  if ( ! mStops.isEmpty() && mStops.first().offset == 0.0 )
+  if ( ! mStops.isEmpty() && mStops.at( 0 ).offset == 0.0 )
     mColor1 = mStops.takeFirst().color;
   if ( ! mStops.isEmpty() && mStops.last().offset == 1.0 )
     mColor2 = mStops.takeLast().color;

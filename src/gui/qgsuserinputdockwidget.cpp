@@ -103,8 +103,8 @@ void QgsUserInputDockWidget::updateLayoutDirection()
 {
   mLayout->setDirection( mLayoutHorizontal ? QBoxLayout::LeftToRight : QBoxLayout::TopToBottom );
 
-  QMap<QWidget*, QFrame*>::iterator i = mWidgetList.begin();
-  while ( i != mWidgetList.end() )
+  QMap<QWidget*, QFrame*>::const_iterator i = mWidgetList.constBegin();
+  while ( i != mWidgetList.constEnd() )
   {
     if ( i.value() )
     {

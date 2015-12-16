@@ -1258,9 +1258,9 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
     double r = rS.toDouble();
     m.identifier = QString::number( i );
     Q_ASSERT( l.boundingBoxes.size() == 1 );
-    m.matrixWidth  = ceil( l.boundingBoxes[0].box.width() / m.tileWidth / r );
-    m.matrixHeight = ceil( l.boundingBoxes[0].box.height() / m.tileHeight / r );
-    m.topLeft = QgsPoint( l.boundingBoxes[0].box.xMinimum(), l.boundingBoxes[0].box.yMinimum() + m.matrixHeight * m.tileHeight * r );
+    m.matrixWidth  = ceil( l.boundingBoxes.at( 0 ).box.width() / m.tileWidth / r );
+    m.matrixHeight = ceil( l.boundingBoxes.at( 0 ).box.height() / m.tileHeight / r );
+    m.topLeft = QgsPoint( l.boundingBoxes.at( 0 ).box.xMinimum(), l.boundingBoxes.at( 0 ).box.yMinimum() + m.matrixHeight * m.tileHeight * r );
     ms.tileMatrices.insert( r, m );
     i++;
   }

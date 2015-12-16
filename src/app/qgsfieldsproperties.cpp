@@ -557,7 +557,7 @@ void QgsFieldsProperties::attributeAdded( int idx )
   mFieldsList->setCurrentCell( row, idx );
 
   for ( int i = idx + 1; i < mIndexedWidgets.count(); i++ )
-    mIndexedWidgets[i]->setData( Qt::DisplayRole, i );
+    mIndexedWidgets.at( i )->setData( Qt::DisplayRole, i );
 
   if ( sorted )
     mFieldsList->setSortingEnabled( true );
@@ -570,7 +570,7 @@ void QgsFieldsProperties::attributeDeleted( int idx )
   mIndexedWidgets.removeAt( idx );
   for ( int i = idx; i < mIndexedWidgets.count(); i++ )
   {
-    mIndexedWidgets[i]->setData( Qt::DisplayRole, i );
+    mIndexedWidgets.at( i )->setData( Qt::DisplayRole, i );
   }
 }
 

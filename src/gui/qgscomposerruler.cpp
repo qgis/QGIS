@@ -461,8 +461,8 @@ void QgsComposerRuler::setSnapLinePosition( const QPointF& pos )
   }
 
   //move snapped items together with the snap line
-  QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >::iterator itemIt = mSnappedItems.begin();
-  for ( ; itemIt != mSnappedItems.end(); ++itemIt )
+  QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >::const_iterator itemIt = mSnappedItems.constBegin();
+  for ( ; itemIt != mSnappedItems.constEnd(); ++itemIt )
   {
     if ( mDirection == Horizontal )
     {

@@ -387,12 +387,11 @@ bool QgsComposerAttributeTableColumnModel::moveColumnInSortRank( QgsComposerTabl
 
   //find column before this one in sort order
   QList<QgsComposerTableColumn*> sortedColumns;
-  QList<QgsComposerTableColumn*>::iterator columnIt = mComposerTable->columns()->begin();
-  for ( ; columnIt != mComposerTable->columns()->end(); ++columnIt )
+  Q_FOREACH ( QgsComposerTableColumn* currentColumn, *mComposerTable->columns() )
   {
-    if (( *columnIt )->sortByRank() > 0 )
+    if ( currentColumn->sortByRank() > 0 )
     {
-      sortedColumns.append( *columnIt );
+      sortedColumns.append( currentColumn );
     }
   }
   qStableSort( sortedColumns.begin(), sortedColumns.end(), columnsBySortRank );

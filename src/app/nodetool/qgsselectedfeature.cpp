@@ -249,13 +249,13 @@ void QgsSelectedFeature::deleteSelectedVertexes()
   int count = 0;
   for ( int i = mVertexMap.size() - 1; i > -1 && nSelected > 0; i-- )
   {
-    if ( mVertexMap[i]->isSelected() )
+    if ( mVertexMap.at( i )->isSelected() )
     {
       if ( topologicalEditing )
       {
         // snap from current vertex
         currentResultList.clear();
-        mVlayer->snapWithContext( mVertexMap[i]->pointV1(), ZERO_TOLERANCE, currentResultList, QgsSnapper::SnapToVertex );
+        mVlayer->snapWithContext( mVertexMap.at( i )->pointV1(), ZERO_TOLERANCE, currentResultList, QgsSnapper::SnapToVertex );
       }
 
       // only last update should trigger the geometry update
@@ -385,7 +385,7 @@ void QgsSelectedFeature::deleteVertexMap()
 
 bool QgsSelectedFeature::isSelected( int vertexNr )
 {
-  return mVertexMap[vertexNr]->isSelected();
+  return mVertexMap.at( vertexNr )->isSelected();
 }
 
 QgsGeometry *QgsSelectedFeature::geometry()
@@ -427,7 +427,7 @@ void QgsSelectedFeature::selectVertex( int vertexNr )
   if ( vertexNr < 0 || vertexNr >= mVertexMap.size() )
     return;
 
-  QgsVertexEntry *entry = mVertexMap[vertexNr];
+  QgsVertexEntry *entry = mVertexMap.at( vertexNr );
   entry->setSelected();
 
   emit selectionChanged();
@@ -438,7 +438,7 @@ void QgsSelectedFeature::deselectVertex( int vertexNr )
   if ( vertexNr < 0 || vertexNr >= mVertexMap.size() )
     return;
 
-  QgsVertexEntry *entry = mVertexMap[vertexNr];
+  QgsVertexEntry *entry = mVertexMap.at( vertexNr );
   entry->setSelected( false );
 
   emit selectionChanged();
@@ -448,7 +448,7 @@ void QgsSelectedFeature::deselectAllVertexes()
 {
   for ( int i = 0; i < mVertexMap.size(); i++ )
   {
-    mVertexMap[i]->setSelected( false );
+    mVertexMap.at( i )->setSelected( false );
   }
   emit selectionChanged();
 }
@@ -458,7 +458,7 @@ void QgsSelectedFeature::invertVertexSelection( int vertexNr )
   if ( vertexNr < 0 || vertexNr >= mVertexMap.size() )
     return;
 
-  QgsVertexEntry *entry = mVertexMap[vertexNr];
+  QgsVertexEntry *entry = mVertexMap.at( vertexNr );
 
   bool selected = !entry->isSelected();
 

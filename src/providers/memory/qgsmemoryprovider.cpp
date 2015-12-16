@@ -396,7 +396,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap & a
       continue;
 
     const QgsAttributeMap& attrs = it.value();
-    for ( QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2 )
+    for ( QgsAttributeMap::const_iterator it2 = attrs.constBegin(); it2 != attrs.constEnd(); ++it2 )
       fit->setAttribute( it2.key(), it2.value() );
   }
   return true;
@@ -455,7 +455,7 @@ bool QgsMemoryProvider::createSpatialIndex()
     mSpatialIndex = new QgsSpatialIndex();
 
     // add existing features to index
-    for ( QgsFeatureMap::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it )
+    for ( QgsFeatureMap::const_iterator it = mFeatures.constBegin(); it != mFeatures.constEnd(); ++it )
     {
       mSpatialIndex->insertFeature( *it );
     }

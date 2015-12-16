@@ -2909,8 +2909,8 @@ QVariant QgsExpression::specialColumn( const QString& name )
     // function of the same name already exists
     return QVariant();
   }
-  QMap<QString, QVariant>::iterator it = gmSpecialColumns.find( name );
-  if ( it == gmSpecialColumns.end() )
+  QMap<QString, QVariant>::const_iterator it = gmSpecialColumns.constFind( name );
+  if ( it == gmSpecialColumns.constEnd() )
   {
     return QVariant();
   }
@@ -2953,7 +2953,7 @@ QString QgsExpression::expression() const
 QList<QgsExpression::Function*> QgsExpression::specialColumns()
 {
   QList<Function*> defs;
-  for ( QMap<QString, QVariant>::const_iterator it = gmSpecialColumns.begin(); it != gmSpecialColumns.end(); ++it )
+  for ( QMap<QString, QVariant>::const_iterator it = gmSpecialColumns.constBegin(); it != gmSpecialColumns.constEnd(); ++it )
   {
     //check for special column group name
     QString group = gmSpecialColumnGroups.value( it.key(), "Record" );

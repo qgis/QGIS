@@ -512,8 +512,8 @@ void QgsRasterFormatSaveOptionsWidget::setCreateOptions()
 {
   QSettings mySettings;
   QString myProfiles;
-  QMap< QString, QString >::iterator i = mOptionsMap.begin();
-  while ( i != mOptionsMap.end() )
+  QMap< QString, QString >::const_iterator i = mOptionsMap.constBegin();
+  while ( i != mOptionsMap.constEnd() )
   {
     setCreateOptions( i.key(), i.value() );
     myProfiles += i.key() + QLatin1String( " " );

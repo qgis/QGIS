@@ -140,7 +140,7 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
 
     if ( !mItems.isEmpty() )
     {
-      showItem( mItems.first() );
+      showItem( mItems.at( 0 ) );
     }
     else
     {

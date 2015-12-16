@@ -225,7 +225,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
     CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configOld );
     myCrs.createFromUserInput( "ESRI::" + myWktStrings[i] );
     msg = testESRIWkt( i, myCrs );
-    if ( GDAL_VERSION_NUM < myGdalVersionOK[i] )
+    if ( GDAL_VERSION_NUM < myGdalVersionOK.at( i ) )
     {
       QEXPECT_FAIL( "", QString( "expected failure with GDAL %1 : %2"
                                ).arg( GDAL_VERSION_NUM ).arg( msg ).toLocal8Bit().constData(),
@@ -254,7 +254,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
       {
         myCrs = myLayer->crs();
         msg = testESRIWkt( i, myCrs );
-        if ( GDAL_VERSION_NUM < myGdalVersionOK[i] )
+        if ( GDAL_VERSION_NUM < myGdalVersionOK.at( i ) )
         {
           QEXPECT_FAIL( "", QString( "expected failure with GDAL %1 : %2 using layer %3"
                                    ).arg( GDAL_VERSION_NUM ).arg( msg, fileStr ).toLocal8Bit().constData(),

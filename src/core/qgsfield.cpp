@@ -337,7 +337,7 @@ void QgsFields::remove( int fieldIdx )
   d->nameToIndex.clear();
   for ( int idx = 0; idx < count(); ++idx )
   {
-    d->nameToIndex.insert( d->fields[idx].field.name(), idx );
+    d->nameToIndex.insert( d->fields.at( idx ).field.name(), idx );
   }
 }
 

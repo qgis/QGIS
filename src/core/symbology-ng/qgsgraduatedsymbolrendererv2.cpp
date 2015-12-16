@@ -303,12 +303,12 @@ QgsGraduatedSymbolRendererV2::~QgsGraduatedSymbolRendererV2()
 
 QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForValue( double value )
 {
-  for ( QgsRangeList::iterator it = mRanges.begin(); it != mRanges.end(); ++it )
+  Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
   {
-    if ( it->lowerValue() <= value && it->upperValue() >= value )
+    if ( range.lowerValue() <= value && range.upperValue() >= value )
     {
-      if ( it->renderState() || mCounting )
-        return it->symbol();
+      if ( range.renderState() || mCounting )
+        return range.symbol();
       else
         return nullptr;
     }
@@ -384,21 +384,20 @@ void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const
     mExpression->prepare( &context.expressionContext() );
   }
 
-  QgsRangeList::iterator it = mRanges.begin();
-  for ( ; it != mRanges.end(); ++it )
+  Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
   {
-    if ( !it->symbol() )
+    if ( !range.symbol() )
       continue;
 
-    it->symbol()->startRender( context, &fields );
+    range.symbol()->startRender( context, &fields );
 
     if ( mRotation.data() || mSizeScale.data() )
     {
-      QgsSymbolV2* tempSymbol = it->symbol()->clone();
+      QgsSymbolV2* tempSymbol = range.symbol()->clone();
       tempSymbol->setRenderHints(( mRotation.data() ? QgsSymbolV2::DataDefinedRotation : 0 ) |
                                  ( mSizeScale.data() ? QgsSymbolV2::DataDefinedSizeScale : 0 ) );
       tempSymbol->startRender( context, &fields );
-      mTempSymbols[ it->symbol()] = tempSymbol;
+      mTempSymbols[ range.symbol()] = tempSymbol;
     }
   }
   return;
@@ -406,18 +405,17 @@ void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const
 
 void QgsGraduatedSymbolRendererV2::stopRender( QgsRenderContext& context )
 {
-  QgsRangeList::iterator it = mRanges.begin();
-  for ( ; it != mRanges.end(); ++it )
+  Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
   {
-    if ( !it->symbol() )
+    if ( !range.symbol() )
       continue;
 
-    it->symbol()->stopRender( context );
+    range.symbol()->stopRender( context );
   }
 
   // cleanup mTempSymbols
-  QHash<QgsSymbolV2*, QgsSymbolV2*>::iterator it2 = mTempSymbols.begin();
-  for ( ; it2 != mTempSymbols.end(); ++it2 )
+  QHash<QgsSymbolV2*, QgsSymbolV2*>::const_iterator it2 = mTempSymbols.constBegin();
+  for ( ; it2 != mTempSymbols.constEnd(); ++it2 )
   {
     it2.value()->stopRender( context );
     delete it2.value();
@@ -550,8 +548,10 @@ QgsSymbolV2List QgsGraduatedSymbolRendererV2::symbols( QgsRenderContext &context
   Q_UNUSED( context );
   QgsSymbolV2List lst;
   lst.reserve( mRanges.count() );
-  for ( int i = 0; i < mRanges.count(); i++ )
-    lst.append( mRanges[i].symbol() );
+  Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
+  {
+    lst.append( range.symbol() );
+  }
   return lst;
 }
 
@@ -1033,9 +1033,9 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
   QDomElement rotationElem = element.firstChildElement( "rotation" );
   if ( !rotationElem.isNull() && !rotationElem.attribute( "field" ).isEmpty() )
   {
-    for ( QgsRangeList::iterator it = r->mRanges.begin(); it != r->mRanges.end(); ++it )
+    Q_FOREACH ( const QgsRendererRangeV2& range, r->mRanges )
     {
-      convertSymbolRotation( it->symbol(), rotationElem.attribute( "field" ) );
+      convertSymbolRotation( range.symbol(), rotationElem.attribute( "field" ) );
     }
     if ( r->mSourceSymbol.data() )
     {
@@ -1046,9 +1046,9 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
   if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( "field" ).isEmpty() )
   {
-    for ( QgsRangeList::iterator it = r->mRanges.begin(); it != r->mRanges.end(); ++it )
+    Q_FOREACH ( const QgsRendererRangeV2& range, r->mRanges )
     {
-      convertSymbolSizeScale( it->symbol(),
+      convertSymbolSizeScale( range.symbol(),
                               QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
                               sizeScaleElem.attribute( "field" ) );
     }
@@ -1298,7 +1298,7 @@ void QgsGraduatedSymbolRendererV2::setSymbolSizes( double minSize, double maxSiz
 {
   for ( int i = 0; i < mRanges.count(); i++ )
   {
-    QScopedPointer<QgsSymbolV2> symbol( mRanges[i].symbol() ? mRanges[i].symbol()->clone() : nullptr );
+    QScopedPointer<QgsSymbolV2> symbol( mRanges.at( i ).symbol() ? mRanges.at( i ).symbol()->clone() : nullptr );
     const double size =  mRanges.count() > 1
                          ? minSize + i * ( maxSize - minSize ) / ( mRanges.count() - 1 )
                          : .5 * ( maxSize + minSize );
@@ -1403,10 +1403,10 @@ QString QgsGraduatedSymbolRendererV2::sizeScaleField() const
 void QgsGraduatedSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
 {
   mScaleMethod = scaleMethod;
-  for ( QgsRangeList::iterator it = mRanges.begin(); it != mRanges.end(); ++it )
+  Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
   {
-    if ( it->symbol() )
-      setScaleMethodToSymbol( it->symbol(), scaleMethod );
+    if ( range.symbol() )
+      setScaleMethodToSymbol( range.symbol(), scaleMethod );
   }
 }
 
@@ -1420,7 +1420,7 @@ bool QgsGraduatedSymbolRendererV2::legendSymbolItemChecked( const QString& key )
   bool ok;
   int index = key.toInt( &ok );
   if ( ok && index >= 0 && index < mRanges.size() )
-    return mRanges[ index ].renderState();
+    return mRanges.at( index ).renderState();
   else
     return true;
 }
@@ -1528,9 +1528,9 @@ void QgsGraduatedSymbolRendererV2::calculateLabelPrecision( bool updateRanges )
 {
   // Find the minimum size of a class
   double minClassRange = 0.0;
-  for ( QgsRangeList::iterator it = mRanges.begin(); it != mRanges.end(); ++it )
+  Q_FOREACH ( const QgsRendererRangeV2& rendererRange, mRanges )
   {
-    double range = it->upperValue() - it->lowerValue();
+    double range = rendererRange.upperValue() - rendererRange.lowerValue();
     if ( range <= 0.0 )
       continue;
     if ( minClassRange == 0.0 || range < minClassRange )

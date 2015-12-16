@@ -94,8 +94,8 @@ void QgsComposerManager::refreshComposers()
   QSet<QgsComposer *> selectedComposers;
   Q_FOREACH ( QListWidgetItem* item, mComposerListWidget->selectedItems() )
   {
-    QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
-    if ( it != mItemComposerMap.end() )
+    QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+    if ( it != mItemComposerMap.constEnd() )
     {
       selectedComposers << it.value();
     }
@@ -414,8 +414,8 @@ void QgsComposerManager::remove_clicked()
   // Find the QgsComposers that need to be deleted
   Q_FOREACH ( QListWidgetItem* item, composerItems )
   {
-    QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
-    if ( it != mItemComposerMap.end() )
+    QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+    if ( it != mItemComposerMap.constEnd() )
     {
       composerList << it.value();
     }
@@ -432,7 +432,7 @@ void QgsComposerManager::show_clicked()
 {
   Q_FOREACH ( QListWidgetItem* item, mComposerListWidget->selectedItems() )
   {
-    QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.find( item );
+    QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
     if ( it != mItemComposerMap.constEnd() )
     {
       QgsComposer* c = nullptr;
@@ -468,8 +468,8 @@ void QgsComposerManager::duplicate_clicked()
   QString currentTitle;
 
   QListWidgetItem* item = mComposerListWidget->selectedItems().at( 0 );
-  QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
-  if ( it != mItemComposerMap.end() )
+  QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+  if ( it != mItemComposerMap.constEnd() )
   {
     currentComposer = it.value();
     currentTitle = it.value()->title();
@@ -519,8 +519,8 @@ void QgsComposerManager::rename_clicked()
   QgsComposer* currentComposer = nullptr;
 
   QListWidgetItem* item = mComposerListWidget->selectedItems().at( 0 );
-  QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
-  if ( it != mItemComposerMap.end() )
+  QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+  if ( it != mItemComposerMap.constEnd() )
   {
     currentComposer = it.value();
     currentTitle = it.value()->title();
@@ -543,8 +543,8 @@ void QgsComposerManager::rename_clicked()
 
 void QgsComposerManager::on_mComposerListWidget_itemChanged( QListWidgetItem * item )
 {
-  QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
-  if ( it != mItemComposerMap.end() )
+  QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+  if ( it != mItemComposerMap.constEnd() )
   {
     it.value()->setTitle( item->text() );
   }

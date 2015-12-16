@@ -545,7 +545,7 @@ void QgsGeorefPluginGui::selectPoint( const QPoint &p )
   bool isMapPlugin = sender() == mToolMovePoint;
   QgsGeorefDataPoint *&mvPoint = isMapPlugin ? mMovingPoint : mMovingPointQgis;
 
-  for ( QgsGCPList::iterator it = mPoints.begin(); it != mPoints.end(); ++it )
+  for ( QgsGCPList::const_iterator it = mPoints.constBegin(); it != mPoints.constEnd(); ++it )
   {
     if (( *it )->contains( p, isMapPlugin ) )
     {

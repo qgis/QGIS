@@ -921,8 +921,8 @@ QgsGeometry QgsAtlasComposition::currentGeometry( const QgsCoordinateReferenceSy
     return *mCurrentFeature.constGeometry();
   }
 
-  QMap<long, QgsGeometry>::const_iterator it = mGeometryCache.find( crs.srsid() );
-  if ( it != mGeometryCache.end() )
+  QMap<long, QgsGeometry>::const_iterator it = mGeometryCache.constFind( crs.srsid() );
+  if ( it != mGeometryCache.constEnd() )
   {
     // we have it in cache, return it
     return it.value();

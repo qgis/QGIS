@@ -266,9 +266,9 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
                     Qt::AlignLeft | Qt::AlignVCenter, mScheme->schemeName() );
 
   //draw color swatches
-  QgsNamedColorList::iterator colorIt = mColors.begin();
+  QgsNamedColorList::const_iterator colorIt = mColors.constBegin();
   int index = 0;
-  for ( ; colorIt != mColors.end(); ++colorIt )
+  for ( ; colorIt != mColors.constEnd(); ++colorIt )
   {
     int row = index / NUMBER_COLORS_PER_ROW;
     int column = index % NUMBER_COLORS_PER_ROW;

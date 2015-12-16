@@ -239,10 +239,10 @@ void QgsBench::render()
   {
     for ( int i = 0; i < mTimes.size(); i++ )
     {
-      avg[t] += mTimes[i][t];
+      avg[t] += mTimes.at( i )[t];
 
-      if ( i == 0 || mTimes[i][t] < min[t] ) min[t] = mTimes[i][t];
-      if ( i == 0 || mTimes[i][t] > max[t] ) max[t] = mTimes[i][t];
+      if ( i == 0 || mTimes.at( i )[t] < min[t] ) min[t] = mTimes.at( i )[t];
+      if ( i == 0 || mTimes.at( i )[t] > max[t] ) max[t] = mTimes.at( i )[t];
     }
     avg[t] /= mTimes.size();
   }
@@ -254,7 +254,7 @@ void QgsBench::render()
     {
       for ( int i = 0; i < mTimes.size(); i++ )
       {
-        double d = fabs( avg[t] - mTimes[i][t] );
+        double d = fabs( avg[t] - mTimes.at( i )[t] );
         stdev[t] += pow( d, 2 );
         if ( i == 0 || d > maxdev[t] ) maxdev[t] = d;
       }

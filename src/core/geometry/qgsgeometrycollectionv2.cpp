@@ -120,7 +120,7 @@ bool QgsGeometryCollectionV2::removeGeometry( int nr )
   {
     return false;
   }
-  delete mGeometries[nr];
+  delete mGeometries.at( nr );
   mGeometries.remove( nr );
   mBoundingBox = QgsRectangle(); //set bounding box invalid
   return true;
@@ -143,20 +143,18 @@ int QgsGeometryCollectionV2::dimension() const
 
 void QgsGeometryCollectionV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
 {
-  QVector< QgsAbstractGeometryV2* >::iterator it = mGeometries.begin();
-  for ( ; it != mGeometries.end(); ++it )
+  Q_FOREACH ( QgsAbstractGeometryV2* g, mGeometries )
   {
-    ( *it )->transform( ct, d );
+    g->transform( ct, d );
   }
   mBoundingBox = QgsRectangle(); //set bounding box invalid
 }
 
 void QgsGeometryCollectionV2::transform( const QTransform& t )
 {
-  QVector< QgsAbstractGeometryV2* >::iterator it = mGeometries.begin();
-  for ( ; it != mGeometries.end(); ++it )
+  Q_FOREACH ( QgsAbstractGeometryV2* g, mGeometries )
   {
-    ( *it )->transform( t );
+    g->transform( t );
   }
   mBoundingBox = QgsRectangle(); //set bounding box invalid
 }
@@ -380,7 +378,7 @@ bool QgsGeometryCollectionV2::insertVertex( const QgsVertexId& position, const Q
     return false;
   }
 
-  bool success = mGeometries[position.part]->insertVertex( position, vertex );
+  bool success = mGeometries.at( position.part )->insertVertex( position, vertex );
   if ( success )
   {
     mBoundingBox = QgsRectangle(); //set bounding box invalid
@@ -395,7 +393,7 @@ bool QgsGeometryCollectionV2::moveVertex( const QgsVertexId& position, const Qgs
     return false;
   }
 
-  bool success = mGeometries[position.part]->moveVertex( position, newPos );
+  bool success = mGeometries.at( position.part )->moveVertex( position, newPos );
   if ( success )
   {
     mBoundingBox = QgsRectangle(); //set bounding box invalid
@@ -410,7 +408,7 @@ bool QgsGeometryCollectionV2::deleteVertex( const QgsVertexId& position )
     return false;
   }
 
-  QgsAbstractGeometryV2* geom = mGeometries[position.part];
+  QgsAbstractGeometryV2* geom = mGeometries.at( position.part );
   if ( !geom )
   {
     return false;

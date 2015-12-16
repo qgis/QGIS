@@ -92,7 +92,7 @@ void QgsLayerTreeGroup::insertChildNodes( int index, const QList<QgsLayerTreeNod
 {
   QgsLayerTreeNode* meChild = nullptr;
   if ( mMutuallyExclusive && mMutuallyExclusiveChildIndex >= 0 && mMutuallyExclusiveChildIndex < mChildren.count() )
-    meChild = mChildren[mMutuallyExclusiveChildIndex];
+    meChild = mChildren.at( mMutuallyExclusiveChildIndex );
 
   // low-level insert
   insertChildrenPrivate( index, nodes );
@@ -150,7 +150,7 @@ void QgsLayerTreeGroup::removeChildren( int from, int count )
 {
   QgsLayerTreeNode* meChild = nullptr;
   if ( mMutuallyExclusive && mMutuallyExclusiveChildIndex >= 0 && mMutuallyExclusiveChildIndex < mChildren.count() )
-    meChild = mChildren[mMutuallyExclusiveChildIndex];
+    meChild = mChildren.at( mMutuallyExclusiveChildIndex );
 
   removeChildrenPrivate( from, count );
 
@@ -462,7 +462,7 @@ void QgsLayerTreeGroup::updateVisibilityFromChildren()
     if ( mMutuallyExclusiveChildIndex < 0 || mMutuallyExclusiveChildIndex >= mChildren.count() )
       return;
 
-    Qt::CheckState meChildState = _nodeIsChecked( mChildren[mMutuallyExclusiveChildIndex] ) ? Qt::Checked : Qt::Unchecked;
+    Qt::CheckState meChildState = _nodeIsChecked( mChildren.at( mMutuallyExclusiveChildIndex ) ) ? Qt::Checked : Qt::Unchecked;
 
     setVisible( meChildState );
     return;

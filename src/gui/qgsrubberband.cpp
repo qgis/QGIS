@@ -169,8 +169,8 @@ void QgsRubberBand::addPoint( const QgsPoint & p, bool doUpdate /* = true */, in
     mPoints.push_back( QList<QgsPoint>() << p );
   }
 
-  if ( mPoints[geometryIndex].size() == 2 &&
-       mPoints[geometryIndex][0] == mPoints[geometryIndex][1] )
+  if ( mPoints.at( geometryIndex ).size() == 2 &&
+       mPoints.at( geometryIndex ).at( 0 ) == mPoints.at( geometryIndex ).at( 1 ) )
   {
     mPoints[geometryIndex].last() = p;
   }
@@ -203,7 +203,7 @@ void QgsRubberBand::removePoint( int index, bool doUpdate/* = true*/, int geomet
     // negative index removes from end, eg -1 removes last one
     if ( index < 0 )
     {
-      index = mPoints[geometryIndex].size() + index;
+      index = mPoints.at( geometryIndex ).size() + index;
     }
     mPoints[geometryIndex].removeAt( index );
   }
@@ -670,7 +670,7 @@ QgsGeometry *QgsRubberBand::asGeometry()
         }
         else
         {
-          geom = QgsGeometry::fromPolyline( getPolyline( mPoints[0] ) );
+          geom = QgsGeometry::fromPolyline( getPolyline( mPoints.at( 0 ) ) );
         }
       }
       break;

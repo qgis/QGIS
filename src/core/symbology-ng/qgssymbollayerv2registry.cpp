@@ -132,8 +132,8 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Registry::createSymbolLayerFromSld( const QStr
 QStringList QgsSymbolLayerV2Registry::symbolLayersForType( QgsSymbolV2::SymbolType type )
 {
   QStringList lst;
-  QMap<QString, QgsSymbolLayerV2AbstractMetadata*>::ConstIterator it = mMetadata.begin();
-  for ( ; it != mMetadata.end(); ++it )
+  QMap<QString, QgsSymbolLayerV2AbstractMetadata*>::ConstIterator it = mMetadata.constBegin();
+  for ( ; it != mMetadata.constEnd(); ++it )
   {
     if ( it.value()->type() == type || it.value()->type() == QgsSymbolV2::Hybrid )
       lst.append( it.key() );

@@ -127,11 +127,11 @@ void QgsTrack::writeXML( QTextStream& stream )
   for ( int i = 0; i < segments.size(); ++i )
   {
     stream << "<trkseg>\n";
-    for ( int j = 0; j < segments[i].points.size(); ++j )
+    for ( int j = 0; j < segments.at( i ).points.size(); ++j )
     {
       stream << "<trkpt lat=\"" <<
-      QString::number( segments[i].points[j].lat, 'f', OUTPUT_PRECISION ) <<
-      "\" lon=\"" << QString::number( segments[i].points[j].lon, 'f', OUTPUT_PRECISION ) <<
+      QString::number( segments.at( i ).points.at( j ).lat, 'f', OUTPUT_PRECISION ) <<
+      "\" lon=\"" << QString::number( segments.at( i ).points.at( j ).lon, 'f', OUTPUT_PRECISION ) <<
       "\">\n";
       segments[i].points[j].writeXML( stream );
       stream << "</trkpt>\n";

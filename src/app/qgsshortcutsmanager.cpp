@@ -89,7 +89,7 @@ QAction* QgsShortcutsManager::actionForShortcut( const QKeySequence& s )
   if ( s.isEmpty() )
     return nullptr;
 
-  for ( ActionsHash::iterator it = mActions.begin(); it != mActions.end(); ++it )
+  for ( ActionsHash::const_iterator it = mActions.constBegin(); it != mActions.constEnd(); ++it )
   {
     if ( it.key()->shortcut() == s )
       return it.key();
@@ -100,7 +100,7 @@ QAction* QgsShortcutsManager::actionForShortcut( const QKeySequence& s )
 
 QAction* QgsShortcutsManager::actionByName( const QString& name )
 {
-  for ( ActionsHash::iterator it = mActions.begin(); it != mActions.end(); ++it )
+  for ( ActionsHash::const_iterator it = mActions.constBegin(); it != mActions.constEnd(); ++it )
   {
     if ( it.key()->text() == name )
       return it.key();

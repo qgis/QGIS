@@ -72,7 +72,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayerV2
     //! Will always return true.
     //! This is a hybrid layer, it constructs its own geometry so it does not
     //! care about the geometry of its parents.
-    bool isCompatibleWithSymbol( QgsSymbolV2* symbol ) override;
+    bool isCompatibleWithSymbol( QgsSymbolV2* symbol ) const override;
 
     /**
      * Will render this symbol layer using the context.

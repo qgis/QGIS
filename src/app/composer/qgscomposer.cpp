@@ -912,7 +912,7 @@ void QgsComposer::updateStatusZoom()
 
 void QgsComposer::statusZoomCombo_currentIndexChanged( int index )
 {
-  double selectedZoom = mStatusZoomLevelsList[ mStatusZoomLevelsList.count() - index - 1 ];
+  double selectedZoom = mStatusZoomLevelsList.at( mStatusZoomLevelsList.count() - index - 1 );
   if ( mView )
   {
     mView->setZoomLevel( selectedZoom );
@@ -955,7 +955,7 @@ void QgsComposer::showItemOptions( QgsComposerItem* item )
     return;
   }
 
-  QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.find( item );
+  QMap<QgsComposerItem*, QWidget*>::const_iterator it = mItemWidgetMap.constFind( item );
   if ( it == mItemWidgetMap.constEnd() )
   {
     return;
@@ -2383,13 +2383,13 @@ struct QgsItemTempHider
   }
   void hideAll()
   {
-    QgsItemVisibilityHash::iterator it = mItemVisibility.begin();
-    for ( ; it != mItemVisibility.end(); ++it ) it.key()->hide();
+    QgsItemVisibilityHash::const_iterator it = mItemVisibility.constBegin();
+    for ( ; it != mItemVisibility.constEnd(); ++it ) it.key()->hide();
   }
   ~QgsItemTempHider()
   {
-    QgsItemVisibilityHash::iterator it = mItemVisibility.begin();
-    for ( ; it != mItemVisibility.end(); ++it )
+    QgsItemVisibilityHash::const_iterator it = mItemVisibility.constBegin();
+    for ( ; it != mItemVisibility.constEnd(); ++it )
     {
       it.key()->setVisible( it.value() );
     }
@@ -3426,8 +3426,8 @@ void QgsComposer::writeXML( QDomNode& parentNode, QDomDocument& doc )
   composerElem.setAttribute( "title", mTitle );
 
   //change preview mode of minimised / hidden maps before saving XML (show contents only on demand)
-  QMap< QgsComposerMap*, int >::iterator mapIt = mMapsToRestore.begin();
-  for ( ; mapIt != mMapsToRestore.end(); ++mapIt )
+  QMap< QgsComposerMap*, int >::const_iterator mapIt = mMapsToRestore.constBegin();
+  for ( ; mapIt != mMapsToRestore.constEnd(); ++mapIt )
   {
     mapIt.key()->setPreviewMode(( QgsComposerMap::PreviewMode )( mapIt.value() ) );
   }
@@ -3629,11 +3629,7 @@ void QgsComposer::restoreGridSettings()
 void QgsComposer::deleteItemWidgets()
 {
   //delete all the items
-  QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.begin();
-  for ( ; it != mItemWidgetMap.end(); ++it )
-  {
-    delete it.value();
-  }
+  qDeleteAll( mItemWidgetMap );
   mItemWidgetMap.clear();
 }
 
@@ -3749,9 +3745,9 @@ void QgsComposer::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame*
 
 void QgsComposer::deleteItem( QgsComposerItem* item )
 {
-  QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.find( item );
+  QMap<QgsComposerItem*, QWidget*>::const_iterator it = mItemWidgetMap.constFind( item );
 
-  if ( it == mItemWidgetMap.end() )
+  if ( it == mItemWidgetMap.constEnd() )
   {
     return;
   }
@@ -3937,8 +3933,8 @@ void QgsComposer::restoreComposerMapStates()
   if ( !mMapsToRestore.isEmpty() )
   {
     //go through maps and restore original preview modes (show on demand after loading from project file)
-    QMap< QgsComposerMap*, int >::iterator mapIt = mMapsToRestore.begin();
-    for ( ; mapIt != mMapsToRestore.end(); ++mapIt )
+    QMap< QgsComposerMap*, int >::const_iterator mapIt = mMapsToRestore.constBegin();
+    for ( ; mapIt != mMapsToRestore.constEnd(); ++mapIt )
     {
       mapIt.key()->setPreviewMode(( QgsComposerMap::PreviewMode )( mapIt.value() ) );
       mapIt.key()->cache();

@@ -257,8 +257,8 @@ void QgsAdvancedDigitizingDockWidget::setConstructionMode( bool enabled )
 void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction* action )
 {
   // snapping
-  QMap<QAction*, QgsMapMouseEvent::SnappingMode>::const_iterator isn = mSnappingActions.find( action );
-  if ( isn != mSnappingActions.end() )
+  QMap<QAction*, QgsMapMouseEvent::SnappingMode>::const_iterator isn = mSnappingActions.constFind( action );
+  if ( isn != mSnappingActions.constEnd() )
   {
     isn.key()->setChecked( true );
     mSnappingMode = isn.value();
@@ -267,8 +267,8 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction* action )
   }
 
   // common angles
-  QMap<QAction*, int>::const_iterator ica = mCommonAngleActions.find( action );
-  if ( ica != mCommonAngleActions.end() )
+  QMap<QAction*, int>::const_iterator ica = mCommonAngleActions.constFind( action );
+  if ( ica != mCommonAngleActions.constEnd() )
   {
     ica.key()->setChecked( true );
     mCommonAngleConstraint = ica.value();
@@ -477,15 +477,15 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
     if ( !mSnappedSegment.isEmpty() && !mXConstraint->isLocked() )
     {
       // intersect with snapped segment line at X ccordinate
-      const double dx = mSnappedSegment[1].x() - mSnappedSegment[0].x();
+      const double dx = mSnappedSegment.at( 1 ).x() - mSnappedSegment.at( 0 ).x();
       if ( dx == 0 )
       {
-        point.setY( mSnappedSegment[0].y() );
+        point.setY( mSnappedSegment.at( 0 ).y() );
       }
       else
       {
-        const double dy = mSnappedSegment[1].y() - mSnappedSegment[0].y();
-        point.setY( mSnappedSegment[0].y() + ( dy * ( point.x() - mSnappedSegment[0].x() ) ) / dx );
+        const double dy = mSnappedSegment.at( 1 ).y() - mSnappedSegment.at( 0 ).y();
+        point.setY( mSnappedSegment.at( 0 ).y() + ( dy * ( point.x() - mSnappedSegment.at( 0 ).x() ) ) / dx );
       }
     }
   }
@@ -504,15 +504,15 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
     if ( !mSnappedSegment.isEmpty() && !mYConstraint->isLocked() )
     {
       // intersect with snapped segment line at Y ccordinate
-      const double dy = mSnappedSegment[1].y() - mSnappedSegment[0].y();
+      const double dy = mSnappedSegment.at( 1 ).y() - mSnappedSegment.at( 0 ).y();
       if ( dy == 0 )
       {
-        point.setX( mSnappedSegment[0].x() );
+        point.setX( mSnappedSegment.at( 0 ).x() );
       }
       else
       {
-        const double dx = mSnappedSegment[1].x() - mSnappedSegment[0].x();
-        point.setX( mSnappedSegment[0].x() + ( dx * ( point.y() - mSnappedSegment[0].y() ) ) / dy );
+        const double dx = mSnappedSegment.at( 1 ).x() - mSnappedSegment.at( 0 ).x();
+        point.setX( mSnappedSegment.at( 0 ).x() + ( dx * ( point.y() - mSnappedSegment.at( 0 ).y() ) ) / dy );
       }
     }
   }
@@ -620,10 +620,10 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
       const double x2 = previousPt.x() + cosa;
       const double y2 = previousPt.y() + sina;
       // line of snapped segment
-      const double x3 = mSnappedSegment[0].x();
-      const double y3 = mSnappedSegment[0].y();
-      const double x4 = mSnappedSegment[1].x();
-      const double y4 = mSnappedSegment[1].y();
+      const double x3 = mSnappedSegment.at( 0 ).x();
+      const double y3 = mSnappedSegment.at( 0 ).y();
+      const double x4 = mSnappedSegment.at( 1 ).x();
+      const double y4 = mSnappedSegment.at( 1 ).y();
 
       const double d = ( x1 - x2 ) * ( y3 - y4 ) - ( y1 - y2 ) * ( x3 - x4 );
 

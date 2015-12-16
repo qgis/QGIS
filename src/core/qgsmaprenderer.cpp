@@ -939,14 +939,13 @@ void QgsMapRenderer::updateFullExtent()
 
   // iterate through the map layers and test each layers extent
   // against the current min and max values
-  QStringList::iterator it = mLayerSet.begin();
   QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayerSet.count() ) );
-  while ( it != mLayerSet.end() )
+  Q_FOREACH ( const QString layerId, mLayerSet )
   {
-    QgsMapLayer * lyr = registry->mapLayer( *it );
+    QgsMapLayer * lyr = registry->mapLayer( layerId );
     if ( lyr == nullptr )
     {
-      QgsDebugMsg( QString( "WARNING: layer '%1' not found in map layer registry!" ).arg( *it ) );
+      QgsDebugMsg( QString( "WARNING: layer '%1' not found in map layer registry!" ).arg( layerId ) );
     }
     else
     {
@@ -955,7 +954,6 @@ void QgsMapRenderer::updateFullExtent()
 
       if ( lyr->extent().isNull() )
       {
-        ++it;
         continue;
       }
 
@@ -967,7 +965,6 @@ void QgsMapRenderer::updateFullExtent()
       mFullExtent.unionRect( extent );
 
     }
-    ++it;
   }
 
   if ( mFullExtent.width() == 0.0 || mFullExtent.height() == 0.0 )

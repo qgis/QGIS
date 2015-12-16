@@ -234,14 +234,14 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
     // add waypoint-specific attributes
     for ( int i = 0; i < attrs.count(); ++i )
     {
-      if ( indexToAttr[i] == EleAttr )
+      if ( indexToAttr.at( i ) == EleAttr )
       {
         bool eleIsOK;
         double ele = attrs.at( i ).toDouble( &eleIsOK );
         if ( eleIsOK )
           wpt.ele = ele;
       }
-      else if ( indexToAttr[i] == SymAttr )
+      else if ( indexToAttr.at( i ) == SymAttr )
       {
         wpt.sym = attrs.at( i ).toString();
       }
@@ -285,7 +285,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
     // add route-specific attributes
     for ( int i = 0; i < attrs.count(); ++i )
     {
-      if ( indexToAttr[i] == NumAttr )
+      if ( indexToAttr.at( i ) == NumAttr )
       {
         bool numIsOK;
         long num = attrs.at( i ).toInt( &numIsOK );
@@ -333,7 +333,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
     // add track-specific attributes
     for ( int i = 0; i < attrs.count(); ++i )
     {
-      if ( indexToAttr[i] == NumAttr )
+      if ( indexToAttr.at( i ) == NumAttr )
       {
         bool numIsOK;
         long num = attrs.at( i ).toInt( &numIsOK );
@@ -354,7 +354,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   {
     for ( int i = 0; i < attrs.count(); ++i )
     {
-      switch ( indexToAttr[i] )
+      switch ( indexToAttr.at( i ) )
       {
         case NameAttr:    obj->name    = attrs.at( i ).toString(); break;
         case CmtAttr:     obj->cmt     = attrs.at( i ).toString(); break;
@@ -452,7 +452,7 @@ void QgsGPXProvider::changeAttributeValues( QgsGPSObject& obj, const QgsAttribut
     QVariant v = aIter.value();
 
     // common attributes
-    switch ( indexToAttr[i] )
+    switch ( indexToAttr.at( i ) )
     {
       case NameAttr:    obj.name    = v.toString(); break;
       case CmtAttr:     obj.cmt     = v.toString(); break;
@@ -465,9 +465,9 @@ void QgsGPXProvider::changeAttributeValues( QgsGPSObject& obj, const QgsAttribut
     // waypoint-specific attributes
     if ( wpt != nullptr )
     {
-      if ( indexToAttr[i] == SymAttr )
+      if ( indexToAttr.at( i ) == SymAttr )
         wpt->sym = v.toString();
-      else if ( indexToAttr[i] == EleAttr )
+      else if ( indexToAttr.at( i ) == EleAttr )
       {
         bool eleIsOK;
         double ele = v.toDouble( &eleIsOK );
@@ -479,7 +479,7 @@ void QgsGPXProvider::changeAttributeValues( QgsGPSObject& obj, const QgsAttribut
     // route- and track-specific attributes
     if ( ext != nullptr )
     {
-      if ( indexToAttr[i] == NumAttr )
+      if ( indexToAttr.at( i ) == NumAttr )
       {
         bool numIsOK;
         int num = v.toInt( &numIsOK );

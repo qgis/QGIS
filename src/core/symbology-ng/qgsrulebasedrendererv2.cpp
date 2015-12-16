@@ -96,9 +96,8 @@ void QgsRuleBasedRendererV2::Rule::removeChild( Rule* rule )
 
 void QgsRuleBasedRendererV2::Rule::removeChildAt( int i )
 {
-  Rule* rule = mChildren[i];
+  delete mChildren.at( i );
   mChildren.removeAt( i );
-  delete rule;
   updateElseRules();
 }
 
@@ -162,7 +161,7 @@ QString QgsRuleBasedRendererV2::Rule::dump( int indent ) const
   return msg;
 }
 
-QSet<QString> QgsRuleBasedRendererV2::Rule::usedAttributes()
+QSet<QString> QgsRuleBasedRendererV2::Rule::usedAttributes() const
 {
   // attributes needed by this rule
   QSet<QString> attrs;
@@ -172,23 +171,21 @@ QSet<QString> QgsRuleBasedRendererV2::Rule::usedAttributes()
     attrs.unite( mSymbol->usedAttributes() );
 
   // attributes needed by child rules
-  for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+  Q_FOREACH ( Rule* rule, mChildren )
   {
-    Rule* rule = *it;
     attrs.unite( rule->usedAttributes() );
   }
   return attrs;
 }
 
-QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbols( const QgsRenderContext& context )
+QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbols( const QgsRenderContext& context ) const
 {
   QgsSymbolV2List lst;
   if ( mSymbol )
     lst.append( mSymbol );
 
-  for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+  Q_FOREACH ( Rule* rule, mChildren )
   {
-    Rule* rule = *it;
     lst += rule->symbols( context );
   }
   return lst;
@@ -200,15 +197,14 @@ void QgsRuleBasedRendererV2::Rule::setSymbol( QgsSymbolV2* sym )
   mSymbol = sym;
 }
 
-QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems( double scaleDenominator, const QString& ruleFilter )
+QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems( double scaleDenominator, const QString& ruleFilter ) const
 {
   QgsLegendSymbolList lst;
   if ( mSymbol && ( ruleFilter.isEmpty() || mLabel == ruleFilter ) )
     lst << qMakePair( mLabel, mSymbol );
 
-  for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+  Q_FOREACH ( Rule* rule, mChildren )
   {
-    Rule* rule = *it;
     if ( scaleDenominator == -1 || rule->isScaleOK( scaleDenominator ) )
     {
       lst << rule->legendSymbolItems( scaleDenominator, ruleFilter );
@@ -268,7 +264,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::clone() const
   return newrule;
 }
 
-QDomElement QgsRuleBasedRendererV2::Rule::save( QDomDocument& doc, QgsSymbolV2Map& symbolMap )
+QDomElement QgsRuleBasedRendererV2::Rule::save( QDomDocument& doc, QgsSymbolV2Map& symbolMap ) const
 {
   QDomElement ruleElem = doc.createElement( "rule" );
 
@@ -292,15 +288,14 @@ QDomElement QgsRuleBasedRendererV2::Rule::save( QDomDocument& doc, QgsSymbolV2Ma
     ruleElem.setAttribute( "checkstate", 0 );
   ruleElem.setAttribute( "key", mRuleKey );
 
-  for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+  Q_FOREACH ( Rule* rule, mChildren )
   {
-    Rule* rule = *it;
     ruleElem.appendChild( rule->save( doc, symbolMap ) );
   }
   return ruleElem;
 }
 
-void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props )
+void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
 {
   // do not convert this rule if there are no symbols
   QgsRenderContext context;
@@ -386,9 +381,9 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
   }
 
   // loop into childern rule list
-  for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+  Q_FOREACH ( Rule* rule, mChildren )
   {
-    ( *it )->toSld( doc, element, props );
+    rule->toSld( doc, element, props );
   }
 }
 
@@ -418,10 +413,9 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
   // init children
   // build temporary list of active rules (usable with this scale)
   QStringList subfilters;
-  for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+  Q_FOREACH ( Rule* rule, mChildren )
   {
     QString subfilter;
-    Rule* rule = *it;
     if ( rule->startRender( context, fields , subfilter ) )
     {
       // only add those which are active with current scale
@@ -503,9 +497,8 @@ void QgsRuleBasedRendererV2::Rule::setNormZLevels( const QMap<int, int>& zLevels
   }
 
   // prepare list of normalized levels for each rule
-  for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
+  Q_FOREACH ( Rule* rule, mActiveChildren )
   {
-    Rule* rule = *it;
     rule->setNormZLevels( zLevelsToNormLevels );
   }
 }
@@ -568,9 +561,8 @@ bool QgsRuleBasedRendererV2::Rule::willRenderFeature( QgsFeature& feat, QgsRende
   if ( mSymbol )
     return true;
 
-  for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
+  Q_FOREACH ( Rule* rule, mActiveChildren )
   {
-    Rule* rule = *it;
     if ( rule->willRenderFeature( feat, context ) )
       return true;
   }
@@ -585,9 +577,8 @@ QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbolsForFeature( QgsFeature& fea
   if ( mSymbol )
     lst.append( mSymbol );
 
-  for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
+  Q_FOREACH ( Rule* rule, mActiveChildren )
   {
-    Rule* rule = *it;
     lst += rule->symbolsForFeature( feat, context );
   }
   return lst;
@@ -602,9 +593,8 @@ QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2::Rule::rulesForFeature( 
   if ( mSymbol )
     lst.append( this );
 
-  for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
+  Q_FOREACH ( Rule* rule, mActiveChildren )
   {
-    Rule* rule = *it;
     lst += rule->rulesForFeature( feat, context );
   }
   return lst;
@@ -615,9 +605,8 @@ void QgsRuleBasedRendererV2::Rule::stopRender( QgsRenderContext& context )
   if ( mSymbol )
     mSymbol->stopRender( context );
 
-  for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
+  Q_FOREACH ( Rule* rule, mActiveChildren )
   {
-    Rule* rule = *it;
     rule->stopRender( context );
   }
 

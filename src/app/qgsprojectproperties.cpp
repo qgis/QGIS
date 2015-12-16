@@ -705,10 +705,10 @@ void QgsProjectProperties::apply()
 
   QgsProject::instance()->writeEntry( "Paths", "/Absolute", cbxAbsolutePath->currentIndex() == 0 );
 
-  if ( mEllipsoidList[ mEllipsoidIndex ].acronym.startsWith( "PARAMETER" ) )
+  if ( mEllipsoidList.at( mEllipsoidIndex ).acronym.startsWith( "PARAMETER" ) )
   {
-    double major = mEllipsoidList[ mEllipsoidIndex ].semiMajor;
-    double minor = mEllipsoidList[ mEllipsoidIndex ].semiMinor;
+    double major = mEllipsoidList.at( mEllipsoidIndex ).semiMajor;
+    double minor = mEllipsoidList.at( mEllipsoidIndex ).semiMinor;
     // If the user fields have changed, use them instead.
     if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
     {
@@ -1675,8 +1675,8 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
   // Pre-select current ellipsoid
 
   // Check if CRS transformation is on, or else turn everything off
-  double myMajor =  mEllipsoidList[ newIndex ].semiMajor;
-  double myMinor =  mEllipsoidList[ newIndex ].semiMinor;
+  double myMajor =  mEllipsoidList.at( newIndex ).semiMajor;
+  double myMinor =  mEllipsoidList.at( newIndex ).semiMinor;
 
   // If user has modified the radii (only possible if parametric!), before
   // changing ellipsoid, save the modified coordinates
@@ -1696,7 +1696,7 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
   {
     cmbEllipsoid->setEnabled( true );
     cmbEllipsoid->setToolTip( "" );
-    if ( mEllipsoidList[ mEllipsoidIndex ].acronym.startsWith( "PARAMETER:" ) )
+    if ( mEllipsoidList.at( mEllipsoidIndex ).acronym.startsWith( "PARAMETER:" ) )
     {
       leSemiMajor->setEnabled( true );
       leSemiMinor->setEnabled( true );
@@ -1730,7 +1730,7 @@ void QgsProjectProperties::projectionSelectorInitialized()
   int myIndex = 0;
   for ( int i = 0; i < mEllipsoidList.length(); i++ )
   {
-    if ( mEllipsoidList[ i ].acronym.startsWith( mySplitEllipsoid[ 0 ] ) )
+    if ( mEllipsoidList.at( i ).acronym.startsWith( mySplitEllipsoid[ 0 ] ) )
     {
       myIndex = i;
       break;

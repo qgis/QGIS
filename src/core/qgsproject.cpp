@@ -1078,7 +1078,7 @@ bool QgsProject::write()
     if ( ml )
     {
       QString externalProjectFile = layerIsEmbedded( ml->id() );
-      QHash< QString, QPair< QString, bool> >::const_iterator emIt = mEmbeddedLayers.find( ml->id() );
+      QHash< QString, QPair< QString, bool> >::const_iterator emIt = mEmbeddedLayers.constFind( ml->id() );
       if ( emIt == mEmbeddedLayers.constEnd() )
       {
         // general layer metadata

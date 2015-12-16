@@ -89,7 +89,7 @@ void QgsMssqlConnectionItem::refresh()
     int index = findItem( mChildren, item );
     if ( index >= 0 )
     {
-      (( QgsMssqlSchemaItem* )mChildren[index] )->addLayers( item );
+      (( QgsMssqlSchemaItem* )mChildren.at( index ) )->addLayers( item );
       delete item;
       continue;
     }

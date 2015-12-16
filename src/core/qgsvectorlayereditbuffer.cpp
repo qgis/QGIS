@@ -440,10 +440,10 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
       {
         commitErrors << tr( "SUCCESS: %n feature(s) deleted.", "deleted features count", mDeletedFeatureIds.size() );
         // TODO[MD]: we should not need this here
-        for ( QgsFeatureIds::const_iterator it = mDeletedFeatureIds.begin(); it != mDeletedFeatureIds.end(); ++it )
+        Q_FOREACH ( QgsFeatureId id, mDeletedFeatureIds )
         {
-          mChangedAttributeValues.remove( *it );
-          mChangedGeometries.remove( *it );
+          mChangedAttributeValues.remove( id );
+          mChangedGeometries.remove( id );
         }
 
         emit committedFeaturesRemoved( L->id(), mDeletedFeatureIds );

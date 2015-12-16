@@ -155,9 +155,9 @@ void Builder::addPolyline( const DL_PolylineData& data )
 
     for ( int i = 0; i < dim; i++ )
     {
-      xv[i] = polyVertex[i].x;
-      yv[i] = polyVertex[i].y;
-      zv[i] = polyVertex[i].z;
+      xv[i] = polyVertex.at( i ).x;
+      yv[i] = polyVertex.at( i ).y;
+      zv[i] = polyVertex.at( i ).z;
     }
 
     shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, nullptr, nullptr, dim, xv.data(), yv.data(), zv.data(), nullptr );
@@ -390,9 +390,9 @@ void Builder::FinalizeAnyPolyline()
 
     for ( int i = 0; i < dim; i++ )
     {
-      xv[i] = polyVertex[i].x;
-      yv[i] = polyVertex[i].y;
-      zv[i] = polyVertex[i].z;
+      xv[i] = polyVertex.at( i ).x;
+      yv[i] = polyVertex.at( i ).y;
+      zv[i] = polyVertex.at( i ).z;
     }
 
     shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, nullptr, nullptr, dim, xv.data(), yv.data(), zv.data(), nullptr );
@@ -437,8 +437,8 @@ void Builder::print_shpObjects()
 
   for ( int i = 0; i < shpObjects.size(); i++ )
   {
-    SHPWriteObject( hSHP, -1, shpObjects[i] );
-    SHPDestroyObject( shpObjects[i] );
+    SHPWriteObject( hSHP, -1, shpObjects.at( i ) );
+    SHPDestroyObject( shpObjects.at( i ) );
     DBFWriteIntegerAttribute( dbffile, i, 0, i );
   }
 
@@ -474,32 +474,32 @@ void Builder::print_shpObjects()
     for ( int i = 0; i < textObjects.size(); i++ )
     {
       SHPObject *psObject;
-      double x = textObjects[i].ipx;
-      double y = textObjects[i].ipy;
-      double z = textObjects[i].ipz;
+      double x = textObjects.at( i ).ipx;
+      double y = textObjects.at( i ).ipy;
+      double z = textObjects.at( i ).ipz;
       psObject = SHPCreateObject( SHPT_POINT, i, 0, nullptr, nullptr, 1, &x, &y, &z, nullptr );
 
       SHPWriteObject( thSHP, -1, psObject );
 
-      DBFWriteDoubleAttribute( Tdbffile, i, 0, textObjects[i].ipx );
-      DBFWriteDoubleAttribute( Tdbffile, i, 1, textObjects[i].ipy );
-      DBFWriteDoubleAttribute( Tdbffile, i, 2, textObjects[i].ipz );
+      DBFWriteDoubleAttribute( Tdbffile, i, 0, textObjects.at( i ).ipx );
+      DBFWriteDoubleAttribute( Tdbffile, i, 1, textObjects.at( i ).ipy );
+      DBFWriteDoubleAttribute( Tdbffile, i, 2, textObjects.at( i ).ipz );
 
-      DBFWriteDoubleAttribute( Tdbffile, i, 3, textObjects[i].apx );
-      DBFWriteDoubleAttribute( Tdbffile, i, 4, textObjects[i].apy );
-      DBFWriteDoubleAttribute( Tdbffile, i, 5, textObjects[i].apz );
+      DBFWriteDoubleAttribute( Tdbffile, i, 3, textObjects.at( i ).apx );
+      DBFWriteDoubleAttribute( Tdbffile, i, 4, textObjects.at( i ).apy );
+      DBFWriteDoubleAttribute( Tdbffile, i, 5, textObjects.at( i ).apz );
 
-      DBFWriteDoubleAttribute( Tdbffile, i, 6, textObjects[i].height );
-      DBFWriteDoubleAttribute( Tdbffile, i, 7, textObjects[i].xScaleFactor );
-      DBFWriteIntegerAttribute( Tdbffile, i, 8, textObjects[i].textGenerationFlags );
+      DBFWriteDoubleAttribute( Tdbffile, i, 6, textObjects.at( i ).height );
+      DBFWriteDoubleAttribute( Tdbffile, i, 7, textObjects.at( i ).xScaleFactor );
+      DBFWriteIntegerAttribute( Tdbffile, i, 8, textObjects.at( i ).textGenerationFlags );
 
-      DBFWriteIntegerAttribute( Tdbffile, i, 9, textObjects[i].hJustification );
-      DBFWriteIntegerAttribute( Tdbffile, i, 10, textObjects[i].vJustification );
+      DBFWriteIntegerAttribute( Tdbffile, i, 9, textObjects.at( i ).hJustification );
+      DBFWriteIntegerAttribute( Tdbffile, i, 10, textObjects.at( i ).vJustification );
 
-      DBFWriteStringAttribute( Tdbffile, i, 11, textObjects[i].text.c_str() );
-      DBFWriteStringAttribute( Tdbffile, i, 12, textObjects[i].style.c_str() );
+      DBFWriteStringAttribute( Tdbffile, i, 11, textObjects.at( i ).text.c_str() );
+      DBFWriteStringAttribute( Tdbffile, i, 12, textObjects.at( i ).style.c_str() );
 
-      DBFWriteDoubleAttribute( Tdbffile, i, 13, textObjects[i].angle );
+      DBFWriteDoubleAttribute( Tdbffile, i, 13, textObjects.at( i ).angle );
 
       SHPDestroyObject( psObject );
     }
@@ -542,18 +542,18 @@ void Builder::print_shpObjects()
       SHPWriteObject( ihSHP, -1, psObject );
 
       int c = 0;
-      DBFWriteStringAttribute( Idbffile, i, c++, insertObjects[i].name.c_str() );
-      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].ipx );
-      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].ipy );
-      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].ipz );
-      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].sx );
-      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].sy );
-      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].sz );
-      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].angle );
-      DBFWriteIntegerAttribute( Idbffile, i, c++, insertObjects[i].cols );
-      DBFWriteIntegerAttribute( Idbffile, i, c++, insertObjects[i].rows );
-      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].colSp );
-      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].rowSp );
+      DBFWriteStringAttribute( Idbffile, i, c++, insertObjects.at( i ).name.c_str() );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects.at( i ).ipx );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects.at( i ).ipy );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects.at( i ).ipz );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects.at( i ).sx );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects.at( i ).sy );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects.at( i ).sz );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects.at( i ).angle );
+      DBFWriteIntegerAttribute( Idbffile, i, c++, insertObjects.at( i ).cols );
+      DBFWriteIntegerAttribute( Idbffile, i, c++, insertObjects.at( i ).rows );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects.at( i ).colSp );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects.at( i ).rowSp );
 
       SHPDestroyObject( psObject );
     }

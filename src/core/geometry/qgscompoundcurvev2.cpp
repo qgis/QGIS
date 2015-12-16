@@ -401,7 +401,7 @@ void QgsCompoundCurveV2::removeCurve( int i )
     return;
   }
 
-  delete( mCurves[i] );
+  delete( mCurves.at( i ) );
   mCurves.removeAt( i );
 }
 
@@ -448,19 +448,17 @@ void QgsCompoundCurveV2::draw( QPainter& p ) const
 
 void QgsCompoundCurveV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
 {
-  QList< QgsCurveV2* >::iterator it = mCurves.begin();
-  for ( ; it != mCurves.end(); ++it )
+  Q_FOREACH ( QgsCurveV2* curve, mCurves )
   {
-    ( *it )->transform( ct, d );
+    curve->transform( ct, d );
   }
 }
 
 void QgsCompoundCurveV2::transform( const QTransform& t )
 {
-  QList< QgsCurveV2* >::iterator it = mCurves.begin();
-  for ( ; it != mCurves.end(); ++it )
+  Q_FOREACH ( QgsCurveV2* curve, mCurves )
   {
-    ( *it )->transform( t );
+    curve->transform( t );
   }
 }
 
@@ -499,7 +497,7 @@ bool QgsCompoundCurveV2::insertVertex( const QgsVertexId& position, const QgsPoi
     return false;
   }
 
-  bool success = mCurves[curveId]->insertVertex( curveIds.at( 0 ).second, vertex );
+  bool success = mCurves.at( curveId )->insertVertex( curveIds.at( 0 ).second, vertex );
   if ( success )
   {
     mBoundingBox = QgsRectangle(); //bbox changed
@@ -513,7 +511,7 @@ bool QgsCompoundCurveV2::moveVertex( const QgsVertexId& position, const QgsPoint
   QList< QPair<int, QgsVertexId> >::const_iterator idIt = curveIds.constBegin();
   for ( ; idIt != curveIds.constEnd(); ++idIt )
   {
-    mCurves[idIt->first]->moveVertex( idIt->second, newPos );
+    mCurves.at( idIt->first )->moveVertex( idIt->second, newPos );
   }
 
   bool success = !curveIds.isEmpty();
@@ -530,7 +528,7 @@ bool QgsCompoundCurveV2::deleteVertex( const QgsVertexId& position )
   QList< QPair<int, QgsVertexId> >::const_iterator idIt = curveIds.constBegin();
   for ( ; idIt != curveIds.constEnd(); ++idIt )
   {
-    mCurves[idIt->first]->deleteVertex( idIt->second );
+    mCurves.at( idIt->first )->deleteVertex( idIt->second );
   }
 
   bool success = !curveIds.isEmpty();

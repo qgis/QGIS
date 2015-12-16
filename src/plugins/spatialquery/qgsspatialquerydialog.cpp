@@ -1029,8 +1029,8 @@ void QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved( const QString& idLay
   }
   // idLayer = QgsMapLayer::getLayerID()
   // Get Pointer layer removed
-  QMap<QString, QgsVectorLayer *>::const_iterator i = mMapIdVectorLayers.find( idLayer );
-  if ( i == mMapIdVectorLayers.end() )
+  QMap<QString, QgsVectorLayer *>::const_iterator i = mMapIdVectorLayers.constFind( idLayer );
+  if ( i == mMapIdVectorLayers.constEnd() )
   {
     return;
   }

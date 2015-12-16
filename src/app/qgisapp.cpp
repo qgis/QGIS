@@ -2275,8 +2275,8 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionDecorationGrid->setIcon( QgsApplication::getThemeIcon( "/transformed.png" ) );
 
   //change themes of all composers
-  QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
-  for ( ; composerIt != mPrintComposers.end(); ++composerIt )
+  QSet<QgsComposer*>::const_iterator composerIt = mPrintComposers.constBegin();
+  for ( ; composerIt != mPrintComposers.constEnd(); ++composerIt )
   {
     ( *composerIt )->setupTheme();
   }

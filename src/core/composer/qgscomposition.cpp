@@ -2084,11 +2084,10 @@ void QgsComposition::removeSnapLine( QGraphicsLineItem* line )
 
 void QgsComposition::clearSnapLines()
 {
-  QList< QGraphicsLineItem* >::iterator it = mSnapLines.begin();
-  for ( ; it != mSnapLines.end(); ++it )
+  Q_FOREACH ( QGraphicsLineItem* line, mSnapLines )
   {
-    removeItem(( *it ) );
-    delete( *it );
+    removeItem( line );
+    delete( line );
   }
   mSnapLines.clear();
 }
@@ -2096,17 +2095,9 @@ void QgsComposition::clearSnapLines()
 void QgsComposition::setSnapLinesVisible( const bool visible )
 {
   mGuidesVisible = visible;
-  QList< QGraphicsLineItem* >::iterator it = mSnapLines.begin();
-  for ( ; it != mSnapLines.end(); ++it )
+  Q_FOREACH ( QGraphicsLineItem* line, mSnapLines )
   {
-    if ( visible )
-    {
-      ( *it )->show();
-    }
-    else
-    {
-      ( *it )->hide();
-    }
+    line->setVisible( visible );
   }
 }
 
@@ -2728,10 +2719,9 @@ void QgsComposition::sendItemAddedSignal( QgsComposerItem* item )
 
 void QgsComposition::updatePaperItems()
 {
-  QList< QgsPaperItem* >::iterator paperIt = mPages.begin();
-  for ( ; paperIt != mPages.end(); ++paperIt )
+  Q_FOREACH ( QgsPaperItem* page, mPages )
   {
-    ( *paperIt )->update();
+    page->update();
   }
 }
 
@@ -2755,11 +2745,7 @@ void QgsComposition::removePaperItems()
 
 void QgsComposition::deleteAndRemoveMultiFrames()
 {
-  QSet<QgsComposerMultiFrame*>::iterator multiFrameIt = mMultiFrames.begin();
-  for ( ; multiFrameIt != mMultiFrames.end(); ++multiFrameIt )
-  {
-    delete *multiFrameIt;
-  }
+  qDeleteAll( mMultiFrames );
   mMultiFrames.clear();
 }
 
@@ -2962,7 +2948,7 @@ void QgsComposition::renderPage( QPainter* p, int page )
     return;
   }
 
-  QgsPaperItem* paperItem = mPages[page];
+  QgsPaperItem* paperItem = mPages.at( page );
   if ( !paperItem )
   {
     return;
@@ -3219,7 +3205,7 @@ QgsDataDefined *QgsComposition::dataDefinedProperty( const QgsComposerObject::Da
   }
 
   //find matching QgsDataDefined for property
-  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.find( property );
+  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constFind( property );
   if ( it != mDataDefinedProperties.constEnd() )
   {
     return it.value();
@@ -3241,7 +3227,7 @@ void QgsComposition::setDataDefinedProperty( const QgsComposerObject::DataDefine
 
   if ( mDataDefinedProperties.contains( property ) )
   {
-    QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.find( property );
+    QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constFind( property );
     if ( it != mDataDefinedProperties.constEnd() )
     {
       QgsDataDefined* dd = it.value();

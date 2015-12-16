@@ -139,9 +139,7 @@ void checkDock::updateRubberBands( bool visible )
 
 void checkDock::deleteErrors()
 {
-  QList<TopolError*>::Iterator it = mErrorList.begin();
-  for ( ; it != mErrorList.end(); ++it )
-    delete *it;
+  qDeleteAll( mErrorList );
 
   mErrorList.clear();
   mErrorListModel->resetModel();
@@ -200,19 +198,19 @@ void checkDock::configure()
 void checkDock::errorListClicked( const QModelIndex& index )
 {
   int row = index.row();
-  QgsRectangle r = mErrorList[row]->boundingBox();
+  QgsRectangle r = mErrorList.at( row )->boundingBox();
   r.scale( 1.5 );
   QgsMapCanvas* canvas = qgsInterface->mapCanvas();
   canvas->setExtent( r );
   canvas->refresh();
 
   mFixBox->clear();
-  mFixBox->addItems( mErrorList[row]->fixNames() );
+  mFixBox->addItems( mErrorList.at( row )->fixNames() );
   mFixBox->setCurrentIndex( mFixBox->findText( tr( "Select automatic fix" ) ) );
 
   QgsFeature f;
   const QgsGeometry* g;
-  FeatureLayer fl = mErrorList[row]->featurePairs().first();
+  FeatureLayer fl = mErrorList.at( row )->featurePairs().first();
   if ( !fl.layer )
   {
     QgsMessageLog::logMessage( tr( "Invalid first layer" ), tr( "Topology plugin" ) );
@@ -281,17 +279,17 @@ void checkDock::errorListClicked( const QModelIndex& index )
     return;
   }
 
-  if ( mErrorList[row]->conflict()->type() == QGis::Point )
+  if ( mErrorList.at( row )->conflict()->type() == QGis::Point )
   {
     mVMConflict = new QgsVertexMarker( canvas );
     mVMConflict->setIconType( QgsVertexMarker::ICON_BOX );
     mVMConflict->setPenWidth( 5 );
     mVMConflict->setIconSize( 5 );
     mVMConflict->setColor( "red" );
-    mVMConflict->setCenter( mErrorList[row]->conflict()->asPoint() );
+    mVMConflict->setCenter( mErrorList.at( row )->conflict()->asPoint() );
   }
   else
-    mRBConflict->setToGeometry( mErrorList[row]->conflict(), fl.layer );
+    mRBConflict->setToGeometry( mErrorList.at( row )->conflict(), fl.layer );
 }
 
 void checkDock::fix()
@@ -308,7 +306,7 @@ void checkDock::fix()
 
   clearVertexMarkers();
 
-  if ( mErrorList[row]->fix( fixName ) )
+  if ( mErrorList.at( row )->fix( fixName ) )
   {
     mErrorList.removeAt( row );
     mErrorListModel->resetModel();

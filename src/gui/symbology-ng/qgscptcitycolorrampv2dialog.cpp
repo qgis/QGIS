@@ -611,9 +611,9 @@ bool QgsCptCityColorRampV2Dialog::updateRamp()
   // update listWidget, find appropriate item in mListRamps
   for ( int i = 0; i < mListRamps.count(); i++ )
   {
-    if ( mListRamps[i] == childItem )
+    if ( mListRamps.at( i ) == childItem )
     {
-      QgsDebugMsg( QString( "found matching item %1 target=%2" ).arg( mListRamps[i]->path(), childItem->path() ) );
+      QgsDebugMsg( QString( "found matching item %1 target=%2" ).arg( mListRamps.at( i )->path(), childItem->path() ) );
       QListWidgetItem* listItem = mListWidget->item( i );
       mListWidget->setCurrentItem( listItem );
       // on_mListWidget_itemClicked( listItem );

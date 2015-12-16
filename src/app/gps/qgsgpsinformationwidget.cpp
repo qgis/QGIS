@@ -880,7 +880,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
       memcpy( &wkb[1+sizeof( int )], &length, sizeof( int ) );
       int position = 1 + 2 * sizeof( int );
       double x, y;
-      for ( QList<QgsPoint>::iterator it = mCaptureList.begin(); it != mCaptureList.end(); ++it )
+      for ( QList<QgsPoint>::const_iterator it = mCaptureList.constBegin(); it != mCaptureList.constEnd(); ++it )
       {
         QgsPoint savePoint = *it;
         // transform the gps point into the layer crs

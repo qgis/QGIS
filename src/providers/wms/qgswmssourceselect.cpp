@@ -96,7 +96,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WindowFlags fl, bo
     {
       mMimeMap.insert( mFormats[i].format, i );
 
-      QRadioButton *btn = new QRadioButton( mFormats[i].label );
+      QRadioButton *btn = new QRadioButton( mFormats.at( i ).label );
       btn->setToolTip( mFormats[i].format );
       btn->setHidden( true );
       mImageFormatGroup->addButton( btn, i );
@@ -320,17 +320,17 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabiliti
     // Layer Styles
     for ( int j = 0; j < layer->style.size(); j++ )
     {
-      QgsDebugMsg( QString( "got style name %1 and title '%2'." ).arg( layer->style[j].name, layer->style[j].title ) );
+      QgsDebugMsg( QString( "got style name %1 and title '%2'." ).arg( layer->style.at( j ).name, layer->style.at( j ).title ) );
 
       QgsNumericSortTreeWidgetItem *lItem2 = new QgsNumericSortTreeWidgetItem( lItem );
       lItem2->setText( 0, QString::number( ++layerAndStyleCount ) );
-      lItem2->setText( 1, layer->style[j].name.simplified() );
-      lItem2->setText( 2, layer->style[j].title.simplified() );
-      lItem2->setText( 3, layer->style[j].abstract.simplified() );
+      lItem2->setText( 1, layer->style.at( j ).name.simplified() );
+      lItem2->setText( 2, layer->style.at( j ).title.simplified() );
+      lItem2->setText( 3, layer->style.at( j ).abstract.simplified() );
 
       lItem2->setData( 0, Qt::UserRole + 0, layer->name );
-      lItem2->setData( 0, Qt::UserRole + 1, layer->style[j].name );
-      lItem2->setData( 0, Qt::UserRole + 3, layer->style[j].title.isEmpty() ? layer->style[j].name : layer->style[j].title );
+      lItem2->setData( 0, Qt::UserRole + 1, layer->style.at( j ).name );
+      lItem2->setData( 0, Qt::UserRole + 3, layer->style.at( j ).title.isEmpty() ? layer->style.at( j ).name : layer->style.at( j ).title );
     }
   }
 
@@ -826,8 +826,8 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
     // check whether current CRS is supported
     // if not, use one of the available CRS
     QString defaultCRS;
-    QSet<QString>::const_iterator it = mCRSs.begin();
-    for ( ; it != mCRSs.end(); ++it )
+    QSet<QString>::const_iterator it = mCRSs.constBegin();
+    for ( ; it != mCRSs.constEnd(); ++it )
     {
       if ( it->compare( mCRS, Qt::CaseInsensitive ) == 0 )
         break;
@@ -1008,7 +1008,7 @@ QString QgsWMSSourceSelect::selectedImageEncoding()
   }
   else
   {
-    return QUrl::toPercentEncoding( mFormats[ id ].format );
+    return QUrl::toPercentEncoding( mFormats.at( id ).format );
   }
 }
 

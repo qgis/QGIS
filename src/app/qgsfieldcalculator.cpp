@@ -204,8 +204,8 @@ void QgsFieldCalculator::accept()
       }
       else
       {
-        QMap<QString, int>::const_iterator fieldIt = mFieldMap.find( mExistingFieldComboBox->currentText() );
-        if ( fieldIt != mFieldMap.end() )
+        QMap<QString, int>::const_iterator fieldIt = mFieldMap.constFind( mExistingFieldComboBox->currentText() );
+        if ( fieldIt != mFieldMap.constEnd() )
         {
           mAttributeId = fieldIt.value();
         }

@@ -1506,7 +1506,7 @@ void QgsPalLayerSettings::setDataDefinedProperty( QgsPalLayerSettings::DataDefin
 
   if ( dataDefinedProperties.contains( p ) )
   {
-    QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator it = dataDefinedProperties.find( p );
+    QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator it = dataDefinedProperties.constFind( p );
     if ( it != dataDefinedProperties.constEnd() )
     {
       QgsDataDefined* dd = it.value();
@@ -1535,12 +1535,7 @@ void QgsPalLayerSettings::removeDataDefinedProperty( DataDefinedProperties p )
 
 void QgsPalLayerSettings::removeAllDataDefinedProperties()
 {
-  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::iterator it = dataDefinedProperties.begin();
-  for ( ; it != dataDefinedProperties.constEnd(); ++it )
-  {
-    delete( it.value() );
-    it.value() = nullptr;
-  }
+  qDeleteAll( dataDefinedProperties );
   dataDefinedProperties.clear();
 }
 
@@ -1566,7 +1561,7 @@ QgsDataDefined* QgsPalLayerSettings::dataDefinedProperty( DataDefinedProperties 
   if ( dataDefinedProperties.isEmpty() )
     return nullptr;
 
-  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator it = dataDefinedProperties.find( p );
+  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator it = dataDefinedProperties.constFind( p );
   if ( it != dataDefinedProperties.constEnd() )
   {
     return it.value();

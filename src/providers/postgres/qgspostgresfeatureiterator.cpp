@@ -603,7 +603,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
     case pktInt:
       fid = mConn->getBinaryInt( queryResult, row, col++ );
       if ( mSource->mPrimaryKeyType == pktInt &&
-           ( !subsetOfAttributes || fetchAttributes.contains( mSource->mPrimaryKeyAttrs[0] ) ) )
+           ( !subsetOfAttributes || fetchAttributes.contains( mSource->mPrimaryKeyAttrs.at( 0 ) ) ) )
         feature.setAttribute( mSource->mPrimaryKeyAttrs[0], fid );
       break;
 

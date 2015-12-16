@@ -115,7 +115,7 @@ void QgsCRSCache::updateCRSCache( const QString& authid )
 
 const QgsCoordinateReferenceSystem& QgsCRSCache::crsByAuthId( const QString& authid )
 {
-  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRS.find( authid );
+  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRS.constFind( authid );
   if ( crsIt == mCRS.constEnd() )
   {
     QgsCoordinateReferenceSystem s;

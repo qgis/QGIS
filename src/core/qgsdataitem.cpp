@@ -558,8 +558,8 @@ void QgsDataItem::addChildItem( QgsDataItem * child, bool refresh )
     for ( i = 0; i < mChildren.size(); i++ )
     {
       // sort items by type, so directories are before data items
-      if ( mChildren[i]->mType == child->mType &&
-           mChildren[i]->mName.localeAwareCompare( child->mName ) > 0 )
+      if ( mChildren.at( i )->mType == child->mType &&
+           mChildren.at( i )->mName.localeAwareCompare( child->mName ) > 0 )
         break;
     }
   }
@@ -567,7 +567,7 @@ void QgsDataItem::addChildItem( QgsDataItem * child, bool refresh )
   {
     for ( i = 0; i < mChildren.size(); i++ )
     {
-      if ( mChildren[i]->mName.localeAwareCompare( child->mName ) >= 0 )
+      if ( mChildren.at( i )->mName.localeAwareCompare( child->mName ) >= 0 )
         break;
     }
   }
@@ -1161,7 +1161,7 @@ void QgsFavouritesItem::removeDirectory( QgsDirectoryItem *item )
   }
 
   if ( state() == Populated )
-    deleteChildItem( mChildren[idx] );
+    deleteChildItem( mChildren.at( idx ) );
 }
 
 //-----------------------------------------------------------------------
@@ -1360,10 +1360,10 @@ QVector<QgsDataItem*> QgsZipItem::createChildren()
       }
 
       // try to get data item from provider
-      dataItem_t *dataItem = mDataItemPtr[i];
+      dataItem_t *dataItem = mDataItemPtr.at( i );
       if ( dataItem )
       {
-        QgsDebugMsgLevel( QString( "trying to load item %1 with %2" ).arg( tmpPath, mProviderNames[i] ), 3 );
+        QgsDebugMsgLevel( QString( "trying to load item %1 with %2" ).arg( tmpPath, mProviderNames.at( i ) ), 3 );
         QgsDataItem * item = dataItem( tmpPath, this );
         if ( item )
         {
@@ -1468,15 +1468,15 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, const QString& fileP
     // try to open using registered providers (gdal and ogr)
     for ( int i = 0; i < mProviderNames.size(); i++ )
     {
-      dataItem_t *dataItem = mDataItemPtr[i];
+      dataItem_t *dataItem = mDataItemPtr.at( i );
       if ( dataItem )
       {
         QgsDataItem *item = nullptr;
         // try first with normal path (Passthru)
         // this is to simplify .qml handling, and without this some tests will fail
         // (e.g. testZipItemVectorTransparency(), second test)
-        if (( mProviderNames[i] == "ogr" ) ||
-            ( mProviderNames[i] == "gdal" && zipFileCount == 1 ) )
+        if (( mProviderNames.at( i ) == "ogr" ) ||
+            ( mProviderNames.at( i ) == "gdal" && zipFileCount == 1 ) )
           item = dataItem( filePath, parent );
         // try with /vsizip/
         if ( ! item )

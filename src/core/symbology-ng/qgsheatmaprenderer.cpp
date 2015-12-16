@@ -178,7 +178,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
         }
 
         double score = weight * quarticKernel( sqrt( distanceSquared ), mRadiusPixels );
-        double value = mValues[ index ] + score;
+        double value = mValues.at( index ) + score;
         if ( value > mCalculatedMaxValue )
         {
           mCalculatedMaxValue = value;

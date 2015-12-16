@@ -93,13 +93,13 @@ QgsSymbolV2::QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers )
   // check they're all correct symbol layers
   for ( int i = 0; i < mLayers.count(); i++ )
   {
-    if ( mLayers[i] == nullptr )
+    if ( !mLayers.at( i ) )
     {
       mLayers.removeAt( i-- );
     }
-    else if ( !mLayers[i]->isCompatibleWithSymbol( this ) )
+    else if ( !mLayers.at( i )->isCompatibleWithSymbol( this ) )
     {
-      delete mLayers[i];
+      delete mLayers.at( i );
       mLayers.removeAt( i-- );
     }
   }
@@ -284,19 +284,17 @@ QgsMapUnitScale QgsSymbolV2::mapUnitScale() const
 
 void QgsSymbolV2::setOutputUnit( QgsSymbolV2::OutputUnit u )
 {
-  QgsSymbolLayerV2List::iterator it = mLayers.begin();
-  for ( ; it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    ( *it )->setOutputUnit( u );
+    layer->setOutputUnit( u );
   }
 }
 
 void QgsSymbolV2::setMapUnitScale( const QgsMapUnitScale &scale )
 {
-  QgsSymbolLayerV2List::iterator it = mLayers.begin();
-  for ( ; it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    ( *it )->setMapUnitScale( scale );
+    layer->setMapUnitScale( scale );
   }
 }
 
@@ -390,7 +388,7 @@ bool QgsSymbolV2::deleteSymbolLayer( int index )
   if ( index < 0 || index >= mLayers.count() )
     return false;
 
-  delete mLayers[index];
+  delete mLayers.at( index );
   mLayers.removeAt( index );
   return true;
 }

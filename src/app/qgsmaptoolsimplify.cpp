@@ -113,7 +113,7 @@ void QgsMapToolSimplify::updateSimplificationPreview()
     if ( QgsGeometry* g = fSel.constGeometry()->simplify( layerTolerance ) )
     {
       mReducedVertexCount += vertexCount( g );
-      mRubberBands[i]->setToGeometry( g, vl );
+      mRubberBands.at( i )->setToGeometry( g, vl );
       delete g;
     }
     else

@@ -251,15 +251,15 @@ QDomDocument QgsWCSServer::describeCoverage()
   //defining coverage name
   QString coveName = "";
   //read COVERAGE
-  QMap<QString, QString>::const_iterator cove_name_it = mParameters.find( "COVERAGE" );
-  if ( cove_name_it != mParameters.end() )
+  QMap<QString, QString>::const_iterator cove_name_it = mParameters.constFind( "COVERAGE" );
+  if ( cove_name_it != mParameters.constEnd() )
   {
     coveName = cove_name_it.value();
   }
   if ( coveName == "" )
   {
-    QMap<QString, QString>::const_iterator cove_name_it = mParameters.find( "IDENTIFIER" );
-    if ( cove_name_it != mParameters.end() )
+    QMap<QString, QString>::const_iterator cove_name_it = mParameters.constFind( "IDENTIFIER" );
+    if ( cove_name_it != mParameters.constEnd() )
     {
       coveName = cove_name_it.value();
     }
@@ -279,15 +279,15 @@ QByteArray* QgsWCSServer::getCoverage()
   //defining coverage name
   QString coveName = "";
   //read COVERAGE
-  QMap<QString, QString>::const_iterator cove_name_it = mParameters.find( "COVERAGE" );
-  if ( cove_name_it != mParameters.end() )
+  QMap<QString, QString>::const_iterator cove_name_it = mParameters.constFind( "COVERAGE" );
+  if ( cove_name_it != mParameters.constEnd() )
   {
     coveName = cove_name_it.value();
   }
   if ( coveName == "" )
   {
-    QMap<QString, QString>::const_iterator cove_name_it = mParameters.find( "IDENTIFIER" );
-    if ( cove_name_it != mParameters.end() )
+    QMap<QString, QString>::const_iterator cove_name_it = mParameters.constFind( "IDENTIFIER" );
+    if ( cove_name_it != mParameters.constEnd() )
     {
       coveName = cove_name_it.value();
     }
@@ -314,8 +314,8 @@ QByteArray* QgsWCSServer::getCoverage()
   QString crs = "";
 
   // read BBOX
-  QMap<QString, QString>::const_iterator bbIt = mParameters.find( "BBOX" );
-  if ( bbIt == mParameters.end() )
+  QMap<QString, QString>::const_iterator bbIt = mParameters.constFind( "BBOX" );
+  if ( bbIt == mParameters.constEnd() )
   {
     minx = 0; miny = 0; maxx = 0; maxy = 0;
   }

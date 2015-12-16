@@ -428,8 +428,8 @@ void QgsOWSSourceSelect::populateCRS()
     // check whether current CRS is supported
     // if not, use one of the available CRS
     QString defaultCRS;
-    QSet<QString>::const_iterator it = mSelectedLayersCRSs.begin();
-    for ( ; it != mSelectedLayersCRSs.end(); ++it )
+    QSet<QString>::const_iterator it = mSelectedLayersCRSs.constBegin();
+    for ( ; it != mSelectedLayersCRSs.constEnd(); ++it )
     {
       if ( it->compare( mSelectedCRS, Qt::CaseInsensitive ) == 0 )
         break;

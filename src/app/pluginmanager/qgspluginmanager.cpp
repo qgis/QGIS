@@ -477,8 +477,8 @@ void QgsPluginManager::reloadModelData()
     buttonUninstall->setEnabled( false );
   }
 
-  for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
-        it != mPlugins.end();
+  for ( QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.constBegin();
+        it != mPlugins.constEnd();
         ++it )
   {
     if ( ! it->value( "id" ).isEmpty() )
@@ -1070,8 +1070,8 @@ void QgsPluginManager::setCurrentTab( int idx )
 
     // load tab description HTML to the detail browser
     QString tabInfoHTML = "";
-    QMap<QString, QString>::iterator it = mTabDescriptions.find( tabTitle );
-    if ( it != mTabDescriptions.end() )
+    QMap<QString, QString>::const_iterator it = mTabDescriptions.constFind( tabTitle );
+    if ( it != mTabDescriptions.constEnd() )
     {
       tabInfoHTML += "<style>"
                      "body, table {"
@@ -1354,8 +1354,8 @@ bool QgsPluginManager::isPluginEnabled( QString key )
 
 bool QgsPluginManager::hasAvailablePlugins()
 {
-  for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
-        it != mPlugins.end();
+  for ( QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.constBegin();
+        it != mPlugins.constEnd();
         ++it )
   {
     if ( it->value( "status" ) == "not installed" || it->value( "status" ) == "new" )
@@ -1371,8 +1371,8 @@ bool QgsPluginManager::hasAvailablePlugins()
 
 bool QgsPluginManager::hasReinstallablePlugins()
 {
-  for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
-        it != mPlugins.end();
+  for ( QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.constBegin();
+        it != mPlugins.constEnd();
         ++it )
   {
     // plugins marked as "installed" are available for download (otherwise they are marked "orphans")
@@ -1389,8 +1389,8 @@ bool QgsPluginManager::hasReinstallablePlugins()
 
 bool QgsPluginManager::hasUpgradeablePlugins()
 {
-  for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
-        it != mPlugins.end();
+  for ( QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.constBegin();
+        it != mPlugins.constEnd();
         ++it )
   {
     if ( it->value( "status" ) == "upgradeable" )
@@ -1406,8 +1406,8 @@ bool QgsPluginManager::hasUpgradeablePlugins()
 
 bool QgsPluginManager::hasNewPlugins()
 {
-  for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
-        it != mPlugins.end();
+  for ( QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.constBegin();
+        it != mPlugins.constEnd();
         ++it )
   {
     if ( it->value( "status" ) == "new" )
@@ -1423,8 +1423,8 @@ bool QgsPluginManager::hasNewPlugins()
 
 bool QgsPluginManager::hasNewerPlugins()
 {
-  for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
-        it != mPlugins.end();
+  for ( QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.constBegin();
+        it != mPlugins.constEnd();
         ++it )
   {
     if ( it->value( "status" ) == "newer" )
@@ -1440,8 +1440,8 @@ bool QgsPluginManager::hasNewerPlugins()
 
 bool QgsPluginManager::hasInvalidPlugins()
 {
-  for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
-        it != mPlugins.end();
+  for ( QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.constBegin();
+        it != mPlugins.constEnd();
         ++it )
   {
     if ( ! it->value( "error" ).isEmpty() )

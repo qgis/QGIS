@@ -358,7 +358,7 @@ QgsComposerMapOverview *QgsComposerMapOverviewStack::overview( const int index )
 
 QgsComposerMapOverview &QgsComposerMapOverviewStack::operator[]( int idx )
 {
-  QgsComposerMapItem* item = mItems[idx];
+  QgsComposerMapItem* item = mItems.at( idx );
   QgsComposerMapOverview* overview = dynamic_cast<QgsComposerMapOverview*>( item );
   return *overview;
 }

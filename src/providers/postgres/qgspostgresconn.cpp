@@ -1416,10 +1416,10 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
         int j;
         for ( j = 0; j < layerProperty.size(); j++ )
         {
-          if ( layerProperty.srids[j] != srid.toInt() )
+          if ( layerProperty.srids.at( j ) != srid.toInt() )
             continue;
 
-          QGis::WkbType wkbType1 = layerProperty.types[j];
+          QGis::WkbType wkbType1 = layerProperty.types.at( j );
           QGis::WkbType multiType1 = QGis::multiType( wkbType1 );
           if ( multiType0 == multiType1 && wkbType0 != wkbType1 )
           {

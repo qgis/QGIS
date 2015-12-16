@@ -108,13 +108,13 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
          * Return the attributes used to evaluate the expression of this rule
          * @return A set of attribute names
          */
-        QSet<QString> usedAttributes();
+        QSet<QString> usedAttributes() const;
 
         //! @note available in python bindings as symbol2
-        QgsSymbolV2List symbols( const QgsRenderContext& context = QgsRenderContext() );
+        QgsSymbolV2List symbols( const QgsRenderContext& context = QgsRenderContext() ) const;
 
         //! @note not available in python bindings
-        QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" );
+        QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) const;
 
         //! @note added in 2.6
         QgsLegendSymbolListV2 legendSymbolItemsV2( int currentLevel = -1 ) const;
@@ -226,10 +226,10 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! clone this rule, return new instance
         Rule* clone() const;
 
-        void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props );
+        void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
         static Rule* createFromSld( QDomElement& element, QGis::GeometryType geomType );
 
-        QDomElement save( QDomDocument& doc, QgsSymbolV2Map& symbolMap );
+        QDomElement save( QDomDocument& doc, QgsSymbolV2Map& symbolMap ) const;
 
         /** Prepare the rule for rendering and its children (build active children array)
          * @deprecated use startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter ) instead

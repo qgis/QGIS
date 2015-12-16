@@ -77,8 +77,8 @@ void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName,
   //update config file map
   if ( !configFile.isEmpty() )
   {
-    QHash< QString, int >::iterator configIt = mConfigFiles.find( configFile );
-    if ( configIt == mConfigFiles.end() )
+    QHash< QString, int >::const_iterator configIt = mConfigFiles.constFind( configFile );
+    if ( configIt == mConfigFiles.constEnd() )
     {
       mConfigFiles.insert( configFile, 1 );
       mFileSystemWatcher.addPath( configFile );

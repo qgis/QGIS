@@ -135,8 +135,8 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     currentY += mGridStrokeWidth;
 
     //draw the attribute values
-    QList<QgsAttributeMap>::const_iterator attIt = mAttributeMaps.begin();
-    for ( ; attIt != mAttributeMaps.end(); ++attIt )
+    QList<QgsAttributeMap>::const_iterator attIt = mAttributeMaps.constBegin();
+    for ( ; attIt != mAttributeMaps.constEnd(); ++attIt )
     {
       cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], cellBodyHeight );
 

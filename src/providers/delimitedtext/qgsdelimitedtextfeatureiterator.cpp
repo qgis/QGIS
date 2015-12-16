@@ -174,12 +174,12 @@ bool QgsDelimitedTextFeatureIterator::fetchFeature( QgsFeature& feature )
       {
         if ( mNextId < mFeatureIds.size() )
         {
-          fid = mFeatureIds[mNextId];
+          fid = mFeatureIds.at( mNextId );
         }
       }
       else if ( mNextId < mSource->mSubsetIndex.size() )
       {
-        fid = mSource->mSubsetIndex[mNextId];
+        fid = mSource->mSubsetIndex.at( mNextId );
       }
       if ( fid < 0 ) break;
       mNextId++;
@@ -417,7 +417,7 @@ QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList&
 void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens )
 {
   if ( fieldIdx < 0 || fieldIdx >= mSource->attributeColumns.count() ) return;
-  int column = mSource->attributeColumns[fieldIdx];
+  int column = mSource->attributeColumns.at( fieldIdx );
   if ( column < 0 || column >= tokens.count() ) return;
   const QString &value = tokens[column];
   QVariant val;

@@ -49,8 +49,8 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource* sour
   else if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
     mUsingFeatureIdList = true;
-    QgsFeatureMap::const_iterator it = mSource->mFeatures.find( mRequest.filterFid() );
-    if ( it != mSource->mFeatures.end() )
+    QgsFeatureMap::const_iterator it = mSource->mFeatures.constFind( mRequest.filterFid() );
+    if ( it != mSource->mFeatures.constEnd() )
       mFeatureIdList.append( mRequest.filterFid() );
   }
   else

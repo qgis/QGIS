@@ -115,9 +115,8 @@ void QgsRuleBasedLabeling::Rule::insertChild( int i, QgsRuleBasedLabeling::Rule*
 
 void QgsRuleBasedLabeling::Rule::removeChildAt( int i )
 {
-  Rule* rule = mChildren[i];
+  delete mChildren.at( i );
   mChildren.removeAt( i );
-  delete rule;
   updateElseRules();
 }
 

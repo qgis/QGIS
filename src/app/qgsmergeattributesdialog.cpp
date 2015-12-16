@@ -139,7 +139,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   {
     verticalHeaderLabels << FID_TO_STRING( mFeatureList[i].id() );
 
-    QgsAttributes attrs = mFeatureList[i].attributes();
+    QgsAttributes attrs = mFeatureList.at( i ).attributes();
 
     for ( int j = 0; j < mTableWidget->columnCount(); j++ )
     {
@@ -300,7 +300,7 @@ QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int
   int idx = mTableWidget->horizontalHeaderItem( col )->data( Qt::UserRole ).toInt();
 
   int i;
-  for ( i = 0; i < mFeatureList.size() && mFeatureList[i].id() != featureId; i++ )
+  for ( i = 0; i < mFeatureList.size() && mFeatureList.at( i ).id() != featureId; i++ )
     ;
 
   QVariant value;

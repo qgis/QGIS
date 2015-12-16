@@ -319,11 +319,11 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
         double medianValue;
         if ( even )
         {
-          medianValue = ( featureStats.values[size / 2 - 1] + featureStats.values[size / 2] ) / 2;
+          medianValue = ( featureStats.values.at( size / 2 - 1 ) + featureStats.values.at( size / 2 ) ) / 2;
         }
         else //odd
         {
-          medianValue = featureStats.values[( size + 1 ) / 2 - 1];
+          medianValue = featureStats.values.at(( size + 1 ) / 2 - 1 );
         }
         changeAttributeMap.insert( medianIndex, QVariant( medianValue ) );
       }

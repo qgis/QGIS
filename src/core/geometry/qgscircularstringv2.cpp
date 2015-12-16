@@ -633,7 +633,7 @@ void QgsCircularStringV2::transform( const QTransform& t )
   for ( int i = 0; i < nPoints; ++i )
   {
     qreal x, y;
-    t.map( mX[i], mY[i], &x, &y );
+    t.map( mX.at( i ), mY.at( i ), &x, &y );
     mX[i] = x; mY[i] = y;
   }
 }
@@ -947,12 +947,12 @@ double QgsCircularStringV2::closestPointOnArc( double x1, double y1, double x2, 
 
 void QgsCircularStringV2::insertVertexBetween( int after, int before, int pointOnCircle )
 {
-  double xAfter = mX[after];
-  double yAfter = mY[after];
-  double xBefore = mX[before];
-  double yBefore = mY[before];
-  double xOnCircle = mX[ pointOnCircle ];
-  double yOnCircle = mY[ pointOnCircle ];
+  double xAfter = mX.at( after );
+  double yAfter = mY.at( after );
+  double xBefore = mX.at( before );
+  double yBefore = mY.at( before );
+  double xOnCircle = mX.at( pointOnCircle );
+  double yOnCircle = mY.at( pointOnCircle );
 
   double radius, centerX, centerY;
   QgsGeometryUtils::circleCenterRadius( QgsPointV2( xAfter, yAfter ), QgsPointV2( xBefore, yBefore ), QgsPointV2( xOnCircle, yOnCircle ), radius, centerX, centerY );

@@ -97,7 +97,7 @@ void QgsClipboard::setSystemClipboard()
   textFields.clear();
 
   // then the field contents
-  for ( QgsFeatureList::iterator it = mFeatureClipboard.begin(); it != mFeatureClipboard.end(); ++it )
+  for ( QgsFeatureList::const_iterator it = mFeatureClipboard.constBegin(); it != mFeatureClipboard.constEnd(); ++it )
   {
     QgsAttributes attributes = it->attributes();
 

@@ -568,7 +568,7 @@ void QgsGml::characters( const XML_Char* chars, int len )
 void QgsGml::setAttribute( const QString& name, const QString& value )
 {
   //find index with attribute name
-  QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.find( name );
+  QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.constFind( name );
   if ( att_it != mThematicAttributes.constEnd() )
   {
     QVariant var;

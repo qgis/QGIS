@@ -145,11 +145,7 @@ void QgsSymbolLayerV2::removeDataDefinedProperty( const QString& property )
 
 void QgsSymbolLayerV2::removeDataDefinedProperties()
 {
-  QMap< QString, QgsDataDefined* >::iterator it = mDataDefinedProperties.begin();
-  for ( ; it != mDataDefinedProperties.constEnd(); ++it )
-  {
-    delete( it.value() );
-  }
+  qDeleteAll( mDataDefinedProperties );
   mDataDefinedProperties.clear();
 }
 
@@ -341,8 +337,8 @@ QgsSymbolLayerV2::QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked )
 
 void QgsSymbolLayerV2::prepareExpressions( const QgsFields* fields, double scale )
 {
-  QMap< QString, QgsDataDefined* >::iterator it = mDataDefinedProperties.begin();
-  for ( ; it != mDataDefinedProperties.end(); ++it )
+  QMap< QString, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constBegin();
+  for ( ; it != mDataDefinedProperties.constEnd(); ++it )
   {
     if ( it.value() )
     {
@@ -373,8 +369,8 @@ void QgsSymbolLayerV2::prepareExpressions( const QgsFields* fields, double scale
 
 void QgsSymbolLayerV2::prepareExpressions( const QgsSymbolV2RenderContext& context )
 {
-  QMap< QString, QgsDataDefined* >::iterator it = mDataDefinedProperties.begin();
-  for ( ; it != mDataDefinedProperties.end(); ++it )
+  QMap< QString, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constBegin();
+  for ( ; it != mDataDefinedProperties.constEnd(); ++it )
   {
     if ( it.value() )
     {
@@ -401,7 +397,7 @@ QgsSymbolLayerV2::~QgsSymbolLayerV2()
   delete mPaintEffect;
 }
 
-bool QgsSymbolLayerV2::isCompatibleWithSymbol( QgsSymbolV2* symbol )
+bool QgsSymbolLayerV2::isCompatibleWithSymbol( QgsSymbolV2* symbol ) const
 {
   if ( symbol->type() == QgsSymbolV2::Fill && mType == QgsSymbolV2::Line )
     return true;

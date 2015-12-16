@@ -475,8 +475,8 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
 
   // SOAP platform
   //only give this information if it is not a WMS request to be in sync with the WMS capabilities schema
-  QMap<QString, QString>::const_iterator service_it = mParameters.find( "SERVICE" );
-  if ( service_it != mParameters.end() && service_it.value().compare( "WMS", Qt::CaseInsensitive ) != 0 )
+  QMap<QString, QString>::const_iterator service_it = mParameters.constFind( "SERVICE" );
+  if ( service_it != mParameters.constEnd() && service_it.value().compare( "WMS", Qt::CaseInsensitive ) != 0 )
   {
     QDomElement soapElement = doc.createElement( "SOAP"/*wms:SOAP*/ );
     httpElement.appendChild( soapElement );
@@ -728,7 +728,7 @@ QImage* QgsWMSServer::getLegendGraphics()
 
   //scale
   double scaleDenominator = -1;
-  QMap<QString, QString>::const_iterator scaleIt = mParameters.find( "SCALE" );
+  QMap<QString, QString>::const_iterator scaleIt = mParameters.constFind( "SCALE" );
   if ( scaleIt != mParameters.constEnd() )
   {
     bool conversionSuccess;
@@ -755,12 +755,12 @@ QImage* QgsWMSServer::getLegendGraphics()
 
   QString rule;
   int ruleSymbolWidth = 0, ruleSymbolHeight = 0;
-  QMap<QString, QString>::const_iterator ruleIt = mParameters.find( "RULE" );
+  QMap<QString, QString>::const_iterator ruleIt = mParameters.constFind( "RULE" );
   if ( ruleIt != mParameters.constEnd() )
   {
     rule = ruleIt.value();
 
-    QMap<QString, QString>::const_iterator widthIt = mParameters.find( "WIDTH" );
+    QMap<QString, QString>::const_iterator widthIt = mParameters.constFind( "WIDTH" );
     if ( widthIt != mParameters.constEnd() )
     {
       bool conversionSuccess;
@@ -771,7 +771,7 @@ QImage* QgsWMSServer::getLegendGraphics()
       }
     }
 
-    QMap<QString, QString>::const_iterator heightIt = mParameters.find( "HEIGHT" );
+    QMap<QString, QString>::const_iterator heightIt = mParameters.constFind( "HEIGHT" );
     if ( heightIt != mParameters.constEnd() )
     {
       bool conversionSuccess;
@@ -1026,41 +1026,41 @@ void QgsWMSServer::legendParameters( double& boxSpace, double& layerSpace, doubl
                                      QFont& layerFont, QFont& itemFont, QColor& layerFontColor, QColor& itemFontColor )
 {
   //spaces between legend elements
-  QMap<QString, QString>::const_iterator boxSpaceIt = mParameters.find( "BOXSPACE" );
+  QMap<QString, QString>::const_iterator boxSpaceIt = mParameters.constFind( "BOXSPACE" );
   boxSpace = ( boxSpaceIt == mParameters.constEnd() ) ? mConfigParser->legendBoxSpace() : boxSpaceIt.value().toDouble();
-  QMap<QString, QString>::const_iterator layerSpaceIt = mParameters.find( "LAYERSPACE" );
+  QMap<QString, QString>::const_iterator layerSpaceIt = mParameters.constFind( "LAYERSPACE" );
   layerSpace = ( layerSpaceIt == mParameters.constEnd() ) ? mConfigParser->legendLayerSpace() : layerSpaceIt.value().toDouble();
-  QMap<QString, QString>::const_iterator layerTitleSpaceIt = mParameters.find( "LAYERTITLESPACE" );
+  QMap<QString, QString>::const_iterator layerTitleSpaceIt = mParameters.constFind( "LAYERTITLESPACE" );
   layerTitleSpace = ( layerTitleSpaceIt == mParameters.constEnd() ) ? mConfigParser->legendLayerTitleSpace() : layerTitleSpaceIt.value().toDouble();
-  QMap<QString, QString>::const_iterator symbolSpaceIt = mParameters.find( "SYMBOLSPACE" );
+  QMap<QString, QString>::const_iterator symbolSpaceIt = mParameters.constFind( "SYMBOLSPACE" );
   symbolSpace = ( symbolSpaceIt == mParameters.constEnd() ) ? mConfigParser->legendSymbolSpace() : symbolSpaceIt.value().toDouble();
-  QMap<QString, QString>::const_iterator iconLabelSpaceIt = mParameters.find( "ICONLABELSPACE" );
+  QMap<QString, QString>::const_iterator iconLabelSpaceIt = mParameters.constFind( "ICONLABELSPACE" );
   iconLabelSpace = ( iconLabelSpaceIt == mParameters.constEnd() ) ? mConfigParser->legendIconLabelSpace() : iconLabelSpaceIt.value().toDouble();
-  QMap<QString, QString>::const_iterator symbolWidthIt = mParameters.find( "SYMBOLWIDTH" );
+  QMap<QString, QString>::const_iterator symbolWidthIt = mParameters.constFind( "SYMBOLWIDTH" );
   symbolWidth = ( symbolWidthIt == mParameters.constEnd() ) ? mConfigParser->legendSymbolWidth() : symbolWidthIt.value().toDouble();
-  QMap<QString, QString>::const_iterator symbolHeightIt = mParameters.find( "SYMBOLHEIGHT" );
+  QMap<QString, QString>::const_iterator symbolHeightIt = mParameters.constFind( "SYMBOLHEIGHT" );
   symbolHeight = ( symbolHeightIt == mParameters.constEnd() ) ? mConfigParser->legendSymbolHeight() : symbolHeightIt.value().toDouble();
 
   //font properties
   layerFont = mConfigParser->legendLayerFont();
-  QMap<QString, QString>::const_iterator layerFontFamilyIt = mParameters.find( "LAYERFONTFAMILY" );
+  QMap<QString, QString>::const_iterator layerFontFamilyIt = mParameters.constFind( "LAYERFONTFAMILY" );
   if ( layerFontFamilyIt != mParameters.constEnd() )
   {
     layerFont.setFamily( layerFontFamilyIt.value() );
   }
-  QMap<QString, QString>::const_iterator layerFontBoldIt = mParameters.find( "LAYERFONTBOLD" );
+  QMap<QString, QString>::const_iterator layerFontBoldIt = mParameters.constFind( "LAYERFONTBOLD" );
   if ( layerFontBoldIt != mParameters.constEnd() )
   {
     layerFont.setBold( layerFontBoldIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
   }
-  QMap<QString, QString>::const_iterator layerFontItalicIt = mParameters.find( "LAYERFONTITALIC" );
+  QMap<QString, QString>::const_iterator layerFontItalicIt = mParameters.constFind( "LAYERFONTITALIC" );
   if ( layerFontItalicIt != mParameters.constEnd() )
   {
     layerFont.setItalic( layerFontItalicIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
   }
-  QMap<QString, QString>::const_iterator layerFontSizeIt = mParameters.find( "LAYERFONTSIZE" );
+  QMap<QString, QString>::const_iterator layerFontSizeIt = mParameters.constFind( "LAYERFONTSIZE" );
   layerFont.setPointSizeF( layerFontSizeIt != mParameters.constEnd() ? layerFontSizeIt.value().toDouble() : layerFont.pointSizeF() );
-  QMap<QString, QString>::const_iterator layerFontColorIt = mParameters.find( "LAYERFONTCOLOR" );
+  QMap<QString, QString>::const_iterator layerFontColorIt = mParameters.constFind( "LAYERFONTCOLOR" );
   if ( layerFontColorIt != mParameters.constEnd() )
   {
     layerFontColor.setNamedColor( layerFontColorIt.value() );
@@ -1069,7 +1069,7 @@ void QgsWMSServer::legendParameters( double& boxSpace, double& layerSpace, doubl
   {
     layerFontColor = QColor( 0, 0, 0 );
   }
-  QMap<QString, QString>::const_iterator layerTitleIt = mParameters.find( "LAYERTITLE" );
+  QMap<QString, QString>::const_iterator layerTitleIt = mParameters.constFind( "LAYERTITLE" );
   if ( layerTitleIt != mParameters.constEnd() )
   {
     mDrawLegendLayerLabel = ( layerTitleIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
@@ -1081,24 +1081,24 @@ void QgsWMSServer::legendParameters( double& boxSpace, double& layerSpace, doubl
 
 
   itemFont = mConfigParser->legendItemFont();
-  QMap<QString, QString>::const_iterator itemFontFamilyIt = mParameters.find( "ITEMFONTFAMILY" );
+  QMap<QString, QString>::const_iterator itemFontFamilyIt = mParameters.constFind( "ITEMFONTFAMILY" );
   if ( itemFontFamilyIt != mParameters.constEnd() )
   {
     itemFont.setFamily( itemFontFamilyIt.value() );
   }
-  QMap<QString, QString>::const_iterator itemFontBoldIt = mParameters.find( "ITEMFONTBOLD" );
+  QMap<QString, QString>::const_iterator itemFontBoldIt = mParameters.constFind( "ITEMFONTBOLD" );
   if ( itemFontBoldIt != mParameters.constEnd() )
   {
     itemFont.setBold( itemFontBoldIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
   }
-  QMap<QString, QString>::const_iterator itemFontItalicIt = mParameters.find( "ITEMFONTITALIC" );
+  QMap<QString, QString>::const_iterator itemFontItalicIt = mParameters.constFind( "ITEMFONTITALIC" );
   if ( itemFontItalicIt != mParameters.constEnd() )
   {
     itemFont.setItalic( itemFontItalicIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
   }
-  QMap<QString, QString>::const_iterator itemFontSizeIt = mParameters.find( "ITEMFONTSIZE" );
+  QMap<QString, QString>::const_iterator itemFontSizeIt = mParameters.constFind( "ITEMFONTSIZE" );
   itemFont.setPointSizeF( itemFontSizeIt != mParameters.constEnd() ? itemFontSizeIt.value().toDouble() : itemFont.pointSizeF() );
-  QMap<QString, QString>::const_iterator itemFontColorIt = mParameters.find( "ITEMFONTCOLOR" );
+  QMap<QString, QString>::const_iterator itemFontColorIt = mParameters.constFind( "ITEMFONTCOLOR" );
   if ( itemFontColorIt != mParameters.constEnd() )
   {
     itemFontColor.setNamedColor( itemFontColorIt.value() );
@@ -1107,7 +1107,7 @@ void QgsWMSServer::legendParameters( double& boxSpace, double& layerSpace, doubl
   {
     itemFontColor = QColor( 0, 0, 0 );
   }
-  QMap<QString, QString>::const_iterator itemLabelIt = mParameters.find( "RULELABEL" );
+  QMap<QString, QString>::const_iterator itemLabelIt = mParameters.constFind( "RULELABEL" );
   if ( itemLabelIt != mParameters.constEnd() )
   {
     mDrawLegendItemLabel = ( itemLabelIt.value().compare( "TRUE", Qt::CaseInsensitive ) == 0 );
@@ -1503,7 +1503,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
   QStringList layersList, stylesList;
   bool conversionSuccess;
 
-  for ( QMap<QString, QString>::iterator it = mParameters.begin(); it != mParameters.end(); ++it )
+  for ( QMap<QString, QString>::const_iterator it = mParameters.constBegin(); it != mParameters.constEnd(); ++it )
   {
     QgsMessageLog::logMessage( QString( "%1 // %2" ).arg( it.key() ).arg( it.value() ) );
   }
@@ -2777,7 +2777,7 @@ void QgsWMSServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
                                    QList< QPair< QgsVectorLayer*, double > >& labelBufferTransparencies )
 {
   //get opacity list
-  QMap<QString, QString>::const_iterator opIt = mParameters.find( "OPACITIES" );
+  QMap<QString, QString>::const_iterator opIt = mParameters.constFind( "OPACITIES" );
   if ( opIt == mParameters.constEnd() )
   {
     return;

@@ -69,10 +69,8 @@ QgsStyleV2* QgsStyleV2::defaultStyle() // static
 
 void QgsStyleV2::clear()
 {
-  for ( QMap<QString, QgsSymbolV2*>::iterator its = mSymbols.begin(); its != mSymbols.end(); ++its )
-    delete its.value();
-  for ( QMap<QString, QgsVectorColorRampV2*>::iterator itr = mColorRamps.begin(); itr != mColorRamps.end(); ++itr )
-    delete itr.value();
+  qDeleteAll( mSymbols );
+  qDeleteAll( mColorRamps );
 
   mSymbols.clear();
   mColorRamps.clear();
@@ -1270,7 +1268,7 @@ bool QgsStyleV2::exportXML( const QString& filename )
   QDomElement rampsElem = doc.createElement( "colorramps" );
 
   // save color ramps
-  for ( QMap<QString, QgsVectorColorRampV2*>::iterator itr = mColorRamps.begin(); itr != mColorRamps.end(); ++itr )
+  for ( QMap<QString, QgsVectorColorRampV2*>::const_iterator itr = mColorRamps.constBegin(); itr != mColorRamps.constEnd(); ++itr )
   {
     QDomElement rampEl = QgsSymbolLayerV2Utils::saveColorRamp( itr.key(), itr.value(), doc );
     rampsElem.appendChild( rampEl );

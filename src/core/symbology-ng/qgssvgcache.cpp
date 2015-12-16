@@ -111,11 +111,7 @@ QgsSvgCache::QgsSvgCache( QObject *parent )
 
 QgsSvgCache::~QgsSvgCache()
 {
-  QMultiHash< QString, QgsSvgCacheEntry* >::iterator it = mEntryLookup.begin();
-  for ( ; it != mEntryLookup.end(); ++it )
-  {
-    delete it.value();
-  }
+  qDeleteAll( mEntryLookup );
 }
 
 

@@ -157,8 +157,7 @@ QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2( const QString& a
 {
   for ( int i = 0; i < mCategories.count(); ++i )
   {
-    QgsRendererCategoryV2& cat = mCategories[i];
-    if ( cat.symbol() == nullptr )
+    if ( !mCategories.at( i ).symbol() )
     {
       QgsDebugMsg( "invalid symbol in a category! ignoring..." );
       mCategories.removeAt( i-- );
@@ -177,7 +176,7 @@ void QgsCategorizedSymbolRendererV2::rebuildHash()
 
   for ( int i = 0; i < mCategories.size(); ++i )
   {
-    QgsRendererCategoryV2& cat = mCategories[i];
+    const QgsRendererCategoryV2& cat = mCategories.at( i );
     mSymbolHash.insert( cat.value().toString(), ( cat.renderState() || mCounting ) ? cat.symbol() : &sSkipRender );
   }
 }
@@ -185,8 +184,8 @@ void QgsCategorizedSymbolRendererV2::rebuildHash()
 QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( const QVariant& value )
 {
   // TODO: special case for int, double
-  QHash<QString, QgsSymbolV2*>::iterator it = mSymbolHash.find( value.isNull() ? "" : value.toString() );
-  if ( it == mSymbolHash.end() )
+  QHash<QString, QgsSymbolV2*>::const_iterator it = mSymbolHash.constFind( value.isNull() ? "" : value.toString() );
+  if ( it == mSymbolHash.constEnd() )
   {
     if ( mSymbolHash.isEmpty() )
     {
@@ -414,18 +413,17 @@ void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, con
     mExpression->prepare( &context.expressionContext() );
   }
 
-  QgsCategoryList::iterator it = mCategories.begin();
-  for ( ; it != mCategories.end(); ++it )
+  Q_FOREACH ( const QgsRendererCategoryV2& cat, mCategories )
   {
-    it->symbol()->startRender( context, &fields );
+    cat.symbol()->startRender( context, &fields );
 
     if ( mRotation.data() || mSizeScale.data() )
     {
-      QgsSymbolV2* tempSymbol = it->symbol()->clone();
+      QgsSymbolV2* tempSymbol = cat.symbol()->clone();
       tempSymbol->setRenderHints(( mRotation.data() ? QgsSymbolV2::DataDefinedRotation : 0 ) |
                                  ( mSizeScale.data() ? QgsSymbolV2::DataDefinedSizeScale : 0 ) );
       tempSymbol->startRender( context, &fields );
-      mTempSymbols[ it->symbol()] = tempSymbol;
+      mTempSymbols[ cat.symbol()] = tempSymbol;
     }
   }
   return;
@@ -433,13 +431,14 @@ void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, con
 
 void QgsCategorizedSymbolRendererV2::stopRender( QgsRenderContext& context )
 {
-  QgsCategoryList::iterator it = mCategories.begin();
-  for ( ; it != mCategories.end(); ++it )
-    it->symbol()->stopRender( context );
+  Q_FOREACH ( const QgsRendererCategoryV2& cat, mCategories )
+  {
+    cat.symbol()->stopRender( context );
+  }
 
   // cleanup mTempSymbols
-  QHash<QgsSymbolV2*, QgsSymbolV2*>::iterator it2 = mTempSymbols.begin();
-  for ( ; it2 != mTempSymbols.end(); ++it2 )
+  QHash<QgsSymbolV2*, QgsSymbolV2*>::const_iterator it2 = mTempSymbols.constBegin();
+  for ( ; it2 != mTempSymbols.constEnd(); ++it2 )
   {
     it2.value()->stopRender( context );
     delete it2.value();
@@ -593,8 +592,10 @@ QgsSymbolV2List QgsCategorizedSymbolRendererV2::symbols( QgsRenderContext &conte
   Q_UNUSED( context );
   QgsSymbolV2List lst;
   lst.reserve( mCategories.count() );
-  for ( int i = 0; i < mCategories.count(); i++ )
-    lst.append( mCategories[i].symbol() );
+  Q_FOREACH ( const QgsRendererCategoryV2& cat, mCategories )
+  {
+    lst.append( cat.symbol() );
+  }
   return lst;
 }
 
@@ -661,10 +662,9 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::create( QDomElement& eleme
   QDomElement rotationElem = element.firstChildElement( "rotation" );
   if ( !rotationElem.isNull() && !rotationElem.attribute( "field" ).isEmpty() )
   {
-    QgsCategoryList::iterator it = r->mCategories.begin();
-    for ( ; it != r->mCategories.end(); ++it )
+    Q_FOREACH ( const QgsRendererCategoryV2& cat, r->mCategories )
     {
-      convertSymbolRotation( it->symbol(), rotationElem.attribute( "field" ) );
+      convertSymbolRotation( cat.symbol(), rotationElem.attribute( "field" ) );
     }
     if ( r->mSourceSymbol.data() )
     {
@@ -675,10 +675,9 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::create( QDomElement& eleme
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
   if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( "field" ).isEmpty() )
   {
-    QgsCategoryList::iterator it = r->mCategories.begin();
-    for ( ; it != r->mCategories.end(); ++it )
+    Q_FOREACH ( const QgsRendererCategoryV2& cat, r->mCategories )
     {
-      convertSymbolSizeScale( it->symbol(),
+      convertSymbolSizeScale( cat.symbol(),
                               QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
                               sizeScaleElem.attribute( "field" ) );
     }
@@ -949,7 +948,7 @@ bool QgsCategorizedSymbolRendererV2::legendSymbolItemChecked( const QString& key
   bool ok;
   int index = key.toInt( &ok );
   if ( ok && index >= 0 && index < mCategories.size() )
-    return mCategories[ index ].renderState();
+    return mCategories.at( index ).renderState();
   else
     return true;
 }

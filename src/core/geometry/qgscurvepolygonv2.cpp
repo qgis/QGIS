@@ -179,7 +179,7 @@ bool QgsCurvePolygonV2::fromWkt( const QString& wkt )
     return false;
   }
 
-  mExteriorRing = mInteriorRings.first();
+  mExteriorRing = mInteriorRings.at( 0 );
   mInteriorRings.removeFirst();
 
   //scan through rings and check if dimensionality of rings is different to CurvePolygon.
@@ -563,10 +563,9 @@ void QgsCurvePolygonV2::transform( const QgsCoordinateTransform& ct, QgsCoordina
     mExteriorRing->transform( ct, d );
   }
 
-  QList<QgsCurveV2*>::iterator it = mInteriorRings.begin();
-  for ( ; it != mInteriorRings.end(); ++it )
+  Q_FOREACH ( QgsCurveV2* curve, mInteriorRings )
   {
-    ( *it )->transform( ct, d );
+    curve->transform( ct, d );
   }
 }
 
@@ -577,10 +576,9 @@ void QgsCurvePolygonV2::transform( const QTransform& t )
     mExteriorRing->transform( t );
   }
 
-  QList<QgsCurveV2*>::iterator it = mInteriorRings.begin();
-  for ( ; it != mInteriorRings.end(); ++it )
+  Q_FOREACH ( QgsCurveV2* curve, mInteriorRings )
   {
-    ( *it )->transform( t );
+    curve->transform( t );
   }
 }
 
@@ -659,7 +657,7 @@ bool QgsCurvePolygonV2::insertVertex( const QgsVertexId& vId, const QgsPointV2& 
     return false;
   }
 
-  QgsCurveV2* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings[vId.ring - 1];
+  QgsCurveV2* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings.at( vId.ring - 1 );
   int n = ring->numPoints();
   bool success = ring->insertVertex( QgsVertexId( 0, 0, vId.vertex ), vertex );
   if ( !success )
@@ -684,7 +682,7 @@ bool QgsCurvePolygonV2::moveVertex( const QgsVertexId& vId, const QgsPointV2& ne
     return false;
   }
 
-  QgsCurveV2* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings[vId.ring - 1];
+  QgsCurveV2* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings.at( vId.ring - 1 );
   int n = ring->numPoints();
   bool success = ring->moveVertex( vId, newPos );
   if ( success )
@@ -706,7 +704,7 @@ bool QgsCurvePolygonV2::deleteVertex( const QgsVertexId& vId )
     return false;
   }
 
-  QgsCurveV2* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings[vId.ring - 1];
+  QgsCurveV2* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings.at( vId.ring - 1 );
   int n = ring->numPoints();
   if ( n <= 2 )
   {

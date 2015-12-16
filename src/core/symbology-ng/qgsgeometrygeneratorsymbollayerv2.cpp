@@ -180,7 +180,7 @@ QSet<QString> QgsGeometryGeneratorSymbolLayerV2::usedAttributes() const
   return mSymbol->usedAttributes() + mExpression->referencedColumns().toSet();
 }
 
-bool QgsGeometryGeneratorSymbolLayerV2::isCompatibleWithSymbol( QgsSymbolV2* symbol )
+bool QgsGeometryGeneratorSymbolLayerV2::isCompatibleWithSymbol( QgsSymbolV2* symbol ) const
 {
   Q_UNUSED( symbol )
   return true;

@@ -227,13 +227,13 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
     return;
   }
 
-  for ( FeatureCategoryVector::iterator cit = mFeaturesCategories.begin(); cit != mFeaturesCategories.end(); ++cit )
+  Q_FOREACH ( const CombinedFeature& cit, mFeaturesCategories )
   {
-    QgsFeature feat = cit->feature; // just a copy, so that we do not accumulate geometries again
+    QgsFeature feat = cit.feature; // just a copy, so that we do not accumulate geometries again
     if ( mPreprocessingEnabled )
     {
       // compute the unary union on the polygons
-      QScopedPointer<QgsGeometry> unioned( QgsGeometry::unaryUnion( cit->geometries ) );
+      QScopedPointer<QgsGeometry> unioned( QgsGeometry::unaryUnion( cit.geometries ) );
       // compute the difference with the extent
       QScopedPointer<QgsGeometry> rect( QgsGeometry::fromPolygon( mExtentPolygon ) );
       QgsGeometry *final = rect->difference( const_cast<QgsGeometry*>( unioned.data() ) );
@@ -253,7 +253,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       // operations do not need geometries to be valid
       QgsMultiPolygon finalMulti;
       finalMulti.append( mExtentPolygon );
-      Q_FOREACH ( QgsGeometry* geom, cit->geometries )
+      Q_FOREACH ( QgsGeometry* geom, cit.geometries )
       {
         QgsMultiPolygon multi;
         if (( geom->wkbType() == QGis::WKBPolygon ) ||
@@ -294,9 +294,9 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       mSubRenderer->renderFeature( feat, mContext );
     }
   }
-  for ( FeatureCategoryVector::iterator cit = mFeaturesCategories.begin(); cit != mFeaturesCategories.end(); ++cit )
+  Q_FOREACH ( const CombinedFeature& cit, mFeaturesCategories )
   {
-    Q_FOREACH ( QgsGeometry* g, cit->geometries )
+    Q_FOREACH ( QgsGeometry* g, cit.geometries )
     {
       delete g;
     }

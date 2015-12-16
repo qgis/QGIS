@@ -83,8 +83,8 @@ bool QgsPluginRegistry::isLoaded( const QString& key ) const
 
 QString QgsPluginRegistry::library( const QString& key )
 {
-  QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.find( key );
-  if ( it != mPlugins.end() )
+  QMap<QString, QgsPluginMetadata>::const_iterator it = mPlugins.constFind( key );
+  if ( it != mPlugins.constEnd() )
     return it->library();
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
@@ -125,8 +125,8 @@ void QgsPluginRegistry::addPlugin( const QString& key, const QgsPluginMetadata& 
 void QgsPluginRegistry::dump()
 {
   QgsDebugMsg( "PLUGINS IN REGISTRY: key -> (name, library)" );
-  for ( QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.begin();
-        it != mPlugins.end();
+  for ( QMap<QString, QgsPluginMetadata>::const_iterator it = mPlugins.constBegin();
+        it != mPlugins.constEnd();
         ++it )
   {
     QgsDebugMsg( QString( "PLUGIN: %1 -> (%2, %3)" )

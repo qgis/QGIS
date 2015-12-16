@@ -915,8 +915,8 @@ void QgsDxfExport::writeEntities()
   engine.setMapSettings( mapSettings );
 
   // iterate through the maplayers
-  QList< QPair< QgsVectorLayer*, int > >::iterator layerIt = mLayers.begin();
-  for ( ; layerIt != mLayers.end(); ++layerIt )
+  QList< QPair< QgsVectorLayer*, int > >::const_iterator layerIt = mLayers.constBegin();
+  for ( ; layerIt != mLayers.constEnd(); ++layerIt )
   {
     QgsVectorLayer* vl = layerIt->first;
     if ( !vl || !layerIsScaleBasedVisible( vl ) )
@@ -3318,7 +3318,7 @@ void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, const Q
 #endif // 0
 
   // insert block or write point directly?
-  QHash< const QgsSymbolLayerV2*, QString >::const_iterator blockIt = mPointSymbolBlocks.find( symbolLayer );
+  QHash< const QgsSymbolLayerV2*, QString >::const_iterator blockIt = mPointSymbolBlocks.constFind( symbolLayer );
   if ( !symbolLayer || blockIt == mPointSymbolBlocks.constEnd() )
   {
     // write symbol directly here
@@ -3785,7 +3785,7 @@ QString QgsDxfExport::lineStyleFromSymbolLayer( const QgsSymbolLayerV2* symbolLa
     return lineStyleName;
   }
 
-  QHash< const QgsSymbolLayerV2*, QString >::const_iterator lineTypeIt = mLineStyles.find( symbolLayer );
+  QHash< const QgsSymbolLayerV2*, QString >::const_iterator lineTypeIt = mLineStyles.constFind( symbolLayer );
   if ( lineTypeIt != mLineStyles.constEnd() )
   {
     lineStyleName = lineTypeIt.value();
@@ -3863,8 +3863,8 @@ QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > QgsDxfExport::symbolLayers( Qg
 {
   QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > symbolLayers;
 
-  QList< QPair< QgsVectorLayer*, int> >::iterator lIt = mLayers.begin();
-  for ( ; lIt != mLayers.end(); ++lIt )
+  QList< QPair< QgsVectorLayer*, int> >::const_iterator lIt = mLayers.constBegin();
+  for ( ; lIt != mLayers.constEnd(); ++lIt )
   {
     // cast to vector layer
     QgsVectorLayer* vl = lIt->first;

@@ -208,7 +208,7 @@ namespace pal
     do
     {
       discrim += 1.0;
-      for ( stop = 0; stop < feat->lPos.count() && feat->lPos[stop]->cost() < discrim; stop++ )
+      for ( stop = 0; stop < feat->lPos.count() && feat->lPos.at( stop )->cost() < discrim; stop++ )
         ;
     }
     while ( stop == 0 && discrim < feat->lPos.last()->cost() + 2.0 );
@@ -217,7 +217,7 @@ namespace pal
     {
       int k;
       for ( k = 0; k < stop; k++ )
-        feat->lPos[k]->setCost( 0.0021 );
+        feat->lPos.at( k )->setCost( 0.0021 );
     }
 
     if ( max_p > stop )

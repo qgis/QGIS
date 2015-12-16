@@ -267,8 +267,8 @@ const QgsExpressionContextScope* QgsExpressionContext::activeScopeForVariable( c
 QgsExpressionContextScope* QgsExpressionContext::activeScopeForVariable( const QString& name )
 {
   //iterate through stack backwards, so that higher priority variables take precedence
-  QList< QgsExpressionContextScope* >::iterator it = mStack.end();
-  while ( it != mStack.begin() )
+  QList< QgsExpressionContextScope* >::const_iterator it = mStack.constEnd();
+  while ( it != mStack.constBegin() )
   {
     --it;
     if (( *it )->hasVariable( name ) )
@@ -282,7 +282,7 @@ QgsExpressionContextScope* QgsExpressionContext::scope( int index )
   if ( index < 0 || index >= mStack.count() )
     return nullptr;
 
-  return mStack[index];
+  return mStack.at( index );
 }
 
 QgsExpressionContextScope *QgsExpressionContext::lastScope()

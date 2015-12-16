@@ -409,7 +409,7 @@ namespace pal
       // add all candidates into a rtree (to speed up conflicts searching)
       for ( j = 0; j < feat->lPos.count(); j++, idlp++ )
       {
-        lp = feat->lPos[j];
+        lp = feat->lPos.at( j );
         //lp->insertIntoIndex(prob->candidates);
         lp->setProblemIds( i, idlp ); // bugfix #1 (maxence 10/23/2008)
       }

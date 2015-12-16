@@ -657,7 +657,7 @@ void QgsLabelPropertyDialog::on_mLabelTextLineEdit_textChanged( const QString& t
 
 void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::DataDefinedProperties p, const QVariant& value )
 {
-  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator ddIt = mDataDefinedProperties.find( p );
+  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator ddIt = mDataDefinedProperties.constFind( p );
   if ( ddIt != mDataDefinedProperties.constEnd() )
   {
     QgsDataDefined* dd = ddIt.value();
