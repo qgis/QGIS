@@ -816,3 +816,9 @@ void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature &f )
     f.setGeometry( mSource->mChangedGeometries[f.id()] );
 }
 
+bool QgsVectorLayerFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys )
+{
+  Q_UNUSED( orderBys );
+  return true;
+}
+
