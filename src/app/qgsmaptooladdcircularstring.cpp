@@ -36,6 +36,8 @@ QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture *par
   {
     connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircularString::setParentTool );
   }
+  connect( QgisApp::instance(), SIGNAL( newProject() ), this, SLOT( stopCapturing() ) );
+  connect( QgisApp::instance(), SIGNAL( projectRead() ), this, SLOT( stopCapturing() ) );
 }
 
 QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapCanvas *canvas )
