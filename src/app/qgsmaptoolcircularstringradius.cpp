@@ -49,24 +49,8 @@ void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent* e 
   {
     if ( mPoints.isEmpty() )
     {
-      //get first point from parent tool if there. Todo: move to upper class
-      const QgsCompoundCurveV2* compoundCurve = mParentTool->captureCurve();
-      if ( compoundCurve && compoundCurve->nCurves() > 0 )
-      {
-        const QgsCurveV2* curve = compoundCurve->curveAt( compoundCurve->nCurves() - 1 );
-        if ( curve )
-        {
-          //mParentTool->captureCurve() is in layer coordinates, but we need map coordinates
-          QgsPointV2 endPointLayerCoord = curve->endPoint();
-          QgsPoint mapPoint = toMapCoordinates( mCanvas->currentLayer(), QgsPoint( endPointLayerCoord.x(), endPointLayerCoord.y() ) );
-          mPoints.append( QgsPointV2( mapPoint.x(), mapPoint.y() ) );
-        }
-      }
-      else
-      {
-        mPoints.append( mapPoint );
-        return;
-      }
+      mPoints.append( mapPoint );
+      return;
     }
 
     if ( mPoints.size() % 2 == 1 )

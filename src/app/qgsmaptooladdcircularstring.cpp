@@ -126,6 +126,22 @@ void QgsMapToolAddCircularString::activate()
   if ( mParentTool )
   {
     mParentTool->deleteTempRubberBand();
+    if ( mPoints.isEmpty() )
+    {
+      // if the parent tool has a curve, use its last point as the first point in this curve
+      const QgsCompoundCurveV2* compoundCurve = mParentTool->captureCurve();
+      if ( compoundCurve && compoundCurve->nCurves() > 0 )
+      {
+        const QgsCurveV2* curve = compoundCurve->curveAt( compoundCurve->nCurves() - 1 );
+        if ( curve )
+        {
+          //mParentTool->captureCurve() is in layer coordinates, but we need map coordinates
+          QgsPointV2 endPointLayerCoord = curve->endPoint();
+          QgsPoint mapPoint = toMapCoordinates( mCanvas->currentLayer(), QgsPoint( endPointLayerCoord.x(), endPointLayerCoord.y() ) );
+          mPoints.append( QgsPointV2( mapPoint ) );
+        }
+      }
+    }
   }
   QgsMapToolCapture::activate();
 }
