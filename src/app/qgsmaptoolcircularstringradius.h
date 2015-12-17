@@ -31,6 +31,7 @@ class QgsMapToolCircularStringRadius: public QgsMapToolAddCircularString
 
     virtual void cadCanvasReleaseEvent( QgsMapMouseEvent* e ) override;
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent* e ) override;
+    virtual void deactivate() override;
 
   private slots:
     void updateRadiusFromSpinBox( double radius );
@@ -38,7 +39,6 @@ class QgsMapToolCircularStringRadius: public QgsMapToolAddCircularString
   private:
     double mTemporaryEndPointX;
     double mTemporaryEndPointY;
-    bool mRadiusMode;
     double mRadius;
     QgsPointV2 mLastMouseMapPos;
     QDoubleSpinBox* mRadiusSpinBox;
