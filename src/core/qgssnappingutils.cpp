@@ -55,7 +55,7 @@ QgsPointLocator* QgsSnappingUtils::locatorForLayer( QgsVectorLayer* vl )
   else if ( mSnapToType == SnapToType::SnapToLayer )
     locators = &mToLayerLocators;
   else
-    return NULL;
+    return nullptr;
 
   if ( !locators->contains( vl ) )
   {
@@ -104,7 +104,7 @@ QgsPointLocator* QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer* vl,
   else if ( mSnapToType == SnapToType::SnapToLayer )
     locators = &mTemporaryToLayerLocators;
   else
-    return NULL;
+    return nullptr;
 
   if ( locators->contains( vl ) )
     delete locators->take( vl );
@@ -477,9 +477,9 @@ const QgsCoordinateReferenceSystem* QgsSnappingUtils::destCRS()
   if ( mSnapToType == SnapToType::SnapToMap )
     return mMapSettings.hasCrsTransformEnabled() ? &mMapSettings.destinationCrs() : nullptr;
   else if ( mSnapToType == SnapToType::SnapToLayer )
-    return mMapSettings.hasCrsTransformEnabled() ? &mCurrentLayer->crs() : 0;
+    return mMapSettings.hasCrsTransformEnabled() ? &mCurrentLayer->crs() : nullptr;
   else
-    return 0;
+    return nullptr;
 }
 
 void QgsSnappingUtils::setSnapToType( SnapToType snapToType )

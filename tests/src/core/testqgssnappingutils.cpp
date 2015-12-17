@@ -118,10 +118,10 @@ class TestQgsSnappingUtils : public QObject
       FilterExcludePoint myFilter( QgsPoint( 1, 0 ) );
       QgsPointLocator::Match m3 = u.snapToMap( QPoint( 100, 100 ), &myFilter );
       QVERIFY( !m3.isValid() );
-   }
+    }
 
-   void testSnapModeCurrentWithReprojection()
-   {
+    void testSnapModeCurrentWithReprojection()
+    {
       // test with OTF reprojection enabled.
       // test with UTM<->Pseudo-Mercator, both with meters as units.
       QgsCoordinateReferenceSystem* destCrs;

@@ -32,11 +32,11 @@ QgsMapMouseEvent::QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QMouseEvent* event 
     , mSnappingMode( NoSnapping )
     , mOriginalMapPoint( mapCanvas ? mapCanvas->mapSettings().mapToPixel().toMapCoordinates( event->pos() ) : QgsPoint() )
     , mOriginalLayerPoint( mapCanvas && mapCanvas->currentLayer() ?
-                             mapCanvas->mapSettings().mapToLayerCoordinates(
-                               mapCanvas->currentLayer(),
-                               mapCanvas->mapSettings().mapToPixel().toMapCoordinates( event->pos() )
-                             ) :
-                             QgsPoint() )
+                           mapCanvas->mapSettings().mapToLayerCoordinates(
+                             mapCanvas->currentLayer(),
+                             mapCanvas->mapSettings().mapToPixel().toMapCoordinates( event->pos() )
+                           ) :
+                           QgsPoint() )
     , mMapPoint( mOriginalMapPoint )
     , mLayerPoint( mOriginalLayerPoint )
     , mPixelPoint( event->pos() )
@@ -49,11 +49,11 @@ QgsMapMouseEvent::QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QEvent::Type type, 
     , mSnappingMode( NoSnapping )
     , mOriginalMapPoint( mapCanvas ? mapCanvas->mapSettings().mapToPixel().toMapCoordinates( pos ) : QgsPoint() )
     , mOriginalLayerPoint( mapCanvas && mapCanvas->currentLayer() ?
-                             mapCanvas->mapSettings().mapToLayerCoordinates(
-                               mapCanvas->currentLayer(),
-                               mapCanvas->mapSettings().mapToPixel().toMapCoordinates( pos )
-                             ) :
-                             QgsPoint() )
+                           mapCanvas->mapSettings().mapToLayerCoordinates(
+                             mapCanvas->currentLayer(),
+                             mapCanvas->mapSettings().mapToPixel().toMapCoordinates( pos )
+                           ) :
+                           QgsPoint() )
     , mMapPoint( mOriginalMapPoint )
     , mLayerPoint( mOriginalLayerPoint )
     , mPixelPoint( pos )
