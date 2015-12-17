@@ -121,34 +121,43 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
   mOrderByCompiled = true;
 
-  Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBys() )
+  if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
   {
-    QgsSpatiaLiteExpressionCompiler compiler = QgsSpatiaLiteExpressionCompiler( source );
-    QgsExpression expression = clause.expression();
-    if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
+    Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBys() )
     {
-      QString part;
-      part = compiler.result();
+      QgsSpatiaLiteExpressionCompiler compiler = QgsSpatiaLiteExpressionCompiler( source );
+      QgsExpression expression = clause.expression();
+      if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
+      {
+        QString part;
+        part = compiler.result();
 
-      if ( clause.nullsFirst() )
-        orderByParts << QString( "%1 IS NOT NULL" ).arg( part );
+        if ( clause.nullsFirst() )
+          orderByParts << QString( "%1 IS NOT NULL" ).arg( part );
+        else
+          orderByParts << QString( "%1 IS NULL" ).arg( part );
+
+        part += clause.ascending() ? " COLLATE NOCASE ASC" : " COLLATE NOCASE DESC";
+        orderByParts << part;
+      }
       else
-        orderByParts << QString( "%1 IS NULL" ).arg( part );
-
-      part += clause.ascending() ? " COLLATE NOCASE ASC" : " COLLATE NOCASE DESC";
-      orderByParts << part;
-    }
-    else
-    {
-      // Bail out on first non-complete compilation.
-      // Most important clauses at the beginning of the list
-      // will still be sent and used to pre-sort so the local
-      // CPU can use its cycles for fine-tuning.
-      mOrderByCompiled = false;
-      limitAtProvider = false;
-      break;
+      {
+        // Bail out on first non-complete compilation.
+        // Most important clauses at the beginning of the list
+        // will still be sent and used to pre-sort so the local
+        // CPU can use its cycles for fine-tuning.
+        mOrderByCompiled = false;
+        break;
+      }
     }
   }
+  else
+  {
+    mOrderByCompiled = false;
+  }
+
+  if ( !mOrderByCompiled )
+    limitAtProvider = false;
 
   // preparing the SQL statement
   bool success = prepareStatement( whereClause, limitAtProvider ? mRequest.limit() : -1, orderByParts.join( "," ) );

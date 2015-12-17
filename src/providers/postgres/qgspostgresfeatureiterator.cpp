@@ -116,29 +116,38 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
 
   mOrderByCompiled = true;
 
-  Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBys() )
+  if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
   {
-    QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
-    QgsExpression expression = clause.expression();
-    if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
+    Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBys() )
     {
-      QString part;
-      part = compiler.result();
-      part += clause.ascending() ? " ASC" : " DESC";
-      part += clause.nullsFirst() ? " NULLS FIRST" : " NULLS LAST";
-      orderByParts << part;
-    }
-    else
-    {
-      // Bail out on first non-complete compilation.
-      // Most important clauses at the beginning of the list
-      // will still be sent and used to pre-sort so the local
-      // CPU can use its cycles for fine-tuning.
-      mOrderByCompiled = false;
-      limitAtProvider = false;
-      break;
+      QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
+      QgsExpression expression = clause.expression();
+      if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
+      {
+        QString part;
+        part = compiler.result();
+        part += clause.ascending() ? " ASC" : " DESC";
+        part += clause.nullsFirst() ? " NULLS FIRST" : " NULLS LAST";
+        orderByParts << part;
+      }
+      else
+      {
+        // Bail out on first non-complete compilation.
+        // Most important clauses at the beginning of the list
+        // will still be sent and used to pre-sort so the local
+        // CPU can use its cycles for fine-tuning.
+        mOrderByCompiled = false;
+        break;
+      }
     }
   }
+  else
+  {
+    mOrderByCompiled = false;
+  }
+
+  if ( !mOrderByCompiled )
+    limitAtProvider = false;
 
   bool success = declareCursor( whereClause, limitAtProvider ? mRequest.limit() : -1, false, orderByParts.join( "," ) );
   if ( !success && useFallbackWhereClause )
