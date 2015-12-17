@@ -848,14 +848,14 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
 void QgsFieldsProperties::on_pbtnSelectInitFilePath_clicked()
 {
   QSettings myQSettings;
-  QString lastUsedDir = myQSettings.value( "style/lastUIDir", "." ).toString();
+  QString lastUsedDir = myQSettings.value( "style/lastInitFilePathDir", "." ).toString();
   QString pyfilename = QFileDialog::getOpenFileName( this, tr( "Select Python file" ), lastUsedDir, tr( "Python file" )  + " (*.py)" );
 
   if ( pyfilename.isNull() )
     return;
 
   QFileInfo fi( pyfilename );
-  myQSettings.setValue( "style/lastUIDir", fi.path() );
+  myQSettings.setValue( "style/lastInitFilePathDir", fi.path() );
   mInitFilePathLineEdit->setText( pyfilename );
 }
 

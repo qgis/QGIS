@@ -147,7 +147,7 @@ void QgsEditFormConfig::readXml( const QDomNode& node )
   QDomNode editFormInitFilePathNode = node.namedItem( "editforminitfilepath" );
   if ( !editFormInitFilePathNode.isNull() || ( !editFormInitFilePathNode.isNull() && !editFormInitFilePathNode.toElement().text().isEmpty() ) )
   {
-    setInitFilePath( editFormInitFilePathNode.toElement().text() );
+    setInitFilePath( QgsProject::instance()->readPath( editFormInitFilePathNode.toElement().text() ) );
   }
 
   QDomNode fFSuppNode = node.namedItem( "featformsuppress" );
