@@ -57,16 +57,12 @@ void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent* e 
     {
       if ( !mRadiusMode )
       {
-        delete mRubberBand;
-        mRubberBand = nullptr;
         mTemporaryEndPointX = mapPoint.x();
         mTemporaryEndPointY = mapPoint.y();
-        mRadiusMode = true;
 
         //initial radius is distance( tempPoint - mPoints.last ) / 2.0
         double minRadius = sqrt( QgsGeometryUtils::sqrDistance2D( mPoints.last(), QgsPointV2( mTemporaryEndPointX, mTemporaryEndPointY ) ) ) / 2.0;
         mRadius = minRadius + minRadius / 10.0;
-        recalculateCircularString();
         createRadiusSpinBox();
         if ( mRadiusSpinBox )
         {
@@ -81,9 +77,10 @@ void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent* e 
           mPoints.append( result );
           mPoints.append( QgsPointV2( mTemporaryEndPointX, mTemporaryEndPointY ) );
         }
-        mRadiusMode = false;
         deleteRadiusSpinBox();
       }
+      mRadiusMode = !mRadiusMode;
+      recalculateCircularString();
     }
     else
     {
@@ -108,10 +105,29 @@ void QgsMapToolCircularStringRadius::cadCanvasMoveEvent( QgsMapMouseEvent* e )
     mLastMouseMapPos.setY( e->mapPoint().y() );
     recalculateCircularString();
   }
+  if ( !mPoints.isEmpty() && !mRadiusMode )
+  {
+    delete mTempRubberBand;
+    mTempRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QGis::Polygon : QGis::Line, true );
+    QgsCircularStringV2* cString = new QgsCircularStringV2();
+    QList<QgsPointV2> rubberBandPoints;
+    rubberBandPoints.append( mPoints.last() );
+    rubberBandPoints.append( QgsPointV2( e->mapPoint() ) );
+    cString->setPoints( rubberBandPoints );
+    mTempRubberBand->setGeometry( cString );
+    mTempRubberBand->show();
+  }
 }
 
 void QgsMapToolCircularStringRadius::recalculateCircularString()
 {
+  QgsCircularStringV2* cString2 = new QgsCircularStringV2();
+  cString2->setPoints( mPoints );
+  delete mRubberBand;
+  mRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QGis::Polygon : QGis::Line );
+  mRubberBand->setGeometry( cString2 );
+  mRubberBand->show();
+
   //new midpoint on circle segment
   QgsPointV2 midPoint;
   if ( !QgsGeometryUtils::segmentMidPoint( mPoints.last(), QgsPointV2( mTemporaryEndPointX, mTemporaryEndPointY ), midPoint, mRadius,
@@ -125,10 +141,10 @@ void QgsMapToolCircularStringRadius::recalculateCircularString()
   rubberBandPoints.append( QgsPointV2( mTemporaryEndPointX, mTemporaryEndPointY ) );
   QgsCircularStringV2* cString = new QgsCircularStringV2();
   cString->setPoints( rubberBandPoints );
-  delete mRubberBand;
-  mRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QGis::Polygon : QGis::Line );
-  mRubberBand->setGeometry( cString );
-  mRubberBand->show();
+  delete mTempRubberBand;
+  mTempRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QGis::Polygon : QGis::Line, true );
+  mTempRubberBand->setGeometry( cString );
+  mTempRubberBand->show();
 }
 
 void QgsMapToolCircularStringRadius::createRadiusSpinBox()
