@@ -37,7 +37,7 @@ except:
 # DON'T RAISE THIS THRESHOLD!!!
 # (changes which lower this threshold are welcomed though!)
 
-ACCEPTABLE_MISSING_CLASSES = 80
+ACCEPTABLE_MISSING_CLASSES = 69
 ACCEPTABLE_MISSING_MEMBERS = 264
 
 
