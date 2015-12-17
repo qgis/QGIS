@@ -31,6 +31,20 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
 
     if ( mPoints.size() >= 1 )
     {
+      if ( !mTempRubberBand )
+      {
+        mTempRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QGis::Polygon : QGis::Line, true );
+        mTempRubberBand->show();
+      }
+
+      QgsCircularStringV2* c = new QgsCircularStringV2();
+      QList< QgsPointV2 > rubberBandPoints = mPoints.mid( mPoints.size() - 1 - ( mPoints.size() + 1 ) % 2 );
+      rubberBandPoints.append( mapPoint );
+      c->setPoints( rubberBandPoints );
+      mTempRubberBand->setGeometry( c );
+    }
+    if ( mPoints.size() > 1 && ( mPoints.size() ) % 2 == 1 )
+    {
       if ( !mRubberBand )
       {
         mRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QGis::Polygon : QGis::Line );
@@ -42,9 +56,6 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
       rubberBandPoints.append( mapPoint );
       c->setPoints( rubberBandPoints );
       mRubberBand->setGeometry( c );
-    }
-    if (( mPoints.size() ) % 2 == 1 )
-    {
       removeCenterPointRubberBand();
     }
   }
@@ -64,10 +75,10 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasMoveEvent( QgsMapMouseEvent* e
   QgsVertexId idx;
   idx.part = 0;
   idx.ring = 0;
-  idx.vertex = mPoints.size();
-  if ( mRubberBand )
+  idx.vertex = 1 + ( mPoints.size() + 1 ) % 2;
+  if ( mTempRubberBand )
   {
-    mRubberBand->moveVertex( idx, mapPoint );
+    mTempRubberBand->moveVertex( idx, mapPoint );
     updateCenterPointRubberBand( mapPoint );
   }
 }
