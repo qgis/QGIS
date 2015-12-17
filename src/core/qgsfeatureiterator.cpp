@@ -20,6 +20,8 @@
 
 #include <algorithm>
 
+
+/// @cond
 class QgsExpressionSorter
 {
   public:
@@ -113,6 +115,7 @@ class QgsExpressionSorter
     QList<QgsFeatureRequest::OrderByClause> mPreparedOrderBys;
 };
 
+/// @endcond
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest& request )
     : mRequest( request )
