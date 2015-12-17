@@ -116,13 +116,47 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
   whereClause = whereClauses.join( " AND " );
 
+  // Setup the order by
+  QStringList orderByParts;
+
+  mOrderByCompiled = true;
+
+  Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBys() )
+  {
+    QgsSpatiaLiteExpressionCompiler compiler = QgsSpatiaLiteExpressionCompiler( source );
+    QgsExpression expression = clause.expression();
+    if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
+    {
+      QString part;
+      part = compiler.result();
+
+      if ( clause.nullsFirst() )
+        orderByParts << QString( "%1 IS NOT NULL" ).arg( part );
+      else
+        orderByParts << QString( "%1 IS NULL" ).arg( part );
+
+      part += clause.ascending() ? " COLLATE NOCASE ASC" : " COLLATE NOCASE DESC";
+      orderByParts << part;
+    }
+    else
+    {
+      // Bail out on first non-complete compilation.
+      // Most important clauses at the beginning of the list
+      // will still be sent and used to pre-sort so the local
+      // CPU can use its cycles for fine-tuning.
+      mOrderByCompiled = false;
+      limitAtProvider = false;
+      break;
+    }
+  }
+
   // preparing the SQL statement
-  bool success = prepareStatement( whereClause, limitAtProvider ? mRequest.limit() : -1 );
+  bool success = prepareStatement( whereClause, limitAtProvider ? mRequest.limit() : -1, orderByParts.join( "," ) );
   if ( !success && useFallbackWhereClause )
   {
     //try with the fallback where clause, eg for cases when using compiled expression failed to prepare
     mExpressionCompiled = false;
-    success = prepareStatement( fallbackWhereClause, -1 );
+    success = prepareStatement( fallbackWhereClause, -1, orderByParts.join( "," ) );
   }
 
   if ( !success )
@@ -213,7 +247,7 @@ bool QgsSpatiaLiteFeatureIterator::close()
 ////
 
 
-bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString& whereClause, long limit )
+bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString& whereClause, long limit, const QString& orderBy )
 {
   if ( !mHandle )
     return false;
@@ -251,6 +285,9 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString& whereClause,
 
     if ( !whereClause.isEmpty() )
       sql += QString( " WHERE %1" ).arg( whereClause );
+
+    if ( !orderBy.isEmpty() )
+      sql += QString( " ORDER BY %1" ).arg( orderBy );
 
     if ( limit >= 0 )
       sql += QString( " LIMIT %1" ).arg( limit );
@@ -501,6 +538,13 @@ void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt* stmt, int i
     // NULL geometry
     feature.setGeometry( nullptr );
   }
+}
+
+bool QgsSpatiaLiteFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys )
+{
+  Q_UNUSED( orderBys )
+  // Preparation has already been done in the constructor, so we just communicate the result
+  return mOrderByCompiled;
 }
 
 

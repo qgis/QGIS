@@ -77,7 +77,7 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     QString whereClauseFid();
     QString whereClauseFids();
     QString mbr( const QgsRectangle& rect );
-    bool prepareStatement( const QString& whereClause, long limit = -1 );
+    bool prepareStatement( const QString& whereClause, long limit = -1 , const QString& orderBy = QString() );
     QString quotedPrimaryKey();
     bool getFeature( sqlite3_stmt *stmt, QgsFeature &feature );
     QString fieldName( const QgsField& fld );
@@ -102,7 +102,9 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     QgsFeatureId mRowNumber;
 
   private:
+    bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
+    bool mOrderByCompiled;
     bool mExpressionCompiled;
 };
 
