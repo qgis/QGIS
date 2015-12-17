@@ -40,10 +40,16 @@ class QgsMapToolAddCircularString: public QgsMapToolCapture
   protected:
     explicit QgsMapToolAddCircularString( QgsMapCanvas* canvas ); //forbidden
 
+    /** The parent map tool, e.g. the add feature tool.
+     *  Completed circular strings will be added to this tool by calling its addCurve() method.
+     * */
     QgsMapToolCapture* mParentTool;
     /** Circular string points (in map coordinates)*/
     QList< QgsPointV2 > mPoints;
+    //! The rubberband to show the already completed circular strings
     QgsGeometryRubberBand* mRubberBand;
+    //! The rubberband to show the circular string currently working on
+    QgsGeometryRubberBand* mTempRubberBand;
 
     //center point rubber band
     bool mShowCenterPointRubberBand;

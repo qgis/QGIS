@@ -28,6 +28,7 @@ QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture* par
     : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
     , mParentTool( parentTool )
     , mRubberBand( nullptr )
+    , mTempRubberBand( nullptr )
     , mShowCenterPointRubberBand( false )
     , mCenterPointRubberBand( nullptr )
 {
@@ -41,6 +42,7 @@ QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapCanvas* canvas )
     : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
     , mParentTool( nullptr )
     , mRubberBand( nullptr )
+    , mTempRubberBand( nullptr )
     , mShowCenterPointRubberBand( false )
     , mCenterPointRubberBand( nullptr )
 {
@@ -53,6 +55,7 @@ QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapCanvas* canvas )
 QgsMapToolAddCircularString::~QgsMapToolAddCircularString()
 {
   delete mRubberBand;
+  delete mTempRubberBand;
   removeCenterPointRubberBand();
 }
 
@@ -117,6 +120,8 @@ void QgsMapToolAddCircularString::deactivate()
   mPoints.clear();
   delete mRubberBand;
   mRubberBand = nullptr;
+  delete mTempRubberBand;
+  mTempRubberBand = nullptr;
   removeCenterPointRubberBand();
   QgsMapToolCapture::deactivate();
 }
@@ -156,15 +161,15 @@ void QgsMapToolAddCircularString::createCenterPointRubberBand()
   mCenterPointRubberBand = createGeometryRubberBand( QGis::Polygon );
   mCenterPointRubberBand->show();
 
-  if ( mRubberBand )
+  if ( mTempRubberBand )
   {
-    const QgsAbstractGeometryV2* rubberBandGeom = mRubberBand->geometry();
+    const QgsAbstractGeometryV2* rubberBandGeom = mTempRubberBand->geometry();
     if ( rubberBandGeom )
     {
       QgsVertexId idx;
       idx.part = 0;
       idx.ring = 0;
-      idx.vertex = mPoints.size();
+      idx.vertex = 2;
       QgsPointV2 pt = rubberBandGeom->vertexAt( idx );
       updateCenterPointRubberBand( pt );
     }
