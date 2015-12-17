@@ -144,6 +144,16 @@ void QgsMapToolAddCircularString::activate()
           QgsPointV2 endPointLayerCoord = curve->endPoint();
           QgsPoint mapPoint = toMapCoordinates( mCanvas->currentLayer(), QgsPoint( endPointLayerCoord.x(), endPointLayerCoord.y() ) );
           mPoints.append( QgsPointV2( mapPoint ) );
+          if ( !mTempRubberBand )
+          {
+            mTempRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QGis::Polygon : QGis::Line, true );
+            mTempRubberBand->show();
+          }
+          QgsCircularStringV2* c = new QgsCircularStringV2();
+          QList< QgsPointV2 > rubberBandPoints = mPoints;
+          rubberBandPoints.append( QgsPointV2( mapPoint ) );
+          c->setPoints( rubberBandPoints );
+          mTempRubberBand->setGeometry( c );
         }
       }
     }
