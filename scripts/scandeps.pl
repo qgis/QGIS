@@ -84,6 +84,7 @@ for my $dist (@dists) {
 
 	push @dep, $dep;
 	push @dep, "cmake-curses-gui";
+	push @dep, "python-psycopg2";
 
 	print O "| $dist | ``apt-get install" . join( " ", @dep ) . "`` |\n";
 }
