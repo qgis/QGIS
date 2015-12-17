@@ -114,8 +114,12 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
   {
     if ( mMoveRubberBands.empty() )
     {
-      delete mSelectRubberBand;
-      mSelectRubberBand = 0;
+      QSettings settings;
+      bool ghostLine = settings.value( "/qgis/digitizing/line_ghost", true ).toBool();
+      if ( !ghostLine ) {
+        delete mSelectRubberBand;
+        mSelectRubberBand = nullptr;
+      }
       QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, mSelectedFeature->geometry()->type() );
       rb->setOutlineColor( Qt::blue );
       rb->setBrushStyle( Qt::NoBrush );
@@ -397,7 +401,9 @@ void QgsMapToolNodeTool::selectedFeatureDestroyed()
 
 void QgsMapToolNodeTool::geometryChanged( QgsFeatureId fid, QgsGeometry &geom )
 {
-  if ( mSelectedFeature && ( mSelectedFeature->featureId() == fid ) )
+  QSettings settings;
+  bool ghostLine = settings.value( "/qgis/digitizing/line_ghost", true ).toBool();
+  if ( !ghostLine && mSelectedFeature && ( mSelectedFeature->featureId() == fid ) )
   {
     updateSelectFeature( geom );
   }
@@ -518,8 +524,6 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QgsMapMouseEvent* e )
 
     mDeselectOnRelease = -1;
   }
-
-  updateSelectFeature();
 }
 
 void QgsMapToolNodeTool::deactivate()
