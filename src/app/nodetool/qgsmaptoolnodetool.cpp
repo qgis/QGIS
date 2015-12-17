@@ -116,7 +116,8 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
     {
       QSettings settings;
       bool ghostLine = settings.value( "/qgis/digitizing/line_ghost", true ).toBool();
-      if ( !ghostLine ) {
+      if ( !ghostLine )
+      {
         delete mSelectRubberBand;
         mSelectRubberBand = nullptr;
       }
@@ -370,7 +371,8 @@ void QgsMapToolNodeTool::updateSelectFeature( QgsGeometry &geom )
 {
   delete mSelectRubberBand;
 
-  if ( geom.geometry() ) {
+  if ( geom.geometry() )
+  {
     mSelectRubberBand = new QgsGeometryRubberBand( mCanvas, mSelectedFeature->geometry()->type() );
     mSelectRubberBand->setBrushStyle( Qt::SolidPattern );
 
@@ -388,8 +390,10 @@ void QgsMapToolNodeTool::updateSelectFeature( QgsGeometry &geom )
     if ( mCanvas->mapSettings().layerTransform( vlayer ) )
       rbGeom->transform( *mCanvas->mapSettings().layerTransform( vlayer ) );
     mSelectRubberBand->setGeometry( rbGeom );
-  } else {
-    mSelectRubberBand = 0;
+  }
+  else
+  {
+    mSelectRubberBand = nullptr;
   }
 }
 
