@@ -138,19 +138,23 @@ void QgsLayerPropertiesWidget::setExpressionContext( QgsExpressionContext *conte
 
 void QgsLayerPropertiesWidget::populateLayerTypes()
 {
-  QStringList types = QgsSymbolLayerV2Registry::instance()->symbolLayersForType( mSymbol->type() );
+  QStringList symbolLayerIds = QgsSymbolLayerV2Registry::instance()->symbolLayersForType( mSymbol->type() );
 
-  for ( int i = 0; i < types.count(); i++ )
-    cboLayerType->addItem( QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( types[i] )->visibleName(), types[i] );
+  Q_FOREACH ( const QString& symbolLayerId, symbolLayerIds )
+    cboLayerType->addItem( QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( symbolLayerId )->visibleName(), symbolLayerId );
 
   if ( mSymbol->type() == QgsSymbolV2::Fill )
   {
-    QStringList typesLine = QgsSymbolLayerV2Registry::instance()->symbolLayersForType( QgsSymbolV2::Line );
-    for ( int i = 0; i < typesLine.count(); i++ )
+    QStringList lineLayerIds = QgsSymbolLayerV2Registry::instance()->symbolLayersForType( QgsSymbolV2::Line );
+    Q_FOREACH ( const QString& lineLayerId, lineLayerIds )
     {
-      QString visibleName = QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( typesLine[i] )->visibleName();
-      QString name = QString( tr( "Outline: %1" ) ).arg( visibleName );
-      cboLayerType->addItem( name, typesLine[i] );
+      QgsSymbolLayerV2AbstractMetadata* layerInfo = QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( lineLayerId );
+      if ( layerInfo->type() != QgsSymbolV2::Hybrid )
+      {
+        QString visibleName = layerInfo->visibleName();
+        QString name = QString( tr( "Outline: %1" ) ).arg( visibleName );
+        cboLayerType->addItem( name, lineLayerId );
+      }
     }
   }
 }
