@@ -138,7 +138,6 @@ class TestQgsRulebasedRenderer(TestCase):
         assert self.r3.children()[0].filterExpression() == '"id" = 1'
         assert self.r3.children()[1].filterExpression() == '"id" = 2'
 
-    @unittest.skip("temporarily disabled")
     def testRefineWithRanges(self):
         # Test refining rule with ranges (refs #10815)
 
