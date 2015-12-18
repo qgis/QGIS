@@ -420,22 +420,40 @@ void QgsServerProjectParser::serviceCapabilities( QDomElement& parentElement, QD
   QDomElement keywordListElem = propertiesElement.firstChildElement( "WMSKeywordList" );
   if ( !keywordListElem.isNull() && !keywordListElem.text().isEmpty() )
   {
-    QDomElement wmsKeywordElem = doc.createElement( "KeywordList" );
-    QDomNodeList keywordList = keywordListElem.elementsByTagName( "value" );
-    for ( int i = 0; i < keywordList.size(); ++i )
+    if ( service.compare( "WMS", Qt::CaseInsensitive ) == 0 )
     {
-      QDomElement keywordElem = doc.createElement( "Keyword" );
-      QDomText keywordText = doc.createTextNode( keywordList.at( i ).toElement().text() );
-      keywordElem.appendChild( keywordText );
-      if ( sia2045 )
+      QDomElement wmsKeywordElem = doc.createElement( "KeywordList" );
+      QDomNodeList keywordList = keywordListElem.elementsByTagName( "value" );
+      for ( int i = 0; i < keywordList.size(); ++i )
       {
-        keywordElem.setAttribute( "vocabulary", "SIA_Geo405" );
+        QDomElement keywordElem = doc.createElement( "Keyword" );
+        QDomText keywordText = doc.createTextNode( keywordList.at( i ).toElement().text() );
+        keywordElem.appendChild( keywordText );
+        if ( sia2045 )
+        {
+          keywordElem.setAttribute( "vocabulary", "SIA_Geo405" );
+        }
+        wmsKeywordElem.appendChild( keywordElem );
       }
-      wmsKeywordElem.appendChild( keywordElem );
-    }
 
-    if ( keywordList.size() > 0 )
+      if ( keywordList.size() > 0 )
+      {
+        serviceElem.appendChild( wmsKeywordElem );
+      }
+    }
+    else
     {
+      QDomNodeList keywordNodeList = keywordListElem.elementsByTagName( "value" );
+      QStringList keywordList;
+      for ( int i = 0; i < keywordNodeList.size(); ++i )
+      {
+        keywordList.push_back( keywordNodeList.at( i ).toElement().text() );
+      }
+      QDomElement wmsKeywordElem = doc.createElement( "Keywords" );
+      if ( service.compare( "WCS", Qt::CaseInsensitive ) == 0 )
+        wmsKeywordElem = doc.createElement( "keywords" );
+      QDomText keywordText = doc.createTextNode( keywordList.join( ", " ) );
+      wmsKeywordElem.appendChild( keywordText );
       serviceElem.appendChild( wmsKeywordElem );
     }
   }
