@@ -64,7 +64,8 @@ ADD_PYTHON_TEST(PyQgsVectorFileWriter test_qgsvectorfilewriter.py)
 ADD_PYTHON_TEST(PyQgsVectorLayer test_qgsvectorlayer.py)
 ADD_PYTHON_TEST(PyQgsZonalStatistics test_qgszonalstatistics.py)
 ADD_PYTHON_TEST(PyQgsMapLayerRegistry test_qgsmaplayerregistry.py)
-
+ADD_PYTHON_TEST(PyQgsVirtualLayerProvider test_provider_virtual.py)
+ADD_PYTHON_TEST(PyQgsVirtualLayerDefinition test_qgsvirtuallayerdefinition.py)
 
 IF (NOT WIN32)
   ADD_PYTHON_TEST(PyQgsLogger test_qgslogger.py)
