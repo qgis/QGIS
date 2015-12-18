@@ -40,7 +40,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
      * @param map encoded properties string map
      * @returns new QgsTransformEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& );
+    static QgsPaintEffect* create( const QgsStringMap& map );
 
     QgsTransformEffect();
     virtual ~QgsTransformEffect();

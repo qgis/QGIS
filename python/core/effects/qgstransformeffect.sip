@@ -18,7 +18,7 @@ class QgsTransformEffect : QgsPaintEffect
      * @param map encoded properties string map
      * @returns new QgsTransformEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& ) /Factory/;
+    static QgsPaintEffect* create( const QgsStringMap& map ) /Factory/;
 
     QgsTransformEffect();
     virtual ~QgsTransformEffect();
