@@ -81,7 +81,8 @@ void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent* e 
         mPoints.append( mTemporaryEndPoint );
         deleteRadiusSpinBox();
       }
-      recalculateCircularString();
+      recalculateRubberBand();
+      recalculateTempRubberBand( e->mapPoint() );
     }
   }
   else if ( e->button() == Qt::RightButton )
@@ -100,13 +101,12 @@ void QgsMapToolCircularStringRadius::cadCanvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( !mPoints.isEmpty() )
   {
-    mLastMouseMapPos = QgsPointV2( e->mapPoint() );
-    recalculateCircularString();
+    recalculateTempRubberBand( e->mapPoint() );
     updateCenterPointRubberBand( mTemporaryEndPoint );
   }
 }
 
-void QgsMapToolCircularStringRadius::recalculateCircularString()
+void QgsMapToolCircularStringRadius::recalculateRubberBand()
 {
   if ( mPoints.size() >= 3 )
   {
@@ -118,14 +118,17 @@ void QgsMapToolCircularStringRadius::recalculateCircularString()
     mRubberBand->setGeometry( cString );
     mRubberBand->show();
   }
+}
 
+void QgsMapToolCircularStringRadius::recalculateTempRubberBand( const QgsPoint& mousePosition )
+{
   QList<QgsPointV2> rubberBandPoints;
   if ( !( mPoints.size() % 2 ) )
   {
     //recalculate midpoint on circle segment
     QgsPointV2 midPoint;
     if ( !QgsGeometryUtils::segmentMidPoint( mPoints.at( mPoints.size() - 2 ), mTemporaryEndPoint, midPoint, mRadius,
-         mLastMouseMapPos ) )
+         QgsPointV2( mousePosition ) ) )
     {
       return;
     }
@@ -137,7 +140,7 @@ void QgsMapToolCircularStringRadius::recalculateCircularString()
   else
   {
     rubberBandPoints.append( mPoints.last() );
-    rubberBandPoints.append( mLastMouseMapPos );
+    rubberBandPoints.append( QgsPointV2( mousePosition ) );
   }
   QgsCircularStringV2* cString = new QgsCircularStringV2();
   cString->setPoints( rubberBandPoints );
@@ -173,5 +176,5 @@ void QgsMapToolCircularStringRadius::deleteRadiusSpinBox()
 void QgsMapToolCircularStringRadius::updateRadiusFromSpinBox( double radius )
 {
   mRadius = radius;
-  recalculateCircularString();
+  recalculateTempRubberBand( toMapCoordinates( mCanvas->mouseLastXY() ).toQPointF() );
 }

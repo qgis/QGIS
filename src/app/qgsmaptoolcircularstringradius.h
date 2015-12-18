@@ -39,11 +39,12 @@ class QgsMapToolCircularStringRadius: public QgsMapToolAddCircularString
   private:
     QgsPointV2 mTemporaryEndPoint;
     double mRadius;
-    QgsPointV2 mLastMouseMapPos;
     QDoubleSpinBox* mRadiusSpinBox;
 
-    //! recalculate the rubberband and the temporary rubberband
-    void recalculateCircularString();
+    //! recalculate the rubberband
+    void recalculateRubberBand();
+    //! recalculate the temporary rubberband using the given mouse position
+    void recalculateTempRubberBand( const QgsPoint& mousePosition );
     //! (re-)create the spin box to enter the radius
     void createRadiusSpinBox();
     //! delete the spin box to enter the radius, if it exists
