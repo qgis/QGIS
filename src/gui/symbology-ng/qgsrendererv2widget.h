@@ -215,8 +215,8 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
         : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
     {
       init( tr( "Symbol size" ) );
-      if ( !symbolList.isEmpty() && mLayer )
-        mDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbolV2*>( symbolList[0] ) ) );
+      if ( !symbolList.isEmpty() && symbolList.at( 0 ) && mLayer )
+        mDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbolV2*>( symbolList.at( 0 ) ) ) );
     }
 
   protected:

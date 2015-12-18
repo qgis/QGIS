@@ -1324,6 +1324,8 @@ void QgsLineSymbolV2::setWidth( double w )
 double QgsLineSymbolV2::width() const
 {
   double maxWidth = 0;
+  if ( mLayers.isEmpty() )
+    return maxWidth;
 
   Q_FOREACH ( QgsSymbolLayerV2* symbolLayer, mLayers )
   {
