@@ -149,20 +149,21 @@ void QgsRendererCategoryV2::toSld( QDomDocument &doc, QDomElement &element, QgsS
 QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2( const QString& attrName, const QgsCategoryList& categories )
     : QgsFeatureRendererV2( "categorizedSymbol" )
     , mAttrName( attrName )
-    , mCategories( categories )
     , mInvertedColorRamp( false )
     , mScaleMethod( DEFAULT_SCALE_METHOD )
     , mAttrNum( -1 )
     , mCounting( false )
 {
-  for ( int i = 0; i < mCategories.count(); ++i )
+  //important - we need a deep copy of the categories list, not a shared copy. This is required because
+  //QgsRendererCategoryV2::symbol() is marked const, and so retrieving the symbol via this method does not
+  //trigger a detachment and copy of mCategories BUT that same method CAN be used to modify a symbol in place
+  Q_FOREACH ( const QgsRendererCategoryV2& cat, categories )
   {
-    if ( !mCategories.at( i ).symbol() )
+    if ( cat.symbol() )
     {
       QgsDebugMsg( "invalid symbol in a category! ignoring..." );
-      mCategories.removeAt( i-- );
     }
-    //mCategories.insert(cat.value().toString(), cat);
+    mCategories << cat;
   }
 }
 

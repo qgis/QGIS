@@ -284,7 +284,6 @@ void QgsRendererRangeV2LabelFormat::saveToDomElement( QDomElement &element )
 QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( const QString& attrName, const QgsRangeList& ranges )
     : QgsFeatureRendererV2( "graduatedSymbol" )
     , mAttrName( attrName )
-    , mRanges( ranges )
     , mMode( Custom )
     , mInvertedColorRamp( false )
     , mScaleMethod( DEFAULT_SCALE_METHOD )
@@ -294,6 +293,15 @@ QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( const QString& attrN
 
 {
   // TODO: check ranges for sanity (NULL symbols, invalid ranges)
+
+  //important - we need a deep copy of the ranges list, not a shared copy. This is required because
+  //QgsRendererRangeV2::symbol() is marked const, and so retrieving the symbol via this method does not
+  //trigger a detachment and copy of mRanges BUT that same method CAN be used to modify a symbol in place
+  Q_FOREACH ( const QgsRendererRangeV2& range, ranges )
+  {
+    mRanges << range;
+  }
+
 }
 
 QgsGraduatedSymbolRendererV2::~QgsGraduatedSymbolRendererV2()
