@@ -449,7 +449,9 @@ void QgsServerProjectParser::serviceCapabilities( QDomElement& parentElement, QD
         wmsKeywordElem.appendChild( keywordElem );
       }
     }
-  } else if ( !keywordListElem.isNull() && !keywordListElem.text().isEmpty() ) {
+  }
+  else if ( !keywordListElem.isNull() && !keywordListElem.text().isEmpty() )
+  {
     QDomNodeList keywordNodeList = keywordListElem.elementsByTagName( "value" );
     QStringList keywordList;
     for ( int i = 0; i < keywordNodeList.size(); ++i )
