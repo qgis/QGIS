@@ -83,7 +83,6 @@ void QgsMapToolAddCircularString::keyPressEvent( QKeyEvent* e )
   if ( e && e->key() == Qt::Key_R )
   {
     mShowCenterPointRubberBand = true;
-
     createCenterPointRubberBand();
   }
 }
@@ -176,10 +175,7 @@ void QgsMapToolAddCircularString::createCenterPointRubberBand()
     const QgsAbstractGeometryV2* rubberBandGeom = mTempRubberBand->geometry();
     if ( rubberBandGeom )
     {
-      QgsVertexId idx;
-      idx.part = 0;
-      idx.ring = 0;
-      idx.vertex = 2;
+      QgsVertexId idx( 0, 0, 2 );
       QgsPointV2 pt = rubberBandGeom->vertexAt( idx );
       updateCenterPointRubberBand( pt );
     }
@@ -206,17 +202,17 @@ void QgsMapToolAddCircularString::updateCenterPointRubberBand( const QgsPointV2&
   csPoints.append( pt );
   cs->setPoints( csPoints );
 
-  double centerX, centerY;
+  QgsPointV2 center;
   double radius;
-  QgsGeometryUtils::circleCenterRadius( csPoints.at( 0 ), csPoints.at( 1 ), csPoints.at( 2 ), radius, centerX, centerY );
+  QgsGeometryUtils::circleCenterRadius( csPoints.at( 0 ), csPoints.at( 1 ), csPoints.at( 2 ), radius, center.rx(), center.ry() );
 
   QgsLineStringV2* segment1 = new QgsLineStringV2();
-  segment1->addVertex( QgsPointV2( centerX, centerY ) );
+  segment1->addVertex( center );
   segment1->addVertex( csPoints.at( 0 ) );
 
   QgsLineStringV2* segment2 = new QgsLineStringV2();
   segment2->addVertex( csPoints.at( 2 ) );
-  segment2->addVertex( QgsPointV2( centerX, centerY ) );
+  segment2->addVertex( center );
 
   QgsCompoundCurveV2* cc = new QgsCompoundCurveV2();
   cc->addCurve( segment1 );

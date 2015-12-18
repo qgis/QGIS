@@ -19,7 +19,7 @@ QgsMapToolCircularStringCurvePoint::~QgsMapToolCircularStringCurvePoint()
 
 void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 {
-  QgsPointV2 mapPoint( e->mapPoint().x(), e->mapPoint().y() );
+  QgsPointV2 mapPoint( e->mapPoint() );
 
   if ( e->button() == Qt::LeftButton )
   {
@@ -29,7 +29,7 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
       createCenterPointRubberBand();
     }
 
-    if ( mPoints.size() >= 1 )
+    if ( !mPoints.isEmpty() )
     {
       if ( !mTempRubberBand )
       {
@@ -43,7 +43,7 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
       c->setPoints( rubberBandPoints );
       mTempRubberBand->setGeometry( c );
     }
-    if ( mPoints.size() > 1 && ( mPoints.size() ) % 2 == 1 )
+    if ( mPoints.size() > 1 && mPoints.size() % 2 )
     {
       if ( !mRubberBand )
       {
@@ -71,11 +71,8 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
 
 void QgsMapToolCircularStringCurvePoint::cadCanvasMoveEvent( QgsMapMouseEvent* e )
 {
-  QgsPointV2 mapPoint( e->mapPoint().x(), e->mapPoint().y() );
-  QgsVertexId idx;
-  idx.part = 0;
-  idx.ring = 0;
-  idx.vertex = 1 + ( mPoints.size() + 1 ) % 2;
+  QgsPointV2 mapPoint( e->mapPoint() );
+  QgsVertexId idx( 0, 0, 1 + ( mPoints.size() + 1 ) % 2 );
   if ( mTempRubberBand )
   {
     mTempRubberBand->moveVertex( idx, mapPoint );
