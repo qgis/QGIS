@@ -418,33 +418,50 @@ void QgsServerProjectParser::serviceCapabilities( QDomElement& parentElement, QD
 
   //keyword list
   QDomElement keywordListElem = propertiesElement.firstChildElement( "WMSKeywordList" );
-  QDomElement wmsKeywordElem = doc.createElement( "KeywordList" );
-  //add default keyword
-  QDomElement keywordElem = doc.createElement( "Keyword" );
-  keywordElem.setAttribute( "vocabulary", "ISO" );
-  QDomText keywordText = doc.createTextNode( "infoMapAccessService" );
-  if ( service.compare( "WFS", Qt::CaseInsensitive ) == 0 )
-    keywordText = doc.createTextNode( "infoFeatureAccessService" );
-  else if ( service.compare( "WCS", Qt::CaseInsensitive ) == 0 )
-    keywordText = doc.createTextNode( "infoCoverageAccessService" );
-  keywordElem.appendChild( keywordText );
-  wmsKeywordElem.appendChild( keywordElem );
-  serviceElem.appendChild( wmsKeywordElem );
-  //add config keywords
-  if ( !keywordListElem.isNull() && !keywordListElem.text().isEmpty() )
+  if ( service.compare( "WMS", Qt::CaseInsensitive ) == 0 )
   {
-    QDomNodeList keywordList = keywordListElem.elementsByTagName( "value" );
-    for ( int i = 0; i < keywordList.size(); ++i )
+    QDomElement wmsKeywordElem = doc.createElement( "KeywordList" );
+    //add default keyword
+    QDomElement keywordElem = doc.createElement( "Keyword" );
+    keywordElem.setAttribute( "vocabulary", "ISO" );
+    QDomText keywordText = doc.createTextNode( "infoMapAccessService" );
+    /* If WFS and WCS 2.0 is implemented
+    if ( service.compare( "WFS", Qt::CaseInsensitive ) == 0 )
+      keywordText = doc.createTextNode( "infoFeatureAccessService" );
+    else if ( service.compare( "WCS", Qt::CaseInsensitive ) == 0 )
+      keywordText = doc.createTextNode( "infoCoverageAccessService" );*/
+    keywordElem.appendChild( keywordText );
+    wmsKeywordElem.appendChild( keywordElem );
+    serviceElem.appendChild( wmsKeywordElem );
+    //add config keywords
+    if ( !keywordListElem.isNull() && !keywordListElem.text().isEmpty() )
     {
-      keywordElem = doc.createElement( "Keyword" );
-      keywordText = doc.createTextNode( keywordList.at( i ).toElement().text() );
-      keywordElem.appendChild( keywordText );
-      if ( sia2045 )
+      QDomNodeList keywordList = keywordListElem.elementsByTagName( "value" );
+      for ( int i = 0; i < keywordList.size(); ++i )
       {
-        keywordElem.setAttribute( "vocabulary", "SIA_Geo405" );
+        keywordElem = doc.createElement( "Keyword" );
+        keywordText = doc.createTextNode( keywordList.at( i ).toElement().text() );
+        keywordElem.appendChild( keywordText );
+        if ( sia2045 )
+        {
+          keywordElem.setAttribute( "vocabulary", "SIA_Geo405" );
+        }
+        wmsKeywordElem.appendChild( keywordElem );
       }
-      wmsKeywordElem.appendChild( keywordElem );
     }
+  } else if ( !keywordListElem.isNull() && !keywordListElem.text().isEmpty() ) {
+    QDomNodeList keywordNodeList = keywordListElem.elementsByTagName( "value" );
+    QStringList keywordList;
+    for ( int i = 0; i < keywordNodeList.size(); ++i )
+    {
+      keywordList.push_back( keywordNodeList.at( i ).toElement().text() );
+    }
+    QDomElement wmsKeywordElem = doc.createElement( "Keywords" );
+    if ( service.compare( "WCS", Qt::CaseInsensitive ) == 0 )
+      wmsKeywordElem = doc.createElement( "keywords" );
+    QDomText keywordText = doc.createTextNode( keywordList.join( ", " ) );
+    wmsKeywordElem.appendChild( keywordText );
+    serviceElem.appendChild( wmsKeywordElem );
   }
 
   //OnlineResource element is mandatory according to the WMS specification
