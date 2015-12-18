@@ -161,6 +161,12 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     QScopedPointer<QgsExpressionContext> mExpressionContext;
 
+    /**
+     * Will always return true. We assume that ordering has been done on provider level already.
+     *
+     */
+    bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
+
     //! returns whether the iterator supports simplify geometries on provider side
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
 };

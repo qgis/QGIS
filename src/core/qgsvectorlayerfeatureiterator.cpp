@@ -530,7 +530,7 @@ void QgsVectorLayerFeatureIterator::prepareExpressions()
            || mRequest.subsetOfAttributes().contains( i ) )
       {
         int oi = mSource->mFields.fieldOriginIndex( i );
-        QgsExpression* exp = new QgsExpression( exps[oi].expression );
+        QgsExpression* exp = new QgsExpression( exps[oi].cachedExpression );
         exp->prepare( mExpressionContext.data() );
         mExpressionFieldInfo.insert( i, exp );
 
@@ -814,5 +814,11 @@ void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature &f )
 {
   if ( mSource->mChangedGeometries.contains( f.id() ) )
     f.setGeometry( mSource->mChangedGeometries[f.id()] );
+}
+
+bool QgsVectorLayerFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys )
+{
+  Q_UNUSED( orderBys );
+  return true;
 }
 
