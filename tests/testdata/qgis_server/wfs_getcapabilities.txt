@@ -6,9 +6,6 @@ Content-Type: text/xml; charset=utf-8
   <Name>WFS</Name>
   <Title>QGIS TestProject</Title>
   <Abstract>Some UTF8 text èòù</Abstract>
-  <KeywordList>
-   <Keyword vocabulary="ISO">infoFeatureAccessService</Keyword>
-  </KeywordList>
   <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href=""/>
   <Fees>conditions unknown</Fees>
   <AccessConstraints>None</AccessConstraints>
