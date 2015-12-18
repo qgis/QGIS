@@ -25,7 +25,7 @@ class QgsBlurEffect : QgsPaintEffect
      * @param map encoded properties string map
      * @returns new QgsBlurEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& ) /Factory/;
+    static QgsPaintEffect* create( const QgsStringMap& map ) /Factory/;
 
     QgsBlurEffect();
     virtual ~QgsBlurEffect();

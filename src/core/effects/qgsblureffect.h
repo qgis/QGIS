@@ -45,7 +45,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
      * @param map encoded properties string map
      * @returns new QgsBlurEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& );
+    static QgsPaintEffect* create( const QgsStringMap& map );
 
     QgsBlurEffect();
     virtual ~QgsBlurEffect();
