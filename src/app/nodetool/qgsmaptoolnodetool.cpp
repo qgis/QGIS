@@ -115,7 +115,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
     if ( mMoveRubberBands.empty() )
     {
       QSettings settings;
-      bool ghostLine = settings.value( "/qgis/digitizing/line_ghost", true ).toBool();
+      bool ghostLine = settings.value( "/qgis/digitizing/line_ghost", false ).toBool();
       if ( !ghostLine )
       {
         delete mSelectRubberBand;
@@ -406,7 +406,7 @@ void QgsMapToolNodeTool::selectedFeatureDestroyed()
 void QgsMapToolNodeTool::geometryChanged( QgsFeatureId fid, QgsGeometry &geom )
 {
   QSettings settings;
-  bool ghostLine = settings.value( "/qgis/digitizing/line_ghost", true ).toBool();
+  bool ghostLine = settings.value( "/qgis/digitizing/line_ghost", false ).toBool();
   if ( !ghostLine && mSelectedFeature && ( mSelectedFeature->featureId() == fid ) )
   {
     updateSelectFeature( geom );
