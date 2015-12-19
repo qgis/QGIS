@@ -27,10 +27,7 @@
  *
  */
 
-#ifndef POINT_SET_H
-#define POINT_SET_H
-
-#if defined(_VERBOSE_) || (_DEBUG_) || (_DEBUG_FULL_)
+#if defined(_VERBOSE_) || defined(_DEBUG_) || defined(_DEBUG_FULL_)
 #include <iostream>
 #endif
 
@@ -1054,5 +1051,3 @@ namespace pal
 
 
 } // end namespace
-
-#endif

@@ -219,7 +219,7 @@ class CORE_EXPORT QgsImageOperation
       {
         for ( unsigned int y = block.beginLine; y < block.endLine; ++y )
         {
-          QRgb* ref = ( QRgb* )block.image->scanLine( y );
+          QRgb* ref = reinterpret_cast< QRgb* >( block.image->scanLine( y ) );
           for ( unsigned int x = 0; x < block.lineLength; ++x )
           {
             mOperation( ref[x], x, y );
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsImageOperation
         {
           for ( unsigned int y = block.beginLine; y < block.endLine; ++y )
           {
-            QRgb* ref = ( QRgb* )block.image->scanLine( y );
+            QRgb* ref = reinterpret_cast< QRgb* >( block.image->scanLine( y ) );
             mOperation( ref, block.lineLength, bpl );
           }
         }
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsImageOperation
           unsigned char* ref = block.image->scanLine( 0 ) + 4 * block.beginLine;
           for ( unsigned int x = block.beginLine; x < block.endLine; ++x, ref += 4 )
           {
-            mOperation(( QRgb* )ref, block.lineLength, bpl );
+            mOperation( reinterpret_cast< QRgb* >( ref ), block.lineLength, bpl );
           }
         }
       }

@@ -166,7 +166,7 @@ bool QgsVectorLayerEditBuffer::deleteFeatures( QgsFeatureIds fids )
   if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
     return false;
 
-  Q_FOREACH ( const QgsFeatureId& fid, fids )
+  Q_FOREACH ( QgsFeatureId fid, fids )
     deleteFeature( fid );
 
   return true;

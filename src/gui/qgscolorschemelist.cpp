@@ -396,7 +396,6 @@ QVariant QgsColorSchemeModel::headerData( int section, Qt::Orientation orientati
         default:
           return QVariant();
       }
-      break;
     }
 
     case Qt::TextAlignmentRole:

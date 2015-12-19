@@ -169,13 +169,13 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
   foreach ( const QgsVirtualLayerDefinition::SourceLayer& l, sourceLayers() )
   {
     if ( l.isReferenced() )
-      url.addQueryItem( "layer_ref", QString( "%1:%2" ).arg( l.reference() ).arg( l.name() ) );
+      url.addQueryItem( "layer_ref", QString( "%1:%2" ).arg( l.reference(), l.name() ) );
     else
       url.addQueryItem( "layer", QString( "%1:%4:%2:%3" ) // the order is important, since the 4th argument may contain '%2' as well
-                        .arg( l.provider() )
-                        .arg( QString( QUrl::toPercentEncoding( l.name() ) ) )
-                        .arg( l.encoding() )
-                        .arg( QString( QUrl::toPercentEncoding( l.source() ) ) ) );
+                        .arg( l.provider(),
+                              QString( QUrl::toPercentEncoding( l.name() ) ),
+                              l.encoding(),
+                              QString( QUrl::toPercentEncoding( l.source() ) ) ) );
   }
 
   if ( !query().isEmpty() )

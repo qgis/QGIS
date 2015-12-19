@@ -51,8 +51,8 @@ class CORE_EXPORT QgsRasterHistogram
       return ( h.bandNumber == bandNumber &&
                h.binCount == binCount &&
                h.includeOutOfRange == includeOutOfRange &&
-               h.maximum == maximum &&
-               h.minimum == minimum &&
+               qgsDoubleNear( h.maximum, maximum ) &&
+               qgsDoubleNear( h.minimum, minimum ) &&
                h.extent == extent &&
                h.width == width &&
                h.height == height );

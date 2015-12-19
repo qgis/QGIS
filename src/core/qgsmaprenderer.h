@@ -208,8 +208,8 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void setScale( double scale ) {mScale = scale;}
     double mapUnitsPerPixel() const { return mMapUnitsPerPixel; }
 
-    int width() const { return ( int ) mSize.width(); }
-    int height() const { return ( int ) mSize.height(); }
+    int width() const { return static_cast< int >( mSize.width() ); }
+    int height() const { return static_cast< int >( mSize.height() ); }
 
     //! Recalculate the map scale
     void updateScale();

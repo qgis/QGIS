@@ -115,7 +115,7 @@ struct QgsPostgresLayerProperty
     return property;
   }
 
-#if QGISDEBUG
+#ifdef QGISDEBUG
   QString toString() const
   {
     QString typeString;

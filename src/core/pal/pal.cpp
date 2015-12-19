@@ -29,8 +29,6 @@
 
 //#define _VERBOSE_
 
-#define _CRT_SECURE_NO_DEPRECATE
-
 #include "qgsgeometry.h"
 #include "pal.h"
 #include "layer.h"
@@ -151,7 +149,7 @@ namespace pal
   bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
   {
     double amin[2], amax[2];
-    FeatCallBackCtx *context = ( FeatCallBackCtx* ) ctx;
+    FeatCallBackCtx *context = reinterpret_cast< FeatCallBackCtx* >( ctx );
 
     // Holes of the feature are obstacles
     for ( int i = 0; i < ft_ptr->getNumSelfObstacles(); i++ )
@@ -200,7 +198,7 @@ namespace pal
   bool extractObstaclesCallback( FeaturePart *ft_ptr, void *ctx )
   {
     double amin[2], amax[2];
-    ObstacleCallBackCtx *context = ( ObstacleCallBackCtx* ) ctx;
+    ObstacleCallBackCtx *context = reinterpret_cast< ObstacleCallBackCtx* >( ctx );
 
     // insert into obstacles
     ft_ptr->getBoundingBox( amin, amax );
@@ -218,8 +216,8 @@ namespace pal
   bool filteringCallback( FeaturePart *featurePart, void *ctx )
   {
 
-    RTree<LabelPosition*, double, 2, double> *cdtsIndex = (( FilterContext* ) ctx )->cdtsIndex;
-    Pal* pal = (( FilterContext* )ctx )->pal;
+    RTree<LabelPosition*, double, 2, double> *cdtsIndex = ( reinterpret_cast< FilterContext* >( ctx ) )->cdtsIndex;
+    Pal* pal = ( reinterpret_cast< FilterContext* >( ctx ) )->pal;
 
     if ( pal->isCancelled() )
       return false; // do not continue searching
@@ -230,7 +228,7 @@ namespace pal
     LabelPosition::PruneCtx pruneContext;
     pruneContext.obstacle = featurePart;
     pruneContext.pal = pal;
-    cdtsIndex->Search( amin, amax, LabelPosition::pruneCallback, ( void* ) &pruneContext );
+    cdtsIndex->Search( amin, amax, LabelPosition::pruneCallback, static_cast< void* >( &pruneContext ) );
 
     return true;
   }
@@ -306,9 +304,9 @@ namespace pal
 
       // find features within bounding box and generate candidates list
       context.layer = layer;
-      layer->mFeatureIndex->Search( amin, amax, extractFeatCallback, ( void* ) &context );
+      layer->mFeatureIndex->Search( amin, amax, extractFeatCallback, static_cast< void* >( &context ) );
       // find obstacles within bounding box
-      layer->mObstacleIndex->Search( amin, amax, extractObstaclesCallback, ( void* ) &obstacleContext );
+      layer->mObstacleIndex->Search( amin, amax, extractObstaclesCallback, static_cast< void* >( &obstacleContext ) );
 
       layer->mMutex.unlock();
 
@@ -353,7 +351,7 @@ namespace pal
     FilterContext filterCtx;
     filterCtx.cdtsIndex = prob->candidates;
     filterCtx.pal = this;
-    obstacles->Search( amin, amax, filteringCallback, ( void* ) &filterCtx );
+    obstacles->Search( amin, amax, filteringCallback, static_cast< void* >( &filterCtx ) );
 
     if ( isCancelled() )
     {
@@ -450,7 +448,7 @@ namespace pal
         lp->getBoundingBox( amin, amax );
 
         // lookup for overlapping candidate
-        prob->candidates->Search( amin, amax, LabelPosition::countOverlapCallback, ( void* ) lp );
+        prob->candidates->Search( amin, amax, LabelPosition::countOverlapCallback, static_cast< void* >( lp ) );
 
         nbOverlaps += lp->getNumOverlaps();
       }

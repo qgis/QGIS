@@ -74,7 +74,7 @@ bool QgsRendererRangeV2::operator<( const QgsRendererRangeV2 &other ) const
 {
   return
     lowerValue() < other.lowerValue() ||
-    ( lowerValue() == other.lowerValue() && upperValue() < other.upperValue() );
+    ( qgsDoubleNear( lowerValue(), other.lowerValue() ) && upperValue() < other.upperValue() );
 }
 
 
@@ -616,9 +616,9 @@ static QList<double> _calcQuantileBreaks( QList<double> values, int classes )
   {
     if ( n > 1 )
     {
-      double q = i  / ( double ) classes;
+      double q = i  / static_cast< double >( classes );
       double a = q * ( n - 1 );
-      int aa = ( int )( a );
+      int aa = static_cast<  int >( a );
 
       double r = a - aa;
       Xq = ( 1 - r ) * values[aa] + r * values[aa+1];
@@ -657,7 +657,7 @@ static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList
     minimum = qMin( values[i], minimum ); // could use precomputed max and min
     maximum = qMax( values[i], maximum ); // but have to go through entire list anyway
   }
-  mean = mean / ( double ) n;
+  mean = mean / static_cast< double >( n );
 
   double sd = 0.0;
   for ( int i = 0; i < n; i++ )
@@ -776,7 +776,7 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
       s1 += val;
       w++;
 
-      v = s2 - ( s1 * s1 ) / ( double ) w;
+      v = s2 - ( s1 * s1 ) / static_cast< double >( w );
       int i4 = i3 - 1;
       if ( i4 != 0 )
       {
@@ -1336,9 +1336,9 @@ void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp, 
       {
         double colorValue;
         if ( inverted )
-          colorValue = ( mRanges.count() > 1 ? ( double )( mRanges.count() - i - 1 ) / ( mRanges.count() - 1 ) : 0 );
+          colorValue = ( mRanges.count() > 1 ? static_cast< double >( mRanges.count() - i - 1 ) / ( mRanges.count() - 1 ) : 0 );
         else
-          colorValue = ( mRanges.count() > 1 ? ( double ) i / ( mRanges.count() - 1 ) : 0 );
+          colorValue = ( mRanges.count() > 1 ? static_cast< double >( i ) / ( mRanges.count() - 1 ) : 0 );
         symbol->setColor( mSourceColorRamp->color( colorValue ) );
       }
       updateRangeSymbol( i, symbol );

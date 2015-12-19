@@ -324,7 +324,6 @@ static bool operator<( const QVariant &a, const QVariant &b )
         else
           return al[i] < bl[i];
       }
-      break;
 
       case QVariant::StringList:
       {
@@ -340,7 +339,6 @@ static bool operator<( const QVariant &a, const QVariant &b )
         else
           return al[i] < bl[i];
       }
-      break;
 
       case QVariant::Date:
         return a.toDate() < b.toDate();
@@ -677,10 +675,8 @@ QString QgsPostgresProvider::endianString()
   {
     case QgsApplication::NDR:
       return QString( "NDR" );
-      break;
     case QgsApplication::XDR:
       return QString( "XDR" );
-      break;
     default :
       return QString( "Unknown" );
   }

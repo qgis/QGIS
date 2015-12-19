@@ -30,7 +30,7 @@
 #define _CRT_SECURE_NO_DEPRECATE
 
 
-#if defined(_VERBOSE_) || (_DEBUG_)
+#if defined(_VERBOSE_) || defined(_DEBUG_)
 #include <iostream>
 #endif
 

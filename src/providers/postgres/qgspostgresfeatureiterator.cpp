@@ -534,7 +534,6 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long
     case pktUnknown:
       QgsDebugMsg( "Cannot declare cursor without primary key." );
       return false;
-      break;
   }
 
   bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;

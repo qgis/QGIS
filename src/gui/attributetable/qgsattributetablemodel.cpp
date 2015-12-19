@@ -84,7 +84,7 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds& fids )
 {
   QList<int> rows;
 
-  Q_FOREACH ( const QgsFeatureId& fid, fids )
+  Q_FOREACH ( QgsFeatureId fid, fids )
   {
     QgsDebugMsgLevel( QString( "(%2) fid: %1, size: %3" ).arg( fid ).arg( mFeatureRequest.filterType() ).arg( mIdRowMap.size() ), 4 );
 

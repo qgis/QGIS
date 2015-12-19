@@ -70,11 +70,11 @@ class CORE_EXPORT QgsMapUnitScale
     {
       double mup = c.mapToPixel().mapUnitsPerPixel();
       double renderScale = c.rendererScale(); // Note: this value is 1 / scale
-      if ( minScale != 0 )
+      if ( !qgsDoubleNear( minScale, 0 ) )
       {
         mup = qMin( mup / ( minScale * renderScale ), mup );
       }
-      if ( maxScale != 0 )
+      if ( !qgsDoubleNear( maxScale, 0 ) )
       {
         mup = qMax( mup / ( maxScale * renderScale ), mup );
       }
@@ -83,11 +83,12 @@ class CORE_EXPORT QgsMapUnitScale
 
     bool operator==( const QgsMapUnitScale& other ) const
     {
-      return minScale == other.minScale && maxScale == other.maxScale
+      return qgsDoubleNear( minScale, other.minScale )
+             && qgsDoubleNear( maxScale, other.maxScale )
              && minSizeMMEnabled == other.minSizeMMEnabled
-             && minSizeMM == other.minSizeMM
+             && qgsDoubleNear( minSizeMM, other.minSizeMM )
              && maxSizeMMEnabled == other.maxSizeMMEnabled
-             && maxSizeMM == other.maxSizeMM;
+             && qgsDoubleNear( maxSizeMM, other.maxSizeMM );
     }
 
     bool operator!=( const QgsMapUnitScale& other ) const

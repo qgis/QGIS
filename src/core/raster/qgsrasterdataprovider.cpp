@@ -28,7 +28,6 @@
 
 #include <qmath.h>
 
-#define ERRMSG(message) QGS_ERROR_MESSAGE(message, "Raster provider")
 #define ERR(message) QgsError(message, "Raster provider")
 
 void QgsRasterDataProvider::setUseSrcNoDataValue( int bandNo, bool use )

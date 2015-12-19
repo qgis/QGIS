@@ -51,7 +51,7 @@ class CORE_EXPORT QgsRasterRange
 
     inline bool operator==( const QgsRasterRange &o ) const
     {
-      return mMin == o.mMin && mMax == o.mMax;
+      return qgsDoubleNear( mMin, o.mMin ) && qgsDoubleNear( mMax, o.mMax );
     }
 
     /** \brief Test if value is within the list of ranges

@@ -280,7 +280,7 @@ void QgsEditFormConfig::writeXml( QDomNode& node ) const
   {
     QDomElement tabsElem = doc.createElement( "attributeEditorForm" );
 
-    for ( QList< QgsAttributeEditorElement* >::const_iterator it = tabs().constBegin(); it != tabs().constEnd(); ++it )
+    for ( QList< QgsAttributeEditorElement* >::const_iterator it = mAttributeEditorElements.constBegin(); it != mAttributeEditorElements.constEnd(); ++it )
     {
       QDomElement attributeEditorWidgetElem = ( *it )->toDomElement( doc );
       tabsElem.appendChild( attributeEditorWidgetElem );

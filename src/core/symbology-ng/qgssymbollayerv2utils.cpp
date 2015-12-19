@@ -114,7 +114,8 @@ int QgsSymbolLayerV2Utils::decodeSldFontWeight( const QString& str )
 {
   bool ok;
   int weight = str.toInt( &ok );
-  if ( !ok ) return ( int ) QFont::Normal;
+  if ( !ok )
+    return static_cast< int >( QFont::Normal );
 
   // CSS font-weight is between 100 and 900
   // QFont::Weight is between 0 and 99
@@ -621,7 +622,7 @@ QPixmap QgsSymbolLayerV2Utils::colorRampPreviewPixmap( QgsVectorColorRampV2* ram
   // painter.setRenderHint( QPainter::Antialiasing );
   for ( int i = 0; i < size.width(); i++ )
   {
-    QPen pen( ramp->color(( double ) i / size.width() ) );
+    QPen pen( ramp->color( static_cast< double >( i ) / size.width() ) );
     painter.setPen( pen );
     painter.drawLine( i, 0, i, size.height() - 1 );
   }
@@ -873,7 +874,7 @@ QList<QPolygonF> offsetLine( const QPolygonF& polyline, double dist )
   QGis::GeometryType geometryType = QGis::Point;
   int pointCount = polyline.count();
 
-  if ( pointCount > 3 && polyline[ 0 ].x() == polyline[ pointCount - 1 ].x() && polyline[ 0 ].y() == polyline[ pointCount - 1 ].y() )
+  if ( pointCount > 3 && qgsDoubleNear( polyline[ 0 ].x(), polyline[ pointCount - 1 ].x() ) && qgsDoubleNear( polyline[ 0 ].y(), polyline[ pointCount - 1 ].y() ) )
   {
     geometryType = QGis::Polygon;
   }
@@ -1431,7 +1432,7 @@ bool QgsSymbolLayerV2Utils::needLinePatternFill( QDomElement &element )
 
   bool ok;
   double angle = angleFunc.toDouble( &ok );
-  if ( !ok || angle == 0 )
+  if ( !ok || qgsDoubleNear( angle, 0.0 ) )
     return false;
 
   return true;
@@ -3422,7 +3423,7 @@ void QgsSymbolLayerV2Utils::multiplyImageOpacity( QImage* image, qreal alpha )
   //change the alpha component of every pixel
   for ( int heightIndex = 0; heightIndex < image->height(); ++heightIndex )
   {
-    QRgb* scanLine = ( QRgb* )image->scanLine( heightIndex );
+    QRgb* scanLine = reinterpret_cast< QRgb* >( image->scanLine( heightIndex ) );
     for ( int widthIndex = 0; widthIndex < image->width(); ++widthIndex )
     {
       myRgb = scanLine[widthIndex];
@@ -3759,7 +3760,7 @@ QPointF QgsSymbolLayerV2Utils::polygonCentroid( const QPolygonF& points )
     cy += ( p1.y() + p2.y() ) * area;
   }
   sum *= 3.0;
-  if ( sum == 0 )
+  if ( qgsDoubleNear( sum, 0.0 ) )
   {
     // the linear ring is invalid -  let's fall back to a solution that will still
     // allow us render at least something (instead of just returning point nan,nan)
@@ -3819,7 +3820,7 @@ bool QgsSymbolLayerV2Utils::pointInPolygon( const QPolygonF &points, const QPoin
     const QPointF& p1 = points[i];
     const QPointF& p2 = points[j];
 
-    if ( p1.x() == x && p1.y() == y )
+    if ( qgsDoubleNear( p1.x(), x ) && qgsDoubleNear( p1.y(), y ) )
       return true;
 
     if (( p1.y() < y && p2.y() >= y ) || ( p2.y() < y && p1.y() >= y ) )
@@ -3877,7 +3878,7 @@ QList<double> QgsSymbolLayerV2Utils::prettyBreaks( double minimum, double maximu
     return breaks;
   }
 
-  int minimumCount = ( int ) classes / 3;
+  int minimumCount = static_cast< int >( classes ) / 3;
   double shrink = 0.75;
   double highBias = 1.5;
   double adjustBias = 0.5 + 1.5 * highBias;
@@ -3888,7 +3889,7 @@ QList<double> QgsSymbolLayerV2Utils::prettyBreaks( double minimum, double maximu
   bool small = false;
   double dx = maximum - minimum;
 
-  if ( dx == 0 && maximum == 0 )
+  if ( qgsDoubleNear( dx, 0.0 ) && qgsDoubleNear( maximum, 0.0 ) )
   {
     cell = 1.0;
     small = true;

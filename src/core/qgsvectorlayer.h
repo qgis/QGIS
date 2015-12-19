@@ -1331,13 +1331,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * Get the active layout for the attribute editor for this layer
      * @deprecated Use `editFormConfig()->layout()` instead
      */
-    Q_DECL_DEPRECATED EditorLayout editorLayout() { return ( EditorLayout )mEditFormConfig->layout(); }
+    Q_DECL_DEPRECATED EditorLayout editorLayout() { return static_cast< EditorLayout >( mEditFormConfig->layout() ); }
 
     /**
      * Set the active layout for the attribute editor for this layer
      * @deprecated Use `editFormConfig()->setLayout()` instead
      */
-    Q_DECL_DEPRECATED void setEditorLayout( EditorLayout editorLayout ) { mEditFormConfig->setLayout(( QgsEditFormConfig::EditorLayout )editorLayout ); }
+    Q_DECL_DEPRECATED void setEditorLayout( EditorLayout editorLayout ) { mEditFormConfig->setLayout( static_cast< QgsEditFormConfig::EditorLayout >( editorLayout ) ); }
 
     /**
      * Set the editor widget type for a field
@@ -1414,13 +1414,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in 2.1
      * @deprecated Use `editFormConfig()->suppress()` instead
      */
-    Q_DECL_DEPRECATED QgsVectorLayer::FeatureFormSuppress featureFormSuppress() const { return ( FeatureFormSuppress )mEditFormConfig->suppress(); }
+    Q_DECL_DEPRECATED QgsVectorLayer::FeatureFormSuppress featureFormSuppress() const { return static_cast< FeatureFormSuppress >( mEditFormConfig->suppress() ); }
 
     /** Set type of feature form pop-up suppression after feature creation (overrides app setting)
      * @note added in 2.1
      * @deprecated Use `editFormConfig()->setSuppress()` instead
      */
-    Q_DECL_DEPRECATED void setFeatureFormSuppress( QgsVectorLayer::FeatureFormSuppress s ) { mEditFormConfig->setSuppress(( QgsEditFormConfig::FeatureFormSuppress )s ); }
+    Q_DECL_DEPRECATED void setFeatureFormSuppress( QgsVectorLayer::FeatureFormSuppress s ) { mEditFormConfig->setSuppress( static_cast< QgsEditFormConfig::FeatureFormSuppress >( s ) ); }
 
     /** Get annotation form */
     QString annotationForm() const { return mAnnotationForm; }

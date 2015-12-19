@@ -71,9 +71,9 @@ QgsDataDefined* scaleWholeSymbol( double scaleFactorX, double scaleFactorY, cons
   QgsDataDefined* scaledDD = new QgsDataDefined( dd );
   QString exprString = dd.useExpression() ? dd.expressionString() : dd.field();
   scaledDD->setExpressionString(
-    ( scaleFactorX ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : "'0'" ) +
+    ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : "'0'" ) +
     "|| ',' || " +
-    ( scaleFactorY ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : "'0'" ) );
+    ( !qgsDoubleNear( scaleFactorY, 0.0 ) ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : "'0'" ) );
   scaledDD->setUseExpression( true );
   return scaledDD;
 }
@@ -112,8 +112,8 @@ const unsigned char* QgsSymbolV2::_getLineString( QPolygonF& pts, QgsRenderConte
   unsigned int wkbType, nPoints;
   wkbPtr >> wkbType >> nPoints;
 
-  bool hasZValue = QgsWKBTypes::hasZ(( QgsWKBTypes::Type )wkbType );
-  bool hasMValue = QgsWKBTypes::hasM(( QgsWKBTypes::Type )wkbType );
+  bool hasZValue = QgsWKBTypes::hasZ( static_cast< QgsWKBTypes::Type >( wkbType ) );
+  bool hasMValue = QgsWKBTypes::hasM( static_cast< QgsWKBTypes::Type >( wkbType ) );
 
   double x = 0.0;
   double y = 0.0;
@@ -170,8 +170,8 @@ const unsigned char* QgsSymbolV2::_getPolygon( QPolygonF& pts, QList<QPolygonF>&
   if ( numRings == 0 )  // sanity check for zero rings in polygon
     return wkbPtr;
 
-  bool hasZValue = QgsWKBTypes::hasZ(( QgsWKBTypes::Type )wkbType );
-  bool hasMValue = QgsWKBTypes::hasM(( QgsWKBTypes::Type )wkbType );
+  bool hasZValue = QgsWKBTypes::hasZ( static_cast< QgsWKBTypes::Type >( wkbType ) );
+  bool hasMValue = QgsWKBTypes::hasM( static_cast< QgsWKBTypes::Type >( wkbType ) );
 
   double x, y;
   holes.clear();
@@ -589,7 +589,7 @@ void QgsSymbolV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap p
   props[ "alpha" ] = QString::number( alpha() );
   double scaleFactor = 1.0;
   props[ "uom" ] = QgsSymbolLayerV2Utils::encodeSldUom( outputUnit(), &scaleFactor );
-  props[ "uomScale" ] = scaleFactor != 1 ? QString::number( scaleFactor ) : "";
+  props[ "uomScale" ] = ( !qgsDoubleNear( scaleFactor, 1.0 ) ? QString::number( scaleFactor ) : "" );
 
   for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
@@ -838,7 +838,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
       mapPoint.setX( x ); mapPoint.setY( y );
       mtp.transformInPlace( mapPoint.rx(), mapPoint.ry() );
       QgsVectorLayer::drawVertexMarker( mapPoint.x(), mapPoint.y(), *context.painter(),
-                                        ( QgsVectorLayer::VertexMarkerType ) currentVertexMarkerType,
+                                        static_cast< QgsVectorLayer::VertexMarkerType >( currentVertexMarkerType ),
                                         currentVertexMarkerSize );
     }
   }
@@ -1012,7 +1012,7 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedAngle() const
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
     const QgsMarkerSymbolLayerV2* markerLayer = static_cast<const QgsMarkerSymbolLayerV2*>( layer );
-    if ( markerLayer->angle() == symbolRotation && markerLayer->getDataDefinedProperty( "angle" ) )
+    if ( qgsDoubleNear( markerLayer->angle(), symbolRotation ) && markerLayer->getDataDefinedProperty( "angle" ) )
     {
       symbolDD = markerLayer->getDataDefinedProperty( "angle" );
       break;
@@ -1055,15 +1055,15 @@ void QgsMarkerSymbolV2::setSize( double s )
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
     QgsMarkerSymbolLayerV2* markerLayer = static_cast<QgsMarkerSymbolLayerV2*>( layer );
-    if ( markerLayer->size() == origSize )
+    if ( qgsDoubleNear( markerLayer->size(), origSize ) )
       markerLayer->setSize( s );
-    else if ( origSize != 0 )
+    else if ( !qgsDoubleNear( origSize, 0.0 ) )
     {
       // proportionally scale size
       markerLayer->setSize( markerLayer->size() * s / origSize );
     }
     // also scale offset to maintain relative position
-    if ( origSize != 0 && ( markerLayer->offset().x() || markerLayer->offset().y() ) )
+    if ( !qgsDoubleNear( origSize, 0.0 ) && ( !qgsDoubleNear( markerLayer->offset().x(), 0.0 ) || !qgsDoubleNear( markerLayer->offset().y(), 0.0 ) ) )
       markerLayer->setOffset( QPointF( markerLayer->offset().x() * s / origSize,
                                        markerLayer->offset().y() * s / origSize ) );
   }
@@ -1102,7 +1102,7 @@ void QgsMarkerSymbolV2::setDataDefinedSize( const QgsDataDefined &dd )
     }
     else
     {
-      if ( symbolSize == 0 || qgsDoubleNear( markerLayer->size(), symbolSize ) )
+      if ( qgsDoubleNear( symbolSize, 0.0 ) || qgsDoubleNear( markerLayer->size(), symbolSize ) )
       {
         markerLayer->setDataDefinedProperty( "size", new QgsDataDefined( dd ) );
       }
@@ -1111,7 +1111,7 @@ void QgsMarkerSymbolV2::setDataDefinedSize( const QgsDataDefined &dd )
         markerLayer->setDataDefinedProperty( "size", scaleWholeSymbol( markerLayer->size() / symbolSize, dd ) );
       }
 
-      if ( markerLayer->offset().x() || markerLayer->offset().y() )
+      if ( !qgsDoubleNear( markerLayer->offset().x(), 0.0 ) || !qgsDoubleNear( markerLayer->offset().y(), 0.0 ) )
       {
         markerLayer->setDataDefinedProperty( "offset", scaleWholeSymbol(
                                                markerLayer->offset().x() / symbolSize,
@@ -1133,7 +1133,7 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedSize() const
     if ( layer->type() !=  QgsSymbolV2::Marker )
       continue;
     const QgsMarkerSymbolLayerV2* markerLayer = static_cast<const QgsMarkerSymbolLayerV2*>( layer );
-    if ( markerLayer->size() == symbolSize && markerLayer->getDataDefinedProperty( "size" ) )
+    if ( qgsDoubleNear( markerLayer->size(), symbolSize ) && markerLayer->getDataDefinedProperty( "size" ) )
     {
       symbolDD = markerLayer->getDataDefinedProperty( "size" );
       break;
@@ -1160,7 +1160,7 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedSize() const
     }
     else
     {
-      if ( symbolSize == 0 )
+      if ( qgsDoubleNear( symbolSize, 0.0 ) )
         return QgsDataDefined();
 
       QScopedPointer< QgsDataDefined > scaledDD( scaleWholeSymbol( markerLayer->size() / symbolSize, *symbolDD ) );
@@ -1305,17 +1305,17 @@ void QgsLineSymbolV2::setWidth( double w )
 
     if ( lineLayer )
     {
-      if ( lineLayer->width() == origWidth )
+      if ( qgsDoubleNear( lineLayer->width(), origWidth ) )
       {
         lineLayer->setWidth( w );
       }
-      else if ( origWidth != 0 )
+      else if ( !qgsDoubleNear( origWidth, 0.0 ) )
       {
         // proportionally scale the width
         lineLayer->setWidth( lineLayer->width() * w / origWidth );
       }
       // also scale offset to maintain relative position
-      if ( origWidth != 0 && lineLayer->offset() )
+      if ( !qgsDoubleNear( origWidth, 0.0 ) && !qgsDoubleNear( lineLayer->offset(), 0.0 ) )
         lineLayer->setOffset( lineLayer->offset() * w / origWidth );
     }
   }
@@ -1357,7 +1357,7 @@ void QgsLineSymbolV2::setDataDefinedWidth( const QgsDataDefined& dd )
       }
       else
       {
-        if ( symbolWidth == 0 || qgsDoubleNear( lineLayer->width(), symbolWidth ) )
+        if ( qgsDoubleNear( symbolWidth, 0.0 ) || qgsDoubleNear( lineLayer->width(), symbolWidth ) )
         {
           lineLayer->setDataDefinedProperty( "width", new QgsDataDefined( dd ) );
         }
@@ -1366,7 +1366,7 @@ void QgsLineSymbolV2::setDataDefinedWidth( const QgsDataDefined& dd )
           lineLayer->setDataDefinedProperty( "width", scaleWholeSymbol( lineLayer->width() / symbolWidth, dd ) );
         }
 
-        if ( lineLayer->offset() )
+        if ( !qgsDoubleNear( lineLayer->offset(), 0.0 ) )
         {
           lineLayer->setDataDefinedProperty( "offset", scaleWholeSymbol( lineLayer->offset() / symbolWidth, dd ) );
         }
@@ -1385,7 +1385,7 @@ QgsDataDefined QgsLineSymbolV2::dataDefinedWidth() const
   for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     const QgsLineSymbolLayerV2* layer = dynamic_cast<const QgsLineSymbolLayerV2*>( *it );
-    if ( layer && layer->width() == symbolWidth && layer->getDataDefinedProperty( "width" ) )
+    if ( layer && qgsDoubleNear( layer->width(), symbolWidth ) && layer->getDataDefinedProperty( "width" ) )
     {
       symbolDD = layer->getDataDefinedProperty( "width" );
       break;
@@ -1412,7 +1412,7 @@ QgsDataDefined QgsLineSymbolV2::dataDefinedWidth() const
     }
     else
     {
-      if ( symbolWidth == 0 )
+      if ( qgsDoubleNear( symbolWidth, 0.0 ) )
         return QgsDataDefined();
 
       QScopedPointer< QgsDataDefined > scaledDD( scaleWholeSymbol( lineLayer->width() / symbolWidth, *symbolDD ) );

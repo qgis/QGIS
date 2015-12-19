@@ -82,7 +82,7 @@ class DynamicTreeModel : public QAbstractItemModel
     QHash<qint64, QString> m_items;
     QHash<qint64, QList<QList<qint64> > > m_childItems;
     qint64 nextId;
-    qint64 newId() { return nextId++; };
+    qint64 newId() { return nextId++; }
 
     QModelIndex m_nextParentIndex;
     // int m_nextRow;

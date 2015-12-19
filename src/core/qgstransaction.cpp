@@ -183,7 +183,7 @@ bool QgsTransaction::rollback( QString& errorMsg )
 
 void QgsTransaction::onLayersDeleted( const QStringList& layerids )
 {
-  Q_FOREACH ( QString layerid, layerids )
+  Q_FOREACH ( const QString& layerid, layerids )
     Q_FOREACH ( QgsVectorLayer* l, mLayers )
       if ( l->id() == layerid )
         mLayers.remove( l );

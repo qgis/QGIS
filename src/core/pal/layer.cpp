@@ -27,8 +27,6 @@
  *
  */
 
-#define _CRT_SECURE_NO_DEPRECATE
-
 #include "pal.h"
 #include "layer.h"
 #include "palexception.h"

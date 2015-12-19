@@ -48,7 +48,7 @@ const unsigned char* QgsFeatureRendererV2::_getPoint( QPointF& pt, QgsRenderCont
   unsigned int wkbType;
   wkbPtr >> wkbType >> pt.rx() >> pt.ry();
 
-  if (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::Point25D || ( QgsWKBTypes::Type )wkbType == QgsWKBTypes::PointZ )
+  if ( static_cast< QgsWKBTypes::Type >( wkbType ) == QgsWKBTypes::Point25D || static_cast< QgsWKBTypes::Type >( wkbType ) == QgsWKBTypes::PointZ )
     wkbPtr += sizeof( double );
 
   if ( context.coordinateTransform() )
@@ -68,8 +68,8 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
   unsigned int wkbType, nPoints;
   wkbPtr >> wkbType >> nPoints;
 
-  bool hasZValue = QgsWKBTypes::hasZ(( QgsWKBTypes::Type )wkbType );
-  bool hasMValue = QgsWKBTypes::hasM(( QgsWKBTypes::Type )wkbType );
+  bool hasZValue = QgsWKBTypes::hasZ( static_cast< QgsWKBTypes::Type >( wkbType ) );
+  bool hasMValue = QgsWKBTypes::hasM( static_cast< QgsWKBTypes::Type >( wkbType ) );
 
   double x = 0.0;
   double y = 0.0;
@@ -126,8 +126,8 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
   if ( numRings == 0 )  // sanity check for zero rings in polygon
     return wkbPtr;
 
-  bool hasZValue = QgsWKBTypes::hasZ(( QgsWKBTypes::Type )wkbType );
-  bool hasMValue = QgsWKBTypes::hasM(( QgsWKBTypes::Type )wkbType );
+  bool hasZValue = QgsWKBTypes::hasZ( static_cast< QgsWKBTypes::Type >( wkbType ) );
+  bool hasMValue = QgsWKBTypes::hasM( static_cast< QgsWKBTypes::Type >( wkbType ) );
 
   double x, y;
   holes.clear();
@@ -196,7 +196,7 @@ void QgsFeatureRendererV2::setScaleMethodToSymbol( QgsSymbolV2* symbol, int scal
       QgsMarkerSymbolV2* ms = static_cast<QgsMarkerSymbolV2*>( symbol );
       if ( ms )
       {
-        ms->setScaleMethod(( QgsSymbolV2::ScaleMethod )scaleMethod );
+        ms->setScaleMethod( static_cast< QgsSymbolV2::ScaleMethod >( scaleMethod ) );
       }
     }
   }
@@ -524,7 +524,7 @@ bool QgsFeatureRendererV2::willRenderFeature( QgsFeature &feat, QgsRenderContext
 void QgsFeatureRendererV2::renderVertexMarker( const QPointF &pt, QgsRenderContext& context )
 {
   QgsVectorLayer::drawVertexMarker( pt.x(), pt.y(), *context.painter(),
-                                    ( QgsVectorLayer::VertexMarkerType ) mCurrentVertexMarkerType,
+                                    static_cast< QgsVectorLayer::VertexMarkerType >( mCurrentVertexMarkerType ),
                                     mCurrentVertexMarkerSize );
 }
 
