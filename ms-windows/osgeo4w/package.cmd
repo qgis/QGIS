@@ -303,22 +303,23 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME
 	"apps/%PACKAGENAME%/bin/qgis_core.dll" ^
 	"apps/%PACKAGENAME%/bin/qgis_gui.dll" ^
 	"apps/%PACKAGENAME%/doc/" ^
+	"apps/%PACKAGENAME%/plugins/basicauthmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/delimitedtextprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gdalprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpxprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/identcertauthmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/memoryprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/mssqlprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/ogrprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/owsprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/pkcs12authmethod.dll" ^
+	"apps/%PACKAGENAME%/plugins/pkipathsauthmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/postgresprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/spatialiteprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/virtuallayerprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wcsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wfsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wmsprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/basicauthmethod.dll" ^
-	"apps/%PACKAGENAME%/plugins/identcertauthmethod.dll" ^
-	"apps/%PACKAGENAME%/plugins/pkcs12authmethod.dll" ^
-	"apps/%PACKAGENAME%/plugins/pkipathsauthmethod.dll" ^
 	"apps/%PACKAGENAME%/resources/qgis.db" ^
 	"apps/%PACKAGENAME%/resources/spatialite.db" ^
 	"apps/%PACKAGENAME%/resources/srs.db" ^
