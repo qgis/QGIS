@@ -317,7 +317,7 @@ QGis::WkbType QgsGeometry::wkbType() const
   }
   else
   {
-    return ( QGis::WkbType )d->geometry->wkbType();
+    return static_cast< QGis::WkbType >( d->geometry->wkbType() );
   }
 }
 
@@ -328,7 +328,7 @@ QGis::GeometryType QgsGeometry::type() const
   {
     return QGis::UnknownGeometry;
   }
-  return ( QGis::GeometryType )( QgsWKBTypes::geometryType( d->geometry->wkbType() ) );
+  return static_cast< QGis::GeometryType >( QgsWKBTypes::geometryType( d->geometry->wkbType() ) );
 }
 
 bool QgsGeometry::isMultipart() const
@@ -1917,7 +1917,6 @@ QgsGeometry* QgsGeometry::smooth( const unsigned int iterations, const double of
       }
       return QgsGeometry::fromMultiPolygon( resultMultipoly );
     }
-    break;
 
     case QGis::WKBUnknown:
     default:
@@ -2303,7 +2302,7 @@ QgsGeometryEngine* QgsGeometry::createGeometryEngine( const QgsAbstractGeometryV
 
 QDataStream& operator<<( QDataStream& out, const QgsGeometry& geometry )
 {
-  QByteArray byteArray = QByteArray::fromRawData(( char * )geometry.asWkb(), geometry.wkbSize() ); // does not copy data and does not take ownership
+  QByteArray byteArray = QByteArray::fromRawData( reinterpret_cast< const char * >( geometry.asWkb() ), geometry.wkbSize() ); // does not copy data and does not take ownership
   out << byteArray;
   return out;
 }
@@ -2320,6 +2319,6 @@ QDataStream& operator>>( QDataStream& in, QgsGeometry& geometry )
 
   char *data = new char[byteArray.size()];
   memcpy( data, byteArray.data(), byteArray.size() );
-  geometry.fromWkb(( unsigned char* )data, byteArray.size() );
+  geometry.fromWkb( reinterpret_cast< unsigned char* >( data ), byteArray.size() );
   return in;
 }

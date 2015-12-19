@@ -41,13 +41,10 @@ QString QgsColorRampShader::colorRampTypeAsQString()
   {
     case INTERPOLATED:
       return QString( "INTERPOLATED" );
-      break;
     case DISCRETE:
       return QString( "DISCRETE" );
-      break;
     case EXACT:
       return QString( "EXACT" );
-      break;
   }
   return QString( "Unknown" );
 }

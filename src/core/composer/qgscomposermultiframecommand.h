@@ -81,7 +81,7 @@ class CORE_EXPORT QgsComposerMultiFrameMergeCommand: public QgsComposerMultiFram
     ~QgsComposerMultiFrameMergeCommand();
 
     bool mergeWith( const QUndoCommand * command ) override;
-    int id() const override { return ( int )mContext; }
+    int id() const override { return static_cast< int >( mContext ); }
 
   private:
     Context mContext;

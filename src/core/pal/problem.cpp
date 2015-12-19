@@ -27,8 +27,6 @@
  *
  */
 
-#define _CRT_SECURE_NO_DEPRECATE
-
 #include "pal.h"
 #include "palstat.h"
 #include "layer.h"
@@ -453,7 +451,7 @@ namespace pal
 
     SubPart *current = nullptr;
 
-#if _VERBOSE_
+#ifdef _VERBOSE_
     int subPartTotalSize = 0;
 #endif
 
@@ -472,7 +470,7 @@ namespace pal
     for ( i = 0; i < nbft; i++ )
     {
       parts[i] = subPart( r, i, isIn );
-#if _VERBOSE_
+#ifdef _VERBOSE_
       subPartTotalSize += parts[i]->subSize;
 #endif
       ok[i] = false;

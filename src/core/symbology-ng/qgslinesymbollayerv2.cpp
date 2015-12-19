@@ -192,7 +192,7 @@ void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   mPen.setColor( penColor );
   double scaledWidth = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), mWidth, mWidthUnit, mWidthMapUnitScale );
   mPen.setWidthF( scaledWidth );
-  if ( mUseCustomDashPattern && scaledWidth != 0 )
+  if ( mUseCustomDashPattern && !qgsDoubleNear( scaledWidth, 0 ) )
   {
     mPen.setStyle( Qt::CustomDashLine );
 
@@ -413,7 +413,7 @@ void QgsSimpleLineSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
                                     &mPenJoinStyle, &mPenCapStyle, &mCustomDashVector );
 
   // <se:PerpendicularOffset>
-  if ( mOffset != 0 )
+  if ( !qgsDoubleNear( mOffset, 0.0 ) )
   {
     QDomElement perpOffsetElem = doc.createElement( "se:PerpendicularOffset" );
     perpOffsetElem.appendChild( doc.createTextNode( QString::number( mOffset ) ) );
@@ -661,7 +661,7 @@ class MyLine
         return; // invalid
 
       // tangent and direction
-      if ( p1.x() == p2.x() )
+      if ( qgsDoubleNear( p1.x(), p2.x() ) )
       {
         // vertical line - tangent undefined
         mVertical = true;
@@ -877,7 +877,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
     }
   }
 
-  if ( offset == 0 )
+  if ( qgsDoubleNear( offset, 0.0 ) )
   {
     if ( placement == Interval )
       renderPolylineInterval( points, context );
@@ -1031,13 +1031,13 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
     context.setOriginalValueVariable( mOffsetAlongLine );
     offsetAlongLine = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET_ALONG_LINE, context, mOffsetAlongLine ).toDouble();
   }
-  if ( offsetAlongLine != 0 )
+  if ( !qgsDoubleNear( offsetAlongLine, 0.0 ) )
   {
     //scale offset along line
     offsetAlongLine = QgsSymbolLayerV2Utils::convertToPainterUnits( rc, offsetAlongLine, mOffsetAlongLineUnit, mOffsetAlongLineMapUnitScale );
   }
 
-  if ( offsetAlongLine == 0 && context.renderContext().geometry()
+  if ( qgsDoubleNear( offsetAlongLine, 0.0 ) && context.renderContext().geometry()
        && context.renderContext().geometry()->hasCurvedSegments() && ( placement == Vertex || placement == CurvePoint ) )
   {
     const QgsCoordinateTransform* ct = context.renderContext().coordinateTransform();
@@ -1205,7 +1205,7 @@ void QgsMarkerLineSymbolLayerV2::renderOffsetVertexAlongLine( const QPolygonF &p
 
   QgsRenderContext& rc = context.renderContext();
   double origAngle = mMarker->angle();
-  if ( distance == 0 )
+  if ( qgsDoubleNear( distance, 0.0 ) )
   {
     // rotate marker (if desired)
     if ( mRotateMarker )

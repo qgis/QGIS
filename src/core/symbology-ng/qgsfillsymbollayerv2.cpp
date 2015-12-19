@@ -487,13 +487,13 @@ QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::create( const QgsStringMap& prop
 
   //update gradient properties from props
   if ( props.contains( "type" ) )
-    type = ( GradientType )props["type"].toInt();
+    type = static_cast< GradientType >( props["type"].toInt() );
   if ( props.contains( "coordinate_mode" ) )
-    coordinateMode = ( GradientCoordinateMode )props["coordinate_mode"].toInt();
+    coordinateMode = static_cast< GradientCoordinateMode >( props["coordinate_mode"].toInt() );
   if ( props.contains( "spread" ) )
-    gradientSpread = ( GradientSpread )props["spread"].toInt();
+    gradientSpread = static_cast< GradientSpread >( props["spread"].toInt() );
   if ( props.contains( "color_type" ) )
-    colorType = ( GradientColorType )props["color_type"].toInt();
+    colorType = static_cast< GradientColorType >( props["color_type"].toInt() );
   if ( props.contains( "gradient_color" ) )
   {
     //pre 2.5 projects used "gradient_color"
@@ -760,8 +760,8 @@ void QgsGradientFillSymbolLayerV2::applyGradient( const QgsSymbolV2RenderContext
   fillColor2.setAlphaF( context.alpha() * fillColor2.alphaF() );
 
   //rotate reference points
-  QPointF rotatedReferencePoint1 = angle != 0 ? rotateReferencePoint( referencePoint1, angle ) : referencePoint1;
-  QPointF rotatedReferencePoint2 = angle != 0 ? rotateReferencePoint( referencePoint2, angle ) : referencePoint2;
+  QPointF rotatedReferencePoint1 = !qgsDoubleNear( angle, 0.0 ) ? rotateReferencePoint( referencePoint1, angle ) : referencePoint1;
+  QPointF rotatedReferencePoint2 = !qgsDoubleNear( angle, 0.0 ) ? rotateReferencePoint( referencePoint2, angle ) : referencePoint2;
 
   //create a QGradient with the desired properties
   QGradient gradient;
@@ -967,7 +967,7 @@ QgsSymbolLayerV2* QgsShapeburstFillSymbolLayerV2::create( const QgsStringMap& pr
   //update fill properties from props
   if ( props.contains( "color_type" ) )
   {
-    colorType = ( ShapeburstColorType )props["color_type"].toInt();
+    colorType = static_cast< ShapeburstColorType >( props["color_type"].toInt() );
   }
   if ( props.contains( "shapeburst_color" ) )
   {
@@ -1163,7 +1163,7 @@ void QgsShapeburstFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QLi
 
   //calculate max distance for shapeburst fill to extend from polygon boundary, in pixels
   int outputPixelMaxDist = 0;
-  if ( !useWholeShape && maxDistance != 0 )
+  if ( !useWholeShape && !qgsDoubleNear( maxDistance, 0.0 ) )
   {
     //convert max distance to pixels
     const QgsRenderContext& ctx = context.renderContext();
@@ -1367,7 +1367,7 @@ double * QgsShapeburstFillSymbolLayerV2::distanceTransform( QImage *im )
   int idx = 0;
   for ( int heightIndex = 0; heightIndex < height; ++heightIndex )
   {
-    QRgb* scanLine = ( QRgb* )im->constScanLine( heightIndex );
+    const QRgb* scanLine = reinterpret_cast< const QRgb* >( im->constScanLine( heightIndex ) );
     for ( int widthIndex = 0; widthIndex < width; ++widthIndex )
     {
       tmpRgb = scanLine[widthIndex];
@@ -1429,7 +1429,7 @@ void QgsShapeburstFillSymbolLayerV2::dtArrayToQImage( double * array, QImage *im
 
   for ( int heightIndex = 0; heightIndex < height; ++heightIndex )
   {
-    QRgb* scanLine = ( QRgb* )im->scanLine( heightIndex );
+    QRgb* scanLine = reinterpret_cast< QRgb* >( im->scanLine( heightIndex ) );
     for ( int widthIndex = 0; widthIndex < width; ++widthIndex )
     {
       //result of distance transform
@@ -1918,7 +1918,7 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFileP
   mSvgPattern = nullptr;
   double size = patternWidth * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context.renderContext(), patternWidthUnit, patternWidthMapUnitScale );
 
-  if (( int )size < 1.0 || 10000.0 < size )
+  if ( static_cast< int >( size ) < 1.0 || 10000.0 < size )
   {
     mSvgPattern = new QImage();
     brush.setTextureImage( *mSvgPattern );
@@ -1936,9 +1936,9 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFileP
       double hwRatio = 1.0;
       if ( patternPict.width() > 0 )
       {
-        hwRatio = ( double )patternPict.height() / ( double )patternPict.width();
+        hwRatio = static_cast< double >( patternPict.height() ) / static_cast< double >( patternPict.width() );
       }
-      mSvgPattern = new QImage(( int )size, ( int )( size * hwRatio ), QImage::Format_ARGB32_Premultiplied );
+      mSvgPattern = new QImage( static_cast< int >( size ), static_cast< int >( size * hwRatio ), QImage::Format_ARGB32_Premultiplied );
       mSvgPattern->fill( 0 ); // transparent background
 
       QPainter p( mSvgPattern );
@@ -2087,7 +2087,7 @@ void QgsSVGFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, cons
   {
     angleFunc = QString( "%1 + %2" ).arg( props.value( "angle", "0" ) ).arg( mAngle );
   }
-  else if ( angle + mAngle != 0 )
+  else if ( !qgsDoubleNear( angle + mAngle, 0.0 ) )
   {
     angleFunc = QString::number( angle + mAngle );
   }
@@ -2593,7 +2593,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
     width = outputPixelDist / sin( lineAngle * M_PI / 180 );
 
     // recalculate real angle and distance after rounding to pixels
-    lineAngle = 180 * atan2(( double ) height, ( double ) width ) / M_PI;
+    lineAngle = 180 * atan2( static_cast< double >( height ), static_cast< double >( width ) ) / M_PI;
     if ( lineAngle < 0 )
     {
       lineAngle += 360.;
@@ -2869,7 +2869,7 @@ void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &eleme
   {
     angleFunc = QString( "%1 + %2" ).arg( props.value( "angle", "0" ) ).arg( mLineAngle );
   }
-  else if ( angle + mLineAngle != 0 )
+  else if ( !qgsDoubleNear( angle + mLineAngle, 0.0 ) )
   {
     angleFunc = QString::number( angle + mLineAngle );
   }
@@ -3556,7 +3556,7 @@ QgsSymbolLayerV2 *QgsRasterFillSymbolLayer::create( const QgsStringMap &properti
   }
   if ( properties.contains( "coordinate_mode" ) )
   {
-    mode = ( FillCoordinateMode )properties["coordinate_mode"].toInt();
+    mode = static_cast< FillCoordinateMode >( properties["coordinate_mode"].toInt() );
   }
   if ( properties.contains( "alpha" ) )
   {

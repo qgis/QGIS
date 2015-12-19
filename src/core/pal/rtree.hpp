@@ -417,28 +417,28 @@ namespace pal
       size_t Write( const TYPE& a_value )
       {
         ASSERT( m_file );
-        return fwrite(( void* ) &a_value, sizeof( a_value ), 1, m_file );
+        return fwrite( static_cast< void* >( &a_value ), sizeof( a_value ), 1, m_file );
       }
 
       template< typename TYPE >
       size_t WriteArray( const TYPE* a_array, int a_count )
       {
         ASSERT( m_file );
-        return fwrite(( void* ) a_array, sizeof( TYPE ) * a_count, 1, m_file );
+        return fwrite( static_cast< void* >( a_array ), sizeof( TYPE ) * a_count, 1, m_file );
       }
 
       template< typename TYPE >
       size_t Read( TYPE& a_value )
       {
         ASSERT( m_file );
-        return fread(( void* ) &a_value, sizeof( a_value ), 1, m_file );
+        return fread( static_cast< void* >( &a_value ), sizeof( a_value ), 1, m_file );
       }
 
       template< typename TYPE >
       size_t ReadArray( TYPE* a_array, int a_count )
       {
         ASSERT( m_file );
-        return fread(( void* ) a_array, sizeof( TYPE ) * a_count, 1, m_file );
+        return fread( static_cast< void* >( a_array ), sizeof( TYPE ) * a_count, 1, m_file );
       }
   };
 
@@ -468,7 +468,7 @@ namespace pal
 
     m_root = AllocNode();
     m_root->m_level = 0;
-    m_unitSphereVolume = ( ELEMTYPEREAL ) UNIT_SPHERE_VOLUMES[NUMDIMS];
+    m_unitSphereVolume = static_cast< ELEMTYPEREAL >( UNIT_SPHERE_VOLUMES[NUMDIMS] );
   }
 
 
@@ -866,8 +866,8 @@ namespace pal
   {
     for ( int index = 0; index < NUMDIMS; ++index )
     {
-      a_rect->m_min[index] = ( ELEMTYPE ) 0;
-      a_rect->m_max[index] = ( ELEMTYPE ) 0;
+      a_rect->m_min[index] = static_cast< ELEMTYPE >( 0 );
+      a_rect->m_max[index] = static_cast< ELEMTYPE >( 0 );
     }
   }
 
@@ -910,7 +910,7 @@ namespace pal
     else if ( a_node->m_level == a_level ) // Have reached level for insertion. Add rect, split if necessary
     {
       branch.m_rect = *a_rect;
-      branch.m_child = ( Node* ) a_id;
+      branch.m_child = reinterpret_cast< Node* >( a_id );
       // Child field of leaves contains id of data record
       return AddBranch( &branch, a_node, a_newNode );
     }
@@ -1045,7 +1045,7 @@ namespace pal
 
     bool firstTime = true;
     ELEMTYPEREAL increase;
-    ELEMTYPEREAL bestIncr = ( ELEMTYPEREAL ) - 1;
+    ELEMTYPEREAL bestIncr = static_cast< ELEMTYPEREAL >( -1 );
     ELEMTYPEREAL area;
     ELEMTYPEREAL bestArea =  0;
     int best = 0;
@@ -1064,7 +1064,7 @@ namespace pal
         bestIncr = increase;
         firstTime = false;
       }
-      else if (( increase == bestIncr ) && ( area < bestArea ) )
+      else if ( qgsDoubleNear( increase, bestIncr ) && ( area < bestArea ) )
       {
         best = index;
         bestArea = area;
@@ -1131,14 +1131,14 @@ namespace pal
   {
     ASSERT( a_rect );
 
-    ELEMTYPEREAL volume = ( ELEMTYPEREAL ) 1;
+    ELEMTYPEREAL volume = static_cast< ELEMTYPEREAL >( 1 );
 
     for ( int index = 0; index < NUMDIMS; ++index )
     {
       volume *= a_rect->m_max[index] - a_rect->m_min[index];
     }
 
-    ASSERT( volume >= ( ELEMTYPEREAL ) 0 );
+    ASSERT( volume >= static_cast< ELEMTYPEREAL >( 0 ) );
 
     return volume;
   }
@@ -1150,16 +1150,16 @@ namespace pal
   {
     ASSERT( a_rect );
 
-    ELEMTYPEREAL sumOfSquares = ( ELEMTYPEREAL ) 0;
+    ELEMTYPEREAL sumOfSquares = static_cast< ELEMTYPEREAL >( 0 );
     ELEMTYPEREAL radius;
 
     for ( int index = 0; index < NUMDIMS; ++index )
     {
-      ELEMTYPEREAL halfExtent = (( ELEMTYPEREAL ) a_rect->m_max[index] - ( ELEMTYPEREAL ) a_rect->m_min[index] ) * 0.5f;
+      ELEMTYPEREAL halfExtent = ( static_cast< ELEMTYPEREAL >( a_rect->m_max[index] ) - static_cast< ELEMTYPEREAL >( a_rect->m_min[index] ) ) * 0.5f;
       sumOfSquares += halfExtent * halfExtent;
     }
 
-    radius = ( ELEMTYPEREAL ) sqrt( sumOfSquares );
+    radius = static_cast< ELEMTYPEREAL >( sqrt( sumOfSquares ) );
 
     // Pow maybe slow, so test for common dims like 2,3 and just use x*x, x*x*x.
     if ( NUMDIMS == 3 )
@@ -1172,7 +1172,7 @@ namespace pal
     }
     else
     {
-      return ( ELEMTYPEREAL )( pow( radius, NUMDIMS ) * m_unitSphereVolume );
+      return static_cast< ELEMTYPEREAL >( pow( radius, NUMDIMS ) * m_unitSphereVolume );
     }
   }
 
@@ -1245,7 +1245,7 @@ namespace pal
            && ( a_parVars->m_count[0] < ( a_parVars->m_total - a_parVars->m_minFill ) )
            && ( a_parVars->m_count[1] < ( a_parVars->m_total - a_parVars->m_minFill ) ) )
     {
-      biggestDiff = ( ELEMTYPEREAL ) - 1;
+      biggestDiff = static_cast< ELEMTYPEREAL >( -1 );
       for ( int index = 0; index < a_parVars->m_total; ++index )
       {
         if ( !a_parVars->m_taken[index] )
@@ -1272,7 +1272,7 @@ namespace pal
             chosen = index;
             betterGroup = group;
           }
-          else if (( diff == biggestDiff ) && ( a_parVars->m_count[group] < a_parVars->m_count[betterGroup] ) )
+          else if ( qgsDoubleNear( diff, biggestDiff ) && ( a_parVars->m_count[group] < a_parVars->m_count[betterGroup] ) )
           {
             chosen = index;
             betterGroup = group;
@@ -1339,7 +1339,7 @@ namespace pal
     ASSERT( a_parVars );
 
     a_parVars->m_count[0] = a_parVars->m_count[1] = 0;
-    a_parVars->m_area[0] = a_parVars->m_area[1] = ( ELEMTYPEREAL ) 0;
+    a_parVars->m_area[0] = a_parVars->m_area[1] = static_cast< ELEMTYPEREAL >( 0 );
     a_parVars->m_total = a_maxRects;
     a_parVars->m_minFill = a_minFill;
     for ( int index = 0; index < a_maxRects; ++index )
@@ -1498,7 +1498,7 @@ namespace pal
     {
       for ( int index = 0; index < a_node->m_count; ++index )
       {
-        if ( a_node->m_branch[index].m_child == ( Node* ) a_id )
+        if ( a_node->m_branch[index].m_child == reinterpret_cast< Node* >( a_id ) )
         {
           DisconnectBranch( a_node, index ); // Must return after this call as count has changed
           return false;

@@ -41,8 +41,8 @@ static void _fixQPictureDPI( QPainter* p )
   // Then when being drawn, it scales the painter. The following call
   // negates the effect. There is no way of setting QPicture's DPI.
   // See QTBUG-20361
-  p->scale(( double )qt_defaultDpiX() / p->device()->logicalDpiX(),
-           ( double )qt_defaultDpiY() / p->device()->logicalDpiY() );
+  p->scale( static_cast< double >( qt_defaultDpiX() ) / p->device()->logicalDpiX(),
+            static_cast< double >( qt_defaultDpiY() ) / p->device()->logicalDpiY() );
 }
 
 //////
@@ -224,7 +224,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   }
 
   // rotate if the rotation is not going to be changed during the rendering
-  if ( !hasDataDefinedRotation && mAngle != 0 )
+  if ( !hasDataDefinedRotation && !qgsDoubleNear( mAngle, 0.0 ) )
   {
     transform.rotate( mAngle );
   }
@@ -258,8 +258,8 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& conte
   double scaledSize = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), mSize, mSizeUnit, mSizeMapUnitScale );
 
   // calculate necessary image size for the cache
-  double pw = (( mPen.widthF() == 0 ? 1 : mPen.widthF() ) + 1 ) / 2 * 2; // make even (round up); handle cosmetic pen
-  int imageSize = (( int ) scaledSize + pw ) / 2 * 2 + 1; //  make image width, height odd; account for pen width
+  double pw = (( qgsDoubleNear( mPen.widthF(), 0.0 ) ? 1 : mPen.widthF() ) + 1 ) / 2 * 2;  // make even (round up); handle cosmetic pen
+  int imageSize = ( static_cast< int >( scaledSize ) + pw ) / 2 * 2 + 1; //  make image width, height odd; account for pen width
   double center = imageSize / 2.0;
 
   if ( imageSize > mMaximumCacheWidth )
@@ -519,7 +519,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
       transform.scale( half, half );
     }
 
-    if ( angle != 0 && ( hasDataDefinedRotation || createdNewPath ) )
+    if ( !qgsDoubleNear( angle, 0.0 ) && ( hasDataDefinedRotation || createdNewPath ) )
       transform.rotate( angle );
 
     if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
@@ -707,7 +707,7 @@ void QgsSimpleMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElemen
   {
     angleFunc = QString( "%1 + %2" ).arg( props.value( "angle", "0" ) ).arg( mAngle );
   }
-  else if ( angle + mAngle != 0 )
+  else if ( !qgsDoubleNear( angle + mAngle, 0.0 ) )
   {
     angleFunc = QString::number( angle + mAngle );
   }
@@ -937,7 +937,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   QTransform t;
   t.translate( shift.x() + offsetX, shift.y() + offsetY );
 
-  if ( angle != 0 )
+  if ( !qgsDoubleNear( angle, 0.0 ) )
     t.rotate( angle );
 
   QPolygonF polygon;
@@ -1330,7 +1330,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   double size = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), scaledSize, mSizeUnit, mSizeMapUnitScale );
 
   //don't render symbols with size below one or above 10,000 pixels
-  if (( int )size < 1 || 10000.0 < size )
+  if ( static_cast< int >( size ) < 1 || 10000.0 < size )
   {
     return;
   }
@@ -1397,12 +1397,12 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
         QImage transparentImage = img.copy();
         QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
         p->drawImage( -transparentImage.width() / 2.0, -transparentImage.height() / 2.0, transparentImage );
-        hwRatio = ( double )transparentImage.height() / ( double )transparentImage.width();
+        hwRatio = static_cast< double >( transparentImage.height() ) / static_cast< double >( transparentImage.width() );
       }
       else
       {
         p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );
-        hwRatio = ( double )img.height() / ( double )img.width();
+        hwRatio = static_cast< double >( img.height() ) / static_cast< double >( img.width() );
       }
     }
   }
@@ -1419,7 +1419,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
       _fixQPictureDPI( p );
       p->drawPicture( 0, 0, pct );
       p->restore();
-      hwRatio = ( double )pct.height() / ( double )pct.width();
+      hwRatio = static_cast< double >( pct.height() ) / static_cast< double >( pct.width() );
     }
   }
 
@@ -1602,7 +1602,7 @@ void QgsSvgMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &
   {
     angleFunc = QString( "%1 + %2" ).arg( props.value( "angle", "0" ) ).arg( mAngle );
   }
-  else if ( angle + mAngle != 0 )
+  else if ( !qgsDoubleNear( angle + mAngle, 0.0 ) )
   {
     angleFunc = QString::number( angle + mAngle );
   }
@@ -1792,7 +1792,7 @@ QRectF QgsSvgMarkerSymbolLayerV2::bounds( const QPointF& point, QgsSymbolV2Rende
   scaledSize = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), scaledSize, mSizeUnit, mSizeMapUnitScale );
 
   //don't render symbols with size below one or above 10,000 pixels
-  if (( int )scaledSize < 1 || 10000.0 < scaledSize )
+  if ( static_cast< int >( scaledSize ) < 1 || 10000.0 < scaledSize )
   {
     return QRectF();
   }
@@ -2148,7 +2148,7 @@ void QgsFontMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement 
   {
     angleFunc = QString( "%1 + %2" ).arg( props.value( "angle", "0" ) ).arg( mAngle );
   }
-  else if ( angle + mAngle != 0 )
+  else if ( !qgsDoubleNear( angle + mAngle, 0.0 ) )
   {
     angleFunc = QString::number( angle + mAngle );
   }

@@ -122,7 +122,7 @@ QgsWKBTypes::Type QGis::fromOldWkbType( QGis::WkbType type )
   }
 
   QgsDebugMsg( QString( "unexpected old wkbType=%1" ).arg( type ) );
-  return ( QgsWKBTypes::Type ) type;
+  return static_cast< QgsWKBTypes::Type >( type );
 }
 
 QGis::WkbType QGis::fromNewWkbType( QgsWKBTypes::Type type )
@@ -146,7 +146,7 @@ QGis::WkbType QGis::fromNewWkbType( QgsWKBTypes::Type type )
   }
 
   QgsDebugMsg( QString( "unexpected new wkbType=%1" ).arg( type ) );
-  return ( QGis::WkbType ) type;
+  return static_cast< QGis::WkbType >( type );
 }
 
 

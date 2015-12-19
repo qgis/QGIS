@@ -220,7 +220,7 @@ inline DualEdgeTriangulation::DualEdgeTriangulation( int nop, Triangulation* dec
 
 inline int DualEdgeTriangulation::getNumberOfPoints() const
 {
-  return (( int )( mPointVector.count() ) );
+  return mPointVector.count();
 }
 
 inline Point3D* DualEdgeTriangulation::getPoint( unsigned int i ) const

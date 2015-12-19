@@ -95,37 +95,27 @@ double QgsContrastEnhancement::maximumValuePossible( QGis::DataType theDataType 
   {
     case QGis::Byte:
       return std::numeric_limits<unsigned char>::max();
-      break;
     case QGis::UInt16:
       return std::numeric_limits<unsigned short>::max();
-      break;
     case QGis::Int16:
       return std::numeric_limits<short>::max();
-      break;
     case QGis::UInt32:
       return std::numeric_limits<unsigned int>::max();
-      break;
     case QGis::Int32:
       return std::numeric_limits<int>::max();
       break;
     case QGis::Float32:
       return std::numeric_limits<float>::max();
-      break;
     case QGis::Float64:
       return std::numeric_limits<double>::max();
-      break;
     case QGis::CInt16:
       return std::numeric_limits<short>::max();
-      break;
     case QGis::CInt32:
       return std::numeric_limits<int>::max();
-      break;
     case QGis::CFloat32:
       return std::numeric_limits<float>::max();
-      break;
     case QGis::CFloat64:
       return std::numeric_limits<double>::max();
-      break;
     case QGis::ARGB32:
     case QGis::ARGB32_Premultiplied:
     case QGis::UnknownDataType:
@@ -144,37 +134,26 @@ double QgsContrastEnhancement::minimumValuePossible( QGis::DataType theDataType 
   {
     case QGis::Byte:
       return std::numeric_limits<unsigned char>::min();
-      break;
     case QGis::UInt16:
       return std::numeric_limits<unsigned short>::min();
-      break;
     case QGis::Int16:
       return std::numeric_limits<short>::min();
-      break;
     case QGis::UInt32:
       return std::numeric_limits<unsigned int>::min();
-      break;
     case QGis::Int32:
       return std::numeric_limits<int>::min();
-      break;
     case QGis::Float32:
       return std::numeric_limits<float>::max() * -1.0;
-      break;
     case QGis::Float64:
       return std::numeric_limits<double>::max() * -1.0;
-      break;
     case QGis::CInt16:
       return std::numeric_limits<short>::min();
-      break;
     case QGis::CInt32:
       return std::numeric_limits<int>::min();
-      break;
     case QGis::CFloat32:
       return std::numeric_limits<float>::max() * -1.0;
-      break;
     case QGis::CFloat64:
       return std::numeric_limits<double>::max() * -1.0;
-      break;
     case QGis::ARGB32:
     case QGis::ARGB32_Premultiplied:
     case QGis::UnknownDataType:

@@ -290,13 +290,10 @@ QString QgsMultiBandColorRendererWidget::min( int index )
   {
     case 0:
       return mRedMinLineEdit->text();
-      break;
     case 1:
       return mGreenMinLineEdit->text();
-      break;
     case 2:
       return mBlueMinLineEdit->text();
-      break;
     default:
       break;
   }
@@ -309,13 +306,10 @@ QString QgsMultiBandColorRendererWidget::max( int index )
   {
     case 0:
       return mRedMaxLineEdit->text();
-      break;
     case 1:
       return mGreenMaxLineEdit->text();
-      break;
     case 2:
       return mBlueMaxLineEdit->text();
-      break;
     default:
       break;
   }
@@ -364,13 +358,10 @@ int QgsMultiBandColorRendererWidget::selectedBand( int index )
   {
     case 0:
       return mRedBandComboBox->currentIndex();
-      break;
     case 1:
       return mGreenBandComboBox->currentIndex();
-      break;
     case 2:
       return mBlueBandComboBox->currentIndex();
-      break;
     default:
       break;
   }

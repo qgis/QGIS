@@ -205,7 +205,7 @@ QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems( double scal
 
   Q_FOREACH ( Rule* rule, mChildren )
   {
-    if ( scaleDenominator == -1 || rule->isScaleOK( scaleDenominator ) )
+    if ( qgsDoubleNear( scaleDenominator, -1 ) || rule->isScaleOK( scaleDenominator ) )
     {
       lst << rule->legendSymbolItems( scaleDenominator, ruleFilter );
     }
@@ -242,7 +242,7 @@ bool QgsRuleBasedRendererV2::Rule::isFilterOK( QgsFeature& f, QgsRenderContext* 
 
 bool QgsRuleBasedRendererV2::Rule::isScaleOK( double scale ) const
 {
-  if ( scale == 0 ) // so that we can count features in classes without scale context
+  if ( qgsDoubleNear( scale, 0.0 ) ) // so that we can count features in classes without scale context
     return true;
   if ( mScaleMinDenom == 0 && mScaleMaxDenom == 0 )
     return true;

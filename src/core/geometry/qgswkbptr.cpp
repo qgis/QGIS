@@ -2,7 +2,7 @@
 
 QgsConstWkbPtr::QgsConstWkbPtr( const unsigned char *p ): mEndianSwap( false )
 {
-  mP = ( unsigned char * ) p;
+  mP = const_cast< unsigned char * >( p );
 }
 
 QgsWKBTypes::Type QgsConstWkbPtr::readHeader() const

@@ -58,7 +58,7 @@ bool QgsVectorLayerEditPassthrough::deleteFeatures( QgsFeatureIds fids )
 {
   if ( L->dataProvider()->deleteFeatures( fids ) )
   {
-    Q_FOREACH ( const QgsFeatureId& fid, fids )
+    Q_FOREACH ( QgsFeatureId fid, fids )
       emit featureDeleted( fid );
 
     return true;

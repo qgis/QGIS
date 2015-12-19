@@ -149,7 +149,7 @@ bool QgsGeometryUtils::lineIntersection( const QgsPointV2& p1, const QgsVector& 
 {
   double d = v.y() * w.x() - v.x() * w.y();
 
-  if ( d == 0 )
+  if ( qgsDoubleNear( d, 0 ) )
     return false;
 
   double dx = q1.x() - p1.x();

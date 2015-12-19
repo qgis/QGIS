@@ -176,7 +176,7 @@ class CORE_EXPORT QgsMapToPixel
      * @deprecated in 2.8, use setParameters
      * @note this really sets the viewport height, not ymax
      */
-    Q_DECL_DEPRECATED void setYMaximum( double yMax ) { mHeight = yMax; }
+    Q_DECL_DEPRECATED void setYMaximum( double yMax ) { mHeight = static_cast< int >( yMax ); }
 
     /**
      * Set minimum y value
