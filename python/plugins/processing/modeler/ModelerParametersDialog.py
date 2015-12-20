@@ -131,7 +131,7 @@ class ModelerParametersDialog(QDialog):
             if output.hidden:
                 continue
             if isinstance(output, (OutputRaster, OutputVector, OutputTable,
-                          OutputHTML, OutputFile, OutputDirectory)):
+                                   OutputHTML, OutputFile, OutputDirectory)):
                 label = QLabel(output.description + '<'
                                + output.__class__.__name__ + '>')
                 item = QLineEdit()
@@ -596,7 +596,7 @@ class ModelerParametersDialog(QDialog):
 
     def setParamValue(self, alg, param, widget):
         if isinstance(param, (ParameterRaster, ParameterVector,
-                      ParameterTable)):
+                              ParameterTable)):
             return self.setParamValueLayerOrTable(alg, param, widget)
         elif isinstance(param, ParameterBoolean):
             if widget.currentIndex() < 2:
