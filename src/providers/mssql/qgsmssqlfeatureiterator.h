@@ -84,12 +84,16 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
   protected:
     void BuildStatement( const QgsFeatureRequest& request );
 
-  private:
+
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
 
     //! fetch next feature filter expression
     bool nextFeatureFilterExpression( QgsFeature& f ) override;
+
+  private:
+
+    virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
     // The current database
     QSqlDatabase mDatabase;
@@ -99,6 +103,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
 
     // The current sql statement
     QString mStatement;
+    QString mOrderByClause;
 
     QString mFallbackStatement;
 
@@ -112,6 +117,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     QgsMssqlGeometryParser mParser;
 
     bool mExpressionCompiled;
+    bool mOrderByCompiled;
 };
 
 #endif // QGSMSSQLFEATUREITERATOR_H
