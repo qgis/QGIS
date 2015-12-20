@@ -106,7 +106,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * @note added in QGIS 2.14
      */
-    class OrderByClause
+    class CORE_EXPORT OrderByClause
     {
       public:
         /**
