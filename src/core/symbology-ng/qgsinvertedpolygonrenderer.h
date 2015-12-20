@@ -76,7 +76,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     /** Proxy that will call this method on the embedded renderer. */
     virtual QList<QString> usedAttributes() override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual int capabilities() override;
+    virtual Capabilities capabilities() override;
     /** Proxy that will call this method on the embedded renderer.
      * @note available in python bindings as symbol2
      */

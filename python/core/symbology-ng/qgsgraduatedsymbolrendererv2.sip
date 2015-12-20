@@ -111,7 +111,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities();
+    virtual QgsFeatureRendererV2::Capabilities capabilities();
 
     //! @note symbol2 in python bindings
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;

@@ -68,7 +68,7 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities();
+    virtual QgsFeatureRendererV2::Capabilities capabilities();
 
     virtual QString filter( const QgsFields& fields = QgsFields() );
 

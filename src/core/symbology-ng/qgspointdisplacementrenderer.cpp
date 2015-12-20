@@ -275,7 +275,7 @@ QList<QString> QgsPointDisplacementRenderer::usedAttributes()
   return attributeList;
 }
 
-int QgsPointDisplacementRenderer::capabilities()
+QgsFeatureRendererV2::Capabilities QgsPointDisplacementRenderer::capabilities()
 {
   if ( !mRenderer )
   {

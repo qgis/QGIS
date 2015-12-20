@@ -169,10 +169,12 @@ class CORE_EXPORT QgsFeatureRendererV2
     virtual QString filter( const QgsFields& fields = QgsFields() ) { Q_UNUSED( fields ); return QString::null; }
 
     /**
-     * Returns a set of attributes required for this renderer.
+     * Return a list of attributes required by this renderer. Attributes not listed in here may
+     * not have been requested from the provider at rendering time.
      *
-     * TODO QGIS3: Change QList to QSet
+     * @return A set of attributes
      */
+    // TODO QGIS3: Change QList to QSet
     virtual QList<QString> usedAttributes() = 0;
 
     /**
@@ -182,6 +184,12 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     virtual ~QgsFeatureRendererV2();
 
+    /**
+     * Create a deep copy of this renderer. Should be implemented by all subclasses
+     * and generate a proper subclass.
+     *
+     * @return A copy of this renderer
+     */
     virtual QgsFeatureRendererV2* clone() const = 0;
 
     /**
@@ -196,20 +204,37 @@ class CORE_EXPORT QgsFeatureRendererV2
      */
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
-    //! for debugging
+    //! Returns debug information about this renderer
     virtual QString dump() const;
 
-    enum Capabilities
+    /**
+     * Used to specify details about a renderer.
+     * Is returned from the capabilities() method.
+     */
+    enum Capability
     {
-      SymbolLevels = 1,               //!< rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
-      RotationField = 1 <<  1,        //!< rotate symbols by attribute value
+      SymbolLevels          = 1,      //!< rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
+      RotationField         = 1 << 1, //!< rotate symbols by attribute value
       MoreSymbolsPerFeature = 1 << 2, //!< may use more than one symbol to render a feature: symbolsForFeature() will return them
-      Filter         = 1 << 3,        //!< features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
-      ScaleDependent = 1 << 4         //!< depends on scale if feature will be rendered (rule based )
+      Filter                = 1 << 3, //!< features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
+      ScaleDependent        = 1 << 4  //!< depends on scale if feature will be rendered (rule based )
     };
 
-    //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities() { return 0; }
+    Q_DECLARE_FLAGS( Capabilities, Capability )
+
+    /**
+     * Returns details about internals of this renderer.
+     *
+     * E.g. if you only want to deal with visible features:
+     *
+     * ~~~{.py}
+     * if not renderer.capabilities().testFlag(QgsFeatureRendererV2.Filter) or renderer.willRenderFeature(feature, context):
+     *     deal_with_my_feature()
+     * else:
+     *     skip_the_curren_feature()
+     * ~~~
+     */
+    virtual Capabilities capabilities() { return 0; }
 
     /** For symbol levels
      * @deprecated use symbols( QgsRenderContext& context ) instead
@@ -516,6 +541,8 @@ class CORE_EXPORT QgsFeatureRendererV2
   private:
     Q_DISABLE_COPY( QgsFeatureRendererV2 )
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRendererV2::Capabilities )
 
 // for some reason SIP compilation fails if these lines are not included:
 class QgsRendererV2Widget;
