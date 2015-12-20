@@ -124,7 +124,8 @@ const unsigned char* QgsSymbolV2::_getLineString( QPolygonF& pts, QgsRenderConte
   if ( clipToExtent && nPoints > 1 )
   {
     const QgsRectangle& e = context.extent();
-    double cw = e.width() / 10; double ch = e.height() / 10;
+    double cw = e.width() / 10;
+    double ch = e.height() / 10;
     QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
     wkbPtr = QgsConstWkbPtr( QgsClipper::clippedLineWKB( wkb, clipRect, pts ) );
   }
@@ -179,7 +180,8 @@ const unsigned char* QgsSymbolV2::_getPolygon( QPolygonF& pts, QList<QPolygonF>&
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
   const QgsRectangle& e = context.extent();
-  double cw = e.width() / 10; double ch = e.height() / 10;
+  double cw = e.width() / 10;
+  double ch = e.height() / 10;
   QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
 
   for ( unsigned int idx = 0; idx < numRings; idx++ )
@@ -315,7 +317,9 @@ QgsSymbolV2* QgsSymbolV2::defaultSymbol( QGis::GeometryType geomType )
     case QGis::Polygon :
       defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Fill", "" );
       break;
-    default: defaultSymbol = ""; break;
+    default:
+      defaultSymbol = "";
+      break;
   }
   if ( defaultSymbol != "" )
     s = QgsStyleV2::defaultStyle()->symbol( defaultSymbol );
@@ -325,10 +329,18 @@ QgsSymbolV2* QgsSymbolV2::defaultSymbol( QGis::GeometryType geomType )
   {
     switch ( geomType )
     {
-      case QGis::Point: s = new QgsMarkerSymbolV2(); break;
-      case QGis::Line:  s = new QgsLineSymbolV2(); break;
-      case QGis::Polygon: s = new QgsFillSymbolV2(); break;
-      default: QgsDebugMsg( "unknown layer's geometry type" ); return nullptr;
+      case QGis::Point:
+        s = new QgsMarkerSymbolV2();
+        break;
+      case QGis::Line:
+        s = new QgsLineSymbolV2();
+        break;
+      case QGis::Polygon:
+        s = new QgsFillSymbolV2();
+        break;
+      default:
+        QgsDebugMsg( "unknown layer's geometry type" );
+        return nullptr;
     }
   }
 
@@ -570,10 +582,17 @@ QString QgsSymbolV2::dump() const
   QString t;
   switch ( type() )
   {
-    case QgsSymbolV2::Marker: t = "MARKER"; break;
-    case QgsSymbolV2::Line: t = "LINE"; break;
-    case QgsSymbolV2::Fill: t = "FILL"; break;
-    default: Q_ASSERT( 0 && "unknown symbol type" );
+    case QgsSymbolV2::Marker:
+      t = "MARKER";
+      break;
+    case QgsSymbolV2::Line:
+      t = "LINE";
+      break;
+    case QgsSymbolV2::Fill:
+      t = "FILL";
+      break;
+    default:
+      Q_ASSERT( 0 && "unknown symbol type" );
   }
   QString s = QString( "%1 SYMBOL (%2 layers) color %3" ).arg( t ).arg( mLayers.count() ).arg( QgsSymbolLayerV2Utils::encodeColor( color() ) );
 
@@ -830,12 +849,15 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     while ( geom->geometry()->nextVertex( vertexId, vertexPoint ) )
     {
       //transform
-      x = vertexPoint.x(); y = vertexPoint.y(); z = vertexPoint.z();
+      x = vertexPoint.x();
+      y = vertexPoint.y();
+      z = vertexPoint.z();
       if ( ct )
       {
         ct->transformInPlace( x, y, z );
       }
-      mapPoint.setX( x ); mapPoint.setY( y );
+      mapPoint.setX( x );
+      mapPoint.setY( y );
       mtp.transformInPlace( mapPoint.rx(), mapPoint.ry() );
       QgsVectorLayer::drawVertexMarker( mapPoint.x(), mapPoint.y(), *context.painter(),
                                         static_cast< QgsVectorLayer::VertexMarkerType >( currentVertexMarkerType ),

@@ -163,7 +163,8 @@ void QgsStyleV2ManagerDialog::populateTypes()
       case QgsSymbolV2::Fill:
         fillCount++;
         break;
-      default: Q_ASSERT( 0 && "unknown symbol type" );
+      default:
+        Q_ASSERT( 0 && "unknown symbol type" );
         break;
     }
   }
@@ -290,11 +291,16 @@ int QgsStyleV2ManagerDialog::currentItemType()
 {
   switch ( tabItemType->currentIndex() )
   {
-    case 0: return QgsSymbolV2::Marker;
-    case 1: return QgsSymbolV2::Line;
-    case 2: return QgsSymbolV2::Fill;
-    case 3: return 3;
-    default: return 0;
+    case 0:
+      return QgsSymbolV2::Marker;
+    case 1:
+      return QgsSymbolV2::Line;
+    case 2:
+      return QgsSymbolV2::Fill;
+    case 3:
+      return 3;
+    default:
+      return 0;
   }
 }
 

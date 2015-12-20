@@ -421,7 +421,10 @@ QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable( int
     ct.append( ctItem2 );
     QgsDebugMsg( QString( "color %1 %2 %3 %4" ).arg( i->value2 ).arg( i->red2 ).arg( i->green2 ).arg( i->blue2 ) );
 
-    v = i->value2; r = i->red2; g = i->green2; b = i->blue2;
+    v = i->value2;
+    r = i->red2;
+    g = i->green2;
+    b = i->blue2;
   }
   return ct;
 }

@@ -26,13 +26,20 @@ void SpatialiteBlobHeader::readFrom( const char* p )
 {
   // we cannot use directly memcpy( this, p, sizeof(this) ),
   // since there may be padding between struct members
-  memcpy( &start, p, 1 ); p++;
-  memcpy( &endianness, p, 1 ); p++;
-  memcpy( &srid, p, 4 ); p += 4;
-  memcpy( &mbrMinX, p, 8 ); p += 8;
-  memcpy( &mbrMinY, p, 8 ); p += 8;
-  memcpy( &mbrMaxX, p, 8 ); p += 8;
-  memcpy( &mbrMaxY, p, 8 ); p += 8;
+  memcpy( &start, p, 1 );
+  p++;
+  memcpy( &endianness, p, 1 );
+  p++;
+  memcpy( &srid, p, 4 );
+  p += 4;
+  memcpy( &mbrMinX, p, 8 );
+  p += 8;
+  memcpy( &mbrMinY, p, 8 );
+  p += 8;
+  memcpy( &mbrMaxX, p, 8 );
+  p += 8;
+  memcpy( &mbrMaxY, p, 8 );
+  p += 8;
   memcpy( &end, p, 1 );
 }
 
@@ -40,13 +47,20 @@ void SpatialiteBlobHeader::writeTo( char* p ) const
 {
   // we cannot use directly memcpy( this, p, sizeof(this) ),
   // since there may be padding between struct members
-  memcpy( p, &start, 1 ); p++;
-  memcpy( p, &endianness, 1 ); p++;
-  memcpy( p, &srid, 4 ); p += 4;
-  memcpy( p, &mbrMinX, 8 ); p += 8;
-  memcpy( p, &mbrMinY, 8 ); p += 8;
-  memcpy( p, &mbrMaxX, 8 ); p += 8;
-  memcpy( p, &mbrMaxY, 8 ); p += 8;
+  memcpy( p, &start, 1 );
+  p++;
+  memcpy( p, &endianness, 1 );
+  p++;
+  memcpy( p, &srid, 4 );
+  p += 4;
+  memcpy( p, &mbrMinX, 8 );
+  p += 8;
+  memcpy( p, &mbrMinY, 8 );
+  p += 8;
+  memcpy( p, &mbrMaxX, 8 );
+  p += 8;
+  memcpy( p, &mbrMaxY, 8 );
+  p += 8;
   memcpy( p, &end, 1 );
 }
 
@@ -118,7 +132,8 @@ void copySpatialiteSingleWkbToQgsGeometry( QgsWKBTypes::Type type, const char* i
     {
       uint32_t n_points = *( uint32_t* )iwkb;
       memcpy( owkb, iwkb, 4 );
-      iwkb += 4; owkb += 4;
+      iwkb += 4;
+      owkb += 4;
       for ( uint32_t i = 0; i < n_points; i++ )
       {
         memcpy( owkb, iwkb, n_dims*8 );
@@ -132,13 +147,15 @@ void copySpatialiteSingleWkbToQgsGeometry( QgsWKBTypes::Type type, const char* i
     {
       uint32_t n_rings = *( uint32_t* )iwkb;
       memcpy( owkb, iwkb, 4 );
-      iwkb += 4; owkb += 4;
+      iwkb += 4;
+      owkb += 4;
       osize = 4;
       for ( uint32_t i = 0; i < n_rings; i++ )
       {
         uint32_t n_points = *( uint32_t* )iwkb;
         memcpy( owkb, iwkb, 4 );
-        iwkb += 4; owkb += 4;
+        iwkb += 4;
+        owkb += 4;
         osize += 4;
         for ( uint32_t j = 0; j < n_points; j++ )
         {

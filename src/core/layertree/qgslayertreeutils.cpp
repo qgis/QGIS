@@ -184,9 +184,13 @@ QString QgsLayerTreeUtils::checkStateToXml( Qt::CheckState state )
 {
   switch ( state )
   {
-    case Qt::Unchecked:        return "Qt::Unchecked";
-    case Qt::PartiallyChecked: return "Qt::PartiallyChecked";
-  case Qt::Checked: default: return "Qt::Checked";
+    case Qt::Unchecked:
+      return "Qt::Unchecked";
+    case Qt::PartiallyChecked:
+      return "Qt::PartiallyChecked";
+    case Qt::Checked:
+    default:
+      return "Qt::Checked";
   }
 }
 

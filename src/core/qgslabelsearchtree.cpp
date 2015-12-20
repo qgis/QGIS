@@ -33,8 +33,12 @@ QgsLabelSearchTree::~QgsLabelSearchTree()
 
 void QgsLabelSearchTree::label( const QgsPoint& p, QList<QgsLabelPosition*>& posList ) const
 {
-  double c_min[2]; c_min[0] = p.x() - 0.1; c_min[1] = p.y() - 0.1;
-  double c_max[2]; c_max[0] = p.x() + 0.1; c_max[1] = p.y() + 0.1;
+  double c_min[2];
+  c_min[0] = p.x() - 0.1;
+  c_min[1] = p.y() - 0.1;
+  double c_max[2];
+  c_max[0] = p.x() + 0.1;
+  c_max[1] = p.y() + 0.1;
 
   QList<QgsLabelPosition*> searchResults;
   mSpatialIndex.Search( c_min, c_max, searchCallback, &searchResults );
@@ -53,8 +57,12 @@ void QgsLabelSearchTree::label( const QgsPoint& p, QList<QgsLabelPosition*>& pos
 
 void QgsLabelSearchTree::labelsInRect( const QgsRectangle& r, QList<QgsLabelPosition*>& posList ) const
 {
-  double c_min[2]; c_min[0] = r.xMinimum(); c_min[1] = r.yMinimum();
-  double c_max[2]; c_max[0] = r.xMaximum(); c_max[1] = r.yMaximum();
+  double c_min[2];
+  c_min[0] = r.xMinimum();
+  c_min[1] = r.yMinimum();
+  double c_max[2];
+  c_max[0] = r.xMaximum();
+  c_max[1] = r.yMaximum();
 
   QList<QgsLabelPosition*> searchResults;
   mSpatialIndex.Search( c_min, c_max, searchCallback, &searchResults );

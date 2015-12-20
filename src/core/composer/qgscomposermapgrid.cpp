@@ -1578,7 +1578,8 @@ int QgsComposerMapGrid::xGridLines( QList< QPair< double, QLineF > >& lines ) co
     if ( mGridUnit == CM )
     {
       annotationScale = 0.1;
-      gridIntervalY *= 10; gridOffsetY *= 10;
+      gridIntervalY *= 10;
+      gridOffsetY *= 10;
     }
   }
 
@@ -1662,7 +1663,8 @@ int QgsComposerMapGrid::yGridLines( QList< QPair< double, QLineF > >& lines ) co
     if ( mGridUnit == CM )
     {
       annotationScale = 0.1;
-      gridIntervalX *= 10; gridOffsetX *= 10;
+      gridIntervalX *= 10;
+      gridOffsetX *= 10;
     }
   }
 

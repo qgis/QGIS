@@ -276,6 +276,7 @@ bool QgsAbstractGeometryV2::convertTo( QgsWKBTypes::Type type )
 
 bool QgsAbstractGeometryV2::isEmpty() const
 {
-  QgsVertexId vId; QgsPointV2 vertex;
+  QgsVertexId vId;
+  QgsPointV2 vertex;
   return !nextVertex( vId, vertex );
 }

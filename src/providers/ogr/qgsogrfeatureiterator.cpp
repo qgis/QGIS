@@ -277,12 +277,20 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
   {
     switch ( mSource->mFields.at( attindex ).type() )
     {
-      case QVariant::String: value = QVariant( mSource->mEncoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attindex ) ) ); break;
-      case QVariant::Int: value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attindex ) ); break;
+      case QVariant::String:
+        value = QVariant( mSource->mEncoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attindex ) ) );
+        break;
+      case QVariant::Int:
+        value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attindex ) );
+        break;
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
-      case QVariant::LongLong: value = QVariant( OGR_F_GetFieldAsInteger64( ogrFet, attindex ) ); break;
+      case QVariant::LongLong:
+        value = QVariant( OGR_F_GetFieldAsInteger64( ogrFet, attindex ) );
+        break;
 #endif
-      case QVariant::Double: value = QVariant( OGR_F_GetFieldAsDouble( ogrFet, attindex ) ); break;
+      case QVariant::Double:
+        value = QVariant( OGR_F_GetFieldAsDouble( ogrFet, attindex ) );
+        break;
       case QVariant::Date:
       case QVariant::DateTime:
       {

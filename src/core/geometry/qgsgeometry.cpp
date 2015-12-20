@@ -383,7 +383,8 @@ void QgsGeometry::adjacentVertices( int atVertex, int& beforeVertex, int& afterV
   QgsVertexId id;
   if ( !vertexIdFromVertexNr( atVertex, id ) )
   {
-    beforeVertex = -1; afterVertex = -1;
+    beforeVertex = -1;
+    afterVertex = -1;
     return;
   }
 

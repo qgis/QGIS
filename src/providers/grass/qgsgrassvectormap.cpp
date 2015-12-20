@@ -346,7 +346,8 @@ bool QgsGrassVectorMap::closeEdit( bool newMap )
 #endif
 
   mIsEdited = false;
-  QgsGrass::unlock();closeAllIterators(); // blocking
+  QgsGrass::unlock();
+  closeAllIterators(); // blocking
 
   closeMap();
   openMap();

@@ -135,9 +135,12 @@ void QgsGrassFeatureIterator::setSelectionRect( const QgsRectangle& rect, bool u
   mSelection.fill( false );
 
   BOUND_BOX box;
-  box.N = rect.yMaximum(); box.S = rect.yMinimum();
-  box.E = rect.xMaximum(); box.W = rect.xMinimum();
-  box.T = PORT_DOUBLE_MAX; box.B = -PORT_DOUBLE_MAX;
+  box.N = rect.yMaximum();
+  box.S = rect.yMinimum();
+  box.E = rect.xMaximum();
+  box.W = rect.xMinimum();
+  box.T = PORT_DOUBLE_MAX;
+  box.B = -PORT_DOUBLE_MAX;
 
   // Init structures
   struct ilist * list = Vect_new_list();
@@ -551,7 +554,8 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
       int nlines = Vect_get_node_n_lines( mSource->map(), lid );
       for ( int i = 0; i < nlines; i++ )
       {
-        int line = Vect_get_node_line( mSource->map(), lid, i );  QgsDebugMsg( "cancel" );
+        int line = Vect_get_node_line( mSource->map(), lid, i );
+        QgsDebugMsg( "cancel" );
         if ( i > 0 ) lines += ",";
         lines += QString::number( line );
       }

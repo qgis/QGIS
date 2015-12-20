@@ -325,10 +325,18 @@ void QgsGPSPlugin::convertGPSFile( const QString& inputFileName,
 
   switch ( convertType )
   {
-    case 0: convertStrings << "-x" << "transform,wpt=rte,del"; break;
-    case 1: convertStrings << "-x" << "transform,rte=wpt,del"; break;
-    case 2: convertStrings << "-x" << "transform,trk=wpt,del"; break;
-    case 3: convertStrings << "-x" << "transform,wpt=trk,del"; break;
+    case 0:
+      convertStrings << "-x" << "transform,wpt=rte,del";
+      break;
+    case 1:
+      convertStrings << "-x" << "transform,rte=wpt,del";
+      break;
+    case 2:
+      convertStrings << "-x" << "transform,trk=wpt,del";
+      break;
+    case 3:
+      convertStrings << "-x" << "transform,wpt=trk,del";
+      break;
     default:
       QgsDebugMsg( "Illegal conversion index!" );
       return;

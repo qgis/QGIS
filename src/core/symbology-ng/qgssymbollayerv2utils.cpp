@@ -83,10 +83,14 @@ QString QgsSymbolLayerV2Utils::encodeSldFontStyle( QFont::Style style )
 {
   switch ( style )
   {
-    case QFont::StyleNormal:  return "normal";
-    case QFont::StyleItalic:  return "italic";
-    case QFont::StyleOblique: return "oblique";
-    default: return "";
+    case QFont::StyleNormal:
+      return "normal";
+    case QFont::StyleItalic:
+      return "italic";
+    case QFont::StyleOblique:
+      return "oblique";
+    default:
+      return "";
   }
 }
 
@@ -128,13 +132,20 @@ QString QgsSymbolLayerV2Utils::encodePenStyle( Qt::PenStyle style )
 {
   switch ( style )
   {
-    case Qt::NoPen:          return "no";
-    case Qt::SolidLine:      return "solid";
-    case Qt::DashLine:       return "dash";
-    case Qt::DotLine:        return "dot";
-    case Qt::DashDotLine:    return "dash dot";
-    case Qt::DashDotDotLine: return "dash dot dot";
-    default: return "???";
+    case Qt::NoPen:
+      return "no";
+    case Qt::SolidLine:
+      return "solid";
+    case Qt::DashLine:
+      return "dash";
+    case Qt::DotLine:
+      return "dot";
+    case Qt::DashDotLine:
+      return "dash dot";
+    case Qt::DashDotDotLine:
+      return "dash dot dot";
+    default:
+      return "???";
   }
 }
 
@@ -153,10 +164,14 @@ QString QgsSymbolLayerV2Utils::encodePenJoinStyle( Qt::PenJoinStyle style )
 {
   switch ( style )
   {
-    case Qt::BevelJoin: return "bevel";
-    case Qt::MiterJoin: return "miter";
-    case Qt::RoundJoin: return "round";
-    default: return "???";
+    case Qt::BevelJoin:
+      return "bevel";
+    case Qt::MiterJoin:
+      return "miter";
+    case Qt::RoundJoin:
+      return "round";
+    default:
+      return "???";
   }
 }
 
@@ -172,10 +187,14 @@ QString QgsSymbolLayerV2Utils::encodeSldLineJoinStyle( Qt::PenJoinStyle style )
 {
   switch ( style )
   {
-    case Qt::BevelJoin: return "bevel";
-    case Qt::MiterJoin: return "mitre";
-    case Qt::RoundJoin: return "round";
-    default: return "";
+    case Qt::BevelJoin:
+      return "bevel";
+    case Qt::MiterJoin:
+      return "mitre";
+    case Qt::RoundJoin:
+      return "round";
+    default:
+      return "";
   }
 }
 
@@ -191,10 +210,14 @@ QString QgsSymbolLayerV2Utils::encodePenCapStyle( Qt::PenCapStyle style )
 {
   switch ( style )
   {
-    case Qt::SquareCap: return "square";
-    case Qt::FlatCap:   return "flat";
-    case Qt::RoundCap:  return "round";
-    default: return "???";
+    case Qt::SquareCap:
+      return "square";
+    case Qt::FlatCap:
+      return "flat";
+    case Qt::RoundCap:
+      return "round";
+    default:
+      return "???";
   }
 }
 
@@ -210,10 +233,14 @@ QString QgsSymbolLayerV2Utils::encodeSldLineCapStyle( Qt::PenCapStyle style )
 {
   switch ( style )
   {
-    case Qt::SquareCap: return "square";
-    case Qt::FlatCap:   return "butt";
-    case Qt::RoundCap:  return "round";
-    default: return "";
+    case Qt::SquareCap:
+      return "square";
+    case Qt::FlatCap:
+      return "butt";
+    case Qt::RoundCap:
+      return "round";
+    default:
+      return "";
   }
 }
 
@@ -229,22 +256,38 @@ QString QgsSymbolLayerV2Utils::encodeBrushStyle( Qt::BrushStyle style )
 {
   switch ( style )
   {
-    case Qt::SolidPattern : return "solid";
-    case Qt::HorPattern : return "horizontal";
-    case Qt::VerPattern : return "vertical";
-    case Qt::CrossPattern : return "cross";
-    case Qt::BDiagPattern : return "b_diagonal";
-    case Qt::FDiagPattern : return  "f_diagonal";
-    case Qt::DiagCrossPattern : return "diagonal_x";
-    case Qt::Dense1Pattern  : return "dense1";
-    case Qt::Dense2Pattern  : return "dense2";
-    case Qt::Dense3Pattern  : return "dense3";
-    case Qt::Dense4Pattern  : return "dense4";
-    case Qt::Dense5Pattern  : return "dense5";
-    case Qt::Dense6Pattern  : return "dense6";
-    case Qt::Dense7Pattern  : return "dense7";
-    case Qt::NoBrush : return "no";
-    default: return "???";
+    case Qt::SolidPattern :
+      return "solid";
+    case Qt::HorPattern :
+      return "horizontal";
+    case Qt::VerPattern :
+      return "vertical";
+    case Qt::CrossPattern :
+      return "cross";
+    case Qt::BDiagPattern :
+      return "b_diagonal";
+    case Qt::FDiagPattern :
+      return  "f_diagonal";
+    case Qt::DiagCrossPattern :
+      return "diagonal_x";
+    case Qt::Dense1Pattern  :
+      return "dense1";
+    case Qt::Dense2Pattern  :
+      return "dense2";
+    case Qt::Dense3Pattern  :
+      return "dense3";
+    case Qt::Dense4Pattern  :
+      return "dense4";
+    case Qt::Dense5Pattern  :
+      return "dense5";
+    case Qt::Dense6Pattern  :
+      return "dense6";
+    case Qt::Dense7Pattern  :
+      return "dense7";
+    case Qt::NoBrush :
+      return "no";
+    default:
+      return "???";
   }
 }
 
@@ -272,17 +315,23 @@ QString QgsSymbolLayerV2Utils::encodeSldBrushStyle( Qt::BrushStyle style )
 {
   switch ( style )
   {
-    case Qt::CrossPattern: return "cross";
-    case Qt::DiagCrossPattern: return "x";
+    case Qt::CrossPattern:
+      return "cross";
+    case Qt::DiagCrossPattern:
+      return "x";
 
       /* The following names are taken from the presentation "GeoServer
        * Cartographic Rendering" by Andrea Aime at the FOSS4G 2010.
        * (see http://2010.foss4g.org/presentations/3588.pdf)
        */
-    case Qt::HorPattern: return "horline";
-    case Qt::VerPattern: return "line";
-    case Qt::BDiagPattern: return "slash";
-    case Qt::FDiagPattern: return "backslash";
+    case Qt::HorPattern:
+      return "horline";
+    case Qt::VerPattern:
+      return "line";
+    case Qt::BDiagPattern:
+      return "slash";
+    case Qt::FDiagPattern:
+      return "backslash";
 
       /* define the other names following the same pattern used above */
     case Qt::Dense1Pattern:
@@ -701,8 +750,12 @@ static QPointF linesIntersection( QPointF p1, double t1, QPointF p2, double t2 )
     // swap them so that line 2 is with undefined tangent
     if ( t1 == DBL_MAX )
     {
-      QPointF pSwp = p1; p1 = p2; p2 = pSwp;
-      double  tSwp = t1; t1 = t2; t2 = tSwp;
+      QPointF pSwp = p1;
+      p1 = p2;
+      p2 = pSwp;
+      double  tSwp = t1;
+      t1 = t2;
+      t2 = tSwp;
     }
 
     x = p2.x();
@@ -999,10 +1052,14 @@ static QString _nameForSymbolType( QgsSymbolV2::SymbolType type )
 {
   switch ( type )
   {
-    case QgsSymbolV2::Line: return "line";
-    case QgsSymbolV2::Marker: return "marker";
-    case QgsSymbolV2::Fill: return "fill";
-    default: return "";
+    case QgsSymbolV2::Line:
+      return "line";
+    case QgsSymbolV2::Marker:
+      return "marker";
+    case QgsSymbolV2::Fill:
+      return "fill";
+    default:
+      return "";
   }
 }
 

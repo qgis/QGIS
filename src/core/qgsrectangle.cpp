@@ -376,8 +376,12 @@ bool QgsRectangle::isFinite() const
 void QgsRectangle::invert()
 {
   double tmp;
-  tmp = xmin; xmin = ymin; ymin = tmp;
-  tmp = xmax; xmax = ymax; ymax = tmp;
+  tmp = xmin;
+  xmin = ymin;
+  ymin = tmp;
+  tmp = xmax;
+  xmax = ymax;
+  ymax = tmp;
 }
 
 QDataStream& operator<<( QDataStream& out, const QgsRectangle& rectangle )

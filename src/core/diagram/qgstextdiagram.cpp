@@ -146,7 +146,8 @@ void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext&
     //draw separator lines
     QList<QPointF> intersect; //intersections between shape and separation lines
     QPointF center( baseX + w / 2.0, baseY + h / 2.0 );
-    double r1 = w / 2.0; double r2 = h / 2.0;
+    double r1 = w / 2.0;
+    double r2 = h / 2.0;
 
     for ( int i = 1; i < nCategories; ++i )
     {

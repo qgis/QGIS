@@ -550,7 +550,10 @@ QList< QPair<int, QgsVertexId> > QgsCompoundCurveV2::curveVertexId( const QgsVer
     if ( id.vertex >= currentVertexIndex && id.vertex <= currentVertexIndex + increment )
     {
       int curveVertexId = id.vertex - currentVertexIndex;
-      QgsVertexId vid; vid.part = 0; vid.ring = 0; vid.vertex = curveVertexId;
+      QgsVertexId vid;
+      vid.part = 0;
+      vid.ring = 0;
+      vid.vertex = curveVertexId;
       curveIds.append( qMakePair( i, vid ) );
       if ( curveVertexId == increment && i < ( mCurves.size() - 1 ) ) //add first vertex of next curve
       {

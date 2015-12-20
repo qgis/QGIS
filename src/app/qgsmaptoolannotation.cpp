@@ -214,11 +214,15 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent* e )
       double tmp;
       if ( xmax < xmin )
       {
-        tmp = xmax; xmax = xmin; xmin = tmp;
+        tmp = xmax;
+        xmax = xmin;
+        xmin = tmp;
       }
       if ( ymax < ymin )
       {
-        tmp = ymax; ymax = ymin; ymin = tmp;
+        tmp = ymax;
+        ymax = ymin;
+        ymin = tmp;
       }
 
       sItem->setOffsetFromReferencePoint( QPointF( xmin, ymin ) );

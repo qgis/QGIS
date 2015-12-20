@@ -79,7 +79,10 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
 void QgsMapToolCircularStringCurvePoint::cadCanvasMoveEvent( QgsMapMouseEvent* e )
 {
   QgsPointV2 mapPoint( e->mapPoint().x(), e->mapPoint().y() );
-  QgsVertexId idx; idx.part = 0; idx.ring = 0; idx.vertex = mPoints.size();
+  QgsVertexId idx;
+  idx.part = 0;
+  idx.ring = 0;
+  idx.vertex = mPoints.size();
   if ( mRubberBand )
   {
     mRubberBand->moveVertex( idx, mapPoint );

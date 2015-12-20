@@ -52,8 +52,10 @@ inline static QgsRectangle calculateBoundingBox( QGis::WkbType wkbType, const un
 
   for ( size_t i = 0; i < numPoints; ++i )
   {
-    memcpy( &x, wkb, sizeof( double ) ); wkb += sizeOfDoubleX;
-    memcpy( &y, wkb, sizeof( double ) ); wkb += sizeOfDoubleY;
+    memcpy( &x, wkb, sizeof( double ) );
+    wkb += sizeOfDoubleX;
+    memcpy( &y, wkb, sizeof( double ) );
+    wkb += sizeOfDoubleY;
     r.combineExtentWith( x, y );
   }
 
@@ -116,11 +118,15 @@ static bool generalizeWkbGeometryByBoundingBox(
     memcpy( targetWkb, &numPoints, 4 ); // numPoints;
     targetWkb += 4;
 
-    memcpy( targetWkb, &x1, sizeof( double ) ); targetWkb += sizeof( double );
-    memcpy( targetWkb, &y1, sizeof( double ) ); targetWkb += sizeof( double );
+    memcpy( targetWkb, &x1, sizeof( double ) );
+    targetWkb += sizeof( double );
+    memcpy( targetWkb, &y1, sizeof( double ) );
+    targetWkb += sizeof( double );
 
-    memcpy( targetWkb, &x2, sizeof( double ) ); targetWkb += sizeof( double );
-    memcpy( targetWkb, &y2, sizeof( double ) ); targetWkb += sizeof( double );
+    memcpy( targetWkb, &x2, sizeof( double ) );
+    targetWkb += sizeof( double );
+    memcpy( targetWkb, &y2, sizeof( double ) );
+    targetWkb += sizeof( double );
   }
   else
   {
@@ -128,20 +134,30 @@ static bool generalizeWkbGeometryByBoundingBox(
     memcpy( targetWkb, &numPoints, 4 ); // numPoints;
     targetWkb += 4;
 
-    memcpy( targetWkb, &x1, sizeof( double ) ); targetWkb += sizeof( double );
-    memcpy( targetWkb, &y1, sizeof( double ) ); targetWkb += sizeof( double );
+    memcpy( targetWkb, &x1, sizeof( double ) );
+    targetWkb += sizeof( double );
+    memcpy( targetWkb, &y1, sizeof( double ) );
+    targetWkb += sizeof( double );
 
-    memcpy( targetWkb, &x2, sizeof( double ) ); targetWkb += sizeof( double );
-    memcpy( targetWkb, &y1, sizeof( double ) ); targetWkb += sizeof( double );
+    memcpy( targetWkb, &x2, sizeof( double ) );
+    targetWkb += sizeof( double );
+    memcpy( targetWkb, &y1, sizeof( double ) );
+    targetWkb += sizeof( double );
 
-    memcpy( targetWkb, &x2, sizeof( double ) ); targetWkb += sizeof( double );
-    memcpy( targetWkb, &y2, sizeof( double ) ); targetWkb += sizeof( double );
+    memcpy( targetWkb, &x2, sizeof( double ) );
+    targetWkb += sizeof( double );
+    memcpy( targetWkb, &y2, sizeof( double ) );
+    targetWkb += sizeof( double );
 
-    memcpy( targetWkb, &x1, sizeof( double ) ); targetWkb += sizeof( double );
-    memcpy( targetWkb, &y2, sizeof( double ) ); targetWkb += sizeof( double );
+    memcpy( targetWkb, &x1, sizeof( double ) );
+    targetWkb += sizeof( double );
+    memcpy( targetWkb, &y2, sizeof( double ) );
+    targetWkb += sizeof( double );
 
-    memcpy( targetWkb, &x1, sizeof( double ) ); targetWkb += sizeof( double );
-    memcpy( targetWkb, &y1, sizeof( double ) ); targetWkb += sizeof( double );
+    memcpy( targetWkb, &x1, sizeof( double ) );
+    targetWkb += sizeof( double );
+    memcpy( targetWkb, &y1, sizeof( double ) );
+    targetWkb += sizeof( double );
   }
   targetWkbSize += targetWkb - wkb2;
 
@@ -245,8 +261,10 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
     // Process each vertex...
     for ( int i = 0; i < numPoints; ++i )
     {
-      memcpy( &x, sourceWkb, sizeof( double ) ); sourceWkb += sizeOfDoubleX;
-      memcpy( &y, sourceWkb, sizeof( double ) ); sourceWkb += sizeOfDoubleY;
+      memcpy( &x, sourceWkb, sizeof( double ) );
+      sourceWkb += sizeOfDoubleX;
+      memcpy( &y, sourceWkb, sizeof( double ) );
+      sourceWkb += sizeOfDoubleY;
 
       isLongSegment = false;
 
@@ -255,8 +273,12 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
            ( isLongSegment = ( calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol ) ) ||
            ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
       {
-        memcpy( ptr, &x, sizeof( double ) ); lastX = x; ptr++;
-        memcpy( ptr, &y, sizeof( double ) ); lastY = y; ptr++;
+        memcpy( ptr, &x, sizeof( double ) );
+        lastX = x;
+        ptr++;
+        memcpy( ptr, &y, sizeof( double ) );
+        lastY = y;
+        ptr++;
         numTargetPoints++;
 
         hasLongSegments |= isLongSegment;
@@ -301,8 +323,10 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
       memcpy( &y, targetWkb + sizeof( double ), sizeof( double ) );
       if ( lastX != x || lastY != y )
       {
-        memcpy( ptr, &x, sizeof( double ) ); ptr++;
-        memcpy( ptr, &y, sizeof( double ) ); ptr++;
+        memcpy( ptr, &x, sizeof( double ) );
+        ptr++;
+        memcpy( ptr, &y, sizeof( double ) );
+        ptr++;
         numTargetPoints++;
       }
     }

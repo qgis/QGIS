@@ -475,7 +475,8 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
     //exclude files that are not svg or image
     if ( !fileIsSvg && !fileIsPixel )
     {
-      ++counter; continue;
+      ++counter;
+      continue;
     }
 
     QListWidgetItem * listItem = new QListWidgetItem( mPreviewListWidget );
@@ -491,7 +492,8 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
       QPixmap iconPixmap( filePath );
       if ( iconPixmap.isNull() )
       {
-        ++counter; continue; //unknown file format or other problem
+        ++counter;
+        continue; //unknown file format or other problem
       }
       //set pixmap hardcoded to 30/30, same as icon size for mPreviewListWidget
       QPixmap scaledPixmap( iconPixmap.scaled( QSize( 30, 30 ), Qt::KeepAspectRatio ) );

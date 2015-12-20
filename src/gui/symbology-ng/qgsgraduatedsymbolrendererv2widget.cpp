@@ -137,8 +137,10 @@ QVariant QgsGraduatedSymbolRendererV2Model::data( const QModelIndex &index, int 
         if ( decimalPlaces < 0 ) decimalPlaces = 0;
         return QString::number( range.lowerValue(), 'f', decimalPlaces ) + " - " + QString::number( range.upperValue(), 'f', decimalPlaces );
       }
-      case 2: return range.label();
-      default: return QVariant();
+      case 2:
+        return range.label();
+      default:
+        return QVariant();
     }
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 && range.symbol() )
@@ -154,8 +156,10 @@ QVariant QgsGraduatedSymbolRendererV2Model::data( const QModelIndex &index, int 
     switch ( index.column() )
     {
         // case 1: return rangeStr;
-      case 2: return range.label();
-      default: return QVariant();
+      case 2:
+        return range.label();
+      default:
+        return QVariant();
     }
   }
 
@@ -196,7 +200,8 @@ QVariant QgsGraduatedSymbolRendererV2Model::headerData( int section, Qt::Orienta
 {
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 3 )
   {
-    QStringList lst; lst << tr( "Symbol" ) << tr( "Values" ) << tr( "Legend" );
+    QStringList lst;
+    lst << tr( "Symbol" ) << tr( "Values" ) << tr( "Legend" );
     return lst.value( section );
   }
   return QVariant();

@@ -195,9 +195,15 @@ void QgsSnappingDialog::apply()
   QString snapMode;
   switch ( mSnapModeComboBox->currentIndex() )
   {
-    case 0: snapMode = "current_layer"; break;
-    case 1: snapMode = "all_layers"; break;
-    default: snapMode = "advanced"; break;
+    case 0:
+      snapMode = "current_layer";
+      break;
+    case 1:
+      snapMode = "all_layers";
+      break;
+    default:
+      snapMode = "advanced";
+      break;
   }
   QgsProject::instance()->writeEntry( "Digitizing", "/SnappingMode", snapMode );
 

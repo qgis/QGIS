@@ -116,8 +116,10 @@ namespace pal
 
       void getBoundingBox( double min[2], double max[2] ) const
       {
-        min[0] = xmin; min[1] = ymin;
-        max[0] = xmax; max[1] = ymax;
+        min[0] = xmin;
+        min[1] = ymin;
+        max[0] = xmax;
+        max[1] = ymax;
       }
 
       /** Returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset. */

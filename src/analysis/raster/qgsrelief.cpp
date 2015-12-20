@@ -330,7 +330,9 @@ bool QgsRelief::processNineCellWindow( float* x1, float* x2, float* x3, float* x
     }
     else
     {
-      r2 = hillShadeValue315; g2 = hillShadeValue315; b2 = hillShadeValue315;
+      r2 = hillShadeValue315;
+      g2 = hillShadeValue315;
+      b2 = hillShadeValue315;
     }
 
     //combine with r,g,b with 70 percentage coverage

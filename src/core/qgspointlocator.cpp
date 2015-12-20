@@ -560,7 +560,8 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
 
       if ( ! ids.empty() )
       {
-        nextEntry = ids.back(); ids.pop();
+        nextEntry = ids.back();
+        ids.pop();
         hasNext = true;
       }
       else

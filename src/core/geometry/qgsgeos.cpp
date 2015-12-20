@@ -537,7 +537,8 @@ GEOSGeometry* QgsGeos::linePointDifference( GEOSGeometry* GEOSsplitPoint ) const
   QgsPointV2* splitPoint = dynamic_cast<QgsPointV2*>( splitGeom );
   if ( !splitPoint )
   {
-    delete splitGeom; return nullptr;
+    delete splitGeom;
+    return nullptr;
   }
 
   QgsMultiCurveV2 lines;
@@ -1341,7 +1342,8 @@ bool QgsGeos::centroid( QgsPointV2& pt, QString* errorMsg ) const
   double x, y;
   GEOSGeomGetX_r( geosinit.ctxt, geos.get(), &x );
   GEOSGeomGetY_r( geosinit.ctxt, geos.get(), &y );
-  pt.setX( x ); pt.setY( y );
+  pt.setX( x );
+  pt.setY( y );
   return true;
 }
 
