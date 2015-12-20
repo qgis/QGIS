@@ -154,14 +154,15 @@ QgsFeatureRequest& QgsFeatureRequest::addOrderBy( const QString& expression, boo
   return *this;
 }
 
-QList<QgsFeatureRequest::OrderByClause> QgsFeatureRequest::orderBys() const
+QgsFeatureRequest::OrderBy QgsFeatureRequest::orderBys() const
 {
   return mOrderBys;
 }
 
-void QgsFeatureRequest::setOrderBys( const QList<QgsFeatureRequest::OrderByClause>& orderBys )
+QgsFeatureRequest& QgsFeatureRequest::setOrderBys( const QgsFeatureRequest::OrderBy& orderBys )
 {
   mOrderBys = orderBys;
+  return *this;
 }
 
 QgsFeatureRequest& QgsFeatureRequest::setLimit( long limit )
@@ -307,7 +308,77 @@ void QgsFeatureRequest::OrderByClause::setNullsFirst( bool nullsFirst )
   mNullsFirst = nullsFirst;
 }
 
+QString QgsFeatureRequest::OrderByClause::dump() const
+{
+  return QString( "%1 %2 %3" )
+         .arg( mExpression.expression() )
+         .arg( mAscending ? "ASC" : "DESC" )
+         .arg( mNullsFirst ? "NULLS FIRST" : "NULLS LAST" );
+}
+
 QgsExpression QgsFeatureRequest::OrderByClause::expression() const
 {
   return mExpression;
+}
+
+void QgsFeatureRequest::OrderBy::save( QDomElement& elem ) const
+{
+  QDomDocument doc = elem.ownerDocument();
+  QList<OrderByClause>::ConstIterator it;
+  for ( it = constBegin(); it != constEnd(); ++it )
+  {
+    const OrderByClause& clause = *it;
+    QDomElement clauseElem = doc.createElement( "orderByClause" );
+    clauseElem.setAttribute( "asc", clause.ascending() );
+    clauseElem.setAttribute( "nullsFirst", clause.nullsFirst() );
+    clauseElem.appendChild( doc.createTextNode( clause.expression().expression() ) );
+
+    elem.appendChild( clauseElem );
+  }
+}
+
+void QgsFeatureRequest::OrderBy::load( const QDomElement& elem )
+{
+  clear();
+
+  QDomNodeList clauses = elem.childNodes();
+
+  for ( int i = 0; i < clauses.size(); ++i )
+  {
+    QDomElement clauseElem = clauses.at( i ).toElement();
+    QString expression = clauseElem.toText().data();
+    bool asc = clauseElem.attribute( "asc" ).toInt() != 0;
+    bool nullsFirst  = clauseElem.attribute( "nullsFirst" ).toInt() != 0;
+
+    append( OrderByClause( expression, asc, nullsFirst ) );
+  }
+}
+
+QSet<QString> QgsFeatureRequest::OrderBy::usedAttributes() const
+{
+  QSet<QString> usedAttributes;
+
+  QList<OrderByClause>::ConstIterator it;
+  for ( it = constBegin(); it != constEnd(); ++it )
+  {
+    const OrderByClause& clause = *it;
+
+    usedAttributes.unite( clause.expression().referencedColumns().toSet() );
+  }
+
+  return usedAttributes;
+}
+QString QgsFeatureRequest::OrderBy::dump() const
+{
+  QStringList results;
+
+  QList<OrderByClause>::ConstIterator it;
+  for ( it = constBegin(); it != constEnd(); ++it )
+  {
+    const OrderByClause& clause = *it;
+
+    results << clause.dump();
+  }
+
+  return results.join( ", " );
 }

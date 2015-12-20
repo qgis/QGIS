@@ -149,6 +149,12 @@ bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
       ++mFeatureIterator;
       dataOk = true;
     }
+    else
+    {
+      dataOk = false;
+      // don't call close, the provider connection has already been closed
+      mClosed = true;
+    }
   }
   else
   {
@@ -283,6 +289,7 @@ void QgsAbstractFeatureIterator::setupOrderBy( const QList<QgsFeatureRequest::Or
 
     mFeatureIterator = mCachedFeatures.constBegin();
     mUseCachedFeatures = true;
+    mClosed = false;
   }
 }
 
