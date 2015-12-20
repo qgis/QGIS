@@ -108,7 +108,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
             if param.value:
                 if isinstance(param, (ParameterRaster, ParameterVector)):
                     if isinstance(param.value, (QgsRasterLayer,
-                                  QgsVectorLayer)):
+                                                QgsVectorLayer)):
                         layer = param.value
                     else:
                         layer = dataobjects.getObject(param.value)
