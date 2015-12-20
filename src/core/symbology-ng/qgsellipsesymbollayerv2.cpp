@@ -762,7 +762,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
   QTransform t;
   t.translate( shift.x() + offsetX, shift.y() + offsetY );
 
-  if ( rotation != 0 )
+  if ( !qgsDoubleNear( rotation, 0.0 ) )
     t.rotate( rotation );
 
   double halfWidth = symbolWidth / 2.0;

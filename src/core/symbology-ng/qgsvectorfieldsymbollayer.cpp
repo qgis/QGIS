@@ -93,15 +93,15 @@ QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::create( const QgsStringMap& propert
   }
   if ( properties.contains( "vector_field_type" ) )
   {
-    symbolLayer->setVectorFieldType(( VectorFieldType )( properties["vector_field_type"].toInt() ) );
+    symbolLayer->setVectorFieldType( static_cast< VectorFieldType >( properties["vector_field_type"].toInt() ) );
   }
   if ( properties.contains( "angle_orientation" ) )
   {
-    symbolLayer->setAngleOrientation(( AngleOrientation )( properties["angle_orientation"].toInt() ) );
+    symbolLayer->setAngleOrientation( static_cast< AngleOrientation >( properties["angle_orientation"].toInt() ) );
   }
   if ( properties.contains( "angle_units" ) )
   {
-    symbolLayer->setAngleUnits(( AngleUnits )( properties["angle_units"].toInt() ) );
+    symbolLayer->setAngleUnits( static_cast< AngleUnits >( properties["angle_units"].toInt() ) );
   }
   if ( properties.contains( "size" ) )
   {
