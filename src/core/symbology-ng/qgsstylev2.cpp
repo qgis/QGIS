@@ -315,8 +315,8 @@ bool QgsStyleV2::load( const QString& filename )
   while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
     QDomDocument doc;
-    QString symbol_name = QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, SymbolName ) );
-    QString xmlstring = QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, SymbolXML ) );
+    QString symbol_name = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, SymbolName ) ) );
+    QString xmlstring = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, SymbolXML ) ) );
     if ( !doc.setContent( xmlstring ) )
     {
       QgsDebugMsg( "Cannot open symbol " + symbol_name );
@@ -336,8 +336,8 @@ bool QgsStyleV2::load( const QString& filename )
   while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
     QDomDocument doc;
-    QString ramp_name = QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, ColorrampName ) );
-    QString xmlstring = QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, ColorrampXML ) );
+    QString ramp_name = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, ColorrampName ) ) );
+    QString xmlstring = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, ColorrampXML ) ) );
     if ( !doc.setContent( xmlstring ) )
     {
       QgsDebugMsg( "Cannot open symbol " + ramp_name );
@@ -469,7 +469,7 @@ QStringList QgsStyleV2::groupNames()
   int nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
   while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
-    groupNames << QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, SymgroupName ) );
+    groupNames << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, SymgroupName ) ) );
   }
   sqlite3_finalize( ppStmt );
   return groupNames;
@@ -513,7 +513,7 @@ QgsSymbolGroupMap QgsStyleV2::childGroupNames( const QString& parent )
   nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
   while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
-    QString group = QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, SymgroupName ) );
+    QString group = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, SymgroupName ) ) );
     groupNames.insert( sqlite3_column_int( ppStmt, SymgroupId ), group );
   }
 
@@ -551,7 +551,7 @@ QStringList QgsStyleV2::symbolsOfGroup( StyleEntity type, int groupid )
   QStringList symbols;
   while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
-    symbols << QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
+    symbols << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
   }
 
   sqlite3_finalize( ppStmt );
@@ -599,7 +599,7 @@ QStringList QgsStyleV2::symbolsWithTag( StyleEntity type, int tagid )
     int sErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt2, nullptr );
     while ( sErr == SQLITE_OK && sqlite3_step( ppStmt2 ) == SQLITE_ROW )
     {
-      symbols << QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt2, 0 ) );
+      symbols << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt2, 0 ) ) );
     }
     sqlite3_finalize( ppStmt2 );
   }
@@ -622,7 +622,7 @@ int QgsStyleV2::addGroup( const QString& groupName, int parentid )
 
   sqlite3_finalize( ppStmt );
 
-  return ( int )sqlite3_last_insert_rowid( mCurrentDB );
+  return static_cast< int >( sqlite3_last_insert_rowid( mCurrentDB ) );
 }
 
 int QgsStyleV2::addTag( const QString& tagname )
@@ -637,7 +637,7 @@ int QgsStyleV2::addTag( const QString& tagname )
     ( void )sqlite3_step( ppStmt );
   sqlite3_finalize( ppStmt );
 
-  return ( int )sqlite3_last_insert_rowid( mCurrentDB );
+  return static_cast< int >( sqlite3_last_insert_rowid( mCurrentDB ) );
 }
 
 void QgsStyleV2::rename( StyleEntity type, int id, const QString& newName )
@@ -777,7 +777,7 @@ QStringList QgsStyleV2::findSymbols( StyleEntity type, const QString& qword )
   QStringList symbols;
   while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
-    symbols << QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
+    symbols << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
   }
 
   sqlite3_finalize( ppStmt );
@@ -919,7 +919,7 @@ QStringList QgsStyleV2::tagsOfSymbol( StyleEntity type, const QString& symbol )
     int pErr = sqlite3_prepare_v2( mCurrentDB, subquery, -1, &ppStmt2, nullptr );
     if ( pErr == SQLITE_OK && sqlite3_step( ppStmt2 ) == SQLITE_ROW )
     {
-      tagList << QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt2, 0 ) );
+      tagList << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt2, 0 ) ) );
     }
     sqlite3_finalize( ppStmt2 );
   }
@@ -1003,7 +1003,7 @@ int QgsStyleV2::addSmartgroup( const QString& name, const QString& op, const Qgs
 
   if ( runEmptyQuery( query ) )
   {
-    return ( int )sqlite3_last_insert_rowid( mCurrentDB );
+    return static_cast< int >( sqlite3_last_insert_rowid( mCurrentDB ) );
   }
   else
   {
@@ -1029,7 +1029,7 @@ QgsSymbolGroupMap QgsStyleV2::smartgroupsListMap()
   QgsSymbolGroupMap groupNames;
   while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
-    QString group = QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, SmartgroupName ) );
+    QString group = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, SmartgroupName ) ) );
     groupNames.insert( sqlite3_column_int( ppStmt, SmartgroupId ), group );
   }
 
@@ -1055,7 +1055,7 @@ QStringList QgsStyleV2::smartgroupNames()
   QStringList groups;
   while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
-    groups << QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
+    groups << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
   }
 
   sqlite3_finalize( ppStmt );
@@ -1079,7 +1079,7 @@ QStringList QgsStyleV2::symbolsOfSmartgroup( StyleEntity type, int id )
   else
   {
     QDomDocument doc;
-    QString xmlstr = QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
+    QString xmlstr = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
     if ( !doc.setContent( xmlstr ) )
     {
       QgsDebugMsg( QString( "Cannot open smartgroup id: %1" ).arg( id ) );
@@ -1194,7 +1194,7 @@ QgsSmartConditionMap QgsStyleV2::smartgroup( int id )
   if ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
     QDomDocument doc;
-    QString xmlstr = QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
+    QString xmlstr = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
     if ( !doc.setContent( xmlstr ) )
     {
       QgsDebugMsg( QString( "Cannot open smartgroup id: %1" ).arg( id ) );
@@ -1236,7 +1236,7 @@ QString QgsStyleV2::smartgroupOperator( int id )
   if ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
     QDomDocument doc;
-    QString xmlstr = QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
+    QString xmlstr = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
     if ( !doc.setContent( xmlstr ) )
     {
       QgsDebugMsg( QString( "Cannot open smartgroup id: %1" ).arg( id ) );

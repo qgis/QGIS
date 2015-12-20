@@ -76,8 +76,8 @@ QgsSvgCacheEntry::~QgsSvgCacheEntry()
 
 bool QgsSvgCacheEntry::operator==( const QgsSvgCacheEntry& other ) const
 {
-  return other.file == file && other.size == size && other.outlineWidth == outlineWidth && other.widthScaleFactor == widthScaleFactor
-         && other.rasterScaleFactor == rasterScaleFactor && other.fill == fill && other.outline == outline;
+  return other.file == file && qgsDoubleNear( other.size, size ) && qgsDoubleNear( other.outlineWidth, outlineWidth ) && qgsDoubleNear( other.widthScaleFactor, widthScaleFactor )
+         && qgsDoubleNear( other.rasterScaleFactor, rasterScaleFactor ) && other.fill == fill && other.outline == outline;
 }
 
 int QgsSvgCacheEntry::dataSize() const
@@ -136,7 +136,7 @@ const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const Q
     }
     long cachedDataSize = 0;
     cachedDataSize += currentEntry->svgContent.size();
-    cachedDataSize += ( int )( currentEntry->size * currentEntry->size * hwRatio * 32 );
+    cachedDataSize += static_cast< int >( currentEntry->size * currentEntry->size * hwRatio * 32 );
     if ( cachedDataSize > mMaximumSize / 2 )
     {
       fitsInCache = false;
@@ -337,7 +337,7 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElem
   QString viewBox;
 
   //bad size
-  if ( !entry || entry->size == 0 )
+  if ( !entry || qgsDoubleNear( entry->size, 0.0 ) )
     return 1.0;
 
   //find svg viewbox attribute
@@ -511,13 +511,13 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
     hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
   }
   double wSize = entry->size;
-  int wImgSize = ( int )wSize;
+  int wImgSize = static_cast< int >( wSize );
   if ( wImgSize < 1 )
   {
     wImgSize = 1;
   }
   double hSize = wSize * hwRatio;
-  int hImgSize = ( int )hSize;
+  int hImgSize = static_cast< int >( hSize );
   if ( hImgSize < 1 )
   {
     hImgSize = 1;
@@ -527,7 +527,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
   image->fill( 0 ); // transparent background
 
   QPainter p( image );
-  if ( r.viewBoxF().width() == r.viewBoxF().height() )
+  if ( qgsDoubleNear( r.viewBoxF().width(), r.viewBoxF().height() ) )
   {
     r.render( &p );
   }
@@ -588,7 +588,8 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, con
   {
     QgsSvgCacheEntry* cacheEntry = *entryIt;
     if ( qgsDoubleNear( cacheEntry->size, size ) && cacheEntry->fill == fill && cacheEntry->outline == outline &&
-         cacheEntry->outlineWidth == outlineWidth && cacheEntry->widthScaleFactor == widthScaleFactor && cacheEntry->rasterScaleFactor == rasterScaleFactor )
+         qgsDoubleNear( cacheEntry->outlineWidth, outlineWidth ) && qgsDoubleNear( cacheEntry->widthScaleFactor, widthScaleFactor )
+         && qgsDoubleNear( cacheEntry->rasterScaleFactor, rasterScaleFactor ) )
     {
       currentEntry = cacheEntry;
       break;
