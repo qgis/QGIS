@@ -105,17 +105,30 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   if ( mProviderRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
     // prepare list of attributes to match provider fields
-    QgsAttributeList providerSubset;
+    QSet<int> providerSubset;
     QgsAttributeList subset = mProviderRequest.subsetOfAttributes();
     int nPendingFields = mSource->mFields.count();
-    for ( int i = 0; i < subset.count(); ++i )
+    Q_FOREACH ( int attrIndex, subset )
     {
-      int attrIndex = subset[i];
       if ( attrIndex < 0 || attrIndex >= nPendingFields ) continue;
       if ( mSource->mFields.fieldOrigin( attrIndex ) == QgsFields::OriginProvider )
         providerSubset << mSource->mFields.fieldOriginIndex( attrIndex );
     }
-    mProviderRequest.setSubsetOfAttributes( providerSubset );
+
+    // This is done in order to be prepared to do fallback order bys
+    // and be sure we have the required columns.
+    // TODO:
+    // It would be nicer to first check if we can compile the order by
+    // and only modify the subset if we cannot.
+    if ( !mProviderRequest.orderBys().isEmpty() )
+    {
+      Q_FOREACH ( const QString& attr, mProviderRequest.orderBys().usedAttributes() )
+      {
+        providerSubset << mSource->mFields.fieldNameIndex( attr );
+      }
+    }
+
+    mProviderRequest.setSubsetOfAttributes( providerSubset.toList() );
   }
 
   if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression )
