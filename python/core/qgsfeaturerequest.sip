@@ -78,6 +78,30 @@ class QgsFeatureRequest
 
     };
 
+    class OrderBy
+    {
+      public:
+        /**
+         * Serialize to XML
+         */
+        void save( QDomElement& elem ) const;
+
+        /**
+         * Deserialize from XML
+         */
+        void load( const QDomElement& elem );
+
+        /**
+         * Returns a set of used attributes
+         */
+        QSet<QString> usedAttributes() const;
+
+        /**
+         * Dumps the content to an SQL equivalent syntax
+         */
+        QString dump() const;
+    };
+
     /**
      * A special attribute that if set matches all attributes
      */
@@ -175,12 +199,12 @@ class QgsFeatureRequest
     /**
      * Return a list of order by clauses specified for this feature request.
      */
-    QList<QgsFeatureRequest::OrderByClause> orderBys() const;
+    QgsFeatureRequest::OrderBy orderBys() const;
 
     /**
      * Set a list of order by clauses.
      */
-    void setOrderBys(const QList<QgsFeatureRequest::OrderByClause>& orderBys );
+    QgsFeatureRequest& setOrderBys(const QgsFeatureRequest::OrderBy& orderBys );
 
     /** Set the maximum number of features to request.
      * @param limit maximum number of features, or -1 to request all features.
