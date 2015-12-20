@@ -418,7 +418,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     virtual QSet<QString> legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities();
+    virtual QgsFeatureRendererV2::Capabilities capabilities();
 
     /////
 

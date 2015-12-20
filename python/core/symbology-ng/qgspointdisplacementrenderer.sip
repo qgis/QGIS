@@ -26,7 +26,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     /** Partial proxy that will call this method on the embedded renderer. */
     virtual QList<QString> usedAttributes();
     /** Proxy that will call this method on the embedded renderer. */
-    virtual int capabilities();
+    virtual QgsFeatureRendererV2::Capabilities capabilities();
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as symbols2
      */

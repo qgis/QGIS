@@ -65,7 +65,7 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     static QgsFeatureRendererV2* createFromSld( QDomElement& element, Qgis::GeometryType geomType );
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities() override { return SymbolLevels | RotationField; }
+    virtual Capabilities capabilities() override { return SymbolLevels | RotationField; }
 
     //! @note available in python as symbol2
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;

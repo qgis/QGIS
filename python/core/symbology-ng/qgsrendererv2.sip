@@ -172,7 +172,7 @@ class QgsFeatureRendererV2
     //! for debugging
     virtual QString dump() const;
 
-    enum Capabilities
+    enum Capability
     {
       SymbolLevels,           // rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
       RotationField,          // rotate symbols by attribute value
@@ -181,8 +181,10 @@ class QgsFeatureRendererV2
       ScaleDependent          // depends on scale if feature will be rendered (rule based )
     };
 
+    typedef QFlags<QgsFeatureRendererV2::Capability> Capabilities;
+
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities();
+    virtual QgsFeatureRendererV2::Capabilities capabilities();
 
     /** For symbol levels
      * @deprecated use symbols( QgsRenderContext& context ) instead

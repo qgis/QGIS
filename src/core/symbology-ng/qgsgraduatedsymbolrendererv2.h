@@ -155,7 +155,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities() override { return SymbolLevels | RotationField | Filter; }
+    virtual Capabilities capabilities() override { return SymbolLevels | RotationField | Filter; }
 
     //! @note symbol2 in python bindings
     virtual QgsSymbolV2List symbols( QgsRenderContext &context ) override;

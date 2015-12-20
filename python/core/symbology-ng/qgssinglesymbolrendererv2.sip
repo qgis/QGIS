@@ -41,7 +41,7 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
     static QgsFeatureRendererV2* createFromSld( QDomElement& element, Qgis::GeometryType geomType );
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities();
+    virtual QgsFeatureRendererV2::Capabilities capabilities();
 
     //! @note available in python as symbol2
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;

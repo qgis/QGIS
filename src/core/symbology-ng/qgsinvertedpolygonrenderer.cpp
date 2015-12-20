@@ -455,7 +455,7 @@ QgsSymbolV2List QgsInvertedPolygonRenderer::symbols( QgsRenderContext& context )
   return mSubRenderer->symbols( context );
 }
 
-int QgsInvertedPolygonRenderer::capabilities()
+QgsFeatureRendererV2::Capabilities QgsInvertedPolygonRenderer::capabilities()
 {
   if ( !mSubRenderer )
   {

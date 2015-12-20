@@ -54,7 +54,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     /** Partial proxy that will call this method on the embedded renderer. */
     virtual QList<QString> usedAttributes() override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual int capabilities() override;
+    virtual Capabilities capabilities() override;
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as symbols2
      */

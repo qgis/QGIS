@@ -489,7 +489,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     virtual QSet<QString> legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities() override { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
+    virtual Capabilities capabilities() override { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
 
     /////
 
