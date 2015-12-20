@@ -106,7 +106,8 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkt( const QString& text )
   {
     if ( !geom->fromWkt( text ) )
     {
-      delete geom; return nullptr;
+      delete geom;
+      return nullptr;
     }
   }
   return geom;

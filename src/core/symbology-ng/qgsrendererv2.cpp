@@ -80,7 +80,8 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
   if ( clipToExtent && nPoints > 1 )
   {
     const QgsRectangle& e = context.extent();
-    double cw = e.width() / 10; double ch = e.height() / 10;
+    double cw = e.width() / 10;
+    double ch = e.height() / 10;
     QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
     wkbPtr = QgsConstWkbPtr( QgsClipper::clippedLineWKB( wkb, clipRect, pts ) );
   }
@@ -135,7 +136,8 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
   const QgsRectangle& e = context.extent();
-  double cw = e.width() / 10; double ch = e.height() / 10;
+  double cw = e.width() / 10;
+  double ch = e.height() / 10;
   QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
 
   for ( unsigned int idx = 0; idx < numRings; idx++ )

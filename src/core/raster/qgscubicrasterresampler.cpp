@@ -191,10 +191,14 @@ void QgsCubicRasterResampler::resample( const QImage& srcImage, QImage& dstImage
       }
 
       //bernstein polynomials
-      bp0u = calcBernsteinPolyN3( 0, u ); bp1u = calcBernsteinPolyN3( 1, u );
-      bp2u = calcBernsteinPolyN3( 2, u ); bp3u = calcBernsteinPolyN3( 3, u );
-      bp0v = calcBernsteinPolyN3( 0, v ); bp1v = calcBernsteinPolyN3( 1, v );
-      bp2v = calcBernsteinPolyN3( 2, v ); bp3v = calcBernsteinPolyN3( 3, v );
+      bp0u = calcBernsteinPolyN3( 0, u );
+      bp1u = calcBernsteinPolyN3( 1, u );
+      bp2u = calcBernsteinPolyN3( 2, u );
+      bp3u = calcBernsteinPolyN3( 3, u );
+      bp0v = calcBernsteinPolyN3( 0, v );
+      bp1v = calcBernsteinPolyN3( 1, v );
+      bp2v = calcBernsteinPolyN3( 2, v );
+      bp3v = calcBernsteinPolyN3( 3, v );
 
       //then calculate value based on bernstein form of Bezier patch
       //todo: move into function
@@ -356,52 +360,100 @@ void QgsCubicRasterResampler::calculateControlPoints( int nCols, int nRows, int 
   int idx11 = idx01 + 1;
 
   //corner points
-  cRed00 = redMatrix[idx00]; cGreen00 = greenMatrix[idx00]; cBlue00 = blueMatrix[idx00]; cAlpha00 = alphaMatrix[idx00];
-  cRed30 = redMatrix[idx10]; cGreen30 = greenMatrix[idx10]; cBlue30 = blueMatrix[idx10]; cAlpha30 = alphaMatrix[idx10];
-  cRed03 = redMatrix[idx01]; cGreen03 = greenMatrix[idx01]; cBlue03 = blueMatrix[idx01]; cAlpha03 = alphaMatrix[idx01];
-  cRed33 = redMatrix[idx11]; cGreen33 = greenMatrix[idx11]; cBlue33 = blueMatrix[idx11]; cAlpha33 = alphaMatrix[idx11];
+  cRed00 = redMatrix[idx00];
+  cGreen00 = greenMatrix[idx00];
+  cBlue00 = blueMatrix[idx00];
+  cAlpha00 = alphaMatrix[idx00];
+  cRed30 = redMatrix[idx10];
+  cGreen30 = greenMatrix[idx10];
+  cBlue30 = blueMatrix[idx10];
+  cAlpha30 = alphaMatrix[idx10];
+  cRed03 = redMatrix[idx01];
+  cGreen03 = greenMatrix[idx01];
+  cBlue03 = blueMatrix[idx01];
+  cAlpha03 = alphaMatrix[idx01];
+  cRed33 = redMatrix[idx11];
+  cGreen33 = greenMatrix[idx11];
+  cBlue33 = blueMatrix[idx11];
+  cAlpha33 = alphaMatrix[idx11];
 
   //control points near c00
-  cRed10 = cRed00 + 0.333 * xDerivativeMatrixRed[idx00]; cGreen10 = cGreen00 + 0.333 * xDerivativeMatrixGreen[idx00];
-  cBlue10 = cBlue00 + 0.333 * xDerivativeMatrixBlue[idx00];cAlpha10 = cAlpha00 + 0.333 * xDerivativeMatrixAlpha[idx00];
-  cRed01 = cRed00 + 0.333 * yDerivativeMatrixRed[idx00]; cGreen01 = cGreen00 + 0.333 * yDerivativeMatrixGreen[idx00];
-  cBlue01 = cBlue00 + 0.333 * yDerivativeMatrixBlue[idx00];cAlpha01 = cAlpha00 + 0.333 * yDerivativeMatrixAlpha[idx00];
-  cRed11 = cRed10 + 0.333 * yDerivativeMatrixRed[idx00]; cGreen11 = cGreen10 + 0.333 * yDerivativeMatrixGreen[idx00];
-  cBlue11 = cBlue10 + 0.333 * yDerivativeMatrixBlue[idx00];cAlpha11 = cAlpha10 + 0.333 * yDerivativeMatrixAlpha[idx00];
+  cRed10 = cRed00 + 0.333 * xDerivativeMatrixRed[idx00];
+  cGreen10 = cGreen00 + 0.333 * xDerivativeMatrixGreen[idx00];
+  cBlue10 = cBlue00 + 0.333 * xDerivativeMatrixBlue[idx00];
+  cAlpha10 = cAlpha00 + 0.333 * xDerivativeMatrixAlpha[idx00];
+  cRed01 = cRed00 + 0.333 * yDerivativeMatrixRed[idx00];
+  cGreen01 = cGreen00 + 0.333 * yDerivativeMatrixGreen[idx00];
+  cBlue01 = cBlue00 + 0.333 * yDerivativeMatrixBlue[idx00];
+  cAlpha01 = cAlpha00 + 0.333 * yDerivativeMatrixAlpha[idx00];
+  cRed11 = cRed10 + 0.333 * yDerivativeMatrixRed[idx00];
+  cGreen11 = cGreen10 + 0.333 * yDerivativeMatrixGreen[idx00];
+  cBlue11 = cBlue10 + 0.333 * yDerivativeMatrixBlue[idx00];
+  cAlpha11 = cAlpha10 + 0.333 * yDerivativeMatrixAlpha[idx00];
 
   //control points near c30
-  cRed20 = cRed30 - 0.333 * xDerivativeMatrixRed[idx10]; cGreen20 = cGreen30 - 0.333 * xDerivativeMatrixGreen[idx10];
-  cBlue20 = cBlue30 - 0.333 * xDerivativeMatrixBlue[idx10]; cAlpha20 = cAlpha30 - 0.333 * xDerivativeMatrixAlpha[idx10];
-  cRed31 = cRed30 + 0.333 * yDerivativeMatrixRed[idx10]; cGreen31 = cGreen30 + 0.333 * yDerivativeMatrixGreen[idx10];
-  cBlue31 = cBlue30 + 0.333 * yDerivativeMatrixBlue[idx10]; cAlpha31 = cAlpha30 + 0.333 * yDerivativeMatrixAlpha[idx10];
-  cRed21 = cRed20 + 0.333 * yDerivativeMatrixRed[idx10]; cGreen21 = cGreen20 + 0.333 * yDerivativeMatrixGreen[idx10];
-  cBlue21 = cBlue20 + 0.333 * yDerivativeMatrixBlue[idx10]; cAlpha21 = cAlpha20 + 0.333 * yDerivativeMatrixAlpha[idx10];
+  cRed20 = cRed30 - 0.333 * xDerivativeMatrixRed[idx10];
+  cGreen20 = cGreen30 - 0.333 * xDerivativeMatrixGreen[idx10];
+  cBlue20 = cBlue30 - 0.333 * xDerivativeMatrixBlue[idx10];
+  cAlpha20 = cAlpha30 - 0.333 * xDerivativeMatrixAlpha[idx10];
+  cRed31 = cRed30 + 0.333 * yDerivativeMatrixRed[idx10];
+  cGreen31 = cGreen30 + 0.333 * yDerivativeMatrixGreen[idx10];
+  cBlue31 = cBlue30 + 0.333 * yDerivativeMatrixBlue[idx10];
+  cAlpha31 = cAlpha30 + 0.333 * yDerivativeMatrixAlpha[idx10];
+  cRed21 = cRed20 + 0.333 * yDerivativeMatrixRed[idx10];
+  cGreen21 = cGreen20 + 0.333 * yDerivativeMatrixGreen[idx10];
+  cBlue21 = cBlue20 + 0.333 * yDerivativeMatrixBlue[idx10];
+  cAlpha21 = cAlpha20 + 0.333 * yDerivativeMatrixAlpha[idx10];
 
   //control points near c03
-  cRed13 = cRed03 + 0.333 * xDerivativeMatrixRed[idx01]; cGreen13 = cGreen03 + 0.333 * xDerivativeMatrixGreen[idx01];
-  cBlue13 = cBlue03 + 0.333 * xDerivativeMatrixBlue[idx01]; cAlpha13 = cAlpha03 + 0.333 * xDerivativeMatrixAlpha[idx01];
-  cRed02 = cRed03 - 0.333 * yDerivativeMatrixRed[idx01]; cGreen02 = cGreen03 - 0.333 * yDerivativeMatrixGreen[idx01];
-  cBlue02 = cBlue03 - 0.333 * yDerivativeMatrixBlue[idx01]; cAlpha02 = cAlpha03 - 0.333 * yDerivativeMatrixAlpha[idx01];
-  cRed12 = cRed02 + 0.333 * xDerivativeMatrixRed[idx01]; cGreen12 = cGreen02 + 0.333 * xDerivativeMatrixGreen[idx01];
-  cBlue12 = cBlue02 + 0.333 * xDerivativeMatrixBlue[idx01]; cAlpha12 = cAlpha02 + 0.333 * xDerivativeMatrixAlpha[idx01];
+  cRed13 = cRed03 + 0.333 * xDerivativeMatrixRed[idx01];
+  cGreen13 = cGreen03 + 0.333 * xDerivativeMatrixGreen[idx01];
+  cBlue13 = cBlue03 + 0.333 * xDerivativeMatrixBlue[idx01];
+  cAlpha13 = cAlpha03 + 0.333 * xDerivativeMatrixAlpha[idx01];
+  cRed02 = cRed03 - 0.333 * yDerivativeMatrixRed[idx01];
+  cGreen02 = cGreen03 - 0.333 * yDerivativeMatrixGreen[idx01];
+  cBlue02 = cBlue03 - 0.333 * yDerivativeMatrixBlue[idx01];
+  cAlpha02 = cAlpha03 - 0.333 * yDerivativeMatrixAlpha[idx01];
+  cRed12 = cRed02 + 0.333 * xDerivativeMatrixRed[idx01];
+  cGreen12 = cGreen02 + 0.333 * xDerivativeMatrixGreen[idx01];
+  cBlue12 = cBlue02 + 0.333 * xDerivativeMatrixBlue[idx01];
+  cAlpha12 = cAlpha02 + 0.333 * xDerivativeMatrixAlpha[idx01];
 
   //control points near c33
-  cRed23 = cRed33 - 0.333 * xDerivativeMatrixRed[idx11]; cGreen23 = cGreen33 - 0.333 * xDerivativeMatrixGreen[idx11];
-  cBlue23 = cBlue33 - 0.333 * xDerivativeMatrixBlue[idx11]; cAlpha23 = cAlpha33 - 0.333 * xDerivativeMatrixAlpha[idx11];
-  cRed32 = cRed33 - 0.333 * yDerivativeMatrixRed[idx11]; cGreen32 = cGreen33 - 0.333 * yDerivativeMatrixGreen[idx11];
-  cBlue32 = cBlue33 - 0.333 * yDerivativeMatrixBlue[idx11]; cAlpha32 = cAlpha33 - 0.333 * yDerivativeMatrixAlpha[idx11];
-  cRed22 = cRed32 - 0.333 * xDerivativeMatrixRed[idx11]; cGreen22 = cGreen32 - 0.333 * xDerivativeMatrixGreen[idx11];
-  cBlue22 = cBlue32 - 0.333 * xDerivativeMatrixBlue[idx11]; cAlpha22 = cAlpha32 - 0.333 * xDerivativeMatrixAlpha[idx11];
+  cRed23 = cRed33 - 0.333 * xDerivativeMatrixRed[idx11];
+  cGreen23 = cGreen33 - 0.333 * xDerivativeMatrixGreen[idx11];
+  cBlue23 = cBlue33 - 0.333 * xDerivativeMatrixBlue[idx11];
+  cAlpha23 = cAlpha33 - 0.333 * xDerivativeMatrixAlpha[idx11];
+  cRed32 = cRed33 - 0.333 * yDerivativeMatrixRed[idx11];
+  cGreen32 = cGreen33 - 0.333 * yDerivativeMatrixGreen[idx11];
+  cBlue32 = cBlue33 - 0.333 * yDerivativeMatrixBlue[idx11];
+  cAlpha32 = cAlpha33 - 0.333 * yDerivativeMatrixAlpha[idx11];
+  cRed22 = cRed32 - 0.333 * xDerivativeMatrixRed[idx11];
+  cGreen22 = cGreen32 - 0.333 * xDerivativeMatrixGreen[idx11];
+  cBlue22 = cBlue32 - 0.333 * xDerivativeMatrixBlue[idx11];
+  cAlpha22 = cAlpha32 - 0.333 * xDerivativeMatrixAlpha[idx11];
 }
 
 QRgb QgsCubicRasterResampler::curveInterpolation( QRgb pt1, QRgb pt2, double t, double d1red, double d1green, double d1blue, double d1alpha,
     double d2red, double d2green, double d2blue, double d2alpha )
 {
   //control points
-  double p0r = qRed( pt1 ); double p1r = p0r + 0.333 * d1red; double p3r = qRed( pt2 ); double p2r = p3r - 0.333 * d2red;
-  double p0g = qGreen( pt1 ); double p1g = p0g + 0.333 * d1green; double p3g = qGreen( pt2 ); double p2g = p3g - 0.333 * d2green;
-  double p0b = qBlue( pt1 ); double p1b = p0b + 0.333 * d1blue; double p3b = qBlue( pt2 ); double p2b = p3b - 0.333 * d2blue;
-  double p0a = qAlpha( pt1 ); double p1a = p0a + 0.333 * d1alpha; double p3a = qAlpha( pt2 ); double p2a = p3a - 0.333 * d2alpha;
+  double p0r = qRed( pt1 );
+  double p1r = p0r + 0.333 * d1red;
+  double p3r = qRed( pt2 );
+  double p2r = p3r - 0.333 * d2red;
+  double p0g = qGreen( pt1 );
+  double p1g = p0g + 0.333 * d1green;
+  double p3g = qGreen( pt2 );
+  double p2g = p3g - 0.333 * d2green;
+  double p0b = qBlue( pt1 );
+  double p1b = p0b + 0.333 * d1blue;
+  double p3b = qBlue( pt2 );
+  double p2b = p3b - 0.333 * d2blue;
+  double p0a = qAlpha( pt1 );
+  double p1a = p0a + 0.333 * d1alpha;
+  double p3a = qAlpha( pt2 );
+  double p2a = p3a - 0.333 * d2alpha;
 
   //bernstein polynomials
   double bp0 = calcBernsteinPolyN3( 0, t );

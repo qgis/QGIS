@@ -125,9 +125,12 @@ QVariant QgsCategorizedSymbolRendererV2Model::data( const QModelIndex &index, in
   {
     switch ( index.column() )
     {
-      case 1: return category.value().toString();
-      case 2: return category.label();
-      default: return QVariant();
+      case 1:
+        return category.value().toString();
+      case 2:
+        return category.label();
+      default:
+        return QVariant();
     }
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 && category.symbol() )
@@ -142,9 +145,12 @@ QVariant QgsCategorizedSymbolRendererV2Model::data( const QModelIndex &index, in
   {
     switch ( index.column() )
     {
-      case 1: return category.value();
-      case 2: return category.label();
-      default: return QVariant();
+      case 1:
+        return category.value();
+      case 2:
+        return category.label();
+      default:
+        return QVariant();
     }
   }
 
@@ -202,7 +208,8 @@ QVariant QgsCategorizedSymbolRendererV2Model::headerData( int section, Qt::Orien
 {
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 3 )
   {
-    QStringList lst; lst << tr( "Symbol" ) << tr( "Value" ) << tr( "Legend" );
+    QStringList lst;
+    lst << tr( "Symbol" ) << tr( "Value" ) << tr( "Legend" );
     return lst.value( section );
   }
   return QVariant();

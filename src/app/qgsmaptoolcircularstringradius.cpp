@@ -73,7 +73,8 @@ void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent* e 
     {
       if ( !mRadiusMode )
       {
-        delete mRubberBand; mRubberBand = nullptr;
+        delete mRubberBand;
+        mRubberBand = nullptr;
         mTemporaryEndPointX = mapPoint.x();
         mTemporaryEndPointY = mapPoint.y();
         mRadiusMode = true;
@@ -135,7 +136,9 @@ void QgsMapToolCircularStringRadius::recalculateCircularString()
     return;
   }
 
-  QList<QgsPointV2> rubberBandPoints = mPoints; rubberBandPoints.append( midPoint ); rubberBandPoints.append( QgsPointV2( mTemporaryEndPointX, mTemporaryEndPointY ) );
+  QList<QgsPointV2> rubberBandPoints = mPoints;
+  rubberBandPoints.append( midPoint );
+  rubberBandPoints.append( QgsPointV2( mTemporaryEndPointX, mTemporaryEndPointY ) );
   QgsCircularStringV2* cString = new QgsCircularStringV2();
   cString->setPoints( rubberBandPoints );
   delete mRubberBand;
@@ -164,7 +167,8 @@ void QgsMapToolCircularStringRadius::deleteRadiusSpinBox()
     return;
   }
   QgisApp::instance()->statusBar()->removeWidget( mRadiusSpinBox );
-  delete mRadiusSpinBox; mRadiusSpinBox = nullptr;
+  delete mRadiusSpinBox;
+  mRadiusSpinBox = nullptr;
 }
 
 void QgsMapToolCircularStringRadius::updateRadiusFromSpinBox( double radius )

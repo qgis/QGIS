@@ -298,7 +298,8 @@ bool QgsPointV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newP
 
 double QgsPointV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
 {
-  Q_UNUSED( leftOf ); Q_UNUSED( epsilon );
+  Q_UNUSED( leftOf );
+  Q_UNUSED( epsilon );
   segmentPt = *this;
   vertexAfter = QgsVertexId( 0, 0, 0 );
   return QgsGeometryUtils::sqrDistance2D( *this, pt );
@@ -357,7 +358,8 @@ void QgsPointV2::transform( const QTransform& t )
   mBoundingBox = QgsRectangle();
   qreal x, y;
   t.map( mX, mY, &x, &y );
-  mX = x; mY = y;
+  mX = x;
+  mY = y;
 }
 
 

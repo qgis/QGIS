@@ -540,7 +540,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     {
       QRgb c = inputBlock->color( i );
       alpha = qAlpha( c );
-      red = qRed( c ); green = qGreen( c ); blue = qBlue( c );
+      red = qRed( c );
+      green = qGreen( c );
+      blue = qBlue( c );
 
       if ( inputDataType == QGis::ARGB32_Premultiplied )
       {
@@ -595,7 +597,10 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   if ( destProvider )
     delete destProvider;
 
-  qgsFree( redData ); qgsFree( greenData ); qgsFree( blueData ); qgsFree( alphaData );
+  qgsFree( redData );
+  qgsFree( greenData );
+  qgsFree( blueData );
+  qgsFree( alphaData );
 
   if ( progressDialog )
   {

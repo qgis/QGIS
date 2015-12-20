@@ -96,9 +96,16 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   QString pkText, pkCol = "";
   switch ( layerProperty.pkCols.size() )
   {
-    case 0:   pkText = ""; break;
-    case 1:   pkText = layerProperty.pkCols[0]; pkCol = pkText; break;
-    default:  pkText = tr( "Select..." ); break;
+    case 0:
+      pkText = "";
+      break;
+    case 1:
+      pkText = layerProperty.pkCols[0];
+      pkCol = pkText;
+      break;
+    default:
+      pkText = tr( "Select..." );
+      break;
   }
 
   QStandardItem *pkItem = new QStandardItem( pkText );

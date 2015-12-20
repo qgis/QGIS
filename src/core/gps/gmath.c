@@ -252,7 +252,8 @@ int nmea_move_horz(
 
   if ( NMEA_POSIX( isnan )( end_pos->lat ) || NMEA_POSIX( isnan )( end_pos->lon ) )
   {
-    end_pos->lat = 0; end_pos->lon = 0;
+    end_pos->lat = 0;
+    end_pos->lon = 0;
     RetVal = 0;
   }
 

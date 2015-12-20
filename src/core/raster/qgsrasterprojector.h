@@ -103,7 +103,8 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     /** \brief set maximum source resolution */
     void setMaxSrcRes( double theMaxSrcXRes, double theMaxSrcYRes )
     {
-      mMaxSrcXRes = theMaxSrcXRes; mMaxSrcYRes = theMaxSrcYRes;
+      mMaxSrcXRes = theMaxSrcXRes;
+      mMaxSrcYRes = theMaxSrcYRes;
     }
 
     Precision precision() const { return mPrecision; }

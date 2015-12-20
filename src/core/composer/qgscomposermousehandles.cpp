@@ -888,11 +888,17 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
       if ( ratio )
       {
         diffX = (( mBeginHandleHeight - diffY ) * ratio ) - mBeginHandleWidth;
-        mx = -diffX / 2; my = diffY; rx = diffX; ry = -diffY;
+        mx = -diffX / 2;
+        my = diffY;
+        rx = diffX;
+        ry = -diffY;
       }
       else
       {
-        mx = 0; my = diffY; rx = 0; ry = -diffY;
+        mx = 0;
+        my = diffY;
+        rx = 0;
+        ry = -diffY;
       }
       break;
     }
@@ -902,11 +908,17 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
       if ( ratio )
       {
         diffX = (( mBeginHandleHeight + diffY ) * ratio ) - mBeginHandleWidth;
-        mx = -diffX / 2; my = 0; rx = diffX; ry = diffY;
+        mx = -diffX / 2;
+        my = 0;
+        rx = diffX;
+        ry = diffY;
       }
       else
       {
-        mx = 0; my = 0; rx = 0; ry = diffY;
+        mx = 0;
+        my = 0;
+        rx = 0;
+        ry = diffY;
       }
       break;
     }
@@ -917,11 +929,16 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
       if ( ratio )
       {
         diffY = (( mBeginHandleWidth - diffX ) / ratio ) - mBeginHandleHeight;
-        mx = diffX; my = -diffY / 2; rx = -diffX; ry = diffY;
+        mx = diffX;
+        my = -diffY / 2;
+        rx = -diffX;
+        ry = diffY;
       }
       else
       {
-        mx = diffX, my = 0; rx = -diffX; ry = 0;
+        mx = diffX, my = 0;
+        rx = -diffX;
+        ry = 0;
       }
       break;
     }
@@ -931,11 +948,16 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
       if ( ratio )
       {
         diffY = (( mBeginHandleWidth + diffX ) / ratio ) - mBeginHandleHeight;
-        mx = 0; my = -diffY / 2; rx = diffX; ry = diffY;
+        mx = 0;
+        my = -diffY / 2;
+        rx = diffX;
+        ry = diffY;
       }
       else
       {
-        mx = 0; my = 0; rx = diffX, ry = 0;
+        mx = 0;
+        my = 0;
+        rx = diffX, ry = 0;
       }
       break;
     }
@@ -955,7 +977,9 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
           diffY = mBeginHandleHeight - (( mBeginHandleWidth - diffX ) / ratio );
         }
       }
-      mx = diffX, my = diffY; rx = -diffX; ry = -diffY;
+      mx = diffX, my = diffY;
+      rx = -diffX;
+      ry = -diffY;
       break;
     }
 
@@ -973,7 +997,9 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
           diffY = (( mBeginHandleWidth + diffX ) / ratio ) - mBeginHandleHeight;
         }
       }
-      mx = 0; my = 0; rx = diffX, ry = diffY;
+      mx = 0;
+      my = 0;
+      rx = diffX, ry = diffY;
       break;
     }
 
@@ -991,7 +1017,8 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
           diffY = mBeginHandleHeight - (( mBeginHandleWidth + diffX ) / ratio );
         }
       }
-      mx = 0; my = diffY, rx = diffX, ry = -diffY;
+      mx = 0;
+      my = diffY, rx = diffX, ry = -diffY;
       break;
     }
 
@@ -1009,7 +1036,9 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
           diffY = (( mBeginHandleWidth - diffX ) / ratio ) - mBeginHandleHeight;
         }
       }
-      mx = diffX, my = 0; rx = -diffX; ry = diffY;
+      mx = diffX, my = 0;
+      rx = -diffX;
+      ry = diffY;
       break;
     }
 

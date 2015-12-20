@@ -423,7 +423,11 @@ void QgsCircularStringV2::setPoints( const QList<QgsPointV2>& points )
 {
   if ( points.size() < 1 )
   {
-    mWkbType = QgsWKBTypes::Unknown; mX.clear(); mY.clear(); mZ.clear(); mM.clear();
+    mWkbType = QgsWKBTypes::Unknown;
+    mX.clear();
+    mY.clear();
+    mZ.clear();
+    mM.clear();
     return;
   }
 
@@ -634,7 +638,8 @@ void QgsCircularStringV2::transform( const QTransform& t )
   {
     qreal x, y;
     t.map( mX.at( i ), mY.at( i ), &x, &y );
-    mX[i] = x; mY[i] = y;
+    mX[i] = x;
+    mY[i] = y;
   }
 }
 
@@ -816,7 +821,8 @@ double QgsCircularStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& se
 
   segmentPt = minDistSegmentPoint;
   vertexAfter = minDistVertexAfter;
-  vertexAfter.part = 0; vertexAfter.ring = 0;
+  vertexAfter.part = 0;
+  vertexAfter.ring = 0;
   if ( leftOf )
   {
     *leftOf = minDistLeftOf;

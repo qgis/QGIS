@@ -317,7 +317,10 @@ QByteArray* QgsWCSServer::getCoverage()
   QMap<QString, QString>::const_iterator bbIt = mParameters.constFind( "BBOX" );
   if ( bbIt == mParameters.constEnd() )
   {
-    minx = 0; miny = 0; maxx = 0; maxy = 0;
+    minx = 0;
+    miny = 0;
+    maxx = 0;
+    maxy = 0;
   }
   else
   {

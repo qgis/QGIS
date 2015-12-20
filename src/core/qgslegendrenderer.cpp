@@ -609,10 +609,17 @@ void QgsLegendRenderer::setNodeLegendStyle( QgsLayerTreeNode* node, QgsComposerL
   QString str;
   switch ( style )
   {
-    case QgsComposerLegendStyle::Hidden:   str = "hidden"; break;
-    case QgsComposerLegendStyle::Group:    str = "group"; break;
-    case QgsComposerLegendStyle::Subgroup: str = "subgroup"; break;
-    default: break; // nothing
+    case QgsComposerLegendStyle::Hidden:
+      str = "hidden";
+      break;
+    case QgsComposerLegendStyle::Group:
+      str = "group";
+      break;
+    case QgsComposerLegendStyle::Subgroup:
+      str = "subgroup";
+      break;
+    default:
+      break; // nothing
   }
 
   if ( !str.isEmpty() )

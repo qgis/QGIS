@@ -355,7 +355,9 @@ bool QgsGeometryCollectionV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) 
 {
   if ( id.part < 0 )
   {
-    id.part = 0; id.ring = -1; id.vertex = -1;
+    id.part = 0;
+    id.ring = -1;
+    id.vertex = -1;
   }
 
   QgsAbstractGeometryV2* geom = mGeometries.at( id.part );
@@ -367,7 +369,9 @@ bool QgsGeometryCollectionV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) 
   {
     return false;
   }
-  ++id.part; id.ring = -1; id.vertex = -1;
+  ++id.part;
+  id.ring = -1;
+  id.vertex = -1;
   return mGeometries.at( id.part )->nextVertex( id, vertex );
 }
 
@@ -538,7 +542,8 @@ QgsAbstractGeometryV2* QgsGeometryCollectionV2::segmentize() const
   QgsGeometryCollectionV2* geomCollection = dynamic_cast<QgsGeometryCollectionV2*>( geom );
   if ( !geomCollection )
   {
-    delete geom; return clone();
+    delete geom;
+    return clone();
   }
 
   QVector< QgsAbstractGeometryV2* >::const_iterator geomIt = mGeometries.constBegin();

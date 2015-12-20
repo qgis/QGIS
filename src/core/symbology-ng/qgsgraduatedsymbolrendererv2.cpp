@@ -1700,8 +1700,10 @@ const char * QgsGraduatedSymbolRendererV2::graduatedMethodStr( GraduatedMethod m
 {
   switch ( method )
   {
-    case GraduatedColor: return "GraduatedColor";
-    case GraduatedSize: return "GraduatedSize";
+    case GraduatedColor:
+      return "GraduatedColor";
+    case GraduatedSize:
+      return "GraduatedSize";
   }
   return "";
 }

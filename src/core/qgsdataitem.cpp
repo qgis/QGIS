@@ -675,14 +675,28 @@ QgsLayerItem::QgsLayerItem( QgsDataItem* parent, const QString& name, const QStr
 {
   switch ( layerType )
   {
-    case Point:      mIconName = "/mIconPointLayer.svg"; break;
-    case Line:       mIconName = "/mIconLineLayer.svg"; break;
-    case Polygon:    mIconName = "/mIconPolygonLayer.svg"; break;
+    case Point:
+      mIconName = "/mIconPointLayer.svg";
+      break;
+    case Line:
+      mIconName = "/mIconLineLayer.svg";
+      break;
+    case Polygon:
+      mIconName = "/mIconPolygonLayer.svg";
+      break;
       // TODO add a new icon for generic Vector layers
-    case Vector :    mIconName = "/mIconPolygonLayer.svg"; break;
-    case TableLayer: mIconName = "/mIconTableLayer.png"; break;
-    case Raster:     mIconName = "/mIconRaster.svg"; break;
-    default:         mIconName = "/mIconLayer.png"; break;
+    case Vector :
+      mIconName = "/mIconPolygonLayer.svg";
+      break;
+    case TableLayer:
+      mIconName = "/mIconTableLayer.png";
+      break;
+    case Raster:
+      mIconName = "/mIconRaster.svg";
+      break;
+    default:
+      mIconName = "/mIconLayer.png";
+      break;
   }
 }
 

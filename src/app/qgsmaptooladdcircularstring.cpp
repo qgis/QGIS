@@ -115,7 +115,8 @@ void QgsMapToolAddCircularString::deactivate()
   c->setPoints( mPoints );
   mParentTool->addCurve( c );
   mPoints.clear();
-  delete mRubberBand; mRubberBand = nullptr;
+  delete mRubberBand;
+  mRubberBand = nullptr;
   removeCenterPointRubberBand();
   QgsMapToolCapture::deactivate();
 }
@@ -144,7 +145,10 @@ void QgsMapToolAddCircularString::createCenterPointRubberBand()
     const QgsAbstractGeometryV2* rubberBandGeom = mRubberBand->geometry();
     if ( rubberBandGeom )
     {
-      QgsVertexId idx; idx.part = 0; idx.ring = 0; idx.vertex = mPoints.size();
+      QgsVertexId idx;
+      idx.part = 0;
+      idx.ring = 0;
+      idx.vertex = mPoints.size();
       QgsPointV2 pt = rubberBandGeom->vertexAt( idx );
       updateCenterPointRubberBand( pt );
     }
@@ -196,5 +200,6 @@ void QgsMapToolAddCircularString::updateCenterPointRubberBand( const QgsPointV2&
 
 void QgsMapToolAddCircularString::removeCenterPointRubberBand()
 {
-  delete mCenterPointRubberBand; mCenterPointRubberBand = nullptr;
+  delete mCenterPointRubberBand;
+  mCenterPointRubberBand = nullptr;
 }

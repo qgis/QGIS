@@ -73,15 +73,23 @@ void QgsGeometryUtils::adjacentVertices( const QgsAbstractGeometryV2& geom, cons
   //vertex in the middle
   if ( atVertex.vertex > 0 && atVertex.vertex < ring.size() - 1 )
   {
-    beforeVertex.part = atVertex.part; beforeVertex.ring = atVertex.ring; beforeVertex.vertex = atVertex.vertex - 1;
-    afterVertex.part = atVertex.part; afterVertex.ring = atVertex.ring; afterVertex.vertex = atVertex.vertex + 1;
+    beforeVertex.part = atVertex.part;
+    beforeVertex.ring = atVertex.ring;
+    beforeVertex.vertex = atVertex.vertex - 1;
+    afterVertex.part = atVertex.part;
+    afterVertex.ring = atVertex.ring;
+    afterVertex.vertex = atVertex.vertex + 1;
   }
   else if ( atVertex.vertex == 0 )
   {
-    afterVertex.part = atVertex.part; afterVertex.ring = atVertex.ring; afterVertex.vertex = atVertex.vertex + 1;
+    afterVertex.part = atVertex.part;
+    afterVertex.ring = atVertex.ring;
+    afterVertex.vertex = atVertex.vertex + 1;
     if ( polygonType && ring.size() > 3 )
     {
-      beforeVertex.part = atVertex.part; beforeVertex.ring = atVertex.ring; beforeVertex.vertex = ring.size() - 2;
+      beforeVertex.part = atVertex.part;
+      beforeVertex.ring = atVertex.ring;
+      beforeVertex.vertex = ring.size() - 2;
     }
     else
     {
@@ -90,10 +98,14 @@ void QgsGeometryUtils::adjacentVertices( const QgsAbstractGeometryV2& geom, cons
   }
   else if ( atVertex.vertex == ring.size() - 1 )
   {
-    beforeVertex.part = atVertex.part; beforeVertex.ring = atVertex.ring; beforeVertex.vertex = atVertex.vertex - 1;
+    beforeVertex.part = atVertex.part;
+    beforeVertex.ring = atVertex.ring;
+    beforeVertex.vertex = atVertex.vertex - 1;
     if ( polygonType )
     {
-      afterVertex.part = atVertex.part; afterVertex.ring = atVertex.ring; afterVertex.vertex = 1;
+      afterVertex.part = atVertex.part;
+      afterVertex.ring = atVertex.ring;
+      afterVertex.vertex = 1;
     }
     else
     {

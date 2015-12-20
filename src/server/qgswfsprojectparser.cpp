@@ -30,7 +30,8 @@ QgsWFSProjectParser::QgsWFSProjectParser(
 #endif
 )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    : mAccessControl( ac )
+    :
+    mAccessControl( ac )
 #endif
 {
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );

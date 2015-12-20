@@ -166,7 +166,8 @@ namespace pal
        *  called from pal.cpp during extraction */
       void setProblemIds( int probFid, int lpId )
       {
-        probFeat = probFid; id = lpId;
+        probFeat = probFid;
+        id = lpId;
         if ( nextPart ) nextPart->setProblemIds( probFid, lpId );
       }
 

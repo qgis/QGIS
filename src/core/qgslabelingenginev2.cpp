@@ -72,13 +72,27 @@ void QgsLabelingEngineV2::processProvider( QgsAbstractLabelProvider* provider, Q
   pal::Arrangement arrangement;
   switch ( provider->placement() )
   {
-    case QgsPalLayerSettings::AroundPoint: arrangement = pal::P_POINT; break;
-    case QgsPalLayerSettings::OverPoint:   arrangement = pal::P_POINT_OVER; break;
-    case QgsPalLayerSettings::Line:        arrangement = pal::P_LINE; break;
-    case QgsPalLayerSettings::Curved:      arrangement = pal::P_CURVED; break;
-    case QgsPalLayerSettings::Horizontal:  arrangement = pal::P_HORIZ; break;
-    case QgsPalLayerSettings::Free:        arrangement = pal::P_FREE; break;
-    default: Q_ASSERT( "unsupported placement" && 0 ); return;
+    case QgsPalLayerSettings::AroundPoint:
+      arrangement = pal::P_POINT;
+      break;
+    case QgsPalLayerSettings::OverPoint:
+      arrangement = pal::P_POINT_OVER;
+      break;
+    case QgsPalLayerSettings::Line:
+      arrangement = pal::P_LINE;
+      break;
+    case QgsPalLayerSettings::Curved:
+      arrangement = pal::P_CURVED;
+      break;
+    case QgsPalLayerSettings::Horizontal:
+      arrangement = pal::P_HORIZ;
+      break;
+    case QgsPalLayerSettings::Free:
+      arrangement = pal::P_FREE;
+      break;
+    default:
+      Q_ASSERT( "unsupported placement" && 0 );
+      return;
   }
 
   QgsAbstractLabelProvider::Flags flags = provider->flags();
@@ -125,10 +139,18 @@ void QgsLabelingEngineV2::processProvider( QgsAbstractLabelProvider* provider, Q
   pal::Layer::UpsideDownLabels upsdnlabels;
   switch ( provider->upsidedownLabels() )
   {
-    case QgsPalLayerSettings::Upright:     upsdnlabels = pal::Layer::Upright; break;
-    case QgsPalLayerSettings::ShowDefined: upsdnlabels = pal::Layer::ShowDefined; break;
-    case QgsPalLayerSettings::ShowAll:     upsdnlabels = pal::Layer::ShowAll; break;
-    default: Q_ASSERT( "unsupported upside-down label setting" && 0 ); return;
+    case QgsPalLayerSettings::Upright:
+      upsdnlabels = pal::Layer::Upright;
+      break;
+    case QgsPalLayerSettings::ShowDefined:
+      upsdnlabels = pal::Layer::ShowDefined;
+      break;
+    case QgsPalLayerSettings::ShowAll:
+      upsdnlabels = pal::Layer::ShowAll;
+      break;
+    default:
+      Q_ASSERT( "unsupported upside-down label setting" && 0 );
+      return;
   }
   l->setUpsidedownLabels( upsdnlabels );
 
@@ -166,11 +188,21 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
   switch ( mSearchMethod )
   {
     default:
-    case QgsPalLabeling::Chain: s = pal::CHAIN; break;
-    case QgsPalLabeling::Popmusic_Tabu: s = pal::POPMUSIC_TABU; break;
-    case QgsPalLabeling::Popmusic_Chain: s = pal::POPMUSIC_CHAIN; break;
-    case QgsPalLabeling::Popmusic_Tabu_Chain: s = pal::POPMUSIC_TABU_CHAIN; break;
-    case QgsPalLabeling::Falp: s = pal::FALP; break;
+    case QgsPalLabeling::Chain:
+      s = pal::CHAIN;
+      break;
+    case QgsPalLabeling::Popmusic_Tabu:
+      s = pal::POPMUSIC_TABU;
+      break;
+    case QgsPalLabeling::Popmusic_Chain:
+      s = pal::POPMUSIC_CHAIN;
+      break;
+    case QgsPalLabeling::Popmusic_Tabu_Chain:
+      s = pal::POPMUSIC_TABU_CHAIN;
+      break;
+    case QgsPalLabeling::Falp:
+      s = pal::FALP;
+      break;
   }
   p.setSearch( s );
 

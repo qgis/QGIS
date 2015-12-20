@@ -312,7 +312,9 @@ void QgsMapToolCapture::undo()
     }
 
     QgsVertexId vertexToRemove;
-    vertexToRemove.part = 0; vertexToRemove.ring = 0; vertexToRemove.vertex = size() - 1;
+    vertexToRemove.part = 0;
+    vertexToRemove.ring = 0;
+    vertexToRemove.vertex = size() - 1;
     mCaptureCurve.deleteVertex( vertexToRemove );
 
     validateGeometry();

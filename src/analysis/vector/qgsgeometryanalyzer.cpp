@@ -1303,7 +1303,9 @@ const unsigned char* QgsGeometryAnalyzer::locateBetweenWkbString( const unsigned
         }
       }
     }
-    prevx = *x; prevy = *y; prevz = *z;
+    prevx = *x;
+    prevy = *y;
+    prevz = *z;
   }
   return ptr;
 }
@@ -1339,7 +1341,9 @@ const unsigned char* QgsGeometryAnalyzer::locateAlongWkbString( const unsigned c
         result.append( pt2 );
       }
     }
-    prevx = *x; prevy = *y; prevz = *z;
+    prevx = *x;
+    prevy = *y;
+    prevz = *z;
   }
   return ptr;
 }
@@ -1385,13 +1389,17 @@ bool QgsGeometryAnalyzer::clipSegmentByRange( double x1, double y1, double m1, d
   {
     if ( reversed )
     {
-      pt1.setX( x2 ); pt1.setY( y2 );
-      pt2.setX( x1 ); pt2.setY( y1 );
+      pt1.setX( x2 );
+      pt1.setY( y2 );
+      pt2.setX( x1 );
+      pt2.setY( y1 );
     }
     else
     {
-      pt1.setX( x1 ); pt1.setY( y1 );
-      pt2.setX( x2 ); pt2.setY( y2 );
+      pt1.setX( x1 );
+      pt1.setY( y1 );
+      pt2.setX( x2 );
+      pt2.setY( y2 );
     }
     secondPointClipped = false;
     return true;
@@ -1400,7 +1408,8 @@ bool QgsGeometryAnalyzer::clipSegmentByRange( double x1, double y1, double m1, d
   //m1 inside and m2 not
   if ( m1 >= range1 && m1 <= range2 )
   {
-    pt1.setX( x1 ); pt1.setY( y1 );
+    pt1.setX( x1 );
+    pt1.setY( y1 );
     double dist = ( range2 - m1 ) / ( m2 - m1 );
     pt2.setX( x1 + ( x2 - x1 ) * dist );
     pt2.setY( y1 + ( y2 - y1 ) * dist );
@@ -1410,7 +1419,8 @@ bool QgsGeometryAnalyzer::clipSegmentByRange( double x1, double y1, double m1, d
   //m2 inside and m1 not
   if ( m2 >= range1 && m2 <= range2 )
   {
-    pt2.setX( x2 ); pt2.setY( y2 );
+    pt2.setX( x2 );
+    pt2.setY( y2 );
     double dist = ( m2 - range1 ) / ( m2 - m1 );
     pt1.setX( x2 - ( x2 - x1 ) * dist );
     pt1.setY( y2 - ( y2 - y1 ) * dist );
@@ -1468,12 +1478,14 @@ void QgsGeometryAnalyzer::locateAlongSegment( double x1, double y1, double m1, d
     if ( reversed )
     {
       pt2Ok = true;
-      pt2.setX( x2 ); pt2.setY( y2 );
+      pt2.setX( x2 );
+      pt2.setY( y2 );
     }
     else
     {
       pt1Ok = true;
-      pt1.setX( x1 ); pt1.setY( y1 );
+      pt1.setX( x1 );
+      pt1.setY( y1 );
     }
   }
 
@@ -1483,12 +1495,14 @@ void QgsGeometryAnalyzer::locateAlongSegment( double x1, double y1, double m1, d
     if ( reversed )
     {
       pt1Ok = true;
-      pt1.setX( x1 ); pt1.setY( y1 );
+      pt1.setX( x1 );
+      pt1.setY( y1 );
     }
     else
     {
       pt2Ok = true;
-      pt2.setX( x2 ); pt2.setY( y2 );
+      pt2.setX( x2 );
+      pt2.setY( y2 );
     }
   }
 

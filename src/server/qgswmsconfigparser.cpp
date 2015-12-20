@@ -73,13 +73,17 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
     if ( extent.isEmpty() ) //map extent is mandatory
     {
       //remove map from composition if not referenced by the request
-      c->removeItem( currentMap ); delete currentMap; continue;
+      c->removeItem( currentMap );
+      delete currentMap;
+      continue;
     }
 
     QStringList coordList = extent.split( "," );
     if ( coordList.size() < 4 )
     {
-      c->removeItem( currentMap ); delete currentMap; continue; //need at least four coordinates
+      c->removeItem( currentMap );
+      delete currentMap;
+      continue; //need at least four coordinates
     }
 
     bool xMinOk, yMinOk, xMaxOk, yMaxOk;
@@ -89,7 +93,9 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
     double ymax = coordList.at( 3 ).toDouble( &yMaxOk );
     if ( !xMinOk || !yMinOk || !xMaxOk || !yMaxOk )
     {
-      c->removeItem( currentMap ); delete currentMap; continue;
+      c->removeItem( currentMap );
+      delete currentMap;
+      continue;
     }
 
     QgsRectangle r( xmin, ymin, xmax, ymax );

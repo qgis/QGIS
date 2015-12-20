@@ -50,17 +50,20 @@ int QgsGeometryEditUtils::addRing( QgsAbstractGeometryV2* geom, QgsCurveV2* ring
   }
   else
   {
-    delete ring; return 1; //not polygon / multipolygon;
+    delete ring;
+    return 1; //not polygon / multipolygon;
   }
 
   //ring must be closed
   if ( !ring->isClosed() )
   {
-    delete ring; return 2;
+    delete ring;
+    return 2;
   }
   else if ( !ring->isRing() )
   {
-    delete ring; return 3;
+    delete ring;
+    return 3;
   }
 
   QScopedPointer<QgsGeometryEngine> ringGeom( QgsGeometry::createGeometryEngine( ring ) );
@@ -78,7 +81,8 @@ int QgsGeometryEditUtils::addRing( QgsAbstractGeometryV2* geom, QgsCurveV2* ring
       {
         if ( !ringGeom->disjoint( *( *polyIter )->interiorRing( i ) ) )
         {
-          delete ring; return 4;
+          delete ring;
+          return 4;
         }
       }
 
@@ -92,7 +96,8 @@ int QgsGeometryEditUtils::addRing( QgsAbstractGeometryV2* geom, QgsCurveV2* ring
       return 0; //success
     }
   }
-  delete ring; return 5; //not contained in any outer ring
+  delete ring;
+  return 5; //not contained in any outer ring
 }
 
 int QgsGeometryEditUtils::addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeometryV2* part )
@@ -150,14 +155,16 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeome
       {
         while ( geomCollection->numGeometries() > n )
           geomCollection->removeGeometry( n );
-        delete part; return 2;
+        delete part;
+        return 2;
       }
 
       delete part;
     }
     else
     {
-      delete part; return 2;
+      delete part;
+      return 2;
     }
   }
   else

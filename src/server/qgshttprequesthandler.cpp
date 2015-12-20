@@ -897,7 +897,10 @@ bool QgsHttpRequestHandler::minMaxRange( const QgsColorBox& colorBox, int& redRa
   int bMax = INT_MIN;
   int aMax = INT_MIN;
 
-  int currentRed = 0; int currentGreen = 0; int currentBlue = 0; int currentAlpha = 0;
+  int currentRed = 0;
+  int currentGreen = 0;
+  int currentBlue = 0;
+  int currentAlpha = 0;
 
   QgsColorBox::const_iterator colorBoxIt = colorBox.constBegin();
   for ( ; colorBoxIt != colorBox.constEnd(); ++colorBoxIt )

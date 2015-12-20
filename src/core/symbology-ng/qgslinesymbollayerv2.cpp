@@ -1053,12 +1053,14 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
           || ( placement == CurvePoint && vId.type == QgsVertexId::CurveVertex ) )
       {
         //transform
-        x = vPoint.x(), y = vPoint.y(); z = vPoint.z();
+        x = vPoint.x(), y = vPoint.y();
+        z = vPoint.z();
         if ( ct )
         {
           ct->transformInPlace( x, y, z );
         }
-        mapPoint.setX( x ); mapPoint.setY( y );
+        mapPoint.setX( x );
+        mapPoint.setY( y );
         mtp.transformInPlace( mapPoint.rx(), mapPoint.ry() );
         if ( mRotateMarker )
         {

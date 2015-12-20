@@ -183,7 +183,8 @@ void QgsMapToolOffsetCurve::applyOffset()
 
   deleteRubberBandAndGeometry();
   deleteDistanceWidget();
-  delete mSnapVertexMarker; mSnapVertexMarker = nullptr;
+  delete mSnapVertexMarker;
+  mSnapVertexMarker = nullptr;
   mForceCopy = false;
   mCanvas->refresh();
 }
@@ -391,7 +392,8 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
     {
       deleteRubberBandAndGeometry();
       deleteDistanceWidget();
-      delete mSnapVertexMarker; mSnapVertexMarker = nullptr;
+      delete mSnapVertexMarker;
+      mSnapVertexMarker = nullptr;
       mForceCopy = false;
       mGeometryModified = false;
       deleteDistanceWidget();

@@ -269,8 +269,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
                                    QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
                                    const QStringList & theConfigOptions = QStringList() )
     {
-      Q_UNUSED( thePyramidList ); Q_UNUSED( theResamplingMethod );
-      Q_UNUSED( theFormat ); Q_UNUSED( theConfigOptions );
+      Q_UNUSED( thePyramidList );
+      Q_UNUSED( theResamplingMethod );
+      Q_UNUSED( theFormat );
+      Q_UNUSED( theConfigOptions );
       return "FAILED_NOT_SUPPORTED";
     }
 
