@@ -85,13 +85,15 @@ ADD_LIBRARY (geometrycheckerplugin   MODULE ${geometrychecker_HDRS} ${geometrych
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
-     ${GEOS_INCLUDE_DIR}
-     ${GDAL_INCLUDE_DIR}
      ../../core
      ../../core/geometry
      ../../core/symbology-ng
      ../../gui
      ..
+)
+INCLUDE_DIRECTORIES(SYSTEM
+     ${GEOS_INCLUDE_DIR}
+     ${GDAL_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(geometrycheckerplugin

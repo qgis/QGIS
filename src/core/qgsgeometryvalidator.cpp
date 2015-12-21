@@ -363,7 +363,7 @@ void QgsGeometryValidator::validateGeometry( const QgsGeometry *g, QList<QgsGeom
 //
 double QgsGeometryValidator::distLine2Point( const QgsPoint& p, const QgsVector& v, const QgsPoint& q )
 {
-  if ( v.length() == 0 )
+  if ( qgsDoubleNear( v.length(), 0 ) )
   {
     throw QgsException( QObject::tr( "invalid line" ) );
   }
@@ -375,7 +375,7 @@ bool QgsGeometryValidator::intersectLines( const QgsPoint& p, const QgsVector& v
 {
   double d = v.y() * w.x() - v.x() * w.y();
 
-  if ( d == 0 )
+  if ( qgsDoubleNear( d, 0 ) )
     return false;
 
   double dx = q.x() - p.x();
@@ -394,7 +394,7 @@ bool QgsGeometryValidator::pointInRing( const QgsPolyline &ring, const QgsPoint 
 
   for ( int i = 0; !mStop && i < ring.size(); i++ )
   {
-    if ( ring[i].x() == p.x() && ring[i].y() == p.y() )
+    if ( qgsDoubleNear( ring[i].x(), p.x() ) && qgsDoubleNear( ring[i].y(), p.y() ) )
       return true;
 
     if (( ring[i].y() < p.y() && ring[j].y() >= p.y() ) ||

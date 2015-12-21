@@ -1331,7 +1331,7 @@ QgsCptCityBrowserModel::QgsCptCityBrowserModel( QObject *parent,
     : QAbstractItemModel( parent ), mArchive( archive ), mViewType( viewType )
 {
   Q_ASSERT( mArchive );
-  QgsDebugMsg( "archiveName = " + archive->archiveName() + " viewType=" + ( int ) viewType );
+  QgsDebugMsg( "archiveName = " + archive->archiveName() + " viewType=" + static_cast< int >( viewType ) );
   // keep iconsize for now, but not effectively used
   mIconSize = QSize( 100, 15 );
   addRootItems();

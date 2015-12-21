@@ -192,7 +192,7 @@ bool QgsFontUtils::updateFontViaStyle( QFont& f, const QString& fontstyle, bool 
   // and we want to make sure that's preserved
   if ( foundmatch )
   {
-    if ( f.pointSizeF() != -1 )
+    if ( !qgsDoubleNear( f.pointSizeF(), -1 ) )
     {
       styledfont.setPointSizeF( f.pointSizeF() );
     }

@@ -372,7 +372,7 @@ void QgsCoordinateTransform::transformInPlace( double& x, double& y, double& z,
 void QgsCoordinateTransform::transformInPlace( float& x, float& y, double& z,
     TransformDirection direction ) const
 {
-  double xd = ( double )x, yd = ( double )y;
+  double xd = static_cast< double >( x ), yd = static_cast< double >( y );
   transformInPlace( xd, yd, z, direction );
   x = xd;
   y = yd;
@@ -539,9 +539,9 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // even with 1000 points it takes < 1ms
   // TODO: how to effectively and precisely reproject bounding box?
   const int nPoints = 1000;
-  double d = sqrt(( rect.width() * rect.height() ) / pow( sqrt(( double ) nPoints ) - 1, 2.0 ) );
-  int nXPoints = ( int ) ceil( rect.width() / d ) + 1;
-  int nYPoints = ( int ) ceil( rect.height() / d ) + 1;
+  double d = sqrt(( rect.width() * rect.height() ) / pow( sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
+  int nXPoints = static_cast< int >( ceil( rect.width() / d ) ) + 1;
+  int nYPoints = static_cast< int >( ceil( rect.height() / d ) ) + 1;
 
   QgsRectangle bb_rect;
   bb_rect.setMinimal();
@@ -557,8 +557,8 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   // Populate the vectors
 
-  double dx = rect.width()  / ( double )( nXPoints - 1 );
-  double dy = rect.height() / ( double )( nYPoints - 1 );
+  double dx = rect.width()  / static_cast< double >( nXPoints - 1 );
+  double dy = rect.height() / static_cast< double >( nYPoints - 1 );
 
   double pointY = rect.yMinimum();
 
@@ -923,7 +923,7 @@ void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< in
   QString cOpCode;
   while ( sqlite3_step( stmt ) == SQLITE_ROW )
   {
-    cOpCode = ( const char * ) sqlite3_column_text( stmt, 0 );
+    cOpCode = reinterpret_cast< const char * >( sqlite3_column_text( stmt, 0 ) );
     transforms.push_back( cOpCode.toInt() );
   }
   sqlite3_finalize( stmt );
@@ -958,7 +958,7 @@ QString QgsCoordinateTransform::datumTransformString( int datumTransform )
     int methodCode = sqlite3_column_int( stmt, 0 );
     if ( methodCode == 9615 ) //ntv2
     {
-      transformString = "+nadgrids=" + QString(( const char * )sqlite3_column_text( stmt, 1 ) );
+      transformString = "+nadgrids=" + QString( reinterpret_cast< const char * >( sqlite3_column_text( stmt, 1 ) ) );
     }
     else if ( methodCode == 9603 || methodCode == 9606 || methodCode == 9607 )
     {
@@ -1017,8 +1017,8 @@ bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& eps
   epsgNr = sqlite3_column_int( stmt, 0 );
   srcCrsId = sqlite3_column_int( stmt, 1 );
   destCrsId = sqlite3_column_int( stmt, 2 );
-  remarks = QString::fromUtf8(( const char * ) sqlite3_column_text( stmt, 3 ) );
-  scope = QString::fromUtf8(( const char * ) sqlite3_column_text( stmt, 4 ) );
+  remarks = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( stmt, 3 ) ) );
+  scope = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( stmt, 4 ) ) );
   preferred = sqlite3_column_int( stmt, 5 ) != 0;
   deprecated = sqlite3_column_int( stmt, 6 ) != 0;
 

@@ -66,7 +66,7 @@ class QgsExpressionSorter
               return v1.toLongLong() > v2.toLongLong();
 
           case QVariant::Double:
-            if ( v1.toDouble() == v2.toDouble() )
+            if ( qgsDoubleNear( v1.toDouble(), v2.toDouble() ) )
               continue;
             if ( orderBy.ascending() )
               return v1.toDouble() < v2.toDouble();

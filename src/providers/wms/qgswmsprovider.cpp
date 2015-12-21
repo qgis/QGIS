@@ -80,7 +80,6 @@
 #endif
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"WMS provider")
-#define SRVERR(message) QGS_ERROR_MESSAGE(message,"WMS server")
 #define ERROR(message) QgsError(message,"WMS provider")
 
 static QString WMS_KEY = "wms";
@@ -820,7 +819,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       default:
         QgsDebugMsg( QString( "unexpected tile mode %1" ).arg( mTileLayer->tileMode ) );
         return mCachedImage;
-        break;
     }
 
     emit statusChanged( tr( "Getting tiles." ) );

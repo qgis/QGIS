@@ -13,6 +13,8 @@ INCLUDE_DIRECTORIES(
   ../core/geometry
   ../core/raster
   ../gui
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${PYTHON_INCLUDE_PATH}
 )
 

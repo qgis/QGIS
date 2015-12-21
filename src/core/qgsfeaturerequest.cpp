@@ -216,21 +216,18 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature& feature )
   {
     case QgsFeatureRequest::FilterNone:
       return true;
-      break;
 
     case QgsFeatureRequest::FilterRect:
       if ( feature.constGeometry() && feature.constGeometry()->intersects( mFilterRect ) )
         return true;
       else
         return false;
-      break;
 
     case QgsFeatureRequest::FilterFid:
       if ( feature.id() == mFilterFid )
         return true;
       else
         return false;
-      break;
 
     case QgsFeatureRequest::FilterExpression:
       mExpressionContext.setFeature( feature );
@@ -238,14 +235,12 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature& feature )
         return true;
       else
         return false;
-      break;
 
     case QgsFeatureRequest::FilterFids:
       if ( mFilterFids.contains( feature.id() ) )
         return true;
       else
         return false;
-      break;
   }
 
   return true;

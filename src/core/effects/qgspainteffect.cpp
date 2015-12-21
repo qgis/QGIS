@@ -227,8 +227,8 @@ void QgsPaintEffect::fixQPictureDpi( QPainter *painter ) const
   // Then when being drawn, it scales the painter. The following call
   // negates the effect. There is no way of setting QPicture's DPI.
   // See QTBUG-20361
-  painter->scale(( double )qt_defaultDpiX() / painter->device()->logicalDpiX(),
-                 ( double )qt_defaultDpiY() / painter->device()->logicalDpiY() );
+  painter->scale( static_cast< double >( qt_defaultDpiX() ) / painter->device()->logicalDpiX(),
+                  static_cast< double >( qt_defaultDpiY() ) / painter->device()->logicalDpiY() );
 }
 
 QRectF QgsPaintEffect::imageBoundingRect( const QgsRenderContext &context ) const
@@ -303,7 +303,7 @@ QgsStringMap QgsDrawSourceEffect::properties() const
 void QgsDrawSourceEffect::readProperties( const QgsStringMap &props )
 {
   bool ok;
-  QPainter::CompositionMode mode = ( QPainter::CompositionMode )props.value( "blend_mode" ).toInt( &ok );
+  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( "blend_mode" ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
@@ -314,5 +314,5 @@ void QgsDrawSourceEffect::readProperties( const QgsStringMap &props )
     mTransparency = transparency;
   }
   mEnabled = props.value( "enabled", "1" ).toInt();
-  mDrawMode = ( QgsPaintEffect::DrawMode )props.value( "draw_mode", "2" ).toInt();
+  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( "draw_mode", "2" ).toInt() );
 }

@@ -161,7 +161,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 {
   QSettings s;
 
-  QNetworkRequest *pReq(( QNetworkRequest * ) &req ); // hack user agent
+  QNetworkRequest *pReq( const_cast< QNetworkRequest * >( &req ) ); // hack user agent
 
   QString userAgent = s.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toString();
   if ( !userAgent.isEmpty() )
@@ -234,16 +234,12 @@ QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoa
   {
     case QNetworkRequest::AlwaysNetwork:
       return "AlwaysNetwork";
-      break;
     case QNetworkRequest::PreferNetwork:
       return "PreferNetwork";
-      break;
     case QNetworkRequest::PreferCache:
       return "PreferCache";
-      break;
     case QNetworkRequest::AlwaysCache:
       return "AlwaysCache";
-      break;
     default:
       break;
   }

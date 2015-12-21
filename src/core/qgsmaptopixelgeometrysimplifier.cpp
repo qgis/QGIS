@@ -34,8 +34,8 @@ QgsMapToPixelSimplifier::~QgsMapToPixelSimplifier()
 //! Returns the squared 2D-distance of the vector defined by the two points specified
 float QgsMapToPixelSimplifier::calculateLengthSquared2D( double x1, double y1, double x2, double y2 )
 {
-  float vx = ( float )( x2 - x1 );
-  float vy = ( float )( y2 - y1 );
+  float vx = static_cast< float >( x2 - x1 );
+  float vy = static_cast< float >( y2 - y1 );
 
   return vx*vx + vy*vy;
 }
@@ -201,7 +201,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
 
     int geometryType;
     memcpy( &geometryType, sourceWkb, 4 );
-    int flatType = QGis::flatType(( QGis::WkbType )geometryType );
+    int flatType = QGis::flatType( static_cast< QGis::WkbType >( geometryType ) );
     memcpy( targetWkb, &flatType, 4 ); // type
     sourceWkb += 4;
     targetWkb += 4;
@@ -234,7 +234,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
     targetWkb += 4;
     targetWkbSize += 4;
 
-    double* ptr = ( double* )targetWkb;
+    double* ptr = reinterpret_cast< double* >( targetWkb );
     map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
 
     bool isLongSegment;
@@ -255,7 +255,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
       memcpy( &x2, finalWkbX, sizeof( double ) );
       memcpy( &y2, finalWkbY, sizeof( double ) );
 
-      isaLinearRing = ( x1 == x2 ) && ( y1 == y2 );
+      isaLinearRing = qgsDoubleNear( x1, x2 ) && qgsDoubleNear( y1, y2 );
     }
 
     // Process each vertex...
@@ -321,7 +321,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
       // make sure we keep the linear ring closed
       memcpy( &x, targetWkb + 0, sizeof( double ) );
       memcpy( &y, targetWkb + sizeof( double ), sizeof( double ) );
-      if ( lastX != x || lastY != y )
+      if ( !qgsDoubleNear( lastX, x ) || !qgsDoubleNear( lastY, y ) )
       {
         memcpy( ptr, &x, sizeof( double ) );
         ptr++;
@@ -430,7 +430,7 @@ QgsGeometry* QgsMapToPixelSimplifier::simplify( QgsGeometry* geometry ) const
   QgsGeometry* g = new QgsGeometry();
 
   size_t wkbSize = geometry->wkbSize();
-  unsigned char* wkb = ( unsigned char* )malloc( wkbSize );
+  unsigned char* wkb = reinterpret_cast< unsigned char* >( malloc( wkbSize ) );
   memcpy( wkb, geometry->asWkb(), wkbSize );
   g->fromWkb( wkb, wkbSize );
   simplifyGeometry( g, mSimplifyFlags, mTolerance );

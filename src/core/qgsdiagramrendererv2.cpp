@@ -48,8 +48,8 @@ void QgsDiagramLayerSettings::readXML( const QDomElement& elem, const QgsVectorL
 {
   Q_UNUSED( layer )
 
-  placement = ( Placement )elem.attribute( "placement" ).toInt();
-  placementFlags = ( LinePlacementFlags )elem.attribute( "linePlacementFlags" ).toInt();
+  placement = static_cast< Placement >( elem.attribute( "placement" ).toInt() );
+  placementFlags = static_cast< LinePlacementFlags >( elem.attribute( "linePlacementFlags" ).toInt() );
   priority = elem.attribute( "priority" ).toInt();
   obstacle = elem.attribute( "obstacle" ).toInt();
   dist = elem.attribute( "dist" ).toDouble();

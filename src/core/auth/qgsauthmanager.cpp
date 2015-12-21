@@ -774,7 +774,7 @@ const QString QgsAuthManager::uniqueConfigId() const
   QTimer::singleShot( 3, &loop, SLOT( quit() ) );
   loop.exec();
 
-  uint seed = ( uint ) QTime::currentTime().msec();
+  uint seed = static_cast< uint >( QTime::currentTime().msec() );
   qsrand( seed );
 
   while ( true )
@@ -2463,7 +2463,7 @@ bool QgsAuthManager::storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthC
                           "VALUES (:id, :policy)" ).arg( authDbTrustTable() ) );
 
   query.bindValue( ":id", id );
-  query.bindValue( ":policy", ( int )policy );
+  query.bindValue( ":policy", static_cast< int >( policy ) );
 
   if ( !authDbStartTransaction() )
     return false;
@@ -2502,7 +2502,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertTrustPolicy( const QSsl
   {
     if ( query.first() )
     {
-      policy = ( QgsAuthCertUtils::CertTrustPolicy )query.value( 0 ).toInt();
+      policy = static_cast< QgsAuthCertUtils::CertTrustPolicy >( query.value( 0 ).toInt() );
       QgsDebugMsg( QString( "Authentication cert trust policy retrieved for id: %1" ).arg( id ) );
     }
     if ( query.next() )
@@ -2591,7 +2591,7 @@ bool QgsAuthManager::setDefaultCertTrustPolicy( QgsAuthCertUtils::CertTrustPolic
     // set default trust policy to Trusted by removing setting
     return removeAuthSetting( "certdefaulttrust" );
   }
-  return storeAuthSetting( "certdefaulttrust", ( int )policy );
+  return storeAuthSetting( "certdefaulttrust", static_cast< int >( policy ) );
 }
 
 QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::defaultCertTrustPolicy()
@@ -2601,7 +2601,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::defaultCertTrustPolicy()
   {
     return QgsAuthCertUtils::Trusted;
   }
-  return ( QgsAuthCertUtils::CertTrustPolicy )policy.toInt();
+  return static_cast< QgsAuthCertUtils::CertTrustPolicy >( policy.toInt() );
 }
 
 bool QgsAuthManager::rebuildCertTrustCache()
@@ -2622,7 +2622,7 @@ bool QgsAuthManager::rebuildCertTrustCache()
     while ( query.next() )
     {
       QString id = query.value( 0 ).toString();
-      QgsAuthCertUtils::CertTrustPolicy policy = ( QgsAuthCertUtils::CertTrustPolicy )query.value( 1 ).toInt();
+      QgsAuthCertUtils::CertTrustPolicy policy = static_cast< QgsAuthCertUtils::CertTrustPolicy >( query.value( 1 ).toInt() );
 
       QStringList ids;
       if ( mCertTrustCache.contains( policy ) )

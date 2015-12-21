@@ -80,6 +80,8 @@ INCLUDE_DIRECTORIES(
      ../../core ../../core/geometry ../../core/raster ../../core/composer
      ../../gui  ../../gui/editorwidgets
      ..
+)
+INCLUDE_DIRECTORIES(SYSTEM
      ${GSL_INCLUDE_DIR}
      ${QGIS_INCLUDE_DIR}
      ${GDAL_INCLUDE_DIR}

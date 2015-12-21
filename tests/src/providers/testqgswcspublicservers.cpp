@@ -949,7 +949,6 @@ int main( int argc, char *argv[] )
       case 'h':
         usage( argv[0] );
         return 2;   // XXX need standard exit codes
-        break;
 
       default:
         QgsDebugMsg( QString( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );

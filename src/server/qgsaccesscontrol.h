@@ -38,17 +38,19 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     QgsAccessControl()
     {
       mPluginsAccessControls = new QgsAccessControlFilterMap();
-    };
+    }
+
     /** Constructor */
     QgsAccessControl( const QgsAccessControl& copy )
     {
       mPluginsAccessControls = new QgsAccessControlFilterMap( *copy.mPluginsAccessControls );
-    };
+    }
+
     /** Destructor */
     ~QgsAccessControl()
     {
       delete mPluginsAccessControls;
-    };
+    }
 
     /** Filter the features of the layer
      * @param layer the layer to control

@@ -124,7 +124,7 @@ QgsExpression::Interval QgsExpression::Interval::fromString( const QString& stri
 
 bool QgsExpression::Interval::operator==( const QgsExpression::Interval& other ) const
 {
-  return ( mSeconds == other.mSeconds );
+  return qgsDoubleNear( mSeconds, other.mSeconds );
 }
 
 ///////////////////////////////////////////////
@@ -401,7 +401,7 @@ static TVL getTVLValue( const QVariant& value, QgsExpression* parent )
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to boolean" ).arg( value.toString() ) );
     return Unknown;
   }
-  return x != 0 ? True : False;
+  return !qgsDoubleNear( x, 0.0 ) ? True : False;
 }
 
 //////
@@ -518,7 +518,7 @@ static QVariant fcnRndF( const QVariantList& values, const QgsExpressionContext*
     return QVariant();
 
   // Return a random double in the range [min, max] (inclusive)
-  double f = ( double )qrand() / RAND_MAX;
+  double f = static_cast< double >( qrand() ) / RAND_MAX;
   return QVariant( min + f * ( max - min ) );
 }
 static QVariant fcnRnd( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -529,7 +529,7 @@ static QVariant fcnRnd( const QVariantList& values, const QgsExpressionContext*,
     return QVariant();
 
   // Return a random integer in the range [min, max] (inclusive)
-  return QVariant( min + ( qrand() % ( int )( max - min + 1 ) ) );
+  return QVariant( min + ( qrand() % static_cast< int >( max - min + 1 ) ) );
 }
 
 static QVariant fcnLinearScale( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -1008,7 +1008,7 @@ static QVariant fcnFeatureId( const QVariantList&, const QgsExpressionContext* c
 {
   FEAT_FROM_CONTEXT( context, f );
   // TODO: handling of 64-bit feature ids?
-  return QVariant(( int )f.id() );
+  return QVariant( static_cast< int >( f.id() ) );
 }
 
 static QVariant fcnFeature( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
@@ -2559,9 +2559,9 @@ static QVariant fcnGetLayerProperty( const QVariantList& values, const QgsExpres
   else if ( QString::compare( layerProperty, QString( "source" ), Qt::CaseInsensitive ) == 0 )
     return layer->publicSource();
   else if ( QString::compare( layerProperty, QString( "min_scale" ), Qt::CaseInsensitive ) == 0 )
-    return ( double )layer->minimumScale();
+    return static_cast< double >( layer->minimumScale() );
   else if ( QString::compare( layerProperty, QString( "max_scale" ), Qt::CaseInsensitive ) == 0 )
-    return ( double )layer->maximumScale();
+    return static_cast< double >( layer->maximumScale() );
   else if ( QString::compare( layerProperty, QString( "crs" ), Qt::CaseInsensitive ) == 0 )
     return layer->crs().authid();
   else if ( QString::compare( layerProperty, QString( "crs_definition" ), Qt::CaseInsensitive ) == 0 )
@@ -2959,7 +2959,7 @@ QList<QgsExpression::Function*> QgsExpression::specialColumns()
   {
     //check for special column group name
     QString group = gmSpecialColumnGroups.value( it.key(), "Record" );
-    defs << new StaticFunction( it.key(), 0, ( FcnEvalContext )nullptr, group );
+    defs << new StaticFunction( it.key(), 0, static_cast< FcnEvalContext >( nullptr ), group );
   }
   return defs;
 }
@@ -3421,7 +3421,6 @@ QVariant QgsExpression::NodeUnaryOperator::eval( QgsExpression *parent, const Qg
         return QVariant( - getDoubleValue( val, parent ) );
       else
         SET_EVAL_ERROR( tr( "Unary minus only for numeric values." ) );
-      break;
     default:
       Q_ASSERT( 0 && "unknown unary operation" );
   }
@@ -3591,7 +3590,7 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
           ENSURE_NO_EVAL_ERROR;
           double fR = getDoubleValue( vR, parent );
           ENSURE_NO_EVAL_ERROR;
-          equal = fL == fR;
+          equal = qgsDoubleNear( fL, fR );
         }
         else
         {
@@ -3667,9 +3666,9 @@ bool QgsExpression::NodeBinaryOperator::compare( double diff )
   switch ( mOp )
   {
     case boEQ:
-      return diff == 0;
+      return qgsDoubleNear( diff, 0.0 );
     case boNE:
-      return diff != 0;
+      return !qgsDoubleNear( diff, 0.0 );
     case boLT:
       return diff < 0;
     case boGT:
@@ -3883,7 +3882,7 @@ QVariant QgsExpression::NodeInOperator::eval( QgsExpression *parent, const QgsEx
         ENSURE_NO_EVAL_ERROR;
         double f2 = getDoubleValue( v2, parent );
         ENSURE_NO_EVAL_ERROR;
-        equal = f1 == f2;
+        equal = qgsDoubleNear( f1, f2 );
       }
       else
       {

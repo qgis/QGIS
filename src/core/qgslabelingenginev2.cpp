@@ -29,7 +29,7 @@
 // helper function for checking for job cancellation within PAL
 static bool _palIsCancelled( void* ctx )
 {
-  return (( QgsRenderContext* ) ctx )->renderingStopped();
+  return ( reinterpret_cast< QgsRenderContext* >( ctx ) )->renderingStopped();
 }
 
 
@@ -107,7 +107,7 @@ void QgsLabelingEngineV2::processProvider( QgsAbstractLabelProvider* provider, Q
                               flags.testFlag( QgsAbstractLabelProvider::DrawAllLabels ) );
 
   // extra flags for placement of labels for linestrings
-  l->setArrangementFlags(( pal::LineArrangementFlags ) provider->linePlacementFlags() );
+  l->setArrangementFlags( static_cast< pal::LineArrangementFlags >( provider->linePlacementFlags() ) );
 
   // set label mode (label per feature is the default)
   l->setLabelMode( flags.testFlag( QgsAbstractLabelProvider::LabelPerFeaturePart ) ? pal::Layer::LabelPerFeaturePart : pal::Layer::LabelPerFeature );
@@ -235,7 +235,7 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
   QgsRectangle extent = extentGeom->boundingBox();
   delete extentGeom;
 
-  p.registerCancellationCallback( &_palIsCancelled, ( void* ) &context );
+  p.registerCancellationCallback( &_palIsCancelled, reinterpret_cast< void* >( &context ) );
 
   QTime t;
   t.start();
@@ -345,7 +345,7 @@ void QgsLabelingEngineV2::readSettingsFromProject()
 {
   bool saved = false;
   QgsProject* prj = QgsProject::instance();
-  mSearchMethod = ( QgsPalLabeling::Search )( prj->readNumEntry( "PAL", "/SearchMethod", ( int ) QgsPalLabeling::Chain, &saved ) );
+  mSearchMethod = static_cast< QgsPalLabeling::Search >( prj->readNumEntry( "PAL", "/SearchMethod", static_cast< int >( QgsPalLabeling::Chain ), &saved ) );
   mCandPoint = prj->readNumEntry( "PAL", "/CandidatesPoint", 8, &saved );
   mCandLine = prj->readNumEntry( "PAL", "/CandidatesLine", 8, &saved );
   mCandPolygon = prj->readNumEntry( "PAL", "/CandidatesPolygon", 8, &saved );
@@ -361,7 +361,7 @@ void QgsLabelingEngineV2::readSettingsFromProject()
 
 void QgsLabelingEngineV2::writeSettingsToProject()
 {
-  QgsProject::instance()->writeEntry( "PAL", "/SearchMethod", ( int )mSearchMethod );
+  QgsProject::instance()->writeEntry( "PAL", "/SearchMethod", static_cast< int >( mSearchMethod ) );
   QgsProject::instance()->writeEntry( "PAL", "/CandidatesPoint", mCandPoint );
   QgsProject::instance()->writeEntry( "PAL", "/CandidatesLine", mCandLine );
   QgsProject::instance()->writeEntry( "PAL", "/CandidatesPolygon", mCandPolygon );

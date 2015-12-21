@@ -59,7 +59,7 @@ void QgsColorEffect::draw( QgsRenderContext &context )
   QgsImageOperation::adjustBrightnessContrast( image, mBrightness, mContrast / 100.0 + 1 );
   if ( mGrayscaleMode != QgsImageOperation::GrayscaleOff )
   {
-    QgsImageOperation::convertToGrayscale( image, ( QgsImageOperation::GrayscaleMode ) mGrayscaleMode );
+    QgsImageOperation::convertToGrayscale( image, static_cast< QgsImageOperation::GrayscaleMode >( mGrayscaleMode ) );
   }
   QgsImageOperation::adjustHueSaturation( image, mSaturation, mColorizeOn ? mColorizeColor : QColor(), mColorizeStrength / 100.0 );
 
@@ -92,7 +92,7 @@ QgsStringMap QgsColorEffect::properties() const
 void QgsColorEffect::readProperties( const QgsStringMap &props )
 {
   bool ok;
-  QPainter::CompositionMode mode = ( QPainter::CompositionMode )props.value( "blend_mode" ).toInt( &ok );
+  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( "blend_mode" ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
@@ -103,12 +103,12 @@ void QgsColorEffect::readProperties( const QgsStringMap &props )
     mTransparency = transparency;
   }
   mEnabled = props.value( "enabled", "1" ).toInt();
-  mDrawMode = ( QgsPaintEffect::DrawMode )props.value( "draw_mode", "2" ).toInt();
+  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( "draw_mode", "2" ).toInt() );
 
   mBrightness = props.value( "brightness", "0" ).toInt();
   mContrast = props.value( "contrast", "0" ).toInt();
   mSaturation = props.value( "saturation", "1.0" ).toDouble();
-  mGrayscaleMode = ( QgsImageOperation::GrayscaleMode )props.value( "grayscale_mode", "0" ).toInt();
+  mGrayscaleMode = static_cast< QgsImageOperation::GrayscaleMode >( props.value( "grayscale_mode", "0" ).toInt() );
   mColorizeOn = props.value( "colorize", "0" ).toInt();
   if ( props.contains( "colorize_color" ) )
   {

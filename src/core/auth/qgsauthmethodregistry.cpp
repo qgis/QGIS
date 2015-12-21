@@ -107,7 +107,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString& pluginPath )
     }
 
     // get the description and the key for the auth method plugin
-    isauthmethod_t *isAuthMethod = ( isauthmethod_t * ) cast_to_fptr( myLib.resolve( "isAuthMethod" ) );
+    isauthmethod_t *isAuthMethod = reinterpret_cast< isauthmethod_t * >( cast_to_fptr( myLib.resolve( "isAuthMethod" ) ) );
     if ( !isAuthMethod )
     {
       QgsDebugMsg( QString( "Checking %1: ...invalid (no isAuthMethod method)" ).arg( myLib.fileName() ) );
@@ -122,14 +122,14 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString& pluginPath )
     }
 
     // looks like an auth method plugin. get the key and description
-    description_t *pDesc = ( description_t * ) cast_to_fptr( myLib.resolve( "description" ) );
+    description_t *pDesc = reinterpret_cast< description_t * >( cast_to_fptr( myLib.resolve( "description" ) ) );
     if ( !pDesc )
     {
       QgsDebugMsg( QString( "Checking %1: ...invalid (no description method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
-    methodkey_t *pKey = ( methodkey_t * ) cast_to_fptr( myLib.resolve( "authMethodKey" ) );
+    methodkey_t *pKey = reinterpret_cast< methodkey_t * >( cast_to_fptr( myLib.resolve( "authMethodKey" ) ) );
     if ( !pKey )
     {
       QgsDebugMsg( QString( "Checking %1: ...invalid (no authMethodKey method)" ).arg( myLib.fileName() ) );
@@ -156,7 +156,7 @@ QgsAuthMethodRegistry::~QgsAuthMethodRegistry()
     QLibrary myLib( lib );
     if ( myLib.isLoaded() )
     {
-      cleanupAuthMethod_t* cleanupFunc = ( cleanupAuthMethod_t* ) cast_to_fptr( myLib.resolve( "cleanupAuthMethod" ) );
+      cleanupAuthMethod_t* cleanupFunc = reinterpret_cast< cleanupAuthMethod_t* >( cast_to_fptr( myLib.resolve( "cleanupAuthMethod" ) ) );
       if ( cleanupFunc )
         cleanupFunc();
     }
@@ -292,7 +292,7 @@ QgsAuthMethod *QgsAuthMethodRegistry::authMethod( const QString &authMethodKey )
     return nullptr;
   }
 
-  classFactoryFunction_t *classFactory = ( classFactoryFunction_t * ) cast_to_fptr( myLib.resolve( "classFactory" ) );
+  classFactoryFunction_t *classFactory = reinterpret_cast< classFactoryFunction_t * >( cast_to_fptr( myLib.resolve( "classFactory" ) ) );
   if ( !classFactory )
   {
     QgsDebugMsg( QString( "Failed to load %1: no classFactory method" ).arg( lib ) );
@@ -316,7 +316,7 @@ typedef QWidget * editFactoryFunction_t( QWidget * parent );
 QWidget *QgsAuthMethodRegistry::editWidget( const QString &authMethodKey, QWidget *parent )
 {
   editFactoryFunction_t * editFactory =
-    ( editFactoryFunction_t * ) cast_to_fptr( function( authMethodKey, "editWidget" ) );
+    reinterpret_cast< editFactoryFunction_t * >( cast_to_fptr( function( authMethodKey, "editWidget" ) ) );
 
   if ( !editFactory )
     return nullptr;

@@ -52,7 +52,7 @@ bool QgsMapRendererCache::init( const QgsRectangle& extent, double scale )
 
   // check whether the params are the same
   if ( extent == mExtent &&
-       scale == mScale )
+       qgsDoubleNear( scale, mScale ) )
     return true;
 
   clearInternal();

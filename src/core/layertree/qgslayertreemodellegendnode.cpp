@@ -66,7 +66,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
   // itemHeight here is not realy item height, it is only for symbol
   // vertical alignment purpose, i.e. ok take single line height
   // if there are more lines, thos run under the symbol
-  double itemHeight = qMax(( double ) settings.symbolSize().height(), textHeight );
+  double itemHeight = qMax( static_cast< double >( settings.symbolSize().height() ), textHeight );
 
   ItemMetrics im;
   im.symbolSize = drawSymbol( settings, ctx, itemHeight );
@@ -104,7 +104,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings& set
   {
     ctx->painter->setPen( settings.fontColor() );
 
-    labelX = ctx->point.x() + qMax(( double ) symbolSize.width(), ctx->labelXOffset );
+    labelX = ctx->point.x() + qMax( static_cast< double >( symbolSize.width() ), ctx->labelXOffset );
     labelY = ctx->point.y();
 
     // Vertical alignment of label with symbol
@@ -226,7 +226,7 @@ QgsRenderContext * QgsSymbolV2LegendNode::createTemporaryRenderContext() const
   int dpi = 0;
   if ( model() )
     model()->legendMapViewData( &mupp, &dpi, &scale );
-  bool validData = mupp != 0 && dpi != 0 && scale != 0;
+  bool validData = !qgsDoubleNear( mupp, 0.0 ) && dpi != 0 && !qgsDoubleNear( scale, 0.0 );
 
   // setup temporary render context
   QScopedPointer<QgsRenderContext> context( new QgsRenderContext );
@@ -425,8 +425,8 @@ QSizeF QgsSymbolV2LegendNode::drawSymbol( const QgsLegendSettings& settings, Ite
     p->restore();
   }
 
-  return QSizeF( qMax( width + 2 * widthOffset, ( double ) settings.symbolSize().width() ),
-                 qMax( height + 2 * heightOffset, ( double ) settings.symbolSize().height() ) );
+  return QSizeF( qMax( width + 2 * widthOffset, static_cast< double >( settings.symbolSize().width() ) ),
+                 qMax( height + 2 * heightOffset, static_cast< double >( settings.symbolSize().height() ) ) );
 }
 
 
