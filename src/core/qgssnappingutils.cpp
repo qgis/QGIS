@@ -323,12 +323,14 @@ void QgsSnappingUtils::prepareIndex( const QList<QgsVectorLayer*>& layers )
   if ( !layersToIndex.isEmpty() )
   {
     // build indexes
-    QTime t; t.start();
+    QTime t;
+    t.start();
     int i = 0;
     prepareIndexStarting( layersToIndex.count() );
     Q_FOREACH ( QgsVectorLayer* vl, layersToIndex )
     {
-      QTime tt; tt.start();
+      QTime tt;
+      tt.start();
       if ( !locatorForLayer( vl )->init( mStrategy == IndexHybrid ? 1000000 : -1 ) )
         mHybridNonindexableLayers.insert( vl->id() );
       QgsDebugMsg( QString( "Index init: %1 ms (%2)" ).arg( tt.elapsed() ).arg( vl->id() ) );

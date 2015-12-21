@@ -354,12 +354,24 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
     {
       switch ( indexToAttr.at( i ) )
       {
-        case NameAttr:    obj->name    = attrs.at( i ).toString(); break;
-        case CmtAttr:     obj->cmt     = attrs.at( i ).toString(); break;
-        case DscAttr:     obj->desc    = attrs.at( i ).toString(); break;
-        case SrcAttr:     obj->src     = attrs.at( i ).toString(); break;
-        case URLAttr:     obj->url     = attrs.at( i ).toString(); break;
-        case URLNameAttr: obj->urlname = attrs.at( i ).toString(); break;
+        case NameAttr:
+          obj->name    = attrs.at( i ).toString();
+          break;
+        case CmtAttr:
+          obj->cmt     = attrs.at( i ).toString();
+          break;
+        case DscAttr:
+          obj->desc    = attrs.at( i ).toString();
+          break;
+        case SrcAttr:
+          obj->src     = attrs.at( i ).toString();
+          break;
+        case URLAttr:
+          obj->url     = attrs.at( i ).toString();
+          break;
+        case URLNameAttr:
+          obj->urlname = attrs.at( i ).toString();
+          break;
       }
     }
   }
@@ -452,12 +464,24 @@ void QgsGPXProvider::changeAttributeValues( QgsGPSObject& obj, const QgsAttribut
     // common attributes
     switch ( indexToAttr.at( i ) )
     {
-      case NameAttr:    obj.name    = v.toString(); break;
-      case CmtAttr:     obj.cmt     = v.toString(); break;
-      case DscAttr:     obj.desc    = v.toString(); break;
-      case SrcAttr:     obj.src     = v.toString(); break;
-      case URLAttr:     obj.url     = v.toString(); break;
-      case URLNameAttr: obj.urlname = v.toString(); break;
+      case NameAttr:
+        obj.name    = v.toString();
+        break;
+      case CmtAttr:
+        obj.cmt     = v.toString();
+        break;
+      case DscAttr:
+        obj.desc    = v.toString();
+        break;
+      case SrcAttr:
+        obj.src     = v.toString();
+        break;
+      case URLAttr:
+        obj.url     = v.toString();
+        break;
+      case URLNameAttr:
+        obj.urlname = v.toString();
+        break;
     }
 
     // waypoint-specific attributes

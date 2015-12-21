@@ -72,7 +72,9 @@ void QgsRasterMatrix::setData( int cols, int rows, double* data, double nodataVa
 double* QgsRasterMatrix::takeData()
 {
   double* data = mData;
-  mData = nullptr; mColumns = 0; mRows = 0;
+  mData = nullptr;
+  mColumns = 0;
+  mRows = 0;
   return data;
 }
 
@@ -337,7 +339,8 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
 
     for ( int i = 0; i < nEntries; ++i )
     {
-      value1 = mData[i]; value2 = matrix[i];
+      value1 = mData[i];
+      value2 = matrix[i];
       if ( value1 == mNodataValue || value2 == other.mNodataValue )
       {
         mData[i] = mNodataValue;
@@ -357,7 +360,9 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
     int nEntries = other.nColumns() * other.nRows();
     double value = mData[0];
     delete[] mData;
-    mData = new double[nEntries]; mColumns = other.nColumns(); mRows = other.nRows();
+    mData = new double[nEntries];
+    mColumns = other.nColumns();
+    mRows = other.nRows();
     mNodataValue = other.nodataValue();
 
     if ( value == mNodataValue )

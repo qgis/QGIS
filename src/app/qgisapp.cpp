@@ -1831,11 +1831,21 @@ void QgisApp::createToolBars()
   QAction* defSelectAction = mActionSelectFeatures;
   switch ( settings.value( "/UI/selectTool", 0 ).toInt() )
   {
-    case 0: defSelectAction = mActionSelectFeatures; break;
-    case 1: defSelectAction = mActionSelectFeatures; break;
-    case 2: defSelectAction = mActionSelectRadius; break;
-    case 3: defSelectAction = mActionSelectPolygon; break;
-    case 4: defSelectAction = mActionSelectFreehand; break;
+    case 0:
+      defSelectAction = mActionSelectFeatures;
+      break;
+    case 1:
+      defSelectAction = mActionSelectFeatures;
+      break;
+    case 2:
+      defSelectAction = mActionSelectRadius;
+      break;
+    case 3:
+      defSelectAction = mActionSelectPolygon;
+      break;
+    case 4:
+      defSelectAction = mActionSelectFreehand;
+      break;
   }
   bt->setDefaultAction( defSelectAction );
   QAction* selectAction = mAttributesToolBar->insertWidget( mActionDeselectAll, bt );
@@ -1865,9 +1875,15 @@ void QgisApp::createToolBars()
   QAction* defMeasureAction = mActionMeasure;
   switch ( settings.value( "/UI/measureTool", 0 ).toInt() )
   {
-    case 0: defMeasureAction = mActionMeasure; break;
-    case 1: defMeasureAction = mActionMeasureArea; break;
-    case 2: defMeasureAction = mActionMeasureAngle; break;
+    case 0:
+      defMeasureAction = mActionMeasure;
+      break;
+    case 1:
+      defMeasureAction = mActionMeasureArea;
+      break;
+    case 2:
+      defMeasureAction = mActionMeasureAngle;
+      break;
   }
   bt->setDefaultAction( defMeasureAction );
   QAction* measureAction = mAttributesToolBar->insertWidget( mActionMapTips, bt );
@@ -1887,11 +1903,21 @@ void QgisApp::createToolBars()
   QAction* defAnnotationAction = mActionTextAnnotation;
   switch ( settings.value( "/UI/annotationTool", 0 ).toInt() )
   {
-    case 0: defAnnotationAction = mActionTextAnnotation; break;
-    case 1: defAnnotationAction = mActionFormAnnotation; break;
-    case 2: defAnnotationAction = mActionHtmlAnnotation; break;
-    case 3: defAnnotationAction = mActionSvgAnnotation; break;
-    case 4: defAnnotationAction =  mActionAnnotation; break;
+    case 0:
+      defAnnotationAction = mActionTextAnnotation;
+      break;
+    case 1:
+      defAnnotationAction = mActionFormAnnotation;
+      break;
+    case 2:
+      defAnnotationAction = mActionHtmlAnnotation;
+      break;
+    case 3:
+      defAnnotationAction = mActionSvgAnnotation;
+      break;
+    case 4:
+      defAnnotationAction =  mActionAnnotation;
+      break;
 
   }
   bt->setDefaultAction( defAnnotationAction );
@@ -1914,9 +1940,15 @@ void QgisApp::createToolBars()
   QAction* defNewLayerAction = mActionNewVectorLayer;
   switch ( settings.value( "/UI/defaultNewLayer", 1 ).toInt() )
   {
-    case 0: defNewLayerAction = mActionNewSpatiaLiteLayer; break;
-    case 1: defNewLayerAction = mActionNewVectorLayer; break;
-    case 2: defNewLayerAction = mActionNewMemoryLayer; break;
+    case 0:
+      defNewLayerAction = mActionNewSpatiaLiteLayer;
+      break;
+    case 1:
+      defNewLayerAction = mActionNewVectorLayer;
+      break;
+    case 2:
+      defNewLayerAction = mActionNewMemoryLayer;
+      break;
   }
   bt->setDefaultAction( defNewLayerAction );
   QAction* newLayerAction = mLayerToolBar->addWidget( bt );

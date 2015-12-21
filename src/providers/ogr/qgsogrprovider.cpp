@@ -579,24 +579,59 @@ QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
   QString geom;
   switch (( long )type )
   {
-    case wkbUnknown:            geom = "Unknown"; break;
-    case wkbPoint:              geom = "Point"; break;
-    case wkbLineString:         geom = "LineString"; break;
-    case wkbPolygon:            geom = "Polygon"; break;
-    case wkbMultiPoint:         geom = "MultiPoint"; break;
-    case wkbMultiLineString:    geom = "MultiLineString"; break;
-    case wkbMultiPolygon:       geom = "MultiPolygon"; break;
-    case wkbGeometryCollection: geom = "GeometryCollection"; break;
-    case wkbNone:               geom = "None"; break;
-    case wkbUnknown | wkb25DBit:geom = "Unknown25D"; break;
-    case wkbPoint25D:           geom = "Point25D"; break;
-    case wkbLineString25D:      geom = "LineString25D"; break;
-    case wkbPolygon25D:         geom = "Polygon25D"; break;
-    case wkbMultiPoint25D:      geom = "MultiPoint25D"; break;
-    case wkbMultiLineString25D: geom = "MultiLineString25D"; break;
-    case wkbMultiPolygon25D:    geom = "MultiPolygon25D"; break;
-    case wkbGeometryCollection25D: geom = "GeometryCollection25D"; break;
-    default:                    geom = QString( "Unknown WKB: %1" ).arg( type );
+    case wkbUnknown:
+      geom = "Unknown";
+      break;
+    case wkbPoint:
+      geom = "Point";
+      break;
+    case wkbLineString:
+      geom = "LineString";
+      break;
+    case wkbPolygon:
+      geom = "Polygon";
+      break;
+    case wkbMultiPoint:
+      geom = "MultiPoint";
+      break;
+    case wkbMultiLineString:
+      geom = "MultiLineString";
+      break;
+    case wkbMultiPolygon:
+      geom = "MultiPolygon";
+      break;
+    case wkbGeometryCollection:
+      geom = "GeometryCollection";
+      break;
+    case wkbNone:
+      geom = "None";
+      break;
+    case wkbUnknown | wkb25DBit:
+      geom = "Unknown25D";
+      break;
+    case wkbPoint25D:
+      geom = "Point25D";
+      break;
+    case wkbLineString25D:
+      geom = "LineString25D";
+      break;
+    case wkbPolygon25D:
+      geom = "Polygon25D";
+      break;
+    case wkbMultiPoint25D:
+      geom = "MultiPoint25D";
+      break;
+    case wkbMultiLineString25D:
+      geom = "MultiLineString25D";
+      break;
+    case wkbMultiPolygon25D:
+      geom = "MultiPolygon25D";
+      break;
+    case wkbGeometryCollection25D:
+      geom = "GeometryCollection25D";
+      break;
+    default:
+      geom = QString( "Unknown WKB: %1" ).arg( type );
   }
   return geom;
 }
@@ -778,17 +813,28 @@ void QgsOgrProvider::loadFields()
       QVariant::Type varType;
       switch ( ogrType )
       {
-        case OFTInteger: varType = QVariant::Int; break;
+        case OFTInteger:
+          varType = QVariant::Int;
+          break;
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
-        case OFTInteger64: varType = QVariant::LongLong; break;
+        case OFTInteger64:
+          varType = QVariant::LongLong;
+          break;
 #endif
-        case OFTReal: varType = QVariant::Double; break;
+        case OFTReal:
+          varType = QVariant::Double;
+          break;
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1400
-        case OFTDate: varType = QVariant::Date; break;
-        case OFTDateTime: varType = QVariant::DateTime; break;
+        case OFTDate:
+          varType = QVariant::Date;
+          break;
+        case OFTDateTime:
+          varType = QVariant::DateTime;
+          break;
         case OFTString:
 #endif
-        default: varType = QVariant::String; // other unsupported, leave it as a string
+        default:
+          varType = QVariant::String; // other unsupported, leave it as a string
       }
 
       //TODO: fix this hack
@@ -2702,10 +2748,14 @@ OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type 
   type = wkbFlatten( type );
   switch ( type )
   {
-    case wkbMultiPoint: return wkbPoint;
-    case wkbMultiLineString: return wkbLineString;
-    case wkbMultiPolygon: return wkbPolygon;
-    default: return type;
+    case wkbMultiPoint:
+      return wkbPoint;
+    case wkbMultiLineString:
+      return wkbLineString;
+    case wkbMultiPolygon:
+      return wkbPolygon;
+    default:
+      return type;
   }
 }
 

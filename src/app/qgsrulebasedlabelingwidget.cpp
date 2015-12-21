@@ -211,7 +211,8 @@ QVariant QgsRuleBasedLabelingModel::data( const QModelIndex& index, int role ) c
   {
     switch ( index.column() )
     {
-      case 0: return rule->description();
+      case 0:
+        return rule->description();
       case 1:
         if ( rule->isElse() )
         {
@@ -221,10 +222,14 @@ QVariant QgsRuleBasedLabelingModel::data( const QModelIndex& index, int role ) c
         {
           return rule->filterExpression().isEmpty() ? tr( "(no filter)" ) : rule->filterExpression();
         }
-      case 2: return rule->dependsOnScale() ? _formatScale( rule->scaleMaxDenom() ) : QVariant();
-      case 3: return rule->dependsOnScale() ? _formatScale( rule->scaleMinDenom() ) : QVariant();
-      case 4: return rule->settings() ? rule->settings()->fieldName : QVariant();
-      default: return QVariant();
+      case 2:
+        return rule->dependsOnScale() ? _formatScale( rule->scaleMaxDenom() ) : QVariant();
+      case 3:
+        return rule->dependsOnScale() ? _formatScale( rule->scaleMinDenom() ) : QVariant();
+      case 4:
+        return rule->settings() ? rule->settings()->fieldName : QVariant();
+      default:
+        return QVariant();
     }
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 && rule->settings() )
@@ -250,12 +255,18 @@ QVariant QgsRuleBasedLabelingModel::data( const QModelIndex& index, int role ) c
   {
     switch ( index.column() )
     {
-      case 0: return rule->description();
-      case 1: return rule->filterExpression();
-      case 2: return rule->scaleMaxDenom();
-      case 3: return rule->scaleMinDenom();
-      case 4: return rule->settings() ? rule->settings()->fieldName : QVariant();
-      default: return QVariant();
+      case 0:
+        return rule->description();
+      case 1:
+        return rule->filterExpression();
+      case 2:
+        return rule->scaleMaxDenom();
+      case 3:
+        return rule->scaleMinDenom();
+      case 4:
+        return rule->settings() ? rule->settings()->fieldName : QVariant();
+      default:
+        return QVariant();
     }
   }
   else if ( role == Qt::CheckStateRole )
@@ -272,7 +283,8 @@ QVariant QgsRuleBasedLabelingModel::headerData( int section, Qt::Orientation ori
 {
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 5 )
   {
-    QStringList lst; lst << tr( "Label" ) << tr( "Rule" ) << tr( "Min. scale" ) << tr( "Max. scale" ) << tr( "Text" ); // << tr( "Count" ) << tr( "Duplicate count" );
+    QStringList lst;
+    lst << tr( "Label" ) << tr( "Rule" ) << tr( "Min. scale" ) << tr( "Max. scale" ) << tr( "Text" ); // << tr( "Count" ) << tr( "Duplicate count" );
     return lst[section];
   }
 

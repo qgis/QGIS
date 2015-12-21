@@ -2558,7 +2558,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
           qreal xPosR, yPosR;
           qreal xPos_qreal = xPos, yPos_qreal = yPos;
           t.map( xPos_qreal, yPos_qreal, &xPosR, &yPosR );
-          xPos = xPosR; yPos = yPosR;
+          xPos = xPosR;
+          yPos = yPosR;
 
         }
 

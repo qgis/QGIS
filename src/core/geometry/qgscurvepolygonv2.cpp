@@ -624,7 +624,8 @@ bool QgsCurvePolygonV2::nextVertex( QgsVertexId& vId, QgsPointV2& vertex ) const
 
   if ( vId.ring < 0 )
   {
-    vId.ring = 0; vId.vertex = -1;
+    vId.ring = 0;
+    vId.vertex = -1;
     if ( vId.part < 0 )
     {
       vId.part = 0;

@@ -63,7 +63,6 @@ astyleit()
 		--indent-namespaces \
 		--indent-switches \
 		--one-line=keep-blocks \
-		--one-line=keep-statements \
 		--max-instatement-indent=40 \
 		--min-conditional-indent=-1 \
 		--suffix=none \

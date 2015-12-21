@@ -569,7 +569,8 @@ void QgsLineStringV2::transform( const QTransform& t )
   {
     qreal x, y;
     t.map( mX.at( i ), mY.at( i ), &x, &y );
-    mX[i] = x; mY[i] = y;
+    mX[i] = x;
+    mY[i] = y;
   }
   mBoundingBox = QgsRectangle();
 }
@@ -707,7 +708,9 @@ double QgsLineStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmen
       {
         *leftOf = ( QgsGeometryUtils::leftOfLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY ) < 0 );
       }
-      vertexAfter.part = 0; vertexAfter.ring = 0; vertexAfter.vertex = i;
+      vertexAfter.part = 0;
+      vertexAfter.ring = 0;
+      vertexAfter.vertex = i;
     }
   }
   return sqrDist;

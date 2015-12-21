@@ -789,7 +789,8 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
   {
     switch ( index.column() )
     {
-      case 0: return rule->label();
+      case 0:
+        return rule->label();
       case 1:
         if ( rule->isElse() )
         {
@@ -799,8 +800,10 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
         {
           return rule->filterExpression().isEmpty() ? tr( "(no filter)" ) : rule->filterExpression();
         }
-      case 2: return rule->dependsOnScale() ? _formatScale( rule->scaleMaxDenom() ) : QVariant();
-      case 3: return rule->dependsOnScale() ? _formatScale( rule->scaleMinDenom() ) : QVariant();
+      case 2:
+        return rule->dependsOnScale() ? _formatScale( rule->scaleMaxDenom() ) : QVariant();
+      case 3:
+        return rule->dependsOnScale() ? _formatScale( rule->scaleMinDenom() ) : QVariant();
       case 4:
         if ( mFeatureCountMap.count( rule ) == 1 )
         {
@@ -834,7 +837,8 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
           }
         }
         return QVariant();
-      default: return QVariant();
+      default:
+        return QVariant();
     }
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 && rule->symbol() )
@@ -859,11 +863,16 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
   {
     switch ( index.column() )
     {
-      case 0: return rule->label();
-      case 1: return rule->filterExpression();
-      case 2: return rule->scaleMaxDenom();
-      case 3: return rule->scaleMinDenom();
-      default: return QVariant();
+      case 0:
+        return rule->label();
+      case 1:
+        return rule->filterExpression();
+      case 2:
+        return rule->scaleMaxDenom();
+      case 3:
+        return rule->scaleMinDenom();
+      default:
+        return QVariant();
     }
   }
   else if ( role == Qt::CheckStateRole )
@@ -880,7 +889,8 @@ QVariant QgsRuleBasedRendererV2Model::headerData( int section, Qt::Orientation o
 {
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 7 )
   {
-    QStringList lst; lst << tr( "Label" ) << tr( "Rule" ) << tr( "Min. scale" ) << tr( "Max. scale" ) << tr( "Count" ) << tr( "Duplicate count" );
+    QStringList lst;
+    lst << tr( "Label" ) << tr( "Rule" ) << tr( "Min. scale" ) << tr( "Max. scale" ) << tr( "Count" ) << tr( "Duplicate count" );
     return lst[section];
   }
   else if ( orientation == Qt::Horizontal && role == Qt::ToolTipRole )

@@ -201,10 +201,18 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     QString title;
     switch ( err )
     {
-      case QgsWFSCapabilities::NetworkError: title = tr( "Network Error" ); break;
-      case QgsWFSCapabilities::XmlError:     title = tr( "Capabilities document is not valid" ); break;
-      case QgsWFSCapabilities::ServerExceptionError: title = tr( "Server Exception" ); break;
-      default: tr( "Error" ); break;
+      case QgsWFSCapabilities::NetworkError:
+        title = tr( "Network Error" );
+        break;
+      case QgsWFSCapabilities::XmlError:
+        title = tr( "Capabilities document is not valid" );
+        break;
+      case QgsWFSCapabilities::ServerExceptionError:
+        title = tr( "Server Exception" );
+        break;
+      default:
+        tr( "Error" );
+        break;
     }
     // handle errors
     QMessageBox::critical( nullptr, title, mCapabilities->errorMessage() );

@@ -795,7 +795,8 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
     tblResults->resizeRowToContents( j );
 
-    j++; i++;
+    j++;
+    i++;
   }
   //tblResults->resizeColumnToContents( 1 );
 

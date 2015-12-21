@@ -323,14 +323,16 @@ void QgsMapToPixel::transformInPlace( double& x, double& y ) const
   qreal x_qreal = x, y_qreal = y;
   mMatrix.map( x_qreal, y_qreal, &mx, &my );
   //QgsDebugMsg(QString("XXX transformInPlace X : %1-->%2, Y: %3 -->%4").arg(x).arg(mx).arg(y).arg(my));
-  x = mx; y = my;
+  x = mx;
+  y = my;
 }
 
 void QgsMapToPixel::transformInPlace( float& x, float& y ) const
 {
   double mx = x, my = y;
   transformInPlace( mx, my );
-  x = mx; y = my;
+  x = mx;
+  y = my;
 }
 
 QTransform QgsMapToPixel::transform() const

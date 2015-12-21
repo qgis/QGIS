@@ -140,7 +140,10 @@ void QgsAnnotationItem::updateBalloon()
 
   //edge list
   QList<QLineF> segmentList;
-  segmentList << segment( 0 ); segmentList << segment( 1 ); segmentList << segment( 2 ); segmentList << segment( 3 );
+  segmentList << segment( 0 );
+  segmentList << segment( 1 );
+  segmentList << segment( 2 );
+  segmentList << segment( 3 );
 
   //find  closest edge / closest edge point
   double minEdgeDist = DBL_MAX;

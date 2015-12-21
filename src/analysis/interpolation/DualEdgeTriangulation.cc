@@ -1527,7 +1527,8 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
 
   //set the necessary nexts of leftPolygon(exept the first)
   int actedgel = leftPolygon[1];
-  leftiter = leftPolygon.constBegin(); leftiter += 2;
+  leftiter = leftPolygon.constBegin();
+  leftiter += 2;
   for ( ; leftiter != leftPolygon.constEnd(); ++leftiter )
   {
     mHalfEdge[actedgel]->setNext(( *leftiter ) );
@@ -1536,7 +1537,8 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
 
   //set all the necessary nexts of rightPolygon
   int actedger = rightPolygon[1];
-  rightiter = rightPolygon.constBegin(); rightiter += 2;
+  rightiter = rightPolygon.constBegin();
+  rightiter += 2;
   for ( ; rightiter != rightPolygon.constEnd(); ++rightiter )
   {
     mHalfEdge[actedger]->setNext(( *rightiter ) );
@@ -2526,7 +2528,8 @@ void DualEdgeTriangulation::triangulatePolygon( QList<int>* poly, QList<int>* fr
       mHalfEdge[( *( --poly->end() ) )]->setNext( inserta );
 
       QList<int> polya;
-      iterator = poly->constBegin(); iterator += 2;
+      iterator = poly->constBegin();
+      iterator += 2;
       while ( iterator != poly->constEnd() )
       {
         polya.append(( *iterator ) );

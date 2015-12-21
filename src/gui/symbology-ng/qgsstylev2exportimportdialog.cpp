@@ -349,7 +349,8 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
             prompt = false;
             overwrite = true;
             break;
-          case QMessageBox::NoToAll:  prompt = false;
+          case QMessageBox::NoToAll:
+            prompt = false;
             overwrite = false;
             break;
         }

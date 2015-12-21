@@ -118,9 +118,12 @@ void QgsMapToolLabel::createRubberBands()
 
 void QgsMapToolLabel::deleteRubberBands()
 {
-  delete mLabelRubberBand; mLabelRubberBand = nullptr;
-  delete mFeatureRubberBand; mFeatureRubberBand = nullptr;
-  delete mFixPointRubberBand; mFixPointRubberBand = nullptr;
+  delete mLabelRubberBand;
+  mLabelRubberBand = nullptr;
+  delete mFeatureRubberBand;
+  mFeatureRubberBand = nullptr;
+  delete mFixPointRubberBand;
+  mFixPointRubberBand = nullptr;
 }
 
 QgsVectorLayer* QgsMapToolLabel::currentLayer()

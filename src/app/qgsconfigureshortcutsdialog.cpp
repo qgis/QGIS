@@ -81,7 +81,8 @@ void QgsConfigureShortcutsDialog::populateActions()
     QString actionText = actions[i]->text();
     actionText.remove( '&' ); // remove the accelerator
 
-    QStringList lst; lst << actionText << actions[i]->shortcut().toString();
+    QStringList lst;
+    lst << actionText << actions[i]->shortcut().toString();
     QTreeWidgetItem* item = new QTreeWidgetItem( lst );
     item->setIcon( 0, actions[i]->icon() );
     item->setData( 0, Qt::UserRole, qVariantFromValue(( QObject* )actions[i] ) );

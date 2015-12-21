@@ -278,11 +278,13 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
     QPointF fixPoint;
     if ( type == StartMarker )
     {
-      fixPoint.setX( 0 ); fixPoint.setY( arrowHeadHeight / 2.0 );
+      fixPoint.setX( 0 );
+      fixPoint.setY( arrowHeadHeight / 2.0 );
     }
     else
     {
-      fixPoint.setX( 0 ); fixPoint.setY( -arrowHeadHeight / 2.0 );
+      fixPoint.setX( 0 );
+      fixPoint.setY( -arrowHeadHeight / 2.0 );
     }
     QPointF rotatedFixPoint;
     double angleRad = ang / 180 * M_PI;

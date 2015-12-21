@@ -301,8 +301,10 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
   {
     if ( boundingBoxFromPointList( splitLine, xMin, yMin, xMax, yMax ) == 0 )
     {
-      bBox.setXMinimum( xMin ); bBox.setYMinimum( yMin );
-      bBox.setXMaximum( xMax ); bBox.setYMaximum( yMax );
+      bBox.setXMinimum( xMin );
+      bBox.setYMinimum( yMin );
+      bBox.setXMaximum( xMax );
+      bBox.setYMaximum( yMax );
     }
     else
     {
@@ -433,8 +435,10 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
   {
     if ( boundingBoxFromPointList( splitLine, xMin, yMin, xMax, yMax ) == 0 )
     {
-      bBox.setXMinimum( xMin ); bBox.setYMinimum( yMin );
-      bBox.setXMaximum( xMax ); bBox.setYMaximum( yMax );
+      bBox.setXMinimum( xMin );
+      bBox.setYMinimum( yMin );
+      bBox.setXMaximum( xMax );
+      bBox.setYMaximum( yMax );
     }
     else
     {

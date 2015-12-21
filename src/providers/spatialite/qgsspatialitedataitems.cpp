@@ -116,11 +116,21 @@ QVector<QgsDataItem*> QgsSLConnectionItem::createChildren()
     QString msg;
     switch ( err )
     {
-      case QgsSpatiaLiteConnection::NotExists: msg = tr( "Database does not exist" ); break;
-      case QgsSpatiaLiteConnection::FailedToOpen: msg = tr( "Failed to open database" ); break;
-      case QgsSpatiaLiteConnection::FailedToCheckMetadata: msg = tr( "Failed to check metadata" ); break;
-      case QgsSpatiaLiteConnection::FailedToGetTables: msg = tr( "Failed to get list of tables" ); break;
-      default: msg = tr( "Unknown error" ); break;
+      case QgsSpatiaLiteConnection::NotExists:
+        msg = tr( "Database does not exist" );
+        break;
+      case QgsSpatiaLiteConnection::FailedToOpen:
+        msg = tr( "Failed to open database" );
+        break;
+      case QgsSpatiaLiteConnection::FailedToCheckMetadata:
+        msg = tr( "Failed to check metadata" );
+        break;
+      case QgsSpatiaLiteConnection::FailedToGetTables:
+        msg = tr( "Failed to get list of tables" );
+        break;
+      default:
+        msg = tr( "Unknown error" );
+        break;
     }
     QString msgDetails = connection.errorMessage();
     if ( !msgDetails.isEmpty() )

@@ -253,14 +253,22 @@ QgsGeorefTransformInterface *QgsGeorefTransform::createImplementation( Transform
 {
   switch ( parametrisation )
   {
-    case Linear:           return new QgsLinearGeorefTransform;
-    case Helmert:          return new QgsHelmertGeorefTransform;
-    case PolynomialOrder1: return new QgsGDALGeorefTransform( false, 1 );
-    case PolynomialOrder2: return new QgsGDALGeorefTransform( false, 2 );
-    case PolynomialOrder3: return new QgsGDALGeorefTransform( false, 3 );
-    case ThinPlateSpline:  return new QgsGDALGeorefTransform( true, 0 );
-    case Projective:       return new QgsProjectiveGeorefTransform;
-    default:               return nullptr;
+    case Linear:
+      return new QgsLinearGeorefTransform;
+    case Helmert:
+      return new QgsHelmertGeorefTransform;
+    case PolynomialOrder1:
+      return new QgsGDALGeorefTransform( false, 1 );
+    case PolynomialOrder2:
+      return new QgsGDALGeorefTransform( false, 2 );
+    case PolynomialOrder3:
+      return new QgsGDALGeorefTransform( false, 3 );
+    case ThinPlateSpline:
+      return new QgsGDALGeorefTransform( true, 0 );
+    case Projective:
+      return new QgsProjectiveGeorefTransform;
+    default:
+      return nullptr;
   }
 }
 

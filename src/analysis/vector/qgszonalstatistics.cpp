@@ -392,7 +392,10 @@ int QgsZonalStatistics::cellInfoForBBox( const QgsRectangle& rasterBBox, const Q
   QgsRectangle intersectBox = rasterBBox.intersect( &featureBBox );
   if ( intersectBox.isEmpty() )
   {
-    nCellsX = 0; nCellsY = 0; offsetX = 0; offsetY = 0;
+    nCellsX = 0;
+    nCellsY = 0;
+    offsetX = 0;
+    offsetY = 0;
     return 0;
   }
 
