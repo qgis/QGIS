@@ -2153,6 +2153,21 @@ static QVariant fcnAzimuth( const QVariantList& values, const QgsExpressionConte
   return QVariant();
 }
 
+static QVariant fcnExtrude( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  if ( values.length() != 3 )
+    return QVariant();
+
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  double x = getDoubleValue( values.at( 1 ), parent );
+  double y = getDoubleValue( values.at( 2 ), parent );
+
+  QgsGeometry geom = fGeom.extrude( x, y );
+
+  QVariant result = geom.geometry() ? QVariant::fromValue( geom ) : QVariant();
+  return result;
+}
+
 static QVariant fcnRound( const QVariantList& values, const QgsExpressionContext *, QgsExpression* parent )
 {
   if ( values.length() == 2 )
@@ -2915,6 +2930,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "geom_to_wkt", -1, fcnGeomToWKT, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "geomToWKT" )
     << new StaticFunction( "geometry", 1, fcnGetGeometry, "GeometryGroup", QString(), true )
     << new StaticFunction( "transform", 3, fcnTransformGeometry, "GeometryGroup" )
+    << new StaticFunction( "extrude", 3, fcnExtrude, "GeometryGroup", QString() )
     << new StaticFunction( "$rownum", 0, fcnRowNumber, "deprecated" )
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
     << new StaticFunction( "$currentfeature", 0, fcnFeature, "Record" )

@@ -345,7 +345,7 @@ class TestQgsGeometry(TestCase):
                                       'simplify_error.wkt'), 'rt')
         myWKT = myWKTFile.readline()
         myWKTFile.close()
-        print myWKT
+        # print myWKT
         myGeometry = QgsGeometry().fromWkt(myWKT)
         assert myGeometry is not None
         myStartLength = len(myWKT)
@@ -1190,6 +1190,17 @@ class TestQgsGeometry(TestCase):
         assert polygon.transform(ct) == 0, "Translate failed"
         expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
         wkt = polygon.exportToWkt()
+
+    def testExtrude(self):
+        points = [QgsPoint(1, 2), QgsPoint(3, 2), QgsPoint(4, 3)]
+        line = QgsGeometry.fromPolyline(points)
+        expected = QgsGeometry.fromWkt('Polygon ((1 2, 3 2, 4 3, 5 5, 4 4, 2 4, 1 2))')
+        self.assertEqual(line.extrude(1, 2).exportToWkt(), expected.exportToWkt())
+
+        points2 = [[QgsPoint(1, 2), QgsPoint(3, 2)], [QgsPoint(4, 3), QgsPoint(8, 3)]]
+        multiline = QgsGeometry.fromMultiPolyline(points2)
+        expected = QgsGeometry.fromWkt('MultiPolygon (((1 2, 3 2, 4 4, 2 4, 1 2)),((4 3, 8 3, 9 5, 5 5, 4 3)))')
+        self.assertEqual(multiline.extrude(1, 2).exportToWkt(), expected.exportToWkt())
 
     def testBoundingBox(self):
         # 2-+-+-+-+-3

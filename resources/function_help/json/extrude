@@ -1,0 +1,20 @@
+{
+  "name": "extrude",
+  "type": "function",
+  "description": "Returns an extruded version of the input (Multi-)Curve or (Multi-)Linestring geometry with an extension specified by x and y.",
+  "arguments": [
+    {"arg":"geom","description":"a polygon geometry"},
+    {"arg":"x","description":"x extension, numeric value"},
+    {"arg":"y","description":"y extension, numeric value"}
+  ],
+  "examples": [
+    {
+      "expression":"extrude(geom_from_wkt('LineString(1 2, 3 2, 4 3)'), 1, 2)",
+      "returns":"Polygon ((1 2, 3 2, 4 3, 5 5, 4 4, 2 4, 1 2))"
+    },
+    {
+      "expression":"extrude(geom_from_wkt('MultiLineString((1 2, 3 2), (4 3, 8 3)'), 1, 2)",
+      "returns":"MultiPolygon (((1 2, 3 2, 4 4, 2 4, 1 2)),((4 3, 8 3, 9 5, 5 5, 4 3)))"
+    }
+  ]
+}
