@@ -122,7 +122,7 @@ void QgsEditFormConfig::readXml( const QDomNode& node )
   QDomNode editFormInitCodeSourceNode = node.namedItem( "editforminitcodesource" );
   if ( !editFormInitCodeSourceNode.isNull() || ( !editFormInitCodeSourceNode.isNull() && !editFormInitCodeSourceNode.toElement().text().isEmpty() ) )
   {
-    setInitCodeSource(( QgsEditFormConfig::PythonInitCodeSource ) editFormInitCodeSourceNode.toElement().text().toInt() );
+    setInitCodeSource( static_cast< QgsEditFormConfig::PythonInitCodeSource >( editFormInitCodeSourceNode.toElement().text().toInt() ) );
   }
 
   QDomNode editFormInitCodeNode = node.namedItem( "editforminitcode" );
@@ -158,7 +158,7 @@ void QgsEditFormConfig::readXml( const QDomNode& node )
   else
   {
     QDomElement e = fFSuppNode.toElement();
-    mSuppressForm = ( QgsEditFormConfig::FeatureFormSuppress )e.text().toInt();
+    mSuppressForm = static_cast< QgsEditFormConfig::FeatureFormSuppress >( e.text().toInt() );
   }
 
   // tab display

@@ -86,18 +86,18 @@ QgsStringMap QgsBlurEffect::properties() const
 {
   QgsStringMap props;
   props.insert( "enabled", mEnabled ? "1" : "0" );
-  props.insert( "draw_mode", QString::number( int( mDrawMode ) ) );
-  props.insert( "blend_mode", QString::number( int( mBlendMode ) ) );
+  props.insert( "draw_mode", QString::number( static_cast< int >( mDrawMode ) ) );
+  props.insert( "blend_mode", QString::number( static_cast< int >( mBlendMode ) ) );
   props.insert( "transparency", QString::number( mTransparency ) );
   props.insert( "blur_level", QString::number( mBlurLevel ) );
-  props.insert( "blur_method", QString::number(( int )mBlurMethod ) );
+  props.insert( "blur_method", QString::number( static_cast< int >( mBlurMethod ) ) );
   return props;
 }
 
 void QgsBlurEffect::readProperties( const QgsStringMap &props )
 {
   bool ok;
-  QPainter::CompositionMode mode = ( QPainter::CompositionMode )props.value( "blend_mode" ).toInt( &ok );
+  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( "blend_mode" ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
@@ -108,13 +108,13 @@ void QgsBlurEffect::readProperties( const QgsStringMap &props )
     mTransparency = transparency;
   }
   mEnabled = props.value( "enabled", "1" ).toInt();
-  mDrawMode = ( QgsPaintEffect::DrawMode )props.value( "draw_mode", "2" ).toInt();
+  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( "draw_mode", "2" ).toInt() );
   int level = props.value( "blur_level" ).toInt( &ok );
   if ( ok )
   {
     mBlurLevel = level;
   }
-  QgsBlurEffect::BlurMethod method = ( QgsBlurEffect::BlurMethod )props.value( "blur_method" ).toInt( &ok );
+  QgsBlurEffect::BlurMethod method = static_cast< QgsBlurEffect::BlurMethod >( props.value( "blur_method" ).toInt( &ok ) );
   if ( ok )
   {
     mBlurMethod = method;

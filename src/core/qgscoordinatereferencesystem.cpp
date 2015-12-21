@@ -364,16 +364,16 @@ bool QgsCoordinateReferenceSystem::loadFromDb( const QString& db, const QString&
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
   {
-    mSrsId = QString::fromUtf8(( char * )sqlite3_column_text(
-                                 myPreparedStatement, 0 ) ).toLong();
-    mDescription = QString::fromUtf8(( char * )sqlite3_column_text(
-                                       myPreparedStatement, 1 ) );
-    mProjectionAcronym = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 2 ) );
-    mEllipsoidAcronym = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 3 ) );
-    mProj4 = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) );
-    mSRID = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 5 ) ).toLong();
-    mAuthId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 6 ) );
-    mGeoFlag = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 7 ) ).toInt() != 0;
+    mSrsId = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text(
+                                  myPreparedStatement, 0 ) ) ).toLong();
+    mDescription = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text(
+                                        myPreparedStatement, 1 ) ) );
+    mProjectionAcronym = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 2 ) ) );
+    mEllipsoidAcronym = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 3 ) ) );
+    mProj4 = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 4 ) ) );
+    mSRID = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 5 ) ) ).toLong() ;
+    mAuthId = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 6 ) ) );
+    mGeoFlag = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 7 ) ) ).toInt() != 0;
     mAxisInverted = -1;
 
     if ( mSrsId >= USER_CRS_START_ID && mAuthId.isEmpty() )
@@ -443,7 +443,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &theWkt )
   QByteArray ba = theWkt.toLatin1();
   const char *pWkt = ba.data();
 
-  OGRErr myInputResult = OSRImportFromWkt( mCRS, ( char ** ) & pWkt );
+  OGRErr myInputResult = OSRImportFromWkt( mCRS, const_cast< char ** >( & pWkt ) );
 
   if ( myInputResult != OGRERR_NONE )
   {
@@ -743,8 +743,8 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     //loop through each column in the record adding its expression name and value to the map
     for ( int myColNo = 0; myColNo < myColumnCount; myColNo++ )
     {
-      myFieldName = QString::fromUtf8(( char * )sqlite3_column_name( myPreparedStatement, myColNo ) );
-      myFieldValue = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, myColNo ) );
+      myFieldName = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_name( myPreparedStatement, myColNo ) ) );
+      myFieldValue = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, myColNo ) ) );
       myMap[myFieldName] = myFieldValue;
     }
     if ( sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
@@ -788,8 +788,8 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
       //loop through each column in the record adding its field name and value to the map
       for ( int myColNo = 0; myColNo < myColumnCount; myColNo++ )
       {
-        myFieldName = QString::fromUtf8(( char * )sqlite3_column_name( myPreparedStatement, myColNo ) );
-        myFieldValue = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, myColNo ) );
+        myFieldName = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_name( myPreparedStatement, myColNo ) ) );
+        myFieldValue = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, myColNo ) ) );
         myMap[myFieldName] = myFieldValue;
       }
 
@@ -1057,8 +1057,8 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
 
     while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
-      QString mySrsId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-      QString myProj4String = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 1 ) );
+      QString mySrsId = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
+      QString myProj4String = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 1 ) ) );
       if ( toProj4() == myProj4String.trimmed() )
       {
         QgsDebugMsg( "-------> MATCH FOUND in srs.db srsid: " + mySrsId );
@@ -1096,8 +1096,8 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
 
     while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
-      QString mySrsId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-      QString myProj4String = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 1 ) );
+      QString mySrsId = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
+      QString myProj4String = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 1 ) ) );
       if ( toProj4() == myProj4String.trimmed() )
       {
         QgsDebugMsg( "-------> MATCH FOUND in user qgis.db srsid: " + mySrsId );
@@ -1374,7 +1374,7 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
   {
     if ( sqlite3_step( ppStmt ) == SQLITE_ROW )
     {
-      myProjString = QString::fromUtf8(( char* )sqlite3_column_text( ppStmt, 0 ) );
+      myProjString = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
     }
   }
   // close the statement
@@ -1555,7 +1555,7 @@ long QgsCoordinateReferenceSystem::getRecordCount()
   {
     if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
-      QString myRecordCountString = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
+      QString myRecordCountString = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
       myRecordCount = myRecordCountString.toLong();
     }
   }
@@ -1759,9 +1759,9 @@ int QgsCoordinateReferenceSystem::syncDb()
     QString srsProj4;
     if ( sqlite3_step( select ) == SQLITE_ROW )
     {
-      srsProj4 = ( const char * ) sqlite3_column_text( select, 0 );
+      srsProj4 = reinterpret_cast< const char * >( sqlite3_column_text( select, 0 ) );
 
-      if ( QString::fromUtf8(( char * )sqlite3_column_text( select, 1 ) ).toInt() != 0 )
+      if ( QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( select, 1 ) ) ).toInt() != 0 )
         continue;
     }
 
@@ -1863,9 +1863,9 @@ int QgsCoordinateReferenceSystem::syncDb()
   {
     while ( sqlite3_step( select ) == SQLITE_ROW )
     {
-      const char *auth_name = ( const char * ) sqlite3_column_text( select, 0 );
-      const char *auth_id   = ( const char * ) sqlite3_column_text( select, 1 );
-      const char *params    = ( const char * ) sqlite3_column_text( select, 2 );
+      const char *auth_name = reinterpret_cast< const char * >( sqlite3_column_text( select, 0 ) );
+      const char *auth_id   = reinterpret_cast< const char * >( sqlite3_column_text( select, 1 ) );
+      const char *params    = reinterpret_cast< const char * >( sqlite3_column_text( select, 2 ) );
 
       QString input = QString( "+init=%1:%2" ).arg( QString( auth_name ).toLower(), auth_id );
       projPJ pj = pj_init_plus( input.toAscii() );
@@ -2117,7 +2117,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
     if ( sqlite3_step( stmt ) == SQLITE_ROW )
     {
-      cOpCode = ( const char * ) sqlite3_column_text( stmt, 0 );
+      cOpCode = reinterpret_cast< const char * >( sqlite3_column_text( stmt, 0 ) );
     }
     sqlite3_finalize( stmt );
 

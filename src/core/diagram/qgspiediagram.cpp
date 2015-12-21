@@ -90,7 +90,7 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCon
   if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
   {
     bool p = false; // preserve height == width
-    if ( size.width() == size.height() )
+    if ( qgsDoubleNear( size.width(), size.height() ) )
       p = true;
 
     size.scale( s.minimumSize, s.minimumSize, Qt::KeepAspectRatio );

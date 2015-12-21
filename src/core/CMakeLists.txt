@@ -406,6 +406,8 @@ ADD_FLEX_FILES(QGIS_CORE_SRCS qgsexpressionlexer.ll)
 
 ADD_BISON_FILES(QGIS_CORE_SRCS qgsexpressionparser.yy)
 
+SET_SOURCE_FILES_PROPERTIES( qgsexpressionparser.cpp PROPERTIES COMPILE_FLAGS -w )
+
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
   qgsbrowsermodel.h

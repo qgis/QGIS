@@ -240,7 +240,7 @@ bool QgsField::convertCompatible( QVariant& v ) const
 QDataStream& operator<<( QDataStream& out, const QgsField& field )
 {
   out << field.name();
-  out << ( quint32 )field.type();
+  out << static_cast< quint32 >( field.type() );
   out << field.typeName();
   out << field.length();
   out << field.precision();
@@ -254,10 +254,10 @@ QDataStream& operator>>( QDataStream& in, QgsField& field )
   QString name, typeName, comment;
   in >> name >> type >> typeName >> length >> precision >> comment;
   field.setName( name );
-  field.setType(( QVariant::Type )type );
+  field.setType( static_cast< QVariant::Type >( type ) );
   field.setTypeName( typeName );
-  field.setLength(( int )length );
-  field.setPrecision(( int )precision );
+  field.setLength( static_cast< int >( length ) );
+  field.setPrecision( static_cast< int >( precision ) );
   field.setComment( comment );
   return in;
 }
@@ -476,7 +476,7 @@ QgsAttributeList QgsFields::allAttributesList() const
 
 QDataStream& operator<<( QDataStream& out, const QgsFields& fields )
 {
-  out << ( quint32 )fields.size();
+  out << static_cast< quint32 >( fields.size() );
   for ( int i = 0; i < fields.size(); i++ )
   {
     out << fields.field( i );

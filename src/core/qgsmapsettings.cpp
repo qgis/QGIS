@@ -73,7 +73,7 @@ double QgsMapSettings::rotation() const
 
 void QgsMapSettings::setRotation( double degrees )
 {
-  if ( mRotation == degrees ) return;
+  if ( qgsDoubleNear( mRotation, degrees ) ) return;
 
   mRotation = degrees;
 

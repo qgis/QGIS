@@ -265,7 +265,6 @@ QGis::DataType QgsRasterBlock::typeWithNoDataValue( QGis::DataType dataType, dou
     default:
       QgsDebugMsg( QString( "Unknow data type %1" ).arg( dataType ) );
       return QGis::UnknownDataType;
-      break;
   }
   QgsDebugMsg( QString( "newDataType = %1 noDataValue = %2" ).arg( newDataType ).arg( *noDataValue ) );
   return newDataType;
@@ -820,7 +819,7 @@ QString QgsRasterBlock::printValue( double value )
   for ( int i = 15; i <= 17; i++ )
   {
     s.setNum( value, 'g', i );
-    if ( s.toDouble() == value )
+    if ( qgsDoubleNear( s.toDouble(), value ) )
     {
       return s;
     }

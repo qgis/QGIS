@@ -78,7 +78,7 @@ void QgsExpressionFieldBuffer::readXml( const QDomNode& layerNode )
       QString comment = field.attribute( "comment" );
       int precision = field.attribute( "precision" ).toInt();
       int length = field.attribute( "length" ).toInt();
-      QVariant::Type type = ( QVariant::Type )( field.attribute( "type" ).toInt() );
+      QVariant::Type type = static_cast< QVariant::Type >( field.attribute( "type" ).toInt() );
       QString typeName = field.attribute( "typeName" );
 
       mExpressions.append( ExpressionField( exp, QgsField( name, type, typeName, length, precision, comment ) ) );

@@ -43,7 +43,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature& feature, const QgsRen
     return size; //zero size if no attributes
   }
 
-  if ( is.upperValue - is.lowerValue == 0 )
+  if ( qgsDoubleNear( is.upperValue, is.lowerValue ) )
     return size; // invalid value range => zero size
 
   double maxValue = 0;

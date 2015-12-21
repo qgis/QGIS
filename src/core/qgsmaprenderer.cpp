@@ -246,7 +246,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
     return;
   }
 
-  if ( mSize.width() == 1 && mSize.height() == 1 )
+  if ( qgsDoubleNear( mSize.width(), 1.0 ) && qgsDoubleNear( mSize.height(), 1.0 ) )
   {
     QgsDebugMsg( "size 1x1... not rendering" );
     return;
@@ -315,15 +315,15 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
     }
   }
   double rasterScaleFactor = ( thePaintDevice->logicalDpiX() + thePaintDevice->logicalDpiY() ) / 2.0 / sceneDpi;
-  if ( mRenderContext.rasterScaleFactor() != rasterScaleFactor )
+  if ( !qgsDoubleNear( mRenderContext.rasterScaleFactor(), rasterScaleFactor ) )
   {
     mRenderContext.setRasterScaleFactor( rasterScaleFactor );
   }
-  if ( mRenderContext.scaleFactor() != scaleFactor )
+  if ( !qgsDoubleNear( mRenderContext.scaleFactor(), scaleFactor ) )
   {
     mRenderContext.setScaleFactor( scaleFactor );
   }
-  if ( mRenderContext.rendererScale() != mScale )
+  if ( !qgsDoubleNear( mRenderContext.rendererScale(), mScale ) )
   {
     //add map scale to render context
     mRenderContext.setRendererScale( mScale );
@@ -1251,7 +1251,7 @@ const QgsMapSettings& QgsMapRenderer::mapSettings()
   // make sure the settings object is up-to-date
   mMapSettings.setExtent( extent() );
   mMapSettings.setOutputSize( outputSize() );
-  mMapSettings.setOutputDpi( outputDpi() != 0 ? outputDpi() : qt_defaultDpiX() );
+  mMapSettings.setOutputDpi( !qgsDoubleNear( outputDpi(), 0 ) ? outputDpi() : qt_defaultDpiX() );
   mMapSettings.setLayers( layerSet() );
   mMapSettings.setCrsTransformEnabled( hasCrsTransformEnabled() );
   mMapSettings.setDestinationCrs( destinationCrs() );

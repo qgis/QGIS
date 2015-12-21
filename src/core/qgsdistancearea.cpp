@@ -174,8 +174,8 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   {
     if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
-      radius = QString(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-      parameter2 = QString(( char * )sqlite3_column_text( myPreparedStatement, 1 ) );
+      radius = QString( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
+      parameter2 = QString( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 1 ) ) );
     }
   }
   // close the sqlite3 statement
@@ -694,7 +694,7 @@ double QgsDistanceArea::computeDistanceBearing(
   const QgsPoint& p1, const QgsPoint& p2,
   double* course1, double* course2 ) const
 {
-  if ( p1.x() == p2.x() && p1.y() == p2.y() )
+  if ( qgsDoubleNear( p1.x(), p2.x() ) && qgsDoubleNear( p1.y(), p2.y() ) )
     return 0;
 
   // ellipsoid
