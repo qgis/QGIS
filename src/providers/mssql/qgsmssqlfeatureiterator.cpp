@@ -29,6 +29,7 @@
 QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>( source, ownSource, request )
     , mExpressionCompiled( false )
+    , mOrderByCompiled( false )
 {
   mClosed = false;
   mQuery = nullptr;
@@ -191,6 +192,48 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     }
   }
 
+  QStringList orderByParts;
+  mOrderByCompiled = true;
+
+  if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
+  {
+    Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBys() )
+    {
+      if (( clause.ascending() && !clause.nullsFirst() ) || ( !clause.ascending() && clause.nullsFirst() ) )
+      {
+        //not supported by SQL Server
+        mOrderByCompiled = false;
+        break;
+      }
+
+      QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource );
+      QgsExpression expression = clause.expression();
+      if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
+      {
+        QString part;
+        part = compiler.result();
+        part += clause.ascending() ? " ASC" : " DESC";
+        orderByParts << part;
+      }
+      else
+      {
+        // Bail out on first non-complete compilation.
+        // Most important clauses at the beginning of the list
+        // will still be sent and used to pre-sort so the local
+        // CPU can use its cycles for fine-tuning.
+        mOrderByCompiled = false;
+        break;
+      }
+    }
+  }
+  else
+  {
+    mOrderByCompiled = false;
+  }
+
+  if ( !mOrderByCompiled )
+    limitAtProvider = false;
+
   if ( request.limit() >= 0 && limitAtProvider )
   {
     mStatement.prepend( QString( "SELECT TOP %1 " ).arg( mRequest.limit() ) );
@@ -202,6 +245,11 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     mStatement.prepend( "SELECT " );
     if ( !mFallbackStatement.isEmpty() )
       mFallbackStatement.prepend( "SELECT " );
+  }
+
+  if ( !orderByParts.isEmpty() )
+  {
+    mOrderByClause = QString( " ORDER BY %1" ).arg( orderByParts.join( "," ) );
   }
 
   QgsDebugMsg( mStatement );
@@ -267,6 +315,13 @@ bool QgsMssqlFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
     return fetchFeature( f );
 }
 
+bool QgsMssqlFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys )
+{
+  Q_UNUSED( orderBys )
+  // Preparation has already been done in the constructor, so we just communicate the result
+  return mOrderByCompiled;
+}
+
 bool QgsMssqlFeatureIterator::rewind()
 {
   if ( mClosed )
@@ -284,12 +339,32 @@ bool QgsMssqlFeatureIterator::rewind()
   mQuery->clear();
   mQuery->setForwardOnly( true );
 
-  bool result = mQuery->exec( mStatement );
+  bool result = mQuery->exec( mOrderByClause.isEmpty() ? mStatement : mStatement + mOrderByClause );
   if ( !result && !mFallbackStatement.isEmpty() )
   {
     //try with fallback statement
+    result = mQuery->exec( mOrderByClause.isEmpty() ? mFallbackStatement : mFallbackStatement + mOrderByClause );
+    if ( result )
+      mExpressionCompiled = false;
+  }
+
+  if ( !result && !mOrderByClause.isEmpty() )
+  {
+    //try without order by clause
+    result = mQuery->exec( mStatement );
+    if ( result )
+      mOrderByCompiled = false;
+  }
+
+  if ( !result && !mFallbackStatement.isEmpty() && !mOrderByClause.isEmpty() )
+  {
+    //try with fallback statement and without order by clause
     result = mQuery->exec( mFallbackStatement );
-    mExpressionCompiled = false;
+    if ( result )
+    {
+      mExpressionCompiled = false;
+      mOrderByCompiled = false;
+    }
   }
 
   if ( !result )

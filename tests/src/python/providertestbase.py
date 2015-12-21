@@ -160,10 +160,30 @@ class ProviderTestCase(object):
         values = [f['pk'] for f in self.provider.getFeatures(request)]
         self.assertEquals(values, [5, 4, 3, 2, 1])
 
+        # Type dependant expression
+        request = QgsFeatureRequest().addOrderBy('num_char*2', False)
+        values = [f['pk'] for f in self.provider.getFeatures(request)]
+        self.assertEquals(values, [5, 4, 3, 2, 1])
+
+        # Order by guaranteed to fail
+        request = QgsFeatureRequest().addOrderBy('not a valid expression*', False)
+        values = [f['pk'] for f in self.provider.getFeatures(request)]
+        self.assertEquals(set(values), set([5, 4, 3, 2, 1]))
+
         # Multiple order bys and boolean
         request = QgsFeatureRequest().addOrderBy('pk > 2').addOrderBy('pk', False)
         values = [f['pk'] for f in self.provider.getFeatures(request)]
         self.assertEquals(values, [2, 1, 5, 4, 3])
+
+        # Multiple order bys, one bad, and a limit
+        request = QgsFeatureRequest().addOrderBy('pk', False).addOrderBy('not a valid expression*', False).setLimit(2)
+        values = [f['pk'] for f in self.provider.getFeatures(request)]
+        self.assertEquals(values, [5, 4])
+
+        # Bad expression first
+        request = QgsFeatureRequest().addOrderBy('not a valid expression*', False).addOrderBy('pk', False).setLimit(2)
+        values = [f['pk'] for f in self.provider.getFeatures(request)]
+        self.assertEquals(values, [5, 4])
 
     def testGetFeaturesFidTests(self):
         fids = [f.id() for f in self.provider.getFeatures()]

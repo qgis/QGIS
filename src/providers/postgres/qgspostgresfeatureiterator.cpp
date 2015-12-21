@@ -153,8 +153,28 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   if ( !success && useFallbackWhereClause )
   {
     //try with the fallback where clause, eg for cases when using compiled expression failed to prepare
-    mExpressionCompiled = false;
     success = declareCursor( fallbackWhereClause, -1, false, orderByParts.join( "," ) );
+    if ( success )
+      mExpressionCompiled = false;
+  }
+
+  if ( !success && !orderByParts.isEmpty() )
+  {
+    //try with no order by clause
+    success = declareCursor( whereClause, -1, false );
+    if ( success )
+      mOrderByCompiled = false;
+  }
+
+  if ( !success && useFallbackWhereClause && !orderByParts.isEmpty() )
+  {
+    //try with no expression compilation AND no order by clause
+    success = declareCursor( fallbackWhereClause, -1, false );
+    if ( success )
+    {
+      mExpressionCompiled = false;
+      mOrderByCompiled = false;
+    }
   }
 
   if ( !success )
