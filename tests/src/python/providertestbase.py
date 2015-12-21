@@ -185,6 +185,11 @@ class ProviderTestCase(object):
         values = [f['pk'] for f in self.provider.getFeatures(request)]
         self.assertEquals(values, [5, 4])
 
+        # Combination with subset of attributes
+        request = QgsFeatureRequest().addOrderBy('num_char', False).setSubsetOfAttributes(['pk'], self.vl.fields())
+        values = [f['pk'] for f in self.vl.getFeatures(request)]
+        self.assertEquals(values, [5, 4, 3, 2, 1])
+
     def testGetFeaturesFidTests(self):
         fids = [f.id() for f in self.provider.getFeatures()]
         assert len(fids) == 5, 'Expected 5 features, got {} instead'.format(len(fids))
