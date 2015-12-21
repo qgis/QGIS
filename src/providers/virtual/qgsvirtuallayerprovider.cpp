@@ -97,7 +97,7 @@ QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri )
 
 bool QgsVirtualLayerProvider::loadSourceLayers()
 {
-  foreach ( const QgsVirtualLayerDefinition::SourceLayer& layer, mDefinition.sourceLayers() )
+  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer &layer, mDefinition.sourceLayers() )
   {
     if ( layer.isReferenced() )
     {
@@ -221,7 +221,7 @@ bool QgsVirtualLayerProvider::createIt()
   {
 
     QStringList tables = referencedTables( mDefinition.query() );
-    foreach ( const QString& tname, tables )
+    Q_FOREACH ( const QString &tname, tables )
     {
       // is it in source layers ?
       if ( mDefinition.hasSourceLayer( tname ) )
@@ -230,7 +230,7 @@ bool QgsVirtualLayerProvider::createIt()
       }
       // is it in loaded layers ?
       bool found = false;
-      foreach ( const QgsMapLayer* l, QgsMapLayerRegistry::instance()->mapLayers() )
+      Q_FOREACH ( const QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
       {
         if ( l->type() != QgsMapLayer::VectorLayer )
           continue;
@@ -418,7 +418,7 @@ bool QgsVirtualLayerProvider::createIt()
     mTableName = mLayers[0].name;
 
     TableDef td = tableDefinitionFromVirtualTable( mSqlite.get(), mTableName );
-    foreach ( const ColumnDef& c, td )
+    Q_FOREACH ( const ColumnDef &c, td )
     {
       if ( !c.isGeometry() )
       {

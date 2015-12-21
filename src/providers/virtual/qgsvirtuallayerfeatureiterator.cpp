@@ -64,7 +64,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     {
       QString values = quotedColumn( mDefinition.uid() ) + " IN (";
       bool first = true;
-      foreach ( auto& v, request.filterFids() )
+      Q_FOREACH ( const QgsFeatureId &v, request.filterFids() )
       {
         if ( !first )
         {
@@ -82,7 +82,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     {
 
       // copy only selected fields
-      foreach ( int idx, request.subsetOfAttributes() )
+      Q_FOREACH ( int idx, request.subsetOfAttributes() )
       {
         mAttributes << idx;
       }
@@ -103,7 +103,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       {
         columns = "0";
       }
-      foreach ( int i, mAttributes )
+      Q_FOREACH ( int i, mAttributes )
       {
         columns += ",";
         QString cname = mFields.at( i ).name().toLower();
@@ -190,7 +190,7 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature& feature )
 
   int n = mQuery->columnCount();
   int i = 0;
-  foreach ( int idx, mAttributes )
+  Q_FOREACH ( int idx, mAttributes )
   {
     int type = mQuery->columnType( i + 1 );
     switch ( type )
