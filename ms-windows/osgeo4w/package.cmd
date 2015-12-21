@@ -430,24 +430,20 @@ for %%g IN (%GRASS_VERSIONS%) do (
 	set w=!v!
 	if !v!==6 set w=
 
-	set files="apps/%PACKAGENAME%/bin/qgisgrass!v!.dll" ^
+	tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin!w!/%PACKAGENAME%-grass-plugin!w!-%VERSION%-%PACKAGE%.tar.bz2 ^
+		"apps/%PACKAGENAME%/bin/qgisgrass!v!.dll" ^
+		"apps/%PACKAGENAME%/grass/bin/qgis.g.browser!v!.exe" ^
 		"apps/%PACKAGENAME%/grass/modules/qgis.d.rast!v!.exe" ^
 		"apps/%PACKAGENAME%/grass/modules/qgis.g.info!v!.exe" ^
 		"apps/%PACKAGENAME%/grass/modules/qgis.r.in!v!.exe" ^
 		"apps/%PACKAGENAME%/grass/modules/qgis.v.in!v!.exe" ^
-		"apps/%PACKAGENAME%/plugins/grassrasterprovider!v!.dll" ^
+		"apps/%PACKAGENAME%/plugins/grassplugin!v!.dll" ^
 		"apps/%PACKAGENAME%/plugins/grassprovider!v!.dll" ^
-		"bin/%PACKAGENAME%-grass!v!.bat.tmpl" ^
+		"apps/%PACKAGENAME%/plugins/grassrasterprovider!v!.dll" ^
 		"bin/%PACKAGENAME%-browser-grass!v!.bat.tmpl" ^
+		"bin/%PACKAGENAME%-grass!v!.bat.tmpl" ^
 		"etc/postinstall/%PACKAGENAME%-grass-plugin!w!.bat" ^
 		"etc/preremove/%PACKAGENAME%-grass-plugin!w!.bat"
-
-	if !v!==6 set files=!files! ^
-		"apps/%PACKAGENAME%/plugins/grassplugin!v!.dll" ^
-		"apps/%PACKAGENAME%/grass/bin/qgis.g.browser!v!.exe"
-
-	tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin!w!/%PACKAGENAME%-grass-plugin!w!-%VERSION%-%PACKAGE%.tar.bz2 ^
-		!files!
 	if errorlevel 1 (echo tar grass-plugin!w! failed & goto error)
 )
 
