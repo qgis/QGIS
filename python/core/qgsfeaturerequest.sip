@@ -81,6 +81,18 @@ class QgsFeatureRequest
     class OrderBy
     {
       public:
+        OrderBy();
+
+        OrderBy( const QList<QgsFeatureRequest::OrderByClause>& other );
+
+        /**
+         * Get a copy as a list of OrderByClauses
+         *
+         * This is only required in python where the inheritance
+         * is not properly propagated and this makes it usable.
+         */
+        QList<QgsFeatureRequest::OrderByClause> list() const;
+
         /**
          * Serialize to XML
          */
@@ -199,12 +211,12 @@ class QgsFeatureRequest
     /**
      * Return a list of order by clauses specified for this feature request.
      */
-    QgsFeatureRequest::OrderBy orderBys() const;
+    QgsFeatureRequest::OrderBy orderBy() const;
 
     /**
      * Set a list of order by clauses.
      */
-    QgsFeatureRequest& setOrderBys(const QgsFeatureRequest::OrderBy& orderBys );
+    QgsFeatureRequest& setOrderBy(const QgsFeatureRequest::OrderBy& orderBy );
 
     /** Set the maximum number of features to request.
      * @param limit maximum number of features, or -1 to request all features.

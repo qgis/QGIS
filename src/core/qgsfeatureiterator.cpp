@@ -220,7 +220,7 @@ void QgsAbstractFeatureIterator::ref()
     prepareSimplification( mRequest.simplifyMethod() );
 
     // Should be called as last preparation step since it possibly will already fetch all features
-    setupOrderBy( mRequest.orderBys() );
+    setupOrderBy( mRequest.orderBy() );
   }
   refs++;
 }

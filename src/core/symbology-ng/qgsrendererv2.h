@@ -348,13 +348,13 @@ class CORE_EXPORT QgsFeatureRendererV2
      * Get the order in which features shall be processed by this renderer.
      * @note added in QGIS 2.14
      */
-    QgsFeatureRequest::OrderBy orderBy();
+    QgsFeatureRequest::OrderBy orderBy() const;
 
     /**
      * Define the order in which features shall be processed by this renderer.
      * @note added in QGIS 2.14
      */
-    void setOrderBy( const QgsFeatureRequest::OrderBy& orderBys );
+    void setOrderBy( const QgsFeatureRequest::OrderBy& orderBy );
 
   protected:
     QgsFeatureRendererV2( const QString& type );

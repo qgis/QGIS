@@ -71,7 +71,7 @@ void QgsOrderByDialog::setOrderBy( const QgsFeatureRequest::OrderBy& orderBy )
 
 QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
 {
-  QgsFeatureRequest::OrderBy orderBys;
+  QgsFeatureRequest::OrderBy orderBy;
 
   for ( int i = 0; i < mOrderByTableWidget->rowCount(); ++i )
   {
@@ -81,13 +81,13 @@ QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
     {
       bool asc = static_cast<QCheckBox*>( mOrderByTableWidget->cellWidget( i, 1 ) )->checkState();
       bool nullsFirst = static_cast<QCheckBox*>( mOrderByTableWidget->cellWidget( i, 2 ) )->checkState();
-      QgsFeatureRequest::OrderByClause orderBy( expressionText, asc, nullsFirst );
+      QgsFeatureRequest::OrderByClause orderByClause( expressionText, asc, nullsFirst );
 
-      orderBys << orderBy;
+      orderBy << orderByClause;
     }
   }
 
-  return orderBys;
+  return orderBy;
 }
 
 void QgsOrderByDialog::onCellDoubleClicked( int row, int column )

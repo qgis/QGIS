@@ -80,7 +80,7 @@ QgsPointDisplacementRenderer* QgsPointDisplacementRenderer::clone() const
   {
     r->setCenterSymbol( mCenterSymbol->clone() );
   }
-  copyPaintEffect( r );
+  copyRendererData( r );
   return r;
 }
 

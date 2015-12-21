@@ -176,6 +176,26 @@ class CORE_EXPORT QgsFeatureRequest
     {
       public:
         /**
+         * Create a new empty order by
+         */
+        OrderBy()
+            : QList<OrderByClause>()
+        {}
+
+        /**
+         * Create a new order by from a list of clauses
+         */
+        OrderBy( const QList<OrderByClause>& other );
+
+        /**
+         * Get a copy as a list of OrderByClauses
+         *
+         * This is only required in python where the inheritance
+         * is not properly propagated and this makes it usable.
+         */
+        QList<OrderByClause> list() const;
+
+        /**
          * Serialize to XML
          */
         void save( QDomElement& elem ) const;
@@ -315,14 +335,14 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * @note added in 2.14
      */
-    OrderBy orderBys() const;
+    OrderBy orderBy() const;
 
     /**
      * Set a list of order by clauses.
      *
      * @note added in 2.14
      */
-    QgsFeatureRequest& setOrderBys( const OrderBy& orderBys );
+    QgsFeatureRequest& setOrderBy( const OrderBy& orderBy );
 
     /** Set the maximum number of features to request.
      * @param limit maximum number of features, or -1 to request all features.
@@ -385,7 +405,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsAttributeList mAttrs;
     QgsSimplifyMethod mSimplifyMethod;
     long mLimit;
-    OrderBy mOrderBys;
+    OrderBy mOrderBy;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
