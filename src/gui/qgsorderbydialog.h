@@ -53,10 +53,14 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     QgsFeatureRequest::OrderBy orderBy();
 
   private slots:
-    void onCellDoubleClicked( int row, int column );
-    void onCellChanged( int row, int column );
+    void onExpressionChanged( const QString& expression );
 
   private:
+    /**
+     * Initialize a row with the given information
+     */
+    void setRow( int row, const QgsFeatureRequest::OrderByClause& orderByClause );
+
     QgsVectorLayer* mLayer;
 
     bool eventFilter( QObject *obj, QEvent *e );
