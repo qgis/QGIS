@@ -327,9 +327,9 @@ void rulesDialog::updateRuleItems( const QString &layerName )
     return;
   }
 
-  for ( QMap<QString, TopologyRule>::const_iterator it = mTestConfMap.constBegin(); it != mTestConfMap.constEnd(); ++it )
+  for ( QMap<QString, TopologyRule>::iterator it = mTestConfMap.begin(); it != mTestConfMap.end(); ++it )
   {
-    TopologyRule rule = it.value();
+    TopologyRule& rule = it.value();
     if ( rule.layer1AcceptsType( vlayer->geometryType() ) )
     {
       mRuleBox->addItem( it.key() );
