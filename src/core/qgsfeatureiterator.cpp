@@ -120,6 +120,7 @@ class QgsExpressionSorter
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest& request )
     : mRequest( request )
     , mClosed( false )
+    , mZombie( false )
     , refs( 0 )
     , mFetchedCount( 0 )
     , mGeometrySimplifier( nullptr )
@@ -152,8 +153,8 @@ bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
     else
     {
       dataOk = false;
-      // don't call close, the provider connection has already been closed
-      mClosed = true;
+      // even the zombie dies at this point...
+      mZombie = false;
     }
   }
   else
@@ -289,7 +290,8 @@ void QgsAbstractFeatureIterator::setupOrderBy( const QList<QgsFeatureRequest::Or
 
     mFeatureIterator = mCachedFeatures.constBegin();
     mUseCachedFeatures = true;
-    mClosed = false;
+    // The real iterator is closed, we are only serving cached features
+    mZombie = true;
   }
 }
 

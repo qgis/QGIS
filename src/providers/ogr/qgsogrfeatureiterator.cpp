@@ -243,7 +243,7 @@ bool QgsOgrFeatureIterator::rewind()
 
 bool QgsOgrFeatureIterator::close()
 {
-  if ( mClosed )
+  if ( !mConn )
     return false;
 
   iteratorClosed();
@@ -253,7 +253,9 @@ bool QgsOgrFeatureIterator::close()
     OGR_DS_ReleaseResultSet( mConn->ds, ogrLayer );
   }
 
-  QgsOgrConnPool::instance()->releaseConnection( mConn );
+  if ( mConn )
+    QgsOgrConnPool::instance()->releaseConnection( mConn );
+
   mConn = nullptr;
 
   mClosed = true;

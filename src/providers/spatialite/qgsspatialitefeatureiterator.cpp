@@ -235,7 +235,7 @@ bool QgsSpatiaLiteFeatureIterator::rewind()
 
 bool QgsSpatiaLiteFeatureIterator::close()
 {
-  if ( mClosed )
+  if ( !mHandle )
     return false;
 
   iteratorClosed();
