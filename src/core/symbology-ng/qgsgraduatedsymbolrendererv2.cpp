@@ -529,7 +529,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::clone() const
   r->setSizeScaleField( sizeScaleField() );
   r->setLabelFormat( labelFormat() );
   r->setGraduatedMethod( graduatedMethod() );
-  copyPaintEffect( r );
+  copyRendererData( r );
   return r;
 }
 
@@ -1170,6 +1170,13 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
+
+  if ( !mOrderBy.isEmpty() )
+  {
+    QDomElement orderBy = doc.createElement( "orderby" );
+    mOrderBy.save( orderBy );
+    rendererElem.appendChild( orderBy );
+  }
 
   return rendererElem;
 }

@@ -346,7 +346,7 @@ void QgsFeatureRequest::OrderBy::load( const QDomElement& elem )
   for ( int i = 0; i < clauses.size(); ++i )
   {
     QDomElement clauseElem = clauses.at( i ).toElement();
-    QString expression = clauseElem.toText().data();
+    QString expression = clauseElem.text();
     bool asc = clauseElem.attribute( "asc" ).toInt() != 0;
     bool nullsFirst  = clauseElem.attribute( "nullsFirst" ).toInt() != 0;
 

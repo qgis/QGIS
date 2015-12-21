@@ -204,6 +204,15 @@ void QgsFeatureRendererV2::setScaleMethodToSymbol( QgsSymbolV2* symbol, int scal
   }
 }
 
+void QgsFeatureRendererV2::copyRendererData( QgsFeatureRendererV2* destRenderer ) const
+{
+  if ( !destRenderer || !mPaintEffect )
+    return;
+
+  destRenderer->setPaintEffect( mPaintEffect->clone() );
+  destRenderer->mOrderBy = mOrderBy;
+}
+
 void QgsFeatureRendererV2::copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const
 {
   if ( !destRenderer || !mPaintEffect )
@@ -211,7 +220,6 @@ void QgsFeatureRendererV2::copyPaintEffect( QgsFeatureRendererV2 *destRenderer )
 
   destRenderer->setPaintEffect( mPaintEffect->clone() );
 }
-
 
 QgsFeatureRendererV2::QgsFeatureRendererV2( const QString& type )
     : mType( type )
@@ -331,6 +339,10 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
     {
       r->setPaintEffect( QgsPaintEffectRegistry::instance()->createEffect( effectElem ) );
     }
+
+    // restore order by
+    QDomElement orderByElem = element.firstChildElement( "orderby" );
+    r->mOrderBy.load( orderByElem );
   }
   return r;
 }
@@ -344,6 +356,12 @@ QDomElement QgsFeatureRendererV2::save( QDomDocument& doc )
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
 
+  if ( !mOrderBy.isEmpty() )
+  {
+    QDomElement orderBy = doc.createElement( "orderby" );
+    mOrderBy.save( orderBy );
+    rendererElem.appendChild( orderBy );
+  }
   return rendererElem;
 }
 
@@ -596,6 +614,16 @@ void QgsFeatureRendererV2::setPaintEffect( QgsPaintEffect *effect )
 {
   delete mPaintEffect;
   mPaintEffect = effect;
+}
+
+QgsFeatureRequest::OrderBy QgsFeatureRendererV2::orderBy()
+{
+  return mOrderBy;
+}
+
+void QgsFeatureRendererV2::setOrderBy( const QgsFeatureRequest::OrderBy& orderBys )
+{
+  mOrderBy = orderBys;
 }
 
 void QgsFeatureRendererV2::convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymbolV2::ScaleMethod method, const QString & field )

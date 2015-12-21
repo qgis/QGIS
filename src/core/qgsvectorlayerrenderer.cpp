@@ -150,10 +150,13 @@ bool QgsVectorLayerRenderer::render()
   QgsRectangle requestExtent = mContext.extent();
   mRendererV2->modifyRequestExtent( requestExtent, mContext );
 
+  QgsFeatureRequest::OrderBy orderBy = mRendererV2->orderBy();
+
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
                                      .setFilterRect( requestExtent )
                                      .setSubsetOfAttributes( mAttrNames, mFields )
-                                     .setExpressionContext( mContext.expressionContext() );
+                                     .setExpressionContext( mContext.expressionContext() )
+                                     .setOrderBys( orderBy );
 
   const QgsFeatureFilterProvider* featureFilterProvider = mContext.featureFilterProvider();
   if ( featureFilterProvider )
