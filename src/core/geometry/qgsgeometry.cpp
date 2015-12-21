@@ -23,6 +23,7 @@ email                : morb at ozemail dot com dot au
 #include "qgsgeometryeditutils.h"
 #include "qgsgeometryfactory.h"
 #include "qgsgeometryutils.h"
+#include "qgsinternalgeometryengine.h"
 #include "qgsgeos.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -1402,6 +1403,13 @@ QgsGeometry* QgsGeometry::symDifference( const QgsGeometry* geometry ) const
     return nullptr;
   }
   return new QgsGeometry( resultGeom );
+}
+
+QgsGeometry QgsGeometry::extrude( double x, double y )
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.extrude( x, y );
 }
 
 QList<QgsGeometry*> QgsGeometry::asGeometryCollection() const

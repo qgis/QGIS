@@ -13,8 +13,8 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVECTORTOPOLOGY_H
-#define QGSVECTORTOPOLOGY_H
+#ifndef QGSGEOMETRYENGINE_H
+#define QGSGEOMETRYENGINE_H
 
 #include "qgspointv2.h"
 #include "qgslinestringv2.h"
@@ -106,4 +106,4 @@ class CORE_EXPORT QgsGeometryEngine
     QgsGeometryEngine();
 };
 
-#endif // QGSVECTORTOPOLOGY_H
+#endif // QGSGEOMETRYENGINE_H

@@ -477,8 +477,11 @@ class CORE_EXPORT QgsGeometry
     /** Returns a geometry representing the points making up this geometry that do not make up other. */
     QgsGeometry* difference( const QgsGeometry* geometry ) const;
 
-    /** Returns a Geometry representing the points making up this Geometry that do not make up other. */
+    /** Returns a geometry representing the points making up this geometry that do not make up other. */
     QgsGeometry* symDifference( const QgsGeometry* geometry ) const;
+
+    /** Returns an extruded version of this geometry. */
+    QgsGeometry extrude( double x, double y );
 
     /** Exports the geometry to WKT
      *  @note precision parameter added in 2.4
