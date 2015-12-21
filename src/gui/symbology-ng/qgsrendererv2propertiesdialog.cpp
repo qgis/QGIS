@@ -25,6 +25,7 @@
 #include "qgspointdisplacementrendererwidget.h"
 #include "qgsinvertedpolygonrendererwidget.h"
 #include "qgsheatmaprendererwidget.h"
+#include "qgsorderbydialog.h"
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -109,13 +110,17 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   connect( mLayerTransparencySpnBx, SIGNAL( valueChanged( int ) ), mLayerTransparencySlider, SLOT( setValue( int ) ) );
 
   //paint effect widget
-  if ( mLayer->rendererV2() && mLayer->rendererV2()->paintEffect() )
+  if ( mLayer->rendererV2() )
   {
-    mPaintEffect = mLayer->rendererV2()->paintEffect()->clone();
-    mEffectWidget->setPaintEffect( mPaintEffect );
+    if ( mLayer->rendererV2()->paintEffect() )
+    {
+      mPaintEffect = mLayer->rendererV2()->paintEffect()->clone();
+      mEffectWidget->setPaintEffect( mPaintEffect );
+    }
+
+    mOrderBy = mLayer->rendererV2()->orderBy();
   }
 
-  QPixmap pix;
   QgsRendererV2Registry* reg = QgsRendererV2Registry::instance();
   QStringList renderers = reg->renderersList();
   Q_FOREACH ( const QString& name, renderers )
@@ -128,21 +133,31 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
 
   // setup slot rendererChanged()
   connect( cboRenderers, SIGNAL( currentIndexChanged( int ) ), this, SLOT( rendererChanged() ) );
+  //setup order by
+  if ( mOrderBy.isEmpty() )
+  {
+    btnOrderBy->setEnabled( false );
+    checkboxEnableOrderBy->setChecked( false );
+    lineEditOrderBy->setEnabled( false );
+  }
+  else
+  {
+    checkboxEnableOrderBy->setChecked( true );
+  }
+  lineEditOrderBy->setReadOnly( true );
+  connect( checkboxEnableOrderBy, SIGNAL( toggled( bool ) ), btnOrderBy, SLOT( setEnabled( bool ) ) );
+  connect( checkboxEnableOrderBy, SIGNAL( toggled( bool ) ), lineEditOrderBy, SLOT( setEnabled( bool ) ) );
+  connect( btnOrderBy, SIGNAL( clicked( bool ) ), this, SLOT( showOrderByDialog() ) );
+  lineEditOrderBy->setText( mOrderBy.dump() );
 
   // set current renderer from layer
   QString rendererName = mLayer->rendererV2()->type();
-  for ( int i = 0; i < cboRenderers->count(); i++ )
-  {
-    if ( cboRenderers->itemData( i ).toString() == rendererName )
-    {
-      cboRenderers->setCurrentIndex( i );
-      return;
-    }
-  }
+
+  int rendererIdx = cboRenderers->findData( rendererName );
+  cboRenderers->setCurrentIndex( rendererIdx );
 
   // no renderer found... this mustn't happen
-  Q_ASSERT( false && "there must be a renderer!" );
-
+  Q_ASSERT( rendererIdx != -1 && "there must be a renderer!" );
 }
 
 QgsRendererV2PropertiesDialog::~QgsRendererV2PropertiesDialog()
@@ -223,6 +238,9 @@ void QgsRendererV2PropertiesDialog::apply()
   if ( renderer )
   {
     renderer->setPaintEffect( mPaintEffect->clone() );
+    // set the order by
+    renderer->setOrderBy( mOrderBy );
+
     mLayer->setRendererV2( renderer->clone() );
   }
 
@@ -238,6 +256,18 @@ void QgsRendererV2PropertiesDialog::onOK()
 {
   apply();
   accept();
+}
+
+void QgsRendererV2PropertiesDialog::showOrderByDialog()
+{
+  QgsOrderByDialog dlg( mLayer );
+
+  dlg.setOrderBy( mOrderBy );
+  if ( dlg.exec() )
+  {
+    mOrderBy = dlg.orderBy();
+    lineEditOrderBy->setText( mOrderBy.dump() );
+  }
 }
 
 

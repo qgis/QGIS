@@ -201,7 +201,7 @@ QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::clone() const
   QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( mSymbol->clone() );
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setSizeScaleField( sizeScaleField() );
-  copyPaintEffect( r );
+  copyRendererData( r );
   return r;
 }
 
@@ -381,6 +381,12 @@ QDomElement QgsSingleSymbolRendererV2::save( QDomDocument& doc )
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
 
+  if ( !mOrderBy.isEmpty() )
+  {
+    QDomElement orderBy = doc.createElement( "orderby" );
+    mOrderBy.save( orderBy );
+    rendererElem.appendChild( orderBy );
+  }
   return rendererElem;
 }
 
