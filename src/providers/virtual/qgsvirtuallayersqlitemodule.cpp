@@ -188,6 +188,7 @@ private:
         case QVariant::Int:
         case QVariant::UInt:
         case QVariant::Bool:
+        case QVariant::LongLong:
           typeName = "int";
           break;
         case QVariant::Double:
@@ -587,6 +588,9 @@ int vtable_column( sqlite3_vtab_cursor *cursor, sqlite3_context* ctxt, int idx )
       case QVariant::Int:
       case QVariant::UInt:
         sqlite3_result_int( ctxt, v.toInt() );
+        break;
+      case QVariant::LongLong:
+        sqlite3_result_int64( ctxt, v.toLongLong() );
         break;
       case QVariant::Double:
         sqlite3_result_double( ctxt, v.toDouble() );
