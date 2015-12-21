@@ -313,7 +313,7 @@ bool QgsPostgresFeatureIterator::rewind()
 
 bool QgsPostgresFeatureIterator::close()
 {
-  if ( mClosed )
+  if ( !mConn )
     return false;
 
   mConn->closeCursor( mCursorName );
