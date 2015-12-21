@@ -85,6 +85,18 @@ void QgsMapToolAddCircularString::keyPressEvent( QKeyEvent* e )
     mShowCenterPointRubberBand = true;
     createCenterPointRubberBand();
   }
+
+  if ( e && e->key() == Qt::Key_Escape )
+  {
+    mPoints.clear();
+    delete mRubberBand;
+    mRubberBand = nullptr;
+    delete mTempRubberBand;
+    mTempRubberBand = nullptr;
+    removeCenterPointRubberBand();
+    if ( mParentTool )
+      mParentTool->keyPressEvent( e );
+  }
 }
 
 void QgsMapToolAddCircularString::keyReleaseEvent( QKeyEvent* e )
