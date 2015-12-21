@@ -120,9 +120,9 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     // TODO:
     // It would be nicer to first check if we can compile the order by
     // and only modify the subset if we cannot.
-    if ( !mProviderRequest.orderBys().isEmpty() )
+    if ( !mProviderRequest.orderBy().isEmpty() )
     {
-      Q_FOREACH ( const QString& attr, mProviderRequest.orderBys().usedAttributes() )
+      Q_FOREACH ( const QString& attr, mProviderRequest.orderBy().usedAttributes() )
       {
         providerSubset << mSource->mFields.fieldNameIndex( attr );
       }

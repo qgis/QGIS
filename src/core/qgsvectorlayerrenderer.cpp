@@ -156,7 +156,7 @@ bool QgsVectorLayerRenderer::render()
                                      .setFilterRect( requestExtent )
                                      .setSubsetOfAttributes( mAttrNames, mFields )
                                      .setExpressionContext( mContext.expressionContext() )
-                                     .setOrderBys( orderBy );
+                                     .setOrderBy( orderBy );
 
   const QgsFeatureFilterProvider* featureFilterProvider = mContext.featureFilterProvider();
   if ( featureFilterProvider )

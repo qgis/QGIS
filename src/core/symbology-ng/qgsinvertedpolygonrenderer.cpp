@@ -344,7 +344,7 @@ QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::clone() const
     newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer.data() );
   }
   newRenderer->setPreprocessingEnabled( preprocessingEnabled() );
-  copyPaintEffect( newRenderer );
+  copyRendererData( newRenderer );
   return newRenderer;
 }
 
