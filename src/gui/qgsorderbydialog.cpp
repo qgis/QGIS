@@ -17,6 +17,7 @@
 #include "qgsorderbydialog.h"
 
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsfieldexpressionwidget.h"
 
 #include <QTableWidget>
 #include <QCheckBox>
@@ -27,8 +28,6 @@ QgsOrderByDialog::QgsOrderByDialog( QgsVectorLayer* layer, QWidget* parent )
     , mLayer( layer )
 {
   setupUi( this );
-  connect( mOrderByTableWidget, SIGNAL( cellDoubleClicked( int, int ) ), this, SLOT( onCellDoubleClicked( int, int ) ) );
-  connect( mOrderByTableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( onCellChanged( int, int ) ) );
 
   mOrderByTableWidget->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
   mOrderByTableWidget->horizontalHeader()->setResizeMode( 1, QHeaderView::Interactive );
@@ -45,28 +44,13 @@ void QgsOrderByDialog::setOrderBy( const QgsFeatureRequest::OrderBy& orderBy )
   int i = 0;
   Q_FOREACH ( const QgsFeatureRequest::OrderByClause& orderByClause, orderBy )
   {
-    QTableWidgetItem* expressionItem  = new QTableWidgetItem( orderByClause.expression().expression() );
-    QCheckBox* ascCheckBox        = new QCheckBox();
-    ascCheckBox->setChecked( orderByClause.ascending() );
-    QCheckBox* nullsFirstCheckBox = new QCheckBox();
-    nullsFirstCheckBox->setChecked( orderByClause.nullsFirst() );
-
-    mOrderByTableWidget->setItem( i, 0, expressionItem );
-    mOrderByTableWidget->setCellWidget( i, 1, ascCheckBox );
-    mOrderByTableWidget->setCellWidget( i, 2, nullsFirstCheckBox );
+    setRow( i, orderByClause );
 
     ++i;
   }
 
   // Add an empty widget at the end
-  QTableWidgetItem* expressionItem  = new QTableWidgetItem( "" );
-  QCheckBox* ascCheckBox        = new QCheckBox();
-  ascCheckBox->setChecked( true );
-  QCheckBox* nullsFirstCheckBox = new QCheckBox();
-
-  mOrderByTableWidget->setItem( i, 0, expressionItem );
-  mOrderByTableWidget->setCellWidget( i, 1, ascCheckBox );
-  mOrderByTableWidget->setCellWidget( i, 2, nullsFirstCheckBox );
+  setRow( i, QgsFeatureRequest::OrderByClause( "" ) );
 }
 
 QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
@@ -75,7 +59,7 @@ QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
 
   for ( int i = 0; i < mOrderByTableWidget->rowCount(); ++i )
   {
-    QString expressionText = mOrderByTableWidget->item( i, 0 )->text();
+    QString expressionText = static_cast<QgsFieldExpressionWidget*>( mOrderByTableWidget->cellWidget( i, 0 ) )->currentText();
 
     if ( ! expressionText.isEmpty() )
     {
@@ -90,70 +74,43 @@ QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
   return orderBy;
 }
 
-void QgsOrderByDialog::onCellDoubleClicked( int row, int column )
+void QgsOrderByDialog::onExpressionChanged( const QString& expression )
 {
-  // Only act on first cell where the expression text is
-  if ( 0 == column )
+  // The sender() is the field widget which is the cell widget of the first column
+  int row;
+  for ( row = 0; row < mOrderByTableWidget->rowCount(); ++row )
   {
-    QgsExpressionBuilderDialog dlg( mLayer );
-
-    dlg.setExpressionText( mOrderByTableWidget->item( row, column )->text() );
-
-    if ( dlg.exec() )
+    if ( mOrderByTableWidget->cellWidget( row, 0 ) == sender() )
     {
-      QString expressionText = dlg.expressionText();
-
-      mOrderByTableWidget->item( row, column )->setText( expressionText );
-
-      if ( row == mOrderByTableWidget->rowCount() - 1 )
-      {
-        // Add an empty widget at the end if the last row was edited
-        mOrderByTableWidget->insertRow( mOrderByTableWidget->rowCount() );
-
-        QTableWidgetItem* expressionItem  = new QTableWidgetItem( "" );
-        QCheckBox* ascCheckBox        = new QCheckBox();
-        ascCheckBox->setChecked( true );
-        QCheckBox* nullsFirstCheckBox = new QCheckBox();
-
-        mOrderByTableWidget->setItem( row + 1, 0, expressionItem );
-        mOrderByTableWidget->setCellWidget( row + 1, 1, ascCheckBox );
-        mOrderByTableWidget->setCellWidget( row + 1, 2, nullsFirstCheckBox );
-      }
+      break;
     }
+  }
+
+  if ( expression.isEmpty() && row != mOrderByTableWidget->rowCount() - 1 )
+  {
+    mOrderByTableWidget->removeRow( row );
+  }
+  else if ( !expression.isEmpty() && row == mOrderByTableWidget->rowCount() - 1 )
+  {
+    mOrderByTableWidget->insertRow( mOrderByTableWidget->rowCount() );
+    setRow( row + 1, QgsFeatureRequest::OrderByClause( "" ) );
   }
 }
 
-void QgsOrderByDialog::onCellChanged( int row, int column )
+void QgsOrderByDialog::setRow( int row, const QgsFeatureRequest::OrderByClause& orderByClause )
 {
-  // If the text was cleared
-  if ( mOrderByTableWidget->item( row, column )->text().isEmpty() )
-  {
-    // If the first column (expression text) and not the last row was edited
-    if ( 0 == column && row != mOrderByTableWidget->rowCount() - 1 )
-    {
-      {
-        mOrderByTableWidget->removeRow( row );
-      }
-    }
-  }
-  else
-  {
-    // If it's the last row and an expression was added: add a new empty one
-    if ( row == mOrderByTableWidget->rowCount() - 1 && !mOrderByTableWidget->item( row, column )->text().isEmpty() )
-    {
-      // Add an empty widget at the end if the last row was edited
-      mOrderByTableWidget->insertRow( mOrderByTableWidget->rowCount() );
+  QgsFieldExpressionWidget* fieldExpression = new QgsFieldExpressionWidget();
+  fieldExpression->setLayer( mLayer );
+  fieldExpression->setField( orderByClause.expression().expression() );
+  connect( fieldExpression, SIGNAL( fieldChanged( QString ) ), this, SLOT( onExpressionChanged( QString ) ) );
+  QCheckBox* ascCheckBox        = new QCheckBox();
+  ascCheckBox->setChecked( orderByClause.ascending() );
+  QCheckBox* nullsFirstCheckBox = new QCheckBox();
+  nullsFirstCheckBox->setChecked( orderByClause.nullsFirst() );
 
-      QTableWidgetItem* expressionItem  = new QTableWidgetItem( "" );
-      QCheckBox* ascCheckBox        = new QCheckBox();
-      ascCheckBox->setChecked( true );
-      QCheckBox* nullsFirstCheckBox = new QCheckBox();
-
-      mOrderByTableWidget->setItem( row + 1, 0, expressionItem );
-      mOrderByTableWidget->setCellWidget( row + 1, 1, ascCheckBox );
-      mOrderByTableWidget->setCellWidget( row + 1, 2, nullsFirstCheckBox );
-    }
-  }
+  mOrderByTableWidget->setCellWidget( row, 0, fieldExpression );
+  mOrderByTableWidget->setCellWidget( row, 1, ascCheckBox );
+  mOrderByTableWidget->setCellWidget( row, 2, nullsFirstCheckBox );
 }
 
 bool QgsOrderByDialog::eventFilter( QObject* obj, QEvent* e )
