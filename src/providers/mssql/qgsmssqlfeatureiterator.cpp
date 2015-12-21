@@ -197,7 +197,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 
   if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
   {
-    Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBys() )
+    Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBy() )
     {
       if (( clause.ascending() && !clause.nullsFirst() ) || ( !clause.ascending() && clause.nullsFirst() ) )
       {

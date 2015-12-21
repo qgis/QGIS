@@ -911,7 +911,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::clone() const
   QgsRuleBasedRendererV2* r = new QgsRuleBasedRendererV2( clonedRoot );
 
   r->setUsingSymbolLevels( usingSymbolLevels() );
-  copyPaintEffect( r );
+  copyRendererData( r );
   return r;
 }
 

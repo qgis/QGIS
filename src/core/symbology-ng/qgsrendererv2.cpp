@@ -616,14 +616,14 @@ void QgsFeatureRendererV2::setPaintEffect( QgsPaintEffect *effect )
   mPaintEffect = effect;
 }
 
-QgsFeatureRequest::OrderBy QgsFeatureRendererV2::orderBy()
+QgsFeatureRequest::OrderBy QgsFeatureRendererV2::orderBy() const
 {
   return mOrderBy;
 }
 
-void QgsFeatureRendererV2::setOrderBy( const QgsFeatureRequest::OrderBy& orderBys )
+void QgsFeatureRendererV2::setOrderBy( const QgsFeatureRequest::OrderBy& orderBy )
 {
-  mOrderBy = orderBys;
+  mOrderBy = orderBy;
 }
 
 void QgsFeatureRendererV2::convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymbolV2::ScaleMethod method, const QString & field )

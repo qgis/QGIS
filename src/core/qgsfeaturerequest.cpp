@@ -84,7 +84,7 @@ QgsFeatureRequest& QgsFeatureRequest::operator=( const QgsFeatureRequest & rh )
   mAttrs = rh.mAttrs;
   mSimplifyMethod = rh.mSimplifyMethod;
   mLimit = rh.mLimit;
-  mOrderBys = rh.mOrderBys;
+  mOrderBy = rh.mOrderBy;
   return *this;
 }
 
@@ -144,24 +144,24 @@ QgsFeatureRequest &QgsFeatureRequest::setExpressionContext( const QgsExpressionC
 
 QgsFeatureRequest& QgsFeatureRequest::addOrderBy( const QString& expression, bool ascending )
 {
-  mOrderBys.append( OrderByClause( expression, ascending ) );
+  mOrderBy.append( OrderByClause( expression, ascending ) );
   return *this;
 }
 
 QgsFeatureRequest& QgsFeatureRequest::addOrderBy( const QString& expression, bool ascending, bool nullsfirst )
 {
-  mOrderBys.append( OrderByClause( expression, ascending, nullsfirst ) );
+  mOrderBy.append( OrderByClause( expression, ascending, nullsfirst ) );
   return *this;
 }
 
-QgsFeatureRequest::OrderBy QgsFeatureRequest::orderBys() const
+QgsFeatureRequest::OrderBy QgsFeatureRequest::orderBy() const
 {
-  return mOrderBys;
+  return mOrderBy;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setOrderBys( const QgsFeatureRequest::OrderBy& orderBys )
+QgsFeatureRequest& QgsFeatureRequest::setOrderBy( const QgsFeatureRequest::OrderBy& orderBy )
 {
-  mOrderBys = orderBys;
+  mOrderBy = orderBy;
   return *this;
 }
 
@@ -319,6 +319,19 @@ QString QgsFeatureRequest::OrderByClause::dump() const
 QgsExpression QgsFeatureRequest::OrderByClause::expression() const
 {
   return mExpression;
+}
+
+QgsFeatureRequest::OrderBy::OrderBy( const QList<QgsFeatureRequest::OrderByClause>& other )
+{
+  Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, other )
+  {
+    append( clause );
+  }
+}
+
+QList<QgsFeatureRequest::OrderByClause> QgsFeatureRequest::OrderBy::list() const
+{
+  return *this;
 }
 
 void QgsFeatureRequest::OrderBy::save( QDomElement& elem ) const
