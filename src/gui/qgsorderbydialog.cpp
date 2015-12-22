@@ -20,7 +20,6 @@
 #include "qgsfieldexpressionwidget.h"
 
 #include <QTableWidget>
-#include <QCheckBox>
 #include <QKeyEvent>
 
 QgsOrderByDialog::QgsOrderByDialog( QgsVectorLayer* layer, QWidget* parent )
@@ -30,15 +29,14 @@ QgsOrderByDialog::QgsOrderByDialog( QgsVectorLayer* layer, QWidget* parent )
   setupUi( this );
 
   mOrderByTableWidget->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
-  mOrderByTableWidget->horizontalHeader()->setResizeMode( 1, QHeaderView::Interactive );
-  mOrderByTableWidget->horizontalHeader()->setResizeMode( 2, QHeaderView::Interactive );
+  mOrderByTableWidget->horizontalHeader()->setResizeMode( 1, QHeaderView::ResizeToContents );
+  mOrderByTableWidget->horizontalHeader()->setResizeMode( 2, QHeaderView::ResizeToContents );
 
   mOrderByTableWidget->installEventFilter( this );
 }
 
 void QgsOrderByDialog::setOrderBy( const QgsFeatureRequest::OrderBy& orderBy )
 {
-  mOrderByTableWidget->clear();
   mOrderByTableWidget->setRowCount( orderBy.length() + 1 );
 
   int i = 0;
@@ -63,8 +61,16 @@ QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
 
     if ( ! expressionText.isEmpty() )
     {
-      bool asc = static_cast<QCheckBox*>( mOrderByTableWidget->cellWidget( i, 1 ) )->checkState();
-      bool nullsFirst = static_cast<QCheckBox*>( mOrderByTableWidget->cellWidget( i, 2 ) )->checkState();
+      bool asc = true;
+      int ascIndex = static_cast<QComboBox*>( mOrderByTableWidget->cellWidget( i, 1 ) )->currentIndex();
+      if ( ascIndex == 1 )
+        asc = false;
+
+      bool nullsFirst = false;
+      int nullsFirstIndex = static_cast<QComboBox*>( mOrderByTableWidget->cellWidget( i, 2 ) )->currentIndex();
+      if ( nullsFirstIndex == 1 )
+        nullsFirst = true;
+
       QgsFeatureRequest::OrderByClause orderByClause( expressionText, asc, nullsFirst );
 
       orderBy << orderByClause;
@@ -103,14 +109,20 @@ void QgsOrderByDialog::setRow( int row, const QgsFeatureRequest::OrderByClause& 
   fieldExpression->setLayer( mLayer );
   fieldExpression->setField( orderByClause.expression().expression() );
   connect( fieldExpression, SIGNAL( fieldChanged( QString ) ), this, SLOT( onExpressionChanged( QString ) ) );
-  QCheckBox* ascCheckBox        = new QCheckBox();
-  ascCheckBox->setChecked( orderByClause.ascending() );
-  QCheckBox* nullsFirstCheckBox = new QCheckBox();
-  nullsFirstCheckBox->setChecked( orderByClause.nullsFirst() );
+
+  QComboBox* ascComboBox = new QComboBox();
+  ascComboBox->addItem( tr( "Ascending" ) );
+  ascComboBox->addItem( tr( "Descencing" ) );
+  ascComboBox->setCurrentIndex( orderByClause.ascending() ? 0 : 1 );
+
+  QComboBox* nullsFirstComboBox = new QComboBox();
+  nullsFirstComboBox->addItem( tr( "NULLs last" ) );
+  nullsFirstComboBox->addItem( tr( "NULLs first" ) );
+  nullsFirstComboBox->setCurrentIndex( orderByClause.nullsFirst() ? 1 : 0 );
 
   mOrderByTableWidget->setCellWidget( row, 0, fieldExpression );
-  mOrderByTableWidget->setCellWidget( row, 1, ascCheckBox );
-  mOrderByTableWidget->setCellWidget( row, 2, nullsFirstCheckBox );
+  mOrderByTableWidget->setCellWidget( row, 1, ascComboBox );
+  mOrderByTableWidget->setCellWidget( row, 2, nullsFirstComboBox );
 }
 
 bool QgsOrderByDialog::eventFilter( QObject* obj, QEvent* e )
