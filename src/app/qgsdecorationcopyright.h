@@ -60,6 +60,9 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
     //! Placement of the copyright label - index and translated label names
     int mPlacementIndex;
     QStringList mPlacementLabels;
+    //! enable or disable use of position percentage for placement
+    int mMarginHorizontal;
+    int mMarginVertical;
 
     friend class QgsDecorationCopyrightDialog;
 };
