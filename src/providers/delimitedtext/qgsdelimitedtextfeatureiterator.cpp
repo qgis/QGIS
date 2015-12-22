@@ -377,7 +377,7 @@ QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList
   }
 
   isNull = false;
-  geom = QgsDelimitedTextProvider::geomFromWkt( sWkt, mSource->mWktHasPrefix, mSource->mWktHasZM );
+  geom = QgsDelimitedTextProvider::geomFromWkt( sWkt, mSource->mWktHasPrefix );
 
   if ( geom && geom->type() != mSource->mGeometryType )
   {
@@ -482,7 +482,6 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
     , mXFieldIndex( p->mXFieldIndex )
     , mYFieldIndex( p->mYFieldIndex )
     , mWktFieldIndex( p->mWktFieldIndex )
-    , mWktHasZM( p->mWktHasZM )
     , mWktHasPrefix( p->mWktHasPrefix )
     , mGeometryType( p->mGeometryType )
     , mDecimalPoint( p->mDecimalPoint )

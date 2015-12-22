@@ -217,9 +217,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
   private:
 
-    static QRegExp WktZMRegexp;
-    static QRegExp WktCrdRegexp;
-
     void scanFile( bool buildIndexes );
     void rescanFile();
     void resetCachedSubset();
@@ -231,7 +228,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     void setUriParameter( const QString& parameter, const QString& value );
 
 
-    static QgsGeometry *geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp, bool wktHasZM );
+    static QgsGeometry *geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp );
     static bool pointFromXY( QString &sX, QString &sY, QgsPoint &point, const QString& decimalPoint, bool xyDms );
     static double dmsStringToDouble( const QString &sX, bool *xOk );
 
@@ -258,13 +255,8 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     int mYFieldIndex;
     int mWktFieldIndex;
 
-    // Handling of WKT types with .. Z, .. M, and .. ZM geometries (ie
-    // Z values and/or measures).  mWktZMRegexp is used to test for and
-    // remove the Z or M fields, and mWktCrdRegexp is used to remove the
-    // extra coordinate values. mWktPrefix regexp is used to clean up
+    // mWktPrefix regexp is used to clean up
     // prefixes sometimes used for WKT (postgis EWKT, informix SRID)
-
-    bool mWktHasZM;
     bool mWktHasPrefix;
 
     //! Layer extent
@@ -294,15 +286,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     //! Record file updates, flags rescan required
     bool mRescanRequired;
-
-    struct wkbPoint
-    {
-      unsigned char byteOrder;
-      quint32 wkbType;
-      double x;
-      double y;
-    };
-    wkbPoint mWKBpt;
 
     // Coordinate reference sytem
     QgsCoordinateReferenceSystem mCrs;
