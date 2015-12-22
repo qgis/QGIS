@@ -118,7 +118,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
 
   if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
   {
-    Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBys() )
+    Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBy() )
     {
       QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
       QgsExpression expression = clause.expression();
@@ -313,7 +313,7 @@ bool QgsPostgresFeatureIterator::rewind()
 
 bool QgsPostgresFeatureIterator::close()
 {
-  if ( mClosed )
+  if ( !mConn )
     return false;
 
   mConn->closeCursor( mCursorName );

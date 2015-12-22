@@ -123,7 +123,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
   if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
   {
-    Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBys() )
+    Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBy() )
     {
       QgsSpatiaLiteExpressionCompiler compiler = QgsSpatiaLiteExpressionCompiler( source );
       QgsExpression expression = clause.expression();
@@ -235,7 +235,7 @@ bool QgsSpatiaLiteFeatureIterator::rewind()
 
 bool QgsSpatiaLiteFeatureIterator::close()
 {
-  if ( mClosed )
+  if ( !mHandle )
     return false;
 
   iteratorClosed();

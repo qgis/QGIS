@@ -89,7 +89,17 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     /** Set to true, as soon as the iterator is closed. */
     bool mClosed;
 
+    /**
+     * A feature iterator may be closed already but still be serving features from the cache.
+     * This is done when we serve features which have been pre-fetched and the order by has
+     * been locally sorted.
+     * In such a scenario, all resources have been released (mClosed is true) but the deads
+     * are still alive.
+     */
+    bool mZombie;
+
     //! reference counting (to allow seamless copying of QgsFeatureIterator instances)
+    //! TODO QGIS3: make this private
     int refs;
     void ref(); //!< add reference
     void deref(); //!< remove reference, delete if refs == 0
@@ -247,7 +257,7 @@ inline bool QgsFeatureIterator::close()
 
 inline bool QgsFeatureIterator::isClosed() const
 {
-  return mIter ? mIter->mClosed : true;
+  return mIter ? mIter->mClosed && !mIter->mZombie : true;
 }
 
 inline bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )

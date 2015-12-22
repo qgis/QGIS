@@ -79,7 +79,11 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
       */
     bool isValidExpression( QString *expressionError = nullptr ) const;
 
+    /**
+     * If the content is not just a simple field this method will return true.
+     */
     bool isExpression() const;
+
     /**
       * Return the current text that is set in the expression area
       */

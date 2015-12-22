@@ -21,6 +21,7 @@
 #include "qgsrendercontext.h"
 #include "qgssymbolv2.h"
 #include "qgsfield.h"
+#include "qgsfeaturerequest.h"
 
 #include <QList>
 #include <QString>
@@ -343,6 +344,18 @@ class CORE_EXPORT QgsFeatureRendererV2
      */
     void setForceRasterRender( bool forceRaster ) { mForceRaster = forceRaster; }
 
+    /**
+     * Get the order in which features shall be processed by this renderer.
+     * @note added in QGIS 2.14
+     */
+    QgsFeatureRequest::OrderBy orderBy() const;
+
+    /**
+     * Define the order in which features shall be processed by this renderer.
+     * @note added in QGIS 2.14
+     */
+    void setOrderBy( const QgsFeatureRequest::OrderBy& orderBy );
+
   protected:
     QgsFeatureRendererV2( const QString& type );
 
@@ -366,10 +379,21 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     void setScaleMethodToSymbol( QgsSymbolV2* symbol, int scaleMethod );
 
-    /** Copies paint effect of this renderer to another renderer
+    /**
+     * Clones generic renderer data to another renderer.
+     * Currently clones
+     *  * Order By
+     *  * Paint Effect
+     *
      * @param destRenderer destination renderer for copied effect
      */
-    void copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const;
+    void copyRendererData( QgsFeatureRendererV2 *destRenderer ) const;
+
+    /** Copies paint effect of this renderer to another renderer
+     * @param destRenderer destination renderer for copied effect
+     * @deprecated use copyRendererData instead
+     */
+    Q_DECL_DEPRECATED void copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const;
 
     QString mType;
 
@@ -392,6 +416,8 @@ class CORE_EXPORT QgsFeatureRendererV2
      * level DataDefined angle
      */
     static void convertSymbolRotation( QgsSymbolV2 * symbol, const QString & field );
+
+    QgsFeatureRequest::OrderBy mOrderBy;
 
   private:
     Q_DISABLE_COPY( QgsFeatureRendererV2 )

@@ -155,10 +155,65 @@ class CORE_EXPORT QgsFeatureRequest
          */
         void setNullsFirst( bool nullsFirst );
 
+        /**
+         * Dumps the content to an SQL equivalent
+         */
+        QString dump() const;
+
       private:
         QgsExpression mExpression;
         bool mAscending;
         bool mNullsFirst;
+    };
+
+    /**
+     * Represents a list of OrderByClauses, with the most important first and the least
+     * important last.
+     *
+     * @note added in QGIS 2.14
+     */
+    class OrderBy : public QList<OrderByClause>
+    {
+      public:
+        /**
+         * Create a new empty order by
+         */
+        OrderBy()
+            : QList<OrderByClause>()
+        {}
+
+        /**
+         * Create a new order by from a list of clauses
+         */
+        OrderBy( const QList<OrderByClause>& other );
+
+        /**
+         * Get a copy as a list of OrderByClauses
+         *
+         * This is only required in python where the inheritance
+         * is not properly propagated and this makes it usable.
+         */
+        QList<OrderByClause> list() const;
+
+        /**
+         * Serialize to XML
+         */
+        void save( QDomElement& elem ) const;
+
+        /**
+         * Deserialize from XML
+         */
+        void load( const QDomElement& elem );
+
+        /**
+         * Returns a set of used attributes
+         */
+        QSet<QString> usedAttributes() const;
+
+        /**
+         * Dumps the content to an SQL equivalent syntax
+         */
+        QString dump() const;
     };
 
     /**
@@ -277,13 +332,17 @@ class CORE_EXPORT QgsFeatureRequest
 
     /**
      * Return a list of order by clauses specified for this feature request.
+     *
+     * @note added in 2.14
      */
-    QList<OrderByClause> orderBys() const;
+    OrderBy orderBy() const;
 
     /**
      * Set a list of order by clauses.
+     *
+     * @note added in 2.14
      */
-    void setOrderBys( const QList<OrderByClause>& orderBys );
+    QgsFeatureRequest& setOrderBy( const OrderBy& orderBy );
 
     /** Set the maximum number of features to request.
      * @param limit maximum number of features, or -1 to request all features.
@@ -346,7 +405,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsAttributeList mAttrs;
     QgsSimplifyMethod mSimplifyMethod;
     long mLimit;
-    QList<OrderByClause> mOrderBys;
+    OrderBy mOrderBy;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )

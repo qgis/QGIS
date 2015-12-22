@@ -120,6 +120,7 @@ class QgsExpressionSorter
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest& request )
     : mRequest( request )
     , mClosed( false )
+    , mZombie( false )
     , refs( 0 )
     , mFetchedCount( 0 )
     , mGeometrySimplifier( nullptr )
@@ -148,6 +149,12 @@ bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
       f = mFeatureIterator->mFeature;
       ++mFeatureIterator;
       dataOk = true;
+    }
+    else
+    {
+      dataOk = false;
+      // even the zombie dies at this point...
+      mZombie = false;
     }
   }
   else
@@ -213,7 +220,7 @@ void QgsAbstractFeatureIterator::ref()
     prepareSimplification( mRequest.simplifyMethod() );
 
     // Should be called as last preparation step since it possibly will already fetch all features
-    setupOrderBy( mRequest.orderBys() );
+    setupOrderBy( mRequest.orderBy() );
   }
   refs++;
 }
@@ -279,10 +286,12 @@ void QgsAbstractFeatureIterator::setupOrderBy( const QList<QgsFeatureRequest::Or
       mCachedFeatures.append( indexedFeature );
     }
 
-    std::sort( mCachedFeatures.begin(), mCachedFeatures.end(), QgsExpressionSorter( preparedOrderBys ) );
+    qSort( mCachedFeatures.begin(), mCachedFeatures.end(), QgsExpressionSorter( preparedOrderBys ) );
 
     mFeatureIterator = mCachedFeatures.constBegin();
     mUseCachedFeatures = true;
+    // The real iterator is closed, we are only serving cached features
+    mZombie = true;
   }
 }
 
