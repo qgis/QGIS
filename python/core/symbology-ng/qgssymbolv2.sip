@@ -213,6 +213,9 @@ class QgsSymbolV2
     //! check whether a symbol layer type can be used within the symbol
     //! (marker-marker, line-line, fill-fill/line)
     bool isSymbolLayerCompatible( SymbolType t );
+
+  private:
+    QgsSymbolV2( const QgsSymbolV2& );
 };
 
 ///////////////////////
