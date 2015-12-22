@@ -1002,53 +1002,12 @@ bool QgsProject::write()
 {
   clearError();
 
-  // Create backup file
-  if ( QFile::exists( fileName() ) )
-  {
-    QFile backupFile( fileName() + '~' );
-    bool ok = true;
-    ok &= backupFile.open( QIODevice::WriteOnly | QIODevice::Truncate );
-    ok &= imp_->file.open( QIODevice::ReadOnly );
-
-    QByteArray ba;
-    while ( ok && !imp_->file.atEnd() )
-    {
-      ba = imp_->file.read( 10240 );
-      ok &= backupFile.write( ba ) == ba.size();
-    }
-
-    imp_->file.close();
-    backupFile.close();
-
-    if ( !ok )
-    {
-      setError( tr( "Unable to create backup file %1" ).arg( backupFile.fileName() ) );
-      return false;
-    }
-
-    QFileInfo fi( fileName() );
-    struct utimbuf tb = { fi.lastRead().toTime_t(), fi.lastModified().toTime_t() };
-    utime( backupFile.fileName().toUtf8().constData(), &tb );
-  }
-
   // if we have problems creating or otherwise writing to the project file,
   // let's find out up front before we go through all the hand-waving
   // necessary to create all the Dom objects
-  if ( !imp_->file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-  {
-    imp_->file.close();         // even though we got an error, let's make
-    // sure it's closed anyway
-
-    setError( tr( "Unable to save to file %1" ).arg( imp_->file.fileName() ) );
-    return false;
-  }
-
   QFileInfo myFileInfo( imp_->file );
-  if ( !myFileInfo.isWritable() )
+  if ( myFileInfo.exists() && !myFileInfo.isWritable() )
   {
-    // even though we got an error, let's make
-    // sure it's closed anyway
-    imp_->file.close();
     setError( tr( "%1 is not writable. Please adjust permissions (if possible) and try again." )
               .arg( imp_->file.fileName() ) );
     return false;
@@ -1148,6 +1107,44 @@ bool QgsProject::write()
 
   // now wrap it up and ship it to the project file
   doc->normalize();             // XXX I'm not entirely sure what this does
+
+  // Create backup file
+  if ( QFile::exists( fileName() ) )
+  {
+    QFile backupFile( fileName() + '~' );
+    bool ok = true;
+    ok &= backupFile.open( QIODevice::WriteOnly | QIODevice::Truncate );
+    ok &= imp_->file.open( QIODevice::ReadOnly );
+
+    QByteArray ba;
+    while ( ok && !imp_->file.atEnd() )
+    {
+      ba = imp_->file.read( 10240 );
+      ok &= backupFile.write( ba ) == ba.size();
+    }
+
+    imp_->file.close();
+    backupFile.close();
+
+    if ( !ok )
+    {
+      setError( tr( "Unable to create backup file %1" ).arg( backupFile.fileName() ) );
+      return false;
+    }
+
+    QFileInfo fi( fileName() );
+    struct utimbuf tb = { fi.lastRead().toTime_t(), fi.lastModified().toTime_t() };
+    utime( backupFile.fileName().toUtf8().constData(), &tb );
+  }
+
+  if ( !imp_->file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  {
+    imp_->file.close();         // even though we got an error, let's make
+    // sure it's closed anyway
+
+    setError( tr( "Unable to save to file %1" ).arg( imp_->file.fileName() ) );
+    return false;
+  }
 
   QTemporaryFile tempFile;
   bool ok = tempFile.open();
