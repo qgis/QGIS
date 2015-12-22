@@ -1005,19 +1005,30 @@ bool QgsProject::write()
   // Create backup file
   if ( QFile::exists( fileName() ) )
   {
-    QString backup = fileName() + '~';
-    if ( QFile::exists( backup ) )
-      QFile::remove( backup );
+    QFile backupFile( fileName() + '~' );
+    bool ok = true;
+    ok &= backupFile.open( QIODevice::WriteOnly | QIODevice::Truncate );
+    ok &= imp_->file.open( QIODevice::ReadOnly );
 
-    if ( !QFile::copy( fileName(), backup ) )
+    QByteArray ba;
+    while ( ok && !imp_->file.atEnd() )
     {
-      setError( tr( "Unable to create backup file %1" ).arg( backup ) );
+      ba = imp_->file.read( 10240 );
+      ok &= backupFile.write( ba ) == ba.size();
+    }
+
+    imp_->file.close();
+    backupFile.close();
+
+    if ( !ok )
+    {
+      setError( tr( "Unable to create backup file %1" ).arg( backupFile.fileName() ) );
       return false;
     }
 
     QFileInfo fi( fileName() );
     struct utimbuf tb = { fi.lastRead().toTime_t(), fi.lastModified().toTime_t() };
-    utime( backup.toUtf8().constData(), &tb );
+    utime( backupFile.fileName().toUtf8().constData(), &tb );
   }
 
   // if we have problems creating or otherwise writing to the project file,
