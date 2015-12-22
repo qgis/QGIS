@@ -173,14 +173,12 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
     case ShowAll:
       return true;
 
+    case ShowVisible:
     case ShowFilteredList:
       return mFilteredFeatures.contains( masterModel()->rowToId( sourceRow ) );
 
     case ShowSelected:
       return layer()->selectedFeaturesIds().isEmpty() || layer()->selectedFeaturesIds().contains( masterModel()->rowToId( sourceRow ) );
-
-    case ShowVisible:
-      return mFilteredFeatures.contains( masterModel()->rowToId( sourceRow ) );
 
     case ShowEdited:
     {
@@ -235,6 +233,10 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   {
     connect( masterModel(), SIGNAL( loadFinished() ), this,  SLOT( generateListOfVisibleFeatures( ) ), Qt::UniqueConnection );
     return;
+  }
+  else // for clarity
+  {
+    disconnect( masterModel(), SIGNAL( loadFinished() ), this,  SLOT( generateListOfVisibleFeatures( ) ) );
   }
 
   bool filter = false;

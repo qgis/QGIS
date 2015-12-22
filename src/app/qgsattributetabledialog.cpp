@@ -112,8 +112,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   // Connect models signals for progress bar
   connect( mMainView, SIGNAL( loadProgress( int, bool & ) ), this, SLOT( loadProgress( int, bool & ) ) );
-  connect( mMainView, SIGNAL( loadFinished() ), this, SLOT( loadFinished() ) );
   connect( mMainView, SIGNAL( loadStarted( long ) ), this, SLOT( loadStarted( long ) ) );
+  connect( mMainView, SIGNAL( loadFinished() ), this, SLOT( loadFinished() ) );
 
   // Initialize dual view
   mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, context );

@@ -424,7 +424,6 @@ void QgsAttributeTableModel::featuresReady( const QgsFeatureList features, const
     }
   }
   endInsertRows();
-  QgsDebugMsg( QString( "mRowIdMap.size(%1) == mIdRowMap.size(%2)" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ) );
   Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
   reload( index( rowCount() - 1, 0 ), index( rowCount() + features.count() - 1, columnCount() ) );
 }
@@ -472,6 +471,9 @@ void QgsAttributeTableModel::loadLayer()
   connect( mLayerCache, SIGNAL( invalidated() ), this, SLOT( loadLayer() ), Qt::UniqueConnection );
 
   mLoadWorkerThread.start();
+
+  // Process pending events
+  qApp->processEvents();
 
   // Pass the total number of features as a maximum for the progress bar
   emit loadStarted( mLayerCache->layer()->featureCount() );
