@@ -182,6 +182,12 @@ void QgsPolygonV2::addInteriorRing( QgsCurveV2* ring )
     ring = segmented;
   }
 
+  QgsLineStringV2* lineString = dynamic_cast< QgsLineStringV2*>( ring );
+  if ( lineString && !lineString->isClosed() )
+  {
+    lineString->close();
+  }
+
   if ( mWkbType == QgsWKBTypes::Polygon25D )
   {
     ring->convertTo( QgsWKBTypes::LineString25D );
@@ -207,6 +213,12 @@ void QgsPolygonV2::setExteriorRing( QgsCurveV2* ring )
     QgsCurveV2* line = ring->segmentize();
     delete ring;
     ring = line;
+  }
+
+  QgsLineStringV2* lineString = dynamic_cast< QgsLineStringV2*>( ring );
+  if ( lineString && !lineString->isClosed() )
+  {
+    lineString->close();
   }
 
   mExteriorRing = ring;
