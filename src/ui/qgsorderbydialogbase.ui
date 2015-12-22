@@ -26,12 +26,6 @@
    </item>
    <item row="0" column="0">
     <widget class="QTableWidget" name="mOrderByTableWidget">
-     <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
-     </property>
-     <property name="selectionBehavior">
-      <enum>QAbstractItemView::SelectRows</enum>
-     </property>
      <column>
       <property name="text">
        <string>Expression</string>
@@ -39,12 +33,12 @@
      </column>
      <column>
       <property name="text">
-       <string>Ascending</string>
+       <string>Asc / Desc</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>Nulls First</string>
+       <string>NULLs handling</string>
       </property>
      </column>
     </widget>
