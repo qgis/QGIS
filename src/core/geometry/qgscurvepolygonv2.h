@@ -56,7 +56,6 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     //surface interface
     virtual double area() const override;
     virtual double perimeter() const override;
-    QgsPointV2 pointOnSurface() const override;
     QgsPolygonV2* surfaceToPolygon() const override;
 
     //curve polygon interface

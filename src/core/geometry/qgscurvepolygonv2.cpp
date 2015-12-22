@@ -399,11 +399,6 @@ double QgsCurvePolygonV2::perimeter() const
   return perimeter;
 }
 
-QgsPointV2 QgsCurvePolygonV2::pointOnSurface() const
-{
-  return QgsPointV2( 0, 0 );
-}
-
 QgsPolygonV2* QgsCurvePolygonV2::surfaceToPolygon() const
 {
   QgsPolygonV2* polygon = new QgsPolygonV2();
