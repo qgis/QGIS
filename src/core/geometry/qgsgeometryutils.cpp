@@ -488,7 +488,7 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
   //first scan through for extra unexpected dimensions
   bool foundZ = false;
   bool foundM = false;
-  Q_FOREACH( const QString& pointCoordinates, coordList )
+  Q_FOREACH ( const QString& pointCoordinates, coordList )
   {
     QStringList coordinates = pointCoordinates.split( ' ', QString::SkipEmptyParts );
     if ( coordinates.size() == 3 && !foundZ && !foundM && !is3D && !isMeasure )
@@ -506,7 +506,7 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
     }
   }
 
-  Q_FOREACH( const QString& pointCoordinates, coordList )
+  Q_FOREACH ( const QString& pointCoordinates, coordList )
   {
     QStringList coordinates = pointCoordinates.split( ' ', QString::SkipEmptyParts );
     if ( coordinates.size() < dim )
@@ -549,7 +549,7 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
 void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QList<QgsPointV2> &points, bool is3D, bool isMeasure )
 {
   wkb << static_cast<quint32>( points.size() );
-  Q_FOREACH( const QgsPointV2& point, points )
+  Q_FOREACH ( const QgsPointV2& point, points )
   {
     wkb << point.x() << point.y();
     if ( is3D )
@@ -566,7 +566,7 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QList<QgsPointV2> &poi
 QString QgsGeometryUtils::pointsToWKT( const QList<QgsPointV2>& points, int precision, bool is3D, bool isMeasure )
 {
   QString wkt = "(";
-  Q_FOREACH( const QgsPointV2& p, points )
+  Q_FOREACH ( const QgsPointV2& p, points )
   {
     wkt += qgsDoubleToString( p.x(), precision );
     wkt += ' ' + qgsDoubleToString( p.y(), precision );
@@ -588,8 +588,8 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QList<QgsPointV2>& points, QDo
 
   QString strCoordinates;
 
-  Q_FOREACH( const QgsPointV2& p, points )
-  strCoordinates += qgsDoubleToString( p.x(), precision ) + ',' + qgsDoubleToString( p.y(), precision ) + ' ';
+  Q_FOREACH ( const QgsPointV2& p, points )
+    strCoordinates += qgsDoubleToString( p.x(), precision ) + ',' + qgsDoubleToString( p.y(), precision ) + ' ';
 
   if ( strCoordinates.endsWith( ' ' ) )
     strCoordinates.chop( 1 ); // Remove trailing space
@@ -604,7 +604,7 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QList<QgsPointV2>& points, QDo
   elemPosList.setAttribute( "srsDimension", is3D ? 3 : 2 );
 
   QString strCoordinates;
-  Q_FOREACH( const QgsPointV2& p, points )
+  Q_FOREACH ( const QgsPointV2& p, points )
   {
     strCoordinates += qgsDoubleToString( p.x(), precision ) + ' ' + qgsDoubleToString( p.y(), precision ) + ' ';
     if ( is3D )
@@ -620,7 +620,7 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QList<QgsPointV2>& points, QDo
 QString QgsGeometryUtils::pointsToJSON( const QList<QgsPointV2>& points, int precision )
 {
   QString json = "[ ";
-  Q_FOREACH( const QgsPointV2& p, points )
+  Q_FOREACH ( const QgsPointV2& p, points )
   {
     json += '[' + qgsDoubleToString( p.x(), precision ) + ", " + qgsDoubleToString( p.y(), precision ) + "], ";
   }
