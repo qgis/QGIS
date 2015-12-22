@@ -460,7 +460,7 @@ def test_011_read_wkt():
             'id': u'10',
             'description': u'Measure in point',
             '#fid': 11,
-            '#geometry': 'Point (10 20)',
+            '#geometry': 'PointM (10 20 30)',
         },
     }
     wanted['log'] = [
@@ -507,7 +507,7 @@ def test_012_read_wkt_point():
             'id': u'10',
             'description': u'Measure in point',
             '#fid': 11,
-            '#geometry': 'Point (10 20)',
+            '#geometry': 'PointM (10 20 30)',
         },
     }
     wanted['log'] = [
@@ -542,19 +542,19 @@ def test_013_read_wkt_line():
             'id': u'11',
             'description': u'Measure in line',
             '#fid': 12,
-            '#geometry': 'LineString (10 20, 11 21)',
+            '#geometry': 'LineStringM (10 20 30, 11 21 31)',
         },
         13: {
             'id': u'12',
             'description': u'Z in line',
             '#fid': 13,
-            '#geometry': 'LineString (10 20, 11 21)',
+            '#geometry': 'LineStringZ (10 20 30, 11 21 31)',
         },
         14: {
             'id': u'13',
             'description': u'Measure and Z in line',
             '#fid': 14,
-            '#geometry': 'LineString (10 20, 11 21)',
+            '#geometry': 'LineStringZM (10 20 30 40, 11 21 31 41)',
         },
         15: {
             'id': u'14',
