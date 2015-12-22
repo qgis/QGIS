@@ -9,7 +9,9 @@ id|description|geom_wkt
 8|EWKT prefix|SRID=1234;POINT(10 10)
 9|Informix prefix|1 POINT(10 10)
 10|Measure in point|POINTM(10 20 30)
-11|Measure in line|LINESTRING(10.0 20.0 30.0, 11.0 21.0 31.0)
+11|Measure in line|LINESTRINGM(10.0 20.0 30.0, 11.0 21.0 31.0)
 12|Z in line|LINESTRING Z(10.0 20.0 30.0, 11.0 21.0 31.0)
 13|Measure and Z in line|LINESTRING ZM(10.0 20.0 30.0 40.0, 11.0 21.0 31.0 41.0)
-
+14|CircularString|CIRCULARSTRING(268 415,227 505,227 406)
+15|CurvePolygon|CURVEPOLYGON(CIRCULARSTRING(1 3, 3 5, 4 7, 7 3, 1 3))
+16|CompoundCurve|COMPOUNDCURVE((5 3, 5 13), CIRCULARSTRING(5 13, 7 15, 9 13), (9 13, 9 3), CIRCULARSTRING(9 3, 7 1, 5 3))

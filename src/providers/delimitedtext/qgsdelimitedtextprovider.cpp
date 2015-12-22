@@ -53,8 +53,6 @@ static const QString TEXT_PROVIDER_DESCRIPTION = "Delimited text data provider";
 static const int SUBSET_ID_THRESHOLD_FACTOR = 10;
 
 QRegExp QgsDelimitedTextProvider::WktPrefixRegexp( "^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)", Qt::CaseInsensitive );
-QRegExp QgsDelimitedTextProvider::WktZMRegexp( "\\s*(?:z|m|zm)(?=\\s*\\()", Qt::CaseInsensitive );
-QRegExp QgsDelimitedTextProvider::WktCrdRegexp( "(\\-?\\d+(?:\\.\\d*)?\\s+\\-?\\d+(?:\\.\\d*)?)\\s[\\s\\d\\.\\-]+" );
 QRegExp QgsDelimitedTextProvider::CrdDmsRegexp( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*([-+nsew])?\\s*$", Qt::CaseInsensitive );
 
 QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
@@ -67,7 +65,6 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
     , mXFieldIndex( -1 )
     , mYFieldIndex( -1 )
     , mWktFieldIndex( -1 )
-    , mWktHasZM( false )
     , mWktHasPrefix( false )
     , mXyDms( false )
     , mSubsetString( "" )
@@ -447,9 +444,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         QgsGeometry *geom = nullptr;
         if ( !mWktHasPrefix && sWkt.indexOf( WktPrefixRegexp ) >= 0 )
           mWktHasPrefix = true;
-        if ( !mWktHasZM && sWkt.indexOf( WktZMRegexp ) >= 0 )
-          mWktHasZM = true;
-        geom = geomFromWkt( sWkt, mWktHasPrefix, mWktHasZM );
+        geom = geomFromWkt( sWkt, mWktHasPrefix );
 
         if ( geom )
         {
@@ -812,7 +807,7 @@ void QgsDelimitedTextProvider::rescanFile()
   mUseSpatialIndex = buildSpatialIndex;
 }
 
-QgsGeometry *QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp, bool wktHasZM )
+QgsGeometry *QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp )
 {
   QgsGeometry *geom = nullptr;
   try
@@ -822,10 +817,6 @@ QgsGeometry *QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPr
       sWkt.remove( WktPrefixRegexp );
     }
 
-    if ( wktHasZM )
-    {
-      sWkt.remove( WktZMRegexp ).replace( WktCrdRegexp, "\\1" );
-    }
     geom = QgsGeometry::fromWkt( sWkt );
   }
   catch ( ... )
@@ -1148,7 +1139,7 @@ bool QgsDelimitedTextProvider::isValid()
 
 int QgsDelimitedTextProvider::capabilities() const
 {
-  return SelectAtId | CreateSpatialIndex;
+  return SelectAtId | CreateSpatialIndex | CircularGeometries;
 }
 
 
