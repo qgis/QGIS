@@ -1148,7 +1148,7 @@ bool QgsDelimitedTextProvider::isValid()
 
 int QgsDelimitedTextProvider::capabilities() const
 {
-  return SelectAtId | CreateSpatialIndex;
+  return SelectAtId | CreateSpatialIndex | CircularGeometries;
 }
 
 

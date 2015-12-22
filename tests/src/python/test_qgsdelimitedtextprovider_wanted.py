@@ -466,7 +466,7 @@ def test_011_read_wkt():
     wanted['log'] = [
         u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
-        u'7 records discarded due to incompatible geometry types',
+        u'10 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid WKT at line 8',
     ]
@@ -513,7 +513,7 @@ def test_012_read_wkt_point():
     wanted['log'] = [
         u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
-        u'7 records discarded due to incompatible geometry types',
+        u'10 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid WKT at line 8',
     ]
@@ -556,11 +556,23 @@ def test_013_read_wkt_line():
             '#fid': 14,
             '#geometry': 'LineString (10 20, 11 21)',
         },
+        15: {
+            'id': u'14',
+            'description': u'CircularString',
+            '#fid': 15,
+            '#geometry': 'CircularString (268 415, 227 505, 227 406)',
+        },
+        17: {
+            'id': u'16',
+            'description': u'CompoundCurve',
+            '#fid': 17,
+            '#geometry': 'CompoundCurve ((5 3, 5 13), CircularString(5 13, 7 15, 9 13), (9 13, 9 3), CircularString(9 3, 7 1, 5 3))',
+        },
     }
     wanted['log'] = [
         u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
-        u'7 records discarded due to incompatible geometry types',
+        u'8 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid WKT at line 8',
     ]
@@ -585,11 +597,17 @@ def test_014_read_wkt_polygon():
             '#fid': 7,
             '#geometry': 'MultiPolygon (((10 10,10 20,20 20,20 10,10 10),(14 14,14 16,16 16,14 14)),((30 30,30 35,35 35,30 30)))',
         },
+        16: {
+            'id': u'15',
+            'description': u'CurvePolygon',
+            '#fid': 16,
+            '#geometry': 'CurvePolygon (CircularString (1 3, 3 5, 4 7, 7 3, 1 3))',
+        },
     }
     wanted['log'] = [
         u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
-        u'10 records discarded due to incompatible geometry types',
+        u'12 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid WKT at line 8',
     ]
