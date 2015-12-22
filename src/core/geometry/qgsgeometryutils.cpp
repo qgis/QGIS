@@ -280,7 +280,7 @@ double QgsGeometryUtils::ccwAngle( double dy, double dx )
 
 void QgsGeometryUtils::circleCenterRadius( const QgsPointV2& pt1, const QgsPointV2& pt2, const QgsPointV2& pt3, double& radius, double& centerX, double& centerY )
 {
-  double temp, bc, cd, det;
+  double dx21, dy21, dx31, dy31, h21, h31, d;
 
   //closed circle
   if ( qgsDoubleNear( pt1.x(), pt3.x() ) && qgsDoubleNear( pt1.y(), pt3.y() ) )
@@ -291,22 +291,29 @@ void QgsGeometryUtils::circleCenterRadius( const QgsPointV2& pt1, const QgsPoint
     return;
   }
 
-  temp = pt2.x() * pt2.x() + pt2.y() * pt2.y();
-  bc = ( pt1.x() * pt1.x() + pt1.y() * pt1.y() - temp ) / 2.0;
-  cd = ( temp - pt3.x() * pt3.x() - pt3.y() * pt3.y() ) / 2.0;
-  det = ( pt1.x() - pt2.x() ) * ( pt2.y() - pt3.y() ) - ( pt2.x() - pt3.x() ) * ( pt1.y() - pt2.y() );
+  // Using cartesian circumcenter eguations from page https://en.wikipedia.org/wiki/Circumscribed_circle
+  dx21 = pt2.x() - pt1.x();
+  dy21 = pt2.y() - pt1.y();
+  dx31 = pt3.x() - pt1.x();
+  dy31 = pt3.y() - pt1.y();
 
-  /* Check colinearity */
-  if ( qgsDoubleNear( fabs( det ), 0.0, 0.00000000001 ) )
+  h21 = pow( dx21, 2.0 ) + pow( dy21, 2.0 );
+  h31 = pow( dx31, 2.0 ) + pow( dy31, 2.0 );
+
+  // 2*Cross product, d<0 means clockwise and d>0 counterclockwise sweeping angle
+  d = 2 * ( dx21 * dy31 - dx31 * dy21 );
+
+  // Check colinearity, Cross product = 0
+  if ( qgsDoubleNear( fabs( d ), 0.0, 0.00000000001 ) )
   {
     radius = -1.0;
     return;
   }
 
-  det = 1.0 / det;
-  centerX = ( bc * ( pt2.y() - pt3.y() ) - cd * ( pt1.y() - pt2.y() ) ) * det;
-  centerY = (( pt1.x() - pt2.x() ) * cd - ( pt2.x() - pt3.x() ) * bc ) * det;
-  radius = sqrt(( centerX - pt1.x() ) * ( centerX - pt1.x() ) + ( centerY - pt1.y() ) * ( centerY - pt1.y() ) );
+  // Calculate centroid coordinates and radius
+  centerX = pt1.x() + ( h21 * dy31 - h31 * dy21 ) / d;
+  centerY = pt1.y() - ( h21 * dx31 - h31 * dx21 ) / d;
+  radius = sqrt( pow( centerX - pt1.x(), 2.0 ) + pow( centerY - pt1.y(), 2.0 ) );
 }
 
 bool QgsGeometryUtils::circleClockwise( double angle1, double angle2, double angle3 )
@@ -481,7 +488,7 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
   //first scan through for extra unexpected dimensions
   bool foundZ = false;
   bool foundM = false;
-  Q_FOREACH ( const QString& pointCoordinates, coordList )
+  Q_FOREACH( const QString& pointCoordinates, coordList )
   {
     QStringList coordinates = pointCoordinates.split( ' ', QString::SkipEmptyParts );
     if ( coordinates.size() == 3 && !foundZ && !foundM && !is3D && !isMeasure )
@@ -499,7 +506,7 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
     }
   }
 
-  Q_FOREACH ( const QString& pointCoordinates, coordList )
+  Q_FOREACH( const QString& pointCoordinates, coordList )
   {
     QStringList coordinates = pointCoordinates.split( ' ', QString::SkipEmptyParts );
     if ( coordinates.size() < dim )
@@ -542,7 +549,7 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
 void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QList<QgsPointV2> &points, bool is3D, bool isMeasure )
 {
   wkb << static_cast<quint32>( points.size() );
-  Q_FOREACH ( const QgsPointV2& point, points )
+  Q_FOREACH( const QgsPointV2& point, points )
   {
     wkb << point.x() << point.y();
     if ( is3D )
@@ -559,7 +566,7 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QList<QgsPointV2> &poi
 QString QgsGeometryUtils::pointsToWKT( const QList<QgsPointV2>& points, int precision, bool is3D, bool isMeasure )
 {
   QString wkt = "(";
-  Q_FOREACH ( const QgsPointV2& p, points )
+  Q_FOREACH( const QgsPointV2& p, points )
   {
     wkt += qgsDoubleToString( p.x(), precision );
     wkt += ' ' + qgsDoubleToString( p.y(), precision );
@@ -581,8 +588,8 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QList<QgsPointV2>& points, QDo
 
   QString strCoordinates;
 
-  Q_FOREACH ( const QgsPointV2& p, points )
-    strCoordinates += qgsDoubleToString( p.x(), precision ) + ',' + qgsDoubleToString( p.y(), precision ) + ' ';
+  Q_FOREACH( const QgsPointV2& p, points )
+  strCoordinates += qgsDoubleToString( p.x(), precision ) + ',' + qgsDoubleToString( p.y(), precision ) + ' ';
 
   if ( strCoordinates.endsWith( ' ' ) )
     strCoordinates.chop( 1 ); // Remove trailing space
@@ -597,7 +604,7 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QList<QgsPointV2>& points, QDo
   elemPosList.setAttribute( "srsDimension", is3D ? 3 : 2 );
 
   QString strCoordinates;
-  Q_FOREACH ( const QgsPointV2& p, points )
+  Q_FOREACH( const QgsPointV2& p, points )
   {
     strCoordinates += qgsDoubleToString( p.x(), precision ) + ' ' + qgsDoubleToString( p.y(), precision ) + ' ';
     if ( is3D )
@@ -613,7 +620,7 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QList<QgsPointV2>& points, QDo
 QString QgsGeometryUtils::pointsToJSON( const QList<QgsPointV2>& points, int precision )
 {
   QString json = "[ ";
-  Q_FOREACH ( const QgsPointV2& p, points )
+  Q_FOREACH( const QgsPointV2& p, points )
   {
     json += '[' + qgsDoubleToString( p.x(), precision ) + ", " + qgsDoubleToString( p.y(), precision ) + "], ";
   }
