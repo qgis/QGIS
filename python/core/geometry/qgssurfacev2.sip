@@ -5,6 +5,5 @@ class QgsSurfaceV2: public QgsAbstractGeometryV2
 %End
 
   public:
-    virtual QgsPointV2 pointOnSurface() const = 0;
     virtual QgsPolygonV2* surfaceToPolygon() const = 0;
 };
