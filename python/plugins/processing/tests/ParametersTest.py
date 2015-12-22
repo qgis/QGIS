@@ -62,25 +62,30 @@ class ParameterBooleanTest(unittest.TestCase):
     def testSetValue(self):
         parameter = ParameterBoolean('myName', 'myDescription')
         self.assertEqual(parameter.value, None)
-        parameter.setValue(True)
-        self.assertEqual(parameter.value, True)
         parameter.setValue(False)
         self.assertEqual(parameter.value, False)
+        parameter.setValue(True)
+        self.assertEqual(parameter.value, True)
 
     def testDefault(self):
         parameter = ParameterBoolean('myName', 'myDescription', default=False, optional=True)
-        parameter.setValue(None)
         self.assertEqual(parameter.value, False)
+        parameter.setValue(None)
+        self.assertEqual(parameter.value, None)
 
     def testOptional(self):
         optionalParameter = ParameterBoolean('myName', 'myDescription', default=False, optional=True)
-        optionalParameter.setValue(True)
-        optionalParameter.setValue(None)
         self.assertEqual(optionalParameter.value, False)
+        optionalParameter.setValue(True)
+        self.assertEqual(optionalParameter.value, True)
+        self.assertTrue(optionalParameter.setValue(None))
+        self.assertEqual(optionalParameter.value, None)
 
         requiredParameter = ParameterBoolean('myName', 'myDescription', default=False, optional=False)
+        self.assertEqual(requiredParameter.value, False)
         requiredParameter.setValue(True)
-        requiredParameter.setValue(None)
+        self.assertEqual(requiredParameter.value, True)
+        self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, True)
 
 
@@ -93,13 +98,17 @@ class ParameterCRSTest(unittest.TestCase):
 
     def testOptional(self):
         optionalParameter = ParameterCrs('myName', 'myDesc', default='EPSG:4326', optional=True)
-        optionalParameter.setValue('EPSG:12003')
-        optionalParameter.setValue(None)
         self.assertEqual(optionalParameter.value, 'EPSG:4326')
+        optionalParameter.setValue('EPSG:12003')
+        self.assertEqual(optionalParameter.value, 'EPSG:12003')
+        self.assertTrue(optionalParameter.setValue(None))
+        self.assertEqual(optionalParameter.value, None)
 
         requiredParameter = ParameterCrs('myName', 'myDesc', default='EPSG:4326', optional=False)
+        self.assertEqual(requiredParameter.value, 'EPSG:4326')
         requiredParameter.setValue('EPSG:12003')
-        requiredParameter.setValue(None)
+        self.assertEqual(requiredParameter.value, 'EPSG:12003')
+        self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, 'EPSG:12003')
 
 
@@ -129,15 +138,19 @@ class ParameterExtentTest(unittest.TestCase):
 
     def testOptional(self):
         optionalParameter = ParameterExtent('myName', 'myDesc', default='0,1,0,1', optional=True)
+        self.assertEqual(optionalParameter.value, '0,1,0,1')
         optionalParameter.setValue('1,2,3,4')
-        optionalParameter.setValue(None)
+        self.assertEqual(optionalParameter.value, '1,2,3,4')
+        self.assertTrue(optionalParameter.setValue(None))
         # Extent is unique in that it will let you set `None`, whereas other
         # optional parameters become "default" when assigning None.
         self.assertEqual(optionalParameter.value, None)
 
         requiredParameter = ParameterExtent('myName', 'myDesc', default='0,1,0,1', optional=False)
+        self.assertEqual(requiredParameter.value, '0,1,0,1')
         requiredParameter.setValue('1,2,3,4')
-        requiredParameter.setValue(None)
+        self.assertEqual(requiredParameter.value, '1,2,3,4')
+        self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, '1,2,3,4')
 
 
@@ -157,7 +170,7 @@ class ParameterFileTest(unittest.TestCase):
         self.assertEquals(optionalParameter.value, '')
 
         self.assertTrue(optionalParameter.setValue(None))
-        self.assertEquals(optionalParameter.value, '')
+        self.assertEquals(optionalParameter.value, None)
 
         requiredParameter = ParameterFile('myName', 'myDesc', optional=False)
         self.assertTrue(requiredParameter.setValue('myFile.png'))
@@ -178,7 +191,7 @@ class ParameterFileTest(unittest.TestCase):
         self.assertEquals(parameter.value, 'myFile.png')
 
         self.assertFalse(parameter.setValue('myFile.bmp'))
-        self.assertEquals(parameter.value, 'myFile.bmp')
+        self.assertEquals(parameter.value, 'myFile.png')
 
     def testGetValueAsCommandLineParameter(self):
         parameter = ParameterFile('myName', 'myDesc')
@@ -313,13 +326,17 @@ class ParameterNumberTest(unittest.TestCase):
 
     def testOptional(self):
         optionalParameter = ParameterNumber('myName', 'myDescription', default=1.0, optional=True)
-        optionalParameter.setValue(5)
-        optionalParameter.setValue(None)
         self.assertEqual(optionalParameter.value, 1.0)
+        optionalParameter.setValue(5)
+        self.assertEqual(optionalParameter.value, 5)
+        self.assertTrue(optionalParameter.setValue(None))
+        self.assertEqual(optionalParameter.value, None)
 
         requiredParameter = ParameterNumber('myName', 'myDescription', default=1.0, optional=False)
+        self.assertEqual(requiredParameter.value, 1.0)
         requiredParameter.setValue(5)
-        requiredParameter.setValue(None)
+        self.assertEqual(requiredParameter.value, 5)
+        self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, 5)
 
 
