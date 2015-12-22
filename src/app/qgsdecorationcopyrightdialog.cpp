@@ -33,13 +33,15 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   cboOrientation->hide();
   textLabel15->hide();
 
-  cboxEnabled->setChecked( mDeco.enabled() );
+  grpEnable->setChecked( mDeco.enabled() );
   // text
   txtCopyrightText->setPlainText( mDeco.mLabelQString );
   // placement
   cboPlacement->clear();
   cboPlacement->addItems( mDeco.mPlacementLabels );
   cboPlacement->setCurrentIndex( mDeco.mPlacementIndex );
+  spnHorizontal->setValue( mDeco.mMarginHorizontal );
+  spnVertical->setValue( mDeco.mMarginVertical );
   // color
   pbnColorChooser->setColor( mDeco.mLabelQColor );
   pbnColorChooser->setContext( "gui" );
@@ -63,7 +65,9 @@ void QgsDecorationCopyrightDialog::on_buttonBox_accepted()
   mDeco.mLabelQString = txtCopyrightText->toPlainText();
   mDeco.mLabelQColor = pbnColorChooser->color();
   mDeco.mPlacementIndex = cboPlacement->currentIndex();
-  mDeco.setEnabled( cboxEnabled->isChecked() );
+  mDeco.mMarginHorizontal = spnHorizontal->value();
+  mDeco.mMarginVertical = spnVertical->value();
+  mDeco.setEnabled( grpEnable->isChecked() );
 
   accept();
 }
