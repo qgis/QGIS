@@ -62,6 +62,9 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
     QStringList mStyleLabels;
     //! The scale bar color
     QColor mColor;
+    //! Margin percentage values
+    int mMarginHorizontal;
+    int mMarginVertical;
 
     friend class QgsDecorationScaleBarDialog;
 };

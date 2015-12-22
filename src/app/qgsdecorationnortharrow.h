@@ -68,6 +68,9 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
     // The placement index and translated text
     int mPlacementIndex;
     QStringList mPlacementLabels;
+    //! margin values
+    int mMarginHorizontal;
+    int mMarginVertical;
 
     friend class QgsDecorationNorthArrowDialog;
 };

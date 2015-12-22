@@ -46,6 +46,8 @@ QgsDecorationCopyright::QgsDecorationCopyright( QObject* parent )
 {
   mPlacementLabels << tr( "Bottom Left" ) << tr( "Top Left" )
   << tr( "Top Right" ) << tr( "Bottom Right" );
+  mMarginHorizontal = 0;
+  mMarginVertical = 0;
 
   setName( "Copyright Label" );
   // initialise default values in the gui
@@ -68,6 +70,8 @@ void QgsDecorationCopyright::projectRead()
   QgsProject* prj = QgsProject::instance();
   mLabelQString = prj->readEntry( mNameConfig, "/Label", defString );
   mPlacementIndex = prj->readNumEntry( mNameConfig, "/Placement", 3 );
+  mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, "/MarginH", 0 );
+  mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, "/MarginV", 0 );
   mLabelQColor.setNamedColor( prj->readEntry( mNameConfig, "/Color", "#000000" ) ); // default color is black
 }
 
@@ -80,6 +84,8 @@ void QgsDecorationCopyright::saveToProject()
   prj->writeEntry( mNameConfig, "/Label", mLabelQString );
   prj->writeEntry( mNameConfig, "/Color", mLabelQColor.name() );
   prj->writeEntry( mNameConfig, "/Placement", mPlacementIndex );
+  prj->writeEntry( mNameConfig, "/MarginH", mMarginHorizontal );
+  prj->writeEntry( mNameConfig, "/MarginV", mMarginVertical );
 }
 
 // Slot called when the buffer menu item is activated
@@ -112,28 +118,26 @@ void QgsDecorationCopyright::render( QPainter * theQPainter )
     QSizeF size = text.size();
 
     float myXOffset( 0 ), myYOffset( 0 );
+
+    myXOffset = int(( float( myWidth - size.width() )
+                      / 100. ) * float( mMarginHorizontal ) );
+    myYOffset = int(( float( myHeight - size.height() )
+                      / 100. ) * float( mMarginVertical ) );
     //Determine placement of label from form combo box
     switch ( mPlacementIndex )
     {
-      case 0: // Bottom Left
-        //Define bottom left hand corner start point
-        myYOffset = myHeight - ( size.height() + 5 );
-        myXOffset = 5;
+      case 0: // Bottom Left. myXOffset is set above
+        myYOffset = myHeight - myYOffset - size.height();
         break;
-      case 1: // Top left
-        //Define top left hand corner start point
-        myYOffset = 0;
-        myXOffset = 5;
+      case 1: // Top left. Already setup above
         break;
-      case 2: // Top Right
-        //Define top right hand corner start point
-        myYOffset = 0;
-        myXOffset = myWidth - ( size.width() + 5 );
+      case 2: // Top Right. myYOffset is set above
+        myXOffset = myWidth - myXOffset - size.width();
         break;
       case 3: // Bottom Right
         //Define bottom right hand corner start point
-        myYOffset = myHeight - ( size.height() + 5 );
-        myXOffset = myWidth - ( size.width() + 5 );
+        myYOffset = myHeight - myYOffset - size.height();
+        myXOffset = myWidth - myXOffset - size.width();
         break;
       default:
         QgsDebugMsg( QString( "Unknown placement index of %1" ).arg( mPlacementIndex ) );
