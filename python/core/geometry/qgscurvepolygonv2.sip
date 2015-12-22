@@ -30,7 +30,6 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     //surface interface
     virtual double area() const;
     virtual double perimeter() const;
-    QgsPointV2 pointOnSurface() const;
     QgsPolygonV2* surfaceToPolygon() const;
 
     //curve polygon interface
