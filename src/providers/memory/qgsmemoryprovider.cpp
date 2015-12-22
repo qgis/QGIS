@@ -467,7 +467,7 @@ int QgsMemoryProvider::capabilities() const
 {
   return AddFeatures | DeleteFeatures | ChangeGeometries |
          ChangeAttributeValues | AddAttributes | DeleteAttributes | CreateSpatialIndex |
-         SelectAtId | SelectGeometryAtId;
+         SelectAtId | SelectGeometryAtId | CircularGeometries;
 }
 
 
