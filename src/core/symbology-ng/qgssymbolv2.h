@@ -308,6 +308,9 @@ class CORE_EXPORT QgsSymbolV2
 
     const QgsVectorLayer* mLayer; //current vectorlayer
 
+  private:
+    Q_DISABLE_COPY( QgsSymbolV2 )
+
 };
 
 ///////////////////////
