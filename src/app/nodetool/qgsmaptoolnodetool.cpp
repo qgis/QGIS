@@ -363,10 +363,10 @@ void QgsMapToolNodeTool::updateSelectFeature()
 
   QSettings settings;
   QColor color(
-    settings.value( "/qgis/digitizing/select_color_red", 255 ).toInt(),
-    settings.value( "/qgis/digitizing/select_color_green", 0 ).toInt(),
-    settings.value( "/qgis/digitizing/select_color_blue", 0 ).toInt() );
-  double myAlpha = settings.value( "/qgis/digitizing/select_color_alpha", 30 ).toInt() / 255.0 ;
+    settings.value( "/qgis/digitizing/fill_color_red", 255 ).toInt(),
+    settings.value( "/qgis/digitizing/fill_color_green", 0 ).toInt(),
+    settings.value( "/qgis/digitizing/fill_color_blue", 0 ).toInt() );
+  double myAlpha = settings.value( "/qgis/digitizing/fill_color_alpha", 30 ).toInt() / 255.0 ;
   color.setAlphaF( myAlpha );
   mSelectRubberBand->setFillColor( color );
 
