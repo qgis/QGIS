@@ -42,6 +42,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! destructor
     virtual ~QgsMapToolCapture();
 
+    //! active the tool
+    virtual void activate() override;
+
     //! deactive the tool
     virtual void deactivate() override;
 

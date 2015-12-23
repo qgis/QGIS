@@ -25,6 +25,9 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! destructor
     virtual ~QgsMapToolCapture();
 
+    //! active the tool
+    virtual void activate();
+
     //! deactive the tool
     virtual void deactivate();
 
