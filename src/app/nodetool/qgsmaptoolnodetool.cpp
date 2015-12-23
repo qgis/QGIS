@@ -85,9 +85,16 @@ void QgsMapToolNodeTool::createTopologyRubberBands()
       if ( !mMoveRubberBands.contains( snapFeatureId ) )
       {
         QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, feature.geometry()->type() );
-        rb->setOutlineColor( Qt::blue );
+        QSettings settings;
+        QColor color(
+          settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt(),
+          settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt(),
+          settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt() );
+        double myAlpha = settings.value( "/qgis/digitizing/line_color_alpha", 30 ).toInt() / 255.0 ;
+        color.setAlphaF( myAlpha );
+        rb->setOutlineColor( color );
         rb->setBrushStyle( Qt::NoBrush );
-        rb->setOutlineWidth( 2 );
+        rb->setOutlineWidth( settings.value( "/qgis/digitizing/line_width", 1 ).toInt() );
         QgsAbstractGeometryV2* rbGeom = feature.geometry()->geometry()->clone();
         if ( mCanvas->mapSettings().layerTransform( vlayer ) )
           rbGeom->transform( *mCanvas->mapSettings().layerTransform( vlayer ) );
@@ -115,9 +122,16 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
     if ( mMoveRubberBands.empty() )
     {
       QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, mSelectedFeature->geometry()->type() );
-      rb->setOutlineColor( Qt::blue );
+      QSettings settings;
+      QColor color(
+        settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt(),
+        settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt(),
+        settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt() );
+      double myAlpha = settings.value( "/qgis/digitizing/line_color_alpha", 30 ).toInt() / 255.0 ;
+      color.setAlphaF( myAlpha );
+      rb->setOutlineColor( color );
       rb->setBrushStyle( Qt::NoBrush );
-      rb->setOutlineWidth( 2 );
+      rb->setOutlineWidth( settings.value( "/qgis/digitizing/line_width", 1 ).toInt() );
       QgsAbstractGeometryV2* rbGeom = mSelectedFeature->geometry()->geometry()->clone();
       if ( mCanvas->mapSettings().layerTransform( vlayer ) )
         rbGeom->transform( *mCanvas->mapSettings().layerTransform( vlayer ) );
