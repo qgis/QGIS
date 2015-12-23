@@ -220,14 +220,17 @@ class ParameterFile(Parameter):
         return '"' + unicode(self.value) + '"'
 
     def setValue(self, obj):
-        self.value = unicode(obj)
-        if self.value.strip() == '' or self.value is None:
+        if obj == None or unicode(obj).strip() == '':
             if not self.optional:
                 return False
-            self.value = ''
-        if self.ext is not None and self.value != '':
-            return self.value.endswith(self.ext)
-        return True
+            else:
+                self.value = ''
+                return True
+        else:
+            self.value = unicode(obj)
+            if self.ext is not None:
+                return self.value.endswith(self.ext)
+            return True
 
     def typeName(self):
         if self.isFolder:
@@ -384,9 +387,9 @@ class ParameterMultipleInput(ParameterDataObject):
                     if layer.name() == s:
                         return unicode(layer.dataProvider().dataSourceUri())
                 return s
-        if self.datatype == ParameterMultipleInput.TYPE_FILE:
+        elif self.datatype == ParameterMultipleInput.TYPE_FILE:
             return unicode(value)
-        else:
+        else: # Some vector type
             if isinstance(value, QgsVectorLayer):
                 return unicode(value.source())
             else:
