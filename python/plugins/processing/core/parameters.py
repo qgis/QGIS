@@ -122,8 +122,8 @@ class Parameter:
 
 class ParameterBoolean(Parameter):
 
-    def __init__(self, name='', description='', default=True, optional=False):
-        Parameter.__init__(self, name, description, parseBool(default), optional)
+    def __init__(self, name='', description='', default=None, optional=False):
+        Parameter.__init__(self, name, description, default, optional)
 
     def setValue(self, value):
         if value is None:
@@ -152,10 +152,10 @@ class ParameterCrs(Parameter):
         Parameter.__init__(self, name, description, default, optional)
 
     def setValue(self, value):
-        if value is None:
+        if value is None or value.strip() == '':
             if not self.optional:
                 return False
-            self.value = None
+            self.value = None if value is None else value.strip()
             return True
 
         # TODO: check it is a valid authid
@@ -195,7 +195,7 @@ class ParameterExtent(Parameter):
             self.value = None
             return True
 
-        tokens = text.split(',')
+        tokens = unicode(text).split(',')
         if len(tokens) != 4:
             return False
         try:
@@ -218,7 +218,7 @@ class ParameterExtent(Parameter):
 class ParameterFile(Parameter):
 
     def __init__(self, name='', description='', isFolder=False, optional=True, ext=None):
-        Parameter.__init__(self, name, description, '', parseBool(optional))
+        Parameter.__init__(self, name, description, None, parseBool(optional))
         self.ext = ext
         self.isFolder = parseBool(isFolder)
 
@@ -229,7 +229,7 @@ class ParameterFile(Parameter):
         if obj is None or obj.strip() == '':
             if not self.optional:
                 return False
-            self.value = ''
+            self.value = None if obj is None else obj.strip()
             return True
 
         if self.ext is not None and obj != '' and not obj.endswith(self.ext):
@@ -591,7 +591,7 @@ class ParameterRaster(ParameterDataObject):
 
 class ParameterSelection(Parameter):
 
-    def __init__(self, name='', description='', options=[], default=0, isSource=False,
+    def __init__(self, name='', description='', options=[], default=None, isSource=False,
                  optional=False):
         Parameter.__init__(self, name, description, default, optional)
         isSource = parseBool(isSource)
@@ -610,11 +610,12 @@ class ParameterSelection(Parameter):
         elif isinstance(self.options, basestring):
             self.options = self.options.split(";")
 
-        try:
-            self.default = int(default)
-        except:
-            self.default = 0
-        self.value = self.default
+        if default is not None:
+            try:
+                self.default = int(default)
+            except:
+                self.default = 0
+            self.value = self.default
 
     def setValue(self, n):
         if n is None:
@@ -636,16 +637,16 @@ class ParameterString(Parameter):
     NEWLINE = '\n'
     ESCAPED_NEWLINE = '\\n'
 
-    def __init__(self, name='', description='', default='', multiline=False,
+    def __init__(self, name='', description='', default=None, multiline=False,
                  optional=False):
         Parameter.__init__(self, name, description, default, optional)
         self.multiline = parseBool(multiline)
 
     def setValue(self, obj):
         if obj is None:
-            if not self.optional and self.default is None:
+            if not self.optional:
                 return False
-            self.value = ''
+            self.value = None
             return True
 
         self.value = unicode(obj).replace(
@@ -875,7 +876,7 @@ class ParameterGeometryPredicate(Parameter):
 
     def __init__(self, name='', description='', left=None, right=None,
                  optional=False, enabledPredicates=None):
-        Parameter.__init__(self, name, description, [], optional)
+        Parameter.__init__(self, name, description, None, optional)
         self.left = left
         self.right = right
         self.value = None
