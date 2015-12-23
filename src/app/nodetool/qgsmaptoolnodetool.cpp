@@ -30,6 +30,7 @@
 
 #include <QMouseEvent>
 #include <QRubberBand>
+#include <QSettings>
 
 QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
@@ -129,7 +130,6 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
         mSelectRubberBand = nullptr;
       }
       QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, mSelectedFeature->geometry()->type() );
-      QSettings settings;
       QColor color(
         settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt(),
         settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt(),
