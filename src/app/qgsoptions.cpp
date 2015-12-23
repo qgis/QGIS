@@ -804,7 +804,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mFillColorToolButton->setContext( "gui" );
   mFillColorToolButton->setDefaultColor( QColor( 255, 0, 0, 30 ) );
 
-  mLineGhostCheckBox->setChecked( settings.value( "/qgis/digitizing/line_ghost", false ).toBool() );
+  mLineGhostCheckBox->setChecked( mSettings->value( "/qgis/digitizing/line_ghost", false ).toBool() );
 
   //default snap mode
   mDefaultSnapModeComboBox->insertItem( 0, tr( "To vertex" ), "to vertex" );
