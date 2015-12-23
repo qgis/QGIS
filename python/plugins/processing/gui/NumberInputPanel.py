@@ -60,8 +60,16 @@ class NumberInputPanel(BASE, WIDGET):
         else:
             self.spnValue.setMinimum(-99999999)
 
-        self.spnValue.setValue(float(number))
-        self.spnValue.setClearValue(float(number))
+        #Set default value
+        if number == 0 or number:
+            self.spnValue.setValue(float(number))
+            self.spnValue.setClearValue(float(number))
+        elif minimum == 0 or minimum:
+            self.spnValue.setValue(float(minimum))
+            self.spnValue.setClearValue(float(minimum))
+        else:
+            self.spnValue.setValue(0)
+            self.spnValue.setClearValue(0)
 
         self.btnCalc.clicked.connect(self.showNumberInputDialog)
 
