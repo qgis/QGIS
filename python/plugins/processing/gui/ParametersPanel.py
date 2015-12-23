@@ -286,7 +286,8 @@ class ParametersPanel(BASE, WIDGET):
         elif isinstance(param, ParameterSelection):
             item = QComboBox()
             item.addItems(param.options)
-            item.setCurrentIndex(param.default)
+            if param.default:
+                item.setCurrentIndex(param.default)
         elif isinstance(param, ParameterFixedTable):
             item = FixedTablePanel(param)
         elif isinstance(param, ParameterRange):
@@ -320,12 +321,14 @@ class ParametersPanel(BASE, WIDGET):
                 verticalLayout.setSizeConstraint(
                     QLayout.SetDefaultConstraint)
                 textEdit = QPlainTextEdit()
-                textEdit.setPlainText(param.default)
+                if param.default:
+                    textEdit.setPlainText(param.default)
                 verticalLayout.addWidget(textEdit)
                 item = textEdit
             else:
                 item = QLineEdit()
-                item.setText(unicode(param.default))
+                if param.default:
+                    item.setText(unicode(param.default))
         elif isinstance(param, ParameterGeometryPredicate):
             item = GeometryPredicateSelectionPanel(param.enabledPredicates)
             if param.left:
@@ -341,10 +344,12 @@ class ParametersPanel(BASE, WIDGET):
                 widget.currentIndexChanged.connect(item.onRightLayerChange)
                 item.rightLayer = widget.itemData(widget.currentIndex())
             item.updatePredicates()
-            item.setValue(param.default)
+            if param.default:
+                item.setValue(param.default)
         else:
             item = QLineEdit()
-            item.setText(unicode(param.default))
+            if param.default:
+                item.setText(unicode(param.default))
 
         return item
 
@@ -362,7 +367,7 @@ class ParametersPanel(BASE, WIDGET):
             if self.alg.getParameterFromName(child).optional:
                 widget.addItem(self.tr('[not set]'))
             widget.addItems(self.getFields(layer,
-                            self.alg.getParameterFromName(child).datatype))
+                                           self.alg.getParameterFromName(child).datatype))
 
     def getFields(self, layer, datatype):
         fieldTypes = []
