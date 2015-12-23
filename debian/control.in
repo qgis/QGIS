@@ -340,6 +340,7 @@ Architecture: any
 Depends:
  qgis (= ${binary:Version}),
  qgis-plugin-globe-common (= ${source:Version}),
+ openscenegraph-plugin-osgearth,
  ${shlibs:Depends},
  ${misc:Depends}
 Description: OSG globe plugin for QGIS
