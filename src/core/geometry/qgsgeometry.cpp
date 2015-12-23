@@ -2292,8 +2292,6 @@ QDataStream& operator>>( QDataStream& in, QgsGeometry& geometry )
     return in;
   }
 
-  char *data = new char[byteArray.size()];
-  memcpy( data, byteArray.data(), byteArray.size() );
-  geometry.fromWkb( reinterpret_cast< unsigned char* >( data ), byteArray.size() );
+  geometry.fromWkb( reinterpret_cast<unsigned char*>( byteArray.data() ), byteArray.size() );
   return in;
 }
