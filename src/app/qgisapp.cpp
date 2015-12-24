@@ -4336,10 +4336,11 @@ bool QgisApp::addProject( const QString& projectFile )
   mOverviewCanvas->setBackgroundColor( myColor );
 
   QgsDebugMsg( "Canvas background color restored..." );
+  int myAlphaInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorAlphaPart", 255 );
   myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
   myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", 255 );
   myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorBluePart", 0 );
-  myColor = QColor( myRedInt, myGreenInt, myBlueInt );
+  myColor = QColor( myRedInt, myGreenInt, myBlueInt, myAlphaInt );
   mMapCanvas->setSelectionColor( myColor ); //this is selection color before rendering starts
 
   //load project scales
