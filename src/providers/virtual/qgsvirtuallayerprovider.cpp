@@ -30,6 +30,7 @@ extern "C"
 #include <qgsvectorlayer.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsdatasourceuri.h>
+
 #include "qgsvirtuallayerprovider.h"
 #include "qgsvirtuallayersqlitemodule.h"
 #include "qgsvirtuallayerqueryparser.h"

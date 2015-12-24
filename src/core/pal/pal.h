@@ -153,7 +153,7 @@ namespace pal
        *
        * @return A list of label to display on map
        */
-      std::list<LabelPosition*> *labeller( double bbox[4], PalStat **stats, bool displayAll );
+      QList<LabelPosition*> *labeller( double bbox[4], PalStat **stats, bool displayAll );
 
       typedef bool ( *FnIsCancelled )( void* ctx );
 
@@ -165,7 +165,7 @@ namespace pal
 
       Problem* extractProblem( double bbox[4] );
 
-      std::list<LabelPosition*>* solveProblem( Problem* prob, bool displayAll );
+      QList<LabelPosition*>* solveProblem( Problem* prob, bool displayAll );
 
       /**
        *\brief Set flag show partial label

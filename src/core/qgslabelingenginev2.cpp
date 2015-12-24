@@ -243,7 +243,7 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
   // do the labeling itself
   double bbox[] = { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() };
 
-  std::list<pal::LabelPosition*>* labels;
+  QList<pal::LabelPosition*>* labels;
   pal::Problem *problem;
   try
   {
@@ -307,7 +307,7 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
   painter->setRenderHint( QPainter::Antialiasing );
 
   // draw the labels
-  std::list<pal::LabelPosition*>::iterator it = labels->begin();
+  QList<pal::LabelPosition*>::iterator it = labels->begin();
   for ( ; it != labels->end(); ++it )
   {
     if ( context.renderingStopped() )

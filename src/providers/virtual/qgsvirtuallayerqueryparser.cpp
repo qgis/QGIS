@@ -3,6 +3,7 @@
 #include "qgsvirtuallayerblob.h"
 
 #include <QRegExp>
+#include <QtDebug>
 
 namespace QgsVirtualLayerQueryParser
 {
@@ -157,7 +158,7 @@ namespace QgsVirtualLayerQueryParser
 
         if ( !isValidColumnName( columnName ) )
         {
-          std::cout << "Invalid name: " << columnName.toLocal8Bit().constData() << std::endl;
+          qWarning() << "Invalid name: " << columnName;
           hasInvalidName = true;
 
           // add an unnamed column
@@ -208,7 +209,7 @@ namespace QgsVirtualLayerQueryParser
           qs += ", ";
       }
       qs += " FROM _tview LIMIT 1";
-      std::cout << qs.toLocal8Bit().constData() << std::endl;
+      qWarning() << qs;
 
       Sqlite::Query q( db, qs );
       if ( q.step() == SQLITE_ROW )

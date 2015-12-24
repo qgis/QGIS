@@ -27,10 +27,6 @@
 #include <QSqlDatabase>
 #include <QTcpSocket>
 
-/* Uncomment this block to use preloaded images
-#include <map>
-std::map<QString, QPixmap> mugs;
-*/
 #ifdef Q_OS_MACX
 QgsAbout::QgsAbout( QWidget *parent )
     : QgsOptionsDialogBase( "about", parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only

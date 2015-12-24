@@ -180,7 +180,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     /**
        Changes geometries of existing features
-       @param geometry_map   A std::map containing the feature IDs to change the geometries of.
+       @param geometry_map   A map containing the feature IDs to change the geometries of.
                              the second map parameter being the new geometries themselves
        @return               true in case of success and false in case of failure
      */
