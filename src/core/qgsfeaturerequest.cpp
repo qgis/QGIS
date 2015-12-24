@@ -381,7 +381,8 @@ QSet<QString> QgsFeatureRequest::OrderBy::usedAttributes() const
 
   return usedAttributes;
 }
-QString QgsFeatureRequest::OrderBy::dump() const
+
+QString QgsFeatureRequest::OrderBy::dump( void ) const
 {
   QStringList results;
 

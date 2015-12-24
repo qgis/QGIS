@@ -140,7 +140,7 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
 
   bool xOk = false;
   bool  yOk = false;
-  double x, y;
+  double x = 0., y = 0.;
   QString coordText = mLineEdit->text();
   coordText.replace( QRegExp( " {2,}" ), " " );
 

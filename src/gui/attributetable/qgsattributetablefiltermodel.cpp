@@ -86,9 +86,6 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
     default:
       return leftData.toString().localeAwareCompare( rightData.toString() ) < 0;
   }
-
-  // Avoid warning. Will never reach this
-  return false;
 }
 
 void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )

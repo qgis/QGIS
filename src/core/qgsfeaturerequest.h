@@ -16,6 +16,7 @@
 #define QGSFEATUREREQUEST_H
 
 #include <QFlags>
+#include <QList>
 
 #include "qgsfeature.h"
 #include "qgsrectangle.h"
@@ -23,7 +24,6 @@
 #include "qgsexpressioncontext.h"
 #include "qgssimplifymethod.h"
 
-#include <QList>
 typedef QList<int> QgsAttributeList;
 
 /**
@@ -160,6 +160,8 @@ class CORE_EXPORT QgsFeatureRequest
          */
         QString dump() const;
 
+        // friend inline int qHash(const OrderByClause &a) { return qHash(a.mExpression.expression()) ^ qHash(a.mAscending) ^ qHash( a.mNullsFirst); }
+
       private:
         QgsExpression mExpression;
         bool mAscending;
@@ -178,14 +180,14 @@ class CORE_EXPORT QgsFeatureRequest
         /**
          * Create a new empty order by
          */
-        OrderBy()
+        CORE_EXPORT OrderBy()
             : QList<OrderByClause>()
         {}
 
         /**
          * Create a new order by from a list of clauses
          */
-        OrderBy( const QList<OrderByClause>& other );
+        CORE_EXPORT OrderBy( const QList<OrderByClause>& other );
 
         /**
          * Get a copy as a list of OrderByClauses
@@ -193,27 +195,27 @@ class CORE_EXPORT QgsFeatureRequest
          * This is only required in python where the inheritance
          * is not properly propagated and this makes it usable.
          */
-        QList<OrderByClause> list() const;
+        QList<OrderByClause> CORE_EXPORT list() const;
 
         /**
          * Serialize to XML
          */
-        void save( QDomElement& elem ) const;
+        void CORE_EXPORT save( QDomElement& elem ) const;
 
         /**
          * Deserialize from XML
          */
-        void load( const QDomElement& elem );
+        void CORE_EXPORT load( const QDomElement& elem );
 
         /**
          * Returns a set of used attributes
          */
-        QSet<QString> usedAttributes() const;
+        QSet<QString> CORE_EXPORT usedAttributes() const;
 
         /**
          * Dumps the content to an SQL equivalent syntax
          */
-        QString dump() const;
+        QString CORE_EXPORT dump() const;
     };
 
     /**

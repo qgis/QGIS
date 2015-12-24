@@ -77,8 +77,8 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const Qg
       //not support by OGR
       return Fail;
 
-    default:
-      return QgsSqlExpressionCompiler::compileNode( node, result );
+    case QgsExpression::ntUnaryOperator:
+      break;
   }
 
   return QgsSqlExpressionCompiler::compileNode( node, result );
