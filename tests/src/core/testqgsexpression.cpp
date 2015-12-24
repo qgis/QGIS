@@ -827,6 +827,8 @@ class TestQgsExpression: public QObject
       run_evaluation_test( exp2, evalError, result );
       QgsExpression exp3( exp.expression() );
       run_evaluation_test( exp3, evalError, result );
+      QgsExpression exp4( exp );
+      run_evaluation_test( exp4, evalError, result );
     }
 
     void eval_precedence()
