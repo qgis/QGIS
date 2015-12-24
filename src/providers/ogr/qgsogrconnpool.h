@@ -102,7 +102,12 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
     {
       mMutex.lock();
       T_Groups::iterator it = mGroups.find( connInfo );
-      Q_ASSERT( it != mGroups.end() );
+      if ( it == mGroups.end() )
+      {
+        mMutex.unlock();
+        return;
+      }
+
       if ( it.value()->unref() )
       {
         delete it.value();
