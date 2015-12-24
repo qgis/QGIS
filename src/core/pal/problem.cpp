@@ -2614,11 +2614,11 @@ namespace pal
     return l1->getWidth() * l1->getHeight() > l2->getWidth() * l2->getHeight();
   }
 
-  std::list<LabelPosition*> * Problem::getSolution( bool returnInactive )
+  QList<LabelPosition*> * Problem::getSolution( bool returnInactive )
   {
 
     int i;
-    std::list<LabelPosition*> *solList = new std::list<LabelPosition*>();
+    QList<LabelPosition*> *solList = new QList<LabelPosition*>();
 
     if ( nbft == 0 )
     {
@@ -2642,7 +2642,7 @@ namespace pal
     // if features collide, order by size, so smaller ones appear on top
     if ( returnInactive )
     {
-      solList->sort( compareLabelArea );
+      qSort( solList->begin(), solList->end(), compareLabelArea );
     }
 
     return solList;

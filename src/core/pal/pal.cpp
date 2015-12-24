@@ -478,7 +478,7 @@ namespace pal
   /*
    * BIG MACHINE
    */
-  std::list<LabelPosition*>* Pal::labeller( double bbox[4], PalStat **stats, bool displayAll )
+  QList<LabelPosition*>* Pal::labeller( double bbox[4], PalStat **stats, bool displayAll )
   {
 #ifdef _DEBUG_
     std::cout << "LABELLER (selection)" << std::endl;
@@ -508,7 +508,7 @@ namespace pal
       // nothing to be done => return an empty result set
       if ( stats )
         ( *stats ) = new PalStat();
-      return new std::list<LabelPosition*>();
+      return new QList<LabelPosition*>();
     }
 
     std::cout << "PAL EXTRACT: " << t.elapsed() / 1000.0 << " s" << std::endl;
@@ -548,7 +548,7 @@ namespace pal
     //prob->post_optimization();
 
 
-    std::list<LabelPosition*> * solution = prob->getSolution( displayAll );
+    QList<LabelPosition*> * solution = prob->getSolution( displayAll );
 
     if ( stats )
       *stats = prob->getStats();
@@ -581,10 +581,10 @@ namespace pal
     return extract( bbox[0], bbox[1], bbox[2], bbox[3] );
   }
 
-  std::list<LabelPosition*>* Pal::solveProblem( Problem* prob, bool displayAll )
+  QList<LabelPosition*>* Pal::solveProblem( Problem* prob, bool displayAll )
   {
     if ( !prob )
-      return new std::list<LabelPosition*>();
+      return new QList<LabelPosition*>();
 
     prob->reduce();
 
@@ -599,7 +599,7 @@ namespace pal
     }
     catch ( InternalException::Empty )
     {
-      return new std::list<LabelPosition*>();
+      return new QList<LabelPosition*>();
     }
 
     return prob->getSolution( displayAll );

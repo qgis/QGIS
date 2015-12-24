@@ -59,13 +59,13 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     QMap <QString, QString> existingCRSparameters;
     QMap <QString, QString> existingCRSnames;
 
-    //These three vectors store the value updated with the current modifications
-    std::vector<QString> customCRSnames;
-    std::vector<QString> customCRSids;
-    std::vector<QString> customCRSparameters;
+    //These three list store the value updated with the current modifications
+    QStringList customCRSnames;
+    QStringList customCRSids;
+    QStringList customCRSparameters;
 
     //vector saving the CRS to be deleted
-    std::vector<QString> deletedCRSs;
+    QStringList deletedCRSs;
 
     //Columns in the tree widget
     enum columns { QGIS_CRS_NAME_COLUMN, QGIS_CRS_ID_COLUMN, QGIS_CRS_PARAMETERS_COLUMN };
