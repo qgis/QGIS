@@ -966,6 +966,7 @@ class CORE_EXPORT QgsExpression
     {
       public:
         NodeCondition( WhenThenList* conditions, Node* elseExp = nullptr ) : mConditions( *conditions ), mElseExp( elseExp ) { delete conditions; }
+        NodeCondition( const WhenThenList& conditions, Node* elseExp = nullptr ) : mConditions( conditions ), mElseExp( elseExp ) {}
         ~NodeCondition() { delete mElseExp; qDeleteAll( mConditions ); }
 
         virtual NodeType nodeType() const override { return ntCondition; }
