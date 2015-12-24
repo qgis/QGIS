@@ -262,7 +262,7 @@ inline bool QgsFeatureIterator::isClosed() const
 
 inline bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
 {
-  return ( fi1.mIter == fi2.mIter );
+  return fi1.mIter == fi2.mIter;
 }
 
 inline bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )

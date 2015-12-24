@@ -75,13 +75,13 @@ class CORE_EXPORT QgsRasterInterface
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType */
-    virtual QGis::DataType srcDataType( int bandNo ) const { if ( mInput ) return mInput->srcDataType( bandNo ); else return QGis::UnknownDataType; }
+    virtual QGis::DataType srcDataType( int bandNo ) const { return mInput ? mInput->srcDataType( bandNo ) : QGis::UnknownDataType; }
 
     /**
      * Get the extent of the interface.
      * @return QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent() { if ( mInput ) return mInput->extent(); else return QgsRectangle(); }
+    virtual QgsRectangle extent() { return mInput ? mInput->extent() : QgsRectangle(); }
 
     int dataTypeSize( int bandNo ) { return QgsRasterBlock::typeSize( dataType( bandNo ) ); }
 
@@ -89,12 +89,12 @@ class CORE_EXPORT QgsRasterInterface
     virtual int bandCount() const = 0;
 
     /** Get block size */
-    virtual int xBlockSize() const { if ( mInput ) return mInput->xBlockSize(); else return 0; }
-    virtual int yBlockSize() const { if ( mInput ) return mInput->yBlockSize(); else return 0; }
+    virtual int xBlockSize() const { return mInput ? mInput->xBlockSize() : 0; }
+    virtual int yBlockSize() const { return mInput ? mInput->yBlockSize() : 0; }
 
     /** Get raster size */
-    virtual int xSize() const { if ( mInput ) return mInput->xSize(); else return 0; }
-    virtual int ySize() const { if ( mInput ) return mInput->ySize(); else return 0; }
+    virtual int xSize() const { return mInput ? mInput->xSize() : 0; }
+    virtual int ySize() const { return mInput ? mInput->ySize() : 0; }
 
     /** \brief helper function to create zero padded band names */
     virtual QString generateBandName( int theBandNumber ) const

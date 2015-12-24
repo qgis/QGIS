@@ -62,10 +62,20 @@ ADD_FLEX_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalclexer.ll)
 
 ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalcparser.yy)
 
-SET_SOURCE_FILES_PROPERTIES(
+IF(NOT MSVC)
+  SET_SOURCE_FILES_PROPERTIES(
     ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp
     PROPERTIES COMPILE_FLAGS "-w"
   )
+ELSE(NOT MSVC)
+  IF(PEDANTIC)
+    # 4702 unreachable code
+    SET_SOURCE_FILES_PROPERTIES(
+      ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp
+      PROPERTIES COMPILE_FLAGS "-wd4702"
+    )
+  ENDIF(PEDANTIC)
+ENDIF(NOT MSVC)
 
 IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   SET_SOURCE_FILES_PROPERTIES(
