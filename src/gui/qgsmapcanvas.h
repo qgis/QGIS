@@ -20,10 +20,6 @@
 
 #include "qgsconfig.h"
 
-#include <list>
-#include <memory>
-#include <deque>
-
 #include "qgsexpressioncontext.h"
 #include "qgsrectangle.h"
 #include "qgspoint.h"

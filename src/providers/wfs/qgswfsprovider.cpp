@@ -866,7 +866,7 @@ int QgsWFSProvider::describeFeatureTypeFile( const QString& uri, QString& geomet
     return 0;
   }
 
-  std::list<QString> thematicAttributes;
+  QStringList thematicAttributes;
 
   //if this fails (e.g. no schema file), try to guess the geometry attribute and the names of the thematic attributes from the .gml file
   if ( guessAttributesFromFile( uri, geometryAttribute, thematicAttributes, geomType ) != 0 )
@@ -876,10 +876,10 @@ int QgsWFSProvider::describeFeatureTypeFile( const QString& uri, QString& geomet
 
   fields.clear();
   int i = 0;
-  for ( std::list<QString>::const_iterator it = thematicAttributes.begin(); it != thematicAttributes.end(); ++it, ++i )
+  Q_FOREACH ( const QString &name, thematicAttributes )
   {
     // TODO: is this correct?
-    fields[i] = QgsField( *it, QVariant::String, "unknown" );
+    fields[i++] = QgsField( name, QVariant::String, "unknown" );
   }
   return 0;
 }
@@ -995,7 +995,7 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
   return 0;
 }
 
-int QgsWFSProvider::guessAttributesFromFile( const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes, QGis::WkbType& geomType ) const
+int QgsWFSProvider::guessAttributesFromFile( const QString& uri, QString& geometryAttribute, QStringList &thematicAttributes, QGis::WkbType& geomType ) const
 {
   QFile gmlFile( uri );
   if ( !gmlFile.open( QIODevice::ReadOnly ) )
@@ -1085,7 +1085,7 @@ int QgsWFSProvider::getExtentFromGML2( QgsRectangle* extent, const QDomElement& 
   QDomNode coordinatesNode = childNode.firstChild();
   if ( coordinatesNode.localName() == "coordinates" )
   {
-    std::list<QgsPoint> boundingPoints;
+    QList<QgsPoint> boundingPoints;
     if ( readGML2Coordinates( boundingPoints, coordinatesNode.toElement() ) != 0 )
     {
       return 5;
@@ -1096,7 +1096,7 @@ int QgsWFSProvider::getExtentFromGML2( QgsRectangle* extent, const QDomElement& 
       return 6;
     }
 
-    std::list<QgsPoint>::const_iterator it = boundingPoints.begin();
+    QList<QgsPoint>::const_iterator it = boundingPoints.begin();
     extent->setXMinimum( it->x() );
     extent->setYMinimum( it->y() );
     ++it;
@@ -1256,7 +1256,7 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
   return 0;
 }
 
-int QgsWFSProvider::readGML2Coordinates( std::list<QgsPoint>& coords, const QDomElement& elem ) const
+int QgsWFSProvider::readGML2Coordinates( QList<QgsPoint>& coords, const QDomElement& elem ) const
 {
   QString coordSeparator = ",";
   QString tupelSeparator = " ";

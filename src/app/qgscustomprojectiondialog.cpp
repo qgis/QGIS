@@ -403,7 +403,7 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
 
   //Check if all CRS are valid:
   QgsCoordinateReferenceSystem CRS;
-  for ( size_t i = 0; i < customCRSids.size(); ++i )
+  for ( int i = 0; i < customCRSids.size(); ++i )
   {
     CRS.createFromProj4( customCRSparameters[i] );
     if ( !CRS.isValid() )
@@ -415,19 +415,19 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
   }
   //Modify the CRS changed:
   bool save_success = true;
-  for ( size_t i = 0; i < customCRSids.size(); ++i )
+  for ( int i = 0; i < customCRSids.size(); ++i )
   {
     CRS.createFromProj4( customCRSparameters[i] );
     //Test if we just added this CRS (if it has no existing ID)
     if ( customCRSids[i] == "" )
     {
-      save_success = save_success && saveCRS( CRS, customCRSnames[i], "", true );
+      save_success &= saveCRS( CRS, customCRSnames[i], "", true );
     }
     else
     {
       if ( existingCRSnames[customCRSids[i]] != customCRSnames[i] || existingCRSparameters[customCRSids[i]] != customCRSparameters[i] )
       {
-        save_success = save_success && saveCRS( CRS, customCRSnames[i], customCRSids[i], false );
+        save_success &= saveCRS( CRS, customCRSnames[i], customCRSids[i], false );
       }
     }
     if ( ! save_success )
@@ -436,9 +436,9 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
     }
   }
   QgsDebugMsg( "We remove the deleted CRS." );
-  for ( size_t i = 0; i < deletedCRSs.size(); ++i )
+  for ( int i = 0; i < deletedCRSs.size(); ++i )
   {
-    save_success = save_success && deleteCRS( deletedCRSs[i] );
+    save_success &= deleteCRS( deletedCRSs[i] );
     if ( ! save_success )
     {
       QgsDebugMsg( QString( "Problem for layer '%1'" ).arg( customCRSparameters[i] ) );

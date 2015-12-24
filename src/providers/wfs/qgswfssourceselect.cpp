@@ -241,12 +241,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     mModel->appendRow( StandardItemList() << titleItem << nameItem << abstractItem << cachedItem << filterItem );
 
     // insert the available CRS into mAvailableCRS
-    std::list<QString> currentCRSList;
-    Q_FOREACH ( const QString& crs, featureType.crslist )
-    {
-      currentCRSList.push_back( crs );
-    }
-    mAvailableCRS.insert( std::make_pair( featureType.name, currentCRSList ) );
+    mAvailableCRS.insert( featureType.name, featureType.crslist );
   }
 
   if ( !caps.featureTypes.isEmpty() )
@@ -488,17 +483,11 @@ void QgsWFSSourceSelect::changeCRSFilter()
     QString currentTypename = currentIndex.sibling( currentIndex.row(), 1 ).data().toString();
     QgsDebugMsg( QString( "the current typename is: %1" ).arg( currentTypename ) );
 
-    std::map<QString, std::list<QString> >::const_iterator crsIterator = mAvailableCRS.find( currentTypename );
+    QMap<QString, QStringList >::const_iterator crsIterator = mAvailableCRS.find( currentTypename );
     if ( crsIterator != mAvailableCRS.end() )
     {
-      std::list<QString> crsList = crsIterator->second;
+      QSet<QString> crsNames( crsIterator->toSet() );
 
-      QSet<QString> crsNames;
-
-      for ( std::list<QString>::const_iterator it = crsList.begin(); it != crsList.end(); ++it )
-      {
-        crsNames.insert( *it );
-      }
       if ( mProjectionSelector )
       {
         mProjectionSelector->setOgcWmsCrsFilter( crsNames );
