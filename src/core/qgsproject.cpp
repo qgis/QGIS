@@ -17,9 +17,6 @@
 
 #include "qgsproject.h"
 
-#include <deque>
-#include <memory>
-
 #include "qgsdatasourceuri.h"
 #include "qgsexception.h"
 #include "qgslayertree.h"
@@ -44,8 +41,15 @@
 #include <QDomNode>
 #include <QObject>
 #include <QTextStream>
+#include <QTemporaryFile>
 #include <QDir>
 #include <QUrl>
+
+#ifdef Q_OS_UNIX
+#include <utime.h>
+#elif _MSC_VER
+#include <sys/utime.h>
+#endif
 
 // canonical project instance
 QgsProject *QgsProject::theProject_ = nullptr;
@@ -1004,7 +1008,16 @@ bool QgsProject::write()
     QString backup = fileName() + '~';
     if ( QFile::exists( backup ) )
       QFile::remove( backup );
-    QFile::rename( fileName(), backup );
+
+    if ( !QFile::copy( fileName(), backup ) )
+    {
+      setError( tr( "Unable to create backup file %1" ).arg( backup ) );
+      return false;
+    }
+
+    QFileInfo fi( fileName() );
+    struct utimbuf tb = { fi.lastRead().toTime_t(), fi.lastModified().toTime_t() };
+    utime( backup.toUtf8().constData(), &tb );
   }
 
   // if we have problems creating or otherwise writing to the project file,
@@ -1018,6 +1031,7 @@ bool QgsProject::write()
     setError( tr( "Unable to save to file %1" ).arg( imp_->file.fileName() ) );
     return false;
   }
+
   QFileInfo myFileInfo( imp_->file );
   if ( !myFileInfo.isWritable() )
   {
@@ -1028,8 +1042,6 @@ bool QgsProject::write()
               .arg( imp_->file.fileName() ) );
     return false;
   }
-
-
 
   QDomImplementation DomImplementation;
   DomImplementation.setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
@@ -1126,15 +1138,31 @@ bool QgsProject::write()
   // now wrap it up and ship it to the project file
   doc->normalize();             // XXX I'm not entirely sure what this does
 
-  QTextStream projectFileStream( &imp_->file );
+  QTemporaryFile tempFile;
+  bool ok = tempFile.open();
+  if ( ok )
+  {
+    QTextStream projectFileStream( &tempFile );
+    doc->save( projectFileStream, 2 );  // save as utf-8
+    ok &= projectFileStream.pos() > -1;
 
-  doc->save( projectFileStream, 2 );  // save as utf-8
-  imp_->file.close();
+    ok &= tempFile.seek( 0 );
 
-  // check if the text stream had no error - if it does
-  // the user will get a message so they can try to resolve the
-  // situation e.g. by saving project to a volume with more space
-  if ( projectFileStream.pos() == -1  || imp_->file.error() != QFile::NoError )
+    QByteArray ba;
+    while ( ok && !tempFile.atEnd() )
+    {
+      ba = tempFile.read( 10240 );
+      ok &= imp_->file.write( ba ) == ba.size();
+    }
+
+    ok &= imp_->file.error() == QFile::NoError;
+
+    imp_->file.close();
+  }
+
+  tempFile.close();
+
+  if ( !ok )
   {
     setError( tr( "Unable to save to file %1. Your project "
                   "may be corrupted on disk. Try clearing some space on the volume and "
