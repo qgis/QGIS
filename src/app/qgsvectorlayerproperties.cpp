@@ -1052,6 +1052,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
       QMessageBox::warning( this, tr( "Error occured retrieving styles from database" ), errorMsg );
       return;
     }
+    Q_NOWARN_DEPRECATED_PUSH
     if ( layer->applyNamedStyle( qmlStyle, errorMsg ) )
     {
       syncToLayer();
@@ -1062,7 +1063,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
                             tr( "The retrieved style is not a valid named style. Error message: %1" )
                             .arg( errorMsg ) );
     }
-
+    Q_NOWARN_DEPRECATED_POP
   }
 }
 

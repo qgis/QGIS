@@ -3419,9 +3419,6 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index )
   {
     return QVariant( QVariant::Int );
   }
-
-  // dummy return, so compiler is quiet
-  return QVariant();
 }
 
 // Returns the list of unique values of an attribute

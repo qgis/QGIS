@@ -3878,7 +3878,9 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFl
         qml = loadStyleExternalMethod( mDataSource, errorMsg );
         if ( !qml.isEmpty() )
         {
+          Q_NOWARN_DEPRECATED_PUSH
           theResultFlag = applyNamedStyle( qml, errorMsg );
+          Q_NOWARN_DEPRECATED_POP
           return QObject::tr( "Loaded from Provider" );
         }
       }

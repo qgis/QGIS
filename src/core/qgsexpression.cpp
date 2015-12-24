@@ -4478,4 +4478,7 @@ QVariant QgsExpression::StaticFunction::func( const QVariantList &values, const 
   Q_NOWARN_DEPRECATED_POP
 }
 
-const QgsExpression::Node* QgsExpression::rootNode() const { return d->mRootNode; }
+const QgsExpression::Node* QgsExpression::rootNode() const
+{
+  return d->mRootNode;
+}

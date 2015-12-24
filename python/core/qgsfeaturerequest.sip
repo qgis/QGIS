@@ -15,17 +15,39 @@ class QgsFeatureRequest
     };
     typedef QFlags<QgsFeatureRequest::Flag> Flags;
 
+    /**
+     * Types of filters.
+     */
     enum FilterType
     {
       FilterNone,       //!< No filter is applied
-      FilterRect,       //!< Filter using a rectangle, no need to set NoGeometry
+      FilterRect,       //!< Obsolete, will be ignored. If a filterRect is set it will be used anyway. Filter using a rectangle, no need to set NoGeometry. Instead check for request.filterRect().isNull()
       FilterFid,        //!< Filter using feature ID
       FilterExpression, //!< Filter using expression
       FilterFids        //!< Filter using feature IDs
     };
 
     /**
-     * @brief The OrderByClause class represents an order by clause for a QgsFeatureRequest
+     * The OrderByClause class represents an order by clause for a QgsFeatureRequest.
+     *
+     * It can be a simple field or an expression. Multiple order by clauses can be added to
+     * a QgsFeatureRequest to fine tune the behavior if a single field or expression is not
+     * enough to completely specify the required behavior.
+     *
+     * If expression compilation is activated in the settings and the expression can be
+     * translated for the provider in question, it will be evaluated on provider side.
+     * If one of these two premises does not apply, the ordering will take place locally
+     * which results in increased memory and CPU usage.
+     *
+     * If the ordering is done on strings, the order depends on the system's locale if the
+     * local fallback implementation is used. The order depends on the server system's locale
+     * and implementation if ordering is done on the server.
+     *
+     * In case the fallback code needs to be used, a limit set on the request will be respected
+     * for the features returned by the iterator but internally all features will be requested
+     * from the provider.
+     *
+     * @note added in QGIS 2.14
      */
     class OrderByClause
     {
@@ -35,8 +57,8 @@ class QgsFeatureRequest
          *
          * @param expression The expression to use for ordering
          * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
-         *                   If thr order is ascending, by default nulls are last
-         *                   If thr order is descending, by default nulls are first
+         *                   If the order is ascending, by default nulls are last
+         *                   If the order is descending, by default nulls are first
          */
         OrderByClause( const QString &expression, bool ascending = true );
         /**
@@ -76,13 +98,29 @@ class QgsFeatureRequest
          */
         void setNullsFirst( bool nullsFirst );
 
+        /**
+         * Dumps the content to an SQL equivalent
+         */
+        QString dump() const;
     };
 
+    /**
+     * Represents a list of OrderByClauses, with the most important first and the least
+     * important last.
+     *
+     * @note added in QGIS 2.14
+     */
     class OrderBy
     {
       public:
+        /**
+         * Create a new empty order by
+         */
         OrderBy();
 
+        /**
+         * Create a new order by from a list of clauses
+         */
         OrderBy( const QList<QgsFeatureRequest::OrderByClause>& other );
 
         /**
@@ -127,20 +165,36 @@ class QgsFeatureRequest
     explicit QgsFeatureRequest( const QgsRectangle& rect );
     //! construct a request with a filter expression
     explicit QgsFeatureRequest( const QgsExpression& expr, const QgsExpressionContext& context = QgsExpressionContext() );
+    //! copy constructor
+    QgsFeatureRequest( const QgsFeatureRequest& rh );
 
+    ~QgsFeatureRequest();
+
+    /**
+     * Return the filter type which is currently set on this request
+     *
+     * @return Filter type
+     */
     FilterType filterType() const;
 
-    //! Set rectangle from which features will be taken. Empty rectangle removes the filter.
-    //!
+    /**
+     * Set rectangle from which features will be taken. Empty rectangle removes the filter.
+     */
     QgsFeatureRequest& setFilterRect( const QgsRectangle& rect );
+
+    /**
+     * Get the rectangle from which features will be taken.
+     */
     const QgsRectangle& filterRect() const;
 
     //! Set feature ID that should be fetched.
     QgsFeatureRequest& setFilterFid( qint64 fid );
+    //! Get the feature ID that should be fetched.
     qint64 filterFid() const;
 
-    //! Set feature ID that should be fetched.
+    //! Set feature IDs that should be fetched.
     QgsFeatureRequest& setFilterFids( const QgsFeatureIds& fids );
+    //! Get feature IDs that should be fetched.
     const QgsFeatureIds& filterFids() const;
 
     /** Set the filter expression. {@see QgsExpression}
@@ -166,12 +220,14 @@ class QgsFeatureRequest
     /** Returns the expression context used to evaluate filter expressions.
      * @note added in QGIS 2.12
      * @see setExpressionContext
+     * @see filterExpression
      */
     QgsExpressionContext* expressionContext();
 
     /** Sets the expression context used to evaluate filter expressions.
      * @note added in QGIS 2.12
      * @see expressionContext
+     * @see setFilterExpression
      */
     QgsFeatureRequest& setExpressionContext( const QgsExpressionContext& context );
 
@@ -186,14 +242,14 @@ class QgsFeatureRequest
     QgsFeatureRequest& disableFilter();
 
     /**
-     * Adds a new OrderByClause
+     * Adds a new OrderByClause, appending it as the least important one.
      *
      * @param expression The expression to use for ordering
      * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
      *                   If the order is ascending, by default nulls are last
      *                   If the order is descending, by default nulls are first
      *
-     * @added in QGIS 2.14
+     * @note added in QGIS 2.14
      */
 
     QgsFeatureRequest& addOrderBy( const QString &expression, bool ascending = true );
@@ -204,19 +260,23 @@ class QgsFeatureRequest
      * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
      * @param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
      *
-     * @added in QGIS 2.14
+     * @note added in QGIS 2.14
      */
     QgsFeatureRequest& addOrderBy( const QString &expression, bool ascending, bool nullsfirst );
 
     /**
      * Return a list of order by clauses specified for this feature request.
+     *
+     * @note added in 2.14
      */
     QgsFeatureRequest::OrderBy orderBy() const;
 
     /**
      * Set a list of order by clauses.
+     *
+     * @note added in 2.14
      */
-    QgsFeatureRequest& setOrderBy(const QgsFeatureRequest::OrderBy& orderBy );
+    QgsFeatureRequest& setOrderBy( const QgsFeatureRequest::OrderBy& orderBy );
 
     /** Set the maximum number of features to request.
      * @param limit maximum number of features, or -1 to request all features.
@@ -238,6 +298,10 @@ class QgsFeatureRequest
     //! Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
     //! To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
     QgsFeatureRequest& setSubsetOfAttributes( const QgsAttributeList& attrs );
+    /**
+     * Return the subset of attributes which at least need to be fetched
+     * @return A list of attributes to be fetched
+     */
     const QgsAttributeList& subsetOfAttributes() const;
 
     //! Set a subset of attributes by names that will be fetched
@@ -275,6 +339,11 @@ class QgsAbstractFeatureSource
   public:
     virtual ~QgsAbstractFeatureSource();
 
+    /**
+     * Get an iterator for features matching the specified request
+     * @param request The request
+     * @return A feature iterator
+     */
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) = 0;
 
   protected:
