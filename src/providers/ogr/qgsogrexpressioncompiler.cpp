@@ -78,6 +78,9 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const Qg
       return Fail;
 
     case QgsExpression::ntUnaryOperator:
+    case QgsExpression::ntColumnRef:
+    case QgsExpression::ntInOperator:
+    case QgsExpression::ntLiteral:
       break;
   }
 
