@@ -80,7 +80,7 @@
 #endif
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"WMS provider")
-#define ERROR(message) QgsError(message,"WMS provider")
+#define QGS_ERROR(message) QgsError(message,"WMS provider")
 
 static QString WMS_KEY = "wms";
 static QString WMS_DESCRIPTION = "OGC Web Map Service version 1.3 data provider";
@@ -2047,7 +2047,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
   format = mCaps.mIdentifyFormats.value( theFormat );
   if ( format.isEmpty() )
   {
-    return QgsRasterIdentifyResult( ERROR( tr( "Format not supported" ) ) );
+    return QgsRasterIdentifyResult( QGS_ERROR( tr( "Format not supported" ) ) );
   }
 
   QgsDebugMsg( QString( "theFormat = %1 format = %2" ).arg( theFormat ).arg( format ) );
@@ -2067,7 +2067,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
     // are not, because we don't know original resolution
     if ( theWidth == 0 || theHeight == 0 )
     {
-      return QgsRasterIdentifyResult( ERROR( tr( "Context not fully specified (extent was defined but width and/or height was not)." ) ) );
+      return QgsRasterIdentifyResult( QGS_ERROR( tr( "Context not fully specified (extent was defined but width and/or height was not)." ) ) );
     }
   }
   else // context (theExtent, theWidth, theHeight) not defined
@@ -2620,7 +2620,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         // Report it as error so that user can switch to another format in results dialog.
         if ( xsdPart < 0 && !featureTypeNames.isEmpty() && featureStoreList.isEmpty() )
         {
-          QgsError err = ERROR( tr( "Cannot identify" ) );
+          QgsError err = QGS_ERROR( tr( "Cannot identify" ) );
           err.append( tr( "Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed." ).arg( featureTypeNames.size() ).arg( featureTypeNames.join( "," ) ) );
           QgsDebugMsg( "parsing GML error: " + err.message() );
           return QgsRasterIdentifyResult( err );
