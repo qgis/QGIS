@@ -102,7 +102,7 @@ void qgsGeometryToSpatialiteBlob( const QgsGeometry& geom, int32_t srid, char *&
   p += wkb_size - 1;
 
   // end marker
-  *p = 0xFE;
+  *p = '\xFE';
 }
 
 //

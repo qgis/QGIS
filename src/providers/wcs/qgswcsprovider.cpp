@@ -66,7 +66,7 @@
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"WCS provider")
 #define SRVERR(message) QGS_ERROR_MESSAGE(message,"WCS server")
-#define ERROR(message) QgsError(message,"WCS provider")
+#define QGS_ERROR(message) QgsError(message,"WCS provider")
 
 static QString WCS_KEY = "wcs";
 static QString WCS_DESCRIPTION = "OGC Web Coverage Service version 1.0/1.1 data provider";
@@ -1370,7 +1370,7 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Qgs
 
   if ( theFormat != QgsRaster::IdentifyFormatValue )
   {
-    return QgsRasterIdentifyResult( ERROR( tr( "Format not supported" ) ) );
+    return QgsRasterIdentifyResult( QGS_ERROR( tr( "Format not supported" ) ) );
   }
 
   if ( !extent().contains( thePoint ) )
@@ -1491,7 +1491,7 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Qgs
   if ( !mCachedGdalDataset ||
        !mCachedViewExtent.contains( thePoint ) )
   {
-    return QgsRasterIdentifyResult( ERROR( tr( "Read data error" ) ) );
+    return QgsRasterIdentifyResult( QGS_ERROR( tr( "Read data error" ) ) );
   }
 
   double x = thePoint.x();
@@ -1518,7 +1518,7 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Qgs
     if ( err != CPLE_None )
     {
       QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
-      return QgsRasterIdentifyResult( ERROR( tr( "RasterIO error: " ) + QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+      return QgsRasterIdentifyResult( QGS_ERROR( tr( "RasterIO error: " ) + QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     }
 
     // Apply no data and user no data
