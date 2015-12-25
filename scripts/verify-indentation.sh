@@ -9,8 +9,6 @@ if [ -z "$TRAVIS_COMMIT_RANGE" ]; then
 	exit 0
 fi
 
-TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE/.../..}
-
 if ! type -p astyle.sh >/dev/null; then
 	echo astyle.sh not found
 	exit 1
@@ -21,12 +19,17 @@ set -e
 ASTYLEDIFF=/tmp/astyle.diff
 >$ASTYLEDIFF
 
-echo "Checking indentation in $TRAVIS_COMMIT_RANGE"
-echo "Checking indentation in $TRAVIS_COMMIT_RANGE" >>/tmp/ctest-important.log
-git log $TRAVIS_COMMIT_RANGE >>/tmp/ctest-important.log 2>&1
-git diff --name-only $TRAVIS_COMMIT_RANGE >>/tmp/ctest-important.log 2>&1
+case "${TRAVIS_COMMIT_RANGE}" in
+*...*)
+	curl https://api.github.com/repos/$TRAVIS_REPO_SLUG/compare/$TRAVIS_COMMIT_RANGE | jq -r .files[].filename >/tmp/changed-files
+	;;
 
-git diff --name-only $TRAVIS_COMMIT_RANGE | while read f
+*)
+	git diff --name-only $TRAVIS_COMMIT_RANGE >/tmp/changed-files
+	;;
+esac
+
+while read f
 do
 	if ! [ -f "$f" ]; then
 		echo "$f was removed." >>/tmp/ctest-important.log
@@ -56,7 +59,7 @@ do
 	else
 		echo "File $f needs indentation"
 	fi
-done
+done </tmp/changed-files
 
 if [ -s "$ASTYLEDIFF" ]; then
 	echo
