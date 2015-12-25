@@ -178,8 +178,17 @@ void QgsCategorizedSymbolRendererV2::rebuildHash()
   for ( int i = 0; i < mCategories.size(); ++i )
   {
     const QgsRendererCategoryV2& cat = mCategories.at( i );
-    mSymbolHash.insert( cat.value().toString(), ( cat.renderState() || mCounting ) ? cat.symbol() : &sSkipRender );
+    mSymbolHash.insert( cat.value().toString(), ( cat.renderState() || mCounting ) ? cat.symbol() : skipRender() );
   }
+}
+
+QgsSymbolV2*QgsCategorizedSymbolRendererV2::skipRender()
+{
+  static QgsMarkerSymbolV2* skipRender = nullptr;
+  if ( !skipRender )
+    skipRender = new QgsMarkerSymbolV2();
+
+  return skipRender;
 }
 
 QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( const QVariant& value )
@@ -254,7 +263,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::originalSymbolForFeature( QgsFeatur
 
   // find the right symbol for the category
   QgsSymbolV2 *symbol = symbolForValue( value );
-  if ( symbol == &sSkipRender )
+  if ( symbol == skipRender() )
     return nullptr;
 
   if ( !symbol )
@@ -978,8 +987,6 @@ void QgsCategorizedSymbolRendererV2::checkLegendSymbolItem( const QString& key, 
   if ( ok )
     updateCategoryRenderState( index, state );
 }
-
-QgsMarkerSymbolV2 QgsCategorizedSymbolRendererV2::sSkipRender;
 
 QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::convertFromRenderer( const QgsFeatureRendererV2 *renderer )
 {
