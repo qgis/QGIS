@@ -421,8 +421,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
   public:
     // static functions
 
-    static void convertToGeosWKB( const unsigned char *blob, size_t blob_size,
-                                  unsigned char **wkb, size_t *geom_size );
+    static void convertToGeosWKB( const unsigned char *blob, int blob_size,
+                                  unsigned char **wkb, int *geom_size );
     static int computeMultiWKB3Dsize( const unsigned char *p_in, int little_endian,
                                       int endian_arch );
   private:
@@ -434,19 +434,19 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     int computeSizeFromMultiWKB3D( const unsigned char *p_in, int nDims,
                                    int little_endian,
                                    int endian_arch );
-    void convertFromGeosWKB2D( const unsigned char *blob, size_t blob_size,
-                               unsigned char *wkb, size_t geom_size,
+    void convertFromGeosWKB2D( const unsigned char *blob, int blob_size,
+                               unsigned char *wkb, int geom_size,
                                int nDims, int little_endian, int endian_arch );
-    void convertFromGeosWKB3D( const unsigned char *blob, size_t blob_size,
-                               unsigned char *wkb, size_t geom_size,
+    void convertFromGeosWKB3D( const unsigned char *blob, int blob_size,
+                               unsigned char *wkb, int geom_size,
                                int nDims, int little_endian, int endian_arch );
-    void convertFromGeosWKB( const unsigned char *blob, size_t blob_size,
-                             unsigned char **wkb, size_t *geom_size,
+    void convertFromGeosWKB( const unsigned char *blob, int blob_size,
+                             unsigned char **wkb, int *geom_size,
                              int dims );
-    int computeSizeFromGeosWKB3D( const unsigned char *blob, size_t size,
+    int computeSizeFromGeosWKB3D( const unsigned char *blob, int size,
                                   int type, int nDims, int little_endian,
                                   int endian_arch );
-    int computeSizeFromGeosWKB2D( const unsigned char *blob, size_t size,
+    int computeSizeFromGeosWKB2D( const unsigned char *blob, int size,
                                   int type, int nDims, int little_endian,
                                   int endian_arch );
 

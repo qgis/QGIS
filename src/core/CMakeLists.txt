@@ -409,7 +409,11 @@ IF(NOT MSVC)
   SET_SOURCE_FILES_PROPERTIES(qgsexpressionparser.cpp PROPERTIES COMPILE_FLAGS -w)
 ELSE(NOT MSVC)
   # -wd4702 unreachable code
-  SET_SOURCE_FILES_PROPERTIES(geometry/qgsgeos.cpp PROPERTIES COMPILE_FLAGS -wd4702)
+  SET_SOURCE_FILES_PROPERTIES(
+    geometry/qgsgeos.cpp
+    pal/feature.cpp
+    pal/pointset.cpp
+    PROPERTIES COMPILE_FLAGS -wd4702)
 ENDIF(NOT MSVC)
 
 SET(QGIS_CORE_MOC_HDRS

@@ -1415,8 +1415,6 @@ bool QgsGeorefPluginGui::georeference()
       return true;
     }
   }
-
-  return false;
 }
 
 bool QgsGeorefPluginGui::writeWorldFile( const QgsPoint& origin, double pixelXSize, double pixelYSize, double rotation )
@@ -1457,7 +1455,7 @@ bool QgsGeorefPluginGui::calculateMeanError( double& error ) const
     return false;
   }
 
-  unsigned int nPointsEnabled = 0;
+  int nPointsEnabled = 0;
   QgsGCPList::const_iterator gcpIt = mPoints.constBegin();
   for ( ; gcpIt != mPoints.constEnd(); ++gcpIt )
   {
@@ -1962,7 +1960,7 @@ bool QgsGeorefPluginGui::checkReadyGeoref()
 
 bool QgsGeorefPluginGui::updateGeorefTransform()
 {
-  std::vector<QgsPoint> mapCoords, pixelCoords;
+  QVector<QgsPoint> mapCoords, pixelCoords;
   if ( mGCPListWidget->gcpList() )
     mGCPListWidget->gcpList()->createGCPVectors( mapCoords, pixelCoords );
   else

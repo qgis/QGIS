@@ -35,11 +35,10 @@ QgsGCPList::QgsGCPList( const QgsGCPList &list )
   }
 }
 
-void QgsGCPList::createGCPVectors( std::vector<QgsPoint> &mapCoords,
-                                   std::vector<QgsPoint> &pixelCoords )
+void QgsGCPList::createGCPVectors( QVector<QgsPoint> &mapCoords, QVector<QgsPoint> &pixelCoords )
 {
-  mapCoords   = std::vector<QgsPoint>( size() );
-  pixelCoords = std::vector<QgsPoint>( size() );
+  mapCoords   = QVector<QgsPoint>( size() );
+  pixelCoords = QVector<QgsPoint>( size() );
   for ( int i = 0, j = 0; i < sizeAll(); i++ )
   {
     QgsGeorefDataPoint *pt = at( i );

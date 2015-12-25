@@ -528,11 +528,10 @@ void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt* stmt, int i
   if ( sqlite3_column_type( stmt, ic ) == SQLITE_BLOB )
   {
     unsigned char *featureGeom = nullptr;
-    size_t geom_size = 0;
+    int geom_size = 0;
     const void *blob = sqlite3_column_blob( stmt, ic );
-    size_t blob_size = sqlite3_column_bytes( stmt, ic );
-    QgsSpatiaLiteProvider::convertToGeosWKB(( const unsigned char * )blob, blob_size,
-                                            &featureGeom, &geom_size );
+    int blob_size = sqlite3_column_bytes( stmt, ic );
+    QgsSpatiaLiteProvider::convertToGeosWKB(( const unsigned char * )blob, blob_size, &featureGeom, &geom_size );
     if ( featureGeom )
     {
       QgsGeometry *g = new QgsGeometry();

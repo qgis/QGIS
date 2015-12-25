@@ -47,7 +47,7 @@ bool QgsOgrTopologyPreservingSimplifier::simplifyGeometry( OGRGeometryH geometry
   if ( !g )
     return false;
 
-  size_t wkbSize = OGR_G_WkbSize( g );
+  int wkbSize = OGR_G_WkbSize( g );
   unsigned char *wkb = new unsigned char[ wkbSize ];
   OGR_G_ExportToWkb( g, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
   OGR_G_ImportFromWkb( geometry, wkb, wkbSize );

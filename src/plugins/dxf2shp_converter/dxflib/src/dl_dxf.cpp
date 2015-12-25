@@ -296,7 +296,7 @@ bool DL_Dxf::getStrippedLine(std::string &s, unsigned int size,
  */
 bool DL_Dxf::stripWhiteSpace(char** s) {
     // last non-NULL char:
-    int lastChar = strlen(*s) - 1;
+    int lastChar = (int) strlen(*s) - 1;
 
     // Is last character CR or LF?
     while ( (lastChar >= 0) &&
@@ -1923,7 +1923,7 @@ void DL_Dxf::addHatch(DL_CreationInterface* creationInterface) {
 
     creationInterface->addHatch(hd);
 
-    for (unsigned int i=0; i<hatchEdges.size(); i++) {
+    for (size_t i=0; i<hatchEdges.size(); i++) {
         creationInterface->addHatchLoop(DL_HatchLoopData(hatchEdges[i].size()));
         for (unsigned int k=0; k<hatchEdges[i].size(); k++) {
             creationInterface->addHatchEdge(DL_HatchEdgeData(hatchEdges[i][k]));
@@ -2779,7 +2779,7 @@ void DL_Dxf::writeMText(DL_WriterA& dw,
     dw.dxfInt(72, data.drawingDirection);
 
     // Creare text chunks of 250 characters each:
-    int length = data.text.length();
+    int length = (int) data.text.length();
     char chunk[251];
     int i;
     for (i=250; i<length; i+=250) {
@@ -5117,13 +5117,13 @@ bool DL_Dxf::checkVariable(const char* var, DL_Codes::version version) {
  * e.g. if str = "2.0.2.0" getLibVersion returns 0x02000200
  */
 int DL_Dxf::getLibVersion(const std::string& str) {
-    int d[4];
+    size_t d[4];
     int idx = 0;
     //char v[4][5];
     std::string v[4];
     int ret = 0;
 
-    for (unsigned int i=0; i<str.length() && idx<3; ++i) {
+    for (size_t i=0; i<str.length() && idx<3; ++i) {
         if (str[i]=='.') {
             d[idx] = i;
             idx++;

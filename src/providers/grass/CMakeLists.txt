@@ -52,6 +52,25 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ../qgsgrassvectormaplayer.cpp
     )
 
+    IF(MSVC)
+      # 4611 setjmp
+      SET_SOURCE_FILES_PROPERTIES(
+        ../qgsgrassimport.cpp
+        ../qgsgrassprovider.cpp
+        ../qgsgrassvector.cpp
+        ../qgsgrassvectormap.cpp
+        ../qgsgrassvectormaplayer.cpp
+        PROPERTIES COMPILE_FLAGS "-wd4611"
+      )
+
+      # 4611 setjmp
+      # 4702 unreachable code
+      SET_SOURCE_FILES_PROPERTIES(
+        ../qgsgrass.cpp
+        PROPERTIES COMPILE_FLAGS "-wd4611 -wd4702"
+      )
+    ENDIF(MSVC)
+
     QT4_WRAP_UI (GRASS_LIBRARY_UIS_H
       ../qgsgrassoptionsbase.ui
     )
@@ -126,12 +145,8 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     #
     # GRASS vector provider
     #
-    SET (GRASS_VECTOR_PROVIDER_SRCS
-      ../qgsgrassprovidermodule.cpp
-    )
-    QT4_WRAP_CPP(GRASS_VECTOR_PROVIDER_MOC_SRCS
-      ../qgsgrassprovidermodule.h
-    )
+    SET (GRASS_VECTOR_PROVIDER_SRCS ../qgsgrassprovidermodule.cpp)
+    QT4_WRAP_CPP(GRASS_VECTOR_PROVIDER_MOC_SRCS ../qgsgrassprovidermodule.h)
     ADD_LIBRARY(grassprovider${GRASS_BUILD_VERSION} MODULE ${GRASS_VECTOR_PROVIDER_SRCS} ${GRASS_VECTOR_PROVIDER_MOC_SRCS})
     SET_TARGET_PROPERTIES(grassprovider${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" \"-DGRASS_EXPORT=${DLLEXPORT}\" \"-DGRASS_LIB_EXPORT=${DLLIMPORT}\""

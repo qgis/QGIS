@@ -910,7 +910,7 @@ QgsFeatureIterator QgsSpatiaLiteProvider::getFeatures( const QgsFeatureRequest& 
 
 
 int QgsSpatiaLiteProvider::computeSizeFromGeosWKB2D( const unsigned char *blob,
-    size_t size, int type, int nDims,
+    int size, int type, int nDims,
     int little_endian, int endian_arch )
 {
   Q_UNUSED( size );
@@ -1082,7 +1082,7 @@ int QgsSpatiaLiteProvider::computeSizeFromMultiWKB2D( const unsigned char *p_in,
 }
 
 int QgsSpatiaLiteProvider::computeSizeFromGeosWKB3D( const unsigned char *blob,
-    size_t size, int type, int nDims,
+    int size, int type, int nDims,
     int little_endian, int endian_arch )
 {
   Q_UNUSED( size );
@@ -1254,9 +1254,9 @@ int QgsSpatiaLiteProvider::computeSizeFromMultiWKB3D( const unsigned char *p_in,
 }
 
 void QgsSpatiaLiteProvider::convertFromGeosWKB( const unsigned char *blob,
-    size_t blob_size,
+    int blob_size,
     unsigned char **wkb,
-    size_t *geom_size,
+    int *geom_size,
     int nDims )
 {
 // attempting to convert from 2D/3D GEOS own WKB
@@ -1322,9 +1322,9 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB( const unsigned char *blob,
 }
 
 void QgsSpatiaLiteProvider::convertFromGeosWKB2D( const unsigned char *blob,
-    size_t blob_size,
+    int blob_size,
     unsigned char *wkb,
-    size_t geom_size,
+    int geom_size,
     int nDims,
     int little_endian,
     int endian_arch )
@@ -1867,9 +1867,9 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB2D( const unsigned char *blob,
 }
 
 void QgsSpatiaLiteProvider::convertFromGeosWKB3D( const unsigned char *blob,
-    size_t blob_size,
+    int blob_size,
     unsigned char *wkb,
-    size_t geom_size,
+    int geom_size,
     int nDims,
     int little_endian,
     int endian_arch )
@@ -2430,9 +2430,9 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB3D( const unsigned char *blob,
 }
 
 void QgsSpatiaLiteProvider::convertToGeosWKB( const unsigned char *blob,
-    size_t blob_size,
+    int blob_size,
     unsigned char **wkb,
-    size_t *geom_size )
+    int *geom_size )
 {
 // attempting to convert to 2D/3D GEOS own WKB
   int type;
@@ -2445,7 +2445,7 @@ void QgsSpatiaLiteProvider::convertToGeosWKB( const unsigned char *blob,
   int ie;
   int ib;
   int iv;
-  size_t gsize = 6;
+  int gsize = 6;
   const unsigned char *p_in;
   unsigned char *p_out;
   double coord;
@@ -3352,9 +3352,6 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index )
   {
     return QVariant( QVariant::Int );
   }
-
-  // dummy return, so compiler is quiet
-  return QVariant();
 }
 
 // Returns the maximum value of an attribute
@@ -3626,7 +3623,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
           else
           {
             unsigned char *wkb = nullptr;
-            size_t wkb_size;
+            int wkb_size;
             convertFromGeosWKB( feature->constGeometry()->asWkb(),
                                 feature->constGeometry()->wkbSize(),
                                 &wkb, &wkb_size, nDims );
@@ -3699,8 +3696,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         {
           // some unexpected error occurred
           const char *err = sqlite3_errmsg( sqliteHandle );
-          int len = strlen( err );
-          errMsg = ( char * ) sqlite3_malloc( len + 1 );
+          errMsg = ( char * ) sqlite3_malloc( strlen( err ) + 1 );
           strcpy( errMsg, err );
           break;
         }
@@ -3775,8 +3771,7 @@ bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )
     {
       // some unexpected error occurred
       const char *err = sqlite3_errmsg( sqliteHandle );
-      int len = strlen( err );
-      errMsg = ( char * ) sqlite3_malloc( len + 1 );
+      errMsg = ( char * ) sqlite3_malloc( strlen( err ) + 1 );
       strcpy( errMsg, err );
       goto abort;
     }
@@ -4020,9 +4015,8 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( QgsGeometryMap & geometry_map 
 
     // binding GEOMETRY to Prepared Statement
     unsigned char *wkb = nullptr;
-    size_t wkb_size;
-    convertFromGeosWKB( iter->asWkb(), iter->wkbSize(), &wkb, &wkb_size,
-                        nDims );
+    int wkb_size;
+    convertFromGeosWKB( iter->asWkb(), iter->wkbSize(), &wkb, &wkb_size, nDims );
     if ( !wkb )
       sqlite3_bind_null( stmt, 1 );
     else
@@ -4037,8 +4031,7 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( QgsGeometryMap & geometry_map 
     {
       // some unexpected error occurred
       const char *err = sqlite3_errmsg( sqliteHandle );
-      int len = strlen( err );
-      errMsg = ( char * ) sqlite3_malloc( len + 1 );
+      errMsg = ( char * ) sqlite3_malloc( strlen( err ) + 1 );
       strcpy( errMsg, err );
       goto abort;
     }

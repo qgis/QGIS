@@ -2711,7 +2711,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
                 OGRGeometryH ogrGeom = OGR_G_CreateGeometryFromJson( geom.toString().toUtf8() );
                 if ( ogrGeom )
                 {
-                  size_t wkbSize = OGR_G_WkbSize( ogrGeom );
+                  int wkbSize = OGR_G_WkbSize( ogrGeom );
                   unsigned char *wkb = new unsigned char[ wkbSize ];
                   OGR_G_ExportToWkb( ogrGeom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
                   OGR_G_DestroyGeometry( ogrGeom );
