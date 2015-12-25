@@ -39,7 +39,7 @@
 #include <QHash>
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"GRASS provider")
-#define ERROR(message) QgsError(message,"GRASS provider")
+#define QGS_ERROR(message) QgsError(message,"GRASS provider")
 
 // Do not use warning dialogs, providers are also created on threads (rendering) where dialogs connot be used (constructing QPixmap icon)
 
@@ -473,7 +473,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
 
   if ( theFormat != QgsRaster::IdentifyFormatValue )
   {
-    return QgsRasterIdentifyResult( ERROR( tr( "Format not supported" ) ) );
+    return QgsRasterIdentifyResult( QGS_ERROR( tr( "Format not supported" ) ) );
   }
 
   if ( !extent().contains( thePoint ) )
@@ -490,7 +490,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
 
   if ( !ok )
   {
-    return QgsRasterIdentifyResult( ERROR( tr( "Cannot read data" ) ) );
+    return QgsRasterIdentifyResult( QGS_ERROR( tr( "Cannot read data" ) ) );
   }
 
   // no data?
