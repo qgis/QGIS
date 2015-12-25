@@ -224,9 +224,9 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 
     void rebuildHash();
 
-    QgsSymbolV2* symbolForValue( const QVariant& value );
+    QgsSymbolV2* skipRender();
 
-    static QgsMarkerSymbolV2 sSkipRender;
+    QgsSymbolV2* symbolForValue( const QVariant& value );
 };
 Q_NOWARN_DEPRECATED_POP
 
