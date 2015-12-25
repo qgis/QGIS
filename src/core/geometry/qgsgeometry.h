@@ -142,7 +142,7 @@ class CORE_EXPORT QgsGeometry
       Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
       This class will take ownership of the buffer.
      */
-    void fromWkb( unsigned char * wkb, size_t length );
+    void fromWkb( unsigned char * wkb, int length );
 
     /**
        Returns the buffer containing this geometry in WKB format.
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsGeometry
      * Returns the size of the WKB in asWkb().
      * @see asWkb
      */
-    size_t wkbSize() const;
+    int wkbSize() const;
 
     /** Returns a geos geometry. QgsGeometry retains ownership of the geometry, so the returned object should not be deleted.
         @param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.

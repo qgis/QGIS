@@ -459,7 +459,7 @@ namespace pal
         // Walk along line
         unsigned int cur = 0;
         double lambda = 0;
-        std::vector<Point> part;
+        QVector<Point> part;
         for ( ;; )
         {
           lambda += chopInterval;
@@ -477,7 +477,7 @@ namespace pal
           p.y = points[cur - 1].y + c * ( points[cur].y - points[cur - 1].y );
           part.push_back( p );
           GEOSCoordSequence* cooSeq = GEOSCoordSeq_create_r( geosctxt, part.size(), 2 );
-          for ( std::size_t i = 0; i < part.size(); ++i )
+          for ( int i = 0; i < part.size(); ++i )
           {
             GEOSCoordSeq_setX_r( geosctxt, cooSeq, i, part[i].x );
             GEOSCoordSeq_setY_r( geosctxt, cooSeq, i, part[i].y );
@@ -494,7 +494,7 @@ namespace pal
         // Create final part
         part.push_back( points[n - 1] );
         GEOSCoordSequence* cooSeq = GEOSCoordSeq_create_r( geosctxt, part.size(), 2 );
-        for ( std::size_t i = 0; i < part.size(); ++i )
+        for ( int i = 0; i < part.size(); ++i )
         {
           GEOSCoordSeq_setX_r( geosctxt, cooSeq, i, part[i].x );
           GEOSCoordSeq_setY_r( geosctxt, cooSeq, i, part[i].y );

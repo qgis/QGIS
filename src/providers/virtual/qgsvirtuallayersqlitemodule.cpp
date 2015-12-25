@@ -276,9 +276,9 @@ struct VTableCursor
 
   QVariant currentAttribute( int column ) const { return mCurrentFeature.attribute( column ); }
 
-  QPair<char*, size_t> currentGeometry() const
+  QPair<char*, int> currentGeometry() const
   {
-    size_t blob_len = 0;
+    int blob_len = 0;
     char* blob = 0;
     const QgsGeometry* g = mCurrentFeature.constGeometry();
     if ( g && ! g->isEmpty() )
@@ -414,7 +414,7 @@ int vtable_create( sqlite3* sql, void* aux, int argc, const char* const* argv, s
   {
     if ( out_err )
     {
-      *out_err = ( char* )sqlite3_malloc( strlen( e.what() ) + 1 );
+      *out_err = ( char* )sqlite3_malloc(( int ) strlen( e.what() ) + 1 );
       strcpy( *out_err, e.what() );
     }
     return SQLITE_ERROR;
@@ -569,7 +569,7 @@ int vtable_column( sqlite3_vtab_cursor *cursor, sqlite3_context* ctxt, int idx )
   }
   if ( idx == c->nColumns() + 1 )
   {
-    QPair<char*, size_t> g = c->currentGeometry();
+    QPair<char*, int> g = c->currentGeometry();
     if ( !g.first )
       sqlite3_result_null( ctxt );
     else

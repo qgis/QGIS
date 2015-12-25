@@ -715,7 +715,7 @@ void QgsGeometryAnalyzer::dissolveFeature( QgsFeature& f, int nProcessedFeatures
 
   if ( nProcessedFeatures == 0 )
   {
-    size_t geomSize = featureGeometry->wkbSize();
+    int geomSize = featureGeometry->wkbSize();
     *dissolveGeometry = new QgsGeometry();
     unsigned char* wkb = new unsigned char[geomSize];
     memcpy( wkb, featureGeometry->asWkb(), geomSize );

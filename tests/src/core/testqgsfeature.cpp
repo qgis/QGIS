@@ -292,7 +292,7 @@ void TestQgsFeature::geometry()
   Q_NOWARN_DEPRECATED_PUSH
   copy = feature;
   QCOMPARE( *copy.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
-  size_t wkbSize = mGeometry2->wkbSize();
+  int wkbSize = mGeometry2->wkbSize();
   unsigned char* wkb = new unsigned char[wkbSize];
   memcpy( wkb, mGeometry2->asWkb(), wkbSize );
   copy.setGeometryAndOwnership( wkb, wkbSize );

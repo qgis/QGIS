@@ -66,11 +66,11 @@ void SpatialiteBlobHeader::writeTo( char* p ) const
 
 //
 // Convert a QgsGeometry into a Spatialite geometry BLOB
-void qgsGeometryToSpatialiteBlob( const QgsGeometry& geom, int32_t srid, char *&blob, size_t& size )
+void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&blob, int &size )
 {
-  const size_t header_len = SpatialiteBlobHeader::length;
+  const int header_len = SpatialiteBlobHeader::length;
 
-  const size_t wkb_size = geom.wkbSize();
+  const int wkb_size = geom.wkbSize();
   size = header_len + wkb_size;
   blob = new char[size];
 
@@ -211,8 +211,8 @@ void copySpatialiteCollectionWkbToQgsGeometry( const char* iwkb, char* owkb, uin
 
 QgsGeometry spatialiteBlobToQgsGeometry( const char* blob, size_t size )
 {
-  const size_t header_size = SpatialiteBlobHeader::length;
-  const size_t wkb_size = size - header_size;
+  const int header_size = SpatialiteBlobHeader::length;
+  const int wkb_size = ( const int )( size - header_size );
   char* wkb = new char[wkb_size];
 
   uint32_t osize = 0;
