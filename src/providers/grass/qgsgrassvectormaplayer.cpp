@@ -195,7 +195,7 @@ void QgsGrassVectorMapLayer::load()
         {
           mHasTable = true;
           // Read attributes to the memory
-          while ( true )
+          for ( ;; )
           {
             int more;
 

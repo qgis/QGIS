@@ -73,7 +73,11 @@ ENDIF(import_res)
 ENDMACRO (ADD_QGIS_GRASS_TEST)
 
 MACRO (ADD_QGIS_GRASS_TESTS version)
-    ADD_QGIS_GRASS_TEST(${version} grassprovidertest ../testqgsgrassprovider.cpp)
+  ADD_QGIS_GRASS_TEST(${version} grassprovidertest ../testqgsgrassprovider.cpp)
+  IF(MSVC)
+    # 4611 setjmp
+    SET_SOURCE_FILES_PROPERTIES(../testqgsgrassprovider.cpp PROPERTIES COMPILE_FLAGS "-wd4611")
+  ENDIF(MSVC)
 ENDMACRO (ADD_QGIS_GRASS_TESTS)
 
 FOREACH(GRASS_BUILD_VERSION 6 7)

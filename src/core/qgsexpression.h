@@ -865,7 +865,7 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override { QStringList lst( mNode->referencedColumns() ); Q_FOREACH ( Node* n, mList->list() ) lst.append( n->referencedColumns() ); return lst; }
+        virtual QStringList referencedColumns() const override { QStringList lst( mNode->referencedColumns() ); Q_FOREACH ( const Node* n, mList->list() ) lst.append( n->referencedColumns() ); return lst; }
         virtual bool needsGeometry() const override { bool needs = false; Q_FOREACH ( Node* n, mList->list() ) needs |= n->needsGeometry(); return needs; }
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;

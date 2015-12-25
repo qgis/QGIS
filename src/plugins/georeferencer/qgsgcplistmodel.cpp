@@ -18,10 +18,9 @@
 #include "qgis.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftransform.h"
-#include <QSettings>
 
+#include <QSettings>
 #include <cmath>
-using namespace std;
 
 class QgsStandardItem : public QStandardItem
 {
@@ -80,7 +79,7 @@ void QgsGCPListModel::updateModel()
 
   bool bTransformUpdated = false;
 
-  vector<QgsPoint> mapCoords, pixelCoords;
+  QVector<QgsPoint> mapCoords, pixelCoords;
   mGCPList->createGCPVectors( mapCoords, pixelCoords );
 
   //  // Setup table header

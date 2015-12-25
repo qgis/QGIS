@@ -69,10 +69,11 @@ IF(NOT MSVC)
   )
 ELSE(NOT MSVC)
   IF(PEDANTIC)
+    # 4127 expression is constant
     # 4702 unreachable code
     SET_SOURCE_FILES_PROPERTIES(
       ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp
-      PROPERTIES COMPILE_FLAGS "-wd4702"
+      PROPERTIES COMPILE_FLAGS "-wd4127 -wd4702"
     )
   ENDIF(PEDANTIC)
 ENDIF(NOT MSVC)

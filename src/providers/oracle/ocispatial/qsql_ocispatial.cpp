@@ -778,7 +778,7 @@ QOCISpatialDriverPrivate::QOCISpatialDriverPrivate()
     , err( 0 )
     , transaction( false )
     , serverVersion( -1 )
-    , prefetchRows( -1 )
+    , prefetchRows( 0xffffffff )
     , prefetchMem( QOCISPATIAL_PREFETCH_MEM )
     , geometryTDO( 0 )
 {
@@ -814,6 +814,7 @@ OCIType *QOCISpatialDriverPrivate::tdo( QString type )
   }
   catch ( int r )
   {
+    Q_UNUSED( r );
     return 0;
   }
 
@@ -1977,7 +1978,7 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
           case QVariant::String:
           {
             const QString s = val.toString();
-            columns[i].lengths[row] = ( s.length() + 1 ) * sizeof( QChar );
+            columns[i].lengths[row] = ( ub2 )( s.length() + 1 ) * sizeof( QChar );
             memcpy( dataPtr, s.utf16(), columns[i].lengths[row] );
             break;
           }
@@ -3383,13 +3384,13 @@ static void qParseOpts( const QString &options, QOCISpatialDriverPrivate *d )
     {
       d->prefetchRows = val.toInt( &ok );
       if ( !ok )
-        d->prefetchRows = -1;
+        d->prefetchRows = 0xffffffff;
     }
     else if ( opt == QLatin1String( "OCI_ATTR_PREFETCH_MEMORY" ) )
     {
       d->prefetchMem = val.toInt( &ok );
       if ( !ok )
-        d->prefetchMem = -1;
+        d->prefetchMem = 0xffff;
     }
     else
     {
@@ -3438,7 +3439,7 @@ bool QOCISpatialDriver::open( const QString & db,
     r = OCIAttrSet( d->authp, OCI_HTYPE_SESSION, const_cast<ushort *>( password.utf16() ),
                     password.length() * sizeof( QChar ), OCI_ATTR_PASSWORD, d->err );
 
-  OCITrans* trans;
+  OCITrans *trans = nullptr;
   if ( r == OCI_SUCCESS )
     r = OCIHandleAlloc( d->env, reinterpret_cast<void **>( &trans ), OCI_HTYPE_TRANS, 0, 0 );
   if ( r == OCI_SUCCESS )

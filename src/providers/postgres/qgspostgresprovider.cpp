@@ -2292,7 +2292,7 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry *geom, QStringList 
 
   QString param;
   const unsigned char *buf = geom->asWkb();
-  for ( uint i = 0; i < geom->wkbSize(); ++i )
+  for ( int i = 0; i < geom->wkbSize(); ++i )
   {
     if ( connectionRO()->useWkbHex() )
       param += QString( "%1" ).arg(( int ) buf[i], 2, 16, QChar( '0' ) );

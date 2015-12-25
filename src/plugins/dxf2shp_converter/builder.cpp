@@ -276,7 +276,7 @@ void Builder::addArc( const DL_ArcData& data )
 
   // Finalize
 
-  int dim = arcPoints.size();
+  int dim = ( int ) arcPoints.size();
   QVector<double> xv( dim );
   QVector<double> yv( dim );
   QVector<double> zv( dim );
@@ -325,7 +325,7 @@ void Builder::addCircle( const DL_CircleData& data )
     circlePoints.push_back( myPoint );
   }
 
-  int dim = circlePoints.size();
+  int dim = ( int ) circlePoints.size();
   QVector<double> xv( dim );
   QVector<double> yv( dim );
   QVector<double> zv( dim );

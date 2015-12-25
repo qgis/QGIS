@@ -54,7 +54,7 @@ struct SpatialiteBlobHeader
 //!
 //! Convert a QgsGeometry into a Spatialite geometry BLOB
 //! The blob will be allocated and must be handled by the caller
-void qgsGeometryToSpatialiteBlob( const QgsGeometry& geom, int32_t srid, char *&blob, size_t& size );
+void qgsGeometryToSpatialiteBlob( const QgsGeometry& geom, int32_t srid, char *&blob, int &size );
 
 //!
 //! Return the bouding box of a spatialite geometry blob

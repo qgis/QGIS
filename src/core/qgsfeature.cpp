@@ -163,7 +163,7 @@ void QgsFeature::setGeometry( QgsGeometry* geom )
 
 /** Set the pointer to the feature geometry
 */
-void QgsFeature::setGeometryAndOwnership( unsigned char *geom, size_t length )
+void QgsFeature::setGeometryAndOwnership( unsigned char *geom, int length )
 {
   QgsGeometry *g = new QgsGeometry();
   g->fromWkb( geom, length );

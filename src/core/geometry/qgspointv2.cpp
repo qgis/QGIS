@@ -408,8 +408,9 @@ bool QgsPointV2::convertTo( QgsWKBTypes::Type type )
       mWkbType = type;
       return true;
     default:
-      return false;
+      break;
   }
+
   return false;
 }
 

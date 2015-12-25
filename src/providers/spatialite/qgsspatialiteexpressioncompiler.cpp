@@ -41,7 +41,7 @@ QgsSqlExpressionCompiler::Result QgsSpatiaLiteExpressionCompiler::compileNode( c
     }
 
     default:
-      return QgsSqlExpressionCompiler::compileNode( node, result );
+      break;
   }
 
   return QgsSqlExpressionCompiler::compileNode( node, result );
