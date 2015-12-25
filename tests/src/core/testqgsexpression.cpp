@@ -770,6 +770,10 @@ class TestQgsExpression: public QObject
       //qDebug() << "type " << res.typeName();
       QCOMPARE( exp.hasEvalError(), evalError );
 
+      QgsExpressionContext context;
+
+      Q_ASSERT( exp.prepare( &context ) );
+
       QCOMPARE( result.type(), expected.type() );
       switch ( result.type() )
       {
