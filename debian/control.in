@@ -74,13 +74,13 @@ Architecture: any
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
+ python-qgis (= ${binary:Version}),
  qgis-providers (= ${binary:Version}),
  qgis-common (= ${source:Version})
 Recommends:
  qgis-plugin-grass,
  qgis-provider-grass,
- qgis-plugin-globe,
- python-qgis
+ qgis-plugin-globe
 Suggests: gpsbabel
 Conflicts: uim-qt3
 Description: Geographic Information System (GIS)
