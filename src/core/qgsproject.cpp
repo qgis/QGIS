@@ -1667,9 +1667,12 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
   QgsDebugCall;
 
   static QString prevProjectFilePath;
+  static QDateTime prevProjectFileTimestamp;
   static QDomDocument projectDocument;
 
-  if ( projectFilePath != prevProjectFilePath )
+  QDateTime projectFileTimestamp = QFileInfo( projectFilePath ).lastModified();
+
+  if ( projectFilePath != prevProjectFilePath || projectFileTimestamp != prevProjectFileTimestamp )
   {
     prevProjectFilePath.clear();
 
@@ -1685,6 +1688,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
     }
 
     prevProjectFilePath = projectFilePath;
+    prevProjectFileTimestamp = projectFileTimestamp;
   }
 
   // does project store pathes absolute or relative?
