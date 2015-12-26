@@ -4312,13 +4312,35 @@ bool QgisApp::addProject( const QString& projectFile )
 
   if ( !QgsProject::instance()->read( projectFile ) )
   {
+    QString backupFile = projectFile + "~";
+    QString loadBackupPrompt;
+    QMessageBox::StandardButtons buttons;
+    if ( QFile( backupFile ).exists() )
+    {
+      loadBackupPrompt = "\n\n" + tr( "Do you want to open the backup file\n%1\ninstead?" ).arg( backupFile );
+      buttons |= QMessageBox::Yes;
+      buttons |= QMessageBox::No;
+    }
+    else
+    {
+      buttons |= QMessageBox::Ok;
+    }
     QApplication::restoreOverrideCursor();
     statusBar()->clearMessage();
 
-    QMessageBox::critical( this,
-                           tr( "Unable to open project" ),
-                           QgsProject::instance()->error() );
+    int r = QMessageBox::critical( this,
+                                   tr( "Unable to open project" ),
+                                   QgsProject::instance()->error() + loadBackupPrompt,
+                                   buttons );
 
+    if ( QMessageBox::Yes == r && addProject( backupFile ) )
+    {
+      // We loaded data from the backup file, but we pretend to work on the original project file.
+      QgsProject::instance()->setFileName( projectFile );
+      QgsProject::instance()->setDirty( true );
+      mProjectLastModified = pfi.lastModified();
+      return true;
+    }
 
     mMapCanvas->freeze( false );
     mMapCanvas->refresh();
