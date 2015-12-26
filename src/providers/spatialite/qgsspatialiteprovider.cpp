@@ -3696,7 +3696,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         {
           // some unexpected error occurred
           const char *err = sqlite3_errmsg( sqliteHandle );
-          errMsg = ( char * ) sqlite3_malloc( strlen( err ) + 1 );
+          errMsg = ( char * ) sqlite3_malloc(( int ) strlen( err ) + 1 );
           strcpy( errMsg, err );
           break;
         }
@@ -3771,7 +3771,7 @@ bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )
     {
       // some unexpected error occurred
       const char *err = sqlite3_errmsg( sqliteHandle );
-      errMsg = ( char * ) sqlite3_malloc( strlen( err ) + 1 );
+      errMsg = ( char * ) sqlite3_malloc(( int ) strlen( err ) + 1 );
       strcpy( errMsg, err );
       goto abort;
     }
@@ -4031,7 +4031,7 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( QgsGeometryMap & geometry_map 
     {
       // some unexpected error occurred
       const char *err = sqlite3_errmsg( sqliteHandle );
-      errMsg = ( char * ) sqlite3_malloc( strlen( err ) + 1 );
+      errMsg = ( char * ) sqlite3_malloc(( int ) strlen( err ) + 1 );
       strcpy( errMsg, err );
       goto abort;
     }

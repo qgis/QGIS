@@ -306,8 +306,8 @@ int vtable_create_connect( sqlite3* sql, void* aux, int argc, const char* const*
   Q_UNUSED( aux );
   Q_UNUSED( is_created );
 
-#define RETURN_CSTR_ERROR(err) if (out_err) {size_t s = strlen(err); *out_err=(char*)sqlite3_malloc(s+1); strncpy(*out_err, err, s);}
-#define RETURN_CPPSTR_ERROR(err) if (out_err) {*out_err=(char*)sqlite3_malloc(err.size()+1); strncpy(*out_err, err.c_str(), err.size());}
+#define RETURN_CSTR_ERROR(err) if (out_err) {size_t s = strlen(err); *out_err=(char*)sqlite3_malloc( (int) s+1); strncpy(*out_err, err, s);}
+#define RETURN_CPPSTR_ERROR(err) if (out_err) {*out_err=(char*)sqlite3_malloc( (int) err.size()+1); strncpy(*out_err, err.c_str(), err.size());}
 
   if ( argc < 4 )
   {
