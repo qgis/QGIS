@@ -18,6 +18,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgspointv2.h"
 #include "qgslinestringv2.h"
+#include "qgsgeometry.h"
 
 #include <QList>
 
@@ -97,6 +98,14 @@ class CORE_EXPORT QgsGeometryEngine
       Q_UNUSED( errorMsg );
       return 2;
     }
+
+    /**
+     * Explodes a linestring or multilinestring into individual segments.
+     *
+     * @return A multilinestring with all parts being straight line segments
+     *         consisting of only two vertices.
+     */
+    QgsGeometry explode();
 
     virtual QgsAbstractGeometryV2* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const = 0;
 
