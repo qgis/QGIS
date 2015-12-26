@@ -2082,6 +2082,77 @@ static QVariant fcnGeomToWKT( const QVariantList& values, const QgsExpressionCon
   return QVariant( wkt );
 }
 
+static QVariant fcnAzimuth( const QVariantList& values, const QgsExpressionContext *, QgsExpression* parent )
+{
+  if ( values.length() != 2 )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `azimuth` requires exactly two parameters. %1 given." ).arg( values.length() ) );
+    return QVariant();
+  }
+
+  QgsGeometry fGeom1 = getGeometry( values.at( 0 ), parent );
+  QgsGeometry fGeom2 = getGeometry( values.at( 1 ), parent );
+
+  const QgsPointV2* pt1 = dynamic_cast<const QgsPointV2*>( fGeom1.geometry() );
+  const QgsPointV2* pt2 = dynamic_cast<const QgsPointV2*>( fGeom2.geometry() );
+
+  if ( !pt1 || !pt2 )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `azimuth` requires two points as arguments." ) );
+    return QVariant();
+  }
+
+  // Code from postgis
+  if ( pt1->x() == pt2->x() )
+  {
+    if ( pt1->y() < pt2->y() )
+      return 0.0;
+    else if ( pt1->y() > pt2->y() )
+      return M_PI;
+    else return 0;
+    return 1;
+  }
+
+  if ( pt1->y() == pt2->y() )
+  {
+    if ( pt1->x() < pt2->x() )
+      return M_PI / 2;
+    else if ( pt1->x() > pt2->x() )
+      return M_PI + ( M_PI / 2 );
+    else return 0;
+    return 1;
+  }
+
+  if ( pt1->x() < pt2->x() )
+  {
+    if ( pt1->y() < pt2->y() )
+    {
+      return atan( fabs( pt1->x() - pt2->x() ) / fabs( pt1->y() - pt2->y() ) );
+    }
+    else /* ( pt1->y() > pt2->y() )  - equality case handled above */
+    {
+      return atan( fabs( pt1->y() - pt2->y() ) / fabs( pt1->x() - pt2->x() ) )
+             + ( M_PI / 2 );
+    }
+  }
+
+  else /* ( pt1->x() > pt2->x() ) - equality case handled above */
+  {
+    if ( pt1->y() > pt2->y() )
+    {
+      return atan( fabs( pt1->x() - pt2->x() ) / fabs( pt1->y() - pt2->y() ) )
+             + M_PI;
+    }
+    else /* ( pt1->y() < pt2->y() )  - equality case handled above */
+    {
+      return atan( fabs( pt1->y() - pt2->y() ) / fabs( pt1->x() - pt2->x() ) )
+             + ( M_PI + ( M_PI / 2 ) );
+    }
+  }
+
+  return QVariant();
+}
+
 static QVariant fcnRound( const QVariantList& values, const QgsExpressionContext *, QgsExpression* parent )
 {
   if ( values.length() == 2 )
@@ -2700,6 +2771,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "sqrt", 1, fcnSqrt, "Math" )
     << new StaticFunction( "radians", 1, fcnRadians, "Math" )
     << new StaticFunction( "degrees", 1, fcnDegrees, "Math" )
+    << new StaticFunction( "azimuth", 2, fcnAzimuth, "Math" )
     << new StaticFunction( "abs", 1, fcnAbs, "Math" )
     << new StaticFunction( "cos", 1, fcnCos, "Math" )
     << new StaticFunction( "sin", 1, fcnSin, "Math" )
