@@ -19,7 +19,7 @@
 #include "qgsmessagelog.h"
 #include <QDomDocument>
 
-QgsPostRequestHandler::QgsPostRequestHandler( const bool captureOutput /*= FALSE*/ )
+QgsPostRequestHandler::QgsPostRequestHandler( const bool captureOutput )
     : QgsHttpRequestHandler( captureOutput )
 {
 }

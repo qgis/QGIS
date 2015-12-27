@@ -33,7 +33,7 @@
 #include <fcgi_stdio.h>
 
 
-QgsHttpRequestHandler::QgsHttpRequestHandler( const bool captureOutput /*= FALSE*/ )
+QgsHttpRequestHandler::QgsHttpRequestHandler( const bool captureOutput )
     : QgsRequestHandler( )
 {
   mException = nullptr;

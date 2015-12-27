@@ -121,11 +121,11 @@ class CORE_EXPORT QgsSymbolLayerV2
       be affected by data defined symbology rules.*/
     virtual double estimateMaxBleed() const { return 0; }
 
-    virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit ) { Q_UNUSED( unit ); } //= 0;
-    virtual QgsSymbolV2::OutputUnit outputUnit() const { return QgsSymbolV2::Mixed; } //= 0;
+    virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit ) { Q_UNUSED( unit ); }
+    virtual QgsSymbolV2::OutputUnit outputUnit() const { return QgsSymbolV2::Mixed; }
 
-    virtual void setMapUnitScale( const QgsMapUnitScale& scale ) { Q_UNUSED( scale ); } //= 0;
-    virtual QgsMapUnitScale mapUnitScale() const { return QgsMapUnitScale(); } //= 0;
+    virtual void setMapUnitScale( const QgsMapUnitScale& scale ) { Q_UNUSED( scale ); }
+    virtual QgsMapUnitScale mapUnitScale() const { return QgsMapUnitScale(); }
 
     // used only with rending with symbol levels is turned on (0 = first pass, 1 = second, ...)
     void setRenderingPass( int renderingPass ) { mRenderingPass = renderingPass; }
