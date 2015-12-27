@@ -170,7 +170,8 @@ First you need to install the debian packaging tools once:
 apt-get install build-essential
 ```
 
-First you need to create an changelog entry for your distribution. For example for Ubuntu Lucid:
+First you need to create an changelog entry for your distribution. For example
+for Ubuntu Precise:
 
 ```
 dch -l ~precise --force-distribution --distribution precise "precise build"
