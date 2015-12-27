@@ -72,7 +72,7 @@
       <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="testlayer20150528120452665"/>
     </layer_coordinate_transform_info>
   </mapcanvas>
-  <projectlayers layercount="1">
+  <projectlayers>
     <maplayer minimumScale="-4.65661e-10" maximumScale="1e+08" simplifyDrawingHints="0" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Point" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <id>testlayer20150528120452665</id>
       <datasource>./testlayer.shp</datasource>

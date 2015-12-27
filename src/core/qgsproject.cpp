@@ -1058,7 +1058,6 @@ bool QgsProject::write()
   // Iterate over layers in zOrder
   // Call writeXML() on each
   QDomElement projectLayersNode = doc->createElement( "projectlayers" );
-  projectLayersNode.setAttribute( "layercount", qulonglong( layers.size() ) );
 
   QMap<QString, QgsMapLayer*>::ConstIterator li = layers.constBegin();
   while ( li != layers.end() )
