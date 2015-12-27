@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Thursday December 17, 2015
+Sunday December 27, 2015
 
 
-Last Updated: Thursday December 17, 2015
-Last Change : Thursday December 17, 2015
+Last Updated: Sunday December 27, 2015
+Last Change : Sunday December 27, 2015
 
 
   1. Introduction
@@ -293,7 +293,8 @@ First you need to install the debian packaging tools once:
 
   apt-get install build-essential
 
-First you need to create an changelog entry for your distribution. For example for Ubuntu Lucid:
+First you need to create an changelog entry for your distribution. For example
+for Ubuntu Precise:
 
   dch -l ~precise --force-distribution --distribution precise "precise build"
 
