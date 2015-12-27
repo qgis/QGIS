@@ -993,7 +993,7 @@ void GlobePlugin::help()
 {
 }
 
-void GlobePlugin::placeNode( osg::Node* node, double lat, double lon, double alt /*= 0.0*/ )
+void GlobePlugin::placeNode( osg::Node* node, double lat, double lon, double alt )
 {
 #ifdef HAVE_OSGEARTH_ELEVATION_QUERY
   Q_UNUSED( node );

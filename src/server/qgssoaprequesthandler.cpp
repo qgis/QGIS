@@ -27,7 +27,7 @@
 #include <time.h>
 #include <fcgi_stdio.h>
 
-QgsSOAPRequestHandler::QgsSOAPRequestHandler( const bool captureOutput /*= FALSE*/ )
+QgsSOAPRequestHandler::QgsSOAPRequestHandler( const bool captureOutput )
     : QgsHttpRequestHandler( captureOutput )
 {
 }

@@ -67,7 +67,7 @@ QVariant QgsSelectLayerTreeModel::data( const QModelIndex& index, int role ) con
 }
 
 
-QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent /*= 0*/, Qt::WindowFlags fl /*= 0*/ )
+QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
