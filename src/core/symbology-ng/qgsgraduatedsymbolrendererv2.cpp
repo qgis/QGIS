@@ -679,7 +679,7 @@ static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList
 
 static QList<double> _calcJenksBreaks( QList<double> values, int classes,
                                        double minimum, double maximum,
-                                       int maximumSize = 1000 )
+                                       int maximumSize = 3000 )
 {
   // Jenks Optimal (Natural Breaks) algorithm
   // Based on the Jenks algorithm from the 'classInt' package available for
