@@ -19,9 +19,11 @@
 #define QGSDIAGRAMPROPERTIES_H
 
 #include <QDialog>
+#include <QScopedPointer>
 #include <ui_qgsdiagrampropertiesbase.h>
 
 class QgsVectorLayer;
+class QgsMarkerSymbolV2;
 
 class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPropertiesBase
 {
@@ -40,7 +42,6 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     void on_mDiagramTypeComboBox_currentIndexChanged( int index );
     void on_mAddCategoryPushButton_clicked();
     void on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
-    void on_mFindMaximumValueButton_clicked();
     void on_mRemoveCategoryPushButton_clicked();
     void on_mDiagramFontButton_clicked();
     void on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
@@ -58,6 +59,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
 
     QString guessLegendText( const QString &expression );
 
+    QScopedPointer<QgsMarkerSymbolV2> mAssistantPreviewSymbol;
 };
 
 #endif // QGSDIAGRAMPROPERTIES_H
