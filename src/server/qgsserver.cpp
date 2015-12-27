@@ -111,7 +111,7 @@ void QgsServer::setupNetworkAccessManager()
  * @param captureOutput
  * @return request instance
  */
-QgsRequestHandler* QgsServer::createRequestHandler( const bool captureOutput /*= false*/ )
+QgsRequestHandler* QgsServer::createRequestHandler( const bool captureOutput )
 {
   QgsRequestHandler* requestHandler = nullptr;
   char* requestMethod = getenv( "REQUEST_METHOD" );
@@ -427,13 +427,13 @@ bool QgsServer::init( int & argc, char ** argv )
  * @param queryString
  * @return response headers and body
  */
-QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryString /*= QString( )*/ )
+QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryString )
 {
   // Run init if handleRequest was called without previously initialising
   // the server
   if ( ! mInitialised )
   {
-    init( );
+    init();
   }
 
   /*
