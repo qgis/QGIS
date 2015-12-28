@@ -1612,13 +1612,11 @@ void TestQgsGeometry::lineStringV2()
   QCOMPARE( l26.numPoints(), 2 );
   QCOMPARE( l26.pointN( 0 ), QgsPointV2( QgsWKBTypes::PointZM, 1, 2, 2, 3 ) );
   QCOMPARE( l26.pointN( 1 ), QgsPointV2( QgsWKBTypes::PointZM, 21, 22, 6, 7 ) );
-  QVERIFY( l26.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
-  QCOMPARE( l26.numPoints(), 1 );
-  QCOMPARE( l26.pointN( 0 ), QgsPointV2( QgsWKBTypes::PointZM, 21, 22, 6, 7 ) );
+  //removing the second to last vertex removes both remaining vertices
   QVERIFY( l26.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
   QCOMPARE( l26.numPoints(), 0 );
+  QVERIFY( !l26.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
   QVERIFY( l26.isEmpty() );
-
 
   //reversed
   QgsLineStringV2 l27;
@@ -2090,6 +2088,12 @@ void TestQgsGeometry::lineStringV2()
   QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 2.35619, 0.00001 ) );
   QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 6 ) ), 2.35619, 0.00001 ) );
 
+  //removing the second to last vertex should remove the whole line
+  QgsLineStringV2 l39;
+  l39.setPoints( QList<QgsPointV2>() << QgsPointV2( 0, 0 ) << QgsPointV2( 1, 1 ) );
+  QVERIFY( l39.numPoints() == 2 );
+  l39.deleteVertex( QgsVertexId( 0, 0, 1 ) );
+  QVERIFY( l39.numPoints() == 0 );
 }
 
 void TestQgsGeometry::polygonV2()
@@ -2787,6 +2791,14 @@ void TestQgsGeometry::polygonV2()
   expectedGML3prec3 += QString( "<interior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LinearRing></interior></Polygon>" );
   QCOMPARE( elemToString( exportPolygonFloat.asGML3( doc, 3 ) ), expectedGML3prec3 );
 
+  //removing the fourth to last vertex removes the whole ring
+  QgsPolygonV2 p20;
+  QgsLineStringV2* p20ExteriorRing = new QgsLineStringV2();
+  p20ExteriorRing->setPoints( QList<QgsPointV2>() << QgsPointV2( 0, 0 ) << QgsPointV2( 1, 0 ) << QgsPointV2( 1, 1 ) << QgsPointV2( 0, 0 ) );
+  p20.setExteriorRing( p20ExteriorRing );
+  QVERIFY( p20.exteriorRing() );
+  p20.deleteVertex( QgsVertexId( 0, 0, 2 ) );
+  QVERIFY( !p20.exteriorRing() );
 }
 
 void TestQgsGeometry::fromQgsPoint()
