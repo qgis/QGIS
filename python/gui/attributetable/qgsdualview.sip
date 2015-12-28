@@ -98,6 +98,16 @@ class QgsDualView : QStackedWidget
      * @return The master model
      */
     QgsAttributeTableModel* masterModel() const;
+    /**
+      Returns the filter model
+      @return the filter model
+      */
+    QgsAttributeTableFilterModel* filterModel() const;
+    /**
+      Returns the table view
+      @return the table view
+      */
+    const QgsAttributeTableView* tableView() const;
 
     void setRequest( const QgsFeatureRequest& request );
 

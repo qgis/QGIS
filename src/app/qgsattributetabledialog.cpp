@@ -240,6 +240,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mMainView->setView( QgsDualView::AttributeTable );
 
   editingToggled();
+
+  QObject::connect( mMainView->tableView(), SIGNAL( willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu*, QModelIndex ) ) );
 }
 
 QgsAttributeTableDialog::~QgsAttributeTableDialog()
@@ -349,6 +351,26 @@ void QgsAttributeTableDialog::updateFieldFromExpressionSelected()
 {
   QgsFeatureIds filteredIds = mLayer->selectedFeaturesIds();
   runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds );
+}
+
+void QgsAttributeTableDialog::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
+{
+  if ( menu )
+  {
+    menu->addAction( tr( "Zoom to feature" ), this, SLOT( zoomToFeature() ) );
+  }
+}
+
+void QgsAttributeTableDialog::zoomToFeature()
+{
+  QModelIndex currentIndex = mMainView->tableView()->currentIndex();
+  if ( !currentIndex.isValid() )
+  {
+    return;
+  }
+
+  QgsFeatureId id = mMainView->filterModel()->rowToId( currentIndex );
+  QgisApp::instance()->mapCanvas()->zoomToFeatureId( mLayer, id );
 }
 
 void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, const QString& fieldName, const QString& expression, const QgsFeatureIds& filteredIds )
