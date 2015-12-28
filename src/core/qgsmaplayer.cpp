@@ -1269,6 +1269,9 @@ QString QgsMapLayer::saveNamedStyle( const QString &theURI, bool &theResultFlag 
   else if ( vlayer && vlayer->providerType() == "delimitedtext" )
   {
     filename = QUrl::fromEncoded( theURI.toAscii() ).toLocalFile();
+    // toLocalFile() returns an empty string if theURI is a plain Windows-path, e.g. "C:/style.qml"
+    if ( filename.isEmpty() )
+      filename = theURI;
   }
   else
   {
@@ -1453,6 +1456,9 @@ QString QgsMapLayer::saveSldStyle( const QString &theURI, bool &theResultFlag )
   else if ( vlayer->providerType() == "delimitedtext" )
   {
     filename = QUrl::fromEncoded( theURI.toAscii() ).toLocalFile();
+    // toLocalFile() returns an empty string if theURI is a plain Windows-path, e.g. "C:/style.qml"
+    if ( filename.isEmpty() )
+      filename = theURI;
   }
   else
   {
