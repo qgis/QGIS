@@ -211,7 +211,7 @@ static void dumpBacktrace( unsigned int depth )
       }
 
       close( fd[1] );        // close writing end
-      execl( "/usr/bin/c++filt", "c++filt", ( char * ) nullptr );
+      execl( "/usr/bin/c++filt", "c++filt", static_cast< char * >( nullptr ) );
       perror( "could not start c++filt" );
       exit( 1 );
     }

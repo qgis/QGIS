@@ -299,7 +299,7 @@ bool QgsRuleBasedLabeling::Rule::isFilterOK( QgsFeature& f, QgsRenderContext& co
 
 bool QgsRuleBasedLabeling::Rule::isScaleOK( double scale ) const
 {
-  if ( scale == 0 ) // so that we can count features in classes without scale context
+  if ( qgsDoubleNear( scale, 0.0 ) ) // so that we can count features in classes without scale context
     return true;
   if ( mScaleMinDenom == 0 && mScaleMaxDenom == 0 )
     return true;
