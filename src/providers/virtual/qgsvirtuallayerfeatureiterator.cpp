@@ -64,7 +64,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     {
       QString values = quotedColumn( mDefinition.uid() ) + " IN (";
       bool first = true;
-      Q_FOREACH ( const QgsFeatureId &v, request.filterFids() )
+      Q_FOREACH ( QgsFeatureId v, request.filterFids() )
       {
         if ( !first )
         {

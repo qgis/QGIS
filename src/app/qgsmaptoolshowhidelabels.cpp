@@ -152,7 +152,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
   QString editTxt = doHide ? tr( "Hid labels" ) : tr( "Showed labels" );
 
   vlayer->beginEditCommand( editTxt );
-  Q_FOREACH ( const QgsFeatureId &fid, selectedFeatIds )
+  Q_FOREACH ( QgsFeatureId fid, selectedFeatIds )
   {
     if ( showHideLabel( vlayer, fid, doHide ) )
     {
@@ -261,7 +261,7 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
 }
 
 bool QgsMapToolShowHideLabels::showHideLabel( QgsVectorLayer* vlayer,
-    const QgsFeatureId &fid,
+    QgsFeatureId fid,
     bool hide )
 {
 

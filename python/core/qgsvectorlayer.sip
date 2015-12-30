@@ -1444,7 +1444,7 @@ class QgsVectorLayer : QgsMapLayer
      *
      * @see select(QgsFeatureIds)
      */
-    void select( const QgsFeatureId &featureId );
+    void select( QgsFeatureId featureId );
 
     /**
      * Select features by their ID
@@ -1661,7 +1661,7 @@ class QgsVectorLayer : QgsMapLayer
   private slots:
     void onRelationsLoaded();
     void onJoinedFieldsChanged();
-    void onFeatureDeleted( const QgsFeatureId& fid );
+    void onFeatureDeleted( QgsFeatureId fid );
 
   protected:
     /** Set the extent */

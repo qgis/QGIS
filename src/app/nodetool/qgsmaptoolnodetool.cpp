@@ -165,7 +165,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
       double deltaX = curPos.x() - pressPos.x();
       double deltaY = curPos.y() - pressPos.y();
 
-      Q_FOREACH ( const QgsFeatureId& fid, mMoveRubberBands.keys() )
+      Q_FOREACH ( QgsFeatureId fid, mMoveRubberBands.keys() )
       {
         typedef QPair<QgsVertexId, QgsPointV2> MoveVertex;
         Q_FOREACH ( const MoveVertex& pair, mMoveVertices[fid] )

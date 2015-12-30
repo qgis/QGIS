@@ -48,7 +48,7 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, bool selectedOnly )
   }
 }
 
-bool QgsFeaturePool::get( const QgsFeatureId& id , QgsFeature& feature )
+bool QgsFeaturePool::get( QgsFeatureId id , QgsFeature& feature )
 {
   QMutexLocker lock( &mLayerMutex );
   QgsFeature* pfeature = mFeatureCache.object( id );
