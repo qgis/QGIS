@@ -122,28 +122,10 @@ namespace pal
     double nbOverlap;
   } Ft;
 
-
-  inline bool borderSizeDec( void *l, void *r )
-  {
-    return (( SubPart* ) l )->borderSize < (( SubPart* ) r )->borderSize;
-  }
-
   inline bool borderSizeInc( void *l, void *r )
   {
-    return (( SubPart* ) l )->borderSize > (( SubPart* ) r )->borderSize;
+    return ( reinterpret_cast< SubPart* >( l ) )->borderSize > ( reinterpret_cast< SubPart* >( r ) )->borderSize;
   }
-
-  inline bool increaseImportance( void *l, void *r )
-  {
-    return (( Ft* ) l )->inactiveCost < (( Ft* ) r )->inactiveCost;
-  }
-
-  inline bool increaseNbOverlap( void *l, void *r )
-  {
-    return (( Ft* ) l )->nbOverlap > (( Ft* ) r )->nbOverlap;
-  }
-
-
 
   void Problem::reduce()
   {
@@ -195,7 +177,7 @@ namespace pal
                 lp2->getBoundingBox( amin, amax );
 
                 nbOverlap -= lp2->getNumOverlaps();
-                candidates->Search( amin, amax, LabelPosition::removeOverlapCallback, ( void* ) lp2 );
+                candidates->Search( amin, amax, LabelPosition::removeOverlapCallback, reinterpret_cast< void* >( lp2 ) );
                 lp2->removeFromIndex( candidates );
               }
 
@@ -245,10 +227,11 @@ namespace pal
     RTree <LabelPosition*, double, 2, double> *candidates;
   } FalpContext;
 
-  bool falpCallback2( LabelPosition *lp, void *  ctx )
+  bool falpCallback2( LabelPosition *lp, void* ctx )
   {
-    LabelPosition *lp2 = (( FalpContext* ) ctx )->lp;
-    PriorityQueue *list = (( FalpContext* ) ctx )->list;
+    FalpContext* context = reinterpret_cast< FalpContext* >( ctx );
+    LabelPosition *lp2 = context->lp;
+    PriorityQueue *list = context->list;
 
     if ( lp->getId() != lp2->getId() && list->isIn( lp->getId() ) && lp->isInConflict( lp2 ) )
     {
@@ -282,11 +265,12 @@ namespace pal
   }
 
 
-  bool falpCallback1( LabelPosition *lp, void *  ctx )
+  bool falpCallback1( LabelPosition *lp, void* ctx )
   {
-    LabelPosition *lp2 = (( FalpContext* ) ctx )->lp;
-    PriorityQueue *list = (( FalpContext* ) ctx )->list;
-    RTree <LabelPosition*, double, 2, double> *candidates = (( FalpContext* ) ctx )->candidates;
+    FalpContext* context = reinterpret_cast< FalpContext* >( ctx );
+    LabelPosition *lp2 = context->lp;
+    PriorityQueue *list = context->list;
+    RTree <LabelPosition*, double, 2, double> *candidates = context->candidates;
 
     if ( lp2->isInConflict( lp ) )
     {
@@ -329,7 +313,7 @@ namespace pal
         label = featStartId[i] + j;
         try
         {
-          list->insert( label, ( double ) mLabelPositions.at( label )->getNumOverlaps() );
+          list->insert( label, mLabelPositions.at( label )->getNumOverlaps() );
         }
         catch ( pal::InternalException::Full )
         {
@@ -372,7 +356,7 @@ namespace pal
       lp->getBoundingBox( amin, amax );
 
       context->lp = lp;
-      candidates->Search( amin, amax, falpCallback1, ( void* ) context );
+      candidates->Search( amin, amax, falpCallback1, reinterpret_cast< void* >( context ) );
       candidates_sol->Insert( amin, amax, lp );
     }
 
@@ -407,7 +391,7 @@ namespace pal
             if ( lp->getNumOverlaps() < nbOverlap )
             {
               retainedLabel = lp;
-              nbOverlap = static_cast<int>( lp->getNumOverlaps() );
+              nbOverlap = lp->getNumOverlaps();
             }
           }
           sol->s[i] = retainedLabel->getId();
@@ -476,7 +460,7 @@ namespace pal
       ok[i] = false;
     }
     delete[] isIn;
-    sort(( void** ) parts, nbft, borderSizeInc );
+    sort( reinterpret_cast< void** >( parts ), nbft, borderSizeInc );
     //sort ((void**)parts, nbft, borderSizeDec);
 
 #ifdef _VERBOSE_
@@ -645,12 +629,13 @@ namespace pal
 
   bool subPartCallback( LabelPosition *lp, void *ctx )
   {
-    int *isIn = (( SubPartContext* ) ctx )->isIn;
-    QLinkedList<int> *queue = (( SubPartContext* ) ctx )->queue;
+    SubPartContext* context = reinterpret_cast< SubPartContext* >( ctx );
+    int *isIn = context->isIn;
+    QLinkedList<int> *queue = context->queue;
 
 
     int id = lp->getProblemFeatureId();
-    if ( !isIn[id] && lp->isInConflict((( SubPartContext* ) ctx )->lp ) )
+    if ( !isIn[id] && lp->isInConflict( context->lp ) )
     {
       queue->append( id );
       isIn[id] = 1;
@@ -702,7 +687,7 @@ namespace pal
         lp->getBoundingBox( amin, amax );
 
         context.lp = lp;
-        candidates->Search( amin, amax, subPartCallback, ( void* ) &context );
+        candidates->Search( amin, amax, subPartCallback, reinterpret_cast< void* >( &context ) );
       }
     }
 
@@ -764,7 +749,7 @@ namespace pal
       lp->getBoundingBox( amin, amax );
 
       context.lp = lp;
-      candidates_subsol->Search( amin, amax, LabelPosition::countFullOverlapCallback, ( void* ) &context );
+      candidates_subsol->Search( amin, amax, LabelPosition::countFullOverlapCallback, reinterpret_cast< void* >( &context ) );
 
       cost += lp->cost();
     }
@@ -808,15 +793,8 @@ namespace pal
 
   bool decreaseCost( void *tl, void *tr )
   {
-    return (( Triple* ) tl )->cost < (( Triple* ) tr )->cost;
+    return ( reinterpret_cast< Triple* >( tl ) )->cost < ( reinterpret_cast< Triple* >( tr ) )->cost;
   }
-
-  bool increaseCost( void *tl, void *tr )
-  {
-    return (( Triple* ) tl )->cost > (( Triple* ) tr )->cost;
-  }
-
-
 
   inline void actualizeTabuCandidateList( int m, int iteration, int nbOverlap, int *candidateListSize,
                                           double candidateBaseFactor, double *candidateFactor,
@@ -829,8 +807,8 @@ namespace pal
 
     if ( iteration % m == 0 )
     {
-      *tenure = minTabuTSize + ( int )( tabuFactor * nbOverlap );
-      *candidateListSize = minCandidateListSize + ( int )( *candidateFactor * nbOverlap );
+      *tenure = minTabuTSize + static_cast< int >( tabuFactor * nbOverlap );
+      *candidateListSize = minCandidateListSize + static_cast< int >( *candidateFactor * nbOverlap );
 
       if ( *candidateListSize > n )
         *candidateListSize = n;
@@ -847,7 +825,7 @@ namespace pal
 
     if ( *candidateListSize < n )
       *candidateFactor = *candidateFactor * growingFactor;
-    *candidateListSize = minCandidateListSize + ( int )( *candidateFactor * nbOverlap );
+    *candidateListSize = minCandidateListSize + static_cast< int >( *candidateFactor * nbOverlap );
 
     if ( *candidateListSize > n )
       *candidateListSize = n;
@@ -870,7 +848,7 @@ namespace pal
 
   bool updateCandidatesCost( LabelPosition *lp, void *context )
   {
-    UpdateContext *ctx = ( UpdateContext* ) context;
+    UpdateContext *ctx = reinterpret_cast< UpdateContext* >( context );
 
     if ( ctx->lp->isInConflict( lp ) )
     {
@@ -1030,7 +1008,7 @@ namespace pal
       }
     }
 
-    sort(( void** ) candidateList, probSize, decreaseCost );
+    sort( reinterpret_cast< void** >( candidateList ), probSize, decreaseCost );
 
     best_cost = cur_cost;
     initial_cost = cur_cost;
@@ -1219,7 +1197,7 @@ namespace pal
           lp->insertIntoIndex( candidates_subsol );
         }
 
-        sort(( void** ) candidateList, probSize, decreaseCost );
+        sort( reinterpret_cast< void** >( candidateList ), probSize, decreaseCost );
 
         if ( best_cost - cur_cost > EPSILON ) // new best sol
         {
@@ -1283,7 +1261,7 @@ namespace pal
 
   bool chainCallback( LabelPosition *lp, void *context )
   {
-    ChainContext *ctx = ( ChainContext* ) context;
+    ChainContext *ctx = reinterpret_cast< ChainContext* >( context );
 
 
 #ifdef _DEBUG_FULL_
@@ -1448,7 +1426,7 @@ namespace pal
                 std::cerr << "Conflicts not empty !!" << std::endl;
 
               // search ative conflicts and count them
-              candidates_subsol->Search( amin, amax, chainCallback, ( void* ) &context );
+              candidates_subsol->Search( amin, amax, chainCallback, reinterpret_cast< void* >( &context ) );
 
 #ifdef _DEBUG_FULL_
               std::cout << "Conflicts:" <<  conflicts->size() << std::endl;
@@ -1738,7 +1716,7 @@ namespace pal
               if ( conflicts->size() != 0 )
                 std::cerr << "Conflicts not empty" << std::endl;
 
-              candidates_sol->Search( amin, amax, chainCallback, ( void* ) &context );
+              candidates_sol->Search( amin, amax, chainCallback, reinterpret_cast< void* >( &context ) );
 
               // no conflict -> end of chain
               if ( conflicts->isEmpty() )
@@ -2181,10 +2159,10 @@ namespace pal
       candidates[i]->cost = ( sol[i+borderSize] == -1 ? inactiveCost[i+borderSize] : mLabelPositions.at( sol[i+borderSize] )->cost() );
     }
 
-    sort(( void** ) candidates, probSize, decreaseCost );
+    sort( reinterpret_cast< void** >( candidates ), probSize, decreaseCost );
 
     int candidateListSize;
-    candidateListSize = int ( pal->candListSize * ( double ) probSize + 0.5 );
+    candidateListSize = int ( pal->candListSize * static_cast< double >( probSize ) + 0.5 );
 
     if ( candidateListSize > probSize )
       candidateListSize = probSize;
@@ -2324,7 +2302,7 @@ namespace pal
 
           stop_it = ( it + itwimp > maxit ? maxit : it + itwimp );
         }
-        sort(( void** ) candidates, probSize, decreaseCost );
+        sort( reinterpret_cast< void** >( candidates ), probSize, decreaseCost );
 
 
       }
@@ -2357,7 +2335,7 @@ namespace pal
 
   bool checkCallback( LabelPosition *lp, void *ctx )
   {
-    QLinkedList<LabelPosition*> *list = ( QLinkedList<LabelPosition*>* ) ctx;
+    QLinkedList<LabelPosition*> *list = reinterpret_cast< QLinkedList<LabelPosition*>* >( ctx );
     list->append( lp );
 
     return true;
@@ -2378,7 +2356,7 @@ namespace pal
 
     QLinkedList<LabelPosition*> *list = new QLinkedList<LabelPosition*>;
 
-    candidates_sol->Search( amin, amax, checkCallback, ( void* ) list );
+    candidates_sol->Search( amin, amax, checkCallback, reinterpret_cast< void* >( list ) );
 
     std::cerr << "Check Solution" << std::endl;
 
@@ -2431,10 +2409,10 @@ namespace pal
 
   bool nokCallback( LabelPosition *lp, void *context )
   {
-
-    LabelPosition *lp2 = (( NokContext* ) context )->lp;
-    bool *ok = (( NokContext* ) context )->ok;
-    int *wrap = (( NokContext* ) context )->wrap;
+    NokContext* ctx = reinterpret_cast< NokContext*>( context );
+    LabelPosition *lp2 = ctx->lp;
+    bool *ok = ctx->ok;
+    int *wrap = ctx->wrap;
 
     if ( lp2->isInConflict( lp ) )
     {

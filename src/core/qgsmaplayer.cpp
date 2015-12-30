@@ -1092,7 +1092,7 @@ bool QgsMapLayer::loadNamedStyleFromDb( const QString &db, const QString &theURI
     if ( sqlite3_bind_text( myPreparedStatement, 1, param.data(), param.length(), SQLITE_STATIC ) == SQLITE_OK &&
          sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
-      qml = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
+      qml = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
       theResultFlag = true;
     }
 

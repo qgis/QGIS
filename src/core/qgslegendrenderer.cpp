@@ -330,7 +330,7 @@ void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
     {
       if ( QgsLayerTreeModelLegendNode* legendNode = qobject_cast<QgsLayerTreeModelLegendNode*>( atom.nucleons.at( j ).item ) )
       {
-        QString key = QString( "%1-%2" ).arg(( qulonglong )legendNode->layerNode() ).arg( atom.column );
+        QString key = QString( "%1-%2" ).arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( atom.column );
         maxSymbolWidth[key] = qMax( atom.nucleons.at( j ).symbolSize.width(), maxSymbolWidth[key] );
       }
     }
@@ -342,7 +342,7 @@ void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
     {
       if ( QgsLayerTreeModelLegendNode* legendNode = qobject_cast<QgsLayerTreeModelLegendNode*>( atom.nucleons.at( j ).item ) )
       {
-        QString key = QString( "%1-%2" ).arg(( qulonglong )legendNode->layerNode() ).arg( atom.column );
+        QString key = QString( "%1-%2" ).arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( atom.column );
         double space = mSettings.style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Right ) +
                        mSettings.style( QgsComposerLegendStyle::SymbolLabel ).margin( QgsComposerLegendStyle::Left );
         atom.nucleons[j].labelXOffset =  maxSymbolWidth[key] + space;
@@ -375,7 +375,7 @@ QSizeF QgsLegendRenderer::drawTitle( QPainter* painter, QPointF point, Qt::Align
   switch ( halignment )
   {
     case Qt::AlignHCenter:
-      textBoxWidth = ( qMin(( double ) point.x(), legendWidth - point.x() ) - mSettings.boxSpace() ) * 2.0;
+      textBoxWidth = ( qMin( static_cast< double >( point.x() ), legendWidth - point.x() ) - mSettings.boxSpace() ) * 2.0;
       textBoxLeft = point.x() - textBoxWidth / 2.;
       break;
     case Qt::AlignRight:
@@ -507,7 +507,7 @@ QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItem( QgsLayerTreeModelL
   nucleon.symbolSize = im.symbolSize;
   nucleon.labelSize = im.labelSize;
   //QgsDebugMsg( QString( "symbol height = %1 label height = %2").arg( symbolSize.height()).arg( labelSize.height() ));
-  double width = qMax(( double ) im.symbolSize.width(), labelXOffset ) + im.labelSize.width();
+  double width = qMax( static_cast< double >( im.symbolSize.width() ), labelXOffset ) + im.labelSize.width();
   double height = qMax( im.symbolSize.height(), im.labelSize.height() );
   nucleon.size = QSizeF( width, height );
   return nucleon;
