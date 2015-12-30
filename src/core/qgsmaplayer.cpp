@@ -46,6 +46,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
@@ -558,6 +559,11 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
     QUrl urlDest = QUrl::fromLocalFile( QgsProject::instance()->writePath( urlSource.toLocalFile(), relativeBasePath ) );
     urlDest.setQueryItems( urlSource.queryItems() );
     src = QString::fromAscii( urlDest.toEncoded() );
+  }
+  else if ( vlayer && vlayer->providerType() == "memory" )
+  {
+    // Refetch the source from the provider, because adding fields actually changes the source for this provider.
+    src = vlayer->dataProvider()->dataSourceUri();
   }
   else
   {
