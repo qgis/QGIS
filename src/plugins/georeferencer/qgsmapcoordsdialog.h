@@ -37,19 +37,19 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
 
     virtual ~QgsGeorefMapToolEmitPoint()
     {
-        delete mSnappingMarker;
-        mSnappingMarker = nullptr;
+      delete mSnappingMarker;
+      mSnappingMarker = nullptr;
     }
 
-    void canvasMoveEvent(QgsMapMouseEvent *e) override
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override
     {
-       MappedPoint mapped = mapPoint(e);
+      MappedPoint mapped = mapPoint( e );
 
-       if ( !mapped.snapped )
-       {
-         delete mSnappingMarker;
-         mSnappingMarker = nullptr;
-       }
+      if ( !mapped.snapped )
+      {
+        delete mSnappingMarker;
+        mSnappingMarker = nullptr;
+      }
       else
       {
         if ( !mSnappingMarker )
@@ -65,7 +65,7 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
 
     void canvasPressEvent( QgsMapMouseEvent * e ) override
     {
-      MappedPoint mapped = mapPoint(e);
+      MappedPoint mapped = mapPoint( e );
       emit canvasClicked( mapped.point, e->button() );
     }
 
@@ -90,20 +90,20 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
   private:
     struct MappedPoint
     {
-        QgsPoint point;
-        bool snapped = false;
+      QgsPoint point;
+      bool snapped = false;
     };
 
-    MappedPoint mapPoint(QMouseEvent *e)
+    MappedPoint mapPoint( QMouseEvent *e )
     {
-       QgsPoint pnt = toMapCoordinates( e->pos() );
-       QgsSnappingUtils* snappingUtils = canvas()->snappingUtils();
-       auto match = snappingUtils->snapToMap( pnt );
+      QgsPoint pnt = toMapCoordinates( e->pos() );
+      QgsSnappingUtils* snappingUtils = canvas()->snappingUtils();
+      auto match = snappingUtils->snapToMap( pnt );
 
-       MappedPoint ret;
-       ret.snapped = match.isValid();
-       ret.point = ret.snapped ? match.point() : pnt;
-       return ret;
+      MappedPoint ret;
+      ret.snapped = match.isValid();
+      ret.point = ret.snapped ? match.point() : pnt;
+      return ret;
     }
 
     QgsVertexMarker* mSnappingMarker = nullptr;
