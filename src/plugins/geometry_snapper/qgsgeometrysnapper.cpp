@@ -52,7 +52,7 @@ QFuture<void> QgsGeometrySnapper::processFeatures()
   return QtConcurrent::map( mFeatures, ProcessFeatureWrapper( this ) );
 }
 
-void QgsGeometrySnapper::processFeature( const QgsFeatureId &id )
+void QgsGeometrySnapper::processFeature( QgsFeatureId id )
 {
   // Get current feature
   QgsFeature feature;
@@ -75,7 +75,7 @@ void QgsGeometrySnapper::processFeature( const QgsFeatureId &id )
   mIndexMutex.lock();
   QList<QgsFeatureId> refFeatureIds = mIndex.intersects( feature.geometry()->boundingBox() );
   mIndexMutex.unlock();
-  Q_FOREACH ( const QgsFeatureId& refId, refFeatureIds )
+  Q_FOREACH ( QgsFeatureId refId, refFeatureIds )
   {
     QgsFeature refFeature;
     if ( getFeature( mReferenceLayer, mReferenceLayerMutex, refId, refFeature ) )
@@ -232,7 +232,7 @@ void QgsGeometrySnapper::processFeature( const QgsFeatureId &id )
   mAdjustLayerMutex.unlock();
 }
 
-bool QgsGeometrySnapper::getFeature( QgsVectorLayer *layer, QMutex &mutex, const QgsFeatureId &id, QgsFeature &feature )
+bool QgsGeometrySnapper::getFeature( QgsVectorLayer *layer, QMutex &mutex, QgsFeatureId id, QgsFeature &feature )
 {
   QMutexLocker locker( &mutex );
   QgsFeatureRequest req( id );

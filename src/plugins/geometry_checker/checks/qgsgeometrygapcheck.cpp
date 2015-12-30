@@ -19,7 +19,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, 
   // Collect geometries, build spatial index
   QList<const QgsAbstractGeometryV2*> geomList;
   const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
-  Q_FOREACH ( const QgsFeatureId& id, featureIds )
+  Q_FOREACH ( QgsFeatureId id, featureIds )
   {
     QgsFeature feature;
     if ( mFeaturePool->get( id, feature ) )
@@ -159,7 +159,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError* err, Chan
   QgsAbstractGeometryV2* errGeometry = QgsGeomUtils::getGeomPart( err->geometry(), 0 );
 
   // Search for touching neighboring geometries
-  Q_FOREACH ( const QgsFeatureId& testId, err->neighbors() )
+  Q_FOREACH ( QgsFeatureId testId, err->neighbors() )
   {
     QgsFeature testFeature;
     if ( !mFeaturePool->get( testId, testFeature ) )

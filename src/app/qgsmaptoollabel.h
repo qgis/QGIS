@@ -128,7 +128,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       @param xCol out: index of the x position column
       @param yCol out: index of the y position column
       @return false if layer does not have data defined label position enabled*/
-    bool dataDefinedPosition( QgsVectorLayer* vlayer, const QgsFeatureId &featureId, double& x, bool& xSuccess, double& y, bool& ySuccess, int& xCol, int& yCol ) const;
+    bool dataDefinedPosition( QgsVectorLayer* vlayer, QgsFeatureId featureId, double& x, bool& xSuccess, double& y, bool& ySuccess, int& xCol, int& yCol ) const;
 
     /** Returns data defined rotation of a feature.
       @param vlayer vector layer
@@ -138,7 +138,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       @param ignoreXY ignore that x and y are required to be data-defined
       @return true if data defined rotation is enabled on the layer
       */
-    bool dataDefinedRotation( QgsVectorLayer* vlayer, const QgsFeatureId &featureId, double& rotation, bool& rotationSuccess, bool ignoreXY = false ) const;
+    bool dataDefinedRotation( QgsVectorLayer* vlayer, QgsFeatureId featureId, double& rotation, bool& rotationSuccess, bool ignoreXY = false ) const;
 
     /** Returns data defined show/hide of a feature.
       @param vlayer vector layer
@@ -148,7 +148,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       @param showCol out: index of the show label column
       @return true if data defined show/hide is enabled on the layer
       */
-    bool dataDefinedShowHide( QgsVectorLayer* vlayer, const QgsFeatureId &featureId, int& show, bool& showSuccess, int& showCol ) const;
+    bool dataDefinedShowHide( QgsVectorLayer* vlayer, QgsFeatureId featureId, int& show, bool& showSuccess, int& showCol ) const;
 
   private:
     QgsPalLayerSettings mInvalidLabelSettings;

@@ -14,12 +14,12 @@ class QgsGeometryContainedCheckError : public QgsGeometryCheckError
 {
   public:
     QgsGeometryContainedCheckError( const QgsGeometryCheck* check,
-                                    const QgsFeatureId& featureId,
+                                    QgsFeatureId featureId,
                                     const QgsPointV2& errorLocation,
-                                    const QgsFeatureId& otherId
+                                    QgsFeatureId otherId
                                   )
         : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), otherId, ValueOther ), mOtherId( otherId ) { }
-    const QgsFeatureId& otherId() const { return mOtherId; }
+    QgsFeatureId otherId() const { return mOtherId; }
 
     bool isEqual( QgsGeometryCheckError* other ) const override
     {

@@ -458,7 +458,7 @@ int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::DataDefinedPro
   return -1;
 }
 
-bool QgsMapToolLabel::dataDefinedPosition( QgsVectorLayer* vlayer, const QgsFeatureId &featureId, double& x, bool& xSuccess, double& y, bool& ySuccess, int& xCol, int& yCol ) const
+bool QgsMapToolLabel::dataDefinedPosition( QgsVectorLayer* vlayer, QgsFeatureId featureId, double& x, bool& xSuccess, double& y, bool& ySuccess, int& xCol, int& yCol ) const
 {
   xSuccess = false;
   ySuccess = false;
@@ -513,7 +513,7 @@ bool QgsMapToolLabel::layerIsRotatable( QgsMapLayer* layer, int& rotationCol ) c
   return false;
 }
 
-bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, const QgsFeatureId &featureId, double& rotation, bool& rotationSuccess, bool ignoreXY ) const
+bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, QgsFeatureId featureId, double& rotation, bool& rotationSuccess, bool ignoreXY ) const
 {
   rotationSuccess = false;
   if ( !vlayer )
@@ -549,7 +549,7 @@ bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, const QgsFeat
   return true;
 }
 
-bool QgsMapToolLabel::dataDefinedShowHide( QgsVectorLayer* vlayer, const QgsFeatureId &featureId, int& show, bool& showSuccess, int& showCol ) const
+bool QgsMapToolLabel::dataDefinedShowHide( QgsVectorLayer* vlayer, QgsFeatureId featureId, int& show, bool& showSuccess, int& showCol ) const
 {
   showSuccess = false;
   if ( !vlayer )

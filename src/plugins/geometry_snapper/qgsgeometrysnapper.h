@@ -40,7 +40,7 @@ class QgsGeometrySnapper : public QObject
     {
       QgsGeometrySnapper* instance;
       explicit ProcessFeatureWrapper( QgsGeometrySnapper* _instance ) : instance( _instance ) {}
-      void operator()( const QgsFeatureId& id ) { instance->processFeature( id ); }
+      void operator()( QgsFeatureId id ) { instance->processFeature( id ); }
     };
 
     enum PointFlag { SnappedToRefNode, SnappedToRefSegment, Unsnapped };
@@ -57,8 +57,8 @@ class QgsGeometrySnapper : public QObject
     QMutex mAdjustLayerMutex;
     QMutex mReferenceLayerMutex;
 
-    void processFeature( const QgsFeatureId& id );
-    bool getFeature( QgsVectorLayer* layer, QMutex& mutex, const QgsFeatureId &id, QgsFeature& feature );
+    void processFeature( QgsFeatureId id );
+    bool getFeature( QgsVectorLayer* layer, QMutex& mutex, QgsFeatureId id, QgsFeature& feature );
     int polyLineSize( const QgsAbstractGeometryV2* geom, int iPart, int iRing ) const;
 };
 

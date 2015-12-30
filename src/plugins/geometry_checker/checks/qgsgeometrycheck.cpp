@@ -49,7 +49,7 @@ double QgsGeometryCheckPrecision::reducedTolerance()
 }
 
 QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck* check,
-    const QgsFeatureId& featureId,
+    QgsFeatureId featureId,
     const QgsPointV2& errorLocation,
     const QgsVertexId& vidx,
     const QVariant& value , ValueType valueType )

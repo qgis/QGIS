@@ -14,7 +14,7 @@ class QgsGeometryTypeCheckError : public QgsGeometryCheckError
 {
   public:
     QgsGeometryTypeCheckError( const QgsGeometryCheck* check,
-                               const QgsFeatureId& featureId,
+                               QgsFeatureId featureId,
                                const QgsPointV2& errorLocation,
                                QgsWKBTypes::Type flatType )
         : QgsGeometryCheckError( check, featureId, errorLocation )

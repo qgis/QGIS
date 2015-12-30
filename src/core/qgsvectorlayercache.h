@@ -245,7 +245,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @brief Is emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
      *        You should connect to this signal, to be sure, to not get a cached value if querying the cache.
      */
-    void attributeValueChanged( const QgsFeatureId& fid, const int& field, const QVariant &value );
+    void attributeValueChanged( QgsFeatureId fid, const int& field, const QVariant &value );
 
     /**
      * Is emitted, when a new feature has been added to the layer and this cache.

@@ -87,14 +87,14 @@ class QgsGeometryCheckError
     enum ValueType { ValueLength, ValueArea, ValueOther };
 
     QgsGeometryCheckError( const QgsGeometryCheck* check,
-                           const QgsFeatureId& featureId,
+                           QgsFeatureId featureId,
                            const QgsPointV2& errorLocation,
                            const QgsVertexId& vidx = QgsVertexId(),
                            const QVariant& value = QVariant(),
                            ValueType valueType = ValueOther );
     virtual ~QgsGeometryCheckError();
     const QgsGeometryCheck* check() const { return mCheck; }
-    const QgsFeatureId& featureId() const { return mFeatureId; }
+    QgsFeatureId featureId() const { return mFeatureId; }
     virtual QgsAbstractGeometryV2* geometry();
     virtual QgsRectangle affectedAreaBBox() { return geometry() ? geometry()->boundingBox() : QgsRectangle(); }
     virtual QString description() const { return mCheck->errorDescription(); }
