@@ -157,7 +157,7 @@ namespace pal
     GEOSContextHandle_t geosctxt = geosContext();
 
     bool needClose = false;
-    if ( type == GEOS_POLYGON && ( x[0] != x[ nbPoints - 1] || y[0] != y[ nbPoints - 1 ] ) )
+    if ( type == GEOS_POLYGON && ( !qgsDoubleNear( x[0], x[ nbPoints - 1] ) || !qgsDoubleNear( y[0], y[ nbPoints - 1 ] ) ) )
     {
       needClose = true;
     }

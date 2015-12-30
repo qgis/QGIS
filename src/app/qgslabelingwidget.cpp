@@ -73,7 +73,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
     if ( QgsLabelingGui* widgetSimple = qobject_cast<QgsLabelingGui*>( mWidget ) )
     {
       // lighter variant - just change the mode of existing widget
-      widgetSimple->setLabelMode(( QgsLabelingGui::LabelMode ) index );
+      widgetSimple->setLabelMode( static_cast< QgsLabelingGui::LabelMode >( index ) );
       return;
     }
   }
@@ -93,7 +93,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
   else
   {
     QgsLabelingGui* w = new QgsLabelingGui( mLayer, mCanvas, nullptr, this );
-    w->setLabelMode(( QgsLabelingGui::LabelMode ) index );
+    w->setLabelMode( static_cast< QgsLabelingGui::LabelMode >( index ) );
     w->init();
     mWidget = w;
   }

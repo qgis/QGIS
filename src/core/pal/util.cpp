@@ -60,7 +60,7 @@ namespace pal
     if ( N <= 0 )
       return;
 
-    unsigned int n = ( unsigned int ) N, i = n / 2, parent, child;
+    unsigned int n = static_cast< unsigned int >( N ), i = n / 2, parent, child;
 
     void *t = nullptr;
 

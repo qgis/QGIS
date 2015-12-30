@@ -165,7 +165,8 @@ namespace pal
     b2 = x3 - x4;
     c2 = x4 * y3 - x3 * y4;
 
-    if (( denom = a1 * b2 - a2 * b1 ) == 0 )
+    denom = a1 * b2 - a2 * b1;
+    if ( qgsDoubleNear( denom, 0.0 ) )
     {
       return false;
     }
@@ -376,7 +377,7 @@ namespace pal
       // Should never happen, No real solutions.
       return;
 
-    if ( det == 0 )
+    if ( qgsDoubleNear( det, 0.0 ) )
     {
       // Could potentially happen.... One solution.
       double t = -B / ( 2 * A );

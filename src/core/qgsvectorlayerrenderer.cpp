@@ -179,7 +179,7 @@ bool QgsVectorLayerRenderer::render()
     const QgsCoordinateTransform* ct = mContext.coordinateTransform();
 
     // resize the tolerance using the change of size of an 1-BBOX from the source CoordinateSystem to the target CoordinateSystem
-    if ( ct && !(( QgsCoordinateTransform* )ct )->isShortCircuited() )
+    if ( ct && !( ct->isShortCircuited() ) )
     {
       try
       {
@@ -205,7 +205,7 @@ bool QgsVectorLayerRenderer::render()
           QgsDebugMsg( QString( "Simplify - SourceHypothenuse=%1" ).arg( sourceHypothenuse ) );
           QgsDebugMsg( QString( "Simplify - TargetHypothenuse=%1" ).arg( targetHypothenuse ) );
 
-          if ( targetHypothenuse != 0 )
+          if ( !qgsDoubleNear( targetHypothenuse, 0.0 ) )
             map2pixelTol *= ( sourceHypothenuse / targetHypothenuse );
         }
       }

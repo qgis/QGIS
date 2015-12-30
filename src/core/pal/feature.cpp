@@ -27,9 +27,6 @@
  *
  */
 
-#define _CRT_SECURE_NO_DEPRECATE
-
-
 #if defined(_VERBOSE_) || defined(_DEBUG_)
 #include <iostream>
 #endif
@@ -250,18 +247,18 @@ namespace pal
     double xdiff = -labelW / 2.0;
     double ydiff = -labelH / 2.0;
 
-    if ( mLF->quadOffset().x() != 0 )
+    if ( !qgsDoubleNear( mLF->quadOffset().x(), 0.0 ) )
     {
       xdiff += labelW / 2.0 * mLF->quadOffset().x();
     }
-    if ( mLF->quadOffset().y() != 0 )
+    if ( !qgsDoubleNear( mLF->quadOffset().y(), 0.0 ) )
     {
       ydiff += labelH / 2.0 * mLF->quadOffset().y();
     }
 
     if ( ! mLF->hasFixedPosition() )
     {
-      if ( angle != 0 )
+      if ( !qgsDoubleNear( angle, 0.0 ) )
       {
         double xd = xdiff * cos( angle ) - ydiff * sin( angle );
         double yd = xdiff * sin( angle ) + ydiff * cos( angle );
@@ -290,11 +287,11 @@ namespace pal
     }
     else
     {
-      if ( mLF->positionOffset().x() != 0 )
+      if ( !qgsDoubleNear( mLF->positionOffset().x(), 0.0 ) )
       {
         xdiff += mLF->positionOffset().x();
       }
-      if ( mLF->positionOffset().y() != 0 )
+      if ( !qgsDoubleNear( mLF->positionOffset().y(), 0.0 ) )
       {
         ydiff += mLF->positionOffset().y();
       }
@@ -359,7 +356,7 @@ namespace pal
       gamma2 = a90 / 3.0;
 
 
-    if ( gamma1 == 0 || gamma2 == 0 )
+    if ( qgsDoubleNear( gamma1, 0.0 ) || qgsDoubleNear( gamma2, 0.0 ) )
     {
       std::cout << "Oups... label size error..." << std::endl;
     }
@@ -538,7 +535,7 @@ namespace pal
     ad[line->nbPoints-1] = ll;
 
 
-    nbls = ( int )( ll / xrm ); // ratio bw line length and label width
+    nbls = static_cast< int >( ll / xrm ); // ratio bw line length and label width
 
 #ifdef _DEBUG_FULL_
     std::cout << "line length :" << ll << std::endl;
@@ -707,7 +704,7 @@ namespace pal
     double dy = new_y - old_y;
 
     double segment_length = path_distances[index];
-    if ( segment_length == 0 )
+    if ( qgsDoubleNear( segment_length, 0.0 ) )
     {
       // Not allowed to place across on 0 length segments or discontinuities
       return nullptr;
@@ -732,7 +729,7 @@ namespace pal
       LabelInfo::CharacterInfo& ci = ( orientation > 0 ? li->char_info[i] : li->char_info[li->char_num-i-1] );
 
       // Coordinates this character will start at
-      if ( segment_length == 0 )
+      if ( qgsDoubleNear( segment_length, 0.0 ) )
       {
         // Not allowed to place across on 0 length segments or discontinuities
         delete slp;
@@ -895,7 +892,7 @@ namespace pal
       total_distance += path_distances[i];
     }
 
-    if ( total_distance == 0 )
+    if ( qgsDoubleNear( total_distance, 0.0 ) )
     {
       delete[] path_distances;
       return 0;

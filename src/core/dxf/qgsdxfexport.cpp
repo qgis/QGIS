@@ -420,7 +420,7 @@ void QgsDxfExport::writeGroup( const QColor& color, int exactMatchCode, int rgbC
   int minDistAt = -1;
   int minDist = INT_MAX;
 
-  for ( int i = 1; i < ( int )( sizeof( mDxfColors ) / sizeof( *mDxfColors ) ) && minDist > 0; ++i )
+  for ( int i = 1; i < static_cast< int >( sizeof( mDxfColors ) / sizeof( *mDxfColors ) ) && minDist > 0; ++i )
   {
     int dist = color_distance( color.rgba(), i );
     if ( dist >= minDist )
@@ -3801,7 +3801,7 @@ int QgsDxfExport::closestColorMatch( QRgb pixel )
 {
   int idx = 0;
   int current_distance = INT_MAX;
-  for ( int i = 1; i < ( int )( sizeof( mDxfColors ) / sizeof( *mDxfColors ) ); ++i )
+  for ( int i = 1; i < static_cast< int >( sizeof( mDxfColors ) / sizeof( *mDxfColors ) ); ++i )
   {
     int dist = color_distance( pixel, i );
     if ( dist < current_distance )
@@ -4136,10 +4136,10 @@ QString QgsDxfExport::dxfEncoding( const QString &name )
       continue;
 
     int i;
-    for ( i = 0; i < ( int )( sizeof( mDxfEncodings ) / sizeof( *mDxfEncodings ) ) && name != mDxfEncodings[i][1]; ++i )
+    for ( i = 0; i < static_cast< int >( sizeof( mDxfEncodings ) / sizeof( *mDxfEncodings ) ) && name != mDxfEncodings[i][1]; ++i )
       ;
 
-    if ( i == ( int )( sizeof( mDxfEncodings ) / sizeof( *mDxfEncodings ) ) )
+    if ( i == static_cast< int >( sizeof( mDxfEncodings ) / sizeof( *mDxfEncodings ) ) )
       continue;
 
     return mDxfEncodings[i][0];
@@ -4154,10 +4154,10 @@ QStringList QgsDxfExport::encodings()
   Q_FOREACH ( QByteArray codec, QTextCodec::availableCodecs() )
   {
     int i;
-    for ( i = 0; i < ( int )( sizeof( mDxfEncodings ) / sizeof( *mDxfEncodings ) ) && strcmp( codec.data(), mDxfEncodings[i][1] ) != 0; ++i )
+    for ( i = 0; i < static_cast< int >( sizeof( mDxfEncodings ) / sizeof( *mDxfEncodings ) ) && strcmp( codec.data(), mDxfEncodings[i][1] ) != 0; ++i )
       ;
 
-    if ( i < ( int )( sizeof( mDxfEncodings ) / sizeof( *mDxfEncodings ) ) )
+    if ( i < static_cast< int >( sizeof( mDxfEncodings ) / sizeof( *mDxfEncodings ) ) )
       encodings << codec.data();
   }
   return encodings;

@@ -27,8 +27,6 @@
  *
  */
 
-#define _CRT_SECURE_NO_DEPRECATE
-
 #include "layer.h"
 #include "pal.h"
 #include "costcalculator.h"
@@ -395,19 +393,9 @@ namespace pal
       nextPart->setConflictsWithObstacle( conflicts );
   }
 
-  bool LabelPosition::costShrink( void *l, void *r )
-  {
-    return (( LabelPosition* ) l )->mCost < (( LabelPosition* ) r )->mCost;
-  }
-
-  bool LabelPosition::costGrow( void *l, void *r )
-  {
-    return (( LabelPosition* ) l )->mCost > (( LabelPosition* ) r )->mCost;
-  }
-
   bool LabelPosition::polygonObstacleCallback( FeaturePart *obstacle, void *ctx )
   {
-    PolygonCostCalculator *pCost = ( PolygonCostCalculator* ) ctx;
+    PolygonCostCalculator *pCost = reinterpret_cast< PolygonCostCalculator* >( ctx );
 
     LabelPosition *lp = pCost->getLabel();
     if (( obstacle == lp->feature ) || ( obstacle->getHoleOf() && obstacle->getHoleOf() != lp->feature ) )
@@ -443,7 +431,7 @@ namespace pal
 
   bool LabelPosition::pruneCallback( LabelPosition *candidatePosition, void *ctx )
   {
-    FeaturePart *obstaclePart = (( PruneCtx* ) ctx )->obstacle;
+    FeaturePart *obstaclePart = ( reinterpret_cast< PruneCtx* >( ctx ) )->obstacle;
 
     // test whether we should ignore this obstacle for the candidate. We do this if:
     // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (eg
@@ -464,7 +452,7 @@ namespace pal
 
   bool LabelPosition::countOverlapCallback( LabelPosition *lp, void *ctx )
   {
-    LabelPosition *lp2 = ( LabelPosition* ) ctx;
+    LabelPosition *lp2 = reinterpret_cast< LabelPosition* >( ctx );
 
     //std::cerr << "checking " << lp2->getFeature()->getUID() << " x " << lp->getFeature()->getUID() << std::endl;
     if ( lp2->isInConflict( lp ) )
@@ -478,11 +466,12 @@ namespace pal
 
   bool LabelPosition::countFullOverlapCallback( LabelPosition *lp, void *ctx )
   {
-    LabelPosition *lp2 = (( CountContext* ) ctx )->lp;
-    double *cost = (( CountContext* ) ctx )->cost;
+    CountContext* context = reinterpret_cast< CountContext* >( ctx );
+    LabelPosition *lp2 = context->lp;
+    double *cost = context->cost;
     //int *feat = ((CountContext*)ctx)->feat;
-    int *nbOv = (( CountContext* ) ctx )->nbOv;
-    double *inactiveCost = (( CountContext* ) ctx )->inactiveCost;
+    int *nbOv = context->nbOv;
+    double *inactiveCost = context->inactiveCost;
     if ( lp2->isInConflict( lp ) )
     {
 #ifdef _DEBUG_FULL_
@@ -499,7 +488,7 @@ namespace pal
 
   bool LabelPosition::removeOverlapCallback( LabelPosition *lp, void *ctx )
   {
-    LabelPosition *lp2 = ( LabelPosition * ) ctx;
+    LabelPosition *lp2 = reinterpret_cast< LabelPosition * >( ctx );
 
     if ( lp2->isInConflict( lp ) )
     {
