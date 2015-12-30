@@ -14,7 +14,7 @@
 void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
 {
   const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
-  Q_FOREACH ( const QgsFeatureId& featureid, featureIds )
+  Q_FOREACH ( QgsFeatureId featureid, featureIds )
   {
     if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
     QgsFeature feature;
@@ -26,7 +26,7 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError*>& er
 
     QList<QgsFeatureId> duplicates;
     QgsFeatureIds ids = mFeaturePool->getIntersects( feature.geometry()->geometry()->boundingBox() );
-    Q_FOREACH ( const QgsFeatureId& id, ids )
+    Q_FOREACH ( QgsFeatureId id, ids )
     {
       // > : only report overlaps once
       if ( id >= featureid )
@@ -77,7 +77,7 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError* error, int meth
     QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( feature.geometry()->geometry(), QgsGeometryCheckPrecision::tolerance() );
 
     QgsGeometryDuplicateCheckError* duplicateError = static_cast<QgsGeometryDuplicateCheckError*>( error );
-    Q_FOREACH ( const QgsFeatureId& id, duplicateError->duplicates() )
+    Q_FOREACH ( QgsFeatureId id, duplicateError->duplicates() )
     {
       QgsFeature testFeature;
       if ( !mFeaturePool->get( id, testFeature ) )

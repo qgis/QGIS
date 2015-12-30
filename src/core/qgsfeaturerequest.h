@@ -258,7 +258,7 @@ class CORE_EXPORT QgsFeatureRequest
     //! Set feature ID that should be fetched.
     QgsFeatureRequest& setFilterFid( QgsFeatureId fid );
     //! Get the feature ID that should be fetched.
-    const QgsFeatureId& filterFid() const { return mFilterFid; }
+    QgsFeatureId filterFid() const { return mFilterFid; }
 
     //! Set feature IDs that should be fetched.
     QgsFeatureRequest& setFilterFids( const QgsFeatureIds& fids );

@@ -14,12 +14,12 @@ class QgsGeometryOverlapCheckError : public QgsGeometryCheckError
 {
   public:
     QgsGeometryOverlapCheckError( const QgsGeometryCheck* check,
-                                  const QgsFeatureId& featureId,
+                                  QgsFeatureId featureId,
                                   const QgsPointV2& errorLocation,
                                   const QVariant& value,
-                                  const QgsFeatureId& otherId )
+                                  QgsFeatureId otherId )
         : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), value, ValueArea ), mOtherId( otherId ) { }
-    const QgsFeatureId& otherId() const { return mOtherId; }
+    QgsFeatureId otherId() const { return mOtherId; }
 
     bool isEqual( QgsGeometryCheckError* other ) const override
     {

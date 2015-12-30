@@ -359,7 +359,7 @@ namespace pal
 
   void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
                                 QLinkedList<PointSet*> &shapes_final,
-                                double xrm, double yrm, const QgsFeatureId& uid )
+                                double xrm, double yrm, QgsFeatureId uid )
   {
 #ifdef _DEBUG_
     std::cout << "splitPolygons: " << uid << std::endl;

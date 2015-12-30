@@ -66,7 +66,7 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
 
     //! Show or hide chosen label by setting data defined Show Label to 0
     bool showHideLabel( QgsVectorLayer* vlayer,
-                        const QgsFeatureId &fid,
+                        QgsFeatureId fid,
                         bool hide );
 };
 

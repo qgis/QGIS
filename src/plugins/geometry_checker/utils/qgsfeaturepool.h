@@ -31,7 +31,7 @@ class QgsFeaturePool
 {
   public:
     QgsFeaturePool( QgsVectorLayer* layer, bool selectedOnly = false );
-    bool get( const QgsFeatureId& id, QgsFeature& feature );
+    bool get( QgsFeatureId id, QgsFeature& feature );
     void addFeature( QgsFeature &feature );
     void updateFeature( QgsFeature &feature );
     void deleteFeature( QgsFeature &feature );

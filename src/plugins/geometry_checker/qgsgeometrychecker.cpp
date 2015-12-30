@@ -98,7 +98,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   // Determine what to recheck
   // - Collect all features which were changed, get affected area
   QgsFeatureIds recheckFeatures;
-  Q_FOREACH ( const QgsFeatureId& id, changes.keys() )
+  Q_FOREACH ( QgsFeatureId id, changes.keys() )
   {
     bool removed = false;
     Q_FOREACH ( const QgsGeometryCheck::Change& change, changes.value( id ) )
