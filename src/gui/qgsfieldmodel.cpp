@@ -240,6 +240,25 @@ int QgsFieldModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
 {
+  static QIcon intIcon;
+  if ( intIcon.isNull() )
+    intIcon = QgsApplication::getThemeIcon( "/mIconFieldInteger.svg" );
+  static QIcon floatIcon;
+  if ( floatIcon.isNull() )
+    floatIcon = QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" );
+  static QIcon stringIcon;
+  if ( stringIcon.isNull() )
+    stringIcon = QgsApplication::getThemeIcon( "/mIconFieldText.svg" );
+  static QIcon dateIcon;
+  if ( dateIcon.isNull() )
+    dateIcon = QgsApplication::getThemeIcon( "/mIconFieldDate.svg" );
+  static QIcon dateTimeIcon;
+  if ( dateTimeIcon.isNull() )
+    dateTimeIcon = QgsApplication::getThemeIcon( "/mIconFieldDateTime.svg" );
+  static QIcon timeIcon;
+  if ( timeIcon.isNull() )
+    timeIcon = QgsApplication::getThemeIcon( "/mIconFieldTime.svg" );
+
   if ( !index.isValid() )
     return QVariant();
 
@@ -304,7 +323,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       if ( exprIdx < 0 )
       {
         QgsField field = mFields[index.row()];
-        return ( int )field.type();
+        return static_cast< int >( field.type() );
       }
       return QVariant();
     }
@@ -364,7 +383,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       if ( exprIdx < 0 )
       {
         QgsField field = mFields[index.row()];
-        int fieldType = ( int )field.type();
+        int fieldType = static_cast< int >( field.type() );
 
         switch ( fieldType )
         {
@@ -373,27 +392,27 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
           case QVariant::LongLong:
           case QVariant::ULongLong:
           {
-            return QgsApplication::getThemeIcon( "/mIconFieldInteger.svg" );
+            return intIcon;
           }
           case QVariant::Double:
           {
-            return QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" );
+            return floatIcon;
           }
           case QVariant::String:
           {
-            return QgsApplication::getThemeIcon( "/mIconFieldText.svg" );
+            return stringIcon;
           }
           case QVariant::Date:
           {
-            return QgsApplication::getThemeIcon( "/mIconFieldDate.svg" );
+            return dateIcon;
           }
           case QVariant::DateTime:
           {
-            return QgsApplication::getThemeIcon( "/mIconFieldDateTime.svg" );
+            return dateTimeIcon;
           }
           case QVariant::Time:
           {
-            return QgsApplication::getThemeIcon( "/mIconFieldTime.svg" );
+            return timeIcon;
           }
           default:
             return QIcon();
