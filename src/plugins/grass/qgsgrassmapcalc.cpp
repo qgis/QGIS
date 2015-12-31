@@ -1010,7 +1010,7 @@ void QgsGrassMapcalc::saveAs()
 
   // Ask for file name
   QString name;
-  while ( 1 )
+  for ( ;; )
   {
     bool ok;
     name = QInputDialog::getText( this, tr( "New mapcalc" ),
