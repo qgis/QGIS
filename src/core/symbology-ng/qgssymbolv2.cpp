@@ -1291,7 +1291,7 @@ QRectF QgsMarkerSymbolV2::bounds( const QPointF& point, QgsRenderContext& contex
       if ( bound.isNull() )
         bound = symbolLayer->bounds( point, symbolContext );
       else
-        bound = symbolLayer->bounds( point, symbolContext );
+        bound = bound.united( symbolLayer->bounds( point, symbolContext ) );
     }
   }
   return bound;

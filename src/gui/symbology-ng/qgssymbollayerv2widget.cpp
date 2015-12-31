@@ -3091,6 +3091,7 @@ void QgsSvgGroupsModel::createTree( QStandardItem*& parentGroup )
 
 QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
+    , mLayer( nullptr )
 {
   setupUi( this );
   modificationExpressionSelector->setLayer( const_cast<QgsVectorLayer*>( vl ) );

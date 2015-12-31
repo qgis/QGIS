@@ -55,6 +55,7 @@ QgsGeometryGeneratorSymbolLayerV2::QgsGeometryGeneratorSymbolLayerV2( const QStr
     , mLineSymbol( nullptr )
     , mMarkerSymbol( nullptr )
     , mSymbol( nullptr )
+    , mSymbolType( QgsSymbolV2::Marker )
 {
 
 }
