@@ -356,7 +356,7 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
 
   // Create vector of available pictures
   int cnt = 1;
-  while ( 1 )
+  for ( ;; )
   {
     // SVG
     QString fpath = path + "." + QString::number( cnt ) + ".svg";
