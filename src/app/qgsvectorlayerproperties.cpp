@@ -435,16 +435,24 @@ void QgsVectorLayerProperties::syncToLayer( void )
   mSimplifyDrawingGroupBox->setChecked( simplifyMethod.simplifyHints() != QgsVectorSimplifyMethod::NoSimplification );
   mSimplifyDrawingSpinBox->setValue( simplifyMethod.threshold() );
 
+  QString remark = QString( " (%1)" ).arg( tr( "Not supported" ) );
   if ( !( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) )
   {
     mSimplifyDrawingAtProvider->setChecked( false );
     mSimplifyDrawingAtProvider->setEnabled( false );
-    mSimplifyDrawingAtProvider->setText( QString( "%1 (%2)" ).arg( mSimplifyDrawingAtProvider->text(), tr( "Not supported" ) ) );
+    if ( !mSimplifyDrawingAtProvider->text().endsWith( remark ) )
+      mSimplifyDrawingAtProvider->setText( mSimplifyDrawingAtProvider->text().append( remark ) );
   }
   else
   {
     mSimplifyDrawingAtProvider->setChecked( !simplifyMethod.forceLocalOptimization() );
     mSimplifyDrawingAtProvider->setEnabled( mSimplifyDrawingGroupBox->isChecked() );
+    if ( mSimplifyDrawingAtProvider->text().endsWith( remark ) )
+    {
+      QString newText = mSimplifyDrawingAtProvider->text();
+      newText.chop( remark.size() );
+      mSimplifyDrawingAtProvider->setText( newText );
+    }
   }
 
   // disable simplification for point layers, now it is not implemented
