@@ -17,7 +17,7 @@ import tempfile
 import shutil
 import glob
 
-from qgis.core import QGis, QgsField, QgsPoint, QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry, \
+from qgis.core import QGis, QgsField, QgsPoint, QgsMapLayer, QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry, \
     QgsGeometry, NULL
 from PyQt4.QtCore import QSettings
 from utilities import (unitTestDataPath,
@@ -170,6 +170,39 @@ class TestPyQgsMemoryProvider(TestCase, ProviderTestCase):
         assert myMemoryLayer is not None, 'Provider not initialised'
         myProvider = myMemoryLayer.dataProvider()
         assert myProvider is not None
+
+    def testSaveFields(self):
+        # Create a new memory layer with no fields
+        myMemoryLayer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&index=yes'),
+            'test',
+            'memory')
+
+        # Add some fields to the layer
+        myFields = [QgsField('TestInt', QVariant.Int, 'integer', 2, 0),
+                    QgsField('TestDbl', QVariant.Double, 'double', 8, 6),
+                    QgsField('TestString', QVariant.String, 'string', 50, 0)]
+        assert myMemoryLayer.startEditing()
+        for f in myFields:
+            assert myMemoryLayer.addAttribute(f)
+        assert myMemoryLayer.commitChanges()
+        myMemoryLayer.updateFields()
+
+        # Export the layer to a layer-definition-XML
+        qlr = QgsMapLayer.asLayerDefinition([myMemoryLayer])
+        assert qlr is not None
+
+        # Import the layer from the layer-definition-XML
+        layers = QgsMapLayer.fromLayerDefinition(qlr)
+        assert layers is not None
+        myImportedLayer = layers[0]
+        assert myImportedLayer is not None
+
+        # Check for the presence of the fields
+        importedFields = myImportedLayer.fields()
+        assert importedFields is not None
+        for f in myFields:
+            assert f == importedFields.field(f.name())
 
 
 if __name__ == '__main__':
