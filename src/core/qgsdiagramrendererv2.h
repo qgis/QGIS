@@ -67,6 +67,10 @@ class CORE_EXPORT QgsDiagramLayerSettings
     Placement placement;
     unsigned int placementFlags;
     int priority; // 0 = low, 10 = high
+
+    //! Z-index of diagrams, where diagrams with a higher z-index are drawn on top of diagrams with a lower z-index
+    double zIndex;
+
     bool obstacle; // whether it's an obstacle
     double dist; // distance from the feature (in mm)
     QgsDiagramRendererV2* renderer; // if any renderer is assigned, it is owned by this class

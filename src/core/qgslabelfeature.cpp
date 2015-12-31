@@ -10,6 +10,7 @@ QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const
     , mObstacleGeometry( nullptr )
     , mSize( size )
     , mPriority( -1 )
+    , mZIndex( 0 )
     , mHasFixedPosition( false )
     , mHasFixedAngle( false )
     , mFixedAngle( 0 )

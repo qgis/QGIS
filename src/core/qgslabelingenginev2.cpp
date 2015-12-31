@@ -32,6 +32,38 @@ static bool _palIsCancelled( void* ctx )
   return ( reinterpret_cast< QgsRenderContext* >( ctx ) )->renderingStopped();
 }
 
+// helper class for sorting labels into correct draw order
+class QgsLabelSorter
+{
+  public:
+
+    QgsLabelSorter( const QgsMapSettings& mapSettings )
+        : mMapSettings( mapSettings )
+    {}
+
+    bool operator()( pal::LabelPosition* lp1, pal::LabelPosition* lp2 ) const
+    {
+      QgsLabelFeature* lf1 = lp1->getFeaturePart()->feature();
+      QgsLabelFeature* lf2 = lp2->getFeaturePart()->feature();
+
+      if ( !qgsDoubleNear( lf1->zIndex(), lf2->zIndex() ) )
+        return lf1->zIndex() < lf2->zIndex();
+
+      //equal z-index, so fallback to respecting layer render order
+      int layer1Pos = mMapSettings.layers().indexOf( lf1->provider()->layerId() );
+      int layer2Pos = mMapSettings.layers().indexOf( lf2->provider()->layerId() );
+      if ( layer1Pos != layer2Pos && layer1Pos >= 0 && layer2Pos >= 0 )
+        return layer1Pos > layer2Pos; //higher positions are rendered first
+
+      //same layer, so render larger labels first
+      return lf1->size().width() * lf1->size().height() > lf2->size().width() * lf2->size().height();
+    }
+
+  private:
+
+    const QgsMapSettings& mMapSettings;
+};
+
 
 QgsLabelingEngineV2::QgsLabelingEngineV2()
     : mFlags( RenderOutlineLabels | UsePartialCandidates )
@@ -268,6 +300,9 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
   }
   painter->setRenderHint( QPainter::Antialiasing );
 
+  // sort labels
+  qSort( labels->begin(), labels->end(), QgsLabelSorter( mMapSettings ) );
+
   // draw the labels
   QList<pal::LabelPosition*>::iterator it = labels->begin();
   for ( ; it != labels->end(); ++it )
@@ -346,8 +381,9 @@ QgsAbstractLabelProvider*QgsLabelFeature::provider() const
 
 }
 
-QgsAbstractLabelProvider::QgsAbstractLabelProvider()
+QgsAbstractLabelProvider::QgsAbstractLabelProvider( const QString& layerId )
     : mEngine( nullptr )
+    , mLayerId( layerId )
     , mFlags( DrawLabels )
     , mPlacement( QgsPalLayerSettings::AroundPoint )
     , mLinePlacementFlags( 0 )

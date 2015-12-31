@@ -78,6 +78,21 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setPriority( double priority ) { mPriority = priority; }
 
+    /** Returns the label's z-index. Higher z-index labels are rendered on top of lower
+     * z-index labels.
+     * @see setZIndex()
+     * @note added in QGIS 2.14
+     */
+    double zIndex() const { return mZIndex; }
+
+    /** Sets the label's z-index. Higher z-index labels are rendered on top of lower
+     * z-index labels.
+     * @param zIndex z-index for label
+     * @see zIndex()
+     * @note added in QGIS 2.14
+     */
+    void setZIndex( double zIndex ) { mZIndex = zIndex; }
+
     //! Whether the label should use a fixed position instead of being automatically placed
     bool hasFixedPosition() const { return mHasFixedPosition; }
     //! Set whether the label should use a fixed position instead of being automatically placed
@@ -201,6 +216,8 @@ class CORE_EXPORT QgsLabelFeature
     QSizeF mSize;
     //! Priority of the label
     double mPriority;
+    //! Z-index of label (higher z-index labels are rendered on top of lower z-index labels)
+    double mZIndex;
     //! whether mFixedPosition should be respected
     bool mHasFixedPosition;
     //! fixed position for the label (instead of automatic placement)
