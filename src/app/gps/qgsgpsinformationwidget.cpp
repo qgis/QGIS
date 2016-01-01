@@ -48,7 +48,7 @@
 #include <qwt_plot.h>
 #include <qwt_plot_grid.h>
 
-#if (WITH_QWTPOLAR)
+#ifdef WITH_QWTPOLAR
 // QWT Polar plot add on
 #include <qwt_symbol.h>
 #include <qwt_polar_grid.h>
@@ -79,7 +79,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   mpRubberBand = nullptr;
   populateDevices();
   QWidget * mpHistogramWidget = mStackedWidget->widget( 1 );
-#if (!WITH_QWTPOLAR)
+#ifndef WITH_QWTPOLAR
   mBtnSatellites->setVisible( false );
 #endif
   //
@@ -115,7 +115,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   //
   // Set up the polar graph for satellite pos
   //
-#if (WITH_QWTPOLAR)
+#ifdef WITH_QWTPOLAR
   QWidget * mpPolarWidget = mStackedWidget->widget( 2 );
   mpSatellitesWidget = new QwtPolarPlot( /*QwtText( tr( "Satellite View" ), QwtText::PlainText ),*/ mpPolarWidget );  // possible title for graph removed for now as it is too large in small windows
   mpSatellitesWidget->setAutoReplot( false );   // plot on demand (after all data has been handled)
@@ -256,7 +256,7 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
   delete mpMapMarker;
   delete mpRubberBand;
 
-#if (WITH_QWTPOLAR)
+#ifdef WITH_QWTPOLAR
   delete mpSatellitesGrid;
 #endif
 
@@ -541,7 +541,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
   {
     mpPlot->setAxisScale( QwtPlot::xBottom, 0, info.satellitesInView.size() );
   } //signal
-#if (WITH_QWTPOLAR)
+#ifdef WITH_QWTPOLAR
   if ( mStackedWidget->currentIndex() == 2 && info.satInfoComplete ) //satellites
   {
     while ( !mMarkerList.isEmpty() )
@@ -589,7 +589,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
       // Add a marker to the polar plot
       if ( currentInfo.id > 0 )       // don't show satellite if id=0 (no satellite indication)
       {
-#if (WITH_QWTPOLAR)
+#ifdef WITH_QWTPOLAR
         QwtPolarMarker *mypMarker = new QwtPolarMarker();
 #if (QWT_POLAR_VERSION<0x010000)
         mypMarker->setPosition( QwtPolarPoint( currentInfo.azimuth, currentInfo.elevation ) );
@@ -605,7 +605,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
         {
           myColor = Qt::black; //strong signal
         }
-#if (WITH_QWTPOLAR)
+#ifdef WITH_QWTPOLAR
 #if (QWT_POLAR_VERSION<0x010000)
         mypMarker->setSymbol( QwtSymbol( QwtSymbol::Ellipse,
                                          symbolBrush, QPen( myColor ), markerSize ) );
@@ -635,7 +635,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
 #endif
     mpPlot->replot();
   } //signal
-#if (WITH_QWTPOLAR)
+#ifdef WITH_QWTPOLAR
   if ( mStackedWidget->currentIndex() == 2 && info.satInfoComplete ) //satellites
   {
     mpSatellitesWidget->replot();
