@@ -119,6 +119,24 @@ bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLay
   QFileInfo fileinfo( file );
 
   QDomDocument doc( "qgis-layer-definition" );
+  if ( !exportLayerDefinition( doc, selectedTreeNodes, errorMessage, fileinfo.canonicalFilePath() ) )
+    return false;
+  if ( file.open( QFile::WriteOnly | QFile::Truncate ) )
+  {
+    QTextStream qlayerstream( &file );
+    doc.save( qlayerstream, 2 );
+    return true;
+  }
+  else
+  {
+    errorMessage = file.errorString();
+    return false;
+  }
+}
+
+bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QString& relativeBasePath )
+{
+  Q_UNUSED( errorMessage );
   QDomElement qgiselm = doc.createElement( "qlr" );
   doc.appendChild( qgiselm );
   QList<QgsLayerTreeNode*> nodes = selectedTreeNodes;
@@ -135,20 +153,9 @@ bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLay
   Q_FOREACH ( QgsLayerTreeLayer* layer, layers )
   {
     QDomElement layerelm = doc.createElement( "maplayer" );
-    layer->layer()->writeLayerXML( layerelm, doc, fileinfo.canonicalFilePath() );
+    layer->layer()->writeLayerXML( layerelm, doc, relativeBasePath );
     layerselm.appendChild( layerelm );
   }
   qgiselm.appendChild( layerselm );
-
-  if ( file.open( QFile::WriteOnly | QFile::Truncate ) )
-  {
-    QTextStream qlayerstream( &file );
-    doc.save( qlayerstream, 2 );
-    return true;
-  }
-  else
-  {
-    errorMessage = file.errorString();
-    return false;
-  }
+  return true;
 }

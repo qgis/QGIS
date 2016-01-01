@@ -17,5 +17,7 @@ class QgsLayerDefinition
     static bool loadLayerDefinition( QDomDocument doc, QgsLayerTreeGroup* rootGroup, QString &errorMessage /Out/ );
     /** Export the selected layer tree nodes to a QLR file */
     static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage /Out/ );
+    /** Export the selected layer tree nodes to a QLR-XML document */
+    static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QString& relativeBasePath = QString::null );
 };
 
