@@ -127,6 +127,8 @@ class QgsStyleV2 : QObject
     int symbolId( const QString& name );
     //! return the DB id for the given group name
     int groupId( const QString& group );
+    //! return the group name for the given DB id
+    QString groupName( int groupId ) const;
     //! return the DB id for the given tag name
     int tagId( const QString& tag );
     //! return the DB id for the given smartgroup name
@@ -134,6 +136,9 @@ class QgsStyleV2 : QObject
 
     //! return the all the groups in the style
     QStringList groupNames();
+
+    //! return the ids of all the groups in the style
+    QList<int> groupIds() const;
 
     //! returns the symbolnames of a given groupid
     /*!
@@ -269,6 +274,9 @@ class QgsStyleV2 : QObject
 
     //! gets the id from the table for the given name from the database, 0 if not found
     int getId( const QString& table, const QString& name );
+
+    //! gets the name from the table for the given id from the database, empty if not found
+    QString getName( const QString& table, int id ) const;
 
     //! updates the properties of an existing symbol/colorramp
     /*!

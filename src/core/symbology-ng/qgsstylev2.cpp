@@ -475,6 +475,20 @@ QStringList QgsStyleV2::groupNames()
   return groupNames;
 }
 
+QList<int> QgsStyleV2::groupIds() const
+{
+  QList<int> groupIds;
+  sqlite3_stmt *ppStmt;
+  const char *query = "SELECT * FROM symgroup";
+  int nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    groupIds << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, SymgroupId ) ) ).toInt();
+  }
+  sqlite3_finalize( ppStmt );
+  return groupIds;
+}
+
 QgsSymbolGroupMap QgsStyleV2::childGroupNames( const QString& parent )
 {
   // get the name list from the sqlite database and return as a QStringList
@@ -947,6 +961,24 @@ int QgsStyleV2::getId( const QString& table, const QString& name )
   return id;
 }
 
+QString QgsStyleV2::getName( const QString& table, int id ) const
+{
+  char *query = sqlite3_mprintf( "SELECT name FROM %q WHERE id='%q'", table.toUtf8().constData(), QString::number( id ).toUtf8().constData() );
+
+  sqlite3_stmt *ppStmt;
+  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+
+  QString name;
+  if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    name = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
+  }
+
+  sqlite3_finalize( ppStmt );
+
+  return name;
+}
+
 int QgsStyleV2::symbolId( const QString& name )
 {
   return getId( "symbol", name );
@@ -960,6 +992,11 @@ int QgsStyleV2::colorrampId( const QString& name )
 int QgsStyleV2::groupId( const QString& name )
 {
   return getId( "symgroup", name );
+}
+
+QString QgsStyleV2::groupName( int groupId ) const
+{
+  return getName( "symgroup", groupId );
 }
 
 int QgsStyleV2::tagId( const QString& name )
