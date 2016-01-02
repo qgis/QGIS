@@ -47,10 +47,8 @@
 #include <cpl_conv.h>
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8(x)   (x).toUtf8().constData()
 #define TO8F(x)  (x).toUtf8().constData()
 #else
-#define TO8(x)   (x).toLocal8Bit().constData()
 #define TO8F(x)  QFile::encodeName( x ).constData()
 #endif
 
@@ -499,7 +497,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
 OGRGeometryH QgsVectorFileWriter::createEmptyGeometry( QGis::WkbType wkbType )
 {
-  return OGR_G_CreateGeometry(( OGRwkbGeometryType ) wkbType );
+  return OGR_G_CreateGeometry( static_cast< OGRwkbGeometryType >( wkbType ) );
 }
 
 QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
@@ -1746,7 +1744,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         QgsWKBTypes::Type wkbType = QGis::fromOldWkbType( geom->wkbType() );
         if ( wkbType >= QgsWKBTypes::PointZ && wkbType <= QgsWKBTypes::MultiPolygonZ )
         {
-          QGis::WkbType wkbType25d = ( QGis::WkbType )( geom->wkbType() - QgsWKBTypes::PointZ + QgsWKBTypes::Point25D );
+          QGis::WkbType wkbType25d = static_cast< QGis::WkbType >( geom->wkbType() - QgsWKBTypes::PointZ + QgsWKBTypes::Point25D );
           mGeom2 = createEmptyGeometry( wkbType25d );
         }
       }
@@ -1774,7 +1772,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         return nullptr;
       }
 
-      OGRErr err = OGR_G_ImportFromWkb( mGeom2, const_cast<unsigned char *>( geom->asWkb() ), ( int ) geom->wkbSize() );
+      OGRErr err = OGR_G_ImportFromWkb( mGeom2, const_cast<unsigned char *>( geom->asWkb() ), static_cast< int >( geom->wkbSize() ) );
       if ( err != OGRERR_NONE )
       {
         mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
@@ -1790,7 +1788,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
     }
     else if ( geom )
     {
-      OGRErr err = OGR_G_ImportFromWkb( mGeom, const_cast<unsigned char *>( geom->asWkb() ), ( int ) geom->wkbSize() );
+      OGRErr err = OGR_G_ImportFromWkb( mGeom, const_cast<unsigned char *>( geom->asWkb() ), static_cast< int >( geom->wkbSize() ) );
       if ( err != OGRERR_NONE )
       {
         mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )

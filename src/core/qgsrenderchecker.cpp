@@ -404,13 +404,13 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
   int maxWidth = qMin( myExpectedImage.width(), myResultImage.width() );
 
   mMismatchCount = 0;
-  int colorTolerance = ( int ) mColorTolerance;
+  int colorTolerance = static_cast< int >( mColorTolerance );
   for ( int y = 0; y < maxHeight; ++y )
   {
-    const QRgb* expectedScanline = ( const QRgb* )myExpectedImage.constScanLine( y );
-    const QRgb* resultScanline = ( const QRgb* )myResultImage.constScanLine( y );
-    const QRgb* maskScanline = hasMask ? ( const QRgb* )maskImage->constScanLine( y ) : nullptr;
-    QRgb* diffScanline = ( QRgb* )myDifferenceImage.scanLine( y );
+    const QRgb* expectedScanline = reinterpret_cast< const QRgb* >( myExpectedImage.constScanLine( y ) );
+    const QRgb* resultScanline = reinterpret_cast< const QRgb* >( myResultImage.constScanLine( y ) );
+    const QRgb* maskScanline = hasMask ? reinterpret_cast< const QRgb* >( maskImage->constScanLine( y ) ) : nullptr;
+    QRgb* diffScanline = reinterpret_cast< QRgb* >( myDifferenceImage.scanLine( y ) );
 
     for ( int x = 0; x < maxWidth; ++x )
     {

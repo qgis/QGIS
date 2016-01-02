@@ -75,9 +75,9 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
 
     int myEntryCount = GDALGetColorEntryCount( myGdalColorTable );
     GDALColorInterp myColorInterpretation =  GDALGetRasterColorInterpretation( myGdalBand );
-    QgsDebugMsg( "Color Interpretation: " + QString::number(( int )myColorInterpretation ) );
+    QgsDebugMsg( "Color Interpretation: " + QString::number( static_cast< int >( myColorInterpretation ) ) );
     GDALPaletteInterp myPaletteInterpretation  = GDALGetPaletteInterpretation( myGdalColorTable );
-    QgsDebugMsg( "Palette Interpretation: " + QString::number(( int )myPaletteInterpretation ) );
+    QgsDebugMsg( "Palette Interpretation: " + QString::number( static_cast< int >( myPaletteInterpretation ) ) );
 
     const GDALColorEntry* myColorEntry = nullptr;
     for ( int myIterator = 0; myIterator < myEntryCount; myIterator++ )
@@ -99,7 +99,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
         if ( myColorInterpretation == GCI_GrayIndex )
         {
           QgsColorRampShader::ColorRampItem myColorRampItem;
-          myColorRampItem.value = ( double )myIterator;
+          myColorRampItem.value = static_cast< double >( myIterator );
           myColorRampItem.label = label;
           myColorRampItem.color = QColor::fromRgb( myColorEntry->c1, myColorEntry->c1, myColorEntry->c1, myColorEntry->c4 );
           ct.append( myColorRampItem );
@@ -107,7 +107,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
         else if ( myColorInterpretation == GCI_PaletteIndex )
         {
           QgsColorRampShader::ColorRampItem myColorRampItem;
-          myColorRampItem.value = ( double )myIterator;
+          myColorRampItem.value = static_cast< double >( myIterator );
           myColorRampItem.label = label;
           //Branch on palette interpretation
           if ( myPaletteInterpretation  == GPI_RGB )

@@ -80,7 +80,7 @@ void QgsProviderRegistry::init()
 
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
   mLibraryDirectory.setNameFilters( QStringList( "*.dll" ) );
-#elif ANDROID
+#elif defined(ANDROID)
   mLibraryDirectory.setNameFilters( QStringList( "*provider.so" ) );
 #else
   mLibraryDirectory.setNameFilters( QStringList( "*.so" ) );
@@ -131,7 +131,7 @@ void QgsProviderRegistry::init()
 
     //MH: Added a further test to detect non-provider plugins linked to provider plugins.
     //Only pure provider plugins have 'type' not defined
-    isprovider_t *hasType = ( isprovider_t * ) cast_to_fptr( myLib.resolve( "type" ) );
+    isprovider_t *hasType = reinterpret_cast< isprovider_t * >( cast_to_fptr( myLib.resolve( "type" ) ) );
     if ( hasType )
     {
       QgsDebugMsg( QString( "Checking %1: ...invalid (has type method)" ).arg( myLib.fileName() ) );
@@ -139,7 +139,7 @@ void QgsProviderRegistry::init()
     }
 
     // get the description and the key for the provider plugin
-    isprovider_t *isProvider = ( isprovider_t * ) cast_to_fptr( myLib.resolve( "isProvider" ) );
+    isprovider_t *isProvider = reinterpret_cast< isprovider_t * >( cast_to_fptr( myLib.resolve( "isProvider" ) ) );
     if ( !isProvider )
     {
       QgsDebugMsg( QString( "Checking %1: ...invalid (no isProvider method)" ).arg( myLib.fileName() ) );
@@ -154,14 +154,14 @@ void QgsProviderRegistry::init()
     }
 
     // looks like a provider. get the key and description
-    description_t *pDesc = ( description_t * ) cast_to_fptr( myLib.resolve( "description" ) );
+    description_t *pDesc = reinterpret_cast< description_t * >( cast_to_fptr( myLib.resolve( "description" ) ) );
     if ( !pDesc )
     {
       QgsDebugMsg( QString( "Checking %1: ...invalid (no description method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
-    providerkey_t *pKey = ( providerkey_t * ) cast_to_fptr( myLib.resolve( "providerKey" ) );
+    providerkey_t *pKey = reinterpret_cast< providerkey_t * >( cast_to_fptr( myLib.resolve( "providerKey" ) ) );
     if ( !pKey )
     {
       QgsDebugMsg( QString( "Checking %1: ...invalid (no providerKey method)" ).arg( myLib.fileName() ) );
@@ -172,28 +172,28 @@ void QgsProviderRegistry::init()
     mProviders[pKey()] = new QgsProviderMetadata( pKey(), pDesc(), myLib.fileName() );
 
     // load database drivers
-    databaseDrivers_t *pDatabaseDrivers = ( databaseDrivers_t * ) cast_to_fptr( myLib.resolve( "databaseDrivers" ) );
+    databaseDrivers_t *pDatabaseDrivers = reinterpret_cast< databaseDrivers_t * >( cast_to_fptr( myLib.resolve( "databaseDrivers" ) ) );
     if ( pDatabaseDrivers )
     {
       mDatabaseDrivers = pDatabaseDrivers();
     }
 
     // load directory drivers
-    directoryDrivers_t *pDirectoryDrivers = ( directoryDrivers_t * ) cast_to_fptr( myLib.resolve( "directoryDrivers" ) );
+    directoryDrivers_t *pDirectoryDrivers = reinterpret_cast< directoryDrivers_t * >( cast_to_fptr( myLib.resolve( "directoryDrivers" ) ) );
     if ( pDirectoryDrivers )
     {
       mDirectoryDrivers = pDirectoryDrivers();
     }
 
     // load protocol drivers
-    protocolDrivers_t *pProtocolDrivers = ( protocolDrivers_t * ) cast_to_fptr( myLib.resolve( "protocolDrivers" ) );
+    protocolDrivers_t *pProtocolDrivers = reinterpret_cast< protocolDrivers_t * >( cast_to_fptr( myLib.resolve( "protocolDrivers" ) ) );
     if ( pProtocolDrivers )
     {
       mProtocolDrivers = pProtocolDrivers();
     }
 
     // now get vector file filters, if any
-    fileVectorFilters_t *pFileVectorFilters = ( fileVectorFilters_t * ) cast_to_fptr( myLib.resolve( "fileVectorFilters" ) );
+    fileVectorFilters_t *pFileVectorFilters = reinterpret_cast< fileVectorFilters_t * >( cast_to_fptr( myLib.resolve( "fileVectorFilters" ) ) );
     if ( pFileVectorFilters )
     {
       QString fileVectorFilters = pFileVectorFilters();
@@ -207,7 +207,7 @@ void QgsProviderRegistry::init()
     // now get raster file filters, if any
     // this replaces deprecated QgsRasterLayer::buildSupportedRasterFileFilter
     buildsupportedrasterfilefilter_t *pBuild =
-      ( buildsupportedrasterfilefilter_t * ) cast_to_fptr( myLib.resolve( "buildSupportedRasterFileFilter" ) );
+      reinterpret_cast< buildsupportedrasterfilefilter_t * >( cast_to_fptr( myLib.resolve( "buildSupportedRasterFileFilter" ) ) );
     if ( pBuild )
     {
       QString fileRasterFilters;
@@ -239,7 +239,7 @@ void QgsProviderRegistry::clean()
     QLibrary myLib( lib );
     if ( myLib.isLoaded() )
     {
-      cleanupProviderFunction_t* cleanupFunc = ( cleanupProviderFunction_t* ) cast_to_fptr( myLib.resolve( "cleanupProvider" ) );
+      cleanupProviderFunction_t* cleanupFunc = reinterpret_cast< cleanupProviderFunction_t* >( cast_to_fptr( myLib.resolve( "cleanupProvider" ) ) );
       if ( cleanupFunc )
         cleanupFunc();
     }
@@ -384,7 +384,7 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
     return nullptr;
   }
 
-  classFactoryFunction_t *classFactory = ( classFactoryFunction_t * ) cast_to_fptr( myLib.resolve( "classFactory" ) );
+  classFactoryFunction_t *classFactory = reinterpret_cast< classFactoryFunction_t * >( cast_to_fptr( myLib.resolve( "classFactory" ) ) );
   if ( !classFactory )
   {
     QgsDebugMsg( QString( "Failed to load %1: no classFactory method" ).arg( lib ) );
@@ -411,7 +411,7 @@ int QgsProviderRegistry::providerCapabilities( const QString &providerKey ) cons
     return QgsDataProvider::NoDataCapabilities;
   }
 
-  dataCapabilities_t * dataCapabilities = ( dataCapabilities_t * ) cast_to_fptr( library->resolve( "dataCapabilities" ) );
+  dataCapabilities_t * dataCapabilities = reinterpret_cast< dataCapabilities_t *>( cast_to_fptr( library->resolve( "dataCapabilities" ) ) );
   if ( !dataCapabilities )
   {
     return QgsDataProvider::NoDataCapabilities;
@@ -427,7 +427,7 @@ QWidget* QgsProviderRegistry::selectWidget( const QString & providerKey,
     QWidget * parent, const Qt::WindowFlags& fl )
 {
   selectFactoryFunction_t * selectFactory =
-    ( selectFactoryFunction_t * ) cast_to_fptr( function( providerKey, "selectWidget" ) );
+    reinterpret_cast< selectFactoryFunction_t * >( cast_to_fptr( function( providerKey, "selectWidget" ) ) );
 
   if ( !selectFactory )
     return nullptr;
@@ -495,7 +495,7 @@ void QgsProviderRegistry::registerGuis( QWidget *parent )
 
   Q_FOREACH ( const QString &provider, providerList() )
   {
-    registerGui_function *registerGui = ( registerGui_function * ) cast_to_fptr( function( provider, "registerGui" ) );
+    registerGui_function *registerGui = reinterpret_cast< registerGui_function * >( cast_to_fptr( function( provider, "registerGui" ) ) );
 
     if ( !registerGui )
       continue;

@@ -26,6 +26,7 @@
 #define DL_ENTITIES_H
 
 #include "dl_global.h"
+#include "qgis.h"
 
 #include <string>
 #include <vector>
@@ -159,9 +160,9 @@ struct DXFLIB_EXPORT DL_StyleData {
         // ignore lastHeightUsed:
         return (name==other.name &&
             flags==other.flags &&
-            fixedTextHeight==other.fixedTextHeight &&
-            widthFactor==other.widthFactor &&
-            obliqueAngle==other.obliqueAngle &&
+            qgsDoubleNear( fixedTextHeight, other.fixedTextHeight ) &&
+            qgsDoubleNear( widthFactor, other.widthFactor ) &&
+            qgsDoubleNear( obliqueAngle, other.obliqueAngle ) &&
             textGenerationFlags==other.textGenerationFlags &&
             primaryFontFile==other.primaryFontFile &&
             bigFontFile==other.bigFontFile);

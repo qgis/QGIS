@@ -221,9 +221,9 @@ bool QgsRectangle::isEmpty() const
 bool QgsRectangle::isNull() const
 {
   // rectangle created QgsRectangle() or with rect.setMinimal() ?
-  return ( xmin == 0 && xmax == 0 && ymin == 0 && ymax == 0 ) ||
-         ( xmin == std::numeric_limits<double>::max() && ymin == std::numeric_limits<double>::max() &&
-           xmax == -std::numeric_limits<double>::max() && ymax == -std::numeric_limits<double>::max() );
+  return ( qgsDoubleNear( xmin, 0.0 ) && qgsDoubleNear( xmax, 0.0 ) && qgsDoubleNear( ymin, 0.0 ) && qgsDoubleNear( ymax, 0.0 ) ) ||
+         ( qgsDoubleNear( xmin, std::numeric_limits<double>::max() ) && qgsDoubleNear( ymin, std::numeric_limits<double>::max() ) &&
+           qgsDoubleNear( xmax, -std::numeric_limits<double>::max() ) && qgsDoubleNear( ymax, -std::numeric_limits<double>::max() ) );
 }
 
 QString QgsRectangle::asWktCoordinates() const
@@ -252,7 +252,7 @@ QString QgsRectangle::asWktPolygon() const
 //! returns a QRectF with same coordinates.
 QRectF QgsRectangle::toRectF() const
 {
-  return QRectF(( qreal )xmin, ( qreal )ymin, ( qreal )xmax - xmin, ( qreal )ymax - ymin );
+  return QRectF( static_cast< qreal >( xmin ), static_cast< qreal >( ymin ), static_cast< qreal >( xmax - xmin ), static_cast< qreal >( ymax - ymin ) );
 }
 
 // Return a string representation of the rectangle with automatic or high precision
@@ -321,10 +321,10 @@ QString QgsRectangle::asPolygon() const
 
 bool QgsRectangle::operator==( const QgsRectangle & r1 ) const
 {
-  return r1.xMaximum() == xMaximum() &&
-         r1.xMinimum() == xMinimum() &&
-         r1.yMaximum() == yMaximum() &&
-         r1.yMinimum() == yMinimum();
+  return qgsDoubleNear( r1.xMaximum(), xMaximum() ) &&
+         qgsDoubleNear( r1.xMinimum(), xMinimum() ) &&
+         qgsDoubleNear( r1.yMaximum(), yMaximum() ) &&
+         qgsDoubleNear( r1.yMinimum(), yMinimum() );
 }
 
 
