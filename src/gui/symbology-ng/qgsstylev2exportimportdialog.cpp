@@ -63,7 +63,7 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
 
   if ( mDialogMode == Import )
   {
-    setWindowTitle( tr( "Import style(s)" ) );
+    setWindowTitle( tr( "Import symbol(s)" ) );
     // populate the import types
     importTypeCombo->addItem( tr( "file specified below" ), QVariant( "file" ) );
     // importTypeCombo->addItem( "official QGIS repo online", QVariant( "official" ) );
@@ -85,7 +85,7 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
   }
   else
   {
-    setWindowTitle( tr( "Export style(s)" ) );
+    setWindowTitle( tr( "Export symbol(s)" ) );
     // hide import specific controls when exporting
     btnBrowse->setHidden( true );
     fromLabel->setHidden( true );

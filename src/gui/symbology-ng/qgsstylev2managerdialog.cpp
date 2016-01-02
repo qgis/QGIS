@@ -64,11 +64,11 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( btnEditItem, SIGNAL( clicked() ), this, SLOT( editItem() ) );
   connect( btnRemoveItem, SIGNAL( clicked() ), this, SLOT( removeItem() ) );
 
-  QMenu *shareMenu = new QMenu( tr( "Share Menu" ), this );
-  QAction *exportAsPNGAction = shareMenu->addAction( tr( "Export as PNG" ) );
-  QAction *exportAsSVGAction = shareMenu->addAction( tr( "Export as SVG" ) );
-  QAction *exportAction = shareMenu->addAction( tr( "Export" ) );
-  QAction *importAction = shareMenu->addAction( tr( "Import" ) );
+  QMenu *shareMenu = new QMenu( tr( "Share menu" ), this );
+  QAction *exportAsPNGAction = shareMenu->addAction( tr( "Export selected symbols as PNG" ) );
+  QAction *exportAsSVGAction = shareMenu->addAction( tr( "Export selected symbols as SVG" ) );
+  QAction *exportAction = shareMenu->addAction( tr( "Export..." ) );
+  QAction *importAction = shareMenu->addAction( tr( "Import..." ) );
   exportAsPNGAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
   exportAsSVGAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
   exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
@@ -101,9 +101,9 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( groupModel, SIGNAL( itemChanged( QStandardItem* ) ),
            this, SLOT( groupRenamed( QStandardItem* ) ) );
 
-  QMenu *groupMenu = new QMenu( tr( "Group Actions" ), this );
-  QAction *groupSymbols = groupMenu->addAction( tr( "Group Symbols" ) );
-  QAction *editSmartgroup = groupMenu->addAction( tr( "Edit Smart Group" ) );
+  QMenu *groupMenu = new QMenu( tr( "Group actions" ), this );
+  QAction *groupSymbols = groupMenu->addAction( tr( "Group symbols" ) );
+  QAction *editSmartgroup = groupMenu->addAction( tr( "Edit smart group" ) );
   btnManageGroups->setMenu( groupMenu );
   connect( groupSymbols, SIGNAL( triggered() ), this, SLOT( groupSymbolsAction() ) );
   connect( editSmartgroup, SIGNAL( triggered() ), this, SLOT( editSmartgroupAction() ) );
@@ -1057,7 +1057,7 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
   if ( mGrouppingMode )
   {
     mGrouppingMode = false;
-    senderAction->setText( tr( "Group Symbols" ) );
+    senderAction->setText( tr( "Group symbols" ) );
     // disconnect slot which handles regrouping
     disconnect( model, SIGNAL( itemChanged( QStandardItem* ) ),
                 this, SLOT( regrouped( QStandardItem* ) ) );
@@ -1094,7 +1094,7 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
 
     mGrouppingMode = true;
     // Change the text menu
-    senderAction->setText( tr( "Finish Grouping" ) );
+    senderAction->setText( tr( "Finish grouping" ) );
     // Remove all Symbol editing functionalities
     disconnect( treeModel, SIGNAL( itemChanged( QStandardItem* ) ),
                 this, SLOT( groupRenamed( QStandardItem* ) ) );
@@ -1296,17 +1296,17 @@ void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
   {
     if ( index.parent().data( Qt::UserRole + 1 ).toString() == "smartgroups" )
     {
-      groupMenu.addAction( tr( "Edit Group" ) );
+      groupMenu.addAction( tr( "Edit smart group" ) );
     }
     else
     {
-      groupMenu.addAction( tr( "Add Group" ) );
+      groupMenu.addAction( tr( "Add group" ) );
     }
-    groupMenu.addAction( tr( "Remove Group" ) );
+    groupMenu.addAction( tr( "Remove group" ) );
   }
   else if ( index.data( Qt::UserRole + 1 ) == "groups" || index.data( Qt::UserRole + 1 ) == "smartgroups" )
   {
-    groupMenu.addAction( tr( "Add Group" ) );
+    groupMenu.addAction( tr( "Add group" ) );
   }
 
 
@@ -1314,11 +1314,11 @@ void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
 
   if ( selectedItem )
   {
-    if ( selectedItem->text() == tr( "Add Group" ) )
+    if ( selectedItem->text() == tr( "Add group" ) )
       addGroup();
-    else if ( selectedItem->text() == tr( "Remove Group" ) )
+    else if ( selectedItem->text() == tr( "Remove group" ) )
       removeGroup();
-    else if ( selectedItem->text() == tr( "Edit Group" ) )
+    else if ( selectedItem->text() == tr( "Edit smart group" ) )
       editSmartgroupAction();
   }
 }
