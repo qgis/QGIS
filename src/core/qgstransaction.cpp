@@ -33,7 +33,7 @@ QgsTransaction* QgsTransaction::create( const QString& connString, const QString
   if ( !lib )
     return nullptr;
 
-  createTransaction_t* createTransaction = ( createTransaction_t* ) cast_to_fptr( lib->resolve( "createTransaction" ) );
+  createTransaction_t* createTransaction = reinterpret_cast< createTransaction_t* >( cast_to_fptr( lib->resolve( "createTransaction" ) ) );
   if ( !createTransaction )
     return nullptr;
 

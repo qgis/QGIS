@@ -230,8 +230,8 @@ void Builder::addArc( const DL_ArcData& data )
     return;
   }
 
-  int fromAngle = ( int ) data.angle1 + 1;
-  int toAngle = ( int ) data.angle2 + 1;
+  int fromAngle = static_cast< int >( data.angle1 ) + 1;
+  int toAngle = static_cast< int >( data.angle2 ) + 1;
 
   QgsDebugMsg( QString( "arc (%1,%2,%3 r=%4 a1=%5 a2=%6)" )
                .arg( data.cx ).arg( data.cy ).arg( data.cz )
@@ -276,7 +276,7 @@ void Builder::addArc( const DL_ArcData& data )
 
   // Finalize
 
-  int dim = ( int ) arcPoints.size();
+  int dim = static_cast< int >( arcPoints.size() );
   QVector<double> xv( dim );
   QVector<double> yv( dim );
   QVector<double> zv( dim );
@@ -325,7 +325,7 @@ void Builder::addCircle( const DL_CircleData& data )
     circlePoints.push_back( myPoint );
   }
 
-  int dim = ( int ) circlePoints.size();
+  int dim = static_cast< int >( circlePoints.size() );
   QVector<double> xv( dim );
   QVector<double> yv( dim );
   QVector<double> zv( dim );

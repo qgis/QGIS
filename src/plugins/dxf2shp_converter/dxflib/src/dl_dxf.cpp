@@ -178,7 +178,7 @@ bool DL_Dxf::readDxfGroups(FILE *fp, DL_CreationInterface* creationInterface) {
     if (DL_Dxf::getStrippedLine(groupCodeTmp, DL_DXF_MAXLINE, fp) &&
             DL_Dxf::getStrippedLine(groupValue, DL_DXF_MAXLINE, fp) ) {
 
-        groupCode = (unsigned int)toInt(groupCodeTmp);
+        groupCode = static_cast<unsigned int>(toInt(groupCodeTmp));
 
         creationInterface->processCodeValuePair(groupCode, groupValue);
         line+=2;
@@ -202,7 +202,7 @@ bool DL_Dxf::readDxfGroups(std::stringstream& stream,
     if (DL_Dxf::getStrippedLine(groupCodeTmp, DL_DXF_MAXLINE, stream) &&
             DL_Dxf::getStrippedLine(groupValue, DL_DXF_MAXLINE, stream) ) {
 
-        groupCode = (unsigned int)toInt(groupCodeTmp);
+        groupCode = static_cast<unsigned int>(toInt(groupCodeTmp));
 
         line+=2;
         processDXFGroup(creationInterface, groupCode, groupValue);
@@ -296,7 +296,7 @@ bool DL_Dxf::getStrippedLine(std::string &s, unsigned int size,
  */
 bool DL_Dxf::stripWhiteSpace(char** s) {
     // last non-NULL char:
-    int lastChar = (int) strlen(*s) - 1;
+    int lastChar = static_cast<int>( strlen(*s) ) - 1;
 
     // Is last character CR or LF?
     while ( (lastChar >= 0) &&
@@ -386,7 +386,7 @@ bool DL_Dxf::processDXFGroup(DL_CreationInterface* creationInterface,
                                width,                   // width
                                linetype,                // linetype
                                handle);                 // handle
-        attrib.setInPaperSpace((bool)getIntValue(67, 0));
+        attrib.setInPaperSpace( static_cast<bool>(getIntValue(67, 0)));
         attrib.setLinetypeScale(getRealValue(48, 1.0));
         creationInterface->setAttributes(attrib);
 
@@ -2044,7 +2044,7 @@ bool DL_Dxf::handleHatchData(DL_CreationInterface* creationInterface) {
                 hatchEdge.angle2 = toReal(groupValue)/360.0*2*M_PI;
                 return true;
             case 73:
-                hatchEdge.ccw = (bool)toInt(groupValue);
+                hatchEdge.ccw = static_cast<bool>(toInt(groupValue));
                 hatchEdge.defined = true;
                 return true;
             }
@@ -2075,7 +2075,7 @@ bool DL_Dxf::handleHatchData(DL_CreationInterface* creationInterface) {
                 hatchEdge.angle2 = toReal(groupValue)/360.0*2*M_PI;
                 return true;
             case 73:
-                hatchEdge.ccw = (bool)toInt(groupValue);
+                hatchEdge.ccw = static_cast<bool>(toInt(groupValue));
                 hatchEdge.defined = true;
                 return true;
             }
@@ -2421,7 +2421,7 @@ void DL_Dxf::writePolyline(DL_WriterA& dw,
         dw.entityAttributes(attrib);
         dw.dxfString(100, "AcDbEntity");
         dw.dxfString(100, "AcDbPolyline");
-        dw.dxfInt(90, (int)data.number);
+        dw.dxfInt(90, static_cast<int>(data.number));
         dw.dxfInt(70, data.flags);
     } else {
         dw.entity("POLYLINE");
@@ -2779,7 +2779,7 @@ void DL_Dxf::writeMText(DL_WriterA& dw,
     dw.dxfInt(72, data.drawingDirection);
 
     // Creare text chunks of 250 characters each:
-    int length = (int) data.text.length();
+    int length = static_cast<int>( data.text.length() );
     char chunk[251];
     int i;
     for (i=250; i<length; i+=250) {
@@ -3407,7 +3407,7 @@ void DL_Dxf::writeHatch1(DL_WriterA& dw,
     } else {
         dw.dxfString(2, "SOLID");
     }
-    dw.dxfInt(70, (int)data.solid);
+    dw.dxfInt(70, static_cast<int>(data.solid));
     dw.dxfInt(71, 0);                // non-associative
     dw.dxfInt(91, data.numLoops);
 }
@@ -3516,7 +3516,7 @@ void DL_Dxf::writeHatchEdge(DL_WriterA& dw,
         dw.dxfReal(40, data.radius);
         dw.dxfReal(50, data.angle1/(2*M_PI)*360.0);
         dw.dxfReal(51, data.angle2/(2*M_PI)*360.0);
-        dw.dxfInt(73, (int)(data.ccw));
+        dw.dxfInt(73, static_cast<int>(data.ccw));
         break;
 
     // ellipse arc:
@@ -3528,7 +3528,7 @@ void DL_Dxf::writeHatchEdge(DL_WriterA& dw,
         dw.dxfReal(40, data.ratio);
         dw.dxfReal(50, data.angle1/(2*M_PI)*360.0);
         dw.dxfReal(51, data.angle2/(2*M_PI)*360.0);
-        dw.dxfInt(73, (int)(data.ccw));
+        dw.dxfInt(73, static_cast<int>(data.ccw));
         break;
 
     // spline:

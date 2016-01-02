@@ -270,7 +270,7 @@ bool QgsComposerTable::tableWriteXML( QDomElement& elem, QDomDocument & doc ) co
   elem.setAttribute( "lineTextDist", QString::number( mLineTextDistance ) );
   elem.appendChild( QgsFontUtils::toXmlElement( mHeaderFont, doc, "headerFontProperties" ) );
   elem.setAttribute( "headerFontColor", QgsSymbolLayerV2Utils::encodeColor( mHeaderFontColor ) );
-  elem.setAttribute( "headerHAlignment", QString::number(( int )mHeaderHAlignment ) );
+  elem.setAttribute( "headerHAlignment", QString::number( static_cast< int >( mHeaderHAlignment ) ) );
   elem.appendChild( QgsFontUtils::toXmlElement( mContentFont, doc, "contentFontProperties" ) );
   elem.setAttribute( "contentFontColor", QgsSymbolLayerV2Utils::encodeColor( mContentFontColor ) );
   elem.setAttribute( "gridStrokeWidth", QString::number( mGridStrokeWidth ) );
