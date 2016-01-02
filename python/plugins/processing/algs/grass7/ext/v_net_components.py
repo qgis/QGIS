@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from v_net import variableOutput
 
+
 def processCommand(alg):
     # remove the output for point
     outPoint = alg.getOutputFromName(u'output_point')
@@ -39,8 +40,8 @@ def processCommand(alg):
     # Re-add output for point
     alg.addOutput(outPoint)
 
+
 def processOutputs(alg):
-    outputParameter = { u"output": u"line",
-                        u"output_point": u"point" }
+    outputParameter = {u"output": u"line",
+                       u"output_point": u"point"}
     variableOutput(alg, outputParameter)
-    

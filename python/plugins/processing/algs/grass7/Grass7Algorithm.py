@@ -222,7 +222,7 @@ class Grass7Algorithm(GeoAlgorithm):
                 raise GeoAlgorithmExecutionException(
                     self.tr('GRASS GIS 7 folder is not configured. Please '
                             'configure it before running GRASS GIS 7 algorithms.'))
-            
+
         # Create brand new commands lists
         self.commands = []
         self.outputCommands = []
@@ -244,13 +244,13 @@ class Grass7Algorithm(GeoAlgorithm):
                 func(self)
             else:
                 self.processInputs()
-                
+
             if hasattr(self.module, 'processCommand'):
                 func = getattr(self.module, 'processCommand')
                 func(self)
             else:
                 self.processCommand()
-                
+
             if hasattr(self.module, 'processOutputs'):
                 func = getattr(self.module, 'processOutputs')
                 func(self)
@@ -389,7 +389,7 @@ class Grass7Algorithm(GeoAlgorithm):
                 command += ' ' + param.name + '="' + unicode(param.value) + '"'
             else:
                 command += ' ' + param.name + '="' + unicode(param.value) + '"'
-        
+
         for out in self.outputs:
             if isinstance(out, OutputFile):
                 command += ' > ' + out.value
@@ -405,7 +405,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
         command += ' --overwrite'
         self.commands.append(command)
-        
+
     def processOutputs(self):
         """Prepare the GRASS v.out.ogr commands"""
         for out in self.outputs:
@@ -416,7 +416,7 @@ class Grass7Algorithm(GeoAlgorithm):
                 # exporting
                 self.commands.append('g.region raster=' + out.name + self.uniqueSufix)
                 self.outputCommands.append('g.region raster=' + out.name
-                                      + self.uniqueSufix)
+                                           + self.uniqueSufix)
 
                 if self.grass7Name == 'r.statistics':
                     # r.statistics saves its results in a non-qgis compatible
@@ -477,7 +477,7 @@ class Grass7Algorithm(GeoAlgorithm):
                 command += ' output_layer=' + os.path.basename(out.value)[:-4]
                 self.commands.append(command)
                 self.outputCommands.append(command)
-    
+
     def exportVectorLayer(self, orgFilename):
 
         # TODO: improve this. We are now exporting if it is not a shapefile,

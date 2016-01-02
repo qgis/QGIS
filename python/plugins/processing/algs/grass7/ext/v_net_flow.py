@@ -28,23 +28,26 @@ __revision__ = '$Format:%H$'
 
 from v_net import incorporatePoints, processOutputs
 
+
 def checkParameterValuesBeforeExecuting(alg):
     """ Verify if we have the right parameters """
     params = [u'where', u'cats']
     values = []
     for param in params:
         for i in [u'source', u'sink']:
-            values.append(alg.getParameterValue(u'{}_{}'.format(i,param)))
+            values.append(alg.getParameterValue(u'{}_{}'.format(i, param)))
 
     if (values[0] or values[2]) and (values[1] or values[3]):
         return None
 
     return alg.tr("You need to set at least source/sink_where or source/sink_cats parameters for each set !")
 
+
 def processCommand(alg):
     incorporatePoints(alg)
 
+
 def processOutputs(alg):
-    outputParameter = { u"output": u"line",
-                        u"cut": u"line" }
+    outputParameter = {u"output": u"line",
+                       u"cut": u"line"}
     variableOutput(alg, outputParameter)

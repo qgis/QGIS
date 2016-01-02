@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from processing.core.parameters import getParameterFromString
 from v_net import incorporatePoints
 
+
 def processCommand(alg):
     # We temporary remove the output 'sequence'
     sequence = alg.getOutputFromName(u'sequence')
@@ -46,4 +47,3 @@ def processCommand(alg):
     # then we delete the input parameter and add the old output
     alg.parameters.remove(param)
     alg.addOutput(sequence)
-    

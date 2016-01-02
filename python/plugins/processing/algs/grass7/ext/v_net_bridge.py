@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from v_net import variableOutput
 
+
 def processOutputs(alg):
-    outputParameter = { u"output": { u"method" : { 0: u"line", 1: u"point" } } }
+    outputParameter = {u"output": {u"method": {0: u"line", 1: u"point"}}}
     variableOutput(alg, outputParameter)
-    

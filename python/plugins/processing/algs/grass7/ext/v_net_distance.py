@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 from processing.core.parameters import getParameterFromString, ParameterVector, ParameterNumber, ParameterBoolean, ParameterString
 
+
 def processCommand(alg):
     """ Handle data preparation for v.net.distance:
     * Integrate point layers into network vector map.
@@ -51,7 +52,7 @@ def processCommand(alg):
     for i, layer in enumerate([u'from', u'to']):
         # Get a temp layer name
         intLayer = alg.getTempFilename()
-        
+
         # Grab the from point layer and delete this parameter (not used by v.net.distance)
         point_layer = alg.getParameterValue(layer + u'_points')
         if point_layer:
@@ -59,7 +60,7 @@ def processCommand(alg):
             paramsToDelete.append(alg.getParameterFromName(layer + u'_points'))
 
         # Create the v.net connect command for point layer integration
-        command = u"v.net -s input={} points={} out={} op=connect threshold={} arc_layer=1 node_layer={}".format( line_layer, point_layer, intLayer, threshold, i+2 )
+        command = u"v.net -s input={} points={} out={} op=connect threshold={} arc_layer=1 node_layer={}".format(line_layer, point_layer, intLayer, threshold, i + 2)
         alg.commands.append(command)
         line_layer = intLayer
 
@@ -68,12 +69,12 @@ def processCommand(alg):
         if not parameter:
             parameter = getParameterFromString(u'ParameterNumber|{0}_layer|{0} layer number|1|3|2|False'.format(layer))
             alg.addParameter(parameter)
-        parameter.setValue(i+2)
+        parameter.setValue(i + 2)
 
         # Make the connection with attribute table
-        command = u"v.db.connect -o map={} table={} layer={}".format(line_layer, point_layer, i+2)
+        command = u"v.db.connect -o map={} table={} layer={}".format(line_layer, point_layer, i + 2)
         alg.commands.append(command)
-        
+
     alg.setParameterValue(u'input', line_layer)
 
     # Delete some unnecessary parameters
@@ -81,7 +82,7 @@ def processCommand(alg):
         alg.parameters.remove(param)
 
     alg.processCommand()
-    
+
     # Bring back the parameters:
     for param in paramsToDelete:
         alg.parameters.append(param)
