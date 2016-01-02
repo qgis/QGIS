@@ -36,12 +36,13 @@ __revision__ = '$Format:%H$'
 import os
 from processing.core.parameters import getParameterFromString, ParameterVector, ParameterNumber, ParameterBoolean, ParameterString
 
+
 def incorporatePoints(alg, pointLayerName=u'points', networkLayerName=u'input'):
     """
     incorporate points with lines to form a GRASS network
     """
     paramsToDelete = []
-    
+
     # Create an intermediate GRASS layer which is the combination of network + centers
     intLayer = alg.getTempFilename()
 
@@ -62,22 +63,23 @@ def incorporatePoints(alg, pointLayerName=u'points', networkLayerName=u'input'):
 
     # Create the v.net connect command for point layer integration
     command = u"v.net -s input={} points={} out={} op=connect threshold={}".format(
-        lineLayer, pointLayer, intLayer, threshold )
+        lineLayer, pointLayer, intLayer, threshold)
     alg.commands.append(command)
 
     # Connect the point layer database to the layer 2 of the network
     command = u"v.db.connect -o map={} table={} layer=2".format(intLayer, pointLayer)
     alg.commands.append(command)
-    
+
     # Delete some unnecessary parameters
     for param in paramsToDelete:
         alg.parameters.remove(param)
-        
+
     alg.processCommand()
 
     # Bring back the parameters:
     for param in paramsToDelete:
         alg.parameters.append(param)
+
 
 def variableOutput(alg, params, nocats=True):
     """ Handle variable data output for v.net modules:
@@ -106,9 +108,9 @@ def variableOutput(alg, params, nocats=True):
             u"" if geomType == u"line" and nocats else u"-c",
             geomType,
             alg.exportedLayers[out],
-            os.path.dirname( out ),
-            os.path.basename( out)[:-4]
-            )
+            os.path.dirname(out),
+            os.path.basename(out)[:-4]
+        )
         alg.commands.append(command)
         alg.outputCommands.append(command)
 
@@ -129,6 +131,7 @@ def checkParameterValuesBeforeExecuting(alg):
 
     return None
 
+
 def processCommand(alg):
     """ Handle data preparation for v.net:
     * Integrate point layers into network vector map.
@@ -144,7 +147,7 @@ def processCommand(alg):
         paramsToDelete.append(alg.getParameterFromName(u'file'))
     elif operation == 2:
         paramsToDelete.append(alg.getParameterFromName(u'threshold'))
-    elif operation in [3,4]:
+    elif operation in [3, 4]:
         paramsToDelete.append(alg.getParameterFromName(u'threshold'))
         paramsToDelete.append(alg.getParameterFromName(u'points'))
         paramsToDelete.append(alg.getParameterFromName(u'file'))
@@ -159,7 +162,7 @@ def processCommand(alg):
         alg.parameters.remove(param)
 
     alg.processCommand()
-    
+
     # Bring back the parameters:
     for param in paramsToDelete:
         alg.parameters.append(param)
@@ -170,7 +173,7 @@ def processOutputs(alg):
     * use v.out.ogr with type=line on node operation.
     * use v.out.ogr with type=point on articulation method.
     """
-    
+
     # Find the method used
     operation = alg.getParameterValue(u'operation')
 
@@ -182,7 +185,7 @@ def processOutputs(alg):
         u"point" if operation == 0 else "line",
         u"2" if operation == 0 else u"1",
         alg.exportedLayers[out],
-        os.path.dirname( out ),
-        os.path.basename( out )[:-4]
-        )
+        os.path.dirname(out),
+        os.path.basename(out)[:-4]
+    )
     alg.commands.append(command)
