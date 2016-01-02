@@ -1327,10 +1327,13 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
   // Clear all actions and create new actions for every group
   mGroupListMenu->clear();
 
-  QStringList groups = mStyle->groupNames();
-  Q_FOREACH ( const QString& group, groups )
+  QAction* a;
+  QList<int> groupIds = mStyle->groupIds();
+  Q_FOREACH ( int groupId, groupIds )
   {
-    mGroupListMenu->addAction( new QAction( group, mGroupListMenu ) );
+    a = new QAction( mStyle->groupName( groupId ), mGroupListMenu );
+    a->setData( groupId );
+    mGroupListMenu->addAction( a );
   }
 
   QAction* selectedItem = mGroupMenu->exec( globalPos );
@@ -1343,11 +1346,7 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
       QgsDebugMsg( "unknow entity type" );
       return;
     }
-    int groupId = 0;
-    if ( selectedItem->text() != tr( "Un-group" ) )
-    {
-      groupId = mStyle->groupId( selectedItem->text() );
-    }
+    int groupId = selectedItem->data().toInt();
     QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
     Q_FOREACH ( const QModelIndex& index, indexes )
     {
