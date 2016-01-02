@@ -49,7 +49,6 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
 #endif
 
   QSettings settings;
-  QAction* a; // used as a temporary variable before passing ownership of a created action.
 
   restoreGeometry( settings.value( "/Windows/StyleV2Manager/geometry" ).toByteArray() );
   mSplitter->setSizes( QList<int>() << 170 << 540 );
@@ -66,6 +65,8 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( btnEditItem, SIGNAL( clicked() ), this, SLOT( editItem() ) );
   connect( btnRemoveItem, SIGNAL( clicked() ), this, SLOT( removeItem() ) );
 
+  btnRemoveItem->setEnabled( false );
+
   QMenu *shareMenu = new QMenu( tr( "Share menu" ), this );
   QAction *exportAsPNGAction = shareMenu->addAction( tr( "Export selected symbols as PNG" ) );
   QAction *exportAsSVGAction = shareMenu->addAction( tr( "Export selected symbols as SVG" ) );
@@ -74,7 +75,9 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   QAction *importAction = new QAction( tr( "Import..." ), this );
   shareMenu->addAction( importAction );
   exportAsPNGAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
+  exportAsPNGAction->setEnabled( false );
   exportAsSVGAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
+  exportAsSVGAction->setEnabled( false );
   exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
   importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingImport.svg" ) ) );
   connect( exportAsPNGAction, SIGNAL( triggered() ), this, SLOT( exportItemsPNG() ) );
@@ -93,6 +96,8 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( model, SIGNAL( itemChanged( QStandardItem* ) ), this, SLOT( itemChanged( QStandardItem* ) ) );
   connect( listItems->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
            this, SLOT( symbolSelected( const QModelIndex& ) ) );
+  connect( listItems->selectionModel(), SIGNAL( selectionChanged( const QItemSelection, const QItemSelection ) ),
+           this, SLOT( selectedSymbolsChanged( const QItemSelection&, const QItemSelection& ) ) );
 
   populateTypes();
 
@@ -114,8 +119,6 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
 
   connect( btnAddGroup, SIGNAL( clicked() ), this, SLOT( addGroup() ) );
   connect( btnRemoveGroup, SIGNAL( clicked() ), this, SLOT( removeGroup() ) );
-
-  on_tabItemType_currentChanged( 0 );
 
   connect( searchBox, SIGNAL( textChanged( QString ) ), this, SLOT( filterSymbols( QString ) ) );
   tagsLineEdit->installEventFilter( this );
@@ -144,10 +147,12 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   mGroupMenu = new QMenu( this );
   mGroupListMenu = new QMenu( mGroupMenu );
   mGroupListMenu->setTitle( tr( "Apply Group" ) );
+  mGroupListMenu->setEnabled( false );
   mGroupMenu->addMenu( mGroupListMenu );
-  a = new QAction( tr( "Un-group" ), mGroupMenu );
-  a->setData( 0 );
-  mGroupMenu->addAction( a );
+  actnUngroup->setData( 0 );
+  mGroupMenu->addAction( actnUngroup );
+
+  on_tabItemType_currentChanged( 0 );
 }
 
 void QgsStyleV2ManagerDialog::onFinished()
@@ -260,6 +265,8 @@ void QgsStyleV2ManagerDialog::populateSymbols( const QStringList& symbolNames, b
     }
     delete symbol;
   }
+  selectedSymbolsChanged( QItemSelection(), QItemSelection() );
+  symbolSelected( listItems->currentIndex() );
 }
 
 
@@ -1219,10 +1226,25 @@ void QgsStyleV2ManagerDialog::symbolSelected( const QModelIndex& index )
 {
   // Populate the tags for the symbol
   tagsLineEdit->clear();
-  QStandardItem *item = static_cast<QStandardItemModel*>( listItems->model() )->itemFromIndex( index );
-  QgsStyleV2::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyleV2::SymbolEntity : QgsStyleV2::ColorrampEntity;
-  mTagList = mStyle->tagsOfSymbol( type, item->data().toString() );
-  tagsLineEdit->setText( mTagList.join( "," ) );
+  if ( index.isValid() )
+  {
+    QStandardItem *item = static_cast<QStandardItemModel*>( listItems->model() )->itemFromIndex( index );
+    QgsStyleV2::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyleV2::SymbolEntity : QgsStyleV2::ColorrampEntity;
+    mTagList = mStyle->tagsOfSymbol( type, item->data().toString() );
+    tagsLineEdit->setText( mTagList.join( "," ) );
+  }
+}
+
+void QgsStyleV2ManagerDialog::selectedSymbolsChanged( const QItemSelection& selected, const QItemSelection& deselected )
+{
+  Q_UNUSED( selected );
+  Q_UNUSED( deselected );
+  bool nothingSelected = listItems->selectionModel()->selectedIndexes().empty();
+  btnRemoveItem->setDisabled( nothingSelected );
+  mGroupListMenu->setDisabled( nothingSelected );
+  actnUngroup->setDisabled( nothingSelected );
+  btnShare->menu()->actions().at( 0 )->setDisabled( nothingSelected );
+  btnShare->menu()->actions().at( 1 )->setDisabled( nothingSelected );
 }
 
 void QgsStyleV2ManagerDialog::enableSymbolInputs( bool enable )

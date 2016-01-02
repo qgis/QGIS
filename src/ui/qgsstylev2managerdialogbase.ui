@@ -420,6 +420,17 @@ QMenu::item:selected {  background-color: gray; } */
     </widget>
    </item>
   </layout>
+  <action name="actnUngroup">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Ungroup</string>
+   </property>
+   <property name="toolTip">
+    <string>Ungroup</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

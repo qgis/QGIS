@@ -55,6 +55,9 @@ class QgsStyleV2ManagerDialog : QDialog
     //! Perform symbol specific tasks when selected
     void symbolSelected( const QModelIndex& );
 
+    //! Perform tasks when the selected symbols change
+    void selectedSymbolsChanged( const QItemSelection& selected, const QItemSelection& deselected );
+
     //! Context menu for the groupTree
     void grouptreeContextMenu( const QPoint& );
 

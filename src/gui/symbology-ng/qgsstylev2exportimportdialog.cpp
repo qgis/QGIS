@@ -51,6 +51,8 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
   QStandardItemModel* model = new QStandardItemModel( listItems );
 
   listItems->setModel( model );
+  connect( listItems->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ),
+           this, SLOT( selectionChanged( const QItemSelection&, const QItemSelection& ) ) );
 
   mTempStyle = new QgsStyleV2();
   // TODO validate
@@ -109,6 +111,7 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
   // use Ok button for starting import and export operations
   disconnect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( doExportImport() ) );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
 
 void QgsStyleV2ExportImportDialog::doExportImport()
@@ -593,4 +596,12 @@ void QgsStyleV2ExportImportDialog::downloadCanceled()
   mNetReply->abort();
   mTempFile->remove();
   mFileName = "";
+}
+
+void QgsStyleV2ExportImportDialog::selectionChanged( const QItemSelection & selected, const QItemSelection & deselected )
+{
+  Q_UNUSED( selected );
+  Q_UNUSED( deselected );
+  bool nothingSelected = listItems->selectionModel()->selectedIndexes().empty();
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( nothingSelected );
 }
