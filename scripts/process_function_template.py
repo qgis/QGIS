@@ -120,5 +120,5 @@ for f in sorted(glob.glob('resources/function_help/text/*')):
         cpp.write("\n\n  gFunctionHelpTexts.insert( \"{0}\",\n    Help( tr( \"{0}\" ), tr( \"group\" ), tr( \"{1}\" ), QList<HelpVariant>() ) );\n".format(
             n, content.read().replace("\\", "&#92;").replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')))
 
-cpp.write("\n}")
+cpp.write("\n}\n")
 cpp.close()

@@ -140,7 +140,7 @@ bool CustomLayerOrderModel::setData( const QModelIndex& index, const QVariant& v
     QgsLayerTreeLayer* nodeLayer = mBridge->rootGroup()->findLayer( id );
     if ( nodeLayer )
     {
-      nodeLayer->setVisible(( Qt::CheckState )value.toInt() );
+      nodeLayer->setVisible( static_cast< Qt::CheckState >( value.toInt() ) );
       return true;
     }
   }

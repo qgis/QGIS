@@ -415,7 +415,7 @@ public:
 
     bool toBool(const std::string& str) {
         char* p;
-        return (bool)strtol(str.c_str(), &p, 10);
+        return static_cast<bool>( strtol(str.c_str(), &p, 10) );
     }
 
     std::string getStringValue(int code, const std::string& def) {

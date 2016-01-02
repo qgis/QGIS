@@ -32,7 +32,7 @@
 #include <strings.h>
 #endif
 
-#if _MSC_VER > 1000
+#if defined(_MSC_VER)&& _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
@@ -607,7 +607,7 @@ public:
      * @param value The bool value.
      */
     virtual void dxfBool(int gc, bool value) const {
-        dxfInt(gc, (int)value);
+        dxfInt(gc, static_cast<int>(value));
     }
 
     /**

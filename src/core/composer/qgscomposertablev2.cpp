@@ -109,20 +109,20 @@ QgsComposerTableV2::~QgsComposerTableV2()
 bool QgsComposerTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
   elem.setAttribute( "cellMargin", QString::number( mCellMargin ) );
-  elem.setAttribute( "emptyTableMode", QString::number(( int )mEmptyTableMode ) );
+  elem.setAttribute( "emptyTableMode", QString::number( static_cast< int >( mEmptyTableMode ) ) );
   elem.setAttribute( "emptyTableMessage", mEmptyTableMessage );
   elem.setAttribute( "showEmptyRows", mShowEmptyRows );
   elem.appendChild( QgsFontUtils::toXmlElement( mHeaderFont, doc, "headerFontProperties" ) );
   elem.setAttribute( "headerFontColor", QgsSymbolLayerV2Utils::encodeColor( mHeaderFontColor ) );
-  elem.setAttribute( "headerHAlignment", QString::number(( int )mHeaderHAlignment ) );
-  elem.setAttribute( "headerMode", QString::number(( int )mHeaderMode ) );
+  elem.setAttribute( "headerHAlignment", QString::number( static_cast< int >( mHeaderHAlignment ) ) );
+  elem.setAttribute( "headerMode", QString::number( static_cast< int >( mHeaderMode ) ) );
   elem.appendChild( QgsFontUtils::toXmlElement( mContentFont, doc, "contentFontProperties" ) );
   elem.setAttribute( "contentFontColor", QgsSymbolLayerV2Utils::encodeColor( mContentFontColor ) );
   elem.setAttribute( "gridStrokeWidth", QString::number( mGridStrokeWidth ) );
   elem.setAttribute( "gridColor", QgsSymbolLayerV2Utils::encodeColor( mGridColor ) );
   elem.setAttribute( "showGrid", mShowGrid );
   elem.setAttribute( "backgroundColor", QgsSymbolLayerV2Utils::encodeColor( mBackgroundColor ) );
-  elem.setAttribute( "wrapBehaviour", QString::number(( int )mWrapBehaviour ) );
+  elem.setAttribute( "wrapBehaviour", QString::number( static_cast< int >( mWrapBehaviour ) ) );
 
   //columns
   QDomElement displayColumnsElem = doc.createElement( "displayColumns" );
@@ -435,7 +435,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
 
       currentX += mCellMargin;
 
-      Qt::TextFlag textFlag = ( Qt::TextFlag )0;
+      Qt::TextFlag textFlag = static_cast< Qt::TextFlag >( 0 );
       if (( *columnIt )->width() <= 0 )
       {
         //automatic column width, so we use the Qt::TextDontClip flag when drawing contents, as this works nicer for italicised text
@@ -506,7 +506,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
         QVariant cellContents = mTableContents.at( row ).at( col );
         QString str = cellContents.toString();
 
-        Qt::TextFlag textFlag = ( Qt::TextFlag )0;
+        Qt::TextFlag textFlag = static_cast< Qt::TextFlag >( 0 );
         if (( *columnIt )->width() <= 0 && mWrapBehaviour == TruncateText )
         {
           //automatic column width, so we use the Qt::TextDontClip flag when drawing contents, as this works nicer for italicised text
@@ -587,7 +587,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
     double messageX = gridSize + mCellMargin;
     double messageY = gridSize + ( drawHeader ? cellHeaderHeight + gridSize : 0 );
     cell = QRectF( messageX, messageY, mTableSize.width() - messageX, cellBodyHeight );
-    QgsComposerUtils::drawText( p, cell, mEmptyTableMessage, mContentFont, mContentFontColor, Qt::AlignHCenter, Qt::AlignVCenter, ( Qt::TextFlag )0 );
+    QgsComposerUtils::drawText( p, cell, mEmptyTableMessage, mContentFont, mContentFontColor, Qt::AlignHCenter, Qt::AlignVCenter, static_cast< Qt::TextFlag >( 0 ) );
   }
 
   p->restore();
@@ -596,7 +596,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
 
 void QgsComposerTableV2::setCellMargin( const double margin )
 {
-  if ( margin == mCellMargin )
+  if ( qgsDoubleNear( margin, mCellMargin ) )
   {
     return;
   }
@@ -747,7 +747,7 @@ void QgsComposerTableV2::setShowGrid( const bool showGrid )
 
 void QgsComposerTableV2::setGridStrokeWidth( const double width )
 {
-  if ( width == mGridStrokeWidth )
+  if ( qgsDoubleNear( width, mGridStrokeWidth ) )
   {
     return;
   }
@@ -1163,7 +1163,7 @@ void QgsComposerTableV2::drawVerticalGridLines( QPainter *painter, const QMap<in
 
 bool QgsComposerTableV2::textRequiresWrapping( const QString& text, double columnWidth, const QFont &font ) const
 {
-  if ( columnWidth == 0 || mWrapBehaviour != WrapText )
+  if ( qgsDoubleNear( columnWidth, 0.0 ) || mWrapBehaviour != WrapText )
     return false;
 
   QStringList multiLineSplit = text.split( '\n' );

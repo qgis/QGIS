@@ -38,7 +38,7 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
   mParserSettings.invertAxisOrientation = uri.hasParam( "InvertAxisOrientation" ); // must be before parsing!
   mSmoothPixmapTransform = uri.hasParam( "SmoothPixmapTransform" );
 
-  mDpiMode = uri.hasParam( "dpiMode" ) ? ( QgsWmsDpiMode ) uri.param( "dpiMode" ).toInt() : dpiAll;
+  mDpiMode = uri.hasParam( "dpiMode" ) ? static_cast< QgsWmsDpiMode >( uri.param( "dpiMode" ).toInt() ) : dpiAll;
 
   mAuth.mUserName = uri.param( "username" );
   QgsDebugMsg( "set username to " + mAuth.mUserName );

@@ -409,7 +409,7 @@ void QgsSnappingUtils::readConfigFromProject()
   else if ( snapType == "to vertex" )
     type = QgsPointLocator::Vertex;
   double tolerance = QgsProject::instance()->readDoubleEntry( "Digitizing", "/DefaultSnapTolerance", 0 );
-  QgsTolerance::UnitType unit = ( QgsTolerance::UnitType ) QgsProject::instance()->readNumEntry( "Digitizing", "/DefaultSnapToleranceUnit", QgsTolerance::ProjectUnits );
+  QgsTolerance::UnitType unit = static_cast< QgsTolerance::UnitType >( QgsProject::instance()->readNumEntry( "Digitizing", "/DefaultSnapToleranceUnit", QgsTolerance::ProjectUnits ) );
   setDefaultSettings( type, tolerance, unit );
 
   //snapping on intersection on?
@@ -464,7 +464,7 @@ void QgsSnappingUtils::readConfigFromProject()
                                 QgsPointLocator::Vertex | QgsPointLocator::Edge
                               )
                             );
-    mLayers.append( LayerConfig( vlayer, t, tolIt->toDouble(), ( QgsTolerance::UnitType ) tolUnitIt->toInt() ) );
+    mLayers.append( LayerConfig( vlayer, t, tolIt->toDouble(), static_cast< QgsTolerance::UnitType >( tolUnitIt->toInt() ) ) );
   }
 
 }
