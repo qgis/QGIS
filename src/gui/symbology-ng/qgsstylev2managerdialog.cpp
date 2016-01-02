@@ -950,32 +950,41 @@ void QgsStyleV2ManagerDialog::addGroup()
   }
 
   QString itemName;
-  QVariant itemData;
   bool isGroup = true;
 
-  // create a smart group if that is selected
-  if ( parentIndex.data( Qt::UserRole + 1 ).toString() == "smartgroups" )
+  int id;
+  if ( parentData == "smartgroups" )
   {
+    // create a smart group
+
     QgsSmartGroupEditorDialog dlg( mStyle, this );
     if ( dlg.exec() == QDialog::Rejected )
       return;
-    int id = mStyle->addSmartgroup( dlg.smartgroupName(), dlg.conditionOperator(), dlg.conditionMap() );
+    id = mStyle->addSmartgroup( dlg.smartgroupName(), dlg.conditionOperator(), dlg.conditionMap() );
     if ( !id )
       return;
-    itemData = QVariant( id );
     itemName = dlg.smartgroupName();
     isGroup = false;
   }
   else
   {
+    // create a simple child-group to the selected
+
     itemName = QString( tr( "New Group" ) );
-    itemData = QVariant( "newgroup" );
+    int parentid = ( parentData == "groups" ) ? 0 : parentData.toInt(); // parentid is 0 for top-level groups
+    id = mStyle->addGroup( itemName, parentid );
+    if ( !id )
+    {
+      QMessageBox::critical( this, tr( "Error!" ),
+                             tr( "New group could not be created.\n"
+                                 "There was a problem with your symbol database." ) );
+      return;
+    }
   }
 
-  // Else create a simple child-group to the selected
   QStandardItem *parentItem = model->itemFromIndex( parentIndex );
   QStandardItem *childItem = new QStandardItem( itemName );
-  childItem->setData( itemData );
+  childItem->setData( id );
   parentItem->appendRow( childItem );
 
   groupTree->setCurrentIndex( childItem->index() );
@@ -1026,43 +1035,15 @@ void QgsStyleV2ManagerDialog::groupRenamed( QStandardItem * item )
 {
   QString data = item->data( Qt::UserRole + 1 ).toString();
   QgsDebugMsg( "Symbol group edited: data=" + data + " text=" + item->text() );
-  if ( data == "newgroup" )
+  int id = item->data( Qt::UserRole + 1 ).toInt();
+  QString name = item->text();
+  if ( item->parent()->data( Qt::UserRole + 1 ) == "smartgroups" )
   {
-    int id;
-    if ( item->parent()->data( Qt::UserRole + 1 ).toString() == "groups" )
-    {
-      id = mStyle->addGroup( item->text() );
-    }
-    else
-    {
-      int parentid = item->parent()->data( Qt::UserRole + 1 ).toInt();
-      id = mStyle->addGroup( item->text(), parentid );
-    }
-    if ( !id )
-    {
-      QMessageBox::critical( this, tr( "Error!" ),
-                             tr( "New group could not be created.\n"
-                                 "There was a problem with your symbol database." ) );
-      item->parent()->removeRow( item->row() );
-      return;
-    }
-    else
-    {
-      item->setData( id );
-    }
+    mStyle->rename( QgsStyleV2::SmartgroupEntity, id, name );
   }
   else
   {
-    int id = item->data( Qt::UserRole + 1 ).toInt();
-    QString name = item->text();
-    if ( item->parent()->data( Qt::UserRole + 1 ) == "smartgroups" )
-    {
-      mStyle->rename( QgsStyleV2::SmartgroupEntity, id, name );
-    }
-    else
-    {
-      mStyle->rename( QgsStyleV2::GroupEntity, id, name );
-    }
+    mStyle->rename( QgsStyleV2::GroupEntity, id, name );
   }
 }
 
