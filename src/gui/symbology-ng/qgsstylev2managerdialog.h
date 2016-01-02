@@ -146,6 +146,15 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
 
     //! space to store symbol tags
     QStringList mTagList;
+
+    //! Context menu for the symbols/colorramps
+    QMenu *mGroupMenu;
+
+    //! Sub-menu of @c mGroupMenu, dynamically filled to show one entry for every group
+    QMenu *mGroupListMenu;
+
+    //! Menu for the "Add item" toolbutton when in colorramp mode
+    QMenu* mMenuBtnAddItemColorRamp;
 };
 
 #endif

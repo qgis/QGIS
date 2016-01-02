@@ -49,6 +49,8 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
 #endif
 
   QSettings settings;
+  QAction* a; // used as a temporary variable before passing ownership of a created action.
+
   restoreGeometry( settings.value( "/Windows/StyleV2Manager/geometry" ).toByteArray() );
   mSplitter->setSizes( QList<int>() << 170 << 540 );
   mSplitter->restoreState( settings.value( "/Windows/StyleV2Manager/splitter" ).toByteArray() );
@@ -67,8 +69,10 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   QMenu *shareMenu = new QMenu( tr( "Share menu" ), this );
   QAction *exportAsPNGAction = shareMenu->addAction( tr( "Export selected symbols as PNG" ) );
   QAction *exportAsSVGAction = shareMenu->addAction( tr( "Export selected symbols as SVG" ) );
-  QAction *exportAction = shareMenu->addAction( tr( "Export..." ) );
-  QAction *importAction = shareMenu->addAction( tr( "Import..." ) );
+  QAction *exportAction = new QAction( tr( "Export..." ), this );
+  shareMenu->addAction( exportAction );
+  QAction *importAction = new QAction( tr( "Import..." ), this );
+  shareMenu->addAction( importAction );
   exportAsPNGAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
   exportAsSVGAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
   exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
@@ -126,6 +130,24 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( listItems, SIGNAL( customContextMenuRequested( const QPoint& ) ),
            this, SLOT( listitemsContextMenu( const QPoint& ) ) );
 
+  // Menu for the "Add item" toolbutton when in colorramp mode
+  QStringList rampTypes;
+  rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" );
+  rampTypes << tr( "cpt-city" ); // todo, only for rasters?
+  mMenuBtnAddItemColorRamp = new QMenu( this );
+  Q_FOREACH ( const QString& rampType, rampTypes )
+    mMenuBtnAddItemColorRamp->addAction( new QAction( rampType, this ) );
+  connect( mMenuBtnAddItemColorRamp, SIGNAL( triggered( QAction* ) ),
+           this, SLOT( addColorRamp( QAction* ) ) );
+
+  // Context menu for symbols/colorramps. The menu entries for every group are created when displaying the menu.
+  mGroupMenu = new QMenu( this );
+  mGroupListMenu = new QMenu( mGroupMenu );
+  mGroupListMenu->setTitle( tr( "Apply Group" ) );
+  mGroupMenu->addMenu( mGroupListMenu );
+  a = new QAction( tr( "Un-group" ), mGroupMenu );
+  a->setData( 0 );
+  mGroupMenu->addAction( a );
 }
 
 void QgsStyleV2ManagerDialog::onFinished()
@@ -183,36 +205,11 @@ void QgsStyleV2ManagerDialog::populateTypes()
 
 void QgsStyleV2ManagerDialog::on_tabItemType_currentChanged( int )
 {
-  // when in Color Ramp tab, add menu to add item button
-  if ( currentItemType() == 3 )
-  {
-    btnShare->menu()->actions().at( 0 )->setVisible( false );
-    btnShare->menu()->actions().at( 1 )->setVisible( false );
-
-    QStringList rampTypes;
-    rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" );
-    rampTypes << tr( "cpt-city" ); // todo, only for rasters?
-    QMenu* menu = new QMenu( btnAddItem );
-    Q_FOREACH ( const QString& rampType, rampTypes )
-    {
-      menu->addAction( rampType );
-    }
-    btnAddItem->setMenu( menu );
-    connect( menu, SIGNAL( triggered( QAction* ) ),
-             this, SLOT( addColorRamp( QAction* ) ) );
-  }
-  else
-  {
-    btnShare->menu()->actions().at( 0 )->setVisible( true );
-    btnShare->menu()->actions().at( 1 )->setVisible( true );
-
-    if ( btnAddItem->menu() )
-    {
-      disconnect( btnAddItem->menu(), SIGNAL( triggered( QAction* ) ),
-                  this, SLOT( addColorRamp( QAction* ) ) );
-      btnAddItem->setMenu( nullptr );
-    }
-  }
+  // when in Color Ramp tab, add menu to add item button and hide "Export symbols as PNG/SVG"
+  bool flag = currentItemType() != 3;
+  btnAddItem->setMenu( flag ? nullptr : mMenuBtnAddItemColorRamp );
+  btnShare->menu()->actions().at( 0 )->setVisible( flag );
+  btnShare->menu()->actions().at( 1 )->setVisible( flag );
 
   // set icon and grid size, depending on type
   if ( currentItemType() == 1 || currentItemType() == 3 )
@@ -1327,19 +1324,16 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
 {
   QPoint globalPos = listItems->viewport()->mapToGlobal( point );
 
-  QMenu *groupMenu = new QMenu( this );
-  QMenu *groupList = new QMenu( this );
-  groupList->setTitle( tr( "Apply Group" ) );
+  // Clear all actions and create new actions for every group
+  mGroupListMenu->clear();
 
   QStringList groups = mStyle->groupNames();
   Q_FOREACH ( const QString& group, groups )
   {
-    groupList->addAction( group );
+    mGroupListMenu->addAction( new QAction( group, mGroupListMenu ) );
   }
-  groupMenu->addMenu( groupList );
-  groupMenu->addAction( tr( "Un-group" ) );
 
-  QAction* selectedItem = groupMenu->exec( globalPos );
+  QAction* selectedItem = mGroupMenu->exec( globalPos );
 
   if ( selectedItem )
   {
