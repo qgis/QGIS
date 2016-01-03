@@ -42,8 +42,6 @@ namespace pal
   class Layer;
   class FeaturePart;
 
-  QLinkedList<const GEOSGeometry*> * unmulti( const GEOSGeometry* the_geom );
-
   /**
    * \brief For usage in problem solving algorithm
    * \note not available in Python bindings
@@ -78,13 +76,20 @@ namespace pal
 
 #define EPSILON 1e-9
 
-  /**
-   * \brief Sort an array of pointers
-   * \param items arays of pointers to sort
-   * \param N number of items
-   * \param greater function to compare two items
-   **/
-  void sort( void** items, int N, bool ( *greater )( void *l, void *r ) );
+  class Util
+  {
+    public:
+      /**
+       * \brief Sort an array of pointers
+       * \param items arays of pointers to sort
+       * \param N number of items
+       * \param greater function to compare two items
+       **/
+      static void sort( void** items, int N, bool ( *greater )( void *l, void *r ) );
+
+      static QLinkedList<const GEOSGeometry*>* unmulti( const GEOSGeometry* the_geom );
+  };
+
 
 } // namespace
 

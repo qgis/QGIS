@@ -17,10 +17,8 @@
 #ifndef RTREE_H
 #define RTREE_H
 
-#include <cstdio>
 #include <cmath>
 #include <cassert>
-#include <cstdlib>
 #include <QtGlobal>
 
 #define ASSERT assert // RTree uses ASSERT( condition )
