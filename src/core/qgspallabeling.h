@@ -73,22 +73,36 @@ class CORE_EXPORT QgsPalLayerSettings
     //! @note added in 2.4
     static QgsPalLayerSettings fromLayer( QgsVectorLayer* layer );
 
+
+    /** Placement modes which determine how label candidates are generated for a feature.
+     */
+    //TODO QGIS 3.0 - move to QgsLabelingEngineV2
     enum Placement
     {
-      AroundPoint, // Point / Polygon
-      OverPoint, // Point / Polygon
-      Line, // Line / Polygon
-      Curved, // Line
-      Horizontal, // Polygon
-      Free // Polygon
+      AroundPoint, /**< Arranges candidates in a circle around a point (or centroid of a polygon). Applies to point or polygon layers only.*/
+      OverPoint, /**  Arranges candidates over a point (or centroid of a polygon), or at a preset offset from the point. Applies to point or polygon layers only.*/
+      Line, /**< Arranges candidates parallel to a generalised line representing the feature or parallel to a polygon's perimeter. Applies to line or polygon layers only. */
+      Curved, /** Arranges candidates following the curvature of a line feature. Applies to line layers only.*/
+      Horizontal, /**< Arranges horizontal candidates scattered throughout a polygon feature. Applies to polygon layers only.*/
+      Free /**< Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only.*/
     };
 
+    /** Line placement flags, which control how candidates are generated for a linear feature.
+     */
+    //TODO QGIS 3.0 - move to QgsLabelingEngineV2, rename to LinePlacementFlag, use Q_DECLARE_FLAGS to make
+    //LinePlacementFlags type, and replace use of pal::LineArrangementFlag
     enum LinePlacementFlags
     {
-      OnLine    = 1,
-      AboveLine = 2,
-      BelowLine = 4,
-      MapOrientation = 8
+      OnLine    = 1, /**< Labels can be placed directly over a line feature.*/
+      AboveLine = 2, /**< Labels can be placed above a line feature. Unless MapOrientation is also specified this mode
+                            respects the direction of the line feature, so a line from right to left labels will have labels
+                            placed placed below the line feature. */
+      BelowLine = 4, /**< Labels can be placed below a line feature. Unless MapOrientation is also specified this mode
+                            respects the direction of the line feature, so a line from right to left labels will have labels
+                            placed placed above the line feature. */
+      MapOrientation = 8, /**< Signifies that the AboveLine and BelowLine flags should respect the map's orientation rather
+                            than the feature's orientation. Eg, AboveLine will always result in label's being placed
+                            above a line, regardless of the line's direction. */
     };
 
     enum QuadrantPosition
@@ -130,6 +144,7 @@ class CORE_EXPORT QgsPalLayerSettings
     /** Valid obstacle types, which affect how features within the layer will act as obstacles
      * for labels.
      */
+    //TODO QGIS 3.0 - Move to QgsLabelingEngineV2
     enum ObstacleType
     {
       PolygonInterior, /*!< avoid placing labels over interior of polygon (prefer placing labels totally
