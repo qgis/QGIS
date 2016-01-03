@@ -17,9 +17,17 @@ email                : hugo dot mercier at oslandia dot com
 
 #include "qgsvirtuallayerblob.h"
 #include <string.h>
+#include <limits>
 
-SpatialiteBlobHeader::SpatialiteBlobHeader() :
-    start( 0x00 ), endianness( 0x01 ), end( 0x7C )
+SpatialiteBlobHeader::SpatialiteBlobHeader()
+    : start( 0x00 )
+    , endianness( 0x01 )
+    , srid( -1 )
+    , mbrMinX( -DBL_MAX )
+    , mbrMinY( -DBL_MAX )
+    , mbrMaxX( DBL_MAX )
+    , mbrMaxY( DBL_MAX )
+    , end( 0x7C )
 {}
 
 void SpatialiteBlobHeader::readFrom( const char* p )
@@ -130,7 +138,7 @@ void copySpatialiteSingleWkbToQgsGeometry( QgsWKBTypes::Type type, const char* i
       break;
     case QgsWKBTypes::LineString:
     {
-      uint32_t n_points = *( uint32_t* )iwkb;
+      uint32_t n_points = *( reinterpret_cast<const uint32_t*>( iwkb ) );
       memcpy( owkb, iwkb, 4 );
       iwkb += 4;
       owkb += 4;
@@ -145,14 +153,14 @@ void copySpatialiteSingleWkbToQgsGeometry( QgsWKBTypes::Type type, const char* i
     }
     case QgsWKBTypes::Polygon:
     {
-      uint32_t n_rings = *( uint32_t* )iwkb;
+      uint32_t n_rings = *( reinterpret_cast<const uint32_t*>( iwkb ) );
       memcpy( owkb, iwkb, 4 );
       iwkb += 4;
       owkb += 4;
       osize = 4;
       for ( uint32_t i = 0; i < n_rings; i++ )
       {
-        uint32_t n_points = *( uint32_t* )iwkb;
+        uint32_t n_points = *( reinterpret_cast<const uint32_t*>( iwkb ) );
         memcpy( owkb, iwkb, 4 );
         iwkb += 4;
         owkb += 4;
@@ -185,12 +193,12 @@ void copySpatialiteCollectionWkbToQgsGeometry( const char* iwkb, char* owkb, uin
   // replace 0x69 by the endianness
   owkb[0] = endianness;
 
-  QgsWKBTypes::Type type = static_cast<QgsWKBTypes::Type>( *( uint32_t* )( iwkb + 1 ) );
+  QgsWKBTypes::Type type = static_cast<QgsWKBTypes::Type>( *( reinterpret_cast<const uint32_t*>( iwkb + 1 ) ) );
 
   if ( QgsWKBTypes::isMultiType( type ) )
   {
     // multi type
-    uint32_t n_elements = *( uint32_t* )( iwkb + 5 );
+    uint32_t n_elements = *( reinterpret_cast<const  uint32_t* >( iwkb + 5 ) );
     memcpy( owkb + 5, iwkb + 5, 4 );
     uint32_t p = 0;
     for ( uint32_t i = 0; i < n_elements; i++ )
@@ -212,14 +220,14 @@ void copySpatialiteCollectionWkbToQgsGeometry( const char* iwkb, char* owkb, uin
 QgsGeometry spatialiteBlobToQgsGeometry( const char* blob, size_t size )
 {
   const int header_size = SpatialiteBlobHeader::length;
-  const int wkb_size = ( const int )( size - header_size );
+  const int wkb_size = static_cast< const int >( size - header_size );
   char* wkb = new char[wkb_size];
 
   uint32_t osize = 0;
   copySpatialiteCollectionWkbToQgsGeometry( blob + header_size - 1, wkb, osize, /*endianness*/blob[1] );
 
   QgsGeometry geom;
-  geom.fromWkb(( unsigned char* )wkb, wkb_size );
+  geom.fromWkb( reinterpret_cast< unsigned char* >( wkb ), wkb_size );
   return geom;
 }
 
@@ -230,8 +238,8 @@ QPair<QgsWKBTypes::Type, long> spatialiteBlobGeometryType( const char* blob, siz
     return qMakePair( QgsWKBTypes::NoGeometry, long( 0 ) );
   }
 
-  uint32_t srid = *( uint32_t* )( blob + 2 );
-  uint32_t type = *( uint32_t* )( blob + SpatialiteBlobHeader::length );
+  uint32_t srid = *( reinterpret_cast< const uint32_t* >( blob + 2 ) );
+  uint32_t type = *( reinterpret_cast< const uint32_t* >( blob + SpatialiteBlobHeader::length ) );
 
   return qMakePair( static_cast<QgsWKBTypes::Type>( type ), long( srid ) );
 }
