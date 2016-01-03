@@ -116,7 +116,7 @@ namespace pal
     //finishGEOS();
   }
 
-  Layer* Pal::addLayer( QgsAbstractLabelProvider* provider, const QString& layerName, Arrangement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll )
+  Layer* Pal::addLayer( QgsAbstractLabelProvider* provider, const QString& layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll )
   {
     mMutex.lock();
 

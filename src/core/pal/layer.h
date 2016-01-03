@@ -89,13 +89,13 @@ namespace pal
       /** Returns the layer's arrangement policy.
        * @see setArrangement
        */
-      Arrangement arrangement() const { return mArrangement; }
+      QgsPalLayerSettings::Placement arrangement() const { return mArrangement; }
 
       /** Sets the layer's arrangement policy.
        * @param arrangement arrangement policy
        * @see arrangement
        */
-      void setArrangement( Arrangement arrangement ) { mArrangement = arrangement; }
+      void setArrangement( QgsPalLayerSettings::Placement arrangement ) { mArrangement = arrangement; }
 
       /** Returns the layer's arrangement flags.
        * @see setArrangementFlags
@@ -142,14 +142,14 @@ namespace pal
        * act as obstacles for labels.
        * @see setObstacleType
        */
-      ObstacleType obstacleType() const { return mObstacleType; }
+      QgsPalLayerSettings::ObstacleType obstacleType() const { return mObstacleType; }
 
       /** Sets the obstacle type, which controls how features within the layer
        * act as obstacles for labels.
        * @param obstacleType new obstacle type
        * @see obstacleType
        */
-      void setObstacleType( ObstacleType obstacleType ) { mObstacleType = obstacleType; }
+      void setObstacleType( QgsPalLayerSettings::ObstacleType obstacleType ) { mObstacleType = obstacleType; }
 
       /** Sets the layer's priority.
        * @param priority layer priority, between 0 and 1. 0 corresponds to highest priority,
@@ -262,7 +262,7 @@ namespace pal
 
       double mDefaultPriority;
 
-      ObstacleType mObstacleType;
+      QgsPalLayerSettings::ObstacleType mObstacleType;
       bool mActive;
       bool mLabelLayer;
       bool mDisplayAll;
@@ -270,7 +270,7 @@ namespace pal
       bool mFitInPolygon;
 
       /** Optional flags used for some placement methods */
-      Arrangement mArrangement;
+      QgsPalLayerSettings::Placement mArrangement;
       LineArrangementFlags mArrangementFlags;
       LabelMode mMode;
       bool mMergeLines;
@@ -304,7 +304,7 @@ namespace pal
        * @param displayAll if true, all features will be labelled even though overlaps occur
        *
        */
-      Layer( QgsAbstractLabelProvider* provider, const QString& name, Arrangement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
+      Layer( QgsAbstractLabelProvider* provider, const QString& name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
       /** Add newly created feature part into r tree and to the list */
       void addFeaturePart( FeaturePart* fpart, const QString &labelText = QString() );
