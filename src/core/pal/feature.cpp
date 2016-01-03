@@ -267,7 +267,7 @@ namespace pal
       }
     }
 
-    if ( mLF->layer()->arrangement() == P_POINT )
+    if ( mLF->layer()->arrangement() == QgsPalLayerSettings::AroundPoint )
     {
       //if in "around point" placement mode, then we use the label distance to determine
       //the label's offset
@@ -604,7 +604,7 @@ namespace pal
 #ifdef _DEBUG_FULL_
       std::cout << "  Create new label" << std::endl;
 #endif
-      if ( mLF->layer()->arrangement() == P_LINE )
+      if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Line )
       {
         // find out whether the line direction for this candidate is from right to left
         bool isRightToLeft = ( alpha > M_PI / 2 || alpha <= -M_PI / 2 );
@@ -630,7 +630,7 @@ namespace pal
             positions.append( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
         }
       }
-      else if ( mLF->layer()->arrangement() == P_HORIZ )
+      else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Horizontal )
       {
         positions.append( new LabelPosition( i, bx - xrm / 2, by - yrm / 2, xrm, yrm, 0, cost, this ) ); // Line
       }
@@ -1087,7 +1087,7 @@ namespace pal
             continue;
           }
 
-          if ( mLF->layer()->arrangement() == P_HORIZ && mLF->layer()->fitInPolygonOnly() )
+          if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Horizontal && mLF->layer()->fitInPolygonOnly() )
           {
             //check width/height of bbox is sufficient for label
             if ( box->length < labelWidth || box->width < labelHeight )
@@ -1106,7 +1106,7 @@ namespace pal
 #endif
 
           bool enoughPlace = false;
-          if ( mLF->layer()->arrangement() == P_FREE )
+          if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Free )
           {
             enoughPlace = true;
             px = ( box->x[0] + box->x[2] ) / 2 - labelWidth;
@@ -1134,7 +1134,7 @@ namespace pal
 
           } // arrangement== FREE ?
 
-          if ( mLF->layer()->arrangement() == P_HORIZ || enoughPlace )
+          if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Horizontal || enoughPlace )
           {
             alpha = 0.0; // HORIZ
           }
@@ -1280,13 +1280,13 @@ namespace pal
       switch ( type )
       {
         case GEOS_POINT:
-          if ( mLF->layer()->arrangement() == P_POINT_OVER || mLF->hasFixedQuadrant() )
+          if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OverPoint || mLF->hasFixedQuadrant() )
             setPositionOverPoint( x[0], y[0], lPos, angle );
           else
             setPositionForPoint( x[0], y[0], lPos, angle );
           break;
         case GEOS_LINESTRING:
-          if ( mLF->layer()->arrangement() == P_CURVED )
+          if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Curved )
             setPositionForLineCurved( lPos, mapShape );
           else
             setPositionForLine( lPos, mapShape );
@@ -1295,16 +1295,16 @@ namespace pal
         case GEOS_POLYGON:
           switch ( mLF->layer()->arrangement() )
           {
-            case P_POINT:
-            case P_POINT_OVER:
+            case QgsPalLayerSettings::AroundPoint:
+            case QgsPalLayerSettings::OverPoint:
               double cx, cy;
               mapShape->getCentroid( cx, cy, mLF->layer()->centroidInside() );
-              if ( mLF->layer()->arrangement() == P_POINT_OVER )
+              if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OverPoint )
                 setPositionOverPoint( cx, cy, lPos, angle, mapShape );
               else
                 setPositionForPoint( cx, cy, lPos, angle, mapShape );
               break;
-            case P_LINE:
+            case QgsPalLayerSettings::Line:
               setPositionForLine( lPos, mapShape );
               break;
             default:

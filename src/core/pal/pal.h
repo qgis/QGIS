@@ -31,6 +31,7 @@
 #define PAL_H
 
 #include "qgsgeometry.h"
+#include "qgspallabeling.h"
 #include <QList>
 #include <iostream>
 #include <ctime>
@@ -62,20 +63,6 @@ namespace pal
     FALP = 4 /** only initial solution */
   };
 
-  /** The way to arrange labels against spatial entities
-   *
-   * image html arrangement.png "Arrangement modes" width=7cm
-   * */
-  enum Arrangement
-  {
-    P_POINT = 0, /**< arranges candidates around a point (centroid for polygon)*/
-    P_POINT_OVER, /** arranges candidates over a point (centroid for polygon)*/
-    P_LINE, /**< Only for lines and polygons, arranges candidates over the line or the polygon perimeter */
-    P_CURVED, /** Only for lines, labels along the line */
-    P_HORIZ, /**< Only for polygon, arranges candidates horizontaly */
-    P_FREE /**< Only for polygon, arranges candidates with respect of polygon orientation */
-  };
-
   /** Enumeration line arrangement flags. Flags can be combined. */
   enum LineArrangementFlag
   {
@@ -85,13 +72,6 @@ namespace pal
     FLAG_MAP_ORIENTATION = 8
   };
   Q_DECLARE_FLAGS( LineArrangementFlags, LineArrangementFlag )
-
-  enum ObstacleType
-  {
-    PolygonInterior,
-    PolygonBoundary,
-    PolygonWhole
-  };
 
   /**
    *  \brief Main Pal labelling class
@@ -134,7 +114,7 @@ namespace pal
        *
        * @todo add symbolUnit
        */
-      Layer* addLayer( QgsAbstractLabelProvider* provider, const QString& layerName, Arrangement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll = false );
+      Layer* addLayer( QgsAbstractLabelProvider* provider, const QString& layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll = false );
 
       /**
        * \brief remove a layer

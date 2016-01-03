@@ -69,15 +69,15 @@ namespace pal
         // behaviour depends on obstacle avoid type
         switch ( obstacle->layer()->obstacleType() )
         {
-          case PolygonInterior:
+          case QgsPalLayerSettings::PolygonInterior:
             // n ranges from 0 -> 12
             n = lp->polygonIntersectionCost( obstacle );
             break;
-          case PolygonBoundary:
+          case QgsPalLayerSettings::PolygonBoundary:
             // penalty may need tweaking, given that interior mode ranges up to 12
             n = ( lp->crossesBoundary( obstacle ) ? 6 : 0 );
             break;
-          case PolygonWhole:
+          case QgsPalLayerSettings::PolygonWhole:
             // n is either 0 or 12
             n = ( lp->intersectsWithPolygon( obstacle ) ? 12 : 0 );
             break;
@@ -232,7 +232,7 @@ namespace pal
     if ( feat->feature->getGeosType() == GEOS_POLYGON )
     {
       int arrangement = feat->feature->layer()->arrangement();
-      if ( arrangement == P_FREE || arrangement == P_HORIZ )
+      if ( arrangement == QgsPalLayerSettings::Free || arrangement == QgsPalLayerSettings::Horizontal )
         setPolygonCandidatesCost( stop, feat->lPos, obstacles, bbx, bby );
     }
 

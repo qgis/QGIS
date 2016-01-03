@@ -68,39 +68,12 @@ void QgsLabelingEngineV2::removeProvider( QgsAbstractLabelProvider* provider )
 
 void QgsLabelingEngineV2::processProvider( QgsAbstractLabelProvider* provider, QgsRenderContext& context, pal::Pal& p )
 {
-  // how to place the labels
-  pal::Arrangement arrangement;
-  switch ( provider->placement() )
-  {
-    case QgsPalLayerSettings::AroundPoint:
-      arrangement = pal::P_POINT;
-      break;
-    case QgsPalLayerSettings::OverPoint:
-      arrangement = pal::P_POINT_OVER;
-      break;
-    case QgsPalLayerSettings::Line:
-      arrangement = pal::P_LINE;
-      break;
-    case QgsPalLayerSettings::Curved:
-      arrangement = pal::P_CURVED;
-      break;
-    case QgsPalLayerSettings::Horizontal:
-      arrangement = pal::P_HORIZ;
-      break;
-    case QgsPalLayerSettings::Free:
-      arrangement = pal::P_FREE;
-      break;
-    default:
-      Q_ASSERT( "unsupported placement" && 0 );
-      return;
-  }
-
   QgsAbstractLabelProvider::Flags flags = provider->flags();
 
   // create the pal layer
   pal::Layer* l = p.addLayer( provider,
                               provider->name(),
-                              arrangement,
+                              provider->placement(),
                               provider->priority(),
                               true,
                               flags.testFlag( QgsAbstractLabelProvider::DrawLabels ),
@@ -116,18 +89,7 @@ void QgsLabelingEngineV2::processProvider( QgsAbstractLabelProvider* provider, Q
   l->setMergeConnectedLines( flags.testFlag( QgsAbstractLabelProvider::MergeConnectedLines ) );
 
   // set obstacle type
-  switch ( provider->obstacleType() )
-  {
-    case QgsPalLayerSettings::PolygonInterior:
-      l->setObstacleType( pal::PolygonInterior );
-      break;
-    case QgsPalLayerSettings::PolygonBoundary:
-      l->setObstacleType( pal::PolygonBoundary );
-      break;
-    case QgsPalLayerSettings::PolygonWhole:
-      l->setObstacleType( pal::PolygonWhole );
-      break;
-  }
+  l->setObstacleType( provider->obstacleType() );
 
   // set whether location of centroid must be inside of polygons
   l->setCentroidInside( flags.testFlag( QgsAbstractLabelProvider::CentroidMustBeInside ) );
