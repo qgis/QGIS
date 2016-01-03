@@ -1234,7 +1234,7 @@ QList<QDomElement> QgsServerProjectParser::setLegendGroupElementsWithLayerTree( 
       QgsLayerTreeNode* layerTreeNode = layerTreeGroupChildren.at( j );
       if ( layerTreeNode->nodeType() != QgsLayerTreeNode::NodeGroup )
         continue;
-      QgsLayerTreeGroup* layerTreeGroup = dynamic_cast<QgsLayerTreeGroup *>( layerTreeNode );
+      QgsLayerTreeGroup* layerTreeGroup = static_cast<QgsLayerTreeGroup *>( layerTreeNode );
       if ( layerTreeGroup->name() == legendElement.attribute( "name" ) )
       {
         g = j;

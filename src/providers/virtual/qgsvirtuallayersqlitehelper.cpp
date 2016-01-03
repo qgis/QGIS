@@ -26,7 +26,7 @@ QgsScopedSqlite::QgsScopedSqlite( const QString& path, bool withExtension )
   {
     // register a statically-linked function as extension
     // for all future database connection
-    sqlite3_auto_extension(( void( * )() )qgsvlayer_module_init );
+    sqlite3_auto_extension( reinterpret_cast < void( * )() > ( qgsvlayer_module_init ) );
   }
   int r;
   r = sqlite3_open( path.toLocal8Bit().constData(), &db_ );
@@ -47,7 +47,7 @@ QgsScopedSqlite::QgsScopedSqlite( const QString& path, bool withExtension )
 QgsScopedSqlite::QgsScopedSqlite( QgsScopedSqlite& other )
 {
   db_ = other.db_;
-  other.db_ = 0;
+  other.db_ = nullptr;
 }
 
 QgsScopedSqlite& QgsScopedSqlite::operator=( QgsScopedSqlite & other )
@@ -66,7 +66,7 @@ sqlite3* QgsScopedSqlite::get() const { return db_; }
 sqlite3* QgsScopedSqlite::release()
 {
   sqlite3* pp = db_;
-  db_ = 0;
+  db_ = nullptr;
   return pp;
 }
 
@@ -120,7 +120,7 @@ namespace Sqlite
 
   void Query::exec( sqlite3* db, const QString& sql )
   {
-    char *errMsg = 0;
+    char *errMsg = nullptr;
     int r = sqlite3_exec( db, sql.toLocal8Bit().constData(), NULL, NULL, &errMsg );
     if ( r )
     {
@@ -172,14 +172,14 @@ namespace Sqlite
   QString Query::columnText( int i ) const
   {
     int size = sqlite3_column_bytes( stmt_, i );
-    const char* str = ( const char* )sqlite3_column_text( stmt_, i );
+    const char* str = reinterpret_cast< const char* >( sqlite3_column_text( stmt_, i ) );
     return QString::fromUtf8( str, size );
   }
 
   QByteArray Query::columnBlob( int i ) const
   {
     int size = sqlite3_column_bytes( stmt_, i );
-    const char* data = ( const char* )sqlite3_column_blob( stmt_, i );
+    const char* data = reinterpret_cast< const char* >( sqlite3_column_blob( stmt_, i ) );
     // data is not copied. QByteArray is just here a augmented pointer
     return QByteArray::fromRawData( data, size );
   }

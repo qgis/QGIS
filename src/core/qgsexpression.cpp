@@ -3116,7 +3116,7 @@ void QgsExpression::detach()
 
   if ( d->ref > 1 )
   {
-    d->ref.deref();
+    ( void )d->ref.deref();
 
     d = new QgsExpressionPrivate( *d );
   }

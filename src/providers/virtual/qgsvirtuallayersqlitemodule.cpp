@@ -76,7 +76,7 @@ void initVirtualLayerMetadata( sqlite3* db )
 
 void deleteGeometryBlob( void * p )
 {
-  delete[]( unsigned char* )p;
+  delete[]( reinterpret_cast< unsigned char* >( p ) );
 }
 
 //-----------------------------------------------------------------------
@@ -96,21 +96,37 @@ struct VTable
   char *zErrMsg;                  /* Error message from sqlite3_mprintf() */
 
   VTable( sqlite3* db, QgsVectorLayer* layer )
-      : zErrMsg( 0 ), mSql( db ), mProvider( 0 ), mLayer( layer ), mSlotToFunction( invalidateTable, this ), mName( layer->name() ), mPkColumn( -1 ), mValid( true )
+      : pModule( nullptr )
+      , nRef( 0 )
+      , zErrMsg( nullptr )
+      , mSql( db )
+      , mProvider( nullptr )
+      , mLayer( layer )
+      , mSlotToFunction( invalidateTable, this )
+      , mName( layer->name() )
+      , mPkColumn( -1 )
+      , mValid( true )
   {
     if ( mLayer )
     {
       QObject::connect( layer, SIGNAL( layerDeleted() ), &mSlotToFunction, SLOT( onSignal() ) );
+      init_();
     }
-
-    init_();
   }
 
   VTable( sqlite3* db, const QString& provider, const QString& source, const QString& name, const QString& encoding )
-      : zErrMsg( 0 ), mSql( db ), mLayer( 0 ), mName( name ), mEncoding( encoding ), mPkColumn( -1 ), mValid( true )
+      : pModule( nullptr )
+      , nRef( 0 )
+      , zErrMsg( nullptr )
+      , mSql( db )
+      , mLayer( nullptr )
+      , mName( name )
+      , mEncoding( encoding )
+      , mPkColumn( -1 )
+      , mValid( true )
   {
     mProvider = static_cast<QgsVectorDataProvider*>( QgsProviderRegistry::instance()->provider( provider, source ) );
-    if ( mProvider == 0 || !mProvider->isValid() )
+    if ( !mProvider || !mProvider->isValid() )
     {
       throw std::runtime_error( "Invalid provider" );
     }
@@ -241,7 +257,7 @@ struct VTableCursor
 
   VTableCursor( VTable *vtab ) : mVtab( vtab ), mEof( true ) {}
 
-  void filter( QgsFeatureRequest request )
+  void filter( const QgsFeatureRequest& request )
   {
     if ( !mVtab->valid() )
     {
@@ -279,7 +295,7 @@ struct VTableCursor
   QPair<char*, int> currentGeometry() const
   {
     int blob_len = 0;
-    char* blob = 0;
+    char* blob = nullptr;
     const QgsGeometry* g = mCurrentFeature.constGeometry();
     if ( g && ! g->isEmpty() )
     {
@@ -292,7 +308,7 @@ struct VTableCursor
 void getGeometryType( const QgsVectorDataProvider* provider, QString& geometryTypeStr, int& geometryDim, int& geometryWkbType, long& srid )
 {
   srid = const_cast<QgsVectorDataProvider*>( provider )->crs().postgisSrid();
-  QgsWKBTypes::Type t = static_cast<QgsWKBTypes::Type>( provider->geometryType() );
+  QgsWKBTypes::Type t = QGis::fromOldWkbType( provider->geometryType() );
   geometryTypeStr = QgsWKBTypes::displayString( t );
   geometryDim = QgsWKBTypes::coordDimensions( t );
   if (( t != QgsWKBTypes::NoGeometry ) && ( t != QgsWKBTypes::Unknown ) )
@@ -306,8 +322,8 @@ int vtable_create_connect( sqlite3* sql, void* aux, int argc, const char* const*
   Q_UNUSED( aux );
   Q_UNUSED( is_created );
 
-#define RETURN_CSTR_ERROR(err) if (out_err) {size_t s = strlen(err); *out_err=(char*)sqlite3_malloc( (int) s+1); strncpy(*out_err, err, s);}
-#define RETURN_CPPSTR_ERROR(err) if (out_err) {*out_err=(char*)sqlite3_malloc( (int) err.size()+1); strncpy(*out_err, err.c_str(), err.size());}
+#define RETURN_CSTR_ERROR(err) if (out_err) {size_t s = strlen(err); *out_err=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( s ) +1)); strncpy(*out_err, err, s);}
+#define RETURN_CPPSTR_ERROR(err) if (out_err) {*out_err=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( err.size() )+1)); strncpy(*out_err, err.c_str(), err.size());}
 
   if ( argc < 4 )
   {
@@ -330,7 +346,7 @@ int vtable_create_connect( sqlite3* sql, void* aux, int argc, const char* const*
       layerid = layerid.mid( 1, layerid.size() - 2 );
     }
     QgsMapLayer *l = QgsMapLayerRegistry::instance()->mapLayer( layerid );
-    if ( l == 0 || l->type() != QgsMapLayer::VectorLayer )
+    if ( !l || l->type() != QgsMapLayer::VectorLayer )
     {
       if ( out_err )
       {
@@ -386,7 +402,7 @@ int vtable_create_connect( sqlite3* sql, void* aux, int argc, const char* const*
     return r;
   }
 
-  *out_vtab = ( sqlite3_vtab* )new_vtab.take();
+  *out_vtab = reinterpret_cast< sqlite3_vtab* >( new_vtab.take() );
   return SQLITE_OK;
 #undef RETURN_CSTR_ERROR
 #undef RETURN_CPPSTR_ERROR
@@ -414,7 +430,7 @@ int vtable_create( sqlite3* sql, void* aux, int argc, const char* const* argv, s
   {
     if ( out_err )
     {
-      *out_err = ( char* )sqlite3_malloc(( int ) strlen( e.what() ) + 1 );
+      *out_err = reinterpret_cast< char* >( sqlite3_malloc( static_cast< int >( strlen( e.what() ) ) + 1 ) );
       strcpy( *out_err, e.what() );
     }
     return SQLITE_ERROR;
@@ -456,7 +472,7 @@ int vtable_rename( sqlite3_vtab *vtab, const char *new_name )
 
 int vtable_bestindex( sqlite3_vtab *pvtab, sqlite3_index_info* index_info )
 {
-  VTable *vtab = ( VTable* )pvtab;
+  VTable *vtab = reinterpret_cast< VTable* >( pvtab );
   for ( int i = 0; i < index_info->nConstraint; i++ )
   {
     if (( index_info->aConstraint[i].usable ) &&
@@ -499,8 +515,8 @@ int vtable_bestindex( sqlite3_vtab *pvtab, sqlite3_index_info* index_info )
 
 int vtable_open( sqlite3_vtab *vtab, sqlite3_vtab_cursor **out_cursor )
 {
-  VTableCursor *ncursor = new VTableCursor(( VTable* )vtab );
-  *out_cursor = ( sqlite3_vtab_cursor* )ncursor;
+  VTableCursor *ncursor = new VTableCursor( reinterpret_cast< VTable* >( vtab ) );
+  *out_cursor = reinterpret_cast< sqlite3_vtab_cursor* >( ncursor );
   return SQLITE_OK;
 }
 
@@ -527,7 +543,7 @@ int vtable_filter( sqlite3_vtab_cursor * cursor, int idxNum, const char *idxStr,
   else if ( idxNum == 2 )
   {
     // rtree filter
-    const char* blob = ( const char* )sqlite3_value_blob( argv[0] );
+    const char* blob = reinterpret_cast< const char* >( sqlite3_value_blob( argv[0] ) );
     int bytes = sqlite3_value_bytes( argv[0] );
     QgsRectangle r( spatialiteBlobBbox( blob, bytes ) );
     request.setFilterRect( r );
@@ -623,7 +639,7 @@ int vtable_findfunction( sqlite3_vtab *pVtab,
 
 sqlite3_module module;
 
-static QCoreApplication* core_app = 0;
+static QCoreApplication* core_app = nullptr;
 
 static int module_argc = 1;
 static char module_name[] = "qgsvlayer_module";
@@ -647,7 +663,7 @@ int qgsvlayer_module_init( sqlite3 *db, char **pzErrMsg, void * unused /*const s
   int rc = SQLITE_OK;
 
   // check if qgis providers are loaded
-  if ( QCoreApplication::instance() == 0 )
+  if ( !QCoreApplication::instance() )
   {
     // if run standalone
     core_app = new QCoreApplication( module_argc, module_argv );
