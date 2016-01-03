@@ -220,9 +220,6 @@ namespace pal
       bool getUpsideDown() const { return upsideDown; }
 
       Quadrant getQuadrant() const { return quadrant; }
-
-      void print();
-
       LabelPosition* getNextPart() const { return nextPart; }
       void setNextPart( LabelPosition* next ) { nextPart = next; }
 
