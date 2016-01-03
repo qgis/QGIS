@@ -1233,7 +1233,7 @@ void QgsStyleV2ManagerDialog::enableSymbolInputs( bool enable )
   groupTree->setEnabled( enable );
   btnAddGroup->setEnabled( enable );
   btnRemoveGroup->setEnabled( enable );
-  btnManageGroups->setEnabled( enable );
+  btnManageGroups->setEnabled( enable || mGrouppingMode ); // always enabled in grouping mode, as it is the only way to leave grouping mode
   searchBox->setEnabled( enable );
   tagsLineEdit->setEnabled( enable );
 }
@@ -1242,7 +1242,7 @@ void QgsStyleV2ManagerDialog::enableGroupInputs( bool enable )
 {
   btnAddGroup->setEnabled( enable );
   btnRemoveGroup->setEnabled( enable );
-  btnManageGroups->setEnabled( enable );
+  btnManageGroups->setEnabled( enable || mGrouppingMode ); // always enabled in grouping mode, as it is the only way to leave grouping mode
 }
 
 void QgsStyleV2ManagerDialog::enableItemsForGroupingMode( bool enable )
