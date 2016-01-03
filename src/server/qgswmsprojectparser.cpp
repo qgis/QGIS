@@ -1000,7 +1000,7 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
           QgsLayerTreeNode* layerTreeChildNode = layerTreeGroupChildren.at( j );
           if ( layerTreeChildNode->nodeType() != QgsLayerTreeNode::NodeGroup )
             continue;
-          QgsLayerTreeGroup* layerTreeChildGroup = dynamic_cast<QgsLayerTreeGroup *>( layerTreeChildNode );
+          QgsLayerTreeGroup* layerTreeChildGroup = static_cast<QgsLayerTreeGroup *>( layerTreeChildNode );
           if ( layerTreeChildGroup->name() != currentChildElem.attribute( "name" ) )
             continue;
           ltGroup = layerTreeChildGroup;
@@ -2042,8 +2042,8 @@ void QgsWMSProjectParser::drawOverlays( QPainter* p, int dpi, int width, int hei
     QRect viewBox = svgIt->first->viewBox();
     if ( viewBox.isValid() )
     {
-      double widthRatio = ( double )( itemWidth ) / ( double )( viewBox.width() );
-      double heightRatio = ( double )( itemHeight ) / ( double )( viewBox.height() );
+      double widthRatio = static_cast< double >( itemWidth ) / static_cast< double >( viewBox.width() );
+      double heightRatio = static_cast< double >( itemHeight ) / static_cast< double >( viewBox.height() );
       double renderWidth = 0;
       double renderHeight = 0;
       if ( widthRatio <= heightRatio )

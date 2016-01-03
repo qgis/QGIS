@@ -374,6 +374,7 @@ QgsDxfExport& QgsDxfExport::operator=( const QgsDxfExport & dxfExport )
   mSymbologyScaleDenominator = dxfExport.mSymbologyScaleDenominator;
   mSymbologyExport = dxfExport.mSymbologyExport;
   mMapUnits = dxfExport.mMapUnits;
+  mLayerTitleAsName = dxfExport.mLayerTitleAsName;
   mSymbolLayerCounter = 0; // internal counter
   mNextHandleId = 0;
   mBlockCounter = 0;

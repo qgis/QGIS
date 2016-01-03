@@ -62,9 +62,6 @@ class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSour
 
     QString mSqlQuery;
 
-    // Index of the id column, -1 if none
-    int mUidColumn;
-
     QgsAttributeList mAttributes;
 };
 

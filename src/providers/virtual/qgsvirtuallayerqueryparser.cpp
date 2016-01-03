@@ -22,7 +22,7 @@ namespace QgsVirtualLayerQueryParser
 
     while ( true )
     {
-      char *errMsg = 0;
+      char *errMsg = nullptr;
       int r = sqlite3_exec( db.get(), query.toLocal8Bit().constData(), NULL, NULL, &errMsg );
       QString err = errMsg;
       if ( r && err.startsWith( noSuchError ) )
@@ -32,7 +32,7 @@ namespace QgsVirtualLayerQueryParser
 
         // create a dummy table to skip this error
         QString createStr = QString( "CREATE TABLE \"%1\" (id int)" ).arg( tableName.replace( "\"", "\"\"" ) );
-        sqlite3_exec( db.get(), createStr.toLocal8Bit().constData(), NULL, NULL, NULL );
+        ( void )sqlite3_exec( db.get(), createStr.toLocal8Bit().constData(), NULL, NULL, NULL );
       }
       else
       {
