@@ -420,6 +420,36 @@ QMenu::item:selected {  background-color: gray; } */
     </widget>
    </item>
   </layout>
+  <action name="actnRemoveItem">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+   </property>
+   <property name="text">
+    <string>Remove item(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove item(s)</string>
+   </property>
+  </action>
+  <action name="actnEditItem">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionProjectProperties.png</normaloff>:/images/themes/default/mActionProjectProperties.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit item...</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit item</string>
+   </property>
+  </action>
   <action name="actnUngroup">
    <property name="enabled">
     <bool>false</bool>
@@ -429,6 +459,36 @@ QMenu::item:selected {  background-color: gray; } */
    </property>
    <property name="toolTip">
     <string>Ungroup</string>
+   </property>
+  </action>
+  <action name="actnExportAsPNG">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSharingExport.svg</normaloff>:/images/themes/default/mActionSharingExport.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export selected symbol(s) as PNG...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export selected symbo(s) as PNG</string>
+   </property>
+  </action>
+  <action name="actnExportAsSVG">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSharingExport.svg</normaloff>:/images/themes/default/mActionSharingExport.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export selected symbol(s) as SVG...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export selected symbol(s) as SVG</string>
    </property>
   </action>
  </widget>

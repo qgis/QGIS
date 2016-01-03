@@ -62,26 +62,23 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( listItems, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( editItem() ) );
 
   connect( btnAddItem, SIGNAL( clicked() ), this, SLOT( addItem() ) );
-  connect( btnEditItem, SIGNAL( clicked() ), this, SLOT( editItem() ) );
-  connect( btnRemoveItem, SIGNAL( clicked() ), this, SLOT( removeItem() ) );
+  connect( actnEditItem, SIGNAL( triggered( bool ) ), this, SLOT( editItem() ) );
+  connect( actnRemoveItem, SIGNAL( triggered( bool ) ), this, SLOT( removeItem() ) );
 
-  btnRemoveItem->setEnabled( false );
+  btnRemoveItem->setDefaultAction( actnRemoveItem );
+  btnEditItem->setDefaultAction( actnEditItem );
 
   QMenu *shareMenu = new QMenu( tr( "Share menu" ), this );
-  QAction *exportAsPNGAction = shareMenu->addAction( tr( "Export selected symbols as PNG" ) );
-  QAction *exportAsSVGAction = shareMenu->addAction( tr( "Export selected symbols as SVG" ) );
+  shareMenu->addAction( actnExportAsPNG );
+  shareMenu->addAction( actnExportAsSVG );
   QAction *exportAction = new QAction( tr( "Export..." ), this );
   shareMenu->addAction( exportAction );
   QAction *importAction = new QAction( tr( "Import..." ), this );
   shareMenu->addAction( importAction );
-  exportAsPNGAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
-  exportAsPNGAction->setEnabled( false );
-  exportAsSVGAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
-  exportAsSVGAction->setEnabled( false );
   exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
   importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingImport.svg" ) ) );
-  connect( exportAsPNGAction, SIGNAL( triggered() ), this, SLOT( exportItemsPNG() ) );
-  connect( exportAsSVGAction, SIGNAL( triggered() ), this, SLOT( exportItemsSVG() ) );
+  connect( actnExportAsPNG, SIGNAL( triggered() ), this, SLOT( exportItemsPNG() ) );
+  connect( actnExportAsSVG, SIGNAL( triggered() ), this, SLOT( exportItemsSVG() ) );
   connect( exportAction, SIGNAL( triggered() ), this, SLOT( exportItems() ) );
   connect( importAction, SIGNAL( triggered() ), this, SLOT( importItems() ) );
   btnShare->setMenu( shareMenu );
@@ -151,6 +148,12 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   mGroupMenu->addMenu( mGroupListMenu );
   actnUngroup->setData( 0 );
   mGroupMenu->addAction( actnUngroup );
+  mGroupMenu->addSeparator()->setParent( this );
+  mGroupMenu->addAction( actnRemoveItem );
+  mGroupMenu->addAction( actnEditItem );
+  mGroupMenu->addSeparator()->setParent( this );
+  mGroupMenu->addAction( actnExportAsPNG );
+  mGroupMenu->addAction( actnExportAsSVG );
 
   on_tabItemType_currentChanged( 0 );
 }
@@ -213,8 +216,8 @@ void QgsStyleV2ManagerDialog::on_tabItemType_currentChanged( int )
   // when in Color Ramp tab, add menu to add item button and hide "Export symbols as PNG/SVG"
   bool flag = currentItemType() != 3;
   btnAddItem->setMenu( flag ? nullptr : mMenuBtnAddItemColorRamp );
-  btnShare->menu()->actions().at( 0 )->setVisible( flag );
-  btnShare->menu()->actions().at( 1 )->setVisible( flag );
+  actnExportAsPNG->setVisible( flag );
+  actnExportAsSVG->setVisible( flag );
 
   // set icon and grid size, depending on type
   if ( currentItemType() == 1 || currentItemType() == 3 )
@@ -1233,6 +1236,8 @@ void QgsStyleV2ManagerDialog::symbolSelected( const QModelIndex& index )
     mTagList = mStyle->tagsOfSymbol( type, item->data().toString() );
     tagsLineEdit->setText( mTagList.join( "," ) );
   }
+
+  actnEditItem->setEnabled( index.isValid() && !mGrouppingMode );
 }
 
 void QgsStyleV2ManagerDialog::selectedSymbolsChanged( const QItemSelection& selected, const QItemSelection& deselected )
@@ -1240,11 +1245,11 @@ void QgsStyleV2ManagerDialog::selectedSymbolsChanged( const QItemSelection& sele
   Q_UNUSED( selected );
   Q_UNUSED( deselected );
   bool nothingSelected = listItems->selectionModel()->selectedIndexes().empty();
-  btnRemoveItem->setDisabled( nothingSelected );
+  actnRemoveItem->setDisabled( nothingSelected );
   mGroupListMenu->setDisabled( nothingSelected );
   actnUngroup->setDisabled( nothingSelected );
-  btnShare->menu()->actions().at( 0 )->setDisabled( nothingSelected );
-  btnShare->menu()->actions().at( 1 )->setDisabled( nothingSelected );
+  actnExportAsPNG->setDisabled( nothingSelected );
+  actnExportAsSVG->setDisabled( nothingSelected );
 }
 
 void QgsStyleV2ManagerDialog::enableSymbolInputs( bool enable )
@@ -1300,6 +1305,9 @@ void QgsStyleV2ManagerDialog::enableItemsForGroupingMode( bool enable )
       w->setEnabled( enable );
   }
 
+  // The actions
+  actnRemoveItem->setEnabled( enable );
+  actnEditItem->setEnabled( enable );
 }
 
 void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
