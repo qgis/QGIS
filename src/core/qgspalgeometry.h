@@ -11,6 +11,7 @@
  * Class that adds extra information to QgsLabelFeature for text labels
  *
  * @note not part of public API
+ * @note not available in Python bindings
  */
 class QgsTextLabelFeature : public QgsLabelFeature
 {

@@ -15,6 +15,9 @@ class QgsStyleV2ManagerDialog : QDialog
     void addItem();
     void editItem();
     void removeItem();
+    void exportItemsSVG();
+    void exportItemsPNG();
+    void exportSelectedItemsImages( const QString& dir, const QString& format, const QSize& size );
     void exportItems();
     void importItems();
 

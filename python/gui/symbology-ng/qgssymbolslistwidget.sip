@@ -34,6 +34,17 @@ class QgsSymbolsListWidget : QWidget
     const QgsVectorLayer* layer() const;
 
   public slots:
+
+    /** Sets the optional expression context used for the widget. This expression context is used for
+     * evaluating data defined symbol properties and for populating based expression widgets in
+     * the properties widget.
+     * @param context expression context pointer. Ownership is not transferred and the object must
+     * be kept alive for the lifetime of the properties widget.
+     * @note added in QGIS 2.12
+     * @see expressionContext()
+     */
+    void setExpressionContext( QgsExpressionContext* context );
+
     void setSymbolFromStyle( const QModelIndex & index );
     void setSymbolColor( const QColor& color );
     void setMarkerAngle( double angle );
@@ -48,6 +59,11 @@ class QgsSymbolsListWidget : QWidget
     void on_groupsCombo_editTextChanged( const QString &text );
 
     void openStyleManager();
+    void clipFeaturesToggled( bool checked );
+
+    void updateDataDefinedMarkerSize();
+    void updateDataDefinedMarkerAngle();
+    void updateDataDefinedLineWidth();
 
   signals:
     void changed();

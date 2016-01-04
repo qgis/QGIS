@@ -391,7 +391,10 @@ class CORE_EXPORT QgsExpression
       soWithin,
     };
 
+    //! @note not available in Python bindings
     static const char* BinaryOperatorText[];
+
+    //! @note not available in Python bindings
     static const char* UnaryOperatorText[];
 
     typedef QVariant( *FcnEval )( const QVariantList& values, const QgsFeature* f, QgsExpression* parent );
@@ -494,6 +497,10 @@ class CORE_EXPORT QgsExpression
         bool mIsContextual; //if true function is only available through an expression context
     };
 
+    /**
+      * c++ helper class for defining QgsExpression functions.
+      * \note not available in Python bindings
+      */
     class StaticFunction : public Function
     {
       public:
@@ -556,9 +563,11 @@ class CORE_EXPORT QgsExpression
         QStringList mAliases;
     };
 
+    //! @note not available in Python bindings
     static QList<Function*> gmFunctions;
     static const QList<Function*>& Functions();
 
+    //! @note not available in Python bindings
     static QStringList gmBuiltinFunctions;
     static const QStringList& BuiltinFunctions();
 
@@ -577,6 +586,7 @@ class CORE_EXPORT QgsExpression
     static bool unregisterFunction( const QString& name );
 
     //! List of functions owned by the expression engine
+    //! @note not available in Python bindings
     static QList<Function*> gmOwnedFunctions;
 
     /** Deletes all registered functions whose ownership have been transferred to the expression engine.
@@ -1117,7 +1127,9 @@ class CORE_EXPORT QgsExpression
     static QHash<QString, QString> gVariableHelpTexts;
     static QHash<QString, QString> gGroups;
 
+    //! @note not available in Python bindings
     static void initFunctionHelp();
+    //! @note not available in Python bindings
     static void initVariableHelp();
 
     friend class QgsOgcUtils;

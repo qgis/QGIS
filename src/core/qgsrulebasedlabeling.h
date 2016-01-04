@@ -15,6 +15,12 @@ class QgsPalLayerSettings;
 class QgsRenderContext;
 class QgsGeometry;
 
+/**
+ * @class QgsRuleBasedLabeling
+ * @note not available in Python bindings
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ */
+
 class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 {
   public:
@@ -22,6 +28,12 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     typedef QList<Rule*> RuleList;
     typedef QMap<Rule*, QgsVectorLayerLabelProvider*> RuleToProviderMap;
 
+
+    /**
+     * @class QgsRuleBasedLabeling::Rule
+     * @note not available in Python bindings
+     * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+     */
     class CORE_EXPORT Rule
     {
       public:
@@ -263,7 +275,11 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
 #include "qgsvectorlayerlabelprovider.h"
 
-
+/**
+ * @class QgsRuleBasedLabelProvider
+ * @note not available in Python bindings
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ */
 class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 {
   public:

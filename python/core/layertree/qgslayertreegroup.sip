@@ -82,6 +82,18 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
     //! @note added in 2.12
     void setIsMutuallyExclusive( bool enabled, int initialChildIndex = -1 );
 
+  protected slots:
+    void layerDestroyed();
+    void nodeVisibilityChanged( QgsLayerTreeNode* node );
+
+  protected:
+    //! Set check state of this group from its children
+    void updateVisibilityFromChildren();
+    //! Set check state of children (when this group's check state changes) - if not mutually exclusive
+    void updateChildVisibility();
+    //! Set check state of children - if mutually exclusive
+    void updateChildVisibilityMutuallyExclusive();
+
   private:
     QgsLayerTreeGroup( const QgsLayerTreeGroup& other );
 };

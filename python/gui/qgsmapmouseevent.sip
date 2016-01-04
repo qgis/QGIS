@@ -78,6 +78,14 @@ class QgsMapMouseEvent : QMouseEvent
      */
     QgsPoint mapPoint() const;
 
+    /**
+     * Set the (snapped) point this event points to in map coordinates.
+     * The point in pixel coordinates will be calculated accordingly.
+     *
+     * @param point The point in map coordinates
+     */
+    void setMapPoint( const QgsPoint& point );
+
     QgsPoint originalMapPoint() const;
 
     QPoint pixelPoint() const;

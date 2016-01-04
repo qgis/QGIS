@@ -27,7 +27,11 @@ using namespace SpatialIndex;
 
 
 
-// custom visitor that adds found features to list
+/**
+ * \class QgisVisitor
+ * \brief Custom visitor that adds found features to list.
+ * \note not available in Python bindings
+ */
 class QgisVisitor : public SpatialIndex::IVisitor
 {
   public:
@@ -49,6 +53,10 @@ class QgisVisitor : public SpatialIndex::IVisitor
     QList<QgsFeatureId>& mList;
 };
 
+/**
+ * \class QgsSpatialIndexCopyVisitor
+ * \note not available in Python bindings
+ */
 class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
 {
   public:
@@ -74,7 +82,10 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
 };
 
 
-/** Utility class for bulk loading of R-trees. Not a part of public API. */
+/** \class QgsFeatureIteratorDataStream
+ * \brief Utility class for bulk loading of R-trees. Not a part of public API.
+ * \note not available in Python bindings
+*/
 class QgsFeatureIteratorDataStream : public IDataStream
 {
   public:
@@ -131,7 +142,10 @@ class QgsFeatureIteratorDataStream : public IDataStream
 };
 
 
-/** Data of spatial index that may be implicitly shared */
+/** \class QgsSpatialIndexData
+ * \brief Data of spatial index that may be implicitly shared
+ * \note not avaiable in Python bindings
+*/
 class QgsSpatialIndexData : public QSharedData
 {
   public:

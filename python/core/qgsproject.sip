@@ -220,6 +220,7 @@ class QgsProject : QObject
 
     /** Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
       @return the layer or 0 in case of error
+      @note not available in Python bindings
      */
     /*
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
@@ -268,13 +269,17 @@ class QgsProject : QObject
 
   protected:
 
-    /** Set error message from read/write operation */
-    void setError( const QString& errorMessage );
+    /** Set error message from read/write operation
+     * @note not available in Python bindings
+    */
+    //void setError( const QString& errorMessage );
 
-    /** Clear error message */
-    void clearError();
+    /** Clear error message
+     * @note not available in Python bindings
+    */
+    //void clearError();
 
-    //Creates layer and adds it to maplayer registry
+    //! Creates layer and adds it to maplayer registry
     //! @note not available in python bindings
     // bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
 

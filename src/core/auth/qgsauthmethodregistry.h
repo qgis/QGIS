@@ -37,6 +37,7 @@ class QgsAuthMethodMetadata;
   QGIS_AUTHMETHOD_FILE is regexp pattern applied to auth method file name (not auth method key).
   For example, if the variable is set to basic|pkipaths it will load only auth methods
   basic, and pkipaths.
+  \note not available in Python bindings
 */
 class CORE_EXPORT QgsAuthMethodRegistry
 {

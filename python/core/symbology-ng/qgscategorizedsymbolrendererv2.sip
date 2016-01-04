@@ -29,6 +29,10 @@ class QgsRendererCategoryV2
     QString dump() const;
 
     void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
+
+  protected:
+
+    void swap( QgsRendererCategoryV2 & other );
 };
 
 typedef QList<QgsRendererCategoryV2> QgsCategoryList;
@@ -172,6 +176,8 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
   protected:
     void rebuildHash();
+
+    QgsSymbolV2* skipRender();
 
     QgsSymbolV2* symbolForValue( const QVariant& value );
 

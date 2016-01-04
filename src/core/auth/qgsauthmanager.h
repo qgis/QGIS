@@ -140,7 +140,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     bool resetMasterPassword( const QString& newpass, const QString& oldpass, bool keepbackup, QString *backuppath = nullptr );
 
-    /** Whether there is a scheduled opitonal erase of authentication database */
+    /** Whether there is a scheduled opitonal erase of authentication database.
+     * @note not available in Python bindings
+    */
     bool scheduledAuthDbErase() { return mScheduledDbErase; }
 
     /** Schedule an optional erase of authentication database, starting when mutex is lockable.
@@ -152,6 +154,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * The created schedule timer will emit a request to gain access to the user,
      * through the given application, to prompt the erase operation (e.g. via a dialog);
      * if no access to user interaction occurs wihtin 90 seconds, it cancels the schedule.
+     * @note not available in Python bindings
      */
     void setScheduledAuthDbErase( bool scheduleErase );
 
@@ -161,6 +164,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * processing state is not ready for interacting with the user, e.g. project is still loading
      * @param emitted Setting to false will cause signal to be emitted by the schedule timer.
      * Setting to true will stop any emitting, but will not stop the schedule timer.
+     * @note not available in Python bindings
      */
     void setScheduledAuthDbEraseRequestEmitted( bool emitted ) { mScheduledDbEraseRequestEmitted = emitted; }
 
@@ -202,6 +206,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /**
      * Get available authentication methods mapped to their key
      * @param dataprovider Provider key filter, returning only methods that support a particular provider
+     * @note not available in Python bindings
      */
     QgsAuthMethodsMap authMethodsMap( const QString &dataprovider = QString() );
 
@@ -349,7 +354,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /** Get a certificate identity by id (sha hash) */
     const QSslCertificate getCertIdentity( const QString& id );
 
-    /** Get a certificate identity bundle by id (sha hash) */
+    /** Get a certificate identity bundle by id (sha hash).
+     * @note not available in Python bindings
+    */
     const QPair<QSslCertificate, QSslKey> getCertIdentityBundle( const QString& id );
 
     /** Get a certificate identity bundle by id (sha hash) returned as PEM text */
@@ -387,7 +394,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool removeSslCertCustomConfig( const QString& id, const QString &hostport );
 
 
-    /** Get ignored SSL error cache, keyed with cert/connection's sha:host:port */
+    /** Get ignored SSL error cache, keyed with cert/connection's sha:host:port.
+     * @note not available in Python bindings
+    */
     QHash<QString, QSet<QSslError::SslError> > getIgnoredSslErrorCache() { return mIgnoredSslErrorsCache; }
 
     /** Utility function to dump the cache for debug purposes */
@@ -430,7 +439,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /** Get sha1-mapped database-stored certificate authorities */
     const QMap<QString, QSslCertificate> getMappedDatabaseCAs();
 
-    /** Get all CA certs mapped to their sha1 from cache */
+    /** Get all CA certs mapped to their sha1 from cache.
+     * @note not available in Python bindings
+    */
     const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource , QSslCertificate> > getCaCertsCache()
     {
       return mCaCertsCache;
@@ -504,7 +515,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     void masterPasswordVerified( bool verified ) const;
 
-    /** Emmitted when a user has indicated they may want to erase the authentication db */
+    /** Emmitted when a user has indicated they may want to erase the authentication db. */
     void authDatabaseEraseRequested() const;
 
     /** Emmitted when the authentication db is significantly changed, e.g. large record removal, erased, etc. */

@@ -92,15 +92,7 @@ ENDIF (ENABLE_MSSQLTEST)
 
 IF (WITH_APIDOC)
   ADD_PYTHON_TEST(PyQgsDocCoverage test_qgsdoccoverage.py)
-  #SIP coverage test relies on API doc parsing to identify members which should be in bindings
-  SET(MISSING_SIP_CLASSES 0)
-  SET(MISSING_SIP_MEMBERS 0)
-
-  IF(NOT QSCI_SIP_DIR)
-    MATH(EXPR MISSING_SIP_CLASSES "${MISSING_SIP_CLASSES}+2") # QgsCodeEditor, QgsCodeEditorPython
-  ENDIF(NOT QSCI_SIP_DIR)
-
-  ADD_PYTHON_TEST(PyQgsSipCoverage test_qgssipcoverage.py "MISSING_SIP_CLASSES=${MISSING_SIP_CLASSES}" "MISSING_SIP_MEMBERS=${MISSING_SIP_MEMBERS}")
+  ADD_PYTHON_TEST(PyQgsSipCoverage test_qgssipcoverage.py)
 ENDIF (WITH_APIDOC)
 
 IF (WITH_SERVER)

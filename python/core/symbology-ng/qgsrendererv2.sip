@@ -347,10 +347,30 @@ class QgsFeatureRendererV2
 
     void setScaleMethodToSymbol( QgsSymbolV2* symbol, int scaleMethod );
 
+    /**
+     * Clones generic renderer data to another renderer.
+     * Currently clones
+     *  * Order By
+     *  * Paint Effect
+     *
+     * @param destRenderer destination renderer for copied effect
+     */
+    void copyRendererData( QgsFeatureRendererV2 *destRenderer ) const;
+
     /** Copies paint effect of this renderer to another renderer
      * @param destRenderer destination renderer for copied effect
      */
     void copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const;
+
+    /** @note this function is used to convert old sizeScale expresssions to symbol
+     * level DataDefined size
+     */
+    static void convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymbolV2::ScaleMethod method, const QString & field );
+
+    /** @note this function is used to convert old rotations expresssions to symbol
+     * level DataDefined angle
+     */
+    static void convertSymbolRotation( QgsSymbolV2 * symbol, const QString & field );
 
   private:
     QgsFeatureRendererV2( const QgsFeatureRendererV2 & );

@@ -28,6 +28,7 @@ class QgsAuthMethodEdit;
 
 /** \ingroup gui
  * Widget for editing an authentication configuration
+ * \note not available in Python bindings
  */
 class GUI_EXPORT QgsAuthConfigEdit : public QDialog, private Ui::QgsAuthConfigEdit
 {

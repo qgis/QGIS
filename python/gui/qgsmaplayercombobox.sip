@@ -47,4 +47,8 @@ class QgsMapLayerComboBox : QComboBox
   signals:
     //! layerChanged this signal is emitted whenever the currently selected layer changes
     void layerChanged( QgsMapLayer* layer );
+
+  protected slots:
+    void indexChanged( int i );
+    void rowsChanged();
 };

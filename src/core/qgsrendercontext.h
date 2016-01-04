@@ -119,6 +119,7 @@ class CORE_EXPORT QgsRenderContext
     QgsLabelingEngineInterface* labelingEngine() const { return mLabelingEngine; }
 
     //! Get access to new labeling engine (may be nullptr)
+    //! @note not available in Python bindings
     QgsLabelingEngineV2* labelingEngineV2() const { return mLabelingEngine2; }
 
     QColor selectionColor() const { return mSelectionColor; }
@@ -150,6 +151,7 @@ class CORE_EXPORT QgsRenderContext
 
     void setLabelingEngine( QgsLabelingEngineInterface* iface ) { mLabelingEngine = iface; }
     //! Assign new labeling engine
+    //! @note not available in Python bindings
     void setLabelingEngineV2( QgsLabelingEngineV2* engine2 ) { mLabelingEngine2 = engine2; }
     void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
 

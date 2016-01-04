@@ -65,6 +65,7 @@
 %Include qgslegendrenderer.sip
 %Include qgslegendsettings.sip
 %Include qgslogger.sip
+%Include qgsmaphittest.sip
 %Include qgsmaplayer.sip
 %Include qgsmaplayerlegend.sip
 %Include qgsmaplayerregistry.sip
@@ -85,6 +86,7 @@
 %Include qgsmultirenderchecker.sip
 %Include qgsnetworkaccessmanager.sip
 %Include qgsnetworkcontentfetcher.sip
+%Include qgsobjectcustomproperties.sip
 %Include qgsofflineediting.sip
 %Include qgsogcutils.sip
 %Include qgsowsconnection.sip
@@ -123,6 +125,7 @@
 %Include qgsvectorlayer.sip
 %Include qgsvectorlayercache.sip
 %Include qgsvectorlayereditbuffer.sip
+%Include qgsvectorlayereditpassthrough.sip
 %Include qgsvectorlayerimport.sip
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayerundocommand.sip
@@ -142,6 +145,7 @@
 %Include qgsvisibilitypresetcollection.sip
 %Include qgslayerdefinition.sip
 %Include qgsvirtuallayerdefinition.sip
+%Include qgsxmlutils.sip
 
 %Include auth/qgsauthcertutils.sip
 %Include auth/qgsauthconfig.sip

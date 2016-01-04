@@ -20,6 +20,10 @@
 
 #include "ui_qgsdatumtransformdialogbase.h"
 
+/**
+ * \class QgsDatumTransformDialog
+ * \note not available in Python bindings
+ */
 class GUI_EXPORT QgsDatumTransformDialog: public QDialog, private Ui::QgsDatumTransformDialogBase
 {
     Q_OBJECT

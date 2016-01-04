@@ -31,6 +31,7 @@
 %Include qgsattributedialog.sip
 %Include qgsattributeform.sip
 %Include qgsattributeforminterface.sip
+%Include qgsattributetypeloaddialog.sip
 %Include qgsbrowsertreeview.sip
 %Include qgsbusyindicatordialog.sip
 %Include qgscollapsiblegroupbox.sip
@@ -75,6 +76,7 @@
 %Include qgsformannotationitem.sip
 %Include qgsgenericprojectionselector.sip
 %Include qgsgeometryrubberband.sip
+%Include qgsgroupwmsdatadialog.sip
 %Include qgshighlight.sip
 %Include qgshistogramwidget.sip
 %Include qgshtmlannotationitem.sip
@@ -116,7 +118,9 @@
 %Include qgsnewvectorlayerdialog.sip
 %Include qgsnumericsortlistviewitem.sip
 %Include qgsoptionsdialogbase.sip
+%Include qgsorderbydialog.sip
 %Include qgsowssourceselect.sip
+%Include qgspixmaplabel.sip
 %Include qgspluginmanagerinterface.sip
 %Include qgsprevieweffect.sip
 %Include qgsprojectbadlayerguihandler.sip
@@ -229,6 +233,7 @@
 %Include editorwidgets/core/qgseditorwidgetfactory.sip
 %Include editorwidgets/core/qgseditorwidgetregistry.sip
 %Include editorwidgets/core/qgseditorwidgetwrapper.sip
+%Include editorwidgets/core/qgssearchwidgetwrapper.sip
 %Include editorwidgets/core/qgswidgetwrapper.sip
 %Include editorwidgets/qgsdoublespinbox.sip
 %Include editorwidgets/qgsrelationreferencewidget.sip

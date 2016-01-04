@@ -47,6 +47,7 @@ struct CORE_EXPORT QgsRasterRendererRegistryEntry
 
 /** \ingroup core
   * Registry for raster renderers.
+  * \note not available in Python bindings
   */
 class CORE_EXPORT QgsRasterRendererRegistry
 {

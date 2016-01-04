@@ -23,6 +23,7 @@
  * This selection manager synchronizes a local set of selected features with an attribute table.
  * If you want to synchronize the attribute table selection with the map canvas selection, you
  * should use { @link QgsVectorLayerSelectionManager } instead.
+ * \note not available in Python bindings
  */
 class GUI_EXPORT QgsGenericFeatureSelectionManager : public QgsIFeatureSelectionManager
 {

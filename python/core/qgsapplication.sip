@@ -273,6 +273,9 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! deletes provider registry and map layer registry
     static void exitQgis();
 
+    //! get application icon
+    static QString appIconPath();
+
     /** Constants for endian-ness */
     enum endian_t
     {

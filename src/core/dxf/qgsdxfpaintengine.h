@@ -25,6 +25,10 @@ class QgsDxfExport;
 class QgsDxfPaintDevice;
 class QgsPoint;
 
+/** \class QgsDxfPaintEngine
+ * \note not available in Python bindings
+*/
+
 class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
 {
   public:

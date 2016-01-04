@@ -36,7 +36,6 @@ class QgsField;
  * by a field of a vector layer, or return the value it currently holds. Every time it is changed
  * it has to emit a valueChanged signal. If it fails to do so, there is no guarantee that the
  * changed status of the widget will be saved.
- *
  */
 class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 {

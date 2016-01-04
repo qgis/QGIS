@@ -459,6 +459,10 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayerV2
     virtual Qt::PenStyle dxfPenStyle() const;
 
     QSet<QString> usedAttributes() const;
+
+  protected:
+
+    virtual void applyDataDefinedSettings( QgsSymbolV2RenderContext& context );
 };
 
 /** \ingroup core

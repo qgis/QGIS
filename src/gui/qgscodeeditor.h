@@ -27,6 +27,7 @@ class QWidget;
 /** \ingroup gui
  * A text editor based on QScintilla2.
  * \note added in 2.6
+ * \note may not be available in Python bindings, depending on platform support
  */
 class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 {

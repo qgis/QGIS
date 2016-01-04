@@ -64,7 +64,7 @@ class ANALYSIS_EXPORT QgsInterpolator
        @return 0 in case of success*/
     virtual int interpolatePoint( double x, double y, double& result ) = 0;
 
-    // @note not available in python bindings
+    //! @note not available in Python bindings
     const QList<LayerData>& layerData() const { return mLayerData; }
 
   protected:

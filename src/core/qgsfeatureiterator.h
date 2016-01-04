@@ -20,7 +20,9 @@
 
 class QgsAbstractGeometrySimplifier;
 
-// Temporarily used structure to cache order by information
+/** Temporarily used structure to cache order by information
+ * \note not available in Python bindings
+ */
 class QgsIndexedFeature
 {
   public:
@@ -148,7 +150,9 @@ class CORE_EXPORT QgsAbstractFeatureIterator
 
 
 
-/** Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator */
+/** Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
+ * \note not available in Python bindings
+*/
 template<typename T>
 class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 {

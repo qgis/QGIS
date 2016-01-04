@@ -245,7 +245,7 @@ QgsAbstractGeometryV2* QgsGeometryEditUtils::avoidIntersections( const QgsAbstra
   if ( !listReadOk )
     return nullptr; //no intersections stored in project does not mean error
 
-  QList< const QgsAbstractGeometryV2* > nearGeometries;
+  QList< QgsAbstractGeometryV2* > nearGeometries;
 
   //go through list, convert each layer to vector layer and call QgsVectorLayer::removePolygonIntersections for each
   QgsVectorLayer* currentLayer = nullptr;

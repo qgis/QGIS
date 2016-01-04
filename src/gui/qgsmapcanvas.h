@@ -733,6 +733,7 @@ Q_NOWARN_DEPRECATED_POP
  *
  * This class can be removed within API cleanup when QgsMapRenderer will not be accessible from canvas API anymore.
  * Added in 2.4. This class is not a part of public API!
+ * @note not available in Python bindings
  */
 class QgsMapCanvasRendererSync : public QObject
 {

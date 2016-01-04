@@ -34,8 +34,6 @@ class ANALYSIS_EXPORT QgsOSMElement
 
     bool isValid() const { return mElemID.type != QgsOSMElementID::Invalid; }
 
-    QgsOSMDatabase* database() const;
-
     // fetched automatically from DB
     QgsOSMElementID elemID() const { return mElemID; }
     QgsOSMId id() const { return mElemID.id; }
@@ -62,10 +60,6 @@ class ANALYSIS_EXPORT QgsOSMNode : public QgsOSMElement
     QgsOSMNode( QgsOSMId id, const QgsPoint& point ) : QgsOSMElement( QgsOSMElementID::Node, id ), mPoint( point ) {}
 
     QgsPoint point() const { return mPoint; }
-
-    // fetched on-demand
-    QList<QgsOSMElementID> ways() const; // where the node participates?
-    QList<QgsOSMElementID> relations() const;
 
   private:
     QgsPoint mPoint;

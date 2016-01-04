@@ -34,4 +34,13 @@ class QgsLayerTreeRegistryBridge : QObject
     //! @note added in 2.6
     void addedLayersToLayerTree( const QList<QgsMapLayer*>& layers );
 
+  protected slots:
+    void layersAdded( const QList<QgsMapLayer*>& layers );
+    void layersWillBeRemoved( const QStringList& layerIds );
+
+    void groupWillRemoveChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
+    void groupRemovedChildren();
+
+    void removeLayersFromRegistry( const QStringList& layerIds );
+
 };

@@ -44,7 +44,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsAbstractGeometryV2* intersection( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
     QgsAbstractGeometryV2* difference( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
     QgsAbstractGeometryV2* combine( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometryV2* combine( const QList<const QgsAbstractGeometryV2*>&, QString* errorMsg = nullptr ) const override;
+    QgsAbstractGeometryV2* combine( const QList< QgsAbstractGeometryV2*>&, QString* errorMsg = nullptr ) const override;
     QgsAbstractGeometryV2* symDifference( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
     QgsAbstractGeometryV2* buffer( double distance, int segments, QString* errorMsg = nullptr ) const override;
     QgsAbstractGeometryV2* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const override;

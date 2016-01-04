@@ -65,11 +65,13 @@ email                : sherman at mrcc.com
 #include <math.h>
 
 
-/** @deprecated to be deleted, stuff from here should be moved elsewhere */
+/** Deprecated to be deleted, stuff from here should be moved elsewhere.
+ * @note not available in Python bindings
+*/
+//TODO QGIS 3.0 - remove
 class QgsMapCanvas::CanvasProperties
 {
   public:
-
     CanvasProperties() : mouseButtonDown( false ), panSelectorDown( false ) { }
 
     //!Flag to indicate status of mouse button

@@ -432,6 +432,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Copy member variables from other raster data provider. Useful for implementation of clone() method in subclasses */
     void copyBaseSettings( const QgsRasterDataProvider& other );
 
+    //! @note not available in Python bindings
     static QStringList cStringList2Q_( char ** stringList );
 
     static QString makeTableCell( const QString & value );
@@ -462,7 +463,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     QgsRectangle mExtent;
 
-    static void initPyramidResamplingDefs();
     static QStringList mPyramidResamplingListGdal;
     static QgsStringMap mPyramidResamplingMapGdal;
 

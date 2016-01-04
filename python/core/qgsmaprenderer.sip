@@ -152,6 +152,15 @@ class QgsMapRenderer : QObject
     //! returns current extent
     QgsRectangle extent() const;
 
+    //! sets rotation
+    //! value in clockwise degrees
+    //! @note added in 2.8
+    void setRotation( double degrees );
+
+    //! returns current rotation in clockwise degrees
+    //! @note added in 2.8
+    double rotation() const;
+
     const QgsMapToPixel* coordinateTransform();
 
     //! Scale denominator
@@ -329,8 +338,8 @@ class QgsMapRenderer : QObject
     void rotationChanged( double );
 
     //! Notifies higher level components to show the datum transform dialog and add a QgsLayerCoordinateTransformInfo for that layer
-    void datumTransformInfoRequested( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId ) const;
-
+    //! @note not available in Python bindings
+    //void datumTransformInfoRequested( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId ) const;
 
   public slots:
 

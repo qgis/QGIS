@@ -52,6 +52,10 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
      */
     QgsFeatureRequest::OrderBy orderBy();
 
+  protected:
+
+    bool eventFilter( QObject *obj, QEvent *e ) override;
+
   private slots:
     void onExpressionChanged( const QString& expression );
 
@@ -63,7 +67,6 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
 
     QgsVectorLayer* mLayer;
 
-    bool eventFilter( QObject *obj, QEvent *e );
 };
 
 #endif // QGSORDERBYDIALOG_H

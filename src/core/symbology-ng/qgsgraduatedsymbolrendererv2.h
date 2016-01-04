@@ -358,6 +358,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     QgsSymbolV2* symbolForValue( double value );
 
+    //! @note not available in Python bindings
     static const char * graduatedMethodStr( GraduatedMethod method );
 
 };

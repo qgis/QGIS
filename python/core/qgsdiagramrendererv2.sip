@@ -34,6 +34,12 @@ struct QgsDiagramLayerSettings
     bool obstacle; // whether it's an obstacle
     double dist; // distance from the feature (in mm)
     QgsDiagramRendererV2* renderer; // if any renderer is assigned, it is owned by this class
+
+    //assigned when layer gets prepared
+    const QgsCoordinateTransform* ct;
+    const QgsMapToPixel* xform;
+    QgsFields fields;
+
     int xPosColumn; //attribute index for x coordinate (or -1 if position not data defined)
     int yPosColumn;//attribute index for y coordinate (or -1 if position not data defined)
     bool showAll;

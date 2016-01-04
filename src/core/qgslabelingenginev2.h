@@ -36,6 +36,7 @@ class QgsLabelingEngineV2;
  * Implementations also take care of drawing the returned final label positions.
  *
  * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ * @note not available in Python bindings
  * @note added in QGIS 2.12
  */
 class CORE_EXPORT QgsAbstractLabelProvider
@@ -145,6 +146,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
  * into feature loop vs providers with independent feature loop), split labeling
  * computation from drawing of labels, improved results class with label iterator).
  * @note added in QGIS 2.12
+ * @note not available in Python bindings
  */
 class CORE_EXPORT QgsLabelingEngineV2
 {

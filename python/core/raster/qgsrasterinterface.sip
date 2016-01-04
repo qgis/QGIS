@@ -223,5 +223,23 @@ class QgsRasterInterface
     /** Sets base class members from xml. Usually called from create() methods of subclasses */
     virtual void readXML( const QDomElement& filterElem );
 
+  protected:
+
+    /** Fill in histogram defaults if not specified
+     * @note theBinCount, theMinimun and theMaximum not optional in python bindings
+     */
+    void initHistogram( QgsRasterHistogram &theHistogram, int theBandNo,
+                        int theBinCount /* = 0 */,
+                        double theMinimum /*= std::numeric_limits<double>::quiet_NaN()*/,
+                        double theMaximum /*= std::numeric_limits<double>::quiet_NaN()*/,
+                        const QgsRectangle & theExtent = QgsRectangle(),
+                        int theSampleSize = 0,
+                        bool theIncludeOutOfRange = false );
+
+    /** Fill in statistics defaults if not specified */
+    void initStatistics( QgsRasterBandStats &theStatistics, int theBandNo,
+                         int theStats = QgsRasterBandStats::All,
+                         const QgsRectangle & theExtent = QgsRectangle(),
+                         int theBinCount = 0 );
 };
 

@@ -229,3 +229,24 @@ class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
 
     QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
 };
+
+/**
+ * Implementation of legend node interface for displaying WMS legend entries
+ *
+ * @note added in 2.8
+ */
+class QgsWMSLegendNode : QgsLayerTreeModelLegendNode
+{
+%TypeHeaderCode
+#include <qgslayertreemodellegendnode.h>
+%End
+  public:
+    QgsWMSLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent /TransferThis/ = nullptr );
+
+    virtual QVariant data( int role ) const;
+
+    virtual QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+
+    virtual void invalidateMapBasedData();
+
+};

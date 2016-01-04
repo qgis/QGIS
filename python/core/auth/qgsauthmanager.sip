@@ -131,6 +131,9 @@ class QgsAuthManager : QObject
 
     const QList<QSslCertificate> getCertIdentities();
 
+    /** Get list of certificate identity ids from database */
+    QStringList getCertIdentityIds() const;
+
     bool existsCertIdentity( const QString& id );
 
     bool removeCertIdentity( const QString& id );
@@ -216,6 +219,9 @@ class QgsAuthManager : QObject
     void messageOut( const QString& message, const QString& tag, QgsAuthManager::MessageLevel level = INFO ) const;
 
     void masterPasswordVerified( bool verified ) const;
+
+    /** Emmitted when a user has indicated they may want to erase the authentication db. */
+    void authDatabaseEraseRequested() const;
 
     void authDatabaseChanged() const;
 

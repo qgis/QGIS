@@ -94,8 +94,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      *
      * @return True if filters are chained
      */
-    bool chainFilters() { return mChainFilters; }
-
+    bool chainFilters() const { return mChainFilters; }
 
     /**
      * Set if filters are chained.

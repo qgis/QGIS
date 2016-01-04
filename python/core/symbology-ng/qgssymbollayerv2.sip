@@ -105,6 +105,9 @@ class QgsSymbolLayerV2
 
     QgsSymbolV2::SymbolType type() const;
 
+    //! Returns if the layer can be used below the specified symbol
+    virtual bool isCompatibleWithSymbol( QgsSymbolV2* symbol ) const;
+
     void setLocked( bool locked );
     bool isLocked() const;
 

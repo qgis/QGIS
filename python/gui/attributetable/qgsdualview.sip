@@ -128,6 +128,8 @@ class QgsDualView : QStackedWidget
      */
     bool saveEditChanges();
 
+    void openConditionalStyles();
+
   signals:
     /**
      * Is emitted, whenever the display expression is successfully changed
