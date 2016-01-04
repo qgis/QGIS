@@ -52,15 +52,18 @@
      </item>
      <item row="0" column="1">
       <widget class="QLineEdit" name="mShortNameLineEdit">
+       <property name="toolTip">
+        <string>A name used to identify the group layer. The short name is a text string used for machine-to-machine communication.</string>
+       </property>
        <property name="placeholderText">
-        <string>The short name is a text string used for machine-to-machine communication</string>
+        <string>A name used to identify the group layer. The short name is a text string used for machine-to-machine communication.</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
       <widget class="QLineEdit" name="mTitleLineEdit">
        <property name="placeholderText">
-        <string>The title is a text string for the benefit of humans</string>
+        <string>The title is for the benefit of humans to identify group layer.</string>
        </property>
       </widget>
      </item>
@@ -79,7 +82,11 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QTextEdit" name="mAbstractTextEdit"/>
+      <widget class="QTextEdit" name="mAbstractTextEdit">
+       <property name="toolTip">
+        <string>The abstract is a descriptive narrative providing more information about the group layer.</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
