@@ -34,6 +34,10 @@
 
 namespace pal
 {
+  /**
+   * \class pal::GeomFunction
+   * \note not available in Python bindings
+   */
   class CORE_EXPORT GeomFunction
   {
     public:
