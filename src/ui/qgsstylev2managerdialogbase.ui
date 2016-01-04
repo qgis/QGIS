@@ -484,6 +484,22 @@ QMenu::item:selected {  background-color: gray; } */
     <string>Remove group</string>
    </property>
   </action>
+  <action name="actnGroupSymbols">
+   <property name="text">
+    <string>Group symbols</string>
+   </property>
+  </action>
+  <action name="actnFinishGrouping">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Finish grouping</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
   <action name="actnExportAsPNG">
    <property name="enabled">
     <bool>false</bool>

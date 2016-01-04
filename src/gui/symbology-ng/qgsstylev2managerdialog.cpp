@@ -108,10 +108,13 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
            this, SLOT( groupRenamed( QStandardItem* ) ) );
 
   QMenu *groupMenu = new QMenu( tr( "Group actions" ), this );
-  QAction *groupSymbols = groupMenu->addAction( tr( "Group symbols" ) );
+  connect( actnGroupSymbols, SIGNAL( triggered() ), this, SLOT( groupSymbolsAction() ) );
+  groupMenu->addAction( actnGroupSymbols );
+  connect( actnFinishGrouping, SIGNAL( triggered() ), this, SLOT( groupSymbolsAction() ) );
+  actnFinishGrouping->setVisible( false );
+  groupMenu->addAction( actnFinishGrouping );
   groupMenu->addAction( actnEditSmartGroup );
   btnManageGroups->setMenu( groupMenu );
-  connect( groupSymbols, SIGNAL( triggered() ), this, SLOT( groupSymbolsAction() ) );
 
   connect( searchBox, SIGNAL( textChanged( QString ) ), this, SLOT( filterSymbols( QString ) ) );
   tagsLineEdit->installEventFilter( this );
@@ -894,6 +897,7 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index )
     if ( category == "groups" || category == "smartgroups" )
     {
       btnAddGroup->setEnabled( true );
+      actnAddGroup->setEnabled( true );
     }
     symbolNames = currentItemType() < 3 ? mStyle->symbolNames() : mStyle->colorRampNames();
   }
@@ -903,7 +907,9 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index )
     if ( index.parent().data( Qt::UserRole + 1 ) == "smartgroups" )
     {
       btnAddGroup->setEnabled( false );
+      actnAddGroup->setEnabled( false );
       btnRemoveGroup->setEnabled( true );
+      actnRemoveGroup->setEnabled( true );
       btnManageGroups->setEnabled( true );
       int groupId = index.data( Qt::UserRole + 1 ).toInt();
       symbolNames = mStyle->symbolsOfSmartgroup( type, groupId );
@@ -938,22 +944,26 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index )
   actnEditSmartGroup->setVisible( false );
   actnAddGroup->setVisible( false );
   actnRemoveGroup->setVisible( false );
+  actnGroupSymbols->setVisible( false );
+  actnFinishGrouping->setVisible( false );
 
   if ( index.parent().isValid() && ( index.data().toString() != "Ungrouped" ) )
   {
     if ( index.parent().data( Qt::UserRole + 1 ).toString() == "smartgroups" )
     {
-      actnEditSmartGroup->setVisible( true );
+      actnEditSmartGroup->setVisible( !mGrouppingMode );
     }
     else
     {
-      actnAddGroup->setVisible( true );
+      actnAddGroup->setVisible( !mGrouppingMode );
+      actnGroupSymbols->setVisible( !mGrouppingMode );
+      actnFinishGrouping->setVisible( mGrouppingMode );
     }
     actnRemoveGroup->setVisible( true );
   }
   else if ( index.data( Qt::UserRole + 1 ) == "groups" || index.data( Qt::UserRole + 1 ) == "smartgroups" )
   {
-    actnAddGroup->setVisible( true );
+    actnAddGroup->setVisible( !mGrouppingMode );
   }
 }
 
@@ -1086,12 +1096,12 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
 
   QStandardItemModel *treeModel = qobject_cast<QStandardItemModel*>( groupTree->model() );
   QStandardItemModel *model = qobject_cast<QStandardItemModel*>( listItems->model() );
-  QAction *senderAction = qobject_cast<QAction*>( sender() );
 
   if ( mGrouppingMode )
   {
     mGrouppingMode = false;
-    senderAction->setText( tr( "Group symbols" ) );
+    actnGroupSymbols->setVisible( true );
+    actnFinishGrouping->setVisible( false );
     // disconnect slot which handles regrouping
     disconnect( model, SIGNAL( itemChanged( QStandardItem* ) ),
                 this, SLOT( regrouped( QStandardItem* ) ) );
@@ -1127,8 +1137,9 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
       return;
 
     mGrouppingMode = true;
-    // Change the text menu
-    senderAction->setText( tr( "Finish grouping" ) );
+    // Change visibility of actions
+    actnGroupSymbols->setVisible( false );
+    actnFinishGrouping->setVisible( true );
     // Remove all Symbol editing functionalities
     disconnect( treeModel, SIGNAL( itemChanged( QStandardItem* ) ),
                 this, SLOT( groupRenamed( QStandardItem* ) ) );
@@ -1283,7 +1294,9 @@ void QgsStyleV2ManagerDialog::enableSymbolInputs( bool enable )
 {
   groupTree->setEnabled( enable );
   btnAddGroup->setEnabled( enable );
+  actnAddGroup->setEnabled( enable );
   btnRemoveGroup->setEnabled( enable );
+  actnRemoveGroup->setEnabled( enable );
   btnManageGroups->setEnabled( enable || mGrouppingMode ); // always enabled in grouping mode, as it is the only way to leave grouping mode
   searchBox->setEnabled( enable );
   tagsLineEdit->setEnabled( enable );
@@ -1293,6 +1306,7 @@ void QgsStyleV2ManagerDialog::enableGroupInputs( bool enable )
 {
   btnAddGroup->setEnabled( enable );
   btnRemoveGroup->setEnabled( enable );
+  actnRemoveGroup->setEnabled( enable );
   btnManageGroups->setEnabled( enable || mGrouppingMode ); // always enabled in grouping mode, as it is the only way to leave grouping mode
 }
 
@@ -1344,7 +1358,7 @@ void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
   QModelIndex index = groupTree->indexAt( point );
   QgsDebugMsg( "Now you clicked: " + index.data().toString() );
 
-  if ( index.isValid() )
+  if ( index.isValid() && !mGrouppingMode )
     mGroupTreeContextMenu->popup( globalPos );
 }
 
