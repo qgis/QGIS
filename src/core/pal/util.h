@@ -76,6 +76,10 @@ namespace pal
 
 #define EPSILON 1e-9
 
+  /**
+   * \class pal::Util
+   * \note not available in Python bindings
+   */
   class Util
   {
     public:
