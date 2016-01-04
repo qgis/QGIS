@@ -109,10 +109,9 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
 
   QMenu *groupMenu = new QMenu( tr( "Group actions" ), this );
   QAction *groupSymbols = groupMenu->addAction( tr( "Group symbols" ) );
-  QAction *editSmartgroup = groupMenu->addAction( tr( "Edit smart group" ) );
+  groupMenu->addAction( actnEditSmartGroup );
   btnManageGroups->setMenu( groupMenu );
   connect( groupSymbols, SIGNAL( triggered() ), this, SLOT( groupSymbolsAction() ) );
-  connect( editSmartgroup, SIGNAL( triggered() ), this, SLOT( editSmartgroupAction() ) );
 
   connect( searchBox, SIGNAL( textChanged( QString ) ), this, SLOT( filterSymbols( QString ) ) );
   tagsLineEdit->installEventFilter( this );
@@ -935,6 +934,27 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index )
   }
   if ( mGrouppingMode )
     setSymbolsChecked( groupSymbols );
+
+  actnEditSmartGroup->setVisible( false );
+  actnAddGroup->setVisible( false );
+  actnRemoveGroup->setVisible( false );
+
+  if ( index.parent().isValid() && ( index.data().toString() != "Ungrouped" ) )
+  {
+    if ( index.parent().data( Qt::UserRole + 1 ).toString() == "smartgroups" )
+    {
+      actnEditSmartGroup->setVisible( true );
+    }
+    else
+    {
+      actnAddGroup->setVisible( true );
+    }
+    actnRemoveGroup->setVisible( true );
+  }
+  else if ( index.data( Qt::UserRole + 1 ) == "groups" || index.data( Qt::UserRole + 1 ) == "smartgroups" )
+  {
+    actnAddGroup->setVisible( true );
+  }
 }
 
 void QgsStyleV2ManagerDialog::addGroup()
@@ -1324,28 +1344,8 @@ void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
   QModelIndex index = groupTree->indexAt( point );
   QgsDebugMsg( "Now you clicked: " + index.data().toString() );
 
-  actnEditSmartGroup->setVisible( false );
-  actnAddGroup->setVisible( false );
-  actnRemoveGroup->setVisible( false );
-
-  if ( index.parent().isValid() && ( index.data().toString() != "Ungrouped" ) )
-  {
-    if ( index.parent().data( Qt::UserRole + 1 ).toString() == "smartgroups" )
-    {
-      actnEditSmartGroup->setVisible( true );
-    }
-    else
-    {
-      actnAddGroup->setVisible( true );
-    }
-    actnRemoveGroup->setVisible( true );
-  }
-  else if ( index.data( Qt::UserRole + 1 ) == "groups" || index.data( Qt::UserRole + 1 ) == "smartgroups" )
-  {
-    actnAddGroup->setVisible( true );
-  }
-
-  mGroupTreeContextMenu->popup( globalPos );
+  if ( index.isValid() )
+    mGroupTreeContextMenu->popup( globalPos );
 }
 
 void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
