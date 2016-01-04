@@ -28,7 +28,7 @@ class GUI_EXPORT QgsGroupWMSDataDialog: public QDialog, private Ui::QgsGroupWMSD
 
   public:
     //! Constructor
-    QgsGroupWMSDataDialog( QWidget *parent = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
+    QgsGroupWMSDataDialog( QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
     //~QgsGroupWMSDataDialog();
 
     //! return group WMS title
