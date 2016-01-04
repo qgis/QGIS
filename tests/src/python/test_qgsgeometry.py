@@ -1020,7 +1020,7 @@ class TestQgsGeometry(TestCase):
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         polyline = QgsGeometry.fromWkt("MultiLineString ((0 0, 1 0, 1 1, 2 1,2 0),(3 0, 3 1, 5 1, 5 0, 6 0))")
-        for i in range(5):
+        for i in range(4):
             assert polyline.deleteVertex(5), "Delete vertex 5 failed"
         expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0))"
         wkt = polyline.exportToWkt()
@@ -1074,7 +1074,7 @@ class TestQgsGeometry(TestCase):
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         polygon = QgsGeometry.fromWkt("MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))")
-        for i in range(6):
+        for i in range(4):
             assert polygon.deleteVertex(0), "Delete vertex 0 failed"
 
         expwkt = "MultiPolygon (((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
@@ -1091,7 +1091,7 @@ class TestQgsGeometry(TestCase):
         polygon = QgsGeometry.fromWkt("Polygon ((0 0, 9 0, 9 3, 0 3, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1),(3 1, 4 1, 4 2, 3 2, 3 1),(5 1, 6 1, 6 2, 5 2, 5 1),(7 1, 8 1, 8 2, 7 2, 7 1))")
         #                                         0   1    2    3    4     5    6    7    8    9     10   11   12   13   14    15   16   17   18   19    20  21   22   23   24
 
-        for i in range(4):
+        for i in range(2):
             assert polygon.deleteVertex(16), "Delete vertex 16 failed" % i
 
         expwkt = "Polygon ((0 0, 9 0, 9 3, 0 3, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1),(3 1, 4 1, 4 2, 3 2, 3 1),(7 1, 8 1, 8 2, 7 2, 7 1))"
@@ -1099,7 +1099,7 @@ class TestQgsGeometry(TestCase):
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         for i in range(3):
-            for j in range(4):
+            for j in range(2):
                 assert polygon.deleteVertex(5), "Delete vertex 5 failed" % i
 
         expwkt = "Polygon ((0 0, 9 0, 9 3, 0 3, 0 0))"
@@ -1108,7 +1108,7 @@ class TestQgsGeometry(TestCase):
 
         # Remove whole outer ring, inner ring should become outer
         polygon = QgsGeometry.fromWkt("Polygon ((0 0, 9 0, 9 3, 0 3, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1))")
-        for i in range(4):
+        for i in range(2):
             assert polygon.deleteVertex(0), "Delete vertex 16 failed" % i
 
         expwkt = "Polygon ((1 1, 2 1, 2 2, 1 2, 1 1))"

@@ -644,6 +644,12 @@ bool QgsLineStringV2::deleteVertex( const QgsVertexId& position )
   {
     mM.remove( position.vertex );
   }
+
+  if ( numPoints() == 1 )
+  {
+    clear();
+  }
+
   mBoundingBox = QgsRectangle(); //set bounding box invalid
   return true;
 }

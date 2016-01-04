@@ -702,7 +702,7 @@ bool QgsCurvePolygonV2::deleteVertex( const QgsVertexId& vId )
 
   QgsCurveV2* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings.at( vId.ring - 1 );
   int n = ring->numPoints();
-  if ( n <= 2 )
+  if ( n <= 4 )
   {
     //no points will be left in ring, so remove whole ring
     if ( vId.ring == 0 )
