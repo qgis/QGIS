@@ -56,7 +56,7 @@ def myself(L):
 
 def filter_null(vals):
     """Takes an iterator of values and returns a new iterator returning the same values but skipping any NULL values"""
-    return (v for v in vals if v is not None)
+    return (v for v in vals if v != NULL)
 
 
 class Dialog(QDialog, Ui_Dialog):
