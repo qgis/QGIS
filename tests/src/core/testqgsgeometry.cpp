@@ -2152,6 +2152,16 @@ void TestQgsGeometry::polygonV2()
   //retrieve exterior ring and check
   QCOMPARE( *( static_cast< QgsLineStringV2* >( p1.exteriorRing() ) ), *ext );
 
+  //test that a non closed exterior ring will be automatically closed
+  ext = new QgsLineStringV2();
+  ext->setPoints( QList< QgsPointV2 >() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 10 ) << QgsPointV2( 10, 10 )
+                  << QgsPointV2( 10, 0 ) );
+  QVERIFY( !ext->isClosed() );
+  p1.setExteriorRing( ext );
+  QVERIFY( !p1.isEmpty() );
+  QVERIFY( p1.exteriorRing()->isClosed() );
+  QCOMPARE( p1.nCoordinates(), 5 );
+
   //initial setting of exterior ring should set z/m type
   QgsPolygonV2 p2;
   ext = new QgsLineStringV2();
@@ -2228,26 +2238,20 @@ void TestQgsGeometry::polygonV2()
   QCOMPARE( p6.interiorRing( 0 ), ring );
   QVERIFY( !p6.interiorRing( 1 ) );
 
+  //add non-closed interior ring, should be closed automatically
+  ring = new QgsLineStringV2();
+  ring->setPoints( QList< QgsPointV2 >() << QgsPointV2( 0.1, 0.1 ) << QgsPointV2( 0.1, 0.9 ) << QgsPointV2( 0.9, 0.9 )
+                   << QgsPointV2( 0.9, 0.1 ) );
+  QVERIFY( !ring->isClosed() );
+  p6.addInteriorRing( ring );
+  QCOMPARE( p6.numInteriorRings(), 2 );
+  QVERIFY( p6.interiorRing( 1 )->isClosed() );
+
   //try adding an interior ring with z to a 2d polygon, z should be dropped
   ring = new QgsLineStringV2();
   ring->setPoints( QList< QgsPointV2 >() << QgsPointV2( QgsWKBTypes::PointZ, 0.1, 0.1, 1 )
                    << QgsPointV2( QgsWKBTypes::PointZ, 0.1, 0.2, 2 ) << QgsPointV2( QgsWKBTypes::PointZ, 0.2, 0.2, 3 )
                    << QgsPointV2( QgsWKBTypes::PointZ, 0.2, 0.1, 4 ) << QgsPointV2( QgsWKBTypes::PointZ, 0.1, 0.1, 1 ) );
-  p6.addInteriorRing( ring );
-  QCOMPARE( p6.numInteriorRings(), 2 );
-  QVERIFY( !p6.is3D() );
-  QVERIFY( !p6.isMeasure() );
-  QCOMPARE( p6.wkbType(), QgsWKBTypes::Polygon );
-  QVERIFY( p6.interiorRing( 1 ) );
-  QVERIFY( !p6.interiorRing( 1 )->is3D() );
-  QVERIFY( !p6.interiorRing( 1 )->isMeasure() );
-  QCOMPARE( p6.interiorRing( 1 )->wkbType(), QgsWKBTypes::LineString );
-
-  //try adding an interior ring with m to a 2d polygon, m should be dropped
-  ring = new QgsLineStringV2();
-  ring->setPoints( QList< QgsPointV2 >() << QgsPointV2( QgsWKBTypes::PointM, 0.1, 0.1, 0, 1 )
-                   << QgsPointV2( QgsWKBTypes::PointM, 0.1, 0.2, 0, 2 ) << QgsPointV2( QgsWKBTypes::PointM, 0.2, 0.2, 0, 3 )
-                   << QgsPointV2( QgsWKBTypes::PointM, 0.2, 0.1, 0, 4 ) << QgsPointV2( QgsWKBTypes::PointM, 0.1, 0.1, 0, 1 ) );
   p6.addInteriorRing( ring );
   QCOMPARE( p6.numInteriorRings(), 3 );
   QVERIFY( !p6.is3D() );
@@ -2257,6 +2261,21 @@ void TestQgsGeometry::polygonV2()
   QVERIFY( !p6.interiorRing( 2 )->is3D() );
   QVERIFY( !p6.interiorRing( 2 )->isMeasure() );
   QCOMPARE( p6.interiorRing( 2 )->wkbType(), QgsWKBTypes::LineString );
+
+  //try adding an interior ring with m to a 2d polygon, m should be dropped
+  ring = new QgsLineStringV2();
+  ring->setPoints( QList< QgsPointV2 >() << QgsPointV2( QgsWKBTypes::PointM, 0.1, 0.1, 0, 1 )
+                   << QgsPointV2( QgsWKBTypes::PointM, 0.1, 0.2, 0, 2 ) << QgsPointV2( QgsWKBTypes::PointM, 0.2, 0.2, 0, 3 )
+                   << QgsPointV2( QgsWKBTypes::PointM, 0.2, 0.1, 0, 4 ) << QgsPointV2( QgsWKBTypes::PointM, 0.1, 0.1, 0, 1 ) );
+  p6.addInteriorRing( ring );
+  QCOMPARE( p6.numInteriorRings(), 4 );
+  QVERIFY( !p6.is3D() );
+  QVERIFY( !p6.isMeasure() );
+  QCOMPARE( p6.wkbType(), QgsWKBTypes::Polygon );
+  QVERIFY( p6.interiorRing( 3 ) );
+  QVERIFY( !p6.interiorRing( 3 )->is3D() );
+  QVERIFY( !p6.interiorRing( 3 )->isMeasure() );
+  QCOMPARE( p6.interiorRing( 3 )->wkbType(), QgsWKBTypes::LineString );
 
   //addInteriorRing without z/m to PolygonZM
   QgsPolygonV2 p6b;
