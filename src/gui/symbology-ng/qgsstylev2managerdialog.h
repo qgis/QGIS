@@ -92,6 +92,7 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
 
   protected slots:
     bool addColorRamp( QAction* action );
+    void groupSelectedSymbols();
 
   protected:
 
@@ -155,6 +156,9 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
 
     //! Sub-menu of @c mGroupMenu, dynamically filled to show one entry for every group
     QMenu *mGroupListMenu;
+
+    //! Context menu for the group tree
+    QMenu* mGroupTreeContextMenu;
 
     //! Menu for the "Add item" toolbutton when in colorramp mode
     QMenu* mMenuBtnAddItemColorRamp;

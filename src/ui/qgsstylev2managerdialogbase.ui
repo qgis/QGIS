@@ -461,6 +461,29 @@ QMenu::item:selected {  background-color: gray; } */
     <string>Ungroup</string>
    </property>
   </action>
+  <action name="actnEditSmartGroup">
+   <property name="text">
+    <string>Edit smart group...</string>
+   </property>
+  </action>
+  <action name="actnAddGroup">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add group</string>
+   </property>
+  </action>
+  <action name="actnRemoveGroup">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+   </property>
+   <property name="text">
+    <string>Remove group</string>
+   </property>
+  </action>
   <action name="actnExportAsPNG">
    <property name="enabled">
     <bool>false</bool>
@@ -530,6 +553,38 @@ QMenu::item:selected {  background-color: gray; } */
     <hint type="destinationlabel">
      <x>299</x>
      <y>351</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnAddGroup</sender>
+   <signal>clicked()</signal>
+   <receiver>actnAddGroup</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>46</x>
+     <y>362</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnRemoveGroup</sender>
+   <signal>clicked()</signal>
+   <receiver>actnRemoveGroup</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>133</x>
+     <y>362</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
     </hint>
    </hints>
   </connection>

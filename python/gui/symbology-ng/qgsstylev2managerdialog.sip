@@ -66,6 +66,7 @@ class QgsStyleV2ManagerDialog : QDialog
 
   protected slots:
     bool addColorRamp( QAction* action );
+    void groupSelectedSymbols();
 
   protected:
 

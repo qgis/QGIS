@@ -114,9 +114,6 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( groupSymbols, SIGNAL( triggered() ), this, SLOT( groupSymbolsAction() ) );
   connect( editSmartgroup, SIGNAL( triggered() ), this, SLOT( editSmartgroupAction() ) );
 
-  connect( btnAddGroup, SIGNAL( clicked() ), this, SLOT( addGroup() ) );
-  connect( btnRemoveGroup, SIGNAL( clicked() ), this, SLOT( removeGroup() ) );
-
   connect( searchBox, SIGNAL( textChanged( QString ) ), this, SLOT( filterSymbols( QString ) ) );
   tagsLineEdit->installEventFilter( this );
 
@@ -147,6 +144,7 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   mGroupListMenu->setEnabled( false );
   mGroupMenu->addMenu( mGroupListMenu );
   actnUngroup->setData( 0 );
+  connect( actnUngroup, SIGNAL( triggered( bool ) ), this, SLOT( groupSelectedSymbols() ) );
   mGroupMenu->addAction( actnUngroup );
   mGroupMenu->addSeparator()->setParent( this );
   mGroupMenu->addAction( actnRemoveItem );
@@ -154,6 +152,15 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   mGroupMenu->addSeparator()->setParent( this );
   mGroupMenu->addAction( actnExportAsPNG );
   mGroupMenu->addAction( actnExportAsSVG );
+
+  // Context menu for the group tree
+  mGroupTreeContextMenu = new QMenu( this );
+  connect( actnEditSmartGroup, SIGNAL( triggered( bool ) ), this, SLOT( editSmartgroupAction() ) );
+  mGroupTreeContextMenu->addAction( actnEditSmartGroup );
+  connect( actnAddGroup, SIGNAL( triggered( bool ) ), this, SLOT( addGroup() ) );
+  mGroupTreeContextMenu->addAction( actnAddGroup );
+  connect( actnRemoveGroup, SIGNAL( triggered( bool ) ), this, SLOT( removeGroup() ) );
+  mGroupTreeContextMenu->addAction( actnRemoveGroup );
 
   on_tabItemType_currentChanged( 0 );
 }
@@ -1317,37 +1324,28 @@ void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
   QModelIndex index = groupTree->indexAt( point );
   QgsDebugMsg( "Now you clicked: " + index.data().toString() );
 
-  QMenu groupMenu;
+  actnEditSmartGroup->setVisible( false );
+  actnAddGroup->setVisible( false );
+  actnRemoveGroup->setVisible( false );
 
   if ( index.parent().isValid() && ( index.data().toString() != "Ungrouped" ) )
   {
     if ( index.parent().data( Qt::UserRole + 1 ).toString() == "smartgroups" )
     {
-      groupMenu.addAction( tr( "Edit smart group" ) );
+      actnEditSmartGroup->setVisible( true );
     }
     else
     {
-      groupMenu.addAction( tr( "Add group" ) );
+      actnAddGroup->setVisible( true );
     }
-    groupMenu.addAction( tr( "Remove group" ) );
+    actnRemoveGroup->setVisible( true );
   }
   else if ( index.data( Qt::UserRole + 1 ) == "groups" || index.data( Qt::UserRole + 1 ) == "smartgroups" )
   {
-    groupMenu.addAction( tr( "Add group" ) );
+    actnAddGroup->setVisible( true );
   }
 
-
-  QAction* selectedItem = groupMenu.exec( globalPos );
-
-  if ( selectedItem )
-  {
-    if ( selectedItem->text() == tr( "Add group" ) )
-      addGroup();
-    else if ( selectedItem->text() == tr( "Remove group" ) )
-      removeGroup();
-    else if ( selectedItem->text() == tr( "Edit smart group" ) )
-      editSmartgroupAction();
-  }
+  mGroupTreeContextMenu->popup( globalPos );
 }
 
 void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
@@ -1363,10 +1361,16 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
   {
     a = new QAction( mStyle->groupName( groupId ), mGroupListMenu );
     a->setData( groupId );
+    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( groupSelectedSymbols() ) );
     mGroupListMenu->addAction( a );
   }
 
-  QAction* selectedItem = mGroupMenu->exec( globalPos );
+  mGroupMenu->popup( globalPos );
+}
+
+void QgsStyleV2ManagerDialog::groupSelectedSymbols()
+{
+  QAction* selectedItem = qobject_cast<QAction*>( sender() );
 
   if ( selectedItem )
   {
