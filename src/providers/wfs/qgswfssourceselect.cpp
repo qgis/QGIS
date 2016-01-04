@@ -81,6 +81,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WindowFlags fl, boo
   QgsDebugMsg( "restoring settings" );
   restoreGeometry( settings.value( "/Windows/WFSSourceSelect/geometry" ).toByteArray() );
   cbxUseTitleLayerName->setChecked( settings.value( "/Windows/WFSSourceSelect/UseTitleLayerName", false ).toBool() );
+  mHoldDialogOpen->setChecked( settings.value( "/Windows/WFSSourceSelect/HoldDialogOpen", false ).toBool() );
 
   mModel = new QStandardItemModel();
   mModel->setHorizontalHeaderItem( 0, new QStandardItem( "Title" ) );
@@ -104,6 +105,7 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
   QgsDebugMsg( "saving settings" );
   settings.setValue( "/Windows/WFSSourceSelect/geometry", saveGeometry() );
   settings.setValue( "/Windows/WFSSourceSelect/UseTitleLayerName", cbxUseTitleLayerName->isChecked() );
+  settings.setValue( "/Windows/WFSSourceSelect/HoldDialogOpen", mHoldDialogOpen->isChecked() );
 
   delete mItemDelegate;
   delete mProjectionSelector;
@@ -419,7 +421,11 @@ void QgsWFSSourceSelect::addLayer()
     }
     emit addWfsLayer( mUri, layerName );
   }
-  accept();
+
+  if ( !mHoldDialogOpen->isChecked() )
+  {
+    accept();
+  }
 }
 
 void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
