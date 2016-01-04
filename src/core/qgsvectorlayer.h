@@ -549,6 +549,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     const QList<QgsVectorJoinInfo> vectorJoins() const;
 
     /**
+     * Get the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
+     */
+    virtual QSet<QString> layerDependencies() const;
+
+    /**
      * Add a new field which is calculated by the expression specified
      *
      * @param exp The expression which calculates the field

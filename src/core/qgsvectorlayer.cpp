@@ -1620,6 +1620,16 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   //save joins
   mJoinBuffer->writeXml( layer_node, document );
 
+  // dependencies
+  QDomElement dependenciesElement = document.createElement( "layerDependencies" );
+  foreach ( QString layerId, layerDependencies() )
+  {
+    QDomElement depElem = document.createElement( "layer" );
+    depElem.setAttribute( "id", layerId );
+    dependenciesElement.appendChild( depElem );
+  }
+  layer_node.appendChild( dependenciesElement );
+
   // save expression fields
   mExpressionFieldBuffer->writeXml( layer_node, document );
 
@@ -3910,4 +3920,13 @@ bool QgsAttributeEditorRelation::init( QgsRelationManager* relationManager )
 {
   mRelation = relationManager->relation( mRelationId );
   return mRelation.isValid();
+}
+
+QSet<QString> QgsVectorLayer::layerDependencies() const
+{
+  if ( mDataProvider )
+  {
+    return mDataProvider->layerDependencies();
+  }
+  return QSet<QString>();
 }

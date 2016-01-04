@@ -548,4 +548,9 @@ void QgsVectorDataProvider::pushError( const QString& msg )
   mErrors << msg;
 }
 
+QSet<QString> QgsVectorDataProvider::layerDependencies() const
+{
+  return QSet<QString>();
+}
+
 QStringList QgsVectorDataProvider::smEncodings;

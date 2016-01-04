@@ -383,6 +383,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       emit dataChanged();
     }
 
+    /**
+     * Get the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
+     */
+    virtual QSet<QString> layerDependencies() const;
+
   protected:
     void clearMinMaxCache();
     void fillMinMaxCache();
