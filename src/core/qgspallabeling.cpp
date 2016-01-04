@@ -78,6 +78,29 @@ using namespace pal;
 
 // -------------
 
+/* ND: Default point label position priority. These are set to match variants of the ideal placement priority described
+  in "Making Maps", Krygier & Wood (2011) (p216),
+  "Elements of Cartography", Robinson et al (1995)
+  and "Designing Better Maps", Brewer (2005) (p76)
+  Note that while they agree on positions 1-4, 5-8 are more contentious so I've selected these placements
+  based on my preferences, and to follow Krygier and Wood's placements more closer. (I'm not going to disagree
+  with Denis Wood on anything cartography related...!)
+*/
+QVector< QgsPalLayerSettings::PredefinedPointPosition > QgsPalLayerSettings::DEFAULT_PLACEMENT_ORDER = QVector< QgsPalLayerSettings::PredefinedPointPosition >()
+    << QgsPalLayerSettings::TopRight
+    << QgsPalLayerSettings::TopLeft
+    << QgsPalLayerSettings::BottomRight
+    << QgsPalLayerSettings::BottomLeft
+    << QgsPalLayerSettings::MiddleRight
+    << QgsPalLayerSettings::MiddleLeft
+    << QgsPalLayerSettings::TopSlightlyRight
+    << QgsPalLayerSettings::BottomSlightlyRight;
+//debugging only - don't use these placements by default
+/* << QgsPalLayerSettings::TopSlightlyLeft
+<< QgsPalLayerSettings::BottomSlightlyLeft;
+<< QgsPalLayerSettings::TopMiddle
+<< QgsPalLayerSettings::BottomMiddle;*/
+
 QgsPalLayerSettings::QgsPalLayerSettings()
     : upsidedownLabels( Upright )
     , mCurFeat( nullptr )
@@ -169,6 +192,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   placementFlags = AboveLine | MapOrientation;
   centroidWhole = false;
   centroidInside = false;
+  predefinedPositionOrder = DEFAULT_PLACEMENT_ORDER;
   fitInPolygonOnly = false;
   quadOffset = QuadrantOver;
   xOffset = 0;
@@ -298,6 +322,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   mDataDefinedNames.insert( Priority, QPair<QString, int>( "Priority", -1 ) );
   mDataDefinedNames.insert( IsObstacle, QPair<QString, int>( "IsObstacle", -1 ) );
   mDataDefinedNames.insert( ObstacleFactor, QPair<QString, int>( "ObstacleFactor", -1 ) );
+  mDataDefinedNames.insert( PredefinedPositionOrder, QPair<QString, int>( "PredefinedPositionOrder", -1 ) );
 
   // (data defined only)
   mDataDefinedNames.insert( PositionX, QPair<QString, int>( "PositionX", 9 ) );
@@ -391,6 +416,7 @@ QgsPalLayerSettings& QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   placementFlags = s.placementFlags;
   centroidWhole = s.centroidWhole;
   centroidInside = s.centroidInside;
+  predefinedPositionOrder = s.predefinedPositionOrder;
   fitInPolygonOnly = s.fitInPolygonOnly;
   quadOffset = s.quadOffset;
   xOffset = s.xOffset;
@@ -914,6 +940,9 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   placementFlags = layer->customProperty( "labeling/placementFlags" ).toUInt();
   centroidWhole = layer->customProperty( "labeling/centroidWhole", QVariant( false ) ).toBool();
   centroidInside = layer->customProperty( "labeling/centroidInside", QVariant( false ) ).toBool();
+  predefinedPositionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( layer->customProperty( "labeling/predefinedPositionOrder" ).toString() );
+  if ( predefinedPositionOrder.isEmpty() )
+    predefinedPositionOrder = DEFAULT_PLACEMENT_ORDER;
   fitInPolygonOnly = layer->customProperty( "labeling/fitInPolygonOnly", QVariant( false ) ).toBool();
   dist = layer->customProperty( "labeling/dist" ).toDouble();
   distInMapUnits = layer->customProperty( "labeling/distInMapUnits" ).toBool();
@@ -1089,6 +1118,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/placementFlags", static_cast< unsigned int >( placementFlags ) );
   layer->setCustomProperty( "labeling/centroidWhole", centroidWhole );
   layer->setCustomProperty( "labeling/centroidInside", centroidInside );
+  layer->setCustomProperty( "labeling/predefinedPositionOrder", QgsLabelingUtils::encodePredefinedPositionOrder( predefinedPositionOrder ) );
   layer->setCustomProperty( "labeling/fitInPolygonOnly", fitInPolygonOnly );
   layer->setCustomProperty( "labeling/dist", dist );
   layer->setCustomProperty( "labeling/distInMapUnits", distInMapUnits );
@@ -1288,6 +1318,9 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   placementFlags = placementElem.attribute( "placementFlags" ).toUInt();
   centroidWhole = placementElem.attribute( "centroidWhole", "0" ).toInt();
   centroidInside = placementElem.attribute( "centroidInside", "0" ).toInt();
+  predefinedPositionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( placementElem.attribute( "predefinedPositionOrder" ) );
+  if ( predefinedPositionOrder.isEmpty() )
+    predefinedPositionOrder = DEFAULT_PLACEMENT_ORDER;
   fitInPolygonOnly = placementElem.attribute( "fitInPolygonOnly", "0" ).toInt();
   dist = placementElem.attribute( "dist" ).toDouble();
   distInMapUnits = placementElem.attribute( "distInMapUnits" ).toInt();
@@ -1449,6 +1482,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   placementElem.setAttribute( "placementFlags", static_cast< unsigned int >( placementFlags ) );
   placementElem.setAttribute( "centroidWhole", centroidWhole );
   placementElem.setAttribute( "centroidInside", centroidInside );
+  placementElem.setAttribute( "predefinedPositionOrder", QgsLabelingUtils::encodePredefinedPositionOrder( predefinedPositionOrder ) );
   placementElem.setAttribute( "fitInPolygonOnly", fitInPolygonOnly );
   placementElem.setAttribute( "dist", dist );
   placementElem.setAttribute( "distInMapUnits", distInMapUnits );
@@ -2644,6 +2678,14 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     ( *labelFeature )->setObstacleGeometry( geosObstacleGeomClone );
   }
 
+  //set label's visual margin so that top visual margin is the leading, and bottom margin is the font's descent
+  //this makes labels align to the font's baseline or highest character
+  double topMargin = qMax( labelFontMetrics->leading(), 0.0 ) + 1.0;
+  double bottomMargin = 1.0 + labelFontMetrics->descent();
+  QgsLabelFeature::VisualMargin vm( topMargin, 0.0, bottomMargin, 0.0 );
+  vm *= xform->mapUnitsPerPixel() / rasterCompressFactor;
+  ( *labelFeature )->setVisualMargin( vm  );
+
   // store the label's calculated font for later use during painting
   QgsDebugMsgLevel( QString( "PAL font stored definedFont: %1, Style: %2" ).arg( labelFont.toString(), labelFont.styleName() ), 4 );
   lf->setDefinedFont( labelFont );
@@ -2739,6 +2781,17 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     }
   }
   ( *labelFeature )->setObstacleFactor( featObstacleFactor );
+
+  QVector< QgsPalLayerSettings::PredefinedPointPosition > positionOrder = predefinedPositionOrder;
+  if ( positionOrder.isEmpty() )
+    positionOrder = QgsPalLayerSettings::DEFAULT_PLACEMENT_ORDER;
+
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::PredefinedPositionOrder, exprVal, &context.expressionContext(), QgsLabelingUtils::encodePredefinedPositionOrder( predefinedPositionOrder ) ) )
+  {
+    QString orderD = exprVal.toString();
+    positionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( orderD );
+  }
+  ( *labelFeature )->setPredefinedPositionOrder( positionOrder );
 
   // add parameters for data defined labeling to label feature
   lf->setDataDefinedValues( dataDefinedValues );

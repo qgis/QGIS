@@ -265,15 +265,13 @@ int GeomFunction::reorderPolygon( int nbPoints, double *x, double *y )
 {
   int inc = 0;
   int *cHull;
-  int cHullSize;
   int i;
 
   int *pts = new int[nbPoints];
   for ( i = 0; i < nbPoints; i++ )
     pts[i] = i;
 
-
-  cHullSize = convexHullId( pts, x, y, nbPoints, cHull );
+  ( void )convexHullId( pts, x, y, nbPoints, cHull );
 
   if ( pts[cHull[0]] < pts[cHull[1]] && pts[cHull[1]] < pts[cHull[2]] )
     inc = 1;

@@ -521,7 +521,7 @@
               <item>
                <widget class="QStackedWidget" name="mLabelStackedWidget">
                 <property name="currentIndex">
-                 <number>6</number>
+                 <number>5</number>
                 </property>
                 <widget class="QWidget" name="mLabelPage_Text">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -560,8 +560,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>346</width>
-                       <height>388</height>
+                       <width>594</width>
+                       <height>398</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1316,8 +1316,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>383</width>
-                       <height>389</height>
+                       <width>594</width>
+                       <height>398</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -1961,8 +1961,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>301</width>
-                       <height>257</height>
+                       <width>594</width>
+                       <height>398</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2340,7 +2340,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>454</width>
+                       <width>578</width>
                        <height>697</height>
                       </rect>
                      </property>
@@ -3170,7 +3170,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>330</width>
+                       <width>578</width>
                        <height>424</height>
                       </rect>
                      </property>
@@ -3659,7 +3659,7 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-398</y>
+                       <y>0</y>
                        <width>578</width>
                        <height>829</height>
                       </rect>
@@ -3716,7 +3716,7 @@ font-style: italic;</string>
                             <number>2</number>
                            </property>
                            <widget class="QWidget" name="pagePoint">
-                            <layout class="QGridLayout" name="gridLayout_13">
+                            <layout class="QGridLayout" name="gridLayout_13" columnstretch="0,0,0,0">
                              <property name="leftMargin">
                               <number>0</number>
                              </property>
@@ -3729,13 +3729,10 @@ font-style: italic;</string>
                              <property name="bottomMargin">
                               <number>0</number>
                              </property>
-                             <item row="0" column="0">
+                             <item row="0" column="1">
                               <widget class="QRadioButton" name="radAroundPoint">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
+                               <property name="toolTip">
+                                <string>Labels are placed in an equal radius circle around point features.</string>
                                </property>
                                <property name="text">
                                 <string>Around point</string>
@@ -3745,12 +3742,38 @@ font-style: italic;</string>
                                </property>
                               </widget>
                              </item>
-                             <item row="0" column="1">
+                             <item row="0" column="2">
                               <widget class="QRadioButton" name="radOverPoint">
+                               <property name="toolTip">
+                                <string>Labels are placed at a fixed offset from the point.</string>
+                               </property>
                                <property name="text">
                                 <string>Offset from point</string>
                                </property>
                               </widget>
+                             </item>
+                             <item row="0" column="0">
+                              <widget class="QRadioButton" name="radPredefinedOrder">
+                               <property name="toolTip">
+                                <string>Uses cartographically 'ideal' placements, prioritising label placement with best visual relationship with the point feature</string>
+                               </property>
+                               <property name="text">
+                                <string>Cartographic</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item row="0" column="3">
+                              <spacer name="horizontalSpacer_25">
+                               <property name="orientation">
+                                <enum>Qt::Horizontal</enum>
+                               </property>
+                               <property name="sizeHint" stdset="0">
+                                <size>
+                                 <width>40</width>
+                                 <height>20</height>
+                                </size>
+                               </property>
+                              </spacer>
                              </item>
                             </layout>
                            </widget>
@@ -5127,7 +5150,7 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-157</y>
+                       <y>0</y>
                        <width>578</width>
                        <height>799</height>
                       </rect>
@@ -6313,12 +6336,14 @@ font-style: italic;</string>
   <tabstop>radLineParallel</tabstop>
   <tabstop>radLineCurved</tabstop>
   <tabstop>radLineHorizontal</tabstop>
-  <tabstop>radPolygonPerimeter</tabstop>
-  <tabstop>radOverCentroid</tabstop>
+  <tabstop>radPredefinedOrder</tabstop>
   <tabstop>radAroundPoint</tabstop>
-  <tabstop>radPolygonFree</tabstop>
+  <tabstop>radOverPoint</tabstop>
+  <tabstop>radOverCentroid</tabstop>
   <tabstop>radAroundCentroid</tabstop>
+  <tabstop>radPolygonPerimeter</tabstop>
   <tabstop>radPolygonHorizontal</tabstop>
+  <tabstop>radPolygonFree</tabstop>
   <tabstop>chkLineAbove</tabstop>
   <tabstop>chkLineOn</tabstop>
   <tabstop>chkLineBelow</tabstop>
@@ -6359,7 +6384,6 @@ font-style: italic;</string>
   <tabstop>mCoordRotationDDBtn</tabstop>
   <tabstop>chkPreserveRotation</tabstop>
   <tabstop>mPrioritySlider</tabstop>
-  <tabstop>radOverPoint</tabstop>
   <tabstop>scrollArea_4</tabstop>
   <tabstop>mScaleBasedVisibilityChkBx</tabstop>
   <tabstop>mScaleBasedVisibilityDDBtn</tabstop>

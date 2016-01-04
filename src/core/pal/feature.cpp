@@ -227,7 +227,7 @@ LabelPosition::Quadrant FeaturePart::quadrantFromOffset() const
   }
 }
 
-int FeaturePart::setPositionOverPoint( double x, double y, QList< LabelPosition*>& lPos, double angle, PointSet *mapShape )
+int FeaturePart::createCandidatesOverPoint( double x, double y, QList< LabelPosition*>& lPos, double angle, PointSet *mapShape )
 {
   int nbp = 1;
 
@@ -306,7 +306,129 @@ int FeaturePart::setPositionOverPoint( double x, double y, QList< LabelPosition*
   return nbp;
 }
 
-int FeaturePart::setPositionForPoint( double x, double y, QList< LabelPosition* >& lPos, double angle, PointSet *mapShape )
+int FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y, QList<LabelPosition*>& lPos, double angle )
+{
+  QVector< QgsPalLayerSettings::PredefinedPointPosition > positions = mLF->predefinedPositionOrder();
+  double labelWidth = getLabelWidth();
+  double labelHeight = getLabelHeight();
+  double distanceToLabel = getLabelDistance();
+  const QgsLabelFeature::VisualMargin& visualMargin = mLF->visualMargin();
+
+  double cost = 0.0001;
+  int i = 0;
+  Q_FOREACH ( QgsPalLayerSettings::PredefinedPointPosition position, positions )
+  {
+    double alpha = 0.0;
+    double deltaX = 0;
+    double deltaY = 0;
+    LabelPosition::Quadrant quadrant;
+    switch ( position )
+    {
+      case QgsPalLayerSettings::TopLeft:
+        quadrant = LabelPosition::QuadrantAboveLeft;
+        alpha = 2.3561944902; //315 degrees
+        deltaX = -labelWidth + visualMargin.right;
+        deltaY = -visualMargin.bottom;
+        break;
+
+      case QgsPalLayerSettings::TopSlightlyLeft:
+        quadrant = LabelPosition::QuadrantAboveRight; //right quadrant, so labels are left-aligned
+        alpha = 1.5707963268; //0 degrees;
+        deltaX = -labelWidth / 4.0 - visualMargin.left;
+        deltaY = -visualMargin.bottom;
+        break;
+
+      case QgsPalLayerSettings::TopMiddle:
+        quadrant = LabelPosition::QuadrantAbove;
+        alpha = 1.5707963268; //0 degrees
+        deltaX = -labelWidth / 2.0;
+        deltaY = -visualMargin.bottom;
+        break;
+
+      case QgsPalLayerSettings::TopSlightlyRight:
+        quadrant = LabelPosition::QuadrantAboveLeft; //left quadrant, so labels are right-aligned
+        alpha = 1.5707963268; //0 degrees
+        deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right;
+        deltaY = -visualMargin.bottom;
+        break;
+
+      case QgsPalLayerSettings::TopRight:
+        quadrant = LabelPosition::QuadrantAboveRight;
+        alpha = 0.7853981634; // 45.0 degrees
+        deltaX = - visualMargin.left;
+        deltaY = -visualMargin.bottom;
+        break;
+
+      case QgsPalLayerSettings::MiddleLeft:
+        quadrant = LabelPosition::QuadrantLeft;
+        alpha = 3.1415926536; // 270.0 degrees
+        deltaX = -labelWidth + visualMargin.right;
+        deltaY = -labelHeight / 2.0;// TODO - should this be adjusted by visual margin??
+        break;
+
+      case QgsPalLayerSettings::MiddleRight:
+        quadrant = LabelPosition::QuadrantRight;
+        alpha = 0.0; // 90.0 degrees
+        deltaX = -visualMargin.left;
+        deltaY = -labelHeight / 2.0;// TODO - should this be adjusted by visual margin??
+        break;
+
+      case QgsPalLayerSettings::BottomLeft:
+        quadrant = LabelPosition::QuadrantBelowLeft;
+        alpha = 3.926990817; // 225.0 degrees
+        deltaX = -labelWidth + visualMargin.right;
+        deltaY = -labelHeight + visualMargin.top;
+        break;
+
+      case QgsPalLayerSettings::BottomSlightlyLeft:
+        quadrant = LabelPosition::QuadrantBelowRight; //right quadrant, so labels are left-aligned
+        alpha = 4.7123889804; // 180.0 degrees
+        deltaX = -labelWidth / 4.0 - visualMargin.left;
+        deltaY = -labelHeight + visualMargin.top;
+        break;
+
+      case QgsPalLayerSettings::BottomMiddle:
+        quadrant = LabelPosition::QuadrantBelow;
+        alpha = 4.7123889804; // 180.0 degrees
+        deltaX = -labelWidth / 2.0;
+        deltaY = -labelHeight + visualMargin.top;
+        break;
+
+      case QgsPalLayerSettings::BottomSlightlyRight:
+        quadrant = LabelPosition::QuadrantBelowLeft; //left quadrant, so labels are right-aligned
+        alpha =  4.7123889804; // 180.0 degrees
+        deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right;
+        deltaY = -labelHeight + visualMargin.top;
+        break;
+
+      case QgsPalLayerSettings::BottomRight:
+        quadrant = LabelPosition::QuadrantBelowRight;
+        alpha = 5.4977871438; // 135.0 degrees
+        deltaX = -visualMargin.left;
+        deltaY = -labelHeight + visualMargin.top;
+        break;
+    }
+
+    //have bearing, distance - calculate reference point
+    double referenceX = cos( alpha ) * distanceToLabel + x;
+    double referenceY = sin( alpha ) * distanceToLabel + y;
+
+    double labelX = referenceX + deltaX;
+    double labelY = referenceY + deltaY;
+
+    lPos << new LabelPosition( i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant );
+
+
+    //TODO - tweak
+    cost += 0.001;
+
+    ++i;
+  }
+
+  return lPos.count();
+}
+
+int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPosition* >& lPos, double angle, PointSet *mapShape )
 {
   double labelWidth = getLabelWidth();
   double labelHeight = getLabelHeight();
@@ -460,7 +582,7 @@ int FeaturePart::setPositionForPoint( double x, double y, QList< LabelPosition* 
 }
 
 // TODO work with squared distance by removing call to sqrt or dist_euc2d
-int FeaturePart::setPositionForLine( QList< LabelPosition* >& lPos, PointSet *mapShape )
+int FeaturePart::createCandidatesAlongLine( QList< LabelPosition* >& lPos, PointSet *mapShape )
 {
   int i;
   double distlabel = getLabelDistance();
@@ -821,7 +943,7 @@ static LabelPosition* _createCurvedCandidate( LabelPosition* lp, double angle, d
   return newLp;
 }
 
-int FeaturePart::setPositionForLineCurved( QList< LabelPosition* >& lPos, PointSet* mapShape )
+int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos, PointSet* mapShape )
 {
   LabelInfo* li = mLF->curvedLabelInfo();
 
@@ -956,7 +1078,7 @@ int FeaturePart::setPositionForLineCurved( QList< LabelPosition* >& lPos, PointS
  *
  */
 
-int FeaturePart::setPositionForPolygon( QList< LabelPosition*>& lPos, PointSet *mapShape )
+int FeaturePart::createCandidatesForPolygon( QList< LabelPosition*>& lPos, PointSet *mapShape )
 {
   int i;
   int j;
@@ -1162,16 +1284,16 @@ int FeaturePart::setPositionForPolygon( QList< LabelPosition*>& lPos, PointSet *
   return nbp;
 }
 
-int FeaturePart::setPosition( QList< LabelPosition*>& lPos,
-                              double bbox_min[2], double bbox_max[2],
-                              PointSet *mapShape, RTree<LabelPosition*, double, 2, double> *candidates )
+int FeaturePart::createCandidates( QList< LabelPosition*>& lPos,
+                                   double bboxMin[2], double bboxMax[2],
+                                   PointSet *mapShape, RTree<LabelPosition*, double, 2, double>* candidates )
 {
   double bbox[4];
 
-  bbox[0] = bbox_min[0];
-  bbox[1] = bbox_min[1];
-  bbox[2] = bbox_max[0];
-  bbox[3] = bbox_max[1];
+  bbox[0] = bboxMin[0];
+  bbox[1] = bboxMin[1];
+  bbox[2] = bboxMax[0];
+  bbox[3] = bboxMax[1];
 
   double angle = mLF->hasFixedAngle() ? mLF->fixedAngle() : 0.0;
 
@@ -1185,15 +1307,17 @@ int FeaturePart::setPosition( QList< LabelPosition*>& lPos,
     {
       case GEOS_POINT:
         if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OverPoint || mLF->hasFixedQuadrant() )
-          setPositionOverPoint( x[0], y[0], lPos, angle );
+          createCandidatesOverPoint( x[0], y[0], lPos, angle );
+        else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OrderedPositionsAroundPoint )
+          createCandidatesAtOrderedPositionsOverPoint( x[0], y[0], lPos, angle );
         else
-          setPositionForPoint( x[0], y[0], lPos, angle );
+          createCandidatesAroundPoint( x[0], y[0], lPos, angle );
         break;
       case GEOS_LINESTRING:
         if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Curved )
-          setPositionForLineCurved( lPos, mapShape );
+          createCurvedCandidatesAlongLine( lPos, mapShape );
         else
-          setPositionForLine( lPos, mapShape );
+          createCandidatesAlongLine( lPos, mapShape );
         break;
 
       case GEOS_POLYGON:
@@ -1204,15 +1328,15 @@ int FeaturePart::setPosition( QList< LabelPosition*>& lPos,
             double cx, cy;
             mapShape->getCentroid( cx, cy, mLF->layer()->centroidInside() );
             if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OverPoint )
-              setPositionOverPoint( cx, cy, lPos, angle, mapShape );
+              createCandidatesOverPoint( cx, cy, lPos, angle, mapShape );
             else
-              setPositionForPoint( cx, cy, lPos, angle, mapShape );
+              createCandidatesAroundPoint( cx, cy, lPos, angle, mapShape );
             break;
           case QgsPalLayerSettings::Line:
-            setPositionForLine( lPos, mapShape );
+            createCandidatesAlongLine( lPos, mapShape );
             break;
           default:
-            setPositionForPolygon( lPos, mapShape );
+            createCandidatesForPolygon( lPos, mapShape );
             break;
         }
     }

@@ -392,3 +392,32 @@ QgsAbstractLabelProvider::QgsAbstractLabelProvider( const QString& layerId )
     , mUpsidedownLabels( QgsPalLayerSettings::Upright )
 {
 }
+
+
+//
+// QgsLabelingUtils
+//
+
+QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<QgsPalLayerSettings::PredefinedPointPosition>& positions )
+{
+  QStringList predefinedOrderString;
+  Q_FOREACH ( QgsPalLayerSettings::PredefinedPointPosition position, positions )
+  {
+    predefinedOrderString << QString::number( static_cast< int >( position ) );
+  }
+  return predefinedOrderString.join( "," );
+}
+
+QVector<QgsPalLayerSettings::PredefinedPointPosition> QgsLabelingUtils::decodePredefinedPositionOrder( const QString& positionString )
+{
+  QVector<QgsPalLayerSettings::PredefinedPointPosition> result;
+  QStringList predefinedOrderList = positionString.split( ',' );
+  Q_FOREACH ( const QString& position, predefinedOrderList )
+  {
+    bool ok = false;
+    int positionInt = position.toInt( &ok );
+    if ( ok )
+      result << static_cast< QgsPalLayerSettings::PredefinedPointPosition >( positionInt );
+  }
+  return result;
+}

@@ -244,8 +244,9 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   connect( chkLineAbove, SIGNAL( toggled( bool ) ), this, SLOT( updatePlacementWidgets() ) );
   connect( chkLineBelow, SIGNAL( toggled( bool ) ), this, SLOT( updatePlacementWidgets() ) );
 
-  // setup point placement button group (assigned enum id currently unused)
+  // setup point placement button group
   mPlacePointBtnGrp = new QButtonGroup( this );
+  mPlacePointBtnGrp->addButton( radPredefinedOrder, ( int )QgsPalLayerSettings::OrderedPositionsAroundPoint );
   mPlacePointBtnGrp->addButton( radAroundPoint, ( int )QgsPalLayerSettings::AroundPoint );
   mPlacePointBtnGrp->addButton( radOverPoint, ( int )QgsPalLayerSettings::OverPoint );
   mPlacePointBtnGrp->setExclusive( true );
@@ -357,6 +358,9 @@ void QgsLabelingGui::init()
     case QgsPalLayerSettings::OverPoint:
       radOverPoint->setChecked( true );
       radOverCentroid->setChecked( true );
+      break;
+    case QgsPalLayerSettings::OrderedPositionsAroundPoint:
+      radPredefinedOrder->setChecked( true );
       break;
     case QgsPalLayerSettings::Line:
       radLineParallel->setChecked( true );
@@ -658,6 +662,10 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
            || ( curPlacementWdgt == pagePolygon && radOverCentroid->isChecked() ) )
   {
     lyr.placement = QgsPalLayerSettings::OverPoint;
+  }
+  else if ( curPlacementWdgt == pagePoint && radPredefinedOrder->isChecked() )
+  {
+    lyr.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
   }
   else if (( curPlacementWdgt == pageLine && radLineParallel->isChecked() )
            || ( curPlacementWdgt == pagePolygon && radPolygonPerimeter->isChecked() )
@@ -1376,6 +1384,10 @@ void QgsLabelingGui::updatePlacementWidgets()
     showFixedQuadrantFrame = true;
     showOffsetFrame = true;
     showRotationFrame = true;
+  }
+  else if ( curWdgt == pagePoint && radPredefinedOrder->isChecked() )
+  {
+    showDistanceFrame = true;
   }
   else if (( curWdgt == pageLine && radLineParallel->isChecked() )
            || ( curWdgt == pagePolygon && radPolygonPerimeter->isChecked() )

@@ -238,4 +238,33 @@ class CORE_EXPORT QgsLabelingEngineV2
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabelingEngineV2::Flags )
 
+
+/**
+ * @class QgsLabelingUtils
+ * @brief Contains helper utilities for working with QGIS' labeling engine.
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ * @note added in QGIS 2.14
+ * @note not available in Python bindings
+ */
+
+class CORE_EXPORT QgsLabelingUtils
+{
+  public:
+
+    /** Encodes an ordered list of predefined point label positions to a string.
+     * @param positions order list of positions
+     * @returns list encoded to string
+     * @see decodePredefinedPositionOrder()
+     */
+    static QString encodePredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition >& positions );
+
+    /** Decodes a string to an ordered list of predefined point label positions.
+     * @param positionString encoded string of positions
+     * @returns decoded list
+     * @see encodePredefinedPositionOrder()
+     */
+    static QVector< QgsPalLayerSettings::PredefinedPointPosition > decodePredefinedPositionOrder( const QString& positionString );
+
+};
+
 #endif // QGSLABELINGENGINEV2_H

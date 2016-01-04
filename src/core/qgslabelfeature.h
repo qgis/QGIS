@@ -34,6 +34,52 @@ class QgsGeometry;
 class CORE_EXPORT QgsLabelFeature
 {
   public:
+
+    //! Stores visual margins for labels (left, right, top and bottom)
+    //! @note not available in Python bindings
+    struct VisualMargin
+    {
+      /** Default constructor, all margins are set to 0.0
+       */
+      VisualMargin()
+          : left( 0.0 )
+          , right( 0.0 )
+          , top( 0.0 )
+          , bottom( 0.0 )
+      {}
+
+      /** Constructor allowing margins to be specified
+       * @param top top margin
+       * @param right right margin
+       * @param bottom bottom margin
+       * @param left left margin
+       */
+      VisualMargin( double top, double right, double bottom, double left )
+          : left( left )
+          , right( right )
+          , top( top )
+          , bottom( bottom )
+      {}
+
+      //! Left margin
+      double left;
+      //! Right margin
+      double right;
+      //! Top margin
+      double top;
+      //! Bottom margin
+      double bottom;
+
+      VisualMargin& operator *=( double value )
+      {
+        left *= value;
+        right *= value;
+        top *= value;
+        bottom *= value;
+        return *this;
+      }
+    };
+
     //! Create label feature, takes ownership of the geometry instance
     QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size );
     //! Clean up geometry and curved label info (if present)
@@ -63,6 +109,22 @@ class CORE_EXPORT QgsLabelFeature
 
     //! Size of the label (in map units)
     QSizeF size() const { return mSize; }
+
+    /** Sets the visual margin for the label feature. The visual margin represents a margin
+     * within the label which should not be considered when calculating the positions of candidates
+     * for the label feature. It is used in certain label placement modes to adjust the position
+     * of candidates so that they all appear to be at visually equal distances from a point feature.
+     * For instance, this can be used to place labels which sit above a point so that their baseline
+     * rather then the descender of the label is at a preset distance from the point.
+     * @param margin visual margins for label
+     * @see visualMargin()
+     */
+    void setVisualMargin( const VisualMargin& margin ) { mVisualMargin = margin; }
+
+    /** Returns the visual margin for the label feature.
+     * @see setVisualMargin() for details
+     */
+    const VisualMargin& visualMargin() const { return mVisualMargin; }
 
     /** Returns the feature's labeling priority.
      * @returns feature's priority, as a value between 0 (highest priority)
@@ -144,6 +206,18 @@ class CORE_EXPORT QgsLabelFeature
     //! Set distance of the label from the feature (in map units)
     void setDistLabel( double dist ) { mDistLabel = dist; }
 
+    /** Returns the priority ordered list of predefined positions for label candidates. This property
+     * is only used for OrderedPositionsAroundPoint placements.
+     * @see setPredefinedPositionOrder()
+     */
+    QVector< QgsPalLayerSettings::PredefinedPointPosition > predefinedPositionOrder() const { return mPredefinedPositionOrder; }
+
+    /** Sets the priority ordered list of predefined positions for label candidates. This property
+     * is only used for OrderedPositionsAroundPoint placements.
+     * @see predefinedPositionOrder()
+     */
+    void setPredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition >& order ) { mPredefinedPositionOrder = order; }
+
     //! Applies only to linestring features - after what distance (in map units)
     //! the labels should be repeated (0 = no repetitions)
     double repeatDistance() const { return mRepeatDistance; }
@@ -214,6 +288,8 @@ class CORE_EXPORT QgsLabelFeature
     GEOSGeometry* mObstacleGeometry;
     //! Width and height of the label
     QSizeF mSize;
+    //! Visual margin of label contents
+    VisualMargin mVisualMargin;
     //! Priority of the label
     double mPriority;
     //! Z-index of label (higher z-index labels are rendered on top of lower z-index labels)
@@ -234,6 +310,8 @@ class CORE_EXPORT QgsLabelFeature
     QgsPoint mPositionOffset;
     //! distance of label from the feature (only for "around point" placement or linestrings)
     double mDistLabel;
+    //! Ordered list of predefined positions for label (only for OrderedPositionsAroundPoint placement)
+    QVector< QgsPalLayerSettings::PredefinedPointPosition > mPredefinedPositionOrder;
     //! distance after which label should be repeated (only for linestrings)
     double mRepeatDistance;
     //! whether to always show label - even in case of collisions

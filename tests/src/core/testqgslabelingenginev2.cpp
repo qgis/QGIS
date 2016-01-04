@@ -42,6 +42,7 @@ class TestQgsLabelingEngineV2 : public QObject
     void testDiagrams();
     void testRuleBased();
     void zOrder(); //test that labels are stacked correctly
+    void testEncodeDecodePositionOrder();
 
   private:
     QgsVectorLayer* vl;
@@ -384,6 +385,19 @@ void TestQgsLabelingEngineV2::zOrder()
   QgsMapLayerRegistry::instance()->removeMapLayer( vl2 );
 }
 
+void TestQgsLabelingEngineV2::testEncodeDecodePositionOrder()
+{
+  //create an ordered position list
+  QVector< QgsPalLayerSettings::PredefinedPointPosition > original;
+  original << QgsPalLayerSettings::TopLeft << QgsPalLayerSettings::BottomRight << QgsPalLayerSettings::MiddleRight;
+  //encode list
+  QString encoded = QgsLabelingUtils::encodePredefinedPositionOrder( original );
+  QVERIFY( !encoded.isEmpty() );
+
+  //decode
+  QVector< QgsPalLayerSettings::PredefinedPointPosition > decoded = QgsLabelingUtils::decodePredefinedPositionOrder( encoded );
+  QCOMPARE( decoded, original );
+}
 
 bool TestQgsLabelingEngineV2::imageCheck( const QString& testName, QImage &image, int mismatchCount )
 {

@@ -154,7 +154,7 @@ bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
 
   // generate candidates for the feature part
   QList< LabelPosition* > lPos;
-  if ( ft_ptr->setPosition( lPos, context->bbox_min, context->bbox_max, ft_ptr, context->candidates ) )
+  if ( ft_ptr->createCandidates( lPos, context->bbox_min, context->bbox_max, ft_ptr, context->candidates ) )
   {
     // valid features are added to fFeats
     Feats *ft = new Feats();
