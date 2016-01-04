@@ -1084,7 +1084,7 @@ void QgsMapCanvas::zoomToFeatureId( QgsVectorLayer* layer, QgsFeatureId id )
   }
 
   QgsGeometry* geom = fet.geometry();
-  if ( !geom )
+  if ( !geom || !geom->geometry() )
   {
     return;
   }

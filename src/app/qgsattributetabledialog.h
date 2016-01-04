@@ -203,13 +203,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void updateFieldFromExpression();
     void updateFieldFromExpressionSelected();
 
-    /** Add items to the rightclick menu
-        @menu the context menu
-        @atIndex the current model index*/
-    void viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex );
-    /** Zooms to the active feature*/
-    void zoomToFeature();
-
   private:
     QMenu* mMenuActions;
     QAction* mActionToggleEditing;

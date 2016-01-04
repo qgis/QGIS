@@ -96,6 +96,8 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
 
     virtual QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const;
 
+    QgsMapCanvas* mapCanvas() const;
+
   protected:
     /**
      * Returns true if the source row will be accepted

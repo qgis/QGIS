@@ -348,6 +348,17 @@ int QgsDualView::filteredFeatureCount()
 
 void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atIndex )
 {
+  if ( !menu )
+  {
+    return;
+  }
+
+  QgsVectorLayer* vl = mFilterModel->layer();
+  if ( vl && vl->geometryType() != QGis::NoGeometry )
+  {
+    menu->addAction( tr( "Zoom to feature" ), this, SLOT( zoomToCurrentFeature() ) );
+  }
+
   QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
 
   //add user-defined actions to context menu
@@ -387,6 +398,22 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
   menu->addSeparator();
   QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), this, -1, sourceIndex );
   menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
+}
+
+void QgsDualView::zoomToCurrentFeature()
+{
+  QModelIndex currentIndex = mTableView->currentIndex();
+  if ( !currentIndex.isValid() )
+  {
+    return;
+  }
+
+  QgsFeatureId id = mFilterModel->rowToId( currentIndex );
+  QgsMapCanvas* canvas = mFilterModel->mapCanvas();
+  if ( canvas )
+  {
+    canvas->zoomToFeatureId( mLayerCache->layer(), id );
+  }
 }
 
 void QgsDualView::previewExpressionChanged( const QString& expression )

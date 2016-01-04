@@ -136,16 +136,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @return The master model
      */
     QgsAttributeTableModel* masterModel() const { return mMasterModel; }
-    /**
-      Returns the filter model
-      @return the filter model
-      */
-    QgsAttributeTableFilterModel* filterModel() const { return mFilterModel; }
-    /**
-      Returns the table view
-      @return the table view
-      */
-    const QgsAttributeTableView* tableView() const { return mTableView; }
 
     void setRequest( const QgsFeatureRequest& request );
 
@@ -226,6 +216,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * Use e.g. to close a dialog created from progress( int i, bool &cancel )
      */
     virtual void finished();
+
+    /** Zooms to the active feature*/
+    void zoomToCurrentFeature();
 
   private:
     void initLayerCache( QgsVectorLayer *layer, bool cacheGeometry );
