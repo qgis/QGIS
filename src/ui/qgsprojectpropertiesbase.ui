@@ -1460,7 +1460,14 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="mWMSOnlineResourceLineEdit"/>
+                   <widget class="QLineEdit" name="mWMSOnlineResourceLineEdit">
+                    <property name="toolTip">
+                     <string>The web site URL of the service provider.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>The web site URL of the service provider.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="3" column="0">
                    <widget class="QLabel" name="mWMSOnlineResourceLabel">
@@ -1480,10 +1487,24 @@
                    </widget>
                   </item>
                   <item row="6" column="1">
-                   <widget class="QLineEdit" name="mWMSContactMail"/>
+                   <widget class="QLineEdit" name="mWMSContactMail">
+                    <property name="toolTip">
+                     <string>The contact person e-mail for the service.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>The contact person e-mail for the service.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="mWMSContactPerson"/>
+                   <widget class="QLineEdit" name="mWMSContactPerson">
+                    <property name="toolTip">
+                     <string>The contact person name for the service.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>The contact person name for the service.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="6" column="0">
                    <widget class="QLabel" name="label_13">
@@ -1493,7 +1514,14 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="mWMSContactOrganization"/>
+                   <widget class="QLineEdit" name="mWMSContactOrganization">
+                    <property name="toolTip">
+                     <string>The name of the service provider.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>The name of the service provider.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="7" column="0">
                    <widget class="QLabel" name="label_12">
@@ -1507,8 +1535,11 @@
                   </item>
                   <item row="1" column="1">
                    <widget class="QLineEdit" name="mWMSTitle">
+                    <property name="toolTip">
+                     <string>The title should be brief yet descriptive enough to identify this service.</string>
+                    </property>
                     <property name="placeholderText">
-                     <string>The title is a text string for the benefit of humans</string>
+                     <string>The title should be brief yet descriptive enough to identify this service.</string>
                     </property>
                    </widget>
                   </item>
@@ -1523,10 +1554,27 @@
                    </widget>
                   </item>
                   <item row="7" column="1">
-                   <widget class="QLineEdit" name="mWMSContactPhone"/>
+                   <widget class="QLineEdit" name="mWMSContactPhone">
+                    <property name="toolTip">
+                     <string>The contact person phone for the service.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>The contact person phone for the service.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="8" column="1">
-                   <widget class="QTextEdit" name="mWMSAbstract"/>
+                   <widget class="QTextEdit" name="mWMSAbstract">
+                    <property name="toolTip">
+                     <string>The abstract is a descriptive narrative providing more information about the service.</string>
+                    </property>
+                    <property name="whatsThis">
+                     <string/>
+                    </property>
+                    <property name="documentTitle">
+                     <string/>
+                    </property>
+                   </widget>
                   </item>
                   <item row="11" column="0">
                    <widget class="QLabel" name="mWMSKeywordListLabel">
@@ -1536,7 +1584,14 @@
                    </widget>
                   </item>
                   <item row="11" column="1">
-                   <widget class="QLineEdit" name="mWMSKeywordList"/>
+                   <widget class="QLineEdit" name="mWMSKeywordList">
+                    <property name="toolTip">
+                     <string>List of keywords separated by comma to help catalog searching.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>List of keywords separated by comma to help catalog searching.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="label_11">
@@ -1564,6 +1619,9 @@
                   </item>
                   <item row="9" column="1">
                    <widget class="QComboBox" name="mWMSFeesCb">
+                    <property name="toolTip">
+                     <string>Fees applied to the service.</string>
+                    </property>
                     <property name="editable">
                      <bool>true</bool>
                     </property>
@@ -1571,6 +1629,9 @@
                   </item>
                   <item row="10" column="1">
                    <widget class="QComboBox" name="mWMSAccessConstraintsCb">
+                    <property name="toolTip">
+                     <string>Access constraints applied to the service.</string>
+                    </property>
                     <property name="editable">
                      <bool>true</bool>
                     </property>
@@ -1585,6 +1646,12 @@
                   </item>
                   <item row="5" column="1">
                    <widget class="QComboBox" name="mWMSContactPositionCb">
+                    <property name="toolTip">
+                     <string>The contact person position for the service.</string>
+                    </property>
+                    <property name="accessibleDescription">
+                     <string/>
+                    </property>
                     <property name="editable">
                      <bool>true</bool>
                     </property>
@@ -1592,8 +1659,11 @@
                   </item>
                   <item row="0" column="1">
                    <widget class="QLineEdit" name="mWMSName">
+                    <property name="toolTip">
+                     <string>A name used to identify the root layer. The short name is a text string used for machine-to-machine communication.</string>
+                    </property>
                     <property name="placeholderText">
-                     <string>The short name is a text string used for machine-to-machine communication</string>
+                     <string>A name used to identify the root layer. The short name is a text string used for machine-to-machine communication.</string>
                     </property>
                    </widget>
                   </item>
