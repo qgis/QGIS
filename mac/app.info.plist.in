@@ -229,6 +229,30 @@
 				<string>qlr</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>DXF document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>dxf.icns</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>dxf</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>SQLite database</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>sqlite.icns</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>sqlite</string>
+			</array>
+		</dict>		
 	</array>
 	<key>CFBundleLocalizations</key>
 	<array>
