@@ -645,7 +645,7 @@ bool QgsLineStringV2::deleteVertex( const QgsVertexId& position )
     mM.remove( position.vertex );
   }
 
-  if( numPoints() == 1 )
+  if ( numPoints() == 1 )
   {
     clear();
   }
