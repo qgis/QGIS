@@ -60,7 +60,6 @@ namespace pal
       friend class Problem;
 
       friend class LabelPosition;
-      friend bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx );
 
     public:
       enum LabelMode { LabelPerFeature, LabelPerFeaturePart };
