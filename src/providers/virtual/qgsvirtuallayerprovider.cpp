@@ -600,6 +600,17 @@ QgsAttributeList QgsVirtualLayerProvider::pkAttributeIndexes()
   return QgsAttributeList();
 }
 
+QSet<QString> QgsVirtualLayerProvider::layerDependencies() const
+{
+  QSet<QString> deps;
+  foreach ( const QgsVirtualLayerDefinition::SourceLayer& l, mDefinition.sourceLayers() )
+  {
+    if ( l.isReferenced() )
+      deps << l.reference();
+  }
+  return deps;
+}
+
 /**
  * Class factory to return a pointer to a newly created
  * QgsSpatiaLiteProvider object

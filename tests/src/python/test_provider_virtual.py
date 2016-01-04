@@ -30,6 +30,7 @@ from qgis.core import (QGis,
                        QgsProviderRegistry,
                        QgsVirtualLayerDefinition,
                        QgsWKBTypes
+                       QgsProject
                        )
 
 from utilities import (unitTestDataPath,
@@ -663,6 +664,44 @@ class TestQgsVirtualLayerProvider(TestCase, ProviderTestCase):
         f3 = QgsFeature(ml.fields())
         ml.addFeatures([f3])
         self.assertEqual(ml.featureCount(), vl.featureCount())
+
+    def test_ProjectDependencies(self):
+        # make a virtual layer with living references and save it to a project
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr", False)
+        self.assertEqual(l1.isValid(), True)
+        QgsMapLayerRegistry.instance().addMapLayer(l1)
+
+        query = QUrl.toPercentEncoding("SELECT * FROM france_parts")
+        l2 = QgsVectorLayer("?query=%s" % query, "aa", "virtual", False)
+        self.assertEqual(l2.isValid(), True)
+        QgsMapLayerRegistry.instance().addMapLayer(l2)
+
+        self.assertEqual(len(l2.layerDependencies()), 1)
+        self.assertEqual(l2.layerDependencies()[0].startswith('france_parts'), True)
+
+        query = QUrl.toPercentEncoding("SELECT t1.objectid, t2.name_0 FROM france_parts as t1, aa as t2")
+        l3 = QgsVectorLayer("?query=%s" % query, "bb", "virtual", False)
+        self.assertEqual(l3.isValid(), True)
+        QgsMapLayerRegistry.instance().addMapLayer(l3)
+
+        self.assertEqual(len(l2.layerDependencies()), 1)
+        self.assertEqual(l2.layerDependencies()[0].startswith('france_parts'), True)
+
+        self.assertEqual(len(l3.layerDependencies()), 2)
+
+        temp = os.path.join(tempfile.gettempdir(), "qgstestproject.qgs")
+
+        QgsProject.instance().setFileName(temp)
+        QgsProject.instance().write()
+
+        QgsMapLayerRegistry.instance().removeMapLayers([l1, l2])
+        QgsProject.instance().clear()
+
+        QgsProject.instance().setFileName(temp)
+        QgsProject.instance().read()
+
+        # make sure the 3 layers are loaded back
+        self.assertEqual(len(QgsMapLayerRegistry.instance().mapLayers()), 3)
 
 if __name__ == '__main__':
     unittest.main()

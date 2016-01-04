@@ -89,6 +89,9 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     /** Return list of indexes of fields that make up the primary key */
     QgsAttributeList pkAttributeIndexes() override;
 
+    /** Get the list of layer ids on which this layer depends */
+    QSet<QString> layerDependencies() const override;
+
   private:
 
     // file on disk
