@@ -286,6 +286,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** Clean shapefile from features which are marked as deleted */
     void repack();
 
+    void open();
+    void close();
+
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
     QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
