@@ -57,6 +57,7 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
 
     QImage mFinalImage;
 
+    //! @note not available in Python bindings
     enum { Idle, RenderingLayers, RenderingLabels } mStatus;
 
     QFuture<void> mFuture;

@@ -519,6 +519,16 @@ class QgsPalLayerSettings
     void readFromLayer( QgsVectorLayer* layer );
     void writeToLayer( QgsVectorLayer* layer );
 
+    /** Read settings from a DOM element
+     * @note added in 2.12
+     */
+    void readXml( QDomElement& elem );
+
+    /** Write settings into a DOM element
+     * @note added in 2.12
+     */
+    QDomElement writeXml( QDomDocument& doc );
+
     /** Get a data defined property pointer
      * @note helpful for Python access
      */
@@ -599,6 +609,26 @@ class QgsPalLayerSettings
      * @note not available in python bindings;
      */
     // QMap<QgsPalLayerSettings::DataDefinedProperties, QPair<QString, int> > dataDefinedNames() const;
+
+    // temporary stuff: set when layer gets prepared or labeled
+    QgsFeature* mCurFeat;
+    QgsFields mCurFields;
+    int fieldIndex;
+    const QgsMapToPixel* xform;
+
+    const QgsCoordinateTransform* ct;
+
+    QgsPoint ptZero;
+    QgsPoint ptOne;
+    QgsGeometry* extentGeom;
+    int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
+    int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
+    int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
+
+    QString mTextFontFamily;
+    bool mTextFontFound;
+
+    bool showingShadowRects; // whether to show debug rectangles for drop shadows
 };
 
 class QgsLabelCandidate

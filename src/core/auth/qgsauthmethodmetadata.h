@@ -30,6 +30,7 @@
    supplies enough information to be able to later load the associated shared
    library object.
  * \note Culled from QgsProviderMetadata
+ * \note not available in Python bindings
  */
 class CORE_EXPORT QgsAuthMethodMetadata
 {

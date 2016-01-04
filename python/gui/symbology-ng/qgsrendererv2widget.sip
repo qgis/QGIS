@@ -52,6 +52,8 @@ class QgsRendererV2Widget : QWidget
     void changeSymbolWidth();
     /** Change marker sizes of selected symbols*/
     void changeSymbolSize();
+    /** Change marker angles of selected symbols*/
+    void changeSymbolAngle();
 
     virtual void copy();
     virtual void paste();

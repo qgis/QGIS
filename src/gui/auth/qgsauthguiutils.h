@@ -25,6 +25,7 @@ class QgsMessageBar;
 
 /** \ingroup gui
  * \brief Utility functions for use by authentication GUI widgets or standalone apps
+ * \note not available in Python bindings
  */
 class GUI_EXPORT QgsAuthGuiUtils
 {

@@ -535,6 +535,13 @@ class QgsExpression
 
         int precedence() const;
         bool leftAssociative() const;
+
+      protected:
+
+        bool compare( double diff );
+        int computeInt( int x, int y );
+        double computeDouble( double x, double y );
+        QDateTime computeDateTimeFromInterval( const QDateTime& d, QgsExpression::Interval *i );
     };
 
     class NodeInOperator : QgsExpression::Node

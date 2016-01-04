@@ -23,7 +23,7 @@
 
 /**
  * Wraps a search widget. Default form is just a QgsLineFilterEdit
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper

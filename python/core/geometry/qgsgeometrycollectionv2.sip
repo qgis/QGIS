@@ -84,4 +84,8 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
      */
     virtual bool wktOmitChildType() const;
 
+    /** Reads a collection from a WKT string.
+     */
+    bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometryV2*>& subtypes, const QString& defaultChildWkbType = QString() );
+
 };

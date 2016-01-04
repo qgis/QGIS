@@ -141,6 +141,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      */
     void displayExpressionChanged( const QString& expression );
 
+    //! @note not available in Python bindings
     void aboutToChangeEditSelection( bool& ok );
 
   public slots:

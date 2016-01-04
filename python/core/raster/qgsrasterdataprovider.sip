@@ -281,19 +281,28 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
   protected:
 
-    /** Fill in histogram defaults if not specified */
-    void initHistogram( QgsRasterHistogram &theHistogram, int theBandNo,
-                        int theBinCount,
-                        double theMinimum,
-                        double theMaximum,
-                        const QgsRectangle & theExtent = QgsRectangle(),
-                        int theSampleSize = 0,
-                        bool theIncludeOutOfRange = false );
+    /** Read block of data
+     * @note not available in python bindings */
+    virtual void readBlock( int bandNo, int xBlock, int yBlock, void *data );
 
-    /** Fill in statistics defaults if not specified */
-    void initStatistics( QgsRasterBandStats &theStatistics, int theBandNo,
-                         int theStats = QgsRasterBandStats::All,
-                         const QgsRectangle & theExtent = QgsRectangle(),
-                         int theBinCount = 0 );
+    /** Read block of data using give extent and size
+     *  @note not available in python bindings */
+    //virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
+
+    /** Returns true if user no data contains value */
+    bool userNoDataValuesContains( int bandNo, double value ) const;
+
+    /** Copy member variables from other raster data provider. Useful for implementation of clone() method in subclasses */
+    void copyBaseSettings( const QgsRasterDataProvider& other );
+
+    //! @note not available in Python bindings
+    //static QStringList cStringList2Q_( char ** stringList );
+
+    static QString makeTableCell( const QString & value );
+    static QString makeTableCells( const QStringList & values );
+
+    /** Source no data value is available and is set to be used or internal no data
+     *  is available. Used internally only  */
+    //bool hasNoDataValue ( int theBandNo );
 
 };

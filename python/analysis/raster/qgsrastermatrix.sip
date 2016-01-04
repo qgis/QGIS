@@ -86,4 +86,6 @@ class QgsRasterMatrix
     bool tangens();
     bool atangens();
     bool changeSign();
+    bool log();
+    bool log10();
 };

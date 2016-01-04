@@ -124,6 +124,14 @@ class QgsLayerTreeNode : QObject
 
     QgsLayerTreeNode( NodeType t );
 
+    void readCommonXML( QDomElement &element );
+    void writeCommonXML( QDomElement &element );
+
+    //! Low-level insertion of children to the node. The children must not have any parent yet!
+    void insertChildrenPrivate( int index, QList<QgsLayerTreeNode*> nodes );
+    //! Low-level removal of children from the node.
+    void removeChildrenPrivate( int from, int count, bool destroy = true );
+
   private:
     QgsLayerTreeNode( const QgsLayerTreeNode& other );
 

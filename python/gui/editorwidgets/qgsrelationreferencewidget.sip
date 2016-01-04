@@ -45,10 +45,27 @@ class QgsRelationReferenceWidget : QWidget
     bool orderByValue();
     //! Set if the widget will order the combobox entries by value
     void setOrderByValue( bool orderByValue );
+    //! Set the fields for which filter comboboxes will be created
+    void setFilterFields( const QStringList& filterFields );
 
     //! determines the open form button is visible in the widget
     bool openFormButtonVisible();
     void setOpenFormButtonVisible( bool openFormButtonVisible );
+
+    /**
+     * Determines if the filters are chained
+     *
+     * @return True if filters are chained
+     */
+    bool chainFilters() const;
+
+    /**
+     * Set if filters are chained.
+     * Chained filters restrict the option of subsequent filters based on the selection of a previous filter.
+     *
+     * @param chainFilters If chaining should be enabled
+     */
+    void setChainFilters( bool chainFilters );
 
     //! return the related feature (from the referenced layer)
     //! if no feature is related, it returns an invalid feature

@@ -498,12 +498,13 @@ class DoxygenParser():
             :param elem: XML element corresponding to a class
         """
         try:
-            # check for 'not available in python bindings' note in class docs
+            # check for classes with special python doc notes (probably 'not available' or renamed classes, either way
+            # they should be safe to ignore as obviously some consideration has been given to Python bindings)
             detailed_sec = elem.find('detaileddescription')
             for p in detailed_sec.getiterator('para'):
                 for s in p.getiterator('simplesect'):
                     for ps in s.getiterator('para'):
-                        if 'not available in python bindings' in ps.text.lower():
+                        if ps.text and 'python' in ps.text.lower():
                             return False
             return True
         except:

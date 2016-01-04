@@ -40,4 +40,10 @@ class QgsGml: QObject
       @note Added in QGIS 2.1 */
     QgsCoordinateReferenceSystem crs() const;
 
+  signals:
+    void dataReadProgress( int progress );
+    void totalStepsUpdate( int totalSteps );
+    //also emit signal with progress and totalSteps together (this is better for the status message)
+    void dataProgressAndSteps( int progress, int totalSteps );
+
 };

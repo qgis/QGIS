@@ -300,10 +300,10 @@ class CORE_EXPORT QgsRasterBlock
      *  @return true on success */
     bool setImage( const QImage * image );
 
-    // @note not available in python bindings
+    //! @note not available in python bindings
     inline static double readValue( void *data, QGis::DataType type, qgssize index );
 
-    // @note not available in python bindings
+    //! @note not available in python bindings
     inline static void writeValue( void *data, QGis::DataType type, qgssize index, double value );
 
     void applyNoDataValues( const QgsRasterRangeList & rangeList );

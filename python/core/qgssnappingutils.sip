@@ -88,4 +88,9 @@ class QgsSnappingUtils : QObject
     /** Read snapping configuration from the project */
     void readConfigFromProject();
 
+  protected:
+    //! Called when starting to index - can be overridden and e.g. progress dialog can be provided
+    virtual void prepareIndexStarting( int count );
+    //! Called when finished indexing a layer. When index == count the indexing is complete
+    virtual void prepareIndexProgress( int index );
 };

@@ -82,6 +82,17 @@ class QgsLayerTreeView : QTreeView
     void updateExpandedStateFromNode( QgsLayerTreeNode* node );
 
     QgsMapLayer* layerForIndex( const QModelIndex& index ) const;
+
+  protected slots:
+
+    void modelRowsInserted( const QModelIndex& index, int start, int end );
+    void modelRowsRemoved();
+
+    void updateExpandedStateToNode( const QModelIndex& index );
+
+    void onCurrentChanged();
+    void onExpandedChanged( QgsLayerTreeNode* node, bool expanded );
+    void onModelReset();
 };
 
 

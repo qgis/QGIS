@@ -37,8 +37,8 @@ except:
 # DON'T RAISE THIS THRESHOLD!!!
 # (changes which lower this threshold are welcomed though!)
 
-ACCEPTABLE_MISSING_CLASSES = 69
-ACCEPTABLE_MISSING_MEMBERS = 245
+ACCEPTABLE_MISSING_CLASSES = 0
+ACCEPTABLE_MISSING_MEMBERS = 0
 
 
 class TestQgsSipCoverage(TestCase):
@@ -130,10 +130,4 @@ If these members are not suitable for the Python bindings, please add the Doxyge
 
 
 if __name__ == '__main__':
-    if "MISSING_SIP_CLASSES" in os.environ:
-        ACCEPTABLE_MISSING_CLASSES += int(os.environ['MISSING_SIP_CLASSES'])
-
-    if "MISSING_SIP_MEMBERS" in os.environ:
-        ACCEPTABLE_MISSING_MEMBERS += int(os.environ['MISSING_SIP_MEMBERS'])
-
     unittest.main()

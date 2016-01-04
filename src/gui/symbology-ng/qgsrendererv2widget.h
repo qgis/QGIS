@@ -115,6 +115,7 @@ class QgsFields;
 /**
 Utility class for providing GUI for data-defined rendering.
 @deprecated unused, will be removed in QGIS 3.0
+@note not available in Python bindings
 */
 class QgsRendererV2DataDefinedMenus : public QObject
 {

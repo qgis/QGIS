@@ -23,6 +23,7 @@
  * A HTML editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
  * \note added in 2.6
+ * \note may not be available in Python bindings, depending on platform support
  */
 class GUI_EXPORT QgsCodeEditorHTML : public QgsCodeEditor
 {

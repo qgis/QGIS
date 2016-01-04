@@ -24,6 +24,9 @@
 
 #include "qgsdataitem.h"
 
+/** \class QgsBrowserWatcher
+ * \note not available in Python bindings
+*/
 class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem*> >
 {
     Q_OBJECT

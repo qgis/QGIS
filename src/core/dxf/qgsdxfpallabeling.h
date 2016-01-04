@@ -28,6 +28,7 @@ class QgsDxfExport;
 /** Implements a derived label provider internally used for DXF export
  *
  * Internal class, not in public API. Added in QGIS 2.12
+ * @note not available in Python bindings
  */
 class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
 {

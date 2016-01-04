@@ -383,6 +383,9 @@ class QgsExpressionContext
      */
     void setOriginalValueVariable( const QVariant& value );
 
+    static const QString EXPR_FIELDS;
+    static const QString EXPR_FEATURE;
+    static const QString EXPR_ORIGINAL_VALUE;
 };
 
 /** \ingroup core

@@ -29,6 +29,7 @@ class QgsGeometry;
  *
  * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
  * @note added in QGIS 2.12
+ * @note not available in Python bindings
  */
 class CORE_EXPORT QgsLabelFeature
 {

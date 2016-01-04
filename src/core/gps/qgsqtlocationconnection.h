@@ -34,6 +34,10 @@ QTM_USE_NAMESPACE
 #include <QtPositioning/QGeoSatelliteInfoSource>
 #endif
 
+/**
+ * \class QgsQtLocationConnection
+ * \note may not be available in Python bindings on all platforms
+*/
 class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
 {
     Q_OBJECT

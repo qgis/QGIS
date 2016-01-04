@@ -17,7 +17,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, 
   if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
 
   // Collect geometries, build spatial index
-  QList<const QgsAbstractGeometryV2*> geomList;
+  QList<QgsAbstractGeometryV2*> geomList;
   const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
   Q_FOREACH ( QgsFeatureId id, featureIds )
   {

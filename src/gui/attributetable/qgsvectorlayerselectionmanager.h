@@ -20,6 +20,10 @@
 
 class QgsVectorLayer;
 
+/**
+ * \class QgsVectorLayerSelectionManager
+ * \note not available in Python bindings
+ */
 class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionManager
 {
     Q_OBJECT

@@ -1555,7 +1555,7 @@ QgsGeometry *QgsGeometry::unaryUnion( const QList<QgsGeometry*> &geometryList )
 {
   QgsGeos geos( nullptr );
 
-  QList<const QgsAbstractGeometryV2*> geomV2List;
+  QList<QgsAbstractGeometryV2*> geomV2List;
   QList<QgsGeometry*>::const_iterator it = geometryList.constBegin();
   for ( ; it != geometryList.constEnd(); ++it )
   {

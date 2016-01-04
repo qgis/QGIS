@@ -108,6 +108,11 @@ class QgsDataSourceURI
     bool selectAtIdDisabled() const;
 
     void clearSchema();
+
+    //! set the table schema
+    // @note added in 2.11
+    void setSchema( const QString& schema );
+
     void setSql( const QString& sql );
 
     QString host() const;

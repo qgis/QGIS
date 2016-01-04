@@ -1020,11 +1020,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Access to labeling configuration.
      * @note added in 2.12
+     * @note not available in Python bindings
      */
     const QgsAbstractVectorLayerLabeling* labeling() const { return mLabeling; }
 
     /** Set labeling configuration. Takes ownership of the object.
      * @note added in 2.12
+     * @note not available in Python bindings
      */
     void setLabeling( QgsAbstractVectorLayerLabeling* labeling );
 

@@ -38,7 +38,6 @@
 
 #include "qgsauthmanager.h"
 
-
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {
   public:

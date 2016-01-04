@@ -63,7 +63,7 @@ typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFromSldFunc )( QDomElement& );
 class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMetadata
 {
   public:
-    //! not available in python bindings
+    //! @note not available in python bindings
     QgsSymbolLayerV2Metadata( const QString& name, const QString& visibleName,
                               QgsSymbolV2::SymbolType type,
                               QgsSymbolLayerV2CreateFunc pfCreate,
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMeta
         , mCreateFromSldFunc( nullptr )
     {}
 
-    //! not available in python bindings
+    //! @note not available in python bindings
     QgsSymbolLayerV2Metadata( const QString& name, const QString& visibleName,
                               QgsSymbolV2::SymbolType type,
                               QgsSymbolLayerV2CreateFunc pfCreate,
@@ -86,14 +86,14 @@ class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMeta
         , mCreateFromSldFunc( pfCreateFromSld )
     {}
 
-    //! not available in python bindings
+    //! @note not available in python bindings
     QgsSymbolLayerV2CreateFunc createFunction() const { return mCreateFunc; }
-    //! not available in python bindings
+    //! @note not available in python bindings
     QgsSymbolLayerV2WidgetFunc widgetFunction() const { return mWidgetFunc; }
-    //! not available in python bindings
+    //! @note not available in python bindings
     QgsSymbolLayerV2CreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; }
 
-    //! not available in python bindings
+    //! @note not available in python bindings
     void setWidgetFunction( QgsSymbolLayerV2WidgetFunc f ) { mWidgetFunc = f; }
 
     virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; }

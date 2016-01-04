@@ -203,6 +203,9 @@ class QgsMapSettings
 
     void writeXML( QDomNode& theNode, QDomDocument& theDoc );
 
+  protected:
+
+    void updateDerived();
 };
 
 QFlags<QgsMapSettings::Flag> operator|(QgsMapSettings::Flag f1, QFlags<QgsMapSettings::Flag> f2);

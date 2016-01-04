@@ -190,5 +190,10 @@ class QgsVectorLayerCache : QObject
      */
     void featureAdded( QgsFeatureId fid );
 
+    /**
+     * The cache has been invalidated and cleared.
+     */
+    void invalidated();
+
 };
 

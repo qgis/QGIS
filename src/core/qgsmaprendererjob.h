@@ -159,6 +159,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     bool needTemporaryImage( QgsMapLayer* ml );
 
+    //! @note not available in Python bindings
     static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine, QgsLabelingEngineV2* labelingEngine2, QPainter* painter );
     static void drawOldLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext );
     static void drawNewLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine );

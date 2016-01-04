@@ -12,6 +12,8 @@ class QgsVectorLayerLabelProvider;
  * Abstract base class - its implementations define different approaches to the labeling of a vector layer.
  *
  * @note added in 2.12
+ * @note not available in Python bindings
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
  */
 class CORE_EXPORT QgsAbstractVectorLayerLabeling
 {
@@ -40,6 +42,8 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
  * The configuration is kept in layer's custom properties for backward compatibility.
  *
  * @note added in 2.12
+ * @note not available in Python bindings
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
  */
 class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLabeling
 {

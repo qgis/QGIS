@@ -12,6 +12,12 @@ class QgsFeatureListModel : QAbstractProxyModel, QgsFeatureModel
       bool isEdited;
     };
 
+    enum Role
+    {
+      FeatureInfoRole,
+      FeatureRole
+    };
+
   public:
     explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject* parent /TransferThis/ = 0 );
     virtual ~QgsFeatureListModel();

@@ -382,6 +382,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void rotationChanged( double );
 
     //! Notifies higher level components to show the datum transform dialog and add a QgsLayerCoordinateTransformInfo for that layer
+    //! @note not available in Python bindings
     void datumTransformInfoRequested( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId ) const;
 
 

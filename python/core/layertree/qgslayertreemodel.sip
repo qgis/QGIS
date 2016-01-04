@@ -153,7 +153,7 @@ class QgsLayerTreeModel : QAbstractItemModel
 
     //! Returns the current map settings used for legend filtering
     //! @deprecated It has been renamed to legendFilterMapSettings()
-    const QgsMapSettings* legendFilterByMap() const;
+    const QgsMapSettings* legendFilterByMap() const /Deprecated/;
 
     //! Returns the current map settings used for the current legend filter (or null if none is enabled)
     //! @note added in 2.14
@@ -189,5 +189,59 @@ class QgsLayerTreeModel : QAbstractItemModel
     int autoCollapseSymbologyNodes() const /Deprecated/;
 
   signals:
+
+  protected slots:
+    void nodeWillAddChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
+    void nodeAddedChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
+    void nodeWillRemoveChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
+    void nodeRemovedChildren();
+
+    void nodeVisibilityChanged( QgsLayerTreeNode* node );
+
+    void nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key );
+
+    void nodeLayerLoaded();
+    void nodeLayerWillBeUnloaded();
+    void layerLegendChanged();
+
+    void layerNeedsUpdate();
+
+    void legendNodeDataChanged();
+
+    void invalidateLegendMapBasedData();
+
+  protected:
+    void removeLegendFromLayer( QgsLayerTreeLayer* nodeLayer );
+    void addLegendToLayer( QgsLayerTreeLayer* nodeL );
+
+    void connectToLayer( QgsLayerTreeLayer* nodeLayer );
+    void disconnectFromLayer( QgsLayerTreeLayer* nodeLayer );
+
+    void connectToLayers( QgsLayerTreeGroup* parentGroup );
+    void disconnectFromLayers( QgsLayerTreeGroup* parentGroup );
+    void connectToRootNode();
+    void disconnectFromRootNode();
+
+    //! emit dataChanged() for layer tree node items
+    void recursivelyEmitDataChanged( const QModelIndex& index = QModelIndex() );
+
+    static const QIcon& iconGroup();
+
+    //! Filter nodes from QgsMapLayerLegend according to the current filtering rules
+    QList<QgsLayerTreeModelLegendNode*> filterLegendNodes( const QList<QgsLayerTreeModelLegendNode*>& nodes );
+
+    QModelIndex indexOfParentLayerTreeNode( QgsLayerTreeNode* parentNode ) const;
+
+    int legendRootRowCount( QgsLayerTreeLayer* nL ) const;
+    int legendNodeRowCount( QgsLayerTreeModelLegendNode* node ) const;
+    QModelIndex legendRootIndex( int row, int column, QgsLayerTreeLayer* nL ) const;
+    QModelIndex legendNodeIndex( int row, int column, QgsLayerTreeModelLegendNode* node ) const;
+    QModelIndex legendParent( QgsLayerTreeModelLegendNode* legendNode ) const;
+    QVariant legendNodeData( QgsLayerTreeModelLegendNode* node, int role ) const;
+    Qt::ItemFlags legendNodeFlags( QgsLayerTreeModelLegendNode* node ) const;
+    bool legendEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
+    QIcon legendIconEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
+    void legendCleanup();
+    void legendInvalidateMapBasedData();
 
 };

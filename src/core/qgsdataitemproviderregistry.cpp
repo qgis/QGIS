@@ -27,6 +27,7 @@
  *
  * Ideally the provider plugins should directly provide implementation of QgsDataItemProvider, for the time being
  * this is a wrapper for the legacy interface.
+ * \note not available in Python bindings
  */
 class QgsDataItemProviderFromPlugin : public QgsDataItemProvider
 {

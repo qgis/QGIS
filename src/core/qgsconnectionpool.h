@@ -48,6 +48,7 @@
  * - having startExpirationTimer(), stopExpirationTimer() slots to start/stop the expiration timer
  *
  * For an example on how to use the template class, have a look at the implementation in postgres/spatialite providers.
+ * \note not available in Python bindings
  */
 template <typename T>
 class QgsConnectionPoolGroup
@@ -220,7 +221,7 @@ class QgsConnectionPoolGroup
  *
  * When the connections are not used for some time, they will get closed automatically
  * to save resources.
- *
+ * \note not available in Python bindings
  */
 template <typename T, typename T_Group>
 class QgsConnectionPool

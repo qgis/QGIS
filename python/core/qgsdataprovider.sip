@@ -24,6 +24,15 @@ class QgsDataProvider : QObject
 
   public:
 
+    enum DataCapability
+    {
+      NoDataCapabilities,
+      File,
+      Dir,
+      Database,
+      Net
+    };
+
     QgsDataProvider( const QString & uri = "" );
 
     /**
@@ -230,4 +239,11 @@ class QgsDataProvider : QObject
      */
     void dataChanged( int changed );
 
+  protected:
+
+    /** Add error message */
+    void appendError( const QgsErrorMessage & theMessage );
+
+    /** Set error message */
+    void setError( const QgsError & theError );
 };

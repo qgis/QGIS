@@ -264,6 +264,12 @@ class QgsLayerItem : QgsDataItem
      *  @note Added in 2.8
      */
     QStringList supportedFormats();
+
+    /** Returns comments of the layer
+     * @note added in 2.12
+     */
+    virtual QString comments() const;
+
   public:
     static const QIcon &iconPoint();
     static const QIcon &iconLine();
@@ -328,6 +334,14 @@ class QgsDirectoryItem : QgsDataCollectionItem
 
     /** Check if the given path is hidden from the browser model */
     static bool hiddenPath( QString path );
+
+  public slots:
+    virtual void childrenCreated();
+    void directoryChanged();
+
+  protected:
+    void init();
+
 };
 
 /**
