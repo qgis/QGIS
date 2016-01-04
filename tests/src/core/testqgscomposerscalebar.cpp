@@ -25,6 +25,8 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsfontutils.h"
+
+#include <QLocale>
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -66,6 +68,12 @@ void TestQgsComposerScaleBar::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  // the scale denominator is formatted in a locale aware manner
+  // so 10000 is rendered as "10,000" in C (or en_US) locale, however
+  // other locales may render the number differently (e.g. "10 000" in cs_CZ)
+  // so we enforce C locale to make sure we get expected result
+  QLocale::setDefault( QLocale::c() );
 
   mMapSettings = new QgsMapSettings();
 
