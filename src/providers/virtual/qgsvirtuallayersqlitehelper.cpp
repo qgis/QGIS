@@ -87,7 +87,7 @@ namespace Sqlite
   Query::Query( sqlite3* db, const QString& q ) : db_( db ), nBind_( 1 )
   {
     QByteArray ba( q.toLocal8Bit() );
-    int r = sqlite3_prepare_v2( db, ba.constData(), ba.size(), &stmt_, NULL );
+    int r = sqlite3_prepare_v2( db, ba.constData(), ba.size(), &stmt_, nullptr );
     if ( r )
     {
       QString err = QString( "Query preparation error on %1" ).arg( q );
@@ -121,7 +121,7 @@ namespace Sqlite
   void Query::exec( sqlite3* db, const QString& sql )
   {
     char *errMsg = nullptr;
-    int r = sqlite3_exec( db, sql.toLocal8Bit().constData(), NULL, NULL, &errMsg );
+    int r = sqlite3_exec( db, sql.toLocal8Bit().constData(), nullptr, nullptr, &errMsg );
     if ( r )
     {
       QString err = QString( "Query execution error on %1: %2 - %3" ).arg( sql ).arg( r ).arg( errMsg );

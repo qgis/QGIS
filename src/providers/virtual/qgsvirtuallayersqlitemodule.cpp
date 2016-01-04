@@ -55,7 +55,7 @@ void initVirtualLayerMetadata( sqlite3* db )
 
   sqlite3_stmt *stmt;
   int r;
-  r = sqlite3_prepare_v2( db, "SELECT name FROM sqlite_master WHERE name='_meta'", -1, &stmt, NULL );
+  r = sqlite3_prepare_v2( db, "SELECT name FROM sqlite_master WHERE name='_meta'", -1, &stmt, nullptr );
   if ( r )
   {
     throw std::runtime_error( sqlite3_errmsg( db ) );
@@ -66,7 +66,7 @@ void initVirtualLayerMetadata( sqlite3* db )
   char *errMsg;
   if ( create_meta )
   {
-    r = sqlite3_exec( db, QString( "CREATE TABLE _meta (version INT, url TEXT); INSERT INTO _meta (version) VALUES(%1);" ).arg( VIRTUAL_LAYER_VERSION ).toLocal8Bit().constData(), NULL, NULL, &errMsg );
+    r = sqlite3_exec( db, QString( "CREATE TABLE _meta (version INT, url TEXT); INSERT INTO _meta (version) VALUES(%1);" ).arg( VIRTUAL_LAYER_VERSION ).toLocal8Bit().constData(), nullptr, nullptr, &errMsg );
     if ( r )
     {
       throw std::runtime_error( errMsg );
@@ -485,7 +485,7 @@ int vtable_bestindex( sqlite3_vtab *pvtab, sqlite3_index_info* index_info )
       index_info->idxNum = 1; // PK filter
       index_info->estimatedCost = 1.0; // ??
       //index_info->estimatedRows = 1;
-      index_info->idxStr = NULL;
+      index_info->idxStr = nullptr;
       index_info->needToFreeIdxStr = 0;
       return SQLITE_OK;
     }
@@ -500,7 +500,7 @@ int vtable_bestindex( sqlite3_vtab *pvtab, sqlite3_index_info* index_info )
       index_info->idxNum = 2; // RTree filter
       index_info->estimatedCost = 1.0; // ??
       //index_info->estimatedRows = 1;
-      index_info->idxStr = NULL;
+      index_info->idxStr = nullptr;
       index_info->needToFreeIdxStr = 0;
       return SQLITE_OK;
     }
@@ -508,7 +508,7 @@ int vtable_bestindex( sqlite3_vtab *pvtab, sqlite3_index_info* index_info )
   index_info->idxNum = 0;
   index_info->estimatedCost = 10.0;
   //index_info->estimatedRows = 10;
-  index_info->idxStr = NULL;
+  index_info->idxStr = nullptr;
   index_info->needToFreeIdxStr = 0;
   return SQLITE_OK;
 }
@@ -685,15 +685,15 @@ int qgsvlayer_module_init( sqlite3 *db, char **pzErrMsg, void * unused /*const s
   module.xRowid = vtable_rowid;
   module.xRename = vtable_rename;
 
-  module.xUpdate = NULL;
-  module.xBegin = NULL;
-  module.xSync = NULL;
-  module.xCommit = NULL;
-  module.xRollback = NULL;
-  module.xFindFunction = NULL;
-  module.xSavepoint = NULL;
-  module.xRelease = NULL;
-  module.xRollbackTo = NULL;
+  module.xUpdate = nullptr;
+  module.xBegin = nullptr;
+  module.xSync = nullptr;
+  module.xCommit = nullptr;
+  module.xRollback = nullptr;
+  module.xFindFunction = nullptr;
+  module.xSavepoint = nullptr;
+  module.xRelease = nullptr;
+  module.xRollbackTo = nullptr;
 
   ModuleContext* context = new ModuleContext;
   sqlite3_create_module_v2( db, "QgsVLayer", &module, context, module_destroy );

@@ -99,10 +99,10 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     // underlying vector layers
     struct SourceLayer
     {
-      SourceLayer(): layer( 0 ) {}
+      SourceLayer(): layer( nullptr ) {}
       SourceLayer( QgsVectorLayer *l, const QString& n = "" ) : layer( l ), name( n ) {}
       SourceLayer( const QString& p, const QString& s, const QString& n, const QString& e = "UTF-8" ) :
-          layer( 0 ), name( n ), source( s ), provider( p ), encoding( e ) {}
+          layer( nullptr ), name( n ), source( s ), provider( p ), encoding( e ) {}
       // non-null if it refers to a live layer
       QgsVectorLayer* layer;
       QString name;
