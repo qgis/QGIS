@@ -192,7 +192,7 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
   int row = 0;
   for ( ; symbolIt != lst.constEnd(); ++symbolIt )
   {
-    if ( scaleDenominator == -1 && rule.isEmpty() )
+    if ( qgsDoubleNear( scaleDenominator, -1 ) && rule.isEmpty() )
     {
       QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( "" );
 
@@ -233,7 +233,7 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
   }
 
   // Don't remove row on getLegendGraphic (read only with filter)
-  if ( scaleDenominator == -1 && rule.isEmpty() )
+  if ( qgsDoubleNear( scaleDenominator, -1 ) && rule.isEmpty() )
   {
     // Delete following old items (if current number of items decreased)
     for ( int i = layerItem->rowCount() - 1; i >= row; --i )

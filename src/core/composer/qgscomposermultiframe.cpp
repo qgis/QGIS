@@ -375,7 +375,7 @@ bool QgsComposerMultiFrame::_readXML( const QDomElement& itemElem, const QDomDoc
 {
   QgsComposerObject::readXML( itemElem, doc );
 
-  mResizeMode = ( ResizeMode )itemElem.attribute( "resizeMode", "0" ).toInt();
+  mResizeMode = static_cast< ResizeMode >( itemElem.attribute( "resizeMode", "0" ).toInt() );
   if ( !ignoreFrames )
   {
     QDomNodeList frameList = itemElem.elementsByTagName( "ComposerFrame" );

@@ -319,7 +319,7 @@ bool QgsComposerMouseHandles::selectionRotation( double & rotation ) const
   //iterate through remaining items, checking if they have same rotation
   for ( ++itemIter; itemIter != selectedItems.end(); ++itemIter )
   {
-    if (( *itemIter )->itemRotation() != firstItemRotation )
+    if ( !qgsDoubleNear(( *itemIter )->itemRotation(), firstItemRotation ) )
     {
       //item has a different rotation, so return false
       return false;
@@ -804,7 +804,7 @@ void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition, boo
 
   QPointF snappedLeftPoint;
   //no snapping for rotated items for now
-  if ( !preventSnap && rotation() == 0 )
+  if ( !preventSnap && qgsDoubleNear( rotation(), 0.0 ) )
   {
     //snap to grid and guides
     snappedLeftPoint = snapPoint( upperLeftPoint, QgsComposerMouseHandles::Item );
@@ -854,7 +854,7 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
 
   QPointF beginMousePos;
   QPointF finalPosition;
-  if ( rotation() == 0 )
+  if ( qgsDoubleNear( rotation(), 0.0 ) )
   {
     //snapping only occurs if handles are not rotated for now
 
@@ -875,7 +875,7 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
   double diffY = finalPosition.y() - beginMousePos.y();
 
   double ratio = 0;
-  if ( lockRatio && mBeginHandleHeight != 0 )
+  if ( lockRatio && !qgsDoubleNear( mBeginHandleHeight, 0.0 ) )
   {
     ratio = mBeginHandleWidth / mBeginHandleHeight;
   }
@@ -1128,7 +1128,7 @@ QPointF QgsComposerMouseHandles::snapPoint( const QPointF& point, QgsComposerMou
       break;
   }
 
-  if ( alignX != -1 )
+  if ( !qgsDoubleNear( alignX, -1.0 ) )
   {
     QGraphicsLineItem* item = hAlignSnapItem();
     int numPages = mComposition->numPages();
@@ -1144,7 +1144,7 @@ QPointF QgsComposerMouseHandles::snapPoint( const QPointF& point, QgsComposerMou
   {
     deleteHAlignSnapItem();
   }
-  if ( alignY != -1 )
+  if ( !qgsDoubleNear( alignY, -1.0 ) )
   {
     QGraphicsLineItem* item = vAlignSnapItem();
     item->setLine( QLineF( 0, alignY, mComposition->paperWidth(), alignY ) );

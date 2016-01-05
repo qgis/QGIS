@@ -322,7 +322,7 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
   //write general properties
   composerLegendElem.setAttribute( "title", mSettings.title() );
-  composerLegendElem.setAttribute( "titleAlignment", QString::number(( int ) mSettings.titleAlignment() ) );
+  composerLegendElem.setAttribute( "titleAlignment", QString::number( static_cast< int >( mSettings.titleAlignment() ) ) );
   composerLegendElem.setAttribute( "columnCount", QString::number( mSettings.columnCount() ) );
   composerLegendElem.setAttribute( "splitLayer", QString::number( mSettings.splitLayer() ) );
   composerLegendElem.setAttribute( "equalColumnWidth", QString::number( mSettings.equalColumnWidth() ) );
@@ -421,7 +421,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   mSettings.setTitle( itemElem.attribute( "title" ) );
   if ( !itemElem.attribute( "titleAlignment" ).isEmpty() )
   {
-    mSettings.setTitleAlignment(( Qt::AlignmentFlag )itemElem.attribute( "titleAlignment" ).toInt() );
+    mSettings.setTitleAlignment( static_cast< Qt::AlignmentFlag >( itemElem.attribute( "titleAlignment" ).toInt() ) );
   }
   int colCount = itemElem.attribute( "columnCount", "1" ).toInt();
   if ( colCount < 1 ) colCount = 1;

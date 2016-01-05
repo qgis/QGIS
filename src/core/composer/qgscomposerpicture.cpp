@@ -149,7 +149,7 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
     {
       //TODO - allow placement modes with rotation set. for now, setting a rotation
       //always places picture in center of frame
-      if ( mPictureRotation != 0 )
+      if ( !qgsDoubleNear( mPictureRotation, 0.0 ) )
       {
         painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
         painter->rotate( mPictureRotation );
@@ -204,7 +204,7 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
     }
     else if ( mResizeMode == ZoomResizeFrame )
     {
-      if ( mPictureRotation != 0 )
+      if ( !qgsDoubleNear( mPictureRotation, 0.0 ) )
       {
         painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
         painter->rotate( mPictureRotation );
@@ -528,7 +528,7 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
   if ( mResizeMode == ZoomResizeFrame && !rect().isEmpty() && !( currentPictureSize.isEmpty() ) )
   {
     QSizeF targetImageSize;
-    if ( mPictureRotation == 0 )
+    if ( qgsDoubleNear( mPictureRotation, 0.0 ) )
     {
       targetImageSize = currentPictureSize;
     }
@@ -654,7 +654,7 @@ void QgsComposerPicture::setResizeMode( QgsComposerPicture::ResizeMode mode )
 {
   mResizeMode = mode;
   if ( mode == QgsComposerPicture::ZoomResizeFrame || mode == QgsComposerPicture::FrameToImageSize
-       || ( mode == QgsComposerPicture::Zoom && mPictureRotation != 0 ) )
+       || ( mode == QgsComposerPicture::Zoom && !qgsDoubleNear( mPictureRotation, 0.0 ) ) )
   {
     //call set scene rect to force item to resize to fit picture
     recalculateSize();
@@ -725,8 +725,8 @@ bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerPictureElem.setAttribute( "file", QgsProject::instance()->writePath( mSourcePath ) );
   composerPictureElem.setAttribute( "pictureWidth", QString::number( mPictureWidth ) );
   composerPictureElem.setAttribute( "pictureHeight", QString::number( mPictureHeight ) );
-  composerPictureElem.setAttribute( "resizeMode", QString::number(( int )mResizeMode ) );
-  composerPictureElem.setAttribute( "anchorPoint", QString::number(( int )mPictureAnchor ) );
+  composerPictureElem.setAttribute( "resizeMode", QString::number( static_cast< int >( mResizeMode ) ) );
+  composerPictureElem.setAttribute( "anchorPoint", QString::number( static_cast< int >( mPictureAnchor ) ) );
 
   //rotation
   composerPictureElem.setAttribute( "pictureRotation", QString::number( mPictureRotation ) );
@@ -755,14 +755,14 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   mPictureHeight = itemElem.attribute( "pictureHeight", "10" ).toDouble();
   mResizeMode = QgsComposerPicture::ResizeMode( itemElem.attribute( "resizeMode", "0" ).toInt() );
   //when loading from xml, default to anchor point of middle to match pre 2.4 behaviour
-  mPictureAnchor = ( QgsComposerItem::ItemPositionMode ) itemElem.attribute( "anchorPoint", QString::number( QgsComposerItem::Middle ) ).toInt();
+  mPictureAnchor = static_cast< QgsComposerItem::ItemPositionMode >( itemElem.attribute( "anchorPoint", QString::number( QgsComposerItem::Middle ) ).toInt() );
 
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
 
-    if ( composerItemElem.attribute( "rotation", "0" ).toDouble() != 0 )
+    if ( !qgsDoubleNear( composerItemElem.attribute( "rotation", "0" ).toDouble(), 0.0 ) )
     {
       //in versions prior to 2.1 picture rotation was stored in the rotation attribute
       mPictureRotation = composerItemElem.attribute( "rotation", "0" ).toDouble();
@@ -794,7 +794,7 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   mSourcePath = QgsProject::instance()->readPath( itemElem.attribute( "file" ) );
 
   //picture rotation
-  if ( itemElem.attribute( "pictureRotation", "0" ).toDouble() != 0 )
+  if ( !qgsDoubleNear( itemElem.attribute( "pictureRotation", "0" ).toDouble(), 0.0 ) )
   {
     mPictureRotation = itemElem.attribute( "pictureRotation", "0" ).toDouble();
   }

@@ -1099,7 +1099,6 @@ QGis::DataType QgsGdalProvider::srcDataType( int bandNo ) const
       case QGis::ARGB32:
       case QGis::ARGB32_Premultiplied:
         return myDataType;
-        break;
       case QGis::Byte:
       case QGis::UInt16:
       case QGis::Int16:
@@ -1116,7 +1115,6 @@ QGis::DataType QgsGdalProvider::srcDataType( int bandNo ) const
         break;
       case QGis::CFloat64:
         return myDataType;
-        break;
     }
   }
   return myDataType;

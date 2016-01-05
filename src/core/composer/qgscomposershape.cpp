@@ -295,7 +295,7 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
 
     //rotation
-    if ( composerItemElem.attribute( "rotation", "0" ).toDouble() != 0 )
+    if ( !qgsDoubleNear( composerItemElem.attribute( "rotation", "0" ).toDouble(), 0.0 ) )
     {
       //check for old (pre 2.1) rotation attribute
       setItemRotation( composerItemElem.attribute( "rotation", "0" ).toDouble() );
@@ -450,13 +450,10 @@ QString QgsComposerShape::displayName() const
   {
     case Ellipse:
       return tr( "<ellipse>" );
-      break;
     case Rectangle:
       return tr( "<rectangle>" );
-      break;
     case Triangle:
       return tr( "<triangle>" );
-      break;
   }
 
   return tr( "<shape>" );

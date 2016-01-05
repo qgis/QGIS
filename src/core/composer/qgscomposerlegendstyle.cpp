@@ -57,10 +57,10 @@ void QgsComposerLegendStyle::writeXML( const QString& name, QDomElement& elem, Q
 
   styleElem.setAttribute( "name", name );
 
-  if ( mMarginMap[Top] != 0 ) styleElem.setAttribute( "marginTop", QString::number( mMarginMap[Top] ) );
-  if ( mMarginMap[Bottom] != 0 ) styleElem.setAttribute( "marginBottom", QString::number( mMarginMap[Bottom] ) );
-  if ( mMarginMap[Left] != 0 ) styleElem.setAttribute( "marginLeft", QString::number( mMarginMap[Left] ) );
-  if ( mMarginMap[Right] != 0 ) styleElem.setAttribute( "marginRight", QString::number( mMarginMap[Right] ) );
+  if ( !qgsDoubleNear( mMarginMap[Top], 0.0 ) ) styleElem.setAttribute( "marginTop", QString::number( mMarginMap[Top] ) );
+  if ( !qgsDoubleNear( mMarginMap[Bottom], 0.0 ) ) styleElem.setAttribute( "marginBottom", QString::number( mMarginMap[Bottom] ) );
+  if ( !qgsDoubleNear( mMarginMap[Left], 0.0 ) ) styleElem.setAttribute( "marginLeft", QString::number( mMarginMap[Left] ) );
+  if ( !qgsDoubleNear( mMarginMap[Right], 0.0 ) ) styleElem.setAttribute( "marginRight", QString::number( mMarginMap[Right] ) );
 
   styleElem.appendChild( QgsFontUtils::toXmlElement( mFont, doc, "styleFont" ) );
 

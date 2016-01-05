@@ -183,11 +183,7 @@ QVariant QgsComposerModel::data( const QModelIndex &index, int role ) const
         boldFont.setBold( true );
         return boldFont;
       }
-      else
-      {
-        return QVariant();
-      }
-      break;
+      return QVariant();
 
     default:
       return QVariant();
@@ -248,11 +244,7 @@ QVariant QgsComposerModel::headerData( int section, Qt::Orientation orientation,
       {
         return tr( "Item" );
       }
-      else
-      {
-        return QVariant();
-      }
-      break;
+      return QVariant();
     }
 
     case Qt::DecorationRole:
@@ -265,11 +257,8 @@ QVariant QgsComposerModel::headerData( int section, Qt::Orientation orientation,
       {
         return qVariantFromValue( lockIcon );
       }
-      else
-      {
-        return QVariant();
-      }
-      break;
+
+      return QVariant();
     }
 
     case Qt::TextAlignmentRole:

@@ -756,7 +756,7 @@ void QgsAtlasComposition::readXMLMapSettings( const QDomElement &elem, const QDo
 
   //upgrade pre 2.1 projects
   double margin = elem.attribute( "margin", "0.0" ).toDouble();
-  if ( composerMap && margin != 0 )
+  if ( composerMap && !qgsDoubleNear( margin, 0.0 ) )
   {
     composerMap->setAtlasMargin( margin );
   }
@@ -905,7 +905,7 @@ void QgsAtlasComposition::setMargin( float margin )
     return;
   }
 
-  map->setAtlasMargin(( double ) margin );
+  map->setAtlasMargin( static_cast< double >( margin ) );
 }
 
 QgsGeometry QgsAtlasComposition::currentGeometry( const QgsCoordinateReferenceSystem& crs ) const

@@ -71,14 +71,14 @@ void QgsComposerItemGroup::addItem( QgsComposerItem* item )
     //call method of superclass to avoid repositioning of items
     QgsComposerItem::setSceneRect( QRectF( item->pos().x(), item->pos().y(), item->rect().width(), item->rect().height() ) );
 
-    if ( item->itemRotation() != 0 )
+    if ( !qgsDoubleNear( item->itemRotation(), 0.0 ) )
     {
       setItemRotation( item->itemRotation() );
     }
   }
   else
   {
-    if ( item->itemRotation() != itemRotation() )
+    if ( !qgsDoubleNear( item->itemRotation(), itemRotation() ) )
     {
       //items have mixed rotation, so reset rotation of group
       mBoundingRectangle = mapRectToScene( mBoundingRectangle );

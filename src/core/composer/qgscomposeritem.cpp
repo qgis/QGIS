@@ -202,7 +202,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "pagey", QString::number( pagepos.y() ) );
   composerItemElem.setAttribute( "width", QString::number( rect().width() ) );
   composerItemElem.setAttribute( "height", QString::number( rect().height() ) );
-  composerItemElem.setAttribute( "positionMode", QString::number(( int ) mLastUsedPositionMode ) );
+  composerItemElem.setAttribute( "positionMode", QString::number( static_cast< int >( mLastUsedPositionMode ) ) );
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
   composerItemElem.setAttribute( "frameJoinStyle", QgsSymbolLayerV2Utils::encodePenJoinStyle( mFrameJoinStyle ) );
@@ -325,7 +325,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   pagey = itemElem.attribute( "pagey" ).toDouble( &pageyOk );
   width = itemElem.attribute( "width" ).toDouble( &widthOk );
   height = itemElem.attribute( "height" ).toDouble( &heightOk );
-  mLastUsedPositionMode = ( ItemPositionMode )itemElem.attribute( "positionMode" ).toInt( &positionModeOK );
+  mLastUsedPositionMode = static_cast< ItemPositionMode >( itemElem.attribute( "positionMode" ).toInt( &positionModeOK ) );
   if ( !positionModeOK )
   {
     mLastUsedPositionMode = UpperLeft;
@@ -391,7 +391,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //blend mode
-  setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode", "0" ).toUInt() ) );
+  setBlendMode( QgsMapRenderer::getCompositionMode( static_cast< QgsMapRenderer::BlendMode >( itemElem.attribute( "blendMode", "0" ).toUInt() ) ) );
 
   //transparency
   setTransparency( itemElem.attribute( "transparency", "0" ).toInt() );
@@ -433,7 +433,7 @@ void QgsComposerItem::setFrameOutlineColor( const QColor &color )
 void QgsComposerItem::setFrameOutlineWidth( const double outlineWidth )
 {
   QPen itemPen = pen();
-  if ( itemPen.widthF() == outlineWidth )
+  if ( qgsDoubleNear( itemPen.widthF(), outlineWidth ) )
   {
     //no change
     return;
@@ -652,7 +652,7 @@ void QgsComposerItem::setItemPosition( double x, double y, double width, double 
   {
     //adjust position to account for frame size
 
-    if ( mEvaluatedItemRotation == 0 )
+    if ( qgsDoubleNear( mEvaluatedItemRotation, 0.0 ) )
     {
       upperLeftX += estimatedFrameBleed();
       upperLeftY += estimatedFrameBleed();
@@ -1061,7 +1061,7 @@ void QgsComposerItem::setItemRotation( const double r, const bool adjustPosition
 {
   if ( r >= 360 )
   {
-    mItemRotation = (( int )r ) % 360;
+    mItemRotation = ( static_cast< int >( r ) ) % 360;
   }
   else
   {
@@ -1089,7 +1089,7 @@ void QgsComposerItem::refreshRotation( const bool updateItem, const bool adjustP
     }
   }
 
-  if ( rotation == mEvaluatedItemRotation )
+  if ( qgsDoubleNear( rotation, mEvaluatedItemRotation ) )
   {
     return;
   }

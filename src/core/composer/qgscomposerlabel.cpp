@@ -448,10 +448,10 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //Horizontal alignment
-  mHAlignment = ( Qt::AlignmentFlag )( itemElem.attribute( "halign" ).toInt() );
+  mHAlignment = static_cast< Qt::AlignmentFlag >( itemElem.attribute( "halign" ).toInt() );
 
   //Vertical alignment
-  mVAlignment = ( Qt::AlignmentFlag )( itemElem.attribute( "valign" ).toInt() );
+  mVAlignment = static_cast< Qt::AlignmentFlag >( itemElem.attribute( "valign" ).toInt() );
 
   //font
   QgsFontUtils::setFromXmlChildNode( mFont, itemElem, "LabelFont" );
@@ -478,7 +478,7 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
 
     //rotation
-    if ( composerItemElem.attribute( "rotation", "0" ).toDouble() != 0 )
+    if ( !qgsDoubleNear( composerItemElem.attribute( "rotation", "0" ).toDouble(), 0.0 ) )
     {
       //check for old (pre 2.1) rotation attribute
       setItemRotation( composerItemElem.attribute( "rotation", "0" ).toDouble() );

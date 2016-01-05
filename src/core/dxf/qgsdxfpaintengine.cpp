@@ -265,7 +265,7 @@ double QgsDxfPaintEngine::power( double a, int b )
     return 1;
 
   double tmp = a;
-  for ( int i = 2; i <= qAbs(( double )b ); i++ )
+  for ( int i = 2; i <= qAbs( static_cast< double >( b ) ); i++ )
     a *= tmp;
 
   if ( b > 0 )

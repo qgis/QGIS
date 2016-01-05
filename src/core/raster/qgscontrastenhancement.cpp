@@ -103,7 +103,6 @@ double QgsContrastEnhancement::maximumValuePossible( QGis::DataType theDataType 
       return std::numeric_limits<unsigned int>::max();
     case QGis::Int32:
       return std::numeric_limits<int>::max();
-      break;
     case QGis::Float32:
       return std::numeric_limits<float>::max();
     case QGis::Float64:
