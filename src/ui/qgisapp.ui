@@ -152,6 +152,7 @@
      <addaction name="mActionAddWcsLayer"/>
      <addaction name="mActionAddWfsLayer"/>
      <addaction name="mActionAddDelimitedText"/>
+     <addaction name="mActionAddVirtualLayer"/>
     </widget>
     <addaction name="mNewLayerMenu"/>
     <addaction name="mAddLayerMenu"/>
@@ -341,6 +342,7 @@
    <addaction name="mActionAddWcsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
    <addaction name="mActionAddDelimitedText"/>
+   <addaction name="mActionAddVirtualLayer"/>
   </widget>
   <widget class="QToolBar" name="mDigitizeToolBar">
    <property name="windowTitle">
@@ -2194,6 +2196,18 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Add Delimited Text Layer</string>
+   </property>
+  </action>
+  <action name="mActionAddVirtualLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddVirtualLayer.svg</normaloff>:/images/themes/default/mActionAddVirtualLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Virtual Layer...</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Virtual Layer</string>
    </property>
   </action>
   <action name="mActionPasteAsNewVector">

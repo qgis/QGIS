@@ -710,6 +710,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void addDelimitedTextLayer();
     //! Add a vector layer defined by uri, layer name, data source uri
     void addSelectedVectorLayer( const QString& uri, const QString& layerName, const QString& provider );
+    //! Replace the selected layer by a vector layer defined by uri, layer name, data source uri
+    void replaceSelectedVectorLayer( const QString& uri, const QString& layerName, const QString& provider );
     //#ifdef HAVE_MSSQL
     //! Add a MSSQL layer to the map
     void addMssqlLayer();
@@ -718,6 +720,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Add a Oracle layer to the map
     void addOracleLayer();
     //#endif
+    //! Add a virtual layer
+    void addVirtualLayer();
     //! toggles whether the current selected layer is in overview or not
     void isInOverview();
     //! Store the position for map tool tip

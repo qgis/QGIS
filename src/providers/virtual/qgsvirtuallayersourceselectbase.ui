@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsVirtualLayerSourceSelectBase</class>
+ <widget class="QDialog" name="QgsVirtualLayerSourceSelectBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>885</width>
+    <height>619</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Create a virtual layer</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Layer name</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mLayerName">
+       <property name="text">
+        <string>virtual_layer</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mReplaceLayer">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Replace</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="mQueryBox">
+     <property name="title">
+      <string>Query</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QgsCodeEditorSQL" name="mQueryEdit" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mUIDGroup">
+     <property name="title">
+      <string>Unique row identifier</string>
+     </property>
+     <property name="collapsed">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
+       <widget class="QRadioButton" name="mAutoincrementUIDRadio">
+        <property name="text">
+         <string>Autoincrement</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QRadioButton" name="mUIDColumnNameRadio">
+          <property name="text">
+           <string>Column name</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="mUIDField">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mGeometryGroup">
+     <property name="title">
+      <string>Geometry</string>
+     </property>
+     <property name="collapsed">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QRadioButton" name="mAutodetectGeometryRadio">
+        <property name="text">
+         <string>Autodetect</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="mNoGeometryRadio">
+        <property name="text">
+         <string>No geometry</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QRadioButton" name="mGeometryRadio">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="mGeometryFrame">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QFormLayout" name="formLayout_2">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Geometry column</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="mGeometryField">
+             <property name="text">
+              <string>geometry</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Type</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QComboBox" name="mGeometryType">
+             <item>
+              <property name="text">
+               <string>Point</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>LineString</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Polygon</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>MultiPoint</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>MultiLineString</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>MultiPolygon</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>CRS</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QLineEdit" name="mCRS">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QToolButton" name="mBrowseCRSBtn">
+               <property name="text">
+                <string>...</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="mTestButton">
+     <property name="text">
+      <string>Test</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorSQL</class>
+   <extends>QWidget</extends>
+   <header location="global">qgscodeeditorsql.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mLayerName</tabstop>
+  <tabstop>mUIDGroup</tabstop>
+  <tabstop>mGeometryGroup</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>mGeometryRadio</tabstop>
+  <tabstop>mGeometryField</tabstop>
+  <tabstop>mGeometryType</tabstop>
+  <tabstop>mCRS</tabstop>
+  <tabstop>mBrowseCRSBtn</tabstop>
+  <tabstop>mUIDField</tabstop>
+  <tabstop>mUIDColumnNameRadio</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsVirtualLayerSourceSelectBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsVirtualLayerSourceSelectBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>291</x>
+     <y>405</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>291</x>
+     <y>213</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mUIDColumnNameRadio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mUIDField</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>88</x>
+     <y>510</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>510</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mGeometryRadio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mGeometryFrame</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>36</x>
+     <y>729</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>460</x>
+     <y>729</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

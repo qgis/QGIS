@@ -1415,6 +1415,7 @@ void QgisApp::createActions()
   connect( mActionAddWcsLayer, SIGNAL( triggered() ), this, SLOT( addWcsLayer() ) );
   connect( mActionAddWfsLayer, SIGNAL( triggered() ), this, SLOT( addWfsLayer() ) );
   connect( mActionAddDelimitedText, SIGNAL( triggered() ), this, SLOT( addDelimitedTextLayer() ) );
+  connect( mActionAddVirtualLayer, SIGNAL( triggered() ), this, SLOT( addVirtualLayer() ) );
   connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
   connect( mActionOpenFieldCalc, SIGNAL( triggered() ), this, SLOT( fieldCalculator() ) );
   connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
@@ -3758,10 +3759,73 @@ void QgisApp::addDelimitedTextLayer()
   delete dts;
 } // QgisApp::addDelimitedTextLayer()
 
+void QgisApp::addVirtualLayer()
+{
+  // show the Delimited text dialog
+  QDialog *dts = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "virtual", this ) );
+  if ( !dts )
+  {
+    QMessageBox::warning( this, tr( "Virtual layer" ), tr( "Cannot get virtual layer select dialog from provider." ) );
+    return;
+  }
+  connect( dts, SIGNAL( addVectorLayer( QString, QString, QString ) ),
+           this, SLOT( addSelectedVectorLayer( QString, QString, QString ) ) );
+  connect( dts, SIGNAL( replaceVectorLayer( QString, QString, QString ) ),
+           this, SLOT( replaceSelectedVectorLayer( QString, QString, QString ) ) );
+  dts->exec();
+  delete dts;
+} // QgisApp::addVirtualLayer()
+
 void QgisApp::addSelectedVectorLayer( const QString& uri, const QString& layerName, const QString& provider )
 {
   addVectorLayer( uri, layerName, provider );
 } // QgisApp:addSelectedVectorLayer
+
+void QgisApp::replaceSelectedVectorLayer( const QString& uri, const QString& layerName, const QString& provider )
+{
+  QList<QgsMapLayer*> selected = mLayerTreeView->selectedLayers();
+  if ( selected.size() != 1 && selected[0]->type() != QgsMapLayer::VectorLayer )
+    return;
+
+  QgsVectorLayer* oldLayer = static_cast<QgsVectorLayer*>( selected[0] );
+  QgsVectorLayer* newLayer = new QgsVectorLayer( uri, layerName, provider );
+  if ( !newLayer || !newLayer->isValid() )
+    return;
+
+  QgsMapLayerRegistry::instance()->addMapLayer( newLayer, /*addToLegend*/ false, /*takeOwnership*/ true );
+  // copy symbology, if possible
+  if ( oldLayer->geometryType() == newLayer->geometryType() )
+  {
+    QDomImplementation DomImplementation;
+    QDomDocumentType documentType =
+      DomImplementation.createDocumentType(
+        "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+    QDomDocument doc( documentType );
+    QDomElement rootNode = doc.createElement( "qgis" );
+    rootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
+    doc.appendChild( rootNode );
+    QString errorMsg;
+    oldLayer->writeSymbology( rootNode, doc, errorMsg );
+    newLayer->readSymbology( rootNode, errorMsg );
+  }
+
+  // get the index in its parent for the current layer
+  QgsLayerTreeLayer* inTree = QgsProject::instance()->layerTreeRoot()->findLayer( oldLayer->id() );
+  int idx = 0;
+  foreach ( QgsLayerTreeNode* vl, inTree->parent()->children() )
+  {
+    if ( vl->nodeType() == QgsLayerTreeNode::NodeLayer && static_cast<QgsLayerTreeLayer*>( vl )->layer() == oldLayer )
+    {
+      break;
+    }
+    idx++;
+  }
+  // insert the new layer
+  QgsLayerTreeGroup* parent = static_cast<QgsLayerTreeGroup*>( inTree->parent() ) ? static_cast<QgsLayerTreeGroup*>( inTree->parent() ) : QgsProject::instance()->layerTreeRoot();
+  parent->insertLayer( idx, newLayer );
+  // remove the current layer
+  QgsMapLayerRegistry::instance()->removeMapLayer( oldLayer );
+} // QgisApp:replaceSelectedVectorLayer
 
 void QgisApp::addMssqlLayer()
 {
