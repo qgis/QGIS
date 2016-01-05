@@ -344,6 +344,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! true if antialising is enabled
     bool antiAliasingEnabled() const { return mSettings.testFlag( QgsMapSettings::Antialiasing ); }
 
+    //! sets map tile rendering flag
+    void enableMapTileRendering( bool theFlag );
+
     //! Select which Qt class to render with
     //! @deprecated since 2.4 - does nothing because now we always render to QImage
     Q_DECL_DEPRECATED void useImageToRender( bool theFlag );

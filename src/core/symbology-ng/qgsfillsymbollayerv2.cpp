@@ -1571,6 +1571,16 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
   applyDataDefinedSettings( context );
 
   p->setPen( QPen( Qt::NoPen ) );
+
+  if ( context.renderContext().testFlag( QgsRenderContext::RenderMapTile ) )
+  {
+    //transform brush to upper left corner of geometry bbox
+    QPointF leftCorner = points.boundingRect().topLeft();
+    QTransform leftCornerTransform = QTransform::fromTranslate( leftCorner.x(), leftCorner.y() );
+    mBrush.setTransform( leftCornerTransform );
+  }
+
+
   if ( context.selected() )
   {
     QColor selColor = context.renderContext().selectionColor();
