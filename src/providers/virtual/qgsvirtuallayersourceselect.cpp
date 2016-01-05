@@ -21,11 +21,13 @@ email                : hugo dot mercier at oslandia dot com
 #include <layertree/qgslayertreeview.h>
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
+#include <qgsmaplayerregistry.h>
 #include <qgsgenericprojectionselector.h>
 
 #include <QUrl>
 #include <Qsci/qscilexer.h>
 #include <QMessageBox>
+#include <QTextStream>
 
 QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
@@ -73,6 +75,38 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
       }
     }
   }
+
+  // configure auto completion with SQL functions
+  QsciAPIs* apis = new QsciAPIs( mQueryEdit->lexer() );
+
+  Q_INIT_RESOURCE( sqlfunctionslist );
+  QFile fFile( ":/sqlfunctions/list.txt" );
+  if ( fFile.open( QIODevice::ReadOnly ) )
+  {
+    QTextStream in( &fFile );
+    while ( !in.atEnd() )
+    {
+      apis->add( in.readLine().toLower() + "()" );
+    }
+    fFile.close();
+  }
+
+  // configure auto completion with table and column names
+  foreach ( QgsMapLayer* l, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  {
+    if ( l->type() == QgsMapLayer::VectorLayer )
+    {
+      apis->add( l->name() );
+      QgsVectorLayer* vl = static_cast<QgsVectorLayer*>( l );
+      foreach ( const QgsField& f, vl->fields().toList() )
+      {
+        apis->add( f.name() );
+      }
+    }
+  }
+
+  apis->prepare();
+  mQueryEdit->lexer()->setAPIs( apis );
 }
 
 QgsVirtualLayerSourceSelect::~QgsVirtualLayerSourceSelect()
