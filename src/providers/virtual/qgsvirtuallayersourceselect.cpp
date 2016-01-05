@@ -56,7 +56,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
 
       if ( !def.uid().isEmpty() )
       {
-        mUIDColumnNameRadio->setChecked( true );
+        mUIDColumnNameChck->setChecked( true );
         mUIDField->setText( def.uid() );
       }
 
