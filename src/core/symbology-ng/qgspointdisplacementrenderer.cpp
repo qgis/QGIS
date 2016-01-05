@@ -418,6 +418,13 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElement );
 
+  if ( !mOrderBy.isEmpty() )
+  {
+    QDomElement orderBy = doc.createElement( "orderby" );
+    mOrderBy.save( orderBy );
+    rendererElement.appendChild( orderBy );
+  }
+
   return rendererElement;
 }
 
