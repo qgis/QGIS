@@ -32,7 +32,8 @@ QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider(
   const QgsCoordinateReferenceSystem& crs,
   QgsAbstractFeatureSource* source,
   bool ownsSource )
-    : mSettings( *diagSettings )
+    : QgsAbstractLabelProvider( layerId )
+    , mSettings( *diagSettings )
     , mDiagRenderer( diagRenderer->clone() )
     , mLayerId( layerId )
     , mFields( fields )
@@ -45,7 +46,8 @@ QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider(
 
 
 QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer* layer, bool ownFeatureLoop )
-    : mSettings( *layer->diagramLayerSettings() )
+    : QgsAbstractLabelProvider( layer->id() )
+    , mSettings( *layer->diagramLayerSettings() )
     , mDiagRenderer( layer->diagramRenderer()->clone() )
     , mLayerId( layer->id() )
     , mFields( layer->fields() )
@@ -352,6 +354,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   lf->setFixedAngle( 0 );
   lf->setAlwaysShow( alwaysShow );
   lf->setIsObstacle( mSettings.obstacle );
+  lf->setZIndex( mSettings.zIndex );
   if ( geosObstacleGeomClone )
   {
     lf->setObstacleGeometry( geosObstacleGeomClone );

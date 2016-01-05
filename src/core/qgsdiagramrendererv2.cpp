@@ -28,6 +28,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings()
     : placement( AroundPoint )
     , placementFlags( OnLine )
     , priority( 5 )
+    , zIndex( 0.0 )
     , obstacle( false )
     , dist( 0.0 )
     , renderer( nullptr )
@@ -51,6 +52,7 @@ void QgsDiagramLayerSettings::readXML( const QDomElement& elem, const QgsVectorL
   placement = static_cast< Placement >( elem.attribute( "placement" ).toInt() );
   placementFlags = static_cast< LinePlacementFlags >( elem.attribute( "linePlacementFlags" ).toInt() );
   priority = elem.attribute( "priority" ).toInt();
+  zIndex = elem.attribute( "zIndex" ).toDouble();
   obstacle = elem.attribute( "obstacle" ).toInt();
   dist = elem.attribute( "dist" ).toDouble();
   xPosColumn = elem.attribute( "xPosColumn" ).toInt();
@@ -66,6 +68,7 @@ void QgsDiagramLayerSettings::writeXML( QDomElement& layerElem, QDomDocument& do
   diagramLayerElem.setAttribute( "placement", placement );
   diagramLayerElem.setAttribute( "linePlacementFlags", placementFlags );
   diagramLayerElem.setAttribute( "priority", priority );
+  diagramLayerElem.setAttribute( "zIndex", zIndex );
   diagramLayerElem.setAttribute( "obstacle", obstacle );
   diagramLayerElem.setAttribute( "dist", QString::number( dist ) );
   diagramLayerElem.setAttribute( "xPosColumn", xPosColumn );

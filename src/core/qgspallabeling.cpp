@@ -202,6 +202,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   obstacle = true;
   obstacleFactor = 1.0;
   obstacleType = PolygonInterior;
+  zIndex = 0.0;
 
   // scale factors
   vectorScaleFactor = 1.0;
@@ -312,6 +313,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   mDataDefinedNames.insert( FontLimitPixel, QPair<QString, int>( "FontLimitPixel", -1 ) );
   mDataDefinedNames.insert( FontMinPixel, QPair<QString, int>( "FontMinPixel", -1 ) );
   mDataDefinedNames.insert( FontMaxPixel, QPair<QString, int>( "FontMaxPixel", -1 ) );
+  mDataDefinedNames.insert( ZIndex, QPair<QString, int>( "ZIndex", -1 ) );
   // (data defined only)
   mDataDefinedNames.insert( Show, QPair<QString, int>( "Show", 15 ) );
   mDataDefinedNames.insert( AlwaysShow, QPair<QString, int>( "AlwaysShow", 20 ) );
@@ -425,6 +427,7 @@ QgsPalLayerSettings& QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   obstacle = s.obstacle;
   obstacleFactor = s.obstacleFactor;
   obstacleType = s.obstacleType;
+  zIndex = s.zIndex;
 
   // shape background
   shapeDraw = s.shapeDraw;
@@ -971,6 +974,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   obstacle = layer->customProperty( "labeling/obstacle", QVariant( true ) ).toBool();
   obstacleFactor = layer->customProperty( "labeling/obstacleFactor", QVariant( 1.0 ) ).toDouble();
   obstacleType = static_cast< ObstacleType >( layer->customProperty( "labeling/obstacleType", QVariant( PolygonInterior ) ).toUInt() );
+  zIndex = layer->customProperty( "labeling/zIndex", QVariant( 0.0 ) ).toDouble();
 
   readDataDefinedPropertyMap( layer, nullptr, dataDefinedProperties );
 }
@@ -1124,6 +1128,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/obstacle", obstacle );
   layer->setCustomProperty( "labeling/obstacleFactor", obstacleFactor );
   layer->setCustomProperty( "labeling/obstacleType", static_cast< unsigned int >( obstacleType ) );
+  layer->setCustomProperty( "labeling/zIndex", zIndex );
 
   writeDataDefinedPropertyMap( layer, nullptr, dataDefinedProperties );
 }
@@ -1324,6 +1329,7 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   obstacle = renderingElem.attribute( "obstacle", "1" ).toInt();
   obstacleFactor = renderingElem.attribute( "obstacleFactor", "1" ).toDouble();
   obstacleType = static_cast< ObstacleType >( renderingElem.attribute( "obstacleType", QString::number( PolygonInterior ) ).toUInt() );
+  zIndex = renderingElem.attribute( "zIndex", "0.0" ).toDouble();
 
   QDomElement ddElem = elem.firstChildElement( "data-defined" );
   readDataDefinedPropertyMap( nullptr, &ddElem, dataDefinedProperties );
@@ -1483,6 +1489,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   renderingElem.setAttribute( "obstacle", obstacle );
   renderingElem.setAttribute( "obstacleFactor", obstacleFactor );
   renderingElem.setAttribute( "obstacleType", static_cast< unsigned int >( obstacleType ) );
+  renderingElem.setAttribute( "zIndex", zIndex );
 
   QDomElement ddElem = doc.createElement( "data-defined" );
   writeDataDefinedPropertyMap( nullptr, &ddElem, dataDefinedProperties );
@@ -2690,6 +2697,19 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   {
     ( *labelFeature )->setHasFixedQuadrant( true );
   }
+
+  // data defined z-index?
+  double z = zIndex;
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::ZIndex, exprVal, &context.expressionContext(), zIndex ) )
+  {
+    bool ok;
+    double zIndexD = exprVal.toDouble( &ok );
+    if ( ok )
+    {
+      z = zIndexD;
+    }
+  }
+  ( *labelFeature )->setZIndex( z );
 
   // data defined priority?
   if ( dataDefinedEvaluate( QgsPalLayerSettings::Priority, exprVal, &context.expressionContext(), priority ) )

@@ -94,8 +94,6 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
   protected:
     //! Layer's labeling configuration
     QgsPalLayerSettings mSettings;
-    //! Layer's ID
-    QString mLayerId;
     //! Geometry type of layer
     QGis::GeometryType mLayerGeometryType;
 

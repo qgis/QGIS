@@ -50,8 +50,8 @@ static void _fixQPictureDPI( QPainter* p )
 
 
 QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer, bool withFeatureLoop, const QgsPalLayerSettings* settings, const QString& layerName )
-    : mSettings( settings ? *settings : QgsPalLayerSettings::fromLayer( layer ) )
-    , mLayerId( layer->id() )
+    : QgsAbstractLabelProvider( layer->id() )
+    , mSettings( settings ? *settings : QgsPalLayerSettings::fromLayer( layer ) )
     , mLayerGeometryType( layer->geometryType() )
     , mRenderer( layer->rendererV2() )
     , mFields( layer->fields() )
@@ -79,8 +79,8 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( const QgsPalLayerSetti
     const QgsCoordinateReferenceSystem& crs,
     QgsAbstractFeatureSource* source,
     bool ownsSource, QgsFeatureRendererV2* renderer )
-    : mSettings( settings )
-    , mLayerId( layerId )
+    : QgsAbstractLabelProvider( layerId )
+    , mSettings( settings )
     , mLayerGeometryType( QGis::UnknownGeometry )
     , mRenderer( renderer )
     , mFields( fields )
@@ -290,6 +290,7 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
       //point feature, use symbol bounds as obstacle
       obstacleGeometry.reset( getPointObstacleGeometry( fet, ctx, mRenderer ) );
     }
+    ctx.expressionContext().setFeature( fet );
     registerFeature( fet, ctx, obstacleGeometry.data() );
   }
 

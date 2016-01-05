@@ -368,6 +368,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     {
       mDiagramDistanceSpinBox->setValue( dls->dist );
       mPrioritySlider->setValue( dls->priority );
+      mZIndexSpinBox->setValue( dls->zIndex );
       mDataDefinedXComboBox->setCurrentIndex( mDataDefinedXComboBox->findData( dls->xPosColumn ) );
       mDataDefinedYComboBox->setCurrentIndex( mDataDefinedYComboBox->findData( dls->yPosColumn ) );
       if ( dls->xPosColumn != -1 || dls->yPosColumn != -1 )
@@ -763,6 +764,7 @@ void QgsDiagramProperties::apply()
   QgsDiagramLayerSettings dls;
   dls.dist = mDiagramDistanceSpinBox->value();
   dls.priority = mPrioritySlider->value();
+  dls.zIndex = mZIndexSpinBox->value();
   dls.showAll = mShowAllCheckBox->isChecked();
   if ( mDataDefinedPositionGroupBox->isChecked() )
   {

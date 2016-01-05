@@ -314,6 +314,7 @@ class QgsPalLayerSettings
       FontMaxPixel,
       IsObstacle,
       ObstacleFactor,
+      ZIndex,
 
       // (data defined only)
       Show,
@@ -493,6 +494,9 @@ class QgsPalLayerSettings
     /** Controls how features act as obstacles for labels
      */
     ObstacleType obstacleType;
+
+    //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index
+    double zIndex;
 
     //-- scale factors
     double vectorScaleFactor; //scale factor painter units->pixels

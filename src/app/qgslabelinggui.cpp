@@ -442,6 +442,8 @@ void QgsLabelingGui::init()
   mFontSizeUnitWidget->setUnit( lyr.fontSizeInMapUnits ? 1 : 0 );
   mFontSizeUnitWidget->setMapUnitScale( lyr.fontSizeMapUnitScale );
 
+  mZIndexSpinBox->setValue( lyr.zIndex );
+
   mRefFont = lyr.textFont;
   mFontSizeSpinBox->setValue( lyr.textFont.pointSizeF() );
   btnTextColor->setColor( lyr.textColor );
@@ -786,6 +788,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.multilineAlign = ( QgsPalLayerSettings::MultiLineAlign ) mFontMultiLineAlignComboBox->currentIndex();
   lyr.preserveRotation = chkPreserveRotation->isChecked();
 
+  lyr.zIndex = mZIndexSpinBox->value();
+
   // data defined labeling
   // text style
   setDataDefinedProperty( mFontDDBtn, QgsPalLayerSettings::Family, lyr );
@@ -892,6 +896,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   setDataDefinedProperty( mAlwaysShowDDBtn, QgsPalLayerSettings::AlwaysShow, lyr );
   setDataDefinedProperty( mIsObstacleDDBtn, QgsPalLayerSettings::IsObstacle, lyr );
   setDataDefinedProperty( mObstacleFactorDDBtn, QgsPalLayerSettings::ObstacleFactor, lyr );
+  setDataDefinedProperty( mZIndexDDBtn, QgsPalLayerSettings::ZIndex, lyr );
 
   return lyr;
 }
@@ -1168,6 +1173,8 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
                           QgsDataDefinedButton::AnyType, QgsDataDefinedButton::boolDesc() );
   mObstacleFactorDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ObstacleFactor ),
                               QgsDataDefinedButton::AnyType, tr( "double [0.0-10.0]" ) );
+  mZIndexDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ZIndex ),
+                      QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
 }
 
 void QgsLabelingGui::changeTextColor( const QColor &color )
