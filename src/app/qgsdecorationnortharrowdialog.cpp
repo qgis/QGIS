@@ -39,9 +39,11 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   cboPlacement->clear();
   cboPlacement->addItems( mDeco.mPlacementLabels );
   cboPlacement->setCurrentIndex( mDeco.mPlacementIndex );
+  spinHorizontal->setValue( mDeco.mMarginHorizontal );
+  spinVertical->setValue( mDeco.mMarginVertical );
 
   // enabled
-  cboxShow->setChecked( mDeco.enabled() );
+  grpEnable->setChecked( mDeco.enabled() );
 
   // automatic
   cboxAutomatic->setChecked( mDeco.mAutomatic );
@@ -62,8 +64,10 @@ void QgsDecorationNorthArrowDialog::on_buttonBox_accepted()
 {
   mDeco.mRotationInt = sliderRotation->value();
   mDeco.mPlacementIndex = cboPlacement->currentIndex();
-  mDeco.setEnabled( cboxShow->isChecked() );
+  mDeco.setEnabled( grpEnable->isChecked() );
   mDeco.mAutomatic = cboxAutomatic->isChecked();
+  mDeco.mMarginHorizontal = spinHorizontal->value();
+  mDeco.mMarginVertical = spinVertical->value();
 
   accept();
 }
