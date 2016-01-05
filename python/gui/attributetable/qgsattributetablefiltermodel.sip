@@ -96,6 +96,7 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
 
     virtual QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const;
 
+    /** Returns the map canvas*/
     QgsMapCanvas* mapCanvas() const;
 
   protected:
