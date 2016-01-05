@@ -168,6 +168,35 @@ class TestQgsServer(unittest.TestCase):
         for request in ('GetCapabilities', 'GetProjectSettings'):
             self.wms_request_compare(request)
 
+    # WMS INSPIRE tests
+    def wms_inspire_request_compare(self, request):
+        project = self.testdata_path + "test+project_inspire.qgs"
+        assert os.path.exists(project), "Project file not found: " + project
+
+        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.quote(project), request)
+        header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
+        response = header + body
+        f = open(self.testdata_path + request.lower() + '_inspire.txt')
+        expected = f.read()
+        f.close()
+        # Store the output for debug or to regenerate the reference documents:
+        """
+        f = open(os.path.dirname(__file__) + '/expected.txt', 'w+')
+        f.write(expected)
+        f.close()
+        f = open(os.path.dirname(__file__) + '/response.txt', 'w+')
+        f.write(response)
+        f.close()
+        """
+        response = re.sub(RE_STRIP_PATH, '', response)
+        expected = re.sub(RE_STRIP_PATH, '', expected)
+        self.assertEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected, response))
+
+    def test_project_wms_inspire(self):
+        """Test some WMS request"""
+        for request in ('GetCapabilities',):
+            self.wms_inspire_request_compare(request)
+
     # WFS tests
     def wfs_request_compare(self, request):
         project = self.testdata_path + "test+project_wfs.qgs"

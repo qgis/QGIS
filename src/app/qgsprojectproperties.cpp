@@ -294,7 +294,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   {
     mWMSContactPositionCb->setCurrentIndex( contactPositionIndex );
   }
-  else if ( contactPositionText != "" )
+  else if ( !contactPositionText.isEmpty() )
   {
     mWMSContactPositionCb->setEditText( contactPositionText );
   }
@@ -308,7 +308,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   {
     mWMSFeesCb->setCurrentIndex( feesIndex );
   }
-  else if ( feesText != "" )
+  else if ( !feesText.isEmpty() )
   {
     mWMSFeesCb->setEditText( feesText );
   }
@@ -329,9 +329,80 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   {
     mWMSAccessConstraintsCb->setCurrentIndex( accessConstraintsIndex );
   }
-  else if ( accessConstraintsText != "" )
+  else if ( !accessConstraintsText.isEmpty() )
   {
     mWMSAccessConstraintsCb->setEditText( accessConstraintsText );
+  }
+
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "bg" ) ), QLocale( "bg" ).nativeLanguageName(), "bul" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "cs" ) ), QLocale( "cs" ).nativeLanguageName(), "cze" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "da" ) ), QLocale( "da" ).nativeLanguageName(), "dan" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "nl" ) ), QLocale( "nl" ).nativeLanguageName(), "dut" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "en_GB" ) ), QLocale( "en_GB" ).nativeLanguageName(), "eng" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "et" ) ), QLocale( "et" ).nativeLanguageName(), "est" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "fi" ) ), QLocale( "fi" ).nativeLanguageName(), "fin" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "fr" ) ), QLocale( "fr" ).nativeLanguageName(), "fre" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "de" ) ), QLocale( "de" ).nativeLanguageName(), "ger" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "ga" ) ), QLocale( "ga" ).nativeLanguageName(), "gle" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "el" ) ), QLocale( "el" ).nativeLanguageName(), "gre" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "hu" ) ), QLocale( "hu" ).nativeLanguageName(), "hun" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "it" ) ), QLocale( "it" ).nativeLanguageName(), "ita" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "lv" ) ), QLocale( "lv" ).nativeLanguageName(), "lav" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "lt" ) ), QLocale( "lt" ).nativeLanguageName(), "lit" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "mt" ) ), QLocale( "mt" ).nativeLanguageName(), "mlt" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "pl" ) ), QLocale( "pl" ).nativeLanguageName(), "pol" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "pt_PT" ) ), QLocale( "pt_PT" ).nativeLanguageName(), "por" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "ro" ) ), QLocale( "ro" ).nativeLanguageName(), "rum" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "sk" ) ), QLocale( "sk" ).nativeLanguageName(), "slo" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "sl" ) ), QLocale( "sl" ).nativeLanguageName(), "slv" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "es" ) ), QLocale( "es" ).nativeLanguageName(), "spa" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "sv" ) ), QLocale( "sv" ).nativeLanguageName(), "swe" );
+
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "eu" ) ), QLocale( "eu" ).nativeLanguageName(), "eus" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "ca" ) ), QLocale( "ca" ).nativeLanguageName(), "cat" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "gl" ) ), QLocale( "gl" ).nativeLanguageName(), "gal" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "gd" ) ), QLocale( "gd" ).nativeLanguageName(), "gla" );
+  mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "cy" ) ), QLocale( "cy" ).nativeLanguageName(), "cym" );
+  mWMSInspireLanguage->setCurrentIndex(
+    mWMSInspireLanguage->findText(
+      QLocale::system().nativeLanguageName()
+    )
+  );
+
+  bool addWMSInspire = QgsProject::instance()->readBoolEntry( "WMSInspire", "/activated" );
+  if ( addWMSInspire )
+  {
+    mWMSInspire->setChecked( addWMSInspire );
+    QString inspireLanguage = QgsProject::instance()->readEntry( "WMSInspire", "/language", "" );
+    int inspireLanguageIndex = mWMSInspireLanguage->findData( inspireLanguage );
+    mWMSInspireLanguage->setCurrentIndex( inspireLanguageIndex );
+
+    QString inspireMetadataUrl = QgsProject::instance()->readEntry( "WMSInspire", "/metadataUrl", "" );
+    if ( !inspireMetadataUrl.isEmpty() )
+    {
+      mWMSInspireScenario1->setChecked( true );
+      mWMSInspireMetadataUrl->setText( inspireMetadataUrl );
+      mWMSInspireMetadataUrlType->setCurrentIndex(
+        mWMSInspireMetadataUrlType->findText(
+          QgsProject::instance()->readEntry( "WMSInspire", "/metadataUrlType", "" )
+        )
+      );
+    }
+    else
+    {
+      QString inspireTemporalReference = QgsProject::instance()->readEntry( "WMSInspire", "/temporalReference", "" );
+      if ( !inspireTemporalReference.isEmpty() )
+      {
+        mWMSInspireScenario2->setChecked( true );
+        mWMSInspireTemporalReference->setDate( QDate::fromString( inspireTemporalReference, "yyyy-MM-dd" ) );
+      }
+      QString inspireMetadataDate = QgsProject::instance()->readEntry( "WMSInspire", "/metadataDate", "" );
+      if ( !inspireMetadataDate.isEmpty() )
+      {
+        mWMSInspireScenario2->setChecked( true );
+        mWMSInspireMetadataDate->setDate( QDate::fromString( inspireMetadataDate, "yyyy-MM-dd" ) );
+      }
+    }
   }
 
   // WMS GetFeatureInfo precision
@@ -790,7 +861,10 @@ void QgsProjectProperties::apply()
 
   QgsProject::instance()->writeEntry( "WMSServiceCapabilities", "/", grpOWSServiceCapabilities->isChecked() );
   QgsProject::instance()->writeEntry( "WMSServiceTitle", "/", mWMSTitle->text() );
-  QgsProject::instance()->writeEntry( "WMSRootName", "/", mWMSName->text() );
+
+  if ( !mWMSName->text().isEmpty() )
+    QgsProject::instance()->writeEntry( "WMSRootName", "/", mWMSName->text() );
+
   QgsProject::instance()->writeEntry( "WMSContactOrganization", "/", mWMSContactOrganization->text() );
   QgsProject::instance()->writeEntry( "WMSContactPerson", "/", mWMSContactPerson->text() );
   QgsProject::instance()->writeEntry( "WMSContactMail", "/", mWMSContactMail->text() );
@@ -802,7 +876,7 @@ void QgsProjectProperties::apply()
   // WMS Contact Position
   int contactPositionIndex = mWMSContactPositionCb->currentIndex();
   QString contactPositionText = mWMSContactPositionCb->currentText();
-  if ( contactPositionText != "" && contactPositionText == mWMSContactPositionCb->itemText( contactPositionIndex ) )
+  if ( !contactPositionText.isEmpty() && contactPositionText == mWMSContactPositionCb->itemText( contactPositionIndex ) )
   {
     QgsProject::instance()->writeEntry( "WMSContactPosition", "/", mWMSContactPositionCb->itemData( contactPositionIndex ).toString() );
   }
@@ -814,7 +888,7 @@ void QgsProjectProperties::apply()
   // WMS Fees
   int feesIndex = mWMSFeesCb->currentIndex();
   QString feesText = mWMSFeesCb->currentText();
-  if ( feesText != "" && feesText == mWMSFeesCb->itemText( feesIndex ) )
+  if ( !feesText.isEmpty() && feesText == mWMSFeesCb->itemText( feesIndex ) )
   {
     QgsProject::instance()->writeEntry( "WMSFees", "/", mWMSFeesCb->itemData( feesIndex ).toString() );
   }
@@ -826,7 +900,7 @@ void QgsProjectProperties::apply()
   // WMS Access Constraints
   int accessConstraintsIndex = mWMSAccessConstraintsCb->currentIndex();
   QString accessConstraintsText = mWMSAccessConstraintsCb->currentText();
-  if ( accessConstraintsText != "" && accessConstraintsText == mWMSAccessConstraintsCb->itemText( accessConstraintsIndex ) )
+  if ( !accessConstraintsText.isEmpty() && accessConstraintsText == mWMSAccessConstraintsCb->itemText( accessConstraintsIndex ) )
   {
     QgsProject::instance()->writeEntry( "WMSAccessConstraints", "/", mWMSAccessConstraintsCb->itemData( accessConstraintsIndex ).toString() );
   }
@@ -845,6 +919,27 @@ void QgsProjectProperties::apply()
   else
   {
     QgsProject::instance()->removeEntry( "WMSKeywordList", "/" );
+  }
+
+  // WMS INSPIRE configuration
+  QgsProject::instance()->removeEntry( "WMSInspire", "/" );
+  if ( mWMSInspire->isChecked() )
+  {
+    QgsProject::instance()->writeEntry( "WMSInspire", "/activated", mWMSInspire->isChecked() );
+
+    int inspireLanguageIndex = mWMSInspireLanguage->currentIndex();
+    QgsProject::instance()->writeEntry( "WMSInspire", "/language", mWMSInspireLanguage->itemData( inspireLanguageIndex ).toString() );
+
+    if ( mWMSInspireScenario1->isChecked() )
+    {
+      QgsProject::instance()->writeEntry( "WMSInspire", "/metadataUrl", mWMSInspireMetadataUrl->text() );
+      QgsProject::instance()->writeEntry( "WMSInspire", "/metadataUrlType", mWMSInspireMetadataUrlType->currentText() );
+    }
+    else if ( mWMSInspireScenario2->isChecked() )
+    {
+      QgsProject::instance()->writeEntry( "WMSInspire", "/temporalReference", mWMSInspireTemporalReference->date().toString( "yyyy-MM-dd" ) );
+      QgsProject::instance()->writeEntry( "WMSInspire", "/metadataDate", mWMSInspireMetadataDate->date().toString( "yyyy-MM-dd" ) );
+    }
   }
 
   // WMS GetFeatureInfo geometry precision (decimal places)
@@ -1326,6 +1421,20 @@ void QgsProjectProperties::on_pbnWFSLayersSelectAll_clicked()
   }
 }
 
+void QgsProjectProperties::on_mWMSInspireScenario1_toggled( bool on )
+{
+  mWMSInspireScenario2->blockSignals( true );
+  mWMSInspireScenario2->setChecked( !on );
+  mWMSInspireScenario2->blockSignals( false );
+}
+
+void QgsProjectProperties::on_mWMSInspireScenario2_toggled( bool on )
+{
+  mWMSInspireScenario1->blockSignals( true );
+  mWMSInspireScenario1->setChecked( !on );
+  mWMSInspireScenario1->blockSignals( false );
+}
+
 void QgsProjectProperties::on_pbnWFSLayersUnselectAll_clicked()
 {
   for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
@@ -1551,7 +1660,7 @@ void QgsProjectProperties::on_mTransparencySpinBox_valueChanged( int value )
 void QgsProjectProperties::editSymbol( QComboBox* cbo )
 {
   QString symbolName = cbo->currentText();
-  if ( symbolName == "" )
+  if ( symbolName.isEmpty() )
   {
     QMessageBox::information( this, "", tr( "Select a valid symbol" ) );
     return;

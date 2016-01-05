@@ -96,7 +96,7 @@ void QgsWMSProjectParser::layersAndStylesCapabilities( QDomElement& parentElemen
   QDomElement layerParentNameElem = doc.createElement( "Name" );
   //WMS Name
   QDomElement nameElem = mProjectParser->propertiesElem().firstChildElement( "WMSRootName" );
-  if ( !nameElem.isNull() )
+  if ( !nameElem.isNull() && !nameElem.text().isEmpty() )
   {
     QDomText layerParentNameText = doc.createTextNode( nameElem.text() );
     layerParentNameElem.appendChild( layerParentNameText );
@@ -450,6 +450,25 @@ int QgsWMSProjectParser::WMSPrecision() const
   return WMSPrecision;
 }
 
+bool QgsWMSProjectParser::WMSInspireActivated() const
+{
+  bool inspireActivated = false;
+  QDomElement propertiesElem = mProjectParser->propertiesElem();
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement inspireElem = propertiesElem.firstChildElement( "WMSInspire" );
+    if ( !inspireElem.isNull() )
+    {
+      QDomElement inspireActivatedElem = inspireElem.firstChildElement( "activated" );
+      if ( !inspireActivatedElem.isNull() )
+      {
+        inspireActivated = QVariant( inspireActivatedElem.text() ).toBool();
+      }
+    }
+  }
+  return inspireActivated;
+}
+
 QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const
 {
   //Create composition from xml
@@ -661,6 +680,123 @@ void QgsWMSProjectParser::printCapabilities( QDomElement& parentElement, QDomDoc
     composerTemplatesElem.appendChild( composerTemplateElem );
   }
   parentElement.appendChild( composerTemplatesElem );
+}
+
+void QgsWMSProjectParser::inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+{
+  if ( !WMSInspireActivated() )
+    return;
+
+  QDomElement propertiesElem = mProjectParser->propertiesElem();
+  if ( propertiesElem.isNull() )
+  {
+    return;
+  }
+
+  QDomElement inspireElem = propertiesElem.firstChildElement( "WMSInspire" );
+  if ( inspireElem.isNull() )
+  {
+    return;
+  }
+
+  QDomElement inspireCapabilitiesElem = doc.createElement( "inspire_vs:ExtendedCapabilities" );
+
+  QDomElement inspireMetadataUrlElem = inspireElem.firstChildElement( "metadataUrl" );
+  if ( !inspireMetadataUrlElem.isNull() )
+  {
+    QDomElement inspireCommonMetadataUrlElem = doc.createElement( "inspire_common:MetadataUrl" );
+    inspireCommonMetadataUrlElem.setAttribute( "xsi:type", "inspire_common:resourceLocatorType" );
+
+    QDomElement inspireCommonMetadataUrlUrlElem = doc.createElement( "inspire_common:URL" );
+    inspireCommonMetadataUrlUrlElem.appendChild( doc.createTextNode( inspireMetadataUrlElem.text() ) );
+    inspireCommonMetadataUrlElem.appendChild( inspireCommonMetadataUrlUrlElem );
+
+    QDomElement inspireMetadataUrlTypeElem = inspireElem.firstChildElement( "metadataUrlType" );
+    if ( !inspireMetadataUrlTypeElem.isNull() )
+    {
+      QDomElement inspireCommonMetadataUrlMediaTypeElem = doc.createElement( "inspire_common:MediaType" );
+      inspireCommonMetadataUrlMediaTypeElem.appendChild( doc.createTextNode( inspireMetadataUrlTypeElem.text() ) );
+      inspireCommonMetadataUrlElem.appendChild( inspireCommonMetadataUrlMediaTypeElem );
+    }
+
+    inspireCapabilitiesElem.appendChild( inspireCommonMetadataUrlElem );
+  }
+  else
+  {
+    QDomElement inspireCommonResourceTypeElem = doc.createElement( "inspire_common:ResourceType" );
+    inspireCommonResourceTypeElem.appendChild( doc.createTextNode( "service" ) );
+    inspireCapabilitiesElem.appendChild( inspireCommonResourceTypeElem );
+
+    QDomElement inspireCommonSpatialDataServiceTypeElem = doc.createElement( "inspire_common:SpatialDataServiceType" );
+    inspireCommonSpatialDataServiceTypeElem.appendChild( doc.createTextNode( "view" ) );
+    inspireCapabilitiesElem.appendChild( inspireCommonSpatialDataServiceTypeElem );
+
+    QDomElement inspireTemporalReferenceElem = inspireElem.firstChildElement( "temporalReference" );
+    if ( !inspireTemporalReferenceElem.isNull() )
+    {
+      QDomElement inspireCommonTemporalReferenceElem = doc.createElement( "inspire_common:TemporalReference" );
+      QDomElement inspireCommonDateOfLastRevisionElem = doc.createElement( "inspire_common:DateOfLastRevision" );
+      inspireCommonDateOfLastRevisionElem.appendChild( doc.createTextNode( inspireTemporalReferenceElem.text() ) );
+      inspireCommonTemporalReferenceElem.appendChild( inspireCommonDateOfLastRevisionElem );
+      inspireCapabilitiesElem.appendChild( inspireCommonTemporalReferenceElem );
+    }
+
+    QDomElement inspireCommonMetadataPointOfContactElem = doc.createElement( "inspire_common:MetadataPointOfContact" );
+
+    QDomElement contactOrganizationElem = propertiesElem.firstChildElement( "WMSContactOrganization" );
+    QDomElement inspireCommonOrganisationNameElem = doc.createElement( "inspire_common:OrganisationName" );
+    if ( !contactOrganizationElem.isNull() )
+    {
+      inspireCommonOrganisationNameElem.appendChild( doc.createTextNode( contactOrganizationElem.text() ) );
+    }
+    inspireCommonMetadataPointOfContactElem.appendChild( inspireCommonOrganisationNameElem );
+
+    QDomElement contactMailElem = propertiesElem.firstChildElement( "WMSContactMail" );
+    QDomElement inspireCommonEmailAddressElem = doc.createElement( "inspire_common:EmailAddress" );
+    if ( !contactMailElem.isNull() )
+    {
+      inspireCommonEmailAddressElem.appendChild( doc.createTextNode( contactMailElem.text() ) );
+    }
+    inspireCommonMetadataPointOfContactElem.appendChild( inspireCommonEmailAddressElem );
+
+    inspireCapabilitiesElem.appendChild( inspireCommonMetadataPointOfContactElem );
+
+    QDomElement inspireMetadataDateElem = inspireElem.firstChildElement( "metadataDate" );
+    if ( !inspireMetadataDateElem.isNull() )
+    {
+      QDomElement inspireCommonMetadataDateElem = doc.createElement( "inspire_common:MetadataDate" );
+      inspireCommonMetadataDateElem.appendChild( doc.createTextNode( inspireMetadataDateElem.text() ) );
+      inspireCapabilitiesElem.appendChild( inspireCommonMetadataDateElem );
+    }
+  }
+
+  QDomElement inspireLanguageElem = inspireElem.firstChildElement( "language" );
+  if ( !inspireLanguageElem.isNull() )
+  {
+    QDomElement inspireCommonSupportedLanguagesElem = doc.createElement( "inspire_common:SupportedLanguages" );
+    inspireCommonSupportedLanguagesElem.setAttribute( "xsi:type", "inspire_common:supportedLanguagesType" );
+
+    QDomElement inspireCommonLanguageElem = doc.createElement( "inspire_common:Language" );
+    inspireCommonLanguageElem.appendChild( doc.createTextNode( inspireLanguageElem.text() ) );
+
+    QDomElement inspireCommonDefaultLanguageElem = doc.createElement( "inspire_common:DefaultLanguage" );
+    inspireCommonDefaultLanguageElem.appendChild( inspireCommonLanguageElem );
+    inspireCommonSupportedLanguagesElem.appendChild( inspireCommonDefaultLanguageElem );
+
+    /* Supported language has to be different from default one
+    QDomElement inspireCommonSupportedLanguageElem = doc.createElement( "inspire_common:SupportedLanguage" );
+    inspireCommonSupportedLanguageElem.appendChild( inspireCommonLanguageElem.cloneNode().toElement() );
+    inspireCommonSupportedLanguagesElem.appendChild( inspireCommonSupportedLanguageElem );
+    */
+
+    inspireCapabilitiesElem.appendChild( inspireCommonSupportedLanguagesElem );
+
+    QDomElement inspireCommonResponseLanguageElem = doc.createElement( "inspire_common:ResponseLanguage" );
+    inspireCommonResponseLanguageElem.appendChild( inspireCommonLanguageElem.cloneNode().toElement() );
+    inspireCapabilitiesElem.appendChild( inspireCommonResponseLanguageElem );
+  }
+
+  parentElement.appendChild( inspireCapabilitiesElem );
 }
 
 QList< QPair< QString, QgsLayerCoordinateTransform > > QgsWMSProjectParser::layerCoordinateTransforms() const

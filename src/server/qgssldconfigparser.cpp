@@ -708,6 +708,15 @@ int QgsSLDConfigParser::WMSPrecision() const
   return -1;
 }
 
+bool QgsSLDConfigParser::WMSInspireActivated() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->WMSInspireActivated();
+  }
+  return false;
+}
+
 QgsComposition* QgsSLDConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
 {
   if ( mFallbackParser )
@@ -731,6 +740,14 @@ void QgsSLDConfigParser::printCapabilities( QDomElement& parentElement, QDomDocu
   if ( mFallbackParser )
   {
     mFallbackParser->printCapabilities( parentElement, doc );
+  }
+}
+
+void QgsSLDConfigParser::inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+{
+  if ( mFallbackParser )
+  {
+    mFallbackParser->inspireCapabilities( parentElement, doc );
   }
 }
 

@@ -442,6 +442,13 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
     schemaLocation += " http://www.opengis.net/sld";
     schemaLocation += " http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd";
     schemaLocation += " http://www.qgis.org/wms";
+    if ( mConfigParser && mConfigParser->WMSInspireActivated() )
+    {
+      wmsCapabilitiesElement.setAttribute( "xmlns:inspire_common", "http://inspire.ec.europa.eu/schemas/common/1.0" );
+      wmsCapabilitiesElement.setAttribute( "xmlns:inspire_vs", "http://inspire.ec.europa.eu/schemas/inspire_vs/1.0" );
+      schemaLocation += " http://inspire.ec.europa.eu/schemas/inspire_vs/1.0";
+      schemaLocation += " http://inspire.ec.europa.eu/schemas/inspire_vs/1.0/inspire_vs.xsd";
+    }
     schemaLocation += " " + hrefString + "SERVICE=WMS&REQUEST=GetSchemaExtension";
     wmsCapabilitiesElement.setAttribute( "xsi:schemaLocation", schemaLocation );
   }
@@ -563,6 +570,11 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
     elem.setAttribute( "InlineFeature", "0" );
     elem.setAttribute( "RemoteWCS", "0" );
     capabilityElement.appendChild( elem );
+
+    if ( mConfigParser && mConfigParser->WMSInspireActivated() )
+    {
+      mConfigParser->inspireCapabilities( capabilityElement, doc );
+    }
   }
 
   if ( mConfigParser && fullProjectInformation ) //remove composer templates from GetCapabilities in the long term

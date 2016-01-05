@@ -105,6 +105,11 @@ class SERVER_EXPORT QgsWMSConfigParser
     // WMS GetFeatureInfo precision (decimal places)
     virtual int WMSPrecision() const = 0;
 
+    // WMS inspire capabilities
+    virtual bool WMSInspireActivated() const = 0;
+    /** Adds inspire capabilities to xml document. ParentElem usually is the <Capabilities> element*/
+    virtual void inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
+
     //printing
 
     /** Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/

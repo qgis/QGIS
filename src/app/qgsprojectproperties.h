@@ -104,6 +104,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void on_mRemoveWMSComposerButton_clicked();
     void on_mAddLayerRestrictionButton_clicked();
     void on_mRemoveLayerRestrictionButton_clicked();
+    void on_mWMSInspireScenario1_toggled( bool on );
+    void on_mWMSInspireScenario2_toggled( bool on );
 
     /*!
      * Slots to select/unselect all the WFS layers

@@ -68,9 +68,12 @@ class SERVER_EXPORT QgsWMSProjectParser : public QgsWMSConfigParser
     double imageQuality() const override;
     int WMSPrecision() const override;
 
+    // WMS inspire capabilities
+    bool WMSInspireActivated() const override;
+    void inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
+
     //printing
     QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const override;
-
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
     //todo: fixme

@@ -75,7 +75,7 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
   }
   // Setting the QgsProject instance fileName
   // to help converting relative pathes to absolute
-  if ( mProjectPath != "" )
+  if ( !mProjectPath.isEmpty() )
   {
     QgsProject::instance()->setFileName( mProjectPath );
   }
@@ -563,7 +563,7 @@ void QgsServerProjectParser::serviceCapabilities( QDomElement& parentElement, QD
   QDomElement feesElem = propertiesElement.firstChildElement( "WMSFees" );
   QDomElement wmsFeesElem = doc.createElement( "Fees" );
   QDomText wmsFeesText = doc.createTextNode( "conditions unknown" ); // default value if access conditions are unknown
-  if ( !feesElem.isNull() && feesElem.text() != "" )
+  if ( !feesElem.isNull() && !feesElem.text().isEmpty() )
   {
     wmsFeesText = doc.createTextNode( feesElem.text() );
   }
@@ -574,7 +574,7 @@ void QgsServerProjectParser::serviceCapabilities( QDomElement& parentElement, QD
   QDomElement accessConstraintsElem = propertiesElement.firstChildElement( "WMSAccessConstraints" );
   QDomElement wmsAccessConstraintsElem = doc.createElement( "AccessConstraints" );
   QDomText wmsAccessConstraintsText = doc.createTextNode( "None" ); // default value if access constraints are unknown
-  if ( !accessConstraintsElem.isNull() && accessConstraintsElem.text() != "" )
+  if ( !accessConstraintsElem.isNull() && !accessConstraintsElem.text().isEmpty() )
   {
     wmsAccessConstraintsText = doc.createTextNode( accessConstraintsElem.text() );
   }

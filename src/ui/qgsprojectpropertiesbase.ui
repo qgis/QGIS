@@ -1686,124 +1686,6 @@
                   <string notr="true">projowsserver</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_13">
-                  <item row="2" column="0">
-                   <widget class="QgsCollapsibleGroupBox" name="mWMSComposerGroupBox">
-                    <property name="title">
-                     <string>Exclude composers</string>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                    <property name="collapsed" stdset="0">
-                     <bool>false</bool>
-                    </property>
-                    <property name="saveCollapsedState" stdset="0">
-                     <bool>true</bool>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_10">
-                     <item row="0" column="0" colspan="3">
-                      <widget class="QListWidget" name="mComposerListWidget"/>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QToolButton" name="mAddWMSComposerButton">
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QToolButton" name="mRemoveWMSComposerButton">
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="2">
-                      <spacer name="horizontalSpacer_2">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>0</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QgsCollapsibleGroupBox" name="mLayerRestrictionsGroupBox">
-                    <property name="title">
-                     <string>Exclude layers</string>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                    <property name="collapsed" stdset="0">
-                     <bool>false</bool>
-                    </property>
-                    <property name="saveCollapsedState" stdset="0">
-                     <bool>true</bool>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout">
-                     <item row="0" column="0" colspan="3">
-                      <widget class="QListWidget" name="mLayerRestrictionsListWidget"/>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QToolButton" name="mAddLayerRestrictionButton">
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QToolButton" name="mRemoveLayerRestrictionButton">
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="2">
-                      <spacer name="horizontalSpacer_3">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>0</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
                   <item row="1" column="0">
                    <widget class="QgsCollapsibleGroupBox" name="grpWMSExt">
                     <property name="title">
@@ -1913,6 +1795,124 @@
                     </layout>
                    </widget>
                   </item>
+                  <item row="2" column="0">
+                   <widget class="QgsCollapsibleGroupBox" name="mWMSComposerGroupBox">
+                    <property name="title">
+                     <string>Exclude composers</string>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                    <property name="checked">
+                     <bool>false</bool>
+                    </property>
+                    <property name="collapsed">
+                     <bool>false</bool>
+                    </property>
+                    <property name="saveCollapsedState">
+                     <bool>true</bool>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_10">
+                     <item row="0" column="0" colspan="3">
+                      <widget class="QListWidget" name="mComposerListWidget"/>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QToolButton" name="mAddWMSComposerButton">
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="icon">
+                        <iconset resource="../../images/images.qrc">
+                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QToolButton" name="mRemoveWMSComposerButton">
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="icon">
+                        <iconset resource="../../images/images.qrc">
+                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <spacer name="horizontalSpacer_2">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>0</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QgsCollapsibleGroupBox" name="mLayerRestrictionsGroupBox">
+                    <property name="title">
+                     <string>Exclude layers</string>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                    <property name="checked">
+                     <bool>false</bool>
+                    </property>
+                    <property name="collapsed">
+                     <bool>false</bool>
+                    </property>
+                    <property name="saveCollapsedState">
+                     <bool>true</bool>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout">
+                     <item row="0" column="0" colspan="3">
+                      <widget class="QListWidget" name="mLayerRestrictionsListWidget"/>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QToolButton" name="mAddLayerRestrictionButton">
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="icon">
+                        <iconset resource="../../images/images.qrc">
+                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QToolButton" name="mRemoveLayerRestrictionButton">
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="icon">
+                        <iconset resource="../../images/images.qrc">
+                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <spacer name="horizontalSpacer_3">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>0</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
                   <item row="1" column="1">
                    <widget class="QgsCollapsibleGroupBox" name="grpWMSList">
                     <property name="title">
@@ -1960,14 +1960,14 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="3" column="0">
+                  <item row="5" column="0">
                    <widget class="QCheckBox" name="mWmsUseLayerIDs">
                     <property name="text">
                      <string>Use layer ids as names</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="8" column="0" colspan="2">
+                  <item row="10" column="0" colspan="2">
                    <layout class="QHBoxLayout" name="horizontalLayout_10">
                     <item>
                      <widget class="QLabel" name="mWMSImageQualityLabel">
@@ -1994,14 +1994,14 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="4" column="0">
+                  <item row="6" column="0">
                    <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
                     <property name="text">
                      <string>Add geometry to feature response</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="7" column="0" colspan="2">
+                  <item row="9" column="0" colspan="2">
                    <layout class="QGridLayout" name="gridLayout_3">
                     <item row="1" column="1">
                      <widget class="QLabel" name="mMaxWidthLabel">
@@ -2048,7 +2048,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="5" column="0" colspan="2">
+                  <item row="7" column="0" colspan="2">
                    <layout class="QHBoxLayout" name="grpWMSPrecision">
                     <item>
                      <widget class="QLabel" name="label_5">
@@ -2072,7 +2072,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="6" column="0" colspan="2">
+                  <item row="8" column="0" colspan="2">
                    <layout class="QHBoxLayout" name="horizontalLayout_2">
                     <item>
                      <widget class="QLabel" name="mWMSUrlLabel">
@@ -2085,6 +2085,138 @@
                      <widget class="QLineEdit" name="mWMSUrlLineEdit"/>
                     </item>
                    </layout>
+                  </item>
+                  <item row="4" column="0" colspan="2">
+                   <widget class="QgsCollapsibleGroupBox" name="mWMSInspire">
+                    <property name="title">
+                     <string>INSPIRE (European directive)</string>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                    <property name="checked">
+                     <bool>false</bool>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_14">
+                     <item row="0" column="1">
+                      <widget class="QComboBox" name="mWMSInspireLanguage">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_7">
+                       <property name="text">
+                        <string>Service language</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0" colspan="2">
+                      <widget class="QGroupBox" name="mWMSInspireScenario2">
+                       <property name="title">
+                        <string>Scenario 2 - INSPIRE related fields using embedded service metadata:</string>
+                       </property>
+                       <property name="checkable">
+                        <bool>true</bool>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_17">
+                        <item row="0" column="1">
+                         <widget class="QDateEdit" name="mWMSInspireTemporalReference">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QLabel" name="label_23">
+                          <property name="text">
+                           <string>Metadata date</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="1">
+                         <widget class="QDateEdit" name="mWMSInspireMetadataDate">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="0">
+                         <widget class="QLabel" name="label_22">
+                          <property name="text">
+                           <string>Last revision date</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item row="3" column="0" colspan="2">
+                      <widget class="QGroupBox" name="mWMSInspireScenario1">
+                       <property name="title">
+                        <string>Scenario 1 - INSPIRE related fields using referenced external service metadata</string>
+                       </property>
+                       <property name="checkable">
+                        <bool>true</bool>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_15">
+                        <item row="0" column="1">
+                         <widget class="QLineEdit" name="mWMSInspireMetadataUrl"/>
+                        </item>
+                        <item row="0" column="0">
+                         <widget class="QLabel" name="label_8">
+                          <property name="text">
+                           <string>Metadata URL</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="1">
+                         <widget class="QComboBox" name="mWMSInspireMetadataUrlType">
+                          <item>
+                           <property name="text">
+                            <string>application/vnd.iso.19139+xml</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>application/vnd.ogc.csw.GetRecordByIdResponse_xml</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>application/vnd.ogc.csw_xml</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QLabel" name="label_24">
+                          <property name="text">
+                           <string>URL mime/type</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
                   </item>
                  </layout>
                 </widget>

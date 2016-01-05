@@ -4,12 +4,16 @@
         <file>flags/af.png</file>
         <file>flags/ar.png</file>
         <file>flags/bg.png</file>
+        <file>flags/cy.png</file>
         <file>flags/de.png</file>
+        <file>flags/en_GB.png</file>
         <file>flags/en_US.png</file>
         <file>flags/es.png</file>
         <file>flags/fa.png</file>
         <file>flags/fi.png</file>
         <file>flags/fr.png</file>
+        <file>flags/ga.png</file>
+        <file>flags/gd.png</file>
         <file>flags/he.png</file>
         <file>flags/hu.png</file>
         <file>flags/id.png</file>
@@ -21,6 +25,7 @@
         <file>flags/lt.png</file>
         <file>flags/lv.png</file>
         <file>flags/mn.png</file>
+        <file>flags/mt.png</file>
         <file>flags/nl.png</file>
         <file>flags/pt_BR.png</file>
         <file>flags/pt_PT.png</file>
