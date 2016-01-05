@@ -157,10 +157,10 @@ QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF &originalR
   double clippedRotation = normalizedAngle( rotation );
 
   //shortcut for some rotation values
-  if ( clippedRotation == 0 || clippedRotation == 90 || clippedRotation == 180 || clippedRotation == 270 )
+  if ( qgsDoubleNear( clippedRotation, 0.0 ) || qgsDoubleNear( clippedRotation, 90.0 ) || qgsDoubleNear( clippedRotation, 180.0 ) || qgsDoubleNear( clippedRotation, 270.0 ) )
   {
     double rectScale;
-    if ( clippedRotation == 0 || clippedRotation == 180 )
+    if ( qgsDoubleNear( clippedRotation, 0.0 ) || qgsDoubleNear( clippedRotation, 180.0 ) )
     {
       rectScale = (( originalWidth / originalHeight ) > ratioBoundsRect ) ? boundsWidth / originalWidth : boundsHeight / originalHeight;
     }
@@ -171,7 +171,7 @@ QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF &originalR
     double rectScaledWidth = rectScale * originalWidth;
     double rectScaledHeight = rectScale * originalHeight;
 
-    if ( clippedRotation == 0 || clippedRotation == 180 )
+    if ( qgsDoubleNear( clippedRotation, 0.0 ) || qgsDoubleNear( clippedRotation, 180.0 ) )
     {
       return QRectF(( boundsWidth - rectScaledWidth ) / 2.0, ( boundsHeight - rectScaledHeight ) / 2.0, rectScaledWidth, rectScaledHeight );
     }
@@ -492,7 +492,7 @@ double QgsComposerUtils::textHeightMM( const QFont &font, const QString &text, d
   QFontMetricsF fontMetrics( metricsFont );
 
   double fontHeight = fontMetrics.ascent() + fontMetrics.descent(); // ignore +1 for baseline
-  double textHeight = fontMetrics.ascent() + ( double )(( lines - 1 ) * fontHeight * multiLineHeight );
+  double textHeight = fontMetrics.ascent() + static_cast< double >(( lines - 1 ) * fontHeight * multiLineHeight );
 
   return textHeight / FONT_WORKAROUND_SCALE;
 }

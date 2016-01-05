@@ -180,7 +180,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   {
     return;
   }
-  if ( size.width() == 0 || size.height() == 0 )
+  if ( qgsDoubleNear( size.width(), 0.0 ) || qgsDoubleNear( size.height(), 0.0 ) )
   {
     //don't attempt to draw if size is invalid
     return;
@@ -649,7 +649,7 @@ void QgsComposerMap::zoomContent( int delta, double x, double y )
   QSettings settings;
 
   //read zoom mode
-  QgsComposerItem::ZoomMode zoomMode = ( QgsComposerItem::ZoomMode )settings.value( "/qgis/wheel_action", 2 ).toInt();
+  QgsComposerItem::ZoomMode zoomMode = static_cast< QgsComposerItem::ZoomMode >( settings.value( "/qgis/wheel_action", 2 ).toInt() );
   if ( zoomMode == QgsComposerItem::NoZoom )
   {
     //do nothing
@@ -894,7 +894,7 @@ void QgsComposerMap::setNewScale( double scaleDenominator, bool forceUpdate )
 {
   double currentScaleDenominator = scale();
 
-  if ( scaleDenominator == currentScaleDenominator || scaleDenominator == 0 )
+  if ( qgsDoubleNear( scaleDenominator, currentScaleDenominator ) || qgsDoubleNear( scaleDenominator, 0.0 ) )
   {
     return;
   }
@@ -1118,7 +1118,7 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext* context )
     }
   }
 
-  if ( mEvaluatedMapRotation != mapRotation )
+  if ( !qgsDoubleNear( mEvaluatedMapRotation, mapRotation ) )
   {
     mEvaluatedMapRotation = mapRotation;
     emit mapRotationChanged( mapRotation );
@@ -1219,7 +1219,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
           // Check all label blending properties
           QgsPalLayerSettings layerSettings = QgsPalLayerSettings::fromLayer( currentVectorLayer );
           if (( layerSettings.blendMode != QPainter::CompositionMode_SourceOver ) ||
-              ( layerSettings.bufferSize != 0 && layerSettings.bufferBlendMode != QPainter::CompositionMode_SourceOver ) ||
+              ( layerSettings.bufferDraw && layerSettings.bufferBlendMode != QPainter::CompositionMode_SourceOver ) ||
               ( layerSettings.shadowDraw && layerSettings.shadowBlendMode != QPainter::CompositionMode_SourceOver ) ||
               ( layerSettings.shapeDraw && layerSettings.shapeBlendMode != QPainter::CompositionMode_SourceOver ) )
           {
@@ -1390,7 +1390,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   }
 
   //map rotation
-  if ( itemElem.attribute( "mapRotation", "0" ).toDouble() != 0 )
+  if ( !qgsDoubleNear( itemElem.attribute( "mapRotation", "0" ).toDouble(), 0.0 ) )
   {
     mMapRotation = itemElem.attribute( "mapRotation", "0" ).toDouble();
   }
@@ -1476,13 +1476,13 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mapGrid->setOffsetX( gridElem.attribute( "offsetX", "0" ).toDouble() );
     mapGrid->setOffsetY( gridElem.attribute( "offsetY", "0" ).toDouble() );
     mapGrid->setCrossLength( gridElem.attribute( "crossLength", "3" ).toDouble() );
-    mapGrid->setFrameStyle(( QgsComposerMapGrid::FrameStyle )gridElem.attribute( "gridFrameStyle", "0" ).toInt() );
+    mapGrid->setFrameStyle( static_cast< QgsComposerMapGrid::FrameStyle >( gridElem.attribute( "gridFrameStyle", "0" ).toInt() ) );
     mapGrid->setFrameWidth( gridElem.attribute( "gridFrameWidth", "2.0" ).toDouble() );
     mapGrid->setFramePenSize( gridElem.attribute( "gridFramePenThickness", "0.5" ).toDouble() );
     mapGrid->setFramePenColor( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "framePenColor", "0,0,0" ) ) );
     mapGrid->setFrameFillColor1( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "frameFillColor1", "255,255,255,255" ) ) );
     mapGrid->setFrameFillColor2( QgsSymbolLayerV2Utils::decodeColor( gridElem.attribute( "frameFillColor2", "0,0,0,255" ) ) );
-    mapGrid->setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "gridBlendMode", "0" ).toUInt() ) );
+    mapGrid->setBlendMode( QgsMapRenderer::getCompositionMode( static_cast< QgsMapRenderer::BlendMode >( itemElem.attribute( "gridBlendMode", "0" ).toUInt() ) ) );
     QDomElement gridSymbolElem = gridElem.firstChildElement( "symbol" );
     QgsLineSymbolV2* lineSymbol = nullptr;
     if ( gridSymbolElem.isNull() )
@@ -1533,7 +1533,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     QgsComposerMapOverview* mapOverview = new QgsComposerMapOverview( tr( "Overview %1" ).arg( mOverviewStack->size() + 1 ), this );
 
     mapOverview->setFrameMap( overviewFrameElem.attribute( "overviewFrameMap", "-1" ).toInt() );
-    mapOverview->setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) overviewFrameElem.attribute( "overviewBlendMode", "0" ).toUInt() ) );
+    mapOverview->setBlendMode( QgsMapRenderer::getCompositionMode( static_cast< QgsMapRenderer::BlendMode >( overviewFrameElem.attribute( "overviewBlendMode", "0" ).toUInt() ) ) );
     mapOverview->setInverted( overviewFrameElem.attribute( "overviewInverted" ).compare( "true", Qt::CaseInsensitive ) == 0 );
     mapOverview->setCentered( overviewFrameElem.attribute( "overviewCentered" ).compare( "true", Qt::CaseInsensitive ) == 0 );
 
@@ -1570,7 +1570,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
 
-    if ( composerItemElem.attribute( "rotation", "0" ).toDouble() != 0 )
+    if ( !qgsDoubleNear( composerItemElem.attribute( "rotation", "0" ).toDouble(), 0.0 ) )
     {
       //in versions prior to 2.1 map rotation was stored in the rotation attribute
       mMapRotation = composerItemElem.attribute( "rotation", "0" ).toDouble();
@@ -1672,7 +1672,7 @@ void QgsComposerMap::setGridStyle( GridStyle style )
 QgsComposerMap::GridStyle QgsComposerMap::gridStyle() const
 {
   const QgsComposerMapGrid* g = constFirstMapGrid();
-  return ( QgsComposerMap::GridStyle )g->style();
+  return static_cast< QgsComposerMap::GridStyle >( g->style() );
 }
 
 void QgsComposerMap::setGridIntervalX( double interval )
@@ -1814,18 +1814,18 @@ void QgsComposerMap::setGridAnnotationPosition( QgsComposerMap::GridAnnotationPo
   QgsComposerMapGrid* g = grid();
   if ( p != QgsComposerMap::Disabled )
   {
-    g->setAnnotationPosition(( QgsComposerMapGrid::AnnotationPosition )p, ( QgsComposerMapGrid::BorderSide )border );
+    g->setAnnotationPosition( static_cast< QgsComposerMapGrid::AnnotationPosition >( p ), static_cast< QgsComposerMapGrid::BorderSide >( border ) );
   }
   else
   {
-    g->setAnnotationDisplay( QgsComposerMapGrid::HideAll, ( QgsComposerMapGrid::BorderSide )border );
+    g->setAnnotationDisplay( QgsComposerMapGrid::HideAll, static_cast< QgsComposerMapGrid::BorderSide >( border ) );
   }
 }
 
 QgsComposerMap::GridAnnotationPosition QgsComposerMap::gridAnnotationPosition( QgsComposerMap::Border border ) const
 {
   const QgsComposerMapGrid* g = constFirstMapGrid();
-  return ( QgsComposerMap::GridAnnotationPosition )g->annotationPosition(( QgsComposerMapGrid::BorderSide )border );
+  return static_cast< QgsComposerMap::GridAnnotationPosition >( g->annotationPosition( static_cast< QgsComposerMapGrid::BorderSide >( border ) ) );
 }
 
 void QgsComposerMap::setAnnotationFrameDistance( double d )
@@ -1859,38 +1859,38 @@ void QgsComposerMap::setGridAnnotationDirection( GridAnnotationDirection d, QgsC
     default:
       gridDirection = QgsComposerMapGrid::Horizontal;
   }
-  g->setAnnotationDirection( gridDirection, ( QgsComposerMapGrid::BorderSide )border );
+  g->setAnnotationDirection( gridDirection, static_cast< QgsComposerMapGrid::BorderSide >( border ) );
 
 }
 
 QgsComposerMap::GridAnnotationDirection QgsComposerMap::gridAnnotationDirection( QgsComposerMap::Border border ) const
 {
   const QgsComposerMapGrid* g = constFirstMapGrid();
-  return ( QgsComposerMap::GridAnnotationDirection )g->annotationDirection(( QgsComposerMapGrid::BorderSide )border );
+  return static_cast< QgsComposerMap::GridAnnotationDirection >( g->annotationDirection( static_cast< QgsComposerMapGrid::BorderSide >( border ) ) );
 }
 
 void QgsComposerMap::setGridAnnotationFormat( QgsComposerMap::GridAnnotationFormat f )
 {
   QgsComposerMapGrid* g = grid();
-  g->setAnnotationFormat(( QgsComposerMapGrid::AnnotationFormat )f );
+  g->setAnnotationFormat( static_cast< QgsComposerMapGrid::AnnotationFormat >( f ) );
 }
 
 QgsComposerMap::GridAnnotationFormat QgsComposerMap::gridAnnotationFormat() const
 {
   const QgsComposerMapGrid* g = constFirstMapGrid();
-  return ( QgsComposerMap::GridAnnotationFormat )g->annotationFormat();
+  return static_cast< QgsComposerMap::GridAnnotationFormat >( g->annotationFormat() );
 }
 
 void QgsComposerMap::setGridFrameStyle( GridFrameStyle style )
 {
   QgsComposerMapGrid* g = grid();
-  g->setFrameStyle(( QgsComposerMapGrid::FrameStyle )style );
+  g->setFrameStyle( static_cast< QgsComposerMapGrid::FrameStyle >( style ) );
 }
 
 QgsComposerMap::GridFrameStyle QgsComposerMap::gridFrameStyle() const
 {
   const QgsComposerMapGrid* g = constFirstMapGrid();
-  return ( QgsComposerMap::GridFrameStyle )g->frameStyle();
+  return static_cast< QgsComposerMap::GridFrameStyle >( g->frameStyle() );
 }
 
 void QgsComposerMap::setGridFrameWidth( double w )
@@ -2059,7 +2059,7 @@ QPolygonF QgsComposerMap::transformedMapPolygon() const
 void QgsComposerMap::mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) const
 {
   poly.clear();
-  if ( mEvaluatedMapRotation == 0 )
+  if ( qgsDoubleNear( mEvaluatedMapRotation, 0.0 ) )
   {
     poly << QPointF( extent.xMinimum(), extent.yMaximum() );
     poly << QPointF( extent.xMaximum(), extent.yMaximum() );
@@ -2122,7 +2122,7 @@ QString QgsComposerMap::displayName() const
 void QgsComposerMap::requestedExtent( QgsRectangle& extent ) const
 {
   QgsRectangle newExtent = *currentMapExtent();
-  if ( mEvaluatedMapRotation == 0 )
+  if ( qgsDoubleNear( mEvaluatedMapRotation, 0.0 ) )
   {
     extent = newExtent;
   }

@@ -736,7 +736,7 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) cons
   composerScaleBarElem.appendChild( fontColorElem );
 
   //alignment
-  composerScaleBarElem.setAttribute( "alignment", QString::number(( int ) mAlignment ) );
+  composerScaleBarElem.setAttribute( "alignment", QString::number( static_cast< int >( mAlignment ) ) );
 
   elem.appendChild( composerScaleBarElem );
   return _writeXML( composerScaleBarElem, doc );
@@ -870,8 +870,8 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   QString styleString = itemElem.attribute( "style", "" );
   setStyle( tr( styleString.toLocal8Bit().data() ) );
 
-  mUnits = ( ScaleBarUnits )itemElem.attribute( "units" ).toInt();
-  mAlignment = ( Alignment )( itemElem.attribute( "alignment", "0" ).toInt() );
+  mUnits = static_cast< ScaleBarUnits >( itemElem.attribute( "units" ).toInt() );
+  mAlignment = static_cast< Alignment >( itemElem.attribute( "alignment", "0" ).toInt() );
 
   //map
   int mapId = itemElem.attribute( "mapId", "-1" ).toInt();

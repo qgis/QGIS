@@ -355,7 +355,7 @@ QRectF QgsComposition::pageItemBounds( int pageNumber, bool visibleOnly ) const
 
 void QgsComposition::setPaperSize( const double width, const double height, bool keepRelativeItemPosition )
 {
-  if ( width == mPageWidth && height == mPageHeight )
+  if ( qgsDoubleNear( width, mPageWidth ) && qgsDoubleNear( height, mPageHeight ) )
   {
     return;
   }
@@ -382,7 +382,7 @@ void QgsComposition::setPaperSize( const double width, const double height, bool
   for ( ; guideIt != guides->end(); ++guideIt )
   {
     QLineF line = ( *guideIt )->line();
-    if ( line.dx() == 0 )
+    if ( qgsDoubleNear( line.dx(), 0. ) )
     {
       //vertical line, change height of line
       ( *guideIt )->setLine( line.x1(), 0, line.x1(), totalHeight );
@@ -460,7 +460,7 @@ void QgsComposition::resizePageToContents( double marginTop, double marginRight,
   Q_FOREACH ( QGraphicsLineItem* guide, mSnapLines )
   {
     QLineF line = guide->line();
-    if ( line.dx() == 0 )
+    if ( qgsDoubleNear( line.dx(), 0.0 ) )
     {
       //vertical line
       guide->setLine( line.x1() + diffX, 0, line.x1() + diffX, newHeight );
@@ -533,7 +533,7 @@ void QgsComposition::setNumPages( const int pages )
   for ( ; guideIt != guides->end(); ++guideIt )
   {
     QLineF line = ( *guideIt )->line();
-    if ( line.dx() == 0 )
+    if ( qgsDoubleNear( line.dx(), 0.0 ) )
     {
       //vertical line, change height of line
       ( *guideIt )->setLine( line.x1(), 0, line.x1(), totalHeight );
@@ -1255,7 +1255,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
 
     if ( mapsToRestore )
     {
-      mapsToRestore->insert( newMap, ( int )( newMap->previewMode() ) );
+      mapsToRestore->insert( newMap, static_cast< int >( newMap->previewMode() ) );
       newMap->setPreviewMode( QgsComposerMap::Rectangle );
       newMap->setUpdatesEnabled( true );
     }
@@ -2030,13 +2030,13 @@ QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const
   }
 
   //y offset to current page
-  int pageNr = ( int )( scenePoint.y() / ( mPageHeight + mSpaceBetweenPages ) );
+  int pageNr = static_cast< int >( scenePoint.y() / ( mPageHeight + mSpaceBetweenPages ) );
   double yOffset = pageNr * ( mPageHeight + mSpaceBetweenPages );
   double yPage = scenePoint.y() - yOffset; //y-coordinate relative to current page
 
   //snap x coordinate
-  int xRatio = ( int )(( scenePoint.x() - mSnapGridOffsetX ) / mSnapGridResolution + 0.5 );
-  int yRatio = ( int )(( yPage - mSnapGridOffsetY ) / mSnapGridResolution + 0.5 );
+  int xRatio = static_cast< int >(( scenePoint.x() - mSnapGridOffsetX ) / mSnapGridResolution + 0.5 );
+  int yRatio = static_cast< int >(( yPage - mSnapGridOffsetY ) / mSnapGridResolution + 0.5 );
 
   double xSnapped = xRatio * mSnapGridResolution + mSnapGridOffsetX;
   double ySnapped = yRatio * mSnapGridResolution + mSnapGridOffsetY + yOffset;
@@ -2890,9 +2890,9 @@ QImage QgsComposition::printPageAsRaster( int page, const QSize& imageSize, int 
   }
 
   int width = imageSize.isValid() ? imageSize.width()
-              : ( int )( resolution * mPageWidth / 25.4 );
+              : static_cast< int >( resolution * mPageWidth / 25.4 );
   int height = imageSize.isValid() ? imageSize.height()
-               : ( int )( resolution * mPageHeight / 25.4 );
+               : static_cast< int >( resolution * mPageHeight / 25.4 );
 
   QImage image( QSize( width, height ), QImage::Format_ARGB32 );
   if ( !image.isNull() )
@@ -2924,9 +2924,9 @@ QImage QgsComposition::renderRectAsRaster( const QRectF& rect, const QSize& imag
   }
 
   int width = imageSize.isValid() ? imageSize.width()
-              : ( int )( resolution * rect.width() / 25.4 );
+              : static_cast< int >( resolution * rect.width() / 25.4 );
   int height = imageSize.isValid() ? imageSize.height()
-               : ( int )( resolution * rect.height() / 25.4 );
+               : static_cast< int >( resolution * rect.height() / 25.4 );
 
   QImage image( QSize( width, height ), QImage::Format_ARGB32 );
   if ( !image.isNull() )
@@ -3053,8 +3053,8 @@ void QgsComposition::computeWorldFileParameters( const QRectF& exportRegion, dou
   double X0 = paperExtent.xMinimum();
   double Y0 = paperExtent.yMinimum();
 
-  int widthPx = ( int )( printResolution() * destinationWidth / 25.4 );
-  int heightPx = ( int )( printResolution() * destinationHeight / 25.4 );
+  int widthPx = static_cast< int >( printResolution() * destinationWidth / 25.4 );
+  int heightPx = static_cast< int >( printResolution() * destinationHeight / 25.4 );
 
   double Ww = paperExtent.width() / widthPx;
   double Hh = paperExtent.height() / heightPx;

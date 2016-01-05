@@ -48,8 +48,8 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
     if ( mComposition->gridVisible() && mComposition->plotStyle() ==  QgsComposition::Preview
          && mComposition->snapGridResolution() > 0 )
     {
-      int gridMultiplyX = ( int )( mComposition->snapGridOffsetX() / mComposition->snapGridResolution() );
-      int gridMultiplyY = ( int )( mComposition->snapGridOffsetY() / mComposition->snapGridResolution() );
+      int gridMultiplyX = static_cast< int >( mComposition->snapGridOffsetX() / mComposition->snapGridResolution() );
+      int gridMultiplyY = static_cast< int >( mComposition->snapGridOffsetY() / mComposition->snapGridResolution() );
       double currentXCoord = mComposition->snapGridOffsetX() - gridMultiplyX * mComposition->snapGridResolution();
       double currentYCoord;
       double minYCoord = mComposition->snapGridOffsetY() - gridMultiplyY * mComposition->snapGridResolution();

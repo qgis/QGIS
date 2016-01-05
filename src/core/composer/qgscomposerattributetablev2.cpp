@@ -687,7 +687,7 @@ void QgsComposerAttributeTableV2::setWrapString( const QString &wrapString )
 bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
   QDomElement composerTableElem = doc.createElement( "ComposerAttributeTableV2" );
-  composerTableElem.setAttribute( "source", QString::number(( int )mSource ) );
+  composerTableElem.setAttribute( "source", QString::number( static_cast< int >( mSource ) ) );
   composerTableElem.setAttribute( "relationId", mRelationId );
   composerTableElem.setAttribute( "showUniqueRowsOnly", mShowUniqueRowsOnly );
   composerTableElem.setAttribute( "showOnlyVisibleFeatures", mShowOnlyVisibleFeatures );

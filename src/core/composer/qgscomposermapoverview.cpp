@@ -183,7 +183,7 @@ bool QgsComposerMapOverview::readXML( const QDomElement &itemElem, const QDomDoc
   bool ok = QgsComposerMapItem::readXML( itemElem, doc );
 
   setFrameMap( itemElem.attribute( "frameMap", "-1" ).toInt() );
-  mBlendMode = QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode", "0" ).toUInt() );
+  mBlendMode = QgsMapRenderer::getCompositionMode( static_cast< QgsMapRenderer::BlendMode >( itemElem.attribute( "blendMode", "0" ).toUInt() ) );
   mInverted = ( itemElem.attribute( "inverted", "0" ) != "0" );
   mCentered = ( itemElem.attribute( "centered", "0" ) != "0" );
 

@@ -620,7 +620,7 @@ bool QgsComposerTableSortColumnsProxyModelV2::setData( const QModelIndex& index,
 
   if ( index.column() == 1 )
   {
-    column->setSortOrder(( Qt::SortOrder )value.toInt() );
+    column->setSortOrder( static_cast< Qt::SortOrder >( value.toInt() ) );
     emit dataChanged( index, index );
     return true;
   }
