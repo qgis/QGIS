@@ -44,7 +44,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
 
   public:
     //! Construct the provider with default values
-    QgsAbstractLabelProvider();
+    QgsAbstractLabelProvider( const QString& layerId = QString() );
     //! Vritual destructor
     virtual ~QgsAbstractLabelProvider() {}
 
@@ -74,6 +74,9 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! Name of the layer (for statistics, debugging etc.) - does not need to be unique
     QString name() const { return mName; }
 
+    //! Returns ID of associated layer, or empty string if no layer is associated with the provider.
+    QString layerId() const { return mLayerId; }
+
     //! Flags associated with the provider
     Flags flags() const { return mFlags; }
 
@@ -98,6 +101,8 @@ class CORE_EXPORT QgsAbstractLabelProvider
 
     //! Name of the layer
     QString mName;
+    //! Associated layer's ID, if applicable
+    QString mLayerId;
     //! Flags altering drawing and registration of features
     Flags mFlags;
     //! Placement strategy

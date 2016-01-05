@@ -301,6 +301,7 @@ class CORE_EXPORT QgsPalLayerSettings
       FontMaxPixel = 26,
       IsObstacle = 88,
       ObstacleFactor = 89,
+      ZIndex = 90,
 
       // (data defined only)
       Show = 15,
@@ -480,6 +481,9 @@ class CORE_EXPORT QgsPalLayerSettings
     /** Controls how features act as obstacles for labels
      */
     ObstacleType obstacleType;
+
+    //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index
+    double zIndex;
 
     //-- scale factors
     double vectorScaleFactor; //scale factor painter units->pixels
