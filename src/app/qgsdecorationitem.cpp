@@ -44,8 +44,9 @@
 
 QgsDecorationItem::QgsDecorationItem( QObject* parent )
     : QObject( parent )
+    , mEnabled( false )
+    , mPlacement( TopLeft )
 {
-  mEnabled = false;
 }
 
 QgsDecorationItem::~QgsDecorationItem()
@@ -63,12 +64,14 @@ void QgsDecorationItem::projectRead()
 {
   QgsDebugMsg( "Entered" );
   mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, "/Enabled", false );
+  mPlacement = static_cast< Placement >( QgsProject::instance()->readNumEntry( mNameConfig, "/Placement", static_cast< int >( mPlacement ) ) );
 }
 
 void QgsDecorationItem::saveToProject()
 {
   QgsDebugMsg( "Entered" );
   QgsProject::instance()->writeEntry( mNameConfig, "/Enabled", mEnabled );
+  QgsProject::instance()->writeEntry( mNameConfig, "/Placement", static_cast< int >( mPlacement ) );
 }
 void QgsDecorationItem::setName( const char *name )
 {

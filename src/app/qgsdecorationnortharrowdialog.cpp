@@ -36,9 +36,11 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   spinAngle->setValue( mDeco.mRotationInt );
 
   // placement
-  cboPlacement->clear();
-  cboPlacement->addItems( mDeco.mPlacementLabels );
-  cboPlacement->setCurrentIndex( mDeco.mPlacementIndex );
+  cboPlacement->addItem( tr( "Top left" ), QgsDecorationItem::TopLeft );
+  cboPlacement->addItem( tr( "Top right" ), QgsDecorationItem::TopRight );
+  cboPlacement->addItem( tr( "Bottom left" ), QgsDecorationItem::BottomLeft );
+  cboPlacement->addItem( tr( "Bottom right" ), QgsDecorationItem::BottomRight );
+  cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
   spinHorizontal->setValue( mDeco.mMarginHorizontal );
   spinVertical->setValue( mDeco.mMarginVertical );
 
@@ -63,7 +65,7 @@ void QgsDecorationNorthArrowDialog::on_buttonBox_helpRequested()
 void QgsDecorationNorthArrowDialog::on_buttonBox_accepted()
 {
   mDeco.mRotationInt = sliderRotation->value();
-  mDeco.mPlacementIndex = cboPlacement->currentIndex();
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
   mDeco.setEnabled( grpEnable->isChecked() );
   mDeco.mAutomatic = cboxAutomatic->isChecked();
   mDeco.mMarginHorizontal = spinHorizontal->value();

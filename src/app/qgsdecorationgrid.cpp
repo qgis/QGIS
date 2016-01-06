@@ -94,10 +94,10 @@ void QgsDecorationGrid::projectRead()
   QgsDecorationItem::projectRead();
 
   mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, "/Enabled", false );
-  mMapUnits = ( QGis::UnitType ) QgsProject::instance()->readNumEntry( mNameConfig, "/MapUnits",
-              QGis::UnknownUnit );
-  mGridStyle = ( GridStyle ) QgsProject::instance()->readNumEntry( mNameConfig, "/Style",
-               QgsDecorationGrid::Line );
+  mMapUnits = static_cast< QGis::UnitType >( QgsProject::instance()->readNumEntry( mNameConfig, "/MapUnits",
+              QGis::UnknownUnit ) );
+  mGridStyle = static_cast< GridStyle >( QgsProject::instance()->readNumEntry( mNameConfig, "/Style",
+                                         QgsDecorationGrid::Line ) );
   mGridIntervalX = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalX", 10 );
   mGridIntervalY = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalY", 10 );
   mGridOffsetX = QgsProject::instance()->readDoubleEntry( mNameConfig, "/OffsetX", 0 );
@@ -107,8 +107,8 @@ void QgsDecorationGrid::projectRead()
   // mGridAnnotationPosition = ( GridAnnotationPosition ) QgsProject::instance()->readNumEntry( mNameConfig,
   //                           "/AnnotationPosition", 0 );
   mGridAnnotationPosition = InsideMapFrame; // don't allow outside frame, doesn't make sense
-  mGridAnnotationDirection = ( GridAnnotationDirection ) QgsProject::instance()->readNumEntry( mNameConfig,
-                             "/AnnotationDirection", 0 );
+  mGridAnnotationDirection = static_cast< GridAnnotationDirection >( QgsProject::instance()->readNumEntry( mNameConfig,
+                             "/AnnotationDirection", 0 ) );
   QString fontStr = QgsProject::instance()->readEntry( mNameConfig, "/AnnotationFont", "" );
   if ( fontStr != "" )
   {
@@ -164,8 +164,8 @@ void QgsDecorationGrid::saveToProject()
 {
   QgsDecorationItem::saveToProject();
   QgsProject::instance()->writeEntry( mNameConfig, "/Enabled", mEnabled );
-  QgsProject::instance()->writeEntry( mNameConfig, "/MapUnits", ( int ) mMapUnits );
-  QgsProject::instance()->writeEntry( mNameConfig, "/Style", ( int ) mGridStyle );
+  QgsProject::instance()->writeEntry( mNameConfig, "/MapUnits", static_cast< int >( mMapUnits ) );
+  QgsProject::instance()->writeEntry( mNameConfig, "/Style", static_cast< int >( mGridStyle ) );
   QgsProject::instance()->writeEntry( mNameConfig, "/IntervalX", mGridIntervalX );
   QgsProject::instance()->writeEntry( mNameConfig, "/IntervalY", mGridIntervalY );
   QgsProject::instance()->writeEntry( mNameConfig, "/OffsetX", mGridOffsetX );
@@ -174,7 +174,7 @@ void QgsDecorationGrid::saveToProject()
   // missing mGridPen, but should use styles anyway
   QgsProject::instance()->writeEntry( mNameConfig, "/ShowAnnotation", mShowGridAnnotation );
   // QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationPosition", ( int ) mGridAnnotationPosition );
-  QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationDirection", ( int ) mGridAnnotationDirection );
+  QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationDirection", static_cast< int >( mGridAnnotationDirection ) );
   QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationFont", mGridAnnotationFont.toString() );
   QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationFrameDistance", mAnnotationFrameDistance );
   QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationPrecision", mGridAnnotationPrecision );
@@ -595,7 +595,7 @@ int QgsDecorationGrid::xGridLines( QList< QPair< qreal, QLineF > >& lines ) cons
   Q_ASSERT( fabs( len - lineWest.length() ) < 1e-6 ); // no shear
 
   double roundCorrection = mapBoundingRect.top() > 0 ? 1.0 : 0.0;
-  double dist = ( int )(( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + roundCorrection ) * mGridIntervalY + mGridOffsetY;
+  double dist = static_cast< int >(( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + roundCorrection ) * mGridIntervalY + mGridOffsetY;
   dist = dist - mapBoundingRect.top();
   while ( dist < len )
   {
@@ -642,7 +642,7 @@ int QgsDecorationGrid::yGridLines( QList< QPair< qreal, QLineF > >& lines ) cons
 
   const QRectF& mapBoundingRect = mapPolygon.boundingRect();
   double roundCorrection = mapBoundingRect.left() > 0 ? 1.0 : 0.0;
-  double dist = ( int )(( mapBoundingRect.left() - mGridOffsetX ) / mGridIntervalX + roundCorrection ) * mGridIntervalX + mGridOffsetX;
+  double dist = static_cast< int >(( mapBoundingRect.left() - mGridOffsetX ) / mGridIntervalX + roundCorrection ) * mGridIntervalX + mGridOffsetX;
   dist = dist - mapBoundingRect.left();
   while ( dist < len )
   {
@@ -767,7 +767,7 @@ bool QgsDecorationGrid::isDirty()
   // or if interval is 0
   if ( mMapUnits == QGis::UnknownUnit ||
        mMapUnits != QgisApp::instance()->mapCanvas()->mapSettings().mapUnits() ||
-       mGridIntervalX == 0 || mGridIntervalY == 0 )
+       qgsDoubleNear( mGridIntervalX, 0.0 ) || qgsDoubleNear( mGridIntervalY, 0.0 ) )
     return true;
   return false;
 }
@@ -796,7 +796,7 @@ bool QgsDecorationGrid::getIntervalFromExtent( double* values, bool useXAxis )
   else
     interval = ( extent.yMaximum() - extent.yMinimum() ) / 5;
   QgsDebugMsg( QString( "interval: %1" ).arg( interval ) );
-  if ( interval != 0 )
+  if ( !qgsDoubleNear( interval, 0.0 ) )
   {
     double interval2 = 0;
     int factor =  pow( 10, floor( log10( interval ) ) );
@@ -804,7 +804,7 @@ bool QgsDecorationGrid::getIntervalFromExtent( double* values, bool useXAxis )
     {
       interval2 = qRound( interval / factor ) * factor;
       QgsDebugMsg( QString( "interval2: %1" ).arg( interval2 ) );
-      if ( interval2 != 0 )
+      if ( !qgsDoubleNear( interval2, 0.0 ) )
         interval = interval2;
     }
   }

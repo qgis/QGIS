@@ -37,9 +37,11 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   // text
   txtCopyrightText->setPlainText( mDeco.mLabelQString );
   // placement
-  cboPlacement->clear();
-  cboPlacement->addItems( mDeco.mPlacementLabels );
-  cboPlacement->setCurrentIndex( mDeco.mPlacementIndex );
+  cboPlacement->addItem( tr( "Top left" ), QgsDecorationItem::TopLeft );
+  cboPlacement->addItem( tr( "Top right" ), QgsDecorationItem::TopRight );
+  cboPlacement->addItem( tr( "Bottom left" ), QgsDecorationItem::BottomLeft );
+  cboPlacement->addItem( tr( "Bottom right" ), QgsDecorationItem::BottomRight );
+  cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
   // color
@@ -64,7 +66,7 @@ void QgsDecorationCopyrightDialog::on_buttonBox_accepted()
   mDeco.mQFont = txtCopyrightText->currentFont();
   mDeco.mLabelQString = txtCopyrightText->toPlainText();
   mDeco.mLabelQColor = pbnColorChooser->color();
-  mDeco.mPlacementIndex = cboPlacement->currentIndex();
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
   mDeco.mMarginHorizontal = spnHorizontal->value();
   mDeco.mMarginVertical = spnVertical->value();
   mDeco.setEnabled( grpEnable->isChecked() );

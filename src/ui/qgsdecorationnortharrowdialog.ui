@@ -68,26 +68,6 @@
         <property name="toolTip">
          <string>Placement on screen</string>
         </property>
-        <item>
-         <property name="text">
-          <string>Top Left</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Top Right</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Bottom Left</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Bottom Right</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item row="2" column="3">

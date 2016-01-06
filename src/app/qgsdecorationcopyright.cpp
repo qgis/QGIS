@@ -43,11 +43,10 @@ email                : tim@linfiniti.com
 
 QgsDecorationCopyright::QgsDecorationCopyright( QObject* parent )
     : QgsDecorationItem( parent )
+    , mMarginHorizontal( 0 )
+    , mMarginVertical( 0 )
 {
-  mPlacementLabels << tr( "Bottom Left" ) << tr( "Top Left" )
-  << tr( "Top Right" ) << tr( "Bottom Right" );
-  mMarginHorizontal = 0;
-  mMarginVertical = 0;
+  mPlacement = BottomRight;
 
   setName( "Copyright Label" );
   // initialise default values in the gui
@@ -69,7 +68,6 @@ void QgsDecorationCopyright::projectRead()
   //  mQFont.setPointSize( QgsProject::instance()->readNumEntry( "CopyrightLabel", "/FontSize", 9 ) );
   QgsProject* prj = QgsProject::instance();
   mLabelQString = prj->readEntry( mNameConfig, "/Label", defString );
-  mPlacementIndex = prj->readNumEntry( mNameConfig, "/Placement", 3 );
   mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, "/MarginH", 0 );
   mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, "/MarginV", 0 );
   mLabelQColor.setNamedColor( prj->readEntry( mNameConfig, "/Color", "#000000" ) ); // default color is black
@@ -83,7 +81,6 @@ void QgsDecorationCopyright::saveToProject()
   prj->writeEntry( mNameConfig, "/FontSize", mQFont.pointSize() );
   prj->writeEntry( mNameConfig, "/Label", mLabelQString );
   prj->writeEntry( mNameConfig, "/Color", mLabelQColor.name() );
-  prj->writeEntry( mNameConfig, "/Placement", mPlacementIndex );
   prj->writeEntry( mNameConfig, "/MarginH", mMarginHorizontal );
   prj->writeEntry( mNameConfig, "/MarginV", mMarginVertical );
 }
@@ -124,23 +121,23 @@ void QgsDecorationCopyright::render( QPainter * theQPainter )
     myYOffset = int(( float( myHeight - size.height() )
                       / 100. ) * float( mMarginVertical ) );
     //Determine placement of label from form combo box
-    switch ( mPlacementIndex )
+    switch ( mPlacement )
     {
-      case 0: // Bottom Left. myXOffset is set above
+      case BottomLeft: // Bottom Left. myXOffset is set above
         myYOffset = myHeight - myYOffset - size.height();
         break;
-      case 1: // Top left. Already setup above
+      case TopLeft: // Top left. Already setup above
         break;
-      case 2: // Top Right. myYOffset is set above
+      case TopRight: // Top Right. myYOffset is set above
         myXOffset = myWidth - myXOffset - size.width();
         break;
-      case 3: // Bottom Right
+      case BottomRight: // Bottom Right
         //Define bottom right hand corner start point
         myYOffset = myHeight - myYOffset - size.height();
         myXOffset = myWidth - myXOffset - size.width();
         break;
       default:
-        QgsDebugMsg( QString( "Unknown placement index of %1" ).arg( mPlacementIndex ) );
+        QgsDebugMsg( QString( "Unknown placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
     }
 
     //Paint label to canvas

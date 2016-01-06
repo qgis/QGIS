@@ -29,6 +29,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
   restoreGeometry( settings.value( "/Windows/DecorationScaleBar/geometry" ).toByteArray() );
 
   // set the map units in the spin box
+  spnSize->setShowClearButton( false );
   switch ( units )
   {
     case 0:
@@ -47,9 +48,11 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
 
   chkSnapping->setChecked( mDeco.mSnapping );
 
-  cboPlacement->clear();
-  cboPlacement->addItems( mDeco.mPlacementLabels );
-  cboPlacement->setCurrentIndex( mDeco.mPlacementIndex );
+  cboPlacement->addItem( tr( "Top left" ), QgsDecorationItem::TopLeft );
+  cboPlacement->addItem( tr( "Top right" ), QgsDecorationItem::TopRight );
+  cboPlacement->addItem( tr( "Bottom left" ), QgsDecorationItem::BottomLeft );
+  cboPlacement->addItem( tr( "Bottom right" ), QgsDecorationItem::BottomRight );
+  cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
 
@@ -78,7 +81,7 @@ void QgsDecorationScaleBarDialog::on_buttonBox_helpRequested()
 
 void QgsDecorationScaleBarDialog::on_buttonBox_accepted()
 {
-  mDeco.mPlacementIndex = cboPlacement->currentIndex();
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
   mDeco.mMarginHorizontal = spnHorizontal->value();
   mDeco.mMarginVertical = spnVertical->value();
   mDeco.mPreferredSize = spnSize->value();
