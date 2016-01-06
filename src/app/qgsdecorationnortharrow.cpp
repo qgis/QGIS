@@ -92,11 +92,7 @@ void QgsDecorationNorthArrow::saveToProject()
 void QgsDecorationNorthArrow::run()
 {
   QgsDecorationNorthArrowDialog dlg( *this, QgisApp::instance() );
-
-  if ( dlg.exec() )
-  {
-    update();
-  }
+  dlg.exec();
 }
 
 void QgsDecorationNorthArrow::render( QPainter * theQPainter )

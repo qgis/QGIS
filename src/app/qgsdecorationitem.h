@@ -55,8 +55,6 @@ class APP_EXPORT QgsDecorationItem: public QObject
      */
     void setPlacement( Placement placement ) { mPlacement = placement; }
 
-    void update();
-
   signals:
     void toggled( bool t );
 
@@ -73,6 +71,9 @@ class APP_EXPORT QgsDecorationItem: public QObject
 
     virtual void setName( const char *name );
     virtual QString name() { return mName; }
+
+    //! Redraws the decoration
+    void update();
 
   protected:
 

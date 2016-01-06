@@ -11,15 +11,15 @@
  ***************************************************************************/
 
 #include "qgsdecorationnortharrowdialog.h"
-
 #include "qgsdecorationnortharrow.h"
-
 #include "qgslogger.h"
 #include "qgscontexthelp.h"
 
 #include <QPainter>
 #include <QSettings>
 #include <cmath>
+#include <QDialogButtonBox>
+#include <QPushButton>
 
 QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow& deco, QWidget* parent )
     : QDialog( parent ), mDeco( deco )
@@ -28,6 +28,9 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/DecorationNorthArrow/geometry" ).toByteArray() );
+
+  QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
+  connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
 
   // rotation
   rotatePixmap( mDeco.mRotationInt );
@@ -64,13 +67,7 @@ void QgsDecorationNorthArrowDialog::on_buttonBox_helpRequested()
 
 void QgsDecorationNorthArrowDialog::on_buttonBox_accepted()
 {
-  mDeco.mRotationInt = sliderRotation->value();
-  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
-  mDeco.setEnabled( grpEnable->isChecked() );
-  mDeco.mAutomatic = cboxAutomatic->isChecked();
-  mDeco.mMarginHorizontal = spinHorizontal->value();
-  mDeco.mMarginVertical = spinVertical->value();
-
+  apply();
   accept();
 }
 
@@ -88,6 +85,17 @@ void QgsDecorationNorthArrowDialog::on_spinAngle_valueChanged( int theInt )
 void QgsDecorationNorthArrowDialog::on_sliderRotation_valueChanged( int theInt )
 {
   rotatePixmap( theInt );
+}
+
+void QgsDecorationNorthArrowDialog::apply()
+{
+  mDeco.mRotationInt = sliderRotation->value();
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
+  mDeco.setEnabled( grpEnable->isChecked() );
+  mDeco.mAutomatic = cboxAutomatic->isChecked();
+  mDeco.mMarginHorizontal = spinHorizontal->value();
+  mDeco.mMarginVertical = spinVertical->value();
+  mDeco.update();
 }
 
 void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
