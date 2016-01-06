@@ -17,6 +17,7 @@
 #ifndef RTREE_H
 #define RTREE_H
 
+#include <cstdio>
 #include <cmath>
 #include <cassert>
 #include <QtGlobal>
