@@ -98,11 +98,7 @@ void QgsDecorationScaleBar::saveToProject()
 void QgsDecorationScaleBar::run()
 {
   QgsDecorationScaleBarDialog dlg( *this, QgisApp::instance()->mapCanvas()->mapUnits(), QgisApp::instance() );
-
-  if ( dlg.exec() )
-  {
-    update();
-  }
+  dlg.exec();
 }
 
 

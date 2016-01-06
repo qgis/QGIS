@@ -89,11 +89,7 @@ void QgsDecorationCopyright::saveToProject()
 void QgsDecorationCopyright::run()
 {
   QgsDecorationCopyrightDialog dlg( *this, QgisApp::instance() );
-
-  if ( dlg.exec() )
-  {
-    update();
-  }
+  dlg.exec();
 }
 
 
