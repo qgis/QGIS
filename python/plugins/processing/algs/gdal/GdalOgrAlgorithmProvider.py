@@ -67,6 +67,8 @@ from GridDataMetrics import GridDataMetrics
 from gdaltindex import gdaltindex
 from gdalcalc import gdalcalc
 from rasterize_over import rasterize_over
+from retile import retile
+from gdal2tiles import gdal2tiles
 
 from ogr2ogr import Ogr2Ogr
 from ogr2ogrclip import Ogr2OgrClip
@@ -137,6 +139,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
                               hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
                               ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
                               GridDataMetrics(), gdaltindex(), gdalcalc(), rasterize_over(),
+                              retile(), gdal2tiles(),
                               # ----- OGR tools -----
                               OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
                               Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
