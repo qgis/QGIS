@@ -181,8 +181,8 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
           return block;
         }
 
-        qgssize tmpIndex = ( qgssize )tmpRow * ( qgssize )tmpWidth + tmpCol;
-        qgssize index = row * ( qgssize )theWidth + col;
+        qgssize tmpIndex = static_cast< qgssize >( tmpRow ) * static_cast< qgssize >( tmpWidth ) + tmpCol;
+        qgssize index = row * static_cast< qgssize >( theWidth ) + col;
 
         char *tmpBits = tmpBlock->bits( tmpIndex );
         char *bits = block->bits( index );
@@ -313,8 +313,8 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoi
   double xres = ( myExtent.width() ) / theWidth;
   double yres = ( myExtent.height() ) / theHeight;
 
-  int col = ( int ) floor(( thePoint.x() - myExtent.xMinimum() ) / xres );
-  int row = ( int ) floor(( myExtent.yMaximum() - thePoint.y() ) / yres );
+  int col = static_cast< int >( floor(( thePoint.x() - myExtent.xMinimum() ) / xres ) );
+  int row = static_cast< int >( floor(( myExtent.yMaximum() - thePoint.y() ) / yres ) );
 
   double xMin = myExtent.xMinimum() + col * xres;
   double xMax = xMin + xres;
@@ -349,7 +349,7 @@ QString QgsRasterDataProvider::lastErrorFormat()
 typedef QList<QPair<QString, QString> > *pyramidResamplingMethods_t();
 QList<QPair<QString, QString> > QgsRasterDataProvider::pyramidResamplingMethods( const QString& providerKey )
 {
-  pyramidResamplingMethods_t *pPyramidResamplingMethods = ( pyramidResamplingMethods_t * ) cast_to_fptr( QgsProviderRegistry::instance()->function( providerKey,  "pyramidResamplingMethods" ) );
+  pyramidResamplingMethods_t *pPyramidResamplingMethods = reinterpret_cast< pyramidResamplingMethods_t * >( cast_to_fptr( QgsProviderRegistry::instance()->function( providerKey,  "pyramidResamplingMethods" ) ) );
   if ( pPyramidResamplingMethods )
   {
     QList<QPair<QString, QString> > *methods = pPyramidResamplingMethods();
@@ -435,7 +435,7 @@ QgsRasterDataProvider* QgsRasterDataProvider::create( const QString &providerKey
     const QgsCoordinateReferenceSystem& crs,
     const QStringList& createOptions )
 {
-  createFunction_t *createFn = ( createFunction_t* ) cast_to_fptr( QgsProviderRegistry::instance()->function( providerKey, "create" ) );
+  createFunction_t *createFn = reinterpret_cast< createFunction_t* >( cast_to_fptr( QgsProviderRegistry::instance()->function( providerKey, "create" ) ) );
   if ( !createFn )
   {
     QgsDebugMsg( "Cannot resolve 'create' function in " + providerKey + " provider" );

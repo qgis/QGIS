@@ -186,7 +186,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int theBandNo,
       QgsRasterBlock* blk = block( theBandNo, myPartExtent, myBlockWidth, myBlockHeight );
 
       // Collect the histogram counts.
-      for ( qgssize i = 0; i < (( qgssize ) myBlockHeight ) * myBlockWidth; i++ )
+      for ( qgssize i = 0; i < ( static_cast< qgssize >( myBlockHeight ) ) * myBlockWidth; i++ )
       {
         if ( blk->isNoData( i ) ) continue; // NULL
 
@@ -468,7 +468,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int theBandNo,
       QgsRasterBlock* blk = block( theBandNo, myPartExtent, myBlockWidth, myBlockHeight );
 
       // Collect the histogram counts.
-      for ( qgssize i = 0; i < (( qgssize ) myBlockHeight ) * myBlockWidth; i++ )
+      for ( qgssize i = 0; i < ( static_cast< qgssize >( myBlockHeight ) ) * myBlockWidth; i++ )
       {
         if ( blk->isNoData( i ) )
         {
@@ -533,8 +533,8 @@ void QgsRasterInterface::cumulativeCut( int theBandNo,
 
   double myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / myHistogram.binCount;
   int myCount = 0;
-  int myMinCount = ( int ) qRound( theLowerCount * myHistogram.nonNullCount );
-  int myMaxCount = ( int ) qRound( theUpperCount * myHistogram.nonNullCount );
+  int myMinCount = static_cast< int >( qRound( theLowerCount * myHistogram.nonNullCount ) );
+  int myMaxCount = static_cast< int >( qRound( theUpperCount * myHistogram.nonNullCount ) );
   bool myLowerFound = false;
   QgsDebugMsg( QString( "binCount = %1 minimum = %2 maximum = %3 myBinXStep = %4" ).arg( myHistogram.binCount ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myBinXStep ) );
   QgsDebugMsg( QString( "myMinCount = %1 myMaxCount = %2" ).arg( myMinCount ).arg( myMaxCount ) );
