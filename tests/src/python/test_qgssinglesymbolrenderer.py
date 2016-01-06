@@ -41,20 +41,24 @@ from qgis.core import (QgsVectorLayer,
                        QgsRendererRangeV2,
                        QgsFeatureRequest
                        )
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
+from qgis.testing import (start_app,
+                          unittest
+                          )
+
+from qgis.testing.mocked import get_iface
+
+from utilities import unitTestDataPath
+
 # Convenience instances in case you may need them
 # not used in this test
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsSingleSymbolRenderer(TestCase):
+class TestQgsSingleSymbolRenderer(unittest.TestCase):
 
     def setUp(self):
+        self.iface = get_iface()
         myShpFile = os.path.join(TEST_DATA_DIR, 'polys_overlapping.shp')
         layer = QgsVectorLayer(myShpFile, 'Polys', 'ogr')
         QgsMapLayerRegistry.instance().addMapLayer(layer)
@@ -66,7 +70,7 @@ class TestQgsSingleSymbolRenderer(TestCase):
         layer.setRendererV2(self.renderer)
 
         rendered_layers = [layer.id()]
-        self.mapsettings = CANVAS.mapSettings()
+        self.mapsettings = self.iface.mapCanvas().mapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
         self.mapsettings.setOutputDpi(96)
         self.mapsettings.setExtent(QgsRectangle(-163, 22, -70, 52))

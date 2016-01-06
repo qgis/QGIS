@@ -21,15 +21,16 @@ from qgis.gui import QgsEditorWidgetRegistry
 
 from PyQt4 import QtCore
 
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.testing import (start_app,
+                          unittest
+                          )
+
+from utilities import unitTestDataPath
+
+start_app()
 
 
-class TestQgsTextEditWidget(TestCase):
+class TestQgsTextEditWidget(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

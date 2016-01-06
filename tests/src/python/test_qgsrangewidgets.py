@@ -21,15 +21,14 @@ from qgis.gui import QgsEditorWidgetRegistry
 
 from PyQt4 import QtCore, QtGui
 
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.testing import (start_app,
+                          unittest
+                          )
+from utilities import unitTestDataPath
+start_app()
 
 
-class TestQgsRangeWidget(TestCase):
+class TestQgsRangeWidget(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

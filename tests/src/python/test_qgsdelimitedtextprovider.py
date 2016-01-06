@@ -34,34 +34,38 @@ import test_qgsdelimitedtextprovider_wanted as want
 
 rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ
 
-from PyQt4.QtCore import (QCoreApplication,
-                          QUrl,
-                          QObject
-                          )
+import qgis
 
-from qgis.core import (QgsProviderRegistry,
-                       QgsVectorLayer,
-                       QgsFeatureRequest,
-                       QgsRectangle,
-                       QgsMessageLog,
-                       QGis
-                       )
+from PyQt4.QtCore import (
+    QCoreApplication,
+    QUrl,
+    QObject
+)
 
-from utilities import (getQgisTestApp,
-                       TestCase,
-                       unitTestDataPath,
-                       unittest,
-                       compareWkt
-                       )
+from qgis.core import (
+    QgsProviderRegistry,
+    QgsVectorLayer,
+    QgsFeatureRequest,
+    QgsRectangle,
+    QgsMessageLog,
+    QGis
+)
+
+from qgis.testing import (
+    start_app,
+    unittest
+)
+
+from utilities import (
+    unitTestDataPath,
+    compareWkt
+)
 
 from providertestbase import ProviderTestCase
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
-import sip
-sipversion = str(sip.getapi('QVariant'))
-sipwanted = '2'
 geomkey = "#geometry"
 fidkey = "#fid"
 
@@ -245,9 +249,6 @@ def recordDifference(record1, record2):
 
 
 def runTest(file, requests, **params):
-    # No point doing test if haven't got the right SIP vesion
-    if sipversion != sipwanted:
-        return
     testname = inspect.stack()[1][3]
     verbose = not rebuildTests
     if verbose:
@@ -322,7 +323,7 @@ def runTest(file, requests, **params):
     assert len(failures) == 0, "\n".join(failures)
 
 
-class TestQgsDelimitedTextProviderXY(TestCase, ProviderTestCase):
+class TestQgsDelimitedTextProviderXY(unittest.TestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -349,7 +350,7 @@ class TestQgsDelimitedTextProviderXY(TestCase, ProviderTestCase):
         """Run after all tests"""
 
 
-class TestQgsDelimitedTextProviderWKT(TestCase, ProviderTestCase):
+class TestQgsDelimitedTextProviderWKT(unittest.TestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -389,7 +390,7 @@ class TestQgsDelimitedTextProviderWKT(TestCase, ProviderTestCase):
         """Run after all tests"""
 
 
-class TestQgsDelimitedTextProviderOther(TestCase):
+class TestQgsDelimitedTextProviderOther(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -401,7 +402,6 @@ class TestQgsDelimitedTextProviderOther(TestCase):
         registry = QgsProviderRegistry.instance()
         metadata = registry.providerMetadata('delimitedtext')
         assert metadata is not None, "Delimited text provider is not installed"
-        assert sipversion == sipwanted, "SIP version " + sipversion + " -  require version " + sipwanted + " for delimited text tests"
 
     def test_002_load_csv_file(self):
         # CSV file parsing

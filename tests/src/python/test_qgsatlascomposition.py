@@ -15,19 +15,19 @@ test_qgsatlascomposition.py
  ***************************************************************************/
 '''
 import qgis
-import unittest
 import os
 import glob
 import shutil
 import tempfile
-from utilities import getQgisTestApp, unitTestDataPath
+from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 from PyQt4.QtCore import QFileInfo, QRectF, qWarning
 from qgis.core import QGis, QgsVectorLayer, QgsMapLayerRegistry, QgsMapSettings, QgsCoordinateReferenceSystem, \
     QgsComposition, QgsFillSymbolV2, QgsSingleSymbolRendererV2, QgsComposerLabel, QgsComposerMap, QgsFontUtils, \
     QgsRectangle, QgsComposerLegend, QgsFeature, QgsGeometry, QgsPoint, QgsRendererCategoryV2, QgsCategorizedSymbolRendererV2, QgsMarkerSymbolV2
 from qgscompositionchecker import QgsCompositionChecker
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
 
 class TestQgsAtlasComposition(unittest.TestCase):

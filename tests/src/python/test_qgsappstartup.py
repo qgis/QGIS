@@ -26,7 +26,8 @@ import subprocess
 import tempfile
 import errno
 
-from utilities import unittest, unitTestDataPath
+from qgis.testing import unittest
+from utilities import unitTestDataPath
 
 print 'CTEST_FULL_OUTPUT'
 

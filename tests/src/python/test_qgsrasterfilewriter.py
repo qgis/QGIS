@@ -23,18 +23,16 @@ from qgis.core import (QgsRasterLayer,
                        QgsRasterPipe,
                        QgsRasterFileWriter,
                        QgsRasterProjector)
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       # expectedFailure
-                       )
-# Convenience instances in case you may need them
-# not used in this test
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+
+from qgis.testing import (start_app,
+                          unittest)
+
+from utilities import unitTestDataPath
+
+start_app()
 
 
-class TestQgsRasterFileWriter(TestCase):
+class TestQgsRasterFileWriter(unittest.TestCase):
 
     def __init__(self, methodName):
         unittest.TestCase.__init__(self, methodName)

@@ -16,17 +16,15 @@ import qgis
 import os
 
 from qgis.core import QgsField, QgsVectorLayer, NULL
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
-from unittest import expectedFailure
+from qgis.testing import (start_app,
+                          unittest
+                          )
+from utilities import unitTestDataPath
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
 
-class TestQgsFields(TestCase):
+class TestQgsFields(unittest.TestCase):
 
     def test_expections(self):
         ml = QgsVectorLayer("Point?crs=epsg:4236&field=id:integer&field=value:double",
