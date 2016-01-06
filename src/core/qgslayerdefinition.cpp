@@ -6,6 +6,7 @@
 
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
 #include "qgslayertree.h"
 #include "qgsmaplayerregistry.h"
 #include "qgslayerdefinition.h"
@@ -62,6 +63,18 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
         layerNode.toElement().setAttribute( "id", newid );
       }
     }
+
+    // change layer IDs for vector joins
+    QDomNodeList vectorJoinNodes = doc.elementsByTagName( "join" ); // TODO: Find a better way of searching for vectorjoins, there might be other <join> elements within the project.
+    for ( int j = 0; j < vectorJoinNodes.size(); ++j )
+    {
+      QDomNode joinNode = vectorJoinNodes.at( j );
+      QDomElement joinElement = joinNode.toElement();
+      if ( joinElement.attribute( "joinLayerId" ) == oldid )
+      {
+        joinNode.toElement().setAttribute( "joinLayerId", newid );
+      }
+    }
   }
 
   QDomElement layerTreeElem = doc.documentElement().firstChildElement( "layer-tree-group" );
@@ -74,6 +87,17 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
 
   QList<QgsMapLayer*> layers = QgsMapLayer::fromLayerDefinition( doc );
   QgsMapLayerRegistry::instance()->addMapLayers( layers, loadInLegend );
+
+  // Now that all layers are loaded, refresh the vectorjoins to get the joined fields
+  Q_FOREACH ( QgsMapLayer* layer, layers )
+  {
+    QgsVectorLayer* vlayer = static_cast< QgsVectorLayer * >( layer );
+    if ( vlayer )
+    {
+      vlayer->createJoinCaches();
+      vlayer->updateFields();
+    }
+  }
 
   QList<QgsLayerTreeNode*> nodes = root->children();
   Q_FOREACH ( QgsLayerTreeNode *node, nodes )
@@ -95,6 +119,24 @@ bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLay
   QFileInfo fileinfo( file );
 
   QDomDocument doc( "qgis-layer-definition" );
+  if ( !exportLayerDefinition( doc, selectedTreeNodes, errorMessage, fileinfo.canonicalFilePath() ) )
+    return false;
+  if ( file.open( QFile::WriteOnly | QFile::Truncate ) )
+  {
+    QTextStream qlayerstream( &file );
+    doc.save( qlayerstream, 2 );
+    return true;
+  }
+  else
+  {
+    errorMessage = file.errorString();
+    return false;
+  }
+}
+
+bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QString& relativeBasePath )
+{
+  Q_UNUSED( errorMessage );
   QDomElement qgiselm = doc.createElement( "qlr" );
   doc.appendChild( qgiselm );
   QList<QgsLayerTreeNode*> nodes = selectedTreeNodes;
@@ -111,20 +153,9 @@ bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLay
   Q_FOREACH ( QgsLayerTreeLayer* layer, layers )
   {
     QDomElement layerelm = doc.createElement( "maplayer" );
-    layer->layer()->writeLayerXML( layerelm, doc, fileinfo.canonicalFilePath() );
+    layer->layer()->writeLayerXML( layerelm, doc, relativeBasePath );
     layerselm.appendChild( layerelm );
   }
   qgiselm.appendChild( layerselm );
-
-  if ( file.open( QFile::WriteOnly | QFile::Truncate ) )
-  {
-    QTextStream qlayerstream( &file );
-    doc.save( qlayerstream, 2 );
-    return true;
-  }
-  else
-  {
-    errorMessage = file.errorString();
-    return false;
-  }
+  return true;
 }

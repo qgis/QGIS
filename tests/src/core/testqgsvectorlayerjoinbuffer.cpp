@@ -23,6 +23,8 @@
 #include <qgsapplication.h>
 #include <qgsvectorlayerjoinbuffer.h>
 #include <qgsmaplayerregistry.h>
+#include <qgslayerdefinition.h>
+#include <qgsproject.h>
 
 /** @ingroup UnitTests
  * This is a unit test for the vector layer join buffer
@@ -53,6 +55,7 @@ class TestVectorLayerJoinBuffer : public QObject
     void testJoinSubset_data();
     void testJoinSubset();
     void testJoinTwoTimes();
+    void testJoinLayerDefinitionFile();
 
   private:
     QgsVectorLayer* mLayerA;
@@ -337,6 +340,58 @@ void TestVectorLayerJoinBuffer::testJoinTwoTimes()
   mLayerA->removeJoin( mLayerB->id() );
 
   QCOMPARE( mLayerA->vectorJoins().count(), 0 );
+}
+
+void TestVectorLayerJoinBuffer::testJoinLayerDefinitionFile()
+{
+  bool r;
+
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+
+  // Create two layers
+  QgsVectorLayer* layerA = new QgsVectorLayer( "Point?crs=epsg:4326&field=key:integer&field=value:double&index=yes", "layerA", "memory" );
+  QVERIFY( layerA );
+  QgsMapLayerRegistry::instance()->addMapLayer( layerA );
+
+  QgsVectorLayer* layerB = new QgsVectorLayer( "Point?crs=epsg:4326&field=id:integer&index=yes", "layerB", "memory" );
+  QVERIFY( layerB );
+  QgsMapLayerRegistry::instance()->addMapLayer( layerB );
+
+  // Create vector join
+  QgsVectorJoinInfo joinInfo;
+  joinInfo.targetFieldName = "id";
+  joinInfo.joinLayerId = layerA->id();
+  joinInfo.joinFieldName = "key";
+  joinInfo.memoryCache = true;
+  joinInfo.prefix = "joined_";
+  r = layerB->addJoin( joinInfo );
+  QVERIFY( r );
+
+  // Generate QLR
+  QDomDocument qlrDoc( "qgis-layer-definition" );
+  QString errorMessage;
+  r = QgsLayerDefinition::exportLayerDefinition( qlrDoc, QgsProject::instance()->layerTreeRoot()->children(), errorMessage );
+  QVERIFY2( r, errorMessage.toUtf8().constData() );
+
+  // Clear
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+
+  // Load QLR
+  r = QgsLayerDefinition::loadLayerDefinition( qlrDoc, QgsProject::instance()->layerTreeRoot(), errorMessage );
+  QVERIFY2( r, errorMessage.toUtf8().constData() );
+
+  // Get layer
+  QList<QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayersByName( "layerB" );
+  QCOMPARE( mapLayers.count(), 1 );
+
+  QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( mapLayers.value( 0 ) );
+  QVERIFY( vLayer );
+
+  // Check for vector join
+  QCOMPARE( vLayer->vectorJoins().count(), 1 );
+
+  // Check for joined field
+  QVERIFY( vLayer->fieldNameIndex( joinInfo.prefix + "value" ) >= 0 );
 }
 
 
