@@ -1,8 +1,8 @@
-
 from PyQt4.QtGui import *
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.ParametersPanel import ParametersPanel
+from processing.gui.MultipleInputPanel import MultipleInputPanel
 
 
 class GdalAlgorithmDialog(AlgorithmDialog):
@@ -57,6 +57,8 @@ class GdalParametersPanel(ParametersPanel):
                 w.currentIndexChanged.connect(self.parametersHaveChanged)
             elif isinstance(w, QCheckBox):
                 w.stateChanged.connect(self.parametersHaveChanged)
+            elif isinstance(w, MultipleInputPanel):
+                w.selectionChanged.connect(self.parametersHaveChanged)
 
     def parametersHaveChanged(self):
         try:

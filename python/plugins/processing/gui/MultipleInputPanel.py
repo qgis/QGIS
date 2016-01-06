@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -28,6 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt4 import uic
+from PyQt4.QtCore import pyqtSignal
 
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 from processing.gui.MultipleFileInputDialog import MultipleFileInputDialog
@@ -38,6 +40,8 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class MultipleInputPanel(BASE, WIDGET):
+
+    selectionChanged = pyqtSignal()
 
     def __init__(self, options=None, datatype=None):
         super(MultipleInputPanel, self).__init__(None)
@@ -68,3 +72,5 @@ class MultipleInputPanel(BASE, WIDGET):
             self.selectedoptions = dlg.selectedoptions
             self.leText.setText(
                 self.tr('%d elements selected') % len(self.selectedoptions))
+            self.selectionChanged.emit()
+
