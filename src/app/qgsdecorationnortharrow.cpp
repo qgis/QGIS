@@ -56,14 +56,12 @@ const double QgsDecorationNorthArrow::TOL = 1e-8;
  */
 QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject* parent )
     : QgsDecorationItem( parent )
+    , mRotationInt( 0 )
+    , mAutomatic( true )
+    , mMarginHorizontal( 0 )
+    , mMarginVertical( 0 )
 {
-  mRotationInt = 0;
-  mAutomatic = true;
-  mPlacementLabels << tr( "Bottom Left" ) << tr( "Top Left" )
-  << tr( "Top Right" ) << tr( "Bottom Right" );
-  mMarginHorizontal = 0;
-  mMarginVertical = 0;
-
+  mPlacement = BottomLeft;
   setName( "North Arrow" );
   projectRead();
 }
@@ -76,7 +74,6 @@ void QgsDecorationNorthArrow::projectRead()
 {
   QgsDecorationItem::projectRead();
   mRotationInt = QgsProject::instance()->readNumEntry( mNameConfig, "/Rotation", 0 );
-  mPlacementIndex = QgsProject::instance()->readNumEntry( mNameConfig, "/Placement", 0 );
   mAutomatic = QgsProject::instance()->readBoolEntry( mNameConfig, "/Automatic", true );
   mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, "/MarginH", 0 );
   mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, "/MarginV", 0 );
@@ -86,7 +83,6 @@ void QgsDecorationNorthArrow::saveToProject()
 {
   QgsDecorationItem::saveToProject();
   QgsProject::instance()->writeEntry( mNameConfig, "/Rotation", mRotationInt );
-  QgsProject::instance()->writeEntry( mNameConfig, "/Placement", mPlacementIndex );
   QgsProject::instance()->writeEntry( mNameConfig, "/Automatic", mAutomatic );
   QgsProject::instance()->writeEntry( mNameConfig, "/MarginH", mMarginHorizontal );
   QgsProject::instance()->writeEntry( mNameConfig, "/MarginV", mMarginVertical );
@@ -153,18 +149,18 @@ void QgsDecorationNorthArrow::render( QPainter * theQPainter )
                                     / 100. ) * float( mMarginVertical ) );
 
       //Determine placement of label from form combo box
-      switch ( mPlacementIndex )
+      switch ( mPlacement )
       {
-        case 0: // Bottom Left
+        case BottomLeft:
           theQPainter->translate( myPercentageWidth, myHeight - myPercentageHeight - myQPixmap.height() );
           break;
-        case 1: // Top Left
+        case TopLeft:
           theQPainter->translate( myPercentageWidth, myPercentageHeight );
           break;
-        case 2: // Top Right
+        case TopRight:
           theQPainter->translate( myWidth - myPercentageWidth - myQPixmap.width(), myPercentageHeight );
           break;
-        case 3: // Bottom Right
+        case BottomRight:
           theQPainter->translate( myWidth - myPercentageWidth - myQPixmap.width(),
                                   myHeight - myPercentageHeight - myQPixmap.height() );
           break;

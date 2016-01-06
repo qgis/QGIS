@@ -74,9 +74,9 @@ void QgsDecorationGridDialog::updateGuiElements()
   mOffsetXEdit->setText( QString::number( mDeco.gridOffsetX() ) );
   mOffsetYEdit->setText( QString::number( mDeco.gridOffsetY() ) );
 
-  mGridTypeComboBox->setCurrentIndex(( int ) mDeco.gridStyle() );
+  mGridTypeComboBox->setCurrentIndex( static_cast< int >( mDeco.gridStyle() ) );
   mDrawAnnotationCheckBox->setChecked( mDeco.showGridAnnotation() );
-  mAnnotationDirectionComboBox->setCurrentIndex(( int ) mDeco.gridAnnotationDirection() );
+  mAnnotationDirectionComboBox->setCurrentIndex( static_cast< int >( mDeco.gridAnnotationDirection() ) );
   mCoordinatePrecisionSpinBox->setValue( mDeco.gridAnnotationPrecision() );
 
   mDistanceToMapFrameSpinBox->setValue( mDeco.annotationFrameDistance() );

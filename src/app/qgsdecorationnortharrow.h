@@ -65,9 +65,6 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
 
     //! enable or disable the automatic setting of the arrow direction
     bool mAutomatic;
-    // The placement index and translated text
-    int mPlacementIndex;
-    QStringList mPlacementLabels;
     //! margin values
     int mMarginHorizontal;
     int mMarginVertical;
