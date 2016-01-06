@@ -1402,6 +1402,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Apply raster brightness */
     void adjustBrightnessContrast( int delta, bool updateBrightness = true );
 
+    /** Copy a vector style from a layer to another one, if they have the same geometry type */
+    void duplicateVectorStyle( QgsVectorLayer* srcLayer, QgsVectorLayer* destLayer );
+
     QgisAppStyleSheet *mStyleSheetBuilder;
 
     // actions for menus and toolbars -----------------

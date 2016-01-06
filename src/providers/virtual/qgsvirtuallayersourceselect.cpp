@@ -107,6 +107,9 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
 
   apis->prepare();
   mQueryEdit->lexer()->setAPIs( apis );
+
+  mQueryEdit->setWrapMode( QsciScintilla::WrapWord );
+
 }
 
 QgsVirtualLayerSourceSelect::~QgsVirtualLayerSourceSelect()
