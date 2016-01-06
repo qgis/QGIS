@@ -12,6 +12,8 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+print 'CTEST_FULL_OUTPUT'
+
 from os import path, environ
 from shutil import copyfile
 from math import sqrt
@@ -157,13 +159,16 @@ class TestQgsServerAccessControl(TestCase):
     def setUp(self):
         self.testdata_path = unitTestDataPath("qgis_server_accesscontrol")
 
-        copyfile(path.join(self.testdata_path, "helloworld.db"), path.join(self.testdata_path, "_helloworld.db"))
+        dataFile = path.join(self.testdata_path, "helloworld.db")
+        self.assertTrue(path.isfile(dataFile), 'Could not find data file "{}"'.format(dataFile))
+        copyfile(dataFile, path.join(self.testdata_path, "_helloworld.db"))
 
         for k in ["QUERY_STRING", "QGIS_PROJECT_FILE"]:
             if k in environ:
                 del environ[k]
 
         self.projectPath = urllib.quote(path.join(self.testdata_path, "project.qgs"))
+        self.assertTrue(path.isfile(self.projectPath), 'Could not find project file "{}"'.format(self.projectPath))
 
     def tearDown(self):
         copyfile(path.join(self.testdata_path, "_helloworld.db"), path.join(self.testdata_path, "helloworld.db"))
