@@ -123,7 +123,7 @@ class Parameter:
 class ParameterBoolean(Parameter):
 
     def __init__(self, name='', description='', default=None, optional=False):
-        Parameter.__init__(self, name, description, default, optional)
+        Parameter.__init__(self, name, description, parseBool(default), optional)
 
     def setValue(self, value):
         if value is None:
