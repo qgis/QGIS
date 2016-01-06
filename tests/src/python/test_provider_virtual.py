@@ -85,7 +85,7 @@ class TestQgsVirtualLayerProvider(TestCase, ProviderTestCase):
         pass
 
     def test_CsvNoGeometry(self):
-        l1 = QgsVectorLayer("file:///" + os.path.join(self.testDataDir, "delimitedtext/test.csv").replace("\\", "/") + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", False)
+        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", False)
         self.assertEqual(l1.isValid(), True)
         QgsMapLayerRegistry.instance().addMapLayer(l1)
 
@@ -96,7 +96,7 @@ class TestQgsVirtualLayerProvider(TestCase, ProviderTestCase):
 
     def test_source_escaping(self):
         # the source contains ':'
-        source = "file:///" + os.path.join(self.testDataDir, "delimitedtext/test.csv").replace("\\", "/") + "?type=csv&geomType=none&subsetIndex=no&watchFile=no"
+        source = QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no"
         d = QgsVirtualLayerDefinition()
         d.addSource("t", source, "delimitedtext")
         l = QgsVectorLayer(d.toString(), "vtab", "virtual", False)
@@ -135,7 +135,7 @@ class TestQgsVirtualLayerProvider(TestCase, ProviderTestCase):
         self.assertEqual(l.isValid(), True)
 
     def test_DynamicGeometry(self):
-        l1 = QgsVectorLayer("file:///" + os.path.join(self.testDataDir, "delimitedtext/testextpt.txt").replace("\\", "/") + "?type=csv&delimiter=%7C&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", False)
+        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/testextpt.txt")).toString() + "?type=csv&delimiter=%7C&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", False)
         self.assertEqual(l1.isValid(), True)
         QgsMapLayerRegistry.instance().addMapLayer(l1)
 
@@ -337,7 +337,7 @@ class TestQgsVirtualLayerProvider(TestCase, ProviderTestCase):
 
     def test_reopen(self):
         source = QUrl.toPercentEncoding(os.path.join(self.testDataDir, "france_parts.shp"))
-        tmp = os.path.join(tempfile.gettempdir(), "t.sqlite")
+        tmp = QUrl.fromLocalFile(os.path.join(tempfile.gettempdir(), "t.sqlite")).toString()
         l = QgsVectorLayer("%s?layer=ogr:%s:vtab" % (tmp, source), "vtab2", "virtual", False)
         self.assertEqual(l.isValid(), True)
 
@@ -348,7 +348,7 @@ class TestQgsVirtualLayerProvider(TestCase, ProviderTestCase):
 
     def test_reopen2(self):
         source = QUrl.toPercentEncoding(os.path.join(self.testDataDir, "france_parts.shp"))
-        tmp = os.path.join(tempfile.gettempdir(), "t.sqlite")
+        tmp = QUrl.fromLocalFile(os.path.join(tempfile.gettempdir(), "t.sqlite")).toString()
         l = QgsVectorLayer("%s?layer=ogr:%s:vtab&nogeometry" % (tmp, source), "vtab2", "virtual", False)
         self.assertEqual(l.isValid(), True)
 
@@ -359,7 +359,7 @@ class TestQgsVirtualLayerProvider(TestCase, ProviderTestCase):
 
     def test_reopen3(self):
         source = QUrl.toPercentEncoding(os.path.join(self.testDataDir, "france_parts.shp"))
-        tmp = os.path.join(tempfile.gettempdir(), "t.sqlite")
+        tmp = QUrl.fromLocalFile(os.path.join(tempfile.gettempdir(), "t.sqlite")).toString()
         query = QUrl.toPercentEncoding("SELECT * FROM vtab")
         l = QgsVectorLayer("%s?layer=ogr:%s:vtab&query=%s&uid=objectid&geometry=geometry:3:4326" % (tmp, source, query), "vtab2", "virtual", False)
         self.assertEqual(l.isValid(), True)
@@ -375,7 +375,7 @@ class TestQgsVirtualLayerProvider(TestCase, ProviderTestCase):
 
     def test_reopen4(self):
         source = QUrl.toPercentEncoding(os.path.join(self.testDataDir, "france_parts.shp"))
-        tmp = os.path.join(tempfile.gettempdir(), "t.sqlite")
+        tmp = QUrl.fromLocalFile(os.path.join(tempfile.gettempdir(), "t.sqlite")).toString()
         query = QUrl.toPercentEncoding("SELECT * FROM vtab")
         l = QgsVectorLayer("%s?layer=ogr:%s:vtab&query=%s&uid=objectid&nogeometry" % (tmp, source, query), "vtab2", "virtual", False)
         self.assertEqual(l.isValid(), True)
@@ -390,7 +390,7 @@ class TestQgsVirtualLayerProvider(TestCase, ProviderTestCase):
         self.assertEqual(suma, 3064.0)
 
     def test_refLayer(self):
-        l1 = QgsVectorLayer("file:///" + os.path.join(self.testDataDir, "delimitedtext/test.csv").replace("\\", "/") + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", False)
+        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", False)
         self.assertEqual(l1.isValid(), True)
         QgsMapLayerRegistry.instance().addMapLayer(l1)
 
@@ -403,7 +403,7 @@ class TestQgsVirtualLayerProvider(TestCase, ProviderTestCase):
         print sum([f.id() for f in l2.getFeatures()])
 
     def test_refLayers(self):
-        l1 = QgsVectorLayer("file:///" + os.path.join(self.testDataDir, "delimitedtext/test.csv").replace("\\", "/") + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", False)
+        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", False)
         self.assertEqual(l1.isValid(), True)
         QgsMapLayerRegistry.instance().addMapLayer(l1)
 
@@ -418,18 +418,18 @@ class TestQgsVirtualLayerProvider(TestCase, ProviderTestCase):
             QgsMapLayerRegistry.instance().removeMapLayer(l2.id())
 
     def test_refLayers2(self):
-        l1 = QgsVectorLayer("file:///" + os.path.join(self.testDataDir, "delimitedtext/test.csv").replace("\\", "/") + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", False)
+        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", False)
         self.assertEqual(l1.isValid(), True)
         QgsMapLayerRegistry.instance().addMapLayer(l1)
 
         # referenced layers cannot be stored !
-        tmp = os.path.join(tempfile.gettempdir(), "t.sqlite")
+        tmp = QUrl.fromLocalFile(os.path.join(tempfile.gettempdir(), "t.sqlite")).toString()
         l2 = QgsVectorLayer("%s?layer_ref=%s" % (tmp, l1.id()), "tt", "virtual", False)
         self.assertEqual(l2.isValid(), False)
         self.assertEqual("Cannot store referenced layers" in l2.dataProvider().error().message(), True)
 
     def test_sql(self):
-        l1 = QgsVectorLayer("file:///" + os.path.join(self.testDataDir, "delimitedtext/test.csv").replace("\\", "/") + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", False)
+        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", False)
         self.assertEqual(l1.isValid(), True)
         QgsMapLayerRegistry.instance().addMapLayer(l1)
 

@@ -31,7 +31,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl& url )
 {
   QgsVirtualLayerDefinition def;
 
-  def.setFilePath( url.path() );
+  def.setFilePath( url.toLocalFile() );
 
   // regexp for column name
   const QString columnNameRx( "[a-zA-Z_\x80-\xFF][a-zA-Z0-9_\x80-\xFF]*" );
@@ -74,6 +74,8 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl& url )
 
         providerKey = value.left( pos );
         int pos2 = value.indexOf( ':', pos + 1 );
+        if ( pos2 - pos == 2 )
+          pos2 = value.indexOf( ':', pos + 3 );
         if ( pos2 != -1 )
         {
           source = QUrl::fromPercentEncoding( value.mid( pos + 1, pos2 - pos - 1 ).toUtf8() );

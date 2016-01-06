@@ -19,6 +19,7 @@ email                : hugo dot mercier at oslandia dot com
 #include <stdexcept>
 
 #include "qgsvirtuallayersqlitehelper.h"
+#include "qgslogger.h"
 
 QgsScopedSqlite::QgsScopedSqlite( const QString& path, bool withExtension )
 {
@@ -38,7 +39,9 @@ QgsScopedSqlite::QgsScopedSqlite( const QString& path, bool withExtension )
 
   if ( r )
   {
-    throw std::runtime_error( sqlite3_errmsg( db_ ) );
+    QString err = QString( "%1 [%2]" ).arg( sqlite3_errmsg( db_ ), path );
+    QgsDebugMsg( err );
+    throw std::runtime_error( err.toLocal8Bit().constData() );
   }
   // enable extended result codes
   sqlite3_extended_result_codes( db_, 1 );
