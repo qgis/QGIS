@@ -240,6 +240,7 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   iconLock.addFile( QgsApplication::iconPath( "locked.svg" ), QSize(), QIcon::Normal, QIcon::On );
   iconLock.addFile( QgsApplication::iconPath( "unlocked.svg" ), QSize(), QIcon::Normal, QIcon::Off );
   btnLock->setIcon( iconLock );
+  btnDuplicate->setIcon( QIcon( QgsApplication::iconPath( "mActionDuplicateLayer.svg" ) ) );
   btnUp->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.svg" ) ) );
   btnDown->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.svg" ) ) );
 
@@ -259,6 +260,7 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   connect( btnAddLayer, SIGNAL( clicked() ), this, SLOT( addLayer() ) );
   connect( btnRemoveLayer, SIGNAL( clicked() ), this, SLOT( removeLayer() ) );
   connect( btnLock, SIGNAL( clicked() ), this, SLOT( lockLayer() ) );
+  connect( btnDuplicate, SIGNAL( clicked() ), this, SLOT( duplicateLayer() ) );
   connect( btnSaveSymbol, SIGNAL( clicked() ), this, SLOT( saveSymbol() ) );
 
   updateUi();
@@ -362,6 +364,7 @@ void QgsSymbolV2SelectorDialog::updateUi()
     btnDown->setEnabled( false );
     btnRemoveLayer->setEnabled( false );
     btnLock->setEnabled( false );
+    btnDuplicate->setEnabled( false );
     return;
   }
 
@@ -372,6 +375,7 @@ void QgsSymbolV2SelectorDialog::updateUi()
   btnDown->setEnabled( currentRow < rowCount - 1 );
   btnRemoveLayer->setEnabled( rowCount > 1 );
   btnLock->setEnabled( true );
+  btnDuplicate->setEnabled( true );
 }
 
 void QgsSymbolV2SelectorDialog::updatePreview()
@@ -615,6 +619,43 @@ void QgsSymbolV2SelectorDialog::lockLayer()
   if ( !layer )
     return;
   layer->setLocked( btnLock->isChecked() );
+}
+
+void QgsSymbolV2SelectorDialog::duplicateLayer()
+{
+  QModelIndex idx = layersTree->currentIndex();
+  if ( !idx.isValid() )
+    return;
+
+  SymbolLayerItem *item = static_cast<SymbolLayerItem*>( model->itemFromIndex( idx ) );
+  if ( !item->isLayer() )
+    return;
+
+  QgsSymbolLayerV2* source = item->layer();
+
+  int insertIdx = item->row();
+  item = static_cast<SymbolLayerItem*>( item->parent() );
+
+  QgsSymbolV2* parentSymbol = item->symbol();
+
+  QgsSymbolLayerV2* newLayer = source->clone();
+  if ( insertIdx == -1 )
+    parentSymbol->appendSymbolLayer( newLayer );
+  else
+    parentSymbol->insertSymbolLayer( item->rowCount() - insertIdx, newLayer );
+
+  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer );
+  item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
+  if ( newLayer->subSymbol() )
+  {
+    loadSymbol( newLayer->subSymbol(), newLayerItem );
+    layersTree->setExpanded( newLayerItem->index(), true );
+  }
+  item->updatePreview();
+
+  layersTree->setCurrentIndex( model->indexFromItem( newLayerItem ) );
+  updateUi();
+  updatePreview();
 }
 
 void QgsSymbolV2SelectorDialog::saveSymbol()

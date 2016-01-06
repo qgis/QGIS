@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>436</width>
+    <width>670</width>
     <height>359</height>
    </rect>
   </property>
@@ -101,6 +101,22 @@
          </property>
          <property name="checkable">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnDuplicate">
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Duplicates the current layer</string>
+         </property>
+         <property name="text">
+          <string/>
          </property>
         </widget>
        </item>

@@ -139,6 +139,10 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     void saveSymbol();
     void lockLayer();
 
+    //! Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
+    //! @note added in QGIS 2.14
+    void duplicateLayer();
+
     void layerChanged();
 
     void updateLayerPreview();
