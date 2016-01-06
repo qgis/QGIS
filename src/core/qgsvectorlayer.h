@@ -1323,7 +1323,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     Q_DECL_DEPRECATED EditType editType( int idx );
 
     /**
-     * Get edit type
+     * Set edit type
      *
      * @deprecated Use `editFormConfig()->setWidgetType()` instead
      */
