@@ -23,7 +23,7 @@ from qgis.core import (QGis,
 
 from utilities import (TestCase, unittest)
 
-from PyQt4.QtCore import QVariant
+from PyQt4.QtCore import QVariant, QUrl
 
 
 class TestQgsVirtualLayerDefinition(TestCase):
@@ -34,32 +34,45 @@ class TestQgsVirtualLayerDefinition(TestCase):
         d.setFilePath("/file")
         self.assertEqual(d.toString(), "/file")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).filePath(), "/file")
+        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).filePath(), "/file")
         d.setFilePath("C:\\file")
         self.assertEqual(d.toString(), "C:%5Cfile")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).filePath(), "C:\\file")
         d.setQuery("SELECT * FROM mytable")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).query(), "SELECT * FROM mytable")
+        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).query(), "SELECT * FROM mytable")
 
         q = u"SELECT * FROM tableéé /*:int*/"
         d.setQuery(q)
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).query(), q)
+        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).query(), q)
 
         s1 = u"file://foo&bar=okié"
         d.addSource("name", s1, "provider", "utf8")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).sourceLayers()[0].source(), s1)
+        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).sourceLayers()[0].source(), s1)
 
         n1 = u"éé ok"
         d.addSource(n1, s1, "provider")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).sourceLayers()[1].name(), n1)
+        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).sourceLayers()[1].name(), n1)
 
         d.addSource("ref1", "id0001")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).sourceLayers()[2].reference(), "id0001")
+        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).sourceLayers()[2].reference(), "id0001")
+
+        s = "dbname='C:\\tt' table=\"test\" (geometry) sql="
+        d.addSource("nn", s, "spatialite")
+        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).sourceLayers()[3].source(), s)
+        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).sourceLayers()[3].source(), s)
 
         d.setGeometryField("geom")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).geometryField(), "geom")
+        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).geometryField(), "geom")
 
         d.setGeometryWkbType(QgsWKBTypes.Point)
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).geometryWkbType(), QgsWKBTypes.Point)
+        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(d.toString())).geometryWkbType(), QgsWKBTypes.Point)
 
         f = QgsFields()
         f.append(QgsField("a", QVariant.Int))

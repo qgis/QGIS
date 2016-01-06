@@ -126,9 +126,13 @@ struct VTable
       , mValid( true )
   {
     mProvider = static_cast<QgsVectorDataProvider*>( QgsProviderRegistry::instance()->provider( provider, source ) );
-    if ( !mProvider || !mProvider->isValid() )
+    if ( !mProvider )
     {
       throw std::runtime_error( "Invalid provider" );
+    }
+    else if ( mProvider && !mProvider->isValid() )
+    {
+      throw std::runtime_error(( "Provider error:" + mProvider->error().message() ).toUtf8().constData() );
     }
     if ( mProvider->capabilities() & QgsVectorDataProvider::SelectEncoding )
     {
