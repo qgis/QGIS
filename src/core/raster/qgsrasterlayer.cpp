@@ -169,7 +169,7 @@ QgsRasterLayer::~QgsRasterLayer()
  */
 bool QgsRasterLayer::isValidRasterFileName( const QString& theFileNameQString, QString& retErrMsg )
 {
-  isvalidrasterfilename_t *pValid = ( isvalidrasterfilename_t * ) cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal",  "isValidRasterFileName" ) );
+  isvalidrasterfilename_t *pValid = reinterpret_cast< isvalidrasterfilename_t * >( cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal",  "isValidRasterFileName" ) ) );
   if ( ! pValid )
   {
     QgsDebugMsg( "Could not resolve isValidRasterFileName in gdal provider library" );
@@ -558,14 +558,14 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
       myQImage.fill( 0 );
       myPalettePixmap.fill();
 
-      double myStep = (( double )myColorRampItemList.size() - 1 ) / ( double )( mySize * mySize );
+      double myStep = ( static_cast< double >( myColorRampItemList.size() ) - 1 ) / static_cast< double >( mySize * mySize );
       double myValue = 0.0;
       for ( int myRow = 0; myRow < mySize; myRow++ )
       {
-        QRgb* myLineBuffer = ( QRgb* )myQImage.scanLine( myRow );
+        QRgb* myLineBuffer = reinterpret_cast< QRgb* >( myQImage.scanLine( myRow ) );
         for ( int myCol = 0; myCol < mySize; myCol++ )
         {
-          myValue = myStep * ( double )( myCol + myRow * mySize );
+          myValue = myStep * static_cast< double >( myCol + myRow * mySize );
           int c1, c2, c3, c4;
           myShader.shade( myValue, &c1, &c2, &c3, &c4 );
           myLineBuffer[ myCol ] = qRgba( c1, c2, c3, c4 );
@@ -651,7 +651,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
 
   //mBandCount = 0;
 
-  mDataProvider = ( QgsRasterDataProvider* )QgsProviderRegistry::instance()->provider( mProviderKey, mDataSource );
+  mDataProvider = dynamic_cast< QgsRasterDataProvider* >( QgsProviderRegistry::instance()->provider( mProviderKey, mDataSource ) );
   if ( !mDataProvider )
   {
     //QgsMessageLog::logMessage( tr( "Cannot instantiate the data provider" ), tr( "Raster" ) );
@@ -886,8 +886,8 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
   {
     if ( myBand != -1 )
     {
-      QGis::DataType myType = ( QGis::DataType )mDataProvider->dataType( myBand );
-      QgsContrastEnhancement* myEnhancement = new QgsContrastEnhancement(( QGis::DataType )myType );
+      QGis::DataType myType = static_cast< QGis::DataType >( mDataProvider->dataType( myBand ) );
+      QgsContrastEnhancement* myEnhancement = new QgsContrastEnhancement( static_cast< QGis::DataType >( myType ) );
       myEnhancement->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
 
       double myMin = std::numeric_limits<double>::quiet_NaN();
@@ -1115,7 +1115,7 @@ QPixmap QgsRasterLayer::previewAsPixmap( const QSize& size, const QColor& bgColo
   double myX = 0.0;
   double myY = 0.0;
   QgsRectangle myExtent = mDataProvider->extent();
-  if ( myExtent.width() / myExtent.height() >= ( double )myQPixmap.width() / myQPixmap.height() )
+  if ( myExtent.width() / myExtent.height() >= static_cast< double >( myQPixmap.width() ) / myQPixmap.height() )
   {
     myMapUnitsPerPixel = myExtent.width() / myQPixmap.width();
     myY = ( myQPixmap.height() - myExtent.height() / myMapUnitsPerPixel ) / 2;
@@ -1167,7 +1167,7 @@ QImage QgsRasterLayer::previewAsImage( const QSize& size, const QColor& bgColor,
   double myX = 0.0;
   double myY = 0.0;
   QgsRectangle myExtent = mDataProvider->extent();
-  if ( myExtent.width() / myExtent.height() >= ( double )myQImage.width() / myQImage.height() )
+  if ( myExtent.width() / myExtent.height() >= static_cast< double >( myQImage.width() ) / myQImage.height() )
   {
     myMapUnitsPerPixel = myExtent.width() / myQImage.width();
     myY = ( myQImage.height() - myExtent.height() / myMapUnitsPerPixel ) / 2;
@@ -1215,7 +1215,7 @@ void QgsRasterLayer::onProgress( int theType, double theProgress, const QString&
   Q_UNUSED( theType );
   Q_UNUSED( theMessage );
   QgsDebugMsg( QString( "theProgress = %1" ).arg( theProgress ) );
-  emit progressUpdate(( int )theProgress );
+  emit progressUpdate( static_cast< int >( theProgress ) );
 }
 
 //////////////////////////////////////////////////////////
@@ -1309,7 +1309,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   if ( !blendModeNode.isNull() )
   {
     QDomElement e = blendModeNode.toElement();
-    setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) e.text().toInt() ) );
+    setBlendMode( QgsMapRenderer::getCompositionMode( static_cast< QgsMapRenderer::BlendMode >( e.text().toInt() ) ) );
   }
 
   return true;

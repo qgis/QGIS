@@ -220,8 +220,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
         QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, QgsRasterBandStats::Min | QgsRasterBandStats::Max, srcExtent, 250000 );
 
         // Test if we have free (not used) values
-        double typeMinValue = QgsContrastEnhancement::maximumValuePossible(( QGis::DataType )srcProvider->srcDataType( bandNo ) );
-        double typeMaxValue = QgsContrastEnhancement::maximumValuePossible(( QGis::DataType )srcProvider->srcDataType( bandNo ) );
+        double typeMinValue = QgsContrastEnhancement::maximumValuePossible( static_cast< QGis::DataType >( srcProvider->srcDataType( bandNo ) ) );
+        double typeMaxValue = QgsContrastEnhancement::maximumValuePossible( static_cast< QGis::DataType >( srcProvider->srcDataType( bandNo ) ) );
         if ( stats.minimumValue > typeMinValue )
         {
           destNoDataValue = typeMinValue;
@@ -530,7 +530,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     }
 
     //fill into red/green/blue/alpha channels
-    qgssize nPixels = ( qgssize )iterCols * iterRows;
+    qgssize nPixels = static_cast< qgssize >( iterCols ) * iterRows;
     // TODO: should be char not int? we are then copying 1 byte
     int red = 0;
     int green = 0;
@@ -547,15 +547,15 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
       if ( inputDataType == QGis::ARGB32_Premultiplied )
       {
         double a = alpha / 255.;
-        QgsDebugMsgLevel( QString( "red = %1 green = %2 blue = %3 alpha = %4 p = %5 a = %6" ).arg( red ).arg( green ).arg( blue ).arg( alpha ).arg(( int )c, 0, 16 ).arg( a ), 5 );
+        QgsDebugMsgLevel( QString( "red = %1 green = %2 blue = %3 alpha = %4 p = %5 a = %6" ).arg( red ).arg( green ).arg( blue ).arg( alpha ).arg( static_cast< int >( c ), 0, 16 ).arg( a ), 5 );
         red /= a;
         green /= a;
         blue /= a;
       }
-      memcpy(( char* )redData + i, &red, 1 );
-      memcpy(( char* )greenData + i, &green, 1 );
-      memcpy(( char* )blueData + i, &blue, 1 );
-      memcpy(( char* )alphaData + i, &alpha, 1 );
+      memcpy( reinterpret_cast< char* >( redData ) + i, &red, 1 );
+      memcpy( reinterpret_cast< char* >( greenData ) + i, &green, 1 );
+      memcpy( reinterpret_cast< char* >( blueData ) + i, &blue, 1 );
+      memcpy( reinterpret_cast< char* >( alphaData ) + i, &alpha, 1 );
     }
     delete inputBlock;
 
@@ -710,7 +710,7 @@ void QgsRasterFileWriter::buildPyramids( const QString& filename )
 {
   QgsDebugMsg( "filename = " + filename );
   // open new dataProvider so we can build pyramids with it
-  QgsRasterDataProvider* destProvider = ( QgsRasterDataProvider* ) QgsProviderRegistry::instance()->provider( mOutputProviderKey, filename );
+  QgsRasterDataProvider* destProvider = dynamic_cast< QgsRasterDataProvider* >( QgsProviderRegistry::instance()->provider( mOutputProviderKey, filename ) );
   if ( !destProvider )
   {
     return;
@@ -948,7 +948,7 @@ void QgsRasterFileWriter::globalOutputParameters( const QgsRectangle& extent, in
   //calculate nRows automatically for providers without exact resolution
   if ( nRows < 0 )
   {
-    nRows = ( double )nCols / extent.width() * extent.height() + 0.5;
+    nRows = static_cast< double >( nCols ) / extent.width() * extent.height() + 0.5;
   }
   geoTransform[0] = extent.xMinimum();
   geoTransform[1] = pixelSize;

@@ -173,8 +173,8 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   }
 
   //effective oversampling factors are different to global one because of rounding
-  double oversamplingX = (( double )width * oversampling ) / width;
-  double oversamplingY = (( double )height * oversampling ) / height;
+  double oversamplingX = ( static_cast< double >( width ) * oversampling ) / width;
+  double oversamplingY = ( static_cast< double >( height ) * oversampling ) / height;
 
   // TODO: we must also increase the extent to get correct result on borders of parts
 

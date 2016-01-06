@@ -127,7 +127,7 @@ int QgsRasterTransparency::alphaValue( double theValue, int theGlobalTransparenc
   //if a match was found use the stored transparency percentage
   if ( myTransparentPixelFound )
   {
-    return ( int )(( float )theGlobalTransparency *( 1.0 - ( myTransparentPixel.percentTransparent / 100.0 ) ) );
+    return static_cast< int >( static_cast< float >( theGlobalTransparency ) *( 1.0 - ( myTransparentPixel.percentTransparent / 100.0 ) ) );
   }
 
   return theGlobalTransparency;
@@ -155,11 +155,11 @@ int QgsRasterTransparency::alphaValue( double theRedValue, double theGreenValue,
   for ( int myListRunner = 0; myListRunner < mTransparentThreeValuePixelList.count(); myListRunner++ )
   {
     myTransparentPixel = mTransparentThreeValuePixelList[myListRunner];
-    if ( myTransparentPixel.red == theRedValue )
+    if ( qgsDoubleNear( myTransparentPixel.red, theRedValue ) )
     {
-      if ( myTransparentPixel.green == theGreenValue )
+      if ( qgsDoubleNear( myTransparentPixel.green, theGreenValue ) )
       {
-        if ( myTransparentPixel.blue == theBlueValue )
+        if ( qgsDoubleNear( myTransparentPixel.blue, theBlueValue ) )
         {
           myTransparentPixelFound = true;
           break;
@@ -171,7 +171,7 @@ int QgsRasterTransparency::alphaValue( double theRedValue, double theGreenValue,
   //if a match was found use the stored transparency percentage
   if ( myTransparentPixelFound )
   {
-    return ( int )(( float )theGlobalTransparency *( 1.0 - ( myTransparentPixel.percentTransparent / 100.0 ) ) );
+    return static_cast< int >( static_cast< float >( theGlobalTransparency ) *( 1.0 - ( myTransparentPixel.percentTransparent / 100.0 ) ) );
   }
 
   return theGlobalTransparency;

@@ -324,8 +324,8 @@ void QgsRasterProjector::calc()
     }
   }
   QgsDebugMsg( QString( "CPMatrix size: mCPRows = %1 mCPCols = %2" ).arg( mCPRows ).arg( mCPCols ) );
-  mDestRowsPerMatrixRow = ( float )mDestRows / ( mCPRows - 1 );
-  mDestColsPerMatrixCol = ( float )mDestCols / ( mCPCols - 1 );
+  mDestRowsPerMatrixRow = static_cast< float >( mDestRows ) / ( mCPRows - 1 );
+  mDestColsPerMatrixCol = static_cast< float >( mDestCols ) / ( mCPCols - 1 );
 
   QgsDebugMsgLevel( "CPMatrix:", 5 );
   QgsDebugMsgLevel( cpToString(), 5 );
@@ -446,8 +446,8 @@ void QgsRasterProjector::calcSrcRowsCols()
   if ( mApproximate )
   {
     // For now, we take cell sizes projected to source but not to source axes
-    double myDestColsPerMatrixCell = ( double )mDestCols / mCPCols;
-    double myDestRowsPerMatrixCell = ( double )mDestRows / mCPRows;
+    double myDestColsPerMatrixCell = static_cast< double >( mDestCols ) / mCPCols;
+    double myDestRowsPerMatrixCell = static_cast< double >( mDestRows ) / mCPRows;
     QgsDebugMsg( QString( "myDestColsPerMatrixCell = %1 myDestRowsPerMatrixCell = %2" ).arg( myDestColsPerMatrixCell ).arg( myDestRowsPerMatrixCell ) );
     for ( int i = 0; i < mCPRows - 1; i++ )
     {
@@ -501,8 +501,8 @@ void QgsRasterProjector::calcSrcRowsCols()
   QgsDebugMsg( QString( "mSrcExtent.width = %1 mSrcExtent.height = %2" ).arg( mSrcExtent.width() ).arg( mSrcExtent.height() ) );
 
   // we have to round to keep alignment set in calcSrcExtent
-  mSrcRows = ( int ) qRound( mSrcExtent.height() / myMinYSize );
-  mSrcCols = ( int ) qRound( mSrcExtent.width() / myMinXSize );
+  mSrcRows = static_cast< int >( qRound( mSrcExtent.height() / myMinYSize ) );
+  mSrcCols = static_cast< int >( qRound( mSrcExtent.width() / myMinXSize ) );
 
   QgsDebugMsg( QString( "mSrcRows = %1 mSrcCols = %2" ).arg( mSrcRows ).arg( mSrcCols ) );
 }
@@ -516,11 +516,11 @@ inline void QgsRasterProjector::destPointOnCPMatrix( int theRow, int theCol, dou
 
 inline int QgsRasterProjector::matrixRow( int theDestRow )
 {
-  return ( int )( floor(( theDestRow + 0.5 ) / mDestRowsPerMatrixRow ) );
+  return static_cast< int >( floor(( theDestRow + 0.5 ) / mDestRowsPerMatrixRow ) );
 }
 inline int QgsRasterProjector::matrixCol( int theDestCol )
 {
-  return ( int )( floor(( theDestCol + 0.5 ) / mDestColsPerMatrixCol ) );
+  return static_cast< int >( floor(( theDestCol + 0.5 ) / mDestColsPerMatrixCol ) );
 }
 
 QgsPoint QgsRasterProjector::srcPoint( int theDestRow, int theCol )
@@ -608,8 +608,8 @@ bool QgsRasterProjector::preciseSrcRowCol( int theDestRow, int theDestCol, int *
     return false;
   }
   // Get source row col
-  *theSrcRow = ( int ) floor(( mSrcExtent.yMaximum() - y ) / mSrcYRes );
-  *theSrcCol = ( int ) floor(( x - mSrcExtent.xMinimum() ) / mSrcXRes );
+  *theSrcRow = static_cast< int >( floor(( mSrcExtent.yMaximum() - y ) / mSrcYRes ) );
+  *theSrcCol = static_cast< int >( floor(( x - mSrcExtent.xMinimum() ) / mSrcXRes ) );
 #ifdef QGISDEBUG
   QgsDebugMsgLevel( QString( "mSrcExtent.yMinimum() = %1 mSrcExtent.yMaximum() = %2 mSrcYRes = %3" ).arg( mSrcExtent.yMinimum() ).arg( mSrcExtent.yMaximum() ).arg( mSrcYRes ), 5 );
   QgsDebugMsgLevel( QString( "theSrcRow = %1 theSrcCol = %2" ).arg( *theSrcRow ).arg( *theSrcCol ), 5 );
@@ -670,8 +670,8 @@ bool QgsRasterProjector::approximateSrcRowCol( int theDestRow, int theDestCol, i
 
   // TODO: check again cell selection (coor is in the middle)
 
-  *theSrcRow = ( int ) floor(( mSrcExtent.yMaximum() - mySrcY ) / mSrcYRes );
-  *theSrcCol = ( int ) floor(( mySrcX - mSrcExtent.xMinimum() ) / mSrcXRes );
+  *theSrcRow = static_cast< int >( floor(( mSrcExtent.yMaximum() - mySrcY ) / mSrcYRes ) );
+  *theSrcCol = static_cast< int >( floor(( mySrcX - mSrcExtent.xMinimum() ) / mSrcXRes ) );
 
   // For now silently correct limits to avoid crashes
   // TODO: review
@@ -965,7 +965,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
       bool inside = srcRowCol( i, j, &srcRow, &srcCol, inverseCt );
       if ( !inside ) continue; // we have everything set to no data
 
-      qgssize srcIndex = ( qgssize )srcRow * mSrcCols + srcCol;
+      qgssize srcIndex = static_cast< qgssize >( srcRow ) * mSrcCols + srcCol;
       QgsDebugMsgLevel( QString( "row = %1 col = %2 srcRow = %3 srcCol = %4" ).arg( i ).arg( j ).arg( srcRow ).arg( srcCol ), 5 );
 
       // isNoData() may be slow so we check doNoData first
@@ -975,7 +975,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
         continue;
       }
 
-      qgssize destIndex = ( qgssize )i * width + j;
+      qgssize destIndex = static_cast< qgssize >( i ) * width + j;
       char *srcBits = inputBlock->bits( srcIndex );
       char *destBits = outputBlock->bits( destIndex );
       if ( !srcBits )
@@ -1048,8 +1048,8 @@ bool QgsRasterProjector::extentSize( const QgsCoordinateTransform* ct,
       }
     }
   }
-  theDestXSize = std::max( 1, ( int )( theDestExtent.width() / destYRes ) );
-  theDestYSize = std::max( 1, ( int )( theDestExtent.height() / destYRes ) );
+  theDestXSize = std::max( 1, static_cast< int >( theDestExtent.width() / destYRes ) );
+  theDestYSize = std::max( 1, static_cast< int >( theDestExtent.height() / destYRes ) );
 
   return true;
 }
