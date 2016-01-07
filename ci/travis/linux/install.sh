@@ -15,7 +15,9 @@ cmake -DWITH_SERVER=ON \
       -DENABLE_PGTEST=ON \
       -DWITH_QWTPOLAR=OFF \
       -DWITH_APIDOC=ON \
+      -DDOXYGEN_FILE_PATTERN="*.h" \
       -DWITH_ASTYLE=ON \
       -DWITH_PYSPATIALITE=ON \
       -DGRASS_PREFIX7=/usr/lib/grass70 \
-      -DGRASS_INCLUDE_DIR7=/usr/lib/grass70/include ..
+      -DGRASS_INCLUDE_DIR7=/usr/lib/grass70/include \
+      ..
