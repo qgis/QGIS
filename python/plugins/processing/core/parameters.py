@@ -45,7 +45,7 @@ def getParameterFromString(s):
 
 
 def parseBool(s):
-    if s == unicode(None):
+    if s is None or s == unicode(None).lower():
         return None
     return unicode(s).lower() == unicode(True).lower()
 
