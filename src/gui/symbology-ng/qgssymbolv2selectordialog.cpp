@@ -261,7 +261,6 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   connect( btnRemoveLayer, SIGNAL( clicked() ), this, SLOT( removeLayer() ) );
   connect( btnLock, SIGNAL( clicked() ), this, SLOT( lockLayer() ) );
   connect( btnDuplicate, SIGNAL( clicked() ), this, SLOT( duplicateLayer() ) );
-  connect( btnSaveSymbol, SIGNAL( clicked() ), this, SLOT( saveSymbol() ) );
 
   updateUi();
 

@@ -81,6 +81,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void setMarkerSize( double size );
     void setLineWidth( double width );
     void addSymbolToStyle();
+    void saveSymbol();
     void symbolAddedToStyle( const QString& name, QgsSymbolV2* symbol );
     void on_mSymbolUnitWidget_changed();
     void on_mTransparencySlider_valueChanged( int value );

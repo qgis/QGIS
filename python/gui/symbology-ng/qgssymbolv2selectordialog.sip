@@ -64,8 +64,9 @@ class QgsSymbolV2SelectorDialog : QDialog
     void addLayer();
     void removeLayer();
 
-    void saveSymbol();
     void lockLayer();
+
+    void saveSymbol() /Deprecated/;
 
     //! Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
     //! @note added in QGIS 2.14

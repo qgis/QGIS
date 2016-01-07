@@ -118,6 +118,8 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   btnColor->setAllowAlpha( true );
   btnColor->setColorDialogTitle( tr( "Select color" ) );
   btnColor->setContext( "symbology" );
+
+  connect( btnSaveSymbol, SIGNAL( clicked() ), this, SLOT( saveSymbol() ) );
 }
 
 QgsSymbolsListWidget::~QgsSymbolsListWidget()
@@ -358,6 +360,34 @@ void QgsSymbolsListWidget::addSymbolToStyle()
   // make sure the symbol is stored
   mStyle->saveSymbol( name, mSymbol->clone(), 0, QStringList() );
   populateSymbolView();
+}
+
+void QgsSymbolsListWidget::saveSymbol()
+{
+  bool ok;
+  QString name = QInputDialog::getText( this, tr( "Symbol name" ),
+                                        tr( "Please enter name for the symbol:" ), QLineEdit::Normal, tr( "New symbol" ), &ok );
+  if ( !ok || name.isEmpty() )
+    return;
+
+  // check if there is no symbol with same name
+  if ( mStyle->symbolNames().contains( name ) )
+  {
+    int res = QMessageBox::warning( this, tr( "Save symbol" ),
+                                    tr( "Symbol with name '%1' already exists. Overwrite?" )
+                                    .arg( name ),
+                                    QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+    {
+      return;
+    }
+  }
+
+  // add new symbol to style and re-populate the list
+  mStyle->addSymbol( name, mSymbol->clone() );
+
+  // make sure the symbol is stored
+  mStyle->saveSymbol( name, mSymbol->clone(), 0, QStringList() );
 }
 
 void QgsSymbolsListWidget::on_mSymbolUnitWidget_changed()

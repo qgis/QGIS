@@ -338,6 +338,22 @@
       </spacer>
      </item>
      <item>
+      <widget class="QPushButton" name="btnSaveSymbol">
+       <property name="maximumSize">
+        <size>
+         <width>70</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Save symbol</string>
+       </property>
+       <property name="text">
+        <string>Save</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="btnAdvanced">
        <property name="text">
         <string>Advanced</string>
@@ -391,6 +407,7 @@
   <tabstop>groupsCombo</tabstop>
   <tabstop>openStyleManagerButton</tabstop>
   <tabstop>viewSymbols</tabstop>
+  <tabstop>btnSaveSymbol</tabstop>
   <tabstop>btnAdvanced</tabstop>
  </tabstops>
  <resources/>
