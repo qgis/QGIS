@@ -35,6 +35,7 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsvisibilitypresetcollection.h"
+#include "qgslayerdefinition.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -672,13 +673,19 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
 
   emit layerLoaded( 0, nl.count() );
 
+  // order layers based on their dependencies
+  QgsLayerDefinition::DependencySorter depSorter( doc );
+  if ( depSorter.hasCycle() || depSorter.hasMissingDependency() )
+    return qMakePair( false, QList<QDomNode>() );
+
+  QVector<QDomNode> sortedLayerNodes = depSorter.sortedLayerNodes();
+
   // Collect vector layers with joins.
   // They need to refresh join caches and symbology infos after all layers are loaded
   QList< QPair< QgsVectorLayer*, QDomElement > > vLayerList;
-
-  for ( int i = 0; i < nl.count(); i++ )
+  int i = 0;
+  foreach ( QDomNode node, sortedLayerNodes )
   {
-    QDomNode node = nl.item( i );
     QDomElement element = node.toElement();
 
     QString name = node.namedItem( "layername" ).toElement().text();
@@ -698,6 +705,7 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
       }
     }
     emit layerLoaded( i + 1, nl.count() );
+    i++;
   }
 
   // Update field map of layers with joins and create join caches if necessary

@@ -8467,11 +8467,18 @@ void QgisApp::embedLayers()
     //layer ids
     QList<QDomNode> brokenNodes;
     QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
+
+    // resolve dependencies
+    QgsLayerDefinition::DependencySorter depSorter( projectFile );
+    QStringList sortedIds = depSorter.sortedLayerIds();
     QStringList layerIds = d.selectedLayerIds();
-    QStringList::const_iterator layerIt = layerIds.constBegin();
-    for ( ; layerIt != layerIds.constEnd(); ++layerIt )
+    foreach ( QString id, sortedIds )
     {
-      QgsProject::instance()->createEmbeddedLayer( *layerIt, projectFile, brokenNodes, vectorLayerList );
+      foreach ( QString selId, layerIds )
+      {
+        if ( selId == id )
+          QgsProject::instance()->createEmbeddedLayer( selId, projectFile, brokenNodes, vectorLayerList );
+      }
     }
 
     mMapCanvas->freeze( false );
