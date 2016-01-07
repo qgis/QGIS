@@ -33,8 +33,16 @@ class CORE_EXPORT QgsLayerDefinition
          */
         DependencySorter( QDomDocument doc );
 
+        /** Constructor
+         * @param fileName The filename where the XML document is stored
+         */
+        DependencySorter( const QString& fileName );
+
         /** Get the layer nodes in an order where they can be loaded incrementally without dependency break */
         QVector<QDomNode> sortedLayerNodes() const { return mSortedLayerNodes; }
+
+        /** Get the layer IDs in an order where they can be loaded incrementally without dependency break */
+        QStringList sortedLayerIds() const { return mSortedLayerIds; }
 
         /** Whether some cyclic dependency has been detected */
         bool hasCycle() const { return mHasCycle; }
@@ -44,8 +52,10 @@ class CORE_EXPORT QgsLayerDefinition
 
       private:
         QVector<QDomNode> mSortedLayerNodes;
+        QStringList mSortedLayerIds;
         bool mHasCycle;
         bool mHasMissingDependency;
+        void init( QDomDocument doc );
     };
 };
 

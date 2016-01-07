@@ -186,13 +186,13 @@ bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<Qg
   return true;
 }
 
-QgsLayerDefinition::DependencySorter::DependencySorter( QDomDocument doc ) :
-    mHasCycle( false ), mHasMissingDependency( false )
+void QgsLayerDefinition::DependencySorter::init( QDomDocument doc )
 {
   // Determine a loading order of layers based on a graph of dependencies
   QMap< QString, QVector< QString > > dependencies;
-  QVector<QString> sortedLayers;
+  QStringList sortedLayers;
   QList< QPair<QString, QDomNode> > layersToSort;
+  QStringList layerIds;
 
   QDomNodeList nl = doc.elementsByTagName( "maplayer" );
   for ( int i = 0; i < nl.count(); i++ )
@@ -202,6 +202,7 @@ QgsLayerDefinition::DependencySorter::DependencySorter( QDomDocument doc ) :
     QDomElement element = node.toElement();
 
     QString id = node.namedItem( "id" ).toElement().text();
+    layerIds << id;
 
     // dependencies for this layer
     QDomElement layerDependenciesElem = node.firstChildElement( "layerDependencies" );
@@ -234,6 +235,9 @@ QgsLayerDefinition::DependencySorter::DependencySorter( QDomDocument doc ) :
       {
         // some dependencies are not satisfied
         mHasMissingDependency = true;
+        for ( int i = 0; i < nl.size(); i++ )
+          mSortedLayerNodes << nl.at( i );
+        mSortedLayerIds = layerIds;
         return;
       }
     }
@@ -264,6 +268,7 @@ QgsLayerDefinition::DependencySorter::DependencySorter( QDomDocument doc ) :
       {
         sortedLayers << idToSort;
         mSortedLayerNodes << node;
+        mSortedLayerIds << idToSort;
         it = layersToSort.erase( it ); // erase and go to the next
         mHasCycle = false;
       }
@@ -274,4 +279,21 @@ QgsLayerDefinition::DependencySorter::DependencySorter( QDomDocument doc ) :
     }
   }
 }
+
+QgsLayerDefinition::DependencySorter::DependencySorter( QDomDocument doc ) :
+    mHasCycle( false ), mHasMissingDependency( false )
+{
+  init( doc );
+}
+
+QgsLayerDefinition::DependencySorter::DependencySorter( const QString& fileName ) :
+    mHasCycle( false ), mHasMissingDependency( false )
+{
+  QDomDocument doc;
+  QFile pFile( fileName );
+  pFile.open( QIODevice::ReadOnly );
+  doc.setContent( &pFile );
+  init( doc );
+}
+
 

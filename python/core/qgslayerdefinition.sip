@@ -31,8 +31,16 @@ class QgsLayerDefinition
        */
       DependencySorter( QDomDocument doc );
 
+      /** Constructor
+       * @param fileName The filename where the XML document is stored
+       */
+      DependencySorter( const QString& fileName );
+
       /** Get the layer nodes in an order where they can be loaded incrementally without dependency break */
       QVector<QDomNode> sortedLayerNodes() const;
+
+      /** Get the layer IDs in an order where they can be loaded incrementally without dependency break */
+      QStringList sortedLayerIds() const;
 
       /** Whether some cyclic dependency has been detected */
       bool hasCycle() const;
