@@ -23,8 +23,10 @@
 
 QgsMSLayerCache* QgsMSLayerCache::instance()
 {
-  static QgsMSLayerCache mInstance;
-  return &mInstance;
+  static QgsMSLayerCache *mInstance = 0;
+  if ( !mInstance )
+    mInstance = new QgsMSLayerCache();
+  return mInstance;
 }
 
 QgsMSLayerCache::QgsMSLayerCache()
@@ -52,6 +54,7 @@ QgsMSLayerCache::~QgsMSLayerCache()
   {
     delete entry.layerPointer;
   }
+  mEntries.clear();
 }
 
 void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QString& configFile, const QList<QString>& tempFiles )

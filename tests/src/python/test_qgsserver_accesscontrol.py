@@ -170,7 +170,6 @@ class TestQgsServerAccessControl(TestCase):
 
         self.projectPath = os.path.join(self.testdata_path, "project.qgs")
         self.assertTrue(os.path.isfile(self.projectPath), 'Could not find project file "{}"'.format(self.projectPath))
-        self.projectPath = urllib.quote(self.projectPath)
 
     def tearDown(self):
         copyfile(os.path.join(self.testdata_path, "_helloworld.db"), os.path.join(self.testdata_path, "helloworld.db"))
@@ -179,7 +178,7 @@ class TestQgsServerAccessControl(TestCase):
 
     def test_wms_getcapabilities(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetCapabilities"
@@ -203,7 +202,7 @@ class TestQgsServerAccessControl(TestCase):
 
     def test_wms_describelayer_hello(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "DescribeLayer",
@@ -223,7 +222,7 @@ class TestQgsServerAccessControl(TestCase):
 
     def test_wms_describelayer_country(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "DescribeLayer",
@@ -243,7 +242,7 @@ class TestQgsServerAccessControl(TestCase):
 
     def test_wms_getlegendgraphic_hello(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetLegendGraphic",
@@ -259,7 +258,7 @@ class TestQgsServerAccessControl(TestCase):
 
     def test_wms_getlegendgraphic_country(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetLegendGraphic",
@@ -281,7 +280,7 @@ class TestQgsServerAccessControl(TestCase):
 
     def test_wms_getmap(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
@@ -298,7 +297,7 @@ class TestQgsServerAccessControl(TestCase):
         self._img_diff_error(response, headers, "WMS_GetMap")
 
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
@@ -314,7 +313,7 @@ class TestQgsServerAccessControl(TestCase):
         self._img_diff_error(response, headers, "Restricted_WMS_GetMap")
 
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
@@ -337,7 +336,7 @@ class TestQgsServerAccessControl(TestCase):
 
     def test_wms_getfeatureinfo_hello(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeatureInfo",
@@ -376,7 +375,7 @@ class TestQgsServerAccessControl(TestCase):
 
     def test_wms_getfeatureinfo_hello2(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeatureInfo",
@@ -406,7 +405,7 @@ class TestQgsServerAccessControl(TestCase):
 
     def test_wms_getfeatureinfo_country(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeatureInfo",
@@ -438,7 +437,7 @@ class TestQgsServerAccessControl(TestCase):
 
     def test_wfs_getcapabilities(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WFS",
             "VERSION": "1.1.0",
             "REQUEST": "GetCapabilities"
@@ -462,7 +461,7 @@ class TestQgsServerAccessControl(TestCase):
 
     def test_wfs_describefeaturetype_hello(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WFS",
             "VERSION": "1.1.0",
             "REQUEST": "DescribeFeatureType",
@@ -481,7 +480,7 @@ class TestQgsServerAccessControl(TestCase):
 
     def test_wfs_describefeaturetype_country(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WFS",
             "VERSION": "1.1.0",
             "REQUEST": "DescribeFeatureType",
@@ -569,7 +568,7 @@ class TestQgsServerAccessControl(TestCase):
 
     def test_wcs_getcapabilities(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WCS",
             "VERSION": "1.0.0",
             "REQUEST": "GetCapabilities",
@@ -586,7 +585,7 @@ class TestQgsServerAccessControl(TestCase):
             "No dem layer in WCS/GetCapabilities\n%s" % response)
 
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WCS",
             "VERSION": "1.0.0",
             "REQUEST": "GetCapabilities",
@@ -600,7 +599,7 @@ class TestQgsServerAccessControl(TestCase):
 
     def test_wcs_describecoverage(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WCS",
             "VERSION": "1.0.0",
             "REQUEST": "DescribeCoverage",
@@ -618,7 +617,7 @@ class TestQgsServerAccessControl(TestCase):
             "No dem layer in DescribeCoverage\n%s" % response)
 
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WCS",
             "VERSION": "1.0.0",
             "REQUEST": "DescribeCoverage",
@@ -633,7 +632,7 @@ class TestQgsServerAccessControl(TestCase):
 
     def test_wcs_getcoverage(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WCS",
             "VERSION": "1.0.0",
             "REQUEST": "GetCoverage",
@@ -662,7 +661,7 @@ class TestQgsServerAccessControl(TestCase):
             "Image for GetCoverage is wrong")
 
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WCS",
             "VERSION": "1.0.0",
             "REQUEST": "GetCoverage",
@@ -829,7 +828,7 @@ class TestQgsServerAccessControl(TestCase):
 # # WMS # # WMS # # WMS # #
     def test_wms_getmap_subsetstring(self):
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
@@ -846,7 +845,7 @@ class TestQgsServerAccessControl(TestCase):
         self._img_diff_error(response, headers, "WMS_GetMap")
 
         query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": self.projectPath,
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
@@ -879,7 +878,7 @@ class TestQgsServerAccessControl(TestCase):
             "INFO_FORMAT": "application/vnd.ogc.gml",
             "X": "56",
             "Y": "144",
-            "MAP": self.projectPath
+            "MAP": urllib.quote(self.projectPath)
         }.items()])
 
         response, headers = self._get_fullaccess(query_string)
@@ -915,7 +914,7 @@ class TestQgsServerAccessControl(TestCase):
             "INFO_FORMAT": "application/vnd.ogc.gml",
             "X": "146",
             "Y": "160",
-            "MAP": self.projectPath
+            "MAP": urllib.quote(self.projectPath)
         }.items()])
 
         response, headers = self._get_fullaccess(query_string)
@@ -997,35 +996,35 @@ class TestQgsServerAccessControl(TestCase):
         return data[1], headers
 
     def _get_fullaccess(self, query_string):
-        os.environ["REQUEST_METHOD"] = "GET"
+        server.putenv("REQUEST_METHOD", "GET")
         result = self._handle_request(False, query_string)
-        del os.environ["REQUEST_METHOD"]
+        server.putenv("REQUEST_METHOD", '')
         return result
 
     def _get_restricted(self, query_string):
-        os.environ["REQUEST_METHOD"] = "GET"
+        server.putenv("REQUEST_METHOD", "GET")
         result = self._handle_request(True, query_string)
-        del os.environ["REQUEST_METHOD"]
+        server.putenv("REQUEST_METHOD", '')
         return result
 
     def _post_fullaccess(self, data, query_string=None):
-        os.environ["REQUEST_METHOD"] = "POST"
-        os.environ["REQUEST_BODY"] = data
-        os.environ["QGIS_PROJECT_FILE"] = self.projectPath
+        server.putenv("REQUEST_METHOD", "POST")
+        server.putenv("REQUEST_BODY", data)
+        server.putenv("QGIS_PROJECT_FILE", self.projectPath)
         result = self._handle_request(False, query_string)
-        del os.environ["REQUEST_METHOD"]
-        del os.environ["REQUEST_BODY"]
-        del os.environ["QGIS_PROJECT_FILE"]
+        server.putenv("REQUEST_METHOD", '')
+        server.putenv("REQUEST_BODY", '')
+        server.putenv("QGIS_PROJECT_FILE", '')
         return result
 
     def _post_restricted(self, data, query_string=None):
-        os.environ["REQUEST_METHOD"] = "POST"
-        os.environ["REQUEST_BODY"] = data
-        os.environ["QGIS_PROJECT_FILE"] = self.projectPath
+        server.putenv("REQUEST_METHOD", "POST")
+        server.putenv("REQUEST_BODY", data)
+        server.putenv("QGIS_PROJECT_FILE", self.projectPath)
         result = self._handle_request(True, query_string)
-        del os.environ["REQUEST_METHOD"]
-        del os.environ["REQUEST_BODY"]
-        del os.environ["QGIS_PROJECT_FILE"]
+        server.putenv("REQUEST_METHOD", '')
+        server.putenv("REQUEST_BODY", '')
+        server.putenv("QGIS_PROJECT_FILE", '')
         return result
 
     def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize()):

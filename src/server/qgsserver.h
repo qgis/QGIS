@@ -58,6 +58,13 @@ class SERVER_EXPORT QgsServer
     //! The following is mainly for python bindings, that do not pass argc/argv
     static bool init();
 
+    /** Set environment variable
+     * @param var environment variable name
+     * @param val value
+     * @note added in 2.14
+     */
+    void putenv( const QString &var, const QString &val );
+
     /** Handles the request. The output is normally printed trough FCGI printf
      * by the request handler or, in case the server has been invoked from python
      * bindings, a flag is set that captures all the output headers and body, instead

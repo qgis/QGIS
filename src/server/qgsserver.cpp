@@ -420,7 +420,14 @@ bool QgsServer::init( int & argc, char ** argv )
   return true;
 }
 
-
+void QgsServer::putenv( const QString &var, const QString &val )
+{
+#ifdef _MSC_VER
+  _putenv_s( var.toUtf8().data(), val.toUtf8().data() );
+#else
+  setenv( var.toUtf8().data(), val.toUtf8().data(), 1 );
+#endif
+}
 
 /**
  * @brief Handles the request
@@ -441,13 +448,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
    * to handleRequest without using os.environment
    */
   if ( ! queryString.isEmpty() )
-  {
-#ifdef _MSC_VER
-    _putenv_s( "QUERY_STRING", queryString.toUtf8().data() );
-#else
-    setenv( "QUERY_STRING", queryString.toUtf8().data(), 1 );
-#endif
-  }
+    putenv( "QUERY_STRING", queryString );
 
   int logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
