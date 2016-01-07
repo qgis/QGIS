@@ -1,0 +1,17 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+
+"features": [
+{ "type": "Feature", "properties": { "Name": "Lake", "Value": 10.000000 }, "geometry": { "type": "Point", "coordinates": [ -106.094580700419201, 44.685942900561074 ] } },
+{ "type": "Feature", "properties": { "Name": "Dam", "Value": 20.000000 }, "geometry": { "type": "Point", "coordinates": [ -103.653199878342306, 38.349643906274352 ] } },
+{ "type": "Feature", "properties": { "Name": "Lake", "Value": 11.000000 }, "geometry": { "type": "Point", "coordinates": [ -96.34517815752406, 39.124986363274637 ] } },
+{ "type": "Feature", "properties": { "Name": "Dam", "Value": 8.000000 }, "geometry": { "type": "Point", "coordinates": [ -105.451296424714954, 32.551432912590492 ] } },
+{ "type": "Feature", "properties": { "Name": "Dam", "Value": 7.000000 }, "geometry": { "type": "Point", "coordinates": [ -94.894024856130642, 31.572614178387987 ] } },
+{ "type": "Feature", "properties": { "Name": "Lake", "Value": 12.000000 }, "geometry": { "type": "Point", "coordinates": [ -90.619673239996786, 43.238130023878028 ] } },
+{ "type": "Feature", "properties": { "Name": "Lake", "Value": 8.000000 }, "geometry": { "type": "Point", "coordinates": [ -115.661487025731759, 40.315711973329016 ] } },
+{ "type": "Feature", "properties": { "Name": "Lake", "Value": 12.000000 }, "geometry": { "type": "Point", "coordinates": [ -87.699554898385514, 27.532978543036723 ] } },
+{ "type": "Feature", "properties": { "Name": "Dam", "Value": 13.000000 }, "geometry": { "type": "Point", "coordinates": [ -113.833518242459832, 28.7528527646054 ] } },
+{ "type": "Feature", "properties": { "Name": "Lake", "Value": 8.000000 }, "geometry": { "type": "Point", "coordinates": [ -101.100289079924366, 27.074241571062291 ] } }
+]
+}

@@ -5,8 +5,8 @@ tests:
     algorithm: qgis:polygoncentroids # Algorithm name
     params: # A list of parameters (only 1 here)
       - type: vector    # Param is a vector layer
-        location: proc   # file is in the qgis tests/testdata directory
-        name: polys.geojson # file name
+        location: qgs   # file is in the qgis tests/testdata directory
+        name: polys.shp # file name
     results: # A map of results (only one here)
       OUTPUT_LAYER:
         type: vector   # Expected result is a vector layer
