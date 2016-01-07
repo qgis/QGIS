@@ -38,23 +38,23 @@ QgsAccessControlFilter::~QgsAccessControlFilter()
 }
 
 /** Return an additional layer expression filter */
-const QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer* layer ) const
+QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer* layer ) const
 {
   QgsMessageLog::logMessage( "QgsAccessControlFilter plugin default layerFilterExpression called", "AccessControlFilter", QgsMessageLog::INFO );
   Q_UNUSED( layer );
-  return nullptr;
+  return QString();
 }
 
 /** Return an additional layer subset string (typically SQL) filter */
-const QString QgsAccessControlFilter::layerFilterSubsetString( const QgsVectorLayer* layer ) const
+QString QgsAccessControlFilter::layerFilterSubsetString( const QgsVectorLayer* layer ) const
 {
   QgsMessageLog::logMessage( "QgsAccessControlFilter plugin default layerFilterSQL called", "AccessControlFilter", QgsMessageLog::INFO );
   Q_UNUSED( layer );
-  return nullptr;
+  return QString();
 }
 
 /** Return the layer permissions */
-const QgsAccessControlFilter::LayerPermissions QgsAccessControlFilter::layerPermissions( const QgsMapLayer* layer ) const
+QgsAccessControlFilter::LayerPermissions QgsAccessControlFilter::layerPermissions( const QgsMapLayer* layer ) const
 {
   QgsMessageLog::logMessage( "QgsAccessControlFilter plugin default layerPermissions called", "AccessControlFilter", QgsMessageLog::INFO );
   Q_UNUSED( layer );
@@ -64,12 +64,11 @@ const QgsAccessControlFilter::LayerPermissions QgsAccessControlFilter::layerPerm
 }
 
 /** Return the authorized layer attributes */
-const QStringList* QgsAccessControlFilter::authorizedLayerAttributes( const QgsVectorLayer* layer, const QStringList& attributes ) const
+QStringList QgsAccessControlFilter::authorizedLayerAttributes( const QgsVectorLayer* layer, const QStringList& attributes ) const
 {
   Q_UNUSED( layer );
-  Q_UNUSED( attributes );
   QgsMessageLog::logMessage( "QgsAccessControlFilter plugin default authorizedLayerAttributes called", "AccessControlFilter", QgsMessageLog::INFO );
-  return nullptr;
+  return attributes;
 }
 
 /** Are we authorized to modify the feature */
@@ -82,7 +81,7 @@ bool QgsAccessControlFilter::allowToEdit( const QgsVectorLayer* layer, const Qgs
 }
 
 /** Cache key to used to create the capabilities cache, "" for no cache */
-const QString QgsAccessControlFilter::cacheKey() const
+QString QgsAccessControlFilter::cacheKey() const
 {
-  return "";
+  return QString();
 }
