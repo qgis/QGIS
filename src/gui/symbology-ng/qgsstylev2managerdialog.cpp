@@ -732,16 +732,20 @@ bool QgsStyleV2ManagerDialog::removeSymbol()
 
 bool QgsStyleV2ManagerDialog::removeColorRamp()
 {
-  QString rampName = currentItemName();
-  if ( rampName.isEmpty() )
-    return false;
+  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm removal" ),
-       QString( tr( "Do you really want to remove the colorramp '%1'?" ) ).arg( rampName ),
+       QString( tr( "Do you really want to remove %n ramps(s)?", nullptr, indexes.count() ) ),
        QMessageBox::Yes,
        QMessageBox::No ) )
     return false;
 
-  mStyle->removeColorRamp( rampName );
+  Q_FOREACH ( const QModelIndex& index, indexes )
+  {
+    QString rampName = index.data().toString();
+    // delete from style and update list
+    if ( !rampName.isEmpty() )
+      mStyle->removeColorRamp( rampName );
+  }
   mModified = true;
   return true;
 }
