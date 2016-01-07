@@ -69,26 +69,26 @@ class SERVER_EXPORT QgsAccessControlFilter
      * @param layer the layer to control
      * @return the filter expression
      */
-    virtual const QString layerFilterExpression( const QgsVectorLayer* layer ) const;
+    virtual QString layerFilterExpression( const QgsVectorLayer* layer ) const;
 
     /** Return an additional subset string (typically SQL) filter
      * @param layer the layer to control
      * @return the subset string
      */
-    virtual const QString layerFilterSubsetString( const QgsVectorLayer* layer ) const;
+    virtual QString layerFilterSubsetString( const QgsVectorLayer* layer ) const;
 
     /** Return the layer permissions
      * @param layer the layer to control
      * @return the permission to use on the layer
      */
-    virtual const LayerPermissions layerPermissions( const QgsMapLayer* layer ) const;
+    virtual LayerPermissions layerPermissions( const QgsMapLayer* layer ) const;
 
     /** Return the authorized layer attributes
      * @param layer the layer to control
      * @param attributes the current list of visible attribute
      * @return the new list of visible attributes
      */
-    virtual const QStringList* authorizedLayerAttributes( const QgsVectorLayer* layer, const QStringList& attributes ) const;
+    virtual QStringList authorizedLayerAttributes( const QgsVectorLayer* layer, const QStringList& attributes ) const;
 
     /** Are we authorized to modify the following geometry
      * @param layer the layer to control
@@ -100,7 +100,7 @@ class SERVER_EXPORT QgsAccessControlFilter
     /** Cache key to used to create the capabilities cache
      * @return the cache key, "" for no cache
      */
-    virtual const QString cacheKey() const;
+    virtual QString cacheKey() const;
 
   private:
 

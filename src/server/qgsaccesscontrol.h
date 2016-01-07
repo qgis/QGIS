@@ -67,7 +67,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
      * @param layer the layer to control
      * @return the subset string to use
      */
-    const QString extraSubsetString( const QgsVectorLayer* layer ) const;
+    QString extraSubsetString( const QgsVectorLayer* layer ) const;
 
     /** Return the layer read right
      * @param layer the layer to control
@@ -98,7 +98,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
      * @param attributes the list of attribute
      * @return the list of visible attributes
      */
-    const QStringList layerAttributes( const QgsVectorLayer* layer, const QStringList attributes ) const;
+    QStringList layerAttributes( const QgsVectorLayer* layer, const QStringList& attributes ) const;
 
     /** Are we authorized to modify the following geometry
      * @param layer the layer to control

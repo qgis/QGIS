@@ -30,7 +30,7 @@ void QgsAccessControl::filterFeatures( const QgsVectorLayer* layer, QgsFeatureRe
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    const QString expression = acIterator.value()->layerFilterExpression( layer );
+    QString expression = acIterator.value()->layerFilterExpression( layer );
     if ( !expression.isEmpty() )
     {
       expressions.append( expression );
@@ -49,13 +49,13 @@ QgsFeatureFilterProvider* QgsAccessControl::clone() const
 }
 
 /** Return an additional subset string (typically SQL) filter */
-const QString QgsAccessControl::extraSubsetString( const QgsVectorLayer* layer ) const
+QString QgsAccessControl::extraSubsetString( const QgsVectorLayer* layer ) const
 {
   QStringList sqls = QStringList();
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    const QString sql = acIterator.value()->layerFilterSubsetString( layer );
+    QString sql = acIterator.value()->layerFilterSubsetString( layer );
     if ( !sql.isEmpty() )
     {
       sqls.append( sql );
@@ -121,17 +121,13 @@ bool QgsAccessControl::layerDeletePermission( const QgsVectorLayer* layer ) cons
 }
 
 /** Return the authorized layer attributes */
-const QStringList QgsAccessControl::layerAttributes( const QgsVectorLayer* layer, const QStringList attributes ) const
+QStringList QgsAccessControl::layerAttributes( const QgsVectorLayer* layer, const QStringList& attributes ) const
 {
   QStringList currentAttributes( attributes );
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    const QStringList* newAttributes = acIterator.value()->authorizedLayerAttributes( layer, currentAttributes );
-    if ( newAttributes )
-    {
-      currentAttributes = *newAttributes;
-    }
+    currentAttributes = acIterator.value()->authorizedLayerAttributes( layer, currentAttributes );
   }
   return currentAttributes;
 }
