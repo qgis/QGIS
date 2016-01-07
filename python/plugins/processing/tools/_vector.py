@@ -1,7 +1,38 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    _vector.py
+    ---------------------
+    Date                 : May 2015
+    Copyright            : (C) 2015 by Victor Olaya
+    Email                : volayaf at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Victor Olaya'
+__date__ = 'May 2015'
+__copyright__ = '(C) 2015, Victor Olaya'
+
+# This will get replaced with a git SHA1 when you do a git archive
+
+__revision__ = '$Format:%H$'
+
+
 import os
-from PyQt4.QtCore import *
-from qgis.core import *
 from collections import Iterator
+
+from PyQt4.QtCore import *
+
+from qgis.core import *
+
 
 TYPE_MAP = {
     str: QVariant.String,
