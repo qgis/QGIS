@@ -167,8 +167,9 @@ class TestQgsServerAccessControl(TestCase):
             if k in environ:
                 del environ[k]
 
-        self.projectPath = urllib.quote(path.join(self.testdata_path, "project.qgs"))
+        self.projectPath = path.join(self.testdata_path, "project.qgs")
         self.assertTrue(path.isfile(self.projectPath), 'Could not find project file "{}"'.format(self.projectPath))
+        self.projectPath = urllib.quote(self.projectPath)
 
     def tearDown(self):
         copyfile(path.join(self.testdata_path, "_helloworld.db"), path.join(self.testdata_path, "helloworld.db"))
