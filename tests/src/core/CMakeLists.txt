@@ -177,5 +177,6 @@ ADD_QGIS_TEST(vectorlayercachetest testqgsvectorlayercache.cpp )
 ADD_QGIS_TEST(vectorlayerjoinbuffer testqgsvectorlayerjoinbuffer.cpp )
 ADD_QGIS_TEST(vectorlayertest testqgsvectorlayer.cpp)
 ADD_QGIS_TEST(ziplayertest testziplayer.cpp)
+ADD_QGIS_TEST(adjacenttiles testqgsadjacenttiles.cpp)
 
 ADD_DEPENDENCIES(qgis_coordinatereferencesystemtest synccrsdb)
