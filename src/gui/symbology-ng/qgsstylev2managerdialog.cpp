@@ -142,7 +142,7 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   // Context menu for symbols/colorramps. The menu entries for every group are created when displaying the menu.
   mGroupMenu = new QMenu( this );
   mGroupListMenu = new QMenu( mGroupMenu );
-  mGroupListMenu->setTitle( tr( "Apply Group" ) );
+  mGroupListMenu->setTitle( tr( "Add to group" ) );
   mGroupListMenu->setEnabled( false );
   mGroupMenu->addMenu( mGroupListMenu );
   actnUngroup->setData( 0 );
@@ -301,6 +301,8 @@ void QgsStyleV2ManagerDialog::populateColorRamps( const QStringList& colorRamps,
     model->appendRow( item );
     delete ramp;
   }
+  selectedSymbolsChanged( QItemSelection(), QItemSelection() );
+  symbolSelected( listItems->currentIndex() );
 }
 
 int QgsStyleV2ManagerDialog::currentItemType()
@@ -1303,6 +1305,7 @@ void QgsStyleV2ManagerDialog::selectedSymbolsChanged( const QItemSelection& sele
   actnUngroup->setDisabled( nothingSelected );
   actnExportAsPNG->setDisabled( nothingSelected );
   actnExportAsSVG->setDisabled( nothingSelected );
+  actnEditItem->setDisabled( nothingSelected );
 }
 
 void QgsStyleV2ManagerDialog::enableSymbolInputs( bool enable )
