@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 print 'CTEST_FULL_OUTPUT'
 
-from os import path, environ
+import os
 from shutil import copyfile
 from math import sqrt
 from subprocess import check_output
@@ -160,20 +160,20 @@ class TestQgsServerAccessControl(TestCase):
     def setUp(self):
         self.testdata_path = unitTestDataPath("qgis_server_accesscontrol")
 
-        dataFile = path.join(self.testdata_path, "helloworld.db")
-        self.assertTrue(path.isfile(dataFile), 'Could not find data file "{}"'.format(dataFile))
-        copyfile(dataFile, path.join(self.testdata_path, "_helloworld.db"))
+        dataFile = os.path.join(self.testdata_path, "helloworld.db")
+        self.assertTrue(os.path.isfile(dataFile), 'Could not find data file "{}"'.format(dataFile))
+        copyfile(dataFile, os.path.join(self.testdata_path, "_helloworld.db"))
 
         for k in ["QUERY_STRING", "QGIS_PROJECT_FILE"]:
-            if k in environ:
-                del environ[k]
+            if k in os.environ:
+                del os.environ[k]
 
-        self.projectPath = path.join(self.testdata_path, "project.qgs")
-        self.assertTrue(path.isfile(self.projectPath), 'Could not find project file "{}"'.format(self.projectPath))
+        self.projectPath = os.path.join(self.testdata_path, "project.qgs")
+        self.assertTrue(os.path.isfile(self.projectPath), 'Could not find project file "{}"'.format(self.projectPath))
         self.projectPath = urllib.quote(self.projectPath)
 
     def tearDown(self):
-        copyfile(path.join(self.testdata_path, "_helloworld.db"), path.join(self.testdata_path, "helloworld.db"))
+        copyfile(os.path.join(self.testdata_path, "_helloworld.db"), os.path.join(self.testdata_path, "helloworld.db"))
 
 # # WMS # # WMS # # WMS # #
 
@@ -997,39 +997,39 @@ class TestQgsServerAccessControl(TestCase):
         return data[1], headers
 
     def _get_fullaccess(self, query_string):
-        environ["REQUEST_METHOD"] = "GET"
+        os.environ["REQUEST_METHOD"] = "GET"
         result = self._handle_request(False, query_string)
-        del environ["REQUEST_METHOD"]
+        del os.environ["REQUEST_METHOD"]
         return result
 
     def _get_restricted(self, query_string):
-        environ["REQUEST_METHOD"] = "GET"
+        os.environ["REQUEST_METHOD"] = "GET"
         result = self._handle_request(True, query_string)
-        del environ["REQUEST_METHOD"]
+        del os.environ["REQUEST_METHOD"]
         return result
 
     def _post_fullaccess(self, data, query_string=None):
-        environ["REQUEST_METHOD"] = "POST"
-        environ["REQUEST_BODY"] = data
-        environ["QGIS_PROJECT_FILE"] = self.projectPath
+        os.environ["REQUEST_METHOD"] = "POST"
+        os.environ["REQUEST_BODY"] = data
+        os.environ["QGIS_PROJECT_FILE"] = self.projectPath
         result = self._handle_request(False, query_string)
-        del environ["REQUEST_METHOD"]
-        del environ["REQUEST_BODY"]
-        del environ["QGIS_PROJECT_FILE"]
+        del os.environ["REQUEST_METHOD"]
+        del os.environ["REQUEST_BODY"]
+        del os.environ["QGIS_PROJECT_FILE"]
         return result
 
     def _post_restricted(self, data, query_string=None):
-        environ["REQUEST_METHOD"] = "POST"
-        environ["REQUEST_BODY"] = data
-        environ["QGIS_PROJECT_FILE"] = self.projectPath
+        os.environ["REQUEST_METHOD"] = "POST"
+        os.environ["REQUEST_BODY"] = data
+        os.environ["QGIS_PROJECT_FILE"] = self.projectPath
         result = self._handle_request(True, query_string)
-        del environ["REQUEST_METHOD"]
-        del environ["REQUEST_BODY"]
-        del environ["QGIS_PROJECT_FILE"]
+        del os.environ["REQUEST_METHOD"]
+        del os.environ["REQUEST_BODY"]
+        del os.environ["QGIS_PROJECT_FILE"]
         return result
 
     def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize()):
-        temp_image = path.join(tempfile.gettempdir(), "%s_result.png" % control_image)
+        temp_image = os.path.join(tempfile.gettempdir(), "%s_result.png" % control_image)
 
         with open(temp_image, "wb") as f:
             f.write(image)
@@ -1048,13 +1048,13 @@ class TestQgsServerAccessControl(TestCase):
             "Content type is wrong: %s" % headers.get("Content-Type"))
         test, report = self._img_diff(response, image, max_diff, max_size_diff)
 
-        with open(path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:
+        with open(os.path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:
             encoded_rendered_file = base64.b64encode(rendered_file.read())
             message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.png" % (
                 report, encoded_rendered_file.strip(), tempfile.gettempdir(), image
             )
 
-        with open(path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
+        with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
             encoded_diff_file = base64.b64encode(diff_file.read())
             message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.png" % (
                 encoded_diff_file.strip(), tempfile.gettempdir(), image
@@ -1063,17 +1063,21 @@ class TestQgsServerAccessControl(TestCase):
         self.assertTrue(test, message)
 
     def _geo_img_diff(self, image_1, image_2):
-        with open(path.join(tempfile.gettempdir(), image_2), "wb") as f:
+        if os.name == 'nt':
+            # Not supported on Windows due to #13061
+            return 0
+
+        with open(os.path.join(tempfile.gettempdir(), image_2), "wb") as f:
             f.write(image_1)
-        image_1 = gdal.Open(path.join(tempfile.gettempdir(), image_2), GA_ReadOnly)
+        image_1 = gdal.Open(os.path.join(tempfile.gettempdir(), image_2), GA_ReadOnly)
         assert image_1, "No output image written: " + image_2
 
-        image_2 = gdal.Open(path.join(self.testdata_path, "results", image_2), GA_ReadOnly)
+        image_2 = gdal.Open(os.path.join(self.testdata_path, "results", image_2), GA_ReadOnly)
         assert image_1, "No expected image found:" + image_2
 
-        if image_1.RasterXSize != image_2.RasterXSize:
-            return 1000  # wrong size
-        if image_1.RasterYSize != image_2.RasterYSize:
+        if image_1.RasterXSize != image_2.RasterXSize or image_1.RasterYSize != image_2.RasterYSize:
+            image_1 = None
+            image_2 = None
             return 1000  # wrong size
 
         square_sum = 0
@@ -1081,6 +1085,9 @@ class TestQgsServerAccessControl(TestCase):
             for y in range(image_1.RasterYSize):
                 square_sum += (image_1.ReadAsArray()[x][y] - image_2.ReadAsArray()[x][y]) ** 2
 
+        # Explicitly close GDAL datasets
+        image_1 = None
+        image_2 = None
         return sqrt(square_sum)
 
     def _test_colors(self, colors):
