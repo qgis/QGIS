@@ -40,7 +40,7 @@ IF(WITH_APIDOC)
       SET(DOXYGEN_TAGS ${QT_TAG_FILE}=${QT_DOC_URL})
     ENDIF(QT_TAG_FILE)
 
-    SET (DOXYGEN_FILEPATTERN "*.cpp *.h *.dox" CACHE STRING "File pattern to be parsed by doxygen.")
+    SET (DOXYGEN_FILE_PATTERNS "*.cpp *.h *.dox" CACHE STRING "File patterns to be parsed by doxygen.")
     CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake_templates/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
     ADD_CUSTOM_TARGET(apidoc ALL
             COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
