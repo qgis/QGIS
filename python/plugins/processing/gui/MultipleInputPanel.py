@@ -73,4 +73,3 @@ class MultipleInputPanel(BASE, WIDGET):
             self.leText.setText(
                 self.tr('%d elements selected') % len(self.selectedoptions))
             self.selectionChanged.emit()
-
