@@ -68,8 +68,9 @@ class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui
 };
 
 
+// not part of public API
 ///@cond
-/// not part of public API
+//! @note not available in Python bindings
 class ItemDelegate : public QItemDelegate
 {
     Q_OBJECT

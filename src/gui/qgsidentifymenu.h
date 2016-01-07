@@ -23,8 +23,9 @@
 #include "qgsmaptoolidentify.h"
 #include "qgsvectorlayer.h"
 
+// not part of public API
 ///@cond
-/// not part of public API
+//! @note not available in Python bindings
 class CustomActionRegistry : public QgsMapLayerActionRegistry
 {
     Q_OBJECT
