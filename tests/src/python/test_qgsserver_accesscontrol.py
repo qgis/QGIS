@@ -27,6 +27,7 @@ from qgis.core import QgsRenderChecker
 from PyQt4.QtCore import QSize
 import tempfile
 import urllib
+import base64
 
 
 XML_NS = \
@@ -1029,7 +1030,8 @@ class TestQgsServerAccessControl(TestCase):
 
     def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize()):
         temp_image = path.join(tempfile.gettempdir(), "%s_result.png" % control_image)
-        with open(temp_image, "w") as f:
+
+        with open(temp_image, "wb") as f:
             f.write(image)
 
         control = QgsRenderChecker()
@@ -1046,21 +1048,22 @@ class TestQgsServerAccessControl(TestCase):
             "Content type is wrong: %s" % headers.get("Content-Type"))
         test, report = self._img_diff(response, image, max_diff, max_size_diff)
 
-        result_img = check_output(["base64", path.join(tempfile.gettempdir(), image + "_result.png")])
-        message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.png" % (
-            report, result_img.strip(), tempfile.gettempdir(), image
-        )
-
-        if path.isfile(path.join(tempfile.gettempdir(), image + "_result_diff.png")):
-            diff_img = check_output(["base64", path.join(tempfile.gettempdir(), image + "_result_diff.png")])
-            message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.png" % (
-                diff_img.strip(), tempfile.gettempdir(), image
+        with open(path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:
+            encoded_rendered_file = base64.b64encode(rendered_file.read())
+            message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.png" % (
+                report, encoded_rendered_file.strip(), tempfile.gettempdir(), image
             )
+
+        with open(path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
+            encoded_diff_file = base64.b64encode(diff_file.read())
+            message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.png" % (
+                encoded_diff_file.strip(), tempfile.gettempdir(), image
+            )
+
         self.assertTrue(test, message)
 
     def _geo_img_diff(self, image_1, image_2):
-
-        with open(path.join(tempfile.gettempdir(), image_2), "w") as f:
+        with open(path.join(tempfile.gettempdir(), image_2), "wb") as f:
             f.write(image_1)
         image_1 = gdal.Open(path.join(tempfile.gettempdir(), image_2), GA_ReadOnly)
         assert image_1, "No output image written: " + image_2
