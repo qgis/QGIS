@@ -22,6 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgslayertreeregistrybridge.h"
 #include "qgssymbolv2selectordialog.h"
+#include "qgssinglesymbolrendererv2.h"
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas )
     : mView( view )
@@ -125,6 +126,30 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         menuStyleManager->addSeparator();
         QgsMapLayerStyleGuiUtils::instance()->addStyleManagerActions( menuStyleManager, layer );
+
+        if ( vlayer )
+        {
+          QgsSingleSymbolRendererV2* singleRenderer = dynamic_cast< QgsSingleSymbolRendererV2* >( vlayer->rendererV2() );
+          if ( singleRenderer && singleRenderer->symbol() )
+          {
+            //single symbol renderer, so add set color/edit symbol actions
+            menuStyleManager->addSeparator();
+            QgsColorWheel* colorWheel = new QgsColorWheel( menuStyleManager );
+            colorWheel->setColor( singleRenderer->symbol()->color() );
+            QgsColorWidgetAction* colorAction = new QgsColorWidgetAction( colorWheel, menuStyleManager, menuStyleManager );
+            colorAction->setDismissOnColorSelection( false );
+            connect( colorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setVectorSymbolColor( const QColor& ) ) );
+            //store the layer id in action, so we can later retrieve the corresponding layer
+            colorAction->setProperty( "layerId", vlayer->id() );
+            menuStyleManager->addAction( colorAction );
+            menuStyleManager->addSeparator();
+            QAction* editSymbolAction = new QAction( tr( "Edit Symbol..." ), menuStyleManager );
+            //store the layer id in action, so we can later retrieve the corresponding layer
+            editSymbolAction->setProperty( "layerId", vlayer->id() );
+            connect( editSymbolAction, SIGNAL( triggered() ), this, SLOT( editVectorSymbol() ) );
+            menuStyleManager->addAction( editSymbolAction );
+          }
+        }
 
         menu->addMenu( menuStyleManager );
       }
@@ -396,6 +421,54 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
     }
     menu->addSeparator();
   }
+}
+
+void QgsAppLayerTreeViewMenuProvider::editVectorSymbol()
+{
+  QAction* action = qobject_cast< QAction*>( sender() );
+  if ( !action )
+    return;
+
+  QString layerId = action->property( "layerId" ).toString();
+  QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+  if ( !layer )
+    return;
+
+  QgsSingleSymbolRendererV2* singleRenderer = dynamic_cast< QgsSingleSymbolRendererV2* >( layer->rendererV2() );
+  if ( !singleRenderer )
+    return;
+
+  QScopedPointer< QgsSymbolV2 > symbol( singleRenderer->symbol() ? singleRenderer->symbol()->clone() : nullptr );
+  QgsSymbolV2SelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), layer, mView->window() );
+  dlg.setMapCanvas( mCanvas );
+  if ( dlg.exec() )
+  {
+    singleRenderer->setSymbol( symbol.take() );
+    layer->triggerRepaint();
+    mView->refreshLayerSymbology( layer->id() );
+  }
+}
+
+void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor& color )
+{
+  QAction* action = qobject_cast< QAction*>( sender() );
+  if ( !action )
+    return;
+
+  QString layerId = action->property( "layerId" ).toString();
+  QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+  if ( !layer )
+    return;
+
+  QgsSingleSymbolRendererV2* singleRenderer = dynamic_cast< QgsSingleSymbolRendererV2* >( layer->rendererV2() );
+  if ( !singleRenderer || !singleRenderer->symbol() )
+    return;
+
+  QgsSymbolV2* newSymbol = singleRenderer->symbol()->clone();
+  newSymbol->setColor( color );
+  singleRenderer->setSymbol( newSymbol );
+  layer->triggerRepaint();
+  mView->refreshLayerSymbology( layer->id() );
 }
 
 void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
