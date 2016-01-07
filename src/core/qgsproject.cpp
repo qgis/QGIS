@@ -35,6 +35,7 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsvisibilitypresetcollection.h"
+#include "qgslayerdefinition.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -672,83 +673,19 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
 
   emit layerLoaded( 0, nl.count() );
 
-  // Determine a loading order of layers based on a graph of dependencies
-  QMap< QString, QVector< QString > > dependencies;
-  QVector<QString> sortedLayers;
-  QMap<QString, int> layerIdIdx;
-  QList<QString> layersToSort;
-
-  for ( int i = 0; i < nl.count(); i++ )
-  {
-    QVector<QString> deps;
-    QDomNode node = nl.item( i );
-    QDomElement element = node.toElement();
-
-    QString id = node.namedItem( "id" ).toElement().text();
-
-    // dependencies for this layer
-    QDomElement layerDependenciesElem = node.firstChildElement( "layerDependencies" );
-    if ( !layerDependenciesElem.isNull() )
-    {
-      QDomNodeList dependencyList = layerDependenciesElem.elementsByTagName( "layer" );
-      for ( int j = 0; j < dependencyList.size(); ++j )
-      {
-        QDomElement depElem = dependencyList.at( j ).toElement();
-        deps << depElem.attribute( "id" );
-      }
-    }
-    dependencies[id] = deps;
-
-    if ( deps.empty() )
-      sortedLayers << id;
-    else
-      layersToSort << id;
-    layerIdIdx[id] = i;
-  }
-
-  bool hasCycle = false;
-  while ( !layersToSort.empty() && !hasCycle )
-  {
-    QList<QString>::iterator it = layersToSort.begin();
-    while ( it != layersToSort.end() )
-    {
-      hasCycle = true;
-      bool resolved = true;
-      foreach ( QString dep, dependencies[*it] )
-      {
-        if ( !sortedLayers.contains( dep ) )
-        {
-          resolved = false;
-          break;
-        }
-      }
-      if ( resolved ) // dependencies for this layer are resolved
-      {
-        sortedLayers << *it;
-        it = layersToSort.erase( it ); // erase and go to the next
-        hasCycle = false;
-      }
-      else
-      {
-        it++;
-      }
-    }
-  }
-
-  if ( hasCycle )
-  {
-    // should not happen, since layers with cyclic dependencies may only be created by
-    // manually modifying the project file
+  // order layers based on their dependencies
+  QgsLayerDefinition::DependencySorter depSorter( doc );
+  if ( depSorter.hasCycle() || depSorter.hasMissingDependency() )
     return qMakePair( false, QList<QDomNode>() );
-  }
+
+  QVector<QDomNode> sortedLayerNodes = depSorter.sortedLayerNodes();
 
   // Collect vector layers with joins.
   // They need to refresh join caches and symbology infos after all layers are loaded
   QList< QPair< QgsVectorLayer*, QDomElement > > vLayerList;
-  foreach ( QString id, sortedLayers )
+  int i = 0;
+  foreach ( QDomNode node, sortedLayerNodes )
   {
-    int i = layerIdIdx[id];
-    QDomNode node = nl.item( i );
     QDomElement element = node.toElement();
 
     QString name = node.namedItem( "layername" ).toElement().text();
@@ -768,6 +705,7 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
       }
     }
     emit layerLoaded( i + 1, nl.count() );
+    i++;
   }
 
   // Update field map of layers with joins and create join caches if necessary

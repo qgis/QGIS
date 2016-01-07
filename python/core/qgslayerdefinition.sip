@@ -19,5 +19,26 @@ class QgsLayerDefinition
     static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage /Out/ );
     /** Export the selected layer tree nodes to a QLR-XML document */
     static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QString& relativeBasePath = QString::null );
+
+    /**
+     * Class used to work with layer dependencies stored in a XML project or layer definition file
+     */
+    class DependencySorter
+    {
+    public:
+      /** Constructor
+       * @param doc The XML document containing maplayer elements
+       */
+      DependencySorter( QDomDocument doc );
+
+      /** Get the layer nodes in an order where they can be loaded incrementally without dependency break */
+      QVector<QDomNode> sortedLayerNodes() const;
+
+      /** Whether some cyclic dependency has been detected */
+      bool hasCycle() const;
+
+      /** Whether some dependency is missing */
+      bool hasMissingDependency() const;
+    };
 };
 

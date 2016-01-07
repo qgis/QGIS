@@ -29,7 +29,7 @@ from qgis.core import (QGis,
                        QgsErrorMessage,
                        QgsProviderRegistry,
                        QgsVirtualLayerDefinition,
-                       QgsWKBTypes
+                       QgsWKBTypes,
                        QgsProject
                        )
 

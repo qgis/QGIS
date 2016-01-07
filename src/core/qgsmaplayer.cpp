@@ -47,6 +47,7 @@
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsmaplayerregistry.h"
 
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
@@ -788,7 +789,7 @@ QDomDocument QgsMapLayer::asLayerDefinition( const QList<QgsMapLayer *>& layers,
   return doc;
 }
 
-QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document )
+QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document, bool addToRegistry, bool addToLegend )
 {
   QList<QgsMapLayer*> layers;
   QDomNodeList layernodes = document.elementsByTagName( "maplayer" );
@@ -820,7 +821,11 @@ QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document )
 
     bool ok = layer->readLayerXML( layerElem );
     if ( ok )
+    {
       layers << layer;
+      if ( addToRegistry )
+        QgsMapLayerRegistry::instance()->addMapLayer( layer, addToLegend );
+    }
   }
   return layers;
 }

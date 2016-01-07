@@ -1,0 +1,97 @@
+# -*- coding: utf-8 -*-
+"""QGIS Unit tests for QgsLayerDefinition
+
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+"""
+__author__ = 'Hugo Mercier'
+__date__ = '07/01/2016'
+__copyright__ = 'Copyright 2016, The QGIS Project'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
+import qgis
+
+from qgis.core import (QGis,
+                       QgsLayerDefinition
+                       )
+
+from utilities import (TestCase, unittest)
+
+from PyQt4.QtCore import QVariant
+from PyQt4.QtXml import QDomDocument
+
+
+class TestQgsLayerDefinition(TestCase):
+
+    def testDependency(self):
+        inDoc = """
+        <maplayers>
+        <maplayer>
+          <id>layerB</id>
+          <layerDependencies>
+            <layer id="layerA"/>
+          </layerDependencies>
+        </maplayer>
+        <maplayer>
+          <id>layerA</id>
+        </maplayer>
+        </maplayers>"""
+        doc = QDomDocument("testdoc")
+        doc.setContent(inDoc)
+        dep = QgsLayerDefinition.DependencySorter(doc)
+        nodes = dep.sortedLayerNodes()
+        self.assertTrue(not dep.hasCycle())
+        self.assertTrue(not dep.hasMissingDependency())
+        self.assertEqual(nodes[0].firstChildElement("id").text(), "layerA")
+        self.assertEqual(nodes[1].firstChildElement("id").text(), "layerB")
+
+    def testMissingDependency(self):
+        inDoc = """
+        <maplayers>
+        <maplayer>
+          <id>layerB</id>
+          <layerDependencies>
+            <layer id="layerA"/>
+          </layerDependencies>
+        </maplayer>
+        <maplayer>
+          <id>layerA</id>
+          <layerDependencies>
+            <layer id="layerC"/>
+          </layerDependencies>
+        </maplayer>
+        </maplayers>"""
+        doc = QDomDocument("testdoc")
+        doc.setContent(inDoc)
+        dep = QgsLayerDefinition.DependencySorter(doc)
+        nodes = dep.sortedLayerNodes()
+        self.assertTrue(not dep.hasCycle())
+        self.assertTrue(dep.hasMissingDependency())
+
+    def testCyclicDependency(self):
+        inDoc = """
+        <maplayers>
+        <maplayer>
+          <id>layerB</id>
+          <layerDependencies>
+            <layer id="layerA"/>
+          </layerDependencies>
+        </maplayer>
+        <maplayer>
+          <id>layerA</id>
+          <layerDependencies>
+            <layer id="layerB"/>
+          </layerDependencies>
+        </maplayer>
+        </maplayers>"""
+        doc = QDomDocument("testdoc")
+        doc.setContent(inDoc)
+        dep = QgsLayerDefinition.DependencySorter(doc)
+        nodes = dep.sortedLayerNodes()
+        self.assertTrue(dep.hasCycle())
+
+if __name__ == '__main__':
+    unittest.main()

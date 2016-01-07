@@ -40,6 +40,33 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
 
   QgsLayerTreeGroup *root = new QgsLayerTreeGroup();
 
+  // reorder maplayer nodes based on dependencies
+  // dependencies have to be resolved before IDs get changed
+  DependencySorter depSorter( doc );
+  if ( !depSorter.hasMissingDependency() )
+  {
+    QVector<QDomNode> sortedLayerNodes = depSorter.sortedLayerNodes();
+    QVector<QDomNode> clonedSorted;
+    foreach ( QDomNode node, sortedLayerNodes )
+    {
+      clonedSorted << node.cloneNode();
+    }
+    QDomNode layersNode = doc.elementsByTagName( "maplayers" ).at( 0 );
+    // remove old children
+    QDomNodeList childNodes = layersNode.childNodes();
+    for ( int i = 0; i < childNodes.size(); i++ )
+    {
+      layersNode.removeChild( childNodes.at( i ) );
+    }
+    // replace with new ones
+    foreach ( QDomNode node, clonedSorted )
+    {
+      layersNode.appendChild( node );
+    }
+  }
+  // if a dependency is missing, we still try to load layers, since dependencies may already be loaded
+
+  // IDs of layers should be changed otherwise we may have more then one layer with the same id
   // We have to replace the IDs before we load them because it's too late once they are loaded
   QDomNodeList ids = doc.elementsByTagName( "id" );
   for ( int i = 0; i < ids.size(); ++i )
@@ -85,8 +112,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
     loadInLegend = false;
   }
 
-  QList<QgsMapLayer*> layers = QgsMapLayer::fromLayerDefinition( doc );
-  QgsMapLayerRegistry::instance()->addMapLayers( layers, loadInLegend );
+  QList<QgsMapLayer*> layers = QgsMapLayer::fromLayerDefinition( doc, /*addToRegistry*/ true, loadInLegend );
 
   // Now that all layers are loaded, refresh the vectorjoins to get the joined fields
   Q_FOREACH ( QgsMapLayer* layer, layers )
@@ -159,3 +185,93 @@ bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<Qg
   qgiselm.appendChild( layerselm );
   return true;
 }
+
+QgsLayerDefinition::DependencySorter::DependencySorter( QDomDocument doc ) :
+    mHasCycle( false ), mHasMissingDependency( false )
+{
+  // Determine a loading order of layers based on a graph of dependencies
+  QMap< QString, QVector< QString > > dependencies;
+  QVector<QString> sortedLayers;
+  QList< QPair<QString, QDomNode> > layersToSort;
+
+  QDomNodeList nl = doc.elementsByTagName( "maplayer" );
+  for ( int i = 0; i < nl.count(); i++ )
+  {
+    QVector<QString> deps;
+    QDomNode node = nl.item( i );
+    QDomElement element = node.toElement();
+
+    QString id = node.namedItem( "id" ).toElement().text();
+
+    // dependencies for this layer
+    QDomElement layerDependenciesElem = node.firstChildElement( "layerDependencies" );
+    if ( !layerDependenciesElem.isNull() )
+    {
+      QDomNodeList dependencyList = layerDependenciesElem.elementsByTagName( "layer" );
+      for ( int j = 0; j < dependencyList.size(); ++j )
+      {
+        QDomElement depElem = dependencyList.at( j ).toElement();
+        deps << depElem.attribute( "id" );
+      }
+    }
+    dependencies[id] = deps;
+
+    if ( deps.empty() )
+    {
+      sortedLayers << id;
+      mSortedLayerNodes << node;
+    }
+    else
+      layersToSort << qMakePair( id, node );
+  }
+
+  // check that all dependencies are present
+  foreach ( QString id, dependencies.keys() )
+  {
+    foreach ( QString depId, dependencies[id] )
+    {
+      if ( !dependencies.contains( depId ) )
+      {
+        // some dependencies are not satisfied
+        mHasMissingDependency = true;
+        return;
+      }
+    }
+  }
+
+  // cycles should be very rare, since layers with cyclic dependencies may only be created by
+  // manually modifying the project file
+  mHasCycle = false;
+
+  while ( !layersToSort.empty() && !mHasCycle )
+  {
+    QList< QPair<QString, QDomNode> >::iterator it = layersToSort.begin();
+    while ( it != layersToSort.end() )
+    {
+      QString idToSort = it->first;
+      QDomNode node = it->second;
+      mHasCycle = true;
+      bool resolved = true;
+      foreach ( QString dep, dependencies[idToSort] )
+      {
+        if ( !sortedLayers.contains( dep ) )
+        {
+          resolved = false;
+          break;
+        }
+      }
+      if ( resolved ) // dependencies for this layer are resolved
+      {
+        sortedLayers << idToSort;
+        mSortedLayerNodes << node;
+        it = layersToSort.erase( it ); // erase and go to the next
+        mHasCycle = false;
+      }
+      else
+      {
+        it++;
+      }
+    }
+  }
+}
+
