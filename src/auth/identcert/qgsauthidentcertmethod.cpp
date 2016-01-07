@@ -17,6 +17,9 @@
 #include "qgsauthidentcertmethod.h"
 #include "qgsauthidentcertedit.h"
 
+#include <QDir>
+#include <QFile>
+#include <QUuid>
 #ifndef QT_NO_OPENSSL
 #include <QtCrypto>
 #include <QSslConfiguration>
@@ -26,7 +29,6 @@
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-
 
 static const QString AUTH_METHOD_KEY = "Identity-Cert";
 static const QString AUTH_METHOD_DESCRIPTION = "Identity certificate authentication";
@@ -38,12 +40,13 @@ QgsAuthIdentCertMethod::QgsAuthIdentCertMethod()
     : QgsAuthMethod()
 {
   setVersion( 2 );
-  setExpansions( QgsAuthMethod::NetworkRequest );
+  setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceURI );
   setDataProviders( QStringList()
                     << "ows"
                     << "wfs"  // convert to lowercase
                     << "wcs"
-                    << "wms" );
+                    << "wms"
+                    << "postgres" );
 }
 
 QgsAuthIdentCertMethod::~QgsAuthIdentCertMethod()
@@ -97,6 +100,128 @@ bool QgsAuthIdentCertMethod::updateNetworkRequest( QNetworkRequest &request, con
   sslConfig.setPrivateKey( pkibundle->clientCertKey() );
 
   request.setSslConfiguration( sslConfig );
+
+  return true;
+}
+
+bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
+    const QString &dataprovider )
+{
+  Q_UNUSED( dataprovider )
+
+  QgsDebugMsg( QString( "Update URI items for authcfg: %1" ).arg( authcfg ) );
+
+  QString pkiTempFilePrefix = "tmppki_";
+
+  QgsAuthMethodConfig amConfig;
+  if ( !QgsAuthManager::instance()->loadAuthenticationConfig( authcfg, amConfig, true ) )
+  {
+    QgsDebugMsg( QString( "Update URI items: FAILED to retrieve config for authcfg: %1" ).arg( authcfg ) );
+    return false;
+  }
+
+  if ( !amConfig.isValid() )
+  {
+      QgsDebugMsg( QString( "Update URI items: FAILED retrieved invalid Auth method for authcfg: %1" ).arg( authcfg ) );
+      return false;
+  }
+
+  // get client cent and key
+  QSslCertificate clientCert = QgsAuthManager::instance()->getCertIdentityBundle( amConfig.config( "certid" ) ).first;
+  QSslKey clientKey = QgsAuthManager::instance()->getCertIdentityBundle( amConfig.config( "certid" ) ).second;
+
+  // get common name of the client certificate
+  QString commonName = QgsAuthCertUtils::resolvedCertName( clientCert, false);
+
+  // get CA
+  QByteArray caCert = QgsAuthManager::instance()->getTrustedCaCertsPemText();
+
+  // save client cert to temp file
+  QFile certFile( QDir::tempPath() + QDir::separator() + pkiTempFilePrefix + QUuid::createUuid() + ".pem" );
+  if( certFile.open( QIODevice::WriteOnly ) )
+  {
+    certFile.write( clientCert.toPem() );
+  }
+  else
+  {
+    QgsDebugMsg( QString( "Update URI items: FAILED to save client cert temporary file" ) );
+    return false;
+  }
+
+  certFile.setPermissions( QFile::ReadUser | QFile::WriteUser );
+
+  // save key cert to temp file setting it's permission only read to the current user
+  QFile keyFile( QDir::tempPath() + QDir::separator() + pkiTempFilePrefix + QUuid::createUuid() + ".pem" );
+  if( keyFile.open( QIODevice::WriteOnly ) )
+  {
+    keyFile.write( clientKey.toPem() );
+  }
+  else
+  {
+    QgsDebugMsg( QString( "Update URI items: FAILED to save client key temporary file" ) );
+    return false;
+  }
+
+  keyFile.setPermissions( QFile::ReadUser );
+
+  // save CA to tempo file
+  QFile caFile( QDir::tempPath() + QDir::separator() + pkiTempFilePrefix + QUuid::createUuid() + ".pem" );
+  if( caFile.open( QIODevice::WriteOnly ) )
+  {
+    caFile.write( caCert );
+  }
+  else
+  {
+    QgsDebugMsg( QString( "Update URI items: FAILED to save CAs to temporary file" ) );
+    return false;
+  }
+
+  caFile.setPermissions( QFile::ReadUser | QFile::WriteUser );
+
+  // add uri parameters
+  QString userparam = "user='" + commonName + "'";
+  int userindx = connectionItems.indexOf( QRegExp( "^user='.*" ) );
+  if ( userindx != -1 )
+  {
+    connectionItems.replace( userindx, userparam );
+  }
+  else
+  {
+    connectionItems.append( userparam );
+  }
+
+  QString certparam = "sslcert='" + certFile.fileName() + "'";
+  int sslcertindx = connectionItems.indexOf( QRegExp( "^sslcert='.*" ) );
+  if ( sslcertindx != -1 )
+  {
+    connectionItems.replace( sslcertindx, certparam );
+  }
+  else
+  {
+    connectionItems.append( certparam );
+  }
+
+  QString keyparam = "sslkey='" + keyFile.fileName() + "'";
+  int sslkeyindx = connectionItems.indexOf( QRegExp( "^sslkey='.*" ) );
+  if ( sslkeyindx != -1 )
+  {
+    connectionItems.replace( sslkeyindx, keyparam );
+  }
+  else
+  {
+    connectionItems.append( keyparam );
+  }
+
+  QString caparam = "sslrootcert='" + caFile.fileName() + "'";
+  int sslcaindx = connectionItems.indexOf( QRegExp( "^sslrootcert='.*" ) );
+  if ( sslcaindx != -1 )
+  {
+    connectionItems.replace( sslcaindx, caparam );
+  }
+  else
+  {
+    connectionItems.append( caparam );
+  }
 
   return true;
 }

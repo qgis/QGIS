@@ -41,6 +41,10 @@ class QgsAuthPkcs12Method : public QgsAuthMethod
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
                                const QString &dataprovider = QString() ) override;
 
+
+    bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
+                                   const QString &dataprovider = QString() ) override;
+
     void clearCachedConfig( const QString &authcfg ) override;
 
     void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;

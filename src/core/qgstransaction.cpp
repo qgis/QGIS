@@ -53,7 +53,7 @@ QgsTransaction* QgsTransaction::create( const QStringList& layerIds )
   if ( !layer )
     return nullptr;
 
-  QString connStr = QgsDataSourceURI( layer->source() ).connectionInfo();
+  QString connStr = QgsDataSourceURI( layer->source() ).connectionInfo(false);
   QString providerKey = layer->dataProvider()->name();
   QgsTransaction* ts = QgsTransaction::create( connStr, providerKey );
   if ( !ts )
@@ -109,10 +109,10 @@ bool QgsTransaction::addLayer( QgsVectorLayer* layer )
     return false;
 
   //connection string not compatible
-  if ( QgsDataSourceURI( layer->source() ).connectionInfo() != mConnString )
+  if ( QgsDataSourceURI( layer->source() ).connectionInfo(false) != mConnString )
   {
     QgsDebugMsg( QString( "Couldn't start transaction because connection string for layer %1 : '%2' does not match '%3'" ).arg(
-                   layer->id(), QgsDataSourceURI( layer->source() ).connectionInfo(), mConnString ) );
+                   layer->id(), QgsDataSourceURI( layer->source() ).connectionInfo(false), mConnString ) );
     return false;
   }
 

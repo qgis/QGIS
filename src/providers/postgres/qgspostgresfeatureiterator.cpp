@@ -734,7 +734,7 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
 //  ------------------
 
 QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider* p )
-    : mConnInfo( p->mUri.connectionInfo() )
+    : mConnInfo( p->mUri.connectionInfo(false) )
     , mGeometryColumn( p->mGeometryColumn )
     , mFields( p->mAttributeFields )
     , mSpatialColType( p->mSpatialColType )
