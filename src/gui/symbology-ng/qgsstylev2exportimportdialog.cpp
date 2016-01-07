@@ -227,8 +227,8 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
   // get the groupid when going for import
   if ( mDialogMode == Import )
   {
-    int index = groupCombo->currentIndex();
-    QString name = groupCombo->itemText( index );
+    // get the name the user entered
+    QString name = groupCombo->currentText();
     if ( name.isEmpty() )
     {
       // get name of the group
