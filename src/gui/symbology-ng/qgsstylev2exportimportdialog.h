@@ -100,6 +100,7 @@ class GUI_EXPORT QgsStyleV2ExportImportDialog : public QDialog, private Ui::QgsS
     void fileReadyRead();
     void updateProgress( qint64, qint64 );
     void downloadCanceled();
+    void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );
 
   private:
     void downloadStyleXML( const QUrl& url );

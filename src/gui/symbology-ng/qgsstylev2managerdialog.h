@@ -81,6 +81,9 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     //! Perform symbol specific tasks when selected
     void symbolSelected( const QModelIndex& );
 
+    //! Perform tasks when the selected symbols change
+    void selectedSymbolsChanged( const QItemSelection& selected, const QItemSelection& deselected );
+
     //! Context menu for the groupTree
     void grouptreeContextMenu( const QPoint& );
 
@@ -89,6 +92,7 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
 
   protected slots:
     bool addColorRamp( QAction* action );
+    void groupSelectedSymbols();
 
   protected:
 
@@ -146,6 +150,18 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
 
     //! space to store symbol tags
     QStringList mTagList;
+
+    //! Context menu for the symbols/colorramps
+    QMenu *mGroupMenu;
+
+    //! Sub-menu of @c mGroupMenu, dynamically filled to show one entry for every group
+    QMenu *mGroupListMenu;
+
+    //! Context menu for the group tree
+    QMenu* mGroupTreeContextMenu;
+
+    //! Menu for the "Add item" toolbutton when in colorramp mode
+    QMenu* mMenuBtnAddItemColorRamp;
 };
 
 #endif

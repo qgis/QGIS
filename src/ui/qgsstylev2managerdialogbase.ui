@@ -420,6 +420,116 @@ QMenu::item:selected {  background-color: gray; } */
     </widget>
    </item>
   </layout>
+  <action name="actnRemoveItem">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+   </property>
+   <property name="text">
+    <string>Remove item(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove item(s)</string>
+   </property>
+  </action>
+  <action name="actnEditItem">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionProjectProperties.png</normaloff>:/images/themes/default/mActionProjectProperties.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit item...</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit item</string>
+   </property>
+  </action>
+  <action name="actnUngroup">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Ungroup</string>
+   </property>
+   <property name="toolTip">
+    <string>Ungroup</string>
+   </property>
+  </action>
+  <action name="actnEditSmartGroup">
+   <property name="text">
+    <string>Edit smart group...</string>
+   </property>
+  </action>
+  <action name="actnAddGroup">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add group</string>
+   </property>
+  </action>
+  <action name="actnRemoveGroup">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+   </property>
+   <property name="text">
+    <string>Remove group</string>
+   </property>
+  </action>
+  <action name="actnGroupSymbols">
+   <property name="text">
+    <string>Group symbols</string>
+   </property>
+  </action>
+  <action name="actnFinishGrouping">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Finish grouping</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actnExportAsPNG">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSharingExport.svg</normaloff>:/images/themes/default/mActionSharingExport.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export selected symbol(s) as PNG...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export selected symbo(s) as PNG</string>
+   </property>
+  </action>
+  <action name="actnExportAsSVG">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSharingExport.svg</normaloff>:/images/themes/default/mActionSharingExport.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export selected symbol(s) as SVG...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export selected symbol(s) as SVG</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -459,6 +569,38 @@ QMenu::item:selected {  background-color: gray; } */
     <hint type="destinationlabel">
      <x>299</x>
      <y>351</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnAddGroup</sender>
+   <signal>clicked()</signal>
+   <receiver>actnAddGroup</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>46</x>
+     <y>362</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnRemoveGroup</sender>
+   <signal>clicked()</signal>
+   <receiver>actnRemoveGroup</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>133</x>
+     <y>362</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
     </hint>
    </hints>
   </connection>
