@@ -987,6 +987,13 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
           OGR_F_SetFieldInteger( feature, targetAttributeId, attrVal.toInt() );
           break;
 
+
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
+        case OFTInteger64:
+          OGR_F_SetFieldInteger64( feature, targetAttributeId, attrVal.toLongLong() );
+          break;
+#endif
+
         case OFTReal:
           OGR_F_SetFieldDouble( feature, targetAttributeId, attrVal.toDouble() );
           break;
@@ -1204,6 +1211,11 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
           case OFTInteger:
             OGR_F_SetFieldInteger( of, f, it2->toInt() );
             break;
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
+          case OFTInteger64:
+            OGR_F_SetFieldInteger64( of, f, it2->toLongLong() );
+            break;
+#endif
           case OFTReal:
             OGR_F_SetFieldDouble( of, f, it2->toDouble() );
             break;
