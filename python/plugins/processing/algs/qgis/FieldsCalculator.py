@@ -38,7 +38,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector, system
 
-from ui.FieldsCalculatorDialog import FieldsCalculatorDialog
+from .ui.FieldsCalculatorDialog import FieldsCalculatorDialog
 
 
 class FieldsCalculator(GeoAlgorithm):

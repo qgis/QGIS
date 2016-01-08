@@ -82,6 +82,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
             self.textShortHelp.setHtml(algHelp)
 
         self.textShortHelp.setOpenLinks(False)
+
         def linkClicked(url):
             webbrowser.open(url.toString())
         self.textShortHelp.connect(self.textShortHelp, SIGNAL("anchorClicked(const QUrl&)"), linkClicked)

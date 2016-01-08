@@ -51,6 +51,7 @@ def loadClassification():
 def classificationFile():
     return os.path.join(os.path.dirname(__file__), 'algclasssification.txt')
 
+
 def getClassificationEn(alg):
     if alg.commandLineName().lower() in classification:
         group, subgroup = classification[alg.commandLineName()]

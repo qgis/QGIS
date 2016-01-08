@@ -70,6 +70,7 @@ class ProcessingToolbox(BASE, WIDGET):
         self.txtTip.setOpenLinks(False)
         self.txtDisabled.connect(self.txtDisabled, SIGNAL("anchorClicked(const QUrl&)"),
                                  self.showDisabled)
+
         def openSettings():
             dlg = ConfigDialog(self)
             dlg.exec_()
@@ -144,7 +145,7 @@ class ProcessingToolbox(BASE, WIDGET):
         provider = Processing.getProviderFromName(providerName)
         if not provider.canBeActivated():
             QMessageBox.warning(self, "Activate provider",
-                    "The provider has been activated, but it might need additional configuration.")
+                                "The provider has been activated, but it might need additional configuration.")
 
     def algsListHasChanged(self):
         if self.updateAlgList:
@@ -287,7 +288,6 @@ class ProcessingToolbox(BASE, WIDGET):
 
             self.algorithmTree.setWordWrap(True)
 
-
     def fillTreeUsingProviders(self):
         self.algorithmTree.clear()
         self.disabledProviderItems = {}
@@ -304,6 +304,7 @@ class ProcessingToolbox(BASE, WIDGET):
             providerItem = TreeProviderItem(providerName, self.algorithmTree, self)
             providerItem.setHidden(True)
             self.disabledProviderItems[providerName] = providerItem
+
 
 class TreeAlgorithmItem(QTreeWidgetItem):
 
@@ -402,5 +403,3 @@ class TreeProviderItem(QTreeWidgetItem):
         self.setToolTip(0, self.text(0))
         for groupItem in groups.values():
             self.addChild(groupItem)
-
-

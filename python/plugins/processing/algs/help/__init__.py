@@ -3,6 +3,7 @@ import yaml
 from qgis.core import *
 from PyQt4.QtCore import QSettings, QLocale
 
+
 def loadShortHelp():
     h = {}
     path = os.path.dirname(__file__)
@@ -18,14 +19,14 @@ def loadShortHelp():
     else:
         locale = QSettings().value('locale/userLocale', '')
     locale = locale.split("_")[0]
+
     def replace(s):
         if s is not None:
             return s.replace("{qgisdocs}", "https://docs.qgis.org/%s/%s/docs" % (version, locale))
         else:
             return None
-    h = {k:replace(v) for k,v in h.iteritems()}
+    h = {k: replace(v) for k, v in h.iteritems()}
     return h
 
 
 shortHelp = loadShortHelp()
-
