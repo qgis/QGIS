@@ -382,6 +382,11 @@ void QgsExpressionContext::appendScope( QgsExpressionContextScope* scope )
   mStack.append( scope );
 }
 
+void QgsExpressionContext::popScope()
+{
+  mStack.pop_back();
+}
+
 QgsExpressionContext& QgsExpressionContext::operator<<( QgsExpressionContextScope* scope )
 {
   mStack.append( scope );
