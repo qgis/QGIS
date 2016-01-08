@@ -43,9 +43,13 @@ TARGET_LINK_LIBRARIES(offlineeditingplugin
 	${SPATIALITE_LIBRARY}
 )
 
+INCLUDE_DIRECTORIES(SYSTEM
+        ${SPATIALITE_INCLUDE_DIR}
+        ${SQLITE3_INCLUDE_DIR}
+        ${GEOS_INCLUDE_DIR}
+)
+
 INCLUDE_DIRECTORIES(
-	${SPATIALITE_INCLUDE_DIR}
-	${SQLITE3_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	../../core
 	../../core/geometry
@@ -54,7 +58,6 @@ INCLUDE_DIRECTORIES(
 	../../gui
 	../../gui/layertree
 	..
-	${GEOS_INCLUDE_DIR}
 )
 
 ########################################################

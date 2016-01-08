@@ -9,12 +9,14 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/raster
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
-  )
+)
 
 #############################################################
 # Compiler defines
@@ -103,6 +105,8 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/providers/wcs
+  )
+  INCLUDE_DIRECTORIES(SYSTEM
     ${QT_QTSCRIPT_INCLUDE_DIR}
   )
 

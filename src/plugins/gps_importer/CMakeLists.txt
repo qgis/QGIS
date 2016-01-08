@@ -43,6 +43,8 @@ INCLUDE_DIRECTORIES(
      ../../core/gps
      ../../gui
      ..
+)
+INCLUDE_DIRECTORIES(SYSTEM
      ${EXPAT_INCLUDE_DIR}
 )
 

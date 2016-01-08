@@ -54,11 +54,14 @@ QT4_ADD_RESOURCES(globe_plugin_RCC_SRCS ${globe_plugin_RCCS})
 
 ADD_LIBRARY (globeplugin MODULE ${globe_plugin_SRCS} ${globe_plugin_MOC_SRCS} ${globe_plugin_RCC_SRCS} ${globe_plugin_UIS_H})
 
-INCLUDE_DIRECTORIES(
-     ${CMAKE_CURRENT_BINARY_DIR}
+INCLUDE_DIRECTORIES(SYSTEM
      ${OSGEARTH_INCLUDE_DIR}
      ${OSG_INCLUDE_DIR}
      ${GEOS_INCLUDE_DIR}
+)
+
+INCLUDE_DIRECTORIES(
+     ${CMAKE_CURRENT_BINARY_DIR}
      ../../core ../../core/geometry ../../core/raster
      ../../gui
      ..

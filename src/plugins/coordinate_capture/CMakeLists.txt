@@ -35,6 +35,8 @@ INCLUDE_DIRECTORIES(
      ../../core/raster
      ../../gui
      ..
+)
+INCLUDE_DIRECTORIES(SYSTEM
      ${GEOS_INCLUDE_DIR}
 )
 

@@ -37,10 +37,13 @@ QT4_ADD_RESOURCES(topol_RCC_SRCS ${topol_RCCS})
 
 ADD_LIBRARY (topolplugin MODULE ${topol_SRCS} ${topol_MOC_SRCS} ${topol_RCC_SRCS} ${topol_UIS_H})
 
+INCLUDE_DIRECTORIES(SYSTEM
+  ${GEOS_INCLUDE_DIR}
+)
+
 INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${GEOS_INCLUDE_DIR}
   ../../core ../../core/geometry ../../core/raster
   ../../gui
   ..
