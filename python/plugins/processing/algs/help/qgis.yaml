@@ -86,7 +86,7 @@ qgis:createconstantrasterlayer: >
   Given an input raster layer an a value, this algorithm generates a new layer with the same extent and cellsize as the input one, and all cells with the specified value.
 
 qgis:creategrid:
-  This algorith creates a vector layer with a grid convering a given extent. Features can be lines or polygons, and the shape used in the grid can be rectangles, diamond or hexagons.
+  This algorithm creates a vector layer with a grid convering a given extent. Features can be lines or polygons, and the shape used in the grid can be rectangles, diamond or hexagons.
 
   The size of each element in the grid is defined using a horizontal and vertical spaciong.
 

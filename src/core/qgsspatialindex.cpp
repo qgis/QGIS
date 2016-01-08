@@ -144,7 +144,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
 
 /** \class QgsSpatialIndexData
  * \brief Data of spatial index that may be implicitly shared
- * \note not avaiable in Python bindings
+ * \note not available in Python bindings
 */
 class QgsSpatialIndexData : public QSharedData
 {

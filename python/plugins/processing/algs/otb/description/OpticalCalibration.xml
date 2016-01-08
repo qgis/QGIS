@@ -142,7 +142,7 @@
     <key>atmo.rsr</key>
     <name>Relative Spectral Response File</name>
     <description>Sensor relative spectral response file
-By default the application gets these informations in the metadata</description>
+By default the application gets this information in the metadata</description>
     <isFolder />
     <optional>True</optional>
   </parameter>

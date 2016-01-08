@@ -160,7 +160,7 @@ class ProviderTestCase(object):
         values = [f['pk'] for f in self.provider.getFeatures(request)]
         self.assertEquals(values, [5, 4, 3, 2, 1])
 
-        # Type dependant expression
+        # Type dependent expression
         request = QgsFeatureRequest().addOrderBy('num_char*2', False)
         values = [f['pk'] for f in self.provider.getFeatures(request)]
         self.assertEquals(values, [5, 4, 3, 2, 1])

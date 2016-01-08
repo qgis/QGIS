@@ -38,7 +38,7 @@ Note that it is also possible to use the following expressions to obtain the sam
                    im1b2 + im2b2       (2)
                          ....
 
-Nevertheless, the first expression is by far much pleaseant. We call this new functionnality the 'batch mode'
+Nevertheless, the first expression is by far much pleaseant. We call this new functionality the 'batch mode'
 (performing the same operation in a band-to-band fashion).
 
 
@@ -50,7 +50,7 @@ Variable related to such neighborhoods are always defined following the pattern 
 - J is an number identifying the band (remember, first band is indexed by 1)
 - KxP are two numbers that represent the size of the neighborhood (first one is related to the horizontal direction)
 All neighborhood are centred, thus K and P must be odd numbers.
-Many operators come with this new functionnality: dotpr, mean var median min max...
+Many operators come with this new functionality: dotpr, mean var median min max...
 For instance, if im1 represents the pixel of 3 bands image:
 
                im1 - mean(im1b1N5x5,im1b2N5x5,im1b3N5x5)       (3)
@@ -66,7 +66,7 @@ In addition to the previous operators, other operators are available:
 matrices (for instance cos, sin, ...). These new operators/ functions keep the original names to which we added the prefix 'v' for vector (vcos, vsin, ...).
 - mult, div and pow operators, that perform element-wise multiplication, division or exponentiation of vector/matrices (for instance im1 div im2)
 - mlt, dv and pw operators, that perform multiplication, division or exponentiation of vector/matrices by a scalar (for instance im1 dv 2.0)
-- bands, which is a very usefull operator. It allows to select specific bands from an image, and/or to rearrange them in a new vector;
+- bands, which is a very useful operator. It allows to select specific bands from an image, and/or to rearrange them in a new vector;
 for instance bands(im1,{1,2,1,1}) produces a vector of 4 components made of band 1, band 2, band 1 and band 1 values from the first input.
 Note that curly brackets must be used in order to select the desired band indices.
 ... and so on.

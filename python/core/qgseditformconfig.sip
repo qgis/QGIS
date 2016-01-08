@@ -195,7 +195,7 @@ class QgsEditFormConfig : QObject
 
     /**
      * This returns true if the field is manually set to read only or if the field
-     * does not support editing like joins or vitual fields.
+     * does not support editing like joins or virtual fields.
      */
     bool readOnly( int idx );
 

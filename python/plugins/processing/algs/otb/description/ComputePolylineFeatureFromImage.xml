@@ -3,7 +3,7 @@
   <exec>otbcli_ComputePolylineFeatureFromImage</exec>
   <longname>Compute Polyline Feature From Image</longname>
   <group>Feature Extraction</group>
-  <description>This application compute for each studied polyline, contained in the input VectorData, the choosen descriptors.</description>
+  <description>This application compute for each studied polyline, contained in the input VectorData, the chosen descriptors.</description>
   <parameter>
     <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
     <key>in</key>

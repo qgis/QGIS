@@ -171,7 +171,7 @@ def get_choices_of(doc, parameter):
     return choices
 
 
-def remove_dependant_choices(doc, parameter, choice):
+def remove_dependent_choices(doc, parameter, choice):
     choices = get_choices_of(doc, parameter)
     choices.remove(choice)
     for a_choice in choices:
@@ -186,7 +186,7 @@ def renameValueField(doc, textitem, field, newValue):
         t5.find(field).text = newValue
 
 
-def remove_independant_choices(doc, parameter, choice):
+def remove_independent_choices(doc, parameter, choice):
     choices = []
     choices.append(choice)
     for a_choice in choices:
@@ -230,7 +230,7 @@ def split_by_choice(doc, parameter):
     for choice in choices:
         #creates a new copy of the document
         working_copy = copy.deepcopy(doc)
-        remove_dependant_choices(working_copy, parameter, choice)
+        remove_dependent_choices(working_copy, parameter, choice)
         #remove all other choices except the current one
         remove_other_choices(working_copy, parameter, choice)
         #set a new name according to the choice

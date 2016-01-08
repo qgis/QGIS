@@ -147,7 +147,7 @@ void TestQgsStatisticSummary::individualStatCalculations_data()
 void TestQgsStatisticSummary::individualStatCalculations()
 {
   //tests calculation of statistics one at a time, to make sure statistic calculations are not
-  //dependant on each other
+  //dependent on each other
 
   QList<double> values;
   values << 4 << 4 << 2 << 3 << 3 << 3 << 5 << 5 << 8 << 8;

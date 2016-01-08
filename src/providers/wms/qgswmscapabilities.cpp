@@ -2063,7 +2063,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
         }
         else
         {
-          QgsDebugMsg( "No cache for capabilites!" );
+          QgsDebugMsg( "No cache for capabilities!" );
         }
 
 #ifdef QGISDEBUG
