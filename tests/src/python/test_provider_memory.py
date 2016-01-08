@@ -69,20 +69,30 @@ class TestPyQgsMemoryProvider(TestCase, ProviderTestCase):
     def tearDownClass(cls):
         """Run after all tests"""
 
-    def testPointCtor(self):
-        layer = QgsVectorLayer("Point", "test", "memory")
-        assert layer.isValid(), "Failed to create valid point memory layer"
+    def testCtors(self):
+        testVectors = ["Point", "LineString", "Polygon", "MultiPoint", "MultiLineString", "MultiPolygon", "None"]
+        for v in testVectors:
+            layer = QgsVectorLayer(v, "test", "memory")
+            assert layer.isValid(), "Failed to create valid %s memory layer" % (v)
 
     def testLayerGeometry(self):
-        layer = QgsVectorLayer("Point", "test", "memory")
+        testVectors = [("Point", QGis.Point, QGis.WKBPoint),
+                       ("LineString", QGis.Line, QGis.WKBLineString),
+                       ("Polygon", QGis.Polygon, QGis.WKBPolygon),
+                       ("MultiPoint", QGis.Point, QGis.WKBMultiPoint),
+                       ("MultiLineString", QGis.Line, QGis.WKBMultiLineString),
+                       ("MultiPolygon", QGis.Polygon, QGis.WKBMultiPolygon),
+                       ("None", QGis.NoGeometry, QGis.WKBNoGeometry)]
+        for v in testVectors:
+            layer = QgsVectorLayer(v[0], "test", "memory")
 
-        myMessage = ('Expected: %s\nGot: %s\n' %
-                     (QGis.Point, layer.geometryType()))
-        assert layer.geometryType() == QGis.Point, myMessage
+            myMessage = ('Expected: %s\nGot: %s\n' %
+                         (v[1], layer.geometryType()))
+            assert layer.geometryType() == v[1], myMessage
 
-        myMessage = ('Expected: %s\nGot: %s\n' %
-                     (QGis.WKBPoint, layer.wkbType()))
-        assert layer.wkbType() == QGis.WKBPoint, myMessage
+            myMessage = ('Expected: %s\nGot: %s\n' %
+                         (v[2], layer.wkbType()))
+            assert layer.wkbType() == v[2], myMessage
 
     def testAddFeatures(self):
         layer = QgsVectorLayer("Point", "test", "memory")
