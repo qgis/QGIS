@@ -26,6 +26,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import math
+import codecs
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -114,7 +115,11 @@ class RasterLayerStatistics(GeoAlgorithm):
         self.addOutput(OutputNumber(self.STD_DEV, self.tr('Standard deviation')))
 
     def createHTML(self, outputFile, algData):
-        f = open(outputFile, 'w')
+        f = codecs.open(outputFile, 'w', encoding='utf-8')
+        f.write('<html><head>')
+        f.write('<meta http-equiv="Content-Type" content="text/html; \
+                charset=utf-8" /></head><body>')
         for s in algData:
             f.write('<p>' + unicode(s) + '</p>')
+        f.write('</body></html>')
         f.close()

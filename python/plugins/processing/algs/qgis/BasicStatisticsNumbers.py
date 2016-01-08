@@ -26,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import math
+import codecs
 
 from qgis.core import QgsStatisticalSummary
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -178,7 +179,11 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.setOutputValue(self.IQR, iqr)
 
     def createHTML(self, outputFile, algData):
-        f = open(outputFile, 'w')
+        f = codecs.open(outputFile, 'w', encoding='utf-8')
+        f.write('<html><head>')
+        f.write('<meta http-equiv="Content-Type" content="text/html; \
+                charset=utf-8" /></head><body>')
         for s in algData:
             f.write('<p>' + unicode(s) + '</p>')
+        f.write('</body></html>')
         f.close()
