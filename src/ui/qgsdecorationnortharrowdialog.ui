@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>549</width>
+    <width>559</width>
     <height>234</height>
    </rect>
   </property>
@@ -31,103 +31,6 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="6">
-       <widget class="QSpinBox" name="spinAngle">
-        <property name="maximum">
-         <number>360</number>
-        </property>
-        <property name="singleStep">
-         <number>1</number>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3" colspan="3">
-       <widget class="QSlider" name="sliderRotation">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="maximum">
-         <number>360</number>
-        </property>
-        <property name="singleStep">
-         <number>1</number>
-        </property>
-        <property name="pageStep">
-         <number>10</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3" colspan="4">
-       <widget class="QComboBox" name="cboPlacement">
-        <property name="toolTip">
-         <string>Placement on screen</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="3">
-       <widget class="QLabel" name="labelHorizontal">
-        <property name="text">
-         <string>Horizontal</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="5">
-       <widget class="QLabel" name="labelVertical">
-        <property name="text">
-         <string>Vertical</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="6">
-       <widget class="QgsSpinBox" name="spinVertical">
-        <property name="minimumSize">
-         <size>
-          <width>90</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="whatsThis">
-         <string extracomment="Distance from the top of the canvas as a percentage of page height"/>
-        </property>
-        <property name="minimum">
-         <number>0</number>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="4">
-       <widget class="QgsSpinBox" name="spinHorizontal">
-        <property name="minimumSize">
-         <size>
-          <width>90</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="whatsThis">
-         <string extracomment="Distance from the left of the canvas as a percentage of page width"/>
-        </property>
-        <property name="minimum">
-         <number>0</number>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
        <widget class="QLabel" name="textLabel6">
         <property name="sizePolicy">
@@ -150,6 +53,19 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="5">
+       <widget class="QSpinBox" name="spinAngle">
+        <property name="maximum">
+         <number>360</number>
+        </property>
+        <property name="singleStep">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="1">
        <widget class="QLabel" name="textLabel8">
         <property name="text">
@@ -160,19 +76,6 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>7</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
       <item row="2" column="1">
        <widget class="QLabel" name="lblMargin">
         <property name="minimumSize">
@@ -182,11 +85,72 @@
          </size>
         </property>
         <property name="text">
-         <string>Margin from edge (%)</string>
+         <string>Margin from edge</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1" colspan="6">
+      <item row="2" column="2">
+       <widget class="QLabel" name="labelHorizontal">
+        <property name="text">
+         <string>Horizontal</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QgsSpinBox" name="spinHorizontal">
+        <property name="minimumSize">
+         <size>
+          <width>90</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="whatsThis">
+         <string extracomment="Distance from the left of the canvas as a percentage of page width"/>
+        </property>
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="4">
+       <widget class="QLabel" name="labelVertical">
+        <property name="text">
+         <string>Vertical</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="5">
+       <widget class="QgsSpinBox" name="spinVertical">
+        <property name="minimumSize">
+         <size>
+          <width>90</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="whatsThis">
+         <string extracomment="Distance from the top of the canvas as a percentage of page height"/>
+        </property>
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="6">
+       <widget class="QgsUnitSelectionWidget" name="wgtUnitSelection" native="true"/>
+      </item>
+      <item row="3" column="1" colspan="2">
        <widget class="QCheckBox" name="cboxAutomatic">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -214,7 +178,46 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0" rowspan="5">
+      <item row="4" column="1">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>7</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="2" colspan="4">
+       <widget class="QComboBox" name="cboPlacement">
+        <property name="toolTip">
+         <string>Placement on screen</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" colspan="3">
+       <widget class="QSlider" name="sliderRotation">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="maximum">
+         <number>360</number>
+        </property>
+        <property name="singleStep">
+         <number>1</number>
+        </property>
+        <property name="pageStep">
+         <number>10</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" rowspan="4">
        <widget class="QLabel" name="pixmapLabel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
@@ -257,6 +260,12 @@
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
