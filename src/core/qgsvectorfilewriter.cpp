@@ -71,18 +71,32 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     , mGeom( nullptr )
     , mError( NoError )
     , mCodec( nullptr )
+    , mWkbType( QGis::fromOldWkbType( geometryType ) )
+    , mSymbologyExport( symbologyExport )
+    , mSymbologyScaleDenominator( 1.0 )
+{
+  init( theVectorFileName, theFileEncoding, fields, QGis::fromOldWkbType( geometryType ), srs, driverName, datasourceOptions, layerOptions, newFilename );
+}
+
+QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName, const QString& fileEncoding, const QgsFields& fields, QgsWKBTypes::Type geometryType, const QgsCoordinateReferenceSystem* srs, const QString& driverName, const QStringList& datasourceOptions, const QStringList& layerOptions, QString* newFilename, QgsVectorFileWriter::SymbologyExport symbologyExport )
+    : mDS( nullptr )
+    , mLayer( nullptr )
+    , mOgrRef( nullptr )
+    , mGeom( nullptr )
+    , mError( NoError )
+    , mCodec( nullptr )
     , mWkbType( geometryType )
     , mSymbologyExport( symbologyExport )
     , mSymbologyScaleDenominator( 1.0 )
 {
-  QString vectorFileName = theVectorFileName;
-  QString fileEncoding = theFileEncoding;
-  QStringList layOptions = layerOptions;
-  QStringList dsOptions = datasourceOptions;
+  init( vectorFileName, fileEncoding, fields, geometryType, srs, driverName, datasourceOptions, layerOptions, newFilename );
+}
 
+void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, const QgsFields& fields, QgsWKBTypes::Type geometryType, const QgsCoordinateReferenceSystem* srs, const QString& driverName, QStringList datasourceOptions, QStringList layerOptions, QString* newFilename )
+{
   mRenderContext.setRendererScale( mSymbologyScaleDenominator );
 
-  if ( theVectorFileName.isEmpty() )
+  if ( vectorFileName.isEmpty() )
   {
     mErrorMessage = QObject::tr( "Empty filename given" );
     mError = ErrCreateDataSource;
@@ -97,17 +111,17 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   else if ( driverName == "SpatiaLite" )
   {
     ogrDriverName = "SQLite";
-    if ( !dsOptions.contains( "SPATIALITE=YES" ) )
+    if ( !datasourceOptions.contains( "SPATIALITE=YES" ) )
     {
-      dsOptions.append( "SPATIALITE=YES" );
+      datasourceOptions.append( "SPATIALITE=YES" );
     }
   }
   else if ( driverName == "DBF file" )
   {
     ogrDriverName = "ESRI Shapefile";
-    if ( !layOptions.contains( "SHPT=NULL" ) )
+    if ( !layerOptions.contains( "SHPT=NULL" ) )
     {
-      layOptions.append( "SHPT=NULL" );
+      layerOptions.append( "SHPT=NULL" );
     }
     srs = nullptr;
   }
@@ -133,9 +147,9 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
   if ( ogrDriverName == "ESRI Shapefile" )
   {
-    if ( layOptions.join( "" ).toUpper().indexOf( "ENCODING=" ) == -1 )
+    if ( layerOptions.join( "" ).toUpper().indexOf( "ENCODING=" ) == -1 )
     {
-      layOptions.append( "ENCODING=" + convertCodecNameForEncodingOption( fileEncoding ) );
+      layerOptions.append( "ENCODING=" + convertCodecNameForEncodingOption( fileEncoding ) );
     }
 
     if ( driverName == "ESRI Shapefile" && !vectorFileName.endsWith( ".shp", Qt::CaseInsensitive ) )
@@ -210,14 +224,14 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   }
 
   char **options = nullptr;
-  if ( !dsOptions.isEmpty() )
+  if ( !datasourceOptions.isEmpty() )
   {
-    options = new char *[ dsOptions.size()+1 ];
-    for ( int i = 0; i < dsOptions.size(); i++ )
+    options = new char *[ datasourceOptions.size()+1 ];
+    for ( int i = 0; i < datasourceOptions.size(); i++ )
     {
-      options[i] = CPLStrdup( dsOptions[i].toLocal8Bit().data() );
+      options[i] = CPLStrdup( datasourceOptions[i].toLocal8Bit().data() );
     }
-    options[ dsOptions.size()] = nullptr;
+    options[ datasourceOptions.size()] = nullptr;
   }
 
   // create the data source
@@ -225,7 +239,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
   if ( options )
   {
-    for ( int i = 0; i < dsOptions.size(); i++ )
+    for ( int i = 0; i < datasourceOptions.size(); i++ )
       CPLFree( options[i] );
     delete [] options;
     options = nullptr;
@@ -270,14 +284,14 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   QString layerName = QFileInfo( vectorFileName ).baseName();
   OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>( geometryType );
 
-  if ( !layOptions.isEmpty() )
+  if ( !layerOptions.isEmpty() )
   {
-    options = new char *[ layOptions.size()+1 ];
-    for ( int i = 0; i < layOptions.size(); i++ )
+    options = new char *[ layerOptions.size()+1 ];
+    for ( int i = 0; i < layerOptions.size(); i++ )
     {
-      options[i] = CPLStrdup( layOptions[i].toLocal8Bit().data() );
+      options[i] = CPLStrdup( layerOptions[i].toLocal8Bit().data() );
     }
-    options[ layOptions.size()] = nullptr;
+    options[ layerOptions.size()] = nullptr;
   }
 
   // disable encoding conversion of OGR Shapefile layer
@@ -287,7 +301,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
   if ( options )
   {
-    for ( int i = 0; i < layOptions.size(); i++ )
+    for ( int i = 0; i < layerOptions.size(); i++ )
       CPLFree( options[i] );
     delete [] options;
     options = nullptr;
@@ -485,7 +499,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   QgsDebugMsg( "Done creating fields" );
 
   mWkbType = geometryType;
-  if ( mWkbType != QGis::WKBNoGeometry )
+  if ( mWkbType != QgsWKBTypes::NoGeometry )
   {
     // create geometry which will be used for import
     mGeom = createEmptyGeometry( mWkbType );
@@ -495,9 +509,9 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     *newFilename = vectorFileName;
 }
 
-OGRGeometryH QgsVectorFileWriter::createEmptyGeometry( QGis::WkbType wkbType )
+OGRGeometryH QgsVectorFileWriter::createEmptyGeometry( QgsWKBTypes::Type wkbType )
 {
-  return OGR_G_CreateGeometry( static_cast< OGRwkbGeometryType >( wkbType ) );
+  return OGR_G_CreateGeometry( ogrTypeFromWkbType( wkbType ) );
 }
 
 QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
@@ -1551,6 +1565,18 @@ bool QgsVectorFileWriter::driverMetadata( const QString& driverName, QgsVectorFi
   return false;
 }
 
+OGRwkbGeometryType QgsVectorFileWriter::ogrTypeFromWkbType( QgsWKBTypes::Type type )
+{
+  type = QgsWKBTypes::dropM( type );
+
+  OGRwkbGeometryType ogrType = static_cast<OGRwkbGeometryType>( type );
+
+  if ( type >= QgsWKBTypes::PointZ && type <= QgsWKBTypes::GeometryCollectionZ )
+  {
+    ogrType = static_cast<OGRwkbGeometryType>( QgsWKBTypes::to25D( type ) );
+  }
+  return ogrType;
+}
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::hasError()
 {
@@ -1717,90 +1743,93 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
     }
   }
 
-  if ( mWkbType != QGis::WKBNoGeometry )
+  if ( mWkbType != QgsWKBTypes::NoGeometry )
   {
-    // build geometry from WKB
-    QgsGeometry *geom = feature.geometry();
-
-    // turn single geoemetry to multi geometry if needed
-    if ( geom && geom->wkbType() != mWkbType &&
-         QgsWKBTypes::flatType( geom->geometry()->wkbType() ) == QgsWKBTypes::flatType( QgsWKBTypes::singleType( QGis::fromOldWkbType( mWkbType ) ) ) )
+    if ( feature.geometry() && feature.geometry()->geometry() )
     {
-      geom->convertToMultiType();
-    }
+      // build geometry from WKB
+      QgsGeometry* geom = feature.geometry();
 
-    if ( geom && geom->wkbType() != mWkbType )
-    {
-      OGRGeometryH mGeom2 = nullptr;
-
-      // If requested WKB type is 25D and geometry WKB type is 3D,
-      // we must force the use of 25D.
-      if ( mWkbType >= QGis::WKBPoint25D && mWkbType <= QGis::WKBMultiPolygon25D )
+      // turn single geoemetry to multi geometry if needed
+      if ( geom->geometry()->wkbType() != mWkbType &&
+           QgsWKBTypes::flatType( geom->geometry()->wkbType() ) == QgsWKBTypes::flatType( QgsWKBTypes::singleType( mWkbType ) ) )
       {
-        //ND: I suspect there's a bug here, in that this is NOT converting the geometry's WKB type,
-        //so the exported WKB has a different type to what the OGRGeometry is expecting.
-        //possibly this is handled already in OGR, but it should be fixed regardless by actually converting
-        //geom to the correct WKB type
-        QgsWKBTypes::Type wkbType = QGis::fromOldWkbType( geom->wkbType() );
-        if ( wkbType >= QgsWKBTypes::PointZ && wkbType <= QgsWKBTypes::MultiPolygonZ )
+        geom->convertToMultiType();
+      }
+
+      if ( geom->geometry()->wkbType() != mWkbType )
+      {
+        OGRGeometryH mGeom2 = nullptr;
+
+        // If requested WKB type is 25D and geometry WKB type is 3D,
+        // we must force the use of 25D.
+        if ( mWkbType >= QgsWKBTypes::Point25D && mWkbType <= QgsWKBTypes::MultiPolygon25D )
         {
-          QGis::WkbType wkbType25d = static_cast< QGis::WkbType >( geom->wkbType() - QgsWKBTypes::PointZ + QgsWKBTypes::Point25D );
-          mGeom2 = createEmptyGeometry( wkbType25d );
+          //ND: I suspect there's a bug here, in that this is NOT converting the geometry's WKB type,
+          //so the exported WKB has a different type to what the OGRGeometry is expecting.
+          //possibly this is handled already in OGR, but it should be fixed regardless by actually converting
+          //geom to the correct WKB type
+          QgsWKBTypes::Type wkbType = geom->geometry()->wkbType();
+          if ( wkbType >= QgsWKBTypes::PointZ && wkbType <= QgsWKBTypes::MultiPolygonZ )
+          {
+            QgsWKBTypes::Type wkbType25d = static_cast<QgsWKBTypes::Type>( geom->geometry()->wkbType() - QgsWKBTypes::PointZ + QgsWKBTypes::Point25D );
+            mGeom2 = createEmptyGeometry( wkbType25d );
+          }
         }
-      }
 
-      if ( !mGeom2 )
+        if ( !mGeom2 )
+        {
+          // there's a problem when layer type is set as wkbtype Polygon
+          // although there are also features of type MultiPolygon
+          // (at least in OGR provider)
+          // If the feature's wkbtype is different from the layer's wkbtype,
+          // try to export it too.
+          //
+          // Btw. OGRGeometry must be exactly of the type of the geometry which it will receive
+          // i.e. Polygons can't be imported to OGRMultiPolygon
+          mGeom2 = createEmptyGeometry( geom->geometry()->wkbType() );
+        }
+
+        if ( !mGeom2 )
+        {
+          mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
+                          .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+          mError = ErrFeatureWriteFailed;
+          QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
+          OGR_F_Destroy( poFeature );
+          return nullptr;
+        }
+
+        OGRErr err = OGR_G_ImportFromWkb( mGeom2, const_cast<unsigned char *>( geom->asWkb() ), static_cast< int >( geom->wkbSize() ) );
+        if ( err != OGRERR_NONE )
+        {
+          mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
+                          .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+          mError = ErrFeatureWriteFailed;
+          QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
+          OGR_F_Destroy( poFeature );
+          return nullptr;
+        }
+
+        // pass ownership to geometry
+        OGR_F_SetGeometryDirectly( poFeature, mGeom2 );
+      }
+      else // wkb type matches
       {
-        // there's a problem when layer type is set as wkbtype Polygon
-        // although there are also features of type MultiPolygon
-        // (at least in OGR provider)
-        // If the feature's wkbtype is different from the layer's wkbtype,
-        // try to export it too.
-        //
-        // Btw. OGRGeometry must be exactly of the type of the geometry which it will receive
-        // i.e. Polygons can't be imported to OGRMultiPolygon
-        mGeom2 = createEmptyGeometry( geom->wkbType() );
-      }
+        OGRErr err = OGR_G_ImportFromWkb( mGeom, const_cast<unsigned char *>( geom->asWkb() ), static_cast< int >( geom->wkbSize() ) );
+        if ( err != OGRERR_NONE )
+        {
+          mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
+                          .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+          mError = ErrFeatureWriteFailed;
+          QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
+          OGR_F_Destroy( poFeature );
+          return nullptr;
+        }
 
-      if ( !mGeom2 )
-      {
-        mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
-                        .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
-        mError = ErrFeatureWriteFailed;
-        QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
-        OGR_F_Destroy( poFeature );
-        return nullptr;
+        // set geometry (ownership is not passed to OGR)
+        OGR_F_SetGeometry( poFeature, mGeom );
       }
-
-      OGRErr err = OGR_G_ImportFromWkb( mGeom2, const_cast<unsigned char *>( geom->asWkb() ), static_cast< int >( geom->wkbSize() ) );
-      if ( err != OGRERR_NONE )
-      {
-        mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
-                        .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
-        mError = ErrFeatureWriteFailed;
-        QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
-        OGR_F_Destroy( poFeature );
-        return nullptr;
-      }
-
-      // pass ownership to geometry
-      OGR_F_SetGeometryDirectly( poFeature, mGeom2 );
-    }
-    else if ( geom )
-    {
-      OGRErr err = OGR_G_ImportFromWkb( mGeom, const_cast<unsigned char *>( geom->asWkb() ), static_cast< int >( geom->wkbSize() ) );
-      if ( err != OGRERR_NONE )
-      {
-        mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
-                        .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
-        mError = ErrFeatureWriteFailed;
-        QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
-        OGR_F_Destroy( poFeature );
-        return nullptr;
-      }
-
-      // set geometry (ownership is not passed to OGR)
-      OGR_F_SetGeometry( poFeature, mGeom );
     }
     else
     {

@@ -239,11 +239,24 @@ class CORE_EXPORT QgsVectorFileWriter
                                             bool includeZ = false
                                           );
 
-    /** Create shapefile and initialize it */
+    /** Create a new vector file writer */
     QgsVectorFileWriter( const QString& vectorFileName,
                          const QString& fileEncoding,
                          const QgsFields& fields,
                          QGis::WkbType geometryType,
+                         const QgsCoordinateReferenceSystem* srs,
+                         const QString& driverName = "ESRI Shapefile",
+                         const QStringList &datasourceOptions = QStringList(),
+                         const QStringList &layerOptions = QStringList(),
+                         QString *newFilename = nullptr,
+                         SymbologyExport symbologyExport = NoSymbology
+                       );
+
+    /** Create a new vector file writer */
+    QgsVectorFileWriter( const QString& vectorFileName,
+                         const QString& fileEncoding,
+                         const QgsFields& fields,
+                         QgsWKBTypes::Type geometryType,
                          const QgsCoordinateReferenceSystem* srs,
                          const QString& driverName = "ESRI Shapefile",
                          const QStringList &datasourceOptions = QStringList(),
@@ -276,7 +289,7 @@ class CORE_EXPORT QgsVectorFileWriter
     /** Retrieves error message */
     QString errorMessage();
 
-    /** Add feature to the currently opened shapefile */
+    /** Add feature to the currently opened data source */
     bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = nullptr, QGis::UnitType outputUnit = QGis::Meters );
 
     //! @note not available in python bindings
@@ -299,9 +312,17 @@ class CORE_EXPORT QgsVectorFileWriter
 
     static bool driverMetadata( const QString& driverName, MetaData& driverMetadata );
 
+    /**
+     * Get the ogr geometry type from an internal QGIS wkb type enum.
+     *
+     * Will drop M values and convert Z to 2.5D where required.
+     * @note not available in python bindings
+     */
+    static OGRwkbGeometryType ogrTypeFromWkbType( QgsWKBTypes::Type type );
+
   protected:
     //! @note not available in python bindings
-    OGRGeometryH createEmptyGeometry( QGis::WkbType wkbType );
+    OGRGeometryH createEmptyGeometry( QgsWKBTypes::Type wkbType );
 
     OGRDataSourceH mDS;
     OGRLayerH mLayer;
@@ -317,7 +338,7 @@ class CORE_EXPORT QgsVectorFileWriter
     QTextCodec *mCodec;
 
     /** Geometry type which is being used */
-    QGis::WkbType mWkbType;
+    QgsWKBTypes::Type mWkbType;
 
     /** Map attribute indizes to OGR field indexes */
     QMap<int, int> mAttrIdxToOgrIdx;
@@ -332,6 +353,8 @@ class CORE_EXPORT QgsVectorFileWriter
     double mSymbologyScaleDenominator;
 
   private:
+    void init( QString vectorFileName, QString fileEncoding, const QgsFields& fields, QgsWKBTypes::Type geometryType, const QgsCoordinateReferenceSystem* srs, const QString& driverName, QStringList datasourceOptions, QStringList layerOptions, QString* newFilename );
+
     QgsRenderContext mRenderContext;
 
     static QMap<QString, MetaData> initMetaData();
