@@ -36,17 +36,6 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsslottofunction.h"
 
 /**
- * Structure created in SQLITE module creation and passed to xCreate/xConnect
- */
-struct ModuleContext
-{
-  // private pointer needed for spatialite_init_ex;
-  // allows to know whether the database has been initialied (null or not)
-  bool init;
-  ModuleContext() : init( false ) {}
-};
-
-/**
  * Create metadata tables if needed
  */
 void initVirtualLayerMetadata( sqlite3* db )
@@ -414,14 +403,8 @@ int vtable_create_connect( sqlite3* sql, void* aux, int argc, const char* const*
 #undef RETURN_CPPSTR_ERROR
 }
 
-void db_init( sqlite3* db, ModuleContext* context )
+void db_init( sqlite3* db )
 {
-  if ( context->init )
-  {
-    // db already initialized
-    return;
-  }
-
   // create metadata tables
   initVirtualLayerMetadata( db );
 }
@@ -430,7 +413,7 @@ int vtable_create( sqlite3* sql, void* aux, int argc, const char* const* argv, s
 {
   try
   {
-    db_init( sql, reinterpret_cast<ModuleContext*>( aux ) );
+    db_init( sql );
   }
   catch ( std::runtime_error& e )
   {
@@ -643,18 +626,10 @@ int vtable_findfunction( sqlite3_vtab *pVtab,
 
 
 
-sqlite3_module module;
-
 static QCoreApplication* core_app = nullptr;
 
-static int module_argc = 1;
-static char module_name[] = "qgsvlayer_module";
-static char* module_argv[] = { module_name };
-
-void module_destroy( void * d )
+void module_destroy( void* )
 {
-  delete reinterpret_cast<ModuleContext*>( d );
-
   if ( core_app )
   {
     delete core_app;
@@ -672,11 +647,15 @@ int qgsvlayer_module_init( sqlite3 *db, char **pzErrMsg, void * unused /*const s
   if ( !QCoreApplication::instance() )
   {
     // if run standalone
+    static int module_argc = 1;
+    static char module_name[] = "qgsvlayer_module";
+    static char* module_argv[] = { module_name };
     core_app = new QCoreApplication( module_argc, module_argv );
     QgsApplication::init();
     QgsApplication::initQgis();
   }
 
+  static sqlite3_module module;
   module.xCreate = vtable_create;
   module.xConnect = vtable_connect;
   module.xBestIndex = vtable_bestindex;
@@ -701,8 +680,7 @@ int qgsvlayer_module_init( sqlite3 *db, char **pzErrMsg, void * unused /*const s
   module.xRelease = nullptr;
   module.xRollbackTo = nullptr;
 
-  ModuleContext* context = new ModuleContext;
-  sqlite3_create_module_v2( db, "QgsVLayer", &module, context, module_destroy );
+  sqlite3_create_module_v2( db, "QgsVLayer", &module, nullptr, module_destroy );
 
   return rc;
 }
