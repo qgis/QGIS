@@ -238,7 +238,9 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   btnRemoveLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
   QIcon iconLock;
   iconLock.addFile( QgsApplication::iconPath( "locked.svg" ), QSize(), QIcon::Normal, QIcon::On );
+  iconLock.addFile( QgsApplication::iconPath( "locked.svg" ), QSize(), QIcon::Active, QIcon::On );
   iconLock.addFile( QgsApplication::iconPath( "unlocked.svg" ), QSize(), QIcon::Normal, QIcon::Off );
+  iconLock.addFile( QgsApplication::iconPath( "unlocked.svg" ), QSize(), QIcon::Active, QIcon::Off );
   btnLock->setIcon( iconLock );
   btnDuplicate->setIcon( QIcon( QgsApplication::iconPath( "mActionDuplicateLayer.svg" ) ) );
   btnUp->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.svg" ) ) );
