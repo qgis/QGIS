@@ -60,6 +60,8 @@ QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
     mWkbType = QGis::WKBMultiLineString;
   else if ( geometry == "multipolygon" )
     mWkbType = QGis::WKBMultiPolygon;
+  else if ( geometry == "none" )
+    mWkbType = QGis::WKBNoGeometry;
   else
     mWkbType = QGis::WKBUnknown;
 
@@ -200,6 +202,9 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
       break;
     case QGis::WKBMultiPolygon :
       geometry = "MultiPolygon";
+      break;
+    case QGis::WKBNoGeometry :
+      geometry = "None";
       break;
     default:
       geometry = "";
