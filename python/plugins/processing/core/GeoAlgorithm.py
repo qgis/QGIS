@@ -18,7 +18,6 @@
 """
 
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -45,6 +44,7 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects, vector
 from processing.tools.system import setTempOutput
 from processing.algs.help import shortHelp
+
 
 class GeoAlgorithm:
 

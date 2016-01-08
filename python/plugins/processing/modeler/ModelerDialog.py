@@ -468,7 +468,7 @@ class ModelerDialog(BASE, WIDGET):
         if text != '':
             self.algorithmTree.expandAll()
 
-    def fillAlgorithmTreeUsingProviders(self):    
+    def fillAlgorithmTreeUsingProviders(self):
         self.algorithmTree.clear()
         text = unicode(self.searchBox.text())
         allAlgs = ModelerUtils.allAlgs
