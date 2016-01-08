@@ -102,7 +102,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                 # An extent parameter that wraps 4 SAGA numerical parameters
                 self.extentParamNames = line[6:].strip().split(' ')
                 self.addParameter(ParameterExtent(self.OUTPUT_EXTENT,
-                                  'Output extent', '0,1,0,1'))
+                                                  'Output extent', '0,1,0,1'))
             else:
                 self.addOutput(getOutputFromString(line))
             line = lines.readline().strip('\n').strip()
@@ -179,8 +179,7 @@ class SagaAlgorithm212(GeoAlgorithm):
         for param in self.parameters:
             if param.value is None:
                 continue
-            if isinstance(param, (ParameterRaster, ParameterVector,
-                          ParameterTable)):
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable)):
                 value = param.value
                 if value in self.exportedLayers.keys():
                     command += ' -' + param.name + ' "' \

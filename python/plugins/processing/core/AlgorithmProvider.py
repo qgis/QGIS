@@ -74,7 +74,7 @@ class AlgorithmProvider(object):
         ProcessingConfig.settingIcons[self.getDescription()] = self.getIcon()
         name = 'ACTIVATE_' + self.getName().upper().replace(' ', '_')
         ProcessingConfig.addSetting(Setting(self.getDescription(), name,
-                                    self.tr('Activate'), self.activate))
+                                            self.tr('Activate'), self.activate))
 
     def unload(self):
         """Do here anything that you want to be done when the provider

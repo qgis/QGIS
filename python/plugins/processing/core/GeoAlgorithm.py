@@ -219,8 +219,7 @@ class GeoAlgorithm:
 
     def _checkParameterValuesBeforeExecuting(self):
         for param in self.parameters:
-            if isinstance(param, (ParameterRaster, ParameterVector,
-                          ParameterMultipleInput)):
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 if param.value:
                     if isinstance(param, ParameterMultipleInput):
                         inputlayers = param.value.split(';')
@@ -368,8 +367,7 @@ class GeoAlgorithm:
     def setOutputCRS(self):
         layers = dataobjects.getAllLayers()
         for param in self.parameters:
-            if isinstance(param, (ParameterRaster, ParameterVector,
-                          ParameterMultipleInput)):
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 if param.value:
                     if isinstance(param, ParameterMultipleInput):
                         inputlayers = param.value.split(';')
@@ -395,7 +393,7 @@ class GeoAlgorithm:
         layers = dataobjects.getAllLayers()
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable,
-                          ParameterMultipleInput)):
+                                  ParameterMultipleInput)):
                 if param.value:
                     if isinstance(param, ParameterMultipleInput):
                         inputlayers = param.value.split(';')
@@ -414,8 +412,7 @@ class GeoAlgorithm:
         """
         crsList = []
         for param in self.parameters:
-            if isinstance(param, (ParameterRaster, ParameterVector,
-                          ParameterMultipleInput)):
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 if param.value:
                     if isinstance(param, ParameterMultipleInput):
                         layers = param.value.split(';')

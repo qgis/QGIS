@@ -82,10 +82,10 @@ class ProcessingToolbox(BASE, WIDGET):
         self.fillTree()
 
     def showDisabled(self):
-            self.txtDisabled.setVisible(False)
-            for providerName in self.disabledWithMatchingAlgs:
-                self.disabledProviderItems[providerName].setHidden(False)
-            self.algorithmTree.expandAll()
+        self.txtDisabled.setVisible(False)
+        for providerName in self.disabledWithMatchingAlgs:
+            self.disabledProviderItems[providerName].setHidden(False)
+        self.algorithmTree.expandAll()
 
     def disabledProviders(self):
         for providerName in Processing.algs.keys():

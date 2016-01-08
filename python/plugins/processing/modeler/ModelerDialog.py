@@ -258,8 +258,8 @@ class ModelerDialog(BASE, WIDGET):
 
     def exportAsImage(self):
         filename = unicode(QFileDialog.getSaveFileName(self,
-                           self.tr('Save Model As Image'), '',
-                           self.tr('PNG files (*.png *.PNG)')))
+                                                       self.tr('Save Model As Image'), '',
+                                                       self.tr('PNG files (*.png *.PNG)')))
         if not filename:
             return
 
@@ -284,8 +284,8 @@ class ModelerDialog(BASE, WIDGET):
 
     def exportAsPython(self):
         filename = unicode(QFileDialog.getSaveFileName(self,
-                           self.tr('Save Model As Python Script'), '',
-                           self.tr('Python files (*.py *.PY)')))
+                                                       self.tr('Save Model As Python Script'), '',
+                                                       self.tr('Python files (*.py *.PY)')))
         if not filename:
             return
 
@@ -311,9 +311,9 @@ class ModelerDialog(BASE, WIDGET):
             filename = self.alg.descriptionFile
         else:
             filename = unicode(QFileDialog.getSaveFileName(self,
-                               self.tr('Save Model'),
-                               ModelerUtils.modelsFolder(),
-                               self.tr('Processing models (*.model)')))
+                                                           self.tr('Save Model'),
+                                                           ModelerUtils.modelsFolder(),
+                                                           self.tr('Processing models (*.model)')))
             if filename:
                 if not filename.endswith('.model'):
                     filename += '.model'
@@ -343,8 +343,8 @@ class ModelerDialog(BASE, WIDGET):
 
     def openModel(self):
         filename = unicode(QFileDialog.getOpenFileName(self,
-                           self.tr('Open Model'), ModelerUtils.modelsFolder(),
-                           self.tr('Processing models (*.model *.MODEL)')))
+                                                       self.tr('Open Model'), ModelerUtils.modelsFolder(),
+                                                       self.tr('Processing models (*.model *.MODEL)')))
         if filename:
             try:
                 alg = ModelerAlgorithm.fromFile(filename)
@@ -372,7 +372,7 @@ class ModelerDialog(BASE, WIDGET):
     def repaintModel(self):
         self.scene = ModelerScene()
         self.scene.setSceneRect(QRectF(0, 0, ModelerAlgorithm.CANVAS_SIZE,
-                                ModelerAlgorithm.CANVAS_SIZE))
+                                       ModelerAlgorithm.CANVAS_SIZE))
         self.scene.paintModel(self.alg)
         self.view.setScene(self.scene)
 
@@ -426,24 +426,24 @@ class ModelerDialog(BASE, WIDGET):
             self._addAlgorithm(alg.getCopy())
 
     def _addAlgorithm(self, alg, pos=None):
-            dlg = alg.getCustomModelerParametersDialog(self.alg)
-            if not dlg:
-                dlg = ModelerParametersDialog(alg, self.alg)
-            dlg.exec_()
-            if dlg.alg is not None:
-                if pos is None:
-                    dlg.alg.pos = self.getPositionForAlgorithmItem()
-                else:
-                    dlg.alg.pos = pos
-                if isinstance(dlg.alg.pos, QPoint):
-                    dlg.alg.pos = QPointF(pos)
-                from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
-                for i, out in enumerate(dlg.alg.outputs):
-                    dlg.alg.outputs[out].pos = dlg.alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5)
-                                                                     * ModelerGraphicItem.BOX_HEIGHT)
-                self.alg.addAlgorithm(dlg.alg)
-                self.repaintModel()
-                self.hasChanged = True
+        dlg = alg.getCustomModelerParametersDialog(self.alg)
+        if not dlg:
+            dlg = ModelerParametersDialog(alg, self.alg)
+        dlg.exec_()
+        if dlg.alg is not None:
+            if pos is None:
+                dlg.alg.pos = self.getPositionForAlgorithmItem()
+            else:
+                dlg.alg.pos = pos
+            if isinstance(dlg.alg.pos, QPoint):
+                dlg.alg.pos = QPointF(pos)
+            from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
+            for i, out in enumerate(dlg.alg.outputs):
+                dlg.alg.outputs[out].pos = dlg.alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5)
+                                                                 * ModelerGraphicItem.BOX_HEIGHT)
+            self.alg.addAlgorithm(dlg.alg)
+            self.repaintModel()
+            self.hasChanged = True
 
     def getPositionForAlgorithmItem(self):
         MARGIN = 20
