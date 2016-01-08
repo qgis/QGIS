@@ -362,6 +362,7 @@ QgsColorSwatchGridAction::QgsColorSwatchGridAction( QgsColorScheme* scheme, QMen
     : QWidgetAction( parent )
     , mMenu( menu )
     , mSuppressRecurse( false )
+    , mDismissOnColorSelection( true )
 {
   mColorSwatchGrid = new QgsColorSwatchGrid( scheme, context, parent );
 
@@ -411,7 +412,7 @@ void QgsColorSwatchGridAction::setColor( const QColor &color )
 {
   emit colorChanged( color );
   QAction::trigger();
-  if ( mMenu )
+  if ( mMenu && mDismissOnColorSelection )
   {
     mMenu->hide();
   }

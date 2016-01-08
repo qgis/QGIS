@@ -194,6 +194,12 @@ class QgsRecentColorScheme : QgsColorScheme
                                            const QColor &baseColor = QColor() );
 
     virtual QgsRecentColorScheme* clone() const /Factory/;
+
+    /** Adds a color to the list of recent colors.
+     * @param color color to add
+     * @note added in QGIS 2.14
+     */
+    static void addRecentColor( const QColor& color );
 };
 
 /** \ingroup core

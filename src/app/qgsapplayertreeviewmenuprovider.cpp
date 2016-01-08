@@ -142,6 +142,19 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
             //store the layer id in action, so we can later retrieve the corresponding layer
             colorAction->setProperty( "layerId", vlayer->id() );
             menuStyleManager->addAction( colorAction );
+
+            //add recent colors action
+            QList<QgsRecentColorScheme *> recentSchemes;
+            QgsColorSchemeRegistry::instance()->schemes( recentSchemes );
+            if ( !recentSchemes.isEmpty() )
+            {
+              QgsColorSwatchGridAction* recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menuStyleManager, "symbology", menuStyleManager );
+              recentColorAction->setProperty( "layerId", vlayer->id() );
+              recentColorAction->setDismissOnColorSelection( false );
+              menuStyleManager->addAction( recentColorAction );
+              connect( recentColorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setVectorSymbolColor( const QColor& ) ) );
+            }
+
             menuStyleManager->addSeparator();
             QAction* editSymbolAction = new QAction( tr( "Edit Symbol..." ), menuStyleManager );
             //store the layer id in action, so we can later retrieve the corresponding layer
@@ -260,6 +273,20 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
           colorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
           colorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
           menu->addAction( colorAction );
+
+          //add recent colors action
+          QList<QgsRecentColorScheme *> recentSchemes;
+          QgsColorSchemeRegistry::instance()->schemes( recentSchemes );
+          if ( !recentSchemes.isEmpty() )
+          {
+            QgsColorSwatchGridAction* recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menu, "symbology", menu );
+            recentColorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
+            recentColorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
+            recentColorAction->setDismissOnColorSelection( false );
+            menu->addAction( recentColorAction );
+            connect( recentColorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setSymbolLegendNodeColor( const QColor& ) ) );
+          }
+
           menu->addSeparator();
         }
 
