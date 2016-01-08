@@ -219,6 +219,9 @@ void TestQgsExpressionContext::contextScopeFunctions()
 void TestQgsExpressionContext::contextStack()
 {
   QgsExpressionContext context;
+
+  context.popScope();
+
   //test retrieving from empty context
   QVERIFY( !context.hasVariable( "test" ) );
   QVERIFY( !context.variable( "test" ).isValid() );
@@ -290,6 +293,11 @@ void TestQgsExpressionContext::contextStack()
   scope2->addVariable( QgsExpressionContextScope::StaticVariable( "readonly", 5, true ) );
   QVERIFY( context.isReadOnly( "readonly" ) );
   QVERIFY( !context.isReadOnly( "test" ) );
+
+  // Check scopes can be popped
+  context.popScope();
+  QCOMPARE( scopes.length(), 2 );
+  QCOMPARE( scopes.at( 0 ), scope1 );
 }
 
 void TestQgsExpressionContext::contextCopy()

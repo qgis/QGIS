@@ -186,17 +186,20 @@ bool QgsGeometryGeneratorSymbolLayerV2::isCompatibleWithSymbol( QgsSymbolV2* sym
   Q_UNUSED( symbol )
   return true;
 }
-
 void QgsGeometryGeneratorSymbolLayerV2::render( QgsSymbolV2RenderContext& context )
 {
-  QgsGeometry geom = mExpression->evaluate( &context.renderContext().expressionContext() ).value<QgsGeometry>();
   if ( context.feature() )
   {
-    QgsFeature f = *context.feature();
+    QgsExpressionContext& expressionContext = context.renderContext().expressionContext();
+
+    QgsFeature f = expressionContext.feature();
+    QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
     f.setGeometry( geom );
+
+    QgsExpressionContextScope* subSymbolExpressionContextScope = mSymbol->symbolRenderContext()->expressionContextScope();
+
+    subSymbolExpressionContextScope->setFeature( f );
 
     mSymbol->renderFeature( f, context.renderContext() );
   }
 }
-
-

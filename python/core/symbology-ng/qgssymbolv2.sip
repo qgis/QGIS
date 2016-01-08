@@ -191,6 +191,13 @@ class QgsSymbolV2
      */
     void renderFeature( const QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, int currentVertexMarkerSize = 0 );
 
+    /**
+     * Returns the symbol render context. Only valid between startRender and stopRender calls.
+     *
+     * @return The symbol render context
+     */
+    QgsSymbolV2RenderContext* symbolRenderContext();
+
   protected:
     QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers /Transfer/ ); // can't be instantiated
 
@@ -283,6 +290,21 @@ class QgsSymbolV2RenderContext
 
     // workaround for sip 4.7. Don't use assignment - will fail with assertion error
     // QgsSymbolV2RenderContext& operator=( const QgsSymbolV2RenderContext& );
+
+    /**
+     * This scope is always available when a symbol of this type is being rendered.
+     *
+     * @return An expression scope for details about this symbol
+     */
+    QgsExpressionContextScope* expressionContextScope();
+    /**
+     * Set an expression scope for this symbol.
+     *
+     * Will take ownership.
+     *
+     * @param contextScope An expression scope for details about this symbol
+     */
+    void setExpressionContextScope( QgsExpressionContextScope* contextScope /Transfer/);
 };
 
 
