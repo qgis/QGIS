@@ -542,7 +542,22 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer*>& layers )
   if ( mLayers == layers )
     return;
 
+  foreach ( QgsVectorLayer* layer, mLayers )
+  {
+    disconnect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
+    disconnect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
+    disconnect( layer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, QgsGeometry& ) ) );
+  }
+
   mLayers = layers;
+
+  foreach ( QgsVectorLayer* layer, mLayers )
+  {
+    connect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
+    connect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
+    connect( layer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, QgsGeometry& ) ) );
+  }
+
   invalidateGraph();
 }
 
@@ -568,6 +583,25 @@ void QgsTracer::invalidateGraph()
 {
   delete mGraph;
   mGraph = 0;
+}
+
+void QgsTracer::onFeatureAdded( QgsFeatureId fid )
+{
+  Q_UNUSED( fid );
+  invalidateGraph();
+}
+
+void QgsTracer::onFeatureDeleted( QgsFeatureId fid )
+{
+  Q_UNUSED( fid );
+  invalidateGraph();
+}
+
+void QgsTracer::onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom )
+{
+  Q_UNUSED( fid );
+  Q_UNUSED( geom );
+  invalidateGraph();
 }
 
 QVector<QgsPoint> QgsTracer::findShortestPath( const QgsPoint& p1, const QgsPoint& p2 )

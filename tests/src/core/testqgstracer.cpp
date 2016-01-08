@@ -31,10 +31,29 @@ class TestQgsTracer : public QObject
     void testSimple();
     void testPolygon();
     void testButterfly();
+    void testLayerUpdates();
 
   private:
 
 };
+
+namespace QTest
+{
+  template<>
+  char* toString( const QgsPoint& point )
+  {
+    QByteArray ba = "QgsPoint(" + QByteArray::number( point.x() ) +
+                    ", " + QByteArray::number( point.y() ) + ")";
+    return qstrdup( ba.data() );
+  }
+}
+
+static QgsFeature make_feature( const QString& wkt )
+{
+  QgsFeature f;
+  f.setGeometry( QgsGeometry::fromWkt( wkt ) );
+  return f;
+}
 
 static QgsVectorLayer* make_layer( const QStringList& wkts )
 {
@@ -44,8 +63,7 @@ static QgsVectorLayer* make_layer( const QStringList& wkts )
   vl->startEditing();
   foreach ( const QString& wkt, wkts )
   {
-    QgsFeature f;
-    f.setGeometry( QgsGeometry::fromWkt( wkt ) );
+    QgsFeature f( make_feature( wkt ) );
     vl->addFeature( f, false );
   }
   vl->commitChanges();
@@ -151,6 +169,8 @@ void TestQgsTracer::testPolygon()
   QCOMPARE( points[0], QgsPoint( 1, 0 ) );
   QCOMPARE( points[1], QgsPoint( 0, 0 ) );
   QCOMPARE( points[2], QgsPoint( 0, 1 ) );
+
+  delete vl;
 }
 
 void TestQgsTracer::testButterfly()
@@ -179,6 +199,71 @@ void TestQgsTracer::testButterfly()
   QCOMPARE( points[0], QgsPoint( 0, 0 ) );
   QCOMPARE( points[1], QgsPoint( 5, 5 ) );
   QCOMPARE( points[2], QgsPoint( 10, 0 ) );
+
+  delete vl;
+}
+
+void TestQgsTracer::testLayerUpdates()
+{
+  // check whether the tracer is updated on added/removed/changed features
+
+  // same shape as in testSimple()
+  QStringList wkts;
+  wkts  << "LINESTRING(0 0, 0 10)"
+  << "LINESTRING(0 0, 10 0)"
+  << "LINESTRING(0 10, 20 10)"
+  << "LINESTRING(10 0, 20 10)";
+
+  QgsVectorLayer* vl = make_layer( wkts );
+
+  QgsTracer tracer;
+  tracer.setLayers( QList<QgsVectorLayer*>() << vl );
+  tracer.init();
+
+  QgsPolyline points1 = tracer.findShortestPath( QgsPoint( 10, 0 ), QgsPoint( 10, 10 ) );
+  QCOMPARE( points1.count(), 3 );
+  QCOMPARE( points1[0], QgsPoint( 10, 0 ) );
+  QCOMPARE( points1[1], QgsPoint( 20, 10 ) );
+  QCOMPARE( points1[2], QgsPoint( 10, 10 ) );
+
+  vl->startEditing();
+
+  // add a shortcut
+  QgsFeature f( make_feature( "LINESTRING(10 0, 10 10)" ) );
+  vl->addFeature( f );
+
+  QgsPolyline points2 = tracer.findShortestPath( QgsPoint( 10, 0 ), QgsPoint( 10, 10 ) );
+  QCOMPARE( points2.count(), 2 );
+  QCOMPARE( points2[0], QgsPoint( 10, 0 ) );
+  QCOMPARE( points2[1], QgsPoint( 10, 10 ) );
+
+  // delete the shortcut
+  vl->deleteFeature( f.id() );
+
+  QgsPolyline points3 = tracer.findShortestPath( QgsPoint( 10, 0 ), QgsPoint( 10, 10 ) );
+  QCOMPARE( points3.count(), 3 );
+  QCOMPARE( points3[0], QgsPoint( 10, 0 ) );
+  QCOMPARE( points3[1], QgsPoint( 20, 10 ) );
+  QCOMPARE( points3[2], QgsPoint( 10, 10 ) );
+
+  // make the shortcut again from a different feature
+  QgsGeometry* g = QgsGeometry::fromWkt( "LINESTRING(10 0, 10 10)" );
+  vl->changeGeometry( 2, g );  // change bottom line (second item in wkts)
+  delete g;
+
+  QgsPolyline points4 = tracer.findShortestPath( QgsPoint( 10, 0 ), QgsPoint( 10, 10 ) );
+  QCOMPARE( points4.count(), 2 );
+  QCOMPARE( points4[0], QgsPoint( 10, 0 ) );
+  QCOMPARE( points4[1], QgsPoint( 10, 10 ) );
+
+  QgsPolyline points5 = tracer.findShortestPath( QgsPoint( 0, 0 ), QgsPoint( 10, 0 ) );
+  QCOMPARE( points5.count(), 4 );
+  QCOMPARE( points5[0], QgsPoint( 0, 0 ) );
+  QCOMPARE( points5[1], QgsPoint( 0, 10 ) );
+  QCOMPARE( points5[2], QgsPoint( 10, 10 ) );
+  QCOMPARE( points5[3], QgsPoint( 10, 0 ) );
+
+  vl->rollBack();
 
   delete vl;
 }

@@ -21,8 +21,9 @@ class QgsVectorLayer;
 #include <QSet>
 #include <QVector>
 
-#include "qgspoint.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfeature.h"
+#include "qgspoint.h"
 
 struct QgsTracerGraph;
 
@@ -65,6 +66,11 @@ class CORE_EXPORT QgsTracer : public QObject
   private:
     void initGraph();
     void invalidateGraph();
+
+  private slots:
+    void onFeatureAdded( QgsFeatureId fid );
+    void onFeatureDeleted( QgsFeatureId fid );
+    void onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom );
 
   private:
     //! Graph data structure for path searching
