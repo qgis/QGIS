@@ -94,11 +94,10 @@ void TestQgsTracer::testSimple()
    * 0,0  +--+  10,0
    */
 
-  QList<QgsVectorLayer*> layers;
   QgsVectorLayer* vl = make_layer( wkts );
-  layers << vl;
 
-  QgsTracer tracer( layers );
+  QgsTracer tracer;
+  tracer.setLayers( QList<QgsVectorLayer*>() << vl );
 
   QgsPolyline points1 = tracer.findShortestPath( QgsPoint( 0, 0 ), QgsPoint( 20, 10 ) );
   QCOMPARE( points1.count(), 3 );
@@ -142,11 +141,11 @@ void TestQgsTracer::testPolygon()
   QStringList wkts;
   wkts << "POLYGON((0 0, 0 10, 20 10, 10 0, 0 0))";
 
-  QList<QgsVectorLayer*> layers;
   QgsVectorLayer* vl = make_layer( wkts );
-  layers << vl;
 
-  QgsTracer tracer( layers );
+  QgsTracer tracer;
+  tracer.setLayers( QList<QgsVectorLayer*>() << vl );
+
   QgsPolyline points = tracer.findShortestPath( QgsPoint( 1, 0 ), QgsPoint( 0, 1 ) );
   QCOMPARE( points.count(), 3 );
   QCOMPARE( points[0], QgsPoint( 1, 0 ) );
@@ -169,11 +168,11 @@ void TestQgsTracer::testButterfly()
    *  0,0
    */
 
-  QList<QgsVectorLayer*> layers;
   QgsVectorLayer* vl = make_layer( wkts );
-  layers << vl;
 
-  QgsTracer tracer( layers );
+  QgsTracer tracer;
+  tracer.setLayers( QList<QgsVectorLayer*>() << vl );
+
   QgsPolyline points = tracer.findShortestPath( QgsPoint( 0, 0 ), QgsPoint( 10, 0 ) );
 
   QCOMPARE( points.count(), 3 );

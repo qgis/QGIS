@@ -450,9 +450,17 @@ void extract_linework( QgsGeometry* g, QgsMultiPolyline& mpl )
 // -------------
 
 
-QgsTracer::QgsTracer( QList<QgsVectorLayer*> layers )
-  : mGraph(0)
+QgsTracer::QgsTracer()
+    : mGraph( 0 )
 {
+}
+
+
+void QgsTracer::initGraph()
+{
+  if ( mGraph )
+    return; // already initialized
+
   QgsFeature f;
   QgsMultiPolyline mpl;
 
@@ -463,13 +471,29 @@ QgsTracer::QgsTracer( QList<QgsVectorLayer*> layers )
   QTime t1, t2, t2a, t3;
 
   t1.start();
-  foreach ( QgsVectorLayer* vl, layers )
+  foreach ( QgsVectorLayer* vl, mLayers )
   {
+    QgsCoordinateTransform ct( vl->crs(), mCRS );
+
     QgsFeatureIterator fi = vl->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
     while ( fi.nextFeature( f ) )
     {
-      if ( f.geometry() )
-        extract_linework( f.geometry(), mpl );
+      if ( !f.geometry() )
+        continue;
+
+      if ( !ct.isShortCircuited() )
+      {
+        try
+        {
+          f.geometry()->transform( ct );
+        }
+        catch ( QgsCsException& )
+        {
+          continue; // ignore if the transform failed
+        }
+      }
+
+      extract_linework( f.geometry(), mpl );
     }
   }
   int timeExtract = t1.elapsed();
@@ -510,11 +534,46 @@ QgsTracer::QgsTracer( QList<QgsVectorLayer*> layers )
 
 QgsTracer::~QgsTracer()
 {
-  delete mGraph;
+  invalidateGraph();
 }
 
-QgsPolyline QgsTracer::findShortestPath( const QgsPoint& p1, const QgsPoint& p2 )
+void QgsTracer::setLayers( const QList<QgsVectorLayer*>& layers )
 {
+  if ( mLayers == layers )
+    return;
+
+  mLayers = layers;
+  invalidateGraph();
+}
+
+void QgsTracer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs )
+{
+  if ( mCRS == crs )
+    return;
+
+  mCRS = crs;
+  invalidateGraph();
+}
+
+void QgsTracer::init()
+{
+  if ( mGraph )
+    return;
+
+  initGraph();
+}
+
+
+void QgsTracer::invalidateGraph()
+{
+  delete mGraph;
+  mGraph = 0;
+}
+
+QVector<QgsPoint> QgsTracer::findShortestPath( const QgsPoint& p1, const QgsPoint& p2 )
+{
+  init();  // does nothing if the graph exists already
+
   QTime t;
   t.start();
   int v1 = point_in_graph( *mGraph, p1 );
