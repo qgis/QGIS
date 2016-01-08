@@ -47,6 +47,7 @@ QgsDecorationCopyright::QgsDecorationCopyright( QObject* parent )
     , mMarginVertical( 0 )
 {
   mPlacement = BottomRight;
+  mMarginUnit = QgsSymbolV2::Pixel;
 
   setName( "Copyright Label" );
   // initialise default values in the gui
@@ -112,10 +113,30 @@ void QgsDecorationCopyright::render( QPainter * theQPainter )
 
     float myXOffset( 0 ), myYOffset( 0 );
 
-    myXOffset = int(( float( myWidth - size.width() )
-                      / 100. ) * float( mMarginHorizontal ) );
-    myYOffset = int(( float( myHeight - size.height() )
-                      / 100. ) * float( mMarginVertical ) );
+    // Set  margin according to selected units
+    switch ( mMarginUnit )
+    {
+      case 0: // Millimetres
+      {
+        int myPixelsInchX = theQPainter->device()->logicalDpiX();
+        int myPixelsInchY = theQPainter->device()->logicalDpiY();
+        myXOffset = int(( float( myPixelsInchX ) * INCHES_TO_MM ) * float( mMarginHorizontal ) );
+        myYOffset = int(( float( myPixelsInchY ) * INCHES_TO_MM ) * float( mMarginVertical ) );
+        break;
+      }
+      case 3: // Pixels
+        myXOffset = mMarginHorizontal;
+        myYOffset = mMarginVertical;
+        break;
+      case 4: // Percentage
+        myXOffset = int(( float( myWidth - size.width() )
+                          / 100. ) * float( mMarginHorizontal ) );
+        myYOffset = int(( float( myHeight - size.height() )
+                          / 100. ) * float( mMarginVertical ) );
+        break;
+      default:  // Use default of top left
+        break;
+    }
     //Determine placement of label from form combo box
     switch ( mPlacement )
     {

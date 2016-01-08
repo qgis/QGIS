@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include "qgslogger.h"
+#include "qgssymbollayerv2.h"
 
 class QPainter;
 
@@ -82,6 +83,9 @@ class APP_EXPORT QgsDecorationItem: public QObject
 
     //! Placement of the decoration
     Placement mPlacement;
+    //! Units used for the decoration placement margin
+    QgsSymbolV2::OutputUnit mMarginUnit;
+    const double INCHES_TO_MM = 0.0393700787402;
 
     QString mName;
     QString mNameConfig;

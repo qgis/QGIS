@@ -51,6 +51,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
 
   chkSnapping->setChecked( mDeco.mSnapping );
 
+  // placement
   cboPlacement->addItem( tr( "Top left" ), QgsDecorationItem::TopLeft );
   cboPlacement->addItem( tr( "Top right" ), QgsDecorationItem::TopRight );
   cboPlacement->addItem( tr( "Bottom left" ), QgsDecorationItem::BottomLeft );
@@ -58,9 +59,12 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
+  wgtUnitSelection->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::Percentage << QgsSymbolV2::Pixel );
+  wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   grpEnable->setChecked( mDeco.enabled() );
 
+  // style
   cboStyle->clear();
   cboStyle->addItems( mDeco.mStyleLabels );
 
@@ -85,6 +89,7 @@ void QgsDecorationScaleBarDialog::on_buttonBox_helpRequested()
 void QgsDecorationScaleBarDialog::apply()
 {
   mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
+  mDeco.mMarginUnit = wgtUnitSelection->unit();
   mDeco.mMarginHorizontal = spnHorizontal->value();
   mDeco.mMarginVertical = spnVertical->value();
   mDeco.mPreferredSize = spnSize->value();

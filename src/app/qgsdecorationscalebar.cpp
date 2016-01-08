@@ -54,7 +54,8 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject* parent )
     , mMarginHorizontal( 0 )
     , mMarginVertical( 0 )
 {
-  mPlacement = TopRight;
+  mPlacement = TopLeft;
+  mMarginUnit = QgsSymbolV2::Pixel;
   mStyleLabels << tr( "Tick Down" ) << tr( "Tick Up" )
   << tr( "Bar" ) << tr( "Box" );
 
@@ -247,16 +248,39 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     //Calculate total width of scale bar and label
     double myTotalScaleBarWidth = myScaleBarWidth + myFontWidth;
 
-    //Calculate percentage page width for use in placing item
     int myMarginW = 10;
     int myMarginH = 20;
-    float myMarginDoubledW = float( myMarginW * 2 );
-    float myMarginDoubledH = float( myMarginH * 2 );
-    int myOriginX = int((( float( myCanvasWidth - myMarginDoubledW ) - myTotalScaleBarWidth )
-                         / 100. ) * float( mMarginHorizontal ) );
-    int myOriginY = int((( float( myCanvasHeight - myMarginDoubledH ) )
-                         / 100. ) * float( mMarginVertical ) );
+    int myOriginX = 0;
+    int myOriginY = 0;
 
+    // Set  margin according to selected units
+    switch ( mMarginUnit )
+    {
+      case 0: // Millimetres
+      {
+        int myPixelsInchX = theQPainter->device()->logicalDpiX();
+        int myPixelsInchY = theQPainter->device()->logicalDpiY();
+        myOriginX = int(( float( myPixelsInchX ) * INCHES_TO_MM ) * float( mMarginHorizontal ) );
+        myOriginY = int(( float( myPixelsInchY ) * INCHES_TO_MM ) * float( mMarginVertical ) );
+        break;
+      }
+      case 3: // Pixels
+        myOriginX = mMarginHorizontal - 5.; // Minus 5 to shift tight into corner
+        myOriginY = mMarginVertical - 5.;
+        break;
+      case 4: // Percentage
+      {
+        float myMarginDoubledW = float( myMarginW * 2 );
+        float myMarginDoubledH = float( myMarginH * 2 );
+        myOriginX = int((( float( myCanvasWidth - myMarginDoubledW ) - myTotalScaleBarWidth )
+                         / 100. ) * float( mMarginHorizontal ) );
+        myOriginY = int((( float( myCanvasHeight - myMarginDoubledH ) )
+                         / 100. ) * float( mMarginVertical ) );
+        break;
+      }
+      default:  // Use default of top left
+        break;
+    }
     //Determine the origin of scale bar depending on placement selected
     switch ( mPlacement )
     {
