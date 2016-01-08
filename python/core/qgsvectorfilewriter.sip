@@ -194,8 +194,21 @@ class QgsVectorFileWriter
                          const QString& driverName = "ESRI Shapefile",
                          const QStringList &datasourceOptions = QStringList(),
                          const QStringList &layerOptions = QStringList(),
-                         QString *newFilename = 0,
-                         QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology
+                         QString *newFilename = nullptr,
+                         SymbologyExport symbologyExport = NoSymbology
+                       );
+
+    /** Create a new vector file writer */
+    QgsVectorFileWriter( const QString& vectorFileName,
+                         const QString& fileEncoding,
+                         const QgsFields& fields,
+                         QgsWKBTypes::Type geometryType,
+                         const QgsCoordinateReferenceSystem* srs,
+                         const QString& driverName = "ESRI Shapefile",
+                         const QStringList &datasourceOptions = QStringList(),
+                         const QStringList &layerOptions = QStringList(),
+                         QString *newFilename = nullptr,
+                         SymbologyExport symbologyExport = NoSymbology
                        );
 
     /** Returns map with format filter string as key and OGR format key as value*/

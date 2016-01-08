@@ -236,6 +236,18 @@ QgsWKBTypes::Type QgsWKBTypes::dropM( QgsWKBTypes::Type type )
   return returnType;
 }
 
+QgsWKBTypes::Type QgsWKBTypes::to25D( QgsWKBTypes::Type type )
+{
+  QgsWKBTypes::Type flat = flatType( type );
+
+  if ( flat >= Point && flat <= MultiPolygon )
+    return static_cast< QgsWKBTypes::Type >( flat + 0x80000000 );
+  else if ( type == QgsWKBTypes::NoGeometry )
+    return QgsWKBTypes::NoGeometry;
+  else
+    return Unknown;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
