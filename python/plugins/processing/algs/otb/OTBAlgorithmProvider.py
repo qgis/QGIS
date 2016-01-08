@@ -101,3 +101,6 @@ class OTBAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.unload(self)
         ProcessingConfig.removeSetting(OTBUtils.OTB_FOLDER)
         ProcessingConfig.removeSetting(OTBUtils.OTB_LIB_FOLDER)
+
+    def canBeActivated(self):
+        return not bool(OTBUtils.checkOtbConfiguration())

@@ -49,7 +49,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                          "2.1.4": ("2.1.4", SagaAlgorithm214),
                          "2.2.0": ("2.2.0", SagaAlgorithm214),
                          "2.2.1": ("2.2.0", SagaAlgorithm214),
-                         "2.2.2": ("2.2.2", SagaAlgorithm214)}
+                         "2.2.0": ("2.2.2", SagaAlgorithm214)}
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
@@ -72,7 +72,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                                             self.tr('Log console output'), True))
         ProcessingConfig.settingIcons["SAGA"] = self.getIcon()
         ProcessingConfig.addSetting(Setting("SAGA", "ACTIVATE_SAGA",
-                                    self.tr('Activate'), self.activate))
+                                            self.tr('Activate'), self.activate))
 
     def unload(self):
         AlgorithmProvider.unload(self)

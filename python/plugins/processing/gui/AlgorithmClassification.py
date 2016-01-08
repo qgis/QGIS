@@ -28,7 +28,6 @@ __revision__ = '$Format:%H$'
 import os
 from PyQt4.QtCore import QCoreApplication
 
-displayNames = {}
 classification = {}
 
 
@@ -49,28 +48,8 @@ def loadClassification():
     lines.close()
 
 
-def loadDisplayNames():
-    global displayNames
-    if not os.path.isfile(displayNamesFile()):
-        return
-    lines = open(displayNamesFile())
-    line = lines.readline().strip('\n')
-    while line != '':
-        tokens = line.split(',')
-        try:
-            displayNames[tokens[0]] = tokens[1]
-        except:
-            raise Exception(line)
-        line = lines.readline().strip('\n')
-    lines.close()
-
-
 def classificationFile():
     return os.path.join(os.path.dirname(__file__), 'algclasssification.txt')
-
-
-def displayNamesFile():
-    return os.path.join(os.path.dirname(__file__), 'algnames.txt')
 
 
 def getClassificationEn(alg):

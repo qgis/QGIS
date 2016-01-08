@@ -110,3 +110,6 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
 
     def getSupportedOutputRasterLayerExtensions(self):
         return ['tif']
+
+    def canBeActivated(self):
+        return not bool(Grass7Utils.checkGrass7IsInstalled())

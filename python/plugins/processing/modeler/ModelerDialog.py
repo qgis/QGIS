@@ -258,8 +258,8 @@ class ModelerDialog(BASE, WIDGET):
 
     def exportAsImage(self):
         filename = unicode(QFileDialog.getSaveFileName(self,
-                           self.tr('Save Model As Image'), '',
-                           self.tr('PNG files (*.png *.PNG)')))
+                                                       self.tr('Save Model As Image'), '',
+                                                       self.tr('PNG files (*.png *.PNG)')))
         if not filename:
             return
 
@@ -284,8 +284,8 @@ class ModelerDialog(BASE, WIDGET):
 
     def exportAsPython(self):
         filename = unicode(QFileDialog.getSaveFileName(self,
-                           self.tr('Save Model As Python Script'), '',
-                           self.tr('Python files (*.py *.PY)')))
+                                                       self.tr('Save Model As Python Script'), '',
+                                                       self.tr('Python files (*.py *.PY)')))
         if not filename:
             return
 
@@ -311,9 +311,9 @@ class ModelerDialog(BASE, WIDGET):
             filename = self.alg.descriptionFile
         else:
             filename = unicode(QFileDialog.getSaveFileName(self,
-                               self.tr('Save Model'),
-                               ModelerUtils.modelsFolder(),
-                               self.tr('Processing models (*.model)')))
+                                                           self.tr('Save Model'),
+                                                           ModelerUtils.modelsFolder(),
+                                                           self.tr('Processing models (*.model)')))
             if filename:
                 if not filename.endswith('.model'):
                     filename += '.model'
@@ -343,8 +343,8 @@ class ModelerDialog(BASE, WIDGET):
 
     def openModel(self):
         filename = unicode(QFileDialog.getOpenFileName(self,
-                           self.tr('Open Model'), ModelerUtils.modelsFolder(),
-                           self.tr('Processing models (*.model *.MODEL)')))
+                                                       self.tr('Open Model'), ModelerUtils.modelsFolder(),
+                                                       self.tr('Processing models (*.model *.MODEL)')))
         if filename:
             try:
                 alg = ModelerAlgorithm.fromFile(filename)
@@ -372,7 +372,7 @@ class ModelerDialog(BASE, WIDGET):
     def repaintModel(self):
         self.scene = ModelerScene()
         self.scene.setSceneRect(QRectF(0, 0, ModelerAlgorithm.CANVAS_SIZE,
-                                ModelerAlgorithm.CANVAS_SIZE))
+                                       ModelerAlgorithm.CANVAS_SIZE))
         self.scene.paintModel(self.alg)
         self.view.setScene(self.scene)
 
@@ -426,24 +426,24 @@ class ModelerDialog(BASE, WIDGET):
             self._addAlgorithm(alg.getCopy())
 
     def _addAlgorithm(self, alg, pos=None):
-            dlg = alg.getCustomModelerParametersDialog(self.alg)
-            if not dlg:
-                dlg = ModelerParametersDialog(alg, self.alg)
-            dlg.exec_()
-            if dlg.alg is not None:
-                if pos is None:
-                    dlg.alg.pos = self.getPositionForAlgorithmItem()
-                else:
-                    dlg.alg.pos = pos
-                if isinstance(dlg.alg.pos, QPoint):
-                    dlg.alg.pos = QPointF(pos)
-                from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
-                for i, out in enumerate(dlg.alg.outputs):
-                    dlg.alg.outputs[out].pos = dlg.alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5)
-                                                                     * ModelerGraphicItem.BOX_HEIGHT)
-                self.alg.addAlgorithm(dlg.alg)
-                self.repaintModel()
-                self.hasChanged = True
+        dlg = alg.getCustomModelerParametersDialog(self.alg)
+        if not dlg:
+            dlg = ModelerParametersDialog(alg, self.alg)
+        dlg.exec_()
+        if dlg.alg is not None:
+            if pos is None:
+                dlg.alg.pos = self.getPositionForAlgorithmItem()
+            else:
+                dlg.alg.pos = pos
+            if isinstance(dlg.alg.pos, QPoint):
+                dlg.alg.pos = QPointF(pos)
+            from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
+            for i, out in enumerate(dlg.alg.outputs):
+                dlg.alg.outputs[out].pos = dlg.alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5)
+                                                                 * ModelerGraphicItem.BOX_HEIGHT)
+            self.alg.addAlgorithm(dlg.alg)
+            self.repaintModel()
+            self.hasChanged = True
 
     def getPositionForAlgorithmItem(self):
         MARGIN = 20
@@ -461,120 +461,21 @@ class ModelerDialog(BASE, WIDGET):
         return QPointF(newX, newY)
 
     def fillAlgorithmTree(self):
-        settings = QSettings()
-        useCategories = settings.value(self.USE_CATEGORIES, type=bool)
-        if useCategories:
-            self.fillAlgorithmTreeUsingCategories()
-        else:
-            self.fillAlgorithmTreeUsingProviders()
-
+        self.fillAlgorithmTreeUsingProviders()
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
 
         text = unicode(self.searchBox.text())
         if text != '':
             self.algorithmTree.expandAll()
 
-    def fillAlgorithmTreeUsingCategories(self):
-        providersToExclude = ['model', 'script']
-        self.algorithmTree.clear()
-        text = unicode(self.searchBox.text())
-        groups = {}
-        allAlgs = ModelerUtils.allAlgs
-        for providerName in allAlgs.keys():
-            provider = allAlgs[providerName]
-            name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
-            if not ProcessingConfig.getSetting(name):
-                continue
-            if providerName in providersToExclude \
-                    or len(ModelerUtils.providers[providerName].actions) != 0:
-                continue
-            algs = provider.values()
-
-            # Add algorithms
-            for alg in algs:
-                if not alg.showInModeler or alg.allowOnlyOpenedLayers:
-                    continue
-                altgroup, altsubgroup = AlgorithmClassification.getClassification(alg)
-                if altgroup is None:
-                    continue
-                algName = AlgorithmClassification.getDisplayName(alg)
-                if text == '' or text.lower() in algName.lower():
-                    if altgroup not in groups:
-                        groups[altgroup] = {}
-                    group = groups[altgroup]
-                    if altsubgroup not in group:
-                        groups[altgroup][altsubgroup] = []
-                    subgroup = groups[altgroup][altsubgroup]
-                    subgroup.append(alg)
-
-        if len(groups) > 0:
-            mainItem = QTreeWidgetItem()
-            mainItem.setText(0, self.tr('Geoalgorithms'))
-            mainItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
-            mainItem.setToolTip(0, mainItem.text(0))
-            for (groupname, group) in groups.items():
-                groupItem = QTreeWidgetItem()
-                groupItem.setText(0, groupname)
-                groupItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
-                groupItem.setToolTip(0, groupItem.text(0))
-                mainItem.addChild(groupItem)
-                for (subgroupname, subgroup) in group.items():
-                    subgroupItem = QTreeWidgetItem()
-                    subgroupItem.setText(0, subgroupname)
-                    subgroupItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
-                    subgroupItem.setToolTip(0, subgroupItem.text(0))
-                    groupItem.addChild(subgroupItem)
-                    for alg in subgroup:
-                        algItem = TreeAlgorithmItem(alg)
-                        subgroupItem.addChild(algItem)
-            self.algorithmTree.addTopLevelItem(mainItem)
-
-        for providerName in allAlgs.keys():
-            groups = {}
-            provider = allAlgs[providerName]
-            name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
-            if not ProcessingConfig.getSetting(name):
-                continue
-            if providerName not in providersToExclude:
-                continue
-            algs = provider.values()
-
-            # Add algorithms
-            for alg in algs:
-                if not alg.showInModeler or alg.allowOnlyOpenedLayers:
-                    continue
-                if text == '' or text.lower() in alg.name.lower():
-                    if alg.group in groups:
-                        groupItem = groups[alg.group]
-                    else:
-                        groupItem = QTreeWidgetItem()
-                        name = alg.i18n_group
-                        groupItem.setText(0, name)
-                        groupItem.setToolTip(0, name)
-                        groups[alg.group] = groupItem
-                    algItem = TreeAlgorithmItem(alg)
-                    groupItem.addChild(algItem)
-
-            if len(groups) > 0:
-                providerItem = QTreeWidgetItem()
-                providerItem.setText(0,
-                                     ModelerUtils.providers[providerName].getDescription())
-                providerItem.setIcon(0,
-                                     ModelerUtils.providers[providerName].getIcon())
-                providerItem.setToolTip(0, providerItem.text(0))
-                for groupItem in groups.values():
-                    providerItem.addChild(groupItem)
-                self.algorithmTree.addTopLevelItem(providerItem)
-                providerItem.setExpanded(text != '')
-                for groupItem in groups.values():
-                    if text != '':
-                        groupItem.setExpanded(True)
-
     def fillAlgorithmTreeUsingProviders(self):
         self.algorithmTree.clear()
         text = unicode(self.searchBox.text())
         allAlgs = ModelerUtils.allAlgs
         for providerName in allAlgs.keys():
+            name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
+            if not ProcessingConfig.getSetting(name):
+                continue
             groups = {}
             provider = allAlgs[providerName]
             algs = provider.values()

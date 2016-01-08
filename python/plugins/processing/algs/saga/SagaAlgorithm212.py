@@ -38,9 +38,9 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import getParameterFromString, ParameterExtent, ParameterRaster, ParameterVector, ParameterTable, ParameterMultipleInput, ParameterBoolean, ParameterFixedTable, ParameterNumber, ParameterSelection
 from processing.core.outputs import getOutputFromString, OutputTable, OutputVector, OutputRaster
 import SagaUtils
-from SagaGroupNameDecorator import SagaGroupNameDecorator
 from processing.tools import dataobjects
-from processing.tools.system import getTempFilename, isWindows, getTempFilenameInTempFolder
+from processing.tools.system import getTempFilename, getTempFilenameInTempFolder
+from processing.algs.saga.SagaNameDecorator import *
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -74,15 +74,21 @@ class SagaAlgorithm212(GeoAlgorithm):
         if '|' in self.name:
             tokens = self.name.split('|')
             self.name = tokens[0]
-            self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", unicode(self.name))
+            #cmdname is the name of the algorithm in SAGA, that is, the name to use to call it in the console
             self.cmdname = tokens[1]
+
         else:
             self.cmdname = self.name
             self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", unicode(self.name))
-            self.name = self.name[0].upper() + self.name[1:].lower()
+        #_commandLineName is the name used in processing to call the algorithm
+        #Most of the time will be equal to the cmdname, but in same cases, several processing algorithms
+        #call the same SAGA one
+        self._commandLineName = self.createCommandLineName(self.name)
+        self.name = decoratedAlgorithmName(self.name)
+        self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", unicode(self.name))
         line = lines.readline().strip('\n').strip()
         self.undecoratedGroup = line
-        self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
+        self.group = decoratedGroupName(self.undecoratedGroup)
         self.i18n_group = QCoreApplication.translate("SAGAAlgorithm", self.group)
         line = lines.readline().strip('\n').strip()
         while line != '':
@@ -96,7 +102,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                 # An extent parameter that wraps 4 SAGA numerical parameters
                 self.extentParamNames = line[6:].strip().split(' ')
                 self.addParameter(ParameterExtent(self.OUTPUT_EXTENT,
-                                  'Output extent', '0,1,0,1'))
+                                                  'Output extent', '0,1,0,1'))
             else:
                 self.addOutput(getOutputFromString(line))
             line = lines.readline().strip('\n').strip()
@@ -173,8 +179,7 @@ class SagaAlgorithm212(GeoAlgorithm):
         for param in self.parameters:
             if param.value is None:
                 continue
-            if isinstance(param, (ParameterRaster, ParameterVector,
-                          ParameterTable)):
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable)):
                 value = param.value
                 if value in self.exportedLayers.keys():
                     command += ' -' + param.name + ' "' \
@@ -332,3 +337,11 @@ class SagaAlgorithm212(GeoAlgorithm):
                         extent2 = (layer.extent(), layer.height(), layer.width())
                         if extent != extent2:
                             return self.tr("Input layers do not have the same grid extent.")
+
+    def createCommandLineName(self, name):
+        validChars = \
+            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
+        return 'saga:' + ''.join(c for c in name if c in validChars).lower()
+
+    def commandLineName(self):
+        return self._commandLineName

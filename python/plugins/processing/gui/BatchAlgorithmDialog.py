@@ -67,6 +67,8 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         self.mainWidget = BatchPanel(self, self.alg)
         self.setMainWidget()
 
+        self.textShortHelp.setVisible(False)
+
     def setParamValue(self, param, widget, alg=None):
         if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable,
                               ParameterMultipleInput)):

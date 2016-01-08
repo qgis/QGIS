@@ -49,7 +49,7 @@ class SplitRGBBands(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Split RGB bands')
-        self.group, self.i18n_group = self.trAlgorithm('Grid - Tools')
+        self.group, self.i18n_group = self.trAlgorithm('Image tools')
         self.addParameter(ParameterRaster(SplitRGBBands.INPUT,
                                           self.tr('Input layer'), False))
         self.addOutput(OutputRaster(SplitRGBBands.R,
