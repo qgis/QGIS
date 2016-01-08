@@ -317,6 +317,14 @@ class QgsDirectoryItem : QgsDataCollectionItem
     };
 
     QgsDirectoryItem( QgsDataItem* parent, const QString& name, const QString& path );
+
+    /** Constructor.
+     * @param parent
+     * @param name directory name
+     * @param dirPath path to directory in file system
+     * @param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favourites: */
+    QgsDirectoryItem( QgsDataItem* parent, const QString& name, const QString& dirPath, const QString& path );
+
     ~QgsDirectoryItem();
 
     virtual void setState( State state );

@@ -38,6 +38,9 @@
 
 #include "qgsauthmanager.h"
 
+//not part of public API
+///@cond
+//! @note not available in Python bindings
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {
   public:
@@ -91,6 +94,8 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       return QList<QNetworkProxy>() << nam->fallbackProxy();
     }
 };
+
+///@endcond
 
 //
 // Static calls to enforce singleton behaviour
