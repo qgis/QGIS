@@ -1,3 +1,28 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    test_qgsdelimitedtextprovider_wanted.py
+    ---------------------
+    Date                 : May 2013
+    Copyright            : (C) 2013 by Chris Crook
+    Email                : ccrook at linz dot govt dot nz
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Chris Crook'
+__date__ = 'May 2013'
+__copyright__ = '(C) 2013, Chris Crook'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 
 def test_002_load_csv_file():
     wanted = {}

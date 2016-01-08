@@ -2,8 +2,8 @@
 
 """
 ***************************************************************************
-    OTBUtils.py
-    ---------------------
+    OTBSpecific_XMLLoading.py
+    -------------------------
     Date                 : 11-12-13
     Copyright            : (C) 2013 by CS Systemes d'information (CS SI)
     Email                : otb at c-s dot fr (CS SI)
