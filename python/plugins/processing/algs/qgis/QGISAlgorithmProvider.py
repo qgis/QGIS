@@ -133,6 +133,7 @@ from CheckValidity import CheckValidity
 from OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
 from Smooth import Smooth
 from ReverseLineDirection import ReverseLineDirection
+from ExecuteSQL import ExecuteSQL
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -182,7 +183,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SplitLinesWithLines(), CreateConstantRaster(),
                         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
                         CheckValidity(), OrientedMinimumBoundingBox(), Smooth(),
-                        ReverseLineDirection()
+                        ReverseLineDirection(), ExecuteSQL()
                         ]
 
         if hasMatplotlib:
