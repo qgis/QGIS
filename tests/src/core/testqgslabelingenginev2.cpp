@@ -132,7 +132,7 @@ void TestQgsLabelingEngineV2::testBasic()
 
   p.end();
 
-  QVERIFY( imageCheck( "labeling_basic", img, 0 ) );
+  QVERIFY( imageCheck( "labeling_basic", img, 20 ) );
 
   // now let's test the variant when integrated into rendering loop
   //note the reference images are slightly different due to use of renderer for this test
@@ -143,7 +143,7 @@ void TestQgsLabelingEngineV2::testBasic()
 
   vl->setCustomProperty( "labeling/enabled", false );
 
-  QVERIFY( imageCheck( "labeling_basic", img2, 0 ) );
+  QVERIFY( imageCheck( "labeling_basic", img2, 20 ) );
 }
 
 
@@ -179,7 +179,7 @@ void TestQgsLabelingEngineV2::testDiagrams()
 
   p.end();
 
-  QVERIFY( imageCheck( "labeling_point_diagrams", img, 0 ) );
+  QVERIFY( imageCheck( "labeling_point_diagrams", img, 20 ) );
 
   // now let's test the variant when integrated into rendering loop
   job.start();
@@ -187,7 +187,7 @@ void TestQgsLabelingEngineV2::testDiagrams()
   QImage img2 = job.renderedImage();
 
   vl->loadDefaultStyle( res );
-  QVERIFY( imageCheck( "labeling_point_diagrams", img2, 0 ) );
+  QVERIFY( imageCheck( "labeling_point_diagrams", img2, 20 ) );
 }
 
 
@@ -238,7 +238,7 @@ void TestQgsLabelingEngineV2::testRuleBased()
   job.start();
   job.waitForFinished();
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( "labeling_rulebased", img, 0 ) );
+  QVERIFY( imageCheck( "labeling_rulebased", img, 20 ) );
 
   // test read/write rules
   QDomDocument doc, doc2, doc3;
@@ -311,7 +311,7 @@ void TestQgsLabelingEngineV2::zOrder()
 
   // since labels are all from same layer and have same z-index then smaller labels should be stacked on top of larger
   // labels. Eg: B52 > Biplane > Jet
-  QVERIFY( imageCheck( "label_order_size", img, 0 ) );
+  QVERIFY( imageCheck( "label_order_size", img, 20 ) );
   img = job.renderedImage();
 
   //test data defined z-index
@@ -324,7 +324,7 @@ void TestQgsLabelingEngineV2::zOrder()
   engine.removeProvider( provider1 );
 
   // z-index will take preference over label size, so labels should be stacked Jet > Biplane > B52
-  QVERIFY( imageCheck( "label_order_zindex", img, 0 ) );
+  QVERIFY( imageCheck( "label_order_zindex", img, 20 ) );
   img = job.renderedImage();
 
   pls1.removeAllDataDefinedProperties();
@@ -352,7 +352,7 @@ void TestQgsLabelingEngineV2::zOrder()
   p.end();
 
   // labels have same z-index, so layer order will be used
-  QVERIFY( imageCheck( "label_order_layer1", img, 0 ) );
+  QVERIFY( imageCheck( "label_order_layer1", img, 20 ) );
   img = job.renderedImage();
 
   //flip layer order and re-test
@@ -363,7 +363,7 @@ void TestQgsLabelingEngineV2::zOrder()
   p.end();
 
   // label order should be reversed
-  QVERIFY( imageCheck( "label_order_layer2", img, 0 ) );
+  QVERIFY( imageCheck( "label_order_layer2", img, 20 ) );
   img = job.renderedImage();
 
   //try mixing layer order and z-index
@@ -377,7 +377,7 @@ void TestQgsLabelingEngineV2::zOrder()
   p.end();
 
   // label order should be most labels from layer 1, then labels from layer 2, then "Jet"s from layer 1
-  QVERIFY( imageCheck( "label_order_mixed", img, 0 ) );
+  QVERIFY( imageCheck( "label_order_mixed", img, 20 ) );
   img = job.renderedImage();
 
   //cleanup
