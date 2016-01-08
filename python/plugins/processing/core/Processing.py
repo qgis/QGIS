@@ -142,13 +142,11 @@ class Processing:
 
         # And initialize
         AlgorithmClassification.loadClassification()
-        AlgorithmClassification.loadDisplayNames()
         ProcessingLog.startLogging()
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
         Processing.loadFromProviders()
-
         # Inform registered listeners that all providers' algorithms have been loaded
         Processing.fireAlgsListHasChanged()
 

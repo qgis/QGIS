@@ -47,7 +47,7 @@ class ExtractProjection(GdalAlgorithm):
                                            self.tr('Create also .prj file'), False))
 
     def getConsoleCommands(self):
-        return ""
+        return ["extractprojection"]
 
     def processAlgorithm(self, progress):
         rasterPath = self.getParameterValue(self.INPUT)

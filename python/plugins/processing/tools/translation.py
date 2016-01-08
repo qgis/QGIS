@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 import os
 from processing.core.Processing import Processing
 from processing.gui.AlgorithmClassification import (
-    loadClassification, loadDisplayNames, getClassificationEn, getDisplayNameEn)
+    loadClassification, getClassificationEn, getDisplayNameEn)
 
 
 def updateTranslations():
@@ -39,7 +39,6 @@ def updateTranslations():
     """
 
     loadClassification()
-    loadDisplayNames()
 
     f = open(os.path.join(os.path.dirname(__file__), '../algs/translations.py'), 'w')
     f.write('''# -*- coding: utf-8 -*-

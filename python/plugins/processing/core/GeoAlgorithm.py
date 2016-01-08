@@ -18,6 +18,7 @@
 """
 
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -43,7 +44,7 @@ from processing.core.outputs import OutputVector, OutputRaster, OutputTable, Out
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects, vector
 from processing.tools.system import setTempOutput
-
+from processing.algs.help import shortHelp
 
 class GeoAlgorithm:
 
@@ -105,44 +106,17 @@ class GeoAlgorithm:
     def getDefaultIcon():
         return GeoAlgorithm._icon
 
+    def _formatHelp(self, text):
+        return "<h2>%s</h2>%s" % (self.name, "".join(["<p>%s</p>" % s for s in text.split("\n")]))
+
     def help(self):
-        """Returns the help with the description of this algorithm.
-        It returns a tuple boolean, string. IF the boolean value is True,
-        it means that the string contains the actual description. If False,
-        it is an url or path to a file where the description is stored.
-        In both cases, the string or the content of the file have to be HTML,
-        ready to be set into the help display component.
+        return False, None
 
-        Returns None if there is no help file available.
-
-        The default implementation looks for an HTML page in the QGIS
-        documentation site taking into account QGIS version.
-        """
-
-        qgsVersion = QGis.QGIS_VERSION_INT
-        major = qgsVersion / 10000
-        minor = (qgsVersion - major * 10000) / 100
-        if minor % 2 == 1:
-            qgsVersion = 'testing'
-        else:
-            qgsVersion = '{}.{}'.format(major, minor)
-
-        providerName = self.provider.getName().lower()
-        groupName = self.group.lower()
-        groupName = groupName.replace('[', '').replace(']', '').replace(' - ', '_')
-        groupName = groupName.replace(' ', '_')
-        cmdLineName = self.commandLineName()
-        validChars = \
-            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
-        safeGroupName = ''.join(c for c in groupName if c in validChars)
-
-        safeAlgName = self.name.lower().replace(' ', '-')
-        validChars = \
-            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-'
-        safeAlgName = ''.join(c for c in safeAlgName if c in validChars)
-
-        helpUrl = 'http://docs.qgis.org/{}/en/docs/user_manual/processing_algs/{}/{}.html#{}'.format(qgsVersion, providerName, safeGroupName, safeAlgName)
-        return False, helpUrl
+    def shortHelp(self):
+        text = shortHelp.get(self.commandLineName(), None)
+        if text is not None:
+            text = self._formatHelp(text)
+        return text
 
     def processAlgorithm(self, progress):
         """Here goes the algorithm itself.

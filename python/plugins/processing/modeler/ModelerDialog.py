@@ -461,120 +461,21 @@ class ModelerDialog(BASE, WIDGET):
         return QPointF(newX, newY)
 
     def fillAlgorithmTree(self):
-        settings = QSettings()
-        useCategories = settings.value(self.USE_CATEGORIES, type=bool)
-        if useCategories:
-            self.fillAlgorithmTreeUsingCategories()
-        else:
-            self.fillAlgorithmTreeUsingProviders()
-
+        self.fillAlgorithmTreeUsingProviders()
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
 
         text = unicode(self.searchBox.text())
         if text != '':
             self.algorithmTree.expandAll()
 
-    def fillAlgorithmTreeUsingCategories(self):
-        providersToExclude = ['model', 'script']
-        self.algorithmTree.clear()
-        text = unicode(self.searchBox.text())
-        groups = {}
-        allAlgs = ModelerUtils.allAlgs
-        for providerName in allAlgs.keys():
-            provider = allAlgs[providerName]
-            name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
-            if not ProcessingConfig.getSetting(name):
-                continue
-            if providerName in providersToExclude \
-                    or len(ModelerUtils.providers[providerName].actions) != 0:
-                continue
-            algs = provider.values()
-
-            # Add algorithms
-            for alg in algs:
-                if not alg.showInModeler or alg.allowOnlyOpenedLayers:
-                    continue
-                altgroup, altsubgroup = AlgorithmClassification.getClassification(alg)
-                if altgroup is None:
-                    continue
-                algName = AlgorithmClassification.getDisplayName(alg)
-                if text == '' or text.lower() in algName.lower():
-                    if altgroup not in groups:
-                        groups[altgroup] = {}
-                    group = groups[altgroup]
-                    if altsubgroup not in group:
-                        groups[altgroup][altsubgroup] = []
-                    subgroup = groups[altgroup][altsubgroup]
-                    subgroup.append(alg)
-
-        if len(groups) > 0:
-            mainItem = QTreeWidgetItem()
-            mainItem.setText(0, self.tr('Geoalgorithms'))
-            mainItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
-            mainItem.setToolTip(0, mainItem.text(0))
-            for (groupname, group) in groups.items():
-                groupItem = QTreeWidgetItem()
-                groupItem.setText(0, groupname)
-                groupItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
-                groupItem.setToolTip(0, groupItem.text(0))
-                mainItem.addChild(groupItem)
-                for (subgroupname, subgroup) in group.items():
-                    subgroupItem = QTreeWidgetItem()
-                    subgroupItem.setText(0, subgroupname)
-                    subgroupItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
-                    subgroupItem.setToolTip(0, subgroupItem.text(0))
-                    groupItem.addChild(subgroupItem)
-                    for alg in subgroup:
-                        algItem = TreeAlgorithmItem(alg)
-                        subgroupItem.addChild(algItem)
-            self.algorithmTree.addTopLevelItem(mainItem)
-
-        for providerName in allAlgs.keys():
-            groups = {}
-            provider = allAlgs[providerName]
-            name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
-            if not ProcessingConfig.getSetting(name):
-                continue
-            if providerName not in providersToExclude:
-                continue
-            algs = provider.values()
-
-            # Add algorithms
-            for alg in algs:
-                if not alg.showInModeler or alg.allowOnlyOpenedLayers:
-                    continue
-                if text == '' or text.lower() in alg.name.lower():
-                    if alg.group in groups:
-                        groupItem = groups[alg.group]
-                    else:
-                        groupItem = QTreeWidgetItem()
-                        name = alg.i18n_group
-                        groupItem.setText(0, name)
-                        groupItem.setToolTip(0, name)
-                        groups[alg.group] = groupItem
-                    algItem = TreeAlgorithmItem(alg)
-                    groupItem.addChild(algItem)
-
-            if len(groups) > 0:
-                providerItem = QTreeWidgetItem()
-                providerItem.setText(0,
-                                     ModelerUtils.providers[providerName].getDescription())
-                providerItem.setIcon(0,
-                                     ModelerUtils.providers[providerName].getIcon())
-                providerItem.setToolTip(0, providerItem.text(0))
-                for groupItem in groups.values():
-                    providerItem.addChild(groupItem)
-                self.algorithmTree.addTopLevelItem(providerItem)
-                providerItem.setExpanded(text != '')
-                for groupItem in groups.values():
-                    if text != '':
-                        groupItem.setExpanded(True)
-
-    def fillAlgorithmTreeUsingProviders(self):
+    def fillAlgorithmTreeUsingProviders(self):    
         self.algorithmTree.clear()
         text = unicode(self.searchBox.text())
         allAlgs = ModelerUtils.allAlgs
         for providerName in allAlgs.keys():
+            name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
+            if not ProcessingConfig.getSetting(name):
+                continue
             groups = {}
             provider = allAlgs[providerName]
             algs = provider.values()

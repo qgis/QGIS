@@ -51,13 +51,9 @@ class AlgorithmProvider(object):
 
     def loadAlgorithms(self):
         self.algs = []
-        name = 'ACTIVATE_' + self.getName().upper().replace(' ', '_')
-        if not ProcessingConfig.getSetting(name):
-            return
-        else:
-            self._loadAlgorithms()
-            for alg in self.algs:
-                alg.provider = self
+        self._loadAlgorithms()
+        for alg in self.algs:
+            alg.provider = self
 
     # Methods to be overridden.
     def _loadAlgorithms(self):
@@ -123,6 +119,9 @@ class AlgorithmProvider(object):
 
     def supportsNonFileBasedOutput(self):
         return False
+
+    def canBeActivated(self):
+        return True
 
     def tr(self, string, context=''):
         if context == '':
