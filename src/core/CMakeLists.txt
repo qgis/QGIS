@@ -184,6 +184,7 @@ SET(QGIS_CORE_SRCS
   qgssqlexpressioncompiler.cpp
   qgsstatisticalsummary.cpp
   qgsstringutils.cpp
+  qgstracer.cpp
   qgstransaction.cpp
   qgstextlabelfeature.cpp
   qgstolerance.cpp
@@ -454,6 +455,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsrelationmanager.h
   qgsrunprocess.h
   qgssnappingutils.h
+  qgstracer.h
   qgstransaction.h
   qgsvectordataprovider.h
   qgsvectorlayercache.h
@@ -659,6 +661,7 @@ SET(QGIS_CORE_HDRS
   qgsstringutils.h
   qgstextlabelfeature.h
   qgstolerance.h
+  qgstracer.h
 
   qgsvectordataprovider.h
   qgsvectorlayercache.h

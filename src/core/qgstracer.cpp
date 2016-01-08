@@ -1,0 +1,534 @@
+/***************************************************************************
+  qgstracer.cpp
+  --------------------------------------
+  Date                 : January 2016
+  Copyright            : (C) 2016 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgstracer.h"
+
+#include "qgsgeometry.h"
+#include "qgsgeometryutils.h"
+#include "qgsvectorlayer.h"
+
+#include <queue>
+#include <vector>
+
+typedef std::pair<int, double> queue_item; // first = vertex index, second = distance
+
+// utility comparator for queue items based on distance
+struct comp
+{
+  bool operator()( const queue_item &a, const queue_item &b )
+  {
+    return a.second > b.second;
+  }
+};
+
+
+// TODO: move to geometry utils
+double distance_2d( const QgsPolyline& coords )
+{
+  int np = coords.count();
+  if ( np == 0 )
+    return 0;
+
+  double x0 = coords[0].x(), y0 = coords[0].y();
+  double x1, y1;
+  double dist = 0;
+  for ( int i = 1; i < np; ++i )
+  {
+    x1 = coords[i].x();
+    y1 = coords[i].y();
+    dist += sqrt(( x1 - x0 ) * ( x1 - x0 ) + ( y1 - y0 ) * ( y1 - y0 ) );
+    x0 = x1;
+    y0 = y1;
+  }
+  return dist;
+}
+
+
+// TODO: move to geometry utils
+double closest_segment( const QgsPolyline& pl, const QgsPoint& pt, int& vertexAfter, double epsilon )
+{
+  double sqrDist = std::numeric_limits<double>::max();
+  const QgsPoint* pldata = pl.constData();
+  int plcount = pl.count();
+  double prevX = pldata[0].x(), prevY = pldata[0].y();
+  double segmentPtX, segmentPtY;
+  for ( int i = 1; i < plcount; ++i )
+  {
+    double currentX = pldata[i].x();
+    double currentY = pldata[i].y();
+    double testDist = QgsGeometryUtils::sqrDistToLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY, segmentPtX, segmentPtY, epsilon );
+    if ( testDist < sqrDist )
+    {
+      sqrDist = testDist;
+      vertexAfter = i;
+    }
+    prevX = currentX;
+    prevY = currentY;
+  }
+  return sqrDist;
+}
+
+/////
+
+/** Simple graph structure for shortest path search */
+struct QgsTracerGraph
+{
+  struct E  // bidirectional edge
+  {
+    //! vertices that the edge connects
+    int v1, v2;
+    //! coordinates of the edge (including endpoints)
+    QVector<QgsPoint> coords;
+
+    int other_vertex( int v0 ) const { return v1 == v0 ? v2 : v1; }
+    double weight() const { return distance_2d( coords ); }
+  };
+
+  struct V
+  {
+    //! location of the vertex
+    QgsPoint pt;
+    //! indices of adjacent edges (used in Dijkstra algorithm)
+    QVector<int> edges;
+  };
+
+  //! Vertices of the graph
+  QVector<V> v;
+  //! Edges of the graph
+  QVector<E> e;
+
+  //! Temporarily removed edges
+  QSet<int> inactiveEdges;
+  //! Temporarily added vertices (for each there are two extra edges)
+  int joinedVertices;
+};
+
+
+QgsTracerGraph* make_graph( const QVector<QgsPolyline>& edges )
+{
+  QgsTracerGraph* g = new QgsTracerGraph;
+  g->joinedVertices = 0;
+  QHash<QgsPoint, int> point2vertex;
+
+  foreach ( const QgsPolyline& line, edges )
+  {
+    QgsPoint p1( line[0] );
+    QgsPoint p2( line[line.count() - 1] );
+
+    int v1 = -1, v2 = -1;
+    // get or add vertex 1
+    if ( point2vertex.contains( p1 ) )
+      v1 = point2vertex.value( p1 );
+    else
+    {
+      v1 = g->v.count();
+      QgsTracerGraph::V v;
+      v.pt = p1;
+      g->v.append( v );
+      point2vertex[p1] = v1;
+    }
+
+    // get or add vertex 2
+    if ( point2vertex.contains( p2 ) )
+      v2 = point2vertex.value( p2 );
+    else
+    {
+      v2 = g->v.count();
+      QgsTracerGraph::V v;
+      v.pt = p2;
+      g->v.append( v );
+      point2vertex[p2] = v2;
+    }
+
+    // add edge
+    QgsTracerGraph::E e;
+    e.v1 = v1;
+    e.v2 = v2;
+    e.coords = line;
+    g->e.append( e );
+
+    // link edge to vertices
+    int eIdx = g->e.count() - 1;
+    g->v[v1].edges << eIdx;
+    g->v[v2].edges << eIdx;
+  }
+
+  return g;
+}
+
+
+QVector<QgsPoint> shortest_path( const QgsTracerGraph& g, int v1, int v2 )
+{
+  if ( v1 == -1 || v2 == -1 )
+    return QVector<QgsPoint>(); // invalid input
+
+  // priority queue to drive Dijkstra:
+  // first of the pair is vertex index, second is distance
+  std::priority_queue< queue_item, std::vector< queue_item >, comp > Q;
+
+  // shortest distances to each vertex
+  QVector<double> D( g.v.count(), std::numeric_limits<double>::max() );
+  D[v1] = 0;
+
+  // whether vertices have been already processed
+  QVector<bool> F( g.v.count() );
+
+  // using which edge there is shortest path to each vertex
+  QVector<int> S( g.v.count(), -1 );
+
+  int u = -1;
+  Q.push( queue_item( v1, 0 ) );
+
+  while ( !Q.empty() )
+  {
+    u = Q.top().first; // new vertex to visit
+    Q.pop();
+
+    if ( u == v2 )
+      break; // we can stop now, there won't be a shorter path
+
+    if ( F[u] )
+      continue;  // ignore previously added path which is actually longer
+
+    const QgsTracerGraph::V& vu = g.v[u];
+    const int* vuEdges = vu.edges.constData();
+    int count = vu.edges.count();
+    for ( int i = 0; i < count; ++i )
+    {
+      const QgsTracerGraph::E& edge = g.e[ vuEdges[i] ];
+      int v = edge.other_vertex( u );
+      double w = edge.weight();
+      if ( !F[v] && D[u] + w < D[v] )
+      {
+        // found a shorter way to the vertex
+        D[v] = D[u] + w;
+        S[v] = vuEdges[i];
+        Q.push( queue_item( v, D[v] ) );
+      }
+    }
+    F[u] = 1; // mark the vertex as processed (we know the fastest path to it)
+  }
+
+  if ( u != v2 ) // there's no path to the end vertex
+    return QVector<QgsPoint>();
+
+  //qDebug("dist %f", D[u]);
+
+  QVector<QgsPoint> points;
+  QList<int> path;
+  while ( S[u] != -1 )
+  {
+    path << S[u];
+    const QgsTracerGraph::E& e = g.e[S[u]];
+    QVector<QgsPoint> edgePoints = e.coords;
+    if ( edgePoints[0] != g.v[u].pt )
+      std::reverse( edgePoints.begin(), edgePoints.end() );
+    if ( !points.isEmpty() )
+      points.remove( points.count() - 1 );  // chop last one (will be used from next edge)
+    points << edgePoints;
+    u = e.other_vertex( u );
+  }
+
+  std::reverse( path.begin(), path.end() );
+  //foreach (int x, path)
+  //  qDebug("e: %d", x);
+
+  std::reverse( points.begin(), points.end() );
+  return points;
+}
+
+
+int point2vertex( const QgsTracerGraph& g, const QgsPoint& pt )
+{
+  // TODO: use spatial index
+
+  for ( int i = 0; i < g.v.count(); ++i )
+  {
+    const QgsTracerGraph::V& v = g.v.at( i );
+    if ( v.pt == pt )
+      return i;
+  }
+
+  return -1;
+}
+
+
+int point2edge( const QgsTracerGraph& g, const QgsPoint& pt, int& lineVertexAfter, double epsilon )
+{
+  int vertexAfter;
+
+  for ( int i = 0; i < g.e.count(); ++i )
+  {
+    if ( g.inactiveEdges.contains( i ) )
+      continue;  // ignore temporarily disabled edges
+
+    const QgsTracerGraph::E& e = g.e.at( i );
+    double dist = closest_segment( e.coords, pt, vertexAfter, epsilon );
+    if ( dist == 0 )
+    {
+      lineVertexAfter = vertexAfter;
+      return i;
+    }
+  }
+  return -1;
+}
+
+
+void split_linestring( const QgsPolyline& points, const QgsPoint& pt, int lineVertexAfter, QgsPolyline& pts1, QgsPolyline& pts2 )
+{
+  int count1 = lineVertexAfter;
+  int count2 = points.count() - lineVertexAfter;
+
+  for ( int i = 0; i < count1; ++i )
+    pts1 << points[i];
+  if ( points[lineVertexAfter-1] != pt )
+    pts1 << pt;  // repeat if not split exactly at that point
+
+  if ( pt != points[lineVertexAfter] )
+    pts2 << pt;  // repeat if not split exactly at that point
+  for ( int i = 0; i < count2; ++i )
+    pts2 << points[i + lineVertexAfter];
+}
+
+
+int join_vertex_to_graph( QgsTracerGraph& g, const QgsPoint& pt )
+{
+  const double epsilon = 1e-6;
+
+  // find edge where the point is
+  int lineVertexAfter;
+  int eIdx = point2edge( g, pt, lineVertexAfter, epsilon );
+
+  //qDebug("e: %d", eIdx);
+
+  if ( eIdx == -1 )
+    return -1;
+
+  const QgsTracerGraph::E& e = g.e[eIdx];
+  QgsTracerGraph::V& v1 = g.v[e.v1];
+  QgsTracerGraph::V& v2 = g.v[e.v2];
+
+  QgsPolyline out1, out2;
+  split_linestring( e.coords, pt, lineVertexAfter, out1, out2 );
+
+  int vIdx = g.v.count();
+  int e1Idx = g.e.count();
+  int e2Idx = e1Idx + 1;
+
+  // prepare new vertex and edges
+
+  QgsTracerGraph::V v;
+  v.pt = pt;
+  v.edges << e1Idx << e2Idx;
+
+  QgsTracerGraph::E e1;
+  e1.v1 = e.v1;
+  e1.v2 = vIdx;
+  e1.coords = out1;
+
+  QgsTracerGraph::E e2;
+  e2.v1 = vIdx;
+  e2.v2 = e.v2;
+  e2.coords = out2;
+
+  // update edge connectivity of existing vertices
+  v1.edges.replace( v1.edges.indexOf( eIdx ), e1Idx );
+  v2.edges.replace( v2.edges.indexOf( eIdx ), e2Idx );
+  g.inactiveEdges << eIdx;
+
+  // add new vertex and edges to the graph
+  g.v.append( v );
+  g.e.append( e1 );
+  g.e.append( e2 );
+  g.joinedVertices++;
+
+  return vIdx;
+}
+
+
+int point_in_graph( QgsTracerGraph& g, const QgsPoint& pt )
+{
+  // try to use existing vertex in the graph
+  int v = point2vertex( g, pt );
+  if ( v != -1 )
+    return v;
+
+  // try to add the vertex to an edge (may fail if point is not on edge)
+  return join_vertex_to_graph( g, pt );
+}
+
+
+void reset_graph( QgsTracerGraph& g )
+{
+  // remove extra vertices and edges
+  g.v.resize( g.v.count() - g.joinedVertices );
+  g.e.resize( g.e.count() - g.joinedVertices * 2 );
+  g.joinedVertices = 0;
+
+  // fix vertices of deactivated edges
+  foreach ( int eIdx, g.inactiveEdges )
+  {
+    if ( eIdx >= g.e.count() )
+      continue;
+    const QgsTracerGraph::E& e = g.e[eIdx];
+    QgsTracerGraph::V& v1 = g.v[e.v1];
+    for ( int i = 0; i < v1.edges.count(); ++i )
+    {
+      if ( v1.edges[i] >= g.e.count() )
+        v1.edges.remove( i-- );
+    }
+    v1.edges << eIdx;
+
+    QgsTracerGraph::V& v2 = g.v[e.v2];
+    for ( int i = 0; i < v2.edges.count(); ++i )
+    {
+      if ( v2.edges[i] >= g.e.count() )
+        v2.edges.remove( i-- );
+    }
+    v2.edges << eIdx;
+  }
+
+  g.inactiveEdges.clear();
+}
+
+
+void print_shortest_path( const QgsTracerGraph& g, int v1, int v2 )
+{
+  qDebug( "from %d to %d", v1, v2 );
+  QVector<QgsPoint> points = shortest_path( g, v1, v2 );
+
+  if ( points.isEmpty() )
+    qDebug( "no path!" );
+
+  foreach ( QgsPoint p, points )
+    qDebug( "p: %f %f", p.x(), p.y() );
+}
+
+
+void extract_linework( QgsGeometry* g, QgsMultiPolyline& mpl )
+{
+  switch ( QgsWKBTypes::flatType( g->geometry()->wkbType() ) )
+  {
+    case QgsWKBTypes::LineString:
+      mpl << g->asPolyline();
+      break;
+
+    case QgsWKBTypes::Polygon:
+      foreach ( const QgsPolyline& ring, g->asPolygon() )
+        mpl << ring;
+      break;
+
+    case QgsWKBTypes::MultiLineString:
+      foreach ( const QgsPolyline& linestring, g->asMultiPolyline() )
+        mpl << linestring;
+      break;
+
+    case QgsWKBTypes::MultiPolygon:
+      foreach ( const QgsPolygon& polygon, g->asMultiPolygon() )
+        foreach ( const QgsPolyline& ring, polygon )
+          mpl << ring;
+      break;
+
+    default:
+      break;  // unkown type - do nothing
+  }
+}
+
+
+// -------------
+
+
+QgsTracer::QgsTracer( QList<QgsVectorLayer*> layers )
+  : mGraph(0)
+{
+  QgsFeature f;
+  QgsMultiPolyline mpl;
+
+  // extract linestrings
+
+  // TODO: use QgsPointLocator as a source for the linework
+
+  QTime t1, t2, t2a, t3;
+
+  t1.start();
+  foreach ( QgsVectorLayer* vl, layers )
+  {
+    QgsFeatureIterator fi = vl->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+    while ( fi.nextFeature( f ) )
+    {
+      if ( f.geometry() )
+        extract_linework( f.geometry(), mpl );
+    }
+  }
+  int timeExtract = t1.elapsed();
+
+  // resolve intersections
+
+  t2.start();
+
+#if 0
+  // without noding - if data are known to be noded beforehand
+  int timeNodingCall = 0;
+#else
+  QgsGeometry* all_geom = QgsGeometry::fromMultiPolyline( mpl );
+
+  t2a.start();
+  GEOSGeometry* all_noded = GEOSNode_r( QgsGeometry::getGEOSHandler(), all_geom->asGeos() );
+  int timeNodingCall = t2a.elapsed();
+
+  QgsGeometry* noded = new QgsGeometry;
+  noded->fromGeos( all_noded );
+  delete all_geom;
+
+  mpl = noded->asMultiPolyline();
+
+  delete noded;
+#endif
+
+  int timeNoding = t2.elapsed();
+
+  t3.start();
+
+  mGraph = make_graph( mpl );
+
+  int timeMake = t3.elapsed();
+
+  qDebug( "tracer extract %d ms, noding %d ms (call %d ms), make %d ms", timeExtract, timeNoding, timeNodingCall, timeMake );
+}
+
+QgsTracer::~QgsTracer()
+{
+  delete mGraph;
+}
+
+QgsPolyline QgsTracer::findShortestPath( const QgsPoint& p1, const QgsPoint& p2 )
+{
+  QTime t;
+  t.start();
+  int v1 = point_in_graph( *mGraph, p1 );
+  int v2 = point_in_graph( *mGraph, p2 );
+  int tPrep = t.elapsed();
+
+  QTime t2;
+  t2.start();
+  QgsPolyline points = shortest_path( *mGraph, v1, v2 );
+  int tPath = t2.elapsed();
+
+  qDebug( "path timing: prep %d ms, path %d ms", tPrep, tPath );
+
+  reset_graph( *mGraph );
+
+  return points;
+}
