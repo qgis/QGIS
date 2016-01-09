@@ -278,6 +278,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
       * Emitted theProgress is in percents (0.0-100.0) */
     void progress( int theType, double theProgress, const QString& theMessage );
     void progressUpdate( int theProgress );
+    void statusChanged( const QString& );
 
   protected:
 
