@@ -157,7 +157,6 @@ class QgsGrassRegionEdit : public QgsMapTool
     void setRegion( const QgsPoint&, const QgsPoint& );
     void setSrcRegion( const QgsRectangle &rect );
 
-    void setTransform();
     static void drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubberBand, const QgsRectangle &rect, QgsCoordinateTransform *coordinateTransform = 0, bool isPolygon = false );
     void calcSrcRegion();
     static void transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, QgsCoordinateTransform *coordinateTransform, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform );
@@ -166,6 +165,8 @@ class QgsGrassRegionEdit : public QgsMapTool
     void captureStarted();
     void captureEnded();
 
+  public slots:
+    void setTransform();
 
   private:
     //! Rubber band for selecting grass region
