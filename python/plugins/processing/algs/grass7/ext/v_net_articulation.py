@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    v_net_visibility.py
+    v_net_articulation.py
     ---------------------
     Date                 : December 2015
     Copyright            : (C) 2015 by Médéric Ribreux
@@ -29,5 +29,5 @@ from v_net import variableOutput
 
 
 def processOutputs(alg):
-    outputParameter = {u"output": [u"line", 1]}
-    variableOutput(alg, outputParameter, False)
+    outputParameter = {u"output": [u"point", 1]}
+    variableOutput(alg, outputParameter)

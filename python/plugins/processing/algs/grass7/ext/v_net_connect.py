@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    v_net_visibility.py
+    v_net_connect.py
     ---------------------
     Date                 : December 2015
     Copyright            : (C) 2015 by Médéric Ribreux
@@ -25,9 +25,15 @@ __copyright__ = '(C) 2015, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from v_net import variableOutput
+import os
 
 
 def processOutputs(alg):
-    outputParameter = {u"output": [u"line", 1]}
-    variableOutput(alg, outputParameter, False)
+    out = alg.getOutputValue(u"output")
+    command = u"v.out.ogr -c type=line layer=1 -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={}".format(
+        alg.exportedLayers[out],
+            os.path.dirname(out),
+            os.path.basename(out)[:-4]
+    )
+    alg.commands.append(command)
+    alg.outputCommands.append(command)

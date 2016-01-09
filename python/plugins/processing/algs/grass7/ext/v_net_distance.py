@@ -26,7 +26,7 @@ __copyright__ = '(C) 2015, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-from processing.core.parameters import getParameterFromString, ParameterVector, ParameterNumber, ParameterBoolean, ParameterString
+from processing.core.parameters import getParameterFromString
 
 
 def processCommand(alg):

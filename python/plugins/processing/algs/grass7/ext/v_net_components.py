@@ -30,8 +30,8 @@ from v_net import variableOutput
 
 def processCommand(alg):
     # remove the output for point
-    outPoint = alg.getOutputFromName(u'output_point')
     outLine = alg.getOutputFromName(u'output')
+    outPoint = alg.getOutputFromName(u'output_point')
     alg.exportedLayers[outPoint.value] = outLine.name + alg.uniqueSufix
     alg.removeOutputFromName(u'output_point')
 
@@ -42,6 +42,6 @@ def processCommand(alg):
 
 
 def processOutputs(alg):
-    outputParameter = {u"output": u"line",
-                       u"output_point": u"point"}
+    outputParameter = {u"output": [u"line", 1],
+                       u"output_point": [u"point", 2]}
     variableOutput(alg, outputParameter)

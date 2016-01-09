@@ -47,5 +47,5 @@ def processCommand(alg):
 
 
 def processOutputs(alg):
-    outputParameter = {u"output": u"point"}
+    outputParameter = {u"output": [u"point", 2]}
     variableOutput(alg, outputParameter)

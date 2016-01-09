@@ -26,7 +26,7 @@ __copyright__ = '(C) 2015, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-from v_net import incorporatePoints, processOutputs
+from v_net import incorporatePoints, variableOutput
 
 
 def checkParameterValuesBeforeExecuting(alg):
@@ -48,6 +48,6 @@ def processCommand(alg):
 
 
 def processOutputs(alg):
-    outputParameter = {u"output": u"line",
-                       u"cut": u"line"}
+    outputParameter = {u"output": [u"line", 1],
+                       u"cut": [u"line", 1]}
     variableOutput(alg, outputParameter)
