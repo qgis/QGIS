@@ -227,39 +227,12 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
   // get the groupid when going for import
   if ( mDialogMode == Import )
   {
-    int index = groupCombo->currentIndex();
-    QString name = groupCombo->itemText( index );
+    // get the name the user entered
+    QString name = groupCombo->currentText();
     if ( name.isEmpty() )
     {
-      // get name of the group
-      bool nameInvalid = true;
-      while ( nameInvalid )
-      {
-        bool ok;
-        name = QInputDialog::getText( this, tr( "Group Name" ),
-                                      tr( "Please enter a name for new group:" ),
-                                      QLineEdit::Normal,
-                                      tr( "imported" ),
-                                      &ok );
-        if ( !ok )
-        {
-          QMessageBox::warning( this, tr( "New Group" ),
-                                tr( "New group cannot be created without a name. Kindly enter a name." ) );
-          continue;
-        }
-        // validate name
-        if ( name.isEmpty() )
-        {
-          QMessageBox::warning( this, tr( "New group" ),
-                                tr( "Cannot create a group without name. Enter a name." ) );
-        }
-        else
-        {
-          // valid name
-          nameInvalid = false;
-        }
-      }
-      groupid = dst->addGroup( name );
+      // import to "ungrouped"
+      groupid = 0;
     }
     else if ( dst->groupNames().contains( name ) )
     {
