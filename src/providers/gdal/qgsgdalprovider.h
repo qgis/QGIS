@@ -247,9 +247,6 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString validatePyramidsCreationOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
         const QStringList & theConfigOptions, const QString & fileFormat );
 
-  signals:
-    void statusChanged( const QString& );
-
   private:
     // update mode
     bool mUpdate;

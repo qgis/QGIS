@@ -415,6 +415,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     void progress( int theType, double theProgress, const QString& theMessage );
     void progressUpdate( int theProgress );
 
+    /** Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
+        @note added in 2.14 */
+    void statusChanged( const QString& );
+
   protected:
     /** Read block of data
      * @note not available in python bindings */
