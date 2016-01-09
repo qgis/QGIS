@@ -704,7 +704,7 @@ class DoxygenParser():
         try:
             definition = member_elem.find('definition').text
             name = member_elem.find('name').text
-            if definition == '{}::{}'.format(name, name):
+            if '{}::{}'.format(name, name) in definition:
                 return True
         except:
             pass
