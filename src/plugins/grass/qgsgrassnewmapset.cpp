@@ -697,7 +697,8 @@ void QgsGrassNewMapset::checkRegion()
   mCellHead.ns_res  = res;
   mCellHead.ns_res3 = res3;
   mCellHead.tb_res  = 1.;
-  mCellHead.zone = 0;
+  // Do not override zone, it was set in setGrassProjection()
+  //mCellHead.zone = 0;
 
   button( QWizard::NextButton )->setEnabled( true );
 }
