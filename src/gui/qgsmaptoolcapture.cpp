@@ -208,6 +208,8 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point )
 
   for ( int i = 1; i < points.count(); ++i )
   {
+    if ( points[i] == points[i-1] )
+      continue; // avoid duplicate vertices if there are any
     mRubberBand->addPoint( points[i], i == points.count() - 1 );
     mCaptureCurve.addVertex( layerPoints[i-1] );
   }

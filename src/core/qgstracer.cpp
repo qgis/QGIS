@@ -444,7 +444,6 @@ void extract_linework( QgsGeometry* g, QgsMultiPolyline& mpl )
   }
 }
 
-
 // -------------
 
 
