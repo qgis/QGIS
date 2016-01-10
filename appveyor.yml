@@ -18,7 +18,7 @@ skip_commits:
 
 install:
   - SET PATH=c:\cygwin\bin;%PATH%
-  - c:\cygwin\setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/temp/cygwin -P flex -P poppler -P doxygen
+  - c:\cygwin\setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/temp/cygwin -P flex -P poppler
   - ps: cd ms-windows\osgeo4w
   - perl osgeo4w-appveyor.pl -arch=%platform%
   - cmake --version
