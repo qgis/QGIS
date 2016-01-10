@@ -360,7 +360,7 @@ class TestQgsServerAccessControl(TestCase):
             "No result in GetFeatureInfo\n%s" % response)
         self.assertTrue(
             str(response).find("<qgs:colour>red</qgs:colour>") != -1,
-            "No colour in result of GetFeatureInfo\n%s" % response)
+            "No color in result of GetFeatureInfo\n%s" % response)
 
         response, headers = self._get_restricted(query_string)
         self.assertTrue(
@@ -368,10 +368,10 @@ class TestQgsServerAccessControl(TestCase):
             "No result in GetFeatureInfo\n%s" % response)
         self.assertFalse(
             str(response).find("<qgs:colour>red</qgs:colour>") != -1,
-            "Unexpected colour in result of GetFeatureInfo\n%s" % response)
+            "Unexpected color in result of GetFeatureInfo\n%s" % response)
         self.assertFalse(
             str(response).find("<qgs:colour>NULL</qgs:colour>") != -1,
-            "Unexpected colour NULL in result of GetFeatureInfo\n%s" % response)
+            "Unexpected color NULL in result of GetFeatureInfo\n%s" % response)
 
     def test_wms_getfeatureinfo_hello2(self):
         query_string = "&".join(["%s=%s" % i for i in {
@@ -512,7 +512,7 @@ class TestQgsServerAccessControl(TestCase):
             "No result in GetFeature\n%s" % response)
         self.assertTrue(
             str(response).find("<qgs:colour>red</qgs:colour>") != -1,
-            "No colour in result of GetFeature\n%s" % response)
+            "No color in result of GetFeature\n%s" % response)
 
         response, headers = self._post_restricted(data)
         self.assertTrue(
@@ -520,10 +520,10 @@ class TestQgsServerAccessControl(TestCase):
             "No result in GetFeature\n%s" % response)
         self.assertFalse(
             str(response).find("<qgs:colour>red</qgs:colour>") != -1,
-            "Unexpected colour in result of GetFeature\n%s" % response)
+            "Unexpected color in result of GetFeature\n%s" % response)
         self.assertFalse(
             str(response).find("<qgs:colour>NULL</qgs:colour>") != -1,
-            "Unexpected colour NULL in result of GetFeature\n%s" % response)
+            "Unexpected color NULL in result of GetFeature\n%s" % response)
 
     def test_wfs_getfeature_hello2(self):
         data = """<?xml version="1.0" encoding="UTF-8"?>
