@@ -719,6 +719,23 @@
           42.810529897
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Sebastian Dietrich",
+        "Committer": "No",
+        "First Commit Message": "Moved the code to determine the primary key for a view using the URI keyColumn to a separate function.",
+        "First Commit Date": "17-10-2015",
+        "GIT Nickname": "SebDieBln"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.409402,
+          52.520804
+        ]
+      }
     }
   ]
 }
