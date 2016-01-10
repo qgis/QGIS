@@ -141,6 +141,14 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void closePolygon();
 
   private:
+    //! whether tracing has been requested by the user
+    bool tracingEnabled();
+    //! handle of mouse movement when tracing enabled and capturing has started
+    void tracingMouseMove( QgsMapMouseEvent* e );
+    //! handle of addition of clicked point (with the rest of the trace) when tracing enabled
+    void tracingAddVertex( const QgsPoint& point );
+
+  private:
     /** Flag to indicate a map canvas capture operation is taking place */
     bool mCapturing;
 
