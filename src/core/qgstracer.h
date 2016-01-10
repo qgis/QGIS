@@ -63,6 +63,9 @@ class CORE_EXPORT QgsTracer : public QObject
     //! if the two points are not connected.
     QVector<QgsPoint> findShortestPath( const QgsPoint& p1, const QgsPoint& p2 );
 
+    //! Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)
+    bool isPointSnapped( const QgsPoint& pt );
+
   private:
     void initGraph();
     void invalidateGraph();

@@ -265,7 +265,7 @@ int point2vertex( const QgsTracerGraph& g, const QgsPoint& pt )
 }
 
 
-int point2edge( const QgsTracerGraph& g, const QgsPoint& pt, int& lineVertexAfter, double epsilon )
+int point2edge( const QgsTracerGraph& g, const QgsPoint& pt, int& lineVertexAfter, double epsilon = 1e-6 )
 {
   int vertexAfter;
 
@@ -305,11 +305,9 @@ void split_linestring( const QgsPolyline& points, const QgsPoint& pt, int lineVe
 
 int join_vertex_to_graph( QgsTracerGraph& g, const QgsPoint& pt )
 {
-  const double epsilon = 1e-6;
-
   // find edge where the point is
   int lineVertexAfter;
-  int eIdx = point2edge( g, pt, lineVertexAfter, epsilon );
+  int eIdx = point2edge( g, pt, lineVertexAfter );
 
   //qDebug("e: %d", eIdx);
 
@@ -624,4 +622,16 @@ QVector<QgsPoint> QgsTracer::findShortestPath( const QgsPoint& p1, const QgsPoin
   reset_graph( *mGraph );
 
   return points;
+}
+
+bool QgsTracer::isPointSnapped( const QgsPoint& pt )
+{
+  init();  // does nothing if the graph exists already
+
+  if ( point2vertex( *mGraph, pt ) != -1 )
+    return true;
+
+  int lineVertexAfter;
+  int e = point2edge( *mGraph, pt, lineVertexAfter );
+  return e != -1;
 }
