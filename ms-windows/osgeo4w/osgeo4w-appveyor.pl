@@ -90,7 +90,7 @@ sub getDeps {
 	}
 }
 
-my @pkg = qw/fcgi gdal geos grass grass6 gsl-devel libspatialindex-devel oci openssl osg-dev osgearth-dev proj pyqt4 pyspatialite python python-qscintilla qscintilla qt4-devel sip spatialite sqlite3 zlib/;
+my @pkg = qw/fcgi gdal geos grass grass6 gsl-devel libspatialindex-devel oci openssl osg-dev osgearth-dev proj pyqt4 pyspatialite python python-qscintilla qca-devel qca-libs qscintilla qt4-devel sip spatialite sqlite3 zlib/;
 push @pkg, "qwt-devel-qt4" if $arch eq "x86";
 push @pkg, qw/qwt5-devel-qt4 oci-devel python-devel/ if $arch eq "x86_64";
 getDeps($_) for @pkg;
