@@ -116,8 +116,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 };
 
 
-// not part of public API
-///@cond
+/// @cond PRIVATE
 //! Widget that serves as rectangle showing current extent in overview
 //! @note not available in Python bindings
 class QgsPanningWidget : public QWidget

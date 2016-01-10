@@ -180,7 +180,7 @@ void QgsGraduatedHistogramWidget::findClosestRange( double value, int &closestRa
   }
 }
 
-///@cond
+/// @cond PRIVATE
 
 QgsGraduatedHistogramEventFilter::QgsGraduatedHistogramEventFilter( QwtPlot *plot )
     : QObject( plot )

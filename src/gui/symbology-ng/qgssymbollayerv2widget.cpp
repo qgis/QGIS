@@ -2966,7 +2966,7 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
 }
 
 
-/// @cond
+/// @cond PRIVATE
 
 QgsSvgListModel::QgsSvgListModel( QObject* parent ) : QAbstractListModel( parent )
 {

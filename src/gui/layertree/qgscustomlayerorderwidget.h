@@ -60,8 +60,7 @@ class GUI_EXPORT QgsCustomLayerOrderWidget : public QWidget
 };
 
 
-///@cond
-//not part of public API
+///@cond PRIVATE
 class CustomLayerOrderModel : public QAbstractListModel
 {
     Q_OBJECT

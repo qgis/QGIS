@@ -15,7 +15,7 @@
 #ifndef QGSDATADEFINED_PRIVATE_H
 #define QGSDATADEFINED_PRIVATE_H
 
-/// @cond
+/// @cond PRIVATE
 
 //
 //  W A R N I N G

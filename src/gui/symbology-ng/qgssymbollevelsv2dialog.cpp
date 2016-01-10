@@ -164,7 +164,7 @@ void QgsSymbolLevelsV2Dialog::setForceOrderingEnabled( bool enabled )
 }
 
 
-///@cond
+/// @cond PRIVATE
 
 QWidget* SpinBoxDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem&, const QModelIndex& ) const
 {

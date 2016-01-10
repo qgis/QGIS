@@ -91,8 +91,7 @@ void QgsCustomLayerOrderWidget::modelUpdated()
 }
 
 
-///@cond
-/// not part of public API
+///@cond PRIVATE
 
 CustomLayerOrderModel::CustomLayerOrderModel( QgsLayerTreeMapCanvasBridge* bridge, QObject* parent )
     : QAbstractListModel( parent ), mBridge( bridge )

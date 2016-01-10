@@ -29,8 +29,7 @@
 #include <QCheckBox>
 #include <QToolButton>
 
-///@cond
-//not part of public API
+///@cond PRIVATE
 
 static const int EffectItemType = QStandardItem::UserType + 1;
 

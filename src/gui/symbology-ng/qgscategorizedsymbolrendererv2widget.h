@@ -25,8 +25,7 @@ class QgsRendererCategoryV2;
 
 #include "ui_qgscategorizedsymbolrendererv2widget.h"
 
-///@cond
-//not part of public API
+///@cond PRIVATE
 
 class GUI_EXPORT QgsCategorizedSymbolRendererV2Model : public QAbstractItemModel
 {

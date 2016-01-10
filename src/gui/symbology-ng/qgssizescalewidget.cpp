@@ -32,8 +32,7 @@
 
 #include <limits>
 
-///@cond
-//not part of public API
+///@cond PRIVATE
 
 // RAII class to block a QObject signal until destroyed
 struct SignalBlocker

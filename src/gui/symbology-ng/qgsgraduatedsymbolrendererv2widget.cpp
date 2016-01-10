@@ -39,8 +39,7 @@
 
 // ------------------------------ Model ------------------------------------
 
-///@cond
-//not part of public API
+///@cond PRIVATE
 
 QgsGraduatedSymbolRendererV2Model::QgsGraduatedSymbolRendererV2Model( QObject * parent ) : QAbstractItemModel( parent )
     , mRenderer( nullptr )

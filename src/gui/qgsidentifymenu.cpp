@@ -22,7 +22,7 @@
 #include "qgshighlight.h"
 
 
-///@cond
+/// @cond PRIVATE
 CustomActionRegistry::CustomActionRegistry( QObject* parent )
     : QgsMapLayerActionRegistry( parent )
 {

@@ -138,7 +138,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
 };
 
 
-/// @cond
+/// @cond PRIVATE
 
 /* QgsVariableEditorTree is NOT part of the public QGIS api. It's only
  * public here as Qt meta objects can't be nested classes

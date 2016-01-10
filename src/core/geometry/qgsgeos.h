@@ -152,7 +152,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static int geomDigits( const GEOSGeometry* geom );
 };
 
-/// @cond
+/// @cond PRIVATE
 
 class GEOSException
 {

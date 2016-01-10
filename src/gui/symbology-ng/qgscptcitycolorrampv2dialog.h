@@ -83,8 +83,7 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
 
 };
 
-///@cond
-//not part of public API
+/// @cond PRIVATE
 
 class TreeFilterProxyModel : public QSortFilterProxyModel
 {

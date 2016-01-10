@@ -35,7 +35,7 @@
  */
 class CORE_EXPORT QWebSettings : public QObject
 {
-/// @cond
+/// @cond NOT_STABLE_API
     Q_OBJECT
 
   public:
@@ -98,7 +98,7 @@ class CORE_EXPORT QWebSettings : public QObject
  */
 class CORE_EXPORT QWebPage : public QObject
 {
-/// @cond
+/// @cond NOT_STABLE_API
     Q_OBJECT
 
   public:

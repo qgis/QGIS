@@ -40,8 +40,7 @@
 #include <QPainter>
 #include <QFileDialog>
 
-///@cond
-//not part of public API
+///@cond PRIVATE
 
 QgsCategorizedSymbolRendererV2Model::QgsCategorizedSymbolRendererV2Model( QObject * parent ) : QAbstractItemModel( parent )
     , mRenderer( nullptr )

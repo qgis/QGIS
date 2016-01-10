@@ -21,7 +21,7 @@
 #include <algorithm>
 
 
-/// @cond
+/// @cond PRIVATE
 class QgsExpressionSorter
 {
   public:

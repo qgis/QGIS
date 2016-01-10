@@ -23,8 +23,7 @@
 
 #include "ui_qgsgraduatedsymbolrendererv2widget.h"
 
-///@cond
-//not part of public API
+/// @cond PRIVATE
 
 class GUI_EXPORT QgsGraduatedSymbolRendererV2Model : public QAbstractItemModel
 {

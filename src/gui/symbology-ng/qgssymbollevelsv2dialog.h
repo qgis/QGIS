@@ -57,8 +57,7 @@ class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbol
     bool mForceOrderingEnabled;
 };
 
-///@cond
-//not part of public API
+///@cond PRIVATE
 
 // delegate used from Qt Spin Box example
 class SpinBoxDelegate : public QItemDelegate

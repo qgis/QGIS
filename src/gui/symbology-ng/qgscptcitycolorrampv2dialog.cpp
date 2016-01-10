@@ -688,7 +688,7 @@ void QgsCptCityColorRampV2Dialog::refreshModel( const QModelIndex& index )
 }
 #endif
 
-///@cond
+/// @cond PRIVATE
 
 TreeFilterProxyModel::TreeFilterProxyModel( QObject* parent, QgsCptCityBrowserModel* model )
     : QSortFilterProxyModel( parent ), mModel( model )

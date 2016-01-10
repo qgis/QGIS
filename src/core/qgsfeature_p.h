@@ -16,7 +16,7 @@ email                : nyall dot dawson at gmail dot com
 #ifndef QGSFEATURE_PRIVATE_H
 #define QGSFEATURE_PRIVATE_H
 
-/// @cond
+/// @cond PRIVATE
 
 //
 //  W A R N I N G

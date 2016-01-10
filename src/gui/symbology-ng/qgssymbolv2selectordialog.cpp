@@ -44,8 +44,7 @@
 #include <QFile>
 #include <QStandardItem>
 
-///@cond
-//not part of public API
+/// @cond PRIVATE
 
 static const int SymbolLayerItemType = QStandardItem::UserType + 1;
 

@@ -41,8 +41,8 @@ class QgsLineSymbolLayerV2;
 
 class QgsMapCanvas;
 
-///@cond
-//not part of public API
+/// @cond PRIVATE
+
 class DataDefinedRestorer: public QObject
 {
     Q_OBJECT

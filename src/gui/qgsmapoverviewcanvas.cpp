@@ -268,7 +268,7 @@ QStringList QgsMapOverviewCanvas::layerSet() const
 }
 
 
-///@cond
+/// @cond PRIVATE
 
 QgsPanningWidget::QgsPanningWidget( QWidget* parent )
     : QWidget( parent )

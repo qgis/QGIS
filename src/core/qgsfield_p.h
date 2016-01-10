@@ -16,7 +16,7 @@
 #ifndef QGSFIELD_PRIVATE_H
 #define QGSFIELD_PRIVATE_H
 
-/// @cond
+/// @cond PRIVATE
 
 //
 //  W A R N I N G

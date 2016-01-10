@@ -649,8 +649,7 @@ double QgsSimpleLineSymbolLayerV2::dxfOffset( const QgsDxfExport& e, QgsSymbolV2
 
 /////////
 
-///@cond
-//not part of public API
+///@cond PRIVATE
 
 class MyLine
 {

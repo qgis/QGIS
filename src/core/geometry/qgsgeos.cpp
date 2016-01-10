@@ -49,8 +49,7 @@ email                : marco.hugentobler at sourcepole dot com
     return r; \
   }
 
-///@cond
-//not part of public API
+/// @cond PRIVATE
 
 static void throwGEOSException( const char *fmt, ... )
 {

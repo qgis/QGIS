@@ -38,8 +38,7 @@
 
 #include "qgsauthmanager.h"
 
-//not part of public API
-///@cond
+/// @cond PRIVATE
 //! @note not available in Python bindings
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {

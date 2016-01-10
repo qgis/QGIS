@@ -30,7 +30,7 @@
  */
 class CORE_EXPORT QWebFrame : public QObject
 {
-/// @cond
+/// @cond NOT_STABLE_API
     Q_OBJECT
 
   public:

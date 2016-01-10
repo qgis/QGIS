@@ -624,8 +624,7 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
 };
 
 
-///@cond
-//not part of public API
+///@cond PRIVATE
 
 class QgsSvgListModel : public QAbstractListModel
 {

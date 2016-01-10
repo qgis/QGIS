@@ -118,8 +118,7 @@ bool QgsExpressionContextScope::variableNameSort( const QString& a, const QStrin
   return QString::localeAwareCompare( a, b ) < 0;
 }
 
-// not public API
-/// @cond
+/// @cond PRIVATE
 class QgsExpressionContextVariableCompare
 {
   public:
@@ -496,8 +495,7 @@ void QgsExpressionContextUtils::setGlobalVariables( const QgsStringMap &variable
   settings.setValue( QString( "/variables/values" ), customVariableVariants );
 }
 
-///@cond
-//not part of public API
+/// @cond PRIVATE
 
 class GetNamedProjectColor : public QgsScopedExpressionFunction
 {

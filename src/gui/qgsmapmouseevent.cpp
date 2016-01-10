@@ -19,7 +19,7 @@
 
 #include "qgssnappingutils.h"
 
-/// @cond
+/// @cond PRIVATE
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
   bool acceptMatch( const QgsPointLocator::Match& m ) override { return m.hasEdge(); }

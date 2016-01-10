@@ -242,7 +242,7 @@ void QgsVariableEditorWidget::selectionChanged()
 }
 
 
-/// @cond
+/// @cond PRIVATE
 //
 // VariableEditorTree
 //

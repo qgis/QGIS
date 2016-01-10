@@ -87,7 +87,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
 // For private use by QgsGraduatedHistogramWidget only,
 // not part of stable api or exposed to Python bindings
 //
-///@cond
+/// @cond PRIVATE
 class GUI_EXPORT QgsGraduatedHistogramEventFilter: public QObject
 {
     Q_OBJECT
