@@ -105,6 +105,7 @@ struct VTable
       , mSlotToFunction( invalidateTable, this )
       , mName( layer->name() )
       , mPkColumn( -1 )
+      , mCrs( -1 )
       , mValid( true )
   {
     if ( mLayer )
@@ -123,6 +124,7 @@ struct VTable
       , mName( name )
       , mEncoding( encoding )
       , mPkColumn( -1 )
+      , mCrs( -1 )
       , mValid( true )
   {
     mProvider = static_cast<QgsVectorDataProvider*>( QgsProviderRegistry::instance()->provider( provider, source ) );

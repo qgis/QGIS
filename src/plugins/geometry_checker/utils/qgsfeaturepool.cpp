@@ -52,19 +52,24 @@ bool QgsFeaturePool::get( QgsFeatureId id , QgsFeature& feature )
 {
   QMutexLocker lock( &mLayerMutex );
   QgsFeature* pfeature = mFeatureCache.object( id );
-  if ( !pfeature )
+  if ( pfeature )
   {
-    // Get new feature
-    pfeature = new QgsFeature();
-    // TODO: avoid always querying all attributes (attribute values are needed when merging by attribute)
-    if ( !mLayer->getFeatures( QgsFeatureRequest( id ) ).nextFeature( *pfeature ) )
-    {
-      delete pfeature;
-      return false;
-    }
-    mFeatureCache.insert( id, pfeature );
+    //feature was cached
+    feature = *pfeature;
   }
-  feature = *pfeature;
+
+  // Feature not in cache, retrieve from layer
+  pfeature = new QgsFeature();
+  // TODO: avoid always querying all attributes (attribute values are needed when merging by attribute)
+  if ( !mLayer->getFeatures( QgsFeatureRequest( id ) ).nextFeature( *pfeature ) )
+  {
+    delete pfeature;
+    return false;
+  }
+  //make a copy of pfeature into feature parameter
+  feature = QgsFeature( *pfeature );
+  //ownership of pfeature is transferred to cache
+  mFeatureCache.insert( id, pfeature );
   return true;
 }
 
