@@ -55,7 +55,7 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject* parent )
     , mMarginVertical( 0 )
 {
   mPlacement = TopLeft;
-  mMarginUnit = QgsSymbolV2::Pixel;
+  mMarginUnit = QgsSymbolV2::MM;
   mStyleLabels << tr( "Tick Down" ) << tr( "Tick Up" )
   << tr( "Bar" ) << tr( "Box" );
 

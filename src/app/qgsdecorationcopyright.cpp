@@ -47,7 +47,7 @@ QgsDecorationCopyright::QgsDecorationCopyright( QObject* parent )
     , mMarginVertical( 0 )
 {
   mPlacement = BottomRight;
-  mMarginUnit = QgsSymbolV2::Pixel;
+  mMarginUnit = QgsSymbolV2::MM;
 
   setName( "Copyright Label" );
   // initialise default values in the gui

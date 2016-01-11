@@ -62,7 +62,7 @@ QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject* parent )
     , mMarginVertical( 0 )
 {
   mPlacement = BottomLeft;
-  mMarginUnit = QgsSymbolV2::Pixel;
+  mMarginUnit = QgsSymbolV2::MM;
 
   setName( "North Arrow" );
   projectRead();
