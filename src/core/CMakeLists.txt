@@ -316,6 +316,7 @@ SET(QGIS_CORE_SRCS
   geometry/qgscurvev2.cpp
   geometry/qgscurvepolygonv2.cpp
   geometry/qgsgeometry.cpp
+  geometry/qgsgeometryengine.cpp
   geometry/qgsgeometrycollectionv2.cpp
   geometry/qgsgeometryeditutils.cpp
   geometry/qgsgeometryfactory.cpp
@@ -784,6 +785,7 @@ SET(QGIS_CORE_HDRS
   layertree/qgslayertreeutils.h
 
   geometry/qgsgeometry.h
+  geometry/qgsgeometryengine.h
   geometry/qgsabstractgeometryv2.h
   geometry/qgswkbtypes.h
   geometry/qgspointv2.h
