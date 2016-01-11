@@ -1,33 +1,3 @@
-/***************************************************************************
-  qgstracer.h
-  --------------------------------------
-  Date                 : January 2016
-  Copyright            : (C) 2016 by Martin Dobias
-  Email                : wonder dot sk at gmail dot com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
-#ifndef QGSTRACER_H
-#define QGSTRACER_H
-
-class QgsVectorLayer;
-
-#include <QSet>
-#include <QVector>
-
-#include "qgscoordinatereferencesystem.h"
-#include "qgsfeature.h"
-#include "qgspoint.h"
-#include "qgsrectangle.h"
-
-struct QgsTracerGraph;
-
 /** \ingroup core
  * Utility class that construct a planar graph from the input vector
  * layers and provides shortest path search for tracing of existing
@@ -35,32 +5,35 @@ struct QgsTracerGraph;
  *
  * @note added in QGIS 2.14
  */
-class CORE_EXPORT QgsTracer : public QObject
+class QgsTracer : QObject
 {
-    Q_OBJECT
+%TypeHeaderCode
+#include <qgstracer.h>
+%End
+
   public:
     QgsTracer();
     ~QgsTracer();
 
     //! Get layers used for tracing
-    QList<QgsVectorLayer*> layers() const { return mLayers; }
+    QList<QgsVectorLayer*> layers() const;
     //! Set layers used for tracing
     void setLayers( const QList<QgsVectorLayer*>& layers );
 
     //! Get CRS used for tracing
-    QgsCoordinateReferenceSystem destinationCrs() const { return mCRS; }
+    QgsCoordinateReferenceSystem destinationCrs() const;
     //! Set CRS used for tracing
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
 
     //! Get extent to which graph's features will be limited (empty extent means no limit)
-    QgsRectangle extent() const { return mExtent; }
+    QgsRectangle extent() const;
     //! Set extent to which graph's features will be limited (empty extent means no limit)
     void setExtent( const QgsRectangle& extent );
 
     //! Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
-    int maxFeatureCount() const { return mMaxFeatureCount; }
+    int maxFeatureCount() const;
     //! Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
-    void setMaxFeatureCount( int count ) { mMaxFeatureCount = count; }
+    void setMaxFeatureCount( int count );
 
     //! Build the internal data structures. This may take some time
     //! depending on how big the input layers are. It is not necessary
@@ -69,7 +42,7 @@ class CORE_EXPORT QgsTracer : public QObject
     bool init();
 
     //! Whether the internal data structures have been initialized
-    bool isInitialized() const { return mGraph != nullptr; }
+    bool isInitialized() const;
 
     //! Possible errors that may happen when calling findShortestPath()
     enum PathError
@@ -84,7 +57,7 @@ class CORE_EXPORT QgsTracer : public QObject
     //! Given two points, find the shortest path and return points on the way.
     //! The optional "error" argument may receive error code (PathError enum) if it is not null
     //! @return array of points - trace of linestrings of other features (empty array one error)
-    QVector<QgsPoint> findShortestPath( const QgsPoint& p1, const QgsPoint& p2, PathError* error = nullptr );
+    QVector<QgsPoint> findShortestPath( const QgsPoint& p1, const QgsPoint& p2, QgsTracer::PathError* error /Out/ = nullptr );
 
     //! Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)
     bool isPointSnapped( const QgsPoint& pt );
@@ -93,33 +66,9 @@ class CORE_EXPORT QgsTracer : public QObject
     //! Allows derived classes to setup the settings just before the tracer is initialized.
     //! This allows the configuration to be set in a lazy way only when it is really necessary.
     //! Default implementation does nothing.
-    virtual void configure() {}
+    virtual void configure();
 
   protected slots:
     //! Destroy the existing graph structure if any (de-initialize)
     void invalidateGraph();
-
-  private:
-    bool initGraph();
-
-  private slots:
-    void onFeatureAdded( QgsFeatureId fid );
-    void onFeatureDeleted( QgsFeatureId fid );
-    void onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom );
-
-  private:
-    //! Graph data structure for path searching
-    QgsTracerGraph* mGraph;
-    //! Input layers for the graph building
-    QList<QgsVectorLayer*> mLayers;
-    //! Destination CRS in which graph is built and tracing done
-    QgsCoordinateReferenceSystem mCRS;
-    //! Extent for graph building (empty extent means no limit)
-    QgsRectangle mExtent;
-    //! Limit of how many features can be in the graph (0 means no limit).
-    //! This is to avoid possibly long graph preparation for complicated layers
-    int mMaxFeatureCount;
 };
-
-
-#endif // QGSTRACER_H

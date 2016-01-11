@@ -1,13 +1,3 @@
-#ifndef QGSMAPCANVASTRACER_H
-#define QGSMAPCANVASTRACER_H
-
-#include "qgstracer.h"
-
-class QAction;
-class QgsMapCanvas;
-class QgsMessageBar;
-class QgsMessageBarItem;
-
 /** \ingroup gui
  * Extension of QgsTracer that provides extra functionality:
  *  - automatic updates of own configuration based on canvas settings
@@ -20,9 +10,11 @@ class QgsMessageBarItem;
  *
  * @note added in QGIS 2.14
  */
-class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
+class QgsMapCanvasTracer : QgsTracer
 {
-    Q_OBJECT
+%TypeHeaderCode
+#include <qgsmapcanvastracer.h>
+%End
 
   public:
     //! Create tracer associated with a particular map canvas, optionally message bar for reporting
@@ -30,7 +22,7 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
     ~QgsMapCanvasTracer();
 
     //! Access to action that user may use to toggle tracing on/off
-    QAction* actionEnableTracing() { return mActionEnableTracing; }
+    QAction* actionEnableTracing();
 
     //! Retrieve instance of this class associated with given canvas (if any).
     //! The class keeps a simple registry of tracers associated with map canvas
@@ -38,23 +30,9 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
     static QgsMapCanvasTracer* tracerForCanvas( QgsMapCanvas* canvas );
 
     //! Report a path finding error to the user
-    void reportError( PathError err, bool addingVertex );
+    void reportError( QgsTracer::PathError err, bool addingVertex );
 
   protected:
     //! Sets configuration from current snapping settings and canvas settings
     virtual void configure();
-
-  private slots:
-    void onCurrentLayerChanged();
-
-  private:
-    QgsMapCanvas* mCanvas;
-    QgsMessageBar* mMessageBar;
-    QgsMessageBarItem* mLastMessage;
-
-    QAction* mActionEnableTracing;
-
-    static QHash<QgsMapCanvas*, QgsMapCanvasTracer*> sTracers;
 };
-
-#endif // QGSMAPCANVASTRACER_H

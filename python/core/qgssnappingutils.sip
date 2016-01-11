@@ -59,14 +59,17 @@ class QgsSnappingUtils : QObject
     /** Find out which strategy is used for indexing - by default hybrid indexing is used */
     IndexingStrategy indexingStrategy() const;
 
-    /** Configure options used when the mode is snap to current layer */
+    /** Configure options used when the mode is snap to current layer or to all layers */
     void setDefaultSettings( int type, double tolerance, QgsTolerance::UnitType unit );
-    /** Query options used when the mode is snap to current layer */
+    /** Query options used when the mode is snap to current layer or to all layers */
     void defaultSettings( int& type /Out/, double& tolerance /Out/, QgsTolerance::UnitType& unit /Out/ );
 
     struct LayerConfig
     {
       LayerConfig( QgsVectorLayer* l, const QgsPointLocator::Types& t, double tol, QgsTolerance::UnitType u );
+
+      bool operator==( const QgsSnappingUtils::LayerConfig& other ) const;
+      bool operator!=( const QgsSnappingUtils::LayerConfig& other ) const;
 
       QgsVectorLayer* layer;
       QgsPointLocator::Types type;
@@ -87,6 +90,12 @@ class QgsSnappingUtils : QObject
   public slots:
     /** Read snapping configuration from the project */
     void readConfigFromProject();
+
+  signals:
+    /** Emitted when snapping configuration has been changed
+     * @note added in QGIS 2.14
+     */
+    void configChanged();
 
   protected:
     //! Called when starting to index - can be overridden and e.g. progress dialog can be provided
