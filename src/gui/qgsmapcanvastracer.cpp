@@ -3,6 +3,7 @@
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmessagebar.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 
@@ -26,6 +27,10 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas* canvas )
   mActionEnableTracing->setShortcut( Qt::Key_T );
   mActionEnableTracing->setCheckable( true );
 
+  // arbitrarily chosen limit that should allow for fairly fast initialization
+  // of the underlying graph structure
+  setMaxFeatureCount( 10000 );
+
   updateSettings(); // initialize
   updateLayerSettings();
 }
@@ -33,6 +38,16 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas* canvas )
 QgsMapCanvasTracer::~QgsMapCanvasTracer()
 {
   sTracers.remove( mCanvas );
+}
+
+bool QgsMapCanvasTracer::init()
+{
+  bool res = QgsTracer::init();
+
+  if ( !res )
+    emit messageEmitted( tr( "Tracing disabled because there are too many features displayed. Try zooming in or disable some layers." ) );
+
+  return res;
 }
 
 QgsMapCanvasTracer* QgsMapCanvasTracer::tracerForCanvas( QgsMapCanvas* canvas )

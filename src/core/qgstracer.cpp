@@ -17,6 +17,7 @@
 
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
+#include "qgslogger.h"
 #include "qgsvectorlayer.h"
 
 #include <queue>
@@ -402,19 +403,6 @@ void reset_graph( QgsTracerGraph& g )
 }
 
 
-void print_shortest_path( const QgsTracerGraph& g, int v1, int v2 )
-{
-  qDebug( "from %d to %d", v1, v2 );
-  QVector<QgsPoint> points = shortest_path( g, v1, v2 );
-
-  if ( points.isEmpty() )
-    qDebug( "no path!" );
-
-  foreach ( QgsPoint p, points )
-    qDebug( "p: %f %f", p.x(), p.y() );
-}
-
-
 void extract_linework( QgsGeometry* g, QgsMultiPolyline& mpl )
 {
   switch ( QgsWKBTypes::flatType( g->geometry()->wkbType() ) )
@@ -449,14 +437,15 @@ void extract_linework( QgsGeometry* g, QgsMultiPolyline& mpl )
 
 QgsTracer::QgsTracer()
     : mGraph( 0 )
+    , mMaxFeatureCount( 0 )
 {
 }
 
 
-void QgsTracer::initGraph()
+bool QgsTracer::initGraph()
 {
   if ( mGraph )
-    return; // already initialized
+    return true; // already initialized
 
   QgsFeature f;
   QgsMultiPolyline mpl;
@@ -468,6 +457,7 @@ void QgsTracer::initGraph()
   QTime t1, t2, t2a, t3;
 
   t1.start();
+  int featuresCounted = 0;
   foreach ( QgsVectorLayer* vl, mLayers )
   {
     QgsCoordinateTransform ct( vl->crs(), mCRS );
@@ -496,9 +486,13 @@ void QgsTracer::initGraph()
       }
 
       extract_linework( f.geometry(), mpl );
+      ++featuresCounted;
     }
   }
   int timeExtract = t1.elapsed();
+
+  if ( mMaxFeatureCount != 0 && featuresCounted >= mMaxFeatureCount )
+    return false;
 
   // resolve intersections
 
@@ -531,7 +525,9 @@ void QgsTracer::initGraph()
 
   int timeMake = t3.elapsed();
 
-  qDebug( "tracer extract %d ms, noding %d ms (call %d ms), make %d ms", timeExtract, timeNoding, timeNodingCall, timeMake );
+  QgsDebugMsg( QString( "tracer extract %1 ms, noding %2 ms (call %3 ms), make %4 ms" )
+               .arg ( timeExtract ).arg( timeNoding ).arg ( timeNodingCall ).arg( timeMake ) );
+  return true;
 }
 
 QgsTracer::~QgsTracer()
@@ -581,12 +577,12 @@ void QgsTracer::setExtent( const QgsRectangle& extent )
   invalidateGraph();
 }
 
-void QgsTracer::init()
+bool QgsTracer::init()
 {
   if ( mGraph )
-    return;
+    return true;
 
-  initGraph();
+  return initGraph();
 }
 
 
@@ -618,6 +614,8 @@ void QgsTracer::onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom )
 QVector<QgsPoint> QgsTracer::findShortestPath( const QgsPoint& p1, const QgsPoint& p2 )
 {
   init();  // does nothing if the graph exists already
+  if ( !mGraph )
+    return QVector<QgsPoint>();
 
   QTime t;
   t.start();
@@ -630,7 +628,7 @@ QVector<QgsPoint> QgsTracer::findShortestPath( const QgsPoint& p1, const QgsPoin
   QgsPolyline points = shortest_path( *mGraph, v1, v2 );
   int tPath = t2.elapsed();
 
-  qDebug( "path timing: prep %d ms, path %d ms", tPrep, tPath );
+  QgsDebugMsg( QString( "path timing: prep %1 ms, path %2 ms" ).arg( tPrep ).arg( tPath ) );
 
   reset_graph( *mGraph );
 
@@ -640,6 +638,8 @@ QVector<QgsPoint> QgsTracer::findShortestPath( const QgsPoint& p1, const QgsPoin
 bool QgsTracer::isPointSnapped( const QgsPoint& pt )
 {
   init();  // does nothing if the graph exists already
+  if ( !mGraph )
+    return false;
 
   if ( point2vertex( *mGraph, pt ) != -1 )
     return true;

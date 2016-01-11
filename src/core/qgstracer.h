@@ -57,11 +57,16 @@ class CORE_EXPORT QgsTracer : public QObject
     //! Set extent to which graph's features will be limited (empty extent means no limit)
     void setExtent( const QgsRectangle& extent );
 
+    //! Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
+    int maxFeatureCount() const { return mMaxFeatureCount; }
+    //! Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
+    void setMaxFeatureCount( int count ) { mMaxFeatureCount = count; }
+
     //! Build the internal data structures. This may take some time
     //! depending on how big the input layers are. It is not necessary
     //! to call this method explicitly - it will be called by findShortestPath()
     //! if necessary.
-    void init();
+    virtual bool init();
 
     //! Given two points, find the shortest path and return points on the way.
     //! If the points are not located on existing vertices or edges,
@@ -73,7 +78,7 @@ class CORE_EXPORT QgsTracer : public QObject
     bool isPointSnapped( const QgsPoint& pt );
 
   private:
-    void initGraph();
+    bool initGraph();
     void invalidateGraph();
 
   private slots:
@@ -90,6 +95,9 @@ class CORE_EXPORT QgsTracer : public QObject
     QgsCoordinateReferenceSystem mCRS;
     //! Extent for graph building (empty extent means no limit)
     QgsRectangle mExtent;
+    //! Limit of how many features can be in the graph (0 means no limit).
+    //! This is to avoid possibly long graph preparation for complicated layers
+    int mMaxFeatureCount;
 };
 
 

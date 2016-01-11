@@ -174,6 +174,9 @@ void QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent* e )
   if ( !tracer )
     return;  // this should not happen!
 
+  if ( !tracer->init() )  // normally no-op if the graph is built already
+    return;  // graph would be too big
+
   mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QGis::Polygon : QGis::Line );
 
   QVector<QgsPoint> points = tracer->findShortestPath( pt0, e->mapPoint() );
@@ -189,11 +192,16 @@ void QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent* e )
 }
 
 
-bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point )
+bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point, bool& pathNotFound )
 {
+  pathNotFound = false;
+
   QgsMapCanvasTracer* tracer = QgsMapCanvasTracer::tracerForCanvas( mCanvas );
   if ( !tracer )
     return false;  // this should not happen!
+
+  if ( !tracer->init() )  // normally no-op if the graph is built already
+    return false;  // graph would be too big
 
   if ( mCaptureCurve.numPoints() == 0 )
   {
@@ -216,7 +224,10 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point )
 
   QVector<QgsPoint> points = tracer->findShortestPath( pt0, point );
   if ( points.isEmpty() )
+  {
+    pathNotFound = true;
     return false; // ignore the vertex - can't find path to the end point!
+  }
 
   // transform points
   QList<QgsPointV2> layerPoints;
@@ -358,9 +369,12 @@ int QgsMapToolCapture::addVertex( const QgsPoint& point )
 
   if ( tracingEnabled() )
   {
-    if ( !tracingAddVertex( point ) )
+    bool pathNotFound;
+    bool res = tracingAddVertex( point, pathNotFound );
+    if ( !res )
     {
-      emit messageEmitted( tr( "Tracing: The point needs to be snapped to a geometry" ), QgsMessageBar::WARNING );
+      if ( pathNotFound )
+        emit messageEmitted( tr( "Tracing: The point needs to be snapped to a geometry" ), QgsMessageBar::WARNING );
       return 1;  // early exit if the point cannot be accepted
     }
   }

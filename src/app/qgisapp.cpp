@@ -1976,6 +1976,8 @@ void QgisApp::createToolBars()
 
   mTracer = new QgsMapCanvasTracer( mMapCanvas );
   mAdvancedDigitizeToolBar->insertAction( mActionUndo, mTracer->actionEnableTracing() );
+  connect( mTracer, SIGNAL( messageEmitted( QString, QgsMessageBar::MessageLevel ) ),
+           this, SLOT( displayMapToolMessage( QString, QgsMessageBar::MessageLevel ) ) );
 }
 
 void QgisApp::createStatusBar()
