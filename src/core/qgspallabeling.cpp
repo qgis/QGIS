@@ -200,6 +200,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   labelOffsetInMapUnits = true;
   dist = 0;
   distInMapUnits = false;
+  offsetType = FromPoint;
   angleOffset = 0;
   preserveRotation = true;
   maxCurvedCharAngleIn = 20.0;
@@ -424,6 +425,7 @@ QgsPalLayerSettings& QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   labelOffsetInMapUnits = s.labelOffsetInMapUnits;
   labelOffsetMapUnitScale = s.labelOffsetMapUnitScale;
   dist = s.dist;
+  offsetType = s.offsetType;
   distInMapUnits = s.distInMapUnits;
   distMapUnitScale = s.distMapUnitScale;
   angleOffset = s.angleOffset;
@@ -948,6 +950,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   distInMapUnits = layer->customProperty( "labeling/distInMapUnits" ).toBool();
   distMapUnitScale.minScale = layer->customProperty( "labeling/distMapUnitMinScale", 0.0 ).toDouble();
   distMapUnitScale.maxScale = layer->customProperty( "labeling/distMapUnitMaxScale", 0.0 ).toDouble();
+  offsetType = static_cast< OffsetType >( layer->customProperty( "labeling/offsetType", QVariant( FromPoint ) ).toUInt() );
   quadOffset = static_cast< QuadrantPosition >( layer->customProperty( "labeling/quadOffset", QVariant( QuadrantOver ) ).toUInt() );
   xOffset = layer->customProperty( "labeling/xOffset", QVariant( 0.0 ) ).toDouble();
   yOffset = layer->customProperty( "labeling/yOffset", QVariant( 0.0 ) ).toDouble();
@@ -1124,6 +1127,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/distInMapUnits", distInMapUnits );
   layer->setCustomProperty( "labeling/distMapUnitMinScale", distMapUnitScale.minScale );
   layer->setCustomProperty( "labeling/distMapUnitMaxScale", distMapUnitScale.maxScale );
+  layer->setCustomProperty( "labeling/offsetType", static_cast< unsigned int >( offsetType ) );
   layer->setCustomProperty( "labeling/quadOffset", static_cast< unsigned int >( quadOffset ) );
   layer->setCustomProperty( "labeling/xOffset", xOffset );
   layer->setCustomProperty( "labeling/yOffset", yOffset );
@@ -1326,6 +1330,7 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   distInMapUnits = placementElem.attribute( "distInMapUnits" ).toInt();
   distMapUnitScale.minScale = placementElem.attribute( "distMapUnitMinScale", "0" ).toDouble();
   distMapUnitScale.maxScale = placementElem.attribute( "distMapUnitMaxScale", "0" ).toDouble();
+  offsetType = static_cast< OffsetType >( placementElem.attribute( "offsetType", QString::number( FromPoint ) ).toUInt() );
   quadOffset = static_cast< QuadrantPosition >( placementElem.attribute( "quadOffset", QString::number( QuadrantOver ) ).toUInt() );
   xOffset = placementElem.attribute( "xOffset", "0" ).toDouble();
   yOffset = placementElem.attribute( "yOffset", "0" ).toDouble();
@@ -1488,6 +1493,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   placementElem.setAttribute( "distInMapUnits", distInMapUnits );
   placementElem.setAttribute( "distMapUnitMinScale", distMapUnitScale.minScale );
   placementElem.setAttribute( "distMapUnitMaxScale", distMapUnitScale.maxScale );
+  placementElem.setAttribute( "offsetType", static_cast< unsigned int >( offsetType ) );
   placementElem.setAttribute( "quadOffset", static_cast< unsigned int >( quadOffset ) );
   placementElem.setAttribute( "xOffset", xOffset );
   placementElem.setAttribute( "yOffset", yOffset );
@@ -2299,9 +2305,9 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     if ( obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : nullptr ) )
     {
       scopedObstacleGeom.reset( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : nullptr ) );
-      geosObstacleGeom = scopedObstacleGeom.data()->asGeos();
+      obstacleGeometry = scopedObstacleGeom.data();
     }
-    else if ( obstacleGeometry )
+    if ( obstacleGeometry )
     {
       geosObstacleGeom = obstacleGeometry->asGeos();
     }
@@ -2670,12 +2676,20 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   ( *labelFeature )->setFixedAngle( angle );
   ( *labelFeature )->setQuadOffset( QPointF( quadOffsetX, quadOffsetY ) );
   ( *labelFeature )->setPositionOffset( QgsPoint( offsetX, offsetY ) );
+  ( *labelFeature )->setOffsetType( offsetType );
   ( *labelFeature )->setAlwaysShow( alwaysShow );
   ( *labelFeature )->setRepeatDistance( repeatDist );
   ( *labelFeature )->setLabelText( labelText );
   if ( geosObstacleGeomClone )
   {
     ( *labelFeature )->setObstacleGeometry( geosObstacleGeomClone );
+
+    if ( geom->type() == QGis::Point )
+    {
+      //register symbol size
+      ( *labelFeature )->setSymbolSize( QSizeF( obstacleGeometry->boundingBox().width(),
+                                        obstacleGeometry->boundingBox().height() ) );
+    }
   }
 
   //set label's visual margin so that top visual margin is the leading, and bottom margin is the font's descent
@@ -2684,7 +2698,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   double bottomMargin = 1.0 + labelFontMetrics->descent();
   QgsLabelFeature::VisualMargin vm( topMargin, 0.0, bottomMargin, 0.0 );
   vm *= xform->mapUnitsPerPixel() / rasterCompressFactor;
-  ( *labelFeature )->setVisualMargin( vm  );
+  ( *labelFeature )->setVisualMargin( vm );
 
   // store the label's calculated font for later use during painting
   QgsDebugMsgLevel( QString( "PAL font stored definedFont: %1, Style: %2" ).arg( labelFont.toString(), labelFont.styleName() ), 4 );

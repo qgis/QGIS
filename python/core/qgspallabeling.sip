@@ -121,6 +121,14 @@ class QgsPalLayerSettings
       BottomRight, //!< Label on bottom right of point
     };
 
+    //! Behaviour modifier for label offset and distance, only applies in some
+    //! label placement modes.
+    enum OffsetType
+    {
+      FromPoint, //!< Offset distance applies from point geometry
+      FromSymbolBounds, //!< Offset distance applies from rendered symbol bounds
+    };
+
     /** Line placement flags, which control how candidates are generated for a linear feature.
      */
     enum LinePlacementFlags
@@ -468,6 +476,9 @@ class QgsPalLayerSettings
     double dist; // distance from the feature (in mm)
     bool distInMapUnits; //true if distance is in map units (otherwise in mm)
     QgsMapUnitScale distMapUnitScale;
+
+    //! Offset type for layer (only applies in certain placement modes)
+    OffsetType offsetType;
 
     double repeatDistance;
     SizeUnit repeatDistanceUnit;

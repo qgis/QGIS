@@ -23,7 +23,7 @@ import sys
 from PyQt4.QtCore import Qt, QPointF, QThreadPool
 from PyQt4.QtGui import QFont
 
-from qgis.core import QgsPalLayerSettings
+from qgis.core import QgsPalLayerSettings, QgsSingleSymbolRendererV2, QgsMarkerSymbolV2
 from unittest import skip
 from utilities import (
     svgSymbolsPath,
@@ -255,6 +255,26 @@ class TestPointPlacement(TestPlacementBase):
         self.removeMapLayer(obstacleLayer)
         self.removeMapLayer(self.layer)
         self.lyr.removeDataDefinedProperty(QgsPalLayerSettings.PredefinedPositionOrder)
+        self.layer = None
+
+    def test_point_ordered_symbol_bound_offset(self):
+        # Test ordered placements for point using symbol bounds offset
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_placement')
+        # Make a big symbol
+        symbol = QgsMarkerSymbolV2.createSimple({u'color': u'31,120,180,255',
+                                                 u'outline_color': u'0,0,0,0',
+                                                 u'outline_style': u'solid',
+                                                 u'size': u'10',
+                                                 u'name': u'rectangle',
+                                                 u'size_unit': u'MM'})
+        renderer = QgsSingleSymbolRendererV2(symbol)
+        self.layer.setRendererV2(renderer)
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
+        self.lyr.dist = 2
+        self.lyr.offsetType = QgsPalLayerSettings.FromSymbolBounds
+        self.checkTest()
+        self.removeMapLayer(self.layer)
         self.layer = None
 
 if __name__ == '__main__':

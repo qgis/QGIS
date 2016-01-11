@@ -126,6 +126,21 @@ class CORE_EXPORT QgsLabelFeature
      */
     const VisualMargin& visualMargin() const { return mVisualMargin; }
 
+    /** Sets the size of the rendered symbol associated with this feature. This size is taken into
+     * account in certain label placement modes to avoid placing labels over the rendered
+     * symbol for this feature.
+     * @see symbolSize()
+     */
+    void setSymbolSize( const QSizeF& size ) { mSymbolSize = size; }
+
+    /** Returns the size of the rendered symbol associated with this feature, if applicable.
+     * This size is taken into account in certain label placement modes to avoid placing labels over
+     * the rendered symbol for this feature. The size will only be set for labels associated
+     * with a point feature.
+     * @see symbolSize()
+     */
+    const QSizeF& symbolSize() const { return mSymbolSize; }
+
     /** Returns the feature's labeling priority.
      * @returns feature's priority, as a value between 0 (highest priority)
      * and 1 (lowest priority). Returns -1.0 if feature will use the layer's default priority.
@@ -199,6 +214,21 @@ class CORE_EXPORT QgsLabelFeature
     //! Applies only to "offset from point" placement strategy.
     //! Set what offset (in map units) to use from the point
     void setPositionOffset( const QgsPoint& offset ) { mPositionOffset = offset; }
+
+    /** Returns the offset type, which determines how offsets and distance to label
+     * behaves. Support depends on which placement mode is used for generating
+     * label candidates.
+     * @see setOffsetType()
+     */
+    QgsPalLayerSettings::OffsetType offsetType() const { return mOffsetType; }
+
+    /** Sets the offset type, which determines how offsets and distance to label
+     * behaves. Support depends on which placement mode is used for generating
+     * label candidates.
+     * @see offsetType()
+     */
+    void setOffsetType( QgsPalLayerSettings::OffsetType type ) { mOffsetType = type; }
+
     //! Applies to "around point" placement strategy or linestring features.
     //! Distance of the label from the feature (in map units)
     double distLabel() const { return mDistLabel; }
@@ -290,6 +320,8 @@ class CORE_EXPORT QgsLabelFeature
     QSizeF mSize;
     //! Visual margin of label contents
     VisualMargin mVisualMargin;
+    //! Size of associated rendered symbol, if applicable
+    QSizeF mSymbolSize;
     //! Priority of the label
     double mPriority;
     //! Z-index of label (higher z-index labels are rendered on top of lower z-index labels)
@@ -310,6 +342,8 @@ class CORE_EXPORT QgsLabelFeature
     QgsPoint mPositionOffset;
     //! distance of label from the feature (only for "around point" placement or linestrings)
     double mDistLabel;
+    //! Offset type for certain placement modes
+    QgsPalLayerSettings::OffsetType mOffsetType;
     //! Ordered list of predefined positions for label (only for OrderedPositionsAroundPoint placement)
     QVector< QgsPalLayerSettings::PredefinedPointPosition > mPredefinedPositionOrder;
     //! distance after which label should be repeated (only for linestrings)

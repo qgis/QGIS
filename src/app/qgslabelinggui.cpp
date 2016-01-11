@@ -111,6 +111,9 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   mObstacleTypeComboBox->addItem( tr( "Over the feature's interior" ), QgsPalLayerSettings::PolygonInterior );
   mObstacleTypeComboBox->addItem( tr( "Over the feature's boundary" ), QgsPalLayerSettings::PolygonBoundary );
 
+  mOffsetTypeComboBox->addItem( tr( "From point" ), QgsPalLayerSettings::FromPoint );
+  mOffsetTypeComboBox->addItem( tr( "From symbol bounds" ), QgsPalLayerSettings::FromSymbolBounds );
+
   mCharDlg = new QgsCharacterSelectorDialog( this );
 
   mRefFont = lblFontPreview->font();
@@ -336,6 +339,7 @@ void QgsLabelingGui::init()
   mLineDistanceSpnBx->setValue( lyr.dist );
   mLineDistanceUnitWidget->setUnit( lyr.distInMapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
   mLineDistanceUnitWidget->setMapUnitScale( lyr.distMapUnitScale );
+  mOffsetTypeComboBox->setCurrentIndex( mOffsetTypeComboBox->findData( lyr.offsetType ) );
   mQuadrantBtnGrp->button(( int )lyr.quadOffset )->setChecked( true );
   mPointOffsetXSpinBox->setValue( lyr.xOffset );
   mPointOffsetYSpinBox->setValue( lyr.yOffset );
@@ -639,6 +643,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.dist = mLineDistanceSpnBx->value();
   lyr.distInMapUnits = ( mLineDistanceUnitWidget->unit() == QgsSymbolV2::MapUnit );
   lyr.distMapUnitScale = mLineDistanceUnitWidget->getMapUnitScale();
+  lyr.offsetType = static_cast< QgsPalLayerSettings::OffsetType >( mOffsetTypeComboBox->itemData( mOffsetTypeComboBox->currentIndex() ).toInt() );
   lyr.quadOffset = ( QgsPalLayerSettings::QuadrantPosition )mQuadrantBtnGrp->checkedId();
   lyr.xOffset = mPointOffsetXSpinBox->value();
   lyr.yOffset = mPointOffsetYSpinBox->value();
@@ -1368,6 +1373,7 @@ void QgsLabelingGui::updatePlacementWidgets()
   bool showQuadrantFrame = false;
   bool showFixedQuadrantFrame = false;
   bool showPlacementPriorityFrame = false;
+  bool showOffsetTypeFrame = false;
   bool showOffsetFrame = false;
   bool showDistanceFrame = false;
   bool showRotationFrame = false;
@@ -1399,6 +1405,7 @@ void QgsLabelingGui::updatePlacementWidgets()
   {
     showDistanceFrame = true;
     showPlacementPriorityFrame = true;
+    showOffsetTypeFrame  = true;
   }
   else if (( curWdgt == pageLine && radLineParallel->isChecked() )
            || ( curWdgt == pagePolygon && radPolygonPerimeter->isChecked() )
@@ -1424,6 +1431,7 @@ void QgsLabelingGui::updatePlacementWidgets()
   mPlacementCartographicFrame->setVisible( showPlacementPriorityFrame );
   mPlacementOffsetFrame->setVisible( showOffsetFrame );
   mPlacementDistanceFrame->setVisible( showDistanceFrame );
+  mPlacementOffsetTypeFrame->setVisible( showOffsetTypeFrame );
   mPlacementRotationFrame->setVisible( showRotationFrame );
   mPlacementRepeatDistanceFrame->setVisible( curWdgt == pageLine || ( curWdgt == pagePolygon && radPolygonPerimeter->isChecked() ) );
   mPlacementMaxCharAngleFrame->setVisible( showMaxCharAngleFrame );

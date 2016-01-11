@@ -521,7 +521,7 @@
               <item>
                <widget class="QStackedWidget" name="mLabelStackedWidget">
                 <property name="currentIndex">
-                 <number>5</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="mLabelPage_Text">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -560,8 +560,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>346</width>
-                       <height>388</height>
+                       <width>594</width>
+                       <height>398</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -3659,9 +3659,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-114</y>
+                       <y>0</y>
                        <width>578</width>
-                       <height>866</height>
+                       <height>899</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -3713,7 +3713,7 @@ font-style: italic;</string>
                             <enum>QFrame::Sunken</enum>
                            </property>
                            <property name="currentIndex">
-                            <number>0</number>
+                            <number>2</number>
                            </property>
                            <widget class="QWidget" name="pagePoint">
                             <layout class="QGridLayout" name="gridLayout_13" columnstretch="0,0,0,0">
@@ -4157,6 +4157,58 @@ font-style: italic;</string>
                          </item>
                          <item row="1" column="1">
                           <widget class="QgsUnitSelectionWidget" name="mLineDistanceUnitWidget" native="true"/>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="mPlacementOffsetTypeFrame">
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::NoFrame</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Raised</enum>
+                        </property>
+                        <layout class="QGridLayout" name="gridLayout_40">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="verticalSpacing">
+                          <number>12</number>
+                         </property>
+                         <item row="0" column="0">
+                          <widget class="QLabel" name="label_42">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Distance offset from</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="1">
+                          <widget class="QComboBox" name="mOffsetTypeComboBox"/>
                          </item>
                         </layout>
                        </widget>
@@ -5223,7 +5275,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>429</width>
+                       <width>578</width>
                        <height>799</height>
                       </rect>
                      </property>
@@ -6441,6 +6493,7 @@ font-style: italic;</string>
   <tabstop>mLineDistanceSpnBx</tabstop>
   <tabstop>mLineDistanceDDBtn</tabstop>
   <tabstop>mLineDistanceUnitDDBtn</tabstop>
+  <tabstop>mOffsetTypeComboBox</tabstop>
   <tabstop>mPointPositionOrderDDBtn</tabstop>
   <tabstop>mPointAngleSpinBox</tabstop>
   <tabstop>mPointAngleDDBtn</tabstop>

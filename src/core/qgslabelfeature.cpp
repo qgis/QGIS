@@ -30,6 +30,7 @@ QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const
     , mFixedAngle( 0 )
     , mHasFixedQuadrant( false )
     , mDistLabel( 0 )
+    , mOffsetType( QgsPalLayerSettings::FromPoint )
     , mRepeatDistance( 0 )
     , mAlwaysShow( false )
     , mIsObstacle( false )
