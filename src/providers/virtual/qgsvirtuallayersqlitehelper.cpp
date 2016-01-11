@@ -27,7 +27,7 @@ QgsScopedSqlite::QgsScopedSqlite( const QString& path, bool withExtension )
   {
     // register a statically-linked function as extension
     // for all future database connection
-    sqlite3_auto_extension( reinterpret_cast < void( * )() > ( qgsvlayer_module_init ) );
+    sqlite3_auto_extension( reinterpret_cast < void( * )() > ( qgsvlayerModuleInit ) );
   }
   int r;
   r = sqlite3_open( path.toLocal8Bit().constData(), &db_ );

@@ -21,9 +21,9 @@ extern "C"
 {
 #include <sqlite3.h>
 
-  int qgsvlayer_module_init( sqlite3 *db,
-                             char **pzErrMsg,
-                             void * unused /*const sqlite3_api_routines *pApi*/ );
+  int qgsvlayerModuleInit( sqlite3 *db,
+                           char **pzErrMsg,
+                           void * unused /*const sqlite3_api_routines *pApi*/ );
 
 }
 
