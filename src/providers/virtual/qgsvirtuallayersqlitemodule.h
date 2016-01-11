@@ -54,15 +54,6 @@ extern "C"
 #include <qgsgeometry.h>
 
 /**
- * Convert a spatialite geometry blob to a QgsGeometry
- *
- * \param blob Pointer to the raw blob memory
- * \param size Size in bytes of the blob
- * \returns a QgsGeometry (that are implicitly shared)
- */
-QgsGeometry spatialite_blob_to_qgsgeometry( const unsigned char* blob, size_t size );
-
-/**
  * Init the SQLite file with proper metadata tables
  */
 void initVirtualLayerMetadata( sqlite3* db );

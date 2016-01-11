@@ -20,6 +20,7 @@ email                : hugo dot mercier at oslandia dot com
 #include <stdexcept>
 
 #include <QCoreApplication>
+#include <QBuffer>
 
 #include <qgsapplication.h>
 #include <qgsvectorlayer.h>
@@ -636,6 +637,178 @@ void module_destroy( void* )
   }
 }
 
+// the expression context used for calling qgis functions
+QgsExpressionContext qgisFunctionExpressionContext;
+
+void qgisFunctionWrapper( sqlite3_context* ctxt, int nArgs, sqlite3_value** args )
+{
+  // convert from sqlite3 value to QVariant and then call the qgis expression function
+  // the 3 basic sqlite3 types (int, float, text) are converted to their QVariant equivalent
+  // Expression::Interval is handled specifically
+  // geometries are converted between spatialite and QgsGeometry
+  // other data types (datetime mainly) are represented as BLOBs thanks to QVariant serializing functions
+
+  QgsExpression::Function* foo = reinterpret_cast<QgsExpression::Function*>( sqlite3_user_data( ctxt ) );
+
+  QVariantList variants;
+  for ( int i = 0; i < nArgs; i++ )
+  {
+    int t = sqlite3_value_type( args[i] );
+    switch ( t )
+    {
+      case SQLITE_INTEGER:
+        variants << QVariant( sqlite3_value_int64( args[i] ) );
+        break;
+      case SQLITE_FLOAT:
+        variants << QVariant( sqlite3_value_double( args[i] ) );
+        break;
+      case SQLITE_TEXT:
+      {
+        int n = sqlite3_value_bytes( args[i] );
+        const char* t = reinterpret_cast<const char*>( sqlite3_value_text( args[i] ) );
+        QString str( QByteArray::fromRawData( t, n ) ); // don't copy data
+        variants << QVariant( str );
+        break;
+      }
+      case SQLITE_BLOB:
+      {
+        int n = sqlite3_value_bytes( args[i] );
+        const char* blob = reinterpret_cast<const char*>( sqlite3_value_blob( args[i] ) );
+        // spatialite blobs start with a 0 byte
+        if ( n > 0 && blob[0] == 0 )
+        {
+          QgsGeometry geom = spatialiteBlobToQgsGeometry( blob, n );
+          variants << QVariant::fromValue( geom );
+        }
+        else
+        {
+          // else it is another type
+          QByteArray ba = QByteArray::fromRawData( blob + 1, n - 1 );
+          QBuffer buffer( &ba );
+          buffer.open( QIODevice::ReadOnly );
+          QDataStream ds( &buffer );
+          QVariant v;
+          ds >> v;
+          buffer.close();
+          variants << v;
+        }
+        break;
+      }
+      default:
+        variants << QVariant(); // null
+        break;
+    };
+  }
+
+  QgsExpression parentExpr( "" );
+  QVariant ret = foo->func( variants, &qgisFunctionExpressionContext, &parentExpr );
+  if ( parentExpr.hasEvalError() )
+  {
+    QByteArray ba = parentExpr.evalErrorString().toUtf8();
+    sqlite3_result_error( ctxt, ba.constData(), ba.size() );
+    return;
+  }
+
+  if ( ret.isNull() )
+  {
+    sqlite3_result_null( ctxt );
+    return;
+  }
+
+  switch ( ret.type() )
+  {
+    case QVariant::Bool:
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+      sqlite3_result_int64( ctxt, ret.toLongLong() );
+      break;
+    case QVariant::Double:
+      sqlite3_result_double( ctxt, ret.toDouble() );
+      break;
+    case QVariant::String:
+    {
+      QByteArray ba( ret.toByteArray() );
+      sqlite3_result_text( ctxt, ba.constData(), ba.size(), SQLITE_TRANSIENT );
+      break;
+    }
+    case QVariant::UserType:
+    {
+      if ( ret.canConvert<QgsGeometry>() )
+      {
+        char* blob = nullptr;
+        int size = 0;
+        qgsGeometryToSpatialiteBlob( ret.value<QgsGeometry>(), /*srid*/0, blob, size );
+        sqlite3_result_blob( ctxt, blob, size, deleteGeometryBlob );
+      }
+      else if ( ret.canConvert<QgsExpression::Interval>() )
+      {
+        sqlite3_result_double( ctxt, ret.value<QgsExpression::Interval>().seconds() );
+      }
+      break;
+    }
+    default:
+    {
+      QBuffer buffer;
+      buffer.open( QBuffer::ReadWrite );
+      QDataStream ds( &buffer );
+      // something different from 0 (to distinguish from the first byte of a geometry blob)
+      char type = 1;
+      buffer.write( &type, 1 );
+      // then the serialized version of the variant
+      ds << ret;
+      buffer.close();
+      sqlite3_result_blob( ctxt, buffer.buffer().constData(), buffer.buffer().size(), SQLITE_TRANSIENT );
+    }
+  };
+}
+
+void registerQgisFunctions( sqlite3* db )
+{
+  QStringList excludedFunctions;
+  excludedFunctions << "min" << "max" << "coalesce" << "get_feature" << "getFeature" << "attribute";
+  QStringList reservedFunctions;
+  reservedFunctions << "left" << "right" << "union";
+  // register QGIS expression functions
+  foreach ( QgsExpression::Function* foo, QgsExpression::Functions() )
+  {
+    if ( foo->usesgeometry() || foo->lazyEval() )
+    {
+      // there is no "current" feature here, so calling functions that access "the" geometry does not make sense
+      // also, we can't pass Node values for lazy evaluations
+      continue;
+    }
+    if ( excludedFunctions.contains( foo->name() ) )
+      continue;
+
+    QStringList names;
+    names << foo->name();
+    names << foo->aliases();
+
+    foreach ( QString name, names ) // for each alias
+    {
+      if ( reservedFunctions.contains( name ) ) // reserved keyword
+        name = "_" + name;
+      if ( name.startsWith( "$" ) )
+        continue;
+
+      // register the function and pass the pointer to the Function* as user data
+      int r = sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
+      if ( r != SQLITE_OK )
+      {
+        // is it because a function of the same name already exist (in Spatialite for instance ?)
+        // we then try to recreate it with a prefix
+        name = "qgis_" + name;
+        r = sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
+      }
+    }
+  }
+
+  // initialize the expression context
+  qgisFunctionExpressionContext << QgsExpressionContextUtils::globalScope();
+  qgisFunctionExpressionContext << QgsExpressionContextUtils::projectScope();
+}
+
 int qgsvlayer_module_init( sqlite3 *db, char **pzErrMsg, void * unused /*const sqlite3_api_routines *pApi*/ )
 {
   Q_UNUSED( pzErrMsg );
@@ -681,6 +854,8 @@ int qgsvlayer_module_init( sqlite3 *db, char **pzErrMsg, void * unused /*const s
   module.xRollbackTo = nullptr;
 
   sqlite3_create_module_v2( db, "QgsVLayer", &module, nullptr, module_destroy );
+
+  registerQgisFunctions( db );
 
   return rc;
 }
