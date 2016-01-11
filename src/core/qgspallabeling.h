@@ -456,6 +456,7 @@ class CORE_EXPORT QgsPalLayerSettings
     /** Ordered list of predefined label positions for points. Positions earlier
      * in the list will be prioritised over later positions. Only used when the placement
      * is set to QgsPalLayerSettings::OrderedPositionsAroundPoint.
+     * @note not available in Python bindings
      */
     QVector< PredefinedPointPosition > predefinedPositionOrder;
 
