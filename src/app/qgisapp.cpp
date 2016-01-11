@@ -230,6 +230,8 @@
 #include "qgsmaprendererparalleljob.h"
 #include "qgsversioninfo.h"
 #include "qgslegendfilterbutton.h"
+#include "qgsvirtuallayerdefinition.h"
+#include "qgsvirtuallayerdefinitionutils.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -1415,6 +1417,7 @@ void QgisApp::createActions()
   connect( mActionAddWcsLayer, SIGNAL( triggered() ), this, SLOT( addWcsLayer() ) );
   connect( mActionAddWfsLayer, SIGNAL( triggered() ), this, SLOT( addWfsLayer() ) );
   connect( mActionAddDelimitedText, SIGNAL( triggered() ), this, SLOT( addDelimitedTextLayer() ) );
+  connect( mActionAddVirtualLayer, SIGNAL( triggered() ), this, SLOT( addVirtualLayer() ) );
   connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
   connect( mActionOpenFieldCalc, SIGNAL( triggered() ), this, SLOT( fieldCalculator() ) );
   connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
@@ -3758,10 +3761,47 @@ void QgisApp::addDelimitedTextLayer()
   delete dts;
 } // QgisApp::addDelimitedTextLayer()
 
+void QgisApp::addVirtualLayer()
+{
+  // show the Delimited text dialog
+  QDialog *dts = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "virtual", this ) );
+  if ( !dts )
+  {
+    QMessageBox::warning( this, tr( "Virtual layer" ), tr( "Cannot get virtual layer select dialog from provider." ) );
+    return;
+  }
+  connect( dts, SIGNAL( addVectorLayer( QString, QString, QString ) ),
+           this, SLOT( addSelectedVectorLayer( QString, QString, QString ) ) );
+  connect( dts, SIGNAL( replaceVectorLayer( QString, QString, QString ) ),
+           this, SLOT( replaceSelectedVectorLayer( QString, QString, QString ) ) );
+  dts->exec();
+  delete dts;
+} // QgisApp::addVirtualLayer()
+
 void QgisApp::addSelectedVectorLayer( const QString& uri, const QString& layerName, const QString& provider )
 {
   addVectorLayer( uri, layerName, provider );
 } // QgisApp:addSelectedVectorLayer
+
+void QgisApp::replaceSelectedVectorLayer( const QString& uri, const QString& layerName, const QString& provider )
+{
+  QList<QgsMapLayer*> selected = mLayerTreeView->selectedLayers();
+  if ( selected.size() != 1 && selected[0]->type() != QgsMapLayer::VectorLayer )
+    return;
+
+  QgsVectorLayer* oldLayer = static_cast<QgsVectorLayer*>( selected[0] );
+  QgsVectorLayer* newLayer = new QgsVectorLayer( uri, layerName, provider );
+  if ( !newLayer || !newLayer->isValid() )
+    return;
+
+  QgsMapLayerRegistry::instance()->addMapLayer( newLayer, /*addToLegend*/ false, /*takeOwnership*/ true );
+  duplicateVectorStyle( oldLayer, newLayer );
+
+  // insert the new layer just below the old one
+  QgsLayerTreeUtils::insertLayerBelow( QgsProject::instance()->layerTreeRoot(), oldLayer, newLayer );
+  // and remove the old layer
+  QgsMapLayerRegistry::instance()->removeMapLayer( oldLayer );
+} // QgisApp:replaceSelectedVectorLayer
 
 void QgisApp::addMssqlLayer()
 {
@@ -7367,11 +7407,57 @@ QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
   return editLayers;
 }
 
+void QgisApp::duplicateVectorStyle( QgsVectorLayer* srcLayer, QgsVectorLayer* destLayer )
+{
+  // copy symbology, if possible
+  if ( srcLayer->geometryType() == destLayer->geometryType() )
+  {
+    QDomImplementation DomImplementation;
+    QDomDocumentType documentType =
+      DomImplementation.createDocumentType(
+        "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+    QDomDocument doc( documentType );
+    QDomElement rootNode = doc.createElement( "qgis" );
+    rootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
+    doc.appendChild( rootNode );
+    QString errorMsg;
+    srcLayer->writeSymbology( rootNode, doc, errorMsg );
+    destLayer->readSymbology( rootNode, errorMsg );
+  }
+}
+
 void QgisApp::layerSubsetString()
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !vlayer )
     return;
+
+  if ( !vlayer->vectorJoins().isEmpty() )
+  {
+    if ( QMessageBox::question( NULL, tr( "Filter on joined fields" ),
+                                tr( "You are about to set a subset filter on a layer that has joined fields. "
+                                    "Joined fields cannot be filtered, unless you convert the layer to a virtual layer first. "
+                                    "Would you like to create a virtual layer out of this layer first ?" ),
+                                QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+    {
+      QgsVirtualLayerDefinition def = QgsVirtualLayerDefinitionUtils::fromJoinedLayer( vlayer );
+      QgsVectorLayer* newLayer = new QgsVectorLayer( def.toString(), vlayer->name() + " (virtual)", "virtual" );
+      if ( newLayer->isValid() )
+      {
+        duplicateVectorStyle( vlayer, newLayer );
+        QgsMapLayerRegistry::instance()->addMapLayer( newLayer, /*addToLegend*/ false, /*takeOwnership*/ true );
+        QgsLayerTreeUtils::insertLayerBelow( QgsProject::instance()->layerTreeRoot(), vlayer, newLayer );
+        mLayerTreeView->setCurrentLayer( newLayer );
+        // hide the old layer
+        QgsProject::instance()->layerTreeRoot()->findLayer( vlayer->id() )->setVisible( Qt::Unchecked );
+        vlayer = newLayer;
+      }
+      else
+      {
+        delete newLayer;
+      }
+    }
+  }
 
   // launch the query builder
   QgsQueryBuilder *qb = new QgsQueryBuilder( vlayer, this );

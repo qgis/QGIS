@@ -19,6 +19,8 @@ email                : hugo dot mercier at oslandia dot com
 #include <QStringList>
 
 #include "qgsvirtuallayerdefinition.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 
 QgsVirtualLayerDefinition::QgsVirtualLayerDefinition( const QString& filePath ) :
     mFilePath( filePath ),

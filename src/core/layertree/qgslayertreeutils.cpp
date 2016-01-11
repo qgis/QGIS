@@ -394,3 +394,21 @@ bool QgsLayerTreeUtils::hasLegendFilterExpression( const QgsLayerTreeGroup& grou
   }
   return false;
 }
+
+QgsLayerTreeLayer* QgsLayerTreeUtils::insertLayerBelow( QgsLayerTreeGroup* group, const QgsMapLayer* refLayer, QgsMapLayer* layerToInsert )
+{
+  // get the index of the reflayer
+  QgsLayerTreeLayer* inTree = group->findLayer( refLayer->id() );
+  int idx = 0;
+  foreach ( QgsLayerTreeNode* vl, inTree->parent()->children() )
+  {
+    if ( vl->nodeType() == QgsLayerTreeNode::NodeLayer && static_cast<QgsLayerTreeLayer*>( vl )->layer() == refLayer )
+    {
+      break;
+    }
+    idx++;
+  }
+  // insert the new layer
+  QgsLayerTreeGroup* parent = static_cast<QgsLayerTreeGroup*>( inTree->parent() ) ? static_cast<QgsLayerTreeGroup*>( inTree->parent() ) : group;
+  return parent->insertLayer( idx, layerToInsert );
+}
