@@ -31,6 +31,7 @@ class GUI_EXPORT QgsFilePickerWidget : public QWidget
     Q_PROPERTY( bool filePickerButtonVisible READ filePickerButtonVisible WRITE setFilePickerButtonVisible )
     Q_PROPERTY( bool useLink READ useLink WRITE setUseLink )
     Q_PROPERTY( bool fullUrl READ fullUrl WRITE setFullUrl )
+    Q_PROPERTY( QString dialogTitle READ dialogTitle WRITE setDialogTitle )
     Q_PROPERTY( QString defaultRoot READ defaultRoot WRITE setDefaultRoot )
     Q_PROPERTY( StorageMode storageMode READ storageMode WRITE setStorageMode )
     Q_PROPERTY( RelativeStorage relativeStorage READ relativeStorage WRITE setRelativeStorage )
@@ -61,6 +62,14 @@ class GUI_EXPORT QgsFilePickerWidget : public QWidget
     //! defines if the widget is readonly
     void setReadOnly( bool readOnly );
 
+    //! returns the open file dialog title
+    QString dialogTitle() const;
+    /**
+     * @brief setDialogTitle defines the open file dialog title
+     * @note if not defined, the title is "Select a file" or "Select a directory" depending on the configuration.
+     */
+    void setDialogTitle( QString title );
+
     //! determines if the tool button is shown
     bool filePickerButtonVisible() const;
     //! determines if the tool button is shown
@@ -84,7 +93,7 @@ class GUI_EXPORT QgsFilePickerWidget : public QWidget
     void setStorageMode( QgsFilePickerWidget::StorageMode storageMode );
 
     //! determines if the relative path is with respect to the project path or the default path
-    QgsFilePickerWidget::RelativeStorage relativeStorage();
+    QgsFilePickerWidget::RelativeStorage relativeStorage() const;
     void setRelativeStorage( QgsFilePickerWidget::RelativeStorage relativeStorage );
 
   signals:
@@ -99,6 +108,7 @@ class GUI_EXPORT QgsFilePickerWidget : public QWidget
     bool mButtonVisible;
     bool mUseLink;
     bool mFullUrl;
+    QString mDialogTitle;
     QString mDefaultRoot;
     StorageMode mStorageMode;
     RelativeStorage mRelativeStorage;
@@ -108,10 +118,10 @@ class GUI_EXPORT QgsFilePickerWidget : public QWidget
     QToolButton* mFilePickerButton;
 
     //! returns a HTML code with a link to the given file path
-    QString toUrl( const QString& value );
+    QString toUrl( const QString& path ) const;
 
     //! Returns a filePath with relative path options applied (or not) !
-    QString relativePath( QString filePath, bool removeRelative );
+    QString relativePath( QString filePath, bool removeRelative ) const;
 };
 
 #endif // QGSFILEPICKERWIDGET_H

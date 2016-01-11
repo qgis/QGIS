@@ -34,6 +34,7 @@ QgsFilePickerWidget::QgsFilePickerWidget( QWidget *parent )
     , mButtonVisible( true )
     , mUseLink( false )
     , mFullUrl( false )
+    , mDialogTitle( QString() )
     , mDefaultRoot( QString() )
     , mStorageMode( File )
 {
@@ -85,6 +86,16 @@ void QgsFilePickerWidget::setReadOnly( bool readOnly )
 {
   mFilePickerButton->setEnabled( !readOnly );
   mLineEdit->setEnabled( !readOnly );
+}
+
+QString QgsFilePickerWidget::dialogTitle() const
+{
+  return mDialogTitle;
+}
+
+void QgsFilePickerWidget::setDialogTitle( QString title )
+{
+  mDialogTitle = title;
 }
 
 bool QgsFilePickerWidget::filePickerButtonVisible() const
@@ -147,7 +158,7 @@ void QgsFilePickerWidget::setStorageMode( QgsFilePickerWidget::StorageMode stora
   mStorageMode = storageMode;
 }
 
-QgsFilePickerWidget::RelativeStorage QgsFilePickerWidget::relativeStorage()
+QgsFilePickerWidget::RelativeStorage QgsFilePickerWidget::relativeStorage() const
 {
   return mRelativeStorage;
 }
@@ -182,13 +193,16 @@ void QgsFilePickerWidget::openFileDialog()
 
   // Handle Storage
   QString fileName;
+  QString title;
   if ( mStorageMode == File )
   {
-    fileName = QFileDialog::getOpenFileName( this, tr( "Select a file" ), QFileInfo( oldPath ).absoluteFilePath() );
+    title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a file" );
+    fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath() );
   }
   else if ( mStorageMode == Directory )
   {
-    fileName = QFileDialog::getExistingDirectory( this, tr( "Select a directory" ), QFileInfo( oldPath ).absoluteFilePath(),  QFileDialog::ShowDirsOnly );
+    title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
+    fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(),  QFileDialog::ShowDirsOnly );
   }
 
   if ( fileName.isEmpty() )
@@ -199,9 +213,13 @@ void QgsFilePickerWidget::openFileDialog()
   // Store the last used path:
 
   if ( mStorageMode == File )
+  {
     settings.setValue( "/UI/lastFileNameWidgetDir", QFileInfo( fileName ).absolutePath() );
+  }
   else if ( mStorageMode == Directory )
+  {
     settings.setValue( "/UI/lastFileNameWidgetDir", fileName );
+}
 
   // Handle relative Path storage
   fileName = relativePath( fileName, true );
@@ -211,7 +229,7 @@ void QgsFilePickerWidget::openFileDialog()
 }
 
 
-QString QgsFilePickerWidget::relativePath( QString filePath, bool removeRelative )
+QString QgsFilePickerWidget::relativePath( QString filePath, bool removeRelative ) const
 {
   QString RelativePath;
   if ( mRelativeStorage == RelativeProject )
@@ -234,31 +252,31 @@ QString QgsFilePickerWidget::relativePath( QString filePath, bool removeRelative
 }
 
 
-QString QgsFilePickerWidget::toUrl( const QString& value )
+QString QgsFilePickerWidget::toUrl(const QString& path ) const
 {
   QString rep;
-  if ( value.isEmpty() )
+  if ( path.isEmpty() )
   {
     rep =  QSettings().value( "qgis/nullValue", "NULL" ).toString();
   }
 
-  QString urlStr = relativePath( value, false );
-  QUrl theUrl = QUrl::fromUserInput( urlStr );
-  if ( !theUrl.isValid() or !theUrl.isLocalFile() )
+  QString urlStr = relativePath( path, false );
+  QUrl url = QUrl::fromUserInput( urlStr );
+  if ( !url.isValid() or !url.isLocalFile() )
   {
-    QgsDebugMsg( QString( "URL: %1 is not valid or not a local file !" ).arg( value ) );
-    rep =  value;
+    QgsDebugMsg( QString( "URL: %1 is not valid or not a local file !" ).arg( path ) );
+    rep =  path;
   }
 
-  QString filePath = theUrl.toString();
+  QString pathStr = url.toString();
   if ( mFullUrl )
   {
-    rep = QString( "<a href=\"%1\">%2</a>" ).arg( filePath, urlStr );
+    rep = QString( "<a href=\"%1\">%2</a>" ).arg( pathStr, path );
   }
   else
   {
     QString fileName = QFileInfo( urlStr ).fileName();
-    rep = QString( "<a href=\"%1\">%2</a>" ).arg( filePath, fileName );
+    rep = QString( "<a href=\"%1\">%2</a>" ).arg( pathStr, fileName );
   }
 
   return rep;
