@@ -65,6 +65,7 @@ class ProcessingToolbox(BASE, WIDGET):
         self.txtDisabled.setVisible(False)
         self.txtTip.setVisible(self.disabledProviders())
         self.txtDisabled.linkActivated.connect(self.showDisabled)
+
         def openSettings():
             dlg = ConfigDialog(self)
             dlg.exec_()
