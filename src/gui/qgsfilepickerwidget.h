@@ -50,8 +50,9 @@ class GUI_EXPORT QgsFilePickerWidget : public QWidget
       RelativeDefaultPath
     };
 
-  public:
     explicit QgsFilePickerWidget( QWidget *parent = 0 );
+
+    ~QgsFilePickerWidget();
 
     //! Returns the current file path
     QString filePath();
