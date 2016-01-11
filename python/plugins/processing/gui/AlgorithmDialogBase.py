@@ -30,7 +30,7 @@ import webbrowser
 
 from PyQt4 import uic
 from PyQt4.QtCore import QCoreApplication, QSettings, QByteArray, SIGNAL, QUrl
-from PyQt4.QtGui import QApplication, QDialogButtonBox
+from PyQt4.QtGui import QApplication, QDialogButtonBox, QDesktopWidget
 
 from qgis.utils import iface
 from qgis.core import *
@@ -68,6 +68,10 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
 
         self.setWindowTitle(AlgorithmClassification.getDisplayName(self.alg))
+
+        desktop = QDesktopWidget()
+        if desktop.physicalDpiX() > 96:
+            self.textHelp.setZoomFactor(desktop.physicalDpiX() / 96)
 
         algHelp = self.alg.shortHelp()
         if algHelp is None:
