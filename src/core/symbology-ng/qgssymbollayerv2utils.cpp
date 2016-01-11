@@ -415,6 +415,8 @@ QString QgsSymbolLayerV2Utils::encodeOutputUnit( QgsSymbolV2::OutputUnit unit )
       return "MapUnit";
     case QgsSymbolV2::Pixel:
       return "Pixel";
+    case QgsSymbolV2::Percentage:
+      return "Percentage";
     default:
       return "MM";
   }
@@ -433,6 +435,10 @@ QgsSymbolV2::OutputUnit QgsSymbolLayerV2Utils::decodeOutputUnit( const QString& 
   else if ( str == "Pixel" )
   {
     return QgsSymbolV2::Pixel;
+  }
+  else if ( str == "Percentage" )
+  {
+    return QgsSymbolV2::Percentage;
   }
 
   // millimeters are default
@@ -3377,6 +3383,7 @@ double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, Q
     case QgsSymbolV2::Pixel:
       return 1.0 / c.rasterScaleFactor();
     case QgsSymbolV2::Mixed:
+    case QgsSymbolV2::Percentage:
       //no sensible value
       return 1.0;
   }
@@ -3421,6 +3428,7 @@ double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, Q
     case QgsSymbolV2::Pixel:
       return 1.0;
     case QgsSymbolV2::Mixed:
+    case QgsSymbolV2::Percentage:
       //no sensible value
       return 1.0;
   }
@@ -3440,6 +3448,7 @@ double QgsSymbolLayerV2Utils::mapUnitScaleFactor( const QgsRenderContext &c, Qgs
     case QgsSymbolV2::Pixel:
       return scale.computeMapUnitsPerPixel( c );
     case QgsSymbolV2::Mixed:
+    case QgsSymbolV2::Percentage:
       //no sensible value
       return 1.0;
   }
