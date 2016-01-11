@@ -138,6 +138,10 @@ void QgsUnitSelectionWidget::setUnits( const QgsSymbolV2::OutputUnitList &units 
   {
     mUnitCombo->addItem( tr( "Map unit" ), QgsSymbolV2::MapUnit );
   }
+  if ( units.contains( QgsSymbolV2::Percentage ) )
+  {
+    mUnitCombo->addItem( tr( "Percentage" ), QgsSymbolV2::Percentage );
+  }
   blockSignals( false );
 }
 
