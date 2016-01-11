@@ -506,6 +506,9 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.12
     void layerStyleOverridesChanged();
 
+    //! emit a message (usually to be displayed in a message bar)
+    void messageEmitted( const QString& title, const QString& message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
+
   protected:
     //! Overridden standard event to be gestures aware
     bool event( QEvent * e );

@@ -1084,8 +1084,19 @@ void QgsMapCanvas::zoomToFeatureId( QgsVectorLayer* layer, QgsFeatureId id )
   }
 
   QgsGeometry* geom = fet.geometry();
+
+  QString errorMessage;
   if ( !geom || !geom->geometry() )
   {
+    errorMessage = tr( "Feature does not have a geometry" );
+  }
+  else if ( geom->geometry()->isEmpty() )
+  {
+    errorMessage = tr( "Feature geometry is empty" );
+  }
+  if ( !errorMessage.isEmpty() )
+  {
+    emit messageEmitted( tr( "Zoom to feature id failed" ), errorMessage, QgsMessageBar::WARNING );
     return;
   }
 

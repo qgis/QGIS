@@ -22,6 +22,7 @@
 
 #include "qgsexpressioncontext.h"
 #include "qgsfeature.h"
+#include "qgsmessagebar.h"
 #include "qgsrectangle.h"
 #include "qgspoint.h"
 #include "qgis.h"
@@ -585,6 +586,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emitted when the configuration of overridden layer styles changes
     //! @note added in 2.12
     void layerStyleOverridesChanged();
+
+    //! emit a message (usually to be displayed in a message bar)
+    void messageEmitted( const QString& title, const QString& message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
 
   protected:
 #ifdef HAVE_TOUCH
