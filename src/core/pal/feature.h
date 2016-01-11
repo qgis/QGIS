@@ -147,7 +147,6 @@ namespace pal
        * @param y y coordinate of the point
        * @param lPos pointer to an array of candidates, will be filled by generated candidate
        * @param angle orientation of the label
-       * @param mapShape optional geometry of source polygon
        * @returns the number of generated candidates
        */
       int createCandidatesAtOrderedPositionsOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );

@@ -100,7 +100,25 @@ class QgsPalLayerSettings
       Line, /**< Arranges candidates parallel to a generalised line representing the feature or parallel to a polygon's perimeter. Applies to line or polygon layers only. */
       Curved, /** Arranges candidates following the curvature of a line feature. Applies to line layers only.*/
       Horizontal, /**< Arranges horizontal candidates scattered throughout a polygon feature. Applies to polygon layers only.*/
-      Free /**< Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only.*/
+      Free, /**< Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only.*/
+      OrderedPositionsAroundPoint, /**< Candidates are placed in predefined positions around a point. Peference is given to positions with greatest cartographic appeal, eg top right, bottom right, etc. Applies to point layers only.*/
+    };
+
+    //! Positions for labels when using the QgsPalLabeling::OrderedPositionsAroundPoint placement mode
+    enum PredefinedPointPosition
+    {
+      TopLeft, //!< Label on top-left of point
+      TopSlightlyLeft, //! Label on top of point, slightly left of center
+      TopMiddle, //!< Label directly above point
+      TopSlightlyRight, //! Label on top of point, slightly right of center
+      TopRight, //!< Label on top-right of point
+      MiddleLeft, //!< Label on left of point
+      MiddleRight, //!< Label on right of point
+      BottomLeft, //!< Label on bottom-left of point
+      BottomSlightlyLeft, //! Label below point, slightly left of center
+      BottomMiddle, //!< Label directly below point
+      BottomSlightlyRight, //! Label below point, slightly right of center
+      BottomRight, //!< Label on bottom right of point
     };
 
     /** Line placement flags, which control how candidates are generated for a linear feature.
@@ -304,6 +322,7 @@ class QgsPalLayerSettings
       RepeatDistance,
       RepeatDistanceUnit,
       Priority,
+      PredefinedPositionOrder,
 
       // rendering
       ScaleVisibility,
@@ -436,6 +455,12 @@ class QgsPalLayerSettings
 
     bool centroidWhole; // whether centroid calculated from whole or visible polygon
     bool centroidInside; // whether centroid-point calculated must be inside polygon
+
+    /** Ordered list of predefined label positions for points. Positions earlier
+     * in the list will be prioritised over later positions. Only used when the placement
+     * is set to QgsPalLayerSettings::OrderedPositionsAroundPoint.
+     */
+    QVector< QgsPalLayerSettings::PredefinedPointPosition > predefinedPositionOrder;
 
     /** True if only labels which completely fit within a polygon are allowed.
      */

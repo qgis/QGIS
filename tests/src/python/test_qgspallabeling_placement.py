@@ -185,6 +185,78 @@ class TestPointPlacement(TestPlacementBase):
         self.removeMapLayer(polyLayer)
         self.layer = None
 
+    def test_point_ordered_placement1(self):
+        # Test ordered placements for point
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_placement')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
+        self.lyr.dist = 2
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_point_ordered_placement2(self):
+        # Test ordered placements for point (1 obstacle)
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_placement')
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_obstacle1')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
+        self.lyr.dist = 2
+        self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_point_ordered_placement3(self):
+        # Test ordered placements for point (2 obstacle)
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_placement')
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_obstacle2')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
+        self.lyr.dist = 2
+        self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_point_ordered_placement4(self):
+        # Test ordered placements for point (3 obstacle)
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_placement')
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_obstacle3')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
+        self.lyr.dist = 2
+        self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_point_dd_ordered_placement(self):
+        # Test ordered placements for point with data defined order
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_placement')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
+        self.lyr.dist = 2
+        self.lyr.setDataDefinedProperty(QgsPalLayerSettings.PredefinedPositionOrder, True, True, "'T,B'", None)
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.lyr.removeDataDefinedProperty(QgsPalLayerSettings.PredefinedPositionOrder)
+        self.layer = None
+
+    def test_point_dd_ordered_placement1(self):
+        # Test ordered placements for point with data defined order and obstacle
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_placement')
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_obstacle_top')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
+        self.lyr.dist = 2
+        self.lyr.setDataDefinedProperty(QgsPalLayerSettings.PredefinedPositionOrder, True, True, "'T,B'", None)
+        self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.lyr.removeDataDefinedProperty(QgsPalLayerSettings.PredefinedPositionOrder)
+        self.layer = None
+
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
     # SEE: test_qgspallabeling_tests.suiteTests() to define suite
