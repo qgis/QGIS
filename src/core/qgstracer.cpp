@@ -526,7 +526,7 @@ bool QgsTracer::initGraph()
   int timeMake = t3.elapsed();
 
   QgsDebugMsg( QString( "tracer extract %1 ms, noding %2 ms (call %3 ms), make %4 ms" )
-               .arg ( timeExtract ).arg( timeNoding ).arg ( timeNodingCall ).arg( timeMake ) );
+               .arg( timeExtract ).arg( timeNoding ).arg( timeNodingCall ).arg( timeMake ) );
   return true;
 }
 
@@ -582,6 +582,9 @@ bool QgsTracer::init()
   if ( mGraph )
     return true;
 
+  // configuration from derived class?
+  configure();
+
   return initGraph();
 }
 
@@ -611,7 +614,7 @@ void QgsTracer::onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom )
   invalidateGraph();
 }
 
-QVector<QgsPoint> QgsTracer::findShortestPath(const QgsPoint& p1, const QgsPoint& p2, PathError* error )
+QVector<QgsPoint> QgsTracer::findShortestPath( const QgsPoint& p1, const QgsPoint& p2, PathError* error )
 {
   init();  // does nothing if the graph exists already
   if ( !mGraph )

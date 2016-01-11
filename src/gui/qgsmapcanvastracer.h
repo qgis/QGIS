@@ -18,8 +18,6 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
 
     QAction* actionEnableTracing() { return mActionEnableTracing; }
 
-    virtual bool init();
-
     //! Retrieve instance of this class associated with given canvas (if any).
     //! The class keeps a simple registry of tracers associated with map canvas
     //! instances for easier access to the common tracer by various map tools
@@ -28,9 +26,10 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
     //! Report a path finding error to the user
     void reportError( PathError err, bool addingVertex );
 
+  protected:
+    virtual void configure();
+
   private slots:
-    void updateSettings();
-    void updateLayerSettings();
     void onCurrentLayerChanged();
 
   private:

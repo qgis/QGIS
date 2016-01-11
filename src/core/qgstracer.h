@@ -66,7 +66,10 @@ class CORE_EXPORT QgsTracer : public QObject
     //! depending on how big the input layers are. It is not necessary
     //! to call this method explicitly - it will be called by findShortestPath()
     //! if necessary.
-    virtual bool init();
+    bool init();
+
+    //! Whether the internal data structures have been initialized
+    bool isInitialized() const { return mGraph != nullptr; }
 
     enum PathError
     {
@@ -86,9 +89,17 @@ class CORE_EXPORT QgsTracer : public QObject
     //! Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)
     bool isPointSnapped( const QgsPoint& pt );
 
+  protected:
+    //! Allows derived classes to setup the settings just before the tracer is initialized.
+    //! This allows the configuration to be set in a lazy way only when it is really necessary.
+    //! Default implementation does nothing.
+    virtual void configure() {}
+
+  protected slots:
+    void invalidateGraph();
+
   private:
     bool initGraph();
-    void invalidateGraph();
 
   private slots:
     void onFeatureAdded( QgsFeatureId fid );
