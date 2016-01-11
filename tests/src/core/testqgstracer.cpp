@@ -32,6 +32,8 @@ class TestQgsTracer : public QObject
     void testPolygon();
     void testButterfly();
     void testLayerUpdates();
+    void testExtent();
+    void testReprojection();
 
   private:
 
@@ -266,6 +268,54 @@ void TestQgsTracer::testLayerUpdates()
   vl->rollBack();
 
   delete vl;
+}
+
+void TestQgsTracer::testExtent()
+{
+  // check whether the tracer correctly handles the extent limitation
+
+  // same shape as in testSimple()
+  QStringList wkts;
+  wkts  << "LINESTRING(0 0, 0 10)"
+  << "LINESTRING(0 0, 10 0)"
+  << "LINESTRING(0 10, 20 10)"
+  << "LINESTRING(10 0, 20 10)";
+
+  QgsVectorLayer* vl = make_layer( wkts );
+
+  QgsTracer tracer;
+  tracer.setLayers( QList<QgsVectorLayer*>() << vl );
+  tracer.setExtent( QgsRectangle( 0, 0, 5, 5 ) );
+  tracer.init();
+
+  QgsPolyline points1 = tracer.findShortestPath( QgsPoint( 0, 0 ), QgsPoint( 10, 0 ) );
+  QCOMPARE( points1.count(), 2 );
+  QCOMPARE( points1[0], QgsPoint( 0, 0 ) );
+  QCOMPARE( points1[1], QgsPoint( 10, 0 ) );
+
+  QgsPolyline points2 = tracer.findShortestPath( QgsPoint( 0, 0 ), QgsPoint( 20, 10 ) );
+  QCOMPARE( points2.count(), 0 );
+}
+
+void TestQgsTracer::testReprojection()
+{
+  QStringList wkts;
+  wkts  << "LINESTRING(1 0, 2 0)";
+
+  QgsVectorLayer* vl = make_layer( wkts );
+
+  QgsCoordinateReferenceSystem dstCrs( "EPSG:3857" );
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( "EPSG:4326" ), dstCrs );
+  QgsPoint p1 = ct.transform( QgsPoint( 1, 0 ) );
+  QgsPoint p2 = ct.transform( QgsPoint( 2, 0 ) );
+
+  QgsTracer tracer;
+  tracer.setLayers( QList<QgsVectorLayer*>() << vl );
+  tracer.setDestinationCrs( dstCrs );
+  tracer.init();
+
+  QgsPolyline points1 = tracer.findShortestPath( p1, p2 );
+  QCOMPARE( points1.count(), 2 );
 }
 
 

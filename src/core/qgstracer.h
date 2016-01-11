@@ -24,6 +24,7 @@ class QgsVectorLayer;
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
 #include "qgspoint.h"
+#include "qgsrectangle.h"
 
 struct QgsTracerGraph;
 
@@ -50,6 +51,11 @@ class CORE_EXPORT QgsTracer : public QObject
     QgsCoordinateReferenceSystem destinationCrs() const { return mCRS; }
     //! Set CRS used for tracing
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+
+    //! Get extent to which graph's features will be limited (empty extent means no limit)
+    QgsRectangle extent() const { return mExtent; }
+    //! Set extent to which graph's features will be limited (empty extent means no limit)
+    void setExtent( const QgsRectangle& extent );
 
     //! Build the internal data structures. This may take some time
     //! depending on how big the input layers are. It is not necessary
@@ -82,6 +88,8 @@ class CORE_EXPORT QgsTracer : public QObject
     QList<QgsVectorLayer*> mLayers;
     //! Destination CRS in which graph is built and tracing done
     QgsCoordinateReferenceSystem mCRS;
+    //! Extent for graph building (empty extent means no limit)
+    QgsRectangle mExtent;
 };
 
 

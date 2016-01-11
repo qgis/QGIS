@@ -250,14 +250,14 @@ QVector<QgsPoint> shortest_path( const QgsTracerGraph& g, int v1, int v2 )
 }
 
 
-int point2vertex( const QgsTracerGraph& g, const QgsPoint& pt )
+int point2vertex( const QgsTracerGraph& g, const QgsPoint& pt, double epsilon = 1e-6 )
 {
   // TODO: use spatial index
 
   for ( int i = 0; i < g.v.count(); ++i )
   {
     const QgsTracerGraph::V& v = g.v.at( i );
-    if ( v.pt == pt )
+    if ( v.pt == pt || ( fabs( v.pt.x() - pt.x() ) < epsilon && fabs( v.pt.y() - pt.y() ) < epsilon ) )
       return i;
   }
 
@@ -472,7 +472,12 @@ void QgsTracer::initGraph()
   {
     QgsCoordinateTransform ct( vl->crs(), mCRS );
 
-    QgsFeatureIterator fi = vl->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+    QgsFeatureRequest request;
+    request.setSubsetOfAttributes( QgsAttributeList() );
+    if ( !mExtent.isEmpty() )
+      request.setFilterRect( ct.transformBoundingBox( mExtent, QgsCoordinateTransform::ReverseTransform ) );
+
+    QgsFeatureIterator fi = vl->getFeatures( request );
     while ( fi.nextFeature( f ) )
     {
       if ( !f.geometry() )
@@ -564,6 +569,15 @@ void QgsTracer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs )
     return;
 
   mCRS = crs;
+  invalidateGraph();
+}
+
+void QgsTracer::setExtent( const QgsRectangle& extent )
+{
+  if ( mExtent == extent )
+    return;
+
+  mExtent = extent;
   invalidateGraph();
 }
 

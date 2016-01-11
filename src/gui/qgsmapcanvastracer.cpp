@@ -17,6 +17,7 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas* canvas )
 
   connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( updateSettings() ) );
   connect( canvas, SIGNAL( layersChanged() ), this, SLOT( updateSettings() ) );
+  connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( updateSettings() ) );
   // TODO: watch for snapping changes
 
   mActionEnableTracing = new QAction( QIcon( QgsApplication::getThemeIcon( "/mActionTracing.png" ) ), tr( "Enable Tracing" ), this );
@@ -48,4 +49,5 @@ void QgsMapCanvasTracer::updateSettings()
   setLayers( layers );
 
   setDestinationCrs( mCanvas->mapSettings().destinationCrs() );
+  setExtent( mCanvas->extent() );
 }

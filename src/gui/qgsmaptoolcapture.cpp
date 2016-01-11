@@ -143,12 +143,32 @@ bool QgsMapToolCapture::tracingEnabled()
 }
 
 
+QgsPoint QgsMapToolCapture::tracingStartPoint()
+{
+  try
+  {
+    QgsMapLayer* layer = mCanvas->currentLayer();
+    if ( !layer )
+      return QgsPoint();
+    QgsPointV2 v = mCaptureCurve.endPoint();
+    return toMapCoordinates( layer, QgsPoint( v.x(), v.y() ) );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugMsg( "transformation to layer coordinate failed" );
+    return QgsPoint();
+  }
+}
+
+
 void QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent* e )
 {
   if ( !e->isSnapped() )
     return;
 
-  QgsPointV2 v = mCaptureCurve.endPoint();
+  QgsPoint pt0 = tracingStartPoint();
+  if ( pt0 == QgsPoint() )
+    return;
 
   QgsMapCanvasTracer* tracer = QgsMapCanvasTracer::tracerForCanvas( mCanvas );
   if ( !tracer )
@@ -156,7 +176,7 @@ void QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent* e )
 
   mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QGis::Polygon : QGis::Line );
 
-  QVector<QgsPoint> points = tracer->findShortestPath( QgsPoint( v.x(), v.y() ), e->mapPoint() );
+  QVector<QgsPoint> points = tracer->findShortestPath( pt0, e->mapPoint() );
   if ( points.isEmpty() )
     return;
 
@@ -190,9 +210,11 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point )
     return res;
   }
 
-  QgsPointV2 v = mCaptureCurve.endPoint();
+  QgsPoint pt0 = tracingStartPoint();
+  if ( pt0 == QgsPoint() )
+    return false;
 
-  QVector<QgsPoint> points = tracer->findShortestPath( QgsPoint( v.x(), v.y() ), point );
+  QVector<QgsPoint> points = tracer->findShortestPath( pt0, point );
   if ( points.isEmpty() )
     return false; // ignore the vertex - can't find path to the end point!
 

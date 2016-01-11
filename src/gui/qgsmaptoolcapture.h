@@ -143,6 +143,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
   private:
     //! whether tracing has been requested by the user
     bool tracingEnabled();
+    //! first point that will be used as a start of the trace
+    QgsPoint tracingStartPoint();
     //! handle of mouse movement when tracing enabled and capturing has started
     void tracingMouseMove( QgsMapMouseEvent* e );
     //! handle of addition of clicked point (with the rest of the trace) when tracing enabled
