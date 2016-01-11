@@ -389,7 +389,13 @@ void TestQgsLabelingEngineV2::testEncodeDecodePositionOrder()
 {
   //create an ordered position list
   QVector< QgsPalLayerSettings::PredefinedPointPosition > original;
-  original << QgsPalLayerSettings::TopLeft << QgsPalLayerSettings::BottomRight << QgsPalLayerSettings::MiddleRight;
+  //make sure all placements are added here
+  original << QgsPalLayerSettings::BottomLeft << QgsPalLayerSettings::BottomSlightlyLeft
+  << QgsPalLayerSettings::BottomMiddle << QgsPalLayerSettings::BottomSlightlyRight
+  << QgsPalLayerSettings::BottomRight << QgsPalLayerSettings::MiddleRight
+  << QgsPalLayerSettings::MiddleLeft << QgsPalLayerSettings::TopLeft
+  << QgsPalLayerSettings::TopSlightlyLeft << QgsPalLayerSettings::TopMiddle
+  << QgsPalLayerSettings::TopSlightlyRight << QgsPalLayerSettings::TopRight;
   //encode list
   QString encoded = QgsLabelingUtils::encodePredefinedPositionOrder( original );
   QVERIFY( !encoded.isEmpty() );
@@ -397,6 +403,13 @@ void TestQgsLabelingEngineV2::testEncodeDecodePositionOrder()
   //decode
   QVector< QgsPalLayerSettings::PredefinedPointPosition > decoded = QgsLabelingUtils::decodePredefinedPositionOrder( encoded );
   QCOMPARE( decoded, original );
+
+  //test decoding with a messy string
+  decoded = QgsLabelingUtils::decodePredefinedPositionOrder( ",tr,x,BSR, L, t,," );
+  QVector< QgsPalLayerSettings::PredefinedPointPosition > expected;
+  expected << QgsPalLayerSettings::TopRight << QgsPalLayerSettings::BottomSlightlyRight
+  << QgsPalLayerSettings::MiddleLeft << QgsPalLayerSettings::TopMiddle;
+  QCOMPARE( decoded, expected );
 }
 
 bool TestQgsLabelingEngineV2::imageCheck( const QString& testName, QImage &image, int mismatchCount )

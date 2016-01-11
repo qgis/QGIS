@@ -403,7 +403,45 @@ QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<QgsPalLay
   QStringList predefinedOrderString;
   Q_FOREACH ( QgsPalLayerSettings::PredefinedPointPosition position, positions )
   {
-    predefinedOrderString << QString::number( static_cast< int >( position ) );
+    switch ( position )
+    {
+      case QgsPalLayerSettings::TopLeft:
+        predefinedOrderString << "TL";
+        break;
+      case QgsPalLayerSettings::TopSlightlyLeft:
+        predefinedOrderString << "TSL";
+        break;
+      case QgsPalLayerSettings::TopMiddle:
+        predefinedOrderString << "T";
+        break;
+      case QgsPalLayerSettings::TopSlightlyRight:
+        predefinedOrderString << "TSR";
+        break;
+      case QgsPalLayerSettings::TopRight:
+        predefinedOrderString << "TR";
+        break;
+      case QgsPalLayerSettings::MiddleLeft:
+        predefinedOrderString << "L";
+        break;
+      case QgsPalLayerSettings::MiddleRight:
+        predefinedOrderString << "R";
+        break;
+      case QgsPalLayerSettings::BottomLeft:
+        predefinedOrderString << "BL";
+        break;
+      case QgsPalLayerSettings::BottomSlightlyLeft:
+        predefinedOrderString << "BSL";
+        break;
+      case QgsPalLayerSettings::BottomMiddle:
+        predefinedOrderString << "B";
+        break;
+      case QgsPalLayerSettings::BottomSlightlyRight:
+        predefinedOrderString << "BSR";
+        break;
+      case QgsPalLayerSettings::BottomRight:
+        predefinedOrderString << "BR";
+        break;
+    }
   }
   return predefinedOrderString.join( "," );
 }
@@ -414,10 +452,31 @@ QVector<QgsPalLayerSettings::PredefinedPointPosition> QgsLabelingUtils::decodePr
   QStringList predefinedOrderList = positionString.split( ',' );
   Q_FOREACH ( const QString& position, predefinedOrderList )
   {
-    bool ok = false;
-    int positionInt = position.toInt( &ok );
-    if ( ok )
-      result << static_cast< QgsPalLayerSettings::PredefinedPointPosition >( positionInt );
+    QString cleaned = position.trimmed().toUpper();
+    if ( cleaned == "TL" )
+      result << QgsPalLayerSettings::TopLeft;
+    else if ( cleaned == "TSL" )
+      result << QgsPalLayerSettings::TopSlightlyLeft;
+    else if ( cleaned == "T" )
+      result << QgsPalLayerSettings::TopMiddle;
+    else if ( cleaned == "TSR" )
+      result << QgsPalLayerSettings::TopSlightlyRight;
+    else if ( cleaned == "TR" )
+      result << QgsPalLayerSettings::TopRight;
+    else if ( cleaned == "L" )
+      result << QgsPalLayerSettings::MiddleLeft;
+    else if ( cleaned == "R" )
+      result << QgsPalLayerSettings::MiddleRight;
+    else if ( cleaned == "BL" )
+      result << QgsPalLayerSettings::BottomLeft;
+    else if ( cleaned == "BSL" )
+      result << QgsPalLayerSettings::BottomSlightlyLeft;
+    else if ( cleaned == "B" )
+      result << QgsPalLayerSettings::BottomMiddle;
+    else if ( cleaned == "BSR" )
+      result << QgsPalLayerSettings::BottomSlightlyRight;
+    else if ( cleaned == "BR" )
+      result << QgsPalLayerSettings::BottomRight;
   }
   return result;
 }

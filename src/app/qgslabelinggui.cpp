@@ -876,6 +876,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   // placement
   setDataDefinedProperty( mCentroidDDBtn, QgsPalLayerSettings::CentroidWhole, lyr );
   setDataDefinedProperty( mPointQuadOffsetDDBtn, QgsPalLayerSettings::OffsetQuad, lyr );
+  setDataDefinedProperty( mPointPositionOrderDDBtn, QgsPalLayerSettings::PredefinedPositionOrder, lyr );
   setDataDefinedProperty( mPointOffsetDDBtn, QgsPalLayerSettings::OffsetXY, lyr );
   setDataDefinedProperty( mPointOffsetUnitsDDBtn, QgsPalLayerSettings::OffsetUnits, lyr );
   setDataDefinedProperty( mLineDistanceDDBtn, QgsPalLayerSettings::LabelDistance, lyr );
@@ -1107,6 +1108,14 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
                                tr( "int<br>" ) + QLatin1String( "[<b>0</b>=Above Left|<b>1</b>=Above|<b>2</b>=Above Right|<br>"
                                                                 "<b>3</b>=Left|<b>4</b>=Over|<b>5</b>=Right|<br>"
                                                                 "<b>6</b>=Below Left|<b>7</b>=Below|<b>8</b>=Below Right]" ) );
+  mPointPositionOrderDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::PredefinedPositionOrder ),
+                                  QgsDataDefinedButton::String,
+                                  tr( "Comma seperated list of placements in order of priority<br>" )
+                                  + QLatin1String( "[<b>TL</b>=Top left|<b>TSL</b>=Top, slightly left|<b>T</b>=Top middle|<br>"
+                                                   "<b>TSR</b>=Top, slightly right|<b>TR</b>=Top right|<br>"
+                                                   "<b>L</b>=Left|<b>R</b>=Right|<br>"
+                                                   "<b>BL</b>=Bottom left|<b>BSL</b>=Bottom, slightly left|<b>B</b>=Bottom middle|<br>"
+                                                   "<b>BSR</b>=Bottom, slightly right|<b>BR</b>=Bottom right]" ) );
   mPointOffsetDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::OffsetXY ),
                            QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleXYDesc() );
   mPointOffsetUnitsDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::OffsetUnits ),
@@ -1358,6 +1367,7 @@ void QgsLabelingGui::updatePlacementWidgets()
   bool showCentroidFrame = false;
   bool showQuadrantFrame = false;
   bool showFixedQuadrantFrame = false;
+  bool showPlacementPriorityFrame = false;
   bool showOffsetFrame = false;
   bool showDistanceFrame = false;
   bool showRotationFrame = false;
@@ -1388,6 +1398,7 @@ void QgsLabelingGui::updatePlacementWidgets()
   else if ( curWdgt == pagePoint && radPredefinedOrder->isChecked() )
   {
     showDistanceFrame = true;
+    showPlacementPriorityFrame = true;
   }
   else if (( curWdgt == pageLine && radLineParallel->isChecked() )
            || ( curWdgt == pagePolygon && radPolygonPerimeter->isChecked() )
@@ -1410,6 +1421,7 @@ void QgsLabelingGui::updatePlacementWidgets()
   mPlacementCentroidFrame->setVisible( showCentroidFrame );
   mPlacementQuadrantFrame->setVisible( showQuadrantFrame );
   mPlacementFixedQuadrantFrame->setVisible( showFixedQuadrantFrame );
+  mPlacementCartographicFrame->setVisible( showPlacementPriorityFrame );
   mPlacementOffsetFrame->setVisible( showOffsetFrame );
   mPlacementDistanceFrame->setVisible( showDistanceFrame );
   mPlacementRotationFrame->setVisible( showRotationFrame );

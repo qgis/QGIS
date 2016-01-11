@@ -560,8 +560,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>594</width>
-                       <height>398</height>
+                       <width>346</width>
+                       <height>388</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1316,8 +1316,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>594</width>
-                       <height>398</height>
+                       <width>383</width>
+                       <height>389</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -1961,8 +1961,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>594</width>
-                       <height>398</height>
+                       <width>301</width>
+                       <height>257</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2340,7 +2340,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>578</width>
+                       <width>454</width>
                        <height>697</height>
                       </rect>
                      </property>
@@ -3170,7 +3170,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>578</width>
+                       <width>330</width>
                        <height>424</height>
                       </rect>
                      </property>
@@ -3659,9 +3659,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
+                       <y>-114</y>
                        <width>578</width>
-                       <height>829</height>
+                       <height>866</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -3713,7 +3713,7 @@ font-style: italic;</string>
                             <enum>QFrame::Sunken</enum>
                            </property>
                            <property name="currentIndex">
-                            <number>2</number>
+                            <number>0</number>
                            </property>
                            <widget class="QWidget" name="pagePoint">
                             <layout class="QGridLayout" name="gridLayout_13" columnstretch="0,0,0,0">
@@ -4449,6 +4449,78 @@ font-style: italic;</string>
                        </widget>
                       </item>
                       <item>
+                       <widget class="QFrame" name="mPlacementCartographicFrame">
+                        <layout class="QGridLayout" name="gridLayout_39">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
+                         <item row="0" column="2">
+                          <widget class="QgsDataDefinedButton" name="mPointPositionOrderDDBtn">
+                           <property name="text">
+                            <string>...</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="1" rowspan="2">
+                          <widget class="QFrame" name="mPlacementFixedQuadrantFrame_2">
+                           <layout class="QGridLayout" name="gridLayout_11">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="spacing">
+                             <number>2</number>
+                            </property>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item row="0" column="3">
+                          <spacer name="horizontalSpacer_27">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>0</width>
+                             <height>12</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
+                         <item row="0" column="0">
+                          <widget class="QLabel" name="label_20">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Position priority</string>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
                        <widget class="QFrame" name="mPlacementOffsetFrame">
                         <property name="minimumSize">
                          <size>
@@ -5151,7 +5223,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>578</width>
+                       <width>429</width>
                        <height>799</height>
                       </rect>
                      </property>
@@ -6369,6 +6441,7 @@ font-style: italic;</string>
   <tabstop>mLineDistanceSpnBx</tabstop>
   <tabstop>mLineDistanceDDBtn</tabstop>
   <tabstop>mLineDistanceUnitDDBtn</tabstop>
+  <tabstop>mPointPositionOrderDDBtn</tabstop>
   <tabstop>mPointAngleSpinBox</tabstop>
   <tabstop>mPointAngleDDBtn</tabstop>
   <tabstop>mRepeatDistanceSpinBox</tabstop>
