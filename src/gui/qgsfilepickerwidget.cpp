@@ -249,12 +249,17 @@ QString QgsFilePickerWidget::relativePath( QString filePath, bool removeRelative
   {
     RelativePath = QDir::toNativeSeparators( QDir::cleanPath( mDefaultRoot ) );
   }
+
   if ( !RelativePath.isEmpty() )
   {
     if ( removeRelative )
+    {
       return QDir::cleanPath( QDir( RelativePath ).relativeFilePath( filePath ) );
+    }
     else
+    {
       return QDir::cleanPath( QDir( RelativePath ).filePath( filePath ) );
+    }
   }
 
   return filePath;

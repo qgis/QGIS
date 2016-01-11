@@ -82,6 +82,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mQgsWidget )
   {
+    mQgsWidget->filePickerwidget()->setStorageMode( QgsFilePickerWidget::File );
     if ( config().contains( "UseLink" ) )
     {
       mQgsWidget->filePickerwidget()->setUseLink( config( "UseLink" ).toBool() );
