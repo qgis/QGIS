@@ -64,16 +64,12 @@ class ProcessingToolbox(BASE, WIDGET):
         self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
         self.txtDisabled.setVisible(False)
         self.txtTip.setVisible(self.disabledProviders())
-        self.txtDisabled.setOpenLinks(False)
-        self.txtTip.setOpenLinks(False)
-        self.txtDisabled.connect(self.txtDisabled, SIGNAL("anchorClicked(const QUrl&)"),
-                                 self.showDisabled)
-
+        self.txtDisabled.linkActivated.connect(self.showDisabled)
         def openSettings():
             dlg = ConfigDialog(self)
             dlg.exec_()
             self.txtTip.setVisible(self.disabledProviders())
-        self.txtTip.connect(self.txtTip, SIGNAL("anchorClicked(const QUrl&)"), openSettings)
+        self.txtTip.linkActivated.connect(openSettings)
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(self.tr('Search...'))
 

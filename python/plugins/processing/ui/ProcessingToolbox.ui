@@ -44,49 +44,50 @@
      </widget>
     </item>
     <item>
-     <widget class="QTextBrowser" name="txtDisabled">
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>50</height>
-       </size>
+     <widget class="QLabel" name="txtDisabled">
+      <property name="autoFillBackground">
+       <bool>false</bool>
       </property>
       <property name="styleSheet">
        <string notr="true">background-color: rgb(255, 255, 127);</string>
       </property>
-      <property name="html">
-       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;There are disabled providers that contain algorithms including your text string. Click &lt;/span&gt;&lt;a href=&quot;view&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;to view them.&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <property name="text">
+       <string>There are disabled providers that contain algorithms including your text string. Click &lt;a href=&quot;view&quot;&gt;to view them.&lt;/a&gt;</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+      <property name="margin">
+       <number>5</number>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QTextBrowser" name="txtTip">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>50</height>
-       </size>
-      </property>
+     <widget class="QLabel" name="txtTip">
       <property name="styleSheet">
        <string notr="true">background-color: rgb(85, 170, 255);
 color: rgb(255, 255, 255);</string>
       </property>
-      <property name="html">
-       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;You can add more algorithms to the toolbox,&lt;/span&gt;&lt;a href=&quot;enable&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;enabling additional providers.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <property name="text">
+       <string>You can add more algorithms to the toolbox,&lt;a href=&quot;enable&quot;&gt;enabling additional providers.&lt;/a&gt;</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+      <property name="margin">
+       <number>5</number>
       </property>
      </widget>
     </item>
