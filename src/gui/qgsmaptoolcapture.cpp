@@ -174,14 +174,15 @@ void QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent* e )
   if ( !tracer )
     return;  // this should not happen!
 
-  if ( !tracer->init() )  // normally no-op if the graph is built already
-    return;  // graph would be too big
-
   mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QGis::Polygon : QGis::Line );
 
-  QVector<QgsPoint> points = tracer->findShortestPath( pt0, e->mapPoint() );
+  QgsTracer::PathError err;
+  QVector<QgsPoint> points = tracer->findShortestPath( pt0, e->mapPoint(), &err );
   if ( points.isEmpty() )
+  {
+    tracer->reportError( err, false );
     return;
+  }
 
   if ( mCaptureMode == CapturePolygon )
     mTempRubberBand->addPoint( *mRubberBand->getPoint( 0, 0 ), false );
@@ -192,19 +193,20 @@ void QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent* e )
 }
 
 
-bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point, bool& pathNotFound )
+bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point )
 {
-  pathNotFound = false;
-
   QgsMapCanvasTracer* tracer = QgsMapCanvasTracer::tracerForCanvas( mCanvas );
   if ( !tracer )
     return false;  // this should not happen!
 
-  if ( !tracer->init() )  // normally no-op if the graph is built already
-    return false;  // graph would be too big
-
   if ( mCaptureCurve.numPoints() == 0 )
   {
+    if ( !tracer->init() )
+    {
+      tracer->reportError( QgsTracer::ErrTooManyFeatures, true );
+      return false;
+    }
+
     // only accept first point if it is snapped to the graph (to vertex or edge)
     bool res = tracer->isPointSnapped( point );
     if ( res )
@@ -222,10 +224,11 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point, bool& pathNotFo
   if ( pt0 == QgsPoint() )
     return false;
 
-  QVector<QgsPoint> points = tracer->findShortestPath( pt0, point );
+  QgsTracer::PathError err;
+  QVector<QgsPoint> points = tracer->findShortestPath( pt0, point, &err );
   if ( points.isEmpty() )
   {
-    pathNotFound = true;
+    tracer->reportError( err, true );
     return false; // ignore the vertex - can't find path to the end point!
   }
 
@@ -369,14 +372,9 @@ int QgsMapToolCapture::addVertex( const QgsPoint& point )
 
   if ( tracingEnabled() )
   {
-    bool pathNotFound;
-    bool res = tracingAddVertex( point, pathNotFound );
+    bool res = tracingAddVertex( point );
     if ( !res )
-    {
-      if ( pathNotFound )
-        emit messageEmitted( tr( "Tracing: The point needs to be snapped to a geometry" ), QgsMessageBar::WARNING );
       return 1;  // early exit if the point cannot be accepted
-    }
   }
   else
   {

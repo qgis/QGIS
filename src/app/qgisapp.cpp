@@ -1974,10 +1974,8 @@ void QgisApp::createToolBars()
   // Cad toolbar
   mAdvancedDigitizeToolBar->insertAction( mActionUndo, mAdvancedDigitizingDockWidget->enableAction() );
 
-  mTracer = new QgsMapCanvasTracer( mMapCanvas );
+  mTracer = new QgsMapCanvasTracer( mMapCanvas, messageBar() );
   mAdvancedDigitizeToolBar->insertAction( mActionUndo, mTracer->actionEnableTracing() );
-  connect( mTracer, SIGNAL( messageEmitted( QString, QgsMessageBar::MessageLevel ) ),
-           this, SLOT( displayMapToolMessage( QString, QgsMessageBar::MessageLevel ) ) );
 }
 
 void QgisApp::createStatusBar()

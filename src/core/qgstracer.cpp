@@ -486,13 +486,13 @@ bool QgsTracer::initGraph()
       }
 
       extract_linework( f.geometry(), mpl );
+
       ++featuresCounted;
+      if ( mMaxFeatureCount != 0 && featuresCounted >= mMaxFeatureCount )
+        return false;
     }
   }
   int timeExtract = t1.elapsed();
-
-  if ( mMaxFeatureCount != 0 && featuresCounted >= mMaxFeatureCount )
-    return false;
 
   // resolve intersections
 
@@ -611,17 +611,31 @@ void QgsTracer::onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom )
   invalidateGraph();
 }
 
-QVector<QgsPoint> QgsTracer::findShortestPath( const QgsPoint& p1, const QgsPoint& p2 )
+QVector<QgsPoint> QgsTracer::findShortestPath(const QgsPoint& p1, const QgsPoint& p2, PathError* error )
 {
   init();  // does nothing if the graph exists already
   if ( !mGraph )
+  {
+    if ( error ) *error = ErrTooManyFeatures;
     return QVector<QgsPoint>();
+  }
 
   QTime t;
   t.start();
   int v1 = point_in_graph( *mGraph, p1 );
   int v2 = point_in_graph( *mGraph, p2 );
   int tPrep = t.elapsed();
+
+  if ( v1 == -1 )
+  {
+    if ( error ) *error = ErrPoint1;
+    return QVector<QgsPoint>();
+  }
+  if ( v2 == -1 )
+  {
+    if ( error ) *error = ErrPoint2;
+    return QVector<QgsPoint>();
+  }
 
   QTime t2;
   t2.start();
@@ -631,6 +645,9 @@ QVector<QgsPoint> QgsTracer::findShortestPath( const QgsPoint& p1, const QgsPoin
   QgsDebugMsg( QString( "path timing: prep %1 ms, path %2 ms" ).arg( tPrep ).arg( tPath ) );
 
   reset_graph( *mGraph );
+
+  if ( error )
+    *error = points.isEmpty() ? ErrNoPath : ErrNone;
 
   return points;
 }

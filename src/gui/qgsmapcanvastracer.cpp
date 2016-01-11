@@ -4,6 +4,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 
@@ -12,8 +13,10 @@
 QHash<QgsMapCanvas*, QgsMapCanvasTracer*> QgsMapCanvasTracer::sTracers;
 
 
-QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas* canvas )
+QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas* canvas, QgsMessageBar* messageBar )
     : mCanvas( canvas )
+    , mMessageBar( messageBar )
+    , mLastMessage( nullptr )
 {
   sTracers.insert( canvas, this );
 
@@ -29,7 +32,7 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas* canvas )
 
   // arbitrarily chosen limit that should allow for fairly fast initialization
   // of the underlying graph structure
-  setMaxFeatureCount( 10000 );
+  setMaxFeatureCount( QSettings().value( "/qgis/digitizing/tracing_max_feature_count", 10000 ).toInt() );
 
   updateSettings(); // initialize
   updateLayerSettings();
@@ -43,16 +46,51 @@ QgsMapCanvasTracer::~QgsMapCanvasTracer()
 bool QgsMapCanvasTracer::init()
 {
   bool res = QgsTracer::init();
-
-  if ( !res )
-    emit messageEmitted( tr( "Tracing disabled because there are too many features displayed. Try zooming in or disable some layers." ) );
-
   return res;
 }
 
 QgsMapCanvasTracer* QgsMapCanvasTracer::tracerForCanvas( QgsMapCanvas* canvas )
 {
   return sTracers.value( canvas, 0 );
+}
+
+void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVertex )
+{
+  if ( !mMessageBar )
+    return;
+
+  // remove previous message (if any)
+  mMessageBar->popWidget( mLastMessage );
+  mLastMessage = nullptr;
+
+  QString message;
+  switch ( err )
+  {
+  case ErrTooManyFeatures:
+    message = tr( "Disabled - there are too many features displayed. Try zooming in or disable some layers." );
+    break;
+  case ErrPoint1:
+    message = tr( "The start point needs to be snapped and in the visible map view" );
+    break;
+  case ErrPoint2:
+    if ( addingVertex )
+      message = tr( "The end point needs to be snapped" );
+    break;
+  case ErrNoPath:
+    if ( addingVertex )
+      message = tr( "Endpoints are not connected" );
+    break;
+  case ErrNone:
+  default:
+    break;
+  }
+
+  if ( message.isEmpty() )
+    return;
+
+  mLastMessage = new QgsMessageBarItem( tr( "Tracing" ), message, QgsMessageBar::WARNING,
+                                        QSettings().value( "/qgis/messageTimeout", 5 ).toInt() );
+  mMessageBar->pushItem( mLastMessage );
 }
 
 void QgsMapCanvasTracer::updateSettings()

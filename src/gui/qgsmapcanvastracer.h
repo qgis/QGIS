@@ -1,18 +1,19 @@
 #ifndef QGSMAPCANVASTRACER_H
 #define QGSMAPCANVASTRACER_H
 
-#include "qgsmessagebar.h"
 #include "qgstracer.h"
 
 class QAction;
 class QgsMapCanvas;
+class QgsMessageBar;
+class QgsMessageBarItem;
 
 class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
 {
     Q_OBJECT
 
   public:
-    explicit QgsMapCanvasTracer( QgsMapCanvas* canvas );
+    explicit QgsMapCanvasTracer( QgsMapCanvas* canvas, QgsMessageBar* messageBar = 0 );
     ~QgsMapCanvasTracer();
 
     QAction* actionEnableTracing() { return mActionEnableTracing; }
@@ -24,12 +25,8 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
     //! instances for easier access to the common tracer by various map tools
     static QgsMapCanvasTracer* tracerForCanvas( QgsMapCanvas* canvas );
 
-  signals:
-    //! emit a message
-    void messageEmitted( const QString& message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
-
-    //! emit signal to clear previous message
-    //void messageDiscarded();
+    //! Report a path finding error to the user
+    void reportError( PathError err, bool addingVertex );
 
   private slots:
     void updateSettings();
@@ -38,6 +35,8 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
 
   private:
     QgsMapCanvas* mCanvas;
+    QgsMessageBar* mMessageBar;
+    QgsMessageBarItem* mLastMessage;
 
     QAction* mActionEnableTracing;
 

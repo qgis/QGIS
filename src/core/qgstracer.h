@@ -68,11 +68,20 @@ class CORE_EXPORT QgsTracer : public QObject
     //! if necessary.
     virtual bool init();
 
+    enum PathError
+    {
+      ErrNone,
+      ErrTooManyFeatures,
+      ErrPoint1,
+      ErrPoint2,
+      ErrNoPath,
+    };
+
     //! Given two points, find the shortest path and return points on the way.
     //! If the points are not located on existing vertices or edges,
     //! search will fail and return empty array. The search will also fail
     //! if the two points are not connected.
-    QVector<QgsPoint> findShortestPath( const QgsPoint& p1, const QgsPoint& p2 );
+    QVector<QgsPoint> findShortestPath( const QgsPoint& p1, const QgsPoint& p2, PathError* error = 0 );
 
     //! Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)
     bool isPointSnapped( const QgsPoint& pt );
