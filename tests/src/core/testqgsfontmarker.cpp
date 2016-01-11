@@ -173,7 +173,7 @@ bool TestQgsFontMarkerSymbol::imageCheck( const QString& theTestType )
   myChecker.setControlPathPrefix( "symbol_fontmarker" );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( theTestType, 30 );
   mReport += myChecker.report();
   return myResultFlag;
 }
