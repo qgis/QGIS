@@ -69,6 +69,10 @@ QgsFilePickerWidget::QgsFilePickerWidget( QWidget *parent )
   setLayout( layout );
 }
 
+QgsFilePickerWidget::~QgsFilePickerWidget()
+{
+}
+
 QString QgsFilePickerWidget::filePath()
 {
   return mFilePath;
