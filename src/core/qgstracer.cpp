@@ -525,6 +525,10 @@ bool QgsTracer::initGraph()
 
   int timeMake = t3.elapsed();
 
+  Q_UNUSED( timeExtract );
+  Q_UNUSED( timeNoding );
+  Q_UNUSED( timeNodingCall );
+  Q_UNUSED( timeMake );
   QgsDebugMsg( QString( "tracer extract %1 ms, noding %2 ms (call %3 ms), make %4 ms" )
                .arg( timeExtract ).arg( timeNoding ).arg( timeNodingCall ).arg( timeMake ) );
   return true;
@@ -645,6 +649,8 @@ QVector<QgsPoint> QgsTracer::findShortestPath( const QgsPoint& p1, const QgsPoin
   QgsPolyline points = shortest_path( *mGraph, v1, v2 );
   int tPath = t2.elapsed();
 
+  Q_UNUSED( tPrep );
+  Q_UNUSED( tPath );
   QgsDebugMsg( QString( "path timing: prep %1 ms, path %2 ms" ).arg( tPrep ).arg( tPath ) );
 
   reset_graph( *mGraph );
