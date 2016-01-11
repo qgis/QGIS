@@ -51,8 +51,6 @@ WIDGET, BASE = uic.loadUiType(
 
 class ProcessingToolbox(BASE, WIDGET):
 
-    USE_CATEGORIES = '/Processing/UseSimplifiedInterface'
-
     updateAlgList = True
 
     def __init__(self):
