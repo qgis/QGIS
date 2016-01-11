@@ -18,11 +18,10 @@
 #define QGSEXTERNALRESOURCEWIDGET_H
 
 class QWebView;
-
-class QVariant;
 class QgsPixmapLabel;
 
 #include <QWidget>
+#include <QVariant>
 
 #include "qgsfilepickerwidget.h"
 
@@ -52,8 +51,11 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
     explicit QgsExternalResourceWidget( QWidget *parent = 0 );
 
-    //! returns the value of the widget
-    QVariant documentPath();
+    /**
+     * @brief documentPath returns the path of the current document in the widget
+     * @param type determines the type of the returned null variant if the document is not defined yet
+     */
+    QVariant documentPath( QVariant::Type type = QVariant::String ) const;
     void setDocumentPath( QVariant documentPath );
 
     //! access the file picker widget to allow its configuration
