@@ -369,15 +369,35 @@ void QgsSnappingUtils::setMapSettings( const QgsMapSettings& settings )
     clearAllLocators();
 }
 
+void QgsSnappingUtils::setCurrentLayer( QgsVectorLayer* layer )
+{
+  mCurrentLayer = layer;
+}
+
+void QgsSnappingUtils::setSnapToMapMode( QgsSnappingUtils::SnapToMapMode mode )
+{
+  if ( mSnapToMapMode == mode )
+    return;
+
+  mSnapToMapMode = mode;
+  emit configChanged();
+}
+
 void QgsSnappingUtils::setDefaultSettings( int type, double tolerance, QgsTolerance::UnitType unit )
 {
   // force map units - can't use layer units for just any layer
   if ( unit == QgsTolerance::LayerUnits )
     unit = QgsTolerance::ProjectUnits;
 
+  if ( mDefaultType == type && mDefaultTolerance == tolerance && mDefaultUnit == unit )
+    return;
+
   mDefaultType = type;
   mDefaultTolerance = tolerance;
   mDefaultUnit = unit;
+
+  if ( mSnapToMapMode != SnapAdvanced ) // does not affect advanced mode
+    emit configChanged();
 }
 
 void QgsSnappingUtils::defaultSettings( int& type, double& tolerance, QgsTolerance::UnitType& unit )
@@ -385,6 +405,25 @@ void QgsSnappingUtils::defaultSettings( int& type, double& tolerance, QgsToleran
   type = mDefaultType;
   tolerance = mDefaultTolerance;
   unit = mDefaultUnit;
+}
+
+void QgsSnappingUtils::setLayers( const QList<QgsSnappingUtils::LayerConfig>& layers )
+{
+  if ( mLayers == layers )
+    return;
+
+  mLayers = layers;
+  if ( mSnapToMapMode == SnapAdvanced ) // only affects advanced mode
+    emit configChanged();
+}
+
+void QgsSnappingUtils::setSnapOnIntersections( bool enabled )
+{
+  if ( mSnapOnIntersection == enabled )
+    return;
+
+  mSnapOnIntersection = enabled;
+  emit configChanged();
 }
 
 const QgsCoordinateReferenceSystem* QgsSnappingUtils::destCRS()
@@ -467,6 +506,7 @@ void QgsSnappingUtils::readConfigFromProject()
     mLayers.append( LayerConfig( vlayer, t, tolIt->toDouble(), static_cast< QgsTolerance::UnitType >( tolUnitIt->toInt() ) ) );
   }
 
+  emit configChanged();
 }
 
 void QgsSnappingUtils::onLayersWillBeRemoved( const QStringList& layerIds )

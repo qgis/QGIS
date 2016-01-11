@@ -23,6 +23,8 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
 
   private slots:
     void updateSettings();
+    void updateLayerSettings();
+    void onCurrentLayerChanged();
 
   private:
     QgsMapCanvas* mCanvas;

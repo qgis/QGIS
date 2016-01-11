@@ -64,7 +64,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
     /** Set current layer so that if mode is SnapCurrentLayer we know which layer to use */
-    void setCurrentLayer( QgsVectorLayer* layer ) { mCurrentLayer = layer; }
+    void setCurrentLayer( QgsVectorLayer* layer );
     QgsVectorLayer* currentLayer() const { return mCurrentLayer; }
 
 
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     };
 
     /** Set how the snapping to map is done */
-    void setSnapToMapMode( SnapToMapMode mode ) { mSnapToMapMode = mode; }
+    void setSnapToMapMode( SnapToMapMode mode );
     /** Find out how the snapping to map is done */
     SnapToMapMode snapToMapMode() const { return mSnapToMapMode; }
 
@@ -95,9 +95,9 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /** Find out which strategy is used for indexing - by default hybrid indexing is used */
     IndexingStrategy indexingStrategy() const { return mStrategy; }
 
-    /** Configure options used when the mode is snap to current layer */
+    /** Configure options used when the mode is snap to current layer or to all layers */
     void setDefaultSettings( int type, double tolerance, QgsTolerance::UnitType unit );
-    /** Query options used when the mode is snap to current layer */
+    /** Query options used when the mode is snap to current layer or to all layers */
     void defaultSettings( int& type, double& tolerance, QgsTolerance::UnitType& unit );
 
     /**
@@ -106,6 +106,15 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     struct LayerConfig
     {
       LayerConfig( QgsVectorLayer* l, const QgsPointLocator::Types& t, double tol, QgsTolerance::UnitType u ) : layer( l ), type( t ), tolerance( tol ), unit( u ) {}
+
+      bool operator==( const LayerConfig& other ) const
+      {
+        return layer == other.layer && type == other.type && tolerance == other.tolerance && unit == other.unit;
+      }
+      bool operator!=( const LayerConfig& other ) const
+      {
+        return !operator==( other );
+      }
 
       //! The layer to configure.
       QgsVectorLayer* layer;
@@ -118,18 +127,24 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     };
 
     /** Set layers which will be used for snapping */
-    void setLayers( const QList<LayerConfig>& layers ) { mLayers = layers; }
+    void setLayers( const QList<LayerConfig>& layers );
     /** Query layers used for snapping */
     QList<LayerConfig> layers() const { return mLayers; }
 
     /** Set whether to consider intersections of nearby segments for snapping */
-    void setSnapOnIntersections( bool enabled ) { mSnapOnIntersection = enabled; }
+    void setSnapOnIntersections( bool enabled );
     /** Query whether to consider intersections of nearby segments for snapping */
     bool snapOnIntersections() const { return mSnapOnIntersection; }
 
   public slots:
     /** Read snapping configuration from the project */
     void readConfigFromProject();
+
+  signals:
+    /** Emitted when snapping configuration has been changed
+     * @note added in QGIS 2.14
+     */
+    void configChanged();
 
   protected:
     //! Called when starting to index - can be overridden and e.g. progress dialog can be provided
