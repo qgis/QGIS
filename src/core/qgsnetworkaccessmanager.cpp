@@ -39,7 +39,6 @@
 #include "qgsauthmanager.h"
 
 /// @cond PRIVATE
-//! @note not available in Python bindings
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {
   public:
@@ -93,7 +92,6 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       return QList<QNetworkProxy>() << nam->fallbackProxy();
     }
 };
-
 ///@endcond
 
 //

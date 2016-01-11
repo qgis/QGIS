@@ -24,7 +24,6 @@
 #include "qgsvectorlayer.h"
 
 /// @cond PRIVATE
-//! @note not available in Python bindings
 class CustomActionRegistry : public QgsMapLayerActionRegistry
 {
     Q_OBJECT

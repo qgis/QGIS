@@ -117,8 +117,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 
 
 /// @cond PRIVATE
-//! Widget that serves as rectangle showing current extent in overview
-//! @note not available in Python bindings
+// Widget that serves as rectangle showing current extent in overview
 class QgsPanningWidget : public QWidget
 {
     Q_OBJECT

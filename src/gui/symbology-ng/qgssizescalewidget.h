@@ -68,7 +68,6 @@ class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui
 };
 
 /// @cond PRIVATE
-//! @note not available in Python bindings
 class ItemDelegate : public QItemDelegate
 {
     Q_OBJECT
