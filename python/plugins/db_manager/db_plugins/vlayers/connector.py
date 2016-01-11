@@ -413,15 +413,14 @@ class VLayerConnector(DBConnector):
         from .sql_dictionary import getSqlDictionary
         sql_dict = getSqlDictionary()
 
-        if True:
-            items = []
-            for tbl in self.getTables():
-                items.append(tbl[1])  # table name
+        items = []
+        for tbl in self.getTables():
+            items.append(tbl[1])  # table name
 
             for fld in self.getTableFields((None, tbl[1])):
                 items.append(fld[1])  # field name
 
-            sql_dict["identifier"] = items
+        sql_dict["identifier"] = items
         return sql_dict
 
     def getQueryBuilderDictionary(self):
