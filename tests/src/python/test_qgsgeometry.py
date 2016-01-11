@@ -357,6 +357,33 @@ class TestQgsGeometry(TestCase):
         myMinimumLength = len('Polygon(())')
         assert myEndLength > myMinimumLength, myMessage
 
+    def testExplode(self):
+        """Test that we can explode a linestring into its segments"""
+        myLine = QgsGeometry.fromPolyline([
+            QgsPoint(0, 0),
+            QgsPoint(1, 1),
+            QgsPoint(3, 3)])
+        engine = QgsGeometry.createGeometryEngine(myLine.geometry())
+        geom = engine.explode()
+        self.assertEqual(geom.exportToWkt(), u'MultiLineString ((0 0, 1 1),(1 1, 3 3))')
+
+        myLine = QgsGeometry.fromMultiPolyline(
+            [
+                [
+                    QgsPoint(0, 0),
+                    QgsPoint(1, 1),
+                    QgsPoint(3, 3)],
+                [
+                    QgsPoint(2, 0),
+                    QgsPoint(3, 1),
+                    QgsPoint(6, 3)
+                ]
+            ]
+        )
+        engine = QgsGeometry.createGeometryEngine(myLine.geometry())
+        geom = engine.explode()
+        self.assertEqual(geom.exportToWkt(), u'MultiLineString ((0 0, 1 1),(1 1, 3 3),(2 0, 3 1),(3 1, 6 3))')
+
     def testClipping(self):
         """Test that we can clip geometries using other geometries."""
         myMemoryLayer = QgsVectorLayer(

@@ -63,5 +63,13 @@ class QgsGeometryEngine
                                bool topological,
                                QList<QgsPointV2> &topologyTestPoints, QString* errorMsg = nullptr ) const;
 
+    /**
+     * Explodes a linestring or multilinestring into individual segments.
+     *
+     * @return A multilinestring with all parts being straight line segments
+     *         consisting of only two vertices.
+     */
+    QgsGeometry explode();
+
     virtual QgsAbstractGeometryV2* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = 0 ) const = 0;
 };

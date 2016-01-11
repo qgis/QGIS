@@ -1,0 +1,7 @@
+{
+  "name": "explode",
+  "type": "function",
+  "description": "Returns a MultiLineString consisting of all segments from the input LineString or MultiLineString",
+  "arguments": [ {"arg":"geometry","description":"geometry object"} ],
+  "examples": [ { "expression":"geom_to_wkt(explode(geom_from_wkt('LineString (0 0, 1 1, 3 3)')))", "returns":"'MultiLineString ((0 0, 1 1),(1 1, 3 3))'"}]
+}
