@@ -122,6 +122,8 @@ class GUI_EXPORT QgsFilePickerWidget : public QWidget
 
     //! Returns a filePath with relative path options applied (or not) !
     QString relativePath( QString filePath, bool removeRelative ) const;
+
+    friend class TestQgsFilePickerWidget;
 };
 
 #endif // QGSFILEPICKERWIDGET_H
