@@ -31,7 +31,7 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer* vl, 
   mUseLink->setChecked( false );
   mFullUrl->setChecked( false );
   mDocumentViewerGroupBox->setChecked( false );
-  mRootPath->setPlaceholderText( QSettings().value( "/UI/lastExternalResourceWidgetDir", QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) ) ).toString() );
+  mRootPath->setPlaceholderText( QSettings().value( "/UI/lastExternalResourceWidgetDefaultPath", QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) ) ).toString() );
 
   // Add connection to button for choosing default path
   connect( mRootPathButton, SIGNAL( clicked() ), this, SLOT( chooseDefaultPath() ) );
@@ -65,7 +65,7 @@ void QgsExternalResourceConfigDlg::chooseDefaultPath()
   }
   else
   {
-    dir = QSettings().value( "/UI/lastExternalResourceWidgetDir", QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) ) ).toString();
+    dir = QSettings().value( "/UI/lastExternalResourceWidgetDefaultPath", QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) ) ).toString();
   }
 
   QString rootName = QFileDialog::getExistingDirectory( this, tr( "Select a directory" ), dir, QFileDialog::ShowDirsOnly );

@@ -58,12 +58,12 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   connect( mFilePicker, SIGNAL( fileChanged( QString ) ), this, SLOT( loadDocument( QString ) ) );
 }
 
-QVariant QgsExternalResourceWidget::documentPath()
+QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
 {
   QString path = mFilePicker->filePath();
-  if ( path.isNull() || path == QSettings().value( "qgis/nullValue", "NULL" ) )
+  if ( path.isEmpty() )
   {
-    return QVariant();
+    return QVariant( type );
   }
   else
   {
@@ -71,18 +71,9 @@ QVariant QgsExternalResourceWidget::documentPath()
   }
 }
 
-void QgsExternalResourceWidget::setDocumentPath( QVariant value )
+void QgsExternalResourceWidget::setDocumentPath( QVariant path )
 {
-  QString path;
-  if ( value.isNull() )
-  {
-    path =  QSettings().value( "qgis/nullValue", "NULL" ).toString();
-  }
-  else
-  {
-    path = value.toString();
-  }
-  mFilePicker->setFilePath( path );
+  mFilePicker->setFilePath( path.toString() );
 }
 
 QgsFilePickerWidget*QgsExternalResourceWidget::filePickerwidget()

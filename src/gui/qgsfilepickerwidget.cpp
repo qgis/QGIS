@@ -76,6 +76,10 @@ QString QgsFilePickerWidget::filePath()
 
 void QgsFilePickerWidget::setFilePath( QString path )
 {
+  if ( path == QSettings().value( "qgis/nullValue", "NULL" ) )
+  {
+    path = "";
+  }
   mFilePath = path;
   mLineEdit->setText( path );
   mLinkLabel->setText( toUrl( path ) );
@@ -188,7 +192,12 @@ void QgsFilePickerWidget::openFileDialog()
   QUrl theUrl = QUrl::fromUserInput( oldPath );
   if ( !theUrl.isValid() )
   {
-    oldPath = settings.value( "/UI/lastExternalResourceWidgetDir", QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) ).toString();
+    QString defPath = QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() );
+    if ( defPath.isEmpty() )
+    {
+      defPath = QDir::homePath();
+    }
+    oldPath = settings.value( "/UI/lastExternalResourceWidgetDefaultPath", defPath ).toString();
   }
 
   // Handle Storage
@@ -219,7 +228,7 @@ void QgsFilePickerWidget::openFileDialog()
   else if ( mStorageMode == Directory )
   {
     settings.setValue( "/UI/lastFileNameWidgetDir", fileName );
-}
+  }
 
   // Handle relative Path storage
   fileName = relativePath( fileName, true );
@@ -252,7 +261,7 @@ QString QgsFilePickerWidget::relativePath( QString filePath, bool removeRelative
 }
 
 
-QString QgsFilePickerWidget::toUrl(const QString& path ) const
+QString QgsFilePickerWidget::toUrl( const QString& path ) const
 {
   QString rep;
   if ( path.isEmpty() )
