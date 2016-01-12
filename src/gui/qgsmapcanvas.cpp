@@ -1044,7 +1044,11 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
     return;
 
   QgsRectangle rect = mapSettings().layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
+  zoomToFeatureExtent( rect );
+} // zoomToSelected
 
+void QgsMapCanvas::zoomToFeatureExtent( QgsRectangle& rect )
+{
   // no selected features, only one selected point feature
   //or two point features with the same x- or y-coordinates
   if ( rect.isEmpty() )
@@ -1065,7 +1069,42 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
 
   setExtent( rect );
   refresh();
-} // zoomToSelected
+}
+
+void QgsMapCanvas::zoomToFeatureId( QgsVectorLayer* layer, QgsFeatureId id )
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest().setFilterFid( id ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeature fet;
+  if ( !it.nextFeature( fet ) )
+  {
+    return;
+  }
+
+  QgsGeometry* geom = fet.geometry();
+
+  QString errorMessage;
+  if ( !geom || !geom->geometry() )
+  {
+    errorMessage = tr( "Feature does not have a geometry" );
+  }
+  else if ( geom->geometry()->isEmpty() )
+  {
+    errorMessage = tr( "Feature geometry is empty" );
+  }
+  if ( !errorMessage.isEmpty() )
+  {
+    emit messageEmitted( tr( "Zoom to feature id failed" ), errorMessage, QgsMessageBar::WARNING );
+    return;
+  }
+
+  QgsRectangle rect = mapSettings().layerExtentToOutputExtent( layer, geom->boundingBox() );
+  zoomToFeatureExtent( rect );
+}
 
 void QgsMapCanvas::panToSelected( QgsVectorLayer* layer )
 {

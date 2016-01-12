@@ -151,6 +151,9 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
 
+    /** Returns the map canvas*/
+    QgsMapCanvas* mapCanvas() const { return mCanvas; }
+
   protected:
     /**
      * Returns true if the source row will be accepted

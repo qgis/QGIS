@@ -168,6 +168,11 @@ class QgsMapCanvas : QGraphicsView
       @param layer optionally specify different than current layer */
     void zoomToSelected( QgsVectorLayer* layer = NULL );
 
+    /** Set canvas extent to the bounding box of a feature
+        @param layer the vector layer
+        @param id the feature id*/
+    void zoomToFeatureId( QgsVectorLayer* layer, QgsFeatureId id );
+
     /** Pan to the selected features of current (vector) layer keeping same extent. */
     void panToSelected( QgsVectorLayer* layer = NULL );
 
@@ -501,6 +506,9 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.12
     void layerStyleOverridesChanged();
 
+    //! emit a message (usually to be displayed in a message bar)
+    void messageEmitted( const QString& title, const QString& message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
+
   protected:
     //! Overridden standard event to be gestures aware
     bool event( QEvent * e );
@@ -537,6 +545,10 @@ class QgsMapCanvas : QGraphicsView
 
     //! called when panning is in action, reset indicates end of panning
     void moveCanvasContents( bool reset = false );
+
+    //! Zooms to feature extent. Adds a small margin around the extent
+    //! and does a pan if rect is empty (point extent)
+    void zoomToFeatureExtent( QgsRectangle& rect );
 
     //! called on resize or changed extent to notify canvas items to change their rectangle
     void updateCanvasItemPositions();

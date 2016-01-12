@@ -620,6 +620,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   // "theMapCanvas" used to find this canonical instance later
   mMapCanvas = new QgsMapCanvas( centralWidget, "theMapCanvas" );
+  connect( mMapCanvas, SIGNAL( messageEmitted( const QString&, const QString&, QgsMessageBar::MessageLevel ) ),
+           this, SLOT( displayMessage( const QString&, const QString&, QgsMessageBar::MessageLevel ) ) );
   mMapCanvas->setWhatsThis( tr( "Map canvas. This is where raster and vector "
                                 "layers are displayed when added to the map" ) );
 
@@ -1034,6 +1036,8 @@ QgisApp::QgisApp()
   setupUi( this );
   mInternalClipboard = new QgsClipboard;
   mMapCanvas = new QgsMapCanvas();
+  connect( mMapCanvas, SIGNAL( messageEmitted( const QString&, const QString&, QgsMessageBar::MessageLevel ) ),
+           this, SLOT( displayMessage( const QString&, const QString&, QgsMessageBar::MessageLevel ) ) );
   mMapCanvas->freeze();
   mLayerTreeView = new QgsLayerTreeView( this );
   mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
@@ -9457,6 +9461,11 @@ void QgisApp::displayMapToolMessage( const QString& message, QgsMessageBar::Mess
     mLastMapToolMessage = new QgsMessageBarItem( tool->toolName(), message, level, messageTimeout() );
     messageBar()->pushItem( mLastMapToolMessage );
   }
+}
+
+void QgisApp::displayMessage( const QString& title, const QString& message, QgsMessageBar::MessageLevel level )
+{
+  messageBar()->pushMessage( title, message, level, messageTimeout() );
 }
 
 void QgisApp::removeMapToolMessage()

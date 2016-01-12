@@ -217,6 +217,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     virtual void finished();
 
+    /** Zooms to the active feature*/
+    void zoomToCurrentFeature();
+
   private:
     void initLayerCache( QgsVectorLayer *layer, bool cacheGeometry );
     void initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request );

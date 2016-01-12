@@ -1088,6 +1088,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showRotation();
     void showStatusMessage( const QString& theMessage );
     void displayMapToolMessage( const QString& message, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO );
+    void displayMessage( const QString& title, const QString& message, QgsMessageBar::MessageLevel level );
     void removeMapToolMessage();
     void updateMouseCoordinatePrecision();
     void hasCrsTransformEnabled( bool theFlag );
