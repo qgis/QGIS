@@ -79,7 +79,7 @@ class Datasources2Vrt(GeoAlgorithm):
 
         # We add outputs
         self.addOutput(OutputFile(self.OUTPUT_VRT_FILE,
-                                  self.tr('Virtual vector')))
+                                  self.tr('Virtual vector'), ext='vrt'))
         self.addOutput(OutputString(self.OUTPUT_VRT_STRING,
                                     self.tr('Virtual string')))
 
