@@ -375,7 +375,7 @@
       </ComposerLabel>
     </Composition>
   </Composer>
-  <projectlayers layercount="5">
+  <projectlayers>
     <maplayer minimumScale="-4.65661e-10" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="1" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Polygon" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <id>Hello_copy20150804164427541</id>
       <datasource>dbname='./helloworld.db' table="hello" (geom) sql=</datasource>
