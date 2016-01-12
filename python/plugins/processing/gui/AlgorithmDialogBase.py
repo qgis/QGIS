@@ -112,6 +112,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
     def closeEvent(self, evt):
         self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
+        super(AlgorithmDialogBase, self).closeEvent(evt)
 
     def setMainWidget(self):
         self.tabWidget.widget(0).layout().addWidget(self.mainWidget)
