@@ -854,7 +854,7 @@ void QgsVectorLayerProperties::loadStyle_clicked()
   else
   {
     //let the user know what went wrong
-    QMessageBox::information( this, tr( "Load Style" ), myMessage );
+    QMessageBox::warning( this, tr( "Load Style" ), myMessage );
   }
 
   QFileInfo myFI( myFileName );

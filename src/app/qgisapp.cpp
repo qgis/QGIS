@@ -6948,8 +6948,8 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
 
     if ( !errorMsg.isEmpty() )
     {
-      messageBar()->pushMessage( errorMsg,
-                                 tr( "Cannot copy style: %1" ),
+      messageBar()->pushMessage( tr( "Cannot copy style" ),
+                                 errorMsg,
                                  QgsMessageBar::CRITICAL, messageTimeout() );
       return;
     }
@@ -6978,16 +6978,16 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
       if ( !doc.setContent( clipboard()->data( QGSCLIPBOARD_STYLE_MIME ), false, &errorMsg, &errorLine, &errorColumn ) )
       {
 
-        messageBar()->pushMessage( errorMsg,
-                                   tr( "Cannot parse style: %1:%2:%3" ),
+        messageBar()->pushMessage( tr( "Cannot parse style" ),
+                                   errorMsg,
                                    QgsMessageBar::CRITICAL, messageTimeout() );
         return;
       }
 
       if ( !selectionLayer->importNamedStyle( doc, errorMsg ) )
       {
-        messageBar()->pushMessage( errorMsg,
-                                   tr( "Cannot paste style: %1" ),
+        messageBar()->pushMessage( tr( "Cannot paste style" ),
+                                   errorMsg,
                                    QgsMessageBar::CRITICAL, messageTimeout() );
         return;
       }
