@@ -329,84 +329,84 @@ int FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y
     {
       case QgsPalLayerSettings::TopLeft:
         quadrant = LabelPosition::QuadrantAboveLeft;
-        alpha = 2.3561944902; //315 degrees
+        alpha = 3 * M_PI_4;
         deltaX = -labelWidth + visualMargin.right - symbolWidthOffset;
         deltaY = -visualMargin.bottom + symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::TopSlightlyLeft:
         quadrant = LabelPosition::QuadrantAboveRight; //right quadrant, so labels are left-aligned
-        alpha = 1.5707963268; //0 degrees;
+        alpha = M_PI_2;
         deltaX = -labelWidth / 4.0 - visualMargin.left;
         deltaY = -visualMargin.bottom + symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::TopMiddle:
         quadrant = LabelPosition::QuadrantAbove;
-        alpha = 1.5707963268; //0 degrees
+        alpha = M_PI_2;
         deltaX = -labelWidth / 2.0;
         deltaY = -visualMargin.bottom + symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::TopSlightlyRight:
         quadrant = LabelPosition::QuadrantAboveLeft; //left quadrant, so labels are right-aligned
-        alpha = 1.5707963268; //0 degrees
+        alpha = M_PI_2;
         deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right;
         deltaY = -visualMargin.bottom + symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::TopRight:
         quadrant = LabelPosition::QuadrantAboveRight;
-        alpha = 0.7853981634; // 45.0 degrees
+        alpha = M_PI_4;
         deltaX = - visualMargin.left + symbolWidthOffset;
         deltaY = -visualMargin.bottom + symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::MiddleLeft:
         quadrant = LabelPosition::QuadrantLeft;
-        alpha = 3.1415926536; // 270.0 degrees
+        alpha = M_PI;
         deltaX = -labelWidth + visualMargin.right - symbolWidthOffset;
         deltaY = -labelHeight / 2.0;// TODO - should this be adjusted by visual margin??
         break;
 
       case QgsPalLayerSettings::MiddleRight:
         quadrant = LabelPosition::QuadrantRight;
-        alpha = 0.0; // 90.0 degrees
+        alpha = 0.0;
         deltaX = -visualMargin.left + symbolWidthOffset;
         deltaY = -labelHeight / 2.0;// TODO - should this be adjusted by visual margin??
         break;
 
       case QgsPalLayerSettings::BottomLeft:
         quadrant = LabelPosition::QuadrantBelowLeft;
-        alpha = 3.926990817; // 225.0 degrees
+        alpha = 5 * M_PI_4;
         deltaX = -labelWidth + visualMargin.right - symbolWidthOffset;
         deltaY = -labelHeight + visualMargin.top - symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::BottomSlightlyLeft:
         quadrant = LabelPosition::QuadrantBelowRight; //right quadrant, so labels are left-aligned
-        alpha = 4.7123889804; // 180.0 degrees
+        alpha = 3 * M_PI_2;
         deltaX = -labelWidth / 4.0 - visualMargin.left;
         deltaY = -labelHeight + visualMargin.top - symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::BottomMiddle:
         quadrant = LabelPosition::QuadrantBelow;
-        alpha = 4.7123889804; // 180.0 degrees
+        alpha = 3 * M_PI_2;
         deltaX = -labelWidth / 2.0;
         deltaY = -labelHeight + visualMargin.top - symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::BottomSlightlyRight:
         quadrant = LabelPosition::QuadrantBelowLeft; //left quadrant, so labels are right-aligned
-        alpha =  4.7123889804; // 180.0 degrees
+        alpha = 3 * M_PI_2;
         deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right;
         deltaY = -labelHeight + visualMargin.top - symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::BottomRight:
         quadrant = LabelPosition::QuadrantBelowRight;
-        alpha = 5.4977871438; // 135.0 degrees
+        alpha = 7 * M_PI_4;
         deltaX = -visualMargin.left + symbolWidthOffset;
         deltaY = -labelHeight + visualMargin.top - symbolHeightOffset;
         break;
