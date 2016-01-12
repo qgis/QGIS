@@ -97,7 +97,7 @@ int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint>& geom )
   return 0;
 }
 
-QgsGeometryRubberBand* QgsMapToolEdit::createGeometryRubberBand( QGis::GeometryType geometryType ) const
+QgsGeometryRubberBand* QgsMapToolEdit::createGeometryRubberBand( QGis::GeometryType geometryType, bool alternativeBand ) const
 {
   QSettings settings;
   QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, geometryType );
@@ -105,6 +105,11 @@ QgsGeometryRubberBand* QgsMapToolEdit::createGeometryRubberBand( QGis::GeometryT
                 settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt(),
                 settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt() );
   double myAlpha = settings.value( "/qgis/digitizing/line_color_alpha", 200 ).toInt() / 255.0 ;
+  if ( alternativeBand )
+  {
+    myAlpha = myAlpha * settings.value( "/qgis/digitizing/line_color_alpha_scale", 0.75 ).toDouble();
+    rb->setLineStyle( Qt::DotLine );
+  }
   color.setAlphaF( myAlpha );
   rb->setOutlineColor( color );
   rb->setFillColor( color );
