@@ -409,11 +409,12 @@ void QgsDualView::zoomToCurrentFeature()
     return;
   }
 
-  QgsFeatureId id = mFilterModel->rowToId( currentIndex );
+  QgsFeatureIds ids;
+  ids.insert( mFilterModel->rowToId( currentIndex ) );
   QgsMapCanvas* canvas = mFilterModel->mapCanvas();
   if ( canvas )
   {
-    canvas->zoomToFeatureId( mLayerCache->layer(), id );
+    canvas->zoomToFeatureIds( mLayerCache->layer(), ids );
   }
 }
 

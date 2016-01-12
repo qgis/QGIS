@@ -238,10 +238,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
       @param layer optionally specify different than current layer */
     void zoomToSelected( QgsVectorLayer* layer = nullptr );
 
-    /** Set canvas extent to the bounding box of a feature
+    /** Set canvas extent to the bounding box of a set of features
         @param layer the vector layer
-        @param id the feature id*/
-    void zoomToFeatureId( QgsVectorLayer* layer, QgsFeatureId id );
+        @param ids the feature ids*/
+    void zoomToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds& ids );
 
     /** Pan to the selected features of current (vector) layer keeping same extent. */
     void panToSelected( QgsVectorLayer* layer = nullptr );
