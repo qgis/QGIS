@@ -6941,39 +6941,12 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
 
   if ( selectionLayer )
   {
-    QDomImplementation DomImplementation;
-    QDomDocumentType documentType =
-      DomImplementation.createDocumentType(
-        "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
-    QDomDocument doc( documentType );
-    QDomElement rootNode = doc.createElement( "qgis" );
-    rootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
-    doc.appendChild( rootNode );
-
-    rootNode.setAttribute( "hasScaleBasedVisibilityFlag", selectionLayer->hasScaleBasedVisibility() ? 1 : 0 );
-    rootNode.setAttribute( "minimumScale", QString::number( selectionLayer->minimumScale() ) );
-    rootNode.setAttribute( "maximumScale", QString::number( selectionLayer->maximumScale() ) );
-
-    /*
-     * Check to see if the layer is vector - in which case we should also copy its geometryType
-     * to avoid eventually pasting to a layer with a different geometry
-    */
-    if ( selectionLayer->type() == 0 )
-    {
-      //Getting the selectionLayer geometry
-      QgsVectorLayer *SelectionGeometry = static_cast<QgsVectorLayer*>( selectionLayer );
-      QString geoType = QString::number( SelectionGeometry->geometryType() );
-
-      //Adding geometryinformation
-      QDomElement layerGeometryType = doc.createElement( "layerGeometryType" );
-      QDomText type = doc.createTextNode( geoType );
-
-      layerGeometryType.appendChild( type );
-      rootNode.appendChild( layerGeometryType );
-    }
-
     QString errorMsg;
-    if ( !selectionLayer->writeSymbology( rootNode, doc, errorMsg ) )
+    QDomDocument doc( "qgis" );
+    selectionLayer->exportNamedStyle( doc, errorMsg );
+
+
+    if ( !errorMsg.isEmpty() )
     {
       messageBar()->pushMessage( errorMsg,
                                  tr( "Cannot copy style: %1" ),
@@ -6987,7 +6960,7 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
   }
 }
 /**
-   \param destinatioLayer  The layer that the clipboard will be pasted to
+   \param destinationLayer  The layer that the clipboard will be pasted to
                             (defaults to the active layer on the legend)
  */
 
@@ -7011,33 +6984,13 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
         return;
       }
 
-      QDomElement rootNode = doc.firstChildElement( "qgis" );
-
-      //Test for matching geometry type on vector layers when pasting
-      if ( selectionLayer->type() == QgsMapLayer::VectorLayer )
-      {
-        QgsVectorLayer *selectionVectorLayer = static_cast<QgsVectorLayer*>( selectionLayer );
-        int pasteLayerGeometryType = doc.elementsByTagName( "layerGeometryType" ).item( 0 ).toElement().text().toInt();
-        if ( selectionVectorLayer->geometryType() != pasteLayerGeometryType )
-        {
-          messageBar()->pushMessage( tr( "Cannot paste style to layer with a different geometry type" ),
-                                     tr( "Your copied style does not match the layer you are pasting to" ),
-                                     QgsMessageBar::INFO, messageTimeout() );
-          return;
-        }
-      }
-
-      if ( !selectionLayer->readSymbology( rootNode, errorMsg ) )
+      if ( !selectionLayer->importNamedStyle( doc, errorMsg ) )
       {
         messageBar()->pushMessage( errorMsg,
-                                   tr( "Cannot read style: %1" ),
+                                   tr( "Cannot paste style: %1" ),
                                    QgsMessageBar::CRITICAL, messageTimeout() );
         return;
       }
-
-      selectionLayer->setScaleBasedVisibility( rootNode.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
-      selectionLayer->setMinimumScale( rootNode.attribute( "minimumScale" ).toFloat() );
-      selectionLayer->setMaximumScale( rootNode.attribute( "maximumScale" ).toFloat() );
 
       mLayerTreeView->refreshLayerSymbology( selectionLayer->id() );
       mMapCanvas->clearCache();
@@ -7704,8 +7657,15 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
     nodeDupLayer->setVisible( Qt::Unchecked );
 
     // duplicate the layer style
-    copyStyle( selectedLyr );
-    pasteStyle( dupLayer );
+    QString errMsg;
+    QDomDocument style;
+    selectedLyr->exportNamedStyle( style, errMsg );
+    if ( errMsg.isEmpty() )
+      dupLayer->importNamedStyle( style, errMsg );
+    if ( !errMsg.isEmpty() )
+      messageBar()->pushMessage( errMsg,
+                                 tr( "Cannot copy style to duplicated layer." ),
+                                 QgsMessageBar::CRITICAL, messageTimeout() );
 
     QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( selectedLyr );
     QgsVectorLayer* vDupLayer = dynamic_cast<QgsVectorLayer*>( dupLayer );
