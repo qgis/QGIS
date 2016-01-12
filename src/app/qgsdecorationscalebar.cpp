@@ -256,31 +256,33 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     // Set  margin according to selected units
     switch ( mMarginUnit )
     {
-      case 0: // Millimetres
+      case QgsSymbolV2::MM:
       {
         int myPixelsInchX = theQPainter->device()->logicalDpiX();
         int myPixelsInchY = theQPainter->device()->logicalDpiY();
-        myOriginX = int(( float( myPixelsInchX ) * INCHES_TO_MM ) * float( mMarginHorizontal ) );
-        myOriginY = int(( float( myPixelsInchY ) * INCHES_TO_MM ) * float( mMarginVertical ) );
+        myOriginX = myPixelsInchX * INCHES_TO_MM * mMarginHorizontal;
+        myOriginY = myPixelsInchY * INCHES_TO_MM * mMarginVertical;
         break;
       }
-      case 3: // Pixels
+
+      case QgsSymbolV2::Pixel:
         myOriginX = mMarginHorizontal - 5.; // Minus 5 to shift tight into corner
         myOriginY = mMarginVertical - 5.;
         break;
-      case 4: // Percentage
+
+      case QgsSymbolV2::Percentage:
       {
-        float myMarginDoubledW = float( myMarginW * 2 );
-        float myMarginDoubledH = float( myMarginH * 2 );
-        myOriginX = int((( float( myCanvasWidth - myMarginDoubledW ) - myTotalScaleBarWidth )
-                         / 100. ) * float( mMarginHorizontal ) );
-        myOriginY = int((( float( myCanvasHeight - myMarginDoubledH ) )
-                         / 100. ) * float( mMarginVertical ) );
+        float myMarginDoubledW = myMarginW * 2.0;
+        float myMarginDoubledH = myMarginH * 2.0;
+        myOriginX = (( myCanvasWidth - myMarginDoubledW - myTotalScaleBarWidth ) / 100. ) * mMarginHorizontal;
+        myOriginY = (( myCanvasHeight - myMarginDoubledH ) / 100. ) * mMarginVertical;
         break;
       }
+
       default:  // Use default of top left
         break;
     }
+
     //Determine the origin of scale bar depending on placement selected
     switch ( mPlacement )
     {

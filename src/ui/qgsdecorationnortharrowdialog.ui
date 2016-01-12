@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>559</width>
+    <width>560</width>
     <height>234</height>
    </rect>
   </property>
@@ -15,8 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -31,6 +30,75 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="2" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="labelHorizontal">
+          <property name="text">
+           <string>Horizontal</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsSpinBox" name="spinVertical">
+          <property name="minimumSize">
+           <size>
+            <width>90</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="whatsThis">
+           <string extracomment="Distance from the top of the canvas as a percentage of page height"/>
+          </property>
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelVertical">
+          <property name="text">
+           <string>Vertical</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsSpinBox" name="spinHorizontal">
+          <property name="minimumSize">
+           <size>
+            <width>90</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="whatsThis">
+           <string extracomment="Distance from the left of the canvas as a percentage of page width"/>
+          </property>
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsUnitSelectionWidget" name="wgtUnitSelection" native="true">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
       <item row="0" column="1">
        <widget class="QLabel" name="textLabel6">
         <property name="sizePolicy">
@@ -53,7 +121,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="5">
+      <item row="0" column="4">
        <widget class="QSpinBox" name="spinAngle">
         <property name="maximum">
          <number>360</number>
@@ -89,66 +157,12 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
-       <widget class="QLabel" name="labelHorizontal">
-        <property name="text">
-         <string>Horizontal</string>
+      <item row="1" column="2" colspan="3">
+       <widget class="QComboBox" name="cboPlacement">
+        <property name="toolTip">
+         <string>Placement on screen</string>
         </property>
        </widget>
-      </item>
-      <item row="2" column="3">
-       <widget class="QgsSpinBox" name="spinHorizontal">
-        <property name="minimumSize">
-         <size>
-          <width>90</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="whatsThis">
-         <string extracomment="Distance from the left of the canvas as a percentage of page width"/>
-        </property>
-        <property name="minimum">
-         <number>0</number>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="4">
-       <widget class="QLabel" name="labelVertical">
-        <property name="text">
-         <string>Vertical</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="5">
-       <widget class="QgsSpinBox" name="spinVertical">
-        <property name="minimumSize">
-         <size>
-          <width>90</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="whatsThis">
-         <string extracomment="Distance from the top of the canvas as a percentage of page height"/>
-        </property>
-        <property name="minimum">
-         <number>0</number>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="6">
-       <widget class="QgsUnitSelectionWidget" name="wgtUnitSelection" native="true"/>
       </item>
       <item row="3" column="1" colspan="2">
        <widget class="QCheckBox" name="cboxAutomatic">
@@ -191,14 +205,7 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="2" colspan="4">
-       <widget class="QComboBox" name="cboPlacement">
-        <property name="toolTip">
-         <string>Placement on screen</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2" colspan="3">
+      <item row="0" column="2" colspan="2">
        <widget class="QSlider" name="sliderRotation">
         <property name="toolTip">
          <string/>
@@ -273,10 +280,10 @@
   <tabstop>sliderRotation</tabstop>
   <tabstop>spinAngle</tabstop>
   <tabstop>cboPlacement</tabstop>
-  <tabstop>spinHorizontal</tabstop>
   <tabstop>spinVertical</tabstop>
+  <tabstop>spinHorizontal</tabstop>
+  <tabstop>wgtUnitSelection</tabstop>
   <tabstop>cboxAutomatic</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

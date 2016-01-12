@@ -145,24 +145,25 @@ void QgsDecorationNorthArrow::render( QPainter * theQPainter )
       int myYOffset = 0;
       switch ( mMarginUnit )
       {
-        case 0: // Millimetres
+        case QgsSymbolV2::MM:
         {
           int myPixelsInchX = theQPainter->device()->logicalDpiX();
           int myPixelsInchY = theQPainter->device()->logicalDpiY();
-          myXOffset = int(( float( myPixelsInchX ) * INCHES_TO_MM ) * float( mMarginHorizontal ) );
-          myYOffset = int(( float( myPixelsInchY ) * INCHES_TO_MM ) * float( mMarginVertical ) );
+          myXOffset = myPixelsInchX * INCHES_TO_MM * mMarginHorizontal;
+          myYOffset = myPixelsInchY * INCHES_TO_MM * mMarginVertical;
           break;
         }
-        case 3: // Pixels
+
+        case QgsSymbolV2::Pixel:
           myXOffset = mMarginHorizontal - 5; // Minus 5 to shift tight into corner
           myYOffset = mMarginVertical - 5;
           break;
-        case 4: // Percentage
-          myXOffset = int((( float( myWidth ) - float( myQPixmap.width() ) )
-                           / 100. ) * float( mMarginHorizontal ) );
-          myYOffset = int((( float( myHeight ) - float( myQPixmap.height() ) )
-                           / 100. ) * float( mMarginVertical ) );
+
+        case QgsSymbolV2::Percentage:
+          myXOffset = (( myWidth - myQPixmap.width() ) / 100. ) * mMarginHorizontal;
+          myYOffset = (( myHeight - myQPixmap.height() ) / 100. ) * mMarginVertical;
           break;
+
         default:  // Use default of top left
           break;
       }

@@ -24,6 +24,8 @@
 
 class QPainter;
 
+#define INCHES_TO_MM 0.0393700787402
+
 class APP_EXPORT QgsDecorationItem: public QObject
 {
     Q_OBJECT
@@ -85,7 +87,6 @@ class APP_EXPORT QgsDecorationItem: public QObject
     Placement mPlacement;
     //! Units used for the decoration placement margin
     QgsSymbolV2::OutputUnit mMarginUnit;
-    const double INCHES_TO_MM = 0.0393700787402;
 
     QString mName;
     QString mNameConfig;

@@ -116,24 +116,25 @@ void QgsDecorationCopyright::render( QPainter * theQPainter )
     // Set  margin according to selected units
     switch ( mMarginUnit )
     {
-      case 0: // Millimetres
+      case QgsSymbolV2::MM:
       {
         int myPixelsInchX = theQPainter->device()->logicalDpiX();
         int myPixelsInchY = theQPainter->device()->logicalDpiY();
-        myXOffset = int(( float( myPixelsInchX ) * INCHES_TO_MM ) * float( mMarginHorizontal ) );
-        myYOffset = int(( float( myPixelsInchY ) * INCHES_TO_MM ) * float( mMarginVertical ) );
+        myXOffset = myPixelsInchX * INCHES_TO_MM * mMarginHorizontal;
+        myYOffset = myPixelsInchY * INCHES_TO_MM * mMarginVertical;
         break;
       }
-      case 3: // Pixels
+
+      case QgsSymbolV2::Pixel:
         myXOffset = mMarginHorizontal;
         myYOffset = mMarginVertical;
         break;
-      case 4: // Percentage
-        myXOffset = int(( float( myWidth - size.width() )
-                          / 100. ) * float( mMarginHorizontal ) );
-        myYOffset = int(( float( myHeight - size.height() )
-                          / 100. ) * float( mMarginVertical ) );
+
+      case QgsSymbolV2::Percentage:
+        myXOffset = (( myWidth - size.width() ) / 100. ) * mMarginHorizontal;
+        myYOffset = (( myHeight - size.height() ) / 100. ) * mMarginVertical;
         break;
+
       default:  // Use default of top left
         break;
     }

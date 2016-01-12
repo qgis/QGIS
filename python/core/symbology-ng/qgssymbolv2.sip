@@ -19,27 +19,38 @@ class QgsSymbolV2
 
   public:
 
+    /**
+     * The unit of the output
+     */
     enum OutputUnit
     {
-      MM,
-      MapUnit,
-      Mixed, //mixed units in symbol layers
-      Pixel
+      MM = 0,     //!< The output shall be in millimeters
+      MapUnit,    //!< The output shall be in map unitx
+      Mixed,      //!< Mixed units in symbol layers
+      Pixel,      //!< The output shall be in pixels
+      Percentage,  //!< The ouput shall be a percentage of another measurement (eg canvas size, feature size)
     };
 
     typedef QList<QgsSymbolV2::OutputUnit> OutputUnitList;
 
+    /**
+     * Type of the symbol
+     */
     enum SymbolType
     {
-      Marker,
-      Line,
-      Fill
+      Marker, //!< Marker symbol
+      Line,   //!< Line symbol
+      Fill,   //!< Fill symbol
+      Hybrid  //!< Hybrid symbol
     };
 
+    /**
+     * Scale method
+     */
     enum ScaleMethod
     {
-      ScaleArea,
-      ScaleDiameter
+      ScaleArea,     //!< Calculate scale by the area
+      ScaleDiameter  //!< Calculate scale by the diameter
     };
 
     enum RenderHint

@@ -61,7 +61,7 @@ class CORE_EXPORT QgsSymbolV2
       MapUnit,    //!< The output shall be in map unitx
       Mixed,      //!< Mixed units in symbol layers
       Pixel,      //!< The output shall be in pixels
-      Percentage  //!< The ouput shall be in percentage of canvas
+      Percentage,  //!< The ouput shall be a percentage of another measurement (eg canvas size, feature size)
     };
 
     typedef QList<OutputUnit> OutputUnitList;
