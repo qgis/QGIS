@@ -57,10 +57,11 @@ class CORE_EXPORT QgsSymbolV2
      */
     enum OutputUnit
     {
-      MM = 0,  //!< The output shall be in millimeters
-      MapUnit, //!< The output shall be in map unitx
-      Mixed,   //!< Mixed units in symbol layers
-      Pixel    //!< The output shall be in pixels
+      MM = 0,     //!< The output shall be in millimeters
+      MapUnit,    //!< The output shall be in map unitx
+      Mixed,      //!< Mixed units in symbol layers
+      Pixel,      //!< The output shall be in pixels
+      Percentage  //!< The ouput shall be in percentage of canvas
     };
 
     typedef QList<OutputUnit> OutputUnitList;

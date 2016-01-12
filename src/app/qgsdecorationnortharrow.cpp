@@ -62,6 +62,8 @@ QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject* parent )
     , mMarginVertical( 0 )
 {
   mPlacement = BottomLeft;
+  mMarginUnit = QgsSymbolV2::MM;
+
   setName( "North Arrow" );
   projectRead();
 }
@@ -138,27 +140,47 @@ void QgsDecorationNorthArrow::render( QPainter * theQPainter )
 
       //QgsDebugMsg("Rendering north arrow at " + mPlacementLabels.at(mPlacementIndex));
 
-      // Calculate the margin percentage values
-      int myPercentageWidth = int((( float( myWidth ) - float( myQPixmap.width() ) )
-                                   / 100. ) * float( mMarginHorizontal ) );
-      int myPercentageHeight = int((( float( myHeight ) - float( myQPixmap.height() ) )
-                                    / 100. ) * float( mMarginVertical ) );
-
+      // Set  margin according to selected units
+      int myXOffset = 0;
+      int myYOffset = 0;
+      switch ( mMarginUnit )
+      {
+        case 0: // Millimetres
+        {
+          int myPixelsInchX = theQPainter->device()->logicalDpiX();
+          int myPixelsInchY = theQPainter->device()->logicalDpiY();
+          myXOffset = int(( float( myPixelsInchX ) * INCHES_TO_MM ) * float( mMarginHorizontal ) );
+          myYOffset = int(( float( myPixelsInchY ) * INCHES_TO_MM ) * float( mMarginVertical ) );
+          break;
+        }
+        case 3: // Pixels
+          myXOffset = mMarginHorizontal - 5; // Minus 5 to shift tight into corner
+          myYOffset = mMarginVertical - 5;
+          break;
+        case 4: // Percentage
+          myXOffset = int((( float( myWidth ) - float( myQPixmap.width() ) )
+                           / 100. ) * float( mMarginHorizontal ) );
+          myYOffset = int((( float( myHeight ) - float( myQPixmap.height() ) )
+                           / 100. ) * float( mMarginVertical ) );
+          break;
+        default:  // Use default of top left
+          break;
+      }
       //Determine placement of label from form combo box
       switch ( mPlacement )
       {
         case BottomLeft:
-          theQPainter->translate( myPercentageWidth, myHeight - myPercentageHeight - myQPixmap.height() );
+          theQPainter->translate( myXOffset, myHeight - myYOffset - myQPixmap.height() );
           break;
         case TopLeft:
-          theQPainter->translate( myPercentageWidth, myPercentageHeight );
+          theQPainter->translate( myXOffset, myYOffset );
           break;
         case TopRight:
-          theQPainter->translate( myWidth - myPercentageWidth - myQPixmap.width(), myPercentageHeight );
+          theQPainter->translate( myWidth - myXOffset - myQPixmap.width(), myYOffset );
           break;
         case BottomRight:
-          theQPainter->translate( myWidth - myPercentageWidth - myQPixmap.width(),
-                                  myHeight - myPercentageHeight - myQPixmap.height() );
+          theQPainter->translate( myWidth - myXOffset - myQPixmap.width(),
+                                  myHeight - myYOffset - myQPixmap.height() );
           break;
         default:
         {
