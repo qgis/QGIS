@@ -67,7 +67,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     /**
      * Constructor for the provider. The uri must be in the following format:
-     * host=localhost user=gsherman dbname=test password=xxx table=test.alaska (the_geom)
+     * host=localhost dbname=test [user=gsherman [password=xxx] | authcfg=xxx] table=test.alaska (the_geom)
      * @param uri String containing the required parameters to connect to the database
      * and query the table.
      */
