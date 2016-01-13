@@ -30,7 +30,7 @@ class QgsPixmapLabel;
 
 /** \ingroup gui
  * Widget to display file path with a push button for an "open file" dialog
- * It can also be used to display a picture.
+ * It can also be used to display a picture or a web page.
  **/
 class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 {
@@ -49,6 +49,11 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
       Web
     };
 
+    /**
+     * @brief QgsExternalResourceWidget creates a widget with a file picker and a document viewer
+     * Both part of the widget are optional.
+     * @see QgsFilePickerwidget
+     */
     explicit QgsExternalResourceWidget( QWidget *parent = 0 );
 
     /**
@@ -71,16 +76,26 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     //! setDocumentViewerContent defines the type of content to be shown. Widget will be adapated accordingly
     void setDocumentViewerContent( QgsExternalResourceWidget::DocumentViewerContent content );
 
-    //! set the configuration of the document viewer
+    //! returns the height of the document viewer
     int documentViewerHeight() const;
+    /**
+     * @brief setDocumentViewerWidth set the height of the document viewer.
+     * @param height the height. Use 0 for automatic best display.
+     */
     void setDocumentViewerHeight( int height );
+    //! returns the width of the document viewer
     int documentViewerWidth() const ;
+    /**
+     * @brief setDocumentViewerWidth set the width of the document viewer.
+     * @param width the width. Use 0 for automatic best display.
+     */
     void setDocumentViewerWidth( int width );
 
     //! defines if the widget is readonly
     void setReadOnly( bool readOnly );
 
   signals:
+    //! emitteed as soon as the current document changes
     void valueChanged( QString );
 
   private slots:
