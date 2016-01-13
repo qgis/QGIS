@@ -82,6 +82,7 @@ class QgsAuthCertUtils
                                           const QString &bundlepass = QString(),
                                           bool reencrypt = true );
 
+    static QString pemTextToTempFile( const QString &name, const QByteArray &pemtext );
 
     static QString getCaSourceName( QgsAuthCertUtils::CaCertSource source , bool single = false );
 
