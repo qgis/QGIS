@@ -122,8 +122,8 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
 
   if ( !amConfig.isValid() )
   {
-      QgsDebugMsg( QString( "Update URI items: FAILED retrieved invalid Auth method for authcfg: %1" ).arg( authcfg ) );
-      return false;
+    QgsDebugMsg( QString( "Update URI items: FAILED retrieved invalid Auth method for authcfg: %1" ).arg( authcfg ) );
+    return false;
   }
 
   // get client cent and key
@@ -131,14 +131,14 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
   QSslKey clientKey = QgsAuthManager::instance()->getCertIdentityBundle( amConfig.config( "certid" ) ).second;
 
   // get common name of the client certificate
-  QString commonName = QgsAuthCertUtils::resolvedCertName( clientCert, false);
+  QString commonName = QgsAuthCertUtils::resolvedCertName( clientCert, false );
 
   // get CA
   QByteArray caCert = QgsAuthManager::instance()->getTrustedCaCertsPemText();
 
   // save client cert to temp file
   QFile certFile( QDir::tempPath() + QDir::separator() + pkiTempFilePrefix + QUuid::createUuid() + ".pem" );
-  if( certFile.open( QIODevice::WriteOnly ) )
+  if ( certFile.open( QIODevice::WriteOnly ) )
   {
     certFile.write( clientCert.toPem() );
   }
@@ -152,7 +152,7 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
 
   // save key cert to temp file setting it's permission only read to the current user
   QFile keyFile( QDir::tempPath() + QDir::separator() + pkiTempFilePrefix + QUuid::createUuid() + ".pem" );
-  if( keyFile.open( QIODevice::WriteOnly ) )
+  if ( keyFile.open( QIODevice::WriteOnly ) )
   {
     keyFile.write( clientKey.toPem() );
   }
@@ -166,7 +166,7 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
 
   // save CA to tempo file
   QFile caFile( QDir::tempPath() + QDir::separator() + pkiTempFilePrefix + QUuid::createUuid() + ".pem" );
-  if( caFile.open( QIODevice::WriteOnly ) )
+  if ( caFile.open( QIODevice::WriteOnly ) )
   {
     caFile.write( caCert );
   }

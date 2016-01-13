@@ -203,24 +203,24 @@ QgsPostgresConn::QgsPostgresConn( const QString& conninfo, bool readOnly, bool s
   QgsDebugMsg( QString( "New PostgreSQL connection for " ) + conninfo );
 
   // expand connectionInfo
-  QgsDataSourceURI uri(conninfo);
-  QString expandedConnectionInfo = uri.connectionInfo(true);
+  QgsDataSourceURI uri( conninfo );
+  QString expandedConnectionInfo = uri.connectionInfo( true );
 
   mConn = PQconnectdb( expandedConnectionInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
 
   // remove temporary cert/key/CA
-  QgsDataSourceURI expandedUri(expandedConnectionInfo);
-  QString sslCertFile = expandedUri.param("sslcert");
-  sslCertFile.remove("'");
-  QFile::remove(sslCertFile);
+  QgsDataSourceURI expandedUri( expandedConnectionInfo );
+  QString sslCertFile = expandedUri.param( "sslcert" );
+  sslCertFile.remove( "'" );
+  QFile::remove( sslCertFile );
 
-  QString sslKeyFile = expandedUri.param("sslkey");
-  sslKeyFile.remove("'");
-  QFile::remove(sslKeyFile);
+  QString sslKeyFile = expandedUri.param( "sslkey" );
+  sslKeyFile.remove( "'" );
+  QFile::remove( sslKeyFile );
 
-  QString sslCAFile = expandedUri.param("sslrootcert");
-  sslCAFile.remove("'");
-  QFile::remove(sslCAFile);
+  QString sslCAFile = expandedUri.param( "sslrootcert" );
+  sslCAFile.remove( "'" );
+  QFile::remove( sslCAFile );
 
   // check the connection status
   if ( PQstatus() != CONNECTION_OK )
@@ -246,7 +246,7 @@ QgsPostgresConn::QgsPostgresConn( const QString& conninfo, bool readOnly, bool s
       if ( !password.isEmpty() )
         uri.setPassword( password );
 
-      QgsDebugMsg( "Connecting to " + uri.connectionInfo(false) );
+      QgsDebugMsg( "Connecting to " + uri.connectionInfo( false ) );
       mConn = PQconnectdb( uri.connectionInfo().toLocal8Bit() );
     }
 
