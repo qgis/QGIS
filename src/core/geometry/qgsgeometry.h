@@ -202,7 +202,10 @@ class CORE_EXPORT QgsGeometry
      */
     double length() const;
 
-    /** Returns the minimum distanace between this geometry and another geometry, using GEOS
+    /**
+     * Returns the minimum distanace between this geometry and another geometry, using GEOS.
+     * Will return a negative value if a geometry is missing.
+     *
      * @param geom geometry to find minimum distance to
      */
     double distance( const QgsGeometry& geom ) const;
