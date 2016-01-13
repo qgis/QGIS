@@ -1696,8 +1696,8 @@ void QgsSLDConfigParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLay
       if ( srs.srsid() == 0 )
       {
         QString myName = QString( " * %1 (%2)" )
-                         .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
-                         .arg( srs.toProj4() );
+                         .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
+                               srs.toProj4() );
         srs.saveAsUserCRS( myName );
       }
 

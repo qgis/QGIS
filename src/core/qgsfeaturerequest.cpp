@@ -311,9 +311,9 @@ void QgsFeatureRequest::OrderByClause::setNullsFirst( bool nullsFirst )
 QString QgsFeatureRequest::OrderByClause::dump() const
 {
   return QString( "%1 %2 %3" )
-         .arg( mExpression.expression() )
-         .arg( mAscending ? "ASC" : "DESC" )
-         .arg( mNullsFirst ? "NULLS FIRST" : "NULLS LAST" );
+         .arg( mExpression.expression(),
+               mAscending ? "ASC" : "DESC",
+               mNullsFirst ? "NULLS FIRST" : "NULLS LAST" );
 }
 
 QgsExpression QgsFeatureRequest::OrderByClause::expression() const

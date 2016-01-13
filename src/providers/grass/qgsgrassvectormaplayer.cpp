@@ -716,7 +716,7 @@ void QgsGrassVectorMapLayer::addColumn( const QgsField &field, QString &error )
           QVariant value = mAttributes.value( cat ).value( index );
           QString valueString = quotedValue( value );
           QString query = QString( "UPDATE %1 SET %2 = %3 WHERE %4 = %5" )
-                          .arg( mFieldInfo->table ).arg( field.name() ).arg( valueString ).arg( keyColumnName() ).arg( cat );
+                          .arg( mFieldInfo->table, field.name(), valueString, keyColumnName() ).arg( cat );
           QString err;
           executeSql( query, err );
           if ( !err.isEmpty() )

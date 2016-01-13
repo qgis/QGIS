@@ -292,7 +292,7 @@ bool QgsVirtualLayerProvider::createIt()
     QString vname = mLayers.at( i ).name;
     if ( vlayer )
     {
-      QString createStr = QString( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer(%2);" ).arg( vname ).arg( vlayer->id() );
+      QString createStr = QString( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer(%2);" ).arg( vname, vlayer->id() );
       Sqlite::Query::exec( mSqlite.get(), createStr );
     }
     else
@@ -304,10 +304,10 @@ bool QgsVirtualLayerProvider::createIt()
       source.replace( "'", "''" );
       QString encoding = mLayers.at( i ).encoding;
       QString createStr = QString( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer('%2','%4',%3)" )
-                          .arg( vname )
-                          .arg( provider )
-                          .arg( encoding )
-                          .arg( source ); // source must be the last argument here, since it can contains '%x' strings that would be replaced
+                          .arg( vname,
+                                provider,
+                                encoding,
+                                source ); // source must be the last argument here, since it can contains '%x' strings that would be replaced
       Sqlite::Query::exec( mSqlite.get(), createStr );
     }
   }
@@ -410,8 +410,8 @@ bool QgsVirtualLayerProvider::createIt()
 
     // create a view
     QString viewStr = QString( "DROP VIEW IF EXISTS %1; CREATE VIEW %1 AS %2" )
-                      .arg( VIRTUAL_LAYER_QUERY_VIEW )
-                      .arg( mDefinition.query() );
+                      .arg( VIRTUAL_LAYER_QUERY_VIEW,
+                            mDefinition.query() );
     Sqlite::Query::exec( mSqlite.get(), viewStr );
   }
   else
@@ -528,9 +528,9 @@ void QgsVirtualLayerProvider::updateStatistics() const
   bool hasGeometry = mDefinition.geometryWkbType() != QgsWKBTypes::NoGeometry;
   QString subset = mSubset.isEmpty() ? "" : " WHERE " + mSubset;
   QString sql = QString( "SELECT Count(*)%1 FROM %2%3" )
-                .arg( hasGeometry ? QString( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : "" )
-                .arg( mTableName )
-                .arg( subset );
+                .arg( hasGeometry ? QString( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : "",
+                      mTableName,
+                      subset );
   Sqlite::Query q( mSqlite.get(), sql );
   if ( q.step() == SQLITE_ROW )
   {

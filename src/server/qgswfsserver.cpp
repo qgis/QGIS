@@ -764,7 +764,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       QString errorMsg;
       if ( !filter.setContent( filterIt.value(), true, &errorMsg ) )
       {
-        throw QgsMapServiceException( "RequestNotWellFormed", QString( "error message: %1. The XML string was: %2" ).arg( errorMsg ).arg( filterIt.value() ) );
+        throw QgsMapServiceException( "RequestNotWellFormed", QString( "error message: %1. The XML string was: %2" ).arg( errorMsg, filterIt.value() ) );
       }
       else
       {

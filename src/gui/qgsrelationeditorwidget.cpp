@@ -285,8 +285,8 @@ void QgsRelationEditorWidget::addFeature()
     {
       QgsFeature flink( mRelation.referencingLayer()->fields() ); // Linking feature
 
-      flink.setAttribute( mRelation.fieldPairs().first().first, mFeature.attribute( mRelation.fieldPairs().first().second ) );
-      flink.setAttribute( mNmRelation.referencingFields().first(), f.attribute( mNmRelation.referencedFields().first() ) );
+      flink.setAttribute( mRelation.fieldPairs().at( 0 ).first, mFeature.attribute( mRelation.fieldPairs().at( 0 ).second ) );
+      flink.setAttribute( mNmRelation.referencingFields().at( 0 ), f.attribute( mNmRelation.referencedFields().at( 0 ) ) );
 
       mRelation.referencingLayer()->addFeature( flink );
 

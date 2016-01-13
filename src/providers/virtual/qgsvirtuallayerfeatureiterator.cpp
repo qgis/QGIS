@@ -50,9 +50,9 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       QString mbr = QString( "%1,%2,%3,%4" ).arg( rect.xMinimum() ).arg( rect.yMinimum() ).arg( rect.xMaximum() ).arg( rect.yMaximum() );
       wheres << quotedColumn( mDefinition.geometryField() ) + " is not null";
       wheres <<  QString( "%1Intersects(%2,BuildMbr(%3))" )
-      .arg( do_exact ? "" : "Mbr" )
-      .arg( quotedColumn( mDefinition.geometryField() ) )
-      .arg( mbr );
+      .arg( do_exact ? "" : "Mbr",
+            quotedColumn( mDefinition.geometryField() ),
+            mbr );
     }
     else if ( !mDefinition.uid().isNull() && request.filterType() == QgsFeatureRequest::FilterFid )
     {

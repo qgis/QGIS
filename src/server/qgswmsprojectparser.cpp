@@ -162,7 +162,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
     {
       // try to apply the specified style
       if ( !ml->styleManager()->setCurrentStyle( styleName != EMPTY_STYLE_NAME ? styleName : QString() ) )
-        throw QgsMapServiceException( "StyleNotDefined", QString( "Style \"%1\" does not exist for layer \"%2\"" ).arg( styleName ).arg( lName ) );
+        throw QgsMapServiceException( "StyleNotDefined", QString( "Style \"%1\" does not exist for layer \"%2\"" ).arg( styleName, lName ) );
     }
     return QList<QgsMapLayer*>() << ml;
   }

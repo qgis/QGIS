@@ -1517,7 +1517,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
 
   for ( QMap<QString, QString>::const_iterator it = mParameters.constBegin(); it != mParameters.constEnd(); ++it )
   {
-    QgsMessageLog::logMessage( QString( "%1 // %2" ).arg( it.key() ).arg( it.value() ) );
+    QgsMessageLog::logMessage( QString( "%1 // %2" ).arg( it.key(), it.value() ) );
   }
 
   if ( readLayersAndStyles( layersList, stylesList ) != 0 )
@@ -2178,7 +2178,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     if ( fReq.filterExpression() )
     {
       fReq.setFilterExpression( QString( "intersects( $geometry , geomFromWKT( '%1' ) ) AND ( %2 )" ).
-                                arg( searchRect.asWktPolygon() ).arg( fReq.filterExpression()->expression() ) );
+                                arg( searchRect.asWktPolygon(), fReq.filterExpression()->expression() ) );
     }
     else
     {

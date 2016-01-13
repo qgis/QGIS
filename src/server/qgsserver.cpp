@@ -479,7 +479,8 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   mServerInterface->setRequestHandler( theRequestHandler.data() );
   // Iterate filters and call their requestReady() method
   QgsServerFiltersMap::const_iterator filtersIterator;
-  for ( filtersIterator = mServerInterface->filters().constBegin(); filtersIterator != mServerInterface->filters().constEnd(); ++filtersIterator )
+  QgsServerFiltersMap filters = mServerInterface->filters();
+  for ( filtersIterator = filters.constBegin(); filtersIterator != filters.constEnd(); ++filtersIterator )
   {
     filtersIterator.value()->requestReady();
   }
@@ -616,7 +617,8 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   // Iterate filters and call their responseComplete() method
-  for ( filtersIterator = mServerInterface->filters().constBegin(); filtersIterator != mServerInterface->filters().constEnd(); ++filtersIterator )
+  filters = mServerInterface->filters();
+  for ( filtersIterator = filters.constBegin(); filtersIterator != filters.constEnd(); ++filtersIterator )
   {
     filtersIterator.value()->responseComplete();
   }

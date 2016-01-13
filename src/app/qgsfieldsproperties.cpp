@@ -363,8 +363,8 @@ void QgsFieldsProperties::loadRelations()
     nmCombo->addItem( tr( "Many to one relation" ) );
     Q_FOREACH ( const QgsRelation& nmrel, QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() ) )
     {
-      if ( nmrel.fieldPairs().first().referencingField() != relation.fieldPairs().first().referencingField() )
-        nmCombo->addItem( QString( "%1 (%2)" ).arg( nmrel.referencedLayer()->name() ).arg( nmrel.fieldPairs().first().referencedField() ), nmrel.id() );
+      if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
+        nmCombo->addItem( QString( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
 
       QgsEditorWidgetConfig cfg = mLayer->editFormConfig()->widgetConfig( relation.id() );
 

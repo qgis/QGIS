@@ -234,9 +234,10 @@ private:
       sql_fields << QString( "geometry geometry(%1,%2)" ).arg( provider->geometryType() ).arg( provider->crs().postgisSrid() );
     }
 
-    if ( provider->pkAttributeIndexes().size() == 1 )
+    QgsAttributeList pkAttributeIndexes = provider->pkAttributeIndexes();
+    if ( pkAttributeIndexes.size() == 1 )
     {
-      mPkColumn = provider->pkAttributeIndexes()[0] + 1;
+      mPkColumn = pkAttributeIndexes.at( 0 ) + 1;
     }
 
     mCreationStr = "CREATE TABLE vtable (" + sql_fields.join( "," ) + ")";
