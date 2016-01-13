@@ -88,6 +88,7 @@ QgsSymbolV2::QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers )
     , mRenderHints( 0 )
     , mClipFeaturesToExtent( true )
     , mLayer( nullptr )
+    , mSymbolRenderContext( nullptr )
 {
 
   // check they're all correct symbol layers
@@ -235,6 +236,7 @@ const unsigned char* QgsSymbolV2::_getPolygon( QPolygonF& pts, QList<QPolygonF>&
 
 QgsSymbolV2::~QgsSymbolV2()
 {
+  delete mSymbolRenderContext;
   // delete all symbol layers (we own them, so it's okay)
   qDeleteAll( mLayers );
 }
@@ -434,8 +436,14 @@ bool QgsSymbolV2::changeSymbolLayer( int index, QgsSymbolLayerV2* layer )
 
 void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsFields* fields )
 {
+  delete mSymbolRenderContext;
+  mSymbolRenderContext = new QgsSymbolV2RenderContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, fields, mapUnitScale() );
+
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, fields, mapUnitScale() );
 
+  QgsExpressionContextScope* scope = new QgsExpressionContextScope( QApplication::translate( "QgsSymbolV2", "Symbol Scope" ) );
+
+  mSymbolRenderContext->setExpressionContextScope( scope );
 
   Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
     layer->startRender( symbolContext );
@@ -443,10 +451,12 @@ void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsFields* field
 
 void QgsSymbolV2::stopRender( QgsRenderContext& context )
 {
-  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, nullptr, mapUnitScale() );
-
+  Q_UNUSED( context )
   Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
-    layer->stopRender( symbolContext );
+    layer->stopRender( *mSymbolRenderContext );
+
+  delete mSymbolRenderContext;
+  mSymbolRenderContext = nullptr;
 
   mLayer = nullptr;
 }
@@ -701,6 +711,10 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     deleteSegmentizedGeometry = true;
   }
 
+  context.expressionContext().appendScope( mSymbolRenderContext->expressionContextScope() );
+  mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_count", segmentizedGeometry->geometry()->partCount() );
+  mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_num", 1 );
+
   switch ( QgsWKBTypes::flatType( segmentizedGeometry->geometry()->wkbType() ) )
   {
     case QgsWKBTypes::Point:
@@ -766,6 +780,8 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       for ( int i = 0; i < mp->numGeometries(); ++i )
       {
+        mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_num", i + 1 );
+
         const QgsPointV2* point = static_cast< const QgsPointV2* >( mp->geometryN( i ) );
         _getPoint( pt, context, point );
         static_cast<QgsMarkerSymbolV2*>( this )->renderPoint( pt, &feature, context, layer, selected );
@@ -793,6 +809,8 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       for ( unsigned int i = 0; i < num; ++i )
       {
+        mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_num", i + 1 );
+
         if ( geomCollection )
         {
           context.setGeometry( geomCollection->geometryN( i ) );
@@ -824,6 +842,8 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       for ( unsigned int i = 0; i < num; ++i )
       {
+        mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_num", i + 1 );
+
         if ( geomCollection )
         {
           context.setGeometry( geomCollection->geometryN( i ) );
@@ -869,6 +889,13 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
   {
     delete segmentizedGeometry;
   }
+
+  context.expressionContext().popScope();
+}
+
+QgsSymbolV2RenderContext* QgsSymbolV2::symbolRenderContext()
+{
+  return mSymbolRenderContext;
 }
 
 ////////////////////
@@ -876,6 +903,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
 QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f, const QgsFields* fields, const QgsMapUnitScale& mapUnitScale )
     : mRenderContext( c ),
+    mExpressionContextScope( nullptr ),
     mOutputUnit( u ),
     mMapUnitScale( mapUnitScale ),
     mAlpha( alpha ),
@@ -888,7 +916,7 @@ QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymb
 
 QgsSymbolV2RenderContext::~QgsSymbolV2RenderContext()
 {
-
+  delete mExpressionContextScope;
 }
 
 void QgsSymbolV2RenderContext::setOriginalValueVariable( const QVariant& value )
@@ -914,6 +942,16 @@ QgsSymbolV2RenderContext& QgsSymbolV2RenderContext::operator=( const QgsSymbolV2
   // mRenderContext member which is a reference (and thus can't be changed).
   Q_ASSERT( false );
   return *this;
+}
+
+QgsExpressionContextScope* QgsSymbolV2RenderContext::expressionContextScope()
+{
+  return mExpressionContextScope;
+}
+
+void QgsSymbolV2RenderContext::setExpressionContextScope( QgsExpressionContextScope* contextScope )
+{
+  mExpressionContextScope = contextScope;
 }
 
 ///////////////////

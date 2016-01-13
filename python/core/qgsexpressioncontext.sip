@@ -344,6 +344,11 @@ class QgsExpressionContext
      */
     void appendScope( QgsExpressionContextScope* scope /Transfer/ );
 
+    /**
+     * Remove the last scope from the expression context.
+     */
+    void popScope();
+
     /** Appends a scope to the end of the context. This scope will override
      * any matching variables or functions provided by existing scopes within the
      * context. Ownership of the scope is transferred to the stack.
