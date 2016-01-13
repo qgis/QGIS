@@ -82,7 +82,7 @@ class OTBAlgorithm(GeoAlgorithm):
         if os.path.exists(helpfile):
             return False, helpfile
         else:
-            raise False
+            return False, None
 
     def adapt_list_to_string(self, c_list):
         a_list = c_list[1:]
