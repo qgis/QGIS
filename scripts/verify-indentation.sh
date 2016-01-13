@@ -38,7 +38,7 @@ do
 
 	echo "Checking $f" >>/tmp/ctest-important.log
 	case "$f" in
-	src/core/gps/qextserialport/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
+	src/core/gps/qextserialport/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|scripts/customwidget_template*)
 		echo "$f skipped"
 		continue
 		;;
