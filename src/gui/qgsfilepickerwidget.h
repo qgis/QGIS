@@ -25,6 +25,9 @@ class QgsFilterLineEdit;
 
 #include <QWidget>
 
+/**
+ * @brief The QgsFilePickerWidget class creates a widget for selecting a file or a folder.
+ */
 class GUI_EXPORT QgsFilePickerWidget : public QWidget
 {
     Q_OBJECT
@@ -37,12 +40,18 @@ class GUI_EXPORT QgsFilePickerWidget : public QWidget
     Q_PROPERTY( RelativeStorage relativeStorage READ relativeStorage WRITE setRelativeStorage )
 
   public:
+    /**
+     * @brief The StorageMode enum determines if the file picker should pick files or directories
+     */
     enum StorageMode
     {
       File,
       Directory
     };
 
+    /**
+     * @brief The RelativeStorage enum determines if path is absolute, relative to the current project path or relative to a defined default path.
+     */
     enum RelativeStorage
     {
       Absolute,
@@ -50,6 +59,9 @@ class GUI_EXPORT QgsFilePickerWidget : public QWidget
       RelativeDefaultPath
     };
 
+    /**
+     * @brief QgsFilePickerWidget creates a widget for selecting a file or a folder.
+     */
     explicit QgsFilePickerWidget( QWidget *parent = 0 );
 
     ~QgsFilePickerWidget();
@@ -81,23 +93,28 @@ class GUI_EXPORT QgsFilePickerWidget : public QWidget
     //! determines if the file path will be shown as a link
     void setUseLink( bool useLink );
 
-    //! determines if the links shows the full path or not
+    //! returns if the links shows the full path or not
     bool fullUrl() const;
+    //! determines if the links shows the full path or not
     void setFullUrl( bool fullUrl );
 
-    //! determinies the default root path
+    //! returns the default root path
     QString defaultRoot() const;
+    //! determines the default root path used as the first shown location when picking a file and used if the RelativeStorage is RelativeDefaultPath
     void setDefaultRoot( QString defaultRoot );
 
-    //! determines the storage mode (i.e. file or directory)
+    //! returns the storage mode (i.e. file or directory)
     QgsFilePickerWidget::StorageMode storageMode() const;
+    //! determines the storage mode (i.e. file or directory)
     void setStorageMode( QgsFilePickerWidget::StorageMode storageMode );
 
-    //! determines if the relative path is with respect to the project path or the default path
+    //! returns if the relative path is with respect to the project path or the default path
     QgsFilePickerWidget::RelativeStorage relativeStorage() const;
+    //! determines if the relative path is with respect to the project path or the default path
     void setRelativeStorage( QgsFilePickerWidget::RelativeStorage relativeStorage );
 
   signals:
+    //! emitted as soon as the current file or directory is changed
     void fileChanged( QString );
 
   private slots:

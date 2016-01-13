@@ -30,13 +30,14 @@ class QLineEdit;
  * \note not available in Python bindings
  */
 
+/**
+ * @brief The QgsExternalResourceWidgetWrapper class wraps a external resource widget
+ */
 class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
     explicit QgsExternalResourceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
-
-
 
     // QgsEditorWidgetWrapper interface
   public:
