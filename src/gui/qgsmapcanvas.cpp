@@ -194,6 +194,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mCache( nullptr )
     , mPreviewEffect( nullptr )
     , mSnappingUtils( nullptr )
+    , mExpressionContextScope( tr( "Map Canvas" ) )
 {
   setObjectName( name );
   mScene = new QGraphicsScene();
