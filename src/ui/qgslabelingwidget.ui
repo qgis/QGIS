@@ -37,16 +37,16 @@
        </item>
        <item>
         <property name="text">
-         <string>Discourage other labels from covering features in this layer</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
          <string>Rule-based labeling</string>
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
           <normaloff>:/images/themes/default/propertyicons/labels.svg</normaloff>:/images/themes/default/propertyicons/labels.svg</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Discourage other labels from covering features in this layer</string>
         </property>
        </item>
       </widget>

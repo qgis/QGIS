@@ -44,7 +44,7 @@ void QgsLabelingWidget::adaptToLayer()
   // pick the right mode of the layer
   if ( mLayer->labeling() && mLayer->labeling()->type() == "rule-based" )
   {
-    mLabelModeComboBox->setCurrentIndex( 3 );
+    mLabelModeComboBox->setCurrentIndex( 2 );
   }
   else
   {
@@ -59,14 +59,14 @@ void QgsLabelingWidget::adaptToLayer()
     }
     else
     {
-      mLabelModeComboBox->setCurrentIndex( lyr.drawLabels ? 1 : 2 );
+      mLabelModeComboBox->setCurrentIndex( lyr.drawLabels ? 1 : 3 );
     }
   }
 }
 
 void QgsLabelingWidget::writeSettingsToLayer()
 {
-  if ( mLabelModeComboBox->currentIndex() == 3 )
+  if ( mLabelModeComboBox->currentIndex() == 2 )
   {
     qobject_cast<QgsRuleBasedLabelingWidget*>( mWidget )->writeSettingsToLayer();
   }
@@ -92,7 +92,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
   if ( index < 0 )
     return;
 
-  if ( index < 3 )
+  if ( index != 2 )
   {
     if ( QgsLabelingGui* widgetSimple = qobject_cast<QgsLabelingGui*>( mWidget ) )
     {
@@ -110,7 +110,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
   delete mWidget;
   mWidget = nullptr;
 
-  if ( index == 3 )
+  if ( index == 2 )
   {
     mWidget = new QgsRuleBasedLabelingWidget( mLayer, mCanvas, this );
   }
