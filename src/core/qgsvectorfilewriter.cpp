@@ -1544,6 +1544,57 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            layerOptions
                          )
                        );
+
+  // XLSX
+  datasetOptions.clear();
+  layerOptions.clear();
+
+  layerOptions.insert( "OGR_XLSX_FIELD_TYPES", new SetOption(
+                         QObject::tr( "By default, the driver will try to detect the data type of fields. If set "
+                                      "to STRING, all fields will be of String type." ),
+                         QStringList()
+                         << "AUTO"
+                         << "STRING",
+                         "AUTO", // Default value
+                         false // Allow None
+                       ) );
+
+  driverMetadata.insert( "XLSX",
+                         MetaData(
+                           "MS Office Open XML spreadsheet",
+                           QObject::tr( "MS Office Open XML spreadsheet" ),
+                           "*.xlsx",
+                           "xlsx",
+                           datasetOptions,
+                           layerOptions
+                         )
+                       );
+
+  // ODS
+  datasetOptions.clear();
+  layerOptions.clear();
+
+  layerOptions.insert( "OGR_ODS_FIELD_TYPES", new SetOption(
+                         QObject::tr( "By default, the driver will try to detect the data type of fields. If set "
+                                      "to STRING, all fields will be of String type." ),
+                         QStringList()
+                         << "AUTO"
+                         << "STRING",
+                         "AUTO", // Default value
+                         false // Allow None
+                       ) );
+
+  driverMetadata.insert( "ODS",
+                         MetaData(
+                           "Open Document Spreadsheet",
+                           QObject::tr( "Open Document Spreadsheet" ),
+                           "*.ods",
+                           "ods",
+                           datasetOptions,
+                           layerOptions
+                         )
+                       );
+
   return driverMetadata;
 }
 
@@ -2513,6 +2564,20 @@ bool QgsVectorFileWriter::driverMetadata( const QString& driverName, QString &lo
     trLongName = QObject::tr( "ESRI FileGDB" );
     glob = "*.gdb";
     ext = "gdb";
+  }
+  else if ( driverName.startsWith( "XLSX" ) )
+  {
+    longName = "MS Office Open XML spreadsheet [XLSX]";
+    trLongName = QObject::tr( "MS Office Open XML spreadsheet [XLSX]" );
+    glob = "*.xlsx";
+    ext = "xlsx";
+  }
+  else if ( driverName.startsWith( "ODS" ) )
+  {
+    longName = "Open Document Spreadsheet";
+    trLongName = QObject::tr( "Open Document Spreadsheet [ODS]" );
+    glob = "*.ods";
+    ext = "ods";
   }
   else
   {
