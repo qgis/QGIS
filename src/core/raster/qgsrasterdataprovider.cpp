@@ -44,8 +44,8 @@ void QgsRasterDataProvider::setUseSrcNoDataValue( int bandNo, bool use )
 
 QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  const & theExtent, int theWidth, int theHeight )
 {
-  QgsDebugMsg( QString( "theBandNo = %1 theWidth = %2 theHeight = %3" ).arg( theBandNo ).arg( theWidth ).arg( theHeight ) );
-  QgsDebugMsg( QString( "theExtent = %1" ).arg( theExtent.toString() ) );
+  QgsDebugMsgLevel( QString( "theBandNo = %1 theWidth = %2 theHeight = %3" ).arg( theBandNo ).arg( theWidth ).arg( theHeight ), 4 );
+  QgsDebugMsgLevel( QString( "theExtent = %1" ).arg( theExtent.toString() ), 4 );
 
   QgsRasterBlock *block;
   if ( srcHasNoDataValue( theBandNo ) && useSrcNoDataValue( theBandNo ) )
@@ -110,7 +110,7 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
     int fromCol = qRound(( tmpExtent.xMinimum() - theExtent.xMinimum() ) / xRes );
     int toCol = qRound(( tmpExtent.xMaximum() - theExtent.xMinimum() ) / xRes ) - 1;
 
-    QgsDebugMsg( QString( "fromRow = %1 toRow = %2 fromCol = %3 toCol = %4" ).arg( fromRow ).arg( toRow ).arg( fromCol ).arg( toCol ) );
+    QgsDebugMsgLevel( QString( "fromRow = %1 toRow = %2 fromCol = %3 toCol = %4" ).arg( fromRow ).arg( toRow ).arg( fromCol ).arg( toCol ), 4 );
 
     if ( fromRow < 0 || fromRow >= theHeight || toRow < 0 || toRow >= theHeight ||
          fromCol < 0 || fromCol >= theWidth || toCol < 0 || toCol >= theWidth )
@@ -141,8 +141,8 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
     tmpXRes = tmpExtent.width() / tmpWidth;
     tmpYRes = tmpExtent.height() / tmpHeight;
 
-    QgsDebugMsg( QString( "Reading smaller block tmpWidth = %1 theHeight = %2" ).arg( tmpWidth ).arg( tmpHeight ) );
-    QgsDebugMsg( QString( "tmpExtent = %1" ).arg( tmpExtent.toString() ) );
+    QgsDebugMsgLevel( QString( "Reading smaller block tmpWidth = %1 theHeight = %2" ).arg( tmpWidth ).arg( tmpHeight ), 4 );
+    QgsDebugMsgLevel( QString( "tmpExtent = %1" ).arg( tmpExtent.toString() ), 4 );
 
     QgsRasterBlock *tmpBlock;
     if ( srcHasNoDataValue( theBandNo ) && useSrcNoDataValue( theBandNo ) )
@@ -278,7 +278,7 @@ QString QgsRasterDataProvider::metadata()
 // Default implementation for values
 QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
   QMap<int, QVariant> results;
 
   if ( theFormat != QgsRaster::IdentifyFormatValue || !( capabilities() & IdentifyValue ) )
@@ -398,7 +398,7 @@ void QgsRasterDataProvider::setUserNoDataValue( int bandNo, const QgsRasterRange
       mUserNoDataValue.append( QgsRasterRangeList() );
     }
   }
-  QgsDebugMsg( QString( "set %1 band %1 no data ranges" ).arg( noData.size() ) );
+  QgsDebugMsgLevel( QString( "set %1 band %1 no data ranges" ).arg( noData.size() ), 4 );
 
   if ( mUserNoDataValue[bandNo-1] != noData )
   {

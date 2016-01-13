@@ -291,7 +291,7 @@ void QgsContrastEnhancement::setContrastEnhancementAlgorithm( ContrastEnhancemen
 */
 void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancementFunction* theFunction )
 {
-  QgsDebugMsg( "called" );
+  QgsDebugMsgLevel( "called", 4 );
 
   if ( theFunction )
   {
@@ -310,7 +310,7 @@ void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancem
 */
 void QgsContrastEnhancement::setMaximumValue( double theValue, bool generateTable )
 {
-  QgsDebugMsg( "called value: " + QString::number( theValue ) + " generate lookup table: " + QString::number( static_cast< int >( generateTable ) ) );
+  QgsDebugMsgLevel( "called value: " + QString::number( theValue ) + " generate lookup table: " + QString::number( static_cast< int >( generateTable ) ), 4 );
 
   if ( theValue > maximumValuePossible( mRasterDataType ) )
   {
@@ -342,7 +342,7 @@ void QgsContrastEnhancement::setMaximumValue( double theValue, bool generateTabl
 */
 void QgsContrastEnhancement::setMinimumValue( double theValue, bool generateTable )
 {
-  QgsDebugMsg( "called value: " + QString::number( theValue ) + " generate lookup table: " + QString::number( static_cast< int >( generateTable ) ) );
+  QgsDebugMsgLevel( "called value: " + QString::number( theValue ) + " generate lookup table: " + QString::number( static_cast< int >( generateTable ) ), 4 );
 
   if ( theValue < minimumValuePossible( mRasterDataType ) )
   {

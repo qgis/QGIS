@@ -48,7 +48,7 @@ QgsRasterResampleFilter::~QgsRasterResampleFilter()
 
 QgsRasterResampleFilter* QgsRasterResampleFilter::clone() const
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
   QgsRasterResampleFilter * resampler = new QgsRasterResampleFilter( nullptr );
   if ( mZoomedInResampler )
   {
@@ -82,7 +82,7 @@ QGis::DataType QgsRasterResampleFilter::dataType( int bandNo ) const
 
 bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
 
   // Resampler can only work with single band ARGB32_Premultiplied
   if ( !input )
@@ -94,7 +94,7 @@ bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
   if ( !mOn )
   {
     // In off mode we can connect to anything
-    QgsDebugMsg( "OK" );
+    QgsDebugMsgLevel( "OK", 4 );
     mInput = input;
     return true;
   }
@@ -113,7 +113,7 @@ bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
   }
 
   mInput = input;
-  QgsDebugMsg( "OK" );
+  QgsDebugMsgLevel( "OK", 4 );
   return true;
 }
 
@@ -132,7 +132,7 @@ void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler* r )
 QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   Q_UNUSED( bandNo );
-  QgsDebugMsg( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ) );
+  QgsDebugMsgLevel( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
   QgsRasterBlock *outputBlock = new QgsRasterBlock();
   if ( !mInput ) return outputBlock;
 
@@ -147,7 +147,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
       double providerXRes = provider->extent().width() / provider->xSize();
       double pixelRatio = xRes / providerXRes;
       oversampling = ( pixelRatio > mMaxOversampling ) ? mMaxOversampling : pixelRatio;
-      QgsDebugMsg( QString( "xRes = %1 providerXRes = %2 pixelRatio = %3 oversampling = %4" ).arg( xRes ).arg( providerXRes ).arg( pixelRatio ).arg( oversampling ) );
+      QgsDebugMsgLevel( QString( "xRes = %1 providerXRes = %2 pixelRatio = %3 oversampling = %4" ).arg( xRes ).arg( providerXRes ).arg( pixelRatio ).arg( oversampling ), 4 );
     }
     else
     {
@@ -158,7 +158,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
     }
   }
 
-  QgsDebugMsg( QString( "oversampling %1" ).arg( oversampling ) );
+  QgsDebugMsgLevel( QString( "oversampling %1" ).arg( oversampling ), 4 );
 
   int bandNumber = 1;
 
@@ -167,7 +167,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   // zoom in rasters are never resampled because projector limits resolution.
   if ((( oversampling < 1.0 || qgsDoubleNear( oversampling, 1.0 ) ) && !mZoomedInResampler ) || ( oversampling > 1.0 && !mZoomedOutResampler ) )
   {
-    QgsDebugMsg( "No oversampling." );
+    QgsDebugMsgLevel( "No oversampling.", 4 );
     delete outputBlock;
     return mInput->block( bandNumber, extent, width, height );
   }
@@ -202,12 +202,12 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
 
   if ( mZoomedInResampler && ( oversamplingX < 1.0 || qgsDoubleNear( oversampling, 1.0 ) ) )
   {
-    QgsDebugMsg( "zoomed in resampling" );
+    QgsDebugMsgLevel( "zoomed in resampling", 4 );
     mZoomedInResampler->resample( img, dstImg );
   }
   else if ( mZoomedOutResampler && oversamplingX > 1.0 )
   {
-    QgsDebugMsg( "zoomed out resampling" );
+    QgsDebugMsgLevel( "zoomed out resampling", 4 );
     mZoomedOutResampler->resample( img, dstImg );
   }
   else

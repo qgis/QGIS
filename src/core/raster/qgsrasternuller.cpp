@@ -29,7 +29,7 @@ QgsRasterNuller::~QgsRasterNuller()
 
 QgsRasterNuller* QgsRasterNuller::clone() const
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
   QgsRasterNuller * nuller = new QgsRasterNuller( nullptr );
   nuller->mNoData = mNoData;
   nuller->mOutputNoData = mOutputNoData;
@@ -71,7 +71,7 @@ QGis::DataType QgsRasterNuller::dataType( int bandNo ) const
 
 QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
   if ( !mInput )
   {
     return new QgsRasterBlock();

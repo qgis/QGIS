@@ -131,12 +131,12 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual const QgsRasterInterface *srcInput() const
     {
-      QgsDebugMsg( "Entered" );
+      QgsDebugMsgLevel( "Entered", 4 );
       return mInput ? mInput->srcInput() : this;
     }
     virtual QgsRasterInterface * srcInput()
     {
-      QgsDebugMsg( "Entered" );
+      QgsDebugMsgLevel( "Entered", 4 );
       return mInput ? mInput->srcInput() : this;
     }
 

@@ -30,7 +30,7 @@ QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximu
     , mColorRampType( INTERPOLATED )
     , mClip( false )
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
   mMaximumColorCacheSize = 1024; //good starting value
   mCurrentColorRampItemIndex = 0;
 }

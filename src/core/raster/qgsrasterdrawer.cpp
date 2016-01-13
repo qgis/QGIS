@@ -34,7 +34,7 @@ QgsRasterDrawer::~QgsRasterDrawer()
 
 void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
   if ( !p || !mIterator || !viewPort || !theQgsMapToPixel )
   {
     return;
@@ -72,7 +72,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
     QPrinter *printer = dynamic_cast<QPrinter *>( p->device() );
     if ( printer && printer->outputFormat() == QPrinter::PdfFormat )
     {
-      QgsDebugMsg( "PdfFormat" );
+      QgsDebugMsgLevel( "PdfFormat", 4 );
 
       img = img.convertToFormat( QImage::Format_ARGB32 );
       QRgb transparentBlack = qRgba( 0, 0, 0, 0 );

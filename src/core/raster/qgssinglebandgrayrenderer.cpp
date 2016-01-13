@@ -82,7 +82,7 @@ void QgsSingleBandGrayRenderer::setContrastEnhancement( QgsContrastEnhancement* 
 QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   Q_UNUSED( bandNo );
-  QgsDebugMsg( QString( "width = %1 height = %2" ).arg( width ).arg( height ) );
+  QgsDebugMsgLevel( QString( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
 
   QgsRasterBlock *outputBlock = new QgsRasterBlock();
   if ( !mInput )

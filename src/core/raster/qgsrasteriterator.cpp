@@ -53,7 +53,7 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
     QgsRasterBlock **block,
     int& topLeftCol, int& topLeftRow )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
   *block = nullptr;
   //get partinfo
   QMap<int, RasterPartInfo>::iterator partIt = mRasterPartInfos.find( bandNumber );
@@ -83,7 +83,7 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
   //read data block
   nCols = qMin( mMaximumTileWidth, pInfo.nCols - pInfo.currentCol );
   nRows = qMin( mMaximumTileHeight, pInfo.nRows - pInfo.currentRow );
-  QgsDebugMsg( QString( "nCols = %1 nRows = %2" ).arg( nCols ).arg( nRows ) );
+  QgsDebugMsgLevel( QString( "nCols = %1 nRows = %2" ).arg( nCols ).arg( nRows ), 4 );
 
   //get subrectangle
   QgsRectangle viewPortExtent = mExtent;

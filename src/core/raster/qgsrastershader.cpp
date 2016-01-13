@@ -24,7 +24,7 @@ email                : ersts@amnh.org
 
 QgsRasterShader::QgsRasterShader( double theMinimumValue, double theMaximumValue )
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
 
   mMinimumValue = theMinimumValue;
   mMaximumValue = theMaximumValue;
@@ -86,7 +86,7 @@ bool QgsRasterShader::shade( double theRedValue, double theGreenValue, double th
 */
 void QgsRasterShader::setRasterShaderFunction( QgsRasterShaderFunction* theFunction )
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
 
   if ( mRasterShaderFunction == theFunction )
     return;
@@ -105,7 +105,7 @@ void QgsRasterShader::setRasterShaderFunction( QgsRasterShaderFunction* theFunct
 */
 void QgsRasterShader::setMaximumValue( double theValue )
 {
-  QgsDebugMsg( "Value = " + QString::number( theValue ) );
+  QgsDebugMsgLevel( "Value = " + QString::number( theValue ), 4 );
 
   mMaximumValue = theValue;
   if ( mRasterShaderFunction )
@@ -121,7 +121,7 @@ void QgsRasterShader::setMaximumValue( double theValue )
 */
 void QgsRasterShader::setMinimumValue( double theValue )
 {
-  QgsDebugMsg( "Value = " + QString::number( theValue ) );
+  QgsDebugMsgLevel( "Value = " + QString::number( theValue ), 4 );
 
   mMinimumValue = theValue;
   if ( mRasterShaderFunction )

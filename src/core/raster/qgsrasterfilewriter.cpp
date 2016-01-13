@@ -60,7 +60,7 @@ QgsRasterFileWriter::~QgsRasterFileWriter()
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, QgsRectangle outputExtent,
     const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
 
   if ( !pipe )
   {
@@ -85,7 +85,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
     mMode = Raw;
   }
 
-  QgsDebugMsg( QString( "reading from %1" ).arg( typeid( *iface ).name() ) );
+  QgsDebugMsgLevel( QString( "reading from %1" ).arg( typeid( *iface ).name() ), 4 );
 
   if ( !iface->srcInput() )
   {
@@ -94,7 +94,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
   }
 #ifdef QGISDEBUG
   const QgsRasterInterface &srcInput = *iface->srcInput();
-  QgsDebugMsg( QString( "srcInput = %1" ).arg( typeid( srcInput ).name() ) );
+  QgsDebugMsgLevel( QString( "srcInput = %1" ).arg( typeid( srcInput ).name() ), 4 );
 #endif
 
   mProgressDialog = progressDialog;
@@ -133,7 +133,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const QgsRasterPipe* pipe, QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
     const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
   if ( !iter )
   {
     return SourceProviderError;
@@ -189,7 +189,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     double destNoDataValue = std::numeric_limits<double>::quiet_NaN();
     QGis::DataType destDataType = srcProvider->srcDataType( bandNo );
     // TODO: verify what happens/should happen if srcNoDataValue is disabled by setUseSrcNoDataValue
-    QgsDebugMsg( QString( "srcHasNoDataValue = %1 srcNoDataValue = %2" ).arg( srcHasNoDataValue ).arg( srcProvider->srcNoDataValue( bandNo ) ) );
+    QgsDebugMsgLevel( QString( "srcHasNoDataValue = %1 srcNoDataValue = %2" ).arg( srcHasNoDataValue ).arg( srcProvider->srcNoDataValue( bandNo ) ), 4 );
     if ( srcHasNoDataValue )
     {
 
@@ -244,7 +244,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       nuller->setOutputNoDataValue( bandNo, destNoDataValue );
     }
 
-    QgsDebugMsg( QString( "bandNo = %1 destDataType = %2 destHasNoDataValue = %3 destNoDataValue = %4" ).arg( bandNo ).arg( destDataType ).arg( destHasNoDataValue ).arg( destNoDataValue ) );
+    QgsDebugMsgLevel( QString( "bandNo = %1 destDataType = %2 destHasNoDataValue = %3 destNoDataValue = %4" ).arg( bandNo ).arg( destDataType ).arg( destHasNoDataValue ).arg( destNoDataValue ), 4 );
     destDataTypeList.append( destDataType );
     destHasNoDataValueList.append( destHasNoDataValue );
     destNoDataValueList.append( destNoDataValue );
@@ -321,12 +321,12 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
 {
   Q_UNUSED( pipe );
   Q_UNUSED( destHasNoDataValueList );
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
 
   const QgsRasterInterface* iface = iter->input();
   const QgsRasterDataProvider *srcProvider = dynamic_cast<const QgsRasterDataProvider*>( iface->srcInput() );
   int nBands = iface->bandCount();
-  QgsDebugMsg( QString( "nBands = %1" ).arg( nBands ) );
+  QgsDebugMsgLevel( QString( "nBands = %1" ).arg( nBands ), 4 );
 
   //Get output map units per pixel
   int iterLeft = 0;
@@ -384,7 +384,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
           }
         }
 
-        QgsDebugMsg( "Done" );
+        QgsDebugMsgLevel( "Done", 4 );
         return NoError; //reached last tile, bail out
       }
       // TODO: verify if NoDataConflict happened, to do that we need the whole pipe or nuller interface
@@ -454,14 +454,14 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
     ++fileIndex;
   }
 
-  QgsDebugMsg( "Done" );
+  QgsDebugMsgLevel( "Done", 4 );
   return NoError;
 }
 
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
     const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
   if ( !iter )
   {
     return SourceProviderError;
@@ -708,7 +708,7 @@ void QgsRasterFileWriter::buildPyramids( const QString& filename )
 
 void QgsRasterFileWriter::buildPyramids( const QString& filename )
 {
-  QgsDebugMsg( "filename = " + filename );
+  QgsDebugMsgLevel( "filename = " + filename, 4 );
   // open new dataProvider so we can build pyramids with it
   QgsRasterDataProvider* destProvider = dynamic_cast< QgsRasterDataProvider* >( QgsProviderRegistry::instance()->provider( mOutputProviderKey, filename ) );
   if ( !destProvider )
@@ -727,7 +727,7 @@ void QgsRasterFileWriter::buildPyramids( const QString& filename )
     myPyramidList[myCounterInt].build = true;
   }
 
-  QgsDebugMsg( QString( "building pyramids : %1 pyramids, %2 resampling, %3 format, %4 options" ).arg( myPyramidList.count() ).arg( mPyramidsResampling ).arg( mPyramidsFormat ).arg( mPyramidsConfigOptions.count() ) );
+  QgsDebugMsgLevel( QString( "building pyramids : %1 pyramids, %2 resampling, %3 format, %4 options" ).arg( myPyramidList.count() ).arg( mPyramidsResampling ).arg( mPyramidsFormat ).arg( mPyramidsConfigOptions.count() ), 4 );
   // QApplication::setOverrideCursor( Qt::WaitCursor );
   QString res = destProvider->buildPyramids( myPyramidList, mPyramidsResampling,
                 mPyramidsFormat, mPyramidsConfigOptions );
@@ -764,7 +764,7 @@ void QgsRasterFileWriter::buildPyramids( const QString& filename )
       message = QObject::tr( "Building pyramid overviews is not supported on this type of raster." );
     }
     QMessageBox::warning( nullptr, title, message );
-    QgsDebugMsg( res + " - " + message );
+    QgsDebugMsgLevel( res + " - " + message, 4 );
   }
   delete destProvider;
 }

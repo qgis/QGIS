@@ -85,7 +85,7 @@ QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, Q
       value = ( int )entryElem.attribute( "value", "0" ).toDouble();
       if ( value >= nColors && value <= 10000 ) nColors = value + 1;
     }
-    QgsDebugMsg( QString( "nColors = %1" ).arg( nColors ) );
+    QgsDebugMsgLevel( QString( "nColors = %1" ).arg( nColors ), 4 );
 
     colors = new QRgb[ nColors ];
 
@@ -93,7 +93,7 @@ QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, Q
     {
       entryElem = paletteEntries.at( i ).toElement();
       value = ( int )entryElem.attribute( "value", "0" ).toDouble();
-      QgsDebugMsg( entryElem.attribute( "color", "#000000" ) );
+      QgsDebugMsgLevel( entryElem.attribute( "color", "#000000" ), 4 );
       if ( value >= 0 && value < nColors )
       {
         colors[value] = QColor( entryElem.attribute( "color", "#000000" ) ).rgba();
