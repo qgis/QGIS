@@ -135,7 +135,7 @@ def getInstalledVersion(runOtb=False):
     if _installedVersionFound and not runOtb:
         return _installedVersion
 
-    commands =[os.path.join(otbPath(), "otbcli_Smoothing")]
+    commands = [os.path.join(otbPath(), "otbcli_Smoothing")]
     progress = SilentProgress()
     out = executeOtb(commands, progress, False)
     for line in out:
@@ -144,6 +144,7 @@ def getInstalledVersion(runOtb=False):
             _installedVersion = line.split("version")[-1].strip()
             break
     return _installedVersion
+
 
 def compatibleDescriptionPath(version):
     supportedVersions = {"5.0.0": "5.0.0"}
@@ -158,7 +159,8 @@ def compatibleDescriptionPath(version):
 
     return os.path.join(otbDescriptionPath(), supportedVersions[version])
 
-def executeOtb(commands, progress, addToLog = True):
+
+def executeOtb(commands, progress, addToLog=True):
     loglines = []
     loglines.append(tr("OTB execution console output"))
     os.putenv('ITK_AUTOLOAD_PATH', otbLibPath())
