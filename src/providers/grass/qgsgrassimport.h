@@ -32,7 +32,7 @@ class GRASS_LIB_EXPORT QgsGrassImportIcon : public QgsAnimatedIcon
   public:
     static QgsGrassImportIcon *instance();
     QgsGrassImportIcon();
-    virtual ~QgsGrassImportIcon() {};
+    virtual ~QgsGrassImportIcon() {}
 };
 
 // QgsGrassImport items live on the main thread but mProcess, when importInThread() is used, lives on another

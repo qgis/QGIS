@@ -531,13 +531,10 @@ QGis::DataType QgsGrassRasterProvider::srcDataType( int bandNo ) const
   {
     case CELL_TYPE:
       return QGis::Int32;
-      break;
     case FCELL_TYPE:
       return QGis::Float32;
-      break;
     case DCELL_TYPE:
       return QGis::Float64;
-      break;
   }
   return QGis::UnknownDataType;
 }

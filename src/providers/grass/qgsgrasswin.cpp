@@ -76,3 +76,4 @@ void QgsGrassWin::hideWindow( int pid )
   ShowWindow( hWnd, SW_HIDE );
 #endif
 }
+

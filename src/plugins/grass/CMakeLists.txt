@@ -163,13 +163,13 @@ INCLUDE_DIRECTORIES(
   ../../gui/layertree
   ../../providers/grass
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
-  qtermwidget
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
+  qtermwidget
 )
 
 
