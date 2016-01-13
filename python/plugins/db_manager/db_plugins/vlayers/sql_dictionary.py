@@ -123,6 +123,21 @@ spatialite_functions = [  # from www.gaia-gis.it/spatialite-2.3.0/spatialite-sql
                           "*filtermbrwithin", "*filtermbrcontains", "*filtermbrintersects", "*buildmbrfilter"
 ]
 
+qgis_functions = [
+    "atan2", "round", "rand", "randf", "clamp", "scale_linear", "scale_exp", "_pi", "to_int", "toint", "to_real", "toreal",
+    "to_string", "tostring", "to_datetime", "todatetime", "to_date", "todate", "to_time", "totime", "to_interval", "tointerval",
+    "regexp_match", "now", "_now", "age", "year", "month", "week", "day", "hour", "minute", "second", "day_of_week", "title",
+    "levenshtein", "longest_common_substring", "hamming_distance", "wordwrap", "regexp_replace", "regexp_substr", "concat",
+    "strpos", "_left", "_right", "rpad", "lpad", "format", "format_number", "format_date", "color_rgb", "color_rgba", "ramp_color",
+    "color_hsl", "color_hsla", "color_hsv", "color_hsva", "color_cmyk", "color_cmyka", "color_part", "darker", "lighter",
+    "set_color_part", "point_n", "start_point", "end_point", "nodes_to_points", "segments_to_lines", "make_point",
+    "make_point_m", "make_line", "make_polygon", "x_min", "xmin", "x_max", "xmax", "y_min", "ymin", "y_max", "ymax", "geom_from_wkt",
+    "geomFromWKT", "geom_from_gml", "relate", "intersects_bbox", "bbox", "translate", "buffer", "point_on_surface", "reverse",
+    "exterior_ring", "interior_ring_n", "geometry_n", "bounds", "num_points", "num_interior_rings", "num_rings", "num_geometries",
+    "bounds_width", "bounds_height", "is_closed", "convex_hull", "sym_difference", "combine", "_union", "geom_to_wkt", "geomToWKT",
+    "transform", "uuid", "_uuid", "layer_property", "var", "_specialcol_", "project_color"]
+
+
 # constants
 constants = ["null", "false", "true"]
 spatialite_constants = []
@@ -140,6 +155,7 @@ def getSqlDictionary(spatial=True):
     if spatial:
         k += spatialite_keywords
         f += spatialite_functions
+        f += qgis_functions
         c += spatialite_constants
 
     return {'keyword': map(strip_star, k), 'constant': map(strip_star, c), 'function': map(strip_star, f)}
@@ -152,7 +168,7 @@ def getQueryBuilderDictionary():
 
     def add_paren(l):
         return map(lambda s: s + "(", l)
-    foo = sorted(add_paren(ff(list(set.union(set(functions), set(spatialite_functions))))))
+    foo = sorted(add_paren(ff(list(set.union(set(functions), set(spatialite_functions), set(qgis_functions))))))
     m = sorted(add_paren(ff(math_functions)))
     agg = sorted(add_paren(ff(aggregate_functions)))
     op = ff(operators)

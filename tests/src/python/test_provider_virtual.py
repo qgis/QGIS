@@ -703,5 +703,17 @@ class TestQgsVirtualLayerProvider(TestCase, ProviderTestCase):
         # make sure the 3 layers are loaded back
         self.assertEqual(len(QgsMapLayerRegistry.instance().mapLayers()), 3)
 
+    def test_qgisExpressionFunctions(self):
+        QgsProject.instance().setTitle('project')
+        self.assertEqual(QgsProject.instance().title(), 'project')
+        df = QgsVirtualLayerDefinition()
+        df.setQuery("SELECT format('hello %1', 'world') as a, year(todate('2016-01-02')) as b, title('This') as t, var('project_title') as c")
+        l = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual(l.isValid(), True)
+
+        for f in l.getFeatures():
+            self.assertEqual(f.attributes(), ['hello world', 2016, u'This', u'project'])
+
+
 if __name__ == '__main__':
     unittest.main()

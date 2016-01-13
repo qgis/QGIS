@@ -20,6 +20,7 @@ email                : hugo dot mercier at oslandia dot com
 #include <stdexcept>
 
 #include <QCoreApplication>
+#include <QBuffer>
 
 #include <qgsapplication.h>
 #include <qgsvectorlayer.h>
@@ -34,17 +35,6 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayersqlitemodule.h"
 #include "qgsvirtuallayerblob.h"
 #include "qgsslottofunction.h"
-
-/**
- * Structure created in SQLITE module creation and passed to xCreate/xConnect
- */
-struct ModuleContext
-{
-  // private pointer needed for spatialite_init_ex;
-  // allows to know whether the database has been initialied (null or not)
-  bool init;
-  ModuleContext() : init( false ) {}
-};
 
 /**
  * Create metadata tables if needed
@@ -324,13 +314,13 @@ void getGeometryType( const QgsVectorDataProvider* provider, QString& geometryTy
     geometryWkbType = 0;
 }
 
-int vtable_create_connect( sqlite3* sql, void* aux, int argc, const char* const* argv, sqlite3_vtab **out_vtab, char** out_err, bool is_created )
+int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* argv, sqlite3_vtab **outVtab, char** outErr, bool isCreated )
 {
   Q_UNUSED( aux );
-  Q_UNUSED( is_created );
+  Q_UNUSED( isCreated );
 
-#define RETURN_CSTR_ERROR(err) if (out_err) {size_t s = strlen(err); *out_err=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( s ) +1)); strncpy(*out_err, err, s);}
-#define RETURN_CPPSTR_ERROR(err) if (out_err) {*out_err=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( err.size() )+1)); strncpy(*out_err, err.c_str(), err.size());}
+#define RETURN_CSTR_ERROR(err) if (outErr) {size_t s = strlen(err); *outErr=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( s ) +1)); strncpy(*outErr, err, s);}
+#define RETURN_CPPSTR_ERROR(err) if (outErr) {*outErr=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( err.size() )+1)); strncpy(*outErr, err.c_str(), err.size());}
 
   if ( argc < 4 )
   {
@@ -339,7 +329,7 @@ int vtable_create_connect( sqlite3* sql, void* aux, int argc, const char* const*
     return SQLITE_ERROR;
   }
 
-  QScopedPointer<VTable> new_vtab;
+  QScopedPointer<VTable> newVtab;
   QString vname( argv[2] );
   int r;
   if ( argc == 4 )
@@ -355,7 +345,7 @@ int vtable_create_connect( sqlite3* sql, void* aux, int argc, const char* const*
     QgsMapLayer *l = QgsMapLayerRegistry::instance()->mapLayer( layerid );
     if ( !l || l->type() != QgsMapLayer::VectorLayer )
     {
-      if ( out_err )
+      if ( outErr )
       {
         std::string err( "Cannot find layer " );
         err += argv[3];
@@ -363,7 +353,7 @@ int vtable_create_connect( sqlite3* sql, void* aux, int argc, const char* const*
       }
       return SQLITE_ERROR;
     }
-    new_vtab.reset( new VTable( sql, static_cast<QgsVectorLayer*>( l ) ) );
+    newVtab.reset( new VTable( sql, static_cast<QgsVectorLayer*>( l ) ) );
 
   }
   else if ( argc == 5 || argc == 6 )
@@ -392,7 +382,7 @@ int vtable_create_connect( sqlite3* sql, void* aux, int argc, const char* const*
     }
     try
     {
-      new_vtab.reset( new VTable( sql, provider, source, argv[2], encoding ) );
+      newVtab.reset( new VTable( sql, provider, source, argv[2], encoding ) );
     }
     catch ( std::runtime_error& e )
     {
@@ -402,65 +392,50 @@ int vtable_create_connect( sqlite3* sql, void* aux, int argc, const char* const*
     }
   }
 
-  r = sqlite3_declare_vtab( sql, new_vtab->creationString().toLocal8Bit().constData() );
+  r = sqlite3_declare_vtab( sql, newVtab->creationString().toLocal8Bit().constData() );
   if ( r )
   {
     RETURN_CSTR_ERROR( sqlite3_errmsg( sql ) );
     return r;
   }
 
-  *out_vtab = reinterpret_cast< sqlite3_vtab* >( new_vtab.take() );
+  *outVtab = reinterpret_cast< sqlite3_vtab* >( newVtab.take() );
   return SQLITE_OK;
 #undef RETURN_CSTR_ERROR
 #undef RETURN_CPPSTR_ERROR
 }
 
-void db_init( sqlite3* db, ModuleContext* context )
+void dbInit( sqlite3* db )
 {
-  if ( context->init )
-  {
-    // db already initialized
-    return;
-  }
-
   // create metadata tables
   initVirtualLayerMetadata( db );
 }
 
-int vtable_create( sqlite3* sql, void* aux, int argc, const char* const* argv, sqlite3_vtab **out_vtab, char** out_err )
+int vtableCreate( sqlite3* sql, void* aux, int argc, const char* const* argv, sqlite3_vtab **outVtab, char** outErr )
 {
   try
   {
-    db_init( sql, reinterpret_cast<ModuleContext*>( aux ) );
+    dbInit( sql );
   }
   catch ( std::runtime_error& e )
   {
-    if ( out_err )
+    if ( outErr )
     {
-      *out_err = reinterpret_cast< char* >( sqlite3_malloc( static_cast< int >( strlen( e.what() ) ) + 1 ) );
-      strcpy( *out_err, e.what() );
+      *outErr = reinterpret_cast< char* >( sqlite3_malloc( static_cast< int >( strlen( e.what() ) ) + 1 ) );
+      strcpy( *outErr, e.what() );
     }
     return SQLITE_ERROR;
   }
 
-  return vtable_create_connect( sql, aux, argc, argv, out_vtab, out_err, /* is_created */ true );
+  return vtableCreateConnect( sql, aux, argc, argv, outVtab, outErr, /* is_created */ true );
 }
 
-int vtable_connect( sqlite3* sql, void* aux, int argc, const char* const* argv, sqlite3_vtab **out_vtab, char** out_err )
+int vtableConnect( sqlite3* sql, void* aux, int argc, const char* const* argv, sqlite3_vtab **outVtab, char** outErr )
 {
-  return vtable_create_connect( sql, aux, argc, argv, out_vtab, out_err, /* is_created */ false );
+  return vtableCreateConnect( sql, aux, argc, argv, outVtab, outErr, /* is_created */ false );
 }
 
-int vtable_destroy( sqlite3_vtab *vtab )
-{
-  if ( vtab )
-  {
-    delete reinterpret_cast<VTable*>( vtab );
-  }
-  return SQLITE_OK;
-}
-
-int vtable_disconnect( sqlite3_vtab *vtab )
+int vtableDestroy( sqlite3_vtab *vtab )
 {
   if ( vtab )
   {
@@ -469,65 +444,74 @@ int vtable_disconnect( sqlite3_vtab *vtab )
   return SQLITE_OK;
 }
 
-int vtable_rename( sqlite3_vtab *vtab, const char *new_name )
+int vtableDisconnect( sqlite3_vtab *vtab )
+{
+  if ( vtab )
+  {
+    delete reinterpret_cast<VTable*>( vtab );
+  }
+  return SQLITE_OK;
+}
+
+int vtableRename( sqlite3_vtab *vtab, const char *newName )
 {
   Q_UNUSED( vtab );
-  Q_UNUSED( new_name );
+  Q_UNUSED( newName );
 
   return SQLITE_OK;
 }
 
-int vtable_bestindex( sqlite3_vtab *pvtab, sqlite3_index_info* index_info )
+int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info* indexInfo )
 {
   VTable *vtab = reinterpret_cast< VTable* >( pvtab );
-  for ( int i = 0; i < index_info->nConstraint; i++ )
+  for ( int i = 0; i < indexInfo->nConstraint; i++ )
   {
-    if (( index_info->aConstraint[i].usable ) &&
-        ( vtab->pkColumn() == index_info->aConstraint[i].iColumn ) &&
-        ( index_info->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) )
+    if (( indexInfo->aConstraint[i].usable ) &&
+        ( vtab->pkColumn() == indexInfo->aConstraint[i].iColumn ) &&
+        ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) )
     {
       // request for primary key filter
-      index_info->aConstraintUsage[i].argvIndex = 1;
-      index_info->aConstraintUsage[i].omit = 1;
-      index_info->idxNum = 1; // PK filter
-      index_info->estimatedCost = 1.0; // ??
-      //index_info->estimatedRows = 1;
-      index_info->idxStr = nullptr;
-      index_info->needToFreeIdxStr = 0;
+      indexInfo->aConstraintUsage[i].argvIndex = 1;
+      indexInfo->aConstraintUsage[i].omit = 1;
+      indexInfo->idxNum = 1; // PK filter
+      indexInfo->estimatedCost = 1.0; // ??
+      //indexInfo->estimatedRows = 1;
+      indexInfo->idxStr = nullptr;
+      indexInfo->needToFreeIdxStr = 0;
       return SQLITE_OK;
     }
-    if (( index_info->aConstraint[i].usable ) &&
-        ( 0 == index_info->aConstraint[i].iColumn ) &&
-        ( index_info->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) )
+    if (( indexInfo->aConstraint[i].usable ) &&
+        ( 0 == indexInfo->aConstraint[i].iColumn ) &&
+        ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) )
     {
       // request for rtree filtering
-      index_info->aConstraintUsage[i].argvIndex = 1;
+      indexInfo->aConstraintUsage[i].argvIndex = 1;
       // do not test for equality, since it is used for filtering, not to return an actual value
-      index_info->aConstraintUsage[i].omit = 1;
-      index_info->idxNum = 2; // RTree filter
-      index_info->estimatedCost = 1.0; // ??
-      //index_info->estimatedRows = 1;
-      index_info->idxStr = nullptr;
-      index_info->needToFreeIdxStr = 0;
+      indexInfo->aConstraintUsage[i].omit = 1;
+      indexInfo->idxNum = 2; // RTree filter
+      indexInfo->estimatedCost = 1.0; // ??
+      //indexInfo->estimatedRows = 1;
+      indexInfo->idxStr = nullptr;
+      indexInfo->needToFreeIdxStr = 0;
       return SQLITE_OK;
     }
   }
-  index_info->idxNum = 0;
-  index_info->estimatedCost = 10.0;
-  //index_info->estimatedRows = 10;
-  index_info->idxStr = nullptr;
-  index_info->needToFreeIdxStr = 0;
+  indexInfo->idxNum = 0;
+  indexInfo->estimatedCost = 10.0;
+  //indexInfo->estimatedRows = 10;
+  indexInfo->idxStr = nullptr;
+  indexInfo->needToFreeIdxStr = 0;
   return SQLITE_OK;
 }
 
-int vtable_open( sqlite3_vtab *vtab, sqlite3_vtab_cursor **out_cursor )
+int vtableOpen( sqlite3_vtab *vtab, sqlite3_vtab_cursor **outCursor )
 {
   VTableCursor *ncursor = new VTableCursor( reinterpret_cast< VTable* >( vtab ) );
-  *out_cursor = reinterpret_cast< sqlite3_vtab_cursor* >( ncursor );
+  *outCursor = reinterpret_cast< sqlite3_vtab_cursor* >( ncursor );
   return SQLITE_OK;
 }
 
-int vtable_close( sqlite3_vtab_cursor * cursor )
+int vtableClose( sqlite3_vtab_cursor * cursor )
 {
   if ( cursor )
   {
@@ -536,7 +520,7 @@ int vtable_close( sqlite3_vtab_cursor * cursor )
   return SQLITE_OK;
 }
 
-int vtable_filter( sqlite3_vtab_cursor * cursor, int idxNum, const char *idxStr, int argc, sqlite3_value **argv )
+int vtableFilter( sqlite3_vtab_cursor * cursor, int idxNum, const char *idxStr, int argc, sqlite3_value **argv )
 {
   Q_UNUSED( argc );
   Q_UNUSED( idxStr );
@@ -560,28 +544,28 @@ int vtable_filter( sqlite3_vtab_cursor * cursor, int idxNum, const char *idxStr,
   return SQLITE_OK;
 }
 
-int vtable_next( sqlite3_vtab_cursor *cursor )
+int vtableNext( sqlite3_vtab_cursor *cursor )
 {
   VTableCursor* c = reinterpret_cast<VTableCursor*>( cursor );
   c->next();
   return SQLITE_OK;
 }
 
-int vtable_eof( sqlite3_vtab_cursor *cursor )
+int vtableEof( sqlite3_vtab_cursor *cursor )
 {
   VTableCursor* c = reinterpret_cast<VTableCursor*>( cursor );
   return c->eof();
 }
 
-int vtable_rowid( sqlite3_vtab_cursor *cursor, sqlite3_int64 *out_rowid )
+int vtableRowId( sqlite3_vtab_cursor *cursor, sqlite3_int64 *outRowid )
 {
   VTableCursor* c = reinterpret_cast<VTableCursor*>( cursor );
-  *out_rowid = c->currentId();
+  *outRowid = c->currentId();
 
   return SQLITE_OK;
 }
 
-int vtable_column( sqlite3_vtab_cursor *cursor, sqlite3_context* ctxt, int idx )
+int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context* ctxt, int idx )
 {
   VTableCursor* c = reinterpret_cast<VTableCursor*>( cursor );
   if ( idx == 0 )
@@ -628,41 +612,190 @@ int vtable_column( sqlite3_vtab_cursor *cursor, sqlite3_context* ctxt, int idx )
   return SQLITE_OK;
 }
 
-int vtable_findfunction( sqlite3_vtab *pVtab,
-                         int nArg,
-                         const char *zName,
-                         void ( **pxFunc )( sqlite3_context*, int, sqlite3_value** ),
-                         void **ppArg )
+
+static QCoreApplication* coreApp = nullptr;
+
+void moduleDestroy( void* )
 {
-  Q_UNUSED( pVtab );
-  Q_UNUSED( nArg );
-  Q_UNUSED( zName );
-  Q_UNUSED( pxFunc );
-  Q_UNUSED( ppArg );
-  return SQLITE_OK;
-}
-
-
-
-sqlite3_module module;
-
-static QCoreApplication* core_app = nullptr;
-
-static int module_argc = 1;
-static char module_name[] = "qgsvlayer_module";
-static char* module_argv[] = { module_name };
-
-void module_destroy( void * d )
-{
-  delete reinterpret_cast<ModuleContext*>( d );
-
-  if ( core_app )
+  if ( coreApp )
   {
-    delete core_app;
+    delete coreApp;
   }
 }
 
-int qgsvlayer_module_init( sqlite3 *db, char **pzErrMsg, void * unused /*const sqlite3_api_routines *pApi*/ )
+// the expression context used for calling qgis functions
+QgsExpressionContext qgisFunctionExpressionContext;
+
+void qgisFunctionWrapper( sqlite3_context* ctxt, int nArgs, sqlite3_value** args )
+{
+  // convert from sqlite3 value to QVariant and then call the qgis expression function
+  // the 3 basic sqlite3 types (int, float, text) are converted to their QVariant equivalent
+  // Expression::Interval is handled specifically
+  // geometries are converted between spatialite and QgsGeometry
+  // other data types (datetime mainly) are represented as BLOBs thanks to QVariant serializing functions
+
+  QgsExpression::Function* foo = reinterpret_cast<QgsExpression::Function*>( sqlite3_user_data( ctxt ) );
+
+  QVariantList variants;
+  for ( int i = 0; i < nArgs; i++ )
+  {
+    int t = sqlite3_value_type( args[i] );
+    switch ( t )
+    {
+      case SQLITE_INTEGER:
+        variants << QVariant( sqlite3_value_int64( args[i] ) );
+        break;
+      case SQLITE_FLOAT:
+        variants << QVariant( sqlite3_value_double( args[i] ) );
+        break;
+      case SQLITE_TEXT:
+      {
+        int n = sqlite3_value_bytes( args[i] );
+        const char* t = reinterpret_cast<const char*>( sqlite3_value_text( args[i] ) );
+        QString str( QByteArray::fromRawData( t, n ) ); // don't copy data
+        variants << QVariant( str );
+        break;
+      }
+      case SQLITE_BLOB:
+      {
+        int n = sqlite3_value_bytes( args[i] );
+        const char* blob = reinterpret_cast<const char*>( sqlite3_value_blob( args[i] ) );
+        // spatialite blobs start with a 0 byte
+        if ( n > 0 && blob[0] == 0 )
+        {
+          QgsGeometry geom = spatialiteBlobToQgsGeometry( blob, n );
+          variants << QVariant::fromValue( geom );
+        }
+        else
+        {
+          // else it is another type
+          QByteArray ba = QByteArray::fromRawData( blob + 1, n - 1 );
+          QBuffer buffer( &ba );
+          buffer.open( QIODevice::ReadOnly );
+          QDataStream ds( &buffer );
+          QVariant v;
+          ds >> v;
+          buffer.close();
+          variants << v;
+        }
+        break;
+      }
+      default:
+        variants << QVariant(); // null
+        break;
+    };
+  }
+
+  QgsExpression parentExpr( "" );
+  QVariant ret = foo->func( variants, &qgisFunctionExpressionContext, &parentExpr );
+  if ( parentExpr.hasEvalError() )
+  {
+    QByteArray ba = parentExpr.evalErrorString().toUtf8();
+    sqlite3_result_error( ctxt, ba.constData(), ba.size() );
+    return;
+  }
+
+  if ( ret.isNull() )
+  {
+    sqlite3_result_null( ctxt );
+    return;
+  }
+
+  switch ( ret.type() )
+  {
+    case QVariant::Bool:
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+      sqlite3_result_int64( ctxt, ret.toLongLong() );
+      break;
+    case QVariant::Double:
+      sqlite3_result_double( ctxt, ret.toDouble() );
+      break;
+    case QVariant::String:
+    {
+      QByteArray ba( ret.toByteArray() );
+      sqlite3_result_text( ctxt, ba.constData(), ba.size(), SQLITE_TRANSIENT );
+      break;
+    }
+    case QVariant::UserType:
+    {
+      if ( ret.canConvert<QgsGeometry>() )
+      {
+        char* blob = nullptr;
+        int size = 0;
+        qgsGeometryToSpatialiteBlob( ret.value<QgsGeometry>(), /*srid*/0, blob, size );
+        sqlite3_result_blob( ctxt, blob, size, deleteGeometryBlob );
+      }
+      else if ( ret.canConvert<QgsExpression::Interval>() )
+      {
+        sqlite3_result_double( ctxt, ret.value<QgsExpression::Interval>().seconds() );
+      }
+      break;
+    }
+    default:
+    {
+      QBuffer buffer;
+      buffer.open( QBuffer::ReadWrite );
+      QDataStream ds( &buffer );
+      // something different from 0 (to distinguish from the first byte of a geometry blob)
+      char type = 1;
+      buffer.write( &type, 1 );
+      // then the serialized version of the variant
+      ds << ret;
+      buffer.close();
+      sqlite3_result_blob( ctxt, buffer.buffer().constData(), buffer.buffer().size(), SQLITE_TRANSIENT );
+    }
+  };
+}
+
+void registerQgisFunctions( sqlite3* db )
+{
+  QStringList excludedFunctions;
+  excludedFunctions << "min" << "max" << "coalesce" << "get_feature" << "getFeature" << "attribute";
+  QStringList reservedFunctions;
+  reservedFunctions << "left" << "right" << "union";
+  // register QGIS expression functions
+  foreach ( QgsExpression::Function* foo, QgsExpression::Functions() )
+  {
+    if ( foo->usesgeometry() || foo->lazyEval() )
+    {
+      // there is no "current" feature here, so calling functions that access "the" geometry does not make sense
+      // also, we can't pass Node values for lazy evaluations
+      continue;
+    }
+    if ( excludedFunctions.contains( foo->name() ) )
+      continue;
+
+    QStringList names;
+    names << foo->name();
+    names << foo->aliases();
+
+    foreach ( QString name, names ) // for each alias
+    {
+      if ( reservedFunctions.contains( name ) ) // reserved keyword
+        name = "_" + name;
+      if ( name.startsWith( "$" ) )
+        continue;
+
+      // register the function and pass the pointer to the Function* as user data
+      int r = sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
+      if ( r != SQLITE_OK )
+      {
+        // is it because a function of the same name already exist (in Spatialite for instance ?)
+        // we then try to recreate it with a prefix
+        name = "qgis_" + name;
+        r = sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
+      }
+    }
+  }
+
+  // initialize the expression context
+  qgisFunctionExpressionContext << QgsExpressionContextUtils::globalScope();
+  qgisFunctionExpressionContext << QgsExpressionContextUtils::projectScope();
+}
+
+int qgsvlayerModuleInit( sqlite3 *db, char **pzErrMsg, void * unused /*const sqlite3_api_routines *pApi*/ )
 {
   Q_UNUSED( pzErrMsg );
   Q_UNUSED( unused );
@@ -673,24 +806,28 @@ int qgsvlayer_module_init( sqlite3 *db, char **pzErrMsg, void * unused /*const s
   if ( !QCoreApplication::instance() )
   {
     // if run standalone
-    core_app = new QCoreApplication( module_argc, module_argv );
+    static int moduleArgc = 1;
+    static char moduleName[] = "qgsvlayer_module";
+    static char* moduleArgv[] = { moduleName };
+    coreApp = new QCoreApplication( moduleArgc, moduleArgv );
     QgsApplication::init();
     QgsApplication::initQgis();
   }
 
-  module.xCreate = vtable_create;
-  module.xConnect = vtable_connect;
-  module.xBestIndex = vtable_bestindex;
-  module.xDisconnect = vtable_disconnect;
-  module.xDestroy = vtable_destroy;
-  module.xOpen = vtable_open;
-  module.xClose = vtable_close;
-  module.xFilter = vtable_filter;
-  module.xNext = vtable_next;
-  module.xEof = vtable_eof;
-  module.xColumn = vtable_column;
-  module.xRowid = vtable_rowid;
-  module.xRename = vtable_rename;
+  static sqlite3_module module;
+  module.xCreate = vtableCreate;
+  module.xConnect = vtableConnect;
+  module.xBestIndex = vtableBestIndex;
+  module.xDisconnect = vtableDisconnect;
+  module.xDestroy = vtableDestroy;
+  module.xOpen = vtableOpen;
+  module.xClose = vtableClose;
+  module.xFilter = vtableFilter;
+  module.xNext = vtableNext;
+  module.xEof = vtableEof;
+  module.xColumn = vtableColumn;
+  module.xRowid = vtableRowId;
+  module.xRename = vtableRename;
 
   module.xUpdate = nullptr;
   module.xBegin = nullptr;
@@ -702,8 +839,9 @@ int qgsvlayer_module_init( sqlite3 *db, char **pzErrMsg, void * unused /*const s
   module.xRelease = nullptr;
   module.xRollbackTo = nullptr;
 
-  ModuleContext* context = new ModuleContext;
-  sqlite3_create_module_v2( db, "QgsVLayer", &module, context, module_destroy );
+  sqlite3_create_module_v2( db, "QgsVLayer", &module, nullptr, moduleDestroy );
+
+  registerQgisFunctions( db );
 
   return rc;
 }
