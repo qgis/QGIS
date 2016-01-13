@@ -23,7 +23,7 @@ The content of this file is based on
 """
 
 from PyQt4.QtCore import QRegExp
-from qgis.core import QgsCredentials
+from qgis.core import QgsCredentials, QgsDataSourceURI
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
@@ -51,8 +51,9 @@ class PostGisDBConnector(DBConnector):
         username = uri.username() or os.environ.get('PGUSER') or os.environ.get('USER')
         password = uri.password() or os.environ.get('PGPASSWORD')
 
+        expandedConnInfo = self._connectionInfo()
         try:
-            self.connection = psycopg2.connect(self._connectionInfo().encode('utf-8'))
+            self.connection = psycopg2.connect(expandedConnInfo.encode('utf-8'))
         except self.connection_error_types() as e:
             err = unicode(e)
             uri = self.uri()
@@ -69,14 +70,51 @@ class PostGisDBConnector(DBConnector):
                 if password:
                     uri.setPassword(password)
 
+                newExpandedConnInfo = uri.connectionInfo(True)
                 try:
-                    self.connection = psycopg2.connect(uri.connectionInfo(True).encode('utf-8'))
+                    self.connection = psycopg2.connect(newExpandedConnInfo.encode('utf-8'))
                     QgsCredentials.instance().put(conninfo, username, password)
                 except self.connection_error_types() as e:
                     if i == 2:
                         raise ConnectionError(e)
 
                     err = unicode(e)
+                finally:
+                    # remove certs (if any) of the expanded connectionInfo
+                    expandedUri = QgsDataSourceURI(newExpandedConnInfo)
+
+                    sslCertFile = expandedUri.param("sslcert")
+                    if sslCertFile:
+                        sslCertFile = sslCertFile.replace("'", "")
+                        os.remove(sslCertFile)
+
+                    sslKeyFile = expandedUri.param("sslkey")
+                    if sslKeyFile:
+                        sslKeyFile = sslKeyFile.replace("'", "")
+                        os.remove(sslKeyFile)
+
+                    sslCAFile = expandedUri.param("sslrootcert")
+                    if sslCAFile:
+                        sslCAFile = sslCAFile.replace("'", "")
+                        os.remove(sslCAFile)
+        finally:
+            # remove certs (if any) of the expanded connectionInfo
+            expandedUri = QgsDataSourceURI(expandedConnInfo)
+
+            sslCertFile = expandedUri.param("sslcert")
+            if sslCertFile:
+                sslCertFile = sslCertFile.replace("'", "")
+                os.remove(sslCertFile)
+
+            sslKeyFile = expandedUri.param("sslkey")
+            if sslKeyFile:
+                sslKeyFile = sslKeyFile.replace("'", "")
+                os.remove(sslKeyFile)
+
+            sslCAFile = expandedUri.param("sslrootcert")
+            if sslCAFile:
+                sslCAFile = sslCAFile.replace("'", "")
+                os.remove(sslCAFile)
 
         self.connection.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
