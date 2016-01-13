@@ -330,7 +330,7 @@ bool QgsServer::init( int & argc, char ** argv )
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionsPath );
   }
 
-  mQgsApplication = new QgsApplication( argc, argv, getenv( "DISPLAY" ) );
+  mQgsApplication = new QgsApplication( argc, argv, getenv( "DISPLAY" ), QString(), "server" );
 
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );

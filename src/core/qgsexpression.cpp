@@ -4432,6 +4432,10 @@ void QgsExpression::initVariableHelp()
   gVariableHelpTexts.insert( "qgis_version", QCoreApplication::translate( "variable_help", "Current QGIS version string." ) );
   gVariableHelpTexts.insert( "qgis_version_no", QCoreApplication::translate( "variable_help", "Current QGIS version number." ) );
   gVariableHelpTexts.insert( "qgis_release_name", QCoreApplication::translate( "variable_help", "Current QGIS release name." ) );
+  gVariableHelpTexts.insert( "qgis_os_name", QCoreApplication::translate( "variable_help", "Operating system name, eg 'windows', 'linux' or 'osx'." ) );
+  gVariableHelpTexts.insert( "qgis_platform", QCoreApplication::translate( "variable_help", "QGIS platform, eg 'desktop' or 'server'." ) );
+  gVariableHelpTexts.insert( "user_account_name", QCoreApplication::translate( "variable_help", "Current user's operating system account name." ) );
+  gVariableHelpTexts.insert( "user_full_name", QCoreApplication::translate( "variable_help", "Current user's operating system user name (if available)." ) );
 
   //project variables
   gVariableHelpTexts.insert( "project_title", QCoreApplication::translate( "variable_help", "Title of current project." ) );
