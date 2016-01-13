@@ -245,7 +245,7 @@ int main( int argc, char **argv )
       break;
     }
 
-    QgsGeometry* geometry = feature.geometry();
+    const QgsGeometry* geometry = feature.constGeometry();
     if ( geometry )
     {
       // geometry type may be probably different from provider type (e.g. multi x single)
@@ -423,16 +423,16 @@ int main( int argc, char **argv )
       {
         break;
       }
-      if ( !feature.geometry() )
+      if ( !feature.constGeometry() )
       {
         continue;
       }
 
-      QList<QgsFeatureId> idList = spatialIndex.intersects( feature.geometry()->boundingBox() );
+      QList<QgsFeatureId> idList = spatialIndex.intersects( feature.constGeometry()->boundingBox() );
       Q_FOREACH ( QgsFeatureId id, idList )
       {
         QgsFeature& centroid = centroids[id];
-        if ( feature.geometry()->contains( centroid.geometry() ) )
+        if ( feature.constGeometry()->contains( centroid.constGeometry() ) )
         {
           QgsAttributes attr = centroid.attributes();
           attr.append(( int )feature.id() + fidToCatPlus );
@@ -450,9 +450,9 @@ int main( int argc, char **argv )
 
     int centroidsCount = centroids.size();
     count = 0;
-    Q_FOREACH ( QgsFeature centroid, centroids.values() )
+    Q_FOREACH ( const QgsFeature& centroid, centroids.values() )
     {
-      QgsPoint point = centroid.geometry()->asPoint();
+      QgsPoint point = centroid.constGeometry()->asPoint();
 
       if ( centroid.attributes().size() > 0 )
       {

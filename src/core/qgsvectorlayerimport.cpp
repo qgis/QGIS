@@ -361,7 +361,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     {
       try
       {
-        if ( fet.geometry() )
+        if ( fet.constGeometry() )
         {
           fet.geometry()->transform( *ct );
         }

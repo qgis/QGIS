@@ -1864,7 +1864,7 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
   fStr += "\"" + mTypeName + "." + QString::number( feat->id() ) + "\"";
   fStr += ",\n";
 
-  QgsGeometry* geom = feat->geometry();
+  const QgsGeometry* geom = feat->constGeometry();
   if ( geom && mWithGeom && mGeometryName != "NONE" )
   {
     QgsRectangle box = geom->boundingBox();
@@ -1948,7 +1948,7 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
   if ( mWithGeom && mGeometryName != "NONE" )
   {
     //add geometry column (as gml)
-    QgsGeometry* geom = feat->geometry();
+    const QgsGeometry* geom = feat->constGeometry();
 
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
     QDomElement gmlElem;
@@ -2021,7 +2021,7 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
   if ( mWithGeom && mGeometryName != "NONE" )
   {
     //add geometry column (as gml)
-    QgsGeometry* geom = feat->geometry();
+    const QgsGeometry* geom = feat->constGeometry();
 
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
     QDomElement gmlElem;

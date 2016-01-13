@@ -269,10 +269,10 @@ QgsAbstractGeometryV2* QgsGeometryEditUtils::avoidIntersections( const QgsAbstra
         if ( ignoreIds.contains( f.id() ) )
           continue;
 
-        if ( !f.geometry() )
+        if ( !f.constGeometry() )
           continue;
 
-        nearGeometries << f.geometry()->geometry()->clone();
+        nearGeometries << f.constGeometry()->geometry()->clone();
       }
     }
   }

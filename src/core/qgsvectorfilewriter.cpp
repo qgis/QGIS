@@ -1796,7 +1796,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
 
   if ( mWkbType != QgsWKBTypes::NoGeometry )
   {
-    if ( feature.geometry() && feature.geometry()->geometry() )
+    if ( feature.constGeometry() && !feature.constGeometry()->isEmpty() )
     {
       // build geometry from WKB
       QgsGeometry* geom = feature.geometry();

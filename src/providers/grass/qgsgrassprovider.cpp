@@ -1245,9 +1245,9 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       return;
     }
     QgsFeature feature = mEditBuffer->addedFeatures().value( fid );
-    if ( feature.geometry() )
+    if ( feature.constGeometry() )
     {
-      geometry = feature.geometry()->geometry();
+      geometry = feature.constGeometry()->geometry();
     }
     else
     {
@@ -1941,7 +1941,7 @@ void QgsGrassProvider::setAddedFeaturesSymbol()
   Q_FOREACH ( QgsFeatureId fid, features.keys() )
   {
     QgsFeature feature = features[fid];
-    if ( !feature.geometry() || !feature.geometry()->geometry() )
+    if ( !feature.constGeometry() || !feature.constGeometry()->geometry() )
     {
       continue;
     }

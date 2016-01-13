@@ -1086,9 +1086,9 @@ void QgsMapCanvas::zoomToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds&
   int featureCount = 0;
   while ( it.nextFeature( fet ) )
   {
-    QgsGeometry* geom = fet.geometry();
+    const QgsGeometry* geom = fet.constGeometry();
     QString errorMessage;
-    if ( !geom || !geom->geometry() )
+    if ( !geom || geom->isEmpty() )
     {
       errorMessage = tr( "Feature does not have a geometry" );
     }

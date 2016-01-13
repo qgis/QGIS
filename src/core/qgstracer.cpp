@@ -403,7 +403,7 @@ void resetGraph( QgsTracerGraph& g )
 }
 
 
-void extractLinework( QgsGeometry* g, QgsMultiPolyline& mpl )
+void extractLinework( const QgsGeometry* g, QgsMultiPolyline& mpl )
 {
   switch ( QgsWKBTypes::flatType( g->geometry()->wkbType() ) )
   {
@@ -470,7 +470,7 @@ bool QgsTracer::initGraph()
     QgsFeatureIterator fi = vl->getFeatures( request );
     while ( fi.nextFeature( f ) )
     {
-      if ( !f.geometry() )
+      if ( !f.constGeometry() )
         continue;
 
       if ( !ct.isShortCircuited() )
@@ -485,7 +485,7 @@ bool QgsTracer::initGraph()
         }
       }
 
-      extractLinework( f.geometry(), mpl );
+      extractLinework( f.constGeometry(), mpl );
 
       ++featuresCounted;
       if ( mMaxFeatureCount != 0 && featuresCounted >= mMaxFeatureCount )

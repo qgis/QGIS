@@ -2232,7 +2232,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     QgsRectangle box;
     if ( hasGeometry )
     {
-      box = mapRender->layerExtentToOutputExtent( layer, feature.geometry()->boundingBox() );
+      box = mapRender->layerExtentToOutputExtent( layer, feature.constGeometry()->boundingBox() );
       if ( featureBBox ) //extend feature info bounding box if requested
       {
         if ( !featureBBoxInitialized && featureBBox->isEmpty() )
@@ -3192,7 +3192,7 @@ QDomElement QgsWMSServer::createFeatureGML(
   // always add bounding box info if feature contains geometry
   if ( geom && geom->type() != QGis::UnknownGeometry &&  geom->type() != QGis::NoGeometry )
   {
-    QgsRectangle box = feat->geometry()->boundingBox();
+    QgsRectangle box = feat->constGeometry()->boundingBox();
     if ( transform )
     {
       try
