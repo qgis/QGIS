@@ -1203,7 +1203,7 @@ double QgsGeometry::length() const
 
 double QgsGeometry::distance( const QgsGeometry& geom ) const
 {
-  if ( !d->geometry || !geom.d || !geom.d->geometry )
+  if ( !d->geometry || !geom.d->geometry )
   {
     return -1.0;
   }
@@ -1342,7 +1342,7 @@ QgsGeometry* QgsGeometry::interpolate( double distance ) const
 
 QgsGeometry* QgsGeometry::intersection( const QgsGeometry* geometry ) const
 {
-  if ( !d->geometry || !geometry->d || !geometry->d->geometry )
+  if ( !d->geometry || !geometry->d->geometry )
   {
     return nullptr;
   }
@@ -1355,7 +1355,7 @@ QgsGeometry* QgsGeometry::intersection( const QgsGeometry* geometry ) const
 
 QgsGeometry* QgsGeometry::combine( const QgsGeometry* geometry ) const
 {
-  if ( !d->geometry || !geometry->d || !geometry->d->geometry )
+  if ( !d->geometry || !geometry->d->geometry )
   {
     return nullptr;
   }
@@ -1372,7 +1372,7 @@ QgsGeometry* QgsGeometry::combine( const QgsGeometry* geometry ) const
 
 QgsGeometry* QgsGeometry::difference( const QgsGeometry* geometry ) const
 {
-  if ( !d->geometry || !geometry->d || !geometry->d->geometry )
+  if ( !d->geometry || !geometry->d->geometry )
   {
     return nullptr;
   }
@@ -1389,7 +1389,7 @@ QgsGeometry* QgsGeometry::difference( const QgsGeometry* geometry ) const
 
 QgsGeometry* QgsGeometry::symDifference( const QgsGeometry* geometry ) const
 {
-  if ( !d->geometry || !geometry->d || !geometry->d->geometry )
+  if ( !d->geometry || !geometry->d->geometry )
   {
     return nullptr;
   }
@@ -1531,7 +1531,7 @@ bool QgsGeometry::isGeosValid() const
 
 bool QgsGeometry::isGeosEqual( const QgsGeometry& g ) const
 {
-  if ( !d->geometry || !g.d || !g.d->geometry )
+  if ( !d->geometry || !g.d->geometry )
   {
     return false;
   }
