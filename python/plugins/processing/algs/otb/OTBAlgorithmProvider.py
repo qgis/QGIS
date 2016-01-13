@@ -32,7 +32,7 @@ import os
 from PyQt4.QtGui import QIcon
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from OTBUtils import OTBUtils
+import OTBUtils
 from OTBAlgorithm import OTBAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 
@@ -45,7 +45,6 @@ class OTBAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.activate = True
-        self.createAlgsList()
 
     def getDescription(self):
         return self.tr("Orfeo Toolbox (Image analysis)")
@@ -57,18 +56,29 @@ class OTBAlgorithmProvider(AlgorithmProvider):
         return QIcon(os.path.join(pluginPath, 'images', 'otb.png'))
 
     def _loadAlgorithms(self):
-        self.algs = self.preloadedAlgs
+        self.algs = []
 
-    def createAlgsList(self):
-        self.preloadedAlgs = []
-        folder = OTBUtils.otbDescriptionPath()
+        version = OTBUtils.getInstalledVersion(True)
+        if version is None:
+            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                   self.tr('Problem with OTB installation: OTB was not found or is not correctly installed'))
+            return
+
+        folder = OTBUtils.compatibleDescriptionPath(version)
+        if folder is None:
+            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                    self.tr('Problem with OTB installation: installed OTB version (%s) is not supported' % version))
+            return
+
+
+
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("xml"):
                 try:
                     alg = OTBAlgorithm(os.path.join(folder, descriptionFile))
 
                     if alg.name.strip() != "":
-                        self.preloadedAlgs.append(alg)
+                        self.algs.append(alg)
                     else:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                self.tr("Could not open OTB algorithm: %s" % descriptionFile))
@@ -102,5 +112,3 @@ class OTBAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.removeSetting(OTBUtils.OTB_FOLDER)
         ProcessingConfig.removeSetting(OTBUtils.OTB_LIB_FOLDER)
 
-    def canBeActivated(self):
-        return not bool(OTBUtils.checkOtbConfiguration())

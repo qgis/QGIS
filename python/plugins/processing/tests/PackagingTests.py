@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'May 2015'
 __copyright__ = '(C) 2015, Victor Olaya'
@@ -35,7 +36,7 @@ import sys
 from processing.algs.saga.SagaUtils import *
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.grass.GrassUtils import GrassUtils
-from processing.algs.otb.OTBUtils import OTBUtils
+from processing.algs.otb import OTBUtils
 
 
 class PackageTests(unittest.TestCase):
