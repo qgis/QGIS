@@ -1071,38 +1071,45 @@ void QgsMapCanvas::zoomToFeatureExtent( QgsRectangle& rect )
   refresh();
 }
 
-void QgsMapCanvas::zoomToFeatureId( QgsVectorLayer* layer, QgsFeatureId id )
+void QgsMapCanvas::zoomToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds& ids )
 {
   if ( !layer )
   {
     return;
   }
 
-  QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest().setFilterFid( id ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest().setFilterFids( ids ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsRectangle rect;
+  rect.setMinimal();
   QgsFeature fet;
-  if ( !it.nextFeature( fet ) )
+  int featureCount = 0;
+  while ( it.nextFeature( fet ) )
+  {
+    QgsGeometry* geom = fet.geometry();
+    QString errorMessage;
+    if ( !geom || !geom->geometry() )
+    {
+      errorMessage = tr( "Feature does not have a geometry" );
+    }
+    else if ( geom->geometry()->isEmpty() )
+    {
+      errorMessage = tr( "Feature geometry is empty" );
+    }
+    if ( !errorMessage.isEmpty() )
+    {
+      emit messageEmitted( tr( "Zoom to feature id failed" ), errorMessage, QgsMessageBar::WARNING );
+      return;
+    }
+    QgsRectangle r = mapSettings().layerExtentToOutputExtent( layer, geom->boundingBox() );
+    rect.combineExtentWith( &r );
+    featureCount++;
+  }
+
+  if ( featureCount != ids.count() )
   {
     return;
   }
 
-  QgsGeometry* geom = fet.geometry();
-
-  QString errorMessage;
-  if ( !geom || !geom->geometry() )
-  {
-    errorMessage = tr( "Feature does not have a geometry" );
-  }
-  else if ( geom->geometry()->isEmpty() )
-  {
-    errorMessage = tr( "Feature geometry is empty" );
-  }
-  if ( !errorMessage.isEmpty() )
-  {
-    emit messageEmitted( tr( "Zoom to feature id failed" ), errorMessage, QgsMessageBar::WARNING );
-    return;
-  }
-
-  QgsRectangle rect = mapSettings().layerExtentToOutputExtent( layer, geom->boundingBox() );
   zoomToFeatureExtent( rect );
 }
 
