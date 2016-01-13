@@ -203,7 +203,7 @@ class ORDatabase(Database):
         uri = self.uri()
         con = self.database().connector
 
-        uri.setDataSource(u"", u"({})".format(sql), geomCol, u"", uniqueCol)
+        uri.setDataSource(u"", u"({})".format(sql), geomCol, u"", uniqueCol.strip(u'"'))
         if avoidSelectById:
             uri.disableSelectAtId(True)
         provider = self.dbplugin().providerName()
