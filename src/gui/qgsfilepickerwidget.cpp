@@ -280,7 +280,7 @@ QString QgsFilePickerWidget::toUrl( const QString& path ) const
 
   QString urlStr = relativePath( path, false );
   QUrl url = QUrl::fromUserInput( urlStr );
-  if ( !url.isValid() or !url.isLocalFile() )
+  if ( !url.isValid() || !url.isLocalFile() )
   {
     QgsDebugMsg( QString( "URL: %1 is not valid or not a local file !" ).arg( path ) );
     rep =  path;
