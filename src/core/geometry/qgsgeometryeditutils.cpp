@@ -19,7 +19,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspolygonv2.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometry.h"
-#include "qgsgeos.h"
+#include "qgsgeometryengine.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmultisurfacev2.h"
 #include "qgsproject.h"
@@ -283,14 +283,14 @@ QgsAbstractGeometryV2* QgsGeometryEditUtils::avoidIntersections( const QgsAbstra
   }
 
 
-  QgsAbstractGeometryV2* combinedGeometries = geomEngine.data()->combine( nearGeometries );
+  QgsAbstractGeometryV2* combinedGeometries = geomEngine->combine( nearGeometries );
   qDeleteAll( nearGeometries );
   if ( !combinedGeometries )
   {
     return nullptr;
   }
 
-  QgsAbstractGeometryV2* diffGeom = geomEngine.data()->difference( *combinedGeometries );
+  QgsAbstractGeometryV2* diffGeom = geomEngine->difference( *combinedGeometries );
 
   delete combinedGeometries;
   return diffGeom;

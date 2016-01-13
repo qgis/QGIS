@@ -13,11 +13,12 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVECTORTOPOLOGY_H
-#define QGSVECTORTOPOLOGY_H
+#ifndef QGSGEOMETRYENGINE_H
+#define QGSGEOMETRYENGINE_H
 
 #include "qgspointv2.h"
 #include "qgslinestringv2.h"
+#include "qgsgeos.h"
 
 #include <QList>
 
@@ -32,33 +33,46 @@ class QgsAbstractGeometryV2;
 class CORE_EXPORT QgsGeometryEngine
 {
   public:
-    QgsGeometryEngine( const QgsAbstractGeometryV2* geometry ): mGeometry( geometry ) {}
-    virtual ~QgsGeometryEngine() {}
+    QgsGeometryEngine( const QgsAbstractGeometryV2* geometry, int precision = 0 );
+    ~QgsGeometryEngine();
 
-    virtual void geometryChanged() = 0;
-    virtual void prepareGeometry() = 0;
+    /**
+     * Will clear any cached geometry data.
+     *
+     * TODO QGIS3: remove this and use implicitly shared QgsGeometry instead.
+     */
+    void geometryChanged();
 
-    virtual QgsAbstractGeometryV2* intersection( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometryV2* difference( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometryV2* combine( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometryV2* combine( const QList< QgsAbstractGeometryV2* >&, QString* errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometryV2* symDifference( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometryV2* buffer( double distance, int segments, QString* errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometryV2* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometryV2* simplify( double tolerance, QString* errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometryV2* interpolate( double distance, QString* errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometryV2* envelope( QString* errorMsg = nullptr ) const = 0;
-    virtual bool centroid( QgsPointV2& pt, QString* errorMsg = nullptr ) const = 0;
-    virtual bool pointOnSurface( QgsPointV2& pt, QString* errorMsg = nullptr ) const = 0;
-    virtual QgsAbstractGeometryV2* convexHull( QString* errorMsg = nullptr ) const = 0;
-    virtual double distance( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const = 0;
-    virtual bool intersects( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const = 0;
-    virtual bool touches( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const = 0;
-    virtual bool crosses( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const = 0;
-    virtual bool within( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const = 0;
-    virtual bool overlaps( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const = 0;
-    virtual bool contains( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const = 0;
-    virtual bool disjoint( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const = 0;
+    /**
+     * Prepare the geomtetry for efficient processing.
+     *
+     * TODO: What is the optimal strategy for this in regards to different backends?
+     * Should the caller have to deal with this kind of lowlevel functionality?
+     * Do we need prepareGeosGeometry() instead?
+     */
+    void prepareGeometry();
+
+    QgsAbstractGeometryV2* intersection( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* difference( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* combine( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* combine( const QList< QgsAbstractGeometryV2* >&geomList, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* symDifference( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* buffer( double distance, int segments, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* simplify( double tolerance, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* interpolate( double distance, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* envelope( QString* errorMsg = nullptr ) const;
+    bool centroid( QgsPointV2& pt, QString* errorMsg = nullptr ) const;
+    bool pointOnSurface( QgsPointV2& pt, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* convexHull( QString* errorMsg = nullptr ) const;
+    double distance( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool intersects( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool touches( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool crosses( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool within( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool overlaps( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool contains( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool disjoint( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
 
     /** Returns the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the
      * relationship between the geometries.
@@ -67,7 +81,7 @@ class CORE_EXPORT QgsGeometryEngine
      * @returns DE-9IM string for relationship, or an empty string if an error occurred
      * @note added in QGIS 2.12
      */
-    virtual QString relate( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const = 0;
+    QString relate( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
 
     /** Tests whether two geometries are related by a specified Dimensional Extended 9 Intersection Model (DE-9IM)
      * pattern.
@@ -77,33 +91,35 @@ class CORE_EXPORT QgsGeometryEngine
      * @returns true if geometry relationship matches with pattern
      * @note added in QGIS 2.14
      */
-    virtual bool relatePattern( const QgsAbstractGeometryV2& geom, const QString& pattern, QString* errorMsg = nullptr ) const = 0;
+    bool relatePattern( const QgsAbstractGeometryV2& geom, const QString& pattern, QString* errorMsg = nullptr ) const;
 
-    virtual double area( QString* errorMsg = nullptr ) const = 0;
-    virtual double length( QString* errorMsg = nullptr ) const = 0;
-    virtual bool isValid( QString* errorMsg = nullptr ) const = 0;
-    virtual bool isEqual( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const = 0;
-    virtual bool isEmpty( QString* errorMsg ) const = 0;
+    double area( QString* errorMsg = nullptr ) const;
+    double length( QString* errorMsg = nullptr ) const;
+    bool isValid( QString* errorMsg = nullptr ) const;
+    bool isEqual( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool isEmpty( QString* errorMsg ) const;
 
-    virtual int splitGeometry( const QgsLineStringV2& splitLine,
-                               QList<QgsAbstractGeometryV2*>& newGeometries,
-                               bool topological,
-                               QList<QgsPointV2> &topologyTestPoints, QString* errorMsg = nullptr ) const
-    {
-      Q_UNUSED( splitLine );
-      Q_UNUSED( newGeometries );
-      Q_UNUSED( topological );
-      Q_UNUSED( topologyTestPoints );
-      Q_UNUSED( errorMsg );
-      return 2;
-    }
+    int splitGeometry( const QgsLineStringV2& splitLine,
+                       QList<QgsAbstractGeometryV2*>& newGeometries,
+                       bool topological,
+                       QList<QgsPointV2> &topologyTestPoints, QString* errorMsg = nullptr ) const;
 
-    virtual QgsAbstractGeometryV2* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const = 0;
+    QgsAbstractGeometryV2* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const;
 
-  protected:
-    const QgsAbstractGeometryV2* mGeometry;
-
+  private:
+    /**
+     * Private default constructor. Use QgsGeometry::createEngine() instead.
+     */
     QgsGeometryEngine();
+    /**
+     * Creates a geos engine if not present or returns an existing one.
+     */
+    QgsGeos* geosEngine() const;
+
+    const QgsAbstractGeometryV2* mGeometry;
+    int mPrecision;
+
+    mutable QgsGeos* mGeosEngine;
 };
 
-#endif // QGSVECTORTOPOLOGY_H
+#endif // QGSGEOMETRYENGINE_H

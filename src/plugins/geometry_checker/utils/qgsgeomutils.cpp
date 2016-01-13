@@ -16,7 +16,7 @@
 
 #include "qgsgeomutils.h"
 #include <qmath.h>
-#include "qgsgeos.h"
+#include "qgsgeometryengine.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometrycollectionv2.h"
 
@@ -25,7 +25,7 @@ namespace QgsGeomUtils
 
   QgsGeometryEngine* createGeomEngine( QgsAbstractGeometryV2* geometry, double tolerance )
   {
-    return new QgsGeos( geometry, tolerance );
+    return new QgsGeometryEngine( geometry, tolerance );
   }
 
   QgsAbstractGeometryV2* getGeomPart( QgsAbstractGeometryV2* geom, int partIdx )

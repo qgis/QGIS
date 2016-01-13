@@ -16,7 +16,6 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOS_H
 #define QGSGEOS_H
 
-#include "qgsgeometryengine.h"
 #include "qgspointv2.h"
 #include <geos_c.h>
 
@@ -27,7 +26,7 @@ class QgsPolygonV2;
  * \note this API is not considered stable and may change for 2.12
  * \note not available in Python bindings
  */
-class CORE_EXPORT QgsGeos: public QgsGeometryEngine
+class CORE_EXPORT QgsGeos
 {
   public:
     /** GEOS geometry engine constructor
@@ -38,37 +37,37 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     ~QgsGeos();
 
     /** Removes caches*/
-    void geometryChanged() override;
-    void prepareGeometry() override;
+    void geometryChanged();
+    void prepareGeometry();
 
-    QgsAbstractGeometryV2* intersection( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometryV2* difference( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometryV2* combine( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometryV2* combine( const QList< QgsAbstractGeometryV2*>&, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometryV2* symDifference( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometryV2* buffer( double distance, int segments, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometryV2* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometryV2* simplify( double tolerance, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometryV2* interpolate( double distance, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometryV2* envelope( QString* errorMsg = nullptr ) const override;
-    bool centroid( QgsPointV2& pt, QString* errorMsg = nullptr ) const override;
-    bool pointOnSurface( QgsPointV2& pt, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometryV2* convexHull( QString* errorMsg = nullptr ) const override;
-    double distance( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
-    bool intersects( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
-    bool touches( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
-    bool crosses( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
-    bool within( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
-    bool overlaps( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
-    bool contains( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
-    bool disjoint( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
-    QString relate( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
-    bool relatePattern( const QgsAbstractGeometryV2& geom, const QString& pattern, QString* errorMsg = nullptr ) const override;
-    double area( QString* errorMsg = nullptr ) const override;
-    double length( QString* errorMsg = nullptr ) const override;
-    bool isValid( QString* errorMsg = nullptr ) const override;
-    bool isEqual( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
-    bool isEmpty( QString* errorMsg = nullptr ) const override;
+    QgsAbstractGeometryV2* intersection( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* difference( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* combine( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* combine( const QList< QgsAbstractGeometryV2*>&, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* symDifference( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* buffer( double distance, int segments, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* simplify( double tolerance, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* interpolate( double distance, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* envelope( QString* errorMsg = nullptr ) const;
+    bool centroid( QgsPointV2& pt, QString* errorMsg = nullptr ) const;
+    bool pointOnSurface( QgsPointV2& pt, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* convexHull( QString* errorMsg = nullptr ) const;
+    double distance( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool intersects( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool touches( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool crosses( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool within( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool overlaps( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool contains( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool disjoint( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    QString relate( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool relatePattern( const QgsAbstractGeometryV2& geom, const QString& pattern, QString* errorMsg = nullptr ) const;
+    double area( QString* errorMsg = nullptr ) const;
+    double length( QString* errorMsg = nullptr ) const;
+    bool isValid( QString* errorMsg = nullptr ) const;
+    bool isEqual( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const;
+    bool isEmpty( QString* errorMsg = nullptr ) const;
 
     /** Splits this geometry according to a given line.
     @param splitLine the line that splits the geometry
@@ -81,9 +80,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
                        QList<QgsAbstractGeometryV2*>& newGeometries,
                        bool topological,
                        QList<QgsPointV2> &topologyTestPoints,
-                       QString* errorMsg = nullptr ) const override;
+                       QString* errorMsg = nullptr ) const;
 
-    QgsAbstractGeometryV2* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const override;
+    QgsAbstractGeometryV2* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const;
     QgsAbstractGeometryV2* reshapeGeometry( const QgsLineStringV2& reshapeWithLine, int* errorCode, QString* errorMsg = nullptr ) const;
 
     /** Create a geometry from a GEOSGeometry
@@ -97,6 +96,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static GEOSContextHandle_t getGEOSHandler();
 
   private:
+    const QgsAbstractGeometryV2* mGeometry;
     mutable GEOSGeometry* mGeos;
     const GEOSPreparedGeometry* mGeosPrepared;
     double mPrecision;

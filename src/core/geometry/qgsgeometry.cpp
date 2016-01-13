@@ -23,7 +23,7 @@ email                : morb at ozemail dot com dot au
 #include "qgsgeometryeditutils.h"
 #include "qgsgeometryfactory.h"
 #include "qgsgeometryutils.h"
-#include "qgsgeos.h"
+#include "qgsgeometryengine.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -2272,7 +2272,7 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart ) const
 
 QgsGeometryEngine* QgsGeometry::createGeometryEngine( const QgsAbstractGeometryV2* geometry )
 {
-  return new QgsGeos( geometry );
+  return new QgsGeometryEngine( geometry );
 }
 
 QDataStream& operator<<( QDataStream& out, const QgsGeometry& geometry )
