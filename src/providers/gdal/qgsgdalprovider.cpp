@@ -105,8 +105,13 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, QgsError error )
     , mYBlockSize( 0 )
     , mGdalBaseDataset( nullptr )
     , mGdalDataset( nullptr )
-    , mGeoTransform()
 {
+  mGeoTransform[0] =  0;
+  mGeoTransform[1] =  1;
+  mGeoTransform[2] =  0;
+  mGeoTransform[3] =  0;
+  mGeoTransform[4] =  0;
+  mGeoTransform[5] = -1;
   setError( error );
 }
 
@@ -123,6 +128,13 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
     , mGdalBaseDataset( nullptr )
     , mGdalDataset( nullptr )
 {
+  mGeoTransform[0] =  0;
+  mGeoTransform[1] =  1;
+  mGeoTransform[2] =  0;
+  mGeoTransform[3] =  0;
+  mGeoTransform[4] =  0;
+  mGeoTransform[5] = -1;
+
   QgsDebugMsg( "constructing with uri '" + uri + "'." );
 
   QgsGdalProviderBase::registerGdalDrivers();

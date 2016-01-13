@@ -175,7 +175,7 @@ static int cell_draw( char *name,
   size_t raster_size;
 #ifdef NAN
   double dnul = NAN;
-  float fnul = NAN;
+  float fnul = ( float )( NAN );
 #else
   double dnul = strtod( "NAN", 0 );
   float fnul = strtof( "NAN", 0 );

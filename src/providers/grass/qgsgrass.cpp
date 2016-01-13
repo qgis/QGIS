@@ -58,6 +58,9 @@ extern "C"
 #include <sys/types.h>
 #endif
 #include <grass/version.h>
+#if defined(_MSC_VER) && defined(M_PI_4)
+#undef M_PI_4 //avoid redefinition warning
+#endif
 #include <grass/gprojects.h>
 
 #if GRASS_VERSION_MAJOR < 7

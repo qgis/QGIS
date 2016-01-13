@@ -53,10 +53,12 @@ QgsGdalLayerItem::~QgsGdalLayerItem()
 {
 }
 
+Q_NOWARN_DEPRECATED_PUSH
 QgsLayerItem::Capability QgsGdalLayerItem::capabilities()
 {
   return mCapabilities & SetCrs ? SetCrs : NoCapabilities;
 }
+Q_NOWARN_DEPRECATED_POP
 
 bool QgsGdalLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
 {

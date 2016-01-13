@@ -20,6 +20,11 @@
 #ifndef QGSGRASSRASTERPROVIDER_H
 #define QGSGRASSRASTERPROVIDER_H
 
+#include "qgscoordinatereferencesystem.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrectangle.h"
+#include "qgscolorrampshader.h"
+
 extern "C"
 {
 #include <grass/version.h>
@@ -28,11 +33,6 @@ extern "C"
 #include <grass/raster.h>
 #endif
 }
-
-#include "qgscoordinatereferencesystem.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrectangle.h"
-#include "qgscolorrampshader.h"
 
 #include <QString>
 #include <QStringList>
