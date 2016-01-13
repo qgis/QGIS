@@ -93,6 +93,7 @@
 %Include qgsmapcanvasmap.sip
 %Include qgsmapcanvassnapper.sip
 %Include qgsmapcanvassnappingutils.sip
+%Include qgsmapcanvastracer.sip
 %Include qgsmaplayeractionregistry.sip
 %Include qgsmaplayercombobox.sip
 %Include qgsmaplayermodel.sip

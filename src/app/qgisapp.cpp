@@ -164,6 +164,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvassnappingutils.h"
+#include "qgsmapcanvastracer.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstyleguiutils.h"
@@ -556,6 +557,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     , mComposerManager( nullptr )
     , mpTileScaleWidget( nullptr )
     , mpGpsWidget( nullptr )
+    , mTracer( nullptr )
     , mSnappingUtils( nullptr )
     , mProjectLastModified()
     , mWelcomePage( nullptr )
@@ -1024,6 +1026,7 @@ QgisApp::QgisApp()
     , mMacrosWarn( nullptr )
     , mUserInputDockWidget( nullptr )
     , mVectorLayerTools( nullptr )
+    , mTracer( nullptr )
     , mActionFilterLegend( nullptr )
     , mLegendExpressionFilterButton( nullptr )
     , mSnappingUtils( nullptr )
@@ -1103,6 +1106,8 @@ QgisApp::~QgisApp()
   delete mOverviewMapCursor;
 
   delete mComposerManager;
+
+  delete mTracer;
 
   delete mVectorLayerTools;
   delete mWelcomePage;
@@ -1975,6 +1980,9 @@ void QgisApp::createToolBars()
 
   // Cad toolbar
   mAdvancedDigitizeToolBar->insertAction( mActionUndo, mAdvancedDigitizingDockWidget->enableAction() );
+
+  mTracer = new QgsMapCanvasTracer( mMapCanvas, messageBar() );
+  mAdvancedDigitizeToolBar->insertAction( mActionUndo, mTracer->actionEnableTracing() );
 }
 
 void QgisApp::createStatusBar()
@@ -9681,6 +9689,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionMergeFeatures->setEnabled( false );
     mActionMergeFeatureAttributes->setEnabled( false );
     mActionRotatePointSymbols->setEnabled( false );
+    mTracer->actionEnableTracing()->setEnabled( false );
 
     mActionPinLabels->setEnabled( false );
     mActionShowHideLabels->setEnabled( false );
@@ -9800,6 +9809,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionMoveFeature->setEnabled( isEditable && canChangeGeometry );
       mActionRotateFeature->setEnabled( isEditable && canChangeGeometry );
       mActionNodeTool->setEnabled( isEditable && canChangeGeometry );
+
+      mTracer->actionEnableTracing()->setEnabled( isEditable && canAddFeatures &&
+          ( vlayer->geometryType() == QGis::Line || vlayer->geometryType() == QGis::Polygon ) );
 
       if ( vlayer->geometryType() == QGis::Point )
       {

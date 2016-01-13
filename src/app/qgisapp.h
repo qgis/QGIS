@@ -81,6 +81,7 @@ class QgsAdvancedDigitizingDockWidget;
 class QgsSnappingDialog;
 class QgsGPSInformationWidget;
 class QgsStatisticalSummaryDockWidget;
+class QgsMapCanvasTracer;
 
 class QgsDecorationItem;
 
@@ -1697,6 +1698,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsUserInputDockWidget* mUserInputDockWidget;
 
     QgsVectorLayerTools* mVectorLayerTools;
+
+    //! A class that facilitates tracing of features
+    QgsMapCanvasTracer* mTracer;
 
     QAction* mActionFilterLegend;
 

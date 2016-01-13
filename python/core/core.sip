@@ -120,6 +120,7 @@
 %Include qgsstatisticalsummary.sip
 %Include qgsstringutils.sip
 %Include qgstolerance.sip
+%Include qgstracer.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
 %Include qgsvectorlayer.sip

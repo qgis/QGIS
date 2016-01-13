@@ -21,6 +21,7 @@
 #include "qgslinestringv2.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapcanvastracer.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaprenderer.h"
 #include "qgspolygonv2.h"
@@ -134,6 +135,124 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
   }
 }
 
+
+bool QgsMapToolCapture::tracingEnabled()
+{
+  QgsMapCanvasTracer* tracer = QgsMapCanvasTracer::tracerForCanvas( mCanvas );
+  return tracer && tracer->actionEnableTracing()->isChecked();
+}
+
+
+QgsPoint QgsMapToolCapture::tracingStartPoint()
+{
+  try
+  {
+    QgsMapLayer* layer = mCanvas->currentLayer();
+    if ( !layer )
+      return QgsPoint();
+    QgsPointV2 v = mCaptureCurve.endPoint();
+    return toMapCoordinates( layer, QgsPoint( v.x(), v.y() ) );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugMsg( "transformation to layer coordinate failed" );
+    return QgsPoint();
+  }
+}
+
+
+void QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent* e )
+{
+  if ( !e->isSnapped() )
+    return;
+
+  QgsPoint pt0 = tracingStartPoint();
+  if ( pt0 == QgsPoint() )
+    return;
+
+  QgsMapCanvasTracer* tracer = QgsMapCanvasTracer::tracerForCanvas( mCanvas );
+  if ( !tracer )
+    return;  // this should not happen!
+
+  mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QGis::Polygon : QGis::Line );
+
+  QgsTracer::PathError err;
+  QVector<QgsPoint> points = tracer->findShortestPath( pt0, e->mapPoint(), &err );
+  if ( points.isEmpty() )
+  {
+    tracer->reportError( err, false );
+    return;
+  }
+
+  if ( mCaptureMode == CapturePolygon )
+    mTempRubberBand->addPoint( *mRubberBand->getPoint( 0, 0 ), false );
+
+  //  update rubberband
+  for ( int i = 0; i < points.count(); ++i )
+    mTempRubberBand->addPoint( points.at( i ), i == points.count() - 1 );
+}
+
+
+bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point )
+{
+  QgsMapCanvasTracer* tracer = QgsMapCanvasTracer::tracerForCanvas( mCanvas );
+  if ( !tracer )
+    return false;  // this should not happen!
+
+  if ( mCaptureCurve.numPoints() == 0 )
+  {
+    if ( !tracer->init() )
+    {
+      tracer->reportError( QgsTracer::ErrTooManyFeatures, true );
+      return false;
+    }
+
+    // only accept first point if it is snapped to the graph (to vertex or edge)
+    bool res = tracer->isPointSnapped( point );
+    if ( res )
+    {
+      QgsPoint layerPoint;
+      nextPoint( point, layerPoint ); // assuming the transform went fine earlier
+
+      mRubberBand->addPoint( point );
+      mCaptureCurve.addVertex( QgsPointV2( layerPoint.x(), layerPoint.y() ) );
+    }
+    return res;
+  }
+
+  QgsPoint pt0 = tracingStartPoint();
+  if ( pt0 == QgsPoint() )
+    return false;
+
+  QgsTracer::PathError err;
+  QVector<QgsPoint> points = tracer->findShortestPath( pt0, point, &err );
+  if ( points.isEmpty() )
+  {
+    tracer->reportError( err, true );
+    return false; // ignore the vertex - can't find path to the end point!
+  }
+
+  // transform points
+  QList<QgsPointV2> layerPoints;
+  QgsPoint lp; // in layer coords
+  for ( int i = 1; i < points.count(); ++i )
+  {
+    if ( nextPoint( points[i], lp ) != 0 )
+      return false;
+    layerPoints << QgsPointV2( lp.x(), lp.y() );
+  }
+
+  for ( int i = 1; i < points.count(); ++i )
+  {
+    if ( points[i] == points[i-1] )
+      continue; // avoid duplicate vertices if there are any
+    mRubberBand->addPoint( points[i], i == points.count() - 1 );
+    mCaptureCurve.addVertex( layerPoints[i-1] );
+  }
+  return true;
+}
+
+
 void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent * e )
 {
   QgsMapToolAdvancedDigitizing::cadCanvasMoveEvent( e );
@@ -165,9 +284,30 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent * e )
     mTempRubberBand->addPoint( point );
   }
 
+
   if ( mCaptureMode != CapturePoint && mTempRubberBand && mCapturing )
   {
-    mTempRubberBand->movePoint( point );
+    if ( tracingEnabled() && mCaptureCurve.numPoints() != 0 )
+    {
+      tracingMouseMove( e );
+    }
+    else
+    {
+      if ( mCaptureCurve.numPoints() > 0 &&
+           (( mCaptureMode == CaptureLine && mTempRubberBand->numberOfVertices() != 2 ) ||
+            ( mCaptureMode == CapturePolygon && mTempRubberBand->numberOfVertices() != 3 ) ) )
+      {
+        // fix temporary rubber band after tracing which may have added multiple points
+        mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QGis::Polygon : QGis::Line );
+        if ( mCaptureMode == CapturePolygon )
+          mTempRubberBand->addPoint( *mRubberBand->getPoint( 0, 0 ), false );
+        QgsPointV2 pt = mCaptureCurve.endPoint();
+        mTempRubberBand->addPoint( QgsPoint( pt.x(), pt.y() ) );
+        mTempRubberBand->addPoint( point );
+      }
+      else
+        mTempRubberBand->movePoint( point );
+    }
   }
 } // mouseMoveEvent
 
@@ -220,8 +360,6 @@ int QgsMapToolCapture::addVertex( const QgsPoint& point )
   {
     mRubberBand = createRubberBand( mCaptureMode == CapturePolygon ? QGis::Polygon : QGis::Line );
   }
-  mRubberBand->addPoint( point );
-  mCaptureCurve.addVertex( QgsPointV2( layerPoint.x(), layerPoint.y() ) );
 
   if ( !mTempRubberBand )
   {
@@ -231,6 +369,20 @@ int QgsMapToolCapture::addVertex( const QgsPoint& point )
   {
     mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QGis::Polygon : QGis::Line );
   }
+
+  if ( tracingEnabled() )
+  {
+    bool res = tracingAddVertex( point );
+    if ( !res )
+      return 1;  // early exit if the point cannot be accepted
+  }
+  else
+  {
+    // ordinary digitizing
+    mRubberBand->addPoint( point );
+    mCaptureCurve.addVertex( QgsPointV2( layerPoint.x(), layerPoint.y() ) );
+  }
+
   if ( mCaptureMode == CaptureLine )
   {
     mTempRubberBand->addPoint( point );
