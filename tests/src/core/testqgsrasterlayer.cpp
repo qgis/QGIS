@@ -82,7 +82,7 @@ class TestQgsRasterLayer : public QObject
     void setRenderer();
   private:
     bool render( const QString& theFileName );
-    bool setQml( const QString& theType );
+    bool setQml( const QString& theType, QString& msg );
     void populateColorRampShader( QgsColorRampShader* colorRampShader,
                                   QgsVectorColorRampV2* colorRamp,
                                   int numberOfEntries );
@@ -115,6 +115,7 @@ class TestSignalReceiver : public QObject
 //runs before all tests
 void TestQgsRasterLayer::initTestCase()
 {
+  std::cout << "CTEST_FULL_OUTPUT" << std::endl;
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -322,6 +323,7 @@ void TestQgsRasterLayer::colorRamp4()
 
 void TestQgsRasterLayer::landsatBasic()
 {
+  QVERIFY2( mpLandsatRasterLayer->isValid(), "landsat.tif layer is not valid!" );
   mpLandsatRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax );
   mMapSettings->setLayers( QStringList() << mpLandsatRasterLayer->id() );
   mMapSettings->setExtent( mpLandsatRasterLayer->extent() );
@@ -330,10 +332,13 @@ void TestQgsRasterLayer::landsatBasic()
 
 void TestQgsRasterLayer::landsatBasic875Qml()
 {
+  QVERIFY2( mpLandsatRasterLayer->isValid(), "landsat.tif layer is not valid!" );
   //a qml that orders the rgb bands as 8,7,5
   mMapSettings->setLayers( QStringList() << mpLandsatRasterLayer->id() );
   mMapSettings->setExtent( mpLandsatRasterLayer->extent() );
-  QVERIFY( setQml( "875" ) );
+  QString msg;
+  bool result = setQml( "875", msg );
+  QVERIFY2( result, msg.toLocal8Bit().constData() );
   QVERIFY( render( "landsat_875" ) );
 }
 void TestQgsRasterLayer::checkDimensions()
@@ -535,24 +540,25 @@ bool TestQgsRasterLayer::render( const QString& theTestType )
   return myResultFlag;
 }
 
-bool TestQgsRasterLayer::setQml( const QString& theType )
+bool TestQgsRasterLayer::setQml( const QString& theType, QString& msg )
 {
   //load a qml style and apply to our layer
-  // huh? this is failing but shouldnt!
-  //if (! mpLandsatRasterLayer->isValid() )
-  //{
-  //  qDebug(" **** setQml -> mpLandsatRasterLayer is invalid");
-  //  return false;
-  //}
+  if ( !mpLandsatRasterLayer->isValid() )
+  {
+    msg = " **** setQml -> mpLandsatRasterLayer is invalid";
+    return false;
+  }
+
   QString myFileName = mTestDataDir + "landsat_" + theType + ".qml";
   bool myStyleFlag = false;
-  mpLandsatRasterLayer->loadNamedStyle( myFileName, myStyleFlag );
+  QString loadStyleMsg;
+  loadStyleMsg = mpLandsatRasterLayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
   {
-    qDebug( " **** setQml -> mpLandsatRasterLayer is invalid" );
-    qDebug( "Qml File :%s", myFileName.toLocal8Bit().constData() );
+    msg = QString( "Loading QML %1 failed: %2" ).arg( myFileName, loadStyleMsg );
+    return false;
   }
-  return myStyleFlag;
+  return true;
 }
 
 void TestQgsRasterLayer::transparency()
