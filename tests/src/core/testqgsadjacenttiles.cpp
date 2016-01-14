@@ -17,6 +17,8 @@
 
 #include "qgsapplication.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaprenderersequentialjob.h"
+#include "qgsmapsettings.h"
 #include <qgsrenderchecker.h>
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerrenderer.h"
@@ -119,19 +121,15 @@ void TestQgsAdjacentTiles::testFourAdjacentTiles()
     QFAIL( errorMsg.toLocal8Bit().data() );
   }
 
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << vectorLayer );
+
   QImage globalImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   globalImage.fill( Qt::white );
   QPainter globalPainter( &globalImage );
 
   for ( int i = 0; i < 4; ++i )
   {
-    QImage img( 256, 256, QImage::Format_ARGB32_Premultiplied );
-    img.fill( Qt::white );
-    QPainter p( &img );
-
-    QgsRenderContext renderContext;
-    renderContext.setPainter( &p );
-    renderContext.setFlag( QgsRenderContext::RenderMapTile, true );
+    QgsMapSettings mapSettings;
 
     //extent
     QStringList rectCoords = bboxList.at( i ).split( "," );
@@ -140,24 +138,22 @@ void TestQgsAdjacentTiles::testFourAdjacentTiles()
       QFAIL( "bbox string invalid" );
     }
     QgsRectangle rect( rectCoords[0].toDouble(), rectCoords[1].toDouble(), rectCoords[2].toDouble(), rectCoords[3].toDouble() );
-    renderContext.setExtent( rect );
+    mapSettings.setExtent( rect );
+    mapSettings.setOutputSize( QSize( 256, 256 ) );
+    mapSettings.setLayers( QStringList() << vectorLayer->id() );
+    mapSettings.setFlags( QgsMapSettings::RenderMapTile );
+    mapSettings.setOutputDpi( 96 );
 
-    //maptopixel
-    QgsMapToPixel mapToPixel( rect.width() / 256.0, rect.center().x(), rect.center().y(), 256, 256, 0 );
-    renderContext.setMapToPixel( mapToPixel );
-
-    QgsVectorLayerRenderer renderer( vectorLayer, renderContext );
-    if ( !renderer.render() )
-    {
-      QFAIL( "Rendering failed" );
-    }
-
+    QgsMapRendererSequentialJob renderJob( mapSettings );
+    renderJob.start();
+    renderJob.waitForFinished();
+    QImage img = renderJob.renderedImage();
     int globalImageX = ( i % 2 ) * 256;
     int globalImageY = ( i < 2 ) ? 0 : 256;
     globalPainter.drawImage( globalImageX, globalImageY, img );
   }
 
-  delete vectorLayer;
+  QgsMapLayerRegistry::instance()->removeMapLayers( QStringList() << vectorLayer->id() );
 
   QString renderedImagePath = QDir::tempPath() + "/" + QTest::currentDataTag() + QString( ".png" );
   globalImage.save( renderedImagePath );

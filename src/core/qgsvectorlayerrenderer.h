@@ -50,7 +50,7 @@ class QgsVectorLayerDiagramProvider;
  * @note added in 2.4
  * @note not available in Python bindings
  */
-class CORE_EXPORT QgsVectorLayerRenderer : public QgsMapLayerRenderer
+class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 {
   public:
     QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context );
