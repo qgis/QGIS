@@ -160,7 +160,7 @@ class QgsGeometry
      */
     double length() const;
 
-    /** Returns the minimum distanace between this geometry and another geometry, using GEOS
+    /** Returns the minimum distance between this geometry and another geometry, using GEOS
      * @param geom geometry to find minimum distance to
      */
     double distance( const QgsGeometry& geom ) const;
