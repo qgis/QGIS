@@ -17,6 +17,9 @@
 #include "qgsauthpkcs12method.h"
 #include "qgsauthpkcs12edit.h"
 
+#include <QDir>
+#include <QFile>
+#include <QUuid>
 #ifndef QT_NO_OPENSSL
 #include <QtCrypto>
 #include <QSslConfiguration>
@@ -38,12 +41,13 @@ QgsAuthPkcs12Method::QgsAuthPkcs12Method()
     : QgsAuthMethod()
 {
   setVersion( 2 );
-  setExpansions( QgsAuthMethod::NetworkRequest );
+  setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceURI );
   setDataProviders( QStringList()
                     << "ows"
                     << "wfs"  // convert to lowercase
                     << "wcs"
-                    << "wms" );
+                    << "wms"
+                    << "postgres" );
 }
 
 QgsAuthPkcs12Method::~QgsAuthPkcs12Method()
@@ -97,6 +101,101 @@ bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const 
   sslConfig.setPrivateKey( pkibundle->clientCertKey() );
 
   request.setSslConfiguration( sslConfig );
+
+  return true;
+}
+
+bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
+    const QString &dataprovider )
+{
+  Q_UNUSED( dataprovider )
+
+  QgsDebugMsg( QString( "Update URI items for authcfg: %1" ).arg( authcfg ) );
+
+  QgsPkiConfigBundle * pkibundle = getPkiConfigBundle( authcfg );
+  if ( !pkibundle || !pkibundle->isValid() )
+  {
+    QgsDebugMsg( "Update URI items FAILED: PKI bundle invalid" );
+    return false;
+  }
+  QgsDebugMsg( "Update URI items: PKI bundle valid" );
+
+  QString pkiTempFileBase = "tmppki_%1.pem";
+
+  // save client cert to temp file
+  QString certFilePath = QgsAuthCertUtils::pemTextToTempFile(
+                           pkiTempFileBase.arg( QUuid::createUuid().toString() ),
+                           pkibundle->clientCert().toPem() );
+  if ( certFilePath.isEmpty() )
+  {
+    return false;
+  }
+
+  // save client cert key to temp file
+  QString keyFilePath = QgsAuthCertUtils::pemTextToTempFile(
+                          pkiTempFileBase.arg( QUuid::createUuid().toString() ),
+                          pkibundle->clientCertKey().toPem() );
+  if ( keyFilePath.isEmpty() )
+  {
+    return false;
+  }
+
+  // save CAs to temp file
+  QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
+                         pkiTempFileBase.arg( QUuid::createUuid().toString() ),
+                         QgsAuthManager::instance()->getTrustedCaCertsPemText() );
+  if ( caFilePath.isEmpty() )
+  {
+    return false;
+  }
+
+  // get common name of the client certificate
+  QString commonName = QgsAuthCertUtils::resolvedCertName( pkibundle->clientCert(), false );
+
+  // add uri parameters
+  QString userparam = "user='" + commonName + "'";
+  int userindx = connectionItems.indexOf( QRegExp( "^user='.*" ) );
+  if ( userindx != -1 )
+  {
+    connectionItems.replace( userindx, userparam );
+  }
+  else
+  {
+    connectionItems.append( userparam );
+  }
+
+  QString certparam = "sslcert='" + certFilePath + "'";
+  int sslcertindx = connectionItems.indexOf( QRegExp( "^sslcert='.*" ) );
+  if ( sslcertindx != -1 )
+  {
+    connectionItems.replace( sslcertindx, certparam );
+  }
+  else
+  {
+    connectionItems.append( certparam );
+  }
+
+  QString keyparam = "sslkey='" + keyFilePath + "'";
+  int sslkeyindx = connectionItems.indexOf( QRegExp( "^sslkey='.*" ) );
+  if ( sslkeyindx != -1 )
+  {
+    connectionItems.replace( sslkeyindx, keyparam );
+  }
+  else
+  {
+    connectionItems.append( keyparam );
+  }
+
+  QString caparam = "sslrootcert='" + caFilePath + "'";
+  int sslcaindx = connectionItems.indexOf( QRegExp( "^sslrootcert='.*" ) );
+  if ( sslcaindx != -1 )
+  {
+    connectionItems.replace( sslcaindx, caparam );
+  }
+  else
+  {
+    connectionItems.append( caparam );
+  }
 
   return true;
 }

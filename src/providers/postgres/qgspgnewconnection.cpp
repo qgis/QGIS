@@ -197,9 +197,7 @@ void QgsPgNewConnection::testConnection()
                        mAuthConfigSelect->configId() );
   }
 
-  QString conninfo = uri.connectionInfo();
-
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( conninfo, true );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), true );
 
   if ( conn )
   {

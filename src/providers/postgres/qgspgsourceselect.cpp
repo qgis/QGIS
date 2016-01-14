@@ -531,7 +531,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
   // populate the table list
   QgsDataSourceURI uri = QgsPostgresConn::connUri( cmbConnections->currentText() );
 
-  QgsDebugMsg( "Connection info: " + uri.connectionInfo() );
+  QgsDebugMsg( "Connection info: " + uri.connectionInfo( false ) );
 
   mDataSrcUri = uri;
   mUseEstimatedMetadata = uri.useEstimatedMetadata();
@@ -604,7 +604,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsPgTableModel::dbtmTable ) )->text();
 
-  QString uri = mTableModel.layerURI( idx, connectionInfo(), mUseEstimatedMetadata );
+  QString uri = mTableModel.layerURI( idx, connectionInfo( false ), mUseEstimatedMetadata );
   if ( uri.isNull() )
   {
     QgsDebugMsg( "no uri" );
