@@ -129,7 +129,7 @@ class OracleDBPlugin(DBPlugin):
         max_attempts = 3
         for i in range(max_attempts):
             (ok, username, password) = QgsCredentials.instance().get(
-                uri.connectionInfo(), username, password, err)
+                uri.connectionInfo(False), username, password, err)
 
             if not ok:
                 return False
@@ -145,7 +145,7 @@ class OracleDBPlugin(DBPlugin):
                 continue
 
             QgsCredentials.instance().put(
-                uri.connectionInfo(), username, password)
+                uri.connectionInfo(False), username, password)
 
             return True
 
@@ -207,7 +207,7 @@ class ORDatabase(Database):
         if avoidSelectById:
             uri.disableSelectAtId(True)
         provider = self.dbplugin().providerName()
-        vlayer = QgsVectorLayer(uri.uri(), layerName, provider)
+        vlayer = QgsVectorLayer(uri.uri(False), layerName, provider)
 
         # handling undetermined geometry type
         if not vlayer.isValid():
@@ -217,7 +217,7 @@ class ORDatabase(Database):
             uri.setWkbType(wkbType)
             if srid:
                 uri.setSrid(unicode(srid))
-            vlayer = QgsVectorLayer(uri.uri(), layerName, provider)
+            vlayer = QgsVectorLayer(uri.uri(False), layerName, provider)
 
         return vlayer
 
