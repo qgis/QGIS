@@ -419,6 +419,7 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   if ( renderer )
   {
     mRenderer = QgsCategorizedSymbolRendererV2::convertFromRenderer( renderer );
+    mRenderer->setOrderBy( renderer->orderBy() );
   }
   if ( !mRenderer )
   {
