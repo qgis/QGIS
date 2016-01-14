@@ -146,6 +146,11 @@ class CORE_EXPORT QgsFeatureRendererV2
      */
     virtual QString filter( const QgsFields& fields = QgsFields() ) { Q_UNUSED( fields ); return QString::null; }
 
+    /**
+     * Returns a set of attributes required for this renderer.
+     *
+     * TODO QGIS3: Change QList to QSet
+     */
     virtual QList<QString> usedAttributes() = 0;
 
     virtual ~QgsFeatureRendererV2();
