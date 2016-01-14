@@ -63,7 +63,7 @@ class CORE_EXPORT QgsDataDefined
      * @param string field reference or an expression, can be empty
      * @note added in QGIS 2.9
      */
-    explicit QgsDataDefined( const QString& string );
+    QgsDataDefined( const QString& string );
 
     /**
      * Copy constructor. Note that copies of data defined objects with expressions
