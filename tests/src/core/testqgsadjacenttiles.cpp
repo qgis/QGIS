@@ -160,7 +160,7 @@ void TestQgsAdjacentTiles::testFourAdjacentTiles()
 
   QgsRenderChecker checker;
   checker.setControlName( QTest::currentDataTag() );
-  QVERIFY( checker.compareImages( QTest::currentDataTag(), 0, renderedImagePath ) );
+  QVERIFY( checker.compareImages( QTest::currentDataTag(), 100, renderedImagePath ) );
 }
 
 QTEST_MAIN( TestQgsAdjacentTiles )
