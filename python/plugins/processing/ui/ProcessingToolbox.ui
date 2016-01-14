@@ -81,7 +81,7 @@ color: rgb(255, 255, 255);</string>
        <enum>QFrame::Raised</enum>
       </property>
       <property name="text">
-       <string>You can add more algorithms to the toolbox,&lt;a href=&quot;enable&quot;&gt;enabling additional providers.&lt;/a&gt;</string>
+       <string>You can add more algorithms to the toolbox, &lt;a href=&quot;enable&quot;&gt;enable additional providers.&lt;/a&gt;</string>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
