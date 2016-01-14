@@ -4,7 +4,7 @@ description=Spatial data processing framework for QGIS
 about=Spatial data processing framework for QGIS
 category=Analysis
 version=2.12.99
-qgisMinimumVersion=2.12
+qgisMinimumVersion=2.14
 
 author=Victor Olaya
 email=volayaf@gmail.com
