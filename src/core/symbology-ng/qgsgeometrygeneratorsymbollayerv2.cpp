@@ -200,6 +200,6 @@ void QgsGeometryGeneratorSymbolLayerV2::render( QgsSymbolV2RenderContext& contex
 
     subSymbolExpressionContextScope->setFeature( f );
 
-    mSymbol->renderFeature( f, context.renderContext() );
+    mSymbol->renderFeature( f, context.renderContext(), -1, context.selected() );
   }
 }
