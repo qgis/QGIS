@@ -27,6 +27,7 @@ class QgsMapCanvas;
 class QgsRelationManagerDialog;
 class QgsStyleV2;
 class QgsExpressionContext;
+class QgsLayerTreeGroup;
 
 /** Dialog to set project level properties
 
@@ -120,6 +121,11 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void on_pbnWCSLayersUnselectAll_clicked();
 
     /*!
+     * Slots to launch OWS test
+     */
+    void on_pbnLaunchOWSChecker_clicked();
+
+    /*!
      * Slots for Styles
      */
     void on_pbtnStyleManager_clicked();
@@ -209,6 +215,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     };
     QList<EllipsoidDefs> mEllipsoidList;
     int mEllipsoidIndex;
+
+    //! Check OWS configuration
+    void checkOWS( QgsLayerTreeGroup* treeGroup, QStringList& owsNames, QStringList& encodingMessages );
 
     //! Populates list with ellipsoids from Sqlite3 db
     void populateEllipsoidList();

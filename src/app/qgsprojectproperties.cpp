@@ -50,6 +50,10 @@
 #include "qgscolordialog.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmapoverviewcanvas.h"
+#include "qgslayertreenode.h"
+#include "qgslayertreegroup.h"
+#include "qgslayertreelayer.h"
+#include "qgslayertreemodel.h"
 
 #include "qgsmessagelog.h"
 
@@ -1462,6 +1466,63 @@ void QgsProjectProperties::on_pbnWCSLayersUnselectAll_clicked()
   }
 }
 
+void QgsProjectProperties::on_pbnLaunchOWSChecker_clicked()
+{
+  QString myStyle = QgsApplication::reportStyleSheet();
+  teOWSChecker->clear();
+  teOWSChecker->document()->setDefaultStyleSheet( myStyle );
+  teOWSChecker->setHtml( "<h1>" + tr( "Start checking QGIS Server" ) + "</h1>" );
+
+  QStringList owsNames, encodingMessages;
+  checkOWS( QgisApp::instance()->layerTreeView()->layerTreeModel()->rootGroup(), owsNames, encodingMessages );
+
+  QStringList duplicateNames, regExpMessages;
+  QRegExp snRegExp = QgsApplication::shortNameRegExp();
+  Q_FOREACH ( QString name, owsNames )
+  {
+    if ( !snRegExp.exactMatch( name ) )
+      regExpMessages << tr( "Use short name for \"%1\"" ).arg( name );
+    if ( duplicateNames.contains( name ) )
+      continue;
+    if ( owsNames.count( name ) > 1 )
+      duplicateNames << name;
+  }
+
+  if ( duplicateNames.size() != 0 )
+  {
+    QString nameMessage = "<h1>" + tr( "Some layers and groups have the same name or short name" ) + "</h1>";
+    nameMessage += "<h2>" + tr( "Duplicate names:" ) + "</h2>";
+    nameMessage += duplicateNames.join( "</li><li>" ) + "</li></ul>";
+    teOWSChecker->setHtml( teOWSChecker->toHtml() + nameMessage );
+  }
+  else
+  {
+    teOWSChecker->setHtml( teOWSChecker->toHtml() + "<h1>" + tr( "All names and short names of layer and group are unique" ) + "</h1>" );
+  }
+
+  if ( regExpMessages.size() != 0 )
+  {
+    QString encodingMessage = "<h1>" + tr( "Some layer short names have to be updated:" ) + "</h1><ul><li>" + regExpMessages.join( "</li><li>" ) + "</li></ul>";
+    teOWSChecker->setHtml( teOWSChecker->toHtml() + encodingMessage );
+  }
+  else
+  {
+    teOWSChecker->setHtml( teOWSChecker->toHtml() + "<h1>" + tr( "All layer short names are well formed" ) + "</h1>" );
+  }
+
+  if ( encodingMessages.size() != 0 )
+  {
+    QString encodingMessage = "<h1>" + tr( "Some layer encodings are not set:" ) + "</h1><ul><li>" + encodingMessages.join( "</li><li>" ) + "</li></ul>";
+    teOWSChecker->setHtml( teOWSChecker->toHtml() + encodingMessage );
+  }
+  else
+  {
+    teOWSChecker->setHtml( teOWSChecker->toHtml() + "<h1>" + tr( "All layer encodings are set" ) + "</h1>" );
+  }
+
+  teOWSChecker->setHtml( teOWSChecker->toHtml() + "<h1>" + tr( "Start checking QGIS Server" ) + "</h1>" );
+}
+
 void QgsProjectProperties::on_pbnAddScale_clicked()
 {
   int myScale = QInputDialog::getInt(
@@ -1694,6 +1755,41 @@ void QgsProjectProperties::resetPythonMacros()
   ptePythonMacros->setText( "def openProject():\n    pass\n\n" \
                             "def saveProject():\n    pass\n\n" \
                             "def closeProject():\n    pass\n" );
+}
+
+void QgsProjectProperties::checkOWS( QgsLayerTreeGroup* treeGroup, QStringList& owsNames, QStringList& encodingMessages )
+{
+  QList< QgsLayerTreeNode * > treeGroupChildren = treeGroup->children();
+  for ( int i = 0; i < treeGroupChildren.size(); ++i )
+  {
+    QgsLayerTreeNode* treeNode = treeGroupChildren.at( i );
+    if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
+    {
+      QgsLayerTreeGroup* treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
+      QString shortName = treeGroupChild->customProperty( "wmsShortName" ).toString();
+      if ( shortName.isEmpty() )
+        owsNames << treeGroupChild->name();
+      else
+        owsNames << shortName;
+      checkOWS( treeGroupChild, owsNames, encodingMessages );
+    }
+    else
+    {
+      QgsLayerTreeLayer* treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
+      QgsMapLayer* l = treeLayer->layer();
+      QString shortName = l->shortName();
+      if ( shortName.isEmpty() )
+        owsNames << l->name();
+      else
+        owsNames << shortName;
+      if ( l->type() == QgsMapLayer::VectorLayer )
+      {
+        QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer *>( l );
+        if ( vl->dataProvider()->encoding() == "System" )
+          encodingMessages << tr( "Update layer \"%1\" encoding" ).arg( l->name() );
+      }
+    }
+  }
 }
 
 void QgsProjectProperties::populateEllipsoidList()
