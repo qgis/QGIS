@@ -307,7 +307,7 @@ void qgisCrash( int signal )
       if ( gdbpid == 0 )
       {
         // attach, backtrace and continue
-        execl( "/usr/bin/gdb", "gdb", "-q", "-batch", "-n", pidstr, "-ex", "thread", "-ex", "bt full", exename, nullptr );
+        execl( "/usr/bin/gdb", "gdb", "-q", "-batch", "-n", pidstr, "-ex", "thread", "-ex", "bt full", exename, NULL );
         perror( "cannot exec gdb" );
         exit( 1 );
       }

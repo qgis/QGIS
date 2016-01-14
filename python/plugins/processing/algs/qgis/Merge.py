@@ -84,7 +84,7 @@ class Merge(GeoAlgorithm):
         total = 100.0 / float(totalFeatureCount)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields.toList(), layers[0].dataProvider().geometryType(),
-                layers[0].crs())
+            layers[0].crs())
 
         featureCount = 0
         for layer in layers:
