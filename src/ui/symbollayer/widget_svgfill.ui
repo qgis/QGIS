@@ -14,16 +14,7 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
-   <property name="leftMargin">
-    <number>1</number>
-   </property>
-   <property name="topMargin">
-    <number>1</number>
-   </property>
-   <property name="rightMargin">
-    <number>1</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>1</number>
    </property>
    <item row="1" column="0">
@@ -168,12 +159,12 @@
           <number>6</number>
          </property>
          <property name="maximum">
-          <double>99999999.989999994635582</double>
+          <double>999999999.999999046325684</double>
          </property>
          <property name="singleStep">
           <double>0.200000000000000</double>
          </property>
-         <property name="showClearButton" stdset="0">
+         <property name="showClearButton">
           <bool>false</bool>
          </property>
         </widget>
@@ -204,12 +195,12 @@
           <number>6</number>
          </property>
          <property name="maximum">
-          <double>99999999.000000000000000</double>
+          <double>999999999.999999046325684</double>
          </property>
          <property name="singleStep">
           <double>0.200000000000000</double>
          </property>
-         <property name="showClearButton" stdset="0">
+         <property name="showClearButton">
           <bool>false</bool>
          </property>
         </widget>
@@ -333,6 +324,11 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -342,11 +338,6 @@
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

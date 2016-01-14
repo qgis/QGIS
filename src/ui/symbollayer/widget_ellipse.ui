@@ -222,7 +222,7 @@
          <property name="singleStep">
           <double>0.200000000000000</double>
          </property>
-         <property name="showClearButton" stdset="0">
+         <property name="showClearButton">
           <bool>false</bool>
          </property>
         </widget>
@@ -260,12 +260,12 @@
           <number>6</number>
          </property>
          <property name="maximum">
-          <double>999999999.000000000000000</double>
+          <double>999999999.999999046325684</double>
          </property>
          <property name="singleStep">
           <double>0.200000000000000</double>
          </property>
-         <property name="showClearButton" stdset="0">
+         <property name="showClearButton">
           <bool>false</bool>
          </property>
         </widget>
@@ -437,7 +437,7 @@
          <property name="singleStep">
           <double>0.200000000000000</double>
          </property>
-         <property name="showClearButton" stdset="0">
+         <property name="showClearButton">
           <bool>false</bool>
          </property>
         </widget>
@@ -554,6 +554,11 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -568,11 +573,6 @@
    <class>QgsPenStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgspenstylecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
