@@ -263,7 +263,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
         # Run GRASS
         loglines = []
-        loglines.append(self.tr('GRASS GIS 7 execution self.commands'))
+        loglines.append(self.tr('GRASS GIS 7 execution commands'))
         for line in self.commands:
             progress.setCommand(line)
             loglines.append(line)
