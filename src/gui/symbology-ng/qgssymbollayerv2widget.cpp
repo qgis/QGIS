@@ -75,9 +75,12 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   if ( layer )
     expContext << QgsExpressionContextUtils::layerScope( layer );
 
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( "geometry_part_count", 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( "geometry_part_num", 1, true ) );
+
   //TODO - show actual value
   expContext.setOriginalValueVariable( QVariant() );
-  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE );
+  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << "geometry_part_count" << "geometry_part_num" );
 
   return expContext;
 }
