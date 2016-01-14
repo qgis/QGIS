@@ -39,6 +39,7 @@ QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer
   if ( renderer )
   {
     mRenderer = QgsSingleSymbolRendererV2::convertFromRenderer( renderer );
+    mRenderer->setOrderBy( renderer->orderBy() );
   }
   if ( !mRenderer )
   {

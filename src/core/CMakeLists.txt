@@ -15,6 +15,7 @@ SET(QGIS_CORE_SRCS
   gps/time.c
   gps/tok.c
 
+  symbology-ng/qgs25drenderer.cpp
   symbology-ng/qgscategorizedsymbolrendererv2.cpp
   symbology-ng/qgscolorbrewerpalette.cpp
   symbology-ng/qgscptcityarchive.cpp
@@ -763,6 +764,7 @@ SET(QGIS_CORE_HDRS
   raster/qgssinglebandgrayrenderer.h
   raster/qgssinglebandpseudocolorrenderer.h
 
+  symbology-ng/qgs25drenderer.h
   symbology-ng/qgscategorizedsymbolrendererv2.h
   symbology-ng/qgscolorbrewerpalette.h
   symbology-ng/qgsellipsesymbollayerv2.h

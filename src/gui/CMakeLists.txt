@@ -8,6 +8,7 @@ SET(QGIS_GUI_SRCS
   raster/qgssinglebandpseudocolorrendererwidget.cpp
   raster/qwt5_histogram_item.cpp
 
+  symbology-ng/qgs25drendererwidget.cpp
   symbology-ng/characterwidget.cpp
   symbology-ng/qgsbrushstylecombobox.cpp
   symbology-ng/qgscategorizedsymbolrendererv2widget.cpp
@@ -411,6 +412,7 @@ SET(QGIS_GUI_MOC_HDRS
   raster/qgssinglebandgrayrendererwidget.h
   raster/qgssinglebandpseudocolorrendererwidget.h
 
+  symbology-ng/qgs25drendererwidget.h
   symbology-ng/characterwidget.h
   symbology-ng/qgsbrushstylecombobox.h
   symbology-ng/qgscategorizedsymbolrendererv2widget.h
