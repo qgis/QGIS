@@ -71,6 +71,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         GeoAlgorithm.__init__(self)
         self.script = script
         self.allowEdit = True
+        self.noCRSWarning = False
         self.descriptionFile = descriptionFile
         if script is not None:
             self.defineCharacteristicsFromScript()
@@ -120,6 +121,12 @@ class ScriptAlgorithm(GeoAlgorithm):
                 except:
                     pass
 
+    def checkInputCRS(self):
+        if self.noCRSWarning:
+            return True
+        else:
+            return GeoAlgorithm.checkInputCRS(self)
+
     def createDescriptiveName(self, s):
         return s.replace('_', ' ')
 
@@ -136,6 +143,9 @@ class ScriptAlgorithm(GeoAlgorithm):
             return
         if line == "nomodeler":
             self.showInModeler = False
+            return
+        if line == "nocrswarning":
+            self.noCRSWarning = True
             return
         tokens = line.split('=', 1)
         desc = self.createDescriptiveName(tokens[0])
