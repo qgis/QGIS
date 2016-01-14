@@ -488,10 +488,18 @@ void TestQgsExpressionContext::globalScope()
   QgsExpression expVersion( "var('qgis_version')" );
   QgsExpression expVersionNo( "var('qgis_version_no')" );
   QgsExpression expReleaseName( "var('qgis_release_name')" );
+  QgsExpression expAccountName( "var('user_account_name')" );
+  QgsExpression expUserFullName( "var('user_full_name')" );
+  QgsExpression expOsName( "var('qgis_os_name')" );
+  QgsExpression expPlatform( "var('qgis_platform')" );
 
   QCOMPARE( expVersion.evaluate( &context ).toString(), QString( QGis::QGIS_VERSION ) );
   QCOMPARE( expVersionNo.evaluate( &context ).toInt(), QGis::QGIS_VERSION_INT );
   QCOMPARE( expReleaseName.evaluate( &context ).toString(), QString( QGis::QGIS_RELEASE_NAME ) );
+  QCOMPARE( expAccountName.evaluate( &context ).toString(), QgsApplication::userLoginName() );
+  QCOMPARE( expUserFullName.evaluate( &context ).toString(), QgsApplication::userFullName() );
+  QCOMPARE( expOsName.evaluate( &context ).toString(), QgsApplication::osName() );
+  QCOMPARE( expPlatform.evaluate( &context ).toString(), QgsApplication::platform() );
 
   //test setGlobalVariables
   QgsStringMap vars;

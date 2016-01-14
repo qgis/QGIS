@@ -331,6 +331,7 @@ bool QgsServer::init( int & argc, char ** argv )
   }
 
   mQgsApplication = new QgsApplication( argc, argv, getenv( "DISPLAY" ) );
+  mQgsApplication->sPlatformName = "server";
 
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );

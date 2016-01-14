@@ -39,8 +39,14 @@
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
+#include <pwd.h>
 #else
 #include <winsock.h>
+#include <windows.h>
+#include <Lmcons.h>
+#define SECURITY_WIN32
+#include <Security.h>
+#pragma comment( lib, "Secur32.lib" )
 #endif
 
 #include "qgsconfig.h"
@@ -71,6 +77,10 @@ QString ABISYM( QgsApplication::mBuildOutputPath );
 QStringList ABISYM( QgsApplication::mGdalSkipList );
 int ABISYM( QgsApplication::mMaxThreads );
 QString ABISYM( QgsApplication::mAuthDbDirPath );
+
+QString QgsApplication::sUserName;
+QString QgsApplication::sUserFullName;
+QString QgsApplication::sPlatformName = "desktop";
 
 const char* QgsApplication::QGIS_ORGANIZATION_NAME = "QGIS";
 const char* QgsApplication::QGIS_ORGANIZATION_DOMAIN = "qgis.org";
@@ -720,6 +730,93 @@ QString QgsApplication::userStyleV2Path()
 QRegExp QgsApplication::shortNameRegExp()
 {
   return QRegExp( "^[A-Za-z][A-Za-z0-9\\._-]*" );
+}
+
+QString QgsApplication::userLoginName()
+{
+  if ( !sUserName.isEmpty() )
+    return sUserName;
+
+#ifdef Q_OS_WIN
+  TCHAR name [ UNLEN + 1 ];
+  DWORD size = UNLEN + 1;
+
+  if ( GetUserName(( TCHAR* )name, &size ) )
+  {
+    sUserName = QString( name );
+  }
+
+#else
+  QProcess process;
+
+  process.start( "whoami" );
+  process.waitForFinished();
+  sUserName = process.readAllStandardOutput().trimmed();
+#endif
+
+  if ( !sUserName.isEmpty() )
+    return sUserName;
+
+  //backup plan - use environment variables
+  sUserName = qgetenv( "USER" );
+  if ( !sUserName.isEmpty() )
+    return sUserName;
+
+  //last resort
+  sUserName = qgetenv( "USERNAME" );
+  return sUserName;
+}
+
+QString QgsApplication::userFullName()
+{
+  if ( !sUserFullName.isEmpty() )
+    return sUserFullName;
+
+#ifdef Q_OS_WIN
+  TCHAR name [ UNLEN + 1 ];
+  DWORD size = UNLEN + 1;
+
+  //note - this only works for accounts connected to domain
+  if ( GetUserNameEx( NameDisplay, ( TCHAR* )name, &size ) )
+  {
+    sUserFullName = QString( name );
+  }
+
+  //fall back to login name
+  if ( sUserFullName.isEmpty() )
+    sUserFullName = userLoginName();
+#else
+  struct passwd *p = getpwuid( getuid() );
+
+  if ( p )
+  {
+    QString gecosName = QString( p->pw_gecos );
+    sUserFullName = gecosName.left( gecosName.indexOf( ',', 0 ) );
+  }
+
+#endif
+
+  return sUserFullName;
+}
+
+QString QgsApplication::osName()
+{
+#if defined(Q_OS_ANDROID)
+  return QLatin1String( "android" );
+#elif defined(Q_OS_MAC)
+  return QLatin1String( "osx" );
+#elif defined(Q_OS_WIN)
+  return QLatin1String( "windows" );
+#elif defined(Q_OS_LINUX)
+  return QLatin1String( "linux" );
+#else
+  return QLatin1String( "unknown" );
+#endif
+}
+
+QString QgsApplication::platform()
+{
+  return sPlatformName;
 }
 
 QString QgsApplication::userThemesFolder()
