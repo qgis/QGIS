@@ -25,8 +25,9 @@
 #include "qgspointdisplacementrendererwidget.h"
 #include "qgsinvertedpolygonrendererwidget.h"
 #include "qgsheatmaprendererwidget.h"
-#include "qgsorderbydialog.h"
+#include "qgs25drendererwidget.h"
 
+#include "qgsorderbydialog.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
@@ -71,6 +72,7 @@ static void _initRendererWidgetFunctions()
   _initRenderer( "pointDisplacement", QgsPointDisplacementRendererWidget::create );
   _initRenderer( "invertedPolygonRenderer", QgsInvertedPolygonRendererWidget::create );
   _initRenderer( "heatmapRenderer", QgsHeatmapRendererWidget::create );
+  _initRenderer( "25dRenderer", Qgs25DRendererWidget::create, "rendererSingleSymbol.png" );
   initialized = true;
 }
 
@@ -186,7 +188,7 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
 
   //Retrieve the previous renderer: from the old active widget if possible, otherwise from the layer
   QgsFeatureRendererV2* oldRenderer;
-  if ( mActiveWidget  && mActiveWidget->renderer() )
+  if ( mActiveWidget && mActiveWidget->renderer() )
   {
     oldRenderer = mActiveWidget->renderer()->clone();
   }
@@ -216,15 +218,18 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
     mActiveWidget = w;
     stackedWidget->addWidget( mActiveWidget );
     stackedWidget->setCurrentWidget( mActiveWidget );
-    if ( mMapCanvas && mActiveWidget->renderer() )
-      mActiveWidget->setMapCanvas( mMapCanvas );
+    if ( mActiveWidget->renderer() )
+    {
+      if ( mMapCanvas )
+        mActiveWidget->setMapCanvas( mMapCanvas );
+      changeOrderBy( mActiveWidget->renderer()->orderBy() );
+    }
   }
   else
   {
     // set default "no edit widget available" page
     stackedWidget->setCurrentWidget( pageNoWidget );
   }
-
 }
 
 void QgsRendererV2PropertiesDialog::apply()
@@ -268,6 +273,13 @@ void QgsRendererV2PropertiesDialog::showOrderByDialog()
     mOrderBy = dlg.orderBy();
     lineEditOrderBy->setText( mOrderBy.dump() );
   }
+}
+
+void QgsRendererV2PropertiesDialog::changeOrderBy( const QgsFeatureRequest::OrderBy& orderBy )
+{
+  mOrderBy = orderBy;
+  lineEditOrderBy->setText( mOrderBy.dump() );
+  checkboxEnableOrderBy->setEnabled( orderBy.isEmpty() );
 }
 
 

@@ -278,6 +278,7 @@
 %Include symbology-ng/qgscptcityarchive.sip
 %Include symbology-ng/qgsvectorcolorrampv2.sip
 
+%Include symbology-ng/qgs25drenderer.sip
 %Include symbology-ng/qgscategorizedsymbolrendererv2.sip
 %Include symbology-ng/qgsgraduatedsymbolrendererv2.sip
 %Include symbology-ng/qgslegendsymbolitemv2.sip

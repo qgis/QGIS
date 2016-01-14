@@ -16,6 +16,7 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgssymbollayerv2widget.cpp
   symbology-ng/qgsrendererv2widget.cpp
   symbology-ng/qgssinglesymbolrendererv2widget.cpp
+  symbology-ng/qgs25drendererwidget.cpp
   symbology-ng/qgscategorizedsymbolrendererv2widget.cpp
   symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp
   symbology-ng/qgsgraduatedhistogramwidget.cpp
@@ -431,6 +432,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgsrendererv2widget.h
   symbology-ng/qgsrulebasedrendererv2widget.h
   symbology-ng/qgssinglesymbolrendererv2widget.h
+  symbology-ng/qgs25drendererwidget.h
   symbology-ng/qgssmartgroupeditordialog.h
   symbology-ng/qgsstylev2exportimportdialog.h
   symbology-ng/qgsstylev2groupselectiondialog.h
