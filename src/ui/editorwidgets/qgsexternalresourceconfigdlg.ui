@@ -194,7 +194,7 @@
    <item>
     <widget class="QGroupBox" name="mFilePickerGroupBox">
      <property name="title">
-      <string>Display ressource path</string>
+      <string>Display resource path</string>
      </property>
      <property name="checkable">
       <bool>true</bool>

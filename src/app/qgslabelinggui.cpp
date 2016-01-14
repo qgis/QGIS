@@ -1115,7 +1115,7 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
                                                                 "<b>6</b>=Below Left|<b>7</b>=Below|<b>8</b>=Below Right]" ) );
   mPointPositionOrderDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::PredefinedPositionOrder ),
                                   QgsDataDefinedButton::String,
-                                  tr( "Comma seperated list of placements in order of priority<br>" )
+                                  tr( "Comma separated list of placements in order of priority<br>" )
                                   + QLatin1String( "[<b>TL</b>=Top left|<b>TSL</b>=Top, slightly left|<b>T</b>=Top middle|<br>"
                                                    "<b>TSR</b>=Top, slightly right|<b>TR</b>=Top right|<br>"
                                                    "<b>L</b>=Left|<b>R</b>=Right|<br>"

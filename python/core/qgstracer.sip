@@ -48,7 +48,7 @@ class QgsTracer : QObject
     enum PathError
     {
       ErrNone,               //!< No error
-      ErrTooManyFeatures,    //!< Max feature count treshold was reached while reading features
+      ErrTooManyFeatures,    //!< Max feature count threshold was reached while reading features
       ErrPoint1,             //!< Start point cannot be joined to the graph
       ErrPoint2,             //!< End point cannot be joined to the graph
       ErrNoPath,             //!< Points are not connected in the graph

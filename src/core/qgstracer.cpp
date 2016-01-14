@@ -428,7 +428,7 @@ void extractLinework( const QgsGeometry* g, QgsMultiPolyline& mpl )
       break;
 
     default:
-      break;  // unkown type - do nothing
+      break;  // unknown type - do nothing
   }
 }
 
