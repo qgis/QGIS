@@ -18,6 +18,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsgeometryengine.h"
 #include "qgspointv2.h"
+#include "qgsgeometry.h"
 #include <geos_c.h>
 
 class QgsLineStringV2;
@@ -85,6 +86,18 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     QgsAbstractGeometryV2* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const override;
     QgsAbstractGeometryV2* reshapeGeometry( const QgsLineStringV2& reshapeWithLine, int* errorCode, QString* errorMsg = nullptr ) const;
+
+    /** Returns the closest point on the geometry to the other geometry.
+     * @note added in QGIS 2.14
+     * @see shortestLine()
+     */
+    QgsGeometry closestPoint( const QgsGeometry& other, QString* errorMsg = nullptr ) const;
+
+    /** Returns the shortest line joining this geometry to the other geometry.
+     * @note added in QGIS 2.14
+     * @see closestPoint()
+     */
+    QgsGeometry shortestLine( const QgsGeometry& other, QString* errorMsg = nullptr ) const;
 
     /** Create a geometry from a GEOSGeometry
      * @param geos GEOSGeometry. Ownership is NOT transferred.

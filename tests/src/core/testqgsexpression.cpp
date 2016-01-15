@@ -583,6 +583,15 @@ class TestQgsExpression: public QObject
       QTest::newRow( "relate pattern false" ) << "relate( geom_from_wkt( 'LINESTRING(40 40,120 120)' ), geom_from_wkt( 'LINESTRING(40 40,60 120)' ), '**1F002**' )" << false << QVariant( false );
       QTest::newRow( "azimuth" ) << "toint(degrees(azimuth( make_point(25, 45), make_point(75, 100)))*1000000)" << false << QVariant( 42273689 );
       QTest::newRow( "azimuth" ) << "toint(degrees( azimuth( make_point(75, 100), make_point(25,45) ) )*1000000)" << false << QVariant( 222273689 );
+      QTest::newRow( "extrude geom" ) << "geom_to_wkt(extrude( geom_from_wkt('LineString( 1 2, 3 2, 4 3)'),1,2))" << false << QVariant( "Polygon ((1 2, 3 2, 4 3, 5 5, 4 4, 2 4, 1 2))" );
+      QTest::newRow( "extrude not geom" ) << "extrude('g',5,6)" << true << QVariant();
+      QTest::newRow( "extrude null" ) << "extrude(NULL,5,6)" << false << QVariant();
+      QTest::newRow( "closest_point geom" ) << "geom_to_wkt(closest_point( geom_from_wkt('LineString( 1 1, 5 1, 5 5 )'),geom_from_wkt('Point( 6 3 )')))" << false << QVariant( "Point (5 3)" );
+      QTest::newRow( "closest_point not geom" ) << "closest_point('g','b')" << true << QVariant();
+      QTest::newRow( "closest_point null" ) << "closest_point(NULL,NULL)" << false << QVariant();
+      QTest::newRow( "shortest_line geom" ) << "geom_to_wkt(shortest_line( geom_from_wkt('LineString( 1 1, 5 1, 5 5 )'),geom_from_wkt('Point( 6 3 )')))" << false << QVariant( "LineString (5 3, 6 3)" );
+      QTest::newRow( "shortest_line not geom" ) << "shortest_line('g','a')" << true << QVariant();
+      QTest::newRow( "shortest_line null" ) << "shortest_line(NULL,NULL)" << false << QVariant();
 
       // string functions
       QTest::newRow( "lower" ) << "lower('HeLLo')" << false << QVariant( "hello" );

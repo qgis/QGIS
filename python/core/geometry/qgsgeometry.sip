@@ -240,6 +240,18 @@ class QgsGeometry
      */
     double sqrDistToVertexAt( QgsPoint& point /In/, int atVertex ) const;
 
+    /** Returns the nearest point on this geometry to another geometry.
+     * @note added in QGIS 2.14
+     * @see shortestLine()
+     */
+    QgsGeometry nearestPoint( const QgsGeometry& other ) const;
+
+    /** Returns the shortest line joining this geometry to another geometry.
+     * @note added in QGIS 2.14
+     * @see nearestPoint()
+     */
+    QgsGeometry shortestLine( const QgsGeometry& other ) const;
+
     /**
      * Searches for the closest vertex in this geometry to the given point.
      * @param point Specifiest the point for search

@@ -1192,6 +1192,10 @@ class TestQgsGeometry(TestCase):
         wkt = polygon.exportToWkt()
 
     def testExtrude(self):
+        # test with empty geometry
+        g = QgsGeometry()
+        self.assertTrue(g.extrude(1, 2).isEmpty())
+
         points = [QgsPoint(1, 2), QgsPoint(3, 2), QgsPoint(4, 3)]
         line = QgsGeometry.fromPolyline(points)
         expected = QgsGeometry.fromWkt('Polygon ((1 2, 3 2, 4 3, 5 5, 4 4, 2 4, 1 2))')
@@ -1201,6 +1205,68 @@ class TestQgsGeometry(TestCase):
         multiline = QgsGeometry.fromMultiPolyline(points2)
         expected = QgsGeometry.fromWkt('MultiPolygon (((1 2, 3 2, 4 4, 2 4, 1 2)),((4 3, 8 3, 9 5, 5 5, 4 3)))')
         self.assertEqual(multiline.extrude(1, 2).exportToWkt(), expected.exportToWkt())
+
+    def testNearestPoint(self):
+        # test with empty geometries
+        g1 = QgsGeometry()
+        g2 = QgsGeometry()
+        self.assertTrue(g1.nearestPoint(g2).isEmpty())
+        g1 = QgsGeometry.fromWkt('LineString( 1 1, 5 1, 5 5 )')
+        self.assertTrue(g1.nearestPoint(g2).isEmpty())
+        self.assertTrue(g2.nearestPoint(g1).isEmpty())
+
+        g2 = QgsGeometry.fromWkt('Point( 6 3 )')
+        expWkt = 'Point( 5 3 )'
+        wkt = g1.nearestPoint(g2).exportToWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+        expWkt = 'Point( 6 3 )'
+        wkt = g2.nearestPoint(g1).exportToWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+
+        g1 = QgsGeometry.fromWkt('Polygon ((1 1, 5 1, 5 5, 1 5, 1 1))')
+        g2 = QgsGeometry.fromWkt('Point( 6 3 )')
+        expWkt = 'Point( 5 3 )'
+        wkt = g1.nearestPoint(g2).exportToWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+
+        expWkt = 'Point( 6 3 )'
+        wkt = g2.nearestPoint(g1).exportToWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+        g2 = QgsGeometry.fromWkt('Point( 2 3 )')
+        expWkt = 'Point( 2 3 )'
+        wkt = g1.nearestPoint(g2).exportToWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+
+    def testShortestLine(self):
+        # test with empty geometries
+        g1 = QgsGeometry()
+        g2 = QgsGeometry()
+        self.assertTrue(g1.shortestLine(g2).isEmpty())
+        g1 = QgsGeometry.fromWkt('LineString( 1 1, 5 1, 5 5 )')
+        self.assertTrue(g1.shortestLine(g2).isEmpty())
+        self.assertTrue(g2.shortestLine(g1).isEmpty())
+
+        g2 = QgsGeometry.fromWkt('Point( 6 3 )')
+        expWkt = 'LineString( 5 3, 6 3 )'
+        wkt = g1.shortestLine(g2).exportToWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+        expWkt = 'LineString( 6 3, 5 3 )'
+        wkt = g2.shortestLine(g1).exportToWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+
+        g1 = QgsGeometry.fromWkt('Polygon ((1 1, 5 1, 5 5, 1 5, 1 1))')
+        g2 = QgsGeometry.fromWkt('Point( 6 3 )')
+        expWkt = 'LineString( 5 3, 6 3 )'
+        wkt = g1.shortestLine(g2).exportToWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+
+        expWkt = 'LineString( 6 3, 5 3 )'
+        wkt = g2.shortestLine(g1).exportToWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+        g2 = QgsGeometry.fromWkt('Point( 2 3 )')
+        expWkt = 'LineString( 2 3, 2 3 )'
+        wkt = g1.shortestLine(g2).exportToWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
     def testBoundingBox(self):
         # 2-+-+-+-+-3

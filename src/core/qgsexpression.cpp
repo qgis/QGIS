@@ -2168,6 +2168,28 @@ static QVariant fcnExtrude( const QVariantList& values, const QgsExpressionConte
   return result;
 }
 
+static QVariant fcnClosestPoint( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry fromGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry toGeom = getGeometry( values.at( 1 ), parent );
+
+  QgsGeometry geom = fromGeom.nearestPoint( toGeom );
+
+  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  return result;
+}
+
+static QVariant fcnShortestLine( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry fromGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry toGeom = getGeometry( values.at( 1 ), parent );
+
+  QgsGeometry geom = fromGeom.shortestLine( toGeom );
+
+  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  return result;
+}
+
 static QVariant fcnRound( const QVariantList& values, const QgsExpressionContext *, QgsExpression* parent )
 {
   if ( values.length() == 2 )
@@ -2765,6 +2787,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "overlaps" << "within" << "buffer" << "centroid" << "bounds" << "reverse" << "exterior_ring"
     << "bounds_width" << "bounds_height" << "is_closed" << "convex_hull" << "difference"
     << "distance" << "intersection" << "sym_difference" << "combine"
+    << "extrude" << "azimuth" << "closest_point" << "shortest_line"
     << "union" << "geom_to_wkt" << "geomToWKT" << "geometry"
     << "transform" << "get_feature" << "getFeature"
     << "levenshtein" << "longest_common_substring" << "hamming_distance"
@@ -2931,6 +2954,8 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "geometry", 1, fcnGetGeometry, "GeometryGroup", QString(), true )
     << new StaticFunction( "transform", 3, fcnTransformGeometry, "GeometryGroup" )
     << new StaticFunction( "extrude", 3, fcnExtrude, "GeometryGroup", QString() )
+    << new StaticFunction( "closest_point", 2, fcnClosestPoint, "GeometryGroup" )
+    << new StaticFunction( "shortest_line", 2, fcnShortestLine, "GeometryGroup" )
     << new StaticFunction( "$rownum", 0, fcnRowNumber, "deprecated" )
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
     << new StaticFunction( "$currentfeature", 0, fcnFeature, "Record" )

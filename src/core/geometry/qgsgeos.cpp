@@ -1764,6 +1764,84 @@ QgsAbstractGeometryV2* QgsGeos::reshapeGeometry( const QgsLineStringV2& reshapeW
   }
 }
 
+QgsGeometry QgsGeos::closestPoint( const QgsGeometry& other, QString* errorMsg ) const
+{
+  if ( !mGeos || other.isEmpty() )
+  {
+    return QgsGeometry();
+  }
+
+  GEOSGeomScopedPtr otherGeom( asGeos( other.geometry(), mPrecision ) );
+  if ( !otherGeom )
+  {
+    return QgsGeometry();
+  }
+
+  double nx = 0.0;
+  double ny = 0.0;
+  try
+  {
+    GEOSCoordSequence* nearestCoord = GEOSNearestPoints_r( geosinit.ctxt, mGeos, otherGeom.get() );
+
+    ( void )GEOSCoordSeq_getX_r( geosinit.ctxt, nearestCoord, 0, &nx );
+    ( void )GEOSCoordSeq_getY_r( geosinit.ctxt, nearestCoord, 0, &ny );
+    GEOSCoordSeq_destroy_r( geosinit.ctxt, nearestCoord );
+  }
+  catch ( GEOSException &e )
+  {
+    if ( errorMsg )
+    {
+      *errorMsg = e.what();
+    }
+    return QgsGeometry();
+  }
+
+  return QgsGeometry( new QgsPointV2( nx, ny ) );
+}
+
+QgsGeometry QgsGeos::shortestLine( const QgsGeometry& other, QString* errorMsg ) const
+{
+  if ( !mGeos || other.isEmpty() )
+  {
+    return QgsGeometry();
+  }
+
+  GEOSGeomScopedPtr otherGeom( asGeos( other.geometry(), mPrecision ) );
+  if ( !otherGeom )
+  {
+    return QgsGeometry();
+  }
+
+  double nx1 = 0.0;
+  double ny1 = 0.0;
+  double nx2 = 0.0;
+  double ny2 = 0.0;
+  try
+  {
+    GEOSCoordSequence* nearestCoord = GEOSNearestPoints_r( geosinit.ctxt, mGeos, otherGeom.get() );
+
+    ( void )GEOSCoordSeq_getX_r( geosinit.ctxt, nearestCoord, 0, &nx1 );
+    ( void )GEOSCoordSeq_getY_r( geosinit.ctxt, nearestCoord, 0, &ny1 );
+    ( void )GEOSCoordSeq_getX_r( geosinit.ctxt, nearestCoord, 1, &nx2 );
+    ( void )GEOSCoordSeq_getY_r( geosinit.ctxt, nearestCoord, 1, &ny2 );
+
+    GEOSCoordSeq_destroy_r( geosinit.ctxt, nearestCoord );
+  }
+  catch ( GEOSException &e )
+  {
+    if ( errorMsg )
+    {
+      *errorMsg = e.what();
+    }
+    return QgsGeometry();
+  }
+
+  QgsLineStringV2* line = new QgsLineStringV2();
+  line->addVertex( QgsPointV2( nx1, ny1 ) );
+  line->addVertex( QgsPointV2( nx2, ny2 ) );
+  return QgsGeometry( line );
+}
+
 GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry* reshapeLineGeos , double precision )
 {
   if ( !line || !reshapeLineGeos )

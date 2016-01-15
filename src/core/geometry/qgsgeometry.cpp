@@ -502,6 +502,18 @@ double QgsGeometry::sqrDistToVertexAt( QgsPoint& point, int atVertex ) const
   return QgsGeometryUtils::sqrDistance2D( QgsPointV2( vertexPoint.x(), vertexPoint.y() ), QgsPointV2( point.x(), point.y() ) );
 }
 
+QgsGeometry QgsGeometry::nearestPoint( const QgsGeometry& other ) const
+{
+  QgsGeos geos( d->geometry );
+  return geos.closestPoint( other );
+}
+
+QgsGeometry QgsGeometry::shortestLine( const QgsGeometry& other ) const
+{
+  QgsGeos geos( d->geometry );
+  return geos.shortestLine( other );
+}
+
 double QgsGeometry::closestVertexWithContext( const QgsPoint& point, int& atVertex ) const
 {
   if ( !d->geometry )
