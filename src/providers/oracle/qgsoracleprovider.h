@@ -215,7 +215,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
                              the second map parameter being the new geometries themselves
        @return               true in case of success and false in case of failure
      */
-    bool changeGeometryValues( QgsGeometryMap & geometry_map );
+    bool changeGeometryValues( const QgsGeometryMap & geometry_map );
 
     /** Tries to create an spatial index file for faster access if only a subset of the features is required
      @return true in case of success*/
