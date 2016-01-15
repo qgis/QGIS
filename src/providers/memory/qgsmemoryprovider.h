@@ -109,7 +109,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      *                       the second map parameter being the new geometries themselves
      * @return               true in case of success and false in case of failure
      */
-    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map ) override;
+    virtual bool changeGeometryValues( const QgsGeometryMap & geometry_map ) override;
 
     /** Accessor for sql where clause used to limit dataset */
     QString subsetString() override;

@@ -207,10 +207,10 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     virtual bool deleteAttributes( const QgsAttributeIds &attributes ) override;
 
     /** Changes attribute values of existing features */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) override;
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
     /** Changes existing geometries*/
-    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map ) override;
+    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
     /**
      * Create a spatial index for the current layer

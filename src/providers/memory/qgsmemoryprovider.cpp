@@ -392,7 +392,7 @@ bool QgsMemoryProvider::deleteAttributes( const QgsAttributeIds& attributes )
   return true;
 }
 
-bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
+bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
@@ -407,7 +407,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap & a
   return true;
 }
 
-bool QgsMemoryProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
+bool QgsMemoryProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
   for ( QgsGeometryMap::const_iterator it = geometry_map.begin(); it != geometry_map.end(); ++it )
   {

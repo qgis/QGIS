@@ -1143,6 +1143,14 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 
   // supports circular geometries
   mEnabledCapabilities |= QgsVectorDataProvider::CircularGeometries;
+
+  if (( mEnabledCapabilities & QgsVectorDataProvider::ChangeGeometries ) &&
+      ( mEnabledCapabilities & QgsVectorDataProvider::ChangeAttributeValues ) &&
+      mSpatialColType != sctTopoGeometry )
+  {
+    mEnabledCapabilities |= QgsVectorDataProvider::ChangeFeatures;
+  }
+
   return true;
 }
 
@@ -1214,7 +1222,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
             mPrimaryKeyType = pktTid;
 
             QgsMessageLog::logMessage( tr( "Primary key is ctid - changing of existing features disabled (%1; %2)" ).arg( mGeometryColumn, mQuery ) );
-            mEnabledCapabilities &= ~( QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::ChangeAttributeValues | QgsVectorDataProvider::ChangeGeometries );
+            mEnabledCapabilities &= ~( QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::ChangeAttributeValues | QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::ChangeFeatures );
           }
           else
           {
@@ -2192,7 +2200,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
     conn->begin();
 
     // cycle through the features
-    for ( QgsChangedAttributesMap::const_iterator iter = attr_map.begin(); iter != attr_map.end(); ++iter )
+    for ( QgsChangedAttributesMap::const_iterator iter = attr_map.constBegin(); iter != attr_map.constEnd(); ++iter )
     {
       QgsFeatureId fid = iter.key();
 
@@ -2210,7 +2218,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
 
       // cycle through the changed attributes of the feature
       QString delim;
-      for ( QgsAttributeMap::const_iterator siter = attrs.begin(); siter != attrs.end(); ++siter )
+      for ( QgsAttributeMap::const_iterator siter = attrs.constBegin(); siter != attrs.constEnd(); ++siter )
       {
         try
         {
@@ -2302,7 +2310,7 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry *geom, QStringList 
   params << param;
 }
 
-bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
+bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
   QgsDebugMsg( "entering." );
 
@@ -2389,8 +2397,8 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
     QgsDebugMsg( "iterating over the map of changed geometries..." );
 
-    for ( QgsGeometryMap::iterator iter  = geometry_map.begin();
-          iter != geometry_map.end();
+    for ( QgsGeometryMap::const_iterator iter = geometry_map.constBegin();
+          iter != geometry_map.constEnd();
           ++iter )
     {
       QgsDebugMsg( "iterating over feature id " + FID_TO_STRING( iter.key() ) );
@@ -2483,7 +2491,152 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
   conn->unlock();
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( "leaving." );
+
+  return returnvalue;
+}
+
+bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_map,
+    const QgsGeometryMap &geometry_map )
+{
+  QgsDebugMsg( "entering." );
+  Q_ASSERT( mSpatialColType != sctTopoGeometry );
+
+  bool returnvalue = true;
+
+  if ( mIsQuery )
+    return false;
+
+  if ( attr_map.isEmpty() )
+    return true;
+
+  QgsPostgresConn *conn = connectionRW();
+  if ( !conn )
+    return false;
+
+  conn->lock();
+
+  try
+  {
+    conn->begin();
+
+    QgsFeatureIds ids( attr_map.keys().toSet() );
+    ids |= geometry_map.keys().toSet();
+
+    // cycle through the features
+    Q_FOREACH ( const QgsFeatureId &fid, ids )
+    {
+      // skip added features
+      if ( FID_IS_NEW( fid ) )
+        continue;
+
+      const QgsAttributeMap &attrs = attr_map.value( fid );
+      if ( attrs.isEmpty() && !geometry_map.contains( fid ) )
+        continue;
+
+      QString sql = QString( "UPDATE %1 SET " ).arg( mQuery );
+
+      bool pkChanged = false;
+
+      // cycle through the changed attributes of the feature
+      QString delim;
+      for ( QgsAttributeMap::const_iterator siter = attrs.constBegin(); siter != attrs.constEnd(); ++siter )
+      {
+        try
+        {
+          QgsField fld = field( siter.key() );
+
+          pkChanged = pkChanged || mPrimaryKeyAttrs.contains( siter.key() );
+
+          sql += delim + QString( "%1=" ).arg( quotedIdentifier( fld.name() ) );
+          delim = ',';
+
+          if ( fld.typeName() == "geometry" )
+          {
+            sql += QString( "%1(%2)" )
+                   .arg( connectionRO()->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt",
+                         quotedValue( siter->toString() ) );
+          }
+          else if ( fld.typeName() == "geography" )
+          {
+            sql += QString( "st_geographyfromewkt(%1)" )
+                   .arg( quotedValue( siter->toString() ) );
+          }
+          else
+          {
+            sql += quotedValue( *siter );
+          }
+        }
+        catch ( PGFieldNotFound )
+        {
+          // Field was missing - shouldn't happen
+        }
+      }
+
+      if ( !geometry_map.contains( fid ) )
+      {
+        sql += QString( " WHERE %1" ).arg( whereClause( fid ) );
+
+        QgsPostgresResult result( conn->PQexec( sql ) );
+        if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
+          throw PGException( result );
+      }
+      else
+      {
+        sql += QString( "%1%2=%3" ).arg( delim, quotedIdentifier( mGeometryColumn ), geomParam( 1 ) );
+        sql += QString( " WHERE %1" ).arg( whereClause( fid ) );
+
+        QgsPostgresResult result( conn->PQprepare( "updatefeature", sql, 1, nullptr ) );
+        if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
+        {
+          QgsDebugMsg( QString( "Exception thrown due to PQprepare of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
+                       .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ).arg( sql ) );
+          throw PGException( result );
+        }
+
+        QStringList params;
+        const QgsGeometry &geom = geometry_map[ fid ];
+        appendGeomParam( &geom, params );
+
+        result = conn->PQexecPrepared( "updatefeature", params );
+        if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
+          throw PGException( result );
+
+        conn->PQexecNR( "DEALLOCATE updatefeature" );
+      }
+
+      // update feature id map if key was changed
+      if ( pkChanged && mPrimaryKeyType == pktFidMap )
+      {
+        QVariant v = mShared->removeFid( fid );
+
+        QList<QVariant> k = v.toList();
+
+        for ( int i = 0; i < mPrimaryKeyAttrs.size(); i++ )
+        {
+          int idx = mPrimaryKeyAttrs.at( i );
+          if ( !attrs.contains( idx ) )
+            continue;
+
+          k[i] = attrs[ idx ];
+        }
+
+        mShared->insertFid( fid, k );
+      }
+    }
+
+    returnvalue &= conn->commit();
+  }
+  catch ( PGException &e )
+  {
+    pushError( tr( "PostGIS error while changing attributes: %1" ).arg( e.errorMessage() ) );
+    conn->rollback();
+    returnvalue = false;
+  }
+
+  conn->unlock();
+
+  QgsDebugMsg( "leaving." );
 
   return returnvalue;
 }

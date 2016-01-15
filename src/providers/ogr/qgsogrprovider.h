@@ -152,10 +152,10 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual bool deleteAttributes( const QgsAttributeIds &attributes ) override;
 
     /** Changes attribute values of existing features */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) override;
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
     /** Changes existing geometries*/
-    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map ) override;
+    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
     /** Tries to create a .qix index file for faster access if only a subset of the features is required
      @return true in case of success*/

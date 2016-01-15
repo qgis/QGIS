@@ -3978,7 +3978,7 @@ abort:
   return false;
 }
 
-bool QgsSpatiaLiteProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
+bool QgsSpatiaLiteProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
   sqlite3_stmt *stmt = nullptr;
   char *errMsg = nullptr;
@@ -4007,7 +4007,7 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( QgsGeometryMap & geometry_map 
     return false;
   }
 
-  for ( QgsGeometryMap::iterator iter = geometry_map.begin(); iter != geometry_map.end(); ++iter )
+  for ( QgsGeometryMap::const_iterator iter = geometry_map.constBegin(); iter != geometry_map.constEnd(); ++iter )
   {
     // resetting Prepared Statement and bindings
     sqlite3_reset( stmt );

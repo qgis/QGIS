@@ -1261,14 +1261,14 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   return true;
 }
 
-bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
+bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
   OGRFeatureH theOGRFeature = nullptr;
   OGRGeometryH theNewGeometry = nullptr;
 
   setRelevantFields( ogrLayer, true, attributeIndexes() );
 
-  for ( QgsGeometryMap::iterator it = geometry_map.begin(); it != geometry_map.end(); ++it )
+  for ( QgsGeometryMap::const_iterator it = geometry_map.constBegin(); it != geometry_map.constEnd(); ++it )
   {
     if ( FID_TO_NUMBER( it.key() ) > std::numeric_limits<long>::max() )
     {

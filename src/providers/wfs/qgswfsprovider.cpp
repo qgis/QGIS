@@ -466,7 +466,7 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
   }
 }
 
-bool QgsWFSProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
+bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
   //find out typename from uri and strip namespace prefix
   QString tname = parameterFromUrl( "typename" );
@@ -480,8 +480,8 @@ bool QgsWFSProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
   QDomElement transactionElem = createTransactionElement( transactionDoc );
   transactionDoc.appendChild( transactionElem );
 
-  QgsGeometryMap::iterator geomIt = geometry_map.begin();
-  for ( ; geomIt != geometry_map.end(); ++geomIt )
+  QgsGeometryMap::const_iterator geomIt = geometry_map.constBegin();
+  for ( ; geomIt != geometry_map.constEnd(); ++geomIt )
   {
     //find out feature id
     QMap< QgsFeatureId, QString >::const_iterator fidIt = mIdMap.constFind( geomIt.key() );

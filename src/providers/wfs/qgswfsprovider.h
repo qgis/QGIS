@@ -135,7 +135,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
      *                       The second map parameter being the new geometries themselves
      * @return               True in case of success and false in case of failure
      */
-    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map ) override;
+    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
     /**
      * Changes attribute values of existing features.
