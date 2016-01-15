@@ -591,6 +591,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   cbxAddOracleDC->setChecked( mSettings->value( "/qgis/addOracleDC", false ).toBool() );
   cbxCompileExpressions->setChecked( mSettings->value( "/qgis/compileExpressions", true ).toBool() );
   cbxCreateRasterLegendIcons->setChecked( mSettings->value( "/qgis/createRasterLegendIcons", false ).toBool() );
+  cbxAutoTransaction->setChecked( QgisApp::instance()->autoTransaction() );
   cbxCopyWKTGeomFromTable->setChecked( mSettings->value( "/qgis/copyGeometryAsWKT", true ).toBool() );
   leNullValue->setText( mSettings->value( "qgis/nullValue", "NULL" ).toString() );
   cbxIgnoreShapeEncoding->setChecked( mSettings->value( "/qgis/ignoreShapeEncoding", true ).toBool() );
@@ -1141,6 +1142,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( "/qgis/defaultLegendGraphicResolution", mLegendGraphicResolutionSpinBox->value() );
   bool createRasterLegendIcons = mSettings->value( "/qgis/createRasterLegendIcons", false ).toBool();
   mSettings->setValue( "/qgis/createRasterLegendIcons", cbxCreateRasterLegendIcons->isChecked() );
+  QgisApp::instance()->setAutoTransaction( cbxAutoTransaction->isChecked() );
   mSettings->setValue( "/qgis/copyGeometryAsWKT", cbxCopyWKTGeomFromTable->isChecked() );
   mSettings->setValue( "/qgis/new_layers_visible", chkAddedVisibility->isChecked() );
   mSettings->setValue( "/qgis/enable_anti_aliasing", chkAntiAliasing->isChecked() );

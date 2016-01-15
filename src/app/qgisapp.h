@@ -64,6 +64,7 @@ class QgsProviderRegistry;
 class QgsPythonUtils;
 class QgsRectangle;
 class QgsSnappingUtils;
+class QgsTransactionGroup;
 class QgsUndoWidget;
 class QgsUserInputDockWidget;
 class QgsVectorLayer;
@@ -670,6 +671,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void refreshActionFeatureAction();
 
     QMenu *panelMenu() { return mPanelMenu; }
+
+    bool autoTransaction() const;
+    void setAutoTransaction( bool state );
 
   protected:
 
@@ -1667,6 +1671,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsPluginManager *mPluginManager;
 
     QgsComposerManager *mComposerManager;
+
+    //! map of transaction group: QPair( providerKey, connString ) -> transactionGroup
+    QMap< QPair< QString, QString>, QgsTransactionGroup*> mTransactionGroups;
 
     //! Persistent tile scale slider
     QgsTileScaleWidget *mpTileScaleWidget;

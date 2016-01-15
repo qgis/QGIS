@@ -233,6 +233,8 @@
 #include "qgslegendfilterbutton.h"
 #include "qgsvirtuallayerdefinition.h"
 #include "qgsvirtuallayerdefinitionutils.h"
+#include "qgstransaction.h"
+#include "qgstransactiongroup.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -7512,6 +7514,22 @@ void QgisApp::removingLayers( const QStringList& theLayers )
 
     toggleEditing( vlayer, false );
   }
+
+  if ( autoTransaction() )
+  {
+    for ( QMap< QPair< QString, QString>, QgsTransactionGroup*>::Iterator tg = mTransactionGroups.begin(); tg != mTransactionGroups.end(); )
+    {
+      if ( tg.value()->isEmpty() )
+      {
+        delete tg.value();
+        tg = mTransactionGroups.erase( tg );
+      }
+      else
+      {
+        ++tg;
+      }
+    }
+  }
 }
 
 void QgisApp::removeAllLayers()
@@ -9334,9 +9352,8 @@ void QgisApp::extentChanged()
 
 void QgisApp::layersWereAdded( const QList<QgsMapLayer *>& theLayers )
 {
-  for ( int i = 0; i < theLayers.size(); ++i )
+  Q_FOREACH ( QgsMapLayer* layer, theLayers )
   {
-    QgsMapLayer * layer = theLayers.at( i );
     QgsDataProvider *provider = nullptr;
 
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -9352,6 +9369,27 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *>& theLayers )
         connect( vlayer, SIGNAL( editingStarted() ), this, SLOT( layerEditStateChanged() ) );
         connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( layerEditStateChanged() ) );
       }
+
+      if ( autoTransaction() )
+      {
+        if ( QgsTransaction::supportsTransaction( vlayer ) )
+        {
+          QString connString = QgsDataSourceURI( vlayer->source() ).connectionInfo();
+          QString key = vlayer->providerType();
+
+          QgsTransactionGroup* tg = mTransactionGroups.value( qMakePair( key, connString ) );
+
+          if ( !tg )
+          {
+            tg = new QgsTransactionGroup();
+            mTransactionGroups.insert( qMakePair( key, connString ), tg );
+
+            connect( tg, SIGNAL( commitError ), this, SLOT( displayMapToolMessage( QString, QgsMessageBar::MessageLevel ) ) );
+          }
+          tg->addLayer( vlayer );
+        }
+      }
+
       provider = vProvider;
     }
 
@@ -9993,6 +10031,23 @@ void QgisApp::refreshActionFeatureAction()
 
   bool layerHasActions = vlayer->actions()->size() || !QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty();
   mActionFeatureAction->setEnabled( layerHasActions );
+}
+
+bool QgisApp::autoTransaction() const
+{
+  QSettings settings;
+  return settings.value( "/qgis/autoTransaction", false ).toBool();
+}
+
+void QgisApp::setAutoTransaction( bool state )
+{
+  QSettings settings;
+
+  if ( settings.value( "/qgis/autoTransaction", false ).toBool() != state )
+  {
+
+    settings.setValue( "/qgis/autoTransaction", state );
+  }
 }
 
 /////////////////////////////////////////////////////////////////
