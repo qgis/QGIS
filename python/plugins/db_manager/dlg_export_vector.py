@@ -79,6 +79,13 @@ class DlgExportVector(QDialog, Ui_Dialog):
         if filename == "":
             return
 
+        filterString = qgis.core.QgsVectorFileWriter.filterForDriver(selectedFilter)
+        ext = filterString[filterString.find('.'):]
+        ext = ext[:ext.find(' ')]
+
+        if not filename.lower().endswith(ext):
+            filename += ext
+
         # store the last used dir
         settings.setValue(self.lastUsedVectorDirSettingsKey, QFileInfo(filename).filePath())
 
