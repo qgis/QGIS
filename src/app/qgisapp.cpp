@@ -9384,7 +9384,7 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *>& theLayers )
             tg = new QgsTransactionGroup();
             mTransactionGroups.insert( qMakePair( key, connString ), tg );
 
-            connect( tg, SIGNAL( commitError ), this, SLOT( displayMapToolMessage( QString, QgsMessageBar::MessageLevel ) ) );
+            connect( tg, SIGNAL( commitError( QString ) ), this, SLOT( displayMapToolMessage( QString ) ) );
           }
           tg->addLayer( vlayer );
         }
