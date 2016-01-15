@@ -44,7 +44,7 @@ except ImportError as e:
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
-from OTBUtils import OTBUtils
+import OTBUtils
 
 
 def adaptBinaryMorphologicalOperation(commands_list):

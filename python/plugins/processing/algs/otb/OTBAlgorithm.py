@@ -43,7 +43,7 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import getParameterFromString
 from processing.core.outputs import getOutputFromString
-from OTBUtils import OTBUtils
+import OTBUtils
 from processing.core.parameters import ParameterExtent
 from processing.tools.system import getTempFilename
 import xml.etree.ElementTree as ET
@@ -77,7 +77,11 @@ class OTBAlgorithm(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'otb.png'))
 
     def help(self):
-        folder = os.path.join(OTBUtils.otbDescriptionPath(), 'doc')
+        version = OTBUtils.getInstalledVersion()
+        folder = OTBUtils.compatibleDescriptionPath(version)
+        if folder is None:
+            return False, None
+        folder = os.path.join(folder, 'doc')
         helpfile = os.path.join(unicode(folder), self.appkey + ".html")
         if os.path.exists(helpfile):
             return False, helpfile
@@ -166,15 +170,8 @@ class OTBAlgorithm(GeoAlgorithm):
                                        self.tr('Could not open OTB algorithm: %s\n%s' % (self.descriptionFile, line)))
                 raise e
 
-    def checkBeforeOpeningParametersDialog(self):
-        return OTBUtils.checkOtbConfiguration()
-
     def processAlgorithm(self, progress):
         currentOs = os.name
-
-        msg = OTBUtils.checkOtbConfiguration()
-        if msg:
-            raise GeoAlgorithmExecutionException(msg)
 
         path = OTBUtils.otbPath()
 
