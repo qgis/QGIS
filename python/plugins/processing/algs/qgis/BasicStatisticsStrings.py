@@ -125,6 +125,8 @@ class BasicStatisticsStrings(GeoAlgorithm):
         uniqueValues = vector.getUniqueValuesCount(layer, index)
 
         data = []
+        data.append('Analyzed layer: ' + layer.name())
+        data.append('Analyzed field: ' + fieldName)
         data.append('Minimum length: ' + unicode(minValue))
         data.append('Maximum length: ' + unicode(maxValue))
         data.append('Mean length: ' + unicode(meanValue))

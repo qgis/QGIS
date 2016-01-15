@@ -145,6 +145,8 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         iqr = stat.interQuartileRange()
 
         data = []
+        data.append('Analyzed layer: ' + layer.name())
+        data.append('Analyzed field: ' + fieldName)
         data.append('Count: ' + unicode(count))
         data.append('Unique values: ' + unicode(uniqueValue))
         data.append('Minimum value: ' + unicode(minValue))
