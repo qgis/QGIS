@@ -17,9 +17,11 @@
 #include "qgsauthcertutils.h"
 
 #include <QColor>
+#include <QDir>
 #include <QFile>
 #include <QObject>
 #include <QSslCertificate>
+#include <QUuid>
 
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
@@ -244,6 +246,35 @@ QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath,
   }
 
   return QStringList() << bundle.certificateChain().primary().toPEM() << bundle.privateKey().toPEM( passarray ) << algtype;
+}
+
+QString QgsAuthCertUtils::pemTextToTempFile( const QString &name, const QByteArray &pemtext )
+{
+  QFile pemFile( QDir::tempPath() + QDir::separator() + name );
+  QString pemFilePath( pemFile.fileName() );
+
+  if ( pemFile.open( QIODevice::WriteOnly ) )
+  {
+    qint64 bytesWritten = pemFile.write( pemtext );
+    if ( bytesWritten == -1 )
+    {
+      QgsDebugMsg( QString( "FAILED to write to temp PEM file: %1" ).arg( pemFilePath ) );
+      pemFilePath.clear();
+    }
+  }
+  else
+  {
+    QgsDebugMsg( QString( "FAILED to open writing for temp PEM file: %1" ).arg( pemFilePath ) );
+    pemFilePath.clear();
+  }
+
+  if ( !pemFile.setPermissions( QFile::ReadUser ) )
+  {
+    QgsDebugMsg( QString( "FAILED to set permissions on temp PEM file: %1" ).arg( pemFilePath ) );
+    pemFilePath.clear();
+  }
+
+  return pemFilePath;
 }
 
 QString QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::CaCertSource source, bool single )

@@ -144,6 +144,13 @@ class CORE_EXPORT QgsAuthCertUtils
                                           const QString &bundlepass = QString(),
                                           bool reencrypt = true );
 
+    /** Write a temporary file for a PEM text of cert/key/CAs bundle component
+     * @param pemtext Component content as PEM text
+     * @param name Name of file
+     * @return File path to temporary file
+     */
+    static QString pemTextToTempFile( const QString &name, const QByteArray &pemtext );
+
     /** Get the general name for CA source enum type
      * @param source The enum source type for the CA
      * @param single Whether to return singular or plural description

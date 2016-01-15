@@ -95,7 +95,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
   mSelectAtIdDisabled = mUri.selectAtIdDisabled();
 
-  QgsDebugMsg( QString( "Connection info is %1" ).arg( mUri.connectionInfo() ) );
+  QgsDebugMsg( QString( "Connection info is %1" ).arg( mUri.connectionInfo( false ) ) );
   QgsDebugMsg( QString( "Geometry column is: %1" ).arg( mGeometryColumn ) );
   QgsDebugMsg( QString( "Schema is: %1" ).arg( mSchemaName ) );
   QgsDebugMsg( QString( "Table name is: %1" ).arg( mTableName ) );
@@ -108,7 +108,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     return;
   }
 
-  mConnectionRO = QgsPostgresConn::connectDb( mUri.connectionInfo(), true );
+  mConnectionRO = QgsPostgresConn::connectDb( mUri.connectionInfo( false ), true );
   if ( !mConnectionRO )
   {
     return;
@@ -248,7 +248,7 @@ QgsPostgresConn* QgsPostgresProvider::connectionRW()
   }
   else if ( !mConnectionRW )
   {
-    mConnectionRW = QgsPostgresConn::connectDb( mUri.connectionInfo(), false );
+    mConnectionRW = QgsPostgresConn::connectDb( mUri.connectionInfo( false ), false );
   }
   return mConnectionRW;
 }
@@ -3151,13 +3151,13 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
   }
   schemaTableName += quotedIdentifier( tableName );
 
-  QgsDebugMsg( QString( "Connection info is: %1" ).arg( dsUri.connectionInfo() ) );
+  QgsDebugMsg( QString( "Connection info is: %1" ).arg( dsUri.connectionInfo( false ) ) );
   QgsDebugMsg( QString( "Geometry column is: %1" ).arg( geometryColumn ) );
   QgsDebugMsg( QString( "Schema is: %1" ).arg( schemaName ) );
   QgsDebugMsg( QString( "Table name is: %1" ).arg( tableName ) );
 
   // create the table
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
     if ( errorMessage )
@@ -3319,7 +3319,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
 
   // use the provider to edit the table
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
-  QgsPostgresProvider *provider = new QgsPostgresProvider( dsUri.uri() );
+  QgsPostgresProvider *provider = new QgsPostgresProvider( dsUri.uri( false ) );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
@@ -3543,7 +3543,7 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
   }
   schemaTableName += QgsPostgresConn::quotedIdentifier( tableName );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -3609,7 +3609,7 @@ QGISEXTERN bool deleteSchema( const QString& schema, const QgsDataSourceURI& uri
 
   QString schemaName = QgsPostgresConn::quotedIdentifier( schema );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo(), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -3640,7 +3640,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
 {
   QgsDataSourceURI dsUri( uri );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -3786,7 +3786,7 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
 {
   QgsDataSourceURI dsUri( uri );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -3825,7 +3825,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
 {
   QgsDataSourceURI dsUri( uri );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
@@ -3894,7 +3894,7 @@ QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& e
 {
   QgsDataSourceURI dsUri( uri );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );

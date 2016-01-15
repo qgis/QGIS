@@ -105,7 +105,7 @@ class LayerPreview(QgsMapCanvas):
                 uri.setDataSource("", u"(SELECT * FROM %s LIMIT 1000)" % table.quotedName(), table.geomColumn, "",
                                   uniqueField.name)
                 provider = table.database().dbplugin().providerName()
-                vl = QgsVectorLayer(uri.uri(), table.name, provider)
+                vl = QgsVectorLayer(uri.uri(False), table.name, provider)
             else:
                 vl = table.toMapLayer()
 
