@@ -19,7 +19,7 @@ class QgsRenderContext
       UseRenderingOptimization, //!< Enable vector simplification and other rendering optimizations
       DrawSelection,  //!< Whether vector selections should be shown in the rendered map
       DrawSymbolBounds,  //!< Draw bounds of symbols (for debugging/testing)
-      RenderMapTile, //!< Draw map such that there are no problems between adjacent tiles
+      RenderMapTile
     };
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
