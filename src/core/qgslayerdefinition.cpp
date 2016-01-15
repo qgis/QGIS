@@ -305,8 +305,8 @@ QgsLayerDefinition::DependencySorter::DependencySorter( const QString& fileName 
 {
   QDomDocument doc;
   QFile pFile( fileName );
-  pFile.open( QIODevice::ReadOnly );
-  doc.setContent( &pFile );
+  ( void )pFile.open( QIODevice::ReadOnly );
+  ( void )doc.setContent( &pFile );
   init( doc );
 }
 
