@@ -35,6 +35,7 @@ class GUI_EXPORT QgsFilePickerWidget : public QWidget
     Q_PROPERTY( bool useLink READ useLink WRITE setUseLink )
     Q_PROPERTY( bool fullUrl READ fullUrl WRITE setFullUrl )
     Q_PROPERTY( QString dialogTitle READ dialogTitle WRITE setDialogTitle )
+    Q_PROPERTY( QString filter READ filter WRITE setFilter )
     Q_PROPERTY( QString defaultRoot READ defaultRoot WRITE setDefaultRoot )
     Q_PROPERTY( StorageMode storageMode READ storageMode WRITE setStorageMode )
     Q_PROPERTY( RelativeStorage relativeStorage READ relativeStorage WRITE setRelativeStorage )
@@ -45,8 +46,8 @@ class GUI_EXPORT QgsFilePickerWidget : public QWidget
      */
     enum StorageMode
     {
-      File,
-      Directory
+      GetFile,
+      GetDirectory
     };
 
     /**
@@ -82,6 +83,14 @@ class GUI_EXPORT QgsFilePickerWidget : public QWidget
      * @note if not defined, the title is "Select a file" or "Select a directory" depending on the configuration.
      */
     void setDialogTitle( QString title );
+
+    //! returns the filters used for QDialog::getOpenFileName
+    QString filter() const;
+    /**
+     * @brief setFilter sets the filter used by the model to filters. The filter is used to specify the kind of files that should be shown.
+     * @param filter Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',
+     */
+    void setFilter( const QString &filter );
 
     //! determines if the tool button is shown
     bool filePickerButtonVisible() const;
@@ -127,6 +136,7 @@ class GUI_EXPORT QgsFilePickerWidget : public QWidget
     bool mUseLink;
     bool mFullUrl;
     QString mDialogTitle;
+    QString mFilter;
     QString mDefaultRoot;
     StorageMode mStorageMode;
     RelativeStorage mRelativeStorage;

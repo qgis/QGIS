@@ -82,7 +82,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mQgsWidget )
   {
-    mQgsWidget->filePickerwidget()->setStorageMode( QgsFilePickerWidget::File );
+    mQgsWidget->filePickerwidget()->setStorageMode( QgsFilePickerWidget::GetFile );
     if ( config().contains( "UseLink" ) )
     {
       mQgsWidget->filePickerwidget()->setUseLink( config( "UseLink" ).toBool() );
@@ -114,6 +114,10 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
     if ( config().contains( "DocumentViewer" ) )
     {
       mQgsWidget->setDocumentViewerContent(( QgsExternalResourceWidget::DocumentViewerContent )config( "DocumentViewer" ).toInt() );
+    }
+    if ( config().contains( "FilePickerFilter" ) )
+    {
+      mQgsWidget->filePickerwidget()->setFilter( config( "FilePickerFilter" ).toString() );
     }
   }
 }

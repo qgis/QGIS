@@ -35,8 +35,9 @@ QgsFilePickerWidget::QgsFilePickerWidget( QWidget *parent )
     , mUseLink( false )
     , mFullUrl( false )
     , mDialogTitle( QString() )
+    , mFilter( QString() )
     , mDefaultRoot( QString() )
-    , mStorageMode( File )
+    , mStorageMode( GetFile )
 {
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );
@@ -104,6 +105,16 @@ QString QgsFilePickerWidget::dialogTitle() const
 void QgsFilePickerWidget::setDialogTitle( QString title )
 {
   mDialogTitle = title;
+}
+
+QString QgsFilePickerWidget::filter() const
+{
+  return mFilter;
+}
+
+void QgsFilePickerWidget::setFilter( const QString& filters )
+{
+  mFilter = filters;
 }
 
 bool QgsFilePickerWidget::filePickerButtonVisible() const
@@ -207,12 +218,12 @@ void QgsFilePickerWidget::openFileDialog()
   // Handle Storage
   QString fileName;
   QString title;
-  if ( mStorageMode == File )
+  if ( mStorageMode == GetFile )
   {
     title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a file" );
-    fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath() );
+    fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
   }
-  else if ( mStorageMode == Directory )
+  else if ( mStorageMode == GetDirectory )
   {
     title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
     fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(),  QFileDialog::ShowDirsOnly );
@@ -225,11 +236,11 @@ void QgsFilePickerWidget::openFileDialog()
   fileName = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileName ).absoluteFilePath() ) );
   // Store the last used path:
 
-  if ( mStorageMode == File )
+  if ( mStorageMode == GetFile )
   {
     settings.setValue( "/UI/lastFileNameWidgetDir", QFileInfo( fileName ).absolutePath() );
   }
-  else if ( mStorageMode == Directory )
+  else if ( mStorageMode == GetDirectory )
   {
     settings.setValue( "/UI/lastFileNameWidgetDir", fileName );
   }

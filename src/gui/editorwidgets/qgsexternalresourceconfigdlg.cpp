@@ -43,8 +43,8 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer* vl, 
   connect( mRelativeGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( enableRelative( bool ) ) );
 
   // set ids for StorageTypeButtons
-  mStorageButtonGroup->setId( mStoreFilesButton, QgsFilePickerWidget::File );
-  mStorageButtonGroup->setId( mStoreDirsButton, QgsFilePickerWidget::Directory );
+  mStorageButtonGroup->setId( mStoreFilesButton, QgsFilePickerWidget::GetFile );
+  mStorageButtonGroup->setId( mStoreDirsButton, QgsFilePickerWidget::GetDirectory );
   mStoreFilesButton->setChecked( true );
 
   // set ids for RelativeButtons
@@ -110,7 +110,8 @@ QgsEditorWidgetConfig QgsExternalResourceConfigDlg::config()
   QgsEditorWidgetConfig cfg;
 
   cfg.insert( "FilePicker", mFilePickerGroupBox->isChecked() );
-  cfg.insert( "FilePickerButton", mFilePickerButton->isChecked() );
+  cfg.insert( "FilePickerButton", mFilePickerButtonGroupBox->isChecked() );
+  cfg.insert( "FilePickerFilter", mFilePickerFilterLineEdit->text() );
 
   if ( mUseLink->isChecked() )
   {
@@ -160,7 +161,11 @@ void QgsExternalResourceConfigDlg::setConfig( const QgsEditorWidgetConfig& confi
   }
   if ( config.contains( "FilePicker" ) )
   {
-    mFilePickerButton->setChecked( config.value( "FilePickerButton" ).toBool() );
+    mFilePickerButtonGroupBox->setChecked( config.value( "FilePickerButton" ).toBool() );
+  }
+  if ( config.contains( "FilePickerFilter" ) )
+  {
+    mFilePickerFilterLineEdit->setText( config.value( "Filter" ).toString() );
   }
 
   if ( config.contains( "UseLink" ) )

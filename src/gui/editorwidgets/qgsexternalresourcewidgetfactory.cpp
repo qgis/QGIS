@@ -57,6 +57,8 @@ void QgsExternalResourceWidgetFactory::writeConfig( const QgsEditorWidgetConfig&
   if ( config.contains( "DocumentViewer" ) )
     configElement.setAttribute( "DocumentViewer", config.value( "DocumentViewer" ).toInt() );
 
+  if ( config.contains( "FilePickerFilter" ) )
+    configElement.setAttribute( "FilePickerFilter", config.value( "FilePickerFilter" ).toString() );
 
   configElement.setAttribute( "StorageMode", config.value( "StorageMode" ).toString() );
 }
@@ -92,6 +94,9 @@ QgsEditorWidgetConfig QgsExternalResourceWidgetFactory::readConfig( const QDomEl
 
   if ( configElement.hasAttribute( "DocumentViewer" ) )
     cfg.insert( "DocumentViewer", configElement.attribute( "DocumentViewer" ) );
+
+  if ( configElement.hasAttribute( "FilePickerFilter" ) )
+    cfg.insert( "FilePickerFilter", configElement.attribute( "FilePickerFilter" ) );
 
 
   cfg.insert( "StorageMode", configElement.attribute( "StorageMode", "Files" ) );
