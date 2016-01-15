@@ -163,6 +163,15 @@ bool QgsTransaction::rollback( QString& errorMsg )
   return true;
 }
 
+bool QgsTransaction::supportsTransaction( const QgsVectorLayer* layer )
+{
+  QLibrary* lib = QgsProviderRegistry::instance()->providerLibrary( layer->providerType() );
+  if ( !lib )
+    return false;
+
+  return lib->resolve( "createTransaction" );
+}
+
 void QgsTransaction::onLayersDeleted( const QStringList& layerids )
 {
   Q_FOREACH ( const QString& layerid, layerids )

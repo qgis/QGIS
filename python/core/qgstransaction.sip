@@ -59,6 +59,11 @@ class QgsTransaction : QObject /Abstract/
     /** Executes sql */
     virtual bool executeSql( const QString& sql, QString& error /Out/ ) = 0;
 
+    /**
+     * Checks if a the provider of a give layer supports transactions.
+     */
+    static bool supportsTransaction( const QgsVectorLayer* layer );
+
   signals:
     /**
      * Emitted after a rollback

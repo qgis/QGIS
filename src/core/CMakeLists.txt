@@ -190,6 +190,7 @@ SET(QGIS_CORE_SRCS
   qgstolerance.cpp
   qgstracer.cpp
   qgstransaction.cpp
+  qgstransactiongroup.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
@@ -459,6 +460,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgssnappingutils.h
   qgstracer.h
   qgstransaction.h
+  qgstransactiongroup.h
   qgsvectordataprovider.h
   qgsvectorlayercache.h
   qgsvectorlayereditbuffer.h

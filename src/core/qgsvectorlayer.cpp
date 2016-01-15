@@ -1313,6 +1313,8 @@ bool QgsVectorLayer::startEditing()
     return false;
   }
 
+  emit beforeEditingStarted();
+
   if ( mDataProvider->transaction() )
   {
     mEditBuffer = new QgsVectorLayerEditPassthrough( this );

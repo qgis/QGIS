@@ -1140,14 +1140,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool setReadOnly( bool readonly = true );
 
-    /**
-     * Make layer editable.
-     * This starts an edit session on this layer. Changes made in this edit session will not
-     * be made persistent until {@link commitChanges()} is called and can be reverted by calling
-     * {@link rollBack()}.
-     */
-    bool startEditing();
-
     /** Change feature's geometry */
     bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
 
@@ -1672,6 +1664,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Check if there is a join with a layer that will be removed */
     void checkJoinLayerRemove( const QString& theLayerId );
 
+    /**
+     * Make layer editable.
+     * This starts an edit session on this layer. Changes made in this edit session will not
+     * be made persistent until {@link commitChanges()} is called and can be reverted by calling
+     * {@link rollBack()}.
+     */
+    bool startEditing();
+
+
   protected slots:
     void invalidateSymbolCountedFlag();
 
@@ -1694,6 +1695,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Is emitted, when layer is checked for modifications. Use for last-minute additions */
     void beforeModifiedCheck() const;
+
+    /** Is emitted, before editing on this layer is started */
+    void beforeEditingStarted();
 
     /** Is emitted, when editing on this layer has started*/
     void editingStarted();
