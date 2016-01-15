@@ -217,7 +217,10 @@ class ScriptAlgorithm(GeoAlgorithm):
             param = ParameterSelection(name, descName, options)
         elif token.lower().strip().startswith('boolean'):
             default = token.strip()[len('boolean') + 1:]
-            param = ParameterBoolean(name, descName, default)
+            if default:
+                param = ParameterBoolean(name, descName, default)
+            else:
+                param = ParameterBoolean(name, descName)
         elif token.lower().strip() == 'extent':
             param = ParameterExtent(name, descName)
         elif token.lower().strip() == 'file':
@@ -226,7 +229,10 @@ class ScriptAlgorithm(GeoAlgorithm):
             param = ParameterFile(name, descName, True)
         elif token.lower().strip().startswith('number'):
             default = token.strip()[len('number') + 1:]
-            param = ParameterNumber(name, descName, default=default)
+            if default:
+                param = ParameterNumber(name, descName, default=default)
+            else:
+                param = ParameterNumber(name, descName)
         elif token.lower().strip().startswith('field'):
             field = token.strip()[len('field') + 1:]
             found = False
@@ -238,15 +244,22 @@ class ScriptAlgorithm(GeoAlgorithm):
                 param = ParameterTableField(name, descName, field)
         elif token.lower().strip().startswith('string'):
             default = token.strip()[len('string') + 1:]
-            param = ParameterString(name, descName, default)
+            if default:
+                param = ParameterString(name, descName, default)
+            else:
+                param = ParameterString(name, descName)
         elif token.lower().strip().startswith('longstring'):
             default = token.strip()[len('longstring') + 1:]
-            param = ParameterString(name, descName, default, multiline=True)
+            if default:
+                param = ParameterString(name, descName, default, multiline=True)
+            else:
+                param = ParameterString(name, descName, multiline=True)
         elif token.lower().strip().startswith('crs'):
             default = token.strip()[len('crs') + 1:]
-            if not default:
-                default = 'EPSG:4326'
-            param = ParameterCrs(name, descName, default)
+            if default:
+                param = ParameterCrs(name, descName, default)
+            else:
+                param = ParameterCrs(name, descName)
 
         return param
 
