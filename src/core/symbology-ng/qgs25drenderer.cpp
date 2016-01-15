@@ -28,10 +28,24 @@
   ")"
 
 #define WALL_EXPRESSION \
-  "extrude(" \
-  "  segments_to_lines( exterior_ring( $geometry ) )," \
-  "  cos( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )," \
-  "  sin( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )" \
+  "order_parts( "\
+  "  extrude(" \
+  "    segments_to_lines( exterior_ring( $geometry ) )," \
+  "    cos( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )," \
+  "    sin( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )" \
+  "  )," \
+  "  'distance(  $geometry,  translate(    @map_extent_center,    1000 * @map_extent_width * cos( radians( @qgis_25d_angle + 180 ) ),    1000 * @map_extent_width * sin( radians( @qgis_25d_angle + 180 ) )  ))'," \
+  "  False" \
+  ")"
+
+#define ORDER_BY_EXPRESSION \
+  "distance(" \
+  "  $geometry," \
+  "  translate(" \
+  "    @map_extent_center," \
+  "    1000 * @map_extent_width * cos( radians( @qgis_25d_angle + 180 ) )," \
+  "    1000 * @map_extent_width * sin( radians( @qgis_25d_angle + 180 ) )" \
+  "  )" \
   ")"
 
 Qgs25DRenderer::Qgs25DRenderer()
@@ -75,14 +89,7 @@ Qgs25DRenderer::Qgs25DRenderer()
 
   QgsFeatureRequest::OrderBy orderBy;
   orderBy << QgsFeatureRequest::OrderByClause(
-    "distance("
-    "  $geometry,"
-    "  translate("
-    "    @map_extent_center,"
-    "    1000 * @map_extent_width * cos( radians( @qgis_25d_angle + 180 ) ),"
-    "    1000 * @map_extent_width * sin( radians( @qgis_25d_angle + 180 ) )"
-    "  )"
-    ")",
+    ORDER_BY_EXPRESSION,
     false );
 
   setOrderBy( orderBy );

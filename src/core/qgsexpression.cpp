@@ -46,6 +46,7 @@
 #include "qgsmultilinestringv2.h"
 #include "qgscurvepolygonv2.h"
 #include "qgsexpressionprivate.h"
+#include "qgsexpressionsorter.h"
 
 #if QT_VERSION < 0x050000
 #include <qtextdocument.h>
@@ -2168,6 +2169,70 @@ static QVariant fcnExtrude( const QVariantList& values, const QgsExpressionConte
   return result;
 }
 
+static QVariant fcnOrderParts( const QVariantList& values, const QgsExpressionContext* ctx, QgsExpression* parent )
+{
+  if ( values.length() < 2 )
+    return QVariant();
+
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+
+  if ( !fGeom.isMultipart() )
+    return values.at( 0 );
+
+  QString expString = getStringValue( values.at( 1 ), parent );
+  bool asc = values.value( 2 ).toBool();
+
+  QgsExpressionContext* unconstedContext;
+  QgsFeature f;
+  if ( ctx )
+  {
+    // ExpressionSorter wants a modifiable expression context, but it will return it in the same shape after
+    // so no reason to worry
+    unconstedContext = const_cast<QgsExpressionContext*>( ctx );
+    f = ctx->feature();
+  }
+  else
+  {
+    // If there's no context provided, create a fake one
+    unconstedContext = new QgsExpressionContext();
+  }
+
+  QgsGeometryCollectionV2* collection = dynamic_cast<QgsGeometryCollectionV2*>( fGeom.geometry() );
+  Q_ASSERT( collection ); // Should have failed the multipart check above
+
+  QgsFeatureRequest::OrderBy orderBy;
+  orderBy.append( QgsFeatureRequest::OrderByClause( expString, asc ) );
+  QgsExpressionSorter sorter( orderBy );
+
+  QList<QgsFeature> partFeatures;
+  for ( int i = 0; i < collection->partCount(); ++i )
+  {
+    f.setGeometry( QgsGeometry( collection->geometryN( i )->clone() ) );
+    partFeatures << f;
+  }
+
+  sorter.sortFeatures( partFeatures, unconstedContext );
+
+  QgsGeometryCollectionV2* orderedGeom = dynamic_cast<QgsGeometryCollectionV2*>( fGeom.geometry()->clone() );
+
+  Q_ASSERT( orderedGeom );
+
+  while ( orderedGeom->partCount() )
+    orderedGeom->removeGeometry( 0 );
+
+  Q_FOREACH ( const QgsFeature& feature, partFeatures )
+  {
+    orderedGeom->addGeometry( feature.constGeometry()->geometry()->clone() );
+  }
+
+  QVariant result = QVariant::fromValue( QgsGeometry( orderedGeom ) );
+
+  if ( !ctx )
+    delete unconstedContext;
+
+  return result;
+}
+
 static QVariant fcnClosestPoint( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fromGeom = getGeometry( values.at( 0 ), parent );
@@ -2954,6 +3019,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "geometry", 1, fcnGetGeometry, "GeometryGroup", QString(), true )
     << new StaticFunction( "transform", 3, fcnTransformGeometry, "GeometryGroup" )
     << new StaticFunction( "extrude", 3, fcnExtrude, "GeometryGroup", QString() )
+    << new StaticFunction( "order_parts", 3, fcnOrderParts, "GeometryGroup", QString() )
     << new StaticFunction( "closest_point", 2, fcnClosestPoint, "GeometryGroup" )
     << new StaticFunction( "shortest_line", 2, fcnShortestLine, "GeometryGroup" )
     << new StaticFunction( "$rownum", 0, fcnRowNumber, "deprecated" )

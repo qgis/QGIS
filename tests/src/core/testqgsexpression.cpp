@@ -586,6 +586,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "extrude geom" ) << "geom_to_wkt(extrude( geom_from_wkt('LineString( 1 2, 3 2, 4 3)'),1,2))" << false << QVariant( "Polygon ((1 2, 3 2, 4 3, 5 5, 4 4, 2 4, 1 2))" );
       QTest::newRow( "extrude not geom" ) << "extrude('g',5,6)" << true << QVariant();
       QTest::newRow( "extrude null" ) << "extrude(NULL,5,6)" << false << QVariant();
+      QTest::newRow( "order parts" ) << "geom_to_wkt(order_parts(geom_from_wkt('MultiPolygon (((1 1, 5 1, 5 5, 1 5, 1 1)),((1 1, 9 1, 9 9, 1 9, 1 1)))'), 'area($geometry)', False ) )" << false << QVariant( "MultiPolygon (((1 1, 9 1, 9 9, 1 9, 1 1)),((1 1, 5 1, 5 5, 1 5, 1 1)))" );
+      QTest::newRow( "order parts not geom" ) << "order_parts('g', 'area($geometry)', False )" << true << QVariant();
+      QTest::newRow( "order parts single geom" ) << "geom_to_wkt(order_parts(geom_from_wkt('POLYGON((2 0,2 2, 3 2, 3 0, 2 0))'), 'area($geometry)', False))" << false << QVariant( "Polygon ((2 0, 2 2, 3 2, 3 0, 2 0))" );
       QTest::newRow( "closest_point geom" ) << "geom_to_wkt(closest_point( geom_from_wkt('LineString( 1 1, 5 1, 5 5 )'),geom_from_wkt('Point( 6 3 )')))" << false << QVariant( "Point (5 3)" );
       QTest::newRow( "closest_point not geom" ) << "closest_point('g','b')" << true << QVariant();
       QTest::newRow( "closest_point null" ) << "closest_point(NULL,NULL)" << false << QVariant();
