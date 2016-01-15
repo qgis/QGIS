@@ -142,7 +142,6 @@ class Processing:
 
         # And initialize
         AlgorithmClassification.loadClassification()
-        ProcessingLog.startLogging()
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
