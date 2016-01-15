@@ -131,7 +131,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
   // Now that all layers are loaded, refresh the vectorjoins to get the joined fields
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
-    QgsVectorLayer* vlayer = static_cast< QgsVectorLayer * >( layer );
+    QgsVectorLayer* vlayer = dynamic_cast< QgsVectorLayer * >( layer );
     if ( vlayer )
     {
       vlayer->createJoinCaches();

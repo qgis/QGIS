@@ -384,7 +384,7 @@ void TestVectorLayerJoinBuffer::testJoinLayerDefinitionFile()
   QList<QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayersByName( "layerB" );
   QCOMPARE( mapLayers.count(), 1 );
 
-  QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( mapLayers.value( 0 ) );
+  QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( mapLayers.value( 0 ) );
   QVERIFY( vLayer );
 
   // Check for vector join
