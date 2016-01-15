@@ -15,7 +15,11 @@
  ***************************************************************************/
 #include "qgsexpressionsorter.h"
 
+/// @cond PRIVATE
+
 QgsExpressionSorter::QgsExpressionSorter()
 {
 
 }
+
+/// @endcond
