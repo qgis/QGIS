@@ -54,6 +54,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
   populateOutputFieldTypes();
 
   connect( builder, SIGNAL( expressionParsed( bool ) ), this, SLOT( setOkButtonState() ) );
+  connect( mOutputFieldWidthSpinBox, SIGNAL( editingFinished() ), this, SLOT( setPrecisionMinMax() ) );
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( vl->crs().srsid() );
@@ -64,6 +65,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
   //default values for field width and precision
   mOutputFieldWidthSpinBox->setValue( 10 );
   mOutputFieldPrecisionSpinBox->setValue( 3 );
+  setPrecisionMinMax();
 
   if ( vl->providerType() == "ogr" && vl->storageType() == "ESRI Shapefile" )
   {
@@ -420,13 +422,7 @@ void QgsFieldCalculator::on_mOutputFieldTypeComboBox_activated( int index )
   if ( mOutputFieldWidthSpinBox->value() > mOutputFieldWidthSpinBox->maximum() )
     mOutputFieldWidthSpinBox->setValue( mOutputFieldWidthSpinBox->maximum() );
 
-  mOutputFieldPrecisionSpinBox->setMinimum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 4 ).toInt() );
-  mOutputFieldPrecisionSpinBox->setMaximum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 5 ).toInt() );
-  mOutputFieldPrecisionSpinBox->setEnabled( mOutputFieldPrecisionSpinBox->minimum() < mOutputFieldPrecisionSpinBox->maximum() );
-  if ( mOutputFieldPrecisionSpinBox->value() < mOutputFieldPrecisionSpinBox->minimum() )
-    mOutputFieldPrecisionSpinBox->setValue( mOutputFieldPrecisionSpinBox->minimum() );
-  if ( mOutputFieldPrecisionSpinBox->value() > mOutputFieldPrecisionSpinBox->maximum() )
-    mOutputFieldPrecisionSpinBox->setValue( mOutputFieldPrecisionSpinBox->maximum() );
+  setPrecisionMinMax();
 }
 
 void QgsFieldCalculator::populateFields()
@@ -476,4 +472,14 @@ void QgsFieldCalculator::setOkButtonState()
 
   okButton->setToolTip( "" );
   okButton->setEnabled( true );
+}
+
+void QgsFieldCalculator::setPrecisionMinMax()
+{
+  int idx = mOutputFieldTypeComboBox->currentIndex();
+  int minPrecType = mOutputFieldTypeComboBox->itemData( idx, Qt::UserRole + 4 ).toInt();
+  int maxPrecType = mOutputFieldTypeComboBox->itemData( idx, Qt::UserRole + 5 ).toInt();
+  mOutputFieldPrecisionSpinBox->setEnabled( minPrecType < maxPrecType );
+  mOutputFieldPrecisionSpinBox->setMinimum( minPrecType );
+  mOutputFieldPrecisionSpinBox->setMaximum( qMax( minPrecType, qMin( maxPrecType, mOutputFieldWidthSpinBox->value() ) ) );
 }
