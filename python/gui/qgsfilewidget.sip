@@ -1,8 +1,8 @@
 
-class QgsFilePickerWidget : QWidget
+class QgsFileWidget : QWidget
 {
 %TypeHeaderCode
-#include <qgsfilepickerwidget.h>
+#include <qgsfilewidget.h>
 %End
 
   public:
@@ -20,9 +20,9 @@ class QgsFilePickerWidget : QWidget
       RelativeDefaultPath
     };
 
-    explicit QgsFilePickerWidget( QWidget* parent /TransferThis/ );
+    explicit QgsFileWidget( QWidget* parent /TransferThis/ );
 
-    ~QgsFilePickerWidget();
+    ~QgsFileWidget();
 
    //! Returns the current file path
     QString filePath();
@@ -50,9 +50,9 @@ class QgsFilePickerWidget : QWidget
     void setFilter( const QString &filter );
 
     //! determines if the tool button is shown
-    bool filePickerButtonVisible() const;
+    bool fileWidgetButtonVisible() const;
     //! determines if the tool button is shown
-    void setFilePickerButtonVisible( bool visible );
+    void setFileWidgetButtonVisible( bool visible );
 
     //! determines if the file path will be shown as a link
     bool useLink() const;
@@ -68,12 +68,12 @@ class QgsFilePickerWidget : QWidget
     void setDefaultRoot( QString defaultRoot );
 
     //! determines the storage mode (i.e. file or directory)
-    QgsFilePickerWidget::StorageMode storageMode() const;
-    void setStorageMode( QgsFilePickerWidget::StorageMode storageMode );
+    QgsFileWidget::StorageMode storageMode() const;
+    void setStorageMode( QgsFileWidget::StorageMode storageMode );
 
     //! determines if the relative path is with respect to the project path or the default path
-    QgsFilePickerWidget::RelativeStorage relativeStorage() const;
-    void setRelativeStorage( QgsFilePickerWidget::RelativeStorage relativeStorage );
+    QgsFileWidget::RelativeStorage relativeStorage() const;
+    void setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage );
 
   signals:
     void fileChanged( QString );

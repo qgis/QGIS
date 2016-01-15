@@ -16,9 +16,9 @@
 
 #include <QtTest/QtTest>
 
-#include "qgsfilepickerwidget.h"
+#include "qgsfilewidget.h"
 
-class TestQgsFilePickerWidget: public QObject
+class TestQgsFileWidget: public QObject
 {
     Q_OBJECT
   private slots:
@@ -32,47 +32,47 @@ class TestQgsFilePickerWidget: public QObject
 
 };
 
-void TestQgsFilePickerWidget::initTestCase()
+void TestQgsFileWidget::initTestCase()
 {
 
 }
 
-void TestQgsFilePickerWidget::cleanupTestCase()
+void TestQgsFileWidget::cleanupTestCase()
 {
 }
 
-void TestQgsFilePickerWidget::init()
+void TestQgsFileWidget::init()
 {
 }
 
-void TestQgsFilePickerWidget::cleanup()
+void TestQgsFileWidget::cleanup()
 {
 }
 
-void TestQgsFilePickerWidget::relativePath()
+void TestQgsFileWidget::relativePath()
 {
-  QgsFilePickerWidget* w = new QgsFilePickerWidget();
+  QgsFileWidget* w = new QgsFileWidget();
   w->setDefaultRoot( "/home/test" );
-  w->setRelativeStorage( QgsFilePickerWidget::Absolute );
+  w->setRelativeStorage( QgsFileWidget::Absolute );
   QCOMPARE( w->relativePath( "/home/test2/file1.ext", true ), QString( "/home/test2/file1.ext" ) );
   QCOMPARE( w->relativePath( "/home/test2/file2.ext", false ), QString( "/home/test2/file2.ext" ) );
-  w->setRelativeStorage( QgsFilePickerWidget::RelativeDefaultPath );
+  w->setRelativeStorage( QgsFileWidget::RelativeDefaultPath );
   QCOMPARE( w->relativePath( "/home/test2/file3.ext", true ), QString( "../test2/file3.ext" ) );
   QCOMPARE( w->relativePath( "../test2/file4.ext", true ), QString( "../test2/file4.ext" ) );
   QCOMPARE( w->relativePath( "/home/test2/file5.ext", false ), QString( "/home/test2/file5.ext" ) );
   QCOMPARE( w->relativePath( "../test2/file6.ext", false ), QString( "/home/test2/file6.ext" ) );
 }
 
-void TestQgsFilePickerWidget::toUrl()
+void TestQgsFileWidget::toUrl()
 {
-  QgsFilePickerWidget* w = new QgsFilePickerWidget();
+  QgsFileWidget* w = new QgsFileWidget();
   w->setDefaultRoot( "/home/test" );
-  w->setRelativeStorage( QgsFilePickerWidget::Absolute );
+  w->setRelativeStorage( QgsFileWidget::Absolute );
   w->setFullUrl( true );
   QCOMPARE( w->toUrl( "/home/test2/file1.ext" ), QString( "<a href=\"file:///home/test2/file1.ext\">/home/test2/file1.ext</a>" ) );
   w->setFullUrl( false );
   QCOMPARE( w->toUrl( "/home/test2/file2.ext" ), QString( "<a href=\"file:///home/test2/file2.ext\">file2.ext</a>" ) );
-  w->setRelativeStorage( QgsFilePickerWidget::RelativeDefaultPath );
+  w->setRelativeStorage( QgsFileWidget::RelativeDefaultPath );
   w->setFullUrl( true );
   QCOMPARE( w->toUrl( "/home/test2/file3.ext" ), QString( "<a href=\"file:///home/test2/file3.ext\">/home/test2/file3.ext</a>" ) );
   QCOMPARE( w->toUrl( "../test2/file4.ext" ), QString( "<a href=\"file:///home/test2/file4.ext\">../test2/file4.ext</a>" ) );
@@ -83,5 +83,5 @@ void TestQgsFilePickerWidget::toUrl()
 
 
 
-QTEST_MAIN( TestQgsFilePickerWidget )
-#include "testqgsfilepickerwidget.moc"
+QTEST_MAIN( TestQgsFileWidget )
+#include "testqgsfilewidget.moc"

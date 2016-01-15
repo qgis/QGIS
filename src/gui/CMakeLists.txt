@@ -198,7 +198,7 @@ SET(QGIS_GUI_SRCS
   qgsfieldproxymodel.cpp
   qgsfieldvalidator.cpp
   qgsfiledropedit.cpp
-  qgsfilepickerwidget.cpp
+  qgsfilewidget.cpp
   qgsfilterlineedit.cpp
   qgsformannotationitem.cpp
   qgsgenericprojectionselector.cpp
@@ -338,7 +338,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfieldproxymodel.h
   qgsfieldvalidator.h
   qgsfiledropedit.h
-  qgsfilepickerwidget.h
+  qgsfilewidget.h
   qgsfilterlineedit.h
   qgsformannotationitem.h
   qgsgenericprojectionselector.h

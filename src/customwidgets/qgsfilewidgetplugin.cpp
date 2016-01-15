@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgsfilepickerwidgetplugin.cpp
+   qgsfilewidgetplugin.cpp
     --------------------------------------
    Date                 : 13.01.2016
    Copyright            : (C) 2016 Denis Rouzaud
@@ -14,52 +14,52 @@
 ***************************************************************************/
 
 #include "qgiscustomwidgets.h"
-#include "qgsfilepickerwidgetplugin.h"
-#include "qgsfilepickerwidget.h"
+#include "qgsfilewidgetplugin.h"
+#include "qgsfilewidget.h"
 
 
-QgsFilePickerWidgetPlugin::QgsFilePickerWidgetPlugin( QObject *parent )
+QgsFileWidgetPlugin::QgsFileWidgetPlugin( QObject *parent )
     : QObject( parent )
     , mInitialized( false )
 {
 }
 
-QString QgsFilePickerWidgetPlugin::name() const
+QString QgsFileWidgetPlugin::name() const
 {
-  return "QgsFilePickerWidget";
+  return "QgsFileWidget";
 }
 
-QString QgsFilePickerWidgetPlugin::group() const
+QString QgsFileWidgetPlugin::group() const
 {
   return QgisCustomWidgets::groupName();
 }
 
-QString QgsFilePickerWidgetPlugin::includeFile() const
+QString QgsFileWidgetPlugin::includeFile() const
 {
-  return "qgsfilepickerwidget.h";
+  return "qgsfilewidget.h";
 }
 
-QIcon QgsFilePickerWidgetPlugin::icon() const
+QIcon QgsFileWidgetPlugin::icon() const
 {
   return QIcon( ":/images/icons/qgis-icon-60x60.png" );
 }
 
-bool QgsFilePickerWidgetPlugin::isContainer() const
+bool QgsFileWidgetPlugin::isContainer() const
 {
   return false;
 }
 
-QWidget *QgsFilePickerWidgetPlugin::createWidget( QWidget *parent )
+QWidget *QgsFileWidgetPlugin::createWidget( QWidget *parent )
 {
-  return new QgsFilePickerWidget( parent );
+  return new QgsFileWidget( parent );
 }
 
-bool QgsFilePickerWidgetPlugin::isInitialized() const
+bool QgsFileWidgetPlugin::isInitialized() const
 {
   return mInitialized;
 }
 
-void QgsFilePickerWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsFileWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
 {
   Q_UNUSED( core );
   if ( mInitialized )
@@ -68,20 +68,20 @@ void QgsFilePickerWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
 }
 
 
-QString QgsFilePickerWidgetPlugin::toolTip() const
+QString QgsFileWidgetPlugin::toolTip() const
 {
   return "";
 }
 
-QString QgsFilePickerWidgetPlugin::whatsThis() const
+QString QgsFileWidgetPlugin::whatsThis() const
 {
   return "";
 }
 
-QString QgsFilePickerWidgetPlugin::domXml() const
+QString QgsFileWidgetPlugin::domXml() const
 {
   return QString( "<ui language=\"c++\">\n"
-                  " <widget class=\"%1\" name=\"mQgsFilePickerWidget\">\n"
+                  " <widget class=\"%1\" name=\"mQgsFileWidget\">\n"
                   "  <property name=\"geometry\">\n"
                   "   <rect>\n"
                   "    <x>0</x>\n"

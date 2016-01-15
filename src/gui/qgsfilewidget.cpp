@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsfilepickerwidget.cpp
+  qgsfilewidget.cpp
 
  ---------------------
  begin                : 17.12.2015
@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfilepickerwidget.h"
+#include "qgsfilewidget.h"
 
 #include <QLineEdit>
 #include <QToolButton>
@@ -28,7 +28,7 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 
-QgsFilePickerWidget::QgsFilePickerWidget( QWidget *parent )
+QgsFileWidget::QgsFileWidget( QWidget *parent )
     : QWidget( parent )
     , mFilePath( QString() )
     , mButtonVisible( true )
@@ -62,24 +62,24 @@ QgsFilePickerWidget::QgsFilePickerWidget( QWidget *parent )
   connect( mLineEdit, SIGNAL( textEdited( QString ) ), this, SLOT( textEdited( QString ) ) );
   layout->addWidget( mLineEdit, 1, 0 );
 
-  mFilePickerButton = new QToolButton( this );
-  mFilePickerButton->setText( "..." );
-  connect( mFilePickerButton, SIGNAL( clicked() ), this, SLOT( openFileDialog() ) );
-  layout->addWidget( mFilePickerButton, 0, 1, 2, 1 );
+  mFileWidgetButton = new QToolButton( this );
+  mFileWidgetButton->setText( "..." );
+  connect( mFileWidgetButton, SIGNAL( clicked() ), this, SLOT( openFileDialog() ) );
+  layout->addWidget( mFileWidgetButton, 0, 1, 2, 1 );
 
   setLayout( layout );
 }
 
-QgsFilePickerWidget::~QgsFilePickerWidget()
+QgsFileWidget::~QgsFileWidget()
 {
 }
 
-QString QgsFilePickerWidget::filePath()
+QString QgsFileWidget::filePath()
 {
   return mFilePath;
 }
 
-void QgsFilePickerWidget::setFilePath( QString path )
+void QgsFileWidget::setFilePath( QString path )
 {
   if ( path == QSettings().value( "qgis/nullValue", "NULL" ) )
   {
@@ -91,103 +91,103 @@ void QgsFilePickerWidget::setFilePath( QString path )
   emit fileChanged( mFilePath );
 }
 
-void QgsFilePickerWidget::setReadOnly( bool readOnly )
+void QgsFileWidget::setReadOnly( bool readOnly )
 {
-  mFilePickerButton->setEnabled( !readOnly );
+  mFileWidgetButton->setEnabled( !readOnly );
   mLineEdit->setEnabled( !readOnly );
 }
 
-QString QgsFilePickerWidget::dialogTitle() const
+QString QgsFileWidget::dialogTitle() const
 {
   return mDialogTitle;
 }
 
-void QgsFilePickerWidget::setDialogTitle( QString title )
+void QgsFileWidget::setDialogTitle( QString title )
 {
   mDialogTitle = title;
 }
 
-QString QgsFilePickerWidget::filter() const
+QString QgsFileWidget::filter() const
 {
   return mFilter;
 }
 
-void QgsFilePickerWidget::setFilter( const QString& filters )
+void QgsFileWidget::setFilter( const QString& filters )
 {
   mFilter = filters;
 }
 
-bool QgsFilePickerWidget::filePickerButtonVisible() const
+bool QgsFileWidget::fileWidgetButtonVisible() const
 {
   return mButtonVisible;
 }
 
-void QgsFilePickerWidget::setFilePickerButtonVisible( bool visible )
+void QgsFileWidget::setFileWidgetButtonVisible( bool visible )
 {
   mButtonVisible = visible;
-  mFilePickerButton->setVisible( visible );
+  mFileWidgetButton->setVisible( visible );
 }
 
-void QgsFilePickerWidget::textEdited( QString path )
+void QgsFileWidget::textEdited( QString path )
 {
   mFilePath = path;
   mLinkLabel->setText( toUrl( path ) );
   emit fileChanged( mFilePath );
 }
 
-bool QgsFilePickerWidget::useLink() const
+bool QgsFileWidget::useLink() const
 {
   return mUseLink;
 }
 
-void QgsFilePickerWidget::setUseLink( bool useLink )
+void QgsFileWidget::setUseLink( bool useLink )
 {
   mUseLink = useLink;
   mLinkLabel->setVisible( mUseLink );
   mLineEdit->setVisible( !mUseLink );
 }
 
-bool QgsFilePickerWidget::fullUrl() const
+bool QgsFileWidget::fullUrl() const
 {
   return mFullUrl;
 }
 
-void QgsFilePickerWidget::setFullUrl( bool fullUrl )
+void QgsFileWidget::setFullUrl( bool fullUrl )
 {
   mFullUrl = fullUrl;
 }
 
-QString QgsFilePickerWidget::defaultRoot() const
+QString QgsFileWidget::defaultRoot() const
 {
   return mDefaultRoot;
 }
 
-void QgsFilePickerWidget::setDefaultRoot( QString defaultRoot )
+void QgsFileWidget::setDefaultRoot( QString defaultRoot )
 {
   mDefaultRoot = defaultRoot;
 }
 
-QgsFilePickerWidget::StorageMode QgsFilePickerWidget::storageMode() const
+QgsFileWidget::StorageMode QgsFileWidget::storageMode() const
 {
   return mStorageMode;
 }
 
-void QgsFilePickerWidget::setStorageMode( QgsFilePickerWidget::StorageMode storageMode )
+void QgsFileWidget::setStorageMode( QgsFileWidget::StorageMode storageMode )
 {
   mStorageMode = storageMode;
 }
 
-QgsFilePickerWidget::RelativeStorage QgsFilePickerWidget::relativeStorage() const
+QgsFileWidget::RelativeStorage QgsFileWidget::relativeStorage() const
 {
   return mRelativeStorage;
 }
 
-void QgsFilePickerWidget::setRelativeStorage( QgsFilePickerWidget::RelativeStorage relativeStorage )
+void QgsFileWidget::setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage )
 {
   mRelativeStorage = relativeStorage;
 }
 
-void QgsFilePickerWidget::openFileDialog()
+void QgsFileWidget::openFileDialog()
 {
   QSettings settings;
   QString oldPath;
@@ -253,7 +253,7 @@ void QgsFilePickerWidget::openFileDialog()
 }
 
 
-QString QgsFilePickerWidget::relativePath( QString filePath, bool removeRelative ) const
+QString QgsFileWidget::relativePath( QString filePath, bool removeRelative ) const
 {
   QString RelativePath;
   if ( mRelativeStorage == RelativeProject )
@@ -281,7 +281,7 @@ QString QgsFilePickerWidget::relativePath( QString filePath, bool removeRelative
 }
 
 
-QString QgsFilePickerWidget::toUrl( const QString& path ) const
+QString QgsFileWidget::toUrl( const QString& path ) const
 {
   QString rep;
   if ( path.isEmpty() )

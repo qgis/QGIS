@@ -23,7 +23,7 @@ class QgsPixmapLabel;
 #include <QWidget>
 #include <QVariant>
 
-#include "qgsfilepickerwidget.h"
+#include "qgsfilewidget.h"
 
 
 
@@ -36,7 +36,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 {
 
     Q_OBJECT
-    Q_PROPERTY( bool filePickerVisible READ filePickerVisible WRITE setFilePickerVisible )
+    Q_PROPERTY( bool fileWidgetVisible READ fileWidgetVisible WRITE setFileWidgetVisible )
     Q_PROPERTY( DocumentViewerContent documentViewerContent READ documentViewerContent WRITE setDocumentViewerContent )
     Q_PROPERTY( int documentViewerHeight READ documentViewerHeight WRITE setDocumentViewerHeight )
     Q_PROPERTY( int documentViewerWidth READ documentViewerWidth WRITE setDocumentViewerWidth )
@@ -50,9 +50,9 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     };
 
     /**
-     * @brief QgsExternalResourceWidget creates a widget with a file picker and a document viewer
+     * @brief QgsExternalResourceWidget creates a widget with a file widget and a document viewer
      * Both part of the widget are optional.
-     * @see QgsFilePickerwidget
+     * @see QgsFileWidget
      */
     explicit QgsExternalResourceWidget( QWidget *parent = 0 );
 
@@ -63,13 +63,13 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     QVariant documentPath( QVariant::Type type = QVariant::String ) const;
     void setDocumentPath( QVariant documentPath );
 
-    //! access the file picker widget to allow its configuration
-    QgsFilePickerWidget* filePickerwidget();
+    //! access the file widget to allow its configuration
+    QgsFileWidget* fileWidget();
 
-    //! returns if the file picker is visible in the widget
-    bool filePickerVisible() const;
-    //! set the visiblity of the file picker in the widget
-    void setFilePickerVisible( bool visible );
+    //! returns if the file widget is visible in the widget
+    bool fileWidgetVisible() const;
+    //! set the visiblity of the file widget in the layout
+    void setFileWidgetVisible( bool visible );
 
     //! returns the type of content used in the document viewer
     QgsExternalResourceWidget::DocumentViewerContent documentViewerContent() const;
@@ -105,13 +105,13 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     void updateDocumentViewer();
 
     //! properties
-    bool mFilePickerVisible;
+    bool mFileWidgetVisible;
     DocumentViewerContent mDocumentViewerContent;
     int mDocumentViewerHeight;
     int mDocumentViewerWidth;
 
     //! UI objects
-    QgsFilePickerWidget* mFilePicker;
+    QgsFileWidget* mFileWidget;
     QgsPixmapLabel* mPixmapLabel;
 #ifdef WITH_QTWEBKIT
     //! This webview is used as a container to display the picture

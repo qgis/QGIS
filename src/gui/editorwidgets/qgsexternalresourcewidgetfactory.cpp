@@ -37,8 +37,8 @@ void QgsExternalResourceWidgetFactory::writeConfig( const QgsEditorWidgetConfig&
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
 
-  configElement.setAttribute( "FilePicker", config.value( "FilePicker", true ).toBool() );
-  configElement.setAttribute( "FilePickerButton", config.value( "FilePickerButton", true ).toBool() );
+  configElement.setAttribute( "FileWidget", config.value( "FileWidget", true ).toBool() );
+  configElement.setAttribute( "FileWidgetButton", config.value( "FileWidgetButton", true ).toBool() );
 
 
   // Non mandatory options are not saved into project file (to save some space).
@@ -57,8 +57,8 @@ void QgsExternalResourceWidgetFactory::writeConfig( const QgsEditorWidgetConfig&
   if ( config.contains( "DocumentViewer" ) )
     configElement.setAttribute( "DocumentViewer", config.value( "DocumentViewer" ).toInt() );
 
-  if ( config.contains( "FilePickerFilter" ) )
-    configElement.setAttribute( "FilePickerFilter", config.value( "FilePickerFilter" ).toString() );
+  if ( config.contains( "FileWidgetFilter" ) )
+    configElement.setAttribute( "FileWidgetFilter", config.value( "FileWidgetFilter" ).toString() );
 
   configElement.setAttribute( "StorageMode", config.value( "StorageMode" ).toString() );
 }
@@ -70,11 +70,11 @@ QgsEditorWidgetConfig QgsExternalResourceWidgetFactory::readConfig( const QDomEl
 
   QgsEditorWidgetConfig cfg;
 
-  if ( configElement.hasAttribute( "FilePickerButton" ) )
-    cfg.insert( "FilePickerButton", configElement.attribute( "FilePickerButton" ) == "1" );
+  if ( configElement.hasAttribute( "FileWidgetButton" ) )
+    cfg.insert( "FileWidgetButton", configElement.attribute( "FileWidgetButton" ) == "1" );
 
-  if ( configElement.hasAttribute( "FilePicker" ) )
-    cfg.insert( "FilePicker", configElement.attribute( "FilePicker" ) == "1" );
+  if ( configElement.hasAttribute( "FileWidget" ) )
+    cfg.insert( "FileWidget", configElement.attribute( "FileWidget" ) == "1" );
 
   if ( configElement.hasAttribute( "UseLink" ) )
     cfg.insert( "UseLink", configElement.attribute( "UseLink" ) == "1" );
@@ -95,8 +95,8 @@ QgsEditorWidgetConfig QgsExternalResourceWidgetFactory::readConfig( const QDomEl
   if ( configElement.hasAttribute( "DocumentViewer" ) )
     cfg.insert( "DocumentViewer", configElement.attribute( "DocumentViewer" ) );
 
-  if ( configElement.hasAttribute( "FilePickerFilter" ) )
-    cfg.insert( "FilePickerFilter", configElement.attribute( "FilePickerFilter" ) );
+  if ( configElement.hasAttribute( "FileWidgetFilter" ) )
+    cfg.insert( "FileWidgetFilter", configElement.attribute( "FileWidgetFilter" ) );
 
 
   cfg.insert( "StorageMode", configElement.attribute( "StorageMode", "Files" ) );

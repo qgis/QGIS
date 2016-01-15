@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgsfilepickerwidgetplugin.h
+   qgsfilewidgetplugin.h
     --------------------------------------
    Date                 : 13.01.2016
    Copyright            : (C) 2016 Denis Rouzaud
@@ -13,8 +13,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef QGSFILEPICKERWIDGETPLUGIN_H
-#define QGSFILEPICKERWIDGETPLUGIN_H
+#ifndef QGSFILEWIDGETPLUGIN_H
+#define QGSFILEWIDGETPLUGIN_H
 
 
 #include <QtGlobal>
@@ -27,13 +27,13 @@
 #endif
 
 
-class CUSTOMWIDGETS_EXPORT QgsFilePickerWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface
+class CUSTOMWIDGETS_EXPORT QgsFileWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsFilePickerWidgetPlugin( QObject *parent = 0 );
+    explicit QgsFileWidgetPlugin( QObject *parent = 0 );
 
   private:
     bool mInitialized;
@@ -52,4 +52,4 @@ class CUSTOMWIDGETS_EXPORT QgsFilePickerWidgetPlugin : public QObject, public QD
     QString whatsThis() const override;
     QString domXml() const override;
 };
-#endif // QGSFILEPICKERWIDGETPLUGIN_H
+#endif // QGSFILEWIDGETPLUGIN_H

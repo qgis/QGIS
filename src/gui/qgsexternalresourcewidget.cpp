@@ -27,7 +27,7 @@
 
 QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
     : QWidget( parent )
-    , mFilePickerVisible( true )
+    , mFileWidgetVisible( true )
     , mDocumentViewerContent( NoContent )
     , mDocumentViewerHeight( 0 )
     , mDocumentViewerWidth( 0 )
@@ -39,9 +39,9 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   QGridLayout* layout = new QGridLayout();
   layout->setMargin( 0 );
 
-  mFilePicker = new QgsFilePickerWidget( this );
-  layout->addWidget( mFilePicker, 0, 0 );
-  mFilePicker->setVisible( mFilePickerVisible );
+  mFileWidget = new QgsFileWidget( this );
+  layout->addWidget( mFileWidget, 0, 0 );
+  mFileWidget->setVisible( mFileWidgetVisible );
 
   mPixmapLabel = new QgsPixmapLabel( this );
   layout->addWidget( mPixmapLabel, 1, 0 );
@@ -55,12 +55,12 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
 
   setLayout( layout );
 
-  connect( mFilePicker, SIGNAL( fileChanged( QString ) ), this, SLOT( loadDocument( QString ) ) );
+  connect( mFileWidget, SIGNAL( fileChanged( QString ) ), this, SLOT( loadDocument( QString ) ) );
 }
 
 QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
 {
-  QString path = mFilePicker->filePath();
+  QString path = mFileWidget->filePath();
   if ( path.isEmpty() )
   {
     return QVariant( type );
@@ -73,23 +73,23 @@ QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
 
 void QgsExternalResourceWidget::setDocumentPath( QVariant path )
 {
-  mFilePicker->setFilePath( path.toString() );
+  mFileWidget->setFilePath( path.toString() );
 }
 
-QgsFilePickerWidget*QgsExternalResourceWidget::filePickerwidget()
+QgsFileWidget*QgsExternalResourceWidget::fileWidget()
 {
-  return mFilePicker;
+  return mFileWidget;
 }
 
-bool QgsExternalResourceWidget::filePickerVisible() const
+bool QgsExternalResourceWidget::fileWidgetVisible() const
 {
-  return mFilePickerVisible;
+  return mFileWidgetVisible;
 }
 
-void QgsExternalResourceWidget::setFilePickerVisible( bool visible )
+void QgsExternalResourceWidget::setFileWidgetVisible( bool visible )
 {
-  mFilePickerVisible = visible;
-  mFilePicker->setVisible( visible );
+  mFileWidgetVisible = visible;
+  mFileWidget->setVisible( visible );
 }
 
 QgsExternalResourceWidget::DocumentViewerContent QgsExternalResourceWidget::documentViewerContent() const
@@ -127,7 +127,7 @@ void QgsExternalResourceWidget::setDocumentViewerWidth( int width )
 
 void QgsExternalResourceWidget::setReadOnly( bool readOnly )
 {
-  mFilePicker->setReadOnly( readOnly );
+  mFileWidget->setReadOnly( readOnly );
 }
 
 void QgsExternalResourceWidget::updateDocumentViewer()

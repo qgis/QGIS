@@ -82,42 +82,42 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mQgsWidget )
   {
-    mQgsWidget->filePickerwidget()->setStorageMode( QgsFilePickerWidget::GetFile );
+    mQgsWidget->fileWidget()->setStorageMode( QgsFileWidget::GetFile );
     if ( config().contains( "UseLink" ) )
     {
-      mQgsWidget->filePickerwidget()->setUseLink( config( "UseLink" ).toBool() );
+      mQgsWidget->fileWidget()->setUseLink( config( "UseLink" ).toBool() );
     }
     if ( config().contains( "FullUrl" ) )
     {
-      mQgsWidget->filePickerwidget()->setFullUrl( config( "FullUrl" ).toBool() );
+      mQgsWidget->fileWidget()->setFullUrl( config( "FullUrl" ).toBool() );
     }
     if ( config().contains( "DefaultRoot" ) )
     {
-      mQgsWidget->filePickerwidget()->setDefaultRoot( config( "DefaultRoot" ).toString() );
+      mQgsWidget->fileWidget()->setDefaultRoot( config( "DefaultRoot" ).toString() );
     }
     if ( config().contains( "StorageMode" ) )
     {
-      mQgsWidget->filePickerwidget()->setStorageMode(( QgsFilePickerWidget::StorageMode )config( "StorageMode" ).toInt() );
+      mQgsWidget->fileWidget()->setStorageMode(( QgsFileWidget::StorageMode )config( "StorageMode" ).toInt() );
     }
     if ( config().contains( "RelativeStorage" ) )
     {
-      mQgsWidget->filePickerwidget()->setRelativeStorage(( QgsFilePickerWidget::RelativeStorage )config( "RelativeStorage" ).toInt() );
+      mQgsWidget->fileWidget()->setRelativeStorage(( QgsFileWidget::RelativeStorage )config( "RelativeStorage" ).toInt() );
     }
-    if ( config().contains( "FilePicker" ) )
+    if ( config().contains( "FileWidget" ) )
     {
-      mQgsWidget->setFilePickerVisible( config( "FilePicker" ).toBool() );
+      mQgsWidget->setFileWidgetVisible( config( "FileWidget" ).toBool() );
     }
-    if ( config().contains( "FilePickerButton" ) )
+    if ( config().contains( "FileWidgetButton" ) )
     {
-      mQgsWidget->filePickerwidget()->setFilePickerButtonVisible( config( "FilePickerButton" ).toBool() );
+      mQgsWidget->fileWidget()->setFileWidgetButtonVisible( config( "FileWidgetButton" ).toBool() );
     }
     if ( config().contains( "DocumentViewer" ) )
     {
       mQgsWidget->setDocumentViewerContent(( QgsExternalResourceWidget::DocumentViewerContent )config( "DocumentViewer" ).toInt() );
     }
-    if ( config().contains( "FilePickerFilter" ) )
+    if ( config().contains( "FileWidgetFilter" ) )
     {
-      mQgsWidget->filePickerwidget()->setFilter( config( "FilePickerFilter" ).toString() );
+      mQgsWidget->fileWidget()->setFilter( config( "FileWidgetFilter" ).toString() );
     }
   }
 }
