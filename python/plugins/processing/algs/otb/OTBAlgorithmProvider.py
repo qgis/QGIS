@@ -67,10 +67,8 @@ class OTBAlgorithmProvider(AlgorithmProvider):
         folder = OTBUtils.compatibleDescriptionPath(version)
         if folder is None:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                    self.tr('Problem with OTB installation: installed OTB version (%s) is not supported' % version))
+                                   self.tr('Problem with OTB installation: installed OTB version (%s) is not supported' % version))
             return
-
-
 
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("xml"):
@@ -111,4 +109,3 @@ class OTBAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.unload(self)
         ProcessingConfig.removeSetting(OTBUtils.OTB_FOLDER)
         ProcessingConfig.removeSetting(OTBUtils.OTB_LIB_FOLDER)
-

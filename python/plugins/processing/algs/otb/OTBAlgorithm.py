@@ -81,7 +81,7 @@ class OTBAlgorithm(GeoAlgorithm):
         folder = OTBUtils.compatibleDescriptionPath(version)
         if folder is None:
             return False, None
-        folder = os.path.join(folder,  'doc')
+        folder = os.path.join(folder, 'doc')
         helpfile = os.path.join(unicode(folder), self.appkey + ".html")
         if os.path.exists(helpfile):
             return False, helpfile
