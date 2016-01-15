@@ -83,18 +83,12 @@ QgsTransaction::~QgsTransaction()
 
 bool QgsTransaction::addLayer( const QString& layerId )
 {
-  if ( mTransactionActive )
-    return false;
-
   QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
   return addLayer( layer );
 }
 
 bool QgsTransaction::addLayer( QgsVectorLayer* layer )
 {
-  if ( mTransactionActive )
-    return false;
-
   if ( !layer )
     return false;
 
@@ -119,6 +113,10 @@ bool QgsTransaction::addLayer( QgsVectorLayer* layer )
   connect( this, SIGNAL( afterRollback() ), layer->dataProvider(), SIGNAL( dataChanged() ) );
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( onLayersDeleted( QStringList ) ) );
   mLayers.insert( layer );
+
+  if ( mTransactionActive )
+    layer->dataProvider()->setTransaction( this );
+
   return true;
 }
 
@@ -141,14 +139,6 @@ bool QgsTransaction::commit( QString& errorMsg )
   if ( !mTransactionActive )
     return false;
 
-  Q_FOREACH ( QgsVectorLayer* l, mLayers )
-  {
-    if ( !l || l->isEditable() )
-    {
-      return false;
-    }
-  }
-
   if ( !commitTransaction( errorMsg ) )
     return false;
 
@@ -162,14 +152,6 @@ bool QgsTransaction::rollback( QString& errorMsg )
   if ( !mTransactionActive )
     return false;
 
-  Q_FOREACH ( QgsVectorLayer* l, mLayers )
-  {
-    if ( l->isEditable() )
-    {
-      return false;
-    }
-  }
-
   if ( !rollbackTransaction( errorMsg ) )
     return false;
 
@@ -179,6 +161,15 @@ bool QgsTransaction::rollback( QString& errorMsg )
   emit afterRollback();
 
   return true;
+}
+
+bool QgsTransaction::supportsTransaction( const QgsVectorLayer* layer )
+{
+  QLibrary* lib = QgsProviderRegistry::instance()->providerLibrary( layer->providerType() );
+  if ( !lib )
+    return false;
+
+  return lib->resolve( "createTransaction" );
 }
 
 void QgsTransaction::onLayersDeleted( const QStringList& layerids )

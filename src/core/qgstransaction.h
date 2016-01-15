@@ -60,10 +60,10 @@ class CORE_EXPORT QgsTransaction : public QObject
 
     virtual ~QgsTransaction();
 
-    /** Add layer to the transaction. The layer must not be in edit mode. The transaction must not be active. */
+    /** Add layer to the transaction. The layer must not be in edit mode.*/
     bool addLayer( const QString& layerId );
 
-    /** Add layer to the transaction. The layer must not be in edit mode. The transaction must not be active. */
+    /** Add layer to the transaction. The layer must not be in edit mode.*/
     bool addLayer( QgsVectorLayer* layer );
 
     /** Begin transaction
@@ -76,14 +76,19 @@ class CORE_EXPORT QgsTransaction : public QObject
      *  Some providers might not honour the statement timeout. */
     bool begin( QString& errorMsg, int statementTimeout = 20 );
 
-    /** Commit transaction. All layers need to be in read-only mode. */
+    /** Commit transaction. */
     bool commit( QString& errorMsg );
 
-    /** Roll back transaction. All layers need to be in read-only mode. */
+    /** Roll back transaction. */
     bool rollback( QString& errorMsg );
 
     /** Executes sql */
     virtual bool executeSql( const QString& sql, QString& error ) = 0;
+
+    /**
+     * Checks if a the provider of a give layer supports transactions.
+     */
+    static bool supportsTransaction( const QgsVectorLayer* layer );
 
   signals:
     /**
