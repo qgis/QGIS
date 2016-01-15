@@ -38,6 +38,7 @@ class TestQgsAdjacentTiles : public QObject
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
+
 #if 0 //disable for now
     void testFourAdjacentTiles_data();
     void testFourAdjacentTiles();
