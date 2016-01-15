@@ -118,6 +118,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( "geometry_part_count", 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( "geometry_part_num", 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( "geometry_part", QVariant::fromValue( QgsGeometry() ), true ) );
 
   expContext.setHighlightedVariables( QStringList() << "geometry_part_num" );
 

@@ -85,6 +85,22 @@ class TestQgsSymbolExpressionVariables(TestCase):
 
         self.assertTrue(result)
 
+    def testGeometryPart(self):
+        # Create rulebased style
+        sym1 = QgsFillSymbolV2.createSimple({'color': '#fdbf6f'})
+
+        renderer = QgsSingleSymbolRendererV2(sym1)
+        renderer.symbols()[0].symbolLayers()[0].setDataDefinedProperty('color', 'color_rgb( if( x_min( @geometry_part) < -104, 200, 0 ), 0, 0 )')
+        self.layer.setRendererV2(renderer)
+
+        # Setup rendering check
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlName('expected_geometry_part')
+        result = renderchecker.runTest('part_geometry_part')
+
+        self.assertTrue(result)
+
     def testPartCount(self):
         # Create rulebased style
         sym1 = QgsFillSymbolV2.createSimple({'color': '#fdbf6f'})
