@@ -23,12 +23,12 @@
 
 %Include qgisinterface.sip
 %Include qgsactionmenu.sip
-%Include qgsannotationitem.sip
 %Include qgsadvanceddigitizingcanvasitem.sip
 %Include qgsadvanceddigitizingdockwidget.sip
+%Include qgsannotationitem.sip
+%Include qgsattributedialog.sip
 %Include qgsattributeeditor.sip
 %Include qgsattributeeditorcontext.sip
-%Include qgsattributedialog.sip
 %Include qgsattributeform.sip
 %Include qgsattributeforminterface.sip
 %Include qgsattributetypeloaddialog.sip

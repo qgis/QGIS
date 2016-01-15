@@ -18,18 +18,16 @@
 
 %Include qgis.sip
 
-%Include qgstransaction.sip
-%Include qgstransactiongroup.sip
 %Include qgsapplication.sip
 %Include qgsattributeaction.sip
 %Include qgsbrowsermodel.sip
 %Include qgsclipper.sip
 %Include qgscolorscheme.sip
 %Include qgscolorschemeregistry.sip
+%Include qgsconditionalstyle.sip
 %Include qgscontexthelp.sip
 %Include qgscoordinatereferencesystem.sip
 %Include qgscoordinatetransform.sip
-%Include qgsconditionalstyle.sip
 %Include qgscredentials.sip
 %Include qgscrscache.sip
 %Include qgsdatadefined.sip
@@ -47,19 +45,24 @@
 %Include qgsexpression.sip
 %Include qgsexpressioncontext.sip
 %Include qgsfeature.sip
+%Include qgsfeaturefilterprovider.sip
 %Include qgsfeatureiterator.sip
 %Include qgsfeaturerequest.sip
-%Include qgsfeaturefilterprovider.sip
 %Include qgsfield.sip
-%Include qgsgeometryvalidator.sip
 %Include qgsgeometrysimplifier.sip
-%Include qgshistogram.sip
-%Include qgsmaptopixelgeometrysimplifier.sip
+%Include qgsgeometryvalidator.sip
 %Include qgsgml.sip
 %Include qgsgmlschema.sip
+%Include qgshistogram.sip
+%Include qgsmaptopixelgeometrysimplifier.sip
+%Include qgstransaction.sip
+%Include qgstransactiongroup.sip
 %If(!QT5_SUPPORT)
   %Include qgshttptransaction.sip
 %End
+%Include qgsdartmeasurement.sip
+%Include qgsexpressionfieldbuffer.sip
+%Include qgsfontutils.sip
 %Include qgslabel.sip
 %Include qgslabelattributes.sip
 %Include qgslabelsearchtree.sip
@@ -132,22 +135,19 @@
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayerundocommand.sip
 %Include qgsvectorsimplifymethod.sip
-%Include qgsfontutils.sip
-%Include qgsdartmeasurement.sip
-%Include qgsexpressionfieldbuffer.sip
 
 %Include qgscachedfeatureiterator.sip
 %Include qgscacheindex.sip
 %Include qgscacheindexfeatureid.sip
 %Include qgsfeaturestore.sip
 %Include qgsgeometrycache.sip
+%Include qgslayerdefinition.sip
 %Include qgsprojectfiletransform.sip
 %Include qgsvectorlayereditutils.sip
 %Include qgsvectorlayerfeatureiterator.sip
-%Include qgsvisibilitypresetcollection.sip
-%Include qgslayerdefinition.sip
 %Include qgsvirtuallayerdefinition.sip
 %Include qgsvirtuallayerdefinitionutils.sip
+%Include qgsvisibilitypresetcollection.sip
 %Include qgsxmlutils.sip
 
 %Include auth/qgsauthcertutils.sip
@@ -158,36 +158,39 @@
 
 %Include composer/qgsaddremoveitemcommand.sip
 %Include composer/qgsaddremovemultiframecommand.sip
+%Include composer/qgsatlascomposition.sip
 %Include composer/qgscomposerarrow.sip
 %Include composer/qgscomposerattributetable.sip
 %Include composer/qgscomposerattributetablemodel.sip
 %Include composer/qgscomposerattributetablemodelv2.sip
 %Include composer/qgscomposerattributetablev2.sip
+%Include composer/qgscomposereffect.sip
 %Include composer/qgscomposerframe.sip
 %Include composer/qgscomposerhtml.sip
-%Include composer/qgscomposerobject.sip
 %Include composer/qgscomposeritem.sip
 %Include composer/qgscomposeritemcommand.sip
 %Include composer/qgscomposeritemgroup.sip
 %Include composer/qgscomposerlabel.sip
 %Include composer/qgscomposerlegend.sip
 %Include composer/qgscomposerlegenditem.sip
+%Include composer/qgscomposerlegendstyle.sip
 %Include composer/qgscomposermap.sip
 %Include composer/qgscomposermapgrid.sip
 %Include composer/qgscomposermapitem.sip
 %Include composer/qgscomposermapoverview.sip
+%Include composer/qgscomposermodel.sip
 %Include composer/qgscomposermultiframe.sip
 %Include composer/qgscomposermultiframecommand.sip
+%Include composer/qgscomposerobject.sip
 %Include composer/qgscomposerpicture.sip
 %Include composer/qgscomposerscalebar.sip
 %Include composer/qgscomposershape.sip
 %Include composer/qgscomposertable.sip
 %Include composer/qgscomposertablecolumn.sip
 %Include composer/qgscomposertablev2.sip
+%Include composer/qgscomposertexttable.sip
 %Include composer/qgscomposerutils.sip
 %Include composer/qgscomposition.sip
-%Include composer/qgscomposermodel.sip
-%Include composer/qgsatlascomposition.sip
 %Include composer/qgsdoubleboxscalebarstyle.sip
 %Include composer/qgslegendmodel.sip
 %Include composer/qgsnumericscalebarstyle.sip
@@ -195,25 +198,22 @@
 %Include composer/qgsscalebarstyle.sip
 %Include composer/qgssingleboxscalebarstyle.sip
 %Include composer/qgsticksscalebarstyle.sip
-%Include composer/qgscomposertexttable.sip
-%Include composer/qgscomposereffect.sip
-%Include composer/qgscomposerlegendstyle.sip
 
-%Include qgsdiagramrendererv2.sip
 %Include diagram/qgsdiagram.sip
 %Include diagram/qgshistogramdiagram.sip
 %Include diagram/qgspiediagram.sip
 %Include diagram/qgstextdiagram.sip
+%Include qgsdiagramrendererv2.sip
 
+%Include effects/qgsblureffect.sip
+%Include effects/qgscoloreffect.sip
+%Include effects/qgseffectstack.sip
+%Include effects/qgsgloweffect.sip
 %Include effects/qgsimageoperation.sip
 %Include effects/qgspainteffect.sip
-%Include effects/qgseffectstack.sip
-%Include effects/qgsblureffect.sip
-%Include effects/qgsshadoweffect.sip
-%Include effects/qgsgloweffect.sip
-%Include effects/qgstransformeffect.sip
-%Include effects/qgscoloreffect.sip
 %Include effects/qgspainteffectregistry.sip
+%Include effects/qgsshadoweffect.sip
+%Include effects/qgstransformeffect.sip
 
 %Include gps/qgsgpsconnection.sip
 %Include gps/qgsgpsconnectionregistry.sip
@@ -231,18 +231,25 @@
 %Include layertree/qgslayertreeregistrybridge.sip
 %Include layertree/qgslayertreeutils.sip
 
-%Include raster/qgsraster.sip
+%Include raster/qgsbilinearrasterresampler.sip
+%Include raster/qgsbrightnesscontrastfilter.sip
 %Include raster/qgscliptominmaxenhancement.sip
 %Include raster/qgscolorrampshader.sip
 %Include raster/qgscontrastenhancement.sip
 %Include raster/qgscontrastenhancementfunction.sip
+%Include raster/qgscubicrasterresampler.sip
+%Include raster/qgshuesaturationfilter.sip
 %Include raster/qgslinearminmaxenhancement.sip
 %Include raster/qgslinearminmaxenhancementwithclip.sip
+%Include raster/qgsmultibandcolorrenderer.sip
+%Include raster/qgspalettedrasterrenderer.sip
 %Include raster/qgspseudocolorshader.sip
+%Include raster/qgsraster.sip
 %Include raster/qgsrasterbandstats.sip
 %Include raster/qgsrasterblock.sip
 %Include raster/qgsrasterchecker.sip
 %Include raster/qgsrasterdataprovider.sip
+%Include raster/qgsrasterdrawer.sip
 %Include raster/qgsrasterfilewriter.sip
 %Include raster/qgsrasterhistogram.sip
 %Include raster/qgsrasteridentifyresult.sip
@@ -261,56 +268,49 @@
 %Include raster/qgsrastershaderfunction.sip
 %Include raster/qgsrastertransparency.sip
 %Include raster/qgsrasterviewport.sip
-%Include raster/qgsbilinearrasterresampler.sip
 %Include raster/qgssinglebandcolordatarenderer.sip
-%Include raster/qgssinglebandpseudocolorrenderer.sip
 %Include raster/qgssinglebandgrayrenderer.sip
-%Include raster/qgspalettedrasterrenderer.sip
-%Include raster/qgscubicrasterresampler.sip
-%Include raster/qgsmultibandcolorrenderer.sip
-%Include raster/qgsbrightnesscontrastfilter.sip
-%Include raster/qgshuesaturationfilter.sip
-%Include raster/qgsrasterdrawer.sip
+%Include raster/qgssinglebandpseudocolorrenderer.sip
 
+%Include symbology-ng/qgscolorbrewerpalette.sip
+%Include symbology-ng/qgscptcityarchive.sip
 %Include symbology-ng/qgsstylev2.sip
 %Include symbology-ng/qgssvgcache.sip
 %Include symbology-ng/qgssymbolv2.sip
-%Include symbology-ng/qgscolorbrewerpalette.sip
-%Include symbology-ng/qgscptcityarchive.sip
 %Include symbology-ng/qgsvectorcolorrampv2.sip
 
 %Include symbology-ng/qgs25drenderer.sip
 %Include symbology-ng/qgscategorizedsymbolrendererv2.sip
 %Include symbology-ng/qgsgraduatedsymbolrendererv2.sip
-%Include symbology-ng/qgslegendsymbolitemv2.sip
-%Include symbology-ng/qgssinglesymbolrendererv2.sip
-%Include symbology-ng/qgspointdisplacementrenderer.sip
-%Include symbology-ng/qgsrulebasedrendererv2.sip
-%Include symbology-ng/qgsinvertedpolygonrenderer.sip
 %Include symbology-ng/qgsheatmaprenderer.sip
+%Include symbology-ng/qgsinvertedpolygonrenderer.sip
+%Include symbology-ng/qgslegendsymbolitemv2.sip
+%Include symbology-ng/qgspointdisplacementrenderer.sip
 %Include symbology-ng/qgsrendererv2.sip
 %Include symbology-ng/qgsrendererv2registry.sip
+%Include symbology-ng/qgsrulebasedrendererv2.sip
+%Include symbology-ng/qgssinglesymbolrendererv2.sip
 
-%Include symbology-ng/qgssymbollayerv2.sip
-%Include symbology-ng/qgssymbollayerv2utils.sip
-%Include symbology-ng/qgsvectorfieldsymbollayer.sip
 %Include symbology-ng/qgsellipsesymbollayerv2.sip
 %Include symbology-ng/qgsfillsymbollayerv2.sip
+%Include symbology-ng/qgsgeometrygeneratorsymbollayerv2.sip
 %Include symbology-ng/qgslinesymbollayerv2.sip
 %Include symbology-ng/qgsmarkersymbollayerv2.sip
+%Include symbology-ng/qgssymbollayerv2.sip
 %Include symbology-ng/qgssymbollayerv2registry.sip
-%Include symbology-ng/qgsgeometrygeneratorsymbollayerv2.sip
+%Include symbology-ng/qgssymbollayerv2utils.sip
+%Include symbology-ng/qgsvectorfieldsymbollayer.sip
 
 %Include symbology-ng/qgssymbologyv2conversion.sip
 
 %Include dxf/qgsdxfexport.sip
 
-%Include geometry/qgsgeometry.sip
 %Include geometry/qgsabstractgeometryv2.sip
 %Include geometry/qgscircularstringv2.sip
 %Include geometry/qgscompoundcurvev2.sip
 %Include geometry/qgscurvepolygonv2.sip
 %Include geometry/qgscurvev2.sip
+%Include geometry/qgsgeometry.sip
 %Include geometry/qgsgeometrycollectionv2.sip
 %Include geometry/qgsgeometryengine.sip
 %Include geometry/qgslinestringv2.sip
