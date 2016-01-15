@@ -17,18 +17,9 @@
 
 #include "qgsfeaturerequest.h"
 #include "qgslogger.h"
+#include "qgsindexedfeature.h"
 
 class QgsAbstractGeometrySimplifier;
-
-/** Temporarily used structure to cache order by information
- * \note not available in Python bindings
- */
-class QgsIndexedFeature
-{
-  public:
-    QVector<QVariant> mIndexes;
-    QgsFeature mFeature;
-};
 
 /** \ingroup core
  * Internal feature iterator to be implemented within data providers
