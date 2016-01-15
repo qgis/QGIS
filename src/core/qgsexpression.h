@@ -784,17 +784,29 @@ class CORE_EXPORT QgsExpression
       public:
         Interval( double seconds = 0 ) : mSeconds( seconds ), mValid( true ) { }
         ~Interval();
+        //! interval length in years
         double years() { return mSeconds / YEARS;}
+        //! interval length in months
         double months() { return mSeconds / MONTHS; }
+        //! interval length in weeks
         double weeks() { return mSeconds / WEEKS;}
+        //! interval length in days
         double days() { return mSeconds / DAY;}
+        //! interval length in hours
         double hours() { return mSeconds / HOUR;}
+        //! interval length in minutus
         double minutes() { return mSeconds / MINUTE;}
+        //! interval length in seconds
         double seconds() { return mSeconds; }
+        //! getter interval validity
         bool isValid() { return mValid; }
+        //! setter interval validity
         void setValid( bool valid ) { mValid = valid; }
+        //! compare two intervals
         bool operator==( const QgsExpression::Interval& other ) const;
+        //! return an invalid interval
         static QgsExpression::Interval invalidInterVal();
+        //! convert a string to an interval
         static QgsExpression::Interval fromString( const QString& string );
 
       private:
@@ -921,6 +933,7 @@ class CORE_EXPORT QgsExpression
       public:
         NodeLiteral( const QVariant& value ) : mValue( value ) {}
 
+        /** The value of the literal. */
         inline QVariant value() const { return mValue; }
 
         virtual NodeType nodeType() const override { return ntLiteral; }
@@ -942,6 +955,7 @@ class CORE_EXPORT QgsExpression
       public:
         NodeColumnRef( const QString& name ) : mName( name ), mIndex( -1 ) {}
 
+        /** The name of the column. */
         QString name() const { return mName; }
 
         virtual NodeType nodeType() const override { return ntColumnRef; }
