@@ -218,10 +218,11 @@ void QgsGeometryCheckerSetupTab::runChecks()
       QgsMapLayerRegistry::instance()->removeMapLayers( toRemove );
     }
 
-    QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormat( layer, filename, layer->dataProvider()->encoding(), &layer->crs(), mOutputDriverName, selectedOnly );
+    QString errMsg;
+    QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormat( layer, filename, layer->dataProvider()->encoding(), &layer->crs(), mOutputDriverName, selectedOnly, &errMsg );
     if ( err != QgsVectorFileWriter::NoError )
     {
-      QMessageBox::critical( this, tr( "Layer Creation Failed" ), tr( "Failed to create the output layer." ) );
+      QMessageBox::critical( this, tr( "Layer Creation Failed" ), tr( "Failed to create the output layer: %1" ).arg( errMsg ) );
       mRunButton->setEnabled( true );
       ui.labelStatus->hide();
       unsetCursor();
