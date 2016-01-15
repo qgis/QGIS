@@ -161,6 +161,17 @@ void QgsGeometryCheckerSetupTab::selectOutputFile()
         filename += QString( ".%1" ).arg( mdata.ext );
       }
     }
+    else
+    {
+      int start, stop;
+      start = selectedFilter.indexOf( "." );
+      stop = selectedFilter.indexOf( " ", start );
+      QString ext = selectedFilter.mid( start, stop - start );
+      if ( !filename.endsWith( ext ) )
+      {
+        filename += ext;
+      }
+    }
     ui.lineEditOutput->setText( filename );
   }
 }
