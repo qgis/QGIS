@@ -53,22 +53,8 @@ set -e
 astyleit()
 {
 	$ASTYLE \
-		--preserve-date \
-		--indent-preprocessor \
-		--brackets=break \
-		--convert-tabs \
-		--indent=spaces=2 \
-		--indent-classes \
-		--indent-labels \
-		--indent-namespaces \
-		--indent-switches \
-		--one-line=keep-blocks \
-		--max-instatement-indent=40 \
-		--min-conditional-indent=-1 \
-		--suffix=none \
-		--pad=oper \
-		--pad=paren-in \
-		--unpad=paren "$1"
+		"--options=$(dirname $0)/astyle.options" \
+		"$1"
 
 	scripts/unify_includes.pl "$1"
 }
