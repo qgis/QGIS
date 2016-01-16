@@ -66,16 +66,11 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
       clonedSorted << node.cloneNode();
     }
     QDomNode layersNode = doc.elementsByTagName( "maplayers" ).at( 0 );
-    // remove old children
+    // replace old children with new ones
     QDomNodeList childNodes = layersNode.childNodes();
     for ( int i = 0; i < childNodes.size(); i++ )
     {
-      layersNode.removeChild( childNodes.at( i ) );
-    }
-    // replace with new ones
-    foreach ( QDomNode node, clonedSorted )
-    {
-      layersNode.appendChild( node );
+      layersNode.replaceChild( clonedSorted.at( i ), childNodes.at( i ) );
     }
   }
   // if a dependency is missing, we still try to load layers, since dependencies may already be loaded
@@ -131,7 +126,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
   // Now that all layers are loaded, refresh the vectorjoins to get the joined fields
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
-    QgsVectorLayer* vlayer = static_cast< QgsVectorLayer * >( layer );
+    QgsVectorLayer* vlayer = dynamic_cast< QgsVectorLayer * >( layer );
     if ( vlayer )
     {
       vlayer->createJoinCaches();
