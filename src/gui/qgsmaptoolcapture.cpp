@@ -196,7 +196,7 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent* e )
 }
 
 
-bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point )
+bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& mapPoint, const QgsPoint& layerPoint )
 {
   QgsMapCanvasTracer* tracer = QgsMapCanvasTracer::tracerForCanvas( mCanvas );
   if ( !tracer )
@@ -211,13 +211,10 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point )
     }
 
     // only accept first point if it is snapped to the graph (to vertex or edge)
-    bool res = tracer->isPointSnapped( point );
+    bool res = tracer->isPointSnapped( mapPoint );
     if ( res )
     {
-      QgsPoint layerPoint;
-      nextPoint( point, layerPoint ); // assuming the transform went fine earlier
-
-      mRubberBand->addPoint( point );
+      mRubberBand->addPoint( mapPoint );
       mCaptureCurve.addVertex( QgsPointV2( layerPoint.x(), layerPoint.y() ) );
     }
     return res;
@@ -228,7 +225,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point )
     return false;
 
   QgsTracer::PathError err;
-  QVector<QgsPoint> points = tracer->findShortestPath( pt0, point, &err );
+  QVector<QgsPoint> points = tracer->findShortestPath( pt0, mapPoint, &err );
   if ( points.isEmpty() )
     return false; // ignore the vertex - can't find path to the end point!
 
@@ -383,13 +380,13 @@ int QgsMapToolCapture::addVertex( const QgsPoint& mapPoint, const QgsPoint& laye
   bool traceCreated = false;
   if ( tracingEnabled() )
   {
-    traceCreated = tracingAddVertex( point );
+    traceCreated = tracingAddVertex( mapPoint, layerPoint );
   }
 
   if ( !traceCreated )
   {
     // ordinary digitizing
-    mRubberBand->addPoint( point );
+    mRubberBand->addPoint( mapPoint );
     mCaptureCurve.addVertex( QgsPointV2( layerPoint.x(), layerPoint.y() ) );
   }
 

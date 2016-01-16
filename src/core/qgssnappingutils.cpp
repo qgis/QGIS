@@ -395,16 +395,6 @@ QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( const QPoint& point
   return bestMatch;
 }
 
-void QgsSnappingUtils::setCurrentLayer( QgsVectorLayer* layer )
-{
-  QString oldDestCRS = mCurrentLayer ? mCurrentLayer->crs().authid() : QString();
-  QString newDestCRS = layer ? layer->crs().authid() : QString();
-  mCurrentLayer = layer;
-
-  if ( newDestCRS != oldDestCRS )
-    clearAllToLayerLocators();
-}
-
 void QgsSnappingUtils::setMapSettings( const QgsMapSettings& settings )
 {
   QString oldDestCRS = mMapSettings.hasCrsTransformEnabled() ? mMapSettings.destinationCrs().authid() : QString();
@@ -417,7 +407,12 @@ void QgsSnappingUtils::setMapSettings( const QgsMapSettings& settings )
 
 void QgsSnappingUtils::setCurrentLayer( QgsVectorLayer* layer )
 {
+  QString oldDestCRS = mCurrentLayer ? mCurrentLayer->crs().authid() : QString();
+  QString newDestCRS = layer ? layer->crs().authid() : QString();
   mCurrentLayer = layer;
+
+  if ( newDestCRS != oldDestCRS )
+    clearAllToLayerLocators();
 }
 
 void QgsSnappingUtils::setSnapToMapMode( QgsSnappingUtils::SnapToMapMode mode )
