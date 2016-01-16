@@ -474,7 +474,8 @@ void QgsVectorLayerProperties::syncToLayer( void )
 
   actionDialog->init();
 
-  labelingDialog->adaptToLayer();
+  if ( labelingDialog )
+    labelingDialog->adaptToLayer();
 
   // reset fields in label dialog
   layer->label()->setFields( layer->fields() );
