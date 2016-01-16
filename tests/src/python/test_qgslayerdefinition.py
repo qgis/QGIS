@@ -15,13 +15,18 @@ __revision__ = '$Format:%H$'
 import qgis
 
 from qgis.core import (QGis,
+                       QgsProject,
+                       QgsMapLayerRegistry,
                        QgsLayerDefinition
                        )
 
-from utilities import (TestCase, unittest)
+from utilities import (TestCase, unittest, getQgisTestApp, unitTestDataPath)
 
 from PyQt4.QtCore import QVariant
 from PyQt4.QtXml import QDomDocument
+
+QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayerDefinition(TestCase):
@@ -92,6 +97,19 @@ class TestQgsLayerDefinition(TestCase):
         dep = QgsLayerDefinition.DependencySorter(doc)
         nodes = dep.sortedLayerNodes()
         self.assertTrue(dep.hasCycle())
+
+    def testVectorAndRaster(self):
+        # Load a simple QLR containing a vector layer and a raster layer.
+        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        layers = QgsMapLayerRegistry.instance().mapLayers()
+        self.assertEqual(len(layers), 0)
+
+        (result, errMsg) = QgsLayerDefinition.loadLayerDefinition(TEST_DATA_DIR + '/vector_and_raster.qlr', QgsProject.instance().layerTreeRoot())
+        self.assertTrue(result)
+
+        layers = QgsMapLayerRegistry.instance().mapLayers()
+        self.assertEqual(len(layers), 2)
+        QgsMapLayerRegistry.instance().removeAllMapLayers()
 
 if __name__ == '__main__':
     unittest.main()
