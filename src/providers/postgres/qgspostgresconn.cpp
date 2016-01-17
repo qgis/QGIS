@@ -208,19 +208,19 @@ QgsPostgresConn::QgsPostgresConn( const QString& conninfo, bool readOnly, bool s
 
   mConn = PQconnectdb( expandedConnectionInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
 
-  // remove temporary cert/key/CA
+  // remove temporary cert/key/CA if they exist
   QgsDataSourceURI expandedUri( expandedConnectionInfo );
-  QString sslCertFile = expandedUri.param( "sslcert" );
-  sslCertFile.remove( "'" );
-  QFile::remove( sslCertFile );
-
-  QString sslKeyFile = expandedUri.param( "sslkey" );
-  sslKeyFile.remove( "'" );
-  QFile::remove( sslKeyFile );
-
-  QString sslCAFile = expandedUri.param( "sslrootcert" );
-  sslCAFile.remove( "'" );
-  QFile::remove( sslCAFile );
+  QStringList parameters;
+  parameters << "sslcert" << "sslkey" << "sslrootcert";
+  Q_FOREACH ( const QString& param, parameters )
+  {
+    if ( expandedUri.hasParam( param ) )
+    {
+      QString fileName = expandedUri.param( param );
+      fileName.remove( "'" );
+      QFile::remove( fileName );
+    }
+  }
 
   // check the connection status
   if ( PQstatus() != CONNECTION_OK )
