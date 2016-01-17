@@ -414,6 +414,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   long startIndex = 0;
   long featureCounter = 0;
   int layerPrec = 8;
+  long featCounter = 0;
 
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
@@ -424,7 +425,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   if ( doc.setContent( mParameters.value( "REQUEST_BODY" ), true, &errorMsg ) )
   {
     QDomElement docElem = doc.documentElement();
-
     if ( docElem.hasAttribute( "maxFeatures" ) )
       maxFeatures = docElem.attribute( "maxFeatures" ).toLong();
     if ( docElem.hasAttribute( "startIndex" ) )
@@ -564,7 +564,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
         QgsFeatureIterator fit = layer->getFeatures( fReq );
 
-        long featCounter = 0;
         QDomNodeList filterNodes = queryElem.elementsByTagName( "Filter" );
         if ( !filterNodes.isEmpty() )
         {
@@ -932,7 +931,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
                         searchRect.yMaximum() + 1. / pow( 10., layerPrec ) );
       layerCrs = layer->crs();
 
-      long featCounter = 0;
       if ( featureIdOk )
       {
         Q_FOREACH ( const QString &fidStr, featureIdList )
