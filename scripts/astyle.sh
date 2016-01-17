@@ -14,7 +14,6 @@
 #                                                                         #
 ###########################################################################
 
-
 for ASTYLE in $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle
 do
 	if type -p $ASTYLE >/dev/null; then
@@ -48,14 +47,15 @@ if ! type -p autopep8 >/dev/null; then
 	}
 fi
 
+ASTYLEOPTS=$(dirname $0)/astyle.options
+if type -p cygpath >/dev/null; then
+	ASTYLEOPTS="$(cygpath -w $ASTYLEOPTS)"
+fi
+
 set -e
 
-astyleit()
-{
-	$ASTYLE \
-		"--options=$(dirname $0)/astyle.options" \
-		"$1"
-
+astyleit() {
+	$ASTYLE --options="$ASTYLEOPTS" "$1"
 	scripts/unify_includes.pl "$1"
 }
 

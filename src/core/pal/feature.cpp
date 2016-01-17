@@ -324,7 +324,7 @@ int FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y
     double alpha = 0.0;
     double deltaX = 0;
     double deltaY = 0;
-    LabelPosition::Quadrant quadrant;
+    LabelPosition::Quadrant quadrant = LabelPosition::QuadrantAboveLeft;
     switch ( position )
     {
       case QgsPalLayerSettings::TopLeft:
@@ -420,7 +420,6 @@ int FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y
     double labelY = referenceY + deltaY;
 
     lPos << new LabelPosition( i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant );
-
 
     //TODO - tweak
     cost += 0.001;

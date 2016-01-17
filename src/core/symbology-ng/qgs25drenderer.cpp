@@ -84,7 +84,7 @@ Qgs25DRenderer::Qgs25DRenderer()
   setShadowSpread( 4 );
   setShadowColor( QColor( "#1111111" ) );
 
-  setHeight( 20 );
+  setHeight( "20" );
   setAngle( 40 );
 
   QgsFeatureRequest::OrderBy orderBy;

@@ -2110,8 +2110,8 @@ static QVariant fcnAzimuth( const QVariantList& values, const QgsExpressionConte
       return 0.0;
     else if ( pt1->y() > pt2->y() )
       return M_PI;
-    else return 0;
-    return 1;
+    else
+      return 0;
   }
 
   if ( pt1->y() == pt2->y() )
@@ -2120,8 +2120,8 @@ static QVariant fcnAzimuth( const QVariantList& values, const QgsExpressionConte
       return M_PI / 2;
     else if ( pt1->x() > pt2->x() )
       return M_PI + ( M_PI / 2 );
-    else return 0;
-    return 1;
+    else
+      return 0;
   }
 
   if ( pt1->x() < pt2->x() )
@@ -2150,8 +2150,6 @@ static QVariant fcnAzimuth( const QVariantList& values, const QgsExpressionConte
              + ( M_PI + ( M_PI / 2 ) );
     }
   }
-
-  return QVariant();
 }
 
 static QVariant fcnExtrude( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )

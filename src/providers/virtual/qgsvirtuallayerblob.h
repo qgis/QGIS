@@ -35,7 +35,7 @@ struct SpatialiteBlobHeader
 {
   unsigned char start;
   unsigned char endianness;
-  uint32_t srid;
+  int32_t srid;
   double mbrMinX;
   double mbrMinY;
   double mbrMaxX;

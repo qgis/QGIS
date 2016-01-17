@@ -54,8 +54,8 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y )
     linesToProcess << static_cast<QgsLineStringV2*>( curve->segmentize() );
   }
 
-  QgsMultiPolygonV2* multipolygon = linesToProcess.size() > 1 ? new QgsMultiPolygonV2() : nullptr;
-  QgsPolygonV2* polygon;
+  QgsMultiPolygonV2 *multipolygon = linesToProcess.size() > 1 ? new QgsMultiPolygonV2() : nullptr;
+  QgsPolygonV2 *polygon = nullptr;
 
   if ( !linesToProcess.empty() )
   {
