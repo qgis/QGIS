@@ -233,8 +233,10 @@ class QgsPostgresConn : public QObject
      * \param allowRequestCredentials allow credentials request through current QgsCredentials instance if the provided ones are not valid
      *
      * \returns the PostgreSQL connection
+     *
+     * \deprecated Use QgsPostgresConnPool
      */
-    static QgsPostgresConn *connectDb( const QString &connInfo, bool readOnly, bool shared = true, bool transaction = false, bool allowRequestCredentials = true );
+    Q_DECL_DEPRECATED static QgsPostgresConn *connectDb( const QString &connInfo, bool readOnly, bool shared = true, bool transaction = false, bool allowRequestCredentials = true );
 
     /**
      * Get a new PostgreSQL connection
