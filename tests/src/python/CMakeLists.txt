@@ -1,4 +1,3 @@
-SET (ENABLE_PGTEST FALSE CACHE BOOL "Enable PostgreSQL provider tests")
 SET (ENABLE_MSSQLTEST FALSE CACHE BOOL "Enable MsSQL provider tests")
 
 INCLUDE(UsePythonTest)

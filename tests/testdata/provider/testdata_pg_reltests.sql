@@ -1,6 +1,8 @@
 ﻿-- Table: qgis_test.authors
 
--- DROP TABLE qgis_test.authors;
+DROP TABLE IF EXISTS qgis_test.books_authors;
+DROP TABLE IF EXISTS qgis_test.authors;
+DROP TABLE IF EXISTS qgis_test.books;
 
 CREATE TABLE qgis_test.authors
 (
@@ -12,7 +14,6 @@ CREATE TABLE qgis_test.authors
 
 -- Table: qgis_test.books
 
--- DROP TABLE qgis_test.books;
 
 CREATE TABLE qgis_test.books
 (
@@ -24,7 +25,6 @@ CREATE TABLE qgis_test.books
 
 -- Table: qgis_test.books_authors
 
--- DROP TABLE qgis_test.books_authors;
 
 CREATE TABLE qgis_test.books_authors
 (
