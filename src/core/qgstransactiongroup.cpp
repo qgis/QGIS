@@ -26,14 +26,12 @@ QgsTransactionGroup::QgsTransactionGroup( QObject *parent )
     : QObject( parent )
     , mEditingStarting( false )
     , mEditingStopping( false )
-    , mTransaction( nullptr )
 {
 
 }
 
 QgsTransactionGroup::~QgsTransactionGroup()
 {
-  delete mTransaction;
 }
 
 bool QgsTransactionGroup::addLayer( QgsVectorLayer* layer )
@@ -63,10 +61,10 @@ bool QgsTransactionGroup::addLayer( QgsVectorLayer* layer )
 
 void QgsTransactionGroup::onEditingStarted()
 {
-  if ( mTransaction )
+  if ( !mTransaction.isNull() )
     return;
 
-  mTransaction = QgsTransaction::create( mConnString, mProviderKey );
+  mTransaction.reset( QgsTransaction::create( mConnString, mProviderKey ) );
 
   QString errorMsg;
   mTransaction->begin( errorMsg );
@@ -102,6 +100,8 @@ void QgsTransactionGroup::onCommitChanges()
       if ( layer != sender() )
         layer->commitChanges();
     }
+
+    disableTransaction();
   }
   else
   {
@@ -129,6 +129,7 @@ void QgsTransactionGroup::onRollback()
       if ( layer != triggeringLayer )
         layer->rollBack();
     }
+    disableTransaction();
   }
   else
   {
@@ -136,6 +137,17 @@ void QgsTransactionGroup::onRollback()
     QTimer::singleShot( 0, triggeringLayer, SLOT( startEditing() ) );
   }
   mEditingStopping = false;
+}
+
+void QgsTransactionGroup::disableTransaction()
+{
+  mTransaction.reset();
+
+  Q_FOREACH ( QgsVectorLayer* layer, mLayers )
+  {
+    disconnect( layer, SIGNAL( beforeCommitChanges() ), this, SLOT( onCommitChanges() ) );
+    disconnect( layer, SIGNAL( beforeRollBack() ), this, SLOT( onRollback() ) );
+  }
 }
 
 QString QgsTransactionGroup::providerKey() const

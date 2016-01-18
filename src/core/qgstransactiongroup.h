@@ -70,9 +70,11 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     bool mEditingStarting;
     bool mEditingStopping;
 
+    void disableTransaction();
+
     QSet<QgsVectorLayer*> mLayers;
     //! Only set while a transaction is active
-    QgsTransaction* mTransaction;
+    QScopedPointer<QgsTransaction> mTransaction;
     //! Layers have to be compatible with the connection string
     QString mConnString;
     QString mProviderKey;
