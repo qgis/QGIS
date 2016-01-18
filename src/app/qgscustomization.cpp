@@ -227,7 +227,15 @@ void QgsCustomizationDialog::on_actionSave_triggered( bool checked )
                      lastDir, tr( "Customization files (*.ini)" ) );
 
   if ( fileName.isEmpty() )
+  {
     return;
+  }
+
+  if ( !fileName.endsWith( ".ini", Qt::CaseInsensitive ) )
+  {
+    fileName += ".ini";
+  }
+
   QFileInfo fileInfo( fileName );
   mySettings.setValue( mLastDirSettingsName, fileInfo.absoluteDir().absolutePath() );
 
