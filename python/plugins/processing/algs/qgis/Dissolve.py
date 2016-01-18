@@ -71,10 +71,14 @@ class Dissolve(GeoAlgorithm):
                 if first:
                     attrs = inFeat.attributes()
                     tmpInGeom = QgsGeometry(inFeat.geometry())
+                    if tmpInGeom.isGeosEmpty() or not tmpInGeom.isGeosValid():
+                        continue
                     outFeat.setGeometry(tmpInGeom)
                     first = False
                 else:
                     tmpInGeom = QgsGeometry(inFeat.geometry())
+                    if tmpInGeom.isGeosEmpty() or not tmpInGeom.isGeosValid():
+                        continue
                     tmpOutGeom = QgsGeometry(outFeat.geometry())
                     try:
                         tmpOutGeom = QgsGeometry(tmpOutGeom.combine(tmpInGeom))
@@ -100,6 +104,8 @@ class Dissolve(GeoAlgorithm):
                 attrs = inFeat.attributes()
                 tempItem = attrs[fieldIdx]
                 tmpInGeom = QgsGeometry(inFeat.geometry())
+                if tmpInGeom.isGeosEmpty() or not tmpInGeom.isGeosValid():
+                    continue
 
                 if attrDict[unicode(tempItem).strip()] == None:
                     # keep attributes of first feature
