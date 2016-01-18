@@ -113,6 +113,5 @@ void QgsGeomColumnTypeThread::run()
   emit progressMessage( tr( "Table retrieval finished." ) );
 
   QgsPostgresConnPool::instance()->releaseConnection( mConn );
-  //mConn->unref();
   mConn = nullptr;
 }
