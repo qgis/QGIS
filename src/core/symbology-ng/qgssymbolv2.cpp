@@ -713,7 +713,15 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
   context.expressionContext().appendScope( mSymbolRenderContext->expressionContextScope() );
   mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_count", segmentizedGeometry->geometry()->partCount() );
-  mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_num", 1 );
+
+  const QgsGeometryCollectionV2* collection = dynamic_cast< const QgsGeometryCollectionV2* >( segmentizedGeometry->geometry() );
+  if ( !collection )
+  {
+    //if geometry is a collection, part number will be and part geometry will be set when rendering each part
+    //but for non-collections, this is just set up front
+    mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_num", 1 );
+    mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part",  QVariant::fromValue( *segmentizedGeometry ) );
+  }
 
   switch ( QgsWKBTypes::flatType( segmentizedGeometry->geometry()->wkbType() ) )
   {
@@ -781,6 +789,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
       for ( int i = 0; i < mp->numGeometries(); ++i )
       {
         mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_num", i + 1 );
+        mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part", QVariant::fromValue( QgsGeometry( mp->geometryN( i )->clone() ) ) );
 
         const QgsPointV2* point = static_cast< const QgsPointV2* >( mp->geometryN( i ) );
         _getPoint( pt, context, point );
@@ -813,6 +822,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
         if ( geomCollection )
         {
+          mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part", QVariant::fromValue( QgsGeometry( geomCollection->geometryN( i )->clone() ) ) );
           context.setGeometry( geomCollection->geometryN( i ) );
         }
         ptr = QgsConstWkbPtr( _getLineString( pts, context, ptr, clipFeaturesToExtent() ) );
@@ -846,6 +856,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
         if ( geomCollection )
         {
+          mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part", QVariant::fromValue( QgsGeometry( geomCollection->geometryN( i )->clone() ) ) );
           context.setGeometry( geomCollection->geometryN( i ) );
         }
         ptr = _getPolygon( pts, holes, context, ptr, clipFeaturesToExtent() );
