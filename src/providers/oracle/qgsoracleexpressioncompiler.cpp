@@ -67,7 +67,8 @@ QString QgsOracleExpressionCompiler::quotedIdentifier( const QString& identifier
   return QgsOracleConn::quotedIdentifier( identifier );
 }
 
-QString QgsOracleExpressionCompiler::quotedValue( const QVariant& value, bool& )
+QString QgsOracleExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
 {
+  ok = true;
   return QgsOracleConn::quotedValue( value );
 }
