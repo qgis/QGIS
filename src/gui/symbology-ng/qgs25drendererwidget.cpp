@@ -46,11 +46,17 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* s
   mAngleWidget->setValue( mRenderer->angle() );
   mWallColorButton->setColor( mRenderer->wallColor() );
   mRoofColorButton->setColor( mRenderer->roofColor() );
+  mShadowColorButton->setColor( mRenderer->shadowColor() );
+  mShadowEnabledWidget->setEnabled( mRenderer->shadowEnabled() );
+  mShadowSizeWidget->setValue( mRenderer->shadowSpread() );
 
   connect( mAngleWidget, SIGNAL( valueChanged( int ) ), this, SLOT( updateRenderer() ) );
   connect( mHeightWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( updateRenderer() ) );
   connect( mWallColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( updateRenderer() ) );
   connect( mRoofColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( updateRenderer() ) );
+  connect( mShadowColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( updateRenderer() ) );
+  connect( mShadowEnabledWidget, SIGNAL( toggled( bool ) ), this, SLOT( updateRenderer() ) );
+  connect( mShadowSizeWidget, SIGNAL( valueChanged( double ) ), this, SLOT( updateRenderer() ) );
 }
 
 QgsFeatureRendererV2* Qgs25DRendererWidget::renderer()
@@ -64,6 +70,9 @@ void Qgs25DRendererWidget::updateRenderer()
   mRenderer->setAngle( mAngleWidget->value() );
   mRenderer->setRoofColor( mRoofColorButton->color() );
   mRenderer->setWallColor( mWallColorButton->color() );
+  mRenderer->setShadowColor( mShadowColorButton->color() );
+  mRenderer->setShadowEnabled( mShadowEnabledWidget->isChecked() );
+  mRenderer->setShadowSpread( mShadowSizeWidget->value() );
 }
 
 QgsRendererV2Widget* Qgs25DRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )

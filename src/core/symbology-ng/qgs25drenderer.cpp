@@ -84,7 +84,7 @@ Qgs25DRenderer::Qgs25DRenderer()
   setShadowSpread( 4 );
   setShadowColor( QColor( "#1111111" ) );
 
-  setHeight( "20" );
+  setHeight( QString( "20" ) );
   setAngle( 40 );
 
   QgsFeatureRequest::OrderBy orderBy;
@@ -122,7 +122,7 @@ QgsFeatureRendererV2* Qgs25DRenderer::create( QDomElement& element )
 void Qgs25DRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   QgsExpressionContextScope* scope = new QgsExpressionContextScope( "2.5D Renderer" );
-  scope->setVariable( "qgis_25d_height", mHeight.field() );
+  scope->setVariable( "qgis_25d_height", mHeight.expressionOrField() );
   scope->setVariable( "qgis_25d_angle", mAngle );
   context.expressionContext().appendScope( scope );
   mSymbol->startRender( context, &fields );
@@ -195,6 +195,16 @@ QgsFillSymbolLayerV2* Qgs25DRenderer::wallLayer() const
 QgsOuterGlowEffect* Qgs25DRenderer::glowEffect() const
 {
   return static_cast<QgsOuterGlowEffect*>( mSymbol->symbolLayer( 0 )->paintEffect() );
+}
+
+bool Qgs25DRenderer::shadowEnabled() const
+{
+  return glowEffect()->enabled();
+}
+
+void Qgs25DRenderer::setShadowEnabled( bool value )
+{
+  glowEffect()->setEnabled( value );
 }
 
 QColor Qgs25DRenderer::shadowColor() const

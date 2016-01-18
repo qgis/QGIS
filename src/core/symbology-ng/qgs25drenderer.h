@@ -107,6 +107,15 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRendererV2
      */
     static Qgs25DRenderer* convertFromRenderer( QgsFeatureRendererV2* renderer );
 
+    /**
+     * Is the shadow enabled
+     */
+    bool shadowEnabled() const;
+    /**
+     * Enable or disable the shadow
+     */
+    void setShadowEnabled( bool value );
+
   private:
 
     QgsFillSymbolLayerV2* roofLayer() const;
