@@ -365,10 +365,10 @@ class GrassUtils:
             cmdpath = os.path.join(path, 'bin', 'r.out.gdal.exe')
             if not os.path.exists(cmdpath):
                 return GrassUtils.tr(
-                    'The specified GRASS folder does not contain a valid '
+                    'The specified GRASS folder "{}" does not contain a valid '
                     'set of GRASS modules. Please, go to the Processing '
                     'settings dialog, and check that the GRASS folder is '
-                    'correctly configured')
+                    'correctly configured'.format(os.path.join(path, 'bin')))
 
         if not ignorePreviousState:
             if GrassUtils.isGrassInstalled:
