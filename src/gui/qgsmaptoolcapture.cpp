@@ -302,7 +302,8 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent * e )
         if ( mCaptureMode == CapturePolygon )
           mTempRubberBand->addPoint( *mRubberBand->getPoint( 0, 0 ), false );
         QgsPointV2 pt = mCaptureCurve.endPoint();
-        mTempRubberBand->addPoint( QgsPoint( pt.x(), pt.y() ) );
+        QgsPoint mapPt = toMapCoordinates( qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ), QgsPoint( pt.x(), pt.y() ) );
+        mTempRubberBand->addPoint( mapPt );
         mTempRubberBand->addPoint( point );
       }
       else
