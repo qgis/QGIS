@@ -36,9 +36,13 @@
 
 
 QgsRuleBasedRendererV2::Rule::Rule( QgsSymbolV2* symbol, int scaleMinDenom, int scaleMaxDenom, const QString& filterExp, const QString& label, const QString& description, bool elseRule )
-    : mParent( nullptr ), mSymbol( symbol )
-    , mScaleMinDenom( scaleMinDenom ), mScaleMaxDenom( scaleMaxDenom )
-    , mFilterExp( filterExp ), mLabel( label ), mDescription( description )
+    : mParent( nullptr )
+    , mSymbol( symbol )
+    , mScaleMinDenom( scaleMinDenom )
+    , mScaleMaxDenom( scaleMaxDenom )
+    , mFilterExp( filterExp )
+    , mLabel( label )
+    , mDescription( description )
     , mElseRule( elseRule )
     , mIsActive( true )
     , mFilter( nullptr )
@@ -57,19 +61,15 @@ QgsRuleBasedRendererV2::Rule::~Rule()
 
 void QgsRuleBasedRendererV2::Rule::initFilter()
 {
-  if ( mElseRule || mFilterExp.compare( "ELSE", Qt::CaseInsensitive ) == 0 )
+  if ( mFilterExp.compare( "ELSE", Qt::CaseInsensitive ) == 0 || mFilterExp.trimmed().isEmpty() )
   {
     mElseRule = true;
     mFilter = nullptr;
   }
-  else if ( !mFilterExp.isEmpty() )
+  else
   {
     delete mFilter;
     mFilter = new QgsExpression( mFilterExp );
-  }
-  else
-  {
-    mFilter = nullptr;
   }
 }
 
@@ -442,11 +442,13 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
 
   if ( isElse() )
   {
-    if ( sf.trimmed().isEmpty() )
+    if ( mSymbol || sf.trimmed().isEmpty() )
       filter = "TRUE";
     else
       filter = sf;
   }
+  else if ( mSymbol )
+    filter = mFilterExp;
   else if ( !mFilterExp.trimmed().isEmpty() && !sf.trimmed().isEmpty() )
     filter = QString( "(%1) AND (%2)" ).arg( mFilterExp, sf );
   else if ( !mFilterExp.trimmed().isEmpty() )
