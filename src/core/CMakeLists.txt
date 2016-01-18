@@ -614,6 +614,7 @@ SET(QGIS_CORE_HDRS
   qgsfontutils.h
   qgsgeometrycache.h
   qgshistogram.h
+  qgsindexedfeature.h
   qgslayerdefinition.h
   qgslabel.h
   qgslabelattributes.h

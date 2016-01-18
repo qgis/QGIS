@@ -1,7 +1,7 @@
 /***************************************************************************
   qgs25drenderer.h - Qgs25DRenderer
+  ---------------------------------
 
- ---------------------
  begin                : 14.1.2016
  copyright            : (C) 2016 by Matthias Kuhn
  email                : matthias@opengis.ch

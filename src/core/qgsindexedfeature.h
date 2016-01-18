@@ -1,10 +1,10 @@
 /***************************************************************************
-  qgsindexedfeature - %{Cpp:License:ClassName}
+  qgsindexedfeature - QgsIndexFeature
+  -----------------------------------
 
- ---------------------
  begin                : 15.1.2016
- copyright            : (C) 2016 by mku
- email                : [your-email-here]
+ Copyright            : (C) 2016 Matthias Kuhn
+ Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
