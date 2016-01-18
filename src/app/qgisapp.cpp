@@ -7069,7 +7069,8 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   QString connString = QgsDataSourceURI( vlayer->source() ).connectionInfo();
   QString key = vlayer->providerType();
 
-  QgsTransactionGroup* tg = mTransactionGroups.find( qMakePair( key, connString ) ).value();
+  QMap< QPair< QString, QString>, QgsTransactionGroup*>::iterator tIt = mTransactionGroups.find( qMakePair( key, connString ) );
+  QgsTransactionGroup* tg = ( tIt != mTransactionGroups.end() ? tIt.value() : nullptr );
 
   bool isModified = false;
 
