@@ -47,7 +47,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
       // reuse the configuration of this virtual layer
       mReplaceLayer->setEnabled( true );
 
-      QgsVirtualLayerDefinition def = QgsVirtualLayerDefinition::fromUrl( QUrl( selected[0]->source() ) );
+      QgsVirtualLayerDefinition def = QgsVirtualLayerDefinition::fromUrl( QUrl::fromEncoded( selected[0]->source().toUtf8() ) );
 
       if ( !def.query().isEmpty() )
       {
