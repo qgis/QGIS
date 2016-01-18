@@ -73,7 +73,7 @@ Tips to prevent and resolve:
 * Install autopep8 to format python code
 * Use "scripts/astyle.sh file" to fix the now badly indented files
 * Consider using scripts/prepare-commit.sh as pre-commit hook to avoid this
-  in the future (ln -s scripts/prepare-commit.sh .git/hooks/pre-commit) or
+  in the future (ln -s ../../scripts/prepare-commit.sh .git/hooks/pre-commit) or
   run it manually before each commit.
 EOF
 
