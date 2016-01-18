@@ -122,8 +122,8 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::takeChildAt( int i )
 {
   Rule* rule = mChildren.takeAt( i );
   rule->mParent = nullptr;
+  updateElseRules();
   return rule;
-  // updateElseRules();
 }
 
 QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::findRuleByKey( const QString& key )
