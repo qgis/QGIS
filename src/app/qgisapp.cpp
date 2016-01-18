@@ -7066,6 +7066,17 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
   bool res = true;
 
+  QString connString = QgsDataSourceURI( vlayer->source() ).connectionInfo();
+  QString key = vlayer->providerType();
+
+  QgsTransactionGroup* tg = mTransactionGroups.find( qMakePair( key, connString ) ).value();
+
+  bool isModified = false;
+
+  // Assume changes if: a) the layer reports modifications or b) its transaction group was modified
+  if ( vlayer->isModified() || ( tg && tg->layers().contains( vlayer ) && tg->modified() ) )
+    isModified  = true;
+
   if ( !vlayer->isEditable() && !vlayer->isReadOnly() )
   {
     if ( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
@@ -7091,7 +7102,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
       vlayer->triggerRepaint();
     }
   }
-  else if ( vlayer->isModified() )
+  else if ( isModified )
   {
     QMessageBox::StandardButtons buttons = QMessageBox::Save | QMessageBox::Discard;
     if ( allowCancel )

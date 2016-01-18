@@ -17,6 +17,17 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
+QgsVectorLayerEditPassthrough::QgsVectorLayerEditPassthrough( QgsVectorLayer* layer )
+    : mModified( false )
+{
+  L = layer;
+}
+
+bool QgsVectorLayerEditPassthrough::isModified() const
+{
+  return mModified;
+}
+
 bool QgsVectorLayerEditPassthrough::addFeature( QgsFeature& f )
 {
 
@@ -26,6 +37,7 @@ bool QgsVectorLayerEditPassthrough::addFeature( QgsFeature& f )
   {
     f = fl.first();
     emit featureAdded( f.id() );
+    mModified = true;
     return true;
   }
   return false;
@@ -39,6 +51,7 @@ bool QgsVectorLayerEditPassthrough::addFeatures( QgsFeatureList& features )
     {
       emit featureAdded( f.id() );
     }
+    mModified = true;
     return true;
   }
   return false;
@@ -49,6 +62,7 @@ bool QgsVectorLayerEditPassthrough::deleteFeature( QgsFeatureId fid )
   if ( L->dataProvider()->deleteFeatures( QgsFeatureIds() << fid ) )
   {
     emit featureDeleted( fid );
+    mModified = true;
     return true;
   }
   return false;
@@ -61,6 +75,7 @@ bool QgsVectorLayerEditPassthrough::deleteFeatures( QgsFeatureIds fids )
     Q_FOREACH ( QgsFeatureId fid, fids )
       emit featureDeleted( fid );
 
+    mModified = true;
     return true;
   }
   return false;
@@ -73,6 +88,7 @@ bool QgsVectorLayerEditPassthrough::changeGeometry( QgsFeatureId fid, QgsGeometr
   if ( L->dataProvider()->changeGeometryValues( geomMap ) )
   {
     emit geometryChanged( fid, *geom );
+    mModified = true;
     return true;
   }
   return false;
@@ -87,6 +103,7 @@ bool QgsVectorLayerEditPassthrough::changeAttributeValue( QgsFeatureId fid, int 
   if ( L->dataProvider()->changeAttributeValues( attribMap ) )
   {
     emit attributeValueChanged( fid, field, newValue );
+    mModified = true;
     return true;
   }
   return false;
@@ -97,6 +114,7 @@ bool QgsVectorLayerEditPassthrough::addAttribute( const QgsField &field )
   if ( L->dataProvider()->addAttributes( QList<QgsField>() << field ) )
   {
     emit attributeAdded( L->dataProvider()->fieldNameIndex( field.name() ) );
+    mModified = true;
     return true;
   }
   return false;
@@ -106,7 +124,9 @@ bool QgsVectorLayerEditPassthrough::deleteAttribute( int attr )
 {
   if ( L->dataProvider()->deleteAttributes( QgsAttributeIds() << attr ) )
   {
+    mModified = true;
     emit attributeDeleted( attr );
+    mModified = true;
     return true;
   }
   return false;
@@ -114,9 +134,11 @@ bool QgsVectorLayerEditPassthrough::deleteAttribute( int attr )
 
 bool QgsVectorLayerEditPassthrough::commitChanges( QStringList& /*commitErrors*/ )
 {
+  mModified = false;
   return true;
 }
 
 void QgsVectorLayerEditPassthrough::rollBack()
 {
+  mModified = false;
 }

@@ -285,14 +285,21 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! return list of layers within map canvas.
     QList<QgsMapLayer*> layers() const;
 
-    /** Freeze/thaw the map canvas. This is used to prevent the canvas from
+    /**
+     * Freeze/thaw the map canvas. This is used to prevent the canvas from
      * responding to events while layers are being added/removed etc.
      * @param frz Boolean specifying if the canvas should be frozen (true) or
      * thawed (false). Default is true.
+     *
+     * TODO remove in QGIS 3
      */
     void freeze( bool frz = true );
 
-    /** Accessor for frozen status of canvas */
+    /**
+     * Accessor for frozen status of canvas
+     *
+     * TODO remove in QGIS 3
+     */
     bool isFrozen();
 
     //! Flag the canvas as dirty and needed a refresh

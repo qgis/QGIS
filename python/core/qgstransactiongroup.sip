@@ -32,6 +32,18 @@ class QgsTransactionGroup : QObject
     bool addLayer( QgsVectorLayer* layer );
 
     /**
+     * Get the set of layers currently managed by this transaction group.
+     *
+     * @return Layer set
+     */
+    QSet<QgsVectorLayer*> layers() const;
+
+    /**
+     * Returns true if any of the layers in this group reports a modification.
+     */
+    bool modified() const;
+
+    /**
      * Return the connection string used by this transaction group.
      * Layers need be compatible when added.
      */

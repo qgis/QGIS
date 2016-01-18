@@ -59,6 +59,21 @@ bool QgsTransactionGroup::addLayer( QgsVectorLayer* layer )
   return true;
 }
 
+QSet<QgsVectorLayer*> QgsTransactionGroup::layers() const
+{
+  return mLayers;
+}
+
+bool QgsTransactionGroup::modified() const
+{
+  Q_FOREACH ( QgsVectorLayer* layer, mLayers )
+  {
+    if ( layer->isModified() )
+      return true;
+  }
+  return false;
+}
+
 void QgsTransactionGroup::onEditingStarted()
 {
   if ( !mTransaction.isNull() )
