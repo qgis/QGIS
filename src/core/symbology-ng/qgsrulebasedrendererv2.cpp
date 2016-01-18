@@ -111,11 +111,12 @@ void QgsRuleBasedRendererV2::Rule::removeChildAt( int i )
   updateElseRules();
 }
 
-void QgsRuleBasedRendererV2::Rule::takeChild( Rule* rule )
+QgsRuleBasedRendererV2::Rule*  QgsRuleBasedRendererV2::Rule::takeChild( Rule* rule )
 {
   mChildren.removeAll( rule );
   rule->mParent = nullptr;
   updateElseRules();
+  return rule;
 }
 
 QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::takeChildAt( int i )

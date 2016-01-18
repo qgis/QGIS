@@ -317,7 +317,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         void removeChildAt( int i );
 
         //! take child rule out, set parent as null
-        void takeChild( Rule* rule );
+        Rule* takeChild( Rule* rule );
 
         //! take child rule out, set parent as null
         Rule* takeChildAt( int i );
