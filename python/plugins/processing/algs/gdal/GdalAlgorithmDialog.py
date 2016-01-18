@@ -25,7 +25,7 @@ __copyright__ = '(C) 2015, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-
+from qgis.core import *
 from PyQt4.QtGui import *
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
@@ -55,6 +55,8 @@ class GdalAlgorithmDialog(AlgorithmDialog):
 
         self.mainWidget.parametersHaveChanged()
 
+        QgsMapLayerRegistry.instance().layerWasAdded.connect(self.mainWidget.layerAdded)
+        QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(self.mainWidget.layersWillBeRemoved)
 
 class GdalParametersPanel(ParametersPanel):
 

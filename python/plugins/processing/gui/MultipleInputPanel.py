@@ -73,3 +73,16 @@ class MultipleInputPanel(BASE, WIDGET):
             self.leText.setText(
                 self.tr('%d elements selected') % len(self.selectedoptions))
             self.selectionChanged.emit()
+
+    def updateForOptions(self, options):
+        selectedoptions = []
+        selected = [self.options[i] for i in self.selectedoptions]
+        for sel in selected:
+            try:
+                idx = options.index(sel)
+                selectedoptions.append(idx)
+            except ValueError:
+                pass
+        self.options = options
+        self.setSelectedItems(selectedoptions)
+
