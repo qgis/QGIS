@@ -86,6 +86,23 @@
     {
       "type": "Feature",
       "properties": {
+        "Name": "Tisham Dhar",
+        "Committer": "Yes",
+        "First Commit Message": "MINGW/MSYS based intial windows builds/installers",
+        "First Commit Date": "05-02-2008",
+        "GIT Nickname": "whatnick"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          138.6010,
+          -34.9290
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "Name": "Nathan Woodrow",
         "Committer": "Yes",
         "First Commit Message": "Added expression based labels, simple dialog for entering expressions.",
