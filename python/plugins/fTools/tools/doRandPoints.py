@@ -69,7 +69,7 @@ class Dialog(QDialog, Ui_Dialog):
             changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
             changedFields = ftools_utils.getFieldList(changedLayer)
             for f in changedFields:
-                if f.typeName().lower() == "integer":
+                if f.typeName().lower() in ["integer", "real"]:
                     self.cmbField.addItem(unicode(f.name()))
         else:
             self.rdoUnstratified.setChecked(True)
