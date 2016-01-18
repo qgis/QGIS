@@ -25,47 +25,10 @@
      <property name="sizeConstraint">
       <enum>QLayout::SetNoConstraint</enum>
      </property>
-     <item row="0" column="0" colspan="2">
-      <widget class="QCheckBox" name="inputSelLayersCheck">
+     <item row="10" column="0" colspan="2">
+      <widget class="QCheckBox" name="allowProjDiffCheck">
        <property name="text">
-        <string>Use visible raster layers for input</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="GdalToolsInOutSelector" name="outSelector" native="true"/>
-     </item>
-     <item row="6" column="1">
-      <widget class="QSpinBox" name="srcNoDataSpin">
-       <property name="minimum">
-        <number>-100000</number>
-       </property>
-       <property name="maximum">
-        <number>65000</number>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QCheckBox" name="targetSRSCheck">
-       <property name="text">
-        <string>Target SRS</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QCheckBox" name="srcNoDataCheck">
-       <property name="text">
-        <string>&amp;Source No Data</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>&amp;Input files</string>
-       </property>
-       <property name="buddy">
-        <cstring>inSelector</cstring>
+        <string>Allow projection difference</string>
        </property>
       </widget>
      </item>
@@ -79,10 +42,16 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0" colspan="2">
-      <widget class="QCheckBox" name="inputDirCheck">
+     <item row="2" column="1">
+      <widget class="GdalToolsInOutSelector" name="inSelector" native="true"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label">
        <property name="text">
-        <string>Choose input directory instead of files</string>
+        <string>&amp;Input files</string>
+       </property>
+       <property name="buddy">
+        <cstring>inSelector</cstring>
        </property>
       </widget>
      </item>
@@ -93,15 +62,29 @@
        </property>
       </widget>
      </item>
-     <item row="10" column="0" colspan="2">
-      <widget class="QCheckBox" name="allowProjDiffCheck">
+     <item row="1" column="0" colspan="2">
+      <widget class="QCheckBox" name="inputDirCheck">
        <property name="text">
-        <string>Allow projection difference</string>
+        <string>Choose input directory instead of files</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="GdalToolsInOutSelector" name="inSelector" native="true"/>
+     <item row="4" column="1">
+      <widget class="GdalToolsInOutSelector" name="outSelector" native="true"/>
+     </item>
+     <item row="7" column="0">
+      <widget class="QCheckBox" name="targetSRSCheck">
+       <property name="text">
+        <string>Target SRS</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="2">
+      <widget class="QCheckBox" name="inputSelLayersCheck">
+       <property name="text">
+        <string>Use visible raster layers for input</string>
+       </property>
+      </widget>
      </item>
      <item row="5" column="0">
       <widget class="QCheckBox" name="resolutionCheck">
@@ -138,6 +121,13 @@
        </item>
       </widget>
      </item>
+     <item row="6" column="0">
+      <widget class="QCheckBox" name="srcNoDataCheck">
+       <property name="text">
+        <string>&amp;Source No Data</string>
+       </property>
+      </widget>
+     </item>
      <item row="3" column="1">
       <widget class="QCheckBox" name="recurseCheck">
        <property name="text">
@@ -158,6 +148,13 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item row="6" column="1">
+      <widget class="QLineEdit" name="noDataEdit">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

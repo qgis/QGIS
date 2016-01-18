@@ -52,7 +52,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
                 (self.inSelector, SIGNAL("filenameChanged()")),
                 (self.outSelector, SIGNAL("filenameChanged()")),
                 (self.resolutionComboBox, SIGNAL("currentIndexChanged(int)"), self.resolutionCheck),
-                (self.srcNoDataSpin, SIGNAL("valueChanged(int)"), self.srcNoDataCheck, 1700),
+                (self.noDataEdit, SIGNAL("textChanged( const QString & )"), self.srcNoDataCheck, 1700),
                 (self.inputDirCheck, SIGNAL("stateChanged(int)")),
                 (self.separateCheck, SIGNAL("stateChanged(int)"), None, 1700),
                 (self.targetSRSEdit, SIGNAL("textChanged(const QString &)"), self.targetSRSCheck),
@@ -145,8 +145,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         if self.separateCheck.isChecked():
             arguments.append("-separate")
         if self.srcNoDataCheck.isChecked():
-            arguments.append("-srcnodata")
-            arguments.append(str(self.srcNoDataSpin.value()))
+            nodata = self.noDataEdit.text().strip()
+            if nodata:
+                arguments.append("-srcnodata")
+                arguments.append(nodata)
         if self.targetSRSCheck.isChecked() and self.targetSRSEdit.text():
             arguments.append("-a_srs")
             arguments.append(self.targetSRSEdit.text())
