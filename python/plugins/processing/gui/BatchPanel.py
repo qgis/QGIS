@@ -223,7 +223,6 @@ class BatchPanel(BASE, WIDGET):
         elif isinstance(widget, CrsSelectionPanel):
             widget.setAuthId(value)
 
-
     def save(self):
         toSave = []
         for row in range(self.tblParameters.rowCount()):

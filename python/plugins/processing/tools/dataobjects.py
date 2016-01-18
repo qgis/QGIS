@@ -89,6 +89,7 @@ def getVectorLayers(shapetype=[-1], sorting=True):
     else:
         return vector
 
+
 def canUseVectorLayer(layer, shapetype):
     if layer.type() == QgsMapLayer.VectorLayer and layer.dataProvider().name() != "grass":
         if (layer.hasGeometryType() and
@@ -96,12 +97,14 @@ def canUseVectorLayer(layer, shapetype):
             return True
     return False
 
+
 def canUseRasterLayer(layer):
     if layer.type() == QgsMapLayer.RasterLayer:
         if layer.providerType() == 'gdal':  # only gdal file-based layers
             return True
 
     return False
+
 
 def getAllLayers():
     layers = []

@@ -85,4 +85,3 @@ class MultipleInputPanel(BASE, WIDGET):
                 pass
         self.options = options
         self.setSelectedItems(selectedoptions)
-

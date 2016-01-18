@@ -86,7 +86,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
         QgsMapLayerRegistry.instance().layerWasAdded.connect(self.mainWidget.layerAdded)
         QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(self.mainWidget.layersWillBeRemoved)
 
-
     def runAsBatch(self):
         dlg = BatchAlgorithmDialog(self.alg)
         dlg.show()

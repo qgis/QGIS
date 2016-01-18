@@ -58,6 +58,7 @@ class GdalAlgorithmDialog(AlgorithmDialog):
         QgsMapLayerRegistry.instance().layerWasAdded.connect(self.mainWidget.layerAdded)
         QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(self.mainWidget.layersWillBeRemoved)
 
+
 class GdalParametersPanel(ParametersPanel):
 
     def __init__(self, parent, alg):
