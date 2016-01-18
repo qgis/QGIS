@@ -159,6 +159,8 @@ struct VTable
 
   bool valid() const { return mValid; }
 
+  QgsFields fields() const { return mFields; }
+
 private:
   // connection
   sqlite3* mSql;
@@ -184,18 +186,20 @@ private:
 
   bool mValid;
 
+  QgsFields mFields;
+
   void init_()
   {
-    const QgsFields& fields = mLayer ? mLayer->fields() : mProvider->fields();
-    QStringList sql_fields;
+    mFields = mLayer ? mLayer->fields() : mProvider->fields();
+    QStringList sqlFields;
 
     // add a hidden field for rtree filtering
-    sql_fields << "_search_frame_ HIDDEN BLOB";
+    sqlFields << "_search_frame_ HIDDEN BLOB";
 
-    for ( int i = 0; i < fields.count(); i++ )
+    for ( int i = 0; i < mFields.count(); i++ )
     {
       QString typeName = "text";
-      switch ( fields.at( i ).type() )
+      switch ( mFields.at( i ).type() )
       {
         case QVariant::Int:
         case QVariant::UInt:
@@ -211,7 +215,7 @@ private:
           typeName = "text";
           break;
       }
-      sql_fields << fields.at( i ).name() + " " + typeName;
+      sqlFields << mFields.at( i ).name() + " " + typeName;
     }
 
     QgsVectorDataProvider* provider = mLayer ? mLayer->dataProvider() : mProvider;
@@ -221,7 +225,7 @@ private:
       // the type of a column can be declared with two numeric arguments, usually for setting numeric precision
       // we are using them to set the geometry type and srid
       // these will be reused by the provider when it will introspect the query to detect types
-      sql_fields << QString( "geometry geometry(%1,%2)" ).arg( provider->geometryType() ).arg( provider->crs().postgisSrid() );
+      sqlFields << QString( "geometry geometry(%1,%2)" ).arg( provider->geometryType() ).arg( provider->crs().postgisSrid() );
     }
 
     QgsAttributeList pkAttributeIndexes = provider->pkAttributeIndexes();
@@ -230,7 +234,7 @@ private:
       mPkColumn = pkAttributeIndexes.at( 0 ) + 1;
     }
 
-    mCreationStr = "CREATE TABLE vtable (" + sql_fields.join( "," ) + ")";
+    mCreationStr = "CREATE TABLE vtable (" + sqlFields.join( "," ) + ")";
 
     mCrs = provider->crs().postgisSrid();
   }
@@ -466,31 +470,85 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info* indexInfo )
   VTable *vtab = reinterpret_cast< VTable* >( pvtab );
   for ( int i = 0; i < indexInfo->nConstraint; i++ )
   {
+    // request for primary key filter with '='
     if (( indexInfo->aConstraint[i].usable ) &&
         ( vtab->pkColumn() == indexInfo->aConstraint[i].iColumn ) &&
         ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) )
     {
-      // request for primary key filter
       indexInfo->aConstraintUsage[i].argvIndex = 1;
       indexInfo->aConstraintUsage[i].omit = 1;
       indexInfo->idxNum = 1; // PK filter
-      indexInfo->estimatedCost = 1.0; // ??
-      //indexInfo->estimatedRows = 1;
+      indexInfo->estimatedCost = 1.0;
       indexInfo->idxStr = nullptr;
       indexInfo->needToFreeIdxStr = 0;
       return SQLITE_OK;
     }
+
+    // request for filter with a comparison operator
+    if (( indexInfo->aConstraint[i].usable ) &&
+        ( indexInfo->aConstraint[i].iColumn > 0 ) &&
+        ( indexInfo->aConstraint[i].iColumn <= vtab->fields().count() ) &&
+        (( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) || // if no PK
+         ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_GT ) ||
+         ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_LE ) ||
+         ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_LT ) ||
+         ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_GE )
+#ifdef SQLITE_INDEX_CONSTRAINT_LIKE
+         || ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_LIKE )
+#endif
+        ) )
+    {
+      indexInfo->aConstraintUsage[i].argvIndex = 1;
+      indexInfo->aConstraintUsage[i].omit = 1;
+      indexInfo->idxNum = 3; // expression filter
+      indexInfo->estimatedCost = 2.0; // probably better than no index
+
+      QString expr = vtab->fields().at( indexInfo->aConstraint[i].iColumn - 1 ).name();
+      switch ( indexInfo->aConstraint[i].op )
+      {
+        case SQLITE_INDEX_CONSTRAINT_EQ:
+          expr += " = ";
+          break;
+        case SQLITE_INDEX_CONSTRAINT_GT:
+          expr += " > ";
+          break;
+        case SQLITE_INDEX_CONSTRAINT_LE:
+          expr += " <= ";
+          break;
+        case SQLITE_INDEX_CONSTRAINT_LT:
+          expr += " < ";
+          break;
+        case SQLITE_INDEX_CONSTRAINT_GE:
+          expr += " >= ";
+          break;
+#ifdef SQLITE_INDEX_CONSTRAINT_LIKE
+        case SQLITE_INDEX_CONSTRAINT_LIKE:
+#endif
+          expr += " LIKE ";
+          break;
+        default:
+          break;
+      }
+
+      QByteArray ba = expr.toUtf8();
+      char* cp = ( char* )sqlite3_malloc( ba.size() + 1 );
+      memcpy( cp, ba.constData(), ba.size() + 1 );
+
+      indexInfo->idxStr = cp;
+      indexInfo->needToFreeIdxStr = 1;
+      return SQLITE_OK;
+    }
+
+    // request for rtree filtering
     if (( indexInfo->aConstraint[i].usable ) &&
         ( 0 == indexInfo->aConstraint[i].iColumn ) &&
         ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) )
     {
-      // request for rtree filtering
       indexInfo->aConstraintUsage[i].argvIndex = 1;
       // do not test for equality, since it is used for filtering, not to return an actual value
       indexInfo->aConstraintUsage[i].omit = 1;
       indexInfo->idxNum = 2; // RTree filter
-      indexInfo->estimatedCost = 1.0; // ??
-      //indexInfo->estimatedRows = 1;
+      indexInfo->estimatedCost = 1.0;
       indexInfo->idxStr = nullptr;
       indexInfo->needToFreeIdxStr = 0;
       return SQLITE_OK;
@@ -498,7 +556,6 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info* indexInfo )
   }
   indexInfo->idxNum = 0;
   indexInfo->estimatedCost = 10.0;
-  //indexInfo->estimatedRows = 10;
   indexInfo->idxStr = nullptr;
   indexInfo->needToFreeIdxStr = 0;
   return SQLITE_OK;
@@ -538,6 +595,35 @@ int vtableFilter( sqlite3_vtab_cursor * cursor, int idxNum, const char *idxStr, 
     int bytes = sqlite3_value_bytes( argv[0] );
     QgsRectangle r( spatialiteBlobBbox( blob, bytes ) );
     request.setFilterRect( r );
+  }
+  else if ( idxNum == 3 )
+  {
+    // comparison operator filter
+    // build an expression filter and rely on expression compiler if available
+    QString expr = idxStr;
+    switch ( sqlite3_value_type( argv[0] ) )
+    {
+      case SQLITE_INTEGER:
+        expr += QString::number( sqlite3_value_int64( argv[0] ) );
+        break;
+      case SQLITE_FLOAT:
+        expr += QString::number( sqlite3_value_double( argv[0] ) );
+        break;
+      case SQLITE_TEXT:
+      {
+        int n = sqlite3_value_bytes( argv[0] );
+        const char* t = reinterpret_cast<const char*>( sqlite3_value_text( argv[0] ) );
+        QString str( QByteArray::fromRawData( t, n ) );
+        expr += "'" + str.replace( "'", "''" ) + "'";
+        break;
+      }
+      default:
+        expr = "";
+    }
+    if ( !expr.isEmpty() )
+    {
+      request.setFilterExpression( expr );
+    }
   }
   VTableCursor *c = reinterpret_cast<VTableCursor*>( cursor );
   c->filter( request );
