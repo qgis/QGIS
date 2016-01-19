@@ -401,6 +401,11 @@ void QgsGeometryCheckerResultTab::onSelectionChanged( const QItemSelection &newS
   {
     highlightErrors();
   }
+  else
+  {
+    qDeleteAll( mCurrentRubberBands );
+    mCurrentRubberBands.clear();
+  }
   ui.pushButtonOpenAttributeTable->setEnabled( !newSel.isEmpty() );
 }
 

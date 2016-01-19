@@ -74,7 +74,8 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
         changes[newFeature.id()].append( Change( ChangeFeature, ChangeAdded ) );
       }
       // Recycle feature for part 0
-      feature.setGeometry( new QgsGeometry( QgsGeomUtils::getGeomPart( geom, 0 ) ) );
+      feature.setGeometry( new QgsGeometry( QgsGeomUtils::getGeomPart( geom, 0 )->clone() ) );
+      mFeaturePool->updateFeature( feature );
       changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
     }
     // Check if corresponding multi type is allowed

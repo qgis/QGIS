@@ -1606,7 +1606,7 @@ bool QgsVectorFileWriter::driverMetadata( const QString& driverName, QgsVectorFi
 
   for ( ; it != sDriverMetadata.constEnd(); ++it )
   {
-    if ( it.key().startsWith( driverName ) )
+    if ( it.key().startsWith( driverName ) || it.value().longName.startsWith( driverName ) )
     {
       driverMetadata = it.value();
       return true;

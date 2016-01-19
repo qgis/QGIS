@@ -69,9 +69,11 @@ void QgsGeometrySnapperDialog::updateLayers()
   comboBoxReferenceLayer->clear();
 
   // Collect layers
-  QgsMapLayer* currentLayer = mIface->mapCanvas()->currentLayer();
+  // Don't switch current layer if dialog is visible to avoid confusing the user
+  QgsMapLayer* currentLayer = isVisible() ? 0 : mIface->mapCanvas()->currentLayer();
   int curInputIdx = -1;
   int curReferenceIdx = -1;
+  int idx = 0;
   Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     if ( qobject_cast<QgsVectorLayer*>( layer ) )
@@ -83,17 +85,18 @@ void QgsGeometrySnapperDialog::updateLayers()
         comboBoxReferenceLayer->addItem( layer->name(), layer->id() );
         if ( layer->name() == curInput )
         {
-          curInputIdx = comboBoxInputLayer->count() - 1;
+          curInputIdx = idx;
         }
         else if ( curInputIdx == -1 && layer == currentLayer )
         {
-          curInputIdx = comboBoxInputLayer->count() - 1;
+          curInputIdx = idx;
         }
 
         if ( layer->name() == curReference )
         {
-          curReferenceIdx = comboBoxReferenceLayer->count() - 1;
+          curReferenceIdx = idx;
         }
+        ++idx;
       }
     }
   }
@@ -187,6 +190,14 @@ void QgsGeometrySnapperDialog::run()
     return;
   }
 
+  if ( radioButtonOutputNew->isChecked() &&
+       ( layer->dataProvider()->dataSourceUri().startsWith( lineEditOutput->text() ) ||
+         referenceLayer->dataProvider()->dataSourceUri().startsWith( lineEditOutput->text() ) ) )
+  {
+    QMessageBox::critical( this, tr( "Invalid Output Layer" ), tr( "The chosen output layer is the same as an input layer." ) );
+    return;
+  }
+
   bool selectedOnly = checkBoxInputSelectedOnly->isChecked();
 
   /** Duplicate if necessary **/
@@ -209,10 +220,11 @@ void QgsGeometrySnapperDialog::run()
       QgsMapLayerRegistry::instance()->removeMapLayers( toRemove );
     }
 
-    QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormat( layer, filename, layer->dataProvider()->encoding(), &layer->crs(), mOutputDriverName, selectedOnly );
+    QString errMsg;
+    QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormat( layer, filename, layer->dataProvider()->encoding(), &layer->crs(), mOutputDriverName, selectedOnly, &errMsg );
     if ( err != QgsVectorFileWriter::NoError )
     {
-      QMessageBox::critical( this, tr( "Layer Creation Failed" ), tr( "Failed to create the output layer." ) );
+      QMessageBox::critical( this, tr( "Layer Creation Failed" ), tr( "Failed to create the output layer: %1" ).arg( errMsg ) );
       return;
     }
     QgsVectorLayer* newlayer = new QgsVectorLayer( filename, QFileInfo( filename ).completeBaseName(), "ogr" );
@@ -302,6 +314,6 @@ void QgsGeometrySnapperDialog::run()
   {
     QMessageBox::warning( this, tr( "Errors occurred" ), tr( "<p>The following errors occured:</p><ul><li>%1</li></ul>" ).arg( snapper.getErrors().join( "</li><li>" ) ) );
   }
-  hide();
+  hide() ;
 }
 
