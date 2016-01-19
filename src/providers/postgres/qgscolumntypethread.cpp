@@ -39,8 +39,6 @@ void QgsGeomColumnTypeThread::stop()
     return;
 
   mConn->cancel();
-  QgsPostgresConnPool::instance()->releaseConnection( mConn );
-  mConn = nullptr;
   mStopped = true;
 }
 
@@ -103,6 +101,7 @@ void QgsGeomColumnTypeThread::run()
     {
       layerProperty.types.clear();
       layerProperty.srids.clear();
+      break;
     }
 
     // Now tell the layer list dialog box...
@@ -110,7 +109,7 @@ void QgsGeomColumnTypeThread::run()
   }
 
   emit progress( 0, 0 );
-  emit progressMessage( tr( "Table retrieval finished." ) );
+  emit progressMessage( mStopped ? tr( "Table retrieval stopped." ) : tr( "Table retrieval finished." ) );
 
   QgsPostgresConnPool::instance()->releaseConnection( mConn );
   mConn = nullptr;
