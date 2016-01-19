@@ -40,7 +40,7 @@ class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
       HasGeometry = PointLayer | LineLayer | PolygonLayer,
       VectorLayer = NoGeometry | HasGeometry,
       PluginLayer = 32,
-      All = RasterLayer | PolygonLayer | PluginLayer
+      All = RasterLayer | VectorLayer | PluginLayer
     };
     Q_DECLARE_FLAGS( Filters, Filter )
 
