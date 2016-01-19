@@ -46,7 +46,7 @@ void QgsMapLayerProxyModel::setExceptedLayerList( const QList<QgsMapLayer*>& exc
 
 bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( mFilters.testFlag( All ) )
+  if ( mFilters.testFlag( All ) && mExceptList.isEmpty() )
     return true;
 
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
