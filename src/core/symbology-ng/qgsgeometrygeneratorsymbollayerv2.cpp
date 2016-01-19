@@ -203,3 +203,8 @@ void QgsGeometryGeneratorSymbolLayerV2::render( QgsSymbolV2RenderContext& contex
     mSymbol->renderFeature( f, context.renderContext(), -1, context.selected() );
   }
 }
+
+void QgsGeometryGeneratorSymbolLayerV2::setColor( const QColor& color )
+{
+  mSymbol->setColor( color );
+}
