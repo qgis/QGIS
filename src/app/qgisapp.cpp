@@ -9861,7 +9861,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionNodeTool->setEnabled( isEditable && canChangeGeometry );
 
       mActionEnableTracing->setEnabled( isEditable && canAddFeatures &&
-          ( vlayer->geometryType() == QGis::Line || vlayer->geometryType() == QGis::Polygon ) );
+                                        ( vlayer->geometryType() == QGis::Line || vlayer->geometryType() == QGis::Polygon ) );
 
       if ( vlayer->geometryType() == QGis::Point )
       {
