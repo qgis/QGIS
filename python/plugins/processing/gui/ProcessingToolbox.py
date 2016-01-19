@@ -222,9 +222,9 @@ class ProcessingToolbox(BASE, WIDGET):
             message = alg.checkBeforeOpeningParametersDialog()
             if message:
                 dlg = MessageDialog()
-                dlg.setTitle(self.tr('Missing dependency'))
+                dlg.setTitle(self.tr('Error executing algorithm'))
                 dlg.setMessage(
-                    self.tr('<h3>Missing dependency. This algorithm cannot '
+                    self.tr('<h3>This algorithm cannot '
                             'be run :-( </h3>\n%s') % message)
                 dlg.exec_()
                 return

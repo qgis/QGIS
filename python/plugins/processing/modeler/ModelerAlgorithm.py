@@ -511,6 +511,12 @@ class ModelerAlgorithm(GeoAlgorithm):
         else:
             return 'modeler:' + os.path.basename(self.descriptionFile)[:-6].lower()
 
+    def checkBeforeOpeningParametersDialog(self):
+        for alg in self.algs.values():
+            algInstance = ModelerUtils.getAlgorithm(alg.consoleName)
+            if algInstance is None:
+                return "The model you are trying to run contains an algorithm that is not available: <i>%s</i>" % alg.consoleName
+
     def setModelerView(self, dialog):
         self.modelerdialog = dialog
 
