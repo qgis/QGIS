@@ -183,6 +183,11 @@ class QgsPostgresConn : public QObject
     Q_OBJECT
 
   public:
+    /*
+     * @param shared allow using a shared connection. Should never be
+     *        called from a thread other than the main one.
+     *        An assertion guards against such programmatic error.
+     */
     static QgsPostgresConn *connectDb( QString connInfo, bool readOnly, bool shared = true, bool transaction = false );
 
     void ref() { ++mRef; }

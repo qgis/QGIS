@@ -148,6 +148,10 @@ QgsPostgresConn *QgsPostgresConn::connectDb( QString conninfo, bool readonly, bo
 
   if ( shared )
   {
+    // sharing connection between threads is not safe
+    // See http://hub.qgis.org/issues/13141
+    Q_ASSERT( QApplication::instance()->thread() == QThread::currentThread() );
+
     if ( connections.contains( conninfo ) )
     {
       QgsDebugMsg( QString( "Using cached connection for %1" ).arg( conninfo ) );
