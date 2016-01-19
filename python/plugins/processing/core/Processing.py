@@ -106,8 +106,8 @@ class Processing:
         try:
             provider.unload()
             Processing.providers.remove(provider)
-            ProcessingConfig.readSettings()
-            Processing.updateAlgsList()
+            del Processing.algs[provider.getName()]
+            Processing.fireAlgsListHasChanged()
         except:
             # This try catch block is here to avoid problems if the
             # plugin with a provider is unloaded after the Processing
