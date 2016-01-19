@@ -550,9 +550,7 @@ class Grass7Algorithm(GeoAlgorithm):
         return 'grass7:' + self.name[:self.name.find(' ')]
 
     def checkBeforeOpeningParametersDialog(self):
-        msg = Grass7Utils.checkGrass7IsInstalled()
-        if msg is not None:
-            return msg
+        return Grass7Utils.checkGrass7IsInstalled()
 
     def checkParameterValuesBeforeExecuting(self):
         if self.module:

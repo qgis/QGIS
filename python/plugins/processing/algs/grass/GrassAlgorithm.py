@@ -493,9 +493,7 @@ class GrassAlgorithm(GeoAlgorithm):
         return 'grass:' + self.name[:self.name.find(' ')]
 
     def checkBeforeOpeningParametersDialog(self):
-        msg = GrassUtils.checkGrassIsInstalled()
-        if msg is not None:
-            return msg
+        return GrassUtils.checkGrassIsInstalled()
 
     def checkParameterValuesBeforeExecuting(self):
         name = self.commandLineName().replace('.', '_')[len('grass:'):]
