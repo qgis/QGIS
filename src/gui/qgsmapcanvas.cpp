@@ -315,6 +315,11 @@ void QgsMapCanvas::enableAntiAliasing( bool theFlag )
     mMapOverview->enableAntiAliasing( theFlag );
 } // anti aliasing
 
+void QgsMapCanvas::enableMapTileRendering( bool theFlag )
+{
+  mSettings.setFlag( QgsMapSettings::RenderMapTile, theFlag );
+}
+
 void QgsMapCanvas::useImageToRender( bool theFlag )
 {
   Q_UNUSED( theFlag );
@@ -1865,6 +1870,7 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
     setExtent( tmpSettings.extent() );
     setRotation( tmpSettings.rotation() );
     mSettings.datumTransformStore() = tmpSettings.datumTransformStore();
+    enableMapTileRendering( tmpSettings.testFlag( QgsMapSettings::RenderMapTile ) );
 
     clearExtentHistory(); // clear the extent history on project load
   }

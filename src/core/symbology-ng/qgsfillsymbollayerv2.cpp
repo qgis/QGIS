@@ -1571,6 +1571,17 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
   applyDataDefinedSettings( context );
 
   p->setPen( QPen( Qt::NoPen ) );
+
+  QTransform bkTransform = mBrush.transform();
+  if ( context.renderContext().testFlag( QgsRenderContext::RenderMapTile ) )
+  {
+    //transform brush to upper left corner of geometry bbox
+    QPointF leftCorner = points.boundingRect().topLeft();
+    QTransform t = mBrush.transform();
+    t.translate( leftCorner.x(), leftCorner.y() );
+    mBrush.setTransform( t );
+  }
+
   if ( context.selected() )
   {
     QColor selColor = context.renderContext().selectionColor();
@@ -1581,18 +1592,13 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
     _renderPolygon( p, points, rings, context );
   }
 
-  if ( qgsDoubleNear( mNextAngle, 0.0 ) )
-  {
-    p->setBrush( mBrush );
-  }
-  else
+  if ( !qgsDoubleNear( mNextAngle, 0.0 ) )
   {
     QTransform t = mBrush.transform();
     t.rotate( mNextAngle );
-    QBrush rotatedBrush = mBrush;
-    rotatedBrush.setTransform( t );
-    p->setBrush( rotatedBrush );
+    mBrush.setTransform( t );
   }
+  p->setBrush( mBrush );
   _renderPolygon( p, points, rings, context );
   if ( mOutline )
   {
@@ -1606,6 +1612,8 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
       }
     }
   }
+
+  mBrush.setTransform( bkTransform );
 }
 
 bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )

@@ -281,6 +281,9 @@ class QgsMapCanvas : QGraphicsView
     //! true if antialising is enabled
     bool antiAliasingEnabled() const;
 
+    //! sets map tile rendering flag
+    void enableMapTileRendering( bool theFlag );
+
     //! Select which Qt class to render with
     //! @deprecated since 2.4 - does nothing because now we always render to QImage
     void useImageToRender( bool theFlag ) /Deprecated/;

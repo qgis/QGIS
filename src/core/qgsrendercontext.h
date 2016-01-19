@@ -58,6 +58,7 @@ class CORE_EXPORT QgsRenderContext
       UseRenderingOptimization = 0x08, //!< Enable vector simplification and other rendering optimizations
       DrawSelection      = 0x10,  //!< Whether vector selections should be shown in the rendered map
       DrawSymbolBounds   = 0x20,  //!< Draw bounds of symbols (for debugging/testing)
+      RenderMapTile = 0x40, //!< Draw map such that there are no problems between adjacent tiles
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

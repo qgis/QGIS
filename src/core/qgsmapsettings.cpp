@@ -596,6 +596,13 @@ void QgsMapSettings::readXML( QDomNode& theNode )
     setRotation( rot );
   }
 
+  //render map tile
+  QDomElement renderMapTileElem = theNode.firstChildElement( "rendermaptile" );
+  if ( !renderMapTileElem.isNull() )
+  {
+    setFlag( QgsMapSettings::RenderMapTile, renderMapTileElem.text() == "1" ? true : false );
+  }
+
   mDatumTransformStore.readXML( theNode );
 }
 
@@ -625,6 +632,12 @@ void QgsMapSettings::writeXML( QDomNode& theNode, QDomDocument& theDoc )
   QDomElement srsNode = theDoc.createElement( "destinationsrs" );
   theNode.appendChild( srsNode );
   destinationCrs().writeXML( srsNode, theDoc );
+
+  //render map tile
+  QDomElement renderMapTileElem = theDoc.createElement( "rendermaptile" );
+  QDomText renderMapTileText = theDoc.createTextNode( testFlag( QgsMapSettings::RenderMapTile ) ? "1" : "0" );
+  renderMapTileElem.appendChild( renderMapTileText );
+  theNode.appendChild( renderMapTileElem );
 
   mDatumTransformStore.writeXML( theNode, theDoc );
 }

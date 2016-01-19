@@ -699,6 +699,8 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
   bool deleteSegmentizedGeometry = false;
   context.setGeometry( geom->geometry() );
 
+  bool tileMapRendering = context.testFlag( QgsRenderContext::RenderMapTile );
+
   //convert curve types to normal point/line/polygon ones
   if ( geom->geometry()->hasCurvedSegments() )
   {
@@ -748,7 +750,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
         QgsDebugMsg( "linestring can be drawn only with line symbol!" );
         break;
       }
-      _getLineString( pts, context, segmentizedGeometry->asWkb(), clipFeaturesToExtent() );
+      _getLineString( pts, context, segmentizedGeometry->asWkb(), !tileMapRendering && clipFeaturesToExtent() );
       static_cast<QgsLineSymbolV2*>( this )->renderPolyline( pts, &feature, context, layer, selected );
     }
     break;
@@ -761,7 +763,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
         QgsDebugMsg( "polygon can be drawn only with fill symbol!" );
         break;
       }
-      _getPolygon( pts, holes, context, segmentizedGeometry->asWkb(), clipFeaturesToExtent() );
+      _getPolygon( pts, holes, context, segmentizedGeometry->asWkb(), !tileMapRendering && clipFeaturesToExtent() );
       static_cast<QgsFillSymbolV2*>( this )->renderPolygon( pts, ( !holes.isEmpty() ? &holes : nullptr ), &feature, context, layer, selected );
     }
     break;
@@ -815,7 +817,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
         {
           context.setGeometry( geomCollection->geometryN( i ) );
         }
-        ptr = QgsConstWkbPtr( _getLineString( pts, context, ptr, clipFeaturesToExtent() ) );
+        ptr = QgsConstWkbPtr( _getLineString( pts, context, ptr, !tileMapRendering && clipFeaturesToExtent() ) );
         static_cast<QgsLineSymbolV2*>( this )->renderPolyline( pts, &feature, context, layer, selected );
       }
     }
@@ -848,7 +850,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
         {
           context.setGeometry( geomCollection->geometryN( i ) );
         }
-        ptr = _getPolygon( pts, holes, context, ptr, clipFeaturesToExtent() );
+        ptr = _getPolygon( pts, holes, context, ptr, !tileMapRendering && clipFeaturesToExtent() );
         static_cast<QgsFillSymbolV2*>( this )->renderPolygon( pts, ( !holes.isEmpty() ? &holes : nullptr ), &feature, context, layer, selected );
       }
       break;
