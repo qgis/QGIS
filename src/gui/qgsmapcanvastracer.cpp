@@ -17,6 +17,7 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas* canvas, QgsMessageBar* mes
     : mCanvas( canvas )
     , mMessageBar( messageBar )
     , mLastMessage( nullptr )
+    , mActionEnableTracing( nullptr )
 {
   sTracers.insert( canvas, this );
 
@@ -26,10 +27,6 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas* canvas, QgsMessageBar* mes
   connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( invalidateGraph() ) );
   connect( canvas, SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( onCurrentLayerChanged() ) );
   connect( canvas->snappingUtils(), SIGNAL( configChanged() ), this, SLOT( invalidateGraph() ) );
-
-  mActionEnableTracing = new QAction( QIcon( QgsApplication::getThemeIcon( "/mActionTracing.png" ) ), tr( "Enable Tracing" ), this );
-  mActionEnableTracing->setShortcut( Qt::Key_T );
-  mActionEnableTracing->setCheckable( true );
 
   // arbitrarily chosen limit that should allow for fairly fast initialization
   // of the underlying graph structure

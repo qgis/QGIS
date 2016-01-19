@@ -1981,10 +1981,10 @@ void QgisApp::createToolBars()
   mDigitizeToolBar->insertWidget( mActionMoveFeature, tbAddCircularString );
 
   // Cad toolbar
-  mAdvancedDigitizeToolBar->insertAction( mActionUndo, mAdvancedDigitizingDockWidget->enableAction() );
+  mAdvancedDigitizeToolBar->insertAction( mActionEnableTracing, mAdvancedDigitizingDockWidget->enableAction() );
 
   mTracer = new QgsMapCanvasTracer( mMapCanvas, messageBar() );
-  mAdvancedDigitizeToolBar->insertAction( mActionUndo, mTracer->actionEnableTracing() );
+  mTracer->setActionEnableTracing( mActionEnableTracing );
 }
 
 void QgisApp::createStatusBar()
@@ -9739,7 +9739,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionMergeFeatures->setEnabled( false );
     mActionMergeFeatureAttributes->setEnabled( false );
     mActionRotatePointSymbols->setEnabled( false );
-    mTracer->actionEnableTracing()->setEnabled( false );
+    mActionEnableTracing->setEnabled( false );
 
     mActionPinLabels->setEnabled( false );
     mActionShowHideLabels->setEnabled( false );
@@ -9860,7 +9860,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionRotateFeature->setEnabled( isEditable && canChangeGeometry );
       mActionNodeTool->setEnabled( isEditable && canChangeGeometry );
 
-      mTracer->actionEnableTracing()->setEnabled( isEditable && canAddFeatures &&
+      mActionEnableTracing->setEnabled( isEditable && canAddFeatures &&
           ( vlayer->geometryType() == QGis::Line || vlayer->geometryType() == QGis::Polygon ) );
 
       if ( vlayer->geometryType() == QGis::Point )

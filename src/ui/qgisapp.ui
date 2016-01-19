@@ -381,6 +381,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="mActionEnableTracing"/>
    <addaction name="mActionUndo"/>
    <addaction name="mActionRedo"/>
    <addaction name="mActionRotateFeature"/>
@@ -2396,6 +2397,21 @@ Acts on currently active editable layer</string>
   <action name="mActionReportaBug">
    <property name="text">
     <string>Report an issue</string>
+   </property>
+  </action>
+  <action name="mActionEnableTracing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionTracing.png</normaloff>:/images/themes/default/mActionTracing.png</iconset>
+   </property>
+   <property name="text">
+    <string>Enable Tracing</string>
+   </property>
+   <property name="shortcut">
+    <string>T</string>
    </property>
   </action>
  </widget>

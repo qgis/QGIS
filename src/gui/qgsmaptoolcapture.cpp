@@ -139,7 +139,7 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
 bool QgsMapToolCapture::tracingEnabled()
 {
   QgsMapCanvasTracer* tracer = QgsMapCanvasTracer::tracerForCanvas( mCanvas );
-  return tracer && tracer->actionEnableTracing()->isChecked();
+  return tracer && tracer->actionEnableTracing() && tracer->actionEnableTracing()->isChecked();
 }
 
 
