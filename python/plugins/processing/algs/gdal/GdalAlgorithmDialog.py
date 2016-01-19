@@ -31,6 +31,7 @@ from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
+from processing.gui.NumberInputPanel import NumberInputPanel
 
 
 class GdalAlgorithmDialog(AlgorithmDialog):
@@ -90,6 +91,8 @@ class GdalParametersPanel(ParametersPanel):
                 w.stateChanged.connect(self.parametersHaveChanged)
             elif isinstance(w, MultipleInputPanel):
                 w.selectionChanged.connect(self.parametersHaveChanged)
+            elif isinstance(w, NumberInputPanel):
+                w.hasChanged.connect(self.parametersHaveChanged)
 
     def parametersHaveChanged(self):
         try:

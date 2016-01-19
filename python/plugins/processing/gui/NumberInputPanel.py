@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt4 import uic
+from PyQt4.QtCore import pyqtSignal
 
 from math import log10, floor
 from processing.gui.NumberInputDialog import NumberInputDialog
@@ -38,6 +39,8 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class NumberInputPanel(BASE, WIDGET):
+
+    hasChanged = pyqtSignal()
 
     def __init__(self, number, minimum, maximum, isInteger):
         super(NumberInputPanel, self).__init__(None)
@@ -73,6 +76,8 @@ class NumberInputPanel(BASE, WIDGET):
 
         self.btnCalc.clicked.connect(self.showNumberInputDialog)
 
+        self.spnValue.valueChanged.connect(lambda: self.hasChanged.emit())
+
     def showNumberInputDialog(self):
         dlg = NumberInputDialog(self.isInteger)
         dlg.exec_()
@@ -90,3 +95,5 @@ class NumberInputPanel(BASE, WIDGET):
             return round(step, -int(floor(log10(step))))
         else:
             return 1.0
+
+
