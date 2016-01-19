@@ -589,11 +589,11 @@ QString QgsCategorizedSymbolRendererV2::filter( const QgsFields& fields )
   }
   else if ( defaultActive )
   {
-    return QString( "(%1) NOT IN (%2)" ).arg( mAttrName, inactiveValues );
+    return QString( "(\"%1\") NOT IN (%2)" ).arg( mAttrName, inactiveValues );
   }
   else
   {
-    return QString( "(%1) IN (%2)" ).arg( mAttrName, activeValues );
+    return QString( "(\"%1\") IN (%2)" ).arg( mAttrName, activeValues );
   }
 }
 
