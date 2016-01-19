@@ -1077,10 +1077,10 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            QObject::tr( "Allows you to specify the AltitudeMode to use for KML geometries. "
                                         "This will only affect 3D geometries and must be one of the valid KML options." ),
                            QStringList()
-                           << "relativeToGround"
                            << "clampToGround"
+                           << "relativeToGround"
                            << "absolute",
-                           "relativeToGround" // Default value
+                           "clampToGround" // Default value
                          ) );
 
   driverMetadata.insert( "KML",
