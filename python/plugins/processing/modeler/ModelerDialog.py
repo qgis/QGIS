@@ -164,10 +164,6 @@ class ModelerDialog(BASE, WIDGET):
         self.btnEditHelp.setIcon(QIcon(os.path.join(pluginPath, 'images', 'edithelp.png')))
         self.btnRun.setIcon(QIcon(os.path.join(pluginPath, 'images', 'runalgorithm.png')))
 
-        # Fill trees with inputs and algorithms
-        self.fillInputsTree()
-        self.fillAlgorithmTree()
-
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(self.tr('Search...'))
         if hasattr(self.textName, 'setPlaceholderText'):
@@ -197,6 +193,9 @@ class ModelerDialog(BASE, WIDGET):
         else:
             self.alg = ModelerAlgorithm()
             self.alg.modelerdialog = self
+
+        self.fillInputsTree()
+        self.fillAlgorithmTree()
 
         self.view.centerOn(0, 0)
         self.alg.setModelerView(self)
@@ -483,6 +482,8 @@ class ModelerDialog(BASE, WIDGET):
             # Add algorithms
             for alg in algs:
                 if not alg.showInModeler or alg.allowOnlyOpenedLayers:
+                    continue
+                if alg.commandLineName() == self.alg.commandLineName():
                     continue
                 if text == '' or text.lower() in alg.name.lower():
                     if alg.group in groups:
