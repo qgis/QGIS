@@ -368,7 +368,14 @@ class SpatiaLiteDBConnector(DBConnector):
         indexes = c.fetchall()
 
         for i, idx in enumerate(indexes):
-            num, name, unique = idx
+            # sqlite has changed the number of columns returned by index_list since 3.8.9
+            # I am not using self.getInfo() here because this behaviour
+            # can be changed back without notice as done for index_info, see:
+            # http://repo.or.cz/sqlite.git/commit/53555d6da78e52a430b1884b5971fef33e9ccca4
+            if len(idx) == 3:
+                num, name, unique = idx
+            if len(idx) == 5:
+                num, name, unique, createdby, partial = idx
             sql = u"PRAGMA index_info(%s)" % (self.quoteId(name))
             self._execute(c, sql)
 
