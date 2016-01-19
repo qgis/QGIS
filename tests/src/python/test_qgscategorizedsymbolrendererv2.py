@@ -62,11 +62,11 @@ class TestQgsCategorizedSymbolRendererV2(TestCase):
         self.assertEqual(renderer.filter(), '')
         # remove categories, leaving default
         assert renderer.updateCategoryRenderState(0, False)
-        self.assertEqual(renderer.filter(), "(\"field\") NOT IN ('a')")
+        self.assertEqual(renderer.filter(), "(\"field\") NOT IN ('a') OR (\"field\") IS NULL")
         assert renderer.updateCategoryRenderState(1, False)
-        self.assertEqual(renderer.filter(), "(\"field\") NOT IN ('a','b')")
+        self.assertEqual(renderer.filter(), "(\"field\") NOT IN ('a','b') OR (\"field\") IS NULL")
         assert renderer.updateCategoryRenderState(2, False)
-        self.assertEqual(renderer.filter(), "(\"field\") NOT IN ('a','b','c')")
+        self.assertEqual(renderer.filter(), "(\"field\") NOT IN ('a','b','c') OR (\"field\") IS NULL")
         # remove default category
         assert renderer.updateCategoryRenderState(3, False)
         self.assertEqual(renderer.filter(), "FALSE")
