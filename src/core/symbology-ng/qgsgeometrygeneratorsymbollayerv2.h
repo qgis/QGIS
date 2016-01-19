@@ -63,6 +63,8 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayerV2 : public QgsSymbolLayerV2
      */
     QString geometryExpression() const { return mExpression->expression(); }
 
+    void setColor( const QColor& color ) override;
+
     virtual QgsSymbolV2* subSymbol() override { return mSymbol; }
 
     virtual bool setSubSymbol( QgsSymbolV2* symbol ) override;
