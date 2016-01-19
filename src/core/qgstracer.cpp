@@ -549,6 +549,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer*>& layers )
     disconnect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
     disconnect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
     disconnect( layer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, QgsGeometry& ) ) );
+    disconnect( layer, SIGNAL( destroyed( QObject* ) ), this, SLOT( onLayerDestroyed( QObject* ) ) );
   }
 
   mLayers = layers;
@@ -558,6 +559,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer*>& layers )
     connect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
     connect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
     connect( layer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, QgsGeometry& ) ) );
+    connect( layer, SIGNAL( destroyed( QObject* ) ), this, SLOT( onLayerDestroyed( QObject* ) ) );
   }
 
   invalidateGraph();
@@ -615,6 +617,13 @@ void QgsTracer::onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom )
 {
   Q_UNUSED( fid );
   Q_UNUSED( geom );
+  invalidateGraph();
+}
+
+void QgsTracer::onLayerDestroyed( QObject* obj )
+{
+  // remove the layer before it is completely invalid (static_cast should be the safest cast)
+  mLayers.removeAll( static_cast<QgsVectorLayer*>( obj ) );
   invalidateGraph();
 }
 

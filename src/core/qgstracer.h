@@ -106,6 +106,7 @@ class CORE_EXPORT QgsTracer : public QObject
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
     void onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom );
+    void onLayerDestroyed( QObject* obj );
 
   private:
     //! Graph data structure for path searching
