@@ -51,6 +51,9 @@ class PostGisDBConnector(DBConnector):
         username = uri.username() or os.environ.get('PGUSER') or os.environ.get('USER')
         password = uri.password() or os.environ.get('PGPASSWORD')
 
+        self.dbname = uri.database() or os.environ.get('PGDATABASE') or username
+        uri.setDatabase(self.dbname)
+
         expandedConnInfo = self._connectionInfo()
         try:
             self.connection = psycopg2.connect(expandedConnInfo.encode('utf-8'))
