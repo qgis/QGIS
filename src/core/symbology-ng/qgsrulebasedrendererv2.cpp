@@ -70,7 +70,7 @@ void QgsRuleBasedRendererV2::Rule::initFilter()
     delete mFilter;
     mFilter = nullptr;
   }
-  else if ( !mFilterExp.trimmed().isEmpty() )
+  else if ( mFilterExp.trimmed().isEmpty() )
   {
     mElseRule = false;
     delete mFilter;
