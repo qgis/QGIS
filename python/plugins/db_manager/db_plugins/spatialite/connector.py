@@ -19,6 +19,7 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+import os
 
 from qgis.PyQt.QtCore import QFile
 from qgis.PyQt.QtWidgets import QApplication
@@ -26,7 +27,7 @@ from qgis.PyQt.QtWidgets import QApplication
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
 
-from pyspatialite import dbapi2 as sqlite
+from pysqlite2 import dbapi2 as sqlite
 
 
 def classFactory():
@@ -44,7 +45,14 @@ class SpatiaLiteDBConnector(DBConnector):
 
         try:
             self.connection = sqlite.connect(self._connectionInfo())
-
+            self.connection.enable_load_extension(True)
+            c = self._get_cursor()
+            if os.name == 'nt':
+                sql = "SELECT load_extension('spatialite4.dll')"
+            else:
+                sql = "SELECT load_extension('libspatialite')"
+            self._execute(c, sql)
+            c.close()
         except self.connection_error_types() as e:
             raise ConnectionError(e)
 
