@@ -83,10 +83,12 @@ Qgs25DRenderer::Qgs25DRenderer()
   mSymbol->appendSymbolLayer( walls );
   mSymbol->appendSymbolLayer( roof );
 
+  QgsEffectStack* effectStack = new QgsEffectStack();
   QgsOuterGlowEffect* glowEffect = new QgsOuterGlowEffect();
   glowEffect->setBlurLevel( 5 );
   glowEffect->setSpreadUnit( QgsSymbolV2::MapUnit );
-  floor->setPaintEffect( glowEffect );
+  effectStack->appendEffect( glowEffect );
+  floor->setPaintEffect( effectStack );
 
   // These methods must only be used after the above initialisation!
 
@@ -176,7 +178,8 @@ QgsFillSymbolLayerV2* Qgs25DRenderer::wallLayer() const
 
 QgsOuterGlowEffect* Qgs25DRenderer::glowEffect() const
 {
-  return static_cast<QgsOuterGlowEffect*>( mSymbol->symbolLayer( 0 )->paintEffect() );
+  QgsEffectStack* stack = static_cast<QgsEffectStack*>( mSymbol->symbolLayer( 0 )->paintEffect() );
+  return static_cast<QgsOuterGlowEffect*>( stack->effect( 0 ) );
 }
 
 bool Qgs25DRenderer::shadowEnabled() const
