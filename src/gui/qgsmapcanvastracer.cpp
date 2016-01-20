@@ -84,6 +84,7 @@ void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVerte
 
 void QgsMapCanvasTracer::configure()
 {
+  setCrsTransformEnabled( mCanvas->mapSettings().hasCrsTransformEnabled() );
   setDestinationCrs( mCanvas->mapSettings().destinationCrs() );
   setExtent( mCanvas->extent() );
 

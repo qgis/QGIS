@@ -20,6 +20,11 @@ class QgsTracer : QObject
     //! Set layers used for tracing
     void setLayers( const QList<QgsVectorLayer*>& layers );
 
+    //! Return true if reprojection to destination CRS is enabled
+    bool hasCrsTransformEnabled() const;
+    //! Set whether to do reprojection to destination CRS
+    void setCrsTransformEnabled( bool enabled );
+
     //! Get CRS used for tracing
     QgsCoordinateReferenceSystem destinationCrs() const;
     //! Set CRS used for tracing
