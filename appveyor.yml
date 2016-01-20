@@ -2,7 +2,7 @@ version: 2.13.0-{build}
 
 platform:
   - x86_64
-  - x86
+#  - x86
 
 configuration: Debug
 clone_folder: c:\src\qgis
