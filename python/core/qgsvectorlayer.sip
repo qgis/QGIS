@@ -653,8 +653,8 @@ class QgsVectorLayer : QgsMapLayer
      * @param msgError
      * @return the number of styles related to current layer
      */
-    virtual int listStylesInDatabase( QStringList &ids, QStringList &names,
-                                      QStringList &descriptions, QString &msgError );
+    virtual int listStylesInDatabase( QStringList &ids /Out/, QStringList &names /Out/,
+                                      QStringList &descriptions /Out/, QString &msgError /Out/ );
 
     /**
      * Will return the named style corresponding to style id provided
