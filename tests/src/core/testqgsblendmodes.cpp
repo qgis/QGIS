@@ -237,7 +237,7 @@ bool TestQgsBlendModes::imageCheck( const QString& theTestType )
   QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( *mMapSettings );
-  myChecker.setColorTolerance( 1 );
+  myChecker.setColorTolerance( 5 );
   bool myResultFlag = myChecker.runTest( theTestType, 20 );
   mReport += myChecker.report();
   return myResultFlag;
