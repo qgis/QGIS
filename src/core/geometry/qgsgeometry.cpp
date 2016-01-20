@@ -584,17 +584,22 @@ int QgsGeometry::addRing( QgsCurveV2* ring )
 
 int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType )
 {
+  QList<QgsPointV2> l;
+  convertPointList( points, l );
+  return addPart( l, geomType );
+}
+
+int QgsGeometry::addPart( const QList<QgsPointV2> &points, QGis::GeometryType geomType )
+{
   QgsAbstractGeometryV2* partGeom = nullptr;
   if ( points.size() == 1 )
   {
-    partGeom = new QgsPointV2( points[0].x(), points[0].y() );
+    partGeom = new QgsPointV2( points[0] );
   }
   else if ( points.size() > 1 )
   {
     QgsLineStringV2* ringLine = new QgsLineStringV2();
-    QList< QgsPointV2 > partPoints;
-    convertPointList( points, partPoints );
-    ringLine->setPoints( partPoints );
+    ringLine->setPoints( points );
     partGeom = ringLine;
   }
   return addPart( partGeom, geomType );

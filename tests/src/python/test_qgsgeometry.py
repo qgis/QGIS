@@ -20,6 +20,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsFeature,
     QgsPoint,
+    QgsPointV2,
     QgsCoordinateTransform,
     QgsRectangle,
     QgsWKBTypes,
@@ -1350,6 +1351,23 @@ class TestQgsGeometry(unittest.TestCase):
         assert line.boundingBox().isNull()
 
     def testAddPart(self):
+        # add a part to a multipoint
+        points = [QgsPoint(0, 0), QgsPoint(1, 0)]
+
+        point = QgsGeometry.fromPoint(points[0])
+        assert point.addPart([points[1]]) == 0
+        expwkt = "MultiPoint ((0 0), (1 0))"
+        wkt = point.exportToWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        # test adding a part with Z values
+        point = QgsGeometry.fromPoint(points[0])
+        point.geometry().addZValue(4.0)
+        assert point.addPart([QgsPointV2(QgsWKBTypes.PointZ, points[1][0], points[1][1], 3.0)]) == 0
+        expwkt = "MultiPointZ ((0 0 4), (1 0 3))"
+        wkt = point.exportToWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
         #   2-3 6-+-7
         #   | | |   |
         # 0-1 4 5   8-9
@@ -1368,6 +1386,17 @@ class TestQgsGeometry(unittest.TestCase):
         polyline = QgsGeometry.fromPolyline(points[0])
         assert polyline.addPart(points[1]) == 0, "addPart with %d point line failed." % len(points[1])
         expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1, 5 1, 5 0, 6 0))"
+        wkt = polyline.exportToWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        # test adding a part with Z values
+        polyline = QgsGeometry.fromPolyline(points[0])
+        polyline.geometry().addZValue(4.0)
+        points2 = [QgsPointV2(QgsWKBTypes.PointZ, p[0], p[1], 3.0) for p in points[1]]
+        assert polyline.addPart(points2) == 0
+        expwkt = "MultiLineStringZ ((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 0 4),(3 0 3, 3 1 3, 5 1 3, 5 0 3, 6 0 3))"
+        wkt = polyline.exportToWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         # 5-+-4 0-+-9
         # |   | |   |
@@ -1402,6 +1431,15 @@ class TestQgsGeometry(unittest.TestCase):
         mp2 = QgsGeometry.fromMultiPolygon(points[1:])
         assert mp.addPartGeometry(mp2) == 0
         wkt = mp.exportToWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        # test adding a part with Z values
+        polygon = QgsGeometry.fromPolygon(points[0])
+        polygon.geometry().addZValue(4.0)
+        points2 = [QgsPointV2(QgsWKBTypes.PointZ, p[0], p[1], 3.0) for p in points[1][0]]
+        assert polygon.addPart(points2) == 0
+        expwkt = "MultiPolygonZ (((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 2 4, 0 2 4, 0 0 4)),((4 0 3, 5 0 3, 5 2 3, 3 2 3, 3 1 3, 4 1 3, 4 0 3)))"
+        wkt = polygon.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         # Test adding parts to empty geometry, should become first part

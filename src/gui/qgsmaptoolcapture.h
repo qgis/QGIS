@@ -88,8 +88,49 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
 
   protected:
-    int nextPoint( const QgsPoint& mapPoint, QgsPoint& layerPoint );
-    int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );
+    /** Converts a map point to layer coordinates
+        @param mapPoint the point in map coordinates
+        @param[inout] layerPoint the point in layer coordinates
+        @return
+          0 in case of success
+          1 if the current layer is null or not a vector layer
+          2 if the transformation failed
+        @deprecated use nextPoint(const QgsPointV2&, QgsPointV2&)
+    */
+    Q_DECL_DEPRECATED int nextPoint( const QgsPoint& mapPoint, QgsPoint& layerPoint );
+
+    /** Converts a map point to layer coordinates
+        @param mapPoint the point in map coordinates
+        @param[inout] layerPoint the point in layer coordinates
+        @return
+          0 in case of success
+          1 if the current layer is null or not a vector layer
+          2 if the transformation failed
+    */
+    int nextPoint( const QgsPointV2& mapPoint, QgsPointV2& layerPoint );
+
+    /** Converts a point to map coordinates and layer coordinates
+        @param p the input point
+        @param[inout] layerPoint the point in layer coordinates
+        @param[inout] mapPoint the point in map coordinates
+        @return
+          0 in case of success
+          1 if the current layer is null or not a vector layer
+          2 if the transformation failed
+        @deprecated use nextPoint( const QPoint&, QgsPointV2&, QgsPointV2& )
+    */
+    Q_DECL_DEPRECATED int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );
+
+    /** Converts a point to map coordinates and layer coordinates
+        @param p the input point
+        @param[inout] layerPoint the point in layer coordinates
+        @param[inout] mapPoint the point in map coordinates
+        @return
+          0 in case of success
+          1 if the current layer is null or not a vector layer
+          2 if the transformation failed
+    */
+    int nextPoint( QPoint p, QgsPointV2 &layerPoint, QgsPointV2 &mapPoint );
 
     /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
      @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/

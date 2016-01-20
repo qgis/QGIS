@@ -1155,6 +1155,28 @@ int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
   return utils.addPart( points, *mSelectedFeatureIds.constBegin() );
 }
 
+int QgsVectorLayer::addPart( const QList<QgsPointV2> &points )
+{
+  if ( !mValid || !mEditBuffer || !mDataProvider )
+    return 7;
+
+  //number of selected features must be 1
+
+  if ( mSelectedFeatureIds.size() < 1 )
+  {
+    QgsDebugMsg( "Number of selected features <1" );
+    return 4;
+  }
+  else if ( mSelectedFeatureIds.size() > 1 )
+  {
+    QgsDebugMsg( "Number of selected features >1" );
+    return 5;
+  }
+
+  QgsVectorLayerEditUtils utils( this );
+  return utils.addPart( points, *mSelectedFeatureIds.constBegin() );
+}
+
 int QgsVectorLayer::addPart( QgsCurveV2* ring )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )

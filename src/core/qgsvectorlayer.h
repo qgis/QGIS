@@ -974,6 +974,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
        7 layer not editable */
     int addPart( const QList<QgsPoint>& ring );
 
+    /** Adds a new part polygon to a multipart feature
+     @return
+       0 in case of success,
+       1 if selected feature is not multipart,
+       2 if ring is not a valid geometry,
+       3 if new polygon ring not disjoint with existing rings,
+       4 if no feature was selected,
+       5 if several features are selected,
+       6 if selected geometry not found
+       7 layer not editable */
+    int addPart( const QList<QgsPointV2>& ring );
+
     //! @note available in python as addCurvedPart
     int addPart( QgsCurveV2* ring );
 

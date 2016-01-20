@@ -181,6 +181,16 @@ int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, const QgsFeatureIds& tar
 
 int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureId featureId )
 {
+  QList<QgsPointV2> l;
+  for ( QList<QgsPoint>::const_iterator it = points.constBegin(); it != points.constEnd(); ++it )
+  {
+    l <<  QgsPointV2( *it );
+  }
+  return addPart( l, featureId );
+}
+
+int QgsVectorLayerEditUtils::addPart( const QList<QgsPointV2> &points, QgsFeatureId featureId )
+{
   if ( !L->hasGeometryType() )
     return 6;
 

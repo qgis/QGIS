@@ -21,6 +21,7 @@
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslinestringv2.h"
+#include "qgsmultipointv2.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmapmouseevent.h"
@@ -130,13 +131,23 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       QgsFeature f( vlayer->fields(), 0 );
 
       QgsGeometry *g = nullptr;
-      if ( layerWKBType == QGis::WKBPoint || layerWKBType == QGis::WKBPoint25D )
+      if ( layerWKBType == QGis::WKBPoint )
       {
         g = QgsGeometry::fromPoint( savePoint );
       }
-      else if ( layerWKBType == QGis::WKBMultiPoint || layerWKBType == QGis::WKBMultiPoint25D )
+      else if ( layerWKBType == QGis::WKBPoint25D )
+      {
+        g = new QgsGeometry( new QgsPointV2( QgsWKBTypes::PointZ, savePoint.x(), savePoint.y(), 0.0 ) );
+      }
+      else if ( layerWKBType == QGis::WKBMultiPoint )
       {
         g = QgsGeometry::fromMultiPoint( QgsMultiPoint() << savePoint );
+      }
+      else if ( layerWKBType == QGis::WKBMultiPoint25D )
+      {
+        QgsMultiPointV2* mp = new QgsMultiPointV2();
+        mp->addGeometry( new QgsPointV2( QgsWKBTypes::PointZ, savePoint.x(), savePoint.y(), 0.0 ) );
+        g = new QgsGeometry( mp );
       }
       else
       {

@@ -291,6 +291,14 @@ class QgsGeometry
     */
     int addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
 
+    /** Adds a new part to a the geometry.
+     * @param points points describing part to add
+     * @param geomType default geometry type to create if no existing geometry
+     * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
+     * not disjoint with existing polygons of the feature
+    */
+    int addPart( const QList<QgsPointV2> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
+
     /** Adds a new part to this geometry.
      * @param part part to add (ownership is transferred)
      * @param geomType default geometry type to create if no existing geometry
