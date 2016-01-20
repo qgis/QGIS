@@ -15,6 +15,8 @@
  ***************************************************************************/
 #include "qgs25drendererwidget.h"
 
+#include "qgsmaplayerstylemanager.h"
+
 Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
     , mRenderer( nullptr )
@@ -42,13 +44,19 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* s
   }
 
   mHeightWidget->setLayer( layer );
-  mHeightWidget->setField( mRenderer->height().expressionOrField() );
-  mAngleWidget->setValue( mRenderer->angle() );
+
+  QgsExpressionContextScope* scope = QgsExpressionContextUtils::layerScope( mLayer );
+  QVariant height = scope->variable( "qgis_25d_height" );
+  QVariant angle = scope->variable( "qgis_25d_angle" );
+
+  mHeightWidget->setField( height.isNull() ? "10" : height.toString() );
+  mAngleWidget->setValue( angle.isNull() ? 70 : angle.toDouble() );
   mWallColorButton->setColor( mRenderer->wallColor() );
   mRoofColorButton->setColor( mRenderer->roofColor() );
   mShadowColorButton->setColor( mRenderer->shadowColor() );
   mShadowEnabledWidget->setEnabled( mRenderer->shadowEnabled() );
   mShadowSizeWidget->setValue( mRenderer->shadowSpread() );
+  mWallExpositionShading->setChecked( mRenderer->wallShadingEnabled() );
 
   connect( mAngleWidget, SIGNAL( valueChanged( int ) ), this, SLOT( updateRenderer() ) );
   connect( mHeightWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( updateRenderer() ) );
@@ -57,6 +65,7 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* s
   connect( mShadowColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( updateRenderer() ) );
   connect( mShadowEnabledWidget, SIGNAL( toggled( bool ) ), this, SLOT( updateRenderer() ) );
   connect( mShadowSizeWidget, SIGNAL( valueChanged( double ) ), this, SLOT( updateRenderer() ) );
+  connect( mWallExpositionShading, SIGNAL( toggled( bool ) ), this, SLOT( updateRenderer() ) );
 }
 
 QgsFeatureRendererV2* Qgs25DRendererWidget::renderer()
@@ -66,13 +75,20 @@ QgsFeatureRendererV2* Qgs25DRendererWidget::renderer()
 
 void Qgs25DRendererWidget::updateRenderer()
 {
-  mRenderer->setHeight( QgsDataDefined( mHeightWidget->currentText() ) );
-  mRenderer->setAngle( mAngleWidget->value() );
   mRenderer->setRoofColor( mRoofColorButton->color() );
   mRenderer->setWallColor( mWallColorButton->color() );
   mRenderer->setShadowColor( mShadowColorButton->color() );
   mRenderer->setShadowEnabled( mShadowEnabledWidget->isChecked() );
   mRenderer->setShadowSpread( mShadowSizeWidget->value() );
+  mRenderer->setWallShadingEnabled( mWallExpositionShading->isChecked() );
+}
+
+void Qgs25DRendererWidget::apply()
+{
+  QgsExpressionContextUtils::setLayerVariable( mLayer, "qgis_25d_height", mHeightWidget->currentText() );
+  QgsExpressionContextUtils::setLayerVariable( mLayer, "qgis_25d_angle", mAngleWidget->value() );
+
+  emit layerVariablesChanged();
 }
 
 QgsRendererV2Widget* Qgs25DRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )

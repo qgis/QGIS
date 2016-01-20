@@ -34,6 +34,19 @@ class QgsRendererV2Widget : QWidget
      */
     const QgsVectorLayer* vectorLayer() const;
 
+    /**
+     * This method should be called whenever the renderer is actually set on the layer.
+     */
+    void applyChanges();
+
+  signals:
+    /**
+     * Emitted when expression context variables on the associated
+     * vector layers have been changed. Will request the parent dialog
+     * to re-synchronize with the variables.
+     */
+    void layerVariablesChanged();
+
   protected:
     /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/
@@ -57,6 +70,13 @@ class QgsRendererV2Widget : QWidget
 
     virtual void copy();
     virtual void paste();
+
+  private:
+    /**
+     * This will be called whenever the renderer is set on a layer.
+     * This can be overwritten in subclasses.
+     */
+    virtual void apply();
 
 };
 

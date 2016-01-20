@@ -488,6 +488,16 @@ class QgsExpressionContextUtils
      */
     static QgsExpressionContextScope* mapSettingsScope( const QgsMapSettings &mapSettings ) /Factory/;
 
+    /**
+     * Updates a symbol scope related to a QgsSymbolV2 to an expression context. If there is no existing scope
+     * provided, a new one will be generated and returned.
+     * @param symbol symbol to extract properties from
+     * @param symbolScope optional pointer to an existing scope to update
+     * @note added in QGIS 2.14
+     */
+    static QgsExpressionContextScope* updateSymbolScope( const QgsSymbolV2* symbol, QgsExpressionContextScope* symbolScope = nullptr ) /Factory/;
+
+
     /** Creates a new scope which contains variables and functions relating to a QgsComposition.
      * For instance, number of pages and page sizes.
      * @param composition source composition

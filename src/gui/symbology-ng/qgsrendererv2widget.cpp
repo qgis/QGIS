@@ -261,9 +261,14 @@ void QgsRendererV2Widget::setMapCanvas( QgsMapCanvas *canvas )
   mMapCanvas = canvas;
 }
 
-const QgsMapCanvas*QgsRendererV2Widget::mapCanvas() const
+const QgsMapCanvas* QgsRendererV2Widget::mapCanvas() const
 {
   return mMapCanvas;
+}
+
+void QgsRendererV2Widget::applyChanges()
+{
+  apply();
 }
 
 
@@ -579,4 +584,9 @@ QgsDataDefined QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbolV2 *
 void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbolV2 *symbol, const QgsDataDefined &dd )
 {
   static_cast<QgsLineSymbolV2*>( symbol )->setDataDefinedWidth( dd );
+}
+
+void QgsRendererV2Widget::apply()
+{
+
 }

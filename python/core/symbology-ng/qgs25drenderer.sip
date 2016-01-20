@@ -40,24 +40,6 @@ class Qgs25DRenderer : QgsFeatureRendererV2
     virtual QgsSymbolV2List symbols( QgsRenderContext& context );
 
     /**
-     * Get the field or expression used to determine the height of extrusion
-     */
-    QgsDataDefined height() const;
-    /**
-     * Set the field or expression used to determine the height of extrusion
-     */
-    void setHeight( const QgsDataDefined& height );
-
-    /**
-     * Get the angle for the extrusion effect
-     */
-    int angle() const;
-    /**
-     * Set the angle for the extrusion effect
-     */
-    void setAngle( int angle );
-
-    /**
      * Get the roof color
      */
     QColor roofColor() const;
@@ -76,6 +58,16 @@ class Qgs25DRenderer : QgsFeatureRendererV2
      * Set the wall color
      */
     void setWallColor( const QColor& wallColor );
+
+    /**
+     * Set wall shading enabled
+     */
+    void setWallShadingEnabled( bool enabled );
+
+    /**
+     * Get wall shading enabled
+     */
+    bool wallShadingEnabled();
 
     /**
      * Get the shadow's color

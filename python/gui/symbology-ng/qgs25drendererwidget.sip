@@ -35,4 +35,8 @@ class Qgs25DRendererWidget : QgsRendererV2Widget
     Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
 
     QgsFeatureRendererV2* renderer();
+
+  private:
+    void apply();
+
 };

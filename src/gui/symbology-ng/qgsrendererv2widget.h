@@ -69,6 +69,19 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
      */
     const QgsVectorLayer* vectorLayer() const { return mLayer; }
 
+    /**
+     * This method should be called whenever the renderer is actually set on the layer.
+     */
+    void applyChanges();
+
+  signals:
+    /**
+     * Emitted when expression context variables on the associated
+     * vector layers have been changed. Will request the parent dialog
+     * to re-synchronize with the variables.
+     */
+    void layerVariablesChanged();
+
   protected:
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;
@@ -99,6 +112,13 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
 
     virtual void copy() {}
     virtual void paste() {}
+
+  private:
+    /**
+     * This will be called whenever the renderer is set on a layer.
+     * This can be overwritten in subclasses.
+     */
+    virtual void apply();
 
 };
 

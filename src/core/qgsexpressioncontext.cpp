@@ -33,6 +33,8 @@
 const QString QgsExpressionContext::EXPR_FIELDS( "_fields_" );
 const QString QgsExpressionContext::EXPR_FEATURE( "_feature_" );
 const QString QgsExpressionContext::EXPR_ORIGINAL_VALUE( "value" );
+const QString QgsExpressionContext::EXPR_SYMBOL_COLOR( "symbol_color" );
+const QString QgsExpressionContext::EXPR_SYMBOL_ANGLE( "symbol_angle" );
 
 //
 // QgsExpressionContextScope
@@ -714,6 +716,24 @@ QgsExpressionContextScope* QgsExpressionContextUtils::mapSettingsScope( const Qg
   delete centerPoint;
 
   return scope;
+}
+
+QgsExpressionContextScope* QgsExpressionContextUtils::updateSymbolScope( const QgsSymbolV2* symbol, QgsExpressionContextScope* symbolScope )
+{
+  if ( !symbolScope )
+    symbolScope = new QgsExpressionContextScope( QObject::tr( "Symbol Scope" ) );
+
+  symbolScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_SYMBOL_COLOR, symbol ? symbol->color() : QColor(), true ) );
+
+  double angle = 0.0;
+  const QgsMarkerSymbolV2* markerSymbol = dynamic_cast< const QgsMarkerSymbolV2* >( symbol );
+  if ( markerSymbol )
+  {
+    angle = markerSymbol->angle();
+  }
+  symbolScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_SYMBOL_ANGLE, angle, true ) );
+
+  return symbolScope;
 }
 
 QgsExpressionContextScope *QgsExpressionContextUtils::compositionScope( const QgsComposition *composition )

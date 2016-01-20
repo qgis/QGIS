@@ -286,6 +286,9 @@ void QgsVectorLayerRenderer::setGeometryCachePointer( QgsGeometryCache* cache )
 
 void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
 {
+  QgsExpressionContextScope* symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr );
+  mContext.expressionContext().appendScope( symbolScope );
+
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
@@ -332,10 +335,18 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
         if ( mContext.labelingEngineV2() )
         {
           QScopedPointer<QgsGeometry> obstacleGeometry;
-          if ( fet.constGeometry()->type() == QGis::Point )
+          QgsSymbolV2List symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
+
+          if ( !symbols.isEmpty() && fet.constGeometry()->type() == QGis::Point )
           {
-            obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, mRendererV2 ) );
+            obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
           }
+
+          if ( !symbols.isEmpty() )
+          {
+            QgsExpressionContextUtils::updateSymbolScope( symbols.at( 0 ), symbolScope );
+          }
+
           if ( mLabelProvider )
           {
             mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.data() );
@@ -355,6 +366,8 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
     }
   }
 
+  mContext.expressionContext().popScope();
+
   stopRendererV2( nullptr );
 }
 
@@ -371,6 +384,9 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     selRenderer->startRender( mContext, mFields );
   }
 
+  QgsExpressionContextScope* symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr );
+  mContext.expressionContext().appendScope( symbolScope );
+
   // 1. fetch features
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
@@ -382,6 +398,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     {
       qDebug( "rendering stop!" );
       stopRendererV2( selRenderer );
+      mContext.expressionContext().popScope();
       return;
     }
 
@@ -420,10 +437,18 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     if ( mContext.labelingEngineV2() )
     {
       QScopedPointer<QgsGeometry> obstacleGeometry;
-      if ( fet.constGeometry()->type() == QGis::Point )
+      QgsSymbolV2List symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
+
+      if ( !symbols.isEmpty() && fet.constGeometry()->type() == QGis::Point )
       {
-        obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, mRendererV2 ) );
+        obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
       }
+
+      if ( !symbols.isEmpty() )
+      {
+        QgsExpressionContextUtils::updateSymbolScope( symbols.at( 0 ), symbolScope );
+      }
+
       if ( mLabelProvider )
       {
         mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.data() );
@@ -434,6 +459,8 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       }
     }
   }
+
+  mContext.expressionContext().popScope();
 
   // find out the order
   QgsSymbolV2LevelOrder levels;
