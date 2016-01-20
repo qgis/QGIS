@@ -72,6 +72,9 @@ class Dialog(QDialog, Ui_Dialog):
         mLayerName = self.inShape.currentText()
         if not mLayerName == "":
             mLayer = ftools_utils.getMapLayerByName(unicode(mLayerName))
+            if mLayer.crs() != self.iface.mapCanvas().mapRenderer().destinationCrs():
+                QMessageBox.warning(self, self.tr("Vector grid"), self.tr("Layer and project have different CRS!\nResults may be wrong."))
+
             # get layer extents
             boundBox = mLayer.extent()
             # if "align extents and resolution..." button is checked
@@ -166,6 +169,7 @@ class Dialog(QDialog, Ui_Dialog):
             crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
         else:
             crs = layer.crs()
+
         if not crs.isValid():
             crs = None
 
