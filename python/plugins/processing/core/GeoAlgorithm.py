@@ -385,7 +385,7 @@ class GeoAlgorithm:
                             return
         try:
             from qgis.utils import iface
-            self.crs = iface.mapCanvas().mapRenderer().destinationCrs()
+            self.crs = iface.mapCanvas().mapSettings().destinationCrs()
         except:
             pass
 

@@ -95,7 +95,7 @@ class ExportGeometryInfo(GeoAlgorithm):
                                                      'NONE')[0]
             crs = layer.crs().srsid()
         elif method == 1:
-            mapCRS = iface.mapCanvas().mapRenderer().destinationCrs()
+            mapCRS = iface.mapCanvas().mapSettings().destinationCrs()
             layCRS = layer.crs()
             coordTransform = QgsCoordinateTransform(layCRS, mapCRS)
 

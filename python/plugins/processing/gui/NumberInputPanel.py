@@ -95,5 +95,3 @@ class NumberInputPanel(BASE, WIDGET):
             return round(step, -int(floor(log10(step))))
         else:
             return 1.0
-
-
