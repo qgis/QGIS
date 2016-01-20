@@ -7691,6 +7691,24 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
         {
           dupVLayer->setProviderEncoding( vlayer->dataProvider()->encoding() );
         }
+
+        //add variables defined in layer properties
+        QStringList variableNames = vlayer->customProperty( "variableNames" ).toStringList();
+        QStringList variableValues = vlayer->customProperty( "variableValues" ).toStringList();
+
+        int varIndex = 0;
+        Q_FOREACH ( const QString& variableName, variableNames )
+        {
+          if ( varIndex >= variableValues.length() )
+          {
+            break;
+          }
+
+          QVariant varValue = variableValues.at( varIndex );
+          varIndex++;
+          QgsExpressionContextUtils::setLayerVariable( dupVLayer, variableName, varValue );
+        }
+
         dupLayer = dupVLayer;
       }
     }
