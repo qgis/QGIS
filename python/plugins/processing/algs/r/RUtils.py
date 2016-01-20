@@ -201,7 +201,7 @@ class RUtils:
 
     @staticmethod
     def getRequiredPackages(code):
-        regex = re.compile('library\("?(.*?)"?\)')
+        regex = re.compile('[^#]library\("?(.*?)"?\)')
         return regex.findall(code)
 
     @staticmethod
