@@ -29,13 +29,12 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #include <QDomElement>
 
 QgsContrastEnhancement::QgsContrastEnhancement( QGis::DataType theDataType )
+    : mContrastEnhancementAlgorithm( NoEnhancement )
+    , mContrastEnhancementFunction( nullptr )
+    , mEnhancementDirty( false )
+    , mLookupTable( nullptr )
+    , mRasterDataType( theDataType )
 {
-  mLookupTable = nullptr;
-  mContrastEnhancementFunction = nullptr;
-  mEnhancementDirty = false;
-  mContrastEnhancementAlgorithm = NoEnhancement;
-  mRasterDataType = theDataType;
-
   mMinimumValue = minimumValuePossible( mRasterDataType );
   mMaximumValue = maximumValuePossible( mRasterDataType );
   mRasterDataTypeRange = mMaximumValue - mMinimumValue;
@@ -53,16 +52,14 @@ QgsContrastEnhancement::QgsContrastEnhancement( QGis::DataType theDataType )
 }
 
 QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement& ce )
+    : mContrastEnhancementFunction( nullptr )
+    , mEnhancementDirty( true )
+    , mLookupTable( nullptr )
+    , mMinimumValue( ce.mMinimumValue )
+    , mMaximumValue( ce.mMaximumValue )
+    , mRasterDataType( ce.mRasterDataType )
+    , mRasterDataTypeRange( ce.mRasterDataTypeRange )
 {
-  mLookupTable = nullptr;
-  mContrastEnhancementFunction = nullptr;
-  mEnhancementDirty = true;
-  mRasterDataType = ce.mRasterDataType;
-
-  mMinimumValue = ce.mMinimumValue;
-  mMaximumValue = ce.mMaximumValue;
-  mRasterDataTypeRange = ce.mRasterDataTypeRange;
-
   mLookupTableOffset = minimumValuePossible( mRasterDataType ) * -1;
 
   // setContrastEnhancementAlgorithm sets also QgsContrastEnhancementFunction
@@ -230,7 +227,6 @@ bool QgsContrastEnhancement::generateLookupTable()
 */
 bool QgsContrastEnhancement::isValueInDisplayableRange( double theValue )
 {
-
   if ( mContrastEnhancementFunction )
   {
     return mContrastEnhancementFunction->isValueInDisplayableRange( theValue );
@@ -247,40 +243,35 @@ bool QgsContrastEnhancement::isValueInDisplayableRange( double theValue )
 */
 void QgsContrastEnhancement::setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm theAlgorithm, bool generateTable )
 {
-  QgsDebugMsg( "called algorithm: " + QString::number( static_cast< int >( theAlgorithm ) ) + " generate lookup table: " + QString::number( static_cast< int >( generateTable ) ) );
-
-  if ( theAlgorithm != mContrastEnhancementAlgorithm )
+  switch ( theAlgorithm )
   {
-    switch ( theAlgorithm )
-    {
-      case StretchToMinimumMaximum :
-        delete mContrastEnhancementFunction;
-        mContrastEnhancementFunction = new QgsLinearMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue );
-        break;
-      case StretchAndClipToMinimumMaximum :
-        delete mContrastEnhancementFunction;
-        mContrastEnhancementFunction = new QgsLinearMinMaxEnhancementWithClip( mRasterDataType, mMinimumValue, mMaximumValue );
-        break;
-      case ClipToMinimumMaximum :
-        delete mContrastEnhancementFunction;
-        mContrastEnhancementFunction = new QgsClipToMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue );
-        break;
-      case UserDefinedEnhancement :
-        //Do nothing
-        break;
-      default:
-        delete mContrastEnhancementFunction;
-        mContrastEnhancementFunction = new QgsContrastEnhancementFunction( mRasterDataType, mMinimumValue, mMaximumValue );
-        break;
-    }
+    case StretchToMinimumMaximum :
+      delete mContrastEnhancementFunction;
+      mContrastEnhancementFunction = new QgsLinearMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue );
+      break;
+    case StretchAndClipToMinimumMaximum :
+      delete mContrastEnhancementFunction;
+      mContrastEnhancementFunction = new QgsLinearMinMaxEnhancementWithClip( mRasterDataType, mMinimumValue, mMaximumValue );
+      break;
+    case ClipToMinimumMaximum :
+      delete mContrastEnhancementFunction;
+      mContrastEnhancementFunction = new QgsClipToMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue );
+      break;
+    case UserDefinedEnhancement :
+      //Do nothing
+      break;
+    default:
+      delete mContrastEnhancementFunction;
+      mContrastEnhancementFunction = new QgsContrastEnhancementFunction( mRasterDataType, mMinimumValue, mMaximumValue );
+      break;
+  }
 
-    mEnhancementDirty = true;
-    mContrastEnhancementAlgorithm = theAlgorithm;
+  mEnhancementDirty = true;
+  mContrastEnhancementAlgorithm = theAlgorithm;
 
-    if ( generateTable )
-    {
-      generateLookupTable();
-    }
+  if ( generateTable )
+  {
+    generateLookupTable();
   }
 }
 
