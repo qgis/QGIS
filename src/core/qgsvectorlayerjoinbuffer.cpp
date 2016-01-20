@@ -85,7 +85,9 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorJoinInfo& joinInfo )
   // but then QgsProject makes sure to call createJoinCaches() which will do the connection.
   // Unique connection makes sure we do not respond to one layer's update more times (in case of multiple join)
   if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinInfo.joinLayerId ) ) )
+  {
     connect( vl, SIGNAL( updatedFields() ), this, SLOT( joinedLayerUpdatedFields() ), Qt::UniqueConnection );
+  }
 
   emit joinedFieldsChanged();
   return true;
