@@ -274,7 +274,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         void removeChildAt( int i );
 
         //! take child rule out, set parent as null
-        void takeChild( QgsRuleBasedRendererV2::Rule* rule );
+        QgsRuleBasedRendererV2::Rule* takeChild( QgsRuleBasedRendererV2::Rule* rule ) /TransferBack/;
 
         //! take child rule out, set parent as null
         QgsRuleBasedRendererV2::Rule* takeChildAt( int i ) /TransferBack/;

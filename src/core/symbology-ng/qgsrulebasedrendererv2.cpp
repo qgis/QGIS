@@ -36,13 +36,20 @@
 
 
 QgsRuleBasedRendererV2::Rule::Rule( QgsSymbolV2* symbol, int scaleMinDenom, int scaleMaxDenom, const QString& filterExp, const QString& label, const QString& description, bool elseRule )
-    : mParent( nullptr ), mSymbol( symbol )
-    , mScaleMinDenom( scaleMinDenom ), mScaleMaxDenom( scaleMaxDenom )
-    , mFilterExp( filterExp ), mLabel( label ), mDescription( description )
+    : mParent( nullptr )
+    , mSymbol( symbol )
+    , mScaleMinDenom( scaleMinDenom )
+    , mScaleMaxDenom( scaleMaxDenom )
+    , mFilterExp( filterExp )
+    , mLabel( label )
+    , mDescription( description )
     , mElseRule( elseRule )
     , mIsActive( true )
     , mFilter( nullptr )
 {
+  if ( mElseRule )
+    mFilterExp = "ELSE";
+
   mRuleKey = QUuid::createUuid().toString();
   initFilter();
 }
@@ -57,19 +64,23 @@ QgsRuleBasedRendererV2::Rule::~Rule()
 
 void QgsRuleBasedRendererV2::Rule::initFilter()
 {
-  if ( mElseRule || mFilterExp.compare( "ELSE", Qt::CaseInsensitive ) == 0 )
+  if ( mFilterExp.trimmed().compare( "ELSE", Qt::CaseInsensitive ) == 0 )
   {
     mElseRule = true;
+    delete mFilter;
     mFilter = nullptr;
   }
-  else if ( !mFilterExp.isEmpty() )
+  else if ( mFilterExp.trimmed().isEmpty() )
   {
+    mElseRule = false;
     delete mFilter;
-    mFilter = new QgsExpression( mFilterExp );
+    mFilter = nullptr;
   }
   else
   {
-    mFilter = nullptr;
+    mElseRule = false;
+    delete mFilter;
+    mFilter = new QgsExpression( mFilterExp );
   }
 }
 
@@ -96,24 +107,24 @@ void QgsRuleBasedRendererV2::Rule::removeChild( Rule* rule )
 
 void QgsRuleBasedRendererV2::Rule::removeChildAt( int i )
 {
-  delete mChildren.at( i );
-  mChildren.removeAt( i );
+  delete mChildren.takeAt( i );
   updateElseRules();
 }
 
-void QgsRuleBasedRendererV2::Rule::takeChild( Rule* rule )
+QgsRuleBasedRendererV2::Rule*  QgsRuleBasedRendererV2::Rule::takeChild( Rule* rule )
 {
   mChildren.removeAll( rule );
   rule->mParent = nullptr;
   updateElseRules();
+  return rule;
 }
 
 QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::takeChildAt( int i )
 {
   Rule* rule = mChildren.takeAt( i );
   rule->mParent = nullptr;
+  updateElseRules();
   return rule;
-  // updateElseRules();
 }
 
 QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::findRuleByKey( const QString& key )
@@ -140,6 +151,14 @@ void QgsRuleBasedRendererV2::Rule::updateElseRules()
     if ( rule->isElse() )
       mElseRules << rule;
   }
+}
+
+void QgsRuleBasedRendererV2::Rule::setIsElse( bool iselse )
+{
+  mFilterExp = "ELSE";
+  mElseRule = iselse;
+  delete mFilter;
+  mFilter = nullptr;
 }
 
 
@@ -195,6 +214,12 @@ void QgsRuleBasedRendererV2::Rule::setSymbol( QgsSymbolV2* sym )
 {
   delete mSymbol;
   mSymbol = sym;
+}
+
+void QgsRuleBasedRendererV2::Rule::setFilterExpression( const QString& filterExp )
+{
+  mFilterExp = filterExp;
+  initFilter();
 }
 
 QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems( double scaleDenominator, const QString& ruleFilter ) const
@@ -428,7 +453,7 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
   // Finally they are joined with their parent (this) with AND
   QString sf;
   // If there are subfilters present (and it's not a single empty one), group them and join them with OR
-  if ( subfilters.length() > 1 || subfilters.value( 0 ).trimmed().length() > 0 )
+  if ( subfilters.length() > 1 || !subfilters.value( 0 ).isEmpty() )
   {
     if ( subfilters.contains( "TRUE" ) )
       sf = "TRUE";
@@ -440,14 +465,17 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
   // * The parent is an else rule
   // * The existence of parent filter and subfilters
 
-  if ( isElse() )
+  // No filter expression: ELSE rule or catchall rule
+  if ( !mFilter )
   {
-    if ( sf.trimmed().isEmpty() )
+    if ( mSymbol || sf.isEmpty() )
       filter = "TRUE";
     else
       filter = sf;
   }
-  else if ( !mFilterExp.trimmed().isEmpty() && !sf.trimmed().isEmpty() )
+  else if ( mSymbol )
+    filter = mFilterExp;
+  else if ( !mFilterExp.trimmed().isEmpty() && !sf.isEmpty() )
     filter = QString( "(%1) AND (%2)" ).arg( mFilterExp, sf );
   else if ( !mFilterExp.trimmed().isEmpty() )
     filter = mFilterExp;

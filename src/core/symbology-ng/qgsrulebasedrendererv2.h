@@ -204,7 +204,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
          *
          * @param filterExp An expression
          */
-        void setFilterExpression( const QString& filterExp ) { mFilterExp = filterExp; initFilter(); }
+        void setFilterExpression( const QString& filterExp );
 
         /**
          * Set a human readable description for this rule
@@ -317,7 +317,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         void removeChildAt( int i );
 
         //! take child rule out, set parent as null
-        void takeChild( Rule* rule );
+        Rule* takeChild( Rule* rule );
 
         //! take child rule out, set parent as null
         Rule* takeChildAt( int i );
@@ -338,7 +338,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
          *
          * @param iselse If true, this rule is an ELSE rule
          */
-        void setIsElse( bool iselse ) { mElseRule = iselse; }
+        void setIsElse( bool iselse );
 
         /**
          * Check if this rule is an ELSE rule
