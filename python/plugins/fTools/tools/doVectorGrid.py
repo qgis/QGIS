@@ -48,6 +48,7 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.btnUpdate, SIGNAL("clicked()"), self.updateLayer)
         QObject.connect(self.btnCanvas, SIGNAL("clicked()"), self.updateCanvas)
         QObject.connect(self.chkAlign, SIGNAL("toggled(bool)"), self.chkAlignToggled)
+        QObject.connect(self.chkLock, SIGNAL("toggled(bool)"), self.chkLockToggled)
         self.buttonOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
         self.setWindowTitle(self.tr("Vector grid"))
         self.xMin.setValidator(QDoubleValidator(self.xMin))
@@ -333,6 +334,10 @@ class Dialog(QDialog, Ui_Dialog):
         if self.shapefileName is None or self.encoding is None:
             return
         self.outShape.setText(self.shapefileName)
+
+    def chkLockToggled(self, checked):
+        if checked:
+            self.spnY.setValue(self.spnX.value())
 
     def chkAlignToggled(self):
         if self.chkAlign.isChecked():
