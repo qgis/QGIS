@@ -3257,16 +3257,10 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
         //set friendly name for datasources with only one layer
         QStringList sublayers = layer->dataProvider()->subLayers();
         QStringList elements = sublayers.at( 0 ).split( ':' );
-        if ( layer->storageType() != "GeoJSON" )
-        {
-          while ( elements.size() > 4 )
-          {
-            elements[1] += ':' + elements[2];
-            elements.removeAt( 2 );
-          }
 
-          layer->setLayerName( elements.at( 1 ) );
-        }
+        Q_ASSERT( elements.size() >= 4 );
+        layer->setLayerName( QString( "%1 %2 %3" ).arg( layer->name(), elements.at( 1 ), elements.at( 3 ) ) );
+
         myList << layer;
       }
       else
@@ -3486,9 +3480,24 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 
   if ( chooseSublayersDialog.exec() )
   {
+    // create more informative layer names, containing filename as well as sublayer name
+    QRegExp rx( "\"(.*)\"" );
+    QString uri, name;
+
     Q_FOREACH ( int i, chooseSublayersDialog.selectionIndexes() )
     {
-      QgsRasterLayer *rlayer = new QgsRasterLayer( sublayers[i], names[i] );
+      if ( rx.indexIn( sublayers[i] ) != -1 )
+      {
+        uri = rx.cap( 1 );
+        name = sublayers[i];
+        name.replace( uri, QFileInfo( uri ).completeBaseName() );
+      }
+      else
+      {
+        name = names[i];
+      }
+
+      QgsRasterLayer *rlayer = new QgsRasterLayer( sublayers[i], name );
       if ( rlayer && rlayer->isValid() )
       {
         addRasterLayer( rlayer );
