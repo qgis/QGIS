@@ -2955,6 +2955,12 @@ bool QgsPostgresProvider::getGeometryDetails()
     if ( result.PQntuples() == 1 )
     {
       detectedType = result.PQgetvalue( 0, 0 );
+      QString dim = result.PQgetvalue( 0, 2 );
+      if ( dim == "3" && !detectedType.endsWith( 'M' ) )
+        detectedType += "Z";
+      else if ( dim == "4" )
+        detectedType += "ZM";
+
       detectedSrid = result.PQgetvalue( 0, 1 );
       mSpatialColType = sctGeometry;
     }
