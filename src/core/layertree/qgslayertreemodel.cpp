@@ -276,7 +276,14 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     if ( QgsLayerTree::isLayer( node ) )
     {
       if ( QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer() )
-        return layer->publicSource();
+      {
+        QString tooltip = "<b>" +
+                          ( layer->title().isEmpty() ? layer->shortName() : layer->title() ) + "</b>";
+        if ( !layer->abstract().isEmpty() )
+          tooltip += "<br/>" + layer->abstract().replace( "\n", "<br/>" );
+        tooltip += "<br/><i>" + layer->publicSource() + "</i>";
+        return tooltip;
+      }
     }
   }
 
