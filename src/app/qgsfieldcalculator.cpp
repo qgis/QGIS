@@ -27,8 +27,8 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
-    : QDialog()
+QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent )
+    : QDialog( parent )
     , mVectorLayer( vl )
     , mAttributeId( -1 )
 {

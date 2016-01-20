@@ -5440,7 +5440,7 @@ void QgisApp::fieldCalculator()
     return;
   }
 
-  QgsFieldCalculator calc( myLayer );
+  QgsFieldCalculator calc( myLayer, this );
   if ( calc.exec() )
   {
     mMapCanvas->refresh();
