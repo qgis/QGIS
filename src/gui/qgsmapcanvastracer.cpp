@@ -45,6 +45,8 @@ QgsMapCanvasTracer* QgsMapCanvasTracer::tracerForCanvas( QgsMapCanvas* canvas )
 
 void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVertex )
 {
+  Q_UNUSED( addingVertex );
+
   if ( !mMessageBar )
     return;
 
@@ -57,17 +59,6 @@ void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVerte
   {
     case ErrTooManyFeatures:
       message = tr( "Disabled - there are too many features displayed. Try zooming in or disable some layers." );
-      break;
-    case ErrPoint1:
-      message = tr( "The start point needs to be snapped and in the visible map view" );
-      break;
-    case ErrPoint2:
-      if ( addingVertex )
-        message = tr( "The end point needs to be snapped" );
-      break;
-    case ErrNoPath:
-      if ( addingVertex )
-        message = tr( "Endpoints are not connected" );
       break;
     case ErrNone:
     default:
