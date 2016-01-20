@@ -28,6 +28,7 @@
 #include "qgslogger.h"
 
 #include "qgssymbollayerv2widget.h"
+#include "qgsarrowsymbollayerwidget.h"
 #include "qgsellipsesymbollayerv2widget.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
 #include "qgssymbolv2.h" //for the unit
@@ -60,6 +61,7 @@ static void _initWidgetFunctions()
 
   _initWidgetFunction( "SimpleLine", QgsSimpleLineSymbolLayerV2Widget::create );
   _initWidgetFunction( "MarkerLine", QgsMarkerLineSymbolLayerV2Widget::create );
+  _initWidgetFunction( "ArrowLine", QgsArrowSymbolLayerWidget::create );
 
   _initWidgetFunction( "SimpleMarker", QgsSimpleMarkerSymbolLayerV2Widget::create );
   _initWidgetFunction( "SvgMarker", QgsSvgMarkerSymbolLayerV2Widget::create );

@@ -198,6 +198,7 @@
 
 %Include symbology-ng/characterwidget.sip
 %Include symbology-ng/qgs25drendererwidget.sip
+%Include symbology-ng/qgsarrowsymbollayerwidget.sip
 %Include symbology-ng/qgsbrushstylecombobox.sip
 %Include symbology-ng/qgscategorizedsymbolrendererv2widget.sip
 %Include symbology-ng/qgscolorrampcombobox.sip
