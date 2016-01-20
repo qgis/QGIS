@@ -96,7 +96,7 @@ Qgs25DRenderer::Qgs25DRenderer()
   wallLayer()->setDataDefinedProperty( "color", new QgsDataDefined( QString( WALL_SHADING_EXPRESSION ) ) );
 
   setShadowSpread( 4 );
-  setShadowColor( QColor( "#1111111" ) );
+  setShadowColor( QColor( "#111111" ) );
 
   QgsFeatureRequest::OrderBy orderBy;
   orderBy << QgsFeatureRequest::OrderByClause(
