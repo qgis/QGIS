@@ -14,13 +14,29 @@
    <string>Add WFS Layer from a Server</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="6" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+   <item row="2" column="0">
+    <widget class="QTreeView" name="treeView">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
+     <attribute name="headerVisible">
+      <bool>true</bool>
+     </attribute>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QCheckBox" name="cbxFeatureCurrentViewExtent">
+     <property name="text">
+      <string>Only request features overlapping the current view extent</string>
      </property>
     </widget>
    </item>
@@ -113,7 +129,47 @@
      </layout>
     </widget>
    </item>
-   <item row="5" column="0">
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayoutFilter">
+     <item>
+      <widget class="QLabel" name="labelFilter">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Filter:</string>
+       </property>
+       <property name="buddy">
+        <cstring>lineFilter</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineFilter">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="toolTip">
+        <string>Display WFS FeatureTypes containing this word in the title, name or abstract</string>
+       </property>
+       <property name="whatsThis">
+        <string>Display WFS FeatureTypes containing this word in the title, name or abstract</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
     <widget class="QGroupBox" name="gbCRS">
      <property name="title">
       <string>Coordinate reference system</string>
@@ -122,16 +178,7 @@
       <property name="spacing">
        <number>6</number>
       </property>
-      <property name="leftMargin">
-       <number>9</number>
-      </property>
-      <property name="topMargin">
-       <number>9</number>
-      </property>
-      <property name="rightMargin">
-       <number>9</number>
-      </property>
-      <property name="bottomMargin">
+      <property name="margin">
        <number>9</number>
       </property>
       <item>
@@ -170,68 +217,36 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QCheckBox" name="cbxUseTitleLayerName">
-     <property name="text">
-      <string>Use title for layer name</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QTreeView" name="treeView">
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
-     </property>
-     <property name="alternatingRowColors">
-      <bool>true</bool>
-     </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
-     </property>
-     <property name="sortingEnabled">
-      <bool>true</bool>
-     </property>
-     <attribute name="headerVisible">
-      <bool>true</bool>
-     </attribute>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayoutFilter">
+   <item row="4" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <widget class="QLabel" name="labelFilter">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
+      <widget class="QCheckBox" name="cbxUseTitleLayerName">
        <property name="text">
-        <string>Filter:</string>
-       </property>
-       <property name="buddy">
-        <cstring>lineFilter</cstring>
+        <string>Use title for layer name</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineFilter">
-       <property name="enabled">
-        <bool>true</bool>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
-       <property name="toolTip">
-        <string>Display WFS FeatureTypes containing this word in the title, name or abstract</string>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
        </property>
-       <property name="whatsThis">
-        <string>Display WFS FeatureTypes containing this word in the title, name or abstract</string>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mHoldDialogOpen">
+       <property name="text">
+        <string>Keep dialog open</string>
        </property>
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="4" column="0">
-    <widget class="QCheckBox" name="cbxFeatureCurrentViewExtent">
-     <property name="text">
-      <string>Only request features overlapping the current view extent</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
@@ -245,7 +260,6 @@
   <tabstop>btnSave</tabstop>
   <tabstop>lineFilter</tabstop>
   <tabstop>treeView</tabstop>
-  <tabstop>cbxUseTitleLayerName</tabstop>
   <tabstop>cbxFeatureCurrentViewExtent</tabstop>
   <tabstop>btnChangeSpatialRefSys</tabstop>
  </tabstops>
