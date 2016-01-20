@@ -72,6 +72,9 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     int mNColors;
     /** Optional category labels, size of vector may be < mNColors */
     QVector<QString> mLabels;
+
+    QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer& );
+    const QgsPalettedRasterRenderer& operator=( const QgsPalettedRasterRenderer& );
 };
 
 #endif // QGSPALETTEDRASTERRENDERER_H

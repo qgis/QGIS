@@ -70,6 +70,9 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     QgsContrastEnhancement* mRedContrastEnhancement;
     QgsContrastEnhancement* mGreenContrastEnhancement;
     QgsContrastEnhancement* mBlueContrastEnhancement;
+
+    QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer& );
+    const QgsMultiBandColorRenderer& operator=( const QgsMultiBandColorRenderer& );
 };
 
 #endif // QGSMULTIBANDCOLORRENDERER_H

@@ -35,4 +35,9 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 
     QList<int> usesBands() const;
+
+  private:
+
+    QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer& );
+    const QgsPalettedRasterRenderer& operator=( const QgsPalettedRasterRenderer& );
 };

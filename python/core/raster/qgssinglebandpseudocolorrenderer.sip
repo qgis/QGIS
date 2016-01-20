@@ -43,4 +43,9 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
     int classificationMinMaxOrigin() const;
     void setClassificationMinMaxOrigin( int origin );
 
+  private:
+
+    QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer& );
+    const QgsSingleBandPseudoColorRenderer& operator=( const QgsSingleBandPseudoColorRenderer& );
+
 };

@@ -27,9 +27,14 @@
 QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterInterface* input, int redBand, int greenBand, int blueBand,
     QgsContrastEnhancement* redEnhancement,
     QgsContrastEnhancement* greenEnhancement,
-    QgsContrastEnhancement* blueEnhancement ):
-    QgsRasterRenderer( input, "multibandcolor" ), mRedBand( redBand ), mGreenBand( greenBand ), mBlueBand( blueBand ),
-    mRedContrastEnhancement( redEnhancement ), mGreenContrastEnhancement( greenEnhancement ), mBlueContrastEnhancement( blueEnhancement )
+    QgsContrastEnhancement* blueEnhancement )
+    : QgsRasterRenderer( input, "multibandcolor" )
+    , mRedBand( redBand )
+    , mGreenBand( greenBand )
+    , mBlueBand( blueBand )
+    , mRedContrastEnhancement( redEnhancement )
+    , mGreenContrastEnhancement( greenEnhancement )
+    , mBlueContrastEnhancement( blueEnhancement )
 {
 }
 

@@ -37,4 +37,8 @@ class QgsMultiBandColorRenderer: QgsRasterRenderer
 
     QList<int> usesBands() const;
 
+  private:
+
+    QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer& );
+    const QgsMultiBandColorRenderer& operator=( const QgsMultiBandColorRenderer& );
 };

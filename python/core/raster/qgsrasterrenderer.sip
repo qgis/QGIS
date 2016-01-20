@@ -70,4 +70,9 @@ class QgsRasterRenderer : QgsRasterInterface
     /** Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
     void _writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
 
+  private:
+
+    QgsRasterRenderer( const QgsRasterRenderer& );
+    const QgsRasterRenderer& operator=( const QgsRasterRenderer& );
+
 };

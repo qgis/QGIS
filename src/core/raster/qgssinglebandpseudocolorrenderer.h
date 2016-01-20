@@ -78,6 +78,9 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     double mClassificationMax;
 
     int mClassificationMinMaxOrigin;
+
+    QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer& );
+    const QgsSingleBandPseudoColorRenderer& operator=( const QgsSingleBandPseudoColorRenderer& );
 };
 
 #endif // QGSSINGLEBANDPSEUDOCOLORRENDERER_H

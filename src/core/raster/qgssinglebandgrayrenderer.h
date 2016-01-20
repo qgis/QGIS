@@ -62,6 +62,9 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     int mGrayBand;
     Gradient mGradient;
     QgsContrastEnhancement* mContrastEnhancement;
+
+    QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer& );
+    const QgsSingleBandGrayRenderer& operator=( const QgsSingleBandGrayRenderer& );
 };
 
 #endif // QGSSINGLEBANDGRAYRENDERER_H

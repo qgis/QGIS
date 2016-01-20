@@ -32,4 +32,9 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 
     QList<int> usesBands() const;
+
+  private:
+
+    QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer& );
+    const QgsSingleBandGrayRenderer& operator=( const QgsSingleBandGrayRenderer& );
 };

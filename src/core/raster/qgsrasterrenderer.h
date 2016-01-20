@@ -106,6 +106,11 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     /** Read alpha value from band. Is combined with value from raster transparency / global alpha value.
         Default: -1 (not set)*/
     int mAlphaBand;
+
+  private:
+
+    QgsRasterRenderer( const QgsRasterRenderer& );
+    const QgsRasterRenderer& operator=( const QgsRasterRenderer& );
 };
 
 #endif // QGSRASTERRENDERER_H
