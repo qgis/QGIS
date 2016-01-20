@@ -54,7 +54,7 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* s
   mWallColorButton->setColor( mRenderer->wallColor() );
   mRoofColorButton->setColor( mRenderer->roofColor() );
   mShadowColorButton->setColor( mRenderer->shadowColor() );
-  mShadowEnabledWidget->setEnabled( mRenderer->shadowEnabled() );
+  mShadowEnabledWidget->setChecked( mRenderer->shadowEnabled() );
   mShadowSizeWidget->setValue( mRenderer->shadowSpread() );
   mWallExpositionShading->setChecked( mRenderer->wallShadingEnabled() );
 
