@@ -248,7 +248,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
     const QgsGraphDirector *director = mPlugin->director();
     if ( !director )
     {
-      QMessageBox::critical( this, tr( "Plugin isn't configured" ), tr( "Plugin isn't configured!" ) );
+      QMessageBox::critical( this, tr( "Plugin isn't configured" ), tr( "Plugin isn't configured! Please go to the Vector → Road graph → Settings to configure it." ) );
       return nullptr;
     }
     connect( director, SIGNAL( buildProgress( int, int ) ), mPlugin->iface()->mainWindow(), SLOT( showProgress( int, int ) ) );
