@@ -3259,7 +3259,10 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
         QStringList elements = sublayers.at( 0 ).split( ':' );
 
         Q_ASSERT( elements.size() >= 4 );
-        layer->setLayerName( QString( "%1 %2 %3" ).arg( layer->name(), elements.at( 1 ), elements.at( 3 ) ) );
+        if ( layer->name() != elements.at( 1 ) )
+        {
+          layer->setLayerName( QString( "%1 %2 %3" ).arg( layer->name(), elements.at( 1 ), elements.at( 3 ) ) );
+        }
 
         myList << layer;
       }
