@@ -45,6 +45,8 @@ class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererV2Widget, Ui::Qgs25DRe
     void updateRenderer();
 
   private:
+    void apply() override;
+
     Qgs25DRenderer* mRenderer;
 };
 

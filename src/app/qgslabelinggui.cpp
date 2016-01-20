@@ -50,9 +50,11 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   if ( layer )
     expContext << QgsExpressionContextUtils::layerScope( layer );
 
+  expContext << QgsExpressionContextUtils::updateSymbolScope( nullptr );
+
   //TODO - show actual value
   expContext.setOriginalValueVariable( QVariant() );
-  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE );
+  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR );
 
   return expContext;
 }

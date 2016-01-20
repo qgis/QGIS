@@ -223,6 +223,7 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
       if ( mMapCanvas )
         mActiveWidget->setMapCanvas( mMapCanvas );
       changeOrderBy( mActiveWidget->renderer()->orderBy() );
+      connect( mActiveWidget, SIGNAL( layerVariablesChanged() ), this, SIGNAL( layerVariablesChanged() ) );
     }
   }
   else
@@ -238,6 +239,8 @@ void QgsRendererV2PropertiesDialog::apply()
   {
     return;
   }
+
+  mActiveWidget->applyChanges();
 
   QgsFeatureRendererV2* renderer = mActiveWidget->renderer();
   if ( renderer )

@@ -1263,10 +1263,12 @@ void QgsVectorLayerProperties::updateSymbologyPage()
     mRendererDialog = new QgsRendererV2PropertiesDialog( layer, QgsStyleV2::defaultStyle(), true );
     mRendererDialog->setMapCanvas( QgisApp::instance()->mapCanvas() );
 
+    connect( mRendererDialog, SIGNAL( layerVariablesChanged() ), this, SLOT( updateVariableEditor() ) );
+
     // display the menu to choose the output format (fix #5136)
     mActionSaveStyleAs->setText( tr( "Save Style" ) );
     mActionSaveStyleAs->setMenu( mSaveAsMenu );
-    QObject::disconnect( mActionSaveStyleAs, SIGNAL( triggered() ), this, SLOT( saveStyleAs_clicked() ) );
+    disconnect( mActionSaveStyleAs, SIGNAL( triggered() ), this, SLOT( saveStyleAs_clicked() ) );
   }
   else
   {

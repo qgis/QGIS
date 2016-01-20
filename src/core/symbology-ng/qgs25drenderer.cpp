@@ -48,6 +48,16 @@
   "  )" \
   ")"
 
+#define WALL_SHADING_EXPRESSION \
+  "set_color_part( " \
+  "  @symbol_color," \
+  " 'value'," \
+  "  40 + 20 * abs( $pi - azimuth( " \
+  "    point_n( geometry_n($geometry, @geometry_part_num) , 1 ), " \
+  "    point_n( geometry_n($geometry, @geometry_part_num) , 2 )" \
+  "  ) ) " \
+  ")"
+
 Qgs25DRenderer::Qgs25DRenderer()
     : QgsFeatureRendererV2( "25dRenderer" )
 {
@@ -67,6 +77,8 @@ Qgs25DRenderer::Qgs25DRenderer()
   roofProperties.insert( "symbolType", "Fill" );
   QgsSymbolLayerV2* roof = QgsGeometryGeneratorSymbolLayerV2::create( roofProperties );
 
+  floor->setLocked( true );
+
   mSymbol->appendSymbolLayer( floor );
   mSymbol->appendSymbolLayer( walls );
   mSymbol->appendSymbolLayer( roof );
@@ -81,11 +93,10 @@ Qgs25DRenderer::Qgs25DRenderer()
   setRoofColor( QColor( "#fdbf6f" ) );
   setWallColor( QColor( "#777777" ) );
 
+  wallLayer()->setDataDefinedProperty( "color", new QgsDataDefined( QString( WALL_SHADING_EXPRESSION ) ) );
+
   setShadowSpread( 4 );
   setShadowColor( QColor( "#1111111" ) );
-
-  setHeight( QString( "20" ) );
-  setAngle( 40 );
 
   QgsFeatureRequest::OrderBy orderBy;
   orderBy << QgsFeatureRequest::OrderByClause(
@@ -100,8 +111,6 @@ QDomElement Qgs25DRenderer::save( QDomDocument& doc )
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
 
   rendererElem.setAttribute( "type", "25dRenderer" );
-  rendererElem.setAttribute( "height", mHeight.expressionOrField() );
-  rendererElem.setAttribute( "angle", mAngle );
 
   QDomElement symbolElem = QgsSymbolLayerV2Utils::saveSymbol( "symbol", mSymbol.data(), doc );
 
@@ -112,19 +121,14 @@ QDomElement Qgs25DRenderer::save( QDomDocument& doc )
 
 QgsFeatureRendererV2* Qgs25DRenderer::create( QDomElement& element )
 {
+  Q_UNUSED( element )
   Qgs25DRenderer* renderer = new Qgs25DRenderer();
-  renderer->mHeight.setField( element.attribute( "height" ) );
-  renderer->mAngle = element.attribute( "angle", "45" ).toInt();
 
   return renderer;
 }
 
 void Qgs25DRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
-  QgsExpressionContextScope* scope = new QgsExpressionContextScope( "2.5D Renderer" );
-  scope->setVariable( "qgis_25d_height", mHeight.expressionOrField() );
-  scope->setVariable( "qgis_25d_angle", mAngle );
-  context.expressionContext().appendScope( scope );
   mSymbol->startRender( context, &fields );
 }
 
@@ -142,8 +146,6 @@ QgsFeatureRendererV2* Qgs25DRenderer::clone() const
 {
   Qgs25DRenderer* c = new Qgs25DRenderer();
   c->mSymbol.reset( mSymbol->clone() );
-  c->mAngle = mAngle;
-  c->mHeight = mHeight;
   return c;
 }
 
@@ -160,26 +162,6 @@ QgsSymbolV2List Qgs25DRenderer::symbols( QgsRenderContext& context )
   QgsSymbolV2List lst;
   lst.append( mSymbol.data() );
   return lst;
-}
-
-QgsDataDefined Qgs25DRenderer::height() const
-{
-  return mHeight;
-}
-
-void Qgs25DRenderer::setHeight( const QgsDataDefined& height )
-{
-  mHeight = height;
-}
-
-int Qgs25DRenderer::angle() const
-{
-  return mAngle;
-}
-
-void Qgs25DRenderer::setAngle( int angle )
-{
-  mAngle = angle;
 }
 
 QgsFillSymbolLayerV2* Qgs25DRenderer::roofLayer() const
@@ -236,6 +218,16 @@ void Qgs25DRenderer::setWallColor( const QColor& wallColor )
 {
   wallLayer()->setFillColor( wallColor );
   wallLayer()->setOutlineColor( wallColor );
+}
+
+void Qgs25DRenderer::setWallShadingEnabled( bool enabled )
+{
+  wallLayer()->getDataDefinedProperty( "color" )->setActive( enabled );
+}
+
+bool Qgs25DRenderer::wallShadingEnabled()
+{
+  return wallLayer()->getDataDefinedProperty( "color" )->isActive();
 }
 
 QColor Qgs25DRenderer::roofColor() const
