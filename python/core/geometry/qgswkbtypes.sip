@@ -113,6 +113,11 @@ class QgsWKBTypes
      */
     static bool isMultiType( Type type );
 
+    /** Returns true if the WKB type is a curved type or can contain curved geometries.
+     * @note added in QGIS 2.14
+     */
+    static bool isCurvedType( Type type );
+
     /** Returns the inherent dimension of the geometry type as an integer. Returned value will
      * always be less than or equal to the coordinate dimension.
      * @returns 0 for point geometries, 1 for line geometries, 2 for polygon geometries

@@ -702,7 +702,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
   bool tileMapRendering = context.testFlag( QgsRenderContext::RenderMapTile );
 
   //convert curve types to normal point/line/polygon ones
-  if ( geom->geometry()->hasCurvedSegments() )
+  if ( QgsWKBTypes::isCurvedType( geom->geometry()->wkbType() ) )
   {
     QgsAbstractGeometryV2* g = geom->geometry()->segmentize();
     if ( !g )

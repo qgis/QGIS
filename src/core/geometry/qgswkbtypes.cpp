@@ -94,6 +94,24 @@ bool QgsWKBTypes::isMultiType( Type type )
   return it->mIsMultiType;
 }
 
+bool QgsWKBTypes::isCurvedType( QgsWKBTypes::Type type )
+{
+  switch ( flatType( type ) )
+  {
+    case CircularString:
+    case CompoundCurve:
+    case CurvePolygon:
+    case MultiCurve:
+    case MultiSurface:
+      return true;
+
+    default:
+      return false;
+  }
+
+  return false;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.

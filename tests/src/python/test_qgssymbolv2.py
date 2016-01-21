@@ -95,7 +95,13 @@ class TestQgsSymbolV2(TestCase):
                   'reference_image': 'compound_curve'},
                  {'name': 'CurvePolygon',
                   'wkt': 'CURVEPOLYGON(CIRCULARSTRING(1 3, 3 5, 4 7, 7 3, 1 3))',
-                  'reference_image': 'curve_polygon'}]
+                  'reference_image': 'curve_polygon'},
+                 {'name': 'MultiCurve',
+                  'wkt': 'MultiCurve((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0, 2 1,2 2))',
+                  'reference_image': 'multicurve'},
+                 {'name': 'CurvePolygon_no_arc',  # refs #14028
+                  'wkt': 'CURVEPOLYGON(LINESTRING(1 3, 3 5, 4 7, 7 3, 1 3))',
+                  'reference_image': 'curve_polygon_no_arc'}]
 
         for test in tests:
             geom = QgsGeometry.fromWkt(test['wkt'])
@@ -110,18 +116,18 @@ class TestQgsSymbolV2(TestCase):
             geom_z = QgsGeometry.fromWkt(test['wkt'])
             geom_z.geometry().addZValue(5)
             rendered_image = self.renderGeometry(geom_z)
-            assert self.imageCheck(test['name'] + ' z', test['reference_image'], rendered_image)
+            assert self.imageCheck(test['name'] + 'Z', test['reference_image'], rendered_image)
 
             #test with ZM
             geom_z.geometry().addMValue(15)
             rendered_image = self.renderGeometry(geom_z)
-            assert self.imageCheck(test['name'] + ' zm', test['reference_image'], rendered_image)
+            assert self.imageCheck(test['name'] + 'ZM', test['reference_image'], rendered_image)
 
             #test with ZM
             geom_m = QgsGeometry.fromWkt(test['wkt'])
             geom_m.geometry().addMValue(15)
             rendered_image = self.renderGeometry(geom_m)
-            assert self.imageCheck(test['name'] + ' m', test['reference_image'], rendered_image)
+            assert self.imageCheck(test['name'] + 'M', test['reference_image'], rendered_image)
 
     def renderGeometry(self, geom):
         f = QgsFeature()
