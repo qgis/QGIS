@@ -57,6 +57,14 @@ void QgsRenderChecker::setControlName( const QString &theName )
   mExpectedImageFile = controlImagePath() + theName + '/' + mControlPathSuffix + theName + ".png";
 }
 
+void QgsRenderChecker::setControlPathSuffix( const QString& theName )
+{
+  if ( !theName.isEmpty() )
+    mControlPathSuffix = theName + '/';
+  else
+    mControlPathSuffix.clear();
+}
+
 QString QgsRenderChecker::imageToHash( const QString& theImageFile )
 {
   QImage myImage;
