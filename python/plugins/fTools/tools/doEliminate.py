@@ -233,9 +233,7 @@ class Dialog(QDialog, Ui_Dialog):
 
                     fidList += unicode(fid)
 
-                QMessageBox.information(
-                    self,
-                    self.tr("Eliminate"),
+                QErrorMessage(self).showMessage(
                     self.tr("Could not eliminate features with these ids:\n%s") % (fidList))
             else:
                 QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Could not add features"))
