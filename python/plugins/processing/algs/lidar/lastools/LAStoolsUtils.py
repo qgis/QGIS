@@ -37,6 +37,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows
 
+
 class LAStoolsUtils:
 
     LASTOOLS_FOLDER = "LASTOOLS_FOLDER"
