@@ -130,6 +130,13 @@ class CORE_EXPORT QgsExpressionContextScope
      */
     void setVariable( const QString& name, const QVariant& value );
 
+    /**
+     * Set a map of variables with values. Any existing variables with the same name will be replaced.
+     * @param variables The variables
+     */
+    void setVariables( const QVariantMap& variables );
+
+
     /** Adds a variable into the context scope. If a variable with the same name is already set then its
      * value is overwritten, otherwise a new variable is added to the scope.
      * @param variable definition of variable to insert

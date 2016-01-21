@@ -8226,21 +8226,8 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
         }
 
         //add variables defined in layer properties
-        QStringList variableNames = vlayer->customProperty( "variableNames" ).toStringList();
-        QStringList variableValues = vlayer->customProperty( "variableValues" ).toStringList();
-
-        int varIndex = 0;
-        Q_FOREACH ( const QString& variableName, variableNames )
-        {
-          if ( varIndex >= variableValues.length() )
-          {
-            break;
-          }
-
-          QVariant varValue = variableValues.at( varIndex );
-          varIndex++;
-          QgsExpressionContextUtils::setLayerVariable( dupVLayer, variableName, varValue );
-        }
+        QVariantMap vars = vlayer->customProperty( "expressionVariables" ).toMap();
+        dupVLayer->setCustomProperty( "expressionVariables", vars );
 
         Q_FOREACH ( const QgsVectorJoinInfo& join, vlayer->vectorJoins() )
           dupVLayer->addJoin( join );

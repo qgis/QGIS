@@ -84,15 +84,24 @@ QgsExpressionContextScope::~QgsExpressionContextScope()
 
 void QgsExpressionContextScope::setVariable( const QString &name, const QVariant &value )
 {
-  if ( mVariables.contains( name ) )
+  QHash<QString, StaticVariable>::iterator existing = mVariables.find( name );
+  if ( existing != mVariables.end() )
   {
-    StaticVariable existing = mVariables.value( name );
-    existing.value = value;
-    addVariable( existing );
+    existing->value = value;
   }
   else
   {
     addVariable( QgsExpressionContextScope::StaticVariable( name, value ) );
+  }
+}
+
+void QgsExpressionContextScope::setVariables( const QVariantMap& variables )
+{
+  QVariantMap::ConstIterator it = variables.constBegin();
+
+  for ( ; it != variables.constEnd(); ++it )
+  {
+    setVariable( it.key(), it.value() );
   }
 }
 
@@ -668,21 +677,8 @@ QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLa
     return scope;
 
   //add variables defined in layer properties
-  QStringList variableNames = layer->customProperty( "variableNames" ).toStringList();
-  QStringList variableValues = layer->customProperty( "variableValues" ).toStringList();
-
-  int varIndex = 0;
-  Q_FOREACH ( const QString& variableName, variableNames )
-  {
-    if ( varIndex >= variableValues.length() )
-    {
-      break;
-    }
-
-    QVariant varValue = variableValues.at( varIndex );
-    varIndex++;
-    scope->setVariable( variableName, varValue );
-  }
+  QVariantMap vars = layer->customProperty( "expressionVariables" ).toMap();
+  scope->setVariables( vars );
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_name", layer->name(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_id", layer->id(), true ) );
@@ -706,14 +702,10 @@ void QgsExpressionContextUtils::setLayerVariable( QgsMapLayer* layer, const QStr
     return;
 
   //write variable to layer
-  QStringList variableNames = layer->customProperty( "variableNames" ).toStringList();
-  QStringList variableValues = layer->customProperty( "variableValues" ).toStringList();
+  QVariantMap vars = layer->customProperty( "expressionVariables" ).toMap();
+  vars.insert( name, value );
 
-  variableNames << name;
-  variableValues << value.toString();
-
-  layer->setCustomProperty( "variableNames", variableNames );
-  layer->setCustomProperty( "variableValues", variableValues );
+  layer->setCustomProperty( "expressionVariables", vars );
 }
 
 void QgsExpressionContextUtils::setLayerVariables( QgsMapLayer* layer, const QgsStringMap& variables )
@@ -721,18 +713,15 @@ void QgsExpressionContextUtils::setLayerVariables( QgsMapLayer* layer, const Qgs
   if ( !layer )
     return;
 
-  QStringList variableNames;
-  QStringList variableValues;
+  QVariantMap vars;
 
   QMap< QString, QString >::const_iterator it = variables.constBegin();
   for ( ; it != variables.constEnd(); ++it )
   {
-    variableNames << it.key();
-    variableValues << it.value();
+    vars.insert( it.key(), it.value() );
   }
 
-  layer->setCustomProperty( "variableNames", variableNames );
-  layer->setCustomProperty( "variableValues", variableValues );
+  layer->setCustomProperty( "expressionVariables", vars );
 }
 
 QgsExpressionContextScope* QgsExpressionContextUtils::mapSettingsScope( const QgsMapSettings& mapSettings )
@@ -780,21 +769,8 @@ QgsExpressionContextScope *QgsExpressionContextUtils::compositionScope( const Qg
     return scope;
 
   //add variables defined in composition properties
-  QStringList variableNames = composition->customProperty( "variableNames" ).toStringList();
-  QStringList variableValues = composition->customProperty( "variableValues" ).toStringList();
-
-  int varIndex = 0;
-  Q_FOREACH ( const QString& variableName, variableNames )
-  {
-    if ( varIndex >= variableValues.length() )
-    {
-      break;
-    }
-
-    QVariant varValue = variableValues.at( varIndex );
-    varIndex++;
-    scope->setVariable( variableName, varValue );
-  }
+  QVariantMap variables = composition->customProperty( "expressionVariables" ).toMap();
+  scope->setVariables( variables );
 
   //add known composition context variables
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "layout_numpages", composition->numPages(), true ) );
@@ -811,14 +787,9 @@ void QgsExpressionContextUtils::setCompositionVariable( QgsComposition* composit
     return;
 
   //write variable to composition
-  QStringList variableNames = composition->customProperty( "variableNames" ).toStringList();
-  QStringList variableValues = composition->customProperty( "variableValues" ).toStringList();
-
-  variableNames << name;
-  variableValues << value.toString();
-
-  composition->setCustomProperty( "variableNames", variableNames );
-  composition->setCustomProperty( "variableValues", variableValues );
+  QVariantMap vars = composition->customProperty( "expressionVariables" ).toMap();
+  vars.insert( name, value );
+  composition->setCustomProperty( "expressionVariables", vars );
 }
 
 void QgsExpressionContextUtils::setCompositionVariables( QgsComposition* composition, const QgsStringMap& variables )
@@ -826,18 +797,15 @@ void QgsExpressionContextUtils::setCompositionVariables( QgsComposition* composi
   if ( !composition )
     return;
 
-  QStringList variableNames;
-  QStringList variableValues;
+  QVariantMap vars;
 
   QMap< QString, QString >::const_iterator it = variables.constBegin();
   for ( ; it != variables.constEnd(); ++it )
   {
-    variableNames << it.key();
-    variableValues << it.value();
+    vars.insert( it.key(), it.value() );
   }
 
-  composition->setCustomProperty( "variableNames", variableNames );
-  composition->setCustomProperty( "variableValues", variableValues );
+  composition->setCustomProperty( "expressionVariables", vars );
 }
 
 QgsExpressionContextScope* QgsExpressionContextUtils::atlasScope( const QgsAtlasComposition* atlas )
@@ -884,21 +852,8 @@ QgsExpressionContextScope *QgsExpressionContextUtils::composerItemScope( const Q
     return scope;
 
   //add variables defined in composer item properties
-  QStringList variableNames = composerItem->customProperty( "variableNames" ).toStringList();
-  QStringList variableValues = composerItem->customProperty( "variableValues" ).toStringList();
-
-  int varIndex = 0;
-  Q_FOREACH ( const QString& variableName, variableNames )
-  {
-    if ( varIndex >= variableValues.length() )
-    {
-      break;
-    }
-
-    QVariant varValue = variableValues.at( varIndex );
-    varIndex++;
-    scope->setVariable( variableName, varValue );
-  }
+  QVariantMap vars = composerItem->customProperty( "expressionVariables" ).toMap();
+  scope->setVariables( vars );
 
   //add known composer item context variables
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "item_id", composerItem->id(), true ) );
@@ -914,14 +869,9 @@ void QgsExpressionContextUtils::setComposerItemVariable( QgsComposerItem* compos
     return;
 
   //write variable to composer item
-  QStringList variableNames = composerItem->customProperty( "variableNames" ).toStringList();
-  QStringList variableValues = composerItem->customProperty( "variableValues" ).toStringList();
-
-  variableNames << name;
-  variableValues << value.toString();
-
-  composerItem->setCustomProperty( "variableNames", variableNames );
-  composerItem->setCustomProperty( "variableValues", variableValues );
+  QVariantMap vars = composerItem->customProperty( "expressionVariables" ).toMap();
+  vars.insert( name, value );
+  composerItem->setCustomProperty( "expressionVariables", vars );
 }
 
 void QgsExpressionContextUtils::setComposerItemVariables( QgsComposerItem* composerItem, const QgsStringMap& variables )
@@ -929,18 +879,15 @@ void QgsExpressionContextUtils::setComposerItemVariables( QgsComposerItem* compo
   if ( !composerItem )
     return;
 
-  QStringList variableNames;
-  QStringList variableValues;
+  QVariantMap vars;
 
   QMap< QString, QString >::const_iterator it = variables.constBegin();
   for ( ; it != variables.constEnd(); ++it )
   {
-    variableNames << it.key();
-    variableValues << it.value();
+    vars.insert( it.key(), it.value() );
   }
 
-  composerItem->setCustomProperty( "variableNames", variableNames );
-  composerItem->setCustomProperty( "variableValues", variableValues );
+  composerItem->setCustomProperty( "expressionVariables", vars );
 }
 
 QgsExpressionContext QgsExpressionContextUtils::createFeatureBasedContext( const QgsFeature &feature, const QgsFields &fields )
