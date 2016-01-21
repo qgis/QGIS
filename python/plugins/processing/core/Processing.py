@@ -155,8 +155,10 @@ class Processing:
         requires the list of algorithms to be created again from
         algorithm providers.
         """
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         Processing.loadFromProviders()
         Processing.fireAlgsListHasChanged()
+        QApplication.restoreOverrideCursor()
 
     @staticmethod
     def loadFromProviders():
