@@ -6298,13 +6298,20 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( activeMapLayer );
   if ( !vl )
   {
-    QMessageBox::information( nullptr, tr( "Active layer is not vector" ), tr( "The merge features tool only works on vector layers. Please select a vector layer from the layer list" ) );
+    messageBar()->pushMessage(
+      tr( "Layer not editable" ),
+      tr( "The merge features tool only works on vector layers." ),
+      QgsMessageBar::WARNING );
     return;
   }
 
   if ( !vl->isEditable() )
   {
-    QMessageBox::information( nullptr, tr( "Layer not editable" ), tr( "Merging features can only be done for layers in editing mode. To use the merge tool, go to Layer->Toggle editing" ) );
+    messageBar()->pushMessage(
+      tr( "Layer not editable" ),
+      tr( "Merging features can only be done for layers in editing mode." ),
+      QgsMessageBar::WARNING );
+
     return;
   }
 
@@ -6312,7 +6319,10 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   const QgsFeatureIds& featureIdSet = vl->selectedFeaturesIds();
   if ( featureIdSet.size() < 2 )
   {
-    QMessageBox::information( nullptr, tr( "Not enough features selected" ), tr( "The merge tool requires at least two selected features" ) );
+    messageBar()->pushMessage(
+      tr( "Not enough features selected" ),
+      tr( "The merge tool requires at least two selected features" ),
+      QgsMessageBar::WARNING );
     return;
   }
 
@@ -6381,18 +6391,28 @@ void QgisApp::mergeSelectedFeatures()
   QgsMapLayer* activeMapLayer = activeLayer();
   if ( !activeMapLayer )
   {
-    QMessageBox::information( nullptr, tr( "No active layer" ), tr( "No active layer found. Please select a layer in the layer list" ) );
+    messageBar()->pushMessage(
+      tr( "No active layer" ),
+      tr( "Please select a layer in the layer list" ),
+      QgsMessageBar::WARNING );
     return;
   }
   QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( activeMapLayer );
   if ( !vl )
   {
-    QMessageBox::information( nullptr, tr( "Active layer is not vector" ), tr( "The merge features tool only works on vector layers. Please select a vector layer from the layer list" ) );
+    messageBar()->pushMessage(
+      tr( "Invalid layer" ),
+      tr( "The merge features tool only works on vector layers." ),
+      QgsMessageBar::WARNING );
     return;
   }
   if ( !vl->isEditable() )
   {
-    QMessageBox::information( nullptr, tr( "Layer not editable" ), tr( "Merging features can only be done for layers in editing mode. To use the merge tool, go to Layer->Toggle editing" ) );
+    messageBar()->pushMessage(
+      tr( "Layer not editable" ),
+      tr( "Merging features can only be done for layers in editing mode." ),
+      QgsMessageBar::WARNING );
+
     return;
   }
 
@@ -6407,7 +6427,10 @@ void QgisApp::mergeSelectedFeatures()
   const QgsFeatureIds& featureIdSet = vl->selectedFeaturesIds();
   if ( featureIdSet.size() < 2 )
   {
-    QMessageBox::information( nullptr, tr( "Not enough features selected" ), tr( "The merge tool requires at least two selected features" ) );
+    messageBar()->pushMessage(
+      tr( "Not enough features selected" ),
+      tr( "The merge tool requires at least two selected features" ),
+      QgsMessageBar::WARNING );
     return;
   }
 
@@ -6420,7 +6443,10 @@ void QgisApp::mergeSelectedFeatures()
   {
     if ( !canceled )
     {
-      QMessageBox::critical( nullptr, tr( "Merge failed" ), tr( "An error occurred during the merge operation" ) );
+      messageBar()->pushMessage(
+        tr( "Merge failed" ),
+        tr( "An error occurred during the merge operation" ),
+        QgsMessageBar::CRITICAL );
     }
     return;
   }
@@ -6428,7 +6454,11 @@ void QgisApp::mergeSelectedFeatures()
   //make a first geometry union and notify the user straight away if the union geometry type does not match the layer one
   if ( providerChecksTypeStrictly && unionGeom->wkbType() != vl->wkbType() )
   {
-    QMessageBox::critical( nullptr, tr( "Union operation canceled" ), tr( "The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled" ) );
+    messageBar()->pushMessage(
+      tr( "Merge cancelled" ),
+      tr( "The union operation would result in a geometry type that is not compatible with the current layer." ),
+      QgsMessageBar::CRITICAL );
+
     delete unionGeom;
     return;
   }
@@ -6445,7 +6475,10 @@ void QgisApp::mergeSelectedFeatures()
 
   if ( featureIdsAfter.size() < 2 )
   {
-    QMessageBox::information( nullptr, tr( "Not enough features selected" ), tr( "The merge tool requires at least two selected features" ) );
+    messageBar()->pushMessage(
+      tr( "Not enough features selected" ),
+      tr( "The merge tool requires at least two selected features" ),
+      QgsMessageBar::WARNING );
     delete unionGeom;
     return;
   }
@@ -6461,14 +6494,20 @@ void QgisApp::mergeSelectedFeatures()
     {
       if ( !canceled )
       {
-        QMessageBox::critical( nullptr, tr( "Merge failed" ), tr( "An error occurred during the merge operation" ) );
+        messageBar()->pushMessage(
+          tr( "Merge failed" ),
+          tr( "An error occurred during the merge operation" ),
+          QgsMessageBar::CRITICAL );
       }
       return;
     }
 
     if ( providerChecksTypeStrictly && unionGeom->wkbType() != vl->wkbType() )
     {
-      QMessageBox::critical( nullptr, "Union operation canceled", tr( "The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled" ) );
+      messageBar()->pushMessage(
+        tr( "Merge cancelled" ),
+        tr( "The union operation would result in a geometry type that is not compatible with the current layer." ),
+        QgsMessageBar::CRITICAL );
       delete unionGeom;
       return;
     }
