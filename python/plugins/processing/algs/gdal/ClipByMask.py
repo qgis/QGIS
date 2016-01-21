@@ -27,8 +27,6 @@ __revision__ = '$Format:%H$'
 
 from osgeo import gdal
 
-from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
@@ -41,8 +39,10 @@ from processing.core.outputs import OutputRaster
 from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools import dataobjects
 
-class ClipByMask(GdalAlgorithm, OgrAlgorithm):
+
+class ClipByMask(OgrAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -149,7 +149,7 @@ class ClipByMask(GdalAlgorithm, OgrAlgorithm):
 
         arguments.append('-cutline')
         arguments.append(ogrMask)
-        if maskLayer.subsetString() != '':
+        if maskLayer and maskLayer.subsetString() != '':
             arguments.append('-cwhere')
             arguments.append(maskLayer.subsetString())
 
