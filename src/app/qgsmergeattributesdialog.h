@@ -55,6 +55,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     void selectedRowChanged();
     void on_mFromSelectedPushButton_clicked();
     void on_mRemoveFeatureFromSelectionButton_clicked();
+    void tableWidgetCellChanged( int row, int column );
 
   private:
     QgsMergeAttributesDialog(); //default constructor forbidden

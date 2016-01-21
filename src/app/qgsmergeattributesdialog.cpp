@@ -73,6 +73,7 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   restoreGeometry( settings.value( "/Windows/MergeAttributes/geometry" ).toByteArray() );
 
   connect( mSkipAllButton, SIGNAL( clicked() ), this, SLOT( setAllToSkip() ) );
+  connect( mTableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( tableWidgetCellChanged( int, int ) ) );
 }
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog()
@@ -186,6 +187,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
   }
 
   newComboBox->addItem( tr( "Skip attribute" ), "skip" );
+  newComboBox->addItem( tr( "Manual value" ), "manual" );
 
   QObject::connect( newComboBox, SIGNAL( currentIndexChanged( const QString& ) ),
                     this, SLOT( comboValueChanged( const QString& ) ) );
@@ -275,6 +277,10 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   {
     mergeResult = tr( "Skipped" );
   }
+  else if ( mergeBehaviourString == "manual" )
+  {
+    return; //nothing to do
+  }
   else if ( mergeBehaviourString.startsWith( 'f' ) )
   {
     //an existing feature value
@@ -292,7 +298,11 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   QTableWidgetItem* newTotalItem = new QTableWidgetItem();
   newTotalItem->setData( Qt::DisplayRole, mergeResult );
   newTotalItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
+
+  //block signals to prevent table widget switching combo box to "manual" entry
+  mTableWidget->blockSignals( true );
   mTableWidget->setItem( mTableWidget->rowCount() - 1, col, newTotalItem );
+  mTableWidget->blockSignals( false );
 }
 
 QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int col )
@@ -460,6 +470,23 @@ void QgsMergeAttributesDialog::on_mRemoveFeatureFromSelectionButton_clicked()
       mFeatureList.erase( f_it );
       break;
     }
+  }
+}
+
+void QgsMergeAttributesDialog::tableWidgetCellChanged( int row, int column )
+{
+  if ( row < mTableWidget->rowCount() - 1 )
+  {
+    //only looking for edits in the final row
+    return;
+  }
+
+  QComboBox* currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, column ) );
+  if ( currentComboBox )
+  {
+    currentComboBox->blockSignals( true );
+    currentComboBox->setCurrentIndex( currentComboBox->findData( "manual" ) );
+    currentComboBox->blockSignals( false );
   }
 }
 
