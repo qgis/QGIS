@@ -112,6 +112,8 @@ class ClipByMask(GdalAlgorithm, OgrAlgorithm):
     def getConsoleCommands(self):
         out = self.getOutputValue(self.OUTPUT)
         mask = self.getParameterValue(self.MASK)
+        maskLayer = dataobjects.getObjectFromUri(
+            self.getParameterValue(self.MASK))
         ogrMask = self.ogrConnectionString(mask)[1:-1]
         noData = unicode(self.getParameterValue(self.NO_DATA))
         addAlphaBand = self.getParameterValue(self.ALPHA_BAND)
@@ -147,6 +149,9 @@ class ClipByMask(GdalAlgorithm, OgrAlgorithm):
 
         arguments.append('-cutline')
         arguments.append(ogrMask)
+        if maskLayer.subsetString() != '':
+            arguments.append('-cwhere')
+            arguments.append(maskLayer.subsetString())
 
         if cropToCutline:
             arguments.append('-crop_to_cutline')
