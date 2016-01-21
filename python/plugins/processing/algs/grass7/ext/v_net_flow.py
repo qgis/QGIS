@@ -40,7 +40,7 @@ def checkParameterValuesBeforeExecuting(alg):
     if (values[0] or values[2]) and (values[1] or values[3]):
         return None
 
-    return alg.tr("You need to set at least source/sink_where or source/sink_cats parameters for each set !")
+    return alg.tr("You need to set at least source/sink_where or source/sink_cats parameters for each set!")
 
 
 def processCommand(alg):

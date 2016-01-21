@@ -200,8 +200,8 @@ class QueryBuilderDlg(QDialog):
             return  # No object with this name
         self.table = tableObj[0]
         if (ag in self.coltables):  # table already use
-            reponse = QMessageBox.question(self, "Table already used", "Do you want to add table %s again ?" % ag, QMessageBox.Yes | QMessageBox.No)
-            if reponse == QMessageBox.No:
+            response = QMessageBox.question(self, "Table already used", "Do you want to add table %s again?" % ag, QMessageBox.Yes | QMessageBox.No)
+            if response == QMessageBox.No:
                 return
         ag = self.table.quotedName()
         txt = self.ui.tab.text()
@@ -217,16 +217,16 @@ class QueryBuilderDlg(QDialog):
         ag = self.ui.columns.currentText()
         if self.evt.focus == "where": # in where section
             if ag in self.col_where: # column already called in where section
-                reponse = QMessageBox.question(self, "Column already used in WHERE clause", "Do you want to add column %s again ?" % ag, QMessageBox.Yes | QMessageBox.No)
-                if reponse == QMessageBox.No:
+                response = QMessageBox.question(self, "Column already used in WHERE clause", "Do you want to add column %s again?" % ag, QMessageBox.Yes | QMessageBox.No)
+                if response == QMessageBox.No:
                     self.ui.columns.setCurrentIndex(0)
                     return
             self.ui.where.insertPlainText(ag)
             self.col_where.append(ag)
         elif self.evt.focus == "col":
             if ag in self.col_col: # column already called in col section
-                reponse = QMessageBox.question(self, "Column already used in COLUMNS section", "Do you want to add column %s again ?" % ag, QMessageBox.Yes | QMessageBox.No)
-                if reponse == QMessageBox.No:
+                response = QMessageBox.question(self, "Column already used in COLUMNS section", "Do you want to add column %s again?" % ag, QMessageBox.Yes | QMessageBox.No)
+                if response == QMessageBox.No:
                     self.ui.columns.setCurrentIndex(0)
                     return
             if len(self.ui.col.toPlainText().strip()) > 0:

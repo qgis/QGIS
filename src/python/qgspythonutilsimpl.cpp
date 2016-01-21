@@ -85,7 +85,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
     {
       QgsMessageOutput* msg = QgsMessageOutput::createMessageOutput();
       msg->setTitle( QObject::tr( "Python error" ) );
-      msg->setMessage( QString( QObject::tr( "The extra plugin path '%1' does not exist !" ) ).arg( p ), QgsMessageOutput::MessageText );
+      msg->setMessage( QObject::tr( "The extra plugin path '%1' does not exist!" ).arg( p ), QgsMessageOutput::MessageText );
       msg->showMessage();
     }
 #ifdef Q_OS_WIN
