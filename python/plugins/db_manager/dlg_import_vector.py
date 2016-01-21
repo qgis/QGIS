@@ -300,7 +300,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
             # get output params, update output URI
             self.outUri.setDataSource(schema, table, geom, "", pk)
-            uri = self.outUri.uri()
+            uri = self.outUri.uri(False)
 
             providerName = self.db.dbplugin().providerName()
 
