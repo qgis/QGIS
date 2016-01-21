@@ -21,7 +21,6 @@
 #include <QtGlobal>
 
 class QString;
-class QgsVectorLayer;
 class QgsFeatureRequest;
 
 
@@ -45,10 +44,10 @@ class CORE_EXPORT QgsFeatureFilterProvider
 
     /** Add additional filters to the feature request to further restrict the features returned by the request.
      * Derived classes must implement this method.
-     * @param layer the layer to filter
+     * @param layerId the layer id to filter
      * @param featureRequest the feature request to update
      */
-    virtual void filterFeatures( const QgsVectorLayer* layer, QgsFeatureRequest& featureRequest ) const = 0;
+    virtual void filterFeatures( const QString& layerId, QgsFeatureRequest& featureRequest ) const = 0;
 
     /** Create a clone of the feature filter provider
      * @return a new clone

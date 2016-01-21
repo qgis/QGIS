@@ -161,7 +161,7 @@ bool QgsVectorLayerRenderer::render()
   const QgsFeatureFilterProvider* featureFilterProvider = mContext.featureFilterProvider();
   if ( featureFilterProvider )
   {
-    featureFilterProvider->filterFeatures( mLayer, featureRequest );
+    featureFilterProvider->filterFeatures( mLayer->id(), featureRequest );
   }
   if ( !rendererFilter.isEmpty() && rendererFilter != "TRUE" )
   {

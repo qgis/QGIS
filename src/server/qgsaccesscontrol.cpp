@@ -17,20 +17,18 @@
 
 #include "qgsaccesscontrol.h"
 #include "qgsfeaturerequest.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
 
 #include <QStringList>
 
 
 /** Filter the features of the layer */
-void QgsAccessControl::filterFeatures( const QgsVectorLayer* layer, QgsFeatureRequest& featureRequest ) const
+void QgsAccessControl::filterFeatures( const QString& layerId, QgsFeatureRequest& featureRequest ) const
 {
   QStringList expressions = QStringList();
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    const QString expression = acIterator.value()->layerFilterExpression( layer );
+    const QString expression = acIterator.value()->layerFilterExpression( layerId );
     if ( !expression.isEmpty() )
     {
       expressions.append( expression );
@@ -49,13 +47,13 @@ QgsFeatureFilterProvider* QgsAccessControl::clone() const
 }
 
 /** Return an additional subset string (typically SQL) filter */
-const QString QgsAccessControl::extraSubsetString( const QgsVectorLayer* layer ) const
+const QString QgsAccessControl::extraSubsetString( const QString& layerId ) const
 {
   QStringList sqls = QStringList();
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    const QString sql = acIterator.value()->layerFilterSubsetString( layer );
+    const QString sql = acIterator.value()->layerFilterSubsetString( layerId );
     if ( !sql.isEmpty() )
     {
       sqls.append( sql );
@@ -65,12 +63,12 @@ const QString QgsAccessControl::extraSubsetString( const QgsVectorLayer* layer )
 }
 
 /** Return the layer read right */
-bool QgsAccessControl::layerReadPermission( const QgsMapLayer* layer ) const
+bool QgsAccessControl::layerReadPermission( const QString& layerId ) const
 {
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    if ( !acIterator.value()->layerPermissions( layer ).canRead )
+    if ( !acIterator.value()->layerPermissions( layerId ).canRead )
     {
       return false;
     }
@@ -79,12 +77,12 @@ bool QgsAccessControl::layerReadPermission( const QgsMapLayer* layer ) const
 }
 
 /** Return the layer insert right */
-bool QgsAccessControl::layerInsertPermission( const QgsVectorLayer* layer ) const
+bool QgsAccessControl::layerInsertPermission( const QString& layerId ) const
 {
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    if ( !acIterator.value()->layerPermissions( layer ).canInsert )
+    if ( !acIterator.value()->layerPermissions( layerId ).canInsert )
     {
       return false;
     }
@@ -93,12 +91,12 @@ bool QgsAccessControl::layerInsertPermission( const QgsVectorLayer* layer ) cons
 }
 
 /** Return the layer update right */
-bool QgsAccessControl::layerUpdatePermission( const QgsVectorLayer* layer ) const
+bool QgsAccessControl::layerUpdatePermission( const QString& layerId ) const
 {
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    if ( !acIterator.value()->layerPermissions( layer ).canUpdate )
+    if ( !acIterator.value()->layerPermissions( layerId ).canUpdate )
     {
       return false;
     }
@@ -107,12 +105,12 @@ bool QgsAccessControl::layerUpdatePermission( const QgsVectorLayer* layer ) cons
 }
 
 /** Return the layer delete right */
-bool QgsAccessControl::layerDeletePermission( const QgsVectorLayer* layer ) const
+bool QgsAccessControl::layerDeletePermission( const QString& layerId ) const
 {
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    if ( !acIterator.value()->layerPermissions( layer ).canDelete )
+    if ( !acIterator.value()->layerPermissions( layerId ).canDelete )
     {
       return false;
     }
@@ -121,13 +119,13 @@ bool QgsAccessControl::layerDeletePermission( const QgsVectorLayer* layer ) cons
 }
 
 /** Return the authorized layer attributes */
-const QStringList QgsAccessControl::layerAttributes( const QgsVectorLayer* layer, const QStringList attributes ) const
+const QStringList QgsAccessControl::layerAttributes( const QString& layerId, const QStringList attributes ) const
 {
   QStringList currentAttributes( attributes );
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    const QStringList* newAttributes = acIterator.value()->authorizedLayerAttributes( layer, currentAttributes );
+    const QStringList* newAttributes = acIterator.value()->authorizedLayerAttributes( layerId, currentAttributes );
     if ( newAttributes )
     {
       currentAttributes = *newAttributes;
@@ -137,12 +135,12 @@ const QStringList QgsAccessControl::layerAttributes( const QgsVectorLayer* layer
 }
 
 /** Are we authorized to modify the following geometry */
-bool QgsAccessControl::allowToEdit( const QgsVectorLayer* layer, const QgsFeature& feature ) const
+bool QgsAccessControl::allowToEdit( const QString& layerId, const QgsFeature& feature ) const
 {
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    if ( !acIterator.value()->allowToEdit( layer, feature ) )
+    if ( !acIterator.value()->allowToEdit( layerId, feature ) )
     {
       return false;
     }

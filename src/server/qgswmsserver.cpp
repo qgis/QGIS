@@ -922,7 +922,7 @@ QImage* QgsWMSServer::getLegendGraphics()
       QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      if ( !mAccessControl->layerReadPermission( nodeLayer->layer() ) )
+      if ( !mAccessControl->layerReadPermission( nodeLayer->layer()->id() ) )
       {
         throw QgsMapServiceException( "Security", "You are not allowed to access to the layer: " + nodeLayer->layer()->name() );
       }
@@ -1252,7 +1252,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   foreach ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
-    if ( !mAccessControl->layerReadPermission( layer ) )
+    if ( !mAccessControl->layerReadPermission( layer->id() ) )
     {
       throw QgsMapServiceException( "Security", "You are not allowed to access to the layer: " + layer->name() );
     }
@@ -1386,7 +1386,7 @@ QImage* QgsWMSServer::getMap( HitTest* hitTest )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   foreach ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
-    if ( !mAccessControl->layerReadPermission( layer ) )
+    if ( !mAccessControl->layerReadPermission( layer->id() ) )
     {
       throw QgsMapServiceException( "Security", "You are not allowed to access to the layer: " + layer->name() );
     }
@@ -1700,7 +1700,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
       }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      if ( !mAccessControl->layerReadPermission( currentLayer ) )
+      if ( !mAccessControl->layerReadPermission( currentLayer->id() ) )
       {
         throw QgsMapServiceException( "Security", "You are not allowed to access to the layer: " + currentLayer->name() );
       }
@@ -2172,7 +2172,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   fReq.setFlags((( hasGeometry ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect );
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  mAccessControl->filterFeatures( layer, fReq );
+  mAccessControl->filterFeatures( layer->id(), fReq );
   if ( ! searchRect.isEmpty() )
   {
     if ( fReq.filterExpression() )
@@ -2192,7 +2192,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   {
     attributes.append( field.name() );
   }
-  attributes = mAccessControl->layerAttributes( layer, attributes );
+  attributes = mAccessControl->layerAttributes( layer->id(), attributes );
   fReq.setSubsetOfAttributes( attributes, layer->pendingFields() );
 #else
   if ( ! searchRect.isEmpty() )

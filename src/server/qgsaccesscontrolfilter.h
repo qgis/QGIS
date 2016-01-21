@@ -23,8 +23,6 @@
 #include <QString>
 
 class QgsServerInterface;
-class QgsMapLayer;
-class QgsVectorLayer;
 class QgsExpression;
 class QgsFeature;
 
@@ -66,36 +64,36 @@ class SERVER_EXPORT QgsAccessControlFilter
     const QgsServerInterface* serverInterface() const { return mServerInterface; }
 
     /** Return an additional expression filter
-     * @param layer the layer to control
+     * @param layerId the layer id to control
      * @return the filter expression
      */
-    virtual const QString layerFilterExpression( const QgsVectorLayer* layer ) const;
+    virtual const QString layerFilterExpression( const QString& layerId ) const;
 
     /** Return an additional subset string (typically SQL) filter
-     * @param layer the layer to control
+     * @param layerId the layer id to control
      * @return the subset string
      */
-    virtual const QString layerFilterSubsetString( const QgsVectorLayer* layer ) const;
+    virtual const QString layerFilterSubsetString( const QString& layerId ) const;
 
     /** Return the layer permissions
-     * @param layer the layer to control
+     * @param layerId the layer id to control
      * @return the permission to use on the layer
      */
-    virtual const LayerPermissions layerPermissions( const QgsMapLayer* layer ) const;
+    virtual const LayerPermissions layerPermissions( const QString& layerId ) const;
 
     /** Return the authorized layer attributes
-     * @param layer the layer to control
+     * @param layerId the layer id to control
      * @param attributes the current list of visible attribute
      * @return the new list of visible attributes
      */
-    virtual const QStringList* authorizedLayerAttributes( const QgsVectorLayer* layer, const QStringList& attributes ) const;
+    virtual const QStringList* authorizedLayerAttributes( const QString& layerId, const QStringList& attributes ) const;
 
     /** Are we authorized to modify the following geometry
-     * @param layer the layer to control
+     * @param layerId the layer id to control
      * @param feature the concerned feature
      * @return true if we are allowed to edit
      */
-    virtual bool allowToEdit( const QgsVectorLayer* layer, const QgsFeature& feature ) const;
+    virtual bool allowToEdit( const QString& layerId, const QgsFeature& feature ) const;
 
     /** Cache key to used to create the capabilities cache
      * @return the cache key, "" for no cache

@@ -23,7 +23,7 @@ from utilities import unitTestDataPath
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 from qgis.server import QgsServer, QgsAccessControlFilter
-from qgis.core import QgsRenderChecker
+from qgis.core import QgsRenderChecker, QgsProject
 from PyQt4.QtCore import QSize
 import tempfile
 import urllib
@@ -89,27 +89,46 @@ class RestrictedAccessControl(QgsAccessControlFilter):
     def __init__(self, server_iface):
         super(QgsAccessControlFilter, self).__init__(server_iface)
 
-    def layerFilterExpression(self, layer):
+        project_path = path.join(unitTestDataPath("qgis_server_accesscontrol"), "project.qgs")
+        project = QgsProject.instance()
+        project.setFileName(project_path)
+        project.read()
+
+        layer_tree = project.layerTreeRoot()
+        self.layer_id_name = {}
+        for layer_id in layer_tree.findLayerIds():
+            self.layer_id_name[layer_id] = layer_tree.findLayer(layer_id).layer().name()
+
+    def _get_layer_name(self, layer_id):
+        return self.layer_id_name[layer_id]
+
+    def layerFilterExpression(self, layer_id):
         """ Return an additional expression filter """
 
         if not self._active:
-            return super(RestrictedAccessControl, self).layerFilterExpression(layer)
+            return super(RestrictedAccessControl, self).layerFilterExpression(layer_id)
 
-        return "$id = 1" if layer.name() == "Hello" else None
+        layer_name = self._get_layer_name(layer_id)
 
-    def layerFilterSubsetString(self, layer):
+        return "$id = 1" if layer_name == "Hello" else None
+
+    def layerFilterSubsetString(self, layer_id):
         """ Return an additional subset string (typically SQL) filter """
 
         if not self._active:
-            return super(RestrictedAccessControl, self).layerFilterSubsetString(layer)
+            return super(RestrictedAccessControl, self).layerFilterSubsetString(layer_id)
 
-        return "pk = 1" if layer.name() == "Hello_SubsetString" else None
+        layer_name = self._get_layer_name(layer_id)
 
-    def layerPermissions(self, layer):
+        return "pk = 1" if layer_name == "Hello_SubsetString" else None
+
+    def layerPermissions(self, layer_id):
         """ Return the layer rights """
 
         if not self._active:
-            return super(RestrictedAccessControl, self).layerPermissions(layer)
+            return super(RestrictedAccessControl, self).layerPermissions(layer_id)
+
+        layer_name = self._get_layer_name(layer_id)
 
         rh = self.serverInterface().requestHandler()
         rights = QgsAccessControlFilter.LayerPermissions()
@@ -118,29 +137,29 @@ class RestrictedAccessControl(QgsAccessControlFilter):
             return rights
         # Used to test the WCS
         if rh.parameter("TEST") == "dem" and rh.parameterMap()["TEST"] == "dem":
-            rights.canRead = layer.name() != "dem"
+            rights.canRead = layer_name != "dem"
         else:
-            rights.canRead = layer.name() != "Country"
-        if layer.name() == "db_point":
+            rights.canRead = layer_name != "Country"
+        if layer_name == "db_point":
             rights.canRead = rights.canInsert = rights.canUpdate = rights.canDelete = True
 
         return rights
 
-    def authorizedLayerAttributes(self, layer, attributes):
+    def authorizedLayerAttributes(self, layer_id, attributes):
         """ Return the authorised layer attributes """
 
         if not self._active:
-            return super(RestrictedAccessControl, self).authorizedLayerAttributes(layer, attributes)
+            return super(RestrictedAccessControl, self).authorizedLayerAttributes(layer_id, attributes)
 
         if "colour" in attributes:
             attributes.remove("colour")
         return attributes
 
-    def allowToEdit(self, layer, feature):
+    def allowToEdit(self, layer_id, feature):
         """ Are we authorise to modify the following geometry """
 
         if not self._active:
-            return super(RestrictedAccessControl, self).allowToEdit(layer, feature)
+            return super(RestrictedAccessControl, self).allowToEdit(layer_id, feature)
 
         return feature.attribute("color") in ["red", "yellow"]
 
