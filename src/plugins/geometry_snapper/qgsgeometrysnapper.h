@@ -35,6 +35,10 @@ class QgsGeometrySnapper : public QObject
     QFuture<void> processFeatures();
     const QStringList& getErrors() const { return mErrors; }
 
+  signals:
+    void progressRangeChanged( int min, int max );
+    void progressStep();
+
   private:
     struct ProcessFeatureWrapper
     {
