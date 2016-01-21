@@ -46,11 +46,11 @@ QgsRendererV2Registry::QgsRendererV2Registry()
                                           QgsRuleBasedRendererV2::createFromSld ) );
 
   addRenderer( new QgsRendererV2Metadata( "pointDisplacement",
-                                          QObject::tr( "Point displacement" ),
+                                          QObject::tr( "Point Displacement" ),
                                           QgsPointDisplacementRenderer::create ) );
 
   addRenderer( new QgsRendererV2Metadata( "invertedPolygonRenderer",
-                                          QObject::tr( "Inverted polygons" ),
+                                          QObject::tr( "Inverted Polygons" ),
                                           QgsInvertedPolygonRenderer::create ) );
 
   addRenderer( new QgsRendererV2Metadata( "heatmapRenderer",
