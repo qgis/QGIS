@@ -20,7 +20,7 @@
           <prop k="joinstyle" v="bevel"/>
           <prop k="line_color" v="154,139,116,255"/>
           <prop k="line_style" v="dash dot dot"/>
-          <prop k="line_width" v="1"/>
+          <prop k="line_width" v="2"/>
           <prop k="line_width_unit" v="MM"/>
           <prop k="offset" v="0"/>
           <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
