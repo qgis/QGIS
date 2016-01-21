@@ -135,6 +135,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
     return false;
 
   QgsVectorDataProvider *provider = mLayer->dataProvider();
+  QgsAttributeList pkAttrList = mLayer->pkAttributeList();
 
   QSettings settings;
   bool reuseLastValues = settings.value( "/qgis/digitizing/reuseLastValues", false ).toBool();
@@ -151,7 +152,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
     {
       v = defaultAttributes.value( idx );
     }
-    else if ( reuseLastValues && sLastUsedValues.contains( mLayer ) && sLastUsedValues[ mLayer ].contains( idx ) )
+    else if ( reuseLastValues && sLastUsedValues.contains( mLayer ) && sLastUsedValues[ mLayer ].contains( idx ) && !pkAttrList.contains( idx ) )
     {
       v = sLastUsedValues[ mLayer ][idx];
     }
