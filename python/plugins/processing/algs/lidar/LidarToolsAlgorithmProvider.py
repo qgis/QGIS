@@ -222,10 +222,11 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
             FusionUtils.FUSION_FOLDER,
             self.tr('Fusion folder'), FusionUtils.FusionPath(),
             valuetype=Setting.FOLDER))
-        ProcessingConfig.addSetting(Setting(
-            self.getDescription(),
-            LAStoolsUtils.WINE_FOLDER,
-            self.tr('Wine folder'), '', valuetype=Setting.FOLDER))
+        if not isWindows():
+            ProcessingConfig.addSetting(Setting(
+                self.getDescription(),
+                LAStoolsUtils.WINE_FOLDER,
+                self.tr('Wine folder'), '', valuetype=Setting.FOLDER))
 
     def getName(self):
         return 'lidartools'
