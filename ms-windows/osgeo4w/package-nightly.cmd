@@ -249,7 +249,11 @@ for %%g IN (%GRASS_VERSIONS%) do (
 PATH %path%;%BUILDDIR%\output\plugins\%BUILDCONF%
 
 cmake --build %BUILDDIR% --target %TESTTARGET% --config %BUILDCONF%
-if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
+set TESTRES=0
+if errorlevel 1 (
+    echo TESTS WERE NOT SUCCESSFUL.
+    set TESTRES=1
+)
 
 set TEMP=%oldtemp%
 set TMP=%oldtmp%
@@ -355,6 +359,10 @@ if exist %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-%VERSION%-%
 
 :end
 echo FINISHED: %DATE% %TIME%
-
+if "%TESTTARGET%"=="Experimental" (
+    if %TESTRES%==1 (
+        SET res=1
+    )
+)
 exit /b %res%
 endlocal
