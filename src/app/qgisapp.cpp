@@ -4143,6 +4143,7 @@ void QgisApp::fileOpenAfterLaunch()
   if ( mProjOpen == 0 ) // welcome page
   {
     connect( this, SIGNAL( newProject() ), this, SLOT( showMapCanvas() ) );
+    connect( this, SIGNAL( projectRead() ), this, SLOT( showMapCanvas() ) );
     return;
   }
   if ( mProjOpen == 1 && !mRecentProjects.isEmpty() ) // most recent project
