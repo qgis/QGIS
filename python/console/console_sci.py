@@ -382,7 +382,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
         # handle invalid cursor position and multiline selections
         if not self.is_cursor_on_edition_zone() or startLine < endLine:
-            # allow to copy and select
+            # allow copying and selecting
             if e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier):
                 if e.key() in (Qt.Key_C, Qt.Key_A):
                     QsciScintilla.keyPressEvent(self, e)

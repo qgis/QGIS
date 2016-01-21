@@ -263,7 +263,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
     QDomElement gelem = gnode.toElement();
 
     // Output option may have missing gisprompt if output may be both vector and raster according to other options (e.g. v.kernel)
-    // outputType qgm attribute allows to force output type
+    // outputType qgm attribute allows forcing an output type
 
     // Predefined values ?
     QDomNode valuesNode = gnode.namedItem( "values" );
@@ -348,7 +348,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
       mControlType = LineEdit;
 
       // Output option may have missing gisprompt if output may be both vector and raster according to other options (e.g. v.kernel)
-      // outputType qgm attribute allows to force output type
+      // outputType qgm attribute allow forcing an output type
       QgsDebugMsg( "outputType = " + qdesc.attribute( "outputType" ) );
       if ( qdesc.hasAttribute( "outputType" ) )
       {
@@ -1075,7 +1075,7 @@ QgsGrassModuleField::QgsGrassModuleField( QgsGrassModule *module, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
     : QgsGrassModuleOption( module, key, qdesc, gdesc, gnode, direct, parent )
 {
-  // Validator is disabled to allow to enter also expressions
+  // Validator is disabled to also allow entering of expressions
 #if 0
   QRegExp rx( "^[a-zA-Z_][a-zA-Z0-9_]*$" );
   Q_FOREACH ( QLineEdit *lineEdit, mLineEdits )

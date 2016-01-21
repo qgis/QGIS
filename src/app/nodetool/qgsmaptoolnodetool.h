@@ -145,10 +145,10 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     /** Object containing selected feature and it's vertexes */
     QgsSelectedFeature *mSelectedFeature;
 
-    /** Dock widget which allows to edit vertices */
+    /** Dock widget which allows editing vertices */
     QgsNodeEditor* mNodeEditor;
 
-    /** Flag if moving of vertexes is occuring */
+    /** Flag if moving of vertexes is occurring */
     bool mMoving;
 
     /** Flag if selection of another feature can occur */

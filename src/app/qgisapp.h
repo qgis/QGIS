@@ -1148,7 +1148,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Alerts user when labeling font for layer has not been found on system */
     void labelingFontNotFound( QgsVectorLayer *vlayer, const QString& fontfamily );
 
-    /** Alerts user when commit errors occured */
+    /** Alerts user when commit errors occurred */
     void commitError( QgsVectorLayer *vlayer );
 
     /** Opens the labeling dialog for a layer when called from labelingFontNotFound alert */

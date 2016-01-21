@@ -251,7 +251,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Reset error code (to OK). Call this before a piece of code where an error is expected
     static void resetError( void );  // reset error status
 
-    //! Check if any error occured in lately called functions. Returns value from ERROR.
+    //! Check if any error occurred in lately called functions. Returns value from ERROR.
     static int error( void );
 
     //! Get last error message

@@ -31,7 +31,7 @@ class writeOut:
 
     def __init__(self, shellOut, out=None, style=None):
         """
-        This class allow to write stdout and stderr
+        This class allows writing to stdout and stderr
         """
         self.sO = shellOut
         self.out = None

@@ -101,7 +101,7 @@ class TestQgsRelationEditWidget(TestCase):
         assert(cls.rel_b.isValid())
         relMgr.addRelation(cls.rel_b)
 
-        # Our mock QgsVectorLayerTools, that allow to inject data where user input is expected
+        # Our mock QgsVectorLayerTools, that allow injecting data where user input is expected
         cls.vltools = VlTools()
 
         assert(cls.vl_a.isValid())

@@ -45,7 +45,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     /**
      * Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
      *
-     * @param mapCanvas The map canvas on which the event occured
+     * @param mapCanvas The map canvas on which the event occurred
      * @param event     The original mouse event
      */
     QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QMouseEvent* event );
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     /**
      * Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
      *
-     * @param mapCanvas The map canvas on which the event occured
+     * @param mapCanvas The map canvas on which the event occurred
      * @param type      The type of the event
      * @param pos       The pixel position of the mouse
      * @param button    The pressed button

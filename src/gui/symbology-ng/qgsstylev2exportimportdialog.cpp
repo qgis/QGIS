@@ -173,7 +173,7 @@ bool QgsStyleV2ExportImportDialog::populateStyles( QgsStyleV2* style )
     if ( !style->importXML( mFileName ) )
     {
       QMessageBox::warning( this, tr( "Import error" ),
-                            tr( "An error occured during import:\n%1" ).arg( style->errorString() ) );
+                            tr( "An error occurred during import:\n%1" ).arg( style->errorString() ) );
       return false;
     }
   }

@@ -372,7 +372,7 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
         checkSwap( edgef, 0 );
       }
 
-      else if ( number == -100 || number == -5 )//this means unknown problems or a numerical error occured in 'baseEdgeOfTriangle'
+      else if ( number == -100 || number == -5 )//this means unknown problems or a numerical error occurred in 'baseEdgeOfTriangle'
       {
         // QgsDebugMsg("point has not been inserted because of unknown problems");
         Point3D* p = mPointVector[mPointVector.count()-1];
@@ -557,9 +557,9 @@ int DualEdgeTriangulation::baseEdgeOfTriangle( Point3D* point )
     runs++;
   }
 
-  if ( numinstabs > 0 )//we hit an existing point or a numerical instability occured
+  if ( numinstabs > 0 )//we hit an existing point or a numerical instability occurred
   {
-    // QgsDebugMsg("numerical instability occured");
+    // QgsDebugMsg("numerical instability occurred");
     mUnstableEdge = actedge;
     return -5;
   }
@@ -928,7 +928,7 @@ QList<int>* DualEdgeTriangulation::getSurroundingTriangles( int pointno )
 {
   int firstedge = baseEdgeOfPoint( pointno );
 
-  if ( firstedge == -1 )//an error occured
+  if ( firstedge == -1 )//an error occurred
   {
     return nullptr;
   }
@@ -1388,7 +1388,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
         float frac = distpart / disttot;
         if ( frac == 0 || frac == 1 )
         {
-          break;//seems that a roundoff error occured. We found the endpoint
+          break;//seems that a roundoff error occurred. We found the endpoint
         }
         int newpoint = splitHalfEdge( mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext(), frac );
         insertForcedSegment( p1, newpoint, breakline );
@@ -1435,7 +1435,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
         float frac = distpart / disttot;
         if ( frac == 0 || frac == 1 )
         {
-          break;//seems that a roundoff error occured. We found the endpoint
+          break;//seems that a roundoff error occurred. We found the endpoint
         }
         int newpoint = splitHalfEdge( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext(), frac );
         insertForcedSegment( p1, newpoint, breakline );
@@ -1991,7 +1991,7 @@ void DualEdgeTriangulation::ruppertRefinement()
     //fast version. Maybe this does not work
     QSet<int> influenceedges;//begin fast method
     int baseedge = baseEdgeOfTriangle( &circumcenter );
-    if ( baseedge == -5 )//a numerical instability occured or the circumcenter already exists in the triangulation
+    if ( baseedge == -5 )//a numerical instability occurred or the circumcenter already exists in the triangulation
     {
       //delete minedge from edge_angle and minangle from angle_edge
       edge_angle.erase( minedge );
@@ -2663,7 +2663,7 @@ bool DualEdgeTriangulation::pointInside( double x, double y )
   {
     return true;
   }
-  if ( numinstabs > 0 )//a numerical instability occured
+  if ( numinstabs > 0 )//a numerical instability occurred
   {
     QgsDebugMsg( "numerical instabilities" );
     return true;

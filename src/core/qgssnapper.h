@@ -52,7 +52,7 @@ struct CORE_EXPORT QgsSnappingResult
   int afterVertexNr;
   /** Index of the snapped geometry*/
   QgsFeatureId snappedAtGeometry;
-  /** Layer where the snap occured*/
+  /** Layer where the snap occurred*/
   const QgsVectorLayer* layer;
 };
 

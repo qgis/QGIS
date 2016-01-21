@@ -1,7 +1,7 @@
 /** \ingroup gui
  * \class QgsFilterLegendButton
- * A tool button that allows to enable or disable legend filter by contents of the map.
- * An additional pop down menu allows to define a boolean expression to refine the filtering.
+ * A tool button that allows enabling or disabling legend filter by contents of the map.
+ * An additional pop down menu allows defining a boolean expression to refine the filtering.
  * @note added in 2.14
  */
 

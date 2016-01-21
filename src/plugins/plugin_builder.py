@@ -146,7 +146,7 @@ files = [plugin_file(pluginDir, 'CMakeLists.txt'),
          plugin_file(pluginDir, pluginLCaseName + 'gui.h'),
          plugin_file(pluginDir, pluginLCaseName + 'guibase.ui')]
 
-# replace occurences of [pluginlcasename], [pluginname], [plugindescription], [menuname], [menutiem]
+# replace occurrences of [pluginlcasename], [pluginname], [plugindescription], [menuname], [menutiem]
 # in template with the values from user
 replacements = [('\\[pluginlcasename\\]', pluginLCaseName),
                 ('\\[pluginname\\]', pluginName),

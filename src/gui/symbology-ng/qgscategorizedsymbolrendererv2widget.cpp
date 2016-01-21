@@ -987,7 +987,7 @@ void QgsCategorizedSymbolRendererV2Widget::matchToSymbolsFromXml()
   if ( !importedStyle.importXML( fileName ) )
   {
     QMessageBox::warning( this, tr( "Matching error" ),
-                          tr( "An error occured reading file:\n%1" ).arg( importedStyle.errorString() ) );
+                          tr( "An error occurred reading file:\n%1" ).arg( importedStyle.errorString() ) );
     return;
   }
 

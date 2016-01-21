@@ -313,7 +313,7 @@ void QgsGrassPlugin::onGisbaseChanged()
     QString error = tr( "GRASS init error" );
     qGisInterface->messageBar()->pushMessage( error, QgsGrass::initError(), QgsMessageBar::WARNING );
 
-    mOpenToolsAction->setDisabled( false ); // allow to open to see that tools are disabled
+    mOpenToolsAction->setDisabled( false ); // allow opening to see that tools are disabled
     mRegionAction->setDisabled( true );
     mOpenMapsetAction->setDisabled( true );
     mCloseMapsetAction->setDisabled( true );

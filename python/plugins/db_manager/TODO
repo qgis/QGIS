@@ -13,7 +13,7 @@ DONE:
 * improve error handling, add Re-connect button (v0.1.12)
 * add "Run Vacuum" and "Move to schema" to menu (v0.1.11)
 * fix encoding support and import layer on Win (v0.1.10)
-* allow to copy contents from views (v0.1.9)
+* allow copying contents of views (v0.1.9)
 * GUI to import data by drag'n'drop (v0.1.8)
 * edit table (v0.1.8)
 * create table (v0.1.7)

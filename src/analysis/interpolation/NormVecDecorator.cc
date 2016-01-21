@@ -46,7 +46,7 @@ int NormVecDecorator::addPoint( Point3D* p )
     int pointno;
     pointno = mTIN->addPoint( p );
 
-    if ( pointno == -100 )//a numerical error occured
+    if ( pointno == -100 )//a numerical error occurred
     {
 // QgsDebugMsg("warning, numerical error");
       return -100;
@@ -123,7 +123,7 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
 
     QList<int>* vlist = getSurroundingTriangles( point );//get the value list
 
-    if ( !vlist )//an error occured in 'getSurroundingTriangles'
+    if ( !vlist )//an error occurred in 'getSurroundingTriangles'
     {
       return false;
     }

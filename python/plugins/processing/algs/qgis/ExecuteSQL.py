@@ -35,7 +35,7 @@ from processing.tools import dataobjects, vector
 
 class ExecuteSQL(GeoAlgorithm):
 
-    """ This algorithm allows to execute an SQL query on a set of input
+    """ This algorithm allows executing an SQL query on a set of input
     vector layers thanks to the virtual layer provider
     """
 

@@ -57,11 +57,11 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //! run a statement (wrapper for PyRun_String)
     //! this command is more advanced as enables error checking etc.
     //! when an exception is raised, it shows dialog with exception details
-    //! @return true if no error occured
+    //! @return true if no error occurred
     bool runString( const QString& command, QString msgOnError = QString(), bool single = true ) override;
 
     //! run a statement, error reporting is not done
-    //! @return true if no error occured
+    //! @return true if no error occurred
     bool runStringUnsafe( const QString& command, bool single = true ) override;
 
     bool evalString( const QString& command, QString& result ) override;

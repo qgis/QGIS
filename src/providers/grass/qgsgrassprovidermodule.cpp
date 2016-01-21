@@ -485,7 +485,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
     vectorObject.setType( QgsGrassObject::Vector );
 
     // Skip temporary import maps. If Vect_open_old during refresh fails due to missing topo, hist file remains open
-    // and Windows do no allow to delete temporary map to qgis.v.in. In any case we don't want to show temporary import maps.
+    // and Windows does not allow deleting the temporary map to qgis.v.in. In any case we don't want to show temporary import maps.
     // TODO: add some auto cleaning mechanism to remove temporary maps left after import fail
     // keep excluded tmp name in sync with qgis.v.in
     QgsDebugMsg( "name = " + name );

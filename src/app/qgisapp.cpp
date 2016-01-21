@@ -5828,7 +5828,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent, bool promptCo
   if ( !vlayer->deleteSelectedFeatures( &deletedCount ) )
   {
     messageBar()->pushMessage( tr( "Problem deleting features" ),
-                               tr( "A problem occured during deletion of %1 feature(s)" ).arg( numberOfSelectedFeatures - deletedCount ),
+                               tr( "A problem occurred during deletion of %1 feature(s)" ).arg( numberOfSelectedFeatures - deletedCount ),
                                QgsMessageBar::WARNING );
   }
   else
@@ -6420,7 +6420,7 @@ void QgisApp::mergeSelectedFeatures()
   {
     if ( !canceled )
     {
-      QMessageBox::critical( nullptr, tr( "Merge failed" ), tr( "An error occured during the merge operation" ) );
+      QMessageBox::critical( nullptr, tr( "Merge failed" ), tr( "An error occurred during the merge operation" ) );
     }
     return;
   }
@@ -6461,7 +6461,7 @@ void QgisApp::mergeSelectedFeatures()
     {
       if ( !canceled )
       {
-        QMessageBox::critical( nullptr, tr( "Merge failed" ), tr( "An error occured during the merge operation" ) );
+        QMessageBox::critical( nullptr, tr( "Merge failed" ), tr( "An error occurred during the merge operation" ) );
       }
       return;
     }

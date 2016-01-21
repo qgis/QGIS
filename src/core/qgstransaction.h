@@ -26,7 +26,7 @@ class QgsVectorDataProvider;
 class QgsVectorLayer;
 
 /**
- * This class allows to include a set of layers in a database-side transaction,
+ * This class allows including a set of layers in a database-side transaction,
  * provided the layer data providers support transactions and are compatible
  * with each other.
  *

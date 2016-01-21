@@ -37,7 +37,7 @@ class TableViewer(QTableView):
         self.item = None
         self.dirty = False
 
-        # allow to copy results
+        # allow copying results
         copyAction = QAction(QApplication.translate("DBManagerPlugin", "Copy"), self)
         self.addAction(copyAction)
         copyAction.setShortcuts(QKeySequence.Copy)

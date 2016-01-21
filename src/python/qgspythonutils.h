@@ -66,11 +66,11 @@ class PYTHON_EXPORT QgsPythonUtils
     /* console */
 
     //! run a statement, show an error message on error
-    //! @return true if no error occured
+    //! @return true if no error occurred
     virtual bool runString( const QString& command, QString msgOnError = QString(), bool single = true ) = 0;
 
     //! run a statement, error reporting is not done
-    //! @return true if no error occured
+    //! @return true if no error occurred
     virtual bool runStringUnsafe( const QString& command, bool single = true ) = 0;
 
     virtual bool evalString( const QString& command, QString& result ) = 0;

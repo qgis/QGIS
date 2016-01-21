@@ -72,7 +72,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.initCompleter()
 
-        # allow to copy results
+        # allow copying results
         copyAction = QAction("copy", self)
         self.viewResult.addAction(copyAction)
         copyAction.setShortcuts(QKeySequence.Copy)

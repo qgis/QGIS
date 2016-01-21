@@ -336,7 +336,7 @@ def saveDialog(parent, filtering="Shapefiles (*.shp *.SHP)"):
     return (unicode(files[0]), unicode(fileDialog.encoding()))
 
 # Generate a save file dialog with a dropdown box for choosing encoding style
-# with mode="SingleFile" will allow to select only one file, in other cases - several files
+# with mode="SingleFile" will allow selecting only one file, in other cases - several files
 
 
 def openDialog(parent, filtering="Shapefiles (*.shp *.SHP)", dialogMode="SingleFile"):

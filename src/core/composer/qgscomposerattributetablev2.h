@@ -339,7 +339,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      */
     void restoreFieldAliasMap( const QMap<int, QString>& map );
 
-    /** Replaces occurences of the wrap character with line breaks.
+    /** Replaces occurrences of the wrap character with line breaks.
      * @param variant input cell contents
      */
     QVariant replaceWrapChar( const QVariant &variant ) const;

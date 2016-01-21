@@ -1804,7 +1804,7 @@ void QgsOptions::loadGdalDriverList()
   // make sure we save list when accept()
   mLoadedGdalDriverList = true;
 
-  // allow to retrieve metadata from all drivers, they will be skipped again when saving
+  // allow retrieving metadata from all drivers, they will be skipped again when saving
   CPLSetConfigOption( "GDAL_SKIP", "" );
   GDALAllRegister();
 

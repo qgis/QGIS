@@ -312,7 +312,7 @@ void QgsGeometrySnapperDialog::run()
   /** Show errors **/
   if ( !snapper.getErrors().isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Errors occurred" ), tr( "<p>The following errors occured:</p><ul><li>%1</li></ul>" ).arg( snapper.getErrors().join( "</li><li>" ) ) );
+    QMessageBox::warning( this, tr( "Errors occurred" ), tr( "<p>The following errors occurred:</p><ul><li>%1</li></ul>" ).arg( snapper.getErrors().join( "</li><li>" ) ) );
   }
   hide() ;
 }

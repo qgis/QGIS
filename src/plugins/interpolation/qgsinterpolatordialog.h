@@ -25,7 +25,7 @@
 class QgsVectorLayer;
 class QgisInterface;
 
-/** Abstract base class for dialogs that allow to enter the options for interpolators*/
+/** Abstract base class for dialogs that allow entering the options for interpolators*/
 class QgsInterpolatorDialog: public QDialog
 {
     Q_OBJECT

@@ -66,7 +66,7 @@ In addition to the previous operators, other operators are available:
 matrices (for instance cos, sin, ...). These new operators/ functions keep the original names to which we added the prefix 'v' for vector (vcos, vsin, ...).
 - mult, div and pow operators, that perform element-wise multiplication, division or exponentiation of vector/matrices (for instance im1 div im2)
 - mlt, dv and pw operators, that perform multiplication, division or exponentiation of vector/matrices by a scalar (for instance im1 dv 2.0)
-- bands, which is a very useful operator. It allows to select specific bands from an image, and/or to rearrange them in a new vector;
+- bands, which is a very useful operator. It allows selecting specific bands from an image, and/or to rearrange them in a new vector;
 for instance bands(im1,{1,2,1,1}) produces a vector of 4 components made of band 1, band 2, band 1 and band 1 values from the first input.
 Note that curly brackets must be used in order to select the desired band indices.
 ... and so on.
@@ -89,7 +89,7 @@ It is also possible to define expressions within the same txt file, with the pat
 
 #E $dotpr(kernel1,im1b1N3x5); im2b1^expo$
 
-- The 'outcontext' parameter allows to save user's constants and expressions (context).
+- The 'outcontext' parameter allows saving user's constants and expressions (context).
 - Setting the output image can be done with the 'out' parameter (multi-outputs is not implemented yet).
 
 
