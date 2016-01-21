@@ -309,7 +309,7 @@ void QgsSnapIndex::addGeometry( const QgsAbstractGeometryV2* geom )
 {
   for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
   {
-    for ( int iRing = 0, nRings = geom->ringCount( iRing ); iRing < nRings; ++iRing )
+    for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
     {
       for ( int iVert = 0, nVerts = geom->vertexCount( iPart, iRing ) - 1; iVert < nVerts; ++iVert )
       {

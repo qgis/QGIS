@@ -49,11 +49,13 @@ QgsGeometrySnapper::QgsGeometrySnapper( QgsVectorLayer *adjustLayer, QgsVectorLa
 
 QFuture<void> QgsGeometrySnapper::processFeatures()
 {
+  emit progressRangeChanged( 0, mFeatures.size() );
   return QtConcurrent::map( mFeatures, ProcessFeatureWrapper( this ) );
 }
 
 void QgsGeometrySnapper::processFeature( QgsFeatureId id )
 {
+  emit progressStep();
   // Get current feature
   QgsFeature feature;
   if ( !getFeature( mAdjustLayer, mAdjustLayerMutex, id, feature ) )
