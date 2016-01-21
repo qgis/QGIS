@@ -801,7 +801,7 @@ void QgsSpit::import()
         successes++;
       }
       else if ( !canceled )
-      { // if problem importing file occured
+      { // if problem importing file occurred
         pro.setValue( temp_progress + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         QString errTxt = "<pre>" + error + "\n\n" + errorText + "</pre>";
         QMessageBox::warning( this, tr( "Import Shapefiles" ), errTxt );

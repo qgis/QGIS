@@ -1670,11 +1670,11 @@ Consulta:
         <translation>Erro na base de dados</translation>
     </message>
     <message>
-        <source>An error occured:</source>
+        <source>An error occurred:</source>
         <translation>Ocorreu um erro:</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
+        <source>An error occurred when executing a query:</source>
         <translation>Ocorreu um erro ao executar uma consulta:</translation>
     </message>
     <message>
@@ -4287,7 +4287,7 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
         <translation>Erro de avaliação: %s</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
         <translation>Um erro ocorreu enquanto se avaliava a o cálculo da cadeia de texto:
 %s</translation>
@@ -11109,7 +11109,7 @@ Por favor verifique a configuração na janela de configurações do Processamen
         <translation>Advertência do Python</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
+        <source>An error has occurred while executing Python code:</source>
         <translation>Um erro ocorreu enquanto executava o seguinte código Python:</translation>
     </message>
     <message>
@@ -13856,7 +13856,7 @@ SQL: %1</translation>
         <translation>Impossível carregar QGIS utils.</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
+        <source>An error occurred during execution of following code:</source>
         <translation>Um erro ocorreu durante a execução do seguinte código:</translation>
     </message>
     <message>
@@ -15053,7 +15053,7 @@ Erro: %1</translation>
         <translation>Falha ao mesclar</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
+        <source>An error occurred during the merge operation</source>
         <translation>Um erro ocorreu no processo de mescla</translation>
     </message>
     <message>
@@ -15431,7 +15431,7 @@ Erros: %3
         <translation>Autenticação proxy necessária</translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
+        <source>SSL errors occurred accessing URL %1:</source>
         <translation>Erro SSL ocorreu ao acessar URL %1:</translation>
     </message>
     <message>
@@ -15443,7 +15443,7 @@ Always ignore these errors?</source>
 Sempre ignorar estes erros?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
             <numerusform>%n erro SSL ocorridos</numerusform>
@@ -15487,7 +15487,7 @@ Sempre ignorar estes erros?</translation>
         <translation>Erro ao salvar o arquivode definição da camada</translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation>Ocorreu um problema durante a eliminação de %1 elemento(s)</translation>
     </message>
 </context>
@@ -16642,7 +16642,7 @@ Erro do analisador:
         <translation>Erro</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Ocorreu um erro ao avaliar a seqüência de cálculo:
 %1</translation>
@@ -25647,7 +25647,7 @@ Os arquivos existentes estão listados aqui e carregados quando selecionados.</t
         <translation>Erro</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Um erro ocorreu enquanto avaliava a série de cálculo:
 %1</translation>
@@ -32531,7 +32531,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
         <translation>Anel adicionado</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>Ocorreu um problema com o tipo de geometria</translation>
     </message>
     <message>
@@ -32551,7 +32551,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
         <translation>O Anel inserido não está contido na feição</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>Ocorreu um erro desconhecido</translation>
     </message>
     <message>
@@ -32644,7 +32644,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
         <translation>Anel adicionado e preenchido</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>Ocorreu um problema com o tipo de geometria</translation>
     </message>
     <message>
@@ -32664,7 +32664,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
         <translation>O Anel inserido não está contido na feição</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>Ocorreu um erro desconhecido</translation>
     </message>
     <message>
@@ -32959,7 +32959,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
         <translation>Sem feições de romper feitas</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Ocorreu um erro durante a divisão.</translation>
     </message>
     <message>
@@ -33002,7 +33002,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
         <translation>Nenhuma divisão de parte feita</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Um erro ocorreu durante a divisão.</translation>
     </message>
     <message>
@@ -44919,7 +44919,7 @@ p, li { white-space: pre-wrap; }
         <translation>Erro ao importar</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
         <translation>Um erro ocorreu durante a importação:
 %1</translation>
@@ -46741,7 +46741,7 @@ Erros no provedor:</translation>
         <translation>Estilo Salvo</translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
+        <source>Error occurred retrieving styles from database</source>
         <translation>Ocorreu um erro de recuperação de estilos a partir do banco de dados</translation>
     </message>
     <message>
@@ -55039,7 +55039,7 @@ Para suporte envie um email para scala@itc.cnr.it
         <translation>Cria uma camada a partir de uma consulta de base de dados</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
+        <source>Open an Event Browser and display the selected feature</source>
         <translation>Abre uma Busca de evento eVis e mostra feições selecionadas</translation>
     </message>
     <message>
@@ -59628,7 +59628,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;

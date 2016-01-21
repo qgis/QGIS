@@ -1671,11 +1671,11 @@ Interrogazione:
         <translation>Errore database</translation>
     </message>
     <message>
-        <source>An error occured:</source>
+        <source>An error occurred:</source>
         <translation>Errore:</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
+        <source>An error occurred when executing a query:</source>
         <translation>Si è verificato un errore durante l&apos;esecuzione di un&apos;interrogazione:</translation>
     </message>
     <message>
@@ -4289,7 +4289,7 @@ colonna della geometria - colonna con valori interi univoci</translation>
         <translation>Errore di valutazione: %s</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
         <translation>Errore durante la valutazione della stringa da calcolare:
 %s</translation>
@@ -11108,7 +11108,7 @@ Controllare la configurazione nelle impostazioni del Processing.</translation>
         <translation>Avviso Python</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
+        <source>An error has occurred while executing Python code:</source>
         <translation>Errore durante l&apos;esecuzione di codice Python:</translation>
     </message>
     <message>
@@ -13863,7 +13863,7 @@ SQL: %1</translation>
         <translation>Impossibile caricare gli strumenti QGIS.</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
+        <source>An error occurred during execution of following code:</source>
         <translation>Si è verificato un errore durante l&apos;esecuzione delle seguenti istruzioni:</translation>
     </message>
     <message>
@@ -15060,7 +15060,7 @@ Errore: %1</translation>
         <translation>Unione non riuscita</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
+        <source>An error occurred during the merge operation</source>
         <translation>Si è verificato un errore durante l&apos;operazione di merge</translation>
     </message>
     <message>
@@ -15438,7 +15438,7 @@ Errori: %3
         <translation>Richiesta autenticazione proxy</translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
+        <source>SSL errors occurred accessing URL %1:</source>
         <translation>Errori SSL nell&apos;accedere all&apos;URL %1:</translation>
     </message>
     <message>
@@ -15450,7 +15450,7 @@ Always ignore these errors?</source>
 Ignora sempre questi errori?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
             <numerusform>si è verificato un errore SSL</numerusform>
@@ -15494,7 +15494,7 @@ Ignora sempre questi errori?</translation>
         <translation>Errore durante il salvataggio del file di definizione del layer</translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation>È avvenuto un problema durante l&apos;elimiazione di %1 geometrie</translation>
     </message>
 </context>
@@ -16645,7 +16645,7 @@ Errore di analisi:
         <translation>Errore</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Errore durante la valutazione della stringa da calcolare:
 %1</translation>
@@ -25641,7 +25641,7 @@ I file esistenti vengono elencati qui e caricati quando selezionati.</translatio
         <translation>Errore</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Errore durante la valutazione della stringa da calcolare:
 %1</translation>
@@ -32530,7 +32530,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
         <translation>Anello aggiunto</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>C&apos;è stato un problema con la geometria</translation>
     </message>
     <message>
@@ -32550,7 +32550,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
         <translation>L&apos;anello inserito non è contenuto in una geometria</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>Errore sconosciuto</translation>
     </message>
     <message>
@@ -32643,7 +32643,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
         <translation>Anello aggiunto e riempito</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>C&apos;e stato un problema con la geometria</translation>
     </message>
     <message>
@@ -32663,7 +32663,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
         <translation>L&apos;anello inserito non è contenuto in una geometria</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>Errore sconosciuto</translation>
     </message>
     <message>
@@ -32958,7 +32958,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
         <translation>Non è stata effettuata nessuna divisione della geometria </translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Si è verificato un errore durante la divisione</translation>
     </message>
     <message>
@@ -33001,7 +33001,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
         <translation>Divisione in parti non effettuata</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Si è verificato un errore durante la divisione.</translation>
     </message>
     <message>
@@ -44974,7 +44974,7 @@ text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt; &lt;hr /&gt;&lt;/body&gt;&lt;/h
         <translation>Errore di importazione</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
         <translation>Si è verificato un errore durante l&apos;importazione:
 %1</translation>
@@ -46796,7 +46796,7 @@ L&apos;errore è: %2</translation>
         <translation>Stile salvato</translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
+        <source>Error occurred retrieving styles from database</source>
         <translation>Si è verificato un errore nel recupero degli stili dal database</translation>
     </message>
     <message>
@@ -55217,7 +55217,7 @@ Per supporto inviare una mail a scala@itc.cnr.it</translation>
         <translation>Crea layer da un&apos;interrogazione del database</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
+        <source>Open an Event Browser and display the selected feature</source>
         <translation>Apri un browser evento e mostra la geometria scelta</translation>
     </message>
     <message>
@@ -59803,7 +59803,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;

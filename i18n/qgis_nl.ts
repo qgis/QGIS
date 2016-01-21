@@ -1672,11 +1672,11 @@ Query:
         <translation>Database-fout</translation>
     </message>
     <message>
-        <source>An error occured:</source>
+        <source>An error occurred:</source>
         <translation>Er is een fout opgetreden:</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
+        <source>An error occurred when executing a query:</source>
         <translation>Er is een fout opgetreden bij het uitvoeren van de query:</translation>
     </message>
     <message>
@@ -4290,7 +4290,7 @@ geometry column - column with unique integer values</source>
         <translation>Fout in evaluatie: %s</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
         <translation>Er is een fout opgetreden bij het evalueren van de berekeningsopdracht:
 %s</translation>
@@ -11120,7 +11120,7 @@ Controleer de configuratie in het dialoogvenster Instellingen van Processing.</t
         <translation>Python waarschuwing</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
+        <source>An error has occurred while executing Python code:</source>
         <translation>Er is een fout opgetreden bij het uitvoeren van Python code:</translation>
     </message>
     <message>
@@ -13875,7 +13875,7 @@ SQL: %1</translation>
         <translation>QGIS-utils kon niet worden geladen.</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
+        <source>An error occurred during execution of following code:</source>
         <translation>Er is een fout opgetreden bij het uitvoeren van de volgende code:</translation>
     </message>
     <message>
@@ -15075,7 +15075,7 @@ Fout: %1</translation>
         <translation>Samenvoegen mislukt</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
+        <source>An error occurred during the merge operation</source>
         <translation>Er is een fout opgetreden bij het samenvoegen</translation>
     </message>
     <message>
@@ -15453,7 +15453,7 @@ Fouten: %3
         <translation>Proxy-authenticatie vereist</translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
+        <source>SSL errors occurred accessing URL %1:</source>
         <translation>SSL-fouten opgetreden bij benaderen van URL %1:</translation>
     </message>
     <message>
@@ -15463,7 +15463,7 @@ Always ignore these errors?</source>
         <translation>Deze fouten altijd negeren?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
             <numerusform>%n SSL-fout opgetreden</numerusform>
@@ -15507,7 +15507,7 @@ Always ignore these errors?</source>
         <translation>Fout bij het opslaan van het bestand voor laagdefinitie</translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation>Er is een fout opgetreden tijdens het verwijderen van %1  object(en)</translation>
     </message>
 </context>
@@ -16658,7 +16658,7 @@ Parser fout:
         <translation>Fout</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Er is een fout opgetreden bij het evalueren van de berekenings-opdracht: %1</translation>
     </message>
@@ -25652,7 +25652,7 @@ Bestaande bestanden worden hier vermeld en geladen indien geselecteerd.</transla
         <translation>Fout</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Er is een fout opgetreden bij het evalueren van de berekenings-opdracht: %1</translation>
     </message>
@@ -32531,7 +32531,7 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
         <translation>Ring toegevoegd</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>er trad een probleem met een type geometrie op</translation>
     </message>
     <message>
@@ -32551,7 +32551,7 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
         <translation>de ingevoegde ring is niet opgenomen in een object</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>er trad een onbekende fout op</translation>
     </message>
     <message>
@@ -32644,7 +32644,7 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
         <translation>Ring toegevoegd en gevuld</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>er trad een probleem met een type geometrie op</translation>
     </message>
     <message>
@@ -32664,7 +32664,7 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
         <translation>de ingevoegde ring is niet opgenomen in een object</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>er trad een onbekende fout op</translation>
     </message>
     <message>
@@ -32959,7 +32959,7 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
         <translation>Objecten splitsen niet uitgevoerd</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Een fout trad op tijdens het splitsen.</translation>
     </message>
     <message>
@@ -33002,7 +33002,7 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
         <translation>Niets gesplitst</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Er trad een fout op tijdens het splitsen.</translation>
     </message>
     <message>
@@ -44927,7 +44927,7 @@ p, li { white-space: pre-wrap; }
         <translation>Fout bij importeren</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
         <translation>Er is een fout opgetreden tijdens het importeren:
 %1</translation>
@@ -46750,7 +46750,7 @@ Foutmelding: %2</translation>
         <translation>Opgeslagen Stijl</translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
+        <source>Error occurred retrieving styles from database</source>
         <translation>Fout vond plaats tijdens het ophalen van de stijlen van de database</translation>
     </message>
     <message>
@@ -55000,7 +55000,7 @@ Voor ondersteuning stuur een e-mail naar scala@itc.cnr.it
         <translation>Nieuwe laag aanmaken op basis van database-query</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
+        <source>Open an Event Browser and display the selected feature</source>
         <translation>Open een &apos;Event Browser&apos; om het geselecteerde object te bekijken</translation>
     </message>
     <message>
@@ -59587,7 +59587,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;

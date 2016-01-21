@@ -1669,11 +1669,11 @@ Query:
         <translation>डेटाबेस गलती</translation>
     </message>
     <message>
-        <source>An error occured:</source>
+        <source>An error occurred:</source>
         <translation>एक गलती हो गई:</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
+        <source>An error occurred when executing a query:</source>
         <translation>एक पूछताछ को क्रियान्वित करते समय गलती हो गई:</translation>
     </message>
     <message>
@@ -4281,7 +4281,7 @@ geometry column - column with unique integer values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11078,7 +11078,7 @@ Please check the configuration in the Processing settings dialog.</source>
         <translation>पायथनचेतावनी</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
+        <source>An error has occurred while executing Python code:</source>
         <translation>पायथन कोड क्रियान्वित करते समय गलती आई:0</translation>
     </message>
     <message>
@@ -13841,7 +13841,7 @@ SQL: %1</translation>
         <translation>क्यू.जी.आई.एस. utils नहीं लाये जा स‍कते.</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
+        <source>An error occurred during execution of following code:</source>
         <translation>निम्‍न कोड के निष्‍पादन के दौरान गलती आई</translation>
     </message>
     <message>
@@ -15032,7 +15032,7 @@ Error: %1</source>
         <translation>विलय विफल</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
+        <source>An error occurred during the merge operation</source>
         <translation>विलय कार्यवाही के दौरान गलती आयी </translation>
     </message>
     <message>
@@ -15410,7 +15410,7 @@ Errors: %3
         <translation>प्रॉक्सी सत्‍यापन जरूरी </translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
+        <source>SSL errors occurred accessing URL %1:</source>
         <translation>यूआरएल %1 को पाने के दौरान SSL गलती आई :</translation>
     </message>
     <message>
@@ -15422,7 +15422,7 @@ Always ignore these errors?</source>
 क्या हमेशा इन गलतियों को नज़रअंदाज़ करें?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
             <numerusform>%n SSL गलतियां आयी</numerusform>
@@ -15466,7 +15466,7 @@ Always ignore these errors?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16607,7 +16607,7 @@ Parser error:
         <translation>गलती</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>गणना स्ट्रिंग के आकंलन के समय एक गलती आई:
 %1</translation>
@@ -25581,7 +25581,7 @@ Existing files are listed here and loaded when selected.</source>
         <translation>गलती</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>स्ट्रिंग गणना के आकंलन के समय एक गलती आई:
 %1</translation>
@@ -32454,7 +32454,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>घेरा जोड़ा गया </translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>ज्‍यामिति प्रकार के साथ एक समस्‍या आयी </translation>
     </message>
     <message>
@@ -32474,7 +32474,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>डाला गया घेरा नक्‍शा-अनुभाग में शामिल नहीं</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>एक अज्ञात गलती आयी</translation>
     </message>
     <message>
@@ -32567,7 +32567,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>घेरा जोड़ा गया और भरा गया </translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>ज्‍यामिति प्रकार के साथ एक समस्‍या आयी </translation>
     </message>
     <message>
@@ -32587,7 +32587,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>डाला गया घेरा नक्‍शा-अनुभाग में शामिल नहीं</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>एक अज्ञात गलती आयी</translation>
     </message>
     <message>
@@ -32882,7 +32882,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>कोई नक्शा-अनुभाग विभाजन नहीं किया</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>विभाजन के दौरान ए‍क गलती आयी </translation>
     </message>
     <message>
@@ -32925,7 +32925,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>कोई भाग विभाजित नहीं</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>विभाजन के दौरान एक गलती आयी. </translation>
     </message>
     <message>
@@ -44805,7 +44805,7 @@ p, li { white-space: pre-wrap; }
         <translation>लाने की गलती</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
         <translation>लाने के दौरान एक गलती आयी:
 %1</translation>
@@ -46625,7 +46625,7 @@ Error was:%2</source>
         <translation>संरक्षित शैली </translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
+        <source>Error occurred retrieving styles from database</source>
         <translation>डेटाबेस से शैलियां निकालने के दौरान गलती </translation>
     </message>
     <message>
@@ -53493,7 +53493,7 @@ For support send a mail to scala@itc.cnr.it
         <translation>डेटाबेस पूछताछ से लेयर बनायें</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
+        <source>Open an Event Browser and display the selected feature</source>
         <translation>इवेंट ब्राउज़र खोलें और चयनित नक्‍शा-अनुभाग को प्रदर्शित करें </translation>
     </message>
     <message>
@@ -56475,7 +56475,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;

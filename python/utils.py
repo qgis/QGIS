@@ -63,7 +63,7 @@ warnings.showwarning = showWarning
 def showException(type, value, tb, msg):
     lst = traceback.format_exception(type, value, tb)
     if msg is None:
-        msg = QCoreApplication.translate('Python', 'An error has occured while executing Python code:')
+        msg = QCoreApplication.translate('Python', 'An error has occurred while executing Python code:')
     txt = '<font color="red">%s</font><br><br><pre>' % msg
     for s in lst:
         txt += s.decode('utf-8', 'replace')

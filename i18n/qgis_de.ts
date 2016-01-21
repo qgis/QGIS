@@ -1666,11 +1666,11 @@ Abfrage:
         <translation>Datenbank-Fehler</translation>
     </message>
     <message>
-        <source>An error occured:</source>
+        <source>An error occurred:</source>
         <translation>Ein Fehler ist aufgetreten:</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
+        <source>An error occurred when executing a query:</source>
         <translation>Ein Fehler trat bei der Ausführung folgender Abfrage auf:</translation>
     </message>
     <message>
@@ -4489,7 +4489,7 @@ Geometriespate - Spalte mit eindeutigen ganzahligen Werden</translation>
         <translation>Auswertungsfehler: %s</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
         <translation>Ein Fehler trat bei der Auswertung der Formel auf:
 %s</translation>
@@ -11411,7 +11411,7 @@ Bitte die Processing-Einstellung überprüfen.</translation>
         <translation>Python-Warnung</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
+        <source>An error has occurred while executing Python code:</source>
         <translation>Fehler bei der Ausführung von Python-Code:</translation>
     </message>
     <message>
@@ -14162,7 +14162,7 @@ SQL: %1</translation>
         <translation>Konnte QGIS-Utils nicht öffnen.</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
+        <source>An error occurred during execution of following code:</source>
         <translation>Fehler bei der Ausführung folgenden Codes:</translation>
     </message>
     <message>
@@ -15391,7 +15391,7 @@ Fehler: %1</translation>
         <translation>Zusammenführung fehlgeschlagen</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
+        <source>An error occurred during the merge operation</source>
         <translation>Beim Zusammenführen trat ein Fehler auf</translation>
     </message>
     <message>
@@ -15769,7 +15769,7 @@ Fehler: %3
         <translation>Proxy-Authentifikation erforderlich</translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
+        <source>SSL errors occurred accessing URL %1:</source>
         <translation>SSL-Fehler beim Zugriff auf URL %1:</translation>
     </message>
     <message>
@@ -15781,7 +15781,7 @@ Always ignore these errors?</source>
 Diese Fehler immer ignorieren?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
             <numerusform>Ein SSL-Fehler aufgetreten</numerusform>
@@ -15825,7 +15825,7 @@ Diese Fehler immer ignorieren?</translation>
         <translation>Fehler beim Speichern der Layerdefinitionsdatei</translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation>Ein Problem trat bei der Löschung von %1 Objekt(en) auf</translation>
     </message>
 </context>
@@ -16972,7 +16972,7 @@ Ausdruckfehler:
         <translation>Fehler</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Ein Fehler trat bei der Auswertung des Rechenausdrucks auf:
 %1</translation>
@@ -26098,7 +26098,7 @@ Vorhandene Dateien werden hier aufgelistet und gewählte geladen.</translation>
         <translation>Fehler</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Ein Fehler trat bei der Auswertung des Rechenausdrucks auf:
 %1</translation>
@@ -32984,7 +32984,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
         <translation>Ring hinzugefügt</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>ein Problem mit dem Geometrietyp aufgetreten ist</translation>
     </message>
     <message>
@@ -33004,7 +33004,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
         <translation>der eingefügte Ring sich nicht innerhalb eines Objekts befindet</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>ein unbekannter Fehler aufgetreten ist</translation>
     </message>
     <message>
@@ -33097,7 +33097,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
         <translation>Ring hinzugefügt und gefüllt</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>ein Problem mit dem Geometrietyp auftrat</translation>
     </message>
     <message>
@@ -33117,7 +33117,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
         <translation>der eingefügte Ring sich nicht innerhalb eines Objekts befindet</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>ein unbekannter Fehler auftrat</translation>
     </message>
     <message>
@@ -33412,7 +33412,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
         <translation>Keine Objekte zerteilt</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Ein Fehler ist beim Zerteilen aufgetreten.</translation>
     </message>
     <message>
@@ -33455,7 +33455,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
         <translation>Keine Teilzerlegung vorgenommen</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Ein Fehler ist beim Zerteilen aufgetreten.</translation>
     </message>
     <message>
@@ -45383,7 +45383,7 @@ p, li { white-space: pre-wrap; }
         <translation>Importfehler</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
         <translation>Ein Fehler trat beim Import auf:
 %1</translation>
@@ -47212,7 +47212,7 @@ Datenanbieterfehler:</translation>
         <translation>Gespeicherter Stil</translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
+        <source>Error occurred retrieving styles from database</source>
         <translation>Fehler beim Laden des Stil aus der Datenbank</translation>
     </message>
     <message>
@@ -56001,7 +56001,7 @@ Unterstützung unter scala@itc.cnr.it</translation>
         <translation>Layer aus einer Datenbankabfrage erzeugen</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
+        <source>Open an Event Browser and display the selected feature</source>
         <translation>Einen Ereignisbrowser öffnen und gewählte Objekte anzeigen</translation>
     </message>
     <message>
@@ -59950,7 +59950,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;

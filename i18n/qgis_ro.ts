@@ -1670,11 +1670,11 @@ Interogare:
         <translation>Eroare bază de date</translation>
     </message>
     <message>
-        <source>An error occured:</source>
+        <source>An error occurred:</source>
         <translation>A apărut o eroare:</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
+        <source>An error occurred when executing a query:</source>
         <translation>A apărut o eroare în timpul realizării unei interogări:</translation>
     </message>
     <message>
@@ -4288,7 +4288,7 @@ geometry column - column with unique integer values</source>
         <translation>Eroare de evaluare: %s</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
         <translation>A apărut o eroare în timpul evaluării șirului de calcul:
 %s</translation>
@@ -11113,7 +11113,7 @@ Verificați configurația în fereastra setărilor Processing.</translation>
         <translation>Avertisment Python</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
+        <source>An error has occurred while executing Python code:</source>
         <translation>Eroare în timpul executării codului Python:</translation>
     </message>
     <message>
@@ -13873,7 +13873,7 @@ SQL: %1</translation>
         <translation>Nu se pot încărca utilitarele QGIS.</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
+        <source>An error occurred during execution of following code:</source>
         <translation>A apărut o eroare în timpul executării următorului cod:</translation>
     </message>
     <message>
@@ -15076,7 +15076,7 @@ Eroare: %1</translation>
         <translation>Îmbinarea a eșuat</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
+        <source>An error occurred during the merge operation</source>
         <translation>A apărut o eroare în timpul operațiunii de îmbinare</translation>
     </message>
     <message>
@@ -15455,7 +15455,7 @@ Eroare: %3
         <translation>Este necesară autentificarea proxy</translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
+        <source>SSL errors occurred accessing URL %1:</source>
         <translation>Au apărut erori SSL la accesarea URL-ului %1:</translation>
     </message>
     <message>
@@ -15467,7 +15467,7 @@ Always ignore these errors?</source>
 Ignorați întotdeauna aceste erori?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
             <numerusform>Au apărut %n erori SSL:</numerusform>
@@ -15512,7 +15512,7 @@ Ignorați întotdeauna aceste erori?</translation>
         <translation>Eroare de încărcare a fișierului cu definițiile stratului</translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation>A apărut o problemă în timpul ștergerii a %1 entităț(i)</translation>
     </message>
 </context>
@@ -16664,7 +16664,7 @@ Eroare de analiză:
         <translation>Eroare</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>A apăruit o eroare în timpul evaluării șirului de calcul:
 %1</translation>
@@ -25668,7 +25668,7 @@ Fișierele existente sunt listate aici și încărcate atunci când sunt selecta
         <translation>Eroare</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>A apărut o eroare în timpul evaluării șirului de calcul:
 %1</translation>
@@ -32558,7 +32558,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Inelul s-a adăugat</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>a apărut o problemă cu tipul geometriei</translation>
     </message>
     <message>
@@ -32578,7 +32578,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>inelul introdus nu este conținut într-o entitate</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>a apărut o eroare necunoscută</translation>
     </message>
     <message>
@@ -32671,7 +32671,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Inelul a fost adăugat și umplut</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>a apărut o problemă cu tipul geometriei</translation>
     </message>
     <message>
@@ -32691,7 +32691,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Inelul introdus nu este conținută într-o entitate</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>a apărut o eroare necunoscută</translation>
     </message>
     <message>
@@ -32986,7 +32986,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Nu s-a efectuat nici o divizare de entitate</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>A apărut o eroare pe timpul divizării.</translation>
     </message>
     <message>
@@ -33029,7 +33029,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>A apărut o eroare pe timpul divizării.</translation>
     </message>
     <message>
@@ -44948,7 +44948,7 @@ p, li { white-space: pre-wrap; }
         <translation>Eroare import</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
         <translation>O eroare a avut loc în timpul importării:
 %1</translation>
@@ -46783,7 +46783,7 @@ Erori furnizor:</translation>
         <translation>Stil Salvat</translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
+        <source>Error occurred retrieving styles from database</source>
         <translation>A apărut o eroare la preluarea stilurilor din baza de date</translation>
     </message>
     <message>
@@ -54131,7 +54131,7 @@ For support send a mail to scala@itc.cnr.it
         <translation>Creează un strat dintr-o interogare a bazei de date</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
+        <source>Open an Event Browser and display the selected feature</source>
         <translation>Deschide browsere evenimente şi afişează elementul selectat</translation>
     </message>
     <message>
@@ -57170,7 +57170,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;

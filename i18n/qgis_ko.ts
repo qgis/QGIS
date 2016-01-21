@@ -1670,11 +1670,11 @@ Query:
         <translation>데이터베이스 오류</translation>
     </message>
     <message>
-        <source>An error occured:</source>
+        <source>An error occurred:</source>
         <translation>오류 발생됨:</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
+        <source>An error occurred when executing a query:</source>
         <translation>다음 질의 실행중 오류 발생:</translation>
     </message>
     <message>
@@ -4289,7 +4289,7 @@ geometry column - column with unique integer values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11086,7 +11086,7 @@ Please check the configuration in the Processing settings dialog.</source>
         <translation>파이썬 경고</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
+        <source>An error has occurred while executing Python code:</source>
         <translation>파이썬 프로그램을 실행하는 중 오류 발생:</translation>
     </message>
     <message>
@@ -13840,7 +13840,7 @@ SQL: %1</translation>
         <translation>QGIS 유틸리티를 불러올 수 없습니다.</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
+        <source>An error occurred during execution of following code:</source>
         <translation>다음의 코드 실행 중에 오류 발생:</translation>
     </message>
     <message>
@@ -15034,7 +15034,7 @@ Error: %1</source>
         <translation>결합 실패함</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
+        <source>An error occurred during the merge operation</source>
         <translation>결합하는 동안 오류 발생</translation>
     </message>
     <message>
@@ -15411,7 +15411,7 @@ Errors: %3
         <translation>프록시 인증이 필요함</translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
+        <source>SSL errors occurred accessing URL %1:</source>
         <translation>URL %1에 액세스하는 동안 SSL 오류 발생:</translation>
     </message>
     <message>
@@ -15423,7 +15423,7 @@ Always ignore these errors?</source>
 항상 이런 오류를 무시하시겠습니까?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
             <numerusform>%n개의 SSL 오류가 발생됨</numerusform>
@@ -15466,7 +15466,7 @@ Always ignore these errors?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16616,7 +16616,7 @@ Parser error:
         <translation>오류</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>계산 문자열을 평가하는 동안 오류 발생:
 %1</translation>
@@ -25602,7 +25602,7 @@ Existing files are listed here and loaded when selected.</source>
         <translation>오류</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>계산 문자열을 평가하는 동안 오류 발생:
 %1</translation>
@@ -32492,7 +32492,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>링이 추가되었습니다</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>지오메트리 유형 문제가 발생됨</translation>
     </message>
     <message>
@@ -32512,7 +32512,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>삽입된 링이 객체 안에 포함되지 않음</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>알 수 없는 오류 발생</translation>
     </message>
     <message>
@@ -32605,7 +32605,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>링이 추가되고 채워짐</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>지오메트리 유형 문제가 발생됨</translation>
     </message>
     <message>
@@ -32625,7 +32625,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>삽입된 링이 객체 안에 포함되지 않음</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>알 수 없는 오류 발생함</translation>
     </message>
     <message>
@@ -32920,7 +32920,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>분할된 객체가 없습니다</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>객체 분할에 오류가 발생했습니다</translation>
     </message>
     <message>
@@ -32963,7 +32963,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>분할된 파트가 없음</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>객체 분할에 오류가 발생했습니다</translation>
     </message>
     <message>
@@ -44890,7 +44890,7 @@ p, li { white-space: pre-wrap; }
         <translation>가져오기 오류</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
         <translation>가져오는 중 오류 발생: 
 %1</translation>
@@ -46700,7 +46700,7 @@ Error was:%2</source>
         <translation>스타일 저장</translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
+        <source>Error occurred retrieving styles from database</source>
         <translation>데이터베이스에서 스타일을 불러오는 도중 오류 발생</translation>
     </message>
     <message>
@@ -54523,7 +54523,7 @@ CNR, Milan Unit (Information Technology), Construction Technologies Institute.
         <translation>데이터베이스 질의에서 레이어를 만들기</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
+        <source>Open an Event Browser and display the selected feature</source>
         <translation>이벤트 브라우저를 열어 선택한 객체보기</translation>
     </message>
     <message>
@@ -59118,7 +59118,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;

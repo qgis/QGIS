@@ -1667,11 +1667,11 @@ Query:
         <translation>資料庫錯誤</translation>
     </message>
     <message>
-        <source>An error occured:</source>
+        <source>An error occurred:</source>
         <translation>發生錯誤:</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
+        <source>An error occurred when executing a query:</source>
         <translation>執行查詢時發生錯誤:</translation>
     </message>
     <message>
@@ -4286,7 +4286,7 @@ geometry column - column with unique integer values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11088,7 +11088,7 @@ Please check the configuration in the Processing settings dialog.</source>
         <translation>Python 警告</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
+        <source>An error has occurred while executing Python code:</source>
         <translation>執行Python程式碼時發生錯誤:</translation>
     </message>
     <message>
@@ -13840,7 +13840,7 @@ SQL: %1</translation>
         <translation>無法載入QGIS工具</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
+        <source>An error occurred during execution of following code:</source>
         <translation>當執行以下程式碼發生錯誤:</translation>
     </message>
     <message>
@@ -15029,7 +15029,7 @@ Error: %1</source>
         <translation>合併失敗</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
+        <source>An error occurred during the merge operation</source>
         <translation>合併操作過程中發生錯誤</translation>
     </message>
     <message>
@@ -15405,7 +15405,7 @@ Errors: %3
         <translation>需要代理認證</translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
+        <source>SSL errors occurred accessing URL %1:</source>
         <translation>訪問網址%1時發生SSL錯誤：</translation>
     </message>
     <message>
@@ -15417,7 +15417,7 @@ Always ignore these errors?</source>
 永遠忽略這些錯誤?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
             <numerusform>發生了%n個SSL錯誤</numerusform>
@@ -15460,7 +15460,7 @@ Always ignore these errors?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16609,7 +16609,7 @@ Parser error:
         <translation>錯誤</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>當驗證計算字串時錯誤發生:
 %1</translation>
@@ -25597,7 +25597,7 @@ Existing files are listed here and loaded when selected.</source>
         <translation>錯誤</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>當驗證計算字串時發生錯誤:
 %1</translation>
@@ -32470,7 +32470,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>增加環形</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>幾何類型出現問題</translation>
     </message>
     <message>
@@ -32490,7 +32490,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>插入的環形不包含在圖徵中</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>未知的錯誤已發生</translation>
     </message>
     <message>
@@ -32583,7 +32583,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>環形增加與填滿</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>使用的幾何類型出現問題</translation>
     </message>
     <message>
@@ -32603,7 +32603,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>插入的環形不包含在圖徵中</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>未知的錯誤已發生</translation>
     </message>
     <message>
@@ -32898,7 +32898,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>沒有圖徵被分割</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>分割過程出發生錯誤</translation>
     </message>
     <message>
@@ -32941,7 +32941,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>沒有完成分割</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>在分割過程中發生錯誤</translation>
     </message>
     <message>
@@ -44860,7 +44860,7 @@ p, li { white-space: pre-wrap; }
         <translation>導入錯誤</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
         <translation>導入過程中發生了一個錯誤：
 %1</translation>
@@ -46670,7 +46670,7 @@ Error was:%2</source>
         <translation>儲存樣式</translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
+        <source>Error occurred retrieving styles from database</source>
         <translation>從資料庫中取得樣式時發錯誤發生</translation>
     </message>
     <message>
@@ -53578,7 +53578,7 @@ For support send a mail to scala@itc.cnr.it
         <translation>從資料查詢中建立圖層</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
+        <source>Open an Event Browser and display the selected feature</source>
         <translation>開啟事件瀏覽器與顯示選取的圖徵</translation>
     </message>
     <message>
@@ -56560,7 +56560,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;

@@ -1670,11 +1670,11 @@ Requête :
         <translation>Erreur de base de données</translation>
     </message>
     <message>
-        <source>An error occured:</source>
+        <source>An error occurred:</source>
         <translation>Une erreur est survenue :</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
+        <source>An error occurred when executing a query:</source>
         <translation>Une erreur a été rencontrée lors de l&apos;exécution de la requête :</translation>
     </message>
     <message>
@@ -4289,7 +4289,7 @@ colonne géométrique - colonne avec des entiers uniques</translation>
         <translation>Erreur d&apos;évaluation: %s</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
         <translation>Une erreur s&apos;est produite lors de l&apos;évaluation de la chaîne de calcul :
 %s</translation>
@@ -11119,7 +11119,7 @@ Merci de vérifier la configuration dans la boîte de dialogue des paramètres d
         <translation>Avertissement Python</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
+        <source>An error has occurred while executing Python code:</source>
         <translation>Une erreur est apparue lors de l&apos;exécution du code Python :</translation>
     </message>
     <message>
@@ -13870,7 +13870,7 @@ SQL: %1</translation>
         <translation>Impossible de charger les outils QGIS.</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
+        <source>An error occurred during execution of following code:</source>
         <translation>Une erreur est apparue lors de l&apos;exécution du code suivant :</translation>
     </message>
     <message>
@@ -15068,7 +15068,7 @@ Erreur : %1</translation>
         <translation>Echec de la fusion</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
+        <source>An error occurred during the merge operation</source>
         <translation>Une erreur est survenue lors de l&apos;opération de fusion</translation>
     </message>
     <message>
@@ -15444,7 +15444,7 @@ Erreurs : %3</translation>
         <translation>Identification proxy requise</translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
+        <source>SSL errors occurred accessing URL %1:</source>
         <translation>Une erreur SSL a été rencontrée lors de l&apos;accès à l&apos;adresse %1 :</translation>
     </message>
     <message>
@@ -15456,7 +15456,7 @@ Always ignore these errors?</source>
 Toujours ignorer ces erreurs ?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
             <numerusform>%n erreurs SSL se sont produites</numerusform>
@@ -15500,7 +15500,7 @@ Toujours ignorer ces erreurs ?</translation>
         <translation>Erreur dans l&apos;enregistrement du fichier de définition de la couche</translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation>Un problème est survenu lors de la suppresion de %1 entité(s)</translation>
     </message>
 </context>
@@ -16648,7 +16648,7 @@ Parser error:
         <translation>Erreur</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Une erreur s&apos;est produite lors de l&apos;évaluation de la chaîne de calcul : %1</translation>
     </message>
@@ -25647,7 +25647,7 @@ Les fichiers existants sont listés ici et chargés lorsqu&apos;ils sont sélect
         <translation>Erreur</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Une erreur s&apos;est produite lors de l&apos;évaluation de la chaîne de calcul :
 %1</translation>
@@ -32524,7 +32524,7 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.</numerusform
         <translation>Anneau ajouté</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>un problème avec le type de géométrie est survenu</translation>
     </message>
     <message>
@@ -32544,7 +32544,7 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.</numerusform
         <translation>l&apos;anneau ajouté n&apos;est pas contenu dans une entité</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>une erreur inconnue s&apos;est produite</translation>
     </message>
     <message>
@@ -32637,7 +32637,7 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.</numerusform
         <translation>Anneau ajouté et complété</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>un problème avec le type de géométrie est survenu</translation>
     </message>
     <message>
@@ -32657,7 +32657,7 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.</numerusform
         <translation>l&apos;anneau ajouté n&apos;est pas contenu dans une entité</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>une erreur inconnue s&apos;est produite</translation>
     </message>
     <message>
@@ -32952,7 +32952,7 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.</numerusform
         <translation>Aucune entité coupée</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Une erreur s&apos;est produite pendant le découpage</translation>
     </message>
     <message>
@@ -32995,7 +32995,7 @@ Ceci est peut-être dû à votre connexion ou celle du serveur WMS.</numerusform
         <translation>Aucune séparation effectuée</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Une erreur est survenue lors du découpage.</translation>
     </message>
     <message>
@@ -44909,7 +44909,7 @@ p, li { white-space: pre-wrap; }
         <translation>Erreur importation</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
         <translation>Une erreur a été rencontrée lors de l&apos;import: 
 %1</translation>
@@ -46728,7 +46728,7 @@ L&apos;erreur est : %2</translation>
         <translation>Style enregistré</translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
+        <source>Error occurred retrieving styles from database</source>
         <translation>Une erreur s&apos;est produite lors de la récupération des styles depuis la base de données</translation>
     </message>
     <message>
@@ -48185,7 +48185,7 @@ Response was:
     </message>
     <message>
         <source>Not logging more than 100 request errors.</source>
-        <translation>L&apos;enregistrement des erreurs de requêtes est limité à 100 occurences.</translation>
+        <translation>L&apos;enregistrement des erreurs de requêtes est limité à 100 occurrences.</translation>
     </message>
     <message>
         <source>%1 of %2 bytes of map downloaded.</source>
@@ -54997,7 +54997,7 @@ Pour le support, envoyez un courriel à scala@itc.cnr.it
         <translation>Créer une couche depuis une requête de base de données</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
+        <source>Open an Event Browser and display the selected feature</source>
         <translation>Ouvrir le navigateur d’évènements et afficher l&apos;entité sélectionnée</translation>
     </message>
     <message>
@@ -59581,7 +59581,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -62162,7 +62162,7 @@ Formate une date ou une chaine de caractère dans une chaîne de caractères au 
     </message>
     <message>
         <source>Tabulate mutual occurrence (coincidence) of categories for two rasters</source>
-        <translation>Tabuler les occurences mutuelles (coincidence) des catégories de 2 rasters</translation>
+        <translation>Tabuler les occurrences mutuelles (coincidence) des catégories de 2 rasters</translation>
     </message>
     <message>
         <source>Take vector stream data, transform it to raster, and subtract depth from the output DEM</source>

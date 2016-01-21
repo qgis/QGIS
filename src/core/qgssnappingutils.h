@@ -50,7 +50,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /** get a point locator for the given layer. If such locator does not exist, it will be created */
     QgsPointLocator* locatorForLayer( QgsVectorLayer* vl );
 
-    /** snap to map according to the current configuration (mode). Optional filter allows to discard unwanted matches. */
+    /** snap to map according to the current configuration (mode). Optional filter allows discarding unwanted matches. */
     QgsPointLocator::Match snapToMap( const QPoint& point, QgsPointLocator::MatchFilter* filter = 0 );
     QgsPointLocator::Match snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter = 0 );
 

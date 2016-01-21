@@ -1667,11 +1667,11 @@ Kontsulta:
         <translation>Datu-basearen errorea</translation>
     </message>
     <message>
-        <source>An error occured:</source>
+        <source>An error occurred:</source>
         <translation>Errorea gertatu da:</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
+        <source>An error occurred when executing a query:</source>
         <translation>Errorea gertatu da kontsulta exekutatzean:</translation>
     </message>
     <message>
@@ -4283,7 +4283,7 @@ geometria-zutabea - balio oso bakarrak dituen zutabea</translation>
         <translation>Ebaluazio-errorea: %s</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
         <translation>Errorea gertatu da kalkulu-katea ebaluatzean:
 %s</translation>
@@ -11101,7 +11101,7 @@ Egiaztatu konfigurazioa Prozesuen ezarpenetan.</translation>
         <translation>Phyton abisua</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
+        <source>An error has occurred while executing Python code:</source>
         <translation>Errorea gertatu da Python kodea exekutatzean:</translation>
     </message>
     <message>
@@ -13849,7 +13849,7 @@ SQL: %1</translation>
         <translation>Ezin da QGIS utils kargatu.</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
+        <source>An error occurred during execution of following code:</source>
         <translation>Errorea gertatu da hurrengo kodea exekutatzean:</translation>
     </message>
     <message>
@@ -15046,7 +15046,7 @@ Errorea: %1</translation>
         <translation>Fusioak huts egin du</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
+        <source>An error occurred during the merge operation</source>
         <translation>Errorea gertatu da fusionatze-eragiketan</translation>
     </message>
     <message>
@@ -15422,7 +15422,7 @@ Erroreak: %3</translation>
         <translation>Proxy-autentifikazioa beharrezkoa da</translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
+        <source>SSL errors occurred accessing URL %1:</source>
         <translation>SSL erroreak gertatu dira %1 URLa atzitzean:</translation>
     </message>
     <message>
@@ -15434,7 +15434,7 @@ Always ignore these errors?</source>
 Beti ezikusi errore hauek?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
             <numerusform>SSL errorre %n gertatu da</numerusform>
@@ -15478,7 +15478,7 @@ Beti ezikusi errore hauek?</translation>
         <translation>Errorea geruza-definizioaren fitxategia gordetzean</translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation>Errorea gertatu da %1 elementu ezabatzean</translation>
     </message>
 </context>
@@ -16627,7 +16627,7 @@ Parser error:
         <translation>Errorea</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Errorea gertatu a kalkulu-katea ebaluatzean:
 %1</translation>
@@ -25620,7 +25620,7 @@ Lehendik dauden fitxategiak zerrendatzen dira hemen eta kargatu egiten dira haut
         <translation>Errorea</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Errorea gertatu da kalkulu-katea ebaluatzean:
 %1</translation>
@@ -32506,7 +32506,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <translation>Eraztuna gehitu da</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>errorea gertatu da geometria motarekin</translation>
     </message>
     <message>
@@ -32526,7 +32526,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <translation>txertatutako eraztuna ez dago elementu baten barruan</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>errore ezezaguna gertatu da</translation>
     </message>
     <message>
@@ -32619,7 +32619,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <translation>Eraztuna gehitu eta bete da</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>errorea gertatu da geometria motarekin</translation>
     </message>
     <message>
@@ -32639,7 +32639,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <translation>txertatutako eraztuna ez dago elementu baten barruan</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>errore ezezaguna gertatu da</translation>
     </message>
     <message>
@@ -32934,7 +32934,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <translation>Ez da elementurik zatitu</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Errorea gertatu da zatiketa egitean.</translation>
     </message>
     <message>
@@ -32977,7 +32977,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <translation>Ez dira zatiak zatitu</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Errorea gertatu da zatiketa egitean.</translation>
     </message>
     <message>
@@ -44895,7 +44895,7 @@ p, li { white-space: pre-wrap; }
         <translation>Inportazio-errorea</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
         <translation>Errorea gertatu da inportazioan:
 %1</translation>
@@ -46715,7 +46715,7 @@ Errorea honakoa da: %2</translation>
         <translation>Gordetako estiloa</translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
+        <source>Error occurred retrieving styles from database</source>
         <translation>Errorea gertatu da estiloak datu-basetik atzitzean</translation>
     </message>
     <message>
@@ -53608,7 +53608,7 @@ Laguntza behar izanez gero, bidali mezua hona: scala@itc.cnr.it
         <translation>Sortu geruza datu-basearen kontsulta batetik</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
+        <source>Open an Event Browser and display the selected feature</source>
         <translation>Ireki gertaera-arakatzaile bat eta erakutsi hautatutako elementua</translation>
     </message>
     <message>
@@ -56664,7 +56664,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;

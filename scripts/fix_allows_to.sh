@@ -70,11 +70,11 @@ quickly edit:quick editing
 EOF
 while read v i; do
 	echo "$v => $i"
-	git grep -l "allows to $v" >files
-	[ -s files ] && xargs perl -i.bak -pe "s/allows to $v\b/allows $i/g" <files
+	git grep -l "[aA]llows to $v" >files
+	[ -s files ] && xargs perl -i.bak -pe "s/([aA])llows to $v\b/\$1allows $i/g" <files
 done
 
-git grep "allows to" | sed -e 's/^.*allows to \([^ ]* [^ ]*\) .*$/\1/' | sort -u
+git grep "[aA]llows to" | sed -e 's/^.*[aA]llows to \([^ ]* [^ ]*\) .*$/\1/' | sort -u
 #git grep "allows$"
 
 git checkout ChangeLog

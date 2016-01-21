@@ -1009,7 +1009,7 @@ int main( int argc, char *argv[] )
       rendered properly.
 
       It looks like you don't run the event loop in non-interactive mode, so the
-      event is never occuring.
+      event is never occurring.
 
       To achieve this without running the event loop: show the window, then call
       qApp->processEvents(), grab the pixmap, save it, hide the window and exit.

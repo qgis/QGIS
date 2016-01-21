@@ -1670,11 +1670,11 @@ Consulta:
         <translation>Erro de base de datos</translation>
     </message>
     <message>
-        <source>An error occured:</source>
+        <source>An error occurred:</source>
         <translation>Ocorreu un erro:</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
+        <source>An error occurred when executing a query:</source>
         <translation>Ocorreu un erro cando se executaba unha consulta:</translation>
     </message>
     <message>
@@ -4289,7 +4289,7 @@ columna de xeometría - columna con valores enteiros únicos</translation>
         <translation>Erro de avaliación: %s</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
         <translation>Ocorreu un erro cando se avaliaban as cadeas de cálculo:
 %s</translation>
@@ -11114,7 +11114,7 @@ Comprobe a configuración no diálogo de configuración de Procesamento.</transl
         <translation>Advertencia de Python</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
+        <source>An error has occurred while executing Python code:</source>
         <translation>Ocurriu un erro executando código Python:</translation>
     </message>
     <message>
@@ -13869,7 +13869,7 @@ SQL: %1</translation>
         <translation>Non se poden cargar as utilidades QGIS.</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
+        <source>An error occurred during execution of following code:</source>
         <translation>Ocorreu un erro durante a execución do seguinte código:</translation>
     </message>
     <message>
@@ -15067,7 +15067,7 @@ Erro: %1</translation>
         <translation>Fallou a unión</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
+        <source>An error occurred during the merge operation</source>
         <translation>Ocorreu un erro durante a operación de xuntado</translation>
     </message>
     <message>
@@ -15445,7 +15445,7 @@ Erros: %3
         <translation>Requerida autentificación do Proxy</translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
+        <source>SSL errors occurred accessing URL %1:</source>
         <translation>Ocorreron erros SSL accedento á URL %1:</translation>
     </message>
     <message>
@@ -15457,7 +15457,7 @@ Always ignore these errors?</source>
 ¿Ignorar sempre estes erros?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
             <numerusform>Ocorreu un %n erro SSL</numerusform>
@@ -15501,7 +15501,7 @@ Always ignore these errors?</source>
         <translation>Erro cargando a definición do ficheiro</translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation>Ocorreu un problema durante o borrado de entidade(s) %1</translation>
     </message>
 </context>
@@ -16651,7 +16651,7 @@ Erro do intérprete:
         <translation>Erro</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Ocorreu un erro cando se avaliaban as cadeas de cálculo:
 %1</translation>
@@ -25655,7 +25655,7 @@ Os ficheiros existentes enuméranse aquí e cárganse cando sexan seleccionados.
         <translation>Erro</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Ocorreu un erro cando se avaliaban as cadeas de cálculo:
 %1</translation>
@@ -32548,7 +32548,7 @@ Isto pode ser un problema de conexión da súa rede ou do servidor WMS.</numerus
         <translation>Engadido anel</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>Ocorreu un problema co tipo de xeometría</translation>
     </message>
     <message>
@@ -32568,7 +32568,7 @@ Isto pode ser un problema de conexión da súa rede ou do servidor WMS.</numerus
         <translation>o anel inserido non está contido nunha entidade</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>ocorreu un erro descoñecido</translation>
     </message>
     <message>
@@ -32661,7 +32661,7 @@ Isto pode ser un problema de conexión da súa rede ou do servidor WMS.</numerus
         <translation>Anel engadido e recheo</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>ocorreu un problema co tipo de xeometría</translation>
     </message>
     <message>
@@ -32681,7 +32681,7 @@ Isto pode ser un problema de conexión da súa rede ou do servidor WMS.</numerus
         <translation>o Anel inserido non está contido nunha entidade</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>ocorreu un erro descoñecido</translation>
     </message>
     <message>
@@ -32976,7 +32976,7 @@ Isto pode ser un problema de conexión da súa rede ou do servidor WMS.</numerus
         <translation>Sen realiza-la división de entidades</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Ocorreu un erro durante a división.</translation>
     </message>
     <message>
@@ -33019,7 +33019,7 @@ Isto pode ser un problema de conexión da súa rede ou do servidor WMS.</numerus
         <translation>Non se dividiu a parte</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Ocorreu un erro durante a división.</translation>
     </message>
     <message>
@@ -44964,7 +44964,7 @@ p, li { white-space: pre-wrap; }
         <translation>Erro de importación</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
         <translation>Ocorreu un erro durante a importación:
 %1</translation>
@@ -46786,7 +46786,7 @@ O erro foi:%2</translation>
         <translation>Estilo gardado</translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
+        <source>Error occurred retrieving styles from database</source>
         <translation>Ocorreu un erro na recuperación de estilos dende a base de datos</translation>
     </message>
     <message>
@@ -55070,7 +55070,7 @@ Para soporte enviar email a scala@itc.cnr.it
         <translation>Crear capa dende inquerimento da base de datos</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
+        <source>Open an Event Browser and display the selected feature</source>
         <translation>Abrir un buscador de eventos e amosa-la entidade seleccionada</translation>
     </message>
     <message>
@@ -59684,7 +59684,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;

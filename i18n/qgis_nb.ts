@@ -1670,11 +1670,11 @@ Spørring:
         <translation>Databasefeil</translation>
     </message>
     <message>
-        <source>An error occured:</source>
+        <source>An error occurred:</source>
         <translation>Det har skjedd en feil:</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
+        <source>An error occurred when executing a query:</source>
         <translation>Det oppsto en feil under en spørring:</translation>
     </message>
     <message>
@@ -4288,7 +4288,7 @@ geometrikolonne - kolonne med unike heltallverdier
         <translation>Evalueringsfeil: %s</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
         <translation>Det oppsto en feil ved evaluering av begrensningsstrengen:
 %s</translation>
@@ -11116,7 +11116,7 @@ Vennligst sjekk konfigurasjonen i Prosessering -innstillingsdialogen</translatio
         <translation>Python advarsel</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
+        <source>An error has occurred while executing Python code:</source>
         <translation>En feil har skjedd under utføring av Python-kode:</translation>
     </message>
     <message>
@@ -13871,7 +13871,7 @@ SQL: %1</translation>
         <translation>Kunne ikke laste QGIS utils.</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
+        <source>An error occurred during execution of following code:</source>
         <translation>En feil oppsto under operasjon av følgende kode:</translation>
     </message>
     <message>
@@ -15069,7 +15069,7 @@ Feil: %1</translation>
         <translation>Sammenslåing misslyktes</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
+        <source>An error occurred during the merge operation</source>
         <translation>Det oppsto en feil under sammenslåingen</translation>
     </message>
     <message>
@@ -15447,7 +15447,7 @@ Feil: %3
         <translation>Mellomvertsautentisiering kreves</translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
+        <source>SSL errors occurred accessing URL %1:</source>
         <translation>SSL-feil oppsto ved tilgang til URL %1:</translation>
     </message>
     <message>
@@ -15459,7 +15459,7 @@ Always ignore these errors?</source>
 Ignorer alltid disse feilene?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
             <numerusform>%n SSL-feil oppsto</numerusform>
@@ -15503,7 +15503,7 @@ Ignorer alltid disse feilene?</translation>
         <translation>Feil ved lagrnig av lagdefinisjonsfil</translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation>Et problem oppsto ved sletting av %1 objekt(er)</translation>
     </message>
 </context>
@@ -16654,7 +16654,7 @@ Analysefeil:
         <translation>Feil</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Det oppsto en feil ved evaluering av begrensningsstrengen:
 %1</translation>
@@ -25663,7 +25663,7 @@ Ekisterende filer listes her og lastes når de er valgt.</translation>
         <translation>Feil</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Det oppsto en feil ved evaluering av begrensningsstrengen:
 %1</translation>
@@ -32553,7 +32553,7 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <translation>Ring lagt til</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>det oppsto et feil med geometritype</translation>
     </message>
     <message>
@@ -32573,7 +32573,7 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <translation>insatt ring er ikke en del av et objekt</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>en ukjent feil oppsto</translation>
     </message>
     <message>
@@ -32666,7 +32666,7 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <translation>Ring lagt til og fylt</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>det oppsto et problem med geometritypen</translation>
     </message>
     <message>
@@ -32686,7 +32686,7 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <translation>insatt Ring er ikke en del av et objekt</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>det oppsto en ukjent feil</translation>
     </message>
     <message>
@@ -32981,7 +32981,7 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <translation>Ingen objekter ble delt</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>En feil oppsto under deling.</translation>
     </message>
     <message>
@@ -33024,7 +33024,7 @@ Dette kan være et problem med din nettverkstilkobling eller på WMS-serveren.</
         <translation>Ingen oppdeling ble gjort</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>En feil oppsto under oppdeling.</translation>
     </message>
     <message>
@@ -44958,7 +44958,7 @@ p, li { white-space: pre-wrap; }
         <translation>Importfeil</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
         <translation>En feil oppsto under import:
 %1</translation>
@@ -46780,7 +46780,7 @@ Tilbyderfeil:</translation>
         <translation>Lagret stil</translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
+        <source>Error occurred retrieving styles from database</source>
         <translation>Det oppsto en feil ved henting av stiler fra databasen</translation>
     </message>
     <message>
@@ -55004,7 +55004,7 @@ For support send a mail to scala@itc.cnr.it
         <translation>Opprett lag fra en databasespørring</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
+        <source>Open an Event Browser and display the selected feature</source>
         <translation>Åpne en hendelsesvisning og vis det valgte objekt</translation>
     </message>
     <message>
@@ -59637,7 +59637,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;

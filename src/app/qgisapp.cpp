@@ -5396,7 +5396,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent, bool promptCo
   if ( !vlayer->deleteSelectedFeatures( &deletedCount ) )
   {
     messageBar()->pushMessage( tr( "Problem deleting features" ),
-                               tr( "A problem occured during deletion of %1 feature(s)" ).arg( numberOfSelectedFeatures - deletedCount ),
+                               tr( "A problem occurred during deletion of %1 feature(s)" ).arg( numberOfSelectedFeatures - deletedCount ),
                                QgsMessageBar::WARNING );
   }
   else
@@ -5985,7 +5985,7 @@ void QgisApp::mergeSelectedFeatures()
   {
     if ( !canceled )
     {
-      QMessageBox::critical( 0, tr( "Merge failed" ), tr( "An error occured during the merge operation" ) );
+      QMessageBox::critical( 0, tr( "Merge failed" ), tr( "An error occurred during the merge operation" ) );
     }
     return;
   }
@@ -6026,7 +6026,7 @@ void QgisApp::mergeSelectedFeatures()
     {
       if ( !canceled )
       {
-        QMessageBox::critical( 0, tr( "Merge failed" ), tr( "An error occured during the merge operation" ) );
+        QMessageBox::critical( 0, tr( "Merge failed" ), tr( "An error occurred during the merge operation" ) );
       }
       return;
     }
@@ -10340,7 +10340,7 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
 #ifndef QT_NO_OPENSSL
 void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors )
 {
-  QString msg = tr( "SSL errors occured accessing URL %1:" ).arg( reply->request().url().toString() );
+  QString msg = tr( "SSL errors occurred accessing URL %1:" ).arg( reply->request().url().toString() );
   bool otherError = false;
   static QSet<QSslError::SslError> ignoreErrors;
 
@@ -10360,7 +10360,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
 
   if ( !otherError ||
        QMessageBox::warning( this,
-                             tr( "%n SSL errors occured", "number of errors", errors.size() ),
+                             tr( "%n SSL errors occurred", "number of errors", errors.size() ),
                              msg,
                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
   {

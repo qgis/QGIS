@@ -1666,11 +1666,11 @@ Truy vấn:
         <translation>Lỗi CSDL</translation>
     </message>
     <message>
-        <source>An error occured:</source>
+        <source>An error occurred:</source>
         <translation>Một lỗi đã xảy ra:</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
+        <source>An error occurred when executing a query:</source>
         <translation>Đã xảy ra một lỗi khi thực thi phép truy vấn:</translation>
     </message>
     <message>
@@ -4285,7 +4285,7 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11080,7 +11080,7 @@ Please check the configuration in the Processing settings dialog.</source>
         <translation>Cảnh báo Python</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
+        <source>An error has occurred while executing Python code:</source>
         <translation>Đã xảy ra một lỗi khi thực thi mã Python:</translation>
     </message>
     <message>
@@ -13829,7 +13829,7 @@ SQL: %1</translation>
         <translation>Không thể nạp các tiện ích của QGIS.</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
+        <source>An error occurred during execution of following code:</source>
         <translation>Một lỗi đã xảy ra trong quá trình thực thi mã sau:</translation>
     </message>
     <message>
@@ -15022,7 +15022,7 @@ Lỗi: %1</translation>
         <translation>Phép gộp thất bại</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
+        <source>An error occurred during the merge operation</source>
         <translation>Đã xảy ra một lỗi khi chạy lệnh gộp</translation>
     </message>
     <message>
@@ -15398,7 +15398,7 @@ Lỗi: %3</translation>
         <translation>Cần có chứng thực ủy nhiệm</translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
+        <source>SSL errors occurred accessing URL %1:</source>
         <translation>Lỗi SSL xảy ra khi đang truy cập URL %1:</translation>
     </message>
     <message>
@@ -15410,7 +15410,7 @@ Always ignore these errors?</source>
 Luôn bỏ qua các lỗi này?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
             <numerusform>%n lỗi SSL đã xảy ra</numerusform>
@@ -15453,7 +15453,7 @@ Luôn bỏ qua các lỗi này?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16604,7 +16604,7 @@ Lỗi phân tách:
         <translation>Lỗi</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Đã xảy ra lỗi khi đánh giá chuỗi tính toán:
 %1</translation>
@@ -25588,7 +25588,7 @@ Existing files are listed here and loaded when selected.</source>
         <translation>Lỗi</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Lỗi xảy ra khi đang đánh giá chuỗi tính toán:
 %1</translation>
@@ -32456,7 +32456,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Vòng được thêm vào</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>một trục trặc với kiểu hình học đã xảy ra</translation>
     </message>
     <message>
@@ -32476,7 +32476,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>vòng được chèn vào không chứa trong một đối tượng</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>đã xảy ra một lỗi không rõ</translation>
     </message>
     <message>
@@ -32569,7 +32569,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Vòng được thêm và được lấp đầy</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>đã xảy ra một trục trặc với kiểu hình học</translation>
     </message>
     <message>
@@ -32589,7 +32589,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>vòng được chèn vào không chứa trong một đối tượng</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>đã xảy ra một lỗi không rõ</translation>
     </message>
     <message>
@@ -32884,7 +32884,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Việc cắt đối tượng không được thực hiện</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Một lỗi đã xảy ra trong quá trình cắt.</translation>
     </message>
     <message>
@@ -32927,7 +32927,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Không có phần nào bị ngắt</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Một lỗi đã xảy ra trong quá trình cắt.</translation>
     </message>
     <message>
@@ -44842,7 +44842,7 @@ p, li { white-space: pre-wrap; }
         <translation>Lỗi nhập</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
         <translation>Xảy ra một lỗi trong quá trình nhập:
 %1</translation>
@@ -46651,7 +46651,7 @@ Lỗi là: %2</translation>
         <translation>Kiểu đã lưu</translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
+        <source>Error occurred retrieving styles from database</source>
         <translation>Lỗi xảy ra khi đang lấy các kiểu từ CSDL</translation>
     </message>
     <message>
@@ -54856,7 +54856,7 @@ Cần hỗ trợ vui lòng gửi thư về scala@itc.cnr.it</translation>
         <translation>Tạo lớp từ một phép truy vấn CSDL</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
+        <source>Open an Event Browser and display the selected feature</source>
         <translation>Mở các bộ Duyệt Sự kiện và trình bày đối tượng được chọn</translation>
     </message>
     <message>
@@ -59450,7 +59450,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;

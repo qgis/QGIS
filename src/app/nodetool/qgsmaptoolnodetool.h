@@ -138,7 +138,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     /** flag if selection rectangle is active */
     bool mSelectionRectangle;
 
-    /** flag if moving of vertexes is occuring */
+    /** flag if moving of vertexes is occurring */
     bool mMoving;
 
     /** flag if click action is still in queue to be processed */

@@ -1670,11 +1670,11 @@ Consulta:
         <translation>Error de la base de datos</translation>
     </message>
     <message>
-        <source>An error occured:</source>
+        <source>An error occurred:</source>
         <translation>Ocurrió un error:</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
+        <source>An error occurred when executing a query:</source>
         <translation>Ocurrió un error al ejecutar la consulta:</translation>
     </message>
     <message>
@@ -4288,7 +4288,7 @@ columna de geometría - columna con valores enteros únicos</translation>
         <translation>Error de evaluación: %s</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
         <translation>Ocurrió un error al evaluar la cadena de cálculo:
 %s</translation>
@@ -11114,7 +11114,7 @@ Por favor, compruebe la configuración en el diálogo de opciones de Procesos.</
         <translation>Advertencia de Python</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
+        <source>An error has occurred while executing Python code:</source>
         <translation>Ha ocurrido un error mientras se ejecutaba el código de Python:</translation>
     </message>
     <message>
@@ -13871,7 +13871,7 @@ SQL: %1</translation>
         <translation>No se pudieron cargar las utilidades de QGIS.</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
+        <source>An error occurred during execution of following code:</source>
         <translation>Ocurrió un error durante la ejecución del siguiente código:</translation>
     </message>
     <message>
@@ -15068,7 +15068,7 @@ Error: %1</translation>
         <translation>Falló la combinación</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
+        <source>An error occurred during the merge operation</source>
         <translation>Ocurrió un error durante la operación de combinación</translation>
     </message>
     <message>
@@ -15445,7 +15445,7 @@ Errores: %3</translation>
         <translation>Se requiere autenticación de proxy</translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
+        <source>SSL errors occurred accessing URL %1:</source>
         <translation>Ocurrieron errores de SSL al acceder a la URL %1:</translation>
     </message>
     <message>
@@ -15457,7 +15457,7 @@ Always ignore these errors?</source>
 ¿Ignorar siempre estos errores?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
             <numerusform>Ocurrió 1 error de SSL</numerusform>
@@ -15501,7 +15501,7 @@ Always ignore these errors?</source>
         <translation>Error al guardar el archivo de definición de la capa</translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation>Ocurrió un problema durante el borrado de %1 objeto(s) espacial(es)</translation>
     </message>
 </context>
@@ -16652,7 +16652,7 @@ Error del analizador:
         <translation>Error</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Ocurrió un error al evaluar la cadena de cálculo:
 %1</translation>
@@ -25656,7 +25656,7 @@ Los archivos existentes se listan aquí y se cargan cuando son seleccionados</tr
         <translation>Error</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Ocurrió un error al evaluar la cadena de cálculo:
 %1</translation>
@@ -32547,7 +32547,7 @@ Puede haber un problema en su conexión a la red o en el servidor WMS.</numerusf
         <translation>Anillo añadido</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>ocurrió un problema con el tipo de geometría</translation>
     </message>
     <message>
@@ -32567,7 +32567,7 @@ Puede haber un problema en su conexión a la red o en el servidor WMS.</numerusf
         <translation>el anillo insertado no está contenido en un objeto espacial</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>ocurrió un error desconocido</translation>
     </message>
     <message>
@@ -32660,7 +32660,7 @@ Puede haber un problema en su conexión a la red o en el servidor WMS.</numerusf
         <translation>Anillo añadido y rellenado</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>ocurrió un problema con el tipo de geometría</translation>
     </message>
     <message>
@@ -32680,7 +32680,7 @@ Puede haber un problema en su conexión a la red o en el servidor WMS.</numerusf
         <translation>el anillo insertado no está contenido en un objeto espacial</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>ocurrió un error desconocido</translation>
     </message>
     <message>
@@ -32975,7 +32975,7 @@ Puede haber un problema en su conexión a la red o en el servidor WMS.</numerusf
         <translation>No se ha dividido ningún objeto espacial</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Ocurrió un error durante la división.</translation>
     </message>
     <message>
@@ -33018,7 +33018,7 @@ Puede haber un problema en su conexión a la red o en el servidor WMS.</numerusf
         <translation>No se ha hecho ninguna división de partes</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Ocurrió un error durante la división.</translation>
     </message>
     <message>
@@ -44953,7 +44953,7 @@ p, li { white-space: pre-wrap; }
         <translation>Error de importación</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
         <translation>Ocurrió un error durante la importación:
 %1</translation>
@@ -46775,7 +46775,7 @@ El error fue: %2</translation>
         <translation>Estilo guardado</translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
+        <source>Error occurred retrieving styles from database</source>
         <translation>Ocurrió un error al obtener estilos de la base de datos</translation>
     </message>
     <message>
@@ -55055,7 +55055,7 @@ Para ayuda enviar un correo a scala@itc.cnr.it
         <translation>Crear capa a partir de una consulta de base de datos</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
+        <source>Open an Event Browser and display the selected feature</source>
         <translation>Abrir un Explorador de eventos y mostrar el objeto espacial seleccionado</translation>
     </message>
     <message>
@@ -59675,7 +59675,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;

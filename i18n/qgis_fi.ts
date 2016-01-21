@@ -1671,11 +1671,11 @@ Kysely:
         <translation>Tietokantavirhe</translation>
     </message>
     <message>
-        <source>An error occured:</source>
+        <source>An error occurred:</source>
         <translation>Tapahtui virhe:</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
+        <source>An error occurred when executing a query:</source>
         <translation>Tapahtui virhe suoritettaessa kyselyä:</translation>
     </message>
     <message>
@@ -4290,7 +4290,7 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
         <translation>Evaluointivirhe: %s</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
         <translation>Tapahtui virhe suoritettaessa laskennan merkkijonoa:
 %s</translation>
@@ -11115,7 +11115,7 @@ Ole hyvä ja tarkasta konfiguraatio Prosessointi asetusikkunasta.</translation>
         <translation>Python varoitus</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
+        <source>An error has occurred while executing Python code:</source>
         <translation>Tapahtui virhe suoritettaessa Python koodia:</translation>
     </message>
     <message>
@@ -13868,7 +13868,7 @@ SQL: %1</translation>
         <translation>Ei voida ladata QGIS työkaluja.</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
+        <source>An error occurred during execution of following code:</source>
         <translation>Tapahtui virhe suoritettaessa seuraavaa koodia:</translation>
     </message>
     <message>
@@ -15066,7 +15066,7 @@ Virhe: %1</translation>
         <translation>Yhdistäminen epäonnistui</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
+        <source>An error occurred during the merge operation</source>
         <translation>Virhe yhdistettäessä </translation>
     </message>
     <message>
@@ -15443,7 +15443,7 @@ Virheet: %3</translation>
         <translation>Proxy todennusta tarvitaan</translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
+        <source>SSL errors occurred accessing URL %1:</source>
         <translation>SSL virheitä tapahtui käytettäessä URL %1:</translation>
     </message>
     <message>
@@ -15455,7 +15455,7 @@ Always ignore these errors?</source>
 Ohita nämä virheet aina?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
             <numerusform>%n SSL virhe tapahtui</numerusform>
@@ -15499,7 +15499,7 @@ Ohita nämä virheet aina?</translation>
         <translation>Virhe tallennettaessa tason määritysten tiedostoa</translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation>Ongelma tapahtui poistettaessa %1 ominaisuutta</translation>
     </message>
 </context>
@@ -16650,7 +16650,7 @@ Jäsentelyvirhe:
         <translation>Virhe</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Tapahtui virhe evaluoitaessa laskentajonoa:
 %1</translation>
@@ -25655,7 +25655,7 @@ Olemassa olevat tiedostot on listattu tässä ja ladataan kun on valittu.</trans
         <translation>Virhe</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Tapahtui virhe evaluoitaessa laskentajonoa:
 %1</translation>
@@ -32548,7 +32548,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <translation>Piiri lisättiin</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>tapahtui virhe geometria tyypissä</translation>
     </message>
     <message>
@@ -32568,7 +32568,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <translation>lisätty kehä ei sisälly ominaisuuteen </translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>tapahtui tuntematon virhe</translation>
     </message>
     <message>
@@ -32661,7 +32661,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <translation>Piiri lisätty ja täytetty</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
+        <source>a problem with geometry type occurred</source>
         <translation>tapahtui virhe geometria tyypissä</translation>
     </message>
     <message>
@@ -32681,7 +32681,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <translation>lisätty kehä ei ole sisällytetty ominaisuuteen</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
+        <source>an unknown error occurred</source>
         <translation>tapahtui tuntematon virhe</translation>
     </message>
     <message>
@@ -32976,7 +32976,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <translation>Kohteita ei halkaistu</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Jaettaessa tapahtui virhe.</translation>
     </message>
     <message>
@@ -33019,7 +33019,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <translation>Osia ei halkaistu</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
+        <source>An error occurred during splitting.</source>
         <translation>Jaettaessa tapahtui virhe.</translation>
     </message>
     <message>
@@ -44953,7 +44953,7 @@ p, li { white-space: pre-wrap; }
         <translation>Tuontivirhe</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
         <translation>Virhe tapahtui tuonnissa:
 %1</translation>
@@ -46775,7 +46775,7 @@ Virhe oli:%2</translation>
         <translation>Tallennetiin tyyli</translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
+        <source>Error occurred retrieving styles from database</source>
         <translation>Tapahtui virhe haettaessa tyylejä tietokannasta</translation>
     </message>
     <message>
@@ -54803,7 +54803,7 @@ Lisätiedot sähköpostitse scala@itc.cnr.it
         <translation>Luo taso tietokantahausta</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
+        <source>Open an Event Browser and display the selected feature</source>
         <translation>Avaa tapahtumaselain ja näytä valittu kohde</translation>
     </message>
     <message>
@@ -59404,7 +59404,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;

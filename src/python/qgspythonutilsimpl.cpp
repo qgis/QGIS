@@ -393,7 +393,7 @@ bool QgsPythonUtilsImpl::runString( const QString& command, QString msgOnError, 
   if ( msgOnError.isEmpty() )
   {
     // use some default message if custom hasn't been specified
-    msgOnError = QObject::tr( "An error occured during execution of following code:" ) + "\n<tt>" + command + "</tt>";
+    msgOnError = QObject::tr( "An error occurred during execution of following code:" ) + "\n<tt>" + command + "</tt>";
   }
 
   // TODO: use python implementation

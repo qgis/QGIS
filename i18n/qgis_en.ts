@@ -1678,12 +1678,12 @@ Query:
         <translation>Database Error</translation>
     </message>
     <message>
-        <source>An error occured:</source>
-        <translation>An error occured:</translation>
+        <source>An error occurred:</source>
+        <translation>An error occurred:</translation>
     </message>
     <message>
-        <source>An error occured when executing a query:</source>
-        <translation>An error occured when executing a query:</translation>
+        <source>An error occurred when executing a query:</source>
+        <translation>An error occurred when executing a query:</translation>
     </message>
     <message>
         <source>Query:</source>
@@ -4500,9 +4500,9 @@ geometry column - column with unique integer values</translation>
         <translation>Evaluation error: %s</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %s</source>
-        <translation>An error occured while evaluating the calculation string:
+        <translation>An error occurred while evaluating the calculation string:
 %s</translation>
     </message>
     <message>
@@ -11447,8 +11447,8 @@ Please check the configuration in the Processing settings dialog.</translation>
         <translation>Python warning</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
-        <translation>An error has occured while executing Python code:</translation>
+        <source>An error has occurred while executing Python code:</source>
+        <translation>An error has occurred while executing Python code:</translation>
     </message>
     <message>
         <source>Python version:</source>
@@ -14206,8 +14206,8 @@ SQL: %1</translation>
         <translation>Couldn&apos;t load QGIS utils.</translation>
     </message>
     <message>
-        <source>An error occured during execution of following code:</source>
-        <translation>An error occured during execution of following code:</translation>
+        <source>An error occurred during execution of following code:</source>
+        <translation>An error occurred during execution of following code:</translation>
     </message>
     <message>
         <source>Python version:</source>
@@ -15441,8 +15441,8 @@ Error: %1</translation>
         <translation>Merge failed</translation>
     </message>
     <message>
-        <source>An error occured during the merge operation</source>
-        <translation>An error occured during the merge operation</translation>
+        <source>An error occurred during the merge operation</source>
+        <translation>An error occurred during the merge operation</translation>
     </message>
     <message>
         <source>Union operation canceled</source>
@@ -15819,8 +15819,8 @@ Errors: %3
         <translation>Proxy authentication required</translation>
     </message>
     <message>
-        <source>SSL errors occured accessing URL %1:</source>
-        <translation>SSL errors occured accessing URL %1:</translation>
+        <source>SSL errors occurred accessing URL %1:</source>
+        <translation>SSL errors occurred accessing URL %1:</translation>
     </message>
     <message>
         <source>
@@ -15831,11 +15831,11 @@ Always ignore these errors?</source>
 Always ignore these errors?</translation>
     </message>
     <message numerus="yes">
-        <source>%n SSL errors occured</source>
+        <source>%n SSL errors occurred</source>
         <comment>number of errors</comment>
         <translation>
-            <numerusform>%n SSL errors occured</numerusform>
-            <numerusform>%n SSL errors occured</numerusform>
+            <numerusform>%n SSL errors occurred</numerusform>
+            <numerusform>%n SSL errors occurred</numerusform>
         </translation>
     </message>
     <message>
@@ -15875,8 +15875,8 @@ Always ignore these errors?</translation>
         <translation>Error saving layer definintion file</translation>
     </message>
     <message>
-        <source>A problem occured during deletion of %1 feature(s)</source>
-        <translation>A problem occured during deletion of %1 feature(s)</translation>
+        <source>A problem occurred during deletion of %1 feature(s)</source>
+        <translation>A problem occurred during deletion of %1 feature(s)</translation>
     </message>
 </context>
 <context>
@@ -17026,9 +17026,9 @@ Parser error:
         <translation>Error</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
-        <translation>An error occured while evaluating the calculation string:
+        <translation>An error occurred while evaluating the calculation string:
 %1</translation>
     </message>
     <message>
@@ -26063,9 +26063,9 @@ Existing files are listed here and loaded when selected.</translation>
         <translation>Error</translation>
     </message>
     <message>
-        <source>An error occured while evaluating the calculation string:
+        <source>An error occurred while evaluating the calculation string:
 %1</source>
-        <translation>An error occured while evaluating the calculation string:
+        <translation>An error occurred while evaluating the calculation string:
 %1</translation>
     </message>
     <message>
@@ -32957,8 +32957,8 @@ This may be a problem in your network connection or at the WMS server.</numerusf
         <translation>Ring added</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
-        <translation>a problem with geometry type occured</translation>
+        <source>a problem with geometry type occurred</source>
+        <translation>a problem with geometry type occurred</translation>
     </message>
     <message>
         <source>the inserted ring is not closed</source>
@@ -32977,8 +32977,8 @@ This may be a problem in your network connection or at the WMS server.</numerusf
         <translation>the inserted ring is not contained in a feature</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
-        <translation>an unknown error occured</translation>
+        <source>an unknown error occurred</source>
+        <translation>an unknown error occurred</translation>
     </message>
     <message>
         <source>could not add ring since %1.</source>
@@ -33070,8 +33070,8 @@ This may be a problem in your network connection or at the WMS server.</numerusf
         <translation>Ring added and filled</translation>
     </message>
     <message>
-        <source>a problem with geometry type occured</source>
-        <translation>a problem with geometry type occured</translation>
+        <source>a problem with geometry type occurred</source>
+        <translation>a problem with geometry type occurred</translation>
     </message>
     <message>
         <source>the inserted Ring is not closed</source>
@@ -33090,8 +33090,8 @@ This may be a problem in your network connection or at the WMS server.</numerusf
         <translation>the inserted Ring is not contained in a feature</translation>
     </message>
     <message>
-        <source>an unknown error occured</source>
-        <translation>an unknown error occured</translation>
+        <source>an unknown error occurred</source>
+        <translation>an unknown error occurred</translation>
     </message>
     <message>
         <source>could not add ring since %1.</source>
@@ -33385,8 +33385,8 @@ This may be a problem in your network connection or at the WMS server.</numerusf
         <translation>No feature split done</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
-        <translation>An error occured during splitting.</translation>
+        <source>An error occurred during splitting.</source>
+        <translation>An error occurred during splitting.</translation>
     </message>
     <message>
         <source>Cut edges detected. Make sure the line splits features into multiple parts.</source>
@@ -33428,8 +33428,8 @@ This may be a problem in your network connection or at the WMS server.</numerusf
         <translation>No part split done</translation>
     </message>
     <message>
-        <source>An error occured during splitting.</source>
-        <translation>An error occured during splitting.</translation>
+        <source>An error occurred during splitting.</source>
+        <translation>An error occurred during splitting.</translation>
     </message>
     <message>
         <source>Cut edges detected. Make sure the line splits parts into multiple parts.</source>
@@ -45401,9 +45401,9 @@ p, li { white-space: pre-wrap; }
         <translation>Import error</translation>
     </message>
     <message>
-        <source>An error occured during import:
+        <source>An error occurred during import:
 %1</source>
-        <translation>An error occured during import:
+        <translation>An error occurred during import:
 %1</translation>
     </message>
     <message>
@@ -47231,8 +47231,8 @@ Error was:%2</translation>
         <translation>Saved Style</translation>
     </message>
     <message>
-        <source>Error occured retrieving styles from database</source>
-        <translation>Error occured retrieving styles from database</translation>
+        <source>Error occurred retrieving styles from database</source>
+        <translation>Error occurred retrieving styles from database</translation>
     </message>
     <message>
         <source>The retrieved style is not a valid named style. Error message: %1</source>
@@ -55614,8 +55614,8 @@ For support send a mail to scala@itc.cnr.it
         <translation>Create layer from a database query</translation>
     </message>
     <message>
-        <source>Open an Event Browers and display the selected feature</source>
-        <translation>Open an Event Browers and display the selected feature</translation>
+        <source>Open an Event Browser and display the selected feature</source>
+        <translation>Open an Event Browser and display the selected feature</translation>
     </message>
     <message>
         <source>Open an Event Browser to explore the current layer&apos;s features</source>
@@ -60248,7 +60248,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -60264,7 +60264,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- List args for functions here--&gt;
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;

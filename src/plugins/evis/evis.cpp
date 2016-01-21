@@ -118,7 +118,7 @@ void eVis::initGui()
 
   // Set the what's this text
   mDatabaseConnectionActionPointer->setWhatsThis( tr( "Create layer from a database query" ) );
-  mEventIdToolActionPointer->setWhatsThis( tr( "Open an Event Browers and display the selected feature" ) );
+  mEventIdToolActionPointer->setWhatsThis( tr( "Open an Event Browser and display the selected feature" ) );
   mEventBrowserActionPointer->setWhatsThis( tr( "Open an Event Browser to explore the current layer's features" ) );
 
   // Connect the action to the runmQGisIface->mapCanvas()

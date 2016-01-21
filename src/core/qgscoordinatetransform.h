@@ -250,7 +250,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     bool writeXML( QDomNode & theNode, QDomDocument & theDoc );
 
   signals:
-    /** Signal when an invalid pj_transform() has occured */
+    /** Signal when an invalid pj_transform() has occurred */
     void  invalidTransformInput() const;
 
   private:

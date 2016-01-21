@@ -142,7 +142,7 @@ class FieldsCalculator(GeoAlgorithm):
 
         if not calculationSuccess:
             raise GeoAlgorithmExecutionException(
-                self.tr('An error occured while evaluating the calculation '
+                self.tr('An error occurred while evaluating the calculation '
                         'string:\n%s' % error))
 
     def checkParameterValuesBeforeExecuting(self):

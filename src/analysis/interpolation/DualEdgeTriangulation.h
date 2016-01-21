@@ -146,7 +146,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     const static int nBaseOfRuns = 300000;
     /**Returns the number of an edge which points to the point with number 'point' or -1 if there is an error*/
     int baseEdgeOfPoint( int point );
-    /**returns the number of a HalfEdge from a triangle in which 'point' is in. If the number -10 is returned, this means, that 'point' is outside the convex hull. If -5 is returned, then numerical problems with the leftOfTest occured (and the value of the possible edge is stored in the variable 'mUnstableEdge'. -20 means, that the inserted point is exactly on an edge (the number is stored in the variable 'mEdgeWithPoint'). -25 means, that the point is already in the triangulation (the number of the point is stored in the member 'mTwiceInsPoint'. If -100 is returned, this means that something else went wrong*/
+    /**returns the number of a HalfEdge from a triangle in which 'point' is in. If the number -10 is returned, this means, that 'point' is outside the convex hull. If -5 is returned, then numerical problems with the leftOfTest occurred (and the value of the possible edge is stored in the variable 'mUnstableEdge'. -20 means, that the inserted point is exactly on an edge (the number is stored in the variable 'mEdgeWithPoint'). -25 means, that the point is already in the triangulation (the number of the point is stored in the member 'mTwiceInsPoint'. If -100 is returned, this means that something else went wrong*/
     int baseEdgeOfTriangle( Point3D* point );
     /**Checks, if 'edge' has to be swapped because of the empty circle criterion. If so, doSwap(...) is called.*/
     bool checkSwap( unsigned int edge, unsigned int recursiveDeep );
