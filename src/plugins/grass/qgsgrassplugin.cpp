@@ -296,7 +296,7 @@ void QgsGrassPlugin::initGui()
     QgsRendererV2Registry::instance()->addRenderer( new QgsRendererV2Metadata( "grassEdit",
         QObject::tr( "GRASS Edit" ),
         QgsGrassEditRenderer::create,
-        QIcon(),
+        QIcon( QgsApplication::defaultThemePath() + "rendererGrassSymbol.svg" ),
         QgsGrassEditRendererWidget::create ) );
   }
 
