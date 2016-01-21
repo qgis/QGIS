@@ -31,6 +31,16 @@ if "%SITE%"=="" set SITE=qgis.org
 
 if "%TESTTARGET%"=="" set TESTTARGET=Nightly
 
+if not "%APPVEYOR_PULL_REQUEST_NUMBER%"=="" (
+  set BUILDNAME="VC10-%ARCH%-PR %APPVEYOR_PULL_REQUEST_NUMBER% %APPVEYOR_REPO_BRANCH% (%APPVEYOR_REPO_COMMIT)"
+) else (
+  if not "%APPVEYOR_REPO_COMMIT%"=="" (
+    set BUILDNAME="VC10-%ARCH%-master (%APPVEYOR_REPO_COMMIT%)"
+  ) else (
+    set BUILDNAME="%PACKAGENAME%-%VERSION%%SHA%-%TESTTARGET%-VC10-%ARCH%"
+  )
+)
+
 set res=0
 
 if "%OSGEO4W_ROOT%"=="" (
@@ -113,7 +123,7 @@ cd %BUILDDIR%
 
 set PKGDIR=%OSGEO4W_ROOT%\apps\%PACKAGENAME%
 
-if exist repackage goto package
+if exist ..\repackage goto package
 
 if not exist build.log goto build
 
@@ -157,7 +167,7 @@ set LIB=%LIB%;%OSGEO4W_ROOT%\lib
 set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
 
 cmake %CMAKE_OPT% ^
-	-D BUILDNAME="%PACKAGENAME%-%VERSION%%SHA%-%TESTTARGET%-VC10-%ARCH%" ^
+	-D BUILDNAME="%BUILDNAME%" ^
 	-D SITE="%SITE%" ^
 	-D PEDANTIC=TRUE ^
         -D WITH_APIDOC=FALSE ^
@@ -246,7 +256,7 @@ set TMP=%oldtmp%
 PATH %oldpath%
 
 :skiptests
-if exist noinstall goto end
+if exist ..\noinstall goto end
 if exist "%PKGDIR%" (
 	echo REMOVE: %DATE% %TIME%
 	rmdir /s /q "%PKGDIR%"
@@ -257,7 +267,7 @@ cmake --build %BUILDDIR% --target INSTALL --config %BUILDCONF%
 if errorlevel 1 (echo INSTALL failed & goto error)
 
 :package
-if exist nopackage goto end
+if exist ..\nopackage goto end
 echo PACKAGE: %DATE% %TIME%
 
 cd ..
