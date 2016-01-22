@@ -311,7 +311,7 @@ class PostGisDBConnector(DBConnector):
 
         # get all tables and views
         sql = u"""SELECT
-                                                cla.relname, nsp.nspname, cla.relkind = 'v' OR cla.relkind = 'm',
+                                                cla.relname, nsp.nspname, cla.relkind,
                                                 pg_get_userbyid(relowner), reltuples, relpages,
                                                 pg_catalog.obj_description(cla.oid)
                                         FROM pg_class AS cla
@@ -367,7 +367,7 @@ class PostGisDBConnector(DBConnector):
 
         # discovery of all tables and whether they contain a geometry column
         sql = u"""SELECT
-                                                cla.relname, nsp.nspname, cla.relkind = 'v' OR cla.relkind = 'm',
+                                                cla.relname, nsp.nspname, cla.relkind,
                                                 pg_get_userbyid(relowner), cla.reltuples, cla.relpages,
                                                 pg_catalog.obj_description(cla.oid),
                                                 """ + geometry_fields_select + """
@@ -439,7 +439,7 @@ class PostGisDBConnector(DBConnector):
 
         # discovery of all tables and whether they contain a raster column
         sql = u"""SELECT
-                                                cla.relname, nsp.nspname, cla.relkind = 'v' OR cla.relkind = 'm',
+                                                cla.relname, nsp.nspname, cla.relkind,
                                                 pg_get_userbyid(relowner), cla.reltuples, cla.relpages,
                                                 pg_catalog.obj_description(cla.oid),
                                                 """ + raster_fields_select + """
