@@ -51,7 +51,7 @@ static bool _initRenderer( const QString& name, QgsRendererV2WidgetFunc f, const
   {
     QString iconPath = QgsApplication::defaultThemePath() + iconName;
     QPixmap pix;
-    if ( pix.load( iconPath, "png" ) )
+    if ( pix.load( iconPath ) )
       m->setIcon( pix );
   }
 
@@ -65,14 +65,14 @@ static void _initRendererWidgetFunctions()
   if ( initialized )
     return;
 
-  _initRenderer( "singleSymbol", QgsSingleSymbolRendererV2Widget::create, "rendererSingleSymbol.png" );
-  _initRenderer( "categorizedSymbol", QgsCategorizedSymbolRendererV2Widget::create, "rendererCategorizedSymbol.png" );
-  _initRenderer( "graduatedSymbol", QgsGraduatedSymbolRendererV2Widget::create, "rendererGraduatedSymbol.png" );
-  _initRenderer( "RuleRenderer", QgsRuleBasedRendererV2Widget::create );
-  _initRenderer( "pointDisplacement", QgsPointDisplacementRendererWidget::create );
-  _initRenderer( "invertedPolygonRenderer", QgsInvertedPolygonRendererWidget::create );
-  _initRenderer( "heatmapRenderer", QgsHeatmapRendererWidget::create );
-  _initRenderer( "25dRenderer", Qgs25DRendererWidget::create, "rendererSingleSymbol.png" );
+  _initRenderer( "singleSymbol", QgsSingleSymbolRendererV2Widget::create, "rendererSingleSymbol.svg" );
+  _initRenderer( "categorizedSymbol", QgsCategorizedSymbolRendererV2Widget::create, "rendererCategorizedSymbol.svg" );
+  _initRenderer( "graduatedSymbol", QgsGraduatedSymbolRendererV2Widget::create, "rendererGraduatedSymbol.svg" );
+  _initRenderer( "RuleRenderer", QgsRuleBasedRendererV2Widget::create, "rendererRuleBasedSymbol.svg" );
+  _initRenderer( "pointDisplacement", QgsPointDisplacementRendererWidget::create, "rendererPointDisplacementSymbol.svg" );
+  _initRenderer( "invertedPolygonRenderer", QgsInvertedPolygonRendererWidget::create, "rendererInvertedSymbol.svg" );
+  _initRenderer( "heatmapRenderer", QgsHeatmapRendererWidget::create, "rendererHeatmapSymbol.svg" );
+  _initRenderer( "25dRenderer", Qgs25DRendererWidget::create, "renderer25dSymbol.svg" );
   initialized = true;
 }
 
