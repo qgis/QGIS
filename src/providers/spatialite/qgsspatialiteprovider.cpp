@@ -4056,7 +4056,7 @@ abort:
   if ( toCommit )
   {
     // ROLLBACK after some previous error
-    sqlite3_exec( sqliteHandle, "ROLLBACK", nullptr, nullptr, nullptr );
+    ( void )sqlite3_exec( sqliteHandle, "ROLLBACK", nullptr, nullptr, nullptr );
   }
 
   return false;

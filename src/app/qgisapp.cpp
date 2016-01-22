@@ -7480,7 +7480,9 @@ void QgisApp::layerSubsetString()
         QgsLayerTreeUtils::insertLayerBelow( QgsProject::instance()->layerTreeRoot(), vlayer, newLayer );
         mLayerTreeView->setCurrentLayer( newLayer );
         // hide the old layer
-        QgsProject::instance()->layerTreeRoot()->findLayer( vlayer->id() )->setVisible( Qt::Unchecked );
+        QgsLayerTreeLayer* vLayerTreeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( vlayer->id() );
+        if ( vLayerTreeLayer )
+          vLayerTreeLayer->setVisible( Qt::Unchecked );
         vlayer = newLayer;
       }
       else

@@ -38,6 +38,7 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
     , mFilter( QString() )
     , mDefaultRoot( QString() )
     , mStorageMode( GetFile )
+    , mRelativeStorage( Absolute )
 {
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );

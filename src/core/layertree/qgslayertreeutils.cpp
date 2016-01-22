@@ -399,6 +399,9 @@ QgsLayerTreeLayer* QgsLayerTreeUtils::insertLayerBelow( QgsLayerTreeGroup* group
 {
   // get the index of the reflayer
   QgsLayerTreeLayer* inTree = group->findLayer( refLayer->id() );
+  if ( !inTree )
+    return nullptr;
+
   int idx = 0;
   foreach ( QgsLayerTreeNode* vl, inTree->parent()->children() )
   {

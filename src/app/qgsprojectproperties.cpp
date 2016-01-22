@@ -1788,7 +1788,7 @@ void QgsProjectProperties::checkOWS( QgsLayerTreeGroup* treeGroup, QStringList& 
         owsNames << shortName;
       if ( l->type() == QgsMapLayer::VectorLayer )
       {
-        QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer *>( l );
+        QgsVectorLayer* vl = static_cast<QgsVectorLayer *>( l );
         if ( vl->dataProvider()->encoding() == "System" )
           encodingMessages << tr( "Update layer \"%1\" encoding" ).arg( l->name() );
       }
