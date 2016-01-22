@@ -227,6 +227,7 @@ class TableItem(TreeItem):
         if not hasattr(TableItem, 'tableIcon'):
             TableItem.tableIcon = QIcon(":/db_manager/icons/table.png")
             TableItem.viewIcon = QIcon(":/db_manager/icons/view.png")
+            TableItem.viewMaterializedIcon = QIcon(":/db_manager/icons/view_materialized.png")
             TableItem.layerPointIcon = QIcon(":/db_manager/icons/layer_point.png")
             TableItem.layerLineIcon = QIcon(":/db_manager/icons/layer_line.png")
             TableItem.layerPolygonIcon = QIcon(":/db_manager/icons/layer_polygon.png")
@@ -257,7 +258,10 @@ class TableItem(TreeItem):
             return self.layerRasterIcon
 
         if self.getItemData().isView:
-            return self.viewIcon
+            if hasattr(self.getItemData(), '_relationType') and self.getItemData()._relationType == 'm':
+                return self.viewMaterializedIcon
+            else:
+                return self.viewIcon
         return self.tableIcon
 
     def path(self):
