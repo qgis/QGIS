@@ -2565,6 +2565,7 @@ QString QgsOgrUtils::quotedValue( const QVariant& value )
 bool QgsOgrProvider::syncToDisc()
 {
   //for shapefiles, remove spatial index files and create a new index
+  QgsOgrConnPool::unrefS( mFilePath );
   bool shapeIndex = false;
   if ( ogrDriverName == "ESRI Shapefile" )
   {
@@ -2600,6 +2601,7 @@ bool QgsOgrProvider::syncToDisc()
     return createSpatialIndex();
   }
 
+  QgsOgrConnPool::refS( mFilePath );
   return true;
 }
 
