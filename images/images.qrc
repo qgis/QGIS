@@ -460,8 +460,17 @@
         <file>themes/default/propertyicons/system.svg</file>
         <file>themes/default/propertyicons/transparency.png</file>
         <file>themes/default/rendererCategorizedSymbol.png</file>
+        <file>themes/default/rendererCategorizedSymbol.svg</file>
         <file>themes/default/rendererGraduatedSymbol.png</file>
+        <file>themes/default/rendererGraduatedSymbol.svg</file>
         <file>themes/default/rendererSingleSymbol.png</file>
+        <file>themes/default/rendererSingleSymbol.svg</file>
+        <file>themes/default/rendererRuleBasedSymbol.svg</file>
+        <file>themes/default/rendererPointDisplacementSymbol.svg</file>
+        <file>themes/default/rendererInvertedSymbol.svg</file>
+        <file>themes/default/rendererHeatmapSymbol.svg</file>
+        <file>themes/default/renderer25dSymbol.svg</file>
+        <file>themes/default/rendererGrassSymbol.svg</file>
         <file>themes/default/repositoryConnected.png</file>
         <file>themes/default/repositoryDisabled.png</file>
         <file>themes/default/repositoryUnavailable.png</file>
