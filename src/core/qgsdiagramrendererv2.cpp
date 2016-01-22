@@ -40,6 +40,41 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings()
 {
 }
 
+QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh )
+    : placement( rh.placement )
+    , placementFlags( rh.placementFlags )
+    , priority( rh.priority )
+    , zIndex( rh.zIndex )
+    , obstacle( rh.obstacle )
+    , dist( rh.dist )
+    , renderer( rh.renderer ? rh.renderer->clone() : nullptr )
+    , ct( rh.ct )
+    , xform( rh.xform )
+    , fields( rh.fields )
+    , xPosColumn( rh.xPosColumn )
+    , yPosColumn( rh.yPosColumn )
+    , showAll( rh.showAll )
+{
+}
+
+QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings & rh )
+{
+  placement = rh.placement;
+  placementFlags = rh.placementFlags;
+  priority = rh.priority;
+  zIndex = rh.zIndex;
+  obstacle = rh.obstacle;
+  dist = rh.dist;
+  renderer = rh.renderer ? rh.renderer->clone() : nullptr;
+  ct = rh.ct;
+  xform = rh.xform;
+  fields = rh.fields;
+  xPosColumn = rh.xPosColumn;
+  yPosColumn = rh.yPosColumn;
+  showAll = rh.showAll;
+  return *this;
+}
+
 QgsDiagramLayerSettings::~QgsDiagramLayerSettings()
 {
   delete renderer;

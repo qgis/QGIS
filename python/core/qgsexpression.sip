@@ -632,6 +632,10 @@ class QgsExpression
         //protected:
         QgsExpression::Node* mWhenExp;
         QgsExpression::Node* mThenExp;
+
+      private:
+        WhenThen( const QgsExpression::WhenThen& rh );
+
     };
 
     class NodeCondition : QgsExpression::Node

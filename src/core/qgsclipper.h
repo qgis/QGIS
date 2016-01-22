@@ -134,14 +134,14 @@ class CORE_EXPORT QgsClipper
                                        const QgsRectangle& clipRect, QPolygonF& pts );
 
     //low level clip methods for fast clip algorithm
-    static void clipStartTop( double& x0, double& y0, const double& x1, const double& y1, double yMax );
-    static void clipStartBottom( double& x0, double& y0, const double& x1, const double& y1, double yMin );
-    static void clipStartRight( double& x0, double& y0, const double& x1, const double& y1, double xMax );
-    static void clipStartLeft( double& x0, double& y0, const double& x1, const double& y1, double xMin );
-    static void clipEndTop( const double& x0, const double& y0, double& x1, double& y1, double yMax );
-    static void clipEndBottom( const double& x0, const double& y0, double& x1, double& y1, double yMin );
-    static void clipEndRight( const double& x0, const double& y0, double& x1, double& y1, double xMax );
-    static void clipEndLeft( const double& x0, const double& y0, double& x1, double& y1, double xMin );
+    static void clipStartTop( double& x0, double& y0, double x1, double y1, double yMax );
+    static void clipStartBottom( double& x0, double& y0, double x1, double y1, double yMin );
+    static void clipStartRight( double& x0, double& y0, double x1, double y1, double xMax );
+    static void clipStartLeft( double& x0, double& y0, double& x1, double& y1, double xMin );
+    static void clipEndTop( double x0, double y0, double& x1, double& y1, double yMax );
+    static void clipEndBottom( double x0, double y0, double& x1, double& y1, double yMin );
+    static void clipEndRight( double x0, double y0, double& x1, double& y1, double xMax );
+    static void clipEndLeft( double x0, double y0, double& x1, double& y1, double xMin );
 };
 
 // The inline functions
@@ -430,49 +430,49 @@ inline QPointF QgsClipper::intersectRect( const QPointF& pt1,
   return QPointF( x1 + r*( x2 - x1 ), y1 + r*( y2 - y1 ) );
 }
 
-inline void QgsClipper::clipStartTop( double& x0, double& y0, const double& x1, const double& y1, double yMax )
+inline void QgsClipper::clipStartTop( double& x0, double& y0, double x1, double y1, double yMax )
 {
   x0 += ( x1 - x0 )  * ( yMax - y0 ) / ( y1 - y0 );
   y0 = yMax;
 }
 
-inline void QgsClipper::clipStartBottom( double& x0, double& y0, const double& x1, const double& y1, double yMin )
+inline void QgsClipper::clipStartBottom( double& x0, double& y0, double x1, double y1, double yMin )
 {
   x0 += ( x1 - x0 ) * ( yMin - y0 ) / ( y1 - y0 );
   y0 = yMin;
 }
 
-inline void QgsClipper::clipStartRight( double& x0, double& y0, const double& x1, const double& y1, double xMax )
+inline void QgsClipper::clipStartRight( double& x0, double& y0, double x1, double y1, double xMax )
 {
   y0 += ( y1 - y0 ) * ( xMax - x0 ) / ( x1 - x0 );
   x0 = xMax;
 }
 
-inline void QgsClipper::clipStartLeft( double& x0, double& y0, const double& x1, const double& y1, double xMin )
+inline void QgsClipper::clipStartLeft( double& x0, double& y0, double& x1, double& y1, double xMin )
 {
   y0 += ( y1 - y0 ) * ( xMin - x0 ) / ( x1 - x0 );
   x0 = xMin;
 }
 
-inline void QgsClipper::clipEndTop( const double& x0, const double& y0, double& x1, double& y1, double yMax )
+inline void QgsClipper::clipEndTop( double x0, double y0, double& x1, double& y1, double yMax )
 {
   x1 += ( x1 - x0 ) * ( yMax - y1 ) / ( y1 - y0 );
   y1 = yMax;
 }
 
-inline void QgsClipper::clipEndBottom( const double& x0, const double& y0, double& x1, double& y1, double yMin )
+inline void QgsClipper::clipEndBottom( double x0, double y0, double& x1, double& y1, double yMin )
 {
   x1 += ( x1 - x0 ) * ( yMin - y1 ) / ( y1 - y0 );
   y1 = yMin;
 }
 
-inline void QgsClipper::clipEndRight( const double& x0, const double& y0, double& x1, double& y1, double xMax )
+inline void QgsClipper::clipEndRight( double x0, double y0, double& x1, double& y1, double xMax )
 {
   y1 += ( y1 - y0 ) * ( xMax - x1 ) / ( x1 - x0 );
   x1 = xMax;
 }
 
-inline void QgsClipper::clipEndLeft( const double& x0, const double& y0, double& x1, double& y1, double xMin )
+inline void QgsClipper::clipEndLeft( double x0, double y0, double& x1, double& y1, double xMin )
 {
   y1 += ( y1 - y0 ) * ( xMin - x1 ) / ( x1 - x0 );
   x1 = xMin;

@@ -72,6 +72,9 @@ class GUI_EXPORT QgsMapCanvasSnapper
     QgsMapCanvas* mMapCanvas;
     /** The object which does the snapping operations*/
     QgsSnapper* mSnapper;
+
+    QgsMapCanvasSnapper( const QgsMapCanvasSnapper& rh );
+    QgsMapCanvasSnapper& operator=( const QgsMapCanvasSnapper& rh );
 };
 
 #endif

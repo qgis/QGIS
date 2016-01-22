@@ -39,6 +39,47 @@ QgsRenderContext::QgsRenderContext()
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 }
 
+QgsRenderContext::QgsRenderContext( const QgsRenderContext& rh )
+    : mFlags( rh.mFlags )
+    , mPainter( rh.mPainter )
+    , mCoordTransform( rh.mCoordTransform )
+    , mExtent( rh.mExtent )
+    , mMapToPixel( rh.mMapToPixel )
+    , mRenderingStopped( rh.mRenderingStopped )
+    , mScaleFactor( rh.mScaleFactor )
+    , mRasterScaleFactor( rh.mRasterScaleFactor )
+    , mRendererScale( rh.mRendererScale )
+    , mLabelingEngine( rh.mLabelingEngine )
+    , mLabelingEngine2( rh.mLabelingEngine2 )
+    , mSelectionColor( rh.mSelectionColor )
+    , mVectorSimplifyMethod( rh.mVectorSimplifyMethod )
+    , mExpressionContext( rh.mExpressionContext )
+    , mGeometry( rh.mGeometry )
+    , mFeatureFilterProvider( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr )
+{
+}
+
+QgsRenderContext&QgsRenderContext::operator=( const QgsRenderContext & rh )
+{
+  mFlags = rh.mFlags;
+  mPainter = rh.mPainter;
+  mCoordTransform = rh.mCoordTransform;
+  mExtent = rh.mExtent;
+  mMapToPixel = rh.mMapToPixel;
+  mRenderingStopped = rh.mRenderingStopped;
+  mScaleFactor = rh.mScaleFactor;
+  mRasterScaleFactor = rh.mRasterScaleFactor;
+  mRendererScale = rh.mRendererScale;
+  mLabelingEngine = rh.mLabelingEngine;
+  mLabelingEngine2 = rh.mLabelingEngine2;
+  mSelectionColor = rh.mSelectionColor;
+  mVectorSimplifyMethod = rh.mVectorSimplifyMethod;
+  mExpressionContext = rh.mExpressionContext;
+  mGeometry = rh.mGeometry;
+  mFeatureFilterProvider = rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr;
+  return *this;
+}
+
 QgsRenderContext::~QgsRenderContext()
 {
   delete mFeatureFilterProvider;

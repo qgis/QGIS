@@ -42,4 +42,8 @@ class QgsMapCanvasSnapper
     int snapToBackgroundLayers( const QPoint& p, QList<QgsSnappingResult>& results /Out/, const QList<QgsPoint>& excludePoints = QList<QgsPoint>() );
 
     void setMapCanvas( QgsMapCanvas* canvas );
+
+  private:
+
+    QgsMapCanvasSnapper( const QgsMapCanvasSnapper& rh );
 };

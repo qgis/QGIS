@@ -400,6 +400,9 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     int mRenderHints;
     const QgsFeature* mFeature; //current feature
     const QgsFields* mFields;
+
+
+    QgsSymbolV2RenderContext( const QgsSymbolV2RenderContext& rh );
 };
 
 

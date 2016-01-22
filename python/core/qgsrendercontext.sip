@@ -8,6 +8,7 @@ class QgsRenderContext
 
   public:
     QgsRenderContext();
+    QgsRenderContext( const QgsRenderContext& rh );
     ~QgsRenderContext();
 
     //! Enumeration of flags that affect rendering operations

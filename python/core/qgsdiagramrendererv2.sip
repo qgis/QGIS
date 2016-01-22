@@ -24,6 +24,7 @@ struct QgsDiagramLayerSettings
     };
 
     QgsDiagramLayerSettings();
+    QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh );
 
     ~QgsDiagramLayerSettings();
 

@@ -175,6 +175,8 @@ class QgsPostgresResult
 
   private:
     PGresult *mRes;
+
+    QgsPostgresResult( const QgsPostgresResult& rh );
 };
 
 

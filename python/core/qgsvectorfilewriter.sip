@@ -261,4 +261,8 @@ class QgsVectorFileWriter
   protected:
     //! @note not available in python bindings
     // OGRGeometryH createEmptyGeometry( QGis::WkbType wkbType );
+
+  private:
+
+    QgsVectorFileWriter( const QgsVectorFileWriter& rh );
 };

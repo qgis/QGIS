@@ -157,6 +157,9 @@ class QgsSpatialQuery
     QgsVectorLayer * mLayerTarget;
     QgsVectorLayer * mLayerReference;
     QgsSpatialIndex  mIndexReference;
+
+    QgsSpatialQuery( const QgsSpatialQuery& rh );
+    QgsSpatialQuery& operator=( const QgsSpatialQuery& rh );
 };
 
 #endif // SPATIALQUERY_H

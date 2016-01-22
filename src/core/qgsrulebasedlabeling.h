@@ -261,6 +261,11 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
         // temporary
         QgsExpression* mFilter;
+
+      private:
+
+        Rule( const Rule& rh );
+        Rule& operator=( const Rule& rh );
     };
 
 

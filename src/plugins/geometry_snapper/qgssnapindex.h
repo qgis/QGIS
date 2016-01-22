@@ -101,6 +101,9 @@ class QgsSnapIndex
     void addSegment( const CoordIdx* idxFrom, const CoordIdx* idxTo );
     const Cell* getCell( int col, int row ) const;
     Cell &getCreateCell( int col, int row );
+
+    QgsSnapIndex( const QgsSnapIndex& rh );
+    QgsSnapIndex& operator=( const QgsSnapIndex& rh );
 };
 
 #endif // QGSSNAPINDEX_H

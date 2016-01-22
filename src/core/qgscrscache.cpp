@@ -25,6 +25,10 @@ QgsCoordinateTransformCache* QgsCoordinateTransformCache::instance()
   return &mInstance;
 }
 
+QgsCoordinateTransformCache::QgsCoordinateTransformCache()
+{
+}
+
 QgsCoordinateTransformCache::~QgsCoordinateTransformCache()
 {
   QHash< QPair< QString, QString >, QgsCoordinateTransform* >::const_iterator tIt = mTransforms.constBegin();

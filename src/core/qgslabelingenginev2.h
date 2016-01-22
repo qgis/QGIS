@@ -234,6 +234,11 @@ class CORE_EXPORT QgsLabelingEngineV2
 
     //! Resulting labeling layout
     QgsLabelingResults* mResults;
+
+  private:
+
+    QgsLabelingEngineV2( const QgsLabelingEngineV2& rh );
+    QgsLabelingEngineV2& operator=( const QgsLabelingEngineV2& rh );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabelingEngineV2::Flags )

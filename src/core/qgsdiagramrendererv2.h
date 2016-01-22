@@ -60,6 +60,8 @@ class CORE_EXPORT QgsDiagramLayerSettings
     };
 
     QgsDiagramLayerSettings();
+    QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh );
+    QgsDiagramLayerSettings& operator=( const QgsDiagramLayerSettings& rh );
 
     ~QgsDiagramLayerSettings();
 
@@ -86,6 +88,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+
 };
 
 //diagram settings for rendering

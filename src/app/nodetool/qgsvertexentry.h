@@ -51,6 +51,11 @@ class QgsVertexEntry
     void placeMarker();
 
     void setSelected( bool selected = true );
+
+  private:
+
+    QgsVertexEntry( const QgsVertexEntry& rh );
+    QgsVertexEntry& operator=( const QgsVertexEntry& rh );
 };
 
 #endif

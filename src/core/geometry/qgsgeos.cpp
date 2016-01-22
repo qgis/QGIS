@@ -95,6 +95,11 @@ class GEOSInit
     {
       finishGEOS_r( ctxt );
     }
+
+  private:
+
+    GEOSInit( const GEOSInit& rh );
+    GEOSInit& operator=( const GEOSInit& rh );
 };
 
 static GEOSInit geosinit;

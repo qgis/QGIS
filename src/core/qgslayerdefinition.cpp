@@ -61,7 +61,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
   {
     QVector<QDomNode> sortedLayerNodes = depSorter.sortedLayerNodes();
     QVector<QDomNode> clonedSorted;
-    foreach ( QDomNode node, sortedLayerNodes )
+    Q_FOREACH ( const QDomNode& node, sortedLayerNodes )
     {
       clonedSorted << node.cloneNode();
     }
@@ -236,9 +236,9 @@ void QgsLayerDefinition::DependencySorter::init( QDomDocument doc )
   }
 
   // check that all dependencies are present
-  foreach ( QString id, dependencies.keys() )
+  Q_FOREACH ( const QString& id, dependencies.keys() )
   {
-    foreach ( QString depId, dependencies[id] )
+    Q_FOREACH ( const QString& depId, dependencies[id] )
     {
       if ( !dependencies.contains( depId ) )
       {
@@ -265,7 +265,7 @@ void QgsLayerDefinition::DependencySorter::init( QDomDocument doc )
       QDomNode node = it->second;
       mHasCycle = true;
       bool resolved = true;
-      foreach ( QString dep, dependencies[idToSort] )
+      Q_FOREACH ( const QString& dep, dependencies[idToSort] )
       {
         if ( !sortedLayers.contains( dep ) )
         {

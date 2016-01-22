@@ -306,6 +306,11 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
       protected:
         void initFilter();
+
+      private:
+
+        Rule( const QgsRuleBasedRendererV2::Rule& rh );
+
     };
 
     /////

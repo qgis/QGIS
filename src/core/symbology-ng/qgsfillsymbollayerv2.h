@@ -290,8 +290,8 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     /** Applies the gradient to a brush*/
     void applyGradient( const QgsSymbolV2RenderContext& context, QBrush& brush, const QColor& color, const QColor& color2,
-                        const GradientColorType &gradientColorType, QgsVectorColorRampV2 *gradientRamp, const GradientType &gradientType,
-                        const GradientCoordinateMode &coordinateMode, const GradientSpread &gradientSpread,
+                        GradientColorType gradientColorType, QgsVectorColorRampV2 *gradientRamp, GradientType gradientType,
+                        GradientCoordinateMode coordinateMode, GradientSpread gradientSpread,
                         const QPointF &referencePoint1, const QPointF &referencePoint2, const double angle );
 
     /** Rotates a reference point by a specified angle around the point (0.5, 0.5)*/

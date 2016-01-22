@@ -78,6 +78,10 @@ class CORE_EXPORT QgsCptCityArchive
     // mapping of copyinginfo, key is fileName
     static QMap< QString, QMap< QString, QString > > mCopyingInfoMap;
 
+  private:
+
+    QgsCptCityArchive( const QgsCptCityArchive& rh );
+    QgsCptCityArchive& operator=( const QgsCptCityArchive& rh );
 };
 
 /** Base class for all items in the model */

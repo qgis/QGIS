@@ -845,7 +845,8 @@ class CORE_EXPORT QgsLabelingResults
     QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) const;
 
   private:
-    QgsLabelingResults( const QgsLabelingResults& ) {} // no copying allowed
+    QgsLabelingResults( const QgsLabelingResults& ); // no copying allowed
+    QgsLabelingResults& operator=( const QgsLabelingResults& rh );
 
     QgsLabelSearchTree* mLabelSearchTree;
 

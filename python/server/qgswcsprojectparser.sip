@@ -34,5 +34,8 @@ class QgsWCSProjectParser
     void describeCoverage( const QString& aCoveName, QDomElement& parentElement, QDomDocument& doc ) const;
     QList<QgsMapLayer*> mapLayerFromCoverage( const QString& cName, bool useCache = true ) const;
 
+  private:
+
+    QgsWCSProjectParser( const QgsWCSProjectParser& rh );
 };
 

@@ -64,4 +64,6 @@ class QgsPluginLayerRegistry
 
     /** Private since instance() creates it */
     QgsPluginLayerRegistry();
+    QgsPluginLayerRegistry( const QgsPluginLayerRegistry& rh );
+
 };

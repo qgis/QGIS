@@ -77,6 +77,11 @@ class CORE_EXPORT QgsSvgCacheEntry
     bool operator==( const QgsSvgCacheEntry& other ) const;
     /** Return memory usage in bytes*/
     int dataSize() const;
+
+  private:
+
+    QgsSvgCacheEntry( const QgsSvgCacheEntry& rh );
+    QgsSvgCacheEntry& operator=( const QgsSvgCacheEntry& rh );
 };
 
 /** A cache for images / pictures derived from svg files. This class supports parameter replacement in svg files

@@ -207,6 +207,10 @@ class QgsSpatialIndexData : public QSharedData
 
     /** R-tree containing spatial index */
     SpatialIndex::ISpatialIndex* mRTree;
+
+  private:
+
+    QgsSpatialIndexData& operator=( const QgsSpatialIndexData& rh );
 };
 
 // -------------------------------------------------------------------------

@@ -2596,7 +2596,7 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 void QgsWMSServer::applyAccessControlLayersFilters( const QStringList& layerList, QMap<QString, QString>& originalLayerFilters ) const
 {
-  foreach ( QString layerName, layerList )
+  Q_FOREACH ( const QString& layerName, layerList )
   {
     QList<QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayersByName( layerName );
     foreach ( QgsMapLayer* mapLayer, mapLayers )

@@ -377,6 +377,9 @@ class CORE_EXPORT QgsVectorFileWriter
     /** Adds attributes needed for classification*/
     void addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList );
     static QMap<QString, MetaData> sDriverMetadata;
+
+    QgsVectorFileWriter( const QgsVectorFileWriter& rh );
+    QgsVectorFileWriter& operator=( const QgsVectorFileWriter& rh );
 };
 
 #endif

@@ -26,10 +26,6 @@ class CORE_EXPORT QgsVectorSimplifyMethod
   public:
     //! construct a default object
     QgsVectorSimplifyMethod();
-    //! copy constructor
-    QgsVectorSimplifyMethod( const QgsVectorSimplifyMethod& rh );
-    //! assignment operator
-    QgsVectorSimplifyMethod& operator=( const QgsVectorSimplifyMethod& rh );
 
     /** Simplification flags for fast rendering of features */
     enum SimplifyHint

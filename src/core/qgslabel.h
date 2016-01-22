@@ -184,6 +184,9 @@ class CORE_EXPORT QgsLabel
     float mMaxScale;
     /** A flag that tells us whether to use the above vars to restrict the label's visibility */
     bool mScaleBasedVisibility;
+
+    QgsLabel( const QgsLabel& rh );
+    QgsLabel& operator=( const QgsLabel& rh );
 };
 
 #endif

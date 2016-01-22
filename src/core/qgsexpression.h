@@ -983,6 +983,10 @@ class CORE_EXPORT QgsExpression
         // protected:
         Node* mWhenExp;
         Node* mThenExp;
+
+      private:
+        WhenThen( const WhenThen& rh );
+        WhenThen& operator=( const WhenThen& rh );
     };
     typedef QList<WhenThen*> WhenThenList;
 

@@ -105,6 +105,9 @@ class APP_EXPORT QgsIdentifyPlotCurve
 
   private:
     QwtPlotCurve* mPlotCurve;
+
+    QgsIdentifyPlotCurve( const QgsIdentifyPlotCurve& rh );
+    QgsIdentifyPlotCurve& operator=( const QgsIdentifyPlotCurve& rh );
 };
 
 class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBase

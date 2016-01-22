@@ -54,7 +54,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     QString joinName = QString( "j%1" ).arg( ++joinIdx );
     QString prefix = join.prefix.isEmpty() ? layer->name() + "_" : join.prefix;
 
-    leftJoins << QString( "LEFT JOIN %1 AS %2 ON t.\"%3\"=%2.\"%5\"" ).arg( join.joinLayerId ).arg( joinName ).arg( join.joinFieldName ).arg( join.targetFieldName );
+    leftJoins << QString( "LEFT JOIN %1 AS %2 ON t.\"%3\"=%2.\"%5\"" ).arg( join.joinLayerId, joinName, join.joinFieldName, join.targetFieldName );
     if ( join.joinFieldNamesSubset() )
     {
       foreach ( const QString& f, *join.joinFieldNamesSubset() )

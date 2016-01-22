@@ -91,8 +91,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
 
         QgsDebugMsg( QString( "\n0:%1 %2x%3\n1:%4\n2:%5 %6x%7 (w:%8 h:%9)" )
                      .arg( extent.toString() ).arg( extent.width() ).arg( extent.height() )
-                     .arg( extent1.toString() )
-                     .arg( extent2.toString() ).arg( extent2.width() ).arg( extent2.height() )
+                     .arg( extent1.toString(), extent2.toString() ).arg( extent2.width() ).arg( extent2.height() )
                      .arg( fabs( 1.0 - extent2.width() / extent.width() ) )
                      .arg( fabs( 1.0 - extent2.height() / extent.height() ) )
                    );
@@ -117,7 +116,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
         QgsPoint ur = ct->transform( extent.xMaximum(), extent.yMaximum(),
                                      QgsCoordinateTransform::ReverseTransform );
 
-        QgsDebugMsg( QString( "in:%1 (ll:%2 ur:%3)" ).arg( extent.toString() ).arg( ll.toString() ).arg( ur.toString() ) );
+        QgsDebugMsg( QString( "in:%1 (ll:%2 ur:%3)" ).arg( extent.toString(), ll.toString(), ur.toString() ) );
 
         extent = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
 

@@ -48,6 +48,9 @@ class SERVER_EXPORT QgsWCSProjectParser
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     const QgsAccessControl* mAccessControl;
 #endif
+
+    QgsWCSProjectParser( const QgsWCSProjectParser& rh );
+    QgsWCSProjectParser& operator=( const QgsWCSProjectParser& rh );
 };
 
 #endif // QGSWCSPROJECTPARSER_H

@@ -45,6 +45,10 @@ class CORE_EXPORT QgsRenderContext
 {
   public:
     QgsRenderContext();
+
+    QgsRenderContext( const QgsRenderContext& rh );
+    QgsRenderContext& operator=( const QgsRenderContext& rh );
+
     ~QgsRenderContext();
 
     /** Enumeration of flags that affect rendering operations.
@@ -261,6 +265,7 @@ class CORE_EXPORT QgsRenderContext
 
     /** The feature filter provider */
     const QgsFeatureFilterProvider* mFeatureFilterProvider;
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRenderContext::Flags )

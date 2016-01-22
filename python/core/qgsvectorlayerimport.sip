@@ -76,4 +76,8 @@ class QProgressDialog;
 
     /** Create index */
     bool createSpatialIndex();
+
+  private:
+
+    QgsVectorLayerImport( const QgsVectorLayerImport& rh );
 };

@@ -21,5 +21,6 @@ class QgsDataItemProviderRegistry
 
   private:
     QgsDataItemProviderRegistry();
+    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry& rh );
 
 };

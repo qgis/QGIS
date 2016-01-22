@@ -366,6 +366,11 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         // temporary while rendering
         QSet<int> mSymbolNormZLevels;
         RuleList mActiveChildren;
+
+      private:
+
+        Rule( const Rule& rh );
+        Rule& operator=( const Rule& rh );
     };
 
     /////

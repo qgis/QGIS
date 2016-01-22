@@ -71,4 +71,9 @@ class QgsRasterCalcNode
     // bool calculate( QMap<QString, QgsRasterMatrix*>& rasterData, QgsRasterMatrix& result ) const /Deprecated/;
 
     static QgsRasterCalcNode* parseRasterCalcString( const QString& str, QString& parserErrorMsg ) /Factory/;
+
+  private:
+
+    QgsRasterCalcNode( const QgsRasterCalcNode& rh );
+
 };

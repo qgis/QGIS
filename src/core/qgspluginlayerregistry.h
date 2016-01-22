@@ -89,6 +89,8 @@ class CORE_EXPORT QgsPluginLayerRegistry
 
     /** Private since instance() creates it */
     QgsPluginLayerRegistry();
+    QgsPluginLayerRegistry( const QgsPluginLayerRegistry& rh );
+    QgsPluginLayerRegistry& operator=( const QgsPluginLayerRegistry& rh );
 
     /** Pointer to canonical Singleton object */
     static QgsPluginLayerRegistry* _instance;

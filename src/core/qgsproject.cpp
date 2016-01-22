@@ -684,7 +684,7 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
   // They need to refresh join caches and symbology infos after all layers are loaded
   QList< QPair< QgsVectorLayer*, QDomElement > > vLayerList;
   int i = 0;
-  foreach ( QDomNode node, sortedLayerNodes )
+  Q_FOREACH ( const QDomNode& node, sortedLayerNodes )
   {
     QDomElement element = node.toElement();
 

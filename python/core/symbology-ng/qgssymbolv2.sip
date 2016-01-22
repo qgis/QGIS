@@ -305,6 +305,10 @@ class QgsSymbolV2RenderContext
      * @param contextScope An expression scope for details about this symbol
      */
     void setExpressionContextScope( QgsExpressionContextScope* contextScope /Transfer/);
+
+  private:
+
+     QgsSymbolV2RenderContext( const QgsSymbolV2RenderContext& rh );
 };
 
 

@@ -17,4 +17,8 @@ class QgsGPSConnectionRegistry {
 
   protected:
     QgsGPSConnectionRegistry();
+
+  private:
+
+    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry& rh );
 };

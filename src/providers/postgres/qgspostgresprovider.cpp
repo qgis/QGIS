@@ -2524,7 +2524,7 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
     ids |= geometry_map.keys().toSet();
 
     // cycle through the features
-    Q_FOREACH ( const QgsFeatureId &fid, ids )
+    Q_FOREACH ( QgsFeatureId fid, ids )
     {
       // skip added features
       if ( FID_IS_NEW( fid ) )

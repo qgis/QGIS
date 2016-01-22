@@ -73,6 +73,10 @@ namespace pal
       double label_height;
       int char_num;
       CharacterInfo* char_info;
+    private:
+
+      LabelInfo( const LabelInfo& rh );
+      LabelInfo& operator=( const LabelInfo& rh );
   };
 
   class LabelPosition;

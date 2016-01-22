@@ -118,7 +118,7 @@ void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext&
   double baseX = position.x();
   double baseY = position.y() - h;
 
-  QList<QPointF> textPositions; //midpoints for text placement
+  QVector<QPointF> textPositions; //midpoints for text placement
   int nCategories = s.categoryAttributes.size();
   for ( int i = 0; i < nCategories; ++i )
   {

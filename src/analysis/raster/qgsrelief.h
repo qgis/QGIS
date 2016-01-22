@@ -116,6 +116,9 @@ class ANALYSIS_EXPORT QgsRelief
       @param b y value for x=0
      */
     bool calculateRegression( const QList< QPair < int, double > >& input, double& a, double& b );
+
+    QgsRelief( const QgsRelief& rh );
+    QgsRelief& operator=( const QgsRelief& rh );
 };
 
 #endif // QGSRELIEF_H

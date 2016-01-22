@@ -104,4 +104,5 @@ class QgsLabel
 
   private:
     QgsLabel (); // pretend that constructor is private for now
+    QgsLabel( const QgsLabel& rh );
 };

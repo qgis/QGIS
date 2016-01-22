@@ -36,6 +36,10 @@ class QgsCptCityArchive
     // items
     QVector< QgsCptCityDataItem* > rootItems() const;
     QVector< QgsCptCityDataItem* > selectionItems() const;
+
+  private:
+
+    QgsCptCityArchive( const QgsCptCityArchive& rh );
 };
 
 /** Base class for all items in the model */

@@ -111,6 +111,11 @@ class CORE_EXPORT QgsVectorLayerImport
 
     QgsFeatureList mFeatureBuffer;
     QProgressDialog *mProgress;
+
+  private:
+
+    QgsVectorLayerImport( const QgsVectorLayerImport& rh );
+    QgsVectorLayerImport& operator=( const QgsVectorLayerImport& rh );
 };
 
 #endif

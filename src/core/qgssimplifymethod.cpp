@@ -26,21 +26,6 @@ QgsSimplifyMethod::QgsSimplifyMethod()
 {
 }
 
-QgsSimplifyMethod::QgsSimplifyMethod( const QgsSimplifyMethod &rh )
-{
-  operator=( rh );
-}
-
-QgsSimplifyMethod& QgsSimplifyMethod::operator=( const QgsSimplifyMethod & rh )
-{
-  mMethodType = rh.mMethodType;
-  mTolerance = rh.mTolerance;
-  mThreshold = rh.mThreshold;
-  mForceLocalOptimization = rh.mForceLocalOptimization;
-
-  return *this;
-}
-
 void QgsSimplifyMethod::setMethodType( MethodType methodType )
 {
   mMethodType = methodType;

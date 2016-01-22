@@ -44,4 +44,8 @@ class QgsWFSProjectParser
     QSet<QString> wfstInsertLayers() const;
     QSet<QString> wfstDeleteLayers() const;
 
+  private:
+
+    QgsWFSProjectParser( const QgsWFSProjectParser& rh );
+
 };

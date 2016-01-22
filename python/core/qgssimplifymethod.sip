@@ -18,8 +18,6 @@ class QgsSimplifyMethod
 
     //! construct a default method
     QgsSimplifyMethod();
-    //! copy constructor
-    QgsSimplifyMethod( const QgsSimplifyMethod& rh );
 
     //! Sets the simplification type
     void setMethodType( MethodType methodType );
