@@ -36,13 +36,14 @@ from processing.core.parameters import ParameterNumber
 
 from processing.core.outputs import OutputRaster
 
-from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools import dataobjects
+from processing.tools.vector import ogrConnectionString
 
 
-class ClipByMask(OgrAlgorithm):
+class ClipByMask(GdalAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -114,7 +115,7 @@ class ClipByMask(OgrAlgorithm):
         mask = self.getParameterValue(self.MASK)
         maskLayer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.MASK))
-        ogrMask = self.ogrConnectionString(mask)[1:-1]
+        ogrMask = ogrConnectionString(mask)[1:-1]
         noData = unicode(self.getParameterValue(self.NO_DATA))
         addAlphaBand = self.getParameterValue(self.ALPHA_BAND)
         cropToCutline = self.getParameterValue(self.CROP_TO_CUTLINE)

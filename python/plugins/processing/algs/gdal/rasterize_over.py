@@ -32,11 +32,14 @@ from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputRaster
-from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools.vector import ogrConnectionString, ogrLayerName
 
-class rasterize_over(OgrAlgorithm):
+
+class rasterize_over(GdalAlgorithm):
 
     INPUT = 'INPUT'
     INPUT_RASTER = 'INPUT_RASTER'
@@ -56,16 +59,16 @@ class rasterize_over(OgrAlgorithm):
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT)
-        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
         inRasterLayer = self.getParameterValue(self.INPUT_RASTER)
-        ogrRasterLayer = self.ogrConnectionString(inRasterLayer)[1:-1]
+        ogrRasterLayer = ogrConnectionString(inRasterLayer)[1:-1]
 
         arguments = []
         arguments.append('-a')
         arguments.append(unicode(self.getParameterValue(self.FIELD)))
 
         arguments.append('-l')
-        arguments.append(self.ogrLayerName(inLayer))
+        arguments.append(ogrLayerName(inLayer))
         arguments.append(ogrLayer)
         arguments.append(ogrRasterLayer)
 

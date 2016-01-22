@@ -33,13 +33,14 @@ from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
-from processing.tools.system import isWindows
-
-from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools.system import isWindows
+from processing.tools.vector import ogrConnectionString, ogrLayerName
 
-class Ogr2OgrOneSideBuffer(OgrAlgorithm):
+
+class Ogr2OgrOneSideBuffer(GdalAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
@@ -83,8 +84,8 @@ class Ogr2OgrOneSideBuffer(OgrAlgorithm):
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
-        layername = "'" + self.ogrLayerName(inLayer) + "'"
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        layername = "'" + ogrLayerName(inLayer) + "'"
         operation = self.OPERATIONLIST[self.getParameterValue(self.OPERATION)]
         geometry = unicode(self.getParameterValue(self.GEOMETRY))
         distance = unicode(self.getParameterValue(self.RADIUS))
@@ -96,13 +97,13 @@ class Ogr2OgrOneSideBuffer(OgrAlgorithm):
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
-        output = self.ogrConnectionString(outFile)
+        output = ogrConnectionString(outFile)
         options = unicode(self.getParameterValue(self.OPTIONS))
 
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(self.ogrLayerName(inLayer))
+        arguments.append(ogrLayerName(inLayer))
         if dissolveall or field != 'None':
             if operation == 'Single Side Buffer':
                 arguments.append('-dialect sqlite -sql "SELECT ST_Union(ST_SingleSidedBuffer(')

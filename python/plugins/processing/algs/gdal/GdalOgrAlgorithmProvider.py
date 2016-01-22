@@ -30,8 +30,6 @@ from PyQt4.QtGui import QIcon
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingLog import ProcessingLog
-from processing.script.WrongScriptException import WrongScriptException
-from processing.algs.gdal.GdalAlgorithm import GdalScriptAlgorithm
 from GdalUtils import GdalUtils
 
 from nearblack import nearblack
@@ -95,26 +93,13 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
     """This provider incorporates GDAL-based algorithms into the
     Processing framework.
 
-    Algorithms have been implemented using two different mechanisms,
-    which should serve as an example of different ways of extending
-    the processing capabilities of QGIS:
-      1. when a python script exist for a given process, it has been
-         adapted as a Processing python script and loaded using the
-         ScriptAlgorithm class. This algorithms call GDAL using its
-         Python bindings.
-      2. Other algorithms are called directly using the command line
-         interface. These have been implemented individually extending
-         the GeoAlgorithm class.
+    Algorithms are called directly using the command line interface.
+    They implemented individually extending GeoAlgorithm class.
     """
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.createAlgsList()
-
-    def scriptsFolder(self):
-        """The folder where script algorithms are stored.
-        """
-        return os.path.dirname(__file__) + '/scripts'
 
     def getDescription(self):
         return self.tr('GDAL/OGR')
@@ -146,19 +131,6 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
                               Ogr2OgrBuffer(), Ogr2OgrDissolve(), Ogr2OgrOneSideBuffer(),
                               Ogr2OgrTableToPostGisList(), OgrSql(),
                               ]
-
-        # And then we add those that are created as python scripts
-        folder = self.scriptsFolder()
-        if os.path.exists(folder):
-            for descriptionFile in os.listdir(folder):
-                if descriptionFile.endswith('py'):
-                    try:
-                        fullpath = os.path.join(self.scriptsFolder(),
-                                                descriptionFile)
-                        alg = GdalScriptAlgorithm(fullpath)
-                        self.preloadedAlgs.append(alg)
-                    except WrongScriptException as e:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
 
     def getSupportedOutputRasterLayerExtensions(self):
         return GdalUtils.getSupportedRasterExtensions()

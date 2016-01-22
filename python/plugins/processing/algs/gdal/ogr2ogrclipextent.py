@@ -30,13 +30,14 @@ from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterExtent
 from processing.core.outputs import OutputVector
 
-from processing.tools.system import isWindows
-
-from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools.system import isWindows
+from processing.tools.vector import ogrConnectionString, ogrLayerName
 
-class Ogr2OgrClipExtent(OgrAlgorithm):
+
+class Ogr2OgrClipExtent(GdalAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
@@ -58,13 +59,13 @@ class Ogr2OgrClipExtent(OgrAlgorithm):
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
         clipExtent = self.getParameterValue(self.CLIP_EXTENT)
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
-        output = self.ogrConnectionString(outFile)
+        output = ogrConnectionString(outFile)
         options = unicode(self.getParameterValue(self.OPTIONS))
 
         arguments = []
@@ -81,7 +82,7 @@ class Ogr2OgrClipExtent(OgrAlgorithm):
 
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(self.ogrLayerName(inLayer))
+        arguments.append(ogrLayerName(inLayer))
 
         commands = []
         if isWindows():

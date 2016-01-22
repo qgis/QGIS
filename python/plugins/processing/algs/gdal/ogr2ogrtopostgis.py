@@ -33,13 +33,14 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterTableField
 
-from processing.tools.system import isWindows
-
-from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools.system import isWindows
+from processing.tools.vector import ogrConnectionString, ogrLayerName
 
-class Ogr2OgrToPostGis(OgrAlgorithm):
+
+class Ogr2OgrToPostGis(GdalAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     GTYPE = 'GTYPE'
@@ -151,7 +152,7 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
         ssrs = unicode(self.getParameterValue(self.S_SRS))
         tsrs = unicode(self.getParameterValue(self.T_SRS))
         asrs = unicode(self.getParameterValue(self.A_SRS))
@@ -206,7 +207,7 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
         arguments.append('user=' + user + '"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
-        arguments.append(self.ogrLayerName(inLayer))
+        arguments.append(ogrLayerName(inLayer))
         if index:
             arguments.append(indexstring)
         if launder:

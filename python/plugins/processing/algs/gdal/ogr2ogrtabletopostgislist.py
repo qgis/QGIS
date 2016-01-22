@@ -36,13 +36,14 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterTableField
 
-from processing.tools.system import isWindows
-
-from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools.system import isWindows
+from processing.tools.vector import ogrConnectionString, ogrLayerName
 
-class Ogr2OgrTableToPostGisList(OgrAlgorithm):
+
+class Ogr2OgrTableToPostGisList(GdalAlgorithm):
 
     DATABASE = 'DATABASE'
     INPUT_LAYER = 'INPUT_LAYER'
@@ -121,7 +122,7 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
         port = settings.value(mySettings + '/port')
         password = settings.value(mySettings + '/password')
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
         schema = unicode(self.getParameterValue(self.SCHEMA))
         table = unicode(self.getParameterValue(self.TABLE))
         pk = unicode(self.getParameterValue(self.PK))
@@ -159,7 +160,7 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
         arguments.append('user=' + user + '"')
         arguments.append(ogrLayer)
         arguments.append('-nlt NONE')
-        arguments.append(self.ogrLayerName(inLayer))
+        arguments.append(ogrLayerName(inLayer))
         if launder:
             arguments.append(launderstring)
         if append:
