@@ -23,7 +23,7 @@ email                : brush.tyler@gmail.com
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import PostGisDBConnector
 
-from PyQt4.QtCore import QSettings, Qt, QRegExp
+from PyQt4.QtCore import QSettings, Qt, QRegExp, SIGNAL
 from PyQt4.QtGui import QIcon, QAction, QApplication, QMessageBox
 from qgis.gui import QgsMessageBar
 
@@ -226,6 +226,16 @@ class PGTable(Table):
         from .data_model import PGTableDataModel
 
         return PGTableDataModel(self, parent)
+
+    def delete(self):
+        self.aboutToChange()
+        if self.isView:
+            ret = self.database().connector.deleteView((self.schemaName(), self.name), self._relationType == 'm')
+        else:
+            ret = self.database().connector.deleteTable((self.schemaName(), self.name))
+        if ret is not False:
+            self.emit(SIGNAL('deleted'))
+        return ret
 
 
 class PGVectorTable(PGTable, VectorTable):
