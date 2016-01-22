@@ -44,8 +44,9 @@ class PGTableInfo(TableInfo):
 
         tbl = [
             (QApplication.translate("DBManagerPlugin", "Relation type:"),
-             QApplication.translate("DBManagerPlugin", "View") if self.table.isView else QApplication.translate(
-                 "DBManagerPlugin", "Table")),
+             QApplication.translate("DBManagerPlugin", "View") if self.table._relationType == 'v' else
+             QApplication.translate("DBManagerPlugin", "Materialized view") if self.table._relationType == 'm' else
+             QApplication.translate("DBManagerPlugin", "Table")),
             (QApplication.translate("DBManagerPlugin", "Owner:"), self.table.owner)
         ]
         if self.table.comment:
