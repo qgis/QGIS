@@ -794,8 +794,8 @@ class PostGisDBConnector(DBConnector):
     def createSpatialView(self, view, query):
         self.createView(view, query)
 
-    def deleteView(self, view):
-        sql = u"DROP VIEW %s" % self.quoteId(view)
+    def deleteView(self, view, isMaterialized=False):
+        sql = u"DROP %s VIEW %s" % ('MATERIALIZED' if isMaterialized else '', self.quoteId(view))
         self._execute_and_commit(sql)
 
     def renameView(self, view, new_name):
