@@ -2596,12 +2596,12 @@ bool QgsOgrProvider::syncToDisc()
 
   mShapefileMayBeCorrupted = false;
 
+  QgsOgrConnPool::refS( mFilePath );
   if ( shapeIndex )
   {
     return createSpatialIndex();
   }
 
-  QgsOgrConnPool::refS( mFilePath );
   return true;
 }
 
