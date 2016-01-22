@@ -827,6 +827,12 @@ class PostGisDBConnector(DBConnector):
         self._execute(None, sql)
         self._commit()
 
+    def runRefreshMaterializedView(self, table):
+        """ run refresh materialized view on a table """
+        sql = u"REFRESH MATERIALIZED VIEW %s" % self.quoteId(table)
+        self._execute(None, sql)
+        self._commit()
+
     def addTableColumn(self, table, field_def):
         """ add a column to table """
         sql = u"ALTER TABLE %s ADD %s" % (self.quoteId(table), field_def)
