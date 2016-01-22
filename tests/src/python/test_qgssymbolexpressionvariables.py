@@ -113,7 +113,7 @@ class TestQgsSymbolExpressionVariables(TestCase):
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlName('expected_symbol_color_variable')
-        result = renderchecker.runTest('symbol_color_variable')
+        result = renderchecker.runTest('symbol_color_variable', 50)
 
         self.assertTrue(result)
 
