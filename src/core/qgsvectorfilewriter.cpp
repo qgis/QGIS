@@ -687,6 +687,9 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          true  // Allow None
                        ) );
 
+  // there does not seem to be a reason to provide this option to the user again
+  // as we set encoding for shapefiles based on "fileEncoding" parameter passed to the writer
+#if 0
   layerOptions.insert( "ENCODING", new SetOption(
                          QObject::tr( "set the encoding value in the DBF file. "
                                       "The default value is LDID/87. It is not clear "
@@ -695,6 +698,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          << "LDID/87",
                          "LDID/87" // Default value
                        ) );
+#endif
 
   layerOptions.insert( "RESIZE", new BoolOption(
                          QObject::tr( "Set to YES to resize fields to their optimal size." ),
