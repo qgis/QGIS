@@ -72,6 +72,19 @@ void QgsEditFormConfig::setWidgetConfig( const QString& widgetName, const QgsEdi
   mWidgetConfigs[widgetName] = config;
 }
 
+bool QgsEditFormConfig::removeWidgetConfig( const QString &widgetName )
+{
+  return mWidgetConfigs.remove( widgetName ) != 0;
+}
+
+bool QgsEditFormConfig::removeWidgetConfig( int fieldIdx )
+{
+  if ( fieldIdx < 0 || fieldIdx >= mFields.count() )
+    return false;
+
+  return mWidgetConfigs.remove( mFields[fieldIdx].name() );
+}
+
 void QgsEditFormConfig::setUiForm( const QString& ui )
 {
   if ( ui.isEmpty() || ui.isNull() )

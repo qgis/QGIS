@@ -464,6 +464,24 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     QgsEditorWidgetConfig widgetConfig( const QString& widgetName ) const;
 
     /**
+     * Remove the configuration for the editor widget used to represent the field at the given index
+     *
+     * @param fieldIdx  The index of the field
+     *
+     * @return true if successful, false if the field does not exist
+     */
+    bool removeWidgetConfig( int fieldIdx );
+
+    /**
+     * Remove the configuration for the editor widget used to represent the field with the given name
+     *
+     * @param widgetName The name of the widget. This can be a field name or the name of an additional widget.
+     *
+     * @return true if successful, false if the field does not exist
+     */
+    bool removeWidgetConfig( const QString& widgetName );
+
+    /**
      * This returns true if the field is manually set to read only or if the field
      * does not support editing like joins or virtual fields.
      */
