@@ -75,7 +75,8 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
   mTableView->setModel( mFilterModel );
   mFeatureList->setModel( mFeatureListModel );
   mAttributeForm = new QgsAttributeForm( layer, QgsFeature(), mEditorContext );
-  mAttributeEditorScrollArea->setLayout( new QGridLayout() );
+  if ( !mAttributeEditorScrollArea->layout() )
+    mAttributeEditorScrollArea->setLayout( new QGridLayout() );
   mAttributeEditorScrollArea->layout()->addWidget( mAttributeForm );
   mAttributeEditorScrollArea->setWidget( mAttributeForm );
 
