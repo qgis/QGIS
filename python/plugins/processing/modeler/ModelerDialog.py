@@ -53,7 +53,6 @@ WIDGET, BASE = uic.loadUiType(
 
 class ModelerDialog(BASE, WIDGET):
 
-    USE_CATEGORIES = '/Processing/UseSimplifiedInterface'
     CANVAS_SIZE = 4000
 
     def __init__(self, alg=None):
@@ -519,13 +518,9 @@ class ModelerDialog(BASE, WIDGET):
 class TreeAlgorithmItem(QTreeWidgetItem):
 
     def __init__(self, alg):
-        settings = QSettings()
-        useCategories = settings.value(ModelerDialog.USE_CATEGORIES, type=bool)
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.getIcon()
-        if useCategories:
-            icon = GeoAlgorithm.getDefaultIcon()
         name = AlgorithmClassification.getDisplayName(alg)
         self.setIcon(0, icon)
         self.setToolTip(0, name)
