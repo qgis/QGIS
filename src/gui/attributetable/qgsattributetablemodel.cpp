@@ -370,8 +370,6 @@ void QgsAttributeTableModel::loadLayer()
   {
     ++i;
 
-    QgsDebugMsg( QString( "Next feature %1" ).arg( i ) );
-
     if ( t.elapsed() > 1000 )
     {
       bool cancel = false;
@@ -488,7 +486,6 @@ int QgsAttributeTableModel::fieldCol( int idx ) const
 
 int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
 {
-  QgsDebugMsg( QString( "Row Count %1" ).arg( mRowIdMap.size() ) );
   Q_UNUSED( parent );
   return mRowIdMap.size();
 }
