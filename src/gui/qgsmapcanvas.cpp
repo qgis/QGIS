@@ -437,6 +437,8 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       // Add check if vector layer when connecting to selectionChanged slot
       // Ticket #811 - racicot
       QgsMapLayer *currentLayer = layer( i );
+      if ( !currentLayer )
+        continue;
       connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
       connect( currentLayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerCrsChange() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
