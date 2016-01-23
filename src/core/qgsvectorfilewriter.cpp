@@ -683,7 +683,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          << "ARCZ"
                          << "POLYGONZ"
                          << "MULTIPOINTZ",
-                         "NULL" // Default value
+                         QString(), // Default value
+                         true  // Allow None
                        ) );
 
   layerOptions.insert( "ENCODING", new SetOption(

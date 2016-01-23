@@ -395,21 +395,24 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
         case QgsVectorFileWriter::Int:
         {
           QSpinBox* sb = mLayerOptionsGroupBox->findChild<QSpinBox*>( it.key() );
-          options << QString( "%1=%2" ).arg( it.key() ).arg( sb->value() );
+          if ( sb )
+            options << QString( "%1=%2" ).arg( it.key() ).arg( sb->value() );
           break;
         }
 
         case QgsVectorFileWriter::Set:
         {
           QComboBox* cb = mLayerOptionsGroupBox->findChild<QComboBox*>( it.key() );
-          options << QString( "%1=%2" ).arg( it.key(), cb->currentText() );
+          if ( cb && !cb->itemData( cb->currentIndex() ).isNull() )
+            options << QString( "%1=%2" ).arg( it.key(), cb->currentText() );
           break;
         }
 
         case QgsVectorFileWriter::String:
         {
           QLineEdit* le = mLayerOptionsGroupBox->findChild<QLineEdit*>( it.key() );
-          options << QString( "%1=%2" ).arg( it.key(), le->text() );
+          if ( le )
+            options << QString( "%1=%2" ).arg( it.key(), le->text() );
           break;
         }
 
