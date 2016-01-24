@@ -851,7 +851,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   placeDirectionSymbol = static_cast< DirectionSymbols >( layer->customProperty( "labeling/placeDirectionSymbol", QVariant( SymbolLeftRight ) ).toUInt() );
   formatNumbers = layer->customProperty( "labeling/formatNumbers" ).toBool();
   decimals = layer->customProperty( "labeling/decimals" ).toInt();
-  plusSign = layer->customProperty( "labeling/plussign" ).toInt();
+  plusSign = layer->customProperty( "labeling/plussign" ).toBool();
 
   // text buffer
   double bufSize = layer->customProperty( "labeling/bufferSize", QVariant( 0.0 ) ).toDouble();
