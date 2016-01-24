@@ -217,11 +217,11 @@ class ModelerDialog(BASE, WIDGET):
                 QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
             if ret == QMessageBox.Yes:
-                evt.accept()
+                super(ModelerDialog, self).closeEvent(evt)
             else:
                 evt.ignore()
         else:
-            evt.accept()
+            super(ModelerDialog, self).closeEvent(evt)
 
     def editHelp(self):
         if self.alg.provider is None:
