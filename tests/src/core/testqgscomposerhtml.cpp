@@ -19,7 +19,7 @@
 #include "qgscomposerhtml.h"
 #include "qgscomposerframe.h"
 #include "qgscomposition.h"
-#include "qgscompositionchecker.h"
+#include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
 #include <QObject>
 #include <QtTest/QtTest>
