@@ -65,7 +65,7 @@ warnings.showwarning = showWarning
 
 def showException(type, value, tb, msg, messagebar=False):
     if msg is None:
-        msg = QCoreApplication.translate('Python', 'An error has occured while executing Python code:')
+        msg = QCoreApplication.translate('Python', 'An error has occurred while executing Python code:')
 
     logmessage = ''
     for s in traceback.format_exception(type, value, tb):
@@ -117,7 +117,7 @@ def open_stack_dialog(type, value, tb, msg, pop_error=True):
         iface.messageBar().popWidget()
 
     if msg is None:
-        msg = QCoreApplication.translate('Python', 'An error has occured while executing Python code:')
+        msg = QCoreApplication.translate('Python', 'An error has occurred while executing Python code:')
 
     # TODO Move this to a template HTML file
     txt = u'''<font color="red"><b>{msg}</b></font>

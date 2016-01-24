@@ -61,7 +61,7 @@ simplify:simplifying
 speed-up:speeding up
 split:splitting
 store:storing
-surpress:surpressing
+suppress:suppressing
 use:using
 write:writing
 you to show:showing

@@ -947,9 +947,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Print the current map view frame
     void newPrintComposer();
     void showComposerManager();
-    //! Add all loaded layers into the overview - overides qgisappbase method
+    //! Add all loaded layers into the overview - overrides qgisappbase method
     void addAllToOverview();
-    //! Remove all loaded layers from the overview - overides qgisappbase method
+    //! Remove all loaded layers from the overview - overrides qgisappbase method
     void removeAllFromOverview();
     //reimplements method from base (gui) class
     void hideAllLayers();

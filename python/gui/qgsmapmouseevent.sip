@@ -44,7 +44,7 @@ class QgsMapMouseEvent : QMouseEvent
     /**
      * Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
      *
-     * @param mapCanvas The map canvas on which the event occured
+     * @param mapCanvas The map canvas on which the event occurred
      * @param event     The original mouse event
      */
     QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QMouseEvent* event );

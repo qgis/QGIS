@@ -239,7 +239,7 @@ bool QgsContrastEnhancement::isValueInDisplayableRange( double theValue )
     Set the contrast enhancement algorithm. The second parameter is optional and is for performace improvements. If you know you are immediately going to set the Minimum or Maximum value, you can elect to not generate the lookup tale. By default it will be generated.
 
     @param theAlgorithm The new contrast enhancement algorithm
-    @param generateTable Flag to overide automatic look up table generation
+    @param generateTable Flag to override automatic look up table generation
 */
 void QgsContrastEnhancement::setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm theAlgorithm, bool generateTable )
 {
@@ -297,7 +297,7 @@ void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancem
     Set the maximum value for the contrast enhancement. The second parameter is option an is for performace improvements. If you know you are immediately going to set the Minimum value or the contrast enhancement algorithm, you can elect to not generate the lookup tale. By default it will be generated.
 
     @param theValue The new maximum value for the band
-    @param generateTable Flag to overide automatic look up table generation
+    @param generateTable Flag to override automatic look up table generation
 */
 void QgsContrastEnhancement::setMaximumValue( double theValue, bool generateTable )
 {
@@ -329,7 +329,7 @@ void QgsContrastEnhancement::setMaximumValue( double theValue, bool generateTabl
     Set the maximum value for the contrast enhancement. The second parameter is option an is for performace improvements. If you know you are immediately going to set the Maximum value or the contrast enhancement algorithm, you can elect to not generate the lookup tale. By default it will be generated.
 
     @param theValue The new minimum value for the band
-    @param generateTable Flag to overide automatic look up table generation
+    @param generateTable Flag to override automatic look up table generation
 */
 void QgsContrastEnhancement::setMinimumValue( double theValue, bool generateTable )
 {

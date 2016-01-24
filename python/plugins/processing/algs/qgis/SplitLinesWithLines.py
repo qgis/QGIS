@@ -109,7 +109,7 @@ class SplitLinesWithLines(GeoAlgorithm):
 
                                 # splitGeometry: If there are several intersections
                                 # between geometry and splitLine, only the first one is considered.
-                                if result == 0:  # split occured
+                                if result == 0:  # split occurred
 
                                     if inPoints == vector.extractPoints(inGeom):
                                         # bug in splitGeometry: sometimes it returns 0 but

@@ -23,7 +23,7 @@ struct QgsSnappingResult
   int afterVertexNr;
   /** Index of the snapped geometry*/
   qint64 snappedAtGeometry;
-  /** Layer where the snap occured*/
+  /** Layer where the snap occurred*/
   const QgsVectorLayer* layer;
 };
 

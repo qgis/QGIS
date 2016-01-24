@@ -229,7 +229,7 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
     QMenu* mMenu;
     QgsColorSwatchGrid* mColorSwatchGrid;
 
-    //used to supress recursion with hover events
+    //used to suppress recursion with hover events
     bool mSuppressRecurse;
     bool mDismissOnColorSelection;
 

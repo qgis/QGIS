@@ -235,7 +235,7 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
     QMenu* mMenu;
     QgsColorWidget* mColorWidget;
 
-    //used to supress recursion with hover events
+    //used to suppress recursion with hover events
     bool mSuppressRecurse;
 
     bool mDismissOnColorSelection;
