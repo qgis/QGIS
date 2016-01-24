@@ -34,17 +34,17 @@
       <string>Advanced Configuration</string>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
-      <item row="1" column="1">
-       <widget class="QgsColorButtonV2" name="mRoofColorButton">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>Roof Color</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsColorButtonV2" name="mRoofColorButton">
+        <property name="text">
+         <string>...</string>
         </property>
        </widget>
       </item>
@@ -59,6 +59,16 @@
        <widget class="QgsColorButtonV2" name="mWallColorButton">
         <property name="text">
          <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="mWallExpositionShading">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Walls will have a different color based on their aspect to make them appear to differently reflect the solar radiation.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If this option is enabled, make sure that &lt;span style=&quot; font-style:italic;&quot;&gt;simplification &lt;/span&gt;is disabled on the rendering tab or some colors may be wrong at small scales.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Shade walls based on aspect</string>
         </property>
        </widget>
       </item>
@@ -96,13 +106,6 @@
           </widget>
          </item>
         </layout>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QCheckBox" name="mWallExpositionShading">
-        <property name="text">
-         <string>Shade walls based on exposition</string>
-        </property>
        </widget>
       </item>
      </layout>
