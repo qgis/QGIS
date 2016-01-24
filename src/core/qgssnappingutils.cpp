@@ -214,7 +214,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
 
   if ( mSnapToMapMode == SnapCurrentLayer )
   {
-    if ( !mCurrentLayer )
+    if ( !mCurrentLayer || mDefaultType == 0 )
       return QgsPointLocator::Match();
 
     prepareIndex( QList<QgsVectorLayer*>() << mCurrentLayer );

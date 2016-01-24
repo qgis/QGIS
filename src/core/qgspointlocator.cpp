@@ -642,6 +642,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 
   QgsFeatureRequest request;
   request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setLimit( maxFeaturesToIndex );
   if ( mExtent )
   {
     QgsRectangle rect = *mExtent;
