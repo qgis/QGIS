@@ -71,6 +71,12 @@ class CORE_EXPORT QgsMultiRenderChecker
     void setRenderedImage( const QString& renderedImagePath ) { mRenderedImage = renderedImagePath; }
 
     /**
+     * Returns the path to the rendered image.
+     * @note added in QGIS 2.14
+     */
+    QString renderedImage() const { return mRenderedImage; }
+
+    /**
      * Set the map settings to use to render the image
      *
      * @param mapSettings The map settings
