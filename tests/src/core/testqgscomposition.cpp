@@ -23,7 +23,7 @@
 #include "qgscomposerhtml.h"
 #include "qgscomposerframe.h"
 #include "qgsmapsettings.h"
-#include "qgscompositionchecker.h"
+#include "qgsmultirenderchecker.h"
 #include "qgsfillsymbollayerv2.h"
 
 #include <QObject>

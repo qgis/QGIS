@@ -17,7 +17,7 @@
 
 #include "qgscomposerobject.h"
 #include "qgscomposition.h"
-#include "qgscompositionchecker.h"
+#include "qgsmultirenderchecker.h"
 #include "qgsdatadefined.h"
 #include "qgsexpression.h"
 #include "qgsapplication.h"

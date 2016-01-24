@@ -322,6 +322,7 @@ SET(ENABLE_MODELTEST FALSE CACHE BOOL "Enable QT ModelTest (not for production)"
 
 IF (ENABLE_TESTS)
   SET( QT_USE_QTTEST  TRUE )
+  ADD_DEFINITIONS(-DENABLE_TESTS)
   ENABLE_TESTING()
   # Adds some testing specific build targets e.g. make Experimental
   INCLUDE(Dart)
