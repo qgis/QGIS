@@ -523,9 +523,9 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info* indexInfo )
           break;
 #ifdef SQLITE_INDEX_CONSTRAINT_LIKE
         case SQLITE_INDEX_CONSTRAINT_LIKE:
-#endif
           expr += " LIKE ";
           break;
+#endif
         default:
           break;
       }

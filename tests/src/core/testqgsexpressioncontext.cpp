@@ -295,7 +295,7 @@ void TestQgsExpressionContext::contextStack()
   QVERIFY( !context.isReadOnly( "test" ) );
 
   // Check scopes can be popped
-  context.popScope();
+  delete context.popScope();
   QCOMPARE( scopes.length(), 2 );
   QCOMPARE( scopes.at( 0 ), scope1 );
 }

@@ -281,7 +281,8 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
   request.setSubsetOfAttributes( attrNames, mFields );
   QgsFeatureIterator fit = mSource->getFeatures( request );
 
-  QgsExpressionContextScope* symbolScope = nullptr;
+  QgsExpressionContextScope* symbolScope = new QgsExpressionContextScope();
+  ctx.expressionContext().appendScope( symbolScope );
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
@@ -297,8 +298,6 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
       if ( !symbols.isEmpty() )
       {
         symbolScope = QgsExpressionContextUtils::updateSymbolScope( symbols.at( 0 ), symbolScope );
-        if ( !ctx.expressionContext().scopes().contains( symbolScope ) )
-          ctx.expressionContext().appendScope( symbolScope );
       }
     }
     ctx.expressionContext().setFeature( fet );
@@ -306,7 +305,7 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
   }
 
   if ( ctx.expressionContext().lastScope() == symbolScope )
-    ctx.expressionContext().popScope();
+    delete ctx.expressionContext().popScope();
 
   if ( mRenderer )
     mRenderer->stopRender( ctx );

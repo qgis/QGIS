@@ -286,7 +286,7 @@ void QgsVectorLayerRenderer::setGeometryCachePointer( QgsGeometryCache* cache )
 
 void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
 {
-  QgsExpressionContextScope* symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr );
+  QgsExpressionContextScope* symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
   mContext.expressionContext().appendScope( symbolScope );
 
   QgsFeature fet;
@@ -366,7 +366,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
     }
   }
 
-  mContext.expressionContext().popScope();
+  delete mContext.expressionContext().popScope();
 
   stopRendererV2( nullptr );
 }
@@ -384,7 +384,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     selRenderer->startRender( mContext, mFields );
   }
 
-  QgsExpressionContextScope* symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr );
+  QgsExpressionContextScope* symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
   mContext.expressionContext().appendScope( symbolScope );
 
   // 1. fetch features
@@ -398,7 +398,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     {
       qDebug( "rendering stop!" );
       stopRendererV2( selRenderer );
-      mContext.expressionContext().popScope();
+      delete mContext.expressionContext().popScope();
       return;
     }
 
@@ -460,7 +460,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     }
   }
 
-  mContext.expressionContext().popScope();
+  delete mContext.expressionContext().popScope();
 
   // find out the order
   QgsSymbolV2LevelOrder levels;

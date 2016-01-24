@@ -345,9 +345,9 @@ class QgsExpressionContext
     void appendScope( QgsExpressionContextScope* scope /Transfer/ );
 
     /**
-     * Remove the last scope from the expression context.
+     * Removes the last scope from the expression context and return it.
      */
-    void popScope();
+    QgsExpressionContextScope* popScope();
 
     /** Appends a scope to the end of the context. This scope will override
      * any matching variables or functions provided by existing scopes within the
@@ -491,14 +491,12 @@ class QgsExpressionContextUtils
     static QgsExpressionContextScope* mapSettingsScope( const QgsMapSettings &mapSettings ) /Factory/;
 
     /**
-     * Updates a symbol scope related to a QgsSymbolV2 to an expression context. If there is no existing scope
-     * provided, a new one will be generated and returned.
+     * Updates a symbol scope related to a QgsSymbolV2 to an expression context.
      * @param symbol symbol to extract properties from
-     * @param symbolScope optional pointer to an existing scope to update
+     * @param symbolScope pointer to an existing scope to update
      * @note added in QGIS 2.14
      */
-    static QgsExpressionContextScope* updateSymbolScope( const QgsSymbolV2* symbol, QgsExpressionContextScope* symbolScope = nullptr ) /Factory/;
-
+    static QgsExpressionContextScope* updateSymbolScope( const QgsSymbolV2* symbol, QgsExpressionContextScope* symbolScope = nullptr );
 
     /** Creates a new scope which contains variables and functions relating to a QgsComposition.
      * For instance, number of pages and page sizes.

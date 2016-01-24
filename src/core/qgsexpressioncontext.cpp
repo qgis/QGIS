@@ -384,10 +384,12 @@ void QgsExpressionContext::appendScope( QgsExpressionContextScope* scope )
   mStack.append( scope );
 }
 
-void QgsExpressionContext::popScope()
+QgsExpressionContextScope* QgsExpressionContext::popScope()
 {
   if ( !mStack.isEmpty() )
-    mStack.pop_back();
+    return mStack.takeLast();
+
+  return nullptr;
 }
 
 QgsExpressionContext& QgsExpressionContext::operator<<( QgsExpressionContextScope* scope )
@@ -721,7 +723,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::mapSettingsScope( const Qg
 QgsExpressionContextScope* QgsExpressionContextUtils::updateSymbolScope( const QgsSymbolV2* symbol, QgsExpressionContextScope* symbolScope )
 {
   if ( !symbolScope )
-    symbolScope = new QgsExpressionContextScope( QObject::tr( "Symbol Scope" ) );
+    return nullptr;
 
   symbolScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_SYMBOL_COLOR, symbol ? symbol->color() : QColor(), true ) );
 

@@ -441,7 +441,7 @@ void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsFields* field
 
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, fields, mapUnitScale() );
 
-  QgsExpressionContextScope* scope = QgsExpressionContextUtils::updateSymbolScope( this );
+  QgsExpressionContextScope* scope = QgsExpressionContextUtils::updateSymbolScope( this, new QgsExpressionContextScope() );
 
   mSymbolRenderContext->setExpressionContextScope( scope );
 
@@ -713,10 +713,13 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     deleteSegmentizedGeometry = true;
   }
 
-  context.expressionContext().appendScope( mSymbolRenderContext->expressionContextScope() );
-  QgsExpressionContextUtils::updateSymbolScope( this, mSymbolRenderContext->expressionContextScope() );
-  mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_count", segmentizedGeometry->geometry()->partCount() );
-  mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_num", 1 );
+  if ( mSymbolRenderContext->expressionContextScope() )
+  {
+    context.expressionContext().appendScope( mSymbolRenderContext->expressionContextScope() );
+    QgsExpressionContextUtils::updateSymbolScope( this, mSymbolRenderContext->expressionContextScope() );
+    mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_count", segmentizedGeometry->geometry()->partCount() );
+    mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_num", 1 );
+  }
 
   switch ( QgsWKBTypes::flatType( segmentizedGeometry->geometry()->wkbType() ) )
   {

@@ -134,7 +134,7 @@ class QgsExpressionSorter
         indexedFeatures.append( indexedFeature );
       }
 
-      expressionContext->popScope();
+      delete expressionContext->popScope();
 
       qSort( indexedFeatures.begin(), indexedFeatures.end(), *this );
 

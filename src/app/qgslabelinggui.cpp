@@ -50,7 +50,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   if ( layer )
     expContext << QgsExpressionContextUtils::layerScope( layer );
 
-  expContext << QgsExpressionContextUtils::updateSymbolScope( nullptr );
+  expContext << QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
 
   //TODO - show actual value
   expContext.setOriginalValueVariable( QVariant() );
