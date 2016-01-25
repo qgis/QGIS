@@ -1,5 +1,5 @@
 # Standard includes and utils to compile into all tests.
-SET (util_SRCS qgscompositionchecker.cpp)
+#SET (util_SRCS qgscompositionchecker.cpp)
 
 
 #####################################################
