@@ -1,6 +1,8 @@
 mkdir build
 cd build
 
+CLANG_WARNINGS="-Wimplicit-fallthrough"
+
 cmake -DWITH_SERVER=ON \
       -DWITH_STAGED_PLUGINS=ON \
       -DWITH_GRASS=ON \
@@ -13,4 +15,5 @@ cmake -DWITH_SERVER=ON \
       -DWITH_PYSPATIALITE=ON \
       -DGRASS_PREFIX7=/usr/lib/grass70 \
       -DGRASS_INCLUDE_DIR7=/usr/lib/grass70/include \
+      -DCXX_EXTRA_FLAGS="$CLANG_WARNINGS" \
       ..

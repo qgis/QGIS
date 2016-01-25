@@ -230,6 +230,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
       case QGis::UnknownUnit:
         myScaleBarUnitLabel = tr( " unknown" );
         //intentional fall-through
+        FALLTHROUGH;
       default:
         QgsDebugMsg( QString( "Error: not picked up map units - actual value = %1" ).arg( myMapUnits ) );
     }

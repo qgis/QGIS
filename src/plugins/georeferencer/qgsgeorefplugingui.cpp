@@ -400,6 +400,7 @@ void QgsGeorefPluginGui::generateGDALScript()
         break;
       }
     }
+    FALLTHROUGH;
     default:
       mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
                                 .arg( convertTransformEnumToString( mTransformParam ) )

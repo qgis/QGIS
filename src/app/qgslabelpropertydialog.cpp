@@ -438,6 +438,7 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer* vlayer )
         break;
       case QgsPalLayerSettings::Size:
         mFontSizeSpinBox->setEnabled( true );
+        break;
       default:
         break;
     }

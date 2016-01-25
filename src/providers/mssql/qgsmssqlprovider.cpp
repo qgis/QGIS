@@ -1497,36 +1497,42 @@ void QgsMssqlProvider::mssqlWkbTypeAndDimension( QGis::WkbType wkbType, QString 
   {
     case QGis::WKBPoint25D:
       dim = 3;
+      FALLTHROUGH;
     case QGis::WKBPoint:
       geometryType = "POINT";
       break;
 
     case QGis::WKBLineString25D:
       dim = 3;
+      FALLTHROUGH;
     case QGis::WKBLineString:
       geometryType = "LINESTRING";
       break;
 
     case QGis::WKBPolygon25D:
       dim = 3;
+      FALLTHROUGH;
     case QGis::WKBPolygon:
       geometryType = "POLYGON";
       break;
 
     case QGis::WKBMultiPoint25D:
       dim = 3;
+      FALLTHROUGH;
     case QGis::WKBMultiPoint:
       geometryType = "MULTIPOINT";
       break;
 
     case QGis::WKBMultiLineString25D:
       dim = 3;
+      FALLTHROUGH;
     case QGis::WKBMultiLineString:
       geometryType = "MULTILINESTRING";
       break;
 
     case QGis::WKBMultiPolygon25D:
       dim = 3;
+      FALLTHROUGH;
     case QGis::WKBMultiPolygon:
       geometryType = "MULTIPOLYGON";
       break;

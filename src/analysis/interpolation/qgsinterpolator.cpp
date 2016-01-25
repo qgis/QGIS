@@ -117,6 +117,7 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry *geom, bool zCoord, d
     case QGis::WKBPoint25D:
       hasZValue = true;
       //intentional fall-through
+      FALLTHROUGH;
     case QGis::WKBPoint:
     {
       currentWkbPtr >> theVertex.x >> theVertex.y;
@@ -134,6 +135,7 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry *geom, bool zCoord, d
     case QGis::WKBLineString25D:
       hasZValue = true;
       //intentional fall-through
+      FALLTHROUGH;
     case QGis::WKBLineString:
     {
       int nPoints;

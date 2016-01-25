@@ -1073,6 +1073,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
     case QGis::UnknownUnit:
       unitLabel = QObject::tr( " unknown" );
       //intentional fall-through
+      FALLTHROUGH;
     default:
       QgsDebugMsg( QString( "Error: not picked up map units - actual value = %1" ).arg( u ) );
   }

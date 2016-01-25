@@ -17,6 +17,7 @@
 #include "qgsgrassnewmapset.h"
 #include "qgsgrassplugin.h"
 #include "qgsgrass.h"
+#include "qgis.h"
 
 #include "qgisinterface.h"
 #include "qgsapplication.h"
@@ -298,6 +299,7 @@ int QgsGrassNewMapset::nextId() const
         id = MAPSET;
         break;
       }
+      FALLTHROUGH;
     case DATABASE:
     case CRS:
     case REGION:

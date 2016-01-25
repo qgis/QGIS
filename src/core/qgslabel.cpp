@@ -605,6 +605,7 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
     case QGis::WKBLineString25D:
       dims = 3;
       //intentional fall-through
+      FALLTHROUGH;
     case QGis::WKBLineString: // Line center
     {
 #ifndef QT_NO_DEBUG
@@ -656,6 +657,7 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
     case QGis::WKBPolygon25D:
       dims = 3;
       //intentional fall-through
+      FALLTHROUGH;
     case QGis::WKBPolygon: // centroid of outer ring
     {
 #ifndef QT_NO_DEBUG
