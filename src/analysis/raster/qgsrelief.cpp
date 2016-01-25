@@ -665,7 +665,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   }
 
   //set colors according to optimised class breaks
-  QList<QColor> colorList;
+  QVector<QColor> colorList;
   colorList.push_back( QColor( 7, 165, 144 ) );
   colorList.push_back( QColor( 12, 221, 162 ) );
   colorList.push_back( QColor( 33, 252, 183 ) );

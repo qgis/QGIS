@@ -17,7 +17,7 @@
 
 #include "qgscrscache.h"
 #include "qgscoordinatetransform.h"
-
+#include <QVector>
 
 QgsCoordinateTransformCache* QgsCoordinateTransformCache::instance()
 {
@@ -69,7 +69,7 @@ void QgsCoordinateTransformCache::invalidateCrs( const QString& crsAuthId )
 {
   //get keys to remove first
   QHash< QPair< QString, QString >, QgsCoordinateTransform* >::const_iterator it = mTransforms.constBegin();
-  QList< QPair< QString, QString > > updateList;
+  QVector< QPair< QString, QString > > updateList;
 
   for ( ; it != mTransforms.constEnd(); ++it )
   {
@@ -80,7 +80,7 @@ void QgsCoordinateTransformCache::invalidateCrs( const QString& crsAuthId )
   }
 
   //and remove after
-  QList< QPair< QString, QString > >::const_iterator updateIt = updateList.constBegin();
+  QVector< QPair< QString, QString > >::const_iterator updateIt = updateList.constBegin();
   for ( ; updateIt != updateList.constEnd(); ++updateIt )
   {
     mTransforms.remove( *updateIt );

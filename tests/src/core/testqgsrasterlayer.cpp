@@ -230,7 +230,7 @@ void TestQgsRasterLayer::populateColorRampShader( QgsColorRampShader* colorRampS
   QgsRasterBandStats myRasterBandStats = mpRasterLayer->dataProvider()->bandStatistics( bandNr );
 
   QList<double> entryValues;
-  QList<QColor> entryColors;
+  QVector<QColor> entryColors;
   double currentValue = myRasterBandStats.minimumValue;
   double intervalDiff;
   if ( numberOfEntries > 1 )
@@ -255,7 +255,7 @@ void TestQgsRasterLayer::populateColorRampShader( QgsColorRampShader* colorRampS
   //items to imitate old pseudo color renderer
   QList<QgsColorRampShader::ColorRampItem> colorRampItems;
   QList<double>::const_iterator value_it = entryValues.begin();
-  QList<QColor>::const_iterator color_it = entryColors.begin();
+  QVector<QColor>::const_iterator color_it = entryColors.begin();
   for ( ; value_it != entryValues.end(); ++value_it, ++color_it )
   {
     colorRampItems.append( QgsColorRampShader::ColorRampItem( *value_it, *color_it ) );

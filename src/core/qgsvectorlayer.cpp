@@ -2432,7 +2432,6 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
     return 1;
   }
 
-  QList<QgsFeature> featureList;
   QgsRectangle searchRect( startPoint.x() - snappingTolerance, startPoint.y() - snappingTolerance,
                            startPoint.x() + snappingTolerance, startPoint.y() + snappingTolerance );
   double sqrSnappingTolerance = snappingTolerance * snappingTolerance;

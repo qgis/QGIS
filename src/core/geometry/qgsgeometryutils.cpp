@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometryutils.h"
 #include "qgswkbptr.h"
 #include <QStringList>
+#include <QVector>
 
 QgsPointV2 QgsGeometryUtils::closestVertex( const QgsAbstractGeometryV2& geom, const QgsPointV2& pt, QgsVertexId& id )
 {
@@ -431,7 +432,7 @@ bool QgsGeometryUtils::segmentMidPoint( const QgsPointV2& p1, const QgsPointV2& 
   double midDy = midPoint.y() - p1.y();
 
   //get the four possible midpoints
-  QList<QgsPointV2> possibleMidPoints;
+  QVector<QgsPointV2> possibleMidPoints;
   possibleMidPoints.append( pointOnLineWithDistance( midPoint, QgsPointV2( midPoint.x() - midDy, midPoint.y() + midDx ), dist ) );
   possibleMidPoints.append( pointOnLineWithDistance( midPoint, QgsPointV2( midPoint.x() - midDy, midPoint.y() + midDx ), 2 * radius - dist ) );
   possibleMidPoints.append( pointOnLineWithDistance( midPoint, QgsPointV2( midPoint.x() + midDy, midPoint.y() - midDx ), dist ) );

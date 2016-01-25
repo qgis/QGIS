@@ -240,7 +240,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   int numberOfEntries = 0;
 
   QList<double> entryValues;
-  QList<QColor> entryColors;
+  QVector<QColor> entryColors;
 
   double min = lineEditValue( mMinLineEdit );
   double max = lineEditValue( mMaxLineEdit );
@@ -333,7 +333,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   mColormapTreeWidget->clear();
 
   QList<double>::const_iterator value_it = entryValues.begin();
-  QList<QColor>::const_iterator color_it = entryColors.begin();
+  QVector<QColor>::const_iterator color_it = entryColors.begin();
 
   for ( ; value_it != entryValues.end(); ++value_it, ++color_it )
   {

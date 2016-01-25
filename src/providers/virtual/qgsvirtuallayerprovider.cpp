@@ -217,8 +217,7 @@ bool QgsVirtualLayerProvider::createIt()
   }
 
 
-  QList<ColumnDef> fields, gFields;
-  QMap<QString, TableDef> refTables;
+  QVector<ColumnDef> gFields;
   if ( !mDefinition.query().isEmpty() )
   {
 

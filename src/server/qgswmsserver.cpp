@@ -2828,7 +2828,7 @@ void QgsWMSServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
   QStringList opacityList = opIt.value().split( "," );
 
   //collect leaf layers and their opacity
-  QList< QPair< QgsMapLayer*, int > > layerOpacityList;
+  QVector< QPair< QgsMapLayer*, int > > layerOpacityList;
   QStringList::const_iterator oIt = opacityList.constBegin();
   QStringList::const_iterator lIt = layerList.constBegin();
   for ( ; oIt != opacityList.constEnd() && lIt != layerList.constEnd(); ++oIt, ++lIt )
@@ -2847,7 +2847,7 @@ void QgsWMSServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
     }
   }
 
-  QList< QPair< QgsMapLayer*, int > >::const_iterator lOpIt = layerOpacityList.constBegin();
+  QVector< QPair< QgsMapLayer*, int > >::const_iterator lOpIt = layerOpacityList.constBegin();
   for ( ; lOpIt != layerOpacityList.constEnd(); ++lOpIt )
   {
     //vector or raster?

@@ -385,7 +385,7 @@ void TestQgsSymbolV2::testParseColorList()
     ++i;
   }
 
-  QList< QPair< QString, QList<QColor> > > colorListTests;
+  QVector< QPair< QString, QList<QColor> > > colorListTests;
   QList<QColor> list1;
   list1 << QColor( QString( "blue" ) ) << QColor( QString( "red" ) ) << QColor( QString( "green" ) );
   colorListTests.append( qMakePair( QString( "blue red green" ), list1 ) );
@@ -406,7 +406,7 @@ void TestQgsSymbolV2::testParseColorList()
   colorListTests.append( qMakePair( QString( "rgb(255,0,0)\nrgb(0,255,0)\nrgb(0,0,255)" ), list3 ) );
   colorListTests.append( qMakePair( QString( "rgb(255,0,0)\nrgb(0,255,0) rgb(0,0,255)" ), list3 ) );
 
-  QList< QPair< QString, QList<QColor> > >::const_iterator it = colorListTests.constBegin();
+  QVector< QPair< QString, QList<QColor> > >::const_iterator it = colorListTests.constBegin();
   while ( it != colorListTests.constEnd() )
   {
     QgsDebugMsg( "color list string: " + ( *it ).first );

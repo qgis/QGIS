@@ -535,7 +535,7 @@ bool clipByRect( QLineF& line, const QPolygonF& rect )
   borderLines << QLineF( rect.at( 2 ), rect.at( 3 ) );
   borderLines << QLineF( rect.at( 3 ), rect.at( 0 ) );
 
-  QList<QPointF> intersectionList;
+  QVector<QPointF> intersectionList;
   QVector<QLineF>::const_iterator it = borderLines.constBegin();
   for ( ; it != borderLines.constEnd(); ++it )
   {

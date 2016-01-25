@@ -337,7 +337,7 @@ void RgShortestPathWidget::findingPath()
 
   int startVertexIdx = path->findVertex( p1 );
   int stopVertexIdx  = path->findVertex( p2 );
-  QList< QgsPoint > p;
+  QVector< QgsPoint > p;
   while ( startVertexIdx != stopVertexIdx )
   {
     if ( stopVertexIdx < 0 )
@@ -356,7 +356,7 @@ void RgShortestPathWidget::findingPath()
     stopVertexIdx = e.outVertex();
   }
   p.push_front( p1 );
-  QList< QgsPoint>::iterator it;
+  QVector< QgsPoint>::iterator it;
   for ( it = p.begin(); it != p.end(); ++it )
   {
     mrbPath->addPoint( *it );

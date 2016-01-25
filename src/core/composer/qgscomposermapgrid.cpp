@@ -1610,7 +1610,7 @@ int QgsComposerMapGrid::xGridLines( QList< QPair< double, QLineF > >& lines ) co
   borderLines << QLineF( mapPolygon.at( 2 ), mapPolygon.at( 3 ) );
   borderLines << QLineF( mapPolygon.at( 3 ), mapPolygon.at( 0 ) );
 
-  QList<QPointF> intersectionList; //intersects between border lines and grid lines
+  QVector<QPointF> intersectionList; //intersects between border lines and grid lines
 
   while ( currentLevel <= mapBoundingRect.bottom() && gridLineCount < MAX_GRID_LINES )
   {
@@ -1694,7 +1694,7 @@ int QgsComposerMapGrid::yGridLines( QList< QPair< double, QLineF > >& lines ) co
   borderLines << QLineF( mapPolygon.at( 2 ), mapPolygon.at( 3 ) );
   borderLines << QLineF( mapPolygon.at( 3 ), mapPolygon.at( 0 ) );
 
-  QList<QPointF> intersectionList; //intersects between border lines and grid lines
+  QVector<QPointF> intersectionList; //intersects between border lines and grid lines
 
   while ( currentLevel <= mapBoundingRect.right() && gridLineCount < MAX_GRID_LINES )
   {

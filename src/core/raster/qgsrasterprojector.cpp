@@ -712,8 +712,6 @@ void QgsRasterProjector::insertCols( const QgsCoordinateTransform* ct )
 {
   for ( int r = 0; r < mCPRows; r++ )
   {
-    QList<QgsPoint> myRow;
-    QList<bool> myLegalRow;
     for ( int c = 0; c < mCPCols - 1; c++ )
     {
       mCPMatrix[r].insert( 1 + c*2, QgsPoint() );

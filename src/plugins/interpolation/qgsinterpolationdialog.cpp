@@ -435,7 +435,6 @@ void QgsInterpolationDialog::on_mBBoxToCurrentExtent_clicked()
 QgsRectangle QgsInterpolationDialog::boundingBoxOfLayers()
 {
   int nLayers = mLayersTreeWidget->topLevelItemCount();
-  QList< QgsInterpolator::LayerData > inputLayerList;
   QgsRectangle combinedLayerExtent;
 
   for ( int i = 0; i < nLayers; ++i )

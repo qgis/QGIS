@@ -645,7 +645,7 @@ static bool columnsBySortRank( QPair<int, QgsComposerTableColumn* > a, QPair<int
 QList<QPair<int, bool> > QgsComposerAttributeTableV2::sortAttributes() const
 {
   //generate list of all sorted columns
-  QList< QPair<int, QgsComposerTableColumn* > > sortedColumns;
+  QVector< QPair<int, QgsComposerTableColumn* > > sortedColumns;
   QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();
   int idx = 0;
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
@@ -662,7 +662,7 @@ QList<QPair<int, bool> > QgsComposerAttributeTableV2::sortAttributes() const
 
   //generate list of column index, bool for sort direction (to match 2.0 api)
   QList<QPair<int, bool> > attributesBySortRank;
-  QList< QPair<int, QgsComposerTableColumn* > >::const_iterator sortedColumnIt = sortedColumns.constBegin();
+  QVector< QPair<int, QgsComposerTableColumn* > >::const_iterator sortedColumnIt = sortedColumns.constBegin();
   for ( ; sortedColumnIt != sortedColumns.constEnd(); ++sortedColumnIt )
   {
 

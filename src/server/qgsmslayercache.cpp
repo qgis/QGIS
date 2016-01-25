@@ -122,8 +122,8 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
 void QgsMSLayerCache::removeProjectFileLayers( const QString& project )
 {
   QgsMessageLog::logMessage( "Removing cache entries for project file: " + project, "Server", QgsMessageLog::INFO );
-  QList< QPair< QString, QString > > removeEntries;
-  QList< QgsMSLayerCacheEntry > removeEntriesValues;
+  QVector< QPair< QString, QString > > removeEntries;
+  QVector< QgsMSLayerCacheEntry > removeEntriesValues;
 
   QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator entryIt = mEntries.begin();
   for ( ; entryIt != mEntries.end(); ++entryIt )
