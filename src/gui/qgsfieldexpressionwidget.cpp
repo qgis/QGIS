@@ -148,6 +148,8 @@ void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
 
 void QgsFieldExpressionWidget::setLayer( QgsVectorLayer *layer )
 {
+  disconnect( mFieldProxyModel->sourceFieldModel()->layer(), SIGNAL( updatedFields() ), this, SLOT( reloadLayer() ) );
+
   mExpressionContext.reset( new QgsExpressionContext() );
   mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
   mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope() );
@@ -155,6 +157,8 @@ void QgsFieldExpressionWidget::setLayer( QgsVectorLayer *layer )
     mExpressionContext->appendScope( QgsExpressionContextUtils::layerScope( layer ) );
 
   mFieldProxyModel->sourceFieldModel()->setLayer( layer );
+
+  connect( mFieldProxyModel->sourceFieldModel()->layer(), SIGNAL( updatedFields() ), this, SLOT( reloadLayer() ) );
 }
 
 void QgsFieldExpressionWidget::setField( const QString &fieldName )
@@ -229,6 +233,11 @@ void QgsFieldExpressionWidget::changeEvent( QEvent* event )
   {
     updateLineEditStyle();
   }
+}
+
+void QgsFieldExpressionWidget::reloadLayer()
+{
+  setLayer( mFieldProxyModel->sourceFieldModel()->layer() );
 }
 
 void QgsFieldExpressionWidget::currentFieldChanged()

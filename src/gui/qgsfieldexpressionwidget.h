@@ -147,6 +147,9 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
   protected:
     void changeEvent( QEvent* event ) override;
 
+  private slots:
+    void reloadLayer();
+
   private:
     QComboBox* mCombo;
     QToolButton* mButton;
