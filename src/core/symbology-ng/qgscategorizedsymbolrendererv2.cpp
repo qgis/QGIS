@@ -1016,33 +1016,39 @@ void QgsCategorizedSymbolRendererV2::checkLegendSymbolItem( const QString& key, 
 
 QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::convertFromRenderer( const QgsFeatureRendererV2 *renderer )
 {
+  QgsCategorizedSymbolRendererV2* r = nullptr;
   if ( renderer->type() == "categorizedSymbol" )
   {
-    return dynamic_cast<QgsCategorizedSymbolRendererV2*>( renderer->clone() );
+    r = dynamic_cast<QgsCategorizedSymbolRendererV2*>( renderer->clone() );
   }
-  if ( renderer->type() == "pointDisplacement" )
+  else if ( renderer->type() == "pointDisplacement" )
   {
     const QgsPointDisplacementRenderer* pointDisplacementRenderer = dynamic_cast<const QgsPointDisplacementRenderer*>( renderer );
     if ( pointDisplacementRenderer )
-      return convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
+      r = convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
   }
-  if ( renderer->type() == "invertedPolygonRenderer" )
+  else if ( renderer->type() == "invertedPolygonRenderer" )
   {
     const QgsInvertedPolygonRenderer* invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer*>( renderer );
     if ( invertedPolygonRenderer )
-      return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
+      r = convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
   }
 
   // If not one of the specifically handled renderers, then just grab the symbol from the renderer
   // Could have applied this to specific renderer types (singleSymbol, graduatedSymbo)
 
-  QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2( "", QgsCategoryList() );
-  QgsRenderContext context;
-  QgsSymbolV2List symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols( context );
-  if ( !symbols.isEmpty() )
+  if ( !r )
   {
-    r->setSourceSymbol( symbols.at( 0 )->clone() );
+    r = new QgsCategorizedSymbolRendererV2( "", QgsCategoryList() );
+    QgsRenderContext context;
+    QgsSymbolV2List symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols( context );
+    if ( !symbols.isEmpty() )
+    {
+      r->setSourceSymbol( symbols.at( 0 )->clone() );
+    }
   }
+
+  r->setOrderBy( renderer->orderBy() );
 
   return r;
 }

@@ -425,7 +425,6 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   if ( renderer )
   {
     mRenderer = QgsGraduatedSymbolRendererV2::convertFromRenderer( renderer );
-    mRenderer->setOrderBy( renderer->orderBy() );
   }
   if ( !mRenderer )
   {
