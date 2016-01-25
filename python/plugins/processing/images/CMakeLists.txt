@@ -1,3 +1,6 @@
 FILE(GLOB IMAGE_FILES *.png *.gif)
 
+ADD_SUBDIRECTORY(ftools)
+ADD_SUBDIRECTORY(gdaltools)
+
 PLUGIN_INSTALL(processing ./images ${IMAGE_FILES})

@@ -25,27 +25,35 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 import math
 import codecs
+
+from PyQt4.QtGui import QIcon
+
 from qgis.core import QgsFeatureRequest, QgsFeature, QgsDistanceArea
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
 from processing.tools import dataobjects, vector
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class NearestNeighbourAnalysis(GeoAlgorithm):
 
     POINTS = 'POINTS'
-
     OUTPUT = 'OUTPUT'
-
     OBSERVED_MD = 'OBSERVED_MD'
     EXPECTED_MD = 'EXPECTED_MD'
     NN_INDEX = 'NN_INDEX'
     POINT_COUNT = 'POINT_COUNT'
     Z_SCORE = 'Z_SCORE'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'neighbour.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Nearest neighbour analysis')

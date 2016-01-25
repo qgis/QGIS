@@ -25,6 +25,10 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from osgeo import gdal
 
 from processing.core.parameters import ParameterRaster
@@ -41,6 +45,8 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools import dataobjects
 from processing.tools.vector import ogrConnectionString
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class ClipByMask(GdalAlgorithm):
@@ -64,6 +70,9 @@ class ClipByMask(GdalAlgorithm):
     BIGTIFFTYPE = ['', 'YES', 'NO', 'IF_NEEDED', 'IF_SAFER']
     COMPRESSTYPE = ['NONE', 'JPEG', 'LZW', 'PACKBITS', 'DEFLATE']
     TFW = 'TFW'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-clip.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Clip raster by mask layer')

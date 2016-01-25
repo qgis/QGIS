@@ -25,6 +25,9 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -33,6 +36,8 @@ from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class roughness(GdalAlgorithm):
 
@@ -40,6 +45,9 @@ class roughness(GdalAlgorithm):
     BAND = 'BAND'
     COMPUTE_EDGES = 'COMPUTE_EDGES'
     OUTPUT = 'OUTPUT'
+
+    #def getIcon(self):
+    #    return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'dem.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Roughness')

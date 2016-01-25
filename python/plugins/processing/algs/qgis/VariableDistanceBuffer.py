@@ -25,6 +25,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from qgis.core import QGis
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -36,6 +40,8 @@ from processing.core.outputs import OutputVector
 import Buffer as buff
 from processing.tools import dataobjects
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class VariableDistanceBuffer(GeoAlgorithm):
 
@@ -44,6 +50,9 @@ class VariableDistanceBuffer(GeoAlgorithm):
     FIELD = 'FIELD'
     SEGMENTS = 'SEGMENTS'
     DISSOLVE = 'DISSOLVE'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Variable distance buffer')

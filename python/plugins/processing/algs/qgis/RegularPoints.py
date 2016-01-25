@@ -25,9 +25,11 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
 from random import seed, uniform
 from math import sqrt
 
+from PyQt4.QtGui import QIcon
 from PyQt4.QtCore import QVariant
 from qgis.core import (QGis, QgsRectangle, QgsFields, QgsField, QgsFeature,
                        QgsGeometry, QgsPoint)
@@ -39,6 +41,8 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class RegularPoints(GeoAlgorithm):
 
@@ -48,6 +52,9 @@ class RegularPoints(GeoAlgorithm):
     RANDOMIZE = 'RANDOMIZE'
     IS_SPACING = 'IS_SPACING'
     OUTPUT = 'OUTPUT'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'regular_points.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Regular points')

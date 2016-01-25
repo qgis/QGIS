@@ -25,7 +25,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 import random
+
+from PyQt4.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -35,6 +38,8 @@ from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class RandomSelection(GeoAlgorithm):
 
@@ -42,6 +47,9 @@ class RandomSelection(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     METHOD = 'METHOD'
     NUMBER = 'NUMBER'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_selection.png'))
 
     def defineCharacteristics(self):
         self.allowOnlyOpenedLayers = True
