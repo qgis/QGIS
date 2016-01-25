@@ -98,6 +98,12 @@ class QgsFeatureRendererV2
     //TODO - QGIS 3.0 change PyName to originalSymbolForFeature when deprecated method is removed
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
 
+    /**
+     * Return legend keys matching a specified feature.
+     * @note added in 2.14
+     */
+    virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context );
+
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) = 0;
 
     //! @deprecated since 2.4 - not using QgsVectorLayer directly anymore

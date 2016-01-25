@@ -257,6 +257,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 2.10
     QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
 
+    virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
     QgsSymbolV2* sourceSymbol();
     void setSourceSymbol( QgsSymbolV2* sym );
@@ -360,8 +361,18 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     QgsSymbolV2* symbolForValue( double value );
 
+    /** Returns the matching legend key for a value.
+     */
+    QString legendKeyForValue( double value ) const;
+
     //! @note not available in Python bindings
     static const char * graduatedMethodStr( GraduatedMethod method );
+
+  private:
+
+    /** Returns calculated value used for classifying a feature.
+     */
+    QVariant valueForFeature( QgsFeature& feature, QgsRenderContext &context ) const;
 
 };
 Q_NOWARN_DEPRECATED_POP

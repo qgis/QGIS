@@ -220,6 +220,11 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         //! tell which symbols will be used to render the feature
         QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext* context = 0 );
 
+        /** Returns which legend keys match the feature
+         * @note added in QGIS 2.14
+         */
+        QSet< QString > legendKeysForFeature( QgsFeature& feat, QgsRenderContext* context = nullptr );
+
         //! tell which rules will be used to render the feature
         QList<QgsRuleBasedRendererV2::Rule*> rulesForFeature( QgsFeature& feat, QgsRenderContext* context = 0 );
 
@@ -387,6 +392,8 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext &context );
 
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext &context );
+
+    virtual QSet<QString> legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities();

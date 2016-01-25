@@ -42,7 +42,7 @@ static QString _fileNameForTest( const QString& testName )
   return QDir::tempPath() + '/' + testName + ".png";
 }
 
-static void _setStandardTestFont( QgsLegendSettings& settings )
+static void _setStandardTestFont( QgsLegendSettings& settings, QString style = "Roman" )
 {
   QList< QgsComposerLegendStyle::Style> styles;
   styles << QgsComposerLegendStyle::Title
@@ -51,7 +51,7 @@ static void _setStandardTestFont( QgsLegendSettings& settings )
   << QgsComposerLegendStyle::SymbolLabel;
   Q_FOREACH ( QgsComposerLegendStyle::Style st, styles )
   {
-    QFont font( QgsFontUtils::getStandardTestFont() );
+    QFont font( QgsFontUtils::getStandardTestFont( style ) );
     font.setPointSizeF( settings.style( st ).font().pointSizeF() );
     settings.rstyle( st ).setFont( font );
   }
@@ -113,6 +113,7 @@ class TestQgsLegendRenderer : public QObject
     void testLongSymbolText();
     void testThreeColumns();
     void testFilterByMap();
+    void testFilterByMapSameSymbol();
     void testRasterBorder();
     void testFilterByPolygon();
     void testFilterByExpression();
@@ -343,6 +344,71 @@ void TestQgsLegendRenderer::testFilterByMap()
   _setStandardTestFont( settings );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testFilterByMapSameSymbol()
+{
+  QgsVectorLayer* vl4 = new QgsVectorLayer( "Point", "Point Layer", "memory" );
+  {
+    QgsVectorDataProvider* pr = vl4->dataProvider();
+    QList<QgsField> attrs;
+    attrs << QgsField( "test_attr", QVariant::Int );
+    pr->addAttributes( attrs );
+
+    QgsFields fields;
+    fields.append( attrs.back() );
+
+    QList<QgsFeature> features;
+    QgsFeature f1( fields, 1 );
+    f1.setAttribute( 0, 1 );
+    f1.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1.0, 1.0 ) ) );
+    QgsFeature f2( fields, 2 );
+    f2.setAttribute( 0, 2 );
+    f2.setGeometry( QgsGeometry::fromPoint( QgsPoint( 9.0, 1.0 ) ) );
+    QgsFeature f3( fields, 3 );
+    f3.setAttribute( 0, 3 );
+    f3.setGeometry( QgsGeometry::fromPoint( QgsPoint( 5.0, 5.0 ) ) );
+    features << f1 << f2 << f3;
+    pr->addFeatures( features );
+    vl4->updateFields();
+  }
+  QgsMapLayerRegistry::instance()->addMapLayer( vl4 );
+
+  //setup categorized renderer with duplicate symbols
+  QgsCategoryList cats;
+  QgsMarkerSymbolV2* sym4_1 = new QgsMarkerSymbolV2();
+  sym4_1->setColor( Qt::red );
+  cats << QgsRendererCategoryV2( 1, sym4_1, "Red1" );
+  QgsMarkerSymbolV2* sym4_2 = new QgsMarkerSymbolV2();
+  sym4_2->setColor( Qt::red );
+  cats << QgsRendererCategoryV2( 2, sym4_2, "Red2" );
+  QgsMarkerSymbolV2* sym4_3 = new QgsMarkerSymbolV2();
+  sym4_3->setColor( Qt::red );
+  cats << QgsRendererCategoryV2( 3, sym4_3, "Red3" );
+  QgsCategorizedSymbolRendererV2* r4 = new QgsCategorizedSymbolRendererV2( "test_attr", cats );
+  vl4->setRendererV2( r4 );
+
+  QString testName = "legend_filter_by_map_dupe";
+
+  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+  root->addLayer( vl4 );
+  QgsLayerTreeModel legendModel( root );
+
+  QgsMapSettings mapSettings;
+  // extent and size to include only the red and green points
+  mapSettings.setExtent( QgsRectangle( 0, 0, 10.0, 4.0 ) );
+  mapSettings.setOutputSize( QSize( 400, 100 ) );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setLayers( QStringList() << vl4->id() );
+
+  legendModel.setLegendFilterByMap( &mapSettings );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings, "Bold" );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+
+  QgsMapLayerRegistry::instance()->removeMapLayer( vl4 );
 }
 
 void TestQgsLegendRenderer::testRasterBorder()

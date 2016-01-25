@@ -224,6 +224,8 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.10
     QgsLegendSymbolListV2 legendSymbolItemsV2() const;
 
+    virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context );
+
     QgsSymbolV2* sourceSymbol();
     void setSourceSymbol( QgsSymbolV2* sym /Transfer/ );
 
@@ -305,6 +307,11 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
   protected:
     QgsSymbolV2* symbolForValue( double value );
+
+    /** Returns the matching legend key for a value.
+     */
+    QString legendKeyForValue( double value ) const;
+
 
   private:
     QgsGraduatedSymbolRendererV2( const QgsGraduatedSymbolRendererV2 & );

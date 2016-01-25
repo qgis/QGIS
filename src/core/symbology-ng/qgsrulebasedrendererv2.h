@@ -263,6 +263,11 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! tell which symbols will be used to render the feature
         QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext* context = nullptr );
 
+        /** Returns which legend keys match the feature
+         * @note added in QGIS 2.14
+         */
+        QSet< QString > legendKeysForFeature( QgsFeature& feat, QgsRenderContext* context = nullptr );
+
         //! tell which rules will be used to render the feature
         RuleList rulesForFeature( QgsFeature& feat, QgsRenderContext* context = nullptr );
 
@@ -447,6 +452,8 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
 
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
+
+    virtual QSet<QString> legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities() override { return MoreSymbolsPerFeature | Filter | ScaleDependent; }

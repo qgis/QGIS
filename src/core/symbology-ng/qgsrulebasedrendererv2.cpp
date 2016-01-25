@@ -612,6 +612,20 @@ QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbolsForFeature( QgsFeature& fea
   return lst;
 }
 
+QSet<QString> QgsRuleBasedRendererV2::Rule::legendKeysForFeature( QgsFeature& feat, QgsRenderContext* context )
+{
+  QSet< QString> lst;
+  if ( !isFilterOK( feat, context ) )
+    return lst;
+  lst.insert( mRuleKey );
+
+  Q_FOREACH ( Rule* rule, mActiveChildren )
+  {
+    lst.unite( rule->legendKeysForFeature( feat, context ) );
+  }
+  return lst;
+}
+
 QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2::Rule::rulesForFeature( QgsFeature& feat, QgsRenderContext* context )
 {
   RuleList lst;
@@ -1191,6 +1205,11 @@ QgsSymbolV2List QgsRuleBasedRendererV2::symbolsForFeature( QgsFeature& feat, Qgs
 QgsSymbolV2List QgsRuleBasedRendererV2::originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   return mRootRule->symbolsForFeature( feat, &context );
+}
+
+QSet< QString > QgsRuleBasedRendererV2::legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context )
+{
+  return mRootRule->legendKeysForFeature( feature, &context );
 }
 
 QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFeatureRendererV2* renderer )

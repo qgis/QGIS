@@ -325,6 +325,24 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForValue( double value )
   return nullptr;
 }
 
+QString QgsGraduatedSymbolRendererV2::legendKeyForValue( double value ) const
+{
+  int i = 0;
+  Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
+  {
+    if ( range.lowerValue() <= value && range.upperValue() >= value )
+    {
+      if ( range.renderState() || mCounting )
+        return QString::number( i );
+      else
+        return QString::null;
+    }
+    i++;
+  }
+  // the value is out of the range: return NULL
+  return QString::null;
+}
+
 QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature, QgsRenderContext &context )
 {
   QgsSymbolV2* symbol = originalSymbolForFeature( feature, context );
@@ -357,9 +375,8 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
   return tempSymbol;
 }
 
-QgsSymbolV2* QgsGraduatedSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
+QVariant QgsGraduatedSymbolRendererV2::valueForFeature( QgsFeature& feature, QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
   QgsAttributes attrs = feature.attributes();
   QVariant value;
   if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
@@ -370,6 +387,13 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::originalSymbolForFeature( QgsFeature&
   {
     value = attrs.at( mAttrNum );
   }
+
+  return value;
+}
+
+QgsSymbolV2* QgsGraduatedSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
+{
+  QVariant value = valueForFeature( feature, context );
 
   // Null values should not be categorized
   if ( value.isNull() )
@@ -1243,6 +1267,22 @@ QgsLegendSymbolListV2 QgsGraduatedSymbolRendererV2::legendSymbolItemsV2() const
   }
 
   return QgsFeatureRendererV2::legendSymbolItemsV2();
+}
+
+QSet< QString > QgsGraduatedSymbolRendererV2::legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context )
+{
+  QVariant value = valueForFeature( feature, context );
+
+  // Null values should not be categorized
+  if ( value.isNull() )
+    return QSet< QString >();
+
+  // find the right category
+  QString key = legendKeyForValue( value.toDouble() );
+  if ( !key.isNull() )
+    return QSet< QString >() << key;
+  else
+    return QSet< QString >();
 }
 
 QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems( double scaleDenominator, const QString& rule )

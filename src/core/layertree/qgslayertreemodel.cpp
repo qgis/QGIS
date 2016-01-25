@@ -1058,12 +1058,13 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::filterLegendNodes( const 
   {
     Q_FOREACH ( QgsLayerTreeModelLegendNode* node, nodes )
     {
-      QgsSymbolV2* ruleKey = reinterpret_cast< QgsSymbolV2* >( node->data( QgsSymbolV2LegendNode::SymbolV2LegacyRuleKeyRole ).value<void*>() );
-      if ( ruleKey )
+      QgsSymbolV2* symbolKey = reinterpret_cast< QgsSymbolV2* >( node->data( QgsSymbolV2LegendNode::SymbolV2LegacyRuleKeyRole ).value<void*>() );
+      if ( symbolKey )
       {
+        QString ruleKey = node->data( QgsSymbolV2LegendNode::RuleKeyRole ).toString();
         if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() ) )
         {
-          if ( mLegendFilterHitTest->symbolVisible( ruleKey, vl ) )
+          if ( mLegendFilterHitTest->legendKeyVisible( ruleKey, vl ) )
             filtered << node;
         }
       }

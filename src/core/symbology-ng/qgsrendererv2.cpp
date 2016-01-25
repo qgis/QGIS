@@ -271,6 +271,13 @@ QgsSymbolV2 *QgsFeatureRendererV2::originalSymbolForFeature( QgsFeature &feature
   return symbolForFeature( feature, context );
 }
 
+QSet< QString > QgsFeatureRendererV2::legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context )
+{
+  Q_UNUSED( feature );
+  Q_UNUSED( context );
+  return QSet< QString >();
+}
+
 void QgsFeatureRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer* vlayer )
 {
   startRender( context, vlayer->fields() );

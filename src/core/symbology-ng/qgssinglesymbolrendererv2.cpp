@@ -441,6 +441,13 @@ QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
   return lst;
 }
 
+QSet< QString > QgsSingleSymbolRendererV2::legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context )
+{
+  Q_UNUSED( feature );
+  Q_UNUSED( context );
+  return QSet< QString >() << QString();
+}
+
 QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::convertFromRenderer( const QgsFeatureRendererV2 *renderer )
 {
   if ( renderer->type() == "singleSymbol" )

@@ -121,6 +121,8 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.10
     QgsLegendSymbolListV2 legendSymbolItemsV2() const;
 
+    virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context );
+
     QgsSymbolV2* sourceSymbol();
     void setSourceSymbol( QgsSymbolV2* sym /Transfer/ );
 

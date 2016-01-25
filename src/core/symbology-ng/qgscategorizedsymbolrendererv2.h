@@ -150,6 +150,8 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 2.10
     QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
 
+    virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
+
     QgsSymbolV2* sourceSymbol();
     void setSourceSymbol( QgsSymbolV2* sym );
 
@@ -229,6 +231,12 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     QgsSymbolV2* skipRender();
 
     QgsSymbolV2* symbolForValue( const QVariant& value );
+
+  private:
+
+    /** Returns calculated classification value for a feature */
+    QVariant valueForFeature( QgsFeature& feature, QgsRenderContext &context ) const;
+
 };
 Q_NOWARN_DEPRECATED_POP
 

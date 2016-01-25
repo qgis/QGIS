@@ -245,9 +245,8 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
 }
 
 
-QgsSymbolV2* QgsCategorizedSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
+QVariant QgsCategorizedSymbolRendererV2::valueForFeature( QgsFeature& feature, QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
   QgsAttributes attrs = feature.attributes();
   QVariant value;
   if ( mAttrNum == -1 )
@@ -260,6 +259,13 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::originalSymbolForFeature( QgsFeatur
   {
     value = attrs.value( mAttrNum );
   }
+
+  return value;
+}
+
+QgsSymbolV2* QgsCategorizedSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
+{
+  QVariant value = valueForFeature( feature, context );
 
   // find the right symbol for the category
   QgsSymbolV2 *symbol = symbolForValue( value );
@@ -857,6 +863,26 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRendererV2::legendSymbolItemsV2() cons
   }
 
   return QgsFeatureRendererV2::legendSymbolItemsV2();
+}
+
+QSet<QString> QgsCategorizedSymbolRendererV2::legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context )
+{
+  QString value = valueForFeature( feature, context ).toString();
+  int i = 0;
+
+  Q_FOREACH ( const QgsRendererCategoryV2& cat, mCategories )
+  {
+    if ( value == cat.value() )
+    {
+      if ( cat.renderState() )
+        return QSet< QString >() << QString::number( i );
+      else
+        return QSet< QString >();
+    }
+    i++;
+  }
+
+  return QSet< QString >();
 }
 
 QgsSymbolV2* QgsCategorizedSymbolRendererV2::sourceSymbol()

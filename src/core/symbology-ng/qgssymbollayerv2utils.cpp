@@ -1077,7 +1077,7 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( const QString& name, QgsSymbolV2*
   symEl.setAttribute( "name", name );
   symEl.setAttribute( "alpha", QString::number( symbol->alpha() ) );
   symEl.setAttribute( "clip_to_extent", symbol->clipFeaturesToExtent() ? "1" : "0" );
-  QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
+  //QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
 
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
   {
