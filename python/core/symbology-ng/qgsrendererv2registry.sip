@@ -19,8 +19,14 @@ class QgsRendererV2AbstractMetadata
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
     virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) = 0 /Factory/;
-    /** Return new instance of settings widget for the renderer. Returns NULL on error. */
-    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
+    /** Return new instance of settings widget for the renderer. Returns NULL on error.
+     *
+     * The \a oldRenderer argument may refer to previously used renderer (or it is null).
+     * If not null, it may be used to initialize GUI of the widget from the previous settings.
+     * The old renderer does not have to be of the same type as returned by createRenderer().
+     * When using \a oldRenderer make sure to make a copy of it - it will be deleted afterwards.
+     */
+    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* oldRenderer ) /Factory/;
 
     virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QGis::GeometryType geomType ) /Factory/;
 };
