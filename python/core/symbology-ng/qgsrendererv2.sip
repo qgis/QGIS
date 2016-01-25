@@ -62,6 +62,8 @@ class QgsFeatureRendererV2
     QString type() const;
 
     /** To be overridden
+     *
+     * Must be called between startRender() and stopRender() calls.
      * @param feature feature
      * @return returns pointer to symbol or 0 if symbol was not found
      * @deprecated use symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) instead
@@ -69,6 +71,8 @@ class QgsFeatureRendererV2
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) /Deprecated/;
 
     /** To be overridden
+     *
+     * Must be called between startRender() and stopRender() calls.
      * @param feature feature
      * @param context render context
      * @return returns pointer to symbol or 0 if symbol was not found
@@ -109,6 +113,9 @@ class QgsFeatureRendererV2
     //! @deprecated since 2.4 - not using QgsVectorLayer directly anymore
     virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer ) /Deprecated/;
 
+    /**
+     * Needs to be called when a render cycle has finished to clean up.
+     */
     virtual void stopRender( QgsRenderContext& context ) = 0;
 
     /**
@@ -130,6 +137,16 @@ class QgsFeatureRendererV2
 
     virtual QgsFeatureRendererV2* clone() const = 0 /Factory/;
 
+    /**
+     * Render a feature using this renderer in the given context.
+     * Must be called between startRender() and stopRender() calls.
+     * Default implementation renders a symbol as determined by symbolForFeature() call.
+     * Returns true if the feature has been returned (this is used for example
+     * to determine whether the feature may be labelled).
+     *
+     * If layer is not -1, the renderer should draw only a particula layer from symbols
+     * (in order to support symbol level rendering).
+     */
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     //! for debugging
