@@ -1241,7 +1241,7 @@ bool QgsGeorefPluginGui::loadGCPs( /*bool verbose*/ )
   {
     line = points.readLine();
     QStringList ls;
-    if ( line.contains( QRegExp( "," ) ) ) // in previous format "\t" is delimiter of points in new - ","
+    if ( line.contains( ',' ) ) // in previous format "\t" is delimiter of points in new - ","
     {
       // points from new georeferencer
       ls = line.split( ',' );

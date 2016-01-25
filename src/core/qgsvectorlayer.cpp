@@ -3600,7 +3600,7 @@ QString QgsVectorLayer::metadata()
     //
     myMetadata += "<p class=\"glossy\">" + tr( "Layer Spatial Reference System" ) + "</p>\n";
     myMetadata += "<p>";
-    myMetadata += crs().toProj4().replace( QRegExp( "\"" ), " \"" );
+    myMetadata += crs().toProj4().replace( '"', " \"" );
     myMetadata += "</p>\n";
 
     //
@@ -3611,7 +3611,7 @@ QString QgsVectorLayer::metadata()
     //myMetadata += "<tr><td bgcolor=\"gray\">";
     myMetadata += "<p class=\"glossy\">" + tr( "Project (Output) Spatial Reference System" ) + "</p>\n";
     myMetadata += "<p>";
-    myMetadata += coordinateTransform->destCRS().toProj4().replace( QRegExp( "\"" ), " \"" );
+    myMetadata += coordinateTransform->destCRS().toProj4().replace( '"', " \"" );
     myMetadata += "</p>\n";
 #endif
   }

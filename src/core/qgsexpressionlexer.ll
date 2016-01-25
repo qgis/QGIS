@@ -33,7 +33,6 @@
 #include "qgsexpression.h"
 struct expression_parser_context;
 #include "qgsexpressionparser.hpp"
-#include <QRegExp>
 #include <QLocale>
 
 // if not defined, searches for isatty()
@@ -59,7 +58,7 @@ static QString stripText(QString text)
   text = text.mid( 1, text.length() - 2 );
 
   // make single "single quotes" from double "single quotes"
-  text.replace( QRegExp( "''" ), "'" );
+  text.replace( "''", "'" );
 
   // strip \n \' etc.
   int index = 0;
@@ -86,7 +85,7 @@ static QString stripColumnRef(QString text)
   text = text.mid( 1, text.length() - 2 );
 
   // make single "double quotes" from double "double quotes"
-  text.replace( QRegExp( "\"\"" ), "\"" );
+  text.replace( "\"\"", "\"" );
   return text;
 }
 
