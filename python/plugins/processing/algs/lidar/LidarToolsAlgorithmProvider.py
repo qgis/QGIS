@@ -138,7 +138,9 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.activate = False
-        self.algsList = []
+
+    def _loadAlgorithms(self):
+        self.algs = []
 
         # LAStools for processing single files
 
@@ -161,7 +163,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
             ]
         for alg in lastools:
             alg.group = 'LAStools'
-        self.algsList.extend(lastools)
+        self.algs.extend(lastools)
 
         # LAStools Production for processing folders of files
 
@@ -181,7 +183,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
             ]
         for alg in lastoolsPro:
             alg.group = 'LAStools Production'
-        self.algsList.extend(lastoolsPro)
+        self.algs.extend(lastoolsPro)
 
         # some examples for LAStools Pipelines
 
@@ -194,7 +196,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
             lastoolsPipe = []
         for alg in lastoolsPipe:
             alg.group = 'LAStools Pipelines'
-        self.algsList.extend(lastoolsPipe)
+        self.algs.extend(lastoolsPipe)
 
         # FUSION
 
@@ -208,7 +210,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
             ]
             for alg in fusiontools:
                 alg.group = 'Fusion'
-            self.algsList.extend(fusiontools)
+            self.algs.extend(fusiontools)
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
@@ -237,8 +239,6 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/tool.png')
 
-    def _loadAlgorithms(self):
-        self.algs = self.algsList
 
     def getSupportedOutputTableExtensions(self):
         return ['csv']
