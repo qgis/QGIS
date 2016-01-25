@@ -35,6 +35,7 @@
 #include <qgsmaprenderer.h>
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
+#include <qgsmultibandcolorrenderer.h>
 #include <qgsvectorcolorrampv2.h>
 #include <qgscptcityarchive.h>
 
@@ -49,10 +50,11 @@ class TestQgsRasterLayer : public QObject
     Q_OBJECT
   public:
     TestQgsRasterLayer()
-        : mpRasterLayer( 0 )
-        , mpLandsatRasterLayer( 0 )
-        , mpFloat32RasterLayer( 0 )
-        , mMapSettings( 0 )
+        : mpRasterLayer( nullptr )
+        , mpLandsatRasterLayer( nullptr )
+        , mpFloat32RasterLayer( nullptr )
+        , mPngRasterLayer( nullptr )
+        , mMapSettings( nullptr )
     {}
     ~TestQgsRasterLayer()
     {
@@ -79,6 +81,7 @@ class TestQgsRasterLayer : public QObject
     void buildExternalOverviews();
     void registry();
     void transparency();
+    void multiBandColorRenderer();
     void setRenderer();
   private:
     bool render( const QString& theFileName );
@@ -92,6 +95,7 @@ class TestQgsRasterLayer : public QObject
     QgsRasterLayer * mpRasterLayer;
     QgsRasterLayer * mpLandsatRasterLayer;
     QgsRasterLayer * mpFloat32RasterLayer;
+    QgsRasterLayer * mPngRasterLayer;
     QgsMapSettings * mMapSettings;
     QString mReport;
 };
@@ -101,7 +105,7 @@ class TestSignalReceiver : public QObject
     Q_OBJECT
 
   public:
-    TestSignalReceiver() : QObject( 0 ),
+    TestSignalReceiver() : QObject( nullptr ),
         rendererChanged( false )
     {}
     bool rendererChanged;
@@ -132,6 +136,7 @@ void TestQgsRasterLayer::initTestCase()
   QString myFileName = mTestDataDir + "tenbytenraster.asc";
   QString myLandsatFileName = mTestDataDir + "landsat.tif";
   QString myFloat32FileName = mTestDataDir + "/raster/band1_float32_noct_epsg4326.tif";
+  QString pngRasterFileName = mTestDataDir + "rgb256x256.png";
 
   QFileInfo myRasterFileInfo( myFileName );
   mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
@@ -148,13 +153,16 @@ void TestQgsRasterLayer::initTestCase()
       myFloat32RasterFileInfo.completeBaseName() );
   qDebug() << "float32raster metadata: " << mpFloat32RasterLayer->dataProvider()->metadata();
 
+  QFileInfo pngRasterFileInfo( pngRasterFileName );
+  mPngRasterLayer = new QgsRasterLayer( pngRasterFileInfo.filePath(),
+                                        pngRasterFileInfo.completeBaseName() );
+
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpRasterLayer );
-  QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpLandsatRasterLayer );
-  QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpFloat32RasterLayer );
+    QList<QgsMapLayer *>() << mpRasterLayer
+    << mpLandsatRasterLayer
+    << mpFloat32RasterLayer
+    << mPngRasterLayer );
 
   // add the test layer to the maprender
   mMapSettings->setLayers( QStringList() << mpRasterLayer->id() );
@@ -595,6 +603,15 @@ void TestQgsRasterLayer::transparency()
   mMapSettings->setLayers( QStringList() << mpFloat32RasterLayer->id() );
   mMapSettings->setExtent( mpFloat32RasterLayer->extent() );
   QVERIFY( render( "raster_transparency" ) );
+}
+
+void TestQgsRasterLayer::multiBandColorRenderer()
+{
+  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mPngRasterLayer->dataProvider(), 1, 2, 3 );
+  mPngRasterLayer->setRenderer( rasterRenderer );
+  mMapSettings->setLayers( QStringList() << mPngRasterLayer->id() );
+  mMapSettings->setExtent( mPngRasterLayer->extent() );
+  QVERIFY( render( "raster_multibandrenderer" ) );
 }
 
 void TestQgsRasterLayer::setRenderer()
