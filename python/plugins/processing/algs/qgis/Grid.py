@@ -25,8 +25,10 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
+import os
 import math
 
+from PyQt4.QtGui import QIcon
 from PyQt4.QtCore import QVariant
 from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem, QGis, QgsField, QgsFeature, QgsGeometry, QgsPoint
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -37,6 +39,8 @@ from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class Grid(GeoAlgorithm):
     TYPE = 'TYPE'
@@ -45,6 +49,9 @@ class Grid(GeoAlgorithm):
     VSPACING = 'VSPACING'
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
+
+    #def getIcon(self):
+    #    return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Create grid')
