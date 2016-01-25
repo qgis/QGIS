@@ -1697,6 +1697,7 @@ class TestQgsGeometry(TestCase):
         geom = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))')
         assert geom.geometry().addZValue(3)
         assert geom.geometry().wkbType() == QgsWKBTypes.PolygonZ
+        assert geom.wkbType() == QGis.WKBPolygon25D
         expWkt = 'PolygonZ ((0 0 3, 1 0 3, 1 1 3, 2 1 3, 2 2 3, 0 2 3, 0 0 3))'
         wkt = geom.exportToWkt()
         assert compareWkt(expWkt, wkt), "addZValue to CurvePolygon failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
@@ -1705,6 +1706,7 @@ class TestQgsGeometry(TestCase):
         geom = QgsGeometry.fromWkt('MultiPoint ((1 2),(2 3))')
         assert geom.geometry().addZValue(4)
         assert geom.geometry().wkbType() == QgsWKBTypes.MultiPointZ
+        assert geom.wkbType() == QGis.WKBMultiPoint25D
         expWkt = 'MultiPointZ ((1 2 4),(2 3 4))'
         wkt = geom.exportToWkt()
         assert compareWkt(expWkt, wkt), "addZValue to GeometryCollection failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
@@ -1713,6 +1715,7 @@ class TestQgsGeometry(TestCase):
         geom = QgsGeometry.fromWkt('LineString (1 2, 2 3)')
         assert geom.geometry().addZValue(4)
         assert geom.geometry().wkbType() == QgsWKBTypes.LineStringZ
+        assert geom.wkbType() == QGis.WKBLineString25D
         expWkt = 'LineStringZ (1 2 4, 2 3 4)'
         wkt = geom.exportToWkt()
         assert compareWkt(expWkt, wkt), "addZValue to LineString failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
@@ -1721,6 +1724,7 @@ class TestQgsGeometry(TestCase):
         geom = QgsGeometry.fromWkt('Point (1 2)')
         assert geom.geometry().addZValue(4)
         assert geom.geometry().wkbType() == QgsWKBTypes.PointZ
+        assert geom.wkbType() == QGis.WKBPoint25D
         expWkt = 'PointZ (1 2 4)'
         wkt = geom.exportToWkt()
         assert compareWkt(expWkt, wkt), "addZValue to Point failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
