@@ -15,8 +15,26 @@
  ***************************************************************************/
 
 #include <limits>
+#include <stdexcept>
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include "qgsapplication.h"
+#include "qgslogger.h"
+
+class QgsParserException: public std::runtime_error
+{
+  public:
+    QgsParserException( const QString &msg )
+        : std::runtime_error( msg.toStdString() )
+    {}
+};
+
+class QgsShortWkbException: public QgsParserException
+{
+  public:
+    QgsShortWkbException( const QString &msg )
+        : QgsParserException( QString( "Premature end of WKB: " ) + msg )
+    {}
+};
 
 QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double tolerance )
     : mSimplifyFlags( simplifyFlags )
@@ -180,6 +198,8 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
   unsigned char* targetPrevWkb = targetWkb;
   int targetWkbPrevSize = targetWkbSize;
 
+  const unsigned char* endOfSourceWkb = sourceWkb + sourceWkbSize;
+
   // Can replace the geometry by its BBOX ?
   if (( simplifyFlags & QgsMapToPixelSimplifier::SimplifyEnvelope ) &&
       isGeneralizableByMapBoundingBox( envelope, map2pixelTol ) )
@@ -195,6 +215,9 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
   // Write the main header of the geometry
   if ( writeHeader )
   {
+    if ( sourceWkbSize < 5 )
+      throw QgsParserException( QString( "Premature end of WKB reading header " ) );
+
     targetWkb[0] = sourceWkb[0]; // byteOrder
     sourceWkb += 1;
     targetWkb += 1;
@@ -223,6 +246,9 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
     int sizeOfDoubleX = sizeof( double );
     int sizeOfDoubleY = ( QGis::wkbDimensions( wkbType ) - 1 ) * sizeof( double );
 
+    if ( sourceWkb + 4 >= endOfSourceWkb )
+      throw QgsShortWkbException( "reading numPoints" );
+
     int numPoints;
     memcpy( &numPoints, sourceWkb, 4 );
     sourceWkb += 4;
@@ -250,6 +276,10 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
       const unsigned char* finalWkbX = sourceWkb + ( numPoints - 1 ) * ( sizeOfDoubleX + sizeOfDoubleY );
       const unsigned char* finalWkbY = finalWkbX + sizeOfDoubleX;
 
+      if ( finalWkbY + sizeof( double ) > endOfSourceWkb )
+        throw QgsShortWkbException( "reading last point" );
+
+
       memcpy( &x1, startWkbX, sizeof( double ) );
       memcpy( &y1, startWkbY, sizeof( double ) );
       memcpy( &x2, finalWkbX, sizeof( double ) );
@@ -261,6 +291,11 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
     // Process each vertex...
     for ( int i = 0; i < numPoints; ++i )
     {
+      if ( sourceWkb + sizeOfDoubleX + sizeOfDoubleY > endOfSourceWkb )
+      {
+        throw QgsParserException( QString( "Premature end of WKB reading point %1/%2" ) .arg( i + 1 ) .arg( numPoints ) );
+      }
+
       memcpy( &x, sourceWkb, sizeof( double ) );
       sourceWkb += sizeOfDoubleX;
       memcpy( &y, sourceWkb, sizeof( double ) );
@@ -405,7 +440,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
           wkb1 += wkbSize_i;
         }
       }
-      result |= simplifyWkbGeometry( simplifyFlags, QGis::singleType( wkbType ), sourceWkb, sourceWkbSize_i, targetWkb, targetWkbSize_i, envelope, map2pixelTol, true, false );
+      result |= simplifyWkbGeometry( simplifyFlags, QGis::singleType( wkbType ), sourceWkb, endOfSourceWkb - sourceWkb, targetWkb, targetWkbSize_i, envelope, map2pixelTol, true, false );
       sourceWkb += sourceWkbSize_i;
       targetWkb += targetWkbSize_i;
 
@@ -457,13 +492,20 @@ bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry* geometry, int simpl
   unsigned char* targetWkb = new unsigned char[wkbSize];
   memcpy( targetWkb, wkb, wkbSize );
 
-  if ( simplifyWkbGeometry( simplifyFlags, wkbType, wkb, wkbSize, targetWkb, finalWkbSize, envelope, tolerance ) )
+  try
   {
-    unsigned char* finalWkb = new unsigned char[finalWkbSize];
-    memcpy( finalWkb, targetWkb, finalWkbSize );
-    geometry->fromWkb( finalWkb, finalWkbSize );
-    delete [] targetWkb;
-    return true;
+    if ( simplifyWkbGeometry( simplifyFlags, wkbType, wkb, wkbSize, targetWkb, finalWkbSize, envelope, tolerance ) )
+    {
+      unsigned char* finalWkb = new unsigned char[finalWkbSize];
+      memcpy( finalWkb, targetWkb, finalWkbSize );
+      geometry->fromWkb( finalWkb, finalWkbSize );
+      delete [] targetWkb;
+      return true;
+    }
+  }
+  catch ( const QgsParserException &e )
+  {
+    QgsDebugMsg( QString( "Exception thrown by simplifier: %1" ) .arg( e.what() ) );
   }
   delete [] targetWkb;
   return false;
