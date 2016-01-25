@@ -512,8 +512,6 @@ class CORE_EXPORT QgsWKBTypes
           return true;
 
       }
-
-      return false;
     }
 
     /** Returns true if the WKB type is a curved type or can contain curved geometries.
@@ -533,8 +531,6 @@ class CORE_EXPORT QgsWKBTypes
         default:
           return false;
       }
-
-      return false;
     }
 
     /** Returns the inherent dimension of the geometry type as an integer. Returned value will
@@ -697,8 +693,6 @@ class CORE_EXPORT QgsWKBTypes
           return false;
 
       }
-      return false;
-
     }
 
     /** Tests whether a WKB type contains m values.
@@ -740,7 +734,6 @@ class CORE_EXPORT QgsWKBTypes
           return false;
 
       }
-      return false;
     }
 
     /** Adds the z dimension to a WKB type and returns the new type
