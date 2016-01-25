@@ -1236,6 +1236,16 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
     if ( !categorizedRenderer )
       return nullptr;
 
+    QString attr = categorizedRenderer->classAttribute();
+    // categorizedAttr could be either an attribute name or an expression.
+    // the only way to differentiate is to test it as an expression...
+    QgsExpression testExpr( attr );
+    if ( testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( '\"' ) ) )
+    {
+      //not an expression, so need to quote column name
+      attr = QgsExpression::quotedColumnRef( attr );
+    }
+
     QgsRuleBasedRendererV2::Rule* rootrule = new QgsRuleBasedRendererV2::Rule( nullptr );
 
     QString expression;
@@ -1256,7 +1266,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       }
       else
       {
-        value = '\'' + category.value().toString() + '\'';
+        value = QgsExpression::quotedString( category.value().toString() );
       }
 
       //An empty category is equivalent to the ELSE keyword
@@ -1266,7 +1276,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       }
       else
       {
-        expression = QString( "%1 = %2" ).arg( QgsExpression::quotedColumnRef( categorizedRenderer->classAttribute() ), value );
+        expression = QString( "%1 = %2" ).arg( attr, value );
       }
       rule->setFilterExpression( expression );
 
@@ -1286,10 +1296,24 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
 
   if ( renderer->type() == "graduatedSymbol" )
   {
-
     const QgsGraduatedSymbolRendererV2* graduatedRenderer = dynamic_cast<const QgsGraduatedSymbolRendererV2*>( renderer );
     if ( !graduatedRenderer )
       return nullptr;
+
+    QString attr = graduatedRenderer->classAttribute();
+    // categorizedAttr could be either an attribute name or an expression.
+    // the only way to differentiate is to test it as an expression...
+    QgsExpression testExpr( attr );
+    if ( testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( '\"' ) ) )
+    {
+      //not an expression, so need to quote column name
+      attr = QgsExpression::quotedColumnRef( attr );
+    }
+    else if ( !testExpr.isField() )
+    {
+      //otherwise wrap expression in brackets
+      attr = QString( "(%1)" ).arg( attr );
+    }
 
     QgsRuleBasedRendererV2::Rule* rootrule = new QgsRuleBasedRendererV2::Rule( nullptr );
 
@@ -1302,13 +1326,13 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       rule->setLabel( range.label() );
       if ( i == 0 )//The lower boundary of the first range is included, while it is excluded for the others
       {
-        expression = graduatedRenderer->classAttribute() + " >= " + QString::number( range.lowerValue(), 'f' ) + " AND " + \
-                     graduatedRenderer->classAttribute() + " <= " + QString::number( range.upperValue(), 'f' );
+        expression = attr + " >= " + QString::number( range.lowerValue(), 'f' ) + " AND " + \
+                     attr + " <= " + QString::number( range.upperValue(), 'f' );
       }
       else
       {
-        expression = graduatedRenderer->classAttribute() + " > " + QString::number( range.lowerValue(), 'f' ) + " AND " + \
-                     graduatedRenderer->classAttribute() + " <= " + QString::number( range.upperValue(), 'f' );
+        expression = attr + " > " + QString::number( range.lowerValue(), 'f' ) + " AND " + \
+                     attr + " <= " + QString::number( range.upperValue(), 'f' );
       }
       rule->setFilterExpression( expression );
 
