@@ -23,6 +23,9 @@ email                : hugo dot mercier at oslandia dot com
 #include <qgsvectordataprovider.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsgenericprojectionselector.h>
+#include <layertree/qgslayertreemodel.h>
+#include <layertree/qgslayertreegroup.h>
+#include <layertree/qgslayertreelayer.h>
 
 #include <QUrl>
 #include <Qsci/qscilexer.h>
@@ -41,40 +44,32 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
   QgsLayerTreeView* treeView = parent->findChild<QgsLayerTreeView*>( "theLayerTreeView" );
   if ( treeView )
   {
-    QList<QgsMapLayer*> selected = treeView->selectedLayers();
-    if ( selected.size() == 1 && selected[0]->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer*>( selected[0] )->providerType() == "virtual" )
+    QgsLayerTreeModel* model = qobject_cast<QgsLayerTreeModel*>( treeView->model() );
+    foreach ( QgsLayerTreeLayer* layer, model->rootGroup()->findLayers() )
     {
-      // reuse the configuration of this virtual layer
-      mReplaceLayer->setEnabled( true );
-
-      QgsVirtualLayerDefinition def = QgsVirtualLayerDefinition::fromUrl( QUrl::fromEncoded( selected[0]->source().toUtf8() ) );
-
-      if ( !def.query().isEmpty() )
+      if ( layer->layer()->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer*>( layer->layer() )->providerType() == "virtual" )
       {
-        mQueryEdit->setText( def.query() );
-      }
-
-      if ( !def.uid().isEmpty() )
-      {
-        mUIDColumnNameChck->setChecked( true );
-        mUIDField->setText( def.uid() );
-      }
-
-      if ( def.geometryWkbType() == QgsWKBTypes::NoGeometry )
-      {
-        mNoGeometryRadio->setChecked( true );
-      }
-      else if ( def.hasDefinedGeometry() )
-      {
-        mGeometryRadio->setChecked( true );
-        mSrid = def.geometrySrid();
-        QgsCoordinateReferenceSystem crs( def.geometrySrid() );
-        mCRS->setText( crs.authid() );
-        mGeometryType->setCurrentIndex( static_cast<long>( def.geometryWkbType() ) - 1 );
-        mGeometryField->setText( def.geometryField() );
+        // store layer's id as user data
+        mLayerNameCombo->addItem( layer->layer()->name(), layer->layer()->id() );
       }
     }
   }
+
+  if ( mLayerNameCombo->count() == 0 )
+    mLayerNameCombo->addItem( "virtual_layer" );
+
+  // select the current layer, if any
+  if ( treeView )
+  {
+    QList<QgsMapLayer*> selected = treeView->selectedLayers();
+    if ( selected.size() == 1 && selected[0]->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer*>( selected[0] )->providerType() == "virtual" )
+    {
+      mLayerNameCombo->setCurrentIndex( mLayerNameCombo->findData( selected[0]->id() ) );
+    }
+  }
+
+  QObject::connect( mLayerNameCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( onLayerComboChanged( int ) ) );
+  onLayerComboChanged( mLayerNameCombo->currentIndex() );
 
   // configure auto completion with SQL functions
   QsciAPIs* apis = new QsciAPIs( mQueryEdit->lexer() );
@@ -109,11 +104,45 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
   mQueryEdit->lexer()->setAPIs( apis );
 
   mQueryEdit->setWrapMode( QsciScintilla::WrapWord );
-
 }
 
 QgsVirtualLayerSourceSelect::~QgsVirtualLayerSourceSelect()
 {
+}
+
+void QgsVirtualLayerSourceSelect::onLayerComboChanged( int idx )
+{
+  if ( idx == -1 )
+    return;
+
+  QString lid = mLayerNameCombo->itemData( idx ).toString();
+  QgsVectorLayer* l = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( lid ) );
+  QgsVirtualLayerDefinition def = QgsVirtualLayerDefinition::fromUrl( QUrl::fromEncoded( l->source().toUtf8() ) );
+
+  if ( !def.query().isEmpty() )
+  {
+    mQueryEdit->setText( def.query() );
+  }
+
+  if ( !def.uid().isEmpty() )
+  {
+    mUIDColumnNameChck->setChecked( true );
+    mUIDField->setText( def.uid() );
+  }
+
+  if ( def.geometryWkbType() == QgsWKBTypes::NoGeometry )
+  {
+    mNoGeometryRadio->setChecked( true );
+  }
+  else if ( def.hasDefinedGeometry() )
+  {
+    mGeometryRadio->setChecked( true );
+    mSrid = def.geometrySrid();
+    QgsCoordinateReferenceSystem crs( def.geometrySrid() );
+    mCRS->setText( crs.authid() );
+    mGeometryType->setCurrentIndex( static_cast<long>( def.geometryWkbType() ) - 1 );
+    mGeometryField->setText( def.geometryField() );
+  }
 }
 
 void QgsVirtualLayerSourceSelect::onBrowseCRS()
@@ -174,17 +203,28 @@ void QgsVirtualLayerSourceSelect::onTestQuery()
 void QgsVirtualLayerSourceSelect::on_buttonBox_accepted()
 {
   QString layerName = "virtual_layer";
-  if ( ! mLayerName->text().isEmpty() )
+  int idx = mLayerNameCombo->currentIndex();
+  if ( idx != -1 && !mLayerNameCombo->currentText().isEmpty() )
   {
-    layerName = mLayerName->text();
+    layerName = mLayerNameCombo->currentText();
   }
 
   QgsVirtualLayerDefinition def = getVirtualLayerDef();
 
-  if ( mReplaceLayer->isEnabled() && mReplaceLayer->isChecked() )
-    emit replaceVectorLayer( def.toString(), layerName, "virtual" );
-  else
-    emit addVectorLayer( def.toString(), layerName, "virtual" );
+  if ( idx != -1 )
+  {
+    QString id( mLayerNameCombo->itemData( idx ).toString() );
+    if ( !id.isEmpty() && mLayerNameCombo->currentText() == QgsMapLayerRegistry::instance()->mapLayer( id )->name() )
+    {
+      int r = QMessageBox::warning( nullptr, tr( "Warning" ), tr( "A virtual layer of this name already exists, would you like to overwrite it ?" ), QMessageBox::Yes | QMessageBox::No );
+      if ( r == QMessageBox::Yes )
+      {
+        emit replaceVectorLayer( id, def.toString(), layerName, "virtual" );
+        return;
+      }
+    }
+  }
+  emit addVectorLayer( def.toString(), layerName, "virtual" );
 }
 
 QGISEXTERN QgsVirtualLayerSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )

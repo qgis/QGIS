@@ -17,31 +17,31 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Layer name</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="mLayerName">
-       <property name="text">
-        <string>virtual_layer</string>
+      <widget class="QComboBox" name="mLayerNameCombo">
+       <property name="editable">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="mReplaceLayer">
-       <property name="enabled">
-        <bool>false</bool>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
-       <property name="text">
-        <string>Replace</string>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
        </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
+      </spacer>
      </item>
     </layout>
    </item>
@@ -257,7 +257,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mLayerName</tabstop>
   <tabstop>mGeometryGroup</tabstop>
   <tabstop>buttonBox</tabstop>
   <tabstop>mGeometryRadio</tabstop>

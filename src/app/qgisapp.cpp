@@ -3798,8 +3798,8 @@ void QgisApp::addVirtualLayer()
   }
   connect( dts, SIGNAL( addVectorLayer( QString, QString, QString ) ),
            this, SLOT( addSelectedVectorLayer( QString, QString, QString ) ) );
-  connect( dts, SIGNAL( replaceVectorLayer( QString, QString, QString ) ),
-           this, SLOT( replaceSelectedVectorLayer( QString, QString, QString ) ) );
+  connect( dts, SIGNAL( replaceVectorLayer( QString, QString, QString, QString ) ),
+           this, SLOT( replaceSelectedVectorLayer( QString, QString, QString, QString ) ) );
   dts->exec();
   delete dts;
 } // QgisApp::addVirtualLayer()
@@ -3809,13 +3809,12 @@ void QgisApp::addSelectedVectorLayer( const QString& uri, const QString& layerNa
   addVectorLayer( uri, layerName, provider );
 } // QgisApp:addSelectedVectorLayer
 
-void QgisApp::replaceSelectedVectorLayer( const QString& uri, const QString& layerName, const QString& provider )
+void QgisApp::replaceSelectedVectorLayer( const QString& oldId, const QString& uri, const QString& layerName, const QString& provider )
 {
-  QList<QgsMapLayer*> selected = mLayerTreeView->selectedLayers();
-  if ( selected.size() != 1 && selected[0]->type() != QgsMapLayer::VectorLayer )
+  QgsMapLayer* old = QgsMapLayerRegistry::instance()->mapLayer( oldId );
+  if ( !old )
     return;
-
-  QgsVectorLayer* oldLayer = static_cast<QgsVectorLayer*>( selected[0] );
+  QgsVectorLayer* oldLayer = static_cast<QgsVectorLayer*>( old );
   QgsVectorLayer* newLayer = new QgsVectorLayer( uri, layerName, provider );
   if ( !newLayer || !newLayer->isValid() )
     return;

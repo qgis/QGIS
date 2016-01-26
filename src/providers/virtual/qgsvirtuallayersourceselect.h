@@ -39,10 +39,13 @@ class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerS
     void on_buttonBox_accepted();
     void onTestQuery();
     void onBrowseCRS();
+    void onLayerComboChanged( int );
 
   signals:
+    /** Source, name, provider */
     void addVectorLayer( QString, QString, QString );
-    void replaceVectorLayer( QString, QString, QString );
+    /** Old_id, source, name, provider */
+    void replaceVectorLayer( QString, QString, QString, QString );
 
   private:
     QgsVirtualLayerDefinition getVirtualLayerDef();
