@@ -18,6 +18,17 @@ class QgsRasterCalculator
 
   public:
 
+    //! Result of the calculation
+    enum Result
+    {
+      Success, /*!< Calculation sucessful */
+      CreateOutputError, /*!< Error creating output data file */
+      InputLayerError, /*!< Error reading input layer */
+      Cancelled, /*!< User cancelled calculation */
+      ParserError, /*!< Error parsing formula */
+      MemoryError, /*!< Error allocating memory for result */
+    };
+
     /** QgsRasterCalculator constructor.
      * @param formulaString formula for raster calculation
      * @param outputFile output file path

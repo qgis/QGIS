@@ -4305,12 +4305,46 @@ void QgisApp::showRasterCalculator()
 
     QProgressDialog p( tr( "Calculating..." ), tr( "Abort..." ), 0, 0 );
     p.setWindowModality( Qt::WindowModal );
-    if ( rc.processCalculation( &p ) == 0 )
+    QgsRasterCalculator::Result res = static_cast< QgsRasterCalculator::Result >( rc.processCalculation( &p ) );
+    switch ( res )
     {
-      if ( d.addLayerToProject() )
-      {
-        addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).baseName() );
-      }
+      case QgsRasterCalculator::Success:
+        if ( d.addLayerToProject() )
+        {
+          addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).baseName() );
+        }
+        messageBar()->pushMessage( tr( "Raster calculator" ),
+                                   tr( "Calculation complete." ),
+                                   QgsMessageBar::INFO, messageTimeout() );
+        break;
+
+      case QgsRasterCalculator::CreateOutputError:
+        messageBar()->pushMessage( tr( "Raster calculator" ),
+                                   tr( "Could not create destination file." ),
+                                   QgsMessageBar::CRITICAL );
+        break;
+
+      case QgsRasterCalculator::InputLayerError:
+        messageBar()->pushMessage( tr( "Raster calculator" ),
+                                   tr( "Could not read input layer." ),
+                                   QgsMessageBar::CRITICAL );
+        break;
+
+      case QgsRasterCalculator::Cancelled:
+        break;
+
+      case QgsRasterCalculator::ParserError:
+        messageBar()->pushMessage( tr( "Raster calculator" ),
+                                   tr( "Could not parse raster formula." ),
+                                   QgsMessageBar::CRITICAL );
+        break;
+
+      case QgsRasterCalculator::MemoryError:
+        messageBar()->pushMessage( tr( "Raster calculator" ),
+                                   tr( "Insufficient memory available for operation." ),
+                                   QgsMessageBar::CRITICAL );
+        break;
+
     }
   }
 }
