@@ -235,8 +235,6 @@ QgsGeometry* QgsGeometry::fromRect( const QgsRectangle& rect )
 
 void QgsGeometry::fromWkb( unsigned char *wkb, int length )
 {
-  Q_UNUSED( length );
-
   detach( false );
 
   if ( d->geometry )
@@ -244,7 +242,7 @@ void QgsGeometry::fromWkb( unsigned char *wkb, int length )
     delete d->geometry;
     removeWkbGeos();
   }
-  d->geometry = QgsGeometryFactory::geomFromWkb( wkb );
+  d->geometry = QgsGeometryFactory::geomFromWkb( wkb, length );
   d->mWkb = wkb;
   d->mWkbSize = length;
 }

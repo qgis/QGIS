@@ -82,14 +82,14 @@ void QgsCurvePolygonV2::clear()
 }
 
 
-bool QgsCurvePolygonV2::fromWkb( const unsigned char* wkb )
+bool QgsCurvePolygonV2::fromWkb( const unsigned char* wkb, int length )
 {
   clear();
   if ( !wkb )
   {
     return false;
   }
-  QgsConstWkbPtr wkbPtr( wkb );
+  QgsConstWkbPtr wkbPtr( wkb, length );
   QgsWKBTypes::Type type = wkbPtr.readHeader();
   if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::CurvePolygon )
   {
@@ -125,7 +125,7 @@ bool QgsCurvePolygonV2::fromWkb( const unsigned char* wkb )
     {
       return false;
     }
-    currentCurve->fromWkb( wkbPtr );
+    currentCurve->fromWkb( wkbPtr, wkbPtr.bytesLeft() );
     currentCurveSize = currentCurve->wkbSize();
     if ( i == 0 )
     {
@@ -233,7 +233,7 @@ unsigned char* QgsCurvePolygonV2::asWkb( int& binarySize ) const
 {
   binarySize = wkbSize();
   unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr );
+  QgsWkbPtr wkb( geomPtr, binarySize );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << static_cast<quint32>(( nullptr != mExteriorRing ) + mInteriorRings.size() );

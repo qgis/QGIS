@@ -98,7 +98,7 @@ QgsRectangle QgsCompoundCurveV2::calculateBoundingBox() const
   return bbox;
 }
 
-bool QgsCompoundCurveV2::fromWkb( const unsigned char* wkb )
+bool QgsCompoundCurveV2::fromWkb( const unsigned char* wkb, int length )
 {
   clear();
   if ( !wkb )
@@ -106,7 +106,7 @@ bool QgsCompoundCurveV2::fromWkb( const unsigned char* wkb )
     return false;
   }
 
-  QgsConstWkbPtr wkbPtr( wkb );
+  QgsConstWkbPtr wkbPtr( wkb, length );
   QgsWKBTypes::Type type = wkbPtr.readHeader();
   if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::CompoundCurve )
   {
@@ -136,7 +136,7 @@ bool QgsCompoundCurveV2::fromWkb( const unsigned char* wkb )
     {
       return false;
     }
-    currentCurve->fromWkb( wkbPtr );
+    currentCurve->fromWkb( wkbPtr, wkbPtr.bytesLeft() );
     currentCurveSize = currentCurve->wkbSize();
     mCurves.append( currentCurve );
     wkbPtr += currentCurveSize;
@@ -209,7 +209,7 @@ unsigned char* QgsCompoundCurveV2::asWkb( int& binarySize ) const
 {
   binarySize = wkbSize();
   unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr );
+  QgsWkbPtr wkb( geomPtr, binarySize );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << static_cast<quint32>( mCurves.size() );

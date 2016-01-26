@@ -37,7 +37,7 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygonV2
     virtual QString geometryType() const override { return "Polygon"; }
     virtual QgsPolygonV2* clone() const override;
 
-    virtual bool fromWkb( const unsigned char* wkb ) override;
+    virtual bool fromWkb( const unsigned char* wkb, int length ) override;
 
     int wkbSize() const override;
     unsigned char* asWkb( int& binarySize ) const override;

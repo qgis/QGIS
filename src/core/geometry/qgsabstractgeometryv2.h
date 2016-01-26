@@ -112,9 +112,18 @@ class CORE_EXPORT QgsAbstractGeometryV2
     //import
 
     /** Sets the geometry from a WKB string.
+     * @deprecated, use the version taking a length
+     */
+    Q_DECL_DEPRECATED bool fromWkb( const unsigned char * wkb )
+    {
+      return fromWkb( wkb,
+                      std::numeric_limits<unsigned char *>::max() - wkb );
+    }
+
+    /** Sets the geometry from a WKB string.
      * @see fromWkt
      */
-    virtual bool fromWkb( const unsigned char * wkb ) = 0;
+    virtual bool fromWkb( const unsigned char * wkb, int length ) = 0;
 
     /** Sets the geometry from a WKT string.
      * @see fromWkb

@@ -19,6 +19,18 @@
 #include "qgsapplication.h"
 #include "qgis.h"
 
+class QgsWkbException: public std::runtime_error
+{
+  public:
+    QgsWkbException( const char *msg ) : std::runtime_error( msg ) {}
+};
+
+class QgsWkbPrematureEnd: public QgsWkbException
+{
+  public:
+    QgsWkbPrematureEnd() : QgsWkbException( "Premature end of WKB" ) {}
+};
+
 /** \class QgsWkbPtr
  * \note not available in Python bindings
  */
@@ -26,9 +38,16 @@
 class CORE_EXPORT QgsWkbPtr
 {
     mutable unsigned char *mP;
+    unsigned char *mE; // pointer to one-byte-past-the-end
 
   public:
-    QgsWkbPtr( unsigned char *p ): mP( p ) {}
+    /// @param p pointer to an array of bytes
+    /// @deprecated, use the version taking a length
+    Q_DECL_DEPRECATED QgsWkbPtr( unsigned char *p ): mP( p ), mE( std::numeric_limits<unsigned char *>::max() ) {}
+
+    /// @param p pointer to an array of bytes
+    /// @param l number of bytes in the array (length)
+    QgsWkbPtr( unsigned char *p, unsigned int l ): mP( p ), mE( p + l ) {}
 
     inline const QgsWkbPtr &operator>>( double &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline const QgsWkbPtr &operator>>( int &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
@@ -53,6 +72,10 @@ class CORE_EXPORT QgsWkbPtr
     inline void operator+=( int n ) { mP += n; }
 
     inline operator unsigned char *() const { return mP; }
+
+    inline unsigned int bytesLeft() const { return mE - mP; }
+
+    inline bool eof() const { return mP >= mE; }
 };
 
 /** \class QgsConstWkbPtr
@@ -62,10 +85,18 @@ class CORE_EXPORT QgsWkbPtr
 class CORE_EXPORT QgsConstWkbPtr
 {
     mutable unsigned char *mP;
+    const unsigned char *mE; // pointer to one-byte-past-the-end
     mutable bool mEndianSwap;
 
   public:
-    QgsConstWkbPtr( const unsigned char *p );
+    /// @param p pointer to an array of bytes
+    /// @deprecated, use the version taking a length
+    Q_DECL_DEPRECATED QgsConstWkbPtr( const unsigned char *p );
+
+    /// @param p pointer to an array of bytes
+    /// @param l number of bytes in the array (length)
+    QgsConstWkbPtr( const unsigned char *p, unsigned int l );
+
     QgsWKBTypes::Type readHeader() const;
 
     inline const QgsConstWkbPtr &operator>>( double &v ) const { read( v ); return *this; }
@@ -80,6 +111,10 @@ class CORE_EXPORT QgsConstWkbPtr
     inline void operator-=( int n ) { mP -= n; }
 
     inline operator const unsigned char *() const { return mP; }
+
+    inline unsigned int bytesLeft() const { return mE - mP; }
+
+    inline bool eof() const { return mP >= mE; }
 
     template<typename T> void read( T& v ) const
     {
