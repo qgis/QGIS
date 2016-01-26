@@ -88,10 +88,10 @@ class Grass7Utils:
         if folder is None:
             if isWindows():
                 testfolder = os.path.dirname(unicode(QgsApplication.prefixPath()))
-                testfolder = os.path.join(testfolder, 'grass7')
+                testfolder = os.path.join(testfolder, 'grass')
                 if os.path.isdir(testfolder):
                     for subfolder in os.listdir(testfolder):
-                        if subfolder.startswith('grass7'):
+                        if subfolder.startswith('grass-7'):
                             folder = os.path.join(testfolder, subfolder)
                             break
             else:
