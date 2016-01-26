@@ -969,6 +969,7 @@ void QgsCategorizedSymbolRendererV2::updateSymbols( QgsSymbolV2 * sym )
     updateCategorySymbol( i, symbol );
     ++i;
   }
+  setSourceSymbol( sym->clone() );
 }
 
 void QgsCategorizedSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
