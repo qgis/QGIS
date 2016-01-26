@@ -117,6 +117,8 @@ void QgsVirtualLayerSourceSelect::onLayerComboChanged( int idx )
 
   QString lid = mLayerNameCombo->itemData( idx ).toString();
   QgsVectorLayer* l = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( lid ) );
+  if ( !l )
+    return;
   QgsVirtualLayerDefinition def = QgsVirtualLayerDefinition::fromUrl( QUrl::fromEncoded( l->source().toUtf8() ) );
 
   if ( !def.query().isEmpty() )
