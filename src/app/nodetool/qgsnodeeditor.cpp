@@ -286,7 +286,6 @@ QgsNodeEditor::QgsNodeEditor(
     , mUpdatingNodeSelection( false )
 {
   setWindowTitle( tr( "Vertex Editor" ) );
-  setFeatures( features() ^ QDockWidget::DockWidgetClosable );
 
   mLayer = layer;
   mSelectedFeature = selectedFeature;
