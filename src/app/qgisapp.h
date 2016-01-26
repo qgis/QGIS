@@ -716,7 +716,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Add a vector layer defined by uri, layer name, data source uri
     void addSelectedVectorLayer( const QString& uri, const QString& layerName, const QString& provider );
     //! Replace the selected layer by a vector layer defined by uri, layer name, data source uri
-    void replaceSelectedVectorLayer( const QString& uri, const QString& layerName, const QString& provider );
+    void replaceSelectedVectorLayer( const QString& oldId, const QString& uri, const QString& layerName, const QString& provider );
     //#ifdef HAVE_MSSQL
     //! Add a MSSQL layer to the map
     void addMssqlLayer();
