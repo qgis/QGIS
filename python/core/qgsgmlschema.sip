@@ -7,8 +7,6 @@ class QgsGmlFeatureClass
     QgsGmlFeatureClass();
     QgsGmlFeatureClass( const QString& name, const QString& path );
 
-    ~QgsGmlFeatureClass();
-
     QList<QgsField> & fields();
 
     int fieldIndex( const QString & name );

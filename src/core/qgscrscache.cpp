@@ -98,10 +98,6 @@ QgsCRSCache::QgsCRSCache()
 {
 }
 
-QgsCRSCache::~QgsCRSCache()
-{
-}
-
 void QgsCRSCache::updateCRSCache( const QString& authid )
 {
   QgsCoordinateReferenceSystem s;

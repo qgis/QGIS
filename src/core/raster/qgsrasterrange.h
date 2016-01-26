@@ -41,8 +41,6 @@ class CORE_EXPORT QgsRasterRange
      */
     QgsRasterRange( double theMin, double theMax );
 
-    ~QgsRasterRange();
-
     double min() const { return mMin; }
     double max() const { return mMax; }
 

@@ -84,4 +84,9 @@ class QgsRendererV2Registry
     //! protected constructor
     QgsRendererV2Registry();
     ~QgsRendererV2Registry();
+
+  private:
+
+    QgsRendererV2Registry( const QgsRendererV2Registry& rh );
+
 };

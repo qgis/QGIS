@@ -33,10 +33,6 @@ QgsTransectSample::QgsTransectSample()
 {
 }
 
-QgsTransectSample::~QgsTransectSample()
-{
-}
-
 int QgsTransectSample::createSample( QProgressDialog* pd )
 {
   Q_UNUSED( pd );

@@ -85,10 +85,6 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
   updateMatrix();
 }
 
-QgsMapToPixel::~QgsMapToPixel()
-{
-}
-
 int QgsMapToPixel::mapHeight() const
 {
   return mHeight;

@@ -55,10 +55,6 @@ QgsRasterRendererRegistry::QgsRasterRendererRegistry()
                                           QgsSingleBandColorDataRenderer::create, nullptr ) );
 }
 
-QgsRasterRendererRegistry::~QgsRasterRendererRegistry()
-{
-}
-
 void QgsRasterRendererRegistry::insert( const QgsRasterRendererRegistryEntry& entry )
 {
   mEntries.insert( entry.name, entry );

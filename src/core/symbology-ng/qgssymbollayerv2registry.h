@@ -142,6 +142,9 @@ class CORE_EXPORT QgsSymbolLayerV2Registry
 
     QMap<QString, QgsSymbolLayerV2AbstractMetadata*> mMetadata;
 
+  private:
+    QgsSymbolLayerV2Registry( const QgsSymbolLayerV2Registry& rh );
+    QgsSymbolLayerV2Registry& operator=( const QgsSymbolLayerV2Registry& rh );
 };
 
 #endif

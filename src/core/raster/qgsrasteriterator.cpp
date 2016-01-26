@@ -22,10 +22,6 @@ QgsRasterIterator::QgsRasterIterator( QgsRasterInterface* input ): mInput( input
 {
 }
 
-QgsRasterIterator::~QgsRasterIterator()
-{
-}
-
 void QgsRasterIterator::startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle& extent )
 {
   if ( !mInput )

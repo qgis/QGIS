@@ -16,7 +16,6 @@ class ANALYSIS_EXPORT QgsPointSample
 {
   public:
     QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, const QString& nPointsAttribute, const QString& minDistAttribute = QString() );
-    ~QgsPointSample();
 
     /** Starts calculation of random points
         @return 0 in case of success*/

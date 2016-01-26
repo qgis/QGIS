@@ -99,8 +99,6 @@ class CORE_EXPORT QgsSnapper
 
     explicit QgsSnapper( const QgsMapSettings& mapSettings );
 
-    ~QgsSnapper();
-
     /** Does the snapping operation
      @param startPoint the start point for snapping (in pixel coordinates)
      @param snappingResult the list where the results are inserted (everything in map coordinate system)

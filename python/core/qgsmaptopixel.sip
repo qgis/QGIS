@@ -18,8 +18,7 @@ class QgsMapToPixel
     * @param xmin Minimum x value of the map canvas
     */
     QgsMapToPixel( double mapUnitsPerPixel = 0, double height = 0, double ymin = 0, double xmin = 0 );
-    //! destructor
-    ~QgsMapToPixel();
+
     /** Transform the point from map (world) coordinates to device coordinates
     * @param p Point to transform
     * @return QgsPoint in device coordinates

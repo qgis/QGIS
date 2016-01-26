@@ -55,8 +55,6 @@
 // from parser
 extern QgsExpression::Node* parseExpression( const QString& str, QString& parserErrorMsg );
 
-QgsExpression::Interval::~Interval() {}
-
 QgsExpression::Interval QgsExpression::Interval::invalidInterVal()
 {
   QgsExpression::Interval inter = QgsExpression::Interval();

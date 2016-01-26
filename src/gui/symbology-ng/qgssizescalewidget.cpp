@@ -48,6 +48,12 @@ struct SignalBlocker
   }
 private:
   QObject * mObject;
+
+  SignalBlocker( const SignalBlocker& rh );
+  SignalBlocker& operator=( const SignalBlocker& rh );
+
+
+
 };
 
 ///@endcond

@@ -37,10 +37,6 @@ QgsComposerLegendStyle::QgsComposerLegendStyle()
   }
 }
 
-QgsComposerLegendStyle::~QgsComposerLegendStyle()
-{
-}
-
 void QgsComposerLegendStyle::setMargin( double margin )
 {
   mMarginMap[Top] = margin;

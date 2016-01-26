@@ -46,16 +46,6 @@ QgsAuthMethodConfig::QgsAuthMethodConfig( const QString& method, int version )
 {
 }
 
-QgsAuthMethodConfig::QgsAuthMethodConfig( const QgsAuthMethodConfig &methodconfig )
-    : mId( methodconfig.id() )
-    , mName( methodconfig.name() )
-    , mUri( methodconfig.uri() )
-    , mMethod( methodconfig.method() )
-    , mVersion( methodconfig.version() )
-    , mConfigMap( methodconfig.configMap() )
-{
-}
-
 bool QgsAuthMethodConfig::operator==( const QgsAuthMethodConfig &other ) const
 {
   return ( other.id() == id()
@@ -181,10 +171,6 @@ QgsPkiBundle::QgsPkiBundle( const QSslCertificate &clientCert,
 {
   setClientCert( clientCert );
   setClientKey( clientKey );
-}
-
-QgsPkiBundle::~QgsPkiBundle()
-{
 }
 
 static QByteArray fileData_( const QString& path, bool astext = false )
@@ -348,10 +334,6 @@ QgsPkiConfigBundle::QgsPkiConfigBundle( const QgsAuthMethodConfig& config,
     : mConfig( config )
     , mCert( cert )
     , mCertKey( certkey )
-{
-}
-
-QgsPkiConfigBundle::~QgsPkiConfigBundle()
 {
 }
 

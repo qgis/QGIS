@@ -32,7 +32,6 @@ class CORE_EXPORT QgsRasterIterator
   public:
 
     QgsRasterIterator( QgsRasterInterface* input );
-    ~QgsRasterIterator();
 
     /** Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns false.
       @param bandNumber number of raster band to read

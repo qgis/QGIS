@@ -34,7 +34,6 @@ class CORE_EXPORT QgsRasterDrawer
 {
   public:
     QgsRasterDrawer( QgsRasterIterator *iterator );
-    ~QgsRasterDrawer();
 
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 

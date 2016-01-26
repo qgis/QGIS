@@ -28,10 +28,6 @@ QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator* iterator ): mIterator( iter
 {
 }
 
-QgsRasterDrawer::~QgsRasterDrawer()
-{
-}
-
 void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
 {
   QgsDebugMsgLevel( "Entered", 4 );

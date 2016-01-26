@@ -32,10 +32,6 @@ QgsGdalProviderBase::QgsGdalProviderBase()
   QgsGdalProviderBase::registerGdalDrivers();
 }
 
-QgsGdalProviderBase::~QgsGdalProviderBase()
-{
-}
-
 /**
  * @param theBandNumber the number of the band for which you want a color table
  * @param theList a pointer the object that will hold the color table

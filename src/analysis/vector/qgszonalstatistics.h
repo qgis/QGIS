@@ -50,7 +50,6 @@ class ANALYSIS_EXPORT QgsZonalStatistics
 
     QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix = "", int rasterBand = 1,
                         const Statistics& stats = Statistics( Count | Sum | Mean ) );
-    ~QgsZonalStatistics();
 
     /** Starts the calculation
       @return 0 in case of success*/

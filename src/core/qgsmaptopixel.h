@@ -69,9 +69,6 @@ class CORE_EXPORT QgsMapToPixel
      */
     QgsMapToPixel();
 
-    //! destructor
-    ~QgsMapToPixel();
-
     /**
      * Transform the point from map (world) coordinates to device coordinates
      * @param p Point to transform

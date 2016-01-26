@@ -42,8 +42,6 @@ class CORE_EXPORT QgsGmlFeatureClass
     QgsGmlFeatureClass();
     QgsGmlFeatureClass( const QString& name, const QString& path );
 
-    ~QgsGmlFeatureClass();
-
     QList<QgsField> & fields() { return  mFields; }
 
     int fieldIndex( const QString & name );

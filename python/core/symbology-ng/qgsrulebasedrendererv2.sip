@@ -38,6 +38,9 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
       ~RenderLevel();
       int zIndex;
       QList<QgsRuleBasedRendererV2::RenderJob*> jobs;
+
+      RenderLevel( const QgsRuleBasedRendererV2::RenderLevel& other );
+
     };
 
     // rendering queue: a list of rendering levels

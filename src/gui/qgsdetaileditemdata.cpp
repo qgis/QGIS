@@ -25,10 +25,6 @@ QgsDetailedItemData::QgsDetailedItemData()
 
 }
 
-QgsDetailedItemData::~QgsDetailedItemData()
-{
-}
-
 void QgsDetailedItemData::setTitle( const QString& theTitle )
 {
   mTitle = theTitle;

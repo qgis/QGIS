@@ -27,7 +27,6 @@ class QgsCompositionChecker : public QgsMultiRenderChecker
 {
   public:
     QgsCompositionChecker( const QString& testName, QgsComposition* composition );
-    ~QgsCompositionChecker();
 
     void setSize( const QSize& size ) { mSize = size; }
 

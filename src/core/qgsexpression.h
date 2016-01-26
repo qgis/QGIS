@@ -783,7 +783,7 @@ class CORE_EXPORT QgsExpression
         static const int MINUTE = 60;
       public:
         Interval( double seconds = 0 ) : mSeconds( seconds ), mValid( true ) { }
-        ~Interval();
+
         //! interval length in years
         double years() { return mSeconds / YEARS;}
         //! interval length in months

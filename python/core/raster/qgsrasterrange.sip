@@ -17,8 +17,6 @@ class QgsRasterRange
      */
     QgsRasterRange( double theMin, double theMax );
 
-    ~QgsRasterRange();
-
     double min() const;
     double max() const;
 

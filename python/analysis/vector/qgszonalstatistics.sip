@@ -32,7 +32,6 @@ class QgsZonalStatistics
 
     QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix = "", int rasterBand = 1,
                         const QgsZonalStatistics::Statistics& stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean) );
-    ~QgsZonalStatistics();
 
     /** Starts the calculation
       @return 0 in case of success*/

@@ -119,6 +119,9 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     sqlite3_stmt* mStmtWayNode;
     sqlite3_stmt* mStmtWayNodePoints;
     sqlite3_stmt* mStmtWayTags;
+
+    QgsOSMDatabase( const QgsOSMDatabase& rh );
+    QgsOSMDatabase& operator=( const QgsOSMDatabase& rh );
 };
 
 
@@ -162,6 +165,8 @@ class ANALYSIS_EXPORT QgsOSMWayIterator
     QgsOSMWayIterator( sqlite3* handle );
 
     sqlite3_stmt* mStmt;
+
+  private:
 
     friend class QgsOSMDatabase;
 };

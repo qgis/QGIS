@@ -25,7 +25,6 @@ class CORE_EXPORT QgsGeometryCache
 {
   public:
     QgsGeometryCache();
-    ~QgsGeometryCache();
 
     inline QgsGeometryMap& cachedGeometries() { return mCachedGeometries; }
 

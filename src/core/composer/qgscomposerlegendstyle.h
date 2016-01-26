@@ -48,7 +48,6 @@ class CORE_EXPORT QgsComposerLegendStyle
       Right = 3
     };
     QgsComposerLegendStyle();
-    ~QgsComposerLegendStyle();
 
     QFont font() const { return mFont; }
     QFont & rfont() { return mFont; }

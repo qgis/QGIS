@@ -86,9 +86,6 @@ QgsLabelAttributes::QgsLabelAttributes( bool def )
   }
 }
 
-QgsLabelAttributes::~QgsLabelAttributes()
-{
-}
 /* Text */
 void QgsLabelAttributes::setText( const QString & text )
 {

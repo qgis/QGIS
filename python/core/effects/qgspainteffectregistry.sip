@@ -126,6 +126,8 @@ class QgsPaintEffectRegistry
     QgsPaintEffectRegistry();
     ~QgsPaintEffectRegistry();
 
+  private:
+    QgsPaintEffectRegistry( const QgsPaintEffectRegistry& rh );
 
 };
 

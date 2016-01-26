@@ -20,12 +20,6 @@ QgsGeometryCache::QgsGeometryCache()
 {
 }
 
-QgsGeometryCache::~QgsGeometryCache()
-{
-  // Destroy any cached geometries and clear the references to them
-  deleteCachedGeometries();
-}
-
 bool QgsGeometryCache::geometry( QgsFeatureId fid, QgsGeometry& geometry )
 {
   // no need to check changed geometries because all changed geometries are also cached

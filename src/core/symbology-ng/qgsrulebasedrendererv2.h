@@ -65,6 +65,28 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
       ~RenderLevel() { Q_FOREACH ( RenderJob* j, jobs ) delete j; }
       int zIndex;
       QList<RenderJob*> jobs;
+
+      RenderLevel& operator=( const RenderLevel& rh )
+      {
+        zIndex = rh.zIndex;
+        qDeleteAll( jobs );
+        jobs.clear();
+        Q_FOREACH ( RenderJob* job, rh.jobs )
+        {
+          jobs << new RenderJob( *job );
+        }
+        return *this;
+      }
+
+      RenderLevel( const RenderLevel& other )
+          : zIndex( other.zIndex )
+      {
+        Q_FOREACH ( RenderJob* job, other.jobs )
+        {
+          jobs << new RenderJob( *job );
+        }
+      }
+
     };
 
     // rendering queue: a list of rendering levels

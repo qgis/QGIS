@@ -5,7 +5,6 @@ class QgsGeometryCache
 %End
   public:
     QgsGeometryCache();
-    ~QgsGeometryCache();
 
     QgsGeometryMap& cachedGeometries();
 

@@ -168,6 +168,10 @@ class CORE_EXPORT QgsRendererV2Registry
 
     //! list to keep order in which renderers have been added
     QStringList mRenderersOrder;
+
+  private:
+    QgsRendererV2Registry( const QgsRendererV2Registry& rh );
+    QgsRendererV2Registry& operator=( const QgsRendererV2Registry& rh );
 };
 
 #endif // QGSRENDERERV2REGISTRY_H

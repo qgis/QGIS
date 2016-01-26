@@ -22,7 +22,6 @@ class QgsComposerLegendStyle
       Right,
     };
     QgsComposerLegendStyle();
-    ~QgsComposerLegendStyle();
 
     QFont font() const;
     QFont & rfont();

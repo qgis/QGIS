@@ -84,6 +84,11 @@ class ANALYSIS_EXPORT QgsAlignRaster
       //! number of raster's bands
       int mBandCnt;
 
+    private:
+
+      RasterInfo( const RasterInfo& rh );
+      RasterInfo& operator=( const RasterInfo& rh );
+
       friend class QgsAlignRaster;
     };
 

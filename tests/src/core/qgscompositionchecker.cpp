@@ -38,10 +38,6 @@ QgsCompositionChecker::QgsCompositionChecker()
 {
 }
 
-QgsCompositionChecker::~QgsCompositionChecker()
-{
-}
-
 bool QgsCompositionChecker::testComposition( QString &theReport, int page, int pixelDiff )
 {
   if ( !mComposition )

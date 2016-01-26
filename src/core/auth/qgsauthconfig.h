@@ -44,16 +44,11 @@ class CORE_EXPORT QgsAuthMethodConfig
      */
     QgsAuthMethodConfig( const QString& method = QString(), int version = 0 );
 
-    /** Full clone of config */
-    QgsAuthMethodConfig( const QgsAuthMethodConfig& methodconfig );
-
     /** Operator used to compare configs' equality */
     bool operator==( const QgsAuthMethodConfig& other ) const;
 
     /** Operator used to compare configs' inequality */
     bool operator!=( const QgsAuthMethodConfig& other ) const;
-
-    ~QgsAuthMethodConfig() {}
 
     /**
      * Get 'authcfg' 7-character alphanumeric ID of the config
@@ -197,7 +192,6 @@ class CORE_EXPORT QgsPkiBundle
     QgsPkiBundle( const QSslCertificate &clientCert = QSslCertificate(),
                   const QSslKey &clientKey = QSslKey(),
                   const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
-    ~QgsPkiBundle();
 
     /**
      * Construct a bundle of PKI components from PEM-formatted file paths
@@ -265,7 +259,6 @@ class CORE_EXPORT QgsPkiConfigBundle
     QgsPkiConfigBundle( const QgsAuthMethodConfig& config,
                         const QSslCertificate& cert,
                         const QSslKey& certkey );
-    ~QgsPkiConfigBundle();
 
     /** Whether the bundle is valid */
     bool isValid();

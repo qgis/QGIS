@@ -7,13 +7,9 @@ class QgsAuthMethodConfig
 
     QgsAuthMethodConfig( const QString& method = QString(), int version = 0 );
 
-    QgsAuthMethodConfig( const QgsAuthMethodConfig& methodconfig );
-
     bool operator==( const QgsAuthMethodConfig& other ) const;
 
     bool operator!=( const QgsAuthMethodConfig& other ) const;
-
-    ~QgsAuthMethodConfig();
 
     const QString id() const;
     void setId( const QString& id );
@@ -66,7 +62,6 @@ class QgsPkiBundle
     QgsPkiBundle( const QSslCertificate &clientCert = QSslCertificate(),
                   const QSslKey &clientKey = QSslKey(),
                   const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
-    ~QgsPkiBundle();
 
     static const QgsPkiBundle fromPemPaths( const QString &certPath,
                                             const QString &keyPath,
@@ -102,7 +97,6 @@ class QgsPkiConfigBundle
     QgsPkiConfigBundle( const QgsAuthMethodConfig& config,
                   const QSslCertificate& cert,
                   const QSslKey& certkey );
-    ~QgsPkiConfigBundle();
 
     bool isValid();
 

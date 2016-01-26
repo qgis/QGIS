@@ -61,11 +61,6 @@ QgsRasterCalculator::QgsRasterCalculator( const QString& formulaString, const QS
 {
 }
 
-
-QgsRasterCalculator::~QgsRasterCalculator()
-{
-}
-
 int QgsRasterCalculator::processCalculation( QProgressDialog* p )
 {
   //prepare search string / tree

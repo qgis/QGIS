@@ -44,11 +44,6 @@ QgsGridFileWriter::QgsGridFileWriter()
 
 }
 
-QgsGridFileWriter::~QgsGridFileWriter()
-{
-
-}
-
 int QgsGridFileWriter::writeFile( bool showProgressDialog )
 {
   QFile outputFile( mOutputFilePath );

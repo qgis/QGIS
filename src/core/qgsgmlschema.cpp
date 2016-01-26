@@ -43,10 +43,6 @@ QgsGmlFeatureClass::QgsGmlFeatureClass( const QString& name, const QString& path
 {
 }
 
-QgsGmlFeatureClass::~QgsGmlFeatureClass()
-{
-}
-
 int QgsGmlFeatureClass::fieldIndex( const QString & name )
 {
   for ( int i = 0; i < mFields.size(); i++ )

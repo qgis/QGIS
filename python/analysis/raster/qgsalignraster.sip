@@ -39,6 +39,10 @@ class QgsAlignRaster
 
       //! Get raster value at the given coordinates (from the first band)
       double identify( double mx, double my );
+
+      private:
+        RasterInfo( const QgsAlignRaster::RasterInfo& rh );
+
     };
 
 

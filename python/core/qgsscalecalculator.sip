@@ -21,9 +21,6 @@ class QgsScaleCalculator
     QgsScaleCalculator( double dpi = 0,
                         QGis::UnitType mapUnits = QGis::Meters );
 
-    //! Destructor
-    ~QgsScaleCalculator();
-
     /**
      * Set the dpi to be used in scale calculations
      * @param dpi Dots per inch of monitor resolution

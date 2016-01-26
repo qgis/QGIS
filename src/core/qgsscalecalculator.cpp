@@ -25,9 +25,6 @@ QgsScaleCalculator::QgsScaleCalculator( double dpi, QGis::UnitType mapUnits )
     : mDpi( dpi ), mMapUnits( mapUnits )
 {}
 
-QgsScaleCalculator::~QgsScaleCalculator()
-{}
-
 void QgsScaleCalculator::setDpi( double dpi )
 {
   mDpi = dpi;

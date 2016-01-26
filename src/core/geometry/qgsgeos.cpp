@@ -126,6 +126,10 @@ class GEOSGeomScopedPtr
 
   private:
     GEOSGeometry* mGeom;
+
+  private:
+    GEOSGeomScopedPtr( const GEOSGeomScopedPtr& rh );
+    GEOSGeomScopedPtr& operator=( const GEOSGeomScopedPtr& rh );
 };
 
 QgsGeos::QgsGeos( const QgsAbstractGeometryV2* geometry, double precision )

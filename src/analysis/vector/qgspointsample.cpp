@@ -18,10 +18,6 @@ QgsPointSample::QgsPointSample()
 {
 }
 
-QgsPointSample::~QgsPointSample()
-{
-}
-
 int QgsPointSample::createRandomPoints( QProgressDialog* pd )
 {
   Q_UNUSED( pd );

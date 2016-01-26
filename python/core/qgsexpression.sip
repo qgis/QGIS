@@ -478,7 +478,6 @@ class QgsExpression
     {
       public:
         Interval( int seconds = 0 );
-        ~Interval();
         double years();
         double months();
         double weeks();

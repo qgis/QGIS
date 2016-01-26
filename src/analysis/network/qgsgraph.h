@@ -133,8 +133,6 @@ class ANALYSIS_EXPORT QgsGraph
   public:
     QgsGraph();
 
-    ~QgsGraph();
-
     // begin graph constructing methods
     /**
      * add vertex to a grap

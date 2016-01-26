@@ -52,11 +52,6 @@ QgsRasterFileWriter::QgsRasterFileWriter()
 
 }
 
-QgsRasterFileWriter::~QgsRasterFileWriter()
-{
-
-}
-
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, QgsRectangle outputExtent,
     const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog )
 {

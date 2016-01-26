@@ -213,6 +213,11 @@ class CORE_EXPORT QgsPaintEffectRegistry
     ~QgsPaintEffectRegistry();
 
     QMap<QString, QgsPaintEffectAbstractMetadata*> mMetadata;
+
+  private:
+
+    QgsPaintEffectRegistry( const QgsPaintEffectRegistry& rh );
+    QgsPaintEffectRegistry& operator=( const QgsPaintEffectRegistry& rh );
 };
 
 #endif //QGSPAINTEFFECTREGISTRY_H

@@ -450,13 +450,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
           : mWhat( r.PQresultErrorMessage() )
       {}
 
-      PGException( const PGException &e )
-          : mWhat( e.errorMessage() )
-      {}
-
-      ~PGException()
-      {}
-
       QString errorMessage() const
       {
         return mWhat;

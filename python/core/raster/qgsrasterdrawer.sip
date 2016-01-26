@@ -5,7 +5,6 @@ class QgsRasterDrawer
 %End
   public:
     QgsRasterDrawer( QgsRasterIterator *iterator );
-    ~QgsRasterDrawer();
 
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 

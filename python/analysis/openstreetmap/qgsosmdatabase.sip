@@ -77,6 +77,9 @@ class QgsOSMDatabase
     QString quotedIdentifier( QString id );
     QString quotedValue( QString value );
 
+  private:
+
+    QgsOSMDatabase( const QgsOSMDatabase& rh );
 };
 
 

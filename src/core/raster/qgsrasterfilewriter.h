@@ -49,7 +49,6 @@ class CORE_EXPORT QgsRasterFileWriter
     };
 
     QgsRasterFileWriter( const QString& outputUrl );
-    ~QgsRasterFileWriter();
 
     /** Write raster file
         @param pipe raster pipe

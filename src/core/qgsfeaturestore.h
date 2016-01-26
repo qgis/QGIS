@@ -34,13 +34,7 @@ class CORE_EXPORT QgsFeatureStore
     QgsFeatureStore();
 
     //! Constructor
-    QgsFeatureStore( const QgsFeatureStore &rhs );
-
-    //! Constructor
     QgsFeatureStore( const QgsFields& fields, const QgsCoordinateReferenceSystem& crs );
-
-    //! Destructor
-    ~QgsFeatureStore();
 
     /** Get fields list */
     QgsFields& fields() { return mFields; }
