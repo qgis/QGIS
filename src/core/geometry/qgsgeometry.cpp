@@ -300,7 +300,7 @@ QGis::WkbType QgsGeometry::wkbType() const
   }
   else
   {
-    return static_cast< QGis::WkbType >( d->geometry->wkbType() );
+    return QGis::fromNewWkbType( d->geometry->wkbType() );
   }
 }
 
