@@ -54,9 +54,11 @@ class LayerPreview(QgsMapCanvas):
     def loadPreview(self, item):
         if item == self.item and not self.dirty:
             return
-        self._clear()
+
         if item is None:
             return
+
+        self._clear()
 
         if isinstance(item, Table) and item.type in [Table.VectorType, Table.RasterType]:
             # update the preview, but first let the manager chance to show the canvas
