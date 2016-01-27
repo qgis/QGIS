@@ -24,7 +24,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include <QStringList>
 #include <QVector>
 
-QList<QgsLineStringV2*> QgsGeometryUtils::extractLineStrings(const QgsAbstractGeometryV2* geom)
+QList<QgsLineStringV2*> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeometryV2* geom )
 {
   QList< QgsLineStringV2* > linestrings;
   if ( !geom )
