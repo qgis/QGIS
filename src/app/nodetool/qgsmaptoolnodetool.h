@@ -65,6 +65,11 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
      */
     void editingToggled();
 
+    /*
+     * delete all selected nodes and select next available node
+     */
+    void deleteNodeSelection();
+
   private:
     /**
      * Get the feature on the mouse click
