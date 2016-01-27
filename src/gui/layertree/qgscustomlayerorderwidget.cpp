@@ -39,8 +39,8 @@ QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridg
   mView->setDragEnabled( true );
   mView->setAcceptDrops( true );
   mView->setDropIndicatorShown( true );
-  mView->setDragDropMode( QAbstractItemView::InternalMove );
   mView->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  mView->setDefaultDropAction( Qt::MoveAction );
 
   mView->setModel( mModel );
 
@@ -89,6 +89,7 @@ void QgsCustomLayerOrderWidget::modelUpdated()
 {
   mBridge->setCustomLayerOrder( mModel->order() );
 }
+
 
 
 ///@cond PRIVATE
@@ -155,7 +156,7 @@ Qt::ItemFlags CustomLayerOrderModel::flags( const QModelIndex& index ) const
 
 Qt::DropActions CustomLayerOrderModel::supportedDropActions() const
 {
-  return Qt::MoveAction;
+  return Qt::CopyAction | Qt::MoveAction;
 }
 
 QStringList CustomLayerOrderModel::mimeTypes() const

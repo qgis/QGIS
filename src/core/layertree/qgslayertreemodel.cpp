@@ -915,7 +915,7 @@ void QgsLayerTreeModel::recursivelyEmitDataChanged( const QModelIndex& idx )
 
 Qt::DropActions QgsLayerTreeModel::supportedDropActions() const
 {
-  return Qt::MoveAction;
+  return Qt::CopyAction | Qt::MoveAction;
 }
 
 QStringList QgsLayerTreeModel::mimeTypes() const
