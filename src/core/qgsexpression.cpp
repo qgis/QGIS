@@ -4561,13 +4561,9 @@ QString QgsExpression::variableHelpText( const QString &variableName, bool showV
     {
       valueString = QCoreApplication::translate( "variable_help", "not set" );
     }
-    else if ( value.type() == QVariant::String )
-    {
-      valueString = QString( "'<b>%1</b>'" ).arg( value.toString() );
-    }
     else
     {
-      valueString = QString( "<b>%1</b>" ).arg( value.toString() );
+      valueString = QString( "<b>%1</b>" ).arg( formatPreviewString( value ) );
     }
     text.append( QCoreApplication::translate( "variable_help", "<p>Current value: %1</p>" ).arg( valueString ) );
   }
@@ -4600,6 +4596,47 @@ QString QgsExpression::group( const QString& name )
   //have a translated name in the gGroups hash, return the name
   //unchanged
   return gGroups.value( name, name );
+}
+
+QString QgsExpression::formatPreviewString( const QVariant& value )
+{
+  if ( value.canConvert<QgsGeometry>() )
+  {
+    //result is a geometry
+    QgsGeometry geom = value.value<QgsGeometry>();
+    if ( geom.isEmpty() )
+      return tr( "<i>&lt;empty geometry&gt;</i>" );
+    else
+      return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWKBTypes::displayString( geom.geometry()->wkbType() ) );
+  }
+  else if ( value.canConvert< QgsFeature >() )
+  {
+    //result is a feature
+    QgsFeature feat = value.value<QgsFeature>();
+    return tr( "<i>&lt;feature: %1&gt;</i>" ).arg( feat.id() );
+  }
+  else if ( value.canConvert< QgsExpression::Interval >() )
+  {
+    //result is a feature
+    QgsExpression::Interval interval = value.value<QgsExpression::Interval>();
+    return tr( "<i>&lt;interval: %1 days&gt;</i>" ).arg( interval.days() );
+  }
+  else if ( value.type() == QVariant::String )
+  {
+    QString previewString = value.toString();
+    if ( previewString.length() > 63 )
+    {
+      return QString( tr( "'%1...'" ) ).arg( previewString.left( 60 ) );
+    }
+    else
+    {
+      return previewString.prepend( '\'' ).append( '\'' );
+    }
+  }
+  else
+  {
+    return value.toString();
+  }
 }
 
 QVariant QgsExpression::Function::func( const QVariantList& values, const QgsFeature* feature, QgsExpression* parent )

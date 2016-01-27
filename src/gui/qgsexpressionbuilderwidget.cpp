@@ -557,7 +557,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
       mExpressionContext.setFeature( mFeature );
       QVariant value = exp.evaluate( &mExpressionContext );
       if ( !exp.hasEvalError() )
-        lblPreview->setText( formatPreviewString( value ) );
+        lblPreview->setText( QgsExpression::formatPreviewString( value ) );
     }
     else
     {
@@ -572,7 +572,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     QVariant value = exp.evaluate( &mExpressionContext );
     if ( !exp.hasEvalError() )
     {
-      lblPreview->setText( formatPreviewString( value ) );
+      lblPreview->setText( QgsExpression::formatPreviewString( value ) );
     }
   }
 
@@ -595,44 +595,6 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     txtExpressionString->setToolTip( "" );
     lblPreview->setToolTip( "" );
     emit expressionParsed( true );
-  }
-}
-
-QString QgsExpressionBuilderWidget::formatPreviewString( const QVariant& value ) const
-{
-  if ( value.canConvert<QgsGeometry>() )
-  {
-    //result is a geometry
-    QgsGeometry geom = value.value<QgsGeometry>();
-    if ( geom.isEmpty() )
-      return tr( "<i>&lt;empty geometry&gt;</i>" );
-    else
-      return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWKBTypes::displayString( geom.geometry()->wkbType() ) );
-  }
-  else if ( value.canConvert< QgsFeature >() )
-  {
-    //result is a feature
-    QgsFeature feat = value.value<QgsFeature>();
-    return tr( "<i>&lt;feature: %1&gt;</i>" ).arg( feat.id() );
-  }
-  else if ( value.canConvert< QgsExpression::Interval >() )
-  {
-    //result is a feature
-    QgsExpression::Interval interval = value.value<QgsExpression::Interval>();
-    return tr( "<i>&lt;interval: %1 days&gt;</i>" ).arg( interval.days() );
-  }
-  else
-  {
-    QString previewString = value.toString();
-
-    if ( previewString.length() > 63 )
-    {
-      return QString( tr( "%1..." ) ).arg( previewString.left( 60 ) );
-    }
-    else
-    {
-      return previewString;
-    }
   }
 }
 

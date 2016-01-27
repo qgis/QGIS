@@ -692,6 +692,14 @@ class QgsExpression
      */
     static QString group( const QString& group );
 
+    /** Formats an expression result for friendly display to the user. Truncates the result to a sensible
+     * length, and presents text representations of non numeric/text types (eg geometries and features).
+     * @param value expression result to format
+     * @returns formatted string, may contain HTML formatting characters
+     * @note added in QGIS 2.14
+     */
+    static QString formatPreviewString( const QVariant& value );
+
   protected:
     void initGeomCalculator();
 };

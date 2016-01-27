@@ -261,12 +261,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QString loadFunctionHelp( QgsExpressionItem* functionName );
     QString helpStylesheet() const;
 
-    /** Formats an expression preview result for display in the widget
-     * by truncating the string
-     * @param value expression preview result to format
-     */
-    QString formatPreviewString( const QVariant& value ) const;
-
     void loadExpressionContext();
 
     bool mAutoSave;
