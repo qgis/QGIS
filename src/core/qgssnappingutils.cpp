@@ -514,6 +514,9 @@ void QgsSnappingUtils::onLayersWillBeRemoved( const QStringList& layerIds )
   // remove locators for layers that are going to be deleted
   Q_FOREACH ( const QString& layerId, layerIds )
   {
+    if ( mHybridNonindexableLayers.contains( layerId ) )
+      mHybridNonindexableLayers.remove( layerId );
+
     for ( LocatorsMap::iterator it = mLocators.begin(); it != mLocators.end(); )
     {
       if ( it.key()->id() == layerId )
