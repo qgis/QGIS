@@ -66,6 +66,9 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! Get extent of the area point locator covers - if null then it caches the whole layer
     //! @note added in QGIS 2.14
     const QgsRectangle* extent() const { return mExtent; }
+    //! Configure extent - if not null, it will index only that area
+    //! @note added in QGIS 2.14
+    void setExtent( const QgsRectangle* extent );
 
     enum Type
     {

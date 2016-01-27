@@ -172,10 +172,12 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! return a temporary locator with index only for a small area (will be replaced by another one on next request)
     QgsPointLocator* temporaryLocatorForLayer( QgsVectorLayer* vl, const QgsPoint& pointMap, double tolerance );
 
+    typedef QPair< QgsVectorLayer*, QgsRectangle > LayerAndAreaOfInterest;
+
     //! find out whether the strategy would index such layer or just use a temporary locator
-    bool willUseIndex( QgsVectorLayer* vl ) const;
+    bool isIndexPrepared( QgsVectorLayer* vl, const QgsRectangle& areaOfInterest );
     //! initialize index for layers where it makes sense (according to the indexing strategy)
-    void prepareIndex( const QList<QgsVectorLayer*>& layers );
+    void prepareIndex( const QList<LayerAndAreaOfInterest>& layers );
 
   private:
     // environment
@@ -199,6 +201,17 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     LocatorsMap mTemporaryLocators;
     //! list of layer IDs that are too large to be indexed (hybrid strategy will use temporary locators for those)
     QSet<QString> mHybridNonindexableLayers;
+    //! a record for each layer seen:
+    //! - value -1  == it is small layer -> fully indexed
+    //! - value > 0 == maximum area (in map units) for which it may make sense to build index.
+    //!   This means that index is built in area around the point with this total area, because
+    //!   for a larger area the number of features will likely exceed the limit. When the limit
+    //!   is exceeded, the maximum area is lowered to prevent that from happening.
+    //!   When requesting snap in area that is not currently indexed, layer's index is destroyed
+    //!   and a new one is built in the different area.
+    QHash<QString, double> mHybridMaxAreaPerLayer;
+    //! if using hybrid strategy, how many features of one layer may be indexed (to limit amount of consumed memory)
+    int mHybridPerLayerFeatureLimit;
 
     //! internal flag that an indexing process is going on. Prevents starting two processes in parallel.
     bool mIsIndexing;

@@ -600,10 +600,7 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateRefe
     mTransform = new QgsCoordinateTransform( layer->crs(), *destCRS );
   }
 
-  if ( extent )
-  {
-    mExtent = new QgsRectangle( *extent );
-  }
+  setExtent( extent );
 
   mStorage = StorageManager::createNewMemoryStorageManager();
 
@@ -624,6 +621,16 @@ QgsPointLocator::~QgsPointLocator()
 const QgsCoordinateReferenceSystem* QgsPointLocator::destCRS() const
 {
   return mTransform ? &mTransform->destCRS() : nullptr;
+}
+
+void QgsPointLocator::setExtent( const QgsRectangle* extent )
+{
+  if ( extent )
+  {
+    mExtent = new QgsRectangle( *extent );
+  }
+
+  destroyIndex();
 }
 
 
