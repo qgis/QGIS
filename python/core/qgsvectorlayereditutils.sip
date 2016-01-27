@@ -22,8 +22,17 @@ class QgsVectorLayerEditUtils
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
 
     /** Deletes a vertex from a feature
+     * @deprecated use deleteVertexV2() instead
      */
-    bool deleteVertex( QgsFeatureId atFeatureId, int atVertex );
+    bool deleteVertex( QgsFeatureId atFeatureId, int atVertex ) /Deprecated/;
+
+    /** Deletes a vertex from a feature.
+     * @param featureId ID of feature to remove vertex from
+     * @param vertex index of vertex to delete
+     * @node added in QGIS 2.14
+     */
+    //TODO QGIS 3.0 - rename to deleteVertex
+    QgsVectorLayer::EditResult deleteVertexV2( QgsFeatureId featureId, int vertex );
 
     /** Adds a ring to polygon/multipolygon features
      * @param ring ring to add

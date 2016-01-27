@@ -312,6 +312,16 @@ class QgsVectorLayer : QgsMapLayer
       Color,          /**< color */
       EditorWidgetV2, /**< modularized edit widgets @note added in 2.1 */
     };
+    
+    //! Result of an edit operation
+    enum EditResult
+    {
+      Success, /**< Edit operation was successful */
+      EmptyGeometry, /**< Edit operation resulted in an empty geometry */
+      EditFailed, /**< Edit operation failed */
+      FetchFeatureFailed, /**< Unable to fetch requested feature */
+      InvalidLayer, /**< Edit failed due to invalid layer */
+    };
 
     /** Types of feature form suppression after feature creation
      * @note added in 2.1 */
@@ -793,8 +803,17 @@ class QgsVectorLayer : QgsMapLayer
     bool moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
 
     /** Deletes a vertex from a feature
+     * @deprecated use deleteVertexV2() instead
      */
-    bool deleteVertex( QgsFeatureId atFeatureId, int atVertex );
+    bool deleteVertex( QgsFeatureId atFeatureId, int atVertex ) /Deprecated/;
+
+    /** Deletes a vertex from a feature.
+     * @param featureId ID of feature to remove vertex from
+     * @param vertex index of vertex to delete
+     * @note added in QGIS 2.14
+     */
+    //TODO QGIS 3.0 - rename back to deleteVertex
+    EditResult deleteVertexV2( QgsFeatureId featureId, int vertex );
 
     /** Deletes the selected features
      *  @return true in case of success and false otherwise

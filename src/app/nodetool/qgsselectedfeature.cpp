@@ -246,7 +246,8 @@ void QgsSelectedFeature::deleteSelectedVertexes()
 
   beginGeometryChange();
 
-  int count = 0;
+  bool success = false;
+  QgsVectorLayer::EditResult res = QgsVectorLayer::Success;
   for ( int i = mVertexMap.size() - 1; i > -1 && nSelected > 0; i-- )
   {
     if ( mVertexMap.at( i )->isSelected() )
@@ -263,14 +264,17 @@ void QgsSelectedFeature::deleteSelectedVertexes()
       if ( --nSelected == 0 )
         endGeometryChange();
 
-      if ( !mVlayer->deleteVertex( mFeatureId, i ) )
+      if ( res != QgsVectorLayer::EmptyGeometry )
+        res = mVlayer->deleteVertexV2( mFeatureId, i );
+
+      if ( res != QgsVectorLayer::Success && res != QgsVectorLayer::EmptyGeometry )
       {
-        count = 0;
+        success = false;
         QgsDebugMsg( QString( "Deleting vertex %1 failed - resetting" ).arg( i ) );
         break;
       }
 
-      count++;
+      success = true;
 
       if ( topologicalEditing )
       {
@@ -283,13 +287,22 @@ void QgsSelectedFeature::deleteSelectedVertexes()
             mVlayer->deleteVertex( resultIt.value().snappedAtGeometry, resultIt.value().snappedVertexNr );
         }
       }
+
+      if ( res == QgsVectorLayer::EmptyGeometry )
+      {
+        //geometry has been cleared as a result of deleting vertices (eg not enough vertices left to leave a valid geometry),
+        //so nothing more to do
+        QgsGeometry empty;
+        geometryChanged( mFeatureId, empty );
+        break;
+      }
     }
   }
 
   if ( nSelected > 0 )
     endGeometryChange();
 
-  if ( count > 0 )
+  if ( success )
   {
     mVlayer->endEditCommand();
   }

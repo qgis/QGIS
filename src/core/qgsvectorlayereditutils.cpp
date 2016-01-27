@@ -86,22 +86,28 @@ bool QgsVectorLayerEditUtils::moveVertex( const QgsPointV2& p, QgsFeatureId atFe
 
 bool QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId atFeatureId, int atVertex )
 {
+  QgsVectorLayer::EditResult res = deleteVertexV2( atFeatureId, atVertex );
+  return res == QgsVectorLayer::Success || res == QgsVectorLayer::EmptyGeometry;
+}
+
+QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertexV2( QgsFeatureId featureId, int vertex )
+{
   if ( !L->hasGeometryType() )
-    return false;
+    return QgsVectorLayer::InvalidLayer;
 
   QgsGeometry geometry;
-  if ( !cache()->geometry( atFeatureId, geometry ) )
+  if ( !cache()->geometry( featureId, geometry ) )
   {
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.constGeometry() )
-      return false; // geometry not found
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.constGeometry() )
+      return QgsVectorLayer::FetchFeatureFailed; // geometry not found
 
     geometry = *f.constGeometry();
   }
 
-  if ( !geometry.deleteVertex( atVertex ) )
-    return false;
+  if ( !geometry.deleteVertex( vertex ) )
+    return QgsVectorLayer::EditFailed;
 
   if ( geometry.geometry() && geometry.geometry()->nCoordinates() == 0 )
   {
@@ -109,9 +115,8 @@ bool QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId atFeatureId, int atVert
     geometry.setGeometry( nullptr );
   }
 
-
-  L->editBuffer()->changeGeometry( atFeatureId, &geometry );
-  return true;
+  L->editBuffer()->changeGeometry( featureId, &geometry );
+  return !geometry.isEmpty() ? QgsVectorLayer::Success : QgsVectorLayer::EmptyGeometry;
 }
 
 int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
