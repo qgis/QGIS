@@ -79,6 +79,13 @@ class QgsMapMouseEvent : QMouseEvent
     QgsPoint mapPoint() const;
 
     /**
+      * Returns the matching data from the most recently snapped point.
+      * @return the snapping data structure
+      * @note added in 2.14
+      */
+    QgsPointLocator::Match mapPointMatch() const;
+
+    /**
      * Set the (snapped) point this event points to in map coordinates.
      * The point in pixel coordinates will be calculated accordingly.
      *

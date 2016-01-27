@@ -112,9 +112,21 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     */
     int nextPoint( QPoint p, QgsPointV2 &layerPoint, QgsPointV2 &mapPoint );
 
+    /** Fetches the original point from the source layer if it has the same
+     * CRS as the current layer.
+     * @return 0 in case of success, 1 if not applicable (CRS mismatch), 2 in case of failure
+     * @note added in 2.14 */
+    int fetchLayerPoint( QgsPointLocator::Match match, QgsPointV2& layerPoint );
+
     /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
      @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
     int addVertex( const QgsPoint& point );
+
+    /** Variant to supply more information in the case of snapping
+     @param mapPoint The vertex to add in map coordinates
+     @param match Data about the snapping match. Can be an invalid match, if point not snapped.
+     @note added in 2.14 */
+    int addVertex( const QgsPoint& mapPoint, QgsPointLocator::Match match );
 
     /** Removes the last vertex from mRubberBand and mCaptureList*/
     void undo();
