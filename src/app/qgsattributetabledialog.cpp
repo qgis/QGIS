@@ -551,7 +551,7 @@ void QgsAttributeTableDialog::on_mOpenFieldCalculator_clicked()
 {
   QgsAttributeTableModel* masterModel = mMainView->masterModel();
 
-  QgsFieldCalculator calc( mLayer );
+  QgsFieldCalculator calc( mLayer, this );
   if ( calc.exec() == QDialog::Accepted )
   {
     int col = masterModel->fieldCol( calc.changedAttributeId() );
