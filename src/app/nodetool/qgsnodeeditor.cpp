@@ -381,15 +381,15 @@ void QgsNodeEditor::zoomToNode( int idx )
   }
 }
 
-void QgsNodeEditor::keyPressEvent(QKeyEvent * e)
+void QgsNodeEditor::keyPressEvent( QKeyEvent * e )
 {
-    if (e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete)
-    {
-        emit deleteSelectedRequested();
+  if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
+  {
+    emit deleteSelectedRequested();
 
-        // Override default shortcut management in MapCanvas
-        e->ignore();
-    }
+    // Override default shortcut management in MapCanvas
+    e->ignore();
+  }
 }
 
 //

@@ -88,7 +88,7 @@ class QgsNodeEditor : public QDockWidget
     void deleteSelectedRequested( );
 
   protected:
-    void keyPressEvent(QKeyEvent * event);
+    void keyPressEvent( QKeyEvent * event );
 
   private slots:
     void updateTableSelection( );
