@@ -152,7 +152,6 @@ class ProcessingPlugin:
 
     def openModeler(self):
         dlg = ModelerDialog()
-        dlg.show()
         dlg.exec_()
         if dlg.update:
             self.toolbox.updateProvider('model')
