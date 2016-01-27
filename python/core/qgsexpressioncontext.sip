@@ -392,7 +392,7 @@ class QgsExpressionContext
     static const QString EXPR_FIELDS;
     //! Inbuilt variable name for feature storage
     static const QString EXPR_FEATURE;
-    //! Inbuilt variable name for value original value variable
+    //! Inbuilt variable name for @value original value variable
     static const QString EXPR_ORIGINAL_VALUE;
     //! Inbuilt variable name for symbol color variable
     static const QString EXPR_SYMBOL_COLOR;
