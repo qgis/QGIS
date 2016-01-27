@@ -40,7 +40,6 @@ class EditModelAction(ContextAction):
 
     def execute(self):
         dlg = ModelerDialog(self.alg.getCopy())
-        dlg.show()
         dlg.exec_()
         if dlg.update:
             self.toolbox.updateProvider('model')
