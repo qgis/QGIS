@@ -29,7 +29,7 @@ class QgsVectorLayerEditUtils
     /** Deletes a vertex from a feature.
      * @param featureId ID of feature to remove vertex from
      * @param vertex index of vertex to delete
-     * @node added in QGIS 2.14
+     * @note added in QGIS 2.14
      */
     //TODO QGIS 3.0 - rename to deleteVertex
     QgsVectorLayer::EditResult deleteVertexV2( QgsFeatureId featureId, int vertex );

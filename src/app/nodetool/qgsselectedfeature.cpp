@@ -284,7 +284,7 @@ void QgsSelectedFeature::deleteSelectedVertexes()
         {
           // move all other
           if ( mFeatureId !=  resultIt.value().snappedAtGeometry )
-            mVlayer->deleteVertex( resultIt.value().snappedAtGeometry, resultIt.value().snappedVertexNr );
+            mVlayer->deleteVertexV2( resultIt.value().snappedAtGeometry, resultIt.value().snappedVertexNr );
         }
       }
 
