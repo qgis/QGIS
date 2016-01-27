@@ -70,7 +70,7 @@ class ClipByMask(GdalAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Extraction')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterVector(self.MASK, self.tr('Mask layer'),
-                          [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterString(self.NO_DATA,
                                           self.tr("Nodata value, leave blank to take the nodata value from input"),
                                           '-9999'))
