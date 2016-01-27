@@ -505,7 +505,7 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   bool ok;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( pen.color() ) );
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mColor ) );
     QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, context, QVariant(), &ok ).toString();
     if ( ok )
       pen.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
@@ -555,7 +555,7 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   //line style
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_LINE_STYLE ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenStyle( pen.style() ) );
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenStyle( mPenStyle ) );
     QString lineStyleString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_LINE_STYLE, context, QVariant(), &ok ).toString();
     if ( ok )
       pen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( lineStyleString ) );
@@ -564,7 +564,7 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   //join style
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOINSTYLE ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenJoinStyle( pen.joinStyle() ) );
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle ) );
     QString joinStyleString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOINSTYLE, context, QVariant(), &ok ).toString();
     if ( ok )
       pen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( joinStyleString ) );
@@ -573,7 +573,7 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   //cap style
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_CAPSTYLE ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenCapStyle( pen.capStyle() ) );
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenCapStyle( mPenCapStyle ) );
     QString capStyleString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_CAPSTYLE, context, QVariant(), &ok ).toString();
     if ( ok )
       pen.setCapStyle( QgsSymbolLayerV2Utils::decodePenCapStyle( capStyleString ) );

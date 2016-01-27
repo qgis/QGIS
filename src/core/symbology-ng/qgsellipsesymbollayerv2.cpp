@@ -215,7 +215,7 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
   }
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_STYLE ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenStyle( mPen.style() ) );
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenStyle( mOutlineStyle ) );
     QString styleString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_STYLE, context, QVariant(), &ok ).toString();
     if ( ok )
     {
@@ -225,14 +225,14 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
   }
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL_COLOR ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mBrush.color() ) );
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mColor ) );
     QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL_COLOR, context, QVariant(), &ok ).toString();
     if ( ok )
       mBrush.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
   }
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_COLOR ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mPen.color() ) );
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mOutlineColor ) );
     QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_COLOR, context, QVariant(), &ok ).toString();
     if ( ok )
       mPen.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
@@ -638,7 +638,7 @@ QRectF QgsEllipseSymbolLayerV2::bounds( const QPointF& point, QgsSymbolV2RenderC
   }
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_STYLE ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenStyle( mPen.style() ) );
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenStyle( mOutlineStyle ) );
     QString outlineStyle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_STYLE, context, QVariant(), &ok ).toString();
     if ( ok && outlineStyle == "no" )
     {

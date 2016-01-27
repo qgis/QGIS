@@ -84,21 +84,21 @@ void QgsSimpleFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
 
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( brush.color() ) );
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mColor ) );
     QString color = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, context, QVariant(), &ok ).toString();
     if ( ok )
       brush.setColor( QgsSymbolLayerV2Utils::decodeColor( color ) );
   }
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL_STYLE ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeBrushStyle( brush.style() ) );
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeBrushStyle( mBrushStyle ) );
     QString style = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL_STYLE, context, QVariant(), &ok ).toString();
     if ( ok )
       brush.setStyle( QgsSymbolLayerV2Utils::decodeBrushStyle( style ) );
   }
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( pen.color() ) );
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mBorderColor ) );
     QString color = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER, context, QVariant(), &ok ).toString();
     if ( ok )
       pen.setColor( QgsSymbolLayerV2Utils::decodeColor( color ) );
@@ -113,7 +113,7 @@ void QgsSimpleFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   }
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_BORDER_STYLE ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenStyle( pen.style() ) );
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenStyle( mBorderStyle ) );
     QString style = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_BORDER_STYLE, context, QVariant(), &ok ).toString();
     if ( ok )
     {
@@ -123,7 +123,7 @@ void QgsSimpleFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   }
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenJoinStyle( pen.joinStyle() ) );
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle ) );
     QString style = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE, context, QVariant(), &ok ).toString();
     if ( ok )
     {
