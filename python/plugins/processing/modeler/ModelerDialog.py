@@ -213,15 +213,15 @@ class ModelerDialog(BASE, WIDGET):
         if self.hasChanged:
             ret = QMessageBox.question(
                 self, self.tr('Unsaved changes'),
-                self.tr('There are unsaved changes in model. Continue?'),
+                self.tr('There are unsaved changes in the model. Close it anyway?'),
                 QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
             if ret == QMessageBox.Yes:
-                evt.accept()
+                super(ModelerDialog, self).closeEvent(evt)
             else:
                 evt.ignore()
         else:
-            evt.accept()
+            super(ModelerDialog, self).closeEvent(evt)
 
     def editHelp(self):
         if self.alg.provider is None:
@@ -237,8 +237,8 @@ class ModelerDialog(BASE, WIDGET):
     def runModel(self):
         if len(self.alg.algs) == 0:
             QMessageBox.warning(self, self.tr('Empty model'),
-                                self.tr("Model doesn't contains any algorithms and/or "
-                                        "parameters and can't be executed"))
+                                self.tr("The model contains no algorithms and/or "
+                                        "parameters and can't be executed."))
             return
 
         if self.alg.provider is None:
@@ -294,13 +294,13 @@ class ModelerDialog(BASE, WIDGET):
         with codecs.open(filename, 'w', encoding='utf-8') as fout:
             fout.write(text)
         QMessageBox.information(self, self.tr('Model exported'),
-                                self.tr('Model was correctly exported.'))
+                                self.tr('The model was correctly exported.'))
 
     def saveModel(self, saveAs):
         if unicode(self.textGroup.text()).strip() == '' \
                 or unicode(self.textName.text()).strip() == '':
             QMessageBox.warning(
-                self, self.tr('Warning'), self.tr('Please enter group and model names before saving')
+                self, self.tr('Warning'), self.tr('Please enter group and model names before saving.')
             )
             return
         self.alg.name = unicode(self.textName.text())
@@ -335,7 +335,7 @@ class ModelerDialog(BASE, WIDGET):
             fout.close()
             self.update = True
             QMessageBox.information(self, self.tr('Model saved'),
-                                    self.tr('Model was correctly saved.'))
+                                    self.tr('The model was correctly saved.'))
 
             self.hasChanged = False
 

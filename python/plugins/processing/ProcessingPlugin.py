@@ -57,6 +57,7 @@ class ProcessingPlugin:
         Processing.initialize()
 
         self.commander = None
+        self.modelerDialog = None
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
@@ -151,11 +152,16 @@ class ProcessingPlugin:
             self.toolbox.show()
 
     def openModeler(self):
-        dlg = ModelerDialog()
-        dlg.show()
-        dlg.exec_()
-        if dlg.update:
+        if self.modelerDialog is None:
+            self.modelerDialog = ModelerDialog()
+            self.modelerDialog.finished.connect(self.finishedModeler)
+        self.modelerDialog.show()
+        self.modelerDialog.activateWindow()
+
+    def finishedModeler(self):
+        if self.modelerDialog.update:
             self.toolbox.updateProvider('model')
+        self.modelerDialog = None
 
     def openResults(self):
         dlg = ResultsDialog()
