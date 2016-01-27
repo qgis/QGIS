@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsexternalresourcewidgetfactory.h"
+#include "qgsfilewidget.h"
 
 QgsExternalResourceWidgetFactory::QgsExternalResourceWidgetFactory( const QString& name )
     : QgsEditorWidgetFactory( name )
@@ -57,6 +58,12 @@ void QgsExternalResourceWidgetFactory::writeConfig( const QgsEditorWidgetConfig&
   if ( config.contains( "DocumentViewer" ) )
     configElement.setAttribute( "DocumentViewer", config.value( "DocumentViewer" ).toInt() );
 
+  if ( config.contains( "DocumentViewerWidth" ) )
+    configElement.setAttribute( "DocumentViewerWidth", config.value( "DocumentViewerWidth" ).toInt() );
+
+  if ( config.contains( "DocumentViewerHeight" ) )
+    configElement.setAttribute( "DocumentViewerHeight", config.value( "DocumentViewerHeight" ).toInt() );
+
   if ( config.contains( "FileWidgetFilter" ) )
     configElement.setAttribute( "FileWidgetFilter", config.value( "FileWidgetFilter" ).toString() );
 
@@ -87,13 +94,19 @@ QgsEditorWidgetConfig QgsExternalResourceWidgetFactory::readConfig( const QDomEl
 
   if ( configElement.hasAttribute( "RelativeStorage" ) )
   {
-    if (( configElement.attribute( "RelativeStorage" ) == "Default" && configElement.hasAttribute( "DefaultRoot" ) ) ||
-        configElement.attribute( "RelativeStorage" ) == "Project" )
-      cfg.insert( "RelativeStorage" , configElement.attribute( "RelativeStorage" ) );
+    if (( configElement.attribute( "RelativeStorage" ).toInt() == QgsFileWidget::RelativeStorage::RelativeDefaultPath && configElement.hasAttribute( "DefaultRoot" ) ) ||
+        configElement.attribute( "RelativeStorage" ).toInt() == QgsFileWidget::RelativeStorage::RelativeProject )
+      cfg.insert( "RelativeStorage" , configElement.attribute( "RelativeStorage" ).toInt() );
   }
 
   if ( configElement.hasAttribute( "DocumentViewer" ) )
     cfg.insert( "DocumentViewer", configElement.attribute( "DocumentViewer" ) );
+
+  if ( configElement.hasAttribute( "DocumentViewerWidth" ) )
+    cfg.insert( "DocumentViewerWidth", configElement.attribute( "DocumentViewerWidth" ) );
+
+  if ( configElement.hasAttribute( "DocumentViewerHeight" ) )
+    cfg.insert( "DocumentViewerHeight", configElement.attribute( "DocumentViewerHeight" ) );
 
   if ( configElement.hasAttribute( "FileWidgetFilter" ) )
     cfg.insert( "FileWidgetFilter", configElement.attribute( "FileWidgetFilter" ) );
