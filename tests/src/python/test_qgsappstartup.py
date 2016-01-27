@@ -48,7 +48,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
     # TODO: refactor parameters to **kwargs to handle all startup combinations
     def doTestStartup(self, option='', testDir='', testFile='',
                       loadPlugins=False, customization=False,
-                      timeOut=15, env=None, additionalArguments=[]):
+                      timeOut=90, env=None, additionalArguments=[]):
         """Run QGIS with the given option. Wait for testFile to be created.
         If time runs out, fail.
         """
