@@ -24,11 +24,11 @@
 #include <qgstipfactory.h>
 
 #ifdef Q_OS_MACX
-QgsTipGui::QgsTipGui()
-    : QDialog( nullptr, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
+QgsTipGui::QgsTipGui( QWidget *parent )
+    : QDialog( parent, Qt::WindowSystemMenuHint )  // Dialog with close button only
 #else
-QgsTipGui::QgsTipGui()
-    : QDialog( nullptr )  // Normal dialog in non Mac-OS
+QgsTipGui::QgsTipGui( QWidget *parent )
+    : QDialog( parent )  // Normal dialog in non Mac-OS
 #endif
 {
   setupUi( this );

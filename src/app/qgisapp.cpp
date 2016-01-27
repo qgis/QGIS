@@ -916,7 +916,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   if ( settings.value( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), true ).toBool() )
   {
     mSplash->hide();
-    QgsTipGui myTip;
+    QgsTipGui myTip( this );
     myTip.exec();
   }
   else
