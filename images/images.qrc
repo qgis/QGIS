@@ -565,6 +565,7 @@
         <file>icons/qgis-icon-16x16_xmas.png</file>
         <file>icons/qgis-icon-60x60_xmas.png</file>
         <file>themes/default/mActionTracing.png</file>
+        <file>themes/default/vector_grid.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

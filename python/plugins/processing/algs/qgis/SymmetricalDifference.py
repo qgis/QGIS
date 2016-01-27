@@ -29,7 +29,7 @@ import os
 
 from PyQt4.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest, NULL
+from qgis.core import QGis, QgsFeature, QgsGeometry, QgsFeatureRequest, NULL
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException

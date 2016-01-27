@@ -41,6 +41,8 @@ class ProcessingConfig:
     VECTOR_LINE_STYLE = 'VECTOR_LINE_STYLE'
     VECTOR_POLYGON_STYLE = 'VECTOR_POLYGON_STYLE'
     SHOW_RECENT_ALGORITHMS = 'SHOW_RECENT_ALGORITHMS'
+    SHOW_VECTOR_MENUS = 'SHOW_VECTOR_MENUS'
+    SHOW_RASTER_MENUS = 'SHOW_RASTER_MENUS'
     USE_SELECTED = 'USE_SELECTED'
     USE_FILENAME_AS_LAYER_NAME = 'USE_FILENAME_AS_LAYER_NAME'
     KEEP_DIALOG_OPEN = 'KEEP_DIALOG_OPEN'
@@ -81,6 +83,14 @@ class ProcessingConfig:
             ProcessingConfig.tr('General'),
             ProcessingConfig.SHOW_RECENT_ALGORITHMS,
             ProcessingConfig.tr('Show recently executed algorithms'), True))
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.SHOW_VECTOR_MENUS,
+            ProcessingConfig.tr('Add entries to the Vector menu'), True))
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.SHOW_RASTER_MENUS,
+            ProcessingConfig.tr('Add entries to the Raster menu'), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.SHOW_PROVIDERS_TOOLTIP,

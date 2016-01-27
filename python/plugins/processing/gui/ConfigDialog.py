@@ -151,6 +151,7 @@ class ConfigDialog(BASE, WIDGET):
                     return
             setting.save()
         Processing.updateAlgsList()
+        Processing.updateMenus()
 
         QDialog.accept(self)
 

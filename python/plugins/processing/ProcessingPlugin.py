@@ -34,6 +34,7 @@ from PyQt4.QtCore import Qt, QCoreApplication, QDir
 from PyQt4.QtGui import QMenu, QAction, QIcon
 
 from processing.core.Processing import Processing
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigDialog
@@ -118,6 +119,8 @@ class ProcessingPlugin:
         self.menu.addAction(self.commanderAction)
         self.iface.registerMainWindowAction(self.commanderAction,
                                             self.tr('Ctrl+Alt+M'))
+
+        Processing.updateMenus()
 
     def unload(self):
         self.toolbox.setVisible(False)
