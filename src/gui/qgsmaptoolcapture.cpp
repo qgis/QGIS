@@ -196,7 +196,7 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent* e )
 }
 
 
-bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point )
+bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& mapPoint, const QgsPoint& layerPoint )
 {
   QgsMapCanvasTracer* tracer = QgsMapCanvasTracer::tracerForCanvas( mCanvas );
   if ( !tracer )
@@ -211,13 +211,10 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point )
     }
 
     // only accept first point if it is snapped to the graph (to vertex or edge)
-    bool res = tracer->isPointSnapped( point );
+    bool res = tracer->isPointSnapped( mapPoint );
     if ( res )
     {
-      QgsPoint layerPoint;
-      nextPoint( point, layerPoint ); // assuming the transform went fine earlier
-
-      mRubberBand->addPoint( point );
+      mRubberBand->addPoint( mapPoint );
       mCaptureCurve.addVertex( QgsPointV2( layerPoint.x(), layerPoint.y() ) );
     }
     return res;
@@ -228,7 +225,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point )
     return false;
 
   QgsTracer::PathError err;
-  QVector<QgsPoint> points = tracer->findShortestPath( pt0, point, &err );
+  QVector<QgsPoint> points = tracer->findShortestPath( pt0, mapPoint, &err );
   if ( points.isEmpty() )
     return false; // ignore the vertex - can't find path to the end point!
 
@@ -347,18 +344,23 @@ int QgsMapToolCapture::nextPoint( const QPoint &p, QgsPoint &layerPoint, QgsPoin
 
 int QgsMapToolCapture::addVertex( const QgsPoint& point )
 {
-  if ( mode() == CaptureNone )
-  {
-    QgsDebugMsg( "invalid capture mode" );
-    return 2;
-  }
-
   int res;
   QgsPoint layerPoint;
   res = nextPoint( point, layerPoint );
   if ( res != 0 )
   {
     return res;
+  }
+
+  return addVertex( point, layerPoint );
+}
+
+int QgsMapToolCapture::addVertex( const QgsPoint& mapPoint, const QgsPoint& layerPoint )
+{
+  if ( mode() == CaptureNone )
+  {
+    QgsDebugMsg( "invalid capture mode" );
+    return 2;
   }
 
   if ( !mRubberBand )
@@ -378,26 +380,26 @@ int QgsMapToolCapture::addVertex( const QgsPoint& point )
   bool traceCreated = false;
   if ( tracingEnabled() )
   {
-    traceCreated = tracingAddVertex( point );
+    traceCreated = tracingAddVertex( mapPoint, layerPoint );
   }
 
   if ( !traceCreated )
   {
     // ordinary digitizing
-    mRubberBand->addPoint( point );
+    mRubberBand->addPoint( mapPoint );
     mCaptureCurve.addVertex( QgsPointV2( layerPoint.x(), layerPoint.y() ) );
   }
 
   if ( mCaptureMode == CaptureLine )
   {
-    mTempRubberBand->addPoint( point );
+    mTempRubberBand->addPoint( mapPoint );
   }
   else if ( mCaptureMode == CapturePolygon )
   {
     const QgsPoint *firstPoint = mRubberBand->getPoint( 0, 0 );
     mTempRubberBand->addPoint( *firstPoint );
-    mTempRubberBand->movePoint( point );
-    mTempRubberBand->addPoint( point );
+    mTempRubberBand->movePoint( mapPoint );
+    mTempRubberBand->addPoint( mapPoint );
   }
 
   validateGeometry();

@@ -67,7 +67,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       }
     }
 
-    int error = addVertex( e->mapPoint() );
+    int error = addVertex( e->mapPoint(), e->layerPoint() );
     if ( error == 1 )
     {
       //current layer is not a vector layer

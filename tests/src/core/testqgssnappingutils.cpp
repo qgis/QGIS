@@ -61,7 +61,7 @@ class TestQgsSnappingUtils : public QObject
       //         \ |
       //          \|
       //           + (1,0)
-      mVL = new QgsVectorLayer( "Polygon", "x", "memory" );
+      mVL = new QgsVectorLayer( "Polygon?crs=epsg:32650", "x", "memory" );
       QgsFeature ff( 0 );
       QgsPolygon polygon;
       QgsPolyline polyline;
@@ -118,6 +118,55 @@ class TestQgsSnappingUtils : public QObject
       FilterExcludePoint myFilter( QgsPoint( 1, 0 ) );
       QgsPointLocator::Match m3 = u.snapToMap( QPoint( 100, 100 ), &myFilter );
       QVERIFY( !m3.isValid() );
+    }
+
+    void testSnapModeCurrentWithReprojection()
+    {
+      // test with OTF reprojection enabled.
+      // test with UTM<->Pseudo-Mercator, both with meters as units.
+      QgsCoordinateReferenceSystem* destCrs;
+      destCrs = new QgsCoordinateReferenceSystem( "epsg:3857" );
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setDestinationCrs( *destCrs );
+      mapSettings.setCrsTransformEnabled( true );
+      mapSettings.setExtent( QgsRectangle( 12524695.738, 0, 12524696.735, 1.004 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      u.setCurrentLayer( mVL );
+      u.setMapSettings( mapSettings );
+      u.setSnapToType( QgsSnappingUtils::SnapToLayer );
+
+      u.setDefaultSettings( QgsPointLocator::Vertex | QgsPointLocator::Edge, 10, QgsTolerance::Pixels );
+
+      QgsPointLocator::Match m = u.snapToMap( mapSettings.mapToLayerCoordinates( mVL, mapSettings.mapToPixel().toMapCoordinates( QPoint( 100, 100 ) ) ) );
+      QVERIFY( m.isValid() );
+      QVERIFY( m.hasVertex() );
+      QCOMPARE( m.point(), QgsPoint( 1, 0 ) );
+
+      QgsPointLocator::Match m2 = u.snapToMap( mapSettings.mapToLayerCoordinates( mVL, mapSettings.mapToPixel().toMapCoordinates( QPoint( 0, 100 ) ) ) );
+      QVERIFY( !m2.isValid() );
+      QVERIFY( !m2.hasVertex() );
+
+      // Test with UTM<->WGS84, which have a different unit type, so that
+      // tolerance conversion is tested properly.
+      delete destCrs;
+      destCrs = new QgsCoordinateReferenceSystem( "epsg:4326" );
+      mapSettings.setDestinationCrs( *destCrs );
+      mapSettings.setExtent( QgsRectangle( 112.5112561152933, 0, 112.51126507429, 0.000009019375921546616 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      u.setMapSettings( mapSettings );
+
+      QgsPointLocator::Match m3 = u.snapToMap( mapSettings.mapToLayerCoordinates( mVL, mapSettings.mapToPixel().toMapCoordinates( QPoint( 100, 100 ) ) ) );
+      QVERIFY( m3.isValid() );
+      QVERIFY( m3.hasVertex() );
+      QCOMPARE( m3.point(), QgsPoint( 1, 0 ) );
+
+      QgsPointLocator::Match m4 = u.snapToMap( mapSettings.mapToLayerCoordinates( mVL, mapSettings.mapToPixel().toMapCoordinates( QPoint( 0, 100 ) ) ) );
+      QVERIFY( !m4.isValid() );
+      QVERIFY( !m4.hasVertex() );
     }
 
     void testSnapModeAll()

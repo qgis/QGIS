@@ -92,8 +92,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     int nextPoint( const QPoint &p, QgsPoint &layerPoint, QgsPoint &mapPoint );
 
     /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
-     @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
-    int addVertex( const QgsPoint& point );
+      * @param mapPoint The point in map coordinates
+      * @param layerPoint The point in the crs of the current layer
+      * @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
+    int addVertex( const QgsPoint& mapPoint, const QgsPoint& layerPoint );
 
     /** Removes the last vertex from mRubberBand and mCaptureList*/
     void undo();
@@ -140,6 +142,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     void closePolygon();
 
+    // deprecated methods
+
+    /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates).
+      * @deprecated Use addVertex( mapPoint, layerPoint ) instead
+      * @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
+    Q_DECL_DEPRECATED int addVertex( const QgsPoint& point );
+
   private:
     //! whether tracing has been requested by the user
     bool tracingEnabled();
@@ -148,7 +157,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! handle of mouse movement when tracing enabled and capturing has started
     bool tracingMouseMove( QgsMapMouseEvent* e );
     //! handle of addition of clicked point (with the rest of the trace) when tracing enabled
-    bool tracingAddVertex( const QgsPoint& point );
+    bool tracingAddVertex( const QgsPoint& mapPoint, const QgsPoint& layerPoint );
 
   private:
     /** Flag to indicate a map canvas capture operation is taking place */

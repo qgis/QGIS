@@ -86,7 +86,20 @@ class QgsMapMouseEvent : QMouseEvent
      */
     void setMapPoint( const QgsPoint& point );
 
+    /*
+     * @brief layerPoint returns the point in coordinates
+     * @return the point in layer coordinates, after snapping if requested in the event.
+     */
+    QgsPoint layerPoint() const;
+
     QgsPoint originalMapPoint() const;
+
+    /**
+     * Returns the original, unmodified layer point of the mouse cursor.
+     *
+     * @return The cursor position in layer coordinates.
+     */
+    QgsPoint originalLayerPoint() const;
 
     QPoint pixelPoint() const;
 

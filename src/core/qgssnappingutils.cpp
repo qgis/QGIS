@@ -20,6 +20,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
+#include <QLinkedList>
 
 QgsSnappingUtils::QgsSnappingUtils( QObject* parent )
     : QObject( parent )
@@ -29,6 +30,7 @@ QgsSnappingUtils::QgsSnappingUtils( QObject* parent )
     , mDefaultType( QgsPointLocator::Vertex )
     , mDefaultTolerance( 10 )
     , mDefaultUnit( QgsTolerance::Pixels )
+    , mSnapToType( SnapToType::SnapToMap )
     , mSnapOnIntersection( false )
     , mIsIndexing( false )
 {
@@ -37,7 +39,8 @@ QgsSnappingUtils::QgsSnappingUtils( QObject* parent )
 
 QgsSnappingUtils::~QgsSnappingUtils()
 {
-  clearAllLocators();
+  clearAllToMapLocators();
+  clearAllToLayerLocators();
 }
 
 
@@ -46,15 +49,23 @@ QgsPointLocator* QgsSnappingUtils::locatorForLayer( QgsVectorLayer* vl )
   if ( !vl )
     return nullptr;
 
-  if ( !mLocators.contains( vl ) )
+  LocatorsMap* locators;
+  if ( mSnapToType == SnapToType::SnapToMap )
+    locators = &mLocators;
+  else if ( mSnapToType == SnapToType::SnapToLayer )
+    locators = &mToLayerLocators;
+  else
+    return nullptr;
+
+  if ( !locators->contains( vl ) )
   {
     QgsPointLocator* vlpl = new QgsPointLocator( vl, destCRS() );
-    mLocators.insert( vl, vlpl );
+    locators->insert( vl, vlpl );
   }
-  return mLocators.value( vl );
+  return locators->value( vl );
 }
 
-void QgsSnappingUtils::clearAllLocators()
+void QgsSnappingUtils::clearAllToMapLocators()
 {
   Q_FOREACH ( QgsPointLocator* vlpl, mLocators )
     delete vlpl;
@@ -63,6 +74,17 @@ void QgsSnappingUtils::clearAllLocators()
   Q_FOREACH ( QgsPointLocator* vlpl, mTemporaryLocators )
     delete vlpl;
   mTemporaryLocators.clear();
+}
+
+void QgsSnappingUtils::clearAllToLayerLocators()
+{
+  Q_FOREACH ( QgsPointLocator* vlpl, mToLayerLocators )
+    delete vlpl;
+  mToLayerLocators.clear();
+
+  Q_FOREACH ( QgsPointLocator* vlpl, mTemporaryToLayerLocators )
+    delete vlpl;
+  mTemporaryToLayerLocators.clear();
 }
 
 
@@ -76,14 +98,22 @@ QgsPointLocator* QgsSnappingUtils::locatorForLayerUsingStrategy( QgsVectorLayer*
 
 QgsPointLocator* QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer* vl, const QgsPoint& pointMap, double tolerance )
 {
-  if ( mTemporaryLocators.contains( vl ) )
-    delete mTemporaryLocators.take( vl );
+  LocatorsMap* locators;
+  if ( mSnapToType == SnapToType::SnapToMap )
+    locators = &mTemporaryLocators;
+  else if ( mSnapToType == SnapToType::SnapToLayer )
+    locators = &mTemporaryToLayerLocators;
+  else
+    return nullptr;
+
+  if ( locators->contains( vl ) )
+    delete locators->take( vl );
 
   QgsRectangle rect( pointMap.x() - tolerance, pointMap.y() - tolerance,
                      pointMap.x() + tolerance, pointMap.y() + tolerance );
   QgsPointLocator* vlpl = new QgsPointLocator( vl, destCRS(), &rect );
-  mTemporaryLocators.insert( vl, vlpl );
-  return mTemporaryLocators.value( vl );
+  locators->insert( vl, vlpl );
+  return locators->value( vl );
 }
 
 bool QgsSnappingUtils::willUseIndex( QgsVectorLayer* vl ) const
@@ -220,7 +250,13 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
     prepareIndex( QList<QgsVectorLayer*>() << mCurrentLayer );
 
     // data from project
-    double tolerance = QgsTolerance::toleranceInProjectUnits( mDefaultTolerance, mCurrentLayer, mMapSettings, mDefaultUnit );
+    double tolerance;
+    if ( mSnapToType == SnapToType::SnapToMap )
+      tolerance = QgsTolerance::toleranceInProjectUnits( mDefaultTolerance, mCurrentLayer, mMapSettings, mDefaultUnit );
+    else if ( mSnapToType == SnapToType::SnapToLayer )
+      tolerance = QgsTolerance::toleranceInMapUnits( mDefaultTolerance, mCurrentLayer, mMapSettings, mDefaultUnit );
+    else
+      tolerance = mDefaultTolerance;
     int type = mDefaultType;
 
     // use ad-hoc locator
@@ -366,12 +402,17 @@ void QgsSnappingUtils::setMapSettings( const QgsMapSettings& settings )
   mMapSettings = settings;
 
   if ( newDestCRS != oldDestCRS )
-    clearAllLocators();
+    clearAllToMapLocators();
 }
 
 void QgsSnappingUtils::setCurrentLayer( QgsVectorLayer* layer )
 {
+  QString oldDestCRS = mCurrentLayer ? mCurrentLayer->crs().authid() : QString();
+  QString newDestCRS = layer ? layer->crs().authid() : QString();
   mCurrentLayer = layer;
+
+  if ( newDestCRS != oldDestCRS )
+    clearAllToLayerLocators();
 }
 
 void QgsSnappingUtils::setSnapToMapMode( QgsSnappingUtils::SnapToMapMode mode )
@@ -428,7 +469,17 @@ void QgsSnappingUtils::setSnapOnIntersections( bool enabled )
 
 const QgsCoordinateReferenceSystem* QgsSnappingUtils::destCRS()
 {
-  return mMapSettings.hasCrsTransformEnabled() ? &mMapSettings.destinationCrs() : nullptr;
+  if ( mSnapToType == SnapToType::SnapToMap )
+    return mMapSettings.hasCrsTransformEnabled() ? &mMapSettings.destinationCrs() : nullptr;
+  else if ( mSnapToType == SnapToType::SnapToLayer )
+    return mMapSettings.hasCrsTransformEnabled() ? &mCurrentLayer->crs() : nullptr;
+  else
+    return nullptr;
+}
+
+void QgsSnappingUtils::setSnapToType( SnapToType snapToType )
+{
+  mSnapToType = snapToType;
 }
 
 
@@ -511,32 +562,24 @@ void QgsSnappingUtils::readConfigFromProject()
 
 void QgsSnappingUtils::onLayersWillBeRemoved( const QStringList& layerIds )
 {
+  QLinkedList<LocatorsMap*> locatorsMapList;
+  locatorsMapList << &mLocators << &mTemporaryLocators << &mToLayerLocators << &mTemporaryToLayerLocators;
   // remove locators for layers that are going to be deleted
   Q_FOREACH ( const QString& layerId, layerIds )
   {
-    for ( LocatorsMap::iterator it = mLocators.begin(); it != mLocators.end(); )
+    Q_FOREACH ( LocatorsMap* locators, locatorsMapList )
     {
-      if ( it.key()->id() == layerId )
+      for ( LocatorsMap::iterator it = locators->begin(); it != locators->end(); )
       {
-        delete it.value();
-        it = mLocators.erase( it );
-      }
-      else
-      {
-        ++it;
-      }
-    }
-
-    for ( LocatorsMap::iterator it = mTemporaryLocators.begin(); it != mTemporaryLocators.end(); )
-    {
-      if ( it.key()->id() == layerId )
-      {
-        delete it.value();
-        it = mTemporaryLocators.erase( it );
-      }
-      else
-      {
-        ++it;
+        if ( it.key()->id() == layerId )
+        {
+          delete it.value();
+          it = locators->erase( it );
+        }
+        else
+        {
+          ++it;
+        }
       }
     }
   }
