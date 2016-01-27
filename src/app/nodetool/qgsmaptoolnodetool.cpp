@@ -254,6 +254,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
     mIsPoint = vlayer->geometryType() == QGis::Point;
     mNodeEditor = new QgsNodeEditor( vlayer, mSelectedFeature, mCanvas );
     QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mNodeEditor );
+    connect( mNodeEditor, SIGNAL(deleteSelectedRequested()), this, SLOT( deleteNodeSelection() ) );
   }
   else
   {
@@ -646,55 +647,66 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QgsMapMouseEvent* e )
   mCanvas->refresh();
 }
 
+void QgsMapToolNodeTool::deleteNodeSelection()
+{
+    if (mSelectedFeature)
+    {
+        int firstSelectedIndex = firstSelectedVertex();
+        if ( firstSelectedIndex == -1 )
+          return;
+
+        mSelectedFeature->deleteSelectedVertexes();
+
+        if ( mSelectedFeature->geometry()->isEmpty() )
+        {
+          emit messageEmitted( tr( "Geometry has been cleared. Use the add part tool to set geometry for this feature." ) );
+        }
+        else
+        {
+          int nextVertexToSelect = firstSelectedIndex;
+          if ( mSelectedFeature->geometry()->type() == QGis::Line )
+          {
+            // for lines we don't wrap around vertex selection when deleting nodes from end of line
+            nextVertexToSelect = qMin( nextVertexToSelect, mSelectedFeature->geometry()->geometry()->nCoordinates() - 1 );
+          }
+
+          safeSelectVertex( nextVertexToSelect );
+        }
+        mCanvas->refresh();
+    }
+}
+
 void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
 {
-  if ( mSelectedFeature && ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
+  if (mSelectedFeature)
   {
-    int firstSelectedIndex = firstSelectedVertex();
-    if ( firstSelectedIndex == -1 )
-      return;
-
-    mSelectedFeature->deleteSelectedVertexes();
-
-    if ( mSelectedFeature->geometry()->isEmpty() )
-    {
-      emit messageEmitted( tr( "Geometry has been cleared. Use the add part tool to set geometry for this feature." ) );
-    }
-    else
-    {
-      int nextVertexToSelect = firstSelectedIndex;
-      if ( mSelectedFeature->geometry()->type() == QGis::Line )
+      if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
       {
-        // for lines we don't wrap around vertex selection when deleting nodes from end of line
-        nextVertexToSelect = qMin( nextVertexToSelect, mSelectedFeature->geometry()->geometry()->nCoordinates() - 1 );
+        this->deleteNodeSelection();
+
+        // Override default shortcut management in MapCanvas
+        e->ignore();
       }
+      else if ( e->key() == Qt::Key_Less || e->key() == Qt::Key_Comma )
+      {
+        int firstSelectedIndex = firstSelectedVertex();
+        if ( firstSelectedIndex == -1 )
+          return;
 
-      safeSelectVertex( nextVertexToSelect );
-    }
-    mCanvas->refresh();
+        mSelectedFeature->deselectAllVertexes();
+        safeSelectVertex( firstSelectedIndex - 1 );
+        e->ignore();
+      }
+      else if ( e->key() == Qt::Key_Greater || e->key() == Qt::Key_Period )
+      {
+        int firstSelectedIndex = firstSelectedVertex();
+        if ( firstSelectedIndex == -1 )
+          return;
 
-    // Override default shortcut management in MapCanvas
-    e->ignore();
-  }
-  else if ( mSelectedFeature && ( e->key() == Qt::Key_Less || e->key() == Qt::Key_Comma ) )
-  {
-    int firstSelectedIndex = firstSelectedVertex();
-    if ( firstSelectedIndex == -1 )
-      return;
-
-    mSelectedFeature->deselectAllVertexes();
-    safeSelectVertex( firstSelectedIndex - 1 );
-    e->ignore();
-  }
-  else if ( mSelectedFeature && ( e->key() == Qt::Key_Greater || e->key() == Qt::Key_Period ) )
-  {
-    int firstSelectedIndex = firstSelectedVertex();
-    if ( firstSelectedIndex == -1 )
-      return;
-
-    mSelectedFeature->deselectAllVertexes();
-    safeSelectVertex( firstSelectedIndex + 1 );
-    e->ignore();
+        mSelectedFeature->deselectAllVertexes();
+        safeSelectVertex( firstSelectedIndex + 1 );
+        e->ignore();
+      }
   }
 }
 

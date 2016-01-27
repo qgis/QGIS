@@ -27,6 +27,7 @@
 #include <QHeaderView>
 #include <QVBoxLayout>
 #include <QStyledItemDelegate>
+#include <QKeyEvent>
 #include <QLineEdit>
 #include <QVector2D>
 
@@ -380,6 +381,16 @@ void QgsNodeEditor::zoomToNode( int idx )
   }
 }
 
+void QgsNodeEditor::keyPressEvent(QKeyEvent * e)
+{
+    if (e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete)
+    {
+        emit deleteSelectedRequested();
+
+        // Override default shortcut management in MapCanvas
+        e->ignore();
+    }
+}
 
 //
 // CoordinateItemDelegate
