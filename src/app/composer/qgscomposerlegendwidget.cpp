@@ -773,7 +773,10 @@ void QgsComposerLegendWidget::on_mEditPushButton_clicked()
   else if ( legendNode )
   {
     QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( legendNode->layerNode() );
-    int originalIndex = ( idx.row() >= 0 && idx.row() < order.count() ? order[idx.row()] : -1 );
+    //find unfiltered row number
+    QList<QgsLayerTreeModelLegendNode*> layerLegendNodes = model->layerOriginalLegendNodes( legendNode->layerNode() );
+    int unfilteredRowIndex = layerLegendNodes.indexOf( legendNode );
+    int originalIndex = ( unfilteredRowIndex >= 0 && unfilteredRowIndex < order.count() ? order[unfilteredRowIndex] : -1 );
     QgsMapLayerLegendUtils::setLegendNodeUserLabel( legendNode->layerNode(), originalIndex, newText );
     model->refreshLayerLegend( legendNode->layerNode() );
   }

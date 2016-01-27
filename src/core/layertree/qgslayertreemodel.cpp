@@ -1338,6 +1338,11 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::layerLegendNodes( QgsLaye
   return mLegend.value( nodeLayer ).activeNodes;
 }
 
+QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::layerOriginalLegendNodes( QgsLayerTreeLayer* nodeLayer )
+{
+  return mLegend.value( nodeLayer ).originalNodes;
+}
+
 QgsLayerTreeModelLegendNode* QgsLayerTreeModel::findLegendNode( const QString& layerId, const QString& ruleKey ) const
 {
   Q_FOREACH ( QgsLayerTreeLayer* layer, mLegend.keys() )
