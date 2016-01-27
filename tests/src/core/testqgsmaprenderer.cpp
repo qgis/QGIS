@@ -38,6 +38,7 @@
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
+#include "qgssinglesymbolrendererv2.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -54,8 +55,9 @@ class TestQgsMapRenderer : public QObject
   public:
     TestQgsMapRenderer()
         : mError( QgsVectorFileWriter::NoError )
-        , mMapSettings( 0 )
-        , mpPolysLayer( 0 )
+        , mMapSettings( nullptr )
+        , mpPolysLayer( nullptr )
+        , mPointsLayer( nullptr )
     {
     }
 
@@ -79,6 +81,8 @@ class TestQgsMapRenderer : public QObject
     void testFourAdjacentTiles_data();
     void testFourAdjacentTiles();
 
+    void testSymbolsOnEdgeOfExtent(); //tests that large symbols just outside the extent will be shown
+
   private:
     QString mEncoding;
     QgsVectorFileWriter::WriterError mError;
@@ -86,7 +90,9 @@ class TestQgsMapRenderer : public QObject
     QgsFields mFields;
     QgsMapSettings *mMapSettings;
     QgsMapLayer * mpPolysLayer;
+    QgsVectorLayer* mPointsLayer;
     QString mReport;
+    bool imageCheck(QgsMapSettings mapSettings, const QString& theTestType);
 };
 
 
@@ -183,6 +189,14 @@ void TestQgsMapRenderer::initTestCase()
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), "ogr" );
   QVERIFY( mpPolysLayer->isValid() );
+
+
+  QString pointFileName = myTestDataDir + "regular_points.geojson";
+  QFileInfo pointFileInfo( pointFileName );
+  mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
+                                      pointFileInfo.completeBaseName(), "ogr" );
+  QVERIFY( mPointsLayer->isValid() );
+
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   // add the test layer to the maprender
@@ -332,6 +346,39 @@ void TestQgsMapRenderer::testFourAdjacentTiles()
   QVERIFY( result );
 }
 
+void TestQgsMapRenderer::testSymbolsOnEdgeOfExtent()
+{
+  mReport += "<h2>Large symbols on edge of extent</h2>\n";
+
+  QgsMapSettings ms;
+  ms.setLayers( QStringList() << mPointsLayer->id() );
+  ms.setExtent( mPointsLayer->extent() );
+  mMapSettings->setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:3005" ) );
+
+//  ms.setExtent( QgsRectangle ( 778780, 965073, 780900, 970333 ) );
+
+  //BIG symbol
+  QgsStringMap properties;
+  properties.insert( "color", "0,0,0,255" );
+  properties.insert( "name", "circle" );
+  properties.insert( "size", "20.0" );
+  properties.insert( "outline_style", "no" );
+  QgsMarkerSymbolV2* pointSymbol = QgsMarkerSymbolV2::createSimple( properties );
+  mPointsLayer->setRendererV2( new QgsSingleSymbolRendererV2( pointSymbol  ) );
+
+  QVERIFY( imageCheck( ms, "singlesymbol_orderby" ) );
+}
+
+bool TestQgsMapRenderer::imageCheck( QgsMapSettings mapSettings, const QString& theTestType )
+{
+  mapSettings.setOutputDpi( 96 );
+  QgsRenderChecker myChecker;
+  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setMapSettings( mapSettings );
+  bool myResultFlag = myChecker.runTest( theTestType, 30 );
+  mReport += myChecker.report();
+  return myResultFlag;
+}
 
 QTEST_MAIN( TestQgsMapRenderer )
 #include "testqgsmaprenderer.moc"
