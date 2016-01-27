@@ -179,6 +179,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
   // date type
   << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "timestamp without time zone", QVariant::DateTime, -1, -1, -1, -1 )
   ;
 
   QString key;
