@@ -621,6 +621,11 @@ QgsPointLocator::~QgsPointLocator()
   delete mExtent;
 }
 
+const QgsCoordinateReferenceSystem* QgsPointLocator::destCRS() const
+{
+  return mTransform ? &mTransform->destCRS() : nullptr;
+}
+
 
 bool QgsPointLocator::init( int maxFeaturesToIndex )
 {

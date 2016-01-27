@@ -426,6 +426,77 @@ void QgsSnappingUtils::setSnapOnIntersections( bool enabled )
   emit configChanged();
 }
 
+QString QgsSnappingUtils::dump()
+{
+  QString msg = "--- SNAPPING UTILS DUMP ---\n";
+
+  if ( !mMapSettings.hasValidSettings() )
+  {
+    msg += "invalid map settings!";
+    return msg;
+  }
+
+  QList<LayerConfig> layers;
+
+  if ( mSnapToMapMode == SnapCurrentLayer )
+  {
+    if ( mSnapToMapMode == SnapCurrentLayer && !mCurrentLayer )
+    {
+      msg += "no current layer!";
+      return msg;
+    }
+
+    layers << LayerConfig( mCurrentLayer, QgsPointLocator::Types( mDefaultType ), mDefaultTolerance, mDefaultUnit );
+  }
+  else if ( mSnapToMapMode == SnapAllLayers )
+  {
+    Q_FOREACH ( const QString& layerID, mMapSettings.layers() )
+    {
+      if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) ) )
+        layers << LayerConfig( vl, QgsPointLocator::Types( mDefaultType ), mDefaultTolerance, mDefaultUnit );
+    }
+  }
+  else if ( mSnapToMapMode == SnapAdvanced )
+  {
+    layers = mLayers;
+  }
+
+  Q_FOREACH ( const LayerConfig& layer, layers )
+  {
+    bool usingIndex = willUseIndex( layer.layer );
+
+    msg += QString( "layer : %1\n"
+                    "config: %2   tolerance %3 %4\n" )
+           .arg( layer.layer->name() )
+           .arg( layer.type ).arg( layer.tolerance ).arg( layer.unit );
+
+    if ( usingIndex )
+    {
+      QgsPointLocator* loc = locatorForLayer( layer.layer );
+      if ( loc )
+      {
+        QString extentStr, cachedGeoms;
+        if ( const QgsRectangle* r = loc->extent() )
+          extentStr = " extent = " + r->toString();
+        else
+          extentStr = "full extent";
+        if ( loc->hasIndex() )
+          cachedGeoms = QString( "%1 feats" ).arg( loc->cachedGeometryCount() );
+        else
+          cachedGeoms = "not initialized";
+        msg += QString( "index : YES | %1 | %2\n" ).arg( cachedGeoms ).arg( extentStr );
+      }
+      else
+        msg += QString( "index : ???\n" ); // should not happen
+    }
+    else
+      msg += "index : NO\n";
+    msg += "-\n";
+  }
+
+  return msg;
+}
+
 const QgsCoordinateReferenceSystem* QgsSnappingUtils::destCRS()
 {
   return mMapSettings.hasCrsTransformEnabled() ? &mMapSettings.destinationCrs() : nullptr;

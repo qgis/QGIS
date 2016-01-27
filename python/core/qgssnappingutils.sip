@@ -87,6 +87,11 @@ class QgsSnappingUtils : QObject
     /** Query whether to consider intersections of nearby segments for snapping */
     bool snapOnIntersections() const;
 
+    /** Get extra information about the instance
+     * @note added in QGIS 2.14
+     */
+    QString dump();
+
   public slots:
     /** Read snapping configuration from the project */
     void readConfigFromProject();
