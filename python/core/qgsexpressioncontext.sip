@@ -388,11 +388,20 @@ class QgsExpressionContext
      */
     void setOriginalValueVariable( const QVariant& value );
 
+    //! Inbuilt variable name for fields storage
     static const QString EXPR_FIELDS;
+    //! Inbuilt variable name for feature storage
     static const QString EXPR_FEATURE;
+    //! Inbuilt variable name for @value original value variable
     static const QString EXPR_ORIGINAL_VALUE;
+    //! Inbuilt variable name for symbol color variable
     static const QString EXPR_SYMBOL_COLOR;
+    //! Inbuilt variable name for symbol angle variable
     static const QString EXPR_SYMBOL_ANGLE;
+    //! Inbuilt variable name for geometry part count variable
+    static const QString EXPR_GEOMETRY_PART_COUNT;
+    //! Inbuilt variable name for geometry part number variable
+    static const QString EXPR_GEOMETRY_PART_NUM;
 };
 
 /** \ingroup core

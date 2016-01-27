@@ -75,12 +75,21 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   if ( layer )
     expContext << QgsExpressionContextUtils::layerScope( layer );
 
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( "geometry_part_count", 1, true ) );
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( "geometry_part_num", 1, true ) );
+  QgsExpressionContextScope* symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
+  if ( const QgsSymbolLayerV2* symbolLayer = const_cast< QgsSymbolLayerV2Widget* >( widget )->symbolLayer() )
+  {
+    //cheat a bit - set the symbol color variable to match the symbol layer's color (when we should really be using the *symbols*
+    //color, but that's not accessible here). 99% of the time these will be the same anyway
+    symbolScope->setVariable( QgsExpressionContext::EXPR_SYMBOL_COLOR, symbolLayer->color() );
+  }
+  expContext << symbolScope;
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1, true ) );
 
   //TODO - show actual value
   expContext.setOriginalValueVariable( QVariant() );
-  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << "geometry_part_count" << "geometry_part_num" );
+  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
+                                      << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM );
 
   return expContext;
 }

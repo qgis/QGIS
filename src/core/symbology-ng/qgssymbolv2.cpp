@@ -717,8 +717,8 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
   {
     context.expressionContext().appendScope( mSymbolRenderContext->expressionContextScope() );
     QgsExpressionContextUtils::updateSymbolScope( this, mSymbolRenderContext->expressionContextScope() );
-    mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_count", segmentizedGeometry->geometry()->partCount() );
-    mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_num", 1 );
+    mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, segmentizedGeometry->geometry()->partCount() );
+    mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1 );
   }
 
   switch ( QgsWKBTypes::flatType( segmentizedGeometry->geometry()->wkbType() ) )
@@ -786,7 +786,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       for ( int i = 0; i < mp->numGeometries(); ++i )
       {
-        mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_num", i + 1 );
+        mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
 
         const QgsPointV2* point = static_cast< const QgsPointV2* >( mp->geometryN( i ) );
         _getPoint( pt, context, point );
@@ -815,7 +815,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       for ( unsigned int i = 0; i < num; ++i )
       {
-        mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_num", i + 1 );
+        mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
 
         if ( geomCollection )
         {
@@ -848,7 +848,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       for ( unsigned int i = 0; i < num; ++i )
       {
-        mSymbolRenderContext->expressionContextScope()->setVariable( "geometry_part_num", i + 1 );
+        mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
 
         if ( geomCollection )
         {
