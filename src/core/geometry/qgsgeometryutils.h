@@ -19,6 +19,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspointv2.h"
 #include <limits>
 
+class QgsLineStringV2;
+
 /** \ingroup core
  * \class QgsGeometryUtils
  * \brief Contains various geometry utility functions.
@@ -29,6 +31,11 @@ email                : marco.hugentobler at sourcepole dot com
 class CORE_EXPORT QgsGeometryUtils
 {
   public:
+
+    /** Returns list of linestrings extracted from the passed geometry. The returned objects
+     *  have to be deleted by the caller.
+     */
+    static QList<QgsLineStringV2*> extractLineStrings( const QgsAbstractGeometryV2* geom );
 
     /** Returns the closest vertex to a geometry for a specified point
      */

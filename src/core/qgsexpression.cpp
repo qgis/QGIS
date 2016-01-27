@@ -29,6 +29,7 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
+#include "qgsgeometryutils.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsogcutils.h"
@@ -1432,52 +1433,7 @@ static QVariant fcnSegmentsToLines( const QVariantList& values, const QgsExpress
   if ( geom.isEmpty() )
     return QVariant();
 
-  QList< QgsAbstractGeometryV2 * > geometries;
-
-  QgsGeometryCollectionV2* collection = dynamic_cast< QgsGeometryCollectionV2* >( geom.geometry() );
-  if ( collection )
-  {
-    for ( int i = 0; i < collection->numGeometries(); ++i )
-    {
-      geometries.append( collection->geometryN( i ) );
-    }
-  }
-  else
-  {
-    geometries.append( geom.geometry() );
-  }
-
-  QList< QgsLineStringV2* > linesToProcess;
-  while ( ! geometries.isEmpty() )
-  {
-    QgsAbstractGeometryV2* g = geometries.takeFirst();
-    QgsCurveV2* curve = dynamic_cast< QgsCurveV2* >( g );
-    if ( curve )
-    {
-      linesToProcess << static_cast< QgsLineStringV2* >( curve->segmentize() );
-      continue;
-    }
-    QgsGeometryCollectionV2* collection = dynamic_cast< QgsGeometryCollectionV2* >( g );
-    if ( collection )
-    {
-      for ( int i = 0; i < collection->numGeometries(); ++i )
-      {
-        geometries.append( collection->geometryN( i ) );
-      }
-    }
-    QgsCurvePolygonV2* curvePolygon = dynamic_cast< QgsCurvePolygonV2* >( g );
-    if ( curvePolygon )
-    {
-      if ( curvePolygon->exteriorRing() )
-        linesToProcess << static_cast< QgsLineStringV2* >( curvePolygon->exteriorRing()->segmentize() );
-
-      for ( int i = 0; i < curvePolygon->numInteriorRings(); ++i )
-      {
-        linesToProcess << static_cast< QgsLineStringV2* >( curvePolygon->interiorRing( i )->segmentize() );
-      }
-      continue;
-    }
-  }
+  QList< QgsLineStringV2* > linesToProcess = QgsGeometryUtils::extractLineStrings( geom.geometry() );
 
   //ok, now we have a complete list of segmentized lines from the geometry
   QgsMultiLineStringV2* ml = new QgsMultiLineStringV2();
