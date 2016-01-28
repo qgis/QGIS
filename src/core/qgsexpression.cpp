@@ -293,6 +293,12 @@ static QDateTime getDateTimeValue( const QVariant& value, QgsExpression* parent 
   }
   else
   {
+    QTime t = value.toTime();
+    if ( t.isValid() )
+    {
+      return QDateTime( QDate( 1, 1, 1 ), t );
+    }
+
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to DateTime" ).arg( value.toString() ) );
     return QDateTime();
   }
@@ -1134,7 +1140,7 @@ static QVariant fcnDay( const QVariantList& values, const QgsExpressionContext*,
   }
   else
   {
-    QDateTime d1 =  getDateTimeValue( value, parent );
+    QDateTime d1 = getDateTimeValue( value, parent );
     return QVariant( d1.date().day() );
   }
 }
@@ -1194,8 +1200,8 @@ static QVariant fcnHour( const QVariantList& values, const QgsExpressionContext*
   }
   else
   {
-    QDateTime d1 =  getDateTimeValue( value, parent );
-    return QVariant( d1.time().hour() );
+    QTime t1 = getTimeValue( value, parent );
+    return QVariant( t1.hour() );
   }
 }
 
@@ -1209,8 +1215,8 @@ static QVariant fcnMinute( const QVariantList& values, const QgsExpressionContex
   }
   else
   {
-    QDateTime d1 =  getDateTimeValue( value, parent );
-    return QVariant( d1.time().minute() );
+    QTime t1 =  getTimeValue( value, parent );
+    return QVariant( t1.minute() );
   }
 }
 
@@ -1224,8 +1230,8 @@ static QVariant fcnSeconds( const QVariantList& values, const QgsExpressionConte
   }
   else
   {
-    QDateTime d1 =  getDateTimeValue( value, parent );
-    return QVariant( d1.time().second() );
+    QTime t1 =  getTimeValue( value, parent );
+    return QVariant( t1.second() );
   }
 }
 
