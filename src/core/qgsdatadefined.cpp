@@ -330,7 +330,9 @@ bool QgsDataDefined::setFromXmlElement( const QDomElement &element )
   d->active = element.attribute( "active" ).compare( "true", Qt::CaseInsensitive ) == 0;
   d->useExpression = element.attribute( "useExpr" ).compare( "true", Qt::CaseInsensitive ) == 0;
   d->field = element.attribute( "field" );
-  setExpressionString( element.attribute( "expr" ) );
+  d->expressionString = element.attribute( "expr" );
+  d->expressionPrepared = false;
+  d->exprRefColumns.clear();
   return true;
 }
 
