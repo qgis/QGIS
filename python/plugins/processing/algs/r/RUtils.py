@@ -47,7 +47,26 @@ class RUtils:
     def RFolder():
         folder = ProcessingConfig.getSetting(RUtils.R_FOLDER)
         if folder is None:
-            folder = ''
+            if isWindows():
+                if "ProgramW6432" in os.environ.keys() and os.path.isdir(os.path.join(os.environ["ProgramW6432"],'R')):
+                    testfolder = os.path.join(os.environ["ProgramW6432"],'R')
+                elif "PROGRAMFILES(x86)" in os.environ.keys() and os.path.isdir(os.path.join(os.environ["PROGRAMFILES(x86)"],'R')):
+                    testfolder = os.path.join(os.environ["PROGRAMFILES(x86)"],'R')
+                elif "PROGRAMFILES" in os.environ.keys() and os.path.isdir(os.path.join(os.environ["PROGRAMFILES"],'R')):
+                    testfolder = os.path.join(os.environ["PROGRAMFILES"],'R')
+                else:
+                    testfolder = 'C:\\R'
+                if os.path.isdir(testfolder):
+                    subfolders = os.listdir(testfolder)
+                    subfolders.sort(reverse=True)
+                    for subfolder in subfolders:
+                        if subfolder.startswith('R-'):
+                            folder = os.path.join(testfolder, subfolder)
+                            break
+                else:
+                    folder = ''
+            else:
+                folder = ''
 
         return os.path.abspath(unicode(folder))
 
