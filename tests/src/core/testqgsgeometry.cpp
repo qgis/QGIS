@@ -1108,6 +1108,27 @@ void TestQgsGeometry::lineStringV2()
   QCOMPARE( l10.pointN( 1 ), QgsPointV2( QgsWKBTypes::Point25D, 31, 32, 33 ) );
   QCOMPARE( l10.pointN( 2 ), QgsPointV2( QgsWKBTypes::Point25D, 41, 42, 43 ) );
 
+  //append another line the closes the original geometry.
+  //Make sure there are not duplicit points except start and end point
+  l10.clear();
+  toAppend.reset( new QgsLineStringV2() );
+  toAppend->setPoints( QList< QgsPointV2 >()
+                       << QgsPointV2( 1, 1 )
+                       << QgsPointV2( 5, 5 )
+                       << QgsPointV2( 10, 1 ) );
+  l10.append( toAppend.data() );
+  QCOMPARE( l10.numPoints(), 3 );
+  QCOMPARE( l10.vertexCount(), 3 );
+  toAppend.reset( new QgsLineStringV2() );
+  toAppend->setPoints( QList< QgsPointV2 >()
+                       << QgsPointV2( 10, 1 )
+                       << QgsPointV2( 1, 1 ) );
+  l10.append( toAppend.data() );
+
+  QVERIFY( l10.isClosed() );
+  QCOMPARE( l10.numPoints(), 4 );
+  QCOMPARE( l10.vertexCount(), 4 );
+
   //equality
   QgsLineStringV2 e1;
   QgsLineStringV2 e2;

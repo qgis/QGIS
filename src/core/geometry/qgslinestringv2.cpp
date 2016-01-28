@@ -447,6 +447,17 @@ void QgsLineStringV2::append( const QgsLineStringV2* line )
     setZMTypeFromSubGeometry( line, QgsWKBTypes::LineString );
   }
 
+  // do not store duplicit points
+  if ( numPoints() > 0 &&
+       line->numPoints() > 0 &&
+       endPoint() == line->startPoint() )
+  {
+    mX.pop_back();
+    mY.pop_back();
+    mZ.pop_back();
+    mM.pop_back();
+  }
+
   mX += line->mX;
   mY += line->mY;
 
