@@ -179,6 +179,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
   // date type
   << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Time" ), "time", QVariant::Time, -1, -1, -1, -1 )
   << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "timestamp without time zone", QVariant::DateTime, -1, -1, -1, -1 )
   ;
 
@@ -873,6 +874,11 @@ bool QgsPostgresProvider::loadFields()
       else if ( fieldTypeName == "date" )
       {
         fieldType = QVariant::Date;
+        fieldSize = -1;
+      }
+      else if ( fieldTypeName == "time" )
+      {
+        fieldType = QVariant::Time;
         fieldSize = -1;
       }
       else if ( fieldTypeName == "timestamp" )

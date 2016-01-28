@@ -103,14 +103,13 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
     return;
   }
 
-  QString ogrDriverName;
   if ( driverName == "MapInfo MIF" )
   {
-    ogrDriverName = "MapInfo File";
+    mOgrDriverName = "MapInfo File";
   }
   else if ( driverName == "SpatiaLite" )
   {
-    ogrDriverName = "SQLite";
+    mOgrDriverName = "SQLite";
     if ( !datasourceOptions.contains( "SPATIALITE=YES" ) )
     {
       datasourceOptions.append( "SPATIALITE=YES" );
@@ -118,7 +117,7 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
   }
   else if ( driverName == "DBF file" )
   {
-    ogrDriverName = "ESRI Shapefile";
+    mOgrDriverName = "ESRI Shapefile";
     if ( !layerOptions.contains( "SHPT=NULL" ) )
     {
       layerOptions.append( "SHPT=NULL" );
@@ -127,14 +126,14 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
   }
   else
   {
-    ogrDriverName = driverName;
+    mOgrDriverName = driverName;
   }
 
   // find driver in OGR
   OGRSFDriverH poDriver;
   QgsApplication::registerOgrDrivers();
 
-  poDriver = OGRGetDriverByName( ogrDriverName.toLocal8Bit().data() );
+  poDriver = OGRGetDriverByName( mOgrDriverName.toLocal8Bit().data() );
 
   if ( !poDriver )
   {
@@ -145,7 +144,7 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
     return;
   }
 
-  if ( ogrDriverName == "ESRI Shapefile" )
+  if ( mOgrDriverName == "ESRI Shapefile" )
   {
     if ( layerOptions.join( "" ).toUpper().indexOf( "ENCODING=" ) == -1 )
     {
@@ -315,7 +314,7 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
 
   if ( srs )
   {
-    if ( ogrDriverName == "ESRI Shapefile" )
+    if ( mOgrDriverName == "ESRI Shapefile" )
     {
       QString layerName = vectorFileName.left( vectorFileName.indexOf( ".shp", Qt::CaseInsensitive ) );
       QFile prjFile( layerName + ".qpj" );
@@ -389,6 +388,18 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
         ogrType = OFTDate;
         break;
 
+      case QVariant::Time:
+        if ( mOgrDriverName == "ESRI Shapefile" )
+        {
+          ogrType = OFTString;
+          ogrWidth = 12;
+        }
+        else
+        {
+          ogrType = OFTTime;
+        }
+        break;
+
       case QVariant::DateTime:
         ogrType = OFTDateTime;
         break;
@@ -403,7 +414,7 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
 
     QString name( attrField.name() );
 
-    if ( ogrDriverName == "SQLite" && name.compare( "ogc_fid", Qt::CaseInsensitive ) == 0 )
+    if ( mOgrDriverName == "SQLite" && name.compare( "ogc_fid", Qt::CaseInsensitive ) == 0 )
     {
       int i;
       for ( i = 0; i < 10; i++ )
@@ -1778,12 +1789,19 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
                                 0 );
         break;
       case QVariant::Time:
-        OGR_F_SetFieldDateTime( poFeature, ogrField,
-                                0, 0, 0,
-                                attrValue.toDateTime().time().hour(),
-                                attrValue.toDateTime().time().minute(),
-                                attrValue.toDateTime().time().second(),
-                                0 );
+        if ( mOgrDriverName == "ESRI Shapefile" )
+        {
+          OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
+        }
+        else
+        {
+          OGR_F_SetFieldDateTime( poFeature, ogrField,
+                                  0, 0, 0,
+                                  attrValue.toTime().hour(),
+                                  attrValue.toTime().minute(),
+                                  attrValue.toTime().second(),
+                                  0 );
+        }
         break;
       case QVariant::Invalid:
         break;

@@ -73,6 +73,15 @@ ALTER TABLE ONLY qgis_test."someData"
 -- PostgreSQL database dump complete
 --
 
+CREATE TABLE qgis_test.date_times(
+       id int,
+       date_field date,
+       time_field time,
+       datetime_field timestamp without time zone
+);
+
+INSERT INTO qgis_test.date_times values (1, '2004-03-04'::date, '13:41:52'::time, '2004-03-04 13:41:52'::timestamp without time zone );
+
 CREATE TABLE qgis_test.p2d(
        id int,
        geom Geometry(Polygon,4326)

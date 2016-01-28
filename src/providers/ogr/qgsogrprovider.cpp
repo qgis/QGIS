@@ -119,6 +119,10 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
       ogrType = OFTDate;
       break;
 
+    case QVariant::Time:
+      ogrType = OFTTime;
+      break;
+
     case QVariant::DateTime:
       ogrType = OFTDateTime;
       break;
@@ -366,6 +370,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   if ( ogrDriverName != "ESRI Shapefile" )
   {
     mNativeTypes
+    << QgsVectorDataProvider::NativeType( tr( "Time" ), "time", QVariant::Time, -1, -1 )
     << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime );
   }
 
@@ -721,6 +726,9 @@ void QgsOgrProvider::loadFields()
         case OFTDate:
           varType = QVariant::Date;
           break;
+        case OFTTime:
+          varType = QVariant::Time;
+          break;
         case OFTDateTime:
           varType = QVariant::DateTime;
           break;
@@ -1006,6 +1014,16 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
                                   0, 0, 0,
                                   0 );
           break;
+
+        case OFTTime:
+          OGR_F_SetFieldDateTime( feature, targetAttributeId,
+                                  0, 0, 0,
+                                  attrVal.toTime().hour(),
+                                  attrVal.toTime().minute(),
+                                  attrVal.toTime().second(),
+                                  0 );
+          break;
+
         case OFTDateTime:
           OGR_F_SetFieldDateTime( feature, targetAttributeId,
                                   attrVal.toDateTime().date().year(),
@@ -1098,6 +1116,9 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
         break;
       case QVariant::Date:
         type = OFTDate;
+        break;
+      case QVariant::Time:
+        type = OFTTime;
         break;
       case QVariant::DateTime:
         type = OFTDateTime;
@@ -1225,6 +1246,14 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
                                     it2->toDate().month(),
                                     it2->toDate().day(),
                                     0, 0, 0,
+                                    0 );
+            break;
+          case OFTTime:
+            OGR_F_SetFieldDateTime( of, f,
+                                    0, 0, 0,
+                                    it2->toTime().hour(),
+                                    it2->toTime().minute(),
+                                    it2->toTime().second(),
                                     0 );
             break;
           case OFTDateTime:
@@ -2284,6 +2313,10 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     else if ( fields[0] == "Date" )
     {
       field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTDate );
+    }
+    else if ( fields[0] == "Time" )
+    {
+      field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTTime );
     }
     else if ( fields[0] == "DateTime" )
     {

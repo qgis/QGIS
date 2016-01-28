@@ -79,6 +79,14 @@ class QgsExpressionSorter
             else
               return v1.toDate() > v2.toDate();
 
+          case QVariant::Time:
+            if ( v1.toTime() == v2.toTime() )
+              continue;
+            if ( orderBy.ascending() )
+              return v1.toTime() < v2.toTime();
+            else
+              return v1.toTime() > v2.toTime();
+
           case QVariant::DateTime:
             if ( v1.toDateTime() == v2.toDateTime() )
               continue;

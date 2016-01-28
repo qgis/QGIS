@@ -352,6 +352,8 @@ class CORE_EXPORT QgsVectorFileWriter
     /** Scale for symbology export (e.g. for symbols units in map units)*/
     double mSymbologyScaleDenominator;
 
+    QString mOgrDriverName;
+
   private:
     void init( QString vectorFileName, QString fileEncoding, const QgsFields& fields, QgsWKBTypes::Type geometryType, const QgsCoordinateReferenceSystem* srs, const QString& driverName, QStringList datasourceOptions, QStringList layerOptions, QString* newFilename );
 

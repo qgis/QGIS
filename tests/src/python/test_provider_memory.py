@@ -193,6 +193,7 @@ class TestPyQgsMemoryProvider(TestCase, ProviderTestCase):
                     QgsField('TestDbl', QVariant.Double, 'double', 8, 6),
                     QgsField('TestString', QVariant.String, 'string', 50, 0),
                     QgsField('TestDate', QVariant.Date, 'date'),
+                    QgsField('TestTime', QVariant.Time, 'time'),
                     QgsField('TestDateTime', QVariant.DateTime, 'datetime')]
         assert myMemoryLayer.startEditing()
         for f in myFields:
