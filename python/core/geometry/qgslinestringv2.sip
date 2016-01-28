@@ -3,7 +3,6 @@
  * \brief Line string geometry type, with support for z-dimension and m-values.
  * \note added in QGIS 2.10
  */
-
 class QgsLineStringV2: public QgsCurveV2
 {
 %TypeHeaderCode
@@ -84,7 +83,8 @@ class QgsLineStringV2: public QgsCurveV2
      */
     void setMAt( int index, double m );
 
-    /** Resets the line string to match the specified list of points.
+    /** Resets the line string to match the specified list of points. The line string will
+     * inherit the dimensionality of the first point in the list.
      * @param points new points for line string. If empty, line string will be cleared.
      */
     void setPoints( const QList<QgsPointV2>& points );
@@ -101,8 +101,6 @@ class QgsLineStringV2: public QgsCurveV2
 
     /** Closes the line string by appending the first point to the end of the line, if it is not already closed.*/
     void close();
-
-    virtual QgsLineStringV2* reversed() const /Factory/;
 
     /** Returns a QPolygonF representing the line string.
      */
@@ -144,6 +142,8 @@ class QgsLineStringV2: public QgsCurveV2
     virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex );
     virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos );
     virtual bool deleteVertex( const QgsVertexId& position );
+
+    virtual QgsLineStringV2* reversed() const /Factory/;
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
     bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const;

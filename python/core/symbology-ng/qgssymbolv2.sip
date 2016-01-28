@@ -93,16 +93,32 @@ class QgsSymbolV2
      */
     int symbolLayerCount();
 
-    //! insert symbol layer to specified index
+    /**
+     * Insert symbol layer to specified index
+     * Ownership will be transferred.
+     * @param index The index at which the layer should be added
+     * @param layer The symbol layer to add
+     * @return True if the layer is added, False if the index or the layer is bad
+     */
     bool insertSymbolLayer( int index, QgsSymbolLayerV2* layer /Transfer/ );
 
-    //! append symbol layer at the end of the list
+    /**
+     * Append symbol layer at the end of the list
+     * Ownership will be transferred.
+     * @param layer The layer to add
+     * @return True if the layer is added, False if the layer is bad
+     */
     bool appendSymbolLayer( QgsSymbolLayerV2* layer /Transfer/ );
 
     //! delete symbol layer at specified index
     bool deleteSymbolLayer( int index );
 
-    //! remove symbol layer from the list and return pointer to it
+    /**
+     * Remove symbol layer from the list and return pointer to it.
+     * Ownership is handed to the caller.
+     * @param index The index of the layer to remove
+     * @return A pointer to the removed layer
+     */
     QgsSymbolLayerV2* takeSymbolLayer( int index ) /TransferBack/;
 
     //! delete layer at specified index and set a new one
@@ -183,6 +199,7 @@ class QgsSymbolV2
      */
     bool hasDataDefinedProperties() const;
 
+    //! @note the layer will be NULL after stopRender
     void setLayer( const QgsVectorLayer* layer );
     const QgsVectorLayer* layer() const;
 
@@ -202,7 +219,7 @@ class QgsSymbolV2
     QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers /Transfer/ ); // can't be instantiated
 
     /**
-      Creates a point in screen coordinates from a QgsPointV2 in map coordinates
+     * Creates a point in screen coordinates from a QgsPointV2 in map coordinates
      */
     static void _getPoint( QPointF& pt /Out/, QgsRenderContext& context, const QgsPointV2* point );
     /**
@@ -210,13 +227,19 @@ class QgsSymbolV2
      * coordinates
      */
     static const unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
+
     /**
      * Creates a polygon in screen coordinates from a wkb string in map
      * coordinates
      */
     static const unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
 
+    /**
+     * Retrieve a cloned list of all layers that make up this symbol.
+     * Ownership is transferred to the caller.
+     */
     QgsSymbolLayerV2List cloneLayers() const /Factory/;
+
     /**
      * Renders a context using a particular symbol layer without passing in a
      * geometry. This is used as fallback, if the symbol being rendered is not
@@ -230,7 +253,8 @@ class QgsSymbolV2
 
     //! check whether a symbol layer type can be used within the symbol
     //! (marker-marker, line-line, fill-fill/line)
-    bool isSymbolLayerCompatible( SymbolType t );
+    //! @deprecated since 2.14, use QgsSymbolLayerV2::isCompatibleWithSymbol instead
+    bool isSymbolLayerCompatible( SymbolType layerType );
 
   private:
     QgsSymbolV2( const QgsSymbolV2& );
@@ -249,7 +273,7 @@ class QgsSymbolV2RenderContext
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext();
-    //void setRenderContext( QgsRenderContext& c );
+    // const QgsRenderContext& renderContext() const;
 
     /** Sets the original value variable value for data defined symbology
      * @param value value for original value variable. This usually represents the symbol property value
@@ -262,7 +286,7 @@ class QgsSymbolV2RenderContext
     void setOutputUnit( QgsSymbolV2::OutputUnit u );
 
     QgsMapUnitScale mapUnitScale() const;
-    void setMapUnitScale( const QgsMapUnitScale& scale);
+    void setMapUnitScale( const QgsMapUnitScale& scale );
 
     //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const;
@@ -308,7 +332,7 @@ class QgsSymbolV2RenderContext
 
   private:
 
-     QgsSymbolV2RenderContext( const QgsSymbolV2RenderContext& rh );
+    QgsSymbolV2RenderContext( const QgsSymbolV2RenderContext& rh );
 };
 
 

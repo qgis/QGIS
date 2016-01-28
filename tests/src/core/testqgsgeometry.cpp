@@ -693,27 +693,27 @@ void TestQgsGeometry::pointV2()
 
   //dropZ
   QgsPointV2 p25( QgsWKBTypes::PointZ, 1.0, 2.0, 3.0 );
-  QVERIFY( p25.dropZValue( ) );
+  QVERIFY( p25.dropZValue() );
   QCOMPARE( p25, QgsPointV2( 1.0, 2.0 ) );
-  QVERIFY( !p25.dropZValue( ) );
+  QVERIFY( !p25.dropZValue() );
   QgsPointV2 p26( QgsWKBTypes::PointZM, 1.0, 2.0, 3.0, 4.0 );
-  QVERIFY( p26.dropZValue( ) );
+  QVERIFY( p26.dropZValue() );
   QCOMPARE( p26, QgsPointV2( QgsWKBTypes::PointM, 1.0, 2.0, 0.0, 4.0 ) );
-  QVERIFY( !p26.dropZValue( ) );
+  QVERIFY( !p26.dropZValue() );
   QgsPointV2 p26a( QgsWKBTypes::Point25D, 1.0, 2.0, 3.0 );
-  QVERIFY( p26a.dropZValue( ) );
+  QVERIFY( p26a.dropZValue() );
   QCOMPARE( p26a, QgsPointV2( QgsWKBTypes::Point, 1.0, 2.0 ) );
-  QVERIFY( !p26a.dropZValue( ) );
+  QVERIFY( !p26a.dropZValue() );
 
   //dropM
   QgsPointV2 p27( QgsWKBTypes::PointM, 1.0, 2.0, 0.0, 3.0 );
-  QVERIFY( p27.dropMValue( ) );
+  QVERIFY( p27.dropMValue() );
   QCOMPARE( p27, QgsPointV2( 1.0, 2.0 ) );
-  QVERIFY( !p27.dropMValue( ) );
+  QVERIFY( !p27.dropMValue() );
   QgsPointV2 p28( QgsWKBTypes::PointZM, 1.0, 2.0, 3.0, 4.0 );
-  QVERIFY( p28.dropMValue( ) );
+  QVERIFY( p28.dropMValue() );
   QCOMPARE( p28, QgsPointV2( QgsWKBTypes::PointZ, 1.0, 2.0, 3.0, 0.0 ) );
-  QVERIFY( !p28.dropMValue( ) );
+  QVERIFY( !p28.dropMValue() );
 
   //convertTo
   QgsPointV2 p29( 1.0, 2.0 );
@@ -3187,7 +3187,8 @@ void TestQgsGeometry::smoothCheck()
   QgsMultiPolygon multipoly = result->asMultiPolygon();
   delete result;
   QgsMultiPolygon expectedMultiPoly;
-  expectedMultiPoly << ( QgsPolygon() << ( QgsPolyline() << QgsPoint( 1.0, 0 ) << QgsPoint( 9, 0 ) << QgsPoint( 10.0, 1 )
+  expectedMultiPoly
+  << ( QgsPolygon() << ( QgsPolyline() << QgsPoint( 1.0, 0 ) << QgsPoint( 9, 0 ) << QgsPoint( 10.0, 1 )
                          <<  QgsPoint( 10.0, 9 ) << QgsPoint( 9, 10.0 ) << QgsPoint( 1, 10.0 ) << QgsPoint( 0, 9 )
                          << QgsPoint( 0, 1 ) << QgsPoint( 1, 0 ) ) )
   << ( QgsPolygon() << ( QgsPolyline() << QgsPoint( 2.2, 2.0 ) << QgsPoint( 3.8, 2.0 ) << QgsPoint( 4.0, 2.2 )
@@ -3209,7 +3210,7 @@ void TestQgsGeometry::dataStream()
   ds.device()->seek( 0 );
   ds >> resultGeometry;
 
-  QCOMPARE( geom->geometry()->asWkt(), resultGeometry.geometry()->asWkt( ) );
+  QCOMPARE( geom->geometry()->asWkt(), resultGeometry.geometry()->asWkt() );
 
   //also test with geometry without data
   QScopedPointer<QgsGeometry> emptyGeom( new QgsGeometry() );

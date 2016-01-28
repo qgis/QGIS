@@ -65,7 +65,7 @@ bool QgsTopologyPreservingSimplifier::simplifyGeometry( QgsGeometry* geometry ) 
   if ( g )
   {
     int wkbSize = g->wkbSize();
-    unsigned char* wkb = reinterpret_cast< unsigned char* >( malloc( wkbSize ) );
+    unsigned char *wkb = new unsigned char[ wkbSize ];
     memcpy( wkb, g->asWkb(), wkbSize );
     geometry->fromWkb( wkb, wkbSize );
     delete g;

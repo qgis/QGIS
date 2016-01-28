@@ -17,7 +17,6 @@ class QgsSymbolV2LevelItem
     int layer();
 };
 
-
 // every level has list of items: symbol + symbol layer num
 // typedef QList< QgsSymbolV2LevelItem > QgsSymbolV2Level;
 
@@ -62,8 +61,6 @@ class QgsFeatureRendererV2
     QString type() const;
 
     /** To be overridden
-     *
-     * Must be called between startRender() and stopRender() calls.
      * @param feature feature
      * @return returns pointer to symbol or 0 if symbol was not found
      * @deprecated use symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) instead
@@ -71,8 +68,6 @@ class QgsFeatureRendererV2
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) /Deprecated/;
 
     /** To be overridden
-     *
-     * Must be called between startRender() and stopRender() calls.
      * @param feature feature
      * @param context render context
      * @return returns pointer to symbol or 0 if symbol was not found
@@ -103,19 +98,17 @@ class QgsFeatureRendererV2
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
 
     /**
-     * Return legend keys matching a specified feature.
-     * @note added in 2.14
+     * Needs to be called when a new render cycle is started
+     *
+     * @param context  Additional information passed to the renderer about the job which will be rendered
+     * @param fields   The fields available for rendering
+     * @return         Information passed back from the renderer that can e.g. be used to reduce the amount of requested features
      */
-    virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context );
-
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) = 0;
 
     //! @deprecated since 2.4 - not using QgsVectorLayer directly anymore
     virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer ) /Deprecated/;
 
-    /**
-     * Needs to be called when a render cycle has finished to clean up.
-     */
     virtual void stopRender( QgsRenderContext& context ) = 0;
 
     /**
@@ -131,22 +124,17 @@ class QgsFeatureRendererV2
      */
     virtual QString filter( const QgsFields& fields = QgsFields() );
 
+    /**
+     * Returns a set of attributes required for this renderer.
+     *
+     * TODO QGIS3: Change QList to QSet
+     */
     virtual QList<QString> usedAttributes() = 0;
 
     virtual ~QgsFeatureRendererV2();
 
     virtual QgsFeatureRendererV2* clone() const = 0 /Factory/;
 
-    /**
-     * Render a feature using this renderer in the given context.
-     * Must be called between startRender() and stopRender() calls.
-     * Default implementation renders a symbol as determined by symbolForFeature() call.
-     * Returns true if the feature has been returned (this is used for example
-     * to determine whether the feature may be labelled).
-     *
-     * If layer is not -1, the renderer should draw only a particula layer from symbols
-     * (in order to support symbol level rendering).
-     */
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     //! for debugging
@@ -247,8 +235,11 @@ class QgsFeatureRendererV2
     void setVertexMarkerAppearance( int type, int size );
 
     //! return rotation field name (or empty string if not set or not supported by renderer)
+    //! @deprecated use the symbol's methods instead
     virtual QString rotationField() const /Deprecated/;
+
     //! sets rotation field of renderer (if supported by the renderer)
+    //! @deprecated use the symbol's methods instead
     virtual void setRotationField( const QString& fieldName ) /Deprecated/;
 
     /** Returns whether the renderer will render a feature or not.
@@ -290,7 +281,7 @@ class QgsFeatureRendererV2
      */
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat ) /Deprecated/;
 
-     /** Equivalent of originalSymbolsForFeature() call
+    /** Equivalent of originalSymbolsForFeature() call
      * extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
      * @note added in 2.12
      * @note available in Python bindings as originalSymbolsForFeature2
@@ -382,6 +373,7 @@ class QgsFeatureRendererV2
 
     /** Copies paint effect of this renderer to another renderer
      * @param destRenderer destination renderer for copied effect
+     * @deprecated use copyRendererData instead
      */
     void copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const;
 
@@ -389,7 +381,6 @@ class QgsFeatureRendererV2
      * level DataDefined size
      */
     static void convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymbolV2::ScaleMethod method, const QString & field );
-
     /** @note this function is used to convert old rotations expresssions to symbol
      * level DataDefined angle
      */

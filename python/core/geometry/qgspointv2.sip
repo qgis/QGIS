@@ -3,7 +3,6 @@
  * \brief Point geometry type, with support for z-dimension and m-values.
  * \note added in QGIS 2.10
  */
-
 class QgsPointV2: public QgsAbstractGeometryV2
 {
 %TypeHeaderCode
@@ -34,7 +33,7 @@ class QgsPointV2: public QgsAbstractGeometryV2
      * @param m m-value of point, for PointM or PointZM types
      */
     QgsPointV2( QgsWKBTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
-    %MethodCode
+%MethodCode
   if ( QgsWKBTypes::flatType( a0 ) != QgsWKBTypes::Point )
   {
     PyErr_SetString(PyExc_ValueError,
@@ -128,7 +127,7 @@ class QgsPointV2: public QgsAbstractGeometryV2
 
     /** Sets the point's m-value.
      * @note calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
-     * add an m value and force the point to have an m dimension.
+     * add a m value and force the point to have an m dimension.
      * @see m()
      * @see rm()
      */
@@ -171,8 +170,8 @@ class QgsPointV2: public QgsAbstractGeometryV2
         @return 0.0*/
     double vertexAngle( const QgsVertexId& vertex ) const;
 
-    virtual int vertexCount(int part = 0, int ring = 0) const;
-    virtual int ringCount(int part = 0) const;
+    virtual int vertexCount( int /*part*/ = 0, int ring = 0 ) const;
+    virtual int ringCount( int /*part*/ = 0 ) const;
     virtual int partCount() const;
     virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const;
 

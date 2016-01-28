@@ -87,6 +87,7 @@ class QgsGeometry
       @note not available in python bindings
      */
     // void fromGeos( GEOSGeometry* geos );
+
     /**
       Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
       This class will take ownership of the buffer.
