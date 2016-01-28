@@ -98,6 +98,12 @@ class QgsFeatureRendererV2
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
 
     /**
+     * Return legend keys matching a specified feature.
+     * @note added in 2.14
+     */
+    virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context );
+
+    /**
      * Needs to be called when a new render cycle is started
      *
      * @param context  Additional information passed to the renderer about the job which will be rendered
