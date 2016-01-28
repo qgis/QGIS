@@ -561,11 +561,12 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   QgsField field = layer()->fields().at( fieldId );
 
   QVariant::Type fldType = field.type();
-  bool fldNumeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
+  bool fldRightAlign = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong
+                         || fldType == QVariant::DateTime || fldType == QVariant::Date || fldType == QVariant::Time );
 
   if ( role == Qt::TextAlignmentRole )
   {
-    if ( fldNumeric )
+    if ( fldRightAlign )
       return QVariant( Qt::AlignRight );
     else
       return QVariant( Qt::AlignLeft );
