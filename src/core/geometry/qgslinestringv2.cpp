@@ -454,31 +454,44 @@ void QgsLineStringV2::append( const QgsLineStringV2* line )
   {
     mX.pop_back();
     mY.pop_back();
-    mZ.pop_back();
-    mM.pop_back();
+
+    if ( is3D() )
+    {
+      mZ.pop_back();
+    }
+    if ( isMeasure() )
+    {
+      mM.pop_back();
+    }
   }
 
   mX += line->mX;
   mY += line->mY;
 
-  if ( line->is3D() )
+  if ( is3D() )
   {
-    mZ += line->mZ;
-  }
-  else
-  {
-    // if append line does not have z coordinates, fill with 0 to match number of points in final line
-    mZ.insert( mZ.count(), mX.size() - mZ.size(), 0 );
+    if ( line->is3D() )
+    {
+      mZ += line->mZ;
+    }
+    else
+    {
+      // if append line does not have z coordinates, fill with 0 to match number of points in final line
+      mZ.insert( mZ.count(), mX.size() - mZ.size(), 0 );
+    }
   }
 
-  if ( line->is3D() )
+  if ( isMeasure() )
   {
-    mM += line->mM;
-  }
-  else
-  {
-    // if append line does not have m values, fill with 0 to match number of points in final line
-    mM.insert( mM.count(), mX.size() - mM.size(), 0 );
+    if ( line->isMeasure() )
+    {
+      mM += line->mM;
+    }
+    else
+    {
+      // if append line does not have m values, fill with 0 to match number of points in final line
+      mM.insert( mM.count(), mX.size() - mM.size(), 0 );
+    }
   }
 
   mBoundingBox = QgsRectangle(); //set bounding box invalid
