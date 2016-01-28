@@ -39,6 +39,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
       PostGIS,
       WFS,
       MSSQL,
+	  DB2,
       WCS,
       Oracle,
     };
