@@ -150,6 +150,9 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
   private slots:
     void reloadLayer();
 
+    void beforeResetModel();
+    void afterResetModel();
+
   private:
     QComboBox* mCombo;
     QToolButton* mButton;
@@ -159,6 +162,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QScopedPointer< QgsExpressionContext > mExpressionContext;
     ExpressionContextCallback mExpressionContextCallback;
     const void* mExpressionContextCallbackContext;
+    QString mBackupExpression;
 
     friend class TestQgsFieldExpressionWidget;
 };

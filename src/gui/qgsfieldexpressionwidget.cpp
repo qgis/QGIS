@@ -58,6 +58,8 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   connect( mCombo->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( expressionEditingFinished() ) );
   connect( mCombo, SIGNAL( activated( int ) ), this, SLOT( currentFieldChanged() ) );
   connect( mButton, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
+  connect( mFieldProxyModel, SIGNAL( modelAboutToBeReset() ), this, SLOT( beforeResetModel() ) );
+  connect( mFieldProxyModel, SIGNAL( modelReset() ), this, SLOT( afterResetModel() ) );
   // NW TODO - Fix in 2.6
 //  connect( mCombo->lineEdit(), SIGNAL( returnPressed() ), this, SIGNAL( returnPressed() ) );
 
@@ -158,7 +160,7 @@ void QgsFieldExpressionWidget::setLayer( QgsVectorLayer *layer )
 
   mFieldProxyModel->sourceFieldModel()->setLayer( layer );
 
-  connect( mFieldProxyModel->sourceFieldModel()->layer(), SIGNAL( updatedFields() ), this, SLOT( reloadLayer() ) );
+  connect( mFieldProxyModel->sourceFieldModel()->layer(), SIGNAL( updatedFields() ), SLOT( reloadLayer() ), Qt::UniqueConnection );
 }
 
 void QgsFieldExpressionWidget::setField( const QString &fieldName )
@@ -238,6 +240,18 @@ void QgsFieldExpressionWidget::changeEvent( QEvent* event )
 void QgsFieldExpressionWidget::reloadLayer()
 {
   setLayer( mFieldProxyModel->sourceFieldModel()->layer() );
+}
+
+void QgsFieldExpressionWidget::beforeResetModel()
+{
+  // Backup expression
+  mBackupExpression = mCombo->currentText();
+}
+
+void QgsFieldExpressionWidget::afterResetModel()
+{
+  // Restore expression
+  mCombo->lineEdit()->setText( mBackupExpression );
 }
 
 void QgsFieldExpressionWidget::currentFieldChanged()
