@@ -312,7 +312,7 @@ class QgsVectorLayer : QgsMapLayer
       Color,          /**< color */
       EditorWidgetV2, /**< modularized edit widgets @note added in 2.1 */
     };
-    
+
     //! Result of an edit operation
     enum EditResult
     {

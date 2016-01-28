@@ -233,6 +233,5 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/tool.png')
 
-
     def getSupportedOutputTableExtensions(self):
         return ['csv']
