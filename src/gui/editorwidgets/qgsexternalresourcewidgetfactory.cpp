@@ -94,8 +94,8 @@ QgsEditorWidgetConfig QgsExternalResourceWidgetFactory::readConfig( const QDomEl
 
   if ( configElement.hasAttribute( "RelativeStorage" ) )
   {
-    if (( configElement.attribute( "RelativeStorage" ).toInt() == QgsFileWidget::RelativeStorage::RelativeDefaultPath && configElement.hasAttribute( "DefaultRoot" ) ) ||
-        configElement.attribute( "RelativeStorage" ).toInt() == QgsFileWidget::RelativeStorage::RelativeProject )
+    if (( configElement.attribute( "RelativeStorage" ).toInt() == QgsFileWidget::RelativeDefaultPath && configElement.hasAttribute( "DefaultRoot" ) ) ||
+        configElement.attribute( "RelativeStorage" ).toInt() == QgsFileWidget::RelativeProject )
       cfg.insert( "RelativeStorage" , configElement.attribute( "RelativeStorage" ).toInt() );
   }
 
