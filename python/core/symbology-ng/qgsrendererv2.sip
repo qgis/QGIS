@@ -115,6 +115,9 @@ class QgsFeatureRendererV2
     //! @deprecated since 2.4 - not using QgsVectorLayer directly anymore
     virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer ) /Deprecated/;
 
+    /**
+     * Needs to be called when a render cycle has finished to clean up.
+     */
     virtual void stopRender( QgsRenderContext& context ) = 0;
 
     /**
@@ -141,6 +144,16 @@ class QgsFeatureRendererV2
 
     virtual QgsFeatureRendererV2* clone() const = 0 /Factory/;
 
+    /**
+     * Render a feature using this renderer in the given context.
+     * Must be called between startRender() and stopRender() calls.
+     * Default implementation renders a symbol as determined by symbolForFeature() call.
+     * Returns true if the feature has been returned (this is used for example
+     * to determine whether the feature may be labelled).
+     *
+     * If layer is not -1, the renderer should draw only a particula layer from symbols
+     * (in order to support symbol level rendering).
+     */
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     //! for debugging
@@ -381,7 +394,7 @@ class QgsFeatureRendererV2
      * @param destRenderer destination renderer for copied effect
      * @deprecated use copyRendererData instead
      */
-    void copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const;
+    void copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const /Deprecated/;
 
     /** @note this function is used to convert old sizeScale expresssions to symbol
      * level DataDefined size
