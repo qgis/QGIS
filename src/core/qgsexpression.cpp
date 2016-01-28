@@ -4583,6 +4583,21 @@ QString QgsExpression::formatPreviewString( const QVariant& value )
     QgsExpression::Interval interval = value.value<QgsExpression::Interval>();
     return tr( "<i>&lt;interval: %1 days&gt;</i>" ).arg( interval.days() );
   }
+  else if ( value.type() == QVariant::Date )
+  {
+    QDate dt = value.toDate();
+    return tr( "<i>&lt;date: %1&gt;</i>" ).arg( dt.toString( "yyyy-MM-dd" ) );
+  }
+  else if ( value.type() == QVariant::Time )
+  {
+    QTime tm = value.toTime();
+    return tr( "<i>&lt;time: %1&gt;</i>" ).arg( tm.toString( "hh:mm:ss" ) );
+  }
+  else if ( value.type() == QVariant::DateTime )
+  {
+    QDateTime dt = value.toDateTime();
+    return tr( "<i>&lt;datetime: %1&gt;</i>" ).arg( dt.toString( "yyyy-MM-dd hh:mm:ss" ) );
+  }
   else if ( value.type() == QVariant::String )
   {
     QString previewString = value.toString();
