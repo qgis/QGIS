@@ -55,6 +55,7 @@ class ProcessingToolbox(BASE, WIDGET):
 
     def __init__(self):
         super(ProcessingToolbox, self).__init__(None)
+        self.tipWasClosed = False
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
@@ -66,10 +67,14 @@ class ProcessingToolbox(BASE, WIDGET):
         self.txtTip.setVisible(self.disabledProviders())
         self.txtDisabled.linkActivated.connect(self.showDisabled)
 
-        def openSettings():
-            dlg = ConfigDialog(self)
-            dlg.exec_()
-            self.txtTip.setVisible(self.disabledProviders())
+        def openSettings(url):
+            if url == "close":
+                self.txtTip.setVisible(False)
+                self.tipWasClosed = True
+            else:
+                dlg = ConfigDialog(self)
+                dlg.exec_()
+                self.txtTip.setVisible(self.disabledProviders())
         self.txtTip.linkActivated.connect(openSettings)
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(self.tr('Search...'))
@@ -83,6 +88,10 @@ class ProcessingToolbox(BASE, WIDGET):
         self.algorithmTree.expandAll()
 
     def disabledProviders(self):
+        showTip = ProcessingConfig.getSetting(ProcessingConfig.SHOW_PROVIDERS_TOOLTIP)
+        if not showTip or self.tipWasClosed:
+            return False
+
         for providerName in Processing.algs.keys():
             name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
             if not ProcessingConfig.getSetting(name):

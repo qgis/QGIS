@@ -52,6 +52,7 @@ class ProcessingConfig:
     WARN_UNMATCHING_CRS = 'WARN_UNMATCHING_CRS'
     DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DEFAULT_OUTPUT_RASTER_LAYER_EXT'
     DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DEFAULT_OUTPUT_VECTOR_LAYER_EXT'
+    SHOW_PROVIDERS_TOOLTIP = "SHOW_PROVIDERS_TOOLTIP"
 
     settings = {}
     settingIcons = {}
@@ -80,6 +81,10 @@ class ProcessingConfig:
             ProcessingConfig.tr('General'),
             ProcessingConfig.SHOW_RECENT_ALGORITHMS,
             ProcessingConfig.tr('Show recently executed algorithms'), True))
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.SHOW_PROVIDERS_TOOLTIP,
+            ProcessingConfig.tr('Show tooltip when there are disabled providers'), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.OUTPUT_FOLDER,
