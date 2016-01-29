@@ -925,7 +925,9 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       }
       else
       {
-        QString wkt = geom->exportToWkt();
+        QString wkt;
+        if ( geom && !geom->isEmpty() )
+          wkt = geom->exportToWkt();
         query.addBindValue( wkt );
       }
     }
