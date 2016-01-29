@@ -339,11 +339,15 @@ void QgsMssqlConnectionItem::deleteConnection()
 
 bool QgsMssqlConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 {
+  return handleDrop( data, QString() );
+}
+
+bool QgsMssqlConnectionItem::handleDrop( const QMimeData* data, const QString& toSchema )
+{
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
 
   // TODO: probably should show a GUI with settings etc
-
   qApp->setOverrideCursor( Qt::WaitCursor );
 
   QStringList importResults;
@@ -363,7 +367,17 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction 
 
     if ( srcLayer->isValid() )
     {
-      QString uri = connInfo() + " table=" + u.name + " (geom)";
+      QString tableName;
+      if ( !toSchema.isEmpty() )
+      {
+        tableName = QString( "\"%1\".\"%2\"" ).arg( toSchema, u.name );
+      }
+      else
+      {
+        tableName = u.name;
+      }
+
+      QString uri = connInfo() + " table=" + tableName + " (geom)";
 
       QgsVectorLayerImport::ImportError err;
       QString importError;
@@ -472,6 +486,15 @@ void QgsMssqlSchemaItem::addLayers( QgsDataItem* newLayers )
     QgsMssqlLayerItem* layer = (( QgsMssqlLayerItem* )child )->createClone();
     addChildItem( layer, true );
   }
+}
+
+bool QgsMssqlSchemaItem::handleDrop( const QMimeData* data, Qt::DropAction )
+{
+  QgsMssqlConnectionItem *conn = qobject_cast<QgsMssqlConnectionItem *>( parent() );
+  if ( !conn )
+    return 0;
+
+  return conn->handleDrop( data, mName );
 }
 
 QgsMssqlLayerItem* QgsMssqlSchemaItem::addLayer( QgsMssqlLayerProperty layerProperty, bool refresh )
