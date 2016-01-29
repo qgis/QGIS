@@ -160,6 +160,11 @@ QgsMssqlProvider::QgsMssqlProvider( const QString& uri )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "real", QVariant::Double )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "float", QVariant::Double )
 
+  // date/time types
+  << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Time" ), "time", QVariant::Time, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime, -1, -1, -1, -1 )
+
   // string types
   << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "char", QVariant::String, 1, 255 )
   << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255 )
@@ -321,10 +326,13 @@ QVariant::Type QgsMssqlProvider::DecodeSqlType( const QString& sqlTypeName )
   {
     type = QVariant::Date;
   }
-  else if ( sqlTypeName.startsWith( "time", Qt::CaseInsensitive ) ||
-            sqlTypeName.startsWith( "timestamp", Qt::CaseInsensitive ) )
+  else if ( sqlTypeName.startsWith( "timestamp", Qt::CaseInsensitive ) )
   {
     type = QVariant::String;
+  }
+  else if ( sqlTypeName.startsWith( "time", Qt::CaseInsensitive ) )
+  {
+    type = QVariant::Time;
   }
   else
   {
@@ -407,6 +415,15 @@ void QgsMssqlProvider::loadFields()
               sqlTypeName,
               query.value( 7 ).toInt(),
               query.value( 8 ).toInt() ) );
+        }
+        else if ( sqlType == QVariant::Date || sqlType == QVariant::DateTime || sqlType == QVariant::Time )
+        {
+          mAttributeFields.append(
+            QgsField(
+              query.value( 3 ).toString(), sqlType,
+              sqlTypeName,
+              -1,
+              -1 ) );
         }
         else
         {
@@ -1455,8 +1472,20 @@ bool QgsMssqlProvider::convertField( QgsField &field )
       break;
 
     case QVariant::DateTime:
+      fieldType = "datetime";
+      fieldPrec = -1;
+      break;
+
     case QVariant::Date:
+      fieldType = "date";
+      fieldPrec = -1;
+      break;
+
     case QVariant::Time:
+      fieldType = "time";
+      fieldPrec = -1;
+      break;
+
     case QVariant::String:
       fieldType = "nvarchar(max)";
       fieldPrec = -1;

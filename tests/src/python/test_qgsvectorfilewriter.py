@@ -72,7 +72,7 @@ class TestQgsVectorLayer(TestCase):
 
         ft = QgsFeature()
         ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
-        ft.setAttributes([1, QDate(2014, 0o3, 0o5), QTime(13, 45, 22), QDateTime(QDate(2014, 0o3, 0o5), QTime(13, 45, 22))])
+        ft.setAttributes([1, QDate(2014, 3, 5), QTime(13, 45, 22), QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22))])
         res, features = provider.addFeatures([ft])
         assert res
         assert len(features) > 0
@@ -103,7 +103,7 @@ class TestQgsVectorLayer(TestCase):
 
         date_idx = created_layer.fieldNameIndex('date_f')
         assert isinstance(f.attributes()[date_idx], QDate)
-        self.assertEqual(f.attributes()[date_idx], QDate(2014, 0o3, 0o5))
+        self.assertEqual(f.attributes()[date_idx], QDate(2014, 3, 5))
         time_idx = created_layer.fieldNameIndex('time_f')
         #shapefiles do not support time types
         assert isinstance(f.attributes()[time_idx], basestring)
@@ -111,7 +111,7 @@ class TestQgsVectorLayer(TestCase):
         #shapefiles do not support datetime types
         datetime_idx = created_layer.fieldNameIndex('dt_f')
         assert isinstance(f.attributes()[datetime_idx], QDate)
-        self.assertEqual(f.attributes()[datetime_idx], QDate(2014, 0o3, 0o5))
+        self.assertEqual(f.attributes()[datetime_idx], QDate(2014, 3, 5))
 
     def testDateTimeWriteTabfile(self):
         """Check writing date and time fields to an MapInfo tabfile."""
@@ -128,7 +128,7 @@ class TestQgsVectorLayer(TestCase):
 
         ft = QgsFeature()
         ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
-        ft.setAttributes([1, QDate(2014, 0o3, 0o5), QTime(13, 45, 22), QDateTime(QDate(2014, 0o3, 0o5), QTime(13, 45, 22))])
+        ft.setAttributes([1, QDate(2014, 3, 5), QTime(13, 45, 22), QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22))])
         res, features = provider.addFeatures([ft])
         assert res
         assert len(features) > 0
@@ -157,13 +157,13 @@ class TestQgsVectorLayer(TestCase):
 
         date_idx = created_layer.fieldNameIndex('date_f')
         assert isinstance(f.attributes()[date_idx], QDate)
-        self.assertEqual(f.attributes()[date_idx], QDate(2014, 0o3, 0o5))
+        self.assertEqual(f.attributes()[date_idx], QDate(2014, 3, 5))
         time_idx = created_layer.fieldNameIndex('time_f')
         assert isinstance(f.attributes()[time_idx], QTime)
         self.assertEqual(f.attributes()[time_idx], QTime(13, 45, 22))
         datetime_idx = created_layer.fieldNameIndex('dt_f')
         assert isinstance(f.attributes()[datetime_idx], QDateTime)
-        self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2014, 0o3, 0o5), QTime(13, 45, 22)))
+        self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22)))
 
 if __name__ == '__main__':
     unittest.main()

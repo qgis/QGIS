@@ -47,10 +47,13 @@ class TestPyQgsTabfileProvider(TestCase):
 
         date_idx = vl.fieldNameIndex('date')
         assert isinstance(f.attributes()[date_idx], QDate)
+        self.assertEqual(f.attributes()[date_idx], QDate(2004, 5, 3))
         time_idx = vl.fieldNameIndex('time')
         assert isinstance(f.attributes()[time_idx], QTime)
+        self.assertEqual(f.attributes()[time_idx], QTime(13, 41, 00))
         datetime_idx = vl.fieldNameIndex('date_time')
         assert isinstance(f.attributes()[datetime_idx], QDateTime)
+        self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2004, 5, 3), QTime(13, 41, 00)))
 
 if __name__ == '__main__':
     unittest.main()

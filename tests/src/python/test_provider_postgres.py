@@ -72,10 +72,13 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
 
         date_idx = vl.fieldNameIndex('date_field')
         assert isinstance(f.attributes()[date_idx], QDate)
+        self.assertEqual(f.attributes()[date_idx], QDate(2004, 3, 4))
         time_idx = vl.fieldNameIndex('time_field')
         assert isinstance(f.attributes()[time_idx], QTime)
+        self.assertEqual(f.attributes()[time_idx], QTime(13, 41, 52))
         datetime_idx = vl.fieldNameIndex('datetime_field')
         assert isinstance(f.attributes()[datetime_idx], QDateTime)
+        self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2004, 3, 4), QTime(13, 41, 52)))
 
     def testQueryLayers(self):
         def test_query(dbconn, query, key):
