@@ -56,7 +56,7 @@ Build-Depends:
  txt2tags,
  xvfb, xauth,
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
-#oracle# oracle-instantclient11.2-devel,
+#oracle# oracle-instantclient12.1-devel,
  spawn-fcgi, lighttpd, poppler-utils, locales, qt4-doc-html,
  libqt4-sql-sqlite, python-psycopg2
 Build-Conflicts: libqgis-dev, qgis-dev
