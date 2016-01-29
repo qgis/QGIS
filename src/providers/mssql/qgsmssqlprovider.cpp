@@ -603,6 +603,9 @@ void QgsMssqlProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, i
 // update the extent, wkb type and srid for this layer
 void QgsMssqlProvider::UpdateStatistics( bool estimate )
 {
+  if ( mGeometryColName.isEmpty() )
+    return;
+
   // get features to calculate the statistics
   QString statement;
 
@@ -1300,12 +1303,24 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds & id )
 
 int QgsMssqlProvider::capabilities() const
 {
+  int cap = CreateAttributeIndex | AddFeatures | AddAttributes;
+  bool hasGeom = false;
+  if ( !mGeometryColName.isEmpty() )
+  {
+    hasGeom = true;
+    cap |= CreateSpatialIndex;
+  }
+
   if ( mFidColName.isEmpty() )
-    return CreateSpatialIndex | CreateAttributeIndex | AddFeatures | AddAttributes;
+    return cap;
   else
-    return CreateSpatialIndex | CreateAttributeIndex | AddFeatures | DeleteFeatures |
-           ChangeAttributeValues | ChangeGeometries | AddAttributes | DeleteAttributes |
-           QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+  {
+    if ( hasGeom )
+      cap |= ChangeGeometries | QgsVectorDataProvider::SelectGeometryAtId;
+
+    return cap | DeleteFeatures | ChangeAttributeValues | DeleteAttributes |
+           QgsVectorDataProvider::SelectAtId;
+  }
 }
 
 bool QgsMssqlProvider::createSpatialIndex()
@@ -1657,7 +1672,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
   if ( schemaName.isEmpty() )
     schemaName = "dbo";
 
-  if ( geometryColumn.isEmpty() )
+  if ( wkbType != QGis::WKBNoGeometry && geometryColumn.isEmpty() )
     geometryColumn = "geom";
 
   if ( primaryKey.isEmpty() )
@@ -1770,19 +1785,33 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
     }
   }
 
-  sql = QString( "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) DROP TABLE [%1].[%2]\n"
-                 "CREATE TABLE [%1].[%2]([%3] [int] IDENTITY(1,1) NOT NULL, [%4] [geometry] NULL CONSTRAINT [PK_%2] PRIMARY KEY CLUSTERED ( [%3] ASC ))\n"
-                 "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'\n"
-                 "INSERT INTO [geometry_columns] ([f_table_catalog], [f_table_schema],[f_table_name], "
-                 "[f_geometry_column],[coord_dimension],[srid],[geometry_type]) VALUES ('%5', '%1', '%2', '%4', %6, %7, '%8')" )
-        .arg( schemaName,
-              tableName,
-              primaryKey,
-              geometryColumn,
-              dbName,
-              QString::number( dim ),
-              QString::number( srid ),
-              geometryType );
+  if ( !geometryColumn.isEmpty() )
+  {
+    sql = QString( "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) DROP TABLE [%1].[%2]\n"
+                   "CREATE TABLE [%1].[%2]([%3] [int] IDENTITY(1,1) NOT NULL, [%4] [geometry] NULL CONSTRAINT [PK_%2] PRIMARY KEY CLUSTERED ( [%3] ASC ))\n"
+                   "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'\n"
+                   "INSERT INTO [geometry_columns] ([f_table_catalog], [f_table_schema],[f_table_name], "
+                   "[f_geometry_column],[coord_dimension],[srid],[geometry_type]) VALUES ('%5', '%1', '%2', '%4', %6, %7, '%8')" )
+          .arg( schemaName,
+                tableName,
+                primaryKey,
+                geometryColumn,
+                dbName,
+                QString::number( dim ),
+                QString::number( srid ),
+                geometryType );
+  }
+  else
+  {
+    //geometryless table
+    sql = QString( "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) DROP TABLE [%1].[%2]\n"
+                   "CREATE TABLE [%1].[%2]([%3] [int] IDENTITY(1,1) NOT NULL CONSTRAINT [PK_%2] PRIMARY KEY CLUSTERED ( [%3] ASC ))\n"
+                   "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'\n"
+                 )
+          .arg( schemaName,
+                tableName,
+                primaryKey );
+  }
 
   if ( !q.exec( sql ) )
   {
