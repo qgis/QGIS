@@ -1018,6 +1018,7 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
     return false;
   }
 
+  loadFields();
   return true;
 }
 
