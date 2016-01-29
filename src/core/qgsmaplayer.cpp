@@ -1187,15 +1187,8 @@ bool QgsMapLayer::importNamedStyle( QDomDocument& myDocument, QString& myErrorMe
 
   if ( thisVersion > fileVersion )
   {
-    QgsLogger::warning( "Loading a style file that was saved with an older "
-                        "version of qgis (saved in " + fileVersion.text() +
-                        ", loaded in " + QGis::QGIS_VERSION +
-                        "). Problems may occur." );
-
     QgsProjectFileTransform styleFile( myDocument, fileVersion );
-    // styleFile.dump();
     styleFile.updateRevision( thisVersion );
-    // styleFile.dump();
   }
 
   //Test for matching geometry type on vector layers when applying, if geometry type is given in the style
