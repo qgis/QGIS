@@ -51,6 +51,12 @@ void QgsDb2ConnectionItem::refresh()
   {
     // Is it present in childs?
     int index = findItem( mChildren, item );
+    if ( index >= 0 )
+    {
+      (( QgsDb2SchemaItem* )mChildren.at( index ) )->addLayers( item );
+      delete item;
+      continue;
+    }
     addChildItem( item, true );
   }
 }
@@ -60,7 +66,7 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
   QgsDebugMsg( "Entering." );
 
   QVector<QgsDataItem*> children;
-  QgsDb2GeomColumnTypeThread *columnTypeThread = 0; // TODO - what is this?
+//  QgsDb2GeomColumnTypeThread *columnTypeThread = 0; // TODO - what is this?
 
   readConnectionSettings();
 

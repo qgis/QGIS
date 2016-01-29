@@ -313,13 +313,11 @@ QgsDb2FeatureSource::QgsDb2FeatureSource( const QgsDb2Provider* p )
     , mService( p->mService )
     , mDatabaseName( p->mDatabaseName )
     , mDriver( p->mDriver )
-    , mPort( p->mPort )
     , mHost( p->mHost )
+    , mPort( p->mPort )    
     , mSqlWhereClause( p->mSqlWhereClause )
 {   //TODO set mEnvironment to LUW or ZOS? -David
   mSRId = p->mSRId;
-  mGeometryColName = p->mGeometryColName;  //TODO - aren't these statements redundant?
-  mGeometryColType = p->mGeometryColType;
 }
 
 QgsDb2FeatureSource::~QgsDb2FeatureSource()

@@ -6,7 +6,7 @@ SET(DB2_SRCS
   qgsdb2provider.cpp qgsdb2dataitems.cpp qgsdb2newconnection.cpp qgsdb2tablemodel.cpp qgsdb2featureiterator.cpp qgsdb2sourceselect.cpp
 )
 SET(DB2_MOC_HDRS
-  qgsdb2provider.h qgsdb2dataitems.h qgsdb2newconnection.h qgsdb2tablemodel.h qgsdb2featureiterator.h qgsdb2sourceselect.h
+  qgsdb2provider.h qgsdb2dataitems.h qgsdb2newconnection.h qgsdb2tablemodel.h qgsdb2sourceselect.h
 )
 
 ########################################################

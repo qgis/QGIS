@@ -119,9 +119,9 @@ bool QgsDb2NewConnection::testConnection( QString testDatabase )
   QString userid;
   QString password;
 
-  dsn =  txtService ->text();
+  dsn =  txtService->text();
   driver = txtDriver->text();
-  host = txtHost ->text();
+  host = txtHost->text();
   port = txtPort->text();
   database = txtDatabase->text();
   userid = txtUsername->text();
@@ -132,7 +132,7 @@ bool QgsDb2NewConnection::testConnection( QString testDatabase )
   db = QgsDb2Provider::GetDatabase( dsn, driver, host, portNum, database, userid, password );
   if ( db.open() )
   {
-    QgsDebugMsg( "DB2: TestDatabase; connection open succeeded." );
+    QgsDebugMsg("connection open succeeded on " + testDatabase );
     db2ConnectStatus -> setText( "DB2 connection open succeeded" );
     return true;
   }

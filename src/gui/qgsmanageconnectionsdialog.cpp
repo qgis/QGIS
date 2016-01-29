@@ -127,6 +127,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case Oracle:
         doc = saveOracleConnections( items );
         break;
+      case DB2:
+        doc = saveDb2Connections( items );
+        break;
     }
 
     QFile file( mFileName );
@@ -189,6 +192,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case Oracle:
         loadOracleConnections( doc, items );
         break;
+      case DB2:
+        loadDb2Connections( doc, items );
+        break;
     }
     // clear connections list and close window
     listConnections->clear();
@@ -223,6 +229,9 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
       case Oracle:
         settings.beginGroup( "/Oracle/connections" );
+        break;
+      case DB2:
+        settings.beginGroup( "/DB2/connections" );
         break;
     }
     QStringList keys = settings.childGroups();
@@ -313,6 +322,14 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
       case Oracle:
         if ( root.tagName() != "qgsOracleConnections" )
+        {
+          QMessageBox::information( this, tr( "Loading connections" ),
+                                    tr( "The file is not an Oracle connections exchange file." ) );
+          return false;
+        }
+        break;
+      case DB2:
+        if ( root.tagName() != "qgsDb2Connections" )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
                                     tr( "The file is not an Oracle connections exchange file." ) );
@@ -500,6 +517,47 @@ QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringLis
     el.setAttribute( "userTablesOnly", settings.value( path + "/userTablesOnly", "0" ).toString() );
     el.setAttribute( "geometryColumnsOnly", settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
     el.setAttribute( "allowGeometrylessTables", settings.value( path + "/allowGeometrylessTables", "0" ).toString() );
+
+    el.setAttribute( "saveUsername", settings.value( path + "/saveUsername", "false" ).toString() );
+
+    if ( settings.value( path + "/saveUsername", "false" ).toString() == "true" )
+    {
+      el.setAttribute( "username", settings.value( path + "/username", "" ).toString() );
+    }
+
+    el.setAttribute( "savePassword", settings.value( path + "/savePassword", "false" ).toString() );
+
+    if ( settings.value( path + "/savePassword", "false" ).toString() == "true" )
+    {
+      el.setAttribute( "password", settings.value( path + "/password", "" ).toString() );
+    }
+
+    root.appendChild( el );
+  }
+
+  return doc;
+}
+
+QDomDocument QgsManageConnectionsDialog::saveDb2Connections( const QStringList &connections )
+{
+  QDomDocument doc( "connections" );
+  QDomElement root = doc.createElement( "qgsDb2Connections" );
+  root.setAttribute( "version", "1.0" );
+  doc.appendChild( root );
+
+  QSettings settings;
+  QString path;
+  for ( int i = 0; i < connections.count(); ++i )
+  {
+    path = "/DB2/connections/" + connections[ i ];
+    QDomElement el = doc.createElement( "db2" );
+    el.setAttribute( "name", connections[ i ] );
+    el.setAttribute( "host", settings.value( path + "/host", "" ).toString() );
+    el.setAttribute( "port", settings.value( path + "/port", "" ).toString() );
+    el.setAttribute( "database", settings.value( path + "/database", "" ).toString() );
+    el.setAttribute( "service", settings.value( path + "/service", "" ).toString() );
+    el.setAttribute( "sslmode", settings.value( path + "/sslmode", "1" ).toString() );
+    el.setAttribute( "estimatedMetadata", settings.value( path + "/estimatedMetadata", "0" ).toString() );
 
     el.setAttribute( "saveUsername", settings.value( path + "/saveUsername", "false" ).toString() );
 
@@ -954,6 +1012,95 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
   }
 }
 
+void QgsManageConnectionsDialog::loadDb2Connections( const QDomDocument &doc, const QStringList &items )
+{
+  QDomElement root = doc.documentElement();
+  if ( root.tagName() != "qgsDb2Connections" )
+  {
+    QMessageBox::information( this,
+                              tr( "Loading connections" ),
+                              tr( "The file is not an DB2 connections exchange file." ) );
+    return;
+  }
+
+  QString connectionName;
+  QSettings settings;
+  settings.beginGroup( "/DB2/connections" );
+  QStringList keys = settings.childGroups();
+  settings.endGroup();
+  QDomElement child = root.firstChildElement();
+  bool prompt = true;
+  bool overwrite = true;
+
+  while ( !child.isNull() )
+  {
+    connectionName = child.attribute( "name" );
+    if ( !items.contains( connectionName ) )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    // check for duplicates
+    if ( keys.contains( connectionName ) && prompt )
+    {
+      int res = QMessageBox::warning( this,
+                                      tr( "Loading connections" ),
+                                      tr( "Connection with name '%1' already exists. Overwrite?" )
+                                      .arg( connectionName ),
+                                      QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      switch ( res )
+      {
+        case QMessageBox::Cancel:
+          return;
+        case QMessageBox::No:
+          child = child.nextSiblingElement();
+          continue;
+        case QMessageBox::Yes:
+          overwrite = true;
+          break;
+        case QMessageBox::YesToAll:
+          prompt = false;
+          overwrite = true;
+          break;
+        case QMessageBox::NoToAll:
+          prompt = false;
+          overwrite = false;
+          break;
+      }
+    }
+
+    if ( keys.contains( connectionName ) && !overwrite )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    //no dups detected or overwrite is allowed
+    settings.beginGroup( "/DB2/connections/" + connectionName );
+
+    settings.setValue( "/host", child.attribute( "host" ) );
+    settings.setValue( "/port", child.attribute( "port" ) );
+    settings.setValue( "/database", child.attribute( "database" ) );
+    if ( child.hasAttribute( "service" ) )
+    {
+      settings.setValue( "/service", child.attribute( "service" ) );
+    }
+    else
+    {
+      settings.setValue( "/service", "" );
+    }
+    settings.setValue( "/sslmode", child.attribute( "sslmode" ) );
+    settings.setValue( "/estimatedMetadata", child.attribute( "estimatedMetadata" ) );
+    settings.setValue( "/saveUsername", child.attribute( "saveUsername" ) );
+    settings.setValue( "/username", child.attribute( "username" ) );
+    settings.setValue( "/savePassword", child.attribute( "savePassword" ) );
+    settings.setValue( "/password", child.attribute( "password" ) );
+    settings.endGroup();
+
+    child = child.nextSiblingElement();
+  }
+}
 void QgsManageConnectionsDialog::selectAll()
 {
   listConnections->selectAll();

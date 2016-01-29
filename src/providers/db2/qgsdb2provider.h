@@ -7,6 +7,7 @@
 
 class QgsDb2Provider : public QgsVectorDataProvider
 {
+	Q_OBJECT
 
   public:
     explicit QgsDb2Provider( QString uri = QString() );
@@ -14,8 +15,6 @@ class QgsDb2Provider : public QgsVectorDataProvider
     virtual ~QgsDb2Provider();
 
     static QSqlDatabase GetDatabase( QString service, QString driver, QString host, int port, QString location, QString username, QString password );
-
-    static void TestGetDatabase(); //TODO remove after testing complete
 
     static bool OpenDatabase( QSqlDatabase db );
 
