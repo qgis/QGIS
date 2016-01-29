@@ -377,7 +377,9 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData* data, const QString& t
         tableName = u.name;
       }
 
-      QString uri = connInfo() + " table=" + tableName + " (geom)";
+      QString uri = connInfo() + " table=" + tableName;
+      if ( srcLayer->geometryType() != QGis::NoGeometry )
+        uri += " (geom)";
 
       QgsVectorLayerImport::ImportError err;
       QString importError;
