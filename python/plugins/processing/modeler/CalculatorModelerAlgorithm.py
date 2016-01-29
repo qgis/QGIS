@@ -54,7 +54,7 @@ class CalculatorModelerAlgorithm(GeoAlgorithm):
                                           self.tr('Formula', 'CalculatorModelerAlgorithm'), ''))
         for i in range(AVAILABLE_VARIABLES):
             self.addParameter(ParameterNumber(NUMBER
-                              + unicode(i), 'dummy'))
+                                              + unicode(i), 'dummy'))
         self.addOutput(OutputNumber(RESULT,
                                     self.tr('Result', 'CalculatorModelerAlgorithm')))
 

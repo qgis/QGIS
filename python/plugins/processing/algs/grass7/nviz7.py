@@ -165,7 +165,7 @@ class nviz7(GeoAlgorithm):
                     else:
                         layer = dataobjects.getObjectFromUri(param.value)
                     cellsize = max(cellsize, (layer.extent().xMaximum()
-                                   - layer.extent().xMinimum())
+                                              - layer.extent().xMinimum())
                                    / layer.width())
                 elif isinstance(param, ParameterMultipleInput):
 

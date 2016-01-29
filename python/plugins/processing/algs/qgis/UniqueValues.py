@@ -63,7 +63,7 @@ class UniqueValues(GeoAlgorithm):
         self.createHTML(outputFile, values)
         self.setOutputValue(self.TOTAL_VALUES, len(values))
         self.setOutputValue(self.UNIQUE_VALUES, ';'.join([unicode(v) for v in
-                            values]))
+                                                          values]))
 
     def createHTML(self, outputFile, algData):
         f = codecs.open(outputFile, 'w', encoding='utf-8')

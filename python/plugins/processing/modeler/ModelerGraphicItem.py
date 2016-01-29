@@ -263,12 +263,12 @@ class ModelerGraphicItem(QGraphicsItem):
             painter.drawText(pt, 'Out')
             if not self.element.outputsFolded:
                 for i, out in enumerate(self.element.algorithm.outputs):
-                        text = self.getAdjustedText(out.description)
-                        h = fm.height() * 1.2 * (i + 2)
-                        h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
-                        pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
-                                     + 33, h)
-                        painter.drawText(pt, text)
+                    text = self.getAdjustedText(out.description)
+                    h = fm.height() * 1.2 * (i + 2)
+                    h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
+                    pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
+                                 + 33, h)
+                    painter.drawText(pt, text)
         if self.pixmap:
             painter.drawPixmap(-(ModelerGraphicItem.BOX_WIDTH / 2.0) + 3, -8,
                                self.pixmap)
@@ -354,11 +354,11 @@ class FlatButtonGraphicItem(QGraphicsItem):
         if self.isIn:
             painter.setPen(QPen(Qt.transparent, 1))
             painter.setBrush(QBrush(Qt.lightGray,
-                             Qt.SolidPattern))
+                                    Qt.SolidPattern))
         else:
             painter.setPen(QPen(Qt.transparent, 1))
             painter.setBrush(QBrush(Qt.transparent,
-                             Qt.SolidPattern))
+                                    Qt.SolidPattern))
         painter.drawRect(rect)
         painter.drawPixmap(pt.x(), pt.y(), self.pixmap)
 

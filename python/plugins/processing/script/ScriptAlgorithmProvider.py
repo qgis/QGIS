@@ -46,9 +46,9 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.actions.extend([CreateNewScriptAction(self.tr('Create new script', 'ScriptAlgorithmProvider'),
-                            CreateNewScriptAction.SCRIPT_PYTHON),
-                            AddScriptFromFileAction(),
-                            GetScriptsAction()])
+                                                   CreateNewScriptAction.SCRIPT_PYTHON),
+                             AddScriptFromFileAction(),
+                             GetScriptsAction()])
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)]
@@ -56,9 +56,9 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    ScriptUtils.SCRIPTS_FOLDER,
-                                    self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
-                                    ScriptUtils.scriptsFolder(), valuetype=Setting.FOLDER))
+                                            ScriptUtils.SCRIPTS_FOLDER,
+                                            self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
+                                            ScriptUtils.scriptsFolder(), valuetype=Setting.FOLDER))
 
     def unload(self):
         AlgorithmProvider.unload(self)

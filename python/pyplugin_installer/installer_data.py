@@ -450,7 +450,7 @@ class Repositories(QObject):
                     #if compatible, add the plugin to the list
                     if not pluginNodes.item(i).firstChildElement("disabled").text().strip().upper() in ["TRUE", "YES"]:
                         if isCompatible(QGis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
-                        #add the plugin to the cache
+                            #add the plugin to the cache
                             plugins.addFromRepository(plugin)
                 self.mRepositories[reposName]["state"] = 2
             else:

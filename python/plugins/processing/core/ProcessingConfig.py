@@ -137,13 +137,13 @@ class ProcessingConfig:
             ProcessingConfig.tr('General'),
             ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
             ProcessingConfig.tr('Default output vector layer extension'), extensions[0],
-                                valuetype=Setting.SELECTION, options=extensions))
+            valuetype=Setting.SELECTION, options=extensions))
         extensions = processing.tools.dataobjects.getSupportedOutputRasterLayerExtensions()
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
             ProcessingConfig.tr('Default output raster layer extension'), extensions[0],
-                                valuetype=Setting.SELECTION, options=extensions))
+            valuetype=Setting.SELECTION, options=extensions))
 
     @staticmethod
     def setGroupIcon(group, icon):

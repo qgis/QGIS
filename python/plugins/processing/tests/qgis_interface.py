@@ -47,7 +47,7 @@ class QgisInterface(QObject):
                                                      self.testVector])
 
         self.statusBar = type('FakeStatusBar', (), {'showMessage': lambda _,
-                              m: None})()
+                                                    m: None})()
 
     def zoomFull(self):
         """Zoom to the map full extent"""
@@ -98,7 +98,7 @@ class QgisInterface(QObject):
         """
 
         return type('FakeMainWindow', (), {'statusBar': lambda _:
-                    self.statusBar})()
+                                           self.statusBar})()
 
     def addDockWidget(self, area, dockwidget):
         """Add a dock widget to the main window"""
@@ -106,4 +106,4 @@ class QgisInterface(QObject):
 
     def legendInterface(self):
         return type('FakeLInterface', (), {'layers': lambda _:
-                    [self.testRaster, self.testVector]})()
+                                           [self.testRaster, self.testVector]})()

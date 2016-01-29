@@ -50,7 +50,7 @@ class ORDatabaseInfo(DatabaseInfo):
             tbl.append((QApplication.translate("DBManagerPlugin", "Host:"),
                         self.db.connector.host))
         tbl.append((QApplication.translate("DBManagerPlugin", "Database:"),
-                   self.db.connector.dbname))
+                    self.db.connector.dbname))
         tbl.append((QApplication.translate("DBManagerPlugin", "User:"),
                     self.db.connector.user))
         tbl.append((QApplication.translate("DBManagerPlugin",

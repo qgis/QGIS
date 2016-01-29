@@ -192,7 +192,7 @@ class ScriptEdit(QsciScintilla):
 
             settings = QSettings()
             useDefaultAPI = bool(settings.value('pythonConsole/preloadAPI',
-                                 True))
+                                                True))
             if useDefaultAPI:
                 # Load QGIS API shipped with Python console
                 self.api.loadPrepared(
