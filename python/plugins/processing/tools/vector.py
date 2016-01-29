@@ -67,7 +67,10 @@ TYPE_MAP = {
 TYPE_MAP_MEMORY_LAYER = {
     QVariant.String: "string",
     QVariant.Double: "double",
-    QVariant.Int: "integer"
+    QVariant.Int: "integer",
+    QVariant.Date: "date",
+    QVariant.DateTime: "datetime",
+    QVariant.Time: "time"
 }
 
 TYPE_MAP_POSTGIS_LAYER = {
