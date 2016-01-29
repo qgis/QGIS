@@ -139,6 +139,7 @@ class QgsOracleConn : public QObject
     QString currentUser();
 
     bool hasSpatial();
+    int majorVersion();
 
     static const int sGeomTypeSelectLimit;
 
@@ -176,6 +177,9 @@ class QgsOracleConn : public QObject
 
     //! has spatial
     int mHasSpatial;
+
+    //! major database version
+    int mMajorVersion;
 
     QSqlDatabase mDatabase;
     QSqlQuery mQuery;

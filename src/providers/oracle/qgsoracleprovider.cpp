@@ -747,8 +747,12 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
 
   mEnabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
 
-  // supports geometry simplification on provider side
-  mEnabledCapabilities |= QgsVectorDataProvider::SimplifyGeometries;
+  if ( mConnection->majorVersion() > 10 || mConnection->hasSpatial() )
+  {
+    // 10g doesn't support SDO_UTIL in Oracle Locator
+    // supports geometry simplification on provider side
+    mEnabledCapabilities |= QgsVectorDataProvider::SimplifyGeometries;
+  }
 
   QSqlQuery qry( *mConnection );
   if ( !mIsQuery )

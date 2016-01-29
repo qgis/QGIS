@@ -413,7 +413,7 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause )
 
 bool QgsOracleFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
 {
-  return methodType == QgsSimplifyMethod::OptimizeForRendering;
+  return ( mConnection->majorVersion() > 10 || mConnection->hasSpatial() ) && methodType == QgsSimplifyMethod::OptimizeForRendering;
 }
 
 // -----------
