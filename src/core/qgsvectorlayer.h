@@ -555,7 +555,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool addJoin( const QgsVectorJoinInfo& joinInfo );
 
     /** Removes a vector layer join */
-    void removeJoin( const QString& joinLayerId );
+    bool removeJoin( const QString& joinLayerId );
 
     const QList<QgsVectorJoinInfo> vectorJoins() const;
 
