@@ -32,7 +32,15 @@
 class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 {
   public:
-    QgsMapToPixelSimplifier( int simplifyFlags, double tolerance );
+
+    //! Types of simplification algorithms that can be used.
+    enum SimplifyAlgorithm
+    {
+      Distance   = 0, //!< The simplification uses the distance between points to remove duplicate points
+      SnapToGrid = 1, //!< The simplification uses a grid (similar to ST_SnapToGrid) to remove duplicate points
+    };
+
+    QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm = Distance );
     virtual ~QgsMapToPixelSimplifier();
 
     //! Applicable simplification flags
@@ -45,7 +53,7 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 
   private:
     //! Simplify the WKB-geometry using the specified tolerance
-    static bool simplifyWkbGeometry( int simplifyFlags, QGis::WkbType wkbType, QgsConstWkbPtr sourceWkbPtr, QgsWkbPtr targetWkbPtr, int &targetWkbSize, const QgsRectangle& envelope, double map2pixelTol, bool writeHeader = true, bool isaLinearRing = false );
+    static bool simplifyWkbGeometry( int simplifyFlags, SimplifyAlgorithm simplifyAlgorithm, QGis::WkbType wkbType, QgsConstWkbPtr sourceWkbPtr, QgsWkbPtr targetWkbPtr, int &targetWkbSize, const QgsRectangle& envelope, double map2pixelTol, bool writeHeader = true, bool isaLinearRing = false );
 
   protected:
     //! Current simplification flags
@@ -54,12 +62,21 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     //! Distance tolerance for the simplification
     double mTolerance;
 
+    //! Simplification algorithm to use.
+    SimplifyAlgorithm mSimplifyAlgorithm;
+
     //! Returns the squared 2D-distance of the vector defined by the two points specified
     static float calculateLengthSquared2D( double x1, double y1, double x2, double y2 );
+
+    //! Returns whether the points belong to the same grid
+    static bool equalSnapToGrid( double x1, double y1, double x2, double y2, double gridOriginX, double gridOriginY, float gridInverseSizeXY );
 
   public:
     int simplifyFlags() const { return mSimplifyFlags; }
     void setSimplifyFlags( int simplifyFlags ) { mSimplifyFlags = simplifyFlags; }
+
+    SimplifyAlgorithm simplifyAlgorithm() const { return mSimplifyAlgorithm; }
+    void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm ) { mSimplifyAlgorithm = simplifyAlgorithm; }
 
     //! Returns a simplified version the specified geometry
     virtual QgsGeometry* simplify( QgsGeometry* geometry ) const override;
@@ -79,7 +96,7 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     }
 
     //! Simplifies the geometry when is applied the specified map2pixel context
-    static bool simplifyGeometry( QgsGeometry* geometry, int simplifyFlags, double tolerance );
+    static bool simplifyGeometry( QgsGeometry* geometry, int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm = Distance );
 
 };
 
