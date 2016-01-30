@@ -2764,10 +2764,14 @@ void QgsVectorLayer::checkJoinLayerRemove( const QString& theLayerId )
   removeJoin( theLayerId );
 }
 
-void QgsVectorLayer::removeJoin( const QString& joinLayerId )
+bool QgsVectorLayer::removeJoin( const QString& joinLayerId )
 {
+  bool res = false;
   if ( mJoinBuffer )
-    mJoinBuffer->removeJoin( joinLayerId );
+  {
+    res = mJoinBuffer->removeJoin( joinLayerId );
+  }
+  return res;
 }
 
 const QList< QgsVectorJoinInfo > QgsVectorLayer::vectorJoins() const
