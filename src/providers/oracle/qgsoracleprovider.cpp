@@ -747,6 +747,9 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
 
   mEnabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
 
+  // supports geometry simplification on provider side
+  mEnabledCapabilities |= QgsVectorDataProvider::SimplifyGeometries;
+
   QSqlQuery qry( *mConnection );
   if ( !mIsQuery )
   {

@@ -76,6 +76,9 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
     //! fetch next feature filter expression
     bool nextFeatureFilterExpression( QgsFeature& f ) override;
 
+    //! Setup the simplification of geometries to fetch using the specified simplify method
+    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod ) override;
+
     bool openQuery( QString whereClause );
 
     QgsOracleConn *mConnection;
@@ -83,6 +86,10 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
     bool mRewind;
     bool mExpressionCompiled;
     QgsAttributeList mAttributeList;
+
+  private:
+    //! returns whether the iterator supports simplify geometries on provider side
+    virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
 };
 
 #endif // QGSORACLEFEATUREITERATOR_H
