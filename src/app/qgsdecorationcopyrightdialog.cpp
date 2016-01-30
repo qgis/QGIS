@@ -34,10 +34,6 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
 
-  //programmatically hide orientation selection for now
-  cboOrientation->hide();
-  textLabel15->hide();
-
   grpEnable->setChecked( mDeco.enabled() );
   // text
   txtCopyrightText->setPlainText( mDeco.mLabelQString );
