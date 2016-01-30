@@ -156,6 +156,8 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QScopedPointer< QgsExpressionContext > mExpressionContext;
     ExpressionContextCallback mExpressionContextCallback;
     const void* mExpressionContextCallbackContext;
+
+    friend class TestQgsFieldExpressionWidget;
 };
 
 #endif // QGSFIELDEXPRESSIONWIDGET_H
