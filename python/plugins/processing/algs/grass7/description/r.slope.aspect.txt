@@ -3,7 +3,8 @@ Generates raster layers of slope, aspect, curvatures and partial derivatives fro
 Raster (r.*)
 ParameterRaster|elevation|Elevation|False
 ParameterSelection|format|Format for reporting the slope|degrees;percent
-ParameterSelection|precision|Type of output aspect and slope layer|CELL;FCELL;DCELL
+ParameterSelection|precision|Type of output aspect and slope layer|FCELL;CELL;DCELL
+ParameterBoolean|-a|Do not align the current region to the elevation layer|True
 ParameterNumber|zscale|Multiplicative factor to convert elevation units to meters|None|None|1.0
 ParameterNumber|min_slope|Minimum slope val. (in percent) for which aspect is computed|None|None|0.0
 OutputRaster|slope|Slope
