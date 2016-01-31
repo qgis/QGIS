@@ -45,6 +45,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
   private slots:
     /** Sets the ok button enabled / disabled*/
     void setOkButtonState();
+    void setPrecisionMinMax();
 
   private:
     //! default constructor forbidden
