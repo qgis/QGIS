@@ -207,6 +207,8 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
 
   QStringList importResults;
   bool hasError = false;
+  bool cancelled = false;
+
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
   {
@@ -235,6 +237,8 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
       err = QgsVectorLayerImport::importLayer( srcLayer, uri.uri( false ), "postgres", &srcLayer->crs(), false, &importError, false, nullptr, progress );
       if ( err == QgsVectorLayerImport::NoError )
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
+      else if ( err == QgsVectorLayerImport::ErrUserCancelled )
+        cancelled = true;
       else
       {
         importResults.append( QString( "%1: %2" ).arg( u.name, importError ) );
@@ -254,7 +258,12 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
 
   qApp->restoreOverrideCursor();
 
-  if ( hasError )
+  if ( cancelled )
+  {
+    QMessageBox::information( nullptr, tr( "Import to PostGIS database" ), tr( "Import cancelled." ) );
+    refresh();
+  }
+  else if ( hasError )
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to PostGIS database" ) );
