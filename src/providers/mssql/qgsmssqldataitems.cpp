@@ -31,6 +31,7 @@
 #include <QMessageBox>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
+#include <QProgressDialog>
 
 // ---------------------------------------------------------------------------
 QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem* parent, QString name, QString path )
@@ -350,8 +351,15 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData* data, const QString& t
   // TODO: probably should show a GUI with settings etc
   qApp->setOverrideCursor( Qt::WaitCursor );
 
+  QProgressDialog *progress = new QProgressDialog( tr( "Copying features..." ), tr( "Abort" ), 0, 0, nullptr );
+  progress->setWindowTitle( tr( "Import layer" ) );
+  progress->setWindowModality( Qt::WindowModal );
+  progress->show();
+
   QStringList importResults;
   bool hasError = false;
+  bool cancelled = false;
+
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
   {
@@ -383,9 +391,11 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData* data, const QString& t
 
       QgsVectorLayerImport::ImportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, uri, "mssql", &srcLayer->crs(), false, &importError );
+      err = QgsVectorLayerImport::importLayer( srcLayer, uri, "mssql", &srcLayer->crs(), false, &importError, false, nullptr, progress );
       if ( err == QgsVectorLayerImport::NoError )
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
+      else if ( err == QgsVectorLayerImport::ErrUserCancelled )
+        cancelled = true;
       else
       {
         importResults.append( QString( "%1: %2" ).arg( u.name, importError ) );
@@ -401,9 +411,15 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData* data, const QString& t
     delete srcLayer;
   }
 
+  delete progress;
   qApp->restoreOverrideCursor();
 
-  if ( hasError )
+  if ( cancelled )
+  {
+    QMessageBox::information( nullptr, tr( "Import to MSSQL database" ), tr( "Import cancelled." ) );
+    refresh();
+  }
+  else if ( hasError )
   {
     QMessageBox::warning( nullptr, tr( "Import to MSSQL database" ), tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ) );
   }
