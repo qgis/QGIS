@@ -259,6 +259,23 @@ class ProviderTestCase(object):
         features = [f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
         assert set(features) == set([2, 4]), 'Got {} instead'.format(features)
 
+    def testGetFeaturesPolyFilterRectTests(self):
+        """ Test fetching features from a polygon layer with filter rect"""
+        try:
+            if not self.poly_provider:
+                return
+        except:
+            return
+
+        extent = QgsRectangle(-73, 70, -63, 80)
+        features = [f['pk'] for f in self.poly_provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
+        # Some providers may return the exact intersection matches (2, 3) even without the ExactIntersect flag, so we accept that too
+        assert set(features) == set([2, 3]) or set(features) == set([1, 2, 3]), 'Got {} instead'.format(features)
+
+        # Test with exact intersection
+        features = [f['pk'] for f in self.poly_provider.getFeatures(QgsFeatureRequest().setFilterRect(extent).setFlags(QgsFeatureRequest.ExactIntersect))]
+        assert set(features) == set([2, 3]), 'Got {} instead'.format(features)
+
     def testRectAndExpression(self):
         extent = QgsRectangle(-70, 67, -60, 80)
         result = set([f['pk'] for f in self.provider.getFeatures(

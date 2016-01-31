@@ -38,10 +38,13 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
         cls.dbconn = u'dbname=\'qgis_test\' host=localhost port=5432 user=\'postgres\' password=\'postgres\''
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
-        # Create test layer
+        # Create test layers
         cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
         assert(cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
+        cls.poly_vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
+        assert(cls.poly_vl.isValid())
+        cls.poly_provider = cls.poly_vl.dataProvider()
 
     @classmethod
     def tearDownClass(cls):

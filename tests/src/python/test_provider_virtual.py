@@ -68,6 +68,14 @@ class TestQgsVirtualLayerProvider(TestCase, ProviderTestCase):
         assert (cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
 
+        shp_poly = os.path.join(TEST_DATA_DIR, 'provider/shapefile_poly.shp')
+        d = QgsVirtualLayerDefinition()
+        d.addSource("vtab2", shp_poly, "ogr")
+        d.setUid("pk")
+        cls.poly_vl = QgsVectorLayer(d.toString(), u'test_poly', u'virtual')
+        assert (cls.poly_vl.isValid())
+        cls.poly_provider = cls.poly_vl.dataProvider()
+
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""

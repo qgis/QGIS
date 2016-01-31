@@ -52,6 +52,10 @@ class TestQgsSpatialiteProvider(TestCase, ProviderTestCase):
         assert(cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
 
+        cls.vl_poly = QgsVectorLayer('dbname=\'{}/provider/spatialite.db\' table="somepolydata" (geom) sql='.format(TEST_DATA_DIR), 'test', 'spatialite')
+        assert(cls.vl_poly.isValid())
+        cls.poly_provider = cls.vl_poly.dataProvider()
+
         # create test db
         cls.dbname = os.path.join(tempfile.gettempdir(), "test.sqlite")
         if os.path.exists(cls.dbname):

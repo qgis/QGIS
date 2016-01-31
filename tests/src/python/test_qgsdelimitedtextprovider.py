@@ -370,6 +370,20 @@ class TestQgsDelimitedTextProviderWKT(TestCase, ProviderTestCase):
         assert cls.vl.isValid(), "{} is invalid".format(cls.basetestfile)
         cls.provider = cls.vl.dataProvider()
 
+        cls.basetestpolyfile = os.path.join(srcpath, 'delimited_wkt_poly.csv')
+
+        url = QUrl.fromLocalFile(cls.basetestpolyfile)
+        url.addQueryItem("crs", "epsg:4326")
+        url.addQueryItem("type", "csv")
+        url.addQueryItem("wktField", "wkt")
+        url.addQueryItem("spatialIndex", "no")
+        url.addQueryItem("subsetIndex", "no")
+        url.addQueryItem("watchFile", "no")
+
+        cls.vl_poly = QgsVectorLayer(url.toString(), u'test_polygon', u'delimitedtext')
+        assert cls.vl_poly.isValid(), "{} is invalid".format(cls.basetestpolyfile)
+        cls.poly_provider = cls.vl_poly.dataProvider()
+
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
