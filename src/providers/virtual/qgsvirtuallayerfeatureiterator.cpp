@@ -166,6 +166,8 @@ bool QgsVirtualLayerFeatureIterator::close()
 
 bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature& feature )
 {
+  feature.setValid( false );
+
   if ( mClosed )
   {
     return false;
@@ -218,6 +220,7 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature& feature )
     }
   }
 
+  feature.setValid( true );
   return true;
 }
 

@@ -120,6 +120,47 @@ class ProviderTestCase(object):
         except AttributeError:
             print 'Provider does not support compiling'
 
+    def testSubsetString(self):
+        if not self.provider.supportsSubsetString():
+            print 'Provider does not support subset strings'
+            return
+
+        subset = self.getSubsetString()
+        self.provider.setSubsetString(subset)
+        self.assertEqual(self.provider.subsetString(), subset)
+        result = set([f['pk'] for f in self.provider.getFeatures()])
+        self.provider.setSubsetString(None)
+
+        expected = set([2, 3, 4])
+        assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected), result, subset)
+
+        # Subset string AND filter rect
+        self.provider.setSubsetString(subset)
+        extent = QgsRectangle(-70, 70, -60, 75)
+        result = set([f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))])
+        self.provider.setSubsetString(None)
+        expected = set([2])
+        assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected), result, subset)
+
+        # Subset string AND filter rect, version 2
+        self.provider.setSubsetString(subset)
+        extent = QgsRectangle(-71, 65, -60, 80)
+        result = set([f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))])
+        self.provider.setSubsetString(None)
+        expected = set([2, 4])
+        assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected), result, subset)
+
+        # Subset string AND expression
+        self.provider.setSubsetString(subset)
+        result = set([f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterExpression('length("name")=5'))])
+        self.provider.setSubsetString(None)
+        expected = set([2, 4])
+        assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected), result, subset)
+
+    def getSubsetString(self):
+        """Individual providers may need to override this depending on their subset string formats"""
+        return '"cnt" > 100 and "cnt" < 410'
+
     def testOrderBy(self):
         request = QgsFeatureRequest().addOrderBy('cnt')
         values = [f['cnt'] for f in self.provider.getFeatures(request)]
@@ -285,3 +326,18 @@ class ProviderTestCase(object):
 
     def testFeatureCount(self):
         assert self.provider.featureCount() == 5, 'Got {}'.format(self.provider.featureCount())
+
+    def testClosedIterators(self):
+        """ Test behaviour of closed iterators """
+
+        # Test retrieving feature after closing iterator
+        f_it = self.provider.getFeatures(QgsFeatureRequest())
+        fet = QgsFeature()
+        assert f_it.nextFeature(fet), 'Could not fetch feature'
+        assert fet.isValid(), 'Feature is not valid'
+        assert f_it.close(), 'Could not close iterator'
+        self.assertFalse(f_it.nextFeature(fet), 'Fetched feature after iterator closed, expected nextFeature() to return False')
+        self.assertFalse(fet.isValid(), 'Valid feature fetched from closed iterator, should be invalid')
+
+        # Test rewinding closed iterator
+        self.assertFalse(f_it.rewind(), 'Rewinding closed iterator successful, should not be allowed')
