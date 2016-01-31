@@ -1027,6 +1027,27 @@
     <string>Invert Feature Selection</string>
    </property>
   </action>
+  <action name="mActionSelectAll">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectAll.png</normaloff>:/images/themes/default/mActionSelectAll.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select all Features</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="mActionInvertSelection">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionInvertSelection.png</normaloff>:/images/themes/default/mActionInvertSelection.png</iconset>
+   </property>
+   <property name="text">
+    <string>Invert Feature selection</string>
+   </property>
+  </action>
   <action name="mActionIdentify">
    <property name="checkable">
     <bool>true</bool>
