@@ -116,6 +116,14 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
 
   mOrderByCompiled = true;
 
+  // THIS CODE IS BROKEN - since every retrieved column is cast as text during declareCursor, this method of sorting will always be
+  // performed using a text sort.
+  // TODO - fix ordering by so that instead of
+  //     SELECT my_int_col::text FROM some_table ORDER BY my_int_col
+  // we instead use
+  //     SELECT my_int_col::text FROM some_table ORDER BY some_table.my_int_col
+  // but that's non-trivial
+#if 0
   if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
   {
     Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBy() )
@@ -142,6 +150,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     }
   }
   else
+#endif
   {
     mOrderByCompiled = false;
   }

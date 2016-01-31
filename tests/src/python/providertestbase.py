@@ -161,7 +161,21 @@ class ProviderTestCase(object):
         """Individual providers may need to override this depending on their subset string formats"""
         return '"cnt" > 100 and "cnt" < 410'
 
-    def testOrderBy(self):
+    def testOrderByUncompiled(self):
+        try:
+            self.disableCompiler()
+        except AttributeError:
+            pass
+        self.runOrderByTests()
+
+    def testOrderByCompiled(self):
+        try:
+            self.enableCompiler()
+            self.runOrderByTests()
+        except AttributeError:
+            print 'Provider does not support compiling'
+
+    def runOrderByTests(self):
         request = QgsFeatureRequest().addOrderBy('cnt')
         values = [f['cnt'] for f in self.provider.getFeatures(request)]
         self.assertEquals(values, [-200, 100, 200, 300, 400])
@@ -200,6 +214,11 @@ class ProviderTestCase(object):
         request = QgsFeatureRequest().addOrderBy('pk*2', False)
         values = [f['pk'] for f in self.provider.getFeatures(request)]
         self.assertEquals(values, [5, 4, 3, 2, 1])
+
+        # Order reversing expression
+        request = QgsFeatureRequest().addOrderBy('pk*-1', False)
+        values = [f['pk'] for f in self.provider.getFeatures(request)]
+        self.assertEquals(values, [1, 2, 3, 4, 5])
 
         # Type dependent expression
         request = QgsFeatureRequest().addOrderBy('num_char*2', False)
