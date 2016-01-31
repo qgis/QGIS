@@ -199,7 +199,8 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
   //parse WKB. It is ugly, but we cannot use the methods with QgsPoint because they don't contain z-values for 25D types
   bool hasZValue = false;
   double x, y, z;
-  QgsConstWkbPtr currentWkbPtr( g->asWkb() + 1 + sizeof( int ) );
+  QgsConstWkbPtr currentWkbPtr( g->asWkb(), g->wkbSize() );
+  currentWkbPtr.readHeader();
   //maybe a structure or break line
   Line3D* line = nullptr;
 
@@ -236,7 +237,7 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       currentWkbPtr >> nPoints;
       for ( int index = 0; index < nPoints; ++index )
       {
-        currentWkbPtr += 1 + sizeof( int );
+        currentWkbPtr.readHeader();
         currentWkbPtr >> x >> y;
         if ( hasZValue ) //skip z-coordinate for 25D geometries
         {
@@ -388,7 +389,7 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       currentWkbPtr >> nPolys;
       for ( int index = 0; index < nPolys; ++index )
       {
-        currentWkbPtr += 1 + sizeof( int );
+        currentWkbPtr.readHeader();
         int nRings;
         currentWkbPtr >> nRings;
         for ( int index2 = 0; index2 < nRings; ++index2 )

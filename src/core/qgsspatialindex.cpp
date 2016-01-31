@@ -242,14 +242,14 @@ QgsSpatialIndex& QgsSpatialIndex::operator=( const QgsSpatialIndex & other )
   return *this;
 }
 
-Region QgsSpatialIndex::rectToRegion( const QgsRectangle& rect )
+SpatialIndex::Region QgsSpatialIndex::rectToRegion( const QgsRectangle& rect )
 {
   double pt1[2], pt2[2];
   pt1[0] = rect.xMinimum();
   pt1[1] = rect.yMinimum();
   pt2[0] = rect.xMaximum();
   pt2[1] = rect.yMaximum();
-  return Region( pt1, pt2, 2 );
+  return SpatialIndex::Region( pt1, pt2, 2 );
 }
 
 bool QgsSpatialIndex::featureInfo( const QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id )
@@ -267,7 +267,7 @@ bool QgsSpatialIndex::featureInfo( const QgsFeature& f, SpatialIndex::Region& r,
 
 bool QgsSpatialIndex::insertFeature( const QgsFeature& f )
 {
-  Region r;
+  SpatialIndex::Region r;
   QgsFeatureId id;
   if ( !featureInfo( f, r, id ) )
     return false;
@@ -298,7 +298,7 @@ bool QgsSpatialIndex::insertFeature( const QgsFeature& f )
 
 bool QgsSpatialIndex::deleteFeature( const QgsFeature& f )
 {
-  Region r;
+  SpatialIndex::Region r;
   QgsFeatureId id;
   if ( !featureInfo( f, r, id ) )
     return false;
@@ -312,7 +312,7 @@ QList<QgsFeatureId> QgsSpatialIndex::intersects( const QgsRectangle& rect ) cons
   QList<QgsFeatureId> list;
   QgisVisitor visitor( list );
 
-  Region r = rectToRegion( rect );
+  SpatialIndex::Region r = rectToRegion( rect );
 
   d->mRTree->intersectsWithQuery( r, visitor );
 

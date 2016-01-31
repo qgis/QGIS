@@ -168,21 +168,21 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Set how often map preview should be updated while it is being rendered (in milliseconds)
     //! @note added in 2.4
-    void setMapUpdateInterval( int timeMiliseconds );
+    void setMapUpdateInterval( int timeMilliseconds );
 
     //! Find out how often map preview should be updated while it is being rendered (in milliseconds)
     //! @note added in 2.4
     int mapUpdateInterval() const;
 
     //! @deprecated since 2.4 - there could be more than just one "map" items
-    Q_DECL_DEPRECATED QgsMapCanvasMap* map();
+    Q_DECL_DEPRECATED QgsMapCanvasMap *map();
 
     //! @deprecated since 2.4 - use mapSettings() for anything related to current renderer settings
     //// SIP: removed /Transfer/ because it crashes after few calls to iface.mapCanvas().mapRenderer().hasCrsTransformEnabled()
     //// and in fact there is no transfer of ownership from c++ to python!
     //// Actually the problem comes from the fact that "hasCrsTransformEnabled" is both a signal and a normal method
     //// /KeepReference/ is necessary because otherwise mapRenderer().hasCrsTransformEnabled() was crashing
-    Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer();
+    Q_DECL_DEPRECATED QgsMapRenderer *mapRenderer();
 
     //! Accessor for the canvas paint device
     //! @deprecated since 2.4

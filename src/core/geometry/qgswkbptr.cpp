@@ -14,27 +14,33 @@
  ***************************************************************************/
 #include "qgswkbptr.h"
 
-QgsConstWkbPtr::QgsConstWkbPtr( const unsigned char *p ): mEndianSwap( false )
+QgsWkbPtr::QgsWkbPtr( unsigned char *p, int size )
+{
+  mP = p;
+  mStart = mP;
+  mEnd = mP + size;
+}
+
+QgsConstWkbPtr::QgsConstWkbPtr( const unsigned char *p, int size )
 {
   mP = const_cast< unsigned char * >( p );
+  mEnd = mP + size;
+  mEndianSwap = false;
 }
 
 QgsWKBTypes::Type QgsConstWkbPtr::readHeader() const
 {
   if ( !mP )
-  {
     return QgsWKBTypes::Unknown;
-  }
 
   char wkbEndian;
-  ( *this ) >> wkbEndian;
+  *this >> wkbEndian;
   mEndianSwap = ( wkbEndian != QgsApplication::endian() );
 
-  QgsWKBTypes::Type wkbType;
-  ( *this ) >> wkbType;
+  int wkbType;
+  *this >> wkbType;
   if ( mEndianSwap )
-  {
     QgsApplication::endian_swap( wkbType );
-  }
-  return wkbType;
+
+  return static_cast<QgsWKBTypes::Type>( wkbType );
 }

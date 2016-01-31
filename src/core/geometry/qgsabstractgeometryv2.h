@@ -19,6 +19,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgscoordinatetransform.h"
 #include "qgsrectangle.h"
 #include "qgswkbtypes.h"
+#include "qgswkbptr.h"
+
 #include <QString>
 
 class QgsCoordinateTransform;
@@ -27,9 +29,7 @@ class QgsCurveV2;
 class QgsMultiCurveV2;
 class QgsMultiPointV2;
 class QgsPointV2;
-class QgsConstWkbPtr;
 struct QgsVertexId;
-class QgsWkbPtr;
 class QPainter;
 
 
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
     /** Sets the geometry from a WKB string.
      * @see fromWkt
      */
-    virtual bool fromWkb( const unsigned char * wkb ) = 0;
+    virtual bool fromWkb( QgsConstWkbPtr wkb ) = 0;
 
     /** Sets the geometry from a WKT string.
      * @see fromWkb
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
      * in this variable if found.
      * @param vertex container for found node
      * @return false if at end
-    */
+     */
     virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const = 0;
 
     /** Retrieves the sequence of geometries, rings and nodes.
@@ -358,17 +358,6 @@ class CORE_EXPORT QgsAbstractGeometryV2
     /** Updates the geometry type based on whether sub geometries contain z or m values.
      */
     void setZMTypeFromSubGeometry( const QgsAbstractGeometryV2* subggeom, QgsWKBTypes::Type baseGeomType );
-
-    /** Reads a WKB header and tests its validity.
-     * @param wkbPtr
-     * @param wkbType destination for WKB type from header
-     * @param endianSwap will be set to true if endian from WKB must be swapped to match QGIS platform endianness
-     * @param expectedType expected WKB type
-     * @returns true if header is valid and matches expected type
-     * @note not available in Python bindings
-     */
-    static bool readWkbHeader( QgsConstWkbPtr& wkbPtr, QgsWKBTypes::Type& wkbType, bool& endianSwap, QgsWKBTypes::Type expectedType );
-
 };
 
 

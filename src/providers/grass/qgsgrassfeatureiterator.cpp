@@ -529,7 +529,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
     {
       feature.setAttribute( 1, QgsGrass::vectorTypeName( type ) );
 
-      int node1, node2;;
+      int node1, node2;
       Vect_get_line_nodes( mSource->map(), lid, &node1, &node2 );
       feature.setAttribute( 2, node1 );
       if ( mSource->mLayerType == QgsGrassProvider::TOPO_LINE )

@@ -81,7 +81,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 #endif
     virtual void draw( QPainter& p ) const override;
 
-    bool fromWkb( const unsigned char * wkb ) override;
+    bool fromWkb( QgsConstWkbPtr wkb ) override;
     virtual bool fromWkt( const QString& wkt ) override;
     int wkbSize() const override;
     unsigned char* asWkb( int& binarySize ) const override;

@@ -25,6 +25,8 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsvectordataprovider.h"
 #include "qgsdistancearea.h"
+#include "qgis.h"
+
 #include <QProgressDialog>
 
 bool QgsGeometryAnalyzer::simplify( QgsVectorLayer* layer,
@@ -1178,13 +1180,10 @@ QgsGeometry* QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, dou
   QgsMultiPolyline resultGeom;
 
   //need to go with WKB and z coordinate until QgsGeometry supports M values
-  const unsigned char* lineWkb = lineGeom->asWkb();
+  QgsConstWkbPtr wkbPtr( lineGeom->asWkb(), lineGeom->wkbSize() );
+  wkbPtr.readHeader();
 
-  const unsigned char* ptr = lineWkb + 1;
-  QGis::WkbType wkbType;
-  memcpy( &wkbType, ptr, sizeof( wkbType ) );
-  ptr += sizeof( wkbType );
-
+  QGis::WkbType wkbType = lineGeom->wkbType();
   if ( wkbType != QGis::WKBLineString25D && wkbType != QGis::WKBMultiLineString25D )
   {
     return nullptr;
@@ -1192,16 +1191,16 @@ QgsGeometry* QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, dou
 
   if ( wkbType == QGis::WKBLineString25D )
   {
-    locateBetweenWkbString( ptr, resultGeom, fromMeasure, toMeasure );
+    locateBetweenWkbString( wkbPtr, resultGeom, fromMeasure, toMeasure );
   }
   else if ( wkbType == QGis::WKBMultiLineString25D )
   {
-    int* nLines = ( int* )ptr;
-    ptr += sizeof( int );
-    for ( int i = 0; i < *nLines; ++i )
+    int nLines;
+    wkbPtr >> nLines;
+    for ( int i = 0; i < nLines; ++i )
     {
-      ptr += ( 1 + sizeof( wkbType ) );
-      ptr = locateBetweenWkbString( ptr, resultGeom, fromMeasure, toMeasure );
+      wkbPtr.readHeader();
+      wkbPtr = locateBetweenWkbString( wkbPtr, resultGeom, fromMeasure, toMeasure );
     }
   }
 
@@ -1222,12 +1221,8 @@ QgsGeometry* QgsGeometryAnalyzer::locateAlongMeasure( double measure, const QgsG
   QgsMultiPoint resultGeom;
 
   //need to go with WKB and z coordinate until QgsGeometry supports M values
-  const unsigned char* lineWkb = lineGeom->asWkb();
-
-  const unsigned char* ptr = lineWkb + 1;
-  QGis::WkbType wkbType;
-  memcpy( &wkbType, ptr, sizeof( wkbType ) );
-  ptr += sizeof( wkbType );
+  QgsConstWkbPtr wkbPtr( lineGeom->asWkb(), lineGeom->wkbSize() );
+  QGis::WkbType wkbType = lineGeom->wkbType();
 
   if ( wkbType != QGis::WKBLineString25D && wkbType != QGis::WKBMultiLineString25D )
   {
@@ -1236,16 +1231,16 @@ QgsGeometry* QgsGeometryAnalyzer::locateAlongMeasure( double measure, const QgsG
 
   if ( wkbType == QGis::WKBLineString25D )
   {
-    locateAlongWkbString( ptr, resultGeom, measure );
+    locateAlongWkbString( wkbPtr, resultGeom, measure );
   }
   else if ( wkbType == QGis::WKBMultiLineString25D )
   {
-    int* nLines = ( int* )ptr;
-    ptr += sizeof( int );
-    for ( int i = 0; i < *nLines; ++i )
+    int nLines;
+    wkbPtr >> nLines;
+    for ( int i = 0; i < nLines; ++i )
     {
-      ptr += ( 1 + sizeof( wkbType ) );
-      ptr = locateAlongWkbString( ptr, resultGeom, measure );
+      wkbPtr.readHeader();
+      wkbPtr = locateAlongWkbString( wkbPtr, resultGeom, measure );
     }
   }
 
@@ -1253,34 +1248,27 @@ QgsGeometry* QgsGeometryAnalyzer::locateAlongMeasure( double measure, const QgsG
   {
     return nullptr;
   }
+
   return QgsGeometry::fromMultiPoint( resultGeom );
 }
 
-const unsigned char* QgsGeometryAnalyzer::locateBetweenWkbString( const unsigned char* ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure )
+QgsConstWkbPtr QgsGeometryAnalyzer::locateBetweenWkbString( QgsConstWkbPtr wkbPtr, QgsMultiPolyline& result, double fromMeasure, double toMeasure )
 {
-  int* nPoints = ( int* ) ptr;
-  ptr += sizeof( int );
-  double prevx = 0.0, prevy = 0.0, prevz = 0.0;
-  double *x, *y, *z;
+  int nPoints;
+  wkbPtr >> nPoints;
+
   QgsPolyline currentLine;
-
-  QgsPoint pt1, pt2;
-  bool measureInSegment; //true if measure is contained in the segment
-  bool secondPointClipped; //true if second point is != segment endpoint
-
-
-  for ( int i = 0; i < *nPoints; ++i )
+  double prevx = 0.0, prevy = 0.0, prevz = 0.0;
+  for ( int i = 0; i < nPoints; ++i )
   {
-    x = ( double* )ptr;
-    ptr += sizeof( double );
-    y = ( double* )ptr;
-    ptr += sizeof( double );
-    z = ( double* ) ptr;
-    ptr += sizeof( double );
+    double x, y, z;
+    wkbPtr >> x >> y >> z;
 
     if ( i > 0 )
     {
-      measureInSegment = clipSegmentByRange( prevx, prevy, prevz, *x, *y, *z, fromMeasure, toMeasure, pt1, pt2, secondPointClipped );
+      QgsPoint pt1, pt2;
+      bool secondPointClipped; //true if second point is != segment endpoint
+      bool measureInSegment = clipSegmentByRange( prevx, prevy, prevz, x, y, z, fromMeasure, toMeasure, pt1, pt2, secondPointClipped );
       if ( measureInSegment )
       {
         if ( currentLine.size() < 1 ) //no points collected yet, so the first point needs to be added to the line
@@ -1293,7 +1281,7 @@ const unsigned char* QgsGeometryAnalyzer::locateBetweenWkbString( const unsigned
           currentLine.append( pt2 );
         }
 
-        if ( secondPointClipped || i == *nPoints - 1 ) //close current segment
+        if ( secondPointClipped || i == nPoints - 1 ) //close current segment
         {
           if ( currentLine.size() > 1 )
           {
@@ -1303,49 +1291,45 @@ const unsigned char* QgsGeometryAnalyzer::locateBetweenWkbString( const unsigned
         }
       }
     }
-    prevx = *x;
-    prevy = *y;
-    prevz = *z;
+    prevx = x;
+    prevy = y;
+    prevz = z;
   }
-  return ptr;
+
+  return wkbPtr;
 }
 
-const unsigned char* QgsGeometryAnalyzer::locateAlongWkbString( const unsigned char* ptr, QgsMultiPoint& result, double measure )
+QgsConstWkbPtr QgsGeometryAnalyzer::locateAlongWkbString( QgsConstWkbPtr wkbPtr, QgsMultiPoint& result, double measure )
 {
-  int* nPoints = ( int* ) ptr;
-  ptr += sizeof( int );
+  int nPoints;
+  wkbPtr >> nPoints;
+
+  double x, y, z;
   double prevx = 0.0, prevy = 0.0, prevz = 0.0;
-  double *x, *y, *z;
-
-  QgsPoint pt1, pt2;
-  bool pt1Ok, pt2Ok;
-
-  for ( int i = 0; i < *nPoints; ++i )
+  for ( int i = 0; i < nPoints; ++i )
   {
-    x = ( double* )ptr;
-    ptr += sizeof( double );
-    y = ( double* )ptr;
-    ptr += sizeof( double );
-    z = ( double* ) ptr;
-    ptr += sizeof( double );
+    wkbPtr >> x >> y >> z;
 
     if ( i > 0 )
     {
-      locateAlongSegment( prevx, prevy, prevz, *x, *y, *z, measure, pt1Ok, pt1, pt2Ok, pt2 );
+      QgsPoint pt1, pt2;
+      bool pt1Ok, pt2Ok;
+      locateAlongSegment( prevx, prevy, prevz, x, y, z, measure, pt1Ok, pt1, pt2Ok, pt2 );
       if ( pt1Ok )
       {
         result.append( pt1 );
       }
-      if ( pt2Ok && ( i == ( *nPoints - 1 ) ) )
+      if ( pt2Ok && i == nPoints - 1 )
       {
         result.append( pt2 );
       }
     }
-    prevx = *x;
-    prevy = *y;
-    prevz = *z;
+    prevx = x;
+    prevy = y;
+    prevz = z;
   }
-  return ptr;
+
+  return wkbPtr;
 }
 
 bool QgsGeometryAnalyzer::clipSegmentByRange( double x1, double y1, double m1, double x2, double y2, double m2, double range1, double range2, QgsPoint& pt1,

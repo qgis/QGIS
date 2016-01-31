@@ -179,15 +179,15 @@ void QgsGeometryCollectionV2::draw( QPainter& p ) const
   }
 }
 
-bool QgsGeometryCollectionV2::fromWkb( const unsigned char * wkb )
+bool QgsGeometryCollectionV2::fromWkb( QgsConstWkbPtr wkbPtr )
 {
-  if ( !wkb )
+  if ( !wkbPtr )
   {
     return false;
   }
-  QgsConstWkbPtr wkbPtr( wkb + 1 );
-  //type
-  wkbPtr >> mWkbType;
+
+  mWkbType = wkbPtr.readHeader();
+
   int nGeometries = 0;
   wkbPtr >> nGeometries;
 
@@ -237,7 +237,7 @@ unsigned char* QgsGeometryCollectionV2::asWkb( int& binarySize ) const
 {
   binarySize = wkbSize();
   unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr );
+  QgsWkbPtr wkb( geomPtr, binarySize );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << static_cast<quint32>( mGeometries.size() );

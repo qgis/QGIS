@@ -17,7 +17,7 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
 
 
     virtual QgsRectangle calculateBoundingBox() const;
-    virtual bool fromWkb( const unsigned char* wkb );
+    virtual bool fromWkb( QgsConstWkbPtr wkb );
     virtual bool fromWkt( const QString& wkt );
 
     int wkbSize() const;

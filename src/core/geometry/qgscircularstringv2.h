@@ -43,7 +43,7 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
 
     virtual QgsRectangle calculateBoundingBox() const override;
 
-    virtual bool fromWkb( const unsigned char * wkb ) override;
+    virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
     virtual bool fromWkt( const QString& wkt ) override;
 
     int wkbSize() const override;
@@ -87,6 +87,7 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     virtual QgsLineStringV2* curveToLine() const override;
 
     void draw( QPainter& p ) const override;
+
     /** Transforms the geometry using a coordinate transform
      * @param ct coordinate transform
      * @param d transformation direction

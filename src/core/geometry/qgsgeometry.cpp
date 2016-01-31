@@ -244,7 +244,7 @@ void QgsGeometry::fromWkb( unsigned char *wkb, int length )
     delete d->geometry;
     removeWkbGeos();
   }
-  d->geometry = QgsGeometryFactory::geomFromWkb( wkb );
+  d->geometry = QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr( wkb, length ) );
   d->mWkb = wkb;
   d->mWkbSize = length;
 }

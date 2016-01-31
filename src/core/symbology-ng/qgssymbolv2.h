@@ -276,13 +276,13 @@ class CORE_EXPORT QgsSymbolV2
      * Creates a line string in screen coordinates from a wkb string in map
      * coordinates
      */
-    static const unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
+    static QgsConstWkbPtr _getLineString( QPolygonF& pts, QgsRenderContext& context, QgsConstWkbPtr wkb, bool clipToExtent = true );
 
     /**
      * Creates a polygon in screen coordinates from a wkb string in map
      * coordinates
      */
-    static const unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
+    static QgsConstWkbPtr _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, QgsConstWkbPtr wkb, bool clipToExtent = true );
 
     /**
      * Retrieve a cloned list of all layers that make up this symbol.

@@ -657,7 +657,7 @@ QString QgsHttpRequestHandler::readPostBody() const
     QgsMessageLog::logMessage( "length is: " + lengthQString );
     if ( conversionSuccess )
     {
-      input = ( char* )malloc( length + 1 );
+      input = new char[length + 1];
       memset( input, 0, length + 1 );
       for ( int i = 0; i < length; ++i )
       {
@@ -672,7 +672,7 @@ QString QgsHttpRequestHandler::readPostBody() const
       {
         QgsMessageLog::logMessage( "input is NULL " );
       }
-      free( input );
+      delete [] input;
     }
     else
     {

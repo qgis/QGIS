@@ -56,5 +56,5 @@ class QgsClipper
       @param wkb pointer to the start of the line wkb
       @param clipExtent clipping bounds
       @param line out: clipped line coordinates*/
-    static const unsigned char* clippedLineWKB( const unsigned char* wkb, const QgsRectangle& clipExtent, QPolygonF& line );
+    static QgsConstWkbPtr clippedLineWKB( QgsConstWkbPtr wkb, const QgsRectangle& clipExtent, QPolygonF& line );
 };

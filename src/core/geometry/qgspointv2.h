@@ -155,7 +155,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
     virtual int dimension() const override { return 0; }
     virtual QgsPointV2* clone() const override;
     void clear() override;
-    virtual bool fromWkb( const unsigned char* wkb ) override;
+    virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
     virtual bool fromWkt( const QString& wkt ) override;
     int wkbSize() const override;
     unsigned char* asWkb( int& binarySize ) const override;
