@@ -10380,7 +10380,8 @@ QgsRasterLayer* QgisApp::addRasterLayerPrivate(
     // don't show the gui warning if we are loading from command line
     if ( guiWarning )
     {
-      QgsErrorDialog::show( error, title );
+      messageBar()->pushMessage( title, error.message( QgsErrorMessage::Text ),
+                                 QgsMessageBar::CRITICAL, messageTimeout() );
     }
 
     if ( layer )
@@ -10492,15 +10493,11 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
       // loaded afterwards (see main.cpp)
       if ( guiWarning )
       {
-        QgsError error;
-        QString msg;
-
-        msg = tr( "%1 is not a supported raster data source" ).arg( *myIterator );
+        QString msg = tr( "%1 is not a supported raster data source" ).arg( *myIterator );
         if ( !errMsg.isEmpty() )
           msg += '\n' + errMsg;
-        error.append( QGS_ERROR_MESSAGE( msg, tr( "Raster layer" ) ) );
 
-        QgsErrorDialog::show( error, tr( "Unsupported Data Source" ) );
+        messageBar()->pushMessage( tr( "Unsupported Data Source" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
       }
     }
     if ( ! ok )
