@@ -91,6 +91,8 @@ class TestQgsGeometry : public QObject
 
     void exportToGeoJSON();
 
+    void wkbInOut();
+
   private:
     /** A helper method to do a render check to see if the geometry op is as expected */
     bool renderCheck( const QString& theTestName, const QString& theComment = "", int mismatchCount = 0 );
@@ -100,6 +102,24 @@ class TestQgsGeometry : public QObject
     void dumpPolygon( QgsPolygon &thePolygon );
     /** A helper method to dump to qdebug the geometry of a polyline */
     void dumpPolyline( QgsPolyline &thePolyline );
+
+    // Release return with delete []
+    unsigned char * hex2bytes( const char *hex, int *size )
+    {
+      QByteArray ba = QByteArray::fromHex( hex );
+      unsigned char *out = new unsigned char[ba.size()];
+      memcpy( out, ba.data(), ba.size() );
+      *size = ba.size();
+      return out;
+    }
+
+    QString bytes2hex( const unsigned char *bytes, int size )
+    {
+      QByteArray ba(( const char * )bytes, size );
+      QString out = ba.toHex();
+      return out;
+    }
+
 
     QString elemToString( const QDomElement& elem ) const;
 
@@ -3363,6 +3383,29 @@ QString TestQgsGeometry::elemToString( const QDomElement& elem ) const
   elem.save( stream, -1 );
 
   return s;
+}
+
+void TestQgsGeometry::wkbInOut()
+{
+  // Premature end of WKB
+  // See http://hub.qgis.org/issues/14182
+  const char *hexwkb = "0102000000EF0000000000000000000000000000000000000000000000000000000000000000000000";
+  int size;
+  unsigned char *wkb = hex2bytes( hexwkb, &size );
+  QgsGeometry g14182;
+  // NOTE: wkb onwership transferred to QgsGeometry
+  bool success = false;
+  try
+  {
+    g14182.fromWkb( wkb, size );
+  }
+  catch ( const QgsWkbException& e )
+  {
+    // TODO: check actual message ?
+    success = true;
+  }
+  QVERIFY( success );
+
 }
 
 QTEST_MAIN( TestQgsGeometry )
