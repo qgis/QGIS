@@ -100,6 +100,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     }
     if ( block->isEmpty() )
     {
+      delete block;
       delete calcNode;
       qDeleteAll( inputBlocks );
       return static_cast<int>( MemoryError );
