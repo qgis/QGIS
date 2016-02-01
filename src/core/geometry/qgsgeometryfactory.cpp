@@ -36,13 +36,13 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( const unsigned char* wkb
     return nullptr;
   }
 
-  //find out type (bytes 2-5)
-  int type;
-  memcpy( &type, wkb + 1, sizeof( int ) );
+  //find out type 
+  QgsConstWkbPtr wkbPtr( wkb );
+  QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
+ 
   QgsAbstractGeometryV2* geom = nullptr;
 
-  geom = geomFromWkbType( QgsWKBTypes::Type( type ) );
-
+  geom = geomFromWkbType( wkbType );
   if ( geom )
   {
     geom->fromWkb( wkb );

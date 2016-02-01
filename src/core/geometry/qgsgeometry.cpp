@@ -245,7 +245,15 @@ void QgsGeometry::fromWkb( unsigned char *wkb, int length )
     removeWkbGeos();
   }
   d->geometry = QgsGeometryFactory::geomFromWkb( wkb );
-  d->mWkb = wkb;
+  if  ( *wkb != QgsApplication::endian() )
+  {
+    delete wkb;
+    d->mWkb = d->geometry->asWkb( d->mWkbSize );
+    QgsDebugMsg("rebuilding wkb due to endian difference");
+  } else
+  {
+    d->mWkb = wkb;
+  }
   d->mWkbSize = length;
 }
 
@@ -260,6 +268,7 @@ const unsigned char *QgsGeometry::asWkb() const
   {
     d->mWkb = d->geometry->asWkb( d->mWkbSize );
   }
+  QgsDebugMsg("returning asWkb");
   return d->mWkb;
 }
 

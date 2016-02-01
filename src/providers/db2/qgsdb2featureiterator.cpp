@@ -68,7 +68,9 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   // get geometry col in WKB format
   if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) && mSource->isSpatial() )
   {
-    mStatement += QString( ",VARCHAR(DB2GSE.ST_ASTEXT(%1)) AS %1 " ).arg( mSource->mGeometryColName );
+ mStatement += QString( ",DB2GSE.ST_ASBINARY(%1) AS %1 " ).arg( mSource->mGeometryColName );
+
+//  mStatement += QString( ",VARCHAR(DB2GSE.ST_ASTEXT(%1)) AS %1 " ).arg( mSource->mGeometryColName );
 //    mStatement += QString( ",DB2GSE.ST_ASTEXT(%1) AS %1 " ).arg( mSource->mGeometryColName );
 
     mAttributesToFetch.append( 2 );
@@ -176,7 +178,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
       if ( attrName == mSource->mGeometryColName )
       {
         QgsDebugMsg( QString( "Geom col: %1" ).arg( attrName ) ); // not sure why we set geometry as a field value
-        QgsDebugMsg( QString( "Field: %1; value: %2" ).arg( attrName ).arg( v.toString() ) );
+ //       QgsDebugMsg( QString( "Field: %1; value: %2" ).arg( attrName ).arg( v.toString() ) );
         QgsDebugMsg( QString( "type: %1; typeName: %2" ).arg( v.type() ).arg( v.typeName() ) );
       }
       else
@@ -203,24 +205,32 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
     // and setGeometry accepts this wkb
     if ( mSource->isSpatial() )
     {
-#if 0
+#if 1
       QByteArray ar = record.value( mSource->mGeometryColName ).toByteArray();
       QString wkb( ar.toHex() );
       QgsDebugMsg( "wkb: " + wkb );
       QgsDebugMsg( "wkb size: " + QString( "%1" ).arg( ar.size() ) );
       size_t wkb_size = ar.size();
+      if (0 < wkb_size) 
+      {
+      
       unsigned char* db2data = new unsigned char[wkb_size + 1]; // allocate persistent storage
       memcpy( db2data, ( unsigned char* )ar.data(), wkb_size + 1 );
-//      memset( db2data + wkb_size, 0, 1 );
-//      unsigned int wkbType;
-//      memcpy( &wkbType, db2data + 1, sizeof( wkbType ) );
+      
       QgsGeometry *g = new QgsGeometry();
       g->fromWkb( db2data, wkb_size );
       feature.setGeometry( g );
 //      QString wkt = ((QgsAbstractGeometryV2 *)g)->asWkt();
 //      QString wkt = g->geometry()->asWkt();
-      QgsDebugMsg( "geometry WKT: " );
+      QgsDebugMsg( QString("geometry type: %1").arg(g->wkbType()) );
+ 
+      QByteArray ar2((const char *)g->asWkb(), wkb_size + 1);
+      QString wkb2(ar2.toHex());
+      QgsDebugMsg("wkb2: " + wkb2); 
 //      QgsDebugMsg("geometry WKT: " + wkt);
+      } else {
+        QgsDebugMsg("Geometry is empty");
+      }
 #else
       QByteArray ar = record.value( mSource->mGeometryColName ).toByteArray();
       size_t wkt_size = ar.size();

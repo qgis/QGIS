@@ -84,11 +84,12 @@ class CORE_EXPORT QgsConstWkbPtr
     template<typename T> void read( T& v ) const
     {
       memcpy( &v, mP, sizeof( v ) );
-      mP += sizeof( v );
+
       if ( mEndianSwap )
-      {
+      { 
         QgsApplication::endian_swap( v );
       }
+      mP += sizeof( v );
     }
 };
 
