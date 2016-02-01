@@ -235,7 +235,7 @@ class CORE_EXPORT QgsGml : public QObject
      * are used*/
     QList< QList<QgsWkbPtr> > mCurrentWKBFragments;
     QString mAttributeName;
-    QgsApplication::endian_t mEndian;
+    char mEndian;
     /** Coordinate separator for coordinate strings. Usually "," */
     QString mCoordinateSeparator;
     /** Tuple separator for coordinate strings. Usually " " */

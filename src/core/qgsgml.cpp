@@ -110,7 +110,7 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
   QProgressDialog* progressDialog = nullptr;
   QWidget* mainWindow = nullptr;
   QWidgetList topLevelWidgets = qApp->topLevelWidgets();
-  for ( QWidgetList::iterator it = topLevelWidgets.begin(); it != topLevelWidgets.end(); ++it )
+  for ( QWidgetList::const_iterator it = topLevelWidgets.constBegin(); it != topLevelWidgets.constEnd(); ++it )
   {
     if (( *it )->objectName() == "QgisApp" )
     {
@@ -417,7 +417,7 @@ void QgsGml::endElement( const XML_Char* el )
     if ( theParseMode == QgsGml::geometry )
     {
       //directly add WKB point to the feature
-      if ( getPointWKB( mCurrentWKB, *( pointList.begin() ) ) != 0 )
+      if ( getPointWKB( mCurrentWKB, *( pointList.constBegin() ) ) != 0 )
       {
         //error
       }
@@ -430,7 +430,7 @@ void QgsGml::endElement( const XML_Char* el )
     else //multipoint, add WKB as fragment
     {
       QgsWkbPtr wkbPtr( nullptr, 0 );
-      if ( getPointWKB( wkbPtr, *( pointList.begin() ) ) != 0 )
+      if ( getPointWKB( wkbPtr, *( pointList.constBegin() ) ) != 0 )
       {
         //error
       }
@@ -739,7 +739,7 @@ int QgsGml::getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& lineCoordinate
   fillPtr << mEndian << QGis::WKBLineString << lineCoordinates.size();
 
   QList<QgsPoint>::const_iterator iter;
-  for ( iter = lineCoordinates.begin(); iter != lineCoordinates.end(); ++iter )
+  for ( iter = lineCoordinates.constBegin(); iter != lineCoordinates.constEnd(); ++iter )
   {
     fillPtr << iter->x() << iter->y();
   }
@@ -757,7 +757,7 @@ int QgsGml::getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& ringCoordinate
   fillPtr << ringCoordinates.size();
 
   QList<QgsPoint>::const_iterator iter;
-  for ( iter = ringCoordinates.begin(); iter != ringCoordinates.end(); ++iter )
+  for ( iter = ringCoordinates.constBegin(); iter != ringCoordinates.constEnd(); ++iter )
   {
     fillPtr << iter->x() << iter->y();
   }
@@ -772,12 +772,11 @@ int QgsGml::createMultiLineFromFragments()
 
   QgsWkbPtr wkbPtr( mCurrentWKB, mCurrentWKBSize );
 
-  wkbPtr << mEndian << QGis::WKBMultiLineString << mCurrentWKBFragments.begin()->size();
-
-  QList<QgsWkbPtr>::iterator wkbIt = mCurrentWKBFragments.begin()->begin();
+  wkbPtr << mEndian << QGis::WKBMultiLineString << mCurrentWKBFragments.constBegin()->size();
 
   //copy (and delete) all the wkb fragments
-  for ( ; wkbIt != mCurrentWKBFragments.begin()->end(); ++wkbIt )
+  QList<QgsWkbPtr>::const_iterator wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
+  for ( ; wkbIt != mCurrentWKBFragments.constBegin()->constEnd(); ++wkbIt )
   {
     memcpy( wkbPtr, *wkbIt, wkbIt->size() );
     wkbPtr += wkbIt->size();
@@ -795,10 +794,10 @@ int QgsGml::createMultiPointFromFragments()
   mCurrentWKB = QgsWkbPtr( new unsigned char[mCurrentWKBSize], mCurrentWKBSize );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
-  wkbPtr << mEndian << QGis::WKBMultiPoint << mCurrentWKBFragments.begin()->size();
+  wkbPtr << mEndian << QGis::WKBMultiPoint << mCurrentWKBFragments.constBegin()->size();
 
-  QList<QgsWkbPtr>::iterator wkbIt = mCurrentWKBFragments.begin()->begin();
-  for ( ; wkbIt != mCurrentWKBFragments.begin()->end(); ++wkbIt )
+  QList<QgsWkbPtr>::const_iterator wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
+  for ( ; wkbIt != mCurrentWKBFragments.constBegin()->constEnd(); ++wkbIt )
   {
     memcpy( wkbPtr, *wkbIt, wkbIt->size() );
     wkbPtr += wkbIt->size();
@@ -817,10 +816,10 @@ int QgsGml::createPolygonFromFragments()
   mCurrentWKB = QgsWkbPtr( new unsigned char[mCurrentWKBSize], mCurrentWKBSize );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
-  wkbPtr << mEndian << QGis::WKBPolygon << mCurrentWKBFragments.begin()->size();
+  wkbPtr << mEndian << QGis::WKBPolygon << mCurrentWKBFragments.constBegin()->size();
 
-  QList<QgsWkbPtr>::iterator wkbIt = mCurrentWKBFragments.begin()->begin();
-  for ( ; wkbIt != mCurrentWKBFragments.begin()->end(); ++wkbIt )
+  QList<QgsWkbPtr>::const_iterator wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
+  for ( ; wkbIt != mCurrentWKBFragments.constBegin()->constEnd(); ++wkbIt )
   {
     memcpy( wkbPtr, *wkbIt, wkbIt->size() );
     wkbPtr += wkbIt->size();
@@ -845,15 +844,15 @@ int QgsGml::createMultiPolygonFromFragments()
   wkbPtr << ( char ) mEndian << QGis::WKBMultiPolygon << mCurrentWKBFragments.size();
 
   //have outer and inner iterators
-  QList< QList<QgsWkbPtr> >::iterator outerWkbIt = mCurrentWKBFragments.begin();
+  QList< QList<QgsWkbPtr> >::const_iterator outerWkbIt = mCurrentWKBFragments.constBegin();
 
-  for ( ; outerWkbIt != mCurrentWKBFragments.end(); ++outerWkbIt )
+  for ( ; outerWkbIt != mCurrentWKBFragments.constEnd(); ++outerWkbIt )
   {
     //new polygon
     wkbPtr << ( char ) mEndian << QGis::WKBPolygon << outerWkbIt->size();
 
-    QList<QgsWkbPtr>::iterator innerWkbIt = outerWkbIt->begin();
-    for ( ; innerWkbIt != outerWkbIt->end(); ++innerWkbIt )
+    QList<QgsWkbPtr>::const_iterator innerWkbIt = outerWkbIt->constBegin();
+    for ( ; innerWkbIt != outerWkbIt->constEnd(); ++innerWkbIt )
     {
       memcpy( wkbPtr, *innerWkbIt, innerWkbIt->size() );
       wkbPtr += innerWkbIt->size();

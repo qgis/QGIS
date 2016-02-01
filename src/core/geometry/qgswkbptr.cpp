@@ -21,6 +21,12 @@ QgsWkbPtr::QgsWkbPtr( unsigned char *p, int size )
   mEnd = mP + size;
 }
 
+void QgsWkbPtr::verifyBound( int size ) const
+{
+  if ( !mP || mP + size > mEnd )
+    throw QgsWkbException( "wkb access out of bounds" );
+}
+
 QgsConstWkbPtr::QgsConstWkbPtr( const unsigned char *p, int size )
 {
   mP = const_cast< unsigned char * >( p );
@@ -41,4 +47,10 @@ QgsWKBTypes::Type QgsConstWkbPtr::readHeader() const
   *this >> wkbType;
 
   return static_cast<QgsWKBTypes::Type>( wkbType );
+}
+
+void QgsConstWkbPtr::verifyBound( int size ) const
+{
+  if ( !mP || mP + size > mEnd )
+    throw QgsWkbException( "wkb access out of bounds" );
 }
