@@ -233,6 +233,32 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="mSelectAllButton">
+       <property name="toolTip">
+        <string>Select all (Ctrl+A)</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionSelectAll.png</normaloff>:/images/themes/default/mActionSelectAll.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+A</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="mSelectedToTopButton">
        <property name="toolTip">
         <string>Move selection to top (Ctrl+T)</string>
@@ -814,6 +840,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>mRemoveSelectionButton</tabstop>
+  <tabstop>mSelectAllButton</tabstop>
   <tabstop>mSelectedToTopButton</tabstop>
   <tabstop>mInvertSelectionButton</tabstop>
   <tabstop>mCopySelectedRowsButton</tabstop>

@@ -128,6 +128,11 @@ class ProcessingPlugin:
         if QDir(folder).exists():
             shutil.rmtree(folder, True)
 
+        self.iface.unregisterMainWindowAction(self.toolboxAction)
+        self.iface.unregisterMainWindowAction(self.modelerAction)
+        self.iface.unregisterMainWindowAction(self.historyAction)
+        self.iface.unregisterMainWindowAction(self.configAction)
+        self.iface.unregisterMainWindowAction(self.resultsAction)
         self.iface.unregisterMainWindowAction(self.commanderAction)
 
     def openCommander(self):
@@ -147,7 +152,6 @@ class ProcessingPlugin:
 
     def openModeler(self):
         dlg = ModelerDialog()
-        dlg.show()
         dlg.exec_()
         if dlg.update:
             self.toolbox.updateProvider('model')

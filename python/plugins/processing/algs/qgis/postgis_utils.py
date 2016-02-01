@@ -295,7 +295,7 @@ class GeoDB:
     def get_table_rows(self, table, schema=None):
         c = self.con.cursor()
         self._exec_sql(c, 'SELECT COUNT(*) FROM %s' % self._table_name(schema,
-                       table))
+                                                                       table))
         return c.fetchone()[0]
 
     def get_table_fields(self, table, schema=None):

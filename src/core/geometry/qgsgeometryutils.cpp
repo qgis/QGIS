@@ -14,9 +14,51 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsgeometryutils.h"
+
+#include "qgscurvev2.h"
+#include "qgscurvepolygonv2.h"
+#include "qgsgeometrycollectionv2.h"
+#include "qgslinestringv2.h"
 #include "qgswkbptr.h"
+
 #include <QStringList>
 #include <QVector>
+
+QList<QgsLineStringV2*> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeometryV2* geom )
+{
+  QList< QgsLineStringV2* > linestrings;
+  if ( !geom )
+    return linestrings;
+
+  QList< const QgsAbstractGeometryV2 * > geometries;
+  geometries << geom;
+  while ( ! geometries.isEmpty() )
+  {
+    const QgsAbstractGeometryV2* g = geometries.takeFirst();
+    if ( const QgsCurveV2* curve = dynamic_cast< const QgsCurveV2* >( g ) )
+    {
+      linestrings << static_cast< QgsLineStringV2* >( curve->segmentize() );
+    }
+    else if ( const QgsGeometryCollectionV2* collection = dynamic_cast< const QgsGeometryCollectionV2* >( g ) )
+    {
+      for ( int i = 0; i < collection->numGeometries(); ++i )
+      {
+        geometries.append( collection->geometryN( i ) );
+      }
+    }
+    else if ( const QgsCurvePolygonV2* curvePolygon = dynamic_cast< const QgsCurvePolygonV2* >( g ) )
+    {
+      if ( curvePolygon->exteriorRing() )
+        linestrings << static_cast< QgsLineStringV2* >( curvePolygon->exteriorRing()->segmentize() );
+
+      for ( int i = 0; i < curvePolygon->numInteriorRings(); ++i )
+      {
+        linestrings << static_cast< QgsLineStringV2* >( curvePolygon->interiorRing( i )->segmentize() );
+      }
+    }
+  }
+  return linestrings;
+}
 
 QgsPointV2 QgsGeometryUtils::closestVertex( const QgsAbstractGeometryV2& geom, const QgsPointV2& pt, QgsVertexId& id )
 {

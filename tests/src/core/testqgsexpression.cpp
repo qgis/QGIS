@@ -679,6 +679,24 @@ class TestQgsExpression: public QObject
       QTest::newRow( "negative age" ) << "age('2012-06-28','2012-06-30')" << false << QVariant::fromValue( QgsExpression::Interval( -172800 ) );
       QTest::newRow( "day of week date" ) << "day_of_week(todate('2015-09-21'))" << false << QVariant( 1 );
       QTest::newRow( "day of week datetime" ) << "day_of_week(to_datetime('2015-09-20 13:01:43'))" << false << QVariant( 0 );
+      QTest::newRow( "hour datetime" ) << "hour(to_datetime('2015-09-20 13:01:43'))" << false << QVariant( 13 );
+      QTest::newRow( "hour time" ) << "hour(to_time('14:01:43'))" << false << QVariant( 14 );
+      QTest::newRow( "hour date" ) << "hour(to_date('2004-01-03'))" << true << QVariant();
+      QTest::newRow( "hour string" ) << "hour('not a time')" << true << QVariant();
+      QTest::newRow( "hour null" ) << "hour(NULL)" << false << QVariant();
+      QTest::newRow( "minute datetime" ) << "minute(to_datetime('2015-09-20 13:43:43'))" << false << QVariant( 43 );
+      QTest::newRow( "minute time" ) << "minute(to_time('14:22:43'))" << false << QVariant( 22 );
+      QTest::newRow( "minute date" ) << "minute(to_date('2004-01-03'))" << true << QVariant();
+      QTest::newRow( "minute string" ) << "minute('not a time')" << true << QVariant();
+      QTest::newRow( "minute null" ) << "minute(NULL)" << false << QVariant();
+      QTest::newRow( "second datetime" ) << "second(to_datetime('2015-09-20 13:43:23'))" << false << QVariant( 23 );
+      QTest::newRow( "second time" ) << "second(to_time('14:22:43'))" << false << QVariant( 43 );
+      QTest::newRow( "second date" ) << "second(to_date('2004-01-03'))" << true << QVariant();
+      QTest::newRow( "second string" ) << "second('not a time')" << true << QVariant();
+      QTest::newRow( "second null" ) << "second(NULL)" << false << QVariant();
+      QTest::newRow( "age time" ) << "second(age(to_time('08:30:22'),to_time('07:12:10')))" << false << QVariant( 4692.0 );
+      QTest::newRow( "age date" ) << "day(age(to_date('2004-03-22'),to_date('2004-03-12')))" << false << QVariant( 10.0 );
+      QTest::newRow( "age datetime" ) << "hour(age(to_datetime('2004-03-22 08:30:22'),to_datetime('2004-03-12 07:30:22')))" << false << QVariant( 241.0 );
 
       // Color functions
       QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "253,190,115,255" );

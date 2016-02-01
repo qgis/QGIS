@@ -495,8 +495,8 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
 
 QgsCategorizedSymbolRendererV2Widget::~QgsCategorizedSymbolRendererV2Widget()
 {
-  if ( mRenderer ) delete mRenderer;
-  if ( mModel ) delete mModel;
+  delete mRenderer;
+  delete mModel;
   delete mCategorizedSymbol;
 }
 
@@ -579,7 +579,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
 
   QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
   dlg.setMapCanvas( mMapCanvas );
-  if ( !dlg.exec() )
+  if ( !dlg.exec() || !newSymbol )
   {
     delete newSymbol;
     return;

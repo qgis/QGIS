@@ -145,8 +145,8 @@ class PointDistance(GeoAlgorithm):
                     vari += (i - mean) * (i - mean)
                 vari = math.sqrt(vari / len(distList))
                 self.writer.addRecord([inID, unicode(mean),
-                                      unicode(vari), unicode(min(distList)),
-                                      unicode(max(distList))])
+                                       unicode(vari), unicode(min(distList)),
+                                       unicode(max(distList))])
 
             current += 1
             progress.setPercentage(int(current * total))

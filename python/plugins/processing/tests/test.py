@@ -90,7 +90,7 @@ class ProcessingProviderTestCase(unittest.TestCase):
         self.alg = alg
         self.threaded = threaded
         self.msg = 'ALG %s (%s %s)' % (self.algId, {True: 'threaded',
-                                       False: 'unthreaded'}[threaded], dialog)
+                                                    False: 'unthreaded'}[threaded], dialog)
         unittest.TestCase.__init__(self, 'runalg_%s' % dialog)
 
     def gen_test_parameters(self, alg, doSet=False):

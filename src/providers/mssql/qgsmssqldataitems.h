@@ -60,6 +60,9 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
 
     virtual bool acceptDrop() override { return true; }
     virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
+
+    bool handleDrop( const QMimeData * data, const QString& toSchema );
+
     void refresh() override;
 
     QString connInfo() const { return mConnInfo; }
@@ -100,6 +103,8 @@ class QgsMssqlSchemaItem : public QgsDataCollectionItem
     QgsMssqlLayerItem* addLayer( QgsMssqlLayerProperty layerProperty, bool refresh );
     void refresh() override {} // do not refresh directly
     void addLayers( QgsDataItem* newLayers );
+    virtual bool acceptDrop() override { return true; }
+    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
 };
 
 class QgsMssqlLayerItem : public QgsLayerItem

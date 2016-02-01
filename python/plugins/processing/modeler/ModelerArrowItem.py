@@ -66,7 +66,7 @@ class ModelerArrowItem(QGraphicsPathItem):
         self.setFlag(QGraphicsItem.ItemIsSelectable, False)
         self.myColor = Qt.gray
         self.setPen(QPen(self.myColor, 1, Qt.SolidLine,
-                    Qt.RoundCap, Qt.RoundJoin))
+                         Qt.RoundCap, Qt.RoundJoin))
         self.setZValue(0)
 
     def updatePath(self):

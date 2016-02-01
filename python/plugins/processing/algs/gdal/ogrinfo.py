@@ -48,7 +48,7 @@ class OgrInfo(GdalAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
 
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer'),
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterBoolean(self.SUMMARY_ONLY,
                                            self.tr('Summary output only'),
                                            True))

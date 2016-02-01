@@ -18,7 +18,7 @@ import sys
 from qgis.core import NULL
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry
-from PyQt4.QtCore import QSettings
+from PyQt4.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        unittest,
@@ -38,10 +38,13 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
         cls.dbconn = u'dbname=\'qgis_test\' host=localhost port=5432 user=\'postgres\' password=\'postgres\''
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
-        # Create test layer
+        # Create test layers
         cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
         assert(cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
+        cls.poly_vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
+        assert(cls.poly_vl.isValid())
+        cls.poly_provider = cls.poly_vl.dataProvider()
 
     @classmethod
     def tearDownClass(cls):
@@ -58,6 +61,27 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
         assert self.provider.defaultValue(0) == u'nextval(\'qgis_test."someData_pk_seq"\'::regclass)'
         assert self.provider.defaultValue(1) == NULL
         assert self.provider.defaultValue(2) == '\'qgis\'::text'
+
+    def testDateTimeTypes(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."date_times" sql=' % (self.dbconn), "testdatetimes", "postgres")
+        assert(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName('date_field')).type(), QVariant.Date)
+        self.assertEqual(fields.at(fields.indexFromName('time_field')).type(), QVariant.Time)
+        self.assertEqual(fields.at(fields.indexFromName('datetime_field')).type(), QVariant.DateTime)
+
+        f = vl.getFeatures(QgsFeatureRequest()).next()
+
+        date_idx = vl.fieldNameIndex('date_field')
+        assert isinstance(f.attributes()[date_idx], QDate)
+        self.assertEqual(f.attributes()[date_idx], QDate(2004, 3, 4))
+        time_idx = vl.fieldNameIndex('time_field')
+        assert isinstance(f.attributes()[time_idx], QTime)
+        self.assertEqual(f.attributes()[time_idx], QTime(13, 41, 52))
+        datetime_idx = vl.fieldNameIndex('datetime_field')
+        assert isinstance(f.attributes()[datetime_idx], QDateTime)
+        self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2004, 3, 4), QTime(13, 41, 52)))
 
     def testQueryLayers(self):
         def test_query(dbconn, query, key):

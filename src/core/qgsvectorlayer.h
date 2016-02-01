@@ -475,6 +475,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       EditorWidgetV2, /**< modularized edit widgets @note added in 2.1 */
     };
 
+    //! Result of an edit operation
+    enum EditResult
+    {
+      Success = 0, /**< Edit operation was successful */
+      EmptyGeometry = 1, /**< Edit operation resulted in an empty geometry */
+      EditFailed = 2, /**< Edit operation failed */
+      FetchFeatureFailed = 3, /**< Unable to fetch requested feature */
+      InvalidLayer = 4, /**< Edit failed due to invalid layer */
+    };
+
     /** Constructor - creates a vector layer
      *
      * The QgsVectorLayer is constructed by instantiating a data provider.  The provider
@@ -544,8 +554,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note since 2.6 returns bool indicating whether the join can be added */
     bool addJoin( const QgsVectorJoinInfo& joinInfo );
 
-    /** Removes a vector layer join */
-    void removeJoin( const QString& joinLayerId );
+    /** Removes a vector layer join
+      @returns true if join was found and successfully removed */
+    bool removeJoin( const QString& joinLayerId );
 
     const QList<QgsVectorJoinInfo> vectorJoins() const;
 
@@ -908,8 +919,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex );
 
     /** Deletes a vertex from a feature
+     * @deprecated use deleteVertexV2() instead
      */
-    bool deleteVertex( QgsFeatureId atFeatureId, int atVertex );
+    Q_DECL_DEPRECATED bool deleteVertex( QgsFeatureId atFeatureId, int atVertex );
+
+    /** Deletes a vertex from a feature.
+     * @param featureId ID of feature to remove vertex from
+     * @param vertex index of vertex to delete
+     * @note added in QGIS 2.14
+     */
+    //TODO QGIS 3.0 - rename back to deleteVertex
+    EditResult deleteVertexV2( QgsFeatureId featureId, int vertex );
 
     /** Deletes the selected features
      *  @return true in case of success and false otherwise

@@ -93,9 +93,15 @@ class QgsLayerTreeModel : QAbstractItemModel
     //! @note added in 2.6
     QModelIndex legendNode2index( QgsLayerTreeModelLegendNode* legendNode );
 
-    //! Return list of legend nodes attached to a particular layer node
+    //! Return filtered list of active legend nodes attached to a particular layer node
     //! @note added in 2.6
+    //! @see layerOriginalLegendNodes()
     QList<QgsLayerTreeModelLegendNode*> layerLegendNodes( QgsLayerTreeLayer* nodeLayer );
+
+    //! Return original (unfiltered) list of legend nodes attached to a particular layer node
+    //! @note added in 2.14
+    //! @see layerLegendNodes()
+    QList<QgsLayerTreeModelLegendNode*> layerOriginalLegendNodes( QgsLayerTreeLayer* nodeLayer );
 
     /** Searches through the layer tree to find a legend node with a matching layer ID
      * and rule key.

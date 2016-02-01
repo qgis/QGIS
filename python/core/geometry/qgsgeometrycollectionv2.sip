@@ -12,8 +12,18 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     virtual QgsGeometryCollectionV2* clone() const;
 
+    /** Returns the number of geometries within the collection.
+     */
     int numGeometries() const;
+
+    /** Returns a const reference to a geometry from within the collection.
+     * @param n index of geometry to return
+     */
     //const QgsAbstractGeometryV2* geometryN( int n ) const;
+
+    /** Returns a geometry from within the collection.
+     * @param n index of geometry to return
+     */
     QgsAbstractGeometryV2* geometryN( int n );
 
     //methods inherited from QgsAbstractGeometry
@@ -21,7 +31,7 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     virtual QString geometryType() const;
     virtual void clear();
 
-    /** Adds a geometry and takes ownership. Returns true in case of success*/
+    /** Adds a geometry and takes ownership. Returns true in case of success.*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g /Transfer/ );
 
     /** Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
@@ -30,14 +40,25 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     */
     virtual bool insertGeometry( QgsAbstractGeometryV2* g /Transfer/, int index );
 
+    /** Removes a geometry from the collection.
+     * @param nr index of geometry to remove
+     * @returns true if removal was successful.
+     */
     virtual bool removeGeometry( int nr );
 
+    /** Transforms the geometry using a coordinate transform
+     * @param ct coordinate transform
+     * @param d transformation direction
+     */
     virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
     void transform( const QTransform& t );
+
     //virtual void clip( const QgsRectangle& rect );
+
     virtual void draw( QPainter& p ) const;
 
     bool fromWkb( const unsigned char * wkb );
+    virtual bool fromWkt( const QString& wkt );
     int wkbSize() const;
     unsigned char* asWkb( int& binarySize ) const;
     QString asWkt( int precision = 17 ) const;
@@ -62,13 +83,16 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     bool hasCurvedSegments() const;
 
+    /** Returns a geometry without curves. Caller takes ownership*/
+    QgsAbstractGeometryV2* segmentize() const;
+
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
         @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
     double vertexAngle( const QgsVertexId& vertex ) const;
 
-    virtual int vertexCount(int part = 0, int ring = 0) const;
-    virtual int ringCount(int part = 0) const;
+    virtual int vertexCount( int part = 0, int ring = 0 ) const;
+    virtual int ringCount( int part = 0 ) const;
     virtual int partCount() const;
     virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const;
 

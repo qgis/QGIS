@@ -251,7 +251,14 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="mFileWidgetFilterLineEdit"/>
+          <widget class="QLineEdit" name="mFileWidgetFilterLineEdit">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Filter syntax is borrowed from Qt &lt;a href=&quot;http://doc.qt.io/qt-4.8/qfiledialog.html#getOpenFileName&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;QFileDialog::getOpenFileName&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;If you want simple filter on all pdf files, just use:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;*.pdf&lt;/span&gt;&lt;/p&gt;&lt;p&gt;If you want one filter for multiple file extensions (on .pdf, .odt and .doc files):&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;*.pdf *.odt *.doc&lt;/span&gt;&lt;/p&gt;&lt;p&gt;If you want to describe your filter, use parentheses:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;Text documents (*.pdf, *.odt, *.doc)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;If you want multiple filters, separate them with ';;':&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;&amp;quot;Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)&amp;quot;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -343,7 +350,7 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="mRelativeButtonGroup"/>
   <buttongroup name="mStorageButtonGroup"/>
+  <buttongroup name="mRelativeButtonGroup"/>
  </buttongroups>
 </ui>

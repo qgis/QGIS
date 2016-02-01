@@ -165,7 +165,7 @@ void QgsExternalResourceConfigDlg::setConfig( const QgsEditorWidgetConfig& confi
   }
   if ( config.contains( "FileWidgetFilter" ) )
   {
-    mFileWidgetFilterLineEdit->setText( config.value( "Filter" ).toString() );
+    mFileWidgetFilterLineEdit->setText( config.value( "FileWidgetFilter" ).toString() );
   }
 
   if ( config.contains( "UseLink" ) )

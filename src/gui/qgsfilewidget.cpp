@@ -287,7 +287,7 @@ QString QgsFileWidget::toUrl( const QString& path ) const
   QString rep;
   if ( path.isEmpty() )
   {
-    rep =  QSettings().value( "qgis/nullValue", "NULL" ).toString();
+    return QSettings().value( "qgis/nullValue", "NULL" ).toString();
   }
 
   QString urlStr = relativePath( path, false );

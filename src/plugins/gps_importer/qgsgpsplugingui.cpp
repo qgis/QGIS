@@ -69,7 +69,7 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap& importers,
            this, SLOT( enableRelevantControls() ) );
   connect( leDLBasename, SIGNAL( textChanged( const QString& ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( cmbULLayer, SIGNAL( textChanged( QString ) ),
+  connect( cmbULLayer, SIGNAL( editTextChanged( const QString& ) ),
            this, SLOT( enableRelevantControls() ) );
   connect( tabWidget, SIGNAL( currentChanged( int ) ),
            this, SLOT( enableRelevantControls() ) );

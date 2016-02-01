@@ -1054,6 +1054,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! deselect features from all layers
     void deselectAll();
 
+    //! select all features
+    void selectAll();
+
+    //! invert the selection
+    void invertSelection();
+
     //! select features by expression
     void selectByExpression();
 

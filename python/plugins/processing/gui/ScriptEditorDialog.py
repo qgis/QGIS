@@ -228,8 +228,8 @@ class ScriptEditorDialog(BASE, WIDGET):
                 filterName = self.tr('Processing R script (*.rsx)')
 
             self.filename = unicode(QFileDialog.getSaveFileName(self,
-                                    self.tr('Save script'), scriptDir,
-                                    filterName))
+                                                                self.tr('Save script'), scriptDir,
+                                                                filterName))
 
         if self.filename:
             if self.algType == self.SCRIPT_PYTHON and \

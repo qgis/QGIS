@@ -36,7 +36,7 @@ QVariant QgsExternalResourceWidgetWrapper::value() const
 {
   if ( mQgsWidget )
   {
-    mQgsWidget->documentPath( field().type() );
+    return mQgsWidget->documentPath( field().type() );
   }
 
   if ( mLineEdit )

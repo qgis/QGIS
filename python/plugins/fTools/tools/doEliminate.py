@@ -174,24 +174,24 @@ class Dialog(QDialog, Ui_Dialog):
 
                     selFeat = QgsFeature()
                     while fit.nextFeature(selFeat):
-                            selGeom = selFeat.geometry()
+                        selGeom = selFeat.geometry()
 
-                            if geom2Eliminate.intersects(selGeom): # we have a candidate
-                                iGeom = geom2Eliminate.intersection(selGeom)
+                        if geom2Eliminate.intersects(selGeom): # we have a candidate
+                            iGeom = geom2Eliminate.intersection(selGeom)
 
-                                if boundary:
-                                    selValue = iGeom.length()
+                            if boundary:
+                                selValue = iGeom.length()
+                            else:
+                                # we need a common boundary
+                                if 0 < iGeom.length():
+                                    selValue = selGeom.area()
                                 else:
-                                    # we need a common boundary
-                                    if 0 < iGeom.length():
-                                        selValue = selGeom.area()
-                                    else:
-                                        selValue = 0
+                                    selValue = 0
 
-                                if selValue > max:
-                                    max = selValue
-                                    mergeWithFid = selFeat.id()
-                                    mergeWithGeom = QgsGeometry(selGeom) # deep copy of the geometry
+                            if selValue > max:
+                                max = selValue
+                                mergeWithFid = selFeat.id()
+                                mergeWithGeom = QgsGeometry(selGeom) # deep copy of the geometry
 
                     if mergeWithFid is not None:  # a successful candidate
                         newGeom = mergeWithGeom.combine(geom2Eliminate)

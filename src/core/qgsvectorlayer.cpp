@@ -1026,11 +1026,17 @@ bool QgsVectorLayer::moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, 
 
 bool QgsVectorLayer::deleteVertex( QgsFeatureId atFeatureId, int atVertex )
 {
+  QgsVectorLayer::EditResult res = deleteVertexV2( atFeatureId, atVertex );
+  return res == QgsVectorLayer::Success || res == QgsVectorLayer::EmptyGeometry;
+}
+
+QgsVectorLayer::EditResult QgsVectorLayer::deleteVertexV2( QgsFeatureId featureId, int vertex )
+{
   if ( !mValid || !mEditBuffer || !mDataProvider )
-    return false;
+    return QgsVectorLayer::InvalidLayer;
 
   QgsVectorLayerEditUtils utils( this );
-  return utils.deleteVertex( atFeatureId, atVertex );
+  return utils.deleteVertexV2( featureId, vertex );
 }
 
 
@@ -2758,10 +2764,14 @@ void QgsVectorLayer::checkJoinLayerRemove( const QString& theLayerId )
   removeJoin( theLayerId );
 }
 
-void QgsVectorLayer::removeJoin( const QString& joinLayerId )
+bool QgsVectorLayer::removeJoin( const QString& joinLayerId )
 {
+  bool res = false;
   if ( mJoinBuffer )
-    mJoinBuffer->removeJoin( joinLayerId );
+  {
+    res = mJoinBuffer->removeJoin( joinLayerId );
+  }
+  return res;
 }
 
 const QList< QgsVectorJoinInfo > QgsVectorLayer::vectorJoins() const

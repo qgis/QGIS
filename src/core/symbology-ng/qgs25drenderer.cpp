@@ -30,7 +30,7 @@
 #define WALL_EXPRESSION \
   "order_parts( "\
   "  extrude(" \
-  "    segments_to_lines( exterior_ring( $geometry ) )," \
+  "    segments_to_lines( $geometry )," \
   "    cos( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )," \
   "    sin( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )" \
   "  )," \
@@ -52,7 +52,7 @@
   "set_color_part( " \
   "  @symbol_color," \
   " 'value'," \
-  "  40 + 20 * abs( $pi - azimuth( " \
+  "  40 + 19 * abs( $pi - azimuth( " \
   "    point_n( geometry_n($geometry, @geometry_part_num) , 1 ), " \
   "    point_n( geometry_n($geometry, @geometry_part_num) , 2 )" \
   "  ) ) " \

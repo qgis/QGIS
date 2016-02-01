@@ -26,11 +26,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import QGis, QgsFeature, QgsGeometry, QgsFeatureRequest, QgsWKBTypes
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+GEOM_25D = [QGis.WKBPoint25D, QGis.WKBLineString25D, QGis.WKBPolygon25D,
+            QGis.WKBMultiPoint25D, QGis.WKBMultiLineString25D,
+            QGis.WKBMultiPolygon25D]
 
 
 class Clip(GeoAlgorithm):
@@ -53,6 +59,11 @@ class Clip(GeoAlgorithm):
             self.getParameterValue(Clip.INPUT))
         layerB = dataobjects.getObjectFromUri(
             self.getParameterValue(Clip.OVERLAY))
+
+        geomType = layerA.dataProvider().geometryType()
+        if geomType in GEOM_25D:
+            raise GeoAlgorithmExecutionException(
+                self.tr('Input layer has unsupported geometry type {}').format(geomType))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layerA.pendingFields(),
@@ -88,39 +99,37 @@ class Clip(GeoAlgorithm):
                             outFeat.setGeometry(QgsGeometry(tmpGeom))
                             first = False
                         else:
-                            try:
-                                cur_geom = QgsGeometry(outFeat.geometry())
-                                new_geom = QgsGeometry(
-                                    cur_geom.combine(tmpGeom))
-                                outFeat.setGeometry(QgsGeometry(new_geom))
-                            except:
+                            cur_geom = QgsGeometry(outFeat.geometry())
+                            new_geom = QgsGeometry(cur_geom.combine(tmpGeom))
+                            if new_geom.isGeosEmpty() or not new_geom.isGeosValid():
                                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                        self.tr('GEOS geoprocessing error: One or '
                                                                'more input features have invalid '
                                                                'geometry.'))
                                 break
+
+                            outFeat.setGeometry(QgsGeometry(new_geom))
                 if found:
-                    try:
-                        cur_geom = QgsGeometry(outFeat.geometry())
-                        new_geom = QgsGeometry(geom.intersection(cur_geom))
-                        if new_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(new_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
-                            int_com = QgsGeometry(geom.combine(cur_geom))
-                            int_sym = QgsGeometry(geom.symDifference(cur_geom))
-                            new_geom = QgsGeometry(int_com.difference(int_sym))
-                        try:
-                            outFeat.setGeometry(new_geom)
-                            outFeat.setAttributes(attrs)
-                            writer.addFeature(outFeat)
-                        except:
+                    cur_geom = QgsGeometry(outFeat.geometry())
+                    new_geom = QgsGeometry(geom.intersection(cur_geom))
+                    if new_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(new_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
+                        int_com = QgsGeometry(geom.combine(cur_geom))
+                        int_sym = QgsGeometry(geom.symDifference(cur_geom))
+                        new_geom = QgsGeometry(int_com.difference(int_sym))
+                        if new_geom.isGeosEmpty() or not new_geom.isGeosValid():
                             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                                   self.tr('Feature geometry error: One or more '
-                                                           'output features ignored due to '
-                                                           'invalid geometry.'))
+                                                   self.tr('GEOS geoprocessing error: One or more '
+                                                           'input features have invalid geometry.'))
                             continue
+                    try:
+                        outFeat.setGeometry(new_geom)
+                        outFeat.setAttributes(attrs)
+                        writer.addFeature(outFeat)
                     except:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('GEOS geoprocessing error: One or more '
-                                                       'input features have invalid geometry.'))
+                                               self.tr('Feature geometry error: One or more '
+                                                       'output features ignored due to '
+                                                       'invalid geometry.'))
                         continue
 
             current += 1

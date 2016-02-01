@@ -121,7 +121,7 @@ class SagaAlgorithm213(SagaAlgorithm212):
             if param.value is None:
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector,
-                          ParameterTable)):
+                                  ParameterTable)):
                 value = param.value
                 if value in self.exportedLayers.keys():
                     command += ' -' + param.name + ' "' \

@@ -226,14 +226,30 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context );
 
+    /** Returns the renderer's source symbol, which is the base symbol used for the each classes' symbol before applying
+     * the classes' color.
+     * @see setSourceSymbol()
+     * @see sourceColorRamp()
+     */
     QgsSymbolV2* sourceSymbol();
+
+    /** Sets the source symbol for the renderer, which is the base symbol used for the each classes' symbol before applying
+     * the classes' color.
+     * @param sym source symbol, ownership is transferred to the renderer
+     * @see sourceSymbol()
+     * @see setSourceColorRamp()
+     */
     void setSourceSymbol( QgsSymbolV2* sym /Transfer/ );
 
+    /** Returns the source color ramp, from which each classes' color is derived.
+     * @see setSourceColorRamp()
+     * @see sourceSymbol()
+     */
     QgsVectorColorRampV2* sourceColorRamp();
 
     /** Sets the source color ramp.
-     * @param ramp color ramp. Ownership is transferred to the renderer
-    */
+      * @param ramp color ramp. Ownership is transferred to the renderer
+      */
     void setSourceColorRamp( QgsVectorColorRampV2* ramp /Transfer/ );
 
     //! @note added in 2.1
@@ -247,8 +263,12 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
       */
     void updateColorRamp( QgsVectorColorRampV2* ramp /Transfer/ = 0, bool inverted = false );
 
-    /** Update all the symbols but leave breaks and colors. */
-    void updateSymbols( QgsSymbolV2* sym /Transfer/ );
+    /** Update all the symbols but leave breaks and colors. This method also sets the source
+     * symbol for the renderer.
+     * @param sym source symbol to use for classes. Ownership is not transferred.
+     * @see setSourceSymbol()
+    */
+    void updateSymbols( QgsSymbolV2* sym );
 
     //! set varying symbol size for classes
     //! @note the classes must already be set so that symbols exist

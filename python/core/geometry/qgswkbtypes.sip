@@ -161,6 +161,7 @@ class QgsWKBTypes
      * @param type original type
      * @note added in QGIS 2.12
      * @see addM()
+     * @see dropZ()
      * @see hasZ()
      */
     static Type addZ( Type type );
@@ -169,6 +170,7 @@ class QgsWKBTypes
      * @param type original type
      * @note added in QGIS 2.12
      * @see addZ()
+     * @see dropM()
      * @see hasM()
      */
     static Type addM( Type type );

@@ -30,6 +30,7 @@ QgsSnappingUtils::QgsSnappingUtils( QObject* parent )
     , mDefaultTolerance( 10 )
     , mDefaultUnit( QgsTolerance::Pixels )
     , mSnapOnIntersection( false )
+    , mHybridPerLayerFeatureLimit( 50000 )
     , mIsIndexing( false )
 {
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( onLayersWillBeRemoved( QStringList ) ) );
@@ -68,7 +69,9 @@ void QgsSnappingUtils::clearAllLocators()
 
 QgsPointLocator* QgsSnappingUtils::locatorForLayerUsingStrategy( QgsVectorLayer* vl, const QgsPoint& pointMap, double tolerance )
 {
-  if ( willUseIndex( vl ) )
+  QgsRectangle aoi( pointMap.x() - tolerance, pointMap.y() - tolerance,
+                    pointMap.x() + tolerance, pointMap.y() + tolerance );
+  if ( isIndexPrepared( vl, aoi ) )
     return locatorForLayer( vl );
   else
     return temporaryLocatorForLayer( vl, pointMap, tolerance );
@@ -86,22 +89,20 @@ QgsPointLocator* QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer* vl,
   return mTemporaryLocators.value( vl );
 }
 
-bool QgsSnappingUtils::willUseIndex( QgsVectorLayer* vl ) const
+bool QgsSnappingUtils::isIndexPrepared( QgsVectorLayer* vl, const QgsRectangle& areaOfInterest )
 {
-  if ( vl->geometryType() == QGis::NoGeometry )
+  if ( vl->geometryType() == QGis::NoGeometry || mStrategy == IndexNeverFull )
     return false;
-  if ( mStrategy == IndexAlwaysFull )
-    return true;
-  else if ( mStrategy == IndexNeverFull )
-    return false;
-  else
-  {
-    if ( mHybridNonindexableLayers.contains( vl->id() ) )
-      return false;
 
-    // if the layer is too big, the locator will later stop indexing it after reaching a threshold
+  QgsPointLocator* loc = locatorForLayer( vl );
+
+  if ( mStrategy == IndexAlwaysFull && loc->hasIndex() )
     return true;
-  }
+
+  if ( mStrategy == IndexHybrid && loc->hasIndex() && ( !loc->extent() || loc->extent()->contains( areaOfInterest ) ) )
+    return true;
+
+  return false; // the index - even if it exists - is not suitable
 }
 
 
@@ -207,6 +208,12 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QPoint& point, QgsPoin
   return snapToMap( mMapSettings.mapToPixel().toMapCoordinates( point ), filter );
 }
 
+inline QgsRectangle _areaOfInterest( const QgsPoint& point, double tolerance )
+{
+  return QgsRectangle( point.x() - tolerance, point.y() - tolerance,
+                       point.x() + tolerance, point.y() + tolerance );
+}
+
 QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter )
 {
   if ( !mMapSettings.hasValidSettings() )
@@ -217,11 +224,11 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
     if ( !mCurrentLayer || mDefaultType == 0 )
       return QgsPointLocator::Match();
 
-    prepareIndex( QList<QgsVectorLayer*>() << mCurrentLayer );
-
     // data from project
     double tolerance = QgsTolerance::toleranceInProjectUnits( mDefaultTolerance, mCurrentLayer, mMapSettings, mDefaultUnit );
     int type = mDefaultType;
+
+    prepareIndex( QList<LayerAndAreaOfInterest>() << qMakePair( mCurrentLayer, _areaOfInterest( pointMap, tolerance ) ) );
 
     // use ad-hoc locator
     QgsPointLocator* loc = locatorForLayerUsingStrategy( mCurrentLayer, pointMap, tolerance );
@@ -242,9 +249,12 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
   }
   else if ( mSnapToMapMode == SnapAdvanced )
   {
-    QList<QgsVectorLayer*> layers;
+    QList<LayerAndAreaOfInterest> layers;
     Q_FOREACH ( const LayerConfig& layerConfig, mLayers )
-      layers << layerConfig.layer;
+    {
+      double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
+      layers << qMakePair( layerConfig.layer, _areaOfInterest( pointMap, tolerance ) );
+    }
     prepareIndex( layers );
 
     QgsPointLocator::Match bestMatch;
@@ -276,18 +286,20 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
     // data from project
     double tolerance = QgsTolerance::toleranceInProjectUnits( mDefaultTolerance, nullptr, mMapSettings, mDefaultUnit );
     int type = mDefaultType;
+    QgsRectangle aoi = _areaOfInterest( pointMap, tolerance );
 
-    QList<QgsVectorLayer*> layers;
+    QList<LayerAndAreaOfInterest> layers;
     Q_FOREACH ( const QString& layerID, mMapSettings.layers() )
       if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) ) )
-        layers << vl;
+        layers << qMakePair( vl, aoi );
     prepareIndex( layers );
 
     QgsPointLocator::MatchList edges; // for snap on intersection
     QgsPointLocator::Match bestMatch;
 
-    Q_FOREACH ( QgsVectorLayer* vl, layers )
+    Q_FOREACH ( const LayerAndAreaOfInterest& entry, layers )
     {
+      QgsVectorLayer* vl = entry.first;
       if ( QgsPointLocator* loc = locatorForLayerUsingStrategy( vl, pointMap, tolerance ) )
       {
         _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter );
@@ -307,18 +319,22 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
 }
 
 
-void QgsSnappingUtils::prepareIndex( const QList<QgsVectorLayer*>& layers )
+void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest>& layers )
 {
   if ( mIsIndexing )
     return;
   mIsIndexing = true;
 
   // check if we need to build any index
-  QList<QgsVectorLayer*> layersToIndex;
-  Q_FOREACH ( QgsVectorLayer* vl, layers )
+  QList<LayerAndAreaOfInterest> layersToIndex;
+  Q_FOREACH ( const LayerAndAreaOfInterest& entry, layers )
   {
-    if ( willUseIndex( vl ) && !locatorForLayer( vl )->hasIndex() )
-      layersToIndex << vl;
+    QgsVectorLayer* vl = entry.first;
+    if ( vl->geometryType() == QGis::NoGeometry || mStrategy == IndexNeverFull )
+      continue;
+
+    if ( !isIndexPrepared( vl, entry.second ) )
+      layersToIndex << entry;
   }
   if ( !layersToIndex.isEmpty() )
   {
@@ -327,12 +343,61 @@ void QgsSnappingUtils::prepareIndex( const QList<QgsVectorLayer*>& layers )
     t.start();
     int i = 0;
     prepareIndexStarting( layersToIndex.count() );
-    Q_FOREACH ( QgsVectorLayer* vl, layersToIndex )
+    Q_FOREACH ( const LayerAndAreaOfInterest& entry, layersToIndex )
     {
+      QgsVectorLayer* vl = entry.first;
       QTime tt;
       tt.start();
-      if ( !locatorForLayer( vl )->init( mStrategy == IndexHybrid ? 1000000 : -1 ) )
-        mHybridNonindexableLayers.insert( vl->id() );
+      QgsPointLocator* loc = locatorForLayer( vl );
+      if ( mStrategy == IndexHybrid )
+      {
+        // first time the layer is used? - let's set an initial guess about indexing
+        if ( !mHybridMaxAreaPerLayer.contains( vl->id() ) )
+        {
+          int totalFeatureCount = vl->pendingFeatureCount();
+          if ( totalFeatureCount < mHybridPerLayerFeatureLimit )
+          {
+            // index the whole layer
+            mHybridMaxAreaPerLayer[vl->id()] = -1;
+          }
+          else
+          {
+            // estimate for how big area it probably makes sense to build partial index to not exceed the limit
+            // (we may change the limit later)
+            QgsRectangle layerExtent = mMapSettings.layerExtentToOutputExtent( vl, vl->extent() );
+            double totalArea = layerExtent.width() * layerExtent.height();
+            mHybridMaxAreaPerLayer[vl->id()] = totalArea * mHybridPerLayerFeatureLimit / totalFeatureCount / 4;
+          }
+        }
+
+        double indexReasonableArea = mHybridMaxAreaPerLayer[vl->id()];
+        if ( indexReasonableArea == -1 )
+        {
+          // we can safely index the whole layer
+          loc->init();
+        }
+        else
+        {
+          // use area as big as we think may fit into our limit
+          QgsPoint c = entry.second.center();
+          double halfSide = sqrt( indexReasonableArea ) / 2;
+          QgsRectangle rect( c.x() - halfSide, c.y() - halfSide,
+                             c.x() + halfSide, c.y() + halfSide );
+          loc->setExtent( &rect );
+
+          // see if it's possible build index for this area
+          if ( !loc->init( mHybridPerLayerFeatureLimit ) )
+          {
+            // hmm that didn't work out - too many features!
+            // let's make the allowed area smaller for the next time
+            mHybridMaxAreaPerLayer[vl->id()] /= 4;
+          }
+        }
+
+      }
+      else  // full index strategy
+        loc->init();
+
       QgsDebugMsg( QString( "Index init: %1 ms (%2)" ).arg( tt.elapsed() ).arg( vl->id() ) );
       prepareIndexProgress( ++i );
     }
@@ -426,6 +491,87 @@ void QgsSnappingUtils::setSnapOnIntersections( bool enabled )
   emit configChanged();
 }
 
+QString QgsSnappingUtils::dump()
+{
+  QString msg = "--- SNAPPING UTILS DUMP ---\n";
+
+  if ( !mMapSettings.hasValidSettings() )
+  {
+    msg += "invalid map settings!";
+    return msg;
+  }
+
+  QList<LayerConfig> layers;
+
+  if ( mSnapToMapMode == SnapCurrentLayer )
+  {
+    if ( mSnapToMapMode == SnapCurrentLayer && !mCurrentLayer )
+    {
+      msg += "no current layer!";
+      return msg;
+    }
+
+    layers << LayerConfig( mCurrentLayer, QgsPointLocator::Types( mDefaultType ), mDefaultTolerance, mDefaultUnit );
+  }
+  else if ( mSnapToMapMode == SnapAllLayers )
+  {
+    Q_FOREACH ( const QString& layerID, mMapSettings.layers() )
+    {
+      if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) ) )
+        layers << LayerConfig( vl, QgsPointLocator::Types( mDefaultType ), mDefaultTolerance, mDefaultUnit );
+    }
+  }
+  else if ( mSnapToMapMode == SnapAdvanced )
+  {
+    layers = mLayers;
+  }
+
+  Q_FOREACH ( const LayerConfig& layer, layers )
+  {
+    msg += QString( "layer : %1\n"
+                    "config: %2   tolerance %3 %4\n" )
+           .arg( layer.layer->name() )
+           .arg( layer.type ).arg( layer.tolerance ).arg( layer.unit );
+
+    if ( mStrategy == IndexAlwaysFull || mStrategy == IndexHybrid )
+    {
+      if ( QgsPointLocator* loc = locatorForLayer( layer.layer ) )
+      {
+        QString extentStr, cachedGeoms, limit( "no max area" );
+        if ( const QgsRectangle* r = loc->extent() )
+        {
+          extentStr = QString( " extent %1" ).arg( r->toString() );
+        }
+        else
+          extentStr = "full extent";
+        if ( loc->hasIndex() )
+          cachedGeoms = QString( "%1 feats" ).arg( loc->cachedGeometryCount() );
+        else
+          cachedGeoms = "not initialized";
+        if ( mStrategy == IndexHybrid )
+        {
+          if ( mHybridMaxAreaPerLayer.contains( layer.layer->id() ) )
+          {
+            double maxArea = mStrategy == IndexHybrid ? mHybridMaxAreaPerLayer[layer.layer->id()] : -1;
+            if ( maxArea != -1 )
+              limit = QString( "max area %1" ).arg( maxArea );
+          }
+          else
+            limit = "not evaluated";
+        }
+        msg += QString( "index : YES | %1 | %2 | %3\n" ).arg( cachedGeoms ).arg( extentStr ).arg( limit );
+      }
+      else
+        msg += QString( "index : ???\n" ); // should not happen
+    }
+    else
+      msg += "index : NO\n";
+    msg += "-\n";
+  }
+
+  return msg;
+}
+
 const QgsCoordinateReferenceSystem* QgsSnappingUtils::destCRS()
 {
   return mMapSettings.hasCrsTransformEnabled() ? &mMapSettings.destinationCrs() : nullptr;
@@ -514,6 +660,9 @@ void QgsSnappingUtils::onLayersWillBeRemoved( const QStringList& layerIds )
   // remove locators for layers that are going to be deleted
   Q_FOREACH ( const QString& layerId, layerIds )
   {
+    if ( mHybridMaxAreaPerLayer.contains( layerId ) )
+      mHybridMaxAreaPerLayer.remove( layerId );
+
     for ( LocatorsMap::iterator it = mLocators.begin(); it != mLocators.end(); )
     {
       if ( it.key()->id() == layerId )

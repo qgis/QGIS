@@ -26,6 +26,7 @@
 #include <QAction>
 #include <QMessageBox>
 #include <QSettings>
+#include <QProgressDialog>
 
 QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QString& errCause );
 
@@ -204,8 +205,15 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
   qApp->setOverrideCursor( Qt::WaitCursor );
 
+  QProgressDialog *progress = new QProgressDialog( tr( "Copying features..." ), tr( "Abort" ), 0, 0, nullptr );
+  progress->setWindowTitle( tr( "Import layer" ) );
+  progress->setWindowModality( Qt::WindowModal );
+  progress->show();
+
   QStringList importResults;
   bool hasError = false;
+  bool cancelled = false;
+
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
   {
@@ -221,13 +229,15 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
     if ( srcLayer->isValid() )
     {
-      destUri.setDataSource( QString(), u.name, "geom" );
+      destUri.setDataSource( QString(), u.name, srcLayer->geometryType() != QGis::NoGeometry ? "geom" : QString() );
       QgsDebugMsg( "URI " + destUri.uri() );
       QgsVectorLayerImport::ImportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, destUri.uri(), "spatialite", &srcLayer->crs(), false, &importError );
+      err = QgsVectorLayerImport::importLayer( srcLayer, destUri.uri(), "spatialite", &srcLayer->crs(), false, &importError, false, nullptr, progress );
       if ( err == QgsVectorLayerImport::NoError )
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
+      else if ( err == QgsVectorLayerImport::ErrUserCancelled )
+        cancelled = true;
       else
       {
         importResults.append( QString( "%1: %2" ).arg( u.name, importError ) );
@@ -243,9 +253,16 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
     delete srcLayer;
   }
 
+  delete progress;
+
   qApp->restoreOverrideCursor();
 
-  if ( hasError )
+  if ( cancelled )
+  {
+    QMessageBox::information( nullptr, tr( "Import to SpatiaLite database" ), tr( "Import cancelled." ) );
+    refresh();
+  }
+  else if ( hasError )
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to SpatiaLite database" ) );

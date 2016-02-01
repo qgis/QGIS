@@ -56,10 +56,7 @@ if "%ARCH%"=="x86" goto devenv_x86
 goto devenv_x86_64
 
 :devenv_x86
-for /f "usebackq tokens=1" %%a in (`%OSGEO4W_ROOT%\bin\grass70 --config path`) do set GRASS70_PATH=%%a
-for %%i in ("%GRASS70_PATH%") do set GRASS70_VERSION=%%~nxi
-set GRASS70_VERSION=%GRASS70_VERSION:grass-=%
-set GRASS_VERSIONS=6.4.4 %GRASS70_VERSION%
+set GRASS6_VERSION=6.4.4
 call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" x86
 if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x86 /Release
 path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
@@ -67,16 +64,11 @@ path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
 set CMAKE_OPT=^
 	-G "Visual Studio 10" ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
-	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib ^
-	-D WITH_GRASS=TRUE ^
-	-D WITH_GRASS6=TRUE ^
-	-D WITH_GRASS7=TRUE ^
-	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-6.4.4 ^
-	-D GRASS_PREFIX7=%GRASS70_PATH:\=/%
+	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib
 goto devenv
 
 :devenv_x86_64
-set GRASS_VERSIONS=6.4.3
+set GRASS6_VERSION=6.4.3
 call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" amd64
 if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x64 /Release
 path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
@@ -88,16 +80,17 @@ if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 set CMAKE_OPT=^
 	-G "Visual Studio 10 Win64" ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
-	-D WITH_GRASS=TRUE ^
-	-D WITH_GRASS6=TRUE ^
-	-D WITH_GRASS7=FALSE ^
-	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-6.4.3 ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/bin/sip.exe ^
 	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
 	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
 :devenv
+for /f "usebackq tokens=1" %%a in (`%OSGEO4W_ROOT%\bin\grass70 --config path`) do set GRASS70_PATH=%%a
+for %%i in ("%GRASS70_PATH%") do set GRASS70_VERSION=%%~nxi
+set GRASS70_VERSION=%GRASS70_VERSION:grass-=%
+set GRASS_VERSIONS=%GRASS6_VERSION% %GRASS70_VERSION%
+
 set PYTHONPATH=
 path %PF86%\CMake\bin;%PATH%;c:\cygwin\bin
 
@@ -163,6 +156,11 @@ cmake %CMAKE_OPT% ^
 	-D WITH_QSPATIALITE=TRUE ^
 	-D WITH_SERVER=TRUE ^
 	-D SERVER_SKIP_ECW=TRUE ^
+	-D WITH_GRASS=TRUE ^
+	-D WITH_GRASS6=TRUE ^
+	-D WITH_GRASS7=TRUE ^
+	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS6_VERSION% ^
+	-D GRASS_PREFIX7=%GRASS70_PATH:\=/% ^
 	-D WITH_GLOBE=TRUE ^
 	-D WITH_TOUCH=TRUE ^
 	-D WITH_ORACLE=TRUE ^

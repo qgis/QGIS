@@ -184,10 +184,10 @@ QgsSpatiaLiteFeatureIterator::~QgsSpatiaLiteFeatureIterator()
 
 bool QgsSpatiaLiteFeatureIterator::fetchFeature( QgsFeature& feature )
 {
+  feature.setValid( false );
+
   if ( mClosed )
     return false;
-
-  feature.setValid( false );
 
   if ( !sqliteStatement )
   {

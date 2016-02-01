@@ -80,6 +80,9 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
     case QVariant::Date:
       return leftData.toDate() < rightData.toDate();
 
+    case QVariant::Time:
+      return leftData.toTime() < rightData.toTime();
+
     case QVariant::DateTime:
       return leftData.toDateTime() < rightData.toDateTime();
 

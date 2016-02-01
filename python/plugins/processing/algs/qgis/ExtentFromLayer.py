@@ -94,7 +94,7 @@ class ExtentFromLayer(GeoAlgorithm):
         perim = 2 * width + 2 * height
 
         rect = [QgsPoint(minx, miny), QgsPoint(minx, maxy), QgsPoint(maxx,
-                maxy), QgsPoint(maxx, miny), QgsPoint(minx, miny)]
+                                                                     maxy), QgsPoint(maxx, miny), QgsPoint(minx, miny)]
         geometry = QgsGeometry().fromPolygon([rect])
         feat = QgsFeature()
         feat.setGeometry(geometry)
@@ -131,7 +131,7 @@ class ExtentFromLayer(GeoAlgorithm):
             area = width * height
             perim = 2 * width + 2 * height
             rect = [QgsPoint(minx, miny), QgsPoint(minx, maxy), QgsPoint(maxx,
-                    maxy), QgsPoint(maxx, miny), QgsPoint(minx, miny)]
+                                                                         maxy), QgsPoint(maxx, miny), QgsPoint(minx, miny)]
 
             geometry = QgsGeometry().fromPolygon([rect])
             feat.setGeometry(geometry)

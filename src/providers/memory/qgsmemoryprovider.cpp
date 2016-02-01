@@ -86,6 +86,8 @@ QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
 
   // date type
   << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Time" ), "time", QVariant::Time, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime, -1, -1, -1, -1 )
 
   // integer types
   << QgsVectorDataProvider::NativeType( tr( "Whole number (smallint - 16bit)" ), "int2", QVariant::Int, -1, -1, 0, 0 )
@@ -106,7 +108,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
   {
     QList<QgsField> attributes;
     QRegExp reFieldDef( "\\:"
-                        "(int|integer|real|double|string|date)" // type
+                        "(int|integer|real|double|string|date|time|datetime)" // type
                         "(?:\\((\\d+)"                // length
                         "(?:\\,(\\d+))?"                // precision
                         "\\))?"
@@ -142,7 +144,19 @@ QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
         {
           type = QVariant::Date;
           typeName = "date";
-          length = 10;
+          length = -1;
+        }
+        else if ( typeName == "time" )
+        {
+          type = QVariant::Time;
+          typeName = "time";
+          length = -1;
+        }
+        else if ( typeName == "datetime" )
+        {
+          type = QVariant::DateTime;
+          typeName = "datetime";
+          length = -1;
         }
 
         if ( reFieldDef.cap( 2 ) != "" )
@@ -350,6 +364,8 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
       case QVariant::Double:
       case QVariant::String:
       case QVariant::Date:
+      case QVariant::Time:
+      case QVariant::DateTime:
       case QVariant::LongLong:
         break;
       default:

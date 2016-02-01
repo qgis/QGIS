@@ -112,7 +112,7 @@ class ValidateDialog(QDialog, Ui_Dialog):
 
     def keyPressEvent(self, e):
         if (e.modifiers() == Qt.ControlModifier or
-           e.modifiers() == Qt.MetaModifier ) and \
+            e.modifiers() == Qt.MetaModifier ) and \
            e.key() == Qt.Key_C:
             items = ""
             for row in range(self.tblUnique.rowCount()):

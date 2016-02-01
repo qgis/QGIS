@@ -14,6 +14,7 @@ class QgsPolygonV2: public QgsCurvePolygonV2
     virtual QgsPolygonV2* clone() const;
 
     virtual bool fromWkb( const unsigned char* wkb );
+
     // inherited: bool fromWkt( const QString &wkt );
 
     int wkbSize() const;
@@ -28,4 +29,5 @@ class QgsPolygonV2: public QgsCurvePolygonV2
     void addInteriorRing( QgsCurveV2* ring /Transfer/ );
     //overridden to handle LineString25D rings
     virtual void setExteriorRing( QgsCurveV2* ring /Transfer/ );
+
 };

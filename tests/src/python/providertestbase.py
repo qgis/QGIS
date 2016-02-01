@@ -120,7 +120,62 @@ class ProviderTestCase(object):
         except AttributeError:
             print 'Provider does not support compiling'
 
-    def testOrderBy(self):
+    def testSubsetString(self):
+        if not self.provider.supportsSubsetString():
+            print 'Provider does not support subset strings'
+            return
+
+        subset = self.getSubsetString()
+        self.provider.setSubsetString(subset)
+        self.assertEqual(self.provider.subsetString(), subset)
+        result = set([f['pk'] for f in self.provider.getFeatures()])
+        self.provider.setSubsetString(None)
+
+        expected = set([2, 3, 4])
+        assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected), result, subset)
+
+        # Subset string AND filter rect
+        self.provider.setSubsetString(subset)
+        extent = QgsRectangle(-70, 70, -60, 75)
+        result = set([f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))])
+        self.provider.setSubsetString(None)
+        expected = set([2])
+        assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected), result, subset)
+
+        # Subset string AND filter rect, version 2
+        self.provider.setSubsetString(subset)
+        extent = QgsRectangle(-71, 65, -60, 80)
+        result = set([f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))])
+        self.provider.setSubsetString(None)
+        expected = set([2, 4])
+        assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected), result, subset)
+
+        # Subset string AND expression
+        self.provider.setSubsetString(subset)
+        result = set([f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterExpression('length("name")=5'))])
+        self.provider.setSubsetString(None)
+        expected = set([2, 4])
+        assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected), result, subset)
+
+    def getSubsetString(self):
+        """Individual providers may need to override this depending on their subset string formats"""
+        return '"cnt" > 100 and "cnt" < 410'
+
+    def testOrderByUncompiled(self):
+        try:
+            self.disableCompiler()
+        except AttributeError:
+            pass
+        self.runOrderByTests()
+
+    def testOrderByCompiled(self):
+        try:
+            self.enableCompiler()
+            self.runOrderByTests()
+        except AttributeError:
+            print 'Provider does not support compiling'
+
+    def runOrderByTests(self):
         request = QgsFeatureRequest().addOrderBy('cnt')
         values = [f['cnt'] for f in self.provider.getFeatures(request)]
         self.assertEquals(values, [-200, 100, 200, 300, 400])
@@ -159,6 +214,11 @@ class ProviderTestCase(object):
         request = QgsFeatureRequest().addOrderBy('pk*2', False)
         values = [f['pk'] for f in self.provider.getFeatures(request)]
         self.assertEquals(values, [5, 4, 3, 2, 1])
+
+        # Order reversing expression
+        request = QgsFeatureRequest().addOrderBy('pk*-1', False)
+        values = [f['pk'] for f in self.provider.getFeatures(request)]
+        self.assertEquals(values, [1, 2, 3, 4, 5])
 
         # Type dependent expression
         request = QgsFeatureRequest().addOrderBy('num_char*2', False)
@@ -217,6 +277,23 @@ class ProviderTestCase(object):
         extent = QgsRectangle(-70, 67, -60, 80)
         features = [f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
         assert set(features) == set([2, 4]), 'Got {} instead'.format(features)
+
+    def testGetFeaturesPolyFilterRectTests(self):
+        """ Test fetching features from a polygon layer with filter rect"""
+        try:
+            if not self.poly_provider:
+                return
+        except:
+            return
+
+        extent = QgsRectangle(-73, 70, -63, 80)
+        features = [f['pk'] for f in self.poly_provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
+        # Some providers may return the exact intersection matches (2, 3) even without the ExactIntersect flag, so we accept that too
+        assert set(features) == set([2, 3]) or set(features) == set([1, 2, 3]), 'Got {} instead'.format(features)
+
+        # Test with exact intersection
+        features = [f['pk'] for f in self.poly_provider.getFeatures(QgsFeatureRequest().setFilterRect(extent).setFlags(QgsFeatureRequest.ExactIntersect))]
+        assert set(features) == set([2, 3]), 'Got {} instead'.format(features)
 
     def testRectAndExpression(self):
         extent = QgsRectangle(-70, 67, -60, 80)
@@ -285,3 +362,18 @@ class ProviderTestCase(object):
 
     def testFeatureCount(self):
         assert self.provider.featureCount() == 5, 'Got {}'.format(self.provider.featureCount())
+
+    def testClosedIterators(self):
+        """ Test behaviour of closed iterators """
+
+        # Test retrieving feature after closing iterator
+        f_it = self.provider.getFeatures(QgsFeatureRequest())
+        fet = QgsFeature()
+        assert f_it.nextFeature(fet), 'Could not fetch feature'
+        assert fet.isValid(), 'Feature is not valid'
+        assert f_it.close(), 'Could not close iterator'
+        self.assertFalse(f_it.nextFeature(fet), 'Fetched feature after iterator closed, expected nextFeature() to return False')
+        self.assertFalse(fet.isValid(), 'Valid feature fetched from closed iterator, should be invalid')
+
+        # Test rewinding closed iterator
+        self.assertFalse(f_it.rewind(), 'Rewinding closed iterator successful, should not be allowed')

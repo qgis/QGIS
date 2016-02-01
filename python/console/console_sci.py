@@ -449,7 +449,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                     return
                 elif t == '(' and (re.match(r'^[ \t]*def \w+$', txt)
                                    or re.match(r'^[ \t]*class \w+$', txt)):
-                        self.insert('):')
+                    self.insert('):')
                 else:
                     self.insert(self.closing[i])
             ## FIXES #8392 (automatically removes the redundant char

@@ -72,6 +72,8 @@
      <addaction name="mActionSelectRadius"/>
      <addaction name="mActionSelectByExpression"/>
      <addaction name="mActionDeselectAll"/>
+     <addaction name="mActionSelectAll"/>
+     <addaction name="mActionInvertSelection"/>
     </widget>
     <widget class="QMenu" name="menuMeasure">
      <property name="title">
@@ -441,8 +443,6 @@
     <bool>true</bool>
    </attribute>
    <addaction name="mActionIdentify"/>
-   <addaction name="mActionDeselectAll"/>
-   <addaction name="mActionSelectByExpression"/>
    <addaction name="mActionOpenTable"/>
    <addaction name="mActionOpenFieldCalc"/>
    <addaction name="mActionStatisticalSummary"/>
@@ -998,6 +998,36 @@
    <property name="text">
     <string>Deselect Features from All Layers</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="mActionSelectAll">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectAll.png</normaloff>:/images/themes/default/mActionSelectAll.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select All Features</string>
+   </property>
+   <property name="toolTip">
+    <string>Select All Features</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="mActionInvertSelection">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionInvertSelection.png</normaloff>:/images/themes/default/mActionInvertSelection.png</iconset>
+   </property>
+   <property name="text">
+    <string>Invert Feature Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Invert Feature Selection</string>
+   </property>
   </action>
   <action name="mActionIdentify">
    <property name="checkable">
@@ -1237,9 +1267,6 @@
    </property>
    <property name="text">
     <string>New SpatiaLite Layer...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+A</string>
    </property>
   </action>
   <action name="mActionShowRasterCalculator">

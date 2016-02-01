@@ -342,7 +342,7 @@ class RAlgorithm(GeoAlgorithm):
                     commands.append(param.name + ' <- read.csv("' + value
                                     + '", head=TRUE, sep=",")')
             elif isinstance(param, (ParameterTableField, ParameterString,
-                            ParameterFile)):
+                                    ParameterFile)):
                 commands.append(param.name + '="' + param.value + '"')
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
                 commands.append(param.name + '=' + unicode(param.value))

@@ -18,7 +18,7 @@ import sys
 from qgis.core import NULL
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry
-from PyQt4.QtCore import QSettings
+from PyQt4.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        unittest,
@@ -52,6 +52,28 @@ class TestPyQgsMssqlProvider(TestCase, ProviderTestCase):
 
     def disableCompiler(self):
         QSettings().setValue(u'/qgis/compileExpressions', False)
+
+    # HERE GO THE PROVIDER SPECIFIC TESTS
+    def testDateTimeTypes(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."date_times" sql=' % (self.dbconn), "testdatetimes", "mssql")
+        assert(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName('date_field')).type(), QVariant.Date)
+        self.assertEqual(fields.at(fields.indexFromName('time_field')).type(), QVariant.Time)
+        self.assertEqual(fields.at(fields.indexFromName('datetime_field')).type(), QVariant.DateTime)
+
+        f = vl.getFeatures(QgsFeatureRequest()).next()
+
+        date_idx = vl.fieldNameIndex('date_field')
+        assert isinstance(f.attributes()[date_idx], QDate)
+        self.assertEqual(f.attributes()[date_idx], QDate(2004, 3, 4))
+        time_idx = vl.fieldNameIndex('time_field')
+        assert isinstance(f.attributes()[time_idx], QTime)
+        self.assertEqual(f.attributes()[time_idx], QTime(13, 41, 52))
+        datetime_idx = vl.fieldNameIndex('datetime_field')
+        assert isinstance(f.attributes()[datetime_idx], QDateTime)
+        self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2004, 3, 4), QTime(13, 41, 52)))
 
 if __name__ == '__main__':
     unittest.main()

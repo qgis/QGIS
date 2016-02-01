@@ -35,6 +35,8 @@ const QString QgsExpressionContext::EXPR_FEATURE( "_feature_" );
 const QString QgsExpressionContext::EXPR_ORIGINAL_VALUE( "value" );
 const QString QgsExpressionContext::EXPR_SYMBOL_COLOR( "symbol_color" );
 const QString QgsExpressionContext::EXPR_SYMBOL_ANGLE( "symbol_angle" );
+const QString QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT( "geometry_part_count" );
+const QString QgsExpressionContext::EXPR_GEOMETRY_PART_NUM( "geometry_part_num" );
 
 //
 // QgsExpressionContextScope
@@ -429,7 +431,8 @@ void QgsExpressionContext::setOriginalValueVariable( const QVariant &value )
   if ( mStack.isEmpty() )
     mStack.append( new QgsExpressionContextScope() );
 
-  mStack.last()->setVariable( QgsExpressionContext::EXPR_ORIGINAL_VALUE, value );
+  mStack.last()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_ORIGINAL_VALUE,
+                              value, true ) );
 }
 
 
@@ -711,8 +714,8 @@ QgsExpressionContextScope* QgsExpressionContextUtils::mapSettingsScope( const Qg
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_id", "canvas", true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_rotation", mapSettings.rotation(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_scale", mapSettings.scale(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_width", mapSettings.extent().width() ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_height", mapSettings.extent().height() ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_width", mapSettings.extent().width(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_height", mapSettings.extent().height(), true ) );
   QgsGeometry* centerPoint = QgsGeometry::fromPoint( mapSettings.visibleExtent().center() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_center", QVariant::fromValue( *centerPoint ), true ) );
   delete centerPoint;

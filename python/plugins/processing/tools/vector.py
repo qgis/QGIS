@@ -592,7 +592,7 @@ class VectorWriter:
             _runSQL("CREATE TABLE %s.%s (%s)" % (uri.schema(), uri.table().lower(), fieldsdesc))
             _runSQL("SELECT AddGeometryColumn('{schema}', '{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
                 table=uri.table().lower(), schema=uri.schema(), srid=crs.authid().split(":")[-1],
-                                    typmod=GEOM_TYPE_MAP[geometryType].upper()))
+                typmod=GEOM_TYPE_MAP[geometryType].upper()))
 
             self.layer = QgsVectorLayer(uri.uri(), uri.table(), "postgres")
             self.writer = self.layer.dataProvider()
@@ -622,7 +622,7 @@ class VectorWriter:
             _runSQL("CREATE TABLE %s (%s)" % (uri.table().lower(), fieldsdesc))
             _runSQL("SELECT AddGeometryColumn('{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
                 table=uri.table().lower(), srid=crs.authid().split(":")[-1],
-                                    typmod=GEOM_TYPE_MAP[geometryType].upper()))
+                typmod=GEOM_TYPE_MAP[geometryType].upper()))
 
             self.layer = QgsVectorLayer(uri.uri(), uri.table(), "spatialite")
             self.writer = self.layer.dataProvider()

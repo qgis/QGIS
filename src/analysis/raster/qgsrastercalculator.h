@@ -41,6 +41,17 @@ class ANALYSIS_EXPORT QgsRasterCalculator
 {
   public:
 
+    //! Result of the calculation
+    enum Result
+    {
+      Success = 0, /*!< Calculation sucessful */
+      CreateOutputError = 1, /*!< Error creating output data file */
+      InputLayerError = 2, /*!< Error reading input layer */
+      Cancelled = 3, /*!< User cancelled calculation */
+      ParserError = 4, /*!< Error parsing formula */
+      MemoryError = 5, /*!< Error allocating memory for result */
+    };
+
     /** QgsRasterCalculator constructor.
      * @param formulaString formula for raster calculation
      * @param outputFile output file path
@@ -70,6 +81,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     /** Starts the calculation and writes new raster
       @param p progress bar (or 0 if called from non-gui code)
       @return 0 in case of success*/
+    //TODO QGIS 3.0 - return QgsRasterCalculator::Result
     int processCalculation( QProgressDialog* p = nullptr );
 
   private:

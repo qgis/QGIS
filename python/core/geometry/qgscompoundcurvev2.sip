@@ -37,17 +37,33 @@ class QgsCompoundCurveV2: public QgsCurveV2
     virtual void points( QList<QgsPointV2>& pts ) const;
     virtual int numPoints() const;
     virtual QgsLineStringV2* curveToLine() const;
+
+    /** Returns the number of curves in the geometry.
+     */
     int nCurves() const;
+
+    /** Returns the curve at the specified index.
+     */
     const QgsCurveV2* curveAt( int i ) const;
 
-    /** Adds curve (takes ownership)*/
+    /** Adds a curve to the geometr (takes ownership)
+     */
     void addCurve( QgsCurveV2* c /Transfer/ );
+
+    /** Removes a curve from the geometry.
+     * @param i index of curve to remove
+     */
     void removeCurve( int i );
+
+    /** Adds a vertex to the end of the geometry.
+     */
     void addVertex( const QgsPointV2& pt );
-    /** Returns closed ring based on curve (connects to start point if not already done)*/
-    void close();
 
     void draw( QPainter& p ) const;
+    /** Transforms the geometry using a coordinate transform
+     * @param ct coordinate transform
+       @param d transformation direction
+     */
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
     void transform( const QTransform& t );
     void addToPainterPath( QPainterPath& path ) const;
@@ -58,9 +74,12 @@ class QgsCompoundCurveV2: public QgsCurveV2
     virtual bool deleteVertex( const QgsVertexId& position );
 
     virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
-    bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const;
+    bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const;
 
     void sumUpArea( double& sum ) const;
+
+    /** Appends first point if not already closed.*/
+    void close();
 
     bool hasCurvedSegments() const;
 

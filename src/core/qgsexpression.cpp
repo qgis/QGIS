@@ -29,6 +29,7 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
+#include "qgsgeometryutils.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsogcutils.h"
@@ -292,6 +293,12 @@ static QDateTime getDateTimeValue( const QVariant& value, QgsExpression* parent 
   }
   else
   {
+    QTime t = value.toTime();
+    if ( t.isValid() )
+    {
+      return QDateTime( QDate( 1, 1, 1 ), t );
+    }
+
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to DateTime" ).arg( value.toString() ) );
     return QDateTime();
   }
@@ -1133,7 +1140,7 @@ static QVariant fcnDay( const QVariantList& values, const QgsExpressionContext*,
   }
   else
   {
-    QDateTime d1 =  getDateTimeValue( value, parent );
+    QDateTime d1 = getDateTimeValue( value, parent );
     return QVariant( d1.date().day() );
   }
 }
@@ -1193,8 +1200,8 @@ static QVariant fcnHour( const QVariantList& values, const QgsExpressionContext*
   }
   else
   {
-    QDateTime d1 =  getDateTimeValue( value, parent );
-    return QVariant( d1.time().hour() );
+    QTime t1 = getTimeValue( value, parent );
+    return QVariant( t1.hour() );
   }
 }
 
@@ -1208,8 +1215,8 @@ static QVariant fcnMinute( const QVariantList& values, const QgsExpressionContex
   }
   else
   {
-    QDateTime d1 =  getDateTimeValue( value, parent );
-    return QVariant( d1.time().minute() );
+    QTime t1 =  getTimeValue( value, parent );
+    return QVariant( t1.minute() );
   }
 }
 
@@ -1223,8 +1230,8 @@ static QVariant fcnSeconds( const QVariantList& values, const QgsExpressionConte
   }
   else
   {
-    QDateTime d1 =  getDateTimeValue( value, parent );
-    return QVariant( d1.time().second() );
+    QTime t1 =  getTimeValue( value, parent );
+    return QVariant( t1.second() );
   }
 }
 
@@ -1432,52 +1439,7 @@ static QVariant fcnSegmentsToLines( const QVariantList& values, const QgsExpress
   if ( geom.isEmpty() )
     return QVariant();
 
-  QList< QgsAbstractGeometryV2 * > geometries;
-
-  QgsGeometryCollectionV2* collection = dynamic_cast< QgsGeometryCollectionV2* >( geom.geometry() );
-  if ( collection )
-  {
-    for ( int i = 0; i < collection->numGeometries(); ++i )
-    {
-      geometries.append( collection->geometryN( i ) );
-    }
-  }
-  else
-  {
-    geometries.append( geom.geometry() );
-  }
-
-  QList< QgsLineStringV2* > linesToProcess;
-  while ( ! geometries.isEmpty() )
-  {
-    QgsAbstractGeometryV2* g = geometries.takeFirst();
-    QgsCurveV2* curve = dynamic_cast< QgsCurveV2* >( g );
-    if ( curve )
-    {
-      linesToProcess << static_cast< QgsLineStringV2* >( curve->segmentize() );
-      continue;
-    }
-    QgsGeometryCollectionV2* collection = dynamic_cast< QgsGeometryCollectionV2* >( g );
-    if ( collection )
-    {
-      for ( int i = 0; i < collection->numGeometries(); ++i )
-      {
-        geometries.append( collection->geometryN( i ) );
-      }
-    }
-    QgsCurvePolygonV2* curvePolygon = dynamic_cast< QgsCurvePolygonV2* >( g );
-    if ( curvePolygon )
-    {
-      if ( curvePolygon->exteriorRing() )
-        linesToProcess << static_cast< QgsLineStringV2* >( curvePolygon->exteriorRing()->segmentize() );
-
-      for ( int i = 0; i < curvePolygon->numInteriorRings(); ++i )
-      {
-        linesToProcess << static_cast< QgsLineStringV2* >( curvePolygon->interiorRing( i )->segmentize() );
-      }
-      continue;
-    }
-  }
+  QList< QgsLineStringV2* > linesToProcess = QgsGeometryUtils::extractLineStrings( geom.geometry() );
 
   //ok, now we have a complete list of segmentized lines from the geometry
   QgsMultiLineStringV2* ml = new QgsMultiLineStringV2();
@@ -4561,13 +4523,9 @@ QString QgsExpression::variableHelpText( const QString &variableName, bool showV
     {
       valueString = QCoreApplication::translate( "variable_help", "not set" );
     }
-    else if ( value.type() == QVariant::String )
-    {
-      valueString = QString( "'<b>%1</b>'" ).arg( value.toString() );
-    }
     else
     {
-      valueString = QString( "<b>%1</b>" ).arg( value.toString() );
+      valueString = QString( "<b>%1</b>" ).arg( formatPreviewString( value ) );
     }
     text.append( QCoreApplication::translate( "variable_help", "<p>Current value: %1</p>" ).arg( valueString ) );
   }
@@ -4600,6 +4558,62 @@ QString QgsExpression::group( const QString& name )
   //have a translated name in the gGroups hash, return the name
   //unchanged
   return gGroups.value( name, name );
+}
+
+QString QgsExpression::formatPreviewString( const QVariant& value )
+{
+  if ( value.canConvert<QgsGeometry>() )
+  {
+    //result is a geometry
+    QgsGeometry geom = value.value<QgsGeometry>();
+    if ( geom.isEmpty() )
+      return tr( "<i>&lt;empty geometry&gt;</i>" );
+    else
+      return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWKBTypes::displayString( geom.geometry()->wkbType() ) );
+  }
+  else if ( value.canConvert< QgsFeature >() )
+  {
+    //result is a feature
+    QgsFeature feat = value.value<QgsFeature>();
+    return tr( "<i>&lt;feature: %1&gt;</i>" ).arg( feat.id() );
+  }
+  else if ( value.canConvert< QgsExpression::Interval >() )
+  {
+    //result is a feature
+    QgsExpression::Interval interval = value.value<QgsExpression::Interval>();
+    return tr( "<i>&lt;interval: %1 days&gt;</i>" ).arg( interval.days() );
+  }
+  else if ( value.type() == QVariant::Date )
+  {
+    QDate dt = value.toDate();
+    return tr( "<i>&lt;date: %1&gt;</i>" ).arg( dt.toString( "yyyy-MM-dd" ) );
+  }
+  else if ( value.type() == QVariant::Time )
+  {
+    QTime tm = value.toTime();
+    return tr( "<i>&lt;time: %1&gt;</i>" ).arg( tm.toString( "hh:mm:ss" ) );
+  }
+  else if ( value.type() == QVariant::DateTime )
+  {
+    QDateTime dt = value.toDateTime();
+    return tr( "<i>&lt;datetime: %1&gt;</i>" ).arg( dt.toString( "yyyy-MM-dd hh:mm:ss" ) );
+  }
+  else if ( value.type() == QVariant::String )
+  {
+    QString previewString = value.toString();
+    if ( previewString.length() > 63 )
+    {
+      return QString( tr( "'%1...'" ) ).arg( previewString.left( 60 ) );
+    }
+    else
+    {
+      return previewString.prepend( '\'' ).append( '\'' );
+    }
+  }
+  else
+  {
+    return value.toString();
+  }
 }
 
 QVariant QgsExpression::Function::func( const QVariantList& values, const QgsFeature* feature, QgsExpression* parent )

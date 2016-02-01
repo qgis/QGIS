@@ -81,7 +81,7 @@ color: rgb(255, 255, 255);</string>
        <enum>QFrame::Raised</enum>
       </property>
       <property name="text">
-       <string>You can add more algorithms to the toolbox, &lt;a href=&quot;enable&quot;&gt;enable additional providers.&lt;/a&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You can add more algorithms to the toolbox, &lt;a href=&quot;enable&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;enable additional providers.&lt;/span&gt;&lt;/a&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;a href=&quot;close&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;[close]&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="wordWrap">
        <bool>true</bool>

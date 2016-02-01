@@ -16,11 +16,15 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include "qgsgeometryutils.h"
+#include "qgslinestringv2.h"
+#include "qgspolygonv2.h"
+#include "qgsmultipolygonv2.h"
 
 class TestQgsGeometryUtils: public QObject
 {
     Q_OBJECT
   private slots:
+    void testExtractLinestrings();
     void testCircleClockwise_data();
     void testCircleClockwise();
     void testAngleOnCircle_data();
@@ -40,6 +44,32 @@ class TestQgsGeometryUtils: public QObject
     void testAverageAngle_data();
     void testAverageAngle();
 };
+
+
+void TestQgsGeometryUtils::testExtractLinestrings()
+{
+  QgsLineStringV2* outerRing1 = new QgsLineStringV2();
+  outerRing1->setPoints( QList<QgsPointV2>() << QgsPointV2( 1, 1 ) << QgsPointV2( 1, 2 ) << QgsPointV2( 2, 2 ) << QgsPointV2( 2, 1 ) << QgsPointV2( 1, 1 ) );
+  QgsPolygonV2* polygon1 = new QgsPolygonV2();
+  polygon1->setExteriorRing( outerRing1 );
+
+  QgsLineStringV2* outerRing2 = new QgsLineStringV2();
+  outerRing2->setPoints( QList<QgsPointV2>() << QgsPointV2( 10, 10 ) << QgsPointV2( 10, 20 ) << QgsPointV2( 20, 20 ) << QgsPointV2( 20, 10 ) << QgsPointV2( 10, 10 ) );
+  QgsPolygonV2* polygon2 = new QgsPolygonV2();
+  polygon2->setExteriorRing( outerRing2 );
+
+  QgsLineStringV2* innerRing2 = new QgsLineStringV2();
+  innerRing2->setPoints( QList<QgsPointV2>() << QgsPointV2( 14, 14 ) << QgsPointV2( 14, 16 ) << QgsPointV2( 16, 16 ) << QgsPointV2( 16, 14 ) << QgsPointV2( 14, 14 ) );
+  polygon2->setInteriorRings( QList<QgsCurveV2*>() << innerRing2 );
+
+  QgsMultiPolygonV2 mpg;
+  mpg.addGeometry( polygon1 );
+  mpg.addGeometry( polygon2 );
+
+  QList<QgsLineStringV2*> linestrings = QgsGeometryUtils::extractLineStrings( &mpg );
+  QCOMPARE( linestrings.count(), 3 );
+  qDeleteAll( linestrings );
+}
 
 void TestQgsGeometryUtils::testLeftOfLine_data()
 {

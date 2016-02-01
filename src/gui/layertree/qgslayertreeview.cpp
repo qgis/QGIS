@@ -38,6 +38,7 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   setExpandsOnDoubleClick( false ); // normally used for other actions
 
   setSelectionMode( ExtendedSelection );
+  setDefaultDropAction( Qt::MoveAction );
 
   connect( this, SIGNAL( collapsed( QModelIndex ) ), this, SLOT( updateExpandedStateToNode( QModelIndex ) ) );
   connect( this, SIGNAL( expanded( QModelIndex ) ), this, SLOT( updateExpandedStateToNode( QModelIndex ) ) );

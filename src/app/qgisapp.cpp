@@ -916,7 +916,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   if ( settings.value( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), true ).toBool() )
   {
     mSplash->hide();
-    QgsTipGui myTip;
+    QgsTipGui myTip( this );
     myTip.exec();
   }
   else
@@ -1385,6 +1385,8 @@ void QgisApp::createActions()
   connect( mActionSelectFreehand, SIGNAL( triggered() ), this, SLOT( selectByFreehand() ) );
   connect( mActionSelectRadius, SIGNAL( triggered() ), this, SLOT( selectByRadius() ) );
   connect( mActionDeselectAll, SIGNAL( triggered() ), this, SLOT( deselectAll() ) );
+  connect( mActionSelectAll, SIGNAL( triggered() ), this, SLOT( selectAll() ) );
+  connect( mActionInvertSelection, SIGNAL( triggered() ), this, SLOT( invertSelection() ) );
   connect( mActionSelectByExpression, SIGNAL( triggered() ), this, SLOT( selectByExpression() ) );
   connect( mActionIdentify, SIGNAL( triggered() ), this, SLOT( identify() ) );
   connect( mActionFeatureAction, SIGNAL( triggered() ), this, SLOT( doFeatureAction() ) );
@@ -1630,6 +1632,8 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionSelectFreehand );
   mMapToolGroup->addAction( mActionSelectRadius );
   mMapToolGroup->addAction( mActionDeselectAll );
+  mMapToolGroup->addAction( mActionSelectAll );
+  mMapToolGroup->addAction( mActionInvertSelection );
   mMapToolGroup->addAction( mActionMeasure );
   mMapToolGroup->addAction( mActionMeasureArea );
   mMapToolGroup->addAction( mActionMeasureAngle );
@@ -1840,14 +1844,25 @@ void QgisApp::createToolBars()
 
   mToolbarMenu->addActions( toolbarMenuActions );
 
-  // select tool button
+  // selection tool button
 
   QToolButton *bt = new QToolButton( mAttributesToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   QList<QAction*> selectActions;
-  selectActions << mActionSelectFeatures << mActionSelectPolygon
-  << mActionSelectFreehand << mActionSelectRadius;
+  selectActions << mActionDeselectAll << mActionSelectAll
+  << mActionInvertSelection << mActionSelectByExpression;
   bt->addActions( selectActions );
+  bt->setDefaultAction( mActionDeselectAll );
+  QAction* selectionAction = mAttributesToolBar->insertWidget( mActionOpenTable, bt );
+
+  // select tool button
+
+  bt = new QToolButton( mAttributesToolBar );
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  QList<QAction*> selectionActions;
+  selectionActions << mActionSelectFeatures << mActionSelectPolygon
+  << mActionSelectFreehand << mActionSelectRadius;
+  bt->addActions( selectionActions );
 
   QAction* defSelectAction = mActionSelectFeatures;
   switch ( settings.value( "/UI/selectTool", 0 ).toInt() )
@@ -1869,7 +1884,7 @@ void QgisApp::createToolBars()
       break;
   }
   bt->setDefaultAction( defSelectAction );
-  QAction* selectAction = mAttributesToolBar->insertWidget( mActionDeselectAll, bt );
+  QAction* selectAction = mAttributesToolBar->insertWidget( selectionAction, bt );
   selectAction->setObjectName( "ActionSelect" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
@@ -2303,6 +2318,8 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionSelectFreehand->setIcon( QgsApplication::getThemeIcon( "/mActionSelectFreehand.svg" ) );
   mActionSelectRadius->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRadius.svg" ) );
   mActionDeselectAll->setIcon( QgsApplication::getThemeIcon( "/mActionDeselectAll.svg" ) );
+  mActionSelectAll->setIcon( QgsApplication::getThemeIcon( "/mActionSelectAll.png" ) );
+  mActionInvertSelection->setIcon( QgsApplication::getThemeIcon( "/mActionInvertSelection.png" ) );
   mActionSelectByExpression->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
   mActionOpenTable->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ) );
   mActionOpenFieldCalc->setIcon( QgsApplication::getThemeIcon( "/mActionCalculateField.png" ) );
@@ -4332,12 +4349,46 @@ void QgisApp::showRasterCalculator()
 
     QProgressDialog p( tr( "Calculating..." ), tr( "Abort..." ), 0, 0 );
     p.setWindowModality( Qt::WindowModal );
-    if ( rc.processCalculation( &p ) == 0 )
+    QgsRasterCalculator::Result res = static_cast< QgsRasterCalculator::Result >( rc.processCalculation( &p ) );
+    switch ( res )
     {
-      if ( d.addLayerToProject() )
-      {
-        addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).baseName() );
-      }
+      case QgsRasterCalculator::Success:
+        if ( d.addLayerToProject() )
+        {
+          addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).baseName() );
+        }
+        messageBar()->pushMessage( tr( "Raster calculator" ),
+                                   tr( "Calculation complete." ),
+                                   QgsMessageBar::INFO, messageTimeout() );
+        break;
+
+      case QgsRasterCalculator::CreateOutputError:
+        messageBar()->pushMessage( tr( "Raster calculator" ),
+                                   tr( "Could not create destination file." ),
+                                   QgsMessageBar::CRITICAL );
+        break;
+
+      case QgsRasterCalculator::InputLayerError:
+        messageBar()->pushMessage( tr( "Raster calculator" ),
+                                   tr( "Could not read input layer." ),
+                                   QgsMessageBar::CRITICAL );
+        break;
+
+      case QgsRasterCalculator::Cancelled:
+        break;
+
+      case QgsRasterCalculator::ParserError:
+        messageBar()->pushMessage( tr( "Raster calculator" ),
+                                   tr( "Could not parse raster formula." ),
+                                   QgsMessageBar::CRITICAL );
+        break;
+
+      case QgsRasterCalculator::MemoryError:
+        messageBar()->pushMessage( tr( "Raster calculator" ),
+                                   tr( "Insufficient memory available for operation." ),
+                                   QgsMessageBar::CRITICAL );
+        break;
+
     }
   }
 }
@@ -5467,7 +5518,7 @@ void QgisApp::fieldCalculator()
     return;
   }
 
-  QgsFieldCalculator calc( myLayer );
+  QgsFieldCalculator calc( myLayer, this );
   if ( calc.exec() )
   {
     mMapCanvas->refresh();
@@ -6663,6 +6714,56 @@ void QgisApp::deselectAll()
 
     vl->removeSelection();
   }
+
+  // Turn on rendering (if it was on previously)
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( true );
+}
+
+void QgisApp::invertSelection()
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+  if ( !vlayer )
+  {
+    messageBar()->pushMessage(
+      tr( "No active vector layer" ),
+      tr( "To invert selection, choose a vector layer in the legend" ),
+      QgsMessageBar::INFO,
+      messageTimeout() );
+    return;
+  }
+
+  // Turn off rendering to improve speed.
+  bool renderFlagState = mMapCanvas->renderFlag();
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( false );
+
+  vlayer->invertSelection();
+
+  // Turn on rendering (if it was on previously)
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( true );
+}
+
+void QgisApp::selectAll()
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+  if ( !vlayer )
+  {
+    messageBar()->pushMessage(
+      tr( "No active vector layer" ),
+      tr( "To select all, choose a vector layer in the legend" ),
+      QgsMessageBar::INFO,
+      messageTimeout() );
+    return;
+  }
+
+  // Turn off rendering to improve speed.
+  bool renderFlagState = mMapCanvas->renderFlag();
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( false );
+
+  vlayer->selectAll();
 
   // Turn on rendering (if it was on previously)
   if ( renderFlagState )
@@ -9797,6 +9898,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionSelectByExpression->setEnabled( false );
     mActionLabeling->setEnabled( false );
     mActionOpenTable->setEnabled( false );
+    mActionSelectAll->setEnabled( false );
+    mActionInvertSelection->setEnabled( false );
     mActionOpenFieldCalc->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
     mActionToggleEditing->setChecked( false );
@@ -9893,6 +9996,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionIdentify->setEnabled( true );
     mActionSelectByExpression->setEnabled( true );
     mActionOpenTable->setEnabled( true );
+    mActionSelectAll->setEnabled( true );
+    mActionInvertSelection->setEnabled( true );
     mActionSaveLayerDefinition->setEnabled( true );
     mActionLayerSaveAs->setEnabled( true );
     mActionCopyFeatures->setEnabled( layerHasSelection );
@@ -10067,6 +10172,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionSelectRadius->setEnabled( false );
     mActionZoomActualSize->setEnabled( true );
     mActionOpenTable->setEnabled( false );
+    mActionSelectAll->setEnabled( false );
+    mActionInvertSelection->setEnabled( false );
+    mActionSelectByExpression->setEnabled( false );
     mActionOpenFieldCalc->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
     mActionToggleEditing->setChecked( false );

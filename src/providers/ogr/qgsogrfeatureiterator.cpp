@@ -295,12 +295,15 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
         break;
       case QVariant::Date:
       case QVariant::DateTime:
+      case QVariant::Time:
       {
         int year, month, day, hour, minute, second, tzf;
 
         OGR_F_GetFieldAsDateTime( ogrFet, attindex, &year, &month, &day, &hour, &minute, &second, &tzf );
         if ( mSource->mFields.at( attindex ).type() == QVariant::Date )
           value = QDate( year, month, day );
+        else if ( mSource->mFields.at( attindex ).type() == QVariant::Time )
+          value = QTime( hour, minute, second );
         else
           value = QDateTime( QDate( year, month, day ), QTime( hour, minute, second ) );
       }

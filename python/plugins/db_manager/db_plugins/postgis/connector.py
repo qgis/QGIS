@@ -311,7 +311,7 @@ class PostGisDBConnector(DBConnector):
 
         # get all tables and views
         sql = u"""SELECT
-                                                cla.relname, nsp.nspname, cla.relkind = 'v' OR cla.relkind = 'm',
+                                                cla.relname, nsp.nspname, cla.relkind,
                                                 pg_get_userbyid(relowner), reltuples, relpages,
                                                 pg_catalog.obj_description(cla.oid)
                                         FROM pg_class AS cla
@@ -367,7 +367,7 @@ class PostGisDBConnector(DBConnector):
 
         # discovery of all tables and whether they contain a geometry column
         sql = u"""SELECT
-                                                cla.relname, nsp.nspname, cla.relkind = 'v' OR cla.relkind = 'm',
+                                                cla.relname, nsp.nspname, cla.relkind,
                                                 pg_get_userbyid(relowner), cla.reltuples, cla.relpages,
                                                 pg_catalog.obj_description(cla.oid),
                                                 """ + geometry_fields_select + """
@@ -439,7 +439,7 @@ class PostGisDBConnector(DBConnector):
 
         # discovery of all tables and whether they contain a raster column
         sql = u"""SELECT
-                                                cla.relname, nsp.nspname, cla.relkind = 'v' OR cla.relkind = 'm',
+                                                cla.relname, nsp.nspname, cla.relkind,
                                                 pg_get_userbyid(relowner), cla.reltuples, cla.relpages,
                                                 pg_catalog.obj_description(cla.oid),
                                                 """ + raster_fields_select + """
@@ -794,8 +794,8 @@ class PostGisDBConnector(DBConnector):
     def createSpatialView(self, view, query):
         self.createView(view, query)
 
-    def deleteView(self, view):
-        sql = u"DROP VIEW %s" % self.quoteId(view)
+    def deleteView(self, view, isMaterialized=False):
+        sql = u"DROP %s VIEW %s" % ('MATERIALIZED' if isMaterialized else '', self.quoteId(view))
         self._execute_and_commit(sql)
 
     def renameView(self, view, new_name):

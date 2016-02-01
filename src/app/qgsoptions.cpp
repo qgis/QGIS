@@ -89,7 +89,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
 
   connect( cmbIconSize, SIGNAL( activated( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
   connect( cmbIconSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
-  connect( cmbIconSize, SIGNAL( textChanged( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
+  connect( cmbIconSize, SIGNAL( editTextChanged( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
 
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
   connect( this, SIGNAL( rejected() ), this, SLOT( rejectOptions() ) );

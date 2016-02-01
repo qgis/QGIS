@@ -42,6 +42,10 @@ CREATE TABLE qgis_test."someData" (
     geom public.geometry(Point,4326)
 );
 
+CREATE TABLE qgis_test."some_poly_data" (
+    pk SERIAL NOT NULL,
+    geom public.geometry(Polygon,4326)
+);
 
 --
 -- TOC entry 4068 (class 0 OID 377761)
@@ -57,6 +61,12 @@ INSERT INTO qgis_test."someData" (pk, cnt, name, name2, num_char, geom) VALUES
 (4,  400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')
 ;
 
+INSERT INTO qgis_test."some_poly_data" (pk, geom) VALUES
+(1, ST_GeomFromText('Polygon ((-69.0 81.4, -69.0 80.2, -73.7 80.2, -73.7 76.3, -74.9 76.3, -74.9 81.4, -69.0 81.4))', 4326) ),
+(2, ST_GeomFromText('Polygon ((-67.6 81.2, -66.3 81.2, -66.3 76.9, -67.6 76.9, -67.6 81.2))', 4326) ),
+(3, ST_GeomFromText('Polygon ((-68.4 75.8, -67.5 72.6, -68.6 73.7, -70.2 72.9, -68.4 75.8))', 4326) ),
+(4, NULL)
+;
 
 --
 -- TOC entry 3953 (class 2606 OID 377768)
@@ -72,6 +82,15 @@ ALTER TABLE ONLY qgis_test."someData"
 --
 -- PostgreSQL database dump complete
 --
+
+CREATE TABLE qgis_test.date_times(
+       id int,
+       date_field date,
+       time_field time,
+       datetime_field timestamp without time zone
+);
+
+INSERT INTO qgis_test.date_times values (1, '2004-03-04'::date, '13:41:52'::time, '2004-03-04 13:41:52'::timestamp without time zone );
 
 CREATE TABLE qgis_test.p2d(
        id int,

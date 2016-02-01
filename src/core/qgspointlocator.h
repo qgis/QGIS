@@ -57,6 +57,19 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     ~QgsPointLocator();
 
+    //! Get associated layer
+    //! @note added in QGIS 2.14
+    QgsVectorLayer* layer() const { return mLayer; }
+    //! Get destination CRS - may be null if not doing OTF reprojection
+    //! @note added in QGIS 2.14
+    const QgsCoordinateReferenceSystem* destCRS() const;
+    //! Get extent of the area point locator covers - if null then it caches the whole layer
+    //! @note added in QGIS 2.14
+    const QgsRectangle* extent() const { return mExtent; }
+    //! Configure extent - if not null, it will index only that area
+    //! @note added in QGIS 2.14
+    void setExtent( const QgsRectangle* extent );
+
     enum Type
     {
       Invalid = 0,
@@ -163,6 +176,11 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! find out if the point is in any polygons
     MatchList pointInPolygon( const QgsPoint& point );
 
+    //
+
+    //! Return how many geometries are cached in the index
+    //! @note added in QGIS 2.14
+    int cachedGeometryCount() const { return mGeoms.count(); }
 
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );

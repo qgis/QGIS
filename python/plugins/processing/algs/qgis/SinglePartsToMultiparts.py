@@ -93,7 +93,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
                 outFeat.setAttributes(attrs)
                 outGeom = QgsGeometry(self.convertGeometry(multi_feature,
-                                      vType))
+                                                           vType))
                 outFeat.setGeometry(outGeom)
                 writer.addFeature(outFeat)
 

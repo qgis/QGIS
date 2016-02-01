@@ -762,7 +762,7 @@ void QgsFieldsProperties::on_mCalculateFieldButton_clicked()
     return;
   }
 
-  QgsFieldCalculator calc( mLayer );
+  QgsFieldCalculator calc( mLayer, this );
   calc.exec();
 }
 

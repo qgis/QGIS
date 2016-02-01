@@ -915,7 +915,7 @@ void QgsLayerTreeModel::recursivelyEmitDataChanged( const QModelIndex& idx )
 
 Qt::DropActions QgsLayerTreeModel::supportedDropActions() const
 {
-  return Qt::MoveAction;
+  return Qt::CopyAction | Qt::MoveAction;
 }
 
 QStringList QgsLayerTreeModel::mimeTypes() const
@@ -1336,6 +1336,11 @@ QIcon QgsLayerTreeModel::legendIconEmbeddedInParent( QgsLayerTreeLayer* nodeLaye
 QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::layerLegendNodes( QgsLayerTreeLayer* nodeLayer )
 {
   return mLegend.value( nodeLayer ).activeNodes;
+}
+
+QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::layerOriginalLegendNodes( QgsLayerTreeLayer* nodeLayer )
+{
+  return mLegend.value( nodeLayer ).originalNodes;
 }
 
 QgsLayerTreeModelLegendNode* QgsLayerTreeModel::findLegendNode( const QString& layerId, const QString& ruleKey ) const

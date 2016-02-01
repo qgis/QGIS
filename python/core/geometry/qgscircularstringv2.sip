@@ -29,22 +29,51 @@ class QgsCircularStringV2: public QgsCurveV2
     QString asJSON( int precision = 17 ) const;
 
     int numPoints() const;
+
+    /** Returns the point at index i within the circular string.
+     */
     QgsPointV2 pointN( int i ) const;
+
+    /**
+     * @copydoc QgsCurveV2::points()
+     */
     void points( QList<QgsPointV2>& pts ) const;
+
+    /** Sets the circular string's points
+     */
     void setPoints( const QList<QgsPointV2>& points );
 
-
-    //curve interface
+    /**
+     * @copydoc QgsAbstractGeometryV2::length()
+     */
     virtual double length() const;
+
+    /**
+     * @copydoc QgsCurveV2::startPoint()
+     */
     virtual QgsPointV2 startPoint() const;
+    /**
+     * @copydoc QgsCurveV2::endPoint()
+     */
     virtual QgsPointV2 endPoint() const;
+    /**
+     * @copydoc QgsCurveV2::curveToLine()
+     */
     virtual QgsLineStringV2* curveToLine() const;
 
     void draw( QPainter& p ) const;
+
+    /** Transforms the geometry using a coordinate transform
+     * @param ct coordinate transform
+     * @param d transformation direction
+     */
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
     void transform( const QTransform& t );
-    //void clip( const QgsRectangle& rect );
     void addToPainterPath( QPainterPath& path ) const;
+
+    /**
+     * @copydoc QgsCurveV2::drawAsPolygon()
+     */
     void drawAsPolygon( QPainter& p ) const;
 
     virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex );
@@ -52,10 +81,19 @@ class QgsCircularStringV2: public QgsCurveV2
     virtual bool deleteVertex( const QgsVertexId& position );
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
+    /**
+     * @copydoc QgsCurveV2::pointAt()
+     */
     bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const;
 
+    /**
+     * @copydoc QgsCurveV2::sumUpArea()
+     */
     void sumUpArea( double& sum ) const;
 
+    /**
+     * @copydoc QgsAbstractGeometryV2::hasCurvedSegments()
+     */
     bool hasCurvedSegments() const;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.

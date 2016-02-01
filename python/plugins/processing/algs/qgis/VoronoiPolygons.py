@@ -93,7 +93,7 @@ class VoronoiPolygons(GeoAlgorithm):
         uniqueSet = Set(item for item in pts)
         ids = [pts.index(item) for item in uniqueSet]
         sl = voronoi.SiteList([voronoi.Site(i[0], i[1], sitenum=j) for (j,
-                              i) in enumerate(uniqueSet)])
+                                                                        i) in enumerate(uniqueSet)])
         voronoi.voronoi(sl, c)
         inFeat = QgsFeature()
 
@@ -223,9 +223,9 @@ class VoronoiPolygons(GeoAlgorithm):
                 )
             if x1 or x2 or y1 or y2:
                 lines.append(QgsPoint(x1 + extent.xMinimum(), y1
-                             + extent.yMinimum()))
+                                      + extent.yMinimum()))
                 lines.append(QgsPoint(x2 + extent.xMinimum(), y2
-                             + extent.yMinimum()))
+                                      + extent.yMinimum()))
                 if 0 - exX in (x1, x2):
                     hasXMin = True
                 if 0 - exY in (y1, y2):
@@ -237,15 +237,15 @@ class VoronoiPolygons(GeoAlgorithm):
         if hasXMin:
             if hasYMax:
                 lines.append(QgsPoint(extent.xMinimum() - exX, height
-                             + extent.yMinimum() + exY))
+                                      + extent.yMinimum() + exY))
             if hasYMin:
                 lines.append(QgsPoint(extent.xMinimum() - exX,
-                             extent.yMinimum() - exY))
+                                      extent.yMinimum() - exY))
         if hasXMax:
             if hasYMax:
                 lines.append(QgsPoint(width + extent.xMinimum() + exX, height
-                             + extent.yMinimum() + exY))
+                                      + extent.yMinimum() + exY))
             if hasYMin:
                 lines.append(QgsPoint(width + extent.xMinimum() + exX,
-                             extent.yMinimum() - exY))
+                                      extent.yMinimum() - exY))
         return lines

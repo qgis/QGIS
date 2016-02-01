@@ -161,8 +161,6 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 laszip(), lasindex(), lasmerge(), las2las_filter(), las2las_project(),
                 las2las_transform(), lasquery()
             ]
-        for alg in lastools:
-            alg.group = 'LAStools'
         self.algs.extend(lastools)
 
         # LAStools Production for processing folders of files
@@ -181,8 +179,6 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 laszipPro(), lasindexPro(), lasinfoPro(), las2lasPro_filter(), las2lasPro_project(),
                 las2lasPro_transform(), txt2lasPro(), las2txtPro(), lasvalidatePro(), lasmergePro()
             ]
-        for alg in lastoolsPro:
-            alg.group = 'LAStools Production'
         self.algs.extend(lastoolsPro)
 
         # some examples for LAStools Pipelines
@@ -194,8 +190,6 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
             ]
         else:
             lastoolsPipe = []
-        for alg in lastoolsPipe:
-            alg.group = 'LAStools Pipelines'
         self.algs.extend(lastoolsPipe)
 
         # FUSION
@@ -206,10 +200,10 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 Catalog(), CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(),
                 Csv2Grid(), Cover(), FilterData(), GridMetrics(), GroundFilter(),
                 GridSurfaceCreate(), MergeData(), TinSurfaceCreate(), PolyClipData(),
-                                DTM2TIF(), FirstLastReturn(), ASCII2DTM()
+                DTM2TIF(), FirstLastReturn(), ASCII2DTM()
             ]
             for alg in fusiontools:
-                alg.group = 'Fusion'
+                alg.group, alg.i18n_group = alg.trAlgorithm('Fusion')
             self.algs.extend(fusiontools)
 
     def initializeSettings(self):
@@ -238,7 +232,6 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/tool.png')
-
 
     def getSupportedOutputTableExtensions(self):
         return ['csv']

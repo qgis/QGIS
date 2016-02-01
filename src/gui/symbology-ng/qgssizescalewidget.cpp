@@ -122,10 +122,10 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   if ( widget->layer() )
     expContext << QgsExpressionContextUtils::layerScope( widget->layer() );
 
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( "geometry_part_count", 1, true ) );
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( "geometry_part_num", 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1, true ) );
 
-  expContext.setHighlightedVariables( QStringList() << "geometry_part_num" );
+  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM );
 
   return expContext;
 }

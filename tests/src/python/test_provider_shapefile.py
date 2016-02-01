@@ -43,11 +43,17 @@ class TestPyQgsShapefileProvider(TestCase, ProviderTestCase):
         for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
             shutil.copy(os.path.join(srcpath, file), cls.basetestpath)
             shutil.copy(os.path.join(srcpath, file), cls.repackfilepath)
+        for file in glob.glob(os.path.join(srcpath, 'shapefile_poly.*')):
+            shutil.copy(os.path.join(srcpath, file), cls.basetestpath)
         cls.basetestfile = os.path.join(cls.basetestpath, 'shapefile.shp')
         cls.repackfile = os.path.join(cls.repackfilepath, 'shapefile.shp')
+        cls.basetestpolyfile = os.path.join(cls.basetestpath, 'shapefile_poly.shp')
         cls.vl = QgsVectorLayer(u'{}|layerid=0'.format(cls.basetestfile), u'test', u'ogr')
         assert (cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
+        cls.vl_poly = QgsVectorLayer(u'{}|layerid=0'.format(cls.basetestpolyfile), u'test', u'ogr')
+        assert (cls.vl_poly.isValid())
+        cls.poly_provider = cls.vl_poly.dataProvider()
 
     @classmethod
     def tearDownClass(cls):

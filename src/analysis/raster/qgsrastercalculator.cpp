@@ -69,7 +69,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
   if ( !calcNode )
   {
     //error
-    return 4;
+    return static_cast<int>( ParserError );
   }
 
   QMap< QString, QgsRasterBlock* > inputBlocks;
@@ -78,7 +78,9 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
   {
     if ( !it->raster ) // no raster layer in entry
     {
-      return 2;
+      delete calcNode;
+      qDeleteAll( inputBlocks );
+      return static_cast< int >( InputLayerError );
     }
 
     QgsRasterBlock* block = nullptr;
@@ -96,6 +98,13 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     {
       block = it->raster->dataProvider()->block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows );
     }
+    if ( block->isEmpty() )
+    {
+      delete block;
+      delete calcNode;
+      qDeleteAll( inputBlocks );
+      return static_cast<int>( MemoryError );
+    }
     inputBlocks.insert( it->ref, block );
   }
 
@@ -103,7 +112,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
   GDALDriverH outputDriver = openOutputDriver();
   if ( !outputDriver )
   {
-    return 1;
+    return static_cast< int >( CreateOutputError );
   }
 
   GDALDatasetH outputDataset = openOutputFile( outputDriver );
@@ -169,11 +178,11 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
   {
     //delete the dataset without closing (because it is faster)
     GDALDeleteDataset( outputDriver, TO8F( mOutputFile ) );
-    return 3;
+    return static_cast< int >( Cancelled );
   }
   GDALClose( outputDataset );
 
-  return 0;
+  return static_cast< int >( Success );
 }
 
 QgsRasterCalculator::QgsRasterCalculator()

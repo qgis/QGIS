@@ -20,8 +20,10 @@ QGIS_BUILDDIR ?= debian/build
 
 QGIS_VERSION=$(shell dpkg-parsechangelog | sed -ne 's/^Version: \([0-9]\+:\)\?\([^+-]\+\).*$$/\2/p')
 
-ifeq (,$(DISTRIBUTION))
+ifeq (,$(DIST))
 	DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
+else
+	DISTRIBUTION := $(DIST)
 endif
 
 ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
@@ -106,7 +108,18 @@ ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty utopic vivid wily si
 endif
 
 ifneq (,$(WITH_ORACLE))
-	CMAKE_OPTS += -DWITH_ORACLE=TRUE
+ifeq ($(DEB_BUILD_ARCH),amd64)
+	CMAKE_OPTS += \
+		-DWITH_ORACLE=TRUE \
+		-DORACLE_INCLUDEDIR=/usr/include/oracle/12.1/client64/ \
+		-DORACLE_LIBDIR=/usr/lib/oracle/12.1/client64/lib/
+endif
+ifeq ($(DEB_BUILD_ARCH),i386)
+	CMAKE_OPTS += \
+		-DWITH_ORACLE=TRUE \
+		-DORACLE_INCLUDEDIR=/usr/include/oracle/12.1/client/ \
+		-DORACLE_LIBDIR=/usr/lib/oracle/12.1/client/lib/
+endif
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"sid stretch jessie"))

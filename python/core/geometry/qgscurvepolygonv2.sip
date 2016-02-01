@@ -47,13 +47,18 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     */
     virtual void setExteriorRing( QgsCurveV2* ring /Transfer/ );
 
-    /** Sets interior rings (takes ownership)*/
+    /** Sets all interior rings (takes ownership)*/
     void setInteriorRings( const QList<QgsCurveV2*>& rings );
+    /** Adds an interior ring to the geometry (takes ownership)*/
     virtual void addInteriorRing( QgsCurveV2* ring /Transfer/ );
     /** Removes ring. Exterior ring is 0, first interior ring 1, ...*/
     bool removeInteriorRing( int nr );
 
     virtual void draw( QPainter& p ) const;
+    /** Transforms the geometry using a coordinate transform
+     * @param ct coordinate transform
+       @param d transformation direction
+     */
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
     void transform( const QTransform& t );
 
@@ -73,9 +78,10 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
         @return rotation in radians, clockwise from north*/
     double vertexAngle( const QgsVertexId& vertex ) const;
 
-    virtual int vertexCount(int part = 0, int ring = 0) const;
-    virtual int ringCount(int part = 0) const;
+    virtual int vertexCount( int /*part*/ = 0, int ring = 0) const;
+    virtual int ringCount( int /*part*/ = 0 ) const;
     virtual int partCount() const;
+    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const;
 
     virtual bool addZValue( double zValue = 0 );
     virtual bool addMValue( double mValue = 0 );
