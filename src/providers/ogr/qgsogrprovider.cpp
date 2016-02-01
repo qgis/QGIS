@@ -1558,6 +1558,12 @@ int QgsOgrProvider::capabilities() const
       }
     }
 
+    /* Curve geometries are available in some drivers starting with GDAL 2.0 */
+    if ( OGR_L_TestCapability( ogrLayer, "CurveGeometries" ) )
+    {
+      ability |= CircularGeometries;
+    }
+
     // supports geometry simplification on provider side
 #if defined(GDAL_VERSION_NUM) && defined(GDAL_COMPUTE_VERSION)
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
