@@ -455,10 +455,13 @@
                     </item>
                    </widget>
                   </item>
-                  <item row="4" column="0" colspan="2">
+                  <item row="4" column="0" colspan="4">
                    <widget class="QCheckBox" name="mMapTileRenderingCheckBox">
+                    <property name="toolTip">
+                     <string>Checking this setting avoids visible edge artefacts when rendering this project as seperate map tiles. Rendering performance will be degraded.</string>
+                    </property>
                     <property name="text">
-                     <string>Render  map tile</string>
+                     <string>Avoid artefacts when project is rendered as map tiles (degrades performance)</string>
                     </property>
                    </widget>
                   </item>
@@ -2654,6 +2657,7 @@
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cbxAbsolutePath</tabstop>
+  <tabstop>mMapTileRenderingCheckBox</tabstop>
   <tabstop>cmbEllipsoid</tabstop>
   <tabstop>leSemiMajor</tabstop>
   <tabstop>leSemiMinor</tabstop>
@@ -2745,6 +2749,17 @@
   <tabstop>mWCSUrlLineEdit</tabstop>
   <tabstop>grpPythonMacros</tabstop>
   <tabstop>scrollArea_6</tabstop>
+  <tabstop>mWMSName</tabstop>
+  <tabstop>mWMSInspire</tabstop>
+  <tabstop>mWMSInspireLanguage</tabstop>
+  <tabstop>mWMSInspireScenario2</tabstop>
+  <tabstop>mWMSInspireTemporalReference</tabstop>
+  <tabstop>mWMSInspireMetadataDate</tabstop>
+  <tabstop>mWMSInspireScenario1</tabstop>
+  <tabstop>mWMSInspireMetadataUrl</tabstop>
+  <tabstop>mWMSInspireMetadataUrlType</tabstop>
+  <tabstop>pbnLaunchOWSChecker</tabstop>
+  <tabstop>teOWSChecker</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
