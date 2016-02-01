@@ -26,6 +26,7 @@
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
+#include "qgscoordinateutils.h"
 
 
 QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
@@ -225,32 +226,8 @@ void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPoint & p )
     return;
   }
 
-  QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
-
-  QgsPoint geo = p;
-  if ( format == "DM" || format == "DMS" || format == "D" )
-  {
-    // degrees
-    if ( mMapCanvas->mapSettings().destinationCrs().isValid()
-         && !mMapCanvas->mapSettings().destinationCrs().geographicFlag() )
-    {
-      // need to transform to geographic coordinates
-      QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), QgsCoordinateReferenceSystem( GEOSRID ) );
-      geo = ct.transform( p );
-    }
-
-    if ( format == "DM" )
-      mLineEdit->setText( geo.toDegreesMinutes( mMousePrecisionDecimalPlaces ) );
-    else if ( format == "DMS" )
-      mLineEdit->setText( geo.toDegreesMinutesSeconds( mMousePrecisionDecimalPlaces ) );
-    else
-      mLineEdit->setText( geo.toString( mMousePrecisionDecimalPlaces ) );
-  }
-  else
-  {
-    // coordinates in map units
-    mLineEdit->setText( p.toString( mMousePrecisionDecimalPlaces ) );
-  }
+  mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( p, mMapCanvas->mapSettings().destinationCrs(),
+                      mMousePrecisionDecimalPlaces ) );
 
   if ( mLineEdit->width() > mLineEdit->minimumWidth() )
   {

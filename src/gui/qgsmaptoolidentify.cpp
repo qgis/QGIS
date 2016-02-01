@@ -38,6 +38,7 @@
 #include "qgsgeometryutils.h"
 #include "qgsgeometrycollectionv2.h"
 #include "qgscurvev2.h"
+#include "qgscoordinateutils.h"
 
 #include <QSettings>
 #include <QMouseEvent>
@@ -51,6 +52,7 @@ QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
     , mIdentifyMenu( new QgsIdentifyMenu( mCanvas ) )
     , mLastMapUnitsPerPixel( -1.0 )
+    , mCoordinatePrecision( 6 )
 {
   // set cursor
   QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
@@ -94,6 +96,8 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
   mLastPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
   mLastExtent = mCanvas->extent();
   mLastMapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
+
+  mCoordinatePrecision = QgsCoordinateUtils::calculateCoordinatePrecision( mLastMapUnitsPerPixel );
 
   if ( mode == DefaultQgsSetting )
   {
@@ -208,7 +212,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   QMap< QString, QString > commonDerivedAttributes;
 
-  commonDerivedAttributes.insert( tr( "(clicked coordinate)" ), point.toString() );
+  commonDerivedAttributes.insert( tr( "(clicked coordinate)" ), formatCoordinate( point ) );
 
   int featureCount = 0;
 
@@ -309,6 +313,12 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometryV2& g
     str = QLocale::system().toString( closestPoint.m(), 'g', 10 );
     derivedAttributes.insert( "Closest vertex M", str );
   }
+}
+
+QString QgsMapToolIdentify::formatCoordinate( const QgsPoint& canvasPoint ) const
+{
+  return QgsCoordinateUtils::formatCoordinateForProject( canvasPoint, mCanvas->mapSettings().destinationCrs(),
+         mCoordinatePrecision );
 }
 
 QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer, const QgsPoint& layerPoint )
@@ -506,7 +516,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     identifyResult = dprovider->identify( point, format, viewExtent, width, height );
   }
 
-  derivedAttributes.insert( tr( "(clicked coordinate)" ), point.toString() );
+  derivedAttributes.insert( tr( "(clicked coordinate)" ), formatCoordinate( pointInCanvasCrs ) );
 
   if ( identifyResult.isValid() )
   {

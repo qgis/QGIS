@@ -169,12 +169,16 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      */
     void closestVertexAttributes( const QgsAbstractGeometryV2& geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString >& derivedAttributes );
 
+    QString formatCoordinate( const QgsPoint& canvasPoint ) const;
+
     // Last point in canvas CRS
     QgsPoint mLastPoint;
 
     double mLastMapUnitsPerPixel;
 
     QgsRectangle mLastExtent;
+
+    int mCoordinatePrecision;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolIdentify::LayerType )
