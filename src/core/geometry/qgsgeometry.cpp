@@ -245,8 +245,17 @@ void QgsGeometry::fromWkb( unsigned char *wkb, int length )
     removeWkbGeos();
   }
   d->geometry = QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr( wkb, length ) );
-  d->mWkb = wkb;
-  d->mWkbSize = length;
+  if ( d->geometry )
+  {
+    d->mWkb = wkb;
+    d->mWkbSize = length;
+  }
+  else
+  {
+    delete [] wkb;
+    d->mWkb = nullptr;
+    d->mWkbSize = 0;
+  }
 }
 
 const unsigned char *QgsGeometry::asWkb() const
