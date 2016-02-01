@@ -99,6 +99,10 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     void on_mRemoveSelectionButton_clicked();
     /**
+     * Select all
+     */
+    void on_mSelectAllButton_clicked();
+    /**
      * Zooms to selected features
      */
     void on_mZoomMapToSelectedRowsButton_clicked();
