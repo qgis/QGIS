@@ -47,8 +47,8 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
     void addGeometryColumn( QgsDb2LayerProperty );
 
   public slots:
-    //void editConnection();
     void refreshConnection();
+    void editConnection();
     void deleteConnection();
     //void setAllowGeometrylessTables( bool allow );
 

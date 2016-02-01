@@ -30,8 +30,11 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connNa
     txtDriver->setText( settings.value( key + "/driver" ).toString() );
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
     txtUsername->setText( settings.value( key + "/username" ).toString() );
-
-    txtPassword->setText( settings.value( key + "/password" ).toString() );
+    if ( settings.value( key + "/savePassword" ).toString() == "true" )
+    {
+      txtPassword->setText( settings.value( key + "/password" ).toString() );
+      savePassword->setChecked( true );
+    }
     txtName->setText( connName );
     if ( settings.value( key + "/environment" ) == ENV_LUW )
       radioLuw->setDown( true );
@@ -75,7 +78,8 @@ void QgsDb2NewConnection::accept()
   settings.setValue( baseKey + "/driver", txtDriver->text() );
   settings.setValue( baseKey + "/database", txtDatabase->text() );
   settings.setValue( baseKey + "/username", txtUsername->text() );
-  settings.setValue( baseKey + "/password", txtPassword->text() );
+  settings.setValue( baseKey + "/password", savePassword->isChecked() ? txtPassword->text() : "" );
+  settings.setValue( baseKey + "/savePassword", savePassword->isChecked() ? "true" : "false" );
   if ( radioLuw->isChecked() )
     settings.setValue( baseKey + "/environment", ENV_LUW );
   else
