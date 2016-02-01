@@ -40,18 +40,18 @@ class CORE_EXPORT QgsWkbPtr
     unsigned char *mStart;
     unsigned char *mEnd;
 
-    void verify( int size ) const { if ( !mP || mP + size > mEnd ) throw QgsWkbException( "wkb access out of bounds" ); }
+    void verifyBound( int size ) const { if ( !mP || mP + size > mEnd ) throw QgsWkbException( "wkb access out of bounds" ); }
 
     template<typename T> void read( T& v ) const
     {
-      verify( sizeof v );
+      verifyBound( sizeof v );
       memcpy( &v, mP, sizeof v );
       mP += sizeof v;
     }
 
     template<typename T> void write( T& v ) const
     {
-      verify( sizeof v );
+      verifyBound( sizeof v );
       memcpy( mP, &v, sizeof v );
       mP += sizeof v;
     }
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsWkbPtr
     inline QgsWkbPtr &operator<<( const QgsWKBTypes::Type &v ) { write( v ); return *this; }
     inline QgsWkbPtr &operator<<( const QGis::WkbType &v ) { write( v ); return *this; }
 
-    inline void operator+=( int n ) { verify( n ); mP += n; }
+    inline void operator+=( int n ) { verifyBound( n ); mP += n; }
 
     inline operator unsigned char *() const { return mP; }
     inline int size() const { return mEnd -mStart; }
@@ -93,11 +93,11 @@ class CORE_EXPORT QgsConstWkbPtr
     unsigned char *mEnd;
     mutable bool mEndianSwap;
 
-    void verify( int size ) const { if ( !mP || mP + size > mEnd ) throw QgsWkbException( "wkb access out of bounds" ); }
+    void verifyBound( int size ) const { if ( !mP || mP + size > mEnd ) throw QgsWkbException( "wkb access out of bounds" ); }
 
     template<typename T> void read( T& v ) const
     {
-      verify( sizeof v );
+      verifyBound( sizeof v );
       memcpy( &v, mP, sizeof( v ) );
       mP += sizeof( v );
       if ( mEndianSwap )
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsConstWkbPtr
     inline const QgsConstWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; }
     inline const QgsConstWkbPtr &operator>>( char &v ) const { read( v ); return *this; }
 
-    inline void operator+=( int n ) { verify( n ); mP += n; }
+    inline void operator+=( int n ) { verifyBound( n ); mP += n; }
     inline void operator-=( int n ) { mP -= n; }
 
     inline operator const unsigned char *() const { return mP; }
