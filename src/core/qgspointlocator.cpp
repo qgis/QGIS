@@ -313,7 +313,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry* geom, co
 
   _CohenSutherland cs( rect );
 
-  QgsWkbPtr wkbPtr( wkb + 1 );
+  QgsWkbPtr wkbPtr( wkb + 1, geom->wkbSize() - 1 );
   QGis::WkbType wkbType;
   wkbPtr >> wkbType;
 

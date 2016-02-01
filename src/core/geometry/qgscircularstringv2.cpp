@@ -206,14 +206,14 @@ QList<QgsPointV2> QgsCircularStringV2::compassPointsOnSegment( double p1Angle, d
   return pointList;
 }
 
-bool QgsCircularStringV2::fromWkb( const unsigned char* wkb )
+bool QgsCircularStringV2::fromWkb( const unsigned char* wkb, int length )
 {
   if ( !wkb )
   {
     return false;
   }
 
-  QgsConstWkbPtr wkbPtr( wkb );
+  QgsConstWkbPtr wkbPtr( wkb, length );
   QgsWKBTypes::Type type = wkbPtr.readHeader();
   if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::CircularString )
   {
@@ -272,7 +272,7 @@ unsigned char* QgsCircularStringV2::asWkb( int& binarySize ) const
 {
   binarySize = wkbSize();
   unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr );
+  QgsWkbPtr wkb( geomPtr, binarySize );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   QList<QgsPointV2> pts;

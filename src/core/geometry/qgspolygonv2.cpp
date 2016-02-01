@@ -69,7 +69,7 @@ QgsPolygonV2* QgsPolygonV2::clone() const
   return new QgsPolygonV2( *this );
 }
 
-bool QgsPolygonV2::fromWkb( const unsigned char* wkb )
+bool QgsPolygonV2::fromWkb( const unsigned char* wkb, int length )
 {
   clear();
   if ( !wkb )
@@ -77,7 +77,7 @@ bool QgsPolygonV2::fromWkb( const unsigned char* wkb )
     return false;
   }
 
-  QgsConstWkbPtr wkbPtr( wkb );
+  QgsConstWkbPtr wkbPtr( wkb, length );
   QgsWKBTypes::Type type = wkbPtr.readHeader();
   if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::Polygon )
   {
@@ -149,7 +149,7 @@ unsigned char* QgsPolygonV2::asWkb( int& binarySize ) const
 {
   binarySize = wkbSize();
   unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr );
+  QgsWkbPtr wkb( geomPtr, binarySize );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << static_cast<quint32>(( nullptr != mExteriorRing ) + mInteriorRings.size() );

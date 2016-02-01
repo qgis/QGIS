@@ -44,7 +44,7 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
 
     virtual QgsRectangle calculateBoundingBox() const override;
 
-    virtual bool fromWkb( const unsigned char* wkb ) override;
+    virtual bool fromWkb( const unsigned char* wkb, int length ) override;
     virtual bool fromWkt( const QString& wkt ) override;
 
     int wkbSize() const override;

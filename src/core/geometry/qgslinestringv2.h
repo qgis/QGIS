@@ -139,7 +139,7 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     virtual QgsLineStringV2* clone() const override;
     virtual void clear() override;
 
-    virtual bool fromWkb( const unsigned char* wkb ) override;
+    virtual bool fromWkb( const unsigned char* wkb, int length ) override;
     virtual bool fromWkt( const QString& wkt ) override;
 
     int wkbSize() const override;

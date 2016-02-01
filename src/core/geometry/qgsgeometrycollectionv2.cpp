@@ -179,13 +179,13 @@ void QgsGeometryCollectionV2::draw( QPainter& p ) const
   }
 }
 
-bool QgsGeometryCollectionV2::fromWkb( const unsigned char * wkb )
+bool QgsGeometryCollectionV2::fromWkb( const unsigned char * wkb, int length )
 {
   if ( !wkb )
   {
     return false;
   }
-  QgsConstWkbPtr wkbPtr( wkb + 1 );
+  QgsConstWkbPtr wkbPtr( wkb + 1, length - 1 );
   //type
   wkbPtr >> mWkbType;
   int nGeometries = 0;
@@ -194,7 +194,7 @@ bool QgsGeometryCollectionV2::fromWkb( const unsigned char * wkb )
   QList<QgsAbstractGeometryV2*> geometryList;
   for ( int i = 0; i < nGeometries; ++i )
   {
-    QgsAbstractGeometryV2* geom = QgsGeometryFactory::geomFromWkb( wkbPtr );
+    QgsAbstractGeometryV2* geom = QgsGeometryFactory::geomFromWkb( wkbPtr, wkbPtr.bytesLeft() );
     if ( geom )
     {
       geometryList.append( geom );
@@ -237,7 +237,7 @@ unsigned char* QgsGeometryCollectionV2::asWkb( int& binarySize ) const
 {
   binarySize = wkbSize();
   unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr );
+  QgsWkbPtr wkb( geomPtr, binarySize );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << static_cast<quint32>( mGeometries.size() );

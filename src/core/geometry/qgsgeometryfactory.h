@@ -45,7 +45,7 @@ class CORE_EXPORT QgsGeometryFactory
   public:
     /** Construct geometry from a WKB string.
      */
-    static QgsAbstractGeometryV2* geomFromWkb( const unsigned char* wkb );
+    static QgsAbstractGeometryV2* geomFromWkb( const unsigned char* wkb, int length );
 
     /** Construct geometry from a WKT string.
      */

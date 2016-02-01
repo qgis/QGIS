@@ -29,7 +29,7 @@
 #include "qgsmultisurfacev2.h"
 #include "qgswkbtypes.h"
 
-QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( const unsigned char* wkb )
+QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( const unsigned char* wkb, int length )
 {
   if ( !wkb )
   {
@@ -45,7 +45,7 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( const unsigned char* wkb
 
   if ( geom )
   {
-    geom->fromWkb( wkb );
+    geom->fromWkb( wkb, length );
   }
   return geom;
 }

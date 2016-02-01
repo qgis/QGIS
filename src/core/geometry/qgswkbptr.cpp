@@ -14,9 +14,17 @@
  ***************************************************************************/
 #include "qgswkbptr.h"
 
+// @deprecated
 QgsConstWkbPtr::QgsConstWkbPtr( const unsigned char *p ): mEndianSwap( false )
 {
   mP = const_cast< unsigned char * >( p );
+  mE = std::numeric_limits<unsigned char *>::max();
+}
+
+QgsConstWkbPtr::QgsConstWkbPtr( const unsigned char *p, unsigned int l ): mEndianSwap( false )
+{
+  mP = const_cast< unsigned char * >( p );
+  mE = mP + l;
 }
 
 QgsWKBTypes::Type QgsConstWkbPtr::readHeader() const

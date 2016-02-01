@@ -529,7 +529,8 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, QGi
 }
 
 
-const unsigned char *QgsDistanceArea::measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr ) const
+const unsigned char *
+QgsDistanceArea::measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr ) const
 {
   if ( !feature )
   {
