@@ -51,6 +51,18 @@ class TestQgsMapToPixelGeometrySimplifier : public QObject
   public:
     TestQgsMapToPixelGeometrySimplifier();
 
+  private:
+    // Release return with delete []
+    unsigned char *
+    hex2bytes( const char *hex, int *size )
+    {
+      QByteArray ba = QByteArray::fromHex( hex );
+      unsigned char *out = new unsigned char[ba.size()];
+      memcpy( out, ba.data(), ba.size() );
+      *size = ba.size();
+      return out;
+    }
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -60,7 +72,7 @@ class TestQgsMapToPixelGeometrySimplifier : public QObject
     void testDefaultGeometry();
     void testLine1();
     void testIsGeneralizableByMapBoundingBox();
-    void testMismatchWKB();
+    void testWkbDimensionMismatch();
 
 };
 
@@ -147,9 +159,26 @@ TestQgsMapToPixelGeometrySimplifier::testIsGeneralizableByMapBoundingBox()
   QVERIFY( ! ret );
 }
 
-void TestQgsMapToPixelGeometrySimplifier::testMismatchWKB()
+void TestQgsMapToPixelGeometrySimplifier::testWkbDimensionMismatch()
 {
-  // TODO see http://hub.qgis.org/issues/12416
+  // 2D multilinestring containing 2 3DZ linestrings
+  // See http://hub.qgis.org/issues/12416
+  // NOTE: the first line needs to be 5 vertices or more, or
+  // simplification won't even be attempted
+  const char *hexwkb = "010500000002000000010200008005000000000000000000000000000000000000000000000000000000000000000000F03F000000000000F03F00000000000000000000000000000040000000000000000000000000000000000000000000000840000000000000F03F0000000000000000000000000000244000000000000000008DEDB5A0F7C6B0BE010200008002000000000000000000000000000000000000000000000000000000000000000000000000000000000000008DEDB5A0F7C6B03E";
+  int size;
+  unsigned char *wkb = hex2bytes( hexwkb, &size );
+  QgsGeometry g12416;
+  // NOTE: wkb onwership transferred to QgsGeometry
+  g12416.fromWkb( wkb, size );
+  QString wkt = g12416.exportToWkt();
+  QCOMPARE( wkt, QString( "MultiLineString ((0 0 0, 1 1 0, 2 0 0, 3 1 0, 10 0 -0.000001),(0 0 0, 0 0 0.000001))" ) );
+
+  int fl = QgsMapToPixelSimplifier::SimplifyGeometry;
+  int ret = QgsMapToPixelSimplifier::simplifyGeometry( &g12416, fl, 20.0 );
+  // NOTE: currently false due to thrown exception, but fixing the
+  //       simplification code might actually give a success
+  QVERIFY( ! ret );
 }
 
 QTEST_MAIN( TestQgsMapToPixelGeometrySimplifier )
