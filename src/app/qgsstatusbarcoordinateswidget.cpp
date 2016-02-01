@@ -225,18 +225,19 @@ void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPoint & p )
     return;
   }
 
-  if ( mMapCanvas->mapUnits() == QGis::Degrees )
-  {
-    if ( !mMapCanvas->mapSettings().destinationCrs().isValid() )
-      return;
+  QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
 
-    QgsPoint geo = p;
-    if ( !mMapCanvas->mapSettings().destinationCrs().geographicFlag() )
+  QgsPoint geo = p;
+  if ( format == "DM" || format == "DMS" || format == "D" )
+  {
+    // degrees
+    if ( mMapCanvas->mapSettings().destinationCrs().isValid()
+         && !mMapCanvas->mapSettings().destinationCrs().geographicFlag() )
     {
+      // need to transform to geographic coordinates
       QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), QgsCoordinateReferenceSystem( GEOSRID ) );
       geo = ct.transform( p );
     }
-    QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
 
     if ( format == "DM" )
       mLineEdit->setText( geo.toDegreesMinutes( mMousePrecisionDecimalPlaces ) );
@@ -247,6 +248,7 @@ void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPoint & p )
   }
   else
   {
+    // coordinates in map units
     mLineEdit->setText( p.toString( mMousePrecisionDecimalPlaces ) );
   }
 
