@@ -59,7 +59,6 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
     : mRef( 1 )
     , mCurrentUser( QString::null )
     , mHasSpatial( -1 )
-    , mMajorVersion( -1 )
 {
   QgsDebugMsg( QString( "New Oracle connection for " ) + uri.connectionInfo() );
 
@@ -772,21 +771,6 @@ QString QgsOracleConn::databaseName( QString database, QString host, QString por
   }
 
   return db;
-}
-
-int QgsOracleConn::majorVersion()
-{
-  if ( mMajorVersion == -1 )
-  {
-    QSqlQuery qry( mDatabase );
-    if ( exec( qry, "SELECT banner FROM v$version WHERE banner LIKE 'Oracle Database%'" ) && qry.next() )
-    {
-      QRegExp vers( "([0-9]+)\\.[0-9\\.]+[0-9]" );
-      if ( vers.indexIn( qry.value( 0 ).toString() ) >= 0 )
-        mMajorVersion = vers.cap( 1 ).toInt();
-    }
-  }
-  return mMajorVersion;
 }
 
 bool QgsOracleConn::hasSpatial()

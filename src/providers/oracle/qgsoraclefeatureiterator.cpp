@@ -148,27 +148,6 @@ bool QgsOracleFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
     return fetchFeature( f );
 }
 
-bool QgsOracleFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
-{
-  // setup simplification of geometries to fetch
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) &&
-       simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification &&
-       !simplifyMethod.forceLocalOptimization() )
-  {
-    QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
-
-    if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
-    {
-      return true;
-    }
-    else
-    {
-      QgsDebugMsg( QString( "Simplification method type (%1) is not recognised by OracleFeatureIterator" ).arg( methodType ) );
-    }
-  }
-  return QgsAbstractFeatureIterator::prepareSimplification( simplifyMethod );
-}
-
 bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
 {
   feature.setValid( false );
@@ -337,20 +316,7 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause )
 
     if (( mRequest.flags() & QgsFeatureRequest::NoGeometry ) == 0 && !mSource->mGeometryColumn.isNull() )
     {
-      if ( !mRequest.simplifyMethod().forceLocalOptimization() &&
-           mRequest.simplifyMethod().methodType() == QgsSimplifyMethod::OptimizeForRendering &&
-           QGis::flatType( QGis::singleType( mSource->mRequestedGeomType != QGis::WKBUnknown
-                                             ? mSource->mRequestedGeomType
-                                             : mSource->mDetectedGeomType ) ) != QGis::WKBPoint )
-      {
-        query += QString( "SDO_UTIL.SIMPLIFY( %1, %2 )" )
-                 .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) )
-                 .arg( mRequest.simplifyMethod().tolerance() * 0.7 ); //-> We use a smaller tolerance than pre-filtering to be on the safe side
-      }
-      else
-      {
-        query += QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn );
-      }
+      query += QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn );
       delim = ",";
     }
 
@@ -409,11 +375,6 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause )
   }
 
   return true;
-}
-
-bool QgsOracleFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
-{
-  return ( mConnection->majorVersion() > 10 || mConnection->hasSpatial() ) && methodType == QgsSimplifyMethod::OptimizeForRendering;
 }
 
 // -----------
