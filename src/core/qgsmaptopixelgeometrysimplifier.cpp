@@ -197,7 +197,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
       double x1, y1, x2, y2;
 
       checkPtr >> x1 >> y1;
-      checkPtr += skipZM + ( numPoints - 1 ) * ( 2 * sizeof( double ) + skipZM );
+      checkPtr += skipZM + ( numPoints - 2 ) * ( 2 * sizeof( double ) + skipZM );
       checkPtr >> x2 >> y2;
 
       isaLinearRing = qgsDoubleNear( x1, x2 ) && qgsDoubleNear( y1, y2 );
