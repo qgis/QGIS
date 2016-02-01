@@ -166,6 +166,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   updateTitle();
 
   mRemoveSelectionButton->setIcon( QgsApplication::getThemeIcon( "/mActionUnselectAttributes.png" ) );
+  mSelectAllButton->setIcon( QgsApplication::getThemeIcon( "/mActionSelectAll.png" ) );
   mSelectedToTopButton->setIcon( QgsApplication::getThemeIcon( "/mActionSelectedToTop.png" ) );
   mCopySelectedRowsButton->setIcon( QgsApplication::getThemeIcon( "/mActionCopySelected.png" ) );
   mZoomMapToSelectedRowsButton->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToSelected.svg" ) );
@@ -624,6 +625,11 @@ void QgsAttributeTableDialog::on_mInvertSelectionButton_clicked()
 void QgsAttributeTableDialog::on_mRemoveSelectionButton_clicked()
 {
   mLayer->removeSelection();
+}
+
+void QgsAttributeTableDialog::on_mSelectAllButton_clicked()
+{
+  mLayer->selectAll();
 }
 
 void QgsAttributeTableDialog::on_mDeleteSelectedButton_clicked()
