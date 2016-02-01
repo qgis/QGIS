@@ -28,6 +28,7 @@
 #include "qgsmultipolygonv2.h"
 #include "qgsmultisurfacev2.h"
 #include "qgswkbtypes.h"
+#include "qgslogger.h"
 
 QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr wkbPtr )
 {
@@ -43,7 +44,18 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr wkbPtr )
   geom = geomFromWkbType( type );
 
   if ( geom )
-    geom->fromWkb( wkbPtr );
+  {
+    try
+    {
+      geom->fromWkb( wkbPtr );
+    }
+    catch ( const QgsWkbException &e )
+    {
+      QgsDebugMsg( "WKB exception: " + e.what() );
+      delete geom;
+      geom = nullptr;
+    }
+  }
 
   return geom;
 }

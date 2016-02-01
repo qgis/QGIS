@@ -40,7 +40,7 @@ class CORE_EXPORT QgsWkbPtr
     unsigned char *mStart;
     unsigned char *mEnd;
 
-    void verify( int size ) const { Q_ASSERT( mP && mP + size <= mEnd ); if ( !mP || mP + size > mEnd ) throw QgsWkbException( "wkb access out of bounds" ); }
+    void verify( int size ) const { if ( !mP || mP + size > mEnd ) throw QgsWkbException( "wkb access out of bounds" ); }
 
     template<typename T> void read( T& v ) const
     {
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsConstWkbPtr
     unsigned char *mEnd;
     mutable bool mEndianSwap;
 
-    void verify( int size ) const { Q_ASSERT( mP && mP + size <= mEnd ); if ( !mP || mP + size > mEnd ) throw QgsWkbException( "wkb access out of bounds" ); }
+    void verify( int size ) const { if ( !mP || mP + size > mEnd ) throw QgsWkbException( "wkb access out of bounds" ); }
 
     template<typename T> void read( T& v ) const
     {
