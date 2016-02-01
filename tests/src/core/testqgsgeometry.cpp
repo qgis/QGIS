@@ -38,6 +38,17 @@
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
 
+// Release return with delete []
+unsigned char *
+hex2bytes( const char *hex, int *size )
+{
+  QByteArray ba = QByteArray::fromHex( hex );
+  unsigned char *out = new unsigned char[ba.size()];
+  memcpy( out, ba.data(), ba.size() );
+  *size = ba.size();
+  return out;
+}
+
 /** \ingroup UnitTests
  * This is a unit test for the different geometry operations on vector features.
  */
@@ -520,9 +531,20 @@ void TestQgsGeometry::pointV2()
   wkb = 0;
   QCOMPARE( p13.wkbType(), QgsWKBTypes::Unknown );
 
+  // 2D collection containing 2 3DZ linestrings
+  // See http://hub.qgis.org/issues/12416
+  //
+  const char *hexwkb = "010700000002000000010200008002000000000000000000000000000000000000000000000000000000000000000000000000000000000000008DEDB5A0F7C6B0BE010200008002000000000000000000000000000000000000000000000000000000000000000000000000000000000000008DEDB5A0F7C6B03E";
+  wkb = hex2bytes( hexwkb, &size );
+  QgsGeometry g12416;
+  // NOTE: wkb onwership transferred to QgsGeometry
+  g12416.fromWkb( wkb, size );
+  QString wkt = g12416.exportToWkt();
+  QCOMPARE( wkt, QString( "GeometryCollection (LineStringZ (0 0 0, 0 0 -0.000001),LineStringZ (0 0 0, 0 0 0.000001))" ) );
+
   //to/from WKT
   p13 = QgsPointV2( QgsWKBTypes::PointZM, 1.0, 2.0, 3.0, -4.0 );
-  QString wkt = p13.asWkt();
+  wkt = p13.asWkt();
   QVERIFY( !wkt.isEmpty() );
   QgsPointV2 p14;
   QVERIFY( p14.fromWkt( wkt ) );
