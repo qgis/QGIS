@@ -35,12 +35,10 @@ QgsWKBTypes::Type QgsConstWkbPtr::readHeader() const
 
   char wkbEndian;
   *this >> wkbEndian;
-  mEndianSwap = ( wkbEndian != QgsApplication::endian() );
+  mEndianSwap = wkbEndian != QgsApplication::endian();
 
   int wkbType;
   *this >> wkbType;
-  if ( mEndianSwap )
-    QgsApplication::endian_swap( wkbType );
 
   return static_cast<QgsWKBTypes::Type>( wkbType );
 }
