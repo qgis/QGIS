@@ -94,20 +94,25 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorJoinInfo& joinInfo )
 }
 
 
-void QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
+bool QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
 {
+  bool res = false;
   for ( int i = 0; i < mVectorJoins.size(); ++i )
   {
     if ( mVectorJoins.at( i ).joinLayerId == joinLayerId )
     {
       mVectorJoins.removeAt( i );
+      res = true;
     }
   }
 
   if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinLayerId ) ) )
+  {
     disconnect( vl, SIGNAL( updatedFields() ), this, SLOT( joinedLayerUpdatedFields() ) );
+  }
 
   emit joinedFieldsChanged();
+  return res;
 }
 
 void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )

@@ -12,8 +12,9 @@ class QgsVectorLayerJoinBuffer : QObject
       @return (since 2.6) whether the join was successfully added */
     bool addJoin( const QgsVectorJoinInfo& joinInfo );
 
-    /** Removes  a vector layer join*/
-    void removeJoin( const QString& joinLayerId );
+    /** Removes a vector layer join
+      @returns true if join was found and successfully removed */
+    bool removeJoin( const QString& joinLayerId );
 
     /** Updates field map with joined attributes
       @param fields map to append joined attributes
