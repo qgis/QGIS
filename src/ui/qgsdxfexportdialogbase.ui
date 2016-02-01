@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>394</width>
+    <width>402</width>
     <height>534</height>
    </rect>
   </property>
@@ -15,8 +15,8 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="2" column="1" colspan="2">
-    <widget class="QgsScaleWidget" name="mScaleWidget">
-     <property name="showCurrentScaleButton">
+    <widget class="QgsScaleWidget" name="mScaleWidget" native="true">
+     <property name="showCurrentScaleButton" stdset="0">
       <bool>true</bool>
      </property>
     </widget>
@@ -93,7 +93,7 @@
      <item row="0" column="2">
       <widget class="QPushButton" name="mUnSelectAllButton">
        <property name="text">
-        <string>Unselect all</string>
+        <string>Deselect all</string>
        </property>
       </widget>
      </item>

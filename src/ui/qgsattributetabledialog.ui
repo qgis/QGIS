@@ -14,7 +14,16 @@
    <string>Attribute Table</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <property name="spacing">
@@ -209,7 +218,7 @@
      <item>
       <widget class="QToolButton" name="mRemoveSelectionButton">
        <property name="toolTip">
-        <string>Unselect all (Ctrl+U)</string>
+        <string>Deselect all (Ctrl+Shift+A)</string>
        </property>
        <property name="text">
         <string/>
@@ -225,7 +234,7 @@
         </size>
        </property>
        <property name="shortcut">
-        <string>Ctrl+U</string>
+        <string>Ctrl+Shift+A</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
@@ -618,7 +627,16 @@
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item row="0" column="0">
@@ -727,7 +745,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText">
+       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
