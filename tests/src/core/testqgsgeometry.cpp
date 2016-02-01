@@ -3394,12 +3394,17 @@ void TestQgsGeometry::wkbInOut()
   unsigned char *wkb = hex2bytes( hexwkb, &size );
   QgsGeometry g14182;
   // NOTE: wkb onwership transferred to QgsGeometry
-  g14182.fromWkb( wkb, size );
-  //QList<QgsGeometry::Error> errors;
-  //g14182.validateGeometry(errors);
-  // Check with valgrind !
-  QString wkt = g14182.exportToWkt();
-  QCOMPARE( wkt, QString() );
+  bool success = false;
+  try
+  {
+    g14182.fromWkb( wkb, size );
+  }
+  catch ( const QgsWkbException& e )
+  {
+    // TODO: check actual message ?
+    success = true;
+  }
+  QVERIFY( success );
 
 }
 
