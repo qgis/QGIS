@@ -338,7 +338,7 @@ int QgsMapToolCapture::nextPoint( const QgsPoint& mapPoint, QgsPoint& layerPoint
   return 0;
 }
 
-int QgsMapToolCapture::nextPoint( const QPoint &p, QgsPoint &layerPoint, QgsPoint &mapPoint )
+int QgsMapToolCapture::nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint )
 {
 
   mapPoint = toMapCoordinates( p );

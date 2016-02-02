@@ -71,7 +71,7 @@ QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
   }
 }
 
-void QgsExternalResourceWidget::setDocumentPath( QVariant path )
+void QgsExternalResourceWidget::setDocumentPath( const QVariant& path )
 {
   mFileWidget->setFilePath( path.toString() );
 }
@@ -163,7 +163,7 @@ void QgsExternalResourceWidget::updateDocumentViewer()
   }
 }
 
-void QgsExternalResourceWidget::loadDocument( QString path )
+void QgsExternalResourceWidget::loadDocument( const QString& path )
 {
   if ( path.isNull() )
   {

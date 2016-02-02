@@ -43,7 +43,7 @@ class CORE_EXPORT QgsGeometryUtils
 
     /** Returns vertices adjacent to a specified vertex within a geometry.
      */
-    static void adjacentVertices( const QgsAbstractGeometryV2& geom, const QgsVertexId& atVertex, QgsVertexId& beforeVertex, QgsVertexId& afterVertex );
+    static void adjacentVertices( const QgsAbstractGeometryV2& geom, QgsVertexId atVertex, QgsVertexId& beforeVertex, QgsVertexId& afterVertex );
 
     /** Returns the squared 2D distance between two points.
      */
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param inter Output parameter, the intersection point
      * @return Whether the lines intersect
      */
-    static bool lineIntersection( const QgsPointV2& p1, const QgsVector& v, const QgsPointV2& q1, const QgsVector& w, QgsPointV2& inter );
+    static bool lineIntersection( const QgsPointV2& p1, QgsVector v, const QgsPointV2& q1, QgsVector w, QgsPointV2& inter );
 
     /**
      * @brief Compute the intersection between two segments

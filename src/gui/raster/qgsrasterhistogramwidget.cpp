@@ -1082,7 +1082,7 @@ QString findClosestTickVal( double target, const QwtScaleDiv * scale, int div = 
   return QString::number( closest );
 }
 
-void QgsRasterHistogramWidget::histoPickerSelected( const QPointF & pos )
+void QgsRasterHistogramWidget::histoPickerSelected( QPointF pos )
 {
   if ( btnHistoMin->isChecked() || btnHistoMax->isChecked() )
   {
@@ -1109,7 +1109,7 @@ void QgsRasterHistogramWidget::histoPickerSelected( const QPointF & pos )
     QApplication::restoreOverrideCursor();
 }
 
-void QgsRasterHistogramWidget::histoPickerSelectedQwt5( const QwtDoublePoint & pos )
+void QgsRasterHistogramWidget::histoPickerSelectedQwt5( QwtDoublePoint pos )
 {
   histoPickerSelected( QPointF( pos.x(), pos.y() ) );
 }

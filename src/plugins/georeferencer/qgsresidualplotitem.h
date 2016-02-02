@@ -57,7 +57,7 @@ class QgsResidualPlotItem: public QgsComposerItem
     double maxMMToPixelRatioForGCP( const QgsGeorefDataPoint* p, double pixelXMM, double pixelYMM );
 
     /** Returns distance between two points*/
-    double dist( const QPointF& p1, const QPointF& p2 ) const;
+    double dist( QPointF p1, QPointF p2 ) const;
 };
 
 #endif // QGSRESIDUALPLOTITEM_H

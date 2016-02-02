@@ -363,7 +363,7 @@ void QgsDecorationGrid::drawCoordinateAnnotations( QPainter* p, const QList< QPa
   }
 }
 
-void QgsDecorationGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString )
+void QgsDecorationGrid::drawCoordinateAnnotation( QPainter* p, QPointF pos, const QString& annotationString )
 {
   Border frameBorder = borderForLineCoord( pos, p );
   double textWidth = textWidthMillimeters( mGridAnnotationFont, annotationString );
@@ -503,7 +503,7 @@ void QgsDecorationGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& po
   drawAnnotation( p, QPointF( xpos, ypos ), rotation, annotationString );
 }
 
-void QgsDecorationGrid::drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText )
+void QgsDecorationGrid::drawAnnotation( QPainter* p, QPointF pos, int rotation, const QString& annotationText )
 {
   p->save();
   p->translate( pos );
@@ -659,7 +659,7 @@ int QgsDecorationGrid::yGridLines( QList< QPair< qreal, QLineF > >& lines ) cons
   return 0;
 }
 
-QgsDecorationGrid::Border QgsDecorationGrid::borderForLineCoord( const QPointF& point, QPainter* p ) const
+QgsDecorationGrid::Border QgsDecorationGrid::borderForLineCoord( QPointF point, QPainter* p ) const
 {
   if ( point.x() <= mGridPen.widthF() )
   {
@@ -714,7 +714,7 @@ double QgsDecorationGrid::textWidthMillimeters( const QFont& font, const QString
   return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
 }
 
-double QgsDecorationGrid::fontHeightCharacterMM( const QFont& font, const QChar& c ) const
+double QgsDecorationGrid::fontHeightCharacterMM( const QFont& font, QChar c ) const
 {
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );

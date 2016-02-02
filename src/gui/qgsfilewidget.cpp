@@ -103,7 +103,7 @@ QString QgsFileWidget::dialogTitle() const
   return mDialogTitle;
 }
 
-void QgsFileWidget::setDialogTitle( QString title )
+void QgsFileWidget::setDialogTitle( const QString& title )
 {
   mDialogTitle = title;
 }
@@ -129,7 +129,7 @@ void QgsFileWidget::setFileWidgetButtonVisible( bool visible )
   mFileWidgetButton->setVisible( visible );
 }
 
-void QgsFileWidget::textEdited( QString path )
+void QgsFileWidget::textEdited( const QString& path )
 {
   mFilePath = path;
   mLinkLabel->setText( toUrl( path ) );
@@ -163,7 +163,7 @@ QString QgsFileWidget::defaultRoot() const
   return mDefaultRoot;
 }
 
-void QgsFileWidget::setDefaultRoot( QString defaultRoot )
+void QgsFileWidget::setDefaultRoot( const QString& defaultRoot )
 {
   mDefaultRoot = defaultRoot;
 }
@@ -254,7 +254,7 @@ void QgsFileWidget::openFileDialog()
 }
 
 
-QString QgsFileWidget::relativePath( QString filePath, bool removeRelative ) const
+QString QgsFileWidget::relativePath( const QString& filePath, bool removeRelative ) const
 {
   QString RelativePath;
   if ( mRelativeStorage == RelativeProject )

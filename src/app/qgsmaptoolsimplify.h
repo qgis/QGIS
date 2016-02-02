@@ -78,7 +78,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
   private:
 
-    void selectOneFeature( const QPoint& canvasPoint );
+    void selectOneFeature( QPoint canvasPoint );
     void selectFeaturesInRect();
 
     void updateSimplificationPreview();

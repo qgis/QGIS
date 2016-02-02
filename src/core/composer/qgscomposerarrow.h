@@ -48,7 +48,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * @param stopPoint end point for line
      * @param c parent composition
      */
-    QgsComposerArrow( const QPointF& startPoint, const QPointF& stopPoint, QgsComposition* c );
+    QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition* c );
 
     ~QgsComposerArrow();
 

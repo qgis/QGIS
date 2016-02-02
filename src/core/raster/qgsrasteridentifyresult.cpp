@@ -35,7 +35,7 @@ QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsRaster::IdentifyFormat theF
 {
 }
 
-QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsError theError )
+QgsRasterIdentifyResult::QgsRasterIdentifyResult( const QgsError& theError )
     : mValid( false )
     , mFormat( QgsRaster::IdentifyFormatUndefined )
     , mError( theError )

@@ -153,13 +153,13 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! Get list of rasters that will be aligned
     List rasters() const { return mRasters; }
 
-    void setGridOffset( const QPointF& offset ) { mGridOffsetX = offset.x(); mGridOffsetY = offset.y(); }
+    void setGridOffset( QPointF offset ) { mGridOffsetX = offset.x(); mGridOffsetY = offset.y(); }
     QPointF gridOffset() const { return QPointF( mGridOffsetX, mGridOffsetY ); }
 
     //! Set output cell size
     void setCellSize( double x, double y ) { return setCellSize( QSizeF( x, y ) ); }
     //! Set output cell size
-    void setCellSize( const QSizeF& size ) { mCellSizeX = size.width(); mCellSizeY = size.height(); }
+    void setCellSize( QSizeF size ) { mCellSizeX = size.width(); mCellSizeY = size.height(); }
     //! Get output cell size
     QSizeF cellSize() const { return QSizeF( mCellSizeX, mCellSizeY ); }
 

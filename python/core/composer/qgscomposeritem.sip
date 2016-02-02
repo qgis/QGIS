@@ -487,7 +487,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     /** Returns the font height of a character in millimeters
      * @deprecated use QgsComposerUtils::fontHeightCharacterMM instead
      */
-    double fontHeightCharacterMM( const QFont& font, const QChar& c ) const /Deprecated/;
+    double fontHeightCharacterMM( const QFont& font, QChar c ) const /Deprecated/;
 
     /** Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
      * @deprecated use QgsComposerUtils::fontAscentMM instead
@@ -691,7 +691,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     /** Returns angle of the line from p1 to p2 (clockwise, starting at N)
      * @deprecated will be removed in QGIS 3.0
     */
-    double angle( const QPointF& p1, const QPointF& p2 ) const /Deprecated/;
+    double angle( QPointF p1, QPointF p2 ) const /Deprecated/;
 
     /** Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
     item border for resizing*/

@@ -68,7 +68,7 @@ bool QgsVectorLayerEditPassthrough::deleteFeature( QgsFeatureId fid )
   return false;
 }
 
-bool QgsVectorLayerEditPassthrough::deleteFeatures( QgsFeatureIds fids )
+bool QgsVectorLayerEditPassthrough::deleteFeatures( const QgsFeatureIds& fids )
 {
   if ( L->dataProvider()->deleteFeatures( fids ) )
   {

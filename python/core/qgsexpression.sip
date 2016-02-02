@@ -487,7 +487,7 @@ class QgsExpression
         double seconds();
         bool isValid();
         void setValid( bool valid );
-        bool operator==( const QgsExpression::Interval& other ) const;
+        bool operator==( QgsExpression::Interval other ) const;
         static QgsExpression::Interval invalidInterVal();
         static QgsExpression::Interval fromString( const QString& string );
     };

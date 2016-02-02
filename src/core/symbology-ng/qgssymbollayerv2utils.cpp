@@ -3501,7 +3501,7 @@ void QgsSymbolLayerV2Utils::multiplyImageOpacity( QImage* image, qreal alpha )
   }
 }
 
-void QgsSymbolLayerV2Utils::blurImageInPlace( QImage& image, const QRect& rect, int radius, bool alphaOnly )
+void QgsSymbolLayerV2Utils::blurImageInPlace( QImage& image, QRect rect, int radius, bool alphaOnly )
 {
   // culled from Qt's qpixmapfilter.cpp, see: http://www.qtcentre.org/archive/index.php/t-26534.html
   int tab[] = { 14, 10, 8, 6, 5, 5, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2 };
@@ -3646,7 +3646,7 @@ void QgsSymbolLayerV2Utils::sortVariantList( QList<QVariant>& list, Qt::SortOrde
   }
 }
 
-QPointF QgsSymbolLayerV2Utils::pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance )
+QPointF QgsSymbolLayerV2Utils::pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance )
 {
   double dx = directionPoint.x() - startPoint.x();
   double dy = directionPoint.y() - startPoint.y();
@@ -3874,7 +3874,7 @@ QPointF QgsSymbolLayerV2Utils::polygonPointOnSurface( const QPolygonF& points )
   return centroid;
 }
 
-bool QgsSymbolLayerV2Utils::pointInPolygon( const QPolygonF &points, const QPointF &point )
+bool QgsSymbolLayerV2Utils::pointInPolygon( const QPolygonF &points, QPointF point )
 {
   bool inside = false;
 

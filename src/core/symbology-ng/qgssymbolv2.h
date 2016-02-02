@@ -169,7 +169,7 @@ class CORE_EXPORT QgsSymbolV2
     void drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext* customContext = nullptr );
 
     //! export symbol as image format. PNG and SVG supported
-    void exportImage( const QString& path, const QString& format, const QSize& size );
+    void exportImage( const QString& path, const QString& format, QSize size );
 
     //! Generate symbol as image
     QImage asImage( QSize size, QgsRenderContext* customContext = nullptr );
@@ -468,19 +468,19 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
     ScaleMethod scaleMethod();
 
-    void renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
+    void renderPoint( QPointF point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
     /** Returns the approximate bounding box of the marker symbol, which includes the bounding box
      * of all symbol layers for the symbol.
      * @returns approximate symbol bounds, in painter units
      * @note added in QGIS 2.14     */
-    QRectF bounds( const QPointF& point, QgsRenderContext& context ) const;
+    QRectF bounds( QPointF point, QgsRenderContext& context ) const;
 
     virtual QgsMarkerSymbolV2* clone() const override;
 
   private:
 
-    void renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, const QPointF& point, QgsSymbolV2RenderContext& context );
+    void renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, QPointF point, QgsSymbolV2RenderContext& context );
 
 };
 

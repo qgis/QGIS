@@ -20,7 +20,7 @@
 #include <pal/feature.h>
 
 
-QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size )
+QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, QSizeF size )
     : QgsLabelFeature( id, geometry, size )
     , mFontMetrics( NULL )
 {

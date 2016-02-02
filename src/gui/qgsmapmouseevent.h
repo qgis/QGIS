@@ -60,7 +60,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      * @param buttons   Further buttons that are pressed
      * @param modifiers Keyboard modifiers
      */
-    QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QEvent::Type type, const QPoint &pos, Qt::MouseButton button = Qt::NoButton,
+    QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton,
                       Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
     /**

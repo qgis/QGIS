@@ -724,7 +724,7 @@ void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderC
                  spread, QPointF( refPoint1X, refPoint1Y ), QPointF( refPoint2X, refPoint2Y ), angle );
 }
 
-QPointF QgsGradientFillSymbolLayerV2::rotateReferencePoint( const QPointF & refPoint, double angle )
+QPointF QgsGradientFillSymbolLayerV2::rotateReferencePoint( QPointF refPoint, double angle )
 {
   //rotate a reference point by a specified angle around the point (0.5, 0.5)
 
@@ -751,7 +751,7 @@ void QgsGradientFillSymbolLayerV2::applyGradient( const QgsSymbolV2RenderContext
     const QColor &color, const QColor &color2, GradientColorType gradientColorType,
     QgsVectorColorRampV2 *gradientRamp, GradientType gradientType,
     GradientCoordinateMode coordinateMode, GradientSpread gradientSpread,
-    const QPointF &referencePoint1, const QPointF &referencePoint2, const double angle )
+    QPointF referencePoint1, QPointF referencePoint2, const double angle )
 {
   //update alpha of gradient colors
   QColor fillColor = color;

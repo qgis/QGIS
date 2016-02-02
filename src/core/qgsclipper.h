@@ -107,7 +107,7 @@ class CORE_EXPORT QgsClipper
     // Determines if a point is inside or outside the given boundary
     static bool inside( const double x, const double y, Boundary b );
 
-    static bool inside( const QPointF& pt, Boundary b, double val );
+    static bool inside( QPointF pt, Boundary b, double val );
 
     // Calculates the intersection point between a line defined by a
     // (x1, y1), and (x2, y2) and the given boundary
@@ -115,8 +115,8 @@ class CORE_EXPORT QgsClipper
                                const double x2, const double y2,
                                Boundary b );
 
-    static QPointF intersectRect( const QPointF& pt1,
-                                  const QPointF& pt2,
+    static QPointF intersectRect( QPointF pt1,
+                                  QPointF pt2,
                                   Boundary b, const QgsRectangle& rect );
 
     //Implementation of 'Fast clipping' algorithm (Sobkow et al. 1987, Computers & Graphics Vol.11, 4, p.459-467)
@@ -322,7 +322,7 @@ inline bool QgsClipper::inside( const double x, const double y, Boundary b )
   return false;
 }
 
-inline bool QgsClipper::inside( const QPointF& pt, Boundary b, double val )
+inline bool QgsClipper::inside( QPointF pt, Boundary b, double val )
 {
   switch ( b )
   {
@@ -390,8 +390,8 @@ inline QgsPoint QgsClipper::intersect( const double x1, const double y1,
   return p;
 }
 
-inline QPointF QgsClipper::intersectRect( const QPointF& pt1,
-    const QPointF& pt2,
+inline QPointF QgsClipper::intersectRect( QPointF pt1,
+    QPointF pt2,
     Boundary b, const QgsRectangle& rect )
 {
   // This function assumes that the two given points (x1, y1), and

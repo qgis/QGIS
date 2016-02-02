@@ -108,7 +108,7 @@ class GUI_EXPORT QgsGraduatedHistogramEventFilter: public QObject
   private:
 
     QwtPlot* mPlot;
-    double posToValue( const QPointF& point ) const;
+    double posToValue( QPointF point ) const;
 };
 ///@endcond
 

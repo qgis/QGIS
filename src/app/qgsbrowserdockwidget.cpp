@@ -55,7 +55,7 @@ QgsBrowserPropertiesWrapLabel::QgsBrowserPropertiesWrapLabel( const QString& tex
   setMaximumHeight( 20 );
 }
 
-void QgsBrowserPropertiesWrapLabel::adjustHeight( const QSizeF& size )
+void QgsBrowserPropertiesWrapLabel::adjustHeight( QSizeF size )
 {
   int height = size.height() + 2 * frameWidth();
   setMinimumHeight( height );
@@ -369,7 +369,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
   QDockWidget::showEvent( e );
 }
 
-void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
+void QgsBrowserDockWidget::showContextMenu( QPoint pt )
 {
   QModelIndex index = mProxyModel->mapToSource( mBrowserView->indexAt( pt ) );
   QgsDataItem* item = mModel->dataItem( index );

@@ -484,7 +484,7 @@ void QgsCompoundCurveV2::drawAsPolygon( QPainter& p ) const
   p.drawPath( pp );
 }
 
-bool QgsCompoundCurveV2::insertVertex( const QgsVertexId& position, const QgsPointV2& vertex )
+bool QgsCompoundCurveV2::insertVertex( QgsVertexId position, const QgsPointV2& vertex )
 {
   QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
   if ( curveIds.size() < 1 )
@@ -505,7 +505,7 @@ bool QgsCompoundCurveV2::insertVertex( const QgsVertexId& position, const QgsPoi
   return success;
 }
 
-bool QgsCompoundCurveV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
+bool QgsCompoundCurveV2::moveVertex( QgsVertexId position, const QgsPointV2& newPos )
 {
   QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
   QList< QPair<int, QgsVertexId> >::const_iterator idIt = curveIds.constBegin();
@@ -522,7 +522,7 @@ bool QgsCompoundCurveV2::moveVertex( const QgsVertexId& position, const QgsPoint
   return success;
 }
 
-bool QgsCompoundCurveV2::deleteVertex( const QgsVertexId& position )
+bool QgsCompoundCurveV2::deleteVertex( QgsVertexId position )
 {
   QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
   QList< QPair<int, QgsVertexId> >::const_iterator idIt = curveIds.constBegin();
@@ -539,7 +539,7 @@ bool QgsCompoundCurveV2::deleteVertex( const QgsVertexId& position )
   return success;
 }
 
-QList< QPair<int, QgsVertexId> > QgsCompoundCurveV2::curveVertexId( const QgsVertexId& id ) const
+QList< QPair<int, QgsVertexId> > QgsCompoundCurveV2::curveVertexId( QgsVertexId id ) const
 {
   QList< QPair<int, QgsVertexId> > curveIds;
 
@@ -618,7 +618,7 @@ bool QgsCompoundCurveV2::hasCurvedSegments() const
   return false;
 }
 
-double QgsCompoundCurveV2::vertexAngle( const QgsVertexId& vertex ) const
+double QgsCompoundCurveV2::vertexAngle( QgsVertexId vertex ) const
 {
   QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( vertex );
   if ( curveIds.size() == 1 )

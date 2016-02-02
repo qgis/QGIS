@@ -166,12 +166,12 @@ class QgsComposition : QGraphicsScene
     /** Returns the position within a page of a point in the composition
       @note Added in QGIS 2.1
     */
-    QPointF positionOnPage( const QPointF & position ) const;
+    QPointF positionOnPage( QPointF position ) const;
 
     /** Returns the page number corresponding to a point in the composition
       @note Added in QGIS 2.1
     */
-    int pageNumberForPoint( const QPointF & position ) const;
+    int pageNumberForPoint( QPointF position ) const;
 
     /** Sets the status bar message for the composer window
       @note Added in QGIS 2.1
@@ -304,7 +304,7 @@ class QgsComposition : QGraphicsScene
      * @param ignoreLocked set to true to ignore locked items
      * @returns composer item at position
     */
-    QgsComposerItem* composerItemAt( const QPointF & position, const bool ignoreLocked = false ) const;
+    QgsComposerItem* composerItemAt( QPointF position, const bool ignoreLocked = false ) const;
 
     /** Returns the topmost composer item at a specified position which is below a specified item. Ignores paper items.
      * @param position point to search for item at
@@ -312,10 +312,10 @@ class QgsComposition : QGraphicsScene
      * @param ignoreLocked set to true to ignore locked items
      * @returns composer item at position which is below specified item
     */
-    QgsComposerItem* composerItemAt( const QPointF & position, const QgsComposerItem* belowItem, const bool ignoreLocked = false ) const;
+    QgsComposerItem* composerItemAt( QPointF position, const QgsComposerItem* belowItem, const bool ignoreLocked = false ) const;
 
     /** Returns the page number (0-based) given a coordinate */
-    int pageNumberAt( const QPointF& position ) const;
+    int pageNumberAt( QPointF position ) const;
 
     /** Returns on which page number (0-based) is displayed an item */
     int itemPageNumber( const QgsComposerItem* ) const;
@@ -506,7 +506,7 @@ class QgsComposition : QGraphicsScene
     void refreshZList();
 
     /** Snaps a scene coordinate point to grid*/
-    QPointF snapPointToGrid( const QPointF& scenePoint ) const;
+    QPointF snapPointToGrid( QPointF scenePoint ) const;
 
     /** Returns pointer to snap lines collection*/
     QList< QGraphicsLineItem* >* snapLines();
@@ -613,7 +613,7 @@ class QgsComposition : QGraphicsScene
      * @see renderRectAsRaster()
      * @see renderPage()
     */
-    QImage printPageAsRaster( int page, const QSize& imageSize = QSize(), int dpi = 0 );
+    QImage printPageAsRaster( int page, QSize imageSize = QSize(), int dpi = 0 );
 
     /** Renders a portion of the composition to an image. This method can be used to render
      * sections of pages rather than full pages.
@@ -628,7 +628,7 @@ class QgsComposition : QGraphicsScene
      * @see printPageAsRaster()
      * @see renderRect()
      */
-    QImage renderRectAsRaster( const QRectF& rect, const QSize& imageSize = QSize(), int dpi = 0 );
+    QImage renderRectAsRaster( const QRectF& rect, QSize imageSize = QSize(), int dpi = 0 );
 
     /** Renders a full page to a paint device.
      * @param p destination painter

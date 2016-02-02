@@ -254,7 +254,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
 
       QFormLayout* datasourceLayout = dynamic_cast<QFormLayout*>( mDatasourceOptionsGroupBox->layout() );
 
-      Q_FOREACH ( const LabelControlPair& control, controls )
+      Q_FOREACH ( LabelControlPair control, controls )
       {
         datasourceLayout->addRow( control.first, control.second );
       }
@@ -271,7 +271,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
 
       QFormLayout* layerOptionsLayout = dynamic_cast<QFormLayout*>( mLayerOptionsGroupBox->layout() );
 
-      Q_FOREACH ( const LabelControlPair& control, controls )
+      Q_FOREACH ( LabelControlPair control, controls )
       {
         layerOptionsLayout->addRow( control.first, control.second );
       }

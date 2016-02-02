@@ -42,7 +42,7 @@ static QString _fileNameForTest( const QString& testName )
   return QDir::tempPath() + '/' + testName + ".png";
 }
 
-static void _setStandardTestFont( QgsLegendSettings& settings, QString style = "Roman" )
+static void _setStandardTestFont( QgsLegendSettings& settings, const QString& style = "Roman" )
 {
   QList< QgsComposerLegendStyle::Style> styles;
   styles << QgsComposerLegendStyle::Title

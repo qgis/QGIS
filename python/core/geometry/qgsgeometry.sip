@@ -456,7 +456,7 @@ class QgsGeometry
      *  @note precision parameter added in 2.4
      *  @return true in case of success and false else
      */
-    QString exportToWkt( const int &precision = 17 ) const;
+    QString exportToWkt( int precision = 17 ) const;
 
     /** Exports the geometry to GeoJSON
      *  @return a QString representing the geometry as GeoJSON
@@ -464,7 +464,7 @@ class QgsGeometry
      *  @note python binding added in 1.9
      *  @note precision parameter added in 2.4
      */
-    QString exportToGeoJSON( const int &precision = 17 ) const;
+    QString exportToGeoJSON( int precision = 17 ) const;
 
     /** Try to convert the geometry to the requested type
      * @param destType the geometry type to be converted to
@@ -625,7 +625,7 @@ class QgsGeometry
      * @note added in QGIS 2.10
      * @see vertexIdFromVertexNr
      */
-    int vertexNrFromVertexId( const QgsVertexId& i ) const;
+    int vertexNrFromVertexId( QgsVertexId i ) const;
 
     /** Return GEOS context handle
      * @note added in 2.6
@@ -637,7 +637,7 @@ class QgsGeometry
     * @param point source QPointF
     * @note added in QGIS 2.7
     */
-    static QgsGeometry* fromQPointF( const QPointF& point ) /Factory/;
+    static QgsGeometry* fromQPointF( QPointF point ) /Factory/;
 
     /** Construct geometry from a QPolygonF. If the polygon is closed than
     * the resultant geometry will be a polygon, if it is open than the

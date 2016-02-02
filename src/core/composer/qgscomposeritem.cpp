@@ -876,7 +876,7 @@ void QgsComposerItem::drawArrowHead( QPainter *p, double x, double y, double ang
   QgsComposerUtils::drawArrowHead( p, x, y, angle, arrowHeadWidth );
 }
 
-double QgsComposerItem::angle( const QPointF &p1, const QPointF &p2 ) const
+double QgsComposerItem::angle( QPointF p1, QPointF p2 ) const
 {
   return QgsComposerUtils::angle( p1, p2 );
 }
@@ -968,7 +968,7 @@ double QgsComposerItem::textWidthMillimeters( const QFont& font, const QString& 
   return QgsComposerUtils::textWidthMM( font, text );
 }
 
-double QgsComposerItem::fontHeightCharacterMM( const QFont& font, const QChar& c ) const
+double QgsComposerItem::fontHeightCharacterMM( const QFont& font, QChar c ) const
 {
   return QgsComposerUtils::fontHeightCharacterMM( font, c );
 }

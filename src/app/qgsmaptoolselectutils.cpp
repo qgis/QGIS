@@ -65,7 +65,7 @@ void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas* canvas, QRect& selectRe
 
 void QgsMapToolSelectUtils::expandSelectRectangle( QRect& selectRect,
     QgsVectorLayer* vlayer,
-    const QPoint &point )
+    QPoint point )
 {
   int boxSize = 0;
   if ( vlayer->geometryType() != QGis::Polygon )

@@ -28,7 +28,7 @@ typedef std::pair<int, double> DijkstraQueueItem; // first = vertex index, secon
 // utility comparator for queue items based on distance
 struct comp
 {
-  bool operator()( const DijkstraQueueItem &a, const DijkstraQueueItem &b )
+  bool operator()( DijkstraQueueItem a, DijkstraQueueItem b )
   {
     return a.second > b.second;
   }

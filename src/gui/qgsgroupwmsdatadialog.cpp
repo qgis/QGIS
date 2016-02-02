@@ -31,7 +31,7 @@ QString QgsGroupWMSDataDialog::groupShortName()
   return mShortNameLineEdit->text();
 }
 
-void QgsGroupWMSDataDialog::setGroupShortName( QString shortName )
+void QgsGroupWMSDataDialog::setGroupShortName( const QString& shortName )
 {
   mShortNameLineEdit->setText( shortName );
 }
@@ -41,7 +41,7 @@ QString QgsGroupWMSDataDialog::groupTitle()
   return mTitleLineEdit->text();
 }
 
-void QgsGroupWMSDataDialog::setGroupTitle( QString title )
+void QgsGroupWMSDataDialog::setGroupTitle( const QString& title )
 {
   mTitleLineEdit->setText( title );
 }
@@ -51,7 +51,7 @@ QString QgsGroupWMSDataDialog::groupAbstract()
   return mAbstractTextEdit->toPlainText();
 }
 
-void QgsGroupWMSDataDialog::setGroupAbstract( QString abstract )
+void QgsGroupWMSDataDialog::setGroupAbstract( const QString& abstract )
 {
   mAbstractTextEdit->setPlainText( abstract );
 }

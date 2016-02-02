@@ -333,7 +333,7 @@ void QgsComposerHtml::addFrame( QgsComposerFrame* frame, bool recalcFrameSizes )
   }
 }
 
-bool candidateSort( const QPair<int, int> &c1, const QPair<int, int> &c2 )
+bool candidateSort( QPair<int, int> c1, QPair<int, int> c2 )
 {
   if ( c1.second < c2.second )
     return true;

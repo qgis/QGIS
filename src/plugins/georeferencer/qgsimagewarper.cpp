@@ -42,7 +42,7 @@ QgsImageWarper::QgsImageWarper( QWidget *theParent )
 {
 }
 
-bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, const ResamplingMethod &resampling,
+bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, ResamplingMethod resampling,
     const GDALTransformerFunc &pfnTransform,
     GDALDatasetH &hSrcDS, GDALWarpOptions *&psWarpOptions )
 {

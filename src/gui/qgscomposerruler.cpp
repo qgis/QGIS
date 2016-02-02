@@ -437,7 +437,7 @@ void QgsComposerRuler::mousePressEvent( QMouseEvent* event )
   }
 }
 
-void QgsComposerRuler::setSnapLinePosition( const QPointF& pos )
+void QgsComposerRuler::setSnapLinePosition( QPointF pos )
 {
   if ( !mLineSnapItem || !mComposition )
   {

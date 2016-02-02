@@ -132,7 +132,7 @@ QStringList QgsMimeDataUtils::decode( const QString& encoded )
   QStringList items;
   QString item;
   bool inEscape = false;
-  Q_FOREACH ( const QChar& c, encoded )
+  Q_FOREACH ( QChar c, encoded )
   {
     if ( c == '\\' && inEscape )
     {

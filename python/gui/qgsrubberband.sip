@@ -167,7 +167,7 @@ class QgsRubberBand: QgsMapCanvasItem
      * Sets this rubber band to a map canvas rectangle
      *  @param rect rectangle in canvas coordinates
      */
-    void setToCanvasRectangle( const QRect& rect );
+    void setToCanvasRectangle( QRect rect );
 
     /**
      * Add the geometry of an existing feature to a rubberband

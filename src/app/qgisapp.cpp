@@ -1292,7 +1292,7 @@ void QgisApp::readSettings()
   }
   qSort( projectKeys );
 
-  Q_FOREACH ( const int& key, projectKeys )
+  Q_FOREACH ( int key, projectKeys )
   {
     QgsWelcomePageItemsModel::RecentProjectData data;
     settings.beginGroup( QString::number( key ) );
@@ -8732,9 +8732,9 @@ void QgisApp::embedLayers()
     QgsLayerDefinition::DependencySorter depSorter( projectFile );
     QStringList sortedIds = depSorter.sortedLayerIds();
     QStringList layerIds = d.selectedLayerIds();
-    foreach ( QString id, sortedIds )
+    Q_FOREACH ( const QString& id, sortedIds )
     {
-      foreach ( QString selId, layerIds )
+      Q_FOREACH ( const QString& selId, layerIds )
       {
         if ( selId == id )
           QgsProject::instance()->createEmbeddedLayer( selId, projectFile, brokenNodes, vectorLayerList );

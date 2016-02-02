@@ -509,7 +509,7 @@ void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size, QgsRenderConte
   }
 }
 
-void QgsSymbolV2::exportImage( const QString& path, const QString& format, const QSize& size )
+void QgsSymbolV2::exportImage( const QString& path, const QString& format, QSize size )
 {
   if ( format.toLower() == "svg" )
   {
@@ -1267,7 +1267,7 @@ QgsSymbolV2::ScaleMethod QgsMarkerSymbolV2::scaleMethod()
   return DEFAULT_SCALE_METHOD;
 }
 
-void QgsMarkerSymbolV2::renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, const QPointF& point, QgsSymbolV2RenderContext& context )
+void QgsMarkerSymbolV2::renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, QPointF point, QgsSymbolV2RenderContext& context )
 {
   static QPointF nullPoint( 0, 0 );
 
@@ -1290,7 +1290,7 @@ void QgsMarkerSymbolV2::renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, co
   }
 }
 
-void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layerIdx, bool selected )
+void QgsMarkerSymbolV2::renderPoint( QPointF point, const QgsFeature* f, QgsRenderContext& context, int layerIdx, bool selected )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, nullptr, mapUnitScale() );
 
@@ -1322,7 +1322,7 @@ void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, 
   }
 }
 
-QRectF QgsMarkerSymbolV2::bounds( const QPointF& point, QgsRenderContext& context ) const
+QRectF QgsMarkerSymbolV2::bounds( QPointF point, QgsRenderContext& context ) const
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, nullptr, mapUnitScale() );
 

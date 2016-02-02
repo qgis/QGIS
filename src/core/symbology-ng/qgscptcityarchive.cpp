@@ -807,7 +807,7 @@ QIcon QgsCptCityColorRampItem::icon()
   return icon( QSize( 100, 15 ) );
 }
 
-QIcon QgsCptCityColorRampItem::icon( const QSize& size )
+QIcon QgsCptCityColorRampItem::icon( QSize size )
 {
   Q_FOREACH ( const QIcon& icon, mIcons )
   {

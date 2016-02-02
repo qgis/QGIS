@@ -76,11 +76,11 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
     void on_btnHistoMin_toggled();
     void on_btnHistoMax_toggled();
     /** Called when a selection has been made using the plot picker. */
-    void histoPickerSelected( const QPointF & );
+    void histoPickerSelected( QPointF );
     /** Called when a selection has been made using the plot picker (for qwt5 only).
       @note not available in python bindings
       */
-    void histoPickerSelectedQwt5( const QwtDoublePoint & );
+    void histoPickerSelectedQwt5( QwtDoublePoint );
     /** Various actions that are stored in btnHistoActions. */
     void histoActionTriggered( QAction* );
     /** Draw the min/max markers on the histogram plot. */

@@ -886,7 +886,7 @@ bool QgsGeometry::crosses( const QgsGeometry* geometry ) const
   return geos.crosses( *( geometry->d->geometry ) );
 }
 
-QString QgsGeometry::exportToWkt( const int &precision ) const
+QString QgsGeometry::exportToWkt( int precision ) const
 {
   if ( !d->geometry )
   {
@@ -895,7 +895,7 @@ QString QgsGeometry::exportToWkt( const int &precision ) const
   return d->geometry->asWkt( precision );
 }
 
-QString QgsGeometry::exportToGeoJSON( const int &precision ) const
+QString QgsGeometry::exportToGeoJSON( int precision ) const
 {
   if ( !d->geometry )
   {
@@ -1701,7 +1701,7 @@ bool QgsGeometry::vertexIdFromVertexNr( int nr, QgsVertexId& id ) const
   return false;
 }
 
-int QgsGeometry::vertexNrFromVertexId( const QgsVertexId& id ) const
+int QgsGeometry::vertexNrFromVertexId( QgsVertexId id ) const
 {
   if ( !d->geometry )
   {
@@ -1787,7 +1787,7 @@ GEOSContextHandle_t QgsGeometry::getGEOSHandler()
   return QgsGeos::getGEOSHandler();
 }
 
-QgsGeometry *QgsGeometry::fromQPointF( const QPointF &point )
+QgsGeometry *QgsGeometry::fromQPointF( QPointF point )
 {
   return new QgsGeometry( new QgsPointV2( point.x(), point.y() ) );
 }

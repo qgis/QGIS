@@ -52,7 +52,7 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
     /** Creates a new rubber band and deletes the old one*/
     void createRubberBand();
     /** Snaps point to background layers*/
-    QgsPoint snapPoint( const QPoint& p );
+    QgsPoint snapPoint( QPoint p );
 
     /** Tool for measuring */
     QgsDistanceArea mDa;

@@ -292,10 +292,10 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void applyGradient( const QgsSymbolV2RenderContext& context, QBrush& brush, const QColor& color, const QColor& color2,
                         GradientColorType gradientColorType, QgsVectorColorRampV2 *gradientRamp, GradientType gradientType,
                         GradientCoordinateMode coordinateMode, GradientSpread gradientSpread,
-                        const QPointF &referencePoint1, const QPointF &referencePoint2, const double angle );
+                        QPointF referencePoint1, QPointF referencePoint2, const double angle );
 
     /** Rotates a reference point by a specified angle around the point (0.5, 0.5)*/
-    QPointF rotateReferencePoint( const QPointF & refPoint, double angle );
+    QPointF rotateReferencePoint( QPointF refPoint, double angle );
 };
 
 class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
@@ -662,7 +662,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see setOffsetUnit
      * @see setOffsetMapUnitScale
     */
-    void setOffset( const QPointF& offset ) { mOffset = offset; }
+    void setOffset( QPointF offset ) { mOffset = offset; }
     /** Returns the offset for the fill.
      * @returns offset for fill
      * @see setOffset

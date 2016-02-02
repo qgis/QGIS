@@ -34,7 +34,7 @@ class QgsGeorefToolDeletePoint : public QgsMapToolEmitPoint
     void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
   signals:
-    void deleteDataPoint( const QPoint & );
+    void deleteDataPoint( QPoint );
 };
 
 #endif // QGSGEOREFTOOLDELETEPOINT_H

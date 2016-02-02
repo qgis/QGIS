@@ -958,7 +958,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Draw an annotation. If optional extension argument is specified, nothing will be drawn and instead
      * the extension of the annotation outside of the map frame will be stored in this variable.
      */
-    void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension = nullptr ) const;
+    void drawCoordinateAnnotation( QPainter* p, QPointF pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension = nullptr ) const;
 
     /** Draws a single annotation
      * @param p drawing painter
@@ -966,7 +966,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @param rotation text rotation
      * @param annotationText the text to draw
     */
-    void drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText ) const;
+    void drawAnnotation( QPainter* p, QPointF pos, int rotation, const QString& annotationText ) const;
 
     QString gridAnnotationString( double value, AnnotationCoordinate coord, QgsExpressionContext& expressionContext ) const;
 
@@ -998,7 +998,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @param p point
      * @param coordinateType coordinate type
     */
-    BorderSide borderForLineCoord( const QPointF& p, const AnnotationCoordinate coordinateType ) const;
+    BorderSide borderForLineCoord( QPointF p, const AnnotationCoordinate coordinateType ) const;
 
     /** Get parameters for drawing grid in CRS different to map CRS*/
     int crsGridParams( QgsRectangle& crsRect, QgsCoordinateTransform& inverseTransform ) const;
@@ -1017,7 +1017,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     void createDefaultGridMarkerSymbol();
 
-    void drawGridMarker( const QPointF &point, QgsRenderContext &context ) const;
+    void drawGridMarker( QPointF point, QgsRenderContext &context ) const;
 
     void drawGridFrameZebraBorder( QPainter *p, const QMap<double, double> &borderPos, BorderSide border, double* extension = nullptr ) const;
 
@@ -1027,8 +1027,8 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     void calculateCRSTransformLines();
 
-    bool shouldShowDivisionForSide( const AnnotationCoordinate &coordinate, const QgsComposerMapGrid::BorderSide& side ) const;
-    bool shouldShowDivisionForDisplayMode( const QgsComposerMapGrid::AnnotationCoordinate &coordinate, const QgsComposerMapGrid::DisplayMode &mode ) const;
+    bool shouldShowDivisionForSide( AnnotationCoordinate coordinate, BorderSide side ) const;
+    bool shouldShowDivisionForDisplayMode( AnnotationCoordinate coordinate, DisplayMode mode ) const;
 
     friend class TestQgsComposerMapGrid;
 };

@@ -104,7 +104,7 @@ void QgsGeorefDataPoint::setId( int id )
   }
 }
 
-void QgsGeorefDataPoint::setResidual( const QPointF& r )
+void QgsGeorefDataPoint::setResidual( QPointF r )
 {
   mResidual = r;
   if ( mGCPSourceItem )
@@ -127,7 +127,7 @@ void QgsGeorefDataPoint::updateCoords()
   }
 }
 
-bool QgsGeorefDataPoint::contains( const QPoint &p, bool isMapPlugin )
+bool QgsGeorefDataPoint::contains( QPoint p, bool isMapPlugin )
 {
   if ( isMapPlugin )
   {
@@ -141,7 +141,7 @@ bool QgsGeorefDataPoint::contains( const QPoint &p, bool isMapPlugin )
   }
 }
 
-void QgsGeorefDataPoint::moveTo( const QPoint &p, bool isMapPlugin )
+void QgsGeorefDataPoint::moveTo( QPoint p, bool isMapPlugin )
 {
   if ( isMapPlugin )
   {

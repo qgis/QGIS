@@ -514,7 +514,7 @@ void QgsGeorefPluginGui::addPoint( const QgsPoint& pixelCoords, const QgsPoint& 
   //    logRequaredGCPs();
 }
 
-void QgsGeorefPluginGui::deleteDataPoint( const QPoint &coords )
+void QgsGeorefPluginGui::deleteDataPoint( QPoint coords )
 {
   for ( QgsGCPList::iterator it = mPoints.begin(); it != mPoints.end(); ++it )
   {
@@ -540,7 +540,7 @@ void QgsGeorefPluginGui::deleteDataPoint( int theGCPIndex )
   updateGeorefTransform();
 }
 
-void QgsGeorefPluginGui::selectPoint( const QPoint &p )
+void QgsGeorefPluginGui::selectPoint( QPoint p )
 {
   // Get Map Sender
   bool isMapPlugin = sender() == mToolMovePoint;
@@ -556,7 +556,7 @@ void QgsGeorefPluginGui::selectPoint( const QPoint &p )
   }
 }
 
-void QgsGeorefPluginGui::movePoint( const QPoint &p )
+void QgsGeorefPluginGui::movePoint( QPoint p )
 {
   // Get Map Sender
   bool isMapPlugin = sender() == mToolMovePoint;
@@ -570,7 +570,7 @@ void QgsGeorefPluginGui::movePoint( const QPoint &p )
 
 }
 
-void QgsGeorefPluginGui::releasePoint( const QPoint &p )
+void QgsGeorefPluginGui::releasePoint( QPoint p )
 {
   Q_UNUSED( p );
   // Get Map Sender

@@ -100,13 +100,13 @@ class QgsAlignRaster
     //! Get list of rasters that will be aligned
     List rasters() const;
 
-    void setGridOffset( const QPointF& offset );
+    void setGridOffset( QPointF offset );
     QPointF gridOffset() const;
 
     //! Set output cell size
     void setCellSize( double x, double y );
     //! Set output cell size
-    void setCellSize( const QSizeF& size );
+    void setCellSize( QSizeF size );
     //! Get output cell size
     QSizeF cellSize() const;
 

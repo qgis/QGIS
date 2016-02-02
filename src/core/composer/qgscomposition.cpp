@@ -616,7 +616,7 @@ void QgsComposition::createDefaultPageStyleSymbol()
   mPageStyleSymbol = QgsFillSymbolV2::createSimple( properties );
 }
 
-QPointF QgsComposition::positionOnPage( const QPointF & position ) const
+QPointF QgsComposition::positionOnPage( QPointF position ) const
 {
   double y;
   if ( position.y() > ( mPages.size() - 1 ) * ( paperHeight() + spaceBetweenPages() ) )
@@ -633,7 +633,7 @@ QPointF QgsComposition::positionOnPage( const QPointF & position ) const
   return QPointF( position.x(), y );
 }
 
-int QgsComposition::pageNumberForPoint( const QPointF & position ) const
+int QgsComposition::pageNumberForPoint( QPointF position ) const
 {
   int pageNumber = qFloor( position.y() / ( paperHeight() + spaceBetweenPages() ) ) + 1;
   pageNumber = pageNumber < 1 ? 1 : pageNumber;
@@ -646,12 +646,12 @@ void QgsComposition::setStatusMessage( const QString & message )
   emit statusMsgChanged( message );
 }
 
-QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position, const bool ignoreLocked ) const
+QgsComposerItem* QgsComposition::composerItemAt( QPointF position, bool ignoreLocked ) const
 {
   return composerItemAt( position, nullptr, ignoreLocked );
 }
 
-QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position, const QgsComposerItem* belowItem, const bool ignoreLocked ) const
+QgsComposerItem* QgsComposition::composerItemAt( QPointF position, const QgsComposerItem* belowItem, const bool ignoreLocked ) const
 {
   //get a list of items which intersect the specified position, in descending z order
   QList<QGraphicsItem*> itemList;
@@ -684,7 +684,7 @@ QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position, const
   return nullptr;
 }
 
-int QgsComposition::pageNumberAt( const QPointF& position ) const
+int QgsComposition::pageNumberAt( QPointF position ) const
 {
   return position.y() / ( paperHeight() + spaceBetweenPages() );
 }
@@ -2022,7 +2022,7 @@ void QgsComposition::refreshZList()
   updateZValues( false );
 }
 
-QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const
+QPointF QgsComposition::snapPointToGrid( QPointF scenePoint ) const
 {
   if ( !mSnapToGrid || mSnapGridResolution <= 0 || !graphicsView() )
   {
@@ -2873,7 +2873,7 @@ bool QgsComposition::print( QPrinter &printer, const bool evaluateDDPageSize )
   return true;
 }
 
-QImage QgsComposition::printPageAsRaster( int page, const QSize& imageSize, int dpi )
+QImage QgsComposition::printPageAsRaster( int page, QSize imageSize, int dpi )
 {
   int resolution = mPrintResolution;
   if ( imageSize.isValid() )
@@ -2907,7 +2907,7 @@ QImage QgsComposition::printPageAsRaster( int page, const QSize& imageSize, int 
   return image;
 }
 
-QImage QgsComposition::renderRectAsRaster( const QRectF& rect, const QSize& imageSize, int dpi )
+QImage QgsComposition::renderRectAsRaster( const QRectF& rect, QSize imageSize, int dpi )
 {
   int resolution = mPrintResolution;
   if ( imageSize.isValid() )

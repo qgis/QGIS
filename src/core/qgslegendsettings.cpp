@@ -113,7 +113,7 @@ double QgsLegendSettings::textWidthMillimeters( const QFont& font, const QString
   return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
 }
 
-double QgsLegendSettings::fontHeightCharacterMM( const QFont& font, const QChar& c ) const
+double QgsLegendSettings::fontHeightCharacterMM( const QFont& font, QChar c ) const
 {
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );

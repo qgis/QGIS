@@ -94,7 +94,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     void mouseReleaseEvent( QMouseEvent * e ) override;
 
     //! called when panning to reflect mouse movement
-    void updatePanningWidget( const QPoint& pos );
+    void updatePanningWidget( QPoint pos );
 
     //! widget for panning map in overview
     QgsPanningWidget* mPanningWidget;

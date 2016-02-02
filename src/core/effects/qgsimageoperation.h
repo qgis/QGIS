@@ -171,7 +171,7 @@ class CORE_EXPORT QgsImageOperation
      * @note added in QGIS 2.9
      * @see cropTransparent
      */
-    static QRect nonTransparentImageRect( const QImage & image, const QSize& minSize = QSize(), bool center = false );
+    static QRect nonTransparentImageRect( const QImage & image, QSize minSize = QSize(), bool center = false );
 
     /** Crop any transparent border from around an image.
      * @param image source image
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsImageOperation
      * @param center cropped image will be centered on the center of the original image if set to true
      * @note added in QGIS 2.9
      */
-    static QImage cropTransparent( const QImage & image, const QSize& minSize = QSize(), bool center = false );
+    static QImage cropTransparent( const QImage & image, QSize minSize = QSize(), bool center = false );
 
   private:
 

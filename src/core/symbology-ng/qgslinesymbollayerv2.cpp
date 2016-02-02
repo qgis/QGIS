@@ -1003,7 +1003,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
   }
 }
 
-static double _averageAngle( const QPointF& prevPt, const QPointF& pt, const QPointF& nextPt )
+static double _averageAngle( QPointF prevPt, QPointF pt, QPointF nextPt )
 {
   // calc average angle between the previous and next point
   double a1 = MyLine( prevPt, pt ).angle();

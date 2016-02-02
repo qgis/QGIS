@@ -169,7 +169,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void repaintRequested();
 
   private slots:
-    void editSelectionChanged( QItemSelection deselected, QItemSelection selected );
+    void editSelectionChanged( const QItemSelection& deselected, const QItemSelection& selected );
 
   private:
     void selectRow( const QModelIndex &index, bool anchor );

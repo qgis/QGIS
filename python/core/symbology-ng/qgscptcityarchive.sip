@@ -116,7 +116,7 @@ class QgsCptCityDataItem : QObject
     void setParent( QgsCptCityDataItem* parent );
     QVector<QgsCptCityDataItem*> children() const;
     virtual QIcon icon();
-    virtual QIcon icon( const QSize& size );
+    virtual QIcon icon( QSize size );
     QString name() const;
     QString path() const;
     QString info() const;
@@ -168,7 +168,7 @@ class QgsCptCityColorRampItem : QgsCptCityDataItem
     // --- New virtual methods for layer item derived classes ---
     const QgsCptCityColorRampV2& ramp() const;
     QIcon icon();
-    QIcon icon( const QSize& size );
+    QIcon icon( QSize size );
     void init();
 };
 

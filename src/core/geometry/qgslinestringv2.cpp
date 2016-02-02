@@ -605,7 +605,7 @@ void QgsLineStringV2::transform( const QTransform& t )
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsLineStringV2::insertVertex( const QgsVertexId& position, const QgsPointV2& vertex )
+bool QgsLineStringV2::insertVertex( QgsVertexId position, const QgsPointV2& vertex )
 {
   if ( position.vertex < 0 || position.vertex > mX.size() )
   {
@@ -631,7 +631,7 @@ bool QgsLineStringV2::insertVertex( const QgsVertexId& position, const QgsPointV
   return true;
 }
 
-bool QgsLineStringV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
+bool QgsLineStringV2::moveVertex( QgsVertexId position, const QgsPointV2& newPos )
 {
   if ( position.vertex < 0 || position.vertex >= mX.size() )
   {
@@ -651,7 +651,7 @@ bool QgsLineStringV2::moveVertex( const QgsVertexId& position, const QgsPointV2&
   return true;
 }
 
-bool QgsLineStringV2::deleteVertex( const QgsVertexId& position )
+bool QgsLineStringV2::deleteVertex( QgsVertexId position )
 {
   if ( position.vertex >= mX.size() || position.vertex < 0 )
   {
@@ -860,7 +860,7 @@ void QgsLineStringV2::close()
   addVertex( startPoint() );
 }
 
-double QgsLineStringV2::vertexAngle( const QgsVertexId& vertex ) const
+double QgsLineStringV2::vertexAngle( QgsVertexId vertex ) const
 {
   if ( mX.count() < 2 )
   {

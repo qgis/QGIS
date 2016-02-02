@@ -93,9 +93,9 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     void addToPainterPath( QPainterPath& path ) const override;
     void drawAsPolygon( QPainter& p ) const override;
 
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override;
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) override;
-    virtual bool deleteVertex( const QgsVertexId& position ) override;
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override;
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
+    virtual bool deleteVertex( QgsVertexId position ) override;
 
     virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const override;
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
         @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
-    double vertexAngle( const QgsVertexId& vertex ) const override;
+    double vertexAngle( QgsVertexId vertex ) const override;
 
     virtual QgsCompoundCurveV2* reversed() const override;
 
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     QList< QgsCurveV2* > mCurves;
     /** Turns a vertex id for the compound curve into one or more ids for the subcurves
         @return the index of the subcurve or -1 in case of error*/
-    QList< QPair<int, QgsVertexId> > curveVertexId( const QgsVertexId& id ) const;
+    QList< QPair<int, QgsVertexId> > curveVertexId( QgsVertexId id ) const;
 };
 
 #endif // QGSCOMPOUNDCURVEV2_H

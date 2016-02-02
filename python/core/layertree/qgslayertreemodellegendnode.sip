@@ -90,7 +90,7 @@ class QgsLayerTreeModelLegendNode : QObject
      * @param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
      * @return Size of the label (may span multiple lines)
      */
-    virtual QSizeF drawSymbolText( const QgsLegendSettings& settings, ItemContext* ctx, const QSizeF& symbolSize ) const;
+    virtual QSizeF drawSymbolText( const QgsLegendSettings& settings, ItemContext* ctx, QSizeF symbolSize ) const;
 
   signals:
     //! Emitted on internal data change so the layer tree model can forward the signal to views
@@ -137,7 +137,7 @@ class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
 
     //! Set the icon size
     //! @note added in 2.10
-    void setIconSize( const QSize& sz );
+    void setIconSize( QSize sz );
     //! @note added in 2.10
     QSize iconSize() const;
 

@@ -254,7 +254,7 @@ void HistogramItem::draw( QPainter *painter, const QwtScaleMap &xMap,
 }
 
 void HistogramItem::drawBar( QPainter *painter,
-                             Qt::Orientation, const QRect& rect ) const
+                             Qt::Orientation, QRect rect ) const
 {
   painter->save();
 

@@ -191,7 +191,7 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
      * @param takeSample set to true to actually sample the color, false to just cancel
      * the color picking operation
      */
-    void stopPicking( const QPoint& eventPos, const bool takeSample = true );
+    void stopPicking( QPoint eventPos, const bool takeSample = true );
 
     /** Returns the average color from the pixels in an image
      * @param image image to sample
@@ -203,7 +203,7 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
      * @param point position of color to sample
      * @returns average color from sampled position
      */
-    QColor sampleColor( const QPoint &point ) const;
+    QColor sampleColor( QPoint point ) const;
 
     /** Repopulates the scheme combo box with current color schemes
      */

@@ -646,7 +646,7 @@ bool QgsCurvePolygonV2::nextVertex( QgsVertexId& vId, QgsPointV2& vertex ) const
   }
 }
 
-bool QgsCurvePolygonV2::insertVertex( const QgsVertexId& vId, const QgsPointV2& vertex )
+bool QgsCurvePolygonV2::insertVertex( QgsVertexId vId, const QgsPointV2& vertex )
 {
   if ( !mExteriorRing || vId.ring < 0 || vId.ring >= 1 + mInteriorRings.size() )
   {
@@ -671,7 +671,7 @@ bool QgsCurvePolygonV2::insertVertex( const QgsVertexId& vId, const QgsPointV2& 
   return true;
 }
 
-bool QgsCurvePolygonV2::moveVertex( const QgsVertexId& vId, const QgsPointV2& newPos )
+bool QgsCurvePolygonV2::moveVertex( QgsVertexId vId, const QgsPointV2& newPos )
 {
   if ( !mExteriorRing || vId.ring < 0 || vId.ring >= 1 + mInteriorRings.size() )
   {
@@ -693,7 +693,7 @@ bool QgsCurvePolygonV2::moveVertex( const QgsVertexId& vId, const QgsPointV2& ne
   return success;
 }
 
-bool QgsCurvePolygonV2::deleteVertex( const QgsVertexId& vId )
+bool QgsCurvePolygonV2::deleteVertex( QgsVertexId vId )
 {
   if ( !mExteriorRing || vId.ring < 0 || vId.ring >= 1 + mInteriorRings.size() )
   {
@@ -758,7 +758,7 @@ QgsAbstractGeometryV2* QgsCurvePolygonV2::segmentize() const
   return toPolygon();
 }
 
-double QgsCurvePolygonV2::vertexAngle( const QgsVertexId& vertex ) const
+double QgsCurvePolygonV2::vertexAngle( QgsVertexId vertex ) const
 {
   if ( !mExteriorRing || vertex.ring < 0 || vertex.ring >= 1 + mInteriorRings.size() )
   {
@@ -775,7 +775,7 @@ int QgsCurvePolygonV2::vertexCount( int /*part*/, int ring ) const
   return ring == 0 ? mExteriorRing->vertexCount() : mInteriorRings[ring - 1]->vertexCount();
 }
 
-QgsPointV2 QgsCurvePolygonV2::vertexAt( const QgsVertexId& id ) const
+QgsPointV2 QgsCurvePolygonV2::vertexAt( QgsVertexId id ) const
 {
   return id.ring == 0 ? mExteriorRing->vertexAt( id ) : mInteriorRings[id.ring - 1]->vertexAt( id );
 }

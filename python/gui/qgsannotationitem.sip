@@ -33,7 +33,7 @@ class QgsAnnotationItem: QgsMapCanvasItem
 
     /** Returns the mouse move behaviour for a given position
       @param pos the position in scene coordinates*/
-    QgsAnnotationItem::MouseMoveAction moveActionForPosition( const QPointF& pos ) const;
+    QgsAnnotationItem::MouseMoveAction moveActionForPosition( QPointF pos ) const;
     /** Returns suitable cursor shape for mouse move action*/
     Qt::CursorShape cursorShapeForAction( MouseMoveAction moveAction ) const;
 
@@ -50,10 +50,10 @@ class QgsAnnotationItem: QgsMapCanvasItem
     /** Returns the CRS of the map position.*/
     QgsCoordinateReferenceSystem mapPositionCrs() const;
 
-    void setFrameSize( const QSizeF& size );
+    void setFrameSize( QSizeF size );
     QSizeF frameSize() const;
 
-    void setOffsetFromReferencePoint( const QPointF& offset );
+    void setOffsetFromReferencePoint( QPointF offset );
     QPointF offsetFromReferencePoint() const;
 
     /** Set symbol that is drawn on map position. Takes ownership*/
@@ -88,7 +88,7 @@ class QgsAnnotationItem: QgsMapCanvasItem
     /** Gets the frame line (0 is the top line, 1 right, 2 bottom, 3 left)*/
     QLineF segment( int index );
     /** Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
-    QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
+    QPointF pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance ) const;
     /** Returns the symbol size scaled in (mapcanvas) pixels. Used for the counding rect calculation*/
     double scaledSymbolSize() const;
 };

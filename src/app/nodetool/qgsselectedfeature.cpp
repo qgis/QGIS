@@ -315,7 +315,7 @@ void QgsSelectedFeature::deleteSelectedVertexes()
   }
 }
 
-void QgsSelectedFeature::moveSelectedVertexes( const QgsVector &v )
+void QgsSelectedFeature::moveSelectedVertexes( QgsVector v )
 {
   int nUpdates = 0;
   Q_FOREACH ( QgsVertexEntry *entry, mVertexMap )

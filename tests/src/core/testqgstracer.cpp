@@ -81,7 +81,7 @@ void print_shortest_path( QgsTracer& tracer, const QgsPoint& p1, const QgsPoint&
   if ( points.isEmpty() )
     qDebug( "no path!" );
 
-  foreach ( QgsPoint p, points )
+  Q_FOREACH ( const QgsPoint& p, points )
     qDebug( "p: %f %f", p.x(), p.y() );
 }
 

@@ -2192,7 +2192,7 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   return res;
 }
 
-bool QgsVectorLayer::deleteFeatures( QgsFeatureIds fids )
+bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds& fids )
 {
   if ( !mEditBuffer )
     return false;
@@ -3170,7 +3170,7 @@ QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression,
 
 
 /** Write blend mode for features */
-void QgsVectorLayer::setFeatureBlendMode( const QPainter::CompositionMode &featureBlendMode )
+void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlendMode )
 {
   mFeatureBlendMode = featureBlendMode;
   emit featureBlendModeChanged( featureBlendMode );

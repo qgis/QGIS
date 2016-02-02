@@ -81,7 +81,7 @@ class CORE_EXPORT QgsLabelFeature
     };
 
     //! Create label feature, takes ownership of the geometry instance
-    QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size );
+    QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, QSizeF size );
     //! Clean up geometry and curved label info (if present)
     virtual ~QgsLabelFeature();
 
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsLabelFeature
      * symbol for this feature.
      * @see symbolSize()
      */
-    void setSymbolSize( const QSizeF& size ) { mSymbolSize = size; }
+    void setSymbolSize( QSizeF size ) { mSymbolSize = size; }
 
     /** Returns the size of the rendered symbol associated with this feature, if applicable.
      * This size is taken into account in certain label placement modes to avoid placing labels over
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsLabelFeature
     QPointF quadOffset() const { return mQuadOffset; }
     //! Set which side of the point to use
     //! @see quadOffset
-    void setQuadOffset( const QPointF& quadOffset ) { mQuadOffset = quadOffset; }
+    void setQuadOffset( QPointF quadOffset ) { mQuadOffset = quadOffset; }
     //! Applies only to "offset from point" placement strategy.
     //! What offset (in map units) to use from the point
     QgsPoint positionOffset() const { return mPositionOffset; }

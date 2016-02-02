@@ -219,17 +219,17 @@ QString QgsVirtualLayerDefinition::toString() const
   return QString( toUrl().toEncoded() );
 }
 
-void QgsVirtualLayerDefinition::addSource( const QString& name, const QString ref )
+void QgsVirtualLayerDefinition::addSource( const QString& name, const QString& ref )
 {
   mSourceLayers.append( SourceLayer( name, ref ) );
 }
 
-void QgsVirtualLayerDefinition::addSource( const QString& name, const QString source, const QString& provider, const QString& encoding )
+void QgsVirtualLayerDefinition::addSource( const QString& name, const QString& source, const QString& provider, const QString& encoding )
 {
   mSourceLayers.append( SourceLayer( name, source, provider, encoding ) );
 }
 
-bool QgsVirtualLayerDefinition::hasSourceLayer( QString name ) const
+bool QgsVirtualLayerDefinition::hasSourceLayer( const QString& name ) const
 {
   foreach ( const QgsVirtualLayerDefinition::SourceLayer& l, sourceLayers() )
   {

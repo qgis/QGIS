@@ -84,7 +84,7 @@ class CORE_EXPORT QgsPoint
      * @param point QPointF source
      * @note added in QGIS 2.7
      */
-    QgsPoint( const QPointF& point )
+    QgsPoint( QPointF point )
         : m_x( point.x() ), m_y( point.y() )
     {}
 
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsPoint
      * @param point QPoint source
      * @note added in QGIS 2.7
      */
-    QgsPoint( const QPoint& point )
+    QgsPoint( QPoint point )
         : m_x( point.x() ), m_y( point.y() )
     {}
 
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsPoint
     bool operator!=( const QgsPoint &other ) const;
 
     //! Multiply x and y by the given value
-    void multiply( const double& scalar );
+    void multiply( double scalar );
 
     //! Test if this point is on the segment defined by points a, b
     //! @return 0 if this point is not on the open ray through a and b,
@@ -218,10 +218,10 @@ class CORE_EXPORT QgsPoint
     QgsPoint & operator=( const QgsPoint &other );
 
     QgsVector operator-( const QgsPoint& p ) const { return QgsVector( m_x - p.m_x, m_y - p.m_y ); }
-    QgsPoint &operator+=( const QgsVector &v ) { *this = *this + v; return *this; }
-    QgsPoint &operator-=( const QgsVector &v ) { *this = *this - v; return *this; }
-    QgsPoint operator+( const QgsVector &v ) const { return QgsPoint( m_x + v.x(), m_y + v.y() ); }
-    QgsPoint operator-( const QgsVector &v ) const { return QgsPoint( m_x - v.x(), m_y - v.y() ); }
+    QgsPoint &operator+=( QgsVector v ) { *this = *this + v; return *this; }
+    QgsPoint &operator-=( QgsVector v ) { *this = *this - v; return *this; }
+    QgsPoint operator+( QgsVector v ) const { return QgsPoint( m_x + v.x(), m_y + v.y() ); }
+    QgsPoint operator-( QgsVector v ) const { return QgsPoint( m_x - v.x(), m_y - v.y() ); }
 
   private:
 

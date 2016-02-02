@@ -85,7 +85,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     virtual void paintEvent( QPaintEvent* event ) override;
 
   private slots:
-    void changed( const int& value );
+    void changed( int value );
 
   private:
     int frameWidth() const;

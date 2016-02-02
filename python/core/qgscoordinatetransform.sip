@@ -154,7 +154,7 @@ class QgsCoordinateTransform : QObject
      * @param direction TransformDirection (defaults to ForwardTransform)
      * @return QgsRectangle in Destination Coordinate System
      */
-    void transformCoords( const int &numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
+    void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
 
     /*!
      * Flag to indicate whether the coordinate systems have been initialised

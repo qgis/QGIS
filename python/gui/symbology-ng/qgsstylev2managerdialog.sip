@@ -17,7 +17,7 @@ class QgsStyleV2ManagerDialog : QDialog
     void removeItem();
     void exportItemsSVG();
     void exportItemsPNG();
-    void exportSelectedItemsImages( const QString& dir, const QString& format, const QSize& size );
+    void exportSelectedItemsImages( const QString& dir, const QString& format, QSize size );
     void exportItems();
     void importItems();
 
@@ -59,10 +59,10 @@ class QgsStyleV2ManagerDialog : QDialog
     void selectedSymbolsChanged( const QItemSelection& selected, const QItemSelection& deselected );
 
     //! Context menu for the groupTree
-    void grouptreeContextMenu( const QPoint& );
+    void grouptreeContextMenu( QPoint );
 
     //! Context menu for the listItems ( symbols list )
-    void listitemsContextMenu( const QPoint& );
+    void listitemsContextMenu( QPoint );
 
   protected slots:
     bool addColorRamp( QAction* action );

@@ -203,7 +203,7 @@ static void _updateBestMatch( QgsPointLocator::Match& bestMatch, const QgsPoint&
 }
 
 
-QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QPoint& point, QgsPointLocator::MatchFilter* filter )
+QgsPointLocator::Match QgsSnappingUtils::snapToMap( QPoint point, QgsPointLocator::MatchFilter* filter )
 {
   return snapToMap( mMapSettings.mapToPixel().toMapCoordinates( point ), filter );
 }
@@ -407,7 +407,7 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest>& layers
 }
 
 
-QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( const QPoint& point, int type, QgsPointLocator::MatchFilter* filter )
+QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter* filter )
 {
   if ( !mCurrentLayer )
     return QgsPointLocator::Match();

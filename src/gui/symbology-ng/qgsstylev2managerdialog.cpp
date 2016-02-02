@@ -799,7 +799,7 @@ void QgsStyleV2ManagerDialog::exportItemsSVG()
 }
 
 
-void QgsStyleV2ManagerDialog::exportSelectedItemsImages( const QString& dir, const QString& format, const QSize& size )
+void QgsStyleV2ManagerDialog::exportSelectedItemsImages( const QString& dir, const QString& format, QSize size )
 {
   if ( dir.isEmpty() )
     return;
@@ -1369,7 +1369,7 @@ void QgsStyleV2ManagerDialog::enableItemsForGroupingMode( bool enable )
   actnEditItem->setEnabled( enable );
 }
 
-void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
+void QgsStyleV2ManagerDialog::grouptreeContextMenu( QPoint point )
 {
   QPoint globalPos = groupTree->viewport()->mapToGlobal( point );
 
@@ -1380,7 +1380,7 @@ void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
     mGroupTreeContextMenu->popup( globalPos );
 }
 
-void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
+void QgsStyleV2ManagerDialog::listitemsContextMenu( QPoint point )
 {
   QPoint globalPos = listItems->viewport()->mapToGlobal( point );
 

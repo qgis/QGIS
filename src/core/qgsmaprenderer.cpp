@@ -1126,7 +1126,7 @@ const QgsCoordinateTransform *QgsMapRenderer::transformation( const QgsMapLayer 
 
 /** Returns a QPainter::CompositionMode corresponding to a QgsMapRenderer::BlendMode
  */
-QPainter::CompositionMode QgsMapRenderer::getCompositionMode( const QgsMapRenderer::BlendMode &blendMode )
+QPainter::CompositionMode QgsMapRenderer::getCompositionMode( QgsMapRenderer::BlendMode blendMode )
 {
   // Map QgsMapRenderer::BlendNormal to QPainter::CompositionMode
   switch ( blendMode )
@@ -1185,7 +1185,7 @@ QPainter::CompositionMode QgsMapRenderer::getCompositionMode( const QgsMapRender
   }
 }
 
-QgsMapRenderer::BlendMode QgsMapRenderer::getBlendModeEnum( const QPainter::CompositionMode &blendMode )
+QgsMapRenderer::BlendMode QgsMapRenderer::getBlendModeEnum( QPainter::CompositionMode blendMode )
 {
   // Map QPainter::CompositionMode to QgsMapRenderer::BlendNormal
   switch ( blendMode )

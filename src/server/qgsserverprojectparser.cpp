@@ -1215,7 +1215,7 @@ QList<QDomElement> QgsServerProjectParser::findLegendGroupElements() const
   return LegendGroupElemList;
 }
 
-QList<QDomElement> QgsServerProjectParser::setLegendGroupElementsWithLayerTree( QgsLayerTreeGroup* layerTreeGroup, QDomElement legendElement ) const
+QList<QDomElement> QgsServerProjectParser::setLegendGroupElementsWithLayerTree( QgsLayerTreeGroup* layerTreeGroup, const QDomElement& legendElement ) const
 {
   QList<QDomElement> LegendGroupElemList;
   QList< QgsLayerTreeNode * > layerTreeGroupChildren = layerTreeGroup->children();

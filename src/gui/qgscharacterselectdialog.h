@@ -39,7 +39,7 @@ class GUI_EXPORT QgsCharacterSelectorDialog : public QDialog, private Ui::QgsCha
     const QChar& selectCharacter( bool* gotChar, const QFont& font, const QString& style );
 
   private slots:
-    void setCharacter( const QChar& chr );
+    void setCharacter( QChar chr );
 
   protected:
     QChar mChar;

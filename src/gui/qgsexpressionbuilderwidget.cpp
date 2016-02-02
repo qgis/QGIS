@@ -669,7 +669,7 @@ void QgsExpressionBuilderWidget::operatorButtonClicked()
   txtExpressionString->setFocus();
 }
 
-void QgsExpressionBuilderWidget::showContextMenu( const QPoint & pt )
+void QgsExpressionBuilderWidget::showContextMenu( QPoint pt )
 {
   QModelIndex idx = expressionTree->indexAt( pt );
   idx = mProxyModel->mapToSource( idx );

@@ -803,7 +803,7 @@ class CORE_EXPORT QgsExpression
         //! setter interval validity
         void setValid( bool valid ) { mValid = valid; }
         //! compare two intervals
-        bool operator==( const QgsExpression::Interval& other ) const;
+        bool operator==( QgsExpression::Interval other ) const;
         //! return an invalid interval
         static QgsExpression::Interval invalidInterVal();
         //! convert a string to an interval

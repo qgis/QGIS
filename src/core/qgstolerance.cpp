@@ -138,7 +138,7 @@ double QgsTolerance::computeMapUnitPerPixel( QgsMapLayer* layer, const QgsMapSet
 }
 
 
-QgsPoint QgsTolerance::toLayerCoordinates( QgsMapLayer* layer, const QgsMapSettings& mapSettings, const QPoint& point )
+QgsPoint QgsTolerance::toLayerCoordinates( QgsMapLayer* layer, const QgsMapSettings& mapSettings, QPoint point )
 {
   QgsPoint pt = mapSettings.mapToPixel().toMapCoordinates( point );
   return mapSettings.mapToLayerCoordinates( layer, pt );

@@ -424,7 +424,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
   update();
 }
 
-void QgsRubberBand::setToCanvasRectangle( const QRect& rect )
+void QgsRubberBand::setToCanvasRectangle( QRect rect )
 {
   if ( !mMapCanvas )
   {
@@ -474,7 +474,7 @@ void QgsRubberBand::paint( QPainter* p )
 
         case QGis::Point:
         {
-          Q_FOREACH ( const QPointF& pt, pts )
+          Q_FOREACH ( QPointF pt, pts )
           {
             double x = pt.x();
             double y = pt.y();

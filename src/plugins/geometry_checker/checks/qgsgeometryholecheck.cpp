@@ -41,7 +41,7 @@ void QgsGeometryHoleCheck::fixError( QgsGeometryCheckError* error, int method, i
     return;
   }
   QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
-  const QgsVertexId& vidx = error->vidx();
+  QgsVertexId vidx = error->vidx();
 
   // Check if ring still exists
   if ( !vidx.isValid( geom ) )

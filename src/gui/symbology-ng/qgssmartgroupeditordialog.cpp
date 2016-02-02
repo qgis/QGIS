@@ -155,7 +155,7 @@ QString QgsSmartGroupEditorDialog::conditionOperator()
   return mAndOrCombo->itemData( mAndOrCombo->currentIndex() ).toString();
 }
 
-void QgsSmartGroupEditorDialog::setConditionMap( QgsSmartConditionMap map )
+void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap& map )
 {
   QStringList constraints;
   constraints << "tag" << "group" << "name" << "!tag" << "!group" << "!name";

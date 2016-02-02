@@ -16,7 +16,7 @@ class QgsComposerRuler : QWidget
     QSize minimumSizeHint() const;
 
     void setSceneTransform( const QTransform& transform );
-    void updateMarker( const QPointF& pos );
+    void updateMarker( QPointF pos );
 
     void setComposition( QgsComposition* c );
     QgsComposition* composition();

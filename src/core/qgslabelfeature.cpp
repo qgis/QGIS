@@ -17,7 +17,7 @@
 #include "feature.h"
 
 
-QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size )
+QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, QSizeF size )
     : mLayer( nullptr )
     , mId( id )
     , mGeometry( geometry )

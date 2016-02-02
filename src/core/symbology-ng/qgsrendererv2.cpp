@@ -548,7 +548,7 @@ bool QgsFeatureRendererV2::willRenderFeature( QgsFeature &feat, QgsRenderContext
   return nullptr != symbolForFeature( feat, context );
 }
 
-void QgsFeatureRendererV2::renderVertexMarker( const QPointF &pt, QgsRenderContext& context )
+void QgsFeatureRendererV2::renderVertexMarker( QPointF pt, QgsRenderContext& context )
 {
   QgsVectorLayer::drawVertexMarker( pt.x(), pt.y(), *context.painter(),
                                     static_cast< QgsVectorLayer::VertexMarkerType >( mCurrentVertexMarkerType ),
@@ -557,20 +557,20 @@ void QgsFeatureRendererV2::renderVertexMarker( const QPointF &pt, QgsRenderConte
 
 void QgsFeatureRendererV2::renderVertexMarkerPolyline( QPolygonF& pts, QgsRenderContext& context )
 {
-  Q_FOREACH ( const QPointF& pt, pts )
+  Q_FOREACH ( QPointF pt, pts )
     renderVertexMarker( pt, context );
 }
 
 void QgsFeatureRendererV2::renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolygonF>* rings, QgsRenderContext& context )
 {
-  Q_FOREACH ( const QPointF& pt, pts )
+  Q_FOREACH ( QPointF pt, pts )
     renderVertexMarker( pt, context );
 
   if ( rings )
   {
     Q_FOREACH ( const QPolygonF& ring, *rings )
     {
-      Q_FOREACH ( const QPointF& pt, ring )
+      Q_FOREACH ( QPointF pt, ring )
         renderVertexMarker( pt, context );
     }
   }

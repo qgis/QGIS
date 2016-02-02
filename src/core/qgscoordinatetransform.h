@@ -190,7 +190,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * @param direction TransformDirection (defaults to ForwardTransform)
      * @return QgsRectangle in Destination Coordinate System
      */
-    void transformCoords( const int &numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const;
+    void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const;
 
     /*!
      * Flag to indicate whether the coordinate systems have been initialised

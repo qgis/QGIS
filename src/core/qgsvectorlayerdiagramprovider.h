@@ -29,7 +29,7 @@ class QgsDiagramLabelFeature : public QgsLabelFeature
 {
   public:
     //! Create label feature, takes ownership of the geometry instance
-    QgsDiagramLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size )
+    QgsDiagramLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, QSizeF size )
         : QgsLabelFeature( id, geometry, size ) {}
 
     //! Store feature's attributes - used for rendering of diagrams

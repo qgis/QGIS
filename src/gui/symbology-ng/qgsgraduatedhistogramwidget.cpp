@@ -221,7 +221,7 @@ bool QgsGraduatedHistogramEventFilter::eventFilter( QObject *object, QEvent *eve
   return QObject::eventFilter( object, event );
 }
 
-double QgsGraduatedHistogramEventFilter::posToValue( const QPointF &point ) const
+double QgsGraduatedHistogramEventFilter::posToValue( QPointF point ) const
 {
   if ( !mPlot )
     return -99999999;

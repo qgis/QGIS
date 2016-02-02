@@ -47,7 +47,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
 
     /** Construct a QgsPointV2 from a QPointF
      */
-    explicit QgsPointV2( const QPointF& p );
+    explicit QgsPointV2( QPointF p );
 
     /** Construct a point with a specified type (eg PointZ, PointM) and initial x, y, z, and m values.
      * @param type point type
@@ -170,9 +170,9 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
     virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const override;
 
     //low-level editing
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) override;
-    virtual bool deleteVertex( const QgsVertexId& position ) override { Q_UNUSED( position ); return false; }
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
+    virtual bool deleteVertex( QgsVertexId position ) override { Q_UNUSED( position ); return false; }
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
@@ -180,12 +180,12 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
     /** Angle undefined. Always returns 0.0
         @param vertex the vertex id
         @return 0.0*/
-    double vertexAngle( const QgsVertexId& vertex ) const override { Q_UNUSED( vertex ); return 0.0; }
+    double vertexAngle( QgsVertexId vertex ) const override { Q_UNUSED( vertex ); return 0.0; }
 
     virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return 1; }
     virtual int ringCount( int /*part*/ = 0 ) const override { return 1; }
     virtual int partCount() const override { return 1; }
-    virtual QgsPointV2 vertexAt( const QgsVertexId& /*id*/ ) const override { return *this; }
+    virtual QgsPointV2 vertexAt( QgsVertexId /*id*/ ) const override { return *this; }
 
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;

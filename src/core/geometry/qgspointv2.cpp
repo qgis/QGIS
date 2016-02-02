@@ -50,7 +50,7 @@ QgsPointV2::QgsPointV2( const QgsPoint& p )
   mWkbType = QgsWKBTypes::Point;
 }
 
-QgsPointV2::QgsPointV2( const QPointF& p )
+QgsPointV2::QgsPointV2( QPointF p )
     : QgsAbstractGeometryV2()
     , mX( p.x() )
     , mY( p.y() )
@@ -279,7 +279,7 @@ void QgsPointV2::coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coor
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsPointV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
+bool QgsPointV2::moveVertex( QgsVertexId position, const QgsPointV2& newPos )
 {
   Q_UNUSED( position );
   mBoundingBox = QgsRectangle();

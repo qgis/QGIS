@@ -203,7 +203,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   return layer;
 }
 
-void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
+void QgsEllipseSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2RenderContext& context )
 {
   bool ok;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH ) )
@@ -606,7 +606,7 @@ QgsMapUnitScale QgsEllipseSymbolLayerV2::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
-QRectF QgsEllipseSymbolLayerV2::bounds( const QPointF& point, QgsSymbolV2RenderContext& context )
+QRectF QgsEllipseSymbolLayerV2::bounds( QPointF point, QgsSymbolV2RenderContext& context )
 {
   QSizeF size = calculateSize( context );
 
@@ -661,7 +661,7 @@ QRectF QgsEllipseSymbolLayerV2::bounds( const QPointF& point, QgsSymbolV2RenderC
   return symbolBounds;
 }
 
-bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolV2RenderContext *context, const QgsFeature*, const QPointF& shift ) const
+bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolV2RenderContext *context, const QgsFeature*, QPointF shift ) const
 {
   //width
   double symbolWidth = mSymbolWidth;

@@ -53,7 +53,7 @@ QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* sty
   }
 }
 
-void QgsRendererV2Widget::contextMenuViewCategories( const QPoint & )
+void QgsRendererV2Widget::contextMenuViewCategories( QPoint )
 {
   contextMenu->exec( QCursor::pos() );
 }

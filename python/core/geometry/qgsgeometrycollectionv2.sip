@@ -73,9 +73,9 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
 
     //low-level editing
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex );
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos );
-    virtual bool deleteVertex( const QgsVertexId& position );
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex );
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos );
+    virtual bool deleteVertex( QgsVertexId position );
 
     virtual double length() const;
     virtual double area() const;
@@ -89,12 +89,12 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
         @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
-    double vertexAngle( const QgsVertexId& vertex ) const;
+    double vertexAngle( QgsVertexId vertex ) const;
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const;
     virtual int ringCount( int part = 0 ) const;
     virtual int partCount() const;
-    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const;
+    virtual QgsPointV2 vertexAt( QgsVertexId id ) const;
 
     virtual bool addZValue( double zValue = 0 );
     virtual bool addMValue( double mValue = 0 );

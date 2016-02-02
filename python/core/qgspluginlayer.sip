@@ -16,7 +16,7 @@ class QgsPluginLayer : QgsMapLayer
     //! return a list of symbology items for the legend
     //! (defult implementation returns nothing)
     //! @note Added in v2.1
-    virtual QgsLegendSymbologyList legendSymbologyItems( const QSize& iconSize );
+    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      *

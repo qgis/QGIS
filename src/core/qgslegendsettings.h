@@ -186,7 +186,7 @@ class CORE_EXPORT QgsLegendSettings
     double textWidthMillimeters( const QFont& font, const QString& text ) const;
 
     /** Returns the font height of a character in millimeters */
-    double fontHeightCharacterMM( const QFont& font, const QChar& c ) const;
+    double fontHeightCharacterMM( const QFont& font, QChar c ) const;
 
     /** Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE */
     double fontAscentMillimeters( const QFont& font ) const;

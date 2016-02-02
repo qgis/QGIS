@@ -335,7 +335,7 @@ const QPixmap& QgsColorSwatchGrid::transparentBackground()
   return transpBkgrd;
 }
 
-int QgsColorSwatchGrid::swatchForPosition( const QPoint &position ) const
+int QgsColorSwatchGrid::swatchForPosition( QPoint position ) const
 {
   //calculate box for position
   int box = -1;

@@ -269,7 +269,7 @@ void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QgsMapMouseEvent* e )
   mCanvas->refresh();
 }
 
-double QgsMapToolRotatePointSymbols::calculateAzimut( const QPoint& mousePos )
+double QgsMapToolRotatePointSymbols::calculateAzimut( QPoint mousePos )
 {
   int dx = mousePos.x() - mSnappedPoint.x();
   int dy = mousePos.y() - mSnappedPoint.y();

@@ -53,9 +53,9 @@ class CORE_EXPORT QgsDiagram
     QgsExpression* getExpression( const QString& expression, const QgsExpressionContext& context );
 
     /** @deprecated `void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )` should be used instead */
-    virtual Q_DECL_DEPRECATED void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );
+    virtual Q_DECL_DEPRECATED void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position );
     /** Draws the diagram at the given position (in pixel coordinates)*/
-    virtual void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position ) = 0;
+    virtual void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position ) = 0;
     virtual QString diagramName() const = 0;
     /** Returns the size in map units the diagram will use to render.*/
     virtual QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s ) = 0;
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsDiagram
      *
      *  @return The converted size for rendering
      */
-    QSizeF sizePainterUnits( const QSizeF& size, const QgsDiagramSettings& s, const QgsRenderContext& c );
+    QSizeF sizePainterUnits( QSizeF size, const QgsDiagramSettings& s, const QgsRenderContext& c );
 
     /** Calculates a length to match the current settings and rendering context
      *  @param l    The length to convert

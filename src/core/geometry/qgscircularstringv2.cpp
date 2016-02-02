@@ -681,7 +681,7 @@ void QgsCircularStringV2::addToPainterPath( QPainterPath& path ) const
   }
 }
 
-void QgsCircularStringV2::arcTo( QPainterPath& path, const QPointF& pt1, const QPointF& pt2, const QPointF& pt3 )
+void QgsCircularStringV2::arcTo( QPainterPath& path, QPointF pt1, QPointF pt2, QPointF pt3 )
 {
   double centerX, centerY, radius;
   QgsGeometryUtils::circleCenterRadius( QgsPointV2( pt1.x(), pt1.y() ), QgsPointV2( pt2.x(), pt2.y() ), QgsPointV2( pt3.x(), pt3.y() ),
@@ -699,7 +699,7 @@ void QgsCircularStringV2::drawAsPolygon( QPainter& p ) const
   draw( p );
 }
 
-bool QgsCircularStringV2::insertVertex( const QgsVertexId& position, const QgsPointV2& vertex )
+bool QgsCircularStringV2::insertVertex( QgsVertexId position, const QgsPointV2& vertex )
 {
   if ( position.vertex > mX.size() || position.vertex < 1 )
   {
@@ -730,7 +730,7 @@ bool QgsCircularStringV2::insertVertex( const QgsVertexId& position, const QgsPo
   return true;
 }
 
-bool QgsCircularStringV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
+bool QgsCircularStringV2::moveVertex( QgsVertexId position, const QgsPointV2& newPos )
 {
   if ( position.vertex < 0 || position.vertex >= mX.size() )
   {
@@ -751,7 +751,7 @@ bool QgsCircularStringV2::moveVertex( const QgsVertexId& position, const QgsPoin
   return true;
 }
 
-bool QgsCircularStringV2::deleteVertex( const QgsVertexId& position )
+bool QgsCircularStringV2::deleteVertex( QgsVertexId position )
 {
   int nVertices = this->numPoints();
   if ( nVertices < 4 ) //circular string must have at least 3 vertices
@@ -980,7 +980,7 @@ void QgsCircularStringV2::insertVertexBetween( int after, int before, int pointO
   }
 }
 
-double QgsCircularStringV2::vertexAngle( const QgsVertexId& vId ) const
+double QgsCircularStringV2::vertexAngle( QgsVertexId vId ) const
 {
   int before = vId.vertex - 1;
   int vertex = vId.vertex;

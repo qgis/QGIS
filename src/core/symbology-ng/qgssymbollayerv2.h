@@ -242,7 +242,7 @@ class CORE_EXPORT QgsSymbolLayerV2
                            const QString& layerName,
                            QgsSymbolV2RenderContext* context,
                            const QgsFeature* f,
-                           const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
+                           QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 
     virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
     virtual double dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
@@ -411,7 +411,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 
     void startRender( QgsSymbolV2RenderContext& context ) override;
 
-    virtual void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context ) = 0;
+    virtual void renderPoint( QPointF point, QgsSymbolV2RenderContext& context ) = 0;
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) override;
 
@@ -471,7 +471,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
      * @note this method will become pure virtual in QGIS 3.0
      */
     //TODO QGIS 3.0 - make pure virtual
-    virtual QRectF bounds( const QPointF& point, QgsSymbolV2RenderContext& context ) { Q_UNUSED( context ); Q_UNUSED( point ); return QRectF(); }
+    virtual QRectF bounds( QPointF point, QgsSymbolV2RenderContext& context ) { Q_UNUSED( context ); Q_UNUSED( point ); return QRectF(); }
 
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
@@ -488,7 +488,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
                        double& offsetX, double& offsetY,
                        const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const;
 
-    static QPointF _rotatedOffset( const QPointF& offset, double angle );
+    static QPointF _rotatedOffset( QPointF offset, double angle );
 
     double mAngle;
     double mLineAngle;

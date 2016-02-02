@@ -23,7 +23,7 @@ class QgsPointV2: public QgsAbstractGeometryV2
 
     /** Construct a QgsPointV2 from a QPointF
      */
-    explicit QgsPointV2( const QPointF& p );
+    explicit QgsPointV2( QPointF p );
 
     /** Construct a point with a specified type (eg PointZ, PointM) and initial x, y, z, and m values.
      * @param type point type
@@ -158,9 +158,9 @@ class QgsPointV2: public QgsAbstractGeometryV2
     virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord /Out/ ) const;
 
     //low-level editing
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex );
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos );
-    virtual bool deleteVertex( const QgsVertexId& position );
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex );
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos );
+    virtual bool deleteVertex( QgsVertexId position );
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
@@ -168,12 +168,12 @@ class QgsPointV2: public QgsAbstractGeometryV2
     /** Angle undefined. Always returns 0.0
         @param vertex the vertex id
         @return 0.0*/
-    double vertexAngle( const QgsVertexId& vertex ) const;
+    double vertexAngle( QgsVertexId vertex ) const;
 
     virtual int vertexCount( int /*part*/ = 0, int ring = 0 ) const;
     virtual int ringCount( int /*part*/ = 0 ) const;
     virtual int partCount() const;
-    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const;
+    virtual QgsPointV2 vertexAt( QgsVertexId id ) const;
 
     virtual bool addZValue( double zValue = 0 );
     virtual bool addMValue( double mValue = 0 );

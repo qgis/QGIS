@@ -43,7 +43,7 @@ class APP_EXPORT QgsMapToolAnnotation: public QgsMapTool
 
   private:
     /** Returns the topmost annotation item at the position (or 0 if none)*/
-    QgsAnnotationItem* itemAtPos( const QPointF& pos );
+    QgsAnnotationItem* itemAtPos( QPointF pos );
     QgsAnnotationItem* selectedItem();
     /** Returns a list of all annotationitems in the canvas*/
     QList<QgsAnnotationItem*> annotationItems();

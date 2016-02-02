@@ -146,7 +146,7 @@ void QgsMapOverviewCanvas::mouseMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMapOverviewCanvas::updatePanningWidget( const QPoint& pos )
+void QgsMapOverviewCanvas::updatePanningWidget( QPoint pos )
 {
 //  if (mPanningWidget->isHidden())
 //    return;

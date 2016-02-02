@@ -201,7 +201,7 @@ void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
   }
 }
 
-QgsPoint QgsDxfPaintEngine::toDxfCoordinates( const QPointF& pt ) const
+QgsPoint QgsDxfPaintEngine::toDxfCoordinates( QPointF pt ) const
 {
   if ( !mPaintDevice || !mDxf )
     return QgsPoint( pt.x(), pt.y() );

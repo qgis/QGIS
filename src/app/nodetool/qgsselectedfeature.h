@@ -80,7 +80,7 @@ class QgsSelectedFeature: public QObject
      * Moves selected vertex
      * @param v translation vector
      */
-    void moveSelectedVertexes( const QgsVector &v );
+    void moveSelectedVertexes( QgsVector v );
 
     /**
      * Inverts selection of vertex with number

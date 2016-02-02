@@ -89,7 +89,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
   protected:
     int nextPoint( const QgsPoint& mapPoint, QgsPoint& layerPoint );
-    int nextPoint( const QPoint &p, QgsPoint &layerPoint, QgsPoint &mapPoint );
+    int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );
 
     /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
      @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
