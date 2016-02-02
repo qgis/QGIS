@@ -15,7 +15,7 @@
 ###########################################################################
 
 
-PATH=$PATH:$(git rev-parse --show-toplevel)/scripts
+PATH=$(git rev-parse --show-toplevel)/scripts:$PATH
 
 if ! type -p astyle.sh >/dev/null; then
 	echo astyle.sh not found
@@ -31,7 +31,7 @@ fi
 
 if [ "$1" = "-c" ]; then
 	echo "Cleaning..."
-	find . \( -name "*.prepare" -o -name "*.astyle" -o -name "*.nocopyright" -o -name "astyle.*.diff" -o -name "sha-*.diff" -o -name "*.sortinc" -o -name "*.bom" \) -print -delete
+	remove_temporary_files.sh
 fi
 
 set -e
