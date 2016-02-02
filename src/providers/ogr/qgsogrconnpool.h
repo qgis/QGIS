@@ -88,6 +88,10 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
   public:
     static QgsOgrConnPool* instance();
 
+    // Singleton cleanup
+    // WARNING: do not rely on instace() return after a call to this
+    static void cleanupInstance();
+
     void ref( const QString& connInfo )
     {
       mMutex.lock();

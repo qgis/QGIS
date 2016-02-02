@@ -21,6 +21,11 @@ QgsOgrConnPool* QgsOgrConnPool::instance()
   return pool;
 }
 
+void QgsOgrConnPool::cleanupInstance()
+{
+  delete instance();
+}
+
 QgsOgrConnPool::QgsOgrConnPool() : QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup>()
 {
   QgsDebugCall;
