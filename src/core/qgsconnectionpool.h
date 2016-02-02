@@ -128,15 +128,22 @@ class QgsConnectionPoolGroup
     {
       connMutex.lock();
       acquiredConns.removeAll( conn );
-      Item i;
-      i.c = conn;
-      i.lastUsedTime = QTime::currentTime();
-      conns.push( i );
-
-      if ( !expirationTimer->isActive() )
+      if ( !qgsConnectionPool_ConnectionIsValid( conn ) )
       {
-        // will call the slot directly or queue the call (if the object lives in a different thread)
-        QMetaObject::invokeMethod( expirationTimer->parent(), "startExpirationTimer" );
+        qgsConnectionPool_ConnectionDestroy( conn );
+      }
+      else
+      {
+        Item i;
+        i.c = conn;
+        i.lastUsedTime = QTime::currentTime();
+        conns.push( i );
+
+        if ( !expirationTimer->isActive() )
+        {
+          // will call the slot directly or queue the call (if the object lives in a different thread)
+          QMetaObject::invokeMethod( expirationTimer->parent(), "startExpirationTimer" );
+        }
       }
 
       connMutex.unlock();
