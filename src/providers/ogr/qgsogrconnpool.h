@@ -133,16 +133,6 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
       mMutex.unlock();
     }
 
-    static void refS( const QString &connInfo )
-    {
-      instance()->ref( connInfo );
-    }
-
-    static void unrefS( const QString &connInfo )
-    {
-      instance()->unref( connInfo );
-    }
-
   protected:
     Q_DISABLE_COPY( QgsOgrConnPool )
 
