@@ -876,6 +876,10 @@ void QgsApplication::exitQgis()
 
   //delete all registered functions from expression engine (see above comment)
   QgsExpression::cleanRegisteredFunctions();
+
+  // tear-down GDAL/OGR
+  OGRCleanupAll();
+  GDALDestroyDriverManager();
 }
 
 QString QgsApplication::showSettings()
