@@ -1559,7 +1559,7 @@ void QgsColorPreviewWidget::drawColor( const QColor &color, const QRect &rect, Q
 
     //draw half of widget showing solid color, the other half showing color with alpha
 
-    //ensure at least a 1px overlap to avoid artefacts
+    //ensure at least a 1px overlap to avoid artifacts
     QBrush colorBrush = QBrush( color );
     painter.setBrush( colorBrush );
     painter.drawRect( floor( rect.width() / 2.0 ) + rect.left(), rect.top(), rect.width() - floor( rect.width() / 2.0 ), rect.height() );

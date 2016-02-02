@@ -89,7 +89,7 @@
     <parameter_type source_parameter_type="ParameterType_Radius">ParameterNumber</parameter_type>
     <key>interpolator.bco.radius</key>
     <name>Radius for bicubic interpolation</name>
-    <description>This parameter allows controlling the size of the bicubic interpolation filter. If the target pixel size is higher than the input pixel size, increasing this parameter will reduce aliasing artefacts.</description>
+    <description>This parameter allows controlling the size of the bicubic interpolation filter. If the target pixel size is higher than the input pixel size, increasing this parameter will reduce aliasing artifacts.</description>
     <minValue />
     <maxValue />
     <default>2</default>
