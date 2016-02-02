@@ -118,14 +118,12 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
 
     static void refS( const QString &connInfo )
     {
-      if ( instance() )
-        instance()->ref( connInfo );
+      instance()->ref( connInfo );
     }
 
     static void unrefS( const QString &connInfo )
     {
-      if ( instance() )
-        instance()->unref( connInfo );
+      instance()->unref( connInfo );
     }
 
   protected:
@@ -134,9 +132,6 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
   private:
     QgsOgrConnPool();
     ~QgsOgrConnPool();
-
-    static QgsOgrConnPool sInstance;
-    static bool sInstanceDestroyed;
 };
 
 
