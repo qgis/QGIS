@@ -247,7 +247,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
 
   signals:
     /** Signal when an invalid pj_transform() has occurred */
-    void  invalidTransformInput() const;
+    void invalidTransformInput() const;
 
   private:
 

@@ -93,7 +93,7 @@ void QgsMapCanvasTracer::configure()
     }
     break;
     case QgsSnappingUtils::SnapAllLayers:
-      foreach ( const QString& layerId, visibleLayerIds )
+      Q_FOREACH ( const QString& layerId, visibleLayerIds )
       {
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
         if ( vl )
@@ -101,7 +101,7 @@ void QgsMapCanvasTracer::configure()
       }
       break;
     case QgsSnappingUtils::SnapAdvanced:
-      foreach ( const QgsSnappingUtils::LayerConfig& cfg, mCanvas->snappingUtils()->layers() )
+      Q_FOREACH ( const QgsSnappingUtils::LayerConfig& cfg, mCanvas->snappingUtils()->layers() )
       {
         if ( visibleLayerIds.contains( cfg.layer->id() ) )
           layers << cfg.layer;

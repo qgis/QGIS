@@ -440,7 +440,7 @@ void TestQgsLegendRenderer::testFilterByPolygon()
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
   QStringList ll;
-  foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     ll << l->id();
   }
@@ -475,7 +475,7 @@ void TestQgsLegendRenderer::testFilterByExpression()
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
   QStringList ll;
-  foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     ll << l->id();
   }

@@ -553,7 +553,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         mAccessControl->filterFeatures( layer, fReq );
 
         QStringList attributes = QStringList();
-        foreach ( int idx, attrIndexes )
+        Q_FOREACH ( int idx, attrIndexes )
         {
           attributes.append( layer->pendingFields().field( idx ).name() );
         }

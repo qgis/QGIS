@@ -1630,7 +1630,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   // dependencies
   QDomElement dependenciesElement = document.createElement( "layerDependencies" );
-  foreach ( QString layerId, layerDependencies() )
+  Q_FOREACH ( QString layerId, layerDependencies() )
   {
     QDomElement depElem = document.createElement( "layer" );
     depElem.setAttribute( "id", layerId );

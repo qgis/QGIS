@@ -383,7 +383,7 @@ QString QgsLayerTreeUtils::legendFilterByExpression( const QgsLayerTreeLayer& la
 
 bool QgsLayerTreeUtils::hasLegendFilterExpression( const QgsLayerTreeGroup& group )
 {
-  foreach ( QgsLayerTreeLayer* l, group.findLayers() )
+  Q_FOREACH ( QgsLayerTreeLayer* l, group.findLayers() )
   {
     bool exprEnabled;
     QString expr = legendFilterByExpression( *l, &exprEnabled );
@@ -403,7 +403,7 @@ QgsLayerTreeLayer* QgsLayerTreeUtils::insertLayerBelow( QgsLayerTreeGroup* group
     return nullptr;
 
   int idx = 0;
-  foreach ( QgsLayerTreeNode* vl, inTree->parent()->children() )
+  Q_FOREACH ( QgsLayerTreeNode* vl, inTree->parent()->children() )
   {
     if ( vl->nodeType() == QgsLayerTreeNode::NodeLayer && static_cast<QgsLayerTreeLayer*>( vl )->layer() == refLayer )
     {

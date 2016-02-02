@@ -63,7 +63,7 @@ static QgsVectorLayer* make_layer( const QStringList& wkts )
   Q_ASSERT( vl->isValid() );
 
   vl->startEditing();
-  foreach ( const QString& wkt, wkts )
+  Q_FOREACH ( const QString& wkt, wkts )
   {
     QgsFeature f( make_feature( wkt ) );
     vl->addFeature( f, false );

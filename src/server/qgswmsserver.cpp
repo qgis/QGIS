@@ -1250,7 +1250,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  foreach ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     if ( !mAccessControl->layerReadPermission( layer ) )
     {
@@ -1384,7 +1384,7 @@ QImage* QgsWMSServer::getMap( HitTest* hitTest )
   QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  foreach ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     if ( !mAccessControl->layerReadPermission( layer ) )
     {
@@ -2188,7 +2188,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
 
   QStringList attributes;
   QgsField field;
-  foreach ( field, layer->pendingFields().toList() )
+  Q_FOREACH ( field, layer->pendingFields().toList() )
   {
     attributes.append( field.name() );
   }
@@ -2599,7 +2599,7 @@ void QgsWMSServer::applyAccessControlLayersFilters( const QStringList& layerList
   Q_FOREACH ( const QString& layerName, layerList )
   {
     QList<QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayersByName( layerName );
-    foreach ( QgsMapLayer* mapLayer, mapLayers )
+    Q_FOREACH ( QgsMapLayer* mapLayer, mapLayers )
     {
       applyAccessControlLayerFilters( mapLayer, originalLayerFilters );
     }
