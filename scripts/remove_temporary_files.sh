@@ -26,5 +26,6 @@ find . -name "*.sortinc" -delete
 find . -name "astyle*.diff" -delete
 find . -name "*.astyle" -delete
 find . -name "sha*.diff" -delete
+find . -name "*~" -delete
 
 
