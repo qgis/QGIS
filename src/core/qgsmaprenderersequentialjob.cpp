@@ -31,6 +31,7 @@ QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings& 
   mImage = QImage( mSettings.outputSize(), mSettings.outputImageFormat() );
   mImage.setDotsPerMeterX( 1000 * settings.outputDpi() / 25.4 );
   mImage.setDotsPerMeterY( 1000 * settings.outputDpi() / 25.4 );
+  mImage.fill( settings.backgroundColor().rgba() );
 }
 
 QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
