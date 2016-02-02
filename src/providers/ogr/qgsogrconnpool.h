@@ -86,10 +86,23 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
 class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup>
 {
   public:
+
+    // NOTE: first call to this function initializes the
+    //       singleton.
+    // WARNING: concurrent call from multiple threads may result
+    //          in multiple instances being created, and memory
+    //          leaking at exit.
+    //
     static QgsOgrConnPool* instance();
 
     // Singleton cleanup
-    // WARNING: do not rely on instace() return after a call to this
+    //
+    // Make sure nobody is using the instance before calling
+    // this function.
+    //
+    // WARNING: concurrent call from multiple threads may result
+    //          in double-free of the instance.
+    //
     static void cleanupInstance();
 
     void ref( const QString& connInfo )
@@ -136,6 +149,7 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
   private:
     QgsOgrConnPool();
     ~QgsOgrConnPool();
+    static QgsOgrConnPool *mInstance;
 };
 
 

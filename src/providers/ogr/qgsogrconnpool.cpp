@@ -15,15 +15,20 @@
 
 #include "qgsogrconnpool.h"
 
+QgsOgrConnPool* QgsOgrConnPool::mInstance = nullptr;
+
+// static public
 QgsOgrConnPool* QgsOgrConnPool::instance()
 {
-  static QgsOgrConnPool *pool = new QgsOgrConnPool();
-  return pool;
+  if ( ! mInstance ) mInstance = new QgsOgrConnPool();
+  return mInstance;
 }
 
+// static public
 void QgsOgrConnPool::cleanupInstance()
 {
-  delete instance();
+  delete mInstance;
+  mInstance = nullptr;
 }
 
 QgsOgrConnPool::QgsOgrConnPool() : QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup>()
