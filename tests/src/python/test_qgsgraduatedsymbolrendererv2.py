@@ -78,7 +78,7 @@ def createColorRamp():
 
 def createLabelFormat():
     format = QgsRendererRangeV2LabelFormat()
-    template = "%1 - %2 metres"
+    template = "%1 - %2 meters"
     precision = 5
     format.setFormat(template)
     format.setPrecision(precision)
@@ -189,7 +189,7 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
         """Test QgsRendererRangeV2LabelFormat getter/setter functions"""
         format = QgsRendererRangeV2LabelFormat()
         self.assertTrue(format, "QgsRendererRangeV2LabelFomat construction failed")
-        template = "%1 - %2 metres"
+        template = "%1 - %2 meters"
         precision = 5
         format.setFormat(template)
         self.assertEqual(format.format(), template, "Format getter/setter failed")
@@ -249,8 +249,8 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
             ("%2", "2.34"),
             ("%2%", "2.34%"),
             ("%1%1", "1.231.23"),
-            ("from %1 to %2 metres", "from 1.23 to 2.34 metres"),
-            ("from %2 to %1 metres", "from 2.34 to 1.23 metres"),
+            ("from %1 to %2 meters", "from 1.23 to 2.34 meters"),
+            ("from %2 to %1 meters", "from 2.34 to 1.23 meters"),
         )
         format.setPrecision(2)
         format.setTrimTrailingZeroes(False)

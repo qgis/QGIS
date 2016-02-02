@@ -109,13 +109,13 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void on_mWMSInspireScenario2_toggled( bool on );
 
     /*!
-     * Slots to select/unselect all the WFS layers
+     * Slots to select/deselect all the WFS layers
      */
     void on_pbnWFSLayersSelectAll_clicked();
     void on_pbnWFSLayersUnselectAll_clicked();
 
     /*!
-     * Slots to select/unselect all the WCS layers
+     * Slots to select/deselect all the WCS layers
      */
     void on_pbnWCSLayersSelectAll_clicked();
     void on_pbnWCSLayersUnselectAll_clicked();

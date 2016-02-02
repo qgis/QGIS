@@ -7568,7 +7568,7 @@ void QgisApp::layerSubsetString()
     if ( QMessageBox::question( NULL, tr( "Filter on joined fields" ),
                                 tr( "You are about to set a subset filter on a layer that has joined fields. "
                                     "Joined fields cannot be filtered, unless you convert the layer to a virtual layer first. "
-                                    "Would you like to create a virtual layer out of this layer first ?" ),
+                                    "Would you like to create a virtual layer out of this layer first?" ),
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
     {
       QgsVirtualLayerDefinition def = QgsVirtualLayerDefinitionUtils::fromJoinedLayer( vlayer );

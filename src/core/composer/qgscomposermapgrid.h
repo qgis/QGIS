@@ -172,8 +172,8 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     enum GridUnit
     {
       MapUnit, /*!< grid units follow map units */
-      MM, /*!< grid units in millimetres */
-      CM /*!< grid units in centimetres */
+      MM, /*!< grid units in millimeters */
+      CM /*!< grid units in centimeters */
     };
 
     /** Grid drawing style
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     /** Calculates the maximum distance the grid extends beyond the QgsComposerMap's
      * item rect
-     * @returns maximum extension in millimetres
+     * @returns maximum extension in millimeters
      */
     double maxExtension();
 
@@ -446,14 +446,14 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     /** Sets the length of the cross segments drawn for the grid. This is only used for grids
      * with QgsComposerMapGrid::Cross styles
-     * @param length cross length in millimetres
+     * @param length cross length in millimeters
      * @see crossLength
     */
     void setCrossLength( const double length ) { mCrossLength = length; }
 
     /** Retrieves the length of the cross segments drawn for the grid. This is only used for grids
      * with QgsComposerMapGrid::Cross styles
-     * @returns cross length in millimetres
+     * @returns cross length in millimeters
      * @see setCrossLength
     */
     double crossLength() const { return mCrossLength; }
@@ -617,13 +617,13 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     */
     AnnotationPosition annotationPosition( const BorderSide border ) const;
 
-    /** Sets the distance between the map frame and annotations. Units are in millimetres.
+    /** Sets the distance between the map frame and annotations. Units are in millimeters.
      * @param distance margin between map frame and annotations
      * @see annotationFrameDistance
     */
     void setAnnotationFrameDistance( const double distance ) { mAnnotationFrameDistance = distance; }
 
-    /** Gets the distance between the map frame and annotations. Units are in millimetres.
+    /** Gets the distance between the map frame and annotations. Units are in millimeters.
      * @returns margin between map frame and annotations
      * @see setAnnotationFrameDistance
     */
@@ -749,7 +749,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Sets the grid frame width. This property controls how wide the grid frame is.
      * The size of the line outlines drawn in the frame is controlled through the
      * setFramePenSize method.
-     * @param width width of grid frame in millimetres
+     * @param width width of grid frame in millimeters
      * @see frameWidth
     */
     void setFrameWidth( const double width ) { mGridFrameWidth = width; }
@@ -757,7 +757,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Gets the grid frame width. This property controls how wide the grid frame is.
      * The size of the line outlines drawn in the frame can be retrieved via the
      * framePenSize method.
-     * @returns width of grid frame in millimetres
+     * @returns width of grid frame in millimeters
      * @see setFrameWidth
     */
     double frameWidth() const { return mGridFrameWidth; }

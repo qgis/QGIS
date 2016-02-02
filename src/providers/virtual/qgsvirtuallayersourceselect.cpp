@@ -218,7 +218,7 @@ void QgsVirtualLayerSourceSelect::on_buttonBox_accepted()
     QString id( mLayerNameCombo->itemData( idx ).toString() );
     if ( !id.isEmpty() && mLayerNameCombo->currentText() == QgsMapLayerRegistry::instance()->mapLayer( id )->name() )
     {
-      int r = QMessageBox::warning( nullptr, tr( "Warning" ), tr( "A virtual layer of this name already exists, would you like to overwrite it ?" ), QMessageBox::Yes | QMessageBox::No );
+      int r = QMessageBox::warning( nullptr, tr( "Warning" ), tr( "A virtual layer of this name already exists, would you like to overwrite it?" ), QMessageBox::Yes | QMessageBox::No );
       if ( r == QMessageBox::Yes )
       {
         emit replaceVectorLayer( id, def.toString(), layerName, "virtual" );
