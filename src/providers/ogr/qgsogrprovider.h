@@ -295,7 +295,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString& typeName ) const;
     QgsFields mAttributeFields;
     OGRDataSourceH ogrDataSource;
-    void *extent_;
+    OGREnvelope* mExtent;
 
     /** This member variable receives the same value as extent_
      in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
