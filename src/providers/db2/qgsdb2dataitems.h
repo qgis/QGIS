@@ -22,6 +22,10 @@ class QgsDb2Connection;
 class QgsDb2SchemaItem;
 class QgsDb2LayerItem;
 
+/**
+ * @class QgsDb2RootItem
+ * @brief Browser Panel DB2 root object.
+ */
 class QgsDb2RootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
@@ -30,6 +34,9 @@ class QgsDb2RootItem : public QgsDataCollectionItem
     QgsDb2RootItem( QgsDataItem* parent, QString name, QString path );
     ~QgsDb2RootItem();
 
+    /**
+     * Add saved connections as children.
+     */
     QVector<QgsDataItem*> createChildren() override;
 
     virtual QWidget * paramWidget() override;
@@ -41,6 +48,10 @@ class QgsDb2RootItem : public QgsDataCollectionItem
     void newConnection();
 };
 
+/**
+ * @class QgsDb2ConnectionItem
+ * @brief Browser Panel DB2 connection object (under root).
+ */
 class QgsDb2ConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
@@ -48,8 +59,16 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
     QgsDb2ConnectionItem( QgsDataItem* parent, QString name, QString path );
     ~QgsDb2ConnectionItem();
 
+    /**
+     * Fetch geometry column data from server and populate Browser Panel with
+     * schemas and layers.
+     */
     QVector<QgsDataItem*> createChildren() override;
     //virtual bool equal( const QgsDataItem *other ) override;
+
+    /**
+     * Add Refresh, Edit, and Delete actions for every QgsDb2ConnectionItem.
+     */
     virtual QList<QAction*> actions() override;
 
     //virtual bool acceptDrop() override { return true; }
@@ -62,8 +81,19 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
     void addGeometryColumn( QgsDb2LayerProperty );
 
   public slots:
+    /**
+     * Refresh with saved connection data.
+     */
     void refreshConnection();
+    
+    /**
+     * Show dialog to edit and save connection data.
+     */
     void editConnection();
+    
+    /**
+     * Delete saved connection data and remove from Browser Panel.
+     */
     void deleteConnection();
     //void setAllowGeometrylessTables( bool allow );
 
@@ -86,7 +116,10 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
     void readConnectionSettings();
 };
 
-
+/**
+ * @class QgsDb2SchemaItem
+ * @brief Browser Panel DB2 schema object (under connections).
+ */
 class QgsDb2SchemaItem : public QgsDataCollectionItem
 {
     Q_OBJECT
@@ -101,6 +134,10 @@ class QgsDb2SchemaItem : public QgsDataCollectionItem
     void addLayers( QgsDataItem* newLayers );
 };
 
+/**
+ * @class QgsDb2LayerItem
+ * @brief Browser Panel DB2 layer object (under schemas).
+ */
 class QgsDb2LayerItem : public QgsLayerItem
 {
     Q_OBJECT

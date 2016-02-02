@@ -52,11 +52,8 @@ class QgsDb2FeatureSource : public QgsAbstractFeatureSource
     QString mDatabaseName;
     QString mHost;
 
-
-
     QString mDriver;
     QString mPort;
-
 
     // SQL statement used to limit the features retrieved
     QString mSqlWhereClause;

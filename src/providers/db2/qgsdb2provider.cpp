@@ -146,19 +146,6 @@ QgsDb2Provider::~QgsDb2Provider()
     mDatabase.close();
 }
 
-/**
-* Returns a QSqlDatabase object that can connect to DB2 for LUW or z/OS.
-*
-* If service is provided, then username and password is required. If service is not provided, the remaining arguments are required.
-*
-* @param service The DSN name.
-* @param driver The full driver name.
-* @param host The host name.
-* @param port The port number.
-* @param location The database/location name.
-* @param username The username.
-* @param password The password.
-*/
 QSqlDatabase QgsDb2Provider::GetDatabase( QString service, QString driver, QString host, int port, QString location, QString username, QString password )
 {
   QSqlDatabase db;

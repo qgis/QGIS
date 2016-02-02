@@ -239,20 +239,6 @@ void QgsDb2ConnectionItem::refreshConnection()
   refresh();
 }
 
-
-QList<QAction*> QgsDb2RootItem::actions()
-{
-  QList<QAction*> actionList;
-
-  QAction* action = new QAction( tr( "New Connection..." ), this );
-  connect( action, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
-  actionList.append( action );
-  QgsDebugMsg( "DB2: Browser Panel; New Connection option added." );
-
-  return actionList;
-}
-
-
 QgsDb2RootItem::QgsDb2RootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
@@ -276,10 +262,21 @@ QVector<QgsDataItem*> QgsDb2RootItem::createChildren()
   return connections;
 }
 
+QList<QAction*> QgsDb2RootItem::actions()
+{
+  QList<QAction*> actionList;
+
+  QAction* action = new QAction( tr( "New Connection..." ), this );
+  connect( action, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  actionList.append( action );
+  QgsDebugMsg( "DB2: Browser Panel; New Connection option added." );
+
+  return actionList;
+}
 
 QWidget *QgsDb2RootItem::paramWidget()
 {
-  return NULL;
+  return NULL; //TODO?
 }
 
 void QgsDb2RootItem::newConnection()
