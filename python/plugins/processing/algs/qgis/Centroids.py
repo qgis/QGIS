@@ -68,10 +68,10 @@ class Centroids(GeoAlgorithm):
             attrs = inFeat.attributes()
 
             if not inGeom:
-                outGeom = QgsGeometry()
+                outGeom = QgsGeometry(None)
             else:
                 outGeom = QgsGeometry(inGeom.centroid())
-                if outGeom is None:
+                if not outGeom:
                     raise GeoAlgorithmExecutionException(
                         self.tr('Error calculating centroid'))
 
