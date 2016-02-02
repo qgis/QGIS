@@ -2857,5 +2857,7 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
 
 QGISEXTERN void cleanupProvider()
 {
-  OGRCleanupAll();
+  QgsOgrConnPool::cleanupInstance();
+  // NOTE: QgsApplication takes care of
+  // calling OGRCleanupAll();
 }
