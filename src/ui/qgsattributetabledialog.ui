@@ -857,13 +857,33 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mToggleEditingButton</tabstop>
+  <tabstop>mSaveEditsButton</tabstop>
+  <tabstop>mReloadButton</tabstop>
+  <tabstop>mAddFeature</tabstop>
+  <tabstop>mDeleteSelectedButton</tabstop>
+  <tabstop>mExpressionSelectButton</tabstop>
   <tabstop>mRemoveSelectionButton</tabstop>
   <tabstop>mSelectAllButton</tabstop>
   <tabstop>mSelectedToTopButton</tabstop>
   <tabstop>mInvertSelectionButton</tabstop>
+  <tabstop>mPanMapToSelectedRowsButton</tabstop>
+  <tabstop>mZoomMapToSelectedRowsButton</tabstop>
   <tabstop>mCopySelectedRowsButton</tabstop>
+  <tabstop>mPasteFeatures</tabstop>
   <tabstop>mRemoveAttribute</tabstop>
+  <tabstop>mAddAttribute</tabstop>
   <tabstop>mOpenFieldCalculator</tabstop>
+  <tabstop>mSetStyles</tabstop>
+  <tabstop>mHelpButton</tabstop>
+  <tabstop>mFieldCombo</tabstop>
+  <tabstop>mRunFieldCalc</tabstop>
+  <tabstop>mRunFieldCalcSelected</tabstop>
+  <tabstop>mFilterButton</tabstop>
+  <tabstop>mFilterQuery</tabstop>
+  <tabstop>mApplyFilterButton</tabstop>
+  <tabstop>mAttributeViewButton</tabstop>
+  <tabstop>mTableViewButton</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

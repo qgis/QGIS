@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>614</width>
+    <width>638</width>
     <height>423</height>
    </rect>
   </property>
@@ -615,18 +615,22 @@ Reference in function name: my_form_open
  </customwidgets>
  <tabstops>
   <tabstop>mEditorLayoutComboBox</tabstop>
+  <tabstop>mInitCodeSourceComboBox</tabstop>
+  <tabstop>mInitFunctionLineEdit</tabstop>
+  <tabstop>mInitFilePathLineEdit</tabstop>
+  <tabstop>pbtnSelectInitFilePath</tabstop>
   <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mDeleteAttributeButton</tabstop>
   <tabstop>mToggleEditingButton</tabstop>
   <tabstop>mCalculateFieldButton</tabstop>
-  <tabstop>mEditFormLineEdit</tabstop>
-  <tabstop>pbnSelectEditForm</tabstop>
   <tabstop>mAddTabOrGroupButton</tabstop>
   <tabstop>mRemoveTabGroupItemButton</tabstop>
   <tabstop>mAddItemButton</tabstop>
   <tabstop>mMoveUpItem</tabstop>
   <tabstop>mMoveDownItem</tabstop>
   <tabstop>mFormSuppressCmbBx</tabstop>
+  <tabstop>pbnSelectEditForm</tabstop>
+  <tabstop>mEditFormLineEdit</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

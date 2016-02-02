@@ -23,7 +23,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -54,9 +63,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-420</y>
+        <y>-334</y>
         <width>375</width>
-        <height>1392</height>
+        <height>1306</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -1026,6 +1035,8 @@
   <tabstop>mEditPushButton</tabstop>
   <tabstop>mCountToolButton</tabstop>
   <tabstop>mFilterByMapToolButton</tabstop>
+  <tabstop>mExpressionFilterButton</tabstop>
+  <tabstop>mFilterLegendByAtlasCheckBox</tabstop>
   <tabstop>mFontsColGroupBox</tabstop>
   <tabstop>mTitleFontButton</tabstop>
   <tabstop>mLayerFontButton</tabstop>

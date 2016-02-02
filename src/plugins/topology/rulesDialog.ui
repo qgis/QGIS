@@ -151,6 +151,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mLayer1Box</tabstop>
+  <tabstop>mRuleBox</tabstop>
+  <tabstop>mLayer2Box</tabstop>
+  <tabstop>mToleranceBox</tabstop>
+  <tabstop>mAddTestButton</tabstop>
+  <tabstop>mDeleteTestButton</tabstop>
+  <tabstop>mRulesTable</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

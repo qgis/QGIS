@@ -1415,9 +1415,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-71</y>
+                <y>-104</y>
                 <width>714</width>
-                <height>608</height>
+                <height>641</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_3">
@@ -1889,12 +1889,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -1904,6 +1898,12 @@
    <class>QgsScaleRangeWidget</class>
    <extends>QWidget</extends>
    <header>qgsscalerangewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsprojectionselectionwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsScaleComboBox</class>
@@ -1953,7 +1953,9 @@
   <tabstop>scrollArea_7</tabstop>
   <tabstop>mButtonAddJoin</tabstop>
   <tabstop>mButtonRemoveJoin</tabstop>
+  <tabstop>mButtonEditJoin</tabstop>
   <tabstop>scrollArea_2</tabstop>
+  <tabstop>mLayerShortNameLineEdit</tabstop>
   <tabstop>mLayerTitleLineEdit</tabstop>
   <tabstop>mLayerAbstractTextEdit</tabstop>
   <tabstop>mLayerKeywordListLineEdit</tabstop>
@@ -1967,7 +1969,6 @@
   <tabstop>mLayerLegendUrlLineEdit</tabstop>
   <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
   <tabstop>teMetadata</tabstop>
-  <tabstop>mButtonEditJoin</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

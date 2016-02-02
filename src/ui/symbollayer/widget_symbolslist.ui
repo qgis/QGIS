@@ -397,13 +397,13 @@
  </customwidgets>
  <tabstops>
   <tabstop>mTransparencySlider</tabstop>
+  <tabstop>btnColor</tabstop>
   <tabstop>spinSize</tabstop>
   <tabstop>mSizeDDBtn</tabstop>
-  <tabstop>spinWidth</tabstop>
-  <tabstop>mWidthDDBtn</tabstop>
-  <tabstop>btnColor</tabstop>
   <tabstop>spinAngle</tabstop>
   <tabstop>mRotationDDBtn</tabstop>
+  <tabstop>spinWidth</tabstop>
+  <tabstop>mWidthDDBtn</tabstop>
   <tabstop>groupsCombo</tabstop>
   <tabstop>openStyleManagerButton</tabstop>
   <tabstop>viewSymbols</tabstop>

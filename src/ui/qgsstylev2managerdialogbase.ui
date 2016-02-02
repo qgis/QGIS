@@ -548,8 +548,8 @@ QMenu::item:selected {  background-color: gray; } */
   <tabstop>tabItemType</tabstop>
   <tabstop>listItems</tabstop>
   <tabstop>btnAddItem</tabstop>
-  <tabstop>btnEditItem</tabstop>
   <tabstop>btnRemoveItem</tabstop>
+  <tabstop>btnEditItem</tabstop>
   <tabstop>btnShare</tabstop>
  </tabstops>
  <resources>

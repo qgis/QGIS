@@ -14,7 +14,16 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_7">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item row="0" column="0">
@@ -32,9 +41,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>625</width>
-        <height>767</height>
+        <y>-301</y>
+        <width>670</width>
+        <height>776</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -68,7 +77,16 @@
              <property name="spacing">
               <number>2</number>
              </property>
-             <property name="margin">
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
               <number>2</number>
              </property>
              <item>
@@ -103,7 +121,16 @@
              <property name="spacing">
               <number>2</number>
              </property>
-             <property name="margin">
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
               <number>2</number>
              </property>
              <item>
@@ -148,7 +175,16 @@
              <bool>true</bool>
             </property>
             <layout class="QGridLayout" name="gridLayout">
-             <property name="margin">
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
               <number>2</number>
              </property>
              <property name="spacing">
@@ -211,7 +247,16 @@
              <property name="spacing">
               <number>2</number>
              </property>
-             <property name="margin">
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
               <number>2</number>
              </property>
              <item>
@@ -240,7 +285,16 @@
              <bool>true</bool>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
-             <property name="margin">
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
               <number>2</number>
              </property>
              <property name="spacing">
@@ -310,7 +364,16 @@
                 <bool>false</bool>
                </property>
                <layout class="QGridLayout" name="gridLayout_6">
-                <property name="margin">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
                  <number>0</number>
                 </property>
                 <property name="spacing">
@@ -393,7 +456,16 @@
              <bool>true</bool>
             </property>
             <layout class="QGridLayout" name="gridLayout_3">
-             <property name="margin">
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
               <number>2</number>
              </property>
              <property name="spacing">
@@ -474,7 +546,16 @@
             <property name="spacing">
              <number>2</number>
             </property>
-            <property name="margin">
+            <property name="leftMargin">
+             <number>2</number>
+            </property>
+            <property name="topMargin">
+             <number>2</number>
+            </property>
+            <property name="rightMargin">
+             <number>2</number>
+            </property>
+            <property name="bottomMargin">
              <number>2</number>
             </property>
             <item>
@@ -518,7 +599,16 @@
              <bool>true</bool>
             </property>
             <layout class="QGridLayout" name="gridLayout_5">
-             <property name="margin">
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
               <number>2</number>
              </property>
              <property name="spacing">
@@ -583,7 +673,16 @@
           <property name="spacing">
            <number>0</number>
           </property>
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
@@ -623,6 +722,43 @@
    <header location="global">qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>comboBoxInputLayer</tabstop>
+  <tabstop>checkBoxInputSelectedOnly</tabstop>
+  <tabstop>checkBoxSelfIntersections</tabstop>
+  <tabstop>checkBoxDuplicateNodes</tabstop>
+  <tabstop>checkBoxDegeneratePolygon</tabstop>
+  <tabstop>checkBoxPoint</tabstop>
+  <tabstop>checkBoxMultipoint</tabstop>
+  <tabstop>checkBoxLine</tabstop>
+  <tabstop>checkBoxMultiline</tabstop>
+  <tabstop>checkBoxPolygon</tabstop>
+  <tabstop>checkBoxMultipolygon</tabstop>
+  <tabstop>checkBoxNoHoles</tabstop>
+  <tabstop>checkBoxMultipart</tabstop>
+  <tabstop>checkBoxSegmentLength</tabstop>
+  <tabstop>doubleSpinBoxSegmentLength</tabstop>
+  <tabstop>checkBoxAngle</tabstop>
+  <tabstop>doubleSpinBoxAngle</tabstop>
+  <tabstop>checkBoxArea</tabstop>
+  <tabstop>doubleSpinBoxArea</tabstop>
+  <tabstop>checkBoxSliverPolygons</tabstop>
+  <tabstop>doubleSpinBoxSliverThinness</tabstop>
+  <tabstop>checkBoxSliverArea</tabstop>
+  <tabstop>doubleSpinBoxSliverArea</tabstop>
+  <tabstop>checkBoxDuplicates</tabstop>
+  <tabstop>checkBoxCovered</tabstop>
+  <tabstop>checkBoxOverlaps</tabstop>
+  <tabstop>doubleSpinBoxOverlapArea</tabstop>
+  <tabstop>checkBoxGaps</tabstop>
+  <tabstop>doubleSpinBoxGapArea</tabstop>
+  <tabstop>spinBoxTolerance</tabstop>
+  <tabstop>radioButtonOuputModifyInput</tabstop>
+  <tabstop>radioButtonOutputNew</tabstop>
+  <tabstop>lineEditOutput</tabstop>
+  <tabstop>pushButtonOutputBrowse</tabstop>
+ </tabstops>
  <resources>
   <include location="../pluginres.qrc"/>
  </resources>

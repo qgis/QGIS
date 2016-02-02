@@ -150,7 +150,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mNameLineEdit</tabstop>
   <tabstop>buttonGroupGeometry</tabstop>
   <tabstop>mPointRadioButton</tabstop>
   <tabstop>mLineRadioButton</tabstop>
@@ -159,6 +158,7 @@
   <tabstop>mMultiLineRadioButton</tabstop>
   <tabstop>mMultiPolygonRadioButton</tabstop>
   <tabstop>mCrsSelector</tabstop>
+  <tabstop>mNameLineEdit</tabstop>
  </tabstops>
  <resources/>
  <connections>
