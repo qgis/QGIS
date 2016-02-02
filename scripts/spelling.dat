@@ -488,8 +488,11 @@ surpress:suppress
 artefact:artifact
 artefacts:artifacts
 metres:meters
+millimetre:millimeter
 millimetres:millimeters
-centimetres:centimers
+centimetre:centimeter
+centimetres:centimeters
+kilometre:kilometer
 kilometres:kilometers
 unselect:deselect
 
