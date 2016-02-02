@@ -1,0 +1,11 @@
+{
+"type": "FeatureCollection",
+
+"features": [
+{ "type": "Feature", "properties": { "name": "aaaaa", "intval": 33, "floatval": 44.123456 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -1.0, -1.0 ], [ 2.0, -1.0 ], [ 2.0, 2.0 ], [ 3.0, 2.0 ], [ 3.0, 3.0 ], [ -1.0, 3.0 ], [ -1.0, -1.0 ] ] ] } },
+{ "type": "Feature", "properties": { "name": "Aaaaa", "intval": -33, "floatval": 0}, "geometry": { "type": "Polygon", "coordinates": [ [ [ 5.0, 5.0 ], [ 4.0, 4.0 ], [ 6.0, 4.0 ], [ 5.0, 5.0 ] ] ] } },
+{ "type": "Feature", "properties": { "name": "bbaaa", "intval": null, "floatval": 0.123 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 2.0, 5.0 ], [ 2.0, 6.0 ], [ 3.0, 6.0 ], [ 3.0, 5.0 ], [ 2.0, 5.0 ] ] ] } },
+{ "type": "Feature", "properties": { "name": "ASDF", "intval": 0, "floatval": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 6.0, 1.0 ], [ 10.0, 1.0 ], [ 10.0, -3.0 ], [ 6.0, -3.0 ], [ 6.0, 1.0 ] ], [ [ 7.0, 0.0 ], [ 9.0, 0.0 ], [ 9.0, -2.0 ], [ 7.0, -2.0 ], [ 7.0, 0.0 ] ] ] } },
+{ "type": "Feature", "properties": { "name": null, "intval": 120, "floatval": -100291.43213 }, "geometry": null }
+]
+}
