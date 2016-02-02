@@ -1,5 +1,6 @@
 #include "qgsdb2featureiterator.h"
 #include "qgsdb2provider.h"
+#include "Qgsdb2expressioncompiler.h"
 #include <qgslogger.h>
 #include <qgsgeometry.h>
 
@@ -44,6 +45,7 @@ QgsDb2FeatureIterator::~QgsDb2FeatureIterator()
 
 void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 {
+
 // Note, schema, table and column names are not escaped
 // Not sure if this is a problem with upper/lower case names
   // build sql statement
@@ -131,7 +133,27 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     mStatement += fidfilter;
     filterAdded = true;
   }
+  else if ( request.filterType() == QgsFeatureRequest::FilterFids && !mSource->mFidColName.isEmpty()
+            && !mRequest.filterFids().isEmpty() )
+  {
+    QString delim;
+    QString inClause = QString( "%1 IN (" ).arg( mSource->mFidColName );
+    Q_FOREACH ( QgsFeatureId featureId, mRequest.filterFids() )
+    {
+      inClause += delim + FID_TO_STRING( featureId );
+      delim = ',';
+    }
+    inClause.append( ')' );
 
+    if ( !filterAdded )
+      mStatement += " WHERE ";
+    else
+      mStatement += " AND ";
+
+    mStatement += inClause;
+    filterAdded = true;
+  }
+  
   if ( !mSource->mSqlWhereClause.isEmpty() )
   {
     if ( !filterAdded )
@@ -140,8 +162,62 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
       mStatement += " AND (" + mSource->mSqlWhereClause + ")";
   }
 
-  if ( request.limit() >= 0 && request.filterType() != QgsFeatureRequest::FilterExpression )
+  QStringList orderByParts;
+  mOrderByCompiled = true;
+  QgsDebugMsg(QString("compileExpressions: %1").arg(QSettings().value( "/qgis/compileExpressions", true ).toString()));
+  if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
+  {
+    Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBy() )
+    {
+    QgsDebugMsg(QString("processing a clause; ascending: %1; nullsFirst: %2").arg(clause.ascending()).arg(clause.nullsFirst()));
+
+      if (( clause.ascending() && clause.nullsFirst() ) || ( !clause.ascending() && !clause.nullsFirst() ) )
+      {
+        // Not supported by DB2
+        // NULLs are last in ascending order
+        mOrderByCompiled = false;
+        QgsDebugMsg("ascending with nullsFirst not supported");        
+        break;
+      }
+
+      QgsDb2ExpressionCompiler compiler = QgsDb2ExpressionCompiler( mSource );
+      QgsExpression expression = clause.expression();
+      QgsDebugMsg("expression: " + expression.dump());
+      if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
+      {
+        QgsDebugMsg("compile complete");    
+        QString part;
+        part = compiler.result();
+        part += clause.ascending() ? " ASC" : " DESC";
+        orderByParts << part;
+      }
+      else
+      {
+        QgsDebugMsg("compile of '" + expression.dump() + "' failed");          
+        // Bail out on first non-complete compilation.
+        // Most important clauses at the beginning of the list
+        // will still be sent and used to pre-sort so the local
+        // CPU can use its cycles for fine-tuning.
+        mOrderByCompiled = false;
+        break;
+      }
+    }
+  }
+  else
+  {
+    mOrderByCompiled = false;
+  }
+    
+  if ( !orderByParts.isEmpty() )
+  {
+    mOrderByClause = QString( " ORDER BY %1" ).arg( orderByParts.join( "," ) );
+    mStatement += mOrderByClause;
+  }    
+
+  if ( request.limit() > 0 )
+  {
     mStatement += QString( " FETCH FIRST %1 ROWS ONLY" ).arg( mRequest.limit() );
+  }
 
   QgsDebugMsg( mStatement );
 #if 0 // TODO
@@ -151,6 +227,22 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     mStatement.clear();
   }
 #endif
+}
+
+bool QgsDb2FeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys )
+{
+  Q_UNUSED( orderBys )
+  // Preparation has already been done in the constructor, so we just communicate the result
+  return mOrderByCompiled;
+}
+
+
+bool QgsDb2FeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
+{
+  if ( !mExpressionCompiled )
+    return QgsAbstractFeatureIterator::nextFeatureFilterExpression( f );
+  else
+    return fetchFeature( f );
 }
 
 bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
@@ -270,6 +362,7 @@ bool QgsDb2FeatureIterator::rewind()
 
   mQuery->clear();
   mQuery->setForwardOnly( true );
+  QgsDebugMsg("Execute mStatement: " + mStatement);
   if ( !mQuery->exec( mStatement ) )
   {
     QString msg = mQuery->lastError().text();
