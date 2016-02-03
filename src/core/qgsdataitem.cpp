@@ -552,6 +552,7 @@ void QgsDataItem::addChildItem( QgsDataItem * child, bool refresh )
   Q_ASSERT( child );
   QgsDebugMsg( QString( "path = %1 add child #%2 - %3 - %4" ).arg( mPath ).arg( mChildren.size() ).arg( child->mName ).arg( child->mType ) );
 
+  //calculate position to insert child
   int i;
   if ( type() == Directory )
   {
@@ -581,6 +582,7 @@ void QgsDataItem::addChildItem( QgsDataItem * child, bool refresh )
   if ( refresh )
     emit endInsertItems();
 }
+
 void QgsDataItem::deleteChildItem( QgsDataItem * child )
 {
   QgsDebugMsgLevel( "mName = " + child->mName, 2 );
@@ -597,10 +599,15 @@ QgsDataItem * QgsDataItem::removeChildItem( QgsDataItem * child )
   QgsDebugMsgLevel( "mName = " + child->mName, 2 );
   int i = mChildren.indexOf( child );
   Q_ASSERT( i >= 0 );
+  if ( i < 0 )
+  {
+    child->setParent( nullptr );
+    return nullptr;
+  }
+
   emit beginRemoveItems( this, i, i );
   mChildren.remove( i );
   emit endRemoveItems();
-  child->setParent( nullptr );
   return child;
 }
 
