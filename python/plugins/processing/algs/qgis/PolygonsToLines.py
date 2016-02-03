@@ -77,7 +77,7 @@ class PolygonsToLines(GeoAlgorithm):
     def extractAsLine(self, geom):
         multiGeom = QgsGeometry()
         lines = []
-        if geom.type() == QGis.Polygon:
+        if geom and geom.type() == QGis.Polygon:
             if geom.isMultipart():
                 multiGeom = geom.asMultiPolygon()
                 for i in multiGeom:
