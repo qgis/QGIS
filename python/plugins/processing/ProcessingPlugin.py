@@ -34,7 +34,6 @@ from PyQt4.QtCore import Qt, QCoreApplication, QDir
 from PyQt4.QtGui import QMenu, QAction, QIcon
 
 from processing.core.Processing import Processing
-from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigDialog
@@ -42,6 +41,7 @@ from processing.gui.ResultsDialog import ResultsDialog
 from processing.gui.CommanderWindow import CommanderWindow
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempFolder
+from processing.gui.menus import removeMenus, initializeMenus, createMenus
 
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
@@ -120,7 +120,8 @@ class ProcessingPlugin:
         self.iface.registerMainWindowAction(self.commanderAction,
                                             self.tr('Ctrl+Alt+M'))
 
-        Processing.updateMenus()
+        initializeMenus()
+        createMenus()
 
     def unload(self):
         self.toolbox.setVisible(False)
@@ -137,6 +138,8 @@ class ProcessingPlugin:
         self.iface.unregisterMainWindowAction(self.configAction)
         self.iface.unregisterMainWindowAction(self.resultsAction)
         self.iface.unregisterMainWindowAction(self.commanderAction)
+
+        removeMenus()
 
     def openCommander(self):
         if self.commander is None:

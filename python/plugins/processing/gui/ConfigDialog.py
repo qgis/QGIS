@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -38,6 +37,8 @@ from qgis.gui import QgsDoubleSpinBox, QgsSpinBox
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.Processing import Processing
+from processing.gui.menus import updateMenus, defaultMenuEntries
+
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -92,7 +93,7 @@ class ConfigDialog(BASE, WIDGET):
             emptyItem.setEditable(False)
             rootItem.insertRow(0, [groupItem, emptyItem])
             for setting in settings[group]:
-                if setting.hidden:
+                if setting.hidden or setting.name.startswith("MENU_"):
                     continue
 
                 if text == '' or text.lower() in setting.description.lower():
@@ -135,6 +136,30 @@ class ConfigDialog(BASE, WIDGET):
             emptyItem.setEditable(False)
             providersItem.appendRow([groupItem, emptyItem])
 
+        menusItem = QStandardItem(self.tr('Menus (requires restart)'))
+        icon = QIcon(os.path.join(pluginPath, 'images', 'menu.png'))
+        menusItem.setIcon(icon)
+        menusItem.setEditable(False)
+        emptyItem = QStandardItem()
+        emptyItem.setEditable(False)
+        rootItem.insertRow(0, [menusItem, emptyItem])
+        providers = Processing.providers
+        for provider in providers:
+            groupItem = QStandardItem(provider.getDescription())
+            icon = provider.getIcon()
+            groupItem.setIcon(icon)
+            groupItem.setEditable(False)
+            for alg in provider.algs:
+                labelItem = QStandardItem(alg.name)
+                labelItem.setIcon(icon)
+                labelItem.setEditable(False)
+                setting = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
+                self.items[setting] = SettingItem(setting)
+                groupItem.insertRow(0, [labelItem, self.items[setting]])
+            emptyItem = QStandardItem()
+            emptyItem.setEditable(False)
+            menusItem.appendRow([groupItem, emptyItem])
+
         self.tree.sortByColumn(0, Qt.AscendingOrder)
         self.adjustColumns()
 
@@ -151,7 +176,7 @@ class ConfigDialog(BASE, WIDGET):
                     return
             setting.save()
         Processing.updateAlgsList()
-        Processing.updateMenus()
+        updateMenus()
 
         QDialog.accept(self)
 
