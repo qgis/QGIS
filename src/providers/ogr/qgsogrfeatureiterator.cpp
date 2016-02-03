@@ -404,12 +404,10 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider* p )
   mFields = p->mAttributeFields;
   mDriverName = p->ogrDriverName;
   mOgrGeometryTypeFilter = wkbFlatten( p->mOgrGeometryTypeFilter );
-  QgsOgrConnPool::refS( mFilePath );
 }
 
 QgsOgrFeatureSource::~QgsOgrFeatureSource()
 {
-  QgsOgrConnPool::unrefS( mFilePath );
 }
 
 QgsFeatureIterator QgsOgrFeatureSource::getFeatures( const QgsFeatureRequest& request )

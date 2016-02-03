@@ -61,13 +61,9 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
     Q_OBJECT
 
   public:
-    explicit QgsOgrConnPoolGroup( QString name ) : QgsConnectionPoolGroup<QgsOgrConn*>( name ), mRefCount( 0 ) { initTimer( this ); }
-    void ref() { ++mRefCount; }
-    bool unref()
-    {
-      Q_ASSERT( mRefCount > 0 );
-      return --mRefCount == 0;
-    }
+    explicit QgsOgrConnPoolGroup( QString name )
+        : QgsConnectionPoolGroup<QgsOgrConn*>( name )
+    { initTimer( this ); }
 
   protected slots:
     void handleConnectionExpired() { onConnectionExpired(); }
@@ -76,9 +72,6 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
 
   protected:
     Q_DISABLE_COPY( QgsOgrConnPoolGroup )
-
-  private:
-    int mRefCount;
 
 };
 
@@ -104,44 +97,6 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
     //          in double-free of the instance.
     //
     static void cleanupInstance();
-
-    void ref( const QString& connInfo )
-    {
-      mMutex.lock();
-      T_Groups::const_iterator it = mGroups.constFind( connInfo );
-      if ( it == mGroups.constEnd() )
-        it = mGroups.insert( connInfo, new QgsOgrConnPoolGroup( connInfo ) );
-      it.value()->ref();
-      mMutex.unlock();
-    }
-
-    void unref( const QString& connInfo )
-    {
-      mMutex.lock();
-      T_Groups::iterator it = mGroups.find( connInfo );
-      if ( it == mGroups.end() )
-      {
-        mMutex.unlock();
-        return;
-      }
-
-      if ( it.value()->unref() )
-      {
-        delete it.value();
-        mGroups.erase( it );
-      }
-      mMutex.unlock();
-    }
-
-    static void refS( const QString &connInfo )
-    {
-      instance()->ref( connInfo );
-    }
-
-    static void unrefS( const QString &connInfo )
-    {
-      instance()->unref( connInfo );
-    }
 
   protected:
     Q_DISABLE_COPY( QgsOgrConnPool )
