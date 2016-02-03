@@ -88,7 +88,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
     def runAsBatch(self):
         dlg = BatchAlgorithmDialog(self.alg)
-        dlg.show()
         dlg.exec_()
 
     def setParamValues(self):
