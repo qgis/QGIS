@@ -156,8 +156,9 @@ class QgsConnectionPoolGroup
       connMutex.lock();
       Q_FOREACH ( Item i, conns )
       {
-        qgsConnectionPool_InvalidateConnection( i.c );
+        qgsConnectionPool_ConnectionDestroy( i.c );
       }
+      conns.clear();
       Q_FOREACH ( T c, acquiredConns )
         qgsConnectionPool_InvalidateConnection( c );
       connMutex.unlock();
