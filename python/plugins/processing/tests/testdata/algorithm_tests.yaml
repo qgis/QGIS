@@ -46,12 +46,12 @@ tests:
   - name: Densify geometries
     algorithm: qgis:densifygeometries
     params:
-    - name: expected/polys_densify.gml
+    - name: multipolys.geojson
       type: vector
-    - 4
+    - '4'
     results:
       OUTPUT:
-        name: expected/polys_densify.gml
+        name: expected/multipolys_densify.gml
         type: vector
 
   - name: Polygons to Lines

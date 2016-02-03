@@ -10,27 +10,27 @@
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
-<xs:element name="polys_densify" type="ogr:polys_densify_Type" substitutionGroup="gml:_Feature"/>
-<xs:complexType name="polys_densify_Type">
+<xs:element name="multipolys_densify" type="ogr:multipolys_densify_Type" substitutionGroup="gml:_Feature"/>
+<xs:complexType name="multipolys_densify_Type">
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
-        <xs:element name="geometryProperty" type="gml:PolygonPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
-        <xs:element name="name" nillable="true" minOccurs="0" maxOccurs="1">
+        <xs:element name="geometryProperty" type="gml:MultiPolygonPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="Bname" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:string">
               <xs:maxLength value="255"/>
             </xs:restriction>
           </xs:simpleType>
         </xs:element>
-        <xs:element name="intval" nillable="true" minOccurs="0" maxOccurs="1">
+        <xs:element name="Bintval" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:string">
               <xs:maxLength value="255"/>
             </xs:restriction>
           </xs:simpleType>
         </xs:element>
-        <xs:element name="floatval" nillable="true" minOccurs="0" maxOccurs="1">
+        <xs:element name="Bfloatval" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:decimal">
             </xs:restriction>
