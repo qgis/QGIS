@@ -1,109 +1,65 @@
 # See ../README.md for a description of the file format
 
 tests:
-  - name: centroid # Human readable identifier
+  - name: Centroid # Human readable identifier
     algorithm: qgis:polygoncentroids # Algorithm name
     params: # A list of parameters (only 1 here)
       - type: vector    # Param is a vector layer
-        location: qgs   # file is in the qgis tests/testdata directory
-        name: polys.shp # file name
+        name: polys.geojson # file name
     results: # A map of results (only one here)
       OUTPUT_LAYER:
         type: vector   # Expected result is a vector layer
-        location: proc # The expected control layer is located in the processing testdata directory
-        name: expected/polys_centroid.geojson # The relative filepath from the processing testdata directory
+        name: expected/polys_centroid.gml # The relative filepath from the processing testdata directory
+        compare:
+          geometry:
+            precision: 7
 
-  - name: deleteholes
+  - name: Delete Holes
     algorithm: qgis:deleteholes
     params:
-      - type: vector
-        location: qgs
-        name: polys.shp
+    - name: polys.geojson
+      type: vector
     results:
       OUTPUT:
+        name: expected/polys_deleteholes.gml
         type: vector
-        location: proc
-        name: expected/polys_deleteholes.geojson
 
-  - name: densify
+  # These datasets should produce a geometry collection and not a polygon only
+  # dataset. If the algorithm is fixed, a new test should be introduced to
+  # check this behavior.
+  # This test should stay in place because for shapefiles there should always
+  # be a polygon result created since it does not support geometry collections.
+  - name: Intersection (Collection Fallback)
+    algorithm: qgis:intersection
+    params:
+      INPUT:
+        name: multipolys.geojson
+        type: vector
+      INPUT2:
+        name: polys.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection_collection_fallback.shp
+        type: vector
+
+  - name: Densify geometries
     algorithm: qgis:densifygeometries
     params:
-      - type: vector
-        location: qgs
-        name: polys.shp
-      - 2 # Interval
+    - name: expected/polys_densify.gml
+      type: vector
+    - 4
     results:
       OUTPUT:
+        name: expected/polys_densify.gml
         type: vector
-        location: proc
-        name: expected/polys_densify.geojson
 
-  - name: polygonstolines
+  - name: Polygons to Lines
     algorithm: qgis:polygonstolines
     params:
-      - type: vector
-        location: qgs
-        name: polys.shp
+    - name: multipolys.geojson
+      type: vector
     results:
       OUTPUT:
+        name: expected/polys_to_lines.gml
         type: vector
-        location: proc
-        name: expected/polys_to_lines.geojson
-
-  - name: reverselinedirection
-    algorithm: qgis:reverselinedirection
-    params:
-      - type: vector
-        location: qgs
-        name: lines.shp
-    results:
-      OUTPUT_LAYER:
-        type: vector
-        location: proc
-        name: expected/lines_reverse.geojson
-
-# MK: 7.1.2016, Reenable once epsilon has been implemented
-#   - name: reproject
-#     algorithm: qgis:reprojectlayer
-#     params:
-#       - type: vector
-#         location: qgs
-#         name: france_parts.shp
-#       - 'EPSG:2192' # Quoted to make sure the colon isn't mistaken for a key/value pair
-#     results:
-#       OUTPUT:
-#         type: vector
-#         location: proc
-#         name: expected/reprojected_france_parts.geojson
-#         epsilon: 0.000001
-
-  - name: frequencyanalysis
-    algorithm: qgis:frequencyanalysis
-    params:
-      - type: vector
-        location: qgs
-        name: polys.shp
-      - Name # Field to calculate frequency on
-    results:
-      Frequency:
-        type: vector
-        location: proc
-        name: expected/frequency.csv
-
-# MK: 7.1.2016, Check why this fails on travis (string vs. integer field type)
-#  - name: sumlinelengths
-#    algorithm: qgis:sumlinelengths
-#    params:
-#      - type: vector
-#        location: qgs
-#        name: lines.shp
-#      - type: vector
-#        location: qgs
-#        name: rectangles.shp
-#      - length
-#      - count
-#    results:
-#      OUTPUT:
-#        type: vector
-#        location: proc
-#        name: expected/sumlinelengths.geojson
