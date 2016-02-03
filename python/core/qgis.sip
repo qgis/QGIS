@@ -129,16 +129,24 @@ class QGis
       NauticalMiles
     };
 
-    //! Provides the canonical name of the type value
-    static QString toLiteral( QGis::UnitType unit );
+    //! @deprecated use QgsUnitTypes::encodeUnit() instead
+    static QString toLiteral( QGis::UnitType unit ) /Deprecated/;
+
     //! Converts from the canonical name to the type value
-    static UnitType fromLiteral( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
+    //! @deprecated use QgsUnitTypes::decodeDistanceUnit() instead
+    static UnitType fromLiteral( const QString& literal, QGis::UnitType defaultType = UnknownUnit ) /Deprecated/;
+
     //! Provides translated version of the type value
-    static QString tr( QGis::UnitType unit );
+    //! @deprecated use QgsUnitTypes::toString() instead
+    static QString tr( QGis::UnitType unit ) /Deprecated/;
+
     //! Provides type value from translated version
-    static UnitType fromTr( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
+    //! @deprecated use QgsUnitTypes::stringToDistanceUnit() instead
+    static UnitType fromTr( const QString& literal, QGis::UnitType defaultType = UnknownUnit ) /Deprecated/;
+
     //! Returns the conversion factor between the specified units
-    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
+    //! @deprecated use QgsUnitTyoes::fromUnitToUnitFactor() instead
+    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit ) /Deprecated/;
 
     /** Converts a string to a double in a permissive way, eg allowing for incorrect
      * numbers of digits between thousand separators

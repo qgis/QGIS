@@ -24,6 +24,7 @@
 #include "qgssvgcache.h"
 #include "qgslogger.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgsunittypes.h"
 
 #include <QPainter>
 #include <QFile>
@@ -197,18 +198,18 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::create( const QgsStringMap& props 
   sl->setOffset( offset );
   if ( props.contains( "border_width_unit" ) )
   {
-    sl->setBorderWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["border_width_unit"] ) );
+    sl->setBorderWidthUnit( QgsUnitTypes::decodeSymbolUnit( props["border_width_unit"] ) );
   }
   else if ( props.contains( "outline_width_unit" ) )
   {
-    sl->setBorderWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["outline_width_unit"] ) );
+    sl->setBorderWidthUnit( QgsUnitTypes::decodeSymbolUnit( props["outline_width_unit"] ) );
   }
   else if ( props.contains( "line_width_unit" ) )
   {
-    sl->setBorderWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["line_width_unit"] ) );
+    sl->setBorderWidthUnit( QgsUnitTypes::decodeSymbolUnit( props["line_width_unit"] ) );
   }
   if ( props.contains( "offset_unit" ) )
-    sl->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
+    sl->setOffsetUnit( QgsUnitTypes::decodeSymbolUnit( props["offset_unit"] ) );
 
   if ( props.contains( "border_width_map_unit_scale" ) )
     sl->setBorderWidthMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["border_width_map_unit_scale"] ) );
@@ -300,11 +301,11 @@ QgsStringMap QgsSimpleFillSymbolLayerV2::properties() const
   map["outline_color"] = QgsSymbolLayerV2Utils::encodeColor( mBorderColor );
   map["outline_style"] = QgsSymbolLayerV2Utils::encodePenStyle( mBorderStyle );
   map["outline_width"] = QString::number( mBorderWidth );
-  map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mBorderWidthUnit );
+  map["outline_width_unit"] = QgsUnitTypes::encodeUnit( mBorderWidthUnit );
   map["border_width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mBorderWidthMapUnitScale );
   map["joinstyle"] = QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
-  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  map["offset_unit"] = QgsUnitTypes::encodeUnit( mOffsetUnit );
   map["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
   saveDataDefinedProperties( map );
   return map;
@@ -529,7 +530,7 @@ QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::create( const QgsStringMap& prop
   QgsGradientFillSymbolLayerV2* sl = new QgsGradientFillSymbolLayerV2( color, color2, colorType, type, coordinateMode, gradientSpread );
   sl->setOffset( offset );
   if ( props.contains( "offset_unit" ) )
-    sl->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
+    sl->setOffsetUnit( QgsUnitTypes::decodeSymbolUnit( props["offset_unit"] ) );
   if ( props.contains( "offset_map_unit_scale" ) )
     sl->setOffsetMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["offset_map_unit_scale"] ) );
   sl->setReferencePoint1( referencePoint1 );
@@ -876,7 +877,7 @@ QgsStringMap QgsGradientFillSymbolLayerV2::properties() const
   map["reference_point2_iscentroid"] = QString::number( mReferencePoint2IsCentroid );
   map["angle"] = QString::number( mAngle );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
-  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  map["offset_unit"] = QgsUnitTypes::encodeUnit( mOffsetUnit );
   map["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
   saveDataDefinedProperties( map );
   if ( mGradientRamp )
@@ -1013,11 +1014,11 @@ QgsSymbolLayerV2* QgsShapeburstFillSymbolLayerV2::create( const QgsStringMap& pr
   sl->setOffset( offset );
   if ( props.contains( "offset_unit" ) )
   {
-    sl->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
+    sl->setOffsetUnit( QgsUnitTypes::decodeSymbolUnit( props["offset_unit"] ) );
   }
   if ( props.contains( "distance_unit" ) )
   {
-    sl->setDistanceUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["distance_unit"] ) );
+    sl->setDistanceUnit( QgsUnitTypes::decodeSymbolUnit( props["distance_unit"] ) );
   }
   if ( props.contains( "offset_map_unit_scale" ) )
   {
@@ -1472,11 +1473,11 @@ QgsStringMap QgsShapeburstFillSymbolLayerV2::properties() const
   map["blur_radius"] = QString::number( mBlurRadius );
   map["use_whole_shape"] = QString::number( mUseWholeShape );
   map["max_distance"] = QString::number( mMaxDistance );
-  map["distance_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceUnit );
+  map["distance_unit"] = QgsUnitTypes::encodeUnit( mDistanceUnit );
   map["distance_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mDistanceMapUnitScale );
   map["ignore_rings"] = QString::number( mIgnoreRings );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
-  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  map["offset_unit"] = QgsUnitTypes::encodeUnit( mOffsetUnit );
   map["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
 
   saveDataDefinedProperties( map );
@@ -1879,7 +1880,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
   //units
   if ( properties.contains( "pattern_width_unit" ) )
   {
-    symbolLayer->setPatternWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["pattern_width_unit"] ) );
+    symbolLayer->setPatternWidthUnit( QgsUnitTypes::decodeSymbolUnit( properties["pattern_width_unit"] ) );
   }
   if ( properties.contains( "pattern_width_map_unit_scale" ) )
   {
@@ -1887,7 +1888,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
   }
   if ( properties.contains( "svg_outline_width_unit" ) )
   {
-    symbolLayer->setSvgOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["svg_outline_width_unit"] ) );
+    symbolLayer->setSvgOutlineWidthUnit( QgsUnitTypes::decodeSymbolUnit( properties["svg_outline_width_unit"] ) );
   }
   if ( properties.contains( "svg_outline_width_map_unit_scale" ) )
   {
@@ -1895,7 +1896,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
   }
   if ( properties.contains( "outline_width_unit" ) )
   {
-    symbolLayer->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["outline_width_unit"] ) );
+    symbolLayer->setOutlineWidthUnit( QgsUnitTypes::decodeSymbolUnit( properties["outline_width_unit"] ) );
   }
   if ( properties.contains( "outline_width_map_unit_scale" ) )
   {
@@ -2011,11 +2012,11 @@ QgsStringMap QgsSVGFillSymbolLayer::properties() const
   map.insert( "outline_width", QString::number( mSvgOutlineWidth ) );
 
   //units
-  map.insert( "pattern_width_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mPatternWidthUnit ) );
+  map.insert( "pattern_width_unit", QgsUnitTypes::encodeUnit( mPatternWidthUnit ) );
   map.insert( "pattern_width_map_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mPatternWidthMapUnitScale ) );
-  map.insert( "svg_outline_width_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mSvgOutlineWidthUnit ) );
+  map.insert( "svg_outline_width_unit", QgsUnitTypes::encodeUnit( mSvgOutlineWidthUnit ) );
   map.insert( "svg_outline_width_map_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mSvgOutlineWidthMapUnitScale ) );
-  map.insert( "outline_width_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit ) );
+  map.insert( "outline_width_unit", QgsUnitTypes::encodeUnit( mOutlineWidthUnit ) );
   map.insert( "outline_width_map_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mOutlineWidthMapUnitScale ) );
 
   saveDataDefinedProperties( map );
@@ -2464,7 +2465,7 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::create( const QgsStringMap& pro
 
   if ( properties.contains( "distance_unit" ) )
   {
-    patternLayer->setDistanceUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["distance_unit"] ) );
+    patternLayer->setDistanceUnit( QgsUnitTypes::decodeSymbolUnit( properties["distance_unit"] ) );
   }
   if ( properties.contains( "distance_map_unit_scale" ) )
   {
@@ -2472,11 +2473,11 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::create( const QgsStringMap& pro
   }
   if ( properties.contains( "line_width_unit" ) )
   {
-    patternLayer->setLineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["line_width_unit"] ) );
+    patternLayer->setLineWidthUnit( QgsUnitTypes::decodeSymbolUnit( properties["line_width_unit"] ) );
   }
   else if ( properties.contains( "outline_width_unit" ) )
   {
-    patternLayer->setLineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["outline_width_unit"] ) );
+    patternLayer->setLineWidthUnit( QgsUnitTypes::decodeSymbolUnit( properties["outline_width_unit"] ) );
   }
   if ( properties.contains( "line_width_map_unit_scale" ) )
   {
@@ -2484,7 +2485,7 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::create( const QgsStringMap& pro
   }
   if ( properties.contains( "offset_unit" ) )
   {
-    patternLayer->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["offset_unit"] ) );
+    patternLayer->setOffsetUnit( QgsUnitTypes::decodeSymbolUnit( properties["offset_unit"] ) );
   }
   if ( properties.contains( "offset_map_unit_scale" ) )
   {
@@ -2492,7 +2493,7 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::create( const QgsStringMap& pro
   }
   if ( properties.contains( "outline_width_unit" ) )
   {
-    patternLayer->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["outline_width_unit"] ) );
+    patternLayer->setOutlineWidthUnit( QgsUnitTypes::decodeSymbolUnit( properties["outline_width_unit"] ) );
   }
   if ( properties.contains( "outline_width_map_unit_scale" ) )
   {
@@ -2822,13 +2823,13 @@ QgsStringMap QgsLinePatternFillSymbolLayer::properties() const
   map.insert( "line_width", QString::number( mLineWidth ) );
   map.insert( "color", QgsSymbolLayerV2Utils::encodeColor( mColor ) );
   map.insert( "offset", QString::number( mOffset ) );
-  map.insert( "distance_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceUnit ) );
-  map.insert( "line_width_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mLineWidthUnit ) );
-  map.insert( "offset_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit ) );
+  map.insert( "distance_unit", QgsUnitTypes::encodeUnit( mDistanceUnit ) );
+  map.insert( "line_width_unit", QgsUnitTypes::encodeUnit( mLineWidthUnit ) );
+  map.insert( "offset_unit", QgsUnitTypes::encodeUnit( mOffsetUnit ) );
   map.insert( "distance_map_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mDistanceMapUnitScale ) );
   map.insert( "line_width_map_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mLineWidthMapUnitScale ) );
   map.insert( "offset_map_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale ) );
-  map.insert( "outline_width_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit ) );
+  map.insert( "outline_width_unit", QgsUnitTypes::encodeUnit( mOutlineWidthUnit ) );
   map.insert( "outline_width_map_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mOutlineWidthMapUnitScale ) );
   saveDataDefinedProperties( map );
   return map;
@@ -3091,7 +3092,7 @@ QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::create( const QgsStringMap& pr
 
   if ( properties.contains( "distance_x_unit" ) )
   {
-    layer->setDistanceXUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["distance_x_unit"] ) );
+    layer->setDistanceXUnit( QgsUnitTypes::decodeSymbolUnit( properties["distance_x_unit"] ) );
   }
   if ( properties.contains( "distance_x_map_unit_scale" ) )
   {
@@ -3099,7 +3100,7 @@ QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::create( const QgsStringMap& pr
   }
   if ( properties.contains( "distance_y_unit" ) )
   {
-    layer->setDistanceYUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["distance_y_unit"] ) );
+    layer->setDistanceYUnit( QgsUnitTypes::decodeSymbolUnit( properties["distance_y_unit"] ) );
   }
   if ( properties.contains( "distance_y_map_unit_scale" ) )
   {
@@ -3107,7 +3108,7 @@ QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::create( const QgsStringMap& pr
   }
   if ( properties.contains( "displacement_x_unit" ) )
   {
-    layer->setDisplacementXUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["displacement_x_unit"] ) );
+    layer->setDisplacementXUnit( QgsUnitTypes::decodeSymbolUnit( properties["displacement_x_unit"] ) );
   }
   if ( properties.contains( "displacement_x_map_unit_scale" ) )
   {
@@ -3115,7 +3116,7 @@ QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::create( const QgsStringMap& pr
   }
   if ( properties.contains( "displacement_y_unit" ) )
   {
-    layer->setDisplacementYUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["displacement_y_unit"] ) );
+    layer->setDisplacementYUnit( QgsUnitTypes::decodeSymbolUnit( properties["displacement_y_unit"] ) );
   }
   if ( properties.contains( "displacement_y_map_unit_scale" ) )
   {
@@ -3123,7 +3124,7 @@ QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::create( const QgsStringMap& pr
   }
   if ( properties.contains( "outline_width_unit" ) )
   {
-    layer->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["outline_width_unit"] ) );
+    layer->setOutlineWidthUnit( QgsUnitTypes::decodeSymbolUnit( properties["outline_width_unit"] ) );
   }
   if ( properties.contains( "outline_width_map_unit_scale" ) )
   {
@@ -3234,15 +3235,15 @@ QgsStringMap QgsPointPatternFillSymbolLayer::properties() const
   map.insert( "distance_y", QString::number( mDistanceY ) );
   map.insert( "displacement_x", QString::number( mDisplacementX ) );
   map.insert( "displacement_y", QString::number( mDisplacementY ) );
-  map.insert( "distance_x_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceXUnit ) );
-  map.insert( "distance_y_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceYUnit ) );
-  map.insert( "displacement_x_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mDisplacementXUnit ) );
-  map.insert( "displacement_y_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mDisplacementYUnit ) );
+  map.insert( "distance_x_unit", QgsUnitTypes::encodeUnit( mDistanceXUnit ) );
+  map.insert( "distance_y_unit", QgsUnitTypes::encodeUnit( mDistanceYUnit ) );
+  map.insert( "displacement_x_unit", QgsUnitTypes::encodeUnit( mDisplacementXUnit ) );
+  map.insert( "displacement_y_unit", QgsUnitTypes::encodeUnit( mDisplacementYUnit ) );
   map.insert( "distance_x_map_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mDistanceXMapUnitScale ) );
   map.insert( "distance_y_map_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mDistanceYMapUnitScale ) );
   map.insert( "displacement_x_map_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mDisplacementXMapUnitScale ) );
   map.insert( "displacement_y_map_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mDisplacementYMapUnitScale ) );
-  map.insert( "outline_width_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit ) );
+  map.insert( "outline_width_unit", QgsUnitTypes::encodeUnit( mOutlineWidthUnit ) );
   map.insert( "outline_width_map_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mOutlineWidthMapUnitScale ) );
   saveDataDefinedProperties( map );
   return map;
@@ -3590,7 +3591,7 @@ QgsSymbolLayerV2 *QgsRasterFillSymbolLayer::create( const QgsStringMap &properti
   symbolLayer->setWidth( width );
   if ( properties.contains( "offset_unit" ) )
   {
-    symbolLayer->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["offset_unit"] ) );
+    symbolLayer->setOffsetUnit( QgsUnitTypes::decodeSymbolUnit( properties["offset_unit"] ) );
   }
   if ( properties.contains( "offset_map_unit_scale" ) )
   {
@@ -3598,7 +3599,7 @@ QgsSymbolLayerV2 *QgsRasterFillSymbolLayer::create( const QgsStringMap &properti
   }
   if ( properties.contains( "width_unit" ) )
   {
-    symbolLayer->setWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["width_unit"] ) );
+    symbolLayer->setWidthUnit( QgsUnitTypes::decodeSymbolUnit( properties["width_unit"] ) );
   }
   if ( properties.contains( "width_map_unit_scale" ) )
   {
@@ -3668,11 +3669,11 @@ QgsStringMap QgsRasterFillSymbolLayer::properties() const
   map["coordinate_mode"] = QString::number( mCoordinateMode );
   map["alpha"] = QString::number( mAlpha );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
-  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  map["offset_unit"] = QgsUnitTypes::encodeUnit( mOffsetUnit );
   map["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
   map["angle"] = QString::number( mAngle );
   map["width"] = QString::number( mWidth );
-  map["width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mWidthUnit );
+  map["width_unit"] = QgsUnitTypes::encodeUnit( mWidthUnit );
   map["width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mWidthMapUnitScale );
 
   saveDataDefinedProperties( map );

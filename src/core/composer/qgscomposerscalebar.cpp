@@ -29,6 +29,7 @@
 #include "qgsproject.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsfontutils.h"
+#include "qgsunittypes.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFontMetricsF>
@@ -312,13 +313,13 @@ double QgsComposerScaleBar::mapWidth() const
     switch ( mUnits )
     {
       case QgsComposerScaleBar::Feet:
-        measure /= QGis::fromUnitToUnitFactor( QGis::Feet, units );
+        measure /= QgsUnitTypes::fromUnitToUnitFactor( QGis::Feet, units );
         break;
       case QgsComposerScaleBar::NauticalMiles:
-        measure /= QGis::fromUnitToUnitFactor( QGis::NauticalMiles, units );
+        measure /= QgsUnitTypes::fromUnitToUnitFactor( QGis::NauticalMiles, units );
         break;
       case QgsComposerScaleBar::Meters:
-        measure /= QGis::fromUnitToUnitFactor( QGis::Meters, units );
+        measure /= QgsUnitTypes::fromUnitToUnitFactor( QGis::Meters, units );
         break;
       case QgsComposerScaleBar::MapUnits:
         //avoid warning

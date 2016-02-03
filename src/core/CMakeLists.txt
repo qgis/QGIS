@@ -192,6 +192,7 @@ SET(QGIS_CORE_SRCS
   qgstracer.cpp
   qgstransaction.cpp
   qgstransactiongroup.cpp
+  qgsunittypes.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
@@ -668,6 +669,7 @@ SET(QGIS_CORE_HDRS
   qgstextlabelfeature.h
   qgstolerance.h
   qgstracer.h
+  qgsunittypes.h
 
   qgsvectordataprovider.h
   qgsvectorlayercache.h

@@ -55,6 +55,7 @@ class CORE_EXPORT QgsSymbolV2
     /**
      * The unit of the output
      */
+    //TODO QGIS 3.0 - move to QgsUnitTypes and rename to SymbolUnit
     enum OutputUnit
     {
       MM = 0,     //!< The output shall be in millimeters

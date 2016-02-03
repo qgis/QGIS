@@ -27,6 +27,7 @@
 #include "qgsogcutils.h"
 #include "qgslogger.h"
 #include "qgsrendercontext.h"
+#include "qgsunittypes.h"
 
 #include <QColor>
 #include <QFont>
@@ -407,42 +408,14 @@ QgsMapUnitScale QgsSymbolLayerV2Utils::decodeMapUnitScale( const QString& str )
 
 QString QgsSymbolLayerV2Utils::encodeOutputUnit( QgsSymbolV2::OutputUnit unit )
 {
-  switch ( unit )
-  {
-    case QgsSymbolV2::MM:
-      return "MM";
-    case QgsSymbolV2::MapUnit:
-      return "MapUnit";
-    case QgsSymbolV2::Pixel:
-      return "Pixel";
-    case QgsSymbolV2::Percentage:
-      return "Percentage";
-    default:
-      return "MM";
-  }
+  return QgsUnitTypes::encodeUnit( unit );
 }
 
 QgsSymbolV2::OutputUnit QgsSymbolLayerV2Utils::decodeOutputUnit( const QString& str )
 {
-  if ( str == "MM" )
-  {
-    return QgsSymbolV2::MM;
-  }
-  else if ( str == "MapUnit" )
-  {
-    return QgsSymbolV2::MapUnit;
-  }
-  else if ( str == "Pixel" )
-  {
-    return QgsSymbolV2::Pixel;
-  }
-  else if ( str == "Percentage" )
-  {
-    return QgsSymbolV2::Percentage;
-  }
-
-  // millimeters are default
-  return QgsSymbolV2::MM;
+  bool ok = false;
+  QgsSymbolV2::OutputUnit unit = QgsUnitTypes::decodeSymbolUnit( str, &ok );
+  return ok ? unit : QgsSymbolV2::MM;
 }
 
 QString QgsSymbolLayerV2Utils::encodeSldUom( QgsSymbolV2::OutputUnit unit, double *scaleFactor )
@@ -1008,7 +981,7 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( const QDomElement &element )
 
   if ( element.hasAttribute( "outputUnit" ) )
   {
-    symbol->setOutputUnit( decodeOutputUnit( element.attribute( "outputUnit" ) ) );
+    symbol->setOutputUnit( QgsUnitTypes::decodeSymbolUnit( element.attribute( "outputUnit" ) ) );
   }
   if ( element.hasAttribute(( "mapUnitScale" ) ) )
   {

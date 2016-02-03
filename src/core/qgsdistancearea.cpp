@@ -35,6 +35,7 @@
 #include "qgslinestringv2.h"
 #include "qgspolygonv2.h"
 #include "qgssurfacev2.h"
+#include "qgsunittypes.h"
 
 // MSVC compiler doesn't have defined M_PI in math.h
 #ifndef M_PI
@@ -1107,13 +1108,13 @@ void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measu
   }
 
   // Gets the conversion factor between the specified units
-  double factorUnits = QGis::fromUnitToUnitFactor( measureUnits, displayUnits );
+  double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, displayUnits );
   if ( isArea )
     factorUnits *= factorUnits;
 
-  QgsDebugMsg( QString( "Converting %1 %2" ).arg( QString::number( measure ), QGis::toLiteral( measureUnits ) ) );
+  QgsDebugMsg( QString( "Converting %1 %2" ).arg( QString::number( measure ), QgsUnitTypes::toString( measureUnits ) ) );
   measure *= factorUnits;
-  QgsDebugMsg( QString( "to %1 %2" ).arg( QString::number( measure ), QGis::toLiteral( displayUnits ) ) );
+  QgsDebugMsg( QString( "to %1 %2" ).arg( QString::number( measure ), QgsUnitTypes::toString( displayUnits ) ) );
   measureUnits = displayUnits;
 }
 
