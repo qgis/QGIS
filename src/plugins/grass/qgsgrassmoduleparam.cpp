@@ -241,9 +241,9 @@ QgsGrassModuleMultiParam::QgsGrassModuleMultiParam( QgsGrassModule *module, QStr
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
     bool direct, QWidget * parent )
     : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
-    , mLayout(0)
-    , mParamsLayout(0)
-    , mButtonsLayout(0)
+    , mLayout( 0 )
+    , mParamsLayout( 0 )
+    , mButtonsLayout( 0 )
 {
   adjustTitle();
   setToolTip( mToolTip );
@@ -1183,7 +1183,7 @@ void QgsGrassModuleVectorField::updateFields()
 {
   QgsDebugMsg( "entered" );
 
-  Q_FOREACH( QComboBox *comboBox, mComboBoxList )
+  Q_FOREACH ( QComboBox *comboBox, mComboBoxList )
   {
     QString current = comboBox->currentText();
     comboBox->clear();
@@ -1216,9 +1216,9 @@ QStringList QgsGrassModuleVectorField::options()
   QStringList list;
 
   QStringList valueList;
-  Q_FOREACH( QComboBox *comboBox, mComboBoxList )
+  Q_FOREACH ( QComboBox *comboBox, mComboBoxList )
   {
-    if (  !comboBox->currentText().isEmpty() )
+    if ( !comboBox->currentText().isEmpty() )
     {
       valueList << comboBox->currentText();
     }
@@ -1226,7 +1226,7 @@ QStringList QgsGrassModuleVectorField::options()
 
   if ( !valueList.isEmpty() )
   {
-    QString opt = mKey + "=" + valueList.join(",");
+    QString opt = mKey + "=" + valueList.join( "," );
     list << opt;
   }
 
