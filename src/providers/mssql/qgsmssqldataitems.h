@@ -63,8 +63,6 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
 
     bool handleDrop( const QMimeData * data, const QString& toSchema );
 
-    void refresh() override;
-
     QString connInfo() const { return mConnInfo; }
 
   signals:
@@ -77,6 +75,8 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
 
     void setLayerType( QgsMssqlLayerProperty layerProperty );
 
+    void refresh() override;
+
   private:
     QString mConnInfo;
     QString mService;
@@ -87,8 +87,10 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     bool mUseGeometryColumns;
     bool mUseEstimatedMetadata;
     bool mAllowGeometrylessTables;
+    QgsMssqlGeomColumnTypeThread* mColumnTypeThread;
 
     void readConnectionSettings();
+    void stop();
 };
 
 class QgsMssqlSchemaItem : public QgsDataCollectionItem
@@ -100,7 +102,7 @@ class QgsMssqlSchemaItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem*> createChildren() override;
 
-    QgsMssqlLayerItem* addLayer( QgsMssqlLayerProperty layerProperty, bool refresh );
+    QgsMssqlLayerItem* addLayer( const QgsMssqlLayerProperty& layerProperty, bool refresh );
     void refresh() override {} // do not refresh directly
     void addLayers( QgsDataItem* newLayers );
     virtual bool acceptDrop() override { return true; }
