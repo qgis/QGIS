@@ -206,6 +206,7 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
       if ( !schemaItem )
       {
         schemaItem = new QgsMssqlSchemaItem( this, layer.schemaName, mPath + '/' + layer.schemaName );
+        schemaItem->setState( Populating );
         children.append( schemaItem );
       }
 
@@ -246,10 +247,26 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
 
     // spawn threads (new layers will be added later on)
     if ( mColumnTypeThread )
+    {
+      connect( mColumnTypeThread, SIGNAL( finished() ), this, SLOT( setChildrenAsPopulated() ) );
       mColumnTypeThread->start();
+    }
+    else
+    {
+      //set all as populated
+      setChildrenAsPopulated();
+    }
   }
 
   return children;
+}
+
+void QgsMssqlConnectionItem::setChildrenAsPopulated()
+{
+  Q_FOREACH ( QgsDataItem *child, mChildren )
+  {
+    child->setState( Populated );
+  }
 }
 
 void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )

@@ -77,6 +77,9 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
 
     void refresh() override;
 
+  private slots:
+    void setChildrenAsPopulated();
+
   private:
     QString mConnInfo;
     QString mService;
