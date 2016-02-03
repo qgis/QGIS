@@ -479,6 +479,8 @@ QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem* parent, QString name, QStri
     : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = "mIconDbSchema.png";
+  //not fertile, since children are created by QgsMssqlConnectionItem
+  mCapabilities &= ~( Fertile );
 }
 
 QVector<QgsDataItem*> QgsMssqlSchemaItem::createChildren()
