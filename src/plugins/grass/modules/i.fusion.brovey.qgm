@@ -9,5 +9,5 @@
 	<option key="ms2" />
 	<option key="ms3" />
 	<option key="pan" />
-	<flag key="outputprefix" />
+	<option key="outputprefix" />
 </qgisgrassmodule>
