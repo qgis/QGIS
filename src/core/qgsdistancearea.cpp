@@ -98,6 +98,11 @@ void QgsDistanceArea::setEllipsoidalMode( bool flag )
   mEllipsoidalMode = flag;
 }
 
+bool QgsDistanceArea::willUseEllipsoid() const
+{
+  return mEllipsoidalMode && mEllipsoid != GEO_NONE;
+}
+
 void QgsDistanceArea::setSourceCrs( long srsid )
 {
   QgsCoordinateReferenceSystem srcCRS;

@@ -121,5 +121,23 @@ class TestQgsDistanceArea(TestCase):
         perimeter = da.measurePerimeter(polygon)
         assert perimeter == 16, "Expected:\n%f\nGot:\n%f\n" % (16, perimeter)
 
+    def testWillUseEllipsoid(self):
+        """test QgsDistanceArea::willUseEllipsoid """
+
+        da = QgsDistanceArea()
+        da.setEllipsoidalMode(False)
+        da.setEllipsoid("NONE")
+        self.assertFalse(da.willUseEllipsoid())
+
+        da.setEllipsoidalMode(True)
+        self.assertFalse(da.willUseEllipsoid())
+
+        da.setEllipsoid("WGS84")
+        assert da.willUseEllipsoid()
+
+        da.setEllipsoidalMode(False)
+        self.assertFalse(da.willUseEllipsoid())
+
+
 if __name__ == '__main__':
     unittest.main()

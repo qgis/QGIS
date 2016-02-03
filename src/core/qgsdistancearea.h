@@ -48,11 +48,27 @@ class CORE_EXPORT QgsDistanceArea
     //! Assignment operator
     QgsDistanceArea & operator=( const QgsDistanceArea & origDA );
 
-    //! sets whether coordinates must be projected to ellipsoid before measuring
+    /** Sets whether coordinates must be projected to ellipsoid before measuring
+     * @note for calculations to use the ellipsoid, both the ellipsoid mode must be true
+     * and an ellipse must be set
+     * @see setEllipsoid()
+     * @see willUseEllipsoid()
+     */
     void setEllipsoidalMode( bool flag );
 
-    //! returns projections enabled flag
+    /** Returns whether ellipsoidal calculations are enabled
+     * @see willUseEllipsoid()
+     * @see setEllipsoidalMode()
+     */
     bool ellipsoidalEnabled() const { return mEllipsoidalMode; }
+
+    /** Returns whether calculations will use the ellipsoid. Calculations will only use the
+     * ellipsoid if ellipsoidalEnabled() is true and an ellipsoid has been set.
+     * @note added in QGIS 2.14
+     * @see ellipsoidalEnabled()
+     * @see ellipsoid()
+     */
+    bool willUseEllipsoid() const;
 
     //! sets source spatial reference system (by QGIS CRS)
     void setSourceCrs( long srsid );
@@ -71,14 +87,31 @@ class CORE_EXPORT QgsDistanceArea
     //! What sort of coordinate system is being used?
     bool geographic() const { return mCoordTransform->sourceCrs().geographicFlag(); }
 
-    //! sets ellipsoid by its acronym
+    /** Sets ellipsoid by its acronym. Calculations will only use the ellipsoid if
+     * both the ellipsoid has been set and ellipsoidalEnabled() is true.
+     * @returns true if ellipsoid was successfully set
+     * @see ellipsoid()
+     * @see setEllipsoidalMode()
+     * @see willUseEllipsoid()
+     */
     bool setEllipsoid( const QString& ellipsoid );
 
-    //! Sets ellipsoid by supplied radii
+    /** Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
+     * both the ellipsoid has been set and ellipsoidalEnabled() is true.
+     * @returns true if ellipsoid was successfully set
+     * @see ellipsoid()
+     * @see setEllipsoidalMode()
+     * @see willUseEllipsoid()
+     */
     // Inverse flattening is calculated with invf = a/(a-b)
     bool setEllipsoid( double semiMajor, double semiMinor );
 
-    //! returns ellipsoid's acronym
+    /** Returns ellipsoid's acronym. Calculations will only use the
+     * ellipsoid if ellipsoidalEnabled() is true and an ellipsoid has been set.
+     * @see setEllipsoid()
+     * @see ellipsoidalEnabled()
+     * @see willUseEllipsoid()
+     */
     QString ellipsoid() const { return mEllipsoid; }
 
     //! returns ellipsoid's semi major axis
