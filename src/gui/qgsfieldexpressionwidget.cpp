@@ -150,7 +150,8 @@ void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
 
 void QgsFieldExpressionWidget::setLayer( QgsVectorLayer *layer )
 {
-  disconnect( mFieldProxyModel->sourceFieldModel()->layer(), SIGNAL( updatedFields() ), this, SLOT( reloadLayer() ) );
+  if ( mFieldProxyModel->sourceFieldModel()->layer() )
+    disconnect( mFieldProxyModel->sourceFieldModel()->layer(), SIGNAL( updatedFields() ), this, SLOT( reloadLayer() ) );
 
   mExpressionContext.reset( new QgsExpressionContext() );
   mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
@@ -160,7 +161,8 @@ void QgsFieldExpressionWidget::setLayer( QgsVectorLayer *layer )
 
   mFieldProxyModel->sourceFieldModel()->setLayer( layer );
 
-  connect( mFieldProxyModel->sourceFieldModel()->layer(), SIGNAL( updatedFields() ), SLOT( reloadLayer() ), Qt::UniqueConnection );
+  if ( mFieldProxyModel->sourceFieldModel()->layer() )
+    connect( mFieldProxyModel->sourceFieldModel()->layer(), SIGNAL( updatedFields() ), SLOT( reloadLayer() ), Qt::UniqueConnection );
 }
 
 void QgsFieldExpressionWidget::setField( const QString &fieldName )
