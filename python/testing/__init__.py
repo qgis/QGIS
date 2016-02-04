@@ -45,6 +45,9 @@ class TestCase(_TestCase):
         :param request: Optional, A feature request. This can be used to specify
                         an order by clause to make sure features are compared in
                         a given sequence if they don't match by default.
+        :keyword compare: A map of comparison options. e.g.
+                         { fields: { a: skip, b: { precision: 2 }, geometry: { precision: 5 } }
+                         { fields: { __all__: cast( str ) } }
         """
 
         try:
@@ -56,14 +59,6 @@ class TestCase(_TestCase):
             compare = kwargs['compare']
         except KeyError:
             compare = {}
-
-        # Compare fields
-        _TestCase.assertEqual(self, layer1.fields().count(), layer2.fields().count())
-        for fieldnum in range(layer1.fields().count()):
-            field1 = layer1.fields().at(fieldnum)
-            field2 = layer2.fields().at(fieldnum)
-            _TestCase.assertEqual(self, field1.name(), field2.name())
-            # _TestCase.assertEqual(self, field1.type(), field2.type(), 'Field "{}" is not equal: {}({}) != {}({})'.format(field1.name(), field1.typeName(), field1.type(), field2.typeName(), field2.type()))
 
         # Compare CRS
         _TestCase.assertEqual(self, layer1.dataProvider().crs().authid(), layer2.dataProvider().crs().authid())
@@ -131,15 +126,16 @@ class TestCase(_TestCase):
                     self,
                     attr0,
                     attr1,
-                    'Features {}/{} differ in attributes\n\n * Field1: {} ({})\n * Field2: {} ({})\n\n * {} != {}'.format(feats[0].id(),
-                                                                                                                          feats[1].id(),
-                                                                                                                          field1.name(),
-                                                                                                                          field1.typeName(),
-                                                                                                                          field2.name(),
-                                                                                                                          field2.typeName(),
-                                                                                                                          repr(attr0),
-                                                                                                                          repr(attr1)
-                                                                                                                          )
+                    'Features {}/{} differ in attributes\n\n * Field1: {} ({})\n * Field2: {} ({})\n\n * {} != {}'.format(
+                        feats[0].id(),
+                        feats[1].id(),
+                        field1.name(),
+                        field1.typeName(),
+                        field2.name(),
+                        field2.typeName(),
+                        repr(attr0),
+                        repr(attr1)
+                    )
                 )
 
 # Patch unittest
