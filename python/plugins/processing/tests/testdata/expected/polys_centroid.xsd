@@ -19,7 +19,7 @@
         <xs:element name="name" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:string">
-              <xs:maxLength value="255"/>
+              <xs:maxLength value="5"/>
             </xs:restriction>
           </xs:simpleType>
         </xs:element>

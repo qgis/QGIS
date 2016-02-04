@@ -5,7 +5,7 @@ tests:
     algorithm: qgis:polygoncentroids # Algorithm name
     params: # A list of parameters (only 1 here)
       - type: vector    # Param is a vector layer
-        name: polys.geojson # file name
+        name: polys.gml # file name
     results: # A map of results (only one here)
       OUTPUT_LAYER:
         type: vector   # Expected result is a vector layer
@@ -17,7 +17,7 @@ tests:
   - name: Delete Holes
     algorithm: qgis:deleteholes
     params:
-    - name: polys.geojson
+    - name: polys.gml
       type: vector
     results:
       OUTPUT:
@@ -33,10 +33,10 @@ tests:
     algorithm: qgis:intersection
     params:
       INPUT:
-        name: multipolys.geojson
+        name: multipolys.gml
         type: vector
       INPUT2:
-        name: polys.geojson
+        name: polys.gml
         type: vector
     results:
       OUTPUT:
@@ -46,7 +46,7 @@ tests:
   - name: Densify geometries
     algorithm: qgis:densifygeometries
     params:
-    - name: multipolys.geojson
+    - name: multipolys.gml
       type: vector
     - '4'
     results:
@@ -57,7 +57,7 @@ tests:
   - name: Polygons to Lines
     algorithm: qgis:polygonstolines
     params:
-    - name: multipolys.geojson
+    - name: multipolys.gml
       type: vector
     results:
       OUTPUT:
