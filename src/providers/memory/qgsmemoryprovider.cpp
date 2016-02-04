@@ -289,7 +289,18 @@ QGis::WkbType QgsMemoryProvider::geometryType() const
 
 long QgsMemoryProvider::featureCount() const
 {
-  return mFeatures.count();
+  if ( mSubsetString.isEmpty() )
+    return mFeatures.count();
+
+  // subset string set, no alternative but testing each feature
+  QgsFeatureIterator fit = QgsFeatureIterator( new QgsMemoryFeatureIterator( new QgsMemoryFeatureSource( this ), true,  QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) ) );
+  int count = 0;
+  QgsFeature feature;
+  while ( fit.nextFeature( feature ) )
+  {
+    count++;
+  }
+  return count;
 }
 
 const QgsFields & QgsMemoryProvider::fields() const

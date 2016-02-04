@@ -363,6 +363,13 @@ class ProviderTestCase(object):
     def testFeatureCount(self):
         assert self.provider.featureCount() == 5, 'Got {}'.format(self.provider.featureCount())
 
+        #Add a subset string and test feature count
+        subset = self.getSubsetString()
+        self.provider.setSubsetString(subset)
+        count = self.provider.featureCount()
+        self.provider.setSubsetString(None)
+        assert count == 3, 'Got {}'.format(count)
+
     def testClosedIterators(self):
         """ Test behaviour of closed iterators """
 
