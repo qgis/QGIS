@@ -38,10 +38,10 @@ _TestCase = unittest.TestCase
 
 class TestCase(_TestCase):
 
-    def assertLayersEqual(self, layer1, layer2, **kwargs):
+    def assertLayersEqual(self, layer_expected, layer_result, **kwargs):
         """
-        :param layer1: The first layer to compare
-        :param layer2: The second layer to compare
+        :param layer_expected: The first layer to compare
+        :param layer_result: The second layer to compare
         :param request: Optional, A feature request. This can be used to specify
                         an order by clause to make sure features are compared in
                         a given sequence if they don't match by default.
@@ -61,17 +61,17 @@ class TestCase(_TestCase):
             compare = {}
 
         # Compare CRS
-        _TestCase.assertEqual(self, layer1.dataProvider().crs().authid(), layer2.dataProvider().crs().authid())
+        _TestCase.assertEqual(self, layer_expected.dataProvider().crs().authid(), layer_result.dataProvider().crs().authid())
 
         # Compare features
-        _TestCase.assertEqual(self, layer1.featureCount(), layer2.featureCount())
+        _TestCase.assertEqual(self, layer_expected.featureCount(), layer_result.featureCount())
 
         try:
             precision = compare['geometry']['precision']
         except KeyError:
             precision = 17
 
-        for feats in zip(layer1.getFeatures(request), layer2.getFeatures(request)):
+        for feats in zip(layer_expected.getFeatures(request), layer_result.getFeatures(request)):
             if feats[0].geometry() is not None:
                 geom0 = feats[0].geometry().geometry().asWkt(precision)
             else:
@@ -92,7 +92,9 @@ class TestCase(_TestCase):
                 )
             )
 
-            for attr0, attr1, field1, field2 in zip(feats[0].attributes(), feats[1].attributes(), layer1.fields().toList(), layer2.fields().toList()):
+            for attr_expected, field_expected in zip(feats[0].attributes(), layer_expected.fields().toList()):
+                attr_result = feats[1][field_expected.name()]
+                field_result = [fld for fld in layer_expected.fields().toList() if fld.name() == field_expected.name()][0]
                 try:
                     cmp = compare['fields'][field1.name()]
                 except KeyError:
@@ -108,33 +110,33 @@ class TestCase(_TestCase):
                 # Cast field to a given type
                 if 'cast' in cmp:
                     if cmp['cast'] == 'int':
-                        attr0 = int(attr0) if attr0 else None
-                        attr1 = int(attr1) if attr0 else None
+                        attr_expected = int(attr_expected) if attr_expected else None
+                        attr_result = int(attr_result) if attr_result else None
                     if cmp['cast'] == 'float':
-                        attr0 = float(attr0) if attr0 else None
-                        attr1 = float(attr1) if attr0 else None
+                        attr_expected = float(attr_expected) if attr_expected else None
+                        attr_result = float(attr_result) if attr_result else None
                     if cmp['cast'] == 'str':
-                        attr0 = str(attr0)
-                        attr1 = str(attr1)
+                        attr_expected = str(attr_expected) if attr_expected else None
+                        attr_result = str(attr_result) if attr_result else None
 
                 # Round field (only numeric so it works with __all__)
-                if 'precision' in cmp and field1.type() in [QVariant.Int, QVariant.Double, QVariant.LongLong]:
-                    attr0 = round(attr0, cmp['precision'])
-                    attr1 = round(attr1, cmp['precision'])
+                if 'precision' in cmp and field_expected.type() in [QVariant.Int, QVariant.Double, QVariant.LongLong]:
+                    attr_expected = round(attr_expected, cmp['precision'])
+                    attr_result = round(attr_result, cmp['precision'])
 
                 _TestCase.assertEqual(
                     self,
-                    attr0,
-                    attr1,
+                    attr_expected,
+                    attr_result,
                     'Features {}/{} differ in attributes\n\n * Field1: {} ({})\n * Field2: {} ({})\n\n * {} != {}'.format(
                         feats[0].id(),
                         feats[1].id(),
-                        field1.name(),
-                        field1.typeName(),
-                        field2.name(),
-                        field2.typeName(),
-                        repr(attr0),
-                        repr(attr1)
+                        field_expected.name(),
+                        field_expected.typeName(),
+                        field_result.name(),
+                        field_result.typeName(),
+                        repr(attr_expected),
+                        repr(attr_result)
                     )
                 )
 
