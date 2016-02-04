@@ -70,7 +70,7 @@ CMAKE_OPTS := \
 	-DWITH_INTERNAL_PYGMENTS=FALSE \
 	-DWITH_INTERNAL_DATEUTIL=FALSE \
 	-DWITH_INTERNAL_PYTZ=FALSE \
-	-DWITH_INTERNAL_SIX=FALSE \
+	-DWITH_INTERNAL_YAML=FALSE \
 	-DQT_TAG_FILE=/usr/share/qt4/doc/html/qt.tags \
 	-DQT_DOC_URL=/usr/share/qt4/doc/html/
 
@@ -89,6 +89,12 @@ endif
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	MAKEFLAGS += -j$(NUMJOBS)
+endif
+
+ifneq (,$(findstring $(DISTRIBUTION),"precise"))
+	CMAKE_OPTS += -DWITH_INTERNAL_NOSE2=TRUE -DWITH_INTERNAL_SIX=TRUE
+else
+	CMAKE_OPTS += -DWITH_INTERNAL_NOSE2=FALSE -DWITH_INTERNAL_SIX=FALSE
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"wheezy precise"))
