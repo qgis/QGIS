@@ -1838,6 +1838,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mFileToolButton_clicked()
   mFileLineEdit->setText( file );
   mLayer->setPath( file );
   s.setValue( "/UI/lastSVGMarkerDir", fi.absolutePath() );
+  setGuiForSvg( mLayer );
   emit changed();
 }
 
