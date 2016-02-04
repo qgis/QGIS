@@ -119,7 +119,7 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertexV2( QgsFeatureId
   return !geometry.isEmpty() ? QgsVectorLayer::Success : QgsVectorLayer::EmptyGeometry;
 }
 
-int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
+QgsVectorLayer::AddRingResult QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
 {
   QgsLineStringV2* ringLine = new QgsLineStringV2();
   QList< QgsPointV2 > ringPoints;
@@ -132,15 +132,15 @@ int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, const QgsFeat
   return addRing( ringLine, targetFeatureIds,  modifiedFeatureId );
 }
 
-int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
+QgsVectorLayer::AddRingResult QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
 {
   if ( !L->hasGeometryType() )
   {
     delete ring;
-    return 5;
+    return static_cast<QgsVectorLayer::AddRingResult>( QgsGeometry::AddRingNotInsertable );
   }
 
-  int addRingReturnCode = 5; //default: return code for 'ring not inserted'
+  int addRingReturnCode = QgsGeometry::AddRingNotInsertable;
   QgsFeature f;
 
   QgsFeatureIterator fit;
@@ -164,7 +164,7 @@ int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, const QgsFeatureIds& tar
 
     //add ring takes ownership of ring, and deletes it if there's an error
     addRingReturnCode = f.geometry()->addRing( static_cast< QgsCurveV2* >( ring->clone() ) );
-    if ( addRingReturnCode == 0 )
+    if ( addRingReturnCode == QgsGeometry::AddRingSuccess )
     {
       L->editBuffer()->changeGeometry( f.id(), f.geometry() );
       if ( modifiedFeatureId )
@@ -176,10 +176,10 @@ int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, const QgsFeatureIds& tar
   }
 
   delete ring;
-  return addRingReturnCode;
+  return static_cast<QgsVectorLayer::AddRingResult>( addRingReturnCode );
 }
 
-int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureId featureId )
+QgsVectorLayer::AddPartResult QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureId featureId )
 {
   QList<QgsPointV2> l;
   for ( QList<QgsPoint>::const_iterator it = points.constBegin(); it != points.constEnd(); ++it )
@@ -189,10 +189,10 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureI
   return addPart( l, featureId );
 }
 
-int QgsVectorLayerEditUtils::addPart( const QList<QgsPointV2> &points, QgsFeatureId featureId )
+QgsVectorLayer::AddPartResult QgsVectorLayerEditUtils::addPart( const QList<QgsPointV2> &points, QgsFeatureId featureId )
 {
   if ( !L->hasGeometryType() )
-    return 6;
+    return static_cast<QgsVectorLayer::AddPartResult>( QgsGeometry::AddPartNoGeometry );
 
   QgsGeometry geometry;
   bool firstPart = false;
@@ -201,7 +201,7 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPointV2> &points, QgsFeatur
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
     if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
-      return 6; //not found
+      return static_cast<QgsVectorLayer::AddPartResult>( QgsGeometry::AddPartNoGeometry ); //not found
 
     if ( !f.constGeometry() || f.constGeometry()->isEmpty() )
     {
@@ -215,7 +215,7 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPointV2> &points, QgsFeatur
   }
 
   int errorCode = geometry.addPart( points, L->geometryType() );
-  if ( errorCode == 0 )
+  if ( errorCode == QgsGeometry::AddPartSuccess )
   {
     if ( firstPart && QgsWKBTypes::isSingleType( QGis::fromOldWkbType( L->wkbType() ) )
          && L->dataProvider()->doesStrictFeatureTypeCheck() )
@@ -225,13 +225,13 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPointV2> &points, QgsFeatur
     }
     L->editBuffer()->changeGeometry( featureId, &geometry );
   }
-  return errorCode;
+  return static_cast<QgsVectorLayer::AddPartResult>( errorCode );
 }
 
-int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
+QgsVectorLayer::AddPartResult QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
 {
   if ( !L->hasGeometryType() )
-    return 6;
+    return static_cast<QgsVectorLayer::AddPartResult>( QgsGeometry::AddPartNoGeometry );
 
   QgsGeometry geometry;
   bool firstPart = false;
@@ -240,7 +240,7 @@ int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
     if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
-      return 6; //not found
+      return static_cast<QgsVectorLayer::AddPartResult>( QgsGeometry::AddPartNoGeometry ); //not found
 
     if ( !f.constGeometry() || f.constGeometry()->isEmpty() )
     {
@@ -254,7 +254,7 @@ int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
   }
 
   int errorCode = geometry.addPart( ring, L->geometryType() );
-  if ( errorCode == 0 )
+  if ( errorCode == QgsGeometry::AddPartSuccess )
   {
     if ( firstPart && QgsWKBTypes::isSingleType( QGis::fromOldWkbType( L->wkbType() ) )
          && L->dataProvider()->doesStrictFeatureTypeCheck() )
@@ -264,7 +264,7 @@ int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
     }
     L->editBuffer()->changeGeometry( featureId, &geometry );
   }
-  return errorCode;
+  return static_cast<QgsVectorLayer::AddPartResult>( errorCode );
 }
 
 

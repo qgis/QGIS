@@ -273,39 +273,58 @@ class QgsGeometry
      */
     double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint /Out/, int& afterVertex /Out/ ) const;
 
-    /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
-     @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
-     3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
-    int addRing( const QList<QgsPoint>& ring );
+    /** Result codes for addRing().
+     * @note should be replaced in QGIS 3.0 by common codes for all editing operations
+     * @note this is extended by QgsVectorLayer::AddRingResult
+     */
+    enum AddRingResult
+    {
+      AddRingSuccess = 0,       //< Success
+      AddRingWrongFeatureType,  //< Problem with feature type
+      AddRingNotClosed,         //< Ring not closed
+      AddRingNotValid,          //< Ring not valid
+      AddRingCrossing,          //< Ring crosses existing rings
+      AddRingNotInsertable      //< No feature found where ring can be inserted
+    };
 
-    /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
-     @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
-     3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
-    int addRing( QgsCurveV2* ring );
+    /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons. */
+    AddRingResult addRing( const QList<QgsPoint>& ring );
+
+    /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons. */
+    AddRingResult addRing( QgsCurveV2* ring );
+
+    /** Result codes for addPart().
+     *  @note should be replaced in QGIS 3.0 by common codes for all editing operations
+     */
+    enum AddPartResult
+    {
+      AddPartSuccess,           //< Success
+      AddPartWrongFeatureType,  //< Selected feature is not multipart
+      AddPartNotValid,          //< Ring is not valid geometry
+      AddPartNotDisjoint,       //< New polygon ring not disjoint with exisiting rings
+      AddPartNoFeature,         //< No feature was selected
+      AddPartSeveralFeatures,   //< Several features are selected
+      AddPartNoGeometry         //< Selected geometry not found
+    };
 
     /** Adds a new part to a the geometry.
      * @param points points describing part to add
      * @param geomType default geometry type to create if no existing geometry
-     * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-     * not disjoint with existing polygons of the feature
     */
-    int addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
+    AddPartResult addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
 
     /** Adds a new part to a the geometry.
      * @param points points describing part to add
      * @param geomType default geometry type to create if no existing geometry
-     * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-     * not disjoint with existing polygons of the feature
     */
-    int addPart( const QList<QgsPointV2> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
+    AddPartResult addPart( const QList<QgsPointV2> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
 
     /** Adds a new part to this geometry.
      * @param part part to add (ownership is transferred)
      * @param geomType default geometry type to create if no existing geometry
-     * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
     */
-    int addPart( QgsAbstractGeometryV2* part /Transfer/, QGis::GeometryType geomType = QGis::UnknownGeometry );
+    AddPartResult addPart( QgsAbstractGeometryV2* part /Transfer/, QGis::GeometryType geomType = QGis::UnknownGeometry );
 
     /** Adds a new island polygon to a multipolygon feature
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
@@ -315,11 +334,9 @@ class QgsGeometry
     // int addPart( GEOSGeometry *newPart );
 
     /** Adds a new island polygon to a multipolygon feature
-     @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-     not disjoint with existing polygons of the feature
      @note available in python bindings as addPartGeometry (added in 2.2)
      */
-    int addPart( const QgsGeometry *newPart /Transfer/ ) /PyName=addPartGeometry/;
+    AddPartResult addPart( const QgsGeometry *newPart /Transfer/ ) /PyName=addPartGeometry/;
 
     /** Translate this geometry by dx, dy
      @return 0 in case of success*/

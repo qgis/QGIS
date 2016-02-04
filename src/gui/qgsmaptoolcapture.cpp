@@ -326,13 +326,13 @@ int QgsMapToolCapture::nextPoint( const QgsPoint& mapPoint, QgsPoint& layerPoint
   return r;
 }
 
-int QgsMapToolCapture::nextPoint( const QgsPointV2& mapPoint, QgsPointV2& layerPoint )
+QgsMapToolCapture::NextPointResult QgsMapToolCapture::nextPoint( const QgsPointV2& mapPoint, QgsPointV2& layerPoint )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   if ( !vlayer )
   {
     QgsDebugMsg( "no vector layer" );
-    return 1;
+    return NextPointInvalidLayer;
   }
   try
   {
@@ -347,13 +347,13 @@ int QgsMapToolCapture::nextPoint( const QgsPointV2& mapPoint, QgsPointV2& layerP
   {
     Q_UNUSED( cse );
     QgsDebugMsg( "transformation to layer coordinate failed" );
-    return 2;
+    return NextPointTransformationFailed;
   }
 
-  return 0;
+  return NextPointSuccess;
 }
 
-int QgsMapToolCapture::nextPoint( QPoint p, QgsPointV2 &layerPoint, QgsPointV2 &mapPoint )
+QgsMapToolCapture::NextPointResult QgsMapToolCapture::nextPoint( QPoint p, QgsPointV2 &layerPoint, QgsPointV2 &mapPoint )
 {
   mapPoint = QgsPointV2( toMapCoordinates( p ) );
   return nextPoint( mapPoint, layerPoint );
