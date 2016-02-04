@@ -577,9 +577,9 @@ void QgsBrowserDockWidget::addSelectedLayers()
   qSort( list );
 
   // If any of the layer items are QGIS we just open and exit the loop
-  for ( int i = 0; i <= list.size(); i++ )
+  Q_FOREACH ( const QModelIndex& index, list )
   {
-    QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( list[i] ) );
+    QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
     if ( item && item->type() == QgsDataItem::Project )
     {
       QgsProjectItem *projectItem = qobject_cast<QgsProjectItem*>( item );
