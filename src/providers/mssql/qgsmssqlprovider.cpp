@@ -66,7 +66,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString& uri )
   else
     mSRId = -1;
 
-  mWkbType = anUri.wkbType();
+  mWkbType = QGis::fromNewWkbType( anUri.newWkbType() );
 
   mValid = true;
 

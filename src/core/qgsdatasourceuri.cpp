@@ -30,7 +30,7 @@ QgsDataSourceURI::QgsDataSourceURI()
     , mKeyColumn( "" )
     , mUseEstimatedMetadata( false )
     , mSelectAtIdDisabled( false )
-    , mWkbType( QGis::WKBUnknown )
+    , mWkbType( QgsWKBTypes::Unknown )
 {
   // do nothing
 }
@@ -40,7 +40,7 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
     , mKeyColumn( "" )
     , mUseEstimatedMetadata( false )
     , mSelectAtIdDisabled( false )
-    , mWkbType( QGis::WKBUnknown )
+    , mWkbType( QgsWKBTypes::Unknown )
 {
   int i = 0;
   while ( i < uri.length() )
@@ -139,7 +139,7 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
       }
       else if ( pname == "type" )
       {
-        mWkbType = QGis::fromNewWkbType( QgsWKBTypes::parseType( pval ) );
+        mWkbType = QgsWKBTypes::parseType( pval );
       }
       else if ( pname == "selectatid" )
       {
@@ -540,10 +540,10 @@ QString QgsDataSourceURI::uri( bool expandAuthConfig ) const
     theUri += QString( " srid=%1" ).arg( mSrid );
   }
 
-  if ( mWkbType != QGis::WKBUnknown && mWkbType != QGis::WKBNoGeometry )
+  if ( mWkbType != QgsWKBTypes::Unknown && mWkbType != QgsWKBTypes::NoGeometry )
   {
     theUri += " type=";
-    theUri += QgsWKBTypes::displayString( QgsWKBTypes::Type( mWkbType ) );
+    theUri += QgsWKBTypes::displayString( mWkbType );
   }
 
   if ( mSelectAtIdDisabled )
@@ -672,10 +672,20 @@ void QgsDataSourceURI::setDatabase( const QString &database )
 
 QGis::WkbType QgsDataSourceURI::wkbType() const
 {
+  return QGis::fromNewWkbType( mWkbType );
+}
+
+QgsWKBTypes::Type QgsDataSourceURI::newWkbType() const
+{
   return mWkbType;
 }
 
 void QgsDataSourceURI::setWkbType( QGis::WkbType wkbType )
+{
+  mWkbType = QGis::fromOldWkbType( wkbType );
+}
+
+void QgsDataSourceURI::setWkbType( QgsWKBTypes::Type wkbType )
 {
   mWkbType = wkbType;
 }

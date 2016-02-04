@@ -125,42 +125,79 @@ class CORE_EXPORT QgsDataSourceURI
 
     //! Any associated authentication configuration ID
     QString authConfigId() const;
+
+    //! Returns the username
     QString username() const;
+
+    //! Returns the schema
     QString schema() const;
+
+    //! Returns the table
     QString table() const;
+
+    //! Returns the SQL query
     QString sql() const;
+
+    //! Return the name of the geometry column
     QString geometryColumn() const;
 
     //! set use Estimated Metadata
     void setUseEstimatedMetadata( bool theFlag );
+
+    //! Returns true if estimated metadata are used
     bool useEstimatedMetadata() const;
 
+    //! Set to true to disable selection by id
     void disableSelectAtId( bool theFlag );
+    //! Returns whether the selection by id is disabled
     bool selectAtIdDisabled() const;
 
+    //! Clears the schema
     void clearSchema();
 
     //! set the table schema
     // @note added in 2.11
     void setSchema( const QString& schema );
 
+    //! Sets the SQL query
     void setSql( const QString& sql );
 
+    //! Returns the host
     QString host() const;
+    //! Returns the database
     QString database() const;
+    //! Returns the port
     QString port() const;
+    //! Returns the password
     QString password() const;
+    //! Returns the SSL mode
     enum SSLmode sslMode() const;
 
+    //! Returns the service name
     QString service() const;
 
+    //! Returns the name of the (primary) key column
     QString keyColumn() const;
+    //! Sets the name of the (primary) key column
     void setKeyColumn( const QString& column );
 
-    QGis::WkbType wkbType() const;
-    void setWkbType( QGis::WkbType type );
+    /** The (old) wkb type.
+        @deprecated Will return QgsWKBTypes::Type in 3.0. Prefer newWkbType() in the meantime */
+    Q_DECL_DEPRECATED QGis::WkbType wkbType() const;
 
+    /** The wkb type.
+        @note Will be removed in 3.0 */
+    QgsWKBTypes::Type newWkbType() const;
+
+    //! @deprecated See setWkbType( QgsWKBTypes::Type )
+    Q_DECL_DEPRECATED void setWkbType( QGis::WkbType type );
+
+    //! Sets the wkb type
+    void setWkbType( QgsWKBTypes::Type type );
+
+    //! Returns the srid
     QString srid() const;
+    //! Sets the srid
     void setSrid( const QString& srid );
 
   private:
@@ -201,7 +238,7 @@ class CORE_EXPORT QgsDataSourceURI
     //! Disable SelectAtId capability (eg. to trigger the attribute table memory model for expensive views)
     bool mSelectAtIdDisabled;
     //! geometry type (or QGis::WKBUnknown if not specified)
-    QGis::WkbType mWkbType;
+    QgsWKBTypes::Type mWkbType;
     //! SRID or a null string if not specified
     QString mSrid;
     //! Generic params store

@@ -69,7 +69,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   mGeometryColumn = mUri.geometryColumn();
   mSqlWhereClause = mUri.sql();
   mRequestedSrid = mUri.srid();
-  mRequestedGeomType = mUri.wkbType();
+  mRequestedGeomType = QGis::fromNewWkbType( mUri.newWkbType() );
 
   if ( mSchemaName.isEmpty() && mTableName.startsWith( '(' ) && mTableName.endsWith( ')' ) )
   {
