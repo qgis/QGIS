@@ -220,7 +220,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             if default:
                 param = ParameterBoolean(name, descName, default)
             else:
-                param = ParameterBoolean(name, descName)
+                param = ParameterBoolean(name, descName, optional=True)
         elif token.lower().strip() == 'extent':
             param = ParameterExtent(name, descName)
         elif token.lower().strip() == 'file':
@@ -232,7 +232,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             if default:
                 param = ParameterNumber(name, descName, default=default)
             else:
-                param = ParameterNumber(name, descName)
+                param = ParameterNumber(name, descName, optional=True)
         elif token.lower().strip().startswith('field'):
             field = token.strip()[len('field') + 1:]
             found = False
@@ -247,19 +247,19 @@ class ScriptAlgorithm(GeoAlgorithm):
             if default:
                 param = ParameterString(name, descName, default)
             else:
-                param = ParameterString(name, descName)
+                param = ParameterString(name, descName, optional=True)
         elif token.lower().strip().startswith('longstring'):
             default = token.strip()[len('longstring') + 1:]
             if default:
                 param = ParameterString(name, descName, default, multiline=True)
             else:
-                param = ParameterString(name, descName, multiline=True)
+                param = ParameterString(name, descName, optional=True, multiline=True)
         elif token.lower().strip().startswith('crs'):
             default = token.strip()[len('crs') + 1:]
             if default:
                 param = ParameterCrs(name, descName, default)
             else:
-                param = ParameterCrs(name, descName)
+                param = ParameterCrs(name, descName, optional=True)
 
         return param
 
