@@ -25,8 +25,8 @@
         </xs:element>
         <xs:element name="intval" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
-            <xs:restriction base="xs:string">
-              <xs:maxLength value="255"/>
+            <xs:restriction base="xs:integer">
+              <xs:totalDigits value="10"/>
             </xs:restriction>
           </xs:simpleType>
         </xs:element>
