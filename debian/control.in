@@ -380,7 +380,7 @@ Depends:
  python-six,
 #sid stretch jessie trusty utopic vivid wily# python-pyspatialite,
 #jessie# liblwgeom-2.1.4,
-#stretch sid# liblwgeom-2.2-2,
+#stretch sid# liblwgeom-2.2-5,
  libqgispython{QGIS_ABI},
  ${shlibs:Depends},
  ${python:Depends},

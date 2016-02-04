@@ -109,17 +109,18 @@ endif
 
 ifneq (,$(WITH_ORACLE))
 ifeq ($(DEB_BUILD_ARCH),amd64)
-	CMAKE_OPTS += \
-		-DWITH_ORACLE=TRUE \
-		-DORACLE_INCLUDEDIR=/usr/include/oracle/12.1/client64/ \
-		-DORACLE_LIBDIR=/usr/lib/oracle/12.1/client64/lib/
+	ORACLE_INCLUDEDIR=/usr/include/oracle/12.1/client64/
+	ORACLE_LIBDIR=/usr/lib/oracle/12.1/client64/lib/
 endif
 ifeq ($(DEB_BUILD_ARCH),i386)
+	ORACLE_INCLUDEDIR=/usr/include/oracle/12.1/client/
+	ORACLE_LIBDIR=/usr/lib/oracle/12.1/client/lib/
+endif
+
 	CMAKE_OPTS += \
 		-DWITH_ORACLE=TRUE \
-		-DORACLE_INCLUDEDIR=/usr/include/oracle/12.1/client/ \
-		-DORACLE_LIBDIR=/usr/lib/oracle/12.1/client/lib/
-endif
+		-DORACLE_LIBDIR=$(ORACLE_LIBDIR) \
+		-DORACLE_INCLUDEDIR=$(ORACLE_INCLUDEDIR)
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"sid stretch jessie"))
@@ -277,17 +278,20 @@ override_dh_auto_install:
 
 	# qgis binaries
 	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis/usr/bin
-	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin
-	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qbrowser $(CURDIR)/debian/qgis/usr/bin
+	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin/qgis.bin
+	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qbrowser $(CURDIR)/debian/qgis/usr/bin/qbrowser.bin
 
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/qbrowser
 
 	# qgis binary wrappers
-	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis-plugin-grass/usr/bin
-	sed -r -e "s/\{GRASS\}/$(GRASS)/g" $(CURDIR)/debian/qgis.sh.in >$(CURDIR)/debian/qgis.sh
-	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
-	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qbrowser
+	sed -r \
+		-e "s/\{GRASS\}/$(GRASS)/g" \
+		-e "s#\{ORACLE_LIBDIR\}#$(ORACLE_LIBDIR)#g" \
+		$(CURDIR)/debian/qgis.sh.in >$(CURDIR)/debian/qgis.sh
+
+	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
+	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qbrowser
 
 override_dh_install:
 	# Don't ship srs.db, automatically updated in postinst with crssync
@@ -338,10 +342,18 @@ override_dh_compress:
 	dh_compress --exclude=pdf
 
 override_dh_makeshlibs:
+ifneq (,$(WITH_ORACLE))
+	dh_makeshlibs -Xqgis-plugin-grass -Xlibqgis-customwidgets -Xqgis-provider-oracle -- -c0 -v$(QGIS_VERSION)
+else
 	dh_makeshlibs -Xqgis-plugin-grass -Xlibqgis-customwidgets -- -c0 -v$(QGIS_VERSION)
+endif
 
 override_dh_shlibdeps:
+ifneq (,$(WITH_ORACLE))
+	dh_shlibdeps -l/usr/lib/$(GRASS)/lib -l$(ORACLE_LIBDIR)
+else
 	dh_shlibdeps -l/usr/lib/$(GRASS)/lib
+endif
 
 override_dh_strip:
 	dh_strip --dbg-package=qgis-dbg
