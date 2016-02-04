@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
 import os
 
 from PyQt4.QtCore import QFileInfo, QDir
@@ -26,22 +25,23 @@ from qgis.core import (QgsComposition,
                        QgsMapRenderer
                        )
 
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       # expectedFailure
-                       )
+from qgis.testing import (start_app,
+                          unittest
+                          )
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.testing.mocked import get_iface
+
+from utilities import unitTestDataPath
+
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposition(TestCase):
+class TestQgsComposition(unittest.TestCase):
 
     def setUp(self):
         """Run before each test."""
-        pass
+        self.iface = get_iface()
 
     def tearDown(self):
         """Run after each test."""
@@ -59,7 +59,7 @@ class TestQgsComposition(TestCase):
         myText = 'Latitude: %s, Longitude: %s' % (myLatitude, myLongitude)
 
         # Load the composition with the substitutions
-        myComposition = QgsComposition(CANVAS.mapRenderer())
+        myComposition = QgsComposition(self.iface.mapCanvas().mapRenderer())
         mySubstitutionMap = {'replace-me': myText}
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         myTemplateFile = file(myFile, 'rt')
@@ -76,7 +76,7 @@ class TestQgsComposition(TestCase):
 
     def testNoSubstitutionMap(self):
         """Test that we can get a map if we use no text substitutions."""
-        myComposition = QgsComposition(CANVAS.mapRenderer())
+        myComposition = QgsComposition(self.iface.mapCanvas().mapRenderer())
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         myTemplateFile = file(myFile, 'rt')
         myTemplateContent = myTemplateFile.read()

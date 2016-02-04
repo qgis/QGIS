@@ -14,10 +14,9 @@ __revision__ = '$Format:%H$'
 
 import qgis
 
-from utilities import (unittest,
-                       TestCase,
-                       getQgisTestApp
-                       )
+from qgis.testing import (unittest,
+                          start_app
+                          )
 from qgis.core import (edit,
                        QgsFeature,
                        QgsGeometry,
@@ -25,10 +24,10 @@ from qgis.core import (edit,
                        QgsEditError
                        )
 
-getQgisTestApp()
+start_app()
 
 
-class TestSyntacticSugar(TestCase):
+class TestSyntacticSugar(unittest.TestCase):
 
     def testEdit(self):
         """Test `with edit(layer):` code"""

@@ -32,7 +32,7 @@ from qgis.core import (
     QgsFontUtils
 )
 from qgis.gui import QgsMapCanvas
-from qgis_interface import QgisInterface
+from qgis.testing import start_app
 import hashlib
 import re
 try:
@@ -43,24 +43,6 @@ except ImportError:
 import webbrowser
 import subprocess
 
-# Support python < 2.7 via unittest2 needed for expected failure decorator.
-# Note that you should ignore unused import warnings here as these are imported
-# from this module by other tests.
-if sys.version_info[0:2] < (2, 7):
-    try:
-        from unittest2 import TestCase, expectedFailure
-        import unittest2 as unittest
-    except ImportError:
-        print("You should install unittest2 to run the salt tests")
-        sys.exit(0)
-else:
-    from unittest import TestCase, expectedFailure
-    import unittest
-
-QGISAPP = None  # Static variable used to hold hand to running QGis app
-CANVAS = None
-PARENT = None
-IFACE = None
 GEOCRS = 4326  # constant for EPSG:GEOCRS Geographic CRS id
 
 FONTSLOADED = False
@@ -96,56 +78,6 @@ def hashForFile(theFilename):
     myHash.update(myData)
     myHash = myHash.hexdigest()
     return myHash
-
-
-def getQgisTestApp():
-    """ Start one QGis application to test agaist
-
-    Input
-        NIL
-
-    Output
-        handle to qgis app
-
-
-    If QGis is already running the handle to that app will be returned
-    """
-
-    global QGISAPP  # pylint: disable=W0603
-
-    if QGISAPP is None:
-        myGuiFlag = True  # All test will run qgis in gui mode
-
-        # In python3 we need to conver to a bytes object (or should
-        # QgsApplication accept a QString instead of const char* ?)
-        try:
-            argvb = list(map(os.fsencode, sys.argv))
-        except AttributeError:
-            argvb = sys.argv
-
-        # Note: QGIS_PREFIX_PATH is evaluated in QgsApplication -
-        # no need to mess with it here.
-        QGISAPP = QgsApplication(argvb, myGuiFlag)
-
-        QGISAPP.initQgis()
-        s = QGISAPP.showSettings()
-        print(s)
-
-    global PARENT  # pylint: disable=W0603
-    if PARENT is None:
-        PARENT = QWidget()
-
-    global CANVAS  # pylint: disable=W0603
-    if CANVAS is None:
-        CANVAS = QgsMapCanvas(PARENT)
-        CANVAS.resize(QSize(400, 400))
-
-    global IFACE  # pylint: disable=W0603
-    if IFACE is None:
-        # QgisInterface is a stub implementation of the QGIS plugin interface
-        IFACE = QgisInterface(CANVAS)
-
-    return QGISAPP, CANVAS, IFACE, PARENT
 
 
 def unitTestDataPath(theSubdir=None):
@@ -377,8 +309,7 @@ def getTestFont(style='Roman', size=12):
 
 
 def loadTestFonts():
-    if QGISAPP is None:
-        getQgisTestApp()
+    start_app()
 
     global FONTSLOADED  # pylint: disable=W0603
     if FONTSLOADED is False:

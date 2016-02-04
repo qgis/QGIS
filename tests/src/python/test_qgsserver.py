@@ -14,12 +14,12 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
-import unittest
 import urllib
 from mimetools import Message
 from StringIO import StringIO
 from qgis.server import QgsServer
 from qgis.core import QgsMessageLog
+from qgis.testing import unittest
 from utilities import unitTestDataPath
 
 # Strip path and content length because path may vary

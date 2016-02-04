@@ -21,12 +21,11 @@ from qgis.core import (QgsVectorLayer,
                        QgsPoint,
                        QgsMapLayerRegistry
                        )
-from utilities import (getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
+from qgis.testing import (start_app,
+                          unittest
+                          )
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
 
 def createReferencingLayer():
@@ -70,7 +69,7 @@ def formatAttributes(attrs):
     return repr([unicode(a) for a in attrs])
 
 
-class TestQgsRelation(TestCase):
+class TestQgsRelation(unittest.TestCase):
 
     def setUp(self):
         self.referencedLayer = createReferencedLayer()

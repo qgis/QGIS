@@ -141,10 +141,10 @@ pluginPath = os.path.normpath(os.path.join(
 
 class QGISAlgorithmProvider(AlgorithmProvider):
 
-    _icon = QIcon(os.path.join(pluginPath, 'images', 'qgis.png'))
-
     def __init__(self):
         AlgorithmProvider.__init__(self)
+        self._icon = QIcon(os.path.join(pluginPath, 'images', 'qgis.png'))
+
         self.alglist = [SumLines(), PointsInPolygon(),
                         PointsInPolygonWeighted(), PointsInPolygonUnique(),
                         BasicStatisticsStrings(), BasicStatisticsNumbers(),

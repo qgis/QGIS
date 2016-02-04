@@ -18,4 +18,4 @@ mkdir -p /Users/travis/Library/Python/2.7/lib/python/site-packages
 echo 'import site; site.addsitedir("/usr/local/lib/python2.7/site-packages")' >> /Users/travis/Library/Python/2.7/lib/python/site-packages/homebrew.pth
 
 # Needed for Processing
-pip install psycopg2 numpy
+pip install psycopg2 numpy nose2 pyyaml mock

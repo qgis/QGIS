@@ -128,7 +128,6 @@ class HistoryDialog(BASE, WIDGET):
                 TestTools.createTest(item.entry.text)
 
     def showPopupMenu(self, point):
-        return
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:

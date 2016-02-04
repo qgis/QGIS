@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    ParametersTest.py
+    ParametersTest
     ---------------------
     Date                 : March 2013
     Copyright            : (C) 2013 by Victor Olaya
@@ -25,9 +25,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import unittest
-from utilities import getQgisTestApp, unittest
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.testing import start_app, unittest
 
 from processing.core.parameters import (Parameter,
                                         ParameterBoolean,
@@ -41,6 +39,8 @@ from processing.core.parameters import (Parameter,
 
 from qgis.core import (QgsRasterLayer,
                        QgsVectorLayer)
+
+start_app()
 
 
 class ParameterTest(unittest.TestCase):

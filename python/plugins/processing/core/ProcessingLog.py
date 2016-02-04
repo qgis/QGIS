@@ -60,7 +60,7 @@ class ProcessingLog:
             # It seems that this fails sometimes depending on the msg
             # added. To avoid it stopping the normal functioning of the
             # algorithm, we catch all errors, assuming that is better
-            # to miss some log info that breaking the algorithm.
+            # to miss some log info than breaking the algorithm.
             if msgtype == ProcessingLog.LOG_ALGORITHM:
                 line = msgtype + '|' + datetime.datetime.now().strftime(
                     ProcessingLog.DATE_FORMAT) + '|' \

@@ -1724,8 +1724,6 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
 
 OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
 {
-  QgsLocaleNumC l;
-
   OGRFeatureH poFeature = OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) );
 
   qint64 fid = FID_TO_NUMBER( feature.id() );
@@ -1759,17 +1757,31 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
 
     switch ( attrValue.type() )
     {
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
+      case QVariant::Int:
+      case QVariant::UInt:
+        OGR_F_SetFieldInteger( poFeature, ogrField, attrValue.toInt() );
+        break;
+      case QVariant::LongLong:
+      case QVariant::ULongLong:
+        OGR_F_SetFieldInteger64( poFeature, ogrField, attrValue.toLongLong() );
+        break;
+      case QVariant::String:
+        OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
+        break;
+#else
       case QVariant::Int:
         OGR_F_SetFieldInteger( poFeature, ogrField, attrValue.toInt() );
         break;
-      case QVariant::Double:
-        OGR_F_SetFieldDouble( poFeature, ogrField, attrValue.toDouble() );
-        break;
+      case QVariant::String:
       case QVariant::LongLong:
       case QVariant::UInt:
       case QVariant::ULongLong:
-      case QVariant::String:
         OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
+        break;
+#endif
+      case QVariant::Double:
+        OGR_F_SetFieldDouble( poFeature, ogrField, attrValue.toDouble() );
         break;
       case QVariant::Date:
         OGR_F_SetFieldDateTime( poFeature, ogrField,

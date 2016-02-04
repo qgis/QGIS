@@ -383,10 +383,10 @@ class FoldButtonGraphicItem(FlatButtonGraphicItem):
     WIDTH = 11
     HEIGHT = 11
 
-    icons = {True: QIcon(os.path.join(pluginPath, 'images', 'plus.png')),
-             False: QIcon(os.path.join(pluginPath, 'images', 'minus.png'))}
-
     def __init__(self, position, action, folded):
+        self.icons = {True: QIcon(os.path.join(pluginPath, 'images', 'plus.png')),
+                      False: QIcon(os.path.join(pluginPath, 'images', 'minus.png'))}
+
         self.folded = folded
         icon = self.icons[self.folded]
         super(FoldButtonGraphicItem, self).__init__(icon, position, action)

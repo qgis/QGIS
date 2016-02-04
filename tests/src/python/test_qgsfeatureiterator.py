@@ -16,16 +16,17 @@ import qgis
 import os
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature
+from qgis.testing import (start_app,
+                          unittest
+                          )
 from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
+                       compareWkt
                        )
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsFeatureIterator(TestCase):
+class TestQgsFeatureIterator(unittest.TestCase):
 
     def __init__(self, methodName):
         """Run once on class initialisation."""

@@ -16,12 +16,12 @@ import qgis
 
 from qgis.core import QgsProject, QgsMessageLog
 
-from utilities import getQgisTestApp, TestCase, unittest
+from qgis.testing import start_app, unittest
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
 
-class TestQgsProject(TestCase):
+class TestQgsProject(unittest.TestCase):
 
     def __init__(self, methodName):
         """Run once on class initialisation."""

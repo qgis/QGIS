@@ -14,19 +14,15 @@ __revision__ = '$Format:%H$'
 
 import qgis
 
-from utilities import (unittest,
-                       TestCase,
-                       getQgisTestApp
-                       )
-from qgis.core import (QgsUnitTypes,
-                       QGis,
-                       QgsSymbolV2
-                       )
-
-getQgisTestApp()
+from qgis.testing import unittest
+from qgis.core import (
+    QgsUnitTypes,
+    QGis,
+    QgsSymbolV2
+)
 
 
-class TestQgsUnitTypes(TestCase):
+class TestQgsUnitTypes(unittest.TestCase):
 
     def testDistanceUnitType(self):
         """Test QgsUnitTypes::unitType() """

@@ -58,8 +58,6 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 class ScriptAlgorithm(GeoAlgorithm):
 
-    _icon = QtGui.QIcon(os.path.join(pluginPath, 'images', 'script.png'))
-
     def __init__(self, descriptionFile, script=None):
         """The script parameter can be used to directly pass the code
         of the script without a file.
@@ -69,6 +67,8 @@ class ScriptAlgorithm(GeoAlgorithm):
         """
 
         GeoAlgorithm.__init__(self)
+        self._icon = QtGui.QIcon(os.path.join(pluginPath, 'images', 'script.png'))
+
         self.script = script
         self.allowEdit = True
         self.noCRSWarning = False

@@ -23,7 +23,6 @@ __copyright__ = '(C) 2013, Nyall Dawson, Massimo Endrighi'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
 import os
 
 from PyQt4.QtCore import QSize
@@ -38,21 +37,25 @@ from qgis.core import (QgsVectorLayer,
                        QgsRectangle
                        )
 
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
+from qgis.testing import (start_app,
+                          unittest
+                          )
+
+from qgis.testing.mocked import get_iface
+
+from utilities import unitTestDataPath
 # Convenience instances in case you may need them
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsBlendModes(TestCase):
+class TestQgsBlendModes(unittest.TestCase):
 
     def __init__(self, methodName):
         """Run once on class initialisation."""
         unittest.TestCase.__init__(self, methodName)
+
+        self.iface = get_iface()
 
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
         self.mMapRegistry = QgsMapLayerRegistry.instance()
@@ -89,7 +92,7 @@ class TestQgsBlendModes(TestCase):
         self.mMapRegistry.addMapLayer(self.mRasterLayer2)
 
         # to match blend modes test comparisons background
-        self.mCanvas = CANVAS
+        self.mCanvas = self.iface.mapCanvas()
         self.mCanvas.setCanvasColor(QColor(152, 219, 249))
         self.mMap = self.mCanvas.map()
         self.mMap.resize(QSize(400, 400))

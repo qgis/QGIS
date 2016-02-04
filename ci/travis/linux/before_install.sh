@@ -61,3 +61,4 @@ sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
         postgresql-9.1-postgis-2.1/precise # from ubuntugis-unstable, not pgdg
 
 sudo -H pip install autopep8 # TODO when switching to trusty or above: replace python-pip with python-autopep8
+sudo -H pip install nose2 pyyaml mock

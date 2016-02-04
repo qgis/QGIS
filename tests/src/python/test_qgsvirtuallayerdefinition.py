@@ -21,12 +21,12 @@ from qgis.core import (QGis,
                        QgsVirtualLayerDefinition
                        )
 
-from utilities import (TestCase, unittest)
+from qgis.testing import (TestCase, unittest)
 
 from PyQt4.QtCore import QVariant, QUrl
 
 
-class TestQgsVirtualLayerDefinition(TestCase):
+class TestQgsVirtualLayerDefinition(unittest.TestCase):
 
     def test1(self):
         d = QgsVirtualLayerDefinition()

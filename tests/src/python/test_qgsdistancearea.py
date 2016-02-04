@@ -19,17 +19,16 @@ from qgis.core import (QgsGeometry,
                        QgsDistanceArea
                        )
 
-from utilities import (getQgisTestApp,
-                       TestCase,
-                       unittest)
+from qgis.testing import (start_app,
+                          unittest)
 
 # Convenience instances in case you may need them
 # not used in this test
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
 
-class TestQgsDistanceArea(TestCase):
+class TestQgsDistanceArea(unittest.TestCase):
 
     def testMeasureLine(self):
         #   +-+

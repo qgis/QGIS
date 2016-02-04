@@ -12,35 +12,39 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
 import os
 import csv
 
-from qgis.core import (QgsGeometry,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsPoint,
-                       QgsCoordinateTransform,
-                       QgsRectangle,
-                       QgsWKBTypes,
-                       QGis)
+from qgis.core import (
+    QgsGeometry,
+    QgsVectorLayer,
+    QgsFeature,
+    QgsPoint,
+    QgsCoordinateTransform,
+    QgsRectangle,
+    QgsWKBTypes,
+    QGis
+)
 
-from utilities import (getQgisTestApp,
-                       TestCase,
-                       unittest,
-                       compareWkt,
-                       doubleNear,
-                       unitTestDataPath,
-                       writeShape)
+from qgis.testing import (
+    start_app,
+    unittest,
+)
 
+from utilities import(
+    compareWkt,
+    doubleNear,
+    unitTestDataPath,
+    writeShape
+)
 
 # Convenience instances in case you may need them not used in this test
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsGeometry(TestCase):
+class TestQgsGeometry(unittest.TestCase):
 
     def testWktPointLoading(self):
         myWKT = 'Point (10 10)'

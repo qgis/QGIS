@@ -30,12 +30,11 @@ from qgis.core import (QGis,
                        QgsVectorJoinInfo,
                        QgsSymbolV2,
                        QgsSingleSymbolRendererV2)
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest,
-                       )
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.testing import (start_app,
+                          unittest
+                          )
+from utilities import unitTestDataPath
+start_app()
 
 
 def createEmptyLayer():
@@ -102,7 +101,7 @@ def dumpEditBuffer(layer):
         print "%d | %s" % (f.id(), f.geometry().exportToWkt())
 
 
-class TestQgsVectorLayer(TestCase):
+class TestQgsVectorLayer(unittest.TestCase):
 
     def test_FeatureCount(self):
         myPath = os.path.join(unitTestDataPath(), 'lines.shp')

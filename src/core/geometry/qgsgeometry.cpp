@@ -1034,6 +1034,9 @@ QgsPolyline QgsGeometry::asPolyline() const
 
 QgsPolygon QgsGeometry::asPolygon() const
 {
+  if ( !d->geometry )
+    return QgsPolygon();
+
   bool doSegmentation = ( d->geometry->geometryType() == "CurvePolygon" );
 
   QgsPolygonV2* p = nullptr;

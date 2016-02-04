@@ -15,15 +15,14 @@ __revision__ = '$Format:%H$'
 from qgis.gui import QgsAttributeTableModel, QgsEditorWidgetRegistry
 from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer, QgsVectorLayerCache, NULL
 
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.testing import (start_app,
+                          unittest
+                          )
+from utilities import unitTestDataPath
+start_app()
 
 
-class TestQgsAttributeTableModel(TestCase):
+class TestQgsAttributeTableModel(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

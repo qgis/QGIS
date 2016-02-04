@@ -13,12 +13,12 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis
-from utilities import unittest, TestCase
+from qgis.testing import unittest
 from qgis.utils import qgsfunction
 from qgis.core import QgsExpression
 
 
-class TestQgsExpressionCustomFunctions(TestCase):
+class TestQgsExpressionCustomFunctions(unittest.TestCase):
 
     @qgsfunction(1, 'testing', register=False)
     def testfun(values, feature, parent):

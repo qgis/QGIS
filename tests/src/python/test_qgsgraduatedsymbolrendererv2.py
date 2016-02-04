@@ -14,10 +14,9 @@ __revision__ = '$Format:%H$'
 
 import qgis
 
-from utilities import (unittest,
-                       TestCase,
-                       getQgisTestApp,
-                       )
+from qgis.testing import (unittest,
+                          start_app,
+                          )
 from qgis.core import (QgsGraduatedSymbolRendererV2,
                        QgsRendererRangeV2,
                        QgsRendererRangeV2LabelFormat,
@@ -35,7 +34,7 @@ from PyQt4.QtCore import Qt
 from PyQt4.QtXml import QDomDocument
 from PyQt4.QtGui import QColor
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
 #===========================================================
 # Utility functions
@@ -156,7 +155,7 @@ def dumpGraduatedRenderer(r):
 # Tests
 
 
-class TestQgsGraduatedSymbolRendererV2(TestCase):
+class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
 
     def testQgsRendererRangeV2_1(self):
         """Test QgsRendererRangeV2 getter/setter functions"""

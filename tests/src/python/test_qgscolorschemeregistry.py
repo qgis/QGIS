@@ -13,11 +13,11 @@ __copyright__ = 'Copyright 2014, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis
-from utilities import unittest, TestCase
+from qgis.testing import unittest
 from qgis.core import QgsColorSchemeRegistry, QgsRecentColorScheme
 
 
-class TestQgsColorSchemeRegistry(TestCase):
+class TestQgsColorSchemeRegistry(unittest.TestCase):
 
     def testCreateInstance(self):
         """Test creating global color scheme registry instance"""

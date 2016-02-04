@@ -14,23 +14,21 @@ __revision__ = '$Format:%H$'
 
 import qgis
 import os
-import sys
 from qgis.core import NULL
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry
 from PyQt4.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       unittest,
-                       TestCase
-                       )
+from qgis.testing import (start_app,
+                          unittest
+                          )
+from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
+class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):

@@ -25,18 +25,17 @@ from qgis.core import (QgsComposerPicture,
                        QgsComposition,
                        QgsMapSettings
                        )
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
+from qgis.testing import (start_app,
+                          unittest
+                          )
+from utilities import unitTestDataPath
 from qgscompositionchecker import QgsCompositionChecker
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposerPicture(TestCase):
+class TestQgsComposerPicture(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

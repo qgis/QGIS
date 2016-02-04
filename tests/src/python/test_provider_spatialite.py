@@ -15,15 +15,13 @@ __revision__ = '$Format:%H$'
 import qgis
 import os
 import tempfile
-import sys
 
 from qgis.core import QgsVectorLayer, QgsPoint, QgsFeature
 
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
+from qgis.testing import (start_app,
+                          unittest
+                          )
+from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
 from PyQt4.QtCore import QSettings
 
@@ -34,7 +32,7 @@ except ImportError:
     raise ImportError
 
 # Convenience instances in case you may need them
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
@@ -42,7 +40,7 @@ def die(error_message):
     raise Exception(error_message)
 
 
-class TestQgsSpatialiteProvider(TestCase, ProviderTestCase):
+class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):

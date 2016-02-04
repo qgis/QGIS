@@ -53,16 +53,14 @@ from PyQt.QtGui import (
 
 from time import sleep
 
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest,
-                       expectedFailure
-                       )
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.testing import (start_app,
+                          unittest
+                          )
+from utilities import unitTestDataPath
+start_app()
 
 
-class TestQgsRelationEditWidget(TestCase):
+class TestQgsRelationEditWidget(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -147,7 +145,7 @@ class TestQgsRelationEditWidget(TestCase):
 
         self.assertEquals(self.table_view.model().rowCount(), 4)
 
-    @expectedFailure
+    @unittest.expectedFailure
     def test_add_feature(self):
         """
         Check if a new related feature is added
@@ -199,7 +197,7 @@ class TestQgsRelationEditWidget(TestCase):
 
         self.assertEquals(self.table_view.model().rowCount(), 1)
 
-    @expectedFailure
+    @unittest.expectedFailure
     def test_unlink_feature(self):
         """
         Check if a linked feature can be unlinked

@@ -14,8 +14,6 @@ __revision__ = '$Format:%H$'
 
 import qgis
 import os
-import tempfile
-import sys
 
 from qgis.core import (QGis,
                        QgsVectorLayer,
@@ -33,11 +31,11 @@ from qgis.core import (QGis,
                        QgsProject
                        )
 
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
+from qgis.testing import (start_app,
+                          unittest
+                          )
+from utilities import unitTestDataPath
+
 from providertestbase import ProviderTestCase
 from PyQt4.QtCore import *
 
@@ -50,11 +48,11 @@ except ImportError:
 import tempfile
 
 # Convenience instances in case you may need them
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsVirtualLayerProvider(TestCase, ProviderTestCase):
+class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):

@@ -13,12 +13,9 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-from utilities import (TestCase,
-                       unittest,
-                       printImportant,
-                       DoxygenParser)
+from qgis.testing import unittest
 
-from PyQt4.QtCore import qDebug
+from utilities import printImportant, DoxygenParser
 
 # Import all the things!
 from qgis.analysis import *
@@ -41,7 +38,7 @@ ACCEPTABLE_MISSING_CLASSES = 0
 ACCEPTABLE_MISSING_MEMBERS = 0
 
 
-class TestQgsSipCoverage(TestCase):
+class TestQgsSipCoverage(unittest.TestCase):
 
     def testCoverage(self):
         print 'CTEST_FULL_OUTPUT'

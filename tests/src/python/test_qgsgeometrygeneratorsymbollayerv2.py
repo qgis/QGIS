@@ -23,37 +23,43 @@ __copyright__ = '(C) 2015, Matthias Kuhn'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
 import os
 
 from PyQt.QtCore import QSize
 
-from qgis.core import (QgsVectorLayer,
-                       QgsSingleSymbolRendererV2,
-                       QgsFillSymbolV2,
-                       QgsLineSymbolV2,
-                       QgsMarkerSymbolV2,
-                       QgsMapLayerRegistry,
-                       QgsRectangle,
-                       QgsGeometryGeneratorSymbolLayerV2,
-                       QgsSymbolV2,
-                       QgsMultiRenderChecker
-                       )
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
+from qgis.core import (
+    QgsVectorLayer,
+    QgsSingleSymbolRendererV2,
+    QgsFillSymbolV2,
+    QgsLineSymbolV2,
+    QgsMarkerSymbolV2,
+    QgsMapLayerRegistry,
+    QgsRectangle,
+    QgsGeometryGeneratorSymbolLayerV2,
+    QgsSymbolV2,
+    QgsMultiRenderChecker
+)
+
+from qgis.testing import (
+    start_app,
+    unittest
+)
+
+from qgis.testing.mocked import get_iface
+
+from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 # not used in this test
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsGeometryGeneratorSymbolLayerV2(TestCase):
+class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
 
     def setUp(self):
+        self.iface = get_iface()
+
         polys_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
         points_shp = os.path.join(TEST_DATA_DIR, 'points.shp')
         lines_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
@@ -73,7 +79,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(TestCase):
         self.lines_layer.setRendererV2(QgsSingleSymbolRendererV2(sym2))
         self.points_layer.setRendererV2(QgsSingleSymbolRendererV2(sym3))
 
-        self.mapsettings = CANVAS.mapSettings()
+        self.mapsettings = self.iface.mapCanvas().mapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
         self.mapsettings.setOutputDpi(96)
         self.mapsettings.setExtent(QgsRectangle(-133, 22, -70, 52))
