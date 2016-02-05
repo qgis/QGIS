@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    test_algorithms.py
+    AlgorithmsTest.py
     ---------------------
     Date                 : January 2016
     Copyright            : (C) 2016 by Matthias Kuhn
@@ -46,11 +46,6 @@ from qgis.core import (
     QgsMapLayerRegistry
 )
 
-from qgis.testing import (
-    start_app,
-    unittest
-)
-
 from utilities import (
     unitTestDataPath
 )
@@ -60,25 +55,13 @@ def processingTestDataPath():
     return os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class TestAlgorithms(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        start_app()
-        from processing.core.Processing import Processing
-        Processing.initialize()
-        cls.cleanup_paths = []
-
-    @classmethod
-    def tearDownClass(cls):
-        for path in cls.cleanup_paths:
-            shutil.rmtree(path)
+class AlgorithmsTest():
 
     def test_algorithms(self):
         """
         This is the main test function. All others will be executed based on the definitions in testdata/algorithm_tests.yaml
         """
-        with open(os.path.join(processingTestDataPath(), 'algorithm_tests.yaml'), 'r') as stream:
+        with open(os.path.join(processingTestDataPath(), self.test_definition_file()), 'r') as stream:
             algorithm_tests = yaml.load(stream)
 
         for algtest in algorithm_tests['tests']:
