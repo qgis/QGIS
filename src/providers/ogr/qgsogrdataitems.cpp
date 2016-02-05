@@ -155,6 +155,9 @@ static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name,
     case wkbMultiPolygon25D:
       layerType = QgsLayerItem::Polygon;
       break;
+
+    case wkbLinearRing:
+    case wkbGeometryCollection25D:
     default:
       break;
   }

@@ -180,6 +180,8 @@ static QgsSymbolV2* readOldSymbol( const QDomNode& synode, QGis::GeometryType ge
       return new QgsFillSymbolV2( layers );
     }
 
+    case QGis::UnknownGeometry:
+    case QGis::NoGeometry:
     default:
       return nullptr;
   }

@@ -431,6 +431,9 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
             case QGis::WKBMultiPolygon:
               geomElem.setAttribute( "type", "gml:MultiPolygonPropertyType" );
               break;
+
+            case QGis::WKBNoGeometry:
+            case QGis::WKBUnknown:
             default:
               geomElem.setAttribute( "type", "gml:GeometryPropertyType" );
               break;

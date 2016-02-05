@@ -765,6 +765,9 @@ bool QgsStyleV2::group( StyleEntity type, const QString& name, int groupid )
       query = sqlite3_mprintf( "UPDATE colorramp SET groupid=%d WHERE name='%q'", groupid, name.toUtf8().constData() );
       break;
 
+    case GroupEntity:
+    case TagEntity:
+    case SmartgroupEntity:
     default:
       QgsDebugMsg( "Wrong entity value. cannot apply group" );
       return false;

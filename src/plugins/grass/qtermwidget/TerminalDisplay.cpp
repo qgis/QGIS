@@ -2700,6 +2700,8 @@ QVariant TerminalDisplay::inputMethodQuery( Qt::InputMethodQuery query ) const
         case Qt::ImCurrentSelection:
                 return QString();
             break;
+        case Qt::ImMaximumTextLength:
+        case Qt::ImAnchorPosition:
         default:
             break;
     }
@@ -2760,17 +2762,13 @@ bool TerminalDisplay::handleShortcutOverrideEvent(QKeyEvent* keyEvent)
 bool TerminalDisplay::event(QEvent* event)
 {
   bool eventHandled = false;
-  switch (event->type())
+  if ( event->type() == QEvent::ShortcutOverride )
   {
-    case QEvent::ShortcutOverride:
         eventHandled = handleShortcutOverrideEvent((QKeyEvent*)event);
-        break;
-    case QEvent::PaletteChange:
-    case QEvent::ApplicationPaletteChange:
+  }
+  else if ( event->type() == QEvent::PaletteChange || event->type() == QEvent::ApplicationPaletteChange )
+  {
         _scrollBar->setPalette( QApplication::palette() );
-        break;
-    default:
-        break;
   }
   return eventHandled ? true : QWidget::event(event);
 }
@@ -3078,9 +3076,7 @@ bool AutoScrollHandler::eventFilter(QObject* watched,QEvent* event)
     Q_UNUSED( watched );
 
     QMouseEvent* mouseEvent = (QMouseEvent*)event;
-    switch (event->type())
-    {
-        case QEvent::MouseMove:
+    if (event->type() == QEvent::MouseMove )
         {
             bool mouseInWidget = widget()->rect().contains(mouseEvent->pos());
 
@@ -3095,18 +3091,16 @@ bool AutoScrollHandler::eventFilter(QObject* watched,QEvent* event)
                 if (!_timerId && (mouseEvent->buttons() & Qt::LeftButton))
                     _timerId = startTimer(100);
             }
-                break;
+
         }
-        case QEvent::MouseButtonRelease:
+    else if ( event->type() == QEvent::MouseButtonRelease )
+    {
             if (_timerId && (mouseEvent->buttons() & ~Qt::LeftButton))
             {
                 killTimer(_timerId);
                 _timerId = 0;
             }
-        break;
-        default:
-        break;
-    };
+   }
 
     return false;
 }

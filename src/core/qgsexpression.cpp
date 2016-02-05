@@ -3130,6 +3130,8 @@ QString QgsExpression::quotedValue( const QVariant& value, QVariant::Type type )
     case QVariant::Int:
     case QVariant::LongLong:
     case QVariant::Double:
+    case QVariant::UInt:
+    case QVariant::ULongLong:
       return value.toString();
 
     case QVariant::Bool:
@@ -3137,6 +3139,18 @@ QString QgsExpression::quotedValue( const QVariant& value, QVariant::Type type )
 
     default:
     case QVariant::String:
+    case QVariant::Date:
+    case QVariant::Time:
+    case QVariant::DateTime:
+    case QVariant::Invalid:
+    case QVariant::Char:
+    case QVariant::Map:
+    case QVariant::List:
+    case QVariant::StringList:
+    case QVariant::ByteArray:
+    case QVariant::UserType:
+    CASE_UNUSUAL_QVARIANT_TYPES:
+
       return quotedString( value.toString() );
   }
 
@@ -3815,6 +3829,23 @@ bool QgsExpression::NodeBinaryOperator::compare( double diff )
       return diff <= 0;
     case boGE:
       return diff >= 0;
+    case boOr:
+    case boAnd:
+    case boRegexp:
+    case boLike:
+    case boNotLike:
+    case boILike:
+    case boNotILike:
+    case boIs:
+    case boIsNot:
+    case boPlus:
+    case boMinus:
+    case boMul:
+    case boDiv:
+    case boIntDiv:
+    case boMod:
+    case boPow:
+    case boConcat:
     default:
       Q_ASSERT( false );
       return false;
@@ -3835,6 +3866,25 @@ int QgsExpression::NodeBinaryOperator::computeInt( int x, int y )
       return x / y;
     case boMod:
       return x % y;
+    case boOr:
+    case boAnd:
+    case boEQ:
+    case boNE:
+    case boLE:
+    case boGE:
+    case boLT:
+    case boGT:
+    case boRegexp:
+    case boLike:
+    case boNotLike:
+    case boILike:
+    case boNotILike:
+    case boIs:
+    case boIsNot:
+    case boIntDiv:
+    case boPow:
+    case boConcat:
+
     default:
       Q_ASSERT( false );
       return 0;
@@ -3849,6 +3899,27 @@ QDateTime QgsExpression::NodeBinaryOperator::computeDateTimeFromInterval( const 
       return d.addSecs( i->seconds() );
     case boMinus:
       return d.addSecs( -i->seconds() );
+    case boOr:
+    case boAnd:
+    case boEQ:
+    case boNE:
+    case boLE:
+    case boGE:
+    case boLT:
+    case boGT:
+    case boRegexp:
+    case boLike:
+    case boNotLike:
+    case boILike:
+    case boNotILike:
+    case boIs:
+    case boIsNot:
+    case boMul:
+    case boDiv:
+    case boIntDiv:
+    case boMod:
+    case boPow:
+    case boConcat:
     default:
       Q_ASSERT( false );
       return QDateTime();
@@ -3869,6 +3940,24 @@ double QgsExpression::NodeBinaryOperator::computeDouble( double x, double y )
       return x / y;
     case boMod:
       return fmod( x, y );
+    case boOr:
+    case boAnd:
+    case boEQ:
+    case boNE:
+    case boLE:
+    case boGE:
+    case boLT:
+    case boGT:
+    case boRegexp:
+    case boLike:
+    case boNotLike:
+    case boILike:
+    case boNotILike:
+    case boIs:
+    case boIsNot:
+    case boIntDiv:
+    case boPow:
+    case boConcat:
     default:
       Q_ASSERT( false );
       return 0;
@@ -4180,6 +4269,21 @@ QString QgsExpression::NodeLiteral::dump() const
       return quotedString( mValue.toString() );
     case QVariant::Bool:
       return mValue.toBool() ? "TRUE" : "FALSE";
+
+    case QVariant::Invalid:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    case QVariant::Char:
+    case QVariant::Map:
+    case QVariant::StringList:
+    case QVariant::List:
+    case QVariant::Date:
+    case QVariant::Time:
+    case QVariant::DateTime:
+    case QVariant::ByteArray:
+    case QVariant::UserType:
+    CASE_UNUSUAL_QVARIANT_TYPES:
     default:
       return tr( "[unsupported type;%1; value:%2]" ).arg( mValue.typeName(), mValue.toString() );
   }

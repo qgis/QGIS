@@ -485,6 +485,8 @@ void Problem::popmusic()
       case POPMUSIC_CHAIN :
         delta = popmusic_chain( current );
         break;
+      case CHAIN:
+      case FALP:
       default:
         delete[] ok;
         delete[] parts;

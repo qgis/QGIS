@@ -88,6 +88,24 @@ void QextSerialPort::setBaudRate(BaudRateType baudRate)
                 Settings.BaudRate=BAUD115200;
                 break;
 
+            case BAUD50:
+            case BAUD75:
+            case BAUD110:
+            case BAUD134:
+            case BAUD150:
+            case BAUD200:
+            case BAUD300:
+            case BAUD600:
+            case BAUD1200:
+            case BAUD1800:
+            case BAUD2400:
+            case BAUD4800:
+            case BAUD9600:
+            case BAUD19200:
+            case BAUD38400:
+            case BAUD57600:
+            case BAUD115200:
+
             default:
                 Settings.BaudRate=baudRate;
                 break;

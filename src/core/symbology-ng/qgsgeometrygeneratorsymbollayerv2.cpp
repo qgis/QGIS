@@ -132,6 +132,8 @@ QgsStringMap QgsGeometryGeneratorSymbolLayerV2::properties() const
     case QgsSymbolV2::Line:
       props.insert( "SymbolType", "Line" );
       break;
+    case QgsSymbolV2::Fill:
+    case QgsSymbolV2::Hybrid:
     default:
       props.insert( "SymbolType", "Fill" );
       break;
@@ -167,6 +169,7 @@ bool QgsGeometryGeneratorSymbolLayerV2::setSubSymbol( QgsSymbolV2* symbol )
       mFillSymbol = static_cast<QgsFillSymbolV2*>( symbol );
       break;
 
+    case QgsSymbolV2::Hybrid:
     default:
       break;
   }

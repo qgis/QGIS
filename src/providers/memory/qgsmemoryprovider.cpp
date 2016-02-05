@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsspatialindex.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgis.h"
 
 #include <QUrl>
 #include <QRegExp>
@@ -379,6 +380,18 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
       case QVariant::DateTime:
       case QVariant::LongLong:
         break;
+
+      case QVariant::Invalid:
+      case QVariant::Bool:
+      case QVariant::UInt:
+      case QVariant::ULongLong:
+      case QVariant::Char:
+      case QVariant::Map:
+      case QVariant::List:
+      case QVariant::StringList:
+      case QVariant::ByteArray:
+      case QVariant::UserType:
+      CASE_UNUSUAL_QVARIANT_TYPES:
       default:
         QgsDebugMsg( "Field type not supported: " + it->typeName() );
         continue;

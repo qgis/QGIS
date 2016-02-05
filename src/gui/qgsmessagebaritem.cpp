@@ -114,6 +114,7 @@ void QgsMessageBarItem::writeContent()
       case QgsMessageBar::SUCCESS:
         msgIcon = QString( "/mIconSuccess.png" );
         break;
+      case QgsMessageBar::INFO:
       default:
         break;
     }

@@ -140,6 +140,9 @@ void KProcess::setOutputChannelMode(OutputChannelMode mode)
     case OnlyStderrChannel:
         connect(this, SIGNAL(readyReadStandardOutput()), SLOT(_k_forwardStdout()));
         break;
+    case SeparateChannels:
+    case MergedChannels:
+    case ForwardedChannels:
     default:
         QProcess::setProcessChannelMode((ProcessChannelMode)mode);
         return;

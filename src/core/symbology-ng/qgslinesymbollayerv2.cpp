@@ -1403,6 +1403,7 @@ void QgsMarkerLineSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
         // no way to get line/polygon's vertices, use a VendorOption
         symbolizerElem.appendChild( QgsSymbolLayerV2Utils::createVendorOptionElement( doc, "placement", "points" ) );
         break;
+      case Interval:
       default:
         gap = QString::number( mInterval );
         break;

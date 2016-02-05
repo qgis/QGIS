@@ -71,6 +71,7 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, int canvasW
 
     default:
     case QGis::Degrees:
+    case QGis::UnknownUnit:
       // degrees require conversion to meters first
       conversionFactor = 39.3700787;
       delta = calculateGeographicDistance( mapExtent );

@@ -72,6 +72,9 @@ bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
         dataOk = nextFeatureFilterFids( f );
         break;
 
+      case QgsFeatureRequest::FilterNone:
+      case QgsFeatureRequest::FilterRect:
+      case QgsFeatureRequest::FilterFid:
       default:
         dataOk = fetchFeature( f );
         break;

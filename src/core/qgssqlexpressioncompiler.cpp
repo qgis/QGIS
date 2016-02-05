@@ -62,6 +62,20 @@ QString QgsSqlExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
 
     default:
     case QVariant::String:
+    case QVariant::Invalid:
+    case QVariant::UInt:
+    case QVariant::ULongLong:
+    case QVariant::Char:
+    case QVariant::Map:
+    case QVariant::List:
+    case QVariant::StringList:
+    case QVariant::Date:
+    case QVariant::Time:
+    case QVariant::DateTime:
+    case QVariant::ByteArray:
+    CASE_UNUSUAL_QVARIANT_TYPES:
+    case QVariant::UserType:
+
       QString v = value.toString();
       v.replace( '\'', "''" );
       if ( v.contains( '\\' ) )

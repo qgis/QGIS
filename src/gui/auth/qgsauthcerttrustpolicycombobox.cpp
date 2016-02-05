@@ -101,6 +101,7 @@ void QgsAuthCertTrustPolicyComboBox::highlightCurrentIndex( int indx )
       ss = QgsAuthGuiUtils::redTextStyleSheet( "QComboBox:open" ) + "\nQComboBox:!open{}";
       break;
     case QgsAuthCertUtils::DefaultTrust:
+    case QgsAuthCertUtils::NoPolicy:
     default:
       break;
   }

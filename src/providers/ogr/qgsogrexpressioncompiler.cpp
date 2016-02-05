@@ -66,6 +66,14 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const Qg
         case QgsExpression::boRegexp:
           return Fail; //not supported by OGR
 
+        case QgsExpression::boOr:
+        case QgsExpression::boAnd:
+        case QgsExpression::boEQ:
+        case QgsExpression::boNE:
+        case QgsExpression::boLE:
+        case QgsExpression::boGE:
+        case QgsExpression::boLT:
+        case QgsExpression::boGT:
         default:
           //fallback to default handling
           return QgsSqlExpressionCompiler::compileNode( node, result );

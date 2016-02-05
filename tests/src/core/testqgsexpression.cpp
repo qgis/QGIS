@@ -846,6 +846,8 @@ class TestQgsExpression: public QObject
           }
           break;
         }
+
+      CASE_UNUSUAL_QVARIANT_TYPES:
         default:
           Q_ASSERT( false ); // should never happen
       }

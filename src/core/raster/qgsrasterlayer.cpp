@@ -384,6 +384,9 @@ QString QgsRasterLayer::metadata()
     case QGis::CFloat64:
       myMetadata += tr( "CFloat64 - Complex Float64 " );
       break;
+    case QGis::UnknownDataType:
+    case QGis::ARGB32:
+    case QGis::ARGB32_Premultiplied:
     default:
       myMetadata += tr( "Could not determine raster data type." );
   }

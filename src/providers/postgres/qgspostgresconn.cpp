@@ -944,8 +944,10 @@ QString QgsPostgresConn::quotedValue( const QVariant& value )
     case QVariant::Bool:
       return value.toBool() ? "TRUE" : "FALSE";
 
+
     default:
     case QVariant::String:
+    CASE_UNUSUAL_QVARIANT_TYPES:
       QString v = value.toString();
       v.replace( '\'', "''" );
       if ( v.contains( '\\' ) )

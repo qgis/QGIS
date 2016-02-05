@@ -100,7 +100,16 @@ bool QgsPolygonV2::fromWkb( const unsigned char* wkb )
     case QgsWKBTypes::Polygon25D:
       ringType = QgsWKBTypes::LineString25D;
       break;
+
+    case QgsWKBTypes::Polygon:
+
+    case QgsWKBTypes::Unknown:
+    case QgsWKBTypes::Point:
+    case QgsWKBTypes::LineString:
+    case QgsWKBTypes::MultiPoint:
+    case QgsWKBTypes::MultiLineString:
     default:
+
       ringType = QgsWKBTypes::LineString;
       break;
   }

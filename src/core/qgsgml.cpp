@@ -583,6 +583,22 @@ void QgsGml::setAttribute( const QString& name, const QString& value )
       case QVariant::LongLong:
         var = QVariant( value.toLongLong() );
         break;
+
+      case QVariant::String:
+      case QVariant::Invalid:
+      case QVariant::Bool:
+      case QVariant::UInt:
+      case QVariant::ULongLong:
+      case QVariant::Char:
+      case QVariant::Map:
+      case QVariant::List:
+      case QVariant::StringList:
+      case QVariant::ByteArray:
+      case QVariant::Date:
+      case QVariant::Time:
+      case QVariant::DateTime:
+      case QVariant::UserType:
+      CASE_UNUSUAL_QVARIANT_TYPES:
       default: //string type is default
         var = QVariant( value );
         break;

@@ -739,6 +739,9 @@ void QgsComposerMapWidget::toggleAtlasScalingOptionsByLayerType()
       mAtlasMarginRadio->setEnabled( false );
       mAtlasPredefinedScaleRadio->setEnabled( false );
       break;
+    case QGis::WKBUnknown:
+    case QGis::WKBLineString:
+    case QGis::WKBPolygon:
     default:
       //Not a point layer, so enable changes to fixed scale control
       mAtlasMarginRadio->setEnabled( true );
@@ -1468,6 +1471,7 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
       mFrameStyleComboBox->setCurrentIndex( 5 );
       toggleFrameControls( true, false, false );
       break;
+    case QgsComposerMapGrid::NoFrame:
     default:
       mFrameStyleComboBox->setCurrentIndex( 0 );
       toggleFrameControls( false, false, false );

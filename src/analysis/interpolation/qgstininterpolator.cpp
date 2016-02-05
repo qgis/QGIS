@@ -428,6 +428,8 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       }
       break;
     }
+    case QGis::WKBUnknown:
+    case QGis::WKBNoGeometry:
     default:
       //should not happen...
       break;

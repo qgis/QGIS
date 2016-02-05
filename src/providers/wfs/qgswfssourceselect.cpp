@@ -212,8 +212,13 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
       case QgsWFSCapabilities::ServerExceptionError:
         title = tr( "Server Exception" );
         break;
+
+      case QgsWFSCapabilities::WFSVersionNotSupported:
       default:
-        tr( "Error" );
+        title = tr( "Error" );
+        break;
+
+      case QgsWFSCapabilities::NoError:
         break;
     }
     // handle errors

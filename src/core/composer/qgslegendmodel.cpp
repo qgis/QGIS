@@ -591,6 +591,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer, double scaleDenominator
     case QgsMapLayer::RasterLayer:
       addRasterLayerItems( layerItem, theMapLayer );
       break;
+    case QgsMapLayer::PluginLayer:
     default:
       break;
   }

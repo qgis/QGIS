@@ -410,6 +410,8 @@ void QgsAuthAuthoritiesEditor::checkSelection()
         iscert = true;
         isdbcert = true;
         break;
+      case QgsAuthAuthoritiesEditor::Section:
+      case QgsAuthAuthoritiesEditor::OrgName:
       default:
         break;
     }
@@ -432,6 +434,9 @@ void QgsAuthAuthoritiesEditor::handleDoubleClick( QTreeWidgetItem *item, int col
     case QgsAuthAuthoritiesEditor::OrgName:
       iscert = false;
       break;
+    case QgsAuthAuthoritiesEditor::RootCaCert:
+    case QgsAuthAuthoritiesEditor::FileCaCert:
+    case QgsAuthAuthoritiesEditor::DbCaCert:
     default:
       break;
   }

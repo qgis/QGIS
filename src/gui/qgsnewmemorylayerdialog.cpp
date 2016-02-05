@@ -63,6 +63,14 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
     case QGis::WKBNoGeometry:
       geomType = "none";
       break;
+
+    case QGis::WKBUnknown:
+    case QGis::WKBPoint25D:
+    case QGis::WKBLineString25D:
+    case QGis::WKBPolygon25D:
+    case QGis::WKBMultiPoint25D:
+    case QGis::WKBMultiLineString25D:
+    case QGis::WKBMultiPolygon25D:
     default:
       geomType = "point";
   }

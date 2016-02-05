@@ -555,6 +555,8 @@ void QgsLabel::labelPoint( std::vector<labelpoint>& points, QgsFeature & feature
       }
     }
     break;
+    case QGis::WKBUnknown:
+    case QGis::WKBNoGeometry:
     default:
       QgsDebugMsg( "Unknown geometry type of " + QString::number( wkbType ) );
   }
@@ -697,6 +699,14 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
     }
     break;
 
+    case QGis::WKBUnknown:
+    case QGis::WKBMultiPoint:
+    case QGis::WKBMultiLineString:
+    case QGis::WKBMultiPolygon:
+    case QGis::WKBNoGeometry:
+    case QGis::WKBMultiPoint25D:
+    case QGis::WKBMultiLineString25D:
+    case QGis::WKBMultiPolygon25D:
     default:
       // To get here is a bug because our caller should be filtering
       // on wkb type.

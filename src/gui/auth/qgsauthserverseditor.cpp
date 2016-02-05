@@ -241,6 +241,8 @@ void QgsAuthServersEditor::checkSelection()
       case QgsAuthServersEditor::ServerConfig :
         isconfig = true;
         break;
+      case QgsAuthServersEditor::Section:
+      case QgsAuthServersEditor::OrgName:
       default:
         break;
     }
@@ -263,6 +265,7 @@ void QgsAuthServersEditor::handleDoubleClick( QTreeWidgetItem *item, int col )
     case QgsAuthServersEditor::OrgName:
       isconfig = false;
       break;
+    case QgsAuthServersEditor::ServerConfig:
     default:
       break;
   }

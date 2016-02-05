@@ -41,6 +41,9 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
       mFeatureIds = QgsFeatureIds() << featureRequest.filterFid();
       break;
 
+    case QgsFeatureRequest::FilterNone:
+    case QgsFeatureRequest::FilterRect:
+    case QgsFeatureRequest::FilterExpression:
     default:
       mFeatureIds = mVectorLayerCache->mCache.keys().toSet();
       break;

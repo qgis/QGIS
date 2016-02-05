@@ -161,6 +161,7 @@ QgsProjectBadLayerGuiHandler::ProviderType QgsProjectBadLayerGuiHandler::provide
       // physical files
       return IS_FILE;
 
+    case IS_BOGUS:
     default:
       QgsDebugMsg( "unknown ``type'' attribute" );
   }
@@ -212,6 +213,7 @@ bool QgsProjectBadLayerGuiHandler::findMissingFile( QString const & fileFilters,
 
       break;
     }
+    case IS_BOGUS:
     default:
       QgsDebugMsg( "unable to determine data type" );
       return false;

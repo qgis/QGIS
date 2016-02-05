@@ -1422,6 +1422,9 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Qgs
           // max length of degree of latitude on pole is 111694 m
           xRes = 1e-8;
           break;
+
+        case QGis::UnknownUnit:
+        case QGis::NauticalMiles:
         default:
           xRes = 0.001; // expecting meters
       }

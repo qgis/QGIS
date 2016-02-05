@@ -42,6 +42,8 @@ QString QgsAuthCertUtils::getSslProtocolName( QSsl::SslProtocol protocol )
       return QObject::tr( "SslV3" );
     case QSsl::SslV2:
       return QObject::tr( "SslV2" );
+    case QSsl::UnknownProtocol:
+    case QSsl::AnyProtocol:
     default:
       return QString();
   }
@@ -392,6 +394,7 @@ QString QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::CertTrustPolicy tr
       return QObject::tr( "Trusted" );
     case Untrusted:
       return QObject::tr( "Untrusted" );
+    case NoPolicy:
     default:
       return QString();
   }
@@ -523,6 +526,7 @@ QString QgsAuthCertUtils::qcaSignatureAlgorithm( QCA::SignatureAlgorithm algorit
     case QCA::EMSA3_SHA512:
       return QObject::tr( "SHA512, with EMSA3" );
 #endif
+    case QCA::SignatureUnknown:
     default:
       return QObject::tr( "Unknown (possibly Elliptic Curve)" );
   }

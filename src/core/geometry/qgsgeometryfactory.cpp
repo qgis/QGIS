@@ -209,33 +209,77 @@ QgsLineStringV2* QgsGeometryFactory::linestringFromPolyline( const QgsPolyline& 
 
 QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkbType( QgsWKBTypes::Type t )
 {
-  QgsWKBTypes::Type type = QgsWKBTypes::flatType( t );
-  switch ( type )
+  switch ( t )
   {
     case QgsWKBTypes::Point:
+    case QgsWKBTypes::PointZ:
+    case QgsWKBTypes::PointM:
+    case QgsWKBTypes::PointZM:
+    case QgsWKBTypes::Point25D:
       return new QgsPointV2();
     case QgsWKBTypes::LineString:
+    case QgsWKBTypes::LineStringZ:
+    case QgsWKBTypes::LineStringM:
+    case QgsWKBTypes::LineStringZM:
+    case QgsWKBTypes::LineString25D:
       return new QgsLineStringV2();
     case QgsWKBTypes::CircularString:
+    case QgsWKBTypes::CircularStringZ:
+    case QgsWKBTypes::CircularStringM:
+    case QgsWKBTypes::CircularStringZM:
       return new QgsCircularStringV2();
     case QgsWKBTypes::CompoundCurve:
+    case QgsWKBTypes::CompoundCurveZ:
+    case QgsWKBTypes::CompoundCurveM:
+    case QgsWKBTypes::CompoundCurveZM:
       return new QgsCompoundCurveV2();
     case QgsWKBTypes::Polygon:
+    case QgsWKBTypes::PolygonZ:
+    case QgsWKBTypes::PolygonM:
+    case QgsWKBTypes::PolygonZM:
+    case QgsWKBTypes::Polygon25D:
       return new QgsPolygonV2();
     case QgsWKBTypes::CurvePolygon:
+    case QgsWKBTypes::CurvePolygonZ:
+    case QgsWKBTypes::CurvePolygonM:
+    case QgsWKBTypes::CurvePolygonZM:
       return new QgsCurvePolygonV2();
     case QgsWKBTypes::MultiLineString:
+    case QgsWKBTypes::MultiLineStringZ:
+    case QgsWKBTypes::MultiLineStringM:
+    case QgsWKBTypes::MultiLineStringZM:
+    case QgsWKBTypes::MultiLineString25D:
       return new QgsMultiLineStringV2();
     case QgsWKBTypes::MultiPolygon:
+    case QgsWKBTypes::MultiPolygonZ:
+    case QgsWKBTypes::MultiPolygonM:
+    case QgsWKBTypes::MultiPolygonZM:
+    case QgsWKBTypes::MultiPolygon25D:
       return new QgsMultiPolygonV2();
     case QgsWKBTypes::MultiPoint:
+    case QgsWKBTypes::MultiPointZ:
+    case QgsWKBTypes::MultiPointM:
+    case QgsWKBTypes::MultiPointZM:
+    case QgsWKBTypes::MultiPoint25D:
       return new QgsMultiPointV2();
     case QgsWKBTypes::MultiCurve:
+    case QgsWKBTypes::MultiCurveZ:
+    case QgsWKBTypes::MultiCurveM:
+    case QgsWKBTypes::MultiCurveZM:
       return new QgsMultiCurveV2();
     case QgsWKBTypes::MultiSurface:
+    case QgsWKBTypes::MultiSurfaceZ:
+    case QgsWKBTypes::MultiSurfaceM:
+    case QgsWKBTypes::MultiSurfaceZM:
       return new QgsMultiSurfaceV2();
     case QgsWKBTypes::GeometryCollection:
+    case QgsWKBTypes::GeometryCollectionZ:
+    case QgsWKBTypes::GeometryCollectionM:
+    case QgsWKBTypes::GeometryCollectionZM:
       return new QgsGeometryCollectionV2();
+
+    case QgsWKBTypes::Unknown:
+    case QgsWKBTypes::NoGeometry:
     default:
       return nullptr;
   }

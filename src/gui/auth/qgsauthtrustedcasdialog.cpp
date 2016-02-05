@@ -258,6 +258,8 @@ void QgsAuthTrustedCAsDialog::checkSelection()
       case QgsAuthTrustedCAsDialog::CaCert:
         iscert = true;
         break;
+      case QgsAuthTrustedCAsDialog::Section:
+      case QgsAuthTrustedCAsDialog::OrgName:
       default:
         break;
     }
@@ -279,6 +281,7 @@ void QgsAuthTrustedCAsDialog::handleDoubleClick( QTreeWidgetItem *item, int col 
     case QgsAuthTrustedCAsDialog::OrgName:
       iscert = false;
       break;
+    case QgsAuthTrustedCAsDialog::CaCert:
     default:
       break;
   }

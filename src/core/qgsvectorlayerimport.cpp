@@ -276,6 +276,15 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
         case QGis::WKBPolygon25D:
           wkbType = QGis::WKBMultiPolygon25D;
           break;
+
+        case QGis::WKBMultiPoint:
+        case QGis::WKBMultiPoint25D:
+        case QGis::WKBMultiLineString:
+        case QGis::WKBMultiLineString25D:
+        case QGis::WKBMultiPolygon:
+        case QGis::WKBMultiPolygon25D:
+        case QGis::WKBUnknown:
+        case QGis::WKBNoGeometry:
         default:
           break;
       }

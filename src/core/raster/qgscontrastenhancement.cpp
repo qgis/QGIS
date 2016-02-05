@@ -260,6 +260,7 @@ void QgsContrastEnhancement::setContrastEnhancementAlgorithm( ContrastEnhancemen
     case UserDefinedEnhancement :
       //Do nothing
       break;
+    case NoEnhancement:
     default:
       delete mContrastEnhancementFunction;
       mContrastEnhancementFunction = new QgsContrastEnhancementFunction( mRasterDataType, mMinimumValue, mMaximumValue );

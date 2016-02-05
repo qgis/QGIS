@@ -97,6 +97,7 @@ int QgsColorWidget::componentValue( const QgsColorWidget::ColorComponent compone
       return mCurrentColor.value();
     case QgsColorWidget::Alpha:
       return mCurrentColor.alpha();
+    case QgsColorWidget::Multiple:
     default:
       return -1;
   }
@@ -170,6 +171,7 @@ void QgsColorWidget::alterColor( QColor& color, const QgsColorWidget::ColorCompo
     case QgsColorWidget::Alpha:
       color.setAlpha( clippedValue );
       return;
+    case QgsColorWidget::Multiple:
     default:
       return;
   }
@@ -326,6 +328,7 @@ void QgsColorWidget::setComponentValue( const int value )
       }
       mCurrentColor.setAlpha( valueClipped );
       break;
+    case QgsColorWidget::Multiple:
     default:
       return;
   }
@@ -911,6 +914,8 @@ QgsColorWidget::ColorComponent QgsColorBox::yComponent() const
     case QgsColorWidget:: Saturation:
     case QgsColorWidget:: Value:
       return  QgsColorWidget::Hue;
+    case QgsColorWidget::Multiple:
+    case QgsColorWidget::Alpha:
     default:
       //should not occur
       return QgsColorWidget::Red;
@@ -936,6 +941,8 @@ QgsColorWidget::ColorComponent QgsColorBox::xComponent() const
       return QgsColorWidget:: Value;
     case QgsColorWidget:: Value:
       return  QgsColorWidget::Saturation;
+    case QgsColorWidget::Multiple:
+    case QgsColorWidget::Alpha:
     default:
       //should not occur
       return QgsColorWidget::Red;

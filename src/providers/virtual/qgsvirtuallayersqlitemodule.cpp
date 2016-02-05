@@ -211,6 +211,7 @@ private:
           typeName = "real";
           break;
         case QVariant::String:
+        CASE_UNUSUAL_QVARIANT_TYPES:
         default:
           typeName = "text";
           break;
@@ -688,6 +689,8 @@ int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context* ctxt, int idx )
       case QVariant::Double:
         sqlite3_result_double( ctxt, v.toDouble() );
         break;
+
+      CASE_UNUSUAL_QVARIANT_TYPES:
       default:
       {
         sqlite3_result_text( ctxt, v.toString().toUtf8(), -1, SQLITE_TRANSIENT );
@@ -798,6 +801,8 @@ void qgisFunctionWrapper( sqlite3_context* ctxt, int nArgs, sqlite3_value** args
     case QVariant::Double:
       sqlite3_result_double( ctxt, ret.toDouble() );
       break;
+
+    CASE_UNUSUAL_QVARIANT_TYPES:
     case QVariant::String:
     {
       QByteArray ba( ret.toByteArray() );

@@ -458,6 +458,7 @@ QString QgsRasterDataProvider::identifyFormatName( QgsRaster::IdentifyFormat for
       return "Html";
     case QgsRaster::IdentifyFormatFeature:
       return "Feature";
+    case QgsRaster::IdentifyFormatUndefined:
     default:
       return "Undefined";
   }
@@ -475,6 +476,7 @@ QString QgsRasterDataProvider::identifyFormatLabel( QgsRaster::IdentifyFormat fo
       return tr( "Html" );
     case QgsRaster::IdentifyFormatFeature:
       return tr( "Feature" );
+    case QgsRaster::IdentifyFormatUndefined:
     default:
       return "Undefined";
   }
@@ -501,6 +503,7 @@ QgsRasterInterface::Capability QgsRasterDataProvider::identifyFormatToCapability
       return IdentifyHtml;
     case QgsRaster::IdentifyFormatFeature:
       return IdentifyFeature;
+    case QgsRaster::IdentifyFormatUndefined:
     default:
       return NoCapabilities;
   }

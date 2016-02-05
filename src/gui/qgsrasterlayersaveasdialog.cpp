@@ -556,6 +556,19 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
           valueString = QgsRasterBlock::printValue( value );
         }
         break;
+
+      case QGis::UnknownDataType:
+      case QGis::Byte:
+      case QGis::UInt16:
+      case QGis::Int16:
+      case QGis::UInt32:
+      case QGis::Int32:
+      case QGis::CInt16:
+      case QGis::CInt32:
+      case QGis::CFloat32:
+      case QGis::CFloat64:
+      case QGis::ARGB32:
+      case QGis::ARGB32_Premultiplied:
       default:
         lineEdit->setValidator( new QIntValidator( nullptr ) );
         if ( !qIsNaN( value ) )

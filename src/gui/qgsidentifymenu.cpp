@@ -319,6 +319,8 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
       case QGis::Polygon:
         layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.png" ) );
         break;
+      case QGis::UnknownGeometry:
+      case QGis::NoGeometry:
       default:
         break;
     }

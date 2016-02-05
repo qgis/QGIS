@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsexpressioncontext.h"
+#include "qgis.h"
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( QgsVectorLayer *layer )
 {
@@ -701,8 +702,22 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
       case QVariant::Double:
         break;
 
-      default:
       case QVariant::String:
+      case QVariant::Invalid:
+      case QVariant::Bool:
+      case QVariant::UInt:
+      case QVariant::ULongLong:
+      case QVariant::Char:
+      case QVariant::Map:
+      case QVariant::List:
+      case QVariant::StringList:
+      case QVariant::ByteArray:
+      case QVariant::Date:
+      case QVariant::Time:
+      case QVariant::DateTime:
+      case QVariant::UserType:
+      default:
+      CASE_UNUSUAL_QVARIANT_TYPES:
         v.replace( '\'', "''" );
         v.prepend( '\'' ).append( '\'' );
         break;

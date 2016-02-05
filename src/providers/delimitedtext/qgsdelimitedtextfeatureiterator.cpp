@@ -459,6 +459,14 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int f
       }
       break;
     }
+
+    case QVariant::Invalid:
+    case QVariant::Bool:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    case QVariant::Char:
+    CASE_UNUSUAL_QVARIANT_TYPES:
     default:
       val = QVariant( value );
       break;

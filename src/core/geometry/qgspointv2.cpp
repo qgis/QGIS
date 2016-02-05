@@ -407,6 +407,58 @@ bool QgsPointV2::convertTo( QgsWKBTypes::Type type )
     case QgsWKBTypes::PointZM:
       mWkbType = type;
       return true;
+
+    case QgsWKBTypes::Unknown:
+    case QgsWKBTypes::LineString:
+    case QgsWKBTypes::LineStringZ:
+    case QgsWKBTypes::LineStringM:
+    case QgsWKBTypes::LineStringZM:
+    case QgsWKBTypes::LineString25D:
+    case QgsWKBTypes::Polygon:
+    case QgsWKBTypes::PolygonZ:
+    case QgsWKBTypes::PolygonM:
+    case QgsWKBTypes::PolygonZM:
+    case QgsWKBTypes::Polygon25D:
+    case QgsWKBTypes::MultiPoint:
+    case QgsWKBTypes::MultiPointZ:
+    case QgsWKBTypes::MultiPointM:
+    case QgsWKBTypes::MultiPointZM:
+    case QgsWKBTypes::MultiPoint25D:
+    case QgsWKBTypes::MultiLineString:
+    case QgsWKBTypes::MultiLineStringZ:
+    case QgsWKBTypes::MultiLineStringM:
+    case QgsWKBTypes::MultiLineStringZM:
+    case QgsWKBTypes::MultiLineString25D:
+    case QgsWKBTypes::MultiPolygon:
+    case QgsWKBTypes::MultiPolygonZ:
+    case QgsWKBTypes::MultiPolygonM:
+    case QgsWKBTypes::MultiPolygonZM:
+    case QgsWKBTypes::MultiPolygon25D:
+    case QgsWKBTypes::GeometryCollection:
+    case QgsWKBTypes::GeometryCollectionZ:
+    case QgsWKBTypes::GeometryCollectionM:
+    case QgsWKBTypes::GeometryCollectionZM:
+    case QgsWKBTypes::CircularString:
+    case QgsWKBTypes::CircularStringZ:
+    case QgsWKBTypes::CircularStringM:
+    case QgsWKBTypes::CircularStringZM:
+    case QgsWKBTypes::CompoundCurve:
+    case QgsWKBTypes::CompoundCurveZ:
+    case QgsWKBTypes::CompoundCurveM:
+    case QgsWKBTypes::CompoundCurveZM:
+    case QgsWKBTypes::CurvePolygon:
+    case QgsWKBTypes::CurvePolygonZ:
+    case QgsWKBTypes::CurvePolygonM:
+    case QgsWKBTypes::CurvePolygonZM:
+    case QgsWKBTypes::MultiSurface:
+    case QgsWKBTypes::MultiSurfaceZ:
+    case QgsWKBTypes::MultiSurfaceM:
+    case QgsWKBTypes::MultiSurfaceZM:
+    case QgsWKBTypes::MultiCurve:
+    case QgsWKBTypes::MultiCurveZ:
+    case QgsWKBTypes::MultiCurveM:
+    case QgsWKBTypes::MultiCurveZM:
+    case QgsWKBTypes::NoGeometry:
     default:
       break;
   }

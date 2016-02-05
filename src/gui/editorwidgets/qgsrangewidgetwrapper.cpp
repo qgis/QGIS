@@ -46,20 +46,17 @@ QWidget* QgsRangeWidgetWrapper::createWidget( QWidget* parent )
   else
   {
     QgsDebugMsg( QString( "%1" ).arg(( int )layer()->fields().at( fieldIdx() ).type() ) );
-    switch ( layer()->fields().at( fieldIdx() ).type() )
+    if ( layer()->fields().at( fieldIdx() ).type()  == QVariant::Double )
     {
-      case QVariant::Double:
-      {
-        editor = new QgsDoubleSpinBox( parent );
-        break;
-      }
-      case QVariant::Int:
-      case QVariant::LongLong:
-      default:
-        editor = new QgsSpinBox( parent );
-        break;
+      editor = new QgsDoubleSpinBox( parent );
+
+    }
+    else
+    {
+      editor = new QgsSpinBox( parent );
     }
   }
+
 
   return editor;
 }

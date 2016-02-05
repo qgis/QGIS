@@ -123,6 +123,8 @@ void QgsComposerView::setCurrentTool( QgsComposerView::Tool t )
       viewport()->setCursor( defaultCursorForTool( mCurrentTool ) );
       break;
     }
+    case QgsComposerView::Select:
+    case QgsComposerView::MoveItemContent:
     default:
     {
       //not using pan tool, composer items can change cursor
@@ -954,6 +956,8 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         emit actionFinished();
       }
       break;
+    case AddScalebar:
+    case Pan:
     default:
       break;
   }
@@ -1057,6 +1061,9 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
         }
         break;
       }
+      case AddScalebar:
+      case Pan:
+      case Zoom:
       default:
         break;
     }
@@ -1644,6 +1651,8 @@ void QgsComposerView::wheelZoom( QWheelEvent * event )
       break;
     }
 
+    case QgsMapCanvas::WheelZoom:
+    case QgsMapCanvas::WheelNothing:
     default:
       break;
   }

@@ -65,14 +65,8 @@ QgsGeorefConfigDialog::~QgsGeorefConfigDialog()
 void QgsGeorefConfigDialog::changeEvent( QEvent *e )
 {
   QDialog::changeEvent( e );
-  switch ( e->type() )
-  {
-    case QEvent::LanguageChange:
-      retranslateUi( this );
-      break;
-    default:
-      break;
-  }
+  if ( e->type() == QEvent::LanguageChange )
+    retranslateUi( this );
 }
 
 void QgsGeorefConfigDialog::on_buttonBox_accepted()

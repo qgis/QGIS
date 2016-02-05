@@ -83,6 +83,16 @@ bool QgsComposerAttributeTableCompareV2::operator()( const QgsComposerTableRow& 
         less = v1.toTime() < v2.toTime();
         break;
 
+      case QVariant::String:
+      case QVariant::Bool:
+      case QVariant::Char:
+      case QVariant::Invalid:
+      case QVariant::Map:
+      case QVariant::List:
+      case QVariant::StringList:
+      case QVariant::ByteArray:
+      case QVariant::UserType:
+      CASE_UNUSUAL_QVARIANT_TYPES:
       default:
         //use locale aware compare for strings
         less = v1.toString().localeAwareCompare( v2.toString() ) < 0;

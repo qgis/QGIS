@@ -433,6 +433,7 @@ double Heatmap::uniformKernel( const double distance, const int bandwidth, const
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 0.5 / ( double )bandwidth );
     }
+    case Raw:
     default:
       return 1.0;
   }
@@ -450,6 +451,7 @@ double Heatmap::quarticKernel( const double distance, const int bandwidth, const
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 15. / 16. ) * pow( 1. - pow( distance / ( double )bandwidth, 2 ), 2 );
     }
+    case Raw:
     default:
       return pow( 1. - pow( distance / ( double )bandwidth, 2 ), 2 );
   }
@@ -467,6 +469,7 @@ double Heatmap::triweightKernel( const double distance, const int bandwidth, con
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 35. / 32. ) * pow( 1. - pow( distance / ( double )bandwidth, 2 ), 3 );
     }
+    case Raw:
     default:
       return pow( 1. - pow( distance / ( double )bandwidth, 2 ), 3 );
   }
@@ -484,6 +487,7 @@ double Heatmap::epanechnikovKernel( const double distance, const int bandwidth, 
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 3. / 4. ) * ( 1. - pow( distance / ( double )bandwidth, 2 ) );
     }
+    case Raw:
     default:
       return ( 1. - pow( distance / ( double )bandwidth, 2 ) );
   }
@@ -511,6 +515,7 @@ double Heatmap::triangularKernel( const double distance, const int bandwidth, co
         return ( 1. - ( 1. - mDecay ) * ( distance / ( double )bandwidth ) );
       }
     }
+    case Raw:
     default:
       return ( 1. - ( 1. - mDecay ) * ( distance / ( double )bandwidth ) );
   }

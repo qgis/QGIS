@@ -264,6 +264,13 @@ QGis::DataType QgsRasterBlock::typeWithNoDataValue( QGis::DataType dataType, dou
       *noDataValue = std::numeric_limits<double>::max() * -1.0;
       newDataType = QGis::Float64;
       break;
+    case QGis::UnknownDataType:
+    case QGis::CInt16:
+    case QGis::CInt32:
+    case QGis::CFloat32:
+    case QGis::CFloat64:
+    case QGis::ARGB32:
+    case QGis::ARGB32_Premultiplied:
     default:
       QgsDebugMsg( QString( "Unknown data type %1" ).arg( dataType ) );
       return QGis::UnknownDataType;
@@ -888,6 +895,13 @@ QByteArray QgsRasterBlock::valueBytes( QGis::DataType theDataType, double theVal
       d = static_cast< double >( theValue );
       memcpy( data, &d, size );
       break;
+    case QGis::UnknownDataType:
+    case QGis::CInt16:
+    case QGis::CInt32:
+    case QGis::CFloat32:
+    case QGis::CFloat64:
+    case QGis::ARGB32:
+    case QGis::ARGB32_Premultiplied:
     default:
       QgsDebugMsg( "Data type is not supported" );
   }

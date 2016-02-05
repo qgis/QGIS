@@ -61,6 +61,9 @@ void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVerte
       message = tr( "Disabled - there are too many features displayed. Try zooming in or disable some layers." );
       break;
     case ErrNone:
+    case ErrPoint1:
+    case ErrPoint2:
+    case ErrNoPath:
     default:
       break;
   }

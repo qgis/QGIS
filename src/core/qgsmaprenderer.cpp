@@ -1238,6 +1238,15 @@ QgsMapRenderer::BlendMode QgsMapRenderer::getBlendModeEnum( QPainter::Compositio
       return QgsMapRenderer::BlendDestinationAtop;
     case QPainter::CompositionMode_Xor:
       return QgsMapRenderer::BlendXor;
+    case QPainter::RasterOp_SourceOrDestination:
+    case QPainter::RasterOp_SourceAndDestination:
+    case QPainter::RasterOp_SourceXorDestination:
+    case QPainter::RasterOp_NotSourceAndNotDestination:
+    case QPainter::RasterOp_NotSourceOrNotDestination:
+    case QPainter::RasterOp_NotSourceXorDestination:
+    case QPainter::RasterOp_NotSource:
+    case QPainter::RasterOp_NotSourceAndDestination:
+    case QPainter::RasterOp_SourceAndNotDestination:
     default:
       QgsDebugMsg( QString( "Composition mode %1 mapped to Normal" ).arg( blendMode ) );
       return QgsMapRenderer::BlendNormal;

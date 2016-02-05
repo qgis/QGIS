@@ -45,6 +45,22 @@ bool orderByLessThan( const QgsRelationReferenceWidget::ValueRelationItem& p1
     case QVariant::Double:
       return p1.first.toDouble() < p2.first.toDouble();
 
+    case QVariant::Int:
+    case QVariant::Invalid:
+    case QVariant::Bool:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    case QVariant::Char:
+    case QVariant::Map:
+    case QVariant::List:
+    case QVariant::StringList:
+    case QVariant::ByteArray:
+    case QVariant::Date:
+    case QVariant::Time:
+    case QVariant::DateTime:
+    case QVariant::UserType:
+    CASE_UNUSUAL_QVARIANT_TYPES:
     default:
       return p1.first.toInt() < p2.first.toInt();
   }

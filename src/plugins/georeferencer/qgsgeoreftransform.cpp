@@ -252,6 +252,7 @@ QgsGeorefTransformInterface *QgsGeorefTransform::createImplementation( Transform
       return new QgsGDALGeorefTransform( true, 0 );
     case Projective:
       return new QgsProjectiveGeorefTransform;
+    case InvalidTransform:
     default:
       return nullptr;
   }

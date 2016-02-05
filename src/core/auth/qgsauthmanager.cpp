@@ -2766,6 +2766,7 @@ void QgsAuthManager::writeToConsole( const QString &message,
     case QgsAuthManager::CRITICAL:
       msg += "ERROR: ";
       break;
+    case QgsAuthManager::INFO:
     default:
       break;
   }

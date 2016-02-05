@@ -171,6 +171,11 @@ QGis::WkbType QGis::fromNewWkbType( QgsWKBTypes::Type type )
       return QGis::WKBMultiLineString25D;
     case QgsWKBTypes::MultiPolygonZ:
       return QGis::WKBMultiPolygon25D;
+
+
+    case QgsWKBTypes::Unknown:
+      return QGis::WKBUnknown;
+
     default:
       break;
   }
@@ -280,6 +285,18 @@ bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs )
       return lhs.toTime() < rhs.toTime();
     case QVariant::DateTime:
       return lhs.toDateTime() < rhs.toDateTime();
+    case QVariant::Bool:
+      return !lhs.toBool();
+
+    case QVariant::String:
+    case QVariant::Map:
+    case QVariant::List:
+    case QVariant::StringList:
+    case QVariant::Invalid:
+    case QVariant::UserType:
+    case QVariant::ByteArray:
+    CASE_UNUSUAL_QVARIANT_TYPES:
+
     default:
       return QString::localeAwareCompare( lhs.toString(), rhs.toString() ) < 0;
   }
@@ -323,6 +340,17 @@ QGis::WkbType QGis::singleType( QGis::WkbType type )
       return WKBLineString25D;
     case WKBMultiPolygon25D:
       return WKBPolygon25D;
+
+    case WKBUnknown:
+    case WKBPoint:
+    case WKBLineString:
+    case WKBPolygon:
+    case WKBNoGeometry:
+    case WKBPoint25D:
+    case WKBLineString25D:
+    case WKBPolygon25D:
+      return type;
+
     default:
       return fromNewWkbType( QgsWKBTypes::singleType( fromOldWkbType( type ) ) );
   }
@@ -344,6 +372,16 @@ QGis::WkbType QGis::multiType( QGis::WkbType type )
       return WKBMultiLineString25D;
     case WKBPolygon25D:
       return WKBMultiPolygon25D;
+    case WKBUnknown:
+      return WKBUnknown;
+    case WKBMultiPoint:
+    case WKBMultiPoint25D:
+    case WKBMultiLineString:
+    case WKBMultiLineString25D:
+    case WKBMultiPolygon:
+    case WKBMultiPolygon25D:
+    case WKBNoGeometry:
+      return type;
     default:
       return fromNewWkbType( QgsWKBTypes::multiType( fromOldWkbType( type ) ) );
   }
@@ -365,6 +403,17 @@ QGis::WkbType QGis::flatType( QGis::WkbType type )
       return WKBMultiLineString;
     case WKBMultiPolygon25D:
       return WKBMultiPolygon;
+    case WKBUnknown:
+      return WKBUnknown;
+    case WKBPoint:
+    case WKBLineString:
+    case WKBPolygon:
+    case WKBMultiPoint:
+    case WKBMultiLineString:
+    case WKBMultiPolygon:
+    case WKBNoGeometry:
+      return type;
+
     default:
       return fromNewWkbType( QgsWKBTypes::flatType( fromOldWkbType( type ) ) );
   }

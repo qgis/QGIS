@@ -1337,6 +1337,11 @@ int FeaturePart::createCandidates( QList< LabelPosition*>& lPos,
           case QgsPalLayerSettings::Line:
             createCandidatesAlongLine( lPos, mapShape );
             break;
+
+          case QgsPalLayerSettings::Horizontal:
+          case QgsPalLayerSettings::Free:
+          case QgsPalLayerSettings::Curved:
+          case QgsPalLayerSettings::OrderedPositionsAroundPoint:
           default:
             createCandidatesForPolygon( lPos, mapShape );
             break;
