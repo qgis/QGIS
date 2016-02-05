@@ -374,7 +374,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime );
   }
 
-  QgsOgrConnPool::refS( mFilePath );
+  QgsOgrConnPool::instance()->ref( mFilePath );
 }
 
 QgsOgrProvider::~QgsOgrProvider()
@@ -2590,7 +2590,7 @@ QString QgsOgrUtils::quotedValue( const QVariant& value )
 bool QgsOgrProvider::syncToDisc()
 {
   //for shapefiles, remove spatial index files and create a new index
-  QgsOgrConnPool::unrefS( mFilePath );
+  QgsOgrConnPool::instance()->unref( mFilePath );
   bool shapeIndex = false;
   if ( ogrDriverName == "ESRI Shapefile" )
   {
@@ -2621,7 +2621,7 @@ bool QgsOgrProvider::syncToDisc()
 
   mShapefileMayBeCorrupted = false;
 
-  QgsOgrConnPool::refS( mFilePath );
+  QgsOgrConnPool::instance()->ref( mFilePath );
   if ( shapeIndex )
   {
     return createSpatialIndex();
@@ -2834,7 +2834,7 @@ void QgsOgrProvider::close()
 
   updateExtents();
 
-  QgsOgrConnPool::unrefS( mFilePath );
+  QgsOgrConnPool::instance()->unref( mFilePath );
 }
 
 // ---------------------------------------------------------------------------

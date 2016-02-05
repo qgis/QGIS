@@ -105,6 +105,15 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
     //
     static void cleanupInstance();
 
+    /**
+     * @brief Increases the reference count on the connection pool for the specified connection.
+     * @param connInfo The connection string.
+     * @note
+     *     Any user of the connection pool needs to increase the reference count
+     *     before it acquires any connections and decrease the reference count after
+     *     releasing all acquired connections to ensure that all open OGR handles
+     *     are freed when and only when no one is using the pool anymore.
+     */
     void ref( const QString& connInfo )
     {
       mMutex.lock();
@@ -115,6 +124,10 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
       mMutex.unlock();
     }
 
+    /**
+     * @brief Decrease the reference count on the connection pool for the specified connection.
+     * @param connInfo The connection string.
+     */
     void unref( const QString& connInfo )
     {
       mMutex.lock();
@@ -131,16 +144,6 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
         mGroups.erase( it );
       }
       mMutex.unlock();
-    }
-
-    static void refS( const QString &connInfo )
-    {
-      instance()->ref( connInfo );
-    }
-
-    static void unrefS( const QString &connInfo )
-    {
-      instance()->unref( connInfo );
     }
 
   protected:
