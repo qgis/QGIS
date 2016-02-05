@@ -7812,6 +7812,15 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
           QgsExpressionContextUtils::setLayerVariable( dupVLayer, variableName, varValue );
         }
 
+        Q_FOREACH ( const QgsVectorJoinInfo& join, vlayer->vectorJoins() )
+          dupVLayer->addJoin( join );
+
+        for ( int fld = 0; fld < vlayer->fields().count(); fld++ )
+        {
+          if ( vlayer->fields().fieldOrigin( fld ) == QgsFields::OriginExpression )
+            dupVLayer->addExpressionField( vlayer->expressionField( fld ), vlayer->fields().at( fld ) );
+        }
+
         dupLayer = dupVLayer;
       }
     }
