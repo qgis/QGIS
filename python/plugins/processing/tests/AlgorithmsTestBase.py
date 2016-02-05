@@ -116,7 +116,7 @@ class AlgorithmsTest():
             # No type specified, use whatever is there
             return param
 
-        raise KeyError("Unknown type '{}' specified for parameter '{}'".format(param['type'], param['name']))
+        raise KeyError("Unknown type '{}' specified for parameter".format(param['type']))
 
     def load_result_param(self, param):
         """
@@ -129,8 +129,14 @@ class AlgorithmsTest():
             basename = os.path.basename(param['name'])
             filepath = os.path.join(outdir, basename)
             return filepath
+        elif param['type'] == 'rasterhash':
+            outdir = tempfile.mkdtemp()
+            self.cleanup_paths.append(outdir)
+            basename = 'raster.tif'
+            filepath = os.path.join(outdir, basename)
+            return filepath
 
-        raise KeyError("Unknown type '{}' specified for parameter '{}'".format(param['type'], param['name']))
+        raise KeyError("Unknown type '{}' specified for parameter".format(param['type']))
 
     def load_layer(self, param):
         """
