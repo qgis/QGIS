@@ -116,6 +116,8 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
 {
   QgsDebugMsg( "Entered" );
 
+  setState( Populating );
+
   stop();
 
   QVector<QgsDataItem*> children;
@@ -248,25 +250,26 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
     // spawn threads (new layers will be added later on)
     if ( mColumnTypeThread )
     {
-      connect( mColumnTypeThread, SIGNAL( finished() ), this, SLOT( setChildrenAsPopulated() ) );
+      connect( mColumnTypeThread, SIGNAL( finished() ), this, SLOT( setAsPopulated() ) );
       mColumnTypeThread->start();
     }
     else
     {
       //set all as populated
-      setChildrenAsPopulated();
+      setAsPopulated();
     }
   }
 
   return children;
 }
 
-void QgsMssqlConnectionItem::setChildrenAsPopulated()
+void QgsMssqlConnectionItem::setAsPopulated()
 {
   Q_FOREACH ( QgsDataItem *child, mChildren )
   {
     child->setState( Populated );
   }
+  setState( Populated );
 }
 
 void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
