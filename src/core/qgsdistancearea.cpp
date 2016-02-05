@@ -534,6 +534,10 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, QGi
   return result;
 }
 
+QGis::UnitType QgsDistanceArea::lengthUnits() const
+{
+  return willUseEllipsoid() ? QGis::Meters : mCoordTransform->sourceCrs().mapUnits();
+}
 
 const unsigned char *QgsDistanceArea::measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr ) const
 {
@@ -1116,5 +1120,19 @@ void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measu
   measure *= factorUnits;
   QgsDebugMsg( QString( "to %1 %2" ).arg( QString::number( measure ), QgsUnitTypes::toString( displayUnits ) ) );
   measureUnits = displayUnits;
+}
+
+double QgsDistanceArea::convertLengthMeasurement( double length, QGis::UnitType toUnits ) const
+{
+  // get the conversion factor between the specified units
+  QGis::UnitType measureUnits = lengthUnits();
+  double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
+
+  double result = length * factorUnits;
+  QgsDebugMsg( QString( "Converted length of %1 %2 to %3 %4" ).arg( length )
+               .arg( QgsUnitTypes::toString( measureUnits ) )
+               .arg( result )
+               .arg( QgsUnitTypes::toString( toUnits ) ) );
+  return result;
 }
 

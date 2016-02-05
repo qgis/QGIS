@@ -162,7 +162,9 @@ void TestQgsDistanceArea::unit_conversions()
   //outputUnit = QGis::Meters;
 
   // First, convert from sq.meter to sq.feet
+  Q_NOWARN_DEPRECATED_PUSH
   myDa.convertMeasurement( inputValue, inputUnit, outputUnit, true );
+  Q_NOWARN_DEPRECATED_POP
   QVERIFY( qAbs( inputValue - 107639.1041671 ) <= 0.0000001 );
 
   // The print a text unit. This is i18n, so we should ignore the unit

@@ -141,9 +141,7 @@ void QgsMeasureDialog::mouseMove( QgsPoint &point )
 
     editTotal->setText( formatDistance( mTotal + d ) );
 
-    QGis::UnitType displayUnits;
-    // Meters or feet?
-    convertMeasurement( d, displayUnits, false );
+    d = convertLength( d, mDisplayUnits );
 
     // Set moving
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
@@ -211,9 +209,7 @@ void QgsMeasureDialog::removeLastPoint()
     mTotal = mDa.measureLine( mTool->points() );
     editTotal->setText( formatDistance( mTotal + d ) );
 
-    QGis::UnitType displayUnits;
-    // Meters or feet?
-    convertMeasurement( d, displayUnits, false );
+    d = convertLength( d, mDisplayUnits );
 
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
     item->setText( 0, QLocale::system().toString( d, 'f', mDecimalPlaces ) );
@@ -252,9 +248,8 @@ QString QgsMeasureDialog::formatDistance( double distance )
   QSettings settings;
   bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", false ).toBool();
 
-  QGis::UnitType newDisplayUnits;
-  convertMeasurement( distance, newDisplayUnits, false );
-  return QgsDistanceArea::textUnit( distance, mDecimalPlaces, newDisplayUnits, false, baseUnit );
+  distance = convertLength( distance, mDisplayUnits );
+  return QgsDistanceArea::textUnit( distance, mDecimalPlaces, mDisplayUnits, false, baseUnit );
 }
 
 QString QgsMeasureDialog::formatArea( double area )
@@ -329,9 +324,8 @@ void QgsMeasureDialog::updateUi()
       p2 = *it;
       if ( !b )
       {
-        double d  = mDa.measureLine( p1, p2 );
-        QGis::UnitType dummyUnits;
-        convertMeasurement( d, dummyUnits, false );
+        double d = mDa.measureLine( p1, p2 );
+        d = convertLength( d, mDisplayUnits );
 
         QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale::system().toString( d, 'f', mDecimalPlaces ) ) );
         item->setTextAlignment( 0, Qt::AlignRight );
@@ -359,6 +353,11 @@ void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, b
 
   mDa.convertMeasurement( measure, myUnits, mDisplayUnits, isArea );
   u = myUnits;
+}
+
+double QgsMeasureDialog::convertLength( double length, QGis::UnitType toUnit )
+{
+  return mDa.convertLengthMeasurement( length, toUnit );
 }
 
 

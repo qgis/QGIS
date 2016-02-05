@@ -85,6 +85,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Converts the measurement, depending on settings in options and current transformation
     void convertMeasurement( double &measure, QGis::UnitType &u, bool isArea );
 
+    double convertLength( double length, QGis::UnitType toUnit );
+
     double mTotal;
 
     //! indicates whether we're measuring distances or areas

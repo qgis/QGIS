@@ -83,7 +83,16 @@ class CORE_EXPORT QgsDistanceArea
     void setSourceAuthId( const QString& authid );
 
     //! returns source spatial reference system
-    long sourceCrs() const { return mCoordTransform->sourceCrs().srsid(); }
+    //! @deprecated use sourceCrsId() instead
+    // TODO QGIS 3.0 - make sourceCrs() return QgsCoordinateReferenceSystem
+    Q_DECL_DEPRECATED long sourceCrs() const { return mCoordTransform->sourceCrs().srsid(); }
+
+    /** Returns the QgsCoordinateReferenceSystem::srsid() for the CRS used during calculations.
+     * @see setSourceCrs()
+     * @note added in QGIS 2.14
+     */
+    long sourceCrsId() const { return mCoordTransform->sourceCrs().srsid(); }
+
     //! What sort of coordinate system is being used?
     bool geographic() const { return mCoordTransform->sourceCrs().geographicFlag(); }
 
@@ -138,23 +147,38 @@ class CORE_EXPORT QgsDistanceArea
 
     /** Measures the length of a geometry.
      * @param geometry geometry to measure
-     * @returns length of geometry. For geometry collections, non curve geometries will be ignored
+     * @returns length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
+     * returned distance can be retrieved by calling lengthUnits().
      * @note added in QGIS 2.12
+     * @see lengthUnits()
      * @see measureArea()
      * @see measurePerimeter()
      */
     double measureLength( const QgsGeometry* geometry ) const;
 
-    //! measures perimeter of polygon
+    /** Measures the perimeter of a polygon geometry.
+     * @param geometry geometry to measure
+     * @returns perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
+     * returned perimeter can be retrieved by calling lengthUnits().
+     * @note added in QGIS 2.12
+     * @see lengthUnits()
+     * @see measureArea()
+     * @see measurePerimeter()
+     */
     double measurePerimeter( const QgsGeometry *geometry ) const;
 
-    //! measures line
+    /** Measures the length of a line with multiple segments.
+     * @param points list of points in line
+     * @returns length of line. The units for the returned length can be retrieved by calling lengthUnits().
+     * @see lengthUnits()
+     */
     double measureLine( const QList<QgsPoint>& points ) const;
 
-    /** Measures length of line with one segment
+    /** Measures length of a line with one segment.
      * @param p1 start of line
      * @param p2 end of line
-     * @returns distance in meters, or map units if cartesian calculation was performed
+     * @returns distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
+     * @see lengthUnits()
      */
     double measureLine( const QgsPoint& p1, const QgsPoint& p2 ) const;
 
@@ -167,6 +191,11 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measureLine( const QgsPoint& p1, const QgsPoint& p2, QGis::UnitType& units ) const;
 
+    /** Returns the units of distance for length calculations made by this object.
+     * @note added in QGIS 2.14
+     */
+    QGis::UnitType lengthUnits() const;
+
     //! measures polygon area
     double measurePolygon( const QList<QgsPoint>& points ) const;
 
@@ -176,11 +205,21 @@ class CORE_EXPORT QgsDistanceArea
     static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false );
 
     //! Helper for conversion between physical units
+    // TODO QGIS 3.0 - remove this method, as its behaviour is non-intuitive.
     void convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::UnitType displayUnits, bool isArea ) const;
+
+    /** Takes a length measurement calculated by this QgsDistanceArea object and converts it to a
+     * different distance unit.
+     * @param length length value calculated by this class to convert. It is assumed that the length
+     * was calculated by this class, ie that its unit of length is equal lengthUnits().
+     * @param toUnits distance unit to convert measurement to
+     * @returns converted distance
+     */
+    double convertLengthMeasurement( double length, QGis::UnitType toUnits ) const;
 
   protected:
     //! measures polygon area and perimeter, vertices are extracted from WKB
-    // @note available in python bindings
+    // @note not available in python bindings
     const unsigned char* measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr = false ) const;
 
     /**

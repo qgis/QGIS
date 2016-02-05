@@ -625,7 +625,7 @@ void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &meas
   QGis::UnitType myUnits = mCanvas->mapUnits();
 
   calc.convertMeasurement( measure, myUnits, displayUnits(), isArea );
-  u = myUnits;
+  u = displayUnits();
 }
 
 QGis::UnitType QgsMapToolIdentify::displayUnits()
