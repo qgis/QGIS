@@ -102,7 +102,7 @@ def createTest(text):
     definition['name'] = 'Test ({})'.format(cmdname)
     definition['algorithm'] = cmdname
 
-    params = []
+    params = {}
     results = {}
 
     i = 0
@@ -123,7 +123,7 @@ def createTest(text):
             if not schema:
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
-            params.append(p)
+            params[param.name] = p
         elif isinstance(param, ParameterRaster):
             filename = token[1:-1]
             schema, filepath = extractSchemaPath(filename)
@@ -134,7 +134,7 @@ def createTest(text):
             if not schema:
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
-            params.append(p)
+            params[param.name] = p
         elif isinstance(param, ParameterMultipleInput):
             multiparams = token[1:-1].split(';')
             newparam = []
@@ -151,9 +151,9 @@ def createTest(text):
             if not schema:
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
-            params.append(p)
+            params[param.name] = p
         else:
-            params.append(token)
+            params[param.name] = token
 
     definition['params'] = params
 
