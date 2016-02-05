@@ -595,7 +595,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @note added in 2.9
      */
-    const QString expressionField( int index );
+    QString expressionField( int index );
 
     /**
      * Changes the expression used to define an expression based (virtual) field
@@ -608,9 +608,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void updateExpressionField( int index, const QString& exp );
 
-    /** Get the label object associated with this layer */
+    /** Get the label rendering properties associated with this layer */
     QgsLabel *label();
 
+    /** Get the label rendering properties associated with this layer */
     const QgsLabel *label() const;
 
     QgsAttributeAction *actions() { return mActions; }
