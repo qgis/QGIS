@@ -60,7 +60,7 @@ QgsDb2FeatureIterator::~QgsDb2FeatureIterator()
 
 void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 {
-
+bool limitAtProvider = ( mRequest.limit() >= 0 );
 // Note, schema, table and column names are not escaped
 // Not sure if this is a problem with upper/lower case names
   // build sql statement
@@ -177,6 +177,38 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
       mStatement += " AND (" + mSource->mSqlWhereClause + ")";
   }
 
+  mExpressionCompiled = false;
+  if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+  {
+    QgsDebugMsg(QString("compileExpressions: %1").arg(QSettings().value( "/qgis/compileExpressions", true ).toString()));
+    if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
+    {
+      QgsDb2ExpressionCompiler compiler = QgsDb2ExpressionCompiler( mSource );
+      QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
+        QgsDebugMsg(QString("compiler result: %1").arg(result) + "; query: " + compiler.result());
+      if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
+      {
+        if ( !filterAdded )
+          mStatement += " WHERE (" + compiler.result() + ')';
+        else
+          mStatement += " AND (" + compiler.result() + ')';
+        filterAdded = true;
+
+        //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
+        mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
+        limitAtProvider = mExpressionCompiled;
+      }
+      else
+      {
+        limitAtProvider = false;
+      }
+    }
+    else
+    {
+      limitAtProvider = false;
+    }
+  }  
+  
   QStringList orderByParts;
   mOrderByCompiled = true;
   QgsDebugMsg(QString("compileExpressions: %1").arg(QSettings().value( "/qgis/compileExpressions", true ).toString()));
@@ -247,13 +279,14 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 bool QgsDb2FeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys )
 {
   Q_UNUSED( orderBys )
+      QgsDebugMsg(QString("mOrderByCompiled: %1").arg(mOrderByCompiled));
   // Preparation has already been done in the constructor, so we just communicate the result
   return mOrderByCompiled;
 }
 
-
 bool QgsDb2FeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
 {
+    QgsDebugMsg(QString("mExpressionCompiled: %1").arg(mExpressionCompiled));
   if ( !mExpressionCompiled )
     return QgsAbstractFeatureIterator::nextFeatureFilterExpression( f );
   else
