@@ -3,7 +3,9 @@
   --------------------------------------
   Date      : 2016-01-27
   Copyright : (C) 2016 by David Adler
+                          Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
+              xiaoshir at us.ibm.com, nguyend at us.ibm.com
 /***************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -242,7 +244,7 @@ void QgsDb2Provider::loadMetadata()
     mGeometryColName = query.value( 0 ).toString();
     mGeometryColType = query.value( 3 ).toString();
     mSRId = query.value( 2 ).toInt();
-    mWkbType = getWkbType( query.value( 3 ).toString(), query.value( 1 ).toInt() );
+    mWkbType = QgsDb2TableModel::wkbTypeFromDb2( query.value( 3 ).toString(), query.value( 1 ).toInt() );
     QgsDebugMsg( "table: " + mTableName + " : " + mGeometryColName + " : " + query.value( 2 ).toString() );
   }
 }
@@ -665,44 +667,6 @@ void QgsDb2Provider::db2WkbTypeAndDimension( QGis::WkbType wkbType, QString &geo
     default:
       dim = 0;
       break;
-  }
-}
-
-QGis::WkbType QgsDb2Provider::getWkbType( const QString& geometryType, int dim )
-{
-  if ( dim == 3 )
-  {
-    if ( geometryType == "ST_POINT" )
-      return QGis::WKBPoint25D;
-    if ( geometryType == "ST_LINESTRING" )
-      return QGis::WKBLineString25D;
-    if ( geometryType == "ST_POLYGON" )
-      return QGis::WKBPolygon25D;
-    if ( geometryType == "ST_MULTIPOINT" )
-      return QGis::WKBMultiPoint25D;
-    if ( geometryType == "ST_MULTILINESTRING" )
-      return QGis::WKBMultiLineString25D;
-    if ( geometryType == "ST_MULTIPOLYGON" )
-      return QGis::WKBMultiPolygon25D;
-    else
-      return QGis::WKBUnknown;
-  }
-  else
-  {
-    if ( geometryType == "ST_POINT" )
-      return QGis::WKBPoint;
-    if ( geometryType == "ST_LINESTRING" )
-      return QGis::WKBLineString;
-    if ( geometryType == "ST_POLYGON" )
-      return QGis::WKBPolygon;
-    if ( geometryType == "ST_MULTIPOINT" )
-      return QGis::WKBMultiPoint;
-    if ( geometryType == "ST_MULTILINESTRING" )
-      return QGis::WKBMultiLineString;
-    if ( geometryType == "ST_MULTIPOLYGON" )
-      return QGis::WKBMultiPolygon;
-    else
-      return QGis::WKBUnknown;
   }
 }
 

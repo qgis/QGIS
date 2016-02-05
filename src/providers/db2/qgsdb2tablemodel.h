@@ -3,7 +3,9 @@
   --------------------------------------
   Date      : 2016-01-27
   Copyright : (C) 2016 by David Adler
+                          Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
+              xiaoshir at us.ibm.com, nguyend at us.ibm.com
 /***************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -77,7 +79,7 @@ class QgsDb2TableModel : public QStandardItemModel
 
     static QIcon iconForWkbType( QGis::WkbType type );
 
-    static QGis::WkbType wkbTypeFromDb2( QString dbType );
+    static QGis::WkbType wkbTypeFromDb2( QString dbType, int dim = 2 );
 
     static QString displayStringForWkbType( QGis::WkbType type );
 

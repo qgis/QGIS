@@ -3,7 +3,9 @@
   --------------------------------------
   Date      : 2016-01-27
   Copyright : (C) 2016 by David Adler
+                          Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
+              xiaoshir at us.ibm.com, nguyend at us.ibm.com
 /***************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -32,7 +34,6 @@ QgsDb2TableModel::QgsDb2TableModel()
   headerLabels << tr( "Select at id" );
   headerLabels << tr( "Sql" );
   setHorizontalHeaderLabels( headerLabels );
-
 }
 
 QgsDb2TableModel::~QgsDb2TableModel()
@@ -398,65 +399,47 @@ QString QgsDb2TableModel::layerURI( const QModelIndex &index, const QString &con
   return uri.uri();
 }
 
-QGis::WkbType QgsDb2TableModel::wkbTypeFromDb2( QString type )
+QGis::WkbType QgsDb2TableModel::wkbTypeFromDb2( QString type, int dim )
 {
   type = type.toUpper();
 
-  if ( type == "ST_POINT" )
+  if ( dim == 3 )
   {
-    return QGis::WKBPoint;
-  }
-  else if ( type == "POINTM" )
-  {
-    return QGis::WKBPoint25D;
-  }
-  else if ( type == "ST_MULTIPOINT" )
-  {
-    return QGis::WKBMultiPoint;
-  }
-  else if ( type == "MULTIPOINTM" )
-  {
-    return QGis::WKBMultiPoint25D;
-  }
-  else if ( type == "ST_LINESTRING" )
-  {
-    return QGis::WKBLineString;
-  }
-  else if ( type == "LINESTRINGM" )
-  {
-    return QGis::WKBLineString25D;
-  }
-  else if ( type == "ST_MULTILINESTRING" )
-  {
-    return QGis::WKBMultiLineString;
-  }
-  else if ( type == "MULTILINESTRINGM" )
-  {
-    return QGis::WKBMultiLineString25D;
-  }
-  else if ( type == "ST_POLYGON" )
-  {
-    return QGis::WKBPolygon;
-  }
-  else if ( type == "POLYGONM" )
-  {
-    return QGis::WKBPolygon25D;
-  }
-  else if ( type == "ST_MULTIPOLYGON" )
-  {
-    return QGis::WKBMultiPolygon;
-  }
-  else if ( type == "MULTIPOLYGONM" )
-  {
-    return QGis::WKBMultiPolygon25D;
-  }
-  else if ( type == "NONE" )
-  {
-    return QGis::WKBNoGeometry;
+    if ( type == "ST_POINT" )
+      return QGis::WKBPoint25D;
+    if ( type == "ST_LINESTRING" )
+      return QGis::WKBLineString25D;
+    if ( type == "ST_POLYGON" )
+      return QGis::WKBPolygon25D;
+    if ( type == "ST_MULTIPOINT" )
+      return QGis::WKBMultiPoint25D;
+    if ( type == "ST_MULTILINESTRING" )
+      return QGis::WKBMultiLineString25D;
+    if ( type == "ST_MULTIPOLYGON" )
+      return QGis::WKBMultiPolygon25D;
+    if ( type == "NONE" )
+      return QGis::WKBNoGeometry;
+    else
+      return QGis::WKBUnknown;
   }
   else
   {
-    return QGis::WKBUnknown;
+    if ( type == "ST_POINT" )
+      return QGis::WKBPoint;
+    if ( type == "ST_LINESTRING" )
+      return QGis::WKBLineString;
+    if ( type == "ST_POLYGON" )
+      return QGis::WKBPolygon;
+    if ( type == "ST_MULTIPOINT" )
+      return QGis::WKBMultiPoint;
+    if ( type == "ST_MULTILINESTRING" )
+      return QGis::WKBMultiLineString;
+    if ( type == "ST_MULTIPOLYGON" )
+      return QGis::WKBMultiPolygon;
+    if ( type == "NONE" )
+      return QGis::WKBNoGeometry;
+    else
+      return QGis::WKBUnknown;
   }
 }
 

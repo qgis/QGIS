@@ -3,7 +3,9 @@
   --------------------------------------
   Date      : 2016-01-27
   Copyright : (C) 2016 by David Adler
+                          Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
+              xiaoshir at us.ibm.com, nguyend at us.ibm.com
 /***************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -130,7 +132,6 @@ class QgsDb2Provider : public QgsVectorDataProvider
   private:
     static void db2WkbTypeAndDimension( QGis::WkbType wkbType, QString &geometryType, int &dim );
     static QString db2TypeName( int typeId );
-    static QGis::WkbType getWkbType( const QString& geometryType, int dim );
 
     QgsFields mAttributeFields; //fields
     QMap<int, QVariant> mDefaultValues;

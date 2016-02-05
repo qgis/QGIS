@@ -4,7 +4,9 @@
   --------------------------------------
   Date      : 2016-01-27
   Copyright : (C) 2016 by David Adler
+                          Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
+              xiaoshir at us.ibm.com, nguyend at us.ibm.com
 /***************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
