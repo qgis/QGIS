@@ -441,6 +441,7 @@
     <bool>true</bool>
    </attribute>
    <addaction name="mActionIdentify"/>
+   <addaction name="mActionDeselectAll"/>
    <addaction name="mActionOpenTable"/>
    <addaction name="mActionOpenFieldCalc"/>
    <addaction name="mActionStatisticalSummary"/>
