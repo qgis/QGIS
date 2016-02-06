@@ -219,6 +219,7 @@
         <file>themes/default/mActionIncreaseContrast.svg</file>
         <file>themes/default/mActionInOverview.svg</file>
         <file>themes/default/mActionInvertSelection.png</file>
+        <file>themes/default/mActionInvertSelection.svg</file>
         <file>themes/default/mActionLabel.png</file>
         <file>themes/default/mActionLabeling.png</file>
         <file>themes/default/mActionLocalCumulativeCutStretch.png</file>
@@ -277,6 +278,7 @@
         <file>themes/default/mActionScaleBar.png</file>
         <file>themes/default/mActionSelect.svg</file>
         <file>themes/default/mActionSelectAll.png</file>
+        <file>themes/default/mActionSelectAll.svg</file>
         <file>themes/default/mActionSelectedToTop.png</file>
         <file>themes/default/mActionSelectFreehand.svg</file>
         <file>themes/default/mActionSelectPan.png</file>

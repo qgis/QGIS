@@ -1004,7 +1004,7 @@
   <action name="mActionSelectAll">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelectAll.png</normaloff>:/images/themes/default/mActionSelectAll.png</iconset>
+     <normaloff>:/images/themes/default/mActionSelectAll.svg</normaloff>:/images/themes/default/mActionSelectAll.svg</iconset>
    </property>
    <property name="text">
     <string>Select All Features</string>
@@ -1019,7 +1019,7 @@
   <action name="mActionInvertSelection">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionInvertSelection.png</normaloff>:/images/themes/default/mActionInvertSelection.png</iconset>
+     <normaloff>:/images/themes/default/mActionInvertSelection.svg</normaloff>:/images/themes/default/mActionInvertSelection.svg</iconset>
    </property>
    <property name="text">
     <string>Invert Feature Selection</string>
