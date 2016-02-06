@@ -1843,11 +1843,11 @@ void QgisApp::createToolBars()
   QToolButton *bt = new QToolButton( mAttributesToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   QList<QAction*> selectActions;
-  selectActions << mActionDeselectAll << mActionSelectAll
-  << mActionInvertSelection << mActionSelectByExpression;
+  selectActions << mActionSelectByExpression << mActionSelectAll
+  << mActionInvertSelection;
   bt->addActions( selectActions );
-  bt->setDefaultAction( mActionDeselectAll );
-  QAction* selectionAction = mAttributesToolBar->insertWidget( mActionOpenTable, bt );
+  bt->setDefaultAction( mActionSelectByExpression );
+  QAction* selectionAction = mAttributesToolBar->insertWidget( mActionDeselectAll, bt );
 
   // select tool button
 
