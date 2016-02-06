@@ -117,7 +117,7 @@
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionRefresh.png</normaloff>:/images/themes/default/mActionRefresh.png</iconset>
+         <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -225,7 +225,7 @@
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionSelectAll.png</normaloff>:/images/themes/default/mActionSelectAll.png</iconset>
+         <normaloff>:/images/themes/default/mActionSelectAll.svg</normaloff>:/images/themes/default/mActionSelectAll.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -251,7 +251,7 @@
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionInvertSelection.png</normaloff>:/images/themes/default/mActionInvertSelection.png</iconset>
+         <normaloff>:/images/themes/default/mActionInvertSelection.svg</normaloff>:/images/themes/default/mActionInvertSelection.svg</iconset>
        </property>
        <property name="iconSize">
         <size>

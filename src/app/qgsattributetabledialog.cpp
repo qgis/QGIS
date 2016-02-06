@@ -118,7 +118,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mApplyFilterButton->setDefaultAction( mActionApplyFilter );
 
   // Set filter icon in a couple of places
-  QIcon filterIcon = QgsApplication::getThemeIcon( "/mActionFilter.svg" );
+  QIcon filterIcon = QgsApplication::getThemeIcon( "/mActionFilter2.svg" );
   mActionShowAllFilter->setIcon( filterIcon );
   mActionAdvancedFilter->setIcon( filterIcon );
   mActionSelectedFilter->setIcon( filterIcon );
@@ -166,12 +166,12 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   updateTitle();
 
   mRemoveSelectionButton->setIcon( QgsApplication::getThemeIcon( "/mActionUnselectAttributes.png" ) );
-  mSelectAllButton->setIcon( QgsApplication::getThemeIcon( "/mActionSelectAll.png" ) );
+  mSelectAllButton->setIcon( QgsApplication::getThemeIcon( "/mActionSelectAll.svg" ) );
   mSelectedToTopButton->setIcon( QgsApplication::getThemeIcon( "/mActionSelectedToTop.png" ) );
   mCopySelectedRowsButton->setIcon( QgsApplication::getThemeIcon( "/mActionCopySelected.png" ) );
   mZoomMapToSelectedRowsButton->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToSelected.svg" ) );
   mPanMapToSelectedRowsButton->setIcon( QgsApplication::getThemeIcon( "/mActionPanToSelected.svg" ) );
-  mInvertSelectionButton->setIcon( QgsApplication::getThemeIcon( "/mActionInvertSelection.png" ) );
+  mInvertSelectionButton->setIcon( QgsApplication::getThemeIcon( "/mActionInvertSelection.svg" ) );
   mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.svg" ) );
   mSaveEditsButton->setIcon( QgsApplication::getThemeIcon( "/mActionSaveEdits.svg" ) );
   mDeleteSelectedButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.svg" ) );
