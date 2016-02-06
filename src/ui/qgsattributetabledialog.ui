@@ -216,32 +216,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mRemoveSelectionButton">
-       <property name="toolTip">
-        <string>Deselect all (Ctrl+Shift+A)</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionUnselectAttributes.png</normaloff>:/images/themes/default/mActionUnselectAttributes.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>18</width>
-         <height>18</height>
-        </size>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+Shift+A</string>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QToolButton" name="mSelectAllButton">
        <property name="toolTip">
         <string>Select all (Ctrl+A)</string>
@@ -261,6 +235,58 @@
        </property>
        <property name="shortcut">
         <string>Ctrl+A</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mInvertSelectionButton">
+       <property name="toolTip">
+        <string>Invert selection (Ctrl+R)</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionInvertSelection.png</normaloff>:/images/themes/default/mActionInvertSelection.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+R</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mRemoveSelectionButton">
+       <property name="toolTip">
+        <string>Deselect all (Ctrl+Shift+A)</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionUnselectAttributes.png</normaloff>:/images/themes/default/mActionUnselectAttributes.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+Shift+A</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
@@ -290,32 +316,6 @@
        </property>
        <property name="checkable">
         <bool>true</bool>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mInvertSelectionButton">
-       <property name="toolTip">
-        <string>Invert selection (Ctrl+R)</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionInvertSelection.png</normaloff>:/images/themes/default/mActionInvertSelection.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>18</width>
-         <height>18</height>
-        </size>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+R</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
