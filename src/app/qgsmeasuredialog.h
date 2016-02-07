@@ -66,7 +66,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void updateSettings();
 
   private slots:
-    void unitsChanged( const QString &units );
+    void unitsChanged( int index );
 
     //! Open configuration tab
     void openConfigTab();
@@ -74,7 +74,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
   private:
 
     //! formats distance to most appropriate units
-    QString formatDistance( double distance );
+    QString formatDistance( double distance, bool convertUnits = true );
 
     //! formats area to most appropriate units
     QString formatArea( double area );

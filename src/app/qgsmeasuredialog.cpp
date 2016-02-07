@@ -50,18 +50,17 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
   mMeasureArea = tool->measureArea();
   mTotal = 0.;
 
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Meters ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Feet ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Degrees ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::NauticalMiles ) );
-
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Meters ), QGis::Meters );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Feet ), QGis::Feet );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Degrees ), QGis::Degrees );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::NauticalMiles ), QGis::NauticalMiles );
   QSettings settings;
   QString units = settings.value( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QGis::Meters ) ).toString();
-  mUnitsCombo->setCurrentIndex( mUnitsCombo->findText( QgsUnitTypes::toString( QgsUnitTypes::decodeDistanceUnit( units ) ), Qt::MatchFixedString ) );
+  mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::decodeDistanceUnit( units ) ) );
 
   updateSettings();
 
-  connect( mUnitsCombo, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( unitsChanged( const QString & ) ) );
+  connect( mUnitsCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( unitsChanged( int ) ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
   groupBox->setCollapsed( true );
@@ -79,7 +78,7 @@ void QgsMeasureDialog::updateSettings()
   mDecimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
   mCanvasUnits = mTool->canvas()->mapUnits();
   // Configure QgsDistanceArea
-  mDisplayUnits = QgsUnitTypes::stringToDistanceUnit( mUnitsCombo->currentText() );
+  mDisplayUnits = static_cast< QGis::UnitType >( mUnitsCombo->itemData( mUnitsCombo->currentIndex() ).toInt() );
   mDa.setSourceCrs( mTool->canvas()->mapSettings().destinationCrs().srsid() );
   mDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
   // Only use ellipsoidal calculation when project wide transformation is enabled.
@@ -103,9 +102,9 @@ void QgsMeasureDialog::updateSettings()
   updateUi();
 }
 
-void QgsMeasureDialog::unitsChanged( const QString &units )
+void QgsMeasureDialog::unitsChanged( int index )
 {
-  mDisplayUnits = QgsUnitTypes::stringToDistanceUnit( units );
+  mDisplayUnits = static_cast< QGis::UnitType >( mUnitsCombo->itemData( index ).toInt() );
   mTable->clear();
   mTotal = 0.;
   updateUi();
@@ -243,12 +242,13 @@ void QgsMeasureDialog::saveWindowLocation()
   settings.setValue( key, height() );
 }
 
-QString QgsMeasureDialog::formatDistance( double distance )
+QString QgsMeasureDialog::formatDistance( double distance, bool convertUnits )
 {
   QSettings settings;
   bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", false ).toBool();
 
-  distance = convertLength( distance, mDisplayUnits );
+  if ( convertUnits )
+    distance = convertLength( distance, mDisplayUnits );
   return QgsDistanceArea::textUnit( distance, mDecimalPlaces, mDisplayUnits, false, baseUnit );
 }
 
@@ -266,41 +266,88 @@ void QgsMeasureDialog::updateUi()
 {
   // Set tooltip to indicate how we calculate measurments
   QString toolTip = tr( "The calculations are based on:" );
-  if ( ! mTool->canvas()->hasCrsTransformEnabled() )
+
+  bool forceCartesian = false;
+  bool convertToDisplayUnits = true;
+
+  if ( mTool->canvas()->mapSettings().destinationCrs().mapUnits() == QGis::Degrees
+       && mDisplayUnits == QGis::Degrees )
   {
-    toolTip += "<br> * " + tr( "Project CRS transformation is turned off." ) + ' ';
-    toolTip += tr( "Canvas units setting is taken from project properties setting (%1)." ).arg( QgsUnitTypes::toString( mCanvasUnits ) );
-    toolTip += "<br> * " + tr( "Ellipsoidal calculation is not possible, as project CRS is undefined." );
-    setWindowTitle( tr( "Measure (OTF off)" ) );
+    //both source and destination units are degrees
+    toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so measurement is calculated using cartesian calculations in degrees." ).arg(
+                 mTool->canvas()->mapSettings().destinationCrs().description() );
+    forceCartesian = true;
+    convertToDisplayUnits = false; //not required since we will be measuring in degrees
   }
   else
   {
-    if ( mDa.ellipsoidalEnabled() )
+    QGis::UnitType resultUnit = QGis::UnknownUnit;
+    if ( ! mTool->canvas()->hasCrsTransformEnabled() )
     {
-      toolTip += "<br> * " + tr( "Project CRS transformation is turned on and ellipsoidal calculation is selected." ) + ' ';
-      toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the result is in meters" ).arg( mDa.ellipsoid() );
+      resultUnit =  mTool->canvas()->mapSettings().destinationCrs().mapUnits();
+      toolTip += "<br> * " + tr( "Project CRS transformation is turned off." ) + ' ';
+      toolTip += tr( "Distance is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
+                 mTool->canvas()->mapSettings().destinationCrs().description() );
+      toolTip += "<br> * " + tr( "Ellipsoidal calculation is not possible with CRS transformation disabled." );
+      setWindowTitle( tr( "Measure (OTF off)" ) );
     }
     else
     {
-      toolTip += "<br> * " + tr( "Project CRS transformation is turned on but ellipsoidal calculation is not selected." );
-      toolTip += "<br> * " + tr( "The canvas units setting is taken from the project CRS (%1)." ).arg( QgsUnitTypes::toString( mCanvasUnits ) );
+      if ( mDa.willUseEllipsoid() )
+      {
+        resultUnit = QGis::Meters;
+        toolTip += "<br> * " + tr( "Project CRS transformation is turned on and ellipsoidal calculation is selected." ) + ' ';
+        toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the measurement is calculated in %2." ).arg( mDa.ellipsoid(),
+                   QgsUnitTypes::toString( resultUnit ) );
+      }
+      else
+      {
+        resultUnit = mTool->canvas()->mapSettings().destinationCrs().mapUnits();
+        toolTip += "<br> * " + tr( "Project CRS transformation is turned on but ellipsoidal calculation is not selected." ) + ' ';
+        toolTip += tr( "Distance is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
+                   mTool->canvas()->mapSettings().destinationCrs().description() );
+      }
+      setWindowTitle( tr( "Measure (OTF on)" ) );
     }
-    setWindowTitle( tr( "Measure (OTF on)" ) );
-  }
 
-  if (( mCanvasUnits == QGis::Meters && mDisplayUnits == QGis::Feet ) || ( mCanvasUnits == QGis::Feet && mDisplayUnits == QGis::Meters ) )
-  {
-    toolTip += "<br> * " + tr( "Finally, the value is converted from %1 to %2." ).arg( QgsUnitTypes::toString( mCanvasUnits ), QgsUnitTypes::toString( mDisplayUnits ) );
+    if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Geographic &&
+         QgsUnitTypes::unitType( mDisplayUnits ) == QgsUnitTypes::Standard )
+    {
+      toolTip += "<br> * Distance is roughly converted to meters by using scale at equator (1 degree = 111319.49 meters).";
+      resultUnit = QGis::Meters;
+    }
+    else if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Standard &&
+              QgsUnitTypes::unitType( mDisplayUnits ) == QgsUnitTypes::Geographic )
+    {
+      toolTip += "<br> * Distance is roughly converted to degrees by using scale at equator (1 degree = 111319.49 meters).";
+      resultUnit = QGis::Degrees;
+    }
+
+    if ( resultUnit != mDisplayUnits )
+    {
+      if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Standard &&
+           QgsUnitTypes::unitType( mDisplayUnits ) == QgsUnitTypes::Standard )
+      {
+        // only shown if both conditions are true:
+        // - the display unit is a standard distance measurement (eg feet)
+        // - either the canvas units is also a standard distance OR we are using an ellipsoid (in which case the
+        //   value will be in meters)
+        toolTip += "<br> * " + tr( "The value is converted from %1 to %2." ).arg( QgsUnitTypes::toString( resultUnit ),
+                   QgsUnitTypes::toString( mDisplayUnits ) );
+      }
+      else
+      {
+        //should not be possible!
+      }
+    }
   }
 
   editTotal->setToolTip( toolTip );
   mTable->setToolTip( toolTip );
   mNotesLabel->setText( toolTip );
 
-  QGis::UnitType newDisplayUnits;
-  double dummy = 1.0;
-  convertMeasurement( dummy, newDisplayUnits, true );
-  mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( newDisplayUnits ) ) ) );
+  mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( mDisplayUnits ) );
+  mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mDisplayUnits ) ) ) );
 
   if ( mMeasureArea )
   {
@@ -318,14 +365,24 @@ void QgsMeasureDialog::updateUi()
     bool b = true; // first point
 
     QgsPoint p1, p2;
-
+    mTotal = 0;
     for ( it = mTool->points().constBegin(); it != mTool->points().constEnd(); ++it )
     {
       p2 = *it;
       if ( !b )
       {
-        double d = mDa.measureLine( p1, p2 );
-        d = convertLength( d, mDisplayUnits );
+        double d = -1;
+        if ( forceCartesian )
+        {
+          //cartesian calculation forced
+          d = sqrt( p2.sqrDist( p1 ) );
+          mTotal += d;
+        }
+        else
+        {
+          d = mDa.measureLine( p1, p2 );
+          d = convertLength( d, mDisplayUnits );
+        }
 
         QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale::system().toString( d, 'f', mDecimalPlaces ) ) );
         item->setTextAlignment( 0, Qt::AlignRight );
@@ -335,15 +392,17 @@ void QgsMeasureDialog::updateUi()
       p1 = p2;
       b = false;
     }
-    mTotal = mDa.measureLine( mTool->points() );
+
+    if ( !forceCartesian )
+      mTotal = mDa.measureLine( mTool->points() );
     mTable->show(); // Show the table with items
-    editTotal->setText( formatDistance( mTotal ) );
+    editTotal->setText( formatDistance( mTotal, convertToDisplayUnits ) );
   }
 }
 
 void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, bool isArea )
 {
-  // Helper for converting between meters and feet
+  // Helper for converting between units
   // The parameter &u is out only...
 
   // Get the canvas units
