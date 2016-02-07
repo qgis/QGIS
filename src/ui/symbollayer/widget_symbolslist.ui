@@ -267,7 +267,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="openStyleManagerButton">
+      <widget class="QPushButton" name="openSymbolManagerButton">
        <property name="text">
         <string>Open Library</string>
        </property>
@@ -405,7 +405,7 @@
   <tabstop>spinWidth</tabstop>
   <tabstop>mWidthDDBtn</tabstop>
   <tabstop>groupsCombo</tabstop>
-  <tabstop>openStyleManagerButton</tabstop>
+  <tabstop>openSymbolManagerButton</tabstop>
   <tabstop>viewSymbols</tabstop>
   <tabstop>btnSaveSymbol</tabstop>
   <tabstop>btnAdvanced</tabstop>

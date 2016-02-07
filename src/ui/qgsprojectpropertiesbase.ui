@@ -1308,7 +1308,7 @@
                  <item>
                   <widget class="QPushButton" name="pbtnStyleManager">
                    <property name="text">
-                    <string>Style Manager</string>
+                    <string>Symbol Manager</string>
                    </property>
                   </widget>
                  </item>

@@ -1679,7 +1679,7 @@ Ctl (Cmd) increments by 15 deg.</string>
      <normaloff>:/images/themes/default/propertyicons/symbology.png</normaloff>:/images/themes/default/propertyicons/symbology.png</iconset>
    </property>
    <property name="text">
-    <string>Style Manager...</string>
+    <string>Symbol Manager...</string>
    </property>
   </action>
   <action name="mActionShowPythonDialog">
