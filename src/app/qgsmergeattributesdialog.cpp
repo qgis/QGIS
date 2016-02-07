@@ -179,16 +179,25 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
     newComboBox->addItem( tr( "Feature %1" ).arg( f_it->id() ), QString( "f%1" ).arg( FID_TO_STRING( f_it->id() ) ) );
   }
 
-  if ( columnType == QVariant::Double || columnType == QVariant::Int )
+  switch ( columnType )
   {
-    Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
+    case QVariant::Double:
+    case QVariant::Int:
+    case QVariant::LongLong:
     {
-      newComboBox->addItem( QgsStatisticalSummary::displayName( stat ) , stat );
+      Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
+      {
+        newComboBox->addItem( QgsStatisticalSummary::displayName( stat ) , stat );
+      }
+      break;
     }
-  }
-  else if ( columnType == QVariant::String )
-  {
-    newComboBox->addItem( tr( "Concatenation" ), "concat" );
+    case QVariant::String:
+      newComboBox->addItem( tr( "Concatenation" ), "concat" );
+      break;
+
+      //TODO - add date/time/datetime handling
+    default:
+      break;
   }
 
   newComboBox->addItem( tr( "Skip attribute" ), "skip" );
