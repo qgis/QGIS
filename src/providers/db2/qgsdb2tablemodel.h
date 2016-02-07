@@ -19,7 +19,7 @@
 #define QGSDB2TABLEMODEL_H
 
 #include <QStandardItemModel>
-
+#include <qgsdataitem.h>
 #include "qgis.h"
 
 /** Layer Property structure */
@@ -30,8 +30,10 @@ struct QgsDb2LayerProperty
   QString     tableName;
   QString     geometryColName;
   QStringList pkCols;
+  QString     pkColumnName;
   QString     srid;
   QString     sql;
+  QString     extents;
 };
 
 

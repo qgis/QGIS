@@ -60,6 +60,7 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
   public:
     QgsDb2ConnectionItem( QgsDataItem* parent, QString name, QString path );
     ~QgsDb2ConnectionItem();
+    static bool populateLayerProperty(const QSqlDatabase db, const QSqlQuery q, QgsDb2LayerProperty &layer, int environment);
 
     /**
      * Fetch geometry column data from server and populate Browser Panel with

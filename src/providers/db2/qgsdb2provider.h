@@ -142,6 +142,8 @@ class QgsDb2Provider : public QgsVectorDataProvider
     bool mSkipFailures;
     long mNumberFeatures;
     QString mFidColName;
+    QString mKeyColumn;
+    QString mExtents;
     long mSRId;
     QString mGeometryColName, mGeometryColType;
     QString mLastError; //string containing the last reported error message

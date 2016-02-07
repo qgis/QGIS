@@ -51,6 +51,10 @@ QgsDb2Provider::QgsDb2Provider( QString uri )
   mHost = anUri.host();
   mPort = anUri.port();
   mDriver = anUri.param( "driver" );
+  mKeyColumn = anUri.keyColumn();
+  QgsDebugMsg("mKeyColumn " + mKeyColumn);
+  mExtents = anUri.param( "extents");
+  QgsDebugMsg("mExtents " + mExtents);
   bool convertIntOk;
   int portNum = mPort.toInt( &convertIntOk, 10 );
 

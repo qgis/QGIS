@@ -398,7 +398,7 @@ QString QgsDb2TableModel::layerURI( const QModelIndex &index, const QString &con
 
   return uri.uri();
 }
-
+  
 QGis::WkbType QgsDb2TableModel::wkbTypeFromDb2( QString type, int dim )
 {
   type = type.toUpper();

@@ -105,12 +105,17 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
   QString connectionName = db.connectionName();
 
   // build sql statement, QgsDb2SourceSelect::on_btnConnect_clicked() has identical query
-  QString query( "SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, TYPE_NAME, SRS_ID FROM DB2GSE.ST_GEOMETRY_COLUMNS" );
-
+  QString queryExtents( "SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, TYPE_NAME, "
+                        "SRS_ID, MIN_X, MIN_Y, MAX_X, MAX_Y "
+                        "FROM DB2GSE.ST_GEOMETRY_COLUMNS" );
+  QString queryNoExtents( "SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, TYPE_NAME "
+                          "SRS_ID "
+                          "FROM DB2GSE.ST_GEOMETRY_COLUMNS" );
   // issue the sql query
   QSqlQuery q = QSqlQuery( db );
   q.setForwardOnly( true );
-  if ( !q.exec( query ) )
+  mEnvironment = ENV_LUW;
+  if ( !q.exec( queryExtents ) )
   {
     QgsDebugMsg( "ST_Geometry_Columns query failed: " + db.lastError().text() );
     QgsDebugMsg( QString( "SQLCODE: %1" ).arg( q.lastError().number() ) );
@@ -119,25 +124,37 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
     if ( q.lastError().number() == -204 )
     {
       children.append( new QgsErrorItem( this, tr( "DB2 Spatial Extender is not enabled or set up." ), mPath + "/error" ) );
+    return children;
+      }
+    else if ( q.lastError().number() == -206 ) // most likely no MIN_X on z/OS
+    {
+      QgsDebugMsg("Try query with no extents");
+      q.clear();
+      if ( !q.exec(queryNoExtents ) )
+      {
+        QgsDebugMsg( QString( "SQLCODE: %1" ).arg( q.lastError().number() ) );
+        children.append( new QgsErrorItem( this, db.lastError().text(), mPath + "/error" ) );
+        return children;   
+      } else
+      {
+        QgsDebugMsg("success; must be z/OS");
+        mEnvironment = ENV_ZOS;
+      }
     }
     else
     {
       children.append( new QgsErrorItem( this, db.lastError().text(), mPath + "/error" ) );
+      return children;
     }
-    return children;
   }
-  else if ( q.isActive() )
+  
+  if ( q.isActive() )
   {
     //QVector<QgsDataItem*> newLayers;
     while ( q.next() )
     {
       QgsDb2LayerProperty layer;
-      layer.schemaName = q.value( 0 ).toString().trimmed();
-      layer.tableName = q.value( 1 ).toString().trimmed();
-      layer.geometryColName = q.value( 2 ).toString().trimmed();
-      layer.type = q.value( 3 ).toString();
-      layer.srid = q.value( 4 ).toString();
-      layer.pkCols = QStringList();
+      populateLayerProperty(db, q, layer, mEnvironment);
 
       QString type = layer.type;
       QString srid = layer.srid;
@@ -177,7 +194,53 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
 
   return children;
 }
-
+ 
+bool QgsDb2ConnectionItem::populateLayerProperty(const QSqlDatabase db, const QSqlQuery q, QgsDb2LayerProperty &layer, int environment)
+{
+  bool status = false;
+  QgsDebugMsg("get layer information");
+      layer.schemaName = q.value( 0 ).toString().trimmed();
+      layer.tableName = q.value( 1 ).toString().trimmed();
+      layer.geometryColName = q.value( 2 ).toString().trimmed();
+      layer.type = q.value( 3 ).toString();
+      layer.srid = q.value( 4 ).toString();
+      layer.extents = QString("0 0 0 0"); // no extents
+      if (ENV_LUW == environment) {
+      layer.extents = QString(
+                      q.value( 5 ).toString() + " " +
+                      q.value( 6 ).toString() + " " +
+                      q.value( 7 ).toString() + " " +
+                      q.value( 8 ).toString()).trimmed();
+      }
+      QgsDebugMsg("Extents: " + layer.extents + "'");
+      
+      layer.pkCols = QStringList(); 
+      
+      // Use the Qt functionality to get the primary key information
+      // to set the FID column.
+      // We can only use the primary key if it only has one column and
+      // the type is Integer or BigInt.
+      QString table = QString( "%1.%2" ).arg( layer.schemaName ).arg( layer.tableName );
+      QSqlIndex pk = db.primaryIndex( table );
+      if ( pk.count() == 1 )
+      {
+        QSqlField pkFld = pk.field( 0 );
+        QVariant::Type pkType = pkFld.type();
+        if (( pkType == QVariant::Int ||  pkType == QVariant::LongLong ) )
+        {
+          QString fidColName = pk.fieldName( 0 );
+          layer.pkCols.append( fidColName );
+          QgsDebugMsg( "pk is: " + fidColName );
+        }
+      }
+      else
+      {
+        QgsDebugMsg( "Warning: table primary key count is " + QString::number( pk.count() ) );
+      }    
+  layer.pkColumnName = layer.pkCols.size() > 0 ? layer.pkCols.at( 0 ) : QString::null;      
+  return status;
+  }
+  
 QList<QAction*> QgsDb2ConnectionItem::actions()
 {
   QList<QAction*> lst;
@@ -314,7 +377,6 @@ QgsDb2LayerItem* QgsDb2LayerItem::createClone()
 
 QString QgsDb2LayerItem::createUri()
 {
-  QString pkColName = mLayerProperty.pkCols.size() > 0 ? mLayerProperty.pkCols.at( 0 ) : QString::null;
   QgsDb2ConnectionItem *connItem = qobject_cast<QgsDb2ConnectionItem *>( parent() ? parent()->parent() : 0 );
 
   if ( !connItem )
@@ -324,9 +386,10 @@ QString QgsDb2LayerItem::createUri()
   }
 
   QgsDataSourceURI uri = QgsDataSourceURI( connItem->connInfo() );
-  uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
+  uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, mLayerProperty.pkColumnName );
   uri.setSrid( mLayerProperty.srid );
   uri.setWkbType( QgsDb2TableModel::wkbTypeFromDb2( mLayerProperty.type ) );
+  uri.setParam("extents",mLayerProperty.extents);
   QgsDebugMsg( "Layer URI: " + uri.uri() );
   return uri.uri();
 }

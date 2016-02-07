@@ -17,7 +17,7 @@
  ***************************************************************************/
 
 #include "qgsdb2sourceselect.h"
-
+#include "qgsdb2dataitems.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgscontexthelp.h"
@@ -547,33 +547,8 @@ void QgsDb2SourceSelect::on_btnConnect_clicked()
     while ( q.next() )
     {
       QgsDb2LayerProperty layer;
-      layer.schemaName = q.value( 0 ).toString().trimmed();
-      layer.tableName = q.value( 1 ).toString().trimmed();
-      layer.geometryColName = q.value( 2 ).toString().trimmed();
-      layer.type = q.value( 3 ).toString();
-      layer.srid = q.value( 4 ).toString();
-      layer.pkCols = QStringList();
-      // Use the Qt functionality to get the primary key information
-      // to set the FID column.
-      // We can only use the primary key if it only has one column and
-      // the type is Integer or BigInt.
-      QString table = QString( "%1.%2" ).arg( layer.schemaName ).arg( layer.tableName );
-      QSqlIndex pk = db.primaryIndex( table );
-      if ( pk.count() == 1 )
-      {
-        QSqlField pkFld = pk.field( 0 );
-        QVariant::Type pkType = pkFld.type();
-        if (( pkType == QVariant::Int ||  pkType == QVariant::LongLong ) )
-        {
-          QString fidColName = pk.fieldName( 0 );
-          layer.pkCols.append( fidColName );
-          QgsDebugMsg( "pk is: " + fidColName );
-        }
-      }
-      else
-      {
-        QgsDebugMsg( "Warning: table primary key count is " + QString::number( pk.count() ) );
-      }
+   
+   QgsDb2ConnectionItem::populateLayerProperty(db, q, layer, ENV_ZOS);
 
       QString type = layer.type;
       QString srid = layer.srid;
