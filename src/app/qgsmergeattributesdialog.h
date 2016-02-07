@@ -34,6 +34,13 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
 {
     Q_OBJECT
   public:
+
+    enum ItemDataRole
+    {
+      FieldIndex = Qt::UserRole /*!< index of corresponding field in source table */
+    };
+
+
     QgsMergeAttributesDialog( const QgsFeatureList& features, QgsVectorLayer* vl, QgsMapCanvas* canvas, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsMergeAttributesDialog();
 
@@ -85,6 +92,9 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     QgsMapCanvas* mMapCanvas;
     /** Item that highlights the selected feature in the merge table*/
     QgsRubberBand* mSelectionRubberBand;
+
+    QgsFields mFields;
+    QSet<int> mHiddenAttributes;
 
     static QList< QgsStatisticalSummary::Statistic > mDisplayStats;
 
