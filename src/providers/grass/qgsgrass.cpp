@@ -1543,6 +1543,9 @@ QStringList QgsGrass::grassObjects( const QgsGrassObject& mapsetObject, QgsGrass
   {
 #if GRASS_VERSION_MAJOR >= 7
     QString cmd =  gisbase() + "/scripts/t.list";
+#ifdef Q_OS_WIN
+    cmd += ".py";
+#endif
     QStringList arguments;
 
     // Running t.list module is quite slow (about 500ms) -> check first if temporal db exists.
@@ -1968,7 +1971,10 @@ QProcess *QgsGrass::startModule( const QString& gisdbase, const QString&  locati
     module += QString::number( QgsGrass::versionMajor() );
   }
 #ifdef Q_OS_WIN
-  module += ".exe";
+  if ( !module.endsWith( ".exe", Qt::CaseInsensitive ) && !module.endsWith( ".py", Qt::CaseInsensitive ) )
+  {
+    module += ".exe";
+  }
 #endif
 
   // We have to set GISRC file, uff
