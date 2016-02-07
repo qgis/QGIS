@@ -318,17 +318,24 @@ void QgsGrassTools::runModule( QString name, bool direct )
   QString path = QgsGrass::modulesConfigDirPath() + "/" + name;
   QPixmap pixmap = QgsGrassModule::pixmap( path, height );
 
-  // Icon size in QT4 does not seem to be variable
-  // -> reset the width to max icon width
-  if ( mTabWidget->iconSize().width() < pixmap.width() )
+  if ( !pixmap.isNull() )
   {
-    mTabWidget->setIconSize( QSize( pixmap.width(), mTabWidget->iconSize().height() ) );
+    // Icon size in QT4 does not seem to be variable
+    // -> reset the width to max icon width
+    if ( mTabWidget->iconSize().width() < pixmap.width() )
+    {
+      mTabWidget->setIconSize( QSize( pixmap.width(), mTabWidget->iconSize().height() ) );
+    }
+
+
+    QIcon is;
+    is.addPixmap( pixmap );
+    mTabWidget->addTab( m, is, "" );
   }
-
-
-  QIcon is;
-  is.addPixmap( pixmap );
-  mTabWidget->addTab( m, is, "" );
+  else
+  {
+    mTabWidget->addTab( m, name );
+  }
 
 
   mTabWidget->setCurrentIndex( mTabWidget->count() - 1 );
