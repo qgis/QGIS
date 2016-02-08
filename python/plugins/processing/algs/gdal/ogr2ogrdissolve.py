@@ -75,7 +75,7 @@ class Ogr2OgrDissolve(GdalAlgorithm):
         self.addParameter(ParameterBoolean(self.STATS,
                                            self.tr('Compute min/max/sum/mean for the following numeric attribute'), False))
         self.addParameter(ParameterTableField(self.STATSATT,
-                                              self.tr('Numeric attribute to compute dissolved features stats'), self.INPUT_LAYER))
+                                              self.tr('Numeric attribute to compute dissolved features stats'), self.INPUT_LAYER, optional=True))
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options (see ogr2ogr manual)'),
                                           '', optional=True))

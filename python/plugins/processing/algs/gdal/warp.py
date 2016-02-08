@@ -64,7 +64,7 @@ class warp(GdalAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Projections')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterCrs(self.SOURCE_SRS,
-                                       self.tr('Source SRS'), ''))
+                                       self.tr('Source SRS'), '', optional=True))
         self.addParameter(ParameterCrs(self.DEST_SRS,
                                        self.tr('Destination SRS'), ''))
         self.addParameter(ParameterString(self.NO_DATA,
