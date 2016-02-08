@@ -2312,7 +2312,7 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionSelectAll->setIcon( QgsApplication::getThemeIcon( "/mActionSelectAll.svg" ) );
   mActionInvertSelection->setIcon( QgsApplication::getThemeIcon( "/mActionInvertSelection.svg" ) );
   mActionSelectByExpression->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
-  mActionOpenTable->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ) );
+  mActionOpenTable->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.svg" ) );
   mActionOpenFieldCalc->setIcon( QgsApplication::getThemeIcon( "/mActionCalculateField.png" ) );
   mActionMeasure->setIcon( QgsApplication::getThemeIcon( "/mActionMeasure.png" ) );
   mActionMeasureArea->setIcon( QgsApplication::getThemeIcon( "/mActionMeasureArea.png" ) );

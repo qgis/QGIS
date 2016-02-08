@@ -693,7 +693,7 @@
          </property>
          <property name="icon">
           <iconset resource="../../images/images.qrc">
-           <normaloff>:/images/themes/default/mActionOpenTable.png</normaloff>:/images/themes/default/mActionOpenTable.png</iconset>
+           <normaloff>:/images/themes/default/mActionOpenTable.svg</normaloff>:/images/themes/default/mActionOpenTable.svg</iconset>
          </property>
          <property name="checkable">
           <bool>true</bool>

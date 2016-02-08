@@ -254,7 +254,7 @@
   <action name="mActionAddNewMap">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddMap.png</normaloff>:/images/themes/default/mActionAddMap.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddMap.svg</normaloff>:/images/themes/default/mActionAddMap.svg</iconset>
    </property>
    <property name="text">
     <string>Add &amp;Map</string>
@@ -266,7 +266,7 @@
   <action name="mActionAddNewLabel">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionLabel.png</normaloff>:/images/themes/default/mActionLabel.png</iconset>
+     <normaloff>:/images/themes/default/mActionLabel.svg</normaloff>:/images/themes/default/mActionLabel.svg</iconset>
    </property>
    <property name="text">
     <string>Add Lab&amp;el</string>
@@ -278,7 +278,7 @@
   <action name="mActionAddNewLegend">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddLegend.png</normaloff>:/images/themes/default/mActionAddLegend.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddLegend.svg</normaloff>:/images/themes/default/mActionAddLegend.svg</iconset>
    </property>
    <property name="text">
     <string>Add Legen&amp;d</string>
@@ -335,7 +335,7 @@
   <action name="mActionAddNewScalebar">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionScaleBar.png</normaloff>:/images/themes/default/mActionScaleBar.png</iconset>
+     <normaloff>:/images/themes/default/mActionScaleBar.svg</normaloff>:/images/themes/default/mActionScaleBar.svg</iconset>
    </property>
    <property name="text">
     <string>Add &amp;Scalebar</string>
@@ -429,7 +429,7 @@
   <action name="mActionAddImage">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddImage.png</normaloff>:/images/themes/default/mActionAddImage.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddImage.svg</normaloff>:/images/themes/default/mActionAddImage.svg</iconset>
    </property>
    <property name="text">
     <string>Add Im&amp;age</string>

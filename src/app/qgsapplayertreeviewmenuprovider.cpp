@@ -183,7 +183,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
 
         // attribute table
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ), tr( "&Open Attribute Table" ),
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionOpenTable.svg" ), tr( "&Open Attribute Table" ),
                          QgisApp::instance(), SLOT( attributeTable() ) );
 
         // allow editing
