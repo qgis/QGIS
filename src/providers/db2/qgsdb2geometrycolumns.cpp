@@ -5,7 +5,7 @@
   Copyright : (C) 2016 by David Adler
                           Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
-              xiaoshir at us.ibm.com, nguyend at us.ibm.com
+              xshirley2012 at yahoo.com, davidng0123 at gmail.com
 /***************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  ***************************************************************************/
 #include "qgsdb2geometrycolumns.h"
 #include "qgsdb2tablemodel.h" // needed for QgsDB2LayerProperty
-#include "qgsdb2newconnection.h"  // needed for ENV_ZOS, ENV_LUW
+#include "qgsdb2newconnection.h" // needed for ENV_ZOS, ENV_LUW
 #include <QtSql>
 #include <qgslogger.h>
 
@@ -47,9 +47,9 @@ int QgsDb2GeometryColumns::open()
     QgsDebugMsg( "ST_Geometry_Columns query failed: " + mDatabase.lastError().text() );
     sqlcode =  mQuery.lastError().number();
     QgsDebugMsg( QString( "SQLCODE: %1" ).arg( sqlcode ) );
-    /* Enabling the DB2 Spatial Extender creates the DB2GSE schema and tables,
-    so the Extender is either not enabled or set up if SQLCODE -204 is returned. */
-    if ( mQuery.lastError().number() == -206 ) // most likely no MIN_X on z/OS
+    /* The MIN_X, MIN_Y, MAX_X, and MAX_Y columns are not available on z/OS (and LUW 9.5)
+       so SQLCODE -206 is returned when specifying non-existent columns. */
+    if ( mQuery.lastError().number() == -206 )
     {
       QgsDebugMsg( "Try query with no extents" );
       mQuery.clear();
