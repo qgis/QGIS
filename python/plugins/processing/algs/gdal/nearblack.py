@@ -58,7 +58,7 @@ class nearblack(GdalAlgorithm):
         output = unicode(self.getOutputValue(self.OUTPUT))
         arguments.append(output)
         arguments.append('-of')
-        arguments.append(GdalUtils.getFormatShortNameFromFilename(output))		
+        arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
         arguments.append('-near')
         arguments.append(unicode(self.getParameterValue(self.NEAR)))
         if self.getParameterValue(self.WHITE):

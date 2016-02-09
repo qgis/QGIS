@@ -40,7 +40,7 @@ from qgis.testing import (
 from providertestbase import ProviderTestCase
 
 start_app()
-TEST_DATA_DIR=unitTestDataPath()
+TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
@@ -48,18 +48,18 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn=u"dbname='gis' host=localhost\sqlexpress"
+        cls.dbconn = u"dbname='gis' host=localhost\sqlexpress"
         if 'QGIS_MSSQLTEST_DB' in os.environ:
-            cls.dbconn=os.environ['QGIS_MSSQLTEST_DB']
+            cls.dbconn = os.environ['QGIS_MSSQLTEST_DB']
         # Create test layers
-        cls.vl=QgsVectorLayer(
+        cls.vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'mssql')
         assert(cls.vl.isValid())
-        cls.provider=cls.vl.dataProvider()
-        cls.poly_vl=QgsVectorLayer(
+        cls.provider = cls.vl.dataProvider()
+        cls.poly_vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'mssql')
         assert(cls.poly_vl.isValid())
-        cls.poly_provider=cls.poly_vl.dataProvider()
+        cls.poly_provider = cls.poly_vl.dataProvider()
 
     @classmethod
     def tearDownClass(cls):
@@ -73,11 +73,11 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
 
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDateTimeTypes(self):
-        vl=QgsVectorLayer('%s table="qgis_test"."date_times" sql=' %
-                          (self.dbconn), "testdatetimes", "mssql")
+        vl = QgsVectorLayer('%s table="qgis_test"."date_times" sql=' %
+                            (self.dbconn), "testdatetimes", "mssql")
         assert(vl.isValid())
 
-        fields=vl.dataProvider().fields()
+        fields = vl.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName(
             'date_field')).type(), QVariant.Date)
         self.assertEqual(fields.at(fields.indexFromName(
@@ -85,15 +85,15 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(fields.at(fields.indexFromName(
             'datetime_field')).type(), QVariant.DateTime)
 
-        f=vl.getFeatures(QgsFeatureRequest()).next()
+        f = vl.getFeatures(QgsFeatureRequest()).next()
 
-        date_idx=vl.fieldNameIndex('date_field')
+        date_idx = vl.fieldNameIndex('date_field')
         assert isinstance(f.attributes()[date_idx], QDate)
         self.assertEqual(f.attributes()[date_idx], QDate(2004, 3, 4))
-        time_idx=vl.fieldNameIndex('time_field')
+        time_idx = vl.fieldNameIndex('time_field')
         assert isinstance(f.attributes()[time_idx], QTime)
         self.assertEqual(f.attributes()[time_idx], QTime(13, 41, 52))
-        datetime_idx=vl.fieldNameIndex('datetime_field')
+        datetime_idx = vl.fieldNameIndex('datetime_field')
         assert isinstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(
             QDate(2004, 3, 4), QTime(13, 41, 52)))
