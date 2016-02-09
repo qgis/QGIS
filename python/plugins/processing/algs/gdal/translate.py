@@ -80,7 +80,7 @@ class translate(GdalAlgorithm):
         self.addParameter(ParameterSelection(self.EXPAND,
                                              self.tr('Expand'), ['none', 'gray', 'rgb', 'rgba']))
         self.addParameter(ParameterCrs(self.SRS,
-                                       self.tr('Output projection for output file [leave blank to use input projection]'), None))
+                                       self.tr('Output projection for output file [leave blank to use input projection]'), None, optional=True))
         self.addParameter(ParameterExtent(self.PROJWIN,
                                           self.tr('Subset based on georeferenced coordinates')))
         self.addParameter(ParameterBoolean(self.SDS,
