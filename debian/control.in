@@ -84,7 +84,6 @@ Recommends:
  qgis-provider-grass,
  qgis-plugin-globe
 Suggests: gpsbabel
-Conflicts: uim-qt3
 Replaces: qgis-plugin-grass (<< 1:2.13.0+git20160204)
 Conflicts: uim-qt3, qgis-plugin-grass (<< 1:2.13.0+git20160204)
 Description: Geographic Information System (GIS)
