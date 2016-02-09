@@ -53,7 +53,7 @@ int QgsDb2GeometryColumns::open()
     {
       QgsDebugMsg( "Try query with no extents" );
       mQuery.clear();
-      
+
       if ( !mQuery.exec( queryNoExtents ) )
       {
         QgsDebugMsg( QString( "SQLCODE: %1" ).arg( mQuery.lastError().number() ) );
@@ -89,8 +89,10 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
   layer.type = mQuery.value( 3 ).toString();
   if ( mQuery.value( 4 ).isNull() )
   {
-    layer.srid = QString("");
-  } else {
+    layer.srid = QString( "" );
+  }
+  else
+  {
     layer.srid = mQuery.value( 4 ).toString();
   }
   layer.extents = QString( "0 0 0 0" ); // no extents
@@ -99,15 +101,15 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
     if ( !mQuery.value( 5 ).isNull() ) // Don't get values if null
     {
       layer.extents = QString(
-                      mQuery.value( 5 ).toString() + " " +
-                      mQuery.value( 6 ).toString() + " " +
-                      mQuery.value( 7 ).toString() + " " +
-                      mQuery.value( 8 ).toString() ).trimmed();
+                        mQuery.value( 5 ).toString() + " " +
+                        mQuery.value( 6 ).toString() + " " +
+                        mQuery.value( 7 ).toString() + " " +
+                        mQuery.value( 8 ).toString() ).trimmed();
     }
   }
   QgsDebugMsg( "layer: " + layer.schemaName + "."  + layer.tableName + "(" + layer.geometryColName
-             + ") type=" + layer.type + " srid='" + layer.srid +  "'"
-                 );
+               + ") type=" + layer.type + " srid='" + layer.srid +  "'"
+             );
   QgsDebugMsg( "Extents: '" + layer.extents + "'" );
 
   layer.pkCols = QStringList();

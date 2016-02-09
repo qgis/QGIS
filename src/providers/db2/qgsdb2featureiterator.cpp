@@ -62,7 +62,7 @@ QgsDb2FeatureIterator::~QgsDb2FeatureIterator()
 
 void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 {
-bool limitAtProvider = ( mRequest.limit() >= 0 );
+  bool limitAtProvider = ( mRequest.limit() >= 0 );
 // Note, schema, table and column names are not escaped
 // Not sure if this is a problem with upper/lower case names
   // build sql statement
@@ -87,7 +87,7 @@ bool limitAtProvider = ( mRequest.limit() >= 0 );
   // get geometry col in WKB format
   if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) && mSource->isSpatial() )
   {
- mStatement += QString( ",DB2GSE.ST_ASBINARY(%1) AS %1 " ).arg( mSource->mGeometryColName );
+    mStatement += QString( ",DB2GSE.ST_ASBINARY(%1) AS %1 " ).arg( mSource->mGeometryColName );
 
 //  mStatement += QString( ",VARCHAR(DB2GSE.ST_ASTEXT(%1)) AS %1 " ).arg( mSource->mGeometryColName );
 //    mStatement += QString( ",DB2GSE.ST_ASTEXT(%1) AS %1 " ).arg( mSource->mGeometryColName );
@@ -170,7 +170,7 @@ bool limitAtProvider = ( mRequest.limit() >= 0 );
     mStatement += inClause;
     filterAdded = true;
   }
-  
+
   if ( !mSource->mSqlWhereClause.isEmpty() )
   {
     if ( !filterAdded )
@@ -182,12 +182,12 @@ bool limitAtProvider = ( mRequest.limit() >= 0 );
   mExpressionCompiled = false;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    QgsDebugMsg(QString("compileExpressions: %1").arg(QSettings().value( "/qgis/compileExpressions", true ).toString()));
+    QgsDebugMsg( QString( "compileExpressions: %1" ).arg( QSettings().value( "/qgis/compileExpressions", true ).toString() ) );
     if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
     {
       QgsDb2ExpressionCompiler compiler = QgsDb2ExpressionCompiler( mSource );
       QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
-        QgsDebugMsg(QString("compiler result: %1").arg(result) + "; query: " + compiler.result());
+      QgsDebugMsg( QString( "compiler result: %1" ).arg( result ) + "; query: " + compiler.result() );
       if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
       {
         if ( !filterAdded )
@@ -209,32 +209,32 @@ bool limitAtProvider = ( mRequest.limit() >= 0 );
     {
       limitAtProvider = false;
     }
-  }  
-  
+  }
+
   QStringList orderByParts;
   mOrderByCompiled = true;
-  QgsDebugMsg(QString("compileExpressions: %1").arg(QSettings().value( "/qgis/compileExpressions", true ).toString()));
+  QgsDebugMsg( QString( "compileExpressions: %1" ).arg( QSettings().value( "/qgis/compileExpressions", true ).toString() ) );
   if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
   {
     Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBy() )
     {
-    QgsDebugMsg(QString("processing a clause; ascending: %1; nullsFirst: %2").arg(clause.ascending()).arg(clause.nullsFirst()));
+      QgsDebugMsg( QString( "processing a clause; ascending: %1; nullsFirst: %2" ).arg( clause.ascending() ).arg( clause.nullsFirst() ) );
 
       if (( clause.ascending() && clause.nullsFirst() ) || ( !clause.ascending() && !clause.nullsFirst() ) )
       {
         // Not supported by DB2
         // NULLs are last in ascending order
         mOrderByCompiled = false;
-        QgsDebugMsg("ascending with nullsFirst not supported");        
+        QgsDebugMsg( "ascending with nullsFirst not supported" );
         break;
       }
 
       QgsDb2ExpressionCompiler compiler = QgsDb2ExpressionCompiler( mSource );
       QgsExpression expression = clause.expression();
-      QgsDebugMsg("expression: " + expression.dump());
+      QgsDebugMsg( "expression: " + expression.dump() );
       if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
       {
-        QgsDebugMsg("compile complete");    
+        QgsDebugMsg( "compile complete" );
         QString part;
         part = compiler.result();
         part += clause.ascending() ? " ASC" : " DESC";
@@ -242,7 +242,7 @@ bool limitAtProvider = ( mRequest.limit() >= 0 );
       }
       else
       {
-        QgsDebugMsg("compile of '" + expression.dump() + "' failed");          
+        QgsDebugMsg( "compile of '" + expression.dump() + "' failed" );
         // Bail out on first non-complete compilation.
         // Most important clauses at the beginning of the list
         // will still be sent and used to pre-sort so the local
@@ -256,12 +256,12 @@ bool limitAtProvider = ( mRequest.limit() >= 0 );
   {
     mOrderByCompiled = false;
   }
-    
+
   if ( !orderByParts.isEmpty() )
   {
     mOrderByClause = QString( " ORDER BY %1" ).arg( orderByParts.join( "," ) );
     mStatement += mOrderByClause;
-  }    
+  }
 
   if ( request.limit() > 0 )
   {
@@ -281,14 +281,14 @@ bool limitAtProvider = ( mRequest.limit() >= 0 );
 bool QgsDb2FeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys )
 {
   Q_UNUSED( orderBys )
-      QgsDebugMsg(QString("mOrderByCompiled: %1").arg(mOrderByCompiled));
+  QgsDebugMsg( QString( "mOrderByCompiled: %1" ).arg( mOrderByCompiled ) );
   // Preparation has already been done in the constructor, so we just communicate the result
   return mOrderByCompiled;
 }
 
 bool QgsDb2FeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
 {
-    QgsDebugMsg(QString("mExpressionCompiled: %1").arg(mExpressionCompiled));
+  QgsDebugMsg( QString( "mExpressionCompiled: %1" ).arg( mExpressionCompiled ) );
   if ( !mExpressionCompiled )
     return QgsAbstractFeatureIterator::nextFeatureFilterExpression( f );
   else
@@ -320,7 +320,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
       if ( attrName == mSource->mGeometryColName )
       {
         QgsDebugMsg( QString( "Geom col: %1" ).arg( attrName ) ); // not sure why we set geometry as a field value
- //       QgsDebugMsg( QString( "Field: %1; value: %2" ).arg( attrName ).arg( v.toString() ) );
+//       QgsDebugMsg( QString( "Field: %1; value: %2" ).arg( attrName ).arg( v.toString() ) );
         QgsDebugMsg( QString( "type: %1; typeName: %2" ).arg( v.type() ).arg( v.typeName() ) );
       }
       else
@@ -353,25 +353,27 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
       QgsDebugMsg( "wkb: " + wkb );
       QgsDebugMsg( "wkb size: " + QString( "%1" ).arg( ar.size() ) );
       size_t wkb_size = ar.size();
-      if (0 < wkb_size) 
+      if ( 0 < wkb_size )
       {
-      
-      unsigned char* db2data = new unsigned char[wkb_size + 1]; // allocate persistent storage
-      memcpy( db2data, ( unsigned char* )ar.data(), wkb_size + 1 );
-      
-      QgsGeometry *g = new QgsGeometry();
-      g->fromWkb( db2data, wkb_size );
-      feature.setGeometry( g );
+
+        unsigned char* db2data = new unsigned char[wkb_size + 1]; // allocate persistent storage
+        memcpy( db2data, ( unsigned char* )ar.data(), wkb_size + 1 );
+
+        QgsGeometry *g = new QgsGeometry();
+        g->fromWkb( db2data, wkb_size );
+        feature.setGeometry( g );
 //      QString wkt = ((QgsAbstractGeometryV2 *)g)->asWkt();
 //      QString wkt = g->geometry()->asWkt();
-      QgsDebugMsg( QString("geometry type: %1").arg(g->wkbType()) );
- 
-      QByteArray ar2((const char *)g->asWkb(), wkb_size + 1);
-      QString wkb2(ar2.toHex());
-      QgsDebugMsg("wkb2: " + wkb2); 
+        QgsDebugMsg( QString( "geometry type: %1" ).arg( g->wkbType() ) );
+
+        QByteArray ar2(( const char * )g->asWkb(), wkb_size + 1 );
+        QString wkb2( ar2.toHex() );
+        QgsDebugMsg( "wkb2: " + wkb2 );
 //      QgsDebugMsg("geometry WKT: " + wkt);
-      } else {
-        QgsDebugMsg("Geometry is empty");
+      }
+      else
+      {
+        QgsDebugMsg( "Geometry is empty" );
       }
 #else
       QByteArray ar = record.value( mSource->mGeometryColName ).toByteArray();
@@ -412,7 +414,7 @@ bool QgsDb2FeatureIterator::rewind()
 
   mQuery->clear();
   mQuery->setForwardOnly( true );
-  QgsDebugMsg("Execute mStatement: " + mStatement);
+  QgsDebugMsg( "Execute mStatement: " + mStatement );
   if ( !mQuery->exec( mStatement ) )
   {
     QString msg = mQuery->lastError().text();
@@ -467,7 +469,7 @@ QgsDb2FeatureSource::QgsDb2FeatureSource( const QgsDb2Provider* p )
     , mDatabaseName( p->mDatabaseName )
     , mDriver( p->mDriver )
     , mHost( p->mHost )
-    , mPort( p->mPort )    
+    , mPort( p->mPort )
     , mSqlWhereClause( p->mSqlWhereClause )
 {   //TODO set mEnvironment to LUW or ZOS? -David
   mSRId = p->mSRId;

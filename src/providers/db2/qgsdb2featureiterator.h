@@ -64,7 +64,7 @@ class QgsDb2FeatureSource : public QgsAbstractFeatureSource
     bool isSpatial() { return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty(); }
 
     friend class QgsDb2FeatureIterator;
-    friend class QgsDb2ExpressionCompiler;    
+    friend class QgsDb2ExpressionCompiler;
 };
 
 class QgsDb2FeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDb2FeatureSource>
@@ -82,21 +82,21 @@ class QgsDb2FeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDb2
 
   protected:
     void BuildStatement( const QgsFeatureRequest& request );
-    
+
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
-    
-     //! fetch next feature filter expression
+
+    //! fetch next feature filter expression
     bool nextFeatureFilterExpression( QgsFeature& f ) override;
-    
+
   private:
 
     virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
-    
+
 
     // The current database
     QSqlDatabase mDatabase;
-    QString mOrderByClause;    
+    QString mOrderByClause;
 
     // The current sql query
     QSqlQuery* mQuery;
@@ -109,9 +109,9 @@ class QgsDb2FeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDb2
 
     // List of attribute indices to fetch with nextFeature calls
     QgsAttributeList mAttributesToFetch;
-    
+
     bool mExpressionCompiled;
-    bool mOrderByCompiled;    
+    bool mOrderByCompiled;
 };
 
 #endif // QGSDB2FEATUREITERATOR_H

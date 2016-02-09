@@ -28,7 +28,7 @@
  */
 class QgsDb2Provider : public QgsVectorDataProvider
 {
-	Q_OBJECT
+    Q_OBJECT
 
   public:
     explicit QgsDb2Provider( QString uri = QString() );
@@ -109,7 +109,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     virtual bool supportsSubsetString() override { return true; }
 
     /** Return a provider name
-        
+
         Essentially just returns the provider key.  Should be used to build file
         dialogs so that providers can be shown with their supported types. Thus
         if more than one provider supports a given format, the user is able to
@@ -118,7 +118,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     virtual QString name() const;
 
     /** Return description
-        
+
         Return a terse string describing what the provider is.
      */
     virtual QString description() const;
