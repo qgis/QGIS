@@ -16,10 +16,10 @@ import qgis
 
 from qgis.core import (QgsMapUnitScale, QgsRenderContext, QgsSymbolLayerV2Utils, QgsSymbolV2, QgsMapSettings, QgsRectangle)
 from PyQt4.QtCore import QSize
-from utilities import (TestCase, unittest)
+from qgis.testing import (TestCase, unittest)
 
 
-class PyQgsMapUnitScale(TestCase):
+class PyQgsMapUnitScale(unittest.TestCase):
 
     def testConstructor(self):
         # test creating QgsMapUnitScale

@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis
-import unittest
 import os
 
 from PyQt4.QtCore import QUrl, qDebug
@@ -22,22 +21,30 @@ from qgis.core import (QgsComposition,
                        QgsComposerHtml,
                        QgsComposerFrame,
                        QgsComposerMultiFrame,
-                       QgsMapSettings)
+                       QgsMapSettings
+                       )
 
 from qgscompositionchecker import QgsCompositionChecker
 
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase
-                       )
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.testing import (
+    start_app,
+    unittest
+)
+
+from qgis.testing.mocked import get_iface
+
+from utilities import unitTestDataPath
+
+start_app()
+
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposerHtml(TestCase):
+class TestQgsComposerHtml(unittest.TestCase):
 
     def setUp(self):
         """Run before each test."""
+        self.iface = get_iface()
         self.mapSettings = QgsMapSettings()
         self.mComposition = QgsComposition(self.mapSettings)
         self.mComposition.setPaperSize(297, 210)  # A4 landscape
@@ -136,7 +143,7 @@ class TestQgsComposerHtml(TestCase):
     def testComposerHtmlAccessor(self):
         """Test that we can retrieve the ComposerHtml instance given an item.
         """
-        myComposition = QgsComposition(CANVAS.mapRenderer())
+        myComposition = QgsComposition(self.iface.mapCanvas().mapRenderer())
         mySubstitutionMap = {'replace-me': 'Foo bar'}
         myFile = os.path.join(TEST_DATA_DIR, 'template.qpt')
         myTemplateFile = file(myFile, 'rt')

@@ -347,6 +347,24 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mRootPath</tabstop>
+  <tabstop>mRootPathButton</tabstop>
+  <tabstop>mRelativeGroupBox</tabstop>
+  <tabstop>mRelativeProject</tabstop>
+  <tabstop>mRelativeDefault</tabstop>
+  <tabstop>mStoreFilesButton</tabstop>
+  <tabstop>mStoreDirsButton</tabstop>
+  <tabstop>mFileWidgetGroupBox</tabstop>
+  <tabstop>mFileWidgetButtonGroupBox</tabstop>
+  <tabstop>mFileWidgetFilterLineEdit</tabstop>
+  <tabstop>mUseLink</tabstop>
+  <tabstop>mFullUrl</tabstop>
+  <tabstop>mDocumentViewerGroupBox</tabstop>
+  <tabstop>mDocumentViewerContentComboBox</tabstop>
+  <tabstop>mDocumentViewerWidth</tabstop>
+  <tabstop>mDocumentViewerHeight</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
  <buttongroups>

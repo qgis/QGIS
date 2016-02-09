@@ -15,11 +15,11 @@ class QgsSnappingUtils : QObject
     QgsPointLocator* locatorForLayer( QgsVectorLayer* vl );
 
     /** Snap to map according to the current configuration (mode). Optional filter allows discarding unwanted matches. */
-    QgsPointLocator::Match snapToMap( const QPoint& point, QgsPointLocator::MatchFilter* filter = 0 );
+    QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter* filter = 0 );
     QgsPointLocator::Match snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter = 0 );
 
     /** Snap to current layer */
-    QgsPointLocator::Match snapToCurrentLayer( const QPoint& point, int type, QgsPointLocator::MatchFilter* filter = 0 );
+    QgsPointLocator::Match snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter* filter = 0 );
 
     // environment setup
 

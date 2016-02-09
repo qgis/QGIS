@@ -102,6 +102,17 @@ class CORE_EXPORT QgsVectorLayerEditUtils
        6 if selected geometry not found*/
     int addPart( const QList<QgsPoint>& ring, QgsFeatureId featureId );
 
+    /** Adds a new part polygon to a multipart feature
+     @return
+       0 in case of success,
+       1 if selected feature is not multipart,
+       2 if ring is not a valid geometry,
+       3 if new polygon ring not disjoint with existing rings,
+       4 if no feature was selected,
+       5 if several features are selected,
+       6 if selected geometry not found*/
+    int addPart( const QList<QgsPointV2>& ring, QgsFeatureId featureId );
+
     int addPart( QgsCurveV2* ring, QgsFeatureId featureId );
 
     /** Translates feature by dx, dy

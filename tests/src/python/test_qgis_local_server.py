@@ -36,21 +36,21 @@ from qgis.core import (
 
 from qgis_local_server import getLocalServer
 
-from utilities import (
-    TestCase,
-    getQgisTestApp,
-    unittest,
-    openInBrowserTab
+from qgis.testing import (
+    start_app,
+    unittest
 )
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from utilities import openInBrowserTab
+
+start_app()
 MAPSERV = getLocalServer()
 
 QGIS_TEST_REPORT = 'QGIS_TEST_REPORT' in os.environ
 TESTREPORTS = {}
 
 
-class TestQgisLocalServer(TestCase):
+class TestQgisLocalServer(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

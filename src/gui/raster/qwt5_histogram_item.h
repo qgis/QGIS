@@ -66,7 +66,7 @@ class HistogramItem: public QwtPlotItem
 
   protected:
     virtual void drawBar( QPainter *,
-                          Qt::Orientation o, const QRect & ) const;
+                          Qt::Orientation o, QRect ) const;
 
   private:
     void init();

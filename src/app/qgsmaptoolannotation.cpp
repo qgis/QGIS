@@ -258,7 +258,7 @@ void QgsMapToolAnnotation::canvasDoubleClickEvent( QgsMapMouseEvent* e )
   }
 }
 
-QgsAnnotationItem* QgsMapToolAnnotation::itemAtPos( const QPointF& pos )
+QgsAnnotationItem* QgsMapToolAnnotation::itemAtPos( QPointF pos )
 {
   if ( !mCanvas )
   {

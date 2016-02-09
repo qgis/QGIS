@@ -86,6 +86,9 @@ void  TestQgsVectorAnalyzer::initTestCase()
 }
 void  TestQgsVectorAnalyzer::cleanupTestCase()
 {
+  delete mpLineLayer;
+  delete mpPolyLayer;
+  delete mpPointLayer;
   QgsApplication::exitQgis();
 }
 void  TestQgsVectorAnalyzer::init()

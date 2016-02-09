@@ -88,7 +88,7 @@ class QgsRelation
      * @param fieldPair A pair of two strings
      * @note not available in python bindings
      */
-    // void addFieldPair( FieldPair fieldPair );
+    // void addFieldPair( const FieldPair& fieldPair );
 
     /**
      * Creates an iterator which returns all the features on the referencing (child) layer

@@ -85,10 +85,10 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     static void splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap& colorBoxMap,
                                QMap<int, QgsColorBox>::iterator colorBoxMapIt );
     static bool minMaxRange( const QgsColorBox& colorBox, int& redRange, int& greenRange, int& blueRange, int& alphaRange );
-    static bool redCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
-    static bool greenCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
-    static bool blueCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
-    static bool alphaCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
+    static bool redCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
+    static bool greenCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
+    static bool blueCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
+    static bool alphaCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
     /** Calculates a representative color for a box (pixel weighted average)*/
     static QRgb boxColor( const QgsColorBox& box, int boxPixels );
     // TODO: if HAVE_SERVER_PYTHON

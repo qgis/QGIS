@@ -14,10 +14,9 @@ __revision__ = '$Format:%H$'
 
 import qgis
 
-from utilities import (unittest,
-                       TestCase,
-                       getQgisTestApp,
-                       )
+from qgis.testing import (unittest,
+                          start_app,
+                          )
 from qgis.core import (QgsCategorizedSymbolRendererV2,
                        QgsRendererCategoryV2,
                        QgsMarkerSymbolV2,
@@ -34,7 +33,7 @@ from PyQt4.QtCore import Qt, QVariant
 from PyQt4.QtXml import QDomDocument
 from PyQt4.QtGui import QColor
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
 
 def createMarkerSymbol():
@@ -46,7 +45,7 @@ def createMarkerSymbol():
     return symbol
 
 
-class TestQgsCategorizedSymbolRendererV2(TestCase):
+class TestQgsCategorizedSymbolRendererV2(unittest.TestCase):
 
     def testFilter(self):
         """Test filter creation"""

@@ -140,7 +140,7 @@ void QgsRelation::addFieldPair( const QString& referencingField, const QString& 
   updateRelationStatus();
 }
 
-void QgsRelation::addFieldPair( QgsRelation::FieldPair fieldPair )
+void QgsRelation::addFieldPair( const FieldPair& fieldPair )
 {
   mFieldPairs << fieldPair;
   updateRelationStatus();

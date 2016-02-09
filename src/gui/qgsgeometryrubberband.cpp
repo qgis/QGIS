@@ -118,7 +118,7 @@ void QgsGeometryRubberBand::setGeometry( QgsAbstractGeometryV2* geom )
   }
 }
 
-void QgsGeometryRubberBand::moveVertex( const QgsVertexId& id, const QgsPointV2& newPos )
+void QgsGeometryRubberBand::moveVertex( QgsVertexId id, const QgsPointV2& newPos )
 {
   if ( mGeometry )
   {

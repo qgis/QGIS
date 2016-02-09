@@ -24,15 +24,17 @@ from qgis.core import (QgsVectorLayer,
                        )
 from PyQt4.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 import os
-from utilities import (getQgisTestApp,
-                       TestCase,
-                       unittest,
-                       writeShape
-                       )
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.testing import (
+    start_app,
+    unittest
+)
+
+from utilities import writeShape
+
+start_app()
 
 
-class TestQgsVectorLayer(TestCase):
+class TestQgsVectorLayer(unittest.TestCase):
 
     mMemoryLayer = None
 

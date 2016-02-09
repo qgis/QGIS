@@ -39,6 +39,7 @@ QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem* parent, QString nam
     , mUseGeometryColumns( false )
     , mUseEstimatedMetadata( false )
     , mAllowGeometrylessTables( true )
+    , mColumnTypeThread( nullptr )
 {
   mCapabilities |= Fast;
   mIconName = "mIconConnect.png";
@@ -46,6 +47,7 @@ QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem* parent, QString nam
 
 QgsMssqlConnectionItem::~QgsMssqlConnectionItem()
 {
+  stop();
 }
 
 void QgsMssqlConnectionItem::readConnectionSettings()
@@ -76,9 +78,21 @@ void QgsMssqlConnectionItem::readConnectionSettings()
     mConnInfo += " estimatedmetadata=true";
 }
 
+void QgsMssqlConnectionItem::stop()
+{
+  if ( mColumnTypeThread )
+  {
+    mColumnTypeThread->stop();
+    mColumnTypeThread->wait();
+    delete mColumnTypeThread;
+    mColumnTypeThread = nullptr;
+  }
+}
+
 void QgsMssqlConnectionItem::refresh()
 {
   QgsDebugMsg( "mPath = " + mPath );
+  stop();
 
   // read up the schemas and layers from database
   QVector<QgsDataItem*> items = createChildren();
@@ -102,7 +116,13 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
 {
   QgsDebugMsg( "Entered" );
 
+  setState( Populating );
+
+  stop();
+
   QVector<QgsDataItem*> children;
+  if ( deferredDelete() )
+    return children;
 
   readConnectionSettings();
 
@@ -115,8 +135,6 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
   }
 
   QString connectionName = db.connectionName();
-
-  QgsMssqlGeomColumnTypeThread *columnTypeThread = nullptr;
 
   // build sql statement
   QString query( "select " );
@@ -190,6 +208,7 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
       if ( !schemaItem )
       {
         schemaItem = new QgsMssqlSchemaItem( this, layer.schemaName, mPath + '/' + layer.schemaName );
+        schemaItem->setState( Populating );
         children.append( schemaItem );
       }
 
@@ -197,15 +216,15 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
       {
         if ( type == "GEOMETRY" || type.isNull() || srid.isEmpty() )
         {
-          if ( !columnTypeThread )
+          if ( !mColumnTypeThread )
           {
-            columnTypeThread = new QgsMssqlGeomColumnTypeThread(
+            mColumnTypeThread = new QgsMssqlGeomColumnTypeThread(
               connectionName, true /* use estimated metadata */ );
 
-            connect( columnTypeThread, SIGNAL( setLayerType( QgsMssqlLayerProperty ) ),
+            connect( mColumnTypeThread, SIGNAL( setLayerType( QgsMssqlLayerProperty ) ),
                      this, SLOT( setLayerType( QgsMssqlLayerProperty ) ) );
             connect( this, SIGNAL( addGeometryColumn( QgsMssqlLayerProperty ) ),
-                     columnTypeThread, SLOT( addGeometryColumn( QgsMssqlLayerProperty ) ) );
+                     mColumnTypeThread, SLOT( addGeometryColumn( QgsMssqlLayerProperty ) ) );
           }
 
           emit addGeometryColumn( layer );
@@ -229,11 +248,28 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
     }
 
     // spawn threads (new layers will be added later on)
-    if ( columnTypeThread )
-      columnTypeThread->start();
+    if ( mColumnTypeThread )
+    {
+      connect( mColumnTypeThread, SIGNAL( finished() ), this, SLOT( setAsPopulated() ) );
+      mColumnTypeThread->start();
+    }
+    else
+    {
+      //set all as populated
+      setAsPopulated();
+    }
   }
 
   return children;
+}
+
+void QgsMssqlConnectionItem::setAsPopulated()
+{
+  Q_FOREACH ( QgsDataItem *child, mChildren )
+  {
+    child->setState( Populated );
+  }
+  setState( Populated );
 }
 
 void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
@@ -469,7 +505,7 @@ QString QgsMssqlLayerItem::createUri()
   QgsDataSourceURI uri = QgsDataSourceURI( connItem->connInfo() );
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
   uri.setSrid( mLayerProperty.srid );
-  uri.setWkbType( QgsMssqlTableModel::wkbTypeFromMssql( mLayerProperty.type ) );
+  uri.setWkbType( QGis::fromOldWkbType( QgsMssqlTableModel::wkbTypeFromMssql( mLayerProperty.type ) ) );
   QgsDebugMsg( QString( "layer uri: %1" ).arg( uri.uri() ) );
   return uri.uri();
 }
@@ -479,6 +515,8 @@ QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem* parent, QString name, QStri
     : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = "mIconDbSchema.png";
+  //not fertile, since children are created by QgsMssqlConnectionItem
+  mCapabilities &= ~( Fertile );
 }
 
 QVector<QgsDataItem*> QgsMssqlSchemaItem::createChildren()
@@ -515,7 +553,7 @@ bool QgsMssqlSchemaItem::handleDrop( const QMimeData* data, Qt::DropAction )
   return conn->handleDrop( data, mName );
 }
 
-QgsMssqlLayerItem* QgsMssqlSchemaItem::addLayer( QgsMssqlLayerProperty layerProperty, bool refresh )
+QgsMssqlLayerItem* QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty& layerProperty, bool refresh )
 {
   QGis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsMssqlTableModel::displayStringForWkbType( wkbType ), layerProperty.srid );

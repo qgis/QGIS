@@ -3021,5 +3021,6 @@ QGISEXTERN QList<QPair<QString, QString> > *pyramidResamplingMethods()
 
 QGISEXTERN void cleanupProvider()
 {
-  GDALDestroyDriverManager();
+  // nothing to do here, QgsApplication takes care of
+  // calling GDALDestroyDriverManager()
 }

@@ -1316,8 +1316,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>383</width>
-                       <height>389</height>
+                       <width>594</width>
+                       <height>398</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -1961,8 +1961,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>301</width>
-                       <height>257</height>
+                       <width>594</width>
+                       <height>398</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2340,7 +2340,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>454</width>
+                       <width>578</width>
                        <height>697</height>
                       </rect>
                      </property>
@@ -3170,7 +3170,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>330</width>
+                       <width>578</width>
                        <height>424</height>
                       </rect>
                      </property>
@@ -3713,7 +3713,7 @@ font-style: italic;</string>
                             <enum>QFrame::Sunken</enum>
                            </property>
                            <property name="currentIndex">
-                            <number>2</number>
+                            <number>0</number>
                            </property>
                            <widget class="QWidget" name="pagePoint">
                             <layout class="QGridLayout" name="gridLayout_13" columnstretch="0,0,0,0">
@@ -5274,7 +5274,7 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
+                       <y>-398</y>
                        <width>578</width>
                        <height>799</height>
                       </rect>
@@ -6268,17 +6268,6 @@ font-style: italic;</string>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsUnitSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsBlendModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
@@ -6290,14 +6279,26 @@ font-style: italic;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPenJoinStyleComboBox</class>
@@ -6476,25 +6477,25 @@ font-style: italic;</string>
   <tabstop>mCentroidRadioWhole</tabstop>
   <tabstop>mCentroidDDBtn</tabstop>
   <tabstop>mCentroidInsideCheckBox</tabstop>
+  <tabstop>mLineDistanceSpnBx</tabstop>
+  <tabstop>mLineDistanceDDBtn</tabstop>
+  <tabstop>mLineDistanceUnitDDBtn</tabstop>
+  <tabstop>mOffsetTypeComboBox</tabstop>
   <tabstop>mPointOffsetAboveLeft</tabstop>
   <tabstop>mPointOffsetAbove</tabstop>
   <tabstop>mPointOffsetAboveRight</tabstop>
-  <tabstop>mPointQuadOffsetDDBtn</tabstop>
   <tabstop>mPointOffsetLeft</tabstop>
   <tabstop>mPointOffsetOver</tabstop>
   <tabstop>mPointOffsetRight</tabstop>
   <tabstop>mPointOffsetBelowLeft</tabstop>
   <tabstop>mPointOffsetBelow</tabstop>
   <tabstop>mPointOffsetBelowRight</tabstop>
+  <tabstop>mPointQuadOffsetDDBtn</tabstop>
+  <tabstop>mPointPositionOrderDDBtn</tabstop>
   <tabstop>mPointOffsetXSpinBox</tabstop>
   <tabstop>mPointOffsetYSpinBox</tabstop>
   <tabstop>mPointOffsetDDBtn</tabstop>
   <tabstop>mPointOffsetUnitsDDBtn</tabstop>
-  <tabstop>mLineDistanceSpnBx</tabstop>
-  <tabstop>mLineDistanceDDBtn</tabstop>
-  <tabstop>mLineDistanceUnitDDBtn</tabstop>
-  <tabstop>mOffsetTypeComboBox</tabstop>
-  <tabstop>mPointPositionOrderDDBtn</tabstop>
   <tabstop>mPointAngleSpinBox</tabstop>
   <tabstop>mPointAngleDDBtn</tabstop>
   <tabstop>mRepeatDistanceSpinBox</tabstop>
@@ -6510,6 +6511,7 @@ font-style: italic;</string>
   <tabstop>mCoordRotationDDBtn</tabstop>
   <tabstop>chkPreserveRotation</tabstop>
   <tabstop>mPrioritySlider</tabstop>
+  <tabstop>mPriorityDDBtn</tabstop>
   <tabstop>scrollArea_4</tabstop>
   <tabstop>mScaleBasedVisibilityChkBx</tabstop>
   <tabstop>mScaleBasedVisibilityDDBtn</tabstop>
@@ -6536,7 +6538,6 @@ font-style: italic;</string>
   <tabstop>mLimitLabelChkBox</tabstop>
   <tabstop>mLimitLabelSpinBox</tabstop>
   <tabstop>mMinSizeSpinBox</tabstop>
-  <tabstop>mPriorityDDBtn</tabstop>
   <tabstop>mFitInsidePolygonCheckBox</tabstop>
   <tabstop>mChkNoObstacle</tabstop>
   <tabstop>mIsObstacleDDBtn</tabstop>

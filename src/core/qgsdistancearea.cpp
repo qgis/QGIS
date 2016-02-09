@@ -35,6 +35,7 @@
 #include "qgslinestringv2.h"
 #include "qgspolygonv2.h"
 #include "qgssurfacev2.h"
+#include "qgsunittypes.h"
 
 // MSVC compiler doesn't have defined M_PI in math.h
 #ifndef M_PI
@@ -96,6 +97,11 @@ void QgsDistanceArea::_copy( const QgsDistanceArea & origDA )
 void QgsDistanceArea::setEllipsoidalMode( bool flag )
 {
   mEllipsoidalMode = flag;
+}
+
+bool QgsDistanceArea::willUseEllipsoid() const
+{
+  return mEllipsoidalMode && mEllipsoid != GEO_NONE;
 }
 
 void QgsDistanceArea::setSourceCrs( long srsid )
@@ -528,16 +534,20 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, QGi
   return result;
 }
 
-
-const unsigned char *QgsDistanceArea::measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr ) const
+QGis::UnitType QgsDistanceArea::lengthUnits() const
 {
-  if ( !feature )
+  return willUseEllipsoid() ? QGis::Meters : mCoordTransform->sourceCrs().mapUnits();
+}
+
+QgsConstWkbPtr QgsDistanceArea::measurePolygon( QgsConstWkbPtr wkbPtr, double* area, double* perimeter, bool hasZptr ) const
+{
+  if ( !wkbPtr )
   {
     QgsDebugMsg( "no feature to measure" );
-    return nullptr;
+    return wkbPtr;
   }
 
-  QgsConstWkbPtr wkbPtr( feature + 1 + sizeof( int ) );
+  wkbPtr.readHeader();
 
   // get number of rings in the polygon
   int numRings;
@@ -546,7 +556,7 @@ const unsigned char *QgsDistanceArea::measurePolygon( const unsigned char* featu
   if ( numRings == 0 )
   {
     QgsDebugMsg( "no rings to measure" );
-    return nullptr;
+    return QgsConstWkbPtr( nullptr, 0 );
   }
 
   // Set pointer to the first ring
@@ -1102,13 +1112,27 @@ void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measu
   }
 
   // Gets the conversion factor between the specified units
-  double factorUnits = QGis::fromUnitToUnitFactor( measureUnits, displayUnits );
+  double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, displayUnits );
   if ( isArea )
     factorUnits *= factorUnits;
 
-  QgsDebugMsg( QString( "Converting %1 %2" ).arg( QString::number( measure ), QGis::toLiteral( measureUnits ) ) );
+  QgsDebugMsg( QString( "Converting %1 %2" ).arg( QString::number( measure ), QgsUnitTypes::toString( measureUnits ) ) );
   measure *= factorUnits;
-  QgsDebugMsg( QString( "to %1 %2" ).arg( QString::number( measure ), QGis::toLiteral( displayUnits ) ) );
+  QgsDebugMsg( QString( "to %1 %2" ).arg( QString::number( measure ), QgsUnitTypes::toString( displayUnits ) ) );
   measureUnits = displayUnits;
+}
+
+double QgsDistanceArea::convertLengthMeasurement( double length, QGis::UnitType toUnits ) const
+{
+  // get the conversion factor between the specified units
+  QGis::UnitType measureUnits = lengthUnits();
+  double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
+
+  double result = length * factorUnits;
+  QgsDebugMsg( QString( "Converted length of %1 %2 to %3 %4" ).arg( length )
+               .arg( QgsUnitTypes::toString( measureUnits ) )
+               .arg( result )
+               .arg( QgsUnitTypes::toString( toUnits ) ) );
+  return result;
 }
 

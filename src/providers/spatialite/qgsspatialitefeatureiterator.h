@@ -81,7 +81,7 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     QString quotedPrimaryKey();
     bool getFeature( sqlite3_stmt *stmt, QgsFeature &feature );
     QString fieldName( const QgsField& fld );
-    QVariant getFeatureAttribute( sqlite3_stmt* stmt, int ic, const QVariant::Type& type );
+    QVariant getFeatureAttribute( sqlite3_stmt* stmt, int ic, QVariant::Type type );
     void getFeatureGeometry( sqlite3_stmt* stmt, int ic, QgsFeature& feature );
 
     //! wrapper of the SQLite database connection

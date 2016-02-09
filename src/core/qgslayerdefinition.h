@@ -45,7 +45,7 @@ class CORE_EXPORT QgsLayerDefinition
         /** Constructor
          * @param doc The XML document containing maplayer elements
          */
-        DependencySorter( QDomDocument doc );
+        DependencySorter( const QDomDocument& doc );
 
         /** Constructor
          * @param fileName The filename where the XML document is stored
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsLayerDefinition
         QStringList mSortedLayerIds;
         bool mHasCycle;
         bool mHasMissingDependency;
-        void init( QDomDocument doc );
+        void init( const QDomDocument& doc );
     };
 };
 

@@ -86,7 +86,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     virtual void paintEvent( QPaintEvent* event ) override;
 
   private slots:
-    void changed( const double &value );
+    void changed( double value );
 
   private:
     int frameWidth() const;

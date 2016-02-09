@@ -40,6 +40,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgscolordialog.h"
 #include "qgsexpressioncontext.h"
+#include "qgsunittypes.h"
 
 #include <QInputDialog>
 #include <QFileDialog>
@@ -459,7 +460,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   }
 
   // Set the units for measuring
-  QGis::UnitType myDisplayUnits = QGis::fromLiteral( mSettings->value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+  bool ok = false;
+  QGis::UnitType myDisplayUnits = QgsUnitTypes::decodeDistanceUnit( mSettings->value( "/qgis/measure/displayunits" ).toString(), &ok );
+  if ( !ok )
+    myDisplayUnits = QGis::Meters;
+
   if ( myDisplayUnits == QGis::Feet )
   {
     radFeet->setChecked( true );
@@ -1241,19 +1246,19 @@ void QgsOptions::saveOptions()
 
   if ( radFeet->isChecked() )
   {
-    mSettings->setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Feet ) );
+    mSettings->setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QGis::Feet ) );
   }
   else if ( radNautical->isChecked() )
   {
-    mSettings->setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::NauticalMiles ) );
+    mSettings->setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QGis::NauticalMiles ) );
   }
   else if ( radDegrees->isChecked() )
   {
-    mSettings->setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Degrees ) );
+    mSettings->setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QGis::Degrees ) );
   }
   else
   {
-    mSettings->setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) );
+    mSettings->setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QGis::Meters ) );
   }
 
   QString angleUnitString = "degrees";

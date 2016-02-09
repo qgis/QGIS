@@ -43,7 +43,7 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
 
 
     virtual QgsRectangle calculateBoundingBox() const override;
-    virtual bool fromWkb( const unsigned char* wkb ) override;
+    virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
     virtual bool fromWkt( const QString& wkt ) override;
 
     int wkbSize() const override;
@@ -88,9 +88,9 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) override;
     void transform( const QTransform& t ) override;
 
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override;
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) override;
-    virtual bool deleteVertex( const QgsVertexId& position ) override;
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override;
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
+    virtual bool deleteVertex( QgsVertexId position ) override;
 
     virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const override;
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
@@ -102,12 +102,12 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
         @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
-    double vertexAngle( const QgsVertexId& vertex ) const override;
+    double vertexAngle( QgsVertexId vertex ) const override;
 
     virtual int vertexCount( int /*part*/ = 0, int ring = 0 ) const override;
     virtual int ringCount( int /*part*/ = 0 ) const override { return ( nullptr != mExteriorRing ) + mInteriorRings.size(); }
     virtual int partCount() const override { return ringCount() > 0 ? 1 : 0; }
-    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const override;
+    virtual QgsPointV2 vertexAt( QgsVertexId id ) const override;
 
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;

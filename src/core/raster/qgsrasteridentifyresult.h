@@ -40,7 +40,7 @@ class CORE_EXPORT QgsRasterIdentifyResult
     /** \brief Constructor. Creates invalid result with error.
      *  @param theError the error
      */
-    QgsRasterIdentifyResult( QgsError theError );
+    QgsRasterIdentifyResult( const QgsError& theError );
 
     virtual ~QgsRasterIdentifyResult();
 

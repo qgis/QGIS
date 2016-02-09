@@ -657,7 +657,7 @@ QString QgsHttpRequestHandler::readPostBody() const
     QgsMessageLog::logMessage( "length is: " + lengthQString );
     if ( conversionSuccess )
     {
-      input = ( char* )malloc( length + 1 );
+      input = new char[length + 1];
       memset( input, 0, length + 1 );
       for ( int i = 0; i < length; ++i )
       {
@@ -672,7 +672,7 @@ QString QgsHttpRequestHandler::readPostBody() const
       {
         QgsMessageLog::logMessage( "input is NULL " );
       }
-      free( input );
+      delete [] input;
     }
     else
     {
@@ -953,22 +953,22 @@ bool QgsHttpRequestHandler::minMaxRange( const QgsColorBox& colorBox, int& redRa
   return true;
 }
 
-bool QgsHttpRequestHandler::redCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 )
+bool QgsHttpRequestHandler::redCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 )
 {
   return qRed( c1.first ) < qRed( c2.first );
 }
 
-bool QgsHttpRequestHandler::greenCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 )
+bool QgsHttpRequestHandler::greenCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 )
 {
   return qGreen( c1.first ) < qGreen( c2.first );
 }
 
-bool QgsHttpRequestHandler::blueCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 )
+bool QgsHttpRequestHandler::blueCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 )
 {
   return qBlue( c1.first ) < qBlue( c2.first );
 }
 
-bool QgsHttpRequestHandler::alphaCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 )
+bool QgsHttpRequestHandler::alphaCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 )
 {
   return qAlpha( c1.first ) < qAlpha( c2.first );
 }

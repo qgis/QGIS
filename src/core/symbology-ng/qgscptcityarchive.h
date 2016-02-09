@@ -155,7 +155,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     void setParent( QgsCptCityDataItem* parent ) { mParent = parent; }
     QVector<QgsCptCityDataItem*> children() const { return mChildren; }
     virtual QIcon icon() { return mIcon; }
-    virtual QIcon icon( const QSize& size ) { Q_UNUSED( size ) ; return icon(); }
+    virtual QIcon icon( QSize size ) { Q_UNUSED( size ) ; return icon(); }
     QString name() const { return mName; }
     QString path() const { return mPath; }
     QString info() const { return mInfo; }
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
     // --- New virtual methods for layer item derived classes ---
     const QgsCptCityColorRampV2& ramp() const { return mRamp; }
     QIcon icon() override;
-    QIcon icon( const QSize& size ) override;
+    QIcon icon( QSize size ) override;
     void init();
 
   protected:

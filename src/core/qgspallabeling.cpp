@@ -17,6 +17,7 @@
 
 #include "qgspallabeling.h"
 #include "qgstextlabelfeature.h"
+#include "qgsunittypes.h"
 
 #include <list>
 
@@ -4626,14 +4627,14 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     QgsStringMap map; // for SVG symbology marker
     map["name"] = QgsSymbolLayerV2Utils::symbolNameToPath( tmpLyr.shapeSVGFile.trimmed() );
     map["size"] = QString::number( sizeOut );
-    map["size_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit(
+    map["size_unit"] = QgsUnitTypes::encodeUnit(
                          tmpLyr.shapeSizeUnits == QgsPalLayerSettings::MapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
     map["angle"] = QString::number( 0.0 ); // angle is handled by this local painter
 
     // offset is handled by this local painter
     // TODO: see why the marker renderer doesn't seem to translate offset *after* applying rotation
     //map["offset"] = QgsSymbolLayerV2Utils::encodePoint( tmpLyr.shapeOffset );
-    //map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit(
+    //map["offset_unit"] = QgsUnitTypes::encodeUnit(
     //                       tmpLyr.shapeOffsetUnits == QgsPalLayerSettings::MapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
 
     map["fill"] = tmpLyr.shapeFillColor.name();
@@ -4642,7 +4643,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
 
     // TODO: fix overriding SVG symbol's border width/units in QgsSvgCache
     // currently broken, fall back to symbol's
-    //map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit(
+    //map["outline_width_unit"] = QgsUnitTypes::encodeUnit(
     //                              tmpLyr.shapeBorderWidthUnits == QgsPalLayerSettings::MapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
 
     if ( tmpLyr.shadowDraw && tmpLyr.shadowUnder == QgsPalLayerSettings::ShadowShape )

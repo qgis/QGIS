@@ -385,51 +385,47 @@ void QgsGPXFeatureIterator::readAttributes( QgsFeature& feature, const QgsTrack&
         break;
     }
   }
-
 }
 
 
-
-QgsGeometry* QgsGPXFeatureIterator::readWaypointGeometry( const QgsWaypoint& wpt )
+QgsGeometry *QgsGPXFeatureIterator::readWaypointGeometry( const QgsWaypoint& wpt )
 {
-  char* geo = new char[21];
-  std::memset( geo, 0, 21 );
-  geo[0] = QgsApplication::endian();
-  geo[geo[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBPoint;
-  std::memcpy( geo + 5, &wpt.lon, sizeof( double ) );
-  std::memcpy( geo + 13, &wpt.lat, sizeof( double ) );
+  int size = 1 + sizeof( int ) + 2 * sizeof( double );
+  unsigned char *geo = new unsigned char[size];
+
+  QgsWkbPtr wkbPtr( geo, size );
+  wkbPtr << ( char ) QgsApplication::endian() << QGis::WKBPoint << wpt.lon << wpt.lat;
+
   QgsGeometry *g = new QgsGeometry();
-  g->fromWkb(( unsigned char * )geo, 21 );
+  g->fromWkb( geo, size );
   return g;
 }
 
 
-QgsGeometry* QgsGPXFeatureIterator::readRouteGeometry( const QgsRoute& rte )
+QgsGeometry *QgsGPXFeatureIterator::readRouteGeometry( const QgsRoute& rte )
 {
   // some wkb voodoo
-  int nPoints = rte.points.size();
-  char* geo = new char[9 + 16 * nPoints];
-  std::memset( geo, 0, 9 + 16 * nPoints );
-  geo[0] = QgsApplication::endian();
-  geo[geo[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBLineString;
-  std::memcpy( geo + 5, &nPoints, 4 );
+  int size = 1 + 2 * sizeof( int ) + 2 * sizeof( double ) * rte.points.size();
+  unsigned char *geo = new unsigned char[size];
+
+  QgsWkbPtr wkbPtr( geo, size );
+  wkbPtr << ( char ) QgsApplication::endian() << QGis::WKBLineString << rte.points.size();
+
   for ( int i = 0; i < rte.points.size(); ++i )
   {
-    std::memcpy( geo + 9 + 16 * i, &rte.points[i].lon, sizeof( double ) );
-    std::memcpy( geo + 9 + 16 * i + 8, &rte.points[i].lat, sizeof( double ) );
+    wkbPtr << rte.points[i].lon << rte.points[i].lat;
   }
 
   //create QgsGeometry and use it for intersection test
   //if geometry is to be fetched, it is attached to the feature, otherwise we delete it
-  QgsGeometry* theGeometry = new QgsGeometry();
-  theGeometry->fromWkb(( unsigned char * )geo, 9 + 16 * nPoints );
-  return theGeometry;
+  QgsGeometry *g = new QgsGeometry();
+  g->fromWkb( geo, size );
+  return g;
 }
 
-QgsGeometry* QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack& trk )
+QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack& trk )
 {
   // TODO: support multi line string for segments
-
   if ( trk.segments.isEmpty() )
     return nullptr;
 
@@ -439,39 +435,38 @@ QgsGeometry* QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack& trk )
   {
     totalPoints += trk.segments[i].points.size();
   }
+
   if ( totalPoints == 0 )
     return nullptr;
+
   //QgsDebugMsg( "GPX feature track total points: " + QString::number( totalPoints ) );
 
   // some wkb voodoo
-  char* geo = new char[9 + 16 * totalPoints];
+  int size = 1 + 2 * sizeof( int ) + 2 * sizeof( double ) * totalPoints;
+  unsigned char *geo = new unsigned char[size];
   if ( !geo )
   {
-    QgsDebugMsg( "Too large track!!!" );
+    QgsDebugMsg( "Track too large!" );
     return nullptr;
   }
-  std::memset( geo, 0, 9 + 16 * totalPoints );
-  geo[0] = QgsApplication::endian();
-  geo[geo[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBLineString;
-  std::memcpy( geo + 5, &totalPoints, 4 );
 
-  int thisPoint = 0;
+  QgsWkbPtr wkbPtr( geo, size );
+  wkbPtr << ( char ) QgsApplication::endian() << QGis::WKBLineString << totalPoints;
+
   for ( int k = 0; k < trk.segments.size(); k++ )
   {
     int nPoints = trk.segments[k].points.size();
     for ( int i = 0; i < nPoints; ++i )
     {
-      std::memcpy( geo + 9 + 16 * thisPoint,     &trk.segments[k].points[i].lon, sizeof( double ) );
-      std::memcpy( geo + 9 + 16 * thisPoint + 8, &trk.segments[k].points[i].lat, sizeof( double ) );
-      thisPoint++;
+      wkbPtr << trk.segments[k].points[i].lon << trk.segments[k].points[i].lat;
     }
   }
 
   //create QgsGeometry and use it for intersection test
   //if geometry is to be fetched, it is attached to the feature, otherwise we delete it
-  QgsGeometry* theGeometry = new QgsGeometry();
-  theGeometry->fromWkb(( unsigned char * )geo, 9 + 16 * totalPoints );
-  return theGeometry;
+  QgsGeometry *g = new QgsGeometry();
+  g->fromWkb( geo, size );
+  return g;
 }
 
 

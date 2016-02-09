@@ -41,10 +41,14 @@ from qgis.core import (
     QgsMultiRenderChecker
 )
 
+from qgis.testing import (
+    start_app,
+    unittest
+)
+
+from qgis.testing.mocked import get_iface
+
 from utilities import (
-    getQgisTestApp,
-    TestCase,
-    unittest,
     unitTestDataPath,
     getTempfilePath,
     renderMapToImage,
@@ -54,7 +58,7 @@ from utilities import (
 )
 
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 FONTSLOADED = loadTestFonts()
 
 PALREPORT = 'PAL_REPORT' in os.environ
@@ -62,7 +66,7 @@ PALREPORTS = {}
 
 
 # noinspection PyPep8Naming,PyShadowingNames
-class TestQgsPalLabeling(TestCase):
+class TestQgsPalLabeling(unittest.TestCase):
 
     _TestDataDir = unitTestDataPath()
     _PalDataDir = os.path.join(_TestDataDir, 'labeling')
@@ -87,9 +91,9 @@ class TestQgsPalLabeling(TestCase):
     def setUpClass(cls):
         """Run before all tests"""
 
-        # qgis instances
-        cls._QgisApp, cls._Canvas, cls._Iface, cls._Parent = \
-            QGISAPP, CANVAS, IFACE, PARENT
+        # qgis iface
+        cls._Iface = get_iface()
+        cls._Canvas = cls._Iface.mapCanvas()
 
         # verify that spatialite provider is available
         msg = '\nSpatialite provider not found, SKIPPING TEST SUITE'

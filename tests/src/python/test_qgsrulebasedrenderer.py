@@ -40,20 +40,23 @@ from qgis.core import (QgsVectorLayer,
                        QgsGraduatedSymbolRendererV2,
                        QgsRendererRangeV2
                        )
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
+from qgis.testing import (start_app,
+                          unittest
+                          )
+
+from qgis.testing.mocked import get_iface
+
+from utilities import unitTestDataPath
 # Convenience instances in case you may need them
 # not used in this test
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsRulebasedRenderer(TestCase):
+class TestQgsRulebasedRenderer(unittest.TestCase):
 
     def setUp(self):
+        self.iface = get_iface()
         myShpFile = os.path.join(TEST_DATA_DIR, 'rectangles.shp')
         layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
         QgsMapLayerRegistry.instance().addMapLayer(layer)
@@ -74,7 +77,7 @@ class TestQgsRulebasedRenderer(TestCase):
 
         self.renderer = QgsRuleBasedRendererV2(self.rootrule)
         layer.setRendererV2(self.renderer)
-        self.mapsettings = CANVAS.mapSettings()
+        self.mapsettings = self.iface.mapCanvas().mapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
         self.mapsettings.setOutputDpi(96)
         self.mapsettings.setExtent(QgsRectangle(-163, 22, -70, 52))

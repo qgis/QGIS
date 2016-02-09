@@ -151,8 +151,8 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
         @param offset the offset value in layer unit. Negative values mean offset towards left, positive values offset to the right side*/
     bool createOffsetGeometry( QgsGeometry* geom, QgsGeometry* lineGeom, double offset );
     QgsPoint createPointOffset( double x, double y, double dist, QgsGeometry* lineGeom ) const;
-    const unsigned char* locateBetweenWkbString( const unsigned char* ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure );
-    const unsigned char* locateAlongWkbString( const unsigned char* ptr, QgsMultiPoint& result, double measure );
+    QgsConstWkbPtr locateBetweenWkbString( QgsConstWkbPtr ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure );
+    QgsConstWkbPtr locateAlongWkbString( QgsConstWkbPtr ptr, QgsMultiPoint& result, double measure );
     static bool clipSegmentByRange( double x1, double y1, double m1, double x2, double y2, double m2, double range1, double range2, QgsPoint& pt1, QgsPoint& pt2, bool& secondPointClipped );
     static void locateAlongSegment( double x1, double y1, double m1, double x2, double y2, double m2, double measure, bool& pt1Ok, QgsPoint& pt1, bool& pt2Ok, QgsPoint& pt2 );
 };

@@ -1134,7 +1134,7 @@ void QgsComposerView::updateRubberBandRect( QPointF & pos, const bool constrainS
   mRubberBandItem->setTransform( t );
 }
 
-void QgsComposerView::updateRubberBandLine( const QPointF &pos, const bool constrainAngles )
+void QgsComposerView::updateRubberBandLine( QPointF pos, const bool constrainAngles )
 {
   if ( !mRubberBandLineItem )
   {

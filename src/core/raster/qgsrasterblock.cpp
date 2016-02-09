@@ -474,7 +474,7 @@ bool QgsRasterBlock::setIsNoData()
   }
 }
 
-bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
+bool QgsRasterBlock::setIsNoDataExcept( QRect theExceptRect )
 {
   int top = theExceptRect.top();
   int bottom = theExceptRect.bottom();

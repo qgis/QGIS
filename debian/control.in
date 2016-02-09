@@ -38,6 +38,7 @@ Build-Depends:
  python-qt4 (>= 4.1.0),
  python-qt4-dev,
  python-qt4-sql,
+ python-yaml, python-mock,
 #precise saucy wheezy# python,
 #precise saucy# python-central (>= 0.5),
 #saucy wheezy# python-dev,
@@ -45,6 +46,7 @@ Build-Depends:
 #sid stretch jessie trusty utopic vivid wily# python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~),
 #sid stretch jessie wily# pyqt4.qsci-dev,
 #sid stretch jessie trusty utopic vivid wily# python-pyspatialite,
+#sid wheezy jessie stretch trusty vivid wily# python-nose2,
  python-sip (>= 4.5.0),
  python-sip-dev (>= 4.5.0),
  libosgearth-dev,
@@ -82,7 +84,8 @@ Recommends:
  qgis-provider-grass,
  qgis-plugin-globe
 Suggests: gpsbabel
-Conflicts: uim-qt3
+Replaces: qgis-plugin-grass (<< 1:2.13.0+git20160204)
+Conflicts: uim-qt3, qgis-plugin-grass (<< 1:2.13.0+git20160204)
 Description: Geographic Information System (GIS)
  A Geographic Information System (GIS) manages, analyzes, and displays
  databases of geographic information. QGIS supports shape file viewing and
@@ -380,7 +383,7 @@ Depends:
  python-six,
 #sid stretch jessie trusty utopic vivid wily# python-pyspatialite,
 #jessie# liblwgeom-2.1.4,
-#stretch sid# liblwgeom-2.2-2,
+#stretch sid# liblwgeom-2.2-5,
  libqgispython{QGIS_ABI},
  ${shlibs:Depends},
  ${python:Depends},

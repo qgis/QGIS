@@ -172,8 +172,8 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     enum GridUnit
     {
       MapUnit, /*!< grid units follow map units */
-      MM, /*!< grid units in millimetres */
-      CM /*!< grid units in centimetres */
+      MM, /*!< grid units in millimeters */
+      CM /*!< grid units in centimeters */
     };
 
     /** Grid drawing style
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     /** Calculates the maximum distance the grid extends beyond the QgsComposerMap's
      * item rect
-     * @returns maximum extension in millimetres
+     * @returns maximum extension in millimeters
      */
     double maxExtension();
 
@@ -446,14 +446,14 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     /** Sets the length of the cross segments drawn for the grid. This is only used for grids
      * with QgsComposerMapGrid::Cross styles
-     * @param length cross length in millimetres
+     * @param length cross length in millimeters
      * @see crossLength
     */
     void setCrossLength( const double length ) { mCrossLength = length; }
 
     /** Retrieves the length of the cross segments drawn for the grid. This is only used for grids
      * with QgsComposerMapGrid::Cross styles
-     * @returns cross length in millimetres
+     * @returns cross length in millimeters
      * @see setCrossLength
     */
     double crossLength() const { return mCrossLength; }
@@ -617,13 +617,13 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     */
     AnnotationPosition annotationPosition( const BorderSide border ) const;
 
-    /** Sets the distance between the map frame and annotations. Units are in millimetres.
+    /** Sets the distance between the map frame and annotations. Units are in millimeters.
      * @param distance margin between map frame and annotations
      * @see annotationFrameDistance
     */
     void setAnnotationFrameDistance( const double distance ) { mAnnotationFrameDistance = distance; }
 
-    /** Gets the distance between the map frame and annotations. Units are in millimetres.
+    /** Gets the distance between the map frame and annotations. Units are in millimeters.
      * @returns margin between map frame and annotations
      * @see setAnnotationFrameDistance
     */
@@ -749,7 +749,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Sets the grid frame width. This property controls how wide the grid frame is.
      * The size of the line outlines drawn in the frame is controlled through the
      * setFramePenSize method.
-     * @param width width of grid frame in millimetres
+     * @param width width of grid frame in millimeters
      * @see frameWidth
     */
     void setFrameWidth( const double width ) { mGridFrameWidth = width; }
@@ -757,7 +757,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Gets the grid frame width. This property controls how wide the grid frame is.
      * The size of the line outlines drawn in the frame can be retrieved via the
      * framePenSize method.
-     * @returns width of grid frame in millimetres
+     * @returns width of grid frame in millimeters
      * @see setFrameWidth
     */
     double frameWidth() const { return mGridFrameWidth; }
@@ -958,7 +958,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Draw an annotation. If optional extension argument is specified, nothing will be drawn and instead
      * the extension of the annotation outside of the map frame will be stored in this variable.
      */
-    void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension = nullptr ) const;
+    void drawCoordinateAnnotation( QPainter* p, QPointF pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension = nullptr ) const;
 
     /** Draws a single annotation
      * @param p drawing painter
@@ -966,7 +966,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @param rotation text rotation
      * @param annotationText the text to draw
     */
-    void drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText ) const;
+    void drawAnnotation( QPainter* p, QPointF pos, int rotation, const QString& annotationText ) const;
 
     QString gridAnnotationString( double value, AnnotationCoordinate coord, QgsExpressionContext& expressionContext ) const;
 
@@ -998,7 +998,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @param p point
      * @param coordinateType coordinate type
     */
-    BorderSide borderForLineCoord( const QPointF& p, const AnnotationCoordinate coordinateType ) const;
+    BorderSide borderForLineCoord( QPointF p, const AnnotationCoordinate coordinateType ) const;
 
     /** Get parameters for drawing grid in CRS different to map CRS*/
     int crsGridParams( QgsRectangle& crsRect, QgsCoordinateTransform& inverseTransform ) const;
@@ -1017,7 +1017,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     void createDefaultGridMarkerSymbol();
 
-    void drawGridMarker( const QPointF &point, QgsRenderContext &context ) const;
+    void drawGridMarker( QPointF point, QgsRenderContext &context ) const;
 
     void drawGridFrameZebraBorder( QPainter *p, const QMap<double, double> &borderPos, BorderSide border, double* extension = nullptr ) const;
 
@@ -1027,8 +1027,8 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     void calculateCRSTransformLines();
 
-    bool shouldShowDivisionForSide( const AnnotationCoordinate &coordinate, const QgsComposerMapGrid::BorderSide& side ) const;
-    bool shouldShowDivisionForDisplayMode( const QgsComposerMapGrid::AnnotationCoordinate &coordinate, const QgsComposerMapGrid::DisplayMode &mode ) const;
+    bool shouldShowDivisionForSide( AnnotationCoordinate coordinate, BorderSide side ) const;
+    bool shouldShowDivisionForDisplayMode( AnnotationCoordinate coordinate, DisplayMode mode ) const;
 
     friend class TestQgsComposerMapGrid;
 };

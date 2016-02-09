@@ -27,6 +27,7 @@
 #include "qgsogcutils.h"
 #include "qgslogger.h"
 #include "qgsrendercontext.h"
+#include "qgsunittypes.h"
 
 #include <QColor>
 #include <QFont>
@@ -407,42 +408,14 @@ QgsMapUnitScale QgsSymbolLayerV2Utils::decodeMapUnitScale( const QString& str )
 
 QString QgsSymbolLayerV2Utils::encodeOutputUnit( QgsSymbolV2::OutputUnit unit )
 {
-  switch ( unit )
-  {
-    case QgsSymbolV2::MM:
-      return "MM";
-    case QgsSymbolV2::MapUnit:
-      return "MapUnit";
-    case QgsSymbolV2::Pixel:
-      return "Pixel";
-    case QgsSymbolV2::Percentage:
-      return "Percentage";
-    default:
-      return "MM";
-  }
+  return QgsUnitTypes::encodeUnit( unit );
 }
 
 QgsSymbolV2::OutputUnit QgsSymbolLayerV2Utils::decodeOutputUnit( const QString& str )
 {
-  if ( str == "MM" )
-  {
-    return QgsSymbolV2::MM;
-  }
-  else if ( str == "MapUnit" )
-  {
-    return QgsSymbolV2::MapUnit;
-  }
-  else if ( str == "Pixel" )
-  {
-    return QgsSymbolV2::Pixel;
-  }
-  else if ( str == "Percentage" )
-  {
-    return QgsSymbolV2::Percentage;
-  }
-
-  // millimeters are default
-  return QgsSymbolV2::MM;
+  bool ok = false;
+  QgsSymbolV2::OutputUnit unit = QgsUnitTypes::decodeSymbolUnit( str, &ok );
+  return ok ? unit : QgsSymbolV2::MM;
 }
 
 QString QgsSymbolLayerV2Utils::encodeSldUom( QgsSymbolV2::OutputUnit unit, double *scaleFactor )
@@ -1008,7 +981,7 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( const QDomElement &element )
 
   if ( element.hasAttribute( "outputUnit" ) )
   {
-    symbol->setOutputUnit( decodeOutputUnit( element.attribute( "outputUnit" ) ) );
+    symbol->setOutputUnit( QgsUnitTypes::decodeSymbolUnit( element.attribute( "outputUnit" ) ) );
   }
   if ( element.hasAttribute(( "mapUnitScale" ) ) )
   {
@@ -3501,7 +3474,7 @@ void QgsSymbolLayerV2Utils::multiplyImageOpacity( QImage* image, qreal alpha )
   }
 }
 
-void QgsSymbolLayerV2Utils::blurImageInPlace( QImage& image, const QRect& rect, int radius, bool alphaOnly )
+void QgsSymbolLayerV2Utils::blurImageInPlace( QImage& image, QRect rect, int radius, bool alphaOnly )
 {
   // culled from Qt's qpixmapfilter.cpp, see: http://www.qtcentre.org/archive/index.php/t-26534.html
   int tab[] = { 14, 10, 8, 6, 5, 5, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2 };
@@ -3646,7 +3619,7 @@ void QgsSymbolLayerV2Utils::sortVariantList( QList<QVariant>& list, Qt::SortOrde
   }
 }
 
-QPointF QgsSymbolLayerV2Utils::pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance )
+QPointF QgsSymbolLayerV2Utils::pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance )
 {
   double dx = directionPoint.x() - startPoint.x();
   double dy = directionPoint.y() - startPoint.y();
@@ -3874,7 +3847,7 @@ QPointF QgsSymbolLayerV2Utils::polygonPointOnSurface( const QPolygonF& points )
   return centroid;
 }
 
-bool QgsSymbolLayerV2Utils::pointInPolygon( const QPolygonF &points, const QPointF &point )
+bool QgsSymbolLayerV2Utils::pointInPolygon( const QPolygonF &points, QPointF point )
 {
   bool inside = false;
 

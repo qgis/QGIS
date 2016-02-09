@@ -172,7 +172,7 @@ QgsComposerMap::~QgsComposerMap()
 
 /* This function is called by paint() and cache() to render the map.  It does not override any functions
 from QGraphicsItem. */
-void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const QSizeF& size, double dpi, double* forceWidthScale )
+void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, QSizeF size, double dpi, double* forceWidthScale )
 {
   Q_UNUSED( forceWidthScale );
 
@@ -194,7 +194,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   job.renderSynchronously();
 }
 
-QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, const QSizeF& size, int dpi ) const
+QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF size, int dpi ) const
 {
   const QgsMapSettings &ms = mComposition->mapSettings();
 
@@ -2295,7 +2295,7 @@ void QgsComposerMap::transformShift( double& xShift, double& yShift ) const
   yShift = dyScaled;
 }
 
-QPointF QgsComposerMap::mapToItemCoords( const QPointF& mapCoords ) const
+QPointF QgsComposerMap::mapToItemCoords( QPointF mapCoords ) const
 {
   QPolygonF mapPoly = transformedMapPolygon();
   if ( mapPoly.size() < 1 )

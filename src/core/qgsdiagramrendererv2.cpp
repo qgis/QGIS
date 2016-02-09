@@ -353,7 +353,7 @@ QgsDiagramRendererV2::QgsDiagramRendererV2( const QgsDiagramRendererV2& other )
 {
 }
 
-void QgsDiagramRendererV2::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QPointF& pos )
+void QgsDiagramRendererV2::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos )
 {
   if ( !mDiagram )
   {

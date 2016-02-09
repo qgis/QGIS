@@ -14,11 +14,11 @@ struct QgsVertexId
   QgsVertexId( int _part, int _ring, int _vertex, VertexType _type);
 
   bool isValid() const;
-  bool operator==( const QgsVertexId& other ) const;
-  bool operator!=( const QgsVertexId& other ) const;
-  bool partEqual( const QgsVertexId& o ) const;
-  bool ringEqual( const QgsVertexId& o ) const;
-  bool vertexEqual( const QgsVertexId& o ) const;
+  bool operator==( QgsVertexId other ) const;
+  bool operator!=( QgsVertexId other ) const;
+  bool partEqual( QgsVertexId o ) const;
+  bool ringEqual( QgsVertexId o ) const;
+  bool vertexEqual( QgsVertexId o ) const;
   bool isValid(const QgsAbstractGeometryV2* geom) const;
 
   int part;
@@ -127,7 +127,7 @@ class QgsAbstractGeometryV2
     /** Sets the geometry from a WKB string.
      * @see fromWkt
      */
-    virtual bool fromWkb( const unsigned char * wkb ) = 0;
+    virtual bool fromWkb( QgsConstWkbPtr wkb ) = 0;
 
     /** Sets the geometry from a WKT string.
      * @see fromWkb
@@ -231,7 +231,7 @@ class QgsAbstractGeometryV2
 
     /** Returns the point corresponding to a specified vertex id
      */
-    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const = 0;
+    virtual QgsPointV2 vertexAt( QgsVertexId id ) const = 0;
 
     /** Searches for the closest segment of the geometry to a given point.
      * @param pt specifies the point to find closest segment to
@@ -253,7 +253,7 @@ class QgsAbstractGeometryV2
      * @see moveVertex
      * @see deleteVertex
      */
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) = 0;
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) = 0;
 
     /** Moves a vertex within the geometry
      * @param position vertex id for vertex to move
@@ -262,7 +262,7 @@ class QgsAbstractGeometryV2
      * @see insertVertex
      * @see deleteVertex
      */
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) = 0;
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) = 0;
 
     /** Deletes a vertex within the geometry
      * @param position vertex id for vertex to delete
@@ -270,7 +270,7 @@ class QgsAbstractGeometryV2
      * @see insertVertex
      * @see moveVertex
      */
-    virtual bool deleteVertex( const QgsVertexId& position ) = 0;
+    virtual bool deleteVertex( QgsVertexId position ) = 0;
 
     /** Returns the length of the geometry.
      * @see area()
@@ -312,7 +312,7 @@ class QgsAbstractGeometryV2
      * @param vertex the vertex id
      * @return rotation in radians, clockwise from north
     */
-    virtual double vertexAngle( const QgsVertexId& vertex ) const = 0;
+    virtual double vertexAngle( QgsVertexId vertex ) const = 0;
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const = 0;
     virtual int ringCount( int part = 0 ) const = 0;
@@ -368,15 +368,4 @@ class QgsAbstractGeometryV2
     /** Updates the geometry type based on whether sub geometries contain z or m values.
      */
     void setZMTypeFromSubGeometry( const QgsAbstractGeometryV2* subggeom, QgsWKBTypes::Type baseGeomType );
-
-    /** Reads a WKB header and tests its validity.
-     * @param wkbPtr
-     * @param wkbType destination for WKB type from header
-     * @param endianSwap will be set to true if endian from WKB must be swapped to match QGIS platform endianness
-     * @param expectedType expected WKB type
-     * @returns true if header is valid and matches expected type
-     * @note not available in Python bindings
-     */
-    //static bool readWkbHeader( QgsConstWkbPtr& wkbPtr, QgsWKBTypes::Type& wkbType, bool& endianSwap, QgsWKBTypes::Type expectedType );
-
 };

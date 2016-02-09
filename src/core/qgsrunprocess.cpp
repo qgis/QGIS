@@ -23,6 +23,7 @@
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
 #include <QProcess>
+#include <QTextCodec>
 #include <QMessageBox>
 
 QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
@@ -90,7 +91,9 @@ void QgsRunProcess::die()
 
 void QgsRunProcess::stdoutAvailable()
 {
-  QString line( mProcess->readAllStandardOutput() );
+  QByteArray bytes( mProcess->readAllStandardOutput() );
+  QTextCodec *codec = QTextCodec::codecForLocale();
+  QString line( codec->toUnicode( bytes ) );
 
   // Add the new output to the dialog box
   mOutput->appendMessage( line );
@@ -98,7 +101,9 @@ void QgsRunProcess::stdoutAvailable()
 
 void QgsRunProcess::stderrAvailable()
 {
-  QString line( mProcess->readAllStandardError() );
+  QByteArray bytes( mProcess->readAllStandardOutput() );
+  QTextCodec *codec = QTextCodec::codecForLocale();
+  QString line( codec->toUnicode( bytes ) );
 
   // Add the new output to the dialog box, but color it red
   mOutput->appendMessage( "<font color=red>" + line + "</font>" );

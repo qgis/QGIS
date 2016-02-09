@@ -17,23 +17,37 @@ import tempfile
 import shutil
 import glob
 
-from qgis.core import QGis, QgsField, QgsPoint, QgsMapLayer, QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry, \
-    QgsGeometry, NULL
-from PyQt4.QtCore import QSettings
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       unittest,
-                       TestCase,
-                       compareWkt
-                       )
+from qgis.core import (
+    QGis,
+    QgsField,
+    QgsPoint,
+    QgsMapLayer,
+    QgsVectorLayer,
+    QgsFeatureRequest,
+    QgsFeature,
+    QgsProviderRegistry,
+    QgsGeometry,
+    NULL
+)
+
+from qgis.testing import (
+    start_app,
+    unittest
+)
+
+from utilities import (
+    unitTestDataPath,
+    compareWkt
+)
+
 from providertestbase import ProviderTestCase
 from PyQt4.QtCore import QVariant
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsMemoryProvider(TestCase, ProviderTestCase):
+class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -241,7 +255,8 @@ class TestPyQgsMemoryProvider(TestCase, ProviderTestCase):
             assert f == importedFields.field(f.name())
 
 
-class TestPyQgsMemoryProviderIndexed(TestCase, ProviderTestCase):
+class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
+
     """Runs the provider test suite against an indexed memory layer"""
 
     @classmethod

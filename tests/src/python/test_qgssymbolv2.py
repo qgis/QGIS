@@ -26,12 +26,7 @@ __revision__ = '$Format:%H$'
 import os
 import csv
 
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest,
-                       expectedFailure
-                       )
+from utilities import unitTestDataPath
 
 from PyQt4.QtCore import QSize, QDir
 from PyQt4.QtGui import QImage, QColor, QPainter
@@ -48,11 +43,17 @@ from qgis.core import (QgsGeometry,
                        QgsRenderChecker
                        )
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.testing import(
+    unittest,
+    start_app
+)
+
+
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsSymbolV2(TestCase):
+class TestQgsSymbolV2(unittest.TestCase):
 
     def setUp(self):
         #Create some simple symbols

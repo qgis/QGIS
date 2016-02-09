@@ -138,11 +138,12 @@ class CORE_EXPORT QgsGeometry
       @note not available in python bindings
      */
     void fromGeos( GEOSGeometry* geos );
+
     /**
       Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
       This class will take ownership of the buffer.
      */
-    void fromWkb( unsigned char * wkb, int length );
+    void fromWkb( unsigned char *wkb, int length );
 
     /**
        Returns the buffer containing this geometry in WKB format.
@@ -335,6 +336,14 @@ class CORE_EXPORT QgsGeometry
     */
     int addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
 
+    /** Adds a new part to a the geometry.
+     * @param points points describing part to add
+     * @param geomType default geometry type to create if no existing geometry
+     * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
+     * not disjoint with existing polygons of the feature
+    */
+    int addPart( const QList<QgsPointV2> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
+
     /** Adds a new part to this geometry.
      * @param part part to add (ownership is transferred)
      * @param geomType default geometry type to create if no existing geometry
@@ -502,7 +511,7 @@ class CORE_EXPORT QgsGeometry
      *  @note precision parameter added in 2.4
      *  @return true in case of success and false else
      */
-    QString exportToWkt( const int &precision = 17 ) const;
+    QString exportToWkt( int precision = 17 ) const;
 
     /** Exports the geometry to GeoJSON
      *  @return a QString representing the geometry as GeoJSON
@@ -510,7 +519,7 @@ class CORE_EXPORT QgsGeometry
      *  @note python binding added in 1.9
      *  @note precision parameter added in 2.4
      */
-    QString exportToGeoJSON( const int &precision = 17 ) const;
+    QString exportToGeoJSON( int precision = 17 ) const;
 
     /** Try to convert the geometry to the requested type
      * @param destType the geometry type to be converted to
@@ -679,7 +688,7 @@ class CORE_EXPORT QgsGeometry
      * @note added in QGIS 2.10
      * @see vertexIdFromVertexNr
      */
-    int vertexNrFromVertexId( const QgsVertexId& i ) const;
+    int vertexNrFromVertexId( QgsVertexId i ) const;
 
     /** Return GEOS context handle
      * @note added in 2.6
@@ -691,7 +700,7 @@ class CORE_EXPORT QgsGeometry
     * @param point source QPointF
     * @note added in QGIS 2.7
     */
-    static QgsGeometry* fromQPointF( const QPointF& point );
+    static QgsGeometry* fromQPointF( QPointF point );
 
     /** Construct geometry from a QPolygonF. If the polygon is closed than
     * the resultant geometry will be a polygon, if it is open than the

@@ -224,7 +224,7 @@ const QString QgsRasterLayer::bandName( int theBandNo )
   return dataProvider()->generateBandName( theBandNo );
 }
 
-void QgsRasterLayer::setRendererForDrawingStyle( const QgsRaster::DrawingStyle &  theDrawingStyle )
+void QgsRasterLayer::setRendererForDrawingStyle( QgsRaster::DrawingStyle theDrawingStyle )
 {
   setRenderer( QgsRasterRendererRegistry::instance()->defaultRendererForDrawingStyle( theDrawingStyle, mDataProvider ) );
 }
@@ -1103,7 +1103,7 @@ QStringList QgsRasterLayer::subLayers() const
   return mDataProvider->subLayers();
 }
 
-QPixmap QgsRasterLayer::previewAsPixmap( const QSize& size, const QColor& bgColor )
+QPixmap QgsRasterLayer::previewAsPixmap( QSize size, const QColor& bgColor )
 {
   QPixmap myQPixmap( size );
 
@@ -1154,7 +1154,7 @@ QPixmap QgsRasterLayer::previewAsPixmap( const QSize& size, const QColor& bgColo
 
 // this function should be used when rendering with the MTR engine introduced in 2.3, as QPixmap is not thread safe (see bug #9626)
 // note: previewAsImage and previewAsPixmap should use a common low-level fct QgsRasterLayer::previewOnPaintDevice( QSize size, QColor bgColor, QPaintDevice &device )
-QImage QgsRasterLayer::previewAsImage( const QSize& size, const QColor& bgColor, QImage::Format format )
+QImage QgsRasterLayer::previewAsImage( QSize size, const QColor& bgColor, QImage::Format format )
 {
   QImage myQImage( size, format );
 
@@ -1524,7 +1524,7 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
     noDataRangeList.setAttribute( "bandNo", bandNo );
     noDataRangeList.setAttribute( "useSrcNoData", mDataProvider->useSrcNoDataValue( bandNo ) );
 
-    Q_FOREACH ( const QgsRasterRange& range, mDataProvider->userNoDataValues( bandNo ) )
+    Q_FOREACH ( QgsRasterRange range, mDataProvider->userNoDataValues( bandNo ) )
     {
       QDomElement noDataRange =  document.createElement( "noDataRange" );
 

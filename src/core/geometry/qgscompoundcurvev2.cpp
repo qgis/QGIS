@@ -98,15 +98,14 @@ QgsRectangle QgsCompoundCurveV2::calculateBoundingBox() const
   return bbox;
 }
 
-bool QgsCompoundCurveV2::fromWkb( const unsigned char* wkb )
+bool QgsCompoundCurveV2::fromWkb( QgsConstWkbPtr wkbPtr )
 {
   clear();
-  if ( !wkb )
+  if ( !wkbPtr )
   {
     return false;
   }
 
-  QgsConstWkbPtr wkbPtr( wkb );
   QgsWKBTypes::Type type = wkbPtr.readHeader();
   if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::CompoundCurve )
   {
@@ -120,10 +119,8 @@ bool QgsCompoundCurveV2::fromWkb( const unsigned char* wkb )
   int currentCurveSize = 0;
   for ( int i = 0; i < nCurves; ++i )
   {
-    wkbPtr += 1; //skip endian
-    QgsWKBTypes::Type curveType;
-    wkbPtr >> curveType;
-    wkbPtr -= ( 1 + sizeof( int ) );
+    QgsWKBTypes::Type curveType = wkbPtr.readHeader();
+    wkbPtr -= 1 + sizeof( int );
     if ( QgsWKBTypes::flatType( curveType ) == QgsWKBTypes::LineString )
     {
       currentCurve = new QgsLineStringV2();
@@ -209,7 +206,7 @@ unsigned char* QgsCompoundCurveV2::asWkb( int& binarySize ) const
 {
   binarySize = wkbSize();
   unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr );
+  QgsWkbPtr wkb( geomPtr, binarySize );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << static_cast<quint32>( mCurves.size() );
@@ -484,7 +481,7 @@ void QgsCompoundCurveV2::drawAsPolygon( QPainter& p ) const
   p.drawPath( pp );
 }
 
-bool QgsCompoundCurveV2::insertVertex( const QgsVertexId& position, const QgsPointV2& vertex )
+bool QgsCompoundCurveV2::insertVertex( QgsVertexId position, const QgsPointV2& vertex )
 {
   QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
   if ( curveIds.size() < 1 )
@@ -505,7 +502,7 @@ bool QgsCompoundCurveV2::insertVertex( const QgsVertexId& position, const QgsPoi
   return success;
 }
 
-bool QgsCompoundCurveV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
+bool QgsCompoundCurveV2::moveVertex( QgsVertexId position, const QgsPointV2& newPos )
 {
   QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
   QList< QPair<int, QgsVertexId> >::const_iterator idIt = curveIds.constBegin();
@@ -522,7 +519,7 @@ bool QgsCompoundCurveV2::moveVertex( const QgsVertexId& position, const QgsPoint
   return success;
 }
 
-bool QgsCompoundCurveV2::deleteVertex( const QgsVertexId& position )
+bool QgsCompoundCurveV2::deleteVertex( QgsVertexId position )
 {
   QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
   QList< QPair<int, QgsVertexId> >::const_iterator idIt = curveIds.constBegin();
@@ -539,7 +536,7 @@ bool QgsCompoundCurveV2::deleteVertex( const QgsVertexId& position )
   return success;
 }
 
-QList< QPair<int, QgsVertexId> > QgsCompoundCurveV2::curveVertexId( const QgsVertexId& id ) const
+QList< QPair<int, QgsVertexId> > QgsCompoundCurveV2::curveVertexId( QgsVertexId id ) const
 {
   QList< QPair<int, QgsVertexId> > curveIds;
 
@@ -618,7 +615,7 @@ bool QgsCompoundCurveV2::hasCurvedSegments() const
   return false;
 }
 
-double QgsCompoundCurveV2::vertexAngle( const QgsVertexId& vertex ) const
+double QgsCompoundCurveV2::vertexAngle( QgsVertexId vertex ) const
 {
   QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( vertex );
   if ( curveIds.size() == 1 )

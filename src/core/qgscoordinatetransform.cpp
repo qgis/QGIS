@@ -632,7 +632,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   return bb_rect;
 }
 
-void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, double *y, double *z, TransformDirection direction ) const
+void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *y, double *z, TransformDirection direction ) const
 {
   if ( mShortCircuit || !mInitialisedFlag )
     return;

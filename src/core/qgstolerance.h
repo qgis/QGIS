@@ -114,7 +114,7 @@ class CORE_EXPORT QgsTolerance
 
   private:
     static double computeMapUnitPerPixel( QgsMapLayer* layer, const QgsMapSettings& mapSettings );
-    static QgsPoint toLayerCoordinates( QgsMapLayer* layer, const QgsMapSettings& mapSettings, const QPoint& point );
+    static QgsPoint toLayerCoordinates( QgsMapLayer* layer, const QgsMapSettings& mapSettings, QPoint point );
 
 };
 

@@ -52,7 +52,7 @@
         <x>0</x>
         <y>0</y>
         <width>432</width>
-        <height>580</height>
+        <height>576</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -435,16 +435,17 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>mDatabaseComboBox</tabstop>
-  <tabstop>toolButtonNewDatabase</tabstop>
-  <tabstop>leLayerName</tabstop>
-  <tabstop>leGeometryColumn</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>mPointRadioButton</tabstop>
   <tabstop>mLineRadioButton</tabstop>
   <tabstop>mPolygonRadioButton</tabstop>
   <tabstop>mMultipointRadioButton</tabstop>
   <tabstop>mMultilineRadioButton</tabstop>
   <tabstop>mMultipolygonRadioButton</tabstop>
+  <tabstop>mDatabaseComboBox</tabstop>
+  <tabstop>toolButtonNewDatabase</tabstop>
+  <tabstop>leLayerName</tabstop>
+  <tabstop>leGeometryColumn</tabstop>
   <tabstop>leSRID</tabstop>
   <tabstop>pbnFindSRID</tabstop>
   <tabstop>checkBoxPrimaryKey</tabstop>
@@ -453,7 +454,6 @@
   <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mAttributeView</tabstop>
   <tabstop>mRemoveAttributeButton</tabstop>
-  <tabstop>scrollArea</tabstop>
  </tabstops>
  <resources/>
  <connections>

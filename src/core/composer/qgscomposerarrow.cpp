@@ -41,7 +41,7 @@ QgsComposerArrow::QgsComposerArrow( QgsComposition* c )
   init();
 }
 
-QgsComposerArrow::QgsComposerArrow( const QPointF& startPoint, const QPointF& stopPoint, QgsComposition* c )
+QgsComposerArrow::QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition* c )
     : QgsComposerItem( c )
     , mStartPoint( startPoint )
     , mStopPoint( stopPoint )

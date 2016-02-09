@@ -684,7 +684,7 @@ void QgsWMSSourceSelect::applySelectionConstraints( QTreeWidgetItem *item )
 
     if ( firstNewStyle || style )
     {
-      // individual style selected => unselect layer and all parent groups
+      // individual style selected => deselect layer and all parent groups
       QTreeWidgetItem *parent = item;
       while ( parent )
       {

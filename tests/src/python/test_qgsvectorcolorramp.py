@@ -20,10 +20,10 @@ from qgis.core import (QgsVectorGradientColorRampV2,
                        QgsRandomColorsV2,
                        QgsVectorColorBrewerColorRampV2)
 from PyQt4.QtGui import QColor, QGradient
-from utilities import (TestCase, unittest)
+from qgis.testing import (TestCase, unittest)
 
 
-class PyQgsVectorColorRamp(TestCase):
+class PyQgsVectorColorRamp(unittest.TestCase):
 
     def testQgsVectorRandomColorRampV2(self):
         # test gradient with only start/end color

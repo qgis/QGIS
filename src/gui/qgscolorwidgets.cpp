@@ -947,7 +947,7 @@ int QgsColorBox::xComponentValue() const
   return componentValue( xComponent() );
 }
 
-void QgsColorBox::setColorFromPoint( const QPoint &point )
+void QgsColorBox::setColorFromPoint( QPoint point )
 {
   int valX = valueRangeX() * ( point.x() - mMargin ) / ( width() - 2 * mMargin - 1 );
   valX = qMin( qMax( valX, 0 ), valueRangeX() );
@@ -1231,7 +1231,7 @@ void QgsColorRampWidget::keyPressEvent( QKeyEvent *event )
   }
 }
 
-void QgsColorRampWidget::setColorFromPoint( const QPointF &point )
+void QgsColorRampWidget::setColorFromPoint( QPointF point )
 {
   int oldValue = componentValue();
   int val;
@@ -1547,7 +1547,7 @@ QgsColorPreviewWidget::~QgsColorPreviewWidget()
 
 }
 
-void QgsColorPreviewWidget::drawColor( const QColor &color, const QRect &rect, QPainter& painter )
+void QgsColorPreviewWidget::drawColor( const QColor &color, QRect rect, QPainter& painter )
 {
   painter.setPen( Qt::NoPen );
   //if color has an alpha, start with a checkboard pattern
@@ -1559,7 +1559,7 @@ void QgsColorPreviewWidget::drawColor( const QColor &color, const QRect &rect, Q
 
     //draw half of widget showing solid color, the other half showing color with alpha
 
-    //ensure at least a 1px overlap to avoid artefacts
+    //ensure at least a 1px overlap to avoid artifacts
     QBrush colorBrush = QBrush( color );
     painter.setBrush( colorBrush );
     painter.drawRect( floor( rect.width() / 2.0 ) + rect.left(), rect.top(), rect.width() - floor( rect.width() / 2.0 ), rect.height() );

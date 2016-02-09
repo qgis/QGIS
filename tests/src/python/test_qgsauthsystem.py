@@ -26,9 +26,8 @@ from PyQt4.QtGui import *
 from PyQt4.QtNetwork import *
 from PyQt4.QtTest import *
 
-from utilities import (
-    TestCase,
-    getQgisTestApp,
+from qgis.testing import (
+    start_app,
     unittest,
     expectedFailure,
     unitTestDataPath,
@@ -36,13 +35,13 @@ from utilities import (
 
 AUTHDBDIR = tempfile.mkdtemp()
 os.environ['QGIS_AUTH_DB_DIR_PATH'] = AUTHDBDIR
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
 TESTDATA = os.path.join(unitTestDataPath(), 'auth_system')
 PKIDATA = os.path.join(TESTDATA, 'certs_keys')
 
 
-class TestQgsAuthManager(TestCase):
+class TestQgsAuthManager(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

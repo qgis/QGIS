@@ -85,10 +85,10 @@ class PostgisTableSelector(BASE, WIDGET):
 
 class ConnectionItem(QtGui.QTreeWidgetItem):
 
-    connIcon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/postgis.png')
-    schemaIcon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/namespace.png')
-
     def __init__(self, connection):
+        self.connIcon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/postgis.png')
+        self.schemaIcon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/namespace.png')
+
         QtGui.QTreeWidgetItem.__init__(self)
         self.setChildIndicatorPolicy(QtGui.QTreeWidgetItem.ShowIndicator)
         self.connection = connection

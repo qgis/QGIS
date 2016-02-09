@@ -1155,6 +1155,28 @@ int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
   return utils.addPart( points, *mSelectedFeatureIds.constBegin() );
 }
 
+int QgsVectorLayer::addPart( const QList<QgsPointV2> &points )
+{
+  if ( !mValid || !mEditBuffer || !mDataProvider )
+    return 7;
+
+  //number of selected features must be 1
+
+  if ( mSelectedFeatureIds.size() < 1 )
+  {
+    QgsDebugMsg( "Number of selected features <1" );
+    return 4;
+  }
+  else if ( mSelectedFeatureIds.size() > 1 )
+  {
+    QgsDebugMsg( "Number of selected features >1" );
+    return 5;
+  }
+
+  QgsVectorLayerEditUtils utils( this );
+  return utils.addPart( points, *mSelectedFeatureIds.constBegin() );
+}
+
 int QgsVectorLayer::addPart( QgsCurveV2* ring )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
@@ -1630,7 +1652,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   // dependencies
   QDomElement dependenciesElement = document.createElement( "layerDependencies" );
-  foreach ( QString layerId, layerDependencies() )
+  Q_FOREACH ( QString layerId, layerDependencies() )
   {
     QDomElement depElem = document.createElement( "layer" );
     depElem.setAttribute( "id", layerId );
@@ -2192,7 +2214,7 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   return res;
 }
 
-bool QgsVectorLayer::deleteFeatures( QgsFeatureIds fids )
+bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds& fids )
 {
   if ( !mEditBuffer )
     return false;
@@ -2801,7 +2823,7 @@ void QgsVectorLayer::removeExpressionField( int index )
   emit attributeDeleted( index );
 }
 
-const QString QgsVectorLayer::expressionField( int index )
+QString QgsVectorLayer::expressionField( int index )
 {
   int oi = mUpdatedFields.fieldOriginIndex( index );
   return mExpressionFieldBuffer->expressions().value( oi ).expression;
@@ -3170,7 +3192,7 @@ QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression,
 
 
 /** Write blend mode for features */
-void QgsVectorLayer::setFeatureBlendMode( const QPainter::CompositionMode &featureBlendMode )
+void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlendMode )
 {
   mFeatureBlendMode = featureBlendMode;
   emit featureBlendModeChanged( featureBlendMode );

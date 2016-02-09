@@ -490,7 +490,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
   return true;
 }
 
-QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt* stmt, int ic, const QVariant::Type& type )
+QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt* stmt, int ic, QVariant::Type type )
 {
   if ( sqlite3_column_type( stmt, ic ) == SQLITE_INTEGER )
   {

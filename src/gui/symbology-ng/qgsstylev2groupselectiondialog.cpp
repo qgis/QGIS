@@ -98,7 +98,7 @@ void QgsStyleV2GroupSelectionDialog::groupTreeSelectionChanged( const QItemSelec
   QModelIndexList selectedItems = selected.indexes();
   QModelIndexList deselectedItems = deselected.indexes();
 
-  foreach ( index, deselectedItems )
+  Q_FOREACH ( index, deselectedItems )
   {
     if ( index.data( Qt::UserRole +  2 ).toString() == "groupsheader" )
     {
@@ -121,7 +121,7 @@ void QgsStyleV2GroupSelectionDialog::groupTreeSelectionChanged( const QItemSelec
       emit groupDeselected( index.data( ).toString() );
     }
   }
-  foreach ( index, selectedItems )
+  Q_FOREACH ( index, selectedItems )
   {
     if ( index.data( Qt::UserRole +  2 ).toString( ) == "groupsheader" )
     {

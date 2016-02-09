@@ -45,7 +45,7 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 
   private:
     //! Simplify the WKB-geometry using the specified tolerance
-    static bool simplifyWkbGeometry( int simplifyFlags, QGis::WkbType wkbType, const unsigned char* sourceWkb, int sourceWkbSize, unsigned char* targetWkb, int &targetWkbSize, const QgsRectangle& envelope, double map2pixelTol, bool writeHeader = true, bool isaLinearRing = false );
+    static bool simplifyWkbGeometry( int simplifyFlags, QGis::WkbType wkbType, QgsConstWkbPtr sourceWkbPtr, QgsWkbPtr targetWkbPtr, int &targetWkbSize, const QgsRectangle& envelope, double map2pixelTol, bool writeHeader = true, bool isaLinearRing = false );
 
   protected:
     //! Current simplification flags

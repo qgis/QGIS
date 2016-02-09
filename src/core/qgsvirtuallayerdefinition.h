@@ -92,10 +92,10 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     QString toString() const;
 
     //! Add a live layer source layer
-    void addSource( const QString& name, const QString ref );
+    void addSource( const QString& name, const QString& ref );
 
     //! Add a layer with a source, a provider and an encoding
-    void addSource( const QString& name, const QString source, const QString& provider, const QString& encoding = "" );
+    void addSource( const QString& name, const QString& source, const QString& provider, const QString& encoding = "" );
 
     //! List of source layers
     typedef QList<SourceLayer> SourceLayers;
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     void setFields( const QgsFields& fields ) { mFields = fields; }
 
     //! Convenience method to test if a given source layer is part of the definition
-    bool hasSourceLayer( QString name ) const;
+    bool hasSourceLayer( const QString& name ) const;
 
     //! Convenience method to test whether the definition has referenced (live) layers
     bool hasReferencedLayers() const;

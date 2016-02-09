@@ -573,7 +573,7 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings* settings, bool us
     // collect expression filters
     if ( useExpressions )
     {
-      foreach ( QgsLayerTreeLayer* nodeLayer, mRootNode->findLayers() )
+      Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mRootNode->findLayers() )
       {
         bool enabled;
         QString expr = QgsLayerTreeUtils::legendFilterByExpression( *nodeLayer, &enabled );

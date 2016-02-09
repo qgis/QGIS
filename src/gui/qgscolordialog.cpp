@@ -761,7 +761,7 @@ void QgsColorDialogV2::saveSettings()
   settings.setValue( "/Windows/ColorDialog/sampleRadius", mSpinBoxRadius->value() );
 }
 
-void QgsColorDialogV2::stopPicking( const QPoint &eventPos, const bool takeSample )
+void QgsColorDialogV2::stopPicking( QPoint eventPos, const bool takeSample )
 {
   //release mouse and keyboard, and reset cursor
   releaseMouse();
@@ -856,7 +856,7 @@ QColor QgsColorDialogV2::averageColor( const QImage &image ) const
   return QColor::fromRgbF( avgRed, avgGreen, avgBlue );
 }
 
-QColor QgsColorDialogV2::sampleColor( const QPoint &point ) const
+QColor QgsColorDialogV2::sampleColor( QPoint point ) const
 {
   int sampleRadius = mSpinBoxRadius->value() - 1;
   QPixmap snappedPixmap = QPixmap::grabWindow( QApplication::desktop()->winId(), point.x() - sampleRadius, point.y() - sampleRadius,

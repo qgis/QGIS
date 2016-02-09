@@ -14,10 +14,9 @@ __revision__ = '$Format:%H$'
 
 import qgis
 
-from utilities import (unittest,
-                       TestCase,
-                       getQgisTestApp,
-                       )
+from qgis.testing import (unittest,
+                          start_app,
+                          )
 from qgis.core import (QgsGraduatedSymbolRendererV2,
                        QgsRendererRangeV2,
                        QgsRendererRangeV2LabelFormat,
@@ -35,7 +34,7 @@ from PyQt4.QtCore import Qt
 from PyQt4.QtXml import QDomDocument
 from PyQt4.QtGui import QColor
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
 #===========================================================
 # Utility functions
@@ -78,7 +77,7 @@ def createColorRamp():
 
 def createLabelFormat():
     format = QgsRendererRangeV2LabelFormat()
-    template = "%1 - %2 metres"
+    template = "%1 - %2 meters"
     precision = 5
     format.setFormat(template)
     format.setPrecision(precision)
@@ -156,7 +155,7 @@ def dumpGraduatedRenderer(r):
 # Tests
 
 
-class TestQgsGraduatedSymbolRendererV2(TestCase):
+class TestQgsGraduatedSymbolRendererV2(unittest.TestCase):
 
     def testQgsRendererRangeV2_1(self):
         """Test QgsRendererRangeV2 getter/setter functions"""
@@ -189,7 +188,7 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
         """Test QgsRendererRangeV2LabelFormat getter/setter functions"""
         format = QgsRendererRangeV2LabelFormat()
         self.assertTrue(format, "QgsRendererRangeV2LabelFomat construction failed")
-        template = "%1 - %2 metres"
+        template = "%1 - %2 meters"
         precision = 5
         format.setFormat(template)
         self.assertEqual(format.format(), template, "Format getter/setter failed")
@@ -249,8 +248,8 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
             ("%2", "2.34"),
             ("%2%", "2.34%"),
             ("%1%1", "1.231.23"),
-            ("from %1 to %2 metres", "from 1.23 to 2.34 metres"),
-            ("from %2 to %1 metres", "from 2.34 to 1.23 metres"),
+            ("from %1 to %2 meters", "from 1.23 to 2.34 meters"),
+            ("from %2 to %1 meters", "from 2.34 to 1.23 meters"),
         )
         format.setPrecision(2)
         format.setTrimTrailingZeroes(False)

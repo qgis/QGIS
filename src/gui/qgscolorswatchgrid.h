@@ -134,7 +134,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
      * @param position position
      * @returns swatch number (starting at 0), or -1 if position is outside a swatch
      */
-    int swatchForPosition( const QPoint &position ) const;
+    int swatchForPosition( QPoint position ) const;
 
     /** Updates the widget's tooltip for a given color index
      * @param colorIdx color index to use for calculating tooltip

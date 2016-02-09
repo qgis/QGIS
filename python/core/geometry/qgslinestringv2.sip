@@ -112,7 +112,8 @@ class QgsLineStringV2: public QgsCurveV2
     virtual int dimension() const;
     virtual QgsLineStringV2* clone() const /Factory/;
 
-    virtual bool fromWkb( const unsigned char* wkb );
+
+    virtual bool fromWkb( QgsConstWkbPtr wkb );
     virtual bool fromWkt( const QString& wkt );
 
     int wkbSize() const;
@@ -139,9 +140,9 @@ class QgsLineStringV2: public QgsCurveV2
     void addToPainterPath( QPainterPath& path ) const;
     void drawAsPolygon( QPainter& p ) const;
 
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex );
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos );
-    virtual bool deleteVertex( const QgsVertexId& position );
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex );
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos );
+    virtual bool deleteVertex( QgsVertexId position );
 
     virtual QgsLineStringV2* reversed() const /Factory/;
 
@@ -151,7 +152,7 @@ class QgsLineStringV2: public QgsCurveV2
     virtual QgsPointV2 centroid() const;
 
     void sumUpArea( double& sum ) const;
-    double vertexAngle( const QgsVertexId& vertex ) const;
+    double vertexAngle( QgsVertexId vertex ) const;
 
     virtual bool addZValue( double zValue = 0 );
     virtual bool addMValue( double mValue = 0 );

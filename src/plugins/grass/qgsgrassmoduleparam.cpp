@@ -207,12 +207,82 @@ QList<QDomNode> QgsGrassModuleParam::nodesByType( QDomElement descDomElement, ST
   return nodes;
 }
 
+/***************** QgsGrassModuleGroupBoxItem *********************/
+
+QgsGrassModuleGroupBoxItem::QgsGrassModuleGroupBoxItem( QgsGrassModule *module, QString key,
+    QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
+    bool direct, QWidget * parent )
+    : QGroupBox( parent )
+    , QgsGrassModuleParam( module, key, qdesc, gdesc, gnode, direct )
+{
+  adjustTitle();
+  setToolTip( mToolTip );
+}
+
+QgsGrassModuleGroupBoxItem::~QgsGrassModuleGroupBoxItem() {}
+
+void QgsGrassModuleGroupBoxItem::resizeEvent( QResizeEvent * event )
+{
+  Q_UNUSED( event );
+  adjustTitle();
+  setToolTip( mToolTip );
+}
+
+void QgsGrassModuleGroupBoxItem::adjustTitle()
+{
+  QString tit = fontMetrics().elidedText( mTitle, Qt::ElideRight, width() - 20 );
+
+  setTitle( tit );
+}
+
+/***************** QgsGrassModuleMultiParam *********************/
+
+QgsGrassModuleMultiParam::QgsGrassModuleMultiParam( QgsGrassModule *module, QString key,
+    QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
+    bool direct, QWidget * parent )
+    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
+    , mLayout( 0 )
+    , mParamsLayout( 0 )
+    , mButtonsLayout( 0 )
+{
+  adjustTitle();
+  setToolTip( mToolTip );
+
+  // variable number of line edits
+  // add/delete buttons for multiple options
+  mLayout = new QHBoxLayout( this );
+  mParamsLayout = new QVBoxLayout();
+
+  mLayout->insertLayout( -1, mParamsLayout );
+
+}
+
+QgsGrassModuleMultiParam::~QgsGrassModuleMultiParam() {}
+
+void QgsGrassModuleMultiParam::showAddRemoveButtons()
+{
+  mButtonsLayout = new QVBoxLayout();
+  mLayout->insertLayout( -1, mButtonsLayout );
+
+  // TODO: how to keep both buttons on the top?
+  QPushButton *addButton = new QPushButton( "+", this );
+  connect( addButton, SIGNAL( clicked() ), this, SLOT( addRow() ) );
+  mButtonsLayout->addWidget( addButton, 0, Qt::AlignTop );
+
+  QPushButton *removeButton = new QPushButton( "-", this );
+  connect( removeButton, SIGNAL( clicked() ), this, SLOT( removeRow() ) );
+  mButtonsLayout->addWidget( removeButton, 0, Qt::AlignTop );
+
+  // Don't enable this, it makes the group box expanding
+  // mButtonsLayout->addStretch();
+}
+
 /********************** QgsGrassModuleOption *************************/
 
 QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
     bool direct, QWidget * parent )
-    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
+    : QgsGrassModuleMultiParam( module, key, qdesc, gdesc, gnode, direct, parent )
     , mControlType( NoControl )
     , mValueType( String )
     , mOutputType( None )
@@ -222,16 +292,15 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
     , mComboBox( 0 )
     , mIsOutput( false )
     , mValidator( 0 )
-    , mLayout( 0 )
     , mUsesRegion( false )
 {
   QgsDebugMsg( "entered" );
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
 
   if ( mHidden )
+  {
     hide();
-
-  mLayout = new QVBoxLayout();
+  }
 
   // Is it output?
   QDomNode promptNode = gnode.namedItem( "gisprompt" );
@@ -271,8 +340,9 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
 
     if ( !valuesNode.isNull() && valuesNode.childNodes().count() > 1 )
     {
-      setLayout( mLayout );
       // predefined values -> ComboBox or CheckBox
+
+      // TODO: add add/removeRow support for ComboBox?
 
       // one or many?
       if ( gelem.attribute( "multiple" ) == "yes" )
@@ -283,7 +353,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
       {
         mControlType = ComboBox;
         mComboBox = new QComboBox( this );
-        mLayout->addWidget( mComboBox );
+        paramsLayout()->addWidget( mComboBox );
       }
 
       // List of values to be excluded
@@ -331,7 +401,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
               {
                 QgsGrassModuleCheckBox *cb = new QgsGrassModuleCheckBox( desc, this );
                 mCheckBoxes.push_back( cb );
-                mLayout->addWidget( cb );
+                paramsLayout()->addWidget( cb );
               }
 
               mValues.push_back( val );
@@ -417,37 +487,16 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
           //QString itemDesc = nodeItem.firstChild().toText().data();
           QgsDebugMsg( "keydesc item = " + itemDesc );
 
-          addLineEdit();
+          addRow();
         }
-
-        setLayout( mLayout );
-      }
-      else if ( gelem.attribute( "multiple" ) == "yes" )
-      {
-        // variable number of line edits
-        // add/delete buttons for multiple options
-        QHBoxLayout *l = new QHBoxLayout( this );
-        QVBoxLayout *vl = new QVBoxLayout();
-        l->insertLayout( -1, mLayout );
-        l->insertLayout( -1, vl );
-
-        // TODO: how to keep both buttons on the top?
-        QPushButton *b = new QPushButton( "+", this );
-        connect( b, SIGNAL( clicked() ), this, SLOT( addLineEdit() ) );
-        vl->addWidget( b, 0, Qt::AlignTop );
-
-        b = new QPushButton( "-", this );
-        connect( b, SIGNAL( clicked() ), this, SLOT( removeLineEdit() ) );
-        vl->addWidget( b, 0, Qt::AlignTop );
-
-        // Don't enable this, it makes the group box expanding
-        // vl->addStretch();
       }
       else
       {
-        // only one line edit
-        addLineEdit();
-        setLayout( mLayout );
+        addRow();
+        if ( gelem.attribute( "multiple" ) == "yes" )
+        {
+          showAddRemoveButtons();
+        }
       }
     }
   }
@@ -470,13 +519,13 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
   QgsDebugMsg( QString( "mUsesRegion = %1" ).arg( mUsesRegion ) );
 }
 
-void QgsGrassModuleOption::addLineEdit()
+void QgsGrassModuleOption::addRow()
 {
   QgsDebugMsg( "entered" );
 
   // TODO make the widget growing with new lines. HOW???!!!
   QLineEdit *lineEdit = new QLineEdit( this );
-  mLineEdits.push_back( lineEdit );
+  mLineEdits << lineEdit;
   lineEdit->setText( mAnswer );
 
   if ( mValueType == Integer )
@@ -523,16 +572,28 @@ void QgsGrassModuleOption::addLineEdit()
   {
     QHBoxLayout *l = new QHBoxLayout();
     l->addWidget( lineEdit );
-    lineEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy:: Preferred );
+    lineEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     QPushButton *button = new QPushButton( tr( "Browse" ) );
     l->addWidget( button );
-    mLayout->addItem( l );
+    paramsLayout()->addItem( l );
     connect( button, SIGNAL( clicked( bool ) ), this, SLOT( browse( bool ) ) );
   }
   else
   {
-    mLayout->addWidget( lineEdit );
+    paramsLayout()->addWidget( lineEdit );
   }
+}
+
+void QgsGrassModuleOption::removeRow()
+{
+  QgsDebugMsg( "entered" );
+
+  if ( mLineEdits.size() < 2 )
+  {
+    return;
+  }
+  delete mLineEdits.at( mLineEdits.size() - 1 );
+  mLineEdits.removeLast();
 }
 
 void QgsGrassModuleOption::browse( bool checked )
@@ -552,16 +613,6 @@ void QgsGrassModuleOption::browse( bool checked )
     mLineEdits.at( 0 )->setText( fileName );
     settings.setValue( "/GRASS/lastDirectOutputDir",  QFileInfo( fileName ).absolutePath() );
   }
-}
-
-void QgsGrassModuleOption::removeLineEdit()
-{
-  QgsDebugMsg( "entered" );
-
-  if ( mLineEdits.size() < 2 )
-    return;
-  delete mLineEdits.at( mLineEdits.size() - 1 );
-  mLineEdits.pop_back();
 }
 
 QString QgsGrassModuleOption::outputExists()
@@ -759,35 +810,6 @@ QStringList QgsGrassModuleFlag::options()
 
 QgsGrassModuleFlag::~QgsGrassModuleFlag()
 {
-}
-
-/***************** QgsGrassModuleGroupBoxItem *********************/
-
-QgsGrassModuleGroupBoxItem::QgsGrassModuleGroupBoxItem( QgsGrassModule *module, QString key,
-    QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-    bool direct, QWidget * parent )
-    : QGroupBox( parent )
-    , QgsGrassModuleParam( module, key, qdesc, gdesc, gnode, direct )
-{
-  adjustTitle();
-
-  setToolTip( mToolTip );
-}
-
-QgsGrassModuleGroupBoxItem::~QgsGrassModuleGroupBoxItem() {}
-
-void QgsGrassModuleGroupBoxItem::resizeEvent( QResizeEvent * event )
-{
-  Q_UNUSED( event );
-  adjustTitle();
-  setToolTip( mToolTip );
-}
-
-void QgsGrassModuleGroupBoxItem::adjustTitle()
-{
-  QString tit = fontMetrics().elidedText( mTitle, Qt::ElideRight, width() - 20 );
-
-  setTitle( tit );
 }
 
 /***************** QgsGrassModuleGdalInput *********************/
@@ -1095,7 +1117,7 @@ QgsGrassModuleVectorField::QgsGrassModuleVectorField(
   QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
   QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
-    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
+    : QgsGrassModuleMultiParam( module, key, qdesc, gdesc, gnode, direct, parent )
     , mModuleStandardOptions( options ), mLayerInput( 0 )
 {
   if ( mTitle.isEmpty() )
@@ -1105,8 +1127,7 @@ QgsGrassModuleVectorField::QgsGrassModuleVectorField(
   adjustTitle();
 
   QDomNode promptNode = gnode.namedItem( "gisprompt" );
-  QDomElement promptElem = promptNode.toElement();
-  QString element = promptElem.attribute( "element" );
+  QDomElement gelem = gnode.toElement();
 
   mType = qdesc.attribute( "type" );
 
@@ -1126,36 +1147,65 @@ QgsGrassModuleVectorField::QgsGrassModuleVectorField(
     }
   }
 
-  QHBoxLayout *l = new QHBoxLayout( this );
-  mFieldComboBox = new QComboBox();
-  l->addWidget( mFieldComboBox );
+  addRow();
+  if ( gelem.attribute( "multiple" ) == "yes" )
+  {
+    showAddRemoveButtons();
+  }
 
   // Fill in layer current fields
   updateFields();
+}
+
+void QgsGrassModuleVectorField::addRow()
+{
+  QgsDebugMsg( "entered" );
+  QComboBox *comboBox = new QComboBox();
+  comboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+  paramsLayout()->addWidget( comboBox );
+  mComboBoxList << comboBox;
+  updateFields();
+}
+
+void QgsGrassModuleVectorField::removeRow()
+{
+  QgsDebugMsg( "entered" );
+
+  if ( mComboBoxList.size() < 2 )
+  {
+    return;
+  }
+  delete mComboBoxList.at( mComboBoxList.size() - 1 );
+  mComboBoxList.removeLast();
 }
 
 void QgsGrassModuleVectorField::updateFields()
 {
   QgsDebugMsg( "entered" );
 
-  QString current = mFieldComboBox->currentText();
-  mFieldComboBox->clear();
-
-  //QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
-
-  if ( mLayerInput == 0 )
-    return;
-
-  QgsFields fields = mLayerInput->currentFields();
-
-  for ( int i = 0; i < fields.size(); i++ )
+  Q_FOREACH ( QComboBox *comboBox, mComboBoxList )
   {
-    if ( mType.contains( fields.at( i ).typeName() ) )
+    QString current = comboBox->currentText();
+    comboBox->clear();
+
+    if ( mLayerInput == 0 )
     {
-      mFieldComboBox->addItem( fields.at( i ).name() );
-      if ( fields.at( i ).name() == current )
+      continue;
+    }
+    QgsFields fields = mLayerInput->currentFields();
+
+    int index = 0;
+    for ( int i = 0; i < fields.size(); i++ )
+    {
+      if ( mType.contains( fields.at( i ).typeName() ) )
       {
-        mFieldComboBox->setItemText( mFieldComboBox->currentIndex(), current );
+        comboBox->addItem( fields.at( i ).name() );
+        QgsDebugMsg( "current = " +  current + " field = " + fields.at( i ).name() );
+        if ( fields.at( i ).name() == current )
+        {
+          comboBox->setCurrentIndex( index );
+        }
+        index++;
       }
     }
   }
@@ -1165,10 +1215,19 @@ QStringList QgsGrassModuleVectorField::options()
 {
   QStringList list;
 
-  if ( !mFieldComboBox->currentText().isEmpty() )
+  QStringList valueList;
+  Q_FOREACH ( QComboBox *comboBox, mComboBoxList )
   {
-    QString opt( mKey + "=" + mFieldComboBox->currentText() );
-    list.push_back( opt );
+    if ( !comboBox->currentText().isEmpty() )
+    {
+      valueList << comboBox->currentText();
+    }
+  }
+
+  if ( !valueList.isEmpty() )
+  {
+    QString opt = mKey + "=" + valueList.join( "," );
+    list << opt;
   }
 
   return list;

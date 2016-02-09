@@ -15,11 +15,27 @@ class QgsDistanceArea
     //! Copy constructor
     QgsDistanceArea( const QgsDistanceArea &origDA );
 
-    //! sets whether coordinates must be projected to ellipsoid before measuring
+    /** Sets whether coordinates must be projected to ellipsoid before measuring
+     * @note for calculations to use the ellipsoid, both the ellipsoid mode must be true
+     * and an ellipse must be set
+     * @see setEllipsoid()
+     * @see willUseEllipsoid()
+     */
     void setEllipsoidalMode( bool flag );
 
-    //! returns projections enabled flag
+    /** Returns whether ellipsoidal calculations are enabled
+     * @see willUseEllipsoid()
+     * @see setEllipsoidalMode()
+     */
     bool ellipsoidalEnabled() const;
+
+    /** Returns whether calculations will use the ellipsoid. Calculations will only use the
+     * ellipsoid if ellipsoidalEnabled() is true and an ellipsoid has been set.
+     * @note added in QGIS 2.14
+     * @see ellipsoidalEnabled()
+     * @see ellipsoid()
+     */
+    bool willUseEllipsoid() const;
 
     //! sets source spatial reference system (by QGIS CRS)
     void setSourceCrs( long srsid );
@@ -34,18 +50,43 @@ class QgsDistanceArea
     void setSourceAuthId( const QString& authid );
 
     //! returns source spatial reference system
-    long sourceCrs() const;
+    //! @deprecated use sourceCrsId() instead
+    long sourceCrs() const /Deprecated/;
+
+    /** Returns the QgsCoordinateReferenceSystem::srsid() for the CRS used during calculations.
+     * @see setSourceCrs()
+     * @note added in QGIS 2.14
+     */
+    long sourceCrsId() const;
+
     //! What sort of coordinate system is being used?
     bool geographic() const;
 
-    //! sets ellipsoid by its acronym
+    /** Sets ellipsoid by its acronym. Calculations will only use the ellipsoid if
+     * both the ellipsoid has been set and ellipsoidalEnabled() is true.
+     * @returns true if ellipsoid was successfully set
+     * @see ellipsoid()
+     * @see setEllipsoidalMode()
+     * @see willUseEllipsoid()
+     */
     bool setEllipsoid( const QString& ellipsoid );
 
-    //! Sets ellipsoid by supplied radii
+    /** Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
+     * both the ellipsoid has been set and ellipsoidalEnabled() is true.
+     * @returns true if ellipsoid was successfully set
+     * @see ellipsoid()
+     * @see setEllipsoidalMode()
+     * @see willUseEllipsoid()
+     */
     // Inverse flattening is calculated with invf = a/(a-b)
     bool setEllipsoid( double semiMajor, double semiMinor );
 
-    //! returns ellipsoid's acronym
+    /** Returns ellipsoid's acronym. Calculations will only use the
+     * ellipsoid if ellipsoidalEnabled() is true and an ellipsoid has been set.
+     * @see setEllipsoid()
+     * @see ellipsoidalEnabled()
+     * @see willUseEllipsoid()
+     */
     QString ellipsoid() const;
 
     //! returns ellipsoid's semi major axis
@@ -72,21 +113,45 @@ class QgsDistanceArea
 
     /** Measures the length of a geometry.
      * @param geometry geometry to measure
-     * @returns length of geometry. For geometry collections, non curve geometries will be ignored
+     * @returns length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
+     * returned distance can be retrieved by calling lengthUnits().
      * @note added in QGIS 2.12
+     * @see lengthUnits()
      * @see measureArea()
      * @see measurePerimeter()
      */
     double measureLength( const QgsGeometry* geometry ) const;
 
-    //! measures perimeter of polygon
-    double measurePerimeter( const QgsGeometry* geometry ) const;
+    /** Measures the perimeter of a polygon geometry.
+     * @param geometry geometry to measure
+     * @returns perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
+     * returned perimeter can be retrieved by calling lengthUnits().
+     * @note added in QGIS 2.12
+     * @see lengthUnits()
+     * @see measureArea()
+     * @see measurePerimeter()
+     */
+    double measurePerimeter( const QgsGeometry *geometry ) const;
 
-    //! measures line
+    /** Measures the length of a line with multiple segments.
+     * @param points list of points in line
+     * @returns length of line. The units for the returned length can be retrieved by calling lengthUnits().
+     * @see lengthUnits()
+     */
     double measureLine( const QList<QgsPoint>& points ) const;
 
-    //! measures line with one segment
+    /** Measures length of a line with one segment.
+     * @param p1 start of line
+     * @param p2 end of line
+     * @returns distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
+     * @see lengthUnits()
+     */
     double measureLine( const QgsPoint& p1, const QgsPoint& p2 ) const;
+
+    /** Returns the units of distance for length calculations made by this object.
+     * @note added in QGIS 2.14
+     */
+    QGis::UnitType lengthUnits() const;
 
     //! measures polygon area
     double measurePolygon( const QList<QgsPoint>& points ) const;
@@ -99,12 +164,21 @@ class QgsDistanceArea
     //! Helper for conversion between physical units
     void convertMeasurement( double &measure /In,Out/, QGis::UnitType &measureUnits /In,Out/, QGis::UnitType displayUnits, bool isArea ) const;
 
+    /** Takes a length measurement calculated by this QgsDistanceArea object and converts it to a
+     * different distance unit.
+     * @param length length value calculated by this class to convert. It is assumed that the length
+     * was calculated by this class, ie that its unit of length is equal lengthUnits().
+     * @param toUnits distance unit to convert measurement to
+     * @returns converted distance
+     */
+    double convertLengthMeasurement( double length, QGis::UnitType toUnits ) const;
+
   protected:
     //! measures line distance, line points are extracted from WKB
     // @note available in python bindings
     // const unsigned char* measureLine( const unsigned char* feature, double* area, bool hasZptr = false ) const;
     //! measures polygon area and perimeter, vertices are extracted from WKB
-    // @note available in python bindings
+    // @note not available in python bindings
     // const unsigned char* measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr = false ) const;
 
     /**

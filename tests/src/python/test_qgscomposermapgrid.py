@@ -24,18 +24,17 @@ from qgis.core import (QgsComposerMap,
                        QgsCoordinateReferenceSystem,
                        QgsFontUtils
                        )
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
+from qgis.testing import (start_app,
+                          unittest
+                          )
+from utilities import unitTestDataPath
 from qgscompositionchecker import QgsCompositionChecker
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposerMap(TestCase):
+class TestQgsComposerMap(unittest.TestCase):
 
     def __init__(self, methodName):
         """Run once on class initialisation."""

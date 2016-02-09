@@ -179,15 +179,15 @@ void QgsGeometryCollectionV2::draw( QPainter& p ) const
   }
 }
 
-bool QgsGeometryCollectionV2::fromWkb( const unsigned char * wkb )
+bool QgsGeometryCollectionV2::fromWkb( QgsConstWkbPtr wkbPtr )
 {
-  if ( !wkb )
+  if ( !wkbPtr )
   {
     return false;
   }
-  QgsConstWkbPtr wkbPtr( wkb + 1 );
-  //type
-  wkbPtr >> mWkbType;
+
+  mWkbType = wkbPtr.readHeader();
+
   int nGeometries = 0;
   wkbPtr >> nGeometries;
 
@@ -237,7 +237,7 @@ unsigned char* QgsGeometryCollectionV2::asWkb( int& binarySize ) const
 {
   binarySize = wkbSize();
   unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr );
+  QgsWkbPtr wkb( geomPtr, binarySize );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << static_cast<quint32>( mGeometries.size() );
@@ -375,7 +375,7 @@ bool QgsGeometryCollectionV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) 
   return mGeometries.at( id.part )->nextVertex( id, vertex );
 }
 
-bool QgsGeometryCollectionV2::insertVertex( const QgsVertexId& position, const QgsPointV2& vertex )
+bool QgsGeometryCollectionV2::insertVertex( QgsVertexId position, const QgsPointV2& vertex )
 {
   if ( position.part >= mGeometries.size() )
   {
@@ -390,7 +390,7 @@ bool QgsGeometryCollectionV2::insertVertex( const QgsVertexId& position, const Q
   return success;
 }
 
-bool QgsGeometryCollectionV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
+bool QgsGeometryCollectionV2::moveVertex( QgsVertexId position, const QgsPointV2& newPos )
 {
   if ( position.part >= mGeometries.size() )
   {
@@ -405,7 +405,7 @@ bool QgsGeometryCollectionV2::moveVertex( const QgsVertexId& position, const Qgs
   return success;
 }
 
-bool QgsGeometryCollectionV2::deleteVertex( const QgsVertexId& position )
+bool QgsGeometryCollectionV2::deleteVertex( QgsVertexId position )
 {
   if ( position.part >= mGeometries.size() )
   {
@@ -554,7 +554,7 @@ QgsAbstractGeometryV2* QgsGeometryCollectionV2::segmentize() const
   return geomCollection;
 }
 
-double QgsGeometryCollectionV2::vertexAngle( const QgsVertexId& vertex ) const
+double QgsGeometryCollectionV2::vertexAngle( QgsVertexId vertex ) const
 {
   if ( vertex.part >= mGeometries.size() )
   {

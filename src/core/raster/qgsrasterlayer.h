@@ -323,11 +323,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Draws a preview of the rasterlayer into a pixmap
     @deprecated use previewAsImage() for rendering with QGIS>=2.4 */
-    Q_DECL_DEPRECATED QPixmap previewAsPixmap( const QSize& size, const QColor& bgColor = Qt::white );
+    Q_DECL_DEPRECATED QPixmap previewAsPixmap( QSize size, const QColor& bgColor = Qt::white );
 
     /** \brief Draws a preview of the rasterlayer into a QImage
      @note added in 2.4 */
-    QImage previewAsImage( const QSize& size, const QColor& bgColor = Qt::white,
+    QImage previewAsImage( QSize size, const QColor& bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 
     /**
@@ -383,7 +383,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool update();
 
     /** Sets corresponding renderer for style*/
-    void setRendererForDrawingStyle( const QgsRaster::DrawingStyle &  theDrawingStyle );
+    void setRendererForDrawingStyle( QgsRaster::DrawingStyle theDrawingStyle );
 
     /** \brief  Constant defining flag for XML and a constant that signals property not used */
     const QString QSTRING_NOT_SET;

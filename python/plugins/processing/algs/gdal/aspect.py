@@ -64,7 +64,7 @@ class aspect(GdalAlgorithm):
         self.addParameter(ParameterBoolean(self.ZERO_FLAT,
                                            self.tr('Return 0 for flat (instead of -9999)'), False))
 
-        self.addOutput(OutputRaster(self.OUTPUT, 'Aspect'))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Aspect')))
 
     def getConsoleCommands(self):
         arguments = ['aspect']

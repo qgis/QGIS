@@ -102,7 +102,7 @@ QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRe
   return s.size;
 }
 
-void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position )
 {
   QPainter* p = c.painter();
   if ( !p )
@@ -255,7 +255,7 @@ void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext&
   }
 }
 
-void QgsTextDiagram::lineEllipseIntersection( const QPointF& lineStart, const QPointF& lineEnd, const QPointF& ellipseMid, double r1, double r2, QList<QPointF>& result ) const
+void QgsTextDiagram::lineEllipseIntersection( QPointF lineStart, QPointF lineEnd, QPointF ellipseMid, double r1, double r2, QList<QPointF>& result ) const
 {
   result.clear();
 

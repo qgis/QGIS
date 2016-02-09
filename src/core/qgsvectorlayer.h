@@ -595,7 +595,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @note added in 2.9
      */
-    const QString expressionField( int index );
+    QString expressionField( int index );
 
     /**
      * Changes the expression used to define an expression based (virtual) field
@@ -608,9 +608,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void updateExpressionField( int index, const QString& exp );
 
-    /** Get the label object associated with this layer */
+    /** Get the label rendering properties associated with this layer */
     QgsLabel *label();
 
+    /** Get the label rendering properties associated with this layer */
     const QgsLabel *label() const;
 
     QgsAttributeAction *actions() { return mActions; }
@@ -973,6 +974,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
        7 layer not editable */
     int addPart( const QList<QgsPoint>& ring );
 
+    /** Adds a new part polygon to a multipart feature
+     @return
+       0 in case of success,
+       1 if selected feature is not multipart,
+       2 if ring is not a valid geometry,
+       3 if new polygon ring not disjoint with existing rings,
+       4 if no feature was selected,
+       5 if several features are selected,
+       6 if selected geometry not found
+       7 layer not editable */
+    int addPart( const QList<QgsPointV2>& ring );
+
     //! @note available in python as addCurvedPart
     int addPart( QgsCurveV2* ring );
 
@@ -1308,7 +1321,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @return false if the layer is not in edit mode or does not support deleting
      *         in case of an active transaction depends on the provider implementation
      */
-    bool deleteFeatures( QgsFeatureIds fids );
+    bool deleteFeatures( const QgsFeatureIds& fids );
 
     /**
       Attempts to commit any changes to disk.  Returns the result of the attempt.
@@ -1595,7 +1608,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int* nullCount = nullptr );
 
     /** Set the blending mode used for rendering each feature */
-    void setFeatureBlendMode( const QPainter::CompositionMode &blendMode );
+    void setFeatureBlendMode( QPainter::CompositionMode blendMode );
     /** Returns the current blending mode for features */
     QPainter::CompositionMode featureBlendMode() const;
 
@@ -1820,7 +1833,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void labelingFontNotFound( QgsVectorLayer* layer, const QString& fontfamily );
 
     /** Signal emitted when setFeatureBlendMode() is called */
-    void featureBlendModeChanged( const QPainter::CompositionMode &blendMode );
+    void featureBlendModeChanged( QPainter::CompositionMode blendMode );
 
     /** Signal emitted when setLayerTransparency() is called */
     void layerTransparencyChanged( int layerTransparency );

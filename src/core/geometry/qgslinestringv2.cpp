@@ -21,6 +21,7 @@
 #include "qgsgeometryutils.h"
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
+
 #include <QPainter>
 #include <limits>
 #include <QDomDocument>
@@ -89,13 +90,13 @@ void QgsLineStringV2::clear()
   mBoundingBox = QgsRectangle();
 }
 
-bool QgsLineStringV2::fromWkb( const unsigned char* wkb )
+bool QgsLineStringV2::fromWkb( QgsConstWkbPtr wkbPtr )
 {
-  if ( !wkb )
+  if ( !wkbPtr )
   {
     return false;
   }
-  QgsConstWkbPtr wkbPtr( wkb );
+
   QgsWKBTypes::Type type = wkbPtr.readHeader();
   if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::LineString )
   {
@@ -143,7 +144,7 @@ unsigned char* QgsLineStringV2::asWkb( int& binarySize ) const
 {
   binarySize = wkbSize();
   unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr );
+  QgsWkbPtr wkb( geomPtr, binarySize );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   QList<QgsPointV2> pts;
@@ -605,7 +606,7 @@ void QgsLineStringV2::transform( const QTransform& t )
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsLineStringV2::insertVertex( const QgsVertexId& position, const QgsPointV2& vertex )
+bool QgsLineStringV2::insertVertex( QgsVertexId position, const QgsPointV2& vertex )
 {
   if ( position.vertex < 0 || position.vertex > mX.size() )
   {
@@ -631,7 +632,7 @@ bool QgsLineStringV2::insertVertex( const QgsVertexId& position, const QgsPointV
   return true;
 }
 
-bool QgsLineStringV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
+bool QgsLineStringV2::moveVertex( QgsVertexId position, const QgsPointV2& newPos )
 {
   if ( position.vertex < 0 || position.vertex >= mX.size() )
   {
@@ -651,7 +652,7 @@ bool QgsLineStringV2::moveVertex( const QgsVertexId& position, const QgsPointV2&
   return true;
 }
 
-bool QgsLineStringV2::deleteVertex( const QgsVertexId& position )
+bool QgsLineStringV2::deleteVertex( QgsVertexId position )
 {
   if ( position.vertex >= mX.size() || position.vertex < 0 )
   {
@@ -860,7 +861,7 @@ void QgsLineStringV2::close()
   addVertex( startPoint() );
 }
 
-double QgsLineStringV2::vertexAngle( const QgsVertexId& vertex ) const
+double QgsLineStringV2::vertexAngle( QgsVertexId vertex ) const
 {
   if ( mX.count() < 2 )
   {

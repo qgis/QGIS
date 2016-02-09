@@ -62,7 +62,7 @@ void QgsAnnotationItem::setMapPositionCrs( const QgsCoordinateReferenceSystem& c
   mMapPositionCrs = crs;
 }
 
-void QgsAnnotationItem::setOffsetFromReferencePoint( const QPointF& offset )
+void QgsAnnotationItem::setOffsetFromReferencePoint( QPointF offset )
 {
   mOffsetFromReferencePoint = offset;
   updateBoundingRect();
@@ -211,7 +211,7 @@ void QgsAnnotationItem::drawFrame( QPainter* p )
   p->drawPolygon( poly );
 }
 
-void QgsAnnotationItem::setFrameSize( const QSizeF& size )
+void QgsAnnotationItem::setFrameSize( QSizeF size )
 {
   QSizeF frameSize = minimumFrameSize().expandedTo( size ); //don't allow frame sizes below minimum
   mFrameSize = frameSize;
@@ -283,7 +283,7 @@ QLineF QgsAnnotationItem::segment( int index )
   }
 }
 
-QPointF QgsAnnotationItem::pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const
+QPointF QgsAnnotationItem::pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance ) const
 {
   double dx = directionPoint.x() - startPoint.x();
   double dy = directionPoint.y() - startPoint.y();
@@ -292,7 +292,7 @@ QPointF QgsAnnotationItem::pointOnLineWithDistance( const QPointF& startPoint, c
   return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }
 
-QgsAnnotationItem::MouseMoveAction QgsAnnotationItem::moveActionForPosition( const QPointF& pos ) const
+QgsAnnotationItem::MouseMoveAction QgsAnnotationItem::moveActionForPosition( QPointF pos ) const
 {
   QPointF itemPos = mapFromScene( pos );
 

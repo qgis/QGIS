@@ -158,7 +158,7 @@ class QgsDiagramRendererV2
     /** Returns attribute indices needed for diagram rendering*/
     virtual QList<QString> diagramAttributes() const = 0;
 
-    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QPointF& pos );
+    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos );
 
     void setDiagram( QgsDiagram* d /Transfer/ );
     QgsDiagram* diagram() const;

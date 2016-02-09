@@ -337,6 +337,10 @@ void QgsBrowserModel::reload()
 
 QModelIndex QgsBrowserModel::index( int row, int column, const QModelIndex &parent ) const
 {
+  if ( column < 0 || column >= columnCount( parent ) ||
+       row < 0 || row >= rowCount( parent ) )
+    return QModelIndex();
+
   QgsDataItem *p = dataItem( parent );
   const QVector<QgsDataItem*> &items = p ? p->children() : mRootItems;
   QgsDataItem *item = items.value( row, nullptr );

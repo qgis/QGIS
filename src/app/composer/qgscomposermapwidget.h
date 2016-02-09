@@ -185,7 +185,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void handleChangedFrameDisplay( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::DisplayMode mode );
     void handleChangedAnnotationDisplay( QgsComposerMapGrid::BorderSide border, const QString& text );
     void handleChangedAnnotationPosition( QgsComposerMapGrid::BorderSide border, const QString& text );
-    void handleChangedAnnotationDirection( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::AnnotationDirection &direction );
+    void handleChangedAnnotationDirection( QgsComposerMapGrid::BorderSide border, QgsComposerMapGrid::AnnotationDirection direction );
 
     void insertFrameDisplayEntries( QComboBox* c );
     void insertAnnotationDisplayEntries( QComboBox* c );

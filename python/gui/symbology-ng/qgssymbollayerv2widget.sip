@@ -410,7 +410,7 @@ class QgsFontMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void setColor( const QColor& color );
     void setSize( double size );
     void setAngle( double angle );
-    void setCharacter( const QChar& chr );
+    void setCharacter( QChar chr );
     void setOffset();
     void on_mSizeUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();

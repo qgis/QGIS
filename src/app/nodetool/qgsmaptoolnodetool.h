@@ -119,7 +119,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     snapping results. If the list is empty, the screen coordinates are transformed into map coordinates and returned
     @param snapResults results collected from the snapping operation.
     @return the snapped point in map coordinates*/
-    QgsPoint snapPointFromResults( const QList<QgsSnappingResult>& snapResults, const QPoint& screenCoords );
+    QgsPoint snapPointFromResults( const QList<QgsSnappingResult>& snapResults, QPoint screenCoords );
 
     /** Inserts vertices to the snapped segments of the editing layer.
          This is useful for topological editing if snap to segment is enabled.

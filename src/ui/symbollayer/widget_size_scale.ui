@@ -224,20 +224,21 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsfieldexpressionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mExpressionWidget</tabstop>
   <tabstop>scaleMethodComboBox</tabstop>
+  <tabstop>exponentSpinBox</tabstop>
   <tabstop>minSizeSpinBox</tabstop>
   <tabstop>maxSizeSpinBox</tabstop>
   <tabstop>minValueSpinBox</tabstop>

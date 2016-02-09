@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>353</width>
+    <width>407</width>
     <height>510</height>
    </rect>
   </property>
@@ -413,9 +413,17 @@ p, li { white-space: pre-wrap; }
  <tabstops>
   <tabstop>cbTargetLayer</tabstop>
   <tabstop>ckbUsingSelectedTarget</tabstop>
+  <tabstop>cbOperation</tabstop>
   <tabstop>cbReferenceLayer</tabstop>
   <tabstop>ckbUsingSelectedReference</tabstop>
-  <tabstop>bbMain</tabstop>
+  <tabstop>cbResultFor</tabstop>
+  <tabstop>pbCreateLayerSelected</tabstop>
+  <tabstop>cbTypeItems</tabstop>
+  <tabstop>lwFeatures</tabstop>
+  <tabstop>pbCreateLayerItems</tabstop>
+  <tabstop>ckbZoomItem</tabstop>
+  <tabstop>ckbLogProcessing</tabstop>
+  <tabstop>teStatus</tabstop>
  </tabstops>
  <resources>
   <include location="qgsspatialquerydialogbase.qrc"/>

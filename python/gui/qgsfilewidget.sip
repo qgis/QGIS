@@ -39,7 +39,7 @@ class QgsFileWidget : QWidget
      * @brief setDialogTitle defines the open file dialog title
      * @note if not defined, the title is "Select a file" or "Select a directory" depending on the configuration.
      */
-    void setDialogTitle( QString title );
+    void setDialogTitle( const QString& title );
 
     //! returns the filter used for QDialog::getOpenFileName
     QString filter() const;
@@ -65,7 +65,7 @@ class QgsFileWidget : QWidget
 
     //! determinies the default root path
     QString defaultRoot() const;
-    void setDefaultRoot( QString defaultRoot );
+    void setDefaultRoot( const QString& defaultRoot );
 
     //! determines the storage mode (i.e. file or directory)
     QgsFileWidget::StorageMode storageMode() const;
@@ -76,7 +76,7 @@ class QgsFileWidget : QWidget
     void setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage );
 
   signals:
-    void fileChanged( QString );
+    void fileChanged( const QString& );
 
 
 };

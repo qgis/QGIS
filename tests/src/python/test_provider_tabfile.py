@@ -19,19 +19,19 @@ import glob
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry
 from PyQt4.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       unittest,
-                       TestCase
-                       )
+from qgis.testing import (
+    start_app,
+    unittest
+)
+from utilities import unitTestDataPath
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 # Note - doesn't implement ProviderTestCase as OGR provider is tested by the shapefile provider test
 
 
-class TestPyQgsTabfileProvider(TestCase):
+class TestPyQgsTabfileProvider(unittest.TestCase):
 
     def testDateTimeFormats(self):
         # check that date and time formats are correctly interpreted

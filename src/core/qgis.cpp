@@ -28,6 +28,7 @@
 #include "qgsconfig.h"
 #include "qgslogger.h"
 #include "geometry/qgswkbtypes.h"
+#include "qgsunittypes.h"
 
 #include <ogr_api.h>
 
@@ -181,88 +182,31 @@ QGis::WkbType QGis::fromNewWkbType( QgsWKBTypes::Type type )
 
 QGis::UnitType QGis::fromLiteral( const QString& literal, QGis::UnitType defaultType )
 {
-  for ( unsigned int i = 0; i < ( sizeof( qgisUnitTypes ) / sizeof( qgisUnitTypes[0] ) ); i++ )
-  {
-    if ( literal == qgisUnitTypes[ i ] )
-    {
-      return static_cast<UnitType>( i );
-    }
-  }
-  return defaultType;
+  bool ok = false;
+  QGis::UnitType unit = QgsUnitTypes::decodeDistanceUnit( literal, &ok );
+  return ok ? unit : defaultType;
 }
 
 QString QGis::toLiteral( QGis::UnitType unit )
 {
-  return QString( qgisUnitTypes[ static_cast<int>( unit )] );
+  return QgsUnitTypes::encodeUnit( unit );
 }
 
 QString QGis::tr( QGis::UnitType unit )
 {
-  return QCoreApplication::translate( "QGis::UnitType", qPrintable( toLiteral( unit ) ) );
+  return QgsUnitTypes::toString( unit );
 }
 
 QGis::UnitType QGis::fromTr( const QString& literal, QGis::UnitType defaultType )
 {
-  for ( unsigned int i = 0; i < ( sizeof( qgisUnitTypes ) / sizeof( qgisUnitTypes[0] ) ); i++ )
-  {
-    if ( literal == QGis::tr( static_cast<UnitType>( i ) ) )
-    {
-      return static_cast<UnitType>( i );
-    }
-  }
-  return defaultType;
+  bool ok = false;
+  QGis::UnitType unit = QgsUnitTypes::stringToDistanceUnit( literal, &ok );
+  return ok ? unit : defaultType;
 }
 
 double QGis::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit )
 {
-#define DEGREE_TO_METER 111319.49079327358
-#define FEET_TO_METER 0.3048
-#define NMILE_TO_METER 1852.0
-
-  // Unify degree units
-  if ( fromUnit == QGis::DecimalDegrees || fromUnit == QGis::DegreesMinutesSeconds || fromUnit == QGis::DegreesDecimalMinutes )
-    fromUnit = QGis::Degrees;
-  if ( toUnit == QGis::DecimalDegrees || toUnit == QGis::DegreesMinutesSeconds || toUnit == QGis::DegreesDecimalMinutes )
-    toUnit = QGis::Degrees;
-
-  // Calculate the conversion factor between the specified units
-  if ( fromUnit != toUnit && fromUnit != QGis::UnknownUnit && toUnit != QGis::UnknownUnit )
-  {
-    switch ( fromUnit )
-    {
-      case QGis::Meters:
-      {
-        if ( toUnit == QGis::Feet ) return 1.0 / FEET_TO_METER;
-        if ( toUnit == QGis::Degrees ) return 1.0 / DEGREE_TO_METER;
-        if ( toUnit == QGis::NauticalMiles ) return 1.0 / NMILE_TO_METER;
-        break;
-      }
-      case QGis::Feet:
-      {
-        if ( toUnit == QGis::Meters ) return FEET_TO_METER;
-        if ( toUnit == QGis::Degrees ) return FEET_TO_METER / DEGREE_TO_METER;
-        if ( toUnit == QGis::NauticalMiles ) return FEET_TO_METER / NMILE_TO_METER;
-        break;
-      }
-      case QGis::Degrees:
-      {
-        if ( toUnit == QGis::Meters ) return DEGREE_TO_METER;
-        if ( toUnit == QGis::Feet ) return DEGREE_TO_METER / FEET_TO_METER;
-        if ( toUnit == QGis::NauticalMiles ) return DEGREE_TO_METER / NMILE_TO_METER;
-        break;
-      }
-      case QGis::NauticalMiles:
-      {
-        if ( toUnit == QGis::Meters ) return NMILE_TO_METER;
-        if ( toUnit == QGis::Feet ) return NMILE_TO_METER / FEET_TO_METER;
-        if ( toUnit == QGis::Degrees ) return NMILE_TO_METER / DEGREE_TO_METER;
-        break;
-      }
-      case QGis::UnknownUnit:
-        break;
-    }
-  }
-  return 1.0;
+  return QgsUnitTypes::fromUnitToUnitFactor( fromUnit, toUnit );
 }
 
 double QGis::permissiveToDouble( QString string, bool &ok )

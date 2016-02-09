@@ -77,7 +77,7 @@ class GUI_EXPORT QgsStyleV2ExportImportDialog : public QDialog, private Ui::QgsS
      */
     void selectGroup( const QString& groupName );
     /**
-     * Unselect the symbols belonging to the given group
+     * Deselect the symbols belonging to the given group
      * @param groupName the name of the group to be deselected
      */
     void deselectGroup( const QString& groupName );

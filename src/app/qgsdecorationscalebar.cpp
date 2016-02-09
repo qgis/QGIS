@@ -31,7 +31,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
-
+#include "qgsunittypes.h"
 
 #include <QPainter>
 #include <QAction>
@@ -132,11 +132,14 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     int myTextOffsetX = 3;
 
     QSettings settings;
-    QGis::UnitType myPreferredUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+    bool ok = false;
+    QGis::UnitType myPreferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( "/qgis/measure/displayunits" ).toString(), &ok );
+    if ( !ok )
+      myPreferredUnits = QGis::Meters;
     QGis::UnitType myMapUnits = canvas->mapUnits();
 
     // Adjust units meter/feet/... or vice versa
-    myMapUnitsPerPixelDouble *= QGis::fromUnitToUnitFactor( myMapUnits, myPreferredUnits );
+    myMapUnitsPerPixelDouble *= QgsUnitTypes::fromUnitToUnitFactor( myMapUnits, myPreferredUnits );
     myMapUnits = myPreferredUnits;
 
     //Calculate size of scale bar for preferred number of map units

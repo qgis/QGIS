@@ -45,7 +45,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
   if ( treeView )
   {
     QgsLayerTreeModel* model = qobject_cast<QgsLayerTreeModel*>( treeView->model() );
-    foreach ( QgsLayerTreeLayer* layer, model->rootGroup()->findLayers() )
+    Q_FOREACH ( QgsLayerTreeLayer* layer, model->rootGroup()->findLayers() )
     {
       if ( layer->layer()->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer*>( layer->layer() )->providerType() == "virtual" )
       {
@@ -87,13 +87,13 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
   }
 
   // configure auto completion with table and column names
-  foreach ( QgsMapLayer* l, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer* l, QgsMapLayerRegistry::instance()->mapLayers().values() )
   {
     if ( l->type() == QgsMapLayer::VectorLayer )
     {
       apis->add( l->name() );
       QgsVectorLayer* vl = static_cast<QgsVectorLayer*>( l );
-      foreach ( const QgsField& f, vl->fields().toList() )
+      Q_FOREACH ( const QgsField& f, vl->fields().toList() )
       {
         apis->add( f.name() );
       }
@@ -218,7 +218,7 @@ void QgsVirtualLayerSourceSelect::on_buttonBox_accepted()
     QString id( mLayerNameCombo->itemData( idx ).toString() );
     if ( !id.isEmpty() && mLayerNameCombo->currentText() == QgsMapLayerRegistry::instance()->mapLayer( id )->name() )
     {
-      int r = QMessageBox::warning( nullptr, tr( "Warning" ), tr( "A virtual layer of this name already exists, would you like to overwrite it ?" ), QMessageBox::Yes | QMessageBox::No );
+      int r = QMessageBox::warning( nullptr, tr( "Warning" ), tr( "A virtual layer of this name already exists, would you like to overwrite it?" ), QMessageBox::Yes | QMessageBox::No );
       if ( r == QMessageBox::Yes )
       {
         emit replaceVectorLayer( id, def.toString(), layerName, "virtual" );

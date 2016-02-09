@@ -18,7 +18,7 @@ class QgsCircularStringV2: public QgsCurveV2
 
     virtual QgsRectangle calculateBoundingBox() const;
 
-    virtual bool fromWkb( const unsigned char * wkb );
+    virtual bool fromWkb( QgsConstWkbPtr wkb );
     virtual bool fromWkt( const QString& wkt );
 
     int wkbSize() const;
@@ -76,9 +76,9 @@ class QgsCircularStringV2: public QgsCurveV2
      */
     void drawAsPolygon( QPainter& p ) const;
 
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex );
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos );
-    virtual bool deleteVertex( const QgsVertexId& position );
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex );
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos );
+    virtual bool deleteVertex( QgsVertexId position );
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
     /**
@@ -99,7 +99,7 @@ class QgsCircularStringV2: public QgsCurveV2
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
         @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
-    double vertexAngle( const QgsVertexId& vertex ) const;
+    double vertexAngle( QgsVertexId vertex ) const;
 
     virtual QgsCircularStringV2* reversed() const /Factory/;
 

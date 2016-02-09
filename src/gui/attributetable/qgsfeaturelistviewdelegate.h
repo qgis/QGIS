@@ -28,7 +28,7 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
 
     void setEditSelectionModel( QItemSelectionModel* editSelectionModel );
 
-    Element positionToElement( const QPoint& pos );
+    Element positionToElement( QPoint pos );
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
 

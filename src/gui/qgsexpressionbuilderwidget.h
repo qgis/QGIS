@@ -228,7 +228,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void setAutoSave( bool enabled ) { mAutoSave = enabled; }
 
   private slots:
-    void showContextMenu( const QPoint & );
+    void showContextMenu( QPoint );
     void setExpressionState( bool state );
     void currentChanged( const QModelIndex &index, const QModelIndex & );
     void operatorButtonClicked();

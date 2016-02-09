@@ -1170,7 +1170,7 @@ class QgsVectorLayer : QgsMapLayer
      * @return false if the layer is not in edit mode or does not support deleting
      *         in case of an active transaction depends on the provider implementation
      */
-    bool deleteFeatures( QgsFeatureIds fids );
+    bool deleteFeatures( const QgsFeatureIds& fids );
 
     /**
       Attempts to commit any changes to disk.  Returns the result of the attempt.
@@ -1415,7 +1415,7 @@ class QgsVectorLayer : QgsMapLayer
     QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int* nullCount = 0 );
 
     /** Set the blending mode used for rendering each feature */
-    void setFeatureBlendMode( const QPainter::CompositionMode &blendMode );
+    void setFeatureBlendMode( QPainter::CompositionMode blendMode );
     /** Returns the current blending mode for features */
     QPainter::CompositionMode featureBlendMode() const;
 
@@ -1639,7 +1639,7 @@ class QgsVectorLayer : QgsMapLayer
     void labelingFontNotFound( QgsVectorLayer* layer, const QString& fontfamily );
 
     /** Signal emitted when setFeatureBlendMode() is called */
-    void featureBlendModeChanged( const QPainter::CompositionMode &blendMode );
+    void featureBlendModeChanged( QPainter::CompositionMode blendMode );
 
     /** Signal emitted when setLayerTransparency() is called */
     void layerTransparencyChanged( int layerTransparency );

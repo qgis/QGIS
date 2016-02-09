@@ -36,7 +36,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
   switch ( units )
   {
     case 0:
-      spnSize->setSuffix( tr( " metres/km" ) );
+      spnSize->setSuffix( tr( " meters/km" ) );
       break;
     case 1:
       spnSize->setSuffix( tr( " feet/miles" ) );

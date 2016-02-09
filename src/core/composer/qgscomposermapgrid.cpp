@@ -853,7 +853,7 @@ void QgsComposerMapGrid::drawGridLine( const QPolygonF& line, QgsRenderContext& 
   mGridLineSymbol->stopRender( context );
 }
 
-void QgsComposerMapGrid::drawGridMarker( const QPointF& point, QgsRenderContext& context ) const
+void QgsComposerMapGrid::drawGridMarker( QPointF point, QgsRenderContext& context ) const
 {
   if ( !mComposerMap || !mComposerMap->composition() || !mGridMarkerSymbol )
   {
@@ -1103,7 +1103,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotations( QPainter* p, const QList< QP
   }
 }
 
-void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension ) const
+void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, QPointF pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension ) const
 {
   if ( !mComposerMap )
   {
@@ -1423,7 +1423,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
   drawAnnotation( p, QPointF( xpos, ypos ), rotation, annotationString );
 }
 
-void QgsComposerMapGrid::drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText ) const
+void QgsComposerMapGrid::drawAnnotation( QPainter* p, QPointF pos, int rotation, const QString& annotationText ) const
 {
   if ( !mComposerMap )
   {
@@ -1933,7 +1933,7 @@ void QgsComposerMapGrid::sortGridLinesOnBorders( const QList< QPair< double, QLi
   }
 }
 
-bool QgsComposerMapGrid::shouldShowDivisionForSide( const QgsComposerMapGrid::AnnotationCoordinate& coordinate, const QgsComposerMapGrid::BorderSide& side ) const
+bool QgsComposerMapGrid::shouldShowDivisionForSide( QgsComposerMapGrid::AnnotationCoordinate coordinate, QgsComposerMapGrid::BorderSide side ) const
 {
   switch ( side )
   {
@@ -1949,19 +1949,19 @@ bool QgsComposerMapGrid::shouldShowDivisionForSide( const QgsComposerMapGrid::An
   }
 }
 
-bool QgsComposerMapGrid::shouldShowDivisionForDisplayMode( const QgsComposerMapGrid::AnnotationCoordinate& coordinate, const QgsComposerMapGrid::DisplayMode& mode ) const
+bool QgsComposerMapGrid::shouldShowDivisionForDisplayMode( QgsComposerMapGrid::AnnotationCoordinate coordinate, QgsComposerMapGrid::DisplayMode mode ) const
 {
   return mode == QgsComposerMapGrid::ShowAll
          || ( mode == QgsComposerMapGrid::LatitudeOnly && coordinate == QgsComposerMapGrid::Latitude )
          || ( mode == QgsComposerMapGrid::LongitudeOnly && coordinate == QgsComposerMapGrid::Longitude );
 }
 
-bool sortByDistance( const QPair<qreal , QgsComposerMapGrid::BorderSide>& a, const QPair<qreal , QgsComposerMapGrid::BorderSide>& b )
+bool sortByDistance( QPair<qreal , QgsComposerMapGrid::BorderSide> a, QPair<qreal , QgsComposerMapGrid::BorderSide> b )
 {
   return a.first < b.first;
 }
 
-QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( const QPointF& p, const AnnotationCoordinate coordinateType ) const
+QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( QPointF p, const AnnotationCoordinate coordinateType ) const
 {
   if ( !mComposerMap )
   {

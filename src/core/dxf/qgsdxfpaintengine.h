@@ -49,7 +49,7 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     void setLayer( const QString& layer ) { mLayer = layer; }
     QString layer() const { return mLayer; }
 
-    void setShift( const QPointF& shift ) { mShift = shift; }
+    void setShift( QPointF shift ) { mShift = shift; }
 
   private:
     const QgsDxfPaintDevice* mPaintDevice;
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     QPolygonF mCurrentPolygon;
     QList<QPointF> mCurrentCurve;
 
-    QgsPoint toDxfCoordinates( const QPointF& pt ) const;
+    QgsPoint toDxfCoordinates( QPointF pt ) const;
     double currentWidth() const;
 
     void moveTo( double dx, double dy );

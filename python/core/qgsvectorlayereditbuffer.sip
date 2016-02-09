@@ -28,7 +28,7 @@ class QgsVectorLayerEditBuffer : QObject
     virtual bool deleteFeature( QgsFeatureId fid );
 
     /** Deletes a set of features from the layer (but does not commit it) */
-    virtual bool deleteFeatures( QgsFeatureIds fid );
+    virtual bool deleteFeatures( const QgsFeatureIds& fid );
 
     /** Change feature's geometry */
     virtual bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );

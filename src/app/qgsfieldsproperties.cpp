@@ -195,7 +195,7 @@ void QgsFieldsProperties::setEditFormInit( const QString &editForm,
     const QString &initFunction,
     const QString &initCode,
     const QString &initFilePath,
-    const QgsEditFormConfig::PythonInitCodeSource &codeSource )
+    QgsEditFormConfig::PythonInitCodeSource codeSource )
 {
 
   // Python init function and code

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>460</width>
-    <height>493</height>
+    <width>493</width>
+    <height>526</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -327,7 +327,7 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -347,6 +347,7 @@
   <tabstop>mFormatCombo</tabstop>
   <tabstop>mBufferSizeLineEdit</tabstop>
   <tabstop>mBufferUnitCombo</tabstop>
+  <tabstop>mAddToCanvas</tabstop>
   <tabstop>mAdvancedGroupBox</tabstop>
   <tabstop>mRowsSpinBox</tabstop>
   <tabstop>mColumnsSpinBox</tabstop>
@@ -359,7 +360,7 @@
   <tabstop>mWeightFieldCheckBox</tabstop>
   <tabstop>mWeightFieldCombo</tabstop>
   <tabstop>mDecayLineEdit</tabstop>
-  <tabstop>mButtonBox</tabstop>
+  <tabstop>mOutputValuesComboBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

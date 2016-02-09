@@ -11,7 +11,7 @@ class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
     static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
 
-    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context );
+    void renderPoint( QPointF point, QgsSymbolV2RenderContext& context );
     QString layerType() const;
     void startRender( QgsSymbolV2RenderContext& context );
     void stopRender( QgsSymbolV2RenderContext& context );
@@ -21,7 +21,7 @@ class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
     void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
     void writeSldMarker( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
 
-    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
+    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolV2RenderContext* context, const QgsFeature* f, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 
     void setSymbolName( const QString& name );
     QString symbolName() const;
@@ -68,5 +68,5 @@ class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    QRectF bounds( const QPointF& point, QgsSymbolV2RenderContext& context );
+    QRectF bounds( QPointF point, QgsSymbolV2RenderContext& context );
 };

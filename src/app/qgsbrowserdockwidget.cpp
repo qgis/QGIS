@@ -55,7 +55,7 @@ QgsBrowserPropertiesWrapLabel::QgsBrowserPropertiesWrapLabel( const QString& tex
   setMaximumHeight( 20 );
 }
 
-void QgsBrowserPropertiesWrapLabel::adjustHeight( const QSizeF& size )
+void QgsBrowserPropertiesWrapLabel::adjustHeight( QSizeF size )
 {
   int height = size.height() + 2 * frameWidth();
   setMinimumHeight( height );
@@ -369,7 +369,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
   QDockWidget::showEvent( e );
 }
 
-void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
+void QgsBrowserDockWidget::showContextMenu( QPoint pt )
 {
   QModelIndex index = mProxyModel->mapToSource( mBrowserView->indexAt( pt ) );
   QgsDataItem* item = mModel->dataItem( index );
@@ -577,9 +577,9 @@ void QgsBrowserDockWidget::addSelectedLayers()
   qSort( list );
 
   // If any of the layer items are QGIS we just open and exit the loop
-  for ( int i = 0; i <= list.size(); i++ )
+  Q_FOREACH ( const QModelIndex& index, list )
   {
-    QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( list[i] ) );
+    QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
     if ( item && item->type() == QgsDataItem::Project )
     {
       QgsProjectItem *projectItem = qobject_cast<QgsProjectItem*>( item );

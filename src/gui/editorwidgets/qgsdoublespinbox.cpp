@@ -69,7 +69,7 @@ void QgsDoubleSpinBox::paintEvent( QPaintEvent *event )
   QDoubleSpinBox::paintEvent( event );
 }
 
-void QgsDoubleSpinBox::changed( const double& value )
+void QgsDoubleSpinBox::changed( double value )
 {
   mClearButton->setVisible( shouldShowClearForValue( value ) );
 }

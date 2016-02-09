@@ -16,15 +16,21 @@
 
 #
 # A simple script to get rid of QGIS related temporary files left in 
-# your QGIS source folder by git and the prepare-commit script
-# if you don't want to use "prepare-commit.sh -c"
+# your QGIS source folder by git
 
 # Tim Sutton, May 2008
-find . -name "*.orig" -delete
-find . -name "*.prepare" -delete
-find . -name "*.sortinc" -delete
-find . -name "astyle*.diff" -delete
-find . -name "*.astyle" -delete
-find . -name "sha*.diff" -delete
-
-
+find . \
+  \( \
+       -name "*.orig" \
+    -o -name "*.prepare" \
+    -o -name "*.sortinc" \
+    -o -name "*.nocopyright" \
+    -o -name "astyle*.diff" \
+    -o -name "sha-*.diff" \
+    -o -name "*.astyle" \
+    -o -name "sha*.diff" \
+    -o -name "*.bom" \
+    -o -name "*~" \
+  \) \
+  -print \
+  -delete

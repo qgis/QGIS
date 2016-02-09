@@ -46,7 +46,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param p2 end point of line
      * @returns angle in degrees, clockwise from south
     */
-    static double angle( const QPointF& p1, const QPointF& p2 );
+    static double angle( QPointF p1, QPointF p2 );
 
     /** Rotates a point / vector around the origin.
      * @param angle rotation angle in degrees, counterclockwise
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsComposerUtils
      * @see fontHeightMM
      * @see textWidthMM
      */
-    static double fontHeightCharacterMM( const QFont& font, const QChar& character );
+    static double fontHeightCharacterMM( const QFont& font, QChar character );
 
     /** Calculate font width in millimeters for a string, including workarounds for QT font
      * rendering issues
@@ -248,7 +248,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param color color to draw text
      * @note added in version 2.5
      */
-    static void drawText( QPainter* painter, const QPointF& pos, const QString& text, const QFont& font, const QColor& color = QColor() );
+    static void drawText( QPainter* painter, QPointF pos, const QString& text, const QFont& font, const QColor& color = QColor() );
 
     /** Draws text on a painter within a rectangle, taking care of composer specific issues (calculation to pixel,
      * scaling of font and painter to work around Qt font bugs)

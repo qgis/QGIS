@@ -20,6 +20,8 @@
 
 #include "qgsrectangle.h"
 #include "qgswkbtypes.h"
+#include "qgswkbptr.h"
+
 #include <QString>
 
 class QgsAbstractGeometryV2;
@@ -45,7 +47,7 @@ class CORE_EXPORT QgsGeometryFactory
   public:
     /** Construct geometry from a WKB string.
      */
-    static QgsAbstractGeometryV2* geomFromWkb( const unsigned char* wkb );
+    static QgsAbstractGeometryV2* geomFromWkb( QgsConstWkbPtr wkb );
 
     /** Construct geometry from a WKT string.
      */

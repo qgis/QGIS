@@ -22,7 +22,7 @@ QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *lis
 {
 }
 
-QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElement( const QPoint &pos )
+QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElement( QPoint pos )
 {
   if ( pos.x() > sIconSize )
   {

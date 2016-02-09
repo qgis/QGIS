@@ -42,7 +42,16 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -188,7 +197,16 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -204,7 +222,16 @@
          </property>
          <widget class="QWidget" name="mProjOpts_01">
           <layout class="QVBoxLayout" name="verticalLayout_6">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -220,8 +247,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>696</width>
-                <height>793</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -428,10 +455,13 @@
                     </item>
                    </widget>
                   </item>
-                  <item row="4" column="0" colspan="2">
+                  <item row="4" column="0" colspan="4">
                    <widget class="QCheckBox" name="mMapTileRenderingCheckBox">
+                    <property name="toolTip">
+                     <string>Checking this setting avoids visible edge artifacts when rendering this project as separate map tiles. Rendering performance will be degraded.</string>
+                    </property>
                     <property name="text">
-                     <string>Render  map tile</string>
+                     <string>Avoid artifacts when project is rendered as map tiles (degrades performance)</string>
                     </property>
                    </widget>
                   </item>
@@ -625,7 +655,16 @@
                      <enum>QFrame::Raised</enum>
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_4">
-                     <property name="margin">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
                       <number>0</number>
                      </property>
                      <item>
@@ -798,7 +837,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_02">
           <layout class="QVBoxLayout" name="verticalLayout_5">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -814,8 +862,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>246</width>
-                <height>46</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -848,7 +896,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_03">
           <layout class="QVBoxLayout" name="verticalLayout_9">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -864,8 +921,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>98</width>
-                <height>100</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -920,7 +977,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_04">
           <layout class="QVBoxLayout" name="verticalLayout_11">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -936,8 +1002,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>311</width>
-                <height>509</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1336,7 +1402,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_05">
           <layout class="QVBoxLayout" name="verticalLayout_14">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -1351,9 +1426,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>399</width>
-                <height>1508</height>
+                <y>-1470</y>
+                <width>667</width>
+                <height>2249</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1741,10 +1816,10 @@
                     <property name="checked">
                      <bool>false</bool>
                     </property>
-                    <property name="collapsed">
+                    <property name="collapsed" stdset="0">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState">
+                    <property name="saveCollapsedState" stdset="0">
                      <bool>true</bool>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_10">
@@ -1800,10 +1875,10 @@
                     <property name="checked">
                      <bool>false</bool>
                     </property>
-                    <property name="collapsed">
+                    <property name="collapsed" stdset="0">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState">
+                    <property name="saveCollapsedState" stdset="0">
                      <bool>true</bool>
                     </property>
                     <layout class="QGridLayout" name="gridLayout">
@@ -2214,7 +2289,7 @@
                   <item row="1" column="1">
                    <widget class="QPushButton" name="pbnWFSLayersUnselectAll">
                     <property name="text">
-                     <string>Unselect all</string>
+                     <string>Deselect all</string>
                     </property>
                    </widget>
                   </item>
@@ -2280,7 +2355,7 @@
                   <item row="1" column="1">
                    <widget class="QPushButton" name="pbnWCSLayersUnselectAll">
                     <property name="text">
-                     <string>Unselect all</string>
+                     <string>Deselect all</string>
                     </property>
                    </widget>
                   </item>
@@ -2393,7 +2468,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_06">
           <layout class="QVBoxLayout" name="verticalLayout_15">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -2409,8 +2493,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>129</width>
-                <height>46</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2446,7 +2530,16 @@
          </widget>
          <widget class="QWidget" name="mTabRelations">
           <layout class="QGridLayout" name="gridLayout_16">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
           </layout>
@@ -2492,7 +2585,16 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item>
@@ -2555,6 +2657,7 @@
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cbxAbsolutePath</tabstop>
+  <tabstop>mMapTileRenderingCheckBox</tabstop>
   <tabstop>cmbEllipsoid</tabstop>
   <tabstop>leSemiMajor</tabstop>
   <tabstop>leSemiMinor</tabstop>
@@ -2646,6 +2749,17 @@
   <tabstop>mWCSUrlLineEdit</tabstop>
   <tabstop>grpPythonMacros</tabstop>
   <tabstop>scrollArea_6</tabstop>
+  <tabstop>mWMSName</tabstop>
+  <tabstop>mWMSInspire</tabstop>
+  <tabstop>mWMSInspireLanguage</tabstop>
+  <tabstop>mWMSInspireScenario2</tabstop>
+  <tabstop>mWMSInspireTemporalReference</tabstop>
+  <tabstop>mWMSInspireMetadataDate</tabstop>
+  <tabstop>mWMSInspireScenario1</tabstop>
+  <tabstop>mWMSInspireMetadataUrl</tabstop>
+  <tabstop>mWMSInspireMetadataUrlType</tabstop>
+  <tabstop>pbnLaunchOWSChecker</tabstop>
+  <tabstop>teOWSChecker</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

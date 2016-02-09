@@ -400,6 +400,12 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // ! Get current gisrc path
     static QString gisrcFilePath();
 
+    /** Find a module trying to append .bat, .py and .exe on Windows. The module may be a full path
+     * without extension or just a module name in which case it is searched in grassModulesPaths().
+     * @param module module name or path to module without extension
+     * @return full path including extension or empty string */
+    static QString findModule( QString module );
+
     /** Start a GRASS module in any gisdbase/location/mapset.
      * @param mapset if empty a first mapset owned by user will be used, if no mapset is owned
      *               by user, exception is thrown.

@@ -227,7 +227,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString metadataUrlFormat() const { return mMetadataUrlFormat; }
 
     /** Set the blending mode used for rendering a layer */
-    void setBlendMode( const QPainter::CompositionMode &blendMode );
+    void setBlendMode( QPainter::CompositionMode blendMode );
     /** Returns the current blending mode for a layer */
     QPainter::CompositionMode blendMode() const;
 
@@ -620,7 +620,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void dataChanged();
 
     /** Signal emitted when the blend mode is changed, through QgsMapLayer::setBlendMode() */
-    void blendModeChanged( const QPainter::CompositionMode &blendMode );
+    void blendModeChanged( QPainter::CompositionMode blendMode );
 
     /** Signal emitted when renderer is changed */
     void rendererChanged();

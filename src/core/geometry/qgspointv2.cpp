@@ -50,7 +50,7 @@ QgsPointV2::QgsPointV2( const QgsPoint& p )
   mWkbType = QgsWKBTypes::Point;
 }
 
-QgsPointV2::QgsPointV2( const QPointF& p )
+QgsPointV2::QgsPointV2( QPointF p )
     : QgsAbstractGeometryV2()
     , mX( p.x() )
     , mY( p.y() )
@@ -96,9 +96,8 @@ QgsPointV2 *QgsPointV2::clone() const
   return new QgsPointV2( *this );
 }
 
-bool QgsPointV2::fromWkb( const unsigned char* wkb )
+bool QgsPointV2::fromWkb( QgsConstWkbPtr wkbPtr )
 {
-  QgsConstWkbPtr wkbPtr( wkb );
   QgsWKBTypes::Type type = wkbPtr.readHeader();
   if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::Point )
   {
@@ -183,7 +182,7 @@ unsigned char* QgsPointV2::asWkb( int& binarySize ) const
 {
   binarySize = wkbSize();
   unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr );
+  QgsWkbPtr wkb( geomPtr, binarySize );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << mX << mY;
@@ -279,7 +278,7 @@ void QgsPointV2::coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coor
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsPointV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
+bool QgsPointV2::moveVertex( QgsVertexId position, const QgsPointV2& newPos )
 {
   Q_UNUSED( position );
   mBoundingBox = QgsRectangle();

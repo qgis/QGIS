@@ -20,16 +20,20 @@ from qgis.core import (QGis,
                        QgsLayerDefinition
                        )
 
-from utilities import (TestCase, unittest, getQgisTestApp, unitTestDataPath)
+from qgis.testing import (
+    unittest,
+    start_app
+)
+from utilities import unitTestDataPath
 
 from PyQt4.QtCore import QVariant
 from PyQt4.QtXml import QDomDocument
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayerDefinition(TestCase):
+class TestQgsLayerDefinition(unittest.TestCase):
 
     def testDependency(self):
         inDoc = """

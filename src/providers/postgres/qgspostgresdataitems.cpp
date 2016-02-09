@@ -449,8 +449,8 @@ QString QgsPGLayerItem::createUri()
 
   QgsDataSourceURI uri( QgsPostgresConn::connUri( connItem->name() ).connectionInfo( false ) );
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
-  uri.setWkbType( mLayerProperty.types[0] );
-  if ( uri.wkbType() != QGis::WKBNoGeometry )
+  uri.setWkbType( QGis::fromOldWkbType( mLayerProperty.types[0] ) );
+  if ( uri.newWkbType() != QgsWKBTypes::NoGeometry )
     uri.setSrid( QString::number( mLayerProperty.srids[0] ) );
   QgsDebugMsg( QString( "layer uri: %1" ).arg( uri.uri( false ) ) );
   return uri.uri( false );

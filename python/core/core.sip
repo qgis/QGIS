@@ -125,6 +125,7 @@
 %Include qgsstringutils.sip
 %Include qgstolerance.sip
 %Include qgstracer.sip
+%Include qgsunittypes.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
 %Include qgsvectorlayer.sip
@@ -323,3 +324,4 @@
 %Include geometry/qgspolygonv2.sip
 %Include geometry/qgssurfacev2.sip
 %Include geometry/qgswkbtypes.sip
+%Include geometry/qgswkbptr.sip

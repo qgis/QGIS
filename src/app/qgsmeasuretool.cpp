@@ -108,12 +108,8 @@ void QgsMeasureTool::restart()
   mRubberBand->reset( mMeasureArea ? QGis::Polygon : QGis::Line );
   mRubberBandPoints->reset( QGis::Point );
 
-  // re-read settings
-  updateSettings();
-
   mDone = true;
   mWrongProjectProjection = false;
-
 }
 
 void QgsMeasureTool::updateSettings()

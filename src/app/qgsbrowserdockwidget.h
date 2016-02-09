@@ -40,7 +40,7 @@ class QgsBrowserPropertiesWrapLabel : public QTextEdit
     QgsBrowserPropertiesWrapLabel( const QString& text, QWidget* parent = nullptr );
 
   private slots:
-    void adjustHeight( const QSizeF& size );
+    void adjustHeight( QSizeF size );
 };
 
 class QgsBrowserPropertiesWidget : public QWidget
@@ -110,7 +110,7 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
 
   public slots:
     void addLayerAtIndex( const QModelIndex& index );
-    void showContextMenu( const QPoint & );
+    void showContextMenu( QPoint );
 
     void addFavourite();
     void addFavouriteDirectory();

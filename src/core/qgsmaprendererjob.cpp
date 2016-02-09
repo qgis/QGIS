@@ -350,7 +350,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
 QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs )
 {
   QImage image( settings.outputSize(), settings.outputImageFormat() );
-  image.fill( settings.backgroundColor().rgb() );
+  image.fill( settings.backgroundColor().rgba() );
 
   QPainter painter( &image );
 

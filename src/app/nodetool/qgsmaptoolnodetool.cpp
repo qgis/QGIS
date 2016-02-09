@@ -723,7 +723,7 @@ void QgsMapToolNodeTool::safeSelectVertex( int vertexNr )
   }
 }
 
-QgsPoint QgsMapToolNodeTool::snapPointFromResults( const QList<QgsSnappingResult>& snapResults, const QPoint& screenCoords )
+QgsPoint QgsMapToolNodeTool::snapPointFromResults( const QList<QgsSnappingResult>& snapResults, QPoint screenCoords )
 {
   if ( snapResults.size() < 1 )
   {

@@ -81,7 +81,7 @@ class QgsSnapper
      @return 0 in case of success
      @deprecated
      */
-    int snapPoint( const QPoint &startPoint, QList<QgsSnappingResult> &snappingResult /Out/, const QList<QgsPoint> &excludePoints = QList<QgsPoint>() ) /Deprecated/;
+    int snapPoint( QPoint startPoint, QList<QgsSnappingResult> &snappingResult /Out/, const QList<QgsPoint> &excludePoints = QList<QgsPoint>() ) /Deprecated/;
 
     /** Does the snapping operation
      @param mapCoordPoint the start point for snapping (in map coordinates)

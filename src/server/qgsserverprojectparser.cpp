@@ -480,15 +480,22 @@ void QgsServerProjectParser::serviceCapabilities( QDomElement& parentElement, QD
 
   //OnlineResource element is mandatory according to the WMS specification
   QDomElement wmsOnlineResourceElem = propertiesElement.firstChildElement( "WMSOnlineResource" );
-  QDomElement onlineResourceElem = doc.createElement( "OnlineResource" );
-  onlineResourceElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
-  onlineResourceElem.setAttribute( "xlink:type", "simple" );
   if ( !wmsOnlineResourceElem.isNull() )
   {
-    onlineResourceElem.setAttribute( "xlink:href", wmsOnlineResourceElem.text() );
+    QDomElement onlineResourceElem = doc.createElement( "OnlineResource" );
+    if ( service.compare( "WFS", Qt::CaseInsensitive ) == 0 )
+    {
+      QDomText onlineResourceText = doc.createTextNode( wmsOnlineResourceElem.text() );
+      onlineResourceElem.appendChild( onlineResourceText );
+    }
+    else
+    {
+      onlineResourceElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+      onlineResourceElem.setAttribute( "xlink:type", "simple" );
+      onlineResourceElem.setAttribute( "xlink:href", wmsOnlineResourceElem.text() );
+    }
+    serviceElem.appendChild( onlineResourceElem );
   }
-
-  serviceElem.appendChild( onlineResourceElem );
 
   if ( service.compare( "WMS", Qt::CaseInsensitive ) == 0 ) //no contact information in WFS 1.0 and WCS 1.0
   {
@@ -1189,7 +1196,7 @@ void QgsServerProjectParser::layerFromLegendLayer( const QDomElement& legendLaye
 QList<QDomElement> QgsServerProjectParser::findLegendGroupElements() const
 {
   QList<QDomElement> LegendGroupElemList;
-  QgsLayerTreeGroup* rootLayerTreeGroup = new QgsLayerTreeGroup;;
+  QgsLayerTreeGroup* rootLayerTreeGroup = new QgsLayerTreeGroup;
 
   QDomElement layerTreeElem = mXMLDoc->documentElement().firstChildElement( "layer-tree-group" );
   if ( !layerTreeElem.isNull() )
@@ -1215,7 +1222,7 @@ QList<QDomElement> QgsServerProjectParser::findLegendGroupElements() const
   return LegendGroupElemList;
 }
 
-QList<QDomElement> QgsServerProjectParser::setLegendGroupElementsWithLayerTree( QgsLayerTreeGroup* layerTreeGroup, QDomElement legendElement ) const
+QList<QDomElement> QgsServerProjectParser::setLegendGroupElementsWithLayerTree( QgsLayerTreeGroup* layerTreeGroup, const QDomElement& legendElement ) const
 {
   QList<QDomElement> LegendGroupElemList;
   QList< QgsLayerTreeNode * > layerTreeGroupChildren = layerTreeGroup->children();

@@ -111,14 +111,22 @@
         <file>themes/default/mActionAddLayer.svg</file>
         <file>themes/default/mActionAddAllToOverview.svg</file>
         <file>themes/default/mActionAddArrow.png</file>
+        <file>themes/default/mActionAddArrow.svg</file>
         <file>themes/default/mActionAddBasicShape.png</file>
+        <file>themes/default/mActionAddBasicShape.svg</file>
+        <file>themes/default/mActionAddBasicCircle.svg</file>
+        <file>themes/default/mActionAddBasicRectangle.svg</file>
+        <file>themes/default/mActionAddBasicTriangle.svg</file>
         <file>themes/default/mActionAddGPSLayer.png</file>
         <file>themes/default/mActionAddGroup.png</file>
         <file>themes/default/mActionAddGroup.svg</file>
-        <file>themes/default/mActionAddHtml.png</file>
+        <file>themes/default/mActionAddHtml.svg</file>
         <file>themes/default/mActionAddImage.png</file>
+        <file>themes/default/mActionAddImage.svg</file>
         <file>themes/default/mActionAddLegend.png</file>
+        <file>themes/default/mActionAddLegend.svg</file>
         <file>themes/default/mActionAddMap.png</file>
+        <file>themes/default/mActionAddMap.svg</file>
         <file>themes/default/mActionAddMssqlLayer.svg</file>
         <file>themes/default/mActionAddDb2Layer.svg</file>		
         <file>themes/default/mActionAddNonDbLayer.png</file>
@@ -220,7 +228,9 @@
         <file>themes/default/mActionIncreaseContrast.svg</file>
         <file>themes/default/mActionInOverview.svg</file>
         <file>themes/default/mActionInvertSelection.png</file>
+        <file>themes/default/mActionInvertSelection.svg</file>
         <file>themes/default/mActionLabel.png</file>
+        <file>themes/default/mActionLabel.svg</file>
         <file>themes/default/mActionLabeling.png</file>
         <file>themes/default/mActionLocalCumulativeCutStretch.png</file>
         <file>themes/default/mActionLocalHistogramStretch.png</file>
@@ -233,6 +243,7 @@
         <file>themes/default/mActionMergeFeatures.png</file>
         <file>themes/default/mActionMoveFeature.png</file>
         <file>themes/default/mActionMoveItemContent.png</file>
+        <file>themes/default/mActionMoveItemContent.svg</file>
         <file>themes/default/mActionMoveItemsToBottom.png</file>
         <file>themes/default/mActionMoveItemsToTop.png</file>
         <file>themes/default/mActionMoveLabel.png</file>
@@ -246,6 +257,8 @@
         <file>themes/default/mActionNodeTool.png</file>
         <file>themes/default/mActionOffsetCurve.png</file>
         <file>themes/default/mActionOpenTable.png</file>
+        <file>themes/default/mActionOpenTable.svg</file>
+        <file>themes/default/mActionAddTable.svg</file>
         <file>themes/default/mActionOptions.svg</file>
         <file>themes/default/mActionPan.svg</file>
         <file>themes/default/mActionPanToSelected.svg</file>
@@ -276,8 +289,10 @@
         <file>themes/default/mActionSaveEdits.svg</file>
         <file>themes/default/mActionSaveMapAsImage.png</file>
         <file>themes/default/mActionScaleBar.png</file>
+        <file>themes/default/mActionScaleBar.svg</file>
         <file>themes/default/mActionSelect.svg</file>
         <file>themes/default/mActionSelectAll.png</file>
+        <file>themes/default/mActionSelectAll.svg</file>
         <file>themes/default/mActionSelectedToTop.png</file>
         <file>themes/default/mActionSelectFreehand.svg</file>
         <file>themes/default/mActionSelectPan.png</file>

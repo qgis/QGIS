@@ -1292,7 +1292,7 @@ void QgisApp::readSettings()
   }
   qSort( projectKeys );
 
-  Q_FOREACH ( const int& key, projectKeys )
+  Q_FOREACH ( int key, projectKeys )
   {
     QgsWelcomePageItemsModel::RecentProjectData data;
     settings.beginGroup( QString::number( key ) );
@@ -1849,11 +1849,11 @@ void QgisApp::createToolBars()
   QToolButton *bt = new QToolButton( mAttributesToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   QList<QAction*> selectActions;
-  selectActions << mActionDeselectAll << mActionSelectAll
-  << mActionInvertSelection << mActionSelectByExpression;
+  selectActions << mActionSelectByExpression << mActionSelectAll
+  << mActionInvertSelection;
   bt->addActions( selectActions );
-  bt->setDefaultAction( mActionDeselectAll );
-  QAction* selectionAction = mAttributesToolBar->insertWidget( mActionOpenTable, bt );
+  bt->setDefaultAction( mActionSelectByExpression );
+  QAction* selectionAction = mAttributesToolBar->insertWidget( mActionDeselectAll, bt );
 
   // select tool button
 
@@ -2318,10 +2318,10 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionSelectFreehand->setIcon( QgsApplication::getThemeIcon( "/mActionSelectFreehand.svg" ) );
   mActionSelectRadius->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRadius.svg" ) );
   mActionDeselectAll->setIcon( QgsApplication::getThemeIcon( "/mActionDeselectAll.svg" ) );
-  mActionSelectAll->setIcon( QgsApplication::getThemeIcon( "/mActionSelectAll.png" ) );
-  mActionInvertSelection->setIcon( QgsApplication::getThemeIcon( "/mActionInvertSelection.png" ) );
+  mActionSelectAll->setIcon( QgsApplication::getThemeIcon( "/mActionSelectAll.svg" ) );
+  mActionInvertSelection->setIcon( QgsApplication::getThemeIcon( "/mActionInvertSelection.svg" ) );
   mActionSelectByExpression->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
-  mActionOpenTable->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ) );
+  mActionOpenTable->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.svg" ) );
   mActionOpenFieldCalc->setIcon( QgsApplication::getThemeIcon( "/mActionCalculateField.png" ) );
   mActionMeasure->setIcon( QgsApplication::getThemeIcon( "/mActionMeasure.png" ) );
   mActionMeasureArea->setIcon( QgsApplication::getThemeIcon( "/mActionMeasureArea.png" ) );
@@ -7595,7 +7595,7 @@ void QgisApp::layerSubsetString()
     if ( QMessageBox::question( NULL, tr( "Filter on joined fields" ),
                                 tr( "You are about to set a subset filter on a layer that has joined fields. "
                                     "Joined fields cannot be filtered, unless you convert the layer to a virtual layer first. "
-                                    "Would you like to create a virtual layer out of this layer first ?" ),
+                                    "Would you like to create a virtual layer out of this layer first?" ),
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
     {
       QgsVirtualLayerDefinition def = QgsVirtualLayerDefinitionUtils::fromJoinedLayer( vlayer );
@@ -7837,6 +7837,15 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
           QVariant varValue = variableValues.at( varIndex );
           varIndex++;
           QgsExpressionContextUtils::setLayerVariable( dupVLayer, variableName, varValue );
+        }
+
+        Q_FOREACH ( const QgsVectorJoinInfo& join, vlayer->vectorJoins() )
+          dupVLayer->addJoin( join );
+
+        for ( int fld = 0; fld < vlayer->fields().count(); fld++ )
+        {
+          if ( vlayer->fields().fieldOrigin( fld ) == QgsFields::OriginExpression )
+            dupVLayer->addExpressionField( vlayer->expressionField( fld ), vlayer->fields().at( fld ) );
         }
 
         dupLayer = dupVLayer;
@@ -8759,9 +8768,9 @@ void QgisApp::embedLayers()
     QgsLayerDefinition::DependencySorter depSorter( projectFile );
     QStringList sortedIds = depSorter.sortedLayerIds();
     QStringList layerIds = d.selectedLayerIds();
-    foreach ( QString id, sortedIds )
+    Q_FOREACH ( const QString& id, sortedIds )
     {
-      foreach ( QString selId, layerIds )
+      Q_FOREACH ( const QString& selId, layerIds )
       {
         if ( selId == id )
           QgsProject::instance()->createEmbeddedLayer( selId, projectFile, brokenNodes, vectorLayerList );

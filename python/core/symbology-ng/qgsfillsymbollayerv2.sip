@@ -542,7 +542,7 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
      * @see setOffsetUnit
      * @see setOffsetMapUnitScale
     */
-    void setOffset( const QPointF& offset );
+    void setOffset( QPointF offset );
     /** Returns the offset for the fill.
      * @returns offset for fill
      * @see setOffset

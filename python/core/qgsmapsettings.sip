@@ -22,7 +22,7 @@ class QgsMapSettings
     //! Return the size of the resulting map image
     QSize outputSize() const;
     //! Set the size of the resulting map image
-    void setOutputSize( const QSize& size );
+    void setOutputSize( QSize size );
 
     //! Return the rotation of the resulting map image
     //! Units are clockwise degrees

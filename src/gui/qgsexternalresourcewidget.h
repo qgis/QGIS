@@ -61,7 +61,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * @param type determines the type of the returned null variant if the document is not defined yet
      */
     QVariant documentPath( QVariant::Type type = QVariant::String ) const;
-    void setDocumentPath( QVariant documentPath );
+    void setDocumentPath( const QVariant& documentPath );
 
     //! access the file widget to allow its configuration
     QgsFileWidget* fileWidget();
@@ -96,10 +96,10 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
   signals:
     //! emitteed as soon as the current document changes
-    void valueChanged( QString );
+    void valueChanged( const QString& );
 
   private slots:
-    void loadDocument( QString path );
+    void loadDocument( const QString& path );
 
   private:
     void updateDocumentViewer();

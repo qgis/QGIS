@@ -90,7 +90,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
   // table view
   mTableViewButton = new QToolButton( this );
   mTableViewButton->setText( tr( "Table view" ) );
-  mTableViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ) );
+  mTableViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.svg" ) );
   mTableViewButton->setCheckable( true );
   mTableViewButton->setChecked( mViewMode == QgsDualView::AttributeTable );
   buttonLayout->addWidget( mTableViewButton );

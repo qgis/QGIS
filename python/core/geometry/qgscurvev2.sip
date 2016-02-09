@@ -40,7 +40,7 @@ class QgsCurveV2: public QgsAbstractGeometryV2
     virtual int vertexCount(int part = 0, int ring = 0) const;
     virtual int ringCount(int part = 0) const;
     virtual int partCount() const;
-    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const;
+    virtual QgsPointV2 vertexAt( QgsVertexId id ) const;
 
     /** Drops any Z dimensions which exist in the geometry.
      * @returns true if Z values were present and have been removed

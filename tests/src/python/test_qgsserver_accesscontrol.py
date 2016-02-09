@@ -18,7 +18,7 @@ import os
 from shutil import copyfile
 from math import sqrt
 from subprocess import check_output
-from unittest import TestCase, main
+from qgis.testing import unittest
 from utilities import unitTestDataPath
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
@@ -155,7 +155,7 @@ accesscontrol = RestrictedAccessControl(server_iface)
 server_iface.registerAccessControl(accesscontrol, 100)
 
 
-class TestQgsServerAccessControl(TestCase):
+class TestQgsServerAccessControl(unittest.TestCase):
 
     def setUp(self):
         self.testdata_path = unitTestDataPath("qgis_server_accesscontrol")
@@ -1105,4 +1105,4 @@ class TestQgsServerAccessControl(TestCase):
                 "Wrong color in result\n%s" % response)
 
 if __name__ == "__main__":
-    main()
+    unittest.main()

@@ -59,7 +59,7 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolEdit
 
     void drawArrow( double azimut ) const;
     /** Calculates the azimut between mousePos and mSnappedPoint*/
-    double calculateAzimut( const QPoint& mousePos );
+    double calculateAzimut( QPoint mousePos );
     /** Create item with the point symbol for a specific feature. This will be used to show the rotation to the user*/
     void createPixmapItem( QgsMarkerSymbolV2 *markerSymbol );
     /** Sets the rotation of the pixmap item*/

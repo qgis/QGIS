@@ -56,7 +56,7 @@ class QgsComposerImageExportOptionsDialog: public QDialog, private Ui::QgsCompos
      * and also for determining the image's width to height ratio.
      * @param size image size
      */
-    void setImageSize( const QSizeF& size );
+    void setImageSize( QSizeF size );
 
     /** Returns the user-set image width in pixels.
      * @see imageHeight

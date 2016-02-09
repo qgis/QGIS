@@ -139,7 +139,7 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     virtual QgsLineStringV2* clone() const override;
     virtual void clear() override;
 
-    virtual bool fromWkb( const unsigned char* wkb ) override;
+    virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
     virtual bool fromWkt( const QString& wkt ) override;
 
     int wkbSize() const override;
@@ -166,9 +166,9 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     void addToPainterPath( QPainterPath& path ) const override;
     void drawAsPolygon( QPainter& p ) const override;
 
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override;
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) override;
-    virtual bool deleteVertex( const QgsVertexId& position ) override;
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override;
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
+    virtual bool deleteVertex( QgsVertexId position ) override;
 
     virtual QgsLineStringV2* reversed() const override;
 
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     virtual QgsPointV2 centroid() const override;
 
     void sumUpArea( double& sum ) const override;
-    double vertexAngle( const QgsVertexId& vertex ) const override;
+    double vertexAngle( QgsVertexId vertex ) const override;
 
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;

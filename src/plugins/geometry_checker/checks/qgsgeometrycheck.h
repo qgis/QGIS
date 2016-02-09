@@ -89,7 +89,7 @@ class QgsGeometryCheckError
     QgsGeometryCheckError( const QgsGeometryCheck* check,
                            QgsFeatureId featureId,
                            const QgsPointV2& errorLocation,
-                           const QgsVertexId& vidx = QgsVertexId(),
+                           QgsVertexId vidx = QgsVertexId(),
                            const QVariant& value = QVariant(),
                            ValueType valueType = ValueOther );
     virtual ~QgsGeometryCheckError();
@@ -101,7 +101,7 @@ class QgsGeometryCheckError
     const QgsPointV2& location() const { return mErrorLocation; }
     const QVariant& value() const { return mValue; }
     ValueType valueType() const { return mValueType; }
-    const QgsVertexId& vidx() const { return mVidx; }
+    QgsVertexId vidx() const { return mVidx; }
     Status status() const { return mStatus; }
     const QString& resolutionMessage() const { return mResolutionMessage; }
     void setFixed( int method )

@@ -50,9 +50,7 @@ class QgsSelectedFeature: public QObject
      * Setting selected feature
      * @param featureId id of feature which was selected
      * @param vlayer vector layer in which feature is selected
-     * @param rubberBand rubber band which displays feature
      * @param canvas mapCanvas on which we are working
-     * @param geometry geometry of the selected feature
      */
     void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer* vlayer, QgsMapCanvas* canvas );
 
@@ -82,7 +80,7 @@ class QgsSelectedFeature: public QObject
      * Moves selected vertex
      * @param v translation vector
      */
-    void moveSelectedVertexes( const QgsVector &v );
+    void moveSelectedVertexes( QgsVector v );
 
     /**
      * Inverts selection of vertex with number

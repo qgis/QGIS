@@ -195,7 +195,7 @@ bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<Qg
   return true;
 }
 
-void QgsLayerDefinition::DependencySorter::init( QDomDocument doc )
+void QgsLayerDefinition::DependencySorter::init( const QDomDocument& doc )
 {
   // Determine a loading order of layers based on a graph of dependencies
   QMap< QString, QVector< QString > > dependencies;
@@ -289,7 +289,7 @@ void QgsLayerDefinition::DependencySorter::init( QDomDocument doc )
   }
 }
 
-QgsLayerDefinition::DependencySorter::DependencySorter( QDomDocument doc ) :
+QgsLayerDefinition::DependencySorter::DependencySorter( const QDomDocument& doc ) :
     mHasCycle( false ), mHasMissingDependency( false )
 {
   init( doc );

@@ -1838,6 +1838,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mFileToolButton_clicked()
   mFileLineEdit->setText( file );
   mLayer->setPath( file );
   s.setValue( "/UI/lastSVGMarkerDir", fi.absolutePath() );
+  setGuiForSvg( mLayer );
   emit changed();
 }
 
@@ -2603,7 +2604,7 @@ void QgsFontMarkerSymbolLayerV2Widget::setAngle( double angle )
   emit changed();
 }
 
-void QgsFontMarkerSymbolLayerV2Widget::setCharacter( const QChar& chr )
+void QgsFontMarkerSymbolLayerV2Widget::setCharacter( QChar chr )
 {
   mLayer->setCharacter( chr );
   emit changed();

@@ -23,6 +23,7 @@
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometrysimplifier.h"
+#include "qgsunittypes.h"
 
 #include <QPainter>
 #include <QDomDocument>
@@ -128,23 +129,23 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::create( const QgsStringMap& props 
   QgsSimpleLineSymbolLayerV2* l = new QgsSimpleLineSymbolLayerV2( color, width, penStyle );
   if ( props.contains( "line_width_unit" ) )
   {
-    l->setWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["line_width_unit"] ) );
+    l->setWidthUnit( QgsUnitTypes::decodeSymbolUnit( props["line_width_unit"] ) );
   }
   else if ( props.contains( "outline_width_unit" ) )
   {
-    l->setWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["outline_width_unit"] ) );
+    l->setWidthUnit( QgsUnitTypes::decodeSymbolUnit( props["outline_width_unit"] ) );
   }
   else if ( props.contains( "width_unit" ) )
   {
     //pre 2.5 projects used "width_unit"
-    l->setWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["width_unit"] ) );
+    l->setWidthUnit( QgsUnitTypes::decodeSymbolUnit( props["width_unit"] ) );
   }
   if ( props.contains( "width_map_unit_scale" ) )
     l->setWidthMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["width_map_unit_scale"] ) );
   if ( props.contains( "offset" ) )
     l->setOffset( props["offset"].toDouble() );
   if ( props.contains( "offset_unit" ) )
-    l->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
+    l->setOffsetUnit( QgsUnitTypes::decodeSymbolUnit( props["offset_unit"] ) );
   if ( props.contains( "offset_map_unit_scale" ) )
     l->setOffsetMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["offset_map_unit_scale"] ) );
   if ( props.contains( "joinstyle" ) )
@@ -162,7 +163,7 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::create( const QgsStringMap& props 
   }
   if ( props.contains( "customdash_unit" ) )
   {
-    l->setCustomDashPatternUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["customdash_unit"] ) );
+    l->setCustomDashPatternUnit( QgsUnitTypes::decodeSymbolUnit( props["customdash_unit"] ) );
   }
   if ( props.contains( "customdash_map_unit_scale" ) )
   {
@@ -354,17 +355,17 @@ QgsStringMap QgsSimpleLineSymbolLayerV2::properties() const
   QgsStringMap map;
   map["line_color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
   map["line_width"] = QString::number( mWidth );
-  map["line_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mWidthUnit );
+  map["line_width_unit"] = QgsUnitTypes::encodeUnit( mWidthUnit );
   map["width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mWidthMapUnitScale );
   map["line_style"] = QgsSymbolLayerV2Utils::encodePenStyle( mPenStyle );
   map["joinstyle"] = QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle );
   map["capstyle"] = QgsSymbolLayerV2Utils::encodePenCapStyle( mPenCapStyle );
   map["offset"] = QString::number( mOffset );
-  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  map["offset_unit"] = QgsUnitTypes::encodeUnit( mOffsetUnit );
   map["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
   map["use_custom_dash"] = ( mUseCustomDashPattern ? "1" : "0" );
   map["customdash"] = QgsSymbolLayerV2Utils::encodeRealVector( mCustomDashVector );
-  map["customdash_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mCustomDashPatternUnit );
+  map["customdash_unit"] = QgsUnitTypes::encodeUnit( mCustomDashPatternUnit );
   map["customdash_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mCustomDashPatternMapUnitScale );
   map["draw_inside_polygon"] = ( mDrawInsidePolygon ? "1" : "0" );
   saveDataDefinedProperties( map );
@@ -748,11 +749,11 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props 
   }
   if ( props.contains( "offset_unit" ) )
   {
-    x->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
+    x->setOffsetUnit( QgsUnitTypes::decodeSymbolUnit( props["offset_unit"] ) );
   }
   if ( props.contains( "interval_unit" ) )
   {
-    x->setIntervalUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["interval_unit"] ) );
+    x->setIntervalUnit( QgsUnitTypes::decodeSymbolUnit( props["interval_unit"] ) );
   }
   if ( props.contains( "offset_along_line" ) )
   {
@@ -760,7 +761,7 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props 
   }
   if ( props.contains( "offset_along_line_unit" ) )
   {
-    x->setOffsetAlongLineUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_along_line_unit"] ) );
+    x->setOffsetAlongLineUnit( QgsUnitTypes::decodeSymbolUnit( props["offset_along_line_unit"] ) );
   }
   if ( props.contains(( "offset_along_line_map_unit_scale" ) ) )
   {
@@ -1003,7 +1004,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
   }
 }
 
-static double _averageAngle( const QPointF& prevPt, const QPointF& pt, const QPointF& nextPt )
+static double _averageAngle( QPointF prevPt, QPointF pt, QPointF nextPt )
 {
   // calc average angle between the previous and next point
   double a1 = MyLine( prevPt, pt ).angle();
@@ -1314,11 +1315,11 @@ QgsStringMap QgsMarkerLineSymbolLayerV2::properties() const
   map["interval"] = QString::number( mInterval );
   map["offset"] = QString::number( mOffset );
   map["offset_along_line"] = QString::number( mOffsetAlongLine );
-  map["offset_along_line_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetAlongLineUnit );
+  map["offset_along_line_unit"] = QgsUnitTypes::encodeUnit( mOffsetAlongLineUnit );
   map["offset_along_line_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetAlongLineMapUnitScale );
-  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  map["offset_unit"] = QgsUnitTypes::encodeUnit( mOffsetUnit );
   map["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
-  map["interval_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mIntervalUnit );
+  map["interval_unit"] = QgsUnitTypes::encodeUnit( mIntervalUnit );
   map["interval_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mIntervalMapUnitScale );
   if ( mPlacement == Vertex )
     map["placement"] = "vertex";

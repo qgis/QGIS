@@ -261,7 +261,7 @@ bool QgsSymbolLayerV2::writeDxf( QgsDxfExport& e,
                                  const QString& layerName,
                                  QgsSymbolV2RenderContext *context,
                                  const QgsFeature* f,
-                                 const QPointF& shift ) const
+                                 QPointF shift ) const
 {
   Q_UNUSED( e );
   Q_UNUSED( mmMapUnitScaleFactor );
@@ -594,7 +594,7 @@ void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, do
   }
 }
 
-QPointF QgsMarkerSymbolLayerV2::_rotatedOffset( const QPointF& offset, double angle )
+QPointF QgsMarkerSymbolLayerV2::_rotatedOffset( QPointF offset, double angle )
 {
   angle = DEG2RAD( angle );
   double c = cos( angle ), s = sin( angle );

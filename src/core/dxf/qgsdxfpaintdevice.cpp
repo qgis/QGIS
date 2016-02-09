@@ -69,7 +69,7 @@ double QgsDxfPaintDevice::widthScaleFactor() const
   return ( widthFactor + heightFactor ) / 2.0;
 }
 
-QPointF QgsDxfPaintDevice::dxfCoordinates( const QPointF& pt ) const
+QPointF QgsDxfPaintDevice::dxfCoordinates( QPointF pt ) const
 {
   if ( !mDrawingSize.isValid() || mRectangle.isEmpty() )
   {
@@ -89,7 +89,7 @@ void QgsDxfPaintDevice::setLayer( const QString& layer )
   }
 }
 
-void QgsDxfPaintDevice::setShift( const QPointF& shift )
+void QgsDxfPaintDevice::setShift( QPointF shift )
 {
   if ( mPaintEngine )
   {

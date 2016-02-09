@@ -78,7 +78,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     /** Finds out which mouse move action to choose depending on the scene cursor position*/
-    QgsComposerMouseHandles::MouseAction mouseActionForScenePos( const QPointF& sceneCoordPos );
+    QgsComposerMouseHandles::MouseAction mouseActionForScenePos( QPointF sceneCoordPos );
 
     /** Returns true is user is currently dragging the handles */
     bool isDragging() { return mIsDragging; }
@@ -157,19 +157,19 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     double rectHandlerBorderTolerance();
 
     /** Finds out the appropriate cursor for the current mouse position in the widget (e.g. move in the middle, resize at border)*/
-    Qt::CursorShape cursorForPosition( const QPointF& itemCoordPos );
+    Qt::CursorShape cursorForPosition( QPointF itemCoordPos );
 
     /** Finds out which mouse move action to choose depending on the cursor position inside the widget*/
-    QgsComposerMouseHandles::MouseAction mouseActionForPosition( const QPointF& itemCoordPos );
+    QgsComposerMouseHandles::MouseAction mouseActionForPosition( QPointF itemCoordPos );
 
     /** Handles dragging of items during mouse move*/
-    void dragMouseMove( const QPointF& currentPosition, bool lockMovement, bool preventSnap );
+    void dragMouseMove( QPointF currentPosition, bool lockMovement, bool preventSnap );
 
     /** Calculates the distance of the mouse cursor from thed edge of the mouse handles*/
-    QSizeF calcCursorEdgeOffset( const QPointF &cursorPos );
+    QSizeF calcCursorEdgeOffset( QPointF cursorPos );
 
     /** Handles resizing of items during mouse move*/
-    void resizeMouseMove( const QPointF& currentPosition, bool lockAspect, bool fromCenter );
+    void resizeMouseMove( QPointF currentPosition, bool lockAspect, bool fromCenter );
 
     /** Return horizontal align snap item. Creates a new graphics line if 0*/
     QGraphicsLineItem* hAlignSnapItem();
@@ -180,11 +180,11 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     void deleteAlignItems();
 
     /** Snaps an item or point (depending on mode) originating at originalPoint to the grid or align rulers*/
-    QPointF snapPoint( const QPointF& originalPoint, QgsComposerMouseHandles::SnapGuideMode mode );
+    QPointF snapPoint( QPointF originalPoint, QgsComposerMouseHandles::SnapGuideMode mode );
     /** Snaps an item originating at unalignedX, unalignedY to the grid or align rulers*/
     QPointF alignItem( double& alignX, double& alignY, double unalignedX, double unalignedY );
     /** Snaps a point to to the grid or align rulers*/
-    QPointF alignPos( const QPointF& pos, double& alignX, double& alignY );
+    QPointF alignPos( QPointF pos, double& alignX, double& alignY );
 
     //helper functions for item align
     void collectAlignCoordinates( QMap< double, const QgsComposerItem* >& alignCoordsX, QMap< double, const QgsComposerItem* >& alignCoordsY );

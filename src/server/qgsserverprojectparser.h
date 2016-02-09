@@ -170,7 +170,7 @@ class SERVER_EXPORT QgsServerProjectParser
     bool findUseLayerIDs() const;
 
     QList<QDomElement> findLegendGroupElements() const;
-    QList<QDomElement> setLegendGroupElementsWithLayerTree( QgsLayerTreeGroup* layerTreeGroup, QDomElement legendElement ) const;
+    QList<QDomElement> setLegendGroupElementsWithLayerTree( QgsLayerTreeGroup* layerTreeGroup, const QDomElement& legendElement ) const;
 
     /** Adds sublayers of an embedded group to layer set*/
     static void sublayersOfEmbeddedGroup( const QString& projectFilePath, const QString& groupName, QSet<QString>& layerSet );

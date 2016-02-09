@@ -36,6 +36,7 @@
 #include "qgslinesymbollayerv2.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsunittypes.h"
 
 #include <QIODevice>
 
@@ -893,7 +894,7 @@ void QgsDxfExport::writeEntities()
   mapSettings.setExtent( bbox );
 
   int dpi = 96;
-  double factor = 1000 * dpi / mSymbologyScaleDenominator / 25.4 * QGis::fromUnitToUnitFactor( mMapUnits, QGis::Meters );
+  double factor = 1000 * dpi / mSymbologyScaleDenominator / 25.4 * QgsUnitTypes::fromUnitToUnitFactor( mMapUnits, QGis::Meters );
   mapSettings.setOutputSize( QSize( bbox.width() * factor, bbox.height() * factor ) );
   mapSettings.setOutputDpi( dpi );
   mapSettings.setCrsTransformEnabled( false );
@@ -3857,7 +3858,7 @@ double QgsDxfExport::mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::O
     return 1.0;
   }
   // MM symbol unit
-  return scaleDenominator * QGis::fromUnitToUnitFactor( QGis::Meters, mapUnits ) / 1000.0;
+  return scaleDenominator * QgsUnitTypes::fromUnitToUnitFactor( QGis::Meters, mapUnits ) / 1000.0;
 }
 
 QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > QgsDxfExport::symbolLayers( QgsRenderContext &context )
@@ -4054,7 +4055,7 @@ double QgsDxfExport::dashSeparatorSize() const
 
 double QgsDxfExport::sizeToMapUnits( double s ) const
 {
-  double size = s * QGis::fromUnitToUnitFactor( QGis::Meters, mMapUnits );
+  double size = s * QgsUnitTypes::fromUnitToUnitFactor( QGis::Meters, mMapUnits );
   return size;
 }
 

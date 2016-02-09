@@ -48,9 +48,8 @@ from processing.algs.help import shortHelp
 
 class GeoAlgorithm:
 
-    _icon = QIcon(os.path.dirname(__file__) + '/../images/alg.png')
-
     def __init__(self):
+        self._icon = QIcon(os.path.dirname(__file__) + '/../images/alg.png')
         # Parameters needed by the algorithm
         self.parameters = list()
 
@@ -219,7 +218,8 @@ class GeoAlgorithm:
 
     def _checkParameterValuesBeforeExecuting(self):
         for param in self.parameters:
-            if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
+            if isinstance(param, (ParameterRaster, ParameterVector,
+                                  ParameterMultipleInput)):
                 if param.value:
                     if isinstance(param, ParameterMultipleInput):
                         inputlayers = param.value.split(';')

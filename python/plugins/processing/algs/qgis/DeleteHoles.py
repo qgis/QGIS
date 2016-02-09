@@ -60,18 +60,21 @@ class DeleteHoles(GeoAlgorithm):
         for count, f in enumerate(features):
 
             geometry = f.geometry()
-            if geometry.isMultipart():
-                multi_polygon = geometry.asMultiPolygon()
-                for polygon in multi_polygon:
+            if geometry:
+                if geometry.isMultipart():
+                    multi_polygon = geometry.asMultiPolygon()
+                    for polygon in multi_polygon:
+                        for ring in polygon[1:]:
+                            polygon.remove(ring)
+                    geometry = QgsGeometry.fromMultiPolygon(multi_polygon)
+
+                else:
+                    polygon = geometry.asPolygon()
                     for ring in polygon[1:]:
                         polygon.remove(ring)
-                geometry = QgsGeometry.fromMultiPolygon(multi_polygon)
-
+                    geometry = QgsGeometry.fromPolygon(polygon)
             else:
-                polygon = geometry.asPolygon()
-                for ring in polygon[1:]:
-                    polygon.remove(ring)
-                geometry = QgsGeometry.fromPolygon(polygon)
+                geometry = QgsGeometry(None)
 
             feat.setGeometry(geometry)
             feat.setAttributes(f.attributes())

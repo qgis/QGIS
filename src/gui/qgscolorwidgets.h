@@ -424,7 +424,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     /** Updates the widget's color based on a point within the widget
      * @param point point within the widget
     */
-    void setColorFromPoint( const QPoint& point );
+    void setColorFromPoint( QPoint point );
 
 };
 
@@ -538,7 +538,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
     /** Updates the widget's color based on a point within the widget
      * @param point point within the widget
     */
-    void setColorFromPoint( const QPointF &point );
+    void setColorFromPoint( QPointF point );
 
 };
 
@@ -731,7 +731,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
      * @param rect rect to draw color in
      * @param painter destination painter
      */
-    void drawColor( const QColor& color, const QRect& rect, QPainter &painter );
+    void drawColor( const QColor& color, QRect rect, QPainter &painter );
 };
 
 #endif // #ifndef QGSCOLORWIDGETS_H

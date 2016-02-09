@@ -26,7 +26,7 @@ class QgsTextLabelFeature : public QgsLabelFeature
 {
   public:
     //! Construct text label feature
-    QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size );
+    QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, QSizeF size );
 
     //! Clean up
     ~QgsTextLabelFeature();

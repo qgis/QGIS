@@ -16,21 +16,23 @@ import qgis
 
 from qgis.core import QgsRectangle, QgsPoint
 
-from utilities import (getQgisTestApp,
-                       compareWkt,
-                       TestCase,
-                       unittest,
-                       expectedFailure
-                       )
+from qgis.testing import (
+    start_app,
+    unittest
+)
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from utilities import (
+    compareWkt
+)
+
+start_app()
 
 
-class TestQgsRectangle(TestCase):
+class TestQgsRectangle(unittest.TestCase):
 
     # Because isEmpty() is not returning expected result in 9b0fee3
 
-    @expectedFailure
+    @unittest.expectedFailure
     def testCtor(self):
         rect = QgsRectangle(5.0, 5.0, 10.0, 10.0)
 

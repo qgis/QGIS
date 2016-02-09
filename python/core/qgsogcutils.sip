@@ -28,22 +28,22 @@ class QgsOgcUtils
     /** Exports the geometry to GML2 or GML3
         @return QDomElement
      */
-    static QDomElement geometryToGML( const QgsGeometry* geometry, QDomDocument& doc, const QString& format, const int &precision = 17 );
+    static QDomElement geometryToGML( const QgsGeometry* geometry, QDomDocument& doc, const QString& format, int precision = 17 );
 
     /** Exports the geometry to GML2
         @return QDomElement
      */
-    static QDomElement geometryToGML( const QgsGeometry* geometry, QDomDocument& doc, const int &precision = 17 );
+    static QDomElement geometryToGML( const QgsGeometry* geometry, QDomDocument& doc, int precision = 17 );
 
     /** Exports the rectangle to GML2 Box
         @return QDomElement
      */
-    static QDomElement rectangleToGMLBox( QgsRectangle* box, QDomDocument& doc, const int &precision = 17 );
+    static QDomElement rectangleToGMLBox( QgsRectangle* box, QDomDocument& doc, int precision = 17 );
 
     /** Exports the rectangle to GML2 Envelope
         @return QDomElement
      */
-    static QDomElement rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument& doc, const int &precision = 17 );
+    static QDomElement rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument& doc, int precision = 17 );
 
 
     /** Parse XML with OGC fill into QColor */

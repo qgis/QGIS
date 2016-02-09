@@ -122,7 +122,7 @@ QgsExpression::Interval QgsExpression::Interval::fromString( const QString& stri
   return QgsExpression::Interval( seconds );
 }
 
-bool QgsExpression::Interval::operator==( const QgsExpression::Interval& other ) const
+bool QgsExpression::Interval::operator==( QgsExpression::Interval other ) const
 {
   return qgsDoubleNear( mSeconds, other.mSeconds );
 }

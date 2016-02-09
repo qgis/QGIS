@@ -43,7 +43,7 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
 
     virtual QgsRectangle calculateBoundingBox() const override;
 
-    virtual bool fromWkb( const unsigned char * wkb ) override;
+    virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
     virtual bool fromWkt( const QString& wkt ) override;
 
     int wkbSize() const override;
@@ -87,6 +87,7 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     virtual QgsLineStringV2* curveToLine() const override;
 
     void draw( QPainter& p ) const override;
+
     /** Transforms the geometry using a coordinate transform
      * @param ct coordinate transform
      * @param d transformation direction
@@ -100,9 +101,9 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
      */
     void drawAsPolygon( QPainter& p ) const override;
 
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override;
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) override;
-    virtual bool deleteVertex( const QgsVertexId& position ) override;
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override;
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
+    virtual bool deleteVertex( QgsVertexId position ) override;
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     /**
@@ -123,7 +124,7 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
         @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
-    double vertexAngle( const QgsVertexId& vertex ) const override;
+    double vertexAngle( QgsVertexId vertex ) const override;
 
     virtual QgsCircularStringV2* reversed() const override;
 
@@ -143,7 +144,7 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     void segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QList<QgsPointV2>& points ) const;
     int segmentSide( const QgsPointV2& pt1, const QgsPointV2& pt3, const QgsPointV2& pt2 ) const;
     double interpolateArc( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) const;
-    static void arcTo( QPainterPath& path, const QPointF& pt1, const QPointF& pt2, const QPointF& pt3 );
+    static void arcTo( QPainterPath& path, QPointF pt1, QPointF pt2, QPointF pt3 );
     //bounding box of a single segment
     static QgsRectangle segmentBoundingBox( const QgsPointV2& pt1, const QgsPointV2& pt2, const QgsPointV2& pt3 );
     static QList<QgsPointV2> compassPointsOnSegment( double p1Angle, double p2Angle, double p3Angle, double centerX, double centerY, double radius );

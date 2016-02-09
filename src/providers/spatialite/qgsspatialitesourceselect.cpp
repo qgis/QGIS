@@ -54,7 +54,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::Wind
   btnSave->hide();
   btnLoad->hide();
 
-  mStatsButton = new QPushButton( tr( "&Update statistics" ) );
+  mStatsButton = new QPushButton( tr( "&Update Statistics" ) );
   connect( mStatsButton, SIGNAL( clicked() ), this, SLOT( updateStatistics() ) );
   mStatsButton->setEnabled( false );
 

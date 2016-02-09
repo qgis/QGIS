@@ -51,8 +51,10 @@ class QgsSymbolLayerV2Utils
     static QString encodeSldRealVector( const QVector<qreal>& v );
     static QVector<qreal> decodeSldRealVector( const QString& s );
 
-    static QString encodeOutputUnit( QgsSymbolV2::OutputUnit unit );
-    static QgsSymbolV2::OutputUnit decodeOutputUnit( const QString& str );
+    //! @deprecated use QgsUnitTypes::encodeUnit() instead
+    static QString encodeOutputUnit( QgsSymbolV2::OutputUnit unit ) /Deprecated/;
+    //! @deprecated use QgsUnitTypes::decodeSymbolUnit() instead
+    static QgsSymbolV2::OutputUnit decodeOutputUnit( const QString& str ) /Deprecated/;
 
     static QString encodeSldUom( QgsSymbolV2::OutputUnit unit, double *scaleFactor );
     static QgsSymbolV2::OutputUnit decodeSldUom( const QString& str, double *scaleFactor );
@@ -351,7 +353,7 @@ class QgsSymbolLayerV2Utils
     static void multiplyImageOpacity( QImage* image, qreal alpha );
 
     /** Blurs an image in place, e.g. creating Qt-independent drop shadows */
-    static void blurImageInPlace( QImage& image, const QRect& rect, int radius, bool alphaOnly );
+    static void blurImageInPlace( QImage& image, QRect rect, int radius, bool alphaOnly );
 
     /** Converts a QColor into a premultiplied ARGB QColor value using a specified alpha value
      * @note added in 2.3
@@ -361,7 +363,7 @@ class QgsSymbolLayerV2Utils
     /** Sorts the passed list in requested order*/
     static void sortVariantList( QList<QVariant>& list, Qt::SortOrder order );
     /** Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
-    static QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance );
+    static QPointF pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance );
 
     //! Return a list of all available svg files
     static QStringList listSvgFiles();
@@ -385,7 +387,7 @@ class QgsSymbolLayerV2Utils
     static QPointF polygonPointOnSurface( const QPolygonF& points );
 
     //! Calculate whether a point is within of a QPolygonF
-    static bool pointInPolygon( const QPolygonF &points, const QPointF &point );
+    static bool pointInPolygon( const QPolygonF &points, QPointF point );
 
     /** Return a new valid expression instance for given field or expression string.
      * If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.

@@ -59,7 +59,7 @@ void QgsMapCanvasSnapper::setMapCanvas( QgsMapCanvas* canvas )
   }
 }
 
-int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingResult>& results,
+int QgsMapCanvasSnapper::snapToCurrentLayer( QPoint p, QList<QgsSnappingResult>& results,
     QgsSnapper::SnappingType snap_to,
     double snappingTol,
     const QList<QgsPoint>& excludePoints,
@@ -120,7 +120,7 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
   return 0;
 }
 
-int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints )
+int QgsMapCanvasSnapper::snapToBackgroundLayers( QPoint p, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints )
 {
   const QgsPoint mapCoordPoint = mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( p.x(), p.y() );
   return snapToBackgroundLayers( mapCoordPoint, results, excludePoints );

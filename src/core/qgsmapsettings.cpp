@@ -201,7 +201,7 @@ QSize QgsMapSettings::outputSize() const
   return mSize;
 }
 
-void QgsMapSettings::setOutputSize( const QSize& size )
+void QgsMapSettings::setOutputSize( QSize size )
 {
   mSize = size;
 

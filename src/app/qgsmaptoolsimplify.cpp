@@ -276,7 +276,7 @@ void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent* e )
 }
 
 
-void QgsMapToolSimplify::selectOneFeature( const QPoint& canvasPoint )
+void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
 {
   QgsVectorLayer * vlayer = currentVectorLayer();
   QgsPoint layerCoords = toLayerCoordinates( vlayer, canvasPoint );

@@ -126,8 +126,19 @@ class QgsDataSourceURI
     QString keyColumn() const;
     void setKeyColumn( const QString& column );
 
-    QGis::WkbType wkbType() const;
-    void setWkbType( QGis::WkbType type );
+    /** The (old) wkb type.
+        @deprecated Will return QgsWKBTypes::Type in 3.0. Prefer newWkbType() in the meantime */
+    QGis::WkbType wkbType() const /Deprecated/;
+
+    /** The wkb type.
+        @note Will be removed in 3.0 */
+    QgsWKBTypes::Type newWkbType() const;
+
+    //! @deprecated See setWkbType( QgsWKBTypes::Type )
+    void setWkbType( QGis::WkbType type ) /Deprecated/;
+
+    //! Sets the wkb type
+    void setWkbType( QgsWKBTypes::Type type );
 
     QString srid() const;
     void setSrid( const QString& srid );

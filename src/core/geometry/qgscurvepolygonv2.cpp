@@ -82,14 +82,14 @@ void QgsCurvePolygonV2::clear()
 }
 
 
-bool QgsCurvePolygonV2::fromWkb( const unsigned char* wkb )
+bool QgsCurvePolygonV2::fromWkb( QgsConstWkbPtr wkbPtr )
 {
   clear();
-  if ( !wkb )
+  if ( !wkbPtr )
   {
     return false;
   }
-  QgsConstWkbPtr wkbPtr( wkb );
+
   QgsWKBTypes::Type type = wkbPtr.readHeader();
   if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::CurvePolygon )
   {
@@ -103,10 +103,8 @@ bool QgsCurvePolygonV2::fromWkb( const unsigned char* wkb )
   int currentCurveSize = 0;
   for ( int i = 0; i < nRings; ++i )
   {
-    wkbPtr += 1; //skip endian
-    QgsWKBTypes::Type curveType;
-    wkbPtr >> curveType;
-    wkbPtr -= ( 1 + sizeof( int ) );
+    QgsWKBTypes::Type curveType = wkbPtr.readHeader();
+    wkbPtr -= 1 + sizeof( int );
     if ( curveType == QgsWKBTypes::LineString || curveType == QgsWKBTypes::LineStringZ || curveType == QgsWKBTypes::LineStringM ||
          curveType == QgsWKBTypes::LineStringZM || curveType == QgsWKBTypes::LineString25D )
     {
@@ -149,6 +147,7 @@ bool QgsCurvePolygonV2::fromWkt( const QString& wkt )
 
   if ( QgsWKBTypes::flatType( parts.first ) != QgsWKBTypes::parseType( geometryType() ) )
     return false;
+
   mWkbType = parts.first;
 
   QString defaultChildWkbType = QString( "LineString%1%2" ).arg( is3D() ? "Z" : "", isMeasure() ? "M" : "" );
@@ -233,23 +232,23 @@ unsigned char* QgsCurvePolygonV2::asWkb( int& binarySize ) const
 {
   binarySize = wkbSize();
   unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr );
-  wkb << static_cast<char>( QgsApplication::endian() );
-  wkb << static_cast<quint32>( wkbType() );
-  wkb << static_cast<quint32>(( nullptr != mExteriorRing ) + mInteriorRings.size() );
+  QgsWkbPtr wkbPtr( geomPtr, binarySize );
+  wkbPtr << static_cast<char>( QgsApplication::endian() );
+  wkbPtr << static_cast<quint32>( wkbType() );
+  wkbPtr << static_cast<quint32>(( nullptr != mExteriorRing ) + mInteriorRings.size() );
   if ( mExteriorRing )
   {
     int curveWkbLen = 0;
-    unsigned char* ringWkb = mExteriorRing->asWkb( curveWkbLen );
-    memcpy( wkb, ringWkb, curveWkbLen );
-    wkb += curveWkbLen;
+    unsigned char *ringWkb = mExteriorRing->asWkb( curveWkbLen );
+    memcpy( wkbPtr, ringWkb, curveWkbLen );
+    wkbPtr += curveWkbLen;
   }
   Q_FOREACH ( const QgsCurveV2* curve, mInteriorRings )
   {
     int curveWkbLen = 0;
-    unsigned char* ringWkb = curve->asWkb( curveWkbLen );
-    memcpy( wkb, ringWkb, curveWkbLen );
-    wkb += curveWkbLen;
+    unsigned char *ringWkb = curve->asWkb( curveWkbLen );
+    memcpy( wkbPtr, ringWkb, curveWkbLen );
+    wkbPtr += curveWkbLen;
   }
   return geomPtr;
 }
@@ -646,7 +645,7 @@ bool QgsCurvePolygonV2::nextVertex( QgsVertexId& vId, QgsPointV2& vertex ) const
   }
 }
 
-bool QgsCurvePolygonV2::insertVertex( const QgsVertexId& vId, const QgsPointV2& vertex )
+bool QgsCurvePolygonV2::insertVertex( QgsVertexId vId, const QgsPointV2& vertex )
 {
   if ( !mExteriorRing || vId.ring < 0 || vId.ring >= 1 + mInteriorRings.size() )
   {
@@ -671,7 +670,7 @@ bool QgsCurvePolygonV2::insertVertex( const QgsVertexId& vId, const QgsPointV2& 
   return true;
 }
 
-bool QgsCurvePolygonV2::moveVertex( const QgsVertexId& vId, const QgsPointV2& newPos )
+bool QgsCurvePolygonV2::moveVertex( QgsVertexId vId, const QgsPointV2& newPos )
 {
   if ( !mExteriorRing || vId.ring < 0 || vId.ring >= 1 + mInteriorRings.size() )
   {
@@ -693,7 +692,7 @@ bool QgsCurvePolygonV2::moveVertex( const QgsVertexId& vId, const QgsPointV2& ne
   return success;
 }
 
-bool QgsCurvePolygonV2::deleteVertex( const QgsVertexId& vId )
+bool QgsCurvePolygonV2::deleteVertex( QgsVertexId vId )
 {
   if ( !mExteriorRing || vId.ring < 0 || vId.ring >= 1 + mInteriorRings.size() )
   {
@@ -758,7 +757,7 @@ QgsAbstractGeometryV2* QgsCurvePolygonV2::segmentize() const
   return toPolygon();
 }
 
-double QgsCurvePolygonV2::vertexAngle( const QgsVertexId& vertex ) const
+double QgsCurvePolygonV2::vertexAngle( QgsVertexId vertex ) const
 {
   if ( !mExteriorRing || vertex.ring < 0 || vertex.ring >= 1 + mInteriorRings.size() )
   {
@@ -775,7 +774,7 @@ int QgsCurvePolygonV2::vertexCount( int /*part*/, int ring ) const
   return ring == 0 ? mExteriorRing->vertexCount() : mInteriorRings[ring - 1]->vertexCount();
 }
 
-QgsPointV2 QgsCurvePolygonV2::vertexAt( const QgsVertexId& id ) const
+QgsPointV2 QgsCurvePolygonV2::vertexAt( QgsVertexId id ) const
 {
   return id.ring == 0 ? mExteriorRing->vertexAt( id ) : mInteriorRings[id.ring - 1]->vertexAt( id );
 }

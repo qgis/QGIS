@@ -108,7 +108,8 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry *geom, bool zCoord, d
     return 1;
 
   bool hasZValue = false;
-  QgsConstWkbPtr currentWkbPtr( geom->asWkb() + 1 + sizeof( int ) );
+  QgsConstWkbPtr currentWkbPtr( geom->asWkb(), geom->wkbSize() );
+  currentWkbPtr.readHeader();
   vertexData theVertex; //the current vertex
 
   QGis::WkbType wkbType = geom->wkbType();

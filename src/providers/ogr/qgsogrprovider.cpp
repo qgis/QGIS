@@ -272,7 +272,7 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer(
 QgsOgrProvider::QgsOgrProvider( QString const & uri )
     : QgsVectorDataProvider( uri )
     , ogrDataSource( nullptr )
-    , extent_( nullptr )
+    , mExtent( nullptr )
     , ogrLayer( nullptr )
     , ogrOrigLayer( nullptr )
     , mLayerIndex( 0 )
@@ -374,7 +374,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime );
   }
 
-  QgsOgrConnPool::refS( mFilePath );
+  QgsOgrConnPool::instance()->ref( mFilePath );
 }
 
 QgsOgrProvider::~QgsOgrProvider()
@@ -456,11 +456,7 @@ bool QgsOgrProvider::setSubsetString( const QString& theSQL, bool updateFeatureC
   loadFields();
   QgsDebugMsg( "Done checking validity" );
 
-  if ( extent_ )
-  {
-    free( extent_ );
-    extent_ = nullptr;
-  }
+  updateExtents();
 
   emit dataChanged();
 
@@ -846,9 +842,9 @@ unsigned char * QgsOgrProvider::getGeometryPointer( OGRFeatureH fet )
 
 QgsRectangle QgsOgrProvider::extent()
 {
-  if ( !extent_ )
+  if ( !mExtent )
   {
-    extent_ = calloc( sizeof( OGREnvelope ), 1 );
+    mExtent = new OGREnvelope();
 
     // get the extent_ (envelope) of the layer
     QgsDebugMsg( "Starting get extent" );
@@ -856,16 +852,14 @@ QgsRectangle QgsOgrProvider::extent()
     // TODO: This can be expensive, do we really need it!
     if ( ogrLayer == ogrOrigLayer )
     {
-      OGR_L_GetExtent( ogrLayer, ( OGREnvelope * ) extent_, true );
+      OGR_L_GetExtent( ogrLayer, mExtent, true );
     }
     else
     {
-      OGREnvelope *bb = static_cast<OGREnvelope*>( extent_ );
-
-      bb->MinX = std::numeric_limits<double>::max();
-      bb->MinY = std::numeric_limits<double>::max();
-      bb->MaxX = -std::numeric_limits<double>::max();
-      bb->MaxY = -std::numeric_limits<double>::max();
+      mExtent->MinX = std::numeric_limits<double>::max();
+      mExtent->MinY = std::numeric_limits<double>::max();
+      mExtent->MaxX = -std::numeric_limits<double>::max();
+      mExtent->MaxY = -std::numeric_limits<double>::max();
 
       OGRFeatureH f;
 
@@ -878,10 +872,10 @@ QgsRectangle QgsOgrProvider::extent()
           OGREnvelope env;
           OGR_G_GetEnvelope( g, &env );
 
-          if ( env.MinX < bb->MinX ) bb->MinX = env.MinX;
-          if ( env.MinY < bb->MinY ) bb->MinY = env.MinY;
-          if ( env.MaxX > bb->MaxX ) bb->MaxX = env.MaxX;
-          if ( env.MaxY > bb->MaxY ) bb->MaxY = env.MaxY;
+          mExtent->MinX = qMin( mExtent->MinX, env.MinX );
+          mExtent->MinY = qMin( mExtent->MinY, env.MinY );
+          mExtent->MaxX = qMin( mExtent->MaxX, env.MaxX );
+          mExtent->MaxY = qMin( mExtent->MaxY, env.MaxY );
         }
 
         OGR_F_Destroy( f );
@@ -892,18 +886,14 @@ QgsRectangle QgsOgrProvider::extent()
     QgsDebugMsg( "Finished get extent" );
   }
 
-  OGREnvelope *ext = static_cast<OGREnvelope *>( extent_ );
-  mExtentRect.set( ext->MinX, ext->MinY, ext->MaxX, ext->MaxY );
+  mExtentRect.set( mExtent->MinX, mExtent->MinY, mExtent->MaxX, mExtent->MaxY );
   return mExtentRect;
 }
 
 void QgsOgrProvider::updateExtents()
 {
-  if ( extent_ )
-  {
-    free( extent_ );
-    extent_ = nullptr;
-  }
+  delete mExtent;
+  mExtent = nullptr;
 }
 
 size_t QgsOgrProvider::layerCount() const
@@ -1409,11 +1399,7 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
 
   clearMinMaxCache();
 
-  if ( extent_ )
-  {
-    free( extent_ );
-    extent_ = nullptr;
-  }
+  updateExtents();
 
   return returnvalue;
 }
@@ -1556,6 +1542,12 @@ int QgsOgrProvider::capabilities() const
         // on readonly shapes OGR reports that it can delete features although it can't RandomWrite
         ability &= ~( AddAttributes | DeleteFeatures );
       }
+    }
+
+    /* Curve geometries are available in some drivers starting with GDAL 2.0 */
+    if ( OGR_L_TestCapability( ogrLayer, "CurveGeometries" ) )
+    {
+      ability |= CircularGeometries;
     }
 
     // supports geometry simplification on provider side
@@ -2598,7 +2590,7 @@ QString QgsOgrUtils::quotedValue( const QVariant& value )
 bool QgsOgrProvider::syncToDisc()
 {
   //for shapefiles, remove spatial index files and create a new index
-  QgsOgrConnPool::unrefS( mFilePath );
+  QgsOgrConnPool::instance()->unref( mFilePath );
   bool shapeIndex = false;
   if ( ogrDriverName == "ESRI Shapefile" )
   {
@@ -2629,7 +2621,7 @@ bool QgsOgrProvider::syncToDisc()
 
   mShapefileMayBeCorrupted = false;
 
-  QgsOgrConnPool::refS( mFilePath );
+  QgsOgrConnPool::instance()->ref( mFilePath );
   if ( shapeIndex )
   {
     return createSpatialIndex();
@@ -2840,13 +2832,9 @@ void QgsOgrProvider::close()
   }
   ogrDataSource = nullptr;
 
-  if ( extent_ )
-  {
-    free( extent_ );
-    extent_ = nullptr;
-  }
+  updateExtents();
 
-  QgsOgrConnPool::unrefS( mFilePath );
+  QgsOgrConnPool::instance()->unref( mFilePath );
 }
 
 // ---------------------------------------------------------------------------
@@ -2869,5 +2857,7 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
 
 QGISEXTERN void cleanupProvider()
 {
-  OGRCleanupAll();
+  QgsOgrConnPool::cleanupInstance();
+  // NOTE: QgsApplication takes care of
+  // calling OGRCleanupAll();
 }

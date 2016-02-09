@@ -17,7 +17,7 @@ class QgsGeometrySelfIntersectionCheckError : public QgsGeometryCheckError
     QgsGeometrySelfIntersectionCheckError( const QgsGeometryCheck* check,
                                            QgsFeatureId featureId,
                                            const QgsPointV2& errorLocation,
-                                           const QgsVertexId& vidx,
+                                           QgsVertexId vidx,
                                            const QgsGeometryUtils::SelfIntersection& inter )
         : QgsGeometryCheckError( check, featureId, errorLocation, vidx ), mInter( inter ) { }
     const QgsGeometryUtils::SelfIntersection& intersection() const { return mInter; }

@@ -75,17 +75,17 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
   {
     case CapturePoint:
     {
-      QgsPoint layerPoint;
+      QgsPointV2 layerPoint;
       QgsPoint mapPoint = e->mapPoint();
 
-      if ( nextPoint( mapPoint, layerPoint ) != 0 )
+      if ( nextPoint( QgsPointV2( mapPoint ), layerPoint ) != 0 )
       {
         QgsDebugMsg( "nextPoint failed" );
         return;
       }
 
       vlayer->beginEditCommand( tr( "Part added" ) );
-      errorCode = vlayer->addPart( QList<QgsPoint>() << layerPoint );
+      errorCode = vlayer->addPart( QList<QgsPointV2>() << layerPoint );
     }
     break;
 

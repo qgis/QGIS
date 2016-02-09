@@ -65,7 +65,7 @@ int QgsComposerImageExportOptionsDialog::resolution() const
   return mResolutionSpinBox->value();
 }
 
-void QgsComposerImageExportOptionsDialog::setImageSize( const QSizeF& size )
+void QgsComposerImageExportOptionsDialog::setImageSize( QSizeF size )
 {
   mImageSize = size;
   mWidthSpinBox->blockSignals( true );

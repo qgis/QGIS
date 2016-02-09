@@ -14,7 +14,6 @@ __revision__ = '$Format:%H$'
 
 import qgis
 import os
-import unittest
 
 from PyQt4.QtCore import QFileInfo, QObject, SIGNAL
 from PyQt4 import QtGui
@@ -31,16 +30,17 @@ from qgis.core import (QgsRaster,
                        QgsRenderChecker,
                        QgsSingleBandGrayRenderer,
                        QgsSingleBandPseudoColorRenderer)
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase)
+from utilities import unitTestDataPath
+from qgis.testing import (start_app,
+                          unittest
+                          )
 
 # Convenience instances in case you may need them
 # not used in this test
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
 
-class TestQgsRasterLayer(TestCase):
+class TestQgsRasterLayer(unittest.TestCase):
 
     def testIdentify(self):
         myPath = os.path.join(unitTestDataPath(), 'landsat.tif')

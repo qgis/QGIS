@@ -54,7 +54,7 @@ class QgsRendererV2Widget : QWidget
     virtual void refreshSymbolView();
 
   protected slots:
-    void  contextMenuViewCategories( const QPoint& p );
+    void  contextMenuViewCategories( QPoint p );
     /** Change color of selected symbols*/
     void changeSymbolColor();
     /** Change opacity of selected symbols*/

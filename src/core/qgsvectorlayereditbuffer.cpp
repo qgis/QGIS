@@ -161,7 +161,7 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
   return true;
 }
 
-bool QgsVectorLayerEditBuffer::deleteFeatures( QgsFeatureIds fids )
+bool QgsVectorLayerEditBuffer::deleteFeatures( const QgsFeatureIds& fids )
 {
   if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
     return false;

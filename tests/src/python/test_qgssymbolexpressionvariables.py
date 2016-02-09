@@ -28,39 +28,43 @@ import os
 
 from PyQt4.QtCore import QSize
 
-from qgis.core import (QgsVectorLayer,
-                       QgsMapLayerRegistry,
-                       QgsRectangle,
-                       QgsMultiRenderChecker,
-                       QgsSingleSymbolRendererV2,
-                       QgsFillSymbolV2,
-                       QgsMarkerSymbolV2,
-                       QgsRendererCategoryV2,
-                       QgsCategorizedSymbolRendererV2,
-                       QgsGraduatedSymbolRendererV2,
-                       QgsRendererRangeV2,
-                       QgsFeatureRequest
-                       )
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
-# Convenience instances in case you may need them
-# not used in this test
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.core import (
+    QgsVectorLayer,
+    QgsMapLayerRegistry,
+    QgsRectangle,
+    QgsMultiRenderChecker,
+    QgsSingleSymbolRendererV2,
+    QgsFillSymbolV2,
+    QgsMarkerSymbolV2,
+    QgsRendererCategoryV2,
+    QgsCategorizedSymbolRendererV2,
+    QgsGraduatedSymbolRendererV2,
+    QgsRendererRangeV2,
+    QgsFeatureRequest
+)
+
+from qgis.testing import (
+    unittest,
+    start_app
+)
+from qgis.testing.mocked import get_iface
+
+from utilities import unitTestDataPath
+
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsSymbolExpressionVariables(TestCase):
+class TestQgsSymbolExpressionVariables(unittest.TestCase):
 
     def setUp(self):
         myShpFile = os.path.join(TEST_DATA_DIR, 'polys.shp')
         self.layer = QgsVectorLayer(myShpFile, 'Polys', 'ogr')
         QgsMapLayerRegistry.instance().addMapLayer(self.layer)
 
+        self.iface = get_iface()
         rendered_layers = [self.layer.id()]
-        self.mapsettings = CANVAS.mapSettings()
+        self.mapsettings = self.iface.mapCanvas().mapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
         self.mapsettings.setOutputDpi(96)
         self.mapsettings.setExtent(QgsRectangle(-163, 22, -70, 52))

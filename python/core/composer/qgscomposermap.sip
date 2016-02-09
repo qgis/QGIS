@@ -105,7 +105,7 @@ class QgsComposerMap : QgsComposerItem
         @param dpi scene dpi
         @param forceWidthScale force wysiwyg line widths / marker sizes
     */
-    void draw( QPainter *painter, const QgsRectangle& extent, const QSizeF& size, double dpi, double* forceWidthScale = 0 );
+    void draw( QPainter *painter, const QgsRectangle& extent, QSizeF size, double dpi, double* forceWidthScale = 0 );
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
@@ -115,7 +115,7 @@ class QgsComposerMap : QgsComposerItem
 
     /** Return map settings that would be used for drawing of the map
      *  @note added in 2.6 */
-    QgsMapSettings mapSettings( const QgsRectangle& extent, const QSizeF& size, int dpi ) const;
+    QgsMapSettings mapSettings( const QgsRectangle& extent, QSizeF size, int dpi ) const;
 
     /** \brief Get identification number*/
     int id() const;
@@ -738,7 +738,7 @@ class QgsComposerMap : QgsComposerItem
     QPolygonF transformedMapPolygon() const;
 
     /** Transforms map coordinates to item coordinates (considering rotation and move offset)*/
-    QPointF mapToItemCoords( const QPointF& mapCoords ) const;
+    QPointF mapToItemCoords( QPointF mapCoords ) const;
 
     //! @deprecated will be removed in QGIS 3.0
     void connectMapOverviewSignals() /Deprecated/;

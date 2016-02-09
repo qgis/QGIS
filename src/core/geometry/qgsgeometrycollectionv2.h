@@ -81,7 +81,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 #endif
     virtual void draw( QPainter& p ) const override;
 
-    bool fromWkb( const unsigned char * wkb ) override;
+    bool fromWkb( QgsConstWkbPtr wkb ) override;
     virtual bool fromWkt( const QString& wkt ) override;
     int wkbSize() const override;
     unsigned char* asWkb( int& binarySize ) const override;
@@ -97,9 +97,9 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
     //low-level editing
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override;
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) override;
-    virtual bool deleteVertex( const QgsVertexId& position ) override;
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override;
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
+    virtual bool deleteVertex( QgsVertexId position ) override;
 
     virtual double length() const override;
     virtual double area() const override;
@@ -113,12 +113,12 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
         @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
-    double vertexAngle( const QgsVertexId& vertex ) const override;
+    double vertexAngle( QgsVertexId vertex ) const override;
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const override { return mGeometries[part]->vertexCount( 0, ring ); }
     virtual int ringCount( int part = 0 ) const override { return mGeometries[part]->ringCount(); }
     virtual int partCount() const override { return mGeometries.size(); }
-    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const override { return mGeometries[id.part]->vertexAt( id ); }
+    virtual QgsPointV2 vertexAt( QgsVertexId id ) const override { return mGeometries[id.part]->vertexAt( id ); }
 
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;

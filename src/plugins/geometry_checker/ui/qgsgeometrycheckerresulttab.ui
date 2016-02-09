@@ -14,7 +14,16 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item row="0" column="0">
@@ -30,8 +39,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>572</width>
-        <height>416</height>
+        <width>571</width>
+        <height>395</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
@@ -98,7 +107,16 @@
           <property name="spacing">
            <number>0</number>
           </property>
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
@@ -143,7 +161,16 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <property name="spacing">
@@ -204,7 +231,16 @@
           <property name="spacing">
            <number>0</number>
           </property>
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
          </layout>
@@ -216,7 +252,16 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item row="3" column="1">
@@ -325,7 +370,16 @@
        <item row="6" column="0">
         <widget class="QWidget" name="widgetMergeAttribute" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
@@ -347,6 +401,20 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>tableWidgetErrors</tabstop>
+  <tabstop>pushButtonExport</tabstop>
+  <tabstop>radioButtonError</tabstop>
+  <tabstop>radioButtonFeature</tabstop>
+  <tabstop>radioButtonDontMove</tabstop>
+  <tabstop>checkBoxHighlight</tabstop>
+  <tabstop>pushButtonOpenAttributeTable</tabstop>
+  <tabstop>pushButtonFixWithDefault</tabstop>
+  <tabstop>pushButtonFixWithPrompt</tabstop>
+  <tabstop>pushButtonErrorResolutionSettings</tabstop>
+  <tabstop>comboBoxMergeAttribute</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../../images/images.qrc"/>
  </resources>

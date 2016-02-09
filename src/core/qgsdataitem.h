@@ -119,28 +119,46 @@ class CORE_EXPORT QgsDataItem : public QObject
     //! @deprecated in 2.8, use state()
     Q_DECL_DEPRECATED bool isPopulated() { return state() == Populated; }
 
-    // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
-    // refresh - refresh populated item, emit signals to model
+    /** Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
+     * @param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
+     * @param refresh - set to true to refresh populated item, emitting relevant signals to the model
+     * @see deleteChildItem()
+     */
     virtual void addChildItem( QgsDataItem *child, bool refresh = false );
 
-    // remove and delete child item, signals to browser are emitted
+    /** Removes and deletes a child item, emitting relevant signals to the model.
+     * @param child child to remove. Item must exist as a current child.
+     * @see addChildItem()
+     */
     virtual void deleteChildItem( QgsDataItem * child );
 
-    // remove child item but don't delete it, signals to browser are emitted
-    // returns pointer to the removed item or null if no such item was found
+    /** Removes a child item and returns it without deleting it. Emits relevant signals to model as required.
+     * @param child child to remove
+     * @returns pointer to the removed item or null if no such item was found
+     */
     virtual QgsDataItem *removeChildItem( QgsDataItem * child );
 
+    /** Returns true if this item is equal to another item (by testing item type and path).
+     */
     virtual bool equal( const QgsDataItem *other );
 
     virtual QWidget *paramWidget() { return nullptr; }
 
-    // list of actions provided by this item - usually used for popup menu on right-click
+    /** Returns the list of actions available for this item. This is usually used for the popup menu on right-clicking
+     * the item. Subclasses should override this to provide actions.
+     */
     virtual QList<QAction*> actions() { return QList<QAction*>(); }
 
-    // whether accepts drag&drop'd layers - e.g. for import
+    /** Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
+     * Subclasses should override this and handleDrop() to accept dropped layers.
+     * @see handleDrop()
+     */
     virtual bool acceptDrop() { return false; }
 
-    // try to process the data dropped on this item
+    /** Attempts to process the mime data dropped on this item. Subclasses must override this and acceptDrop() if they
+     * accept dropped layers.
+     * @see acceptDrop()
+     */
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) { return false; }
 
     enum Capability

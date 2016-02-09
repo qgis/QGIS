@@ -1,5 +1,5 @@
 /***************************************************************************
-     testqgsrectangle.cpp
+     testqgsdatasourceuri.cpp
      --------------------------------------
     Date                 : Thu Apr 16 2015
     Copyright            : (C) 2015 by Sandro Mani
@@ -18,7 +18,7 @@
 //header for class being tested
 #include <qgsdatasourceuri.h>
 
-Q_DECLARE_METATYPE( QGis::WkbType )
+Q_DECLARE_METATYPE( QgsWKBTypes::Type )
 Q_DECLARE_METATYPE( QgsDataSourceURI::SSLmode )
 
 class TestQgsDataSourceUri: public QObject
@@ -37,7 +37,7 @@ void TestQgsDataSourceUri::checkparser_data()
   QTest::addColumn<QString>( "key" );
   QTest::addColumn<bool>( "estimatedmetadata" );
   QTest::addColumn<QString>( "srid" );
-  QTest::addColumn<QGis::WkbType>( "type" );
+  QTest::addColumn<QgsWKBTypes::Type>( "type" );
   QTest::addColumn<bool>( "selectatid" );
   QTest::addColumn<QString>( "service" );
   QTest::addColumn<QString>( "user" );
@@ -56,7 +56,7 @@ void TestQgsDataSourceUri::checkparser_data()
   << "" // key
   << true // estimatedmetadata
   << "1000003007" // srid
-  << QGis::WKBUnknown // type
+  << QgsWKBTypes::Unknown // type
   << false // selectatid
   << "" // service
   << "myname" // user
@@ -76,7 +76,7 @@ void TestQgsDataSourceUri::checkparser_data()
   << "" // key
   << false // estimatedmetadata
   << "" // srid
-  << QGis::WKBUnknown // type
+  << QgsWKBTypes::Unknown // type
   << false // selectatid
   << "" // service
   << "myname" // user
@@ -89,6 +89,25 @@ void TestQgsDataSourceUri::checkparser_data()
   << "" // myparam
   ;
 
+  QTest::newRow( "pgmlsz" )
+  << "PG: dbname=mydb host=myhost user=myname password=mypasswd port=5432 mode=2 schema=public column=geom table=mytable type=MultiLineStringZ"
+  << "mytable" // table
+  << "" // geometrycolumn
+  << "" // key
+  << false // estimatedmetadata
+  << "" // srid
+  << QgsWKBTypes::MultiLineStringZ // type
+  << false // selectatid
+  << "" // service
+  << "myname" // user
+  << "mypasswd" // password
+  << "mydb" // dbname
+  << "myhost" // host
+  << "5432" // port
+  << QgsDataSourceURI::SSLprefer // sslmode
+  << "" // sql
+  << "" // myparam
+  ;
 }
 
 void TestQgsDataSourceUri::checkparser()
@@ -99,7 +118,7 @@ void TestQgsDataSourceUri::checkparser()
   QFETCH( QString, key );
   QFETCH( bool, estimatedmetadata );
   QFETCH( QString, srid );
-  QFETCH( QGis::WkbType, type );
+  QFETCH( QgsWKBTypes::Type, type );
   QFETCH( bool, selectatid );
   QFETCH( QString, service );
   QFETCH( QString, user );
@@ -117,7 +136,7 @@ void TestQgsDataSourceUri::checkparser()
   QCOMPARE( ds.keyColumn(), key );
   QCOMPARE( ds.useEstimatedMetadata(), estimatedmetadata );
   QCOMPARE( ds.srid(), srid );
-  QCOMPARE( ds.wkbType(), type );
+  QCOMPARE( ds.newWkbType(), type );
   QCOMPARE( ds.selectAtIdDisabled(), selectatid );
   QCOMPARE( ds.service(), service );
   QCOMPARE( ds.username(), user );

@@ -98,14 +98,14 @@ class CORE_EXPORT QGis
     static bool isMultiType( WkbType type );
 
     // get dimension of points
-    // @deprecated use QgsWKBTypes::hasZ() and QgsWKBTypes::hasM()
+    // @deprecated use QgsWKBTypes::coordDimensions()
     /* Q_DECL_DEPRECATED */
     static int wkbDimensions( WkbType type );
 
-    //! Converts from old (pre 2.10) WKB type to new WKB type
+    //! Converts from old (pre 2.10) WKB type (OGR) to new WKB type
     static QgsWKBTypes::Type fromOldWkbType( QGis::WkbType type );
 
-    //! Converts from new (post 2.10) WKB type to old WKB type
+    //! Converts from new (post 2.10) WKB type (OGC) to old WKB type
     static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
 
     enum GeometryType
@@ -151,6 +151,7 @@ class CORE_EXPORT QGis
      * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
      * @note and QGIS >1.8 returns to that
      */
+    //TODO QGIS 3.0 - clean up and move to QgsUnitTypes and rename to DistanceUnit
     enum UnitType
     {
       Meters = 0,
@@ -166,15 +167,24 @@ class CORE_EXPORT QGis
     };
 
     //! Provides the canonical name of the type value
-    static QString toLiteral( QGis::UnitType unit );
+    //! @deprecated use QgsUnitTypes::encodeUnit() instead
+    Q_DECL_DEPRECATED static QString toLiteral( QGis::UnitType unit );
+
     //! Converts from the canonical name to the type value
-    static UnitType fromLiteral( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
+    //! @deprecated use QgsUnitTypes::decodeDistanceUnit() instead
+    Q_DECL_DEPRECATED static UnitType fromLiteral( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
+
     //! Provides translated version of the type value
-    static QString tr( QGis::UnitType unit );
+    //! @deprecated use QgsUnitTypes::toString() instead
+    Q_DECL_DEPRECATED static QString tr( QGis::UnitType unit );
+
     //! Provides type value from translated version
-    static UnitType fromTr( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
+    //! @deprecated use QgsUnitTypes::stringToDistanceUnit() instead
+    Q_DECL_DEPRECATED static UnitType fromTr( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
+
     //! Returns the conversion factor between the specified units
-    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
+    //! @deprecated use QgsUnitTyoes::fromUnitToUnitFactor() instead
+    Q_DECL_DEPRECATED static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
 
     /** Converts a string to a double in a permissive way, eg allowing for incorrect
      * numbers of digits between thousand separators

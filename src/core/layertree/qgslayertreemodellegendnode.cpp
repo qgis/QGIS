@@ -88,7 +88,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings& setting
 }
 
 
-QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings& settings, ItemContext* ctx, const QSizeF& symbolSize ) const
+QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings& settings, ItemContext* ctx, QSizeF symbolSize ) const
 {
   QSizeF labelSize( 0, 0 );
 

@@ -25,7 +25,7 @@ class QgsSnapIndex
   public:
     struct CoordIdx
     {
-      CoordIdx( const QgsAbstractGeometryV2* _geom, const QgsVertexId& _vidx )
+      CoordIdx( const QgsAbstractGeometryV2* _geom, QgsVertexId _vidx )
           : geom( _geom ), vidx( _vidx )
       {}
       QgsPointV2 point() const { return geom->vertexAt( vidx ); }

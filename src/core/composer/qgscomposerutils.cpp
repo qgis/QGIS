@@ -64,7 +64,7 @@ void QgsComposerUtils::drawArrowHead( QPainter *p, const double x, const double 
   p->restore();
 }
 
-double QgsComposerUtils::angle( const QPointF &p1, const QPointF &p2 )
+double QgsComposerUtils::angle( QPointF p1, QPointF p2 )
 {
   double xDiff = p2.x() - p1.x();
   double yDiff = p2.y() - p1.y();
@@ -463,7 +463,7 @@ double QgsComposerUtils::fontHeightMM( const QFont &font )
   return ( fontMetrics.height() / FONT_WORKAROUND_SCALE );
 }
 
-double QgsComposerUtils::fontHeightCharacterMM( const QFont &font, const QChar &character )
+double QgsComposerUtils::fontHeightCharacterMM( const QFont &font, QChar character )
 {
   //upscale using FONT_WORKAROUND_SCALE
   //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
@@ -497,7 +497,7 @@ double QgsComposerUtils::textHeightMM( const QFont &font, const QString &text, d
   return textHeight / FONT_WORKAROUND_SCALE;
 }
 
-void QgsComposerUtils::drawText( QPainter *painter, const QPointF &pos, const QString &text, const QFont &font, const QColor &color )
+void QgsComposerUtils::drawText( QPainter *painter, QPointF pos, const QString &text, const QFont &font, const QColor &color )
 {
   if ( !painter )
   {

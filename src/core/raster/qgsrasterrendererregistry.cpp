@@ -98,7 +98,7 @@ QList< QgsRasterRendererRegistryEntry > QgsRasterRendererRegistry::entries() con
   return result;
 }
 
-QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( const QgsRaster::DrawingStyle&  theDrawingStyle, QgsRasterDataProvider* provider ) const
+QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( QgsRaster::DrawingStyle theDrawingStyle, QgsRasterDataProvider* provider ) const
 {
   if ( !provider || provider->bandCount() < 1 )
   {

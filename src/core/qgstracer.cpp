@@ -28,7 +28,7 @@ typedef std::pair<int, double> DijkstraQueueItem; // first = vertex index, secon
 // utility comparator for queue items based on distance
 struct comp
 {
-  bool operator()( const DijkstraQueueItem &a, const DijkstraQueueItem &b )
+  bool operator()( DijkstraQueueItem a, DijkstraQueueItem b )
   {
     return a.second > b.second;
   }
@@ -123,7 +123,7 @@ QgsTracerGraph* makeGraph( const QVector<QgsPolyline>& edges )
   g->joinedVertices = 0;
   QHash<QgsPoint, int> point2vertex;
 
-  foreach ( const QgsPolyline& line, edges )
+  Q_FOREACH ( const QgsPolyline& line, edges )
   {
     QgsPoint p1( line[0] );
     QgsPoint p2( line[line.count() - 1] );
@@ -243,7 +243,7 @@ QVector<QgsPoint> shortestPath( const QgsTracerGraph& g, int v1, int v2 )
   }
 
   std::reverse( path.begin(), path.end() );
-  //foreach (int x, path)
+  //Q_FOREACH (int x, path)
   //  qDebug("e: %d", x);
 
   std::reverse( points.begin(), points.end() );
@@ -377,7 +377,7 @@ void resetGraph( QgsTracerGraph& g )
   g.joinedVertices = 0;
 
   // fix vertices of deactivated edges
-  foreach ( int eIdx, g.inactiveEdges )
+  Q_FOREACH ( int eIdx, g.inactiveEdges )
   {
     if ( eIdx >= g.e.count() )
       continue;
@@ -412,18 +412,18 @@ void extractLinework( const QgsGeometry* g, QgsMultiPolyline& mpl )
       break;
 
     case QgsWKBTypes::Polygon:
-      foreach ( const QgsPolyline& ring, g->asPolygon() )
+      Q_FOREACH ( const QgsPolyline& ring, g->asPolygon() )
         mpl << ring;
       break;
 
     case QgsWKBTypes::MultiLineString:
-      foreach ( const QgsPolyline& linestring, g->asMultiPolyline() )
+      Q_FOREACH ( const QgsPolyline& linestring, g->asMultiPolyline() )
         mpl << linestring;
       break;
 
     case QgsWKBTypes::MultiPolygon:
-      foreach ( const QgsPolygon& polygon, g->asMultiPolygon() )
-        foreach ( const QgsPolyline& ring, polygon )
+      Q_FOREACH ( const QgsPolygon& polygon, g->asMultiPolygon() )
+        Q_FOREACH ( const QgsPolyline& ring, polygon )
           mpl << ring;
       break;
 
@@ -459,7 +459,7 @@ bool QgsTracer::initGraph()
 
   t1.start();
   int featuresCounted = 0;
-  foreach ( QgsVectorLayer* vl, mLayers )
+  Q_FOREACH ( QgsVectorLayer* vl, mLayers )
   {
     QgsCoordinateTransform ct( vl->crs(), mCRS );
 
@@ -545,7 +545,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer*>& layers )
   if ( mLayers == layers )
     return;
 
-  foreach ( QgsVectorLayer* layer, mLayers )
+  Q_FOREACH ( QgsVectorLayer* layer, mLayers )
   {
     disconnect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
     disconnect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
@@ -555,7 +555,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer*>& layers )
 
   mLayers = layers;
 
-  foreach ( QgsVectorLayer* layer, mLayers )
+  Q_FOREACH ( QgsVectorLayer* layer, mLayers )
   {
     connect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
     connect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );

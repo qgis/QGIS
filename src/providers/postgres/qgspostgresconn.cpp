@@ -523,6 +523,10 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.tableName = tableName;
       layerProperty.geometryColName = column;
       layerProperty.geometryColType = columnType;
+      if ( dim == 3 && !type.endsWith( 'M' ) )
+        type += "Z";
+      else if ( dim == 4 )
+        type += "ZM";
       layerProperty.types = QList<QGis::WkbType>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
       layerProperty.srids = QList<int>() << srid;
       layerProperty.sql = "";

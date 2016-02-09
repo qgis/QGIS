@@ -63,13 +63,13 @@ class QgsPoint
      * @param point QPointF source
      * @note added in QGIS 2.7
      */
-    QgsPoint( const QPointF& point );
+    QgsPoint( QPointF point );
 
     /** Create a point from a QPoint
      * @param point QPoint source
      * @note added in QGIS 2.7
      */
-    QgsPoint( const QPoint& point );
+    QgsPoint( QPoint point );
 
     ~QgsPoint();
 
@@ -164,7 +164,7 @@ class QgsPoint
     bool operator!=( const QgsPoint &other ) const;
 
     //! Multiply x and y by the given value
-    void multiply( const double& scalar );
+    void multiply( double scalar );
 
     //! Test if this point is on the segment defined by points a, b
     //! @return 0 if this point is not on the open ray through a and b,

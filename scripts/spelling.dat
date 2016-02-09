@@ -94,6 +94,7 @@ langugage:language
 taht:that
 developped:developed
 artifical:artificial
+artefact:artifact
 milliseonds:milliseconds
 pased:passed
 becomming:becoming
@@ -484,3 +485,14 @@ occurence:occurrence
 overide:override
 supress:suppress
 surpress:suppress
+artefact:artifact
+artefacts:artifacts
+metres:meters
+millimetre:millimeter
+millimetres:millimeters
+centimetre:centimeter
+centimetres:centimeters
+kilometre:kilometer
+kilometres:kilometers
+unselect:deselect
+

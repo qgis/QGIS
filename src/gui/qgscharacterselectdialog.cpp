@@ -53,7 +53,7 @@ const QChar& QgsCharacterSelectorDialog::selectCharacter( bool* gotChar, const Q
   return mChar;
 }
 
-void QgsCharacterSelectorDialog::setCharacter( const QChar & chr )
+void QgsCharacterSelectorDialog::setCharacter( QChar chr )
 {
   mChar = chr;
 }

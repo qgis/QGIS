@@ -64,7 +64,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         void setName( const QString& name ) { mName = name; }
 
         Type type() const { return mType; }
-        void setType( const Type& type ) { mType = type; }
+        void setType( Type type ) { mType = type; }
 
         QVariant asQVariant() { return QVariant::fromValue<DesignerTreeItemData>( *this ); }
 
@@ -129,7 +129,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
                           const QString &initFunction,
                           const QString &initCode,
                           const QString &initFilePath,
-                          const QgsEditFormConfig::PythonInitCodeSource &codeSource );
+                          QgsEditFormConfig::PythonInitCodeSource codeSource );
 
   signals:
     void toggleEditing();

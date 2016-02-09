@@ -352,7 +352,7 @@ double QgsComposerMouseHandles::rectHandlerBorderTolerance()
   return rectHandlerSize;
 }
 
-Qt::CursorShape QgsComposerMouseHandles::cursorForPosition( const QPointF& itemCoordPos )
+Qt::CursorShape QgsComposerMouseHandles::cursorForPosition( QPointF itemCoordPos )
 {
   QgsComposerMouseHandles::MouseAction mouseAction = mouseActionForPosition( itemCoordPos );
   switch ( mouseAction )
@@ -444,7 +444,7 @@ Qt::CursorShape QgsComposerMouseHandles::cursorForPosition( const QPointF& itemC
   }
 }
 
-QgsComposerMouseHandles::MouseAction QgsComposerMouseHandles::mouseActionForPosition( const QPointF& itemCoordPos )
+QgsComposerMouseHandles::MouseAction QgsComposerMouseHandles::mouseActionForPosition( QPointF itemCoordPos )
 {
   bool nearLeftBorder = false;
   bool nearRightBorder = false;
@@ -537,7 +537,7 @@ QgsComposerMouseHandles::MouseAction QgsComposerMouseHandles::mouseActionForPosi
   return QgsComposerMouseHandles::SelectItem;
 }
 
-QgsComposerMouseHandles::MouseAction QgsComposerMouseHandles::mouseActionForScenePos( const QPointF& sceneCoordPos )
+QgsComposerMouseHandles::MouseAction QgsComposerMouseHandles::mouseActionForScenePos( QPointF sceneCoordPos )
 {
   // convert sceneCoordPos to item coordinates
   QPointF itemPos = mapFromScene( sceneCoordPos );
@@ -748,7 +748,7 @@ void QgsComposerMouseHandles::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *e
   Q_UNUSED( event );
 }
 
-QSizeF QgsComposerMouseHandles::calcCursorEdgeOffset( const QPointF &cursorPos )
+QSizeF QgsComposerMouseHandles::calcCursorEdgeOffset( QPointF cursorPos )
 {
   //find offset between cursor position and actual edge of item
   QPointF sceneMousePos = mapFromScene( cursorPos );
@@ -788,7 +788,7 @@ QSizeF QgsComposerMouseHandles::calcCursorEdgeOffset( const QPointF &cursorPos )
 
 }
 
-void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition, bool lockMovement, bool preventSnap )
+void QgsComposerMouseHandles::dragMouseMove( QPointF currentPosition, bool lockMovement, bool preventSnap )
 {
   if ( !mComposition )
   {
@@ -842,7 +842,7 @@ void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition, boo
   mComposition->setStatusMessage( QString( tr( "dx: %1 mm dy: %2 mm" ) ).arg( moveRectX ).arg( moveRectY ) );
 }
 
-void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, bool lockRatio, bool fromCenter )
+void QgsComposerMouseHandles::resizeMouseMove( QPointF currentPosition, bool lockRatio, bool fromCenter )
 {
 
   if ( !mComposition )
@@ -1097,7 +1097,7 @@ void QgsComposerMouseHandles::resizeMouseMove( const QPointF& currentPosition, b
   mComposition->setStatusMessage( QString( tr( "width: %1 mm height: %2 mm" ) ).arg( rect().width() ).arg( rect().height() ) );
 }
 
-QPointF QgsComposerMouseHandles::snapPoint( const QPointF& point, QgsComposerMouseHandles::SnapGuideMode mode )
+QPointF QgsComposerMouseHandles::snapPoint( QPointF point, QgsComposerMouseHandles::SnapGuideMode mode )
 {
   //snap to grid
   QPointF snappedPoint = mComposition->snapPointToGrid( point );
@@ -1245,7 +1245,7 @@ QPointF QgsComposerMouseHandles::alignItem( double& alignX, double& alignY, doub
   return QPointF( xCoord, yCoord );
 }
 
-QPointF QgsComposerMouseHandles::alignPos( const QPointF& pos, double& alignX, double& alignY )
+QPointF QgsComposerMouseHandles::alignPos( QPointF pos, double& alignX, double& alignY )
 {
   QMap<double, const QgsComposerItem* > xAlignCoordinates;
   QMap<double, const QgsComposerItem* > yAlignCoordinates;

@@ -372,7 +372,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString& conn
 
   uri.setDataSource( schemaName, tableName, geomColumnName, sql, cols.join( "," ) );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
-  uri.setWkbType( wkbType );
+  uri.setWkbType( QGis::fromOldWkbType( wkbType ) );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
 

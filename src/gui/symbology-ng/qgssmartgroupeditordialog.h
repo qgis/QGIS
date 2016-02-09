@@ -79,7 +79,7 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
 
     //! sets up the GUI for the given conditionmap
     //! @note not available in python bindings
-    void setConditionMap( QgsSmartConditionMap );
+    void setConditionMap( const QgsSmartConditionMap& );
 
     //! sets the operator AND/OR
     void setOperator( const QString& );

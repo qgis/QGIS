@@ -602,7 +602,7 @@ QgsAttributeList QgsVirtualLayerProvider::pkAttributeIndexes()
 QSet<QString> QgsVirtualLayerProvider::layerDependencies() const
 {
   QSet<QString> deps;
-  foreach ( const QgsVirtualLayerDefinition::SourceLayer& l, mDefinition.sourceLayers() )
+  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer& l, mDefinition.sourceLayers() )
   {
     if ( l.isReferenced() )
       deps << l.reference();
