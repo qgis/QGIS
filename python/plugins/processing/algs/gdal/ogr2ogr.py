@@ -124,7 +124,7 @@ class Ogr2Ogr(GdalAlgorithm):
             outFile += ext
             output.value = outFile
 
-        output = self.ogrConnectionString(outFile)
+        output = ogrConnectionString(outFile)
         options = unicode(self.getParameterValue(self.OPTIONS))
 
         if outFormat == 'SQLite' and os.path.isfile(output):
