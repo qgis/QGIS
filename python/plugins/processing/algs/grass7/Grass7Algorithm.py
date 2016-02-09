@@ -427,17 +427,17 @@ class Grass7Algorithm(GeoAlgorithm):
                     self.commands.append(command)
                     self.outputCommands.append(command)
 
-                    command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
+                    command = 'r.out.gdal --overwrite -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
                     command += 'correctedoutput' + self.uniqueSufix
                     command += ' output="' + filename + '"'
                 elif self.grass7Name == 'r.composite':
-                    command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
+                    command = 'r.out.gdal --overwrite -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
                     command += 'correctedoutput' + self.uniqueSufix
                     command += ' output="' + filename + '"'
                 else:
-                    command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
+                    command = 'r.out.gdal --overwrite -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
 
                 if self.grass7Name == 'r.horizon':
@@ -475,6 +475,7 @@ class Grass7Algorithm(GeoAlgorithm):
                 command += ' output="' + os.path.dirname(out.value) + '"'
                 command += ' format=ESRI_Shapefile'
                 command += ' output_layer=' + os.path.basename(out.value)[:-4]
+                command += ' --overwrite'
                 self.commands.append(command)
                 self.outputCommands.append(command)
 
