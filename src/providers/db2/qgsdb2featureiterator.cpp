@@ -101,30 +101,6 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   // set spatial filter
   if ( !request.filterRect().isNull() && mSource->isSpatial() && !request.filterRect().isEmpty() )
   {
-    QString r;
-    QTextStream foo( &r );
-
-    /**
-     * The first form (def USE_POLY) mirrors Microsoft SQL's implementation. //TODO test this form
-     * The second form (not def USE_POLY) is more efficient for DB2 because it
-     * compares envelopes of the geometries with the envelope of the viewing
-     * rectangle instead of an edge-by-edge geometric comparison of the geometry
-     * and the viewing rectangle. This has the drawback that it can sometimes
-     * include geometries that are completely outside the viewing rectangle but
-     * this is generally not an issue.
-     */
-#ifdef USE_POLY
-    foo.setRealNumberPrecision( 8 );
-    foo.setRealNumberNotation( QTextStream::FixedNotation );
-    foo <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMinimum() ) << ", "
-    <<  qgsDoubleToString( request.filterRect().xMaximum() ) << ' ' << qgsDoubleToString( request.filterRect().yMinimum() ) << ", "
-    <<  qgsDoubleToString( request.filterRect().xMaximum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMaximum() ) << ", "
-    <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMaximum() ) << ", "
-    <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMinimum() );
-
-    mStatement += QString( " WHERE DB2GSE.ST_INTERSECTS(%1,DB2GSE.ST_POLYGON('POLYGON((%2))',%3)) = 1" ).arg(
-                    mSource->mGeometryColName, r, QString::number( mSource->mSRId ) );
-#else
     mStatement += QString( " WHERE DB2GSE.ENVELOPESINTERSECT(%1, %2, %3, %4, %5, %6) = 1" ).arg(
                     mSource->mGeometryColName,
                     qgsDoubleToString( request.filterRect().xMinimum() ),
@@ -132,8 +108,6 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
                     qgsDoubleToString( request.filterRect().xMaximum() ),
                     qgsDoubleToString( request.filterRect().yMaximum() ),
                     QString::number( mSource->mSRId ) );
-
-#endif
     filterAdded = true;
   }
 
@@ -320,13 +294,10 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
       if ( attrName == mSource->mGeometryColName )
       {
         QgsDebugMsg( QString( "Geom col: %1" ).arg( attrName ) ); // not sure why we set geometry as a field value
-//       QgsDebugMsg( QString( "Field: %1; value: %2" ).arg( attrName ).arg( v.toString() ) );
-        QgsDebugMsg( QString( "type: %1; typeName: %2" ).arg( v.type() ).arg( v.typeName() ) );
       }
       else
       {
         QgsDebugMsg( QString( "Field: %1; value: %2" ).arg( attrName ).arg( v.toString() ) );
-        QgsDebugMsg( QString( "type: %1; typeName: %2" ).arg( v.type() ).arg( v.typeName() ) );
         /**
          * CHAR and VARCHAR fields seem to get corrupted sometimes when directly
          * calling feature.setAttribute(..., v) with mQuery->value(i). Workaround
@@ -334,7 +305,6 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
          */
         if ( v.type() == QVariant::String )
         {
-          QgsDebugMsg( "handle string type" );
           v = QVariant( v.toString() );
         }
         feature.setAttribute( mAttributesToFetch[i], v );
@@ -349,27 +319,21 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
     {
 #if 1
       QByteArray ar = record.value( mSource->mGeometryColName ).toByteArray();
-      QString wkb( ar.toHex() );
-      QgsDebugMsg( "wkb: " + wkb );
-      QgsDebugMsg( "wkb size: " + QString( "%1" ).arg( ar.size() ) );
+//      QString wkb( ar.toHex() );
+//      QgsDebugMsg( "wkb: " + wkb );
+//      QgsDebugMsg( "wkb size: " + QString( "%1" ).arg( ar.size() ) );
       size_t wkb_size = ar.size();
       if ( 0 < wkb_size )
       {
-
         unsigned char* db2data = new unsigned char[wkb_size + 1]; // allocate persistent storage
         memcpy( db2data, ( unsigned char* )ar.data(), wkb_size + 1 );
-
         QgsGeometry *g = new QgsGeometry();
         g->fromWkb( db2data, wkb_size );
         feature.setGeometry( g );
-//      QString wkt = ((QgsAbstractGeometryV2 *)g)->asWkt();
-//      QString wkt = g->geometry()->asWkt();
-        QgsDebugMsg( QString( "geometry type: %1" ).arg( g->wkbType() ) );
-
-        QByteArray ar2(( const char * )g->asWkb(), wkb_size + 1 );
-        QString wkb2( ar2.toHex() );
-        QgsDebugMsg( "wkb2: " + wkb2 );
-//      QgsDebugMsg("geometry WKT: " + wkt);
+//        QgsDebugMsg( QString( "geometry type: %1" ).arg( g->wkbType() ) );
+//        QByteArray ar2(( const char * )g->asWkb(), wkb_size + 1 );
+//        QString wkb2( ar2.toHex() );
+//        QgsDebugMsg( "wkb2: " + wkb2 );
       }
       else
       {

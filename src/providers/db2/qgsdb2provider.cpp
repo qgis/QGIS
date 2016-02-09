@@ -58,6 +58,7 @@ QgsDb2Provider::QgsDb2Provider( QString uri )
   int portNum = mPort.toInt( &convertIntOk, 10 );
 
   mUseEstimatedMetadata = anUri.useEstimatedMetadata();
+  QgsDebugMsg(QString("mUseEstimatedMetadata: '%1'").arg(mUseEstimatedMetadata));
   mSqlWhereClause = anUri.sql();
   mDatabase = GetDatabase( mService, mDriver, mHost, portNum, mDatabaseName, mUserName, mPassword );
 
@@ -164,12 +165,6 @@ QSqlDatabase QgsDb2Provider::GetDatabase( QString service, QString driver, QStri
   }
   QgsDebugMsg( "connectionName: " + connectionName );
   /* if new database connection */
-  QStringList connections = QSqlDatabase::connectionNames();
-  for ( int i = 0; i < connections.size(); i++ )
-  {
-    QString c = connections.at( i );
-    QgsDebugMsg( c );
-  }
   if ( !QSqlDatabase::contains( connectionName ) )
   {
     QgsDebugMsg( "new DB2 database. create new QODBC mapping" );
