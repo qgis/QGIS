@@ -41,7 +41,6 @@ QgsDb2Provider::QgsDb2Provider( QString uri )
   mWkbType = anUri.wkbType();
 
   mValid = true;
-  mUseWkb = false;
   mSkipFailures = false;
 
   mUserName = anUri.username();
@@ -51,10 +50,10 @@ QgsDb2Provider::QgsDb2Provider( QString uri )
   mHost = anUri.host();
   mPort = anUri.port();
   mDriver = anUri.param( "driver" );
-  mKeyColumn = anUri.keyColumn();
-  QgsDebugMsg("mKeyColumn " + mKeyColumn);
-  mExtents = anUri.param( "extents");
-  QgsDebugMsg("mExtents " + mExtents);
+  mFidColName = anUri.keyColumn();
+  QgsDebugMsg( "mFidColName " + mFidColName );
+  mExtents = anUri.param( "extents" );
+  QgsDebugMsg( "mExtents " + mExtents );
   bool convertIntOk;
   int portNum = mPort.toInt( &convertIntOk, 10 );
 
@@ -75,52 +74,39 @@ QgsDb2Provider::QgsDb2Provider( QString uri )
 
   // Database successfully opened; we can now issue SQL commands.
   if ( !anUri.schema().isEmpty() )
+  {
     mSchemaName = anUri.schema();
+  }
   else
+  {
     mSchemaName = mUserName;
-
-  if ( !anUri.table().isEmpty() )
-  {
-    // the layer name has been specified
-    mTableName = anUri.table();
-    QStringList sl = mTableName.split( '.' );
-    if ( sl.length() == 2 )
-    {
-      mSchemaName = sl[0];
-      mTableName = sl[1];
-    }
-    mTables = QStringList( mTableName );
   }
-  else
+
+  mTableName = anUri.table();
+  QStringList sl = mTableName.split( '.' );
+  if ( sl.length() == 2 )  // Never seems to be the case
   {
-    // Get a list of table
-    mTables = mDatabase.tables( QSql::Tables );
-    if ( mTables.count() > 0 )
-      mTableName = mTables[0];
-    else
-      mValid = false;
+    mSchemaName = sl[0];
+    mTableName = sl[1];
   }
-  if ( mValid )
+
+  QgsDebugMsg( "mSchemaName: '" + mSchemaName + "; mTableName: '" + mTableName );
+
+  if ( !anUri.geometryColumn().isEmpty() )
+    mGeometryColName = anUri.geometryColumn();
+
+  if ( mSRId < 0 || mWkbType == QGis::WKBUnknown || mGeometryColName.isEmpty() )
   {
-    if ( !anUri.keyColumn().isEmpty() )
-      mFidColName = anUri.keyColumn();
+    loadMetadata();
+  }
+  loadFields();
+  UpdateStatistics();
 
-    if ( !anUri.geometryColumn().isEmpty() )
-      mGeometryColName = anUri.geometryColumn();
-
-    if ( mSRId < 0 || mWkbType == QGis::WKBUnknown || mGeometryColName.isEmpty() )
-    {
-      loadMetadata();
-    }
-    loadFields();
-    UpdateStatistics();
-
-    if ( mGeometryColName.isEmpty() )
-    {
-      // table contains no geometries
-      mWkbType = QGis::WKBNoGeometry;
-      mSRId = 0;
-    }
+  if ( mGeometryColName.isEmpty() )
+  {
+    // table contains no geometries
+    mWkbType = QGis::WKBNoGeometry;
+    mSRId = 0;
   }
 
   //fill type names into sets
@@ -258,27 +244,6 @@ void QgsDb2Provider::loadFields()
   mAttributeFields.clear();
   //mDefaultValues.clear();
   QString table = QString( "%1.%2" ).arg( mSchemaName ).arg( mTableName );
-
-  // Use the Qt functionality to get the primary key information
-  // to set the FID column.
-  // We can only use the primary key if it only has one column and
-  // the type is Integer or BigInt.
-  QSqlIndex pk = mDatabase.primaryIndex( table );
-  if ( pk.count() == 1 )
-  {
-    QSqlField pkFld = pk.field( 0 );
-    QVariant::Type pkType = pkFld.type();
-    if (( pkType == QVariant::Int ||  pkType == QVariant::LongLong ) )
-    {
-      mFidColName = pk.fieldName( 0 );
-      QgsDebugMsg( "set FID to " + mFidColName );
-    }
-  }
-  else
-  {
-    QgsDebugMsg( "Warning: table primary key count is " + QString::number( pk.count() ) );
-    mFidColName = QString( "" );
-  }
 
   // Use the Qt functionality to get the fields and their definitions.
   QSqlRecord r = mDatabase.record( table );

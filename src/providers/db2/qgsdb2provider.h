@@ -137,12 +137,10 @@ class QgsDb2Provider : public QgsVectorDataProvider
     QMap<int, QVariant> mDefaultValues;
     QgsRectangle mExtent; //layer extent
     bool mValid;
-    bool mUseWkb;
     bool mUseEstimatedMetadata;
     bool mSkipFailures;
     long mNumberFeatures;
     QString mFidColName;
-    QString mKeyColumn;
     QString mExtents;
     long mSRId;
     QString mGeometryColName, mGeometryColType;
@@ -153,7 +151,6 @@ class QgsDb2Provider : public QgsVectorDataProvider
     QString mSchemaName, mTableName; //current layer schema/name
     QString mUserName, mPassword; //login
     QString mService, mDatabaseName, mDriver, mHost, mPort; //server access
-    QStringList mTables; //available tables
     QString mSqlWhereClause; //SQL statement used to limit the features retrieved
     QSqlDatabase mDatabase; //the database object
     static int sConnectionId;

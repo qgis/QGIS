@@ -23,6 +23,8 @@
 #include "qgscontexthelp.h"
 #include "qgsdb2provider.h"
 #include "qgsdb2newconnection.h"
+#include "qgsdb2geometrycolumns.h"
+
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
@@ -525,62 +527,52 @@ void QgsDb2SourceSelect::on_btnConnect_clicked()
   }
 
   QString connectionName = db.connectionName();
-
-  // Test for ST_GEOMETRY_COLUMNS table first. Throw an error if not found.
-  QSqlQuery q = QSqlQuery( db );
-  q.setForwardOnly( true );
-  // build sql statement, QgsDb2ConnectionItem::createChildren() has identical query
-  QString query( "SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, TYPE_NAME, SRS_ID FROM DB2GSE.ST_GEOMETRY_COLUMNS" );
-  // issue the sql query
-  if ( !q.exec( query ) )
+  QgsDb2GeometryColumns db2GC = QgsDb2GeometryColumns( db );
+  int sqlcode = db2GC.open();
+  if ( 0 != sqlcode )
   {
     QMessageBox::warning( this, tr( "DB2GSE.ST_GEOMETRY_COLUMNS Not Found" ),
                           tr( "DB2GSE.ST_GEOMETRY_COLUMNS not found. The DB2 Spatial Extender is not enabled or set up." ) );
     return;
   }
 
-  // Read supported layers from database
-  QApplication::setOverrideCursor( Qt::WaitCursor );
+  QApplication::setOverrideCursor( Qt::WaitCursor );  // TODO - what does this do?
 
-  if ( q.isActive() )
+  if ( db2GC.isActive() )
   {
-    while ( q.next() )
+    // Read supported layers from database
+    QgsDb2LayerProperty layer;
+
+    while ( db2GC.populateLayerProperty( layer ) )
     {
-      QgsDb2LayerProperty layer;
-   
-   QgsDb2ConnectionItem::populateLayerProperty(db, q, layer, ENV_ZOS);
-
-      QString type = layer.type;
-      QString srid = layer.srid;
-      QgsDebugMsg( "layer type: " + type );
-
+      QgsDebugMsg( "layer type: " + layer.type );
       mTableModel.addTableEntry( layer );
-    }
 
-    if ( mColumnTypeThread )
-    {
-      btnConnect->setText( tr( "Stop" ) );
-      mColumnTypeThread->start();
-    }
-
-    //if we have only one schema item, expand it by default
-    int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
-    if ( numTopLevelItems < 2 || mTableModel.tableCount() < 20 )
-    {
-      //expand all the toplevel items
-      for ( int i = 0; i < numTopLevelItems; ++i )
+      if ( mColumnTypeThread )
       {
-        mTablesTreeView->expand( mProxyModel.mapFromSource(
-                                   mTableModel.indexFromItem( mTableModel.invisibleRootItem()->child( i ) ) ) );
+        btnConnect->setText( tr( "Stop" ) );
+        mColumnTypeThread->start();
+      }
+
+      //if we have only one schema item, expand it by default
+      int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
+      if ( numTopLevelItems < 2 || mTableModel.tableCount() < 20 )
+      {
+        //expand all the toplevel items
+        for ( int i = 0; i < numTopLevelItems; ++i )
+        {
+          mTablesTreeView->expand( mProxyModel.mapFromSource(
+                                     mTableModel.indexFromItem( mTableModel.invisibleRootItem()->child( i ) ) ) );
+        }
       }
     }
   }
   else
   {
     QApplication::restoreOverrideCursor();
-    // Let user know we couldn't retieve tables from the Db2 provider
+    // Let user know we couldn't retrieve tables from the Db2 provider
     QMessageBox::warning( this,
-                          tr( "DB2 Provider" ), q.lastError().text() );
+                          tr( "DB2 Provider" ), db.lastError().text() );
     return;
   }
 
@@ -719,7 +711,7 @@ void QgsDb2GeomColumnTypeThread::stop()
   mStopped = true;
 }
 
-void QgsDb2GeomColumnTypeThread::run() // TODO
+void QgsDb2GeomColumnTypeThread::run() // TODO - should be unused
 {
   mStopped = false;
 

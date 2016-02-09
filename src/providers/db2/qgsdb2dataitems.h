@@ -60,7 +60,6 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
   public:
     QgsDb2ConnectionItem( QgsDataItem* parent, QString name, QString path );
     ~QgsDb2ConnectionItem();
-    static bool populateLayerProperty(const QSqlDatabase db, const QSqlQuery q, QgsDb2LayerProperty &layer, int environment);
 
     /**
      * Fetch geometry column data from server and populate Browser Panel with
@@ -88,12 +87,12 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
      * Refresh with saved connection data.
      */
     void refreshConnection();
-    
+
     /**
      * Show dialog to edit and save connection data.
      */
     void editConnection();
-    
+
     /**
      * Delete saved connection data and remove from Browser Panel.
      */
@@ -133,6 +132,7 @@ class QgsDb2SchemaItem : public QgsDataCollectionItem
     QVector<QgsDataItem*> createChildren() override;
 
     QgsDb2LayerItem* addLayer( QgsDb2LayerProperty layerProperty, bool refresh );
+
     void refresh() override {} // do not refresh directly
     void addLayers( QgsDataItem* newLayers );
 };
