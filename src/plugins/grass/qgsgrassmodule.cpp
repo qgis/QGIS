@@ -148,15 +148,8 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   // => test if the module is in path and if it is not
   // add .exe and test again
 #ifdef Q_OS_WIN
-  if ( inExecPath( xName ) )
-  {
-    mXName = xName;
-  }
-  else if ( inExecPath( xName + ".exe" ) )
-  {
-    mXName = xName + ".exe";
-  }
-  else
+  mXName = QgsGrass::findModule( xName );
+  if ( mXName.isNull() )
   {
     QgsDebugMsg( "Module " + xName + " not found" );
     mErrors.append( tr( "Module %1 not found" ).arg( xName ) );
@@ -666,7 +659,7 @@ void QgsGrassModule::run()
 
 #ifdef Q_OS_WIN
     // we already know it exists from execArguments()
-    QString exe = QgsGrassModule::findExec( mXName );
+    QString exe = QgsGrass::findModule( mXName );
     QFileInfo fi( exe );
     if ( !fi.isExecutable() )
     {
