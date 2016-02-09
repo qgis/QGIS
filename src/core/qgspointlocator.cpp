@@ -18,6 +18,7 @@
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbptr.h"
+#include "qgis.h"
 
 #include <spatialindex/SpatialIndex.h>
 
@@ -301,7 +302,7 @@ struct _CohenSutherland
 };
 
 
-static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry* geom, const QgsRectangle& rect, QgsVectorLayer* vl, QgsFeatureId fid )
+static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, const QgsRectangle& rect, QgsVectorLayer *vl, QgsFeatureId fid )
 {
   // this code is stupidly based on QgsGeometry::closestSegmentWithContext
   // we need iterator for segments...
@@ -313,9 +314,10 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry* geom, co
 
   _CohenSutherland cs( rect );
 
-  QgsWkbPtr wkbPtr( wkb + 1 );
-  QGis::WkbType wkbType;
-  wkbPtr >> wkbType;
+  QgsConstWkbPtr wkbPtr( wkb, geom->wkbSize() );
+  wkbPtr.readHeader();
+
+  QGis::WkbType wkbType = geom->wkbType();
 
   bool hasZValue = false;
   switch ( wkbType )
@@ -373,7 +375,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry* geom, co
       wkbPtr >> nLines;
       for ( int linenr = 0, pointIndex = 0; linenr < nLines; ++linenr )
       {
-        wkbPtr += 1 + sizeof( int );
+        wkbPtr.readHeader();
         int nPoints;
         wkbPtr >> nPoints;
 
@@ -455,7 +457,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry* geom, co
       wkbPtr >> nPolygons;
       for ( int polynr = 0, pointIndex = 0; polynr < nPolygons; ++polynr )
       {
-        wkbPtr += 1 + sizeof( int );
+        wkbPtr.readHeader();
         int nRings;
         wkbPtr >> nRings;
         for ( int ringnr = 0; ringnr < nRings; ++ringnr )

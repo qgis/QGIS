@@ -42,14 +42,12 @@
 
 
 
-const unsigned char* QgsFeatureRendererV2::_getPoint( QPointF& pt, QgsRenderContext& context, const unsigned char* wkb )
+QgsConstWkbPtr QgsFeatureRendererV2::_getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr wkbPtr )
 {
-  QgsConstWkbPtr wkbPtr( wkb + 1 );
-  unsigned int wkbType;
-  wkbPtr >> wkbType >> pt.rx() >> pt.ry();
-
-  if ( static_cast< QgsWKBTypes::Type >( wkbType ) == QgsWKBTypes::Point25D || static_cast< QgsWKBTypes::Type >( wkbType ) == QgsWKBTypes::PointZ )
-    wkbPtr += sizeof( double );
+  QgsDebugCall;
+  QgsWKBTypes::Type type = wkbPtr.readHeader();
+  wkbPtr >> pt.rx() >> pt.ry();
+  wkbPtr += ( QgsWKBTypes::coordDimensions( type ) - 2 ) * sizeof( double );
 
   if ( context.coordinateTransform() )
   {
@@ -62,17 +60,13 @@ const unsigned char* QgsFeatureRendererV2::_getPoint( QPointF& pt, QgsRenderCont
   return wkbPtr;
 }
 
-const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent )
+QgsConstWkbPtr QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderContext& context, QgsConstWkbPtr wkbPtr, bool clipToExtent )
 {
-  QgsConstWkbPtr wkbPtr( wkb + 1 );
-  unsigned int wkbType, nPoints;
-  wkbPtr >> wkbType >> nPoints;
+  QgsDebugCall;
+  QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
+  unsigned int nPoints;
+  wkbPtr >> nPoints;
 
-  bool hasZValue = QgsWKBTypes::hasZ( static_cast< QgsWKBTypes::Type >( wkbType ) );
-  bool hasMValue = QgsWKBTypes::hasM( static_cast< QgsWKBTypes::Type >( wkbType ) );
-
-  double x = 0.0;
-  double y = 0.0;
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
 
@@ -83,22 +77,20 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
     double cw = e.width() / 10;
     double ch = e.height() / 10;
     QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
-    wkbPtr = QgsConstWkbPtr( QgsClipper::clippedLineWKB( wkb, clipRect, pts ) );
+    wkbPtr -= 1 + 2 * sizeof( int );
+    wkbPtr = QgsClipper::clippedLineWKB( wkbPtr, clipRect, pts );
   }
   else
   {
     pts.resize( nPoints );
 
+    int skipZM = ( QgsWKBTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
+
     QPointF* ptr = pts.data();
     for ( unsigned int i = 0; i < nPoints; ++i, ++ptr )
     {
-      wkbPtr >> x >> y;
-      if ( hasZValue )
-        wkbPtr += sizeof( double );
-      if ( hasMValue )
-        wkbPtr += sizeof( double );
-
-      *ptr = QPointF( x, y );
+      wkbPtr >> ptr->rx() >> ptr->ry();
+      wkbPtr += skipZM;
     }
   }
 
@@ -117,20 +109,16 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
   return wkbPtr;
 }
 
-const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent )
+QgsConstWkbPtr QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, QgsConstWkbPtr wkbPtr, bool clipToExtent )
 {
-  QgsConstWkbPtr wkbPtr( wkb + 1 );
-
-  unsigned int wkbType, numRings;
-  wkbPtr >> wkbType >> numRings;
+  QgsDebugCall;
+  QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
+  unsigned int numRings;
+  wkbPtr >> numRings;
 
   if ( numRings == 0 )  // sanity check for zero rings in polygon
     return wkbPtr;
 
-  bool hasZValue = QgsWKBTypes::hasZ( static_cast< QgsWKBTypes::Type >( wkbType ) );
-  bool hasMValue = QgsWKBTypes::hasM( static_cast< QgsWKBTypes::Type >( wkbType ) );
-
-  double x, y;
   holes.clear();
 
   const QgsCoordinateTransform* ct = context.coordinateTransform();
@@ -139,6 +127,8 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
   double cw = e.width() / 10;
   double ch = e.height() / 10;
   QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
+
+  int skipZM = ( QgsWKBTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
 
   for ( unsigned int idx = 0; idx < numRings; idx++ )
   {
@@ -151,13 +141,8 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
     QPointF* ptr = poly.data();
     for ( unsigned int jdx = 0; jdx < nPoints; ++jdx, ++ptr )
     {
-      wkbPtr >> x >> y;
-      if ( hasZValue )
-        wkbPtr += sizeof( double );
-      if ( hasMValue )
-        wkbPtr += sizeof( double );
-
-      *ptr = QPointF( x, y );
+      wkbPtr >> ptr->rx() >> ptr->ry();
+      wkbPtr += skipZM;
     }
 
     if ( nPoints < 1 )
@@ -172,7 +157,6 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
     {
       ct->transformPolygon( poly );
     }
-
 
     ptr = poly.data();
     for ( int i = 0; i < poly.size(); ++i, ++ptr )

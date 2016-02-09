@@ -112,7 +112,8 @@ class QgsLineStringV2: public QgsCurveV2
     virtual int dimension() const;
     virtual QgsLineStringV2* clone() const /Factory/;
 
-    virtual bool fromWkb( const unsigned char* wkb );
+
+    virtual bool fromWkb( QgsConstWkbPtr wkb );
     virtual bool fromWkt( const QString& wkt );
 
     int wkbSize() const;

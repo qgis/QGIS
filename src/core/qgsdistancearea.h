@@ -18,6 +18,7 @@
 
 #include <QList>
 #include "qgscoordinatetransform.h"
+#include "qgswkbptr.h"
 
 class QgsGeometry;
 class QgsAbstractGeometryV2;
@@ -220,7 +221,7 @@ class CORE_EXPORT QgsDistanceArea
   protected:
     //! measures polygon area and perimeter, vertices are extracted from WKB
     // @note not available in python bindings
-    const unsigned char* measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr = false ) const;
+    QgsConstWkbPtr measurePolygon( QgsConstWkbPtr feature, double* area, double* perimeter, bool hasZptr = false ) const;
 
     /**
       calculates distance from two points on ellipsoid

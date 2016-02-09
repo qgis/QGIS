@@ -91,6 +91,8 @@ class TestQgsGeometry : public QObject
 
     void exportToGeoJSON();
 
+    void wkbInOut();
+
   private:
     /** A helper method to do a render check to see if the geometry op is as expected */
     bool renderCheck( const QString& theTestName, const QString& theComment = "", int mismatchCount = 0 );
@@ -100,6 +102,24 @@ class TestQgsGeometry : public QObject
     void dumpPolygon( QgsPolygon &thePolygon );
     /** A helper method to dump to qdebug the geometry of a polyline */
     void dumpPolyline( QgsPolyline &thePolyline );
+
+    // Release return with delete []
+    unsigned char * hex2bytes( const char *hex, int *size )
+    {
+      QByteArray ba = QByteArray::fromHex( hex );
+      unsigned char *out = new unsigned char[ba.size()];
+      memcpy( out, ba.data(), ba.size() );
+      *size = ba.size();
+      return out;
+    }
+
+    QString bytes2hex( const unsigned char *bytes, int size )
+    {
+      QByteArray ba(( const char * )bytes, size );
+      QString out = ba.toHex();
+      return out;
+    }
+
 
     QString elemToString( const QDomElement& elem ) const;
 
@@ -503,19 +523,19 @@ void TestQgsGeometry::pointV2()
   unsigned char* wkb = p12.asWkb( size );
   QCOMPARE( size, p12.wkbSize() );
   QgsPointV2 p13;
-  p13.fromWkb( wkb );
+  p13.fromWkb( QgsConstWkbPtr( wkb, size ) );
   delete[] wkb;
   wkb = 0;
   QVERIFY( p13 == p12 );
 
   //bad WKB - check for no crash
   p13 = QgsPointV2( 1, 2 );
-  QVERIFY( !p13.fromWkb( 0 ) );
+  QVERIFY( !p13.fromWkb( QgsConstWkbPtr( nullptr, 0 ) ) );
   QCOMPARE( p13.wkbType(), QgsWKBTypes::Unknown );
   QgsLineStringV2 line;
   p13 = QgsPointV2( 1, 2 );
   wkb = line.asWkb( size );
-  QVERIFY( !p13.fromWkb( wkb ) );
+  QVERIFY( !p13.fromWkb( QgsConstWkbPtr( wkb, size ) ) );
   delete[] wkb;
   wkb = 0;
   QCOMPARE( p13.wkbType(), QgsWKBTypes::Unknown );
@@ -1310,7 +1330,7 @@ void TestQgsGeometry::lineStringV2()
   unsigned char* wkb = l15.asWkb( size );
   QCOMPARE( size, l15.wkbSize() );
   QgsLineStringV2 l16;
-  l16.fromWkb( wkb );
+  l16.fromWkb( QgsConstWkbPtr( wkb, size ) );
   delete[] wkb;
   wkb = 0;
   QCOMPARE( l16.numPoints(), 4 );
@@ -1328,11 +1348,11 @@ void TestQgsGeometry::lineStringV2()
 
   //bad WKB - check for no crash
   l16.clear();
-  QVERIFY( !l16.fromWkb( 0 ) );
+  QVERIFY( !l16.fromWkb( QgsConstWkbPtr( nullptr, 0 ) ) );
   QCOMPARE( l16.wkbType(), QgsWKBTypes::Unknown );
   QgsPointV2 point( 1, 2 );
   wkb = point.asWkb( size ) ;
-  QVERIFY( !l16.fromWkb( wkb ) );
+  QVERIFY( !l16.fromWkb( QgsConstWkbPtr( wkb, size ) ) );
   delete[] wkb;
   wkb = 0;
   QCOMPARE( l16.wkbType(), QgsWKBTypes::Unknown );
@@ -2058,7 +2078,7 @@ void TestQgsGeometry::lineStringV2()
   QVERIFY( l37.boundingBox().isNull() );
   l37.setPoints( QList< QgsPointV2 >() << QgsPointV2( 5, 10 ) << QgsPointV2( 10, 15 ) );
   wkb = toAppend->asWkb( size );
-  l37.fromWkb( wkb );
+  l37.fromWkb( QgsConstWkbPtr( wkb, size ) );
   delete[] wkb;
   wkb = 0;
   QCOMPARE( l37.boundingBox(), QgsRectangle( 1, 0, 4, 2 ) );
@@ -2658,7 +2678,7 @@ void TestQgsGeometry::polygonV2()
   unsigned char* wkb = p16.asWkb( size );
   QCOMPARE( size, p16.wkbSize() );
   QgsPolygonV2 p17;
-  p17.fromWkb( wkb );
+  p17.fromWkb( QgsConstWkbPtr( wkb, size ) );
   delete[] wkb;
   wkb = 0;
   QCOMPARE( p16, p17 );
@@ -2678,7 +2698,7 @@ void TestQgsGeometry::polygonV2()
   size = 0;
   wkb = p16.asWkb( size );
   QCOMPARE( size, p16.wkbSize() );
-  p17.fromWkb( wkb );
+  p17.fromWkb( QgsConstWkbPtr( wkb, size ) );
   delete[] wkb;
   wkb = 0;
   QCOMPARE( p16, p17 );
@@ -2698,7 +2718,7 @@ void TestQgsGeometry::polygonV2()
   size = 0;
   wkb = p16.asWkb( size );
   QCOMPARE( size, p16.wkbSize() );
-  p17.fromWkb( wkb );
+  p17.fromWkb( QgsConstWkbPtr( wkb, size ) );
   delete[] wkb;
   wkb = 0;
   QCOMPARE( p16, p17 );
@@ -2718,7 +2738,7 @@ void TestQgsGeometry::polygonV2()
   size = 0;
   wkb = p16.asWkb( size );
   QCOMPARE( size, p16.wkbSize() );
-  p17.fromWkb( wkb );
+  p17.fromWkb( QgsConstWkbPtr( wkb, size ) );
   delete[] wkb;
   wkb = 0;
   QCOMPARE( p16, p17 );
@@ -2738,19 +2758,19 @@ void TestQgsGeometry::polygonV2()
   size = 0;
   wkb = p16.asWkb( size );
   QCOMPARE( size, p16.wkbSize() );
-  p17.clear();;
-  p17.fromWkb( wkb );
+  p17.clear();
+  p17.fromWkb( QgsConstWkbPtr( wkb, size ) );
   delete[] wkb;
   wkb = 0;
   QCOMPARE( p16, p17 );
 
   //bad WKB - check for no crash
   p17.clear();
-  QVERIFY( !p17.fromWkb( 0 ) );
+  QVERIFY( !p17.fromWkb( QgsConstWkbPtr( nullptr, 0 ) ) );
   QCOMPARE( p17.wkbType(), QgsWKBTypes::Unknown );
   QgsPointV2 point( 1, 2 );
   wkb = point.asWkb( size ) ;
-  QVERIFY( !p17.fromWkb( wkb ) );
+  QVERIFY( !p17.fromWkb( QgsConstWkbPtr( wkb, size ) ) );
   delete[] wkb;
   wkb = 0;
   QCOMPARE( p17.wkbType(), QgsWKBTypes::Unknown );
@@ -3363,6 +3383,24 @@ QString TestQgsGeometry::elemToString( const QDomElement& elem ) const
   elem.save( stream, -1 );
 
   return s;
+}
+
+void TestQgsGeometry::wkbInOut()
+{
+  // Premature end of WKB
+  // See http://hub.qgis.org/issues/14182
+  const char *hexwkb = "0102000000EF0000000000000000000000000000000000000000000000000000000000000000000000";
+  int size;
+  unsigned char *wkb = hex2bytes( hexwkb, &size );
+  QgsGeometry g14182;
+  // NOTE: wkb onwership transferred to QgsGeometry
+  g14182.fromWkb( wkb, size );
+  //QList<QgsGeometry::Error> errors;
+  //g14182.validateGeometry(errors);
+  // Check with valgrind !
+  QString wkt = g14182.exportToWkt();
+  QCOMPARE( wkt, QString() );
+
 }
 
 QTEST_MAIN( TestQgsGeometry )

@@ -57,7 +57,7 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     virtual void draw( QPainter& p ) const;
 
-    bool fromWkb( const unsigned char * wkb );
+    bool fromWkb( QgsConstWkbPtr wkb );
     virtual bool fromWkt( const QString& wkt );
     int wkbSize() const;
     unsigned char* asWkb( int& binarySize ) const;

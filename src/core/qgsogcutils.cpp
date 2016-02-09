@@ -1080,7 +1080,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
 
   bool hasZValue = false;
 
-  QgsConstWkbPtr wkbPtr( geometry->asWkb() + 1 + sizeof( int ) );
+  QgsConstWkbPtr wkbPtr( geometry->asWkb(), geometry->wkbSize() );
+  wkbPtr.readHeader();
 
   if ( format == "GML3" )
   {
@@ -1135,10 +1136,11 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
 
       for ( int idx = 0; idx < nPoints; ++idx )
       {
-        wkbPtr += 1 + sizeof( int );
         QDomElement pointMemberElem = doc.createElement( "gml:pointMember" );
         QDomElement pointElem = doc.createElement( "gml:Point" );
         QDomElement coordElem = baseCoordElem.cloneNode().toElement();
+
+        wkbPtr.readHeader();
 
         double x, y;
         wkbPtr >> x >> y;
@@ -1206,7 +1208,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
       {
         QDomElement lineStringMemberElem = doc.createElement( "gml:lineStringMember" );
         QDomElement lineStringElem = doc.createElement( "gml:LineString" );
-        wkbPtr += 1 + sizeof( int ); // skip type since we know its 2
+
+        wkbPtr.readHeader();
 
         int nPoints;
         wkbPtr >> nPoints;
@@ -1312,7 +1315,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
         QDomElement polygonMemberElem = doc.createElement( "gml:polygonMember" );
         QDomElement polygonElem = doc.createElement( "gml:Polygon" );
 
-        wkbPtr += 1 + sizeof( int );
+        wkbPtr.readHeader();
 
         int numRings;
         wkbPtr >> numRings;

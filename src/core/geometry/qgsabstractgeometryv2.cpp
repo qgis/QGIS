@@ -18,6 +18,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 #include "qgsgeos.h"
 #include "qgsmaptopixel.h"
+
 #include <limits>
 #include <QTransform>
 
@@ -171,29 +172,6 @@ QString QgsAbstractGeometryV2::wktTypeStr() const
   if ( isMeasure() )
     wkt += 'M';
   return wkt;
-}
-
-bool QgsAbstractGeometryV2::readWkbHeader( QgsConstWkbPtr& wkbPtr, QgsWKBTypes::Type& wkbType, bool& endianSwap, QgsWKBTypes::Type expectedType )
-{
-  if ( !static_cast<const unsigned char*>( wkbPtr ) )
-  {
-    return false;
-  }
-
-  char wkbEndian;
-  wkbPtr >> wkbEndian;
-  endianSwap = wkbEndian != QgsApplication::endian();
-
-  wkbPtr >> wkbType;
-  if ( endianSwap )
-    QgsApplication::endian_swap( wkbType );
-
-  if ( QgsWKBTypes::flatType( wkbType ) != expectedType )
-  {
-    wkbType = QgsWKBTypes::Unknown;
-    return false;
-  }
-  return true;
 }
 
 QgsPointV2 QgsAbstractGeometryV2::centroid() const

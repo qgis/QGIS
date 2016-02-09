@@ -25,6 +25,7 @@
 #include "qgslogger.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
+#include "qgswkbptr.h"
 
 #include <QPair>
 #include <QByteArray>
@@ -164,9 +165,9 @@ class CORE_EXPORT QgsGml : public QObject
     int pointsFromPosListString( QList<QgsPoint>& points, const QString& coordString, int dimension ) const;
 
     int pointsFromString( QList<QgsPoint>& points, const QString& coordString ) const;
-    int getPointWKB( unsigned char** wkb, int* size, const QgsPoint& ) const;
-    int getLineWKB( unsigned char** wkb, int* size, const QList<QgsPoint>& lineCoordinates ) const;
-    int getRingWKB( unsigned char** wkb, int* size, const QList<QgsPoint>& ringCoordinates ) const;
+    int getPointWKB( QgsWkbPtr &wkbPtr, const QgsPoint& ) const;
+    int getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& lineCoordinates ) const;
+    int getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& ringCoordinates ) const;
     /** Creates a multiline from the information in mCurrentWKBFragments and
      * mCurrentWKBFragmentSizes. Assign the result. The multiline is in
      * mCurrentWKB and mCurrentWKBSize. The function deletes the memory in
@@ -224,7 +225,7 @@ class CORE_EXPORT QgsGml : public QObject
     QString mCurrentFeatureId;
     int mFeatureCount;
     /** The total WKB for a feature*/
-    unsigned char* mCurrentWKB;
+    QgsWkbPtr mCurrentWKB;
     /** The total WKB size for a feature*/
     int mCurrentWKBSize;
     QgsRectangle mCurrentExtent;
@@ -232,11 +233,9 @@ class CORE_EXPORT QgsGml : public QObject
      * intermediate WKB is stored at all. For multipoints and multilines and
      * polygons, only one nested list is used. For multipolygons, both nested lists
      * are used*/
-    QList< QList<unsigned char*> > mCurrentWKBFragments;
-    /** Similar to mCurrentWKB, but only the size*/
-    QList< QList<int> > mCurrentWKBFragmentSizes;
+    QList< QList<QgsWkbPtr> > mCurrentWKBFragments;
     QString mAttributeName;
-    QgsApplication::endian_t mEndian;
+    char mEndian;
     /** Coordinate separator for coordinate strings. Usually "," */
     QString mCoordinateSeparator;
     /** Tuple separator for coordinate strings. Usually " " */

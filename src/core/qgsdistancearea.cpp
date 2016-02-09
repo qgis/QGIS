@@ -539,15 +539,15 @@ QGis::UnitType QgsDistanceArea::lengthUnits() const
   return willUseEllipsoid() ? QGis::Meters : mCoordTransform->sourceCrs().mapUnits();
 }
 
-const unsigned char *QgsDistanceArea::measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr ) const
+QgsConstWkbPtr QgsDistanceArea::measurePolygon( QgsConstWkbPtr wkbPtr, double* area, double* perimeter, bool hasZptr ) const
 {
-  if ( !feature )
+  if ( !wkbPtr )
   {
     QgsDebugMsg( "no feature to measure" );
-    return nullptr;
+    return wkbPtr;
   }
 
-  QgsConstWkbPtr wkbPtr( feature + 1 + sizeof( int ) );
+  wkbPtr.readHeader();
 
   // get number of rings in the polygon
   int numRings;
@@ -556,7 +556,7 @@ const unsigned char *QgsDistanceArea::measurePolygon( const unsigned char* featu
   if ( numRings == 0 )
   {
     QgsDebugMsg( "no rings to measure" );
-    return nullptr;
+    return QgsConstWkbPtr( nullptr, 0 );
   }
 
   // Set pointer to the first ring

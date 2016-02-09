@@ -138,11 +138,12 @@ class CORE_EXPORT QgsGeometry
       @note not available in python bindings
      */
     void fromGeos( GEOSGeometry* geos );
+
     /**
       Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
       This class will take ownership of the buffer.
      */
-    void fromWkb( unsigned char * wkb, int length );
+    void fromWkb( unsigned char *wkb, int length );
 
     /**
        Returns the buffer containing this geometry in WKB format.

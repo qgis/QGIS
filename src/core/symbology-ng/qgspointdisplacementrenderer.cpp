@@ -29,6 +29,7 @@
 #include "qgsmultipointv2.h"
 #include "qgspointv2.h"
 #include "qgsunittypes.h"
+#include "qgswkbptr.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -169,7 +170,7 @@ void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, Qg
   QgsGeometry groupGeom( groupMultiPoint );
   QgsGeometry* centroid = groupGeom.centroid();
   QPointF pt;
-  _getPoint( pt, context, centroid->asWkb() );
+  _getPoint( pt, context, QgsConstWkbPtr( centroid->asWkb(), centroid->wkbSize() ) );
   delete centroid;
 
   //calculate max diagonal size from all symbols in group

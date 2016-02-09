@@ -13,7 +13,7 @@ class QgsPolygonV2: public QgsCurvePolygonV2
     virtual QString geometryType() const;
     virtual QgsPolygonV2* clone() const;
 
-    virtual bool fromWkb( const unsigned char* wkb );
+    virtual bool fromWkb( QgsConstWkbPtr wkb );
 
     // inherited: bool fromWkt( const QString &wkt );
 

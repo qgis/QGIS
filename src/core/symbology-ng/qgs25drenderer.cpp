@@ -70,7 +70,7 @@ Qgs25DRenderer::Qgs25DRenderer()
   QgsStringMap wallProperties;
   wallProperties.insert( "geometryModifier", WALL_EXPRESSION );
   wallProperties.insert( "symbolType", "Fill" );
-  QgsSymbolLayerV2* walls = QgsGeometryGeneratorSymbolLayerV2::create( wallProperties );;
+  QgsSymbolLayerV2* walls = QgsGeometryGeneratorSymbolLayerV2::create( wallProperties );
 
   QgsStringMap roofProperties;
   roofProperties.insert( "geometryModifier", ROOF_EXPRESSION );

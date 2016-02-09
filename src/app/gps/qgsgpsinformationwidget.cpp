@@ -35,6 +35,7 @@
 #include "qgsrubberband.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgswkbptr.h"
 
 
 // QWT Charting widget
@@ -817,8 +818,6 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     QgsFeature* f = new QgsFeature( 0 );
 
     int size = 0;
-    char end = QgsApplication::endian();
-    unsigned char *wkb = nullptr;
     int wkbtype = 0;
 
     QgsCoordinateTransform t( mWgs84CRS, vlayer->crs() );
@@ -827,15 +826,13 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     double y = myPoint.y();
 
     size = 1 + sizeof( int ) + 2 * sizeof( double );
-    wkb = new unsigned char[size];
-    wkbtype = QGis::WKBPoint;
-    memcpy( &wkb[0], &end, 1 );
-    memcpy( &wkb[1], &wkbtype, sizeof( int ) );
-    memcpy( &wkb[5], &x, sizeof( double ) );
-    memcpy( &wkb[5] + sizeof( double ), &y, sizeof( double ) );
+    unsigned char *buf = new unsigned char[size];
+
+    QgsWkbPtr wkbPtr( buf, size );
+    wkbPtr << ( char ) QgsApplication::endian() << wkbtype << x << y;
 
     QgsGeometry *g = new QgsGeometry();
-    g->fromWkb( &wkb[0], size );
+    g->fromWkb( buf, size );
     f->setGeometry( g );
 
     QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, -1, this );
@@ -865,54 +862,37 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
 
     //create QgsFeature with wkb representation
     QgsFeature* f = new QgsFeature( 0 );
-    unsigned char* wkb;
-    int size;
-    char end = QgsApplication::endian();
 
     if ( layerWKBType == QGis::WKBLineString )
     {
-      size = 1 + 2 * sizeof( int ) + 2 * mCaptureList.size() * sizeof( double );
-      wkb = new unsigned char[size];
-      int wkbtype = QGis::WKBLineString;
-      int length = mCaptureList.size();
-      memcpy( &wkb[0], &end, 1 );
-      memcpy( &wkb[1], &wkbtype, sizeof( int ) );
-      memcpy( &wkb[1+sizeof( int )], &length, sizeof( int ) );
-      int position = 1 + 2 * sizeof( int );
-      double x, y;
+      int size = 1 + 2 * sizeof( int ) + 2 * mCaptureList.size() * sizeof( double );
+      unsigned char *buf = new unsigned char[size];
+
+      QgsWkbPtr wkbPtr( buf, size );
+      wkbPtr << ( char ) QgsApplication::endian() << QGis::WKBLineString << mCaptureList.size();
+
       for ( QList<QgsPoint>::const_iterator it = mCaptureList.constBegin(); it != mCaptureList.constEnd(); ++it )
       {
         QgsPoint savePoint = *it;
         // transform the gps point into the layer crs
         QgsCoordinateTransform t( mWgs84CRS, vlayer->crs() );
         QgsPoint myPoint = t.transform( savePoint );
-        x = myPoint.x();
-        y = myPoint.y();
 
-        memcpy( &wkb[position], &x, sizeof( double ) );
-        position += sizeof( double );
-
-        memcpy( &wkb[position], &y, sizeof( double ) );
-        position += sizeof( double );
+        wkbPtr << myPoint.x() << myPoint.y();
       }
 
       QgsGeometry *g = new QgsGeometry();
-      g->fromWkb( &wkb[0], size );
+      g->fromWkb( buf, size );
       f->setGeometry( g );
     }
     else if ( layerWKBType == QGis::WKBPolygon )
     {
-      size = 1 + 3 * sizeof( int ) + 2 * ( mCaptureList.size() + 1 ) * sizeof( double );
-      wkb = new unsigned char[size];
-      int wkbtype = QGis::WKBPolygon;
-      int length = mCaptureList.size() + 1;//+1 because the first point is needed twice
-      int numrings = 1;
-      memcpy( &wkb[0], &end, 1 );
-      memcpy( &wkb[1], &wkbtype, sizeof( int ) );
-      memcpy( &wkb[1+sizeof( int )], &numrings, sizeof( int ) );
-      memcpy( &wkb[1+2*sizeof( int )], &length, sizeof( int ) );
-      int position = 1 + 3 * sizeof( int );
-      double x, y;
+      int size = 1 + 3 * sizeof( int ) + 2 * ( mCaptureList.size() + 1 ) * sizeof( double );
+      unsigned char *buf = new unsigned char[size];
+
+      QgsWkbPtr wkbPtr( buf, size );
+      wkbPtr << ( char ) QgsApplication::endian() << QGis::WKBPolygon << 1 << mCaptureList.size() + 1;
+
       QList<QgsPoint>::iterator it;
       for ( it = mCaptureList.begin(); it != mCaptureList.end(); ++it )
       {
@@ -920,28 +900,16 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
         // transform the gps point into the layer crs
         QgsCoordinateTransform t( mWgs84CRS, vlayer->crs() );
         QgsPoint myPoint = t.transform( savePoint );
-        x = myPoint.x();
-        y = myPoint.y();
-
-        memcpy( &wkb[position], &x, sizeof( double ) );
-        position += sizeof( double );
-
-        memcpy( &wkb[position], &y, sizeof( double ) );
-        position += sizeof( double );
+        wkbPtr << myPoint.x() << myPoint.y();
       }
       // close the polygon
       it = mCaptureList.begin();
       QgsPoint savePoint = *it;
-      x = savePoint.x();
-      y = savePoint.y();
 
-      memcpy( &wkb[position], &x, sizeof( double ) );
-      position += sizeof( double );
-
-      memcpy( &wkb[position], &y, sizeof( double ) );
+      wkbPtr << savePoint.x() << savePoint.y();
 
       QgsGeometry *g = new QgsGeometry();
-      g->fromWkb( &wkb[0], size );
+      g->fromWkb( buf, size );
       f->setGeometry( g );
 
       int avoidIntersectionsReturn = f->geometry()->avoidIntersections();

@@ -98,14 +98,14 @@ class CORE_EXPORT QGis
     static bool isMultiType( WkbType type );
 
     // get dimension of points
-    // @deprecated use QgsWKBTypes::hasZ() and QgsWKBTypes::hasM()
+    // @deprecated use QgsWKBTypes::coordDimensions()
     /* Q_DECL_DEPRECATED */
     static int wkbDimensions( WkbType type );
 
-    //! Converts from old (pre 2.10) WKB type to new WKB type
+    //! Converts from old (pre 2.10) WKB type (OGR) to new WKB type
     static QgsWKBTypes::Type fromOldWkbType( QGis::WkbType type );
 
-    //! Converts from new (post 2.10) WKB type to old WKB type
+    //! Converts from new (post 2.10) WKB type (OGC) to old WKB type
     static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
 
     enum GeometryType

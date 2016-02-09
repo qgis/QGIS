@@ -324,3 +324,4 @@
 %Include geometry/qgspolygonv2.sip
 %Include geometry/qgssurfacev2.sip
 %Include geometry/qgswkbtypes.sip
+%Include geometry/qgswkbptr.sip

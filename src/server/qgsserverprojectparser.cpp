@@ -1189,7 +1189,7 @@ void QgsServerProjectParser::layerFromLegendLayer( const QDomElement& legendLaye
 QList<QDomElement> QgsServerProjectParser::findLegendGroupElements() const
 {
   QList<QDomElement> LegendGroupElemList;
-  QgsLayerTreeGroup* rootLayerTreeGroup = new QgsLayerTreeGroup;;
+  QgsLayerTreeGroup* rootLayerTreeGroup = new QgsLayerTreeGroup;
 
   QDomElement layerTreeElem = mXMLDoc->documentElement().firstChildElement( "layer-tree-group" );
   if ( !layerTreeElem.isNull() )

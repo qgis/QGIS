@@ -127,7 +127,7 @@ class QgsAbstractGeometryV2
     /** Sets the geometry from a WKB string.
      * @see fromWkt
      */
-    virtual bool fromWkb( const unsigned char * wkb ) = 0;
+    virtual bool fromWkb( QgsConstWkbPtr wkb ) = 0;
 
     /** Sets the geometry from a WKT string.
      * @see fromWkb
@@ -368,15 +368,4 @@ class QgsAbstractGeometryV2
     /** Updates the geometry type based on whether sub geometries contain z or m values.
      */
     void setZMTypeFromSubGeometry( const QgsAbstractGeometryV2* subggeom, QgsWKBTypes::Type baseGeomType );
-
-    /** Reads a WKB header and tests its validity.
-     * @param wkbPtr
-     * @param wkbType destination for WKB type from header
-     * @param endianSwap will be set to true if endian from WKB must be swapped to match QGIS platform endianness
-     * @param expectedType expected WKB type
-     * @returns true if header is valid and matches expected type
-     * @note not available in Python bindings
-     */
-    //static bool readWkbHeader( QgsConstWkbPtr& wkbPtr, QgsWKBTypes::Type& wkbType, bool& endianSwap, QgsWKBTypes::Type expectedType );
-
 };
