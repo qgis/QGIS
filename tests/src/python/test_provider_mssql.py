@@ -22,7 +22,7 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsFeature,
     QgsProviderRegistry
-
+)
 
 from PyQt4.QtCore import (
     QSettings,
