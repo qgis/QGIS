@@ -244,17 +244,18 @@ void QgsGeometry::fromWkb( unsigned char *wkb, int length )
     delete d->geometry;
     removeWkbGeos();
   }
-  d->geometry = QgsGeometryFactory::geomFromWkb( wkb );
-  if  ( *wkb != QgsApplication::endian() )
-  {
-    delete wkb;
-    d->mWkb = d->geometry->asWkb( d->mWkbSize );
-    QgsDebugMsg("rebuilding wkb due to endian difference");
-  } else
+  d->geometry = QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr( wkb, length ) );
+  if ( d->geometry )
   {
     d->mWkb = wkb;
+    d->mWkbSize = length;
   }
-  d->mWkbSize = length;
+  else
+  {
+    delete [] wkb;
+    d->mWkb = nullptr;
+    d->mWkbSize = 0;
+  }
 }
 
 const unsigned char *QgsGeometry::asWkb() const
@@ -268,7 +269,6 @@ const unsigned char *QgsGeometry::asWkb() const
   {
     d->mWkb = d->geometry->asWkb( d->mWkbSize );
   }
-  QgsDebugMsg("returning asWkb");
   return d->mWkb;
 }
 
@@ -593,17 +593,22 @@ int QgsGeometry::addRing( QgsCurveV2* ring )
 
 int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType )
 {
+  QList<QgsPointV2> l;
+  convertPointList( points, l );
+  return addPart( l, geomType );
+}
+
+int QgsGeometry::addPart( const QList<QgsPointV2> &points, QGis::GeometryType geomType )
+{
   QgsAbstractGeometryV2* partGeom = nullptr;
   if ( points.size() == 1 )
   {
-    partGeom = new QgsPointV2( points[0].x(), points[0].y() );
+    partGeom = new QgsPointV2( points[0] );
   }
   else if ( points.size() > 1 )
   {
     QgsLineStringV2* ringLine = new QgsLineStringV2();
-    QList< QgsPointV2 > partPoints;
-    convertPointList( points, partPoints );
-    ringLine->setPoints( partPoints );
+    ringLine->setPoints( points );
     partGeom = ringLine;
   }
   return addPart( partGeom, geomType );
@@ -895,7 +900,7 @@ bool QgsGeometry::crosses( const QgsGeometry* geometry ) const
   return geos.crosses( *( geometry->d->geometry ) );
 }
 
-QString QgsGeometry::exportToWkt( const int &precision ) const
+QString QgsGeometry::exportToWkt( int precision ) const
 {
   if ( !d->geometry )
   {
@@ -904,7 +909,7 @@ QString QgsGeometry::exportToWkt( const int &precision ) const
   return d->geometry->asWkt( precision );
 }
 
-QString QgsGeometry::exportToGeoJSON( const int &precision ) const
+QString QgsGeometry::exportToGeoJSON( int precision ) const
 {
   if ( !d->geometry )
   {
@@ -1043,6 +1048,9 @@ QgsPolyline QgsGeometry::asPolyline() const
 
 QgsPolygon QgsGeometry::asPolygon() const
 {
+  if ( !d->geometry )
+    return QgsPolygon();
+
   bool doSegmentation = ( d->geometry->geometryType() == "CurvePolygon" );
 
   QgsPolygonV2* p = nullptr;
@@ -1710,7 +1718,7 @@ bool QgsGeometry::vertexIdFromVertexNr( int nr, QgsVertexId& id ) const
   return false;
 }
 
-int QgsGeometry::vertexNrFromVertexId( const QgsVertexId& id ) const
+int QgsGeometry::vertexNrFromVertexId( QgsVertexId id ) const
 {
   if ( !d->geometry )
   {
@@ -1796,7 +1804,7 @@ GEOSContextHandle_t QgsGeometry::getGEOSHandler()
   return QgsGeos::getGEOSHandler();
 }
 
-QgsGeometry *QgsGeometry::fromQPointF( const QPointF &point )
+QgsGeometry *QgsGeometry::fromQPointF( QPointF point )
 {
   return new QgsGeometry( new QgsPointV2( point.x(), point.y() ) );
 }
