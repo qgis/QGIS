@@ -73,18 +73,6 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     // ! Options widget
     QgsGrassModuleOptions *options() { return mOptions; }
 
-    // ! List of directories in PATH variable + current directory on Windows
-    //static QStringList mExecPath;
-    //static bool mExecPathInited;
-
-    // ! Find in exec path
-    //   returns full path or null string
-    //   appends automaticaly .exe on Windows
-    static QString findExec( QString file );
-
-    // ! Check if file is in mExecPath
-    static bool inExecPath( QString file );
-
     // ! Get executable + arguments. Executable is returned as first string.
     // On Window if the module is script the executable will be path to shell
     // Returns empty list if not found.

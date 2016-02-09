@@ -41,98 +41,12 @@ extern "C"
 #include <grass/glocale.h>
 }
 
-//#include <gdal.h>         // to collect version information
-
-//bool QgsGrassModule::mExecPathInited = 0;
-//QStringList QgsGrassModule::mExecPath;
-
-QString QgsGrassModule::findExec( QString file )
-{
-  QgsDebugMsg( "called." );
-
-  // Init mExecPath
-  // Windows searches first in current directory
-  // TODO verify if/why applicationDirPath() is necessary
-#if 0
-  if ( !mExecPathInited )
-  {
-    QString path = getenv( "PATH" );
-    QgsDebugMsg( "path = " + path );
-
-
-#ifdef Q_OS_WIN
-    mExecPath = path.split( ";" );
-    mExecPath.prepend( QgsGrass::shortPath( QgsApplication::applicationDirPath() ) );
-#elif defined(Q_OS_MACX)
-    mExecPath = path.split( ":" );
-    mExecPath.prepend( QgsApplication::applicationDirPath() + "/bin" );
-    mExecPath.prepend( QgsApplication::applicationDirPath() + "/grass/bin" );
-#else
-    mExecPath = path.split( ":" );
-    mExecPath.prepend( QgsApplication::applicationDirPath() );
-#endif
-    mExecPathInited = true;
-  }
-#endif
-
-  if ( QFile::exists( file ) )
-  {
-    return file;  // full path
-  }
-
-#ifdef Q_OS_WIN
-  // On windows try .bat first
-  Q_FOREACH ( const QString& path, QgsGrass::grassModulesPaths() )
-  {
-    QString full = path + "/" + file + ".bat";
-    if ( QFile::exists( full ) )
-    {
-      return full;
-    }
-  }
-
-  // .exe next
-  Q_FOREACH ( const QString& path, QgsGrass::grassModulesPaths() )
-  {
-    QString full = path + "/" + file + ".exe";
-    if ( QFile::exists( full ) )
-    {
-      return full;
-    }
-  }
-
-  // and then try if it's a script (w/o extension)
-#endif
-
-  // Search for module
-  Q_FOREACH ( const QString& path, QgsGrass::grassModulesPaths() )
-  {
-    QString full = path + "/" + file;
-    if ( QFile::exists( full ) )
-    {
-      QgsDebugMsg( "found " + full );
-      return full;
-    }
-    else
-    {
-      QgsDebugMsg( "not found " + full );
-    }
-  }
-
-  return QString();
-}
-
-bool QgsGrassModule::inExecPath( QString file )
-{
-  return !findExec( file ).isNull();
-}
-
 QStringList QgsGrassModule::execArguments( QString module )
 {
   QString exe;
   QStringList arguments;
 
-  exe = QgsGrassModule::findExec( module );
+  exe = QgsGrass::findModule( module );
   if ( exe.isNull() )
   {
     return arguments;
