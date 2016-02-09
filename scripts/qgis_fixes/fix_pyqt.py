@@ -33,7 +33,7 @@ MAPPING = {
          "QPolygonF",
          "QFontMetricsF",
          "QGradient",
-        ]),
+         ]),
         ("PyQt.QtWidgets", [
          "QAbstractButton",
          "QAbstractGraphicsShapeItem",
@@ -236,97 +236,97 @@ MAPPING = {
          "qDrawWinPanel",
          ]),
         ("PyQt.QtPrintSupport", [
-          "QPrinter",
-          "QAbstractPrintDialog",
-          "QPageSetupDialog",
-          "QPrintDialog",
-          "QPrintEngine",
-          "QPrintPreviewDialog",
-          "QPrintPreviewWidget",
-          "QPrinterInfo",
-         ]),
+            "QPrinter",
+            "QAbstractPrintDialog",
+            "QPageSetupDialog",
+            "QPrintDialog",
+            "QPrintEngine",
+            "QPrintPreviewDialog",
+            "QPrintPreviewWidget",
+            "QPrinterInfo",
+        ]),
         ("PyQt.QtCore", [
          "QItemSelectionModel",
          "QSortFilterProxyModel",
          ]),
     ],
     "PyQt4.QtCore": [
-         ("PyQt.QtCore", [
-          "QAbstractItemModel",
-          "QAbstractTableModel",
-          "QByteArray",
-          "QCoreApplication",
-          "QDataStream",
-          "QDir",
-          "QEvent",
-          "QFile",
-          "QFileInfo",
-          "QIODevice",
-          "QLocale",
-          "QMimeData",
-          "QModelIndex",
-          "QMutex",
-          "QObject",
-          "QProcess",
-          "QSettings",
-          "QSize",
-          "QSizeF",
-          "QTextCodec",
-          "QThread",
-          "QThreadPool",
-          "QTimer",
-          "QTranslator",
-          "QUrl",
-          "Qt",
-          "pyqtProperty",
-          "pyqtWrapperType",
-          "pyqtSignal",
-          "qDebug",
-          "qWarning",
-          "QDate",
-          "QTime",
-          "QDateTime",
-          "QRegExp",
-          "QTemporaryFile",
-          "QTextStream",
-          "QVariant",
-          "QPyNullVariant",
-          "QRect",
-          "QRectF",
-          "QMetaObject",
-          "QPoint",
-          "QPointF",
-          "QDirIterator",
-          "SIGNAL",
-          "SLOT",
-          ]),
+        ("PyQt.QtCore", [
+            "QAbstractItemModel",
+            "QAbstractTableModel",
+            "QByteArray",
+            "QCoreApplication",
+            "QDataStream",
+            "QDir",
+            "QEvent",
+            "QFile",
+            "QFileInfo",
+            "QIODevice",
+            "QLocale",
+            "QMimeData",
+            "QModelIndex",
+            "QMutex",
+            "QObject",
+            "QProcess",
+            "QSettings",
+            "QSize",
+            "QSizeF",
+            "QTextCodec",
+            "QThread",
+            "QThreadPool",
+            "QTimer",
+            "QTranslator",
+            "QUrl",
+            "Qt",
+            "pyqtProperty",
+            "pyqtWrapperType",
+            "pyqtSignal",
+            "qDebug",
+            "qWarning",
+            "QDate",
+            "QTime",
+            "QDateTime",
+            "QRegExp",
+            "QTemporaryFile",
+            "QTextStream",
+            "QVariant",
+            "QPyNullVariant",
+            "QRect",
+            "QRectF",
+            "QMetaObject",
+            "QPoint",
+            "QPointF",
+            "QDirIterator",
+            "SIGNAL",
+            "SLOT",
+        ]),
     ],
     "PyQt4.QtNetwork": [
-         ( "PyQt.QtNetwork", ["QNetworkReply","QNetworkRequest"] )
+        ("PyQt.QtNetwork", ["QNetworkReply", "QNetworkRequest"])
     ],
     "PyQt4.QtXml": [
-         ( "PyQt.QtXml", [
-         "QDomDocument"
-         ]),
+        ("PyQt.QtXml", [
+            "QDomDocument"
+        ]),
     ],
     "PyQt4.QtSci": [
-         ( "PyQt.QtSci", [
-         "QsciAPIs",
-         "QsciLexerCustom",
-         "QsciLexerPython",
-         "QsciScintilla",
-         "QsciLexerSQL",
-         ]),
+        ("PyQt.QtSci", [
+            "QsciAPIs",
+            "QsciLexerCustom",
+            "QsciLexerPython",
+            "QsciScintilla",
+            "QsciLexerSQL",
+        ]),
     ],
     "PyQt4.QtWebkit": [
-         ( "PyQt.QtWebkitWidgets", [
-         "QGraphicsWebView",
-         "QWebFrame",
-         "QWebHitTestResult",
-         "QWebInspector",
-         "QWebPage",
-         "QWebView",
-         ]),
+        ("PyQt.QtWebkitWidgets", [
+            "QGraphicsWebView",
+            "QWebFrame",
+            "QWebHitTestResult",
+            "QWebInspector",
+            "QWebPage",
+            "QWebView",
+        ]),
     ],
 }
 
@@ -347,7 +347,7 @@ def build_pattern():
                   """ % (old_module, members, members)
             else:
                 dotted = old_module.split('.')
-                assert len(dotted)==2
+                assert len(dotted) == 2
                 yield """import_from< 'from' mod_member=dotted_name<%r '.' %r> 'import'
                        ( member=%s | import_as_name< member=%s 'as' any > |
                          import_as_names< members=any*  >) >
@@ -389,7 +389,7 @@ class FixPyqt(FixImports):
            module.
         """
         mod_member = results.get("mod_member")
-        if isinstance(mod_member,Node):
+        if isinstance(mod_member, Node):
             module = ""
             for l in mod_member.leaves():
                 module += l.value
@@ -435,13 +435,14 @@ class FixPyqt(FixImports):
                             mod_dict.setdefault(change[0], []).append(member)
                             found = True
                     if not found:
-                        f = open( "/tmp/missing", "a+" )
-                        f.write ( "member %s of %s not found\n" % (member_name, mod_member.value) )
+                        f = open("/tmp/missing", "a+")
+                        f.write("member %s of %s not found\n" % (member_name, mod_member.value))
                         f.close()
 
             new_nodes = []
             indentation = find_indentation(node)
             first = True
+
             def handle_name(name, prefix):
                 if name.type == syms.import_as_name:
                     kids = [Name(name.children[0].value, prefix=prefix),
