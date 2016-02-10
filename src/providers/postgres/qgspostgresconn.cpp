@@ -1221,6 +1221,9 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
       oid = *( quint16 * )p;
       if ( mSwapEndian )
         oid = ntohs( oid );
+      /* cast to signed 16bit
+       * See http://hub.qgis.org/issues/14262 */
+      oid = ( qint16 )oid;
       break;
 
     case 6:
@@ -1268,6 +1271,9 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
       oid = *( quint32 * )p;
       if ( mSwapEndian )
         oid = ntohl( oid );
+      /* cast to signed 32bit
+       * See http://hub.qgis.org/issues/14262 */
+      oid = ( qint32 )oid;
       break;
   }
 
