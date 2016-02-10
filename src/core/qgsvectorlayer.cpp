@@ -701,6 +701,9 @@ long QgsVectorLayer::featureCount( QgsSymbolV2* symbol )
 
 bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
 {
+  // Do not change the method signature
+  // and do not break API
+  Q_UNUSED( showProgress )
   if ( mSymbolFeatureCounted )
     return true;
 
@@ -730,12 +733,6 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
     mSymbolFeatureCountMap.insert( symbolIt->second, 0 );
   }
 
-  long nFeatures = featureCount();
-  QProgressDialog progressDialog( tr( "Updating feature count for layer %1" ).arg( name() ), tr( "Abort" ), 0, nFeatures );
-  progressDialog.setWindowTitle( tr( "QGIS" ) );
-  progressDialog.setWindowModality( Qt::WindowModal );
-  int featuresCounted = 0;
-
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
 
   // Renderer (rule based) may depend on context scale, with scale is ignored if 0
@@ -756,28 +753,8 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
     {
       mSymbolFeatureCountMap[*symbolIt] += 1;
     }
-    ++featuresCounted;
-
-    if ( showProgress )
-    {
-      if ( featuresCounted % 50 == 0 )
-      {
-        if ( featuresCounted > nFeatures ) //sometimes the feature count is not correct
-        {
-          progressDialog.setMaximum( 0 );
-        }
-        progressDialog.setValue( featuresCounted );
-        if ( progressDialog.wasCanceled() )
-        {
-          mSymbolFeatureCountMap.clear();
-          mRendererV2->stopRender( renderContext );
-          return false;
-        }
-      }
-    }
   }
   mRendererV2->stopRender( renderContext );
-  progressDialog.setValue( nFeatures );
   mSymbolFeatureCounted = true;
   return true;
 }
