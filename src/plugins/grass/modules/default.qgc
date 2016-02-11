@@ -293,6 +293,7 @@
                 <grass name="r.volume"/>
                 <grass name="r.surf.area"/>
                 <grass name="r.univar"/>
+                <grass name="r.univar.zones" version_min="7.0"/>
                 <grass name="r.covar"/>
                 <grass name="r.regression.line"/>
                 <grass name="r.coin"/>
@@ -532,6 +533,9 @@
         </section>
         <section label="Sampling" version_min="7.0">
             <grass name="t.sample" version_min="7.0"/>
+            <grass name="t.rast.what.coordinates" version_min="7.0"/>
+            <grass name="t.rast.what.file" version_min="7.0"/>
+            <grass name="t.rast.what.points" version_min="7.0"/>
             <grass name="t.vect.what.strds" version_min="7.0"/>
             <grass name="t.vect.observe.strds" version_min="7.0"/>
         </section>
