@@ -446,9 +446,9 @@ class ParameterNumber(Parameter):
 
         if default is not None:
             try:
-                self.default = int(float(default))
+                self.default = int(unicode(default))
                 self.isInteger = True
-            except:
+            except ValueError:
                 self.default = float(default)
                 self.isInteger = False
         else:
