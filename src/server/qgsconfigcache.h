@@ -18,6 +18,8 @@
 #ifndef QGSCONFIGCACHE_H
 #define QGSCONFIGCACHE_H
 
+#include "qgsconfig.h"
+
 #include <QCache>
 #include <QFileSystemWatcher>
 #include <QMap>
@@ -27,10 +29,11 @@ class QgsServerProjectParser;
 class QgsWCSProjectParser;
 class QgsWFSProjectParser;
 class QgsWMSConfigParser;
+class QgsAccessControl;
 
 class QDomDocument;
 
-class QgsConfigCache: public QObject
+class SERVER_EXPORT QgsConfigCache : public QObject
 {
     Q_OBJECT
   public:
@@ -38,17 +41,33 @@ class QgsConfigCache: public QObject
     ~QgsConfigCache();
 
     QgsServerProjectParser* serverConfiguration( const QString& filePath );
-    QgsWCSProjectParser* wcsConfiguration( const QString& filePath );
-    QgsWFSProjectParser* wfsConfiguration( const QString& filePath );
-    QgsWMSConfigParser* wmsConfiguration( const QString& filePath, const QMap<QString, QString>& parameterMap = ( QMap< QString, QString >() ) );
+    QgsWCSProjectParser* wcsConfiguration(
+      const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , const QgsAccessControl* accessControl
+#endif
+    );
+    QgsWFSProjectParser* wfsConfiguration(
+      const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , const QgsAccessControl* accessControl
+#endif
+    );
+    QgsWMSConfigParser* wmsConfiguration(
+      const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , const QgsAccessControl* accessControl
+#endif
+      , const QMap<QString, QString>& parameterMap = ( QMap< QString, QString >() )
+    );
 
   private:
     QgsConfigCache();
 
-    /**Check for configuration file updates (remove entry from cache if file changes)*/
+    /** Check for configuration file updates (remove entry from cache if file changes)*/
     QFileSystemWatcher mFileSystemWatcher;
 
-    /**Returns xml document for project file / sld or 0 in case of errors*/
+    /** Returns xml document for project file / sld or 0 in case of errors*/
     QDomDocument* xmlDocument( const QString& filePath );
 
     QCache<QString, QDomDocument> mXmlDocumentCache;
@@ -57,7 +76,7 @@ class QgsConfigCache: public QObject
     QCache<QString, QgsWCSProjectParser> mWCSConfigCache;
 
   private slots:
-    /**Removes changed entry from this cache*/
+    /** Removes changed entry from this cache*/
     void removeChangedEntry( const QString& path );
 };
 

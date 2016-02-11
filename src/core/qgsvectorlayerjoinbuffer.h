@@ -28,42 +28,43 @@
 typedef QList< QgsVectorJoinInfo > QgsVectorJoinList;
 
 
-/**Manages joined fields for a vector layer*/
+/** Manages joined fields for a vector layer*/
 class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
 {
     Q_OBJECT
   public:
-    QgsVectorLayerJoinBuffer( QgsVectorLayer* layer = 0 );
+    QgsVectorLayerJoinBuffer( QgsVectorLayer* layer = nullptr );
     ~QgsVectorLayerJoinBuffer();
 
-    /**Joins another vector layer to this layer
+    /** Joins another vector layer to this layer
       @param joinInfo join object containing join layer id, target and source field
       @return (since 2.6) whether the join was successfully added */
     bool addJoin( const QgsVectorJoinInfo& joinInfo );
 
-    /**Removes  a vector layer join*/
-    void removeJoin( const QString& joinLayerId );
+    /** Removes a vector layer join
+      @returns true if join was found and successfully removed */
+    bool removeJoin( const QString& joinLayerId );
 
-    /**Updates field map with joined attributes
+    /** Updates field map with joined attributes
       @param fields map to append joined attributes
      */
     void updateFields( QgsFields& fields );
 
-    /**Calls cacheJoinLayer() for all vector joins*/
+    /** Calls cacheJoinLayer() for all vector joins*/
     void createJoinCaches();
 
-    /**Saves mVectorJoins to xml under the layer node*/
+    /** Saves mVectorJoins to xml under the layer node*/
     void writeXml( QDomNode& layer_node, QDomDocument& document ) const;
 
-    /**Reads joins from project file*/
+    /** Reads joins from project file*/
     void readXml( const QDomNode& layer_node );
 
-    /**Quick way to test if there is any join at all*/
+    /** Quick way to test if there is any join at all*/
     bool containsJoins() const { return !mVectorJoins.isEmpty(); }
 
     const QgsVectorJoinList& vectorJoins() const { return mVectorJoins; }
 
-    /**Finds the vector join for a layer field index.
+    /** Finds the vector join for a layer field index.
       @param index this layers attribute index
       @param fields fields of the vector layer (including joined fields)
       @param sourceFieldIndex Output: field's index in source layer */
@@ -93,10 +94,10 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
 
     QgsVectorLayer* mLayer;
 
-    /**Joined vector layers*/
+    /** Joined vector layers*/
     QgsVectorJoinList mVectorJoins;
 
-    /**Caches attributes of join layer in memory if QgsVectorJoinInfo.memoryCache is true (and the cache is not already there)*/
+    /** Caches attributes of join layer in memory if QgsVectorJoinInfo.memoryCache is true (and the cache is not already there)*/
     void cacheJoinLayer( QgsVectorJoinInfo& joinInfo );
 };
 

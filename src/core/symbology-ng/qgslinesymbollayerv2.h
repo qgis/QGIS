@@ -33,7 +33,7 @@ class QgsExpression;
 class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 {
   public:
-    QgsSimpleLineSymbolLayerV2( QColor color = DEFAULT_SIMPLELINE_COLOR,
+    QgsSimpleLineSymbolLayerV2( const QColor& color = DEFAULT_SIMPLELINE_COLOR,
                                 double width = DEFAULT_SIMPLELINE_WIDTH,
                                 Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE );
 
@@ -57,9 +57,9 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsSimpleLineSymbolLayerV2* clone() const override;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
 
@@ -102,9 +102,9 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const override;
     Qt::PenStyle dxfPenStyle() const override;
 
-    double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const override;
-    double dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const override;
-    QColor dxfColor( const QgsSymbolV2RenderContext& context ) const override;
+    double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext &context ) const override;
+    double dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const override;
+    QColor dxfColor( QgsSymbolV2RenderContext &context ) const override;
 
   protected:
     Qt::PenStyle mPenStyle;
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QgsSymbolV2::OutputUnit mCustomDashPatternUnit;
     QgsMapUnitScale mCustomDashPatternMapUnitScale;
 
-    /**Vector with an even number of entries for the */
+    /** Vector with an even number of entries for the */
     QVector<qreal> mCustomDashVector;
 
     bool mDrawInsidePolygon;
@@ -142,18 +142,37 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     ~QgsMarkerLineSymbolLayerV2();
 
+    /**
+     * Defines how/where the marker should be placed on the line
+     */
     enum Placement
     {
       Interval,
       Vertex,
       LastVertex,
       FirstVertex,
-      CentralPoint
+      CentralPoint,
+      CurvePoint
     };
 
     // static stuff
 
+    /**
+     * Create a new MarkerLineSymbolLayerV2
+     *
+     * @param properties A property map to deserialize saved information from properties()
+     *
+     * @return A new MarkerLineSymbolLayerV2
+     */
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+
+    /**
+     * Create a new MarkerLineSymbolLayerV2 from SLD
+     *
+     * @param element An SLD XML DOM element
+     *
+     * @return A new MarkerLineSymbolLayerV2
+     */
     static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     // implemented from base classes
@@ -170,9 +189,9 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsMarkerLineSymbolLayerV2* clone() const override;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     void setColor( const QColor& color ) override;
 
@@ -186,16 +205,39 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     // new stuff
 
+    /**
+     * Shall the marker be rotated.
+     *
+     * @return True if the marker should be rotated.
+     */
     bool rotateMarker() const { return mRotateMarker; }
+
+    /**
+     * Shall the marker be rotated.
+     */
     void setRotateMarker( bool rotate ) { mRotateMarker = rotate; }
 
+    /**
+     * The interval between individual markers.
+     */
     double interval() const { return mInterval; }
+
+    /**
+     * The interval between individual markers.
+     */
     void setInterval( double interval ) { mInterval = interval; }
 
+    /**
+     * The placement of the markers.
+     */
     Placement placement() const { return mPlacement; }
+
+    /**
+     * The placement of the markers.
+     */
     void setPlacement( Placement p ) { mPlacement = p; }
 
-    /**Returns the offset along the line for the marker placement. For Interval placements, this is the distance
+    /** Returns the offset along the line for the marker placement. For Interval placements, this is the distance
      * between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
      * distance between the marker and the start of the line or the end of the line respectively.
      * This setting has no effect for Vertex or CentralPoint placements.
@@ -207,7 +249,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     */
     double offsetAlongLine() const { return mOffsetAlongLine; }
 
-    /**Sets the the offset along the line for the marker placement. For Interval placements, this is the distance
+    /** Sets the the offset along the line for the marker placement. For Interval placements, this is the distance
      * between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
      * distance between the marker and the start of the line or the end of the line respectively.
      * This setting has no effect for Vertex or CentralPoint placements.
@@ -220,26 +262,26 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     */
     void setOffsetAlongLine( double offsetAlongLine ) { mOffsetAlongLine = offsetAlongLine; }
 
-    /**Returns the unit used for calculating the offset along line for markers.
+    /** Returns the unit used for calculating the offset along line for markers.
      * @returns Offset along line unit type.
      * @see setOffsetAlongLineUnit
      * @see offsetAlongLine
     */
     QgsSymbolV2::OutputUnit offsetAlongLineUnit() const { return mOffsetAlongLineUnit; }
 
-    /**Sets the unit used for calculating the offset along line for markers.
+    /** Sets the unit used for calculating the offset along line for markers.
      * @param unit Offset along line unit type.
      * @see offsetAlongLineUnit
      * @see setOffsetAlongLine
     */
     void setOffsetAlongLineUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetAlongLineUnit = unit; }
 
-    /**Returns the map unit scale used for calculating the offset in map units along line for markers.
+    /** Returns the map unit scale used for calculating the offset in map units along line for markers.
      * @returns Offset along line map unit scale.
      */
     const QgsMapUnitScale& offsetAlongLineMapUnitScale() const { return mOffsetAlongLineMapUnitScale; }
 
-    /**Sets the map unit scale used for calculating the offset in map units along line for markers.
+    /** Sets the map unit scale used for calculating the offset in map units along line for markers.
      * @param scale Offset along line map unit scale.
      */
     void setOffsetAlongLineMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetAlongLineMapUnitScale = scale; }
@@ -255,6 +297,11 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     void setMapUnitScale( const QgsMapUnitScale& scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
+
+    QSet<QString> usedAttributes() const override;
+
+    void setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined ) override;
+
 
   protected:
 
@@ -275,7 +322,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
   private:
 
-    /**Renders a marker by offseting a vertex along the line by a specified distance.
+    /** Renders a marker by offseting a vertex along the line by a specified distance.
      * @param points vertices making up the line
      * @param vertex vertex number to begin offset at
      * @param distance distance to offset from vertex. If distance is positive, offset is calculated

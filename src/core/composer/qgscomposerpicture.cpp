@@ -41,7 +41,7 @@ QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
     : QgsComposerItem( composition )
     , mMode( Unknown )
     , mPictureRotation( 0 )
-    , mRotationMap( 0 )
+    , mRotationMap( nullptr )
     , mResizeMode( QgsComposerPicture::Zoom )
     , mPictureAnchor( UpperLeft )
     , mHasExpressionError( false )
@@ -50,10 +50,10 @@ QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
   init();
 }
 
-QgsComposerPicture::QgsComposerPicture() : QgsComposerItem( 0 ),
+QgsComposerPicture::QgsComposerPicture() : QgsComposerItem( nullptr ),
     mMode( Unknown ),
     mPictureRotation( 0 ),
-    mRotationMap( 0 ),
+    mRotationMap( nullptr ),
     mResizeMode( QgsComposerPicture::Zoom ),
     mPictureAnchor( UpperLeft ),
     mHasExpressionError( false )
@@ -149,7 +149,7 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
     {
       //TODO - allow placement modes with rotation set. for now, setting a rotation
       //always places picture in center of frame
-      if ( mPictureRotation != 0 )
+      if ( !qgsDoubleNear( mPictureRotation, 0.0 ) )
       {
         painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
         painter->rotate( mPictureRotation );
@@ -204,7 +204,7 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
     }
     else if ( mResizeMode == ZoomResizeFrame )
     {
-      if ( mPictureRotation != 0 )
+      if ( !qgsDoubleNear( mPictureRotation, 0.0 ) )
       {
         painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
         painter->rotate( mPictureRotation );
@@ -293,8 +293,16 @@ void QgsComposerPicture::setPictureFile( const QString& path )
   setPicturePath( path );
 }
 
-void QgsComposerPicture::refreshPicture()
+void QgsComposerPicture::refreshPicture( const QgsExpressionContext *context )
 {
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
+  }
+
   QString source = mSourcePath;
 
   //data defined source set?
@@ -302,7 +310,7 @@ void QgsComposerPicture::refreshPicture()
   QVariant exprVal;
   if ( dataDefinedProperty( QgsComposerObject::PictureSource )->isActive() )
   {
-    if ( dataDefinedEvaluate( QgsComposerObject::PictureSource, exprVal ) )
+    if ( dataDefinedEvaluate( QgsComposerObject::PictureSource, exprVal, *evalContext ) )
     {
       source = exprVal.toString().trimmed();
       QgsDebugMsg( QString( "exprVal PictureSource:%1" ).arg( source ) );
@@ -418,7 +426,7 @@ void QgsComposerPicture::loadPicture( const QString &path )
   {
     //trying to load an invalid file or bad expression, show cross picture
     mMode = SVG;
-    QString badFile = QString( ":/images/composer/missing_image.svg" );
+    QString badFile( ":/images/composer/missing_image.svg" );
     mSVG.load( badFile );
     if ( mSVG.isValid() )
     {
@@ -520,7 +528,7 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
   if ( mResizeMode == ZoomResizeFrame && !rect().isEmpty() && !( currentPictureSize.isEmpty() ) )
   {
     QSizeF targetImageSize;
-    if ( mPictureRotation == 0 )
+    if ( qgsDoubleNear( mPictureRotation, 0.0 ) )
     {
       targetImageSize = currentPictureSize;
     }
@@ -623,7 +631,7 @@ void QgsComposerPicture::setRotationMap( int composerMapId )
   if ( composerMapId == -1 ) //disable rotation from map
   {
     QObject::disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( setPictureRotation( double ) ) );
-    mRotationMap = 0;
+    mRotationMap = nullptr;
   }
 
   const QgsComposerMap* map = mComposition->getComposerMapById( composerMapId );
@@ -646,7 +654,7 @@ void QgsComposerPicture::setResizeMode( QgsComposerPicture::ResizeMode mode )
 {
   mResizeMode = mode;
   if ( mode == QgsComposerPicture::ZoomResizeFrame || mode == QgsComposerPicture::FrameToImageSize
-       || ( mode == QgsComposerPicture::Zoom && mPictureRotation != 0 ) )
+       || ( mode == QgsComposerPicture::Zoom && !qgsDoubleNear( mPictureRotation, 0.0 ) ) )
   {
     //call set scene rect to force item to resize to fit picture
     recalculateSize();
@@ -661,14 +669,22 @@ void QgsComposerPicture::recalculateSize()
   setSceneRect( QRectF( pos().x(), pos().y(), rect().width(), rect().height() ) );
 }
 
-void QgsComposerPicture::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
+void QgsComposerPicture::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext* context )
 {
-  if ( property == QgsComposerObject::PictureSource || property == QgsComposerObject::AllProperties )
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
   {
-    refreshPicture();
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
   }
 
-  QgsComposerItem::refreshDataDefinedProperty( property );
+  if ( property == QgsComposerObject::PictureSource || property == QgsComposerObject::AllProperties )
+  {
+    refreshPicture( evalContext );
+  }
+
+  QgsComposerItem::refreshDataDefinedProperty( property, evalContext );
 }
 
 void QgsComposerPicture::setUsePictureExpression( bool useExpression )
@@ -677,7 +693,7 @@ void QgsComposerPicture::setUsePictureExpression( bool useExpression )
   refreshPicture();
 }
 
-void QgsComposerPicture::setPictureExpression( QString expression )
+void QgsComposerPicture::setPictureExpression( const QString& expression )
 {
   dataDefinedProperty( QgsComposerObject::PictureSource )->setExpressionString( expression );
   refreshPicture();
@@ -709,8 +725,8 @@ bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerPictureElem.setAttribute( "file", QgsProject::instance()->writePath( mSourcePath ) );
   composerPictureElem.setAttribute( "pictureWidth", QString::number( mPictureWidth ) );
   composerPictureElem.setAttribute( "pictureHeight", QString::number( mPictureHeight ) );
-  composerPictureElem.setAttribute( "resizeMode", QString::number(( int )mResizeMode ) );
-  composerPictureElem.setAttribute( "anchorPoint", QString::number(( int )mPictureAnchor ) );
+  composerPictureElem.setAttribute( "resizeMode", QString::number( static_cast< int >( mResizeMode ) ) );
+  composerPictureElem.setAttribute( "anchorPoint", QString::number( static_cast< int >( mPictureAnchor ) ) );
 
   //rotation
   composerPictureElem.setAttribute( "pictureRotation", QString::number( mPictureRotation ) );
@@ -739,14 +755,14 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   mPictureHeight = itemElem.attribute( "pictureHeight", "10" ).toDouble();
   mResizeMode = QgsComposerPicture::ResizeMode( itemElem.attribute( "resizeMode", "0" ).toInt() );
   //when loading from xml, default to anchor point of middle to match pre 2.4 behaviour
-  mPictureAnchor = ( QgsComposerItem::ItemPositionMode ) itemElem.attribute( "anchorPoint", QString::number( QgsComposerItem::Middle ) ).toInt();
+  mPictureAnchor = static_cast< QgsComposerItem::ItemPositionMode >( itemElem.attribute( "anchorPoint", QString::number( QgsComposerItem::Middle ) ).toInt() );
 
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
 
-    if ( composerItemElem.attribute( "rotation", "0" ).toDouble() != 0 )
+    if ( !qgsDoubleNear( composerItemElem.attribute( "rotation", "0" ).toDouble(), 0.0 ) )
     {
       //in versions prior to 2.1 picture rotation was stored in the rotation attribute
       mPictureRotation = composerItemElem.attribute( "rotation", "0" ).toDouble();
@@ -778,7 +794,7 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   mSourcePath = QgsProject::instance()->readPath( itemElem.attribute( "file" ) );
 
   //picture rotation
-  if ( itemElem.attribute( "pictureRotation", "0" ).toDouble() != 0 )
+  if ( !qgsDoubleNear( itemElem.attribute( "pictureRotation", "0" ).toDouble(), 0.0 ) )
   {
     mPictureRotation = itemElem.attribute( "pictureRotation", "0" ).toDouble();
   }
@@ -787,7 +803,7 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   int rotationMapId = itemElem.attribute( "mapId", "-1" ).toInt();
   if ( rotationMapId == -1 )
   {
-    mRotationMap = 0;
+    mRotationMap = nullptr;
   }
   else if ( mComposition )
   {

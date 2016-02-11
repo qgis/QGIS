@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -28,22 +28,23 @@
  * <ul>
  * <li><b>Editable</b> <i>If True the user can manually insert new (not yet used) values.</i></li>
  * </ul>
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsUniqueValuesWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsUniqueValuesWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+    explicit QgsUniqueValuesWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value() override;
+    QVariant value() const override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
+    bool valid() const override;
 
   public slots:
     void setValue( const QVariant& value ) override;

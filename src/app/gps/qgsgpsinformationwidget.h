@@ -23,7 +23,7 @@
 #include <qgsgpsmarker.h>
 #include <qgsmaptoolcapture.h>
 #include <qwt_plot_curve.h>
-#if (WITH_QWTPOLAR)
+#ifdef WITH_QWTPOLAR
 #include <qwt_polar_plot.h>
 #include <qwt_polar_grid.h>
 #include <qwt_polar_marker.h>
@@ -37,14 +37,14 @@ struct QgsGPSInformation;
 class QFile;
 class QColor;
 
-/**A dock widget that displays information from a GPS device and
+/** A dock widget that displays information from a GPS device and
  * allows the user to capture features using gps readings to
  * specify the geometry.*/
 class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidgetBase
 {
     Q_OBJECT
   public:
-    QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsGPSInformationWidget();
 
   private slots:
@@ -88,7 +88,7 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     QgsGpsMarker * mpMapMarker;
     QwtPlot * mpPlot;
     QwtPlotCurve * mpCurve;
-#if (WITH_QWTPOLAR)
+#ifdef WITH_QWTPOLAR
     QwtPolarPlot * mpSatellitesWidget;
     QwtPolarGrid *mpSatellitesGrid;
     QList< QwtPolarMarker * > mMarkerList;

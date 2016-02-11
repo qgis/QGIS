@@ -17,15 +17,13 @@ class QgsRasterRange
      */
     QgsRasterRange( double theMin, double theMax );
 
-    ~QgsRasterRange();
-
     double min() const;
     double max() const;
 
     double setMin( double theMin );
     double setMax( double theMax );
 
-    bool operator==( const QgsRasterRange &o ) const;
+    bool operator==( QgsRasterRange o ) const;
 
     /** \brief Test if value is within the list of ranges
      *  @param value value

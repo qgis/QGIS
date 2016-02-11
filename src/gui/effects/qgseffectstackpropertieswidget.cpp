@@ -29,6 +29,8 @@
 #include <QCheckBox>
 #include <QToolButton>
 
+///@cond PRIVATE
+
 static const int EffectItemType = QStandardItem::UserType + 1;
 
 class EffectItem : public QStandardItem
@@ -84,6 +86,7 @@ class EffectItem : public QStandardItem
     QgsPaintEffect* mEffect;
     QgsEffectStackPropertiesWidget* mWidget;
 };
+///@endcond
 
 //
 // QgsEffectStackPropertiesWidget
@@ -92,7 +95,7 @@ class EffectItem : public QStandardItem
 QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent )
     : QWidget( parent )
     , mStack( stack )
-    , mPreviewPicture( 0 )
+    , mPreviewPicture( nullptr )
 {
 
 // TODO
@@ -100,14 +103,14 @@ QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *
   //setWindowModality( Qt::WindowModal );
 #endif
 
-  mPresentWidget = NULL;
+  mPresentWidget = nullptr;
 
   setupUi( this );
 
-  mAddButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
-  mRemoveButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
-  mUpButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.png" ) ) );
-  mDownButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.png" ) ) );
+  mAddButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
+  mRemoveButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
+  mUpButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.svg" ) ) );
+  mDownButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.svg" ) ) );
 
   mModel = new QStandardItemModel();
   // Set the effect
@@ -222,7 +225,7 @@ EffectItem* QgsEffectStackPropertiesWidget::currentEffectItem()
 {
   QModelIndex idx = mEffectsList->currentIndex();
   if ( !idx.isValid() )
-    return NULL;
+    return nullptr;
 
   EffectItem *item = static_cast<EffectItem*>( mModel->itemFromIndex( idx ) );
   return item;
@@ -260,10 +263,10 @@ void QgsEffectStackPropertiesWidget::setWidget( QWidget* widget )
 void QgsEffectStackPropertiesWidget::addEffect()
 {
   QgsPaintEffect* newEffect = new QgsDrawSourceEffect();
-  mStack->appendEffect( newEffect );
+  mStack->insertEffect( 0, newEffect );
 
   EffectItem *newEffectItem = new EffectItem( newEffect, this );
-  mModel->invisibleRootItem()->insertRow( 0, newEffectItem );
+  mModel->invisibleRootItem()->insertRow( mStack->count() - 1, newEffectItem );
 
   mEffectsList->setCurrentIndex( mModel->indexFromItem( newEffectItem ) );
   updateUi();
@@ -345,9 +348,9 @@ void QgsEffectStackPropertiesWidget::changeEffect( QgsPaintEffect* newEffect )
 // QgsEffectStackPropertiesDialog
 //
 
-QgsEffectStackPropertiesDialog::QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent, Qt::WindowFlags f )
+QgsEffectStackPropertiesDialog::QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent, const Qt::WindowFlags& f )
     : QgsDialog( parent, f, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
-    , mPropertiesWidget( 0 )
+    , mPropertiesWidget( nullptr )
 {
   setWindowTitle( tr( "Effect Properties" ) );
   mPropertiesWidget = new QgsEffectStackPropertiesWidget( stack, this );
@@ -375,9 +378,9 @@ void QgsEffectStackPropertiesDialog::setPreviewPicture( const QPicture &picture 
 
 QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent , QgsPaintEffect *effect )
     : QWidget( parent )
-    , mEnabledCheckBox( 0 )
-    , mButton( 0 )
-    , mPreviewPicture( 0 )
+    , mEnabledCheckBox( nullptr )
+    , mButton( nullptr )
+    , mPreviewPicture( nullptr )
 {
   QHBoxLayout* layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -414,7 +417,7 @@ void QgsEffectStackCompactWidget::setPaintEffect( QgsPaintEffect *effect )
     mEnabledCheckBox->setChecked( false );
     mEnabledCheckBox->setEnabled( false );
     mButton->setEnabled( false );
-    mStack = 0;
+    mStack = nullptr;
     return;
   }
 

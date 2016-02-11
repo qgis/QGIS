@@ -35,6 +35,9 @@
 #include "qgsproject.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrendererv2.h"
+#include "qgsgeometryutils.h"
+#include "qgsgeometrycollectionv2.h"
+#include "qgscurvev2.h"
 
 #include <QSettings>
 #include <QMouseEvent>
@@ -59,32 +62,32 @@ QgsMapToolIdentify::~QgsMapToolIdentify()
   delete mIdentifyMenu;
 }
 
-void QgsMapToolIdentify::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolIdentify::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolIdentify::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolIdentify::canvasPressEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolIdentify::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, QList<QgsMapLayer *> layerList, IdentifyMode mode )
+QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, const QList<QgsMapLayer *>& layerList, IdentifyMode mode )
 {
   return identify( x, y, mode, layerList, AllLayers );
 }
 
-QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, LayerType layerType )
+QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const LayerType& layerType )
 {
   return identify( x, y, mode, QList<QgsMapLayer*>(), layerType );
 }
 
-QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, QList<QgsMapLayer*> layerList, LayerType layerType )
+QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer*>& layerList, const LayerType& layerType )
 {
   QList<IdentifyResult> results;
 
@@ -172,7 +175,7 @@ void QgsMapToolIdentify::deactivate()
   QgsMapTool::deactivate();
 }
 
-bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel, LayerType layerType )
+bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPoint& point, const QgsRectangle& viewExtent, double mapUnitsPerPixel, const LayerType& layerType )
 {
   if ( layer->type() == QgsMapLayer::RasterLayer && layerType.testFlag( RasterLayer ) )
   {
@@ -188,7 +191,7 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   }
 }
 
-bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, QgsPoint point )
+bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPoint& point )
 {
   if ( !layer || !layer->hasGeometryType() )
     return false;
@@ -244,11 +247,12 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
   bool filter = false;
 
   QgsRenderContext context( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
+  context.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
   QgsFeatureRendererV2* renderer = layer->rendererV2();
   if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
   {
     // setup scale for scale dependent visibility (rule based)
-    renderer->startRender( context, layer->pendingFields() );
+    renderer->startRender( context, layer->fields() );
     filter = renderer->capabilities() & QgsFeatureRendererV2::Filter;
   }
 
@@ -257,13 +261,14 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     QMap< QString, QString > derivedAttributes = commonDerivedAttributes;
 
     QgsFeatureId fid = f_it->id();
+    context.expressionContext().setFeature( *f_it );
 
-    if ( filter && !renderer->willRenderFeature( *f_it ) )
+    if ( filter && !renderer->willRenderFeature( *f_it, context ) )
       continue;
 
     featureCount++;
 
-    derivedAttributes.unite( featureDerivedAttributes( &( *f_it ), layer ) );
+    derivedAttributes.unite( featureDerivedAttributes( &( *f_it ), layer, toLayerCoordinates( layer, point ) ) );
 
     derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
 
@@ -281,7 +286,32 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
   return featureCount > 0;
 }
 
-QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer )
+void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometryV2& geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString >& derivedAttributes )
+{
+  QString str = QLocale::system().toString( vId.vertex + 1 );
+  derivedAttributes.insert( tr( "Closest vertex number" ), str );
+
+  QgsPointV2 closestPoint = geometry.vertexAt( vId );
+
+  QgsPoint closestPointMapCoords = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPoint( closestPoint.x(), closestPoint.y() ) );
+  str = QLocale::system().toString( closestPointMapCoords.x(), 'g', 10 );
+  derivedAttributes.insert( "Closest vertex X", str );
+  str = QLocale::system().toString( closestPointMapCoords.y(), 'g', 10 );
+  derivedAttributes.insert( "Closest vertex Y", str );
+
+  if ( closestPoint.is3D() )
+  {
+    str = QLocale::system().toString( closestPoint.z(), 'g', 10 );
+    derivedAttributes.insert( "Closest vertex Z", str );
+  }
+  if ( closestPoint.isMeasure() )
+  {
+    str = QLocale::system().toString( closestPoint.m(), 'g', 10 );
+    derivedAttributes.insert( "Closest vertex M", str );
+  }
+}
+
+QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer, const QgsPoint& layerPoint )
 {
   // Calculate derived attributes and insert:
   // measure distance or area depending on geometry type
@@ -294,31 +324,51 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   calc.setEllipsoid( ellipsoid );
   calc.setSourceCrs( layer->crs().srsid() );
 
-  QGis::WkbType wkbType = QGis::WKBNoGeometry;
+  QgsWKBTypes::Type wkbType = QgsWKBTypes::NoGeometry;
   QGis::GeometryType geometryType = QGis::NoGeometry;
 
-  if ( feature->geometry() )
+  QgsVertexId vId;
+  QgsPointV2 closestPoint;
+  if ( feature->constGeometry() )
   {
-    geometryType = feature->geometry()->type();
-    wkbType = feature->geometry()->wkbType();
+    geometryType = feature->constGeometry()->type();
+    wkbType = feature->constGeometry()->geometry()->wkbType();
+    //find closest vertex to clicked point
+    closestPoint = QgsGeometryUtils::closestVertex( *feature->constGeometry()->geometry(), QgsPointV2( layerPoint.x(), layerPoint.y() ), vId );
+  }
+
+  if ( QgsWKBTypes::isMultiType( wkbType ) )
+  {
+    QString str = QLocale::system().toString( static_cast<QgsGeometryCollectionV2*>( feature->constGeometry()->geometry() )->numGeometries() );
+    derivedAttributes.insert( tr( "Parts" ), str );
+    str = QLocale::system().toString( vId.part + 1 );
+    derivedAttributes.insert( tr( "Part number" ), str );
   }
 
   if ( geometryType == QGis::Line )
   {
-    double dist = calc.measure( feature->geometry() );
+    double dist = calc.measureLength( feature->constGeometry() );
     QGis::UnitType myDisplayUnits;
     convertMeasurement( calc, dist, myDisplayUnits, false );
     QString str = calc.textUnit( dist, 3, myDisplayUnits, false );  // dist and myDisplayUnits are out params
     derivedAttributes.insert( tr( "Length" ), str );
-    if ( wkbType == QGis::WKBLineString || wkbType == QGis::WKBLineString25D )
+
+    const QgsCurveV2* curve = dynamic_cast< const QgsCurveV2* >( feature->constGeometry()->geometry() );
+    if ( curve )
     {
+      str = QLocale::system().toString( curve->nCoordinates() );
+      derivedAttributes.insert( tr( "Vertices" ), str );
+
+      //add details of closest vertex to identify point
+      closestVertexAttributes( *curve, vId, layer, derivedAttributes );
+
       // Add the start and end points in as derived attributes
-      QgsPoint pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->geometry()->asPolyline().first() );
+      QgsPoint pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPoint( curve->startPoint().x(), curve->startPoint().y() ) );
       str = QLocale::system().toString( pnt.x(), 'g', 10 );
       derivedAttributes.insert( tr( "firstX", "attributes get sorted; translation for lastX should be lexically larger than this one" ), str );
       str = QLocale::system().toString( pnt.y(), 'g', 10 );
       derivedAttributes.insert( tr( "firstY" ), str );
-      pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->geometry()->asPolyline().last() );
+      pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPoint( curve->endPoint().x(), curve->endPoint().y() ) );
       str = QLocale::system().toString( pnt.x(), 'g', 10 );
       derivedAttributes.insert( tr( "lastX", "attributes get sorted; translation for firstX should be lexically smaller than this one" ), str );
       str = QLocale::system().toString( pnt.y(), 'g', 10 );
@@ -327,8 +377,8 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   }
   else if ( geometryType == QGis::Polygon )
   {
-    double area = calc.measure( feature->geometry() );
-    double perimeter = calc.measurePerimeter( feature->geometry() );
+    double area = calc.measureArea( feature->constGeometry() );
+    double perimeter = calc.measurePerimeter( feature->constGeometry() );
     QGis::UnitType myDisplayUnits;
     convertMeasurement( calc, area, myDisplayUnits, true );  // area and myDisplayUnits are out params
     QString str = calc.textUnit( area, 3, myDisplayUnits, true );
@@ -336,22 +386,39 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     convertMeasurement( calc, perimeter, myDisplayUnits, false );  // perimeter and myDisplayUnits are out params
     str = calc.textUnit( perimeter, 3, myDisplayUnits, false );
     derivedAttributes.insert( tr( "Perimeter" ), str );
+
+    str = QLocale::system().toString( feature->constGeometry()->geometry()->nCoordinates() );
+    derivedAttributes.insert( tr( "Vertices" ), str );
+
+    //add details of closest vertex to identify point
+    closestVertexAttributes( *feature->constGeometry()->geometry(), vId, layer, derivedAttributes );
   }
   else if ( geometryType == QGis::Point &&
-            ( wkbType == QGis::WKBPoint || wkbType == QGis::WKBPoint25D ) )
+            QgsWKBTypes::flatType( wkbType ) == QgsWKBTypes::Point )
   {
     // Include the x and y coordinates of the point as a derived attribute
-    QgsPoint pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->geometry()->asPoint() );
+    QgsPoint pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->constGeometry()->asPoint() );
     QString str = QLocale::system().toString( pnt.x(), 'g', 10 );
     derivedAttributes.insert( "X", str );
     str = QLocale::system().toString( pnt.y(), 'g', 10 );
     derivedAttributes.insert( "Y", str );
+
+    if ( QgsWKBTypes::hasZ( wkbType ) )
+    {
+      str = QLocale::system().toString( static_cast<QgsPointV2*>( feature->constGeometry()->geometry() )->z(), 'g', 10 );
+      derivedAttributes.insert( "Z", str );
+    }
+    if ( QgsWKBTypes::hasM( wkbType ) )
+    {
+      str = QLocale::system().toString( static_cast<QgsPointV2*>( feature->constGeometry()->geometry() )->m(), 'g', 10 );
+      derivedAttributes.insert( "M", str );
+    }
   }
 
   return derivedAttributes;
 }
 
-bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel )
+bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, const QgsRectangle& viewExtent, double mapUnitsPerPixel )
 {
   QgsDebugMsg( "point = " + point.toString() );
   if ( !layer )
@@ -447,7 +514,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     QgsGeometry geometry;
     if ( format == QgsRaster::IdentifyFormatValue )
     {
-      foreach ( int bandNo, values.keys() )
+      Q_FOREACH ( int bandNo, values.keys() )
       {
         QString valueString;
         if ( values.value( bandNo ).isNull() )
@@ -466,7 +533,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     }
     else if ( format == QgsRaster::IdentifyFormatFeature )
     {
-      foreach ( int i, values.keys() )
+      Q_FOREACH ( int i, values.keys() )
       {
         QVariant value = values.value( i );
         if ( value.type() == QVariant::Bool && !value.toBool() )
@@ -490,9 +557,9 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
         // list of feature stores for a single sublayer
         QgsFeatureStoreList featureStoreList = values.value( i ).value<QgsFeatureStoreList>();
 
-        foreach ( QgsFeatureStore featureStore, featureStoreList )
+        Q_FOREACH ( QgsFeatureStore featureStore, featureStoreList )
         {
-          foreach ( QgsFeature feature, featureStore.features() )
+          Q_FOREACH ( QgsFeature feature, featureStore.features() )
           {
             attributes.clear();
             // WMS sublayer and feature type, a sublayer may contain multiple feature types.
@@ -525,8 +592,8 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     }
     else // text or html
     {
-      QgsDebugMsg( QString( "%1 html or text values" ).arg( values.size() ) );
-      foreach ( int bandNo, values.keys() )
+      QgsDebugMsg( QString( "%1 HTML or text values" ).arg( values.size() ) );
+      Q_FOREACH ( int bandNo, values.keys() )
       {
         QString value = values.value( bandNo ).toString();
         attributes.clear();
@@ -558,7 +625,7 @@ void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &meas
   QGis::UnitType myUnits = mCanvas->mapUnits();
 
   calc.convertMeasurement( measure, myUnits, displayUnits(), isArea );
-  u = myUnits;
+  u = displayUnits();
 }
 
 QGis::UnitType QgsMapToolIdentify::displayUnits()

@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,10 +18,14 @@
 
 #include "qgseditorwidgetfactory.h"
 
+/** \class QgsRangeWidgetFactory
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsRangeWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsRangeWidgetFactory( QString name );
+    QgsRangeWidgetFactory( const QString& name );
 
     // QgsEditorWidgetFactory interface
   public:
@@ -29,6 +33,7 @@ class GUI_EXPORT QgsRangeWidgetFactory : public QgsEditorWidgetFactory
     virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
     virtual QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx ) override;
     virtual void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
+    virtual QMap<const char*, int> supportedWidgetTypes() override;
 
   private:
     virtual bool isFieldSupported( QgsVectorLayer *vl, int fieldIdx ) override;

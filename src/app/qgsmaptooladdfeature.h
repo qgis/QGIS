@@ -16,15 +16,21 @@
 #include "qgsmaptoolcapture.h"
 #include "qgsfeature.h"
 
-/**This tool adds new point/line/polygon features to already existing vector layers*/
+/** This tool adds new point/line/polygon features to already existing vector layers*/
 class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolCapture
 {
     Q_OBJECT
   public:
-    QgsMapToolAddFeature( QgsMapCanvas* canvas );
+    /** @note mode parameter added in QGIS 2.12 */
+    QgsMapToolAddFeature( QgsMapCanvas* canvas, CaptureMode mode = CaptureNone );
     virtual ~QgsMapToolAddFeature();
-    void canvasMapReleaseEvent( QgsMapMouseEvent * e ) override;
+    void cadCanvasReleaseEvent( QgsMapMouseEvent * e ) override;
 
     bool addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bool showModal = true );
     void activate() override;
+
+  protected:
+    /** Check if CaptureMode match layer type. Default is true.
+     * @note Added in 2.12 */
+    bool mCheckGeometryType;
 };

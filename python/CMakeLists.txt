@@ -56,14 +56,16 @@ ENDMACRO(PY_COMPILE)
 ADD_SUBDIRECTORY(plugins)
 ADD_SUBDIRECTORY(qsci_apis)
 ADD_SUBDIRECTORY(console)
+ADD_SUBDIRECTORY(PyQt)
 ADD_SUBDIRECTORY(pyplugin_installer)
 ADD_SUBDIRECTORY(ext-libs)
+ADD_SUBDIRECTORY(testing)
 
 IF(POLICY CMP0040)
   CMAKE_POLICY (POP) # see PUSH above
 ENDIF(POLICY CMP0040)
 
-INCLUDE_DIRECTORIES(
+INCLUDE_DIRECTORIES(SYSTEM
   ${PYTHON_INCLUDE_PATH}
   ${SIP_INCLUDE_DIR}
   ${QT_QTCORE_INCLUDE_DIR}
@@ -76,13 +78,17 @@ INCLUDE_DIRECTORIES(
   ${QWT_INCLUDE_DIR}
   ${QEXTSERIALPORT_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
-
+  ${QCA_INCLUDE_DIR}
+)
+INCLUDE_DIRECTORIES(
   ../src/core
+  ../src/core/auth
   ../src/core/pal
   ../src/core/composer
   ../src/core/diagram
   ../src/core/effects
   ../src/core/dxf
+  ../src/core/geometry
   ../src/core/gps
   ../src/core/layertree
   ../src/core/raster
@@ -90,6 +96,7 @@ INCLUDE_DIRECTORIES(
 
   ../src/gui/raster
   ../src/gui/attributetable
+  ../src/gui/auth
   ../src/gui/editorwidgets
   ../src/gui/editorwidgets/core
   ../src/gui/effects
@@ -97,6 +104,10 @@ INCLUDE_DIRECTORIES(
 
   ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
 )
+
+IF(NOT ENABLE_QT5)
+  SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} QT5_SUPPORT)
+ENDIF(NOT ENABLE_QT5)
 
 IF(NOT ANDROID)
   SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} ANDROID)
@@ -119,10 +130,10 @@ IF(PYQT4_VERSION_NUM LESS 263680)	# 0x040600
   SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} PROXY_FACTORY)
 ENDIF(PYQT4_VERSION_NUM LESS 263680)
 
-IF(NOT PYQT4_VERSION_NUM LESS 263941)	# 0x040705
+IF(NOT PYQT4_VERSION_NUM LESS 263941 AND NOT ENABLE_QT5)	# 0x040705
   SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} QSETINT_CONVERSION)
-ENDIF(NOT PYQT4_VERSION_NUM LESS 263941)
-
+ENDIF(NOT PYQT4_VERSION_NUM LESS 263941 AND NOT ENABLE_QT5)
+#
 IF(NOT PYQT4_VERSION_NUM LESS 264194)	# 0x040802
   SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} QSETTYPE_CONVERSION)
 ENDIF(NOT PYQT4_VERSION_NUM LESS 264194)
@@ -138,7 +149,7 @@ ENDIF(NOT PYQT4_VERSION_NUM LESS 264453)
 # core module
 FILE(GLOB_RECURSE sip_files_core core/*.sip)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core})
-SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.core.api)
+SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.core.api)
 ADD_SIP_PYTHON_MODULE(qgis._core core/core.sip qgis_core)
 
 # additional gui includes
@@ -154,7 +165,7 @@ INCLUDE_DIRECTORIES(
 # gui module
 FILE(GLOB_RECURSE sip_files_gui gui/*.sip)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_gui})
-SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.gui.api)
+SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.gui.api)
 IF(QSCI_SIP_DIR)
   SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -I ${QSCI_SIP_DIR})
 ELSE(QSCI_SIP_DIR)
@@ -181,10 +192,10 @@ IF (WITH_SERVER AND WITH_SERVER_PLUGINS)
   SET(PY_MODULES ${PY_MODULES} server)
 
   FILE(GLOB sip_files_server
-    server/*.sip
+    server/server.sip
   )
   SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_server})
-  SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.server.api)
+  SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.server.api)
   ADD_SIP_PYTHON_MODULE(qgis._server server/server.sip qgis_core qgis_server)
 ENDIF (WITH_SERVER AND WITH_SERVER_PLUGINS)
 
@@ -194,10 +205,12 @@ INCLUDE_DIRECTORIES(
   ../src/analysis/raster
   ../src/analysis/network
   ../src/analysis/interpolation
+  ../src/analysis/openstreetmap
   ${CMAKE_BINARY_DIR}/src/analysis/vector
   ${CMAKE_BINARY_DIR}/src/analysis/network
   ${CMAKE_BINARY_DIR}/src/analysis/raster
   ${CMAKE_BINARY_DIR}/src/analysis/interpolation
+  ${CMAKE_BINARY_DIR}/src/analysis/openstreetmap 
 )
 
 # analysis module
@@ -206,15 +219,16 @@ FILE(GLOB sip_files_analysis
   analysis/raster/*.sip
   analysis/vector/*.sip
   analysis/interpolation/*.sip
+  analysis/openstreetmap/*.sip  
 )
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
-SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
+SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
 ADD_SIP_PYTHON_MODULE(qgis._analysis analysis/analysis.sip qgis_core qgis_analysis)
 
 # network-analysis module
 FILE(GLOB_RECURSE sip_files_network_analysis analysis/network/*.sip)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_network_analysis})
-SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.networkanalysis.api)
+SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.networkanalysis.api)
 ADD_SIP_PYTHON_MODULE(qgis._networkanalysis analysis/network/networkanalysis.sip qgis_core qgis_networkanalysis)
 
 SET(QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)

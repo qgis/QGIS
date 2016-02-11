@@ -23,7 +23,7 @@
 **
 **********************************************************************/
 
-#if _MSC_VER > 1000
+#if defined(_MSC_VER) && _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
@@ -31,7 +31,6 @@
 #include <string.h>
 
 #include "dl_writer_ascii.h"
-#include "dl_exception.h"
 
 
 /**
@@ -77,7 +76,7 @@ void DL_WriterA::dxfReal(int gc, double value) const {
             end = i+1;
         }
     }
-    if (end>0 && end<(int)strlen(str)) {
+    if (end>0 && end<static_cast<int>(strlen(str))) {
         str[end] = '\0';
     }
 
@@ -120,11 +119,6 @@ void DL_WriterA::dxfHex(int gc, int value) const {
  * @param value String
  */
 void DL_WriterA::dxfString(int gc, const char* value) const {
-    if (value==NULL) {
-#ifndef __GCC2x__
-        //throw DL_NullStrExc();
-#endif
-    }
     m_ofile << (gc<10 ? "  " : (gc<100 ? " " : "")) << gc << "\n"
     << value << "\n";
 }

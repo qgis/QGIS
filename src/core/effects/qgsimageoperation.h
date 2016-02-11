@@ -61,13 +61,13 @@ class CORE_EXPORT QgsImageOperation
       FlipVertical /*!< flip the image vertically */
     };
 
-    /**Convert a QImage to a grayscale image. Alpha channel is preserved.
+    /** Convert a QImage to a grayscale image. Alpha channel is preserved.
      * @param image QImage to convert
      * @param mode mode to use during grayscale conversion
     */
     static void convertToGrayscale( QImage &image, const GrayscaleMode mode = GrayscaleLuminosity );
 
-    /**Alter the brightness or contrast of a QImage.
+    /** Alter the brightness or contrast of a QImage.
      * @param image QImage to alter
      * @param brightness brightness value, in the range -255 to 255. A brightness value of 0 indicates
      * no change to brightness, a negative value will darken the image, and a positive value will brighten
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsImageOperation
      */
     static void adjustBrightnessContrast( QImage &image, const int brightness, const double contrast );
 
-    /**Alter the hue or saturation of a QImage.
+    /** Alter the hue or saturation of a QImage.
      * @param image QImage to alter
      * @param saturation double between 0 and 2 inclusive, where 0 = desaturate and 1.0 = no change
      * @param colorizeColor color to use for colorizing image. Set to an invalid QColor to disable
@@ -88,48 +88,48 @@ class CORE_EXPORT QgsImageOperation
     static void adjustHueSaturation( QImage &image, const double saturation, const QColor& colorizeColor = QColor(),
                                      const double colorizeStrength = 1.0 );
 
-    /**Multiplies opacity of image pixel values by a factor.
+    /** Multiplies opacity of image pixel values by a factor.
      * @param image QImage to alter
      * @param factor factor to multiple pixel's opacity by
      */
     static void multiplyOpacity( QImage &image, const double factor );
 
-    /**Overlays a color onto an image. This operation retains the alpha channel of the
+    /** Overlays a color onto an image. This operation retains the alpha channel of the
      * original image, but replaces all image pixel colors with the specified color.
      * @param image QImage to alter
      * @param color color to overlay (any alpha component of the color is ignored)
      */
     static void overlayColor( QImage &image, const QColor& color );
 
-    /**Struct for storing properties of a distance transform operation*/
+    /** Struct for storing properties of a distance transform operation*/
     struct DistanceTransformProperties
     {
       DistanceTransformProperties()
           : shadeExterior( true )
           , useMaxDistance( true )
           , spread( 10.0 )
-          , ramp( NULL )
+          , ramp( nullptr )
       { }
 
-      /**Set to true to perform the distance transform on transparent pixels
+      /** Set to true to perform the distance transform on transparent pixels
        * in the source image, set to false to perform the distance transform
        * on opaque pixels
        */
       bool shadeExterior;
-      /**Set to true to automatically calculate the maximum distance in the
+      /** Set to true to automatically calculate the maximum distance in the
        * transform to use as the spread value
        */
       bool useMaxDistance;
-      /**Maximum distance (in pixels) for the distance transform shading to
+      /** Maximum distance (in pixels) for the distance transform shading to
        * spread
        */
       double spread;
-      /**Color ramp to use for shading the distance transform
+      /** Color ramp to use for shading the distance transform
        */
       QgsVectorColorRampV2* ramp;
     };
 
-    /**Performs a distance transform on the source image and shades the result
+    /** Performs a distance transform on the source image and shades the result
      * using a color ramp.
      * @param image QImage to alter
      * @param properties DistanceTransformProperties object with parameters
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsImageOperation
      */
     static void distanceTransform( QImage &image, const DistanceTransformProperties& properties );
 
-    /**Performs a stack blur on an image. Stack blur represents a good balance between
+    /** Performs a stack blur on an image. Stack blur represents a good balance between
      * speed and blur quality.
      * @param image QImage to blur
      * @param radius blur radius in pixels, maximum value of 16
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsImageOperation
      */
     static void stackBlur( QImage &image, const int radius, const bool alphaOnly = false );
 
-    /**Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
+    /** Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
      * quality blur.
      * @param image QImage to blur
      * @param radius blur radius in pixels
@@ -156,20 +156,32 @@ class CORE_EXPORT QgsImageOperation
      */
     static QImage* gaussianBlur( QImage &image, const int radius );
 
-    /**Flips an image horizontally or vertically
+    /** Flips an image horizontally or vertically
      * @param image QImage to flip
      * @param type type of flip to perform (horizontal or vertical)
      */
     static void flipImage( QImage &image, FlipType type );
+
+    /** Calculates the non-transparent region of an image.
+     * @param image source image
+     * @param minSize minimum size for returned region, if desired. If the
+     * non-transparent region of the image is smaller than this minimum size,
+     * it will be centered in the returned rectangle.
+     * @param center return rectangle will be centered on the center of the original image if set to true
+     * @note added in QGIS 2.9
+     * @see cropTransparent
+     */
+    static QRect nonTransparentImageRect( const QImage & image, QSize minSize = QSize(), bool center = false );
 
     /** Crop any transparent border from around an image.
      * @param image source image
      * @param minSize minimum size for cropped image, if desired. If the
      * cropped image is smaller than the minimum size, it will be centered
      * in the returned image.
+     * @param center cropped image will be centered on the center of the original image if set to true
      * @note added in QGIS 2.9
      */
-    static QImage cropTransparent( const QImage & image, const QSize& minSize = QSize() );
+    static QImage cropTransparent( const QImage & image, QSize minSize = QSize(), bool center = false );
 
   private:
 
@@ -198,7 +210,7 @@ class CORE_EXPORT QgsImageOperation
     template <class PixelOperation>
     struct ProcessBlockUsingPixelOperation
     {
-      ProcessBlockUsingPixelOperation( PixelOperation& operation )
+      explicit ProcessBlockUsingPixelOperation( PixelOperation& operation )
           : mOperation( operation ) { }
 
       typedef void result_type;
@@ -207,7 +219,7 @@ class CORE_EXPORT QgsImageOperation
       {
         for ( unsigned int y = block.beginLine; y < block.endLine; ++y )
         {
-          QRgb* ref = ( QRgb* )block.image->scanLine( y );
+          QRgb* ref = reinterpret_cast< QRgb* >( block.image->scanLine( y ) );
           for ( unsigned int x = 0; x < block.lineLength; ++x )
           {
             mOperation( ref[x], x, y );
@@ -224,7 +236,7 @@ class CORE_EXPORT QgsImageOperation
     template <class LineOperation>
     struct ProcessBlockUsingLineOperation
     {
-      ProcessBlockUsingLineOperation( LineOperation& operation )
+      explicit ProcessBlockUsingLineOperation( LineOperation& operation )
           : mOperation( operation ) { }
 
       typedef void result_type;
@@ -237,7 +249,7 @@ class CORE_EXPORT QgsImageOperation
         {
           for ( unsigned int y = block.beginLine; y < block.endLine; ++y )
           {
-            QRgb* ref = ( QRgb* )block.image->scanLine( y );
+            QRgb* ref = reinterpret_cast< QRgb* >( block.image->scanLine( y ) );
             mOperation( ref, block.lineLength, bpl );
           }
         }
@@ -247,7 +259,7 @@ class CORE_EXPORT QgsImageOperation
           unsigned char* ref = block.image->scanLine( 0 ) + 4 * block.beginLine;
           for ( unsigned int x = block.beginLine; x < block.endLine; ++x, ref += 4 )
           {
-            mOperation(( QRgb* )ref, block.lineLength, bpl );
+            mOperation( reinterpret_cast< QRgb* >( ref ), block.lineLength, bpl );
           }
         }
       }
@@ -261,7 +273,7 @@ class CORE_EXPORT QgsImageOperation
     class GrayscalePixelOperation
     {
       public:
-        GrayscalePixelOperation( const GrayscaleMode mode )
+        explicit GrayscalePixelOperation( const GrayscaleMode mode )
             : mMode( mode )
         {  }
 
@@ -319,7 +331,7 @@ class CORE_EXPORT QgsImageOperation
     class MultiplyOpacityPixelOperation
     {
       public:
-        MultiplyOpacityPixelOperation( const double factor )
+        explicit MultiplyOpacityPixelOperation( const double factor )
             : mFactor( factor )
         { }
 
@@ -433,7 +445,7 @@ class CORE_EXPORT QgsImageOperation
     class FlipLineOperation
     {
       public:
-        FlipLineOperation( LineOperationDirection direction )
+        explicit FlipLineOperation( LineOperationDirection direction )
             : mDirection( direction )
         { }
 

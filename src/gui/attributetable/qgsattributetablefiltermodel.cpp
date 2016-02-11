@@ -48,11 +48,11 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
 
     if ( leftSelected && !rightSelected )
     {
-      return true;
+      return sortOrder() == Qt::AscendingOrder;
     }
     else if ( rightSelected && !leftSelected )
     {
-      return false;
+      return sortOrder() == Qt::DescendingOrder;
     }
   }
 
@@ -80,15 +80,15 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
     case QVariant::Date:
       return leftData.toDate() < rightData.toDate();
 
+    case QVariant::Time:
+      return leftData.toTime() < rightData.toTime();
+
     case QVariant::DateTime:
       return leftData.toDateTime() < rightData.toDateTime();
 
     default:
       return leftData.toString().localeAwareCompare( rightData.toString() ) < 0;
   }
-
-  // Avoid warning. Will never reach this
-  return false;
 }
 
 void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
@@ -123,7 +123,7 @@ bool QgsAttributeTableFilterModel::selectedOnTop()
   return mSelectedOnTop;
 }
 
-void QgsAttributeTableFilterModel::setFilteredFeatures( QgsFeatureIds ids )
+void QgsAttributeTableFilterModel::setFilteredFeatures( const QgsFeatureIds& ids )
 {
   mFilteredFeatures = ids;
   setFilterMode( ShowFilteredList );
@@ -189,8 +189,9 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
       {
         const QList<QgsFeatureId> addedFeatures = editBuffer->addedFeatures().keys();
         const QList<QgsFeatureId> changedFeatures = editBuffer->changedAttributeValues().keys();
+        const QList<QgsFeatureId> changedGeometries = editBuffer->changedGeometries().keys();
         const QgsFeatureId fid = masterModel()->rowToId( sourceRow );
-        return addedFeatures.contains( fid ) || changedFeatures.contains( fid );
+        return addedFeatures.contains( fid ) || changedFeatures.contains( fid ) || changedGeometries.contains( fid );
       }
       return false;
     }
@@ -230,6 +231,9 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   bool filter = false;
   QgsRectangle rect = mCanvas->mapSettings().mapToLayerCoordinates( layer(), mCanvas->extent() );
   QgsRenderContext renderContext;
+  renderContext.expressionContext() << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( layer() );
   QgsFeatureRendererV2* renderer = layer()->rendererV2();
 
   mFilteredFeatures.clear();
@@ -263,10 +267,10 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
     filter = renderer && renderer->capabilities() & QgsFeatureRendererV2::Filter;
   }
 
-  renderer->startRender( renderContext, layer()->pendingFields() );
+  renderer->startRender( renderContext, layer()->fields() );
 
   QgsFeatureRequest r( masterModel()->request() );
-  if ( r.filterType() == QgsFeatureRequest::FilterRect )
+  if ( !r.filterRect().isNull() )
   {
     r.setFilterRect( r.filterRect().intersect( &rect ) );
   }
@@ -280,7 +284,8 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
 
   while ( features.nextFeature( f ) )
   {
-    if ( !filter || renderer->willRenderFeature( f ) )
+    renderContext.expressionContext().setFeature( f );
+    if ( !filter || renderer->willRenderFeature( f, renderContext ) )
     {
       mFilteredFeatures << f.id();
     }
@@ -318,7 +323,7 @@ QModelIndex QgsAttributeTableFilterModel::fidToIndex( QgsFeatureId fid )
 QModelIndexList QgsAttributeTableFilterModel::fidToIndexList( QgsFeatureId fid )
 {
   QModelIndexList indexes;
-  foreach ( QModelIndex idx, masterModel()->idToIndexList( fid ) )
+  Q_FOREACH ( const QModelIndex& idx, masterModel()->idToIndexList( fid ) )
   {
     indexes.append( mapFromMaster( idx ) );
   }

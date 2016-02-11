@@ -53,25 +53,25 @@ class ANALYSIS_EXPORT QgsRasterMatrix
       opLOG10,
     };
 
-    /**Takes ownership of data array*/
+    /** Takes ownership of data array*/
     QgsRasterMatrix();
     //! @note note available in python bindings
-    QgsRasterMatrix( int nCols, int nRows, float* data, double nodataValue );
+    QgsRasterMatrix( int nCols, int nRows, double* data, double nodataValue );
     QgsRasterMatrix( const QgsRasterMatrix& m );
     ~QgsRasterMatrix();
 
-    /**Returns true if matrix is 1x1 (=scalar number)*/
+    /** Returns true if matrix is 1x1 (=scalar number)*/
     bool isNumber() const { return ( mColumns == 1 && mRows == 1 ); }
     double number() const { return mData[0]; }
 
-    /**Returns data array (but not ownership)*/
+    /** Returns data array (but not ownership)*/
     //! @note not available in python bindings
-    float* data() { return mData; }
-    /**Returns data and ownership. Sets data and nrows, ncols of this matrix to 0*/
+    double* data() { return mData; }
+    /** Returns data and ownership. Sets data and nrows, ncols of this matrix to 0*/
     //! @note not available in python bindings
-    float* takeData();
+    double* takeData();
 
-    void setData( int cols, int rows, float* data, double nodataValue );
+    void setData( int cols, int rows, double* data, double nodataValue );
 
     int nColumns() const { return mColumns; }
     int nRows() const { return mRows; }
@@ -80,9 +80,9 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     void setNodataValue( double d ) { mNodataValue = d; }
 
     QgsRasterMatrix& operator=( const QgsRasterMatrix& m );
-    /**Adds another matrix to this one*/
+    /** Adds another matrix to this one*/
     bool add( const QgsRasterMatrix& other );
-    /**Subtracts another matrix from this one*/
+    /** Subtracts another matrix from this one*/
     bool subtract( const QgsRasterMatrix& other );
     bool multiply( const QgsRasterMatrix& other );
     bool divide( const QgsRasterMatrix& other );
@@ -110,14 +110,16 @@ class ANALYSIS_EXPORT QgsRasterMatrix
   private:
     int mColumns;
     int mRows;
-    float* mData;
+    double* mData;
     double mNodataValue;
 
-    /**+,-,*,/,^,<,>,<=,>=,=,!=, and, or*/
+    /** +,-,*,/,^,<,>,<=,>=,=,!=, and, or*/
     bool twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix& other );
+    double calculateTwoArgumentOp( TwoArgOperator op, double arg1, double arg2 ) const;
+
     /*sqrt, sin, cos, tan, asin, acos, atan*/
     bool oneArgumentOperation( OneArgOperator op );
-    bool testPowerValidity( double base, double power );
+    bool testPowerValidity( double base, double power ) const;
 };
 
 #endif // QGSRASTERMATRIX_H

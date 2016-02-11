@@ -27,11 +27,11 @@ class QgsMapToolIdentify : QgsMapTool
     {
       IdentifyResult();
 
-      IdentifyResult( QgsMapLayer * layer, QgsFeature feature, QMap< QString, QString > derivedAttributes );
+      IdentifyResult( QgsMapLayer * layer, const QgsFeature& feature, const QMap< QString, QString >& derivedAttributes );
 
-      IdentifyResult( QgsMapLayer * layer, QString label, QMap< QString, QString > attributes, QMap< QString, QString > derivedAttributes );
+      IdentifyResult( QgsMapLayer * layer, const QString& label, const QMap< QString, QString >& attributes, const QMap< QString, QString >& derivedAttributes );
 
-      IdentifyResult( QgsMapLayer * layer, QString label, QgsFields fields, QgsFeature feature, QMap< QString, QString > derivedAttributes );
+      IdentifyResult( QgsMapLayer * layer, const QString& label, const QgsFields& fields, const QgsFeature& feature, const QMap< QString, QString >& derivedAttributes );
 
       QgsMapLayer* mLayer;
       QString mLabel;
@@ -48,13 +48,13 @@ class QgsMapToolIdentify : QgsMapTool
     virtual ~QgsMapToolIdentify();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent * e );
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent * e );
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent * e );
 
     virtual void activate();
 
@@ -66,7 +66,7 @@ class QgsMapToolIdentify : QgsMapTool
     @param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
     @param mode Identification mode. Can use Qgis default settings or a defined mode. Default mode is DefaultQgsSetting.
     @return a list of IdentifyResult*/
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, QList<QgsMapLayer*> layerList = QList<QgsMapLayer*>(), IdentifyMode mode = DefaultQgsSetting );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, const QList<QgsMapLayer*>& layerList = QList<QgsMapLayer*>(), IdentifyMode mode = DefaultQgsSetting );
 
     /** Performs the identification.
     To avoid beeing forced to specify IdentifyMode with a list of layers
@@ -76,7 +76,7 @@ class QgsMapToolIdentify : QgsMapTool
     @param mode Identification mode. Can use Qgis default settings or a defined mode.
     @param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
     @return a list of IdentifyResult*/
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, const LayerType& layerType = AllLayers );
 
     //! return a pointer to the identify menu which will be used in layer selection mode
     //! this menu can also be customized
@@ -87,7 +87,7 @@ class QgsMapToolIdentify : QgsMapTool
 
   signals:
     void identifyProgress( int, int );
-    void identifyMessage( QString );
+    void identifyMessage( const QString& );
     void changedRasterResults( QList<QgsMapToolIdentify::IdentifyResult>& );
 
   protected:
@@ -100,11 +100,11 @@ class QgsMapToolIdentify : QgsMapTool
     @param layerList Performs the identification within the given list of layers.
     @param layerType Only performs identification in a certain type of layers (raster, vector).
     @return a list of IdentifyResult*/
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  QList<QgsMapLayer*> layerList, LayerType layerType = AllLayers );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer*>& layerList, const LayerType& layerType = AllLayers );
 
-    /** call the right method depending on layer type */
-    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel, LayerType layerType = AllLayers );
+    /** Call the right method depending on layer type */
+    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsPoint& point, const QgsRectangle& viewExtent, double mapUnitsPerPixel, const LayerType& layerType = AllLayers );
 
-    bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel );
-    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, QgsPoint point );
+    bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, const QgsRectangle& viewExtent, double mapUnitsPerPixel );
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPoint& point );
 };

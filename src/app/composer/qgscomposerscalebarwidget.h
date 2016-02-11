@@ -30,7 +30,7 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
     Q_OBJECT
 
   public:
-    QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar );
+    explicit QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar );
     ~QgsComposerScaleBarWidget();
 
   public slots:
@@ -54,21 +54,25 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
     void on_mUnitsComboBox_currentIndexChanged( int index );
     void on_mLineJoinStyleCombo_currentIndexChanged( int index );
     void on_mLineCapStyleCombo_currentIndexChanged( int index );
+    void on_mMinWidthSpinBox_valueChanged( int i );
+    void on_mMaxWidthSpinBox_valueChanged( int i );
 
   private slots:
     void setGuiElements();
+    void segmentSizeRadioChanged( QAbstractButton*radio );
 
   protected:
     void showEvent( QShowEvent * event ) override;
 
   private:
     QgsComposerScaleBar* mComposerScaleBar;
+    QButtonGroup mSegmentSizeRadioGroup;
 
     void refreshMapComboBox();
-    /**Enables/disables the signals of the input gui elements*/
+    /** Enables/disables the signals of the input gui elements*/
     void blockMemberSignals( bool enable );
 
-    /**Enables/disables controls based on scale bar style*/
+    /** Enables/disables controls based on scale bar style*/
     void toggleStyleSpecificControls( const QString& style );
 
     void connectUpdateSignal();

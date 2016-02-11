@@ -28,7 +28,7 @@
 #include <QTextEdit>
 
 QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent )
-    : QDialog( parent ), mRamp( ramp ), mCurrentItem( 0 )
+    : QDialog( parent ), mRamp( ramp ), mCurrentItem( nullptr )
 {
   setupUi( this );
 #ifdef Q_OS_MAC
@@ -91,7 +91,7 @@ void QgsVectorGradientColorRampV2Dialog::on_btnInformation_pressed()
     return;
 
   QgsDialog *dlg = new QgsDialog( this );
-  QLabel *label = 0;
+  QLabel *label = nullptr;
 
   // information table
   QTableWidget *tableInfo = new QTableWidget( dlg );
@@ -100,8 +100,9 @@ void QgsVectorGradientColorRampV2Dialog::on_btnInformation_pressed()
   tableInfo->setRowCount( mRamp->info().count() );
   tableInfo->setColumnCount( 2 );
   int i = 0;
-  for ( QgsStringMap::const_iterator it = mRamp->info().constBegin();
-        it != mRamp->info().constEnd(); ++it )
+  QgsStringMap rampInfo = mRamp->info();
+  for ( QgsStringMap::const_iterator it = rampInfo.constBegin();
+        it != rampInfo.constEnd(); ++it )
   {
     if ( it.key().startsWith( "cpt-city" ) )
       continue;
@@ -204,6 +205,7 @@ void QgsVectorGradientColorRampV2Dialog::updatePreview()
   if ( groupStops->isChecked() )
   {
     int count = treeStops->topLevelItemCount();
+    stops.reserve( count );
     for ( int i = 0; i < count; i++ )
     {
       QTreeWidgetItem* item = treeStops->topLevelItem( i );
@@ -238,7 +240,7 @@ void QgsVectorGradientColorRampV2Dialog::setColor2( const QColor& color )
   updatePreview();
 }
 
-void QgsVectorGradientColorRampV2Dialog::setStopColor( QTreeWidgetItem* item, QColor color )
+void QgsVectorGradientColorRampV2Dialog::setStopColor( QTreeWidgetItem* item, const QColor& color )
 {
   QSize iconSize( 16, 16 );
   QPixmap pixmap( iconSize );
@@ -293,7 +295,7 @@ void QgsVectorGradientColorRampV2Dialog::stopDoubleClicked( QTreeWidgetItem* ite
                   item->data( 0, StopColorRole ).value<QColor>(), this, SLOT( setItemStopColor( const QColor& ) ),
                   this, tr( "Edit Stop Color" ), true );
       }
-      mCurrentItem = 0;
+      mCurrentItem = nullptr;
     }
     else
     {

@@ -81,8 +81,6 @@ class  CORE_EXPORT QgsLabelAttributes
      */
     QgsLabelAttributes( bool def = true );
 
-    ~QgsLabelAttributes();
-
     /* Units type */
     enum Units
     {

@@ -16,12 +16,15 @@
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 
-QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerV2Widget( parent, vl ), mLayer( 0 )
+QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerV2Widget( parent, vl ), mLayer( nullptr )
 {
   setupUi( this );
+
+  mDistanceUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+
   if ( mVectorLayer )
   {
-    const QgsFields& fm = mVectorLayer->pendingFields();
+    const QgsFields& fm = mVectorLayer->fields();
     mXAttributeComboBox->addItem( "" );
     mYAttributeComboBox->addItem( "" );
     for ( int idx = 0; idx < fm.count(); ++idx )
@@ -201,13 +204,17 @@ void QgsVectorFieldSymbolLayerWidget::on_mCounterclockwiseFromEastRadioButton_to
   }
 }
 
-void QgsVectorFieldSymbolLayerWidget::on_mDistanceUnitComboBox_currentIndexChanged( int index )
+void QgsVectorFieldSymbolLayerWidget::on_mDistanceUnitWidget_changed()
 {
-  if ( mLayer )
+  if ( !mLayer )
   {
-    mLayer->setDistanceUnit(( QgsSymbolV2::OutputUnit ) index );
-    emit changed();
+    return;
   }
+
+  mLayer->setDistanceUnit( mDistanceUnitWidget->unit() );
+  mLayer->setDistanceMapUnitScale( mDistanceUnitWidget->getMapUnitScale() );
+  emit changed();
 }
+
 
 

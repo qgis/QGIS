@@ -31,6 +31,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 
+
 class lasboundaryPro(LAStoolsAlgorithm):
 
     MODE = "MODE"
@@ -40,18 +41,18 @@ class lasboundaryPro(LAStoolsAlgorithm):
     HOLES = "HOLES"
 
     def defineCharacteristics(self):
-        self.name = "lasboundaryPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasboundaryPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParameter(ParameterSelection(lasboundaryPro.MODE,
-            self.tr("compute boundary based on"), lasboundaryPro.MODES, 0))
+                                             self.tr("compute boundary based on"), lasboundaryPro.MODES, 0))
         self.addParameter(ParameterNumber(lasboundaryPro.CONCAVITY,
-            self.tr("concavity"), 0, None, 50.0))
+                                          self.tr("concavity"), 0, None, 50.0))
         self.addParameter(ParameterBoolean(lasboundaryPro.HOLES,
-            self.tr("interior holes"), False))
+                                           self.tr("interior holes"), False))
         self.addParameter(ParameterBoolean(lasboundaryPro.DISJOINT,
-            self.tr("disjoint polygon"), False))
+                                           self.tr("disjoint polygon"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersVectorOutputFormatGUI()
@@ -73,7 +74,7 @@ class lasboundaryPro(LAStoolsAlgorithm):
         else:
             concavity = self.getParameterValue(lasboundaryPro.CONCAVITY)
             commands.append("-concavity")
-            commands.append(str(concavity))
+            commands.append(unicode(concavity))
             if self.getParameterValue(lasboundaryPro.HOLES):
                 commands.append("-holes")
             if self.getParameterValue(lasboundaryPro.DISJOINT):

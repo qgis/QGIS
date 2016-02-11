@@ -23,6 +23,7 @@ __copyright__ = '(C) 2013, CS Systemes d\'information  (CS SI)'
 from collections import namedtuple
 import re
 
+
 def merge_pairs(list, should_merge, merge):
     """
     Merges adjacent elements of list using the function merge
@@ -48,28 +49,37 @@ _Arg = namedtuple('Arg', 'contents comments')
 _Command = namedtuple('Command', 'name body comment')
 BlankLine = namedtuple('BlankLine', '')
 
+
 class File(list):
+
     def __repr__(self):
         return 'File(' + repr(list(self)) + ')'
 
+
 class Comment(str):
+
     def __repr__(self):
-        return 'Comment(' + str(self) + ')'
+        return 'Comment(' + unicode(self) + ')'
+
 
 def Arg(contents, comments=None):
     return _Arg(contents, comments or [])
 
+
 def Command(name, body, comment=None):
     return _Command(name, body, comment)
 
+
 class CMakeParseError(Exception):
     pass
+
 
 def prettify(s):
     """
     Returns the pretty-print of the contents of a CMakeLists file.
     """
-    return str(parse(s))
+    return unicode(parse(s))
+
 
 def parse(s):
     '''
@@ -82,6 +92,7 @@ def parse(s):
     nums_items = attach_comments_to_commands(nums_items)
     items = [item for _, item in nums_items]
     return File(items)
+
 
 def parse_file(toks):
     '''
@@ -101,8 +112,10 @@ def parse_file(toks):
             yield (line_nums, cmd)
         prev_type = typ
 
+
 def attach_comments_to_commands(nodes):
     return merge_pairs(nodes, command_then_comment, attach_comment_to_command)
+
 
 def command_then_comment(a, b):
     line_nums_a, thing_a = a
@@ -111,10 +124,12 @@ def command_then_comment(a, b):
             isinstance(thing_b, Comment) and
             set(line_nums_a).intersection(line_nums_b))
 
+
 def attach_comment_to_command(lnums_command, lnums_comment):
     command_lines, command = lnums_command
     _, comment = lnums_comment
     return command_lines, Command(command.name, command.body[:], comment)
+
 
 def parse_command(start_line_num, command_name, toks):
     cmd = Command(name=command_name, body=[], comment=None)
@@ -137,6 +152,7 @@ def parse_command(start_line_num, command_name, toks):
         command_name, start_line_num)
     raise CMakeParseError(msg)
 
+
 def expect(expected_type, toks):
     line_num, (typ, tok_contents) = toks.next()
     if typ != expected_type:
@@ -146,14 +162,15 @@ def expect(expected_type, toks):
 
 # http://stackoverflow.com/questions/691148/pythonic-way-to-implement-a-tokenizer
 scanner = re.Scanner([
-    (r'#.*',                lambda scanner, token: ("comment", token)),
-    (r'"[^"]*"',            lambda scanner, token: ("string", token)),
-    (r"\(",                 lambda scanner, token: ("left paren", token)),
-    (r"\)",                 lambda scanner, token: ("right paren", token)),
-    (r'[^ \t\r\n()#"]+',    lambda scanner, token: ("word", token)),
-    (r'\n',                 lambda scanner, token: ("newline", token)),
-    (r"\s+",                None), # skip other whitespace
+    (r'#.*', lambda scanner, token: ("comment", token)),
+    (r'"[^"]*"', lambda scanner, token: ("string", token)),
+    (r"\(", lambda scanner, token: ("left paren", token)),
+    (r"\)", lambda scanner, token: ("right paren", token)),
+    (r'[^ \t\r\n()#"]+', lambda scanner, token: ("word", token)),
+    (r'\n', lambda scanner, token: ("newline", token)),
+    (r"\s+", None), # skip other whitespace
 ])
+
 
 def tokenize(s):
     """

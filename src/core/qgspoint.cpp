@@ -136,7 +136,7 @@ QString QgsPoint::toString( int thePrecision ) const
 {
   QString x = qIsFinite( m_x ) ? QString::number( m_x, 'f', thePrecision ) : QObject::tr( "infinite" );
   QString y = qIsFinite( m_y ) ? QString::number( m_y, 'f', thePrecision ) : QObject::tr( "infinite" );
-  return QString( "%1,%2" ).arg( x ).arg( y );
+  return QString( "%1,%2" ).arg( x, y );
 }
 
 QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffix, const bool padded ) const
@@ -153,13 +153,25 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
     myWrappedX = myWrappedX + 360.0;
   }
 
+  //first, limit latitude to -180 to 180 degree range
+  double myWrappedY = fmod( m_y, 180.0 );
+  //next, wrap around latitudes > 90 or < -90 degrees, so that eg "110S" -> "70N"
+  if ( myWrappedY > 90.0 )
+  {
+    myWrappedY = myWrappedY - 180.0;
+  }
+  else if ( myWrappedY < -90.0 )
+  {
+    myWrappedY = myWrappedY + 180.0;
+  }
+
   int myDegreesX = int( qAbs( myWrappedX ) );
   double myFloatMinutesX = double(( qAbs( myWrappedX ) - myDegreesX ) * 60 );
   int myIntMinutesX = int( myFloatMinutesX );
   double mySecondsX = double( myFloatMinutesX - myIntMinutesX ) * 60;
 
-  int myDegreesY = int( qAbs( m_y ) );
-  double myFloatMinutesY = double(( qAbs( m_y ) - myDegreesY ) * 60 );
+  int myDegreesY = int( qAbs( myWrappedY ) );
+  double myFloatMinutesY = double(( qAbs( myWrappedY ) - myDegreesY ) * 60 );
   int myIntMinutesY = int( myFloatMinutesY );
   double mySecondsY = double( myFloatMinutesY - myIntMinutesY ) * 60;
 
@@ -192,7 +204,7 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
   if ( useSuffix )
   {
     myXHemisphere = myWrappedX < 0 ? QObject::tr( "W" ) : QObject::tr( "E" );
-    myYHemisphere = m_y < 0 ? QObject::tr( "S" ) : QObject::tr( "N" );
+    myYHemisphere = myWrappedY < 0 ? QObject::tr( "S" ) : QObject::tr( "N" );
   }
   else
   {
@@ -200,7 +212,7 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
     {
       myXSign = QObject::tr( "-" );
     }
-    if ( m_y < 0 )
+    if ( myWrappedY < 0 )
     {
       myYSign = QObject::tr( "-" );
     }
@@ -233,7 +245,7 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
   QString rep = myXSign + QString::number( myDegreesX ) + QChar( 176 ) +
                 myMinutesX + QChar( 0x2032 ) +
                 myStrSecondsX + QChar( 0x2033 ) +
-                myXHemisphere + QString( "," ) +
+                myXHemisphere + ',' +
                 myYSign + QString::number( myDegreesY ) + QChar( 176 ) +
                 myMinutesY + QChar( 0x2032 ) +
                 myStrSecondsY + QChar( 0x2033 ) +
@@ -318,7 +330,7 @@ QString QgsPoint::toDegreesMinutes( int thePrecision, const bool useSuffix, cons
 
   QString rep = myXSign + QString::number( myDegreesX ) + QChar( 176 ) +
                 myStrMinutesX + QChar( 0x2032 ) +
-                myXHemisphere + QString( "," ) +
+                myXHemisphere + ',' +
                 myYSign + QString::number( myDegreesY ) + QChar( 176 ) +
                 myStrMinutesY + QChar( 0x2032 ) +
                 myYHemisphere;
@@ -327,7 +339,7 @@ QString QgsPoint::toDegreesMinutes( int thePrecision, const bool useSuffix, cons
 
 QString QgsPoint::wellKnownText() const
 {
-  return QString( "POINT(%1 %2)" ).arg( qgsDoubleToString( m_x ) ).arg( qgsDoubleToString( m_y ) );
+  return QString( "POINT(%1 %2)" ).arg( qgsDoubleToString( m_x ), qgsDoubleToString( m_y ) );
 }
 
 double QgsPoint::sqrDist( double x, double y ) const
@@ -355,7 +367,7 @@ bool QgsPoint::compare( const QgsPoint &other, double epsilon ) const
 // operators
 bool QgsPoint::operator==( const QgsPoint & other )
 {
-  if (( m_x == other.x() ) && ( m_y == other.y() ) )
+  if ( qgsDoubleNear( m_x, other.x() ) && qgsDoubleNear( m_y, other.y() ) )
     return true;
   else
     return false;
@@ -363,7 +375,7 @@ bool QgsPoint::operator==( const QgsPoint & other )
 
 bool QgsPoint::operator!=( const QgsPoint & other ) const
 {
-  if (( m_x == other.x() ) && ( m_y == other.y() ) )
+  if ( qgsDoubleNear( m_x, other.x() ) && qgsDoubleNear( m_y, other.y() ) )
     return false;
   else
     return true;
@@ -380,7 +392,7 @@ QgsPoint & QgsPoint::operator=( const QgsPoint & other )
   return *this;
 }
 
-void QgsPoint::multiply( const double& scalar )
+void QgsPoint::multiply( double scalar )
 {
   m_x *= scalar;
   m_y *= scalar;

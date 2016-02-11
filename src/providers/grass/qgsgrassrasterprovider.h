@@ -20,6 +20,11 @@
 #ifndef QGSGRASSRASTERPROVIDER_H
 #define QGSGRASSRASTERPROVIDER_H
 
+#include "qgscoordinatereferencesystem.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrectangle.h"
+#include "qgscolorrampshader.h"
+
 extern "C"
 {
 #include <grass/version.h>
@@ -28,11 +33,6 @@ extern "C"
 #include <grass/raster.h>
 #endif
 }
-
-#include "qgscoordinatereferencesystem.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrectangle.h"
-#include "qgscolorrampshader.h"
 
 #include <QString>
 #include <QStringList>
@@ -51,16 +51,19 @@ class QgsCoordinateTransform;
   Executes qgis.g.info and keeps it open comunicating through pipe. Restarts the command if raster was updated.
 */
 
-class QgsGrassRasterValue
+class GRASS_LIB_EXPORT QgsGrassRasterValue
 {
   public:
     QgsGrassRasterValue();
     ~QgsGrassRasterValue();
-    void start( QString gisdbase, QString location, QString mapset, QString map );
+
+    void set( const QString & gisdbase, const QString & location, const QString & mapset, const QString & map );
+    void stop();
     // returns raster value, NaN for no data
     // ok is set to true if ok or false on error
     double value( double x, double y, bool *ok );
   private:
+    void start();
     QString mGisdbase;      // map gisdabase
     QString mLocation;      // map location name (not path!)
     QString mMapset;        // map mapset
@@ -77,7 +80,7 @@ class QgsGrassRasterValue
   data residing in a OGC Web Map Service.
 
 */
-class QgsGrassRasterProvider : public QgsRasterDataProvider
+class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 {
     Q_OBJECT
 
@@ -89,7 +92,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     *                otherwise we contact the host directly.
     *
     */
-    QgsGrassRasterProvider( QString const & uri = 0 );
+    explicit QgsGrassRasterProvider( QString const & uri = 0 );
 
     //! Destructor
     ~QgsGrassRasterProvider();
@@ -100,7 +103,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
      */
     QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) override;
 
-    /** return a provider name
+    /** Return a provider name
 
     Essentially just returns the provider key.  Should be used to build file
     dialogs so that providers can be shown with their supported types. Thus
@@ -117,7 +120,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     QString name() const override;
 
 
-    /** return description
+    /** Return description
 
     Return a terse string describing what the provider is.
 
@@ -130,7 +133,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     */
     QString description() const override;
 
-    /*! Get the QgsCoordinateReferenceSystem for this layer
+    /** Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
@@ -141,7 +144,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     */
     virtual QgsRectangle extent() override;
 
-    /**Returns true if layer is valid
+    /** Returns true if layer is valid
     */
     bool isValid() override;
 
@@ -207,8 +210,16 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     QString metadata() override;
 
     virtual QDateTime dataTimestamp() const override;
-  private:
 
+    // used by GRASS tools
+    void freeze();
+    void thaw();
+
+  private:
+    void setLastError( QString error );
+    void clearLastError();
+    // append error if it is not empty
+    void appendIfError( QString error );
     /**
     * Flag indicating if the layer data source is a valid layer
     */
@@ -232,6 +243,9 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     QgsGrassRasterValue mRasterValue;
 
     double mNoDataValue;
+
+    QString mLastErrorTitle;
+    QString mLastError;
 };
 
 #endif

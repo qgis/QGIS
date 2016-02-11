@@ -48,6 +48,9 @@ class QgsLegendSymbolItemV2
     //! Key of the parent legend node. For legends with tree hierarchy
     //! @note added in 2.8
     QString parentRuleKey() const;
+
+    //! Set symbol of the item. Takes ownership of symbol.
+    void setSymbol( QgsSymbolV2* s /Transfer/ );
 };
 
 

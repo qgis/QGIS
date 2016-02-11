@@ -73,12 +73,6 @@
 #include <QApplication>
 #include <QCursor>
 
-#ifdef WIN32
-#define QGISEXTERN extern "C" __declspec( dllexport )
-#else
-#define QGISEXTERN extern "C"
-#endif
-
 static const QString sName = QObject::tr( "eVis" );
 static const QString sDescription = QObject::tr( "An event visualization tool - view images associated with vector features" );
 static const QString sCategory = QObject::tr( "Database" );
@@ -91,11 +85,11 @@ static const QString sIcon = ":/evis/eVisEventBrowser.png";
 eVis::eVis( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
-    , mDatabaseConnectionActionPointer( 0 )
-    , mEventIdToolActionPointer( 0 )
-    , mEventBrowserActionPointer( 0 )
+    , mDatabaseConnectionActionPointer( nullptr )
+    , mEventIdToolActionPointer( nullptr )
+    , mEventBrowserActionPointer( nullptr )
 {
-  mIdTool = 0;
+  mIdTool = nullptr;
 }
 
 eVis::~eVis()
@@ -118,7 +112,7 @@ void eVis::initGui()
 
   // Set the what's this text
   mDatabaseConnectionActionPointer->setWhatsThis( tr( "Create layer from a database query" ) );
-  mEventIdToolActionPointer->setWhatsThis( tr( "Open an Event Browers and display the selected feature" ) );
+  mEventIdToolActionPointer->setWhatsThis( tr( "Open an Event Browser and display the selected feature" ) );
   mEventBrowserActionPointer->setWhatsThis( tr( "Open an Event Browser to explore the current layer's features" ) );
 
   // Connect the action to the runmQGisIface->mapCanvas()
@@ -156,7 +150,7 @@ void eVis::launchDatabaseConnection()
 
 void eVis::launchEventIdTool()
 {
-  if ( 0 == mIdTool )
+  if ( !mIdTool )
   {
     mIdTool = new eVisEventIdTool( mQGisIface->mapCanvas() );
     mIdTool->setAction( mEventIdToolActionPointer );
@@ -188,18 +182,18 @@ void eVis::unload()
   mQGisIface->removeDatabaseToolBarIcon( mEventBrowserActionPointer );
   delete mEventBrowserActionPointer;
 
-  while ( mTemporaryFileList.size() > 0 )
+  while ( !mTemporaryFileList.isEmpty() )
   {
     delete( mTemporaryFileList.takeLast() );
   }
 
-  if ( 0 != mIdTool )
+  if ( mIdTool )
   {
     delete mIdTool;
   }
 }
 
-void eVis::drawVectorLayer( QString thePathNameQString, QString theBaseNameQString, QString theProviderQString )
+void eVis::drawVectorLayer( const QString& thePathNameQString, const QString& theBaseNameQString, const QString& theProviderQString )
 {
   mQGisIface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString );
 }

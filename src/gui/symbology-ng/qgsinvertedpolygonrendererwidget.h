@@ -31,7 +31,7 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererV2Widget, 
     Q_OBJECT
 
   public:
-    /** static creation method
+    /** Static creation method
      * @param layer the layer where this renderer is applied
      * @param style
      * @param renderer the mask renderer (will take ownership)
@@ -47,11 +47,12 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererV2Widget, 
 
     /** @returns the current feature renderer */
     virtual QgsFeatureRendererV2* renderer() override;
+    void setMapCanvas( QgsMapCanvas* canvas ) override;
 
   protected:
-    /** the mask renderer */
+    /** The mask renderer */
     QScopedPointer<QgsInvertedPolygonRenderer> mRenderer;
-    /** the widget used to represent the mask's embedded renderer */
+    /** The widget used to represent the mask's embedded renderer */
     QScopedPointer<QgsRendererV2Widget> mEmbeddedRendererWidget;
 
   private slots:

@@ -27,7 +27,7 @@ QgsMapToolSelectFreehand::QgsMapToolSelectFreehand( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
     , mDragging( false )
 {
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
   mFillColor = QColor( 254, 178, 76, 63 );
   mBorderColour = QColor( 254, 58, 29, 100 );
@@ -38,13 +38,12 @@ QgsMapToolSelectFreehand::~QgsMapToolSelectFreehand()
   delete mRubberBand;
 }
 
-void QgsMapToolSelectFreehand::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolSelectFreehand::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
-  {
     return;
-  }
-  if ( mRubberBand == NULL )
+
+  if ( !mRubberBand )
   {
     mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
     mRubberBand->setFillColor( mFillColor );
@@ -55,22 +54,20 @@ void QgsMapToolSelectFreehand::canvasPressEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSelectFreehand::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent* e )
 {
-  if ( !mDragging || mRubberBand == NULL )
-  {
+  if ( !mDragging || !mRubberBand )
     return;
-  }
+
   mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
 }
 
 
-void QgsMapToolSelectFreehand::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
-  if ( mRubberBand == NULL )
-  {
+  if ( !mRubberBand )
     return;
-  }
+
   if ( mRubberBand->numberOfVertices() > 2 )
   {
     QgsGeometry* shapeGeom = mRubberBand->asGeometry();
@@ -79,6 +76,6 @@ void QgsMapToolSelectFreehand::canvasReleaseEvent( QMouseEvent * e )
   }
   mRubberBand->reset( QGis::Polygon );
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mDragging = false;
 }

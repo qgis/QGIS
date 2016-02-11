@@ -24,7 +24,6 @@
 #include "qgscoloreffect.h"
 #include "qgsstylev2.h"
 #include "qgsvectorcolorrampv2.h"
-#include "qgsvectorgradientcolorrampv2dialog.h"
 
 //
 // draw source
@@ -32,7 +31,7 @@
 
 QgsDrawSourceWidget::QgsDrawSourceWidget( QWidget *parent )
     : QgsPaintEffectWidget( parent )
-    , mEffect( NULL )
+    , mEffect( nullptr )
 {
   setupUi( this );
   initGui();
@@ -120,7 +119,7 @@ void QgsDrawSourceWidget::on_mTransparencySlider_valueChanged( int value )
 
 QgsBlurWidget::QgsBlurWidget( QWidget *parent )
     : QgsPaintEffectWidget( parent )
-    , mEffect( NULL )
+    , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -247,7 +246,7 @@ void QgsBlurWidget::on_mTransparencySlider_valueChanged( int value )
 
 QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
     : QgsPaintEffectWidget( parent )
-    , mEffect( NULL )
+    , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -412,7 +411,7 @@ void QgsShadowEffectWidget::on_mShadowBlendCmbBx_currentIndexChanged( int index 
 
 QgsGlowWidget::QgsGlowWidget( QWidget *parent )
     : QgsPaintEffectWidget( parent )
-    , mEffect( NULL )
+    , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -425,6 +424,9 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
   mRampComboBox->populate( QgsStyleV2::defaultStyle() );
   mRampComboBox->setShowGradientOnly( true );
   connect( mRampComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
+  connect( mRampComboBox, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );
+  connect( mButtonEditRamp, SIGNAL( clicked() ), mRampComboBox, SLOT( editSourceRamp() ) );
+
   connect( radioSingleColor, SIGNAL( toggled( bool ) ), this, SLOT( colorModeChanged() ) );
 
   initGui();
@@ -467,7 +469,6 @@ void QgsGlowWidget::initGui()
   radioColorRamp->setChecked( mEffect->colorType() == QgsGlowEffect::ColorRamp );
   mRampComboBox->setEnabled( mEffect->colorType() == QgsGlowEffect::ColorRamp );
   mButtonEditRamp->setEnabled( mEffect->colorType() == QgsGlowEffect::ColorRamp );
-  mInvertCheckBox->setEnabled( mEffect->colorType() == QgsGlowEffect::ColorRamp );
   mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
 
   blockSignals( false );
@@ -594,39 +595,11 @@ void QgsGlowWidget::applyColorRamp()
   }
 
   QgsVectorColorRampV2* ramp = mRampComboBox->currentColorRamp();
-  if ( ramp == NULL )
+  if ( !ramp )
     return;
 
   mEffect->setRamp( ramp );
   emit changed();
-}
-
-void QgsGlowWidget::on_mButtonEditRamp_clicked()
-{
-  if ( !mEffect )
-  {
-    return;
-  }
-
-  if ( mEffect->ramp() && mEffect->ramp()->type() == "gradient" )
-  {
-    QgsVectorColorRampV2* ramp = mEffect->ramp()->clone();
-    QgsVectorGradientColorRampV2* gradRamp = static_cast<QgsVectorGradientColorRampV2*>( ramp );
-    QgsVectorGradientColorRampV2Dialog dlg( gradRamp, this );
-
-    if ( dlg.exec() && gradRamp )
-    {
-      mEffect->setRamp( gradRamp );
-      mRampComboBox->blockSignals( true );
-      mRampComboBox->setSourceColorRamp( mEffect->ramp() );
-      mRampComboBox->blockSignals( false );
-      emit changed();
-    }
-    else
-    {
-      delete ramp;
-    }
-  }
 }
 
 //
@@ -635,7 +608,7 @@ void QgsGlowWidget::on_mButtonEditRamp_clicked()
 
 QgsTransformWidget::QgsTransformWidget( QWidget *parent )
     : QgsPaintEffectWidget( parent )
-    , mEffect( NULL )
+    , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -812,7 +785,7 @@ void QgsTransformWidget::on_mRotationSpinBox_valueChanged( double value )
 
 QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
     : QgsPaintEffectWidget( parent )
-    , mEffect( NULL )
+    , mEffect( nullptr )
 {
   setupUi( this );
 

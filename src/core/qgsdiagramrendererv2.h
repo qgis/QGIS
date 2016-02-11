@@ -29,7 +29,6 @@ class QgsDiagramRendererV2;
 class QgsFeature;
 class QgsRenderContext;
 class QDomElement;
-class QgsPalGeometry;
 class QgsCoordinateTransform;
 class QgsMapToPixel;
 class QgsVectorLayer;
@@ -61,22 +60,26 @@ class CORE_EXPORT QgsDiagramLayerSettings
     };
 
     QgsDiagramLayerSettings();
+    QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh );
+    QgsDiagramLayerSettings& operator=( const QgsDiagramLayerSettings& rh );
 
     ~QgsDiagramLayerSettings();
 
     //pal placement properties
     Placement placement;
-    unsigned int  placementFlags;
+    unsigned int placementFlags;
     int priority; // 0 = low, 10 = high
+
+    //! Z-index of diagrams, where diagrams with a higher z-index are drawn on top of diagrams with a lower z-index
+    double zIndex;
+
     bool obstacle; // whether it's an obstacle
     double dist; // distance from the feature (in mm)
     QgsDiagramRendererV2* renderer; // if any renderer is assigned, it is owned by this class
 
     //assigned when layer gets prepared
-    pal::Layer* palLayer;
     const QgsCoordinateTransform* ct;
     const QgsMapToPixel* xform;
-    QList<QgsPalGeometry*> geometries;
     QgsFields fields;
 
     int xPosColumn; //attribute index for x coordinate (or -1 if position not data defined)
@@ -85,6 +88,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+
 };
 
 //diagram settings for rendering
@@ -172,13 +176,13 @@ class CORE_EXPORT QgsDiagramInterpolationSettings
     QSizeF upperSize;
     double lowerValue;
     double upperValue;
-    /**Index of the classification attribute*/
+    /** Index of the classification attribute*/
     int classificationAttribute;
     QString classificationAttributeExpression;
     bool classificationAttributeIsExpression;
 };
 
-/**Returns diagram settings for a feature*/
+/** Returns diagram settings for a feature*/
 class CORE_EXPORT QgsDiagramRendererV2
 {
   public:
@@ -190,20 +194,20 @@ class CORE_EXPORT QgsDiagramRendererV2
      * @note added in 2.4 */
     virtual QgsDiagramRendererV2* clone() const = 0;
 
-    /**Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error*/
+    /** Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error*/
     virtual QSizeF sizeMapUnits( const QgsFeature& feature, const QgsRenderContext& c );
 
     virtual QString rendererName() const = 0;
 
-    /**Returns attribute indices needed for diagram rendering*/
+    /** Returns attribute indices needed for diagram rendering*/
     virtual QList<QString> diagramAttributes() const = 0;
 
-    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QPointF& pos );
+    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos );
 
     void setDiagram( QgsDiagram* d );
     QgsDiagram* diagram() const { return mDiagram; }
 
-    /**Returns list with all diagram settings in the renderer*/
+    /** Returns list with all diagram settings in the renderer*/
     virtual QList<QgsDiagramSettings> diagramSettings() const = 0;
 
     virtual void readXML( const QDomElement& elem, const QgsVectorLayer* layer ) = 0;
@@ -218,38 +222,38 @@ class CORE_EXPORT QgsDiagramRendererV2
   protected:
     QgsDiagramRendererV2( const QgsDiagramRendererV2& other );
 
-    /**Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
+    /** Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
      * @param feature the feature
      * @param c render context
      * @param s out: diagram settings for the feature
      */
     virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s ) = 0;
 
-    /**Returns size of the diagram (in painter units) or an invalid size in case of error*/
+    /** Returns size of the diagram (in painter units) or an invalid size in case of error*/
     virtual QSizeF diagramSize( const QgsFeature& features, const QgsRenderContext& c ) = 0;
 
-    /**Converts size from mm to map units*/
+    /** Converts size from mm to map units*/
     void convertSizeToMapUnits( QSizeF& size, const QgsRenderContext& context ) const;
 
-    /**Returns the paint device dpi (or -1 in case of error*/
+    /** Returns the paint device dpi (or -1 in case of error*/
     static int dpiPaintDevice( const QPainter* );
 
     //read / write diagram
     void _readXML( const QDomElement& elem, const QgsVectorLayer* layer );
     void _writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 
-    /**Reference to the object that does the real diagram rendering*/
+    /** Reference to the object that does the real diagram rendering*/
     QgsDiagram* mDiagram;
 };
 
-/**Renders the diagrams for all features with the same settings*/
+/** Renders the diagrams for all features with the same settings*/
 class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
 {
   public:
     QgsSingleCategoryDiagramRenderer();
     ~QgsSingleCategoryDiagramRenderer();
 
-    QgsDiagramRendererV2* clone() const override;
+    QgsSingleCategoryDiagramRenderer* clone() const override;
 
     QString rendererName() const override { return "SingleCategory"; }
 
@@ -279,9 +283,9 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();
 
-    QgsDiagramRendererV2* clone() const override;
+    QgsLinearlyInterpolatedDiagramRenderer* clone() const override;
 
-    /**Returns list with all diagram settings in the renderer*/
+    /** Returns list with all diagram settings in the renderer*/
     QList<QgsDiagramSettings> diagramSettings() const override;
 
     void setDiagramSettings( const QgsDiagramSettings& s ) { mSettings = s; }
@@ -306,7 +310,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     void setClassificationAttribute( int index ) { mInterpolationSettings.classificationAttribute = index; }
 
     QString classificationAttributeExpression() const { return mInterpolationSettings.classificationAttributeExpression; }
-    void setClassificationAttributeExpression( QString expression ) { mInterpolationSettings.classificationAttributeExpression = expression; }
+    void setClassificationAttributeExpression( const QString& expression ) { mInterpolationSettings.classificationAttributeExpression = expression; }
 
     bool classificationAttributeIsExpression() const { return mInterpolationSettings.classificationAttributeIsExpression; }
     void setClassificationAttributeIsExpression( bool isExpression ) { mInterpolationSettings.classificationAttributeIsExpression = isExpression; }

@@ -30,8 +30,6 @@ from PyQt4.QtGui import QIcon
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingLog import ProcessingLog
-from processing.script.WrongScriptException import WrongScriptException
-from processing.algs.gdal.GdalAlgorithm import GdalScriptAlgorithm
 from GdalUtils import GdalUtils
 
 from nearblack import nearblack
@@ -67,6 +65,8 @@ from GridDataMetrics import GridDataMetrics
 from gdaltindex import gdaltindex
 from gdalcalc import gdalcalc
 from rasterize_over import rasterize_over
+from retile import retile
+from gdal2tiles import gdal2tiles
 
 from ogr2ogr import Ogr2Ogr
 from ogr2ogrclip import Ogr2OgrClip
@@ -84,31 +84,22 @@ from ogr2ogronesidebuffer import Ogr2OgrOneSideBuffer
 from ogrinfo import OgrInfo
 from ogrsql import OgrSql
 
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
 
 class GdalOgrAlgorithmProvider(AlgorithmProvider):
+
     """This provider incorporates GDAL-based algorithms into the
     Processing framework.
 
-    Algorithms have been implemented using two different mechanisms,
-    which should serve as an example of different ways of extending
-    the processing capabilities of QGIS:
-      1. when a python script exist for a given process, it has been
-         adapted as a Processing python script and loaded using the
-         ScriptAlgorithm class. This algorithms call GDAL using its
-         Python bindings.
-      2. Other algorithms are called directly using the command line
-         interface. These have been implemented individually extending
-         the GeoAlgorithm class.
+    Algorithms are called directly using the command line interface.
+    They implemented individually extending GeoAlgorithm class.
     """
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.createAlgsList()
-
-    def scriptsFolder(self):
-        """The folder where script algorithms are stored.
-        """
-        return os.path.dirname(__file__) + '/scripts'
 
     def getDescription(self):
         return self.tr('GDAL/OGR')
@@ -117,7 +108,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
         return 'gdalogr'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/gdal.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'gdal.png'))
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
@@ -127,31 +118,19 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
         # extending GeoAlgorithm directly (those that execute GDAL
         # using the console)
         self.preloadedAlgs = [nearblack(), information(), warp(), translate(),
-            rgb2pct(), pct2rgb(), merge(), buildvrt(), polygonize(), gdaladdo(),
-            ClipByExtent(), ClipByMask(), contour(), rasterize(), proximity(),
-            sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
-            hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
-            ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
-            GridDataMetrics(), gdaltindex(), gdalcalc(), rasterize_over(),
-            # ----- OGR tools -----
-            OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
-            Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
-            Ogr2OgrBuffer(), Ogr2OgrDissolve(), Ogr2OgrOneSideBuffer(),
-            Ogr2OgrTableToPostGisList(), OgrSql(),
-        ]
-
-        # And then we add those that are created as python scripts
-        folder = self.scriptsFolder()
-        if os.path.exists(folder):
-            for descriptionFile in os.listdir(folder):
-                if descriptionFile.endswith('py'):
-                    try:
-                        fullpath = os.path.join(self.scriptsFolder(),
-                                descriptionFile)
-                        alg = GdalScriptAlgorithm(fullpath)
-                        self.preloadedAlgs.append(alg)
-                    except WrongScriptException, e:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
+                              rgb2pct(), pct2rgb(), merge(), buildvrt(), polygonize(), gdaladdo(),
+                              ClipByExtent(), ClipByMask(), contour(), rasterize(), proximity(),
+                              sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
+                              hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
+                              ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
+                              GridDataMetrics(), gdaltindex(), gdalcalc(), rasterize_over(),
+                              retile(), gdal2tiles(),
+                              # ----- OGR tools -----
+                              OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
+                              Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
+                              Ogr2OgrBuffer(), Ogr2OgrDissolve(), Ogr2OgrOneSideBuffer(),
+                              Ogr2OgrTableToPostGisList(), OgrSql(),
+                              ]
 
     def getSupportedOutputRasterLayerExtensions(self):
         return GdalUtils.getSupportedRasterExtensions()

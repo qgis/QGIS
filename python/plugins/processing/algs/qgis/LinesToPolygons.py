@@ -39,12 +39,12 @@ class LinesToPolygons(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Lines to polygons'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Lines to polygons')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))

@@ -32,13 +32,13 @@ class CORE_EXPORT QgsTolerance
      * For map (project) units, use ProjectUnits. Try to avoid using MapUnits value and use LayerUnits instead. */
     enum UnitType
     {
-      /**Layer unit value. @note deprecated: use LayerUnits */
+      /** Layer unit value. @note deprecated: use LayerUnits */
       MapUnits,
-      /**Layer unit value */
+      /** Layer unit value */
       LayerUnits = MapUnits,
-      /**Pixels unit of tolerance*/
+      /** Pixels unit of tolerance*/
       Pixels,
-      /**Map (project) units. Added in 2.8 */
+      /** Map (project) units. Added in 2.8 */
       ProjectUnits
     };
 
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsTolerance
 
   private:
     static double computeMapUnitPerPixel( QgsMapLayer* layer, const QgsMapSettings& mapSettings );
-    static QgsPoint toLayerCoordinates( QgsMapLayer* layer, const QgsMapSettings& mapSettings, const QPoint& point );
+    static QgsPoint toLayerCoordinates( QgsMapLayer* layer, const QgsMapSettings& mapSettings, QPoint point );
 
 };
 

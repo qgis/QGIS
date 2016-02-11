@@ -27,7 +27,7 @@ class QgsComposerArrowWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
 {
     Q_OBJECT
   public:
-    QgsComposerArrowWidget( QgsComposerArrow* arrow );
+    explicit QgsComposerArrowWidget( QgsComposerArrow* arrow );
     ~QgsComposerArrowWidget();
 
   private:
@@ -37,7 +37,7 @@ class QgsComposerArrowWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
 
     QButtonGroup* mRadioButtonGroup;
 
-    /**Enables / disables the SVG line inputs*/
+    /** Enables / disables the SVG line inputs*/
     void enableSvgInputElements( bool enable );
 
     void updateLineSymbolMarker();

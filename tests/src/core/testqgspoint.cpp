@@ -15,13 +15,11 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
 
-#include <iostream>
 //qgis includes...
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
@@ -148,7 +146,7 @@ void TestQgsPoint::cleanupTestCase()
   //
   // Runs once after all tests are run
   //
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -220,6 +218,38 @@ void TestQgsPoint::toDegreesMinutesSeconds()
                     QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) + QChar( 0x2033 );
   QCOMPARE( QgsPoint( -359, 0 ).toDegreesMinutesSeconds( 2 ), myControlString );
 
+  //check if latitudes > 90 or <-90 wrap around
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) + QChar( 0x2033 ) +
+                    QString( ",10" ) + QChar( 176 ) +
+                    QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) + QChar( 0x2033 ) + QString( "N" );
+  QCOMPARE( QgsPoint( 0, 190 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) + QChar( 0x2033 ) +
+                    QString( ",10" ) + QChar( 176 ) +
+                    QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) + QChar( 0x2033 ) + QString( "S" );
+  QCOMPARE( QgsPoint( 0, -190 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) + QChar( 0x2033 ) +
+                    QString( ",89" ) + QChar( 176 ) +
+                    QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) + QChar( 0x2033 ) + QString( "S" );
+  QCOMPARE( QgsPoint( 0, 91 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) + QChar( 0x2033 ) +
+                    QString( ",89" ) + QChar( 176 ) +
+                    QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) + QChar( 0x2033 ) + QString( "N" );
+  QCOMPARE( QgsPoint( 0, -91 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) + QChar( 0x2033 ) +
+                    QString( ",1" ) + QChar( 176 ) +
+                    QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) + QChar( 0x2033 ) + QString( "S" );
+  QCOMPARE( QgsPoint( 0, 179 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  myControlString = QString( "0" ) + QChar( 176 ) +
+                    QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) + QChar( 0x2033 ) +
+                    QString( ",1" ) + QChar( 176 ) +
+                    QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) + QChar( 0x2033 ) + QString( "N" );
+  QCOMPARE( QgsPoint( 0, -179 ).toDegreesMinutesSeconds( 2 ), myControlString );
+
   //should be no directional suffixes for 0 degree coordinates
   myControlString = QString( "0" ) + QChar( 176 ) +
                     QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) +
@@ -258,9 +288,9 @@ void TestQgsPoint::toDegreesMinutesSeconds()
   //test rounding does not create seconds >= 60
   myControlString = QString( "100" ) + QChar( 176 ) +
                     QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) + QChar( 0x2033 ) + QString( "E" ) +
-                    QString( ",100" ) + QChar( 176 ) +
+                    QString( ",90" ) + QChar( 176 ) +
                     QString( "0" ) + QChar( 0x2032 ) + QString( "0.00" ) + QChar( 0x2033 ) + QString( "N" );
-  QCOMPARE( QgsPoint( 99.999999, 99.999999 ).toDegreesMinutesSeconds( 2 ), myControlString );
+  QCOMPARE( QgsPoint( 99.999999, 89.999999 ).toDegreesMinutesSeconds( 2 ), myControlString );
 
   //should be no directional suffixes for 180 degree longitudes
   myControlString = QString( "180" ) + QChar( 176 ) +

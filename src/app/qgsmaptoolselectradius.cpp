@@ -33,7 +33,7 @@ const int RADIUS_SEGMENTS = 40;
 QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas* canvas )
     : QgsMapTool( canvas ), mDragging( false )
 {
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
   mFillColor = QColor( 254, 178, 76, 63 );
   mBorderColour = QColor( 254, 58, 29, 100 );
@@ -44,25 +44,23 @@ QgsMapToolSelectRadius::~QgsMapToolSelectRadius()
   delete mRubberBand;
 }
 
-void QgsMapToolSelectRadius::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolSelectRadius::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
-  {
     return;
-  }
+
   mRadiusCenter = toMapCoordinates( e->pos() );
 }
 
 
-void QgsMapToolSelectRadius::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( e->buttons() != Qt::LeftButton )
-  {
     return;
-  }
+
   if ( !mDragging )
   {
-    if ( mRubberBand == NULL )
+    if ( !mRubberBand )
     {
       mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
       mRubberBand->setFillColor( mFillColor );
@@ -75,15 +73,14 @@ void QgsMapToolSelectRadius::canvasMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSelectRadius::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
-  {
     return;
-  }
+
   if ( !mDragging )
   {
-    if ( mRubberBand == NULL )
+    if ( !mRubberBand )
     {
       mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
       mRubberBand->setFillColor( mFillColor );
@@ -98,7 +95,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QMouseEvent * e )
   delete radiusGeometry;
   mRubberBand->reset( QGis::Polygon );
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mDragging = false;
 }
 

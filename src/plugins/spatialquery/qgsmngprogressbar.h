@@ -31,11 +31,11 @@ class MngProgressBar
     * \brief Constructor for a MngProgressBar.
     * \param pb Pointer to the MngProgressBar object.
     */
-    MngProgressBar( QProgressBar *pb );
+    explicit MngProgressBar( QProgressBar *pb );
     /**
     * \brief Destructor
     */
-    ~MngProgressBar() { mPb->reset(); };
+    ~MngProgressBar() { mPb->reset(); }
 
     /**
     * \brief Sets the progress bar's minimum and maximum values to minimum and maximum respectively
@@ -48,7 +48,7 @@ class MngProgressBar
     * \brief Sets the format the current text.
     * \param format This property holds the string used to generate the current text.
     */
-    void setFormat( QString format );
+    void setFormat( const QString& format );
 
     /**
     * \brief Sets current value progress bar's

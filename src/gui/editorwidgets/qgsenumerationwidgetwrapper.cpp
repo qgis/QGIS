@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -20,12 +20,12 @@
 
 QgsEnumerationWidgetWrapper::QgsEnumerationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( NULL )
+    , mComboBox( nullptr )
 {
 }
 
 
-QVariant QgsEnumerationWidgetWrapper::value()
+QVariant QgsEnumerationWidgetWrapper::value() const
 {
   QVariant value;
 
@@ -55,6 +55,11 @@ void QgsEnumerationWidgetWrapper::initWidget( QWidget* editor )
     }
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueChanged() ) );
   }
+}
+
+bool QgsEnumerationWidgetWrapper::valid() const
+{
+  return mComboBox;
 }
 
 void QgsEnumerationWidgetWrapper::setValue( const QVariant& value )

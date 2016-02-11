@@ -52,7 +52,7 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
     return;
 
   // Replace the QGis clipboard.
-  mFeatureFields = src->pendingFields();
+  mFeatureFields = src->fields();
   mFeatureClipboard = src->selectedFeatures();
   mCRS = src->crs();
 
@@ -91,21 +91,21 @@ void QgsClipboard::setSystemClipboard()
 
   for ( int idx = 0; idx < mFeatureFields.count(); ++idx )
   {
-    textFields += mFeatureFields[idx].name();
+    textFields += mFeatureFields.at( idx ).name();
   }
   textLines += textFields.join( "\t" );
   textFields.clear();
 
   // then the field contents
-  for ( QgsFeatureList::iterator it = mFeatureClipboard.begin(); it != mFeatureClipboard.end(); ++it )
+  for ( QgsFeatureList::const_iterator it = mFeatureClipboard.constBegin(); it != mFeatureClipboard.constEnd(); ++it )
   {
-    const QgsAttributes& attributes = it->attributes();
+    QgsAttributes attributes = it->attributes();
 
     // TODO: Set up Paste Transformations to specify the order in which fields are added.
     if ( copyWKT )
     {
-      if ( it->geometry() )
-        textFields += it->geometry()->exportToWkt();
+      if ( it->constGeometry() )
+        textFields += it->constGeometry()->exportToWkt();
       else
       {
         textFields += settings.value( "qgis/nullValue", "NULL" ).toString();
@@ -116,7 +116,7 @@ void QgsClipboard::setSystemClipboard()
     for ( int idx = 0; idx < attributes.count(); ++idx )
     {
       // QgsDebugMsg(QString("inspecting field '%1'.").arg(it2->toString()));
-      textFields += attributes[idx].toString();
+      textFields += attributes.at( idx ).toString();
     }
 
     textLines += textFields.join( "\t" );
@@ -157,12 +157,12 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
   QString text = cb->text( QClipboard::Clipboard );
 #endif
 
-  QStringList values = text.split( "\n" );
+  QStringList values = text.split( '\n' );
   if ( values.isEmpty() || text.isEmpty() )
     return mFeatureClipboard;
 
   QgsFeatureList features;
-  foreach ( QString row, values )
+  Q_FOREACH ( const QString& row, values )
   {
     // Assume that it's just WKT for now.
     QgsGeometry* geometry = QgsGeometry::fromWkt( row );
@@ -171,7 +171,7 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
 
     QgsFeature feature;
     if ( !fields.isEmpty() )
-      feature.setFields( &fields, true );
+      feature.setFields( fields, true );
 
     feature.setGeometry( geometry );
     features.append( feature );
@@ -198,7 +198,7 @@ void QgsClipboard::insert( QgsFeature& feature )
 {
   mFeatureClipboard.push_back( feature );
 
-  QgsDebugMsg( "inserted " + feature.geometry()->exportToWkt() );
+  QgsDebugMsg( "inserted " + feature.constGeometry()->exportToWkt() );
   mUseSystemClipboard = false;
   emit changed();
 }
@@ -214,7 +214,7 @@ bool QgsClipboard::empty()
   return text.isEmpty() && mFeatureClipboard.empty();
 }
 
-QgsFeatureList QgsClipboard::transformedCopyOf( QgsCoordinateReferenceSystem destCRS, const QgsFields &fields )
+QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSystem& destCRS, const QgsFields &fields )
 {
   QgsFeatureList featureList = copyOf( fields );
   QgsCoordinateTransform ct( crs(), destCRS );
@@ -255,7 +255,7 @@ void QgsClipboard::setData( const QString& mimeType, const QByteArray& data, con
 
 void QgsClipboard::setData( const QString& mimeType, const QByteArray& data )
 {
-  setData( mimeType, data, 0 );
+  setData( mimeType, data, nullptr );
 }
 
 bool QgsClipboard::hasFormat( const QString& mimeType )

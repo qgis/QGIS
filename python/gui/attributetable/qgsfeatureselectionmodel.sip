@@ -42,7 +42,7 @@ class QgsFeatureSelectionModel : QItemSelectionModel
      *
      * @param indexes The model indexes which need to be repainted
      */
-    void requestRepaint( QModelIndexList indexes );
+    void requestRepaint( const QModelIndexList& indexes );
 
     /**
      * Request a repaint of the visible items of connected views.
@@ -71,7 +71,7 @@ class QgsFeatureSelectionModel : QItemSelectionModel
      * @param selection  The QItemSelection which will be selected
      * @param command    The command to apply. Select, Deselect and ClearAndSelect are processed.
      */
-    virtual void selectFeatures( const QItemSelection &selection, SelectionFlags command );
+    virtual void selectFeatures( const QItemSelection &selection, const SelectionFlags& command );
 
     virtual void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
 };

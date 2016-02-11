@@ -20,7 +20,7 @@
 #include "qgsrubberband.h"
 
 class QgsVertexMarker;
-/**Map tool to delete vertices from line/polygon features*/
+/** Map tool to delete vertices from line/polygon features*/
 
 class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolEdit
 {
@@ -30,11 +30,11 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolEdit
     QgsMapToolDeleteRing( QgsMapCanvas* canvas );
     virtual ~QgsMapToolDeleteRing();
 
-    void canvasMoveEvent( QMouseEvent * e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
-    void canvasPressEvent( QMouseEvent * e ) override;
+    void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
-    void canvasReleaseEvent( QMouseEvent * e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     //! called when map tool is being deactivated
     void deactivate() override;
@@ -46,15 +46,15 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolEdit
     void deleteRing( QgsFeatureId fId, int beforeVertexNr, QgsVectorLayer* vlayer );
 
     //! return ring number in polygon
-    int ringNumInPolygon( QgsGeometry* g, int vertexNr );
+    int ringNumInPolygon( const QgsGeometry* g, int vertexNr );
 
     //! return ring number in multipolygon and set parNum to index of the part
-    int ringNumInMultiPolygon( QgsGeometry* g, int vertexNr, int& partNum );
+    int ringNumInMultiPolygon( const QgsGeometry* g, int vertexNr, int& partNum );
 
-    /*! return the geometry of the ring under the point p and sets fid to the feature id,
+    /** Return the geometry of the ring under the point p and sets fid to the feature id,
      * partNum to the part number in the feature and ringNum to the ring number in the part
      */
-    QgsGeometry* ringUnderPoint( QgsPoint p, QgsFeatureId& fid, int& partNum, int& ringNum );
+    QgsGeometry* ringUnderPoint( const QgsPoint& p, QgsFeatureId& fid, int& partNum, int& ringNum );
 
     /* Rubberband that shows the ring being deleted*/
     QgsRubberBand* mRubberBand;

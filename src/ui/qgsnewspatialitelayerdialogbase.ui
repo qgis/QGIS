@@ -52,10 +52,67 @@
         <x>0</x>
         <y>0</y>
         <width>432</width>
-        <height>581</height>
+        <height>576</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QGroupBox" name="buttonGroup1">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Type</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="mPointRadioButton">
+            <property name="text">
+             <string>Point</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QRadioButton" name="mLineRadioButton">
+            <property name="text">
+             <string>Line</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QRadioButton" name="mPolygonRadioButton">
+            <property name="text">
+             <string>Polygon</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="mMultipointRadioButton">
+            <property name="text">
+             <string>MultiPoint</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QRadioButton" name="mMultilineRadioButton">
+            <property name="text">
+             <string>Multiline</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QRadioButton" name="mMultipolygonRadioButton">
+            <property name="text">
+             <string>Multipolygon</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
@@ -154,63 +211,6 @@
         </layout>
        </item>
        <item>
-        <widget class="QGroupBox" name="buttonGroup1">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="title">
-          <string>Type</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
-           <widget class="QRadioButton" name="mPointRadioButton">
-            <property name="text">
-             <string>Point</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QRadioButton" name="mLineRadioButton">
-            <property name="text">
-             <string>Line</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QRadioButton" name="mPolygonRadioButton">
-            <property name="text">
-             <string>Polygon</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QRadioButton" name="mMultipointRadioButton">
-            <property name="text">
-             <string>MultiPoint</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QRadioButton" name="mMultilineRadioButton">
-            <property name="text">
-             <string>Multiline</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QRadioButton" name="mMultipolygonRadioButton">
-            <property name="text">
-             <string>Multipolygon</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
           <widget class="QLineEdit" name="leSRID">
@@ -256,7 +256,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
-          <string>New attribute</string>
+          <string>New field</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
           <item row="0" column="0">
@@ -284,7 +284,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>An attribute name</string>
+             <string>A field name</string>
             </property>
            </widget>
           </item>
@@ -323,13 +323,13 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Add attribute to list</string>
+             <string>Add field to list</string>
             </property>
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
             </property>
             <property name="text">
-             <string>Add to attributes list</string>
+             <string>Add to fields list</string>
             </property>
             <property name="icon">
              <iconset>
@@ -346,7 +346,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
-          <string>Attributes list</string>
+          <string>Fields list</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="1" column="0" colspan="3">
@@ -400,10 +400,10 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Delete selected attribute</string>
+             <string>Delete selected field</string>
             </property>
             <property name="text">
-             <string>Remove attribute</string>
+             <string>Remove field</string>
             </property>
             <property name="icon">
              <iconset>
@@ -435,16 +435,17 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>mDatabaseComboBox</tabstop>
-  <tabstop>toolButtonNewDatabase</tabstop>
-  <tabstop>leLayerName</tabstop>
-  <tabstop>leGeometryColumn</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>mPointRadioButton</tabstop>
   <tabstop>mLineRadioButton</tabstop>
   <tabstop>mPolygonRadioButton</tabstop>
   <tabstop>mMultipointRadioButton</tabstop>
   <tabstop>mMultilineRadioButton</tabstop>
   <tabstop>mMultipolygonRadioButton</tabstop>
+  <tabstop>mDatabaseComboBox</tabstop>
+  <tabstop>toolButtonNewDatabase</tabstop>
+  <tabstop>leLayerName</tabstop>
+  <tabstop>leGeometryColumn</tabstop>
   <tabstop>leSRID</tabstop>
   <tabstop>pbnFindSRID</tabstop>
   <tabstop>checkBoxPrimaryKey</tabstop>
@@ -453,7 +454,6 @@
   <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mAttributeView</tabstop>
   <tabstop>mRemoveAttributeButton</tabstop>
-  <tabstop>scrollArea</tabstop>
  </tabstops>
  <resources/>
  <connections>

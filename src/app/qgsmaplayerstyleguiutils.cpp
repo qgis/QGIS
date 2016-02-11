@@ -33,7 +33,7 @@ QgsMapLayerStyleGuiUtils* QgsMapLayerStyleGuiUtils::instance()
 
 QAction* QgsMapLayerStyleGuiUtils::actionAddStyle( QgsMapLayer* layer, QObject* parent )
 {
-  QAction* a = new QAction( tr( "Add" ), parent );
+  QAction* a = new QAction( tr( "Add..." ), parent );
   a->setData( QVariant::fromValue<QObject*>( layer ) );
   connect( a, SIGNAL( triggered() ), this, SLOT( addStyle() ) );
   return a;
@@ -50,7 +50,7 @@ QAction* QgsMapLayerStyleGuiUtils::actionRemoveStyle( QgsMapLayer* layer, QObjec
 
 QAction* QgsMapLayerStyleGuiUtils::actionRenameStyle( QgsMapLayer* layer, QObject* parent )
 {
-  QAction* a = new QAction( tr( "Rename Current" ), parent );
+  QAction* a = new QAction( tr( "Rename Current..." ), parent );
   a->connect( a, SIGNAL( triggered() ), this, SLOT( renameStyle() ) );
   a->setData( QVariant::fromValue<QObject*>( layer ) );
   return a;
@@ -62,7 +62,7 @@ QList<QAction*> QgsMapLayerStyleGuiUtils::actionsUseStyle( QgsMapLayer* layer, Q
   bool onlyOneStyle = mgr->styles().count() == 1;
 
   QList<QAction*> actions;
-  foreach ( QString name, mgr->styles() )
+  Q_FOREACH ( QString name, mgr->styles() )
   {
     bool active = name == mgr->currentStyle();
     if ( name.isEmpty() )
@@ -81,12 +81,12 @@ QList<QAction*> QgsMapLayerStyleGuiUtils::actionsUseStyle( QgsMapLayer* layer, Q
 
 void QgsMapLayerStyleGuiUtils::addStyleManagerActions( QMenu* m, QgsMapLayer* layer )
 {
-  m->addAction( actionAddStyle( layer ) );
+  m->addAction( actionAddStyle( layer, m ) );
   if ( layer->styleManager()->styles().count() > 1 )
-    m->addAction( actionRemoveStyle( layer ) );
-  m->addAction( actionRenameStyle( layer ) );
+    m->addAction( actionRemoveStyle( layer, m ) );
+  m->addAction( actionRenameStyle( layer, m ) );
   m->addSeparator();
-  foreach ( QAction* a, actionsUseStyle( layer ) )
+  Q_FOREACH ( QAction* a, actionsUseStyle( layer, m ) )
     m->addAction( a );
 }
 
@@ -106,7 +106,7 @@ void QgsMapLayerStyleGuiUtils::addStyle()
     return;
 
   bool ok;
-  QString text = QInputDialog::getText( 0, tr( "New style" ),
+  QString text = QInputDialog::getText( nullptr, tr( "New style" ),
                                         tr( "Style name:" ), QLineEdit::Normal,
                                         "new style", &ok );
   if ( !ok || text.isEmpty() )
@@ -173,7 +173,7 @@ void QgsMapLayerStyleGuiUtils::renameStyle()
   QString name = layer->styleManager()->currentStyle();
 
   bool ok;
-  QString text = QInputDialog::getText( 0, tr( "Rename style" ),
+  QString text = QInputDialog::getText( nullptr, tr( "Rename style" ),
                                         tr( "Style name:" ), QLineEdit::Normal,
                                         name, &ok );
   if ( !ok )

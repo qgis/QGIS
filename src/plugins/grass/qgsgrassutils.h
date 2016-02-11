@@ -23,7 +23,7 @@ class QLabel;
 class QPushButton;
 class QgisInterface;
 
-/*! \class QgsGrassUtils
+/** \class QgsGrassUtils
  *  \brief Various utilities.
  */
 class QgsGrassUtils
@@ -51,7 +51,7 @@ class QgsGrassUtils
     static QString htmlBrowserPath();
 };
 
-/*! \class QgsGrassElementDialog
+/** \class QgsGrassElementDialog
  *  \brief Get name for new element
  */
 class QgsGrassElementDialog: public QObject
@@ -60,7 +60,7 @@ class QgsGrassElementDialog: public QObject
 
   public:
     //! Constructor
-    QgsGrassElementDialog( QWidget *parent );
+    explicit QgsGrassElementDialog( QWidget *parent );
 
     //! Destructor
     ~QgsGrassElementDialog();

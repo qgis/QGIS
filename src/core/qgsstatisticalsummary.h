@@ -18,6 +18,12 @@
 
 #include <QMap>
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsstatisticalsummary.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 /** \ingroup core
  * \class QgsStatisticalSummary
  * \brief Calculator for summary statistics for a list of doubles.
@@ -59,7 +65,7 @@ class CORE_EXPORT QgsStatisticalSummary
     /** Constructor for QgsStatisticalSummary
      * @param stats flags for statistics to calculate
      */
-    QgsStatisticalSummary( Statistics stats = Statistics( 0 ) );
+    QgsStatisticalSummary( const QgsStatisticalSummary::Statistics& stats = All );
 
     virtual ~QgsStatisticalSummary();
 
@@ -74,7 +80,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * @param stats flags for statistics to calculate
      * @see statistics
      */
-    void setStatistics( Statistics stats ) { mStatistics = stats; }
+    void setStatistics( const Statistics& stats ) { mStatistics = stats; }
 
     /** Resets the calculated values
      */
@@ -84,6 +90,12 @@ class CORE_EXPORT QgsStatisticalSummary
      * @param values list of doubles
      */
     void calculate( const QList<double>& values );
+
+    /** Returns the value of a specified statistic
+     * @param stat statistic to return
+     * @returns calculated value of statistic
+     */
+    double statistic( Statistic stat ) const;
 
     /** Returns calculated count of values
      */
@@ -166,6 +178,11 @@ class CORE_EXPORT QgsStatisticalSummary
      * @see thirdQuartile
      */
     double interQuartileRange() const { return mThirdQuartile - mFirstQuartile; }
+
+    /** Returns the friendly display name for a statistic
+     * @param statistic statistic to return name for
+     */
+    static QString displayName( Statistic statistic );
 
   private:
 

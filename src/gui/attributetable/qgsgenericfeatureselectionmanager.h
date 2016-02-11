@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 11.6.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,14 +23,15 @@
  * This selection manager synchronizes a local set of selected features with an attribute table.
  * If you want to synchronize the attribute table selection with the map canvas selection, you
  * should use { @link QgsVectorLayerSelectionManager } instead.
+ * \note not available in Python bindings
  */
 class GUI_EXPORT QgsGenericFeatureSelectionManager : public QgsIFeatureSelectionManager
 {
     Q_OBJECT
 
   public:
-    explicit QgsGenericFeatureSelectionManager( QObject *parent = NULL );
-    QgsGenericFeatureSelectionManager( const QgsFeatureIds& initialSelection, QObject *parent = NULL );
+    explicit QgsGenericFeatureSelectionManager( QObject *parent = nullptr );
+    QgsGenericFeatureSelectionManager( const QgsFeatureIds& initialSelection, QObject *parent = nullptr );
 
     // QgsIFeatureSelection interface
     virtual int selectedFeatureCount() override;

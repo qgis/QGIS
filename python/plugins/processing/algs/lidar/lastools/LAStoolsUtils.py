@@ -21,6 +21,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -34,6 +35,8 @@ from PyQt4.QtCore import QCoreApplication
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.tools.system import isWindows
+
 
 class LAStoolsUtils:
 
@@ -50,7 +53,10 @@ class LAStoolsUtils:
         lastools_folder = ProcessingConfig.getSetting(LAStoolsUtils.LASTOOLS_FOLDER)
         if lastools_folder is None:
             lastools_folder = ""
-        wine_folder = ProcessingConfig.getSetting(LAStoolsUtils.WINE_FOLDER)
+        if isWindows():
+            wine_folder = ""
+        else:
+            wine_folder = ProcessingConfig.getSetting(LAStoolsUtils.WINE_FOLDER)
         if wine_folder is None or wine_folder == "":
             folder = lastools_folder
         else:
@@ -68,4 +74,5 @@ class LAStoolsUtils:
                                 stderr=subprocess.STDOUT, universal_newlines=False).stdout
         for line in iter(proc.readline, ""):
             loglines.append(line)
+            progress.setConsoleInfo(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)

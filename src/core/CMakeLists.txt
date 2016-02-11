@@ -2,60 +2,61 @@
 # sources
 
 SET(QGIS_CORE_SRCS
-
+  gps/context.c
+  gps/gmath.c
+  gps/info.c
+  gps/parse.c
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
-  gps/qgsnmeaconnection.cpp
   gps/qgsgpsdconnection.cpp
   gps/qgsgpsdetector.cpp
-  gps/parse.c
+  gps/qgsnmeaconnection.cpp
   gps/sentence.c
-  gps/info.c
   gps/time.c
-  gps/gmath.c
   gps/tok.c
-  gps/context.c
 
-  symbology-ng/qgssymbolv2.cpp
-  symbology-ng/qgssymbollayerv2.cpp
-  symbology-ng/qgssymbollayerv2registry.cpp
-  symbology-ng/qgssymbollayerv2utils.cpp
+  symbology-ng/qgs25drenderer.cpp
+  symbology-ng/qgscategorizedsymbolrendererv2.cpp
+  symbology-ng/qgscolorbrewerpalette.cpp
+  symbology-ng/qgscptcityarchive.cpp
+  symbology-ng/qgsellipsesymbollayerv2.cpp
+  symbology-ng/qgsfillsymbollayerv2.cpp
+  symbology-ng/qgsgeometrygeneratorsymbollayerv2.cpp
+  symbology-ng/qgsgraduatedsymbolrendererv2.cpp
+  symbology-ng/qgsheatmaprenderer.cpp
+  symbology-ng/qgsinvertedpolygonrenderer.cpp
   symbology-ng/qgslegendsymbolitemv2.cpp
   symbology-ng/qgslinesymbollayerv2.cpp
   symbology-ng/qgsmarkersymbollayerv2.cpp
-  symbology-ng/qgsfillsymbollayerv2.cpp
+  symbology-ng/qgspointdisplacementrenderer.cpp
   symbology-ng/qgsrendererv2.cpp
   symbology-ng/qgsrendererv2registry.cpp
-  symbology-ng/qgssinglesymbolrendererv2.cpp
-  symbology-ng/qgscategorizedsymbolrendererv2.cpp
-  symbology-ng/qgsgraduatedsymbolrendererv2.cpp
   symbology-ng/qgsrulebasedrendererv2.cpp
-  symbology-ng/qgsheatmaprenderer.cpp
-  symbology-ng/qgsinvertedpolygonrenderer.cpp
-  symbology-ng/qgsvectorcolorrampv2.cpp
-  symbology-ng/qgscptcityarchive.cpp
+  symbology-ng/qgssinglesymbolrendererv2.cpp
   symbology-ng/qgsstylev2.cpp
-  symbology-ng/qgssymbologyv2conversion.cpp
   symbology-ng/qgssvgcache.cpp
-  symbology-ng/qgsellipsesymbollayerv2.cpp
-  symbology-ng/qgspointdisplacementrenderer.cpp
+  symbology-ng/qgssymbollayerv2.cpp
+  symbology-ng/qgssymbollayerv2registry.cpp
+  symbology-ng/qgssymbollayerv2utils.cpp
+  symbology-ng/qgssymbologyv2conversion.cpp
+  symbology-ng/qgssymbolv2.cpp
+  symbology-ng/qgsvectorcolorrampv2.cpp
   symbology-ng/qgsvectorfieldsymbollayer.cpp
-  symbology-ng/qgscolorbrewerpalette.cpp
 
   diagram/qgsdiagram.cpp
+  diagram/qgshistogramdiagram.cpp
   diagram/qgspiediagram.cpp
   diagram/qgstextdiagram.cpp
-  diagram/qgshistogramdiagram.cpp
-  
+
+  effects/qgsblureffect.cpp
+  effects/qgscoloreffect.cpp
+  effects/qgseffectstack.cpp
+  effects/qgsgloweffect.cpp
   effects/qgsimageoperation.cpp
   effects/qgspainteffect.cpp
-  effects/qgseffectstack.cpp
-  effects/qgsblureffect.cpp
-  effects/qgsshadoweffect.cpp
-  effects/qgsgloweffect.cpp
   effects/qgspainteffectregistry.cpp
+  effects/qgsshadoweffect.cpp
   effects/qgstransformeffect.cpp
-  effects/qgscoloreffect.cpp
 
   layertree/qgslayertreegroup.cpp
   layertree/qgslayertreelayer.cpp
@@ -64,6 +65,13 @@ SET(QGIS_CORE_SRCS
   layertree/qgslayertreenode.cpp
   layertree/qgslayertreeregistrybridge.cpp
   layertree/qgslayertreeutils.cpp
+
+  auth/qgsauthcertutils.cpp
+  auth/qgsauthconfig.cpp
+  auth/qgsauthcrypto.cpp
+  auth/qgsauthmanager.cpp
+  auth/qgsauthmethodmetadata.cpp
+  auth/qgsauthmethodregistry.cpp
 
   qgis.cpp
   qgsapplication.cpp
@@ -75,45 +83,51 @@ SET(QGIS_CORE_SRCS
   qgsclipper.cpp
   qgscolorscheme.cpp
   qgscolorschemeregistry.cpp
+  qgsconditionalstyle.cpp
   qgscontexthelp.cpp
   qgscontexthelp_texts.cpp
   qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
   qgscredentials.cpp
-  qgsdartmeasurement.cpp
   qgscrscache.cpp
+  qgsdartmeasurement.cpp
   qgsdatadefined.cpp
-  qgsdatasourceuri.cpp
   qgsdataitem.cpp
   qgsdataitemprovider.cpp
   qgsdataitemproviderregistry.cpp
+  qgsdatasourceuri.cpp
   qgsdatumtransformstore.cpp
   qgsdbfilterproxymodel.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
+  qgseditformconfig.cpp
   qgserror.cpp
   qgsexpression.cpp
-  qgsexpression_texts.cpp
+  qgsexpressioncontext.cpp
   qgsexpressionfieldbuffer.cpp
+  qgsexpression_texts.cpp
   qgsfeature.cpp
   qgsfeatureiterator.cpp
   qgsfeaturerequest.cpp
   qgsfeaturestore.cpp
   qgsfield.cpp
   qgsfontutils.cpp
-  qgsgeometry.cpp
   qgsgeometrycache.cpp
   qgsgeometrysimplifier.cpp
   qgsgeometryvalidator.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
-  qgslayerdefinition.cpp
+  qgshistogram.cpp
   qgslabel.cpp
   qgslabelattributes.cpp
+  qgslabelfeature.cpp
+  qgslabelingenginev2.cpp
   qgslabelsearchtree.cpp
+  qgslayerdefinition.cpp
   qgslegacyhelpers.cpp
   qgslegendrenderer.cpp
   qgslegendsettings.cpp
+  qgslocalec.cpp
   qgslogger.cpp
   qgsmaphittest.cpp
   qgsmaplayer.cpp
@@ -155,80 +169,94 @@ SET(QGIS_CORE_SRCS
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
   qgspythonrunner.cpp
+  qgsrectangle.cpp
   qgsrelation.cpp
   qgsrelationmanager.cpp
   qgsrenderchecker.cpp
   qgsrendercontext.cpp
-  qgsrectangle.cpp
+  qgsrulebasedlabeling.cpp
   qgsrunprocess.cpp
   qgsscalecalculator.cpp
   qgsscaleexpression.cpp
   qgsscaleutils.cpp
   qgssimplifymethod.cpp
+  qgsslconnect.cpp
   qgssnapper.cpp
   qgssnappingutils.cpp
   qgsspatialindex.cpp
+  qgssqlexpressioncompiler.cpp
   qgsstatisticalsummary.cpp
-  qgstransaction.cpp
+  qgsstringutils.cpp
+  qgstextlabelfeature.cpp
   qgstolerance.cpp
+  qgstracer.cpp
+  qgstransaction.cpp
+  qgstransactiongroup.cpp
+  qgsunittypes.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
   qgsvectorlayercache.cpp
+  qgsvectorlayerdiagramprovider.cpp
   qgsvectorlayereditbuffer.cpp
   qgsvectorlayereditpassthrough.cpp
   qgsvectorlayereditutils.cpp
   qgsvectorlayerfeatureiterator.cpp
   qgsvectorlayerimport.cpp
   qgsvectorlayerjoinbuffer.cpp
+  qgsvectorlayerlabeling.cpp
+  qgsvectorlayerlabelprovider.cpp
   qgsvectorlayerrenderer.cpp
   qgsvectorlayerundocommand.cpp
   qgsvectorsimplifymethod.cpp
+  qgsvirtuallayerdefinition.cpp
+  qgsvirtuallayerdefinitionutils.cpp
+  qgsvisibilitypresetcollection.cpp
   qgsxmlutils.cpp
 
   composer/qgsaddremoveitemcommand.cpp
   composer/qgsaddremovemultiframecommand.cpp
-  composer/qgscomposermultiframecommand.cpp
+  composer/qgsatlascomposition.cpp
   composer/qgscomposerarrow.cpp
+  composer/qgscomposerattributetable.cpp
+  composer/qgscomposerattributetablemodel.cpp
+  composer/qgscomposerattributetablemodelv2.cpp
+  composer/qgscomposerattributetablev2.cpp
+  composer/qgscomposereffect.cpp
   composer/qgscomposerframe.cpp
-  composer/qgscomposermousehandles.cpp
-  composer/qgscomposerobject.cpp
-  composer/qgscomposerutils.cpp
+  composer/qgscomposerhtml.cpp
   composer/qgscomposeritem.cpp
   composer/qgscomposeritemcommand.cpp
   composer/qgscomposeritemgroup.cpp
   composer/qgscomposerlabel.cpp
+  composer/qgscomposerlegend.cpp
   composer/qgscomposerlegenditem.cpp
-  composer/qgscomposerpicture.cpp
+  composer/qgscomposerlegendstyle.cpp
   composer/qgscomposermap.cpp
-  composer/qgscomposermapitem.cpp
   composer/qgscomposermapgrid.cpp
+  composer/qgscomposermapitem.cpp
   composer/qgscomposermapoverview.cpp
-  composer/qgscomposertable.cpp
-  composer/qgscomposertablev2.cpp
-  composer/qgscomposertablecolumn.cpp
-  composer/qgscomposerattributetable.cpp
-  composer/qgscomposerattributetablev2.cpp
-  composer/qgscomposerattributetablemodel.cpp
-  composer/qgscomposerattributetablemodelv2.cpp
-  composer/qgscomposertexttable.cpp
+  composer/qgscomposermodel.cpp
+  composer/qgscomposermousehandles.cpp
+  composer/qgscomposermultiframe.cpp
+  composer/qgscomposermultiframecommand.cpp
+  composer/qgscomposerobject.cpp
+  composer/qgscomposerpicture.cpp
   composer/qgscomposerscalebar.cpp
   composer/qgscomposershape.cpp
-  composer/qgscomposereffect.cpp
-  composer/qgsatlascomposition.cpp
+  composer/qgscomposertable.cpp
+  composer/qgscomposertablecolumn.cpp
+  composer/qgscomposertablev2.cpp
+  composer/qgscomposertexttable.cpp
+  composer/qgscomposerutils.cpp
+  composer/qgscomposition.cpp
+  composer/qgsdoubleboxscalebarstyle.cpp
   composer/qgslegendmodel.cpp
-  composer/qgscomposerlegend.cpp
-  composer/qgscomposerlegendstyle.cpp
+  composer/qgsnumericscalebarstyle.cpp
   composer/qgspaperitem.cpp
   composer/qgsscalebarstyle.cpp
-  composer/qgsdoubleboxscalebarstyle.cpp
-  composer/qgsnumericscalebarstyle.cpp
   composer/qgssingleboxscalebarstyle.cpp
   composer/qgsticksscalebarstyle.cpp
-  composer/qgscomposerhtml.cpp
-  composer/qgscomposermultiframe.cpp
-  composer/qgscomposermodel.cpp
-  composer/qgscomposition.cpp
 
   dxf/qgsdxfexport.cpp
   dxf/qgsdxfpaintdevice.cpp
@@ -245,49 +273,89 @@ SET(QGIS_CORE_SRCS
   pal/pointset.cpp
   pal/priorityqueue.cpp
   pal/problem.cpp
-  pal/util.cpp
-  pal/linkedlist.hpp
-  pal/hashtable.hpp
   pal/rtree.hpp
+  pal/util.cpp
 
   raster/qgscliptominmaxenhancement.cpp
-  raster/qgsraster.cpp
-  raster/qgsrasterblock.cpp
   raster/qgscolorrampshader.cpp
   raster/qgscontrastenhancement.cpp
   raster/qgscontrastenhancementfunction.cpp
-  raster/qgsrasterdataprovider.cpp
   raster/qgslinearminmaxenhancement.cpp
   raster/qgslinearminmaxenhancementwithclip.cpp
   raster/qgspseudocolorshader.cpp
-  raster/qgsrasterprojector.cpp
+  raster/qgsraster.cpp
+  raster/qgsrasterblock.cpp
   raster/qgsrasterchecker.cpp
+  raster/qgsrasterdataprovider.cpp
   raster/qgsrasteridentifyresult.cpp
   raster/qgsrasterinterface.cpp
   raster/qgsrasteriterator.cpp
   raster/qgsrasterlayer.cpp
   raster/qgsrasterlayerrenderer.cpp
   raster/qgsrasternuller.cpp
-  raster/qgsrastertransparency.cpp
   raster/qgsrasterpipe.cpp
+  raster/qgsrasterprojector.cpp
   raster/qgsrasterrange.cpp
   raster/qgsrastershader.cpp
   raster/qgsrastershaderfunction.cpp
+  raster/qgsrastertransparency.cpp
 
+  raster/qgsbilinearrasterresampler.cpp
+  raster/qgsbrightnesscontrastfilter.cpp
+  raster/qgscubicrasterresampler.cpp
+  raster/qgshuesaturationfilter.cpp
+  raster/qgsmultibandcolorrenderer.cpp
+  raster/qgspalettedrasterrenderer.cpp
   raster/qgsrasterdrawer.cpp
   raster/qgsrasterfilewriter.cpp
-  raster/qgsrasterresamplefilter.cpp
-  raster/qgsrasterrendererregistry.cpp
   raster/qgsrasterrenderer.cpp
-  raster/qgsbilinearrasterresampler.cpp
-  raster/qgscubicrasterresampler.cpp
-  raster/qgspalettedrasterrenderer.cpp
-  raster/qgsmultibandcolorrenderer.cpp
+  raster/qgsrasterrendererregistry.cpp
+  raster/qgsrasterresamplefilter.cpp
   raster/qgssinglebandcolordatarenderer.cpp
   raster/qgssinglebandgrayrenderer.cpp
   raster/qgssinglebandpseudocolorrenderer.cpp
-  raster/qgsbrightnesscontrastfilter.cpp
-  raster/qgshuesaturationfilter.cpp
+
+  geometry/qgsabstractgeometryv2.cpp
+  geometry/qgscircularstringv2.cpp
+  geometry/qgscompoundcurvev2.cpp
+  geometry/qgscurvepolygonv2.cpp
+  geometry/qgscurvev2.cpp
+  geometry/qgsgeometry.cpp
+  geometry/qgsgeometrycollectionv2.cpp
+  geometry/qgsgeometryeditutils.cpp
+  geometry/qgsgeometryfactory.cpp
+  geometry/qgsgeometryutils.cpp
+  geometry/qgsgeos.cpp
+  geometry/qgsinternalgeometryengine.cpp
+  geometry/qgslinestringv2.cpp
+  geometry/qgsmulticurvev2.cpp
+  geometry/qgsmultilinestringv2.cpp
+  geometry/qgsmultipointv2.cpp
+  geometry/qgsmultipolygonv2.cpp
+  geometry/qgsmultisurfacev2.cpp
+  geometry/qgspointv2.cpp
+  geometry/qgspolygonv2.cpp
+  geometry/qgswkbptr.cpp
+  geometry/qgswkbtypes.cpp
+)
+
+FILE(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
+STRING(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
+STRING(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")
+STRING(REPLACE "\)" "\\)" JSON_HELP_FILES "${JSON_HELP_FILES}")
+ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/qgsexpression_texts.cpp
+  COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_function_template.py ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp
+  COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp -DDST=${CMAKE_CURRENT_SOURCE_DIR}/qgsexpression_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
+  DEPENDS ${JSON_HELP_FILES}
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
+FILE(GLOB CONTEXT_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/context_help/*")
+ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/qgscontexthelp_texts.cpp
+  COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_contexthelp.py ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp.temp
+  COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp.temp -DDST=${CMAKE_CURRENT_SOURCE_DIR}/qgscontexthelp_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
+  DEPENDS ${CONTEXT_HELP_FILES}
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
 IF(ENABLE_MODELTEST)
@@ -311,17 +379,16 @@ IF (NOT QT5_BUILD)
   )
 ENDIF (NOT QT5_BUILD)
 
-IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # spatialindex headers produce warnings
   SET_SOURCE_FILES_PROPERTIES(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
-ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
 IF (WITH_INTERNAL_QEXTSERIALPORT)
   SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     gps/qextserialport/qextserialport.cpp
     gps/qextserialport/qextserialenumerator.cpp
   )
-
   IF(WIN32)
     SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       gps/qextserialport/win_qextserialport.cpp
@@ -344,78 +411,102 @@ IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 
 ADD_FLEX_FILES(QGIS_CORE_SRCS qgsexpressionlexer.ll)
-
 ADD_BISON_FILES(QGIS_CORE_SRCS qgsexpressionparser.yy)
 
-SET(QGIS_CORE_MOC_HDRS
+IF(NOT MSVC)
+  SET_SOURCE_FILES_PROPERTIES(qgsexpressionparser.cpp PROPERTIES COMPILE_FLAGS -w)
+ELSE(NOT MSVC)
+  # -wd4702 unreachable code
+  SET_SOURCE_FILES_PROPERTIES(
+    geometry/qgsgeos.cpp
+    pal/feature.cpp
+    pal/pointset.cpp
+    PROPERTIES COMPILE_FLAGS -wd4702)
+ENDIF(NOT MSVC)
 
+SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
   qgsbrowsermodel.h
   qgscontexthelp.h
   qgscoordinatetransform.h
+  qgscredentials.h
   qgsdataitem.h
   qgsdataprovider.h
+  qgsdbfilterproxymodel.h
+  qgseditformconfig.h
+  qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
   qgsmaplayer.h
   qgsmaplayerlegend.h
   qgsmaplayerregistry.h
   qgsmaplayerstylemanager.h
-  qgsmaprenderer.h
   qgsmaprenderercache.h
   qgsmaprenderercustompainterjob.h
+  qgsmaprenderer.h
   qgsmaprendererjob.h
   qgsmaprendererparalleljob.h
   qgsmaprenderersequentialjob.h
-  qgsmessageoutput.h
   qgsmessagelog.h
-  qgsnetworkreplyparser.h
+  qgsmessageoutput.h
+  qgsnetworkaccessmanager.h
   qgsnetworkcontentfetcher.h
+  qgsnetworkreplyparser.h
   qgsofflineediting.h
-  qgscredentials.h
+  qgsowsconnection.h
   qgspluginlayer.h
   qgspointlocator.h
   qgsproject.h
-  qgsrunprocess.h
   qgsrelationmanager.h
+  qgsrunprocess.h
   qgssnappingutils.h
-  qgsvectorlayer.h
-  qgsvectorlayereditpassthrough.h
-  qgsvectorlayereditbuffer.h
-  qgsnetworkaccessmanager.h
+  qgstracer.h
+  qgstransaction.h
+  qgstransactiongroup.h
   qgsvectordataprovider.h
   qgsvectorlayercache.h
+  qgsvectorlayereditbuffer.h
+  qgsvectorlayereditpassthrough.h
+  qgsvectorlayer.h
   qgsvectorlayerjoinbuffer.h
-  qgsgeometryvalidator.h
+  qgsvisibilitypresetcollection.h
+  qgswebview.h
+
+  auth/qgsauthmanager.h
+  auth/qgsauthmethod.h
 
   composer/qgsaddremoveitemcommand.h
-  composer/qgscomposerlegend.h
-  composer/qgscomposermap.h
-  composer/qgscomposermapitem.h
-  composer/qgscomposermapgrid.h
-  composer/qgscomposermapoverview.h
-  composer/qgscomposerpicture.h
-  composer/qgscomposerscalebar.h
-  composer/qgscomposerobject.h
-  composer/qgscomposeritem.h
-  composer/qgscomposeritemgroup.h
-  composer/qgscomposermousehandles.h
-  composer/qgscomposerlabel.h
-  composer/qgscomposershape.h
+  composer/qgsatlascomposition.h
+  composer/qgscomposerarrow.h
   composer/qgscomposerattributetable.h
-  composer/qgscomposerattributetablev2.h
   composer/qgscomposerattributetablemodel.h
   composer/qgscomposerattributetablemodelv2.h
+  composer/qgscomposerattributetablev2.h
+  composer/qgscomposereffect.h
+  composer/qgscomposerframe.h
+  composer/qgscomposerhtml.h
+  composer/qgscomposeritemgroup.h
+  composer/qgscomposeritem.h
+  composer/qgscomposerlabel.h
+  composer/qgscomposerlegend.h
+  composer/qgscomposermapgrid.h
+  composer/qgscomposermap.h
+  composer/qgscomposermapitem.h
+  composer/qgscomposermapoverview.h
+  composer/qgscomposermodel.h
+  composer/qgscomposermousehandles.h
+  composer/qgscomposermultiframe.h
+  composer/qgscomposerobject.h
+  composer/qgscomposerpicture.h
+  composer/qgscomposerscalebar.h
+  composer/qgscomposershape.h
+  composer/qgscomposertablecolumn.h
   composer/qgscomposertable.h
   composer/qgscomposertablev2.h
-  composer/qgscomposertablecolumn.h
-  composer/qgscomposerhtml.h
-  composer/qgscomposermultiframe.h
-  composer/qgscomposereffect.h
-  composer/qgsatlascomposition.h
-  composer/qgscomposermodel.h
+  composer/qgscomposertexttable.h
   composer/qgscomposition.h
   composer/qgslegendmodel.h
+  composer/qgspaperitem.h
 
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h
@@ -436,6 +527,13 @@ SET(QGIS_CORE_MOC_HDRS
   layertree/qgslayertreenode.h
   layertree/qgslayertreeregistrybridge.h
 )
+
+IF (NOT WITH_QTWEBKIT)
+  SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
+    qgswebpage.h
+    qgswebframe.h
+  )
+ENDIF(NOT WITH_QTWEBKIT)
 
 IF (NOT QT5_BUILD)
   SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
@@ -459,9 +557,12 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
 
 IF(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${QGIS_CORE_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4996" )
+  SET_SOURCE_FILES_PROPERTIES(${QGIS_CORE_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
 ELSE(MSVC)
   SET_SOURCE_FILES_PROPERTIES(${QGIS_CORE_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
+  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
+    SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
+  ENDIF ()
 ENDIF(MSVC)
 
 # install headers
@@ -482,11 +583,13 @@ SET(QGIS_CORE_HDRS
   qgscolorschemeregistry.h
   qgsconnectionpool.h
   qgscontexthelp.h
+  qgsconditionalstyle.h
   qgscoordinatereferencesystem.h
   qgscrscache.h
   qgscsexception.h
   qgsdartmeasurement.h
   qgsdatadefined.h
+  qgsdatadefined_p.h
   qgsdataitem.h
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
@@ -496,22 +599,28 @@ SET(QGIS_CORE_HDRS
   qgsdiagramrendererv2.h
   qgsdistancearea.h
   qgseditorwidgetconfig.h
+  qgsfeaturefilterprovider.h
   qgserror.h
   qgsexception.h
   qgsexpression.h
+  qgsexpressioncontext.h
   qgsexpressionfieldbuffer.h
   qgsfeature.h
+  qgsfeature_p.h
   qgsfeatureiterator.h
   qgsfeaturerequest.h
   qgsfeaturestore.h
   qgsfield.h
   qgsfield_p.h
   qgsfontutils.h
-  qgsgeometry.h
   qgsgeometrycache.h
+  qgshistogram.h
+  qgsindexedfeature.h
   qgslayerdefinition.h
   qgslabel.h
   qgslabelattributes.h
+  qgslabelfeature.h
+  qgslabelingenginev2.h
   qgslabelsearchtree.h
   qgslegacyhelpers.h
   qgslegendrenderer.h
@@ -530,7 +639,6 @@ SET(QGIS_CORE_HDRS
   qgsogcutils.h
   qgsowsconnection.h
   qgspaintenginehack.h
-  qgspalgeometry.h
   qgspallabeling.h
   qgspluginlayerregistry.h
   qgspoint.h
@@ -555,25 +663,45 @@ SET(QGIS_CORE_HDRS
   qgssnapper.h
   qgssnappingutils.h
   qgsspatialindex.h
+  qgssqlexpressioncompiler.h
   qgsstatisticalsummary.h
+  qgsstringutils.h
+  qgstextlabelfeature.h
   qgstolerance.h
-  qgstransaction.h
+  qgstracer.h
+  qgsunittypes.h
+
   qgsvectordataprovider.h
   qgsvectorlayercache.h
   qgsvectorfilewriter.h
+  qgsvectorlayerdiagramprovider.h
   qgsvectorlayereditutils.h
   qgsvectorlayerfeatureiterator.h
   qgsvectorlayerimport.h
+  qgsvectorlayerlabelprovider.h
   qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
   qgsvectorsimplifymethod.h
+  qgsvisibilitypresetcollection.h
   qgsxmlutils.h
+  qgswebpage.h
+  qgswebframe.h
+  qgswebview.h
+  qgslocalec.h
+
+  auth/qgsauthcertutils.h
+  auth/qgsauthconfig.h
+  auth/qgsauthcrypto.h
+  auth/qgsauthmanager.h
+  auth/qgsauthmethod.h
+  auth/qgsauthmethodmetadata.h
+  auth/qgsauthmethodregistry.h
 
   diagram/qgsdiagram.h
   diagram/qgspiediagram.h
   diagram/qgstextdiagram.h
   diagram/qgshistogramdiagram.h
-  
+
   effects/qgsimageoperation.h
   effects/qgspainteffect.h
   effects/qgseffectstack.h
@@ -639,6 +767,7 @@ SET(QGIS_CORE_HDRS
   raster/qgssinglebandgrayrenderer.h
   raster/qgssinglebandpseudocolorrenderer.h
 
+  symbology-ng/qgs25drenderer.h
   symbology-ng/qgscategorizedsymbolrendererv2.h
   symbology-ng/qgscolorbrewerpalette.h
   symbology-ng/qgsellipsesymbollayerv2.h
@@ -661,9 +790,17 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgssymbolv2.h
   symbology-ng/qgsvectorcolorrampv2.h
   symbology-ng/qgsvectorfieldsymbollayer.h
+  symbology-ng/qgsgeometrygeneratorsymbollayerv2.h
 
   layertree/qgslayertree.h
   layertree/qgslayertreeutils.h
+
+  geometry/qgsabstractgeometryv2.h
+  geometry/qgsgeometry.h
+  geometry/qgsinternalgeometryengine.h
+  geometry/qgspointv2.h
+  geometry/qgswkbptr.h
+  geometry/qgswkbtypes.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
@@ -675,15 +812,19 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
+  auth
   composer
   dxf
   effects
+  geometry
   layertree
   pal
   raster
   renderer
   symbology-ng
   gps/qextserialport
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALINDEX_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
@@ -691,16 +832,17 @@ INCLUDE_DIRECTORIES(
   ${EXPAT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${SPATIALITE_INCLUDE_DIR}
+  ${QCA_INCLUDE_DIR}
 )
 
+IF (NOT MSVC)
+  ADD_DEFINITIONS("-UCORE_EXPORT")
+  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
+  ENDIF()
+ENDIF (NOT MSVC)
+ADD_DEFINITIONS("\"-DCORE_EXPORT=${DLLEXPORT}\"")
 
-IF (WIN32)
-  IF (MSVC)
-    ADD_DEFINITIONS("-DCORE_EXPORT=${DLLEXPORT}")
-  ELSE (MSVC)
-    ADD_DEFINITIONS("-UCORE_EXPORT \"-DCORE_EXPORT=${DLLEXPORT}\"")
-  ENDIF (MSVC)
-ENDIF (WIN32)
 
 #for PAL classes
 IF (WIN32)
@@ -774,6 +916,8 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${QT_QTNETWORK_LIBRARY}
   ${QT_QTSVG_LIBRARY}
   ${QT_QTWEBKIT_LIBRARY}
+  ${QT_QTSQL_LIBRARY}
+  ${QCA_LIBRARY}
 
   ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}

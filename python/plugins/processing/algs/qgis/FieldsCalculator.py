@@ -38,7 +38,8 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector, system
 
-from ui.FieldsCalculatorDialog import FieldsCalculatorDialog
+from .ui.FieldsCalculatorDialog import FieldsCalculatorDialog
+
 
 class FieldsCalculator(GeoAlgorithm):
 
@@ -51,26 +52,31 @@ class FieldsCalculator(GeoAlgorithm):
     FORMULA = 'FORMULA'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    TYPE_NAMES = ['Float', 'Integer', 'String', 'Date']
     TYPES = [QVariant.Double, QVariant.Int, QVariant.String, QVariant.Date]
 
     def defineCharacteristics(self):
-        self.name = 'Field calculator'
-        self.group = 'Vector table tools'
+        self.name, self.i18n_name = self.trAlgorithm('Field calculator')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+
+        self.type_names = [self.tr('Float'),
+                           self.tr('Integer'),
+                           self.tr('String'),
+                           self.tr('Date')]
+
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterString(self.FIELD_NAME,
-            self.tr('Result field name')))
+                                          self.tr('Result field name')))
         self.addParameter(ParameterSelection(self.FIELD_TYPE,
-            self.tr('Field type'), self.TYPE_NAMES))
+                                             self.tr('Field type'), self.type_names))
         self.addParameter(ParameterNumber(self.FIELD_LENGTH,
-            self.tr('Field length'), 1, 255, 10))
+                                          self.tr('Field length'), 1, 255, 10))
         self.addParameter(ParameterNumber(self.FIELD_PRECISION,
-            self.tr('Field precision'), 0, 15, 3))
+                                          self.tr('Field precision'), 0, 15, 3))
         self.addParameter(ParameterBoolean(self.NEW_FIELD,
-            self.tr('Create new field'), True))
+                                           self.tr('Create new field'), True))
         self.addParameter(ParameterString(self.FORMULA, self.tr('Formula')))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
@@ -142,7 +148,7 @@ class FieldsCalculator(GeoAlgorithm):
 
         if not calculationSuccess:
             raise GeoAlgorithmExecutionException(
-                self.tr('An error occured while evaluating the calculation '
+                self.tr('An error occurred while evaluating the calculation '
                         'string:\n%s' % error))
 
     def checkParameterValuesBeforeExecuting(self):
@@ -150,10 +156,6 @@ class FieldsCalculator(GeoAlgorithm):
         fieldName = self.getParameterValue(self.FIELD_NAME).strip()
         if newField and len(fieldName) == 0:
             return self.tr('Field name is not set. Please enter a field name')
-
-        outputName = self.getOutputValue(self.OUTPUT_LAYER).strip()
-        if outputName == '':
-            return self.tr('Output is not set. Please specify valid filename')
 
     def getCustomParametersDialog(self):
         return FieldsCalculatorDialog(self)

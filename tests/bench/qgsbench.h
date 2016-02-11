@@ -54,9 +54,9 @@ class QgsBench :  public QObject
 
     void saveLog( const QString & fileName );
 
-    QString serialize( QMap<QString, QVariant> theMap, int level = 0 );
+    QString serialize( const QMap<QString, QVariant>& theMap, int level = 0 );
 
-    void  setRenderHints( QPainter::RenderHints hints ) { mRendererHints = hints; }
+    void setRenderHints( const QPainter::RenderHints& hints ) { mRendererHints = hints; }
 
     void setParallel( bool enabled ) { mParallel = enabled; }
 

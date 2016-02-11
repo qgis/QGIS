@@ -54,7 +54,7 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
 {
   QgsDebugMsg( "Entered." );
 
-  foreach ( int myBand, mBands )
+  Q_FOREACH ( int myBand, mBands )
   {
     int origin = QgsRasterRenderer::MinMaxUnknown;
     QgsDebugMsg( QString( "myBand = %1" ).arg( myBand ) );

@@ -38,7 +38,16 @@ QString QgsGrassUtils::vectorLayerName( QString map, QString layer,
 void QgsGrassUtils::addVectorLayers( QgisInterface *iface,
                                      QString gisbase, QString location, QString mapset, QString map )
 {
-  QStringList layers = QgsGrass::vectorLayers( gisbase, location, mapset, map );
+  QStringList layers;
+  try
+  {
+    layers = QgsGrass::vectorLayers( gisbase, location, mapset, map );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QgsDebugMsg( e.what() );
+    return;
+  }
 
   for ( int i = 0; i < layers.count(); i++ )
   {
@@ -164,7 +173,7 @@ void QgsGrassElementDialog::textChanged()
     return;
   }
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
   if ( !mSource.isNull() && text.toLower() == mSource.toLower() )
 #else
   if ( !mSource.isNull() && text == mSource )

@@ -32,12 +32,13 @@ class QgsGCPListWidget : public QTableView
 {
     Q_OBJECT
   public:
-    QgsGCPListWidget( QWidget *parent = 0 );
+    explicit QgsGCPListWidget( QWidget *parent = nullptr );
 
     void setGCPList( QgsGCPList *theGCPList );
     void setGeorefTransform( QgsGeorefTransform *theGeorefTransform );
     QgsGCPList *gcpList() { return mGCPList; }
     void updateGCPList();
+    void closeEditors();
 
   public slots:
     // This slot is called by the list view if an item is double-clicked

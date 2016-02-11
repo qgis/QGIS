@@ -29,7 +29,9 @@ QGIS utilities module
 """
 
 from PyQt4.QtCore import QCoreApplication, QLocale
-from qgis.core import QGis, QgsExpression, QgsMessageLog, qgsfunction
+from PyQt4.QtGui import QPushButton, QApplication
+from qgis.core import QGis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput
+from qgis.gui import QgsMessageBar
 
 import sys
 import traceback
@@ -39,6 +41,7 @@ import ConfigParser
 import warnings
 import codecs
 import time
+import functools
 
 # ######################
 # ERROR HANDLING
@@ -52,7 +55,7 @@ def showWarning(message, category, filename, lineno, file=None, line=None):
     for s in traceback.format_stack()[:-2]:
         stk += s.decode('utf-8', 'replace')
     QgsMessageLog.logMessage(
-        "warning:%s\ntraceback:%s" % ( warnings.formatwarning(message, category, filename, lineno), stk),
+        "warning:%s\ntraceback:%s" % (warnings.formatwarning(message, category, filename, lineno), stk),
         QCoreApplication.translate("Python", "Python warning")
     )
 
@@ -60,31 +63,112 @@ def showWarning(message, category, filename, lineno, file=None, line=None):
 warnings.showwarning = showWarning
 
 
-def showException(type, value, tb, msg):
-    lst = traceback.format_exception(type, value, tb)
+def showException(type, value, tb, msg, messagebar=False):
     if msg is None:
-        msg = QCoreApplication.translate('Python', 'An error has occured while executing Python code:')
-    txt = '<font color="red">%s</font><br><br><pre>' % msg
+        msg = QCoreApplication.translate('Python', 'An error has occurred while executing Python code:')
+
+    logmessage = ''
+    for s in traceback.format_exception(type, value, tb):
+        logmessage += s.decode('utf-8', 'replace')
+
+    title = QCoreApplication.translate('Python', 'Python error')
+    QgsMessageLog.logMessage(logmessage, title)
+
+    blockingdialog = QApplication.instance().activeModalWidget()
+    window = QApplication.instance().activeWindow()
+
+    # Still show the normal blocking dialog in this case for now.
+    if blockingdialog or not window or not messagebar or not iface:
+        open_stack_dialog(type, value, tb, msg)
+        return
+
+    bar = iface.messageBar()
+
+    # If it's not the main window see if we can find a message bar to report the error in
+    if not window.objectName() == "QgisApp":
+        widgets = window.findChildren(QgsMessageBar)
+        if widgets:
+            # Grab the first message bar for now
+            bar = widgets[0]
+
+    item = bar.currentItem()
+    if item and item.property("Error") == msg:
+        # Return of we already have a message with the same error message
+        return
+
+    widget = bar.createMessage(title, msg + " " + QCoreApplication.translate("Python", "See message log (Python Error) for more details."))
+    widget.setProperty("Error", msg)
+    stackbutton = QPushButton(QCoreApplication.translate("Python", "Stack trace"), pressed=functools.partial(open_stack_dialog, type, value, tb, msg))
+    button = QPushButton(QCoreApplication.translate("Python", "View message log"), pressed=show_message_log)
+    widget.layout().addWidget(stackbutton)
+    widget.layout().addWidget(button)
+    bar.pushWidget(widget, QgsMessageBar.WARNING)
+
+
+def show_message_log(pop_error=True):
+    if pop_error:
+        iface.messageBar().popWidget()
+
+    iface.openMessageLog()
+
+
+def open_stack_dialog(type, value, tb, msg, pop_error=True):
+    if pop_error:
+        iface.messageBar().popWidget()
+
+    if msg is None:
+        msg = QCoreApplication.translate('Python', 'An error has occurred while executing Python code:')
+
+    # TODO Move this to a template HTML file
+    txt = u'''<font color="red"><b>{msg}</b></font>
+<br>
+<h3>{main_error}</h3>
+<pre>
+{error}
+</pre>
+<br>
+<b>{version_label}</b> {num}
+<br>
+<b>{qgis_label}</b> {qversion} {qgisrelease}, {devversion}
+<br>
+<h4>{pypath_label}</h4>
+<ul>
+{pypath}
+</ul>'''
+
+    error = ''
+    lst = traceback.format_exception(type, value, tb)
     for s in lst:
-        txt += s.decode('utf-8', 'replace')
-    txt += '</pre><br>%s<br>%s<br><br>' % (QCoreApplication.translate('Python', 'Python version:'), sys.version)
-    txt += '<br>%s<br>%s %s, %s<br><br>' % (
-        QCoreApplication.translate('Python', 'QGIS version:'), QGis.QGIS_VERSION, QGis.QGIS_RELEASE_NAME,
-        QGis.QGIS_DEV_VERSION)
-    txt += '%s %s' % (QCoreApplication.translate('Python', 'Python path:'), str(sys.path))
-    txt = txt.replace('\n', '<br>')
+        error += s.decode('utf-8', 'replace')
+    error = error.replace('\n', '<br>')
+
+    main_error = lst[-1].decode('utf-8', 'replace')
+
+    version_label = QCoreApplication.translate('Python', 'Python version:')
+    qgis_label = QCoreApplication.translate('Python', 'QGIS version:')
+    pypath_label = QCoreApplication.translate('Python', 'Python Path:')
+    txt = txt.format(msg=msg,
+                     main_error=main_error,
+                     error=error,
+                     version_label=version_label,
+                     num=sys.version,
+                     qgis_label=qgis_label,
+                     qversion=QGis.QGIS_VERSION,
+                     qgisrelease=QGis.QGIS_RELEASE_NAME,
+                     devversion=QGis.QGIS_DEV_VERSION,
+                     pypath_label=pypath_label,
+                     pypath=u"".join(u"<li>{}</li>".format(path) for path in sys.path))
+
     txt = txt.replace('  ', '&nbsp; ')  # preserve whitespaces for nicer output
 
-    from qgis.core import QgsMessageOutput
-
-    msg = QgsMessageOutput.createMessageOutput()
-    msg.setTitle(QCoreApplication.translate('Python', 'Python error'))
-    msg.setMessage(txt, QgsMessageOutput.MessageHtml)
-    msg.showMessage()
+    dlg = QgsMessageOutput.createMessageOutput()
+    dlg.setTitle(msg)
+    dlg.setMessage(txt, QgsMessageOutput.MessageHtml)
+    dlg.showMessage()
 
 
 def qgis_excepthook(type, value, tb):
-    showException(type, value, tb, None)
+    showException(type, value, tb, None, messagebar=True)
 
 
 def installErrorHook():
@@ -160,7 +244,8 @@ def updateAvailablePlugins():
     metadata_parser = {}
     for pluginpath in plugin_paths:
         for pluginName, parser in findPlugins(pluginpath):
-            if parser is None: continue
+            if parser is None:
+                continue
             if pluginName not in plugins:
                 plugins.append(pluginName)
                 metadata_parser[pluginName] = parser
@@ -196,9 +281,9 @@ def loadPlugin(packageName):
         __import__(packageName)
         return True
     except:
-        msgTemplate = QCoreApplication.translate("Python", "Couldn't load plugin '%s' from ['%s']")
-        msg = msgTemplate % (packageName, "', '".join(sys.path))
-        showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
+        msgTemplate = QCoreApplication.translate("Python", "Couldn't load plugin '%s'")
+        msg = msgTemplate % packageName
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
 
@@ -206,8 +291,10 @@ def startPlugin(packageName):
     """ initialize the plugin """
     global plugins, active_plugins, iface, plugin_times
 
-    if packageName in active_plugins: return False
-    if packageName not in sys.modules: return False
+    if packageName in active_plugins:
+        return False
+    if packageName not in sys.modules:
+        return False
 
     package = sys.modules[packageName]
 
@@ -220,7 +307,7 @@ def startPlugin(packageName):
     except:
         _unloadPluginModules(packageName)
         msg = QCoreApplication.translate("Python", "%s due to an error when calling its classFactory() method") % errMsg
-        showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
     # initGui
@@ -230,7 +317,7 @@ def startPlugin(packageName):
         del plugins[packageName]
         _unloadPluginModules(packageName)
         msg = QCoreApplication.translate("Python", "%s due to an error when calling its initGui() method") % errMsg
-        showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
     # add to active plugins
@@ -245,8 +332,10 @@ def canUninstallPlugin(packageName):
     """ confirm that the plugin can be uninstalled """
     global plugins, active_plugins
 
-    if packageName not in plugins: return False
-    if packageName not in active_plugins: return False
+    if packageName not in plugins:
+        return False
+    if packageName not in active_plugins:
+        return False
 
     try:
         metadata = plugins[packageName]
@@ -255,7 +344,7 @@ def canUninstallPlugin(packageName):
         return bool(metadata.canBeUninstalled())
     except:
         msg = "Error calling " + packageName + ".canBeUninstalled"
-        showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return True
 
 
@@ -263,8 +352,10 @@ def unloadPlugin(packageName):
     """ unload and delete plugin! """
     global plugins, active_plugins
 
-    if packageName not in plugins: return False
-    if packageName not in active_plugins: return False
+    if packageName not in plugins:
+        return False
+    if packageName not in active_plugins:
+        return False
 
     try:
         plugins[packageName].unload()
@@ -272,9 +363,9 @@ def unloadPlugin(packageName):
         active_plugins.remove(packageName)
         _unloadPluginModules(packageName)
         return True
-    except Exception, e:
+    except Exception as e:
         msg = QCoreApplication.translate("Python", "Error while unloading plugin %s") % packageName
-        showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
 
@@ -305,7 +396,8 @@ def isPluginLoaded(packageName):
     """ find out whether a plugin is active (i.e. has been started) """
     global plugins, active_plugins
 
-    if packageName not in plugins: return False
+    if packageName not in plugins:
+        return False
     return (packageName in active_plugins)
 
 
@@ -371,7 +463,7 @@ def reloadProjectMacros():
     mod = imp.new_module("proj_macros_mod")
 
     # set the module code and store it sys.modules
-    exec unicode(code) in mod.__dict__
+    exec(unicode(code), mod.__dict__)
     sys.modules["proj_macros_mod"] = mod
 
     # load new macros
@@ -433,7 +525,7 @@ serverIface = None
 def initServerInterface(pointer):
     from qgis.server import QgsServerInterface
     from sip import wrapinstance
-
+    sys.excepthook = sys.__excepthook__
     global serverIface
     serverIface = wrapinstance(pointer, QgsServerInterface)
 
@@ -442,8 +534,10 @@ def startServerPlugin(packageName):
     """ initialize the plugin """
     global server_plugins, server_active_plugins, serverIface
 
-    if packageName in server_active_plugins: return False
-    if packageName not in sys.modules: return False
+    if packageName in server_active_plugins:
+        return False
+    if packageName not in sys.modules:
+        return False
 
     package = sys.modules[packageName]
 
@@ -456,7 +550,7 @@ def startServerPlugin(packageName):
         _unloadPluginModules(packageName)
         msg = QCoreApplication.translate("Python",
                                          "%s due to an error when calling its serverClassFactory() method") % errMsg
-        showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg)
         return False
 
     # add to active plugins

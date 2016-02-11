@@ -67,6 +67,8 @@ class QgsWFSConnectionItem : public QgsDataCollectionItem
 
 class QgsWFSLayerItem : public QgsLayerItem
 {
+    Q_OBJECT
+
   public:
     QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSourceURI uri, QString featureType, QString title, QString crsString );
     ~QgsWFSLayerItem();

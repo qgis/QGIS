@@ -1,12 +1,12 @@
 ##Vector geometry tools=group
-##lines=vector
-##distance=number 1
-##startpoint=number 0
-##endpoint=number 0
+##Lines=vector
+##Distance=number 1
+##Startpoint=number 0
+##Endpoint=number 0
 ##output=output vector
 
-from qgis.core import QgsFeature, QgsField
 from PyQt4.QtCore import QVariant
+from qgis.core import QGis, QgsFeature, QgsField
 from processing.tools.vector import VectorWriter
 
 
@@ -15,14 +15,14 @@ def create_points(feat):
     length = geom.length()
     currentdistance = 0
 
-    if endpoint > 0:
-        length = endpoint
+    if Endpoint > 0:
+        length = Endpoint
 
     out = QgsFeature()
 
-    while startpoint + currentdistance <= length:
-        point = geom.interpolate(startpoint + currentdistance)
-        currentdistance = currentdistance + distance
+    while Startpoint + currentdistance <= length:
+        point = geom.interpolate(Startpoint + currentdistance)
+        currentdistance = currentdistance + Distance
         out.setGeometry(point)
         attrs = feat.attributes()
         attrs.append(currentdistance)
@@ -30,7 +30,7 @@ def create_points(feat):
         writer.addFeature(out)
 
 
-layer = processing.getObject(lines)
+layer = processing.getObject(Lines)
 fields = layer.dataProvider().fields()
 fields.append(QgsField('Distance', QVariant.Double))
 writer = VectorWriter(output, None, fields, QGis.WKBPoint,

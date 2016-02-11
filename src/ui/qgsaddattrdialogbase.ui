@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>243</width>
+    <width>245</width>
     <height>201</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add column</string>
+   <string>Add field</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -86,7 +86,7 @@
    <item row="4" column="0">
     <widget class="QLabel" name="mLengthLabel">
      <property name="text">
-      <string>Width</string>
+      <string>Length</string>
      </property>
      <property name="buddy">
       <cstring>mLength</cstring>

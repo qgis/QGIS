@@ -32,6 +32,7 @@
  */
 class CORE_EXPORT QgsOWSConnection : public QObject
 {
+    Q_OBJECT
 
   public:
     /**
@@ -55,6 +56,7 @@ class CORE_EXPORT QgsOWSConnection : public QObject
     QgsDataSourceURI uri();
     QString mConnectionInfo;
 
+    //! @deprecated use mConnectionInfo instead
     Q_DECL_DEPRECATED QString connectionInfo();
 
   private:

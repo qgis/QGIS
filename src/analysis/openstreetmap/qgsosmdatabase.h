@@ -63,7 +63,10 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     int countNodes() const;
     int countWays() const;
 
+    //! @note not available in Python bindings
     QgsOSMNodeIterator listNodes() const;
+
+    //! @note not available in Python bindings
     QgsOSMWayIterator listWays() const;
 
     QgsOSMNode node( QgsOSMId id ) const;
@@ -72,6 +75,7 @@ class ANALYSIS_EXPORT QgsOSMDatabase
 
     QgsOSMTags tags( bool way, QgsOSMId id ) const;
 
+    //! @note available in Python bindings
     QList<QgsOSMTagCountPair> usedTags( bool ways ) const;
 
     QgsPolyline wayPoints( QgsOSMId id ) const;
@@ -86,6 +90,10 @@ class ANALYSIS_EXPORT QgsOSMDatabase
   protected:
     bool prepareStatements();
     int runCountStatement( const char* sql ) const;
+
+    /**
+     * @note not available in Python bindings
+     */
     void deleteStatement( sqlite3_stmt*& stmt );
 
     void exportSpatiaLiteNodes( const QString& tableName, const QStringList& tagKeys, const QStringList& notNullTagKeys = QStringList() );
@@ -111,10 +119,15 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     sqlite3_stmt* mStmtWayNode;
     sqlite3_stmt* mStmtWayNodePoints;
     sqlite3_stmt* mStmtWayTags;
+
+    QgsOSMDatabase( const QgsOSMDatabase& rh );
+    QgsOSMDatabase& operator=( const QgsOSMDatabase& rh );
 };
 
 
-/** Encapsulate iteration over table of nodes */
+/** Encapsulate iteration over table of nodes/
+ * @note not available in Python bindings
+*/
 class ANALYSIS_EXPORT QgsOSMNodeIterator
 {
   public:
@@ -124,6 +137,8 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator
     void close();
 
   protected:
+    /** @note not available in Python bindings
+     */
     QgsOSMNodeIterator( sqlite3* handle );
 
     sqlite3_stmt* mStmt;
@@ -133,7 +148,9 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator
 
 
 
-/** Encapsulate iteration over table of ways */
+/** Encapsulate iteration over table of ways
+ * @note not available in Python bindings
+ */
 class ANALYSIS_EXPORT QgsOSMWayIterator
 {
   public:
@@ -143,9 +160,13 @@ class ANALYSIS_EXPORT QgsOSMWayIterator
     void close();
 
   protected:
+    /** @note not available in Python bindings
+     */
     QgsOSMWayIterator( sqlite3* handle );
 
     sqlite3_stmt* mStmt;
+
+  private:
 
     friend class QgsOSMDatabase;
 };

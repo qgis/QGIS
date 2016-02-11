@@ -19,7 +19,7 @@
  *
  * Edits on features can get rejected if another conflicting transaction is active.
  */
-class QgsTransaction /Abstract/
+class QgsTransaction : QObject /Abstract/
 {
 %TypeHeaderCode
 #include <qgstransaction.h>
@@ -37,6 +37,9 @@ class QgsTransaction /Abstract/
     /** Add layer to the transaction. The layer must not be in edit mode. The transaction must not be active. */
     bool addLayer( const QString& layerId );
 
+    /** Add layer to the transaction. The layer must not be in edit mode. The transaction must not be active. */
+    bool addLayer( QgsVectorLayer* layer );
+
     /** Begin transaction
      *  The statement timeout, in seconds, specifies how long an sql statement
      *  is allowed to block QGIS before it is aborted. Statements can block,
@@ -45,14 +48,25 @@ class QgsTransaction /Abstract/
      *  statements block until the conflicting transaction is committed or
      *  rolled back.
      *  Some providers might not honour the statement timeout. */
-    bool begin( QString& errorMsg, int statementTimeout = 20 );
+    bool begin( QString& errorMsg /Out/, int statementTimeout = 20 );
 
     /** Commit transaction. All layers need to be in read-only mode. */
-    bool commit( QString& errorMsg );
+    bool commit( QString& errorMsg /Out/ );
 
     /** Roll back transaction. All layers need to be in read-only mode. */
-    bool rollback( QString& errorMsg );
+    bool rollback( QString& errorMsg /Out/ );
 
     /** Executes sql */
-    virtual bool executeSql( const QString& sql, QString& error ) = 0;
+    virtual bool executeSql( const QString& sql, QString& error /Out/ ) = 0;
+
+    /**
+     * Checks if a the provider of a give layer supports transactions.
+     */
+    static bool supportsTransaction( const QgsVectorLayer* layer );
+
+  signals:
+    /**
+     * Emitted after a rollback
+     */
+    void afterRollback();
 };

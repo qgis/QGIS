@@ -34,6 +34,9 @@ from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.ModelerUtils import ModelerUtils
 
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
+
 class AddModelFromFileAction(ToolboxAction):
 
     def __init__(self):
@@ -41,18 +44,18 @@ class AddModelFromFileAction(ToolboxAction):
         self.group = self.tr('Tools', 'AddModelFromFileAction')
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/model.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
 
     def execute(self):
         settings = QSettings()
         lastDir = settings.value('Processing/lastModelsDir', '')
         filename = QFileDialog.getOpenFileName(self.toolbox,
-            self.tr('Open model', 'AddModelFromFileAction'), lastDir,
-            self.tr('Processing model files (*.model *.MODEL)', 'AddModelFromFileAction'))
+                                               self.tr('Open model', 'AddModelFromFileAction'), lastDir,
+                                               self.tr('Processing model files (*.model *.MODEL)', 'AddModelFromFileAction'))
         if filename:
             try:
                 settings.setValue('Processing/lastModelsDir',
-                    QFileInfo(fileName).absoluteDir().absolutePath())
+                                  QFileInfo(filename).absoluteDir().absolutePath())
 
                 ModelerAlgorithm.fromFile(filename)
             except WrongModelException:
@@ -63,8 +66,9 @@ class AddModelFromFileAction(ToolboxAction):
                 return
             except:
                 QMessageBox.warning(self.toolbox,
-                    self.tr('Error reading model', 'AddModelFromFileAction'),
-                    self.tr('Cannot read file', 'AddModelFromFileAction'))
+                                    self.tr('Error reading model', 'AddModelFromFileAction'),
+                                    self.tr('Cannot read file', 'AddModelFromFileAction'))
+                return
             destFilename = os.path.join(ModelerUtils.modelsFolder(), os.path.basename(filename))
-            shutil.copyfile(filename,destFilename)
+            shutil.copyfile(filename, destFilename)
             self.toolbox.updateProvider('model')

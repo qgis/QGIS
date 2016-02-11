@@ -30,92 +30,93 @@ from ui_widgetPolygonize import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
 import GdalTools_utils as Utils
 
+
 class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
-  def __init__(self, iface):
-      QWidget.__init__(self)
-      self.iface = iface
-      self.resolutions = ("highest", "average", "lowest")
+    def __init__(self, iface):
+        QWidget.__init__(self)
+        self.iface = iface
+        self.resolutions = ("highest", "average", "lowest")
 
-      self.setupUi(self)
-      BasePluginWidget.__init__(self, self.iface, "gdal_polygonize.py")
+        self.setupUi(self)
+        BasePluginWidget.__init__(self, self.iface, "gdal_polygonize.py")
 
-      self.outSelector.setType( self.outSelector.FILE )
-      self.outputFormat = Utils.fillVectorOutputFormat()
+        self.outSelector.setType(self.outSelector.FILE)
+        self.outputFormat = Utils.fillVectorOutputFormat()
 
-      self.setParamsStatus([
-          (self.inSelector, SIGNAL("filenameChanged()")),
-          (self.outSelector, SIGNAL("filenameChanged()")),
-          (self.maskSelector, SIGNAL("filenameChanged()"), self.maskCheck),
-          (self.fieldEdit, SIGNAL("textChanged(const QString &)"), self.fieldCheck)
-      ])
+        self.setParamsStatus([
+            (self.inSelector, SIGNAL("filenameChanged()")),
+            (self.outSelector, SIGNAL("filenameChanged()")),
+            (self.maskSelector, SIGNAL("filenameChanged()"), self.maskCheck),
+            (self.fieldEdit, SIGNAL("textChanged(const QString &)"), self.fieldCheck)
+        ])
 
-      self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-      self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-      self.connect(self.maskSelector, SIGNAL("selectClicked()"), self.fillMaskFileEdit)
+        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
+        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+        self.connect(self.maskSelector, SIGNAL("selectClicked()"), self.fillMaskFileEdit)
 
-  def onLayersChanged(self):
-      self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
-      self.maskSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
+    def onLayersChanged(self):
+        self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())
+        self.maskSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())
 
-  def fillInputFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
-      inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Polygonize" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if not inputFile:
-        return
-      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+    def fillInputFileEdit(self):
+        lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+        inputFile = Utils.FileDialog.getOpenFileName(self, self.tr("Select the input file for Polygonize"), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
+        if not inputFile:
+            return
+        Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
-      self.inSelector.setFilename(inputFile)
+        self.inSelector.setFilename(inputFile)
 
-  def fillOutputFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
-      outputFile, encoding = Utils.FileDialog.getSaveFileName(self, self.tr( "Select where to save the Polygonize output" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter, True)
-      if not outputFile:
-        return
-      Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
+    def fillOutputFileEdit(self):
+        lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
+        outputFile, encoding = Utils.FileDialog.getSaveFileName(self, self.tr("Select where to save the Polygonize output"), Utils.FileFilter.allVectorsFilter(), lastUsedFilter, True)
+        if not outputFile:
+            return
+        Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
 
-      self.outputFormat = Utils.fillVectorOutputFormat( lastUsedFilter, outputFile )
-      self.outSelector.setFilename(outputFile)
-      self.lastEncoding = encoding
+        self.outputFormat = Utils.fillVectorOutputFormat(lastUsedFilter, outputFile)
+        self.outSelector.setFilename(outputFile)
+        self.lastEncoding = encoding
 
-  def fillMaskFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
-      maskFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Polygonize" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if not maskFile():
-        return
-      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+    def fillMaskFileEdit(self):
+        lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+        maskFile = Utils.FileDialog.getOpenFileName(self, self.tr("Select the input file for Polygonize"), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
+        if not maskFile():
+            return
+        Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
-      self.maskSelector.setFilename(maskFile)
+        self.maskSelector.setFilename(maskFile)
 
-  def getArguments(self):
-      arguments = []
-      arguments.append( self.getInputFileName() )
-      outputFn = self.getOutputFileName()
-      maskFn = self.getMaskFileName()
-      if self.maskCheck.isChecked() and maskFn:
-        arguments.append( "-mask" )
-        arguments.append( maskFn )
-      if outputFn:
-        arguments.append( "-f" )
-        arguments.append( self.outputFormat )
-      arguments.append( outputFn )
-      if outputFn:
-        arguments.append( QFileInfo( outputFn ).baseName() )
-      if (self.fieldCheck.isChecked() and self.fieldEdit.text()):
-        arguments.append( self.fieldEdit.text() )
-      return arguments
+    def getArguments(self):
+        arguments = []
+        arguments.append(self.getInputFileName())
+        outputFn = self.getOutputFileName()
+        maskFn = self.getMaskFileName()
+        if self.maskCheck.isChecked() and maskFn:
+            arguments.append("-mask")
+            arguments.append(maskFn)
+        if outputFn:
+            arguments.append("-f")
+            arguments.append(self.outputFormat)
+        arguments.append(outputFn)
+        if outputFn:
+            arguments.append(QFileInfo(outputFn).baseName())
+        if (self.fieldCheck.isChecked() and self.fieldEdit.text()):
+            arguments.append(self.fieldEdit.text())
+        return arguments
 
-  def getOutputFileName(self):
-      return self.outSelector.filename()
+    def getOutputFileName(self):
+        return self.outSelector.filename()
 
-  def getInputFileName(self):
-      return self.inSelector.filename()
+    def getInputFileName(self):
+        return self.inSelector.filename()
 
-  def getMaskFileName(self):
-      return self.maskSelector.filename()
+    def getMaskFileName(self):
+        return self.maskSelector.filename()
 
-  def addLayerIntoCanvas(self, fileInfo):
-      vl = self.iface.addVectorLayer(fileInfo.filePath(), fileInfo.baseName(), "ogr")
-      if vl is not None and vl.isValid():
-        if hasattr(self, 'lastEncoding'):
-          vl.setProviderEncoding(self.lastEncoding)
+    def addLayerIntoCanvas(self, fileInfo):
+        vl = self.iface.addVectorLayer(fileInfo.filePath(), fileInfo.baseName(), "ogr")
+        if vl is not None and vl.isValid():
+            if hasattr(self, 'lastEncoding'):
+                vl.setProviderEncoding(self.lastEncoding)

@@ -58,7 +58,7 @@ class DynamicTreeModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-    DynamicTreeModel( QObject *parent = 0 );
+    explicit DynamicTreeModel( QObject *parent = 0 );
 
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
     QModelIndex parent( const QModelIndex &index ) const;
@@ -82,7 +82,7 @@ class DynamicTreeModel : public QAbstractItemModel
     QHash<qint64, QString> m_items;
     QHash<qint64, QList<QList<qint64> > > m_childItems;
     qint64 nextId;
-    qint64 newId() { return nextId++; };
+    qint64 newId() { return nextId++; }
 
     QModelIndex m_nextParentIndex;
     // int m_nextRow;

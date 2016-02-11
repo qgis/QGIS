@@ -45,25 +45,25 @@ class VectorLayerScatterplot(GeoAlgorithm):
     YFIELD = 'YFIELD'
 
     def defineCharacteristics(self):
-        self.name = 'Vector layer scatterplot'
-        self.group = 'Graphics'
+        self.name, self.i18n_name = self.trAlgorithm('Vector layer scatterplot')
+        self.group, self.i18n_group = self.trAlgorithm('Graphics')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.XFIELD,
-            self.tr('X attribute'), self.INPUT,
-            ParameterTableField.DATA_TYPE_NUMBER))
+                                              self.tr('X attribute'), self.INPUT,
+                                              ParameterTableField.DATA_TYPE_NUMBER))
         self.addParameter(ParameterTableField(self.YFIELD,
-            self.tr('Y attribute'), self.INPUT,
-            ParameterTableField.DATA_TYPE_NUMBER))
+                                              self.tr('Y attribute'), self.INPUT,
+                                              ParameterTableField.DATA_TYPE_NUMBER))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
-        xfieldname = self.getParameterValue(self.YFIELD)
-        yfieldname = self.getParameterValue(self.XFIELD)
+        xfieldname = self.getParameterValue(self.XFIELD)
+        yfieldname = self.getParameterValue(self.YFIELD)
 
         output = self.getOutputValue(self.OUTPUT)
 

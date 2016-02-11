@@ -74,7 +74,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
      *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
      */
-    QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon );
+    Q_DECL_DEPRECATED QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon );
     ~QgsRubberBand();
 
     /**
@@ -137,7 +137,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Sets the representation type according to isPolygon.
      *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
      */
-    void reset( bool isPolygon );
+    Q_DECL_DEPRECATED void reset( bool isPolygon );
 
     /**
      * Add a vertex to the rubberband and update canvas.
@@ -189,13 +189,13 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param layer the layer containing the feature, used for coord transformation to map
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
-    void setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer );
+    void setToGeometry( const QgsGeometry *geom, QgsVectorLayer* layer );
 
     /**
      * Sets this rubber band to a map canvas rectangle
      *  @param rect rectangle in canvas coordinates
      */
-    void setToCanvasRectangle( const QRect& rect );
+    void setToCanvasRectangle( QRect rect );
 
     /**
      * Add the geometry of an existing feature to a rubberband
@@ -208,7 +208,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param layer the layer containing the feature, used for coord transformation to map
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
-    void addGeometry( QgsGeometry* geom, QgsVectorLayer* layer );
+    void addGeometry( const QgsGeometry *geom, QgsVectorLayer* layer );
 
     /**
      * Adds translation to original coordinates (all in map coordinates)

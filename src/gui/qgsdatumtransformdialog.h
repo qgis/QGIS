@@ -20,18 +20,24 @@
 
 #include "ui_qgsdatumtransformdialogbase.h"
 
-class GUI_EXPORT QgsDatumTransformDialog: public QDialog, private Ui::QgsDatumTransformDialogBase
+/**
+ * \class QgsDatumTransformDialog
+ * \note not available in Python bindings
+ */
+class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumTransformDialogBase
 {
     Q_OBJECT
   public:
-    QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > >& dt, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > >& dt, QWidget * parent = nullptr, const Qt::WindowFlags& f = nullptr );
     ~QgsDatumTransformDialog();
 
     //! @note added in 2.4
     void setDatumTransformInfo( const QString& srcCRSauthId, const QString& destCRSauthId );
 
+    //! getter for selected datum tranformations
     QList< int > selectedDatumTransform();
 
+    //! dialog shall remember the selection
     bool rememberSelection() const;
 
   public slots:
@@ -42,7 +48,7 @@ class GUI_EXPORT QgsDatumTransformDialog: public QDialog, private Ui::QgsDatumTr
     QgsDatumTransformDialog();
     void updateTitle();
     bool gridShiftTransformation( const QString& itemText ) const;
-    /**Returns false if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there*/
+    /** Returns false if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there*/
     bool testGridShiftFileAvailability( QTreeWidgetItem* item, int col ) const;
     void load();
 

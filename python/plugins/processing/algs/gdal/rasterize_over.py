@@ -27,18 +27,19 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputRaster
-from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import isWindows
+
+from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 
-class rasterize_over(OgrAlgorithm):
+class rasterize_over(GdalAlgorithm):
 
     INPUT = 'INPUT'
     INPUT_RASTER = 'INPUT_RASTER'
@@ -48,28 +49,27 @@ class rasterize_over(OgrAlgorithm):
         return "gdalogr:rasterize_over"
 
     def defineCharacteristics(self):
-        self.name = 'Rasterize (write over existing raster)'
-        self.group = '[GDAL] Conversion'
+        self.name, self.i18n_name = self.trAlgorithm('Rasterize (write over existing raster)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Attribute field'), self.INPUT))
+                                              self.tr('Attribute field'), self.INPUT))
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
-            self.tr('Existing raster layer'), False))
+                                          self.tr('Existing raster layer'), False))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT)
-        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
         inRasterLayer = self.getParameterValue(self.INPUT_RASTER)
-        ogrRasterLayer = self.ogrConnectionString(inRasterLayer)[1:-1]
+        ogrRasterLayer = ogrConnectionString(inRasterLayer)[1:-1]
 
         arguments = []
         arguments.append('-a')
-        arguments.append(str(self.getParameterValue(self.FIELD)))
+        arguments.append(unicode(self.getParameterValue(self.FIELD)))
 
         arguments.append('-l')
-        arguments.append(self.ogrLayerName(inLayer))
+        arguments.append(ogrLayerName(inLayer))
         arguments.append(ogrLayer)
         arguments.append(ogrRasterLayer)
 
-        GdalUtils.runGdal(['gdal_rasterize',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdal_rasterize', GdalUtils.escapeAndJoin(arguments)]

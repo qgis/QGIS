@@ -33,9 +33,8 @@ email                : jpalmer at linz dot govt dot nz
 
 QgsVectorLayer* QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas* canvas )
 {
-  QgsVectorLayer* vlayer = NULL;
-  if ( !canvas->currentLayer()
-       || ( vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() ) ) == NULL )
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() );
+  if ( !vlayer )
   {
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "No active vector layer" ),
@@ -66,7 +65,7 @@ void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas* canvas, QRect& selectRe
 
 void QgsMapToolSelectUtils::expandSelectRectangle( QRect& selectRect,
     QgsVectorLayer* vlayer,
-    const QPoint &point )
+    QPoint point )
 {
   int boxSize = 0;
   if ( vlayer->geometryType() != QGis::Polygon )
@@ -93,14 +92,11 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
     bool singleSelect )
 {
   if ( selectGeometry->type() != QGis::Polygon )
-  {
     return;
-  }
+
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
-  if ( vlayer == NULL )
-  {
+  if ( !vlayer )
     return;
-  }
 
   // toLayerCoordinates will throw an exception for any 'invalid' points in
   // the rubber band.
@@ -137,15 +133,16 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   QgsDebugMsg( "doDifference: " + QString( doDifference ? "T" : "F" ) );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
+  context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
   QgsFeatureRendererV2* r = vlayer->rendererV2();
   if ( r )
-    r->startRender( context, vlayer->pendingFields() );
+    r->startRender( context, vlayer->fields() );
 
   QgsFeatureRequest request;
   request.setFilterRect( selectGeomTrans.boundingBox() );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
   if ( r )
-    request.setSubsetOfAttributes( r->usedAttributes(), vlayer->pendingFields() );
+    request.setSubsetOfAttributes( r->usedAttributes(), vlayer->fields() );
   else
     request.setSubsetOfAttributes( QgsAttributeList() );
 
@@ -158,11 +155,12 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   double closestFeatureDist = std::numeric_limits<double>::max();
   while ( fit.nextFeature( f ) )
   {
+    context.expressionContext().setFeature( f );
     // make sure to only use features that are visible
-    if ( r && !r->willRenderFeature( f ) )
+    if ( r && !r->willRenderFeature( f, context ) )
       continue;
 
-    QgsGeometry* g = f.geometry();
+    const QgsGeometry* g = f.constGeometry();
     if ( doContains )
     {
       if ( !selectGeomTrans.contains( g ) )
@@ -231,7 +229,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
 
 void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, QMouseEvent * e )
 {
-  bool doContains = e->modifiers() & Qt::ShiftModifier ? true : false;
-  bool doDifference = e->modifiers() & Qt::ControlModifier ? true : false;
+  bool doContains = e->modifiers() & Qt::ShiftModifier;
+  bool doDifference = e->modifiers() & Qt::ControlModifier;
   setSelectFeatures( canvas, selectGeometry, doContains, doDifference );
 }

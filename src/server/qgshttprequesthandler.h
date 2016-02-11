@@ -23,16 +23,17 @@
 #include "qgsrequesthandler.h"
 #include <QColor>
 #include <QPair>
+#include <QHash>
 
 typedef QList< QPair<QRgb, int> > QgsColorBox; //Color / number of pixels
 typedef QMultiMap< int, QgsColorBox > QgsColorBoxMap; // sum of pixels / color box
 
-/**Base class for request handler using HTTP.
+/** Base class for request handler using HTTP.
 It provides a method to set data to the client*/
 class QgsHttpRequestHandler: public QgsRequestHandler
 {
   public:
-    QgsHttpRequestHandler();
+    explicit QgsHttpRequestHandler( const bool captureOutput );
     ~QgsHttpRequestHandler();
 
     virtual void setGetMapResponse( const QString& service, QImage* img, int imageQuality ) override;
@@ -46,8 +47,9 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual void setGetFeatureResponse( QByteArray* ba ) override;
     virtual void endGetFeatureResponse( QByteArray* ba ) override;
     virtual void setGetCoverageResponse( QByteArray* ba ) override;
-    /**Send out HTTP headers and flush output buffer*/
+    /** Send out HTTP headers and flush output buffer*/
     virtual void sendResponse() override;
+    virtual void setDefaultHeaders() override;
     virtual void setHeader( const QString &name, const QString &value ) override;
     virtual int removeHeader( const QString &name ) override;
     virtual void clearHeaders( ) override;
@@ -62,16 +64,19 @@ class QgsHttpRequestHandler: public QgsRequestHandler
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     virtual void setPluginFilters( QgsServerFiltersMap pluginFilters ) override;
 #endif
+    /** Return the response if capture output is activated */
+    QPair<QByteArray, QByteArray> getResponse( ) override;
+
   protected:
     virtual void sendHeaders( ) override;
-    virtual void sendBody( ) const override;
+    virtual void sendBody( ) override;
     void setHttpResponse( QByteArray *ba, const QString &format );
-    /**Converts format to official mimetype (e.g. 'jpg' to 'image/jpeg')
+    /** Converts format to official mimetype (e.g. 'jpg' to 'image/jpeg')
       @return mime string (or the entered string if not found)*/
     QString formatToMimeType( const QString& format ) const;
 
     void requestStringToParameterMap( const QString& request, QMap<QString, QString>& parameters );
-    /**Read CONTENT_LENGTH characters from stdin*/
+    /** Read CONTENT_LENGTH characters from stdin*/
     QString readPostBody() const;
 
   private:
@@ -80,12 +85,18 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     static void splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap& colorBoxMap,
                                QMap<int, QgsColorBox>::iterator colorBoxMapIt );
     static bool minMaxRange( const QgsColorBox& colorBox, int& redRange, int& greenRange, int& blueRange, int& alphaRange );
-    static bool redCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
-    static bool greenCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
-    static bool blueCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
-    static bool alphaCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
-    /**Calculates a representative color for a box (pixel weighted average)*/
+    static bool redCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
+    static bool greenCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
+    static bool blueCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
+    static bool alphaCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
+    /** Calculates a representative color for a box (pixel weighted average)*/
     static QRgb boxColor( const QgsColorBox& box, int boxPixels );
+    // TODO: if HAVE_SERVER_PYTHON
+    QByteArray mResponseHeader;
+    QByteArray mResponseBody;
+    bool mCaptureOutput;
+    void addToResponseHeader( const char * response );
+    void addToResponseBody( const char * response );
 };
 
 #endif

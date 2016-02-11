@@ -42,29 +42,29 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 {
     Q_OBJECT
   public:
-    QgsSnappingUtils( QObject* parent = 0 );
+    QgsSnappingUtils( QObject* parent = nullptr );
     ~QgsSnappingUtils();
 
     // main actions
 
-    /** get a point locator for the given layer. If such locator does not exist, it will be created */
+    /** Get a point locator for the given layer. If such locator does not exist, it will be created */
     QgsPointLocator* locatorForLayer( QgsVectorLayer* vl );
 
-    /** snap to map according to the current configuration (mode). Optional filter allows to discard unwanted matches. */
-    QgsPointLocator::Match snapToMap( const QPoint& point, QgsPointLocator::MatchFilter* filter = 0 );
-    QgsPointLocator::Match snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter = 0 );
+    /** Snap to map according to the current configuration (mode). Optional filter allows discarding unwanted matches. */
+    QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter* filter = nullptr );
+    QgsPointLocator::Match snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter = nullptr );
 
-    /** snap to current layer */
-    QgsPointLocator::Match snapToCurrentLayer( const QPoint& point, int type, QgsPointLocator::MatchFilter* filter = 0 );
+    /** Snap to current layer */
+    QgsPointLocator::Match snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter* filter = nullptr );
 
     // environment setup
 
-    /** assign current map settings to the utils - used for conversion between screen coords to map coords */
+    /** Assign current map settings to the utils - used for conversion between screen coords to map coords */
     void setMapSettings( const QgsMapSettings& settings );
     const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
-    /** set current layer so that if mode is SnapCurrentLayer we know which layer to use */
-    void setCurrentLayer( QgsVectorLayer* layer ) { mCurrentLayer = layer; }
+    /** Set current layer so that if mode is SnapCurrentLayer we know which layer to use */
+    void setCurrentLayer( QgsVectorLayer* layer );
     QgsVectorLayer* currentLayer() const { return mCurrentLayer; }
 
 
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     };
 
     /** Set how the snapping to map is done */
-    void setSnapToMapMode( SnapToMapMode mode ) { mSnapToMapMode = mode; }
+    void setSnapToMapMode( SnapToMapMode mode );
     /** Find out how the snapping to map is done */
     SnapToMapMode snapToMapMode() const { return mSnapToMapMode; }
 
@@ -95,34 +95,61 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /** Find out which strategy is used for indexing - by default hybrid indexing is used */
     IndexingStrategy indexingStrategy() const { return mStrategy; }
 
-    /** configure options used when the mode is snap to current layer */
+    /** Configure options used when the mode is snap to current layer or to all layers */
     void setDefaultSettings( int type, double tolerance, QgsTolerance::UnitType unit );
-    /** query options used when the mode is snap to current layer */
+    /** Query options used when the mode is snap to current layer or to all layers */
     void defaultSettings( int& type, double& tolerance, QgsTolerance::UnitType& unit );
 
+    /**
+     * Configures how a certain layer should be handled in a snapping operation
+     */
     struct LayerConfig
     {
-      LayerConfig( QgsVectorLayer* l, int t, double tol, QgsTolerance::UnitType u ) : layer( l ), type( t ), tolerance( tol ), unit( u ) {}
+      LayerConfig( QgsVectorLayer* l, const QgsPointLocator::Types& t, double tol, QgsTolerance::UnitType u ) : layer( l ), type( t ), tolerance( tol ), unit( u ) {}
 
+      bool operator==( const LayerConfig& other ) const
+      {
+        return layer == other.layer && type == other.type && tolerance == other.tolerance && unit == other.unit;
+      }
+      bool operator!=( const LayerConfig& other ) const
+      {
+        return !operator==( other );
+      }
+
+      //! The layer to configure.
       QgsVectorLayer* layer;
-      int type;
+      //! To which geometry properties of this layers a snapping should happen.
+      QgsPointLocator::Types type;
+      //! The range around snapping targets in which snapping should occur.
       double tolerance;
+      //! The units in which the tolerance is specified.
       QgsTolerance::UnitType unit;
     };
 
     /** Set layers which will be used for snapping */
-    void setLayers( const QList<LayerConfig>& layers ) { mLayers = layers; }
+    void setLayers( const QList<LayerConfig>& layers );
     /** Query layers used for snapping */
     QList<LayerConfig> layers() const { return mLayers; }
 
     /** Set whether to consider intersections of nearby segments for snapping */
-    void setSnapOnIntersections( bool enabled ) { mSnapOnIntersection = enabled; }
+    void setSnapOnIntersections( bool enabled );
     /** Query whether to consider intersections of nearby segments for snapping */
     bool snapOnIntersections() const { return mSnapOnIntersection; }
+
+    /** Get extra information about the instance
+     * @note added in QGIS 2.14
+     */
+    QString dump();
 
   public slots:
     /** Read snapping configuration from the project */
     void readConfigFromProject();
+
+  signals:
+    /** Emitted when snapping configuration has been changed
+     * @note added in QGIS 2.14
+     */
+    void configChanged();
 
   protected:
     //! Called when starting to index - can be overridden and e.g. progress dialog can be provided
@@ -131,7 +158,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     virtual void prepareIndexProgress( int index ) { Q_UNUSED( index ); }
 
   private slots:
-    void onLayersWillBeRemoved( QStringList layerIds );
+    void onLayersWillBeRemoved( const QStringList& layerIds );
 
   private:
     //! get from map settings pointer to destination CRS - or 0 if projections are disabled
@@ -145,10 +172,12 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! return a temporary locator with index only for a small area (will be replaced by another one on next request)
     QgsPointLocator* temporaryLocatorForLayer( QgsVectorLayer* vl, const QgsPoint& pointMap, double tolerance );
 
+    typedef QPair< QgsVectorLayer*, QgsRectangle > LayerAndAreaOfInterest;
+
     //! find out whether the strategy would index such layer or just use a temporary locator
-    bool willUseIndex( QgsVectorLayer* vl ) const;
+    bool isIndexPrepared( QgsVectorLayer* vl, const QgsRectangle& areaOfInterest );
     //! initialize index for layers where it makes sense (according to the indexing strategy)
-    void prepareIndex( const QList<QgsVectorLayer*>& layers );
+    void prepareIndex( const QList<LayerAndAreaOfInterest>& layers );
 
   private:
     // environment
@@ -172,6 +201,20 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     LocatorsMap mTemporaryLocators;
     //! list of layer IDs that are too large to be indexed (hybrid strategy will use temporary locators for those)
     QSet<QString> mHybridNonindexableLayers;
+    //! a record for each layer seen:
+    //! - value -1  == it is small layer -> fully indexed
+    //! - value > 0 == maximum area (in map units) for which it may make sense to build index.
+    //!   This means that index is built in area around the point with this total area, because
+    //!   for a larger area the number of features will likely exceed the limit. When the limit
+    //!   is exceeded, the maximum area is lowered to prevent that from happening.
+    //!   When requesting snap in area that is not currently indexed, layer's index is destroyed
+    //!   and a new one is built in the different area.
+    QHash<QString, double> mHybridMaxAreaPerLayer;
+    //! if using hybrid strategy, how many features of one layer may be indexed (to limit amount of consumed memory)
+    int mHybridPerLayerFeatureLimit;
+
+    //! internal flag that an indexing process is going on. Prevents starting two processes in parallel.
+    bool mIsIndexing;
 };
 
 

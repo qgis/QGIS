@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 20.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,7 +21,7 @@
 
 QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QgsMapCanvas* canvas, QgsMessageBar* messageBar, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mWidget( NULL )
+    , mWidget( nullptr )
     , mCanvas( canvas )
     , mMessageBar( messageBar )
 {
@@ -30,7 +30,6 @@ QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorL
 QWidget* QgsRelationReferenceWidgetWrapper::createWidget( QWidget* parent )
 {
   QgsRelationReferenceWidget* w = new QgsRelationReferenceWidget( parent );
-  w->setSizePolicy( w->sizePolicy().horizontalPolicy(), QSizePolicy::Expanding );
   return w;
 }
 
@@ -82,7 +81,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
   connect( mWidget, SIGNAL( foreignKeyChanged( QVariant ) ), this,  SLOT( foreignKeyChanged( QVariant ) ) );
 }
 
-QVariant QgsRelationReferenceWidgetWrapper::value()
+QVariant QgsRelationReferenceWidgetWrapper::value() const
 {
   if ( !mWidget )
     return QVariant( field().type() );
@@ -99,12 +98,17 @@ QVariant QgsRelationReferenceWidgetWrapper::value()
   }
 }
 
-void QgsRelationReferenceWidgetWrapper::setValue( const QVariant& value )
+bool QgsRelationReferenceWidgetWrapper::valid() const
 {
-  if ( !mWidget )
+  return mWidget;
+}
+
+void QgsRelationReferenceWidgetWrapper::setValue( const QVariant& val )
+{
+  if ( !mWidget || val == value() )
     return;
 
-  mWidget->setForeignKey( value );
+  mWidget->setForeignKey( val );
 }
 
 void QgsRelationReferenceWidgetWrapper::setEnabled( bool enabled )

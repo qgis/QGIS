@@ -36,7 +36,9 @@ BASE_CLASS = get_ui_class('newconnectiondialog.ui')
 
 
 class NewConnectionDialog(QDialog, BASE_CLASS):
+
     """Dialogue to add a new CSW entry"""
+
     def __init__(self, conn_name=None):
         """init"""
 

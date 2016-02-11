@@ -30,6 +30,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 
+
 class lasheightPro(LAStoolsAlgorithm):
 
     REPLACE_Z = "REPLACE_Z"
@@ -39,19 +40,19 @@ class lasheightPro(LAStoolsAlgorithm):
     DROP_BELOW_HEIGHT = "DROP_BELOW_HEIGHT"
 
     def defineCharacteristics(self):
-        self.name = "lasheightPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasheightPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterBoolean(lasheightPro.REPLACE_Z,
-            self.tr("replace z"), False))
+                                           self.tr("replace z"), False))
         self.addParameter(ParameterBoolean(lasheightPro.DROP_ABOVE,
-            self.tr("drop above"), False))
+                                           self.tr("drop above"), False))
         self.addParameter(ParameterNumber(lasheightPro.DROP_ABOVE_HEIGHT,
-            self.tr("drop above height"), 0, None, 100.0))
+                                          self.tr("drop above height"), 0, None, 100.0))
         self.addParameter(ParameterBoolean(lasheightPro.DROP_BELOW,
-            self.tr("drop below"), False))
+                                           self.tr("drop below"), False))
         self.addParameter(ParameterNumber(lasheightPro.DROP_BELOW_HEIGHT,
-            self.tr("drop below height"), 0, None, -2.0))
+                                          self.tr("drop below height"), 0, None, -2.0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -67,10 +68,10 @@ class lasheightPro(LAStoolsAlgorithm):
             commands.append("-replace_z")
         if self.getParameterValue(lasheightPro.DROP_ABOVE):
             commands.append("-drop_above")
-            commands.append(str(self.getParameterValue(lasheightPro.DROP_ABOVE_HEIGHT)))
+            commands.append(unicode(self.getParameterValue(lasheightPro.DROP_ABOVE_HEIGHT)))
         if self.getParameterValue(lasheightPro.DROP_BELOW):
             commands.append("-drop_below")
-            commands.append(str(self.getParameterValue(lasheightPro.DROP_BELOW_HEIGHT)))
+            commands.append(unicode(self.getParameterValue(lasheightPro.DROP_BELOW_HEIGHT)))
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)
         self.addParametersPointOutputFormatCommands(commands)

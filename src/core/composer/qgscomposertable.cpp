@@ -19,6 +19,7 @@
 #include "qgscomposertablecolumn.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgscomposerutils.h"
+#include "qgsfontutils.h"
 #include <QPainter>
 #include <QSettings>
 
@@ -134,14 +135,14 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     currentY += mGridStrokeWidth;
 
     //draw the attribute values
-    QList<QgsAttributeMap>::const_iterator attIt = mAttributeMaps.begin();
-    for ( ; attIt != mAttributeMaps.end(); ++attIt )
+    QList<QgsAttributeMap>::const_iterator attIt = mAttributeMaps.constBegin();
+    for ( ; attIt != mAttributeMaps.constEnd(); ++attIt )
     {
       cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], cellBodyHeight );
 
       const QgsAttributeMap &currentAttributeMap = *attIt;
       QString str = currentAttributeMap[ col ].toString();
-      QgsComposerUtils::drawText( painter, cell, str, mContentFont, mContentFontColor, ( *columnIt )->hAlignment(), Qt::AlignVCenter, Qt::TextDontClip );
+      QgsComposerUtils::drawText( painter, cell, str, mContentFont, mContentFontColor, ( *columnIt )->hAlignment(), ( *columnIt )->vAlignment(), Qt::TextDontClip );
 
       currentY += cellBodyHeight;
       currentY += mGridStrokeWidth;
@@ -255,7 +256,7 @@ QMap<int, QString> QgsComposerTable::headerLabels() const
   return headers;
 }
 
-void QgsComposerTable::setColumns( QList<QgsComposerTableColumn*> columns )
+void QgsComposerTable::setColumns( const QList<QgsComposerTableColumn*>& columns )
 {
   //remove existing columns
   qDeleteAll( mColumns );
@@ -267,10 +268,10 @@ void QgsComposerTable::setColumns( QList<QgsComposerTableColumn*> columns )
 bool QgsComposerTable::tableWriteXML( QDomElement& elem, QDomDocument & doc ) const
 {
   elem.setAttribute( "lineTextDist", QString::number( mLineTextDistance ) );
-  elem.setAttribute( "headerFont", mHeaderFont.toString() );
+  elem.appendChild( QgsFontUtils::toXmlElement( mHeaderFont, doc, "headerFontProperties" ) );
   elem.setAttribute( "headerFontColor", QgsSymbolLayerV2Utils::encodeColor( mHeaderFontColor ) );
-  elem.setAttribute( "headerHAlignment", QString::number(( int )mHeaderHAlignment ) );
-  elem.setAttribute( "contentFont", mContentFont.toString() );
+  elem.setAttribute( "headerHAlignment", QString::number( static_cast< int >( mHeaderHAlignment ) ) );
+  elem.appendChild( QgsFontUtils::toXmlElement( mContentFont, doc, "contentFontProperties" ) );
   elem.setAttribute( "contentFontColor", QgsSymbolLayerV2Utils::encodeColor( mContentFontColor ) );
   elem.setAttribute( "gridStrokeWidth", QString::number( mGridStrokeWidth ) );
   elem.setAttribute( "gridColor", QgsSymbolLayerV2Utils::encodeColor( mGridColor ) );
@@ -297,10 +298,16 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
     return false;
   }
 
-  mHeaderFont.fromString( itemElem.attribute( "headerFont", "" ) );
+  if ( !QgsFontUtils::setFromXmlChildNode( mHeaderFont, itemElem, "headerFontProperties" ) )
+  {
+    mHeaderFont.fromString( itemElem.attribute( "headerFont", "" ) );
+  }
   mHeaderFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "headerFontColor", "0,0,0,255" ) );
   mHeaderHAlignment = QgsComposerTable::HeaderHAlignment( itemElem.attribute( "headerHAlignment", "0" ).toInt() );
-  mContentFont.fromString( itemElem.attribute( "contentFont", "" ) );
+  if ( !QgsFontUtils::setFromXmlChildNode( mContentFont, itemElem, "contentFontProperties" ) )
+  {
+    mContentFont.fromString( itemElem.attribute( "contentFont", "" ) );
+  }
   mContentFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "contentFontColor", "0,0,0,255" ) );
   mLineTextDistance = itemElem.attribute( "lineTextDist", "1.0" ).toDouble();
   mGridStrokeWidth = itemElem.attribute( "gridStrokeWidth", "0.5" ).toDouble();
@@ -325,7 +332,7 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
   qDeleteAll( mColumns );
   mColumns.clear();
   QDomNodeList columnsList = itemElem.elementsByTagName( "displayColumns" );
-  if ( columnsList.size() > 0 )
+  if ( !columnsList.isEmpty() )
   {
     QDomElement columnsElem =  columnsList.at( 0 ).toElement();
     QDomNodeList columnEntryList = columnsElem.elementsByTagName( "column" );
@@ -340,7 +347,7 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
     _readXML( composerItemElem, doc );

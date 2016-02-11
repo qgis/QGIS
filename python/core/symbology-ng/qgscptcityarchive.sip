@@ -4,15 +4,15 @@ class QgsCptCityArchive
 #include <qgscptcityarchive.h>
 %End
   public:
-    QgsCptCityArchive( QString archiveName = DEFAULT_CPTCITY_ARCHIVE,
-                       QString baseDir = QString() );
+    QgsCptCityArchive( const QString& archiveName = DEFAULT_CPTCITY_ARCHIVE,
+                       const QString& baseDir = QString() );
     ~QgsCptCityArchive();
 
     // basic dir info
     QString baseDir() const;
     static QString baseDir( QString archiveName );
     static QString defaultBaseDir();
-    void setBaseDir( QString dirName );
+    void setBaseDir( const QString& dirName );
 
     // collection + selection info
     QString copyingFileName( const QString& dirName ) const;
@@ -27,7 +27,7 @@ class QgsCptCityArchive
     bool isEmpty();
     QString archiveName() const;
     static void initArchives( bool loadAll = false );
-    static void initArchive( QString archiveName, QString archiveBaseDir );
+    static void initArchive( const QString& archiveName, const QString& archiveBaseDir );
     static void initDefaultArchive();
     static void clearArchives();
     static QgsCptCityArchive* defaultArchive();
@@ -36,9 +36,13 @@ class QgsCptCityArchive
     // items
     QVector< QgsCptCityDataItem* > rootItems() const;
     QVector< QgsCptCityDataItem* > selectionItems() const;
+
+  private:
+
+    QgsCptCityArchive( const QgsCptCityArchive& rh );
 };
 
-/** base class for all items in the model */
+/** Base class for all items in the model */
 class QgsCptCityDataItem : QObject
 {
 %TypeHeaderCode
@@ -56,7 +60,7 @@ class QgsCptCityDataItem : QObject
     };
 
     QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem* parent,
-                        QString name, QString path );
+                        const QString& name, const QString& path );
     virtual ~QgsCptCityDataItem();
 
     bool hasChildren();
@@ -112,15 +116,15 @@ class QgsCptCityDataItem : QObject
     void setParent( QgsCptCityDataItem* parent );
     QVector<QgsCptCityDataItem*> children() const;
     virtual QIcon icon();
-    virtual QIcon icon( const QSize& size );
+    virtual QIcon icon( QSize size );
     QString name() const;
     QString path() const;
     QString info() const;
     QString shortInfo() const;
 
-    void setIcon( QIcon icon );
+    void setIcon( const QIcon& icon );
 
-    void setToolTip( QString msg );
+    void setToolTip( const QString& msg );
     QString toolTip() const;
 
     bool isValid();
@@ -147,12 +151,12 @@ class QgsCptCityColorRampItem : QgsCptCityDataItem
 
   public:
     QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
-                             QString name, QString path,
-                             QString variantName = QString(),
+                             const QString& name, const QString& path,
+                             const QString& variantName = QString(),
                              bool initialize = false );
     QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
-                             QString name, QString path,
-                             QStringList variantList,
+                             const QString& name, const QString& path,
+                             const QStringList& variantList,
                              bool initialize = false );
     ~QgsCptCityColorRampItem();
 
@@ -164,7 +168,7 @@ class QgsCptCityColorRampItem : QgsCptCityDataItem
     // --- New virtual methods for layer item derived classes ---
     const QgsCptCityColorRampV2& ramp() const;
     QIcon icon();
-    QIcon icon( const QSize& size );
+    QIcon icon( QSize size );
     void init();
 };
 
@@ -178,7 +182,7 @@ class QgsCptCityCollectionItem : QgsCptCityDataItem
 
   public:
     QgsCptCityCollectionItem( QgsCptCityDataItem* parent,
-                              QString name, QString path );
+                              const QString& name, const QString& path );
     ~QgsCptCityCollectionItem();
 
     void setPopulated();
@@ -194,7 +198,7 @@ class QgsCptCityDirectoryItem : QgsCptCityCollectionItem
 %End
   public:
     QgsCptCityDirectoryItem( QgsCptCityDataItem* parent,
-                             QString name, QString path );
+                             const QString& name, const QString& path );
     ~QgsCptCityDirectoryItem();
 
     QVector<QgsCptCityDataItem*> createChildren();
@@ -202,7 +206,7 @@ class QgsCptCityDirectoryItem : QgsCptCityCollectionItem
     virtual bool equal( const QgsCptCityDataItem *other );
 
     static QgsCptCityDataItem* dataItem( QgsCptCityDataItem* parent,
-                                         QString name, QString path );
+                                         const QString& name, const QString& path );
 
   protected:
     QMap< QString, QStringList > rampsMap();
@@ -217,7 +221,7 @@ class QgsCptCitySelectionItem : QgsCptCityCollectionItem
 %End
 
   public:
-    QgsCptCitySelectionItem( QgsCptCityDataItem* parent, QString name, QString path );
+    QgsCptCitySelectionItem( QgsCptCityDataItem* parent, const QString& name, const QString& path );
     ~QgsCptCitySelectionItem();
 
     QVector<QgsCptCityDataItem*> createChildren();
@@ -237,8 +241,8 @@ class QgsCptCityAllRampsItem : QgsCptCityCollectionItem
 #include <qgscptcityarchive.h>
 %End
   public:
-    QgsCptCityAllRampsItem( QgsCptCityDataItem* parent, QString name,
-                            QVector<QgsCptCityDataItem*> items );
+    QgsCptCityAllRampsItem( QgsCptCityDataItem* parent, const QString& name,
+                            const QVector<QgsCptCityDataItem*>& items );
     ~QgsCptCityAllRampsItem();
 
     QVector<QgsCptCityDataItem*> createChildren();
@@ -315,13 +319,13 @@ class QgsCptCityBrowserModel : QAbstractItemModel
     void reload();
 
     // Refresh item specified by path
-    void refresh( QString path );
+    void refresh( const QString& path );
 
     // Refresh item childs
     void refresh( const QModelIndex &index = QModelIndex() );
 
     //! return index of a path
-    QModelIndex findPath( QString path );
+    QModelIndex findPath( const QString& path );
 
     void connectItem( QgsCptCityDataItem *item );
 

@@ -26,7 +26,7 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
 {
     Q_OBJECT
   public:
-    QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget *parent = 0 );
+    QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget *parent = nullptr );
     ~QgsRasterMinMaxWidget();
 
     void setExtent( const QgsRectangle & theExtent ) { mExtent = theExtent; }

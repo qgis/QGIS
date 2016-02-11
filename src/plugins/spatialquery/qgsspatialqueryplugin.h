@@ -50,7 +50,7 @@ class QgsSpatialQueryPlugin: public QObject, public QgisPlugin
     * QGIS when it attempts to instantiate the plugin.
     * \param iface Pointer to the QgisInterface object.
     */
-    QgsSpatialQueryPlugin( QgisInterface* iface );
+    explicit QgsSpatialQueryPlugin( QgisInterface* iface );
     //! Destructor
     ~QgsSpatialQueryPlugin();
 
@@ -62,7 +62,7 @@ class QgsSpatialQueryPlugin: public QObject, public QgisPlugin
     //! Show the dialog box
     void run();
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( QString theThemeName );
+    void setCurrentTheme( const QString& theThemeName );
     QIcon getThemeIcon( const QString &theThemeName );
 
   private:

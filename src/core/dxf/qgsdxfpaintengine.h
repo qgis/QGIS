@@ -19,10 +19,15 @@
 #define QGSDXFPAINTENGINE_H
 
 #include <QPaintEngine>
+#include "qgsgeometryfactory.h"
 
 class QgsDxfExport;
 class QgsDxfPaintDevice;
 class QgsPoint;
+
+/** \class QgsDxfPaintEngine
+ * \note not available in Python bindings
+*/
 
 class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
 {
@@ -38,14 +43,13 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     void drawPixmap( const QRectF& r, const QPixmap& pm, const QRectF& sr ) override;
 
     void drawPolygon( const QPointF * points, int pointCount, PolygonDrawMode mode ) override;
-    void drawRects( const QRectF * rects, int rectCount ) override;
     void drawPath( const QPainterPath& path ) override;
     void drawLines( const QLineF* lines, int lineCount ) override;
 
     void setLayer( const QString& layer ) { mLayer = layer; }
     QString layer() const { return mLayer; }
 
-    void setShift( const QPointF& shift ) { mShift = shift; }
+    void setShift( QPointF shift ) { mShift = shift; }
 
   private:
     const QgsDxfPaintDevice* mPaintDevice;
@@ -57,10 +61,11 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     QBrush mBrush;
     QString mLayer;
     QPointF mShift;
+    QgsPolygon mPolygon;
     QPolygonF mCurrentPolygon;
     QList<QPointF> mCurrentCurve;
 
-    QgsPoint toDxfCoordinates( const QPointF& pt ) const;
+    QgsPoint toDxfCoordinates( QPointF pt ) const;
     double currentWidth() const;
 
     void moveTo( double dx, double dy );
@@ -68,6 +73,8 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     void curveTo( double dx, double dy );
     void endPolygon();
     void endCurve();
+
+    void setRing( QgsPolyline &polyline, const QPointF * points, int pointCount );
 
     //utils for bezier curve calculation
     static QPointF bezierPoint( const QList<QPointF>& controlPolygon, double t );

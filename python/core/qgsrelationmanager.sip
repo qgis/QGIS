@@ -78,7 +78,7 @@ class QgsRelationManager : QObject
     QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = 0 ) const;
 
   signals:
-    /** this signal is emitted when the relations were loaded after reading a project */
+    /** This signal is emitted when the relations were loaded after reading a project */
     void relationsLoaded();
 
     /**

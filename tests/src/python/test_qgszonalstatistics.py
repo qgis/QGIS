@@ -19,23 +19,24 @@ from PyQt4.QtCore import QDir, QFile
 from qgis.core import QgsVectorLayer, QgsFeature, QgsFeatureRequest
 from qgis.analysis import QgsZonalStatistics
 
-from utilities import (
-    unitTestDataPath,
-    getQgisTestApp,
-    TestCase,
-    unittest)
+from qgis.testing import (
+    start_app,
+    unittest
+)
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from utilities import unitTestDataPath
+
+start_app()
 
 
-class TestQgsZonalStatistics(TestCase):
+class TestQgsZonalStatistics(unittest.TestCase):
+
     """Tests for zonal stats class."""
 
     def testStatistics(self):
         """Test zonal stats"""
-        sep = os.sep
-        TEST_DATA_DIR = unitTestDataPath() + sep + "zonalstatistics" + sep
-        myTempPath = QDir.tempPath() + sep
+        TEST_DATA_DIR = unitTestDataPath() + "/zonalstatistics/"
+        myTempPath = QDir.tempPath() + "/"
         testDir = QDir(TEST_DATA_DIR)
         for f in testDir.entryList(QDir.Files):
             QFile.remove(myTempPath + f)

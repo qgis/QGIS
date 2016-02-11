@@ -136,7 +136,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     void warning( QString msg );
 
   private:
-    /** pointer to canonical Singleton object */
+    /** Pointer to canonical Singleton object */
     static QgsGrassGisLib* _instance;
 
     /** Original GRASS library handle */
@@ -161,7 +161,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     /** Current coordinate reference system */
     QgsCoordinateReferenceSystem mCrs;
     QgsDistanceArea mDistanceArea;
-    /** lat1, lat2 used for geodesic distance calculation */
+    /** Lat1, lat2 used for geodesic distance calculation */
     double mLat1, mLat2;
 };
 

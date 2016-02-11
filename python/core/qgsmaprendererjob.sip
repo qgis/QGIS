@@ -110,7 +110,7 @@ class QgsMapRendererJob : QObject
      * source CRS coordinates, and if it was split, returns true, and
      * also sets the contents of the r2 parameter
      */
-    static bool reprojectToLayerExtent( const QgsCoordinateTransform* ct, bool layerCrsGeographic, QgsRectangle& extent, QgsRectangle& r2 );
+    static bool reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform *ct, QgsRectangle &extent, QgsRectangle &r2 );
 
     //! @note not available in python bindings
     // LayerRenderJobs prepareJobs( QPainter* painter, QgsPalLabeling* labelingEngine );
@@ -122,7 +122,7 @@ class QgsMapRendererJob : QObject
 
     bool needTemporaryImage( QgsMapLayer* ml );
 
-    static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine, QPainter* painter );
+    // TODO static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine, QPainter* painter );
     static void drawOldLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext );
     static void drawNewLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine );
 

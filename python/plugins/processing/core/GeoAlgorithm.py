@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -27,27 +28,28 @@ __revision__ = '$Format:%H$'
 
 import os.path
 import traceback
+import subprocess
 import copy
 
 from PyQt4.QtGui import QIcon
-from PyQt4.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication, QSettings
 from qgis.core import QGis, QgsRasterFileWriter
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, Parameter
+from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects, vector
 from processing.tools.system import setTempOutput
+from processing.algs.help import shortHelp
 
 
 class GeoAlgorithm:
 
-    _icon = QIcon(os.path.dirname(__file__) + '/../images/alg.png')
-
     def __init__(self):
+        self._icon = QIcon(os.path.dirname(__file__) + '/../images/alg.png')
         # Parameters needed by the algorithm
         self.parameters = list()
 
@@ -55,8 +57,8 @@ class GeoAlgorithm:
         self.outputs = list()
 
         # Name and group for normal toolbox display
-        self.name = ''
-        self.group = ''
+        self.name, self.i18n_name = '', ''
+        self.group, self.i18n_group = '', ''
 
         # The crs taken from input layers (if possible), and used when
         # loading output layers
@@ -103,51 +105,19 @@ class GeoAlgorithm:
     def getDefaultIcon():
         return GeoAlgorithm._icon
 
+    def _formatHelp(self, text):
+        return "<h2>%s</h2>%s" % (self.name, "".join(["<p>%s</p>" % s for s in text.split("\n")]))
+
     def help(self):
-        """Returns the help with the description of this algorithm.
-        It returns a tuple boolean, string. IF the boolean value is True,
-        it means that the string contains the actual description. If False,
-        it is an url or path to a file where the description is stored.
-        In both cases, the string or the content of the file have to be HTML,
-        ready to be set into the help display component.
+        return False, None
 
-        Returns None if there is no help file available.
+    def shortHelp(self):
+        text = shortHelp.get(self.commandLineName(), None)
+        if text is not None:
+            text = self._formatHelp(text)
+        return text
 
-        The default implementation looks for an HTML page in the QGIS
-        documentation site taking into account QGIS version.
-        """
-
-        qgsVersion = QGis.QGIS_VERSION_INT
-        major = qgsVersion / 10000
-        minor = minor = (qgsVersion - major * 10000) / 100
-        if minor % 2 == 1:
-            qgsVersion = 'testing'
-        else:
-            qgsVersion = '{}.{}'.format(major, minor)
-
-        providerName = self.provider.getName().lower()
-        groupName = self.group.lower()
-        groupName = groupName.replace('[', '').replace(']', '').replace(' - ', '_')
-        groupName = groupName.replace(' ', '_')
-        cmdLineName = self.commandLineName()
-        algName = cmdLineName[cmdLineName.find(':') + 1:].lower()
-        validChars = \
-            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
-        safeGroupName = ''.join(c for c in groupName if c in validChars)
-        safeAlgName = ''.join(c for c in algName if c in validChars)
-
-        helpUrl = 'http://docs.qgis.org/{}/en/docs/user_manual/processing_algs/{}/{}/{}.html'.format(qgsVersion, providerName, safeGroupName, safeAlgName)
-        return False, helpUrl
-
-        # name = self.commandLineName().split(':')[1].lower()
-        # filename = os.path.join(os.path.dirname(inspect.getfile(self.__class__)), 'help', name + '.rst')
-        # try:
-        #   html = getHtmlFromRstFile(filename)
-        #   return True, html
-        # except:
-        #   return False, None
-
-    def processAlgorithm(self):
+    def processAlgorithm(self, progress):
         """Here goes the algorithm itself.
 
         There is no return value from this method.
@@ -167,7 +137,7 @@ class GeoAlgorithm:
         """
         return None
 
-    def getCustomModelerParametersDialog(self, modelAlg, algIndex=None):
+    def getCustomModelerParametersDialog(self, modelAlg, algName=None):
         """If the algorithm has a custom parameters dialog when called
         from the modeler, it should be returned here, ready to be
         executed.
@@ -227,29 +197,39 @@ class GeoAlgorithm:
         try:
             self.setOutputCRS()
             self.resolveTemporaryOutputs()
+            self.resolveDataObjects()
             self.checkOutputFileExtensions()
             self.runPreExecutionScript(progress)
             self.processAlgorithm(progress)
             progress.setPercentage(100)
             self.convertUnsupportedFormats(progress)
             self.runPostExecutionScript(progress)
-        except GeoAlgorithmExecutionException, gaee:
+        except GeoAlgorithmExecutionException as gaee:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, gaee.msg)
             raise gaee
-        except Exception, e:
+        except Exception as e:
             # If something goes wrong and is not caught in the
             # algorithm, we catch it here and wrap it
             lines = [self.tr('Uncaught error while executing algorithm')]
-            errstring = traceback.format_exc()
-            newline = errstring.find('\n')
-            if newline != -1:
-                lines.append(errstring[:newline])
-            else:
-                lines.append(errstring)
-            lines.append(errstring.replace('\n', '|'))
+            lines.append(traceback.format_exc())
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
             raise GeoAlgorithmExecutionException(
-                str(e) + self.tr('\nSee log for more details'))
+                unicode(e) + self.tr('\nSee log for more details'))
+
+    def _checkParameterValuesBeforeExecuting(self):
+        for param in self.parameters:
+            if isinstance(param, (ParameterRaster, ParameterVector,
+                                  ParameterMultipleInput)):
+                if param.value:
+                    if isinstance(param, ParameterMultipleInput):
+                        inputlayers = param.value.split(';')
+                    else:
+                        inputlayers = [param.value]
+                    for inputlayer in inputlayers:
+                        obj = dataobjects.getObject(inputlayer)
+                        if obj is None:
+                            return "Wrong parameter value: " + param.value
+        return self.checkParameterValuesBeforeExecuting()
 
     def runPostExecutionScript(self, progress):
         scriptFile = ProcessingConfig.getSetting(
@@ -273,7 +253,7 @@ class GeoAlgorithm:
             lines = f.readlines()
             for line in lines:
                 script += line
-            exec script in ns
+            exec(script, ns)
         except:
             # A wrong script should not cause problems, so we swallow
             # all exceptions
@@ -301,13 +281,31 @@ class GeoAlgorithm:
             elif isinstance(out, OutputRaster):
                 if out.compatible is not None:
                     layer = dataobjects.getObjectFromUri(out.compatible)
-                    provider = layer.dataProvider()
-                    writer = QgsRasterFileWriter(out.value)
                     format = self.getFormatShortNameFromFilename(out.value)
-                    writer.setOutputFormat(format)
-                    writer.writeRaster(layer.pipe(), layer.width(),
-                                       layer.height(), layer.extent(),
-                                       layer.crs())
+                    orgFile = out.compatible
+                    destFile = out.value
+                    crsid = layer.crs().authid()
+                    settings = QSettings()
+                    path = unicode(settings.value('/GdalTools/gdalPath', ''))
+                    envval = unicode(os.getenv('PATH'))
+                    if not path.lower() in envval.lower().split(os.pathsep):
+                        envval += '%s%s' % (os.pathsep, path)
+                        os.putenv('PATH', envval)
+                    command = 'gdal_translate -of %s -a_srs %s %s %s' % (format, crsid, orgFile, destFile)
+                    if os.name == 'nt':
+                        command = command.split(" ")
+                    else:
+                        command = [command]
+                    proc = subprocess.Popen(
+                        command,
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        stdin=subprocess.PIPE,
+                        stderr=subprocess.STDOUT,
+                        universal_newlines=False,
+                    )
+                    proc.communicate()
+
             elif isinstance(out, OutputTable):
                 if out.compatible is not None:
                     layer = dataobjects.getObjectFromUri(out.compatible)
@@ -369,8 +367,7 @@ class GeoAlgorithm:
     def setOutputCRS(self):
         layers = dataobjects.getAllLayers()
         for param in self.parameters:
-            if isinstance(param, (ParameterRaster, ParameterVector,
-                          ParameterMultipleInput)):
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 if param.value:
                     if isinstance(param, ParameterMultipleInput):
                         inputlayers = param.value.split(';')
@@ -388,10 +385,26 @@ class GeoAlgorithm:
                             return
         try:
             from qgis.utils import iface
-            self.crs = iface.mapCanvas().mapRenderer().destinationCrs()
+            self.crs = iface.mapCanvas().mapSettings().destinationCrs()
         except:
             pass
 
+    def resolveDataObjects(self):
+        layers = dataobjects.getAllLayers()
+        for param in self.parameters:
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable,
+                                  ParameterMultipleInput)):
+                if param.value:
+                    if isinstance(param, ParameterMultipleInput):
+                        inputlayers = param.value.split(';')
+                    else:
+                        inputlayers = [param.value]
+                    for i, inputlayer in enumerate(inputlayers):
+                        for layer in layers:
+                            if layer.name() == inputlayer:
+                                inputlayers[i] = layer.source()
+                                break
+                    param.setValue(";".join(inputlayers))
 
     def checkInputCRS(self):
         """It checks that all input layers use the same CRS. If so,
@@ -399,8 +412,7 @@ class GeoAlgorithm:
         """
         crsList = []
         for param in self.parameters:
-            if isinstance(param, (ParameterRaster, ParameterVector,
-                          ParameterMultipleInput)):
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 if param.value:
                     if isinstance(param, ParameterMultipleInput):
                         layers = param.value.split(';')
@@ -468,9 +480,9 @@ class GeoAlgorithm:
     def __str__(self):
         s = 'ALGORITHM: ' + self.name + '\n'
         for param in self.parameters:
-            s += '\t' + str(param) + '\n'
+            s += '\t' + unicode(param) + '\n'
         for out in self.outputs:
-            s += '\t' + str(out) + '\n'
+            s += '\t' + unicode(out) + '\n'
         s += '\n'
         return s
 
@@ -525,39 +537,12 @@ class GeoAlgorithm:
         s = s[:-1] + ')'
         return s
 
-    def getPostProcessingErrorMessage(self, wrongLayers):
-        """Returns the message to be shown to the user when, after
-        running this algorithm, there is a problem loading the
-        resulting layer.
-
-        This method should analyze if the problem is caused by wrong
-        entry data, a wrong or missing installation of a required 3rd
-        party app, or any other cause, and create an error response
-        accordingly.
-
-        Message is provided as an HTML code that will be displayed to
-        the user, and which might contains links to installation paths
-        for missing 3rd party apps.
-
-          - wrongLayers: a list of Output objects that could not be
-                         loaded.
-        """
-
-        html = self.tr('<p>Oooops! The following output layers could not be '
-                       'open</p><ul>\n')
-        for layer in wrongLayers:
-            html += self.tr('<li>%s: <font size=3 face="Courier New" '
-                            'color="#ff0000">%s</font></li>\n') % (
-                layer.description, layer.value
-            )
-        html += self.tr('</ul><p>The above files could not be opened, which '
-                        'probably indicates that they were not correctly '
-                        'produced by the executed algorithm</p>'
-                        '<p>Checking the log information might help you see '
-                        'why those layers were not created as expected</p>')
-        return html
-
     def tr(self, string, context=''):
         if context == '':
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
+
+    def trAlgorithm(self, string, context=''):
+        if context == '':
+            context = self.__class__.__name__
+        return string, QCoreApplication.translate(context, string)

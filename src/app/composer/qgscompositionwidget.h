@@ -26,7 +26,7 @@ class QgsDataDefinedButton;
  */
 struct QgsCompositionPaper
 {
-  QgsCompositionPaper( QString name, double width, double height ) {mName = name; mWidth = width; mHeight = height;}
+  QgsCompositionPaper( const QString& name, double width, double height ) {mName = name; mWidth = width; mHeight = height;}
   QString mName;
   double mWidth;
   double mHeight;
@@ -50,6 +50,7 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mPaperHeightDoubleSpinBox_editingFinished();
     void on_mNumPagesSpinBox_valueChanged( int value );
     void on_mPageStyleButton_clicked();
+    void on_mResizePageButton_clicked();
     void on_mResolutionSpinBox_valueChanged( const int value );
     void on_mPrintAsRasterCheckBox_toggled( bool state );
     void on_mGenerateWorldFileCheckBox_toggled( bool state );
@@ -60,16 +61,16 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mOffsetYSpinBox_valueChanged( double d );
     void on_mSnapToleranceSpinBox_valueChanged( int tolerance );
 
-    /**Sets GUI elements to width/height from composition*/
+    /** Sets GUI elements to width/height from composition*/
     void displayCompositionWidthHeight();
-    /**Sets Print as raster checkbox value*/
+    /** Sets Print as raster checkbox value*/
     void setPrintAsRasterCheckBox( bool state );
-    /**Sets number of pages spin box value*/
+    /** Sets number of pages spin box value*/
     void setNumberPages();
 
   signals:
-    /**Is emitted when page orientation changes*/
-    void pageOrientationChanged( QString orientation );
+    /** Is emitted when page orientation changes*/
+    void pageOrientationChanged( const QString& orientation );
 
   private slots:
     /* when a new map is added */
@@ -77,24 +78,28 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     /* when a map is deleted */
     void onItemRemoved( QgsComposerItem* );
 
-    /**Must be called when a data defined button changes*/
+    /** Must be called when a data defined button changes*/
     void updateDataDefinedProperty();
 
-    /**Initializes data defined buttons to current atlas coverage layer*/
+    /** Initializes data defined buttons to current atlas coverage layer*/
     void populateDataDefinedButtons();
+
+    void variablesChanged();
+
+    void resizeMarginsChanged();
 
   private:
     QgsComposition* mComposition;
     QMap<QString, QgsCompositionPaper> mPaperMap;
 
     QgsCompositionWidget(); //default constructor is forbidden
-    /**Sets width/height to chosen paper format and updates paper item*/
+    /** Sets width/height to chosen paper format and updates paper item*/
     void applyCurrentPaperSettings();
-    /**Applies the current width and height values*/
+    /** Applies the current width and height values*/
     void applyWidthHeight();
-    /**Makes sure width/height values for custom paper matches the current orientation*/
+    /** Makes sure width/height values for custom paper matches the current orientation*/
     void adjustOrientation();
-    /**Sets GUI elements to snaping distances of composition*/
+    /** Sets GUI elements to snaping distances of composition*/
     void displaySnapingSettings();
 
     void updatePageStyle();
@@ -104,13 +109,13 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
 
     double size( QDoubleSpinBox *spin );
     void setSize( QDoubleSpinBox *spin, double v );
-    /**Blocks / unblocks the signals of all items*/
+    /** Blocks / unblocks the signals of all items*/
     void blockSignals( bool block );
 
-    /**Sets a data defined property for the item from its current data defined button settings*/
+    /** Sets a data defined property for the item from its current data defined button settings*/
     void setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty property );
 
-    /**Returns the data defined property corresponding to a data defined button widget*/
+    /** Returns the data defined property corresponding to a data defined button widget*/
     virtual QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton* widget );
 
 };

@@ -26,7 +26,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgisgui.h"
 
-QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table ): QgsComposerItemBaseWidget( 0, table ), mComposerTable( table )
+QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table ): QgsComposerItemBaseWidget( nullptr, table ), mComposerTable( table )
 {
   setupUi( this );
   //add widget for general composer item properties
@@ -272,7 +272,7 @@ void QgsComposerTableWidget::on_mGridStrokeWidthSpinBox_valueChanged( double d )
   {
     return;
   }
-  mComposerTable->beginCommand( tr( "Table grid stroke" ), QgsComposerMergeCommand::TableGridStrokeWidth );
+  mComposerTable->beginCommand( tr( "Table grid line" ), QgsComposerMergeCommand::TableGridStrokeWidth );
   mComposerTable->setGridStrokeWidth( d );
   mComposerTable->update();
   mComposerTable->endCommand();
@@ -464,7 +464,9 @@ void QgsComposerTableWidget::on_mFeatureFilterButton_clicked()
     return;
   }
 
-  QgsExpressionBuilderDialog exprDlg( mComposerTable->vectorLayer(), mFeatureFilterEdit->text(), this );
+  QScopedPointer<QgsExpressionContext> context( mComposerTable->createExpressionContext() );
+  QgsExpressionBuilderDialog exprDlg( mComposerTable->vectorLayer(), mFeatureFilterEdit->text(), this, "generic", *context );
+
   exprDlg.setWindowTitle( tr( "Expression based filter" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {

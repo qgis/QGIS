@@ -28,7 +28,7 @@ email                : wonder.sk at gmail dot com
 static bool _executeSqliteStatement( sqlite3* db, const QString& sql )
 {
   sqlite3_stmt* stmt;
-  if ( sqlite3_prepare_v2( db, sql.toUtf8().data(), -1, &stmt, NULL ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( db, sql.toUtf8().data(), -1, &stmt, nullptr ) != SQLITE_OK )
     return false;
 
   return sqlite3_step( stmt ) == SQLITE_DONE;
@@ -72,7 +72,7 @@ static bool _hasCache( sqlite3* db, const QString& connName, int flags = -1 ) //
 
   char **results;
   int rows, columns;
-  char *errMsg = NULL;
+  char *errMsg = nullptr;
   bool res = sqlite3_get_table( db, sqlCacheForConn.toUtf8(), &results, &rows, &columns, &errMsg ) == SQLITE_OK;
   bool hasCache = ( res && rows == 1 );
   sqlite3_free_table( results );
@@ -156,7 +156,7 @@ bool QgsOracleTableCache::saveToCache( const QString& connName, CacheFlags flags
   }
 
   bool insertOk = true;
-  foreach ( const QgsOracleLayerProperty& item, layers )
+  Q_FOREACH ( const QgsOracleLayerProperty& item, layers )
   {
     sqlite3_bind_text( stmtInsert, 1, item.ownerName.toUtf8().data(), -1, SQLITE_TRANSIENT );
     sqlite3_bind_text( stmtInsert, 2, item.tableName.toUtf8().data(), -1, SQLITE_TRANSIENT );
@@ -167,12 +167,12 @@ bool QgsOracleTableCache::saveToCache( const QString& connName, CacheFlags flags
     sqlite3_bind_text( stmtInsert, 6, item.pkCols.join( "," ).toUtf8().data(), -1, SQLITE_TRANSIENT );
 
     QStringList geomTypes;
-    foreach ( QGis::WkbType geomType, item.types )
+    Q_FOREACH ( QGis::WkbType geomType, item.types )
       geomTypes.append( QString::number( static_cast<ulong>( geomType ) ) );
     sqlite3_bind_text( stmtInsert, 7, geomTypes.join( "," ).toUtf8().data(), -1, SQLITE_TRANSIENT );
 
     QStringList geomSrids;
-    foreach ( int geomSrid, item.srids )
+    Q_FOREACH ( int geomSrid, item.srids )
       geomSrids.append( QString::number( geomSrid ) );
     sqlite3_bind_text( stmtInsert, 8, geomSrids.join( "," ).toUtf8().data(), -1, SQLITE_TRANSIENT );
 
@@ -202,7 +202,7 @@ bool QgsOracleTableCache::loadFromCache( const QString& connName, CacheFlags fla
 
   sqlite3_stmt* stmt;
   QString sql = QString( "SELECT * FROM %1" ).arg( QgsOracleConn::quotedIdentifier( "oracle_" + connName ) );
-  if ( sqlite3_prepare_v2( db, sql.toUtf8().data(), -1, &stmt, NULL ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( db, sql.toUtf8().data(), -1, &stmt, nullptr ) != SQLITE_OK )
   {
     sqlite3_close( db );
     return false;
@@ -221,11 +221,11 @@ bool QgsOracleTableCache::loadFromCache( const QString& connName, CacheFlags fla
     layer.pkCols = pkCols.split( ",", QString::SkipEmptyParts );
 
     QString geomTypes = QString::fromUtf8(( const char* ) sqlite3_column_text( stmt, 6 ) );
-    foreach ( QString geomType, geomTypes.split( ",", QString::SkipEmptyParts ) )
+    Q_FOREACH ( QString geomType, geomTypes.split( ",", QString::SkipEmptyParts ) )
       layer.types.append( static_cast<QGis::WkbType>( geomType.toInt() ) );
 
     QString geomSrids = QString::fromUtf8(( const char* ) sqlite3_column_text( stmt, 7 ) );
-    foreach ( QString geomSrid, geomSrids.split( ",", QString::SkipEmptyParts ) )
+    Q_FOREACH ( QString geomSrid, geomSrids.split( ",", QString::SkipEmptyParts ) )
       layer.srids.append( geomSrid.toInt() );
 
     layers.append( layer );
@@ -274,7 +274,7 @@ void _testTableCache()
   // fetch
 
   QgsDataSourceURI uri = QgsOracleConn::connUri( connName );
-  QgsOracleConn* c = QgsOracleConn::connectDb( uri.connectionInfo() );
+  QgsOracleConn* c = QgsOracleConnectionPool::instance()->acquireConnection( uri.connectionInfo() );
   if ( !c )
     return;
 
@@ -289,7 +289,7 @@ void _testTableCache()
     c->retrieveLayerTypes( layerProperty, useEstimated, onlyExisting );
   }
 
-  c->disconnect();
+  QgsOracleConnPool::instance()->releaseConnection( c );
 
   // save
 
@@ -303,10 +303,10 @@ void _testTableCache()
 
   // compare
 
-  foreach ( const QgsOracleLayerProperty& item, layers )
+  Q_FOREACH ( const QgsOracleLayerProperty& item, layers )
     qDebug( "== %s %s", item.tableName.toAscii().data(), item.geometryColName.toAscii().data() );
 
-  foreach ( const QgsOracleLayerProperty& item, layersLoaded )
+  Q_FOREACH ( const QgsOracleLayerProperty& item, layersLoaded )
     qDebug( "++ %s %s", item.tableName.toAscii().data(), item.geometryColName.toAscii().data() );
 
   Q_ASSERT( layers == layersLoaded );

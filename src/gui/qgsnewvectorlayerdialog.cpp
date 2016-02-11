@@ -31,7 +31,7 @@
 #include <QFileDialog>
 
 
-QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl )
+QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, const Qt::WindowFlags& fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
@@ -195,9 +195,9 @@ void QgsNewVectorLayerDialog::attributes( QList< QPair<QString, QString> >& at )
   while ( *it )
   {
     QTreeWidgetItem *item = *it;
-    QString type = QString( "%1;%2;%3" ).arg( item->text( 1 ) ).arg( item->text( 2 ) ).arg( item->text( 3 ) );
+    QString type = QString( "%1;%2;%3" ).arg( item->text( 1 ), item->text( 2 ), item->text( 3 ) );
     at.push_back( qMakePair( item->text( 0 ), type ) );
-    QgsDebugMsg( QString( "appending %1//%2" ).arg( item->text( 0 ) ).arg( type ) );
+    QgsDebugMsg( QString( "appending %1//%2" ).arg( item->text( 0 ), type ) );
     ++it;
   }
 }
@@ -214,14 +214,14 @@ QString QgsNewVectorLayerDialog::selectedFileEncoding() const
   return mFileEncoding->currentText();
 }
 
-void QgsNewVectorLayerDialog::nameChanged( QString name )
+void QgsNewVectorLayerDialog::nameChanged( const QString& name )
 {
-  mAddAttributeButton->setDisabled( name.isEmpty() || mAttributeView->findItems( name, Qt::MatchExactly ).size() > 0 );
+  mAddAttributeButton->setDisabled( name.isEmpty() || !mAttributeView->findItems( name, Qt::MatchExactly ).isEmpty() );
 }
 
 void QgsNewVectorLayerDialog::selectionChanged()
 {
-  mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().size() == 0 );
+  mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().isEmpty() );
 }
 
 
@@ -244,9 +244,9 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
   geomDialog.attributes( attributes );
 
   QSettings settings;
-  QString lastUsedDir = settings.value( "/UI/lastVectorFileFilterDir", "." ).toString();
+  QString lastUsedDir = settings.value( "/UI/lastVectorFileFilterDir", QDir::homePath() ).toString();
   QString filterString = QgsVectorFileWriter::filterForDriver( fileformat );
-  QString fileName = QFileDialog::getSaveFileName( 0, tr( "Save layer as..." ), lastUsedDir, filterString );
+  QString fileName = QFileDialog::getSaveFileName( nullptr, tr( "Save layer as..." ), lastUsedDir, filterString );
   if ( fileName.isNull() )
   {
     return "";

@@ -22,6 +22,8 @@
 #include <ui_qgsbrowserpropertiesdialogbase.h>
 
 #include "qgsdataitem.h"
+#include "qgsbrowsertreeview.h"
+#include <QSortFilterProxyModel>
 
 class QgsBrowserModel;
 class QModelIndex;
@@ -35,27 +37,38 @@ class QgsBrowserPropertiesWrapLabel : public QTextEdit
 {
     Q_OBJECT
   public:
-    QgsBrowserPropertiesWrapLabel( const QString& text, QWidget* parent = 0 );
+    QgsBrowserPropertiesWrapLabel( const QString& text, QWidget* parent = nullptr );
 
   private slots:
-    void adjustHeight( const QSizeF& size );
+    void adjustHeight( QSizeF size );
 };
 
 class QgsBrowserPropertiesWidget : public QWidget
 {
     Q_OBJECT
   public:
-    QgsBrowserPropertiesWidget( QWidget* parent = 0 );
-    static QgsBrowserPropertiesWidget* createWidget( QgsDataItem* item, QWidget* parent = 0 );
-    virtual void setItem( QgsDataItem* item ) = 0;
+    explicit QgsBrowserPropertiesWidget( QWidget* parent = nullptr );
+    static QgsBrowserPropertiesWidget* createWidget( QgsDataItem* item, QWidget* parent = nullptr );
+    virtual void setItem( QgsDataItem* item ) { Q_UNUSED( item ) }
+    /** Set content widget, usually item paramWidget. Takes ownership. */
+    virtual void setWidget( QWidget* widget );
+
+    /** Sets whether the properties widget should display in condensed mode, ie, for display in a dock
+     * widget rather than it's own separate dialog.
+     * @param condensedMode set to true to enable condensed mode
+     * @note added in QGIS 2.10
+     */
+    virtual void setCondensedMode( bool condensedMode ) { Q_UNUSED( condensedMode ); }
 };
 
 class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui::QgsBrowserLayerPropertiesBase
 {
     Q_OBJECT
   public:
-    QgsBrowserLayerProperties( QWidget* parent = 0 );
+    explicit QgsBrowserLayerProperties( QWidget* parent = nullptr );
     void setItem( QgsDataItem* item ) override;
+
+    virtual void setCondensedMode( bool condensedMode ) override;
 
   private:
     QgsBrowserPropertiesWrapLabel *mUriLabel;
@@ -65,7 +78,7 @@ class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget , privat
 {
     Q_OBJECT
   public:
-    QgsBrowserDirectoryProperties( QWidget* parent = 0 );
+    explicit QgsBrowserDirectoryProperties( QWidget* parent = nullptr );
 
     void setItem( QgsDataItem* item ) override;
   private:
@@ -77,7 +90,7 @@ class QgsBrowserPropertiesDialog : public QDialog , private Ui::QgsBrowserProper
 {
     Q_OBJECT
   public:
-    QgsBrowserPropertiesDialog( QString settingsSection, QWidget* parent = 0 );
+    QgsBrowserPropertiesDialog( const QString& settingsSection, QWidget* parent = nullptr );
     ~QgsBrowserPropertiesDialog();
 
     void setItem( QgsDataItem* item );
@@ -91,13 +104,13 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
 {
     Q_OBJECT
   public:
-    explicit QgsBrowserDockWidget( QString name, QWidget *parent = 0 );
+    explicit QgsBrowserDockWidget( const QString& name, QWidget *parent = nullptr );
     ~QgsBrowserDockWidget();
-    void addFavouriteDirectory( QString favDir );
+    void addFavouriteDirectory( const QString& favDir );
 
   public slots:
     void addLayerAtIndex( const QModelIndex& index );
-    void showContextMenu( const QPoint & );
+    void showContextMenu( QPoint );
 
     void addFavourite();
     void addFavouriteDirectory();
@@ -115,6 +128,7 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
     void addCurrentLayer();
     void addSelectedLayers();
     void showProperties();
+    void hideItem();
     void toggleFastScan();
 
     void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );
@@ -140,5 +154,68 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
 
   private:
 };
+
+
+/**
+Utility class for correct drag&drop handling.
+
+We want to allow user to drag layers to qgis window. At the same time we do not
+accept drops of the items on our view - but if we ignore the drag enter action
+then qgis application consumes the drag events and it is possible to drop the
+items on the tree view although the drop is actually managed by qgis app.
+ */
+class QgsDockBrowserTreeView : public QgsBrowserTreeView
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsDockBrowserTreeView( QWidget* parent );
+
+    void dragEnterEvent( QDragEnterEvent* e ) override;
+    void dragMoveEvent( QDragMoveEvent* e ) override;
+};
+
+/**
+Utility class for filtering browser items
+ */
+class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+  public:
+    explicit QgsBrowserTreeFilterProxyModel( QObject *parent );
+
+    void setBrowserModel( QgsBrowserModel* model );
+
+    void setFilterSyntax( const QString & syntax );
+
+    void setFilter( const QString & filter );
+
+    void setCaseSensitive( bool caseSensitive );
+
+    void updateFilter();
+
+  protected:
+
+    QgsBrowserModel* mModel;
+    QString mFilter; //filter string provided
+    QVector<QRegExp> mREList; //list of filters, separated by "|"
+    QString mPatternSyntax;
+    Qt::CaseSensitivity mCaseSensitivity;
+
+    bool filterAcceptsString( const QString & value ) const;
+
+    // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+
+    // returns true if at least one ancestor is accepted by filter
+    bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
+
+    // returns true if at least one descendant s accepted by filter
+    bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
+
+    // filter accepts item name
+    bool filterAcceptsItem( const QModelIndex &sourceIndex ) const;
+};
+
 
 #endif // QGSBROWSERDOCKWIDGET_H

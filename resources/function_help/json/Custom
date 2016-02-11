@@ -1,0 +1,5 @@
+{
+  "name": "Custom",
+  "type": "group",
+  "description": "This group contains custom user-created Python functions."
+}

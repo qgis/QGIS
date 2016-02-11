@@ -81,7 +81,7 @@ class QgsIdentifyMenu : QMenu
      * @param idResults the list of identify results to choose within
      * @param pos the position where the menu will be executed
      */
-    QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> idResults, QPoint pos );
+    QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult>& idResults, QPoint pos );
 
   protected:
     virtual void closeEvent( QCloseEvent *e );

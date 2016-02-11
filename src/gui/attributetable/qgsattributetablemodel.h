@@ -26,11 +26,13 @@
 
 #include "qgsvectorlayer.h" // QgsAttributeList
 #include "qgsvectorlayercache.h"
+#include "qgsconditionalstyle.h"
 #include "qgsattributeeditorcontext.h"
 
 class QgsMapCanvas;
 class QgsMapLayerAction;
 class QgsEditorWidgetFactory;
+
 
 /**
  * A model backed by a {@link QgsVectorLayerCache} which is able to provide
@@ -60,13 +62,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param layerCache  A layer cache to use as backend
      * @param parent      The parent QObject (owner)
      */
-    QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = 0 );
-
-    /**
-     * Loads the layer into the model
-     * Preferably to be called, before basing any other models on this model
-     */
-    virtual void loadLayer();
+    QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = nullptr );
 
     /**
      * Returns the number of rows
@@ -123,8 +119,10 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     /**
      * Resets the model
+     *
+     * Alias to loadLayer()
      */
-    void resetModel();
+    inline void resetModel() { loadLayer(); }
 
     /**
      * Maps feature id to table row
@@ -162,7 +160,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Returns the layer this model uses as backend. Retrieved from the layer cache.
      */
-    inline QgsVectorLayer* layer() const { return mLayerCache ? mLayerCache->layer() : NULL; }
+    inline QgsVectorLayer* layer() const { return mLayerCache ? mLayerCache->layer() : nullptr; }
 
     /**
      * Returns the layer cache this model uses as backend.
@@ -224,6 +222,19 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     const QgsAttributeEditorContext& editorContext() const { return mEditorContext; }
 
+  public slots:
+    /**
+     * Loads the layer into the model
+     * Preferably to be called, before using this model as source for any other proxy model
+     */
+    virtual void loadLayer();
+
+    /** Handles updating the model when the conditional style for a field changes.
+     * @param fieldName name of field whose conditional style has changed
+     * @note added in QGIS 2.12
+     */
+    void fieldConditionalStyleChanged( const QString& fieldName );
+
   signals:
     /**
      * Model has been changed
@@ -261,10 +272,10 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
     /**
-     * Launched when a feature has been deleted
-     * @param fid feature id
+     * Launched when eatures have been deleted
+     * @param fids feature ids
      */
-    virtual void featureDeleted( QgsFeatureId fid );
+    virtual void featuresDeleted( const QgsFeatureIds& fids );
     /**
      * Launched when a feature has been added
      * @param fid feature id
@@ -289,6 +300,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     QHash<QgsFeatureId, int> mIdRowMap;
     QHash<int, QgsFeatureId> mRowIdMap;
+    mutable QHash<int, QList<QgsConditionalStyle> > mRowStylesMap;
+
+    mutable QgsExpressionContext mExpressionContext;
 
     /**
       * Gets mFieldCount, mAttributes and mValueMaps

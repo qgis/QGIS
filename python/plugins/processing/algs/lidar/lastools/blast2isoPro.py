@@ -29,6 +29,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterNumber
 
+
 class blast2isoPro(LAStoolsAlgorithm):
 
     SMOOTH = "SMOOTH"
@@ -38,23 +39,23 @@ class blast2isoPro(LAStoolsAlgorithm):
     CLEAN = "CLEAN"
 
     def defineCharacteristics(self):
-        self.name = "blast2isoPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('blast2isoPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersPointInputMergedGUI()
         self.addParameter(ParameterNumber(blast2isoPro.SMOOTH,
-            self.tr("smooth underlying TIN"), 0, None, 0))
+                                          self.tr("smooth underlying TIN"), 0, None, 0))
         self.addParameter(ParameterNumber(blast2isoPro.ISO_EVERY,
-            self.tr("extract isoline with a spacing of"), 0, None, 10.0))
+                                          self.tr("extract isoline with a spacing of"), 0, None, 10.0))
         self.addParameter(ParameterNumber(blast2isoPro.CLEAN,
-            self.tr("clean isolines shorter than (0 = do not clean)"),
-            None, None, 0.0))
+                                          self.tr("clean isolines shorter than (0 = do not clean)"),
+                                          None, None, 0.0))
         self.addParameter(ParameterNumber(blast2isoPro.SIMPLIFY_LENGTH,
-            self.tr("simplify segments shorter than (0 = do not simplify)"),
-            None, None, 0.0))
+                                          self.tr("simplify segments shorter than (0 = do not simplify)"),
+                                          None, None, 0.0))
         self.addParameter(ParameterNumber(blast2isoPro.SIMPLIFY_AREA,
-            self.tr("simplify segments pairs with area less than (0 = do not simplify)"),
-            None, None, 0.0))
+                                          self.tr("simplify segments pairs with area less than (0 = do not simplify)"),
+                                          None, None, 0.0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersVectorOutputFormatGUI()
@@ -71,21 +72,21 @@ class blast2isoPro(LAStoolsAlgorithm):
         smooth = self.getParameterValue(blast2isoPro.SMOOTH)
         if smooth != 0:
             commands.append("-smooth")
-            commands.append(str(smooth))
+            commands.append(unicode(smooth))
         commands.append("-iso_every")
-        commands.append(str(self.getParameterValue(blast2isoPro.ISO_EVERY)))
+        commands.append(unicode(self.getParameterValue(blast2isoPro.ISO_EVERY)))
         simplify_length = self.getParameterValue(blast2isoPro.SIMPLIFY_LENGTH)
         if simplify_length != 0:
             commands.append("-simplify_length")
-            commands.append(str(simplify_length))
+            commands.append(unicode(simplify_length))
         simplify_area = self.getParameterValue(blast2isoPro.SIMPLIFY_AREA)
         if simplify_area != 0:
             commands.append("-simplify_area")
-            commands.append(str(simplify_area))
+            commands.append(unicode(simplify_area))
         clean = self.getParameterValue(blast2isoPro.CLEAN)
         if clean != 0:
             commands.append("-clean")
-            commands.append(str(clean))
+            commands.append(unicode(clean))
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)
         self.addParametersVectorOutputFormatCommands(commands)

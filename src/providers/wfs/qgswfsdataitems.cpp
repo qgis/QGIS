@@ -25,7 +25,7 @@
 
 
 QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSourceURI uri, QString featureType, QString title, QString crsString )
-    : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Vector, "WFS" )
+    : QgsLayerItem( parent, title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, "WFS" )
 {
   mUri = QgsWFSCapabilities( uri.encodedUri() ).uriGetFeature( featureType, crsString );
   setState( Populated );
@@ -41,7 +41,7 @@ QgsWFSLayerItem::~QgsWFSLayerItem()
 QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
     : QgsDataCollectionItem( parent, name, path )
     , mUri( uri )
-    , mCapabilities( NULL )
+    , mCapabilities( nullptr )
     , mGotCapabilities( false )
 {
   mIconName = "mIconWfs.svg";
@@ -73,7 +73,7 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
   if ( mCapabilities->errorCode() == QgsWFSCapabilities::NoError )
   {
     QgsWFSCapabilities::GetCapabilities caps = mCapabilities->capabilities();
-    foreach ( const QgsWFSCapabilities::FeatureType& featureType, caps.featureTypes )
+    Q_FOREACH ( const QgsWFSCapabilities::FeatureType& featureType, caps.featureTypes )
     {
       //QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, featureType.name, featureType.title );
       QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, uri, featureType.name, featureType.title, featureType.crslist.first() );
@@ -87,7 +87,7 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
   }
 
   mCapabilities->deleteLater();
-  mCapabilities = NULL;
+  mCapabilities = nullptr;
 
   return layers;
 }
@@ -114,7 +114,7 @@ QList<QAction*> QgsWFSConnectionItem::actions()
 
 void QgsWFSConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-wfs/", mName );
+  QgsNewHttpConnection nc( nullptr, "/Qgis/connections-wfs/", mName );
   nc.setWindowTitle( tr( "Modify WFS connection" ) );
 
   if ( nc.exec() )
@@ -152,7 +152,7 @@ QVector<QgsDataItem*> QgsWFSRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 
-  foreach ( QString connName, QgsOWSConnection::connectionList( "WFS" ) )
+  Q_FOREACH ( const QString& connName, QgsOWSConnection::connectionList( "WFS" ) )
   {
     QgsOWSConnection connection( "WFS", connName );
     QString path = "wfs:/" + connName;
@@ -175,7 +175,7 @@ QList<QAction*> QgsWFSRootItem::actions()
 
 QWidget * QgsWFSRootItem::paramWidget()
 {
-  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( 0, 0, true );
+  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, nullptr, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }
@@ -187,7 +187,7 @@ void QgsWFSRootItem::connectionsChanged()
 
 void QgsWFSRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-wfs/" );
+  QgsNewHttpConnection nc( nullptr, "/Qgis/connections-wfs/" );
   nc.setWindowTitle( tr( "Create a new WFS connection" ) );
 
   if ( nc.exec() )
@@ -227,5 +227,5 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     }
   }
 
-  return 0;
+  return nullptr;
 }

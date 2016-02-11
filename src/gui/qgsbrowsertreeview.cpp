@@ -79,7 +79,7 @@ void QgsBrowserTreeView::restoreState()
   if ( !mExpandPaths.isEmpty() )
   {
     QSet<QModelIndex> expandIndexSet;
-    foreach ( QString path, mExpandPaths )
+    Q_FOREACH ( const QString& path, mExpandPaths )
     {
       QModelIndex expandIndex = QgsBrowserModel::findPath( model(), path, Qt::MatchStartsWith );
       if ( expandIndex.isValid() )
@@ -89,7 +89,7 @@ void QgsBrowserTreeView::restoreState()
         QgsDebugMsg( "index for path " + path + " not found" );
       }
     }
-    foreach ( QModelIndex expandIndex, expandIndexSet )
+    Q_FOREACH ( const QModelIndex& expandIndex, expandIndexSet )
     {
       expandTree( expandIndex );
     }
@@ -168,9 +168,9 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex & parentIndex, int star
   // Remove the subtree from mExpandPaths if user collapsed the item in the meantime
   if ( !treeExpanded( parentIndex ) )
   {
-    foreach ( QString path, mExpandPaths )
+    Q_FOREACH ( const QString& path, mExpandPaths )
     {
-      if ( path.startsWith( parentPath + "/" ) )
+      if ( path.startsWith( parentPath + '/' ) )
         mExpandPaths.removeOne( path );
     }
     return;
@@ -181,7 +181,7 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex & parentIndex, int star
     QModelIndex childIndex = model()->index( i, 0, parentIndex );
     QString childPath = model()->data( childIndex, QgsBrowserModel::PathRole ).toString();
     QString escapedChildPath = childPath;
-    escapedChildPath.replace( "|", "\\|" );
+    escapedChildPath.replace( '|', "\\|" );
 
     QgsDebugMsgLevel( "childPath = " + childPath + " escapedChildPath = " + escapedChildPath, 2 );
     if ( mExpandPaths.contains( childPath ) || mExpandPaths.indexOf( QRegExp( "^" + escapedChildPath + "/.*" ) ) != -1 )
@@ -194,7 +194,7 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex & parentIndex, int star
 
 QString QgsBrowserTreeView::expandedPathsKey() const
 {
-  return "/" + mSettingsSection + "/expandedPaths";
+  return '/' + mSettingsSection + "/expandedPaths";
 }
 
 QStringList QgsBrowserTreeView::expandedPathsList( const QModelIndex & index )

@@ -41,25 +41,27 @@ class nearblack(GdalAlgorithm):
     WHITE = 'WHITE'
 
     def defineCharacteristics(self):
-        self.name = 'Near black'
-        self.group = '[GDAL] Analysis'
-        self.addParameter(ParameterRaster(nearblack.INPUT,
-           self.tr('Input layer'), False))
-        self.addParameter(ParameterNumber(nearblack.NEAR,
-            self.tr('How far from black (white)'), 0, None, 15))
-        self.addParameter(ParameterBoolean(nearblack.WHITE,
-            self.tr('Search for nearly white pixels instead of nearly black'),
-            False))
-        self.addOutput(OutputRaster(nearblack.OUTPUT, self.tr('Nearblack')))
+        self.name, self.i18n_name = self.trAlgorithm('Near black')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
+        self.addParameter(ParameterRaster(self.INPUT,
+                                          self.tr('Input layer'), False))
+        self.addParameter(ParameterNumber(self.NEAR,
+                                          self.tr('How far from black (white)'), 0, None, 15))
+        self.addParameter(ParameterBoolean(self.WHITE,
+                                           self.tr('Search for nearly white pixels instead of nearly black'),
+                                           False))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Nearblack')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = []
         arguments.append('-o')
-        arguments.append(self.getOutputValue(nearblack.OUTPUT))
+        output = unicode(self.getOutputValue(self.OUTPUT))
+        arguments.append(output)
+        arguments.append('-of')
+        arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
         arguments.append('-near')
-        arguments.append(str(self.getParameterValue(nearblack.NEAR)))
-        if self.getParameterValue(nearblack.WHITE):
+        arguments.append(unicode(self.getParameterValue(self.NEAR)))
+        if self.getParameterValue(self.WHITE):
             arguments.append('-white')
-        arguments.append(self.getParameterValue(nearblack.INPUT))
-        GdalUtils.runGdal(['nearblack', GdalUtils.escapeAndJoin(arguments)],
-                          progress)
+        arguments.append(self.getParameterValue(self.INPUT))
+        return ['nearblack', GdalUtils.escapeAndJoin(arguments)]

@@ -10,7 +10,7 @@ class QgsExpressionSelectionDialog : QDialog
      * @param startText A default expression text to be applied (Defaults to empty)
      * @param parent parent object (owner)
      */
-    QgsExpressionSelectionDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent /TransferThis/ = 0 );
+    QgsExpressionSelectionDialog( QgsVectorLayer* layer, const QString& startText = QString(), QWidget* parent /TransferThis/ = 0 );
 
     /**
      * The builder widget that is used by the dialog
@@ -39,7 +39,7 @@ class QgsExpressionSelectionDialog : QDialog
     void on_mActionSelect_triggered();
     void on_mActionAddToSelection_triggered();
     void on_mActionRemoveFromSelection_triggered();
-    void on_mActionSelectInstersect_triggered();
+    void on_mActionSelectIntersect_triggered();
     void on_mPbnClose_clicked();
 
   protected:

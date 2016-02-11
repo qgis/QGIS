@@ -1,0 +1,7 @@
+{
+  "name": "$perimeter",
+  "type": "function",
+  "description": "Returns the perimeter length of the current feature.",
+  "examples": [ { "expression":"$perimeter", "returns":"42"}
+  ]
+}

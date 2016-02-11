@@ -50,31 +50,31 @@ from qgis.core import (QgsCentroidFillSymbolLayerV2,
                        QgsVectorFieldSymbolLayer,
                        QgsSymbolV2,
                        )
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest,
-                       expectedFailure
-                       )
+from qgis.testing import (start_app,
+                          unittest
+                          )
+from utilities import unitTestDataPath
 # Convenience instances in case you may need them
 # not used in this test
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
-class TestQgsSymbolLayerV2(TestCase):
-    '''
-    This class test the sip binding for QgsSymbolLayerV2 descendants
-    Every class is tested using the createFromSld implementation
-    An exception is done for:
-    - QgsLinePatternFillSymbolLayer where createFromSld implementation
-        returns NULL
-    - QgsPointPatternFillSymbolLayer where createFromSld implementation
-        returns NULL
-    - QgsVectorFieldSymbolLayer where createFromSld implementation
-        returns NULL
-    '''
+
+class TestQgsSymbolLayerV2(unittest.TestCase):
+
+    """
+     This class test the sip binding for QgsSymbolLayerV2 descendants
+     Every class is tested using the createFromSld implementation
+     An exception is done for:
+     - QgsLinePatternFillSymbolLayer where createFromSld implementation
+         returns NULL
+     - QgsPointPatternFillSymbolLayer where createFromSld implementation
+         returns NULL
+     - QgsVectorFieldSymbolLayer where createFromSld implementation
+         returns NULL
+     """
 
     def testBinding(self):
-        '''Test python bindings existance.'''
+        """Test python bindings existance."""
         mType = type(QgsSymbolLayerV2)
         mExpectedType = pyqtWrapperType
         mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
@@ -209,206 +209,206 @@ class TestQgsSymbolLayerV2(TestCase):
         assert mExpectedType == mType, mMessage
 
     def testQgsSimpleFillSymbolLayerV2(self):
-        '''Create a new style from a .sld file and match test.
-        '''
+        """Create a new style from a .sld file and match test.
+        """
         mTestName = 'QgsSimpleFillSymbolLayerV2'
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.sld' % (unitTestDataPath(), mTestName))
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
         mFile.open(QIODevice.ReadOnly)
-        mDoc.setContent(mFile,True)
+        mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsSimpleFillSymbolLayerV2.createFromSld(
             mDoc.elementsByTagName('PolygonSymbolizer').item(0).toElement())
 
         mExpectedValue = type(QgsSimpleFillSymbolLayerV2())
         mValue = type(mSymbolLayer)
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = Qt.SolidPattern
         mValue = mSymbolLayer.brushStyle()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'#ffaa7f'
         mValue = mSymbolLayer.borderColor().name()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = Qt.DotLine
         mValue = mSymbolLayer.borderStyle()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 0.26
         mValue = mSymbolLayer.borderWidth()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
     def testQgsGradientFillSymbolLayerV2(self):
-        '''Test setting and getting QgsGradientFillSymbolLayerV2 properties.
-        '''
+        """Test setting and getting QgsGradientFillSymbolLayerV2 properties.
+        """
         mGradientLayer = QgsGradientFillSymbolLayerV2()
 
         mExpectedValue = type(QgsGradientFillSymbolLayerV2())
         mValue = type(mGradientLayer)
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = QgsGradientFillSymbolLayerV2.Radial
-        mGradientLayer.setGradientType( mExpectedValue )
+        mGradientLayer.setGradientType(mExpectedValue)
         mValue = mGradientLayer.gradientType()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = QgsGradientFillSymbolLayerV2.ColorRamp
-        mGradientLayer.setGradientColorType( mExpectedValue )
+        mGradientLayer.setGradientColorType(mExpectedValue)
         mValue = mGradientLayer.gradientColorType()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = QColor('#55aaff')
-        mGradientLayer.setColor2( mExpectedValue )
+        mGradientLayer.setColor2(mExpectedValue)
         mValue = mGradientLayer.color2()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = QgsGradientFillSymbolLayerV2.Viewport
-        mGradientLayer.setCoordinateMode( mExpectedValue )
+        mGradientLayer.setCoordinateMode(mExpectedValue)
         mValue = mGradientLayer.coordinateMode()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = QgsGradientFillSymbolLayerV2.Reflect
-        mGradientLayer.setGradientSpread( mExpectedValue )
+        mGradientLayer.setGradientSpread(mExpectedValue)
         mValue = mGradientLayer.gradientSpread()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = QPointF(0.5, 0.8)
-        mGradientLayer.setReferencePoint1( mExpectedValue )
+        mGradientLayer.setReferencePoint1(mExpectedValue)
         mValue = mGradientLayer.referencePoint1()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = True
-        mGradientLayer.setReferencePoint1IsCentroid( mExpectedValue )
+        mGradientLayer.setReferencePoint1IsCentroid(mExpectedValue)
         mValue = mGradientLayer.referencePoint1IsCentroid()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = QPointF(0.2, 0.4)
-        mGradientLayer.setReferencePoint2( mExpectedValue )
+        mGradientLayer.setReferencePoint2(mExpectedValue)
         mValue = mGradientLayer.referencePoint2()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = True
-        mGradientLayer.setReferencePoint2IsCentroid( mExpectedValue )
+        mGradientLayer.setReferencePoint2IsCentroid(mExpectedValue)
         mValue = mGradientLayer.referencePoint2IsCentroid()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 90
-        mGradientLayer.setAngle( mExpectedValue )
+        mGradientLayer.setAngle(mExpectedValue)
         mValue = mGradientLayer.angle()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = QPointF(10, 20)
-        mGradientLayer.setOffset( mExpectedValue )
+        mGradientLayer.setOffset(mExpectedValue)
         mValue = mGradientLayer.offset()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = QgsSymbolV2.MapUnit
-        mGradientLayer.setOffsetUnit( mExpectedValue )
+        mGradientLayer.setOffsetUnit(mExpectedValue)
         mValue = mGradientLayer.offsetUnit()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
     def testQgsCentroidFillSymbolLayerV2(self):
-        '''
+        """
         Create a new style from a .sld file and match test
-        '''
+        """
         mTestName = 'QgsCentroidFillSymbolLayerV2'
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.sld' % (unitTestDataPath(), mTestName))
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
         mFile.open(QIODevice.ReadOnly)
-        mDoc.setContent(mFile,True)
+        mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsCentroidFillSymbolLayerV2.createFromSld(
             mDoc.elementsByTagName('PointSymbolizer').item(0).toElement())
 
         mExpectedValue = type(QgsCentroidFillSymbolLayerV2())
         mValue = type(mSymbolLayer)
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'regular_star'
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).name()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'#55aaff'
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).color().name()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'#00ff00'
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).borderColor().name()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
     def testQgsLinePatternFillSymbolLayer(self):
-        '''
+        """
         Create a new style from a .sld file and match test
-        '''
+        """
         mTestName = 'QgsLinePatternFillSymbolLayer'
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.sld' % (unitTestDataPath(), mTestName))
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
         mFile.open(QIODevice.ReadOnly)
-        mDoc.setContent(mFile,True)
+        mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsLinePatternFillSymbolLayer.createFromSld(
             mDoc.elementsByTagName('PolygonSymbolizer').item(0).toElement())
 
         mExpectedValue = type(QgsLinePatternFillSymbolLayer())
         mValue = type(mSymbolLayer)
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'#ff55ff'
         mValue = mSymbolLayer.color().name()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 1.5
         mValue = mSymbolLayer.lineWidth()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 4
         mValue = mSymbolLayer.distance()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 57
         mValue = mSymbolLayer.lineAngle()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-    @expectedFailure
+    @unittest.expectedFailure
     def testQgsPointPatternFillSymbolLayer(self):
-        '''
+        """
         Create a new style from a .sld file and match test
-        '''
+        """
         # at the moment there is an empty createFromSld implementation
         # that return nulls
         mTestName = 'QgsPointPatternFillSymbolLayer'
@@ -417,279 +417,279 @@ class TestQgsSymbolLayerV2(TestCase):
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
         mFile.open(QIODevice.ReadOnly)
-        mDoc.setContent(mFile,True)
+        mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsPointPatternFillSymbolLayer.createFromSld(
             mDoc.elementsByTagName('PolygonSymbolizer').item(0).toElement())
 
         mExpectedValue = type(QgsPointPatternFillSymbolLayer())
         mValue = type(mSymbolLayer)
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'triangle'
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).name()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'#ffaa00'
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).color().name()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'#ff007f'
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).borderColor().name()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 5
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).angle()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 3
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).size()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
     def testQgsSVGFillSymbolLayer(self):
-        '''
+        """
         Create a new style from a .sld file and match test
-        '''
+        """
         mTestName = 'QgsSVGFillSymbolLayer'
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.sld' % (unitTestDataPath(), mTestName))
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
         mFile.open(QIODevice.ReadOnly)
-        mDoc.setContent(mFile,True)
+        mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsSVGFillSymbolLayer.createFromSld(
             mDoc.elementsByTagName('PolygonSymbolizer').item(0).toElement())
 
         mExpectedValue = type(QgsSVGFillSymbolLayer())
         mValue = type(mSymbolLayer)
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 'accommodation_camping.svg'
         mValue = os.path.basename(mSymbolLayer.svgFilePath())
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 6
         mValue = mSymbolLayer.patternWidth()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
     def testQgsMarkerLineSymbolLayerV2(self):
-        '''
+        """
         Create a new style from a .sld file and match test
-        '''
+        """
         mTestName = 'QgsMarkerLineSymbolLayerV2'
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.sld' % (unitTestDataPath(), mTestName))
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
         mFile.open(QIODevice.ReadOnly)
-        mDoc.setContent(mFile,True)
+        mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsMarkerLineSymbolLayerV2.createFromSld(
             mDoc.elementsByTagName('LineSymbolizer').item(0).toElement())
 
         mExpectedValue = type(QgsMarkerLineSymbolLayerV2())
         mValue = type(mSymbolLayer)
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = QgsMarkerLineSymbolLayerV2.CentralPoint
         mValue = mSymbolLayer.placement()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'circle'
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).name()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'#000000'
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).borderColor().name()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'#ff0000'
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).color().name()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
     def testQgsSimpleLineSymbolLayerV2(self):
-        '''
+        """
         Create a new style from a .sld file and match test
-        '''
+        """
         mTestName = 'QgsSimpleLineSymbolLayerV2'
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.sld' % (unitTestDataPath(), mTestName))
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
         mFile.open(QIODevice.ReadOnly)
-        mDoc.setContent(mFile,True)
+        mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsSimpleLineSymbolLayerV2.createFromSld(
             mDoc.elementsByTagName('LineSymbolizer').item(0).toElement())
 
         mExpectedValue = type(QgsSimpleLineSymbolLayerV2())
         mValue = type(mSymbolLayer)
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'#aa007f'
         mValue = mSymbolLayer.color().name()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 1.26
         mValue = mSymbolLayer.width()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = Qt.RoundCap
         mValue = mSymbolLayer.penCapStyle()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = Qt.MiterJoin
         mValue = mSymbolLayer.penJoinStyle()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = True
         mValue = mSymbolLayer.useCustomDashPattern()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = [5.0, 2.0]
         mValue = mSymbolLayer.customDashVector()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
     def testQgsEllipseSymbolLayerV2(self):
-        '''
+        """
         Create a new style from a .sld file and match test
-        '''
+        """
         mTestName = 'QgsEllipseSymbolLayerV2'
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.sld' % (unitTestDataPath(), mTestName))
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
         mFile.open(QIODevice.ReadOnly)
-        mDoc.setContent(mFile,True)
+        mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsEllipseSymbolLayerV2.createFromSld(
             mDoc.elementsByTagName('PointSymbolizer').item(0).toElement())
 
         mExpectedValue = type(QgsEllipseSymbolLayerV2())
         mValue = type(mSymbolLayer)
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'circle'
         mValue = mSymbolLayer.symbolName()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'#ffff7f'
         mValue = mSymbolLayer.fillColor().name()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'#aaaaff'
         mValue = mSymbolLayer.outlineColor().name()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 7
         mValue = mSymbolLayer.symbolWidth()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 5
         mValue = mSymbolLayer.symbolHeight()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
     def testQgsFontMarkerSymbolLayerV2(self):
-        '''
+        """
         Create a new style from a .sld file and match test
-        '''
+        """
         mTestName = 'QgsFontMarkerSymbolLayerV2'
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.sld' % (unitTestDataPath(), mTestName))
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
         mFile.open(QIODevice.ReadOnly)
-        mDoc.setContent(mFile,True)
+        mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsFontMarkerSymbolLayerV2.createFromSld(
             mDoc.elementsByTagName('PointSymbolizer').item(0).toElement())
 
         mExpectedValue = type(QgsFontMarkerSymbolLayerV2())
         mValue = type(mSymbolLayer)
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'Arial'
         mValue = mSymbolLayer.fontFamily()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u"M"
         mValue = mSymbolLayer.character()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 6.23
         mValue = mSymbolLayer.size()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 3
         mValue = mSymbolLayer.angle()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
     def testQgsSvgMarkerSymbolLayerV2(self):
-        '''
+        """
         Create a new style from a .sld file and match test
-        '''
+        """
         mTestName = 'QgsSvgMarkerSymbolLayerV2'
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.sld' % (unitTestDataPath(), mTestName))
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
         mFile.open(QIODevice.ReadOnly)
-        mDoc.setContent(mFile,True)
+        mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsSvgMarkerSymbolLayerV2.createFromSld(mDoc.elementsByTagName('PointSymbolizer').item(0).toElement())
 
         mExpectedValue = type(QgsSvgMarkerSymbolLayerV2())
         mValue = type(mSymbolLayer)
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = u'skull.svg'
         mValue = os.path.basename(mSymbolLayer.path())
         print "VALUE", mSymbolLayer.path()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 12
         mValue = mSymbolLayer.size()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 45
         mValue = mSymbolLayer.angle()
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
+        mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
 

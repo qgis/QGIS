@@ -12,13 +12,13 @@ class QgsFieldExpressionWidget : QWidget
     explicit QgsFieldExpressionWidget( QWidget *parent /TransferThis/ = 0 );
 
     //! define the title used in the expression dialog
-    void setExpressionDialogTitle( QString title );
+    void setExpressionDialogTitle( const QString& title );
 
     //! return the title used for the expression dialog
     const QString expressionDialogTitle();
 
     //! setFilters allows fitering according to the type of field
-    void setFilters( QgsFieldProxyModel::Filters filters );
+    void setFilters( const QgsFieldProxyModel::Filters& filters );
 
     void setLeftHandButtonStyle( bool isLeft );
 
@@ -49,12 +49,24 @@ class QgsFieldExpressionWidget : QWidget
     //! Returns the currently used layer
     QgsVectorLayer* layer() const;
 
+    //! Callback function for retrieving the expression context for the expression
+    //typedef QgsExpressionContext( *ExpressionContextCallback )( const void* context );
+
+    /** Register callback function for retrieving the expression context for the expression
+     * @param fnGetExpressionContext call back function, will be called when the widget requires
+     * the current expression context
+     * @param context context for callback function
+     * @note added in QGIS 2.12
+     * @note not available in Python bindings
+     */
+    //void registerGetExpressionContextCallback( ExpressionContextCallback fnGetExpressionContext, const void* context );
+
   signals:
     //! the signal is emitted when the currently selected field changes
-    void fieldChanged( QString fieldName );
+    void fieldChanged( const QString& fieldName );
 
     //! fieldChanged signal with indication of the validity of the expression
-    void fieldChanged( QString fieldName, bool isValid );
+    void fieldChanged( const QString& fieldName, bool isValid );
 
 //    void returnPressed();
 
@@ -73,7 +85,7 @@ class QgsFieldExpressionWidget : QWidget
     void editExpression();
 
     //! when expression is edited by the user in the line edit, it will be checked for validity
-    void expressionEdited( const QString expression );
+    void expressionEdited( const QString& expression );
 
     //! when expression has been edited (finished) it will be added to the model
     void expressionEditingFinished();
@@ -85,9 +97,9 @@ class QgsFieldExpressionWidget : QWidget
      * @param expression if expression is given it will be evaluated for the given string, otherwise it takes
      * current expression from the model
      */
-    void updateLineEditStyle( const QString expression = QString() );
+    void updateLineEditStyle( const QString& expression = QString() );
 
-    bool isExpressionValid( const QString expressionStr );
+    bool isExpressionValid( const QString& expressionStr );
 
   protected:
     void changeEvent( QEvent* event );

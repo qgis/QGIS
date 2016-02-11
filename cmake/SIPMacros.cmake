@@ -101,11 +101,14 @@ MACRO(ADD_SIP_PYTHON_MODULE MODULE_NAME MODULE_SIP)
       ENDIF(MSVC)
     ENDIF(PEDANTIC)
 
+
+    SET(SIPCMD ${SIP_BINARY_PATH} ${_sip_tags} -w -e ${_sip_x} ${SIP_EXTRA_OPTIONS} -j ${SIP_CONCAT_PARTS} -c ${CMAKE_CURRENT_BINARY_DIR}/${_module_path} ${_sip_includes} ${_abs_module_sip})
+
     ADD_CUSTOM_COMMAND(
-        OUTPUT ${_sip_output_files} 
+        OUTPUT ${_sip_output_files}
         COMMAND ${CMAKE_COMMAND} -E echo ${message}
-        COMMAND ${CMAKE_COMMAND} -E touch ${_sip_output_files} 
-        COMMAND ${SIP_BINARY_PATH} ${_sip_tags} -w -e ${_sip_x} ${SIP_EXTRA_OPTIONS} -j ${SIP_CONCAT_PARTS} -c ${CMAKE_CURRENT_BINARY_DIR}/${_module_path} ${_sip_includes} ${_abs_module_sip}
+        COMMAND ${CMAKE_COMMAND} -E touch ${_sip_output_files}
+        COMMAND ${SIPCMD}
         DEPENDS ${_abs_module_sip} ${SIP_EXTRA_FILES_DEPEND}
     )
     # not sure if type MODULE could be uses anywhere, limit to cygwin for now
@@ -122,17 +125,16 @@ MACRO(ADD_SIP_PYTHON_MODULE MODULE_NAME MODULE_SIP)
         SET_TARGET_PROPERTIES(${_logical_name} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     ENDIF (APPLE)
     SET_TARGET_PROPERTIES(${_logical_name} PROPERTIES PREFIX "" OUTPUT_NAME ${_child_module_name})
-    
+
     IF (WIN32)
       SET_TARGET_PROPERTIES(${_logical_name} PROPERTIES SUFFIX ".pyd")
     ENDIF (WIN32)
 
     IF(WIN32)
-      GET_TARGET_PROPERTY(_target_location ${_logical_name} LOCATION)
       GET_TARGET_PROPERTY(_runtime_output ${_logical_name} RUNTIME_OUTPUT_DIRECTORY)
       ADD_CUSTOM_COMMAND(TARGET ${_logical_name} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E echo "Copying extension ${_child_module_name}"
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_target_location}" "${_runtime_output}/${_child_module_name}.pyd"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:${_logical_name}>" "${_runtime_output}/${_child_module_name}.pyd"
         DEPENDS ${_logical_name}
       )
     ENDIF(WIN32)

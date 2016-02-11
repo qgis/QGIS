@@ -37,6 +37,7 @@ import ftools_utils
 
 from ui_frmSubsetSelect import Ui_Dialog
 
+
 class Dialog(QDialog, Ui_Dialog):
 
     def __init__(self, iface):
@@ -46,7 +47,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.setupUi(self)
         QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
         self.setWindowTitle(self.tr("Random selection within subsets"))
-        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
+        self.buttonOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
         # populate layer list
         self.progressBar.setValue(0)
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
@@ -59,10 +60,10 @@ class Dialog(QDialog, Ui_Dialog):
         for f in changedField:
             self.inField.addItem(unicode(f.name()))
         maxFeatures = changedLayer.dataProvider().featureCount()
-        self.spnNumber.setMaximum( maxFeatures )
+        self.spnNumber.setMaximum(maxFeatures)
 
     def accept(self):
-        self.buttonOk.setEnabled( False )
+        self.buttonOk.setEnabled(False)
         if self.inShape.currentText() == "":
             QMessageBox.information(self, self.tr("Random selection within subsets"), self.tr("Please specify input vector layer"))
         elif self.inField.currentText() == "":
@@ -79,7 +80,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.compute(inVect, uidField, value, perc, self.progressBar)
             self.progressBar.setValue(100)
         self.progressBar.setValue(0)
-        self.buttonOk.setEnabled( True )
+        self.buttonOk.setEnabled(True)
 
     def compute(self, inVect, inField, value, perc, progressBar):
         mlayer = ftools_utils.getMapLayerByName(inVect)
@@ -97,7 +98,7 @@ class Dialog(QDialog, Ui_Dialog):
         if not len(unique) == mlayer.featureCount():
             for i in unique:
                 fit = vprovider.getFeatures()
-                FIDs= []
+                FIDs = []
                 while fit.nextFeature(inFeat):
                     atMap = inFeat.attributes()
                     if atMap[index] == i:
@@ -105,10 +106,14 @@ class Dialog(QDialog, Ui_Dialog):
                         FIDs.append(FID)
                     nElement += 1
                     self.progressBar.setValue(nElement)
-                if perc: selVal = int(round((value / 100.0000) * len(FIDs), 0))
-                else: selVal = value
-                if selVal >= len(FIDs): selFeat = FIDs
-                else: selFeat = random.sample(FIDs, selVal)
+                if perc:
+                    selVal = int(round((value / 100.0000) * len(FIDs), 0))
+                else:
+                    selVal = value
+                if selVal >= len(FIDs):
+                    selFeat = FIDs
+                else:
+                    selFeat = random.sample(FIDs, selVal)
                 selran.extend(selFeat)
             mlayer.setSelectedFeatures(selran)
         else:

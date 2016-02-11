@@ -106,6 +106,7 @@ void QgsDateTimeEdit::setDateTime( const QDateTime& dateTime )
   else
   {
     QDateTimeEdit::setDateTime( dateTime );
+    mIsNull = false;
   }
 }
 
@@ -135,7 +136,3 @@ void QgsDateTimeEdit::resizeEvent( QResizeEvent * event )
   mNullLabel->setMinimumSize( rect().adjusted( 0, 0, -spinButtonWidth(), 0 ).size() );
   mNullLabel->setMaximumSize( rect().adjusted( 0, 0, -spinButtonWidth(), 0 ).size() );
 }
-
-
-
-

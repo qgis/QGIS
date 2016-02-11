@@ -15,7 +15,13 @@
 #ifndef COSTCALCULATOR_H
 #define COSTCALCULATOR_H
 
+#include <QList>
 #include "rtree.hpp"
+
+/**
+ * \class pal::CostCalculator
+ * \note not available in Python bindings
+ */
 
 namespace pal
 {
@@ -24,40 +30,53 @@ namespace pal
   class CostCalculator
   {
     public:
-      /** increase candidate's cost according to its collision with passed feature */
-      static void addObstacleCostPenalty( LabelPosition* lp, PointSet* feat );
+      /** Increase candidate's cost according to its collision with passed feature */
+      static void addObstacleCostPenalty( LabelPosition* lp, pal::FeaturePart *obstacle );
 
-      static void setPolygonCandidatesCost( int nblp, LabelPosition **lPos, int max_p, RTree<PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      static void setPolygonCandidatesCost( int nblp, QList< LabelPosition* >& lPos, RTree<pal::FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
       /** Set cost to the smallest distance between lPos's centroid and a polygon stored in geoetry field */
-      static void setCandidateCostFromPolygon( LabelPosition* lp, RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      static void setCandidateCostFromPolygon( LabelPosition* lp, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
-      /** sort candidates by costs, skip the worse ones, evaluate polygon candidates */
-      static int finalizeCandidatesCosts( Feats* feat, int max_p, RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      /** Sort candidates by costs, skip the worse ones, evaluate polygon candidates */
+      static int finalizeCandidatesCosts( Feats* feat, int max_p, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+
+      /** Sorts label candidates in ascending order of cost
+       */
+      static bool candidateSortGrow( const LabelPosition *c1, const LabelPosition *c2 );
+
+      /** Sorts label candidates in descending order of cost
+       */
+      static bool candidateSortShrink( const LabelPosition *c1, const LabelPosition *c2 );
   };
 
   /**
    * \brief Data structure to compute polygon's candidates costs
    *
-   *  eight segment from center of candidat to (rpx,rpy) points (0°, 45°, 90°, ..., 315°)
+   *  Eight segments from center of candidate to (rpx,rpy) points (0°, 45°, 90°, ..., 315°)
    *  dist store the shortest square distance from the center to an object
    *  ok[i] is the to true whether the corresponding dist[i] is set
+   *
+   * \note not available in Python bindings
    */
   class PolygonCostCalculator
   {
-      LabelPosition *lp;
-      double px, py;
-      double dist;
-      bool ok;
 
     public:
-      PolygonCostCalculator( LabelPosition *lp );
+      explicit PolygonCostCalculator( LabelPosition *lp );
 
-      void update( PointSet *pset );
+      void update( pal::PointSet *pset );
 
       double getCost();
 
       LabelPosition *getLabel();
+
+    private:
+
+      LabelPosition *lp;
+      double px, py;
+      double dist;
+      bool ok;
   };
 }
 

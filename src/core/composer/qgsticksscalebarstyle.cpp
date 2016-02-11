@@ -24,7 +24,7 @@ QgsTicksScaleBarStyle::QgsTicksScaleBarStyle( const QgsComposerScaleBar* bar ): 
   mTickPosition = TicksMiddle;
 }
 
-QgsTicksScaleBarStyle::QgsTicksScaleBarStyle(): QgsScaleBarStyle( 0 )
+QgsTicksScaleBarStyle::QgsTicksScaleBarStyle(): QgsScaleBarStyle( nullptr )
 {
   mTickPosition = TicksMiddle;
 }
@@ -76,7 +76,7 @@ void QgsTicksScaleBarStyle::draw( QPainter* p, double xOffset ) const
   if ( !segmentInfo.isEmpty() )
   {
     double lastTickPositionX = segmentInfo.last().first + mScaleBar->segmentMillimeters() + xOffset;
-    double verticalPos;
+    double verticalPos = 0.0;
     switch ( mTickPosition )
     {
       case TicksDown:

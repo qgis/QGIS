@@ -30,7 +30,7 @@ QgsPieDiagram::~QgsPieDiagram()
 {
 }
 
-QgsDiagram* QgsPieDiagram::clone() const
+QgsPieDiagram* QgsPieDiagram::clone() const
 {
   return new QgsPieDiagram( *this );
 }
@@ -42,12 +42,17 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCon
   QVariant attrVal;
   if ( is.classificationAttributeIsExpression )
   {
-    QgsExpression* expression = getExpression( is.classificationAttributeExpression, feature.fields() );
-    attrVal = expression->evaluate( feature );
+    QgsExpressionContext expressionContext = c.expressionContext();
+    if ( feature.fields() )
+      expressionContext.setFields( *feature.fields() );
+    expressionContext.setFeature( feature );
+
+    QgsExpression* expression = getExpression( is.classificationAttributeExpression, expressionContext );
+    attrVal = expression->evaluate( &expressionContext );
   }
   else
   {
-    attrVal = feature.attributes()[is.classificationAttribute];
+    attrVal = feature.attributes().at( is.classificationAttribute );
   }
 
   if ( !attrVal.isValid() )
@@ -85,7 +90,7 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCon
   if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
   {
     bool p = false; // preserve height == width
-    if ( size.width() == size.height() )
+    if ( qgsDoubleNear( size.width(), size.height() ) )
       p = true;
 
     size.scale( s.minimumSize, s.minimumSize, Qt::KeepAspectRatio );
@@ -107,7 +112,7 @@ QSizeF QgsPieDiagram::diagramSize( const QgsAttributes& attributes, const QgsRen
 
 int  QgsPieDiagram::sCount = 0;
 
-void QgsPieDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+void QgsPieDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position )
 {
   QPainter* p = c.painter();
   if ( !p )
@@ -121,11 +126,16 @@ void QgsPieDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& 
   double valSum = 0;
   int valCount = 0;
 
+  QgsExpressionContext expressionContext = c.expressionContext();
+  expressionContext.setFeature( feature );
+  if ( feature.fields() )
+    expressionContext.setFields( *feature.fields() );
+
   QList<QString>::const_iterator catIt = s.categoryAttributes.constBegin();
   for ( ; catIt != s.categoryAttributes.constEnd(); ++catIt )
   {
-    QgsExpression* expression = getExpression( *catIt, feature.fields() );
-    currentVal = expression->evaluate( feature ).toDouble();
+    QgsExpression* expression = getExpression( *catIt, expressionContext );
+    currentVal = expression->evaluate( &expressionContext ).toDouble();
     values.push_back( currentVal );
     valSum += currentVal;
     if ( currentVal ) valCount++;

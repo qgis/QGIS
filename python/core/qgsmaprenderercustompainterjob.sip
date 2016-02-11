@@ -38,7 +38,7 @@ class QgsMapRendererCustomPainterJob : QgsMapRendererJob
      * Ideally the "wait for finished" method should not be used at all. The code triggering
      * rendering should not need to actively wait for rendering to finish.
      */
-    void waitForFinishedWithEventLoop( QEventLoop::ProcessEventsFlags flags = QEventLoop::AllEvents );
+    void waitForFinishedWithEventLoop( const QEventLoop::ProcessEventsFlags& flags = QEventLoop::AllEvents );
 
     /**
      * Render the map synchronously in this thread. The function does not return until the map

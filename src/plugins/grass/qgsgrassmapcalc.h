@@ -14,6 +14,7 @@
 #ifndef QGSGRASSMAPCALC_H
 #define QGSGRASSMAPCALC_H
 
+#include "qgsgrassmoduleinput.h"
 #include "ui_qgsgrassmapcalcbase.h"
 #include "qgsgrassmodule.h"
 
@@ -123,8 +124,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     void setTool( int );
 
     //! Map selection changed
-    void on_mMapComboBox_activated() { mapChanged(); }
-    void mapChanged();
+    void mapChanged( const QString & text );
 
     //! Constant changed
     void on_mConstantLineEdit_textChanged() { constantChanged(); }
@@ -164,11 +164,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     // Pointer to current connector
     QgsGrassMapcalcConnector *mConnector;
 
-    // Update combobox with maps
-    void updateMaps();
-
-    //! Vector of map@mapset in the combobox
-    std::vector<QString> mMaps;
+    QgsGrassModuleInputComboBox *mMapComboBox;
 
     //! Last point position
     QPoint mLastPoint;
@@ -329,7 +325,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
       None
     };
 
-    QgsGrassMapcalcObject( int type );
+    explicit QgsGrassMapcalcObject( int type );
     ~QgsGrassMapcalcObject();
 
     // Set map name, constant value or function/operator
@@ -454,7 +450,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
 class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalcItem
 {
   public:
-    QgsGrassMapcalcConnector( QGraphicsScene * );
+    explicit QgsGrassMapcalcConnector( QGraphicsScene * );
     ~QgsGrassMapcalcConnector();
 
     void paint( QPainter * painter,

@@ -57,6 +57,7 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
 
     QImage mFinalImage;
 
+    //! @note not available in Python bindings
     enum { Idle, RenderingLayers, RenderingLabels } mStatus;
 
     QFuture<void> mFuture;
@@ -64,7 +65,10 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
 
     LayerRenderJobs mLayerJobs;
 
+    //! Old labeling engine
     QgsPalLabeling* mLabelingEngine;
+    //! New labeling engine
+    QgsLabelingEngineV2* mLabelingEngineV2;
     QgsRenderContext mLabelingRenderContext;
     QFuture<void> mLabelingFuture;
     QFutureWatcher<void> mLabelingFutureWatcher;

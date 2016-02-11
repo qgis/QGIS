@@ -240,7 +240,24 @@ class CORE_EXPORT QgsRasterBlock
 
     /** \brief Set the whole block to no data except specified rectangle
      *  @return true on success */
-    bool setIsNoDataExcept( const QRect & theExceptRect );
+    bool setIsNoDataExcept( QRect theExceptRect );
+
+    /** \brief Remove no data flag on pixel. If the raster block does not have an explicit
+     * no data value set then an internal map of no data pixels is maintained for the block.
+     * In this case it is possible to reset a pixel to flag it as having valid data using this
+     * method. This method has no effect for raster blocks with an explicit no data value set.
+     *  @param row row index
+     *  @param column column index
+     *  @note added in QGIS 2.10 */
+    void setIsData( int row, int column );
+
+    /** \brief Remove no data flag on pixel. If the raster block does not have an explicit
+     * no data value set then an internal map of no data pixels is maintained for the block.
+     * In this case it is possible to reset a pixel to flag it as having valid data using this
+     * method. This method has no effect for raster blocks with an explicit no data value set.
+     *  @param index data matrix index (long type in Python)
+     *  @note added in QGIS 2.10 */
+    void setIsData( qgssize index );
 
     /** \brief Get pointer to data
      *  @param row row index
@@ -283,15 +300,15 @@ class CORE_EXPORT QgsRasterBlock
      *  @return true on success */
     bool setImage( const QImage * image );
 
-    // @note not available in python bindings
+    //! @note not available in python bindings
     inline static double readValue( void *data, QGis::DataType type, qgssize index );
 
-    // @note not available in python bindings
+    //! @note not available in python bindings
     inline static void writeValue( void *data, QGis::DataType type, qgssize index, double value );
 
     void applyNoDataValues( const QgsRasterRangeList & rangeList );
 
-    /** apply band scale and offset to raster block values
+    /** Apply band scale and offset to raster block values
      * @@note added in 2.3 */
     void applyScaleOffset( double scale, double offset );
 
@@ -300,6 +317,8 @@ class CORE_EXPORT QgsRasterBlock
 
     /** \brief Set error */
     void setError( const QgsError & theError ) { mError = theError;}
+
+    QString toString() const;
 
     /** \brief For theExtent and theWidht, theHeight find rectangle covered by subextent.
      * The output rect has x oriented from left to right and y from top to bottom
@@ -311,6 +330,18 @@ class CORE_EXPORT QgsRasterBlock
      * @return the rectangle covered by sub extent
      */
     static QRect subRect( const QgsRectangle &theExtent, int theWidth, int theHeight, const QgsRectangle &theSubExtent );
+
+    /** Returns the width (number of columns) of the raster block.
+     * @see height
+     * @note added in QGIS 2.10
+     */
+    int width() const { return mWidth; }
+
+    /** Returns the height (number of rows) of the raster block.
+     * @see width
+     * @note added in QGIS 2.10
+     */
+    int height() const { return mHeight; }
 
   private:
     static QImage::Format imageFormat( QGis::DataType theDataType );
@@ -395,25 +426,25 @@ inline double QgsRasterBlock::readValue( void *data, QGis::DataType type, qgssiz
   switch ( type )
   {
     case QGis::Byte:
-      return ( double )(( quint8 * )data )[index];
+      return static_cast< double >(( static_cast< quint8 * >( data ) )[index] );
       break;
     case QGis::UInt16:
-      return ( double )(( quint16 * )data )[index];
+      return static_cast< double >(( static_cast< quint16 * >( data ) )[index] );
       break;
     case QGis::Int16:
-      return ( double )(( qint16 * )data )[index];
+      return static_cast< double >(( static_cast< qint16 * >( data ) )[index] );
       break;
     case QGis::UInt32:
-      return ( double )(( quint32 * )data )[index];
+      return static_cast< double >(( static_cast< quint32 * >( data ) )[index] );
       break;
     case QGis::Int32:
-      return ( double )(( qint32 * )data )[index];
+      return static_cast< double >(( static_cast< qint32 * >( data ) )[index] );
       break;
     case QGis::Float32:
-      return ( double )(( float * )data )[index];
+      return static_cast< double >(( static_cast< float * >( data ) )[index] );
       break;
     case QGis::Float64:
-      return ( double )(( double * )data )[index];
+      return static_cast< double >(( static_cast< double * >( data ) )[index] );
       break;
     default:
       QgsDebugMsg( QString( "Data type %1 is not supported" ).arg( type ) );
@@ -430,25 +461,25 @@ inline void QgsRasterBlock::writeValue( void *data, QGis::DataType type, qgssize
   switch ( type )
   {
     case QGis::Byte:
-      (( quint8 * )data )[index] = ( quint8 ) value;
+      ( static_cast< quint8 * >( data ) )[index] = static_cast< quint8 >( value );
       break;
     case QGis::UInt16:
-      (( quint16 * )data )[index] = ( quint16 ) value;
+      ( static_cast< quint16 * >( data ) )[index] =  static_cast< quint16 >( value );
       break;
     case QGis::Int16:
-      (( qint16 * )data )[index] = ( qint16 ) value;
+      ( static_cast< qint16 * >( data ) )[index] =  static_cast< qint16 >( value );
       break;
     case QGis::UInt32:
-      (( quint32 * )data )[index] = ( quint32 ) value;
+      ( static_cast< quint32 * >( data ) )[index] =  static_cast< quint32 >( value );
       break;
     case QGis::Int32:
-      (( qint32 * )data )[index] = ( qint32 ) value;
+      ( static_cast< qint32 * >( data ) )[index] =  static_cast< qint32 >( value );
       break;
     case QGis::Float32:
-      (( float * )data )[index] = ( float ) value;
+      ( static_cast< float * >( data ) )[index] = static_cast< float >( value );
       break;
     case QGis::Float64:
-      (( double * )data )[index] = value;
+      ( static_cast< double * >( data ) )[index] = value;
       break;
     default:
       QgsDebugMsg( QString( "Data type %1 is not supported" ).arg( type ) );

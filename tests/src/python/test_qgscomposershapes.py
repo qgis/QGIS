@@ -20,18 +20,17 @@ from qgis.core import (QgsComposerShape,
                        QgsComposition,
                        QgsMapSettings
                        )
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest
-                       )
+from qgis.testing import (start_app,
+                          unittest
+                          )
+from utilities import unitTestDataPath
 from qgscompositionchecker import QgsCompositionChecker
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposerShapes(TestCase):
+class TestQgsComposerShapes(unittest.TestCase):
 
     def __init__(self, methodName):
         """Run once on class initialisation."""
@@ -53,6 +52,7 @@ class TestQgsComposerShapes(TestCase):
         self.mComposerShape.setShapeType(QgsComposerShape.Rectangle)
 
         checker = QgsCompositionChecker('composershapes_rectangle', self.mComposition)
+        checker.setControlPathPrefix("composer_shapes")
         myTestResult, myMessage = checker.testComposition()
 
         assert myTestResult, myMessage
@@ -63,6 +63,7 @@ class TestQgsComposerShapes(TestCase):
         self.mComposerShape.setShapeType(QgsComposerShape.Ellipse)
 
         checker = QgsCompositionChecker('composershapes_ellipse', self.mComposition)
+        checker.setControlPathPrefix("composer_shapes")
         myTestResult, myMessage = checker.testComposition()
 
         assert myTestResult, myMessage
@@ -73,6 +74,7 @@ class TestQgsComposerShapes(TestCase):
         self.mComposerShape.setShapeType(QgsComposerShape.Triangle)
 
         checker = QgsCompositionChecker('composershapes_triangle', self.mComposition)
+        checker.setControlPathPrefix("composer_shapes")
         myTestResult, myMessage = checker.testComposition()
 
         assert myTestResult, myMessage
@@ -84,6 +86,7 @@ class TestQgsComposerShapes(TestCase):
         self.mComposerShape.setCornerRadius(30)
 
         checker = QgsCompositionChecker('composershapes_roundedrect', self.mComposition)
+        checker.setControlPathPrefix("composer_shapes")
         myTestResult, myMessage = checker.testComposition()
 
         self.mComposerShape.setCornerRadius(0)

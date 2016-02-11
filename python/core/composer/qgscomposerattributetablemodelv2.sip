@@ -1,4 +1,4 @@
-/**A model for displaying columns shown in a QgsComposerAttributeTableV2*/
+/** A model for displaying columns shown in a QgsComposerAttributeTableV2*/
 class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
 {
 %TypeHeaderCode
@@ -7,7 +7,7 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
 
   public:
 
-    /*! Controls whether a row/column is shifted up or down
+    /** Controls whether a row/column is shifted up or down
      */
     enum ShiftDirection
     {
@@ -15,7 +15,7 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
       ShiftDown /*!< shift the row/column down */
     };
 
-    /**Constructor for QgsComposerAttributeTableColumnModel.
+    /** Constructor for QgsComposerAttributeTableColumnModel.
      * @param composerTable QgsComposerAttributeTable the model is attached to
      * @param parent optional parent
      */
@@ -33,7 +33,7 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
     QModelIndex index( int row, int column, const QModelIndex &parent ) const;
     QModelIndex parent( const QModelIndex &child ) const;
 
-    /**Moves the specified row up or down in the model. Used for rearranging the attribute tables
+    /** Moves the specified row up or down in the model. Used for rearranging the attribute tables
      * columns.
      * @returns true if the move is allowed
      * @param row row in model representing attribute table column to move
@@ -42,13 +42,13 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
      */
     bool moveRow( int row, ShiftDirection direction );
 
-    /**Resets the attribute table's columns to match the source layer's fields. Remove all existing
+    /** Resets the attribute table's columns to match the source layer's fields. Remove all existing
      * attribute table columns and column customisations.
      * @note added in 2.3
      */
     void resetToLayer();
 
-    /**Returns the QgsComposerTableColumn corresponding to an index in the model.
+    /** Returns the QgsComposerTableColumn corresponding to an index in the model.
      * @returns QgsComposerTableColumn for specified index
      * @param index a QModelIndex
      * @note added in 2.3
@@ -56,7 +56,7 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
      */
     QgsComposerTableColumn* columnFromIndex( const QModelIndex & index ) const;
 
-    /**Returns a QModelIndex corresponding to a QgsComposerTableColumn in the model.
+    /** Returns a QModelIndex corresponding to a QgsComposerTableColumn in the model.
      * @returns QModelIndex for specified QgsComposerTableColumn
      * @param column a QgsComposerTableColumn
      * @note added in 2.3
@@ -64,7 +64,7 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
      */
     QModelIndex indexFromColumn( QgsComposerTableColumn *column );
 
-    /**Sets a specified column as a sorted column in the QgsComposerAttributeTable. The column will be
+    /** Sets a specified column as a sorted column in the QgsComposerAttributeTable. The column will be
      * added to the end of the sort rank list, ie it will take the next largest available sort rank.
      * @param column a QgsComposerTableColumn
      * @param order sort order for column
@@ -74,7 +74,7 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
      */
     void setColumnAsSorted( QgsComposerTableColumn *column, Qt::SortOrder order );
 
-    /**Sets a specified column as an unsorted column in the QgsComposerAttributeTable. The column will be
+    /** Sets a specified column as an unsorted column in the QgsComposerAttributeTable. The column will be
      * removed from the sort rank list.
      * @param column a QgsComposerTableColumn
      * @note added in 2.3
@@ -82,7 +82,7 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
      */
     void setColumnAsUnsorted( QgsComposerTableColumn * column );
 
-    /**Moves a column up or down in the sort rank for the QgsComposerAttributeTable.
+    /** Moves a column up or down in the sort rank for the QgsComposerAttributeTable.
      * @param column a QgsComposerTableColumn
      * @param direction direction to move the column in the sort rank list
      * @note added in 2.3
@@ -92,7 +92,7 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
 
 };
 
-/**Allows for filtering QgsComposerAttributeTable columns by columns which are sorted or unsorted*/
+/** Allows for filtering QgsComposerAttributeTable columns by columns which are sorted or unsorted*/
 class QgsComposerTableSortColumnsProxyModelV2 : QSortFilterProxyModel
 {
 %TypeHeaderCode
@@ -101,7 +101,7 @@ class QgsComposerTableSortColumnsProxyModelV2 : QSortFilterProxyModel
 
   public:
 
-    /*! Controls whether the proxy model shows sorted or unsorted columns
+    /** Controls whether the proxy model shows sorted or unsorted columns
      */
     enum ColumnFilterType
     {
@@ -109,7 +109,7 @@ class QgsComposerTableSortColumnsProxyModelV2 : QSortFilterProxyModel
       ShowUnsortedColumns/*!< show only unsorted columns */
     };
 
-    /**Constructor for QgsComposerTableSortColumnsProxyModel.
+    /** Constructor for QgsComposerTableSortColumnsProxyModel.
      * @param composerTable QgsComposerAttributeTable the model is attached to
      * @param filterType filter for columns, controls whether sorted or unsorted columns are shown
      * @param parent optional parent
@@ -125,7 +125,7 @@ class QgsComposerTableSortColumnsProxyModelV2 : QSortFilterProxyModel
     Qt::ItemFlags flags( const QModelIndex &index ) const;
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
-    /**Returns the QgsComposerTableColumn corresponding to a row in the proxy model.
+    /** Returns the QgsComposerTableColumn corresponding to a row in the proxy model.
      * @returns QgsComposerTableColumn for specified row
      * @param row a row number
      * @note added in 2.3
@@ -133,7 +133,7 @@ class QgsComposerTableSortColumnsProxyModelV2 : QSortFilterProxyModel
      */
     QgsComposerTableColumn* columnFromRow( int row );
 
-    /**Returns the QgsComposerTableColumn corresponding to an index in the proxy model.
+    /** Returns the QgsComposerTableColumn corresponding to an index in the proxy model.
      * @returns QgsComposerTableColumn for specified index
      * @param index a QModelIndex
      * @note added in 2.3
@@ -142,7 +142,7 @@ class QgsComposerTableSortColumnsProxyModelV2 : QSortFilterProxyModel
      */
     QgsComposerTableColumn* columnFromIndex( const QModelIndex & index ) const;
 
-    /**Returns the QgsComposerTableColumn corresponding to an index from the source
+    /** Returns the QgsComposerTableColumn corresponding to an index from the source
      * QgsComposerAttributeTableColumnModel model.
      * @returns QgsComposerTableColumn for specified index from QgsComposerAttributeTableColumnModel
      * @param sourceIndex a QModelIndex
@@ -152,7 +152,7 @@ class QgsComposerTableSortColumnsProxyModelV2 : QSortFilterProxyModel
      */
     QgsComposerTableColumn* columnFromSourceIndex( const QModelIndex& sourceIndex ) const;
 
-    /**Invalidates the current filter used by the proxy model
+    /** Invalidates the current filter used by the proxy model
      * @note added in 2.3
      */
     void resetFilter();

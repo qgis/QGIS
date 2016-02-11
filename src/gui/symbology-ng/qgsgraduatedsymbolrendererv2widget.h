@@ -23,11 +23,13 @@
 
 #include "ui_qgsgraduatedsymbolrendererv2widget.h"
 
+/// @cond PRIVATE
+
 class GUI_EXPORT QgsGraduatedSymbolRendererV2Model : public QAbstractItemModel
 {
     Q_OBJECT
   public:
-    QgsGraduatedSymbolRendererV2Model( QObject * parent = 0 );
+    QgsGraduatedSymbolRendererV2Model( QObject * parent = nullptr );
     Qt::ItemFlags flags( const QModelIndex & index ) const override;
     Qt::DropActions supportedDropActions() const override;
     QVariant data( const QModelIndex &index, int role ) const override;
@@ -45,11 +47,11 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Model : public QAbstractItemModel
 
     QgsRendererRangeV2 rendererRange( const QModelIndex &index );
     void addClass( QgsSymbolV2* symbol );
-    void addClass( QgsRendererRangeV2 range );
+    void addClass( const QgsRendererRangeV2& range );
     void deleteRows( QList<int> rows );
     void removeAllRows();
     void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
-    void updateSymbology();
+    void updateSymbology( bool resetModel = false );
     void updateLabels();
 
   signals:
@@ -63,11 +65,15 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Model : public QAbstractItemModel
 // View style which shows drop indicator line between items
 class QgsGraduatedSymbolRendererV2ViewStyle: public QProxyStyle
 {
-  public:
-    QgsGraduatedSymbolRendererV2ViewStyle( QStyle* style = 0 );
+    Q_OBJECT
 
-    void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0 ) const override;
+  public:
+    explicit QgsGraduatedSymbolRendererV2ViewStyle( QStyle* style = nullptr );
+
+    void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = nullptr ) const override;
 };
+
+///@endcond
 
 class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget, private Ui::QgsGraduatedSymbolRendererV2Widget
 {
@@ -83,7 +89,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
 
   public slots:
     void changeGraduatedSymbol();
-    void graduatedColumnChanged( QString field );
+    void graduatedColumnChanged( const QString& field );
     void classifyGraduated();
     void reapplyColorRamp();
     void reapplySizes();
@@ -91,17 +97,16 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void rangesClicked( const QModelIndex & idx );
     void changeCurrentValue( QStandardItem * item );
 
-    /**Adds a class manually to the classification*/
+    /** Adds a class manually to the classification*/
     void addClass();
-    /**Removes currently selected classes */
+    /** Removes currently selected classes */
     void deleteClasses();
-    /**Removes all classes from the classification*/
+    /** Removes all classes from the classification*/
     void deleteAllClasses();
-    /**Toggle the link between classes boundaries */
+    /** Toggle the link between classes boundaries */
     void toggleBoundariesLink( bool linked );
 
-    void rotationFieldChanged( QString fldName );
-    void sizeScaleFieldChanged( QString fldName );
+    void sizeScaleFieldChanged( const QString& fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
     void labelFormatChanged();
 
@@ -111,6 +116,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void modelDataChanged();
     void on_mSizeUnitWidget_changed();
     void on_methodComboBox_currentIndexChanged( int );
+    void refreshRanges( bool reset = false );
 
   protected:
     void updateUiFromRenderer( bool updateCount = true );
@@ -141,8 +147,6 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     QgsSymbolV2* mGraduatedSymbol;
 
     int mRowSelected;
-
-    QgsRendererV2DataDefinedMenus* mDataDefinedMenus;
 
     QgsGraduatedSymbolRendererV2Model* mModel;
 

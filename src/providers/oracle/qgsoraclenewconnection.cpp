@@ -23,6 +23,7 @@
 #include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgsoracletablemodel.h"
+#include "qgsoracleconnpool.h"
 
 QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
     : QDialog( parent, fl ), mOriginalConnName( connName )
@@ -95,7 +96,7 @@ void QgsOracleNewConnection::accept()
   }
 
   // warn if entry was renamed to an existing connection
-  if (( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() ) &&
+  if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
       ( settings.contains( baseKey + txtName->text() + "/service" ) ||
         settings.contains( baseKey + txtName->text() + "/host" ) ) &&
       QMessageBox::question( this,
@@ -109,8 +110,8 @@ void QgsOracleNewConnection::accept()
   // on rename delete the original entry first
   if ( !mOriginalConnName.isNull() && mOriginalConnName != txtName->text() )
   {
-
     settings.remove( baseKey + mOriginalConnName );
+    settings.sync();
   }
 
   baseKey += txtName->text();
@@ -128,9 +129,6 @@ void QgsOracleNewConnection::accept()
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/dboptions", txtOptions->text() );
 
-  // remove old save setting
-  settings.remove( baseKey + "/save" );
-
   QDialog::accept();
 }
 
@@ -141,7 +139,7 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
   if ( !txtOptions->text().isEmpty() )
     uri.setParam( "dboptions", txtOptions->text() );
 
-  QgsOracleConn *conn = QgsOracleConn::connectDb( uri );
+  QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( uri.connectionInfo() );
 
   if ( conn )
   {
@@ -151,7 +149,7 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
                               tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ) );
 
     // free connection resources
-    conn->disconnect();
+    QgsOracleConnPool::instance()->releaseConnection( conn );
   }
   else
   {
@@ -161,7 +159,7 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
   }
 }
 
-/** end  Autoconnected SLOTS **/
+/** End  Autoconnected SLOTS **/
 
 QgsOracleNewConnection::~QgsOracleNewConnection()
 {

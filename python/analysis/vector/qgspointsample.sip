@@ -7,10 +7,9 @@ class QgsPointSample
 #include <qgspointsample.h>
 %End
   public:
-    QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, QString nPointsAttribute, QString minDistAttribute = QString() );
-    ~QgsPointSample();
+    QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, const QString& nPointsAttribute, const QString& minDistAttribute = QString() );
 
-    /**Starts calculation of random points
+    /** Starts calculation of random points
         @return 0 in case of success*/
     int createRandomPoints( QProgressDialog* pd );
 };

@@ -31,6 +31,7 @@ from utilities import (
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
 from test_qgspallabeling_tests import (
     TestPointBase,
+    TestLineBase,
     suiteTests
 )
 
@@ -50,7 +51,7 @@ class TestCanvasBase(TestQgsPalLabeling):
         TestQgsPalLabeling.tearDownClass()
         cls.removeMapLayer(cls.layer)
         cls.layer = None
-        #avoid crash on finish, probably related to https://bugreports.qt.io/browse/QTBUG-35760
+        # avoid crash on finish, probably related to https://bugreports.qt.io/browse/QTBUG-35760
         QThreadPool.globalInstance().waitForDone()
 
     def setUp(self):
@@ -113,6 +114,22 @@ class TestCanvasPoint(TestCanvasBasePoint, TestPointBase):
         """Run before each test."""
         super(TestCanvasPoint, self).setUp()
         self.configTest('pal_canvas', 'sp')
+
+
+class TestCanvasBaseLine(TestCanvasBase):
+
+    @classmethod
+    def setUpClass(cls):
+        TestCanvasBase.setUpClass()
+        cls.layer = TestQgsPalLabeling.loadFeatureLayer('line')
+
+
+class TestCanvasLine(TestCanvasBaseLine, TestLineBase):
+
+    def setUp(self):
+        """Run before each test."""
+        super(TestCanvasLine, self).setUp()
+        self.configTest('pal_canvas_line', 'sp')
 
 
 if __name__ == '__main__':

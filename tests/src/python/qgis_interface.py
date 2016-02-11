@@ -26,11 +26,12 @@ __copyright__ = ('Copyright (c) 2010 by Ivan Mincik, ivan.mincik@gista.sk and '
 
 import qgis
 
-from PyQt4.QtCore import QObject
+from PyQt.QtCore import QObject
 from qgis.core import QgsMapLayerRegistry
 
 
 class QgisInterface(QObject):
+
     """Class to expose qgis objects and functionalities to plugins.
 
     This class is here for enabling us to run unit tests only,

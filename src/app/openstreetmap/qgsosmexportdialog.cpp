@@ -57,7 +57,7 @@ QgsOSMExportDialog::~QgsOSMExportDialog()
 void QgsOSMExportDialog::onBrowse()
 {
   QSettings settings;
-  QString lastDir = settings.value( "/osm/lastDir" ).toString();
+  QString lastDir = settings.value( "/osm/lastDir", QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName( this, QString(), lastDir, tr( "SQLite databases (*.db)" ) );
   if ( fileName.isNull() )
@@ -78,7 +78,7 @@ void QgsOSMExportDialog::updateLayerName()
     layerType = "polylines";
   else
     layerType = "polygons";
-  editLayerName->setText( QString( "%1_%2" ).arg( baseName ).arg( layerType ) );
+  editLayerName->setText( QString( "%1_%2" ).arg( baseName, layerType ) );
 }
 
 

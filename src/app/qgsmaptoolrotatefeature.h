@@ -33,7 +33,7 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
 
   public:
 
-    explicit QgsAngleMagnetWidget( QString label = QString( "" ), QWidget *parent = 0 );
+    explicit QgsAngleMagnetWidget( const QString& label = QString(), QWidget *parent = nullptr );
 
     ~QgsAngleMagnetWidget();
 
@@ -51,7 +51,7 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
   public slots:
 
   protected:
-    bool eventFilter( QObject *obj, QEvent *ev );
+    bool eventFilter( QObject *obj, QEvent *ev ) override;
 
   private slots:
     void angleSpinBoxValueChanged( double angle );
@@ -71,9 +71,9 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     QgsMapToolRotateFeature( QgsMapCanvas* canvas );
     virtual ~QgsMapToolRotateFeature();
 
-    virtual void canvasMoveEvent( QMouseEvent * e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
-    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     //! called when map tool is being deactivated
     void deactivate() override;
@@ -93,14 +93,14 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     void createRotationWidget();
     void deleteRotationWidget();
 
-    /**Start point of the move in map coordinates*/
+    /** Start point of the move in map coordinates*/
     QgsPoint mStartPointMapCoords;
     QPointF mInitialPos;
 
-    /**Rubberband that shows the feature being moved*/
+    /** Rubberband that shows the feature being moved*/
     QgsRubberBand* mRubberBand;
 
-    /**Id of moved feature*/
+    /** Id of moved feature*/
     QgsFeatureIds mRotatedFeatures;
     double mRotation;
     double mRotationOffset;

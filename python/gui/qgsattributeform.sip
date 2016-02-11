@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 3.5.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -94,7 +94,7 @@ class QgsAttributeForm : QWidget
      * @param attribute The name of the attribute that changed.
      * @param value     The new value of the attribute.
      */
-    void attributeChanged( QString attribute, const QVariant& value );
+    void attributeChanged( const QString& attribute, const QVariant& value );
 
     /**
      * Will be emitted before the feature is saved. Use this signal to perform sanity checks.
@@ -152,4 +152,9 @@ class QgsAttributeForm : QWidget
      * Sets all values to the values of the current feature
      */
     void resetValues();
+
+    /**
+     * reload current feature
+     */
+    void refreshFeature();
 };

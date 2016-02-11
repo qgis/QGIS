@@ -18,6 +18,8 @@
 
 #include "qgsconfig.h"
 #include "qgsmessagebar.h"
+#include "qgspointv2.h"
+#include "qgsmapmouseevent.h"
 
 #include <QCursor>
 #include <QString>
@@ -56,16 +58,16 @@ class GUI_EXPORT QgsMapTool : public QObject
     virtual ~QgsMapTool();
 
     //! Mouse move event for overriding. Default implementation does nothing.
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e );
 
     //! Mouse double click event for overriding. Default implementation does nothing.
-    virtual void canvasDoubleClickEvent( QMouseEvent * e );
+    virtual void canvasDoubleClickEvent( QgsMapMouseEvent* e );
 
     //! Mouse press event for overriding. Default implementation does nothing.
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent* e );
 
     //! Mouse release event for overriding. Default implementation does nothing.
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e );
 
     //! Mouse wheel event for overriding. Default implementation does nothing.
     virtual void wheelEvent( QWheelEvent* e );
@@ -103,7 +105,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     QAbstractButton* button();
 
     /** Set a user defined cursor */
-    virtual void setCursor( QCursor cursor );
+    virtual void setCursor( const QCursor& cursor );
 
     /** Check whether this MapTool performs a zoom or pan operation.
      * If it does, we will be able to perform the zoom  and then
@@ -146,7 +148,7 @@ class GUI_EXPORT QgsMapTool : public QObject
 
   signals:
     //! emit a message
-    void messageEmitted( QString message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
+    void messageEmitted( const QString& message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
 
     //! emit signal to clear previous message
     void messageDiscarded();
@@ -167,16 +169,19 @@ class GUI_EXPORT QgsMapTool : public QObject
     QgsMapTool( QgsMapCanvas* canvas );
 
     //! transformation from screen coordinates to map coordinates
-    QgsPoint toMapCoordinates( const QPoint& point );
+    QgsPoint toMapCoordinates( QPoint point );
 
     //! transformation from screen coordinates to layer's coordinates
-    QgsPoint toLayerCoordinates( QgsMapLayer* layer, const QPoint& point );
+    QgsPoint toLayerCoordinates( QgsMapLayer* layer, QPoint point );
 
     //! transformation from map coordinates to layer's coordinates
     QgsPoint toLayerCoordinates( QgsMapLayer* layer, const QgsPoint& point );
 
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
     QgsPoint toMapCoordinates( QgsMapLayer* layer, const QgsPoint& point );
+
+    //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
+    QgsPointV2 toMapCoordinates( QgsMapLayer* layer, const QgsPointV2 &point );
 
     //! trnasformation of the rect from map coordinates to layer's coordinates
     QgsRectangle toLayerCoordinates( QgsMapLayer* layer, const QgsRectangle& rect );

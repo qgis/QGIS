@@ -22,10 +22,14 @@
 #define QGSDATETIMEEDIT_TIMEFORMAT "HH:mm:ss"
 #define QGSDATETIMEEDIT_DATETIMEFORMAT "yyyy-MM-dd HH:mm:ss"
 
+/** \class QgsDateTimeEditFactory
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsDateTimeEditFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsDateTimeEditFactory( QString name );
+    QgsDateTimeEditFactory( const QString& name );
 
     // QgsEditorWidgetFactory interface
   public:
@@ -34,6 +38,7 @@ class GUI_EXPORT QgsDateTimeEditFactory : public QgsEditorWidgetFactory
     QgsEditorWidgetConfig readConfig( const QDomElement &configElement, QgsVectorLayer *layer, int fieldIdx ) override;
     void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
     QString representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const override;
+    virtual QMap<const char*, int> supportedWidgetTypes() override;
 };
 
 #endif // QGSDATETIMEEDITFACTORY_H

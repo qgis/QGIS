@@ -29,6 +29,7 @@ from qgis.core import QGis, QgsFeatureRequest, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterGeometryPredicate
+from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -38,21 +39,25 @@ class ExtractByLocation(GeoAlgorithm):
     INPUT = 'INPUT'
     INTERSECT = 'INTERSECT'
     PREDICATE = 'PREDICATE'
+    PRECISION = 'PRECISION'
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Extract by location'
-        self.group = 'Vector selection tools'
+        self.name, self.i18n_name = self.trAlgorithm('Extract by location')
+        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Layer to select from'),
-            [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Layer to select from'),
+                                          [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.INTERSECT,
-            self.tr('Additional layer (intersection layer)'),
-            [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Additional layer (intersection layer)'),
+                                          [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterGeometryPredicate(self.PREDICATE,
-            self.tr('Geometric predicate'),
-            left=self.INPUT, right=self.INTERSECT))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection')))
+                                                     self.tr('Geometric predicate'),
+                                                     left=self.INPUT, right=self.INTERSECT))
+        self.addParameter(ParameterNumber(self.PRECISION,
+                                          self.tr('Precision'),
+                                          0.0, None, 0.0))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (location)')))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
@@ -60,12 +65,13 @@ class ExtractByLocation(GeoAlgorithm):
         filename = self.getParameterValue(self.INTERSECT)
         selectLayer = dataobjects.getObjectFromUri(filename)
         predicates = self.getParameterValue(self.PREDICATE)
+        precision = self.getParameterValue(self.PRECISION)
 
         index = vector.spatialindex(layer)
 
         output = self.getOutputFromName(self.OUTPUT)
         writer = output.getVectorWriter(layer.pendingFields(),
-                layer.dataProvider().geometryType(), layer.crs())
+                                        layer.dataProvider().geometryType(), layer.crs())
 
         if 'disjoint' in predicates:
             disjoinSet = []
@@ -79,12 +85,13 @@ class ExtractByLocation(GeoAlgorithm):
         featureCount = len(features)
         total = 100.0 / float(len(features))
         for current, f in enumerate(features):
-            geom = QgsGeometry(f.geometry())
-            intersects = index.intersects(geom.boundingBox())
+            geom = vector.snapToPrecision(f.geometry(), precision)
+            bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)
+            intersects = index.intersects(bbox)
             for i in intersects:
                 request = QgsFeatureRequest().setFilterFid(i)
                 feat = layer.getFeatures(request).next()
-                tmpGeom = QgsGeometry(feat.geometry())
+                tmpGeom = vector.snapToPrecision(feat.geometry(), precision)
                 res = False
                 for predicate in predicates:
                     if predicate == 'disjoint':

@@ -47,6 +47,9 @@ class CORE_EXPORT QgsDataItemProviderRegistry
 
     //! available providers. this class owns the pointers
     QList<QgsDataItemProvider*> mProviders;
+
+    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry& rh );
+    QgsDataItemProviderRegistry& operator=( const QgsDataItemProviderRegistry& rh );
 };
 
 #endif // QGSDATAITEMPROVIDERREGISTRY_H

@@ -30,7 +30,7 @@
 #include "rulesDialog.h"
 #include "topolTest.h"
 
-rulesDialog::rulesDialog( QMap<QString, TopologyRule> testMap, QgisInterface *theQgisIface, QWidget *parent )
+rulesDialog::rulesDialog( const QMap<QString, TopologyRule>& testMap, QgisInterface *theQgisIface, QWidget *parent )
     : QDialog( parent ), Ui::rulesDialog()
 {
   setupUi( this );
@@ -45,8 +45,8 @@ rulesDialog::rulesDialog( QMap<QString, TopologyRule> testMap, QgisInterface *th
   mRulesTable->setSelectionBehavior( QAbstractItemView::SelectRows );
   mRuleBox->addItems( mTestConfMap.keys() );
 
-  mAddTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
-  mDeleteTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
+  mAddTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
+  mDeleteTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
   connect( mAddTestButton, SIGNAL( clicked() ), this, SLOT( addRule() ) );
   connect( mAddTestButton, SIGNAL( clicked() ), mRulesTable, SLOT( resizeColumnsToContents() ) );
@@ -329,7 +329,7 @@ void rulesDialog::updateRuleItems( const QString &layerName )
 
   for ( QMap<QString, TopologyRule>::iterator it = mTestConfMap.begin(); it != mTestConfMap.end(); ++it )
   {
-    TopologyRule rule = it.value();
+    TopologyRule& rule = it.value();
     if ( rule.layer1AcceptsType( vlayer->geometryType() ) )
     {
       mRuleBox->addItem( it.key() );

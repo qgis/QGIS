@@ -31,6 +31,7 @@ from processing.core.outputs import OutputNumber
 from processing.tools import dataobjects
 from processing.core.outputs import OutputExtent
 
+
 class RasterLayerBoundsAlgorithm(GeoAlgorithm):
 
     LAYER = 'LAYER'
@@ -60,6 +61,6 @@ class RasterLayerBoundsAlgorithm(GeoAlgorithm):
         self.setOutputValue(self.YMIN, layer.extent().yMinimum())
         self.setOutputValue(self.YMAX, layer.extent().yMaximum())
         self.setOutputValue(self.EXTENT, (layer.extent().xMinimum(),
-                            layer.extent().xMaximum(),
-                            layer.extent().yMinimum(),
-                            layer.extent().yMaximum()))
+                                          layer.extent().xMaximum(),
+                                          layer.extent().yMinimum(),
+                                          layer.extent().yMaximum()))

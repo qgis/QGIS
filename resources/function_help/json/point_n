@@ -1,0 +1,8 @@
+{
+  "name": "point_n",
+  "type": "function",
+  "description": "Returns a specific node from a geometry.",
+  "arguments": [ {"arg":"geometry","description":"geometry object"},
+  {"arg":"index","description":"index of node to return, where 1 is the first node"} ],
+  "examples": [ { "expression":"geom_to_wkt(point_n(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'),2))", "returns":"'Point (4 0)'"}]
+}

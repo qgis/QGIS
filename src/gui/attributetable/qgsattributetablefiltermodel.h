@@ -50,7 +50,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * @param sourceModel The QgsAttributeTableModel to use as source (mostly referred to as master model)
      * @param canvas  The mapCanvas. Used to identify the currently visible features.
      */
-    QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent = 0 );
+    QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent = nullptr );
 
     /**
      * Set the attribute table model that backs this model
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      *
      * @param ids  The list of feature ids which will be accepted by the filter
      */
-    virtual void setFilteredFeatures( QgsFeatureIds ids );
+    virtual void setFilteredFeatures( const QgsFeatureIds& ids );
 
     /**
      * Get a list of currently filtered feature ids
@@ -150,6 +150,9 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * @param order  The order ( Qt::AscendingOrder or Qt::DescendingOrder )
      */
     virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
+
+    /** Returns the map canvas*/
+    QgsMapCanvas* mapCanvas() const { return mCanvas; }
 
   protected:
     /**

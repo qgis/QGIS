@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 6.6.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,7 +16,7 @@
 /**
  * Is an interface class to abstract feature selection handling.
  *
- * e.g. @link{QgsVectorLayer} implements this interface to manage its selections.
+ * e.g. { @link QgsVectorLayer } implements this interface to manage its selections.
  */
 
 class QgsIFeatureSelectionManager : QObject
@@ -50,7 +50,7 @@ class QgsIFeatureSelectionManager : QObject
 
     /**
      * Change selection to the new set of features. Dismisses the current selection.
-     * Will emit the { @link selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) } signal with the
+     * Will emit the { @link selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, bool ) } signal with the
      * clearAndSelect flag set.
      *
      * @param ids   The ids which will be the new selection
@@ -73,5 +73,5 @@ class QgsIFeatureSelectionManager : QObject
      * @param deselected      Ids of all features which have previously been selected but are not any more
      * @param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
      */
-    void selectionChanged( const QgsFeatureIds selected, const QgsFeatureIds deselected, const bool clearAndSelect );
+    void selectionChanged( const QgsFeatureIds& selected, const QgsFeatureIds& deselected, const bool clearAndSelect );
 };

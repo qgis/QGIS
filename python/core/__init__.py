@@ -1,6 +1,39 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    __init__.py
+    ---------------------
+    Date                 : May 2014
+    Copyright            : (C) 2014 by Nathan Woodrow
+    Email                : woodrow dot nathan at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Nathan Woodrow'
+__date__ = 'May 2014'
+__copyright__ = '(C) 2014, Nathan Woodrow'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
+try:
+    import sip
+    sip.setapi("QVariant", 2)
+except:
+    pass
+
 import inspect
 import string
 from qgis._core import *
+from PyQt4.QtCore import QCoreApplication
+
 
 def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     """
@@ -30,7 +63,8 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     :return:
     """
     class QgsExpressionFunction(QgsExpression.Function):
-        def __init__(self, func, name, args, group, helptext='', usesgeometry=False, expandargs=False):
+
+        def __init__(self, func, name, args, group, helptext='', usesgeometry=True, expandargs=False):
             QgsExpression.Function.__init__(self, name, args, group, helptext, usesgeometry)
             self.function = func
             self.expandargs = expandargs
@@ -52,8 +86,6 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     helptext = function.__doc__ or ''
     helptext = helptext.strip()
     expandargs = False
-    if arg_count == 0 and not name[0] == '$':
-        name = '${0}'.format(name)
 
     if arg_count == "auto":
         # Work out the number of args we need.
@@ -66,7 +98,10 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     register = kwargs.get('register', True)
     if register and QgsExpression.isFunctionName(name):
         if not QgsExpression.unregisterFunction(name):
-            raise TypeError("Unable to unregister function")
+            msgtitle = QCoreApplication.translate("UserExpressions", "User expressions")
+            msg = QCoreApplication.translate("UserExpressions", "The user expression {0} already exists and could not be unregistered.").format(name)
+            QgsMessageLog.logMessage(msg + "\n", msgtitle, QgsMessageLog.WARNING)
+            return None
 
     function.__name__ = name
     helptext = helptemplate.safe_substitute(name=name, doc=helptext)
@@ -79,7 +114,7 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     return f
 
 
-def qgsfunction(args, group, **kwargs):
+def qgsfunction(args='auto', group='custom', **kwargs):
     """
     Decorator function used to define a user expression function.
 
@@ -102,3 +137,72 @@ def qgsfunction(args, group, **kwargs):
     def wrapper(func):
         return register_function(func, args, group, **kwargs)
     return wrapper
+
+try:
+    # Add a __nonzero__ method onto QPyNullVariant so we can check for null values easier.
+    #   >>> value = QPyNullVariant("int")
+    #   >>> if value:
+    #   >>>	  print "Not a null value"
+    from types import MethodType
+    from PyQt4.QtCore import QPyNullVariant
+
+    def __nonzero__(self):
+        return False
+
+    def __repr__(self):
+        return 'NULL'
+
+    def __eq__(self, other):
+        return isinstance(other, QPyNullVariant) or other is None
+
+    def __ne__(self, other):
+        return not isinstance(other, QPyNullVariant) and other is not None
+
+    def __hash__(self):
+        return 2178309
+
+    QPyNullVariant.__nonzero__ = MethodType(__nonzero__, None, QPyNullVariant)
+    QPyNullVariant.__repr__ = MethodType(__repr__, None, QPyNullVariant)
+    QPyNullVariant.__eq__ = MethodType(__eq__, None, QPyNullVariant)
+    QPyNullVariant.__ne__ = MethodType(__ne__, None, QPyNullVariant)
+    QPyNullVariant.__hash__ = MethodType(__hash__, None, QPyNullVariant)
+
+    NULL = QPyNullVariant(int)
+
+except ImportError:
+    try:
+        # TODO: Fixme, this creates an invalid variant, not a NULL one
+        from PyQt5.QtCore import QVariant
+        NULL = QVariant()
+    except ImportError:
+        pass
+
+
+class QgsEditError(Exception):
+
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+# Define a `with edit(layer)` statement
+
+
+class edit:
+
+    def __init__(self, layer):
+        self.layer = layer
+
+    def __enter__(self):
+        assert self.layer.startEditing()
+        return self.layer
+
+    def __exit__(self, ex_type, ex_value, traceback):
+        if ex_type is None:
+            if not self.layer.commitChanges():
+                raise QgsEditError(self.layer.commitErrors())
+            return True
+        else:
+            self.layer.rollBack()
+            return False

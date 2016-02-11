@@ -13,11 +13,13 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis
-from utilities import unittest, TestCase
+from qgis.testing import unittest
 from qgis.utils import qgsfunction
 from qgis.core import QgsExpression
 
-class TestQgsExpressionCustomFunctions(TestCase):
+
+class TestQgsExpressionCustomFunctions(unittest.TestCase):
+
     @qgsfunction(1, 'testing', register=False)
     def testfun(values, feature, parent):
         """ Function help """
@@ -25,13 +27,13 @@ class TestQgsExpressionCustomFunctions(TestCase):
 
     @qgsfunction(args="auto", group='testing', register=False)
     def autocount(value1, value2, value3, feature, parent):
-                pass
+        pass
 
     @qgsfunction(args="auto", group='testing', register=False)
     def expandargs(value1, value2, value3, feature, parent):
-                return value1, value2, value3
+        return value1, value2, value3
 
-    @qgsfunction(0, 'testing', register=False)
+    @qgsfunction(args=0, group='testing', register=False)
     def special(values, feature, parent):
         return "test"
 
@@ -60,12 +62,12 @@ class TestQgsExpressionCustomFunctions(TestCase):
         function = self.expandargs
         args = function.params()
         self.assertEqual(args, 3)
-        values = [1,2,3]
+        values = [1, 2, 3]
         exp = QgsExpression("")
         result = function.func(values, None, exp)
         # Make sure there is no eval error
         self.assertEqual(exp.evalErrorString(), "")
-        self.assertEqual(result, (1,2,3))
+        self.assertEqual(result, (1, 2, 3))
 
     def testCanUnregisterFunction(self):
         QgsExpression.registerFunction(self.testfun)
@@ -82,9 +84,13 @@ class TestQgsExpressionCustomFunctions(TestCase):
         result = exp.evaluate()
         self.assertEqual('Testing_1', result)
 
-    def testZeroArgFunctionsAreSpecialColumns(self):
+    def testZeroArgFunctionsTakeNoArgs(self):
+        QgsExpression.registerFunction(self.special)
         special = self.special
-        self.assertEqual(special.name(), '$special')
+        self.assertEqual(special.name(), 'special')
+        exp = QgsExpression('special()')
+        result = exp.evaluate()
+        self.assertEqual('test', result)
 
     def testDecoratorPreservesAttributes(self):
         func = self.testfun
@@ -124,7 +130,7 @@ class TestQgsExpressionCustomFunctions(TestCase):
             "  abc   ",
             " /* co */ da ",
         ]:
-            self.assertEqual( txt, QgsExpression(txt).expression() )
+            self.assertEqual(txt, QgsExpression(txt).expression())
 
     def testBlockComment(self):
         expressions = {
@@ -147,7 +153,6 @@ class TestQgsExpressionCustomFunctions(TestCase):
             exp = QgsExpression(e)
             result = exp.evaluate()
             self.assertEqual(exp_res, result)
-
 
     def testComment(self):
         expressions = {

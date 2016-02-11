@@ -22,6 +22,7 @@
 #include <QStringList>
 
 //#include "qgsdataitem.h"
+#include "qgsdatasourceuri.h"
 #include "qgserror.h"
 
 typedef int dataCapabilities_t();
@@ -70,7 +71,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual ~QgsDataProvider() {}
 
 
-    /*! Get the QgsCoordinateReferenceSystem for this layer
+    /** Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
@@ -91,11 +92,23 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Get the data source specification. This may be a path or database
      * connection string
+     * @param expandAuthConfig Whether to expand any assigned authentication configuration
      * @return data source specification
+     * @note The default authentication configuration expansion is FALSE. This keeps credentials
+     * out of layer data source URIs and project files. Expansion should be specifically done
+     * only when needed within a provider
      */
-    virtual QString dataSourceUri() const
+    virtual QString dataSourceUri( bool expandAuthConfig = false ) const
     {
-      return mDataSourceURI;
+      if ( expandAuthConfig && mDataSourceURI.contains( "authcfg" ) )
+      {
+        QgsDataSourceURI uri( mDataSourceURI );
+        return uri.uri( expandAuthConfig );
+      }
+      else
+      {
+        return mDataSourceURI;
+      }
     }
 
 
@@ -128,7 +141,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * that can be used by the data provider to create a subset.
      * Must be implemented in the dataprovider.
      */
-    virtual bool setSubsetString( QString subset, bool updateFeatureCount = true )
+    virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true )
     {
       // NOP by default
       Q_UNUSED( subset );
@@ -137,7 +150,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
 
-    /** provider supports setting of subset strings */
+    /** Provider supports setting of subset strings */
     virtual bool supportsSubsetString() { return false; }
 
     /**
@@ -216,7 +229,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
 
-    /** return a provider name
+    /** Return a provider name
 
     Essentially just returns the provider key.  Should be used to build file
     dialogs so that providers can be shown with their supported types. Thus
@@ -233,7 +246,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual QString name() const = 0;
 
 
-    /** return description
+    /** Return description
 
       Return a terse string describing what the provider is.
 
@@ -247,7 +260,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual QString description() const = 0;
 
 
-    /** return vector file filter string
+    /** Return vector file filter string
 
       Returns a string suitable for a QFileDialog of vector file formats
       supported by the data provider.  Naturally this will be an empty string
@@ -264,7 +277,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
 
-    /** return raster file filter string
+    /** Return raster file filter string
 
       Returns a string suitable for a QFileDialog of raster file formats
       supported by the data provider.  Naturally this will be an empty string
@@ -280,7 +293,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
       return "";
     }
 
-    /**Reloads the data from the source. Needs to be implemented by providers with data caches to
+    /** Reloads the data from the source. Needs to be implemented by providers with data caches to
       synchronize with changes in the data source*/
     virtual void reloadData() {}
 
@@ -308,6 +321,9 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      *   This is emitted whenever an asynchronous operation has finished
      *   and the data should be redrawn
+     *
+     *   When emitted from a QgsVectorDataProvider, any cached information such as
+     *   feature ids should be invalidated.
      */
     void dataChanged();
 

@@ -22,6 +22,7 @@ email                : brush.tyler@gmail.com
 
 
 class HtmlContent:
+
     def __init__(self, data):
         self.data = data if not isinstance(data, HtmlContent) else data.data
 
@@ -54,6 +55,7 @@ class HtmlContent:
 
 
 class HtmlElem:
+
     def __init__(self, tag, data, attrs=None):
         self.tag = tag
         self.data = data if isinstance(data, HtmlContent) else HtmlContent(data)
@@ -74,33 +76,36 @@ class HtmlElem:
     def getAttrsHtml(self):
         html = u''
         for k, v in self.attrs.iteritems():
-            html += u' %s="%s"' % ( k, v )
+            html += u' %s="%s"' % (k, v)
         return html
 
     def openTagHtml(self):
-        return u"<%s%s>" % ( self.tag, self.getAttrsHtml() )
+        return u"<%s%s>" % (self.tag, self.getAttrsHtml())
 
     def closeTagHtml(self):
         return u"</%s>" % self.tag
 
     def toHtml(self):
-        return u"%s%s%s" % ( self.openTagHtml(), self.data.toHtml(), self.closeTagHtml() )
+        return u"%s%s%s" % (self.openTagHtml(), self.data.toHtml(), self.closeTagHtml())
 
     def hasContents(self):
         return self.data.toHtml() != ""
 
 
 class HtmlParagraph(HtmlElem):
+
     def __init__(self, data, attrs=None):
         HtmlElem.__init__(self, 'p', data, attrs)
 
 
 class HtmlListItem(HtmlElem):
+
     def __init__(self, data, attrs=None):
         HtmlElem.__init__(self, 'li', data, attrs)
 
 
 class HtmlList(HtmlElem):
+
     def __init__(self, items, attrs=None):
         # make sure to have HtmlListItem items
         items = list(items)
@@ -111,6 +116,7 @@ class HtmlList(HtmlElem):
 
 
 class HtmlTableCol(HtmlElem):
+
     def __init__(self, data, attrs=None):
         HtmlElem.__init__(self, 'td', data, attrs)
 
@@ -120,6 +126,7 @@ class HtmlTableCol(HtmlElem):
 
 
 class HtmlTableRow(HtmlElem):
+
     def __init__(self, cols, attrs=None):
         # make sure to have HtmlTableCol items
         cols = list(cols)
@@ -130,6 +137,7 @@ class HtmlTableRow(HtmlElem):
 
 
 class HtmlTableHeader(HtmlTableRow):
+
     def __init__(self, cols, attrs=None):
         HtmlTableRow.__init__(self, cols, attrs)
         for c in self.getOriginalData():
@@ -137,6 +145,7 @@ class HtmlTableHeader(HtmlTableRow):
 
 
 class HtmlTable(HtmlElem):
+
     def __init__(self, rows, attrs=None):
         # make sure to have HtmlTableRow items
         rows = list(rows)
@@ -147,12 +156,14 @@ class HtmlTable(HtmlElem):
 
 
 class HtmlWarning(HtmlContent):
+
     def __init__(self, data):
         data = ['<img src=":/icons/warning-20px.png">&nbsp;&nbsp; ', data]
         HtmlContent.__init__(self, data)
 
 
 class HtmlSection(HtmlContent):
+
     def __init__(self, title, content=None):
         data = ['<div class="section"><h2>', title, '</h2>']
         if content is not None:

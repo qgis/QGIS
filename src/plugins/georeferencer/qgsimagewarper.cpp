@@ -42,7 +42,7 @@ QgsImageWarper::QgsImageWarper( QWidget *theParent )
 {
 }
 
-bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, const ResamplingMethod &resampling,
+bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, ResamplingMethod resampling,
     const GDALTransformerFunc &pfnTransform,
     GDALDatasetH &hSrcDS, GDALWarpOptions *&psWarpOptions )
 {
@@ -72,10 +72,9 @@ bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, const Resampl
   return true;
 }
 
-bool QgsImageWarper::createDestinationDataset(
-  const QString &outputName, GDALDatasetH hSrcDS, GDALDatasetH &hDstDS,
-  uint resX, uint resY, double *adfGeoTransform, bool useZeroAsTrans,
-  const QString& compression, const QString &projection )
+bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, GDALDatasetH &hDstDS,
+    uint resX, uint resY, double *adfGeoTransform, bool useZeroAsTrans,
+    const QString& compression, const QgsCoordinateReferenceSystem& crs )
 {
   // create the output file
   GDALDriverH driver = GDALGetDriverByName( "GTiff" );
@@ -83,7 +82,7 @@ bool QgsImageWarper::createDestinationDataset(
   {
     return false;
   }
-  char **papszOptions = NULL;
+  char **papszOptions = nullptr;
   papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", compression.toAscii() );
   hDstDS = GDALCreate( driver,
                        TO8F( outputName ), resX, resY,
@@ -100,20 +99,12 @@ bool QgsImageWarper::createDestinationDataset(
     return false;
   }
 
-  if ( !projection.isEmpty() )
+  if ( crs.isValid() )
   {
     OGRSpatialReference oTargetSRS;
-    if ( projection.startsWith( "EPSG", Qt::CaseInsensitive ) )
-    {
-      QString epsg = projection.mid( projection.indexOf( ":" ) + 1 );
-      oTargetSRS.importFromEPSG( epsg.toInt() );
-    }
-    else
-    {
-      oTargetSRS.importFromProj4( projection.toLatin1().data() );
-    }
+    oTargetSRS.importFromProj4( crs.toProj4().toLatin1().data() );
 
-    char *wkt = NULL;
+    char *wkt = nullptr;
     OGRErr err = oTargetSRS.exportToWkt( &wkt );
     if ( err != CE_None || GDALSetProjection( hDstDS, wkt ) != CE_None )
     {
@@ -155,7 +146,7 @@ int QgsImageWarper::warpFile( const QString& input,
                               ResamplingMethod resampling,
                               bool useZeroAsTrans,
                               const QString& compression,
-                              const QString &projection,
+                              const QgsCoordinateReferenceSystem& crs,
                               double destResX, double destResY )
 {
   if ( !georefTransform.parametersInitialized() )
@@ -221,7 +212,7 @@ int QgsImageWarper::warpFile( const QString& input,
 
   if ( !createDestinationDataset( output, hSrcDS, hDstDS, destPixels, destLines,
                                   adfGeoTransform, useZeroAsTrans, compression,
-                                  projection ) )
+                                  crs ) )
   {
     GDALClose( hSrcDS );
     GDALDestroyWarpOptions( psWarpOptions );
@@ -283,7 +274,7 @@ void *QgsImageWarper::addGeoToPixelTransform( GDALTransformerFunc GDALTransforme
   {
     // Error handling if inversion fails - although the inverse transform is not needed for warp operation
     delete chain;
-    return 0;
+    return nullptr;
   }
   return ( void* )chain;
 }

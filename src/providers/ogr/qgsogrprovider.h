@@ -49,7 +49,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
   public:
 
-    /** convert a vector layer to a vector file */
+    /** Convert a vector layer to a vector file */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
       const QgsFields &fields,
@@ -57,15 +57,15 @@ class QgsOgrProvider : public QgsVectorDataProvider
       const QgsCoordinateReferenceSystem *srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = 0,
-      const QMap<QString, QVariant> *options = 0
+      QString *errorMessage = nullptr,
+      const QMap<QString, QVariant> *options = nullptr
     );
 
     /**
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    QgsOgrProvider( QString const & uri = "" );
+    explicit QgsOgrProvider( QString const & uri = "" );
 
     /**
      * Destructor
@@ -96,8 +96,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     virtual bool supportsSubsetString() override { return true; }
 
-    /** mutator for sql where clause used to limit dataset size */
-    virtual bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) override;
+    /** Mutator for sql where clause used to limit dataset size */
+    virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     /**
      * Get feature type.
@@ -105,7 +105,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual QGis::WkbType geometryType() const override;
 
-    /** return the number of layers for the current data source
+    /** Return the number of layers for the current data source
 
     @note
 
@@ -131,10 +131,10 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual void updateExtents() override;
 
-    /**Writes a list of features to the file*/
+    /** Writes a list of features to the file*/
     virtual bool addFeatures( QgsFeatureList & flist ) override;
 
-    /**Deletes a feature*/
+    /** Deletes a feature*/
     virtual bool deleteFeatures( const QgsFeatureIds & id ) override;
 
     /**
@@ -151,17 +151,17 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual bool deleteAttributes( const QgsAttributeIds &attributes ) override;
 
-    /**Changes attribute values of existing features */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) override;
+    /** Changes attribute values of existing features */
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
-    /**Changes existing geometries*/
-    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map ) override;
+    /** Changes existing geometries*/
+    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
-    /**Tries to create a .qix index file for faster access if only a subset of the features is required
+    /** Tries to create a .qix index file for faster access if only a subset of the features is required
      @return true in case of success*/
     virtual bool createSpatialIndex() override;
 
-    /**Create an attribute index on the datasource*/
+    /** Create an attribute index on the datasource*/
     virtual bool createAttributeIndex( int field ) override;
 
     /** Returns a bitmask containing the supported capabilities
@@ -175,7 +175,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual void setEncoding( const QString& e ) override;
 
 
-    /** return vector file filter string
+    /** Return vector file filter string
 
       Returns a string suitable for a QFileDialog of vector file formats
       supported by the data provider.  Naturally this will be an empty string
@@ -188,14 +188,14 @@ class QgsOgrProvider : public QgsVectorDataProvider
     */
     /* virtual */
     QString fileVectorFilters() const override;
-    /** return a string containing the available database drivers */
+    /** Return a string containing the available database drivers */
     QString databaseDrivers() const;
-    /** return a string containing the available directory drivers */
+    /** Return a string containing the available directory drivers */
     QString protocolDrivers() const;
-    /** return a string containing the available protocol drivers */
+    /** Return a string containing the available protocol drivers */
     QString directoryDrivers() const;
 
-    /**Returns true if this is a valid shapefile
+    /** Returns true if this is a valid shapefile
     */
     bool isValid() override;
 
@@ -212,7 +212,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      *  @param values reference to the list of unique values */
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) override;
 
-    /** return a provider name
+    /** Return a provider name
 
     Essentially just returns the provider key.  Should be used to build file
     dialogs so that providers can be shown with their supported types. Thus
@@ -229,7 +229,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QString name() const override;
 
 
-    /** return description
+    /** Return description
 
       Return a terse string describing what the provider is.
 
@@ -243,11 +243,11 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QString description() const override;
 
     /** Returns true if the provider is strict about the type of inserted features
-          (e.g. no multipolygon in a polygon layer)
-          */
-    virtual bool doesStrictFeatureTypeCheck() const override { return false;}
+        (e.g. no multipolygon in a polygon layer)
+      */
+    virtual bool doesStrictFeatureTypeCheck() const override;
 
-    /** return OGR geometry type */
+    /** Return OGR geometry type */
     static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer );
 
     /** Get single flatten geometry type */
@@ -261,33 +261,43 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     QTextCodec* textEncoding() { return mEncoding; }
 
-    QByteArray quotedIdentifier( QByteArray field );
+    QByteArray quotedIdentifier( QByteArray field ) const;
+
+    /**
+     * A forced reload invalidates the underlying connection.
+     * E.g. in case a shapefile is replaced, the old file will be closed
+     * and the new file will be opened.
+     */
+    void forceReload() override;
 
   protected:
-    /** loads fields from input file to member attributeFields */
+    /** Loads fields from input file to member attributeFields */
     void loadFields();
 
-    /** find out the number of features of the whole layer */
+    /** Find out the number of features of the whole layer */
     void recalculateFeatureCount();
 
-    /** tell OGR, which fields to fetch in nextFeature/featureAtId (ie. which not to ignore) */
+    /** Tell OGR, which fields to fetch in nextFeature/featureAtId (ie. which not to ignore) */
     void setRelevantFields( OGRLayerH ogrLayer, bool fetchGeometry, const QgsAttributeList& fetchAttributes );
 
-    /** convert a QgsField to work with OGR */
+    /** Convert a QgsField to work with OGR */
     static bool convertField( QgsField &field, const QTextCodec &encoding );
 
     /** Clean shapefile from features which are marked as deleted */
     void repack();
 
+    void open();
+    void close();
+
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
     QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
-    OGRwkbGeometryType ogrWkbGeometryTypeFromName( QString typeName ) const;
+    OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString& typeName ) const;
     QgsFields mAttributeFields;
     OGRDataSourceH ogrDataSource;
-    void *extent_;
+    OGREnvelope* mExtent;
 
-    /**This member variable receives the same value as extent_
+    /** This member variable receives the same value as extent_
      in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
     QgsRectangle mExtentRect;
     OGRLayerH ogrLayer;
@@ -322,30 +332,29 @@ class QgsOgrProvider : public QgsVectorDataProvider
     // Friendly name of the OGR Driver that was actually used to open the layer
     QString ogrDriverName;
 
-    bool valid;
+    bool mValid;
 
     OGRwkbGeometryType geomType;
-    long featuresCounted;
-
-    //! Data has been modified - REPACK before creating a spatialindex
-    bool mDataModified;
+    long mFeaturesCounted;
 
     mutable QStringList mSubLayerList;
 
-    /**Adds one feature*/
+    /** Adds one feature*/
     bool addFeature( QgsFeature& f );
-    /**Deletes one feature*/
+    /** Deletes one feature*/
     bool deleteFeature( QgsFeatureId id );
 
-    /**Calls OGR_L_SyncToDisk and recreates the spatial index if present*/
+    /** Calls OGR_L_SyncToDisk and recreates the spatial index if present*/
     bool syncToDisc();
 
     OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds );
 
     friend class QgsOgrFeatureSource;
 
-    /** whether the file is opened in write mode*/
+    /** Whether the file is opened in write mode*/
     bool mWriteAccess;
+
+    bool mShapefileMayBeCorrupted;
 };
 
 
@@ -355,4 +364,8 @@ class QgsOgrUtils
     static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes );
     static OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec* encoding, const QString& subsetString );
     static QByteArray quotedIdentifier( QByteArray field, const QString& ogrDriverName );
+
+    /** Quote a value for placement in a SQL string.
+     */
+    static QString quotedValue( const QVariant& value );
 };

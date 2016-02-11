@@ -225,6 +225,15 @@
             <normaloff>:/images/themes/default/propertyicons/metadata.svg</normaloff>:/images/themes/default/propertyicons/metadata.svg</iconset>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Variables</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -501,7 +510,7 @@
                   </sizepolicy>
                  </property>
                  <property name="title">
-                  <string>Feature subset</string>
+                  <string>Provider feature filter</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_4">
                   <item row="1" column="1">
@@ -692,8 +701,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>123</width>
-                <height>38</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -774,8 +783,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -834,8 +843,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>721</width>
-                <height>171</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -941,6 +950,13 @@
                 </widget>
                </item>
                <item>
+                <widget class="QCheckBox" name="mForceRasterCheckBox">
+                 <property name="text">
+                  <string>Force layer to render as a raster (may result in smaller export file sizes)</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <spacer name="verticalSpacer_6">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -986,8 +1002,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>487</width>
-                <height>182</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -1165,8 +1181,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1231,8 +1247,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>134</width>
-                <height>113</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1294,7 +1310,7 @@
                    </property>
                    <property name="icon">
                     <iconset resource="../../images/images.qrc">
-                     <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
+                     <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                    </property>
                   </widget>
                  </item>
@@ -1305,7 +1321,7 @@
                    </property>
                    <property name="icon">
                     <iconset resource="../../images/images.qrc">
-                     <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+                     <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                    </property>
                   </widget>
                  </item>
@@ -1399,9 +1415,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>393</width>
-                <height>608</height>
+                <y>-104</y>
+                <width>714</width>
+                <height>641</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_3">
@@ -1422,7 +1438,14 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="mLayerTitleLineEdit"/>
+                   <widget class="QLineEdit" name="mLayerTitleLineEdit">
+                    <property name="toolTip">
+                     <string>The title is for the benefit of humans to identify layer.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>The title is for the benefit of humans to identify layer.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="3" column="0">
                    <widget class="QLabel" name="mLayerAbstractLabel">
@@ -1445,6 +1468,9 @@
                       <height>50</height>
                      </size>
                     </property>
+                    <property name="toolTip">
+                     <string>The abstract is a descriptive narrative providing more information about the layer.</string>
+                    </property>
                    </widget>
                   </item>
                   <item row="5" column="0">
@@ -1455,7 +1481,14 @@
                    </widget>
                   </item>
                   <item row="5" column="1">
-                   <widget class="QLineEdit" name="mLayerKeywordListLineEdit"/>
+                   <widget class="QLineEdit" name="mLayerKeywordListLineEdit">
+                    <property name="toolTip">
+                     <string>List of keywords separated by comma to help catalog searching.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>List of keywords separated by comma to help catalog searching.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="6" column="0">
                    <widget class="QLabel" name="mLayerDataUrlLabel">
@@ -1467,7 +1500,14 @@
                   <item row="6" column="1">
                    <layout class="QHBoxLayout" name="horizontalLayout_7">
                     <item>
-                     <widget class="QLineEdit" name="mLayerDataUrlLineEdit"/>
+                     <widget class="QLineEdit" name="mLayerDataUrlLineEdit">
+                      <property name="toolTip">
+                       <string>An URL of the data presentation.</string>
+                      </property>
+                      <property name="placeholderText">
+                       <string>An URL of the data presentation.</string>
+                      </property>
+                     </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="mLayerDataUrlFormatLabel">
@@ -1497,6 +1537,29 @@
                     </item>
                    </layout>
                   </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="mLayerShortNameLabel">
+                    <property name="text">
+                     <string>Short name</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLineEdit" name="mLayerShortNameLineEdit">
+                    <property name="toolTip">
+                     <string>A name used to identify the layer. The short name is a text string used for machine-to-machine communication.</string>
+                    </property>
+                    <property name="inputMask">
+                     <string/>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="placeholderText">
+                     <string>A name used to identify the layer. The short name is a text string used for machine-to-machine communication.</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>
@@ -1517,7 +1580,14 @@
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QLineEdit" name="mLayerAttributionLineEdit"/>
+                   <widget class="QLineEdit" name="mLayerAttributionLineEdit">
+                    <property name="toolTip">
+                     <string>Attribution's title indicates the provider of the layer.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>Attribution's title indicates the provider of the data layer.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="mLayerAttributionUrlLabel">
@@ -1527,7 +1597,14 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="mLayerAttributionUrlLineEdit"/>
+                   <widget class="QLineEdit" name="mLayerAttributionUrlLineEdit">
+                    <property name="toolTip">
+                     <string>Attribution's url gives a link to the webpage of the provider of the data layer.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>Attribution's url gives a link to the webpage of the provider of the data layer.</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -1549,7 +1626,14 @@
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QLineEdit" name="mLayerMetadataUrlLineEdit"/>
+                   <widget class="QLineEdit" name="mLayerMetadataUrlLineEdit">
+                    <property name="toolTip">
+                     <string>The URL of the metadata document.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>The URL of the metadata document.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="1" column="1">
                    <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -1639,7 +1723,14 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="mLayerLegendUrlLineEdit"/>
+                     <widget class="QLineEdit" name="mLayerLegendUrlLineEdit">
+                      <property name="toolTip">
+                       <string>An URL of the legend image.</string>
+                      </property>
+                      <property name="placeholderText">
+                       <string>An URL of the legend image.</string>
+                      </property>
+                     </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="mLayerLegendUrlFormatLabel">
@@ -1728,6 +1819,26 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="page">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QGroupBox" name="groupBox_4">
+             <property name="title">
+              <string>Variables</string>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <item>
+               <widget class="QgsVariableEditorWidget" name="mVariableEditor" native="true">
+                <property name="settingGroup" stdset="0">
+                 <string notr="true">projectProperties</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -1784,9 +1895,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScaleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsscalecombobox.h</header>
+   <class>QgsScaleRangeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalerangewidget.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
@@ -1795,13 +1906,18 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScaleRangeWidget</class>
+   <class>QgsScaleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsscalecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
-   <header>qgsscalerangewidget.h</header>
+   <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>buttonBox</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mLayerOrigNameLineEdit</tabstop>
@@ -1812,8 +1928,8 @@
   <tabstop>pbnIndex</tabstop>
   <tabstop>pbnUpdateExtents</tabstop>
   <tabstop>mScaleVisibilityGroupBox</tabstop>
-  <tabstop>pbnQueryBuilder</tabstop>
   <tabstop>txtSubsetSQL</tabstop>
+  <tabstop>pbnQueryBuilder</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>scrollArea_9</tabstop>
   <tabstop>labelCheckBox</tabstop>
@@ -1823,6 +1939,7 @@
   <tabstop>mSimplifyDrawingSpinBox</tabstop>
   <tabstop>mSimplifyDrawingAtProvider</tabstop>
   <tabstop>mSimplifyMaximumScaleComboBox</tabstop>
+  <tabstop>mForceRasterCheckBox</tabstop>
   <tabstop>scrollArea_10</tabstop>
   <tabstop>fieldComboRadio</tabstop>
   <tabstop>displayFieldComboBox</tabstop>
@@ -1836,8 +1953,9 @@
   <tabstop>scrollArea_7</tabstop>
   <tabstop>mButtonAddJoin</tabstop>
   <tabstop>mButtonRemoveJoin</tabstop>
-  <tabstop>mDiagramFrame</tabstop>
+  <tabstop>mButtonEditJoin</tabstop>
   <tabstop>scrollArea_2</tabstop>
+  <tabstop>mLayerShortNameLineEdit</tabstop>
   <tabstop>mLayerTitleLineEdit</tabstop>
   <tabstop>mLayerAbstractTextEdit</tabstop>
   <tabstop>mLayerKeywordListLineEdit</tabstop>

@@ -48,7 +48,7 @@
 class DummyPaintEffect : public QgsPaintEffect
 {
   public:
-    DummyPaintEffect( QString prop1, QString prop2 ) : mProp1( prop1 ), mProp2( prop2 ) {}
+    DummyPaintEffect( const QString& prop1, const QString& prop2 ) : mProp1( prop1 ), mProp2( prop2 ) {}
     virtual ~DummyPaintEffect() {}
     virtual QString type() const override { return "Dummy"; }
     virtual QgsPaintEffect* clone() const override { return new DummyPaintEffect( mProp1, mProp2 ); }
@@ -86,6 +86,10 @@ class DummyPaintEffect : public QgsPaintEffect
 class TestQgsPaintEffect: public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsPaintEffect();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -111,8 +115,8 @@ class TestQgsPaintEffect: public QObject
     void composer();
 
   private:
-    bool imageCheck( QString testName , QImage &image, int mismatchCount = 0 );
-    bool mapRenderCheck( QString testName, QgsMapSettings &mapSettings, int mismatchCount = 0 );
+    bool imageCheck( const QString& testName , QImage &image, int mismatchCount = 0 );
+    bool mapRenderCheck( const QString& testName, QgsMapSettings &mapSettings, int mismatchCount = 0 );
 
     QString mReport;
     QString mTestDataDir;
@@ -120,6 +124,12 @@ class TestQgsPaintEffect: public QObject
     QPicture* mPicture;
 };
 
+
+TestQgsPaintEffect::TestQgsPaintEffect()
+    : mPicture( 0 )
+{
+
+}
 
 void TestQgsPaintEffect::initTestCase()
 {
@@ -133,12 +143,12 @@ void TestQgsPaintEffect::initTestCase()
   registry->addEffectType( new QgsPaintEffectMetadata( "Dummy", "Dummy effect", DummyPaintEffect::create ) );
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + QDir::separator();
+  mTestDataDir = myDataDir + '/';
 }
 
 void TestQgsPaintEffect::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -244,13 +254,13 @@ void TestQgsPaintEffect::stackSaveRestore()
 
   //check if stack effect node was written
   QDomNodeList evalNodeList = effectParentElem.childNodes();
-  QCOMPARE( evalNodeList.length(), ( unsigned int )1 );
+  QCOMPARE( evalNodeList.count(), 1 );
   QDomElement effectElem = evalNodeList.at( 0 ).toElement();
   QCOMPARE( effectElem.attribute( "type" ), stack->type() );
 
   //should be two effect child nodes
   QDomNodeList childNodeList = effectElem.elementsByTagName( "effect" );
-  QCOMPARE( childNodeList.length(), ( unsigned int )2 );
+  QCOMPARE( childNodeList.count(), 2 );
   QCOMPARE( childNodeList.at( 0 ).toElement().attribute( "type" ), blur->type() );
   QCOMPARE( childNodeList.at( 1 ).toElement().attribute( "type" ), shadow->type() );
 
@@ -318,7 +328,10 @@ void TestQgsPaintEffect::drawSource()
 
   //test render
   QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
   image.fill( Qt::transparent );
+
   QPainter painter;
   painter.begin( &image );
   QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( &painter );
@@ -390,6 +403,8 @@ void TestQgsPaintEffect::blur()
   delete effect;
 
   QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
@@ -486,6 +501,8 @@ void TestQgsPaintEffect::dropShadow()
   delete effect;
 
   QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
@@ -587,6 +604,8 @@ void TestQgsPaintEffect::glow()
   delete effect;
 
   QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
@@ -647,6 +666,8 @@ void TestQgsPaintEffect::stack()
   //rendering
 
   QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
@@ -876,6 +897,7 @@ void TestQgsPaintEffect::composer()
   p.end();
 
   bool result = imageCheck( "painteffect_composer", outputImage );
+  delete composition;
   QVERIFY( result );
 }
 
@@ -884,7 +906,7 @@ void TestQgsPaintEffect::composer()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsPaintEffect::imageCheck( QString testName, QImage &image, int mismatchCount )
+bool TestQgsPaintEffect::imageCheck( const QString& testName, QImage &image, int mismatchCount )
 {
   //draw background
   QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );
@@ -894,10 +916,11 @@ bool TestQgsPaintEffect::imageCheck( QString testName, QImage &image, int mismat
   painter.end();
 
   mReport += "<h2>" + testName + "</h2>\n";
-  QString tempDir = QDir::tempPath() + QDir::separator();
+  QString tempDir = QDir::tempPath() + '/';
   QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
   QgsRenderChecker checker;
+  checker.setControlPathPrefix( "effects" );
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( fileName );
   checker.setColorTolerance( 2 );
@@ -906,9 +929,11 @@ bool TestQgsPaintEffect::imageCheck( QString testName, QImage &image, int mismat
   return resultFlag;
 }
 
-bool TestQgsPaintEffect::mapRenderCheck( QString testName, QgsMapSettings& mapSettings, int mismatchCount )
+bool TestQgsPaintEffect::mapRenderCheck( const QString& testName, QgsMapSettings& mapSettings, int mismatchCount )
 {
   QgsMultiRenderChecker checker;
+  checker.setControlPathPrefix( "effects" );
+  mapSettings.setOutputDpi( 96 );
   checker.setControlName( "expected_" + testName );
   checker.setMapSettings( mapSettings );
   checker.setColorTolerance( 20 );

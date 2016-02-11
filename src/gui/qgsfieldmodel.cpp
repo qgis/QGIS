@@ -14,16 +14,18 @@
 ***************************************************************************/
 
 #include <QFont>
+#include <QIcon>
 
 #include "qgsfieldmodel.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
     : QAbstractItemModel( parent )
-    , mLayer( NULL )
+    , mLayer( nullptr )
     , mAllowExpression( false )
 {
 }
@@ -75,22 +77,20 @@ void QgsFieldModel::setLayer( QgsVectorLayer *layer )
     disconnect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( layerDeleted() ) );
   }
 
-  if ( !layer )
+  mLayer = layer;
+
+  if ( mLayer )
   {
-    mLayer = 0;
-    updateModel();
-    return;
+    connect( mLayer, SIGNAL( updatedFields() ), this, SLOT( updateModel() ) );
+    connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( layerDeleted() ) );
   }
 
-  mLayer = layer;
-  connect( mLayer, SIGNAL( updatedFields() ), this, SLOT( updateModel() ) );
-  connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( layerDeleted() ) );
   updateModel();
 }
 
 void QgsFieldModel::layerDeleted()
 {
-  mLayer = 0;
+  mLayer = nullptr;
   updateModel();
 }
 
@@ -98,7 +98,7 @@ void QgsFieldModel::updateModel()
 {
   if ( mLayer )
   {
-    QgsFields newFields = mLayer->pendingFields();
+    QgsFields newFields = mLayer->fields();
     if ( mFields.toList() != newFields.toList() )
     {
       // Try to handle two special cases: addition of a new field and removal of a field.
@@ -152,7 +152,7 @@ void QgsFieldModel::updateModel()
 
       // general case with reset - not good - resets selections
       beginResetModel();
-      mFields = mLayer->pendingFields();
+      mFields = mLayer->fields();
       endResetModel();
     }
     else
@@ -240,6 +240,25 @@ int QgsFieldModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
 {
+  static QIcon intIcon;
+  if ( intIcon.isNull() )
+    intIcon = QgsApplication::getThemeIcon( "/mIconFieldInteger.svg" );
+  static QIcon floatIcon;
+  if ( floatIcon.isNull() )
+    floatIcon = QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" );
+  static QIcon stringIcon;
+  if ( stringIcon.isNull() )
+    stringIcon = QgsApplication::getThemeIcon( "/mIconFieldText.svg" );
+  static QIcon dateIcon;
+  if ( dateIcon.isNull() )
+    dateIcon = QgsApplication::getThemeIcon( "/mIconFieldDate.svg" );
+  static QIcon dateTimeIcon;
+  if ( dateTimeIcon.isNull() )
+    dateTimeIcon = QgsApplication::getThemeIcon( "/mIconFieldDateTime.svg" );
+  static QIcon timeIcon;
+  if ( timeIcon.isNull() )
+    timeIcon = QgsApplication::getThemeIcon( "/mIconFieldTime.svg" );
+
   if ( !index.isValid() )
     return QVariant();
 
@@ -289,7 +308,11 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       if ( exprIdx >= 0 )
       {
         QgsExpression exp( mExpression[exprIdx] );
-        exp.prepare( mLayer ? mLayer->pendingFields() : QgsFields() );
+        QgsExpressionContext context;
+        if ( mLayer )
+          context.setFields( mLayer->fields() );
+
+        exp.prepare( &context );
         return !exp.hasParserError();
       }
       return true;
@@ -300,7 +323,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       if ( exprIdx < 0 )
       {
         QgsField field = mFields[index.row()];
-        return ( int )field.type();
+        return static_cast< int >( field.type() );
       }
       return QVariant();
     }
@@ -330,7 +353,11 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       {
         // if expression, test validity
         QgsExpression exp( mExpression[exprIdx] );
-        exp.prepare( mLayer ? mLayer->pendingFields() : QgsFields() );
+        QgsExpressionContext context;
+        if ( mLayer )
+          context.setFields( mLayer->fields() );
+
+        exp.prepare( &context );
         if ( exp.hasParserError() )
         {
           return QBrush( QColor( Qt::red ) );
@@ -349,6 +376,49 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
         return font;
       }
       return QVariant();
+    }
+
+    case Qt::DecorationRole:
+    {
+      if ( exprIdx < 0 )
+      {
+        QgsField field = mFields[index.row()];
+        int fieldType = static_cast< int >( field.type() );
+
+        switch ( fieldType )
+        {
+          case QVariant::Int:
+          case QVariant::UInt:
+          case QVariant::LongLong:
+          case QVariant::ULongLong:
+          {
+            return intIcon;
+          }
+          case QVariant::Double:
+          {
+            return floatIcon;
+          }
+          case QVariant::String:
+          {
+            return stringIcon;
+          }
+          case QVariant::Date:
+          {
+            return dateIcon;
+          }
+          case QVariant::DateTime:
+          {
+            return dateTimeIcon;
+          }
+          case QVariant::Time:
+          {
+            return timeIcon;
+          }
+          default:
+            return QIcon();
+        }
+      }
+      return QIcon();
     }
 
     default:

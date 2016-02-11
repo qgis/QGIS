@@ -1,6 +1,6 @@
 /***************************************************************************
                           qgsseerversinterface.h
- Interface class for exposing functions in Qgis Mapserver for use by plugins
+ Interface class for exposing functions in QGIS Server for use by plugins
                              -------------------
   begin                : 2014-09-10
   copyright            : (C) 2014 by Alessandro Pasotti
@@ -20,10 +20,12 @@
 #include "qgsserverinterfaceimpl.h"
 
 
+/** Constructor */
 QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache ) :
     mCapabilitiesCache( capCache )
 {
-  mRequestHandler = NULL;
+  mRequestHandler = nullptr;
+  mAccessControls = new QgsAccessControl();
 }
 
 
@@ -36,6 +38,13 @@ QString QgsServerInterfaceImpl::getEnv( const QString& name ) const
 /** Destructor */
 QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
 {
+  delete mAccessControls;
+}
+
+
+void QgsServerInterfaceImpl::clearRequestHandler( )
+{
+  mRequestHandler = nullptr;
 }
 
 void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler * requestHandler )
@@ -43,7 +52,23 @@ void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler * requestHandl
   mRequestHandler = requestHandler;
 }
 
+void QgsServerInterfaceImpl::setConfigFilePath( const QString& configFilePath )
+{
+  mConfigFilePath = configFilePath;
+}
+
 void QgsServerInterfaceImpl::registerFilter( QgsServerFilter *filter, int priority )
 {
   mFilters.insert( priority, filter );
+}
+
+void QgsServerInterfaceImpl::setFilters( QgsServerFiltersMap* filters )
+{
+  mFilters = *filters;
+}
+
+/** Register a new access control filter */
+void QgsServerInterfaceImpl::registerAccessControl( QgsAccessControlFilter* accessControl, int priority )
+{
+  mAccessControls->registerAccessControl( accessControl, priority );
 }

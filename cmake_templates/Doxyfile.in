@@ -572,16 +572,19 @@ WARN_LOGFILE           =
 
 INPUT                  = @CMAKE_SOURCE_DIR@/doc \
                          @CMAKE_SOURCE_DIR@/src/core \
+                         @CMAKE_SOURCE_DIR@/src/core/auth \
                          @CMAKE_SOURCE_DIR@/src/core/composer \
                          @CMAKE_SOURCE_DIR@/src/core/diagram \
                          @CMAKE_SOURCE_DIR@/src/core/dxf \
                          @CMAKE_SOURCE_DIR@/src/core/effects \
+                         @CMAKE_SOURCE_DIR@/src/core/geometry \
                          @CMAKE_SOURCE_DIR@/src/core/gps \
                          @CMAKE_SOURCE_DIR@/src/core/layertree \
                          @CMAKE_SOURCE_DIR@/src/core/pal \
                          @CMAKE_SOURCE_DIR@/src/core/raster \
                          @CMAKE_SOURCE_DIR@/src/core/symbology-ng \
                          @CMAKE_SOURCE_DIR@/src/gui \
+                         @CMAKE_SOURCE_DIR@/src/gui/auth \
                          @CMAKE_SOURCE_DIR@/src/gui/attributetable \
                          @CMAKE_SOURCE_DIR@/src/gui/editorwidgets \
                          @CMAKE_SOURCE_DIR@/src/gui/editorwidgets/core \
@@ -596,10 +599,12 @@ INPUT                  = @CMAKE_SOURCE_DIR@/doc \
                          @CMAKE_SOURCE_DIR@/src/analysis/raster \
                          @CMAKE_SOURCE_DIR@/src/analysis/vector \
                          @CMAKE_SOURCE_DIR@/src/plugins \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsserver.h \
                          @CMAKE_SOURCE_DIR@/src/server/qgscapabilitiescache.h \
                          @CMAKE_SOURCE_DIR@/src/server/qgsmapserviceexception.h \
                          @CMAKE_SOURCE_DIR@/src/server/qgsrequesthandler.h \
                          @CMAKE_SOURCE_DIR@/src/server/qgsserverfilter.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsaccesscontrolfilter.h \
                          @CMAKE_SOURCE_DIR@/src/server/qgsserverinterface.h
 
 # This tag can be used to specify the character encoding of the source files
@@ -1404,7 +1409,7 @@ SKIP_FUNCTION_MACROS   = YES
 # If a tag file is not located in the directory in which doxygen
 # is run, you must also specify the path to the tagfile here.
 
-TAGFILES               =
+TAGFILES               = @DOXYGEN_TAGS@
 
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create
 # a tag file that is based on the input files it reads.
@@ -1616,7 +1621,7 @@ DOT_TRANSPARENT        = NO
 # makes dot run faster, but since only newer versions of dot (>1.8.10)
 # support this, this feature is disabled by default.
 
-DOT_MULTI_TARGETS      = NO
+DOT_MULTI_TARGETS      = YES
 
 # If the GENERATE_LEGEND tag is set to YES (the default) Doxygen will
 # generate a legend page explaining the meaning of the various boxes and

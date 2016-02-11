@@ -20,6 +20,7 @@ SET (INTERPOLATION_MOC_HDRS
      qgstininterpolatordialog.h
      qgsidwinterpolatordialog.h
      qgsinterpolationdialog.h
+     qgsinterpolatordialog.h
 )
 
 SET (INTERPOLATION_RCCS  interpolator.qrc)
@@ -38,11 +39,15 @@ ADD_LIBRARY (interpolationplugin MODULE
   ${INTERPOLATION_RCC_SRCS}
   ${INTERPOLATION_UIS_H})
 
+INCLUDE_DIRECTORIES(SYSTEM
+     ${GEOS_INCLUDE_DIR}
+)
+
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
-     ${GEOS_INCLUDE_DIR}
      ../../analysis/interpolation
      ../../core
+     ../../core/geometry
      ../../core/raster
      ../../gui
      ..

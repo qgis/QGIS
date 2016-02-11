@@ -1,4 +1,19 @@
 #!/bin/bash
+###########################################################################
+#    buildrpms.sh
+#    ---------------------
+#    Date                 : March 2014
+#    Copyright            : (C) 2014 by Matthias Kuhn
+#    Email                : matthias at opengis dot ch
+###########################################################################
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+###########################################################################
+
 function print_info
 {
   echo -e "\e[0;32m$1\033[0m"
@@ -68,11 +83,11 @@ fi
 
 # Get the version string
 major=$(grep -e 'SET(CPACK_PACKAGE_VERSION_MAJOR' ../CMakeLists.txt |
-    sed 's/.*\([0-9]\).*/\1/')
+        sed -r 's/.*\"([0-9]+)\".*/\1/g')
 minor=$(grep -e 'SET(CPACK_PACKAGE_VERSION_MINOR' ../CMakeLists.txt |
-    sed 's/.*\([0-9]\).*/\1/')
+        sed -r 's/.*\"([0-9]+)\".*/\1/g')
 patch=$(grep -e 'SET(CPACK_PACKAGE_VERSION_PATCH' ../CMakeLists.txt |
-    sed 's/.*\([0-9]\).*/\1/')
+        sed -r 's/.*\"([0-9]+)\".*/\1/g')
 
 version=$(echo $major.$minor.$patch)
 

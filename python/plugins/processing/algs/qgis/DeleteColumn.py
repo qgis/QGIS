@@ -39,14 +39,14 @@ class DeleteColumn(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Delete column'
-        self.group = 'Vector table tools'
+        self.name, self.i18n_name = self.trAlgorithm('Delete column')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.COLUMN,
-            self.tr('Field to delete'), self.INPUT))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+                                              self.tr('Field to delete'), self.INPUT))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Deleted column')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -57,7 +57,7 @@ class DeleteColumn(GeoAlgorithm):
         fields.remove(idx)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-            layer.wkbType(), layer.crs())
+                                                                     layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
         count = len(features)

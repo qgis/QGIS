@@ -1,0 +1,4 @@
+[console_scripts]
+nose2 = nose2:discover
+nose2-2.7 = nose2:discover
+

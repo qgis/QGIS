@@ -33,7 +33,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
   public:
 
     //! Constructor
-    QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f = 0 );
+    QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f = nullptr );
 
     //! Save position
     void saveWindowLocation( void );
@@ -51,8 +51,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void removeLastPoint();
 
   public slots:
-    //! Reject
-    void on_buttonBox_rejected( void );
+    virtual void reject() override;
 
     //! Reset and start new
     void restart();
@@ -67,12 +66,15 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void updateSettings();
 
   private slots:
-    void unitsChanged( const QString &units );
+    void unitsChanged( int index );
+
+    //! Open configuration tab
+    void openConfigTab();
 
   private:
 
     //! formats distance to most appropriate units
-    QString formatDistance( double distance );
+    QString formatDistance( double distance, bool convertUnits = true );
 
     //! formats area to most appropriate units
     QString formatArea( double area );
@@ -82,6 +84,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! Converts the measurement, depending on settings in options and current transformation
     void convertMeasurement( double &measure, QGis::UnitType &u, bool isArea );
+
+    double convertLength( double length, QGis::UnitType toUnit );
 
     double mTotal;
 

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgsattributetabledialog.h"
 #include "qgscursors.h"
 #include "qgsdistancearea.h"
@@ -33,8 +34,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsmaplayerregistry.h"
-#include "qgisapp.h"
 #include "qgsrendererv2.h"
+#include "qgsunittypes.h"
 
 #include <QSettings>
 #include <QMouseEvent>
@@ -81,7 +82,7 @@ QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
   return mResultsDialog;
 }
 
-void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, const QList<QgsFeature> featureList )
+void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, const QList<QgsFeature>& featureList )
 {
   resultsDialog()->clear();
 
@@ -101,17 +102,17 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, const QLi
   tableDialog->show();
 }
 
-void QgsMapToolIdentifyAction::canvasMoveEvent( QMouseEvent *e )
+void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolIdentifyAction::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   resultsDialog()->clear();
   connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
@@ -187,7 +188,9 @@ QGis::UnitType QgsMapToolIdentifyAction::displayUnits()
 {
   // Get the units for display
   QSettings settings;
-  return QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+  bool ok = false;
+  QGis::UnitType unit = QgsUnitTypes::decodeDistanceUnit( settings.value( "/qgis/measure/displayunits" ).toString(), &ok );
+  return ok ? unit : QGis::Meters;
 }
 
 void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore & featureStore )

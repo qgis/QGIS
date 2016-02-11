@@ -4,11 +4,11 @@ class QgsColorBrewerPalette
 #include <qgscolorbrewerpalette.h>
 %End
   public:
-    static QList<QColor> listSchemeColors( QString schemeName, int colors );
+    static QList<QColor> listSchemeColors( const QString& schemeName, int colors );
 
     static QStringList listSchemes();
 
-    static QList<int> listSchemeVariants( QString schemeName );
+    static QList<int> listSchemeVariants( const QString& schemeName );
 
     // extracted ColorBrewer data
     static const char *brewerString;

@@ -27,18 +27,18 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-static bool _initWidgetFunction( QString name, QgsPaintEffectWidgetFunc f )
+static bool _initWidgetFunction( const QString& name, QgsPaintEffectWidgetFunc f )
 {
   QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
 
   QgsPaintEffectAbstractMetadata* abstractMetadata = registry->effectMetadata( name );
-  if ( abstractMetadata == NULL )
+  if ( !abstractMetadata )
   {
     QgsDebugMsg( QString( "Failed to find paint effect entry in registry: %1" ).arg( name ) );
     return false;
   }
   QgsPaintEffectMetadata* metadata = dynamic_cast<QgsPaintEffectMetadata*>( abstractMetadata );
-  if ( metadata == NULL )
+  if ( !metadata )
   {
     QgsDebugMsg( QString( "Failed to cast paint effect's metadata: " ) .arg( name ) );
     return false;
@@ -91,7 +91,7 @@ void QgsPaintEffectPropertiesWidget::populateEffectTypes()
   QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
   QStringList types = registry->effects();
 
-  foreach ( QString type, types )
+  Q_FOREACH ( const QString& type, types )
   {
     //don't show stack effect
     if ( type == "effectStack" )
@@ -148,13 +148,13 @@ void QgsPaintEffectPropertiesWidget::effectTypeChanged()
   // get creation function for new effect from registry
   QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
   QgsPaintEffectAbstractMetadata* am = registry->effectMetadata( newEffectType );
-  if ( am == NULL ) // check whether the metadata is assigned
+  if ( !am ) // check whether the metadata is assigned
     return;
 
   // change effect to a new (with different type)
   // base new effect on existing effect's properties
   QgsPaintEffect* newEffect = am->createPaintEffect( effect->properties() );
-  if ( newEffect == NULL )
+  if ( !newEffect )
     return;
 
   updateEffectWidget( newEffect );

@@ -6,5 +6,6 @@
 	<option key="database" answer="$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/" />
 	<option key="driver" />
 	<option key="sql" />
-	<option key="fs" answer="|" hidden="yes" />
+	<option key="fs" answer="|" hidden="yes" version_max="6"/>
+	<option key="separator" answer="|" hidden="yes" version_min="7"/>
 </qgisgrassmodule>

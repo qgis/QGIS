@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 6.11.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -45,7 +45,7 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
 
   QStringList subDirs = QDir( baseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot );
 
-  if ( subDirs.count() == 0 )
+  if ( subDirs.isEmpty() )
   {
     subDirs << "";
   }
@@ -95,7 +95,7 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
   return successful;
 }
 
-const QString QgsMultiRenderChecker::controlImagePath() const
+QString QgsMultiRenderChecker::controlImagePath() const
 {
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myControlImageDir = myDataDir + QDir::separator() + "control_images" +

@@ -1,4 +1,4 @@
-/**\ingroup MapComposer
+/** \ingroup MapComposer
  * \class QgsComposerMapGridStack
  * \brief A collection of grids which is drawn above the map content in a
  * QgsComposerMap. The grid stack controls which grids are drawn and the
@@ -14,14 +14,14 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
 
   public:
 
-    /**Constructor for QgsComposerMapGridStack.
+    /** Constructor for QgsComposerMapGridStack.
      * @param map QgsComposerMap the grid stack is attached to
     */
     QgsComposerMapGridStack( QgsComposerMap* map );
 
     virtual ~QgsComposerMapGridStack();
 
-    /**Adds a new map grid to the stack and takes ownership of the grid.
+    /** Adds a new map grid to the stack and takes ownership of the grid.
      * The grid will be added to the end of the stack, and rendered
      * above any existing map grids already present in the stack.
      * @param grid QgsComposerMapGrid to add to the stack
@@ -31,7 +31,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
     */
     void addGrid( QgsComposerMapGrid* grid /Transfer/ );
 
-    /**Removes a grid from the stack and deletes the corresponding QgsComposerMapGrid
+    /** Removes a grid from the stack and deletes the corresponding QgsComposerMapGrid
      * @param gridId id for the QgsComposerMapGrid to remove
      * @note after removing a grid from the stack, updateBoundingRect() and update()
      * should be called for the QgsComposerMap to prevent rendering artifacts
@@ -39,7 +39,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
     */
     void removeGrid( const QString& gridId );
 
-    /**Moves a grid up the stack, causing it to be rendered above other grids
+    /** Moves a grid up the stack, causing it to be rendered above other grids
      * @param gridId id for the QgsComposerMapGrid to move up
      * @note after moving a grid within the stack, update() should be
      * called for the QgsComposerMap to redraw the map with the new grid stack order
@@ -47,7 +47,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
     */
     void moveGridUp( const QString& gridId );
 
-    /**Moves a grid down the stack, causing it to be rendered below other grids
+    /** Moves a grid down the stack, causing it to be rendered below other grids
      * @param gridId id for the QgsComposerMapGrid to move down
      * @note after moving a grid within the stack, update() should be
      * called for the QgsComposerMap to redraw the map with the new grid stack order
@@ -55,28 +55,28 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
     */
     void moveGridDown( const QString& gridId );
 
-    /**Returns a const reference to a grid within the stack
+    /** Returns a const reference to a grid within the stack
      * @param gridId id for the QgsComposerMapGrid to find
      * @returns const reference to grid, if found
      * @see grid
     */
     const QgsComposerMapGrid* constGrid( const QString& gridId ) const;
 
-    /**Returns a reference to a grid within the stack
+    /** Returns a reference to a grid within the stack
      * @param gridId id for the QgsComposerMapGrid to find
      * @returns reference to grid if found
      * @see constGrid
     */
     QgsComposerMapGrid* grid( const QString& gridId ) const;
 
-    /**Returns a reference to a grid within the stack
+    /** Returns a reference to a grid within the stack
      * @param index grid position in the stack
      * @returns reference to grid if found
      * @see constGrid
     */
     QgsComposerMapGrid* grid( const int index ) const;
 
-    /**Returns a reference to a grid within the stack
+    /** Returns a reference to a grid within the stack
      * @param idx grid position in the stack
      * @returns reference to grid if found
      * @see constGrid
@@ -84,12 +84,12 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
     */
     QgsComposerMapGrid &operator[]( int idx );
 
-    /**Returns a list of QgsComposerMapGrids contained by the stack
+    /** Returns a list of QgsComposerMapGrids contained by the stack
      * @returns list of grids
     */
     QList< QgsComposerMapGrid* > asList() const;
 
-    /**Sets the grid stack's state from a DOM document
+    /** Sets the grid stack's state from a DOM document
      * @param elem is DOM node corresponding to 'a ComposerMap' tag
      * @param doc DOM document
      * @returns true if read was successful
@@ -97,11 +97,24 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
      */
     bool readXML( const QDomElement& elem, const QDomDocument& doc );
 
-    /**Calculates the maximum distance grids within the stack extend
+    /** Calculates the maximum distance grids within the stack extend
      * beyond the QgsComposerMap's item rect
      * @returns maximum grid extension
+     * @see calculateMaxGridExtension()
      */
     double maxGridExtension() const;
+
+    /** Calculates the maximum distance grids within the stack extend beyond the
+     * QgsComposerMap's item rect. This method calculates the distance for each side of the
+     * map item separately
+     * @param top storage for top extension
+     * @param right storage for right extension
+     * @param bottom storage for bottom extension
+     * @param left storage for left extension
+     * @note added in QGIS 2.12
+     * @see maxGridExtension()
+     */
+    void calculateMaxGridExtension( double& top, double& right, double& bottom, double& left ) const;
 
 };
 
@@ -109,7 +122,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
 // QgsComposerMapGrid
 //
 
-/**\ingroup MapComposer
+/** \ingroup MapComposer
  * \class QgsComposerMapGrid
  * \brief An individual grid which is drawn above the map content in a
  * QgsComposerMap.
@@ -129,8 +142,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
     enum GridUnit
     {
       MapUnit, /*!< grid units follow map units */
-      MM, /*!< grid units in millimetres */
-      CM /*!< grid units in centimetres */
+      MM, /*!< grid units in millimeters */
+      CM /*!< grid units in centimeters */
     };
 
     /** Grid drawing style
@@ -182,9 +195,10 @@ class QgsComposerMapGrid : QgsComposerMapItem
       DegreeMinuteSecond, /*!< degree/minutes/seconds, use NSEW suffix */
       DecimalWithSuffix, /*!< decimal degrees, use NSEW suffix */
       DegreeMinuteNoSuffix, /*!< degree/minutes, use - for S/W coordinates */
-      DegreeMinutePadded, /*!< degree/minutes, with minutes using leading zeros were required */
+      DegreeMinutePadded, /*!< degree/minutes, with minutes using leading zeros where required */
       DegreeMinuteSecondNoSuffix, /*!< degree/minutes/seconds, use - for S/W coordinates */
-      DegreeMinuteSecondPadded /*!< degree/minutes/seconds, with minutes using leading zeros were required */
+      DegreeMinuteSecondPadded, /*!< degree/minutes/seconds, with minutes using leading zeros where required */
+      CustomFormat /*!< custom expression-based format */
     };
 
     /** Border sides for annotations
@@ -228,7 +242,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
       Latitude /*!< coordinate is a latitude value */
     };
 
-    /**Constructor for QgsComposerMapGrid.
+    /** Constructor for QgsComposerMapGrid.
      * @param name friendly display name for grid
      * @param map QgsComposerMap the grid is attached to
     */
@@ -236,44 +250,44 @@ class QgsComposerMapGrid : QgsComposerMapItem
 
     virtual ~QgsComposerMapGrid();
 
-    /**Draws a grid
+    /** Draws a grid
      * @param painter destination QPainter
      */
     void draw( QPainter* painter );
 
-    /**Stores grid state in DOM element
+    /** Stores grid state in DOM element
      * @param elem is DOM element corresponding to a 'ComposerMap' tag
      * @param doc DOM document
      * @see readXML
     */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
-    /**Sets grid state from a DOM document
+    /** Sets grid state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapGrid' tag
      * @param doc is DOM document
      * @see writeXML
     */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
-    /**Sets the CRS for the grid.
+    /** Sets the CRS for the grid.
      * @param crs coordinate reference system for grid
      * @see crs
     */
     void setCrs( const QgsCoordinateReferenceSystem& crs );
 
-    /**Retrieves the CRS for the grid.
+    /** Retrieves the CRS for the grid.
      * @returns coordinate reference system for grid
      * @see setCrs
     */
     QgsCoordinateReferenceSystem crs() const;
 
-    /**Sets the blending mode used for drawing the grid.
+    /** Sets the blending mode used for drawing the grid.
      * @param mode blending mode for grid
      * @see blendMode
     */
     void setBlendMode( const QPainter::CompositionMode mode );
 
-    /**Retrieves the blending mode used for drawing the grid.
+    /** Retrieves the blending mode used for drawing the grid.
      * @returns blending mode for grid
      * @see setBlendMode
     */
@@ -281,31 +295,44 @@ class QgsComposerMapGrid : QgsComposerMapItem
 
     bool usesAdvancedEffects() const;
 
-    /**Calculates the maximum distance the grid extends beyond the QgsComposerMap's
+    /** Calculates the maximum distance the grid extends beyond the QgsComposerMap's
      * item rect
-     * @returns maximum extension in millimetres
+     * @returns maximum extension in millimeters
      */
-    double maxExtension() const;
+    double maxExtension();
+
+    /** Calculates the maximum distance the grid extends beyond the
+     * QgsComposerMap's item rect. This method calculates the distance for each side of the
+     * map item separately
+     * @param top storage for top extension
+     * @param right storage for right extension
+     * @param bottom storage for bottom extension
+     * @param left storage for left extension
+     * @note added in QGIS 2.12
+     * @see maxExtension()
+     */
+    void calculateMaxExtension( double& top, double& right, double& bottom, double& left );
+
 
     //
     // GRID UNITS
     //
 
-    /**Sets the units to use for grid measurements such as the interval
+    /** Sets the units to use for grid measurements such as the interval
      * and offset for grid lines.
      * @param unit unit for grid measurements
      * @see units
     */
     void setUnits( const GridUnit unit );
 
-    /**Gets the units used for grid measurements such as the interval
+    /** Gets the units used for grid measurements such as the interval
      * and offset for grid lines.
      * @returns for grid measurements
      * @see setUnits
     */
     GridUnit units() const;
 
-    /**Sets the interval between grid lines in the x-direction. The units
+    /** Sets the interval between grid lines in the x-direction. The units
      * are controlled through the setUnits method
      * @param interval interval between horizontal grid lines
      * @see setIntervalY
@@ -313,7 +340,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     void setIntervalX( const double interval );
 
-    /**Gets the interval between grid lines in the x-direction. The units
+    /** Gets the interval between grid lines in the x-direction. The units
      * are retrieved through the units() method.
      * @returns interval between horizontal grid lines
      * @see setIntervalX
@@ -321,7 +348,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     double intervalX() const;
 
-    /**Sets the interval between grid lines in the y-direction. The units
+    /** Sets the interval between grid lines in the y-direction. The units
      * are controlled through the setUnits method
      * @param interval interval between vertical grid lines
      * @see setIntervalX
@@ -329,7 +356,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     void setIntervalY( const double interval );
 
-    /**Gets the interval between grid lines in the y-direction. The units
+    /** Gets the interval between grid lines in the y-direction. The units
      * are retrieved through the units() method.
      * @returns interval between vertical grid lines
      * @see setIntervalY
@@ -337,7 +364,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     double intervalY() const;
 
-    /**Sets the offset for grid lines in the x-direction. The units
+    /** Sets the offset for grid lines in the x-direction. The units
      * are controlled through the setUnits method
      * @param offset offset for horizontal grid lines
      * @see setOffsetY
@@ -345,7 +372,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     void setOffsetX( const double offset );
 
-    /**Gets the offset for grid lines in the x-direction. The units
+    /** Gets the offset for grid lines in the x-direction. The units
      * are retrieved through the units() method.
      * @returns offset for horizontal grid lines
      * @see setOffsetX
@@ -353,7 +380,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     double offsetX() const;
 
-    /**Sets the offset for grid lines in the y-direction. The units
+    /** Sets the offset for grid lines in the y-direction. The units
      * are controlled through the setUnits method
      * @param offset offset for vertical grid lines
      * @see setOffsetX
@@ -361,7 +388,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     void setOffsetY( const double offset );
 
-    /**Gets the offset for grid lines in the y-direction. The units
+    /** Gets the offset for grid lines in the y-direction. The units
      * are retrieved through the units() method.
      * @returns offset for vertical grid lines
      * @see setOffsetY
@@ -373,35 +400,35 @@ class QgsComposerMapGrid : QgsComposerMapItem
     // GRID APPEARANCE
     //
 
-    /**Sets the grid style, which controls how the grid is drawn
+    /** Sets the grid style, which controls how the grid is drawn
      * over the map's contents
      * @param style desired grid style
      * @see style
     */
     void setStyle( const GridStyle style );
 
-    /**Gets the grid's style, which controls how the grid is drawn
+    /** Gets the grid's style, which controls how the grid is drawn
      * over the map's contents
      * @returns current grid style
      * @see setStyle
     */
     GridStyle style() const;
 
-    /**Sets the length of the cross segments drawn for the grid. This is only used for grids
+    /** Sets the length of the cross segments drawn for the grid. This is only used for grids
      * with QgsComposerMapGrid::Cross styles
-     * @param length cross length in millimetres
+     * @param length cross length in millimeters
      * @see crossLength
     */
     void setCrossLength( const double length );
 
-    /**Retrieves the length of the cross segments drawn for the grid. This is only used for grids
+    /** Retrieves the length of the cross segments drawn for the grid. This is only used for grids
      * with QgsComposerMapGrid::Cross styles
-     * @returns cross length in millimetres
+     * @returns cross length in millimeters
      * @see setCrossLength
     */
     double crossLength() const;
 
-    /**Sets width of grid lines. This is only used for grids with QgsComposerMapGrid::Solid
+    /** Sets width of grid lines. This is only used for grids with QgsComposerMapGrid::Solid
      * or QgsComposerMapGrid::Cross styles. For more control over grid line appearance, use
      * setLineSymbol instead.
      * @param width grid line width
@@ -410,7 +437,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     void setGridLineWidth( const double width );
 
-    /**Sets color of grid lines. This is only used for grids with QgsComposerMapGrid::Solid
+    /** Sets color of grid lines. This is only used for grids with QgsComposerMapGrid::Solid
      * or QgsComposerMapGrid::Cross styles. For more control over grid line appearance, use
      * setLineSymbol instead.
      * @param color color of grid lines
@@ -419,7 +446,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     void setGridLineColor( const QColor& color );
 
-    /**Sets the line symbol used for drawing grid lines. This is only used for grids with
+    /** Sets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
      * @param symbol line symbol for grid lines
      * @see lineSymbol
@@ -428,7 +455,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     void setLineSymbol( QgsLineSymbolV2* symbol /Transfer/ );
 
-    /**Gets the line symbol used for drawing grid lines. This is only used for grids with
+    /** Gets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
      * @returns line symbol for grid lines
      * @see setLineSymbol
@@ -437,7 +464,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     QgsLineSymbolV2* lineSymbol();
 
-    /**Sets the marker symbol used for drawing grid points. This is only used for grids with a
+    /** Sets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
      * @param symbol marker symbol for grid intersection points
      * @see markerSymbol
@@ -446,7 +473,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     void setMarkerSymbol( QgsMarkerSymbolV2* symbol /Transfer/);
 
-    /**Gets the marker symbol used for drawing grid points. This is only used for grids with a
+    /** Gets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
      * @returns marker symbol for grid intersection points
      * @see setMarkerSymbol
@@ -459,55 +486,55 @@ class QgsComposerMapGrid : QgsComposerMapItem
     // ANNOTATIONS
     //
 
-    /**Sets whether annotations should be shown for the grid.
+    /** Sets whether annotations should be shown for the grid.
      * @param enabled set to true to draw annotations for the grid
      * @see annotationEnabled
     */
     void setAnnotationEnabled( const bool enabled );
 
-    /**Gets whether annotations are shown for the grid.
+    /** Gets whether annotations are shown for the grid.
      * @returns true if annotations are drawn for the grid
      * @see setAnnotationEnabled
     */
     bool annotationEnabled() const;
 
-    /**Sets the font used for drawing grid annotations
+    /** Sets the font used for drawing grid annotations
      * @param font font for annotations
      * @see annotationFont
     */
     void setAnnotationFont( const QFont& font );
 
-    /**Gets the font used for drawing grid annotations
+    /** Gets the font used for drawing grid annotations
      * @returns font for annotations
      * @see setAnnotationFont
     */
     QFont annotationFont() const;
 
-    /**Sets the font color used for drawing grid annotations
+    /** Sets the font color used for drawing grid annotations
      * @param color font color for annotations
      * @see annotationFontColor
     */
     void setAnnotationFontColor( const QColor& color );
 
-    /**Gets the font color used for drawing grid annotations
+    /** Gets the font color used for drawing grid annotations
      * @returns font color for annotations
      * @see setAnnotationFontColor
     */
     QColor annotationFontColor() const;
 
-    /**Sets the coordinate precision for grid annotations
+    /** Sets the coordinate precision for grid annotations
      * @param precision number of decimal places to show when drawing grid annotations
      * @see annotationPrecision
     */
     void setAnnotationPrecision( const int precision );
 
-    /**Returns the coordinate precision for grid annotations
+    /** Returns the coordinate precision for grid annotations
      * @returns number of decimal places shown when drawing grid annotations
      * @see setAnnotationPrecision
     */
     int annotationPrecision() const;
 
-    /**Sets what types of grid annotations should be drawn for a specified side of the map frame,
+    /** Sets what types of grid annotations should be drawn for a specified side of the map frame,
      * or whether grid annotations should be disabled for the side.
      * @param display display mode for annotations
      * @param border side of map for annotations
@@ -516,7 +543,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     void setAnnotationDisplay( const DisplayMode display, const BorderSide border );
 
-    /**Gets the display mode for the grid annotations on a specified side of the map
+    /** Gets the display mode for the grid annotations on a specified side of the map
      * frame. This property also specifies whether annotations have been disabled
      * from a side of the map frame.
      * @param border side of map for annotations
@@ -526,7 +553,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     DisplayMode annotationDisplay( const BorderSide border ) const;
 
-    /**Sets the position for the grid annotations on a specified side of the map
+    /** Sets the position for the grid annotations on a specified side of the map
      * frame.
      * @param position position to draw grid annotations
      * @param border side of map for annotations
@@ -534,7 +561,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     void setAnnotationPosition( const AnnotationPosition position, const BorderSide border );
 
-    /**Gets the position for the grid annotations on a specified side of the map
+    /** Gets the position for the grid annotations on a specified side of the map
      * frame.
      * @param border side of map for annotations
      * @returns position that grid annotations are drawn in
@@ -542,67 +569,83 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     AnnotationPosition annotationPosition( const BorderSide border ) const;
 
-    /**Sets the distance between the map frame and annotations. Units are in millimetres.
+    /** Sets the distance between the map frame and annotations. Units are in millimeters.
      * @param distance margin between map frame and annotations
      * @see annotationFrameDistance
     */
     void setAnnotationFrameDistance( const double distance );
 
-    /**Gets the distance between the map frame and annotations. Units are in millimetres.
+    /** Gets the distance between the map frame and annotations. Units are in millimeters.
      * @returns margin between map frame and annotations
      * @see setAnnotationFrameDistance
     */
     double annotationFrameDistance() const;
 
-    /**Sets the direction for drawing frame annotations.
+    /** Sets the direction for drawing frame annotations.
      * @param direction direction for frame annotations
      * @param border side of map for annotations
      * @see annotationDirection
     */
     void setAnnotationDirection( const AnnotationDirection direction, const BorderSide border );
 
-    /**Sets the direction for drawing all frame annotations.
+    /** Sets the direction for drawing all frame annotations.
      * @param direction direction for frame annotations
      * @see annotationDirection
     */
     void setAnnotationDirection( const AnnotationDirection direction );
 
-    /**Gets the direction for drawing frame annotations.
+    /** Gets the direction for drawing frame annotations.
      * @param border side of map for annotations
      * @returns direction for frame annotations
      * @see setAnnotationDirection
     */
     AnnotationDirection annotationDirection( const BorderSide border ) const;
 
-    /**Sets the format for drawing grid annotations.
+    /** Sets the format for drawing grid annotations.
      * @param format format for grid annotations
      * @see annotationFormat
     */
     void setAnnotationFormat( const AnnotationFormat format );
 
-    /**Gets the format for drawing grid annotations.
+    /** Gets the format for drawing grid annotations.
      * @returns format for grid annotations
      * @see setAnnotationFormat
     */
     AnnotationFormat annotationFormat() const;
 
+    /** Sets the expression used for drawing grid annotations. This is only used when annotationFormat()
+     * is QgsComposerMapGrid::CustomFormat.
+     * @param expression expression for evaluating custom grid annotations
+     * @see annotationExpression
+     * @note added in QGIS 2.12
+    */
+    void setAnnotationExpression( const QString& expression );
+
+    /** Returns the expression used for drawing grid annotations. This is only used when annotationFormat()
+     * is QgsComposerMapGrid::CustomFormat.
+     * @returns expression for evaluating custom grid annotations
+     * @see setAnnotationExpression
+     * @note added in QGIS 2.12
+    */
+    QString annotationExpression() const;
+
     //
     // GRID FRAME
     //
 
-    /**Sets the grid frame style.
+    /** Sets the grid frame style.
      * @param style style for grid frame
      * @see frameStyle
     */
     void setFrameStyle( const FrameStyle style );
 
-    /**Gets the grid frame style.
+    /** Gets the grid frame style.
      * @returns style for grid frame
      * @see setFrameStyle
     */
     FrameStyle frameStyle() const;
 
-    /**Sets what type of grid divisions should be used for frames on a specified side of the map.
+    /** Sets what type of grid divisions should be used for frames on a specified side of the map.
      * @param divisions grid divisions for frame
      * @param border side of map for frame
      * @see frameDivisions
@@ -610,7 +653,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     void setFrameDivisions( const DisplayMode divisions, const BorderSide border );
 
-    /**Gets the type of grid divisions which are used for frames on a specified side of the map.
+    /** Gets the type of grid divisions which are used for frames on a specified side of the map.
      * @param border side of map for frame
      * @returns grid divisions for frame
      * @see setFrameDivisions
@@ -618,16 +661,16 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     DisplayMode frameDivisions( const BorderSide border ) const;
 
-    /**Sets flags for grid frame sides. Setting these flags controls which sides
+    /** Sets flags for grid frame sides. Setting these flags controls which sides
      * of the map item the grid frame is drawn on.
      * @param flags flags for grid frame sides
      * @see setFrameSideFlag
      * @see frameSideFlags
      * @see testFrameSideFlag
     */
-    void setFrameSideFlags( const FrameSideFlags flags );
+    void setFrameSideFlags( const FrameSideFlags& flags );
 
-    /**Sets whether the grid frame is drawn for a certain side of the map item.
+    /** Sets whether the grid frame is drawn for a certain side of the map item.
      * @param flag flag for grid frame side
      * @param on set to true to draw grid frame on that side of the map
      * @see setFrameSideFlags
@@ -636,7 +679,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     void setFrameSideFlag( const FrameSideFlag flag, bool on = true );
 
-    /**Returns the flags which control which sides of the map item the grid frame
+    /** Returns the flags which control which sides of the map item the grid frame
      * is drawn on.
      * @returns flags for side of map grid is drawn on
      * @see setFrameSideFlags
@@ -645,7 +688,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     FrameSideFlags frameSideFlags() const;
 
-    /**Tests whether the grid frame should be drawn on a specified side of the map
+    /** Tests whether the grid frame should be drawn on a specified side of the map
      * item.
      * @param flag flag for grid frame side
      * @returns true if grid frame should be drawn for that side of the map
@@ -655,37 +698,37 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     bool testFrameSideFlag( const FrameSideFlag flag ) const;
 
-    /**Sets the grid frame width. This property controls how wide the grid frame is.
+    /** Sets the grid frame width. This property controls how wide the grid frame is.
      * The size of the line outlines drawn in the frame is controlled through the
      * setFramePenSize method.
-     * @param width width of grid frame in millimetres
+     * @param width width of grid frame in millimeters
      * @see frameWidth
     */
     void setFrameWidth( const double width );
 
-    /**Gets the grid frame width. This property controls how wide the grid frame is.
+    /** Gets the grid frame width. This property controls how wide the grid frame is.
      * The size of the line outlines drawn in the frame can be retrieved via the
      * framePenSize method.
-     * @returns width of grid frame in millimetres
+     * @returns width of grid frame in millimeters
      * @see setFrameWidth
     */
     double frameWidth() const;
 
-    /**Sets the width of the outline drawn in the grid frame.
+    /** Sets the width of the outline drawn in the grid frame.
      * @param width width of grid frame outline
      * @see framePenSize
      * @see setFramePenColor
     */
     void setFramePenSize( const double width );
 
-    /**Retrieves the width of the outline drawn in the grid frame.
+    /** Retrieves the width of the outline drawn in the grid frame.
      * @returns width of grid frame outline
      * @see setFramePenSize
      * @see framePenColor
     */
     double framePenSize() const;
 
-    /**Sets the color of the outline drawn in the grid frame.
+    /** Sets the color of the outline drawn in the grid frame.
      * @param color color of grid frame outline
      * @see framePenColor
      * @see setFramePenSize
@@ -694,7 +737,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     void setFramePenColor( const QColor& color );
 
-    /**Retrieves the color of the outline drawn in the grid frame.
+    /** Retrieves the color of the outline drawn in the grid frame.
      * @returns color of grid frame outline
      * @see setFramePenColor
      * @see framePenSize
@@ -703,7 +746,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     QColor framePenColor() const;
 
-    /**Sets the first fill color used for the grid frame.
+    /** Sets the first fill color used for the grid frame.
      * @param color first fill color for grid frame
      * @see frameFillColor1
      * @see setFramePenColor
@@ -711,7 +754,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     void setFrameFillColor1( const QColor& color );
 
-    /**Retrieves the first fill color for the grid frame.
+    /** Retrieves the first fill color for the grid frame.
      * @returns first fill color for grid frame
      * @see setFrameFillColor1
      * @see framePenColor
@@ -719,7 +762,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     QColor frameFillColor1() const;
 
-    /**Sets the second fill color used for the grid frame.
+    /** Sets the second fill color used for the grid frame.
      * @param color second fill color for grid frame
      * @see frameFillColor2
      * @see setFramePenColor
@@ -727,12 +770,14 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     void setFrameFillColor2( const QColor& color );
 
-    /**Retrieves the second fill color for the grid frame.
+    /** Retrieves the second fill color for the grid frame.
      * @returns second fill color for grid frame
      * @see setFrameFillColor2
      * @see framePenColor
      * @see frameFillColor1
     */
     QColor frameFillColor2() const;
+
+    virtual QgsExpressionContext* createExpressionContext() const;
 
 };

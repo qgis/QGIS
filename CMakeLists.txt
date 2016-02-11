@@ -1,5 +1,5 @@
 SET(CPACK_PACKAGE_VERSION_MAJOR "2")
-SET(CPACK_PACKAGE_VERSION_MINOR "9")
+SET(CPACK_PACKAGE_VERSION_MINOR "13")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
@@ -209,10 +209,20 @@ ENDIF (NOT SQLITE3_FOUND)
 
 # optional
 IF (WITH_POSTGRESQL)
-  FIND_PACKAGE(Postgres) # PostgreSQL provider, SPIT plugin
+  FIND_PACKAGE(Postgres) # PostgreSQL provider
 ENDIF (WITH_POSTGRESQL)
 
 FIND_PACKAGE(SPATIALITE REQUIRED)
+
+IF(SPATIALITE_VERSION_GE_4_0_0)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPATIALITE_VERSION_GE_4_0_0")
+ENDIF(SPATIALITE_VERSION_GE_4_0_0)
+IF(SPATIALITE_VERSION_G_4_1_1)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPATIALITE_VERSION_G_4_1_1")
+ENDIF(SPATIALITE_VERSION_G_4_1_1)
+IF(SPATIALITE_HAS_INIT_EX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPATIALITE_HAS_INIT_EX")
+ENDIF(SPATIALITE_HAS_INIT_EX)
 
 IF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
   MESSAGE (SEND_ERROR "Some dependencies were not found!")
@@ -229,9 +239,13 @@ SET (HAVE_SPATIALITE TRUE)
 # following variable is used in qgsconfig.h
 SET (HAVE_MSSQL TRUE)
 
+SET (WITH_QTWEBKIT TRUE CACHE INTERNAL "Enable QtWebkit support")
+IF (WITH_QTWEBKIT)
+  ADD_DEFINITIONS(-DWITH_QTWEBKIT)
+ENDIF(WITH_QTWEBKIT)
 #############################################################
 # search for Qt4
-SET(QT_MIN_VERSION 4.7.0)
+SET(QT_MIN_VERSION 4.8.0)
 SET (ENABLE_QT5 FALSE CACHE BOOL "If enabled will try to find Qt5 before looking for Qt4")
 IF (ENABLE_QT5)
   FIND_PACKAGE(Qt5Core QUIET)
@@ -243,8 +257,10 @@ IF (ENABLE_QT5)
   FIND_PACKAGE(Qt5Concurrent REQUIRED)
   FIND_PACKAGE(Qt5PrintSupport REQUIRED)
   FIND_PACKAGE(Qt5Positioning)
-  FIND_PACKAGE(Qt5WebKit REQUIRED)
-  FIND_PACKAGE(Qt5WebKitWidgets REQUIRED)
+  IF (WITH_QTWEBKIT)
+    FIND_PACKAGE(Qt5WebKit REQUIRED)
+    FIND_PACKAGE(Qt5WebKitWidgets REQUIRED)
+  ENDIF(WITH_QTWEBKIT)
   FIND_PACKAGE(Qt5Test REQUIRED)
   FIND_PACKAGE(Qt5UiTools REQUIRED)
   FIND_PACKAGE(Qt5Script REQUIRED)
@@ -292,6 +308,15 @@ ENDIF (WITH_TOUCH)
 # search for QScintilla2 (C++ lib)
 FIND_PACKAGE(QScintilla REQUIRED)
 
+# Master password hash and authentication encryption
+FIND_PACKAGE(QCA REQUIRED)
+# Check for runtime dependency of qca-ossl plugin
+# REQUIRED if unit tests are to be run from build directory
+IF(NOT MSVC)
+include(QCAMacros)
+FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
+ENDIF(NOT MSVC)
+
 # ModelTest
 SET(ENABLE_MODELTEST FALSE CACHE BOOL "Enable QT ModelTest (not for production)")
 
@@ -336,18 +361,20 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
 #   or definitely Apple LLVM 5.0 (based on LLVM 3.3svn, in Xcode 5+):
 #   https://gist.github.com/yamaya/2924292
 
-IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+IF (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
   IF (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
     SET(USE_CXX_11 TRUE)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   ENDIF()
-ELSEIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+ELSEIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   IF ((NOT APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "3.2")
        OR (APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.1"))
     SET(USE_CXX_11 TRUE)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-error=c++11-narrowing")
   ENDIF()
+ELSEIF (MSVC AND MSVC_VERSION GREATER 1600)
+  SET(USE_CXX_11 TRUE)
 ELSE()
   SET(USE_CXX_11 FALSE)
 ENDIF()
@@ -355,7 +382,9 @@ ENDIF()
 #allow override keyword if available
 IF (NOT USE_CXX_11)
   ADD_DEFINITIONS("-Doverride=")
+  ADD_DEFINITIONS("-Dnullptr=0")
 ENDIF()
+
 
 #############################################################
 # enable warnings
@@ -363,23 +392,27 @@ ENDIF()
 IF (PEDANTIC)
   MESSAGE (STATUS "Pedantic compiler settings enabled")
   IF(MSVC)
+    SET(_warnings "")
     IF (NOT USING_NMAKE)
-      ADD_DEFINITIONS( /W4 )
+      SET(_warnings "${_warnings} /W4" )
     ENDIF (NOT USING_NMAKE)
 
     # disable warnings
-    ADD_DEFINITIONS( /wd4100 )  # unused formal parameters
-    ADD_DEFINITIONS( /wd4127 )  # constant conditional expressions (used in Qt template classes)
-    ADD_DEFINITIONS( /wd4231 )  # nonstandard extension used : 'identifier' before template explicit instantiation (used in Qt template classes)
-    ADD_DEFINITIONS( /wd4244 )  # conversion from '...' to '...' possible loss of data
-    ADD_DEFINITIONS( /wd4251 )  # needs to have dll-interface to be used by clients of class (occurs in Qt template classes)
-    ADD_DEFINITIONS( /wd4275 )  # non dll-interface class '...' used as base for dll-interface class '...'
-    ADD_DEFINITIONS( /wd4505 )  # unreferenced local function has been removed (QgsRasterDataProvider::extent)
-    ADD_DEFINITIONS( /wd4510 )  # default constructor could not be generated (sqlite3_index_info, QMap)
-    ADD_DEFINITIONS( /wd4512 )  # assignment operator could not be generated (sqlite3_index_info)
-    ADD_DEFINITIONS( /wd4610 )  # user defined constructor required (sqlite3_index_info)
-    ADD_DEFINITIONS( /wd4706 )  # assignment within conditional expression (pal)
-    ADD_DEFINITIONS( /wd4800 )  # 'int' : forcing value to bool 'true' or 'false' (performance warning)
+    SET(_warnings "${_warnings} /wd4100 ")  # unused formal parameters
+    SET(_warnings "${_warnings} /wd4127 ")  # constant conditional expressions (used in Qt template classes)
+    SET(_warnings "${_warnings} /wd4190 ")  # 'identifier' has C-linkage specified, but returns UDT 'identifier2' which is incompatible with C
+    SET(_warnings "${_warnings} /wd4231 ")  # nonstandard extension used : 'identifier' before template explicit instantiation (used in Qt template classes)
+    SET(_warnings "${_warnings} /wd4244 ")  # conversion from '...' to '...' possible loss of data
+    SET(_warnings "${_warnings} /wd4251 ")  # needs to have dll-interface to be used by clients of class (occurs in Qt template classes)
+    SET(_warnings "${_warnings} /wd4275 ")  # non dll-interface class '...' used as base for dll-interface class '...'
+    SET(_warnings "${_warnings} /wd4505 ")  # unreferenced local function has been removed (QgsRasterDataProvider::extent)
+    SET(_warnings "${_warnings} /wd4510 ")  # default constructor could not be generated (sqlite3_index_info, QMap)
+    SET(_warnings "${_warnings} /wd4512 ")  # assignment operator could not be generated (sqlite3_index_info)
+    SET(_warnings "${_warnings} /wd4610 ")  # user defined constructor required (sqlite3_index_info)
+    SET(_warnings "${_warnings} /wd4706 ")  # assignment within conditional expression (pal)
+    SET(_warnings "${_warnings} /wd4800 ")  # 'int' : forcing value to bool 'true' or 'false' (performance warning)
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_warnings}")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
   ELSE (MSVC)
     # add warnings via flags (not as definitions as on Mac -Wall can not be overridden per language )
     SET(_warnings "-Wall -Wextra -Wno-long-long -Wformat-security -Wno-strict-aliasing")
@@ -409,13 +442,13 @@ IF (PEDANTIC)
 
 ENDIF (PEDANTIC)
 
-IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
   SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Qunused-arguments")
   SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Qunused-arguments")
   SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Qunused-arguments")
-ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
 IF(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)")
   # spatialite crashes on ppc - see bugs.debian.org/603986
@@ -572,14 +605,18 @@ IF (WIN32)
   SET(DLLIMPORT "__declspec(dllimport)")
   SET(DLLEXPORT "__declspec(dllexport)")
 ELSE (WIN32)
+  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    SET(DLLEXPORT "__attribute__ ((visibility (\\\"default\\\")))")
+  ELSE()
+    SET(DLLEXPORT "")
+  ENDIF()
+
   IF(PEDANTIC AND NOT APPLE)
     SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
     SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
   ENDIF(PEDANTIC AND NOT APPLE)
 
-  SET(DLLIMPORT "")
-  SET(DLLEXPORT "")
 ENDIF(WIN32)
 
 ADD_DEFINITIONS("-DCORE_EXPORT=${DLLIMPORT}")
@@ -636,25 +673,44 @@ ENDIF (UNIX AND NOT APPLE)
 
 
 #############################################################
+# Python build dependency
+
+IF(ENABLE_QT5)
+  SET(PYTHON_VER 3)
+ELSE(ENABLE_QT5)
+  SET(PYTHON_VER 2)
+ENDIF(ENABLE_QT5)
+
+FIND_PACKAGE(PythonInterp ${PYTHON_VER} REQUIRED)
+
+#############################################################
 # Python bindings
 
 IF (WITH_BINDINGS)
 
-  # python support: check for interpreter, sip, pyqt4
-  FIND_PACKAGE(PythonInterp REQUIRED)
   FIND_PACKAGE(PythonLibrary REQUIRED)
+
+  # python support: check for interpreter, sip, pyqt4
+  IF(ENABLE_QT5)
+    FIND_PACKAGE(PyQt5 REQUIRED)
+    SET(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
+    SET(PYQT_SIP_DIR ${PYQT5_SIP_DIR})
+  ELSE(ENABLE_QT5)
+    FIND_PACKAGE(PyQt4 REQUIRED)
+    # setup SIP variables
+    SET(PYQT_SIP_FLAGS ${PYQT4_SIP_FLAGS})
+    SET(PYQT_SIP_DIR ${PYQT4_SIP_DIR})
+  ENDIF(ENABLE_QT5)
+  SEPARATE_ARGUMENTS(PYQT_SIP_FLAGS) # convert space separated values to a list
+
   FIND_PACKAGE(SIP REQUIRED)
-  FIND_PACKAGE(PyQt4 REQUIRED)
   FIND_PACKAGE(Qsci REQUIRED)
   INCLUDE(PythonMacros)
+  INCLUDE(PyQtMacros)
   INCLUDE(SIPMacros)
-  INCLUDE(PyQt4Macros)
 
-  # setup SIP variables
-  SEPARATE_ARGUMENTS(PYQT4_SIP_FLAGS) # convert space separated values to a list
-  SET(SIP_INCLUDES ${PYQT4_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
+  SET(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
   SET(SIP_CONCAT_PARTS 4)
-  SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS})
 
   IF (NOT BINDINGS_GLOBAL_INSTALL)
     SET(PYTHON_SITE_PACKAGES_DIR ${QGIS_DATA_DIR}/python)
@@ -683,43 +739,24 @@ FIND_FILE(GIT_MARKER index PATHS ${CMAKE_SOURCE_DIR}/.git)
 IF (GIT_MARKER)
   FIND_PROGRAM(GITCOMMAND git PATHS c:/cygwin/bin)
   IF(GITCOMMAND)
-    IF(MSVC)
+    IF(WIN32)
       ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
-        COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GITCOMMAND}\" log -n1 --oneline`)" do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GITCOMMAND}\" log -n1 --oneline`)" do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
+        COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
         MAIN_DEPENDENCY ${GIT_MARKER}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
-    ELSE(MSVC)
-      EXECUTE_PROCESS(
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND ${GITCOMMAND} log -n1 --pretty=%h OUTPUT_VARIABLE REVISION
-      )
-      STRING(STRIP "${REVISION}" REVISION)
-      # Get GIT remote and branch
-      EXECUTE_PROCESS(
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND ${GITCOMMAND} name-rev --name-only HEAD OUTPUT_VARIABLE GIT_LOCAL_BRANCH
-      )
-      STRING(STRIP "${GIT_LOCAL_BRANCH}" GIT_LOCAL_BRANCH)
-      EXECUTE_PROCESS(
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND ${GITCOMMAND} config branch.${GIT_LOCAL_BRANCH}.remote OUTPUT_VARIABLE GIT_REMOTE
-      )
-      STRING(STRIP "${GIT_REMOTE}" GIT_REMOTE)
-      EXECUTE_PROCESS(
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND ${GITCOMMAND} config remote.${GIT_REMOTE}.url OUTPUT_VARIABLE GIT_REMOTE_URL
-      )
-      STRING(STRIP "${GIT_REMOTE_URL}" GIT_REMOTE_URL)
+    ELSE(WIN32)
       ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
-        COMMAND echo \\\#define QGSVERSION \\\"${REVISION}\\\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
-        COMMAND echo \\\#define QGS_GIT_REMOTE_URL \\\"${GIT_REMOTE_URL}\\\" >>${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        COMMAND ${GITCOMMAND} log -n1 --pretty=\#define\\ QGSVERSION\\ \\"%h\\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
+        COMMAND ${GITCOMMAND} config remote.$$\(${GITCOMMAND} config branch.$$\(${GITCOMMAND} name-rev --name-only HEAD\).remote\).url | sed -e 's/^/\#define QGS_GIT_REMOTE_URL \"/' -e 's/$$/\"/' >>${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
+        COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
         MAIN_DEPENDENCY ${GIT_MARKER}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
-    ENDIF(MSVC)
+    ENDIF(WIN32)
   ELSE(GITCOMMAND)
     MESSAGE(STATUS "git marker, but no git found - version will be unknown")
     SET(REVISION "unknown")
@@ -764,7 +801,11 @@ IF (APPLE)
   # allow QGIS to be run directly from build directory and to run unit tests
   EXECUTE_PROCESS(COMMAND /bin/mkdir -p "${QGIS_OUTPUT_DIRECTORY}/lib")
   EXECUTE_PROCESS(
-    COMMAND /bin/ln -fs ../../Plugins/qgis/qgisgrass.framework lib/
+    COMMAND /bin/ln -fs ../../Plugins/qgis/qgisgrass6.framework lib/
+    WORKING_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}"
+  )
+  EXECUTE_PROCESS(
+    COMMAND /bin/ln -fs ../../Plugins/qgis/qgisgrass7.framework lib/
     WORKING_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}"
   )
 ENDIF (APPLE)
@@ -793,6 +834,10 @@ ADD_CUSTOM_TARGET(uninstall
 #############################################################
 # Enable packaging
 
+# Do not warn about runtime libs when building using VS Express
+IF(NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
+  SET(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS ON)
+ENDIF()
 INCLUDE(InstallRequiredSystemLibraries)
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "QGIS")

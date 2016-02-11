@@ -16,9 +16,16 @@
 #include "qgsstatisticalsummary.h"
 #include <limits>
 #include <qmath.h>
+#include <QString>
+#include <QObject>
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsstatisticalsummary.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
-QgsStatisticalSummary::QgsStatisticalSummary( Statistics stats )
+QgsStatisticalSummary::QgsStatisticalSummary( const Statistics& stats )
     : mStatistics( stats )
 {
   reset();
@@ -36,7 +43,7 @@ void QgsStatisticalSummary::reset()
   mMean = 0;
   mMedian = 0;
   mMin = std::numeric_limits<double>::max();
-  mMax = std::numeric_limits<double>::min();
+  mMax = -std::numeric_limits<double>::max();
   mStdev = 0;
   mSampleStdev = 0;
   mMinority = 0;
@@ -46,11 +53,17 @@ void QgsStatisticalSummary::reset()
   mValueCount.clear();
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsstatisticalsummary.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 void QgsStatisticalSummary::calculate( const QList<double> &values )
 {
   reset();
 
-  foreach ( double value, values )
+  Q_FOREACH ( double value, values )
   {
     mCount++;
     mSum += value;
@@ -66,10 +79,10 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
 
   mMean = mSum / mCount;
 
-  if ( mStatistics & QgsStatisticalSummary::StDev )
+  if ( mStatistics & QgsStatisticalSummary::StDev || mStatistics & QgsStatisticalSummary::StDevSample )
   {
     double sumSquared = 0;
-    foreach ( double value, values )
+    Q_FOREACH ( double value, values )
     {
       double diff = value - mMean;
       sumSquared += diff * diff;
@@ -173,5 +186,91 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
     }
   }
 
+}
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsstatisticalsummary.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
+double QgsStatisticalSummary::statistic( QgsStatisticalSummary::Statistic stat ) const
+{
+  switch ( stat )
+  {
+    case Count:
+      return mCount;
+    case Sum:
+      return mSum;
+    case Mean:
+      return mMean;
+    case Median:
+      return mMedian;
+    case StDev:
+      return mStdev;
+    case StDevSample:
+      return mSampleStdev;
+    case Min:
+      return mMin;
+    case Max:
+      return mMax;
+    case Range:
+      return mMax - mMin;
+    case Minority:
+      return mMinority;
+    case Majority:
+      return mMajority;
+    case Variety:
+      return mValueCount.count();
+    case FirstQuartile:
+      return mFirstQuartile;
+    case ThirdQuartile:
+      return mThirdQuartile;
+    case InterQuartileRange:
+      return mThirdQuartile - mFirstQuartile;
+    case All:
+      return 0;
+  }
+  return 0;
+}
+
+QString QgsStatisticalSummary::displayName( QgsStatisticalSummary::Statistic statistic )
+{
+  switch ( statistic )
+  {
+    case Count:
+      return QObject::tr( "Count" );
+    case Sum:
+      return QObject::tr( "Sum" );
+    case Mean:
+      return QObject::tr( "Mean" );
+    case Median:
+      return QObject::tr( "Median" );
+    case StDev:
+      return QObject::tr( "St dev (pop)" );
+    case StDevSample:
+      return QObject::tr( "St dev (sample)" );
+    case Min:
+      return QObject::tr( "Minimum" );
+    case Max:
+      return QObject::tr( "Maximum" );
+    case Range:
+      return QObject::tr( "Range" );
+    case Minority:
+      return QObject::tr( "Minority" );
+    case Majority:
+      return QObject::tr( "Majority" );
+    case Variety:
+      return QObject::tr( "Variety" );
+    case FirstQuartile:
+      return QObject::tr( "Q1" );
+    case ThirdQuartile:
+      return QObject::tr( "Q3" );
+    case InterQuartileRange:
+      return QObject::tr( "IQR" );
+    case All:
+      return QString();
+  }
+  return QString();
 }
 

@@ -35,12 +35,20 @@ class TestQgsField: public QObject
     void assignment();
     void gettersSetters(); //test getters and setters
     void equality(); //test equality operators
+    void asVariant(); //test conversion to and from a QVariant
+    void displayString();
+    void convertCompatible();
+    void dataStream();
+
   private:
 };
 
 void TestQgsField::initTestCase()
 {
-
+  // Set up the QSettings environment
+  QCoreApplication::setOrganizationName( "QGIS" );
+  QCoreApplication::setOrganizationDomain( "qgis.org" );
+  QCoreApplication::setApplicationName( "QGIS-TEST" );
 }
 
 void TestQgsField::cleanupTestCase()
@@ -145,6 +153,199 @@ void TestQgsField::equality()
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
   field2.setPrecision( 2 );
+}
+
+void TestQgsField::asVariant()
+{
+  QgsField original( "original", QVariant::Double, "double", 5, 2, "comment" );
+
+  //convert to and from a QVariant
+  QVariant var = QVariant::fromValue( original );
+  QVERIFY( var.isValid() );
+
+  QgsField fromVar = qvariant_cast<QgsField>( var );
+  QCOMPARE( fromVar, original );
+}
+
+void TestQgsField::displayString()
+{
+  QgsField stringField( "string", QVariant::String, "string" );
+
+  //test string value
+  QString test( "test string" );
+  QCOMPARE( stringField.displayString( test ), test );
+
+  //test NULL
+  QSettings s;
+  s.setValue( "qgis/nullValue", "TEST NULL" );
+  QVariant nullString = QVariant( QVariant::String );
+  QCOMPARE( stringField.displayString( nullString ), QString( "TEST NULL" ) );
+
+  //test int value
+  QgsField intField( "int", QVariant::String, "int" );
+  QCOMPARE( intField.displayString( 5 ), QString( "5" ) );
+  //test NULL int
+  QVariant nullInt = QVariant( QVariant::Int );
+  QCOMPARE( intField.displayString( nullInt ), QString( "TEST NULL" ) );
+
+  //test double value
+  QgsField doubleField( "double", QVariant::Double, "double", 10, 3 );
+  QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5.005" ) );
+  //test NULL double
+  QVariant nullDouble = QVariant( QVariant::Double );
+  QCOMPARE( doubleField.displayString( nullDouble ), QString( "TEST NULL" ) );
+
+}
+
+void TestQgsField::convertCompatible()
+{
+  //test string field
+  QgsField stringField( "string", QVariant::String, "string" );
+
+  QVariant stringVar( "test string" );
+  QVERIFY( stringField.convertCompatible( stringVar ) );
+  QCOMPARE( stringVar.toString( ), QString( "test string" ) );
+  QVariant nullString = QVariant( QVariant::String );
+  QVERIFY( stringField.convertCompatible( nullString ) );
+  QCOMPARE( nullString.type(), QVariant::String );
+  QVERIFY( nullString.isNull() );
+  QVariant intVar( 5 );
+  QVERIFY( stringField.convertCompatible( intVar ) );
+  QCOMPARE( intVar.type(), QVariant::String );
+  QCOMPARE( intVar, QVariant( "5" ) );
+  QVariant nullInt = QVariant( QVariant::Int );
+  QVERIFY( stringField.convertCompatible( nullInt ) );
+  QCOMPARE( nullInt.type(), QVariant::String );
+  QVERIFY( nullInt.isNull() );
+  QVariant doubleVar( 9.7 );
+  QVERIFY( stringField.convertCompatible( doubleVar ) );
+  QCOMPARE( doubleVar.type(), QVariant::String );
+  QCOMPARE( doubleVar, QVariant( "9.7" ) );
+  QVariant nullDouble = QVariant( QVariant::Double );
+  QVERIFY( stringField.convertCompatible( nullDouble ) );
+  QCOMPARE( nullDouble.type(), QVariant::String );
+  QVERIFY( nullDouble.isNull() );
+
+  //test double
+  QgsField doubleField( "double", QVariant::Double, "double" );
+
+  stringVar = QVariant( "test string" );
+  QVERIFY( !doubleField.convertCompatible( stringVar ) );
+  QCOMPARE( stringVar.type(), QVariant::Double );
+  QVERIFY( stringVar.isNull( ) );
+  nullString = QVariant( QVariant::String );
+  QVERIFY( doubleField.convertCompatible( nullString ) );
+  QCOMPARE( nullString.type(), QVariant::Double );
+  QVERIFY( nullString.isNull() );
+  intVar = QVariant( 5 );
+  QVERIFY( doubleField.convertCompatible( intVar ) );
+  QCOMPARE( intVar.type(), QVariant::Double );
+  QCOMPARE( intVar, QVariant( 5.0 ) );
+  nullInt = QVariant( QVariant::Int );
+  QVERIFY( doubleField.convertCompatible( nullInt ) );
+  QCOMPARE( nullInt.type(), QVariant::Double );
+  QVERIFY( nullInt.isNull() );
+  doubleVar = QVariant( 9.7 );
+  QVERIFY( doubleField.convertCompatible( doubleVar ) );
+  QCOMPARE( doubleVar.type(), QVariant::Double );
+  QCOMPARE( doubleVar, QVariant( 9.7 ) );
+  nullDouble = QVariant( QVariant::Double );
+  QVERIFY( doubleField.convertCompatible( nullDouble ) );
+  QCOMPARE( nullDouble.type(), QVariant::Double );
+  QVERIFY( nullDouble.isNull() );
+
+  //test special rules
+
+  //conversion of double to int
+  QgsField intField( "int", QVariant::Int, "int" );
+  //small double, should be rounded
+  QVariant smallDouble( 45.7 );
+  QVERIFY( intField.convertCompatible( smallDouble ) );
+  QCOMPARE( smallDouble.type(), QVariant::Int );
+  QCOMPARE( smallDouble, QVariant( 46 ) );
+  QVariant negativeSmallDouble( -9345.754534525235235 );
+  QVERIFY( intField.convertCompatible( negativeSmallDouble ) );
+  QCOMPARE( negativeSmallDouble.type(), QVariant::Int );
+  QCOMPARE( negativeSmallDouble, QVariant( -9346 ) );
+  //large double, cannot be converted
+  QVariant largeDouble( 9999999999.99 );
+  QVERIFY( !intField.convertCompatible( largeDouble ) );
+  QCOMPARE( largeDouble.type(), QVariant::Int );
+  QVERIFY( largeDouble.isNull( ) );
+
+  //conversion of string double value to int
+  QVariant notNumberString( "notanumber" );
+  QVERIFY( !intField.convertCompatible( notNumberString ) );
+  QCOMPARE( notNumberString.type(), QVariant::Int );
+  QVERIFY( notNumberString.isNull( ) );
+  //small double, should be rounded
+  QVariant smallDoubleString( "45.7" );
+  QVERIFY( intField.convertCompatible( smallDoubleString ) );
+  QCOMPARE( smallDoubleString.type(), QVariant::Int );
+  QCOMPARE( smallDoubleString, QVariant( 46 ) );
+  QVariant negativeSmallDoubleString( "-9345.754534525235235" );
+  QVERIFY( intField.convertCompatible( negativeSmallDoubleString ) );
+  QCOMPARE( negativeSmallDoubleString.type(), QVariant::Int );
+  QCOMPARE( negativeSmallDoubleString, QVariant( -9346 ) );
+  //large double, cannot be converted
+  QVariant largeDoubleString( "9999999999.99" );
+  QVERIFY( !intField.convertCompatible( largeDoubleString ) );
+  QCOMPARE( largeDoubleString.type(), QVariant::Int );
+  QVERIFY( largeDoubleString.isNull( ) );
+
+  //conversion of longlong to int
+  QVariant longlong( 99999999999999999LL );
+  QVERIFY( !intField.convertCompatible( longlong ) );
+  QCOMPARE( longlong.type(), QVariant::Int );
+  QVERIFY( longlong.isNull( ) );
+  QVariant smallLonglong( 99LL );
+  QVERIFY( intField.convertCompatible( smallLonglong ) );
+  QCOMPARE( smallLonglong.type(), QVariant::Int );
+  QCOMPARE( smallLonglong, QVariant( 99 ) );
+  //conversion of longlong to longlong field
+  QgsField longlongField( "long", QVariant::LongLong, "longlong" );
+  longlong = QVariant( 99999999999999999LL );
+  QVERIFY( longlongField.convertCompatible( longlong ) );
+  QCOMPARE( longlong.type(), QVariant::LongLong );
+  QCOMPARE( longlong, QVariant( 99999999999999999LL ) );
+
+  //double with precision
+  QgsField doubleWithPrecField( "double", QVariant::Double, "double", 10, 3 );
+  doubleVar = QVariant( 10.12345678 );
+  //note - this returns true!
+  QVERIFY( doubleWithPrecField.convertCompatible( doubleVar ) );
+  QCOMPARE( doubleVar.type(), QVariant::Double );
+  QCOMPARE( doubleVar.toDouble(), 10.123 );
+
+  //truncating string length
+  QgsField stringWithLen( "string", QVariant::String, "string", 3 );
+  stringVar = QVariant( "longstring" );
+  QVERIFY( !stringWithLen.convertCompatible( stringVar ) );
+  QCOMPARE( stringVar.type(), QVariant::String );
+  QCOMPARE( stringVar.toString(), QString( "lon" ) );
+}
+
+void TestQgsField::dataStream()
+{
+  QgsField original;
+  original.setName( "name" );
+  original.setType( QVariant::Int );
+  original.setLength( 5 );
+  original.setPrecision( 2 );
+  original.setTypeName( "typename1" );
+  original.setComment( "comment1" );
+
+  QByteArray ba;
+  QDataStream ds( &ba, QIODevice::ReadWrite );
+  ds << original;
+
+  QgsField result;
+  ds.device()->seek( 0 );
+  ds >> result;
+
+  QCOMPARE( result, original );
+  QCOMPARE( result.typeName(), original.typeName() ); //typename is NOT required for equality
+  QCOMPARE( result.comment(), original.comment() ); //comment is NOT required for equality
 }
 
 QTEST_MAIN( TestQgsField )

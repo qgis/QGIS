@@ -16,17 +16,21 @@
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
 #include "qgspoint.h"
+#include "qgswkbptr.h"
 #include <QPolygonF>
+
 
 #include <QtTest/QtTest>
 #include <QObject>
-#include <QSharedPointer>
 
 class TestQgsGeometryImport: public QObject
 {
     Q_OBJECT
 
   private slots:
+
+    void initTestCase();
+
     void pointWkt_data();
     void pointWkt();
 
@@ -49,6 +53,11 @@ class TestQgsGeometryImport: public QObject
     bool compareLineStrings( const QgsPolyline& polyline, QVariantList& line );
 };
 
+void TestQgsGeometryImport::initTestCase()
+{
+  initGEOS( 0, 0 );
+}
+
 void TestQgsGeometryImport::pointWkt_data()
 {
   QTest::addColumn<QString>( "wktString" );
@@ -64,10 +73,11 @@ void TestQgsGeometryImport::pointWkt()
   QFETCH( double, x );
   QFETCH( double, y );
 
-  QSharedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wktString ) );
+  QgsGeometry* geom = QgsGeometry::fromWkt( wktString );
 
   QCOMPARE( geom->wkbType(), QGis::WKBPoint );
   QgsPoint point = geom->asPoint();
+  delete geom;
 
   QVERIFY( qgsDoubleNear( point.x(), x ) );
   QVERIFY( qgsDoubleNear( point.y(), y ) );
@@ -89,7 +99,7 @@ void TestQgsGeometryImport::pointWkb()
   //create wkb
   char byteOrder = QgsApplication::endian();
   unsigned char* geomPtr = new unsigned char[21];
-  QgsWkbPtr wkb( geomPtr );
+  QgsWkbPtr wkb( geomPtr, 21 );
   wkb << byteOrder << QGis::WKBPoint << x << y;
 
   QgsGeometry geom;
@@ -114,12 +124,10 @@ void TestQgsGeometryImport::pointGeos()
   QFETCH( double, x );
   QFETCH( double, y );
 
-  GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
-
-  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-  GEOSCoordSeq_setX_r( geosctxt, coord, 0, x );
-  GEOSCoordSeq_setY_r( geosctxt, coord, 0, y );
-  GEOSGeometry* geosPt = GEOSGeom_createPoint_r( geosctxt, coord );
+  GEOSCoordSequence *coord = GEOSCoordSeq_create( 1, 2 );
+  GEOSCoordSeq_setX( coord, 0, x );
+  GEOSCoordSeq_setY( coord, 0, y );
+  GEOSGeometry* geosPt = GEOSGeom_createPoint( coord );
 
   QgsGeometry geom;
   geom.fromGeos( geosPt );
@@ -147,11 +155,12 @@ void TestQgsGeometryImport::linestringWkt()
   QFETCH( QString, wktString );
   QFETCH( QVariantList, line );
 
-  QSharedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wktString ) );
+  QgsGeometry* geom = QgsGeometry::fromWkt( wktString );
   QCOMPARE( geom->wkbType(), QGis::WKBLineString );
 
   QgsPolyline polyLine = geom->asPolyline();
   QVERIFY( compareLineStrings( polyLine, line ) );
+  delete geom;
 }
 
 void TestQgsGeometryImport::linestringWkb_data()
@@ -169,7 +178,7 @@ void TestQgsGeometryImport::linestringWkb()
   char byteOrder = QgsApplication::endian();
   int wkbSize = 1 + 2 * sizeof( int ) + line.size() * 2 * sizeof( double );
   unsigned char* geomPtr = new unsigned char[wkbSize];
-  QgsWkbPtr wkb( geomPtr );
+  QgsWkbPtr wkb( geomPtr, wkbSize );
   wkb << byteOrder << QGis::WKBLineString << line.size();
 
   for ( int i = 0; i < line.size(); ++i )
@@ -198,17 +207,15 @@ void TestQgsGeometryImport::linestringGeos()
 {
   QFETCH( QVariantList, line );
 
-  GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
-
   //create geos coord sequence first
-  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, line.count(), 2 );
+  GEOSCoordSequence *coord = GEOSCoordSeq_create( line.count(), 2 );
   for ( int i = 0; i < line.count(); i++ )
   {
     QPointF pt = line.at( i ).toPointF();
-    GEOSCoordSeq_setX_r( geosctxt, coord, i, pt.x() );
-    GEOSCoordSeq_setY_r( geosctxt, coord, i, pt.y() );
+    GEOSCoordSeq_setX( coord, i, pt.x() );
+    GEOSCoordSeq_setY( coord, i, pt.y() );
   }
-  GEOSGeometry* geosLine = GEOSGeom_createLineString_r( geosctxt, coord );
+  GEOSGeometry* geosLine = GEOSGeom_createLineString( coord );
   QgsGeometry geom;
   geom.fromGeos( geosLine );
   QVERIFY( geom.wkbType() == QGis::WKBLineString );
@@ -239,4 +246,3 @@ bool TestQgsGeometryImport::compareLineStrings( const QgsPolyline& polyline, QVa
 
 QTEST_MAIN( TestQgsGeometryImport )
 #include "testqgsgeometryimport.moc"
-

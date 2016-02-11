@@ -20,6 +20,7 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgstolerance.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 
@@ -57,7 +58,7 @@ void QgsSimplifyDialog::enableOkButton( bool enabled )
 
 QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
-    , mSelectionRubberBand( 0 )
+    , mSelectionRubberBand( nullptr )
     , mDragging( false )
     , mOriginalVertexCount( 0 )
     , mReducedVertexCount( 0 )
@@ -107,12 +108,12 @@ void QgsMapToolSimplify::updateSimplificationPreview()
   mReducedHasErrors = false;
   mReducedVertexCount = 0;
   int i = 0;
-  foreach ( const QgsFeature& fSel, mSelectedFeatures )
+  Q_FOREACH ( const QgsFeature& fSel, mSelectedFeatures )
   {
-    if ( QgsGeometry* g = fSel.geometry()->simplify( layerTolerance ) )
+    if ( QgsGeometry* g = fSel.constGeometry()->simplify( layerTolerance ) )
     {
       mReducedVertexCount += vertexCount( g );
-      mRubberBands[i]->setToGeometry( g, vl );
+      mRubberBands.at( i )->setToGeometry( g, vl );
       delete g;
     }
     else
@@ -125,7 +126,7 @@ void QgsMapToolSimplify::updateSimplificationPreview()
 }
 
 
-int QgsMapToolSimplify::vertexCount( QgsGeometry* g ) const
+int QgsMapToolSimplify::vertexCount( const QgsGeometry* g ) const
 {
   switch ( g->type() )
   {
@@ -134,7 +135,7 @@ int QgsMapToolSimplify::vertexCount( QgsGeometry* g ) const
       int count = 0;
       if ( g->isMultipart() )
       {
-        foreach ( const QgsPolyline& polyline, g->asMultiPolyline() )
+        Q_FOREACH ( const QgsPolyline& polyline, g->asMultiPolyline() )
           count += polyline.count();
       }
       else
@@ -146,13 +147,13 @@ int QgsMapToolSimplify::vertexCount( QgsGeometry* g ) const
       int count = 0;
       if ( g->isMultipart() )
       {
-        foreach ( const QgsPolygon& polygon, g->asMultiPolygon() )
-          foreach ( const QgsPolyline& ring, polygon )
+        Q_FOREACH ( const QgsPolygon& polygon, g->asMultiPolygon() )
+          Q_FOREACH ( const QgsPolyline& ring, polygon )
             count += ring.count();
       }
       else
       {
-        foreach ( const QgsPolyline& ring, g->asPolygon() )
+        Q_FOREACH ( const QgsPolyline& ring, g->asPolygon() )
           count += ring.count();
       }
       return count;
@@ -169,9 +170,9 @@ void QgsMapToolSimplify::storeSimplified()
   double layerTolerance = QgsTolerance::toleranceInMapUnits( mTolerance, vlayer, mCanvas->mapSettings(), mToleranceUnits );
 
   vlayer->beginEditCommand( tr( "Geometry simplified" ) );
-  foreach ( const QgsFeature& feat, mSelectedFeatures )
+  Q_FOREACH ( const QgsFeature& feat, mSelectedFeatures )
   {
-    if ( QgsGeometry* g = feat.geometry()->simplify( layerTolerance ) )
+    if ( QgsGeometry* g = feat.constGeometry()->simplify( layerTolerance ) )
     {
       vlayer->changeGeometry( feat.id(), g );
       delete g;
@@ -186,7 +187,7 @@ void QgsMapToolSimplify::storeSimplified()
 
 
 
-void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolSimplify::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -204,7 +205,7 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSimplify::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolSimplify::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( !( e->buttons() & Qt::LeftButton ) )
     return;
@@ -228,13 +229,16 @@ void QgsMapToolSimplify::canvasMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSimplify::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
 
+  if ( !currentVectorLayer() )
+    return;
+
   delete mSelectionRubberBand;
-  mSelectionRubberBand = 0;
+  mSelectionRubberBand = nullptr;
 
   if ( mDragging && ( mSelectionRect.topLeft() != mSelectionRect.bottomRight() ) )
   {
@@ -255,9 +259,9 @@ void QgsMapToolSimplify::canvasReleaseEvent( QMouseEvent * e )
 
   // count vertices, prepare rubber bands
   mOriginalVertexCount = 0;
-  foreach ( const QgsFeature& f, mSelectedFeatures )
+  Q_FOREACH ( const QgsFeature& f, mSelectedFeatures )
   {
-    mOriginalVertexCount += vertexCount( f.geometry() );
+    mOriginalVertexCount += vertexCount( f.constGeometry() );
 
     QgsRubberBand* rb = new QgsRubberBand( mCanvas );
     rb->setColor( QColor( 255, 0, 0, 65 ) );
@@ -272,7 +276,7 @@ void QgsMapToolSimplify::canvasReleaseEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSimplify::selectOneFeature( const QPoint& canvasPoint )
+void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
 {
   QgsVectorLayer * vlayer = currentVectorLayer();
   QgsPoint layerCoords = toLayerCoordinates( vlayer, canvasPoint );
@@ -288,7 +292,7 @@ void QgsMapToolSimplify::selectOneFeature( const QPoint& canvasPoint )
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    currentDistance = geometry->distance( *( f.geometry() ) );
+    currentDistance = geometry->distance( *( f.constGeometry() ) );
     if ( currentDistance < minDistance )
     {
       minDistance = currentDistance;
@@ -333,7 +337,7 @@ void QgsMapToolSimplify::clearSelection()
 void QgsMapToolSimplify::deactivate()
 {
   delete mSelectionRubberBand;
-  mSelectionRubberBand = 0;
+  mSelectionRubberBand = nullptr;
 
   if ( mSimplifyDialog->isVisible() )
     mSimplifyDialog->close();
@@ -347,6 +351,6 @@ QString QgsMapToolSimplify::statusText() const
   QString txt = tr( "%1 feature(s): %2 to %3 vertices (%4%)" )
                 .arg( mSelectedFeatures.count() ).arg( mOriginalVertexCount ).arg( mReducedVertexCount ).arg( percent );
   if ( mReducedHasErrors )
-    txt += "\n" + tr( "Simplification failed!" );
+    txt += '\n' + tr( "Simplification failed!" );
   return txt;
 }

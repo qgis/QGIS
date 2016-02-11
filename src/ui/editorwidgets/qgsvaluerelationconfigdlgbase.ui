@@ -140,6 +140,17 @@
    <header>qgsfieldcombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mLayerName</tabstop>
+  <tabstop>mKeyColumn</tabstop>
+  <tabstop>mValueColumn</tabstop>
+  <tabstop>mAllowNull</tabstop>
+  <tabstop>mOrderByValue</tabstop>
+  <tabstop>mAllowMulti</tabstop>
+  <tabstop>mUseCompleter</tabstop>
+  <tabstop>mEditExpression</tabstop>
+  <tabstop>mFilterExpression</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

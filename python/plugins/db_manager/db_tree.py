@@ -20,17 +20,18 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import SIGNAL, SLOT
+from PyQt4.QtCore import SIGNAL, SLOT, QSettings, Qt
 from PyQt4.QtGui import QWidget, QTreeView, QMenu, QLabel
 
 from qgis.core import QgsMapLayerRegistry, QgsMessageLog
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
-from .db_model import DBModel
+from .db_model import DBModel, PluginItem
 from .db_plugins.plugin import DBPlugin, Schema, Table
 
 
 class DBTree(QTreeView):
+
     def __init__(self, mainWindow):
         QTreeView.__init__(self, mainWindow)
         self.mainWindow = mainWindow
@@ -43,6 +44,7 @@ class DBTree(QTreeView):
         self.setAcceptDrops(True)
         self.setDropIndicatorShown(True)
 
+        self.connect(self, SIGNAL("doubleClicked(const QModelIndex &)"), self.addLayer)
         self.connect(self.selectionModel(), SIGNAL("currentChanged(const QModelIndex&, const QModelIndex&)"),
                      self.currentItemChanged)
         self.connect(self, SIGNAL("expanded(const QModelIndex&)"), self.itemChanged)
@@ -53,7 +55,8 @@ class DBTree(QTreeView):
     def refreshItem(self, item=None):
         if item is None:
             item = self.currentItem()
-            if item is None: return
+            if item is None:
+                return
         self.model().refreshItem(item)
 
     def showSystemTables(self, show):
@@ -65,10 +68,10 @@ class DBTree(QTreeView):
             return
         return self.model().getItem(indexes[0])
 
-
     def currentDatabase(self):
         item = self.currentItem()
-        if item is None: return
+        if item is None:
+            return
 
         if isinstance(item, (DBPlugin, Schema, Table)):
             return item.database()
@@ -76,7 +79,8 @@ class DBTree(QTreeView):
 
     def currentSchema(self):
         item = self.currentItem()
-        if item is None: return
+        if item is None:
+            return
 
         if isinstance(item, (Schema, Table)):
             return item.schema()
@@ -84,12 +88,19 @@ class DBTree(QTreeView):
 
     def currentTable(self):
         item = self.currentItem()
-        if item is None: return
+        if item is None:
+            return
 
         if isinstance(item, Table):
             return item
         return None
 
+    def newConnection(self):
+        index = self.currentIndex()
+        if not index.isValid() or not isinstance(index.internalPointer(), PluginItem):
+            return
+        item = self.currentItem()
+        self.mainWindow.invokeCallback(item.addConnectionActionSlot, index)
 
     def itemChanged(self, index):
         self.setCurrentIndex(index)
@@ -117,12 +128,17 @@ class DBTree(QTreeView):
             menu.addAction(self.tr("Rename"), self.rename)
             menu.addAction(self.tr("Delete"), self.delete)
 
-            if isinstance(item, Table):
+            if isinstance(item, Table) and item.canBeAddedToCanvas():
                 menu.addSeparator()
                 menu.addAction(self.tr("Add to canvas"), self.addLayer)
 
-        elif isinstance(item, DBPlugin) and item.database() is not None:
-            menu.addAction(self.tr("Re-connect"), self.reconnect)
+        elif isinstance(item, DBPlugin):
+            if item.database() is not None:
+                menu.addAction(self.tr("Re-connect"), self.reconnect)
+            menu.addAction(self.tr("Remove"), self.delete)
+
+        elif not index.parent().isValid() and item.typeName() == "spatialite":
+            menu.addAction(self.tr("New Connection..."), self.newConnection)
 
         if not menu.isEmpty():
             menu.exec_(ev.globalPos())
@@ -130,15 +146,16 @@ class DBTree(QTreeView):
         menu.deleteLater()
 
     def rename(self):
-        index = self.currentIndex()
-        item = self.model().getItem(index)
+        item = self.currentItem()
         if isinstance(item, (Table, Schema)):
-            self.edit(index)
+            self.edit(self.currentIndex())
 
     def delete(self):
         item = self.currentItem()
         if isinstance(item, (Table, Schema)):
             self.mainWindow.invokeCallback(item.database().deleteActionSlot)
+        elif isinstance(item, DBPlugin):
+            self.mainWindow.invokeCallback(item.removeActionSlot)
 
     def addLayer(self):
         table = self.currentTable()

@@ -1,4 +1,4 @@
-/*!  \mainpage QGIS
+/** \mainpage QGIS
 *
 *  \section about  About QGIS
 * QGIS is a user friendly Open Source Geographic Information
@@ -66,6 +66,12 @@ class QGis
     static bool isMultiType( WkbType type );
     static int wkbDimensions( WkbType type );
 
+    //! Converts from old (pre 2.10) WKB type to new WKB type
+    static QgsWKBTypes::Type fromOldWkbType(QGis::WkbType type);
+
+    //! Converts from new (post 2.10) WKB type to old WKB type
+    static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
+
     enum GeometryType
     {
       Point,
@@ -86,21 +92,21 @@ class QGis
      */
     enum DataType
     {
-      /*! Unknown or unspecified type */                UnknownDataType,
-      /*! Eight bit unsigned integer (quint8) */        Byte,
-      /*! Sixteen bit unsigned integer (quint16) */     UInt16,
-      /*! Sixteen bit signed integer (qint16) */        Int16,
-      /*! Thirty two bit unsigned integer (quint32) */  UInt32,
-      /*! Thirty two bit signed integer (qint32) */     Int32,
-      /*! Thirty two bit floating point (float) */      Float32,
-      /*! Sixty four bit floating point (double) */     Float64,
-      /*! Complex Int16 */                              CInt16,
-      /*! Complex Int32 */                              CInt32,
-      /*! Complex Float32 */                            CFloat32,
-      /*! Complex Float64 */                            CFloat64,
-      /*! Color, alpha, red, green, blue, 4 bytes the same as
+      /** Unknown or unspecified type */                UnknownDataType,
+      /** Eight bit unsigned integer (quint8) */        Byte,
+      /** Sixteen bit unsigned integer (quint16) */     UInt16,
+      /** Sixteen bit signed integer (qint16) */        Int16,
+      /** Thirty two bit unsigned integer (quint32) */  UInt32,
+      /** Thirty two bit signed integer (qint32) */     Int32,
+      /** Thirty two bit floating point (float) */      Float32,
+      /** Sixty four bit floating point (double) */     Float64,
+      /** Complex Int16 */                              CInt16,
+      /** Complex Int32 */                              CInt32,
+      /** Complex Float32 */                            CFloat32,
+      /** Complex Float64 */                            CFloat64,
+      /** Color, alpha, red, green, blue, 4 bytes the same as
           QImage::Format_ARGB32 */                      ARGB32,
-      /*! Color, alpha, red, green, blue, 4 bytes  the same as
+      /** Color, alpha, red, green, blue, 4 bytes  the same as
           QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied,
     };
 
@@ -123,19 +129,27 @@ class QGis
       NauticalMiles
     };
 
-    //! Provides the canonical name of the type value
-    static QString toLiteral( QGis::UnitType unit );
+    //! @deprecated use QgsUnitTypes::encodeUnit() instead
+    static QString toLiteral( QGis::UnitType unit ) /Deprecated/;
+
     //! Converts from the canonical name to the type value
-    static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
+    //! @deprecated use QgsUnitTypes::decodeDistanceUnit() instead
+    static UnitType fromLiteral( const QString& literal, QGis::UnitType defaultType = UnknownUnit ) /Deprecated/;
+
     //! Provides translated version of the type value
-    static QString tr( QGis::UnitType unit );
+    //! @deprecated use QgsUnitTypes::toString() instead
+    static QString tr( QGis::UnitType unit ) /Deprecated/;
+
     //! Provides type value from translated version
-    static UnitType fromTr( QString literal, QGis::UnitType defaultType = UnknownUnit );
+    //! @deprecated use QgsUnitTypes::stringToDistanceUnit() instead
+    static UnitType fromTr( const QString& literal, QGis::UnitType defaultType = UnknownUnit ) /Deprecated/;
+
     //! Returns the conversion factor between the specified units
-    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
+    //! @deprecated use QgsUnitTyoes::fromUnitToUnitFactor() instead
+    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit ) /Deprecated/;
 
     /** Converts a string to a double in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand seperators
+     * numbers of digits between thousand separators
      * @param string string to convert
      * @param ok will be set to true if conversion was successful
      * @returns string converted to double if possible
@@ -145,7 +159,7 @@ class QGis
     static double permissiveToDouble( QString string, bool& ok );
 
     /** Converts a string to an integer in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand seperators
+     * numbers of digits between thousand separators
      * @param string string to convert
      * @param ok will be set to true if conversion was successful
      * @returns string converted to int if possible
@@ -231,10 +245,10 @@ const double MINIMUM_POINT_SIZE;
 const double DEFAULT_POINT_SIZE;
 const double DEFAULT_LINE_WIDTH;
 
-/** default snapping tolerance for segments */
+/** Default snapping tolerance for segments */
 const double DEFAULT_SEGMENT_EPSILON;
 
-/** qgssize is used instead of size_t, because size_t is stdlib type, unknown
+/** Qgssize is used instead of size_t, because size_t is stdlib type, unknown
  *  by SIP, and it would be hard to define size_t correctly in SIP.
  *  Currently used "unsigned long long" was introduced in C++11 (2011)
  *  but it was supported already before C++11 on common platforms.

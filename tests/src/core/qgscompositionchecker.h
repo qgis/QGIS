@@ -22,12 +22,13 @@
 class QgsComposition;
 class QImage;
 
-/**Renders a composition to an image and compares with an expected output*/
+/** Renders a composition to an image and compares with an expected output*/
 class QgsCompositionChecker : public QgsMultiRenderChecker
 {
   public:
     QgsCompositionChecker( const QString& testName, QgsComposition* composition );
-    ~QgsCompositionChecker();
+
+    void setSize( QSize size ) { mSize = size; }
 
     bool testComposition( QString &theReport, int page = 0, int pixelDiff = 0 );
 

@@ -12,9 +12,19 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
 
     virtual QgsFeatureRendererV2* renderer();
 
+    /** Replaces category symbols with the symbols from a style that have a matching
+     * name.
+     * @param style style containing symbols to match with
+     * @return number of symbols matched
+     * @see matchToSymbolsFromLibrary
+     * @see matchToSymbolsFromXml
+     * @note added in QGIS 2.9
+     */
+    int matchToSymbols( QgsStyleV2* style );
+
   public slots:
     void changeCategorizedSymbol();
-    void categoryColumnChanged( QString field );
+    void categoryColumnChanged( const QString& field );
     void categoriesDoubleClicked( const QModelIndex & idx );
     void addCategory();
     void addCategories();
@@ -22,13 +32,28 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
     void deleteCategories();
     void deleteAllCategories();
 
-    void rotationFieldChanged( QString fldName );
-    void sizeScaleFieldChanged( QString fldName );
+    void sizeScaleFieldChanged( const QString& fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
 
     void showSymbolLevels();
 
     void rowsMoved();
+
+    /** Replaces category symbols with the symbols from the users' symbol library that have a
+     * matching name.
+     * @see matchToSymbolsFromXml
+     * @see matchToSymbols
+     * @note added in QGIS 2.9
+     */
+    void matchToSymbolsFromLibrary();
+
+    /** Prompts for selection of an xml file, then replaces category symbols with the symbols
+     * from the XML file with a matching name.
+     * @see matchToSymbolsFromLibrary
+     * @see matchToSymbols
+     * @note added in QGIS 2.9
+     */
+    void matchToSymbolsFromXml();
 
   protected:
 

@@ -25,7 +25,6 @@
 
 #include <cpl_string.h>
 #include <gdalwarper.h>
-#include <ogr_srs_api.h>
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8(x)   (x).toUtf8().constData()
@@ -45,9 +44,20 @@ QgsRasterCalculator::QgsRasterCalculator( const QString& formulaString, const QS
     , mNumOutputRows( nOutputRows )
     , mRasterEntries( rasterEntries )
 {
+  //default to first layer's crs
+  mOutputCrs = mRasterEntries.at( 0 ).raster->crs();
 }
 
-QgsRasterCalculator::~QgsRasterCalculator()
+QgsRasterCalculator::QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
+    const QgsRectangle& outputExtent, const QgsCoordinateReferenceSystem& outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries )
+    : mFormulaString( formulaString )
+    , mOutputFile( outputFile )
+    , mOutputFormat( outputFormat )
+    , mOutputRectangle( outputExtent )
+    , mOutputCrs( outputCrs )
+    , mNumOutputColumns( nOutputColumns )
+    , mNumOutputRows( nOutputRows )
+    , mRasterEntries( rasterEntries )
 {
 }
 
@@ -59,98 +69,58 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
   if ( !calcNode )
   {
     //error
-    return 4;
+    return static_cast<int>( ParserError );
   }
 
-  double targetGeoTransform[6];
-  outputGeoTransform( targetGeoTransform );
-
-  //open all input rasters for reading
-  QMap< QString, GDALRasterBandH > mInputRasterBands; //raster references and corresponding scanline data
-  QMap< QString, QgsRasterMatrix* > inputScanLineData; //stores raster references and corresponding scanline data
-  QVector< GDALDatasetH > mInputDatasets; //raster references and corresponding dataset
-
+  QMap< QString, QgsRasterBlock* > inputBlocks;
   QVector<QgsRasterCalculatorEntry>::const_iterator it = mRasterEntries.constBegin();
   for ( ; it != mRasterEntries.constEnd(); ++it )
   {
     if ( !it->raster ) // no raster layer in entry
     {
-      return 2;
-    }
-    GDALDatasetH inputDataset = GDALOpen( TO8F( it->raster->source() ), GA_ReadOnly );
-    if ( !inputDataset )
-    {
-      return 2;
+      delete calcNode;
+      qDeleteAll( inputBlocks );
+      return static_cast< int >( InputLayerError );
     }
 
-    //check if the input dataset is south up or rotated. If yes, use GDALAutoCreateWarpedVRT to create a north up raster
-    double inputGeoTransform[6];
-    if ( GDALGetGeoTransform( inputDataset, inputGeoTransform ) == CE_None
-         && ( inputGeoTransform[1] < 0.0
-              || inputGeoTransform[2] != 0.0
-              || inputGeoTransform[4] != 0.0
-              || inputGeoTransform[5] > 0.0 ) )
+    QgsRasterBlock* block = nullptr;
+    // if crs transform needed
+    if ( it->raster->crs() != mOutputCrs )
     {
-      GDALDatasetH vDataset = GDALAutoCreateWarpedVRT( inputDataset, NULL, NULL, GRA_NearestNeighbour, 0.2, NULL );
-      mInputDatasets.push_back( vDataset );
-      mInputDatasets.push_back( inputDataset );
-      inputDataset = vDataset;
+      QgsRasterProjector proj;
+      proj.setCRS( it->raster->crs(), mOutputCrs );
+      proj.setInput( it->raster->dataProvider() );
+      proj.setPrecision( QgsRasterProjector::Exact );
+
+      block = proj.block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows );
     }
     else
     {
-      mInputDatasets.push_back( inputDataset );
+      block = it->raster->dataProvider()->block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows );
     }
-
-    GDALRasterBandH inputRasterBand = GDALGetRasterBand( inputDataset, it->bandNumber );
-    if ( inputRasterBand == NULL )
+    if ( block->isEmpty() )
     {
-      return 2;
+      delete block;
+      delete calcNode;
+      qDeleteAll( inputBlocks );
+      return static_cast<int>( MemoryError );
     }
-
-    int nodataSuccess;
-    double nodataValue = GDALGetRasterNoDataValue( inputRasterBand, &nodataSuccess );
-
-    mInputRasterBands.insert( it->ref, inputRasterBand );
-    inputScanLineData.insert( it->ref, new QgsRasterMatrix( mNumOutputColumns, 1, new float[mNumOutputColumns], nodataValue ) );
+    inputBlocks.insert( it->ref, block );
   }
 
   //open output dataset for writing
   GDALDriverH outputDriver = openOutputDriver();
-  if ( outputDriver == NULL )
+  if ( !outputDriver )
   {
-    return 1;
+    return static_cast< int >( CreateOutputError );
   }
+
   GDALDatasetH outputDataset = openOutputFile( outputDriver );
-
-  //copy the projection info from the first input raster
-  if ( mRasterEntries.size() > 0 )
-  {
-    QgsRasterLayer* rl = mRasterEntries.at( 0 ).raster;
-    if ( rl )
-    {
-      char* crsWKT = 0;
-      OGRSpatialReferenceH ogrSRS = OSRNewSpatialReference( NULL );
-      if ( OSRSetFromUserInput( ogrSRS, rl->crs().authid().toUtf8().constData() ) == OGRERR_NONE )
-      {
-        OSRExportToWkt( ogrSRS, &crsWKT );
-        GDALSetProjection( outputDataset, crsWKT );
-      }
-      else
-      {
-        GDALSetProjection( outputDataset, TO8( rl->crs().toWkt() ) );
-      }
-      OSRDestroySpatialReference( ogrSRS );
-      CPLFree( crsWKT );
-    }
-  }
-
-
+  GDALSetProjection( outputDataset, mOutputCrs.toWkt().toLocal8Bit().data() );
   GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset, 1 );
 
   float outputNodataValue = -FLT_MAX;
   GDALSetRasterNoDataValue( outputRasterBand, outputNodataValue );
-
-  float* resultScanLine = ( float * ) CPLMalloc( sizeof( float ) * mNumOutputColumns );
 
   if ( p )
   {
@@ -158,6 +128,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
   }
 
   QgsRasterMatrix resultMatrix;
+  resultMatrix.setNodataValue( outputNodataValue );
 
   //read / write line by line
   for ( int i = 0; i < mNumOutputRows; ++i )
@@ -172,46 +143,14 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
       break;
     }
 
-    //fill buffers
-    QMap< QString, QgsRasterMatrix* >::iterator bufferIt = inputScanLineData.begin();
-    for ( ; bufferIt != inputScanLineData.end(); ++bufferIt )
-    {
-      double sourceTransformation[6];
-      GDALRasterBandH sourceRasterBand = mInputRasterBands[bufferIt.key()];
-      if ( GDALGetGeoTransform( GDALGetBandDataset( sourceRasterBand ), sourceTransformation ) != CE_None )
-      {
-        qWarning( "GDALGetGeoTransform failed!" );
-      }
-
-      //the function readRasterPart calls GDALRasterIO (and ev. does some conversion if raster transformations are not the same)
-      readRasterPart( targetGeoTransform, 0, i, mNumOutputColumns, 1, sourceTransformation, sourceRasterBand, bufferIt.value()->data() );
-    }
-
-    if ( calcNode->calculate( inputScanLineData, resultMatrix ) )
+    if ( calcNode->calculate( inputBlocks, resultMatrix, i ) )
     {
       bool resultIsNumber = resultMatrix.isNumber();
-      float* calcData;
+      float* calcData = new float[mNumOutputColumns];
 
-      if ( resultIsNumber ) //scalar result. Insert number for every pixel
-      {
-        calcData = new float[mNumOutputColumns];
-        for ( int j = 0; j < mNumOutputColumns; ++j )
-        {
-          calcData[j] = resultMatrix.number();
-        }
-      }
-      else //result is real matrix
-      {
-        calcData = resultMatrix.data();
-      }
-
-      //replace all matrix nodata values with output nodatas
       for ( int j = 0; j < mNumOutputColumns; ++j )
       {
-        if ( calcData[j] == resultMatrix.nodataValue() )
-        {
-          calcData[j] = outputNodataValue;
-        }
+        calcData[j] = ( float )( resultIsNumber ? resultMatrix.number() : resultMatrix.data()[j] );
       }
 
       //write scanline to the dataset
@@ -220,10 +159,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
         qWarning( "RasterIO error!" );
       }
 
-      if ( resultIsNumber )
-      {
-        delete[] calcData;
-      }
+      delete[] calcData;
     }
 
   }
@@ -235,28 +171,18 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
 
   //close datasets and release memory
   delete calcNode;
-  QMap< QString, QgsRasterMatrix* >::iterator bufferIt = inputScanLineData.begin();
-  for ( ; bufferIt != inputScanLineData.end(); ++bufferIt )
-  {
-    delete bufferIt.value();
-  }
-  inputScanLineData.clear();
-
-  QVector< GDALDatasetH >::iterator datasetIt = mInputDatasets.begin();
-  for ( ; datasetIt != mInputDatasets.end(); ++ datasetIt )
-  {
-    GDALClose( *datasetIt );
-  }
+  qDeleteAll( inputBlocks );
+  inputBlocks.clear();
 
   if ( p && p->wasCanceled() )
   {
     //delete the dataset without closing (because it is faster)
     GDALDeleteDataset( outputDriver, TO8F( mOutputFile ) );
-    return 3;
+    return static_cast< int >( Cancelled );
   }
   GDALClose( outputDataset );
-  CPLFree( resultScanLine );
-  return 0;
+
+  return static_cast< int >( Success );
 }
 
 QgsRasterCalculator::QgsRasterCalculator()
@@ -272,15 +198,15 @@ GDALDriverH QgsRasterCalculator::openOutputDriver()
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );
 
-  if ( outputDriver == NULL )
+  if ( !outputDriver )
   {
-    return outputDriver; //return NULL, driver does not exist
+    return outputDriver; //return nullptr, driver does not exist
   }
 
-  driverMetadata = GDALGetMetadata( outputDriver, NULL );
+  driverMetadata = GDALGetMetadata( outputDriver, nullptr );
   if ( !CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
   {
-    return NULL; //driver exist, but it does not support the create operation
+    return nullptr; //driver exist, but it does not support the create operation
   }
 
   return outputDriver;
@@ -289,9 +215,9 @@ GDALDriverH QgsRasterCalculator::openOutputDriver()
 GDALDatasetH QgsRasterCalculator::openOutputFile( GDALDriverH outputDriver )
 {
   //open output file
-  char **papszOptions = NULL;
+  char **papszOptions = nullptr;
   GDALDatasetH outputDataset = GDALCreate( outputDriver, TO8F( mOutputFile ), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions );
-  if ( outputDataset == NULL )
+  if ( !outputDataset )
   {
     return outputDataset;
   }
@@ -302,115 +228,6 @@ GDALDatasetH QgsRasterCalculator::openOutputFile( GDALDriverH outputDriver )
   GDALSetGeoTransform( outputDataset, geotransform );
 
   return outputDataset;
-}
-
-void QgsRasterCalculator::readRasterPart( double* targetGeotransform, int xOffset, int yOffset, int nCols, int nRows, double* sourceTransform, GDALRasterBandH sourceBand, float* rasterBuffer )
-{
-  //If dataset transform is the same as the requested transform, do a normal GDAL raster io
-  if ( transformationsEqual( targetGeotransform, sourceTransform ) )
-  {
-    GDALRasterIO( sourceBand, GF_Read, xOffset, yOffset, nCols, nRows, rasterBuffer, nCols, nRows, GDT_Float32, 0, 0 );
-    return;
-  }
-
-  int sourceBandXSize = GDALGetRasterBandXSize( sourceBand );
-  int sourceBandYSize = GDALGetRasterBandYSize( sourceBand );
-
-  //pixel calculation needed because of different raster position / resolution
-  int nodataSuccess;
-  double nodataValue = GDALGetRasterNoDataValue( sourceBand, &nodataSuccess );
-  QgsRectangle targetRect( targetGeotransform[0] + targetGeotransform[1] * xOffset, targetGeotransform[3] + yOffset * targetGeotransform[5] + nRows * targetGeotransform[5]
-                           , targetGeotransform[0] + targetGeotransform[1] * xOffset + targetGeotransform[1] * nCols, targetGeotransform[3] + yOffset * targetGeotransform[5] );
-  QgsRectangle sourceRect( sourceTransform[0], sourceTransform[3] + GDALGetRasterBandYSize( sourceBand ) * sourceTransform[5],
-                           sourceTransform[0] +  GDALGetRasterBandXSize( sourceBand )* sourceTransform[1], sourceTransform[3] );
-  QgsRectangle intersection = targetRect.intersect( &sourceRect );
-
-  //no intersection, fill all the pixels with nodata values
-  if ( intersection.isEmpty() )
-  {
-    int nPixels = nCols * nRows;
-    for ( int i = 0; i < nPixels; ++i )
-    {
-      rasterBuffer[i] = nodataValue;
-    }
-    return;
-  }
-
-  //do raster io in source resolution
-  int sourcePixelOffsetXMin = floor(( intersection.xMinimum() - sourceTransform[0] ) / sourceTransform[1] );
-  int sourcePixelOffsetXMax = ceil(( intersection.xMaximum() - sourceTransform[0] ) / sourceTransform[1] );
-  if ( sourcePixelOffsetXMax > sourceBandXSize )
-  {
-    sourcePixelOffsetXMax = sourceBandXSize;
-  }
-  int nSourcePixelsX = sourcePixelOffsetXMax - sourcePixelOffsetXMin;
-
-  int sourcePixelOffsetYMax = floor(( intersection.yMaximum() - sourceTransform[3] ) / sourceTransform[5] );
-  int sourcePixelOffsetYMin = ceil(( intersection.yMinimum() - sourceTransform[3] ) / sourceTransform[5] );
-  if ( sourcePixelOffsetYMin > sourceBandYSize )
-  {
-    sourcePixelOffsetYMin = sourceBandYSize;
-  }
-  int nSourcePixelsY = sourcePixelOffsetYMin - sourcePixelOffsetYMax;
-  float* sourceRaster = ( float * ) CPLMalloc( sizeof( float ) * nSourcePixelsX * nSourcePixelsY );
-  double sourceRasterXMin = sourceRect.xMinimum() + sourcePixelOffsetXMin * sourceTransform[1];
-  double sourceRasterYMax = sourceRect.yMaximum() + sourcePixelOffsetYMax * sourceTransform[5];
-  if ( GDALRasterIO( sourceBand, GF_Read, sourcePixelOffsetXMin, sourcePixelOffsetYMax, nSourcePixelsX, nSourcePixelsY,
-                     sourceRaster, nSourcePixelsX, nSourcePixelsY, GDT_Float32, 0, 0 ) != CE_None )
-  {
-    //IO error, fill array with nodata values
-    CPLFree( sourceRaster );
-    int npixels = nRows * nCols;
-    for ( int i = 0; i < npixels; ++i )
-    {
-      rasterBuffer[i] = nodataValue;
-    }
-    return;
-  }
-
-
-  double targetPixelX;
-  double targetPixelXMin = targetGeotransform[0] + targetGeotransform[1] * xOffset + targetGeotransform[1] / 2.0;
-  double targetPixelY = targetGeotransform[3] + targetGeotransform[5] * yOffset + targetGeotransform[5] / 2.0; //coordinates of current target pixel
-  int sourceIndexX, sourceIndexY; //current raster index in  source pixels
-  double sx, sy;
-  for ( int i = 0; i < nRows; ++i )
-  {
-    targetPixelX = targetPixelXMin;
-    for ( int j = 0; j < nCols; ++j )
-    {
-      sx = ( targetPixelX - sourceRasterXMin ) / sourceTransform[1];
-      sourceIndexX = sx > 0 ? sx : floor( sx );
-      sy = ( targetPixelY - sourceRasterYMax ) / sourceTransform[5];
-      sourceIndexY = sy > 0 ? sy : floor( sy );
-      if ( sourceIndexX >= 0 && sourceIndexX < nSourcePixelsX
-           && sourceIndexY >= 0 && sourceIndexY < nSourcePixelsY )
-      {
-        rasterBuffer[j + i*nRows] = sourceRaster[ sourceIndexX  + nSourcePixelsX * sourceIndexY ];
-      }
-      else
-      {
-        rasterBuffer[j + i*j] = nodataValue;
-      }
-      targetPixelX += targetGeotransform[1];
-    }
-    targetPixelY += targetGeotransform[5];
-  }
-
-  CPLFree( sourceRaster );
-  return;
-}
-
-bool QgsRasterCalculator::transformationsEqual( double* t1, double* t2 ) const
-{
-  for ( int i = 0; i < 6; ++i )
-  {
-    if ( !qgsDoubleNear( t1[i], t2[i], 0.00001 ) )
-    {
-      return false;
-    }
-  }
-  return true;
 }
 
 void QgsRasterCalculator::outputGeoTransform( double* transform ) const

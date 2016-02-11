@@ -33,7 +33,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     // Should have been private, made public to be used in heatmap.cpp
     enum mBufferType
     {
-      Meters,
+      LayerUnits,
       MapUnits
     };
 
@@ -46,7 +46,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     /** Returns the fixed radius value */
     double radius() const;
 
-    /** Return the radius Unit (meters/map units) */
+    /** Return the radius unit (layer/map units) */
     int radiusUnit() const;
 
     /** Return the selected kernel shape */
@@ -119,8 +119,8 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     /** Update the LineEdits cellsize and row&col values  */
     void updateSize();
 
-    /** Convert Maters value to the corresponding map units based on Layer projection */
-    double mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs ) const;
+    /** Convert layer distance value to the corresponding map units based on layer projection */
+    double mapUnitsOf( double dist, const QgsCoordinateReferenceSystem& layerCrs ) const;
 
     /** Estimate a reasonable starting value for the radius field */
     double estimateRadius();

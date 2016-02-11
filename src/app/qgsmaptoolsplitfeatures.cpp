@@ -24,7 +24,7 @@
 #include <QMouseEvent>
 
 QgsMapToolSplitFeatures::QgsMapToolSplitFeatures( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgsMapToolCapture::CaptureLine )
+    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
 {
   mToolName = tr( "Split features" );
 }
@@ -34,7 +34,7 @@ QgsMapToolSplitFeatures::~QgsMapToolSplitFeatures()
 
 }
 
-void QgsMapToolSplitFeatures::canvasMapReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
 {
   //check if we operate on a vector layer
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -129,7 +129,7 @@ void QgsMapToolSplitFeatures::canvasMapReleaseEvent( QgsMapMouseEvent * e )
       //several intersections but only one split (most likely line)
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "No feature split done" ),
-        tr( "An error occured during splitting." ),
+        tr( "An error occurred during splitting." ),
         QgsMessageBar::WARNING,
         QgisApp::instance()->messageTimeout() );
     }

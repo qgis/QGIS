@@ -21,6 +21,8 @@
 
 class QgsValidatedDoubleSpinBox : public QDoubleSpinBox
 {
+    Q_OBJECT
+
   public:
     QgsValidatedDoubleSpinBox( QWidget *widget ) : QDoubleSpinBox( widget )  { }
 

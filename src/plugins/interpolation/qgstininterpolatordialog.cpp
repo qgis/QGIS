@@ -41,7 +41,7 @@ QgsTINInterpolatorDialog::~QgsTINInterpolatorDialog()
 
 QgsInterpolator* QgsTINInterpolatorDialog::createInterpolator() const
 {
-  QgsTINInterpolator* theInterpolator = 0;
+  QgsTINInterpolator* theInterpolator = nullptr;
 
   if ( mInterpolationComboBox->currentText() == tr( "Clough-Toucher (cubic)" ) )
   {
@@ -82,8 +82,8 @@ void QgsTINInterpolatorDialog::on_mTriangulationFileButton_clicked()
 {
   QSettings s;
   //read last triangulation directory
-  QString lastTriangulationDir = s.value( "/Interpolation/lastTriangulationDir", "" ).toString();
-  QString filename = QFileDialog::getSaveFileName( 0, tr( "Save triangulation to file" ), lastTriangulationDir, "*shp" );
+  QString lastTriangulationDir = s.value( "/Interpolation/lastTriangulationDir", QDir::homePath() ).toString();
+  QString filename = QFileDialog::getSaveFileName( nullptr, tr( "Save triangulation to file" ), lastTriangulationDir, "*shp" );
   if ( !filename.isEmpty() )
   {
     mTriangulationFileEdit->setText( filename );

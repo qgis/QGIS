@@ -24,23 +24,23 @@
 
 QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsMemoryFeatureSource>( source, ownSource, request )
-    , mSelectRectGeom( 0 )
-    , mSubsetExpression( 0 )
+    , mSelectRectGeom( nullptr )
+    , mSubsetExpression( nullptr )
 {
   if ( !mSource->mSubsetString.isEmpty() )
   {
     mSubsetExpression = new QgsExpression( mSource->mSubsetString );
-    mSubsetExpression->prepare( mSource->mFields );
+    mSubsetExpression->prepare( &mSource->mExpressionContext );
   }
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterRect && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+  if ( !mRequest.filterRect().isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
     mSelectRectGeom = QgsGeometry::fromRect( request.filterRect() );
   }
 
   // if there's spatial index, use it!
   // (but don't use it when selection rect is not specified)
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterRect && mSource->mSpatialIndex )
+  if ( !mRequest.filterRect().isNull() && mSource->mSpatialIndex )
   {
     mUsingFeatureIdList = true;
     mFeatureIdList = mSource->mSpatialIndex->intersects( mRequest.filterRect() );
@@ -49,8 +49,8 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource* sour
   else if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
     mUsingFeatureIdList = true;
-    QgsFeatureMap::const_iterator it = mSource->mFeatures.find( mRequest.filterFid() );
-    if ( it != mSource->mFeatures.end() )
+    QgsFeatureMap::const_iterator it = mSource->mFeatures.constFind( mRequest.filterFid() );
+    if ( it != mSource->mFeatures.constEnd() )
       mFeatureIdList.append( mRequest.filterFid() );
   }
   else
@@ -90,7 +90,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
   // option 1: we have a list of features to traverse
   while ( mFeatureIdListIterator != mFeatureIdList.constEnd() )
   {
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterRect && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+    if ( !mRequest.filterRect().isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
       // do exact check in case we're doing intersection
       if ( mSource->mFeatures[*mFeatureIdListIterator].geometry() && mSource->mFeatures[*mFeatureIdListIterator].geometry()->intersects( mSelectRectGeom ) )
@@ -99,8 +99,12 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
     else
       hasFeature = true;
 
-    if ( mSubsetExpression && !mSubsetExpression->evaluate( mSource->mFeatures[*mFeatureIdListIterator] ).toBool() )
-      hasFeature = false;
+    if ( mSubsetExpression )
+    {
+      mSource->mExpressionContext.setFeature( mSource->mFeatures[*mFeatureIdListIterator] );
+      if ( !mSubsetExpression->evaluate( &mSource->mExpressionContext ).toBool() )
+        hasFeature = false;
+    }
 
     if ( hasFeature )
       break;
@@ -118,7 +122,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
     close();
 
   if ( hasFeature )
-    feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+    feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
   return hasFeature;
 }
@@ -131,7 +135,7 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature& feature )
   // option 2: traversing the whole layer
   while ( mSelectIterator != mSource->mFeatures.constEnd() )
   {
-    if ( mRequest.filterType() != QgsFeatureRequest::FilterRect )
+    if ( mRequest.filterRect().isNull() )
     {
       // selection rect empty => using all features
       hasFeature = true;
@@ -141,19 +145,23 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature& feature )
       if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
         // using exact test when checking for intersection
-        if ( mSelectIterator->geometry() && mSelectIterator->geometry()->intersects( mSelectRectGeom ) )
+        if ( mSelectIterator->constGeometry() && mSelectIterator->constGeometry()->intersects( mSelectRectGeom ) )
           hasFeature = true;
       }
       else
       {
         // check just bounding box against rect when not using intersection
-        if ( mSelectIterator->geometry() && mSelectIterator->geometry()->boundingBox().intersects( mRequest.filterRect() ) )
+        if ( mSelectIterator->constGeometry() && mSelectIterator->constGeometry()->boundingBox().intersects( mRequest.filterRect() ) )
           hasFeature = true;
       }
     }
 
-    if ( mSubsetExpression && !mSubsetExpression->evaluate( *mSelectIterator ).toBool() )
-      hasFeature = false;
+    if ( mSubsetExpression )
+    {
+      mSource->mExpressionContext.setFeature( *mSelectIterator );
+      if ( !mSubsetExpression->evaluate( &mSource->mExpressionContext ).toBool() )
+        hasFeature = false;
+    }
 
     if ( hasFeature )
       break;
@@ -167,7 +175,7 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature& feature )
     feature = mSelectIterator.value();
     ++mSelectIterator;
     feature.setValid( true );
-    feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+    feature.setFields( mSource->mFields ); // allow name-based attribute lookups
   }
   else
     close();
@@ -196,7 +204,7 @@ bool QgsMemoryFeatureIterator::close()
   iteratorClosed();
 
   delete mSelectRectGeom;
-  mSelectRectGeom = NULL;
+  mSelectRectGeom = nullptr;
 
   mClosed = true;
   return true;
@@ -207,9 +215,12 @@ bool QgsMemoryFeatureIterator::close()
 QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider* p )
     : mFields( p->mFields )
     , mFeatures( p->mFeatures )
-    , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : 0 )  // just shallow copy
+    , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : nullptr )  // just shallow copy
     , mSubsetString( p->mSubsetString )
 {
+  mExpressionContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+  mExpressionContext.setFields( mFields );
 }
 
 QgsMemoryFeatureSource::~QgsMemoryFeatureSource()

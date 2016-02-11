@@ -28,21 +28,21 @@ QgsCapabilitiesCache::~QgsCapabilitiesCache()
 {
 }
 
-const QDomDocument* QgsCapabilitiesCache::searchCapabilitiesDocument( QString configFilePath, QString version )
+const QDomDocument* QgsCapabilitiesCache::searchCapabilitiesDocument( const QString& configFilePath, const QString& key )
 {
   QCoreApplication::processEvents(); //get updates from file system watcher
 
-  if ( mCachedCapabilities.contains( configFilePath ) && mCachedCapabilities[ configFilePath ].contains( version ) )
+  if ( mCachedCapabilities.contains( configFilePath ) && mCachedCapabilities[ configFilePath ].contains( key ) )
   {
-    return &mCachedCapabilities[configFilePath][version];
+    return &mCachedCapabilities[ configFilePath ][ key ];
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
-void QgsCapabilitiesCache::insertCapabilitiesDocument( QString configFilePath, QString version, const QDomDocument* doc )
+void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString& configFilePath, const QString& key, const QDomDocument* doc )
 {
   if ( mCachedCapabilities.size() > 40 )
   {
@@ -58,7 +58,7 @@ void QgsCapabilitiesCache::insertCapabilitiesDocument( QString configFilePath, Q
     mCachedCapabilities.insert( configFilePath, QHash<QString, QDomDocument>() );
   }
 
-  mCachedCapabilities[ configFilePath ].insert( version, doc->cloneNode().toDocument() );
+  mCachedCapabilities[ configFilePath ].insert( key, doc->cloneNode().toDocument() );
 }
 
 void QgsCapabilitiesCache::removeChangedEntry( const QString& path )

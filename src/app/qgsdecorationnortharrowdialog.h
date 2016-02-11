@@ -21,7 +21,7 @@ class APP_EXPORT QgsDecorationNorthArrowDialog : public QDialog, private Ui::Qgs
     Q_OBJECT
 
   public:
-    QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow& deco, QWidget* parent = 0 );
+    QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow& deco, QWidget* parent = nullptr );
     ~QgsDecorationNorthArrowDialog();
 
   private:
@@ -34,6 +34,7 @@ class APP_EXPORT QgsDecorationNorthArrowDialog : public QDialog, private Ui::Qgs
     void on_buttonBox_helpRequested();
     void on_spinAngle_valueChanged( int theInt );
     void on_sliderRotation_valueChanged( int theInt );
+    void apply();
 
   protected:
     QgsDecorationNorthArrow& mDeco;

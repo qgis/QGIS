@@ -43,7 +43,7 @@ class QgsStatisticalSummary
     /** Constructor for QgsStatisticalSummary
      * @param stats flags for statistics to calculate
      */
-    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = QgsStatisticalSummary::Statistics( 0 ) );
+    QgsStatisticalSummary( const QgsStatisticalSummary::Statistics& stats = QgsStatisticalSummary::All );
 
     virtual ~QgsStatisticalSummary();
 
@@ -58,7 +58,7 @@ class QgsStatisticalSummary
      * @param stats flags for statistics to calculate
      * @see statistics
      */
-    void setStatistics( QgsStatisticalSummary::Statistics stats );
+    void setStatistics( const QgsStatisticalSummary::Statistics& stats );
 
     /** Resets the calculated values
      */
@@ -68,6 +68,12 @@ class QgsStatisticalSummary
      * @param values list of doubles
      */
     void calculate( const QList<double>& values );
+
+    /** Returns the value of a specified statistic
+     * @param stat statistic to return
+     * @returns calculated value of statistic
+     */
+    double statistic( Statistic stat ) const;
 
     /** Returns calculated count of values
      */
@@ -150,6 +156,11 @@ class QgsStatisticalSummary
      * @see thirdQuartile
      */
     double interQuartileRange() const;
+
+    /** Returns the friendly display name for a statistic
+     * @param statistic statistic to return name for
+     */
+    static QString displayName( Statistic statistic );
 
 };
 

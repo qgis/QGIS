@@ -32,14 +32,14 @@ class GUI_EXPORT QgsCharacterSelectorDialog : public QDialog, private Ui::QgsCha
     Q_OBJECT
 
   public:
-    QgsCharacterSelectorDialog( QWidget* parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsCharacterSelectorDialog( QWidget* parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
     ~QgsCharacterSelectorDialog();
 
   public slots:
     const QChar& selectCharacter( bool* gotChar, const QFont& font, const QString& style );
 
   private slots:
-    void setCharacter( const QChar& chr );
+    void setCharacter( QChar chr );
 
   protected:
     QChar mChar;

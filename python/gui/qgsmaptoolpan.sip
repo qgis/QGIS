@@ -10,10 +10,10 @@ class QgsMapToolPan : QgsMapTool
     QgsMapToolPan( QgsMapCanvas* canvas );
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent * e );
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent * e );
 
     virtual bool isTransient();
 };

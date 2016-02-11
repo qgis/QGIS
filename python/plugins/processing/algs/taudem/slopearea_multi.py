@@ -54,21 +54,21 @@ class SlopeAreaMulti(GeoAlgorithm):
         return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
-        self.name = 'Slope Area Combination (multifile)'
+        self.name, self.i18n_name = self.trAlgorithm('Slope Area Combination (multifile)')
         self.cmdName = 'slopearea'
-        self.group = 'Stream Network Analysis tools'
+        self.group, self.i18n_group = self.trAlgorithm('Stream Network Analysis tools')
 
         self.addParameter(ParameterFile(self.SLOPE_GRID,
-            self.tr('Slope Grid'), True, False))
+                                        self.tr('Slope Grid'), True, False))
         self.addParameter(ParameterFile(self.AREA_GRID,
-            self.tr('Contributing Area Grid'), True, False))
+                                        self.tr('Contributing Area Grid'), True, False))
         self.addParameter(ParameterNumber(self.SLOPE_EXPONENT,
-            self.tr('Slope Exponent'), 0, None, 2))
+                                          self.tr('Slope Exponent'), 0, None, 2))
         self.addParameter(ParameterNumber(self.AREA_EXPONENT,
-            self.tr('Area Exponent'), 0, None, 1))
+                                          self.tr('Area Exponent'), 0, None, 1))
 
         self.addOutput(OutputDirectory(self.SLOPE_AREA_GRID,
-            self.tr('Slope Area Grid')))
+                                       self.tr('Slope Area Grid')))
 
     def processAlgorithm(self, progress):
         commands = []
@@ -81,15 +81,15 @@ class SlopeAreaMulti(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(str(processNum))
+        commands.append(unicode(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemMultifilePath(), self.cmdName))
         commands.append('-slp')
         commands.append(self.getParameterValue(self.SLOPE_GRID))
         commands.append('-sca')
         commands.append(self.getParameterValue(self.AREA_GRID))
         commands.append('-par')
-        commands.append(str(self.getParameterValue(self.SLOPE_EXPONENT)))
-        commands.append(str(self.getParameterValue(self.AREA_EXPONENT)))
+        commands.append(unicode(self.getParameterValue(self.SLOPE_EXPONENT)))
+        commands.append(unicode(self.getParameterValue(self.AREA_EXPONENT)))
         commands.append('-sa')
         commands.append(self.getOutputValue(self.SLOPE_AREA_GRID))
 

@@ -26,6 +26,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
 #include "qgsscalecalculator.h"
+#include "qgsexpressioncontext.h"
 
 class QPainter;
 
@@ -68,7 +69,7 @@ class CORE_EXPORT QgsMapSettings
     //! Return the size of the resulting map image
     QSize outputSize() const;
     //! Set the size of the resulting map image
-    void setOutputSize( const QSize& size );
+    void setOutputSize( QSize size );
 
     //! Return the rotation of the resulting map image
     //! Units are clockwise degrees
@@ -134,12 +135,14 @@ class CORE_EXPORT QgsMapSettings
       DrawLabeling       = 0x10,  //!< Enable drawing of labels on top of the map
       UseRenderingOptimization = 0x20, //!< Enable vector simplification and other rendering optimizations
       DrawSelection      = 0x40,  //!< Whether vector selections should be shown in the rendered map
+      DrawSymbolBounds   = 0x80,  //!< Draw bounds of symbols (for debugging/testing)
+      RenderMapTile = 0x100, //!< Draw map such that there are no problems between adjacent tiles
       // TODO: ignore scale-based visibility (overview)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
     //! Set combination of flags that will be used for rendering
-    void setFlags( Flags flags );
+    void setFlags( const QgsMapSettings::Flags& flags );
     //! Enable or disable a particular flag (other flags are not affected)
     void setFlag( Flag flag, bool on = true );
     //! Return combination of flags used for rendering
@@ -164,6 +167,19 @@ class CORE_EXPORT QgsMapSettings
     //! Return the calculated scale of the map
     double scale() const;
 
+    /** Sets the expression context. This context is used for all expression evaluation
+     * associated with this map settings.
+     * @see expressionContext()
+     * @note added in QGIS 2.12
+     */
+    void setExpressionContext( const QgsExpressionContext& context ) { mExpressionContext = context; }
+
+    /** Gets the expression context. This context should be used for all expression evaluation
+     * associated with this map settings.
+     * @see setExpressionContext()
+     * @note added in QGIS 2.12
+     */
+    const QgsExpressionContext& expressionContext() const { return mExpressionContext; }
 
     // -- utility functions --
 
@@ -171,6 +187,13 @@ class CORE_EXPORT QgsMapSettings
     QgsDatumTransformStore& datumTransformStore() { return mDatumTransformStore; }
 
     const QgsMapToPixel& mapToPixel() const { return mMapToPixel; }
+
+    /** Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
+     * @param theLayer The layer
+     * @param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
+     * @note added in QGIS 2.12
+     */
+    double layerToMapUnits( QgsMapLayer* theLayer, const QgsRectangle& referenceExtent = QgsRectangle() ) const;
 
     /**
      * @brief transform bounding box from layer's CRS to output CRS
@@ -240,6 +263,7 @@ class CORE_EXPORT QgsMapSettings
 
     QStringList mLayers;
     QMap<QString, QString> mLayerStyleOverrides;
+    QgsExpressionContext mExpressionContext;
 
     bool mProjectionsEnabled;
     QgsCoordinateReferenceSystem mDestCRS;

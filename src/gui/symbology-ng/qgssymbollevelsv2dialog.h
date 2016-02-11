@@ -17,6 +17,7 @@
 
 #include <QDialog>
 #include <QList>
+#include <QItemDelegate>
 
 #include "qgsrendererv2.h"
 
@@ -27,8 +28,8 @@ class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbol
 {
     Q_OBJECT
   public:
-    // @note not available in python bindings
-    QgsSymbolLevelsV2Dialog( QgsLegendSymbolList list, bool usingSymbolLevels, QWidget* parent = NULL );
+    //! @note not available in python bindings
+    QgsSymbolLevelsV2Dialog( const QgsLegendSymbolList& list, bool usingSymbolLevels, QWidget* parent = nullptr );
 
     ~QgsSymbolLevelsV2Dialog();
 
@@ -43,7 +44,9 @@ class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbol
     void renderingPassChanged( int row, int column );
 
   protected:
+    //! @note not available in python bindings
     void populateTable();
+    //! @note not available in python bindings
     void setDefaultLevels();
 
   protected:
@@ -53,5 +56,27 @@ class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbol
     //! whether symbol layers always should be used (default false)
     bool mForceOrderingEnabled;
 };
+
+///@cond PRIVATE
+
+// delegate used from Qt Spin Box example
+class SpinBoxDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    explicit SpinBoxDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) {}
+
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &/*index*/ ) const override;
+
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & /*index*/ ) const override;
+
+};
+
+///@endcond
 
 #endif // QGSSYMBOLLEVELSV2DIALOG_H

@@ -1,0 +1,8 @@
+{
+  "name": "area",
+  "type": "function",
+  "description": "Returns the area of a geometry polygon object. Calculations are in the Spatial Reference System of this geometry.",
+  "arguments": [ {"arg":"geometry","description":"polygon geometry object"}],
+  "examples": [ { "expression":"area(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'))", "returns":"8.0"}]
+}
+

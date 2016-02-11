@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -27,21 +28,28 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import Qt, QEvent
-from PyQt4.QtGui import QFileDialog, QDialog, QIcon, QStyle, QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate, QLineEdit, QSpinBox, QDoubleSpinBox, QWidget, QToolButton, QHBoxLayout
+from PyQt4 import uic
+from PyQt4.QtCore import Qt, QEvent, QPyNullVariant
+from PyQt4.QtGui import (QFileDialog, QDialog, QIcon, QStyle,
+                         QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate,
+                         QLineEdit, QWidget, QToolButton, QHBoxLayout,
+                         QComboBox)
+from qgis.gui import QgsDoubleSpinBox, QgsSpinBox
 
-from processing.core.ProcessingConfig import ProcessingConfig
+from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.Processing import Processing
-from processing.ui.ui_DlgConfig import Ui_DlgConfig
 
-#import processing.resources_rc
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgConfig.ui'))
 
 
-class ConfigDialog(QDialog, Ui_DlgConfig):
+class ConfigDialog(BASE, WIDGET):
 
     def __init__(self, toolbox):
-        QDialog.__init__(self)
+        super(ConfigDialog, self).__init__(None)
         self.setupUi(self)
+
         self.toolbox = toolbox
         self.groupIcon = QIcon()
         self.groupIcon.addPixmap(self.style().standardPixmap(
@@ -68,7 +76,7 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
         self.items = {}
         self.model.clear()
         self.model.setHorizontalHeaderLabels([self.tr('Setting'),
-                self.tr('Value')])
+                                              self.tr('Value')])
 
         text = unicode(self.searchBox.text())
         settings = ProcessingConfig.getSettings()
@@ -98,7 +106,7 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
                 self.tree.expand(groupItem.index())
 
         providersItem = QStandardItem(self.tr('Providers'))
-        icon = QIcon(':/processing/images/alg.png')
+        icon = QIcon(os.path.join(pluginPath, 'images', 'alg.png'))
         providersItem.setIcon(icon)
         providersItem.setEditable(False)
         emptyItem = QStandardItem()
@@ -133,18 +141,14 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
     def accept(self):
         for setting in self.items.keys():
             if isinstance(setting.value, bool):
-                setting.value = self.items[setting].checkState() == Qt.Checked
-            elif isinstance(setting.value, (float, int, long)):
-                value = unicode(self.items[setting].text())
-                try:
-                    value = float(value)
-                    setting.value = value
-                except ValueError:
-                    QMessageBox.critical(self, self.tr('Wrong value'),
-                            self.tr('Wrong parameter value:\n%1') % value)
-                    return
+                setting.setValue(self.items[setting].checkState() == Qt.Checked)
             else:
-                setting.value = unicode(self.items[setting].text())
+                try:
+                    setting.setValue(unicode(self.items[setting].text()))
+                except ValueError as e:
+                    QMessageBox.warning(self, self.tr('Wrong value'),
+                                        self.tr('Wrong value for parameter "%s":\n\n%s' % (setting.description, unicode(e))))
+                    return
             setting.save()
         Processing.updateAlgsList()
 
@@ -160,7 +164,7 @@ class SettingItem(QStandardItem):
     def __init__(self, setting):
         QStandardItem.__init__(self)
         self.setting = setting
-
+        self.setData(setting, Qt.UserRole)
         if isinstance(setting.value, bool):
             self.setCheckable(True)
             self.setEditable(False)
@@ -183,44 +187,50 @@ class SettingDelegate(QStyledItemDelegate):
         options,
         index,
     ):
-        value = self.convertValue(index.model().data(index, Qt.EditRole))
-        if isinstance(value, (int, long)):
-            spnBox = QSpinBox(parent)
-            spnBox.setRange(-999999999, 999999999)
-            return spnBox
-        elif isinstance(value, float):
-            spnBox = QDoubleSpinBox(parent)
-            spnBox.setRange(-999999999.999999, 999999999.999999)
-            spnBox.setDecimals(6)
-            return spnBox
-        elif isinstance(value, (str, unicode)):
-            if os.path.isdir(value):
-                return FileDirectorySelector(parent)
-            elif os.path.isfile(value):
-                return FileDirectorySelector(parent, True)
-            else:
-                return FileDirectorySelector(parent, True)
+        setting = index.model().data(index, Qt.UserRole)
+        if setting.valuetype == Setting.FOLDER:
+            return FileDirectorySelector(parent)
+        elif setting.valuetype == Setting.FILE:
+            return FileDirectorySelector(parent, True)
+        elif setting.valuetype == Setting.SELECTION:
+            combo = QComboBox(parent)
+            combo.addItems(setting.options)
+            return combo
+        else:
+            value = self.convertValue(index.model().data(index, Qt.EditRole))
+            if isinstance(value, (int, long)):
+                spnBox = QgsSpinBox(parent)
+                spnBox.setRange(-999999999, 999999999)
+                return spnBox
+            elif isinstance(value, float):
+                spnBox = QgsDoubleSpinBox(parent)
+                spnBox.setRange(-999999999.999999, 999999999.999999)
+                spnBox.setDecimals(6)
+                return spnBox
+            elif isinstance(value, (str, unicode)):
+                return QLineEdit(parent)
 
     def setEditorData(self, editor, index):
         value = self.convertValue(index.model().data(index, Qt.EditRole))
-        if isinstance(value, (int, long)):
-            editor.setValue(value)
-        elif isinstance(value, float):
-            editor.setValue(value)
-        elif isinstance(value, (str, unicode)):
+        setting = index.model().data(index, Qt.UserRole)
+        if setting.valuetype == Setting.SELECTION:
+            editor.setCurrentIndex(editor.findText(value))
+        else:
             editor.setText(value)
 
     def setModelData(self, editor, model, index):
         value = self.convertValue(index.model().data(index, Qt.EditRole))
-        if isinstance(value, (int, long)):
-            model.setData(index, editor.value(), Qt.EditRole)
-        elif isinstance(value, float):
-            model.setData(index, editor.value(), Qt.EditRole)
-        elif isinstance(value, (str, unicode)):
-            model.setData(index, editor.text(), Qt.EditRole)
+        setting = index.model().data(index, Qt.UserRole)
+        if setting.valuetype == Setting.SELECTION:
+            model.setData(index, editor.currentText(), Qt.EditRole)
+        else:
+            if isinstance(value, (str, basestring)):
+                model.setData(index, editor.text(), Qt.EditRole)
+            else:
+                model.setData(index, editor.value(), Qt.EditRole)
 
     def sizeHint(self, option, index):
-        return QSpinBox().sizeHint()
+        return QgsSpinBox().sizeHint()
 
     def eventFilter(self, editor, event):
         if event.type() == QEvent.FocusOut and hasattr(editor, 'canFocusOut'):
@@ -229,14 +239,14 @@ class SettingDelegate(QStyledItemDelegate):
         return QStyledItemDelegate.eventFilter(self, editor, event)
 
     def convertValue(self, value):
-        if value is None:
+        if value is None or isinstance(value, QPyNullVariant):
             return ""
         try:
             return int(value)
-        except ValueError:
+        except:
             try:
                 return float(value)
-            except ValueError:
+            except:
                 return unicode(value)
 
 
@@ -267,12 +277,12 @@ class FileDirectorySelector(QWidget):
         lastDir = ''
         if not self.selectFile:
             selectedPath = QFileDialog.getExistingDirectory(None,
-                self.tr('Select directory'), lastDir,
-                QFileDialog.ShowDirsOnly)
+                                                            self.tr('Select directory'), lastDir,
+                                                            QFileDialog.ShowDirsOnly)
         else:
             selectedPath = QFileDialog.getOpenFileName(None,
-                self.tr('Select file'), lastDir, self.tr('All files (*.*)')
-            )
+                                                       self.tr('Select file'), lastDir, self.tr('All files (*.*)')
+                                                       )
 
         if not selectedPath:
             return

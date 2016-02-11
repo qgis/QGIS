@@ -25,7 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsProject, QgsCoordinateTransform, QgsFeature, QgsGeometry
+from qgis.core import QGis, QgsProject, QgsCoordinateTransform, QgsFeature, QgsGeometry, QgsField
+from PyQt4.QtCore import QVariant
 from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -40,18 +41,20 @@ class ExportGeometryInfo(GeoAlgorithm):
     METHOD = 'CALC_METHOD'
     OUTPUT = 'OUTPUT'
 
-    CALC_METHODS = ['Layer CRS', 'Project CRS', 'Ellipsoidal']
-
     def defineCharacteristics(self):
-        self.name = 'Export/Add geometry columns'
-        self.group = 'Vector table tools'
+        self.name, self.i18n_name = self.trAlgorithm('Export/Add geometry columns')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+
+        self.calc_methods = [self.tr('Layer CRS'),
+                             self.tr('Project CRS'),
+                             self.tr('Ellipsoidal')]
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterSelection(self.METHOD,
-            self.tr('Calculate using'), self.CALC_METHODS, 0))
+                                             self.tr('Calculate using'), self.calc_methods, 0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Added geom info')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -59,29 +62,24 @@ class ExportGeometryInfo(GeoAlgorithm):
         method = self.getParameterValue(self.METHOD)
 
         geometryType = layer.geometryType()
-
-        idx1 = -1
-        idx2 = -1
         fields = layer.pendingFields()
 
         if geometryType == QGis.Polygon:
-            (idx1, fields) = vector.findOrCreateField(layer, fields, 'area',
-                    21, 6)
-            (idx2, fields) = vector.findOrCreateField(layer, fields,
-                    'perimeter', 21, 6)
+            areaName = vector.createUniqueFieldName('area', fields)
+            fields.append(QgsField(areaName, QVariant.Double))
+            perimeterName = vector.createUniqueFieldName('perimeter', fields)
+            fields.append(QgsField(perimeterName, QVariant.Double))
         elif geometryType == QGis.Line:
-            (idx1, fields) = vector.findOrCreateField(layer, fields, 'length',
-                    21, 6)
-            idx2 = idx1
+            lengthName = vector.createUniqueFieldName('length', fields)
+            fields.append(QgsField(lengthName, QVariant.Double))
         else:
-            (idx1, fields) = vector.findOrCreateField(layer, fields, 'xcoord',
-                    21, 6)
-            (idx2, fields) = vector.findOrCreateField(layer, fields, 'ycoord',
-                    21, 6)
+            xName = vector.createUniqueFieldName('xcoord', fields)
+            fields.append(QgsField(xName, QVariant.Double))
+            yName = vector.createUniqueFieldName('ycoord', fields)
+            fields.append(QgsField(yName, QVariant.Double))
 
-        writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(fields.toList(),
-            layer.dataProvider().geometryType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+            fields.toList(), layer.dataProvider().geometryType(), layer.crs())
 
         ellips = None
         crs = None
@@ -94,10 +92,10 @@ class ExportGeometryInfo(GeoAlgorithm):
 
         if method == 2:
             ellips = QgsProject.instance().readEntry('Measure', '/Ellipsoid',
-                    'NONE')[0]
+                                                     'NONE')[0]
             crs = layer.crs().srsid()
         elif method == 1:
-            mapCRS = iface.mapCanvas().mapRenderer().destinationCrs()
+            mapCRS = iface.mapCanvas().mapSettings().destinationCrs()
             layCRS = layer.crs()
             coordTransform = QgsCoordinateTransform(layCRS, mapCRS)
 
@@ -120,9 +118,9 @@ class ExportGeometryInfo(GeoAlgorithm):
 
             outFeat.setGeometry(inGeom)
             attrs = f.attributes()
-            attrs.insert(idx1, attr1)
+            attrs.append(attr1)
             if attr2 is not None:
-                attrs.insert(idx2, attr2)
+                attrs.append(attr2)
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 

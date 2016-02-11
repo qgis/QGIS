@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,12 +23,12 @@
 
 QgsUniqueValuesWidgetWrapper::QgsUniqueValuesWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( NULL )
-    , mLineEdit( NULL )
+    , mComboBox( nullptr )
+    , mLineEdit( nullptr )
 {
 }
 
-QVariant QgsUniqueValuesWidgetWrapper::value()
+QVariant QgsUniqueValuesWidgetWrapper::value() const
 {
   QVariant value;
 
@@ -65,7 +65,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget* editor )
 
   layer()->uniqueValues( fieldIdx(), values );
 
-  Q_FOREACH ( QVariant v, values )
+  Q_FOREACH ( const QVariant& v, values )
   {
     if ( mComboBox )
     {
@@ -87,6 +87,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget* editor )
     }
 
     QCompleter* c = new QCompleter( sValues );
+    c->setCaseSensitivity( Qt::CaseInsensitive );
     c->setCompletionMode( QCompleter::PopupCompletion );
     mLineEdit->setCompleter( c );
 
@@ -97,6 +98,11 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget* editor )
   {
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueChanged() ) );
   }
+}
+
+bool QgsUniqueValuesWidgetWrapper::valid() const
+{
+  return mComboBox || mLineEdit;
 }
 
 void QgsUniqueValuesWidgetWrapper::setValue( const QVariant& value )

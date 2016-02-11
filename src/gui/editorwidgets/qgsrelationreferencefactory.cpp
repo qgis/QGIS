@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 29.5.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,7 +18,7 @@
 #include "qgsrelationreferencewidgetwrapper.h"
 #include "qgsrelationreferenceconfigdlg.h"
 
-QgsRelationReferenceFactory::QgsRelationReferenceFactory( QString name, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
+QgsRelationReferenceFactory::QgsRelationReferenceFactory( const QString& name, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
     : QgsEditorWidgetFactory( name )
     , mCanvas( canvas )
     , mMessageBar( messageBar )
@@ -53,6 +53,7 @@ QgsEditorWidgetConfig QgsRelationReferenceFactory::readConfig( const QDomElement
   {
     QStringList filterFields;
     QDomNodeList fieldNodes = filterNode.toElement().elementsByTagName( "field" );
+    filterFields.reserve( fieldNodes.size() );
     for ( int i = 0; i < fieldNodes.size(); i++ )
     {
       QDomElement fieldElement = fieldNodes.at( i ).toElement();
@@ -92,4 +93,11 @@ void QgsRelationReferenceFactory::writeConfig( const QgsEditorWidgetConfig& conf
 
     filterFields.setAttribute( "ChainFilters", config["ChainFilters"].toBool() );
   }
+}
+
+QMap<const char*, int> QgsRelationReferenceFactory::supportedWidgetTypes()
+{
+  QMap<const char*, int> map = QMap<const char*, int>();
+  map.insert( QgsRelationReferenceWidget::staticMetaObject.className(), 10 );
+  return map;
 }

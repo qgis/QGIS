@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SslErrors</class>
+ <widget class="QDialog" name="SslErrors">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>387</width>
+    <height>216</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Unable To Validate The Connection</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:11pt; font-weight:600; color:#ff0000;&quot;&gt;Warning&lt;/span&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:11pt; color:#ff0000;&quot;&gt;:&lt;/span&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:11pt; color:#000000;&quot;&gt; One or more SSL errors have occurred validating the host you are connecting to. Review the following list of errors and click Ignore to continue, or Cancel to abort the connection.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QListWidget" name="sslErrorList">
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout">
+     <item>
+      <widget class="QToolButton" name="certificateChainButton">
+       <property name="text">
+        <string>View Certificate Chain</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Ignore</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SslErrors</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>235</x>
+     <y>185</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>228</x>
+     <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>SslErrors</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>325</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>333</x>
+     <y>231</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

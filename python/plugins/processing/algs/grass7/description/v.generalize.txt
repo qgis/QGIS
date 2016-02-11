@@ -1,5 +1,5 @@
 v.generalize
-v.generalize - Vector based generalization.
+Vector based generalization.
 Vector (v.*)
 ParameterVector|input|Input layer|-1|False
 ParameterSelection|method|method|douglas;douglas_reduction;lang;reduction;reumann;remove_small;boyle;sliding_averaging;distance_weighting;chaiken;hermite;snakes;network;displacement
@@ -16,5 +16,4 @@ ParameterNumber|beta|Snakes beta parameter|None|None|1.0
 ParameterNumber|iterations|Number of iterations|None|None|1
 ParameterBoolean|-t|Do not copy attributes|False
 ParameterBoolean|-l|Disable loop support|True
-OutputVector|output|Output layer
-
+OutputVector|output|Generalized

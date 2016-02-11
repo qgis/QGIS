@@ -119,7 +119,7 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     childItemList << selItem;
     childItemList << sqlItem;
 
-    foreach ( QStandardItem *item, childItemList )
+    Q_FOREACH ( QStandardItem *item, childItemList )
     {
       if ( tip.isEmpty() )
       {

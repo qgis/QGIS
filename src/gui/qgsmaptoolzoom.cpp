@@ -31,7 +31,7 @@ QgsMapToolZoom::QgsMapToolZoom( QgsMapCanvas* canvas, bool zoomOut )
     : QgsMapTool( canvas )
     , mZoomOut( zoomOut )
     , mDragging( false )
-    , mRubberBand( 0 )
+    , mRubberBand( nullptr )
 {
   mToolName = tr( "Zoom" );
   // set the cursor
@@ -45,7 +45,7 @@ QgsMapToolZoom::~QgsMapToolZoom()
 }
 
 
-void QgsMapToolZoom::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolZoom::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( !( e->buttons() & Qt::LeftButton ) )
     return;
@@ -69,7 +69,7 @@ void QgsMapToolZoom::canvasMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolZoom::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolZoom::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -78,7 +78,7 @@ void QgsMapToolZoom::canvasPressEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -90,18 +90,21 @@ void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
   {
     mDragging = false;
     delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand = nullptr;
   }
 
   if ( mDragging )
   {
     mDragging = false;
     delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand = nullptr;
 
     // store the rectangle
     mZoomRect.setRight( e->pos().x() );
     mZoomRect.setBottom( e->pos().y() );
+
+    //account for bottom right -> top left dragging
+    mZoomRect = mZoomRect.normalized();
 
     // set center and zoom
     const QSize& zoomRectSize = mZoomRect.size();
@@ -114,8 +117,7 @@ void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
     const QgsMapToPixel* m2p = mCanvas->getCoordinateTransform();
     QgsPoint c = m2p->toMapCoordinates( mZoomRect.center() );
 
-    mCanvas->setCenter( c );
-    mCanvas->zoomByFactor( mZoomOut ? 1.0 / sf : sf );
+    mCanvas->zoomByFactor( mZoomOut ? 1.0 / sf : sf, &c );
 
     mCanvas->refresh();
   }
@@ -129,7 +131,7 @@ void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
 void QgsMapToolZoom::deactivate()
 {
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 
   QgsMapTool::deactivate();
 }

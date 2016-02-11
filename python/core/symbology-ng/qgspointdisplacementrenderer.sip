@@ -4,24 +4,57 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
 #include <qgspointdisplacementrenderer.h>
 %End
   public:
+
+    /** Placement methods for dispersing points
+     */
+    enum Placement
+    {
+      Ring, /*!< Place points in a single ring around group*/
+      ConcentricRings /*!< Place points in concentric rings around group*/
+    };
+
     QgsPointDisplacementRenderer( const QString& labelAttributeName = "" );
     ~QgsPointDisplacementRenderer();
 
-    QgsFeatureRendererV2* clone() const /Factory/;
+    virtual QgsPointDisplacementRenderer* clone() const /Factory/;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
-    /**Reimplemented from QgsFeatureRendererV2*/
+    /** Reimplemented from QgsFeatureRendererV2*/
     bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
-    QgsSymbolV2* symbolForFeature( QgsFeature& feature );
+    /** Partial proxy that will call this method on the embedded renderer. */
+    virtual QList<QString> usedAttributes();
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual int capabilities();
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as symbols2
+     */
+    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as symbolForFeature2
+     */
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as originalSymbolForFeature2
+     */
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as symbolsForFeature2
+     */
+    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=symbolsForFeature2/;
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as originalSymbolsForFeature2
+     */
+    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=originalSymbolsForFeature2/;
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as willRenderFeature2
+     */
+    virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=willRenderFeature2/;
 
-    void startRender( QgsRenderContext& context, const QgsFields& fields );
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
     void stopRender( QgsRenderContext& context );
-
-    QList<QString> usedAttributes();
-    QgsSymbolV2List symbols();
 
     //! create a renderer from XML element
     static QgsFeatureRendererV2* create( QDomElement& symbologyElem ) /Factory/;
@@ -35,7 +68,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     void setLabelAttributeName( const QString& name );
     QString labelAttributeName() const;
 
-    /**Sets embedded renderer (takes ownership)*/
+    /** Sets embedded renderer (takes ownership)*/
     void setEmbeddedRenderer( QgsFeatureRendererV2* r /Transfer/ );
     QgsFeatureRendererV2* embeddedRenderer();
 
@@ -61,13 +94,68 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     void setMaxLabelScaleDenominator( double d );
     double maxLabelScaleDenominator() const;
 
-    /**Returns the symbol for the center of a displacement group (but _not_ ownership of the symbol)*/
+    /** Returns the placement method used for dispersing the points.
+     * @see setPlacement()
+     * @note added in QGIS 2.12
+     */
+    Placement placement() const;
+
+    /** Sets the placement method used for dispersing the points.
+     * @param placement placement method
+     * @see placement()
+     * @note added in QGIS 2.12
+     */
+    void setPlacement( Placement placement );
+
+    /** Returns the symbol for the center of a displacement group (but _not_ ownership of the symbol)*/
     QgsMarkerSymbolV2* centerSymbol();
-    /**Sets the center symbol (takes ownership)*/
+    /** Sets the center symbol (takes ownership)*/
     void setCenterSymbol( QgsMarkerSymbolV2* symbol /Transfer/ );
 
+    /** Sets the tolerance distance for grouping points. Units are specified using
+     * setToleranceUnit().
+     * @param t tolerance distance
+     * @see tolerance()
+     * @see setToleranceUnit()
+     */
     void setTolerance( double t );
+
+    /** Returns the tolerance distance for grouping points. Units are retrieved using
+     * toleranceUnit().
+     * @see setTolerance()
+     * @see toleranceUnit()
+     */
     double tolerance() const;
+
+    /** Sets the units for the tolerance distance.
+     * @param unit tolerance distance units
+     * @see setTolerance()
+     * @see toleranceUnit()
+     * @note added in QGIS 2.12
+     */
+    void setToleranceUnit( QgsSymbolV2::OutputUnit unit );
+
+    /** Returns the units for the tolerance distance.
+     * @see tolerance()
+     * @see setToleranceUnit()
+     * @note added in QGIS 2.12
+     */
+    QgsSymbolV2::OutputUnit toleranceUnit() const;
+
+    /** Sets the map unit scale object for the distance tolerance. This is only used if the
+     * toleranceUnit() is set to QgsSymbolV2::MapUnit.
+     * @param scale scale for distance tolerance
+     * @see toleranceMapUnitScale()
+     * @see setToleranceUnit()
+     */
+    void setToleranceMapUnitScale( const QgsMapUnitScale& scale );
+
+    /** Returns the map unit scale object for the distance tolerance. This is only used if the
+     * toleranceUnit() is set to QgsSymbolV2::MapUnit.
+     * @see setToleranceMapUnitScale()
+     * @see toleranceUnit()
+     */
+    const QgsMapUnitScale& toleranceMapUnitScale() const;
 
     //! creates a QgsPointDisplacementRenderer from an existing renderer.
     //! @note added in 2.5

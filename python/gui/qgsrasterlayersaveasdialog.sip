@@ -25,7 +25,7 @@ class QgsRasterLayerSaveAsDialog : QDialog
     QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer,
                                 QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
                                 const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
-                                QWidget* parent /TransferThis/ = 0, Qt::WindowFlags f = 0 );
+                                QWidget* parent /TransferThis/ = 0, const Qt::WindowFlags& f = 0 );
     ~QgsRasterLayerSaveAsDialog();
 
     Mode mode() const;
@@ -36,6 +36,7 @@ class QgsRasterLayerSaveAsDialog : QDialog
     int maximumTileSizeX() const;
     int maximumTileSizeY() const;
     bool tileMode() const;
+    bool addToCanvas() const;
     QString outputFileName() const;
     QString outputFormat() const;
     QgsCoordinateReferenceSystem outputCrs();

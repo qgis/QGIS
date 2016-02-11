@@ -40,7 +40,7 @@
 
 QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode )
     : QDialog( parent, fl )
-    , mCapabilities( NULL )
+    , mCapabilities( nullptr )
 {
   setupUi( this );
 
@@ -81,6 +81,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WindowFlags fl, boo
   QgsDebugMsg( "restoring settings" );
   restoreGeometry( settings.value( "/Windows/WFSSourceSelect/geometry" ).toByteArray() );
   cbxUseTitleLayerName->setChecked( settings.value( "/Windows/WFSSourceSelect/UseTitleLayerName", false ).toBool() );
+  mHoldDialogOpen->setChecked( settings.value( "/Windows/WFSSourceSelect/HoldDialogOpen", false ).toBool() );
 
   mModel = new QStandardItemModel();
   mModel->setHorizontalHeaderItem( 0, new QStandardItem( "Title" ) );
@@ -104,6 +105,7 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
   QgsDebugMsg( "saving settings" );
   settings.setValue( "/Windows/WFSSourceSelect/geometry", saveGeometry() );
   settings.setValue( "/Windows/WFSSourceSelect/UseTitleLayerName", cbxUseTitleLayerName->isChecked() );
+  settings.setValue( "/Windows/WFSSourceSelect/HoldDialogOpen", mHoldDialogOpen->isChecked() );
 
   delete mItemDelegate;
   delete mProjectionSelector;
@@ -201,13 +203,21 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     QString title;
     switch ( err )
     {
-      case QgsWFSCapabilities::NetworkError: title = tr( "Network Error" ); break;
-      case QgsWFSCapabilities::XmlError:     title = tr( "Capabilities document is not valid" ); break;
-      case QgsWFSCapabilities::ServerExceptionError: title = tr( "Server Exception" ); break;
-      default: tr( "Error" ); break;
+      case QgsWFSCapabilities::NetworkError:
+        title = tr( "Network Error" );
+        break;
+      case QgsWFSCapabilities::XmlError:
+        title = tr( "Capabilities document is not valid" );
+        break;
+      case QgsWFSCapabilities::ServerExceptionError:
+        title = tr( "Server Exception" );
+        break;
+      default:
+        tr( "Error" );
+        break;
     }
     // handle errors
-    QMessageBox::critical( 0, title, mCapabilities->errorMessage() );
+    QMessageBox::critical( nullptr, title, mCapabilities->errorMessage() );
 
     mAddButton->setEnabled( false );
     return;
@@ -216,7 +226,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
   QgsWFSCapabilities::GetCapabilities caps = mCapabilities->capabilities();
 
   mAvailableCRS.clear();
-  foreach ( QgsWFSCapabilities::FeatureType featureType, caps.featureTypes )
+  Q_FOREACH ( const QgsWFSCapabilities::FeatureType& featureType, caps.featureTypes )
   {
     // insert the typenames, titles and abstracts into the tree view
     QStandardItem* titleItem = new QStandardItem( featureType.title );
@@ -233,15 +243,10 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     mModel->appendRow( StandardItemList() << titleItem << nameItem << abstractItem << cachedItem << filterItem );
 
     // insert the available CRS into mAvailableCRS
-    std::list<QString> currentCRSList;
-    foreach ( QString crs, featureType.crslist )
-    {
-      currentCRSList.push_back( crs );
-    }
-    mAvailableCRS.insert( std::make_pair( featureType.name, currentCRSList ) );
+    mAvailableCRS.insert( featureType.name, featureType.crslist );
   }
 
-  if ( caps.featureTypes.count() > 0 )
+  if ( !caps.featureTypes.isEmpty() )
   {
     treeView->resizeColumnToContents( 0 );
     treeView->resizeColumnToContents( 1 );
@@ -264,7 +269,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
   }
   else
   {
-    QMessageBox::information( 0, tr( "No Layers" ), tr( "capabilities document contained no layers." ) );
+    QMessageBox::information( nullptr, tr( "No Layers" ), tr( "capabilities document contained no layers." ) );
     mAddButton->setEnabled( false );
     mBuildQueryButton->setEnabled( false );
   }
@@ -272,7 +277,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
 
 void QgsWFSSourceSelect::addEntryToServerList()
 {
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-wfs/" );
+  QgsNewHttpConnection nc( nullptr, "/Qgis/connections-wfs/" );
   nc.setWindowTitle( tr( "Create a new WFS connection" ) );
 
   if ( nc.exec() )
@@ -284,7 +289,7 @@ void QgsWFSSourceSelect::addEntryToServerList()
 
 void QgsWFSSourceSelect::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-wfs/", cmbConnections->currentText() );
+  QgsNewHttpConnection nc( nullptr, "/Qgis/connections-wfs/", cmbConnections->currentText() );
   nc.setWindowTitle( tr( "Modify WFS connection" ) );
 
   if ( nc.exec() )
@@ -358,11 +363,11 @@ void QgsWFSSourceSelect::addLayer()
   if ( extentVariant.isValid() )
   {
     QString extentString = extentVariant.toString();
-    QStringList minMaxSplit = extentString.split( ":" );
+    QStringList minMaxSplit = extentString.split( ':' );
     if ( minMaxSplit.size() > 1 )
     {
-      QStringList xyMinSplit = minMaxSplit[0].split( "," );
-      QStringList xyMaxSplit = minMaxSplit[1].split( "," );
+      QStringList xyMinSplit = minMaxSplit[0].split( ',' );
+      QStringList xyMaxSplit = minMaxSplit[1].split( ',' );
       if ( xyMinSplit.size() > 1 && xyMaxSplit.size() > 1 )
       {
         extent.set( xyMinSplit[0].toDouble(), xyMinSplit[1].toDouble(),
@@ -416,7 +421,11 @@ void QgsWFSSourceSelect::addLayer()
     }
     emit addWfsLayer( mUri, layerName );
   }
-  accept();
+
+  if ( !mHoldDialogOpen->isChecked() )
+  {
+    accept();
+  }
 }
 
 void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
@@ -443,7 +452,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
   }
 
   //show expression builder
-  QgsExpressionBuilderDialog d( 0, filterIndex.data().toString() );
+  QgsExpressionBuilderDialog d( nullptr, filterIndex.data().toString() );
 
   //add available attributes to expression builder
   QgsExpressionBuilderWidget* w = d.expressionBuilder();
@@ -480,17 +489,11 @@ void QgsWFSSourceSelect::changeCRSFilter()
     QString currentTypename = currentIndex.sibling( currentIndex.row(), 1 ).data().toString();
     QgsDebugMsg( QString( "the current typename is: %1" ).arg( currentTypename ) );
 
-    std::map<QString, std::list<QString> >::const_iterator crsIterator = mAvailableCRS.find( currentTypename );
+    QMap<QString, QStringList >::const_iterator crsIterator = mAvailableCRS.find( currentTypename );
     if ( crsIterator != mAvailableCRS.end() )
     {
-      std::list<QString> crsList = crsIterator->second;
+      QSet<QString> crsNames( crsIterator->toSet() );
 
-      QSet<QString> crsNames;
-
-      for ( std::list<QString>::const_iterator it = crsList.begin(); it != crsList.end(); ++it )
-      {
-        crsNames.insert( *it );
-      }
       if ( mProjectionSelector )
       {
         mProjectionSelector->setOgcWmsCrsFilter( crsNames );
@@ -528,7 +531,7 @@ void QgsWFSSourceSelect::on_btnSave_clicked()
 
 void QgsWFSSourceSelect::on_btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), ".",
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), QDir::homePath(),
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
@@ -562,7 +565,7 @@ void QgsWFSSourceSelect::buildQueryButtonClicked()
   buildQuery( treeView->selectionModel()->currentIndex() );
 }
 
-void QgsWFSSourceSelect::filterChanged( QString text )
+void QgsWFSSourceSelect::filterChanged( const QString& text )
 {
   QgsDebugMsg( "WFS FeatureType filter changed to :" + text );
   QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );

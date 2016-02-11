@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Shifts temporally the maps of a space time dataset" module="t.shift">
+	<option key="input"/>
+	<option key="temporaltype"/>
+	<option key="granularity"/>
+</qgisgrassmodule>

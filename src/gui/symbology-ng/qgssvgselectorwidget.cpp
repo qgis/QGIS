@@ -42,7 +42,7 @@ QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject* parent )
 }
 
 // Constructor to create model for icons in a specific path
-QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject* parent, QString path )
+QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject* parent, const QString& path )
     : QAbstractListModel( parent )
 {
   mSvgFiles = QgsSymbolLayerV2Utils::listSvgFilesAt( path );
@@ -65,9 +65,25 @@ QVariant QgsSvgSelectorListModel::data( const QModelIndex & index, int role ) co
     {
       // render SVG file
       QColor fill, outline;
-      double outlineWidth;
-      bool fillParam, outlineParam, outlineWidthParam;
-      QgsSvgCache::instance()->containsParams( entry, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
+      double outlineWidth, fillOpacity, outlineOpacity;
+      bool fillParam, fillOpacityParam, outlineParam, outlineWidthParam, outlineOpacityParam;
+      bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false,
+                                 hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
+      QgsSvgCache::instance()->containsParams( entry, fillParam, hasDefaultFillColor, fill,
+          fillOpacityParam, hasDefaultFillOpacity, fillOpacity,
+          outlineParam, hasDefaultOutlineColor, outline,
+          outlineWidthParam, hasDefaultOutlineWidth, outlineWidth,
+          outlineOpacityParam, hasDefaultOutlineOpacity, outlineOpacity );
+
+      //if defaults not set in symbol, use these values
+      if ( !hasDefaultFillColor )
+        fill = QColor( 200, 200, 200 );
+      fill.setAlphaF( hasDefaultFillOpacity ? fillOpacity : 1.0 );
+      if ( !hasDefaultOutlineColor )
+        outline = Qt::black;
+      outline.setAlphaF( hasDefaultOutlineOpacity ? outlineOpacity : 1.0 );
+      if ( !hasDefaultOutlineWidth )
+        outlineWidth = 0.2;
 
       bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
       const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
@@ -125,13 +141,13 @@ QgsSvgSelectorGroupsModel::QgsSvgSelectorGroupsModel( QObject* parent )
 void QgsSvgSelectorGroupsModel::createTree( QStandardItem* &parentGroup )
 {
   QDir parentDir( parentGroup->data().toString() );
-  foreach ( QString item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+  Q_FOREACH ( const QString& item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
   {
     QStandardItem* group = new QStandardItem( item );
-    group->setData( QVariant( parentDir.path() + "/" + item ) );
+    group->setData( QVariant( parentDir.path() + '/' + item ) );
     group->setEditable( false );
     group->setCheckable( false );
-    group->setToolTip( parentDir.path() + "/" + item );
+    group->setToolTip( parentDir.path() + '/' + item );
     group->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
     parentGroup->appendRow( group );
     createTree( group );
@@ -244,7 +260,7 @@ void QgsSvgSelectorWidget::populateIcons( const QModelIndex& idx )
 void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
 {
   QSettings settings;
-  QString openDir = settings.value( "/UI/lastSVGMarkerDir", "." ).toString();
+  QString openDir = settings.value( "/UI/lastSVGMarkerDir", QDir::homePath() ).toString();
 
   QString lineEditText = mFileLineEdit->text();
   if ( !lineEditText.isEmpty() )
@@ -253,7 +269,7 @@ void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
     openDir = openDirFileInfo.path();
   }
 
-  QString file = QFileDialog::getOpenFileName( 0,
+  QString file = QFileDialog::getOpenFileName( nullptr,
                  tr( "Select SVG file" ),
                  openDir,
                  tr( "SVG files" ) + " (*.svg *.SVG)" );
@@ -266,7 +282,7 @@ void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
   QFileInfo fi( file );
   if ( !fi.exists() || !fi.isReadable() )
   {
-    updateCurrentSvgPath( QString( "" ) );
+    updateCurrentSvgPath( QString() );
     updateLineEditFeedback( false );
     return;
   }
@@ -275,7 +291,7 @@ void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
   updateCurrentSvgPath( file );
 }
 
-void QgsSvgSelectorWidget::updateLineEditFeedback( bool ok, QString tip )
+void QgsSvgSelectorWidget::updateLineEditFeedback( bool ok, const QString& tip )
 {
   // draw red text for path field if invalid (path can't be resolved)
   mFileLineEdit->setStyleSheet( QString( !ok ? "QLineEdit{ color: rgb(225, 0, 0); }" : "" ) );
@@ -288,7 +304,7 @@ void QgsSvgSelectorWidget::on_mFileLineEdit_textChanged( const QString& text )
   bool validSVG = !resolvedPath.isNull();
 
   updateLineEditFeedback( validSVG, resolvedPath );
-  updateCurrentSvgPath( validSVG ? resolvedPath : QString( "" ) );
+  updateCurrentSvgPath( validSVG ? resolvedPath : QString() );
 }
 
 void QgsSvgSelectorWidget::populateList()
@@ -309,8 +325,8 @@ void QgsSvgSelectorWidget::populateList()
 
 //-- QgsSvgSelectorDialog
 
-QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
-    QDialogButtonBox::StandardButtons buttons,
+QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, const Qt::WindowFlags& fl,
+    const QDialogButtonBox::StandardButtons& buttons,
     Qt::Orientation orientation )
     : QDialog( parent, fl )
 {

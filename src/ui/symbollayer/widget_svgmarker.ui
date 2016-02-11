@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>519</width>
-    <height>364</height>
+    <height>389</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,10 +29,16 @@
          <property name="decimals">
           <number>6</number>
          </property>
+         <property name="maximum">
+          <double>999999999.999999046325684</double>
+         </property>
          <property name="singleStep">
           <double>0.200000000000000</double>
          </property>
-         <property name="showClearButton" stdset="0">
+         <property name="value">
+          <double>0.200000000000000</double>
+         </property>
+         <property name="showClearButton">
           <bool>false</bool>
          </property>
         </widget>
@@ -106,7 +112,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Border</string>
+          <string>Outline</string>
          </property>
         </widget>
        </item>
@@ -179,10 +185,10 @@
           <number>6</number>
          </property>
          <property name="minimum">
-          <double>-100000.000000000000000</double>
+          <double>-99999999.989999994635582</double>
          </property>
          <property name="maximum">
-          <double>100000.000000000000000</double>
+          <double>99999999.989999994635582</double>
          </property>
          <property name="singleStep">
           <double>0.200000000000000</double>
@@ -201,10 +207,10 @@
           <number>6</number>
          </property>
          <property name="minimum">
-          <double>-100000.000000000000000</double>
+          <double>-99999999.989999994635582</double>
          </property>
          <property name="maximum">
-          <double>100000.000000000000000</double>
+          <double>99999999.989999994635582</double>
          </property>
          <property name="singleStep">
           <double>0.200000000000000</double>
@@ -233,7 +239,7 @@
      <item row="4" column="0">
       <widget class="QLabel" name="mBorderWidthLabel">
        <property name="text">
-        <string>Border width</string>
+        <string>Outline width</string>
        </property>
       </widget>
      </item>
@@ -328,7 +334,7 @@
          <property name="value">
           <double>1.000000000000000</double>
          </property>
-         <property name="showClearButton" stdset="0">
+         <property name="showClearButton">
           <bool>false</bool>
          </property>
         </widget>
@@ -496,6 +502,11 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -505,11 +516,6 @@
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

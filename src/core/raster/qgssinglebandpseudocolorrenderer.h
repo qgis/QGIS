@@ -29,18 +29,19 @@ class QgsRasterShader;
 class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 {
   public:
-    /**Note: takes ownership of QgsRasterShader*/
+    /** Note: takes ownership of QgsRasterShader*/
     QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader );
     ~QgsSingleBandPseudoColorRenderer();
-    QgsRasterInterface * clone() const override;
+    QgsSingleBandPseudoColorRenderer * clone() const override;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
     QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height ) override;
 
-    /**Takes ownership of the shader*/
+    /** Takes ownership of the shader*/
     void setShader( QgsRasterShader* shader );
     QgsRasterShader* shader() { return mShader; }
+    //! @note available in python as constShader
     const QgsRasterShader* shader() const { return mShader; }
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
@@ -49,10 +50,16 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
     QList<int> usesBands() const override;
 
-    /**Returns the band used by the renderer
+    /** Returns the band used by the renderer
      * @note added in QGIS 2.7
      */
     int band() const { return mBand; }
+
+    /** Sets the band used by the renderer.
+    * @see band
+    * @note added in QGIS 2.10
+    */
+    void setBand( int bandNo );
 
     double classificationMin() const { return mClassificationMin; }
     double classificationMax() const { return mClassificationMax; }
@@ -71,6 +78,9 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     double mClassificationMax;
 
     int mClassificationMinMaxOrigin;
+
+    QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer& );
+    const QgsSingleBandPseudoColorRenderer& operator=( const QgsSingleBandPseudoColorRenderer& );
 };
 
 #endif // QGSSINGLEBANDPSEUDOCOLORRENDERER_H

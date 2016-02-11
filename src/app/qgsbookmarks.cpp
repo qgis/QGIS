@@ -14,9 +14,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsbookmarks.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsbookmarks.h"
 #include "qgscontexthelp.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
@@ -24,48 +24,41 @@
 
 #include "qgslogger.h"
 
-#include <QFileInfo>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QMessageBox>
 #include <QSettings>
-#include <QPushButton>
-#include <QSqlTableModel>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlTableModel>
 
-QgsBookmarks *QgsBookmarks::sInstance = 0;
 
-QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+QgsBookmarks::QgsBookmarks( QWidget *parent ) : QDockWidget( parent )
 {
   setupUi( this );
   restorePosition();
 
-  //
-  // Create the zoomto and delete buttons and add them to the
-  // toolbar
-  //
-  QPushButton *btnAdd    = new QPushButton( tr( "&Add" ) );
-  QPushButton *btnDelete = new QPushButton( tr( "&Delete" ) );
-  QPushButton *btnZoomTo = new QPushButton( tr( "&Zoom to" ) );
-  QPushButton *btnImpExp = new QPushButton( tr( "&Share" ) );
+  QToolButton* btnImpExp = new QToolButton;
+  btnImpExp->setAutoRaise( true );
+  btnImpExp->setToolTip( tr( "Import/Export Bookmarks" ) );
+  btnImpExp->setIcon( QgsApplication::getThemeIcon( "/mActionSharing.svg" ) );
+  btnImpExp->setPopupMode( QToolButton::InstantPopup );
 
-  btnZoomTo->setDefault( true );
-  buttonBox->addButton( btnAdd, QDialogButtonBox::ActionRole );
-  buttonBox->addButton( btnDelete, QDialogButtonBox::ActionRole );
-  buttonBox->addButton( btnZoomTo, QDialogButtonBox::ActionRole );
-  buttonBox->addButton( btnImpExp, QDialogButtonBox::ActionRole );
-
-  QMenu *share = new QMenu();
+  QMenu *share = new QMenu( this );
   QAction *btnExport = share->addAction( tr( "&Export" ) );
   QAction *btnImport = share->addAction( tr( "&Import" ) );
+  btnExport->setIcon( QgsApplication::getThemeIcon( "/mActionSharingExport.svg" ) );
+  btnImport->setIcon( QgsApplication::getThemeIcon( "/mActionSharingImport.svg" ) );
   connect( btnExport, SIGNAL( triggered() ), this, SLOT( exportToXML() ) );
   connect( btnImport, SIGNAL( triggered() ), this, SLOT( importFromXML() ) );
   btnImpExp->setMenu( share );
 
-  connect( btnAdd, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
-  connect( btnDelete, SIGNAL( clicked() ), this, SLOT( deleteClicked() ) );
-  connect( btnZoomTo, SIGNAL( clicked() ), this, SLOT( zoomToBookmark() ) );
+  connect( actionAdd, SIGNAL( triggered() ), this, SLOT( addClicked() ) );
+  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteClicked() ) );
+  connect( actionZoomTo, SIGNAL( triggered() ), this, SLOT( zoomToBookmark() ) );
+
+  mBookmarkToolbar->addWidget( btnImpExp );
+  mBookmarkToolbar->addAction( actionHelp );
 
   // open the database
   QSqlDatabase db = QSqlDatabase::addDatabase( "QSQLITE", "bookmarks" );
@@ -74,9 +67,9 @@ QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WindowFlags fl )
   {
     QMessageBox::warning( this, tr( "Error" ),
                           tr( "Unable to open bookmarks database.\nDatabase: %1\nDriver: %2\nDatabase: %3" )
-                          .arg( QgsApplication::qgisUserDbFilePath() )
-                          .arg( db.lastError().driverText() )
-                          .arg( db.lastError().databaseText() )
+                          .arg( QgsApplication::qgisUserDbFilePath(),
+                                db.lastError().driverText(),
+                                db.lastError().databaseText() )
                         );
     deleteLater();
     return;
@@ -110,8 +103,9 @@ QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WindowFlags fl )
 
 QgsBookmarks::~QgsBookmarks()
 {
+  delete lstBookmarks->model();
+  QSqlDatabase::removeDatabase( "bookmarks" );
   saveWindowLocation();
-  sInstance = 0;
 }
 
 void QgsBookmarks::restorePosition()
@@ -125,26 +119,6 @@ void QgsBookmarks::saveWindowLocation()
   QSettings settings;
   settings.setValue( "/Windows/Bookmarks/geometry", saveGeometry() );
   settings.setValue( "/Windows/Bookmarks/headerstate", lstBookmarks->header()->saveState() );
-}
-
-void QgsBookmarks::newBookmark()
-{
-  showBookmarks();
-  sInstance->addClicked();
-}
-
-void QgsBookmarks::showBookmarks()
-{
-  if ( !sInstance )
-  {
-    sInstance = new QgsBookmarks( QgisApp::instance() );
-    sInstance->setAttribute( Qt::WA_DeleteOnClose );
-  }
-
-  sInstance->show();
-  sInstance->raise();
-  sInstance->setWindowState( sInstance->windowState() & ~Qt::WindowMinimized );
-  sInstance->activateWindow();
 }
 
 void QgsBookmarks::addClicked()
@@ -191,15 +165,15 @@ void QgsBookmarks::addClicked()
   else
   {
     QMessageBox::warning( this, tr( "Error" ), tr( "Unable to create the bookmark.\nDriver:%1\nDatabase:%2" )
-                          .arg( query.lastError().driverText() )
-                          .arg( query.lastError().databaseText() ) );
+                          .arg( query.lastError().driverText(),
+                                query.lastError().databaseText() ) );
   }
 }
 
 void QgsBookmarks::deleteClicked()
 {
   QList<int> rows;
-  foreach ( const QModelIndex &idx, lstBookmarks->selectionModel()->selectedIndexes() )
+  Q_FOREACH ( const QModelIndex &idx, lstBookmarks->selectionModel()->selectedIndexes() )
   {
     if ( idx.column() == 1 )
     {
@@ -207,7 +181,7 @@ void QgsBookmarks::deleteClicked()
     }
   }
 
-  if ( rows.size() == 0 )
+  if ( rows.isEmpty() )
     return;
 
   // make sure the user really wants to delete these bookmarks
@@ -217,7 +191,7 @@ void QgsBookmarks::deleteClicked()
     return;
 
   int i = 0;
-  foreach ( int row, rows )
+  Q_FOREACH ( int row, rows )
   {
     lstBookmarks->model()->removeRow( row - i );
     i++;
@@ -267,7 +241,7 @@ void QgsBookmarks::importFromXML()
 {
   QSettings settings;
 
-  QString lastUsedDir = settings.value( "/Bookmark/LastUsedDirectory", QVariant() ).toString();
+  QString lastUsedDir = settings.value( "/Windows/Bookmarks/LastUsedDirectory", QDir::homePath() ).toString();
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), lastUsedDir,
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
@@ -311,17 +285,17 @@ void QgsBookmarks::importFromXML()
                "  VALUES (NULL,"
                "'" + name.text() + "',"
                "'" + prjname.text() + "',"
-               + xmin.text() + ","
-               + ymin.text() + ","
-               + xmax.text() + ","
-               + ymax.text() + ","
+               + xmin.text() + ','
+               + ymin.text() + ','
+               + xmax.text() + ','
+               + ymax.text() + ','
                + srid.text() + ");";
   }
 
-  QStringList queriesList = queries.split( ";" );
+  QStringList queriesList = queries.split( ';' );
   QSqlQuery query( model->database() );
 
-  foreach ( QString queryTxt, queriesList )
+  Q_FOREACH ( const QString& queryTxt, queriesList )
   {
     if ( queryTxt.trimmed().isEmpty() )
     {
@@ -330,8 +304,8 @@ void QgsBookmarks::importFromXML()
     if ( !query.exec( queryTxt ) )
     {
       QMessageBox::warning( this, tr( "Error" ), tr( "Unable to create the bookmark.\nDriver: %1\nDatabase: %2" )
-                            .arg( query.lastError().driverText() )
-                            .arg( query.lastError().databaseText() ) );
+                            .arg( query.lastError().driverText(),
+                                  query.lastError().databaseText() ) );
     }
     query.finish();
   }
@@ -343,7 +317,7 @@ void QgsBookmarks::exportToXML()
 {
   QSettings settings;
 
-  QString lastUsedDir = settings.value( "/Bookmark/LastUsedDirectory", QVariant() ).toString();
+  QString lastUsedDir = settings.value( "/Windows/Bookmarks/LastUsedDirectory", QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Export bookmarks" ), lastUsedDir,
                      tr( "XML files( *.xml *.XML )" ) );
   if ( fileName.isEmpty() )
@@ -399,5 +373,5 @@ void QgsBookmarks::exportToXML()
   doc.save( out, 2 );
   f.close();
 
-  settings.setValue( "/Bookmark/LastUsedDirectory", QFileInfo( fileName ).path() );
+  settings.setValue( "/Windows/Bookmarks/LastUsedDirectory", QFileInfo( fileName ).path() );
 }

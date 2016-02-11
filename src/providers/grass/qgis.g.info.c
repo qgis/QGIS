@@ -32,6 +32,9 @@
 #include <grass/gis.h>
 #include <grass/raster.h>
 #include <grass/display.h>
+#if defined(_MSC_VER) && defined(M_PI_4)
+#undef M_PI_4 //avoid redefinition warning
+#endif
 #include <grass/gprojects.h>
 
 #if GRASS_VERSION_MAJOR >= 7
@@ -54,6 +57,7 @@
 #define G_read_fp_range Rast_read_fp_range
 #define G_window_cols Rast_window_cols
 #define G_window_rows Rast_window_rows
+#define G_suppress_masking Rast_suppress_masking
 #endif
 
 int main( int argc, char **argv )
@@ -113,7 +117,6 @@ int main( int argc, char **argv )
 
   if ( G_parser( argc, argv ) )
     exit( EXIT_FAILURE );
-
 
   if ( strcmp( "proj", info_opt->answer ) == 0 )
   {
@@ -211,6 +214,7 @@ int main( int argc, char **argv )
       char buff[101];
       G_get_cellhd( rast_opt->answer, "", &window );
       G_set_window( &window );
+      G_suppress_masking(); // must be after G_set_window()
       fd = G_open_cell_old( rast_opt->answer, "" );
       // wait for coords from stdin
       while ( fgets( buff, 100, stdin ) != 0 )
@@ -323,6 +327,7 @@ int main( int argc, char **argv )
       window.cols = ( int ) atoi( cols_opt->answer );
 
       G_set_window( &window );
+      G_suppress_masking(); // must be after G_set_window()
       fd = G_open_cell_old( rast_opt->answer, "" );
 
       ncols = G_window_cols();

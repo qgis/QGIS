@@ -40,7 +40,7 @@ class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
       HasGeometry = PointLayer | LineLayer | PolygonLayer,
       VectorLayer = NoGeometry | HasGeometry,
       PluginLayer = 32,
-      All = RasterLayer | PolygonLayer | PluginLayer
+      All = RasterLayer | VectorLayer | PluginLayer
     };
     Q_DECLARE_FLAGS( Filters, Filter )
 
@@ -48,7 +48,7 @@ class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * @brief QgsMapLayerProxModel creates a proxy model with a QgsMapLayerModel as source model.
      * It can be used to filter the layers list in a widget.
      */
-    explicit QgsMapLayerProxyModel( QObject *parent = 0 );
+    explicit QgsMapLayerProxyModel( QObject *parent = nullptr );
 
     /**
      * @brief layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel
@@ -60,11 +60,11 @@ class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * @param filters are Filter flags
      * @note added in 2.3
      */
-    QgsMapLayerProxyModel* setFilters( Filters filters );
+    QgsMapLayerProxyModel* setFilters( const QgsMapLayerProxyModel::Filters& filters );
     const Filters& filters() const { return mFilters; }
 
     //! offer the possibility to except some layers to be listed
-    void setExceptedLayerList( QList<QgsMapLayer*> exceptList );
+    void setExceptedLayerList( const QList<QgsMapLayer*>& exceptList );
     QList<QgsMapLayer*> exceptedLayerList() {return mExceptList;}
 
   private:

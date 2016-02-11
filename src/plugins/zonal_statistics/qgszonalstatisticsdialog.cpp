@@ -91,7 +91,7 @@ QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDia
   mColumnPrefixLineEdit->setText( proposeAttributePrefix() );
 }
 
-QgsZonalStatisticsDialog::QgsZonalStatisticsDialog(): QDialog( 0 ), mIface( 0 )
+QgsZonalStatisticsDialog::QgsZonalStatisticsDialog(): QDialog( nullptr ), mIface( nullptr )
 {
   setupUi( this );
 
@@ -143,7 +143,7 @@ QgsRasterLayer* QgsZonalStatisticsDialog::rasterLayer() const
   int index = mRasterLayerComboBox->currentIndex();
   if ( index == -1 )
   {
-    return 0;
+    return nullptr;
   }
   QString id = mRasterLayerComboBox->itemData( index ).toString();
   QgsRasterLayer* layer = dynamic_cast<QgsRasterLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
@@ -166,7 +166,7 @@ QgsVectorLayer* QgsZonalStatisticsDialog::polygonLayer() const
   int index = mPolygonLayerComboBox->currentIndex();
   if ( index == -1 )
   {
-    return 0;
+    return nullptr;
   }
   return dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mPolygonLayerComboBox->itemData( index ).toString() ) );
 }
@@ -178,7 +178,7 @@ QString QgsZonalStatisticsDialog::attributePrefix() const
 
 QgsZonalStatistics::Statistics QgsZonalStatisticsDialog::selectedStats() const
 {
-  QgsZonalStatistics::Statistics stats = 0;
+  QgsZonalStatistics::Statistics stats = nullptr;
   for ( int i = 0; i < mStatsListWidget->count(); ++i )
   {
     QListWidgetItem* item = mStatsListWidget->item( i );
@@ -200,7 +200,7 @@ QString QgsZonalStatisticsDialog::proposeAttributePrefix() const
   QString proposedPrefix = "";
   while ( !prefixIsValid( proposedPrefix ) )
   {
-    proposedPrefix.prepend( "_" );
+    proposedPrefix.prepend( '_' );
   }
   return proposedPrefix;
 }

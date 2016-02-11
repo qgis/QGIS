@@ -216,7 +216,7 @@ private:
 
 struct HomeControlHandler : public NavigationControlHandler
 {
-  HomeControlHandler( osgEarth::Util::EarthManipulator* manip ) : _manip( manip ) { }
+  explicit HomeControlHandler( osgEarth::Util::EarthManipulator* manip ) : _manip( manip ) { }
   virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa ) override
   {
     _manip->home( ea, aa );
@@ -227,7 +227,7 @@ private:
 
 struct RefreshControlHandler : public ControlEventHandler
 {
-  RefreshControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
+  explicit RefreshControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
   virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ ) override
   {
     mGlobe->imageLayersChanged();
@@ -238,7 +238,7 @@ private:
 
 struct SyncExtentControlHandler : public ControlEventHandler
 {
-  SyncExtentControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
+  explicit SyncExtentControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
   virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ ) override
   {
     mGlobe->syncExtent();
@@ -788,14 +788,14 @@ void GlobePlugin::setupProxy()
     if ( !settings.value( "/proxyUser" ).toString().isEmpty() )
     {
       QString auth = settings.value( "/proxyUser" ).toString() + ":" + settings.value( "/proxyPassword" ).toString();
-#ifdef WIN32
+#ifdef Q_OS_WIN
       putenv( QString( "OSGEARTH_CURL_PROXYAUTH=%1" ).arg( auth ).toAscii() );
 #else
       setenv( "OSGEARTH_CURL_PROXYAUTH", auth.toStdString().c_str(), 0 );
 #endif
     }
     //TODO: settings.value("/proxyType")
-    //TODO: URL exlusions
+    //TODO: URL exclusions
     HTTPClient::setProxySettings( proxySettings );
   }
   settings.endGroup();
@@ -993,7 +993,7 @@ void GlobePlugin::help()
 {
 }
 
-void GlobePlugin::placeNode( osg::Node* node, double lat, double lon, double alt /*= 0.0*/ )
+void GlobePlugin::placeNode( osg::Node* node, double lat, double lon, double alt )
 {
 #ifdef HAVE_OSGEARTH_ELEVATION_QUERY
   Q_UNUSED( node );
@@ -1004,7 +1004,7 @@ void GlobePlugin::placeNode( osg::Node* node, double lat, double lon, double alt
   // get elevation
   double elevation = 0.0;
   double resolution = 0.0;
-  mElevationManager->getElevation( lon, lat, 0, NULL, elevation, resolution );
+  mElevationManager->getElevation( lon, lat, 0, nullptr, elevation, resolution );
 
   // place model
   osg::Matrix mat;
@@ -1071,7 +1071,7 @@ bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActi
           handler->onClick( this, ea.getButtonMask(), ea, aa );
         }
       }
-      _mouse_down_event = NULL;
+      _mouse_down_event = nullptr;
       break;
     default:
       /* ignore */
@@ -1268,7 +1268,7 @@ osg::Vec3d QueryCoordinatesHandler::getCoords( float x, float y, osgViewer::View
       if ( _elevMan->getPlacementMatrix(
              lon_deg, lat_deg, 0,
              query_resolution, _mapSRS,
-             //query_resolution, NULL,
+             //query_resolution, nullptr,
              out_mat, elevation, out_resolution ) )
       {
         OE_NOTICE << "Elevation at " << lon_deg << ", " << lat_deg

@@ -67,6 +67,9 @@ class QgsGeometryCoordinateTransform
 
     QgsCoordinateTransform * mCoordTransform;
     void ( QgsGeometryCoordinateTransform::* mFuncTransform )( QgsGeometry * );
+
+    QgsGeometryCoordinateTransform( const QgsGeometryCoordinateTransform& rh );
+    QgsGeometryCoordinateTransform& operator=( const QgsGeometryCoordinateTransform& rh );
 };
 
 #endif // GEOMETRYCOORDINATETRANSFORM_H

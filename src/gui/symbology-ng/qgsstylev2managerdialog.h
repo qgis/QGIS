@@ -31,7 +31,7 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     Q_OBJECT
 
   public:
-    QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent = NULL );
+    QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent = nullptr );
 
     //! open add color ramp dialog, return color ramp's name if the ramp has been added
     static QString addColorRampStatic( QWidget* parent, QgsStyleV2* style,
@@ -41,6 +41,9 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     void addItem();
     void editItem();
     void removeItem();
+    void exportItemsSVG();
+    void exportItemsPNG();
+    void exportSelectedItemsImages( const QString& dir, const QString& format, QSize size );
     void exportItems();
     void importItems();
 
@@ -70,7 +73,7 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     void regrouped( QStandardItem* );
 
     //! filter the symbols based on input search term
-    void filterSymbols( QString );
+    void filterSymbols( const QString& );
 
     //! Listen to tag changes
     void tagsChanged();
@@ -78,14 +81,18 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     //! Perform symbol specific tasks when selected
     void symbolSelected( const QModelIndex& );
 
+    //! Perform tasks when the selected symbols change
+    void selectedSymbolsChanged( const QItemSelection& selected, const QItemSelection& deselected );
+
     //! Context menu for the groupTree
-    void grouptreeContextMenu( const QPoint& );
+    void grouptreeContextMenu( QPoint );
 
     //! Context menu for the listItems ( symbols list )
-    void listitemsContextMenu( const QPoint& );
+    void listitemsContextMenu( QPoint );
 
   protected slots:
     bool addColorRamp( QAction* action );
+    void groupSelectedSymbols();
 
   protected:
 
@@ -97,13 +104,13 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     //! build the groups tree
     void buildGroupTree( QStandardItem* &parent );
     //! to set symbols checked when in editing mode
-    void setSymbolsChecked( QStringList );
+    void setSymbolsChecked( const QStringList& );
 
     //! populate list view with symbols of the current type with the given names
-    void populateSymbols( QStringList symbolNames, bool checkable = false );
+    void populateSymbols( const QStringList& symbolNames, bool checkable = false );
 
     //! populate list view with color ramps
-    void populateColorRamps( QStringList colorRamps, bool checkable = false );
+    void populateColorRamps( const QStringList& colorRamps, bool checkable = false );
 
     int currentItemType();
     QString currentItemName();
@@ -143,6 +150,18 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
 
     //! space to store symbol tags
     QStringList mTagList;
+
+    //! Context menu for the symbols/colorramps
+    QMenu *mGroupMenu;
+
+    //! Sub-menu of @c mGroupMenu, dynamically filled to show one entry for every group
+    QMenu *mGroupListMenu;
+
+    //! Context menu for the group tree
+    QMenu* mGroupTreeContextMenu;
+
+    //! Menu for the "Add item" toolbutton when in colorramp mode
+    QMenu* mMenuBtnAddItemColorRamp;
 };
 
 #endif

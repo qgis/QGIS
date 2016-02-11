@@ -34,7 +34,9 @@ from qgis.core import QGis, QgsVectorFileWriter, QgsVectorLayer, QgsFeature, Qgs
 import ftools_utils
 from ui_frmEliminate import Ui_Dialog
 
+
 class Dialog(QDialog, Ui_Dialog):
+
     def __init__(self, iface):
         QDialog.__init__(self)
         self.iface = iface
@@ -56,7 +58,7 @@ class Dialog(QDialog, Ui_Dialog):
     def update(self, inputLayer):
         changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
         selFeatures = changedLayer.selectedFeatureCount()
-        self.selected.setText( self.tr("Selected features: %s") % (selFeatures))
+        self.selected.setText(self.tr("Selected features: %s") % (selFeatures))
 
     def accept(self):
         self.buttonOk.setEnabled(False)
@@ -162,34 +164,34 @@ class Dialog(QDialog, Ui_Dialog):
             for fid2Eliminate in inLayer.selectedFeaturesIds():
                 feat = QgsFeature()
 
-                if inLayer.getFeatures( QgsFeatureRequest().setFilterFid( fid2Eliminate ).setSubsetOfAttributes([]) ).nextFeature( feat ):
+                if inLayer.getFeatures(QgsFeatureRequest().setFilterFid(fid2Eliminate).setSubsetOfAttributes([])).nextFeature(feat):
                     geom2Eliminate = feat.geometry()
                     bbox = geom2Eliminate.boundingBox()
-                    fit = outLayer.getFeatures( QgsFeatureRequest().setFilterRect( bbox ) )
+                    fit = outLayer.getFeatures(QgsFeatureRequest().setFilterRect(bbox))
                     mergeWithFid = None
                     mergeWithGeom = None
                     max = 0
 
                     selFeat = QgsFeature()
                     while fit.nextFeature(selFeat):
-                            selGeom = selFeat.geometry()
+                        selGeom = selFeat.geometry()
 
-                            if geom2Eliminate.intersects(selGeom): # we have a candidate
-                                iGeom = geom2Eliminate.intersection(selGeom)
+                        if geom2Eliminate.intersects(selGeom): # we have a candidate
+                            iGeom = geom2Eliminate.intersection(selGeom)
 
-                                if boundary:
-                                    selValue = iGeom.length()
+                            if boundary:
+                                selValue = iGeom.length()
+                            else:
+                                # we need a common boundary
+                                if 0 < iGeom.length():
+                                    selValue = selGeom.area()
                                 else:
-                                    # we need a common boundary
-                                    if 0 < iGeom.length():
-                                        selValue = selGeom.area()
-                                    else:
-                                        selValue = 0
+                                    selValue = 0
 
-                                if selValue > max:
-                                    max = selValue
-                                    mergeWithFid = selFeat.id()
-                                    mergeWithGeom = QgsGeometry(selGeom) # deep copy of the geometry
+                            if selValue > max:
+                                max = selValue
+                                mergeWithFid = selFeat.id()
+                                mergeWithGeom = QgsGeometry(selGeom) # deep copy of the geometry
 
                     if mergeWithFid is not None:  # a successful candidate
                         newGeom = mergeWithGeom.combine(geom2Eliminate)
@@ -229,11 +231,9 @@ class Dialog(QDialog, Ui_Dialog):
                     if not fidList == "":
                         fidList += ", "
 
-                    fidList += str(fid)
+                    fidList += unicode(fid)
 
-                QMessageBox.information(
-                    self,
-                    self.tr("Eliminate"),
+                QErrorMessage(self).showMessage(
                     self.tr("Could not eliminate features with these ids:\n%s") % (fidList))
             else:
                 QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Could not add features"))

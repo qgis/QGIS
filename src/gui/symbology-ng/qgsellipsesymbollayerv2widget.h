@@ -25,7 +25,7 @@ class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerV2Widget, p
     Q_OBJECT
 
   public:
-    QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = 0 );
+    QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsEllipseSymbolLayerV2Widget( vl ); }
 

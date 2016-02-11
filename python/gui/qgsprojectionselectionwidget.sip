@@ -46,7 +46,7 @@ class QgsProjectionSelectionWidget : QWidget
 
     /** Emitted when the selected CRS is changed
      */
-    void crsChanged( QgsCoordinateReferenceSystem );
+    void crsChanged( const QgsCoordinateReferenceSystem& );
 
   public slots:
 

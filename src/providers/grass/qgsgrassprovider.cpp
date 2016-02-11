@@ -25,11 +25,18 @@
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
+#include "qgslinestringv2.h"
+#include "qgspointv2.h"
+#include "qgspolygonv2.h"
 #include "qgsrectangle.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayereditbuffer.h"
 
 #include "qgsgrass.h"
 #include "qgsgrassprovider.h"
 #include "qgsgrassfeatureiterator.h"
+#include "qgsgrassvector.h"
+#include "qgsgrassundocommand.h"
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
@@ -50,6 +57,9 @@
 extern "C"
 {
 #include <grass/version.h>
+#if defined(_MSC_VER) && defined(M_PI_4)
+#undef M_PI_4 //avoid redefinition warning
+#endif
 #include <grass/gprojects.h>
 #include <grass/gis.h>
 #include <grass/dbmi.h>
@@ -65,15 +75,39 @@ extern "C"
 #undef __STDC__
 #endif
 
+// Vect_rewrite_line and Vect_delete_line use int in GRASS 6 and off_t in GRASS 7 for line id argument.
+// off_t size is not specified by C, POSIX specifies it as signed integer and its size depends on compiler.
+// In OSGeo4W 32bit the off_t size is 8 bytes in GRASS (32bit, compiled with MinGW, 'g.version -g' prints build_off_t_size=8 )
+// and 4 bytes QGIS (32bit, compiled with MSVC), which is causing crashes.
+// The problem with off_t size was also reported for custom build of QGIS on Xubuntu 14.04 LTS using GRASS 7.0.1-2~ubuntu14.04.1.
+// See: https://lists.osgeo.org/pipermail/grass-dev/2015-June/075539.html
+//      https://lists.osgeo.org/pipermail/grass-dev/2015-September/076338.html
+// TODO: get real off_t size from GRASS, probably contribute a patch which will save 'g.version -g' to a header file during compilation
+#if GRASS_VERSION_MAJOR < 7
+typedef int Vect_rewrite_line_function_type( struct Map_info *, int, int, struct line_pnts *, struct line_cats * );
+typedef int Vect_delete_line_function_type( struct Map_info *, int );
+#else
+#ifdef Q_OS_WIN
+typedef qint64 grass_off_t;
+#else
+#if defined(GRASS_OFF_T_SIZE) && GRASS_OFF_T_SIZE == 4
+typedef qint32 grass_off_t;
+#elif defined(GRASS_OFF_T_SIZE) && GRASS_OFF_T_SIZE == 8
+typedef qint64 grass_off_t;
+#else
+typedef off_t grass_off_t; // GRASS_OFF_T_SIZE undefined, default to off_t
+#endif
+#endif
+typedef grass_off_t Vect_rewrite_line_function_type( struct Map_info *, grass_off_t, int, const struct line_pnts *, const struct line_cats * );
+typedef int Vect_delete_line_function_type( struct Map_info *, grass_off_t );
+#endif
+Vect_rewrite_line_function_type *Vect_rewrite_line_function_pointer = ( Vect_rewrite_line_function_type * )Vect_rewrite_line;
+Vect_delete_line_function_type *Vect_delete_line_function_pointer = ( Vect_delete_line_function_type * )Vect_delete_line;
 
-QVector<GLAYER> QgsGrassProvider::mLayers;
-QVector<GMAP> QgsGrassProvider::mMaps;
+static QString GRASS_KEY = "grass";
 
-
-static QString GRASS_KEY = "grass"; // XXX verify this
-static QString GRASS_DESCRIPTION = "Grass provider"; // XXX verify this
-
-
+int QgsGrassProvider::LAST_TYPE = -9999;
+int QgsGrassProvider::mEditedCount = 0;
 
 QgsGrassProvider::QgsGrassProvider( QString uri )
     : QgsVectorDataProvider( uri )
@@ -81,81 +115,87 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
     , mLayerType( POINT )
     , mGrassType( 0 )
     , mQgisType( QGis::WKBUnknown )
-    , mLayerId( -1 )
-    , mMap()
-    , mMapVersion()
-    , mCidxFieldIndex( -1 )
-    , mCidxFieldNumCats( 0 )
+    , mLayer( 0 )
+    , mMapVersion( 0 )
     , mNumberFeatures( 0 )
+    , mEditBuffer( 0 )
+    , mEditLayer( 0 )
+    , mNewFeatureType( 0 )
+    , mPoints( 0 )
+    , mCats( 0 )
+    , mLastType( 0 )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider URI: %1" ).arg( uri ) );
+  QgsDebugMsg( "uri = " + uri );
 
-  QgsGrass::init();
+  mValid = false;
+  if ( !QgsGrass::init() )
+  {
+    appendError( QgsGrass::initError() );
+    return;
+  }
 
   QTime time;
   time.start();
 
-  mValid = false;
+  mPoints = Vect_new_line_struct();
+  mCats = Vect_new_cats_struct();
 
   // Parse URI
   QDir dir( uri );   // it is not a directory in fact
   QString myURI = dir.path();  // no dupl '/'
 
-  mLayer = dir.dirName();
+  mLayerName = dir.dirName();
   myURI = myURI.left( dir.path().lastIndexOf( '/' ) );
   dir = QDir( myURI );
-  mMapName = dir.dirName();
+  QString mapName = dir.dirName();
   dir.cdUp();
-  mMapset = dir.dirName();
+  QString mapset = dir.dirName();
   dir.cdUp();
-  mLocation = dir.dirName();
+  QString location = dir.dirName();
   dir.cdUp();
-  mGisdbase = dir.path();
+  QString gisdbase = dir.path();
 
-  QgsDebugMsg( QString( "gisdbase: %1" ).arg( mGisdbase ) );
-  QgsDebugMsg( QString( "location: %1" ).arg( mLocation ) );
-  QgsDebugMsg( QString( "mapset: %1" ).arg( mMapset ) );
-  QgsDebugMsg( QString( "mapName: %1" ).arg( mMapName ) );
-  QgsDebugMsg( QString( "layer: %1" ).arg( mLayer ) );
+  mGrassObject = QgsGrassObject( gisdbase, location, mapset, mapName );
+  QgsDebugMsg( "mGrassObject = " + mGrassObject.toString() + " mLayerName = " + mLayerName );
 
   /* Parse Layer, supported layers <field>_point, <field>_line, <field>_area
   *  Layer is opened even if it is empty (has no features)
   */
-  if ( mLayer.compare( "boundary" ) == 0 ) // currently not used
+  if ( mLayerName.compare( "boundary" ) == 0 ) // currently not used
   {
     mLayerType = BOUNDARY;
     mGrassType = GV_BOUNDARY;
   }
-  else if ( mLayer.compare( "centroid" ) == 0 ) // currently not used
+  else if ( mLayerName.compare( "centroid" ) == 0 ) // currently not used
   {
     mLayerType = CENTROID;
     mGrassType = GV_CENTROID;
   }
-  else if ( mLayer == "topo_point" )
+  else if ( mLayerName == "topo_point" )
   {
     mLayerType = TOPO_POINT;
     mGrassType = GV_POINTS;
   }
-  else if ( mLayer == "topo_line" )
+  else if ( mLayerName == "topo_line" )
   {
     mLayerType = TOPO_LINE;
     mGrassType = GV_LINES;
   }
-  else if ( mLayer == "topo_node" )
+  else if ( mLayerName == "topo_node" )
   {
     mLayerType = TOPO_NODE;
     mGrassType = 0;
   }
   else
   {
-    mLayerField = grassLayer( mLayer );
+    mLayerField = grassLayer( mLayerName );
     if ( mLayerField == -1 )
     {
-      QgsDebugMsg( QString( "Invalid layer name, no underscore found: %1" ).arg( mLayer ) );
+      QgsDebugMsg( QString( "Invalid layer name, no underscore found: %1" ).arg( mLayerName ) );
       return;
     }
 
-    mGrassType = grassLayerType( mLayer );
+    mGrassType = grassLayerType( mLayerName );
 
     if ( mGrassType == GV_POINT )
     {
@@ -175,7 +215,7 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
     }
     else
     {
-      QgsDebugMsg( QString( "Invalid layer name, wrong type: %1" ).arg( mLayer ) );
+      QgsDebugMsg( QString( "Invalid layer name, wrong type: %1" ).arg( mLayerName ) );
       return;
     }
 
@@ -209,90 +249,159 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
       break;
   }
 
-  mLayerId = openLayer( mGisdbase, mLocation, mMapset, mMapName, mLayerField );
-  if ( mLayerId < 0 )
+  if ( !openLayer() )
   {
-    QgsDebugMsg( QString( "Cannot open GRASS layer:%1" ).arg( myURI ) );
+    QgsDebugMsg( "Cannot open layer" );
     return;
   }
-  QgsDebugMsg( QString( "mLayerId: %1" ).arg( mLayerId ) );
-
-  mMap = layerMap( mLayerId );
 
   loadMapInfo();
   setTopoFields();
 
-  mMapVersion = mMaps[mLayers[mLayerId].mapId].version;
+  connect( mLayer->map(), SIGNAL( dataChanged() ), SLOT( onDataChanged() ) );
+
+  // TODO: types according to database
+  mNativeTypes
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
+#if GRASS_VERSION_MAJOR < 7
+  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255, -1, -1 );
+#else
+  << QgsVectorDataProvider::NativeType( tr( "Text" ), "text", QVariant::String );
+#endif
+  // TODO:
+  // << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
 
   mValid = true;
 
   QgsDebugMsg( QString( "New GRASS layer opened, time (ms): %1" ).arg( time.elapsed() ) );
 }
 
+QgsGrassProvider::~QgsGrassProvider()
+{
+  QgsDebugMsg( "entered" );
+  if ( mLayer )
+  {
+    mLayer->close();
+  }
+  if ( mPoints )
+  {
+    Vect_destroy_line_struct( mPoints );
+  }
+  if ( mCats )
+  {
+    Vect_destroy_cats_struct( mCats );
+  }
+}
+
+int QgsGrassProvider::capabilities() const
+{
+  // Because of bug in GRASS https://trac.osgeo.org/grass/ticket/2775 it is not possible
+  // close db drivers in random order on Unix and probably Mac -> disable editing if another layer is edited
+#ifndef Q_OS_WIN
+  if ( mEditedCount > 0 && !mEditBuffer )
+  {
+    return 0;
+  }
+#endif
+  // for now, only one map may be edited at time
+  if ( mEditBuffer || ( mLayer && mLayer->map() && !mLayer->map()->isEdited() ) )
+  {
+    return AddFeatures | DeleteFeatures | ChangeGeometries | AddAttributes | DeleteAttributes | ChangeAttributeValues;
+  }
+  return 0;
+}
+
+bool QgsGrassProvider::openLayer()
+{
+  QgsDebugMsg( "entered" );
+  // the map may be invalid (e.g. wrong uri or open failed)
+  QgsGrassVectorMap *vectorMap = QgsGrassVectorMapStore::instance()->openMap( mGrassObject );
+  if ( !vectorMap ) // should not happen
+  {
+    QgsDebugMsg( "Cannot open map" );
+    return false;
+  }
+  if ( !vectorMap->isValid() ) // may happen
+  {
+    QgsDebugMsg( "vectorMap is not valid" );
+    return false;
+  }
+
+  mLayer = vectorMap->openLayer( mLayerField );
+
+  if ( !mLayer ) // should not happen
+  {
+    QgsDebugMsg( "Cannot open layer" );
+    return false;
+  }
+  if ( !mLayer->map() || !mLayer->map()->map() ) // should not happen
+  {
+    QgsDebugMsg( "map is null" );
+    return false;
+  }
+  mMapVersion = mLayer->map()->version();
+  return true;
+}
+
 void QgsGrassProvider::loadMapInfo()
 {
   // Getting the total number of features in the layer
+  int cidxFieldIndex = -1;
   mNumberFeatures = 0;
-  mCidxFieldIndex = -1;
   if ( mLayerType == TOPO_POINT )
   {
-    mNumberFeatures = Vect_get_num_primitives( mMap, GV_POINTS );
+    mNumberFeatures = Vect_get_num_primitives( map(), GV_POINTS );
   }
   else if ( mLayerType == TOPO_LINE )
   {
-    mNumberFeatures = Vect_get_num_primitives( mMap, GV_LINES );
+    mNumberFeatures = Vect_get_num_primitives( map(), GV_LINES );
   }
   else if ( mLayerType == TOPO_NODE )
   {
-    mNumberFeatures = Vect_get_num_nodes( mMap );
+    mNumberFeatures = Vect_get_num_nodes( map() );
   }
   else
   {
     if ( mLayerField >= 0 )
     {
-      mCidxFieldIndex = Vect_cidx_get_field_index( mMap, mLayerField );
-      if ( mCidxFieldIndex >= 0 )
+      cidxFieldIndex = Vect_cidx_get_field_index( map(), mLayerField );
+      if ( cidxFieldIndex >= 0 )
       {
-        mNumberFeatures = Vect_cidx_get_type_count( mMap, mLayerField, mGrassType );
-        mCidxFieldNumCats = Vect_cidx_get_num_cats_by_index( mMap, mCidxFieldIndex );
+        mNumberFeatures = Vect_cidx_get_type_count( map(), mLayerField, mGrassType );
       }
     }
     else
     {
       // TODO nofield layers
       mNumberFeatures = 0;
-      mCidxFieldNumCats = 0;
     }
   }
-  QgsDebugMsg( QString( "mNumberFeatures = %1 mCidxFieldIndex = %2 mCidxFieldNumCats = %3" ).arg( mNumberFeatures ).arg( mCidxFieldIndex ).arg( mCidxFieldNumCats ) );
-
+  QgsDebugMsg( QString( "mNumberFeatures = %1 cidxFieldIndex = %2" ).arg( mNumberFeatures ).arg( cidxFieldIndex ) );
 }
 
-void QgsGrassProvider::update( void )
+void QgsGrassProvider::update()
 {
-  QgsDebugMsg( "entered." );
+  QgsDebugMsg( "entered" );
 
   mValid = false;
 
-  if ( !mMaps[mLayers[mLayerId].mapId].valid )
+  if ( mLayer )
+  {
+    mLayer->close();
+    mLayer = 0;
+  }
+
+  if ( !openLayer() )
+  {
+    QgsDebugMsg( "Cannot open layer" );
     return;
+  }
 
-  // Getting the total number of features in the layer
-  // It may happen that the field disappeares from the map (deleted features, new map without that field)
   loadMapInfo();
-
-  mMapVersion = mMaps[mLayers[mLayerId].mapId].version;
 
   mValid = true;
 }
-
-QgsGrassProvider::~QgsGrassProvider()
-{
-  QgsDebugMsg( "entered." );
-
-  closeLayer( mLayerId );
-}
-
 
 QgsAbstractFeatureSource* QgsGrassProvider::featureSource() const
 {
@@ -310,24 +419,28 @@ QString QgsGrassProvider::storageType() const
 
 QgsFeatureIterator QgsGrassProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  if ( isEdited() || isFrozen() || !mValid )
+  if ( !mValid )
+  {
     return QgsFeatureIterator();
+  }
 
   // check if outdated and update if necessary
   ensureUpdated();
 
-  return QgsFeatureIterator( new QgsGrassFeatureIterator( new QgsGrassFeatureSource( this ), true, request ) );
+  QgsGrassFeatureSource * source = new QgsGrassFeatureSource( this );
+  QgsGrassFeatureIterator * iterator = new QgsGrassFeatureIterator( source, true, request );
+  return QgsFeatureIterator( iterator );
 }
-
-
-
 
 QgsRectangle QgsGrassProvider::extent()
 {
-  BOUND_BOX box;
-  Vect_get_map_box( mMap, &box );
-
-  return QgsRectangle( box.W, box.S, box.E, box.N );
+  if ( isValid() )
+  {
+    BOUND_BOX box;
+    Vect_get_map_box( map(), &box );
+    return QgsRectangle( box.W, box.S, box.E, box.N );
+  }
+  return QgsRectangle();
 }
 
 /**
@@ -337,730 +450,67 @@ QGis::WkbType QgsGrassProvider::geometryType() const
 {
   return mQgisType;
 }
-/**
-* Return the feature type
-*/
+
 long QgsGrassProvider::featureCount() const
 {
   return mNumberFeatures;
 }
 
-/**
-* Return fields
-*/
 const QgsFields & QgsGrassProvider::fields() const
 {
-  if ( !isTopoType() )
+  if ( isTopoType() )
   {
-    return mLayers[mLayerId].fields;
+    return mTopoFields;
   }
-  return mTopoFields;
+  else
+  {
+    // Original fields must be returned during editing because edit buffer updates fields by indices
+    if ( mEditBuffer )
+    {
+      return mLayer->fields();
+    }
+    else
+    {
+      return mLayer->tableFields();
+    }
+  }
 }
 
 int QgsGrassProvider::keyField()
 {
-  return mLayers[mLayerId].keyColumn;
+  return mLayer->keyColumn();
 }
 
 QVariant QgsGrassProvider::minimumValue( int index )
 {
-  if ( index < 0 || index >= mLayers[mLayerId].fields.count() )
+  if ( isValid() )
   {
-    QgsDebugMsg( "Warning: access requested to invalid field index: " + QString::number( index ) );
-    return QVariant();
+    return mLayer->minMax().value( index ).first;
   }
-  return QVariant( mLayers[mLayerId].minmax[index][0] );
+  return QVariant();
 }
 
 
 QVariant QgsGrassProvider::maxValue( int index )
 {
-  if ( index < 0 || index >= mLayers[mLayerId].fields.count() )
+  if ( isValid() )
   {
-    QgsDebugMsg( "Warning: access requested to invalid field index: " + QString::number( index ) );
-    return QVariant();
+    return mLayer->minMax().value( index ).second;
   }
-  return QVariant( mLayers[mLayerId].minmax[index][1] );
+  return QVariant();
 }
 
 bool QgsGrassProvider::isValid()
 {
-  QgsDebugMsg( QString( "returned: %1" ).arg( mValid ? "true" : "false" ) );
-
-  return mValid;
+  bool valid = mValid && mLayer && mLayer->map() && mLayer->map()->map();
+  QgsDebugMsg( QString( "valid = %1" ).arg( valid ) );
+  return valid;
 }
-
-// ------------------------------------------------------------------------------------------------------
-// Compare categories in GATT
-int QgsGrassProvider::cmpAtt( const void *a, const void *b )
-{
-  GATT *p1 = ( GATT * ) a;
-  GATT *p2 = ( GATT * ) b;
-  return ( p1->cat - p2->cat );
-}
-
-/* returns layerId or -1 on error */
-int QgsGrassProvider::openLayer( QString gisdbase, QString location, QString mapset, QString mapName, int field )
-{
-  QgsDebugMsg( QString( "gisdbase: %1" ).arg( gisdbase ) );
-  QgsDebugMsg( QString( "location: %1" ).arg( location ) );
-  QgsDebugMsg( QString( "mapset: %1" ).arg( mapset ) );
-  QgsDebugMsg( QString( "mapName: %1" ).arg( mapName ) );
-  QgsDebugMsg( QString( "field: %1" ).arg( field ) );
-
-  // Check if this layer is already opened
-
-  for ( int i = 0; i <  mLayers.size(); i++ )
-  {
-    if ( !( mLayers[i].valid ) )
-      continue;
-
-    GMAP *mp = &( mMaps[mLayers[i].mapId] );
-
-    if ( mp->gisdbase == gisdbase && mp->location == location &&
-         mp->mapset == mapset && mp->mapName == mapName && mLayers[i].field == field )
-    {
-      // the layer already exists, return layer id
-      QgsDebugMsg( QString( "The layer is already opened with ID = %1" ).arg( i ) );
-      mLayers[i].nUsers++;
-      return i;
-    }
-  }
-
-  // Create a new layer
-  GLAYER layer;
-  layer.valid = false;
-  layer.field = field;
-  layer.nUsers = 1;
-
-  // Open map
-  QgsGrass::init();
-
-  try
-  {
-    layer.mapId = openMap( gisdbase, location, mapset, mapName );
-  }
-  catch ( QgsGrass::Exception &e )
-  {
-    Q_UNUSED( e );
-    QgsDebugMsg( QString( "Cannot open vector map: %1" ).arg( e.what() ) );
-    return -1;
-  }
-
-  if ( layer.mapId < 0 )
-  {
-    QgsDebugMsg( "Cannot open vector map" );
-    return -1;
-  }
-  QgsDebugMsg( QString( "layer.mapId = %1" ).arg( layer.mapId ) );
-  layer.map = mMaps[layer.mapId].map;
-
-  layer.attributes = 0; // because loadLayerSourcesFromMap will release old
-  loadLayerSourcesFromMap( layer );
-
-  layer.valid = true;
-
-  // Add new layer to layers
-  mLayers.push_back( layer );
-
-  QgsDebugMsg( QString( "New layer successfully opened: %1" ).arg( layer.nAttributes ) );
-
-  return mLayers.size() - 1;
-}
-
-void QgsGrassProvider::loadLayerSourcesFromMap( GLAYER &layer )
-{
-  QgsDebugMsg( "entered." );
-
-  // Reset and free
-  layer.fields.clear();
-  if ( layer.attributes )
-  {
-    for ( int i = 0; i < layer.nAttributes; i ++ )
-    {
-      for ( int j = 0; j < layer.nColumns; j ++ )
-      {
-        if ( layer.attributes[i].values[j] )
-          free( layer.attributes[i].values[j] );
-      }
-      free( layer.attributes[i].values );
-    }
-    free( layer.attributes );
-  }
-  loadAttributes( layer );
-}
-
-void QgsGrassProvider::loadAttributes( GLAYER &layer )
-{
-  QgsDebugMsg( "entered." );
-
-  // TODO: free old attributes
-
-  if ( !layer.map )
-    return;
-
-  // Attributes are not loaded for topo layers in which case field == 0
-
-  // Get field info
-  layer.fieldInfo = Vect_get_field( layer.map, layer.field ); // should work also with field = 0
-
-  // Read attributes
-  layer.nColumns = 0;
-  layer.nAttributes = 0;
-  layer.attributes = 0;
-  layer.fields.clear();
-  layer.keyColumn = -1;
-  if ( !layer.fieldInfo )
-  {
-    QgsDebugMsg( "No field info -> no attribute table" );
-  }
-  else
-  {
-    QgsDebugMsg( "Field info found -> open database" );
-    dbDriver *databaseDriver = db_start_driver_open_database( layer.fieldInfo->driver,
-                               layer.fieldInfo->database );
-
-    if ( !databaseDriver )
-    {
-      QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( layer.fieldInfo->database ).arg( layer.fieldInfo->driver ) );
-    }
-    else
-    {
-      QgsDebugMsg( "Database opened -> open select cursor" );
-      dbString dbstr;
-      db_init_string( &dbstr );
-      db_set_string( &dbstr, ( char * )"select * from " );
-      db_append_string( &dbstr, layer.fieldInfo->table );
-
-      QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
-      dbCursor databaseCursor;
-      if ( db_open_select_cursor( databaseDriver, &dbstr, &databaseCursor, DB_SCROLL ) != DB_OK )
-      {
-        layer.nColumns = 0;
-        db_close_database_shutdown_driver( databaseDriver );
-        QMessageBox::warning( 0, "Warning", "Cannot select attributes from table '" +
-                              QString( layer.fieldInfo->table ) + "'" );
-      }
-      else
-      {
-        int nRecords = db_get_num_rows( &databaseCursor );
-        QgsDebugMsg( QString( "Number of records: %1" ).arg( nRecords ) );
-
-        dbTable  *databaseTable = db_get_cursor_table( &databaseCursor );
-        layer.nColumns = db_get_table_number_of_columns( databaseTable );
-
-        layer.minmax = new double[layer.nColumns][2];
-
-        // Read columns' description
-        for ( int i = 0; i < layer.nColumns; i++ )
-        {
-          layer.minmax[i][0] = DBL_MAX;
-          layer.minmax[i][1] = -DBL_MAX;
-
-          dbColumn *column = db_get_table_column( databaseTable, i );
-
-          int ctype = db_sqltype_to_Ctype( db_get_column_sqltype( column ) );
-          QVariant::Type qtype = QVariant::String; //default to string
-          QgsDebugMsg( QString( "column = %1 ctype = %2" ).arg( db_get_column_name( column ) ).arg( ctype ) );
-
-          QString ctypeStr;
-          switch ( ctype )
-          {
-            case DB_C_TYPE_INT:
-              ctypeStr = "integer";
-              qtype = QVariant::Int;
-              break;
-            case DB_C_TYPE_DOUBLE:
-              ctypeStr = "double";
-              qtype = QVariant::Double;
-              break;
-            case DB_C_TYPE_STRING:
-              ctypeStr = "string";
-              qtype = QVariant::String;
-              break;
-            case DB_C_TYPE_DATETIME:
-              ctypeStr = "datetime";
-              qtype = QVariant::String;
-              break;
-          }
-          layer.fields.append( QgsField( db_get_column_name( column ), qtype, ctypeStr,
-                                         db_get_column_length( column ), db_get_column_precision( column ) ) );
-
-          if ( G_strcasecmp( db_get_column_name( column ), layer.fieldInfo->key ) == 0 )
-          {
-            layer.keyColumn = i;
-          }
-        }
-
-        if ( layer.keyColumn < 0 )
-        {
-          layer.fields.clear();
-          layer.nColumns = 0;
-
-          QMessageBox::warning( 0, "Warning", "Key column '" + QString( layer.fieldInfo->key ) +
-                                "' not found in the table '" + QString( layer.fieldInfo->table ) + "'" );
-        }
-        else
-        {
-          // Read attributes to the memory
-          layer.attributes = ( GATT * ) malloc( nRecords * sizeof( GATT ) );
-          while ( 1 )
-          {
-            int more;
-
-            if ( db_fetch( &databaseCursor, DB_NEXT, &more ) != DB_OK )
-            {
-              QgsDebugMsg( "Cannot fetch DB record" );
-              break;
-            }
-            if ( !more )
-              break; // no more records
-
-            // Check cat value
-            dbColumn *column = db_get_table_column( databaseTable, layer.keyColumn );
-            dbValue *value = db_get_column_value( column );
-
-            if ( db_test_value_isnull( value ) )
-              continue;
-            layer.attributes[layer.nAttributes].cat = db_get_value_int( value );
-            if ( layer.attributes[layer.nAttributes].cat < 0 )
-              continue;
-
-            layer.attributes[layer.nAttributes].values = ( char ** ) malloc( layer.nColumns * sizeof( char* ) );
-
-            for ( int i = 0; i < layer.nColumns; i++ )
-            {
-              column = db_get_table_column( databaseTable, i );
-              int sqltype = db_get_column_sqltype( column );
-              int ctype = db_sqltype_to_Ctype( sqltype );
-              value = db_get_column_value( column );
-              db_convert_value_to_string( value, sqltype, &dbstr );
-
-#if QGISDEBUG > 3
-              QgsDebugMsg( QString( "column: %1" ).arg( db_get_column_name( column ) ) );
-              QgsDebugMsg( QString( "value: %1" ).arg( db_get_string( &dbstr ) ) );
-#endif
-
-              layer.attributes[layer.nAttributes].values[i] = strdup( db_get_string( &dbstr ) );
-              if ( !db_test_value_isnull( value ) )
-              {
-                double dbl;
-                if ( ctype == DB_C_TYPE_INT )
-                {
-                  dbl = db_get_value_int( value );
-                }
-                else if ( ctype == DB_C_TYPE_DOUBLE )
-                {
-                  dbl = db_get_value_double( value );
-                }
-                else
-                {
-                  dbl = 0;
-                }
-
-                if ( dbl < layer.minmax[i][0] )
-                {
-                  layer.minmax[i][0] = dbl;
-                }
-                if ( dbl > layer.minmax[i][1] )
-                {
-                  layer.minmax[i][1] = dbl;
-                }
-              }
-            }
-            layer.nAttributes++;
-          }
-          // Sort attributes by category
-          qsort( layer.attributes, layer.nAttributes, sizeof( GATT ), cmpAtt );
-        }
-        db_close_cursor( &databaseCursor );
-        db_close_database_shutdown_driver( databaseDriver );
-        db_free_string( &dbstr );
-
-        QgsDebugMsg( QString( "fields.size = %1" ).arg( layer.fields.size() ) );
-        QgsDebugMsg( QString( "number of attributes = %1" ).arg( layer.nAttributes ) );
-
-      }
-    }
-  }
-
-  // Add cat if no attribute fields exist (otherwise qgis crashes)
-  if ( layer.nColumns == 0 )
-  {
-    layer.keyColumn = 0;
-    layer.fields.append( QgsField( "cat", QVariant::Int, "integer" ) );
-    layer.minmax = new double[1][2];
-    layer.minmax[0][0] = 0;
-    layer.minmax[0][1] = 0;
-
-    int cidx = Vect_cidx_get_field_index( layer.map, layer.field );
-    if ( cidx >= 0 )
-    {
-      int ncats, cat, type, id;
-
-      ncats = Vect_cidx_get_num_cats_by_index( layer.map, cidx );
-
-      if ( ncats > 0 )
-      {
-        Vect_cidx_get_cat_by_index( layer.map, cidx, 0, &cat, &type, &id );
-        layer.minmax[0][0] = cat;
-
-        Vect_cidx_get_cat_by_index( layer.map, cidx, ncats - 1, &cat, &type, &id );
-        layer.minmax[0][1] = cat;
-      }
-    }
-  }
-
-  GMAP *map = &( mMaps[layer.mapId] );
-
-  QFileInfo di( map->gisdbase + "/" + map->location + "/" + map->mapset + "/vector/" + map->mapName + "/dbln" );
-  map->lastAttributesModified = di.lastModified();
-}
-
-void QgsGrassProvider::closeLayer( int layerId )
-{
-  if ( layerId < 0 )
-    return;
-
-  QgsDebugMsg( QString( "Close layer %1 nUsers = %2" ).arg( layerId ).arg( mLayers[layerId].nUsers ) );
-
-  // TODO: not tested because delete is never used for providers
-  mLayers[layerId].nUsers--;
-
-  if ( mLayers[layerId].nUsers == 0 )   // No more users, free sources
-  {
-    QgsDebugMsg( "No more users -> delete layer" );
-
-    mLayers[layerId].valid = false;
-
-    // Column names/types
-    mLayers[layerId].fields.clear();
-
-    // Attributes
-    QgsDebugMsg( "Delete attribute values" );
-    for ( int i = 0; i < mLayers[layerId].nAttributes; i++ )
-    {
-      free( mLayers[layerId].attributes[i].values );
-    }
-    free( mLayers[layerId].attributes );
-
-    delete[] mLayers[layerId].minmax;
-
-    // Field info
-    G_free( mLayers[layerId].fieldInfo );
-
-    closeMap( mLayers[layerId].mapId );
-  }
-}
-
-/* returns mapId or -1 on error */
-int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapset, QString mapName )
-{
-  QgsDebugMsg( "entered." );
-
-  QString tmpPath = gisdbase + "/" + location + "/" + mapset + "/" + mapName;
-
-  // Check if this map is already opened
-  for ( int i = 0; i <  mMaps.size(); i++ )
-  {
-    if ( mMaps[i].valid && mMaps[i].path == tmpPath )
-    {
-      // the map is already opened, return map id
-      QgsDebugMsg( QString( "The map is already opened with ID = %1" ).arg( i ) );
-      mMaps[i].nUsers++;
-      return i;
-    }
-  }
-
-  GMAP map;
-  map.valid = false;
-  map.frozen = false;
-  map.gisdbase = gisdbase;
-  map.location = location;
-  map.mapset = mapset;
-  map.mapName = mapName;
-  map.path = tmpPath;
-  map.nUsers = 1;
-  map.version = 1;
-  map.update = 0;
-  map.map = ( struct Map_info * ) malloc( sizeof( struct Map_info ) );
-
-  // Set GRASS location
-  QgsGrass::setLocation( gisdbase, location );
-  QgsDebugMsg( QString( "Setting  gisdbase, location: %1, %2" ).arg( gisdbase ).arg( location ) );
-
-  // Find the vector
-  const char *ms = G_find_vector2( mapName.toUtf8().data(), mapset.toUtf8().data() );
-
-  if ( !ms )
-  {
-    QgsDebugMsg( "Cannot find GRASS vector" );
-    return -1;
-  }
-
-  // Read the time of vector dir before Vect_open_old, because it may take long time (when the vector
-  // could be owerwritten)
-  QFileInfo di( gisdbase + "/" + location + "/" + mapset + "/vector/" + mapName );
-  map.lastModified = di.lastModified();
-
-  di.setFile( gisdbase + "/" + location + "/" + mapset + "/vector/" + mapName + "/dbln" );
-  map.lastAttributesModified = di.lastModified();
-
-  // Do we have topology and cidx (level2)
-  int level = -1;
-  G_TRY
-  {
-    //Vect_set_open_level( 2 );
-    level = Vect_open_old_head( map.map, mapName.toUtf8().data(), mapset.toUtf8().data() );
-    Vect_close( map.map );
-  }
-  G_CATCH( QgsGrass::Exception &e )
-  {
-    Q_UNUSED( e );
-    QgsDebugMsg( QString( "Cannot open GRASS vector head on level2: %1" ).arg( e.what() ) );
-    level = -1;
-  }
-
-  if ( level == -1 )
-  {
-    QgsDebugMsg( "Cannot open GRASS vector head" );
-    return -1;
-  }
-  else if ( level == 1 )
-  {
-    QMessageBox::StandardButton ret = QMessageBox::question( 0, "Warning",
-                                      tr( "GRASS vector map %1 does not have topology. Build topology?" ).arg( mapName ),
-                                      QMessageBox::Ok | QMessageBox::Cancel );
-
-    if ( ret == QMessageBox::Cancel )
-      return -1;
-  }
-
-  // Open vector
-  G_TRY
-  {
-    Vect_set_open_level( level );
-    Vect_open_old( map.map, mapName.toUtf8().data(), mapset.toUtf8().data() );
-  }
-  G_CATCH( QgsGrass::Exception &e )
-  {
-    Q_UNUSED( e );
-    QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
-    return -1;
-  }
-
-  if ( level == 1 )
-  {
-    G_TRY
-    {
-#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
-    ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
-      Vect_build( map.map );
-#else
-      Vect_build( map.map, stderr );
-#endif
-    }
-    G_CATCH( QgsGrass::Exception &e )
-    {
-      Q_UNUSED( e );
-      QgsDebugMsg( QString( "Cannot build topology: %1" ).arg( e.what() ) );
-      return -1;
-    }
-  }
-
-  QgsDebugMsg( "GRASS map successfully opened" );
-
-  map.valid = true;
-
-  // Add new map to maps
-  mMaps.push_back( map );
-
-  return mMaps.size() - 1; // map id
-}
-
-void QgsGrassProvider::updateMap( int mapId )
-{
-  QgsDebugMsg( QString( "mapId = %1" ).arg( mapId ) );
-
-  /* Close map */
-  GMAP *map = &( mMaps[mapId] );
-
-  bool closeMap = map->valid;
-  map->valid = false;
-  map->version++;
-
-  QgsGrass::setLocation( map->gisdbase, map->location );
-
-  // TODO: Should be done better / in other place ?
-  // TODO: Is it necessary for close ?
-  G__setenv(( char * )"MAPSET", map->mapset.toUtf8().data() );
-
-  if ( closeMap )
-    Vect_close( map->map );
-
-  QFileInfo di( map->gisdbase + "/" + map->location + "/" + map->mapset + "/vector/" + map->mapName );
-  map->lastModified = di.lastModified();
-
-  di.setFile( map->gisdbase + "/" + map->location + "/" + map->mapset + "/vector/" + map->mapName + "/dbln" );
-  map->lastAttributesModified = di.lastModified();
-
-  // Reopen vector
-  G_TRY
-  {
-    Vect_set_open_level( 2 );
-    Vect_open_old( map->map, map->mapName.toUtf8().data(), map->mapset.toUtf8().data() );
-  }
-  G_CATCH( QgsGrass::Exception &e )
-  {
-    Q_UNUSED( e );
-    QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( e.what() ) );
-
-    // if reopen fails, mLayers should be also updated
-    for ( int i = 0; i <  mLayers.size(); i++ )
-    {
-      if ( mLayers[i].mapId == mapId )
-      {
-        closeLayer( i );
-      }
-    }
-    return;
-  }
-
-  QgsDebugMsg( "GRASS map successfully reopened for reading." );
-
-  for ( int i = 0; i <  mLayers.size(); i++ )
-  {
-    // if ( !(mLayers[i].valid) )
-    //   continue; // ?
-
-    if ( mLayers[i].mapId == mapId )
-    {
-      loadLayerSourcesFromMap( mLayers[i] );
-    }
-  }
-
-  map->valid = true;
-}
-
-void QgsGrassProvider::closeMap( int mapId )
-{
-  GMAP *map = &mMaps[mapId];
-  QgsDebugMsg( QString( "Close map %1 nUsers = %2" ).arg( mapId ).arg( map->nUsers ) );
-
-  // TODO: not tested because delete is never used for providers
-  map->nUsers--;
-
-  if ( map->nUsers == 0 )   // No more users, free sources
-  {
-    QgsDebugMsg( "No more users -> delete map" );
-
-    // TODO: do this better, probably maintain QgsGrassEdit as one user
-    if ( map->update )
-    {
-      QMessageBox::warning( 0, "Warning", "The vector was currently edited, "
-                            "you can expect crash soon." );
-    }
-
-    if ( map->valid )
-    {
-      bool mapsetunset = !G__getenv( "MAPSET" ) || !*G__getenv( "MAPSET" );
-      if ( mapsetunset )
-        G__setenv(( char * )"MAPSET", map->mapset.toUtf8().data() );
-
-      if ( !map->frozen )
-      {
-        try
-        {
-          Vect_close( map->map );
-        }
-        catch ( QgsGrass::Exception &e )
-        {
-          Q_UNUSED( e );
-          QgsDebugMsg( QString( "Vect_close failed: %1" ).arg( e.what() ) );
-        }
-      }
-
-      if ( mapsetunset )
-        G__setenv(( char * )"MAPSET", "" );
-    }
-    map->valid = false;
-  }
-}
-
-bool QgsGrassProvider::mapOutdated( int mapId )
-{
-  QgsDebugMsg( "entered." );
-
-  GMAP *map = &( mMaps[mapId] );
-
-  QString dp = map->gisdbase + "/" + map->location + "/" + map->mapset + "/vector/" + map->mapName;
-  QFileInfo di( dp );
-
-  if ( map->lastModified < di.lastModified() )
-  {
-    // If the cidx file has been deleted, the map is currently being modified
-    // by an external tool. Do not update until the cidx file has been recreated.
-    if ( !QFileInfo( dp, "cidx" ).exists() )
-    {
-      QgsDebugMsg( QString( "**** The map %1 is being modified and is unavailable ****" ).arg( mapId ) );
-      return false;
-    }
-    QgsDebugMsg( QString( "**** The map %1 was modified ****" ).arg( mapId ) );
-
-    return true;
-  }
-
-  return false;
-}
-
-bool QgsGrassProvider::attributesOutdated( int mapId )
-{
-  QgsDebugMsg( "entered." );
-
-  GMAP *map = &( mMaps[mapId] );
-
-  QString dp = map->gisdbase + "/" + map->location + "/" + map->mapset + "/vector/" + map->mapName + "/dbln";
-  QFileInfo di( dp );
-
-  if ( map->lastAttributesModified < di.lastModified() )
-  {
-    QgsDebugMsg( QString( "**** The attributes of the map %1 were modified ****" ).arg( mapId ) );
-
-    return true;
-  }
-
-  return false;
-}
-
-
-void QgsGrassProvider::ensureUpdated()
-{
-  int mapId = mLayers[mLayerId].mapId;
-  if ( mapOutdated( mapId ) )
-  {
-    updateMap( mapId );
-  }
-  if ( mMapVersion < mMaps[mapId].version )
-  {
-    update();
-  }
-  if ( attributesOutdated( mapId ) )
-  {
-    loadAttributes( mLayers[mLayerId] );
-  }
-}
-
-
-/** Get pointer to map */
-struct Map_info *QgsGrassProvider::layerMap( int layerId )
-{
-  return ( mMaps[mLayers[layerId].mapId].map );
-}
-
 
 QgsCoordinateReferenceSystem QgsGrassProvider::crs()
 {
-  return QgsGrass::crs( mGisdbase, mLocation );
+  QString error;
+  return QgsGrass::crs( mGrassObject.gisdbase(), mGrassObject.location(), error );
 }
 
 int QgsGrassProvider::grassLayer()
@@ -1111,17 +561,24 @@ int QgsGrassProvider::grassLayerType( QString name )
   return -1;
 }
 
+void QgsGrassProvider::onDataChanged()
+{
+  QgsDebugMsg( "entered" );
+  update();
+  emit dataChanged();
+}
+
 //-----------------------------------------  Edit -------------------------------------------------------
 
 bool QgsGrassProvider::isGrassEditable( void )
 {
-  QgsDebugMsg( "entered." );
+  QgsDebugMsg( "entered" );
 
   if ( !isValid() )
     return false;
 
   /* Check if current user is owner of mapset */
-  if ( G__mapset_permissions2( mGisdbase.toUtf8().data(), mLocation.toUtf8().data(), mMapset.toUtf8().data() ) != 1 )
+  if ( G__mapset_permissions2( mGrassObject.gisdbase().toUtf8().data(), mGrassObject.location().toUtf8().data(), mGrassObject.mapset().toUtf8().data() ) != 1 )
     return false;
 
   // TODO: check format? (cannot edit OGR layers)
@@ -1131,279 +588,172 @@ bool QgsGrassProvider::isGrassEditable( void )
 
 bool QgsGrassProvider::isEdited( void )
 {
-  QgsDebugMsgLevel( "entered.", 3 );
-
-  GMAP *map = &( mMaps[mLayers[mLayerId].mapId] );
-  return ( map->update );
-}
-
-bool QgsGrassProvider::isFrozen( void )
-{
-  QgsDebugMsgLevel( "entered.", 3 );
-
-  GMAP *map = &( mMaps[mLayers[mLayerId].mapId] );
-  return ( map->frozen );
+  QgsDebugMsgLevel( "entered", 3 );
+  return ( mEditBuffer );
 }
 
 void QgsGrassProvider::freeze()
 {
-  QgsDebugMsg( "entered." );
+  QgsDebugMsg( "entered" );
 
   if ( !isValid() )
+  {
     return;
+  }
 
-  GMAP *map = &( mMaps[mLayers[mLayerId].mapId] );
+  mValid = false;
 
-  if ( map->frozen )
-    return;
-
-  map->frozen = true;
-  Vect_close( map->map );
+  if ( mLayer )
+  {
+    mLayer->close();
+    mLayer->map()->close(); // closes all iterators, blocking
+    mLayer = 0;
+  }
 }
 
 void QgsGrassProvider::thaw()
 {
-  QgsDebugMsg( "entered." );
+  QgsDebugMsg( "entered" );
 
-  if ( !isValid() )
-    return;
-  GMAP *map = &( mMaps[mLayers[mLayerId].mapId] );
-
-  if ( !map->frozen )
-    return;
-
-  if ( reopenMap() )
+  if ( !openLayer() )
   {
-    map->frozen = false;
+    QgsDebugMsg( "Cannot open layer" );
+    return;
   }
+
+  loadMapInfo();
+
+  mValid = true;
 }
 
-bool QgsGrassProvider::startEdit( void )
+bool QgsGrassProvider::closeEdit( bool newMap, QgsVectorLayer *vectorLayer )
 {
-  QgsDebugMsg( "entered." );
-  QgsDebugMsg( QString( "  uri = %1" ).arg( dataSourceUri() ) );
-  QgsDebugMsg( QString( "  mMaps.size() = %1" ).arg( mMaps.size() ) );
-
-  if ( !isGrassEditable() )
-    return false;
-
-  // Check number of maps (the problem may appear if static variables are not shared - runtime linker)
-  if ( mMaps.size() == 0 )
-  {
-    QMessageBox::warning( 0, "Warning", "No maps opened in mMaps, probably problem in runtime linking, "
-                          "static variables are not shared by provider and plugin." );
-    return false;
-  }
-
-  /* Close map */
-  GMAP *map = &( mMaps[mLayers[mLayerId].mapId] );
-  map->valid = false;
-
-  QgsGrass::setLocation( map->gisdbase, map->location );
-
-  // Set current mapset (mapset was previously checked by isGrassEditable() )
-  // TODO: Should be done better / in other place ?
-  G__setenv(( char * )"MAPSET", map->mapset.toUtf8().data() );
-
-  Vect_close( map->map );
-
-  // TODO: Catch error
-  int level = -1;
-  try
-  {
-    level = Vect_open_update( map->map, map->mapName.toUtf8().data(), map->mapset.toUtf8().data() );
-    if ( level < 2 )
-    {
-      QgsDebugMsg( "Cannot open GRASS vector for update on level 2." );
-    }
-  }
-  catch ( QgsGrass::Exception &e )
-  {
-    Q_UNUSED( e );
-    QgsDebugMsg( QString( "Cannot open GRASS vector for update: %1" ).arg( e.what() ) );
-  }
-
-  if ( level < 2 )
-  {
-    // reopen vector for reading
-    try
-    {
-      Vect_set_open_level( 2 );
-      level = Vect_open_old( map->map, map->mapName.toUtf8().data(), map->mapset.toUtf8().data() );
-      if ( level < 2 )
-      {
-        QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( QgsGrass::errorMessage() ) );
-      }
-    }
-    catch ( QgsGrass::Exception &e )
-    {
-      Q_UNUSED( e );
-      QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( e.what() ) );
-    }
-
-    if ( level >= 2 )
-      map->valid = true;
-
-    return false;
-  }
-  Vect_set_category_index_update( map->map );
-
-  // Write history
-  Vect_hist_command( map->map );
-
-  QgsDebugMsg( "Vector successfully reopened for update." );
-
-  map->update = true;
-  map->valid = true;
-
-  return true;
-}
-
-bool QgsGrassProvider::closeEdit( bool newMap )
-{
-  QgsDebugMsg( "entered." );
+  QgsDebugMsg( "entered" );
 
   if ( !isValid() )
-    return false;
-
-  /* Close map */
-  GMAP *map = &( mMaps[mLayers[mLayerId].mapId] );
-
-  if ( !( map->update ) )
-    return false;
-
-  map->valid = false;
-  map->version++;
-
-  QgsGrass::setLocation( map->gisdbase, map->location );
-
-  // Set current mapset (mapset was previously checked by isGrassEditable() )
-  // TODO: Should be done better / in other place ?
-  // TODO: Is it necessary for build/close ?
-  G__setenv(( char * ) "MAPSET", map->mapset.toUtf8().data() );
-
-#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
-    ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
-  Vect_build_partial( map->map, GV_BUILD_NONE );
-  Vect_build( map->map );
-#else
-  Vect_build_partial( map->map, GV_BUILD_NONE, NULL );
-  Vect_build( map->map, stderr );
-#endif
-
-  // If a new map was created close the map and return
-  if ( newMap )
   {
-    QgsDebugMsg( QString( "mLayers.size() = %1" ).arg( mLayers.size() ) );
-    map->update = false;
-    // Map must be set as valid otherwise it is not closed and topo is not written
-    map->valid = true;
-    closeLayer( mLayerId );
+    QgsDebugMsg( "not valid" );
+    return false;
+  }
+
+  mEditBuffer = 0;
+  mEditLayer = 0;
+  // drivers must be closed in reversed order in which were opened
+  // TODO: close driver order for simultaneous editing of multiple vector maps
+  for ( int i = mOtherEditLayers.size() - 1; i >= 0; i-- )
+  {
+    QgsGrassVectorMapLayer *layer = mOtherEditLayers[i];
+    layer->closeEdit();
+    mLayer->map()->closeLayer( layer );
+  }
+  mOtherEditLayers.clear();
+  mLayer->closeEdit();
+  if ( mLayer->map()->closeEdit( newMap ) )
+  {
+    loadMapInfo();
+    if ( vectorLayer )
+    {
+      vectorLayer->updateFields();
+    }
+    connect( mLayer->map(), SIGNAL( dataChanged() ), SLOT( onDataChanged() ) );
+    emit fullExtentCalculated();
+    mEditedCount--;
     return true;
   }
-
-  Vect_close( map->map );
-
-  map->update = false;
-
-  if ( !reopenMap() )
-    return false;
-
-  map->valid = true;
-
-  return true;
+  return false;
 }
 
-bool QgsGrassProvider::reopenMap()
+void QgsGrassProvider::ensureUpdated()
 {
-  GMAP *map = &( mMaps[mLayers[mLayerId].mapId] );
-
-  QFileInfo di( mGisdbase + "/" + mLocation + "/" + mMapset + "/vector/" + mMapName );
-  map->lastModified = di.lastModified();
-
-  di.setFile( mGisdbase + "/" + mLocation + "/" + mMapset + "/vector/" + mMapset + "/dbln" );
-  map->lastAttributesModified = di.lastModified();
-
-  // Reopen vector
-  try
+  // TODO
+#if 0
+  int mapId = mLayers[mLayerId].mapId;
+  if ( mapOutdated( mapId ) )
   {
-    Vect_set_open_level( 2 );
-    Vect_open_old( map->map, map->mapName.toUtf8().data(), map->mapset.toUtf8().data() );
+    updateMap( mapId );
   }
-  catch ( QgsGrass::Exception &e )
+  if ( map()Version < map()s[mapId].version )
   {
-    Q_UNUSED( e );
-    QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( e.what() ) );
-    return false;
+    update();
   }
-
-  QgsDebugMsg( "GRASS map successfully reopened for reading." );
-
-  // Reload sources to layers
-  for ( int i = 0; i <  mLayers.size(); i++ )
+  if ( attributesOutdated( mapId ) )
   {
-    // if ( !(mLayers[i].valid) )
-    //   continue; // ?
-
-    if ( mLayers[i].mapId == mLayers[mLayerId].mapId )
-    {
-      loadLayerSourcesFromMap( mLayers[i] );
-    }
+    loadAttributes( mLayers[mLayerId] );
   }
-
-  return true;
+#endif
 }
 
 int QgsGrassProvider::numLines( void )
 {
-  QgsDebugMsg( "entered." );
+  QgsDebugMsg( "entered" );
 
-  return ( Vect_get_num_lines( mMap ) );
+  //return ( Vect_get_num_lines( map() ) );
+  return mLayer->map()->numLines();
 }
 
 int QgsGrassProvider::numNodes( void )
 {
-  QgsDebugMsg( "entered." );
+  QgsDebugMsg( "entered" );
 
-  return ( Vect_get_num_nodes( mMap ) );
+  return ( Vect_get_num_nodes( map() ) );
 }
 
 int QgsGrassProvider::readLine( struct line_pnts *Points, struct line_cats *Cats, int line )
 {
-  QgsDebugMsgLevel( "entered.", 3 );
+  QgsDebugMsgLevel( "entered", 3 );
 
   if ( Points )
+  {
     Vect_reset_line( Points );
+  }
 
   if ( Cats )
+  {
     Vect_reset_cats( Cats );
+  }
 
-  if ( !Vect_line_alive( mMap, line ) )
+  if ( !map() )
+  {
     return -1;
+  }
 
-  return ( Vect_read_line( mMap, Points, Cats, line ) );
+  if ( !Vect_line_alive( map(), line ) )
+  {
+    return -1;
+  }
+
+  int type = -1;
+  G_TRY
+  {
+    type = Vect_read_line( map(), mPoints, mCats, line );
+  }
+  G_CATCH( QgsGrass::Exception &e )
+  {
+    QgsDebugMsg( QString( "Cannot read line : %1" ).arg( e.what() ) );
+  }
+  return type;
 }
 
 bool QgsGrassProvider::nodeCoor( int node, double *x, double *y )
 {
-  QgsDebugMsgLevel( "entered.", 3 );
+  QgsDebugMsgLevel( "entered", 3 );
 
-  if ( !Vect_node_alive( mMap, node ) )
+  if ( !Vect_node_alive( map(), node ) )
   {
     *x = 0.0;
     *y = 0.0;
     return false;
   }
 
-  Vect_get_node_coor( mMap, node, x, y, NULL );
+  Vect_get_node_coor( map(), node, x, y, NULL );
   return true;
 }
 
 bool QgsGrassProvider::lineNodes( int line, int *node1, int *node2 )
 {
-  QgsDebugMsgLevel( "entered.", 3 );
+  QgsDebugMsgLevel( "entered", 3 );
 
-  if ( !Vect_line_alive( mMap, line ) )
+  if ( !Vect_line_alive( map(), line ) )
   {
     *node1 = 0;
     *node2 = 0;
@@ -1411,7 +761,7 @@ bool QgsGrassProvider::lineNodes( int line, int *node1, int *node2 )
   }
 
 #if GRASS_VERSION_MAJOR < 7
-  Vect_get_line_nodes( mMap, line, node1, node2 );
+  Vect_get_line_nodes( map(), line, node1, node2 );
 #else
   /* points don't have topology in GRASS >= 7 */
   *node1 = 0;
@@ -1427,147 +777,172 @@ int QgsGrassProvider::writeLine( int type, struct line_pnts *Points, struct line
   if ( !isEdited() )
     return -1;
 
-  return (( int ) Vect_write_line( mMap, type, Points, Cats ) );
+  return (( int ) Vect_write_line( map(), type, Points, Cats ) );
 }
 
-int QgsGrassProvider::rewriteLine( int line, int type, struct line_pnts *Points, struct line_cats *Cats )
+int QgsGrassProvider::rewriteLine( int oldLid, int type, struct line_pnts *Points, struct line_cats *Cats )
 {
   QgsDebugMsg( QString( "n_points = %1 n_cats = %2" ).arg( Points->n_points ).arg( Cats->n_cats ) );
 
-  if ( !isEdited() )
+  if ( !map() || !isEdited() )
+  {
     return -1;
+  }
 
-  return ( Vect_rewrite_line( mMap, line, type, Points, Cats ) );
+  int newLid = -1;
+  G_TRY
+  {
+    newLid = Vect_rewrite_line_function_pointer( map(), oldLid, type, Points, Cats );
+
+    // oldLids are maping to the very first, original version (used by undo)
+    int oldestLid = oldLid;
+    if ( mLayer->map()->oldLids().contains( oldLid ) ) // if it was changed already
+    {
+      oldestLid = mLayer->map()->oldLids().value( oldLid );
+    }
+
+    QgsDebugMsg( QString( "oldLid = %1 oldestLid = %2 newLine = %3 numLines = %4" )
+                 .arg( oldLid ).arg( oldestLid ).arg( newLid ).arg( mLayer->map()->numLines() ) );
+    QgsDebugMsg( QString( "oldLids : %1 -> %2" ).arg( newLid ).arg( oldestLid ) );
+    mLayer->map()->oldLids()[newLid] = oldestLid;
+    QgsDebugMsg( QString( "newLids : %1 -> %2" ).arg( oldestLid ).arg( newLid ) );
+    mLayer->map()->newLids()[oldestLid] = newLid;
+  }
+  G_CATCH( QgsGrass::Exception &e )
+  {
+    QgsDebugMsg( QString( "Cannot write line : %1" ).arg( e.what() ) );
+  }
+  return newLid;
 }
 
 
 int QgsGrassProvider::deleteLine( int line )
 {
-  QgsDebugMsg( "entered." );
+  QgsDebugMsg( "entered" );
 
   if ( !isEdited() )
     return -1;
 
-  return ( Vect_delete_line( mMap, line ) );
+  return ( Vect_delete_line_function_pointer( map(), line ) );
 }
 
 int QgsGrassProvider::findLine( double x, double y, int type, double threshold )
 {
   QgsDebugMsgLevel( "entered", 3 );
 
-  return ( Vect_find_line( mMap, x, y, 0, type, threshold, 0, 0 ) );
+  return ( Vect_find_line( map(), x, y, 0, type, threshold, 0, 0 ) );
 }
 
 int QgsGrassProvider::findNode( double x, double y, double threshold )
 {
-  return ( Vect_find_node( mMap, x, y, 0, threshold, 0 ) );
+  return ( Vect_find_node( map(), x, y, 0, threshold, 0 ) );
 }
 
 bool QgsGrassProvider::lineAreas( int line, int *left, int *right )
 {
-  QgsDebugMsgLevel( "entered.", 3 );
+  QgsDebugMsgLevel( "entered", 3 );
 
-  if ( !Vect_line_alive( mMap, line ) )
+  if ( !Vect_line_alive( map(), line ) )
   {
     *left = 0;
     *right = 0;
     return false;
   }
 
-  Vect_get_line_areas( mMap, line, left, right );
+  Vect_get_line_areas( map(), line, left, right );
   return true;
 }
 
 int QgsGrassProvider::isleArea( int isle )
 {
-  QgsDebugMsgLevel( "entered.", 3 );
+  QgsDebugMsgLevel( "entered", 3 );
 
-  if ( !Vect_isle_alive( mMap, isle ) )
+  if ( !Vect_isle_alive( map(), isle ) )
   {
     return 0;
   }
 
-  return ( Vect_get_isle_area( mMap, isle ) );
+  return ( Vect_get_isle_area( map(), isle ) );
 }
 
 int QgsGrassProvider::centroidArea( int centroid )
 {
-  QgsDebugMsgLevel( "entered.", 3 );
+  QgsDebugMsgLevel( "entered", 3 );
 
-  if ( !Vect_line_alive( mMap, centroid ) )
+  if ( !Vect_line_alive( map(), centroid ) )
   {
     return 0;
   }
 
-  return ( Vect_get_centroid_area( mMap, centroid ) );
+  return ( Vect_get_centroid_area( map(), centroid ) );
 }
 
 int QgsGrassProvider::nodeNLines( int node )
 {
-  QgsDebugMsgLevel( "entered.", 3 );
+  QgsDebugMsgLevel( "entered", 3 );
 
-  if ( !Vect_node_alive( mMap, node ) )
+  if ( !Vect_node_alive( map(), node ) )
   {
     return 0;
   }
 
-  return ( Vect_get_node_n_lines( mMap, node ) );
+  return ( Vect_get_node_n_lines( map(), node ) );
 }
 
 int QgsGrassProvider::nodeLine( int node, int idx )
 {
-  QgsDebugMsgLevel( "entered.", 3 );
+  QgsDebugMsgLevel( "entered", 3 );
 
-  if ( !Vect_node_alive( mMap, node ) )
+  if ( !Vect_node_alive( map(), node ) )
   {
     return 0;
   }
 
-  return ( Vect_get_node_line( mMap, node, idx ) );
+  return ( Vect_get_node_line( map(), node, idx ) );
 }
 
 int QgsGrassProvider::lineAlive( int line )
 {
-  QgsDebugMsgLevel( "entered.", 3 );
+  QgsDebugMsgLevel( "entered", 3 );
 
-  return ( Vect_line_alive( mMap, line ) );
+  return ( Vect_line_alive( map(), line ) );
 }
 
 int QgsGrassProvider::nodeAlive( int node )
 {
   QgsDebugMsgLevel( "QgsGrassProvider::nodeAlive", 3 );
 
-  return ( Vect_node_alive( mMap, node ) );
+  return ( Vect_node_alive( map(), node ) );
 }
 
 int QgsGrassProvider::numUpdatedLines( void )
 {
-  QgsDebugMsg( QString( "numUpdatedLines = %1" ).arg( Vect_get_num_updated_lines( mMap ) ) );
+  QgsDebugMsg( QString( "numUpdatedLines = %1" ).arg( Vect_get_num_updated_lines( map() ) ) );
 
-  return ( Vect_get_num_updated_lines( mMap ) );
+  return ( Vect_get_num_updated_lines( map() ) );
 }
 
 int QgsGrassProvider::numUpdatedNodes( void )
 {
-  QgsDebugMsg( QString( "numUpdatedNodes = %1" ).arg( Vect_get_num_updated_nodes( mMap ) ) );
+  QgsDebugMsg( QString( "numUpdatedNodes = %1" ).arg( Vect_get_num_updated_nodes( map() ) ) );
 
-  return ( Vect_get_num_updated_nodes( mMap ) );
+  return ( Vect_get_num_updated_nodes( map() ) );
 }
 
 int QgsGrassProvider::updatedLine( int idx )
 {
   QgsDebugMsg( QString( "idx = %1" ).arg( idx ) );
-  QgsDebugMsg( QString( "  updatedLine = %1" ).arg( Vect_get_updated_line( mMap, idx ) ) );
+  QgsDebugMsg( QString( "  updatedLine = %1" ).arg( Vect_get_updated_line( map(), idx ) ) );
 
-  return ( Vect_get_updated_line( mMap, idx ) );
+  return ( Vect_get_updated_line( map(), idx ) );
 }
 
 int QgsGrassProvider::updatedNode( int idx )
 {
   QgsDebugMsg( QString( "idx = %1" ).arg( idx ) );
-  QgsDebugMsg( QString( "  updatedNode = %1" ).arg( Vect_get_updated_node( mMap, idx ) ) );
+  QgsDebugMsg( QString( "  updatedNode = %1" ).arg( Vect_get_updated_node( map(), idx ) ) );
 
-  return ( Vect_get_updated_node( mMap, idx ) );
+  return ( Vect_get_updated_node( map(), idx ) );
 }
 
 // ------------------ Attributes -------------------------------------------------
@@ -1576,7 +951,7 @@ QString QgsGrassProvider::key( int field )
 {
   QgsDebugMsg( QString( "field = %1" ).arg( field ) );
 
-  struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
+  struct field_info *fi = Vect_get_field( map(), field ); // should work also with field = 0
   if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
@@ -1586,87 +961,13 @@ QString QgsGrassProvider::key( int field )
   return QString::fromUtf8( fi->key );
 }
 
-QVector<QgsField> *QgsGrassProvider::columns( int field )
-{
-  QgsDebugMsg( QString( "field = %1" ).arg( field ) );
-
-  QVector<QgsField> *col = new QVector<QgsField>;
-
-  struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-
-  // Read attributes
-  if ( !fi )
-  {
-    QgsDebugMsg( "No field info -> no attributes" );
-    return col;
-  }
-
-  QgsDebugMsg( "Field info found -> open database" );
-  QgsGrass::setMapset( mGisdbase, mLocation, mMapset );
-  dbDriver *driver = db_start_driver_open_database( fi->driver, fi->database );
-
-  if ( !driver )
-  {
-    QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    return col;
-  }
-
-  QgsDebugMsg( "Database opened -> describe table" );
-
-  dbString tableName;
-  db_init_string( &tableName );
-  db_set_string( &tableName, fi->table );
-
-  dbTable *table;
-  if ( db_describe_table( driver, &tableName, &table ) != DB_OK )
-  {
-    QgsDebugMsg( "Cannot describe table" );
-    return col;
-  }
-
-  int nCols = db_get_table_number_of_columns( table );
-
-  for ( int c = 0; c < nCols; c++ )
-  {
-    dbColumn *column = db_get_table_column( table, c );
-
-    int ctype = db_sqltype_to_Ctype( db_get_column_sqltype( column ) );
-    QString type;
-    QVariant::Type qtype = QVariant::String; //default to string to prevent compiler warnings
-    switch ( ctype )
-    {
-      case DB_C_TYPE_INT:
-        type = "int";
-        qtype = QVariant::Int;
-        break;
-      case DB_C_TYPE_DOUBLE:
-        type = "double";
-        qtype = QVariant::Double;
-        break;
-      case DB_C_TYPE_STRING:
-        type = "string";
-        qtype = QVariant::String;
-        break;
-      case DB_C_TYPE_DATETIME:
-        type = "datetime";
-        qtype = QVariant::String;
-        break;
-    }
-    col->push_back( QgsField( db_get_column_name( column ), qtype, type, db_get_column_length( column ), 0 ) );
-  }
-
-  db_close_database_shutdown_driver( driver );
-
-  return col;
-}
-
 QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
 {
   QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
 
   QgsAttributeMap *att = new QgsAttributeMap;
 
-  struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
+  struct  field_info *fi = Vect_get_field( map(), field ); // should work also with field = 0
 
   // Read attributes
   if ( !fi )
@@ -1676,12 +977,12 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
   }
 
   QgsDebugMsg( "Field info found -> open database" );
-  QgsGrass::setMapset( mGisdbase, mLocation, mMapset );
+  setMapset();
   dbDriver *driver = db_start_driver_open_database( fi->driver, fi->database );
 
   if ( !driver )
   {
-    QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
+    QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database, fi->driver ) );
     return att;
   }
 
@@ -1742,322 +1043,25 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
   return att;
 }
 
-QString QgsGrassProvider::updateAttributes( int field, int cat, const QString &values )
-{
-  QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
 
-  // Read attributes
-  struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-  if ( !fi )
-  {
-    QgsDebugMsg( "No field info -> no attributes" );
-    return "Cannot get field info";
-  }
-
-  QgsDebugMsg( "Field info found -> open database" );
-  QgsGrass::setMapset( mGisdbase, mLocation, mMapset );
-
-  dbDriver *driver = db_start_driver_open_database( fi->driver, fi->database );
-  if ( !driver )
-  {
-    QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    return "Cannot open database";
-  }
-
-  QgsDebugMsg( "Database opened -> read attributes" );
-
-  dbString dbstr;
-  db_init_string( &dbstr );
-  QString query;
-
-  query = "update " + QString( fi->table ) + " set " + values + " where " + QString( fi->key )
-          + " = " + QString::number( cat );
-
-  QgsDebugMsg( QString( "query: %1" ).arg( query ) );
-
-  // For some strange reason, mEncoding->fromUnicode(query) does not work,
-  // but probably it is not correct, because Qt widgets will use current locales for input
-  //  -> it is possible to edit only in current locales at present
-  // QCString qcs = mEncoding->fromUnicode(query);
-
-  QByteArray qcs = query.toUtf8();
-  QgsDebugMsg( QString( "qcs: %1" ).arg( qcs.data() ) );
-
-  char *cs = new char[qcs.length() + 1];
-  strcpy( cs, ( const char * )qcs );
-  db_set_string( &dbstr, cs );
-  delete[] cs;
-
-  QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
-
-  QString error;
-  int ret = db_execute_immediate( driver, &dbstr );
-  if ( ret != DB_OK )
-  {
-    QgsDebugMsg( QString( "Error: %1" ).arg( db_get_error_msg() ) );
-    error = QString::fromLatin1( db_get_error_msg() );
-  }
-
-  db_close_database_shutdown_driver( driver );
-  db_free_string( &dbstr );
-
-  return error;
-}
 
 int QgsGrassProvider::numDbLinks( void )
 {
-  QgsDebugMsg( "entered." );
+  QgsDebugMsg( "entered" );
 
-  return ( Vect_get_num_dblinks( mMap ) );
+  return ( Vect_get_num_dblinks( map() ) );
 }
 
 int QgsGrassProvider::dbLinkField( int link )
 {
-  QgsDebugMsg( "entered." );
+  QgsDebugMsg( "entered" );
 
-  struct  field_info *fi = Vect_get_dblink( mMap, link );
+  struct  field_info *fi = Vect_get_dblink( map(), link );
 
   if ( !fi )
     return 0;
 
   return ( fi->number );
-}
-
-QString QgsGrassProvider::executeSql( int field, const QString &sql )
-{
-  QgsDebugMsg( QString( "field = %1" ).arg( field ) );
-
-  // Read attributes
-  struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-  if ( !fi )
-  {
-    QgsDebugMsg( "No field info -> no attributes" );
-    return "Cannot get field info";
-  }
-
-  QgsDebugMsg( "Field info found -> open database" );
-
-  QgsGrass::setMapset( mGisdbase, mLocation, mMapset );
-  dbDriver *driver = db_start_driver_open_database( fi->driver, fi->database );
-
-  if ( !driver )
-  {
-    QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    return "Cannot open database";
-  }
-
-  QgsDebugMsg( "Database opened" );
-
-  dbString dbstr;
-  db_init_string( &dbstr );
-  db_set_string( &dbstr, sql.toLatin1().data() );
-
-  QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
-
-  QString error;
-
-  int ret = db_execute_immediate( driver, &dbstr );
-  if ( ret != DB_OK )
-  {
-    QgsDebugMsg( QString( "Error: %1" ).arg( db_get_error_msg() ) );
-    error = QString::fromLatin1( db_get_error_msg() );
-  }
-
-  db_close_database_shutdown_driver( driver );
-  db_free_string( &dbstr );
-
-  return error;
-
-}
-
-QString QgsGrassProvider::createTable( int field, const QString &key, const QString &columns )
-{
-  QgsDebugMsg( QString( "field = %1" ).arg( field ) );
-
-  // Read attributes
-  struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-  if ( fi != NULL )
-  {
-    QgsDebugMsg( "The table for this field already exists" );
-    return "The table for this field already exists";
-  }
-
-  QgsDebugMsg( "Field info not found -> create new table" );
-
-  // We must set mapset before Vect_default_field_info
-  QgsGrass::setMapset( mGisdbase, mLocation, mMapset );
-
-  int nLinks = Vect_get_num_dblinks( mMap );
-  if ( nLinks == 0 )
-  {
-    fi = Vect_default_field_info( mMap, field, NULL, GV_1TABLE );
-  }
-  else
-  {
-    fi = Vect_default_field_info( mMap, field, NULL, GV_MTABLE );
-  }
-
-  dbDriver *driver = db_start_driver_open_database( fi->driver, fi->database );
-  if ( !driver )
-  {
-    QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    return "Cannot open database";
-  }
-
-  QgsDebugMsg( "Database opened -> create table" );
-
-  dbString dbstr;
-  db_init_string( &dbstr );
-  QString query;
-
-  query.sprintf( "create table %s ( %s )", fi->table, columns.toLatin1().constData() );
-  db_set_string( &dbstr, query.toLatin1().data() );
-
-  QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
-
-  QString error;
-  int ret = db_execute_immediate( driver, &dbstr );
-  if ( ret != DB_OK )
-  {
-    QgsDebugMsg( QString( "Error: %1" ).arg( db_get_error_msg() ) );
-    error = QString::fromLatin1( db_get_error_msg() );
-  }
-
-  db_close_database_shutdown_driver( driver );
-  db_free_string( &dbstr );
-
-  if ( !error.isEmpty() )
-    return error;
-
-  ret = Vect_map_add_dblink( mMap, field, NULL, fi->table, key.toLatin1().data(),
-                             fi->database, fi->driver );
-
-  if ( ret == -1 )
-  {
-    QgsDebugMsg( "Error: Cannot add dblink" );
-    error = QString::fromLatin1( "Cannot create link to the table. The table was created!" );
-  }
-
-  return error;
-}
-
-QString QgsGrassProvider::addColumn( int field, const QString &column )
-{
-  QgsDebugMsg( QString( "field = %1" ).arg( field ) );
-
-  // Read attributes
-  struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-  if ( !fi )
-  {
-    QgsDebugMsg( "No field info" );
-    return "Cannot get field info";
-  }
-
-  QString query;
-  query.sprintf( "alter table %s add column %s", fi->table, column.toLatin1().constData() );
-  return executeSql( field, query );
-}
-
-QString QgsGrassProvider::insertAttributes( int field, int cat )
-{
-  QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
-
-  // Read attributes
-  struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-  if ( !fi )
-  {
-    QgsDebugMsg( "No field info -> no attributes" );
-    return "Cannot get field info";
-  }
-
-  QString query;
-  query.sprintf( "insert into %s ( %s ) values ( %d )", fi->table, fi->key, cat );
-  return executeSql( field, query );
-}
-
-QString QgsGrassProvider::deleteAttribute( int field, int cat )
-{
-  QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
-
-  // Read attributes
-  struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-  if ( !fi )
-  {
-    QgsDebugMsg( "No field info -> no attributes" );
-    return "Cannot get field info";
-  }
-
-  QString query;
-  query.sprintf( "delete from %s where %s = %d", fi->table, fi->key, cat );
-  return executeSql( field, query );
-}
-
-QString QgsGrassProvider::isOrphan( int field, int cat, int &orphan )
-{
-  QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
-
-  // Check first if another line with such cat exists
-  int fieldIndex = Vect_cidx_get_field_index( mMap, field );
-  if ( fieldIndex >= 0 )
-  {
-    int t, id;
-    int ret = Vect_cidx_find_next( mMap, fieldIndex, cat,
-                                   GV_POINTS | GV_LINES | GV_FACE, 0, &t, &id );
-
-    if ( ret >= 0 )
-    {
-      // Category exists
-      orphan = false;
-      return QString();
-    }
-  }
-
-  // Check if attribute exists
-  // Read attributes
-  struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-  if ( !fi )
-  {
-    QgsDebugMsg( "No field info -> no attributes" );
-    orphan = false;
-    return QString();
-  }
-
-  QgsDebugMsg( "Field info found -> open database" );
-  QgsGrass::setMapset( mGisdbase, mLocation, mMapset );
-  dbDriver *driver = db_start_driver_open_database( fi->driver, fi->database );
-  if ( !driver )
-  {
-    QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    return "Cannot open database";
-  }
-
-  QgsDebugMsg( "Database opened -> select record" );
-
-  dbString dbstr;
-  db_init_string( &dbstr );
-
-  QString query;
-  query.sprintf( "select %s from %s where %s = %d", fi->key, fi->table, fi->key, cat );
-  db_set_string( &dbstr, query.toLatin1().data() );
-
-  QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
-
-  dbCursor cursor;
-  if ( db_open_select_cursor( driver, &dbstr, &cursor, DB_SCROLL ) != DB_OK )
-  {
-    db_close_database_shutdown_driver( driver );
-    return QString( "Cannot query database: %1" ).arg( query );
-  }
-  int nRecords = db_get_num_rows( &cursor );
-  QgsDebugMsg( QString( "Number of records: %1" ).arg( nRecords ) );
-
-  if ( nRecords > 0 )
-    orphan = true;
-
-  db_close_database_shutdown_driver( driver );
-  db_free_string( &dbstr );
-
-  return QString();
 }
 
 bool QgsGrassProvider::isTopoType() const
@@ -2093,50 +1097,1028 @@ void QgsGrassProvider::setTopoFields()
   }
 }
 
-QString QgsGrassProvider::primitiveTypeName( int type )
+void QgsGrassProvider::startEditing( QgsVectorLayer *vectorLayer )
 {
-  switch ( type )
+  QgsDebugMsg( "uri = " +  dataSourceUri() );
+  if ( !vectorLayer || !vectorLayer->editBuffer() )
   {
-    case GV_POINT: return "point";
-    case GV_CENTROID: return "centroid";
-    case GV_LINE: return "line";
-    case GV_BOUNDARY: return "boundary";
-    case GV_FACE: return "face";
-    case GV_KERNEL: return "kernel";
-
+    QgsDebugMsg( "vector or buffer is null" );
+    return;
   }
-  return "unknown";
+  mEditLayer = vectorLayer;
+  if ( !isValid() || !isGrassEditable() )
+  {
+    QgsDebugMsg( "not valid or not editable" );
+    return;
+  }
+  if ( mEditBuffer )
+  {
+    QgsDebugMsg( "already edited" );
+    return;
+  }
+
+  // disconnect dataChanged() because the changes are done here and we know about them
+  disconnect( mLayer->map(), SIGNAL( dataChanged() ), this, SLOT( onDataChanged() ) );
+  mLayer->map()->startEdit();
+  mLayer->startEdit();
+
+  mEditBuffer = vectorLayer->editBuffer();
+  connect( mEditBuffer, SIGNAL( featureAdded( QgsFeatureId ) ), SLOT( onFeatureAdded( QgsFeatureId ) ) );
+  connect( mEditBuffer, SIGNAL( featureDeleted( QgsFeatureId ) ), SLOT( onFeatureDeleted( QgsFeatureId ) ) );
+  connect( mEditBuffer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry & ) ), SLOT( onGeometryChanged( QgsFeatureId, QgsGeometry & ) ) );
+  connect( mEditBuffer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ), SLOT( onAttributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
+  connect( mEditBuffer, SIGNAL( attributeAdded( int ) ), SLOT( onAttributeAdded( int ) ) );
+  connect( mEditBuffer, SIGNAL( attributeDeleted( int ) ), SLOT( onAttributeDeleted( int ) ) );
+  connect( vectorLayer, SIGNAL( beforeCommitChanges() ), SLOT( onBeforeCommitChanges() ) );
+  connect( vectorLayer, SIGNAL( beforeRollBack() ), SLOT( onBeforeRollBack() ) );
+  connect( vectorLayer, SIGNAL( editingStopped() ), SLOT( onEditingStopped() ) );
+
+  connect( vectorLayer->undoStack(), SIGNAL( indexChanged( int ) ), this, SLOT( onUndoIndexChanged( int ) ) );
+
+  // let qgis know (attribute table etc.) that we added topo symbol field
+  vectorLayer->updateFields();
+  mEditLayerFields = vectorLayer->fields();
+
+  // TODO: enable cats editing once all consequences are implemented
+  // disable cat and topo symbol editing
+  vectorLayer->editFormConfig()->setReadOnly( mLayer->keyColumn(), true );
+  vectorLayer->editFormConfig()->setReadOnly( mLayer->fields().size() - 1, true );
+
+  mEditedCount++;
+
+  QgsDebugMsg( "edit started" );
+}
+
+void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeometryV2 * geometry )
+{
+  if ( !points )
+  {
+    return;
+  }
+  Vect_reset_line( points );
+  if ( !geometry )
+  {
+    return;
+  }
+  if ( geometry->wkbType() == QgsWKBTypes::Point || geometry->wkbType() == QgsWKBTypes::PointZ )
+  {
+    const QgsPointV2* point = dynamic_cast<const QgsPointV2*>( geometry );
+    if ( point )
+    {
+      Vect_append_point( points, point->x(), point->y(), point->z() );
+      QgsDebugMsg( QString( "x = %1 y = %2" ).arg( point->x() ).arg( point->y() ) );
+    }
+  }
+  else if ( geometry->wkbType() == QgsWKBTypes::LineString || geometry->wkbType() == QgsWKBTypes::LineStringZ )
+  {
+    const QgsLineStringV2* lineString = dynamic_cast<const QgsLineStringV2*>( geometry );
+    if ( lineString )
+    {
+      for ( int i = 0; i < lineString->numPoints(); i++ )
+      {
+        QgsPointV2 point = lineString->pointN( i );
+        Vect_append_point( points, point.x(), point.y(), point.z() );
+      }
+    }
+  }
+  else if ( geometry->wkbType() == QgsWKBTypes::Polygon || geometry->wkbType() == QgsWKBTypes::PolygonZ )
+  {
+    const QgsPolygonV2* polygon = dynamic_cast<const QgsPolygonV2*>( geometry );
+    if ( polygon && polygon->exteriorRing() )
+    {
+      QgsLineStringV2* lineString = polygon->exteriorRing()->curveToLine();
+      if ( lineString )
+      {
+        for ( int i = 0; i < lineString->numPoints(); i++ )
+        {
+          QgsPointV2 point = lineString->pointN( i );
+          Vect_append_point( points, point.x(), point.y(), point.z() );
+        }
+      }
+    }
+  }
+  else
+  {
+    QgsDebugMsg( "unknown type : " + geometry->geometryType() );
+  }
+}
+
+void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
+{
+  // fid is negative for new features
+
+  int lid = QgsGrassFeatureIterator::lidFromFid( fid );
+  int cat = QgsGrassFeatureIterator::catFromFid( fid );
+
+  QgsDebugMsg( QString( "fid = %1 lid = %2 cat = %3" ).arg( fid ).arg( lid ).arg( cat ) );
+
+  Vect_reset_cats( mCats );
+  int realLine = 0; // number of line to be rewritten if exists
+  int newCat = 0;
+
+  // TODO: get also old type if it is feature previously deleted
+  int type = 0;
+
+  if ( FID_IS_NEW( fid ) )
+  {
+    if ( mNewFeatureType == QgsGrassProvider::LAST_TYPE )
+    {
+      type = mLastType;
+      QgsDebugMsg( QString( "use mLastType = %1" ).arg( mLastType ) );
+    }
+    else
+    {
+      type = mNewFeatureType == GV_AREA ? GV_BOUNDARY : mNewFeatureType;
+    }
+    // geometry
+    const QgsAbstractGeometryV2 *geometry = 0;
+    if ( !mEditBuffer->addedFeatures().contains( fid ) )
+    {
+#ifdef QGISDEBUG
+      QgsDebugMsg( "the feature is missing in buffer addedFeatures :" );
+
+      Q_FOREACH ( QgsFeatureId id, mEditBuffer->addedFeatures().keys() )
+      {
+        QgsDebugMsg( QString( "addedFeatures : id = %1" ).arg( id ) );
+      }
+#endif
+      return;
+    }
+    QgsFeature feature = mEditBuffer->addedFeatures().value( fid );
+    if ( feature.constGeometry() )
+    {
+      geometry = feature.constGeometry()->geometry();
+    }
+    else
+    {
+      QgsDebugMsg( "feature does not have geometry" );
+    }
+    if ( !geometry )
+    {
+      QgsDebugMsg( "geometry is null" );
+      return;
+    }
+
+    setPoints( mPoints, geometry );
+
+    QgsFeatureMap& addedFeatures = const_cast<QgsFeatureMap&>( mEditBuffer->addedFeatures() );
+
+    // change polygon to linestring
+    QgsWKBTypes::Type wkbType = QgsWKBTypes::flatType( geometry->wkbType() );
+    if ( wkbType == QgsWKBTypes::Polygon )
+    {
+      const QgsPolygonV2* polygon = dynamic_cast<const QgsPolygonV2*>( addedFeatures[fid].geometry()->geometry() );
+      if ( polygon )
+      {
+        QgsLineStringV2* lineString = polygon->exteriorRing()->curveToLine();
+        addedFeatures[fid].setGeometry( new QgsGeometry( lineString ) );
+      }
+      // TODO: create also centroid and add it to undo
+    }
+
+    // add new category
+    // TODO: add category also to boundary if user defined at least one attribute?
+    if ( type != GV_BOUNDARY )
+    {
+      // TODO: redo of deleted new features - save new cats somewhere,
+      // resetting fid probably is not possible because it is stored in undo commands and used in buffer maps
+
+      // It may be that user manualy entered cat value
+      QgsFeatureMap& addedFeatures = const_cast<QgsFeatureMap&>( mEditBuffer->addedFeatures() );
+      QgsFeature& feature = addedFeatures[fid];
+      int catIndex = feature.fields()->indexFromName( mLayer->keyColumnName() );
+      if ( catIndex != -1 )
+      {
+        QVariant userCatVariant = feature.attributes().value( catIndex );
+        if ( !userCatVariant.isNull() )
+        {
+          newCat = userCatVariant.toInt();
+          QgsDebugMsg( QString( "user defined newCat = %1" ).arg( newCat ) );
+        }
+      }
+      if ( newCat == 0 )
+      {
+        newCat = getNewCat();
+      }
+      QgsDebugMsg( QString( "newCat = %1" ).arg( newCat ) );
+      Vect_cat_set( mCats, mLayerField, newCat );
+
+      if ( mLayer->hasTable() )
+      {
+        addedFeatures[fid].setAttribute( mLayer->keyColumn(), newCat );
+      }
+      else
+      {
+        addedFeatures[fid].setAttribute( 0, newCat );
+      }
+      mLayer->map()->newCats()[fid] = newCat;
+      QgsDebugMsg( QString( "newCats[%1] = %2" ).arg( fid ).arg( newCat ) );
+
+      // Currently neither entering new cat nor changing existing cat is allowed
+#if 0
+      // There may be other new features with the same cat which we have to update
+      Q_FOREACH ( QgsFeatureId addedFid, addedFeatures.keys() )
+      {
+        if ( addedFid == fid )
+        {
+          continue;
+        }
+        int addedCat = mLayer->map()->newCats().value( addedFid ); // it should always exist
+        QgsDebugMsg( QString( "addedFid = %1 addedCat = %2" ).arg( addedFid ).arg( addedCat ) );
+        if ( addedCat == newCat )
+        {
+          QgsFeature addedFeature = addedFeatures[addedFid];
+          // TODO: better to update form mLayer->attributes() ?
+          for ( int i = 0; i < feature.fields()->size(); i++ )
+          {
+            if ( feature.fields()->field( i ).name() == QgsGrassVectorMap::topoSymbolFieldName() )
+            {
+              continue;
+            }
+            if ( feature.attributes().at( i ).isNull() )
+            {
+              continue;
+            }
+            addedFeature.setAttribute( i, feature.attributes().at( i ) );
+          }
+          addedFeatures[addedFid] = addedFeature;
+        }
+      }
+
+      // Update all changed attributes
+      QgsChangedAttributesMap &changedAttributes = const_cast<QgsChangedAttributesMap &>( mEditBuffer->changedAttributeValues() );
+      Q_FOREACH ( QgsFeatureId changedFid, changedAttributes.keys() )
+      {
+        int changedCat = QgsGrassFeatureIterator::catFromFid( changedFid );
+        int realChangedCat = changedCat;
+        if ( mLayer->map()->newCats().contains( changedFid ) )
+        {
+          realChangedCat = mLayer->map()->newCats().value( changedFid );
+        }
+        QgsDebugMsg( QString( "changedFid = %1 changedCat = %2 realChangedCat = %3" )
+                     .arg( changedFid ).arg( changedCat ).arg( realChangedCat ) );
+        if ( realChangedCat == newCat )
+        {
+          QgsAttributeMap attributeMap = changedAttributes[changedFid];
+          Q_FOREACH ( int index, attributeMap.keys() )
+          {
+            attributeMap[index] = feature.attributes().value( index );
+          }
+          changedAttributes[changedFid] = attributeMap;
+        }
+      }
+#endif
+
+      if ( mLayer->hasTable() )
+      {
+        QString error;
+        // The record may exist if cat is manually defined by user (currently editing of cat column is disabled )
+        bool recordExists = mLayer->recordExists( newCat, error );
+        if ( !error.isEmpty() )
+        {
+          QgsGrass::warning( error );
+        }
+        else
+        {
+          error.clear();
+          if ( !recordExists )
+          {
+            QgsDebugMsg( "record does not exist" );
+            if ( mLayer->attributes().contains( newCat ) )
+            {
+              QgsDebugMsg( "attributes exist -> reinsert" );
+              mLayer->reinsertAttributes( newCat, error );
+            }
+            else
+            {
+              mLayer->insertAttributes( newCat, feature, error );
+            }
+          }
+          else
+          {
+            // Currently disabled
+#if 0
+            // Manual entry of cat is not currently allowed
+            // TODO: open warning dialog?
+            // For now we are expecting that user knows what he is doing.
+            // We update existing record by non null values and set feature null values to existing values
+            mLayer->updateAttributes( newCat, feature, error ); // also updates feature by existing non null attributes
+#endif
+          }
+          if ( !error.isEmpty() )
+          {
+            QgsGrass::warning( error );
+          }
+        }
+      }
+
+      // update table
+      emit dataChanged();
+    }
+  }
+  else
+  {
+    QgsDebugMsg( "undo of old deleted feature" );
+    int oldLid = lid;
+    realLine = oldLid;
+    int realCat = cat;
+    int layerField = QgsGrassFeatureIterator::layerFromFid( fid );
+    if ( mLayer->map()->newLids().contains( oldLid ) ) // if it was changed already
+    {
+      realLine = mLayer->map()->newLids().value( oldLid );
+    }
+    if ( mLayer->map()->newCats().contains( fid ) )
+    {
+      realCat = mLayer->map()->newCats().value( fid );
+    }
+    QgsDebugMsg( QString( "fid = %1 lid = %2 realLine = %3 cat = %4 realCat = %5 layerField = %6" )
+                 .arg( fid ).arg( lid ).arg( realLine ).arg( cat ).arg( realCat ).arg( layerField ) );
+
+    if ( realLine > 0 )
+    {
+      QgsDebugMsg( QString( "reading realLine = %1" ).arg( realLine ) );
+      int realType = readLine( mPoints, mCats, realLine );
+      if ( realType > 0 )
+      {
+        QgsDebugMsg( QString( "the line exists realType = %1, add the cat to that line" ).arg( realType ) );
+        type = realType;
+      }
+      else // should not happen
+      {
+        QgsDebugMsg( "cannot read realLine" );
+        return;
+      }
+    }
+    else
+    {
+      QgsDebugMsg( QString( "the line does not exist -> restore old geometry" ) );
+      const QgsAbstractGeometryV2 *geometry = 0;
+
+      // If it is not new feature, we should have the geometry in oldGeometries
+      if ( mLayer->map()->oldGeometries().contains( lid ) )
+      {
+        geometry = mLayer->map()->oldGeometries().value( lid );
+        type = mLayer->map()->oldTypes().value( lid );
+      }
+      else
+      {
+        QgsDebugMsg( "geometry of old, previously deleted feature not found" );
+        return;
+      }
+      if ( !geometry )
+      {
+        QgsDebugMsg( "geometry is null" );
+        return;
+      }
+      setPoints( mPoints, geometry );
+    }
+
+    QgsDebugMsg( QString( "layerField = %1 realCat = %2" ).arg( layerField ).arg( realCat ) );
+    if ( realCat > 0 && layerField > 0 )
+    {
+      Vect_cat_set( mCats, layerField, realCat );
+
+      // restore attributes
+      QgsGrassVectorMapLayer *layer = mLayer;
+      if ( layerField != mLayer->field() )
+      {
+        layer = otherEditLayer( layerField );
+      }
+      if ( !layer )
+      {
+        QgsDebugMsg( "Cannot get layer" );
+      }
+      else
+      {
+        QString error;
+        bool recordExists = layer->recordExists( realCat, error );
+        QgsDebugMsg( QString( "recordExists = %1 error = %2" ).arg( recordExists ).arg( error ) );
+        if ( !recordExists && error.isEmpty() )
+        {
+          QgsDebugMsg( "record does not exist -> restore attributes" );
+          error.clear();
+          layer->reinsertAttributes( realCat, error );
+          if ( !error.isEmpty() )
+          {
+            QgsGrass::warning( tr( "Cannot restore record with cat %1" ).arg( realCat ) );
+          }
+        }
+      }
+    }
+  }
+
+  QgsDebugMsg( QString( "type = %1 mPoints->n_points = %2" ).arg( type ).arg( mPoints->n_points ) );
+  if ( type > 0 && mPoints->n_points > 0 )
+  {
+    int newLid = 0;
+    mLayer->map()->lockReadWrite();
+    if ( realLine > 0 )
+    {
+      newLid = rewriteLine( realLine, type, mPoints, mCats );
+    }
+    else
+    {
+      // TODO: use writeLine() and move setting oldLids, newLids there
+      newLid = Vect_write_line( map(), type, mPoints, mCats );
+      // fid may be new (negative) or old, if this is delete undo
+      int oldLid = QgsGrassFeatureIterator::lidFromFid( fid );
+
+      mLayer->map()->oldLids()[newLid] = oldLid;
+      mLayer->map()->newLids()[oldLid] = newLid;
+      QgsDebugMsg( QString( "oldLid = %1 newLine = %2" ).arg( oldLid ).arg( newLid ) );
+
+      QgsDebugMsg( QString( "oldLids : %1 -> %2" ).arg( newLid ).arg( oldLid ) );
+      mLayer->map()->oldLids()[newLid] = oldLid;
+      QgsDebugMsg( QString( "newLids : %1 -> %2" ).arg( oldLid ).arg( newLid ) );
+      mLayer->map()->newLids()[oldLid] = newLid;
+    }
+    mLayer->map()->unlockReadWrite();
+
+    QgsDebugMsg( QString( "newLine = %1" ).arg( newLid ) );
+
+    setAddedFeaturesSymbol();
+  }
+  QgsDebugMsg( QString( "mLayer->cidxFieldIndex() = %1 cidxFieldNumCats() = %2" )
+               .arg( mLayer->cidxFieldIndex() ).arg( mLayer->cidxFieldNumCats() ) );
+}
+
+void QgsGrassProvider::onFeatureDeleted( QgsFeatureId fid )
+{
+  QgsDebugMsg( QString( "fid = %1" ).arg( fid ) );
+
+  int oldLid = QgsGrassFeatureIterator::lidFromFid( fid );
+  int cat = QgsGrassFeatureIterator::catFromFid( fid );
+  int layerField = 0;
+  if ( FID_IS_NEW( fid ) )
+  {
+    layerField = mLayerField;
+  }
+  else
+  {
+    layerField = QgsGrassFeatureIterator::layerFromFid( fid );
+  }
+
+  int realLine = oldLid;
+  int realCat = cat;
+  if ( mLayer->map()->newLids().contains( oldLid ) ) // if it was changed already
+  {
+    realLine = mLayer->map()->newLids().value( oldLid );
+  }
+  if ( mLayer->map()->newCats().contains( fid ) )
+  {
+    realCat = mLayer->map()->newCats().value( fid );
+  }
+
+  QgsDebugMsg( QString( "fid = %1 oldLid = %2 realLine = %3 cat = %4 realCat = %5 layerField = %6" )
+               .arg( fid ).arg( oldLid ).arg( realLine ).arg( cat ).arg( realCat ).arg( layerField ) );
+
+  int type = 0;
+  mLayer->map()->lockReadWrite();
+  G_TRY
+  {
+    int type = readLine( mPoints, mCats, realLine );
+    if ( type <= 0 )
+    {
+      QgsDebugMsg( "cannot read line" );
+    }
+    else
+    {
+      // store only the first original geometry if it is not new feature, changed geometries are stored in the buffer
+      if ( oldLid > 0 && !mLayer->map()->oldGeometries().contains( oldLid ) )
+      {
+        QgsAbstractGeometryV2 *geometry = mLayer->map()->lineGeometry( oldLid );
+        if ( geometry )
+        {
+          QgsDebugMsg( QString( "save old geometry of oldLid = %1" ).arg( oldLid ) );
+          mLayer->map()->oldGeometries().insert( oldLid, geometry );
+          mLayer->map()->oldTypes().insert( oldLid, type );
+        }
+        else
+        {
+          QgsDebugMsg( QString( "cannot read geometry of oldLid = %1" ).arg( oldLid ) );
+        }
+      }
+
+      if ( realCat > 0 && layerField > 0 )
+      {
+        if ( Vect_field_cat_del( mCats, layerField, realCat ) == 0 )
+        {
+          // should not happen
+          QgsDebugMsg( "the line does not have old category" );
+        }
+      }
+      QgsDebugMsg( QString( "mCats->n_cats = %1" ).arg( mCats->n_cats ) );
+      if ( mCats->n_cats > 0 )
+      {
+        QgsDebugMsg( "the line has more cats -> rewrite" );
+        int newLid = rewriteLine( realLine, type, mPoints, mCats );
+        Q_UNUSED( newLid )
+      }
+      else
+      {
+        QgsDebugMsg( "no more cats on the line -> delete" );
+
+        Vect_delete_line_function_pointer( map(), realLine );
+        // oldLids are maping to the very first, original version (used by undo)
+        int oldestLid = oldLid;
+        if ( mLayer->map()->oldLids().contains( oldLid ) )
+        {
+          oldestLid = mLayer->map()->oldLids().value( oldLid );
+        }
+        QgsDebugMsg( QString( "oldLid = %1 oldestLid = %2" ).arg( oldLid ).arg( oldestLid ) );
+        QgsDebugMsg( QString( "newLids : %1 -> 0" ).arg( oldestLid ) );
+        mLayer->map()->newLids()[oldestLid] = 0;
+      }
+
+      // Delete record if orphan
+      if ( realCat > 0 && layerField > 0 )
+      {
+        QgsGrassVectorMapLayer *layer = mLayer;
+        if ( layerField != mLayer->field() )
+        {
+          layer = otherEditLayer( layerField );
+        }
+        if ( !layer )
+        {
+          QgsDebugMsg( "Cannot get layer" );
+        }
+        else
+        {
+          QString error;
+          bool orphan = layer->isOrphan( realCat, error );
+          QgsDebugMsg( QString( "orphan = %1 error = %2" ).arg( orphan ).arg( error ) );
+          if ( orphan && error.isEmpty() )
+          {
+            QgsDebugMsg( QString( "realCat = %1 is orphan -> delete record" ).arg( realCat ) );
+            error.clear();
+            layer->deleteAttribute( realCat, error );
+            if ( !error.isEmpty() )
+            {
+              QgsGrass::warning( tr( "Cannot delete orphan record with cat %1" ).arg( realCat ) );
+            }
+          }
+        }
+      }
+    }
+  }
+  G_CATCH( QgsGrass::Exception &e )
+  {
+    QgsDebugMsg( QString( "Cannot rewrite/delete line : %1" ).arg( e.what() ) );
+  }
+  mLayer->map()->unlockReadWrite();
+
+  if ( type == GV_BOUNDARY || type == GV_CENTROID )
+  {
+    setAddedFeaturesSymbol();
+  }
+}
+
+void QgsGrassProvider::onGeometryChanged( QgsFeatureId fid, QgsGeometry &geom )
+{
+  int oldLid = QgsGrassFeatureIterator::lidFromFid( fid );
+  int realLine = oldLid;
+  if ( mLayer->map()->newLids().contains( oldLid ) ) // if it was changed already
+  {
+    realLine = mLayer->map()->newLids().value( oldLid );
+  }
+  QgsDebugMsg( QString( "fid = %1 oldLid = %2 realLine = %3" ).arg( fid ).arg( oldLid ).arg( realLine ) );
+
+  int type = readLine( mPoints, mCats, realLine );
+  QgsDebugMsg( QString( "type = %1 n_points = %2" ).arg( type ).arg( mPoints->n_points ) );
+  if ( type < 1 ) // error
+  {
+    return;
+  }
+  mLastType = type;
+
+  // store only the first original geometry if it is not new feature, changed geometries are stored in the buffer
+  if ( oldLid > 0 && !mLayer->map()->oldGeometries().contains( oldLid ) )
+  {
+    QgsAbstractGeometryV2 *geometry = mLayer->map()->lineGeometry( oldLid );
+    if ( geometry )
+    {
+      QgsDebugMsg( QString( "save old geometry of oldLid = %1" ).arg( oldLid ) );
+      mLayer->map()->oldGeometries().insert( oldLid, geometry );
+      mLayer->map()->oldTypes().insert( oldLid, type );
+    }
+    else
+    {
+      QgsDebugMsg( QString( "cannot read geometry of oldLid = %1" ).arg( oldLid ) );
+    }
+  }
+
+  setPoints( mPoints, geom.geometry() );
+
+  mLayer->map()->lockReadWrite();
+  // Vect_rewrite_line may delete/write the line with a new id
+  int newLid = rewriteLine( realLine, type, mPoints, mCats );
+  Q_UNUSED( newLid )
+
+  mLayer->map()->unlockReadWrite();
+
+  if ( type == GV_BOUNDARY || type == GV_CENTROID )
+  {
+    setAddedFeaturesSymbol();
+  }
+}
+
+void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
+{
+  QgsDebugMsg( QString( "fid = %1 idx = %2 value = %3" ).arg( fid ).arg( idx ).arg( value.toString() ) );
+
+  int layerField = QgsGrassFeatureIterator::layerFromFid( fid );
+  int cat = QgsGrassFeatureIterator::catFromFid( fid );
+  QgsDebugMsg( QString( "layerField = %1" ).arg( layerField ) );
+
+  if ( !FID_IS_NEW( fid ) && ( layerField > 0 && layerField != mLayerField ) )
+  {
+    QgsDebugMsg( "changing attributes in different layer is not allowed" );
+    // reset the value
+    QgsChangedAttributesMap &changedAttributes = const_cast<QgsChangedAttributesMap &>( mEditBuffer->changedAttributeValues() );
+    if ( idx == mLayer->keyColumn() )
+    {
+      // should not happen because cat field is not editable
+      changedAttributes[fid][idx] = cat;
+    }
+    else
+    {
+      changedAttributes[fid][idx] = QgsGrassFeatureIterator::nonEditableValue( layerField );
+    }
+    // update table
+    // TODO: This would be too slow with buld update (field calculator for example), causing update
+    // of the whole table after each change. How to update single row?
+    //emit dataChanged();
+    return;
+  }
+
+  int oldLid = QgsGrassFeatureIterator::lidFromFid( fid );
+
+  int realLine = oldLid;
+  int realCat = cat;
+  if ( mLayer->map()->newLids().contains( oldLid ) ) // if it was changed already
+  {
+    realLine = mLayer->map()->newLids().value( oldLid );
+  }
+  if ( mLayer->map()->newCats().contains( fid ) )
+  {
+    realCat = mLayer->map()->newCats().value( fid );
+  }
+  QgsDebugMsg( QString( "fid = %1 oldLid = %2 realLine = %3 cat = %4 realCat = %5" )
+               .arg( fid ).arg( oldLid ).arg( realLine ).arg( cat ).arg( realCat ) );
+
+  // index is for current fields
+  if ( idx < 0 || idx > mEditLayer->fields().size() )
+  {
+    QgsDebugMsg( "index out of range" );
+    return;
+  }
+  QgsField field = mEditLayer->fields().at( idx );
+
+  QgsDebugMsg( "field.name() = " + field.name() + " keyColumnName() = " + mLayer->keyColumnName() );
+  // TODO: Changing existing category is currently disabled (read only widget set on layer)
+  //       bacause it makes it all too complicated
+  if ( field.name() == mLayer->keyColumnName() )
+  {
+    // user changed category -> rewrite line
+    QgsDebugMsg( "cat changed -> rewrite line" );
+    int type = readLine( mPoints, mCats, realLine );
+    if ( type <= 0 )
+    {
+      QgsDebugMsg( "cannot read line" );
+    }
+    else
+    {
+      if ( Vect_field_cat_del( mCats, mLayerField, realCat ) == 0 )
+      {
+        // should not happen
+        QgsDebugMsg( "the line does not have old category" );
+      }
+
+      int newCat = value.toInt();
+      QgsDebugMsg( QString( "realCat = %1 newCat = %2" ).arg( realCat ).arg( newCat ) );
+      if ( newCat == 0 )
+      {
+        QgsDebugMsg( "new category is 0" );
+        // TODO: remove category from line?
+      }
+      else
+      {
+        Vect_cat_set( mCats, mLayerField, newCat );
+        mLayer->map()->lockReadWrite();
+        int newLid = rewriteLine( realLine, type, mPoints, mCats );
+        Q_UNUSED( newLid )
+        mLayer->map()->newCats()[fid] = newCat;
+
+        // TODO: - store the new cat somewhere for cats mapping
+        //       - insert record if does not exist
+        //       - update feature attributes by existing record?
+
+        mLayer->map()->unlockReadWrite();
+      }
+    }
+  }
+  else
+  {
+    int undoIndex = mEditLayer->undoStack()->index();
+    QgsDebugMsg( QString( "undoIndex = %1" ).arg( undoIndex ) );
+    if ( realCat > 0 )
+    {
+      QString error;
+      bool recordExists = mLayer->recordExists( realCat, error );
+      if ( !error.isEmpty() )
+      {
+        QgsGrass::warning( error );
+      }
+      error.clear();
+      mLayer->changeAttributeValue( realCat, field, value, error );
+      if ( !error.isEmpty() )
+      {
+        QgsGrass::warning( error );
+      }
+      if ( !recordExists )
+      {
+        mLayer->map()->undoCommands()[undoIndex]
+        << new QgsGrassUndoCommandChangeAttribute( this, fid, realLine, mLayerField, realCat, false, true );
+      }
+    }
+    else
+    {
+      int newCat = getNewCat();
+      QgsDebugMsg( QString( "no cat -> add new cat %1 to line" ).arg( newCat ) );
+      int type = readLine( mPoints, mCats, realLine );
+      if ( type <= 0 )
+      {
+        QgsDebugMsg( "cannot read line" );
+      }
+      else
+      {
+        Vect_cat_set( mCats, mLayerField, newCat );
+        mLayer->map()->lockReadWrite();
+        int newLid = rewriteLine( realLine, type, mPoints, mCats );
+        Q_UNUSED( newLid );
+        mLayer->map()->newCats()[fid] = newCat;
+
+        QString error;
+        bool recordExists = mLayer->recordExists( newCat, error );
+        if ( !error.isEmpty() )
+        {
+          QgsGrass::warning( error );
+        }
+        error.clear();
+        // it does insert new record if it doesn't exist
+        mLayer->changeAttributeValue( newCat, field, value, error );
+        if ( !error.isEmpty() )
+        {
+          QgsGrass::warning( error );
+        }
+
+        mLayer->map()->undoCommands()[undoIndex]
+        << new QgsGrassUndoCommandChangeAttribute( this, fid, newLid, mLayerField, newCat, true, !recordExists );
+
+        mLayer->map()->unlockReadWrite();
+      }
+    }
+  }
+}
+
+void QgsGrassProvider::onAttributeAdded( int idx )
+{
+  QgsDebugMsg( QString( "idx = %1" ).arg( idx ) );
+  if ( idx < 0 || idx >= mEditLayer->fields().size() )
+  {
+    QgsDebugMsg( "index out of range" );
+  }
+  QString error;
+  mLayer->addColumn( mEditLayer->fields().at( idx ), error );
+  if ( !error.isEmpty() )
+  {
+    QgsDebugMsg( error );
+    QgsGrass::warning( error );
+    // TODO: remove the column somehow from the layer/buffer - undo?
+  }
+  else
+  {
+    mEditLayerFields = mEditLayer->fields();
+    emit fieldsChanged();
+  }
+}
+
+void QgsGrassProvider::onAttributeDeleted( int idx )
+{
+  QgsDebugMsg( QString( "idx = %1 mEditLayerFields.size() = %2" ).arg( idx ).arg( mEditLayerFields.size() ) );
+  // The field was already removed from mEditLayer->fields() -> using stored last version of fields
+  if ( idx < 0 || idx >= mEditLayerFields.size() )
+  {
+    QgsDebugMsg( "index out of range" );
+    return;
+  }
+  QgsField deletedField = mEditLayerFields.at( idx );
+  QgsDebugMsg( QString( "deletedField.name() = %1" ).arg( deletedField.name() ) );
+
+  QString error;
+  mLayer->deleteColumn( deletedField, error );
+  if ( !error.isEmpty() )
+  {
+    QgsDebugMsg( error );
+    QgsGrass::warning( error );
+    // TODO: get back the column somehow to the layer/buffer - undo?
+  }
+  else
+  {
+    mEditLayerFields = mEditLayer->fields();
+    emit fieldsChanged();
+  }
+}
+
+void QgsGrassProvider::setAddedFeaturesSymbol()
+{
+  QgsDebugMsg( "entered" );
+  if ( !mEditBuffer )
+  {
+    return;
+  }
+  QgsFeatureMap& features = const_cast<QgsFeatureMap&>( mEditBuffer->addedFeatures() );
+  Q_FOREACH ( QgsFeatureId fid, features.keys() )
+  {
+    QgsFeature feature = features[fid];
+    if ( !feature.constGeometry() || !feature.constGeometry()->geometry() )
+    {
+      continue;
+    }
+    int lid = QgsGrassFeatureIterator::lidFromFid( fid );
+    int realLid = lid;
+    if ( mLayer->map()->newLids().contains( lid ) )
+    {
+      realLid = mLayer->map()->newLids().value( lid );
+    }
+    QgsDebugMsg( QString( "fid = %1 lid = %2 realLid = %3" ).arg( fid ).arg( lid ).arg( realLid ) );
+    QgsGrassVectorMap::TopoSymbol symbol = mLayer->map()->topoSymbol( realLid );
+    // the feature may be without fields and set attribute by name does not work
+    int index = mLayer->fields().indexFromName( QgsGrassVectorMap::topoSymbolFieldName() );
+    feature.setAttribute( index, symbol );
+    features[fid] = feature;
+  }
+}
+
+void QgsGrassProvider::onUndoIndexChanged( int currentIndex )
+{
+  QgsDebugMsg( QString( "currentIndex = %1" ).arg( currentIndex ) );
+  // multiple commands maybe undone with single undoIndexChanged signal
+  QList<int> indexes = mLayer->map()->undoCommands().keys();
+  qSort( indexes );
+  for ( int i = indexes.size() - 1; i >= 0; i-- )
+  {
+    int index = indexes[i];
+    if ( index < currentIndex )
+    {
+      break;
+    }
+    QgsDebugMsg( QString( "index = %1" ).arg( index ) );
+    if ( mLayer->map()->undoCommands().contains( index ) )
+    {
+      QgsDebugMsg( QString( "%1 undo commands" ).arg( mLayer->map()->undoCommands()[index].size() ) );
+
+      for ( int j = 0; j < mLayer->map()->undoCommands()[index].size(); j++ )
+      {
+        mLayer->map()->undoCommands()[index][j]->undo();
+        delete mLayer->map()->undoCommands()[index][j];
+      }
+      mLayer->map()->undoCommands().remove( index );
+    }
+  }
+}
+
+bool QgsGrassProvider::addAttributes( const QList<QgsField> &attributes )
+{
+  Q_UNUSED( attributes );
+  // update fields because QgsVectorLayerEditBuffer::commitChanges() checks old /new fields count
+  mLayer->updateFields();
+  return true;
+}
+
+bool QgsGrassProvider::deleteAttributes( const QgsAttributeIds &attributes )
+{
+  Q_UNUSED( attributes );
+  // update fields because QgsVectorLayerEditBuffer::commitChanges() checks old /new fields count
+  mLayer->updateFields();
+  return true;
+}
+
+void QgsGrassProvider::onBeforeCommitChanges()
+{
+  QgsDebugMsg( "entered" );
+  mLayer->map()->clearUndoCommands();
+}
+
+void QgsGrassProvider::onBeforeRollBack()
+{
+  QgsDebugMsg( "entered" );
+}
+
+void QgsGrassProvider::onEditingStopped()
+{
+  QgsDebugMsg( "entered" );
+  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  closeEdit( false, vectorLayer );
 }
 
 // -------------------------------------------------------------------------------
 
 int QgsGrassProvider::cidxGetNumFields()
 {
-  return ( Vect_cidx_get_num_fields( mMap ) );
+  return ( Vect_cidx_get_num_fields( map() ) );
 }
 
 int QgsGrassProvider::cidxGetFieldNumber( int idx )
 {
-  return ( Vect_cidx_get_field_number( mMap, idx ) );
+  if ( idx < 0 || idx >= cidxGetNumFields() )
+  {
+    QgsDebugMsg( QString( "idx %1 out of range (0,%2)" ).arg( idx ).arg( cidxGetNumFields() - 1 ) );
+    return 0;
+  }
+  return ( Vect_cidx_get_field_number( map(), idx ) );
 }
 
 int QgsGrassProvider::cidxGetMaxCat( int idx )
 {
-  int ncats = Vect_cidx_get_num_cats_by_index( mMap, idx );
+  QgsDebugMsg( QString( "idx = %1" ).arg( idx ) );
+  if ( idx < 0 || idx >= cidxGetNumFields() )
+  {
+    QgsDebugMsg( QString( "idx %1 out of range (0,%2)" ).arg( idx ).arg( cidxGetNumFields() - 1 ) );
+    return 0;
+  }
+
+  int ncats = Vect_cidx_get_num_cats_by_index( map(), idx );
+  QgsDebugMsg( QString( "ncats = %1" ).arg( ncats ) );
+
+  if ( ncats == 0 )
+  {
+    return 0;
+  }
 
   int cat, type, id;
-  Vect_cidx_get_cat_by_index( mMap, idx, ncats - 1, &cat, &type, &id );
+  Vect_cidx_get_cat_by_index( map(), idx, ncats - 1, &cat, &type, &id );
 
-  return ( cat );
+  return cat;
+}
+
+int QgsGrassProvider::getNewCat()
+{
+  QgsDebugMsg( QString( "get new cat for cidxFieldIndex() = %1" ).arg( mLayer->cidxFieldIndex() ) );
+  if ( mLayer->cidxFieldIndex() == -1 )
+  {
+    // No features with this field yet in map
+    return 1;
+  }
+  else
+  {
+    return cidxGetMaxCat( mLayer->cidxFieldIndex() ) + 1;
+  }
+}
+
+QgsGrassVectorMapLayer * QgsGrassProvider::openLayer() const
+{
+  return mLayer->map()->openLayer( mLayerField );
+}
+
+struct Map_info * QgsGrassProvider::map()
+{
+  Q_ASSERT( mLayer );
+  Q_ASSERT( mLayer->map() );
+  Q_ASSERT( mLayer->map()->map() );
+  return mLayer->map()->map();
+}
+
+void QgsGrassProvider::setMapset()
+{
+  QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
+}
+
+QgsGrassVectorMapLayer * QgsGrassProvider::otherEditLayer( int layerField )
+{
+  Q_FOREACH ( QgsGrassVectorMapLayer *layer, mOtherEditLayers )
+  {
+    if ( layer->field() == layerField )
+    {
+      return layer;
+    }
+  }
+  QgsGrassVectorMapLayer *layer = mLayer->map()->openLayer( layerField );
+  if ( layer )
+  {
+    layer->startEdit();
+    mOtherEditLayers << layer;
+  }
+  return layer;
 }
 
 QString QgsGrassProvider::name() const
 {
   return GRASS_KEY;
-} // QgsGrassProvider::name()
+}
 
 QString QgsGrassProvider::description() const
 {
-  return GRASS_DESCRIPTION;
-} // QgsGrassProvider::description()
+  return tr( "GRASS %1 vector provider" ).arg( GRASS_VERSION_MAJOR );
+}
 

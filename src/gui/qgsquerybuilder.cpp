@@ -25,7 +25,7 @@
 // constructor used when the query builder must make its own
 // connection to the database
 QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
-                                  QWidget *parent, Qt::WindowFlags fl )
+                                  QWidget *parent, const Qt::WindowFlags& fl )
     : QDialog( parent, fl )
     , mPreviousFieldRow( -1 )
     , mLayer( layer )
@@ -69,7 +69,7 @@ void QgsQueryBuilder::showEvent( QShowEvent *event )
 
 void QgsQueryBuilder::populateFields()
 {
-  const QgsFields& fields = mLayer->pendingFields();
+  const QgsFields& fields = mLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     if ( fields.fieldOrigin( idx ) != QgsFields::OriginProvider )
@@ -305,7 +305,7 @@ QString QgsQueryBuilder::sql()
   return txtSQL->text();
 }
 
-void QgsQueryBuilder::setSql( QString sqlStatement )
+void QgsQueryBuilder::setSql( const QString& sqlStatement )
 {
   txtSQL->setText( sqlStatement );
 }
@@ -325,7 +325,7 @@ void QgsQueryBuilder::on_lstFields_clicked( const QModelIndex &index )
 
 void QgsQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insertText( "\"" + mLayer->pendingFields()[ mModelFields->data( index, Qt::UserRole+1 ).toInt()].name() + "\"" );
+  txtSQL->insertText( '\"' + mLayer->fields().at( mModelFields->data( index, Qt::UserRole + 1 ).toInt() ).name() + '\"' );
   txtSQL->setFocus();
 }
 
@@ -335,11 +335,11 @@ void QgsQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
   if ( value.isNull() )
     txtSQL->insertText( "NULL" );
   else if ( value.type() == QVariant::Date && mLayer->providerType() == "ogr" && mLayer->storageType() == "ESRI Shapefile" )
-    txtSQL->insertText( "'" + value.toDate().toString( "yyyy/MM/dd" ) + "'" );
+    txtSQL->insertText( '\'' + value.toDate().toString( "yyyy/MM/dd" ) + '\'' );
   else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
     txtSQL->insertText( value.toString() );
   else
-    txtSQL->insertText( "'" + value.toString().replace( "'", "''" ) + "'" );
+    txtSQL->insertText( '\'' + value.toString().replace( '\'', "''" ) + '\'' );
 
   txtSQL->setFocus();
 }
@@ -393,7 +393,7 @@ void QgsQueryBuilder::on_btnILike_clicked()
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::setDatasourceDescription( QString uri )
+void QgsQueryBuilder::setDatasourceDescription( const QString& uri )
 {
   lblDataUri->setText( uri );
 }

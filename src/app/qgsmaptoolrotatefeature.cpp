@@ -38,7 +38,7 @@
 
 #define PI 3.14159265
 
-QgsAngleMagnetWidget::QgsAngleMagnetWidget( QString label , QWidget *parent )
+QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString& label , QWidget *parent )
     : QWidget( parent )
 {
   mLayout = new QHBoxLayout( this );
@@ -46,7 +46,7 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( QString label , QWidget *parent )
   //mLayout->setAlignment( Qt::AlignLeft );
   setLayout( mLayout );
 
-  if ( !label.isNull() )
+  if ( !label.isEmpty() )
   {
     QLabel* lbl = new QLabel( label, this );
     lbl->setAlignment( Qt::AlignRight | Qt::AlignCenter );
@@ -130,12 +130,12 @@ void QgsAngleMagnetWidget::angleSpinBoxValueChanged( double angle )
 
 QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
-    , mRubberBand( 0 )
+    , mRubberBand( nullptr )
     , mRotation( 0 )
     , mRotationOffset( 0 )
-    , mAnchorPoint( 0 )
+    , mAnchorPoint( nullptr )
     , mRotationActive( false )
-    , mRotationWidget( 0 )
+    , mRotationWidget( nullptr )
 {
 }
 
@@ -146,7 +146,7 @@ QgsMapToolRotateFeature::~QgsMapToolRotateFeature()
   deleteRubberband();
 }
 
-void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolRotateFeature::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( mRotationActive )
   {
@@ -167,7 +167,7 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   deleteRotationWidget();
 
@@ -242,9 +242,9 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
       QgsFeature f;
       while ( fit.nextFeature( f ) )
       {
-        if ( f.geometry() )
+        if ( f.constGeometry() )
         {
-          double currentDistance = pointGeometry->distance( *f.geometry() );
+          double currentDistance = pointGeometry->distance( *f.constGeometry() );
           if ( currentDistance < minDistance )
           {
             minDistance = currentDistance;
@@ -260,7 +260,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
         return;
       }
 
-      QgsRectangle bound = cf.geometry()->boundingBox();
+      QgsRectangle bound = cf.constGeometry()->boundingBox();
       mStartPointMapCoords = toMapCoordinates( vlayer, bound.center() );
 
       if ( !mAnchorPoint )
@@ -276,7 +276,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
       mRotatedFeatures << cf.id(); //todo: take the closest feature, not the first one...
 
       mRubberBand = createRubberBand( vlayer->geometryType() );
-      mRubberBand->setToGeometry( cf.geometry(), vlayer );
+      mRubberBand->setToGeometry( cf.constGeometry(), vlayer );
     }
     else
     {
@@ -288,7 +288,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
       QgsFeatureIterator it = vlayer->selectedFeaturesIterator();
       while ( it.nextFeature( feat ) )
       {
-        mRubberBand->addGeometry( feat.geometry(), vlayer );
+        mRubberBand->addGeometry( feat.constGeometry(), vlayer );
       }
     }
 
@@ -372,11 +372,11 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   }
 
   int i = 0;
-  foreach ( QgsFeatureId id, mRotatedFeatures )
+  Q_FOREACH ( QgsFeatureId id, mRotatedFeatures )
   {
     QgsFeature feat;
     vlayer->getFeatures( QgsFeatureRequest().setFilterFid( id ) ).nextFeature( feat );
-    QgsGeometry* geom = feat.geometry();
+    const QgsGeometry* geom = feat.constGeometry();
     i = start;
 
     QgsPoint vertex = geom->vertexAt( i );
@@ -440,7 +440,7 @@ void QgsMapToolRotateFeature::activate()
 void QgsMapToolRotateFeature::deleteRubberband()
 {
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 }
 
 void QgsMapToolRotateFeature::deactivate()
@@ -448,7 +448,7 @@ void QgsMapToolRotateFeature::deactivate()
   deleteRotationWidget();
   mRotationActive = false;
   delete mAnchorPoint;
-  mAnchorPoint = 0;
+  mAnchorPoint = nullptr;
   mRotationOffset = 0;
   deleteRubberband();
   QgsMapTool::deactivate();
@@ -480,7 +480,7 @@ void QgsMapToolRotateFeature::deleteRotationWidget()
     mRotationWidget->releaseKeyboard();
     mRotationWidget->deleteLater();
   }
-  mRotationWidget = 0;
+  mRotationWidget = nullptr;
 }
 
 

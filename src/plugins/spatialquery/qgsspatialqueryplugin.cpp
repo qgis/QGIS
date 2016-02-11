@@ -40,12 +40,6 @@
 #include <QMessageBox>
 
 
-#ifdef WIN32
-#define QGISEXTERN extern "C" __declspec( dllexport )
-#else
-#define QGISEXTERN extern "C"
-#endif
-
 static const QString name_ = QObject::tr( "Spatial Query Plugin" );
 static const QString description_ = QObject::tr( "A plugin that makes spatial queries on vector layers" );
 static const QString category_ = QObject::tr( "Vector" );
@@ -61,9 +55,9 @@ static const QString icon_ = ":/icons/spatialquery.png";
 */
 QgsSpatialQueryPlugin::QgsSpatialQueryPlugin( QgisInterface* iface )
     : QgisPlugin( name_, description_, category_, version_, type_ )
-    , mDialog( 0 )
+    , mDialog( nullptr )
     , mIface( iface )
-    , mSpatialQueryAction( 0 )
+    , mSpatialQueryAction( nullptr )
 {
 }
 
@@ -103,9 +97,9 @@ void QgsSpatialQueryPlugin::unload()
   mIface->removePluginVectorMenu( tr( "&Spatial Query" ), mSpatialQueryAction );
 
   delete mSpatialQueryAction;
-  mSpatialQueryAction = 0;
+  mSpatialQueryAction = nullptr;
   delete mDialog;
-  mDialog = NULL;
+  mDialog = nullptr;
 }
 
 void QgsSpatialQueryPlugin::run()
@@ -127,7 +121,7 @@ void QgsSpatialQueryPlugin::run()
     if ( !mDialog->isVisible() )
     {
       delete mDialog;
-      mDialog = NULL;
+      mDialog = nullptr;
       run();
     }
     else
@@ -139,7 +133,7 @@ void QgsSpatialQueryPlugin::run()
 }
 
 //! Set icons to the current theme
-void QgsSpatialQueryPlugin::setCurrentTheme( QString )
+void QgsSpatialQueryPlugin::setCurrentTheme( const QString& )
 {
   if ( mSpatialQueryAction )
     mSpatialQueryAction->setIcon( getThemeIcon( "/spatialquery.png" ) );
@@ -163,7 +157,7 @@ QIcon QgsSpatialQueryPlugin::getThemeIcon( const QString &theName )
 
 void QgsSpatialQueryPlugin::MsgDEBUG( QString sMSg )
 {
-  QMessageBox::warning( 0, tr( "DEBUG" ), sMSg, QMessageBox::Ok );
+  QMessageBox::warning( nullptr, tr( "DEBUG" ), sMSg, QMessageBox::Ok );
 }
 
 

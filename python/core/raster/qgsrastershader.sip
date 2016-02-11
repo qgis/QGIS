@@ -47,4 +47,8 @@ class QgsRasterShader
     void writeXML( QDomDocument& doc, QDomElement& parent ) const;
 
     void readXML( const QDomElement& elem );
+
+  private:
+
+    QgsRasterShader( const QgsRasterShader& rh );
 };

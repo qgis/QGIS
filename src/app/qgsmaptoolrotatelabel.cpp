@@ -32,8 +32,8 @@ QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas* canvas )
     , mStartRotation( 0.0 )
     , mCurrentRotation( 0.0 )
     , mCurrentMouseAzimuth( 0.0 )
-    , mRotationItem( 0 )
-    , mRotationPreviewBox( 0 )
+    , mRotationItem( nullptr )
+    , mRotationPreviewBox( nullptr )
     , mCtrlPressed( false )
 {
 }
@@ -44,7 +44,7 @@ QgsMapToolRotateLabel::~QgsMapToolRotateLabel()
   delete mRotationPreviewBox;
 }
 
-void QgsMapToolRotateLabel::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent* e )
 {
   deleteRubberBands();
 
@@ -102,7 +102,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QMouseEvent *e )
   }
 }
 
-void QgsMapToolRotateLabel::canvasMoveEvent( QMouseEvent *e )
+void QgsMapToolRotateLabel::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( mLabelRubberBand )
   {
@@ -139,7 +139,7 @@ void QgsMapToolRotateLabel::canvasMoveEvent( QMouseEvent *e )
   }
 }
 
-void QgsMapToolRotateLabel::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolRotateLabel::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 
@@ -150,9 +150,9 @@ void QgsMapToolRotateLabel::canvasReleaseEvent( QMouseEvent *e )
 
   deleteRubberBands();
   delete mRotationItem;
-  mRotationItem = 0;
+  mRotationItem = nullptr;
   delete mRotationPreviewBox;
-  mRotationPreviewBox = 0;
+  mRotationPreviewBox = nullptr;
 
   QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( mCurrentLabelPos.layerID );
   if ( !layer )
@@ -201,7 +201,7 @@ QgsRubberBand* QgsMapToolRotateLabel::createRotationPreviewBox()
   QVector< QgsPoint > boxPoints = mCurrentLabelPos.cornerPoints;
   if ( boxPoints.size() < 1 )
   {
-    return 0;
+    return nullptr;
   }
 
   mRotationPreviewBox = new QgsRubberBand( mCanvas, QGis::Line );

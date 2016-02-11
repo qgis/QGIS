@@ -84,6 +84,7 @@ from DensifyGeometriesInterval import DensifyGeometriesInterval
 from Eliminate import Eliminate
 from SpatialJoin import SpatialJoin
 from DeleteColumn import DeleteColumn
+from DeleteHoles import DeleteHoles
 from DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from TextToFloat import TextToFloat
 from ExtractByAttribute import ExtractByAttribute
@@ -126,17 +127,24 @@ from SelectByExpression import SelectByExpression
 from SelectByAttributeSum import SelectByAttributeSum
 from HypsometricCurves import HypsometricCurves
 from SplitLinesWithLines import SplitLinesWithLines
-from processing.algs.qgis.FieldsMapper import FieldsMapper
+from FieldsMapper import FieldsMapper
+from Datasources2Vrt import Datasources2Vrt
+from CheckValidity import CheckValidity
+from OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
+from Smooth import Smooth
+from ReverseLineDirection import ReverseLineDirection
+from ExecuteSQL import ExecuteSQL
 
-import processing.resources_rc
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
 class QGISAlgorithmProvider(AlgorithmProvider):
 
-    _icon = QIcon(':/processing/images/qgis.png')
-
     def __init__(self):
         AlgorithmProvider.__init__(self)
+        self._icon = QIcon(os.path.join(pluginPath, 'images', 'qgis.png'))
+
         self.alglist = [SumLines(), PointsInPolygon(),
                         PointsInPolygonWeighted(), PointsInPolygonUnique(),
                         BasicStatisticsStrings(), BasicStatisticsNumbers(),
@@ -151,7 +159,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         VariableDistanceBuffer(), Dissolve(), Difference(),
                         Intersection(), Union(), Clip(), ExtentFromLayer(),
                         RandomSelection(), RandomSelectionWithinSubsets(),
-                        SelectByLocation(), RandomExtract(),
+                        SelectByLocation(), RandomExtract(), DeleteHoles(),
                         RandomExtractWithinSubsets(), ExtractByLocation(),
                         SpatialJoin(), RegularPoints(), SymmetricalDifference(),
                         VectorSplit(), VectorGrid(), DeleteColumn(),
@@ -173,7 +181,9 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
                         SplitLinesWithLines(), CreateConstantRaster(),
-                        FieldsMapper(),SelectByAttributeSum()
+                        FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
+                        CheckValidity(), OrientedMinimumBoundingBox(), Smooth(),
+                        ReverseLineDirection(), ExecuteSQL()
                         ]
 
         if hasMatplotlib:

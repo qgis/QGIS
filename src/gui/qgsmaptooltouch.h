@@ -26,6 +26,7 @@ class QgsMapCanvas;
 /** \ingroup gui
  * A map tool for panning the map.
  * @see QgsMapTool
+ * @note may not be available in Python bindings on all platforms
  */
 class GUI_EXPORT QgsMapToolTouch : public QgsMapTool
 {
@@ -39,13 +40,13 @@ class GUI_EXPORT QgsMapToolTouch : public QgsMapTool
     void deactivate() override;
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden Mouse double click event.
-    virtual void canvasDoubleClickEvent( QMouseEvent * e ) override;
+    virtual void canvasDoubleClickEvent( QgsMapMouseEvent* e ) override;
 
     virtual bool isTransient() override { return true; }
 

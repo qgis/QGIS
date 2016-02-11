@@ -76,7 +76,7 @@ class RUtils:
         if folder is None:
             folder = unicode(os.path.join(userFolder(), 'rlibs'))
         mkdir(folder)
-        
+
         return os.path.abspath(unicode(folder))
 
     @staticmethod
@@ -220,7 +220,7 @@ class RUtils:
 
     @staticmethod
     def getRequiredPackages(code):
-        regex = re.compile('library\("?(.*?)"?\)')
+        regex = re.compile('[^#]library\("?(.*?)"?\)')
         return regex.findall(code)
 
     @staticmethod

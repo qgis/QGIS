@@ -53,16 +53,16 @@ class eVisImageDisplayWidget : public QWidget
 
   public:
     /** \brief Constructor */
-    eVisImageDisplayWidget( QWidget* parent = 0, Qt::WindowFlags fl = 0 );
+    eVisImageDisplayWidget( QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
 
     /** \brief Destructor */
     ~eVisImageDisplayWidget();
 
     /** \brief Load an image from disk and display */
-    void displayImage( QString );
+    void displayImage( const QString& );
 
     /** \brief Load an image from a remote location using http and display */
-    void displayUrlImage( QString );
+    void displayUrlImage( const QString& );
 
     /*
      * There needs to be more logic around setting the zoom steps as you could change it mid display

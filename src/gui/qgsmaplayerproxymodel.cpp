@@ -31,14 +31,14 @@ QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
   sort( 0 );
 }
 
-QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Filters filters )
+QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( const Filters& filters )
 {
   mFilters = filters;
   invalidateFilter();
   return this;
 }
 
-void QgsMapLayerProxyModel::setExceptedLayerList( QList<QgsMapLayer*> exceptList )
+void QgsMapLayerProxyModel::setExceptedLayerList( const QList<QgsMapLayer*>& exceptList )
 {
   mExceptList = exceptList;
   invalidateFilter();
@@ -46,7 +46,7 @@ void QgsMapLayerProxyModel::setExceptedLayerList( QList<QgsMapLayer*> exceptList
 
 bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( mFilters.testFlag( All ) )
+  if ( mFilters.testFlag( All ) && mExceptList.isEmpty() )
     return true;
 
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );

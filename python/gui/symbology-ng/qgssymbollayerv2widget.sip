@@ -11,6 +11,46 @@ class QgsSymbolLayerV2Widget : QWidget
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) = 0;
     virtual QgsSymbolLayerV2* symbolLayer() = 0;
 
+
+    /** Returns the expression context used for the widget, if set. This expression context is used for
+     * evaluating data defined symbol properties and for populating based expression widgets in
+     * the layer widget.
+     * @note added in QGIS 2.12
+     * @see setExpressionContext()
+     */
+    QgsExpressionContext* expressionContext() const;
+
+    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @see mapCanvas()
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas );
+
+    /** Returns the map canvas associated with the widget.
+     * @see setMapCanvas
+     * @note added in QGIS 2.12
+     */
+    const QgsMapCanvas* mapCanvas() const;
+
+    /** Returns the vector layer associated with the widget.
+     * @note added in QGIS 2.12
+     */
+    const QgsVectorLayer* vectorLayer() const;
+
+  public slots:
+
+    /** Sets the optional expression context used for the widget. This expression context is used for
+     * evaluating data defined symbol properties and for populating based expression widgets in
+     * the layer widget.
+     * @param context expression context pointer. Ownership is not transferred and the object must
+     * be kept alive for the lifetime of the layer widget.
+     * @note added in QGIS 2.12
+     * @see expressionContext()
+     */
+    void setExpressionContext( QgsExpressionContext* context );
+
   protected:
 
     void registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description );
@@ -18,11 +58,23 @@ class QgsSymbolLayerV2Widget : QWidget
     /** Get label for data defined entry.
      * Implemented only for 'size' of marker symbols
      * @note added in 2.1
+     * @deprecated no longer used
      */
-    virtual QString dataDefinedPropertyLabel( const QString &entryName );
+    virtual QString dataDefinedPropertyLabel( const QString &entryName ) /Deprecated/;
 
   signals:
+    /**
+     * Should be emitted whenever configuration changes happened on this symbol layer configuration.
+     * If the subsymbol is changed, {@link symbolChanged()} should be emitted instead.
+     */
     void changed();
+    /**
+     * Should be emitted whenever the sub symbol changed on this symbol layer configuration.
+     * Normally {@link changed()} should be preferred.
+     *
+     * @see {@link changed()}
+     */
+    void symbolChanged();
 
   protected slots:
     void updateDataDefinedProperty();
@@ -72,6 +124,7 @@ class QgsSimpleMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
   public:
     QgsSimpleMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    ~QgsSimpleMarkerSymbolLayerV2Widget();
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -144,7 +197,6 @@ class QgsGradientFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void setColor( const QColor& color );
     void setColor2( const QColor& color );
     void applyColorRamp();
-    void on_mButtonEditRamp_clicked();
     void setGradientType( int index );
     void setCoordinateMode( int index );
     void setGradientSpread( int index );
@@ -180,7 +232,6 @@ class QgsShapeburstFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void on_mDistanceUnitWidget_changed();
     void on_mRadioUseWholeShape_toggled( bool value );
     void applyColorRamp();
-    void on_mButtonEditRamp_clicked();
     void offsetChanged();
     void on_mOffsetUnitWidget_changed();
     void on_mIgnoreRingsCheckBox_stateChanged( int state );
@@ -225,6 +276,7 @@ class QgsSvgMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
   public:
     QgsSvgMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    ~QgsSvgMarkerSymbolLayerV2Widget();
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -295,7 +347,7 @@ class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerV2Widget
 
   protected:
     void insertIcons();
-    /**Enables or disables svg fill color, border color and border width based on whether the
+    /** Enables or disables svg fill color, border color and border width based on whether the
      * svg file supports custom parameters.
      * @param resetValues set to true to overwrite existing layer fill color, border color and border width
      * with default values from svg file
@@ -345,6 +397,7 @@ class QgsFontMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
   public:
     QgsFontMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    ~QgsFontMarkerSymbolLayerV2Widget();
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -357,7 +410,7 @@ class QgsFontMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void setColor( const QColor& color );
     void setSize( double size );
     void setAngle( double angle );
-    void setCharacter( const QChar& chr );
+    void setCharacter( QChar chr );
     void setOffset();
     void on_mSizeUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
@@ -375,6 +428,22 @@ class QgsCentroidFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
   public:
     QgsCentroidFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+
+    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
+
+    // from base class
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
+    virtual QgsSymbolLayerV2* symbolLayer();
+};
+
+
+class QgsGeometryGeneratorSymbolLayerWidget : QgsSymbolLayerV2Widget
+{
+%TypeHeaderCode
+#include <qgssymbollayerv2widget.h>
+%End
+  public:
+    QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = nullptr );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 

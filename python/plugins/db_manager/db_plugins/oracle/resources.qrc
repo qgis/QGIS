@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/db_manager/oracle">
+        <file alias="icon">icons/oracle.png</file>
+    </qresource>
+</RCC>

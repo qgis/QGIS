@@ -33,6 +33,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterNumber
 
+
 class las2iso(LAStoolsAlgorithm):
 
     SMOOTH = "SMOOTH"
@@ -42,23 +43,23 @@ class las2iso(LAStoolsAlgorithm):
     CLEAN = "CLEAN"
 
     def defineCharacteristics(self):
-        self.name = "las2iso"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('las2iso')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(las2iso.SMOOTH,
-            self.tr("smooth underlying TIN"), 0, None, 0))
+                                          self.tr("smooth underlying TIN"), 0, None, 0))
         self.addParameter(ParameterNumber(las2iso.ISO_EVERY,
-            self.tr("extract isoline with a spacing of"), 0, None, 10.0))
+                                          self.tr("extract isoline with a spacing of"), 0, None, 10.0))
         self.addParameter(ParameterNumber(las2iso.CLEAN,
-            self.tr("clean isolines shorter than (0 = do not clean)"),
-            None, None, 0.0))
+                                          self.tr("clean isolines shorter than (0 = do not clean)"),
+                                          None, None, 0.0))
         self.addParameter(ParameterNumber(las2iso.SIMPLIFY_LENGTH,
-            self.tr("simplify segments shorter than (0 = do not simplify)"),
-            None, None, 0.0))
+                                          self.tr("simplify segments shorter than (0 = do not simplify)"),
+                                          None, None, 0.0))
         self.addParameter(ParameterNumber(las2iso.SIMPLIFY_AREA,
-            self.tr("simplify segments pairs with area less than (0 = do not simplify)"),
-            None, None, 0.0))
+                                          self.tr("simplify segments pairs with area less than (0 = do not simplify)"),
+                                          None, None, 0.0))
         self.addParametersVectorOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -69,21 +70,21 @@ class las2iso(LAStoolsAlgorithm):
         smooth = self.getParameterValue(las2iso.SMOOTH)
         if smooth != 0:
             commands.append("-smooth")
-            commands.append(str(smooth))
+            commands.append(unicode(smooth))
         commands.append("-iso_every")
-        commands.append(str(self.getParameterValue(las2iso.ISO_EVERY)))
+        commands.append(unicode(self.getParameterValue(las2iso.ISO_EVERY)))
         simplify_length = self.getParameterValue(las2iso.SIMPLIFY_LENGTH)
         if simplify_length != 0:
             commands.append("-simplify_length")
-            commands.append(str(simplify_length))
+            commands.append(unicode(simplify_length))
         simplify_area = self.getParameterValue(las2iso.SIMPLIFY_AREA)
         if simplify_area != 0:
             commands.append("-simplify_area")
-            commands.append(str(simplify_area))
+            commands.append(unicode(simplify_area))
         clean = self.getParameterValue(las2iso.CLEAN)
         if clean != 0:
             commands.append("-clean")
-            commands.append(str(clean))
+            commands.append(unicode(clean))
         self.addParametersVectorOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 

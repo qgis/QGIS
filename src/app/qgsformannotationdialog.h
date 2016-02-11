@@ -24,7 +24,7 @@ class APP_EXPORT QgsFormAnnotationDialog: public QDialog, private Ui::QgsFormAnn
 {
     Q_OBJECT
   public:
-    QgsFormAnnotationDialog( QgsFormAnnotationItem* item, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsFormAnnotationDialog( QgsFormAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsFormAnnotationDialog();
 
   private:

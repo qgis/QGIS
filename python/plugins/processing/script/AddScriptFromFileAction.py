@@ -26,11 +26,17 @@ __copyright__ = '(C) 201, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+
 from PyQt4.QtGui import QFileDialog, QIcon, QMessageBox
+from PyQt4.QtCore import QSettings, QFileInfo
+
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.script.WrongScriptException import WrongScriptException
 from processing.script.ScriptUtils import ScriptUtils
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
 
 class AddScriptFromFileAction(ToolboxAction):
 
@@ -39,24 +45,23 @@ class AddScriptFromFileAction(ToolboxAction):
         self.group = self.tr('Tools', 'AddScriptFromFileAction')
 
     def getIcon(self):
-        return QIcon(':/processing/images/script.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
 
     def execute(self):
         settings = QSettings()
         lastDir = settings.value('Processing/lastScriptsDir', '')
         filename = QFileDialog.getOpenFileName(self.toolbox,
-            self.tr('Script files', 'AddScriptFromFileAction'), None,
-            self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
+                                               self.tr('Script files', 'AddScriptFromFileAction'), lastDir,
+                                               self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
         if filename:
             try:
                 settings.setValue('Processing/lastScriptsDir',
-                    QFileInfo(fileName).absoluteDir().absolutePath())
-
+                                  QFileInfo(filename).absoluteDir().absolutePath())
                 script = ScriptAlgorithm(filename)
             except WrongScriptException:
                 QMessageBox.warning(self.toolbox,
-                    self.tr('Error reading script', 'AddScriptFromFileAction'),
-                    self.tr('The selected file does not contain a valid script', 'AddScriptFromFileAction'))
+                                    self.tr('Error reading script', 'AddScriptFromFileAction'),
+                                    self.tr('The selected file does not contain a valid script', 'AddScriptFromFileAction'))
                 return
             destFilename = os.path.join(ScriptUtils.scriptsFolder(), os.path.basename(filename))
             with open(destFilename, 'w') as f:

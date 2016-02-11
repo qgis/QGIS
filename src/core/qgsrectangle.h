@@ -79,8 +79,12 @@ class CORE_EXPORT QgsRectangle
     //! Center point of the rectangle
     QgsPoint center() const;
     //! Scale the rectangle around its center point
-    void scale( double scaleFactor, const QgsPoint *c = 0 );
+    void scale( double scaleFactor, const QgsPoint *c = nullptr );
     void scale( double scaleFactor, double centerX, double centerY );
+    //! Grow the rectangle by the specified amount
+    void grow( double delta );
+    /** Updates the rectangle to include the specified point */
+    void include( const QgsPoint& p );
     /** Get rectangle enlarged by buffer.
      * @note added in 2.1 */
     QgsRectangle buffer( double width );
@@ -115,20 +119,20 @@ class CORE_EXPORT QgsRectangle
     QString toString( int thePrecision ) const;
     //! returns rectangle as a polygon
     QString asPolygon() const;
-    /*! Comparison operator
+    /** Comparison operator
       @return True if rectangles are equal
     */
     bool operator==( const QgsRectangle &r1 ) const;
-    /*! Comparison operator
+    /** Comparison operator
     @return False if rectangles are equal
      */
     bool operator!=( const QgsRectangle &r1 ) const;
-    /*! Assignment operator
+    /** Assignment operator
      * @param r1 QgsRectangle to assign from
      */
     QgsRectangle & operator=( const QgsRectangle &r1 );
 
-    /** updates rectangle to include passed argument */
+    /** Updates rectangle to include passed argument */
     void unionRect( const QgsRectangle& rect );
 
     /** Returns true if the rectangle has finite boundaries. Will
@@ -150,6 +154,10 @@ class CORE_EXPORT QgsRectangle
 
 };
 
+/** Writes the list rectangle to stream out. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsRectangle& rectangle );
+/** Reads a rectangle from stream in into rectangle. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsRectangle& rectangle );
 
 inline QgsRectangle::~QgsRectangle()
 {

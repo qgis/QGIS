@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.algs.qgis import postgis_utils
+from processing.algs.qgis import spatialite_utils
 
 __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
@@ -25,14 +27,24 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import re
+import os
 import csv
 import uuid
 import codecs
 import cStringIO
 
+import psycopg2
+
+from PyQt4 import QtSql
 from PyQt4.QtCore import QVariant, QSettings
-from qgis.core import QGis, QgsFields, QgsField, QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer, QgsVectorFileWriter, QgsDistanceArea
+from qgis.core import (QGis, QgsFields, QgsField, QgsGeometry, QgsRectangle,
+                       QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer,
+                       QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceURI, QgsCredentials)
+
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.tools import dataobjects
 
 
 GEOM_TYPE_MAP = {
@@ -46,10 +58,33 @@ GEOM_TYPE_MAP = {
 
 
 TYPE_MAP = {
-    str : QVariant.String,
+    str: QVariant.String,
     float: QVariant.Double,
     int: QVariant.Int,
     bool: QVariant.Bool
+}
+
+TYPE_MAP_MEMORY_LAYER = {
+    QVariant.String: "string",
+    QVariant.Double: "double",
+    QVariant.Int: "integer",
+    QVariant.Date: "date",
+    QVariant.DateTime: "datetime",
+    QVariant.Time: "time"
+}
+
+TYPE_MAP_POSTGIS_LAYER = {
+    QVariant.String: "VARCHAR",
+    QVariant.Double: "REAL",
+    QVariant.Int: "INTEGER",
+    QVariant.Bool: "BOOLEAN"
+}
+
+TYPE_MAP_SPATIALITE_LAYER = {
+    QVariant.String: "VARCHAR",
+    QVariant.Double: "REAL",
+    QVariant.Int: "INTEGER",
+    QVariant.Bool: "INTEGER"
 }
 
 
@@ -147,17 +182,17 @@ def values(layer, *attributes):
     return ret
 
 
-def testForUniqueness( fieldList1, fieldList2 ):
+def testForUniqueness(fieldList1, fieldList2):
     '''Returns a modified version of fieldList2, removing naming
     collisions with fieldList1.'''
     changed = True
     while changed:
         changed = False
-        for i in range(0,len(fieldList1)):
-            for j in range(0,len(fieldList2)):
+        for i in range(0, len(fieldList1)):
+            for j in range(0, len(fieldList2)):
                 if fieldList1[i].name() == fieldList2[j].name():
                     field = fieldList2[j]
-                    name = createUniqueFieldName( field.name(), fieldList1 )
+                    name = createUniqueFieldName(field.name(), fieldList1)
                     fieldList2[j] = QgsField(name, field.type(), len=field.length(), prec=field.precision(), comment=field.comment())
                     changed = True
     return fieldList2
@@ -177,7 +212,7 @@ def createUniqueFieldName(fieldName, fieldList):
     def nextname(name):
         num = 1
         while True:
-            returnname ='{name}_{num}'.format(name=name[:8], num=num)
+            returnname = '{name}_{num}'.format(name=name[:8], num=num)
             yield returnname
             num += 1
 
@@ -328,7 +363,7 @@ def duplicateInMemory(layer, newName='', addToRegistry=False):
         raise RuntimeError('Layer is not a VectorLayer')
 
     crs = layer.crs().authid().lower()
-    myUuid = str(uuid.uuid4())
+    myUuid = unicode(uuid.uuid4())
     uri = '%s?crs=%s&index=yes&uuid=%s' % (strType, crs, myUuid)
     memLayer = QgsVectorLayer(uri, newName, 'memory')
     memProvider = memLayer.dataProvider()
@@ -369,46 +404,231 @@ def checkMinDistance(point, index, distance, points):
     return True
 
 
-def _fieldName(f):
-    if isinstance(f, basestring):
-        return f
-    return f.name()
-
-
 def _toQgsField(f):
     if isinstance(f, QgsField):
         return f
     return QgsField(f[0], TYPE_MAP.get(f[1], QVariant.String))
 
 
+def snapToPrecision(geom, precision):
+    snapped = QgsGeometry(geom)
+    if precision == 0.0:
+        return snapped
+
+    i = 0
+    p = snapped.vertexAt(i)
+    while p.x() != 0.0 and p.y() != 0.0:
+        x = round(p.x() / precision, 0) * precision
+        y = round(p.y() / precision, 0) * precision
+        snapped.moveVertex(x, y, i)
+        i = i + 1
+        p = snapped.vertexAt(i)
+    return snapped
+
+
+def bufferedBoundingBox(bbox, buffer_size):
+    if buffer_size == 0.0:
+        return QgsRectangle(bbox)
+
+    return QgsRectangle(
+        bbox.xMinimum() - buffer_size,
+        bbox.yMinimum() - buffer_size,
+        bbox.xMaximum() + buffer_size,
+        bbox.yMaximum() + buffer_size)
+
+
+def ogrConnectionString(uri):
+    """Generates OGR connection sting from layer source
+    """
+    ogrstr = None
+
+    layer = dataobjects.getObjectFromUri(uri, False)
+    if layer is None:
+        return '"' + uri + '"'
+    provider = layer.dataProvider().name()
+    if provider == 'spatialite':
+        # dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
+        regex = re.compile("dbname='(.+)'")
+        r = regex.search(unicode(layer.source()))
+        ogrstr = r.groups()[0]
+    elif provider == 'postgres':
+        # dbname='ktryjh_iuuqef' host=spacialdb.com port=9999
+        # user='ktryjh_iuuqef' password='xyqwer' sslmode=disable
+        # key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON
+        # table="t4" (geom) sql=
+        dsUri = QgsDataSourceURI(layer.dataProvider().dataSourceUri())
+        conninfo = dsUri.connectionInfo()
+        conn = None
+        ok = False
+        while not conn:
+            try:
+                conn = psycopg2.connect(dsUri.connectionInfo())
+            except psycopg2.OperationalError as e:
+                (ok, user, passwd) = QgsCredentials.instance().get(conninfo, dsUri.username(), dsUri.password())
+                if not ok:
+                    break
+
+                dsUri.setUsername(user)
+                dsUri.setPassword(passwd)
+
+        if not conn:
+            raise RuntimeError('Could not connect to PostgreSQL database - check connection info')
+
+        if ok:
+            QgsCredentials.instance().put(conninfo, user, passwd)
+
+        ogrstr = "PG:%s" % dsUri.connectionInfo()
+    elif provider == "oracle":
+        # OCI:user/password@host:port/service:table
+        dsUri = QgsDataSourceURI(layer.dataProvider().dataSourceUri())
+        ogrstr = "OCI:"
+        if dsUri.username() != "":
+            ogrstr += dsUri.username()
+            if dsUri.password() != "":
+                ogrstr += "/" + dsUri.password()
+            delim = "@"
+
+        if dsUri.host() != "":
+            ogrstr += delim + dsUri.host()
+            delim = ""
+            if dsUri.port() != "" and dsUri.port() != '1521':
+                ogrstr += ":" + dsUri.port()
+            ogrstr += "/"
+            if dsUri.database() != "":
+                ogrstr += dsUri.database()
+        elif dsUri.database() != "":
+            ogrstr += delim + dsUri.database()
+
+        if ogrstr == "OCI:":
+            raise RuntimeError('Invalid oracle data source - check connection info')
+
+        ogrstr += ":"
+        if dsUri.schema() != "":
+            ogrstr += dsUri.schema() + "."
+
+        ogrstr += dsUri.table()
+    else:
+        ogrstr = unicode(layer.source()).split("|")[0]
+
+    return '"' + ogrstr + '"'
+
+
+def ogrLayerName(uri):
+    if 'host' in uri:
+        regex = re.compile('(table=")(.+?)(\.)(.+?)"')
+        r = regex.search(uri)
+        return '"' + r.groups()[1] + '.' + r.groups()[3] + '"'
+    elif 'dbname' in uri:
+        regex = re.compile('(table=")(.+?)"')
+        r = regex.search(uri)
+        return r.groups()[1]
+    elif 'layername' in uri:
+        regex = re.compile('(layername=)(.*)')
+        r = regex.search(uri)
+        return r.groups()[1]
+    else:
+        return os.path.basename(os.path.splitext(uri)[0])
+
+
 class VectorWriter:
 
     MEMORY_LAYER_PREFIX = 'memory:'
+    POSTGIS_LAYER_PREFIX = 'postgis:'
+    SPATIALITE_LAYER_PREFIX = 'spatialite:'
 
-    def __init__(self, fileName, encoding, fields, geometryType,
+    def __init__(self, destination, encoding, fields, geometryType,
                  crs, options=None):
-        self.fileName = fileName
-        self.isMemory = False
-        self.memLayer = None
+        self.destination = destination
+        self.isNotFileBased = False
+        self.layer = None
         self.writer = None
 
         if encoding is None:
             settings = QSettings()
             encoding = settings.value('/Processing/encoding', 'System', type=str)
 
-        if self.fileName.startswith(self.MEMORY_LAYER_PREFIX):
-            self.isMemory = True
+        if self.destination.startswith(self.MEMORY_LAYER_PREFIX):
+            self.isNotFileBased = True
 
-            uri = GEOM_TYPE_MAP[geometryType] + "?uuid=" + str(uuid.uuid4())
+            uri = GEOM_TYPE_MAP[geometryType] + "?uuid=" + unicode(uuid.uuid4())
             if crs.isValid():
                 uri += '&crs=' + crs.authid()
-
-            fieldsdesc = ['field=' + _fieldName(f) for f in fields]
+            fieldsdesc = []
+            for f in fields:
+                qgsfield = _toQgsField(f)
+                fieldsdesc.append('field=%s:%s' % (qgsfield.name(),
+                                                   TYPE_MAP_MEMORY_LAYER.get(qgsfield.type(), "string")))
             if fieldsdesc:
-              uri += '&' + '&'.join(fieldsdesc)
+                uri += '&' + '&'.join(fieldsdesc)
 
-            self.memLayer = QgsVectorLayer(uri, self.fileName, 'memory')
-            self.writer = self.memLayer.dataProvider()
+            self.layer = QgsVectorLayer(uri, self.destination, 'memory')
+            self.writer = self.layer.dataProvider()
+        elif self.destination.startswith(self.POSTGIS_LAYER_PREFIX):
+            self.isNotFileBased = True
+            uri = QgsDataSourceURI(self.destination[len(self.POSTGIS_LAYER_PREFIX):])
+            connInfo = uri.connectionInfo()
+            (success, user, passwd) = QgsCredentials.instance().get(connInfo, None, None)
+            if success:
+                QgsCredentials.instance().put(connInfo, user, passwd)
+            else:
+                raise GeoAlgorithmExecutionException("Couldn't connect to database")
+            print uri.uri()
+            try:
+                db = postgis_utils.GeoDB(host=uri.host(), port=int(uri.port()),
+                                         dbname=uri.database(), user=user, passwd=passwd)
+            except postgis_utils.DbError as e:
+                raise GeoAlgorithmExecutionException(
+                    "Couldn't connect to database:\n%s" % e.message)
+
+            def _runSQL(sql):
+                try:
+                    db._exec_sql_and_commit(unicode(sql))
+                except postgis_utils.DbError as e:
+                    raise GeoAlgorithmExecutionException(
+                        'Error creating output PostGIS table:\n%s' % e.message)
+
+            fields = [_toQgsField(f) for f in fields]
+            fieldsdesc = ",".join('%s %s' % (f.name(),
+                                             TYPE_MAP_POSTGIS_LAYER.get(f.type(), "VARCHAR"))
+                                  for f in fields)
+
+            _runSQL("CREATE TABLE %s.%s (%s)" % (uri.schema(), uri.table().lower(), fieldsdesc))
+            _runSQL("SELECT AddGeometryColumn('{schema}', '{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
+                table=uri.table().lower(), schema=uri.schema(), srid=crs.authid().split(":")[-1],
+                typmod=GEOM_TYPE_MAP[geometryType].upper()))
+
+            self.layer = QgsVectorLayer(uri.uri(), uri.table(), "postgres")
+            self.writer = self.layer.dataProvider()
+        elif self.destination.startswith(self.SPATIALITE_LAYER_PREFIX):
+            self.isNotFileBased = True
+            uri = QgsDataSourceURI(self.destination[len(self.SPATIALITE_LAYER_PREFIX):])
+            print uri.uri()
+            try:
+                db = spatialite_utils.GeoDB(uri=uri)
+            except spatialite_utils.DbError as e:
+                raise GeoAlgorithmExecutionException(
+                    "Couldn't connect to database:\n%s" % e.message)
+
+            def _runSQL(sql):
+                try:
+                    db._exec_sql_and_commit(unicode(sql))
+                except spatialite_utils.DbError as e:
+                    raise GeoAlgorithmExecutionException(
+                        'Error creating output Spatialite table:\n%s' % e.message)
+
+            fields = [_toQgsField(f) for f in fields]
+            fieldsdesc = ",".join('%s %s' % (f.name(),
+                                             TYPE_MAP_SPATIALITE_LAYER.get(f.type(), "VARCHAR"))
+                                  for f in fields)
+
+            _runSQL("DROP TABLE IF EXISTS %s" % uri.table().lower())
+            _runSQL("CREATE TABLE %s (%s)" % (uri.table().lower(), fieldsdesc))
+            _runSQL("SELECT AddGeometryColumn('{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
+                table=uri.table().lower(), srid=crs.authid().split(":")[-1],
+                typmod=GEOM_TYPE_MAP[geometryType].upper()))
+
+            self.layer = QgsVectorLayer(uri.uri(), uri.table(), "spatialite")
+            self.writer = self.layer.dataProvider()
         else:
             formats = QgsVectorFileWriter.supportedFiltersAndFormats()
             OGRCodes = {}
@@ -418,21 +638,20 @@ class VectorWriter:
                 extension = extension[:extension.find(' ')]
                 OGRCodes[extension] = value
 
-            extension = self.fileName[self.fileName.rfind('.') + 1:]
+            extension = self.destination[self.destination.rfind('.') + 1:]
             if extension not in OGRCodes:
                 extension = 'shp'
-                self.filename = self.filename + 'shp'
+                self.destination = self.destination + '.shp'
 
             qgsfields = QgsFields()
             for field in fields:
                 qgsfields.append(_toQgsField(field))
 
-            self.writer = QgsVectorFileWriter(
-                self.fileName, encoding,
-                qgsfields, geometryType, crs, OGRCodes[extension])
+            self.writer = QgsVectorFileWriter(self.destination, encoding,
+                                              qgsfields, geometryType, crs, OGRCodes[extension])
 
     def addFeature(self, feature):
-        if self.isMemory:
+        if self.isNotFileBased:
             self.writer.addFeatures([feature])
         else:
             self.writer.addFeature(feature)

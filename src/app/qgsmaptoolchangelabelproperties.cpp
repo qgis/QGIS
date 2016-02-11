@@ -29,7 +29,7 @@ QgsMapToolChangeLabelProperties::~QgsMapToolChangeLabelProperties()
 {
 }
 
-void QgsMapToolChangeLabelProperties::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent* e )
 {
   deleteRubberBands();
 
@@ -47,7 +47,7 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QMouseEvent *e )
   createRubberBands();
 }
 
-void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
   QgsVectorLayer* vlayer = currentLayer();
@@ -61,7 +61,7 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QMouseEvent *e )
       labeltext = mCurrentLabelPos.labelText;
     }
 
-    QgsLabelPropertyDialog d( mCurrentLabelPos.layerID, mCurrentLabelPos.featureId, mCurrentLabelPos.labelFont, labeltext, 0 );
+    QgsLabelPropertyDialog d( mCurrentLabelPos.layerID, mCurrentLabelPos.featureId, mCurrentLabelPos.labelFont, labeltext, nullptr );
 
     connect( &d, SIGNAL( applied() ), this, SLOT( dialogPropertiesApplied() ) );
     if ( d.exec() == QDialog::Accepted )
@@ -79,7 +79,7 @@ void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap& chang
   if ( !vlayer )
     return;
 
-  if ( changes.size() > 0 )
+  if ( !changes.isEmpty() )
   {
     vlayer->beginEditCommand( tr( "Changed properties for label" ) + QString( " '%1'" ).arg( currentLabelText( 24 ) ) );
 

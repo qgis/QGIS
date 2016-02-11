@@ -15,17 +15,20 @@
 
 #include "qgsmaprendererparalleljob.h"
 
+#include "qgslabelingenginev2.h"
 #include "qgslogger.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgspallabeling.h"
 
 #include <QtConcurrentMap>
 
+#define LABELING_V2
 
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings& settings )
     : QgsMapRendererQImageJob( settings )
     , mStatus( Idle )
-    , mLabelingEngine( 0 )
+    , mLabelingEngine( nullptr )
+    , mLabelingEngineV2( nullptr )
 {
 }
 
@@ -37,7 +40,10 @@ QgsMapRendererParallelJob::~QgsMapRendererParallelJob()
   }
 
   delete mLabelingEngine;
-  mLabelingEngine = 0;
+  mLabelingEngine = nullptr;
+
+  delete mLabelingEngineV2;
+  mLabelingEngineV2 = nullptr;
 }
 
 void QgsMapRendererParallelJob::start()
@@ -50,17 +56,25 @@ void QgsMapRendererParallelJob::start()
   mStatus = RenderingLayers;
 
   delete mLabelingEngine;
-  mLabelingEngine = 0;
+  mLabelingEngine = nullptr;
+
+  delete mLabelingEngineV2;
+  mLabelingEngineV2 = nullptr;
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
+#ifdef LABELING_V2
+    mLabelingEngineV2 = new QgsLabelingEngineV2();
+    mLabelingEngineV2->readSettingsFromProject();
+    mLabelingEngineV2->setMapSettings( mSettings );
+#else
     mLabelingEngine = new QgsPalLabeling;
     mLabelingEngine->loadEngineSettings();
     mLabelingEngine->init( mSettings );
+#endif
   }
 
-
-  mLayerJobs = prepareJobs( 0, mLabelingEngine );
+  mLayerJobs = prepareJobs( nullptr, mLabelingEngine, mLabelingEngineV2 );
 
   QgsDebugMsg( QString( "QThreadPool max thread count is %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
 
@@ -149,7 +163,12 @@ bool QgsMapRendererParallelJob::isActive() const
 
 QgsLabelingResults* QgsMapRendererParallelJob::takeLabelingResults()
 {
-  return mLabelingEngine ? mLabelingEngine->takeResults() : 0;
+  if ( mLabelingEngine )
+    return mLabelingEngine->takeResults();
+  else if ( mLabelingEngineV2 )
+    return mLabelingEngineV2->takeResults();
+  else
+    return nullptr;
 }
 
 QImage QgsMapRendererParallelJob::renderedImage()
@@ -208,7 +227,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
 
   QTime t;
   t.start();
-  QgsDebugMsg( QString( "job %1 start" ).arg(( ulong ) &job, 0, 16 ) );
+  QgsDebugMsg( QString( "job %1 start" ).arg( reinterpret_cast< ulong >( &job ), 0, 16 ) );
 
   try
   {
@@ -228,7 +247,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
   }
 
   int tt = t.elapsed();
-  QgsDebugMsg( QString( "job %1 end [%2 ms]" ).arg(( ulong ) &job, 0, 16 ).arg( tt ) );
+  QgsDebugMsg( QString( "job %1 end [%2 ms]" ).arg( reinterpret_cast< ulong >( &job ), 0, 16 ).arg( tt ) );
   Q_UNUSED( tt );
 }
 
@@ -239,7 +258,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob* s
 
   try
   {
-    drawLabeling( self->mSettings, self->mLabelingRenderContext, self->mLabelingEngine, &painter );
+    drawLabeling( self->mSettings, self->mLabelingRenderContext, self->mLabelingEngine, self->mLabelingEngineV2, &painter );
   }
   catch ( QgsException & e )
   {

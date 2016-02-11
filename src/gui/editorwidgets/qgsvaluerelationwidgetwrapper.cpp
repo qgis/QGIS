@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,42 +24,39 @@
 #include <QStringListModel>
 #include <QCompleter>
 
-bool orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
-                         , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
+bool QgsValueRelationWidgetWrapper::orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
+    , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
 {
   switch ( p1.first.type() )
   {
     case QVariant::String:
       return p1.first.toString() < p2.first.toString();
-      break;
 
     case QVariant::Double:
       return p1.first.toDouble() < p2.first.toDouble();
-      break;
 
     default:
       return p1.first.toInt() < p2.first.toInt();
-      break;
   }
 }
 
-bool orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
-                           , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
+bool QgsValueRelationWidgetWrapper::orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
+    , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
 {
   return p1.second < p2.second;
 }
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( 0 )
-    , mListWidget( 0 )
-    , mLineEdit( 0 )
-    , mLayer( 0 )
+    , mComboBox( nullptr )
+    , mListWidget( nullptr )
+    , mLineEdit( nullptr )
+    , mLayer( nullptr )
 {
 }
 
 
-QVariant QgsValueRelationWidgetWrapper::value()
+QVariant QgsValueRelationWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -82,7 +79,7 @@ QVariant QgsValueRelationWidgetWrapper::value()
         selection << item->data( Qt::UserRole ).toString();
     }
 
-    v = selection.join( "," ).prepend( "{" ).append( "}" );
+    v = selection.join( "," ).prepend( '{' ).append( '}' );
   }
 
   if ( mLineEdit )
@@ -164,11 +161,16 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
+bool QgsValueRelationWidgetWrapper::valid() const
+{
+  return mListWidget || mLineEdit || mComboBox;
+}
+
 void QgsValueRelationWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mListWidget )
   {
-    QStringList checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," );
+    QStringList checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
 
     for ( int i = 0; i < mListWidget->count(); ++i )
     {
@@ -212,11 +214,16 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
     int ki = layer->fieldNameIndex( config.value( "Key" ).toString() );
     int vi = layer->fieldNameIndex( config.value( "Value" ).toString() );
 
-    QgsExpression *e = 0;
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::layerScope( layer );
+
+    QgsExpression *e = nullptr;
     if ( !config.value( "FilterExpression" ).toString().isEmpty() )
     {
       e = new QgsExpression( config.value( "FilterExpression" ).toString() );
-      if ( e->hasParserError() || !e->prepare( layer->pendingFields() ) )
+      if ( e->hasParserError() || !e->prepare( &context ) )
         ki = -1;
     }
 
@@ -258,7 +265,8 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
       QgsFeature f;
       while ( fit.nextFeature( f ) )
       {
-        if ( e && !e->evaluate( &f ).toBool() )
+        context.setFeature( f );
+        if ( e && !e->evaluate( &context ).toBool() )
           continue;
 
         cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString() ) );

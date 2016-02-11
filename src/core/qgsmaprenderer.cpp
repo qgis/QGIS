@@ -59,7 +59,7 @@ QgsMapRenderer::QgsMapRenderer()
 
   mOutputUnits = QgsMapRenderer::Millimeters;
 
-  mLabelingEngine = NULL;
+  mLabelingEngine = nullptr;
 }
 
 QgsMapRenderer::~QgsMapRenderer()
@@ -175,7 +175,7 @@ void QgsMapRenderer::adjustExtentToSize()
   if ( !myWidth || !myHeight )
   {
     mScale = 1.0;
-    newCoordXForm.setParameters( 1, 0, 0, 0 );
+    newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
     return;
   }
 
@@ -205,9 +205,9 @@ void QgsMapRenderer::adjustExtentToSize()
     dymax = mExtent.yMaximum() + whitespace;
   }
 
-  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ) ).arg( qgsDoubleToString( mapUnitsPerPixelY ) ) );
-  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( myWidth ) ).arg( qgsDoubleToString( myHeight ) ) );
-  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ) ).arg( qgsDoubleToString( mExtent.height() ) ) );
+  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ), qgsDoubleToString( mapUnitsPerPixelY ) ) );
+  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( myWidth ), qgsDoubleToString( myHeight ) ) );
+  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ), qgsDoubleToString( mExtent.height() ) ) );
   QgsDebugMsg( mExtent.toString() );
 
   // update extent
@@ -216,16 +216,18 @@ void QgsMapRenderer::adjustExtentToSize()
   mExtent.setYMinimum( dymin );
   mExtent.setYMaximum( dymax );
 
-  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() / myWidth ) ).arg( qgsDoubleToString( mExtent.height() / myHeight ) ) );
+  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() / myWidth ), qgsDoubleToString( mExtent.height() / myHeight ) ) );
 
-  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() / mMapUnitsPerPixel ) ).arg( qgsDoubleToString( mExtent.height() / mMapUnitsPerPixel ) ) );
+  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() / mMapUnitsPerPixel ), qgsDoubleToString( mExtent.height() / mMapUnitsPerPixel ) ) );
 
   // update the scale
   updateScale();
 
   QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ) );
 
+  Q_NOWARN_DEPRECATED_PUSH
   newCoordXForm.setParameters( mMapUnitsPerPixel, dxmin, dymin, myHeight );
+  Q_NOWARN_DEPRECATED_POP
   mRenderContext.setMapToPixel( newCoordXForm );
   mRenderContext.setExtent( mExtent );
 }
@@ -244,7 +246,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
     return;
   }
 
-  if ( mSize.width() == 1 && mSize.height() == 1 )
+  if ( qgsDoubleNear( mSize.width(), 1.0 ) && qgsDoubleNear( mSize.height(), 1.0 ) )
   {
     QgsDebugMsg( "size 1x1... not rendering" );
     return;
@@ -283,7 +285,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
     mRenderContext.setDrawEditingInformation( !mOverview );
 
   mRenderContext.setPainter( painter );
-  mRenderContext.setCoordinateTransform( 0 );
+  mRenderContext.setCoordinateTransform( nullptr );
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   mRenderContext.setRenderingStopped( false );
@@ -313,15 +315,15 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
     }
   }
   double rasterScaleFactor = ( thePaintDevice->logicalDpiX() + thePaintDevice->logicalDpiY() ) / 2.0 / sceneDpi;
-  if ( mRenderContext.rasterScaleFactor() != rasterScaleFactor )
+  if ( !qgsDoubleNear( mRenderContext.rasterScaleFactor(), rasterScaleFactor ) )
   {
     mRenderContext.setRasterScaleFactor( rasterScaleFactor );
   }
-  if ( mRenderContext.scaleFactor() != scaleFactor )
+  if ( !qgsDoubleNear( mRenderContext.scaleFactor(), scaleFactor ) )
   {
     mRenderContext.setScaleFactor( scaleFactor );
   }
-  if ( mRenderContext.rendererScale() != mScale )
+  if ( !qgsDoubleNear( mRenderContext.rendererScale(), mScale ) )
   {
     //add map scale to render context
     mRenderContext.setRendererScale( mScale );
@@ -352,7 +354,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
     // cache painter
     QPainter * mypContextPainter = mRenderContext.painter();
     // Flattened image for drawing when a blending mode is set
-    QImage * mypFlattenedImage = 0;
+    QImage * mypFlattenedImage = nullptr;
 
     QString layerId = li.previous();
 
@@ -417,7 +419,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       }
       else
       {
-        ct = NULL;
+        ct = nullptr;
       }
 
       mRenderContext.setCoordinateTransform( ct );
@@ -437,7 +439,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 
       // If we are drawing with an alternative blending mode then we need to render to a separate image
       // before compositing this on the map. This effectively flattens the layer and prevents
-      // blending occuring between objects on the layer
+      // blending occurring between objects on the layer
       // (this is not required for raster layers or when layer caching is enabled, since that has the same effect)
       bool flattenedLayer = false;
       if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
@@ -452,7 +454,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
                                           mRenderContext.painter()->device()->height(), QImage::Format_ARGB32 );
           if ( mypFlattenedImage->isNull() )
           {
-            QgsDebugMsg( "insufficient memory for image " + QString::number( mRenderContext.painter()->device()->width() ) + "x" + QString::number( mRenderContext.painter()->device()->height() ) );
+            QgsDebugMsg( "insufficient memory for image " + QString::number( mRenderContext.painter()->device()->width() ) + 'x' + QString::number( mRenderContext.painter()->device()->height() ) );
             emit drawError( ml );
             painter->end(); // drawError is not caught by anyone, so we end painting to notify caller
             return;
@@ -485,7 +487,9 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
         bk_mapToPixel = mRenderContext.mapToPixel();
         rasterMapToPixel = mRenderContext.mapToPixel();
         rasterMapToPixel.setMapUnitsPerPixel( mRenderContext.mapToPixel().mapUnitsPerPixel() / rasterScaleFactor );
+        Q_NOWARN_DEPRECATED_PUSH
         rasterMapToPixel.setYMaximum( mSize.height() * rasterScaleFactor );
+        Q_NOWARN_DEPRECATED_POP
         mRenderContext.setMapToPixel( rasterMapToPixel );
         mRenderContext.painter()->save();
         mRenderContext.painter()->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
@@ -541,7 +545,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
         mypContextPainter->drawImage( 0, 0, *( mypFlattenedImage ) );
         mypContextPainter->restore();
         delete mypFlattenedImage;
-        mypFlattenedImage = 0;
+        mypFlattenedImage = nullptr;
       }
 
       disconnect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
@@ -592,7 +596,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
           }
           else
           {
-            ct = NULL;
+            ct = nullptr;
           }
 
           mRenderContext.setCoordinateTransform( ct );
@@ -615,7 +619,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
   {
     // set correct extent
     mRenderContext.setExtent( mExtent );
-    mRenderContext.setCoordinateTransform( NULL );
+    mRenderContext.setCoordinateTransform( nullptr );
 
     mLabelingEngine->drawLabeling( mRenderContext );
     mLabelingEngine->exit();
@@ -935,14 +939,13 @@ void QgsMapRenderer::updateFullExtent()
 
   // iterate through the map layers and test each layers extent
   // against the current min and max values
-  QStringList::iterator it = mLayerSet.begin();
   QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayerSet.count() ) );
-  while ( it != mLayerSet.end() )
+  Q_FOREACH ( const QString layerId, mLayerSet )
   {
-    QgsMapLayer * lyr = registry->mapLayer( *it );
-    if ( lyr == NULL )
+    QgsMapLayer * lyr = registry->mapLayer( layerId );
+    if ( !lyr )
     {
-      QgsDebugMsg( QString( "WARNING: layer '%1' not found in map layer registry!" ).arg( *it ) );
+      QgsDebugMsg( QString( "WARNING: layer '%1' not found in map layer registry!" ).arg( layerId ) );
     }
     else
     {
@@ -951,7 +954,6 @@ void QgsMapRenderer::updateFullExtent()
 
       if ( lyr->extent().isNull() )
       {
-        ++it;
         continue;
       }
 
@@ -963,7 +965,6 @@ void QgsMapRenderer::updateFullExtent()
       mFullExtent.unionRect( extent );
 
     }
-    ++it;
   }
 
   if ( mFullExtent.width() == 0.0 || mFullExtent.height() == 0.0 )
@@ -1091,12 +1092,12 @@ const QgsCoordinateTransform *QgsMapRenderer::transformation( const QgsMapLayer 
 {
   if ( !layer || !mDestCRS )
   {
-    return 0;
+    return nullptr;
   }
 
   if ( layer->crs().authid() == mDestCRS->authid() )
   {
-    return 0;
+    return nullptr;
   }
 
   QHash< QString, QgsLayerCoordinateTransform >::const_iterator ctIt = mLayerCoordinateTransformInfo.find( layer->id() );
@@ -1125,7 +1126,7 @@ const QgsCoordinateTransform *QgsMapRenderer::transformation( const QgsMapLayer 
 
 /** Returns a QPainter::CompositionMode corresponding to a QgsMapRenderer::BlendMode
  */
-QPainter::CompositionMode QgsMapRenderer::getCompositionMode( const QgsMapRenderer::BlendMode &blendMode )
+QPainter::CompositionMode QgsMapRenderer::getCompositionMode( QgsMapRenderer::BlendMode blendMode )
 {
   // Map QgsMapRenderer::BlendNormal to QPainter::CompositionMode
   switch ( blendMode )
@@ -1184,7 +1185,7 @@ QPainter::CompositionMode QgsMapRenderer::getCompositionMode( const QgsMapRender
   }
 }
 
-QgsMapRenderer::BlendMode QgsMapRenderer::getBlendModeEnum( const QPainter::CompositionMode &blendMode )
+QgsMapRenderer::BlendMode QgsMapRenderer::getBlendModeEnum( QPainter::CompositionMode blendMode )
 {
   // Map QPainter::CompositionMode to QgsMapRenderer::BlendNormal
   switch ( blendMode )
@@ -1250,7 +1251,7 @@ const QgsMapSettings& QgsMapRenderer::mapSettings()
   // make sure the settings object is up-to-date
   mMapSettings.setExtent( extent() );
   mMapSettings.setOutputSize( outputSize() );
-  mMapSettings.setOutputDpi( outputDpi() != 0 ? outputDpi() : qt_defaultDpiX() );
+  mMapSettings.setOutputDpi( !qgsDoubleNear( outputDpi(), 0 ) ? outputDpi() : qt_defaultDpiX() );
   mMapSettings.setLayers( layerSet() );
   mMapSettings.setCrsTransformEnabled( hasCrsTransformEnabled() );
   mMapSettings.setDestinationCrs( destinationCrs() );

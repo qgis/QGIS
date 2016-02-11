@@ -74,5 +74,9 @@ class QgsContrastEnhancement
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
     void readXML( const QDomElement& elem );
+
+  private:
+
+    const QgsContrastEnhancement& operator=( const QgsContrastEnhancement& );
 };
 

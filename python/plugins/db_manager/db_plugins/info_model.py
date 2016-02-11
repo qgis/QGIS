@@ -26,6 +26,7 @@ from .html_elems import HtmlContent, HtmlSection, HtmlParagraph, HtmlList, HtmlT
 
 
 class DatabaseInfo:
+
     def __init__(self, db):
         self.db = db
 
@@ -70,8 +71,10 @@ class DatabaseInfo:
     def privilegesDetails(self):
         details = self.db.connector.getDatabasePrivileges()
         lst = []
-        if details[0]: lst.append(QApplication.translate("DBManagerPlugin", "create new schemas"))
-        if details[1]: lst.append(QApplication.translate("DBManagerPlugin", "create temporary tables"))
+        if details[0]:
+            lst.append(QApplication.translate("DBManagerPlugin", "create new schemas"))
+        if details[1]:
+            lst.append(QApplication.translate("DBManagerPlugin", "create temporary tables"))
         return HtmlList(lst)
 
     def toHtml(self):
@@ -121,6 +124,7 @@ class DatabaseInfo:
 
 
 class SchemaInfo:
+
     def __init__(self, schema):
         self.schema = schema
 
@@ -140,8 +144,10 @@ class SchemaInfo:
     def privilegesDetails(self):
         details = self.schema.database().connector.getSchemaPrivileges(self.schema.name)
         lst = []
-        if details[0]: lst.append(QApplication.translate("DBManagerPlugin", "create new objects"))
-        if details[1]: lst.append(QApplication.translate("DBManagerPlugin", "access objects"))
+        if details[0]:
+            lst.append(QApplication.translate("DBManagerPlugin", "create new objects"))
+        if details[1]:
+            lst.append(QApplication.translate("DBManagerPlugin", "access objects"))
         return HtmlList(lst)
 
     def toHtml(self):
@@ -169,6 +175,7 @@ class SchemaInfo:
 
 
 class TableInfo:
+
     def __init__(self, table):
         self.table = table
 
@@ -196,10 +203,8 @@ class TableInfo:
 
         return HtmlTable(tbl)
 
-
     def spatialInfo(self):  # implemented in subclasses
         return None
-
 
     def fieldsDetails(self):
         tbl = []
@@ -207,7 +212,7 @@ class TableInfo:
         # define the table header
         header = (
             "#", QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Type"),
-            QApplication.translate("DBManagerPlugin", "Null"), QApplication.translate("DBManagerPlugin", "Default") )
+            QApplication.translate("DBManagerPlugin", "Null"), QApplication.translate("DBManagerPlugin", "Default"))
         tbl.append(HtmlTableHeader(header))
 
         # add table contents
@@ -222,7 +227,6 @@ class TableInfo:
 
         return HtmlTable(tbl, {"class": "header"})
 
-
     def constraintsDetails(self):
         if self.table.constraints() is None or len(self.table.constraints()) <= 0:
             return None
@@ -231,7 +235,7 @@ class TableInfo:
 
         # define the table header
         header = (QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Type"),
-                  QApplication.translate("DBManagerPlugin", "Column(s)") )
+                  QApplication.translate("DBManagerPlugin", "Column(s)"))
         tbl.append(HtmlTableHeader(header))
 
         # add table contents
@@ -242,7 +246,6 @@ class TableInfo:
 
         return HtmlTable(tbl, {"class": "header"})
 
-
     def indexesDetails(self):
         if self.table.indexes() is None or len(self.table.indexes()) <= 0:
             return None
@@ -251,7 +254,7 @@ class TableInfo:
 
         # define the table header
         header = (
-            QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Column(s)") )
+            QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Column(s)"))
         tbl.append(HtmlTableHeader(header))
 
         # add table contents
@@ -262,7 +265,6 @@ class TableInfo:
 
         return HtmlTable(tbl, {"class": "header"})
 
-
     def triggersDetails(self):
         if self.table.triggers() is None or len(self.table.triggers()) <= 0:
             return None
@@ -271,7 +273,7 @@ class TableInfo:
 
         # define the table header
         header = (
-            QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Function") )
+            QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Function"))
         tbl.append(HtmlTableHeader(header))
 
         # add table contents
@@ -282,12 +284,10 @@ class TableInfo:
 
         return HtmlTable(tbl, {"class": "header"})
 
-
     def getViewDefinition(self):
         if not self.table.isView:
             return None
         return self.table.database().connector.getViewDefinition((self.table.schemaName(), self.table.name))
-
 
     def getTableInfo(self):
         ret = []
@@ -338,7 +338,6 @@ class TableInfo:
 
         return ret
 
-
     def getViewInfo(self):
         if not self.table.isView:
             return []
@@ -354,7 +353,6 @@ class TableInfo:
 
         return ret
 
-
     def toHtml(self):
         if self.table.isView:
             ret = self.getViewInfo()
@@ -364,6 +362,7 @@ class TableInfo:
 
 
 class VectorTableInfo(TableInfo):
+
     def __init__(self, table):
         TableInfo.__init__(self, table)
 
@@ -425,6 +424,7 @@ class VectorTableInfo(TableInfo):
 
 
 class RasterTableInfo(TableInfo):
+
     def __init__(self, table):
         TableInfo.__init__(self, table)
 

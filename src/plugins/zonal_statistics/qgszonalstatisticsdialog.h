@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
                           qgszonalstatisticsdialog.h  -  description
                              -----------------------
     begin                : September 1st, 2009
@@ -29,7 +29,7 @@ class QgsZonalStatisticsDialog: public QDialog, private Ui::QgsZonalStatisticsDi
 {
     Q_OBJECT
   public:
-    QgsZonalStatisticsDialog( QgisInterface* iface );
+    explicit QgsZonalStatisticsDialog( QgisInterface* iface );
     ~QgsZonalStatisticsDialog();
 
     QString rasterFilePath() const;
@@ -42,11 +42,11 @@ class QgsZonalStatisticsDialog: public QDialog, private Ui::QgsZonalStatisticsDi
 
   private:
     QgsZonalStatisticsDialog();
-    /**Fills the available raster and polygon layers into the combo boxes*/
+    /** Fills the available raster and polygon layers into the combo boxes*/
     void insertAvailableLayers();
-    /**Propose a valid prefix for the attributes*/
+    /** Propose a valid prefix for the attributes*/
     QString proposeAttributePrefix() const;
-    /**Check if a prefix can be used for the count, sum and mean attribute*/
+    /** Check if a prefix can be used for the count, sum and mean attribute*/
     bool prefixIsValid( const QString& prefix ) const;
 
     QgisInterface* mIface;

@@ -116,8 +116,8 @@ class ModelerAlgorithmTest(unittest.TestCase):
         fields = layer.pendingFields()
         expectednames = ['CAT']
         expectedtypes = ['Real']
-        names = [str(f.name()) for f in fields]
-        types = [str(f.typeName()) for f in fields]
+        names = [unicode(f.name()) for f in fields]
+        types = [unicode(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
         features = processing.features(layer)
@@ -125,17 +125,17 @@ class ModelerAlgorithmTest(unittest.TestCase):
         feature = features.next()
         attrs = feature.attributes()
         expectedvalues = ['1']
-        values = [str(attr) for attr in attrs]
+        values = [unicode(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt = 'POINT(270839.65586926 4458983.16267036)'
-        self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
+        self.assertEqual(wkt, unicode(feature.geometry().exportToWkt()))
 
     def test_modelersimplemodel(self):
         outputs = processing.runalg('modeler:simplemodel', raster(), None)
         output = outputs['SLOPE_ALG0']
         self.assertTrue(os.path.isfile(output))
         dataset = gdal.Open(output, GA_ReadOnly)
-        strhash = hash(str(dataset.ReadAsArray(0).tolist()))
+        strhash = hash(unicode(dataset.ReadAsArray(0).tolist()))
         self.assertEqual(strhash, 1891122097)
 
     def test_modelerfieldautoextent(self):
@@ -144,7 +144,7 @@ class ModelerAlgorithmTest(unittest.TestCase):
         output = outputs['USER_GRID_ALG0']
         self.assertTrue(os.path.isfile(output))
         dataset = gdal.Open(output, GA_ReadOnly)
-        strhash = hash(str(dataset.ReadAsArray(0).tolist()))
+        strhash = hash(unicode(dataset.ReadAsArray(0).tolist()))
         self.assertEqual(strhash, 2026100494)
 
     def test_modelernotinorder(self):
@@ -152,7 +152,7 @@ class ModelerAlgorithmTest(unittest.TestCase):
         output = outputs['CAREA_ALG0']
         self.assertTrue(os.path.isfile(output))
         dataset = gdal.Open(output, GA_ReadOnly)
-        strhash = hash(str(dataset.ReadAsArray(0).tolist()))
+        strhash = hash(unicode(dataset.ReadAsArray(0).tolist()))
         self.assertEqual(strhash, -1557050506)
 
     def test_modeleroptionalfield(self):
@@ -162,8 +162,8 @@ class ModelerAlgorithmTest(unittest.TestCase):
         fields = layer.pendingFields()
         expectednames = ['id', 'value', 'area', 'perim']
         expectedtypes = ['Integer', 'String', 'Real', 'Real']
-        names = [str(f.name()) for f in fields]
-        types = [str(f.typeName()) for f in fields]
+        names = [unicode(f.name()) for f in fields]
+        types = [unicode(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
         features = processing.features(layer)
@@ -171,10 +171,10 @@ class ModelerAlgorithmTest(unittest.TestCase):
         feature = features.next()
         attrs = feature.attributes()
         expectedvalues = ['0', 'all', '3592.818848', '230.989919']
-        values = [str(attr) for attr in attrs]
+        values = [unicode(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt = 'POLYGON((270839.46818665 4458921.97813894,270778.60197966 4458935.96883677,270786.54279065 4458980.04784113,270803.15756434 4458983.84880322,270839.65586926 4458983.16267036,270855.74530134 4458940.79948673,270839.46818665 4458921.97813894))'
-        self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
+        self.assertEqual(wkt, unicode(feature.geometry().exportToWkt()))
 
     def test_modeleremptystring(self):
         outputs = processing.runalg('modeler:emptystring', union(), None)
@@ -199,8 +199,8 @@ class ModelerAlgorithmTest(unittest.TestCase):
             'String',
             'Integer',
         ]
-        names = [str(f.name()) for f in fields]
-        types = [str(f.typeName()) for f in fields]
+        names = [unicode(f.name()) for f in fields]
+        types = [unicode(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
         features = processing.features(layer)
@@ -216,10 +216,10 @@ class ModelerAlgorithmTest(unittest.TestCase):
             'string a',
             '10',
         ]
-        values = [str(attr) for attr in attrs]
+        values = [unicode(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt = 'POLYGON((270807.08580285 4458940.1594565,270798.42294527 4458914.62661676,270780.81854858 4458914.21983449,270763.52289518 4458920.715993,270760.3449542 4458926.6570575,270763.78234766 4458958.22561242,270794.30290024 4458942.16424502,270807.08580285 4458940.1594565))'
-        self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
+        self.assertEqual(wkt, unicode(feature.geometry().exportToWkt()))
 
 
 def suite():

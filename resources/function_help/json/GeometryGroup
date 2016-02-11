@@ -1,0 +1,5 @@
+{
+  "name": "GeometryGroup",
+  "type": "group",
+  "description": "This group contains functions that operate on geometry objects e.g length, area."
+}

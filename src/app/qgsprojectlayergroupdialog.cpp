@@ -62,7 +62,7 @@ QStringList QgsProjectLayerGroupDialog::selectedGroups() const
 {
   QStringList groups;
   QgsLayerTreeModel* model = mTreeView->layerTreeModel();
-  foreach ( QModelIndex index, mTreeView->selectionModel()->selectedIndexes() )
+  Q_FOREACH ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
   {
     QgsLayerTreeNode* node = model->index2node( index );
     if ( QgsLayerTree::isGroup( node ) )
@@ -75,7 +75,7 @@ QStringList QgsProjectLayerGroupDialog::selectedLayerIds() const
 {
   QStringList layerIds;
   QgsLayerTreeModel* model = mTreeView->layerTreeModel();
-  foreach ( QModelIndex index, mTreeView->selectionModel()->selectedIndexes() )
+  Q_FOREACH ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
   {
     QgsLayerTreeNode* node = model->index2node( index );
     if ( QgsLayerTree::isLayer( node ) )
@@ -88,7 +88,7 @@ QStringList QgsProjectLayerGroupDialog::selectedLayerNames() const
 {
   QStringList layerNames;
   QgsLayerTreeModel* model = mTreeView->layerTreeModel();
-  foreach ( QModelIndex index, mTreeView->selectionModel()->selectedIndexes() )
+  Q_FOREACH ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
   {
     QgsLayerTreeNode* node = model->index2node( index );
     if ( QgsLayerTree::isLayer( node ) )
@@ -102,6 +102,11 @@ QString QgsProjectLayerGroupDialog::selectedProjectFile() const
   return mProjectFileLineEdit->text();
 }
 
+bool QgsProjectLayerGroupDialog::isValid() const
+{
+  return nullptr != mTreeView->layerTreeModel();
+}
+
 void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
 {
   //line edit might emit editingFinished signal when loosing focus
@@ -110,7 +115,7 @@ void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
   QSettings s;
   QString projectFile = QFileDialog::getOpenFileName( this,
                         tr( "Select project file" ),
-                        s.value( "/qgis/last_embedded_project_path" ).toString(),
+                        s.value( "/qgis/last_embedded_project_path", QDir::homePath() ).toString(),
                         tr( "QGIS files" ) + " (*.qgs *.QGS)" );
   if ( !projectFile.isEmpty() )
   {
@@ -142,7 +147,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   //check we are not embedding from/to the same project
   if ( mProjectFileLineEdit->isVisible() && mProjectFileLineEdit->text() == QgsProject::instance()->fileName() )
   {
-    QMessageBox::critical( 0, tr( "Recursive embedding not possible" ), tr( "It is not possible to embed layers / groups from the current project." ) );
+    QMessageBox::critical( nullptr, tr( "Recursive embedding not possible" ), tr( "It is not possible to embed layers / groups from the current project." ) );
     return;
   }
 
@@ -185,21 +190,21 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
 void QgsProjectLayerGroupDialog::removeEmbeddedNodes( QgsLayerTreeGroup* node )
 {
   QList<QgsLayerTreeNode*> childrenToRemove;
-  foreach ( QgsLayerTreeNode* child, node->children() )
+  Q_FOREACH ( QgsLayerTreeNode* child, node->children() )
   {
     if ( child->customProperty( "embedded" ).toInt() )
       childrenToRemove << child;
     else if ( QgsLayerTree::isGroup( child ) )
       removeEmbeddedNodes( QgsLayerTree::toGroup( child ) );
   }
-  foreach ( QgsLayerTreeNode* childToRemove, childrenToRemove )
+  Q_FOREACH ( QgsLayerTreeNode* childToRemove, childrenToRemove )
     node->removeChildNode( childToRemove );
 }
 
 
 void QgsProjectLayerGroupDialog::onTreeViewSelectionChanged()
 {
-  foreach ( QModelIndex index, mTreeView->selectionModel()->selectedIndexes() )
+  Q_FOREACH ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
   {
     unselectChildren( index );
   }

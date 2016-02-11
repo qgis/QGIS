@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 13.2.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -46,7 +46,7 @@ class CORE_EXPORT QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
      * @param featureRequest  The feature request that was answered
      * @param fids            The feature ids that have been returned
      */
-    virtual void requestCompleted( QgsFeatureRequest featureRequest, QgsFeatureIds fids ) override;
+    virtual void requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids ) override;
 
     /**
      * Is called, when a feature request is issued on a cached layer.

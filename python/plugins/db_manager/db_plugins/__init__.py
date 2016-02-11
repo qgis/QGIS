@@ -22,6 +22,7 @@ email                : brush.tyler@gmail.com
 
 
 class NotSupportedDbType(Exception):
+
     def __init__(self, dbtype):
         self.msg = self.tr("%s is not supported yet") % dbtype
         Exception(self, self.msg)
@@ -39,8 +40,8 @@ def initDbPluginList():
             continue
 
         try:
-            exec ( u"from .%s import plugin as mod" % name )
-        except ImportError, e:
+            exec (u"from .%s import plugin as mod" % name)
+        except ImportError as e:
             DBPLUGIN_ERRORS.append(u"%s: %s" % (name, e.message))
             continue
 

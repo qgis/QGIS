@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 from PyQt4 import QtCore
 
+
 class ContextAction:
 
     def setData(self, alg, toolbox):

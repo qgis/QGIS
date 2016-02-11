@@ -26,6 +26,7 @@ from .plugin import DbError, ConnectionError
 
 
 class DBConnector:
+
     def __init__(self, uri):
         self.connection = None
         self._uri = uri
@@ -36,14 +37,12 @@ class DBConnector:
             self.connection.close()
         self.connection = None
 
-
     def uri(self):
-        return QgsDataSourceURI(self._uri.uri())
+        return QgsDataSourceURI(self._uri.uri(False))
 
     def publicUri(self):
-        publicUri = QgsDataSourceURI.removePassword(self._uri.uri())
+        publicUri = QgsDataSourceURI.removePassword(self._uri.uri(False))
         return QgsDataSourceURI(publicUri)
-
 
     def hasSpatialSupport(self):
         return False
@@ -57,6 +56,8 @@ class DBConnector:
     def hasTableColumnEditingSupport(self):
         return False
 
+    def hasCreateSpatialViewSupport(self):
+        return False
 
     def execution_error_types(self):
         raise Exception("DBConnector.execution_error_types() is an abstract method")
@@ -98,10 +99,10 @@ class DBConnector:
 
             return self.connection.cursor()
 
-        except self.connection_error_types(), e:
+        except self.connection_error_types() as e:
             raise ConnectionError(e)
 
-        except self.execution_error_types(), e:
+        except self.execution_error_types() as e:
             # do the rollback to avoid a "current transaction aborted, commands ignored" errors
             self._rollback()
             raise DbError(e)
@@ -111,20 +112,19 @@ class DBConnector:
             if c and not c.closed:
                 c.close()
 
-        except self.error_types(), e:
+        except self.error_types() as e:
             pass
 
         return
-
 
     def _fetchall(self, c):
         try:
             return c.fetchall()
 
-        except self.connection_error_types(), e:
+        except self.connection_error_types() as e:
             raise ConnectionError(e)
 
-        except self.execution_error_types(), e:
+        except self.execution_error_types() as e:
             # do the rollback to avoid a "current transaction aborted, commands ignored" errors
             self._rollback()
             raise DbError(e)
@@ -133,49 +133,45 @@ class DBConnector:
         try:
             return c.fetchone()
 
-        except self.connection_error_types(), e:
+        except self.connection_error_types() as e:
             raise ConnectionError(e)
 
-        except self.execution_error_types(), e:
+        except self.execution_error_types() as e:
             # do the rollback to avoid a "current transaction aborted, commands ignored" errors
             self._rollback()
             raise DbError(e)
-
 
     def _commit(self):
         try:
             self.connection.commit()
 
-        except self.connection_error_types(), e:
+        except self.connection_error_types() as e:
             raise ConnectionError(e)
 
-        except self.execution_error_types(), e:
+        except self.execution_error_types() as e:
             # do the rollback to avoid a "current transaction aborted, commands ignored" errors
             self._rollback()
             raise DbError(e)
-
 
     def _rollback(self):
         try:
             self.connection.rollback()
 
-        except self.connection_error_types(), e:
+        except self.connection_error_types() as e:
             raise ConnectionError(e)
 
-        except self.execution_error_types(), e:
+        except self.execution_error_types() as e:
             # do the rollback to avoid a "current transaction aborted, commands ignored" errors
             self._rollback()
             raise DbError(e)
-
 
     def _get_cursor_columns(self, c):
         try:
             if c.description:
                 return map(lambda x: x[0], c.description)
 
-        except self.connection_error_types() + self.execution_error_types(), e:
+        except self.connection_error_types() + self.execution_error_types() as e:
             return []
-
 
     @classmethod
     def quoteId(self, identifier):
@@ -223,3 +219,6 @@ class DBConnector:
             return getSqlDictionary()
         except ImportError:
             return []
+
+    def getQueryBuilderDictionary(self):
+        return {}

@@ -46,28 +46,28 @@ class PointDistance(GeoAlgorithm):
     NEAREST_POINTS = 'NEAREST_POINTS'
     DISTANCE_MATRIX = 'DISTANCE_MATRIX'
 
-    MAT_TYPES = ['Linear (N*k x 3) distance matrix',
-                 'Standard (N x T) distance matrix',
-                 'Summary distance matrix (mean, std. dev., min, max)']
-
     def defineCharacteristics(self):
-        self.name = 'Distance matrix'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Distance matrix')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
+
+        self.mat_types = [self.tr('Linear (N*k x 3) distance matrix'),
+                          self.tr('Standard (N x T) distance matrix'),
+                          self.tr('Summary distance matrix (mean, std. dev., min, max)')]
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterTableField(self.INPUT_FIELD,
-            self.tr('Input unique ID field'), self.INPUT_LAYER,
-            ParameterTableField.DATA_TYPE_ANY))
+                                              self.tr('Input unique ID field'), self.INPUT_LAYER,
+                                              ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterVector(self.TARGET_LAYER,
-            self.tr('Target point layer'), ParameterVector.VECTOR_TYPE_POINT))
+                                          self.tr('Target point layer'), ParameterVector.VECTOR_TYPE_POINT))
         self.addParameter(ParameterTableField(self.TARGET_FIELD,
-            self.tr('Target unique ID field'), self.TARGET_LAYER,
-            ParameterTableField.DATA_TYPE_ANY))
+                                              self.tr('Target unique ID field'), self.TARGET_LAYER,
+                                              ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterSelection(self.MATRIX_TYPE,
-            self.tr('Output matrix type'), self.MAT_TYPES, 0))
+                                             self.tr('Output matrix type'), self.mat_types, 0))
         self.addParameter(ParameterNumber(self.NEAREST_POINTS,
-            self.tr('Use only the nearest (k) target points'), 0, 9999, 0))
+                                          self.tr('Use only the nearest (k) target points'), 0, 9999, 0))
 
         self.addOutput(OutputTable(self.DISTANCE_MATRIX, self.tr('Distance matrix')))
 
@@ -91,15 +91,15 @@ class PointDistance(GeoAlgorithm):
         if matType == 0:
             # Linear distance matrix
             self.linearMatrix(inLayer, inField, targetLayer, targetField,
-                matType, nPoints, progress)
+                              matType, nPoints, progress)
         elif matType == 1:
-           # Standard distance matrix
+            # Standard distance matrix
             self.regularMatrix(inLayer, inField, targetLayer, targetField,
-                nPoints, progress)
+                               nPoints, progress)
         elif matType == 2:
             # Summary distance matrix
             self.linearMatrix(inLayer, inField, targetLayer, targetField,
-                matType, nPoints, progress)
+                              matType, nPoints, progress)
 
     def linearMatrix(self, inLayer, inField, targetLayer, targetField,
                      matType, nPoints, progress):
@@ -135,7 +135,7 @@ class PointDistance(GeoAlgorithm):
                 dist = distArea.measureLine(inGeom.asPoint(),
                                             outGeom.asPoint())
                 if matType == 0:
-                    self.writer.addRecord([inID,unicode(outID),unicode(dist)])
+                    self.writer.addRecord([inID, unicode(outID), unicode(dist)])
                 else:
                     distList.append(float(dist))
 
@@ -145,8 +145,8 @@ class PointDistance(GeoAlgorithm):
                     vari += (i - mean) * (i - mean)
                 vari = math.sqrt(vari / len(distList))
                 self.writer.addRecord([inID, unicode(mean),
-                                      unicode(vari), unicode(min(distList)),
-                                      unicode(max(distList))])
+                                       unicode(vari), unicode(min(distList)),
+                                       unicode(max(distList))])
 
             current += 1
             progress.setPercentage(int(current * total))
@@ -175,7 +175,7 @@ class PointDistance(GeoAlgorithm):
                 first = False
                 data = ['ID']
                 for i in range(len(featList)):
-                    data.append('DIST_{0}'.format(i+1))
+                    data.append('DIST_{0}'.format(i + 1))
                 self.writer.addRecord(data)
 
             data = [inID]

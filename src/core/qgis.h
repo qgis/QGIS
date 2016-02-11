@@ -28,6 +28,8 @@
 #include <cmath>
 #include <qnumeric.h>
 
+#include <qgswkbtypes.h>
+
 /** \ingroup core
  * The QGis class provides global constants for use throughout the application.
  */
@@ -50,6 +52,8 @@ class CORE_EXPORT QGis
 
     //! Used for symbology operations
     // Feature types
+    // @deprecated use QgsWKBTypes::Type
+    /* Q_DECL_DEPRECATED */
     enum WkbType
     {
       WKBUnknown = 0,
@@ -68,89 +72,41 @@ class CORE_EXPORT QGis
       WKBMultiPolygon25D,
     };
 
-    static WkbType singleType( WkbType type )
-    {
-      switch ( type )
-      {
-        case WKBMultiPoint:         return WKBPoint;
-        case WKBMultiLineString:    return WKBLineString;
-        case WKBMultiPolygon:       return WKBPolygon;
-        case WKBMultiPoint25D:      return WKBPoint25D;
-        case WKBMultiLineString25D: return WKBLineString25D;
-        case WKBMultiPolygon25D:    return WKBPolygon25D;
-        default:                    return type;
-      }
-    }
+    //! Map multi to single type
+    // @deprecated use QgsWKBTypes::singleType
+    /* Q_DECL_DEPRECATED */
+    static WkbType singleType( WkbType type );
 
-    static WkbType multiType( WkbType type )
-    {
-      switch ( type )
-      {
-        case WKBPoint:         return WKBMultiPoint;
-        case WKBLineString:    return WKBMultiLineString;
-        case WKBPolygon:       return WKBMultiPolygon;
-        case WKBPoint25D:      return WKBMultiPoint25D;
-        case WKBLineString25D: return WKBMultiLineString25D;
-        case WKBPolygon25D:    return WKBMultiPolygon25D;
-        default:               return type;
-      }
-    }
+    //! Map single to multitype type
+    // @deprecated use QgsWKBTypes::multiType
+    /* Q_DECL_DEPRECATED */
+    static WkbType multiType( WkbType type );
 
-    static WkbType flatType( WkbType type )
-    {
-      switch ( type )
-      {
-        case WKBPoint25D:           return WKBPoint;
-        case WKBLineString25D:      return WKBLineString;
-        case WKBPolygon25D:         return WKBPolygon;
-        case WKBMultiPoint25D:      return WKBMultiPoint;
-        case WKBMultiLineString25D: return WKBMultiLineString;
-        case WKBMultiPolygon25D:    return WKBMultiPolygon;
-        default:                    return type;
-      }
-    }
+    //! Map 2d+ to 2d type
+    // @deprecated use QgsWKBTypes::flatType
+    /* Q_DECL_DEPRECATED */
+    static WkbType flatType( WkbType type );
 
-    static bool isSingleType( WkbType type )
-    {
-      switch ( flatType( type ) )
-      {
-        case WKBPoint:
-        case WKBLineString:
-        case WKBPolygon:
-          return true;
-        default:
-          return false;
-      }
-    }
+    //! Return if type is a single type
+    // @deprecated use QgsWKBTypes::isSingleType
+    /* Q_DECL_DEPRECATED */
+    static bool isSingleType( WkbType type );
 
-    static bool isMultiType( WkbType type )
-    {
-      switch ( flatType( type ) )
-      {
-        case WKBMultiPoint:
-        case WKBMultiLineString:
-        case WKBMultiPolygon:
-          return true;
-        default:
-          return false;
-      }
-    }
+    //! Return if type is a multi type
+    // @deprecated use QgsWKBTypes::isMultiType
+    /* Q_DECL_DEPRECATED */
+    static bool isMultiType( WkbType type );
 
-    static int wkbDimensions( WkbType type )
-    {
-      switch ( type )
-      {
-        case WKBUnknown:            return 0;
-        case WKBNoGeometry:         return 0;
-        case WKBPoint25D:           return 3;
-        case WKBLineString25D:      return 3;
-        case WKBPolygon25D:         return 3;
-        case WKBMultiPoint25D:      return 3;
-        case WKBMultiLineString25D: return 3;
-        case WKBMultiPolygon25D:    return 3;
-        default:                    return 2;
-      }
-    }
+    // get dimension of points
+    // @deprecated use QgsWKBTypes::coordDimensions()
+    /* Q_DECL_DEPRECATED */
+    static int wkbDimensions( WkbType type );
+
+    //! Converts from old (pre 2.10) WKB type (OGR) to new WKB type
+    static QgsWKBTypes::Type fromOldWkbType( QGis::WkbType type );
+
+    //! Converts from new (post 2.10) WKB type (OGC) to old WKB type
+    static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
 
     enum GeometryType
     {
@@ -162,62 +118,31 @@ class CORE_EXPORT QGis
     };
 
     //! description strings for geometry types
-    static const char *vectorGeometryType( GeometryType type )
-    {
-      switch ( type )
-      {
-        case Point:           return "Point";
-        case Line:            return "Line";
-        case Polygon:         return "Polygon";
-        case UnknownGeometry: return "Unknown geometry";
-        case NoGeometry:      return "No geometry";
-        default:              return "Invalid type";
-      }
-    }
+    static const char *vectorGeometryType( GeometryType type );
 
     //! description strings for feature types
-    static const char *featureType( WkbType type )
-    {
-      switch ( type )
-      {
-        case WKBUnknown:            return "WKBUnknown";
-        case WKBPoint:              return "WKBPoint";
-        case WKBLineString:         return "WKBLineString";
-        case WKBPolygon:            return "WKBPolygon";
-        case WKBMultiPoint:         return "WKBMultiPoint";
-        case WKBMultiLineString:    return "WKBMultiLineString";
-        case WKBMultiPolygon:       return "WKBMultiPolygon";
-        case WKBNoGeometry:         return "WKBNoGeometry";
-        case WKBPoint25D:           return "WKBPoint25D";
-        case WKBLineString25D:      return "WKBLineString25D";
-        case WKBPolygon25D:         return "WKBPolygon25D";
-        case WKBMultiPoint25D:      return "WKBMultiPoint25D";
-        case WKBMultiLineString25D: return "WKBMultiLineString25D";
-        case WKBMultiPolygon25D:    return "WKBMultiPolygon25D";
-        default:                    return "invalid wkbtype";
-      }
-    }
+    static const char *featureType( WkbType type );
 
     /** Raster data types.
      *  This is modified and extended copy of GDALDataType.
      */
     enum DataType
     {
-      /*! Unknown or unspecified type */                UnknownDataType = 0,
-      /*! Eight bit unsigned integer (quint8) */        Byte = 1,
-      /*! Sixteen bit unsigned integer (quint16) */     UInt16 = 2,
-      /*! Sixteen bit signed integer (qint16) */        Int16 = 3,
-      /*! Thirty two bit unsigned integer (quint32) */  UInt32 = 4,
-      /*! Thirty two bit signed integer (qint32) */     Int32 = 5,
-      /*! Thirty two bit floating point (float) */      Float32 = 6,
-      /*! Sixty four bit floating point (double) */     Float64 = 7,
-      /*! Complex Int16 */                              CInt16 = 8,
-      /*! Complex Int32 */                              CInt32 = 9,
-      /*! Complex Float32 */                            CFloat32 = 10,
-      /*! Complex Float64 */                            CFloat64 = 11,
-      /*! Color, alpha, red, green, blue, 4 bytes the same as
+      /** Unknown or unspecified type */                UnknownDataType = 0,
+      /** Eight bit unsigned integer (quint8) */        Byte = 1,
+      /** Sixteen bit unsigned integer (quint16) */     UInt16 = 2,
+      /** Sixteen bit signed integer (qint16) */        Int16 = 3,
+      /** Thirty two bit unsigned integer (quint32) */  UInt32 = 4,
+      /** Thirty two bit signed integer (qint32) */     Int32 = 5,
+      /** Thirty two bit floating point (float) */      Float32 = 6,
+      /** Sixty four bit floating point (double) */     Float64 = 7,
+      /** Complex Int16 */                              CInt16 = 8,
+      /** Complex Int32 */                              CInt32 = 9,
+      /** Complex Float32 */                            CFloat32 = 10,
+      /** Complex Float64 */                            CFloat64 = 11,
+      /** Color, alpha, red, green, blue, 4 bytes the same as
           QImage::Format_ARGB32 */                      ARGB32 = 12,
-      /*! Color, alpha, red, green, blue, 4 bytes  the same as
+      /** Color, alpha, red, green, blue, 4 bytes  the same as
           QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied = 13
     };
 
@@ -226,6 +151,7 @@ class CORE_EXPORT QGis
      * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
      * @note and QGIS >1.8 returns to that
      */
+    //TODO QGIS 3.0 - clean up and move to QgsUnitTypes and rename to DistanceUnit
     enum UnitType
     {
       Meters = 0,
@@ -241,18 +167,27 @@ class CORE_EXPORT QGis
     };
 
     //! Provides the canonical name of the type value
-    static QString toLiteral( QGis::UnitType unit );
+    //! @deprecated use QgsUnitTypes::encodeUnit() instead
+    Q_DECL_DEPRECATED static QString toLiteral( QGis::UnitType unit );
+
     //! Converts from the canonical name to the type value
-    static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
+    //! @deprecated use QgsUnitTypes::decodeDistanceUnit() instead
+    Q_DECL_DEPRECATED static UnitType fromLiteral( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
+
     //! Provides translated version of the type value
-    static QString tr( QGis::UnitType unit );
+    //! @deprecated use QgsUnitTypes::toString() instead
+    Q_DECL_DEPRECATED static QString tr( QGis::UnitType unit );
+
     //! Provides type value from translated version
-    static UnitType fromTr( QString literal, QGis::UnitType defaultType = UnknownUnit );
+    //! @deprecated use QgsUnitTypes::stringToDistanceUnit() instead
+    Q_DECL_DEPRECATED static UnitType fromTr( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
+
     //! Returns the conversion factor between the specified units
-    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
+    //! @deprecated use QgsUnitTyoes::fromUnitToUnitFactor() instead
+    Q_DECL_DEPRECATED static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
 
     /** Converts a string to a double in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand seperators
+     * numbers of digits between thousand separators
      * @param string string to convert
      * @param ok will be set to true if conversion was successful
      * @returns string converted to double if possible
@@ -262,7 +197,7 @@ class CORE_EXPORT QGis
     static double permissiveToDouble( QString string, bool& ok );
 
     /** Converts a string to an integer in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand seperators
+     * numbers of digits between thousand separators
      * @param string string to convert
      * @param ok will be set to true if conversion was successful
      * @returns string converted to int if possible
@@ -285,7 +220,7 @@ class CORE_EXPORT QGis
 
     /** Old search radius in % of canvas width
      *  @deprecated since 2.3, use DEFAULT_SEARCH_RADIUS_MM */
-    static const double DEFAULT_IDENTIFY_RADIUS;
+    Q_DECL_DEPRECATED static const double DEFAULT_IDENTIFY_RADIUS;
 
     /** Identify search radius in mm
      *  @note added in 2.3 */
@@ -336,9 +271,12 @@ inline void ( *cast_to_fptr( void *p ) )()
 //
 // return a string representation of a double
 //
-inline QString qgsDoubleToString( const double &a, const int &precision = 17 )
+inline QString qgsDoubleToString( double a, int precision = 17 )
 {
-  return QString::number( a, 'f', precision ).remove( QRegExp( "\\.?0+$" ) );
+  if ( precision )
+    return QString::number( a, 'f', precision ).remove( QRegExp( "\\.?0+$" ) );
+  else
+    return QString::number( a, 'f', precision );
 }
 
 //
@@ -368,11 +306,19 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
          qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) );
 }
 
+//
+// a round function which returns a double to guard against overflows
+//
+inline double qgsRound( double x )
+{
+  return x < 0.0 ? std::ceil( x - 0.5 ) : std::floor( x + 0.5 );
+}
+
 bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
 
 bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
 
-QString qgsVsiPrefix( QString path );
+CORE_EXPORT QString qgsVsiPrefix( const QString& path );
 
 /** Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
@@ -432,12 +378,12 @@ const double MINIMUM_POINT_SIZE = 0.1;
 const double DEFAULT_POINT_SIZE = 2.0;
 const double DEFAULT_LINE_WIDTH = 0.26;
 
-/** default snapping tolerance for segments */
+/** Default snapping tolerance for segments */
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
 
 typedef QMap<QString, QString> QgsStringMap;
 
-/** qgssize is used instead of size_t, because size_t is stdlib type, unknown
+/** Qgssize is used instead of size_t, because size_t is stdlib type, unknown
  *  by SIP, and it would be hard to define size_t correctly in SIP.
  *  Currently used "unsigned long long" was introduced in C++11 (2011)
  *  but it was supported already before C++11 on common platforms.
@@ -448,9 +394,9 @@ typedef unsigned long long qgssize;
 #if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
 #define Q_NOWARN_DEPRECATED_PUSH \
   _Pragma("GCC diagnostic push") \
-  _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+  _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"");
 #define Q_NOWARN_DEPRECATED_POP \
-  _Pragma("GCC diagnostic pop")
+  _Pragma("GCC diagnostic pop");
 #elif defined(_MSC_VER)
 #define Q_NOWARN_DEPRECATED_PUSH \
   __pragma(warning(push)) \
@@ -462,16 +408,25 @@ typedef unsigned long long qgssize;
 #define Q_NOWARN_DEPRECATED_POP
 #endif
 
-// FIXME: also in qgisinterface.h
 #ifndef QGISEXTERN
-#ifdef WIN32
+#ifdef Q_OS_WIN
 #  define QGISEXTERN extern "C" __declspec( dllexport )
 #  ifdef _MSC_VER
 // do not warn about C bindings returing QString
 #    pragma warning(disable:4190)
 #  endif
 #else
-#  define QGISEXTERN extern "C"
+#  if defined(__GNUC__) || defined(__clang__)
+#    define QGISEXTERN extern "C" __attribute__ ((visibility ("default")))
+#  else
+#    define QGISEXTERN extern "C"
+#  endif
 #endif
 #endif
+#endif
+
+#if defined(__clang__)
+#define FALLTHROUGH [[clang::fallthrough]]
+#else
+#define FALLTHROUGH
 #endif

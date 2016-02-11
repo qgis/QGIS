@@ -64,13 +64,13 @@ QString QgsColorButton::fullPath( const QString &path )
   by Qt Designer to do the same thing.
 */
 
-QgsColorButton::QgsColorButton( QWidget *parent, QString cdt, QColorDialog::ColorDialogOptions cdo )
+QgsColorButton::QgsColorButton( QWidget *parent, const QString& cdt, const QColorDialog::ColorDialogOptions& cdo )
     : QPushButton( parent )
     , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
     , mColor( Qt::black )
     , mColorDialogOptions( cdo )
     , mAcceptLiveUpdates( true )
-    , mTempPNG( NULL )
+    , mTempPNG( nullptr )
     , mColorSet( false )
     , mPickingColor( false )
 {
@@ -126,7 +126,7 @@ void QgsColorButton::onButtonClicked()
     }
     else
     {
-      QgsColorDialogV2 dialog( this, 0, color() );
+      QgsColorDialogV2 dialog( this, nullptr, color() );
       dialog.setTitle( mColorDialogTitle );
       dialog.setAllowAlpha( mColorDialogOptions & QColorDialog::ShowAlphaChannel );
 
@@ -338,16 +338,16 @@ void QgsColorButton::showContextMenu( QMouseEvent *event )
 {
   QMenu colorContextMenu;
 
-  QAction* copyColorAction = new QAction( tr( "Copy color" ), 0 );
+  QAction* copyColorAction = new QAction( tr( "Copy color" ), nullptr );
   colorContextMenu.addAction( copyColorAction );
-  QAction* pasteColorAction = new QAction( tr( "Paste color" ), 0 );
+  QAction* pasteColorAction = new QAction( tr( "Paste color" ), nullptr );
   pasteColorAction->setEnabled( false );
   colorContextMenu.addAction( pasteColorAction );
 #ifndef Q_OS_MAC
   //disabled for OSX, as it is impossible to grab the mouse under OSX
   //see note for QWidget::grabMouse() re OSX Cocoa
   //http://qt-project.org/doc/qt-4.8/qwidget.html#grabMouse
-  QAction* pickColorAction = new QAction( tr( "Pick color" ), 0 );
+  QAction* pickColorAction = new QAction( tr( "Pick color" ), nullptr );
   colorContextMenu.addSeparator();
   colorContextMenu.addAction( pickColorAction );
 #endif
@@ -566,10 +566,10 @@ void QgsColorButton::setButtonBackground( QColor color )
                             " border-width: 2px;"
                             " border-color: rgb(128,128,128);"
                             " border-radius: 4px;} " )
-                   .arg( bkgrd )
-                   .arg( margin )
-                   .arg( isEnabled() ? "128" : "110" )
-                   .arg( isEnabled() ? "outset" : "dotted" ) );
+                   .arg( bkgrd,
+                         margin,
+                         isEnabled() ? "128" : "110",
+                         isEnabled() ? "outset" : "dotted" ) );
   }
 }
 
@@ -578,7 +578,7 @@ QColor QgsColorButton::color() const
   return mColor;
 }
 
-void QgsColorButton::setColorDialogOptions( QColorDialog::ColorDialogOptions cdo )
+void QgsColorButton::setColorDialogOptions( const QColorDialog::ColorDialogOptions& cdo )
 {
   mColorDialogOptions = cdo;
 }
@@ -588,7 +588,7 @@ QColorDialog::ColorDialogOptions QgsColorButton::colorDialogOptions()
   return mColorDialogOptions;
 }
 
-void QgsColorButton::setColorDialogTitle( QString cdt )
+void QgsColorButton::setColorDialogTitle( const QString& cdt )
 {
   mColorDialogTitle = cdt;
 }

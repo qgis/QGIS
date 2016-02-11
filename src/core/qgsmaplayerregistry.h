@@ -44,10 +44,10 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     ~QgsMapLayerRegistry();
 
     //! Retrieve a pointer to a loaded layer by id
-    QgsMapLayer *mapLayer( QString theLayerId );
+    QgsMapLayer *mapLayer( const QString& theLayerId );
 
     //! Retrieve a pointer to a loaded layer by name
-    QList<QgsMapLayer *> mapLayersByName( QString layerName );
+    QList<QgsMapLayer *> mapLayersByName( const QString& layerName );
 
     //! Retrieve the mapLayers collection (mainly intended for use by projection)
     const QMap<QString, QgsMapLayer*> & mapLayers();
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * @note As a side-effect QgsProject is made dirty.
      * @note takeOwner not available in python binding - always takes ownership
      */
-    QList<QgsMapLayer *> addMapLayers( QList<QgsMapLayer *> theMapLayers,
+    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer*>& theMapLayers,
                                        bool addToLegend = true,
                                        bool takeOwnership = true );
 
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      *                      If you specify false here, you have take care of deleting
      *                      the layer yourself. Not available in python.
      *
-     * @return NULL if unable to add layer, otherwise pointer to newly added layer
+     * @return nullptr if unable to add layer, otherwise pointer to newly added layer
      *
      * @see addMapLayers
      *
@@ -118,7 +118,22 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      *
      * @note As a side-effect QgsProject is made dirty.
      */
-    void removeMapLayers( QStringList theLayerIds );
+    void removeMapLayers( const QStringList& theLayerIds );
+
+    /**
+     * @brief
+     * Remove a set of layers from the registry
+     *
+     * Any canvases using the affected layers will need to remove them
+     *
+     * The layers being removed are deleted as well as the registry
+     * table entries.
+     *
+     * @param layers  The layers to remove. Null pointers are ignored
+     *
+     * @note As a side-effect QgsProject is made dirty.
+     */
+    void removeMapLayers( const QList<QgsMapLayer*>& layers );
 
     /**
      * @brief
@@ -136,6 +151,21 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     void removeMapLayer( const QString& theLayerId );
 
     /**
+     * @brief
+     * Remove a layer from qgis
+     *
+     * Any canvases using the affected layers will need to remove them
+     *
+     * The layer being removed is deleted as well as the registry
+     * table entry.
+     *
+     * @param layer   The layer to remove. Nothing happens if the pointer is null
+     *
+     * @note As a side-effect QgsProject is made dirty.
+     */
+    void removeMapLayer( QgsMapLayer* layer );
+
+    /**
      * Remove all registered layers
      *
      * @note As a side-effect QgsProject is made dirty.
@@ -150,7 +180,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * see ticket #1974 for more details.
      */
     //! @deprecated since 2.4 - does nothing
-    Q_DECL_DEPRECATED void clearAllLayerCaches();
+    Q_DECL_DEPRECATED void clearAllLayerCaches() {}
 
     /**
      * Reload all provider data caches (currently used for WFS and WMS providers)
@@ -163,23 +193,39 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      *
      * @param theLayerIds  A list of ids of the layers which are removed.
      */
-    void layersWillBeRemoved( QStringList theLayerIds );
+    void layersWillBeRemoved( const QStringList& theLayerIds );
 
     /**
-     * Emitted when a layer is removed from the registry
+     * Emitted when one or more layers are removed from the registry
+     *
+     * @param layers  A list of layers which are removed.
+     */
+    void layersWillBeRemoved( const QList<QgsMapLayer*>& layers );
+
+    /**
+     * Emitted when an owned layer is removed from the registry
      *
      * @param theLayerId  The id of the layer being removed
      *
      * @note Consider using {@link layersWillBeRemoved()} instead
      */
-    void layerWillBeRemoved( QString theLayerId );
+    void layerWillBeRemoved( const QString& theLayerId );
+
+    /**
+     * Emitted when an owned layer is removed from the registry
+     *
+     * @param layer  The layer being removed
+     *
+     * @note Consider using {@link layersWillBeRemoved()} instead
+     */
+    void layerWillBeRemoved( QgsMapLayer* layer );
 
     /**
      * Emitted after one or more layers were removed from the registry
      *
      * @param theLayerIds  A list of ids of the layers which were removed.
      */
-    void layersRemoved( QStringList theLayerIds );
+    void layersRemoved( const QStringList& theLayerIds );
 
     /**
      * Emitted after a layer was removed from the registry
@@ -188,7 +234,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      *
      * @note Consider using {@link layersRemoved()} instead
      */
-    void layerRemoved( QString theLayerId );
+    void layerRemoved( const QString& theLayerId );
 
 
     /**
@@ -208,7 +254,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      *
      * @see legendLayersAdded()
      */
-    void layersAdded( QList<QgsMapLayer *> theMapLayers );
+    void layersAdded( const QList<QgsMapLayer *>& theMapLayers );
 
     /**
      * Emitted when a layer is added to the registry.
@@ -227,11 +273,11 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      *
      * @param theMapLayers  The {@link QgsMapLayer}s which are added to the legend.
      */
-    void legendLayersAdded( QList<QgsMapLayer*> theMapLayers );
+    void legendLayersAdded( const QList<QgsMapLayer*>& theMapLayers );
 
   protected:
 #if 0
-    /** debugging member
+    /** Debugging member
         invoked when a connect() is made to this object
     */
     void connectNotify( const char * signal ) override;
@@ -239,7 +285,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
 
   private:
     //! private singleton constructor
-    QgsMapLayerRegistry( QObject * parent = 0 );
+    QgsMapLayerRegistry( QObject * parent = nullptr );
 
     QMap<QString, QgsMapLayer*> mMapLayers;
     QSet<QgsMapLayer*> mOwnedLayers;

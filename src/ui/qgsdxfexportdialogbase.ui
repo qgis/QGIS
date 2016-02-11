@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>394</width>
+    <width>402</width>
     <height>534</height>
    </rect>
   </property>
@@ -14,6 +14,16 @@
    <string>DXF export</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <item row="2" column="1" colspan="2">
+    <widget class="QgsScaleWidget" name="mScaleWidget" native="true">
+     <property name="showCurrentScaleButton" stdset="0">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QComboBox" name="mEncoding"/>
+   </item>
    <item row="0" column="2">
     <widget class="QToolButton" name="mFileSelectionButton">
      <property name="text">
@@ -83,7 +93,7 @@
      <item row="0" column="2">
       <widget class="QPushButton" name="mUnSelectAllButton">
        <property name="text">
-        <string>Unselect all</string>
+        <string>Deselect all</string>
        </property>
       </widget>
      </item>
@@ -105,14 +115,14 @@
    <item row="0" column="1">
     <widget class="QLineEdit" name="mFileLineEdit"/>
    </item>
-   <item row="8" column="0" colspan="3">
+   <item row="9" column="0" colspan="3">
     <widget class="QCheckBox" name="mMapExtentCheckBox">
      <property name="text">
       <string>Export features intersecting the current map extent</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="0" colspan="3">
+   <item row="10" column="0" colspan="3">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -132,16 +142,6 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1" colspan="2">
-    <widget class="QgsScaleWidget" name="mScaleWidget" native="true">
-     <property name="showCurrentScaleButton" stdset="0">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1" colspan="2">
-    <widget class="QComboBox" name="mEncoding"/>
-   </item>
    <item row="3" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
@@ -149,18 +149,25 @@
      </property>
     </widget>
    </item>
+   <item row="8" column="0" colspan="3">
+    <widget class="QCheckBox" name="mLayerTitleAsName">
+     <property name="text">
+      <string>Use layer title as name if set</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsLayerTreeView</class>
-   <extends>QTreeView</extends>
-   <header>qgslayertreeview.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsScaleWidget</class>
    <extends>QWidget</extends>
    <header>qgsscalewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsLayerTreeView</class>
+   <extends>QTreeView</extends>
+   <header>qgslayertreeview.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -172,6 +179,7 @@
   <tabstop>mTreeView</tabstop>
   <tabstop>mSelectAllButton</tabstop>
   <tabstop>mUnSelectAllButton</tabstop>
+  <tabstop>mLayerTitleAsName</tabstop>
   <tabstop>mMapExtentCheckBox</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>

@@ -30,86 +30,87 @@ from ui_widgetContour import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
 import GdalTools_utils as Utils
 
+
 class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
-  def __init__(self, iface):
-      QWidget.__init__(self)
-      self.iface = iface
+    def __init__(self, iface):
+        QWidget.__init__(self)
+        self.iface = iface
 
-      self.setupUi(self)
-      BasePluginWidget.__init__(self, self.iface, "gdal_contour")
+        self.setupUi(self)
+        BasePluginWidget.__init__(self, self.iface, "gdal_contour")
 
-      gdalVersion = Utils.GdalConfig.versionNum()
-      self.useDirAsOutput = gdalVersion < 1700
-      if self.useDirAsOutput:
-          self.label_2.setText( QApplication.translate("GdalToolsWidget", "&Output directory for contour lines (shapefile)") )
+        gdalVersion = Utils.GdalConfig.versionNum()
+        self.useDirAsOutput = gdalVersion < 1700
+        if self.useDirAsOutput:
+            self.label_2.setText(QApplication.translate("GdalToolsWidget", "&Output directory for contour lines (shapefile)"))
 
-      self.outSelector.setType( self.outSelector.FILE )
+        self.outSelector.setType(self.outSelector.FILE)
 
-      # set the default QSpinBoxes value
-      self.intervalDSpinBox.setValue(10.0)
+        # set the default QSpinBoxes value
+        self.intervalDSpinBox.setValue(10.0)
 
-      self.setParamsStatus([
-          (self.inSelector, SIGNAL("filenameChanged()") ),
-          (self.outSelector, SIGNAL("filenameChanged()")),
-          (self.intervalDSpinBox, SIGNAL("valueChanged(double)")),
-          (self.attributeEdit, SIGNAL("textChanged(const QString &)"), self.attributeCheck)
-      ])
+        self.setParamsStatus([
+            (self.inSelector, SIGNAL("filenameChanged()")),
+            (self.outSelector, SIGNAL("filenameChanged()")),
+            (self.intervalDSpinBox, SIGNAL("valueChanged(double)")),
+            (self.attributeEdit, SIGNAL("textChanged(const QString &)"), self.attributeCheck)
+        ])
 
-      self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-      self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
+        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
 
-  def onLayersChanged(self):
-      self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
+    def onLayersChanged(self):
+        self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())
 
-  def fillInputFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
-      inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Contour" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
-      if not inputFile:
-        return
-      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+    def fillInputFileEdit(self):
+        lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+        inputFile = Utils.FileDialog.getOpenFileName(self, self.tr("Select the input file for Contour"), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
+        if not inputFile:
+            return
+        Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
-      self.inSelector.setFilename(inputFile)
+        self.inSelector.setFilename(inputFile)
 
-  def fillOutputFileEdit(self):
-      if not self.useDirAsOutput:
-        lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
-        outputFile, encoding = Utils.FileDialog.getSaveFileName(self, self.tr( "Select where to save the Contour output" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter, True)
-      else:
-        outputFile, encoding = Utils.FileDialog.getExistingDirectory(self, self.tr( "Select where to save the Contour output" ), True)
+    def fillOutputFileEdit(self):
+        if not self.useDirAsOutput:
+            lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
+            outputFile, encoding = Utils.FileDialog.getSaveFileName(self, self.tr("Select where to save the Contour output"), Utils.FileFilter.allVectorsFilter(), lastUsedFilter, True)
+        else:
+            outputFile, encoding = Utils.FileDialog.getExistingDirectory(self, self.tr("Select where to save the Contour output"), True)
 
-      if not outputFile:
-        return
+        if not outputFile:
+            return
 
-      if not self.useDirAsOutput:
-        Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
+        if not self.useDirAsOutput:
+            Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
 
-      self.outSelector.setFilename(outputFile)
-      self.lastEncoding = encoding
+        self.outSelector.setFilename(outputFile)
+        self.lastEncoding = encoding
 
-  def getArguments(self):
-      arguments = []
-      if self.attributeCheck.isChecked() and self.attributeEdit.text():
-        arguments.append("-a")
-        arguments.append(self.attributeEdit.text())
-      if True: # XXX in this moment the -i argument is not optional
-        arguments.append("-i")
-        arguments.append(str(self.intervalDSpinBox.value()))
-      arguments.append(self.getInputFileName())
-      arguments.append(self.outSelector.filename())
-      return arguments
+    def getArguments(self):
+        arguments = []
+        if self.attributeCheck.isChecked() and self.attributeEdit.text():
+            arguments.append("-a")
+            arguments.append(self.attributeEdit.text())
+        if True: # XXX in this moment the -i argument is not optional
+            arguments.append("-i")
+            arguments.append(unicode(self.intervalDSpinBox.value()))
+        arguments.append(self.getInputFileName())
+        arguments.append(self.outSelector.filename())
+        return arguments
 
-  def getInputFileName(self):
-      return self.inSelector.filename()
+    def getInputFileName(self):
+        return self.inSelector.filename()
 
-  def getOutputFileName(self):
-      if self.useDirAsOutput:
-        if self.outSelector.filename():
-          return self.outSelector.filename() + QDir.separator() + "contour.shp"
-      return self.outSelector.filename()
+    def getOutputFileName(self):
+        if self.useDirAsOutput:
+            if self.outSelector.filename():
+                return self.outSelector.filename() + QDir.separator() + "contour.shp"
+        return self.outSelector.filename()
 
-  def addLayerIntoCanvas(self, fileInfo):
-      vl = self.iface.addVectorLayer(fileInfo.filePath(), fileInfo.baseName(), "ogr")
-      if vl is not None and vl.isValid():
-        if hasattr(self, 'lastEncoding'):
-          vl.setProviderEncoding(self.lastEncoding)
+    def addLayerIntoCanvas(self, fileInfo):
+        vl = self.iface.addVectorLayer(fileInfo.filePath(), fileInfo.baseName(), "ogr")
+        if vl is not None and vl.isValid():
+            if hasattr(self, 'lastEncoding'):
+                vl.setProviderEncoding(self.lastEncoding)

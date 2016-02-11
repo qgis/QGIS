@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 12.2.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -40,7 +40,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      * @deprecated Use QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, QgsFeatureRequest featureRequest )
      *             instead
      */
-    QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, QgsFeatureRequest featureRequest, QgsFeatureIds featureIds );
+    Q_DECL_DEPRECATED QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, const QgsFeatureRequest& featureRequest, const QgsFeatureIds& featureIds );
 
     /**
      * This constructor creates a feature iterator, that delivers all cached features. No request is made to the backend.
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      * @param vlCache          The vector layer cache to use
      * @param featureRequest   The feature request to answer
      */
-    QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, QgsFeatureRequest featureRequest );
+    QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, const QgsFeatureRequest& featureRequest );
 
     /**
      * Rewind to the beginning of the iterator
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
      * @param vlCache          The vector layer cache to use
      * @param featureRequest   The feature request to answer
      */
-    QgsCachedFeatureWriterIterator( QgsVectorLayerCache* vlCache, QgsFeatureRequest featureRequest );
+    QgsCachedFeatureWriterIterator( QgsVectorLayerCache* vlCache, const QgsFeatureRequest& featureRequest );
 
     /**
      * Rewind to the beginning of the iterator

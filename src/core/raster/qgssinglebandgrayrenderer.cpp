@@ -23,7 +23,7 @@
 #include <QImage>
 
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand ):
-    QgsRasterRenderer( input, "singlebandgray" ), mGrayBand( grayBand ), mGradient( BlackToWhite ), mContrastEnhancement( 0 )
+    QgsRasterRenderer( input, "singlebandgray" ), mGrayBand( grayBand ), mGradient( BlackToWhite ), mContrastEnhancement( nullptr )
 {
 }
 
@@ -32,12 +32,12 @@ QgsSingleBandGrayRenderer::~QgsSingleBandGrayRenderer()
   delete mContrastEnhancement;
 }
 
-QgsRasterInterface * QgsSingleBandGrayRenderer::clone() const
+QgsSingleBandGrayRenderer* QgsSingleBandGrayRenderer::clone() const
 {
-  QgsSingleBandGrayRenderer * renderer = new QgsSingleBandGrayRenderer( 0, mGrayBand );
+  QgsSingleBandGrayRenderer * renderer = new QgsSingleBandGrayRenderer( nullptr, mGrayBand );
   renderer->setOpacity( mOpacity );
   renderer->setAlphaBand( mAlphaBand );
-  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : 0 );
+  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : nullptr );
   renderer->setGradient( mGradient );
   if ( mContrastEnhancement )
   {
@@ -50,7 +50,7 @@ QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, Q
 {
   if ( elem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   int grayBand = elem.attribute( "grayBand", "-1" ).toInt();
@@ -82,7 +82,7 @@ void QgsSingleBandGrayRenderer::setContrastEnhancement( QgsContrastEnhancement* 
 QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   Q_UNUSED( bandNo );
-  QgsDebugMsg( QString( "width = %1 height = %2" ).arg( width ).arg( height ) );
+  QgsDebugMsgLevel( QString( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
 
   QgsRasterBlock *outputBlock = new QgsRasterBlock();
   if ( !mInput )
@@ -98,7 +98,7 @@ QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  cons
     return outputBlock;
   }
 
-  QgsRasterBlock *alphaBlock = 0;
+  QgsRasterBlock *alphaBlock = nullptr;
 
   if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
   {

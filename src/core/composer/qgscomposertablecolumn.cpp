@@ -17,15 +17,18 @@
 
 #include "qgscomposertablecolumn.h"
 
-QgsComposerTableColumn::QgsComposerTableColumn() :
+QgsComposerTableColumn::QgsComposerTableColumn( const QString& heading ) :
     mBackgroundColor( Qt::transparent ),
     mHAlignment( Qt::AlignLeft ),
+    mVAlignment( Qt::AlignVCenter ),
+    mHeading( heading ),
     mSortByRank( 0 ),
     mSortOrder( Qt::AscendingOrder ),
     mWidth( 0.0 )
 {
 
 }
+
 
 QgsComposerTableColumn::~QgsComposerTableColumn()
 {
@@ -43,6 +46,7 @@ bool QgsComposerTableColumn::writeXML( QDomElement& columnElem, QDomDocument& do
   columnElem.appendChild( bgColorElem );
 
   columnElem.setAttribute( "hAlignment", mHAlignment );
+  columnElem.setAttribute( "vAlignment", mVAlignment );
 
   columnElem.setAttribute( "heading", mHeading );
   columnElem.setAttribute( "attribute", mAttribute );
@@ -57,15 +61,16 @@ bool QgsComposerTableColumn::writeXML( QDomElement& columnElem, QDomDocument& do
 
 bool QgsComposerTableColumn::readXML( const QDomElement& columnElem )
 {
-  mHAlignment = ( Qt::AlignmentFlag )columnElem.attribute( "hAlignment", QString::number( Qt::AlignLeft ) ).toInt();
+  mHAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( "hAlignment", QString::number( Qt::AlignLeft ) ).toInt() );
+  mVAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( "vAlignment", QString::number( Qt::AlignVCenter ) ).toInt() );
   mHeading = columnElem.attribute( "heading", "" );
   mAttribute = columnElem.attribute( "attribute", "" );
   mSortByRank = columnElem.attribute( "sortByRank", "0" ).toInt();
-  mSortOrder = ( Qt::SortOrder )columnElem.attribute( "sortOrder", QString::number( Qt::AscendingOrder ) ).toInt();
+  mSortOrder = static_cast< Qt::SortOrder >( columnElem.attribute( "sortOrder", QString::number( Qt::AscendingOrder ) ).toInt() );
   mWidth = columnElem.attribute( "width", "0.0" ).toDouble();
 
   QDomNodeList bgColorList = columnElem.elementsByTagName( "backgroundColor" );
-  if ( bgColorList.size() > 0 )
+  if ( !bgColorList.isEmpty() )
   {
     QDomElement bgColorElem = bgColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
@@ -89,6 +94,7 @@ QgsComposerTableColumn* QgsComposerTableColumn::clone()
   newColumn->setAttribute( mAttribute );
   newColumn->setHeading( mHeading );
   newColumn->setHAlignment( mHAlignment );
+  newColumn->setVAlignment( mVAlignment );
   newColumn->setSortByRank( mSortByRank );
   newColumn->setSortOrder( mSortOrder );
   newColumn->setWidth( mWidth );

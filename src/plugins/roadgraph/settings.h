@@ -32,7 +32,7 @@ class RgSettings
 {
   public:
     //! Destructor
-    virtual ~RgSettings() { };
+    virtual ~RgSettings() { }
 
     /**
      * write settings to the poject file

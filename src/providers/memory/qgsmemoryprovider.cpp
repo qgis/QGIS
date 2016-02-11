@@ -30,9 +30,9 @@
 static const QString TEXT_PROVIDER_KEY = "memory";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Memory provider";
 
-QgsMemoryProvider::QgsMemoryProvider( QString uri )
+QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
-    , mSpatialIndex( 0 )
+    , mSpatialIndex( nullptr )
 {
   // Initialize the geometry with the uri to support old style uri's
   // (ie, just 'point', 'line', 'polygon')
@@ -60,6 +60,8 @@ QgsMemoryProvider::QgsMemoryProvider( QString uri )
     mWkbType = QGis::WKBMultiLineString;
   else if ( geometry == "multipolygon" )
     mWkbType = QGis::WKBMultiPolygon;
+  else if ( geometry == "none" )
+    mWkbType = QGis::WKBNoGeometry;
   else
     mWkbType = QGis::WKBUnknown;
 
@@ -84,6 +86,8 @@ QgsMemoryProvider::QgsMemoryProvider( QString uri )
 
   // date type
   << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Time" ), "time", QVariant::Time, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime, -1, -1, -1, -1 )
 
   // integer types
   << QgsVectorDataProvider::NativeType( tr( "Whole number (smallint - 16bit)" ), "int2", QVariant::Int, -1, -1, 0, 0 )
@@ -104,7 +108,7 @@ QgsMemoryProvider::QgsMemoryProvider( QString uri )
   {
     QList<QgsField> attributes;
     QRegExp reFieldDef( "\\:"
-                        "(int|integer|real|double|string|date)" // type
+                        "(int|integer|real|double|string|date|time|datetime)" // type
                         "(?:\\((\\d+)"                // length
                         "(?:\\,(\\d+))?"                // precision
                         "\\))?"
@@ -140,7 +144,19 @@ QgsMemoryProvider::QgsMemoryProvider( QString uri )
         {
           type = QVariant::Date;
           typeName = "date";
-          length = 10;
+          length = -1;
+        }
+        else if ( typeName == "time" )
+        {
+          type = QVariant::Time;
+          typeName = "time";
+          length = -1;
+        }
+        else if ( typeName == "datetime" )
+        {
+          type = QVariant::DateTime;
+          typeName = "datetime";
+          length = -1;
         }
 
         if ( reFieldDef.cap( 2 ) != "" )
@@ -175,8 +191,10 @@ QgsAbstractFeatureSource* QgsMemoryProvider::featureSource() const
   return new QgsMemoryFeatureSource( this );
 }
 
-QString QgsMemoryProvider::dataSourceUri() const
+QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
 {
+  Q_UNUSED( expandAuthConfig )
+
   QUrl uri( "memory" );
   QString geometry;
   switch ( mWkbType )
@@ -198,6 +216,9 @@ QString QgsMemoryProvider::dataSourceUri() const
       break;
     case QGis::WKBMultiPolygon :
       geometry = "MultiPolygon";
+      break;
+    case QGis::WKBNoGeometry :
+      geometry = "None";
       break;
     default:
       geometry = "";
@@ -268,7 +289,18 @@ QGis::WkbType QgsMemoryProvider::geometryType() const
 
 long QgsMemoryProvider::featureCount() const
 {
-  return mFeatures.count();
+  if ( mSubsetString.isEmpty() )
+    return mFeatures.count();
+
+  // subset string set, no alternative but testing each feature
+  QgsFeatureIterator fit = QgsFeatureIterator( new QgsMemoryFeatureIterator( new QgsMemoryFeatureSource( this ), true,  QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) ) );
+  int count = 0;
+  QgsFeature feature;
+  while ( fit.nextFeature( feature ) )
+  {
+    count++;
+  }
+  return count;
 }
 
 const QgsFields & QgsMemoryProvider::fields() const
@@ -343,6 +375,8 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
       case QVariant::Double:
       case QVariant::String:
       case QVariant::Date:
+      case QVariant::Time:
+      case QVariant::DateTime:
       case QVariant::LongLong:
         break;
       default:
@@ -355,7 +389,9 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
     for ( QgsFeatureMap::iterator fit = mFeatures.begin(); fit != mFeatures.end(); ++fit )
     {
       QgsFeature& f = fit.value();
-      f.attributes().append( QVariant() );
+      QgsAttributes attr = f.attributes();
+      attr.append( QVariant() );
+      f.setAttributes( attr );
     }
   }
   return true;
@@ -375,13 +411,15 @@ bool QgsMemoryProvider::deleteAttributes( const QgsAttributeIds& attributes )
     for ( QgsFeatureMap::iterator fit = mFeatures.begin(); fit != mFeatures.end(); ++fit )
     {
       QgsFeature& f = fit.value();
-      f.attributes().remove( idx );
+      QgsAttributes attr = f.attributes();
+      attr.remove( idx );
+      f.setAttributes( attr );
     }
   }
   return true;
 }
 
-bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
+bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
@@ -390,13 +428,13 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap & a
       continue;
 
     const QgsAttributeMap& attrs = it.value();
-    for ( QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2 )
+    for ( QgsAttributeMap::const_iterator it2 = attrs.constBegin(); it2 != attrs.constEnd(); ++it2 )
       fit->setAttribute( it2.key(), it2.value() );
   }
   return true;
 }
 
-bool QgsMemoryProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
+bool QgsMemoryProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
   for ( QgsGeometryMap::const_iterator it = geometry_map.begin(); it != geometry_map.end(); ++it )
   {
@@ -425,7 +463,7 @@ QString QgsMemoryProvider::subsetString()
   return mSubsetString;
 }
 
-bool QgsMemoryProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
+bool QgsMemoryProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
 {
   Q_UNUSED( updateFeatureCount );
 
@@ -437,6 +475,8 @@ bool QgsMemoryProvider::setSubsetString( QString theSQL, bool updateFeatureCount
   }
 
   mSubsetString = theSQL;
+
+  emit dataChanged();
   return true;
 }
 
@@ -447,7 +487,7 @@ bool QgsMemoryProvider::createSpatialIndex()
     mSpatialIndex = new QgsSpatialIndex();
 
     // add existing features to index
-    for ( QgsFeatureMap::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it )
+    for ( QgsFeatureMap::const_iterator it = mFeatures.constBegin(); it != mFeatures.constEnd(); ++it )
     {
       mSpatialIndex->insertFeature( *it );
     }
@@ -459,13 +499,13 @@ int QgsMemoryProvider::capabilities() const
 {
   return AddFeatures | DeleteFeatures | ChangeGeometries |
          ChangeAttributeValues | AddAttributes | DeleteAttributes | CreateSpatialIndex |
-         SelectAtId | SelectGeometryAtId;
+         SelectAtId | SelectGeometryAtId | CircularGeometries;
 }
 
 
 void QgsMemoryProvider::updateExtent()
 {
-  if ( mFeatures.count() == 0 )
+  if ( mFeatures.isEmpty() )
   {
     mExtent = QgsRectangle();
   }
@@ -474,8 +514,8 @@ void QgsMemoryProvider::updateExtent()
     mExtent.setMinimal();
     Q_FOREACH ( const QgsFeature& feat, mFeatures )
     {
-      if ( feat.geometry() )
-        mExtent.unionRect( feat.geometry()->boundingBox() );
+      if ( feat.constGeometry() )
+        mExtent.unionRect( feat.constGeometry()->boundingBox() );
     }
   }
 }

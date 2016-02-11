@@ -50,9 +50,7 @@ class QgsSelectedFeature: public QObject
      * Setting selected feature
      * @param featureId id of feature which was selected
      * @param vlayer vector layer in which feature is selected
-     * @param rubberBand rubber band which displays feature
      * @param canvas mapCanvas on which we are working
-     * @param geometry geometry of the selected feature
      */
     void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer* vlayer, QgsMapCanvas* canvas );
 
@@ -82,14 +80,14 @@ class QgsSelectedFeature: public QObject
      * Moves selected vertex
      * @param v translation vector
      */
-    void moveSelectedVertexes( const QgsVector &v );
+    void moveSelectedVertexes( QgsVector v );
 
     /**
      * Inverts selection of vertex with number
      * @param vertexNr number of vertex which is to be inverted
      * @param invert flag if vertex selection should be inverted or not
      */
-    void invertVertexSelection( int vertexNr, bool invert = true );
+    void invertVertexSelection( int vertexNr );
 
     /**
      * Tells if vertex is selected
@@ -116,11 +114,6 @@ class QgsSelectedFeature: public QObject
     void replaceVertexMap();
 
     /**
-     * Clears data about vertexes if they are in rubber band for moving etc.
-     */
-    void cleanRubberBandsData();
-
-    /**
      * Get the layer of the selected feature
      * @return used vector layer
      */
@@ -133,6 +126,10 @@ class QgsSelectedFeature: public QObject
 
     void beginGeometryChange();
     void endGeometryChange();
+
+  signals:
+    void selectionChanged();
+    void vertexMapChanged();
 
   public slots:
     /*
@@ -187,21 +184,6 @@ class QgsSelectedFeature: public QObject
     void createVertexMap();
 
     /**
-     *  Creates vertex map for polygon type feature
-     */
-    void createVertexMapPolygon();
-
-    /**
-     *  Creates vertex map for line type feature
-     */
-    void createVertexMapLine();
-
-    /**
-     *  Creates vertex map for ppint type feature
-     */
-    void createVertexMapPoint();
-
-    /**
      * Updates stored geometry to actual one loaded from layer
      * (or already available geometry)
      */
@@ -210,14 +192,13 @@ class QgsSelectedFeature: public QObject
     /**
      * Validates the geometry
      */
-    void validateGeometry( QgsGeometry *g = 0 );
+    void validateGeometry( QgsGeometry *g = nullptr );
 
     QgsFeatureId mFeatureId;
     QgsGeometry *mGeometry;
     bool mFeatureSelected;
     bool mChangingGeometry;
     QgsVectorLayer* mVlayer;
-    QgsRubberBand* mRubberBand;
     QList<QgsVertexEntry*> mVertexMap;
     QgsMapCanvas* mCanvas;
 

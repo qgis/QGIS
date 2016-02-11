@@ -24,7 +24,7 @@
 #include <QTextCodec>
 
 QgsNetworkContentFetcher::QgsNetworkContentFetcher()
-    : mReply( 0 )
+    : mReply( nullptr )
     , mContentLoaded( false )
 {
 
@@ -43,7 +43,7 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
   }
 }
 
-void QgsNetworkContentFetcher::fetchContent( const QUrl url )
+void QgsNetworkContentFetcher::fetchContent( const QUrl& url )
 {
   QUrl nextUrlToFetch = url;
   mContentLoaded = false;
@@ -56,7 +56,7 @@ void QgsNetworkContentFetcher::fetchContent( const QUrl url )
     //cancel any in progress requests
     mReply->abort();
     mReply->deleteLater();
-    mReply = 0;
+    mReply = nullptr;
   }
 
   mReply = QgsNetworkAccessManager::instance()->get( request );
@@ -67,7 +67,7 @@ QNetworkReply *QgsNetworkContentFetcher::reply()
 {
   if ( !mContentLoaded )
   {
-    return 0;
+    return nullptr;
   }
 
   return mReply;
@@ -94,7 +94,7 @@ QTextCodec* QgsNetworkContentFetcher::codecForHtml( QByteArray& array ) const
   //so test for that ourselves
 
   //basic check
-  QTextCodec* codec = QTextCodec::codecForUtfText( array, 0 );
+  QTextCodec* codec = QTextCodec::codecForUtfText( array, nullptr );
   if ( codec )
   {
     return codec;
@@ -132,7 +132,7 @@ void QgsNetworkContentFetcher::contentLoaded( bool ok )
 
   if ( mReply->error() != QNetworkReply::NoError )
   {
-    QgsMessageLog::logMessage( tr( "HTTP fetch %1 failed with error %2" ).arg( mReply->url().toString() ).arg( mReply->errorString() ) );
+    QgsMessageLog::logMessage( tr( "HTTP fetch %1 failed with error %2" ).arg( mReply->url().toString(), mReply->errorString() ) );
     mContentLoaded = true;
     emit finished();
     return;
@@ -145,7 +145,7 @@ void QgsNetworkContentFetcher::contentLoaded( bool ok )
     QVariant status = mReply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
     if ( !status.isNull() && status.toInt() >= 400 )
     {
-      QgsMessageLog::logMessage( tr( "HTTP fetch %1 failed with error %2" ).arg( mReply->url().toString() ).arg( status.toString() ) );
+      QgsMessageLog::logMessage( tr( "HTTP fetch %1 failed with error %2" ).arg( mReply->url().toString(), status.toString() ) );
     }
     mContentLoaded = true;
     emit finished();

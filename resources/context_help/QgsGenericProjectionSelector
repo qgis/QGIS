@@ -1,0 +1,18 @@
+<h3>Coordinate Reference System Selector</h3>
+
+<p>
+  The Coordinate Reference System Selector allows you to set the projection for
+  the current layer.
+</p>
+<p>
+  You can find a coordinate system by entering its name, EPSG code or the QGIS ID
+  into the <label>Filter</label> text field. The list of recently used
+  coordinate systems are available at the top for quick access.
+</p>
+<p>
+  When operating across layers, for example, computing intersections between
+  two layers, it is important that both layers have the same CRS. To change the
+  projection of an existing layer, it is insufficient to simply change the CRS
+  in that layer's properties. Instead you must save the layer as a new layer,
+  and choose the desired CRS for the new layer.
+</p>

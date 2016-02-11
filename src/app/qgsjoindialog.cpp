@@ -40,11 +40,19 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> already
 
   mTargetFieldComboBox->setLayer( mLayer );
 
+  mJoinLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mJoinLayerComboBox->setExceptedLayerList( alreadyJoinedLayers );
   connect( mJoinLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), mJoinFieldComboBox, SLOT( setLayer( QgsMapLayer* ) ) );
   connect( mJoinLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( joinedLayerChanged( QgsMapLayer* ) ) );
 
   mCacheInMemoryCheckBox->setChecked( true );
+
+  QgsMapLayer *joinLayer = mJoinLayerComboBox->currentLayer();
+  if ( joinLayer && joinLayer->isValid() )
+  {
+    mJoinFieldComboBox->setLayer( joinLayer );
+    joinedLayerChanged( joinLayer );
+  }
 }
 
 QgsJoinDialog::~QgsJoinDialog()
@@ -68,7 +76,7 @@ void QgsJoinDialog::setJoinInfo( const QgsVectorJoinInfo& joinInfo )
   }
 
   QStringList* lst = joinInfo.joinFieldNamesSubset();
-  mUseJoinFieldsSubset->setChecked( lst && lst->count() > 0 );
+  mUseJoinFieldsSubset->setChecked( lst && !lst->isEmpty() );
   QAbstractItemModel* model = mJoinFieldsSubsetView->model();
   if ( model )
   {
@@ -94,6 +102,8 @@ QgsVectorJoinInfo QgsJoinDialog::joinInfo() const
   info.joinFieldName = mJoinFieldComboBox->currentField();
   info.targetFieldName = mTargetFieldComboBox->currentField();
   info.memoryCache = mCacheInMemoryCheckBox->isChecked();
+  info.targetFieldIndex = -1;
+  info.joinFieldIndex = -1;
 
   if ( mUseCustomPrefix->isChecked() )
     info.prefix = mCustomPrefix->text();
@@ -126,7 +136,6 @@ bool QgsJoinDialog::createAttributeIndex() const
 
 void QgsJoinDialog::joinedLayerChanged( QgsMapLayer* layer )
 {
-
   mJoinFieldComboBox->clear();
 
   QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( layer );
@@ -137,7 +146,7 @@ void QgsJoinDialog::joinedLayerChanged( QgsMapLayer* layer )
 
   mUseJoinFieldsSubset->setChecked( false );
   QStandardItemModel* subsetModel = new QStandardItemModel( this );
-  const QgsFields& layerFields = vLayer->pendingFields();
+  const QgsFields& layerFields = vLayer->fields();
   for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
     QStandardItem* subsetItem = new QStandardItem( layerFields[idx].name() );
@@ -161,6 +170,6 @@ void QgsJoinDialog::joinedLayerChanged( QgsMapLayer* layer )
 
   if ( !mUseCustomPrefix->isChecked() )
   {
-    mCustomPrefix->setText( layer->name() + "_" );
+    mCustomPrefix->setText( layer->name() + '_' );
   }
 }

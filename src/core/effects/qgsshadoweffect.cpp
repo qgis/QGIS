@@ -18,6 +18,7 @@
 #include "qgsshadoweffect.h"
 #include "qgsimageoperation.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsunittypes.h"
 
 QgsShadowEffect::QgsShadowEffect()
     : QgsPaintEffect()
@@ -102,7 +103,7 @@ QgsStringMap QgsShadowEffect::properties() const
   props.insert( "blur_level", QString::number( mBlurLevel ) );
   props.insert( "offset_angle", QString::number( mOffsetAngle ) );
   props.insert( "offset_distance", QString::number( mOffsetDist ) );
-  props.insert( "offset_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit ) );
+  props.insert( "offset_unit", QgsUnitTypes::encodeUnit( mOffsetUnit ) );
   props.insert( "offset_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale ) );
   props.insert( "color", QgsSymbolLayerV2Utils::encodeColor( mColor ) );
   return props;
@@ -111,7 +112,7 @@ QgsStringMap QgsShadowEffect::properties() const
 void QgsShadowEffect::readProperties( const QgsStringMap &props )
 {
   bool ok;
-  QPainter::CompositionMode mode = ( QPainter::CompositionMode )props.value( "blend_mode" ).toInt( &ok );
+  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( "blend_mode" ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
@@ -122,7 +123,7 @@ void QgsShadowEffect::readProperties( const QgsStringMap &props )
     mTransparency = transparency;
   }
   mEnabled = props.value( "enabled", "1" ).toInt();
-  mDrawMode = ( QgsPaintEffect::DrawMode )props.value( "draw_mode", "2" ).toInt();
+  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( "draw_mode", "2" ).toInt() );
   int level = props.value( "blur_level" ).toInt( &ok );
   if ( ok )
   {
@@ -138,7 +139,7 @@ void QgsShadowEffect::readProperties( const QgsStringMap &props )
   {
     mOffsetDist = distance;
   }
-  mOffsetUnit = QgsSymbolLayerV2Utils::decodeOutputUnit( props.value( "offset_unit" ) );
+  mOffsetUnit = QgsUnitTypes::decodeSymbolUnit( props.value( "offset_unit" ) );
   mOffsetMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( props.value( "offset_unit_scale" ) );
   if ( props.contains( "color" ) )
   {
@@ -178,7 +179,7 @@ QgsDropShadowEffect::~QgsDropShadowEffect()
 
 }
 
-QgsPaintEffect *QgsDropShadowEffect::clone() const
+QgsDropShadowEffect* QgsDropShadowEffect::clone() const
 {
   return new QgsDropShadowEffect( *this );
 }
@@ -206,7 +207,7 @@ QgsInnerShadowEffect::~QgsInnerShadowEffect()
 
 }
 
-QgsPaintEffect *QgsInnerShadowEffect::clone() const
+QgsInnerShadowEffect* QgsInnerShadowEffect::clone() const
 {
   return new QgsInnerShadowEffect( *this );
 }

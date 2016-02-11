@@ -1,0 +1,152 @@
+<root>
+  <key>Segmentation-cc</key>
+  <exec>otbcli_Segmentation</exec>
+  <longname>Segmentation (cc)</longname>
+  <group>Segmentation</group>
+  <description>Performs segmentation of an image, and output either a raster or a vector file. In vector mode, large input datasets are supported.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description>The input image to segment</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>filter</key>
+    <name>Segmentation algorithm</name>
+    <description>Choice of segmentation algorithm (mean-shift by default)</description>
+    <options>
+      <choices>
+        <choice>cc</choice>
+        </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_String">ParameterString</parameter_type>
+    <key>filter.cc.expr</key>
+    <name>Condition</name>
+    <description>User defined connection condition, written as a mathematical expression. Available variables are p(i)b(i), intensity_p(i) and distance (example of expression : distance &lt; 10 )</description>
+    <default />
+    <multiline />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>mode</key>
+    <name>Processing mode</name>
+    <description>Choice of processing mode, either raster or large-scale.</description>
+    <options>
+      <choices>
+        <choice>vector</choice>
+        </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputVectorData">OutputVector</parameter_type>
+    <key>mode.vector.out</key>
+    <name>Output vector file</name>
+    <description>The output vector file or database (name can be anything understood by OGR)</description>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>mode.vector.outmode</key>
+    <name>Writing mode for the output vector file</name>
+    <description>This allows setting the writing behaviour for the output vector file. Please note that the actual behaviour depends on the file format.</description>
+    <options>
+      <choices>
+        <choice>ulco</choice>
+        <choice>ovw</choice>
+        <choice>ulovw</choice>
+        <choice>ulu</choice>
+      </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>mode.vector.inmask</key>
+    <name>Mask Image</name>
+    <description>Only pixels whose mask value is strictly positive will be segmented.</description>
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Empty">ParameterBoolean</parameter_type>
+    <key>mode.vector.neighbor</key>
+    <name>8-neighbor connectivity</name>
+    <description>Activate 8-Neighborhood connectivity (default is 4).</description>
+    <default>True</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Empty">ParameterBoolean</parameter_type>
+    <key>mode.vector.stitch</key>
+    <name>Stitch polygons</name>
+    <description>Scan polygons on each side of tiles and stitch polygons which connect by more than one pixel.</description>
+    <default>True</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>mode.vector.minsize</key>
+    <name>Minimum object size</name>
+    <description>Objects whose size is below the minimum object size (area in pixels) will be ignored during vectorization.</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>mode.vector.simplify</key>
+    <name>Simplify polygons</name>
+    <description>Simplify polygons according to a given tolerance (in pixel). This option allows reducing the size of the output file or database.</description>
+    <minValue />
+    <maxValue />
+    <default>0.1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_String">ParameterString</parameter_type>
+    <key>mode.vector.layername</key>
+    <name>Layer name</name>
+    <description>Name of the layer in the vector file or database (default is Layer).</description>
+    <default>layer</default>
+    <multiline />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_String">ParameterString</parameter_type>
+    <key>mode.vector.fieldname</key>
+    <name>Geometry index field name</name>
+    <description>Name of the field holding the geometry index in the output vector file or database.</description>
+    <default>DN</default>
+    <multiline />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>mode.vector.tilesize</key>
+    <name>Tiles size</name>
+    <description>User defined tiles size for tile-based segmentation. Optimal tile size is selected according to available RAM if null.</description>
+    <minValue />
+    <maxValue />
+    <default>1024</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>mode.vector.startlabel</key>
+    <name>Starting geometry index</name>
+    <description>Starting value of the geometry index field</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_StringList">ParameterString</parameter_type>
+    <key>mode.vector.ogroptions</key>
+    <name>OGR options for layer creation</name>
+    <description>A list of layer creation options in the form KEY=VALUE that will be passed directly to OGR without any validity checking. Options may depend on the file format, and can be found in OGR documentation.</description>
+    <default />
+    <multiline />
+    <optional>True</optional>
+  </parameter>
+  </root>

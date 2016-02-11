@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,6 +18,10 @@
 
 #include "ui_qgsrangeconfigdlgbase.h"
 #include "qgseditorconfigwidget.h"
+
+/** \class QgsRangeConfigDlg
+ * \note not available in Python bindings
+ */
 
 class GUI_EXPORT QgsRangeConfigDlg : public QgsEditorConfigWidget, private Ui::QgsRangeConfigDlgBase
 {

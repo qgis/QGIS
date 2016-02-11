@@ -15,6 +15,9 @@ class QgsStyleV2ManagerDialog : QDialog
     void addItem();
     void editItem();
     void removeItem();
+    void exportItemsSVG();
+    void exportItemsPNG();
+    void exportSelectedItemsImages( const QString& dir, const QString& format, QSize size );
     void exportItems();
     void importItems();
 
@@ -44,7 +47,7 @@ class QgsStyleV2ManagerDialog : QDialog
     void regrouped( QStandardItem* );
 
     //! filter the symbols based on input search term
-    void filterSymbols( QString );
+    void filterSymbols( const QString& );
 
     //! Listen to tag changes
     void tagsChanged();
@@ -52,14 +55,18 @@ class QgsStyleV2ManagerDialog : QDialog
     //! Perform symbol specific tasks when selected
     void symbolSelected( const QModelIndex& );
 
+    //! Perform tasks when the selected symbols change
+    void selectedSymbolsChanged( const QItemSelection& selected, const QItemSelection& deselected );
+
     //! Context menu for the groupTree
-    void grouptreeContextMenu( const QPoint& );
+    void grouptreeContextMenu( QPoint );
 
     //! Context menu for the listItems ( symbols list )
-    void listitemsContextMenu( const QPoint& );
+    void listitemsContextMenu( QPoint );
 
   protected slots:
     bool addColorRamp( QAction* action );
+    void groupSelectedSymbols();
 
   protected:
 
@@ -71,13 +78,13 @@ class QgsStyleV2ManagerDialog : QDialog
     //! build the groups tree
     void buildGroupTree( QStandardItem* &parent );
     //! to set symbols checked when in editing mode
-    void setSymbolsChecked( QStringList );
+    void setSymbolsChecked( const QStringList& );
 
     //! populate list view with symbols of the current type with the given names
-    void populateSymbols( QStringList symbolNames, bool checkable = false );
+    void populateSymbols( const QStringList& symbolNames, bool checkable = false );
 
     //! populate list view with color ramps
-    void populateColorRamps( QStringList colorRamps, bool checkable = false );
+    void populateColorRamps( const QStringList& colorRamps, bool checkable = false );
 
     int currentItemType();
     QString currentItemName();

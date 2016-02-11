@@ -16,7 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QPainter>
 #include <QTime>
 
@@ -57,8 +56,8 @@ class Regression1141: public QObject
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     /** This method tests that we can create a shpfile with diacriticals in its name
      *    and with fields that have diacriticals in their names*/
@@ -88,7 +87,7 @@ void Regression1141::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
   // compute our test file name:
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTmpDir = QDir::tempPath() + '/';
   mFileName = myTmpDir +  "ąęćń.shp";
 }
 
@@ -127,42 +126,45 @@ void Regression1141::diacriticalTest()
   {
     qDebug( "Creating test dataset: " );
 
-    QgsVectorFileWriter myWriter( mFileName,
-                                  mEncoding,
-                                  mFields,
-                                  QGis::WKBPoint,
-                                  &mCRS );
-
-    QgsPoint myPoint = QgsPoint( 10.0, 10.0 );
-    // NOTE: don't delete this pointer again -
-    // ownership is passed to the feature which will
-    // delete it in its dtor!
-    QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( myPoint );
-    QgsFeature myFeature;
-    myFeature.setGeometry( mypPointGeometry );
-    myFeature.initAttributes( 1 );
-    myFeature.setAttribute( 0, 10 );
-    //
-    // Write the feature to the filewriter
-    // and check for errors
-    //
-    QVERIFY( myWriter.addFeature( myFeature ) );
-    mError = myWriter.hasError();
-
-    if ( mError == QgsVectorFileWriter::ErrDriverNotFound )
     {
-      std::cout << "Driver not found error" << std::endl;
-    }
-    else if ( mError == QgsVectorFileWriter::ErrCreateDataSource )
-    {
-      std::cout << "Create data source error" << std::endl;
-    }
-    else if ( mError == QgsVectorFileWriter::ErrCreateLayer )
-    {
-      std::cout << "Create layer error" << std::endl;
+      QgsVectorFileWriter myWriter( mFileName,
+                                    mEncoding,
+                                    mFields,
+                                    QGis::WKBPoint,
+                                    &mCRS );
+
+      QgsPoint myPoint = QgsPoint( 10.0, 10.0 );
+      // NOTE: don't delete this pointer again -
+      // ownership is passed to the feature which will
+      // delete it in its dtor!
+      QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( myPoint );
+      QgsFeature myFeature;
+      myFeature.setGeometry( mypPointGeometry );
+      myFeature.initAttributes( 1 );
+      myFeature.setAttribute( 0, 10 );
+      //
+      // Write the feature to the filewriter
+      // and check for errors
+      //
+      QVERIFY( myWriter.addFeature( myFeature ) );
+      mError = myWriter.hasError();
+
+      if ( mError == QgsVectorFileWriter::ErrDriverNotFound )
+      {
+        std::cout << "Driver not found error" << std::endl;
+      }
+      else if ( mError == QgsVectorFileWriter::ErrCreateDataSource )
+      {
+        std::cout << "Create data source error" << std::endl;
+      }
+      else if ( mError == QgsVectorFileWriter::ErrCreateLayer )
+      {
+        std::cout << "Create layer error" << std::endl;
+      }
+
+      QVERIFY( mError == QgsVectorFileWriter::NoError );
     }
 
-    QVERIFY( mError == QgsVectorFileWriter::NoError );
     // Now check we can delete it again ok
     QVERIFY( QgsVectorFileWriter::deleteShapeFile( mFileName ) );
 

@@ -1,0 +1,17 @@
+{
+  "name": "scale_exp",
+  "type": "function",
+  "description": "Transforms a given value from an input domain to an output range using an exponential curve. This function can be used to ease values in or out of the specified output range.",
+  "arguments": [
+	{"arg":"val","description":"A value in the input domain. The function will return a corresponding scaled value in the output range."},
+	{"arg":"domain_min","description":"Specifies the minimum value in the input domain, the smallest value the input value should take."},
+	{"arg":"domain_max","description":"Specifies the maximum value in the input domain, the largest value the input value should take."},
+	{"arg":"range_min","description":"Specifies the minimum value in the output range, the smallest value which should be output by the function."},
+	{"arg":"range_max","description":"Specifies the maximum value in the output range, the largest value which should be output by the function."},
+	{"arg":"exponent","description":"A positive value (greater than 0), which dictates the way input values are mapped to the output range. Large exponents will cause the output values to 'ease in', starting slowly before accelerating as the input values approach the domain maximum. Smaller exponents (less than 1) will cause output values to 'ease out', where the mapping starts quickly but slows as it approaches the domain maximum."}
+  ],
+  "examples": [
+	{ "expression":"scale_exp(5,0,10,0,100,2)", "returns":"25", "note": "easing in, using an exponent of 2"},
+	{ "expression":"scale_exp(3,0,10,0,100,0.5)", "returns":"54.772", "note": "easing out, using an exponent of 0.5"}
+  ]
+}

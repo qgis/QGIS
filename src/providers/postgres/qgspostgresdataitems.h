@@ -63,13 +63,16 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     virtual bool acceptDrop() override { return true; }
     virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
 
+    bool handleDrop( const QMimeData * data, QString toSchema );
+
   signals:
-    void addGeometryColumn( QgsPostgresLayerProperty );
+    void addGeometryColumn( const QgsPostgresLayerProperty& );
 
   public slots:
     void editConnection();
     void deleteConnection();
     void refreshConnection();
+    void createSchema();
 
 };
 
@@ -82,6 +85,13 @@ class QgsPGSchemaItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem*> createChildren() override;
     virtual QList<QAction*> actions() override;
+
+    virtual bool acceptDrop() override { return true; }
+    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
+
+  public slots:
+    void deleteSchema();
+    void renameSchema();
 
   private:
     QgsPGLayerItem * createLayer( QgsPostgresLayerProperty layerProperty );
@@ -101,8 +111,13 @@ class QgsPGLayerItem : public QgsLayerItem
 
     virtual QList<QAction*> actions() override;
 
+    /** Returns comments of the layer */
+    virtual QString comments() const override;
+
   public slots:
     void deleteLayer();
+    void renameLayer();
+    void truncateTable();
 
   private:
     QgsPostgresLayerProperty mLayerProperty;

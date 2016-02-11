@@ -38,6 +38,7 @@ from processing.tests.TestData import polygons2, polygonsGeoJson, raster
 
 
 class SagaTest(unittest.TestCase):
+
     """Tests for saga algorithms"""
 
     def test_sagametricconversions(self):
@@ -46,7 +47,7 @@ class SagaTest(unittest.TestCase):
         output = outputs['CONV']
         self.assertTrue(os.path.isfile(output))
         dataset = gdal.Open(output, GA_ReadOnly)
-        strhash = hash(str(dataset.ReadAsArray(0).tolist()))
+        strhash = hash(unicode(dataset.ReadAsArray(0).tolist()))
         self.assertEqual(strhash, -2137931723)
 
     def test_sagasortgrid(self):
@@ -54,7 +55,7 @@ class SagaTest(unittest.TestCase):
         output = outputs['OUTPUT']
         self.assertTrue(os.path.isfile(output))
         dataset = gdal.Open(output, GA_ReadOnly)
-        strhash = hash(str(dataset.ReadAsArray(0).tolist()))
+        strhash = hash(unicode(dataset.ReadAsArray(0).tolist()))
         self.assertEqual(strhash, 1320073153)
 
     def test_SagaVectorAlgorithmWithSelection(self):
@@ -70,8 +71,8 @@ class SagaTest(unittest.TestCase):
         fields = layer.pendingFields()
         expectednames = ['ID', 'POLY_NUM_B', 'POLY_ST_B']
         expectedtypes = ['Real', 'Real', 'String']
-        names = [str(f.name()) for f in fields]
-        types = [str(f.typeName()) for f in fields]
+        names = [unicode(f.name()) for f in fields]
+        types = [unicode(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
         features = processing.features(layer)
@@ -79,10 +80,10 @@ class SagaTest(unittest.TestCase):
         feature = features.next()
         attrs = feature.attributes()
         expectedvalues = ['2', '1', 'string a']
-        values = [str(attr) for attr in attrs]
+        values = [unicode(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt = 'POINT(270806.69221918 4458924.97720492)'
-        self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
+        self.assertEqual(wkt, unicode(feature.geometry().exportToWkt()))
 
     def test_SagaVectorAlgorithWithUnsupportedInputAndOutputFormat(self):
         """This tests both the exporting to shp and then the format
@@ -102,8 +103,8 @@ class SagaTest(unittest.TestCase):
         fields = layer.pendingFields()
         expectednames = ['ID', 'POLY_NUM_A', 'POLY_ST_A']
         expectedtypes = ['Real', 'Real', 'String']
-        names = [str(f.name()) for f in fields]
-        types = [str(f.typeName()) for f in fields]
+        names = [unicode(f.name()) for f in fields]
+        types = [unicode(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
         features = processing.features(layer)
@@ -111,10 +112,10 @@ class SagaTest(unittest.TestCase):
         feature = features.next()
         attrs = feature.attributes()
         expectedvalues = ['0', '1.1', 'string a']
-        values = [str(attr) for attr in attrs]
+        values = [unicode(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt = 'POINT(270787.49991451 4458955.46775295)'
-        self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
+        self.assertEqual(wkt, unicode(feature.geometry().exportToWkt()))
 
     def test_SagaRasterAlgorithmWithUnsupportedOutputFormat(self):
         outputs = processing.runalg('saga:convergenceindex', raster(), 0, 0,
@@ -122,7 +123,7 @@ class SagaTest(unittest.TestCase):
         output = outputs['RESULT']
         self.assertTrue(os.path.isfile(output))
         dataset = gdal.Open(output, GA_ReadOnly)
-        strhash = hash(str(dataset.ReadAsArray(0).tolist()))
+        strhash = hash(unicode(dataset.ReadAsArray(0).tolist()))
         self.assertEqual(strhash, 485390137)
 
 

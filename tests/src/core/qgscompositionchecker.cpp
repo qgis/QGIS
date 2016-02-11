@@ -33,12 +33,8 @@ QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsCompos
 }
 
 QgsCompositionChecker::QgsCompositionChecker()
-    : mComposition( NULL )
+    : mComposition( nullptr )
     , mDotsPerMeter( 96 / 25.4 * 1000 )
-{
-}
-
-QgsCompositionChecker::~QgsCompositionChecker()
 {
 }
 
@@ -78,7 +74,7 @@ bool QgsCompositionChecker::testComposition( QString &theReport, int page, int p
   mComposition->renderPage( &p, page );
   p.end();
 
-  QString renderedFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mTestName ).baseName() + "_rendered.png";
+  QString renderedFilePath = QDir::tempPath() + '/' + QFileInfo( mTestName ).baseName() + "_rendered.png";
   outputImage.save( renderedFilePath, "PNG" );
 
   setRenderedImage( renderedFilePath );

@@ -19,9 +19,13 @@
 
 #include <QDialog>
 
-/** \brief Interface class for dialogs that have an apply operation (e.g. for symbology)*/
+/** \brief Interface class for dialogs that have an apply operation (e.g. for symbology)
+ * \note not available in Python bindings
+*/
 class QgsApplyDialog: public QDialog
 {
+    Q_OBJECT
+
   public:
     QgsApplyDialog(): QDialog() {}
     ~QgsApplyDialog() {}

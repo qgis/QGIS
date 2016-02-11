@@ -46,24 +46,23 @@ class Grid(GeoAlgorithm):
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
-    TYPES = ['Rectangle (line)',
-             'Rectangle (polygon)',
-             'Diamond (polygon)',
-             'Hexagon (polygon)'
-             ]
-
     def defineCharacteristics(self):
-        self.name = 'Create grid'
-        self.group = 'Vector creation tools'
+        self.name, self.i18n_name = self.trAlgorithm('Create grid')
+        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
+
+        self.types = [self.tr('Rectangle (line)'),
+                      self.tr('Rectangle (polygon)'),
+                      self.tr('Diamond (polygon)'),
+                      self.tr('Hexagon (polygon)')]
 
         self.addParameter(ParameterSelection(self.TYPE,
-            self.tr('Grid type'), self.TYPES))
+                                             self.tr('Grid type'), self.types))
         self.addParameter(ParameterExtent(self.EXTENT,
-            self.tr('Grid extent')))
+                                          self.tr('Grid extent')))
         self.addParameter(ParameterNumber(self.HSPACING,
-            self.tr('Horizontal spacing'), default=10.0))
+                                          self.tr('Horizontal spacing'), default=10.0))
         self.addParameter(ParameterNumber(self.VSPACING,
-            self.tr('Vertical spacing'), default=10.0))
+                                          self.tr('Vertical spacing'), default=10.0))
         self.addParameter(ParameterCrs(self.CRS, 'Grid CRS'))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid')))
@@ -97,7 +96,7 @@ class Grid(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Vertical spacing is too small for the covered area'))
 
-        if self.TYPES[idx].find('polygon') >= 0:
+        if self.types[idx].find('polygon') >= 0:
             geometryType = QGis.WKBPolygon
         else:
             geometryType = QGis.WKBLineString
@@ -109,7 +108,7 @@ class Grid(GeoAlgorithm):
                   ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-            geometryType, crs)
+                                                                     geometryType, crs)
 
         if idx == 0:
             self._rectangleGridLine(
@@ -211,11 +210,11 @@ class Grid(GeoAlgorithm):
                     y3 = originY + (((row * 2) + 3) * halfVSpacing)
 
                 polyline = []
-                polyline.append(QgsPoint(x1,  y2))
-                polyline.append(QgsPoint(x2,  y1))
-                polyline.append(QgsPoint(x3,  y2))
-                polyline.append(QgsPoint(x2,  y3))
-                polyline.append(QgsPoint(x1,  y2))
+                polyline.append(QgsPoint(x1, y2))
+                polyline.append(QgsPoint(x2, y1))
+                polyline.append(QgsPoint(x3, y2))
+                polyline.append(QgsPoint(x2, y3))
+                polyline.append(QgsPoint(x1, y2))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
                 ft.setAttributes([x1, y1, x3, y3])

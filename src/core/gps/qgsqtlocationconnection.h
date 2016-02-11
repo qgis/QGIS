@@ -23,17 +23,21 @@
 #include <QtCore/QPointer>
 
 #if defined(HAVE_QT_MOBILITY_LOCATION )
-  #include <QtLocation/QGeoPositionInfoSource>
-  #include <QtLocation/QGeoSatelliteInfo>
-  #include <QtLocation/QGeoSatelliteInfoSource>
+#include <QtLocation/QGeoPositionInfoSource>
+#include <QtLocation/QGeoSatelliteInfo>
+#include <QtLocation/QGeoSatelliteInfoSource>
 
-  QTM_USE_NAMESPACE
+QTM_USE_NAMESPACE
 #else // Using QtPositioning
-  #include <QtPositioning/QGeoPositionInfoSource>
-  #include <QtPositioning/QGeoSatelliteInfo>
-  #include <QtPositioning/QGeoSatelliteInfoSource>
+#include <QtPositioning/QGeoPositionInfoSource>
+#include <QtPositioning/QGeoSatelliteInfo>
+#include <QtPositioning/QGeoSatelliteInfoSource>
 #endif
 
+/**
+ * \class QgsQtLocationConnection
+ * \note may not be available in Python bindings on all platforms
+*/
 class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
 {
     Q_OBJECT
@@ -42,23 +46,23 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
     ~QgsQtLocationConnection();
 
   protected slots:
-    /**Needed to make QtLocation detected*/
+    /** Needed to make QtLocation detected*/
     void broadcastConnectionAvailable();
 
-    /**Parse available data source content*/
+    /** Parse available data source content*/
     void parseData();
 
-    /**Called when the position updated.
+    /** Called when the position updated.
       * @note not available in python binding
       */
     void positionUpdated( const QGeoPositionInfo &info );
 
-    /**Called when the number of satellites in view is updated.
+    /** Called when the number of satellites in view is updated.
       * @note not available in python bindings on android
       */
     void satellitesInViewUpdated( const QList<QGeoSatelliteInfo>& satellites );
 
-    /**Called when the number of satellites in use is updated.
+    /** Called when the number of satellites in use is updated.
       * @note not available in python bindings on android
       */
     void satellitesInUseUpdated( const QList<QGeoSatelliteInfo>& satellites );

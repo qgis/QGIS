@@ -42,7 +42,16 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -170,7 +179,16 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -186,7 +204,16 @@
          </property>
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_6">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -353,7 +380,16 @@
                   <string notr="true">rastergeneral</string>
                  </property>
                  <layout class="QGridLayout" name="_5">
-                  <property name="margin">
+                  <property name="leftMargin">
+                   <number>11</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>11</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>11</number>
+                  </property>
+                  <property name="bottomMargin">
                    <number>11</number>
                   </property>
                   <property name="verticalSpacing">
@@ -393,7 +429,16 @@
          </widget>
          <widget class="QWidget" name="mOptsPage_Style">
           <layout class="QVBoxLayout" name="verticalLayout_14">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -1015,7 +1060,16 @@
          </widget>
          <widget class="QWidget" name="mOptsPage_Transparency">
           <layout class="QVBoxLayout" name="verticalLayout_4">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -1299,7 +1353,7 @@
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionSignPlus.png</normaloff>:/images/themes/default/mActionSignPlus.png</iconset>
+                        <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                       </property>
                      </widget>
                     </item>
@@ -1330,7 +1384,7 @@
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+                        <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                       </property>
                      </widget>
                     </item>
@@ -1344,7 +1398,7 @@
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionOpenTable.png</normaloff>:/images/themes/default/mActionOpenTable.png</iconset>
+                        <normaloff>:/images/themes/default/mActionOpenTable.svg</normaloff>:/images/themes/default/mActionOpenTable.svg</iconset>
                       </property>
                      </widget>
                     </item>
@@ -1422,7 +1476,16 @@
          </widget>
          <widget class="QWidget" name="mOptsPage_Pyramids">
           <layout class="QVBoxLayout" name="verticalLayout_9">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -1583,7 +1646,16 @@ p, li { white-space: pre-wrap; }
          </widget>
          <widget class="QWidget" name="mOptsPage_Histogram">
           <layout class="QVBoxLayout" name="verticalLayout_15">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -1633,7 +1705,16 @@ p, li { white-space: pre-wrap; }
          </widget>
          <widget class="QWidget" name="mOptsPage_Metadata">
           <layout class="QVBoxLayout" name="verticalLayout_8">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -1648,9 +1729,9 @@ p, li { white-space: pre-wrap; }
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
+                <y>-99</y>
                 <width>599</width>
-                <height>608</height>
+                <height>641</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -1671,7 +1752,14 @@ p, li { white-space: pre-wrap; }
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="mLayerTitleLineEdit"/>
+                   <widget class="QLineEdit" name="mLayerTitleLineEdit">
+                    <property name="toolTip">
+                     <string>The title is for the benefit of humans to identify layer.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>The title is for the benefit of humans to identify layer.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="3" column="0">
                    <widget class="QLabel" name="mLayerAbstractLabel">
@@ -1694,6 +1782,9 @@ p, li { white-space: pre-wrap; }
                       <height>50</height>
                      </size>
                     </property>
+                    <property name="toolTip">
+                     <string>The abstract is a descriptive narrative providing more information about the layer.</string>
+                    </property>
                    </widget>
                   </item>
                   <item row="5" column="0">
@@ -1704,12 +1795,26 @@ p, li { white-space: pre-wrap; }
                    </widget>
                   </item>
                   <item row="5" column="1">
-                   <widget class="QLineEdit" name="mLayerKeywordListLineEdit"/>
+                   <widget class="QLineEdit" name="mLayerKeywordListLineEdit">
+                    <property name="toolTip">
+                     <string>List of keywords separated by comma to help catalog searching.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>List of keywords separated by comma to help catalog searching.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="6" column="1">
                    <layout class="QHBoxLayout" name="horizontalLayout_13">
                     <item>
-                     <widget class="QLineEdit" name="mLayerDataUrlLineEdit"/>
+                     <widget class="QLineEdit" name="mLayerDataUrlLineEdit">
+                      <property name="toolTip">
+                       <string>An URL of the data presentation.</string>
+                      </property>
+                      <property name="placeholderText">
+                       <string>An URL of the data presentation.</string>
+                      </property>
+                     </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="mLayerDataUrlFormatLabel">
@@ -1746,6 +1851,23 @@ p, li { white-space: pre-wrap; }
                     </property>
                    </widget>
                   </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="mLayerShortNameLabel">
+                    <property name="text">
+                     <string>Short name</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLineEdit" name="mLayerShortNameLineEdit">
+                    <property name="toolTip">
+                     <string>A name used to identify the layer. The short name is a text string used for machine-to-machine communication.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>A name used to identify the layer. The short name is a text string used for machine-to-machine communication.</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>
@@ -1766,7 +1888,14 @@ p, li { white-space: pre-wrap; }
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QLineEdit" name="mLayerAttributionLineEdit"/>
+                   <widget class="QLineEdit" name="mLayerAttributionLineEdit">
+                    <property name="toolTip">
+                     <string>Attribution's title indicates the provider of the layer.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>Attribution's title indicates the provider of the layer.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="mLayerAttributionUrlLabel">
@@ -1776,7 +1905,14 @@ p, li { white-space: pre-wrap; }
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="mLayerAttributionUrlLineEdit"/>
+                   <widget class="QLineEdit" name="mLayerAttributionUrlLineEdit">
+                    <property name="toolTip">
+                     <string>Attribution's url gives a link to the webpage of the provider of the data layer.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>Attribution's url gives a link to the webpage of the provider of the data layer.</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -1798,7 +1934,14 @@ p, li { white-space: pre-wrap; }
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QLineEdit" name="mLayerMetadataUrlLineEdit"/>
+                   <widget class="QLineEdit" name="mLayerMetadataUrlLineEdit">
+                    <property name="toolTip">
+                     <string>The URL of the metadata document.</string>
+                    </property>
+                    <property name="placeholderText">
+                     <string>The URL of the metadata document.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="1" column="1">
                    <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -1888,7 +2031,14 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="mLayerLegendUrlLineEdit"/>
+                     <widget class="QLineEdit" name="mLayerLegendUrlLineEdit">
+                      <property name="toolTip">
+                       <string>An URL of the legend image.</string>
+                      </property>
+                      <property name="placeholderText">
+                       <string>An URL of the legend image.</string>
+                      </property>
+                     </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="mLayerLegendUrlFormatLabel">
@@ -1991,7 +2141,16 @@ p, li { white-space: pre-wrap; }
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item row="0" column="0" colspan="2">
@@ -2011,16 +2170,21 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
-   <container>1</container>
+   <class>QgsScaleRangeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalerangewidget.h</header>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>
@@ -2033,14 +2197,8 @@ p, li { white-space: pre-wrap; }
    <header location="global">qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsScaleRangeWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsscalerangewidget.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>buttonBox</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>mLayerOrigNameLineEd</tabstop>
@@ -2048,6 +2206,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>leLayerSource</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>chkUseScaleDependentRendering</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>mRenderTypeComboBox</tabstop>
   <tabstop>mBlendModeComboBox</tabstop>
   <tabstop>mResetColorRenderingBtn</tabstop>
@@ -2085,6 +2244,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>buttonBuildPyramids</tabstop>
   <tabstop>scrollArea_6</tabstop>
   <tabstop>scrollArea_4</tabstop>
+  <tabstop>mLayerShortNameLineEdit</tabstop>
   <tabstop>mLayerTitleLineEdit</tabstop>
   <tabstop>mLayerAbstractTextEdit</tabstop>
   <tabstop>mLayerKeywordListLineEdit</tabstop>
@@ -2098,7 +2258,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>mLayerLegendUrlLineEdit</tabstop>
   <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
   <tabstop>txtbMetadata</tabstop>
-  <tabstop>scrollArea</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

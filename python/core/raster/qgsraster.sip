@@ -1,4 +1,4 @@
-/*! \class QgsRaster
+/** \class QgsRaster
  */
 
 class QgsRaster
@@ -12,23 +12,23 @@ class QgsRaster
     enum ColorInterpretation
     {
       UndefinedColorInterpretation,
-      /*! Greyscale */                                      GrayIndex,
-      /*! Paletted (see associated color table) */          PaletteIndex, // indexed color table
-      /*! Red band of RGBA image */                         RedBand,
-      /*! Green band of RGBA image */                       GreenBand,
-      /*! Blue band of RGBA image */                        BlueBand,
-      /*! Alpha (0=transparent, 255=opaque) */              AlphaBand,
-      /*! Hue band of HLS image */                          HueBand,
-      /*! Saturation band of HLS image */                   SaturationBand,
-      /*! Lightness band of HLS image */                    LightnessBand,
-      /*! Cyan band of CMYK image */                        CyanBand,
-      /*! Magenta band of CMYK image */                     MagentaBand,
-      /*! Yellow band of CMYK image */                      YellowBand,
-      /*! Black band of CMLY image */                       BlackBand,
-      /*! Y Luminance */                                    YCbCr_YBand,
-      /*! Cb Chroma */                                      YCbCr_CbBand,
-      /*! Cr Chroma */                                      YCbCr_CrBand,
-      /*! Continuous palette, QGIS addition, GRASS */       ContinuousPalette,
+      /** Greyscale */                                      GrayIndex,
+      /** Paletted (see associated color table) */          PaletteIndex, // indexed color table
+      /** Red band of RGBA image */                         RedBand,
+      /** Green band of RGBA image */                       GreenBand,
+      /** Blue band of RGBA image */                        BlueBand,
+      /** Alpha (0=transparent, 255=opaque) */              AlphaBand,
+      /** Hue band of HLS image */                          HueBand,
+      /** Saturation band of HLS image */                   SaturationBand,
+      /** Lightness band of HLS image */                    LightnessBand,
+      /** Cyan band of CMYK image */                        CyanBand,
+      /** Magenta band of CMYK image */                     MagentaBand,
+      /** Yellow band of CMYK image */                      YellowBand,
+      /** Black band of CMLY image */                       BlackBand,
+      /** Y Luminance */                                    YCbCr_YBand,
+      /** Cb Chroma */                                      YCbCr_CbBand,
+      /** Cr Chroma */                                      YCbCr_CrBand,
+      /** Continuous palette, QGIS addition, GRASS */       ContinuousPalette,
     };
 
     enum IdentifyFormat
@@ -88,7 +88,7 @@ class QgsRaster
     };
 
     static QString contrastEnhancementLimitsAsString( QgsRaster::ContrastEnhancementLimits theLimits );
-    static ContrastEnhancementLimits contrastEnhancementLimitsFromString( QString theLimits );
+    static ContrastEnhancementLimits contrastEnhancementLimitsFromString( const QString& theLimits );
 
     /** Get value representable by given data type.
      * Supported are numerical types Byte, UInt16, Int16, UInt32, Int32, Float32, Float64.

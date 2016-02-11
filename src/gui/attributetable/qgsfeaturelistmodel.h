@@ -38,7 +38,7 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     };
 
   public:
-    explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject* parent = 0 );
+    explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject* parent = nullptr );
     virtual ~QgsFeatureListModel();
 
     virtual void setSourceModel( QgsAttributeTableFilterModel* sourceModel );
@@ -68,7 +68,7 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
      *          If it fails, the old expression will still be applied. Call {@link parserErrorString()}
      *          for a meaningful error message.
      */
-    bool setDisplayExpression( const QString expression );
+    bool setDisplayExpression( const QString& expression );
 
     /**
      * @brief Returns a detailed message about errors while parsing a QgsExpression.

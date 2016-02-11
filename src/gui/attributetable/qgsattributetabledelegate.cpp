@@ -39,7 +39,7 @@ QgsVectorLayer* QgsAttributeTableDelegate::layer( const QAbstractItemModel *mode
   if ( fm )
     return fm->layer();
 
-  return 0;
+  return nullptr;
 }
 
 const QgsAttributeTableModel* QgsAttributeTableDelegate::masterModel( const QAbstractItemModel* model )
@@ -52,7 +52,7 @@ const QgsAttributeTableModel* QgsAttributeTableDelegate::masterModel( const QAbs
   if ( fm )
     return fm->masterModel();
 
-  return 0;
+  return nullptr;
 }
 
 QWidget *QgsAttributeTableDelegate::createEditor(
@@ -63,19 +63,19 @@ QWidget *QgsAttributeTableDelegate::createEditor(
   Q_UNUSED( option );
   QgsVectorLayer *vl = layer( index.model() );
   if ( !vl )
-    return NULL;
+    return nullptr;
 
   int fieldIdx = index.model()->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
 
-  QString widgetType = vl->editorWidgetV2( fieldIdx );
-  QgsEditorWidgetConfig cfg = vl->editorWidgetV2Config( fieldIdx );
+  QString widgetType = vl->editFormConfig()->widgetType( fieldIdx );
+  QgsEditorWidgetConfig cfg = vl->editFormConfig()->widgetConfig( fieldIdx );
   QgsAttributeEditorContext context( masterModel( index.model() )->editorContext(), QgsAttributeEditorContext::Popup );
-  QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, vl, fieldIdx, cfg, 0, parent, context );
+  QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, vl, fieldIdx, cfg, nullptr, parent, context );
   QWidget* w = eww->widget();
 
   w->setAutoFillBackground( true );
 
-  eww->setEnabled( vl->fieldEditable( fieldIdx ) );
+  eww->setEnabled( !vl->editFormConfig()->readOnly( fieldIdx ) );
 
   return w;
 }
@@ -83,7 +83,7 @@ QWidget *QgsAttributeTableDelegate::createEditor(
 void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QgsVectorLayer *vl = layer( model );
-  if ( vl == NULL )
+  if ( !vl )
     return;
 
   int fieldIdx = model->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();

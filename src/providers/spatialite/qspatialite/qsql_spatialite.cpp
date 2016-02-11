@@ -58,7 +58,7 @@
 #endif
 
 #include <sqlite3.h>
-#include <spatialite.h>
+#include <qgsslconnect.h>
 
 Q_DECLARE_METATYPE(sqlite3*)
 Q_DECLARE_METATYPE(sqlite3_stmt*)
@@ -113,7 +113,7 @@ public:
 class QSpatiaLiteResultPrivate
 {
 public:
-    QSpatiaLiteResultPrivate(QSpatiaLiteResult *res);
+    explicit QSpatiaLiteResultPrivate(QSpatiaLiteResult *res);
     void cleanup();
     bool fetchNext(QSqlCachedResult::ValueCache &values, int idx, bool initialFetch);
     // initializes the recordInfo and the cache
@@ -350,7 +350,7 @@ bool QSpatiaLiteResult::prepare(const QString &query)
 
     setSelect(false);
 
-    const void *pzTail = NULL;
+    const void *pzTail = nullptr;
 
 #if (SQLITE_VERSION_NUMBER >= 3003011)
     int res = sqlite3_prepare16_v2(d->access, query.constData(), (query.size() + 1) * sizeof(QChar),
@@ -548,8 +548,6 @@ bool QSpatiaLiteDriver::open(const QString & db, const QString &, const QString 
     if (db.isEmpty())
         return false;
 
-    spatialite_init(0);
-
     bool sharedCache = false;
     int openMode = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, timeOut=5000;
     QStringList opts=QString(conOpts).remove(QLatin1Char(' ')).split(QLatin1Char(';'));
@@ -568,7 +566,7 @@ bool QSpatiaLiteDriver::open(const QString & db, const QString &, const QString 
 
     sqlite3_enable_shared_cache(sharedCache);
 
-    if (sqlite3_open_v2(db.toUtf8().constData(), &d->access, openMode, NULL) == SQLITE_OK) {
+    if (QgsSLConnect::sqlite3_open_v2(db.toUtf8().constData(), &d->access, openMode, nullptr ) == SQLITE_OK) {
         sqlite3_busy_timeout(d->access, timeOut);
         setOpen(true);
         setOpenError(false);
@@ -587,7 +585,7 @@ void QSpatiaLiteDriver::close()
         foreach (QSpatiaLiteResult *result, d->results)
             result->d->finalize();
 
-        if (sqlite3_close(d->access) != SQLITE_OK)
+        if (QgsSLConnect::sqlite3_close(d->access) != SQLITE_OK)
             setLastError(qMakeError(d->access, tr("Error closing database"),
                                     QSqlError::ConnectionError));
         d->access = 0;

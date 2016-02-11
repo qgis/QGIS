@@ -32,7 +32,7 @@
 #include <QSettings>
 #include <QSvgRenderer>
 
-QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QgsComposerItemBaseWidget( 0, picture ), mPicture( picture ), mPreviewsLoaded( false )
+QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QgsComposerItemBaseWidget( nullptr, picture ), mPicture( picture ), mPreviewsLoaded( false )
 {
   setupUi( this );
 
@@ -86,7 +86,7 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( "/UI/lastComposerPictureDir", "" ).toString();
+    openDir = s.value( "/UI/lastComposerPictureDir", QDir::homePath() ).toString();
   }
 
   //show file dialog
@@ -100,7 +100,7 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
   QFileInfo fileInfo( filePath );
   if ( !fileInfo.exists() || !fileInfo.isReadable() )
   {
-    QMessageBox::critical( 0, "Invalid file", "Error, file does not exist or is not readable" );
+    QMessageBox::critical( nullptr, "Invalid file", "Error, file does not exist or is not readable" );
     return;
   }
 
@@ -300,7 +300,7 @@ void QgsComposerPictureWidget::on_mComposerMapComboBox_activated( const QString 
   //extract id
   int id;
   bool conversionOk;
-  QStringList textSplit = text.split( " " );
+  QStringList textSplit = text.split( ' ' );
   if ( textSplit.size() < 1 )
   {
     return;
@@ -475,7 +475,8 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
     //exclude files that are not svg or image
     if ( !fileIsSvg && !fileIsPixel )
     {
-      ++counter; continue;
+      ++counter;
+      continue;
     }
 
     QListWidgetItem * listItem = new QListWidgetItem( mPreviewListWidget );
@@ -491,7 +492,8 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
       QPixmap iconPixmap( filePath );
       if ( iconPixmap.isNull() )
       {
-        ++counter; continue; //unknown file format or other problem
+        ++counter;
+        continue; //unknown file format or other problem
       }
       //set pixmap hardcoded to 30/30, same as icon size for mPreviewListWidget
       QPixmap scaledPixmap( iconPixmap.scaled( QSize( 30, 30 ), Qt::KeepAspectRatio ) );
@@ -609,12 +611,26 @@ QgsComposerObject::DataDefinedProperty QgsComposerPictureWidget::ddPropertyForWi
   return QgsComposerObject::NoProperty;
 }
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  const QgsComposerObject* composerObject = ( const QgsComposerObject* ) context;
+  if ( !composerObject )
+  {
+    return QgsExpressionContext();
+  }
+
+  QScopedPointer< QgsExpressionContext > expContext( composerObject->createExpressionContext() );
+  return QgsExpressionContext( *expContext );
+}
+
 void QgsComposerPictureWidget::populateDataDefinedButtons()
 {
   QgsVectorLayer* vl = atlasCoverageLayer();
 
   //block signals from data defined buttons
   mSourceDDBtn->blockSignals( true );
+
+  mSourceDDBtn->registerGetExpressionContextCallback( &_getExpressionContext, mPicture );
 
   //initialise buttons to use atlas coverage layer
   mSourceDDBtn->init( vl, mPicture->dataDefinedProperty( QgsComposerObject::PictureSource ),

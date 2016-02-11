@@ -37,14 +37,15 @@ int main( int argc, char ** argv )
   QgsApplication a( argc, argv, true );
   // update any saved setting for older themes to new default 'gis' theme (2013-04-15)
   QString theme = settings.value( "/Themes", "default" ).toString();
-  if ( theme == QString( "gis" )
-       || theme == QString( "classic" )
-       || theme == QString( "nkids" ) )
+  if ( theme == "gis"
+       || theme == "classic"
+       || theme == "nkids" )
   {
-    theme = QString( "default" );
+    theme = QLatin1String( "default" );
   }
   a.setThemeName( theme );
   a.initQgis();
+  a.setWindowIcon( QIcon( QgsApplication::iconsPath() + "qbrowser-icon-60x60.png" ) );
 
   // Set up the QSettings environment must be done after qapp is created
   QCoreApplication::setOrganizationName( "QGIS" );
@@ -78,6 +79,39 @@ int main( int argc, char ** argv )
     }
   }
 #endif
+
+  QString i18nPath = QgsApplication::i18nPath();
+  bool myLocaleOverrideFlag = settings.value( "locale/overrideFlag", false ).toBool();
+  QString myUserLocale = settings.value( "locale/userLocale", "" ).toString();
+  QString myTranslationCode = !myLocaleOverrideFlag || myUserLocale.isEmpty() ? QLocale::system().name() : myUserLocale;
+
+  QTranslator qgistor( nullptr );
+  QTranslator qttor( nullptr );
+  if ( myTranslationCode != "C" )
+  {
+    if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )
+    {
+      a.installTranslator( &qgistor );
+    }
+    else
+    {
+      qWarning( "loading of qgis translation failed [%s]", QString( "%1/qgis_%2" ).arg( i18nPath, myTranslationCode ).toLocal8Bit().constData() );
+    }
+
+    /* Translation file for Qt.
+     * The strings from the QMenuBar context section are used by Qt/Mac to shift
+     * the About, Preferences and Quit items to the Mac Application menu.
+     * These items must be translated identically in both qt_ and qgis_ files.
+     */
+    if ( qttor.load( QString( "qt_" ) + myTranslationCode, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
+    {
+      a.installTranslator( &qttor );
+    }
+    else
+    {
+      qWarning( "loading of qt translation failed [%s]", QString( "%1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), myTranslationCode ).toLocal8Bit().constData() );
+    }
+  }
 
   QgsBrowser w;
 

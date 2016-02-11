@@ -61,17 +61,17 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       const QgsCoordinateReferenceSystem *srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = 0,
-      const QMap<QString, QVariant> *options = 0
+      QString *errorMessage = nullptr,
+      const QMap<QString, QVariant> *options = nullptr
     );
 
     /**
      * Constructor for the provider. The uri must be in the following format:
-     * host=localhost user=gsherman dbname=test password=xxx table=test.alaska (the_geom)
+     * host=localhost dbname=test [user=gsherman [password=xxx] | authcfg=xxx] table=test.alaska (the_geom)
      * @param uri String containing the required parameters to connect to the database
      * and query the table.
      */
-    QgsPostgresProvider( QString const &uri = "" );
+    explicit QgsPostgresProvider( QString const &uri = "" );
 
     //! Destructor
     virtual ~QgsPostgresProvider();
@@ -83,7 +83,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       */
     virtual QString storageType() const override;
 
-    /*! Get the QgsCoordinateReferenceSystem for this layer
+    /** Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be returned
@@ -103,7 +103,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     QGis::WkbType geometryType() const override;
 
-    /** return the number of layers for the current data source
+    /** Return the number of layers for the current data source
      * @note Should this be subLayerCount() instead?
     */
     size_t layerCount() const;
@@ -136,6 +136,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     */
     bool determinePrimaryKey();
 
+    /** Determine the fields making up the primary key from the uri attribute keyColumn
+    */
+    void determinePrimaryKeyFromUriKeyColumn();
+
     /**
      * Get the field information for the layer
      * @return vector of QgsField objects
@@ -161,13 +165,13 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      *  @param values reference to the list of unique values */
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) override;
 
-    /**Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
+    /** Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
       or if the given attribute is not an enum type.
      * @param index the index of the attribute
      * @param enumList reference to the list to fill */
     virtual void enumValues( int index, QStringList& enumList ) override;
 
-    /**Returns true if layer is valid
+    /** Returns true if layer is valid
     */
     bool isValid() override;
 
@@ -181,33 +185,33 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QgsAttributeList pkAttributeIndexes() override { return mPrimaryKeyAttrs; }
 
-    /**Returns the default value for field specified by @c fieldId */
+    /** Returns the default value for field specified by @c fieldId */
     QVariant defaultValue( int fieldId ) override;
 
-    /**Adds a list of features
+    /** Adds a list of features
       @return true in case of success and false in case of failure*/
     bool addFeatures( QgsFeatureList & flist ) override;
 
-    /**Deletes a list of features
+    /** Deletes a list of features
       @param id list of feature ids
       @return true in case of success and false in case of failure*/
     bool deleteFeatures( const QgsFeatureIds & id ) override;
 
-    /**Adds new attributes
+    /** Adds new attributes
       @param name map with attribute name as key and type as value
       @return true in case of success and false in case of failure*/
     bool addAttributes( const QList<QgsField> &attributes ) override;
 
-    /**Deletes existing attributes
+    /** Deletes existing attributes
       @param names of the attributes to delete
       @return true in case of success and false in case of failure*/
-    bool deleteAttributes( const QgsAttributeIds & name ) override;
+    bool deleteAttributes( const QgsAttributeIds &name ) override;
 
-    /**Changes attribute values of existing features
+    /** Changes attribute values of existing features
       @param attr_map a map containing the new attributes. The integer is the feature id,
       the first QString is the attribute name and the second one is the new attribute value
       @return true in case of success and false in case of failure*/
-    bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) override;
+    bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
     /**
        Changes geometries of existing features
@@ -215,7 +219,17 @@ class QgsPostgresProvider : public QgsVectorDataProvider
                              the second map parameter being the new geometries themselves
        @return               true in case of success and false in case of failure
      */
-    bool changeGeometryValues( QgsGeometryMap & geometry_map ) override;
+    bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
+
+    /**
+     * Changes attribute values and geometries of existing features.
+     * @param attr_map a map containing changed attributes
+     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
+     *                       that will have their geometries changed.
+     *                       The second map parameter being the new geometries themselves
+     * @return true in case of success and false in case of failure
+     */
+    bool changeFeatures( const QgsChangedAttributesMap &attr_map, const QgsGeometryMap &geometry_map ) override;
 
     //! Get the postgres connection
     PGconn * pgConnection();
@@ -226,12 +240,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /** Accessor for sql where clause used to limit dataset */
     QString subsetString() override;
 
-    /** mutator for sql where clause used to limit dataset size */
-    bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) override;
+    /** Mutator for sql where clause used to limit dataset size */
+    bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() override { return true; }
 
-    /**Returns a bitmask containing the supported capabilities*/
+    /** Returns a bitmask containing the supported capabilities*/
     int capabilities() const override;
 
     /** The Postgres provider does its own transforms so we return
@@ -244,7 +258,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool supportsNativeTransform() {return false;}
 
 
-    /** return a provider name
+    /** Return a provider name
 
     Essentially just returns the provider key.  Should be used to build file
     dialogs so that providers can be shown with their supported types. Thus
@@ -260,7 +274,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     */
     QString name() const override;
 
-    /** return description
+    /** Return description
 
     Return a terse string describing what the provider is.
 
@@ -316,7 +330,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * @param offset specifies offset to use for the pk value parameter
      * @param alias specifies an optional alias given to the subject table
      */
-    QString pkParamWhereClause( int offset, const char* alias = 0 ) const;
+    QString pkParamWhereClause( int offset, const char* alias = nullptr ) const;
     QString whereClause( QgsFeatureId featureId ) const;
     QString whereClause( QgsFeatureIds featureIds ) const;
     QString filterWhereClause() const;
@@ -329,10 +343,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     */
     bool loadFields();
 
-    /** convert a QgsField to work with PG */
-    static bool convertField( QgsField &field, const QMap<QString, QVariant> *options = 0 );
+    /** Convert a QgsField to work with PG */
+    static bool convertField( QgsField &field, const QMap<QString, QVariant> *options = nullptr );
 
-    /**Parses the enum_range of an attribute and inserts the possible values into a stringlist
+    /** Parses the enum_range of an attribute and inserts the possible values into a stringlist
     @param enumValues the stringlist where the values are appended
     @param attributeName the name of the enum attribute
     @return true in case of success and fals in case of error (e.g. if the type is not an enum type)*/
@@ -432,15 +446,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     struct PGException
     {
-      PGException( QgsPostgresResult &r )
+      explicit PGException( QgsPostgresResult &r )
           : mWhat( r.PQresultErrorMessage() )
-      {}
-
-      PGException( const PGException &e )
-          : mWhat( e.errorMessage() )
-      {}
-
-      ~PGException()
       {}
 
       QString errorMessage() const
@@ -452,16 +459,15 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       QString mWhat;
     };
 
-    // A function that determines if the given schema.table.column
-    // contains unqiue entries
-    bool uniqueData( QString query, QString colName );
+    // A function that determines if the given columns contain unique entries
+    bool uniqueData( const QString& quotedColNames );
 
     int mEnabledCapabilities;
 
-    void appendGeomParam( QgsGeometry *geom, QStringList &param ) const;
+    void appendGeomParam( const QgsGeometry *geom, QStringList &param ) const;
     void appendPkParams( QgsFeatureId fid, QStringList &param ) const;
 
-    QString paramValue( QString fieldvalue, const QString &defaultValue ) const;
+    QString paramValue( const QString& fieldvalue, const QString &defaultValue ) const;
 
     QgsPostgresConn *mConnectionRO; //! read-only database connection (initially)
     QgsPostgresConn *mConnectionRW; //! read-write database connection (on update)
@@ -471,8 +477,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     void disconnectDb();
 
-    static QString quotedIdentifier( QString ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
-    static QString quotedValue( QVariant value ) { return QgsPostgresConn::quotedValue( value ); }
+    static QString quotedIdentifier( const QString& ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
+    static QString quotedValue( const QVariant& value ) { return QgsPostgresConn::quotedValue( value ); }
 
     friend class QgsPostgresFeatureSource;
 
@@ -495,12 +501,14 @@ class QgsPostgresUtils
                                 const QList<int>& pkAttrs,
                                 QSharedPointer<QgsPostgresSharedData> sharedData );
 
-    static QString whereClause( QgsFeatureIds featureIds,
+    static QString whereClause( const QgsFeatureIds& featureIds,
                                 const QgsFields& fields,
                                 QgsPostgresConn* conn,
                                 QgsPostgresPrimaryKeyType pkType,
                                 const QList<int>& pkAttrs,
                                 QSharedPointer<QgsPostgresSharedData> sharedData );
+
+    static QString andWhereClauses( const QString& c1, const QString& c2 );
 };
 
 /** Data shared between provider class and its feature sources. Ideally there should

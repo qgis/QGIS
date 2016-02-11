@@ -29,19 +29,20 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterBoolean
 
+
 class lassortPro(LAStoolsAlgorithm):
 
     BY_GPS_TIME = "BY_GPS_TIME"
     BY_POINT_SOURCE_ID = "BY_POINT_SOURCE_ID"
 
     def defineCharacteristics(self):
-        self.name = "lassortPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lassortPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterBoolean(lassortPro.BY_GPS_TIME,
-            self.tr("sort by GPS time"), False))
+                                           self.tr("sort by GPS time"), False))
         self.addParameter(ParameterBoolean(lassortPro.BY_POINT_SOURCE_ID,
-            self.tr("sort by point source ID"), False))
+                                           self.tr("sort by point source ID"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()

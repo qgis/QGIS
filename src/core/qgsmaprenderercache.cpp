@@ -35,7 +35,7 @@ void QgsMapRendererCache::clearInternal()
   mScale = 0;
 
   // make sure we are disconnected from all layers
-  foreach ( QString layerId, mCachedImages.keys() )
+  Q_FOREACH ( const QString& layerId, mCachedImages.keys() )
   {
     QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
     if ( layer )
@@ -46,13 +46,13 @@ void QgsMapRendererCache::clearInternal()
   mCachedImages.clear();
 }
 
-bool QgsMapRendererCache::init( QgsRectangle extent, double scale )
+bool QgsMapRendererCache::init( const QgsRectangle& extent, double scale )
 {
   QMutexLocker lock( &mMutex );
 
   // check whether the params are the same
   if ( extent == mExtent &&
-       scale == mScale )
+       qgsDoubleNear( scale, mScale ) )
     return true;
 
   clearInternal();
@@ -64,7 +64,7 @@ bool QgsMapRendererCache::init( QgsRectangle extent, double scale )
   return false;
 }
 
-void QgsMapRendererCache::setCacheImage( QString layerId, const QImage& img )
+void QgsMapRendererCache::setCacheImage( const QString& layerId, const QImage& img )
 {
   QMutexLocker lock( &mMutex );
   mCachedImages[layerId] = img;
@@ -77,7 +77,7 @@ void QgsMapRendererCache::setCacheImage( QString layerId, const QImage& img )
   }
 }
 
-QImage QgsMapRendererCache::cacheImage( QString layerId )
+QImage QgsMapRendererCache::cacheImage( const QString& layerId )
 {
   QMutexLocker lock( &mMutex );
   return mCachedImages.value( layerId );
@@ -90,7 +90,7 @@ void QgsMapRendererCache::layerRequestedRepaint()
     clearCacheImage( layer->id() );
 }
 
-void QgsMapRendererCache::clearCacheImage( QString layerId )
+void QgsMapRendererCache::clearCacheImage( const QString& layerId )
 {
   QMutexLocker lock( &mMutex );
 

@@ -46,7 +46,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     Q_OBJECT
   public:
     //! Constructor: does not take ownership of the layer tree nor canvas
-    QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup* root, QgsMapCanvas* canvas, QObject* parent = 0 );
+    QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup* root, QgsMapCanvas* canvas, QObject* parent = nullptr );
 
     void clear();
 
@@ -94,7 +94,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     void nodeAddedChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
     void nodeRemovedChildren();
     void nodeVisibilityChanged();
-    void nodeCustomPropertyChanged( QgsLayerTreeNode* node, QString key );
+    void nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key );
 
   protected:
     QgsLayerTreeGroup* mRoot;

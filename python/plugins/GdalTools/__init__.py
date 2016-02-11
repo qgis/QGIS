@@ -17,7 +17,9 @@ email                : lorenxo86@gmail.com - brush.tyler@gmail.com
  ***************************************************************************/
  This script initializes the plugin, making it known to QGIS.
 """
+
+
 def classFactory(iface):
-  # load GdalTools class from file GdalTools
-  from GdalTools import GdalTools
-  return GdalTools(iface)
+    # load GdalTools class from file GdalTools
+    from GdalTools import GdalTools
+    return GdalTools(iface)

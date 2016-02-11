@@ -33,7 +33,6 @@
 #include "qgsexpression.h"
 struct expression_parser_context;
 #include "qgsexpressionparser.hpp"
-#include <QRegExp>
 #include <QLocale>
 
 // if not defined, searches for isatty()
@@ -50,8 +49,8 @@ struct expression_parser_context;
 
 #define B_OP(x) yylval->b_op = QgsExpression::x
 #define U_OP(x) yylval->u_op = QgsExpression::x
-#define TEXT                   yylval->text = new QString(); *yylval->text = QString::fromUtf8(yytext);
-#define TEXT_FILTER(filter_fn) yylval->text = new QString(); *yylval->text = filter_fn( QString::fromUtf8(yytext) );
+#define TEXT                   yylval->text = new QString( QString::fromUtf8(yytext) );
+#define TEXT_FILTER(filter_fn) yylval->text = new QString( filter_fn( QString::fromUtf8(yytext) ) );
 
 static QString stripText(QString text)
 {
@@ -59,7 +58,7 @@ static QString stripText(QString text)
   text = text.mid( 1, text.length() - 2 );
 
   // make single "single quotes" from double "single quotes"
-  text.replace( QRegExp( "''" ), "'" );
+  text.replace( "''", "'" );
 
   // strip \n \' etc.
   int index = 0;
@@ -86,7 +85,7 @@ static QString stripColumnRef(QString text)
   text = text.mid( 1, text.length() - 2 );
 
   // make single "double quotes" from double "double quotes"
-  text.replace( QRegExp( "\"\"" ), "\"" );
+  text.replace( "\"\"", "\"" );
   return text;
 }
 
@@ -108,6 +107,7 @@ col_next     [A-Za-z0-9_]|{non_ascii}
 column_ref  {col_first}{col_next}*
 
 special_col "$"{column_ref}
+variable "@"{column_ref}
 
 col_str_char  "\"\""|[^\"]
 column_ref_quoted  "\""{col_str_char}*"\""
@@ -115,6 +115,7 @@ column_ref_quoted  "\""{col_str_char}*"\""
 dig         [0-9]
 num_int     {dig}+
 num_float   {dig}*(\.{dig}+([eE][-+]?{dig}+)?|[eE][-+]?{dig}+)
+boolean     "TRUE"|"FALSE"
 
 str_char    ('')|(\\.)|[^'\\]
 string      "'"{str_char}*"'"
@@ -188,9 +189,13 @@ string      "'"{str_char}*"'"
 	return Unknown_CHARACTER;
 }
 
+{boolean} { yylval->boolVal = QString( yytext ).compare( "true", Qt::CaseInsensitive ) == 0; return BOOLEAN; }
+
 {string}  { TEXT_FILTER(stripText); return STRING; }
 
 {special_col}        { TEXT; return SPECIAL_COL; }
+
+{variable}        { TEXT; return VARIABLE; }
 
 {column_ref}         { TEXT; return QgsExpression::isFunctionName(*yylval->text) ? FUNCTION : COLUMN_REF; }
 

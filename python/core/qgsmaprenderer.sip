@@ -47,13 +47,18 @@ class QgsLabelingEngineInterface
     //! called when starting rendering of a layer
     virtual int prepareLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx ) = 0;
     //! returns PAL layer settings for a registered layer
-    virtual QgsPalLayerSettings& layer( const QString& layerName ) = 0;
+    //! @deprecated since 2.12 - if direct access to QgsPalLayerSettings is necessary, use QgsPalLayerSettings::fromLayer()
+    virtual QgsPalLayerSettings& layer( const QString& layerName ) = 0 /Deprecated/;
     //! adds a diagram layer to the labeling engine
-    virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings* s );
+    //! @note added in QGIS 2.12
+    virtual int prepareDiagramLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx );
+    //! adds a diagram layer to the labeling engine
+    //! @deprecated since 2.12 - use prepareDiagramLayer()
+    virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings* s ) /Deprecated/;
     //! called for every feature
-    virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext(), QString dxfLayer = QString::null ) = 0;
+    virtual void registerFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context, const QString& dxfLayer = QString::null ) = 0;
     //! called for every diagram feature
-    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
+    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context );
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context ) = 0;
     //! called when we're done with rendering
@@ -91,7 +96,7 @@ class QgsMapRenderer : QObject
 
   public:
 
-    /**Output units for pen width and point marker width/height*/
+    /** Output units for pen width and point marker width/height*/
     enum OutputUnits
     {
       Millimeters,
@@ -147,11 +152,20 @@ class QgsMapRenderer : QObject
     //! returns current extent
     QgsRectangle extent() const;
 
+    //! sets rotation
+    //! value in clockwise degrees
+    //! @note added in 2.8
+    void setRotation( double degrees );
+
+    //! returns current rotation in clockwise degrees
+    //! @note added in 2.8
+    double rotation() const;
+
     const QgsMapToPixel* coordinateTransform();
 
     //! Scale denominator
     double scale() const;
-    /**Sets scale for scale based visibility. Normally, the scale is calculated automatically. This
+    /** Sets scale for scale based visibility. Normally, the scale is calculated automatically. This
      function is only used to force a preview scale (e.g. for print composer)*/
     void setScale( double scale );
     double mapUnitsPerPixel() const;
@@ -262,9 +276,9 @@ class QgsMapRenderer : QObject
     void setLabelingEngine( QgsLabelingEngineInterface* iface /Transfer/ );
 
     //! Returns a QPainter::CompositionMode corresponding to a BlendMode
-    static QPainter::CompositionMode getCompositionMode( const QgsMapRenderer::BlendMode &blendMode );
+    static QPainter::CompositionMode getCompositionMode( QgsMapRenderer::BlendMode blendMode );
     //! Returns a BlendMode corresponding to a QPainter::CompositionMode
-    static QgsMapRenderer::BlendMode getBlendModeEnum( const QPainter::CompositionMode &blendMode );
+    static QgsMapRenderer::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
 
     void addLayerCoordinateTransform( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
     void clearLayerCoordinateTransforms();
@@ -282,6 +296,12 @@ class QgsMapRenderer : QObject
      * also sets the contents of the r2 parameter
      */
     bool splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent /In,Out/, QgsRectangle& r2 /Out/ );
+
+    /** Set a feature filter provider to filter the features shown in the map.
+     * @param ffp the feature filter provider
+     * @note added in QGIS 2.14
+     */
+    void setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp );
 
   signals:
 
@@ -318,8 +338,8 @@ class QgsMapRenderer : QObject
     void rotationChanged( double );
 
     //! Notifies higher level components to show the datum transform dialog and add a QgsLayerCoordinateTransformInfo for that layer
-    void datumTransformInfoRequested( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId ) const;
-
+    //! @note not available in Python bindings
+    //void datumTransformInfoRequested( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId ) const;
 
   public slots:
 

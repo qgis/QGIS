@@ -35,10 +35,12 @@ from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox, QListWidgetItem
 from qgis.core import QGis, QgsFeatureRequest, QgsField, QgsVectorFileWriter, QgsFeature, QgsGeometry
 import ftools_utils
 from ui_frmPointsInPolygon import Ui_Dialog
+from functools import reduce
 
 
 typeInt = 1
 typeDouble = 2
+
 
 class Dialog(QDialog, Ui_Dialog):
 
@@ -48,8 +50,8 @@ class Dialog(QDialog, Ui_Dialog):
         self.setupUi(self)
 
         self.setWindowTitle(self.tr("Count Points in Polygon"))
-        self.btnOk = self.buttonBox.button( QDialogButtonBox.Ok )
-        self.btnClose = self.buttonBox.button( QDialogButtonBox.Close )
+        self.btnOk = self.buttonBox.button(QDialogButtonBox.Ok)
+        self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
 
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
         QObject.connect(self.inPoint, SIGNAL("currentIndexChanged(QString)"), self.listPointFields)
@@ -58,7 +60,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.progressBar.setValue(0)
         self.populateLayers()
 
-    def populateLayers( self ):
+    def populateLayers(self):
         layers = ftools_utils.getLayerNames([QGis.Polygon])
         self.inPolygon.clear()
         self.inPolygon.addItems(layers)
@@ -77,13 +79,13 @@ class Dialog(QDialog, Ui_Dialog):
 
             self.attributeList.clear()
             for field in pointFieldList:
-                if field.type() == QVariant.Int or field.type() ==QVariant.Double:
+                if field.type() == QVariant.Int or field.type() == QVariant.Double:
                     if field.type() == QVariant.Int:
                         global typeInt
-                        item = QListWidgetItem(str(field.name()), None, typeInt)
+                        item = QListWidgetItem(unicode(field.name()), None, typeInt)
                     else:
                         global typeDouble
-                        item = QListWidgetItem(str(field.name()), None, typeDouble)
+                        item = QListWidgetItem(unicode(field.name()), None, typeDouble)
                     item.setToolTip("Attribute <%s> of type %s" % (field.name(), field.typeName()))
                     self.attributeList.addItem(item)
 
@@ -120,7 +122,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.btnOk.setEnabled(False)
 
             self.workThread = PointsInPolygonThread(inPoly, inPnts, self.lnField.text(), self.outShape.text(), self.encoding,
-                                                    self.attributeList,  self.statisticSelector)
+                                                    self.attributeList, self.statisticSelector)
 
             QObject.connect(self.workThread, SIGNAL("rangeChanged(int)"), self.setProgressRange)
             QObject.connect(self.workThread, SIGNAL("updateProgress()"), self.updateProgress)
@@ -145,10 +147,10 @@ class Dialog(QDialog, Ui_Dialog):
         if self.addToCanvasCheck.isChecked():
             addCanvasCheck = ftools_utils.addShapeToCanvas(unicode(self.outShape.text()))
             if not addCanvasCheck:
-                QMessageBox.warning( self, self.tr("Count Points in Polygon"), self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( self.outShape.text() ) ))
+                QMessageBox.warning(self, self.tr("Count Points in Polygon"), self.tr("Error loading output shapefile:\n%s") % (unicode(self.outShape.text())))
             self.populateLayers()
         else:
-            QMessageBox.information(self, self.tr("Count Points in Polygon"),self.tr("Created output shapefile:\n%s" ) % ( unicode( self.outShape.text() )))
+            QMessageBox.information(self, self.tr("Count Points in Polygon"), self.tr("Created output shapefile:\n%s") % (unicode(self.outShape.text())))
 
         self.restoreGui()
 
@@ -170,9 +172,11 @@ class Dialog(QDialog, Ui_Dialog):
         self.btnClose.setText(self.tr("Close"))
         self.btnOk.setEnabled(True)
 
+
 class PointsInPolygonThread(QThread):
-    def __init__( self, inPoly, inPoints, fieldName, outPath, encoding,  attributeList,  statisticSelector):
-        QThread.__init__( self, QThread.currentThread() )
+
+    def __init__(self, inPoly, inPoints, fieldName, outPath, encoding, attributeList, statisticSelector):
+        QThread.__init__(self, QThread.currentThread())
         self.mutex = QMutex()
         self.stopMe = 0
         self.interrupted = False
@@ -199,7 +203,7 @@ class PointsInPolygonThread(QThread):
         index = polyProvider.fieldNameIndex(unicode(self.fieldName))
         if index == -1:
             index = polyProvider.fields().count()
-            fieldList.append( QgsField(unicode(self.fieldName), QVariant.Int, "int", 10, 0, self.tr("point count field")) )
+            fieldList.append(QgsField(unicode(self.fieldName), QVariant.Int, "int", 10, 0, self.tr("point count field")))
 
         # Add the selected vector fields to the output polygon vector layer
         selectedItems = self.attributeList.selectedItems()
@@ -209,9 +213,9 @@ class PointsInPolygonThread(QThread):
             index = polyProvider.fieldNameIndex(unicode(columnName))
             if index == -1:
                 if item.type() == typeDouble or self.statistics == "mean" or self.statistics == "stddev":
-                    fieldList.append( QgsField(columnName, QVariant.Double, "double", 24, 15,  "Value") )
+                    fieldList.append(QgsField(columnName, QVariant.Double, "double", 24, 15, "Value"))
                 else:
-                    fieldList.append( QgsField(columnName, QVariant.Int, "int", 10, 0,  "Value") )
+                    fieldList.append(QgsField(columnName, QVariant.Int, "int", 10, 0, "Value"))
 
         sRs = polyProvider.crs()
         if QFile(self.outPath).exists():
@@ -221,9 +225,9 @@ class PointsInPolygonThread(QThread):
         writer = QgsVectorFileWriter(self.outPath, self.encoding, fieldList,
                                      polyProvider.geometryType(), sRs)
 
-        spatialIndex = ftools_utils.createIndex( pointProvider )
+        spatialIndex = ftools_utils.createIndex(pointProvider)
 
-        self.emit(SIGNAL("rangeChanged(int)"), polyProvider.featureCount() )
+        self.emit(SIGNAL("rangeChanged(int)"), polyProvider.featureCount())
 
         polyFeat = QgsFeature()
         pntFeat = QgsFeature()
@@ -250,7 +254,7 @@ class PointsInPolygonThread(QThread):
                 for item in selectedItems:
                     valueList[item.text()] = []
                 for p in pointList:
-                    pointProvider.getFeatures( QgsFeatureRequest().setFilterFid( p ) ).nextFeature( pntFeat )
+                    pointProvider.getFeatures(QgsFeatureRequest().setFilterFid(p)).nextFeature(pntFeat)
                     tmpGeom = QgsGeometry(pntFeat.geometry())
                     if inGeom.intersects(tmpGeom):
                         count += 1
@@ -281,9 +285,9 @@ class PointsInPolygonThread(QThread):
 
                     if values and len(values) > 0:
                         if self.statistics == "sum":
-                            value = reduce(myAdder,  values)
+                            value = reduce(myAdder, values)
                         elif self.statistics == "mean":
-                            value = reduce(myAdder,  values) / float(len(values))
+                            value = reduce(myAdder, values) / float(len(values))
                         elif self.statistics == "min":
                             values.sort()
                             value = values[0]
@@ -298,7 +302,7 @@ class PointsInPolygonThread(QThread):
             outFeat.setAttributes(atMap)
             writer.addFeature(outFeat)
 
-            self.emit( SIGNAL( "updateProgress()" ) )
+            self.emit(SIGNAL("updateProgress()"))
 
             self.mutex.lock()
             s = self.stopMe
@@ -310,31 +314,33 @@ class PointsInPolygonThread(QThread):
         del writer
 
         if not interrupted:
-            self.emit( SIGNAL( "processingFinished()" ) )
+            self.emit(SIGNAL("processingFinished()"))
         else:
-            self.emit( SIGNAL( "processingInterrupted()" ) )
+            self.emit(SIGNAL("processingInterrupted()"))
 
     def stop(self):
         self.mutex.lock()
         self.stopMe = 1
         self.mutex.unlock()
 
-        QThread.wait( self )
+        QThread.wait(self)
 
-def myAdder(x,y):
-    return x+y
+
+def myAdder(x, y):
+    return x + y
+
 
 def two_pass_variance(data):
     """
     Variance algorithm taken from Wikipedia:
     https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
     """
-    n    = 0.0
+    n = 0.0
     sum1 = 0.0
     sum2 = 0.0
 
     for x in data:
-        n    = n + 1.0
+        n = n + 1.0
         sum1 = sum1 + float(x)
 
     if (n < 2):
@@ -343,7 +349,7 @@ def two_pass_variance(data):
     mean = sum1 / n
 
     for x in data:
-        sum2 = sum2 + (x - mean)*(x - mean)
+        sum2 = sum2 + (x - mean) * (x - mean)
 
     variance = sum2 / (n - 1)
     return variance

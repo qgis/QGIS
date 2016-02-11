@@ -24,6 +24,10 @@
 #
 ###############################################################################
 
+#avoid PendingDeprecationWarning from PyQt4.uic
+import warnings
+warnings.filterwarnings("ignore", category=PendingDeprecationWarning)
+
 import ConfigParser
 from gettext import gettext, ngettext
 import logging
@@ -47,6 +51,7 @@ LOGGER = logging.getLogger('MetaSearch')
 
 
 class StaticContext(object):
+
     """base configuration / scaffolding"""
 
     def __init__(self):
@@ -84,10 +89,10 @@ def get_connections_from_file(parent, filename):
         if doc.tag != 'qgsCSWConnections':
             error = 1
             msg = parent.tr('Invalid CSW connections XML.')
-    except etree.ParseError, err:
+    except etree.ParseError as err:
         error = 1
         msg = parent.tr('Cannot parse XML file: %s' % err)
-    except IOError, err:
+    except IOError as err:
         error = 1
         msg = parent.tr('Cannot open file: %s' % err)
 

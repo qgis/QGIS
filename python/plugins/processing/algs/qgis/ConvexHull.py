@@ -43,19 +43,21 @@ class ConvexHull(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
     METHOD = 'METHOD'
-    METHODS = ['Create single minimum convex hull',
-               'Create convex hulls based on field']
 
     def defineCharacteristics(self):
-        self.name = 'Convex hull'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Convex hull')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+
+        self.methods = [self.tr('Create single minimum convex hull'),
+                        self.tr('Create convex hulls based on field')]
+
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Field (optional, only used if creating convex hulls by classes)'),
-            self.INPUT, optional=True))
+                                              self.tr('Field (optional, only used if creating convex hulls by classes)'),
+                                              self.INPUT, optional=True))
         self.addParameter(ParameterSelection(self.METHOD,
-            self.tr('Method'), self.METHODS))
+                                             self.tr('Method'), self.methods))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Convex hull')))
 
     def processAlgorithm(self, progress):
@@ -64,7 +66,7 @@ class ConvexHull(GeoAlgorithm):
         useField = self.getParameterValue(self.METHOD) == 1
         fieldName = self.getParameterValue(self.FIELD)
 
-        f = QgsField('value')
+        f = QgsField('value', QVariant.String, '', 255)
         if useField:
             index = layer.fieldNameIndex(fieldName)
             fType = layer.pendingFields()[index].type()
@@ -79,12 +81,11 @@ class ConvexHull(GeoAlgorithm):
                 f.setType(QVariant.String)
                 f.setLength(255)
 
-        fields = [
-            QgsField('id', QVariant.Int, '', 20),
-            f,
-            QgsField('area', QVariant.Double, '', 20, 6),
-            QgsField('perim', QVariant.Double, '', 20, 6)
-        ]
+        fields = [QgsField('id', QVariant.Int, '', 20),
+                  f,
+                  QgsField('area', QVariant.Double, '', 20, 6),
+                  QgsField('perim', QVariant.Double, '', 20, 6)
+                  ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields, QGis.WKBPolygon, layer.dataProvider().crs())

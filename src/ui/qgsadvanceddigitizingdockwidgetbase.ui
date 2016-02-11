@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>222</width>
+    <width>228</width>
     <height>220</height>
    </rect>
   </property>
@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Advanced Digitizing</string>
+   <string>Advanced Digitizing Panel</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
@@ -195,13 +195,24 @@
              <number>3</number>
             </property>
             <item row="2" column="2">
-             <widget class="QLineEdit" name="mXLineEdit"/>
+             <widget class="QLineEdit" name="mXLineEdit">
+              <property name="toolTip">
+               <string>X coordinate</string>
+              </property>
+             </widget>
             </item>
             <item row="0" column="2">
-             <widget class="QLineEdit" name="mDistanceLineEdit"/>
+             <widget class="QLineEdit" name="mDistanceLineEdit">
+              <property name="toolTip">
+               <string>Distance</string>
+              </property>
+             </widget>
             </item>
             <item row="0" column="3">
              <widget class="QToolButton" name="mLockDistanceButton">
+              <property name="toolTip">
+               <string>Lock distance</string>
+              </property>
               <property name="text">
                <string>...</string>
               </property>
@@ -216,6 +227,9 @@
             </item>
             <item row="1" column="3">
              <widget class="QToolButton" name="mLockAngleButton">
+              <property name="toolTip">
+               <string>Lock angle</string>
+              </property>
               <property name="text">
                <string>...</string>
               </property>
@@ -230,6 +244,9 @@
             </item>
             <item row="3" column="3">
              <widget class="QToolButton" name="mLockYButton">
+              <property name="toolTip">
+               <string>Lock y coordinate</string>
+              </property>
               <property name="text">
                <string>...</string>
               </property>
@@ -251,6 +268,9 @@
             </item>
             <item row="3" column="0">
              <widget class="QToolButton" name="mRelativeYButton">
+              <property name="toolTip">
+               <string>Toggles relative y to previous node</string>
+              </property>
               <property name="text">
                <string>...</string>
               </property>
@@ -271,7 +291,11 @@
              </widget>
             </item>
             <item row="1" column="2">
-             <widget class="QLineEdit" name="mAngleLineEdit"/>
+             <widget class="QLineEdit" name="mAngleLineEdit">
+              <property name="toolTip">
+               <string>Angle</string>
+              </property>
+             </widget>
             </item>
             <item row="2" column="1">
              <widget class="QLabel" name="label_3">
@@ -281,10 +305,17 @@
              </widget>
             </item>
             <item row="3" column="2">
-             <widget class="QLineEdit" name="mYLineEdit"/>
+             <widget class="QLineEdit" name="mYLineEdit">
+              <property name="toolTip">
+               <string>Y coordinate</string>
+              </property>
+             </widget>
             </item>
             <item row="2" column="0">
              <widget class="QToolButton" name="mRelativeXButton">
+              <property name="toolTip">
+               <string>Toggles relative x to previous node</string>
+              </property>
               <property name="text">
                <string>...</string>
               </property>
@@ -306,6 +337,9 @@
             </item>
             <item row="2" column="3">
              <widget class="QToolButton" name="mLockXButton">
+              <property name="toolTip">
+               <string>Lock x coordinate</string>
+              </property>
               <property name="text">
                <string>...</string>
               </property>
@@ -320,6 +354,9 @@
             </item>
             <item row="1" column="0">
              <widget class="QToolButton" name="mRelativeAngleButton">
+              <property name="toolTip">
+               <string>Toggles relative angle to previous segment</string>
+              </property>
               <property name="text">
                <string>...</string>
               </property>
@@ -378,8 +415,8 @@
   <tabstop>mLockYButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../plugins/georeferencer/georeferencer.qrc"/>
+  <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -1,0 +1,315 @@
+<root>
+  <key>StereoFramework</key>
+  <exec>otbcli_StereoFramework</exec>
+  <longname>Stereo Framework</longname>
+  <group>Stereo</group>
+  <description>Compute the ground elevation based on one or multiple stereo pair(s)</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImageList">ParameterMultipleInput</parameter_type>
+    <key>input.il</key>
+    <name>Input images list</name>
+    <description>The list of images.</description>
+    <datatype />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_String">ParameterString</parameter_type>
+    <key>input.co</key>
+    <name>Couples list</name>
+    <description>List of index of couples im image list. Couples must be separated by a comma. (index start at 0). for example : 0 1,1 2 will process a first couple composed of the first and the second image in image list, then the first and the third image
+. note that images are handled by pairs. if left empty couples are created from input index i.e. a first couple will be composed of the first and second image, a second couple with third and fourth image etc. (in this case image list must be even).</description>
+    <default />
+    <multiline />
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>input.channel</key>
+    <name>Image channel used for the block matching</name>
+    <description>Used channel for block matching (used for all images)</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>elev.default</key>
+    <name>Default elevation</name>
+    <description>This parameter allows setting the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>output.res</key>
+    <name>Output resolution</name>
+    <description>Spatial sampling distance of the output elevation : the cell size (in m)</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>output.nodata</key>
+    <name>NoData value</name>
+    <description>DSM empty cells are filled with this value (optional -32768 by default)</description>
+    <minValue />
+    <maxValue />
+    <default>-32768</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>output.fusionmethod</key>
+    <name>Method to fuse measures in each DSM cell</name>
+    <description>This parameter allows choosing the method used to fuse elevation measurements in each output DSM cell</description>
+    <options>
+      <choices>
+        <choice>max</choice>
+        <choice>min</choice>
+        <choice>mean</choice>
+        <choice>acc</choice>
+      </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>output.out</key>
+    <name>Output DSM</name>
+    <description>Output elevation image</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>output.mode</key>
+    <name>Parameters estimation modes</name>
+    <description />
+    <options>
+      <choices>
+        <choice>fit</choice>
+        <choice>user</choice>
+      </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>output.mode.user.ulx</key>
+    <name>Upper Left X </name>
+    <description>Cartographic X coordinate of upper-left corner (meters for cartographic projections, degrees for geographic ones)</description>
+    <minValue />
+    <maxValue />
+    <default>0.0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>output.mode.user.uly</key>
+    <name>Upper Left Y </name>
+    <description>Cartographic Y coordinate of the upper-left corner (meters for cartographic projections, degrees for geographic ones)</description>
+    <minValue />
+    <maxValue />
+    <default>0.0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>output.mode.user.sizex</key>
+    <name>Size X </name>
+    <description>Size of projected image along X (in pixels)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>output.mode.user.sizey</key>
+    <name>Size Y </name>
+    <description>Size of projected image along Y (in pixels)</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>output.mode.user.spacingx</key>
+    <name>Pixel Size X </name>
+    <description>Size of each pixel along X axis (meters for cartographic projections, degrees for geographic ones)</description>
+    <minValue />
+    <maxValue />
+    <default>0.0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>output.mode.user.spacingy</key>
+    <name>Pixel Size Y </name>
+    <description>Size of each pixel along Y axis (meters for cartographic projections, degrees for geographic ones)</description>
+    <minValue />
+    <maxValue />
+    <default>0.0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>map</key>
+    <name>Output Cartographic Map Projection</name>
+    <description>Parameters of the output map projection to be used.</description>
+    <options>
+      <choices>
+        <choice>utm</choice>
+        <choice>lambert2</choice>
+        <choice>lambert93</choice>
+        <choice>wgs</choice>
+        <choice>epsg</choice>
+      </choices>
+    </options>
+    <default>3</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>map.utm.zone</key>
+    <name>Zone number</name>
+    <description>The zone number ranges from 1 to 60 and allows defining the transverse mercator projection (along with the hemisphere)</description>
+    <minValue />
+    <maxValue />
+    <default>31</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Empty">ParameterBoolean</parameter_type>
+    <key>map.utm.northhem</key>
+    <name>Northern Hemisphere</name>
+    <description>The transverse mercator projections are defined by their zone number as well as the hemisphere. Activate this parameter if your image is in the northern hemisphere.</description>
+    <default>True</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>map.epsg.code</key>
+    <name>EPSG Code</name>
+    <description>See www.spatialreference.org to find which EPSG code is associated to your projection</description>
+    <minValue />
+    <maxValue />
+    <default>4326</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>stereorect.fwdgridstep</key>
+    <name>Step of the displacement grid (in pixels)</name>
+    <description>Stereo-rectification displacement grid only varies slowly. Therefore, it is recommended to use a coarser grid (higher step value) in case of large images</description>
+    <minValue />
+    <maxValue />
+    <default>16</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>stereorect.invgridssrate</key>
+    <name>Sub-sampling rate for epipolar grid inversion</name>
+    <description>Grid inversion is an heavy process that implies spline regression on control points. To avoid eating to much memory, this parameter allows sub-sampling first the field to invert.</description>
+    <minValue />
+    <maxValue />
+    <default>10</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>bm.metric</key>
+    <name>Block-matching metric</name>
+    <description />
+    <options>
+      <choices>
+        <choice>ssdmean</choice>
+        <choice>ssd</choice>
+        <choice>ncc</choice>
+        <choice>lp</choice>
+      </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>bm.metric.lp.p</key>
+    <name>p value</name>
+    <description>Value of the p parameter in Lp pseudo-norm (must be positive)</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>bm.radius</key>
+    <name>Radius of blocks for matching filter (in pixels)</name>
+    <description>The radius of blocks in Block-Matching (in pixels)</description>
+    <minValue />
+    <maxValue />
+    <default>2</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>bm.minhoffset</key>
+    <name>Minimum altitude offset (in meters)</name>
+    <description>Minimum altitude below the selected elevation source (in meters)</description>
+    <minValue />
+    <maxValue />
+    <default>-20</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>bm.maxhoffset</key>
+    <name>Maximum altitude offset (in meters)</name>
+    <description>Maximum altitude above the selected elevation source (in meters)</description>
+    <minValue />
+    <maxValue />
+    <default>20</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Empty">ParameterBoolean</parameter_type>
+    <key>postproc.bij</key>
+    <name>Use bijection consistency in block matching strategy</name>
+    <description>use bijection consistency. Right to Left correlation is computed to validate Left to Right disparities. If bijection is not found pixel is rejected.</description>
+    <default>True</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Empty">ParameterBoolean</parameter_type>
+    <key>postproc.med</key>
+    <name>Use median disparities filtering</name>
+    <description>disparities output can be filtered using median post filtering (disabled by default).</description>
+    <default>True</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>postproc.metrict</key>
+    <name>Correlation metric threshold</name>
+    <description>Use block matching metric output to discard pixels with low correlation value (disabled by default, float value)</description>
+    <minValue />
+    <maxValue />
+    <default>0.6</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>mask.left</key>
+    <name>Input left mask</name>
+    <description>Mask for left input image</description>
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>mask.right</key>
+    <name>Input right mask</name>
+    <description>Mask for right input image</description>
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>mask.variancet</key>
+    <name>Discard pixels with low local variance</name>
+    <description>This parameter allows discarding pixels whose local variance is too small (the size of the neighborhood is given by the radius parameter)</description>
+    <minValue />
+    <maxValue />
+    <default>50</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+</root>

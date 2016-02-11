@@ -74,7 +74,7 @@ void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, con
   {
     if ( qApp && qApp->thread() != QThread::currentThread() )
     {
-      m.prepend( QString( "[thread:0x%1] " ).arg(( qint64 ) QThread::currentThread(), 0, 16 ) );
+      m.prepend( QString( "[thread:0x%1] " ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ) );
     }
 
     m.prepend( QString( "[%1ms] " ).arg( sTime.elapsed() ) );
@@ -139,7 +139,7 @@ void QgsLogger::fatal( const QString& msg )
   qFatal( "%s", msg.toLocal8Bit().constData() );
 }
 
-void QgsLogger::logMessageToFile( QString theMessage )
+void QgsLogger::logMessageToFile( const QString& theMessage )
 {
   if ( sLogFile.isEmpty() )
     return;

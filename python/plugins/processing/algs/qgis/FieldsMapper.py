@@ -37,6 +37,7 @@ from .fieldsmapping import ParameterFieldsMapping
 from .ui.FieldsMapperDialogs import (FieldsMapperParametersDialog,
                                      FieldsMapperModelerParametersDialog)
 
+
 class FieldsMapper(GeoAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
@@ -48,21 +49,21 @@ class FieldsMapper(GeoAlgorithm):
         self.mapping = None
 
     def defineCharacteristics(self):
-        self.name = 'Refactor fields'
-        self.group = 'Vector table tools'
+        self.name, self.i18n_name = self.trAlgorithm('Refactor fields')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer'),
+                                          [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterFieldsMapping(self.FIELDS_MAPPING,
-            self.tr('Fields mapping'), self.INPUT_LAYER))
+                                                 self.tr('Fields mapping'), self.INPUT_LAYER))
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
-            self.tr('Output layer')))
+                                    self.tr('Refactored')))
 
     def getCustomParametersDialog(self):
         return FieldsMapperParametersDialog(self)
 
-    def getCustomModelerParametersDialog(self, modelAlg, algIndex=None):
-        return FieldsMapperModelerParametersDialog(self, modelAlg, algIndex)
+    def getCustomModelerParametersDialog(self, modelAlg, algName=None):
+        return FieldsMapperModelerParametersDialog(self, modelAlg, algName)
 
     def processAlgorithm(self, progress):
         layer = self.getParameterValue(self.INPUT_LAYER)

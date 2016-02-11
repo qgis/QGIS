@@ -21,10 +21,12 @@
 #include "qgsvectorlayer.h"
 
 class QgsGeometryCache;
+class QgsCurveV2;
 
 class CORE_EXPORT QgsVectorLayerEditUtils
 {
   public:
+
     QgsVectorLayerEditUtils( QgsVectorLayer* layer );
 
     inline QgsGeometryCache* cache() { return L->cache(); }
@@ -42,11 +44,30 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      */
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
 
-    /** Deletes a vertex from a feature
+    /** Moves the vertex at the given position number,
+     *  ring and item (first number is index 0), and feature
+     *  to the given coordinates
      */
-    bool deleteVertex( QgsFeatureId atFeatureId, int atVertex );
+    bool moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex );
+
+    /** Deletes a vertex from a feature
+     * @deprecated use deleteVertexV2() instead
+     */
+    Q_DECL_DEPRECATED bool deleteVertex( QgsFeatureId atFeatureId, int atVertex );
+
+    /** Deletes a vertex from a feature.
+     * @param featureId ID of feature to remove vertex from
+     * @param vertex index of vertex to delete
+     * @note added in QGIS 2.14
+     */
+    //TODO QGIS 3.0 - rename to deleteVertex
+    QgsVectorLayer::EditResult deleteVertexV2( QgsFeatureId featureId, int vertex );
 
     /** Adds a ring to polygon/multipolygon features
+     * @param ring ring to add
+     * @param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
+     * all intersecting features are tested and the ring is added to the first valid feature.
+     * @param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
      @return
        0 in case of success,
        1 problem with feature type,
@@ -54,7 +75,21 @@ class CORE_EXPORT QgsVectorLayerEditUtils
        3 ring not valid,
        4 ring crosses existing rings,
        5 no feature found where ring can be inserted*/
-    int addRing( const QList<QgsPoint>& ring );
+    int addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
+
+    /** Adds a ring to polygon/multipolygon features
+     * @param ring ring to add
+     * @param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
+     * all intersecting features are tested and the ring is added to the first valid feature.
+     * @param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
+         @return
+           0 in case of success,
+           1 problem with feature type,
+           2 ring not closed,
+           3 ring not valid,
+           4 ring crosses existing rings,
+           5 no feature found where ring can be inserted*/
+    int addRing( QgsCurveV2* ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
 
     /** Adds a new part polygon to a multipart feature
      @return
@@ -66,6 +101,19 @@ class CORE_EXPORT QgsVectorLayerEditUtils
        5 if several features are selected,
        6 if selected geometry not found*/
     int addPart( const QList<QgsPoint>& ring, QgsFeatureId featureId );
+
+    /** Adds a new part polygon to a multipart feature
+     @return
+       0 in case of success,
+       1 if selected feature is not multipart,
+       2 if ring is not a valid geometry,
+       3 if new polygon ring not disjoint with existing rings,
+       4 if no feature was selected,
+       5 if several features are selected,
+       6 if selected geometry not found*/
+    int addPart( const QList<QgsPointV2>& ring, QgsFeatureId featureId );
+
+    int addPart( QgsCurveV2* ring, QgsFeatureId featureId );
 
     /** Translates feature by dx, dy
        @param featureId id of the feature to translate
@@ -97,7 +145,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * @note geom is not going to be modified by the function
      * @return 0 in case of success
      */
-    int addTopologicalPoints( QgsGeometry* geom );
+    int addTopologicalPoints( const QgsGeometry *geom );
 
     /** Adds a vertex to segments which intersect point p but don't
      * already have a vertex there. If a feature already has a vertex at position p,

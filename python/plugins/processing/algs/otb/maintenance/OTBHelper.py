@@ -27,21 +27,12 @@ __version__ = "3.8"
 import os
 import copy
 
-try:
-    import processing
-except ImportError, e:
-    raise Exception("Processing must be installed and available in PYTHONPATH")
-
-try:
-    import otbApplication
-except ImportError, e:
-    raise Exception("OTB python plugins must be installed and available in PYTHONPATH")
-
 import xml.etree.ElementTree as ET
 import traceback
 
 from contextlib import contextmanager
 import shutil
+
 
 @contextmanager
 def tag(name, c):
@@ -52,19 +43,22 @@ def tag(name, c):
     else:
         c.append("</%s>" % name)
 
+
 @contextmanager
 def opentag(name, c):
     c.append("<%s>" % name)
     yield
 
-def get_group( appInstance ) :
+
+def get_group(appInstance):
     tags = appInstance.GetDocTags()
-    sectionTags = ["Image Manipulation","Vector Data Manipulation", "Calibration","Geometry", "Image Filtering","Feature Extraction","Stereo","Learning","Segmentation"]
+    sectionTags = ["Image Manipulation", "Vector Data Manipulation", "Calibration", "Geometry", "Image Filtering", "Feature Extraction", "Stereo", "Learning", "Segmentation"]
     for sectionTag in sectionTags:
         for tag in tags:
             if tag == sectionTag:
                 return sectionTag
     return "Miscellaneous"
+
 
 def set_OTB_log():
     import logging
@@ -79,6 +73,7 @@ def set_OTB_log():
     logger.addHandler(cons)
     logger.setLevel(logging.DEBUG)
 
+
 def get_OTB_log():
     import logging
     logger = logging.getLogger('OTBGenerator')
@@ -87,8 +82,9 @@ def get_OTB_log():
     logger = logging.getLogger('OTBGenerator')
     return logger
 
+
 def indent(elem, level=0):
-    i = "\n" + level*"  "
+    i = "\n" + level * "  "
     if len(elem):
         if not elem.text or not elem.text.strip():
             elem.text = i + "  "
@@ -104,17 +100,19 @@ def indent(elem, level=0):
 
 set_OTB_log()
 
+
 def get_parameters():
-    parameters = { getattr(otbApplication, each): each for each in dir(otbApplication) if 'ParameterType_' in each}
+    parameters = {getattr(otbApplication, each): each for each in dir(otbApplication) if 'ParameterType_' in each}
     return parameters
+
 
 def get_inverted_parameters():
     """
     This function allows mapping otb parameters with processing parameters.
     """
-    parameters = { getattr(otbApplication, each): each for each in dir(otbApplication) if 'ParameterType_' in each}
+    parameters = {getattr(otbApplication, each): each for each in dir(otbApplication) if 'ParameterType_' in each}
 
-    inverted_parameters = { key: value for value, key in parameters.items() }
+    inverted_parameters = {key: value for value, key in parameters.items()}
     inverted_parameters['ParameterType_Radius'] = 1
     inverted_parameters['ParameterType_RAM'] = 1
     inverted_parameters['ParameterType_ComplexInputImage'] = 9
@@ -144,28 +142,41 @@ def get_inverted_parameters():
     inverted_parameters_clone['ParameterType_RAM'] = 'ParameterNumber'
     inverted_parameters_clone['ParameterType_InputProcessXML'] = 'ParameterFile'
     inverted_parameters_clone['ParameterType_OutputProcessXML'] = 'ParameterFile'
-    inverted_parameters_clone['ParameterType_InputFilenameList'] =  'ParameterMultipleInput' # 'ParameterString'
+    inverted_parameters_clone['ParameterType_InputFilenameList'] = 'ParameterMultipleInput' # 'ParameterString'
 
     return inverted_parameters_clone
+
 
 def retrieve_module_name(param):
     """
     returns the file parameter of the given processing parameter
     """
     if param:
-        try :
+        try:
+            import processing.core
+            dir_p = os.path.dirname(processing.core.__file__)
             if 'Parameter' in param:
-                return eval('processing.parameters.%s.__file__' % param).replace('pyc', 'py')
+                exec("from processing.core.parameters import %s" % param)
+                return os.path.join(dir_p, "parameters.py")
             if 'Output' in param:
-                return eval('processing.outputs.%s.__file__' % param).replace('pyc', 'py')
-        except TypeError:
+                exec("from processing.core.outputs import %s" % param)
+                return os.path.join(dir_p, "outputs.py")
+        except ImportError as e:
             print "Error parsing ", param
     return None
 
-def get_constructor_parameters_from_filename(py_file):
+
+def get_constructor_parameters_from_filename(py_file, param=""):
+    """
+    Get all parameters from the constructor of the class param in the given py_file
+    """
     import ast
     asto = ast.parse(open(py_file).read())
-    e1 = [each for each in asto.body if type(each) is ast.ClassDef]
+    # get all class definitions corresponding to param given len(e1) should be 1
+    e1 = [each for each in asto.body if isinstance(each, ast.ClassDef) and each.name == param]
+
+    # e1[0].body lists all functions from the class e1[0]
+    # e2 is a list of __init__ functions of class e1[0]
     e2 = [each for each in e1[0].body if hasattr(each, "name") and each.name == "__init__"]
     if len(e2) > 0:
         e4 = e2[0].args.args
@@ -173,6 +184,21 @@ def get_constructor_parameters_from_filename(py_file):
         e4 = []
     e5 = [each.id for each in e4]
     return e5
+
+
+def get_customize_app_functions():
+    """
+    Get all parameters from the constructor of the class param in the given py_file
+    """
+    import ast
+
+    py_file = os.path.join(os.path.dirname(__file__), "OTBSpecific_XMLcreation.py")
+    asto = ast.parse(open(py_file).read())
+    # get all class definitions corresponding to param given len(e1) should be 1
+    e1 = [each.name for each in asto.body if isinstance(each, ast.FunctionDef) and each.name.startswith("get")]
+
+    return e1
+
 
 def get_xml_description_from_application_name(our_app, criteria=None):
     """
@@ -209,16 +235,18 @@ def get_xml_description_from_application_name(our_app, criteria=None):
     param_keys = filter(real_criteria, param_keys)
 
     for param_key in param_keys:
-        if not param_key == "inxml" and not param_key == "outxml" :
+        if not param_key == "inxml" and not param_key == "outxml":
             get_param_descriptor(app.text, app_instance, param_key, root)
     indent(root)
     return root
+
 
 def get_the_choices(app_instance, our_descriptor, root):
     choices = ET.SubElement(root, 'choices')
     for choice in app_instance.GetChoiceKeys(our_descriptor):
         choice_node = ET.SubElement(choices, 'choice')
         choice_node.text = choice
+
 
 def get_param_descriptor(appkey, app_instance, our_descriptor, root):
     """
@@ -238,53 +266,87 @@ def get_param_descriptor(appkey, app_instance, our_descriptor, root):
     if not file_parameter:
         logger.info("Type %s is not handled yet. (%s, %s)" % (our_type, appkey, our_descriptor))
         return
+    the_params = get_constructor_parameters_from_filename(file_parameter, mapped_parameter)
+
+    # special for default values of OpticalCalibration
+    if appkey == "OpticalCalibration":
+        if "default" in the_params:
+            try:
+                app_instance.GetParameterAsString(our_descriptor)
+            except RuntimeError as e:
+                return
 
     param = ET.SubElement(root, 'parameter')
-    attrs = {'source_parameter_type' : parameters[app_instance.GetParameterType(our_descriptor)]}
-    if appkey == "Segmentation" :
-        if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputFilename" :
-            attrs = {'source_parameter_type' : 'ParameterType_OutputVectorData'}
-    if appkey == "LSMSVectorization" :
-        if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputFilename" :
-            attrs = {'source_parameter_type' : 'ParameterType_OutputVectorData'}
-    if appkey == "SplitImage" :
-        if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputImage" :
-            attrs = {'source_parameter_type' : 'ParameterType_OutputFilename'}
+    attrs = {'source_parameter_type': parameters[app_instance.GetParameterType(our_descriptor)]}
+    if appkey == "Segmentation":
+        if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputFilename":
+            attrs = {'source_parameter_type': 'ParameterType_OutputVectorData'}
+    if appkey == "LSMSVectorization":
+        if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputFilename":
+            attrs = {'source_parameter_type': 'ParameterType_OutputVectorData'}
+    if appkey == "SplitImage":
+        if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputImage":
+            attrs = {'source_parameter_type': 'ParameterType_OutputFilename'}
+
+    if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_ListView":
+        if not appkey == "RadiometricIndices":
+            attrs = {'source_parameter_type': 'ParameterType_StringList'}
 
     param_type = ET.SubElement(param, 'parameter_type', attrib=attrs)
 
     param_type.text = inverted_parameters[parameters[app_instance.GetParameterType(our_descriptor)]]
-    if appkey == "Segmentation" :
-        if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputFilename" :
+    if appkey == "Segmentation":
+        if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputFilename":
             param_type.text = "OutputVector"
-    if appkey == "LSMSVectorization" :
-        if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputFilename" :
+    if appkey == "LSMSVectorization":
+        if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputFilename":
             param_type.text = "OutputVector"
-    if appkey == "SplitImage" :
-        if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputImage" :
+    if appkey == "SplitImage":
+        if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputImage":
             param_type.text = "OutputFile"
+    if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_ListView":
+        if not appkey == "RadiometricIndices":
+            param_type.text = "ParameterString"
 
-    the_params = get_constructor_parameters_from_filename(file_parameter)
+    # {the_params = get_constructor_parameters_from_filename(file_parameter, mapped_parameter)
     if len(the_params) == 0:
-        if 'Output' in file_parameter:
-            file_path = os.path.join(os.path.dirname(file_parameter), 'Output.py')
-            the_params = get_constructor_parameters_from_filename(file_path)
-        if 'Parameter' in file_parameter:
-            file_path = os.path.join(os.path.dirname(file_parameter), 'Parameter.py')
+        # if 'Output' in file_parameter:
+        if 'output' in file_parameter:
+            file_path = os.path.join(os.path.dirname(file_parameter), 'outputs.py')
+            the_params = get_constructor_parameters_from_filename(file_path, "Output")
+        if 'parameter' in file_parameter:
+            file_path = os.path.join(os.path.dirname(file_parameter), 'parameters.py')
             the_params = (file_path)
+            the_params = get_constructor_parameters_from_filename(file_path, "Parameter")
 
     if "self" in the_params:
-        the_params = the_params[1:]
+        #remove self
+        the_params.remove("self")  # the_params[1:]
+        # to be identical as before !
+        if "isSource" in the_params:
+            the_params.remove("isSource")
+        if "showSublayersDialog" in the_params:
+            the_params.remove("showSublayersDialog")
+        if "ext" in the_params:
+            the_params.remove("ext")
     else:
         raise Exception("Unexpected constructor parameters")
 
     key = ET.SubElement(param, 'key')
     key.text = our_descriptor
     is_choice_type = False
+
     for each in the_params:
         if each == "name":
             name = ET.SubElement(param, 'name')
-            name.text = app_instance.GetParameterName(our_descriptor)
+
+            nametext = app_instance.GetParameterName(our_descriptor)
+            if "angle" in nametext:
+                name.text = nametext.replace("\xc2\xb0", "deg")
+            else:
+                name.text = app_instance.GetParameterName(our_descriptor)
+            if our_descriptor == "acqui.fluxnormcoeff":
+                pass
         elif each == "description":
             desc = ET.SubElement(param, 'description')
             desc.text = app_instance.GetParameterDescription(our_descriptor)
@@ -358,6 +420,7 @@ def get_default_parameter_value(app_instance, param):
             default_value = "True"
         return default_value
 
+
 def escape_html(par):
     if 'Int' in par:
         return '&lt;int32&gt;'
@@ -371,9 +434,10 @@ def escape_html(par):
         return '&lt;int32&gt;'
     return '&lt;string&gt;'
 
+
 def is_a_parameter(app_instance, param):
-    if app_instance.GetName() == "HaralickTextureExtraction" :
-        if param.startswith( "parameters." ):
+    if app_instance.GetName() == "HaralickTextureExtraction":
+        if param.startswith("parameters."):
             return True
     if '.' in param:
         return False
@@ -414,8 +478,8 @@ dl { border: 3px double #ccc; padding: 0.5em; } dt { float: left; clear: left; t
                 for param in params:
                     if is_a_parameter(app_instance, param):
                         with tag('li', result):
-                            result.append('<b>%s -%s</b> %s ' % ('[param]', param, escape_html(parameters[app_instance.GetParameterType(param)])  ))
-                            result.append('%s. Mandatory: %s. Default Value: &quot;%s&quot;' %(app_instance.GetParameterDescription(param), str(app_instance.IsMandatory(param)), get_default_parameter_value(app_instance, param)))
+                            result.append('<b>%s -%s</b> %s ' % ('[param]', param, escape_html(parameters[app_instance.GetParameterType(param)])))
+                            result.append('%s. Mandatory: %s. Default Value: &quot;%s&quot;' % (app_instance.GetParameterDescription(param), str(app_instance.IsMandatory(param)), get_default_parameter_value(app_instance, param)))
                 choices_tags = [each for each in params if (not is_a_parameter(app_instance, each)) and '.' not in each]
                 for choice in choices_tags:
                     result.append('<b>%s -%s</b> %s %s. Mandatory: %s. Default Value: &quot;%s&quot;' % ('[choice]', choice, app_instance.GetParameterDescription(choice), ','.join(app_instance.GetChoiceKeys(choice)), str(app_instance.IsMandatory(choice)), get_default_parameter_value(app_instance, choice)))
@@ -430,7 +494,7 @@ dl { border: 3px double #ccc; padding: 0.5em; } dt { float: left; clear: left; t
                                 for param_tag in param_tags:
                                     with tag('li', result):
                                         result.append('<b>%s -%s</b> ' % ('[param]', param_tag))
-                                        result.append("%s %s. Mandatory: %s. Default Value: &quot;%s&quot;" % ( escape_html(parameters[app_instance.GetParameterType(param_tag)]) ,app_instance.GetParameterDescription(param_tag), str(app_instance.IsMandatory(param_tag)), get_default_parameter_value(app_instance, param_tag)))
+                                        result.append("%s %s. Mandatory: %s. Default Value: &quot;%s&quot;" % (escape_html(parameters[app_instance.GetParameterType(param_tag)]), app_instance.GetParameterDescription(param_tag), str(app_instance.IsMandatory(param_tag)), get_default_parameter_value(app_instance, param_tag)))
             with tag('h2', result):
                 result.append('Limitations')
             result.append(app_instance.GetDocLimitations())
@@ -443,13 +507,14 @@ dl { border: 3px double #ccc; padding: 0.5em; } dt { float: left; clear: left; t
             with tag('h2', result):
                 result.append('Example of use')
             result.append(app_instance.GetHtmlExample())
-    if app_instance.GetName() == "HaralickTextureExtraction" :
+    if app_instance.GetName() == "HaralickTextureExtraction":
         index = result.index("<b>[param] -parameters</b> &lt;string&gt; ")
-        del result[index +2]
-        del result[index +1]
+        del result[index + 2]
+        del result[index + 1]
         del result[index]
-        del result[index -1]
+        del result[index - 1]
     return "".join(result)
+
 
 def get_list_from_node(myet, available_app):
     all_params = []
@@ -478,6 +543,7 @@ def get_list_from_node(myet, available_app):
         all_params.append(rebuild)
     return all_params
 
+
 def adapt_list_to_string(c_list):
     a_list = c_list[1:]
     if a_list[0] in ["ParameterVector", "ParameterMultipleInput"]:
@@ -496,7 +562,7 @@ def adapt_list_to_string(c_list):
     if a_list[0] in ["ParameterSelection"]:
         pass
 
-    a_list[1]="-%s" % a_list[1]
+    a_list[1] = "-%s" % a_list[1]
 
     def mystr(par):
         if isinstance(par, list):
@@ -523,12 +589,13 @@ def get_automatic_ut_from_xml_description(the_root):
             raise Exception('Wrong client executable')
 
         rebu = get_list_from_node(dom_model, appkey)
-        the_result = map(adapt_list_to_string,rebu)
+        the_result = map(adapt_list_to_string, rebu)
         ut_command = cliName + " " + " ".join(the_result)
         return ut_command
-    except Exception, e:
+    except Exception as e:
         ET.dump(dom_model)
         raise
+
 
 def list_reader(file_name, version):
     tree = ET.parse(file_name)
@@ -536,17 +603,22 @@ def list_reader(file_name, version):
     nodes = [each.text for each in root.findall("./version[@id='%s']/app_name" % version)]
     return nodes
 
+
 def get_otb_version():
     #TODO Find a way to retrieve installed otb version, force exception and parse otb-X.XX.X ?
-    return "3.18"
+    # return "3.18"
+    return "5.0"
+
 
 def get_white_list():
-    nodes = list_reader("white_list.xml",get_otb_version())
+    nodes = list_reader("white_list.xml", get_otb_version())
     return nodes
 
+
 def get_black_list():
-    nodes = list_reader("black_list.xml",get_otb_version())
+    nodes = list_reader("black_list.xml", get_otb_version())
     return nodes
+
 
 def create_xml_descriptors():
     import os
@@ -559,37 +631,48 @@ def create_xml_descriptors():
 
     white_list = get_white_list()
     black_list = get_black_list()
+    custom_apps_available = get_customize_app_functions()
 
     for available_app in otbApplication.Registry.GetAvailableApplications():
-        try:
-            if 'get%s' % available_app in locals():
-                if available_app in white_list and available_app not in black_list:
-                    the_root = get_xml_description_from_application_name(available_app)
-                    the_list = locals()['get%s' % available_app](available_app, the_root)
-                    if the_list:
-                        for each_dom in the_list:
-                            try:
-                                ut_command = get_automatic_ut_from_xml_description(each_dom)
-                            except:
-                                logger.error("Unit test for command %s must be fixed: %s" % (available_app , traceback.format_exc()))
-                else:
-                    logger.warning("%s is not in white list." % available_app)
-
+        # try:
+        if 'get%s' % available_app in custom_apps_available:
+            if available_app in white_list and available_app not in black_list:
+                the_list = []
+                the_root = get_xml_description_from_application_name(available_app)
+                function_to_call = "the_list = OTBSpecific_XMLcreation.get%s(available_app,the_root)" % available_app
+                exec(function_to_call)
+                # the_list = locals()['get%s' % available_app](available_app, the_root)
+                if the_list:
+                    for each_dom in the_list:
+                        try:
+                            ut_command = get_automatic_ut_from_xml_description(each_dom)
+                        except:
+                            logger.error("Unit test for command %s must be fixed: %s" % (available_app, traceback.format_exc()))
             else:
-                if available_app in white_list and available_app not in black_list:
-                    logger.warning("There is no adaptor for %s, check white list and versions" % available_app)
-                    # TODO Remove this default code when all apps are tested...
-                    fh = open("description/%s.xml" % available_app, "w")
-                    the_root = get_xml_description_from_application_name(available_app)
-                    ET.ElementTree(the_root).write(fh)
-                    fh.close()
-                    try:
-                        ut_command = get_automatic_ut_from_xml_description(the_root)
-                    except:
-                        logger.error("Unit test for command %s must be fixed: %s" % (available_app , traceback.format_exc()))
+                logger.warning("%s is not in white list." % available_app)
 
-        except Exception, e:
-            logger.error(traceback.format_exc())
+        else:
+            if available_app in white_list and available_app not in black_list:
+                logger.warning("There is no adaptor for %s, check white list and versions" % available_app)
+                # TODO Remove this default code when all apps are tested...
+                fh = open("description/%s.xml" % available_app, "w")
+                the_root = get_xml_description_from_application_name(available_app)
+                ET.ElementTree(the_root).write(fh)
+                fh.close()
+                try:
+                    ut_command = get_automatic_ut_from_xml_description(the_root)
+                except:
+                    logger.error("Unit test for command %s must be fixed: %s" % (available_app, traceback.format_exc()))
+
+        # except Exception, e:
+        #    logger.error(traceback.format_exc())
+
+
+def create_html_description():
+    logger = get_OTB_log()
+
+    if not os.path.exists("description/doc"):
+        os.mkdir("description/doc")
 
     for available_app in otbApplication.Registry.GetAvailableApplications():
         try:
@@ -599,12 +682,40 @@ def create_xml_descriptors():
             ct = describe_app(app_instance)
             fh.write(ct)
             fh.close()
-        except Exception, e:
+        except Exception as e:
             logger.error(traceback.format_exc())
 
     sub_algo = [each for each in os.listdir("description") if "-" in each and ".xml" in each]
     for key in sub_algo:
-        shutil.copy("description/doc/%s" % key.split("-")[0] + ".html","description/doc/%s" % key.split(".")[0] + ".html")
+        shutil.copy("description/doc/%s" % key.split("-")[0] + ".html", "description/doc/%s" % key.split(".")[0] + ".html")
 
 if __name__ == "__main__":
+    # Prepare the environment
+    import sys
+    import os
+    from qgis.core import QgsApplication
+    from PyQt4.QtGui import QApplication
+    app = QApplication([])
+    QgsApplication.setPrefixPath("/usr", True)
+    QgsApplication.initQgis()
+    # Prepare processing framework
+    from processing.core.Processing import Processing
+    Processing.initialize()
+
+    import OTBSpecific_XMLcreation
+#     try:
+#         import processing
+#     except ImportError, e:
+#         raise Exception("Processing must be installed and available in PYTHONPATH")
+
+    try:
+        import otbApplication
+    except ImportError as e:
+        raise Exception("OTB python plugins must be installed and available in PYTHONPATH")
+
     create_xml_descriptors()
+    create_html_description()
+
+    # Exit applications
+    QgsApplication.exitQgis()
+    QApplication.exit()

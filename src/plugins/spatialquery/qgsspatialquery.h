@@ -55,7 +55,7 @@ class QgsSpatialQuery
     * \brief Constructor for a Spatial query.
     * \param pb Pointer to the MngProgressBar object.
     */
-    QgsSpatialQuery( MngProgressBar *pb );
+    explicit QgsSpatialQuery( MngProgressBar *pb );
 
     /**
     * \brief Destructor
@@ -157,6 +157,9 @@ class QgsSpatialQuery
     QgsVectorLayer * mLayerTarget;
     QgsVectorLayer * mLayerReference;
     QgsSpatialIndex  mIndexReference;
+
+    QgsSpatialQuery( const QgsSpatialQuery& rh );
+    QgsSpatialQuery& operator=( const QgsSpatialQuery& rh );
 };
 
 #endif // SPATIALQUERY_H

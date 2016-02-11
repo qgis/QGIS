@@ -11,23 +11,23 @@ class QgsSnappingUtils : QObject
 
     // main actions
 
-    /** get a point locator for the given layer. If such locator does not exist, it will be created */
+    /** Get a point locator for the given layer. If such locator does not exist, it will be created */
     QgsPointLocator* locatorForLayer( QgsVectorLayer* vl );
 
-    /** snap to map according to the current configuration (mode). Optional filter allows to discard unwanted matches. */
-    QgsPointLocator::Match snapToMap( const QPoint& point, QgsPointLocator::MatchFilter* filter = 0 );
+    /** Snap to map according to the current configuration (mode). Optional filter allows discarding unwanted matches. */
+    QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter* filter = 0 );
     QgsPointLocator::Match snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter = 0 );
 
-    /** snap to current layer */
-    QgsPointLocator::Match snapToCurrentLayer( const QPoint& point, int type, QgsPointLocator::MatchFilter* filter = 0 );
+    /** Snap to current layer */
+    QgsPointLocator::Match snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter* filter = 0 );
 
     // environment setup
 
-    /** assign current map settings to the utils - used for conversion between screen coords to map coords */
+    /** Assign current map settings to the utils - used for conversion between screen coords to map coords */
     void setMapSettings( const QgsMapSettings& settings );
     const QgsMapSettings& mapSettings() const;
 
-    /** set current layer so that if mode is SnapCurrentLayer we know which layer to use */
+    /** Set current layer so that if mode is SnapCurrentLayer we know which layer to use */
     void setCurrentLayer( QgsVectorLayer* layer );
     QgsVectorLayer* currentLayer() const;
 
@@ -59,17 +59,20 @@ class QgsSnappingUtils : QObject
     /** Find out which strategy is used for indexing - by default hybrid indexing is used */
     IndexingStrategy indexingStrategy() const;
 
-    /** configure options used when the mode is snap to current layer */
+    /** Configure options used when the mode is snap to current layer or to all layers */
     void setDefaultSettings( int type, double tolerance, QgsTolerance::UnitType unit );
-    /** query options used when the mode is snap to current layer */
+    /** Query options used when the mode is snap to current layer or to all layers */
     void defaultSettings( int& type /Out/, double& tolerance /Out/, QgsTolerance::UnitType& unit /Out/ );
 
     struct LayerConfig
     {
-      LayerConfig( QgsVectorLayer* l, int t, double tol, QgsTolerance::UnitType u );
+      LayerConfig( QgsVectorLayer* l, const QgsPointLocator::Types& t, double tol, QgsTolerance::UnitType u );
+
+      bool operator==( const QgsSnappingUtils::LayerConfig& other ) const;
+      bool operator!=( const QgsSnappingUtils::LayerConfig& other ) const;
 
       QgsVectorLayer* layer;
-      int type;
+      QgsPointLocator::Types type;
       double tolerance;
       QgsTolerance::UnitType unit;
     };
@@ -84,8 +87,24 @@ class QgsSnappingUtils : QObject
     /** Query whether to consider intersections of nearby segments for snapping */
     bool snapOnIntersections() const;
 
+    /** Get extra information about the instance
+     * @note added in QGIS 2.14
+     */
+    QString dump();
+
   public slots:
     /** Read snapping configuration from the project */
     void readConfigFromProject();
 
+  signals:
+    /** Emitted when snapping configuration has been changed
+     * @note added in QGIS 2.14
+     */
+    void configChanged();
+
+  protected:
+    //! Called when starting to index - can be overridden and e.g. progress dialog can be provided
+    virtual void prepareIndexStarting( int count );
+    //! Called when finished indexing a layer. When index == count the indexing is complete
+    virtual void prepareIndexProgress( int index );
 };

@@ -15,11 +15,11 @@ class QgsMapCanvasMap : QgsMapCanvasItem
 %ConvertToSubClassCode
     if (dynamic_cast<QgsMapCanvasMap*>(sipCpp) != NULL)
     {
-        sipClass = sipClass_QgsMapCanvasMap;
+        sipType = sipType_QgsMapCanvasMap;
     }
   else
   {
-    sipClass = NULL;
+    sipType = NULL;
   }
 %End
 
@@ -52,7 +52,7 @@ class QgsMapCanvasMap : QgsMapCanvasItem
     void setBackgroundColor( const QColor& color ) /Deprecated/;
 
     //! @deprecated in 2.4 - not called by QgsMapCanvas anymore
-    void setPanningOffset( const QPoint& point ) /Deprecated/;
+    void setPanningOffset( QPoint point ) /Deprecated/;
 
     //! @deprecated in 2.4
     QPaintDevice& paintDevice() /Deprecated/;

@@ -1,0 +1,46 @@
+<root>
+  <key>OGRLayerClassifier</key>
+  <exec>otbcli_OGRLayerClassifier</exec>
+  <longname>OGRLayerClassifier</longname>
+  <group>Segmentation</group>
+  <description>Classify an OGR layer based on a machine learning model and a list of features to consider.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
+    <key>inshp</key>
+    <name>Name of the input shapefile</name>
+    <description>Name of the input shapefile</description>
+    <isFolder />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
+    <key>instats</key>
+    <name>XML file containing mean and variance of each feature.</name>
+    <description>XML file containing mean and variance of each feature.</description>
+    <isFolder />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputFilename">OutputFile</parameter_type>
+    <key>insvm</key>
+    <name>Input model filename.</name>
+    <description>Input model filename.</description>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_StringList">ParameterString</parameter_type>
+    <key>feat</key>
+    <name>Features</name>
+    <description>Features to be calculated</description>
+    <options />
+    <default />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_String">ParameterString</parameter_type>
+    <key>cfield</key>
+    <name>Field containing the predicted class.</name>
+    <description>Field containing the predicted class</description>
+    <default>predicted</default>
+    <multiline />
+    <optional>False</optional>
+  </parameter>
+</root>

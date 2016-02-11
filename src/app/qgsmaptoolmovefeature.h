@@ -19,7 +19,7 @@
 #include "qgsmaptooledit.h"
 #include "qgsvectorlayer.h"
 
-/**Map tool for translating feature position by mouse drag*/
+/** Map tool for translating feature position by mouse drag*/
 class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolEdit
 {
     Q_OBJECT
@@ -27,23 +27,23 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolEdit
     QgsMapToolMoveFeature( QgsMapCanvas* canvas );
     virtual ~QgsMapToolMoveFeature();
 
-    virtual void canvasMoveEvent( QMouseEvent * e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
-    virtual void canvasPressEvent( QMouseEvent * e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
-    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     //! called when map tool is being deactivated
     void deactivate() override;
 
   private:
-    /**Start point of the move in map coordinates*/
+    /** Start point of the move in map coordinates*/
     QgsPoint mStartPointMapCoords;
 
-    /**Rubberband that shows the feature being moved*/
+    /** Rubberband that shows the feature being moved*/
     QgsRubberBand* mRubberBand;
 
-    /**Id of moved feature*/
+    /** Id of moved feature*/
     QgsFeatureIds mMovedFeatures;
 };
 

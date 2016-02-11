@@ -27,7 +27,7 @@
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
-  FilterExcludePoint( const QgsPoint& p ) : mPoint( p ) {}
+  explicit FilterExcludePoint( const QgsPoint& p ) : mPoint( p ) {}
 
   bool acceptMatch( const QgsPointLocator::Match& match ) { return match.point() != mPoint; }
 
@@ -216,7 +216,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( mAddA.count() == 1 );
 
       // change geometry
-      QgsGeometry* newGeom = new QgsGeometry( *ff.geometry() );
+      QgsGeometry* newGeom = new QgsGeometry( *ff.constGeometry() );
       newGeom->moveVertex( 10, 10, 2 ); // change 11,11 to 10,10
       mVL->changeGeometry( ff.id(), newGeom );
       delete newGeom;
@@ -261,4 +261,3 @@ class TestQgsPointLocator : public QObject
 QTEST_MAIN( TestQgsPointLocator )
 
 #include "testqgspointlocator.moc"
-

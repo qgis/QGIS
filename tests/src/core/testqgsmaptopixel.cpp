@@ -15,7 +15,6 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
 //header for class being tested
 #include <qgsrectangle.h>
 #include <qgsmaptopixel.h>
@@ -32,7 +31,9 @@ class TestQgsMapToPixel: public QObject
 
 void TestQgsMapToPixel::legacy()
 {
+  Q_NOWARN_DEPRECATED_PUSH
   QgsMapToPixel m2p( 2, 10, -4, 3 );
+  Q_NOWARN_DEPRECATED_POP
 
   QgsPoint p( 0, 0 ); // in geographical units
   QgsPoint d = m2p.transform( p ); // to device pixels
@@ -45,7 +46,9 @@ void TestQgsMapToPixel::legacy()
   m2p.transform( &p ); // in place transform
   QCOMPARE( p, d );
 
+  Q_NOWARN_DEPRECATED_PUSH
   m2p.setParameters( 0.2, -10, 7, 20 );
+  Q_NOWARN_DEPRECATED_POP
   p = m2p.toMapCoordinates( -1, -1 );
   QCOMPARE( p.x(), -10.2 );
   QCOMPARE( p.y(), 11.2 );

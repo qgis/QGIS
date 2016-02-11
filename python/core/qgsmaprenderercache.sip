@@ -25,16 +25,16 @@ class QgsMapRendererCache : QObject
 
     //! initialize cache: set new parameters and erase cache if parameters have changed
     //! @return flag whether the parameters are the same as last time
-    bool init( QgsRectangle extent, double scale );
+    bool init( const QgsRectangle& extent, double scale );
 
     //! set cached image for the specified layer ID
-    void setCacheImage( QString layerId, const QImage& img );
+    void setCacheImage( const QString& layerId, const QImage& img );
 
     //! get cached image for the specified layer ID. Returns null image if it is not cached.
-    QImage cacheImage( QString layerId );
+    QImage cacheImage( const QString& layerId );
 
     //! remove layer from the cache
-    void clearCacheImage( QString layerId );
+    void clearCacheImage( const QString& layerId );
 
   protected slots:
     //! remove layer (that emitted the signal) from the cache

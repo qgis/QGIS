@@ -26,6 +26,9 @@ class QgsLayerTreeViewDefaultActions : QObject
 
     QAction* actionMakeTopLevel( QObject* parent = 0 ) /Factory/;
     QAction* actionGroupSelected( QObject* parent = 0 ) /Factory/;
+    //! Action to enable/disable mutually exclusive flag of a group (only one child node may be checked)
+    //! @note added in 2.12
+    QAction* actionMutuallyExclusiveGroup( QObject* parent = 0 ) /Factory/;
 
     void zoomToLayer( QgsMapCanvas* canvas );
     void zoomToGroup( QgsMapCanvas* canvas );
@@ -42,6 +45,9 @@ class QgsLayerTreeViewDefaultActions : QObject
     void zoomToGroup();
     void makeTopLevel();
     void groupSelected();
+    //! Slot to enable/disable mutually exclusive group flag
+    //! @note added in 2.12
+    void mutuallyExclusiveGroup();
 
   protected:
     void zoomToLayers( QgsMapCanvas* canvas, const QList<QgsMapLayer*>& layers );

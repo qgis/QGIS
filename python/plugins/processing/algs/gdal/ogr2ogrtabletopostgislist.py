@@ -36,17 +36,19 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterTableField
 
-from processing.tools.system import isWindows
-
-from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-class Ogr2OgrTableToPostGisList(OgrAlgorithm):
+from processing.tools.system import isWindows
+from processing.tools.vector import ogrConnectionString, ogrLayerName
+
+
+class Ogr2OgrTableToPostGisList(GdalAlgorithm):
 
     DATABASE = 'DATABASE'
     INPUT_LAYER = 'INPUT_LAYER'
     HOST = 'HOST'
-    PORT= 'PORT'
+    PORT = 'PORT'
     USER = 'USER'
     DBNAME = 'DBNAME'
     PASSWORD = 'PASSWORD'
@@ -70,47 +72,47 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
         return settings.childGroups()
 
     def defineCharacteristics(self):
-        self.name = 'Import layer/table as geometryless table into PostgreSQL database'
-        self.group = '[OGR] Miscellaneous'
+        self.name, self.i18n_name = self.trAlgorithm('Import layer/table as geometryless table into PostgreSQL database')
+        self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
         self.DB_CONNECTIONS = self.dbConnectionNames()
         self.addParameter(ParameterSelection(self.DATABASE,
-            self.tr('Database (connection name)'), self.DB_CONNECTIONS))
+                                             self.tr('Database (connection name)'), self.DB_CONNECTIONS))
         self.addParameter(ParameterTable(self.INPUT_LAYER,
-            self.tr('Input layer')))
+                                         self.tr('Input layer')))
         self.addParameter(ParameterString(self.SCHEMA,
-            self.tr('Schema name'), 'public', optional=True))
+                                          self.tr('Schema name'), 'public', optional=True))
         self.addParameter(ParameterString(self.TABLE,
-            self.tr('Table name, leave blank to use input name'),
-            '', optional=True))
+                                          self.tr('Table name, leave blank to use input name'),
+                                          '', optional=True))
         self.addParameter(ParameterString(self.PK,
-            self.tr('Primary key'), 'id', optional=True))
+                                          self.tr('Primary key'), 'id', optional=True))
         self.addParameter(ParameterTableField(self.PRIMARY_KEY,
-            self.tr('Primary key (existing field, used if the above option is left empty)'),
-            self.INPUT_LAYER, optional=True))
+                                              self.tr('Primary key (existing field, used if the above option is left empty)'),
+                                              self.INPUT_LAYER, optional=True))
         self.addParameter(ParameterString(self.WHERE,
-            self.tr('Select features using a SQL "WHERE" statement (Ex: column=\'value\')'),
-            '', optional=True))
+                                          self.tr('Select features using a SQL "WHERE" statement (Ex: column=\'value\')'),
+                                          '', optional=True))
         self.addParameter(ParameterString(self.GT,
-            self.tr('Group N features per transaction (Default: 20000)'),
-            '', optional=True))
+                                          self.tr('Group N features per transaction (Default: 20000)'),
+                                          '', optional=True))
         self.addParameter(ParameterBoolean(self.OVERWRITE,
-            self.tr('Overwrite existing table'), True))
+                                           self.tr('Overwrite existing table'), True))
         self.addParameter(ParameterBoolean(self.APPEND,
-            self.tr('Append to existing table'), False))
+                                           self.tr('Append to existing table'), False))
         self.addParameter(ParameterBoolean(self.ADDFIELDS,
-            self.tr('Append and add new fields to existing table'), False))
+                                           self.tr('Append and add new fields to existing table'), False))
         self.addParameter(ParameterBoolean(self.LAUNDER,
-            self.tr('Do not launder columns/table names'), False))
+                                           self.tr('Do not launder columns/table names'), False))
         self.addParameter(ParameterBoolean(self.SKIPFAILURES,
-            self.tr('Continue after a failure, skipping the failed record'),
-            False))
+                                           self.tr('Continue after a failure, skipping the failed record'),
+                                           False))
         self.addParameter(ParameterBoolean(self.PRECISION,
-            self.tr('Keep width and precision of input attributes'),
-            True))
+                                           self.tr('Keep width and precision of input attributes'),
+                                           True))
         self.addParameter(ParameterString(self.OPTIONS,
-            self.tr('Additional creation options'), '', optional=True))
+                                          self.tr('Additional creation options'), '', optional=True))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
         settings = QSettings()
         mySettings = '/PostgreSQL/connections/' + connection
@@ -120,15 +122,14 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
         port = settings.value(mySettings + '/port')
         password = settings.value(mySettings + '/password')
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
         schema = unicode(self.getParameterValue(self.SCHEMA))
-        schemastring = "-lco SCHEMA="+schema
         table = unicode(self.getParameterValue(self.TABLE))
         pk = unicode(self.getParameterValue(self.PK))
-        pkstring = "-lco FID="+pk
+        pkstring = "-lco FID=" + pk
         primary_key = self.getParameterValue(self.PRIMARY_KEY)
         where = unicode(self.getParameterValue(self.WHERE))
-        wherestring = '-where "'+where+'"'
+        wherestring = '-where "' + where + '"'
         gt = unicode(self.getParameterValue(self.GT))
         overwrite = self.getParameterValue(self.OVERWRITE)
         append = self.getParameterValue(self.APPEND)
@@ -152,10 +153,14 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
             arguments.append('dbname=' + dbname)
         if len(password) > 0:
             arguments.append('password=' + password)
+        if len(schema) > 0:
+            arguments.append('active_schema=' + schema)
+        else:
+            arguments.append('active_schema=public')
         arguments.append('user=' + user + '"')
         arguments.append(ogrLayer)
         arguments.append('-nlt NONE')
-        arguments.append(self.ogrLayerName(inLayer))
+        arguments.append(ogrLayerName(inLayer))
         if launder:
             arguments.append(launderstring)
         if append:
@@ -164,12 +169,10 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
             arguments.append('-addfields')
         if overwrite:
             arguments.append('-overwrite')
-        if len(schema) > 0:
-            arguments.append(schemastring)
         if len(pk) > 0:
             arguments.append(pkstring)
         elif primary_key is not None:
-            arguments.append("-lco FID="+primary_key)
+            arguments.append("-lco FID=" + primary_key)
         if len(table) > 0:
             arguments.append('-nln')
             arguments.append(table)
@@ -192,4 +195,7 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
         else:
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands
+
+    def commandName(self):
+        return "ogr2ogr"

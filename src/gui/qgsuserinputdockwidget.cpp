@@ -19,17 +19,17 @@
 #include <QBoxLayout>
 
 QgsUserInputDockWidget::QgsUserInputDockWidget( QWidget *parent )
-    : QDockWidget( tr( "User input" ), parent )
-    , mDockArea( Qt::BottomDockWidgetArea )
+    : QDockWidget( tr( "User Input Panel" ), parent )
+    , mLayoutHorizontal( true )
 {
-  QWidget* w = new QWidget( this );
-  mLayout = new QBoxLayout( QBoxLayout::LeftToRight, this );
+  QWidget* w = new QWidget( nullptr );
+  mLayout = new QBoxLayout( QBoxLayout::LeftToRight );
   mLayout->setAlignment( Qt::AlignLeft | Qt::AlignTop );
   w->setLayout( mLayout );
   setWidget( w );
 
   connect( this, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ), this, SLOT( areaChanged( Qt::DockWidgetArea ) ) );
-
+  connect( this, SIGNAL( topLevelChanged( bool ) ), this, SLOT( floatingChanged( bool ) ) );
   hide();
 }
 
@@ -39,12 +39,12 @@ QgsUserInputDockWidget::~QgsUserInputDockWidget()
 
 void QgsUserInputDockWidget::addUserInputWidget( QWidget *widget )
 {
-  QFrame* line = 0;
+  QFrame* line = nullptr;
   if ( mWidgetList.count() > 0 )
   {
     line = new QFrame( this );
     line->setFrameShadow( QFrame::Sunken );
-    line->setFrameShape( isLayoutHorizontal() ? QFrame::VLine : QFrame::HLine );
+    line->setFrameShape( mLayoutHorizontal ? QFrame::VLine : QFrame::HLine );
     mLayout->addWidget( line );
   }
   mLayout->addWidget( widget );
@@ -53,8 +53,8 @@ void QgsUserInputDockWidget::addUserInputWidget( QWidget *widget )
 
   mWidgetList.insert( widget, line );
 
-  adjustSize();
   show();
+  adjustSize();
 }
 
 void QgsUserInputDockWidget::widgetDestroyed( QObject *obj )
@@ -73,24 +73,42 @@ void QgsUserInputDockWidget::widgetDestroyed( QObject *obj )
       ++i;
     }
   }
-  if ( mWidgetList.count() == 0 )
-  {
-    hide();
-  }
 }
 
 void QgsUserInputDockWidget::areaChanged( Qt::DockWidgetArea area )
 {
-  mDockArea = area;
+  bool newLayoutHorizontal = area & Qt::BottomDockWidgetArea || area & Qt::TopDockWidgetArea;
+  if ( mLayoutHorizontal == newLayoutHorizontal )
+  {
+    // no change
+    adjustSize();
+    return;
+  }
+  mLayoutHorizontal = newLayoutHorizontal;
+  updateLayoutDirection();
+}
 
-  mLayout->setDirection( isLayoutHorizontal() ? QBoxLayout::LeftToRight : QBoxLayout::TopToBottom );
+void QgsUserInputDockWidget::floatingChanged( bool floating )
+{
+  if ( mLayoutHorizontal == floating )
+  {
+    adjustSize();
+    return;
+  }
+  mLayoutHorizontal = floating;
+  updateLayoutDirection();
+}
 
-  QMap<QWidget*, QFrame*>::iterator i = mWidgetList.begin();
-  while ( i != mWidgetList.end() )
+void QgsUserInputDockWidget::updateLayoutDirection()
+{
+  mLayout->setDirection( mLayoutHorizontal ? QBoxLayout::LeftToRight : QBoxLayout::TopToBottom );
+
+  QMap<QWidget*, QFrame*>::const_iterator i = mWidgetList.constBegin();
+  while ( i != mWidgetList.constEnd() )
   {
     if ( i.value() )
     {
-      i.value()->setFrameShape( isLayoutHorizontal() ? QFrame::VLine : QFrame::HLine );
+      i.value()->setFrameShape( mLayoutHorizontal ? QFrame::VLine : QFrame::HLine );
     }
     ++i;
   }
@@ -98,23 +116,14 @@ void QgsUserInputDockWidget::areaChanged( Qt::DockWidgetArea area )
   adjustSize();
 }
 
-bool QgsUserInputDockWidget::isLayoutHorizontal()
-{
-  if ( mDockArea & Qt::BottomDockWidgetArea || mDockArea & Qt::TopDockWidgetArea || mDockArea & Qt::NoDockWidgetArea )
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
 void QgsUserInputDockWidget::paintEvent( QPaintEvent * event )
 {
-  QDockWidget::paintEvent( event );
   if ( mWidgetList.count() == 0 )
   {
     hide();
+  }
+  else
+  {
+    QDockWidget::paintEvent( event );
   }
 }

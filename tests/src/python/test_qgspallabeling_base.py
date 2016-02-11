@@ -41,10 +41,14 @@ from qgis.core import (
     QgsMultiRenderChecker
 )
 
+from qgis.testing import (
+    start_app,
+    unittest
+)
+
+from qgis.testing.mocked import get_iface
+
 from utilities import (
-    getQgisTestApp,
-    TestCase,
-    unittest,
     unitTestDataPath,
     getTempfilePath,
     renderMapToImage,
@@ -54,7 +58,7 @@ from utilities import (
 )
 
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 FONTSLOADED = loadTestFonts()
 
 PALREPORT = 'PAL_REPORT' in os.environ
@@ -62,7 +66,7 @@ PALREPORTS = {}
 
 
 # noinspection PyPep8Naming,PyShadowingNames
-class TestQgsPalLabeling(TestCase):
+class TestQgsPalLabeling(unittest.TestCase):
 
     _TestDataDir = unitTestDataPath()
     _PalDataDir = os.path.join(_TestDataDir, 'labeling')
@@ -87,9 +91,9 @@ class TestQgsPalLabeling(TestCase):
     def setUpClass(cls):
         """Run before all tests"""
 
-        # qgis instances
-        cls._QgisApp, cls._Canvas, cls._Iface, cls._Parent = \
-            QGISAPP, CANVAS, IFACE, PARENT
+        # qgis iface
+        cls._Iface = get_iface()
+        cls._Canvas = cls._Iface.mapCanvas()
 
         # verify that spatialite provider is available
         msg = '\nSpatialite provider not found, SKIPPING TEST SUITE'
@@ -145,8 +149,8 @@ class TestQgsPalLabeling(TestCase):
 
     @classmethod
     def removeAllLayers(cls):
-        cls._MapRegistry.removeAllMapLayers()
         cls._MapSettings.setLayers([])
+        cls._MapRegistry.removeAllMapLayers()
 
     @classmethod
     def removeMapLayer(cls, layer):
@@ -363,7 +367,7 @@ class TestQgsPalLabeling(TestCase):
         res = chk.runTest(self._Test, mismatch)
         if PALREPORT and not res:  # don't report ok checks
             testname = self._TestGroup + ' . ' + self._Test
-            PALREPORTS[testname] = str(chk.report().toLocal8Bit())
+            PALREPORTS[testname] = chk.report()
         msg = '\nRender check failed for "{0}"'.format(self._Test)
         return res, msg
 
@@ -378,6 +382,10 @@ class TestPALConfig(TestQgsPalLabeling):
     def setUpClass(cls):
         TestQgsPalLabeling.setUpClass()
         cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.removeMapLayer(cls.layer)
 
     def setUp(self):
         """Run before each test."""

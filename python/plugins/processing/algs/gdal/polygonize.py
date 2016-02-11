@@ -44,15 +44,15 @@ class polygonize(GdalAlgorithm):
         return "gdalogr:polygonize"
 
     def defineCharacteristics(self):
-        self.name = 'Polygonize (raster to vector)'
-        self.group = '[GDAL] Conversion'
+        self.name, self.i18n_name = self.trAlgorithm('Polygonize (raster to vector)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
         self.addParameter(ParameterRaster(polygonize.INPUT,
-            self.tr('Input layer'), False))
+                                          self.tr('Input layer'), False))
         self.addParameter(ParameterString(polygonize.FIELD,
-            self.tr('Output field name'), 'DN'))
+                                          self.tr('Output field name'), 'DN'))
         self.addOutput(OutputVector(polygonize.OUTPUT, self.tr('Vectorized')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = []
         arguments.append(self.getParameterValue(polygonize.INPUT))
         arguments.append('-f')
@@ -70,4 +70,4 @@ class polygonize(GdalAlgorithm):
             commands = ['gdal_polygonize.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

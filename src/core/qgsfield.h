@@ -27,6 +27,12 @@ class QgsExpression;
 class QgsFieldPrivate;
 class QgsFieldsPrivate;
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfield.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 /** \class QgsField
   * \ingroup core
   * Encapsulate a field in an attribute table or data source.
@@ -50,12 +56,12 @@ class CORE_EXPORT QgsField
      * @param comment Comment for the field
      */
 
-    QgsField( QString name = QString(),
+    QgsField( const QString& name = QString(),
               QVariant::Type type = QVariant::Invalid,
-              QString typeName = QString(),
+              const QString& typeName = QString(),
               int len = 0,
               int prec = 0,
-              QString comment = QString() );
+              const QString& comment = QString() );
 
     /** Copy constructor
      */
@@ -72,7 +78,7 @@ class CORE_EXPORT QgsField
     bool operator!=( const QgsField& other ) const;
 
     //! Gets the name of the field
-    const QString& name() const;
+    QString name() const;
 
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;
@@ -83,7 +89,7 @@ class CORE_EXPORT QgsField
       the data store reports it, with no attempt to standardize the value.
       @return QString containing the field type
      */
-    const QString& typeName() const;
+    QString typeName() const;
 
     /**
       Gets the length of the field.
@@ -100,7 +106,7 @@ class CORE_EXPORT QgsField
     /**
     Returns the field comment
     */
-    const QString& comment() const;
+    QString comment() const;
 
     /**
       Set the field name.
@@ -148,12 +154,28 @@ class CORE_EXPORT QgsField
      */
     bool convertCompatible( QVariant& v ) const;
 
+
   private:
 
     QSharedDataPointer<QgsFieldPrivate> d;
 
+
 }; // class QgsField
 
+Q_DECLARE_METATYPE( QgsField )
+
+/** Writes the field to stream out. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsField& field );
+/** Reads a field from stream in into field. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsField& field );
+
+
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfields.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 /** \class QgsFields
  * \ingroup core
@@ -161,7 +183,7 @@ class CORE_EXPORT QgsField
  *
  * In addition to storing a list of QgsField instances, it also:
  * - allows quick lookups of field names to index in the list
- *- keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
+ * - keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
  * \note QgsFields objects are implicitly shared.
  */
 class CORE_EXPORT QgsFields
@@ -247,8 +269,8 @@ class CORE_EXPORT QgsFields
     //! Look up field's index from name. Returns -1 on error
     int indexFromName( const QString& name ) const;
 
-    //! Look up field's index from name - case insensitive
-    //! TODO: sort out case sensitive (indexFromName()) vs insensitive (fieldNameIndex()) calls
+    //! Look up field's index from name
+    //! also looks up case-insensitive if there is no match otherwise
     //! @note added in 2.4
     int fieldNameIndex( const QString& fieldName ) const;
 
@@ -269,5 +291,12 @@ class CORE_EXPORT QgsFields
     QSharedDataPointer<QgsFieldsPrivate> d;
 
 };
+
+Q_DECLARE_METATYPE( QgsFields )
+
+/** Writes the fields to stream out. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsFields& fields );
+/** Reads fields from stream in into fields. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsFields& fields );
 
 #endif

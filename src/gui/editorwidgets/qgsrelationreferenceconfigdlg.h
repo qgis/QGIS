@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 21.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -20,6 +20,10 @@
 
 #include "ui_qgsrelationreferenceconfigdlgbase.h"
 #include "qgseditorconfigwidget.h"
+
+/** \class QgsRelationReferenceConfigDlg
+ * \note not available in Python bindings
+ */
 
 class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, private Ui::QgsRelReferenceConfigDlgBase
 {

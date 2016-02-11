@@ -46,17 +46,17 @@ class VariableDistanceBuffer(GeoAlgorithm):
     DISSOLVE = 'DISSOLVE'
 
     def defineCharacteristics(self):
-        self.name = 'Variable distance buffer'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Variable distance buffer')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Distance field'), self.INPUT))
+                                              self.tr('Distance field'), self.INPUT))
         self.addParameter(ParameterNumber(self.SEGMENTS,
-            self.tr('Segments'), 1, default=5))
+                                          self.tr('Segments'), 1, default=5))
         self.addParameter(ParameterBoolean(self.DISSOLVE,
-            self.tr('Dissolve result'), False))
+                                           self.tr('Dissolve result'), False))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer')))
 

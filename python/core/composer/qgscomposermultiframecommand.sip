@@ -16,7 +16,7 @@ class QgsComposerMultiFrameCommand : QUndoCommand
     QDomDocument previousState() const;
     QDomDocument afterState() const;
 
-    /**Returns true if previous state and after state are valid and different*/
+    /** Returns true if previous state and after state are valid and different*/
     bool containsChange() const;
 
     const QgsComposerMultiFrame* multiFrame() const;
@@ -29,7 +29,7 @@ class QgsComposerMultiFrameCommand : QUndoCommand
     bool checkFirstRun();
 };
 
-/**A composer command that merges together with other commands having the same context (=id)
+/** A composer command that merges together with other commands having the same context (=id)
  * for multi frame items. Keeps the oldest previous state and uses the newest after state.
  * The purpose is to avoid too many micro changes in the history*/
 class QgsComposerMultiFrameMergeCommand: QgsComposerMultiFrameCommand

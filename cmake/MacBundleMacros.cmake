@@ -21,6 +21,9 @@
 
 # message only if verbose makefiles
 
+CMAKE_POLICY (SET CMP0053 OLD)
+
+
 FUNCTION (MYMESSAGE MSG)
     IF (@CMAKE_VERBOSE_MAKEFILE@)
         MESSAGE (STATUS "${MSG}")
@@ -53,6 +56,11 @@ FUNCTION (INSTALLNAMETOOL_CHANGE CHANGE CHANGETO CHANGEBIN)
         # ensure CHANGEBIN is writable by user, e.g. Homebrew binaries are installed non-writable
         EXECUTE_PROCESS (COMMAND chmod u+w "${CHANGEBIN}")
         EXECUTE_PROCESS (COMMAND install_name_tool -change ${CHANGE} ${CHANGETO} "${CHANGEBIN}")
+        # if that didn't work, try a symlink-resolved id
+        # (some package systems, like Homebrew, heavily use symlinks; and, inter-package builds, like plugins,
+        #  may point to the resolved location instead of the 'public' symlink installed to prefixes like /usr/local)
+        get_filename_component(_chgreal ${CHANGE} REALPATH)
+        EXECUTE_PROCESS (COMMAND install_name_tool -change ${_chgreal} ${CHANGETO} "${CHANGEBIN}")
     ENDIF ()
 ENDFUNCTION (INSTALLNAMETOOL_CHANGE)
 
@@ -133,24 +141,27 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
         FOREACH (QL ${QGFWLIST})
             INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QFWDIR}/${QL}.framework/${QL}")
         ENDFOREACH (QL)
-        # libqgispython and libqgis_server are not frameworks
+        # non-framework qgis libs
         IF (${OSX_HAVE_LOADERPATH})
             SET (LIB_CHG_TO "${ATLOADER}/${QGIS_LIB_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
         ENDIF ()
-        INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBDIR}/libqgispython.dylib")
-        INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBDIR}/libqgis_server.dylib")
+        FOREACH (QL ${QGLIBLIST})
+            INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBDIR}/${QL}")
+        ENDFOREACH (QL)
         # crssync
         IF (${OSX_HAVE_LOADERPATH})
             SET (LIB_CHG_TO "${ATEXECUTABLE}/${QGIS_LIBEXEC_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
         ENDIF ()
         INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBXDIR}/crssync")
         # GRASS libexec stuff
-        IF (EXISTS "${QLIBXDIR}/grass/bin/qgis.g.browser")
-           IF (${OSX_HAVE_LOADERPATH})
-               SET (LIB_CHG_TO "${ATLOADER}/../../${QGIS_LIBEXEC_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
+        FOREACH (QG ${QGRASSEXECLIST})
+           IF (EXISTS "${QLIBXDIR}/grass/${QG}")
+              IF (${OSX_HAVE_LOADERPATH})
+                  SET (LIB_CHG_TO "${ATLOADER}/../../${QGIS_LIBEXEC_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
+              ENDIF ()
+              INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBXDIR}/grass/${QG}")
            ENDIF ()
-           INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBXDIR}/grass/bin/qgis.g.browser")
-        ENDIF ()
+        ENDFOREACH (QG)
         # plugins
         IF (${OSX_HAVE_LOADERPATH})
             SET (LIB_CHG_TO "${ATLOADER}/${QGIS_PLUGIN_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
@@ -174,6 +185,20 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
         #ENDFOREACH (PB)
     ENDIF (LIBFROM)
 ENDFUNCTION (UPDATEQGISPATHS)
+
+
+# Find directory path for a known Python module (or package) directory or file name
+# see: PYTHON_MODULE_PATHS in 0vars.cmake.in
+FUNCTION (PYTHONMODULEDIR MOD_NAME OUTVAR)
+    FOREACH (MOD_PATH ${PYTHON_MODULE_PATHS})
+        IF (EXISTS "${MOD_PATH}/${MOD_NAME}")
+            SET (${OUTVAR} "${MOD_PATH}" PARENT_SCOPE)
+            RETURN()
+        ENDIF()
+    ENDFOREACH (MOD_PATH)
+    SET (${OUTVAR} "" PARENT_SCOPE)
+ENDFUNCTION (PYTHONMODULEDIR)
+
 
 SET (ATEXECUTABLE "@executable_path")
 SET (ATLOADER "@loader_path")
@@ -203,8 +228,9 @@ FILE (GLOB QGFWLIST RELATIVE "${QFWDIR}" "${QFWDIR}/qgis*.framework")
 STRING(REPLACE ".framework" ";" QGFWLIST ${QGFWLIST})
 # don't collect any library symlinks, limit to versioned libs
 SET (Q_LIBVER ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR})
-FILE (GLOB QGLIBLIST  RELATIVE "${QLIBDIR}" "${QLIBDIR}/libqgis*.${Q_LIBVER}*.dylib")
+FILE (GLOB QGLIBLIST  RELATIVE "${QLIBDIR}" "${QLIBDIR}/libqgis*.dylib")
 FILE (GLOB QGPLUGLIST "${QPLUGDIR}/*.so")
 FILE (GLOB QGPYLIST "${QGISPYDIR}/qgis/*.so")
 FILE (GLOB QGAPPLIST RELATIVE "${QBINDIR}" "${QBINDIR}/q*.app")
+FILE (GLOB QGRASSEXECLIST RELATIVE "${QLIBXDIR}/grass" "${QLIBXDIR}/grass/*/*")
 STRING(REPLACE ".app" ";" QGAPPLIST ${QGAPPLIST})

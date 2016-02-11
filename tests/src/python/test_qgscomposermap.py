@@ -28,19 +28,17 @@ from qgis.core import (QgsComposerMap,
                        QgsMultiBandColorRenderer,
                        )
 
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest,
-                       expectedFailure
-                       )
+from qgis.testing import (start_app,
+                          unittest
+                          )
+from utilities import unitTestDataPath
 from qgscompositionchecker import QgsCompositionChecker
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposerMap(TestCase):
+class TestQgsComposerMap(unittest.TestCase):
 
     def __init__(self, methodName):
         """Run once on class initialisation."""
@@ -79,6 +77,7 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setNewExtent(myRectangle2)
         overviewMap.setOverviewFrameMap(self.mComposerMap.id())
         checker = QgsCompositionChecker('composermap_overview', self.mComposition)
+        checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult, myMessage
@@ -95,6 +94,7 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setOverviewFrameMap(self.mComposerMap.id())
         overviewMap.setOverviewBlendMode(QPainter.CompositionMode_Multiply)
         checker = QgsCompositionChecker('composermap_overview_blending', self.mComposition)
+        checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult, myMessage
@@ -111,6 +111,7 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setOverviewFrameMap(self.mComposerMap.id())
         overviewMap.setOverviewInverted(True)
         checker = QgsCompositionChecker('composermap_overview_invert', self.mComposition)
+        checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult, myMessage
@@ -128,26 +129,27 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setOverviewInverted(False)
         overviewMap.setOverviewCentered(True)
         checker = QgsCompositionChecker('composermap_overview_center', self.mComposition)
+        checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult, myMessage
 
     # Fails because addItemsFromXML has been commented out in sip
-    @expectedFailure
+    @unittest.expectedFailure
     def testuniqueId(self):
         doc = QDomDocument()
         documentElement = doc.createElement('ComposerItemClipboard')
         self.mComposition.writeXML(documentElement, doc)
         self.mComposition.addItemsFromXML(documentElement, doc, 0, False)
 
-        #test if both composer maps have different ids
+        # test if both composer maps have different ids
         newMap = QgsComposerMap()
         mapList = self.mComposition.composerMapItems()
 
         for mapIt in mapList:
             if mapIt != self.mComposerMap:
-              newMap = mapIt
-              break
+                newMap = mapIt
+                break
 
         oldId = self.mComposerMap.id()
         newId = newMap.id()
@@ -156,20 +158,20 @@ class TestQgsComposerMap(TestCase):
         myMessage = 'old: %s new: %s' % (oldId, newId)
         assert oldId != newId, myMessage
 
-    def testWorldFileGeneration( self ):
+    def testWorldFileGeneration(self):
         myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
-        self.mComposerMap.setNewExtent( myRectangle )
-        self.mComposerMap.setMapRotation( 30.0 )
+        self.mComposerMap.setNewExtent(myRectangle)
+        self.mComposerMap.setMapRotation(30.0)
 
-        self.mComposition.setGenerateWorldFile( True )
-        self.mComposition.setWorldFileMap( self.mComposerMap )
+        self.mComposition.setGenerateWorldFile(True)
+        self.mComposition.setWorldFileMap(self.mComposerMap)
 
         p = self.mComposition.computeWorldFileParameters()
         pexpected = (4.180480199790922, 2.4133064516129026, 779443.7612381146,
                      2.4136013686911886, -4.179969388427311, 3342408.5663611)
         ptolerance = (0.001, 0.001, 1, 0.001, 0.001, 1e+03)
-        for i in range(0,6):
-            assert abs(p[i]-pexpected[i]) < ptolerance[i]
+        for i in range(0, 6):
+            assert abs(p[i] - pexpected[i]) < ptolerance[i]
 
 if __name__ == '__main__':
     unittest.main()

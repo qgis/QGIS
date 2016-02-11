@@ -18,7 +18,7 @@ class QgsTransformEffect : QgsPaintEffect
      * @param map encoded properties string map
      * @returns new QgsTransformEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& ) /Factory/;
+    static QgsPaintEffect* create( const QgsStringMap& map ) /Factory/;
 
     QgsTransformEffect();
     virtual ~QgsTransformEffect();
@@ -26,7 +26,7 @@ class QgsTransformEffect : QgsPaintEffect
     virtual QString type() const;
     virtual QgsStringMap properties() const;
     virtual void readProperties( const QgsStringMap& props );
-    virtual QgsPaintEffect* clone() const /Factory/;
+    virtual QgsTransformEffect* clone() const /Factory/;
 
     /** Sets the transform x translation.
      * @param translateX distance to translate along the x axis

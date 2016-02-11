@@ -16,8 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
-#include <iostream>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
@@ -32,11 +30,9 @@
 #include <qgsrasterlayer.h>
 #include <qgsrasterpyramid.h>
 #include <qgsrasterbandstats.h>
-#include <qgsrasterpyramid.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsapplication.h>
 #include <qgsmaprenderer.h>
-#include <qgsmaplayerregistry.h>
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
 #include <qgsvectorcolorrampv2.h>
@@ -72,7 +68,7 @@ class TestQgsRasterSubLayer : public QObject
 };
 
 TestQgsRasterSubLayer::TestQgsRasterSubLayer()
-    : mpRasterLayer( NULL )
+    : mpRasterLayer( nullptr )
     , mHasNetCDF( false )
 {
 
@@ -87,8 +83,8 @@ void TestQgsRasterSubLayer::initTestCase()
   // disable any PAM stuff to make sure stats are consistent
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( "\n", "<br />" );
-  mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CmakeLists.txt
+  mySettings = mySettings.replace( '\n', "<br />" );
+  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   GDALAllRegister();
   QString format = "netCDF";
@@ -107,7 +103,6 @@ void TestQgsRasterSubLayer::initTestCase()
                                         myRasterFileInfo.completeBaseName() );
     qDebug() << "raster metadata: " << mpRasterLayer->dataProvider()->metadata();
     mReport += "raster metadata: " + mpRasterLayer->dataProvider()->metadata();
-
   }
   else
   {
@@ -118,8 +113,9 @@ void TestQgsRasterSubLayer::initTestCase()
 //runs after all tests
 void TestQgsRasterSubLayer::cleanupTestCase()
 {
+  delete mpRasterLayer;
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -144,7 +140,7 @@ void TestQgsRasterSubLayer::subLayersList()
     expected << "Band2";
 
     QStringList sublayers;
-    foreach ( QString s, mpRasterLayer->subLayers() )
+    Q_FOREACH ( const QString& s, mpRasterLayer->subLayers() )
     {
       qDebug() << "sublayer: " << s;
       sublayers << s.split( ':' ).last();

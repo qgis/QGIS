@@ -34,7 +34,7 @@ class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 class QgsRasterHistogramWidget;
 
-/**Property sheet for a raster map layer
+/** Property sheet for a raster map layer
   *@author Tim Sutton
   */
 
@@ -46,11 +46,11 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /** \brief Constructor
      * @param ml Map layer for which properties will be displayed
      */
-    QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas* theCanvas, QWidget *parent = 0, Qt::WindowFlags = QgisGui::ModalDialogFlags );
+    QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas* theCanvas, QWidget *parent = nullptr, Qt::WindowFlags = QgisGui::ModalDialogFlags );
     /** \brief Destructor */
     ~QgsRasterLayerProperties();
 
-    /** synchronize state with associated raster layer */
+    /** Synchronize state with associated raster layer */
     void sync();
 
   public slots:
@@ -66,7 +66,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /** \brief slot executed when user presses "Add Values Manually" button on the transparency page */
     void on_pbnAddValuesManually_clicked();
     /** \brief slot executed when user changes the layer's CRS */
-    void on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs );
+    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs );
     /** \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value */
     void on_pbnDefaultValues_clicked();
     /** \brief slot executed when user wishes to export transparency values */
@@ -101,13 +101,13 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /** Slot to reset all color rendering options to default */
     void on_mResetColorRenderingBtn_clicked();
 
-    /**Enable or disable Build pyramids button depending on selection in pyramids list*/
+    /** Enable or disable Build pyramids button depending on selection in pyramids list*/
     void toggleBuildPyramidsButton();
 
-    /**Enable or disable saturation controls depending on choice of grayscale mode */
+    /** Enable or disable saturation controls depending on choice of grayscale mode */
     void toggleSaturationControls( int grayscaleMode );
 
-    /**Enable or disable colorize controls depending on checkbox */
+    /** Enable or disable colorize controls depending on checkbox */
     void toggleColorizeControls( bool colorizeEnabled );
 
     /** Transparency cell changed */
@@ -115,12 +115,12 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     void aboutToShowStyleMenu();
 
-    /** make GUI reflect the layer's state */
+    /** Make GUI reflect the layer's state */
     void syncToLayer();
 
   signals:
-    /** emitted when changes to layer were saved to update legend */
-    void refreshLegend( QString layerID, bool expandItem );
+    /** Emitted when changes to layer were saved to update legend */
+    void refreshLegend( const QString& layerID, bool expandItem );
 
   private:
     /** \brief  A constant that signals property not used */

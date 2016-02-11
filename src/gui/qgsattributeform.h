@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 3.5.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -31,7 +31,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     Q_OBJECT
 
   public:
-    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent = 0 );
+    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent = nullptr );
     ~QgsAttributeForm();
 
     const QgsFeature& feature() { return mFeature; }
@@ -105,7 +105,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * @param attribute The name of the attribute that changed.
      * @param value     The new value of the attribute.
      */
-    void attributeChanged( QString attribute, const QVariant& value );
+    void attributeChanged( const QString& attribute, const QVariant& value );
 
     /**
      * Will be emitted before the feature is saved. Use this signal to perform sanity checks.
@@ -164,11 +164,18 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void resetValues();
 
+    /**
+     * reload current feature
+     */
+    void refreshFeature();
+
   private slots:
     void onAttributeChanged( const QVariant& value );
     void onAttributeAdded( int idx );
     void onAttributeDeleted( int idx );
+    void onUpdatedFields();
 
+    void preventFeatureRefresh();
     void synchronizeEnabledState();
 
   private:
@@ -204,6 +211,9 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! Set to true while saving to prevent recursive saves
     bool mIsSaving;
     bool mIsAddDialog;
+
+    //! Flag to prevent refreshFeature() to change mFeature
+    bool mPreventFeatureRefresh;
 
     QString mEditCommandMessage;
 };

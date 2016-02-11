@@ -7,9 +7,9 @@ class QgsHistogramDiagram: QgsDiagram
     QgsHistogramDiagram();
     ~QgsHistogramDiagram();
 
-    virtual QgsDiagram* clone() const;
+    virtual QgsHistogramDiagram* clone() const /Factory/;
 
-    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );
+    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position );
 
     QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s );
     QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is );
