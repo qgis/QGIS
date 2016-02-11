@@ -1991,7 +1991,11 @@ QString QgsGrass::findModule( QString module )
   {
     Q_FOREACH ( const QString& path, paths )
     {
-      QString full = path + "/" + module + ext;
+      QString full = module + ext;;
+      if ( !path.isEmpty() )
+      {
+        full.prepend( path + "/" );
+      }
       if ( QFile::exists( full ) )
       {
         QgsDebugMsg( "found " + full );
