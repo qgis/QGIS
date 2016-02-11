@@ -701,9 +701,6 @@ long QgsVectorLayer::featureCount( QgsSymbolV2* symbol )
 
 bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
 {
-  // Do not change the method signature
-  // and do not break API
-  Q_UNUSED( showProgress )
   if ( mSymbolFeatureCounted )
     return true;
 
@@ -733,6 +730,10 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
     mSymbolFeatureCountMap.insert( symbolIt->second, 0 );
   }
 
+  long nFeatures = featureCount();
+  emit countSymbolFeaturesStarted( nFeatures );
+  int featuresCounted = 0;
+
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
 
   // Renderer (rule based) may depend on context scale, with scale is ignored if 0
@@ -753,8 +754,18 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
     {
       mSymbolFeatureCountMap[*symbolIt] += 1;
     }
+    ++featuresCounted;
+
+    if ( showProgress )
+    {
+      if ( featuresCounted % 50 == 0 )
+      {
+        emit countSymbolFeaturesStarted( featuresCounted );
+      }
+    }
   }
   mRendererV2->stopRender( renderContext );
+  emit countSymbolFeaturesStarted( featuresCounted );
   mSymbolFeatureCounted = true;
   return true;
 }

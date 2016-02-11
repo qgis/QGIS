@@ -1881,6 +1881,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void writeCustomSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage ) const;
 
+    /** Is emitted, when count symbol features has started*/
+    void countSymbolFeaturesStarted( long featureCount );
+    /** Is emitted, when count symbol features changed */
+    void countSymbolFeaturesChanged( long featureCounted );
+    /** Is emitted, when count symbol features ended */
+    void countSymbolFeaturesStopped( long featureCounted );
+
   private slots:
     void onJoinedFieldsChanged();
     void onFeatureDeleted( QgsFeatureId fid );
