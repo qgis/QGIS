@@ -82,7 +82,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
   public:
     //! Element type
     enum Type { None, Location, Mapset, Raster, Group, Vector, Region,
-                Strds, Stvds, Str3ds
+                Strds, Stvds, Str3ds, Stds
             };
 
     QgsGrassObject() : mType( None ) {}

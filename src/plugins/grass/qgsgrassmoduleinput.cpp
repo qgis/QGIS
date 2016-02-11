@@ -394,7 +394,7 @@ bool QgsGrassModuleInputProxy::filterAcceptsRow( int sourceRow, const QModelInde
     }
   }
 
-  return mType == itemType;
+  return mType == itemType || ( mType == QgsGrassObject::Stds && ( itemType == QgsGrassObject::Strds || itemType == QgsGrassObject::Stvds || itemType == QgsGrassObject::Str3ds ) );
 }
 
 bool QgsGrassModuleInputProxy::lessThan( const QModelIndex & left, const QModelIndex & right ) const
@@ -941,6 +941,10 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   else if ( element == "str3ds" )
   {
     mType = QgsGrassObject::Str3ds;
+  }
+  else if ( element == "stds" )
+  {
+    mType = QgsGrassObject::Stds;
   }
   else
   {

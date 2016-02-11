@@ -195,6 +195,8 @@ QString QgsGrassObject::elementShort( Type type )
     return "stvds";
   else if ( type == Str3ds )
     return "str3ds";
+  else if ( type == Stds )
+    return "stds";
   else
     return "";
 }
@@ -1540,7 +1542,8 @@ QStringList QgsGrass::grassObjects( const QgsGrassObject& mapsetObject, QgsGrass
     QgsDebugMsg( "mapset is not readable" );
     return QStringList();
   }
-  else if ( type == QgsGrassObject::Strds || type == QgsGrassObject::Stvds || type == QgsGrassObject::Str3ds )
+  else if ( type == QgsGrassObject::Strds || type == QgsGrassObject::Stvds
+            || type == QgsGrassObject::Str3ds || type == QgsGrassObject::Stds )
   {
 #if GRASS_VERSION_MAJOR >= 7
     QString cmd =  gisbase() + "/scripts/t.list";
@@ -1556,7 +1559,14 @@ QStringList QgsGrass::grassObjects( const QgsGrassObject& mapsetObject, QgsGrass
     }
     else
     {
-      arguments << "type=" + QgsGrassObject::elementShort( type );
+      if ( type == QgsGrassObject::Stds )
+      {
+        arguments << "type=strds,stvds,str3ds";
+      }
+      else
+      {
+        arguments << "type=" + QgsGrassObject::elementShort( type );
+      }
 
       int timeout = -1; // What timeout to use? It can take long time on network or database
       try
