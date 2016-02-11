@@ -381,6 +381,7 @@ Depends:
  python-dateutil,
  python-tz,
  python-six,
+ python-yaml,
 #sid stretch jessie trusty utopic vivid wily# python-pyspatialite,
 #jessie# liblwgeom-2.1.4,
 #stretch sid# liblwgeom-2.2-5,
