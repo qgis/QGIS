@@ -38,13 +38,20 @@ def processCommand(alg):
     """ Handle inline rules """
     txtRules = alg.getParameterValue(u'txtrules')
     if txtRules:
+        # Creates a temporary txt file
+        tempRulesName = alg.getTempFilename()
+
+        # Inject rules into temporary txt file
+        with open(tempRulesName, "w") as tempRules:
+            tempRules.write(txtRules)
+
         raster = alg.getParameterValue(u'input')
         output = alg.getOutputFromName(u'output')
         alg.exportedLayers[output.value] = output.name + alg.uniqueSufix
         if raster:
             raster = alg.exportedLayers[raster]
-        command = u"echo \"{}\" | r.reclass input={} rules=- output={} --overwrite".format(
-            txtRules, raster, output.name + alg.uniqueSufix)
+        command = u"r.reclass input={} rules=- output={} --overwrite < {}".format(
+            raster, output.name + alg.uniqueSufix, tempRulesName)
         alg.commands.append(command)
     else:
         alg.processCommand()
