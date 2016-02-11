@@ -1,0 +1,14 @@
+v.distance
+Finds the nearest element in vector map 'to' for elements in vector map 'from'.
+Vector (v.*)
+ParameterVector|from|'from' vector map|-1|False
+*ParameterString|from_type|'from' feature type (point,line,boundary,centroid,area)|point,line,area|False|False
+ParameterVector|to|'to' vector map|-1|False
+*ParameterString|to_type|'to' feature type (point,line,boundary,centroid,area)|point,line,area|False|False
+ParameterNumber|dmax|Maximum distance or -1.0 for no limit|-1.0|None|-1.0|False
+ParameterNumber|dmin|Minimum distance or -1.0 for no limit|-1.0|None|-1.0|False
+ParameterString|upload|'upload': Values describing the relation between two nearest features (cat,dist,to_x,to_y,to_along,to_angle,to_attr)|cat|False|True
+ParameterString|column|Column name(s) where values specified by 'upload' option will be uploaded|None|False|True
+ParameterTableField|to_column|Column name of nearest feature (used with upload=to_attr)|to|-1|True
+OutputVector|from_output|Nearest
+OutputVector|output|Distance
