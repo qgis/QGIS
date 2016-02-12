@@ -367,7 +367,41 @@ int QgsMapToolCapture::nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapP
   Q_NOWARN_DEPRECATED_POP
 }
 
+int QgsMapToolCapture::fetchLayerPoint( QgsPointLocator::Match match , QgsPointV2 &layerPoint )
+{
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer* sourceLayer = match.layer();
+  if ( match.isValid() && match.hasVertex() && sourceLayer &&
+       ( sourceLayer->crs() == vlayer->crs() ) )
+  {
+    QgsFeature f;
+    QgsFeatureRequest request;
+    QgsPoint foundPoint;
+    request.setFilterFid( match.featureId() );
+    bool fetched = match.layer()->getFeatures( request ).nextFeature( f );
+    if ( fetched )
+    {
+      foundPoint = f.geometry()->vertexAt( match.vertexIndex() );
+      layerPoint = QgsPointV2( foundPoint.x(), foundPoint.y() );
+      return 0;
+    }
+    else
+    {
+      return 2;
+    }
+  }
+  else
+  {
+    return 1;
+  }
+}
+
 int QgsMapToolCapture::addVertex( const QgsPoint& point )
+{
+  return addVertex( point, QgsPointLocator::Match() );
+}
+
+int QgsMapToolCapture::addVertex( const QgsPoint& point, QgsPointLocator::Match match )
 {
   if ( mode() == CaptureNone )
   {
@@ -377,10 +411,14 @@ int QgsMapToolCapture::addVertex( const QgsPoint& point )
 
   int res;
   QgsPointV2 layerPoint;
-  res = nextPoint( QgsPointV2( point ), layerPoint );
+  res = fetchLayerPoint( match, layerPoint );
   if ( res != 0 )
   {
-    return res;
+    res = nextPoint( QgsPointV2( point ), layerPoint );
+    if ( res != 0 )
+    {
+      return res;
+    }
   }
 
   if ( !mRubberBand )
