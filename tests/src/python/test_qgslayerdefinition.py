@@ -52,10 +52,13 @@ class TestQgsLayerDefinition(unittest.TestCase):
         doc.setContent(inDoc)
         dep = QgsLayerDefinition.DependencySorter(doc)
         nodes = dep.sortedLayerNodes()
+        nodeIds = dep.sortedLayerIds()
         self.assertTrue(not dep.hasCycle())
         self.assertTrue(not dep.hasMissingDependency())
         self.assertEqual(nodes[0].firstChildElement("id").text(), "layerA")
         self.assertEqual(nodes[1].firstChildElement("id").text(), "layerB")
+        self.assertEqual(nodeIds[0], "layerA")
+        self.assertEqual(nodeIds[1], "layerB")
 
     def testMissingDependency(self):
         inDoc = """
@@ -76,7 +79,6 @@ class TestQgsLayerDefinition(unittest.TestCase):
         doc = QDomDocument("testdoc")
         doc.setContent(inDoc)
         dep = QgsLayerDefinition.DependencySorter(doc)
-        nodes = dep.sortedLayerNodes()
         self.assertTrue(not dep.hasCycle())
         self.assertTrue(dep.hasMissingDependency())
 
@@ -99,7 +101,6 @@ class TestQgsLayerDefinition(unittest.TestCase):
         doc = QDomDocument("testdoc")
         doc.setContent(inDoc)
         dep = QgsLayerDefinition.DependencySorter(doc)
-        nodes = dep.sortedLayerNodes()
         self.assertTrue(dep.hasCycle())
 
     def testVectorAndRaster(self):

@@ -230,6 +230,7 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument& doc )
     {
       sortedLayers << id;
       mSortedLayerNodes << node;
+      mSortedLayerIds << id;
     }
     else
       layersToSort << qMakePair( id, node );
