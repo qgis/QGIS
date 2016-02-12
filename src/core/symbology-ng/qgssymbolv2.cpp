@@ -159,7 +159,6 @@ QgsConstWkbPtr QgsSymbolV2::_getLineString( QPolygonF& pts, QgsRenderContext& co
 QgsConstWkbPtr QgsSymbolV2::_getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, QgsConstWkbPtr wkbPtr, bool clipToExtent )
 {
   QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
-  QgsDebugMsg( QString( "wkbType=%1" ).arg( wkbType ) );
   unsigned int numRings;
   wkbPtr >> numRings;
 
