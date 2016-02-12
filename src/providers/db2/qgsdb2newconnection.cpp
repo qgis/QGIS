@@ -139,14 +139,22 @@ bool QgsDb2NewConnection::testConnection( QString testDatabase )
   QString userid;
   QString password;
 
-  dsn =  txtService->text();
-  driver = txtDriver->text();
-  host = txtHost->text();
-  port = txtPort->text();
-  database = txtDatabase->text();
-  userid = txtUsername->text();
-  password = txtPassword->text();
-
+  dsn =  txtService->text().trimmed();
+  driver = txtDriver->text().trimmed();
+  host = txtHost->text().trimmed();
+  port = txtPort->text().trimmed();
+  database = txtDatabase->text().trimmed();
+  userid = txtUsername->text().trimmed();
+  password = txtPassword->text().trimmed();
+  
+  QgsDebugMsg("testDatabase: " + testDatabase);
+  /* TODO - bar is not defined; works for mssql
+  bar->pushMessage( "Testing connection", "....." );
+  // Gross but needed to show the last message.
+  qApp->processEvents();
+  */
+  
+  // TODO - do we need tests on presence of needed parameters?
   bool convertIntOk;
   int portNum = port.toInt( &convertIntOk, 10 );
   db = QgsDb2Provider::GetDatabase( dsn, driver, host, portNum, database, userid, password );

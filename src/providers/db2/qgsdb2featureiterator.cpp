@@ -17,7 +17,7 @@
 
 #include "qgsdb2featureiterator.h"
 #include "qgsdb2provider.h"
-#include "Qgsdb2expressioncompiler.h"
+#include "qgsdb2expressioncompiler.h"
 #include <qgslogger.h>
 #include <qgsgeometry.h>
 
