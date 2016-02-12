@@ -643,7 +643,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mTabRelations->layout()->addWidget( mRelationManagerDlg );
 
   QList<QgsVectorLayer*> vectorLayers;
-  Q_FOREACH ( QgsMapLayer* mapLayer, mapLayers.values() )
+  Q_FOREACH ( QgsMapLayer* mapLayer, mapLayers )
   {
     if ( QgsMapLayer::VectorLayer == mapLayer->type() )
     {
@@ -1482,7 +1482,7 @@ void QgsProjectProperties::on_pbnLaunchOWSChecker_clicked()
 
   QStringList duplicateNames, regExpMessages;
   QRegExp snRegExp = QgsApplication::shortNameRegExp();
-  Q_FOREACH ( QString name, owsNames )
+  Q_FOREACH ( const QString& name, owsNames )
   {
     if ( !snRegExp.exactMatch( name ) )
       regExpMessages << tr( "Use short name for \"%1\"" ).arg( name );
@@ -1583,7 +1583,7 @@ void QgsProjectProperties::on_pbnExportScales_clicked()
   }
 
   // ensure the user never ommited the extension from the file name
-  if ( !fileName.toLower().endsWith( ".xml" ) )
+  if ( !fileName.endsWith( ".xml", Qt::CaseInsensitive ) )
   {
     fileName += ".xml";
   }
@@ -2015,7 +2015,7 @@ void QgsProjectProperties::on_mButtonExportColors_clicked()
   }
 
   // ensure filename contains extension
-  if ( !fileName.toLower().endsWith( ".gpl" ) )
+  if ( !fileName.endsWith( ".gpl", Qt::CaseInsensitive ) )
   {
     fileName += ".gpl";
   }

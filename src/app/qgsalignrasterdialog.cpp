@@ -36,7 +36,7 @@
 static QgsMapLayer* _rasterLayer( const QString& filename )
 {
   QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
-  Q_FOREACH ( QgsMapLayer* layer, layers.values() )
+  Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     if ( layer->type() == QgsMapLayer::RasterLayer && layer->source() == filename )
       return layer;
@@ -457,7 +457,7 @@ void QgsAlignRasterLayerConfigDialog::browseOutputFilename()
   if ( !fileName.isEmpty() )
   {
     // ensure the user never ommited the extension from the file name
-    if ( !fileName.toLower().endsWith( ".tif" ) && !fileName.toLower().endsWith( ".tiff" ) )
+    if ( !fileName.endsWith( ".tif", Qt::CaseInsensitive ) && !fileName.endsWith( ".tiff", Qt::CaseInsensitive ) )
     {
       fileName += ".tif";
     }

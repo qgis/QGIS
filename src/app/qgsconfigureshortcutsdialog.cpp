@@ -107,7 +107,7 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
     return;
 
   // ensure the user never omitted the extension from the file name
-  if ( !fileName.toLower().endsWith( ".xml" ) )
+  if ( !fileName.endsWith( ".xml", Qt::CaseInsensitive ) )
   {
     fileName += ".xml";
   }

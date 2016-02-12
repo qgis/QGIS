@@ -116,7 +116,7 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
       int featureType = cmbDLFeatureType->currentIndex();
 
       QString fileName = leDLOutput->text();
-      if ( !fileName.toLower().endsWith( ".gpx" ) )
+      if ( !fileName.endsWith( ".gpx", Qt::CaseInsensitive ) )
       {
         fileName += ".gpx";
       }
@@ -166,7 +166,7 @@ void QgsGPSPluginGui::on_pbnDLOutput_clicked()
                                   tr( "GPS eXchange format" ) + " (*.gpx)" );
   if ( !myFileNameQString.isEmpty() )
   {
-    if ( !myFileNameQString.toLower().endsWith( ".gpx" ) )
+    if ( !myFileNameQString.endsWith( ".gpx", Qt::CaseInsensitive ) )
     {
       myFileNameQString += ".gpx";
     }
@@ -316,7 +316,7 @@ void QgsGPSPluginGui::on_pbnIMPOutput_clicked()
                                   tr( "GPS eXchange format" ) + " (*.gpx)" );
   if ( !myFileNameQString.isEmpty() )
   {
-    if ( !myFileNameQString.toLower().endsWith( ".gpx" ) )
+    if ( !myFileNameQString.endsWith( ".gpx", Qt::CaseInsensitive ) )
     {
       myFileNameQString += ".gpx";
     }
@@ -423,7 +423,7 @@ void QgsGPSPluginGui::on_pbnCONVOutput_clicked()
                                   tr( "GPS eXchange format" ) + " (*.gpx)" );
   if ( !myFileNameQString.isEmpty() )
   {
-    if ( !myFileNameQString.toLower().endsWith( ".gpx" ) )
+    if ( !myFileNameQString.endsWith( ".gpx", Qt::CaseInsensitive ) )
     {
       myFileNameQString += ".gpx";
     }

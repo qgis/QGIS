@@ -111,7 +111,7 @@ void QgsValueMapConfigDlg::removeSelectedButtonPushed()
       }
     }
   }
-  for ( i = 0; i < rowsToRemove.values().size(); i++ )
+  for ( i = 0; i < rowsToRemove.size(); i++ )
   {
     tableWidget->removeRow( rowsToRemove.values().at( i ) - removed );
     removed++;

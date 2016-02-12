@@ -2001,7 +2001,7 @@ void QgsOptions::on_pbnExportScales_clicked()
   }
 
   // ensure the user never ommited the extension from the file name
-  if ( !fileName.toLower().endsWith( ".xml" ) )
+  if ( !fileName.endsWith( ".xml", Qt::CaseInsensitive ) )
   {
     fileName += ".xml";
   }
@@ -2160,7 +2160,7 @@ void QgsOptions::on_mButtonExportColors_clicked()
   }
 
   // ensure filename contains extension
-  if ( !fileName.toLower().endsWith( ".gpl" ) )
+  if ( !fileName.endsWith( ".gpl", Qt::CaseInsensitive ) )
   {
     fileName += ".gpl";
   }

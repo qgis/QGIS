@@ -87,7 +87,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
   }
 
   // configure auto completion with table and column names
-  Q_FOREACH ( QgsMapLayer* l, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer* l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     if ( l->type() == QgsMapLayer::VectorLayer )
     {

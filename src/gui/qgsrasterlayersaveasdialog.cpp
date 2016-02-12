@@ -204,7 +204,7 @@ void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
   if ( !fileName.isEmpty() )
   {
     // ensure the user never ommited the extension from the file name
-    if ( !fileName.toLower().endsWith( ".tif" ) && !fileName.toLower().endsWith( ".tiff" ) )
+    if ( !fileName.endsWith( ".tif", Qt::CaseInsensitive ) && !fileName.endsWith( ".tiff", Qt::CaseInsensitive ) )
     {
       fileName += ".tif";
     }

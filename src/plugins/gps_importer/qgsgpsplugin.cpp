@@ -174,7 +174,7 @@ void QgsGPSPlugin::createGPX()
                                   tr( "GPS eXchange file" ) + " (*.gpx)" );
   if ( !fileName.isEmpty() )
   {
-    if ( !fileName.toLower().endsWith( ".gpx" ) )
+    if ( !fileName.endsWith( ".gpx", Qt::CaseInsensitive ) )
     {
       fileName += ".gpx";
     }

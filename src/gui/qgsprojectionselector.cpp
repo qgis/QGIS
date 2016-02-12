@@ -172,7 +172,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
 
   // iterate through all incoming CRSs
 
-  Q_FOREACH ( const QString& auth_id, crsFilter->values() )
+  Q_FOREACH ( const QString& auth_id, *crsFilter )
   {
     QStringList parts = auth_id.split( ':' );
 

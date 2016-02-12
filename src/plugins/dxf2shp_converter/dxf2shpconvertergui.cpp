@@ -163,7 +163,7 @@ void dxf2shpConverterGui::getOutputDir()
 
   if ( !s.isEmpty() )
   {
-    if ( !s.toLower().endsWith( ".shp" ) )
+    if ( !s.endsWith( ".shp", Qt::CaseInsensitive ) )
     {
       s += ".shp";
     }

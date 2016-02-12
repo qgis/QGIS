@@ -4798,7 +4798,7 @@ bool QgisApp::openLayer( const QString & fileName, bool allowInteractive )
   if ( QgsRasterLayer::isValidRasterFileName( fileName ) )
   {
     // open .adf as a directory
-    if ( fileName.toLower().endsWith( ".adf" ) )
+    if ( fileName.endsWith( ".adf", Qt::CaseInsensitive ) )
     {
       QString dirName = fileInfo.path();
       ok  = addRasterLayer( dirName, QFileInfo( dirName ).completeBaseName() );
@@ -10337,7 +10337,7 @@ QgsRasterLayer* QgisApp::addRasterLayerPrivate(
   // XXX ya know QgsRasterLayer can snip out the basename on its own;
   // XXX why do we have to pass it in for it?
   // ET : we may not be getting "normal" files here, so we still need the baseName argument
-  if ( !providerKey.isEmpty() && uri.toLower().endsWith( ".adf" ) )
+  if ( !providerKey.isEmpty() && uri.endsWith( ".adf", Qt::CaseInsensitive ) )
   {
     QFileInfo fileInfo( uri );
     QString dirName = fileInfo.path();
