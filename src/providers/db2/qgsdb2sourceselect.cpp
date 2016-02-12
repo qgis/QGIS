@@ -7,7 +7,7 @@
                           Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
               xshirley2012 at yahoo.com, davidng0123 at gmail.com
-/***************************************************************************
+****************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
