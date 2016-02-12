@@ -3087,7 +3087,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     {
       sql = QString( "SELECT (SELECT t.typname FROM pg_type t WHERE oid = %1), upper(postgis_typmod_type(%2)), postgis_typmod_srid(%2)" )
             .arg( QString::number( result.PQftype( 0 ) ), QString::number( result.PQfmod( 0 ) ) );
-      result = connectionRO()->PQexec( sql );
+      result = connectionRO()->PQexec( sql, false );
       if ( result.PQntuples() == 1 )
       {
         geomColType  = result.PQgetvalue( 0, 0 );
