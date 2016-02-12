@@ -1322,17 +1322,20 @@ class TestQgsExpression: public QObject
       // test area with geomCalculator
       expArea.setGeomCalculator( da );
       vArea = expArea.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vArea.toDouble(), 1009089816.617, 0.001 ) );
+      QgsDebugMsg( QString( "got area %1, expected 1009089816.617" ).arg( vArea.toDouble() ) );
+      QVERIFY( qgsDoubleNear( vArea.toDouble(), 1009089816.6, 0.1 ) );
 
       // test perimeter without geomCalculator
       QgsExpression expPerimeter( "$perimeter" );
       QVariant vPerimeter = expPerimeter.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), 128282.086, 0.001 ) );
+      QgsDebugMsg( QString( "got perimeter %1, expected 128282.9" ).arg( vPerimeter.toDouble() ) );
+      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), 128282.9, 0.1 ) );
 
       // test perimeter with geomCalculator
       expPerimeter.setGeomCalculator( da );
       vPerimeter = expPerimeter.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), 128289.074, 0.001 ) );
+      QgsDebugMsg( QString( "got perimeter %1, expected 128289.1" ).arg( vPerimeter.toDouble() ) );
+      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), 128289.1, 0.1 ) );
 
       // test length without geomCalculator
       QgsPolyline line3111;
@@ -1342,12 +1345,14 @@ class TestQgsExpression: public QObject
 
       QgsExpression expLength( "$length" );
       QVariant vLength = expLength.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vLength.toDouble(), 26930.637, 0.001 ) );
+      QgsDebugMsg( QString( "got length %1, expected 26930.6" ).arg( vPerimeter.toDouble() ) );
+      QVERIFY( qgsDoubleNear( vLength.toDouble(), 26930.6, 0.1 ) );
 
       // test length with geomCalculator
       expLength.setGeomCalculator( da );
       vLength = expLength.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vLength.toDouble(), 26932.156, 0.001 ) );
+      QgsDebugMsg( QString( "got length %1, expected 26932.2" ).arg( vPerimeter.toDouble() ) );
+      QVERIFY( qgsDoubleNear( vLength.toDouble(), 26932.2, 0.1 ) );
     }
 
     void eval_geometry_wkt()
