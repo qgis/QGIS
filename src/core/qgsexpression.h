@@ -275,12 +275,19 @@ class CORE_EXPORT QgsExpression
     //! expression() instead.
     QString dump() const;
 
-    //! Return calculator used for distance and area calculations
-    //! (used by internal functions)
+    /** Return calculator used for distance and area calculations
+     * (used by $length, $area and $perimeter functions only)
+     * @see setGeomCalculator()
+     */
     QgsDistanceArea* geomCalculator();
 
-    //! Sets the geometry calculator used in evaluation of expressions,
-    //! instead of the default.
+    /** Sets the geometry calculator used for distance and area calculations in expressions.
+     * (used by $length, $area and $perimeter functions only). By default, no geometry
+     * calculator is set and all distance and area calculations are performed using simple
+     * cartesian methods (ie no ellipsoidal calculations).
+     * @see geomCalculator()
+     */
+    //TODO QGIS 3.0 change calc to a pointer, so that calculator can be cleared by passing nullptr
     void setGeomCalculator( const QgsDistanceArea &calc );
 
     /** This function currently replaces each expression between [% and %]

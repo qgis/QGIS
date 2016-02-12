@@ -29,6 +29,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectordataprovider.h"
+#include "qgsdistancearea.h"
 
 static void _parseAndEvalExpr( int arg )
 {
@@ -1294,6 +1295,59 @@ class TestQgsExpression: public QObject
 
       Q_NOWARN_DEPRECATED_POP
 
+    }
+
+    void geom_calculator()
+    {
+      //test calculations with and without geometry calculator set
+      QgsDistanceArea da;
+      da.setSourceAuthId( "EPSG:3111" );
+      da.setEllipsoid( "WGS84" );
+      da.setEllipsoidalMode( true );
+
+      QgsFeature feat;
+      QgsPolyline polygonRing3111;
+      polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
+      QgsPolygon polygon3111;
+      polygon3111 << polygonRing3111;
+      feat.setGeometry( QgsGeometry::fromPolygon( polygon3111 ) );
+      QgsExpressionContext context;
+      context.setFeature( feat );
+
+      // test area without geomCalculator
+      QgsExpression expArea( "$area" );
+      QVariant vArea = expArea.evaluate( &context );
+      QCOMPARE( vArea.toDouble(), 1005640568.0 );
+
+      // test area with geomCalculator
+      expArea.setGeomCalculator( da );
+      vArea = expArea.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vArea.toDouble(), 1009089816.617, 0.001 ) );
+
+      // test perimeter without geomCalculator
+      QgsExpression expPerimeter( "$perimeter" );
+      QVariant vPerimeter = expPerimeter.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), 128282.086, 0.001 ) );
+
+      // test perimeter with geomCalculator
+      expPerimeter.setGeomCalculator( da );
+      vPerimeter = expPerimeter.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), 128289.074, 0.001 ) );
+
+      // test length without geomCalculator
+      QgsPolyline line3111;
+      line3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 );
+      feat.setGeometry( QgsGeometry::fromPolyline( line3111 ) );
+      context.setFeature( feat );
+
+      QgsExpression expLength( "$length" );
+      QVariant vLength = expLength.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vLength.toDouble(), 26930.637, 0.001 ) );
+
+      // test length with geomCalculator
+      expLength.setGeomCalculator( da );
+      vLength = expLength.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vLength.toDouble(), 26932.156, 0.001 ) );
     }
 
     void eval_geometry_wkt()
