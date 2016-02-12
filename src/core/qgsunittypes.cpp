@@ -157,13 +157,14 @@ double QgsUnitTypes::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitTy
 #define NMILE_TO_METER 1852.0
 
   // Unify degree units
+  // remove for QGIS 3.0, as extra degree types will be removed
   if ( fromUnit == QGis::DecimalDegrees || fromUnit == QGis::DegreesMinutesSeconds || fromUnit == QGis::DegreesDecimalMinutes )
     fromUnit = QGis::Degrees;
   if ( toUnit == QGis::DecimalDegrees || toUnit == QGis::DegreesMinutesSeconds || toUnit == QGis::DegreesDecimalMinutes )
     toUnit = QGis::Degrees;
 
   // Calculate the conversion factor between the specified units
-  if ( fromUnit != toUnit && fromUnit != QGis::UnknownUnit && toUnit != QGis::UnknownUnit )
+  if ( fromUnit != toUnit )
   {
     switch ( fromUnit )
     {
@@ -217,8 +218,6 @@ QString QgsUnitTypes::encodeUnit( QgsSymbolV2::OutputUnit unit )
     default:
       return "MM";
   }
-  //avoid warning
-  return QString();
 }
 
 QgsSymbolV2::OutputUnit QgsUnitTypes::decodeSymbolUnit( const QString& string, bool* ok )
