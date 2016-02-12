@@ -1322,7 +1322,7 @@ class TestQgsExpression: public QObject
       // test area with geomCalculator
       expArea.setGeomCalculator( da );
       vArea = expArea.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vArea.toDouble(), 1009089816.617, 0.001 ) );
+      QVERIFY( qgsDoubleNear( vArea.toDouble(), 1009089817.0, 1.0 ) );
 
       // test perimeter without geomCalculator
       QgsExpression expPerimeter( "$perimeter" );
