@@ -1081,11 +1081,11 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
       }
       break;
     case QGis::UnknownUnit:
-      unitLabel = QObject::tr( " unknown" );
-      //intentional fall-through
-      FALLTHROUGH;
+      unitLabel.clear();
+      break;
     default:
       QgsDebugMsg( QString( "Error: not picked up map units - actual value = %1" ).arg( u ) );
+      break;
   }
 
   return QLocale::system().toString( value, 'f', decimals ) + unitLabel;
