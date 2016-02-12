@@ -20,6 +20,7 @@
 #include "ui_qgsdb2newconnectionbase.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
+#include "qgsauthconfigselect.h"
 
 static const int ENV_LUW = 1, ENV_ZOS = 2;
 
@@ -51,6 +52,7 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
+    QgsAuthConfigSelect * mAuthConfigSelect;
 };
 
 #endif //  QGSDB2NEWCONNECTION_H

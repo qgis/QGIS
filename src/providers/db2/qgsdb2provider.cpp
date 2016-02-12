@@ -21,6 +21,7 @@
 #include <qgscoordinatereferencesystem.h>
 #include <qgsdataitem.h>
 #include <qgslogger.h>
+#include "qgscredentials.h"
 
 static const QString PROVIDER_KEY = "DB2";
 static const QString PROVIDER_DESCRIPTION = "DB2 Spatial Extender provider";
@@ -147,7 +148,7 @@ QSqlDatabase QgsDb2Provider::GetDatabase( QString service, QString driver, QStri
 
   if ( service.isEmpty() )
   {
-    if ( driver.isEmpty() || host.isEmpty() || location.isEmpty() || username.isEmpty() || password.isEmpty() )
+    if ( driver.isEmpty() || host.isEmpty() || location.isEmpty()  )
     {
       QgsDebugMsg( "DB2: service not provided, a required argument is empty." );
       return db;
@@ -156,11 +157,6 @@ QSqlDatabase QgsDb2Provider::GetDatabase( QString service, QString driver, QStri
   }
   else
   {
-    if ( username.isEmpty() || password.isEmpty() )
-    {
-      QgsDebugMsg( "DB2: service provided, a required argument is empty." );
-      return db;
-    }
     connectionName = service;
   }
   QgsDebugMsg( "connectionName: " + connectionName );
@@ -177,6 +173,19 @@ QSqlDatabase QgsDb2Provider::GetDatabase( QString service, QString driver, QStri
   }
   db.setHostName( host );
   db.setPort( port );
+
+  if ( username.isEmpty() || password.isEmpty() )
+  {
+  QgsCredentials::instance()->lock();
+
+  bool ok = QgsCredentials::instance()->get( location, username, password, QString("") );
+      if ( !ok ) // TODO - what if cancel?
+        QgsDebugMsg("Cancel clicked");
+
+  QgsCredentials::instance()->put( location, username, password );
+  QgsCredentials::instance()->unlock();  
+  }
+  
   db.setUserName( username );
   db.setPassword( password );
 

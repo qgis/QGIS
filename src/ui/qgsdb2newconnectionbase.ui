@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>705</width>
-    <height>455</height>
+    <height>582</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
      <x>10</x>
      <y>30</y>
      <width>671</width>
-     <height>331</height>
+     <height>371</height>
     </rect>
    </property>
    <property name="title">
@@ -80,19 +80,6 @@
      <string>Database:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="username">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>220</y>
-      <width>91</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Username:</string>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="txtPort">
     <property name="geometry">
      <rect>
@@ -113,42 +100,6 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="txtUsername">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>220</y>
-      <width>231</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="txtPassword">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>260</y>
-      <width>231</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="echoMode">
-     <enum>QLineEdit::Password</enum>
-    </property>
-   </widget>
-   <widget class="QLabel" name="password">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>260</y>
-      <width>71</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Password:</string>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="txtHost">
     <property name="geometry">
      <rect>
@@ -157,19 +108,6 @@
       <width>231</width>
       <height>31</height>
      </rect>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="savePassword">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>300</y>
-      <width>141</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Save password</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btnConnect">
@@ -254,52 +192,86 @@
      <string>Connection Name:</string>
     </property>
    </widget>
-   <widget class="QGroupBox" name="groupOs">
+   <widget class="QTabWidget" name="tabAuthentication">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>120</y>
-      <width>260</width>
-      <height>70</height>
+      <x>20</x>
+      <y>230</y>
+      <width>417</width>
+      <height>131</height>
      </rect>
     </property>
-    <property name="title">
-     <string>Environment</string>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
     </property>
-    <widget class="QRadioButton" name="radioLuw">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>20</y>
-       <width>200</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Linux, Unix, and Windows</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-     <attribute name="buttonGroup">
-      <string notr="true">buttonGroupOs</string>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tabBasic">
+     <attribute name="title">
+      <string>Authentication</string>
      </attribute>
-    </widget>
-    <widget class="QRadioButton" name="radioZos">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>40</y>
-       <width>82</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>z/OS</string>
-     </property>
-     <attribute name="buttonGroup">
-      <string notr="true">buttonGroupOs</string>
-     </attribute>
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>5</number>
+      </property>
+      <property name="topMargin">
+       <number>5</number>
+      </property>
+      <property name="rightMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
+       <number>5</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="TextLabel3">
+        <property name="text">
+         <string>Username</string>
+        </property>
+        <property name="buddy">
+         <cstring>txtUsername</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="txtPassword">
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QCheckBox" name="chkStoreUsername">
+        <property name="text">
+         <string>Save</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="TextLabel3_2">
+        <property name="text">
+         <string>Password</string>
+        </property>
+        <property name="buddy">
+         <cstring>txtPassword</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="txtUsername"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QCheckBox" name="chkStorePassword">
+        <property name="text">
+         <string>Save</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </widget>
   </widget>

@@ -3,10 +3,21 @@
 # Files
 
 SET(DB2_SRCS
-  qgsdb2geometrycolumns.cpp qgsdb2expressioncompiler.cpp qgsdb2provider.cpp qgsdb2dataitems.cpp qgsdb2newconnection.cpp qgsdb2tablemodel.cpp qgsdb2featureiterator.cpp qgsdb2sourceselect.cpp
+  qgsdb2geometrycolumns.cpp
+  qgsdb2expressioncompiler.cpp
+  qgsdb2provider.cpp
+  qgsdb2dataitems.cpp
+  qgsdb2newconnection.cpp
+  qgsdb2tablemodel.cpp
+  qgsdb2featureiterator.cpp
+  qgsdb2sourceselect.cpp
 )
 SET(DB2_MOC_HDRS
-  qgsdb2provider.h qgsdb2dataitems.h qgsdb2newconnection.h qgsdb2tablemodel.h qgsdb2sourceselect.h
+  qgsdb2provider.h
+  qgsdb2dataitems.h
+  qgsdb2newconnection.h
+  qgsdb2tablemodel.h
+  qgsdb2sourceselect.h
 )
 
 ########################################################
@@ -17,12 +28,15 @@ QT4_WRAP_CPP(DB2_MOC_SRCS ${DB2_MOC_HDRS})
 INCLUDE_DIRECTORIES(
   .
   ../../core
+  ../../core/auth  
   ../../core/geometry
   ${GDAL_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${QT_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
   ../../gui
+  ../../gui/auth
+  ../../ui  
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
 )
 

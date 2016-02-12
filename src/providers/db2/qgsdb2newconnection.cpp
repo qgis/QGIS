@@ -31,8 +31,13 @@
 
 QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
     : QDialog( parent, fl ), mOriginalConnName( connName )
+    , mAuthConfigSelect( nullptr )    
 {
   setupUi( this );
+  
+  mAuthConfigSelect = new QgsAuthConfigSelect( this, "db2" );
+  tabAuthentication->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );  
+    
   if ( !connName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
@@ -45,17 +50,29 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connNa
     txtPort->setText( settings.value( key + "/port" ).toString() );
     txtDriver->setText( settings.value( key + "/driver" ).toString() );
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
-    txtUsername->setText( settings.value( key + "/username" ).toString() );
+
+    
+    if ( settings.value( key + "/saveUsername" ).toString() == "true" )
+    {
+      txtUsername->setText( settings.value( key + "/username" ).toString() );
+      chkStoreUsername->setChecked( true );
+    }
+
     if ( settings.value( key + "/savePassword" ).toString() == "true" )
     {
       txtPassword->setText( settings.value( key + "/password" ).toString() );
-      savePassword->setChecked( true );
+      chkStorePassword->setChecked( true );
     }
+
+    QString authcfg = settings.value( key + "/authcfg" ).toString();
+    mAuthConfigSelect->setConfigId( authcfg );
+    if ( !authcfg.isEmpty() )
+    {
+      tabAuthentication->setCurrentIndex( tabAuthentication->indexOf( mAuthConfigSelect ) );
+    }
+
+
     txtName->setText( connName );
-    if ( settings.value( key + "/environment" ) == ENV_LUW )
-      radioLuw->setDown( true );
-    else
-      radioZos->setDown( true );
   }
 
 }
@@ -66,7 +83,17 @@ void QgsDb2NewConnection::accept()
   QSettings settings;
   QString baseKey = "/DB2/connections/";
   settings.setValue( baseKey + "selected", txtName->text() );
+  bool hasAuthConfigID = !mAuthConfigSelect->configId().isEmpty();
 
+  if ( !hasAuthConfigID && chkStorePassword->isChecked() &&
+       QMessageBox::question( this,
+                              tr( "Saving passwords" ),
+                              tr( "WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\n" ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  {
+    return;
+  }
+  
   // warn if entry was renamed to an existing connection
   if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
       ( settings.contains( baseKey + txtName->text() + "/service" ) ||
@@ -93,13 +120,10 @@ void QgsDb2NewConnection::accept()
   settings.setValue( baseKey + "/port", txtPort->text() );
   settings.setValue( baseKey + "/driver", txtDriver->text() );
   settings.setValue( baseKey + "/database", txtDatabase->text() );
-  settings.setValue( baseKey + "/username", txtUsername->text() );
-  settings.setValue( baseKey + "/password", savePassword->isChecked() ? txtPassword->text() : "" );
-  settings.setValue( baseKey + "/savePassword", savePassword->isChecked() ? "true" : "false" );
-  if ( radioLuw->isChecked() )
-    settings.setValue( baseKey + "/environment", ENV_LUW );
-  else
-    settings.setValue( baseKey + "/environment", ENV_ZOS );
+  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() && !hasAuthConfigID ? txtUsername->text() : "" );
+  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() && !hasAuthConfigID ? txtPassword->text() : "" );
+  settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() && !hasAuthConfigID ? "true" : "false" );
+  settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() && !hasAuthConfigID ? "true" : "false" );
 
   QDialog::accept();
 }
