@@ -5,7 +5,7 @@
   Copyright : (C) 2016 by David Adler
                           Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
-              xiaoshir at us.ibm.com, nguyend at us.ibm.com
+              xshirley2012 at yahoo.com, davidng0123 at gmail.com
 /***************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -108,6 +108,8 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
   QgsDb2GeometryColumns db2GC = QgsDb2GeometryColumns( db );
   int sqlcode = db2GC.open();
 
+  /* Enabling the DB2 Spatial Extender creates the DB2GSE schema and tables,
+     so the Extender is either not enabled or set up if SQLCODE -204 is returned. */
   if ( sqlcode == -204 )
   {
     children.append( new QgsErrorItem( this, tr( "DB2 Spatial Extender is not enabled or set up." ), mPath + "/error" ) );
