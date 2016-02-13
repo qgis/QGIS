@@ -156,7 +156,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     /*!
       * If user changes the CRS, set the corresponding map units
       */
-    void setMapUnitsToCurrentProjection();
+    void srIdUpdated();
 
     /* Update ComboBox accorindg to the selected new index
      * Also sets the new selected Ellipsoid. */
@@ -180,6 +180,16 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void refresh();
 
   private:
+
+    //! Formats for displaying coordinates
+    enum CoordinateFormat
+    {
+      DecimalDegrees, /*!< Decimal degrees */
+      DegreesMinutes, /*!< Degrees, decimal minutes */
+      DegreesMinutesSeconds, /*!< Degrees, minutes, seconds */
+      MapUnits, /*! Show coordinates in map units */
+    };
+
     QgsRelationManagerDialog *mRelationManagerDlg;
     QgsMapCanvas* mMapCanvas;
     QgsStyleV2* mStyle;
@@ -230,4 +240,5 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     static const char * GEO_NONE_DESC;
 
+    void updateGuiForMapUnits( QGis::UnitType units );
 };

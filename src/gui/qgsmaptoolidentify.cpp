@@ -38,6 +38,7 @@
 #include "qgsgeometryutils.h"
 #include "qgsgeometrycollectionv2.h"
 #include "qgscurvev2.h"
+#include "qgscoordinateutils.h"
 
 #include <QSettings>
 #include <QMouseEvent>
@@ -51,6 +52,7 @@ QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
     , mIdentifyMenu( new QgsIdentifyMenu( mCanvas ) )
     , mLastMapUnitsPerPixel( -1.0 )
+    , mCoordinatePrecision( 6 )
 {
   // set cursor
   QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
@@ -94,6 +96,8 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
   mLastPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
   mLastExtent = mCanvas->extent();
   mLastMapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
+
+  mCoordinatePrecision = QgsCoordinateUtils::calculateCoordinatePrecision( mLastMapUnitsPerPixel, mCanvas->mapSettings().destinationCrs() );
 
   if ( mode == DefaultQgsSetting )
   {
@@ -208,7 +212,8 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   QMap< QString, QString > commonDerivedAttributes;
 
-  commonDerivedAttributes.insert( tr( "(clicked coordinate)" ), point.toString() );
+  commonDerivedAttributes.insert( tr( "(clicked coordinate X)" ), formatXCoordinate( point ) );
+  commonDerivedAttributes.insert( tr( "(clicked coordinate Y)" ), formatYCoordinate( point ) );
 
   int featureCount = 0;
 
@@ -294,10 +299,8 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometryV2& g
   QgsPointV2 closestPoint = geometry.vertexAt( vId );
 
   QgsPoint closestPointMapCoords = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPoint( closestPoint.x(), closestPoint.y() ) );
-  str = QLocale::system().toString( closestPointMapCoords.x(), 'g', 10 );
-  derivedAttributes.insert( "Closest vertex X", str );
-  str = QLocale::system().toString( closestPointMapCoords.y(), 'g', 10 );
-  derivedAttributes.insert( "Closest vertex Y", str );
+  derivedAttributes.insert( "Closest vertex X", formatXCoordinate( closestPointMapCoords ) );
+  derivedAttributes.insert( "Closest vertex Y", formatYCoordinate( closestPointMapCoords ) );
 
   if ( closestPoint.is3D() )
   {
@@ -309,6 +312,24 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometryV2& g
     str = QLocale::system().toString( closestPoint.m(), 'g', 10 );
     derivedAttributes.insert( "Closest vertex M", str );
   }
+}
+
+QString QgsMapToolIdentify::formatCoordinate( const QgsPoint& canvasPoint ) const
+{
+  return QgsCoordinateUtils::formatCoordinateForProject( canvasPoint, mCanvas->mapSettings().destinationCrs(),
+         mCoordinatePrecision );
+}
+
+QString QgsMapToolIdentify::formatXCoordinate( const QgsPoint& canvasPoint ) const
+{
+  QString coordinate = formatCoordinate( canvasPoint );
+  return coordinate.split( ',' ).at( 0 );
+}
+
+QString QgsMapToolIdentify::formatYCoordinate( const QgsPoint& canvasPoint ) const
+{
+  QString coordinate = formatCoordinate( canvasPoint );
+  return coordinate.split( ',' ).at( 1 );
 }
 
 QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer, const QgsPoint& layerPoint )
@@ -364,14 +385,14 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
 
       // Add the start and end points in as derived attributes
       QgsPoint pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPoint( curve->startPoint().x(), curve->startPoint().y() ) );
-      str = QLocale::system().toString( pnt.x(), 'g', 10 );
+      str = formatXCoordinate( pnt );
       derivedAttributes.insert( tr( "firstX", "attributes get sorted; translation for lastX should be lexically larger than this one" ), str );
-      str = QLocale::system().toString( pnt.y(), 'g', 10 );
+      str = formatYCoordinate( pnt );
       derivedAttributes.insert( tr( "firstY" ), str );
       pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPoint( curve->endPoint().x(), curve->endPoint().y() ) );
-      str = QLocale::system().toString( pnt.x(), 'g', 10 );
+      str = formatXCoordinate( pnt );
       derivedAttributes.insert( tr( "lastX", "attributes get sorted; translation for firstX should be lexically smaller than this one" ), str );
-      str = QLocale::system().toString( pnt.y(), 'g', 10 );
+      str = formatYCoordinate( pnt );
       derivedAttributes.insert( tr( "lastY" ), str );
     }
   }
@@ -398,9 +419,9 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   {
     // Include the x and y coordinates of the point as a derived attribute
     QgsPoint pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->constGeometry()->asPoint() );
-    QString str = QLocale::system().toString( pnt.x(), 'g', 10 );
+    QString str = formatXCoordinate( pnt );
     derivedAttributes.insert( "X", str );
-    str = QLocale::system().toString( pnt.y(), 'g', 10 );
+    str = formatYCoordinate( pnt );
     derivedAttributes.insert( "Y", str );
 
     if ( QgsWKBTypes::hasZ( wkbType ) )
@@ -506,7 +527,8 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     identifyResult = dprovider->identify( point, format, viewExtent, width, height );
   }
 
-  derivedAttributes.insert( tr( "(clicked coordinate)" ), point.toString() );
+  derivedAttributes.insert( tr( "(clicked coordinate X)" ), formatXCoordinate( pointInCanvasCrs ) );
+  derivedAttributes.insert( tr( "(clicked coordinate Y)" ), formatYCoordinate( pointInCanvasCrs ) );
 
   if ( identifyResult.isValid() )
   {

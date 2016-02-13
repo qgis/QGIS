@@ -88,6 +88,7 @@ SET(QGIS_CORE_SRCS
   qgscontexthelp_texts.cpp
   qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
+  qgscoordinateutils.cpp
   qgscredentials.cpp
   qgscrscache.cpp
   qgsdartmeasurement.cpp
@@ -585,6 +586,7 @@ SET(QGIS_CORE_HDRS
   qgscontexthelp.h
   qgsconditionalstyle.h
   qgscoordinatereferencesystem.h
+  qgscoordinateutils.h
   qgscrscache.h
   qgscsexception.h
   qgsdartmeasurement.h

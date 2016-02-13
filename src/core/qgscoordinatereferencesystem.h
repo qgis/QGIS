@@ -325,6 +325,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /** Returns whether the CRS is a geographic CRS.
      * @returns true if CRS is geographic, or false if it is a projected CRS
      */
+    //TODO QGIS 3.0 - rename to isGeographic
     bool geographicFlag() const;
 
     /** Returns whether axis is inverted (eg. for WMS 1.3) for the CRS.

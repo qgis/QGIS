@@ -125,6 +125,7 @@
 #include "qgsstatusbarcoordinateswidget.h"
 #include "qgsconfigureshortcutsdialog.h"
 #include "qgscoordinatetransform.h"
+#include "qgscoordinateutils.h"
 #include "qgscredentialdialog.h"
 #include "qgscursors.h"
 #include "qgscustomization.h"
@@ -9616,31 +9617,7 @@ void QgisApp::showRotation()
 
 void QgisApp::updateMouseCoordinatePrecision()
 {
-  // Work out what mouse display precision to use. This only needs to
-  // be when the settings change or the zoom level changes. This
-  // function needs to be called every time one of the above happens.
-
-  // Get the display precision from the project settings
-  bool automatic = QgsProject::instance()->readBoolEntry( "PositionPrecision", "/Automatic" );
-  int dp = 0;
-
-  if ( automatic )
-  {
-    // Work out a suitable number of decimal places for the mouse
-    // coordinates with the aim of always having enough decimal places
-    // to show the difference in position between adjacent pixels.
-    // Also avoid taking the log of 0.
-    if ( mapCanvas()->mapUnitsPerPixel() != 0.0 )
-      dp = static_cast<int>( ceil( -1.0 * log10( mapCanvas()->mapUnitsPerPixel() ) ) );
-  }
-  else
-    dp = QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" );
-
-  // Keep dp sensible
-  if ( dp < 0 )
-    dp = 0;
-
-  mCoordsEdit->setMouseCoordinatesPrecision( dp );
+  mCoordsEdit->setMouseCoordinatesPrecision( QgsCoordinateUtils::calculateCoordinatePrecision( mapCanvas()->mapUnitsPerPixel(), mapCanvas()->mapSettings().destinationCrs() ) );
 }
 
 void QgisApp::showStatusMessage( const QString& theMessage )
