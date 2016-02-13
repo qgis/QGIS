@@ -165,7 +165,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
   if ( flatType == QGis::WKBLineString || isaLinearRing )
   {
     QgsWkbPtr savedTargetWkbPtr( targetWkbPtr );
-    double x, y, lastX = 0, lastY = 0;
+    double x = 0.0, y = 0.0, lastX = 0, lastY = 0;
     QgsRectangle r;
     r.setMinimal();
 
