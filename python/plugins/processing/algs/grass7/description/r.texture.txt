@@ -1,0 +1,10 @@
+r.texture
+Generate images with textural features from a raster map.
+Raster (r.*)
+ParameterRaster|input|Name of input raster map|False
+ParameterString|method|Textural measurement method(s) in the following list: asm, contrast, corr, var, idm, sa, se, sv, entr, dv, de, moc1, moc2|None|False|True
+ParameterNumber|size|The size of moving window (odd and >= 3)|3.0|None|3.0|True
+ParameterNumber|distance|The distance between two samples (>= 1)|1.0|None|1.0|True
+*ParameterBoolean|-s|Separate output for each angle (0, 45, 90, 135)|False
+*ParameterBoolean|-a|Calculate all textural measurements|False
+OutputDirectory|output|Texture files directory
