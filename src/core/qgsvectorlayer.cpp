@@ -1072,13 +1072,13 @@ bool QgsVectorLayer::deleteSelectedFeatures( int* deletedCount )
   return deleted == count;
 }
 
-int QgsVectorLayer::addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureId )
+QgsVectorLayer::AddRingResult QgsVectorLayer::addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureId )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
-    return 6;
+    return static_cast<AddRingResult>( QgsGeometry::AddRingSuccess );
 
   QgsVectorLayerEditUtils utils( this );
-  int result = 5;
+  int result = QgsGeometry::AddRingNotInsertable;
 
   //first try with selected features
   if ( !mSelectedFeatureIds.isEmpty() )
@@ -1086,36 +1086,36 @@ int QgsVectorLayer::addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureI
     result = utils.addRing( ring, mSelectedFeatureIds, featureId );
   }
 
-  if ( result != 0 )
+  if ( result != QgsGeometry::AddRingSuccess )
   {
     //try with all intersecting features
     result = utils.addRing( ring, QgsFeatureIds(), featureId );
   }
 
-  return result;
+  return static_cast<AddRingResult>( result );
 }
 
-int QgsVectorLayer::addRing( QgsCurveV2* ring, QgsFeatureId* featureId )
+QgsVectorLayer::AddRingResult QgsVectorLayer::addRing( QgsCurveV2* ring, QgsFeatureId* featureId )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
   {
     delete ring;
-    return 6;
+    return AddRingLayerNotEditable;
   }
 
   if ( !ring )
   {
-    return 1;
+    return static_cast<AddRingResult>( QgsGeometry::AddRingWrongFeatureType );
   }
 
   if ( !ring->isClosed() )
   {
     delete ring;
-    return 2;
+    return static_cast<AddRingResult>( QgsGeometry::AddRingNotClosed );
   }
 
   QgsVectorLayerEditUtils utils( this );
-  int result = 5;
+  int result = QgsGeometry::AddRingNotInsertable;
 
   //first try with selected features
   if ( !mSelectedFeatureIds.isEmpty() )
@@ -1123,76 +1123,76 @@ int QgsVectorLayer::addRing( QgsCurveV2* ring, QgsFeatureId* featureId )
     result = utils.addRing( static_cast< QgsCurveV2* >( ring->clone() ), mSelectedFeatureIds, featureId );
   }
 
-  if ( result != 0 )
+  if ( result != QgsGeometry::AddRingSuccess )
   {
     //try with all intersecting features
     result = utils.addRing( static_cast< QgsCurveV2* >( ring->clone() ), QgsFeatureIds(), featureId );
   }
 
   delete ring;
-  return result;
+  return static_cast<AddRingResult>( result );
 }
 
-int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
+QgsVectorLayer::AddPartResult QgsVectorLayer::addPart( const QList<QgsPoint> &points )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
-    return 7;
+    return AddPartLayerNotEditable;
 
   //number of selected features must be 1
 
   if ( mSelectedFeatureIds.size() < 1 )
   {
     QgsDebugMsg( "Number of selected features <1" );
-    return 4;
+    return static_cast<AddPartResult>( QgsGeometry::AddPartNoFeature );
   }
   else if ( mSelectedFeatureIds.size() > 1 )
   {
     QgsDebugMsg( "Number of selected features >1" );
-    return 5;
+    return static_cast<AddPartResult>( QgsGeometry::AddPartSeveralFeatures );
   }
 
   QgsVectorLayerEditUtils utils( this );
   return utils.addPart( points, *mSelectedFeatureIds.constBegin() );
 }
 
-int QgsVectorLayer::addPart( const QList<QgsPointV2> &points )
+QgsVectorLayer::AddPartResult QgsVectorLayer::addPart( const QList<QgsPointV2> &points )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
-    return 7;
+    return AddPartLayerNotEditable;
 
   //number of selected features must be 1
 
   if ( mSelectedFeatureIds.size() < 1 )
   {
     QgsDebugMsg( "Number of selected features <1" );
-    return 4;
+    return static_cast<AddPartResult>( QgsGeometry::AddPartNoFeature );
   }
   else if ( mSelectedFeatureIds.size() > 1 )
   {
     QgsDebugMsg( "Number of selected features >1" );
-    return 5;
+    return static_cast<AddPartResult>( QgsGeometry::AddPartSeveralFeatures );
   }
 
   QgsVectorLayerEditUtils utils( this );
   return utils.addPart( points, *mSelectedFeatureIds.constBegin() );
 }
 
-int QgsVectorLayer::addPart( QgsCurveV2* ring )
+QgsVectorLayer::AddPartResult QgsVectorLayer::addPart( QgsCurveV2* ring )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
-    return 7;
+    return AddPartLayerNotEditable;
 
   //number of selected features must be 1
 
   if ( mSelectedFeatureIds.size() < 1 )
   {
     QgsDebugMsg( "Number of selected features <1" );
-    return 4;
+    return static_cast<AddPartResult>( QgsGeometry::AddPartNoFeature );
   }
   else if ( mSelectedFeatureIds.size() > 1 )
   {
     QgsDebugMsg( "Number of selected features >1" );
-    return 5;
+    return static_cast<AddPartResult>( QgsGeometry::AddPartSeveralFeatures );
   }
 
   QgsVectorLayerEditUtils utils( this );

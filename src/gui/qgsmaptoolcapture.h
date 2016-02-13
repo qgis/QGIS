@@ -89,6 +89,14 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
 
   protected:
+    /** Result codes for nextPoint() */
+    enum NextPointResult
+    {
+      NextPointSuccess = 0,          //< No problem
+      NextPointInvalidLayer,         //< The current layer is null or not a vector layer
+      NextPointTransformationFailed  //< The transformation failed
+    };
+
     /** Converts a map point to layer coordinates
         @param mapPoint the point in map coordinates
         @param[inout] layerPoint the point in layer coordinates
@@ -103,12 +111,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /** Converts a map point to layer coordinates
         @param mapPoint the point in map coordinates
         @param[inout] layerPoint the point in layer coordinates
-        @return
-          0 in case of success
-          1 if the current layer is null or not a vector layer
-          2 if the transformation failed
     */
-    int nextPoint( const QgsPointV2& mapPoint, QgsPointV2& layerPoint );
+    NextPointResult nextPoint( const QgsPointV2& mapPoint, QgsPointV2& layerPoint );
 
     /** Converts a point to map coordinates and layer coordinates
         @param p the input point
@@ -131,7 +135,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
           1 if the current layer is null or not a vector layer
           2 if the transformation failed
     */
-    int nextPoint( QPoint p, QgsPointV2 &layerPoint, QgsPointV2 &mapPoint );
+    NextPointResult nextPoint( QPoint p, QgsPointV2 &layerPoint, QgsPointV2 &mapPoint );
 
     /** Fetches the original point from the source layer if it has the same
      * CRS as the current layer.

@@ -565,7 +565,7 @@ double QgsGeometry::closestSegmentWithContext(
   return sqrDist;
 }
 
-int QgsGeometry::addRing( const QList<QgsPoint>& ring )
+QgsGeometry::AddRingResult QgsGeometry::addRing( const QList<QgsPoint>& ring )
 {
   detach( true );
 
@@ -577,12 +577,12 @@ int QgsGeometry::addRing( const QList<QgsPoint>& ring )
   return addRing( ringLine );
 }
 
-int QgsGeometry::addRing( QgsCurveV2* ring )
+QgsGeometry::AddRingResult QgsGeometry::addRing( QgsCurveV2* ring )
 {
   if ( !d->geometry )
   {
     delete ring;
-    return 1;
+    return AddRingWrongFeatureType;
   }
 
   detach( true );
@@ -591,14 +591,14 @@ int QgsGeometry::addRing( QgsCurveV2* ring )
   return QgsGeometryEditUtils::addRing( d->geometry, ring );
 }
 
-int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType )
+QgsGeometry::AddPartResult QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType )
 {
   QList<QgsPointV2> l;
   convertPointList( points, l );
   return addPart( l, geomType );
 }
 
-int QgsGeometry::addPart( const QList<QgsPointV2> &points, QGis::GeometryType geomType )
+QgsGeometry::AddPartResult QgsGeometry::addPart( const QList<QgsPointV2> &points, QGis::GeometryType geomType )
 {
   QgsAbstractGeometryV2* partGeom = nullptr;
   if ( points.size() == 1 )
@@ -614,7 +614,7 @@ int QgsGeometry::addPart( const QList<QgsPointV2> &points, QGis::GeometryType ge
   return addPart( partGeom, geomType );
 }
 
-int QgsGeometry::addPart( QgsAbstractGeometryV2* part, QGis::GeometryType geomType )
+QgsGeometry::AddPartResult QgsGeometry::addPart( QgsAbstractGeometryV2* part, QGis::GeometryType geomType )
 {
   if ( !d->geometry )
   {
@@ -631,7 +631,7 @@ int QgsGeometry::addPart( QgsAbstractGeometryV2* part, QGis::GeometryType geomTy
         d->geometry = new QgsMultiPolygonV2();
         break;
       default:
-        return 1;
+        return AddPartWrongFeatureType;
     }
   }
   else
@@ -644,21 +644,21 @@ int QgsGeometry::addPart( QgsAbstractGeometryV2* part, QGis::GeometryType geomTy
   return QgsGeometryEditUtils::addPart( d->geometry, part );
 }
 
-int QgsGeometry::addPart( const QgsGeometry *newPart )
+QgsGeometry::AddPartResult QgsGeometry::addPart( const QgsGeometry *newPart )
 {
   if ( !d->geometry || !newPart || !newPart->d || !newPart->d->geometry )
   {
-    return 1;
+    return AddPartWrongFeatureType;
   }
 
   return addPart( newPart->d->geometry->clone() );
 }
 
-int QgsGeometry::addPart( GEOSGeometry *newPart )
+QgsGeometry::AddPartResult QgsGeometry::addPart( GEOSGeometry *newPart )
 {
   if ( !d->geometry || !newPart )
   {
-    return 1;
+    return AddPartWrongFeatureType;
   }
 
   detach( true );

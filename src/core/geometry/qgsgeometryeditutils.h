@@ -22,6 +22,7 @@ class QgsGeometryEngine;
 class QgsVectorLayer;
 
 #include "qgsfeature.h"
+#include "qgsgeometry.h"
 #include <QMap>
 
 /** \ingroup core
@@ -34,15 +35,11 @@ class QgsVectorLayer;
 class QgsGeometryEditUtils
 {
   public:
-    /** Adds interior ring (taking ownership).
-    @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
-    3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
-    static int addRing( QgsAbstractGeometryV2* geom, QgsCurveV2* ring );
+    /** Adds interior ring (taking ownership). */
+    static QgsGeometry::AddRingResult addRing( QgsAbstractGeometryV2* geom, QgsCurveV2* ring );
 
-    /** Adds part to multi type geometry (taking ownership)
-    @return 0 in case of success, 1 if not a multigeometry, 2 if part is not a valid geometry, 3 if new polygon ring
-    not disjoint with existing polygons of the feature*/
-    static int addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeometryV2* part );
+    /** Adds part to multi type geometry (taking ownership) */
+    static QgsGeometry::AddPartResult addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeometryV2* part );
 
     /** Deletes a ring from a geometry.
      * @returns true if delete was successful

@@ -937,57 +937,44 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool deleteSelectedFeatures( int *deletedCount = nullptr );
 
+    /** Result codes for addRing().
+     * @note should be replaced in QGIS 3.0 by common codes for all editing operations
+     * @note this is extended from QgsGeometry::AddRingResult
+     */
+    enum AddRingResult
+    {
+      AddRingLayerNotEditable = 6 //< Layer is not editable
+    };
+
     /** Adds a ring to polygon/multipolygon features
      * @param ring ring to add
      * @param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
-     @return
-       0 in case of success,
-       1 problem with feature type,
-       2 ring not closed,
-       3 ring not valid,
-       4 ring crosses existing rings,
-       5 no feature found where ring can be inserted
-       6 layer not editable */
-    int addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureId = nullptr );
+     */
+    AddRingResult addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureId = nullptr );
 
     /** Adds a ring to polygon/multipolygon features (takes ownership)
      * @param ring ring to add
      * @param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
-            @return
-            0 in case of success
-            1 problem with feature type
-            2 ring not closed
-            6 layer not editable
-       @note available in python as addCurvedRing
      */
-    int addRing( QgsCurveV2* ring, QgsFeatureId* featureId = nullptr );
+    AddRingResult addRing( QgsCurveV2* ring, QgsFeatureId* featureId = nullptr );
 
-    /** Adds a new part polygon to a multipart feature
-     @return
-       0 in case of success,
-       1 if selected feature is not multipart,
-       2 if ring is not a valid geometry,
-       3 if new polygon ring not disjoint with existing rings,
-       4 if no feature was selected,
-       5 if several features are selected,
-       6 if selected geometry not found
-       7 layer not editable */
-    int addPart( const QList<QgsPoint>& ring );
+    /** Result codes for addPart().
+     * @note should be replaced in QGIS 3.0 by common codes for all editing operations
+     * @note extends QgsGeometry::AddPartResult
+     */
+    enum AddPartResult
+    {
+      AddPartLayerNotEditable = 7   //< Layer not editable
+    };
 
-    /** Adds a new part polygon to a multipart feature
-     @return
-       0 in case of success,
-       1 if selected feature is not multipart,
-       2 if ring is not a valid geometry,
-       3 if new polygon ring not disjoint with existing rings,
-       4 if no feature was selected,
-       5 if several features are selected,
-       6 if selected geometry not found
-       7 layer not editable */
-    int addPart( const QList<QgsPointV2>& ring );
+    /** Adds a new part polygon to a multipart feature */
+    AddPartResult addPart( const QList<QgsPoint>& ring );
+
+    /** Adds a new part polygon to a multipart feature */
+    AddPartResult addPart( const QList<QgsPointV2>& ring );
 
     //! @note available in python as addCurvedPart
-    int addPart( QgsCurveV2* ring );
+    AddPartResult addPart( QgsCurveV2* ring );
 
     /** Translates feature by dx, dy
        @param featureId id of the feature to translate
