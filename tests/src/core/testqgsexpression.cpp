@@ -1327,12 +1327,33 @@ class TestQgsExpression: public QObject
       // test perimeter without geomCalculator
       QgsExpression expPerimeter( "$perimeter" );
       QVariant vPerimeter = expPerimeter.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), 128282.086, 0.001 ) );
+      double expected = 128282.086;
+      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
+      // units should not be converted if no geometry calculator set
+      expPerimeter.setDistanceUnits( QGis::Feet );
+      vPerimeter = expPerimeter.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
+      expPerimeter.setDistanceUnits( QGis::NauticalMiles );
+      vPerimeter = expPerimeter.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
 
       // test perimeter with geomCalculator
-      expPerimeter.setGeomCalculator( da );
-      vPerimeter = expPerimeter.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), 128289.074, 0.001 ) );
+      QgsExpression expPerimeter2( "$perimeter" );
+      expPerimeter2.setGeomCalculator( da );
+      vPerimeter = expPerimeter2.evaluate( &context );
+      expected = 128289.074;
+      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
+      // test unit conversion
+      expPerimeter2.setDistanceUnits( QGis::Meters ); //default units should be meters
+      vPerimeter = expPerimeter2.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
+      expPerimeter2.setDistanceUnits( QGis::UnknownUnit ); //unknown units should not be converted
+      vPerimeter = expPerimeter2.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
+      expPerimeter2.setDistanceUnits( QGis::Feet );
+      expected = 420895.9120735;
+      vPerimeter = expPerimeter2.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
 
       // test length without geomCalculator
       QgsPolyline line3111;
@@ -1342,12 +1363,33 @@ class TestQgsExpression: public QObject
 
       QgsExpression expLength( "$length" );
       QVariant vLength = expLength.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vLength.toDouble(), 26930.637, 0.001 ) );
+      expected = 26930.637;
+      QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
+      // units should not be converted if no geometry calculator set
+      expLength.setDistanceUnits( QGis::Feet );
+      vLength = expLength.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
+      expLength.setDistanceUnits( QGis::NauticalMiles );
+      vLength = expLength.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
 
       // test length with geomCalculator
-      expLength.setGeomCalculator( da );
-      vLength = expLength.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vLength.toDouble(), 26932.156, 0.001 ) );
+      QgsExpression expLength2( "$length" );
+      expLength2.setGeomCalculator( da );
+      vLength = expLength2.evaluate( &context );
+      expected = 26932.156;
+      QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
+      // test unit conversion
+      expLength2.setDistanceUnits( QGis::Meters ); //default units should be meters
+      vLength = expLength2.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
+      expLength2.setDistanceUnits( QGis::UnknownUnit ); //unknown units should not be converted
+      vLength = expLength2.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
+      expLength2.setDistanceUnits( QGis::Feet );
+      expected = 88360.0918635;
+      vLength = expLength2.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
     }
 
     void eval_geometry_wkt()

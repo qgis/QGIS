@@ -38,6 +38,7 @@ class QgsExpressionPrivate
         , mRowNumber( 0 )
         , mScale( 0 )
         , mCalc( nullptr )
+        , mDistanceUnit( QGis::UnknownUnit )
     {}
 
     QgsExpressionPrivate( const QgsExpressionPrivate& other )
@@ -48,6 +49,7 @@ class QgsExpressionPrivate
         , mScale( other.mScale )
         , mExp( other.mExp )
         , mCalc( other.mCalc )
+        , mDistanceUnit( other.mDistanceUnit )
     {}
 
     ~QgsExpressionPrivate()
@@ -67,6 +69,7 @@ class QgsExpressionPrivate
     QString mExp;
 
     QSharedPointer<QgsDistanceArea> mCalc;
+    QGis::UnitType mDistanceUnit;
 };
 ///@endcond
 

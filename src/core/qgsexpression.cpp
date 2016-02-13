@@ -1685,7 +1685,9 @@ static QVariant fcnGeomLength( const QVariantList&, const QgsExpressionContext* 
   QgsDistanceArea* calc = parent->geomCalculator();
   if ( calc )
   {
-    return QVariant( calc->measureLength( f.constGeometry() ) );
+    double len = calc->measureLength( f.constGeometry() );
+    len = calc->convertLengthMeasurement( len, parent->distanceUnits() );
+    return QVariant( len );
   }
   else
   {
@@ -1700,7 +1702,9 @@ static QVariant fcnGeomPerimeter( const QVariantList&, const QgsExpressionContex
   QgsDistanceArea* calc = parent->geomCalculator();
   if ( calc )
   {
-    return QVariant( calc->measurePerimeter( f.constGeometry() ) );
+    double len = calc->measurePerimeter( f.constGeometry() );
+    len = calc->convertLengthMeasurement( len, parent->distanceUnits() );
+    return QVariant( len );
   }
   else
   {
@@ -3409,6 +3413,16 @@ QString QgsExpression::dump() const
 QgsDistanceArea* QgsExpression::geomCalculator()
 {
   return d->mCalc.data();
+}
+
+QGis::UnitType QgsExpression::distanceUnits() const
+{
+  return d->mDistanceUnit;
+}
+
+void QgsExpression::setDistanceUnits( QGis::UnitType unit )
+{
+  d->mDistanceUnit = unit;
 }
 
 void QgsExpression::acceptVisitor( QgsExpression::Visitor& v ) const

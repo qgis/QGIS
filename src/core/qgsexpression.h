@@ -278,6 +278,7 @@ class CORE_EXPORT QgsExpression
     /** Return calculator used for distance and area calculations
      * (used by $length, $area and $perimeter functions only)
      * @see setGeomCalculator()
+     * @see distanceUnits()
      */
     QgsDistanceArea* geomCalculator();
 
@@ -289,6 +290,20 @@ class CORE_EXPORT QgsExpression
      */
     //TODO QGIS 3.0 change calc to a pointer, so that calculator can be cleared by passing nullptr
     void setGeomCalculator( const QgsDistanceArea &calc );
+
+    /** Returns the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
+     * @note distances are only converted when a geomCalculator() has been set
+     * @note added in QGIS 2.14
+     * @see setDistanceUnits()
+     */
+    QGis::UnitType distanceUnits() const;
+
+    /** Sets the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
+     * @note distances are only converted when a geomCalculator() has been set
+     * @note added in QGIS 2.14
+     * @see distanceUnits()
+     */
+    void setDistanceUnits( QGis::UnitType unit );
 
     /** This function currently replaces each expression between [% and %]
        in the string with the result of its evaluation on the feature
