@@ -108,6 +108,8 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
           case QVariant::LongLong:
             mLabelTextLineEdit->setValidator( new QIntValidator( this ) );
             break;
+
+          CASE_UNUSUAL_QVARIANT_TYPES:
           default:
             break;
         }

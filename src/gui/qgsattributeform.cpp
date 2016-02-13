@@ -800,6 +800,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
       break;
     }
 
+    case QgsAttributeEditorElement::AeTypeInvalid:
     default:
       QgsDebugMsg( "Unknown attribute editor widget type encountered..." );
       break;

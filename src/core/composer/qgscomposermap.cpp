@@ -1856,6 +1856,7 @@ void QgsComposerMap::setGridAnnotationDirection( GridAnnotationDirection d, QgsC
     case QgsComposerMap::BoundaryDirection:
       gridDirection = QgsComposerMapGrid::BoundaryDirection;
       break;
+    case QgsComposerMap::HorizontalAndVertical:
     default:
       gridDirection = QgsComposerMapGrid::Horizontal;
   }

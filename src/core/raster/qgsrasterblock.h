@@ -446,6 +446,13 @@ inline double QgsRasterBlock::readValue( void *data, QGis::DataType type, qgssiz
     case QGis::Float64:
       return static_cast< double >(( static_cast< double * >( data ) )[index] );
       break;
+    case QGis::UnknownDataType:
+    case QGis::CInt16:
+    case QGis::CInt32:
+    case QGis::CFloat32:
+    case QGis::CFloat64:
+    case QGis::ARGB32:
+    case QGis::ARGB32_Premultiplied:
     default:
       QgsDebugMsg( QString( "Data type %1 is not supported" ).arg( type ) );
       break;
@@ -481,6 +488,13 @@ inline void QgsRasterBlock::writeValue( void *data, QGis::DataType type, qgssize
     case QGis::Float64:
       ( static_cast< double * >( data ) )[index] = value;
       break;
+    case QGis::UnknownDataType:
+    case QGis::CInt16:
+    case QGis::CInt32:
+    case QGis::CFloat32:
+    case QGis::CFloat64:
+    case QGis::ARGB32:
+    case QGis::ARGB32_Premultiplied:
     default:
       QgsDebugMsg( QString( "Data type %1 is not supported" ).arg( type ) );
       break;

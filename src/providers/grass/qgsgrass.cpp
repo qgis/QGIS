@@ -2506,6 +2506,8 @@ void QgsGrass::createTable( dbDriver *driver, const QString tableName, const Qgs
       case QVariant::String:
         typeName = QString( "varchar (%1)" ).arg( field.length() );
         break;
+
+      CASE_UNUSUAL_QVARIANT_TYPES:
       default:
         typeName = QString( "varchar (%1)" ).arg( field.length() > 0 ? field.length() : 255 );
     }
@@ -2561,6 +2563,8 @@ void QgsGrass::insertRow( dbDriver *driver, const QString tableName,
       case QVariant::DateTime:
         valueString = attribute.toDateTime().toString( Qt::ISODate );
         break;
+
+      CASE_UNUSUAL_QVARIANT_TYPES:
       default:
         valueString = attribute.toString();
     }

@@ -105,12 +105,22 @@ QVariant QgsComposerAttributeTableColumnModelV2::data( const QModelIndex &index,
         switch ( column->hAlignment() )
         {
           case Qt::AlignHCenter:
+          case Qt::AlignCenter:
             switch ( column->vAlignment() )
             {
               case Qt::AlignTop:
+              case Qt::AlignVertical_Mask:
                 return tr( "Top center" );
               case Qt::AlignBottom:
                 return tr( "Bottom center" );
+              case Qt::AlignLeft:
+              case Qt::AlignRight:
+              case Qt::AlignHCenter:
+              case Qt::AlignJustify:
+              case Qt::AlignAbsolute:
+              case Qt::AlignHorizontal_Mask:
+              case Qt::AlignVCenter:
+              case Qt::AlignCenter:
               default:
                 return tr( "Middle center" );
             }
@@ -118,20 +128,45 @@ QVariant QgsComposerAttributeTableColumnModelV2::data( const QModelIndex &index,
             switch ( column->vAlignment() )
             {
               case Qt::AlignTop:
+              case Qt::AlignVertical_Mask:
                 return tr( "Top right" );
               case Qt::AlignBottom:
                 return tr( "Bottom right" );
+              case Qt::AlignLeft:
+              case Qt::AlignRight:
+              case Qt::AlignHCenter:
+              case Qt::AlignJustify:
+              case Qt::AlignAbsolute:
+              case Qt::AlignHorizontal_Mask:
+              case Qt::AlignVCenter:
+              case Qt::AlignCenter:
               default:
                 return tr( "Middle right" );
             }
           case Qt::AlignLeft:
+          case Qt::AlignJustify:
+          case Qt::AlignAbsolute:
+          case Qt::AlignHorizontal_Mask:
+          case Qt::AlignTop:
+          case Qt::AlignBottom:
+          case Qt::AlignVCenter:
+          case Qt::AlignVertical_Mask:
           default:
             switch ( column->vAlignment() )
             {
               case Qt::AlignTop:
+              case Qt::AlignVertical_Mask:
                 return tr( "Top left" );
               case Qt::AlignBottom:
                 return tr( "Bottom left" );
+              case Qt::AlignLeft:
+              case Qt::AlignRight:
+              case Qt::AlignHCenter:
+              case Qt::AlignJustify:
+              case Qt::AlignAbsolute:
+              case Qt::AlignHorizontal_Mask:
+              case Qt::AlignVCenter:
+              case Qt::AlignCenter:
               default:
                 return tr( "Middle left" );
             }

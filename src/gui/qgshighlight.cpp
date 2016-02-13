@@ -338,6 +338,7 @@ void QgsHighlight::paint( QPainter* p )
       break;
 
       case QGis::WKBUnknown:
+      case QGis::WKBNoGeometry:
       default:
         return;
     }

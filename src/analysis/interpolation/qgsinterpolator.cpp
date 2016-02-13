@@ -326,6 +326,18 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry *geom, bool zCoord, d
       break;
     }
 #endif //0
+
+    case QGis::WKBPolygon:
+    case QGis::WKBPolygon25D:
+    case QGis::WKBMultiPoint:
+    case QGis::WKBMultiPoint25D:
+    case QGis::WKBMultiLineString:
+    case QGis::WKBMultiLineString25D:
+    case QGis::WKBMultiPolygon:
+    case QGis::WKBMultiPolygon25D:
+
+    case QGis::WKBUnknown:
+    case QGis::WKBNoGeometry:
     default:
       break;
   }

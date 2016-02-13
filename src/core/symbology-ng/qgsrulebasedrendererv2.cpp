@@ -808,6 +808,8 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
         symbol = new QgsMarkerSymbolV2( layers );
         break;
 
+      case QGis::UnknownGeometry:
+      case QGis::NoGeometry:
       default:
         QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
         return nullptr;
@@ -1411,6 +1413,8 @@ void QgsRuleBasedRendererV2::convertToDataDefinedSymbology( QgsSymbolV2* symbol,
         }
       }
       break;
+    case QgsSymbolV2::Fill:
+    case QgsSymbolV2::Hybrid:
     default:
       break;
   }

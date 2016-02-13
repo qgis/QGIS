@@ -401,6 +401,9 @@ void QgsGeorefPluginGui::generateGDALScript()
       }
     }
     FALLTHROUGH;
+    case QgsGeorefTransform::Linear:
+    case QgsGeorefTransform::Helmert:
+    case QgsGeorefTransform::Projective:
     default:
       mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
                                 .arg( convertTransformEnumToString( mTransformParam ) )
@@ -2043,6 +2046,7 @@ QString QgsGeorefPluginGui::convertTransformEnumToString( QgsGeorefTransform::Tr
       return tr( "Thin plate spline (TPS)" );
     case QgsGeorefTransform::Projective:
       return tr( "Projective" );
+    case QgsGeorefTransform::InvalidTransform:
     default:
       return tr( "Not set" );
   }

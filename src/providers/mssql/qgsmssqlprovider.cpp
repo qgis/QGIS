@@ -1528,6 +1528,13 @@ bool QgsMssqlProvider::convertField( QgsField &field )
       }
       break;
 
+    case QVariant::Invalid:
+    case QVariant::Bool:
+    case QVariant::UInt:
+    case QVariant::ULongLong:
+    case QVariant::Char:
+    case QVariant::Map:
+    CASE_UNUSUAL_QVARIANT_TYPES:
     default:
       return false;
   }

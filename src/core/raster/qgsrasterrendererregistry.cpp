@@ -199,6 +199,11 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       renderer = new QgsSingleBandColorDataRenderer( provider, 1 );
       break;
     }
+    case QgsRaster::UndefinedDrawingStyle:
+    case QgsRaster::PalettedSingleBandGray:
+    case QgsRaster::PalettedSingleBandPseudoColor:
+    case QgsRaster::PalettedMultiBandColor:
+    case QgsRaster::MultiBandSingleBandPseudoColor:
     default:
       return nullptr;
   }

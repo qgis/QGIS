@@ -667,6 +667,13 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry* geom )
       }
       break;
     }
+
+    case QGis::WKBPoint:
+    case QGis::WKBPoint25D:
+    case QGis::WKBMultiPoint:
+    case QGis::WKBMultiPoint25D:
+    case QGis::WKBNoGeometry:
+    case QGis::WKBUnknown:
     default:
       break;
   }

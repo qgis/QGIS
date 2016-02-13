@@ -143,13 +143,9 @@ void QgsTransformSettingsDialog::resetSettings()
 void QgsTransformSettingsDialog::changeEvent( QEvent *e )
 {
   QDialog::changeEvent( e );
-  switch ( e->type() )
+  if ( e->type() == QEvent::LanguageChange )
   {
-    case QEvent::LanguageChange:
-      retranslateUi( this );
-      break;
-    default:
-      break;
+    retranslateUi( this );
   }
 }
 

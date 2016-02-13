@@ -787,6 +787,9 @@ void QgsSpatialQueryDialog::on_bbMain_clicked( QAbstractButton * button )
     case QDialogButtonBox::RejectRole:
       reject();
       break;
+    case QDialogButtonBox::InvalidRole:
+    case QDialogButtonBox::AcceptRole:
+    case QDialogButtonBox::ActionRole:
     default:
       return;
   }

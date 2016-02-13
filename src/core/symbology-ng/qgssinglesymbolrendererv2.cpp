@@ -346,6 +346,8 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
       symbol = new QgsMarkerSymbolV2( layers );
       break;
 
+    case QGis::UnknownGeometry:
+    case QGis::NoGeometry:
     default:
       QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
       return nullptr;

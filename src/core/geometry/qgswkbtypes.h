@@ -508,8 +508,37 @@ class CORE_EXPORT QgsWKBTypes
         case Polygon25D:
           return false;
 
-        default:
+        case MultiPoint:
+        case MultiLineString:
+        case MultiPolygon:
+        case GeometryCollection:
+        case MultiCurve:
+        case MultiSurface:
+        case MultiPointZ:
+        case MultiLineStringZ:
+        case MultiPolygonZ:
+        case GeometryCollectionZ:
+        case MultiCurveZ:
+        case MultiSurfaceZ:
+        case MultiPointM:
+        case MultiLineStringM:
+        case MultiPolygonM:
+        case GeometryCollectionM:
+        case MultiCurveM:
+        case MultiSurfaceM:
+        case MultiPointZM:
+        case MultiLineStringZM:
+        case MultiPolygonZM:
+        case GeometryCollectionZM:
+        case MultiCurveZM:
+        case MultiSurfaceZM:
+        case MultiPoint25D:
+        case MultiLineString25D:
+        case MultiPolygon25D:
           return true;
+
+        default:
+          return false;
 
       }
     }
@@ -528,6 +557,57 @@ class CORE_EXPORT QgsWKBTypes
         case MultiSurface:
           return true;
 
+        case Unknown:
+        case Point:
+        case LineString:
+        case Polygon:
+        case MultiPoint:
+        case MultiLineString:
+        case MultiPolygon:
+        case GeometryCollection:
+        case NoGeometry:
+        case PointZ:
+        case LineStringZ:
+        case PolygonZ:
+        case MultiPointZ:
+        case MultiLineStringZ:
+        case MultiPolygonZ:
+        case GeometryCollectionZ:
+        case CircularStringZ:
+        case CompoundCurveZ:
+        case CurvePolygonZ:
+        case MultiCurveZ:
+        case MultiSurfaceZ:
+        case PointM:
+        case LineStringM:
+        case PolygonM:
+        case MultiPointM:
+        case MultiLineStringM:
+        case MultiPolygonM:
+        case GeometryCollectionM:
+        case CircularStringM:
+        case CompoundCurveM:
+        case CurvePolygonM:
+        case MultiCurveM:
+        case MultiSurfaceM:
+        case PointZM:
+        case LineStringZM:
+        case PolygonZM:
+        case MultiPointZM:
+        case MultiLineStringZM:
+        case MultiPolygonZM:
+        case GeometryCollectionZM:
+        case CircularStringZM:
+        case CompoundCurveZM:
+        case CurvePolygonZM:
+        case MultiCurveZM:
+        case MultiSurfaceZM:
+        case Point25D:
+        case LineString25D:
+        case Polygon25D:
+        case MultiPoint25D:
+        case MultiLineString25D:
+        case MultiPolygon25D:
         default:
           return false;
       }
@@ -548,6 +628,9 @@ class CORE_EXPORT QgsWKBTypes
           return 1;
         case PolygonGeometry:
           return 2;
+        case PointGeometry:
+        case UnknownGeometry:
+        case NullGeometry:
         default: //point, no geometry, unknown geometry
           return 0;
       }
@@ -689,6 +772,32 @@ class CORE_EXPORT QgsWKBTypes
         case MultiPolygon25D:
           return true;
 
+        case Unknown:
+        case Point:
+        case LineString:
+        case Polygon:
+        case MultiPoint:
+        case MultiLineString:
+        case MultiPolygon:
+        case GeometryCollection:
+        case CircularString:
+        case CompoundCurve:
+        case CurvePolygon:
+        case MultiCurve:
+        case MultiSurface:
+        case NoGeometry:
+        case PointM:
+        case LineStringM:
+        case PolygonM:
+        case MultiPointM:
+        case MultiLineStringM:
+        case MultiPolygonM:
+        case GeometryCollectionM:
+        case CircularStringM:
+        case CompoundCurveM:
+        case CurvePolygonM:
+        case MultiCurveM:
+        case MultiSurfaceM:
         default:
           return false;
 
@@ -730,6 +839,38 @@ class CORE_EXPORT QgsWKBTypes
         case MultiSurfaceZM:
           return true;
 
+        case Unknown:
+        case Point:
+        case LineString:
+        case Polygon:
+        case MultiPoint:
+        case MultiLineString:
+        case MultiPolygon:
+        case GeometryCollection:
+        case CircularString:
+        case CompoundCurve:
+        case CurvePolygon:
+        case MultiCurve:
+        case MultiSurface:
+        case NoGeometry:
+        case PointZ:
+        case LineStringZ:
+        case PolygonZ:
+        case MultiPointZ:
+        case MultiLineStringZ:
+        case MultiPolygonZ:
+        case GeometryCollectionZ:
+        case CircularStringZ:
+        case CompoundCurveZ:
+        case CurvePolygonZ:
+        case MultiCurveZ:
+        case MultiSurfaceZ:
+        case Point25D:
+        case LineString25D:
+        case Polygon25D:
+        case MultiPoint25D:
+        case MultiLineString25D:
+        case MultiPolygon25D:
         default:
           return false;
 

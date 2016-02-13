@@ -430,3 +430,43 @@ typedef unsigned long long qgssize;
 #else
 #define FALLTHROUGH
 #endif
+
+#define CASE_UNUSUAL_QVARIANT_TYPES \
+  case QVariant::BitArray: \
+  case QVariant::Url: \
+  case QVariant::Locale: \
+  case QVariant::Rect: \
+  case QVariant::RectF: \
+  case QVariant::Size: \
+  case QVariant::SizeF: \
+  case QVariant::Line: \
+  case QVariant::LineF: \
+  case QVariant::Point: \
+  case QVariant::PointF: \
+  case QVariant::RegExp: \
+  case QVariant::Hash: \
+  case QVariant::EasingCurve: \
+  case QVariant::Font: \
+  case QVariant::Pixmap: \
+  case QVariant::Brush: \
+  case QVariant::Color: \
+  case QVariant::Palette: \
+  case QVariant::Icon: \
+  case QVariant::Image: \
+  case QVariant::Polygon: \
+  case QVariant::Region: \
+  case QVariant::Bitmap: \
+  case QVariant::Cursor: \
+  case QVariant::SizePolicy: \
+  case QVariant::KeySequence: \
+  case QVariant::Pen: \
+  case QVariant::TextLength: \
+  case QVariant::TextFormat: \
+  case QVariant::Matrix: \
+  case QVariant::Transform: \
+  case QVariant::Matrix4x4: \
+  case QVariant::Vector2D: \
+  case QVariant::Vector3D: \
+  case QVariant::Vector4D: \
+  case QVariant::Quaternion: \
+  case QVariant::LastType

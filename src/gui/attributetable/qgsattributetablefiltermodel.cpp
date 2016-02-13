@@ -86,6 +86,16 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
     case QVariant::DateTime:
       return leftData.toDateTime() < rightData.toDateTime();
 
+    case QVariant::String:
+    case QVariant::Invalid:
+    case QVariant::Bool:
+    case QVariant::Char:
+    case QVariant::Map:
+    case QVariant::List:
+    case QVariant::StringList:
+    case QVariant::ByteArray:
+    case QVariant::UserType:
+    CASE_UNUSUAL_QVARIANT_TYPES:
     default:
       return leftData.toString().localeAwareCompare( rightData.toString() ) < 0;
   }

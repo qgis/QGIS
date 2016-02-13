@@ -28,6 +28,7 @@
 #include "qgslogger.h"
 #include "qgslonglongvalidator.h"
 #include "qgsfield.h"
+#include "qgis.h"
 
 QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, const QString& defaultValue, const QString& dateFormat )
     : QValidator( parent )
@@ -79,6 +80,21 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
       mValidator = new QgsLongLongValidator( parent );
       break;
 
+    case QVariant::String:
+    case QVariant::Invalid:
+    case QVariant::Bool:
+    case QVariant::UInt:
+    case QVariant::ULongLong:
+    case QVariant::Char:
+    case QVariant::Map:
+    case QVariant::List:
+    case QVariant::StringList:
+    case QVariant::ByteArray:
+    case QVariant::Date:
+    case QVariant::Time:
+    case QVariant::DateTime:
+    case QVariant::UserType:
+    CASE_UNUSUAL_QVARIANT_TYPES:
     default:
       mValidator = nullptr;
   }

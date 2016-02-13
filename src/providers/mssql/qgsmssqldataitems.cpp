@@ -579,6 +579,9 @@ QgsMssqlLayerItem* QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty& la
     case QGis::WKBMultiPolygon25D:
       layerType = QgsLayerItem::Polygon;
       break;
+
+    case QGis::WKBUnknown:
+    case QGis::WKBNoGeometry:
     default:
       if ( layerProperty.type == "NONE" && layerProperty.geometryColName.isEmpty() )
       {

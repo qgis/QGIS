@@ -223,6 +223,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock* >& rasterData, 
       case opLOG10:
         leftMatrix.log10();
         break;
+      case opNONE:
       default:
         return false;
     }

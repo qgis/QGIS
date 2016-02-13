@@ -42,6 +42,7 @@
 #include <QDateTime>
 
 #include "qgsvariantdelegate.h"
+#include "qgis.h"
 
 QgsVariantDelegate::QgsVariantDelegate( QObject* parent )
     : QItemDelegate( parent )
@@ -143,6 +144,47 @@ QWidget* QgsVariantDelegate::createEditor( QWidget* parent,
     case QVariant::ULongLong:
       regExp = mUnsignedIntegerExp;
       break;
+
+    case QVariant::String:
+    case QVariant::Invalid:
+    case QVariant::Map:
+    case QVariant::StringList:
+    case QVariant::List:
+    case QVariant::BitArray:
+    case QVariant::Url:
+    case QVariant::Locale:
+    case QVariant::RectF:
+    case QVariant::SizeF:
+    case QVariant::Line:
+    case QVariant::LineF:
+    case QVariant::PointF:
+    case QVariant::RegExp:
+    case QVariant::Hash:
+    case QVariant::EasingCurve:
+    case QVariant::Font:
+    case QVariant::Pixmap:
+    case QVariant::Brush:
+    case QVariant::Palette:
+    case QVariant::Icon:
+    case QVariant::Image:
+    case QVariant::Polygon:
+    case QVariant::Region:
+    case QVariant::Bitmap:
+    case QVariant::Cursor:
+    case QVariant::SizePolicy:
+    case QVariant::KeySequence:
+    case QVariant::Pen:
+    case QVariant::TextLength:
+    case QVariant::TextFormat:
+    case QVariant::Matrix:
+    case QVariant::Transform:
+    case QVariant::Matrix4x4:
+    case QVariant::Vector2D:
+    case QVariant::Vector3D:
+    case QVariant::Vector4D:
+    case QVariant::Quaternion:
+    case QVariant::LastType:
+    case QVariant::UserType:
     default:
       ;
   }
@@ -235,6 +277,44 @@ void QgsVariantDelegate::setModelData( QWidget* editor, QAbstractItemModel* mode
       value = time;
     }
     break;
+
+    case QVariant::Invalid:
+    case QVariant::Bool:
+    case QVariant::Int:
+    case QVariant::BitArray:
+    case QVariant::Url:
+    case QVariant::Locale:
+    case QVariant::RectF:
+    case QVariant::SizeF:
+    case QVariant::Line:
+    case QVariant::LineF:
+    case QVariant::PointF:
+    case QVariant::RegExp:
+    case QVariant::Hash:
+    case QVariant::EasingCurve:
+    case QVariant::Font:
+    case QVariant::Pixmap:
+    case QVariant::Brush:
+    case QVariant::Palette:
+    case QVariant::Icon:
+    case QVariant::Image:
+    case QVariant::Polygon:
+    case QVariant::Region:
+    case QVariant::Bitmap:
+    case QVariant::Cursor:
+    case QVariant::SizePolicy:
+    case QVariant::KeySequence:
+    case QVariant::Pen:
+    case QVariant::TextLength:
+    case QVariant::TextFormat:
+    case QVariant::Matrix:
+    case QVariant::Transform:
+    case QVariant::Matrix4x4:
+    case QVariant::Vector2D:
+    case QVariant::Vector3D:
+    case QVariant::Vector4D:
+    case QVariant::Quaternion:
+    case QVariant::LastType:
     default:
       value = text;
       value.convert( QgsVariantDelegate::type( originalValue ) );
@@ -266,6 +346,45 @@ bool QgsVariantDelegate::isSupportedType( QVariant::Type type )
     case QVariant::UInt:
     case QVariant::ULongLong:
       return true;
+
+    case QVariant::Invalid:
+    case QVariant::Map:
+    case QVariant::List:
+    case QVariant::BitArray:
+    case QVariant::Url:
+    case QVariant::Locale:
+    case QVariant::RectF:
+    case QVariant::SizeF:
+    case QVariant::Line:
+    case QVariant::LineF:
+    case QVariant::PointF:
+    case QVariant::RegExp:
+    case QVariant::Hash:
+    case QVariant::EasingCurve:
+    case QVariant::Font:
+    case QVariant::Pixmap:
+    case QVariant::Brush:
+    case QVariant::Palette:
+    case QVariant::Icon:
+    case QVariant::Image:
+    case QVariant::Polygon:
+    case QVariant::Region:
+    case QVariant::Bitmap:
+    case QVariant::Cursor:
+    case QVariant::SizePolicy:
+    case QVariant::KeySequence:
+    case QVariant::Pen:
+    case QVariant::TextLength:
+    case QVariant::TextFormat:
+    case QVariant::Matrix:
+    case QVariant::Transform:
+    case QVariant::Matrix4x4:
+    case QVariant::Vector2D:
+    case QVariant::Vector3D:
+    case QVariant::Vector4D:
+    case QVariant::Quaternion:
+    case QVariant::LastType:
+    case QVariant::UserType:
     default:
       return false;
   }
@@ -319,6 +438,44 @@ QString QgsVariantDelegate::displayText( const QVariant& value )
       return value.toStringList().join( "," );
     case QVariant::Time:
       return value.toTime().toString( Qt::ISODate );
+
+    case QVariant::Map:
+    case QVariant::List:
+    case QVariant::BitArray:
+    case QVariant::Url:
+    case QVariant::Locale:
+    case QVariant::RectF:
+    case QVariant::SizeF:
+    case QVariant::Line:
+    case QVariant::LineF:
+    case QVariant::PointF:
+    case QVariant::RegExp:
+    case QVariant::Hash:
+    case QVariant::EasingCurve:
+    case QVariant::Font:
+    case QVariant::Pixmap:
+    case QVariant::Brush:
+    case QVariant::Palette:
+    case QVariant::Icon:
+    case QVariant::Image:
+    case QVariant::Polygon:
+    case QVariant::Region:
+    case QVariant::Bitmap:
+    case QVariant::Cursor:
+    case QVariant::SizePolicy:
+    case QVariant::KeySequence:
+    case QVariant::Pen:
+    case QVariant::TextLength:
+    case QVariant::TextFormat:
+    case QVariant::Matrix:
+    case QVariant::Transform:
+    case QVariant::Matrix4x4:
+    case QVariant::Vector2D:
+    case QVariant::Vector3D:
+    case QVariant::Vector4D:
+    case QVariant::Quaternion:
+    case QVariant::LastType:
+    case QVariant::UserType:
     default:
       break;
   }

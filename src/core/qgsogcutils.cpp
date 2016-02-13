@@ -1093,6 +1093,16 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
       case QGis::WKBMultiPoint:
         baseCoordElem = doc.createElement( "gml:pos" );
         break;
+      case QGis::WKBUnknown:
+      case QGis::WKBLineString:
+      case QGis::WKBPolygon:
+      case QGis::WKBMultiLineString:
+      case QGis::WKBMultiPolygon:
+      case QGis::WKBNoGeometry:
+      case QGis::WKBLineString25D:
+      case QGis::WKBPolygon25D:
+      case QGis::WKBMultiLineString25D:
+      case QGis::WKBMultiPolygon25D:
       default:
         baseCoordElem = doc.createElement( "gml:posList" );
         break;
@@ -1363,6 +1373,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
       }
       return multiPolygonElem;
     }
+    case QGis::WKBUnknown:
+    case QGis::WKBNoGeometry:
     default:
       return QDomElement();
   }
@@ -1946,6 +1958,7 @@ QDomElement QgsOgcUtils::expressionNodeToOgcFilter( const QgsExpression::Node* n
     case QgsExpression::ntColumnRef:
       return expressionColumnRefToOgcFilter( static_cast<const QgsExpression::NodeColumnRef*>( node ), doc, errorMessage );
 
+    case QgsExpression::ntCondition:
     default:
       errorMessage = QString( "Node type not supported: %1" ).arg( node->nodeType() );
       return QDomElement();
@@ -2072,10 +2085,27 @@ QDomElement QgsOgcUtils::expressionLiteralToOgcFilter( const QgsExpression::Node
     case QVariant::Double:
       value = QString::number( node->value().toDouble() );
       break;
+    case QVariant::LongLong:
+      value = QString::number( node->value().toLongLong() );
+      break;
     case QVariant::String:
+    case QVariant::Char:
       value = node->value().toString();
       break;
 
+    case QVariant::Invalid:
+    case QVariant::Bool:
+    case QVariant::UInt:
+    case QVariant::ULongLong:
+    case QVariant::Map:
+    case QVariant::StringList:
+    case QVariant::List:
+    case QVariant::Date:
+    case QVariant::Time:
+    case QVariant::DateTime:
+    case QVariant::ByteArray:
+    case QVariant::UserType:
+    CASE_UNUSUAL_QVARIANT_TYPES:
     default:
       errorMessage = QString( "Literal type not supported: %1" ).arg( node->value().type() );
       return QDomElement();

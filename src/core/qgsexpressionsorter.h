@@ -103,6 +103,15 @@ class QgsExpressionSorter
             else
               return v1.toBool();
 
+          case QVariant::Invalid:
+          CASE_UNUSUAL_QVARIANT_TYPES:
+          case QVariant::Char:
+          case QVariant::Map:
+          case QVariant::List:
+          case QVariant::String:
+          case QVariant::StringList:
+          case QVariant::ByteArray:
+          case QVariant::UserType:
           default:
             if ( 0 == v1.toString().localeAwareCompare( v2.toString() ) )
               continue;

@@ -701,6 +701,10 @@ QgsLayerItem::QgsLayerItem( QgsDataItem* parent, const QString& name, const QStr
     case Raster:
       mIconName = "/mIconRaster.svg";
       break;
+    case NoType:
+    case Database:
+    case Table:
+    case Plugin:
     default:
       mIconName = "/mIconLayer.png";
       break;

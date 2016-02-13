@@ -4064,6 +4064,7 @@ QString QgsDxfExport::lineNameFromPenStyle( Qt::PenStyle style )
   switch ( style )
   {
     case Qt::DashLine:
+    case Qt::CustomDashLine:
       return "DASH";
     case Qt::DotLine:
       return "DOT";
@@ -4072,6 +4073,8 @@ QString QgsDxfExport::lineNameFromPenStyle( Qt::PenStyle style )
     case Qt::DashDotDotLine:
       return "DASHDOTDOT";
     case Qt::SolidLine:
+    case Qt::NoPen:
+    case Qt::MPenStyle:
     default:
       return "CONTINUOUS";
   }

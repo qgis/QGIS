@@ -154,6 +154,8 @@ short int QgsSpatialQuery::dimensionGeometry( QGis::GeometryType geomType )
     case QGis::Polygon:
       dimGeom = 2;
       break;
+    case QGis::UnknownGeometry:
+    case QGis::NoGeometry:
     default:
       Q_ASSERT( 0 );
       break;

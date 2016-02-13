@@ -124,6 +124,8 @@ QRgb QgsPreviewEffect::simulateColorBlindness( QRgb& originalColor, QgsPreviewEf
     case PreviewDeuteranope:
       simulateDeuteranopeLMS( L, M, S );
       break;
+    case PreviewGrayscale:
+    case PreviewMono:
     default:
       break;
   }

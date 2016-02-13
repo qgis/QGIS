@@ -537,6 +537,17 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
     case QGis::WKBMultiPoint25D:
       isPointLayer = true;
       break;
+
+    case QGis::WKBUnknown:
+    case QGis::WKBLineString:
+    case QGis::WKBLineString25D:
+    case QGis::WKBPolygon:
+    case QGis::WKBPolygon25D:
+    case QGis::WKBMultiLineString:
+    case QGis::WKBMultiLineString25D:
+    case QGis::WKBMultiPolygon:
+    case QGis::WKBMultiPolygon25D:
+    case QGis::WKBNoGeometry:
     default:
       isPointLayer = false;
       break;

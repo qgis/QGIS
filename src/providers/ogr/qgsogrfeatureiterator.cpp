@@ -308,6 +308,19 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
           value = QDateTime( QDate( year, month, day ), QTime( hour, minute, second ) );
       }
       break;
+
+      case QVariant::Invalid:
+      case QVariant::Bool:
+      case QVariant::UInt:
+      case QVariant::LongLong:
+      case QVariant::ULongLong:
+      case QVariant::Char:
+      case QVariant::Map:
+      case QVariant::List:
+      case QVariant::StringList:
+      case QVariant::ByteArray:
+      case QVariant::UserType:
+      CASE_UNUSUAL_QVARIANT_TYPES:
       default:
         assert( 0 && "unsupported field type" );
     }

@@ -186,6 +186,7 @@ class SymbolLayerItem : public QStandardItem
               return QCoreApplication::translate( "SymbolLayerItem", "Fill", nullptr, QCoreApplication::UnicodeUTF8 );
             case QgsSymbolV2::Line   :
               return QCoreApplication::translate( "SymbolLayerItem", "Line", nullptr, QCoreApplication::UnicodeUTF8 );
+            case QgsSymbolV2::Hybrid:
             default:
               return "Symbol";
           }

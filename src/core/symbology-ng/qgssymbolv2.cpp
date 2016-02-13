@@ -307,11 +307,12 @@ QgsSymbolV2* QgsSymbolV2::defaultSymbol( QGis::GeometryType geomType )
     case QGis::Polygon :
       defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Fill", "" );
       break;
+    case QGis::UnknownGeometry:
+    case QGis::NoGeometry:
     default:
-      defaultSymbol = "";
       break;
   }
-  if ( defaultSymbol != "" )
+  if ( !defaultSymbol.isEmpty() )
     s = QgsStyleV2::defaultStyle()->symbol( defaultSymbol );
 
   // if no default found for this type, get global default (as previously)
@@ -328,6 +329,8 @@ QgsSymbolV2* QgsSymbolV2::defaultSymbol( QGis::GeometryType geomType )
       case QGis::Polygon:
         s = new QgsFillSymbolV2();
         break;
+      case QGis::UnknownGeometry:
+      case QGis::NoGeometry:
       default:
         QgsDebugMsg( "unknown layer's geometry type" );
         return nullptr;
@@ -338,7 +341,7 @@ QgsSymbolV2* QgsSymbolV2::defaultSymbol( QGis::GeometryType geomType )
   s->setAlpha( QgsProject::instance()->readDoubleEntry( "DefaultStyles", "/AlphaInt", 255 ) / 255.0 );
 
   // set random color, it project prefs allow
-  if ( defaultSymbol == "" ||
+  if ( defaultSymbol.isEmpty() ||
        QgsProject::instance()->readBoolEntry( "DefaultStyles", "/RandomColors", true ) )
   {
     s->setColor( QColor::fromHsv( qrand() % 360, 64 + qrand() % 192, 128 + qrand() % 128 ) );
@@ -589,6 +592,7 @@ QString QgsSymbolV2::dump() const
     case QgsSymbolV2::Fill:
       t = "FILL";
       break;
+    case QgsSymbolV2::Hybrid:
     default:
       Q_ASSERT( 0 && "unknown symbol type" );
   }
@@ -709,9 +713,12 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1 );
   }
 
-  switch ( QgsWKBTypes::flatType( segmentizedGeometry->geometry()->wkbType() ) )
+  switch ( segmentizedGeometry->geometry()->wkbType() )
   {
     case QgsWKBTypes::Point:
+    case QgsWKBTypes::PointZ:
+    case QgsWKBTypes::PointM:
+    case QgsWKBTypes::PointZM:
     {
       QPointF pt;
       if ( mType != QgsSymbolV2::Marker )
@@ -734,6 +741,9 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     }
     break;
     case QgsWKBTypes::LineString:
+    case QgsWKBTypes::LineStringZ:
+    case QgsWKBTypes::LineStringM:
+    case QgsWKBTypes::LineStringZM:
     {
       QPolygonF pts;
       if ( mType != QgsSymbolV2::Line )
@@ -746,6 +756,9 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     }
     break;
     case QgsWKBTypes::Polygon:
+    case QgsWKBTypes::PolygonZ:
+    case QgsWKBTypes::PolygonM:
+    case QgsWKBTypes::PolygonZM:
     {
       QPolygonF pts;
       QList<QPolygonF> holes;
@@ -760,6 +773,9 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     break;
 
     case QgsWKBTypes::MultiPoint:
+    case QgsWKBTypes::MultiPointZ:
+    case QgsWKBTypes::MultiPointM:
+    case QgsWKBTypes::MultiPointZM:
     {
       QPointF pt;
 
@@ -783,7 +799,13 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     break;
 
     case QgsWKBTypes::MultiCurve:
+    case QgsWKBTypes::MultiCurveZ:
+    case QgsWKBTypes::MultiCurveM:
+    case QgsWKBTypes::MultiCurveZM:
     case QgsWKBTypes::MultiLineString:
+    case QgsWKBTypes::MultiLineStringZ:
+    case QgsWKBTypes::MultiLineStringM:
+    case QgsWKBTypes::MultiLineStringZM:
     {
       QPolygonF pts;
 
@@ -816,7 +838,13 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     break;
 
     case QgsWKBTypes::MultiSurface:
+    case QgsWKBTypes::MultiSurfaceZ:
+    case QgsWKBTypes::MultiSurfaceM:
+    case QgsWKBTypes::MultiSurfaceZM:
     case QgsWKBTypes::MultiPolygon:
+    case QgsWKBTypes::MultiPolygonZ:
+    case QgsWKBTypes::MultiPolygonM:
+    case QgsWKBTypes::MultiPolygonZM:
     {
       if ( mType != QgsSymbolV2::Fill )
       {

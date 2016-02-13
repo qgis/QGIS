@@ -196,12 +196,14 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
             {
               return QgsLayerItem::iconTable();
             }
+            case QGis::UnknownGeometry:
             default:
             {
               return QIcon();
             }
           }
         }
+        case QgsMapLayer::PluginLayer:
         default:
         {
           return QIcon();

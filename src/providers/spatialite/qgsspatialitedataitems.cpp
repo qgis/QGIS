@@ -129,9 +129,12 @@ QVector<QgsDataItem*> QgsSLConnectionItem::createChildren()
       case QgsSpatiaLiteConnection::FailedToGetTables:
         msg = tr( "Failed to get list of tables" );
         break;
+      case QgsSpatiaLiteConnection::NoError:
+        break;
       default:
         msg = tr( "Unknown error" );
         break;
+
     }
     QString msgDetails = connection.errorMessage();
     if ( !msgDetails.isEmpty() )

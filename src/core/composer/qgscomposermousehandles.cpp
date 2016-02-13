@@ -782,6 +782,9 @@ QSizeF QgsComposerMouseHandles::calcCursorEdgeOffset( QPointF cursorPos )
     case QgsComposerMouseHandles::ResizeLeftDown:
       return QSizeF( sceneMousePos.x(), sceneMousePos.y() - rect().height() );
 
+    case MoveItem:
+    case SelectItem:
+    case NoAction:
     default:
       return QSizeF( 0, 0 );
   }

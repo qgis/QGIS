@@ -1,7 +1,7 @@
 mkdir build
 cd build
 
-CLANG_WARNINGS="-Wimplicit-fallthrough"
+CLANG_WARNINGS="-Wimplicit-fallthrough -Wswitch-enum"
 
 cmake -DWITH_SERVER=ON \
       -DWITH_STAGED_PLUGINS=ON \

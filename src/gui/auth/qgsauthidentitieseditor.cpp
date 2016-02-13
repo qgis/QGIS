@@ -262,6 +262,8 @@ void QgsAuthIdentitiesEditor::checkSelection()
       case QgsAuthIdentitiesEditor::CertIdentity:
         iscert = true;
         break;
+      case QgsAuthIdentitiesEditor::Section:
+      case QgsAuthIdentitiesEditor::OrgName:
       default:
         break;
     }
@@ -284,6 +286,7 @@ void QgsAuthIdentitiesEditor::handleDoubleClick( QTreeWidgetItem *item, int col 
     case QgsAuthIdentitiesEditor::OrgName:
       iscert = false;
       break;
+    case QgsAuthIdentitiesEditor::CertIdentity:
     default:
       break;
   }

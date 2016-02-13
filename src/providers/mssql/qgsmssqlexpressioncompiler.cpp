@@ -47,6 +47,12 @@ QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const 
         result = QString( "%1 + %2" ).arg( op1, op2 );
         return result1 == Partial || result2 == Partial ? Partial : Complete;
 
+      case QgsExpression::boOr:
+      case QgsExpression::boAnd:
+      case QgsExpression::boEQ:
+      case QgsExpression::boNE:
+      case QgsExpression::boLE:
+      case QgsExpression::boGE:
       default:
         break;
     }
@@ -67,13 +73,13 @@ QString QgsMssqlExpressionCompiler::quotedValue( const QVariant& value, bool& ok
     return QString();
   }
 
-  switch ( value.type() )
+  if ( value.type() == QVariant::Bool )
   {
-    case QVariant::Bool:
-      //no boolean literal support in mssql, so fake it
-      return value.toBool() ? "(1=1)" : "(1=0)";
-
-    default:
-      return QgsSqlExpressionCompiler::quotedValue( value, ok );
+    //no boolean literal support in mssql, so fake it
+    return value.toBool() ? "(1=1)" : "(1=0)";
+  }
+  else
+  {
+    return QgsSqlExpressionCompiler::quotedValue( value, ok );
   }
 }

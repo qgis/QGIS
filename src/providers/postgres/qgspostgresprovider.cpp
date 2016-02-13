@@ -360,6 +360,7 @@ static bool operator<( const QVariant &a, const QVariant &b )
       case QVariant::ULongLong:
         return a.toULongLong() < b.toULongLong();
 
+      CASE_UNUSUAL_QVARIANT_TYPES:
       default:
         break;
     }
@@ -3279,6 +3280,7 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
       fieldPrec = -1;
       break;
 
+    CASE_UNUSUAL_QVARIANT_TYPES:
     default:
       return false;
   }

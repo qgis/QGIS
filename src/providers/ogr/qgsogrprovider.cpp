@@ -127,6 +127,17 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
       ogrType = OFTDateTime;
       break;
 
+    case QVariant::Invalid:
+    case QVariant::Bool:
+    case QVariant::UInt:
+    case QVariant::ULongLong:
+    case QVariant::Char:
+    case QVariant::Map:
+    case QVariant::List:
+    case QVariant::StringList:
+    case QVariant::ByteArray:
+    case QVariant::UserType:
+    CASE_UNUSUAL_QVARIANT_TYPES:
     default:
       return false;
   }
@@ -730,6 +741,13 @@ void QgsOgrProvider::loadFields()
           break;
         case OFTString:
 #endif
+
+        case OFTIntegerList:
+        case OFTRealList:
+        case OFTStringList:
+        case OFTWideString:
+        case OFTWideStringList:
+        case OFTBinary:
         default:
           varType = QVariant::String; // other unsupported, leave it as a string
       }
@@ -1033,6 +1051,12 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
           OGR_F_SetFieldString( feature, targetAttributeId, mEncoding->fromUnicode( attrVal.toString() ).constData() );
           break;
 
+        case OFTIntegerList:
+        case OFTRealList:
+        case OFTStringList:
+        case OFTWideString:
+        case OFTWideStringList:
+        case OFTBinary:
         default:
           QgsMessageLog::logMessage( tr( "type %1 for attribute %2 not found" ).arg( type ).arg( targetAttributeId ), tr( "OGR" ) );
           break;
@@ -1116,6 +1140,19 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
       case QVariant::String:
         type = OFTString;
         break;
+
+      case QVariant::Invalid:
+      case QVariant::Bool:
+      case QVariant::UInt:
+      case QVariant::LongLong:
+      case QVariant::ULongLong:
+      case QVariant::Char:
+      case QVariant::Map:
+      case QVariant::List:
+      case QVariant::StringList:
+      case QVariant::ByteArray:
+      case QVariant::UserType:
+      CASE_UNUSUAL_QVARIANT_TYPES:
       default:
         pushError( tr( "type %1 for field %2 not found" ).arg( iter->typeName(), iter->name() ) );
         returnvalue = false;
@@ -1259,6 +1296,13 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
           case OFTString:
             OGR_F_SetFieldString( of, f, mEncoding->fromUnicode( it2->toString() ).constData() );
             break;
+
+          case OFTIntegerList:
+          case OFTRealList:
+          case OFTStringList:
+          case OFTWideString:
+          case OFTWideStringList:
+          case OFTBinary:
           default:
             pushError( tr( "Type %1 of attribute %2 of feature %3 unknown." ).arg( type ).arg( fid ).arg( f ) );
             break;
@@ -2219,6 +2263,17 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     case QGis::WKBMultiPolygon:
       OGRvectortype = wkbMultiPolygon;
       break;
+
+      // TODO - should these 25D types be be allowed?
+    case QGis::WKBPoint25D:
+    case QGis::WKBLineString25D:
+    case QGis::WKBPolygon25D:
+    case QGis::WKBMultiPoint25D:
+    case QGis::WKBMultiLineString25D:
+    case QGis::WKBMultiPolygon25D:
+
+    case QGis::WKBUnknown:
+    case QGis::WKBNoGeometry:
     default:
     {
       QgsMessageLog::logMessage( QObject::tr( "Unknown vector type of %1" ).arg(( int )( vectortype ) ), QObject::tr( "OGR" ) );
@@ -2576,8 +2631,22 @@ QString QgsOgrUtils::quotedValue( const QVariant& value )
       //OGR does not support boolean literals
       return value.toBool() ? "1" : "0";
 
-    default:
     case QVariant::String:
+    case QVariant::Invalid:
+    case QVariant::ULongLong:
+    case QVariant::UInt:
+    case QVariant::Char:
+    case QVariant::Map:
+    case QVariant::List:
+    case QVariant::StringList:
+    case QVariant::ByteArray:
+    case QVariant::Date:
+    case QVariant::Time:
+    case QVariant::DateTime:
+    case QVariant::UserType:
+    CASE_UNUSUAL_QVARIANT_TYPES:
+    default:
+
       QString v = value.toString();
       v.replace( '\'', "''" );
       if ( v.contains( '\\' ) )
@@ -2691,6 +2760,19 @@ OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type 
       return wkbLineString;
     case wkbMultiPolygon:
       return wkbPolygon;
+
+    case wkbUnknown:
+    case wkbPoint:
+    case wkbLineString:
+    case wkbPolygon:
+    case wkbGeometryCollection:
+    case wkbNone:
+    case wkbLinearRing:
+
+      //type has already been flattened
+    case wkbPoint25D:
+    case wkbLineString25D:
+
     default:
       return type;
   }

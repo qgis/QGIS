@@ -215,6 +215,7 @@ QString QgsUnitTypes::encodeUnit( QgsSymbolV2::OutputUnit unit )
       return "Pixel";
     case QgsSymbolV2::Percentage:
       return "Percentage";
+    case QgsSymbolV2::Mixed:
     default:
       return "MM";
   }

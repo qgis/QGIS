@@ -70,8 +70,10 @@ QString QgsSpatiaLiteExpressionCompiler::quotedValue( const QVariant& value, boo
       //SQLite has no boolean literals
       return value.toBool() ? "1" : "0";
 
-    default:
     case QVariant::String:
+    CASE_UNUSUAL_QVARIANT_TYPES:
+    default:
+
       QString v = value.toString();
       v.replace( '\'', "''" );
       if ( v.contains( '\\' ) )

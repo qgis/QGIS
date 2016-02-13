@@ -194,28 +194,21 @@ bool QgsGraduatedHistogramEventFilter::eventFilter( QObject *object, QEvent *eve
   if ( !mPlot->isEnabled() )
     return QObject::eventFilter( object, event );
 
-  switch ( event->type() )
+  if ( event->type() == QEvent::MouseButtonPress )
   {
-    case QEvent::MouseButtonPress:
+    const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
+    if ( mouseEvent->button() == Qt::LeftButton )
     {
-      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
-      if ( mouseEvent->button() == Qt::LeftButton )
-      {
-        emit mousePress( posToValue( mouseEvent->pos() ) );
-      }
-      break;
+      emit mousePress( posToValue( mouseEvent->pos() ) );
     }
-    case QEvent::MouseButtonRelease:
+  }
+  else if ( event->type() == QEvent::MouseButtonRelease )
+  {
+    const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
+    if ( mouseEvent->button() == Qt::LeftButton )
     {
-      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
-      if ( mouseEvent->button() == Qt::LeftButton )
-      {
-        emit mouseRelease( posToValue( mouseEvent->pos() ) );
-      }
-      break;
+      emit mouseRelease( posToValue( mouseEvent->pos() ) );
     }
-    default:
-      break;
   }
 
   return QObject::eventFilter( object, event );

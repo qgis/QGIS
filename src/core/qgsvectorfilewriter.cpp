@@ -404,6 +404,17 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
         ogrType = OFTDateTime;
         break;
 
+      case QVariant::Invalid:
+      case QVariant::Bool:
+      case QVariant::UInt:
+      case QVariant::ULongLong:
+      case QVariant::Char:
+      case QVariant::Map:
+      case QVariant::List:
+      case QVariant::StringList:
+      case QVariant::ByteArray:
+      case QVariant::UserType:
+      CASE_UNUSUAL_QVARIANT_TYPES:
       default:
         //assert(0 && "invalid variant type!");
         mErrorMessage = QObject::tr( "unsupported type for field %1" )
@@ -1820,6 +1831,15 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         break;
       case QVariant::Invalid:
         break;
+
+      case QVariant::Bool:
+      case QVariant::Char:
+      case QVariant::Map:
+      case QVariant::List:
+      case QVariant::StringList:
+      case QVariant::ByteArray:
+      case QVariant::UserType:
+      CASE_UNUSUAL_QVARIANT_TYPES:
       default:
         mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )
                         .arg( mFields.at( fldIdx ).name() )

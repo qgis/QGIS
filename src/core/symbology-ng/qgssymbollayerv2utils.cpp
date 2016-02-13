@@ -145,6 +145,8 @@ QString QgsSymbolLayerV2Utils::encodePenStyle( Qt::PenStyle style )
       return "dash dot";
     case Qt::DashDotDotLine:
       return "dash dot dot";
+    case Qt::CustomDashLine:
+    case Qt::MPenStyle:
     default:
       return "???";
   }
@@ -168,9 +170,11 @@ QString QgsSymbolLayerV2Utils::encodePenJoinStyle( Qt::PenJoinStyle style )
     case Qt::BevelJoin:
       return "bevel";
     case Qt::MiterJoin:
+    case Qt::SvgMiterJoin:
       return "miter";
     case Qt::RoundJoin:
       return "round";
+    case Qt::MPenJoinStyle:
     default:
       return "???";
   }
@@ -191,9 +195,11 @@ QString QgsSymbolLayerV2Utils::encodeSldLineJoinStyle( Qt::PenJoinStyle style )
     case Qt::BevelJoin:
       return "bevel";
     case Qt::MiterJoin:
+    case Qt::SvgMiterJoin:
       return "mitre";
     case Qt::RoundJoin:
       return "round";
+    case Qt::MPenJoinStyle:
     default:
       return "";
   }
@@ -217,6 +223,7 @@ QString QgsSymbolLayerV2Utils::encodePenCapStyle( Qt::PenCapStyle style )
       return "flat";
     case Qt::RoundCap:
       return "round";
+    case Qt::MPenCapStyle:
     default:
       return "???";
   }
@@ -240,6 +247,7 @@ QString QgsSymbolLayerV2Utils::encodeSldLineCapStyle( Qt::PenCapStyle style )
       return "butt";
     case Qt::RoundCap:
       return "round";
+    case Qt::MPenCapStyle:
     default:
       return "";
   }
@@ -287,6 +295,10 @@ QString QgsSymbolLayerV2Utils::encodeBrushStyle( Qt::BrushStyle style )
       return "dense7";
     case Qt::NoBrush :
       return "no";
+    case Qt::LinearGradientPattern:
+    case Qt::RadialGradientPattern:
+    case Qt::ConicalGradientPattern:
+    case Qt::TexturePattern:
     default:
       return "???";
   }
@@ -344,6 +356,7 @@ QString QgsSymbolLayerV2Utils::encodeSldBrushStyle( Qt::BrushStyle style )
     case Qt::Dense7Pattern:
       return QString( "brush://%1" ).arg( encodeBrushStyle( style ) );
 
+    case Qt::NoBrush:
     default:
       return QString();
   }
@@ -1037,6 +1050,7 @@ static QString _nameForSymbolType( QgsSymbolV2::SymbolType type )
       return "marker";
     case QgsSymbolV2::Fill:
       return "fill";
+    case QgsSymbolV2::Hybrid:
     default:
       return "";
   }
@@ -1135,6 +1149,8 @@ bool QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( QDomElement& element
 
           break;
 
+        case QGis::UnknownGeometry:
+        case QGis::NoGeometry:
         default:
           break;
       }
@@ -1171,6 +1187,8 @@ bool QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( QDomElement& element
 
           break;
 
+        case QGis::UnknownGeometry:
+        case QGis::NoGeometry:
         default:
           break;
       }
@@ -1227,6 +1245,8 @@ bool QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( QDomElement& element
           convertPolygonSymbolizerToPointMarker( element, layers );
           break;
 
+        case QGis::UnknownGeometry:
+        case QGis::NoGeometry:
         default:
           break;
       }
@@ -1783,6 +1803,10 @@ void QgsSymbolLayerV2Utils::fillToSld( QDomDocument &doc, QDomElement &element, 
       patternName = encodeSldBrushStyle( brushStyle );
       break;
 
+    case Qt::LinearGradientPattern:
+    case Qt::RadialGradientPattern:
+    case Qt::ConicalGradientPattern:
+    case Qt::TexturePattern:
     default:
       element.appendChild( doc.createComment( QString( "Qt::BrushStyle '%1'' not supported yet" ).arg( brushStyle ) ) );
       return;
@@ -1905,6 +1929,7 @@ void QgsSymbolLayerV2Utils::lineToSld( QDomDocument &doc, QDomElement &element,
       pattern = customDashPattern;
       break;
 
+    case Qt::MPenStyle:
     default:
       element.appendChild( doc.createComment( QString( "Qt::BrushStyle '%1'' not supported yet" ).arg( penStyle ) ) );
       return;
@@ -2438,6 +2463,7 @@ QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double mmScaleF
       penStyle.append( 'r' );
       break;
     case Qt::FlatCap:
+    case Qt::MPenCapStyle:
     default:
       penStyle.append( 'b' );
   }
@@ -2453,6 +2479,8 @@ QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double mmScaleF
       penStyle.append( 'r' );
       break;
     case Qt::MiterJoin:
+    case Qt::SvgMiterJoin:
+    case Qt::MPenJoinStyle:
     default:
       penStyle.append( 'm' );
   }

@@ -409,6 +409,7 @@ QString QgsGrassVectorMapLayer::quotedValue( QVariant value )
 
     default:
     case QVariant::String:
+    CASE_UNUSUAL_QVARIANT_TYPES:
       QString v = value.toString();
       v.replace( "'", "''" );
       if ( v.contains( "\\" ) )

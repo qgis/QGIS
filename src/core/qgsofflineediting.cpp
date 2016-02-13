@@ -514,6 +514,14 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
       case QGis::WKBMultiPolygon:
         geomType = "MULTIPOLYGON";
         break;
+      case QGis::WKBUnknown:
+      case QGis::WKBNoGeometry:
+      case QGis::WKBPoint25D:
+      case QGis::WKBLineString25D:
+      case QGis::WKBPolygon25D:
+      case QGis::WKBMultiPoint25D:
+      case QGis::WKBMultiLineString25D:
+      case QGis::WKBMultiPolygon25D:
       default:
         showWarning( tr( "QGIS wkbType %1 not supported" ).arg( layer->wkbType() ) );
         break;

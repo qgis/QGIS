@@ -165,23 +165,22 @@ void QgsAuthSslErrorsDialog::clearCertificateConfig()
 void QgsAuthSslErrorsDialog::on_buttonBox_clicked( QAbstractButton *button )
 {
   QDialogButtonBox::StandardButton btnenum( buttonBox->standardButton( button ) );
-  switch ( btnenum )
+  if ( btnenum ==  QDialogButtonBox::Ignore )
   {
-    case QDialogButtonBox::Ignore:
-      QgsAuthManager::instance()->updateIgnoredSslErrorsCache(
-        QString( "%1:%2" ).arg( mDigest, mHostPort ),
-        mSslErrors );
-      accept();
-      break;
-    case QDialogButtonBox::Save:
-      // save config and ignore errors
-      wdgtSslConfig->saveSslCertConfig();
-      accept();
-      break;
-    case QDialogButtonBox::Abort:
-    default:
-      reject();
-      break;
+    QgsAuthManager::instance()->updateIgnoredSslErrorsCache(
+      QString( "%1:%2" ).arg( mDigest, mHostPort ),
+      mSslErrors );
+    accept();
+  }
+  else if ( btnenum == QDialogButtonBox::Save )
+  {
+    // save config and ignore errors
+    wdgtSslConfig->saveSslCertConfig();
+    accept();
+  }
+  else
+  {
+    reject();
   }
 }
 

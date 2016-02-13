@@ -211,6 +211,35 @@ bool QgsPropertyValue::readXML( QDomNode & keyNode )
         value_ = QVariant(subkeyElement.text()).toULongLong();
         break;
       */
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    case QVariant::Char:
+    case QVariant::Date:
+    case QVariant::Time:
+    case QVariant::DateTime:
+    case QVariant::Url:
+    case QVariant::Locale:
+    case QVariant::RectF:
+    case QVariant::SizeF:
+    case QVariant::Line:
+    case QVariant::LineF:
+    case QVariant::PointF:
+    case QVariant::RegExp:
+    case QVariant::Hash:
+    case QVariant::EasingCurve:
+    case QVariant::Icon:
+    case QVariant::SizePolicy:
+    case QVariant::TextLength:
+    case QVariant::TextFormat:
+    case QVariant::Matrix:
+    case QVariant::Transform:
+    case QVariant::Matrix4x4:
+    case QVariant::Vector2D:
+    case QVariant::Vector3D:
+    case QVariant::Vector4D:
+    case QVariant::Quaternion:
+    case QVariant::UserType:
+    case QVariant::LastType:
     default :
       QgsDebugMsg( QString( "unsupported value type %1 .. not propertly translated to QVariant" ).arg( typeString ) );
   }

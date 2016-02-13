@@ -375,6 +375,7 @@ QSizeF QgsLegendRenderer::drawTitle( QPainter* painter, QPointF point, Qt::Align
   switch ( halignment )
   {
     case Qt::AlignHCenter:
+    case Qt::AlignCenter:
       textBoxWidth = ( qMin( static_cast< double >( point.x() ), legendWidth - point.x() ) - mSettings.boxSpace() ) * 2.0;
       textBoxLeft = point.x() - textBoxWidth / 2.;
       break;
@@ -383,6 +384,13 @@ QSizeF QgsLegendRenderer::drawTitle( QPainter* painter, QPointF point, Qt::Align
       textBoxWidth = point.x() - mSettings.boxSpace();
       break;
     case Qt::AlignLeft:
+    case Qt::AlignJustify:
+    case Qt::AlignAbsolute:
+    case Qt::AlignHorizontal_Mask:
+    case Qt::AlignTop:
+    case Qt::AlignBottom:
+    case Qt::AlignVCenter:
+    case Qt::AlignVertical_Mask:
     default:
       textBoxLeft = point.x();
       textBoxWidth = legendWidth - point.x() - mSettings.boxSpace();
@@ -618,6 +626,10 @@ void QgsLegendRenderer::setNodeLegendStyle( QgsLayerTreeNode* node, QgsComposerL
     case QgsComposerLegendStyle::Subgroup:
       str = "subgroup";
       break;
+    case QgsComposerLegendStyle::Undefined:
+    case QgsComposerLegendStyle::Title:
+    case QgsComposerLegendStyle::Symbol:
+    case QgsComposerLegendStyle::SymbolLabel:
     default:
       break; // nothing
   }

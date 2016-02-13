@@ -129,6 +129,8 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
     case QGis::Polygon:
       mCaptureMode = CapturePolygon;
       break;
+    case QGis::UnknownGeometry:
+    case QGis::NoGeometry:
     default:
       mCaptureMode = CaptureNone;
       break;

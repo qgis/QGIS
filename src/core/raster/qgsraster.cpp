@@ -27,6 +27,7 @@ QString QgsRaster::contrastEnhancementLimitsAsString( ContrastEnhancementLimits 
       return "StdDev";
     case QgsRaster::ContrastEnhancementCumulativeCut:
       return "CumulativeCut";
+    case QgsRaster::ContrastEnhancementNone:
     default:
       break;
   }
@@ -66,6 +67,14 @@ double QgsRaster::representableValue( double value, QGis::DataType dataType )
       return static_cast<qint32>( value );
     case QGis::Float32:
       return static_cast<float>( value );
+    case QGis::UnknownDataType:
+    case QGis::Float64:
+    case QGis::CInt16:
+    case QGis::CInt32:
+    case QGis::CFloat32:
+    case QGis::CFloat64:
+    case QGis::ARGB32:
+    case QGis::ARGB32_Premultiplied:
     default:
       break;
   }

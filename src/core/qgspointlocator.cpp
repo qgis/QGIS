@@ -494,6 +494,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
     }
 
     case QGis::WKBUnknown:
+    case QGis::WKBNoGeometry:
     default:
       return lst;
   } // switch (wkbType)

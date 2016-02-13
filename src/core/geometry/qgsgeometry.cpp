@@ -630,6 +630,8 @@ int QgsGeometry::addPart( QgsAbstractGeometryV2* part, QGis::GeometryType geomTy
       case QGis::Polygon:
         d->geometry = new QgsMultiPolygonV2();
         break;
+      case QGis::UnknownGeometry:
+      case QGis::NoGeometry:
       default:
         return 1;
     }
@@ -931,6 +933,8 @@ QgsGeometry* QgsGeometry::convertToType( QGis::GeometryType destType, bool destM
     case QGis::Polygon:
       return convertToPolygon( destMultipart );
 
+    case QGis::UnknownGeometry:
+    case QGis::NoGeometry:
     default:
       return nullptr;
   }
@@ -1931,6 +1935,7 @@ QgsGeometry* QgsGeometry::smooth( const unsigned int iterations, const double of
     }
 
     case QGis::WKBUnknown:
+    case QGis::WKBNoGeometry:
     default:
       return new QgsGeometry( *this );
   }
@@ -2076,6 +2081,8 @@ QgsGeometry* QgsGeometry::convertToPoint( bool destMultipart ) const
       }
     }
 
+    case QGis::UnknownGeometry:
+    case QGis::NoGeometry:
     default:
       return nullptr;
   }
@@ -2183,6 +2190,8 @@ QgsGeometry* QgsGeometry::convertToLine( bool destMultipart ) const
       return nullptr;
     }
 
+    case QGis::UnknownGeometry:
+    case QGis::NoGeometry:
     default:
       return nullptr;
   }
@@ -2302,6 +2311,8 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart ) const
       return nullptr;
     }
 
+    case QGis::UnknownGeometry:
+    case QGis::NoGeometry:
     default:
       return nullptr;
   }

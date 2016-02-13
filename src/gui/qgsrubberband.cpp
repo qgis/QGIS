@@ -415,6 +415,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
     break;
 
     case QGis::WKBUnknown:
+    case QGis::WKBNoGeometry:
     default:
       return;
   }
@@ -516,6 +517,8 @@ void QgsRubberBand::paint( QPainter* p )
         break;
 
         case QGis::Line:
+        case QGis::UnknownGeometry:
+        case QGis::NoGeometry:
         default:
         {
           p->drawPolyline( pts );
@@ -654,6 +657,8 @@ QgsGeometry *QgsRubberBand::asGeometry()
     }
 
     case QGis::Line:
+    case QGis::UnknownGeometry:
+    case QGis::NoGeometry:
     default:
     {
       if ( !mPoints.isEmpty() )

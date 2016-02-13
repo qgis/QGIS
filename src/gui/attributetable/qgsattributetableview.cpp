@@ -72,18 +72,13 @@ bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
 {
   if ( object == verticalHeader()->viewport() )
   {
-    switch ( event->type() )
+    if ( event->type() == QEvent::MouseButtonPress )
     {
-      case QEvent::MouseButtonPress:
-        mFeatureSelectionModel->enableSync( false );
-        break;
-
-      case QEvent::MouseButtonRelease:
-        mFeatureSelectionModel->enableSync( true );
-        break;
-
-      default:
-        break;
+      mFeatureSelectionModel->enableSync( false );
+    }
+    else if ( event->type() == QEvent::MouseButtonRelease )
+    {
+      mFeatureSelectionModel->enableSync( true );
     }
   }
   return false;
