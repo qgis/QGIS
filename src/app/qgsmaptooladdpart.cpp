@@ -30,6 +30,8 @@ QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas* canvas )
     : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
 {
   mToolName = tr( "Add part" );
+  connect( QgisApp::instance(), SIGNAL( newProject() ), this, SLOT( stopCapturing() ) );
+  connect( QgisApp::instance(), SIGNAL( projectRead() ), this, SLOT( stopCapturing() ) );
 }
 
 QgsMapToolAddPart::~QgsMapToolAddPart()

@@ -165,11 +165,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool isCapturing() const;
 
     /**
-     * Stop capturing
-     */
-    void stopCapturing();
-
-    /**
      * Number of points digitized
      *
      * @return Number of points
@@ -193,6 +188,12 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Close an open polygon
      */
     void closePolygon();
+
+  protected slots:
+    /**
+     * Stop capturing
+     */
+    void stopCapturing();
 
   private:
     //! whether tracing has been requested by the user
