@@ -87,8 +87,8 @@ class AlgorithmsTest():
         for r, p in defs['results'].iteritems():
             alg.setOutputValue(r, self.load_result_param(p))
 
-        self.assertTrue(AlgorithmExecutor.runalg(alg))
         print(alg.getAsCommand())
+        self.assertTrue(AlgorithmExecutor.runalg(alg))
         self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
 
     def load_params(self, params):
@@ -177,10 +177,7 @@ class AlgorithmsTest():
 
                 result_lyr = QgsVectorLayer(results[id], id, 'ogr')
 
-                try:
-                    compare = expected_result['compare']
-                except KeyError:
-                    compare = {}
+                compare = expected_result.get('compare', {})
 
                 self.assertLayersEqual(expected_lyr, result_lyr, compare=compare)
 
