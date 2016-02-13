@@ -357,10 +357,11 @@ void QgsMapRendererJob::drawNewLabeling( const QgsMapSettings& settings, QgsRend
 
 void QgsMapRendererJob::updateLayerGeometryCaches()
 {
-  Q_FOREACH ( const QString& id, mGeometryCaches.keys() )
+  QMap<QString, QgsGeometryCache>::const_iterator it = mGeometryCaches.constBegin();
+  for ( ; it != mGeometryCaches.constEnd(); ++it )
   {
-    const QgsGeometryCache& cache = mGeometryCaches[id];
-    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) ) )
+    const QgsGeometryCache& cache = it.value();
+    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( it.key() ) ) )
       * vl->cache() = cache;
   }
   mGeometryCaches.clear();

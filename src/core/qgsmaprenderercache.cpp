@@ -35,9 +35,10 @@ void QgsMapRendererCache::clearInternal()
   mScale = 0;
 
   // make sure we are disconnected from all layers
-  Q_FOREACH ( const QString& layerId, mCachedImages.keys() )
+  QMap<QString, QImage>::const_iterator it = mCachedImages.constBegin();
+  for ( ; it != mCachedImages.constEnd(); ++it )
   {
-    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( it.key() );
     if ( layer )
     {
       disconnect( layer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );

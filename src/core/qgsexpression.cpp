@@ -96,9 +96,11 @@ QgsExpression::Interval QgsExpression::Interval::fromString( const QString& stri
     }
 
     bool matched = false;
-    Q_FOREACH ( int duration, map.keys() )
+    QMap<int, QStringList>::const_iterator it = map.constBegin();
+    for ( ; it != map.constEnd(); ++it )
     {
-      Q_FOREACH ( const QString& name, map[duration] )
+      int duration = it.key();
+      Q_FOREACH ( const QString& name, it.value() )
       {
         if ( match.contains( name, Qt::CaseInsensitive ) )
         {

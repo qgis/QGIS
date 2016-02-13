@@ -87,7 +87,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     return;
   }
 
-  Q_FOREACH ( int idx, mOldToNewAttrIdx.values() )
+  Q_FOREACH ( int idx, mOldToNewAttrIdx )
   {
     if ( idx > mAttributeCount )
       mAttributeCount = idx;

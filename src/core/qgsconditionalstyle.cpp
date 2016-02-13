@@ -60,11 +60,12 @@ bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc ) co
   stylesel.appendChild( rowel );
 
   QDomElement fieldsel = doc.createElement( "fieldstyles" );
-  Q_FOREACH ( const QString field, mFieldStyles.keys() )
+  QHash<QString, QgsConditionalStyles>::const_iterator it = mFieldStyles.constBegin();
+  for ( ; it != mFieldStyles.constEnd(); ++it )
   {
     QDomElement fieldel = doc.createElement( "fieldstyle" );
-    fieldel.setAttribute( "fieldname", field );
-    QgsConditionalStyles styles = mFieldStyles[field];
+    fieldel.setAttribute( "fieldname", it.key() );
+    QgsConditionalStyles styles = it.value();
     Q_FOREACH ( const QgsConditionalStyle& style, styles )
     {
       style.writeXml( fieldel, doc );

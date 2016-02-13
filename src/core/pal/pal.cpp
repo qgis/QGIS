@@ -271,7 +271,7 @@ Problem* Pal::extract( double lambda_min, double phi_min, double lambda_max, dou
   QStringList layersWithFeaturesInBBox;
 
   mMutex.lock();
-  Q_FOREACH ( Layer* layer, mLayers.values() )
+  Q_FOREACH ( Layer* layer, mLayers )
   {
     if ( !layer )
     {

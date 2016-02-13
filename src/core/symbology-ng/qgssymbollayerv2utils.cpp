@@ -2792,10 +2792,7 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbols( QgsSymbolV2Map& symbols, const Q
 
 void QgsSymbolLayerV2Utils::clearSymbolMap( QgsSymbolV2Map& symbols )
 {
-  Q_FOREACH ( const QString& name, symbols.keys() )
-  {
-    delete symbols.value( name );
-  }
+  qDeleteAll( symbols );
   symbols.clear();
 }
 

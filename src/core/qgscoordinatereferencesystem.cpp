@@ -1838,9 +1838,10 @@ int QgsCoordinateReferenceSystem::syncDb()
 
   sql = "DELETE FROM tbl_srs WHERE auth_name='EPSG' AND NOT auth_id IN (";
   QString delim;
-  Q_FOREACH ( int i, wkts.keys() )
+  QHash<int, QString>::const_iterator it = wkts.constBegin();
+  for ( ; it != wkts.constEnd(); ++it )
   {
-    sql += delim + QString::number( i );
+    sql += delim + QString::number( it.key() );
     delim = ',';
   }
   sql += ") AND NOT noupdate";
