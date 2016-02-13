@@ -215,16 +215,7 @@
       <string>Authentication</string>
      </attribute>
      <layout class="QGridLayout" name="gridLayout">
-      <property name="leftMargin">
-       <number>5</number>
-      </property>
-      <property name="topMargin">
-       <number>5</number>
-      </property>
-      <property name="rightMargin">
-       <number>5</number>
-      </property>
-      <property name="bottomMargin">
+      <property name="margin">
        <number>5</number>
       </property>
       <item row="0" column="0">
@@ -289,6 +280,21 @@
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>txtName</tabstop>
+  <tabstop>txtService</tabstop>
+  <tabstop>txtDriver</tabstop>
+  <tabstop>txtHost</tabstop>
+  <tabstop>txtPort</tabstop>
+  <tabstop>txtDatabase</tabstop>
+  <tabstop>tabAuthentication</tabstop>
+  <tabstop>txtUsername</tabstop>
+  <tabstop>chkStoreUsername</tabstop>
+  <tabstop>txtPassword</tabstop>
+  <tabstop>chkStorePassword</tabstop>
+  <tabstop>btnConnect</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -340,7 +346,4 @@
    </hints>
   </connection>
  </connections>
- <buttongroups>
-  <buttongroup name="buttonGroupOs"/>
- </buttongroups>
 </ui>
