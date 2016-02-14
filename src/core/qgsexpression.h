@@ -60,13 +60,6 @@ Usage:
   }
 \endcode
 
-Possible QVariant value types:
-- invalid (null)
-- int
-- double
-- string
-- geometry
-
 Three Value Logic
 =================
 
@@ -90,14 +83,10 @@ Type conversion
 Operators and functions that expect arguments to be of a particular
 type automatically convert the arguments to that type, e.g. sin('2.1') will convert
 the argument to a double, length(123) will first convert the number to a string.
-Explicit conversion can be achieved with toint, toreal, tostring functions.
+Explicit conversion can be achieved with to_int, to_real, to_string functions.
 If implicit or explicit conversion is invalid, the evaluation returns an error.
 Comparison operators do numeric comparison in case both operators are numeric (int/double)
 or they can be converted to numeric types.
-
-Arithmetic operators do integer arithmetics if both operands are integer. That is
-2+2 yields integer 4, but 2.0+2 returns real number 4.0. There are also two versions of
-division and modulo operators: 1.0/2 returns 0.5 while 1/2 returns 0.
 
 Implicit sharing
 ================
