@@ -462,6 +462,9 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
   return 1.0;
 }
 
+// enable for QGIS 3.0
+#if 0
+
 QString QgsUnitTypes::encodeUnit( QgsSymbolV2::OutputUnit unit )
 {
   switch ( unit )
@@ -501,3 +504,5 @@ QgsSymbolV2::OutputUnit QgsUnitTypes::decodeSymbolUnit( const QString& string, b
   // millimeters are default
   return QgsSymbolV2::MM;
 }
+
+#endif

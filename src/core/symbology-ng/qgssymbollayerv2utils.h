@@ -91,10 +91,8 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QString encodeSldRealVector( const QVector<qreal>& v );
     static QVector<qreal> decodeSldRealVector( const QString& s );
 
-    //! @deprecated use QgsUnitTypes::encodeUnit() instead
-    Q_DECL_DEPRECATED static QString encodeOutputUnit( QgsSymbolV2::OutputUnit unit );
-    //! @deprecated use QgsUnitTypes::decodeSymbolUnit() instead
-    Q_DECL_DEPRECATED static QgsSymbolV2::OutputUnit decodeOutputUnit( const QString& str );
+    static QString encodeOutputUnit( QgsSymbolV2::OutputUnit unit );
+    static QgsSymbolV2::OutputUnit decodeOutputUnit( const QString& str );
 
     static QString encodeSldUom( QgsSymbolV2::OutputUnit unit, double *scaleFactor );
     static QgsSymbolV2::OutputUnit decodeSldUom( const QString& str, double *scaleFactor );

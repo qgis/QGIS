@@ -153,6 +153,7 @@ class TestQgsUnitTypes(unittest.TestCase):
         assert ok
         self.assertEqual(res, QgsUnitTypes.SquareMiles)
 
+    @unittest.skip("enable for 3.0")
     def testEncodeDecodeSymbolUnits(self):
         """Test encoding and decoding symbol units"""
         units = [QgsSymbolV2.MM,

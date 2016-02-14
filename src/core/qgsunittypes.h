@@ -19,7 +19,6 @@
 #define QGSUNITTYPES_H
 
 #include "qgis.h"
-#include "symbology-ng/qgssymbolv2.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -142,6 +141,8 @@ class CORE_EXPORT QgsUnitTypes
      */
     static double fromUnitToUnitFactor( AreaUnit fromUnit, AreaUnit toUnit );
 
+    //TODO QGIS 3.0 - enable and move symbol units here! Otherwise creates circular dependancies...
+#if 0
     // SYMBOL UNITS
 
     /** Encodes a symbol unit to a string.
@@ -158,6 +159,7 @@ class CORE_EXPORT QgsUnitTypes
      * @see encodeUnit()
      */
     static QgsSymbolV2::OutputUnit decodeSymbolUnit( const QString& string, bool *ok = 0 );
+#endif
 
 };
 

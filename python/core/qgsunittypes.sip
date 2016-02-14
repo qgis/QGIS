@@ -113,20 +113,5 @@ class QgsUnitTypes
      */
     static double fromUnitToUnitFactor( AreaUnit fromUnit, AreaUnit toUnit );
 
-    /** Encodes a symbol unit to a string.
-     * @param unit unit to encode
-     * @returns encoded string
-     * @see decodeSymbolUnit()
-     */
-    static QString encodeUnit( QgsSymbolV2::OutputUnit unit );
-
-    /** Decodes a symbol unit from a string.
-     * @param string string to decode
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @returns decoded units
-     * @see encodeUnit()
-     */
-    static QgsSymbolV2::OutputUnit decodeSymbolUnit( const QString& string, bool *ok = 0 );
-
 };
 

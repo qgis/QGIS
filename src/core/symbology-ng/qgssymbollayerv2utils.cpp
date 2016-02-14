@@ -408,14 +408,36 @@ QgsMapUnitScale QgsSymbolLayerV2Utils::decodeMapUnitScale( const QString& str )
 
 QString QgsSymbolLayerV2Utils::encodeOutputUnit( QgsSymbolV2::OutputUnit unit )
 {
-  return QgsUnitTypes::encodeUnit( unit );
+  switch ( unit )
+  {
+    case QgsSymbolV2::MM:
+      return "MM";
+    case QgsSymbolV2::MapUnit:
+      return "MapUnit";
+    case QgsSymbolV2::Pixel:
+      return "Pixel";
+    case QgsSymbolV2::Percentage:
+      return "Percentage";
+    default:
+      return "MM";
+  }
 }
 
-QgsSymbolV2::OutputUnit QgsSymbolLayerV2Utils::decodeOutputUnit( const QString& str )
+QgsSymbolV2::OutputUnit QgsSymbolLayerV2Utils::decodeOutputUnit( const QString& string )
 {
-  bool ok = false;
-  QgsSymbolV2::OutputUnit unit = QgsUnitTypes::decodeSymbolUnit( str, &ok );
-  return ok ? unit : QgsSymbolV2::MM;
+  QString normalized = string.trimmed().toLower();
+
+  if ( normalized == encodeOutputUnit( QgsSymbolV2::MM ).toLower() )
+    return QgsSymbolV2::MM;
+  if ( normalized == encodeOutputUnit( QgsSymbolV2::MapUnit ).toLower() )
+    return QgsSymbolV2::MapUnit;
+  if ( normalized == encodeOutputUnit( QgsSymbolV2::Pixel ).toLower() )
+    return QgsSymbolV2::Pixel;
+  if ( normalized == encodeOutputUnit( QgsSymbolV2::Percentage ).toLower() )
+    return QgsSymbolV2::Percentage;
+
+  // millimeters are default
+  return QgsSymbolV2::MM;
 }
 
 QString QgsSymbolLayerV2Utils::encodeSldUom( QgsSymbolV2::OutputUnit unit, double *scaleFactor )
@@ -981,7 +1003,7 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( const QDomElement &element )
 
   if ( element.hasAttribute( "outputUnit" ) )
   {
-    symbol->setOutputUnit( QgsUnitTypes::decodeSymbolUnit( element.attribute( "outputUnit" ) ) );
+    symbol->setOutputUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( element.attribute( "outputUnit" ) ) );
   }
   if ( element.hasAttribute(( "mapUnitScale" ) ) )
   {

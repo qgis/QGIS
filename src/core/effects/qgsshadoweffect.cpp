@@ -103,7 +103,7 @@ QgsStringMap QgsShadowEffect::properties() const
   props.insert( "blur_level", QString::number( mBlurLevel ) );
   props.insert( "offset_angle", QString::number( mOffsetAngle ) );
   props.insert( "offset_distance", QString::number( mOffsetDist ) );
-  props.insert( "offset_unit", QgsUnitTypes::encodeUnit( mOffsetUnit ) );
+  props.insert( "offset_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit ) );
   props.insert( "offset_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale ) );
   props.insert( "color", QgsSymbolLayerV2Utils::encodeColor( mColor ) );
   return props;
@@ -139,7 +139,7 @@ void QgsShadowEffect::readProperties( const QgsStringMap &props )
   {
     mOffsetDist = distance;
   }
-  mOffsetUnit = QgsUnitTypes::decodeSymbolUnit( props.value( "offset_unit" ) );
+  mOffsetUnit = QgsSymbolLayerV2Utils::decodeOutputUnit( props.value( "offset_unit" ) );
   mOffsetMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( props.value( "offset_unit_scale" ) );
   if ( props.contains( "color" ) )
   {
