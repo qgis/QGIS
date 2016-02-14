@@ -111,13 +111,23 @@ class QgsMapToolIdentify : QgsMapTool
   private:
 
     //! Private helper
-    virtual void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea );
+    //! @deprecated use displayDistanceUnits() and displayAreaUnits() instead
+    virtual void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea ) /Deprecated/;
 
-    /** Transforms the measurements of derived attributes in the desired units*/
-    virtual QGis::UnitType displayUnits();
+    /** Transforms the measurements of derived attributes in the desired units
+     * @deprecated use displayDistanceUnits() and displayAreaUnits() instead
+    */
+    virtual QGis::UnitType displayUnits() /Deprecated/;
 
     /** Desired units for distance display.
      * @note added in QGIS 2.14
+     * @see displayAreaUnits()
      */
-    virtual QGis::UnitType displayDistanceUnits();
+    virtual QGis::UnitType displayDistanceUnits() const;
+
+    /** Desired units for area display.
+     * @note added in QGIS 2.14
+     * @see displayDistanceUnits()
+     */
+    virtual QgsUnitTypes::AreaUnit displayAreaUnits() const;
 };

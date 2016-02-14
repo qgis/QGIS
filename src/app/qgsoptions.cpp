@@ -482,6 +482,22 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     radMeters->setChecked( true );
   }
 
+  mAreaUnitsComboBox->addItem( tr( "Square meters" ), QgsUnitTypes::SquareMeters );
+  mAreaUnitsComboBox->addItem( tr( "Square kilometers" ), QgsUnitTypes::SquareKilometers );
+  mAreaUnitsComboBox->addItem( tr( "Square feet" ), QgsUnitTypes::SquareFeet );
+  mAreaUnitsComboBox->addItem( tr( "Square yards" ), QgsUnitTypes::SquareYards );
+  mAreaUnitsComboBox->addItem( tr( "Square miles" ), QgsUnitTypes::SquareMiles );
+  mAreaUnitsComboBox->addItem( tr( "Hectares" ), QgsUnitTypes::Hectares );
+  mAreaUnitsComboBox->addItem( tr( "Acres" ), QgsUnitTypes::Acres );
+  mAreaUnitsComboBox->addItem( tr( "Square nautical miles" ), QgsUnitTypes::SquareNauticalMiles );
+  mAreaUnitsComboBox->addItem( tr( "Square degrees" ), QgsUnitTypes::SquareDegrees );
+  mAreaUnitsComboBox->addItem( tr( "Map units" ), QgsUnitTypes::UnknownAreaUnit );
+
+  QgsUnitTypes::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings->value( "/qgis/measure/areaunits" ).toString(), &ok );
+  if ( !ok )
+    areaUnits = QgsUnitTypes::SquareMeters;
+  mAreaUnitsComboBox->setCurrentIndex( mAreaUnitsComboBox->findData( areaUnits ) );
+
   QButtonGroup* angleButtonGroup = new QButtonGroup( this );
   angleButtonGroup->addButton( mDegreesRadioButton );
   angleButtonGroup->addButton( mRadiansRadioButton );
@@ -1262,6 +1278,9 @@ void QgsOptions::saveOptions()
   {
     mSettings->setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QGis::Meters ) );
   }
+
+  QgsUnitTypes::AreaUnit areaUnit = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsComboBox->itemData( mAreaUnitsComboBox->currentIndex() ).toInt() );
+  mSettings->setValue( "/qgis/measure/areaunits", QgsUnitTypes::encodeUnit( areaUnit ) );
 
   QString angleUnitString = "degrees";
   if ( mRadiansRadioButton->isChecked() )

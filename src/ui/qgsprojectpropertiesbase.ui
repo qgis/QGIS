@@ -485,24 +485,8 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="4">
-                   <widget class="QLineEdit" name="leSemiMinor"/>
-                  </item>
                   <item row="2" column="1" colspan="4">
                    <widget class="QComboBox" name="mDistanceUnitsCombo"/>
-                  </item>
-                  <item row="1" column="2">
-                   <widget class="QLineEdit" name="leSemiMajor"/>
-                  </item>
-                  <item row="0" column="1" colspan="4">
-                   <widget class="QComboBox" name="cmbEllipsoid"/>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_28">
-                    <property name="text">
-                     <string>Units for distance measurement</string>
-                    </property>
-                   </widget>
                   </item>
                   <item row="1" column="1">
                    <widget class="QLabel" name="label_41">
@@ -511,12 +495,38 @@
                     </property>
                    </widget>
                   </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_28">
+                    <property name="text">
+                     <string>Units for distance measurement</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1" colspan="4">
+                   <widget class="QComboBox" name="cmbEllipsoid"/>
+                  </item>
+                  <item row="1" column="4">
+                   <widget class="QLineEdit" name="leSemiMinor"/>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QLineEdit" name="leSemiMajor"/>
+                  </item>
                   <item row="1" column="3">
                    <widget class="QLabel" name="label_42">
                     <property name="text">
                      <string>Semi-minor</string>
                     </property>
                    </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="label_29">
+                    <property name="text">
+                     <string>Units for area measurement</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1" colspan="4">
+                   <widget class="QComboBox" name="mAreaUnitsCombo"/>
                   </item>
                  </layout>
                 </widget>
@@ -880,7 +890,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>379</width>
-                <height>562</height>
+                <height>582</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2539,6 +2549,7 @@
   <tabstop>leSemiMajor</tabstop>
   <tabstop>leSemiMinor</tabstop>
   <tabstop>mDistanceUnitsCombo</tabstop>
+  <tabstop>mAreaUnitsCombo</tabstop>
   <tabstop>mCoordinateDisplayComboBox</tabstop>
   <tabstop>radAutomatic</tabstop>
   <tabstop>radManual</tabstop>

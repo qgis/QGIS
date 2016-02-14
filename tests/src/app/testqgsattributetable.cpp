@@ -39,6 +39,7 @@ class TestQgsAttributeTable : public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
     void testFieldCalculation();
+    void testFieldCalculationArea();
 
   private:
     QgisApp * mQgisApp;
@@ -112,6 +113,58 @@ void TestQgsAttributeTable::testFieldCalculation()
   fit = tempLayer->dataProvider()->getFeatures();
   QVERIFY( fit.nextFeature( f ) );
   expected = 88360.0918635;
+  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
+}
+
+void TestQgsAttributeTable::testFieldCalculationArea()
+{
+  //test $area field calculation
+
+  //create a temporary layer
+  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double", "vl", "memory" ) );
+  QVERIFY( tempLayer->isValid() );
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "pk", 1 );
+  f1.setAttribute( "col1", 0.0 );
+
+  QgsPolyline polygonRing3111;
+  polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
+  QgsPolygon polygon3111;
+  polygon3111 << polygonRing3111;
+  f1.setGeometry( QgsGeometry::fromPolygon( polygon3111 ) );
+  tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+
+  // set project CRS and ellipsoid
+  QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
+  QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
+  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
+  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
+  QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
+  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareMeters ) );
+
+  // run area calculation
+  QScopedPointer< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.data() ) );
+  tempLayer->startEditing();
+  dlg->runFieldCalculation( tempLayer.data(), "col1", "$area" );
+  tempLayer->commitChanges();
+  // check result
+  QgsFeatureIterator fit = tempLayer->dataProvider()->getFeatures();
+  QgsFeature f;
+  QVERIFY( fit.nextFeature( f ) );
+  double expected = 1009089817.0;
+  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 1.0 ) );
+
+  // change project area unit, check calculation respects unit
+  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareMiles ) );
+  QScopedPointer< QgsAttributeTableDialog > dlg2( new QgsAttributeTableDialog( tempLayer.data() ) );
+  tempLayer->startEditing();
+  dlg2->runFieldCalculation( tempLayer.data(), "col1", "$area" );
+  tempLayer->commitChanges();
+  // check result
+  fit = tempLayer->dataProvider()->getFeatures();
+  QVERIFY( fit.nextFeature( f ) );
+  expected = 389.6117565069;
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
 }
 

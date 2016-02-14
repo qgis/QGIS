@@ -87,6 +87,8 @@ void TestQgsProject::testProjectUnits()
 {
   //test setting and retrieving project units
 
+  // DISTANCE
+
   //first set a default QGIS distance unit
   QSettings s;
   s.setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QGis::Feet ) );
@@ -103,6 +105,23 @@ void TestQgsProject::testProjectUnits()
   //test setting new units for project
   prj->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QGis::NauticalMiles ) );
   QCOMPARE( prj->distanceUnits(), QGis::NauticalMiles );
+
+  // AREA
+
+  //first set a default QGIS area unit
+  s.setValue( "/qgis/measure/areaunits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareYards ) );
+
+  // new project should inherit QGIS default area unit
+  prj->clear();
+  QCOMPARE( prj->areaUnits(), QgsUnitTypes::SquareYards );
+
+  //changing default QGIS unit should not affect existing project
+  s.setValue( "/qgis/measure/areaunits", QgsUnitTypes::encodeUnit( QgsUnitTypes::Acres ) );
+  QCOMPARE( prj->areaUnits(), QgsUnitTypes::SquareYards );
+
+  //test setting new units for project
+  prj->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::Acres ) );
+  QCOMPARE( prj->areaUnits(), QgsUnitTypes::Acres );
 }
 
 

@@ -32,6 +32,7 @@
 //for the snap settings
 #include "qgssnapper.h"
 #include "qgstolerance.h"
+#include "qgsunittypes.h"
 
 //#include <QDomDocument>
 
@@ -295,8 +296,15 @@ class CORE_EXPORT QgsProject : public QObject
 
     /** Convenience function to query default distance measurement units for project.
      * @note added in QGIS 2.14
+     * @see areaUnits()
      */
     QGis::UnitType distanceUnits() const;
+
+    /** Convenience function to query default area measurement units for project.
+     * @note added in QGIS 2.14
+     * @see distanceUnits()
+     */
+    QgsUnitTypes::AreaUnit areaUnits() const;
 
     /** Return project's home path
       @return home path of project (or QString::null if not set) */

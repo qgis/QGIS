@@ -398,10 +398,8 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   else if ( geometryType == QGis::Polygon )
   {
     double area = calc.measureArea( feature->constGeometry() );
-
-    QGis::UnitType myDisplayUnits;
-    convertMeasurement( calc, area, myDisplayUnits, true );  // area and myDisplayUnits are out params
-    QString str = calc.textUnit( area, 3, myDisplayUnits, true );
+    area = calc.convertAreaMeasurement( area, displayAreaUnits() );
+    QString str = formatArea( area );
     derivedAttributes.insert( tr( "Area" ), str );
 
     double perimeter = calc.measurePerimeter( feature->constGeometry() );
@@ -647,8 +645,10 @@ void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &meas
   // Get the canvas units
   QGis::UnitType myUnits = mCanvas->mapUnits();
 
+  Q_NOWARN_DEPRECATED_PUSH
   calc.convertMeasurement( measure, myUnits, displayUnits(), isArea );
   u = displayUnits();
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QGis::UnitType QgsMapToolIdentify::displayUnits()
@@ -656,17 +656,30 @@ QGis::UnitType QgsMapToolIdentify::displayUnits()
   return mCanvas->mapUnits();
 }
 
-QGis::UnitType QgsMapToolIdentify::displayDistanceUnits()
+QGis::UnitType QgsMapToolIdentify::displayDistanceUnits() const
 {
   return mCanvas->mapUnits();
 }
 
-QString QgsMapToolIdentify::formatDistance( double distance )
+QgsUnitTypes::AreaUnit QgsMapToolIdentify::displayAreaUnits() const
+{
+  return QgsUnitTypes::distanceToAreaUnit( mCanvas->mapUnits() );
+}
+
+QString QgsMapToolIdentify::formatDistance( double distance ) const
 {
   QSettings settings;
   bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", false ).toBool();
 
   return QgsDistanceArea::textUnit( distance, 3, displayDistanceUnits(), false, baseUnit );
+}
+
+QString QgsMapToolIdentify::formatArea( double area ) const
+{
+  QSettings settings;
+  bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", false ).toBool();
+
+  return QgsDistanceArea::formatArea( area, 3, displayAreaUnits(), baseUnit );
 }
 
 void QgsMapToolIdentify::formatChanged( QgsRasterLayer *layer )

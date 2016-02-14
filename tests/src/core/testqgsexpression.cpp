@@ -1325,17 +1325,38 @@ class TestQgsExpression: public QObject
       // test area without geomCalculator
       QgsExpression expArea( "$area" );
       QVariant vArea = expArea.evaluate( &context );
-      QCOMPARE( vArea.toDouble(), 1005640568.0 );
+      double expected = 1005640568.0;
+      QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
+      // units should not be converted if no geometry calculator set
+      expArea.setAreaUnits( QgsUnitTypes::SquareFeet );
+      vArea = expArea.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
+      expArea.setAreaUnits( QgsUnitTypes::SquareNauticalMiles );
+      vArea = expArea.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
 
       // test area with geomCalculator
-      expArea.setGeomCalculator( da );
-      vArea = expArea.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vArea.toDouble(), 1009089817.0, 1.0 ) );
+      QgsExpression expArea2( "$area" );
+      expArea2.setGeomCalculator( da );
+      vArea = expArea2.evaluate( &context );
+      expected = 1009089817.0;
+      QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
+      // test unit conversion
+      expArea2.setAreaUnits( QgsUnitTypes::SquareMeters ); //default units should be square meters
+      vArea = expArea2.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
+      expArea2.setAreaUnits( QgsUnitTypes::UnknownAreaUnit ); //unknown units should not be converted
+      vArea = expArea2.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
+      expArea2.setAreaUnits( QgsUnitTypes::SquareMiles );
+      expected = 389.6117565069;
+      vArea = expArea2.evaluate( &context );
+      QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 0.001 ) );
 
       // test perimeter without geomCalculator
       QgsExpression expPerimeter( "$perimeter" );
       QVariant vPerimeter = expPerimeter.evaluate( &context );
-      double expected = 128282.086;
+      expected = 128282.086;
       QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
       // units should not be converted if no geometry calculator set
       expPerimeter.setDistanceUnits( QGis::Feet );

@@ -539,6 +539,12 @@ QGis::UnitType QgsDistanceArea::lengthUnits() const
   return willUseEllipsoid() ? QGis::Meters : mCoordTransform->sourceCrs().mapUnits();
 }
 
+QgsUnitTypes::AreaUnit QgsDistanceArea::areaUnits() const
+{
+  return willUseEllipsoid() ? QgsUnitTypes::SquareMeters :
+         QgsUnitTypes::distanceToAreaUnit( mCoordTransform->sourceCrs().mapUnits() );
+}
+
 QgsConstWkbPtr QgsDistanceArea::measurePolygon( QgsConstWkbPtr wkbPtr, double* area, double* perimeter, bool hasZptr ) const
 {
   if ( !wkbPtr )
@@ -1091,6 +1097,141 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
   return QLocale::system().toString( value, 'f', decimals ) + unitLabel;
 }
 
+QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit )
+{
+  QString unitLabel;
+
+  switch ( unit )
+  {
+    case QgsUnitTypes::SquareMeters:
+    {
+      if ( keepBaseUnit )
+      {
+        unitLabel = QObject::trUtf8( " m²" );
+      }
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareKilometers, QgsUnitTypes::SquareMeters ) )
+      {
+        unitLabel = QObject::trUtf8( " km²" );
+        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareMeters, QgsUnitTypes::SquareKilometers );
+      }
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::Hectares, QgsUnitTypes::SquareMeters ) )
+      {
+        unitLabel = QObject::tr( " ha" );
+        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareMeters, QgsUnitTypes::Hectares );
+      }
+      else
+      {
+        unitLabel = QObject::trUtf8( " m²" );
+      }
+      break;
+    }
+
+    case QgsUnitTypes::SquareKilometers:
+    {
+      unitLabel = QObject::trUtf8( " km²" );
+      break;
+    }
+
+    case QgsUnitTypes::SquareFeet:
+    {
+      if ( keepBaseUnit )
+      {
+        unitLabel = QObject::trUtf8( " ft²" );
+      }
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareMiles, QgsUnitTypes::SquareFeet ) )
+      {
+        unitLabel = QObject::trUtf8( " mi²" );
+        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareFeet, QgsUnitTypes::SquareMiles );
+      }
+      else
+      {
+        unitLabel = QObject::trUtf8( " ft²" );
+      }
+      break;
+    }
+
+    case QgsUnitTypes::SquareYards:
+    {
+      if ( keepBaseUnit )
+      {
+        unitLabel = QObject::trUtf8( " yd²" );
+      }
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareMiles, QgsUnitTypes::SquareYards ) )
+      {
+        unitLabel = QObject::trUtf8( " mi²" );
+        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareYards, QgsUnitTypes::SquareMiles );
+      }
+      else
+      {
+        unitLabel = QObject::trUtf8( " yd²" );
+      }
+      break;
+    }
+
+    case QgsUnitTypes::SquareMiles:
+    {
+      unitLabel = QObject::trUtf8( " mi²" );
+      break;
+    }
+
+    case QgsUnitTypes::Hectares:
+    {
+      if ( keepBaseUnit )
+      {
+        unitLabel = QObject::trUtf8( " ha" );
+      }
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareKilometers, QgsUnitTypes::Hectares ) )
+      {
+        unitLabel = QObject::trUtf8( " km²" );
+        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::Hectares, QgsUnitTypes::SquareKilometers );
+      }
+      else
+      {
+        unitLabel = QObject::trUtf8( " ha" );
+      }
+      break;
+    }
+
+    case QgsUnitTypes::Acres:
+    {
+      if ( keepBaseUnit )
+      {
+        unitLabel = QObject::trUtf8( " ac" );
+      }
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::SquareMiles, QgsUnitTypes::Acres ) )
+      {
+        unitLabel = QObject::trUtf8( " mi²" );
+        area = area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::Acres, QgsUnitTypes::SquareMiles );
+      }
+      else
+      {
+        unitLabel = QObject::trUtf8( " ac" );
+      }
+      break;
+    }
+
+    case QgsUnitTypes::SquareNauticalMiles:
+    {
+      unitLabel = QObject::trUtf8( " nm²" );
+      break;
+    }
+
+    case QgsUnitTypes::SquareDegrees:
+    {
+      unitLabel = QObject::tr( " sq.deg." );
+      break;
+    }
+
+    case QgsUnitTypes::UnknownAreaUnit:
+    {
+      unitLabel.clear();
+      break;
+    }
+  }
+
+  return QLocale::system().toString( area, 'f', decimals ) + unitLabel;
+}
+
 void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::UnitType displayUnits, bool isArea ) const
 {
   // Helper for converting between meters and feet and degrees and NauticalMiles...
@@ -1136,3 +1277,16 @@ double QgsDistanceArea::convertLengthMeasurement( double length, QGis::UnitType 
   return result;
 }
 
+double QgsDistanceArea::convertAreaMeasurement( double area, QgsUnitTypes::AreaUnit toUnits ) const
+{
+  // get the conversion factor between the specified units
+  QgsUnitTypes::AreaUnit measureUnits = areaUnits();
+  double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
+
+  double result = area * factorUnits;
+  QgsDebugMsg( QString( "Converted area of %1 %2 to %3 %4" ).arg( area )
+               .arg( QgsUnitTypes::toString( measureUnits ) )
+               .arg( result )
+               .arg( QgsUnitTypes::toString( toUnits ) ) );
+  return result;
+}

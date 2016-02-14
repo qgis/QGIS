@@ -454,9 +454,10 @@ void QgsProject::clear()
   writeEntry( "PositionPrecision", "/DecimalPlaces", 2 );
   writeEntry( "Paths", "/Absolute", false );
 
-  //copy default distance units to project
+  //copy default units to project
   QSettings s;
   writeEntry( "Measurement", "/DistanceUnits", s.value( "/qgis/measure/displayunits" ).toString() );
+  writeEntry( "Measurement", "/AreaUnits", s.value( "/qgis/measure/areaunits" ).toString() );
 
   setDirty( false );
 }
@@ -2075,6 +2076,19 @@ QGis::UnitType QgsProject::distanceUnits() const
   bool ok = false;
   QGis::UnitType type = QgsUnitTypes::decodeDistanceUnit( s.value( "/qgis/measure/displayunits" ).toString(), &ok );
   return ok ? type : QGis::Meters;
+}
+
+QgsUnitTypes::AreaUnit QgsProject::areaUnits() const
+{
+  QString areaUnitString = QgsProject::instance()->readEntry( "Measurement", "/AreaUnits", QString() );
+  if ( !areaUnitString.isEmpty() )
+    return QgsUnitTypes::decodeAreaUnit( areaUnitString );
+
+  //fallback to QGIS default area unit
+  QSettings s;
+  bool ok = false;
+  QgsUnitTypes::AreaUnit type = QgsUnitTypes::decodeAreaUnit( s.value( "/qgis/measure/areaunits" ).toString(), &ok );
+  return ok ? type : QgsUnitTypes::SquareMeters;
 }
 
 void QgsProjectBadLayerDefaultHandler::handleBadLayers( const QList<QDomNode>& /*layers*/, const QDomDocument& /*projectDom*/ )

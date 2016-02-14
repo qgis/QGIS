@@ -158,20 +158,37 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
   private:
 
     //! Private helper
-    virtual void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea );
+    //! @deprecated use displayDistanceUnits() and displayAreaUnits() instead
+    Q_DECL_DEPRECATED virtual void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea );
 
-    /** Transforms the measurements of derived attributes in the desired units*/
-    virtual QGis::UnitType displayUnits();
+    /** Transforms the measurements of derived attributes in the desired units
+     * @deprecated use displayDistanceUnits() and displayAreaUnits() instead
+    */
+    Q_DECL_DEPRECATED virtual QGis::UnitType displayUnits();
 
     /** Desired units for distance display.
      * @note added in QGIS 2.14
+     * @see displayAreaUnits()
      */
-    virtual QGis::UnitType displayDistanceUnits();
+    virtual QGis::UnitType displayDistanceUnits() const;
+
+    /** Desired units for area display.
+     * @note added in QGIS 2.14
+     * @see displayDistanceUnits()
+     */
+    virtual QgsUnitTypes::AreaUnit displayAreaUnits() const;
 
     /** Format a distance into a suitable string for display to the user
      * @note added in QGIS 2.14
+     * @see formatArea()
      */
-    QString formatDistance( double distance );
+    QString formatDistance( double distance ) const;
+
+    /** Format a distance into a suitable string for display to the user
+     * @note added in QGIS 2.14
+     * @see formatDistance()
+     */
+    QString formatArea( double area ) const;
 
     QMap< QString, QString > featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer, const QgsPoint& layerPoint = QgsPoint() );
 

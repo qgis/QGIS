@@ -91,6 +91,17 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mDistanceUnitsCombo->addItem( tr( "Degrees" ), QGis::Degrees );
   mDistanceUnitsCombo->addItem( tr( "Map units" ), QGis::UnknownUnit );
 
+  mAreaUnitsCombo->addItem( tr( "Square meters" ), QgsUnitTypes::SquareMeters );
+  mAreaUnitsCombo->addItem( tr( "Square kilometers" ), QgsUnitTypes::SquareKilometers );
+  mAreaUnitsCombo->addItem( tr( "Square feet" ), QgsUnitTypes::SquareFeet );
+  mAreaUnitsCombo->addItem( tr( "Square yards" ), QgsUnitTypes::SquareYards );
+  mAreaUnitsCombo->addItem( tr( "Square miles" ), QgsUnitTypes::SquareMiles );
+  mAreaUnitsCombo->addItem( tr( "Hectares" ), QgsUnitTypes::Hectares );
+  mAreaUnitsCombo->addItem( tr( "Acres" ), QgsUnitTypes::Acres );
+  mAreaUnitsCombo->addItem( tr( "Square nautical miles" ), QgsUnitTypes::SquareNauticalMiles );
+  mAreaUnitsCombo->addItem( tr( "Square degrees" ), QgsUnitTypes::SquareDegrees );
+  mAreaUnitsCombo->addItem( tr( "Map units" ), QgsUnitTypes::UnknownAreaUnit );
+
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
   connect( projectionSelector, SIGNAL( sridSelected( QString ) ), this, SLOT( srIdUpdated() ) );
@@ -165,6 +176,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( DecimalDegrees ) );
 
   mDistanceUnitsCombo->setCurrentIndex( mDistanceUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
+  mAreaUnitsCombo->setCurrentIndex( mAreaUnitsCombo->findData( QgsProject::instance()->areaUnits() ) );
 
   //get the color selections and set the button color accordingly
   int myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
@@ -791,6 +803,9 @@ void QgsProjectProperties::apply()
   QGis::UnitType distanceUnits = static_cast< QGis::UnitType >( mDistanceUnitsCombo->itemData( mDistanceUnitsCombo->currentIndex() ).toInt() );
   QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( distanceUnits ) );
 
+  QgsUnitTypes::AreaUnit areaUnits = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsCombo->itemData( mAreaUnitsCombo->currentIndex() ).toInt() );
+  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( areaUnits ) );
+
   QgsProject::instance()->writeEntry( "Paths", "/Absolute", cbxAbsolutePath->currentIndex() == 0 );
 
   if ( mEllipsoidList.at( mEllipsoidIndex ).acronym.startsWith( "PARAMETER" ) )
@@ -1246,6 +1261,20 @@ void QgsProjectProperties::updateGuiForMapUnits( QGis::UnitType units )
     {
       mCoordinateDisplayComboBox->setItemText( idx, mapUnitString );
     }
+  }
+
+  //also update unit combo boxes
+  idx = mDistanceUnitsCombo->findData( QGis::UnknownUnit );
+  if ( idx >= 0 )
+  {
+    QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( units ) );
+    mDistanceUnitsCombo->setItemText( idx, mapUnitString );
+  }
+  idx = mAreaUnitsCombo->findData( QgsUnitTypes::UnknownAreaUnit );
+  if ( idx >= 0 )
+  {
+    QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( QgsUnitTypes::distanceToAreaUnit( units ) ) );
+    mAreaUnitsCombo->setItemText( idx, mapUnitString );
   }
 }
 

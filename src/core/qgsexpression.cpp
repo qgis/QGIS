@@ -1662,7 +1662,9 @@ static QVariant fcnGeomArea( const QVariantList&, const QgsExpressionContext* co
   QgsDistanceArea* calc = parent->geomCalculator();
   if ( calc )
   {
-    return QVariant( calc->measureArea( f.constGeometry() ) );
+    double area = calc->measureArea( f.constGeometry() );
+    area = calc->convertAreaMeasurement( area, parent->areaUnits() );
+    return QVariant( area );
   }
   else
   {
@@ -3425,6 +3427,16 @@ QGis::UnitType QgsExpression::distanceUnits() const
 void QgsExpression::setDistanceUnits( QGis::UnitType unit )
 {
   d->mDistanceUnit = unit;
+}
+
+QgsUnitTypes::AreaUnit QgsExpression::areaUnits() const
+{
+  return d->mAreaUnit;
+}
+
+void QgsExpression::setAreaUnits( QgsUnitTypes::AreaUnit unit )
+{
+  d->mAreaUnit = unit;
 }
 
 void QgsExpression::acceptVisitor( QgsExpression::Visitor& v ) const

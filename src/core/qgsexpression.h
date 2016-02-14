@@ -24,7 +24,7 @@
 #include <QCoreApplication>
 
 #include "qgis.h"
-
+#include "qgsunittypes.h"
 
 class QgsFeature;
 class QgsGeometry;
@@ -268,6 +268,7 @@ class CORE_EXPORT QgsExpression
      * (used by $length, $area and $perimeter functions only)
      * @see setGeomCalculator()
      * @see distanceUnits()
+     * @see areaUnits()
      */
     QgsDistanceArea *geomCalculator();
 
@@ -284,6 +285,7 @@ class CORE_EXPORT QgsExpression
      * @note distances are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see setDistanceUnits()
+     * @see areaUnits()
      */
     QGis::UnitType distanceUnits() const;
 
@@ -291,8 +293,25 @@ class CORE_EXPORT QgsExpression
      * @note distances are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see distanceUnits()
+     * @see setAreaUnits()
      */
     void setDistanceUnits( QGis::UnitType unit );
+
+    /** Returns the desired areal units for calculations involving geomCalculator(), eg "$area".
+     * @note areas are only converted when a geomCalculator() has been set
+     * @note added in QGIS 2.14
+     * @see setAreaUnits()
+     * @see distanceUnits()
+     */
+    QgsUnitTypes::AreaUnit areaUnits() const;
+
+    /** Sets the desired areal units for calculations involving geomCalculator(), eg "$area".
+     * @note areas are only converted when a geomCalculator() has been set
+     * @note added in QGIS 2.14
+     * @see areaUnits()
+     * @see setDistanceUnits()
+     */
+    void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
     /** This function currently replaces each expression between [% and %]
      * in the string with the result of its evaluation on the feature

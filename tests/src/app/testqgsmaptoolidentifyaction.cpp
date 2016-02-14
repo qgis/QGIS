@@ -39,6 +39,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     void cleanup(); // will be called after every testfunction.
     void lengthCalculation(); //test calculation of derived length attributes
     void perimeterCalculation(); //test calculation of derived perimeter attribute
+    void areaCalculation(); //test calculation of derived area attribute
 
   private:
     QgsMapCanvas* canvas;
@@ -177,6 +178,63 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter" )];
   perimeter = derivedPerimeter.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QVERIFY( qgsDoubleNear( perimeter, 79.715, 0.001 ) );
+}
+
+void TestQgsMapToolIdentifyAction::areaCalculation()
+{
+  QSettings s;
+  s.setValue( "/qgis/measure/keepbaseunit", true );
+
+  //create a temporary layer
+  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double", "vl", "memory" ) );
+  QVERIFY( tempLayer->isValid() );
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "pk", 1 );
+  f1.setAttribute( "col1", 0.0 );
+
+  QgsPolyline polygonRing3111;
+  polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
+  QgsPolygon polygon3111;
+  polygon3111 << polygonRing3111;
+  f1.setGeometry( QgsGeometry::fromPolygon( polygon3111 ) );
+  tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+
+  // set project CRS and ellipsoid
+  QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  canvas->setCrsTransformEnabled( true );
+  canvas->setDestinationCrs( srs );
+  canvas->setExtent( f1.geometry()->boundingBox() );
+  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
+  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
+  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
+  QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
+  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareMeters ) );
+
+  QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
+
+  QScopedPointer< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.data() );
+  QCOMPARE( result.length(), 1 );
+  QString derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area" )];
+  double area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
+  QVERIFY( qgsDoubleNear( area, 1009089817.0, 1.0 ) );
+
+  //check that project units are respected
+  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareMiles ) );
+  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.data() );
+  QCOMPARE( result.length(), 1 );
+  derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area" )];
+  area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
+  QVERIFY( qgsDoubleNear( area, 389.6117, 0.001 ) );
+
+  //test unchecked "keep base units" setting
+  s.setValue( "/qgis/measure/keepbaseunit", false );
+  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareFeet ) );
+  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.data() );
+  QCOMPARE( result.length(), 1 );
+  derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area" )];
+  area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
+  QVERIFY( qgsDoubleNear( area, 389.6117, 0.001 ) );
 }
 
 

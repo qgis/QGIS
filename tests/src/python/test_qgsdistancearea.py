@@ -191,6 +191,10 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertAlmostEqual(distance, 247555.57, delta=0.01)
         self.assertEqual(units, QGis.Meters)
 
+        # test converting the resultant length
+        distance = da.convertLengthMeasurement(distance, QGis.NauticalMiles)
+        self.assertAlmostEqual(distance, 133.669, delta=0.01)
+
         # now try with a source CRS which is in feet
         da.setSourceCrs(27469)
         da.setEllipsoidalMode(False)
@@ -201,6 +205,10 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertAlmostEqual(distance, 2.23606797, delta=0.000001)
         self.assertEqual(units, QGis.Feet)
 
+        # test converting the resultant length
+        distance = da.convertLengthMeasurement(distance, QGis.Meters)
+        self.assertAlmostEqual(distance, 0.6815, delta=0.001)
+
         da.setEllipsoidalMode(True)
         # now should be in Meters again
         distance = da.measureLine(QgsPoint(1, 1), QgsPoint(2, 3))
@@ -209,6 +217,83 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertAlmostEqual(distance, 0.67953772, delta=0.000001)
         self.assertEqual(units, QGis.Meters)
 
+        # test converting the resultant length
+        distance = da.convertLengthMeasurement(distance, QGis.Feet)
+        self.assertAlmostEqual(distance, 2.2294, delta=0.001)
+
+    def testAreaMeasureAndUnits(self):
+        """Test a variety of area measurements in different CRS and ellipsoid modes, to check that the
+           calculated areas and units are always consistent
+        """
+
+        da = QgsDistanceArea()
+        da.setSourceCrs(3452)
+        da.setEllipsoidalMode(False)
+        da.setEllipsoid("NONE")
+        daCRS = QgsCoordinateReferenceSystem()
+        daCRS.createFromSrsId(da.sourceCrs())
+
+        polygon = QgsGeometry.fromPolygon(
+            [[
+                QgsPoint(0, 0), QgsPoint(1, 0), QgsPoint(1, 1), QgsPoint(2, 1), QgsPoint(2, 2), QgsPoint(0, 2), QgsPoint(0, 0),
+            ]]
+        )
+
+        # We check both the measured area AND the units, in case the logic regarding
+        # ellipsoids and units changes in future
+        area = da.measureArea(polygon)
+        units = da.areaUnits()
+
+        print "measured {} in {}".format(area, QgsUnitTypes.toString(units))
+        assert ((abs(area - 3.0) < 0.00000001 and units == QgsUnitTypes.SquareDegrees) or
+                (abs(area - 37176087091.5) < 0.1 and units == QgsUnitTypes.SquareMeters))
+
+        da.setEllipsoid("WGS84")
+        area = da.measureArea(polygon)
+        units = da.areaUnits()
+
+        print "measured {} in {}".format(area, QgsUnitTypes.toString(units))
+        assert ((abs(area - 3.0) < 0.00000001 and units == QgsUnitTypes.SquareDegrees) or
+                (abs(area - 37176087091.5) < 0.1 and units == QgsUnitTypes.SquareMeters))
+
+        da.setEllipsoidalMode(True)
+        area = da.measureArea(polygon)
+        units = da.areaUnits()
+
+        print "measured {} in {}".format(area, QgsUnitTypes.toString(units))
+        # should always be in Meters Squared
+        self.assertAlmostEqual(area, 37416879192.9, delta=0.1)
+        self.assertEqual(units, QgsUnitTypes.SquareMeters)
+
+        # test converting the resultant area
+        area = da.convertAreaMeasurement(area, QgsUnitTypes.SquareMiles)
+        self.assertAlmostEqual(area, 14446.7378, delta=0.001)
+
+        # now try with a source CRS which is in feet
+        da.setSourceCrs(27469)
+        da.setEllipsoidalMode(False)
+        # measurement should be in square feet
+        area = da.measureArea(polygon)
+        units = da.areaUnits()
+        print "measured {} in {}".format(area, QgsUnitTypes.toString(units))
+        self.assertAlmostEqual(area, 3.0, delta=0.000001)
+        self.assertEqual(units, QgsUnitTypes.SquareFeet)
+
+        # test converting the resultant area
+        area = da.convertAreaMeasurement(area, QgsUnitTypes.SquareYards)
+        self.assertAlmostEqual(area, 0.333333, delta=0.001)
+
+        da.setEllipsoidalMode(True)
+        # now should be in Square Meters again
+        area = da.measureArea(polygon)
+        units = da.areaUnits()
+        print "measured {} in {}".format(area, QgsUnitTypes.toString(units))
+        self.assertAlmostEqual(area, 0.256102704082, delta=0.000001)
+        self.assertEqual(units, QgsUnitTypes.SquareMeters)
+
+        # test converting the resultant area
+        area = da.convertAreaMeasurement(area, QgsUnitTypes.SquareYards)
+        self.assertAlmostEqual(area, 0.30629, delta=0.0001)
 
 if __name__ == '__main__':
     unittest.main()
