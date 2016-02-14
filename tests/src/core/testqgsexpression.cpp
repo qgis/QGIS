@@ -784,6 +784,15 @@ class TestQgsExpression: public QObject
       QTest::newRow( "feature to bool true" ) << QString( "case when get_feature('test','col1',10) then true else false end" ) << false << QVariant( true );
       QTest::newRow( "geometry to bool false" ) << QString( "case when geom_from_wkt('') then true else false end" ) << false << QVariant( false );
       QTest::newRow( "geometry to bool true" ) << QString( "case when geom_from_wkt('Point(3 4)') then true else false end" ) << false << QVariant( true );
+
+      // is not
+      QTest::newRow( "1 is (not 2)" ) << QString( "1 is (not 2)" ) << false << QVariant( 0 );
+      QTest::newRow( "1 is not 2" ) << QString( "1 is not 2" ) << false << QVariant( 1 );
+      QTest::newRow( "1 is  not 2" ) << QString( "1 is  not 2" ) << false << QVariant( 1 );
+
+      // not like
+      QTest::newRow( "'a' not like 'a%'" ) << QString( "'a' not like 'a%'" ) << false << QVariant( 0 );
+      QTest::newRow( "'a' not  like 'a%'" ) << QString( "'a' not  like 'a%'" ) << false << QVariant( 0 );
     }
 
     void run_evaluation_test( QgsExpression& exp, bool evalError, QVariant& expected )
@@ -872,7 +881,6 @@ class TestQgsExpression: public QObject
     {
       QCOMPARE( QgsExpression::BinaryOperatorText[QgsExpression::boDiv], "/" );
       QCOMPARE( QgsExpression::BinaryOperatorText[QgsExpression::boConcat], "||" );
-
     }
 
     void eval_columns()
@@ -1892,7 +1900,6 @@ class TestQgsExpression: public QObject
 
       // This mainly should not crash, root node should have outlived the original one
       QVERIFY( !expcopy.rootNode()->dump().isEmpty() );
-
 
       // Let's take another copy
       QgsExpression expcopy2( expcopy );

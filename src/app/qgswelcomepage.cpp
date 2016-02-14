@@ -58,7 +58,7 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   mVersionInformation->setVisible( false );
 
   mVersionInfo = new QgsVersionInfo();
-  if( !QgsApplication::isRunningFromBuildDir() )
+  if ( !QgsApplication::isRunningFromBuildDir() )
   {
     connect( mVersionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
     mVersionInfo->checkVersion();

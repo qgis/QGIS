@@ -4004,6 +4004,15 @@ QString QgsExpression::NodeBinaryOperator::dump() const
 {
   QgsExpression::NodeBinaryOperator *lOp = dynamic_cast<QgsExpression::NodeBinaryOperator *>( mOpLeft );
   QgsExpression::NodeBinaryOperator *rOp = dynamic_cast<QgsExpression::NodeBinaryOperator *>( mOpRight );
+  QgsExpression::NodeUnaryOperator *ruOp = dynamic_cast<QgsExpression::NodeUnaryOperator *>( mOpRight );
+
+  QString rdump( mOpRight->dump() );
+
+  // avoid dumping "IS (NOT ...)" as "IS NOT ..."
+  if ( mOp == boIs && ruOp && ruOp->op() == uoNot )
+  {
+    rdump.prepend( '(' ).append( ')' );
+  }
 
   QString fmt;
   if ( leftAssociative() )
@@ -4019,7 +4028,7 @@ QString QgsExpression::NodeBinaryOperator::dump() const
     fmt += rOp && ( rOp->precedence() < precedence() ) ? "(%3)" : "%3";
   }
 
-  return fmt.arg( mOpLeft->dump(), BinaryOperatorText[mOp], mOpRight->dump() );
+  return fmt.arg( mOpLeft->dump(), BinaryOperatorText[mOp], rdump );
 }
 
 QgsExpression::Node* QgsExpression::NodeBinaryOperator::clone() const

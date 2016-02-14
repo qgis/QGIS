@@ -168,7 +168,9 @@ expression:
     | expression GT expression        { $$ = BINOP($2, $1, $3); }
     | expression REGEXP expression    { $$ = BINOP($2, $1, $3); }
     | expression LIKE expression      { $$ = BINOP($2, $1, $3); }
+    | expression NOT LIKE expression  { $$ = BINOP($3==QgsExpression::boLike ? QgsExpression::boNotLike : QgsExpression::boNotILike, $1, $4); }
     | expression IS expression        { $$ = BINOP($2, $1, $3); }
+    | expression IS NOT expression    { $$ = BINOP(QgsExpression::boIsNot, $1, $4); }
     | expression PLUS expression      { $$ = BINOP($2, $1, $3); }
     | expression MINUS expression     { $$ = BINOP($2, $1, $3); }
     | expression MUL expression       { $$ = BINOP($2, $1, $3); }
