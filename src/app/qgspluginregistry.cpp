@@ -469,9 +469,16 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString& thePluginDirString
       // check if the plugin was active on last session
 
       QString baseName = QFileInfo( myFullPath ).baseName();
+      if ( mySettings.value( QString( "/Plugins/watchDog/%1" ).arg( baseName ) ).isValid() )
+      {
+        mQgisInterface->messageBar()->pushWarning( QObject::tr( "Plugin %1" ).arg( baseName ), QObject::tr( "The plugin will be disabled because it crashed QGIS during last startup. Please report an issue and re-enable the plugin when the problem has been solved." ) );
+        mySettings.setValue( "/Plugins/" + baseName, false );
+      }
       if ( mySettings.value( "/Plugins/" + baseName ).toBool() )
       {
+        mySettings.setValue( QString( "/Plugins/watchDog/%1" ).arg( baseName ), true );
         loadCppPlugin( myFullPath );
+        mySettings.remove( QString( "/Plugins/watchDog/%1" ).arg( baseName ) );
       }
     }
   }
@@ -490,18 +497,16 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString& thePluginDirString
     corePlugins << "MetaSearch";
 
     // make the required core plugins enabled by default:
-    for ( int i = 0; i < corePlugins.size(); i++ )
+    Q_FOREACH ( const QString& corePlugin, corePlugins )
     {
-      if ( !mySettings.contains( "/PythonPlugins/" + corePlugins[i] ) )
+      if ( !mySettings.contains( "/PythonPlugins/" + corePlugin ) )
       {
-        mySettings.setValue( "/PythonPlugins/" + corePlugins[i], true );
+        mySettings.setValue( "/PythonPlugins/" + corePlugin, true );
       }
     }
 
-    for ( int i = 0; i < pluginList.size(); i++ )
+    Q_FOREACH ( const QString& packageName, pluginList )
     {
-      QString packageName = pluginList[i];
-
       // TODO: apply better solution for #5879
       // start - temporary fix for issue #5879
       if ( QgsApplication::isRunningFromBuildDir() )
@@ -517,14 +522,22 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString& thePluginDirString
       }
       // end - temporary fix for issue #5879, more below
 
-      if ( checkPythonPlugin( packageName ) )
-      {
-        // check if the plugin was active on last session
 
-        if ( mySettings.value( "/PythonPlugins/" + packageName ).toBool() )
+      if ( mySettings.value( "/PythonPlugins/watchDog/" + packageName ).isValid() )
+      {
+        mQgisInterface->messageBar()->pushWarning( "Plugin " + packageName, "The plugin will be disabled because it crashed QGIS during last startup. Please report an issue and re-enable the plugin when the problem has been solved." );
+        mySettings.setValue( "/PythonPlugins/" + packageName, false );
+      }
+      // check if the plugin was active on last session
+      if ( mySettings.value( "/PythonPlugins/" + packageName ).toBool() )
+      {
+        mySettings.setValue( "/PythonPlugins/watchDog/" + packageName, true );
+        if ( checkPythonPlugin( packageName ) )
         {
           loadPythonPlugin( packageName );
         }
+        mySettings.remove( "/PythonPlugins/watchDog/" + packageName );
+
       }
     }
     // start - temporary fix for issue #5879, more above

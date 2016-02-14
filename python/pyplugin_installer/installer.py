@@ -91,8 +91,10 @@ class QgsPluginInstaller(QObject):
                 updateAvailablePlugins()
                 settings = QSettings()
                 if settings.value("/PythonPlugins/" + key, False, type=bool):
+                    settings.setValue("/PythonPlugins/watchDog/" + key, True)
                     loadPlugin(key)
                     startPlugin(key)
+                    settings.remove("/PythonPlugins/watchDog/" + key)
 
     # ----------------------------------------- #
     def fetchAvailablePlugins(self, reloadMode):
