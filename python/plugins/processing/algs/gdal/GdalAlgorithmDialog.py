@@ -99,11 +99,11 @@ class GdalParametersPanel(ParametersPanel):
             self.parent.setParamValues()
             for output in self.alg.outputs:
                 if output.value is None:
-                    output.value = "[temporary file]"
+                    output.value = self.tr("[temporary file]")
             commands = self.alg.getConsoleCommands()
             commands = [c for c in commands if c not in ['cmd.exe', '/C ']]
             self.text.setPlainText(" ".join(commands))
         except AlgorithmDialogBase.InvalidParameterValue as e:
-            self.text.setPlainText("Invalid value for parameter '%s'" % e.parameter.description)
+            self.text.setPlainText(self.tr("Invalid value for parameter '%s'") % e.parameter.description)
         except:
             self.text.setPlainText("")
