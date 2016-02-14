@@ -24,7 +24,7 @@
 #include <QListView>
 #include <QSettings>
 
-QgsWelcomePage::QgsWelcomePage( QWidget* parent )
+QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget* parent )
     : QWidget( parent )
 {
   QSettings settings;
@@ -60,7 +60,7 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   mVersionInformation->setVisible( false );
 
   mVersionInfo = new QgsVersionInfo();
-  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( "/qgis/checkVersion", true ).toBool() )
+  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( "/qgis/checkVersion", true ).toBool() && !skipVersionCheck )
   {
     connect( mVersionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
     mVersionInfo->checkVersion();

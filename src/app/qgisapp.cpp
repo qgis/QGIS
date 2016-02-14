@@ -531,7 +531,7 @@ static bool cmpByText_( QAction* a, QAction* b )
 QgisApp *QgisApp::smInstance = nullptr;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, Qt::WindowFlags fl )
+QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, QWidget * parent, Qt::WindowFlags fl )
     : QMainWindow( parent, fl )
     , mNonEditMapTool( nullptr )
     , mScaleLabel( nullptr )
@@ -639,7 +639,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // what type of project to auto-open
   mProjOpen = settings.value( "/qgis/projOpenAtLaunch", 0 ).toInt();
 
-  mWelcomePage = new QgsWelcomePage;
+  mWelcomePage = new QgsWelcomePage( skipVersionCheck );
 
   mCentralContainer = new QStackedWidget;
   mCentralContainer->insertWidget( 0, mMapCanvas );
