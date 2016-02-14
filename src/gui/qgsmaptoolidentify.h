@@ -163,6 +163,16 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     /** Transforms the measurements of derived attributes in the desired units*/
     virtual QGis::UnitType displayUnits();
 
+    /** Desired units for distance display.
+     * @note added in QGIS 2.14
+     */
+    virtual QGis::UnitType displayDistanceUnits();
+
+    /** Format a distance into a suitable string for display to the user
+     * @note added in QGIS 2.14
+     */
+    QString formatDistance( double distance );
+
     QMap< QString, QString > featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer, const QgsPoint& layerPoint = QgsPoint() );
 
     /** Adds details of the closest vertex to derived attributes

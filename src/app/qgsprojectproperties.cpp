@@ -54,6 +54,7 @@
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
 #include "qgslayertreemodel.h"
+#include "qgsunittypes.h"
 
 #include "qgsmessagelog.h"
 
@@ -83,6 +84,12 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mCoordinateDisplayComboBox->addItem( tr( "Decimal degrees" ), DecimalDegrees );
   mCoordinateDisplayComboBox->addItem( tr( "Degrees, minutes" ), DegreesMinutes );
   mCoordinateDisplayComboBox->addItem( tr( "Degrees, minutes, seconds" ), DegreesMinutesSeconds );
+
+  mDistanceUnitsCombo->addItem( tr( "Meters" ), QGis::Meters );
+  mDistanceUnitsCombo->addItem( tr( "Feet" ), QGis::Feet );
+  mDistanceUnitsCombo->addItem( tr( "Nautical miles" ), QGis::NauticalMiles );
+  mDistanceUnitsCombo->addItem( tr( "Degrees" ), QGis::Degrees );
+  mDistanceUnitsCombo->addItem( tr( "Map units" ), QGis::UnknownUnit );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
@@ -156,6 +163,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( DegreesMinutesSeconds ) );
   else
     mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( DecimalDegrees ) );
+
+  mDistanceUnitsCombo->setCurrentIndex( mDistanceUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
 
   //get the color selections and set the button color accordingly
   int myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
@@ -779,6 +788,9 @@ void QgsProjectProperties::apply()
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();
 
+  QGis::UnitType distanceUnits = static_cast< QGis::UnitType >( mDistanceUnitsCombo->itemData( mDistanceUnitsCombo->currentIndex() ).toInt() );
+  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( distanceUnits ) );
+
   QgsProject::instance()->writeEntry( "Paths", "/Absolute", cbxAbsolutePath->currentIndex() == 0 );
 
   if ( mEllipsoidList.at( mEllipsoidIndex ).acronym.startsWith( "PARAMETER" ) )
@@ -1139,7 +1151,6 @@ void QgsProjectProperties::showProjectionsTab()
 
 void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
 {
-  QString measureOnFlyState = tr( "Measure tool (CRS transformation: %1)" );
   if ( !onFlyEnabled )
   {
     // reset projection to default
@@ -1162,8 +1173,6 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
 
     // unset ellipsoid
     mEllipsoidIndex = 0;
-
-    btnGrpMeasureEllipsoid->setTitle( measureOnFlyState.arg( tr( "OFF" ) ) );
   }
   else
   {
@@ -1172,8 +1181,6 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
       mLayerSrsId = projectionSelector->selectedCrsId();
     }
     projectionSelector->setSelectedCrsId( mProjectSrsId );
-
-    btnGrpMeasureEllipsoid->setTitle( measureOnFlyState.arg( tr( "ON" ) ) );
   }
 
   srIdUpdated();
@@ -1230,7 +1237,7 @@ void QgsProjectProperties::updateGuiForMapUnits( QGis::UnitType units )
   else
   {
     //make sure map units option is shown in coordinate display combo
-    QString mapUnitString = tr( "Map units (%1)" ).arg( QGis::tr( units ) );
+    QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( units ) );
     if ( idx < 0 )
     {
       mCoordinateDisplayComboBox->insertItem( 0, mapUnitString, MapUnits );

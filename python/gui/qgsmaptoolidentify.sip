@@ -107,4 +107,17 @@ class QgsMapToolIdentify : QgsMapTool
 
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, const QgsRectangle& viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPoint& point );
+
+  private:
+
+    //! Private helper
+    virtual void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea );
+
+    /** Transforms the measurements of derived attributes in the desired units*/
+    virtual QGis::UnitType displayUnits();
+
+    /** Desired units for distance display.
+     * @note added in QGIS 2.14
+     */
+    virtual QGis::UnitType displayDistanceUnits();
 };

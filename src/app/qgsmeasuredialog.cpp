@@ -54,9 +54,7 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
   mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Feet ), QGis::Feet );
   mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::Degrees ), QGis::Degrees );
   mUnitsCombo->addItem( QgsUnitTypes::toString( QGis::NauticalMiles ), QGis::NauticalMiles );
-  QSettings settings;
-  QString units = settings.value( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QGis::Meters ) ).toString();
-  mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::decodeDistanceUnit( units ) ) );
+  mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
 
   updateSettings();
 
@@ -78,7 +76,7 @@ void QgsMeasureDialog::updateSettings()
   mDecimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
   mCanvasUnits = mTool->canvas()->mapUnits();
   // Configure QgsDistanceArea
-  mDisplayUnits = static_cast< QGis::UnitType >( mUnitsCombo->itemData( mUnitsCombo->currentIndex() ).toInt() );
+  mDisplayUnits = QgsProject::instance()->distanceUnits();
   mDa.setSourceCrs( mTool->canvas()->mapSettings().destinationCrs().srsid() );
   mDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
   // Only use ellipsoidal calculation when project wide transformation is enabled.

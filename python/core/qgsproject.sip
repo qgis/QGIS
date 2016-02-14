@@ -248,6 +248,11 @@ class QgsProject : QObject
     /** Convenience function to query topological editing status */
     bool topologicalEditing() const;
 
+    /** Convenience function to query default distance measurement units for project.
+     * @note added in QGIS 2.14
+     */
+    QGis::UnitType distanceUnits() const;
+
     /** Return project's home path
       @return home path of project (or QString::null if not set) */
     QString homePath() const;

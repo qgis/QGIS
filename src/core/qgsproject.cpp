@@ -36,6 +36,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvisibilitypresetcollection.h"
 #include "qgslayerdefinition.h"
+#include "qgsunittypes.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -45,6 +46,7 @@
 #include <QTemporaryFile>
 #include <QDir>
 #include <QUrl>
+#include <QSettings>
 
 #ifdef Q_OS_UNIX
 #include <utime.h>
@@ -451,6 +453,10 @@ void QgsProject::clear()
   writeEntry( "PositionPrecision", "/Automatic", true );
   writeEntry( "PositionPrecision", "/DecimalPlaces", 2 );
   writeEntry( "Paths", "/Absolute", false );
+
+  //copy default distance units to project
+  QSettings s;
+  writeEntry( "Measurement", "/DistanceUnits", s.value( "/qgis/measure/displayunits" ).toString() );
 
   setDirty( false );
 }
@@ -2056,6 +2062,19 @@ void QgsProject::setTopologicalEditing( bool enabled )
 bool QgsProject::topologicalEditing() const
 {
   return ( QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 ) > 0 );
+}
+
+QGis::UnitType QgsProject::distanceUnits() const
+{
+  QString distanceUnitString = QgsProject::instance()->readEntry( "Measurement", "/DistanceUnits", QString() );
+  if ( !distanceUnitString.isEmpty() )
+    return QgsUnitTypes::decodeDistanceUnit( distanceUnitString );
+
+  //fallback to QGIS default measurement unit
+  QSettings s;
+  bool ok = false;
+  QGis::UnitType type = QgsUnitTypes::decodeDistanceUnit( s.value( "/qgis/measure/displayunits" ).toString(), &ok );
+  return ok ? type : QGis::Meters;
 }
 
 void QgsProjectBadLayerDefaultHandler::handleBadLayers( const QList<QDomNode>& /*layers*/, const QDomDocument& /*projectDom*/ )

@@ -193,6 +193,11 @@ QGis::UnitType QgsMapToolIdentifyAction::displayUnits()
   return ok ? unit : QGis::Meters;
 }
 
+QGis::UnitType QgsMapToolIdentifyAction::displayDistanceUnits()
+{
+  return QgsProject::instance()->distanceUnits();
+}
+
 void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore & featureStore )
 {
   QgsDebugMsg( QString( "features count = %1" ).arg( featureStore.features().size() ) );

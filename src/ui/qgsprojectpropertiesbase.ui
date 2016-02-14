@@ -471,13 +471,13 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="btnGrpMeasureEllipsoid">
                  <property name="title">
-                  <string>Measure tool</string>
+                  <string>Measurements</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayoutMeasureTool">
-                  <item row="1" column="0">
+                  <item row="0" column="0">
                    <widget class="QLabel" name="textLabel1_8">
                     <property name="text">
                      <string>Ellipsoid
@@ -485,28 +485,38 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="1">
+                  <item row="1" column="4">
+                   <widget class="QLineEdit" name="leSemiMinor"/>
+                  </item>
+                  <item row="2" column="1" colspan="4">
+                   <widget class="QComboBox" name="mDistanceUnitsCombo"/>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QLineEdit" name="leSemiMajor"/>
+                  </item>
+                  <item row="0" column="1" colspan="4">
+                   <widget class="QComboBox" name="cmbEllipsoid"/>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_28">
+                    <property name="text">
+                     <string>Units for distance measurement</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
                    <widget class="QLabel" name="label_41">
                     <property name="text">
                      <string>Semi-major</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="2">
-                   <widget class="QLineEdit" name="leSemiMajor"/>
-                  </item>
-                  <item row="2" column="4">
-                   <widget class="QLineEdit" name="leSemiMinor"/>
-                  </item>
-                  <item row="2" column="3">
+                  <item row="1" column="3">
                    <widget class="QLabel" name="label_42">
                     <property name="text">
                      <string>Semi-minor</string>
                     </property>
                    </widget>
-                  </item>
-                  <item row="1" column="1" colspan="4">
-                   <widget class="QComboBox" name="cmbEllipsoid"/>
                   </item>
                  </layout>
                 </widget>
@@ -2528,6 +2538,7 @@
   <tabstop>cmbEllipsoid</tabstop>
   <tabstop>leSemiMajor</tabstop>
   <tabstop>leSemiMinor</tabstop>
+  <tabstop>mDistanceUnitsCombo</tabstop>
   <tabstop>mCoordinateDisplayComboBox</tabstop>
   <tabstop>radAutomatic</tabstop>
   <tabstop>radManual</tabstop>

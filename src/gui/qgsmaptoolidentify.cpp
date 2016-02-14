@@ -369,9 +369,8 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   if ( geometryType == QGis::Line )
   {
     double dist = calc.measureLength( feature->constGeometry() );
-    QGis::UnitType myDisplayUnits;
-    convertMeasurement( calc, dist, myDisplayUnits, false );
-    QString str = calc.textUnit( dist, 3, myDisplayUnits, false );  // dist and myDisplayUnits are out params
+    dist = calc.convertLengthMeasurement( dist, displayDistanceUnits() );
+    QString str = formatDistance( dist );
     derivedAttributes.insert( tr( "Length" ), str );
 
     const QgsCurveV2* curve = dynamic_cast< const QgsCurveV2* >( feature->constGeometry()->geometry() );
@@ -399,13 +398,15 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   else if ( geometryType == QGis::Polygon )
   {
     double area = calc.measureArea( feature->constGeometry() );
-    double perimeter = calc.measurePerimeter( feature->constGeometry() );
+
     QGis::UnitType myDisplayUnits;
     convertMeasurement( calc, area, myDisplayUnits, true );  // area and myDisplayUnits are out params
     QString str = calc.textUnit( area, 3, myDisplayUnits, true );
     derivedAttributes.insert( tr( "Area" ), str );
-    convertMeasurement( calc, perimeter, myDisplayUnits, false );  // perimeter and myDisplayUnits are out params
-    str = calc.textUnit( perimeter, 3, myDisplayUnits, false );
+
+    double perimeter = calc.measurePerimeter( feature->constGeometry() );
+    perimeter = calc.convertLengthMeasurement( perimeter, displayDistanceUnits() );
+    str = formatDistance( perimeter );
     derivedAttributes.insert( tr( "Perimeter" ), str );
 
     str = QLocale::system().toString( feature->constGeometry()->geometry()->nCoordinates() );
@@ -640,7 +641,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
 
 void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea )
 {
-  // Helper for converting between meters and feet
+  // Helper for converting between units
   // The parameter &u is out only...
 
   // Get the canvas units
@@ -653,6 +654,19 @@ void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &meas
 QGis::UnitType QgsMapToolIdentify::displayUnits()
 {
   return mCanvas->mapUnits();
+}
+
+QGis::UnitType QgsMapToolIdentify::displayDistanceUnits()
+{
+  return mCanvas->mapUnits();
+}
+
+QString QgsMapToolIdentify::formatDistance( double distance )
+{
+  QSettings settings;
+  bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", false ).toBool();
+
+  return QgsDistanceArea::textUnit( distance, 3, displayDistanceUnits(), false, baseUnit );
 }
 
 void QgsMapToolIdentify::formatChanged( QgsRasterLayer *layer )
