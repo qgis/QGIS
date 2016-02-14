@@ -78,10 +78,80 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(res, QGis.UnknownUnit)
 
         # Test that string is cleaned before conversion
-        res, ok = QgsUnitTypes.decodeDistanceUnit(' {}  '.format(QgsUnitTypes.toString(QGis.Feet).upper()))
+        res, ok = QgsUnitTypes.stringToDistanceUnit(' {}  '.format(QgsUnitTypes.toString(QGis.Feet).upper()))
         print ' {}  '.format(QgsUnitTypes.toString(QGis.Feet).upper())
         assert ok
         self.assertEqual(res, QGis.Feet)
+
+    def testAreaUnitType(self):
+        """Test QgsUnitTypes::unitType() for area units """
+        expected = {QgsUnitTypes.SquareMeters: QgsUnitTypes.Standard,
+                    QgsUnitTypes.SquareKilometers: QgsUnitTypes.Standard,
+                    QgsUnitTypes.SquareFeet: QgsUnitTypes.Standard,
+                    QgsUnitTypes.SquareYards: QgsUnitTypes.Standard,
+                    QgsUnitTypes.SquareMiles: QgsUnitTypes.Standard,
+                    QgsUnitTypes.Hectares: QgsUnitTypes.Standard,
+                    QgsUnitTypes.Acres: QgsUnitTypes.Standard,
+                    QgsUnitTypes.SquareDegrees: QgsUnitTypes.Geographic,
+                    QgsUnitTypes.UnknownAreaUnit: QgsUnitTypes.UnknownType,
+                    }
+
+        for t in expected.keys():
+            self.assertEqual(QgsUnitTypes.unitType(t), expected[t])
+
+    def testEncodeDecodeAreaUnits(self):
+        """Test encoding and decoding area units"""
+        units = [QgsUnitTypes.SquareMeters,
+                 QgsUnitTypes.SquareKilometers,
+                 QgsUnitTypes.SquareFeet,
+                 QgsUnitTypes.SquareYards,
+                 QgsUnitTypes.SquareMiles,
+                 QgsUnitTypes.Hectares,
+                 QgsUnitTypes.Acres,
+                 QgsUnitTypes.SquareDegrees,
+                 QgsUnitTypes.UnknownAreaUnit]
+
+        for u in units:
+            res, ok = QgsUnitTypes.decodeAreaUnit(QgsUnitTypes.encodeUnit(u))
+            assert ok
+            self.assertEqual(res, u)
+
+        # Test decoding bad units
+        res, ok = QgsUnitTypes.decodeAreaUnit('bad')
+        self.assertFalse(ok)
+        self.assertEqual(res, QgsUnitTypes.UnknownAreaUnit)
+
+        # Test that string is cleaned before decoding
+        res, ok = QgsUnitTypes.decodeAreaUnit(' Ha  ')
+        assert ok
+        self.assertEqual(res, QgsUnitTypes.Hectares)
+
+    def testAreaUnitsToFromString(self):
+        """Test converting area units to and from translated strings"""
+        units = [QgsUnitTypes.SquareMeters,
+                 QgsUnitTypes.SquareKilometers,
+                 QgsUnitTypes.SquareFeet,
+                 QgsUnitTypes.SquareYards,
+                 QgsUnitTypes.SquareMiles,
+                 QgsUnitTypes.Hectares,
+                 QgsUnitTypes.Acres,
+                 QgsUnitTypes.SquareDegrees,
+                 QgsUnitTypes.UnknownAreaUnit]
+
+        for u in units:
+            res, ok = QgsUnitTypes.stringToAreaUnit(QgsUnitTypes.toString(u))
+            assert ok
+            self.assertEqual(res, u)
+
+        # Test converting bad strings
+        res, ok = QgsUnitTypes.stringToAreaUnit('bad')
+        self.assertFalse(ok)
+        self.assertEqual(res, QgsUnitTypes.UnknownAreaUnit)
+
+        # Test that string is cleaned before conversion
+        res, ok = QgsUnitTypes.stringToAreaUnit(' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.SquareMiles).upper()))
+        assert ok
+        self.assertEqual(res, QgsUnitTypes.SquareMiles)
 
     def testEncodeDecodeSymbolUnits(self):
         """Test encoding and decoding symbol units"""
@@ -127,6 +197,34 @@ class TestQgsUnitTypes(unittest.TestCase):
                                                                                                               QgsUnitTypes.toString(to_unit)))
                 #test conversion to unknown units
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QGis.UnknownUnit)
+                self.assertAlmostEqual(res,
+                                       1.0,
+                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, expected_factor,
+                                                                                                                      QgsUnitTypes.toString(from_unit)))
+
+    def testAreaFromUnitToUnitFactor(self):
+        """Test calculation of conversion factor between areal units"""
+
+        expected = {QgsUnitTypes.SquareMeters: {QgsUnitTypes.SquareMeters: 1.0, QgsUnitTypes.SquareKilometers: 1e-6, QgsUnitTypes.SquareFeet: 10.7639104, QgsUnitTypes.SquareYards: 1.19599, QgsUnitTypes.SquareMiles: 3.86102e-7, QgsUnitTypes.Hectares: 0.0001, QgsUnitTypes.Acres: 0.000247105, QgsUnitTypes.SquareDegrees: 0.000000000080697, QgsUnitTypes.UnknownAreaUnit: 1.0},
+                    QgsUnitTypes.SquareKilometers: {QgsUnitTypes.SquareMeters: 1e6, QgsUnitTypes.SquareKilometers: 1, QgsUnitTypes.SquareFeet: 10763910.4167097, QgsUnitTypes.SquareYards: 1195990.04630108, QgsUnitTypes.SquareMiles: 0.386102158, QgsUnitTypes.Hectares: 100, QgsUnitTypes.Acres: 247.105381467, QgsUnitTypes.SquareDegrees: 0.000080697034968, QgsUnitTypes.UnknownAreaUnit: 1.0},
+                    QgsUnitTypes.SquareFeet: {QgsUnitTypes.SquareMeters: 0.092903, QgsUnitTypes.SquareKilometers: 9.2903e-8, QgsUnitTypes.SquareFeet: 1.0, QgsUnitTypes.SquareYards: 0.11111111111, QgsUnitTypes.SquareMiles: 3.58701e-8, QgsUnitTypes.Hectares: 9.2903e-6, QgsUnitTypes.Acres: 2.29568e-5, QgsUnitTypes.SquareDegrees: 0.000000000007497, QgsUnitTypes.UnknownAreaUnit: 1.0},
+                    QgsUnitTypes.SquareYards: {QgsUnitTypes.SquareMeters: 0.836127360, QgsUnitTypes.SquareKilometers: 8.36127e-7, QgsUnitTypes.SquareFeet: 9.0, QgsUnitTypes.SquareYards: 1.0, QgsUnitTypes.SquareMiles: 3.22831e-7, QgsUnitTypes.Hectares: 8.3612736E-5, QgsUnitTypes.Acres: 0.00020661157, QgsUnitTypes.SquareDegrees: 0.000000000067473, QgsUnitTypes.UnknownAreaUnit: 1.0},
+                    QgsUnitTypes.SquareMiles: {QgsUnitTypes.SquareMeters: 2589988.110336, QgsUnitTypes.SquareKilometers: 2.589988110, QgsUnitTypes.SquareFeet: 27878400, QgsUnitTypes.SquareYards: 3097600, QgsUnitTypes.SquareMiles: 1.0, QgsUnitTypes.Hectares: 258.998811, QgsUnitTypes.Acres: 640, QgsUnitTypes.SquareDegrees: 0.000209004361107, QgsUnitTypes.UnknownAreaUnit: 1.0},
+                    QgsUnitTypes.Hectares: {QgsUnitTypes.SquareMeters: 10000, QgsUnitTypes.SquareKilometers: 0.01, QgsUnitTypes.SquareFeet: 107639.1041670972, QgsUnitTypes.SquareYards: 11959.9004630, QgsUnitTypes.SquareMiles: 0.00386102, QgsUnitTypes.Hectares: 1.0, QgsUnitTypes.Acres: 2.471053814, QgsUnitTypes.SquareDegrees: 0.000000806970350, QgsUnitTypes.UnknownAreaUnit: 1.0},
+                    QgsUnitTypes.Acres: {QgsUnitTypes.SquareMeters: 4046.8564224, QgsUnitTypes.SquareKilometers: 0.00404686, QgsUnitTypes.SquareFeet: 43560, QgsUnitTypes.SquareYards: 4840, QgsUnitTypes.SquareMiles: 0.0015625, QgsUnitTypes.Hectares: 0.404685642, QgsUnitTypes.Acres: 1.0, QgsUnitTypes.SquareDegrees: 0.000000326569314, QgsUnitTypes.UnknownAreaUnit: 1.0},
+                    QgsUnitTypes.SquareDegrees: {QgsUnitTypes.SquareMeters: 12392029030.5, QgsUnitTypes.SquareKilometers: 12392.029030499, QgsUnitTypes.SquareFeet: 133386690365.5682220, QgsUnitTypes.SquareYards: 14820743373.9520263, QgsUnitTypes.SquareMiles: 4784.5891573967, QgsUnitTypes.Hectares: 1239202.903050, QgsUnitTypes.Acres: 3062137.060733889, QgsUnitTypes.SquareDegrees: 1.0, QgsUnitTypes.UnknownAreaUnit: 1.0}}
+
+        for from_unit in expected.keys():
+            for to_unit in expected[from_unit].keys():
+                expected_factor = expected[from_unit][to_unit]
+                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, to_unit)
+                self.assertAlmostEqual(res,
+                                       expected_factor,
+                                       msg='got {:.15f}, expected {:.15f} when converting from {} to {}'.format(res, expected_factor,
+                                                                                                                QgsUnitTypes.toString(from_unit),
+                                                                                                                QgsUnitTypes.toString(to_unit)))
+                #test conversion to unknown units
+                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.UnknownAreaUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
                                        msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, expected_factor,
