@@ -487,6 +487,9 @@
         <file>themes/default/rendererHeatmapSymbol.svg</file>
         <file>themes/default/renderer25dSymbol.svg</file>
         <file>themes/default/rendererGrassSymbol.svg</file>
+        <file>themes/default/labelingSingle.svg</file>
+        <file>themes/default/labelingRuleBased.svg</file>
+        <file>themes/default/labelingObstacle.svg</file>
         <file>themes/default/repositoryConnected.png</file>
         <file>themes/default/repositoryDisabled.png</file>
         <file>themes/default/repositoryUnavailable.png</file>
