@@ -31,6 +31,7 @@ class QgsUnitTypes
       SquareMiles, /*!< square miles */
       Hectares, /*!< hectares */
       Acres, /*!< acres */
+      SquareNauticalMiles, /*!< square nautical miles */
       SquareDegrees, /*!< square degrees, for planar geographic CRS area measurements */
       UnknownAreaUnit, /*!< unknown areal unit */
     };
@@ -112,6 +113,12 @@ class QgsUnitTypes
      * @returns multiplication factor to convert between units
      */
     static double fromUnitToUnitFactor( AreaUnit fromUnit, AreaUnit toUnit );
+
+    /** Converts a distance unit to its corresponding area unit, eg meters to square meters
+     * @param distanceUnit distance unit to convert
+     * @return matching areal unit
+     */
+    static AreaUnit distanceToAreaUnit( QGis::UnitType distanceUnit );
 
 };
 

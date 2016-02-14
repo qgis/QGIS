@@ -52,6 +52,7 @@ QgsUnitTypes::DistanceUnitType QgsUnitTypes::unitType( QgsUnitTypes::AreaUnit un
     case SquareMiles:
     case Hectares:
     case Acres:
+    case SquareNauticalMiles:
       return Standard;
 
     case SquareDegrees:
@@ -193,30 +194,74 @@ double QgsUnitTypes::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitTy
     {
       case QGis::Meters:
       {
-        if ( toUnit == QGis::Feet ) return 1.0 / FEET_TO_METER;
-        if ( toUnit == QGis::Degrees ) return 1.0 / DEGREE_TO_METER;
-        if ( toUnit == QGis::NauticalMiles ) return 1.0 / NMILE_TO_METER;
+        switch ( toUnit )
+        {
+          case QGis::Meters:
+            return 1.0;
+          case QGis::Feet:
+            return 1.0 / FEET_TO_METER;
+          case QGis::Degrees:
+            return 1.0 / DEGREE_TO_METER;
+          case QGis::NauticalMiles:
+            return 1.0 / NMILE_TO_METER;
+          case QGis::UnknownUnit:
+            break;
+        }
+
         break;
       }
       case QGis::Feet:
       {
-        if ( toUnit == QGis::Meters ) return FEET_TO_METER;
-        if ( toUnit == QGis::Degrees ) return FEET_TO_METER / DEGREE_TO_METER;
-        if ( toUnit == QGis::NauticalMiles ) return FEET_TO_METER / NMILE_TO_METER;
+        switch ( toUnit )
+        {
+          case QGis::Meters:
+            return FEET_TO_METER;
+          case QGis::Feet:
+            return 1.0;
+          case QGis::Degrees:
+            return FEET_TO_METER / DEGREE_TO_METER;
+          case QGis::NauticalMiles:
+            return FEET_TO_METER / NMILE_TO_METER;
+          case QGis::UnknownUnit:
+            break;
+        }
+
         break;
       }
       case QGis::Degrees:
       {
-        if ( toUnit == QGis::Meters ) return DEGREE_TO_METER;
-        if ( toUnit == QGis::Feet ) return DEGREE_TO_METER / FEET_TO_METER;
-        if ( toUnit == QGis::NauticalMiles ) return DEGREE_TO_METER / NMILE_TO_METER;
+        switch ( toUnit )
+        {
+          case QGis::Meters:
+            return DEGREE_TO_METER;
+          case QGis::Feet:
+            return DEGREE_TO_METER / FEET_TO_METER;
+          case QGis::Degrees:
+            return 1.0;
+          case QGis::NauticalMiles:
+            return DEGREE_TO_METER / NMILE_TO_METER;
+          case QGis::UnknownUnit:
+            break;
+        }
+
         break;
       }
       case QGis::NauticalMiles:
       {
-        if ( toUnit == QGis::Meters ) return NMILE_TO_METER;
-        if ( toUnit == QGis::Feet ) return NMILE_TO_METER / FEET_TO_METER;
-        if ( toUnit == QGis::Degrees ) return NMILE_TO_METER / DEGREE_TO_METER;
+        switch ( toUnit )
+        {
+          case QGis::Meters:
+            return NMILE_TO_METER;
+          case QGis::Feet:
+            return NMILE_TO_METER / FEET_TO_METER;
+          case QGis::Degrees:
+            return NMILE_TO_METER / DEGREE_TO_METER;
+          case QGis::NauticalMiles:
+            return 1.0;
+          case QGis::UnknownUnit:
+            break;
+        }
+
         break;
       }
       case QGis::UnknownUnit:
@@ -244,6 +289,8 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaUnit unit )
       return "ha";
     case Acres:
       return "ac";
+    case SquareNauticalMiles:
+      return "nm2";
     case SquareDegrees:
       return "deg2";
     case UnknownAreaUnit:
@@ -273,8 +320,8 @@ QgsUnitTypes::AreaUnit QgsUnitTypes::decodeAreaUnit( const QString& string, bool
     return Hectares;
   if ( normalized == encodeUnit( Acres ) )
     return Acres;
-  if ( normalized == encodeUnit( SquareMiles ) )
-    return SquareMiles;
+  if ( normalized == encodeUnit( SquareNauticalMiles ) )
+    return SquareNauticalMiles;
   if ( normalized == encodeUnit( SquareDegrees ) )
     return SquareDegrees;
   if ( normalized == encodeUnit( UnknownAreaUnit ) )
@@ -304,6 +351,8 @@ QString QgsUnitTypes::toString( QgsUnitTypes::AreaUnit unit )
       return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "hectares" );
     case Acres:
       return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "acres" );
+    case SquareNauticalMiles:
+      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square nautical miles" );
     case SquareDegrees:
       return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square degrees" );
     case UnknownAreaUnit:
@@ -333,6 +382,8 @@ QgsUnitTypes::AreaUnit QgsUnitTypes::stringToAreaUnit( const QString& string, bo
     return Hectares;
   if ( normalized == toString( Acres ) )
     return Acres;
+  if ( normalized == toString( SquareNauticalMiles ) )
+    return SquareNauticalMiles;
   if ( normalized == toString( SquareDegrees ) )
     return SquareDegrees;
   if ( normalized == toString( UnknownAreaUnit ) )
@@ -352,6 +403,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
 #define HA_TO_M2 10000.0
 #define AC_TO_FT2 43560.0
 #define DEG2_TO_M2 12392029030.5
+#define NM2_TO_M2 3429904.0
 
   // Calculate the conversion factor between the specified units
   if ( fromUnit != toUnit )
@@ -360,98 +412,259 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
     {
       case SquareMeters:
       {
-        if ( toUnit == SquareKilometers ) return 1.0 / KM2_TO_M2;
-        if ( toUnit == SquareFeet ) return 1.0 / FT2_TO_M2;
-        if ( toUnit == SquareYards ) return 1.0 / YD2_TO_M2;
-        if ( toUnit == SquareMiles ) return 1.0 / MI2_TO_M2;
-        if ( toUnit == Hectares ) return 1.0 / HA_TO_M2;
-        if ( toUnit == Acres ) return 1.0 / AC_TO_FT2 / FT2_TO_M2;
-        if ( toUnit == SquareDegrees ) return 1.0 / DEG2_TO_M2;
+        switch ( toUnit )
+        {
+          case SquareMeters:
+            return 1.0;
+          case SquareKilometers:
+            return 1.0 / KM2_TO_M2;
+          case SquareFeet:
+            return 1.0 / FT2_TO_M2;
+          case SquareYards:
+            return 1.0 / YD2_TO_M2;
+          case SquareMiles:
+            return 1.0 / MI2_TO_M2;
+          case Hectares:
+            return 1.0 / HA_TO_M2;
+          case Acres:
+            return 1.0 / AC_TO_FT2 / FT2_TO_M2;
+          case SquareNauticalMiles:
+            return 1.0 / NM2_TO_M2;
+          case SquareDegrees:
+            return 1.0 / DEG2_TO_M2;
+          case UnknownAreaUnit:
+            break;
+        }
 
         break;
       }
       case SquareKilometers:
       {
-        if ( toUnit == SquareMeters ) return KM2_TO_M2;
-        if ( toUnit == SquareFeet ) return KM2_TO_M2 / FT2_TO_M2 ;
-        if ( toUnit == SquareYards ) return KM2_TO_M2 / YD2_TO_M2;
-        if ( toUnit == SquareMiles ) return KM2_TO_M2 / MI2_TO_M2;
-        if ( toUnit == Hectares ) return KM2_TO_M2 / HA_TO_M2;
-        if ( toUnit == Acres ) return KM2_TO_M2 / AC_TO_FT2 / FT2_TO_M2 ;
-        if ( toUnit == SquareDegrees ) return KM2_TO_M2 / DEG2_TO_M2;
+        switch ( toUnit )
+        {
+          case SquareMeters:
+            return KM2_TO_M2;
+          case SquareKilometers:
+            return 1.0;
+          case SquareFeet:
+            return KM2_TO_M2 / FT2_TO_M2 ;
+          case SquareYards:
+            return KM2_TO_M2 / YD2_TO_M2;
+          case SquareMiles:
+            return KM2_TO_M2 / MI2_TO_M2;
+          case Hectares:
+            return KM2_TO_M2 / HA_TO_M2;
+          case Acres:
+            return KM2_TO_M2 / AC_TO_FT2 / FT2_TO_M2;
+          case SquareNauticalMiles:
+            return KM2_TO_M2 / NM2_TO_M2;
+          case SquareDegrees:
+            return KM2_TO_M2 / DEG2_TO_M2;
+          case UnknownAreaUnit:
+            break;
+        }
 
         break;
       }
       case SquareFeet:
       {
-        if ( toUnit == SquareMeters ) return FT2_TO_M2;
-        if ( toUnit == SquareKilometers ) return FT2_TO_M2 / KM2_TO_M2;
-        if ( toUnit == SquareYards ) return FT2_TO_M2 / YD2_TO_M2;
-        if ( toUnit == SquareMiles ) return FT2_TO_M2 / MI2_TO_M2;
-        if ( toUnit == Hectares ) return FT2_TO_M2 / HA_TO_M2;
-        if ( toUnit == Acres ) return 1.0 / AC_TO_FT2;
-        if ( toUnit == SquareDegrees ) return FT2_TO_M2 / DEG2_TO_M2;
+        switch ( toUnit )
+        {
+          case SquareMeters:
+            return FT2_TO_M2;
+          case SquareKilometers:
+            return FT2_TO_M2 / KM2_TO_M2;
+          case SquareFeet:
+            return 1.0;
+          case SquareYards:
+            return FT2_TO_M2 / YD2_TO_M2;
+          case SquareMiles:
+            return FT2_TO_M2 / MI2_TO_M2;
+          case Hectares:
+            return FT2_TO_M2 / HA_TO_M2;
+          case Acres:
+            return 1.0 / AC_TO_FT2;
+          case SquareNauticalMiles:
+            return FT2_TO_M2 / NM2_TO_M2;
+          case SquareDegrees:
+            return FT2_TO_M2 / DEG2_TO_M2;
+          case UnknownAreaUnit:
+            break;
+        }
 
         break;
       }
 
       case SquareYards:
       {
-        if ( toUnit == SquareMeters ) return YD2_TO_M2;
-        if ( toUnit == SquareKilometers ) return YD2_TO_M2 / KM2_TO_M2;
-        if ( toUnit == SquareFeet ) return YD2_TO_M2 / FT2_TO_M2;
-        if ( toUnit == SquareMiles ) return YD2_TO_M2 / MI2_TO_M2;
-        if ( toUnit == Hectares ) return YD2_TO_M2 / HA_TO_M2;
-        if ( toUnit == Acres ) return YD2_TO_M2 / FT2_TO_M2 / AC_TO_FT2;
-        if ( toUnit == SquareDegrees ) return YD2_TO_M2 / DEG2_TO_M2;
+        switch ( toUnit )
+        {
+          case SquareMeters:
+            return YD2_TO_M2;
+          case SquareKilometers:
+            return YD2_TO_M2 / KM2_TO_M2;
+          case SquareFeet:
+            return YD2_TO_M2 / FT2_TO_M2;
+          case SquareYards:
+            return 1.0;
+          case SquareMiles:
+            return YD2_TO_M2 / MI2_TO_M2;
+          case Hectares:
+            return YD2_TO_M2 / HA_TO_M2;
+          case Acres:
+            return YD2_TO_M2 / FT2_TO_M2 / AC_TO_FT2;
+          case SquareNauticalMiles:
+            return YD2_TO_M2 / NM2_TO_M2;
+          case SquareDegrees:
+            return YD2_TO_M2 / DEG2_TO_M2;
+          case UnknownAreaUnit:
+            break;
+        }
         break;
       }
 
       case SquareMiles:
       {
-        if ( toUnit == SquareMeters ) return MI2_TO_M2;
-        if ( toUnit == SquareKilometers ) return MI2_TO_M2 / KM2_TO_M2;
-        if ( toUnit == SquareFeet ) return MI2_TO_M2 / FT2_TO_M2;
-        if ( toUnit == SquareYards ) return MI2_TO_M2 / YD2_TO_M2;
-        if ( toUnit == Hectares ) return MI2_TO_M2 / HA_TO_M2;
-        if ( toUnit == Acres ) return MI2_TO_M2 / FT2_TO_M2 / AC_TO_FT2;
-        if ( toUnit == SquareDegrees ) return MI2_TO_M2 / DEG2_TO_M2;
+        switch ( toUnit )
+        {
+          case SquareMeters:
+            return MI2_TO_M2;
+          case SquareKilometers:
+            return MI2_TO_M2 / KM2_TO_M2;
+          case SquareFeet:
+            return MI2_TO_M2 / FT2_TO_M2;
+          case SquareYards:
+            return MI2_TO_M2 / YD2_TO_M2;
+          case SquareMiles:
+            return 1.0;
+          case Hectares:
+            return MI2_TO_M2 / HA_TO_M2;
+          case Acres:
+            return MI2_TO_M2 / FT2_TO_M2 / AC_TO_FT2;
+          case SquareNauticalMiles:
+            return MI2_TO_M2 / NM2_TO_M2;
+          case SquareDegrees:
+            return MI2_TO_M2 / DEG2_TO_M2;
+          case UnknownAreaUnit:
+            break;
+        }
+
         break;
       }
 
       case Hectares:
       {
-        if ( toUnit == SquareMeters ) return HA_TO_M2;
-        if ( toUnit == SquareKilometers ) return HA_TO_M2 / KM2_TO_M2;
-        if ( toUnit == SquareFeet ) return HA_TO_M2 / FT2_TO_M2;
-        if ( toUnit == SquareYards ) return HA_TO_M2 / YD2_TO_M2;
-        if ( toUnit == SquareMiles ) return HA_TO_M2 / MI2_TO_M2;
-        if ( toUnit == Acres ) return HA_TO_M2 / FT2_TO_M2 / AC_TO_FT2;
-        if ( toUnit == SquareDegrees ) return HA_TO_M2 / DEG2_TO_M2;
+        switch ( toUnit )
+        {
+          case SquareMeters:
+            return HA_TO_M2;
+          case SquareKilometers:
+            return HA_TO_M2 / KM2_TO_M2;
+          case SquareFeet:
+            return HA_TO_M2 / FT2_TO_M2;
+          case SquareYards:
+            return HA_TO_M2 / YD2_TO_M2;
+          case SquareMiles:
+            return HA_TO_M2 / MI2_TO_M2;
+          case Hectares:
+            return 1.0;
+          case Acres:
+            return HA_TO_M2 / FT2_TO_M2 / AC_TO_FT2;
+          case SquareNauticalMiles:
+            return HA_TO_M2 / NM2_TO_M2;
+          case SquareDegrees:
+            return HA_TO_M2 / DEG2_TO_M2;
+          case UnknownAreaUnit:
+            break;
+        }
+
         break;
       }
 
       case Acres:
       {
-        if ( toUnit == SquareMeters ) return AC_TO_FT2 * FT2_TO_M2;
-        if ( toUnit == SquareKilometers ) return AC_TO_FT2 * FT2_TO_M2 / KM2_TO_M2;
-        if ( toUnit == SquareFeet ) return AC_TO_FT2;
-        if ( toUnit == SquareYards ) return AC_TO_FT2 * FT2_TO_M2 / YD2_TO_M2;
-        if ( toUnit == SquareMiles ) return AC_TO_FT2 * FT2_TO_M2 / MI2_TO_M2;
-        if ( toUnit == Hectares ) return AC_TO_FT2 * FT2_TO_M2 / HA_TO_M2;
-        if ( toUnit == SquareDegrees ) return AC_TO_FT2 * FT2_TO_M2 / DEG2_TO_M2;
+        switch ( toUnit )
+        {
+          case SquareMeters:
+            return AC_TO_FT2 * FT2_TO_M2;
+          case SquareKilometers:
+            return AC_TO_FT2 * FT2_TO_M2 / KM2_TO_M2;
+          case SquareFeet:
+            return AC_TO_FT2;
+          case SquareYards:
+            return AC_TO_FT2 * FT2_TO_M2 / YD2_TO_M2;
+          case SquareMiles:
+            return AC_TO_FT2 * FT2_TO_M2 / MI2_TO_M2;
+          case Hectares:
+            return AC_TO_FT2 * FT2_TO_M2 / HA_TO_M2;
+          case Acres:
+            return 1.0;
+          case SquareNauticalMiles:
+            return AC_TO_FT2 * FT2_TO_M2 / NM2_TO_M2;
+          case SquareDegrees:
+            return AC_TO_FT2 * FT2_TO_M2 / DEG2_TO_M2;
+          case UnknownAreaUnit:
+            break;
+        }
+
+        break;
+      }
+
+      case SquareNauticalMiles:
+      {
+        switch ( toUnit )
+        {
+          case SquareMeters:
+            return NM2_TO_M2;
+          case SquareKilometers:
+            return NM2_TO_M2 / KM2_TO_M2;
+          case SquareFeet:
+            return NM2_TO_M2 / FT2_TO_M2;
+          case SquareYards:
+            return NM2_TO_M2 / YD2_TO_M2;
+          case SquareMiles:
+            return NM2_TO_M2 / MI2_TO_M2;
+          case Hectares:
+            return NM2_TO_M2 / HA_TO_M2;
+          case Acres:
+            return NM2_TO_M2 / FT2_TO_M2 / AC_TO_FT2;
+          case SquareNauticalMiles:
+            return 1.0;
+          case SquareDegrees:
+            return NM2_TO_M2 / DEG2_TO_M2;
+          case UnknownAreaUnit:
+            break;
+        }
+
         break;
       }
 
       case SquareDegrees:
       {
-        if ( toUnit == SquareMeters ) return DEG2_TO_M2;
-        if ( toUnit == SquareKilometers ) return DEG2_TO_M2 / KM2_TO_M2;
-        if ( toUnit == SquareFeet ) return DEG2_TO_M2 / FT2_TO_M2;
-        if ( toUnit == SquareYards ) return DEG2_TO_M2 / YD2_TO_M2;
-        if ( toUnit == SquareMiles ) return DEG2_TO_M2 / MI2_TO_M2;
-        if ( toUnit == Hectares ) return DEG2_TO_M2 / HA_TO_M2;
-        if ( toUnit == Acres ) return DEG2_TO_M2 / FT2_TO_M2 / AC_TO_FT2;
+        switch ( toUnit )
+        {
+          case SquareMeters:
+            return DEG2_TO_M2;
+          case SquareKilometers:
+            return DEG2_TO_M2 / KM2_TO_M2;
+          case SquareFeet:
+            return DEG2_TO_M2 / FT2_TO_M2;
+          case SquareYards:
+            return DEG2_TO_M2 / YD2_TO_M2;
+          case SquareMiles:
+            return DEG2_TO_M2 / MI2_TO_M2;
+          case Hectares:
+            return DEG2_TO_M2 / HA_TO_M2;
+          case Acres:
+            return DEG2_TO_M2 / FT2_TO_M2 / AC_TO_FT2;
+          case SquareNauticalMiles:
+            return DEG2_TO_M2 / NM2_TO_M2;
+          case SquareDegrees:
+            return 1.0;
+          case UnknownAreaUnit:
+            break;
+        }
+
         break;
       }
 
@@ -460,6 +673,29 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
     }
   }
   return 1.0;
+}
+
+QgsUnitTypes::AreaUnit QgsUnitTypes::distanceToAreaUnit( QGis::UnitType distanceUnit )
+{
+  switch ( distanceUnit )
+  {
+    case QGis::Meters:
+      return SquareMeters;
+
+    case QGis::Feet:
+      return SquareFeet;
+
+    case QGis::Degrees:
+      return SquareDegrees;
+
+    case QGis::UnknownUnit:
+      return UnknownAreaUnit;
+
+    case QGis::NauticalMiles:
+      return SquareNauticalMiles;
+  }
+
+  return UnknownAreaUnit;
 }
 
 // enable for QGIS 3.0

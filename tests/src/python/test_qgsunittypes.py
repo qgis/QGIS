@@ -92,6 +92,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.SquareMiles: QgsUnitTypes.Standard,
                     QgsUnitTypes.Hectares: QgsUnitTypes.Standard,
                     QgsUnitTypes.Acres: QgsUnitTypes.Standard,
+                    QgsUnitTypes.SquareNauticalMiles: QgsUnitTypes.Standard,
                     QgsUnitTypes.SquareDegrees: QgsUnitTypes.Geographic,
                     QgsUnitTypes.UnknownAreaUnit: QgsUnitTypes.UnknownType,
                     }
@@ -108,6 +109,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.SquareMiles,
                  QgsUnitTypes.Hectares,
                  QgsUnitTypes.Acres,
+                 QgsUnitTypes.SquareNauticalMiles,
                  QgsUnitTypes.SquareDegrees,
                  QgsUnitTypes.UnknownAreaUnit]
 
@@ -135,6 +137,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.SquareMiles,
                  QgsUnitTypes.Hectares,
                  QgsUnitTypes.Acres,
+                 QgsUnitTypes.SquareNauticalMiles,
                  QgsUnitTypes.SquareDegrees,
                  QgsUnitTypes.UnknownAreaUnit]
 
@@ -206,14 +209,15 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testAreaFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between areal units"""
 
-        expected = {QgsUnitTypes.SquareMeters: {QgsUnitTypes.SquareMeters: 1.0, QgsUnitTypes.SquareKilometers: 1e-6, QgsUnitTypes.SquareFeet: 10.7639104, QgsUnitTypes.SquareYards: 1.19599, QgsUnitTypes.SquareMiles: 3.86102e-7, QgsUnitTypes.Hectares: 0.0001, QgsUnitTypes.Acres: 0.000247105, QgsUnitTypes.SquareDegrees: 0.000000000080697, QgsUnitTypes.UnknownAreaUnit: 1.0},
-                    QgsUnitTypes.SquareKilometers: {QgsUnitTypes.SquareMeters: 1e6, QgsUnitTypes.SquareKilometers: 1, QgsUnitTypes.SquareFeet: 10763910.4167097, QgsUnitTypes.SquareYards: 1195990.04630108, QgsUnitTypes.SquareMiles: 0.386102158, QgsUnitTypes.Hectares: 100, QgsUnitTypes.Acres: 247.105381467, QgsUnitTypes.SquareDegrees: 0.000080697034968, QgsUnitTypes.UnknownAreaUnit: 1.0},
-                    QgsUnitTypes.SquareFeet: {QgsUnitTypes.SquareMeters: 0.092903, QgsUnitTypes.SquareKilometers: 9.2903e-8, QgsUnitTypes.SquareFeet: 1.0, QgsUnitTypes.SquareYards: 0.11111111111, QgsUnitTypes.SquareMiles: 3.58701e-8, QgsUnitTypes.Hectares: 9.2903e-6, QgsUnitTypes.Acres: 2.29568e-5, QgsUnitTypes.SquareDegrees: 0.000000000007497, QgsUnitTypes.UnknownAreaUnit: 1.0},
-                    QgsUnitTypes.SquareYards: {QgsUnitTypes.SquareMeters: 0.836127360, QgsUnitTypes.SquareKilometers: 8.36127e-7, QgsUnitTypes.SquareFeet: 9.0, QgsUnitTypes.SquareYards: 1.0, QgsUnitTypes.SquareMiles: 3.22831e-7, QgsUnitTypes.Hectares: 8.3612736E-5, QgsUnitTypes.Acres: 0.00020661157, QgsUnitTypes.SquareDegrees: 0.000000000067473, QgsUnitTypes.UnknownAreaUnit: 1.0},
-                    QgsUnitTypes.SquareMiles: {QgsUnitTypes.SquareMeters: 2589988.110336, QgsUnitTypes.SquareKilometers: 2.589988110, QgsUnitTypes.SquareFeet: 27878400, QgsUnitTypes.SquareYards: 3097600, QgsUnitTypes.SquareMiles: 1.0, QgsUnitTypes.Hectares: 258.998811, QgsUnitTypes.Acres: 640, QgsUnitTypes.SquareDegrees: 0.000209004361107, QgsUnitTypes.UnknownAreaUnit: 1.0},
-                    QgsUnitTypes.Hectares: {QgsUnitTypes.SquareMeters: 10000, QgsUnitTypes.SquareKilometers: 0.01, QgsUnitTypes.SquareFeet: 107639.1041670972, QgsUnitTypes.SquareYards: 11959.9004630, QgsUnitTypes.SquareMiles: 0.00386102, QgsUnitTypes.Hectares: 1.0, QgsUnitTypes.Acres: 2.471053814, QgsUnitTypes.SquareDegrees: 0.000000806970350, QgsUnitTypes.UnknownAreaUnit: 1.0},
-                    QgsUnitTypes.Acres: {QgsUnitTypes.SquareMeters: 4046.8564224, QgsUnitTypes.SquareKilometers: 0.00404686, QgsUnitTypes.SquareFeet: 43560, QgsUnitTypes.SquareYards: 4840, QgsUnitTypes.SquareMiles: 0.0015625, QgsUnitTypes.Hectares: 0.404685642, QgsUnitTypes.Acres: 1.0, QgsUnitTypes.SquareDegrees: 0.000000326569314, QgsUnitTypes.UnknownAreaUnit: 1.0},
-                    QgsUnitTypes.SquareDegrees: {QgsUnitTypes.SquareMeters: 12392029030.5, QgsUnitTypes.SquareKilometers: 12392.029030499, QgsUnitTypes.SquareFeet: 133386690365.5682220, QgsUnitTypes.SquareYards: 14820743373.9520263, QgsUnitTypes.SquareMiles: 4784.5891573967, QgsUnitTypes.Hectares: 1239202.903050, QgsUnitTypes.Acres: 3062137.060733889, QgsUnitTypes.SquareDegrees: 1.0, QgsUnitTypes.UnknownAreaUnit: 1.0}}
+        expected = {QgsUnitTypes.SquareMeters: {QgsUnitTypes.SquareMeters: 1.0, QgsUnitTypes.SquareKilometers: 1e-6, QgsUnitTypes.SquareFeet: 10.7639104, QgsUnitTypes.SquareYards: 1.19599, QgsUnitTypes.SquareMiles: 3.86102e-7, QgsUnitTypes.Hectares: 0.0001, QgsUnitTypes.Acres: 0.000247105, QgsUnitTypes.SquareNauticalMiles: 2.91553e-7, QgsUnitTypes.SquareDegrees: 0.000000000080697, QgsUnitTypes.UnknownAreaUnit: 1.0},
+                    QgsUnitTypes.SquareKilometers: {QgsUnitTypes.SquareMeters: 1e6, QgsUnitTypes.SquareKilometers: 1, QgsUnitTypes.SquareFeet: 10763910.4167097, QgsUnitTypes.SquareYards: 1195990.04630108, QgsUnitTypes.SquareMiles: 0.386102158, QgsUnitTypes.Hectares: 100, QgsUnitTypes.Acres: 247.105381467, QgsUnitTypes.SquareNauticalMiles: 0.291553349598, QgsUnitTypes.SquareDegrees: 0.000080697034968, QgsUnitTypes.UnknownAreaUnit: 1.0},
+                    QgsUnitTypes.SquareFeet: {QgsUnitTypes.SquareMeters: 0.092903, QgsUnitTypes.SquareKilometers: 9.2903e-8, QgsUnitTypes.SquareFeet: 1.0, QgsUnitTypes.SquareYards: 0.11111111111, QgsUnitTypes.SquareMiles: 3.58701e-8, QgsUnitTypes.Hectares: 9.2903e-6, QgsUnitTypes.Acres: 2.29568e-5, QgsUnitTypes.SquareNauticalMiles: 2.70862e-8, QgsUnitTypes.SquareDegrees: 0.000000000007497, QgsUnitTypes.UnknownAreaUnit: 1.0},
+                    QgsUnitTypes.SquareYards: {QgsUnitTypes.SquareMeters: 0.836127360, QgsUnitTypes.SquareKilometers: 8.36127e-7, QgsUnitTypes.SquareFeet: 9.0, QgsUnitTypes.SquareYards: 1.0, QgsUnitTypes.SquareMiles: 3.22831e-7, QgsUnitTypes.Hectares: 8.3612736E-5, QgsUnitTypes.Acres: 0.00020661157, QgsUnitTypes.SquareNauticalMiles: 2.43776e-7, QgsUnitTypes.SquareDegrees: 0.000000000067473, QgsUnitTypes.UnknownAreaUnit: 1.0},
+                    QgsUnitTypes.SquareMiles: {QgsUnitTypes.SquareMeters: 2589988.110336, QgsUnitTypes.SquareKilometers: 2.589988110, QgsUnitTypes.SquareFeet: 27878400, QgsUnitTypes.SquareYards: 3097600, QgsUnitTypes.SquareMiles: 1.0, QgsUnitTypes.Hectares: 258.998811, QgsUnitTypes.Acres: 640, QgsUnitTypes.SquareNauticalMiles: 0.75511970898, QgsUnitTypes.SquareDegrees: 0.000209004361107, QgsUnitTypes.UnknownAreaUnit: 1.0},
+                    QgsUnitTypes.Hectares: {QgsUnitTypes.SquareMeters: 10000, QgsUnitTypes.SquareKilometers: 0.01, QgsUnitTypes.SquareFeet: 107639.1041670972, QgsUnitTypes.SquareYards: 11959.9004630, QgsUnitTypes.SquareMiles: 0.00386102, QgsUnitTypes.Hectares: 1.0, QgsUnitTypes.Acres: 2.471053814, QgsUnitTypes.SquareNauticalMiles: 0.00291553, QgsUnitTypes.SquareDegrees: 0.000000806970350, QgsUnitTypes.UnknownAreaUnit: 1.0},
+                    QgsUnitTypes.Acres: {QgsUnitTypes.SquareMeters: 4046.8564224, QgsUnitTypes.SquareKilometers: 0.00404686, QgsUnitTypes.SquareFeet: 43560, QgsUnitTypes.SquareYards: 4840, QgsUnitTypes.SquareMiles: 0.0015625, QgsUnitTypes.Hectares: 0.404685642, QgsUnitTypes.Acres: 1.0, QgsUnitTypes.SquareNauticalMiles: 0.00117987, QgsUnitTypes.SquareDegrees: 0.000000326569314, QgsUnitTypes.UnknownAreaUnit: 1.0},
+                    QgsUnitTypes.SquareNauticalMiles: {QgsUnitTypes.SquareMeters: 3429904, QgsUnitTypes.SquareKilometers: 3.4299040, QgsUnitTypes.SquareFeet: 36919179.39391434, QgsUnitTypes.SquareYards: 4102131.04376826, QgsUnitTypes.SquareMiles: 1.324293337, QgsUnitTypes.Hectares: 342.9904000000, QgsUnitTypes.Acres: 847.54773631, QgsUnitTypes.SquareNauticalMiles: 1.0, QgsUnitTypes.SquareDegrees: 0.000276783083025, QgsUnitTypes.UnknownAreaUnit: 1.0},
+                    QgsUnitTypes.SquareDegrees: {QgsUnitTypes.SquareMeters: 12392029030.5, QgsUnitTypes.SquareKilometers: 12392.029030499, QgsUnitTypes.SquareFeet: 133386690365.5682220, QgsUnitTypes.SquareYards: 14820743373.9520263, QgsUnitTypes.SquareMiles: 4784.5891573967, QgsUnitTypes.Hectares: 1239202.903050, QgsUnitTypes.Acres: 3062137.060733889, QgsUnitTypes.SquareNauticalMiles: 3612.93757215, QgsUnitTypes.SquareDegrees: 1.0, QgsUnitTypes.UnknownAreaUnit: 1.0}}
 
         for from_unit in expected.keys():
             for to_unit in expected[from_unit].keys():
@@ -230,6 +234,18 @@ class TestQgsUnitTypes(unittest.TestCase):
                                        1.0,
                                        msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, expected_factor,
                                                                                                                       QgsUnitTypes.toString(from_unit)))
+
+    def testDistanceToAreaUnit(self):
+        """Test distanceToAreaUnit conversion"""
+        expected = {QGis.Meters: QgsUnitTypes.SquareMeters,
+                    QGis.Feet: QgsUnitTypes.SquareFeet,
+                    QGis.Degrees: QgsUnitTypes.SquareDegrees,
+                    QGis.UnknownUnit: QgsUnitTypes.UnknownAreaUnit,
+                    QGis.NauticalMiles: QgsUnitTypes.SquareNauticalMiles
+                    }
+
+        for t in expected.keys():
+            self.assertEqual(QgsUnitTypes.distanceToAreaUnit(t), expected[t])
 
 
 if __name__ == "__main__":
