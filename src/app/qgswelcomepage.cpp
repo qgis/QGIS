@@ -58,8 +58,11 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   mVersionInformation->setVisible( false );
 
   mVersionInfo = new QgsVersionInfo();
-  connect( mVersionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
-  mVersionInfo->checkVersion();
+  if( !QgsApplication::isRunningFromBuildDir() )
+  {
+    connect( mVersionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
+    mVersionInfo->checkVersion();
+  }
 
   connect( recentProjectsListView, SIGNAL( activated( QModelIndex ) ), this, SLOT( itemActivated( QModelIndex ) ) );
 }
