@@ -106,11 +106,11 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual QGis::WkbType geometryType() const override;
 
     /** Return the number of layers for the current data source
-
-    @note
-
-    Should this be subLayerCount() instead?
-    */
+     *
+     * @note
+     *
+     * Should this be subLayerCount() instead?
+     */
     virtual size_t layerCount() const;
 
     /**
@@ -176,16 +176,14 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
 
     /** Return vector file filter string
-
-      Returns a string suitable for a QFileDialog of vector file formats
-      supported by the data provider.  Naturally this will be an empty string
-      for those data providers that do not deal with plain files, such as
-      databases and servers.
-
-      @note
-
-      It'd be nice to eventually be raster/vector neutral.
-    */
+     *
+     * Returns a string suitable for a QFileDialog of vector file formats
+     * supported by the data provider.  Naturally this will be an empty string
+     * for those data providers that do not deal with plain files, such as
+     * databases and servers.
+     *
+     * @note It'd be nice to eventually be raster/vector neutral.
+     */
     /* virtual */
     QString fileVectorFilters() const override;
     /** Return a string containing the available database drivers */
@@ -196,55 +194,58 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QString directoryDrivers() const;
 
     /** Returns true if this is a valid shapefile
-    */
+     */
     bool isValid() override;
 
     /** Returns the minimum value of an attribute
-     *  @param index the index of the attribute */
+     *  @param index the index of the attribute
+     */
     QVariant minimumValue( int index ) override;
 
     /** Returns the maximum value of an attribute
-     *  @param index the index of the attribute */
+     *  @param index the index of the attribute
+     */
     QVariant maximumValue( int index ) override;
 
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
-     *  @param values reference to the list of unique values */
+     *  @param values reference to the list of unique values
+     */
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) override;
 
     /** Return a provider name
-
-    Essentially just returns the provider key.  Should be used to build file
-    dialogs so that providers can be shown with their supported types. Thus
-    if more than one provider supports a given format, the user is able to
-    select a specific provider to open that file.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+     *
+     * Essentially just returns the provider key.  Should be used to build file
+     * dialogs so that providers can be shown with their supported types. Thus
+     * if more than one provider supports a given format, the user is able to
+     * select a specific provider to open that file.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     QString name() const override;
 
 
     /** Return description
-
-      Return a terse string describing what the provider is.
-
-      @note
-
-      Instead of being pure virtual, might be better to generalize this
-      behavior and presume that none of the sub-classes are going to do
-      anything strange with regards to their name or description?
-
+     *
+     * Return a terse string describing what the provider is.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
      */
     QString description() const override;
 
     /** Returns true if the provider is strict about the type of inserted features
-        (e.g. no multipolygon in a polygon layer)
-      */
+     * (e.g. no multipolygon in a polygon layer)
+     */
     virtual bool doesStrictFeatureTypeCheck() const override;
 
     /** Return OGR geometry type */

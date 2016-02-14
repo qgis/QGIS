@@ -73,7 +73,6 @@ class CORE_EXPORT QgsPalLayerSettings
     //! @note added in 2.4
     static QgsPalLayerSettings fromLayer( QgsVectorLayer* layer );
 
-
     /** Placement modes which determine how label candidates are generated for a feature.
      */
     //TODO QGIS 3.0 - move to QgsLabelingEngineV2
@@ -121,16 +120,16 @@ class CORE_EXPORT QgsPalLayerSettings
     //LinePlacementFlags type, and replace use of pal::LineArrangementFlag
     enum LinePlacementFlags
     {
-      OnLine    = 1, /**< Labels can be placed directly over a line feature.*/
-      AboveLine = 2, /**< Labels can be placed above a line feature. Unless MapOrientation is also specified this mode
-                            respects the direction of the line feature, so a line from right to left labels will have labels
-                            placed placed below the line feature. */
-      BelowLine = 4, /**< Labels can be placed below a line feature. Unless MapOrientation is also specified this mode
-                            respects the direction of the line feature, so a line from right to left labels will have labels
-                            placed placed above the line feature. */
+      OnLine    = 1,      /**< Labels can be placed directly over a line feature.*/
+      AboveLine = 2,      /**< Labels can be placed above a line feature. Unless MapOrientation is also specified this mode
+                               respects the direction of the line feature, so a line from right to left labels will have labels
+                               placed placed below the line feature. */
+      BelowLine = 4,      /**< Labels can be placed below a line feature. Unless MapOrientation is also specified this mode
+                               respects the direction of the line feature, so a line from right to left labels will have labels
+                               placed placed above the line feature. */
       MapOrientation = 8, /**< Signifies that the AboveLine and BelowLine flags should respect the map's orientation rather
-                            than the feature's orientation. Eg, AboveLine will always result in label's being placed
-                            above a line, regardless of the line's direction. */
+                               than the feature's orientation. Eg, AboveLine will always result in label's being placed
+                               above a line, regardless of the line's direction. */
     };
 
     enum QuadrantPosition
@@ -647,7 +646,9 @@ class CORE_EXPORT QgsPalLayerSettings
     int fieldIndex;
     const QgsMapToPixel* xform;
     const QgsCoordinateTransform* ct;
-    QgsPoint ptZero, ptOne;
+
+    QgsPoint ptZero;
+    QgsPoint ptOne;
     QgsGeometry* extentGeom;
     int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)

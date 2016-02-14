@@ -291,32 +291,32 @@ class QgsMapLayer : QObject
 
 
     /** Stores state in Dom node
-       @param layerElement is a Dom element corresponding to ``maplayer'' tag
-       @param document is a the dom document being written
-       @param relativeBasePath base path for relative paths
-       @note
-
-       The Dom node corresponds to a Dom document project file XML element to be
-       written by QgsProject.
-
-       This, in turn, calls writeXml(), which is over-rideable by sub-classes so
-       that they can write their own specific state to the given Dom node.
-
-       Invoked by QgsProject::write().
-
-       @returns true if successful
-    */
+     * @param layerElement is a Dom element corresponding to ``maplayer'' tag
+     * @param document is a the dom document being written
+     * @param relativeBasePath base path for relative paths
+     * @note
+     *
+     * The Dom node corresponds to a Dom document project file XML element to be
+     * written by QgsProject.
+     *
+     * This, in turn, calls writeXml(), which is over-rideable by sub-classes so
+     * that they can write their own specific state to the given Dom node.
+     *
+     * Invoked by QgsProject::write().
+     *
+     * @returns true if successful
+     */
     bool writeLayerXML( QDomElement& layerElement, QDomDocument& document, const QString& relativeBasePath = QString::null );
 
     /** Returns the given layer as a layer definition document
-        Layer definitions store the data source as well as styling and custom properties.
-
-        Layer definitions can be used to load a layer and styling all from a single file.
-    */
+     *  Layer definitions store the data source as well as styling and custom properties.
+     *
+     *  Layer definitions can be used to load a layer and styling all from a single file.
+     */
     static QDomDocument asLayerDefinition( const QList<QgsMapLayer*>& layers, const QString& relativeBasePath = QString::null );
 
     /** Creates a new layer from a layer defininition document
-    */
+     */
     static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document, bool addToRegistry = false, bool addToLegend = false );
     static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString &qlrfile );
 
@@ -342,7 +342,7 @@ class QgsMapLayer : QObject
 
     /** Returns layer's spatial reference system
     @note This was introduced in QGIS 1.4
-    */
+     */
     const QgsCoordinateReferenceSystem& crs() const;
 
     /** Sets layer's spatial reference system */
@@ -447,7 +447,7 @@ class QgsMapLayer : QObject
      * @param node node that will contain the symbology definition for this layer.
      * @param errorMessage reference to string that will be updated with any error messages
      * @return true in case of success.
-    */
+     */
     virtual bool readSymbology( const QDomNode& node, QString& errorMessage ) = 0;
 
     /** Write the symbology for the layer into the docment provided.
@@ -467,7 +467,7 @@ class QgsMapLayer : QObject
     void setLegendUrlFormat( const QString& legendUrlFormat );
     QString legendUrlFormat() const;
 
-    /** @deprecated since 2.4 - returns NULL */
+    /** @deprecated since 2.4 - returns nullptr */
     QImage *cacheImage() /Deprecated/;
     /** @deprecated since 2.4 - caches listen to repaintRequested() signal to invalidate the cached image */
     void setCacheImage( QImage * thepImage /Transfer/ ) /Deprecated/;
@@ -515,7 +515,7 @@ class QgsMapLayer : QObject
      * @see minimumScale
      * @see maximumScale
      * @see setScaleBasedVisibility
-    */
+     */
     bool hasScaleBasedVisibility() const;
 
   public slots:
@@ -551,11 +551,12 @@ class QgsMapLayer : QObject
 
     /** Accessor for the scale based visilibility flag
      * @deprecated use setScaleBasedVisibility instead
-    */
+     */
     void toggleScaleBasedVisibility( bool theVisibilityFlag ) /Deprecated/;
 
     /** Clear cached image
-     *  @deprecated in 2.4 - use triggerRepaint() - caches automatically listen to repaintRequested() signal to invalidate the cached image */
+     *  @deprecated in 2.4 - use triggerRepaint() - caches automatically listen to repaintRequested() signal to invalidate the cached image
+     */
     void clearCacheImage() /Deprecated/;
 
     /**
@@ -620,13 +621,13 @@ class QgsMapLayer : QObject
     void setValid( bool valid );
 
     /** Called by readLayerXML(), used by children to read state specific to them from
-        project files.
-    */
+     *  project files.
+     */
     virtual bool readXml( const QDomNode& layer_node );
 
     /** Called by writeLayerXML(), used by children to write state specific to them to
-        project files.
-    */
+     *  project files.
+     */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & document );
 
 

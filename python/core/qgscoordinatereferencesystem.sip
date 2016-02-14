@@ -1,7 +1,6 @@
 
-/*!
- * \class QgsCoordinateReferenceSystem
- * \brief Class for storing a spatial reference system (CRS)
+/** \ingroup core
+ * Class for storing a coordinate reference system (CRS)
  */
 class QgsCoordinateReferenceSystem
 {

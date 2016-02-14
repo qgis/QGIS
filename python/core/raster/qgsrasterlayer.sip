@@ -38,14 +38,19 @@ class QgsRasterLayer : QgsMapLayer
      *
      * -
      * */
-    QgsRasterLayer( const QString & path,
-                    const QString &  baseName = QString::null,
+    QgsRasterLayer( const QString &path,
+                    const QString &baseName = QString::null,
                     bool loadDefaultStyleFlag = true );
 
+    //TODO - QGIS 3.0
+    //This constructor is confusing if used with string literals for providerKey,
+    //as the previous constructor will be called with the literal for providerKey
+    //implicitly converted to a bool.
+    //for QGIS 3.0, make either constructor explicit or alter the signatures
     /** \brief [ data provider interface ] Constructor in provider mode */
-    QgsRasterLayer( const QString & uri,
-                    const QString & baseName,
-                    const QString & providerKey,
+    QgsRasterLayer( const QString &uri,
+                    const QString &baseName,
+                    const QString &providerKey,
                     bool loadDefaultStyleFlag = true );
 
     /** \brief The destructor */

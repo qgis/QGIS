@@ -26,7 +26,8 @@ class QgsVectorColorRampV2
     // Number of defined colors
     virtual int count() const = 0;
 
-    // Relative value (0,1) of color at index
+    /** Returns relative value between [0,1] of color at specified index
+     */
     virtual double value( int index ) const = 0;
 
     virtual QColor color( double value ) const = 0;
@@ -89,7 +90,8 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
     void setInfo( const QgsStringMap& info );
 
     /** Copy color ramp stops to a QGradient
-    * @note added in 2.1 */
+     * @note added in 2.1
+     */
     void addStopsToGradient( QGradient* gradient, double alpha = 1 );
 };
 
@@ -117,7 +119,8 @@ class QgsVectorRandomColorRampV2 : QgsVectorColorRampV2
     virtual QgsStringMap properties() const;
 
     /** Get a list of random colors
-     * @note added in 2.4 */
+     * @note added in 2.4
+     */
     static QList<QColor> randomColors( int count,
                                        int hueMax = DEFAULT_RANDOM_HUE_MAX, int hueMin = DEFAULT_RANDOM_HUE_MIN,
                                        int satMax = DEFAULT_RANDOM_SAT_MAX, int satMin = DEFAULT_RANDOM_SAT_MIN,

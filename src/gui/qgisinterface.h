@@ -578,7 +578,8 @@ class GUI_EXPORT QgisInterface : public QObject
     void composerWillBeRemoved( QgsComposerView* v );
 
     /** This signal is emitted when a composer instance has been removed
-       @note added in version 2.9 */
+     * @note added in version 2.9
+     */
     void composerRemoved( QgsComposerView* v );
 
     /**
@@ -586,26 +587,26 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     void initializationCompleted();
     /** Emitted when a project file is successfully read
-        @note
-        This is useful for plug-ins that store properties with project files.  A
-        plug-in can connect to this signal.  When it is emitted, the plug-in
-        knows to then check the project properties for any relevant state.
+     * @note
+     * This is useful for plug-ins that store properties with project files.  A
+     * plug-in can connect to this signal.  When it is emitted, the plug-in
+     * knows to then check the project properties for any relevant state.
      */
     void projectRead();
     /** Emitted when starting an entirely new project
-        @note
-        This is similar to projectRead(); plug-ins might want to be notified
-        that they're in a new project.  Yes, projectRead() could have been
-        overloaded to be used in the case of new projects instead.  However,
-        it's probably more semantically correct to have an entirely separate
-        signal for when this happens.
-      */
+     * @note
+     * This is similar to projectRead(); plug-ins might want to be notified
+     * that they're in a new project.  Yes, projectRead() could have been
+     * overloaded to be used in the case of new projects instead.  However,
+     * it's probably more semantically correct to have an entirely separate
+     * signal for when this happens.
+     */
     void newProjectCreated();
 
     /** This signal is emitted when a layer has been saved using save as
-       @note
-       added in version 2.7
-    */
+     * @note
+     * added in version 2.7
+     */
     void layerSavedAs( QgsMapLayer* l, const QString& path );
 };
 

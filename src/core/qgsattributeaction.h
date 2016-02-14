@@ -104,7 +104,7 @@ class CORE_EXPORT QgsAction
  * attributes.
  */
 
-class  CORE_EXPORT QgsAttributeAction
+class CORE_EXPORT QgsAttributeAction
 {
   public:
     //! Constructor

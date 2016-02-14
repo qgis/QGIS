@@ -27,7 +27,14 @@ class QgsPointLocator : QObject
     //! @note added in QGIS 2.14
     void setExtent( const QgsRectangle* extent );
 
-    enum Type { Invalid, Vertex, Edge, Area, All };
+    enum Type
+    {
+      Invalid,
+      Vertex,
+      Edge,
+      Area,
+      All
+    };
 
     typedef QFlags<QgsPointLocator::Type> Types;
 

@@ -437,10 +437,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Toolbars
     /** Get a reference to a toolbar. Mainly intended
-    *   to be used by plugins that want to specifically add
-    *   an icon into the file toolbar for consistency e.g.
-    *   addWFS and GPS plugins.
-    */
+     *   to be used by plugins that want to specifically add
+     *   an icon into the file toolbar for consistency e.g.
+     *   addWFS and GPS plugins.
+     */
     QToolBar *fileToolBar() { return mFileToolBar; }
     QToolBar *layerToolBar() { return mLayerToolBar; }
     QToolBar *mapNavToolToolBar() { return mMapNavToolBar; }
@@ -529,7 +529,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /* layer will be removed - changed from removingLayer to removingLayers
        in 1.8.
-    */
+     */
     void removingLayers( const QStringList& );
 
     //! starts/stops editing mode of the current layer
@@ -1323,7 +1323,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** This signal is emitted when a layer has been saved using save as
        @note added in version 2.7
-    */
+     */
     void layerSavedAs( QgsMapLayer* l, const QString& path );
 
   private:
@@ -1338,7 +1338,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     bool shouldAskUserForGDALSublayers( QgsRasterLayer *layer );
     /** This method will open a dialog so the user can select OGR sublayers to load
-    */
+     */
     void askUserForOGRSublayers( QgsVectorLayer *layer );
     /** Add a raster layer to the map (passed in as a ptr).
      * It won't force a refresh.

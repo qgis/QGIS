@@ -123,8 +123,8 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     //
     ////////////////////////////////////////////////////////////////////
     /**
-    * on show settings
-    */
+     * on show settings
+     */
     QAction * mQSettingsAction;
 
     /**

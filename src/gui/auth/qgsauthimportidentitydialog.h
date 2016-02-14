@@ -68,7 +68,7 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
 
     /** Get certificate/key bundle to be imported.
      * @note not available in Python bindings
-    */
+     */
     const QPair<QSslCertificate, QSslKey> certBundleToImport();
 
     /** Get certificate/key bundle to be imported as a PKI bundle object */

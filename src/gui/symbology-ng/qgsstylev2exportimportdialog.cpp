@@ -427,7 +427,7 @@ void QgsStyleV2ExportImportDialog::deselectSmartgroup( const QString& groupName 
   deselectSymbols( symbolNames );
 }
 
-void QgsStyleV2ExportImportDialog::selectByGroup( )
+void QgsStyleV2ExportImportDialog::selectByGroup()
 {
   if ( ! mGroupSelectionDlg )
   {
@@ -435,8 +435,8 @@ void QgsStyleV2ExportImportDialog::selectByGroup( )
     mGroupSelectionDlg->setWindowTitle( tr( "Select symbols by group" ) );
     connect( mGroupSelectionDlg, SIGNAL( groupSelected( const QString ) ), this, SLOT( selectGroup( const QString ) ) );
     connect( mGroupSelectionDlg, SIGNAL( groupDeselected( const QString ) ), this, SLOT( deselectGroup( const QString ) ) );
-    connect( mGroupSelectionDlg, SIGNAL( allSelected( ) ), this, SLOT( selectAll( ) ) );
-    connect( mGroupSelectionDlg, SIGNAL( allDeselected( ) ), this, SLOT( clearSelection( ) ) );
+    connect( mGroupSelectionDlg, SIGNAL( allSelected() ), this, SLOT( selectAll() ) );
+    connect( mGroupSelectionDlg, SIGNAL( allDeselected() ), this, SLOT( clearSelection() ) );
     connect( mGroupSelectionDlg, SIGNAL( smartgroupSelected( const QString ) ), this, SLOT( selectSmartgroup( const QString ) ) );
     connect( mGroupSelectionDlg, SIGNAL( smartgroupDeselected( const QString ) ), this, SLOT( deselectSmartgroup( const QString ) ) );
   }

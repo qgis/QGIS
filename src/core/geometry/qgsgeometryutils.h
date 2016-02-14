@@ -163,7 +163,7 @@ class CORE_EXPORT QgsGeometryUtils
     /** Ensures that an angle is in the range 0 <= angle < 2 pi.
      * @param angle angle in radians
      * @returns equivalent angle within the range [0, 2 pi)
-    */
+     */
     static double normalizedAngle( double angle );
 
     /** Calculates the direction of line joining two points in radians, clockwise from the north direction.
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param x2 x-coordinate of line end
      * @param y2 y-coordinate of line end
      * @returns angle in radians. Returned value is undefined if start and end point are the same.
-    */
+     */
     static double lineAngle( double x1, double y1, double x2, double y2 );
 
     /** Calculates the perpendicular angle to a line joining two points. Returned angle is in radians,
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param x2 x-coordinate of line end
      * @param y2 y-coordinate of line end
      * @returns angle in radians. Returned value is undefined if start and end point are the same.
-    */
+     */
     static double linePerpendicularAngle( double x1, double y1, double x2, double y2 );
 
     /** Angle between two linear segments*/
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param a1 first angle (in radians)
      * @param a2 second angle (in radians)
      * @returns average angle (in radians)
-    */
+     */
     static double averageAngle( double a1, double a2 );
 
     /** Parses a WKT block of the format "TYPE( contents )" and returns a pair of geometry type to contents ("Pair(wkbType, "contents")")

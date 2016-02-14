@@ -37,7 +37,7 @@ class QgsPointV2: public QgsAbstractGeometryV2
   if ( QgsWKBTypes::flatType( a0 ) != QgsWKBTypes::Point )
   {
     PyErr_SetString(PyExc_ValueError,
-            QString( "%1 is not a valid WKB type for point geometries" ).arg( QgsWKBTypes::displayString( a0 ) ).toUtf8().constData( ) );
+            QString( "%1 is not a valid WKB type for point geometries" ).arg( QgsWKBTypes::displayString( a0 ) ).toUtf8().constData() );
     sipIsErr = 1;
   }
   else

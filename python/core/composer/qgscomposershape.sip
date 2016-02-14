@@ -62,7 +62,7 @@ class QgsComposerShape: QgsComposerItem
 
     /** Sets new scene rectangle bounds and recalculates hight and extent. Reimplemented from
      * QgsComposerItem as it needs to call updateBoundingRect after the shape's size changes
-    */
+     */
     void setSceneRect( const QRectF& rectangle );
 
     //Overridden to return shape type

@@ -20,4 +20,5 @@ class QgsInvertedPolygonRendererWidget : QgsRendererV2Widget
 
     /** @returns the current feature renderer */
     virtual QgsFeatureRendererV2* renderer();
+    void setMapCanvas( QgsMapCanvas* canvas );
 };

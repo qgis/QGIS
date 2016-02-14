@@ -16,9 +16,12 @@ class QgsMessageBar: QFrame
     QgsMessageBar( QWidget *parent /TransferThis/ = 0 );
     ~QgsMessageBar();
 
-    /** Display a message item on the bar after hiding the currently visible one
-     *  and putting it in a stack.
-     * @param item item to display
+    /**
+     * Display a message item on the bar after hiding the currently visible one
+     * and putting it in a stack.
+     * The message bar will take ownership of the item.
+     *
+     * @param item Item to display
      */
     void pushItem( QgsMessageBarItem *item /Transfer/);
 
@@ -60,7 +63,7 @@ class QgsMessageBar: QFrame
 
   public slots:
     /** Remove the currently displayed widget from the bar and
-     *  display the next in the stack if any or hide the bar
+     *  display the next in the stack if any or hide the bar.
      *  @return true if the widget was removed, false otherwise
      */
     bool popWidget();
@@ -71,7 +74,7 @@ class QgsMessageBar: QFrame
     bool clearWidgets();
 
     /**
-     * Pushes a warning with default timeout to the message bar
+     * Pushes a success message with default timeout to the message bar
      * @param title title string for message
      * @param message The message to be displayed
      * @note added in 2.8
@@ -79,7 +82,7 @@ class QgsMessageBar: QFrame
     void pushSuccess( const QString& title, const QString& message );
 
     /**
-     * Pushes a warning with default timeout to the message bar
+     * Pushes a information message with default timeout to the message bar
      * @param title title string for message
      * @param message The message to be displayed
      * @note added in 2.8
@@ -95,7 +98,7 @@ class QgsMessageBar: QFrame
     void pushWarning( const QString& title, const QString& message );
 
     /**
-     * Pushes a warning with default timeout to the message bar
+     * Pushes a critical warning with default timeout to the message bar
      * @param title title string for message
      * @param message The message to be displayed
      * @note added in 2.8

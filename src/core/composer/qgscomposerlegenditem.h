@@ -58,7 +58,6 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
     // Set text defined by user
     virtual void setUserText( const QString & text ) { mUserText = text; }
 
-
   protected:
     void writeXMLChildren( QDomElement& elem, QDomDocument& doc ) const;
 

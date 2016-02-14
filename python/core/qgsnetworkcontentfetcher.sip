@@ -21,23 +21,23 @@ class QgsNetworkContentFetcher : QObject
     /** Fetches content from a remote URL and handles redirects. The finished()
      * signal will be emitted when content has been fetched.
      * @param url URL to fetch
-    */
+     */
     void fetchContent( const QUrl& url );
 
     /** Returns a reference to the network reply
      * @returns QNetworkReply for fetched URL content
-    */
+     */
     QNetworkReply* reply();
 
     /** Returns the fetched content as a string
      * @returns string containing network content
-    */
+     */
     QString contentAsString() const;
 
   signals:
 
     /** Emitted when content has loaded
-    */
+     */
     void finished();
 
 };

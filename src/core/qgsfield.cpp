@@ -273,7 +273,7 @@ QDataStream& operator>>( QDataStream& in, QgsField& field )
 
 QgsFields::QgsFields()
 {
-  d = new QgsFieldsPrivate( );
+  d = new QgsFieldsPrivate();
 }
 
 QgsFields::QgsFields( const QgsFields &other )

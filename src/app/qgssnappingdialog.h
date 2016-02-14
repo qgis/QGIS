@@ -64,8 +64,8 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
 
   protected:
     /** Constructor
-    @param canvas pointer to the map canvas (for detecting which vector layers are loaded
-    */
+     * @param canvas pointer to the map canvas (for detecting which vector layers are loaded
+     */
     //QgsSnappingDialog( QgsMapCanvas* canvas );
 
     /**

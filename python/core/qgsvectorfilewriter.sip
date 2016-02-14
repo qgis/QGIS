@@ -1,5 +1,5 @@
-
-/**
+/** \ingroup core
+  * A convenience class for writing vector files to disk.
  There are two possibilities how to use this class:
  1. static call to QgsVectorFileWriter::writeAsShapefile(...) which saves the whole vector layer
  2. create an instance of the class and issue calls to addFeature(...)
@@ -108,24 +108,25 @@ class QgsVectorFileWriter
     };
 
     /** Write contents of vector layer to an (OGR supported) vector formt
-    @param layer layer to write
-    @param fileName file name to write to
-    @param fileEncoding encoding to use
-    @param destCRS pointer to CRS to reproject exported geometries to
-    @param driverName OGR driver to use
-    @param onlySelected write only selected features of layer
-    @param errorMessage pointer to buffer fo error message
-    @param datasourceOptions list of OGR data source creation options
-    @param layerOptions list of OGR layer creation options
-    @param skipAttributeCreation only write geometries
-    @param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
-    @param symbologyExport symbology to export
-    @param symbologyScale scale of symbology
-    @param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
-    allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
-    @param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
-    @param includeZ set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
-    */
+     * @param layer layer to write
+     * @param fileName file name to write to
+     * @param fileEncoding encoding to use
+     * @param destCRS pointer to CRS to reproject exported geometries to
+     * @param driverName OGR driver to use
+     * @param onlySelected write only selected features of layer
+     * @param errorMessage pointer to buffer fo error message
+     * @param datasourceOptions list of OGR data source creation options
+     * @param layerOptions list of OGR layer creation options
+     * @param skipAttributeCreation only write geometries
+     * @param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
+     * @param symbologyExport symbology to export
+     * @param symbologyScale scale of symbology
+     * @param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
+     * @param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter
+     * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
+     * @param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
+     * @param includeZ set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
+     */
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,
                                             const QString& fileEncoding,
@@ -185,7 +186,7 @@ class QgsVectorFileWriter
                                             bool includeZ = false
                                           );
 
-    /** Create shapefile and initialize it */
+    /** Create a new vector file writer */
     QgsVectorFileWriter( const QString& vectorFileName,
                          const QString& fileEncoding,
                          const QgsFields& fields,
@@ -235,7 +236,7 @@ class QgsVectorFileWriter
     /** Retrieves error message */
     QString errorMessage();
 
-    /** Add feature to the currently opened shapefile */
+    /** Add feature to the currently opened data source */
     bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = 0, QGis::UnitType outputUnit = QGis::Meters );
 
     //! @note not available in python bindings

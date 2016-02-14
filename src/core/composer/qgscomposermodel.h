@@ -260,14 +260,14 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     /** Returns the QgsComposerItem corresponding to a QModelIndex, if possible
      * @param index QModelIndex for item
      * @returns item corresponding to index
-    */
+     */
     QgsComposerItem* itemFromIndex( const QModelIndex &index ) const;
 
     /** Returns the QModelIndex corresponding to a QgsComposerItem, if possible
      * @param item QgsComposerItem to find index for
      * @param column column number for created QModelIndex
      * @returns QModelIndex corresponding to item and specified column
-    */
+     */
     QModelIndex indexForItem( QgsComposerItem *item, const int column = 0 );
 
     /** Rebuilds the list of all composer items which are present in the composition. This is
@@ -277,13 +277,13 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * only be called when changes to the z-order list are known and QAbstractItemModel begin
      * signals have already been called.
      * @see rebuildSceneItemList
-    */
+     */
     void refreshItemsInScene();
 
     /** Steps through the item z-order list and rebuilds the items in composition list,
      * emitting QAbstractItemModel signals as required.
      * @see refreshItemsInScene
-    */
+     */
     void rebuildSceneItemList();
 
     friend class TestQgsComposerModel;

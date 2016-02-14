@@ -160,8 +160,6 @@ class CORE_EXPORT QgsSvgCache : public QObject
                                            bool& hasOutlineParam, bool& hasDefaultOutlineColor, QColor& defaultOutlineColor,
                                            bool& hasOutlineWidthParam, bool& hasDefaultOutlineWidth, double& defaultOutlineWidth ) const;
 
-
-
     /** Tests if an svg file contains parameters for fill, outline color, outline width. If yes, possible default values are returned. If there are several
      * default values in the svg file, only the first one is considered.
      * @param path path to SVG file
@@ -206,7 +204,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
 
     /** Creates new cache entry and returns pointer to it
      * @param file Absolute or relative path to SVG file. If the path is relative the file is searched by QgsSymbolLayerV2Utils::symbolNameToPath() in SVG paths.
-    in settings svg/searchPathsForSVG
+     * in settings svg/searchPathsForSVG
      * @param size size of cached image
      * @param fill color of fill
      * @param outline color of outline

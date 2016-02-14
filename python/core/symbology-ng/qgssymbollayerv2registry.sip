@@ -80,7 +80,6 @@ class QgsSymbolLayerV2Registry
     ~QgsSymbolLayerV2Registry();
 
   private:
-
     QgsSymbolLayerV2Registry( const QgsSymbolLayerV2Registry& rh );
 
 };

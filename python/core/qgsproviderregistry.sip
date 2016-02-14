@@ -1,9 +1,12 @@
-
-
 /** \ingroup core
   * A registry / canonical manager of data providers.
 
   This is a Singleton class that manages data provider access.
+
+  Loaded providers may be restricted using QGIS_PROVIDER_FILE environment variable.
+  QGIS_PROVIDER_FILE is regexp pattern applied to provider file name (not provider key).
+  For example, if the variable is set to gdal|ogr|postgres it will load only providers gdal,
+  ogr and postgres.
 */
 class QgsProviderRegistry
 {
@@ -42,7 +45,7 @@ class QgsProviderRegistry
     /** Return the provider capabilities
         @param providerKey identificator of the provider
         @note Added in 2.6
-    */
+     */
     int providerCapabilities( const QString& providerKey ) const;
 
     QWidget *selectWidget( const QString & providerKey,
@@ -50,9 +53,9 @@ class QgsProviderRegistry
 
 %If (!QT5_SUPPORT)
     /** Get pointer to provider function
-        @param providerKey identificator of the provider
-        @param functionName name of function
-        @return pointer to function or NULL on error
+     * @param providerKey identificator of the provider
+     * @param functionName name of function
+     * @return pointer to function or NULL on error
      */
     void *function( const QString & providerKey,
                     const QString & functionName );
@@ -77,7 +80,7 @@ class QgsProviderRegistry
       @note
 
       It'd be nice to eventually be raster/vector neutral.
-    */
+     */
     virtual QString fileVectorFilters() const;
     /** Return raster file filter string
 
@@ -88,7 +91,7 @@ class QgsProviderRegistry
       buildSupportedRasterFileFilter to a string, which is then returned.
 
       @note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
-    */
+     */
     virtual QString fileRasterFilters() const;
     /** Return a string containing the available database drivers */
     virtual QString databaseDrivers() const;

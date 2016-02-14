@@ -1,6 +1,9 @@
 
 /** Raster file writer */
 
+/** \ingroup core
+ * The raster file writer which allows you to save a raster to a new file.
+ */
 class QgsRasterFileWriter
 {
 %TypeHeaderCode
@@ -53,6 +56,7 @@ class QgsRasterFileWriter
 
     QList< int > pyramidsList() const;
     void setPyramidsList( const QList< int > & list );
+
 
     QString pyramidsResampling() const;
     void setPyramidsResampling( const QString & str );

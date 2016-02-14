@@ -38,7 +38,7 @@ class QgsActionMenu : QMenu
      *                 for the lifetime of this object.
      * @param parent   The usual QWidget parent.
      */
-    explicit QgsActionMenu( QgsVectorLayer* layer, const QgsFeature* feature, QWidget* parent /TransferThis/ = 0 );
+    explicit QgsActionMenu( QgsVectorLayer* layer, const QgsFeature *feature, QWidget *parent /TransferThis/ = 0 );
 
     /**
      * Constructs a new QgsActionMenu
@@ -47,7 +47,7 @@ class QgsActionMenu : QMenu
      * @param fid      The feature id of the feature for which this action will be run.
      * @param parent   The usual QWidget parent.
      */
-    explicit QgsActionMenu( QgsVectorLayer* layer, const QgsFeatureId fid, QWidget* parent /TransferThis/ = 0 );
+    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, QWidget *parent /TransferThis/ = 0 );
 
     /**
      * Destructor

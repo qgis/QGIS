@@ -2,6 +2,7 @@ class QgsCoordinateTransformCache
 {
   public:
     static QgsCoordinateTransformCache* instance();
+
     ~QgsCoordinateTransformCache();
     /** Returns coordinate transformation. Cache keeps ownership
         @param srcAuthId auth id string of source crs
@@ -26,6 +27,7 @@ class QgsCRSCache
 
   public:
     static QgsCRSCache* instance();
+
     /** Returns the CRS for authid, e.g. 'EPSG:4326' (or an invalid CRS in case of error)*/
     const QgsCoordinateReferenceSystem& crsByAuthId( const QString& authid );
     const QgsCoordinateReferenceSystem& crsByEpsgId( long epsg );

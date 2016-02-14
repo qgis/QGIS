@@ -125,7 +125,7 @@ class CORE_EXPORT QgsAuthMethodConfig
 
     /**
      * Return a config's value
-     * @param key Confgi key
+     * @param key Config key
      * @param defaultvalue Default value, if key not found
      */
     QString config( const QString &key, const QString& defaultvalue = QString() ) const;

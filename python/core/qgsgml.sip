@@ -23,7 +23,12 @@ class QgsGml: QObject
      *  @return 0 in case of success
      *  @note available in python as getFeaturesUri
      */
-    int getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent = 0, const QString& userName = QString(), const QString& password = QString(), const QString& authcfg = QString() ) /PyName=getFeaturesUri/;
+    int getFeatures( const QString& uri,
+                     QGis::WkbType* wkbType,
+                     QgsRectangle* extent = 0,
+                     const QString& userName = QString(),
+                     const QString& password = QString(),
+                     const QString& authcfg = QString() ) /PyName=getFeaturesUri/;
 
     /** Read from GML data. Constructor uri param is ignored
      *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.

@@ -35,10 +35,10 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     Q_OBJECT
   public:
     /**
-    * Constructor for a dialog. The QgisInterface pointer is passed by
-    * QGIS when it attempts to instantiate the plugin.
-    * @param iface Pointer to the QgisInterface object.
-    */
+     * Constructor for a dialog. The QgisInterface pointer is passed by
+     * QGIS when it attempts to instantiate the plugin.
+     * @param iface Pointer to the QgisInterface object.
+     */
     QgsSpatialQueryDialog( QWidget *parent = nullptr, QgisInterface* iface = nullptr );
     //! Destructor
     ~QgsSpatialQueryDialog();

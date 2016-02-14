@@ -1,5 +1,9 @@
 typedef QList<QgsRasterRange> QgsRasterRangeList;
 
+/** \ingroup core
+ * Raster values range container. Represents range of values between min and max
+ * including min and max value.
+ */
 class QgsRasterRange
 {
 %TypeHeaderCode

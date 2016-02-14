@@ -116,6 +116,8 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      *        item with the longest match from start with path (to get as close/deep as possible to deleted item).
      * @return model index, invalid if item not found */
     QModelIndex findPath( const QString& path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
+
+    // @note not available in python bindings
     static QModelIndex findPath( QAbstractItemModel *model, const QString& path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
     void connectItem( QgsDataItem *item );

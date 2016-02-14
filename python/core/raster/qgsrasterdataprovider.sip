@@ -24,11 +24,8 @@ class QgsImageFetcher : QObject
     void error( const QString& msg );
 };
 
-/** Base class for raster data providers
- *
- *  \note  This class has been copied and pasted from
- *         QgsVectorDataProvider, and does not yet make
- *         sense for Raster layers.
+/** \ingroup core
+ * Base class for raster data providers.
  */
 class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 {
@@ -51,23 +48,25 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     bool setInput( QgsRasterInterface* input );
 
     /** \brief   Renders the layer as an image
-    \note When render caching (/qgis/enable_render_caching) is on the wms
-       provider doesn't wait for the reply of the getmap request or all
-       tiles replies and can return incomplete images.
-       Temporarily disable render caching if you require the complete
-       wms image in the first call.
-      */
+     * \note When render caching (/qgis/enable_render_caching) is on the wms
+     * provider doesn't wait for the reply of the getmap request or all
+     * tiles replies and can return incomplete images.
+     * Temporarily disable render caching if you require the complete
+     * wms image in the first call.
+     */
     virtual QImage* draw( const QgsRectangle & viewExtent, int pixelWidth, int pixelHeight ) = 0;
 
     /** Get the extent of the data source.
-     * @return QgsRectangle containing the extent of the layer */
+     * @return QgsRectangle containing the extent of the layer
+     */
     virtual QgsRectangle extent() = 0;
 
     /** Returns data type for the band specified by number */
     virtual QGis::DataType dataType( int bandNo ) const = 0;
 
     /** Returns source data type for the band specified by number,
-     *  source data type may be shorter than dataType */
+     *  source data type may be shorter than dataType
+     */
     virtual QGis::DataType srcDataType( int bandNo ) const = 0;
 
     /** Returns data type for the band specified by number */
@@ -81,10 +80,12 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual QString colorInterpretationName( int theBandNo ) const;
 
     /** Read band scale for raster value
-     * @@note added in 2.3 */
+     * @note added in 2.3
+     */
     virtual double bandScale( int bandNo ) const;
     /** Read band offset for raster value
-     * @@note added in 2.3 */
+     * @note added in 2.3
+     */
     virtual double bandOffset( int bandNo ) const;
 
     /** Get block size */
@@ -255,16 +256,19 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual bool remove();
 
     /** Returns a list of pyramid resampling method name and label pairs
-     * for given provider */
+     * for given provider
+     */
     static QList<QPair<QString, QString> > pyramidResamplingMethods( const QString& providerKey );
 
     /** Validates creation options for a specific dataset and destination format.
      * @note used by GDAL provider only
-     * @note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only */
+     * @note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only
+     */
     virtual QString validateCreationOptions( const QStringList& createOptions, const QString& format );
 
     /** Validates pyramid creation options for a specific dataset and destination format
-     * @note used by GDAL provider only */
+     * @note used by GDAL provider only
+     */
     virtual QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
         const QStringList & theConfigOptions, const QString & fileFormat );
 
@@ -278,16 +282,21 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
       * Emitted theProgress is in percents (0.0-100.0) */
     void progress( int theType, double theProgress, const QString& theMessage );
     void progressUpdate( int theProgress );
+
+    /** Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
+     * @note added in 2.14
+     */
     void statusChanged( const QString& );
 
   protected:
-
     /** Read block of data
-     * @note not available in python bindings */
+     * @note not available in python bindings
+     */
     virtual void readBlock( int bandNo, int xBlock, int yBlock, void *data );
 
     /** Read block of data using give extent and size
-     *  @note not available in python bindings */
+     * @note not available in python bindings
+     */
     //virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
 
     /** Returns true if user no data contains value */

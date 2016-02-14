@@ -110,5 +110,6 @@ class QgsCircularStringV2: public QgsCurveV2
     virtual bool dropMValue();
 
   private:
+    //helper methods for curveToLine
     void segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QList<QgsPointV2>& points ) const;
 };

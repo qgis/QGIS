@@ -910,7 +910,7 @@ RoundedFrame::RoundedFrame()
 void
 RoundedFrame::draw( const ControlContext& cx, DrawableList& out )
 {
-    /*
+#if 0
     if ( Geometry::hasBufferOperation() )
     {
         if ( !getImage() || getImage()->s() != _renderSize.x() || getImage()->t() != _renderSize.y() )
@@ -943,7 +943,7 @@ RoundedFrame::draw( const ControlContext& cx, DrawableList& out )
         // fallback: draw a non-rounded frame.
         Frame::draw( cx, out );
     }
-    */
+#endif
         Frame::draw( cx, out );
 }
 

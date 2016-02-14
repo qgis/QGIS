@@ -24,9 +24,9 @@ class QgsSimplifyMethod
     //! Gets the simplification type
     MethodType methodType() const;
 
-    //! Sets the tolerance of simplification in map units. Represents the maximum distance between two coordinates which can be considered equal
+    //! Sets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal.
     void setTolerance( double tolerance );
-    //! Gets the tolerance of simplification in map units
+    //! Gets the tolerance of simplification in map units . Represents the maximum distance in map units between two coordinates which can be considered equal.
     double tolerance() const;
 
     //! Sets the simplification threshold in pixels. Represents the maximum distance in pixels between two coordinates which can be considered equal.

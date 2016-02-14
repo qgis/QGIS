@@ -1,9 +1,11 @@
-/**
-\struct QgsDataSourceURI
-\brief Structure for storing the component parts of a PostgreSQL/RDBMS datasource URI.
-
- This structure stores the database connection information, including host, database,
-  user name, password, schema, password, and sql where clause
+/** \ingroup core
+ * Class for storing the component parts of a PostgreSQL/RDBMS datasource URI.
+ * This structure stores the database connection information, including host, database,
+ * user name, password, schema, password, and sql where clause
+ *
+ * Extended to support generic params so that it may be used by any provider.
+ * The 2 modes (the old - RDMS specific and the new generic) may not yet be mixed.
+ * (Radim Blazek 4/2012)
  */
 class QgsDataSourceURI
 {
@@ -28,6 +30,10 @@ class QgsDataSourceURI
 
     //! return complete encoded uri (generic mode)
     QByteArray encodedUri() const;
+
+    //! set complete encoded uri (generic mode)
+    // \note not available in python bindings
+    // void setEncodedUri( const QByteArray & uri );
 
     //! set complete encoded uri (generic mode)
     void setEncodedUri( const QString & uri );
@@ -81,7 +87,7 @@ class QgsDataSourceURI
                         const QString& aSql = QString(),
                         const QString& aKeyColumn = QString() );
 
-    //! set authentication configuration ID
+    //! Set authentication configuration ID
     void setAuthConfigId( const QString& authcfg );
 
     //! set username
@@ -93,37 +99,62 @@ class QgsDataSourceURI
     //! Removes password element from uris
     static QString removePassword( const QString& aUri );
 
+    //! Any associated authentication configuration ID
     QString authConfigId() const;
+
+    //! Returns the username
     QString username() const;
+
+    //! Returns the schema
     QString schema() const;
+
+    //! Returns the table
     QString table() const;
+
+    //! Returns the SQL query
     QString sql() const;
+
+    //! Return the name of the geometry column
     QString geometryColumn() const;
 
     //! set use Estimated Metadata
     void setUseEstimatedMetadata( bool theFlag );
+
+    //! Returns true if estimated metadata are used
     bool useEstimatedMetadata() const;
 
+    //! Set to true to disable selection by id
     void disableSelectAtId( bool theFlag );
+    //! Returns whether the selection by id is disabled
     bool selectAtIdDisabled() const;
 
+    //! Clears the schema
     void clearSchema();
 
     //! set the table schema
     // @note added in 2.11
     void setSchema( const QString& schema );
 
+    //! Sets the SQL query
     void setSql( const QString& sql );
 
+    //! Returns the host
     QString host() const;
+    //! Returns the database
     QString database() const;
+    //! Returns the port
     QString port() const;
+    //! Returns the password
     QString password() const;
+    //! Returns the SSL mode
     SSLmode sslMode() const;
 
+    //! Returns the service name
     QString service() const;
 
+    //! Returns the name of the (primary) key column
     QString keyColumn() const;
+    //! Sets the name of the (primary) key column
     void setKeyColumn( const QString& column );
 
     /** The (old) wkb type.
@@ -140,6 +171,8 @@ class QgsDataSourceURI
     //! Sets the wkb type
     void setWkbType( QgsWKBTypes::Type type );
 
+    //! Returns the srid
     QString srid() const;
+    //! Sets the srid
     void setSrid( const QString& srid );
 };

@@ -81,7 +81,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
 
     /** Calculates a summary statistic for a column. Returns null if no valid numerical
      * values found in column.
-    */
+     */
     QVariant calcStatistic( int col, QgsStatisticalSummary::Statistic stat );
 
     /** Sets mSelectionRubberBand to a new feature*/

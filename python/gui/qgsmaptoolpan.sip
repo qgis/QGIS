@@ -9,11 +9,14 @@ class QgsMapToolPan : QgsMapTool
     //! constructor
     QgsMapToolPan( QgsMapCanvas* canvas );
 
+    //! Mouse press event
+    virtual void canvasPressEvent( QgsMapMouseEvent* e );
+
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e );
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e );
 
     virtual bool isTransient();
 };

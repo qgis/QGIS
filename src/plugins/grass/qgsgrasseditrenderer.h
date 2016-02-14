@@ -28,7 +28,7 @@ class QgsGrassEditRenderer : public QgsFeatureRendererV2
 {
   public:
 
-    QgsGrassEditRenderer( );
+    QgsGrassEditRenderer();
 
     virtual ~QgsGrassEditRenderer();
 

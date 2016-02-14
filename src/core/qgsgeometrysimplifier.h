@@ -53,15 +53,15 @@ class CORE_EXPORT QgsTopologyPreservingSimplifier : public QgsAbstractGeometrySi
     QgsTopologyPreservingSimplifier( double tolerance );
     virtual ~QgsTopologyPreservingSimplifier();
 
-  protected:
-    //! Distance tolerance for the simplification
-    double mTolerance;
-
-  public:
     //! Returns a simplified version the specified geometry
     virtual QgsGeometry* simplify( QgsGeometry* geometry ) const override;
     //! Simplifies the specified geometry
     virtual bool simplifyGeometry( QgsGeometry* geometry ) const override;
+
+  protected:
+    //! Distance tolerance for the simplification
+    double mTolerance;
+
 };
 
 #endif // QGSGEOMETRYSIMPLIFIER_H

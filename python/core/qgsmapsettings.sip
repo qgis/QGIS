@@ -86,10 +86,10 @@ class QgsMapSettings
       ForceVectorOutput,          //!< Vector graphics should not be cached and drawn as raster images
       UseAdvancedEffects,         //!< Enable layer transparency and blending effects
       DrawLabeling,               //!< Enable drawing of labels on top of the map
-      UseRenderingOptimization,        //!< Enable vector simplification and other rendering optimizations
+      UseRenderingOptimization,   //!< Enable vector simplification and other rendering optimizations
       DrawSelection,              //!< Whether vector selections should be shown in the rendered map
       DrawSymbolBounds,           //!< Draw bounds of symbols (for debugging/testing)
-      RenderMapTile
+      RenderMapTile               //!< Draw map such that there are no problems between adjacent tiles
     };
     typedef QFlags<QgsMapSettings::Flag> Flags;
 
@@ -135,6 +135,7 @@ class QgsMapSettings
 
     // -- utility functions --
 
+    //! @note not available in python bindings
     //const QgsDatumTransformStore& datumTransformStore() const;
     QgsDatumTransformStore& datumTransformStore();
 

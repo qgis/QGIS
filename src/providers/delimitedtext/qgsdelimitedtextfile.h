@@ -138,8 +138,8 @@ class QgsDelimitedTextFile : public QObject
     void setTypeWhitespace();
 
     /** Set the parser for parsing based on a reqular expression delimiter
-        @param regexp A string defining the regular expression
-    */
+     *  @param regexp A string defining the regular expression
+     */
     void setTypeRegexp( const QString& regexp );
     /** Set the parser to use a character type delimiter.
      *  @param delim  The field delimiter character set

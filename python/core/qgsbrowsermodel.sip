@@ -73,6 +73,9 @@ class QgsBrowserModel : QAbstractItemModel
      * @return model index, invalid if item not found */
     QModelIndex findPath( const QString& path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
+    // @note not available in python bindings
+    // static QModelIndex findPath( QAbstractItemModel *model, const QString& path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
+
     void connectItem( QgsDataItem *item );
 
     bool canFetchMore( const QModelIndex & parent ) const;

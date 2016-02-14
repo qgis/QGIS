@@ -144,7 +144,7 @@ public:
      * @returns a vector of doubles representing predefined scales
      * @see setPredefinedScales
      * @see QgsComposerMap::atlasScalingMode
-    */
+     */
     const QVector<qreal>& predefinedScales() const;
 
     /** Sets the list of predefined scales for the atlas. This is used
@@ -168,12 +168,12 @@ public:
      * @param i feature number
      * @param updateMaps set to true to redraw maps and recalculate their extent
      * @returns true if feature was successfully prepared
-    */
+     */
     bool prepareForFeature( const int i, const bool updateMaps = true );
 
     /** Prepare the atlas map for the given feature. Sets the extent and context variables
      * @returns true if feature was successfully prepared
-    */
+     */
     bool prepareForFeature( const QgsFeature * feat );
 
     /** Returns the current filename. Must be called after prepareForFeature() */
@@ -201,7 +201,8 @@ public:
     QgsComposition* composition();
 
     /** Requeries the current atlas coverage layer and applies filtering and sorting. Returns
-      number of matching features. Must be called before prepareForFeature() */
+     * number of matching features. Must be called after prepareForFeature()
+     */
     int updateFeatures();
 
     /** Returns the current atlas feature. Must be called after prepareForFeature().
@@ -222,7 +223,8 @@ public:
     /** Recalculates the bounds of an atlas driven map */
     void prepareMap( QgsComposerMap* map );
 
-    //Deprecated methods
+
+    //deprecated methods
 
     /** Returns the map used by the atlas
      * @deprecated Use QgsComposerMap::atlasDriven() instead
@@ -261,7 +263,7 @@ public:
 
     /** Returns the current atlas feature. Must be called after prepareForFeature( i ).
      * @deprecated use feature() instead
-    */
+     */
     QgsFeature* currentFeature() /Deprecated/;
 
     /** Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS) */
@@ -271,7 +273,7 @@ public:
 
     /** Refreshes the current atlas feature, by refetching its attributes from the vector layer provider
      * @note added in QGIS 2.5
-    */
+     */
     void refreshFeature();
 
     void nextFeature();

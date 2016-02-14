@@ -16,7 +16,7 @@ class QgsComposerUtils
      * @param angle angle in degrees which arrow should point toward, measured
      * clockwise from pointing vertical upward
      * @param arrowHeadWidth size of arrow head
-    */
+     */
     static void drawArrowHead( QPainter* p, const double x, const double y, const double angle, const double arrowHeadWidth );
 
     /** Calculates the angle of the line from p1 to p2 (counter clockwise,
@@ -24,27 +24,27 @@ class QgsComposerUtils
      * @param p1 start point of line
      * @param p2 end point of line
      * @returns angle in degrees, clockwise from south
-    */
+     */
     static double angle( QPointF p1, QPointF p2 );
 
     /** Rotates a point / vector around the origin.
      * @param angle rotation angle in degrees, counterclockwise
      * @param x in/out: x coordinate before / after the rotation
      * @param y in/out: y cooreinate before / after the rotation
-    */
+     */
     static void rotate( const double angle, double& x, double& y );
 
     /** Ensures that an angle is in the range 0 <= angle < 360
      * @param angle angle in degrees
      * @returns equivalent angle within the range [0, 360)
      * @see snappedAngle
-    */
+     */
     static double normalizedAngle( const double angle );
 
     /** Snaps an angle to its closest 45 degree angle
      * @param angle angle in degrees
      * @returns angle snapped to 0, 45/90/135/180/225/270 or 315 degrees
-    */
+     */
     static double snappedAngle( const double angle );
 
     /** Calculates the largest scaled version of originalRect which fits within boundsRect, when it is rotated by
@@ -53,19 +53,19 @@ class QgsComposerUtils
      * @param boundsRect QRectF specifying the bounds which the rotated and scaled rectangle must fit within
      * @param rotation the rotation in degrees to be applied to the rectangle
      * @returns largest scaled version of the rectangle possible
-    */
+     */
     static QRectF largestRotatedRectWithinBounds( const QRectF originalRect, const QRectF boundsRect, const double rotation );
 
     /** Returns the size in mm corresponding to a font point size
      * @param pointSize font size in points
      * @see mmToPoints
-    */
+     */
     static double pointsToMM( const double pointSize );
 
     /** Returns the size in mm corresponding to a font point size
      * @param mmSize font size in mm
      * @see pointsToMM
-    */
+     */
     static double mmToPoints( const double mmSize );
 
     /** Resizes a QRectF relative to a resized bounding rectangle.
@@ -74,7 +74,7 @@ class QgsComposerUtils
      * boundsAfter.
      * @param boundsBefore QRectF of bounds before resize
      * @param boundsAfter QRectF of bounds after resize
-    */
+     */
     static void relativeResizeRect( QRectF &rectToResize, const QRectF &boundsBefore, const QRectF &boundsAfter );
 
     /** Returns a scaled position given a before and after range
@@ -84,14 +84,14 @@ class QgsComposerUtils
      * @param afterMin minimum value in after range
      * @param afterMax maximum value in after range
      * @returns position scaled to range specified by afterMin and afterMax
-    */
+     */
     static double relativePosition( const double position, const double beforeMin, const double beforeMax, const double afterMin, const double afterMax );
 
     /** Decodes a string representing a paper orientation
      * @param orientationString string to decode
      * @param ok will be true if string could be decoded
      * @returns decoded paper orientation
-    */
+     */
     static QgsComposition::PaperOrientation decodePaperOrientation( const QString& orientationString, bool &ok );
 
     /** Decodes a string representing a preset page size
@@ -99,7 +99,7 @@ class QgsComposerUtils
      * @param width double for decoded paper width
      * @param height double for decoded paper height
      * @returns true if string could be decoded successfully
-    */
+     */
     static bool decodePresetPaperSize( const QString& presetString, double &width, double &height );
 
     /** Reads all data defined properties from xml
@@ -109,7 +109,7 @@ class QgsComposerUtils
      * @note this method was added in version 2.5
      * @see readDataDefinedProperty
      * @see writeDataDefinedPropertyMap
-    */
+     */
     static void readDataDefinedPropertyMap( const QDomElement &itemElem,
                                             QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
                                             QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties
@@ -121,7 +121,7 @@ class QgsComposerUtils
      * @param dataDefinedProperties map of data defined properties to QgsDataDefined in which to store properties from xml
      * @note this method was added in version 2.5
      * @see readDataDefinedPropertyMap
-    */
+     */
     static void readDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem,
                                          QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
 
@@ -132,7 +132,7 @@ class QgsComposerUtils
      * @param dataDefinedProperties map of data defined properties to QgsDataDefined for storing in xml
      * @note this method was added in version 2.5
      * @see readDataDefinedPropertyMap
-    */
+     */
     static void writeDataDefinedPropertyMap( QDomElement &itemElem, QDomDocument &doc,
         const QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
         const QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
@@ -142,7 +142,7 @@ class QgsComposerUtils
      * @param font source font with size set in points
      * @returns font with size set in pixels
      * @note added in version 2.5
-    */
+     */
     static QFont scaledFontPixelSize( const QFont& font );
 
     /** Calculate font ascent in millimeters, including workarounds for QT font rendering issues

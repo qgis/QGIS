@@ -1,9 +1,7 @@
-
-/**
-* \class QgsMapLayerRegistry
-* \brief This class tracks map layers that are currently loaded an provides
-* a means to fetch a pointer to a map layer and delete it
-*/
+/** \ingroup core
+ * This class tracks map layers that are currently loaded and provides
+ * a means to fetch a pointer to a map layer and delete it.
+ */
 class QgsMapLayerRegistry : QObject
 {
 %TypeHeaderCode
@@ -48,7 +46,7 @@ class QgsMapLayerRegistry : QObject
      *         it will not be part of the returned QList.
      *
      * @note As a side-effect QgsProject is made dirty.
-     * @note takeOwner not available in python binding - always takes ownership
+     * @note takeOwnership not available in python binding - always takes ownership
      */
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *>& theMapLayers /Transfer/,
                                        bool addToLegend = true );
@@ -70,7 +68,7 @@ class QgsMapLayerRegistry : QObject
      *                      If you specify false here, you have take care of deleting
      *                      the layer yourself. Not available in python.
      *
-     * @return NULL if unable to add layer, otherwise pointer to newly added layer
+     * @return nullptr if unable to add layer, otherwise pointer to newly added layer
      *
      * @see addMapLayers
      *
@@ -104,7 +102,7 @@ class QgsMapLayerRegistry : QObject
      * The layers being removed are deleted as well as the registry
      * table entries.
      *
-     * @param layers  The layers to remove
+     * @param layers  The layers to remove. Null pointers are ignored
      *
      * @note As a side-effect QgsProject is made dirty.
      */
@@ -134,7 +132,7 @@ class QgsMapLayerRegistry : QObject
      * The layer being removed is deleted as well as the registry
      * table entry.
      *
-     * @param layer   The layer to remove
+     * @param layer   The layer to remove. Nothing happens if the pointer is null
      *
      * @note As a side-effect QgsProject is made dirty.
      */
@@ -251,7 +249,8 @@ class QgsMapLayerRegistry : QObject
     void legendLayersAdded( const QList<QgsMapLayer*>& theMapLayers );
 
   private:
-    QgsMapLayerRegistry(); // private 'cause it's a singleton
+    //! private singleton constructor
+    QgsMapLayerRegistry();
 
     void connectNotify( const char * signal );
 }; // class QgsMapLayerRegistry

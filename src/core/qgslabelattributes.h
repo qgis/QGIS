@@ -73,7 +73,7 @@ class QColor;
  *   Each attribute is either set or unset.
  */
 
-class  CORE_EXPORT QgsLabelAttributes
+class CORE_EXPORT QgsLabelAttributes
 {
   public:
     /** Constructor.

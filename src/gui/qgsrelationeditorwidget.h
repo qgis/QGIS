@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsrelationeditor.h
+    qgsrelationeditorwidget.h
      --------------------------------------
     Date                 : 17.5.2013
     Copyright            : (C) 2013 Matthias Kuhn

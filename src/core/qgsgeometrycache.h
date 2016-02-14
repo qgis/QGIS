@@ -37,7 +37,6 @@ class CORE_EXPORT QgsGeometryCache
     //! get rid of the cached geometry
     void removeGeometry( QgsFeatureId fid ) { mCachedGeometries.remove( fid ); }
 
-
     /** Deletes the geometries in mCachedGeometries */
     void deleteCachedGeometries();
 

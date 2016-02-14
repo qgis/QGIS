@@ -2265,7 +2265,7 @@ bool QgsVectorFileWriter::deleteShapeFile( const QString& theFileName )
   Q_FOREACH ( const QString& file, dir.entryList( filter ) )
   {
     QFile f( dir.canonicalPath() + '/' + file );
-    if ( !f.remove( ) )
+    if ( !f.remove() )
     {
       QgsDebugMsg( QString( "Removing file %1 failed: %2" ).arg( file, f.errorString() ) );
       ok = false;

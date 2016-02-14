@@ -56,7 +56,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     /*!
        Every project has a title
-    */
+     */
     QString title() const;
     void title( QString const & title );
 

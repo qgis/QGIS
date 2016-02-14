@@ -49,7 +49,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter* painter )
     return;
 
   bool previousPointExist, penulPointExist;
-  const QgsPoint curPoint = mAdvancedDigitizingDockWidget->currentPoint( );
+  const QgsPoint curPoint = mAdvancedDigitizingDockWidget->currentPoint();
   const QgsPoint prevPoint = mAdvancedDigitizingDockWidget->previousPoint( &previousPointExist );
   const QgsPoint penulPoint = mAdvancedDigitizingDockWidget->penultimatePoint( &penulPointExist );
   const bool snappedToVertex = mAdvancedDigitizingDockWidget->snappedToVertex();

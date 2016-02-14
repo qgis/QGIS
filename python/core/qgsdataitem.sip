@@ -28,6 +28,8 @@ class QgsAnimatedIcon : QObject
 
 };
 
+/** Base class for all items in the model.
+ *  Parent/children hierarchy is not based on QObject. */
 class QgsDataItem : QObject
 {
 %TypeHeaderCode
@@ -206,9 +208,18 @@ class QgsDataItem : QObject
     bool deferredDelete();
 
   public slots:
+    /** Safely delete the item:
+     *   - disconnects parent
+     *   - unsets parent (but does not remove itself)
+     *   - deletes all its descendants recursively
+     *   - waits until Populating state (createChildren() in thread) finished without blocking main thread
+     *   - calls QObject::deleteLater()
+     */
+    virtual void deleteLater();
 
     // Populate children using children vector created by createChildren()
-    virtual void populate();
+    // @param foreground run createChildren in foreground
+    virtual void populate( bool foreground = false );
 
     /** Remove children recursively and set as not populated. This is used when refreshing collapsed items. */
     virtual void depopulate();
@@ -220,7 +231,7 @@ class QgsDataItem : QObject
     void emitBeginRemoveItems( QgsDataItem* parent, int first, int last );
     void emitEndRemoveItems();
     void emitDataChanged( QgsDataItem* item );
-    void emitDataChanged( );
+    void emitDataChanged();
     void emitStateChanged( QgsDataItem* item, QgsDataItem::State oldState );
     virtual void childrenCreated();
 

@@ -44,18 +44,18 @@ class GUI_EXPORT QgsStyleV2GroupSelectionDialog : public QDialog, private Ui::Sy
     //! smart group with groupName has been deselected
     void smartgroupDeselected( const QString& groupName );
     //! all deselected
-    void allDeselected( );
+    void allDeselected();
     //! all selected
-    void allSelected( );
+    void allSelected();
 
   private slots:
     void groupTreeSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
 
   private:
     /**
-    * @brief build group tree
-    * @param parent
-    */
+     * @brief build group tree
+     * @param parent
+     */
     void buildGroupTree( QStandardItem *&parent );
     QgsStyleV2* mStyle;
 

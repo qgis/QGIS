@@ -39,7 +39,7 @@ class SERVER_EXPORT QgsServerInterface
   public:
 
     /** Constructor */
-    QgsServerInterface( );
+    QgsServerInterface();
 
     /** Destructor */
     virtual ~QgsServerInterface() = 0;
@@ -56,7 +56,7 @@ class SERVER_EXPORT QgsServerInterface
      *
      * @note not available in python bindings
      */
-    virtual void clearRequestHandler( ) = 0;
+    virtual void clearRequestHandler() = 0;
 
     /**
      * Get pointer to the capabiblities cache
@@ -68,7 +68,7 @@ class SERVER_EXPORT QgsServerInterface
      * Get pointer to the request handler
      * @return QgsRequestHandler
      */
-    virtual QgsRequestHandler* requestHandler( ) = 0;
+    virtual QgsRequestHandler* requestHandler() = 0;
 
     /**
      * Register a QgsServerFilter
@@ -87,14 +87,14 @@ class SERVER_EXPORT QgsServerInterface
      * Return the list of current QgsServerFilter
      * @return QgsServerFiltersMap list of QgsServerFilter
      */
-    virtual QgsServerFiltersMap filters( ) = 0;
+    virtual QgsServerFiltersMap filters() = 0;
     /** Register an access control filter
      * @param accessControl the access control to register
      * @param priority the priority used to order them
      */
     virtual void registerAccessControl( QgsAccessControlFilter* accessControl, int priority = 0 ) = 0;
     /** Gets the registred access control filters */
-    virtual const QgsAccessControl* accessControls( ) const = 0;
+    virtual const QgsAccessControl* accessControls() const = 0;
 
     //! Return an enrironment variable, used to pass  environment variables to python
     virtual QString getEnv( const QString& name ) const = 0;
@@ -103,7 +103,7 @@ class SERVER_EXPORT QgsServerInterface
      * Return the configuration file path
      * @return QString containing the configuration file path
      */
-    virtual QString configFilePath( ) = 0;
+    virtual QString configFilePath() = 0;
 
     /**
      * Set the configuration file path

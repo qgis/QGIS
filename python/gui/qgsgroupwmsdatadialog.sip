@@ -18,6 +18,7 @@ class QgsGroupWMSDataDialog : QDialog
     //! return group WMS abstract
     QString groupAbstract();
 
+
   public slots:
     //! set group WMS title
     void setGroupTitle( const QString& title );

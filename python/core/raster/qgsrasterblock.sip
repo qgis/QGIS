@@ -206,7 +206,7 @@ class QgsRasterBlock
     // char * bits( int row, int column );
 
     /** \brief Get pointer to data
-     *  @param index data matrix index
+     *  @param index data matrix index (long type in Python)
      *  @return pointer to data
      *  @note not available in python bindings
      */

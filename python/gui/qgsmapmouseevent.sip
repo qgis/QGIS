@@ -56,9 +56,10 @@ class QgsMapMouseEvent : QMouseEvent
     QgsPoint snapPoint( SnappingMode snappingMode );
 
     /**
-     * returns the first snapped segment. If the cached snapped match is a segment, it will simply return it.
+     * Returns the first snapped segment. If the cached snapped match is a segment, it will simply return it.
      * Otherwise it will try to snap a segment according to the event's snapping mode. In this case the cache
      * will not be overwritten.
+     * @param snappingMode Specify if the default project settings or all layers should be used for snapping
      * @param snapped if given, determines if a segment has been snapped
      * @param allLayers if true, override snapping mode
      */
@@ -93,9 +94,25 @@ class QgsMapMouseEvent : QMouseEvent
      */
     void setMapPoint( const QgsPoint& point );
 
+    /**
+     * Returns the original, unmodified map point of the mouse cursor.
+     *
+     * @return The cursor position in map coordinates.
+     */
     QgsPoint originalMapPoint() const;
 
+    /**
+     * The snapped mouse cursor in pixel coordinates.
+     *
+     * @return The snapped mouse cursor position in pixel coordinates.
+     */
     QPoint pixelPoint() const;
 
+    /**
+     * The unsnapped, real mouse cursor position in pixel coordinates.
+     * Alias to pos()
+     *
+     * @return Mouse position in pixel coordinates
+     */
     QPoint originalPixelPoint() const;
 };

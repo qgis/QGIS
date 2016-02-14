@@ -22,14 +22,14 @@ class QgsVisibilityPresetCollection : QObject
         bool operator==( const QgsVisibilityPresetCollection::PresetRecord& other ) const;
         bool operator!=( const QgsVisibilityPresetCollection::PresetRecord& other ) const;
 
-      //! Ordered list of layers that are visible
-      QStringList mVisibleLayerIDs;
-      /** For layers that have checkable legend symbols and not all symbols are checked - list which ones are
-       * @note not available in Python bindings
-       */
-      //QMap<QString, QSet<QString> > mPerLayerCheckedLegendSymbols;
-      //! For layers that use multiple styles - which one is currently selected
-      QMap<QString, QString> mPerLayerCurrentStyle;
+        //! Ordered list of layers that are visible
+        QStringList mVisibleLayerIDs;
+        /** For layers that have checkable legend symbols and not all symbols are checked - list which ones are
+         * @note not available in Python bindings
+         */
+        //QMap<QString, QSet<QString> > mPerLayerCheckedLegendSymbols;
+        //! For layers that use multiple styles - which one is currently selected
+        QMap<QString, QString> mPerLayerCurrentStyle;
     };
 
     QgsVisibilityPresetCollection();

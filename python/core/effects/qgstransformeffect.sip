@@ -114,10 +114,9 @@ class QgsTransformEffect : QgsPaintEffect
      */
     double scaleX() const;
 
-    /** Sets the x axis scaling factor.
-     * @param scaleX factor to scale x axis by, where 1.0 = no scaling
+    /** Sets the y axis scaling factor.
+     * @param scaleY factor to scale y axis by, where 1.0 = no scaling
      * @see scaleX
-     * @see setScaleY
      */
     void setScaleY( const double scaleY );
 

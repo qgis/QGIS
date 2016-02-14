@@ -120,11 +120,11 @@ class CORE_EXPORT QgsRectangle
     //! returns rectangle as a polygon
     QString asPolygon() const;
     /** Comparison operator
-      @return True if rectangles are equal
-    */
+     * @return True if rectangles are equal
+     */
     bool operator==( const QgsRectangle &r1 ) const;
     /** Comparison operator
-    @return False if rectangles are equal
+     * @return False if rectangles are equal
      */
     bool operator!=( const QgsRectangle &r1 ) const;
     /** Assignment operator
@@ -136,7 +136,8 @@ class CORE_EXPORT QgsRectangle
     void unionRect( const QgsRectangle& rect );
 
     /** Returns true if the rectangle has finite boundaries. Will
-        return false if any of the rectangle boundaries are NaN or Inf. */
+     * return false if any of the rectangle boundaries are NaN or Inf.
+     */
     bool isFinite() const;
 
     //! swap x/y

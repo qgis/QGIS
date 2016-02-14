@@ -108,6 +108,8 @@ delemiter:delimiter
 delimeter:delimiter
 delemeter:delimiter
 emited:emitted
+emmitted:emitted
+emmited:emitted
 charcter:character
 compatable:compatible
 seperated:separated
@@ -483,6 +485,9 @@ occured:occurred
 occuring:occurring
 occurence:occurrence
 overide:override
+overiden:overridden
+overidden:overridden
+overriden:overridden
 supress:suppress
 surpress:suppress
 artefact:artifact

@@ -33,11 +33,9 @@ class QgsVectorLayer;
 class GUI_EXPORT QgsVectorLayerTools
 {
   public:
-    QgsVectorLayerTools()
-    {}
+    QgsVectorLayerTools() {}
 
-    virtual ~QgsVectorLayerTools()
-    {}
+    virtual ~QgsVectorLayerTools() {}
 
     /**
      * This method should/will be called, whenever a new feature will be added to the layer

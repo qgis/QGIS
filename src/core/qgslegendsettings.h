@@ -44,12 +44,12 @@ class CORE_EXPORT QgsLegendSettings
     /** Returns the alignment of the legend title
      * @returns Qt::AlignmentFlag for the legend title
      * @see setTitleAlignment
-    */
+     */
     Qt::AlignmentFlag titleAlignment() const { return mTitleAlignment; }
     /** Sets the alignment of the legend title
      * @param alignment Text alignment for drawing the legend title
      * @see titleAlignment
-    */
+     */
     void setTitleAlignment( Qt::AlignmentFlag alignment ) { mTitleAlignment = alignment; }
 
     /** Returns reference to modifiable style */
@@ -158,11 +158,13 @@ class CORE_EXPORT QgsLegendSettings
     // utility functions
 
     /** Splits a string using the wrap char taking into account handling empty
-      wrap char which means no wrapping */
+     * wrap char which means no wrapping
+     */
     QStringList splitStringForWrapping( const QString& stringToSplt ) const;
 
-    /** Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
-     to work around the Qt font bug)*/
+    /** Draws Text. Takes care about all the composer specific issues (calculation to
+     * pixel, scaling of font and painter to work around the Qt font bug)
+     */
     void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const;
 
     /** Like the above, but with a rectangle for multiline text
@@ -173,7 +175,7 @@ class CORE_EXPORT QgsLegendSettings
      * @param halignment optional horizontal alignment
      * @param valignment optional vertical alignment
      * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
-    */
+     */
     void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
 
     /** Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE */

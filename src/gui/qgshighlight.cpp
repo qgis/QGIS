@@ -265,7 +265,7 @@ void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
   p->drawPath( path );
 }
 
-void QgsHighlight::updatePosition( )
+void QgsHighlight::updatePosition()
 {
   // nothing to do here...
 }

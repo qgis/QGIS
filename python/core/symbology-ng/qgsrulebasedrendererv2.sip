@@ -7,7 +7,6 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 %TypeHeaderCode
 #include <qgsrulebasedrendererv2.h>
 %End
-
   public:
     // TODO: use QVarLengthArray instead of QList
 
@@ -57,6 +56,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     class Rule
     {
       public:
+        //! The result of rendering a rule
         enum RenderResult
         {
           Filtered = 0, //!< The rule does not apply
@@ -68,14 +68,25 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         Rule( QgsSymbolV2* symbol /Transfer/, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString& filterExp = QString(),
               const QString& label = QString(), const QString& description = QString(), bool elseRule = false );
         ~Rule();
-        QString dump( int offset = 0 ) const;
+
+        /**
+         * Dump for debug purpose
+         * @param indent How many characters to indent. Will increase by two with every of the recursive calls
+         * @return A string representing this rule
+         */
+        QString dump( int indent  = 0 ) const;
+
+        /**
+         * Return the attributes used to evaluate the expression of this rule
+         * @return A set of attribute names
+         */
         QSet<QString> usedAttributes();
 
 	//! @note available in python bindings as symbol2
         QgsSymbolV2List symbols( const QgsRenderContext& context = QgsRenderContext() ) /PyName=symbols2/;
 
         //! @note not available in python bindings
-        // QgsLegendSymbolList legendSymbolItems();
+        // QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) const;
 
         //! @note added in 2.6
         QgsLegendSymbolListV2 legendSymbolItemsV2( int currentLevel = -1 ) const;
@@ -125,6 +136,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         //! @note added in 2.6
         //! @deprecated use active instead
         bool checkState() const /Deprecated/;
+
         /**
          * Returns if this rule is active
          *

@@ -1,3 +1,8 @@
+/*!
+ * \class QgsSearchQueryBuilder
+ * \brief Query Builder for search strings
+ *
+ */
 class QgsSearchQueryBuilder : QDialog
 {
 %TypeHeaderCode

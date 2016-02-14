@@ -316,7 +316,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      * to use symbolForFeature()
      * @note added in QGIS 2.12
      * @note available in Python bindings as symbolsForFeature2
-    */
+     */
     //TODO - QGIS 3.0 change PyName to symbolsForFeature when deprecated method is removed
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
 
@@ -331,7 +331,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      * extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
      * @note added in 2.12
      * @note available in Python bindings as originalSymbolsForFeature2
-    */
+     */
     //TODO - QGIS 3.0 change PyName to symbolsForFeature when deprecated method is removed
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
 

@@ -93,15 +93,16 @@ class CORE_EXPORT QgsAuthCertUtils
 
     /** Map certificates to their oraganization.
      * @note not available in Python bindings
-    */
+     */
     static QMap< QString, QList<QSslCertificate> > certsGroupedByOrg( const QList<QSslCertificate>& certs );
 
-    /** Map SSL custom configs' certificate sha1 to custom config as simple cache */
+    /** Map SSL custom configs' certificate sha1 to custom config as simple cache
+     */
     static QMap<QString, QgsAuthConfigSslServer> mapDigestToSslConfigs( const QList<QgsAuthConfigSslServer>& configs );
 
     /** Map SSL custom configs' certificates to their oraganization.
      * @note not available in Python bindings
-    */
+     */
     static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer>& configs );
 
     /** Return list of concatenated certs from a PEM or DER formatted file */
@@ -184,35 +185,37 @@ class CORE_EXPORT QgsAuthCertUtils
 
     /** Convert a QSslCertificate to a QCA::Certificate.
      * @note not available in Python bindings
-    */
+     */
     static QCA::Certificate qtCertToQcaCert( const QSslCertificate& cert );
 
     /** Convert a QList of QSslCertificate to a QCA::CertificateCollection.
      * @note not available in Python bindings
-    */
+     */
     static QCA::CertificateCollection qtCertsToQcaCollection( const QList<QSslCertificate>& certs );
 
     /** PKI key/cert bundle from file path, e.g. from .p12 or pfx files.
      * @note not available in Python bindings
-    */
+     */
     static QCA::KeyBundle qcaKeyBundle( const QString &path, const QString &pass );
 
     /** Certificate validity check messages per enum.
      * @note not available in Python bindings
-    */
+     */
     static QString qcaValidityMessage( QCA::Validity validity );
 
     /** Certificate signature algorithm strings per enum.
      * @note not available in Python bindings
-    */
+     */
     static QString qcaSignatureAlgorithm( QCA::SignatureAlgorithm algorithm );
 
     /** Certificate well-known constraint strings per enum.
      * @note not available in Python bindings
-    */
+     */
     static QString qcaKnownConstraint( QCA::ConstraintTypeKnown constraint );
 
-    /** Certificate usage type strings per enum */
+    /** Certificate usage type strings per enum
+     * @note not available in Python bindings
+     */
     static QString certificateUsageTypeString( QgsAuthCertUtils::CertUsageType usagetype );
 
     /** Try to determine the certificates usage types */
@@ -238,7 +241,7 @@ class CORE_EXPORT QgsAuthCertUtils
 
     /** Get short strings describing SSL errors.
      * @note not available in Python bindings
-    */
+     */
     static QList<QPair<QSslError::SslError, QString> > sslErrorEnumStrings();
 
   private:

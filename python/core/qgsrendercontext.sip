@@ -1,4 +1,3 @@
-
 class QgsRenderContext
 {
 
@@ -11,26 +10,39 @@ class QgsRenderContext
     QgsRenderContext( const QgsRenderContext& rh );
     ~QgsRenderContext();
 
-    //! Enumeration of flags that affect rendering operations
+    /** Enumeration of flags that affect rendering operations.
+     * @note added in QGIS 2.14
+     */
     enum Flag
     {
-      DrawEditingInfo,  //!< Enable drawing of vertex markers for layers in editing mode
-      ForceVectorOutput,  //!< Vector graphics should not be cached and drawn as raster images
-      UseAdvancedEffects,  //!< Enable layer transparency and blending effects
+      DrawEditingInfo,          //!< Enable drawing of vertex markers for layers in editing mode
+      ForceVectorOutput,        //!< Vector graphics should not be cached and drawn as raster images
+      UseAdvancedEffects,       //!< Enable layer transparency and blending effects
       UseRenderingOptimization, //!< Enable vector simplification and other rendering optimizations
-      DrawSelection,  //!< Whether vector selections should be shown in the rendered map
-      DrawSymbolBounds,  //!< Draw bounds of symbols (for debugging/testing)
+      DrawSelection,            //!< Whether vector selections should be shown in the rendered map
+      DrawSymbolBounds,         //!< Draw bounds of symbols (for debugging/testing)
       RenderMapTile
     };
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
-    //! Set combination of flags that will be used for rendering
+    /** Set combination of flags that will be used for rendering.
+     * @note added in QGIS 2.14
+     */
     void setFlags( const QgsRenderContext::Flags& flags );
-    //! Enable or disable a particular flag (other flags are not affected)
+
+    /** Enable or disable a particular flag (other flags are not affected)
+     * @note added in QGIS 2.14
+     */
     void setFlag( Flag flag, bool on = true );
-    //! Return combination of flags used for rendering
+
+    /** Return combination of flags used for rendering.
+     * @note added in QGIS 2.14
+     */
     Flags flags() const;
-    //! Check whether a particular flag is enabled
+
+    /** Check whether a particular flag is enabled.
+     * @note added in QGIS 2.14
+     */
     bool testFlag( Flag flag ) const;
 
     //! create initialized QgsRenderContext instance from given QgsMapSettings
@@ -56,10 +68,12 @@ class QgsRenderContext
 
     bool forceVectorOutput() const;
 
-    /** Returns true if advanced effects such as blend modes such be used */
+    /** Returns true if advanced effects such as blend modes such be used
+     */
     bool useAdvancedEffects() const;
 
-    /** Used to enable or disable advanced effects such as blend modes */
+    /** Used to enable or disable advanced effects such as blend modes
+     */
     void setUseAdvancedEffects( bool enabled );
 
     bool drawEditingInformation() const;
@@ -68,6 +82,10 @@ class QgsRenderContext
 
     QgsLabelingEngineInterface* labelingEngine();
 
+    //! Get access to new labeling engine (may be nullptr)
+    //! @note not available in Python bindings
+    // QgsLabelingEngineV2* labelingEngineV2() const { return mLabelingEngine2; }
+
     QColor selectionColor() const;
 
     /** Returns true if vector selections should be shown in the rendered map
@@ -75,7 +93,7 @@ class QgsRenderContext
      * @see setShowSelection
      * @see selectionColor
      * @note Added in QGIS v2.4
-    */
+     */
     bool showSelection() const;
 
     //setters
@@ -96,6 +114,9 @@ class QgsRenderContext
     void setForceVectorOutput( bool force );
 
     void setLabelingEngine( QgsLabelingEngineInterface* iface );
+    //! Assign new labeling engine
+    //! @note not available in Python bindings
+    // void setLabelingEngineV2( QgsLabelingEngineV2* engine2 ) { mLabelingEngine2 = engine2; }
     void setSelectionColor( const QColor& color );
 
     /** Sets whether vector selections should be shown in the rendered map
@@ -103,10 +124,11 @@ class QgsRenderContext
      * @see showSelection
      * @see setSelectionColor
      * @note Added in QGIS v2.4
-    */
+     */
     void setShowSelection( const bool showSelection );
 
-    /** Returns true if the rendering optimization (geometry simplification) can be executed*/
+    /** Returns true if the rendering optimization (geometry simplification) can be executed
+     */
     bool useRenderingOptimization() const;
 
     void setUseRenderingOptimization( bool enabled );
@@ -137,11 +159,9 @@ class QgsRenderContext
      */
     //const QgsExpressionContext& expressionContext() const;
 
-    /** Returns pointer to the unsegmentized geometry
-        @return the geometry*/
+    /** Returns pointer to the unsegmentized geometry*/
     const QgsAbstractGeometryV2* geometry() const;
-    /** Sets pointer to original (unsegmentized) geometry
-        @geometry the geometry*/
+    /** Sets pointer to original (unsegmentized) geometry*/
     void setGeometry( const QgsAbstractGeometryV2* geometry );
 
     /** Set a filter feature provider used for additional filtering of rendered features.

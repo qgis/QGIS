@@ -130,6 +130,11 @@ class QgsAttributeAction
     QgsAction &at( int idx );
     QgsAction &operator[]( int idx );
 
+    /** @deprecated Initialize QgsPythonRunner instead
+     * @note not available in Python bindings
+     */
+    // Q_DECL_DEPRECATED static void setPythonExecute( void ( * )( const QString & ) );
+
     //! Whether the action is the default action
     int defaultAction() const;
     void setDefaultAction( int actionNumber );

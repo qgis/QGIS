@@ -200,7 +200,7 @@ void QgsFieldsProperties::setEditFormInit( const QString &editForm,
 
   // Python init function and code
   QString code( initCode );
-  if ( code.isEmpty( ) )
+  if ( code.isEmpty() )
   {
     code.append( tr( "# -*- coding: utf-8 -*-\n\"\"\"\n"
                      "QGIS forms can have a Python function that is called when the form is\n"
@@ -935,9 +935,9 @@ void QgsFieldsProperties::apply()
     mLayer->editFormConfig()->setUiForm( mEditFormLineEdit->text() );
 
   // Init function configuration
-  mLayer->editFormConfig()->setInitFunction( mInitFunctionLineEdit->text( ) );
-  mLayer->editFormConfig()->setInitCode( mInitCodeEditorPython->text( ) );
-  mLayer->editFormConfig()->setInitFilePath( mInitFilePathLineEdit->text( ) );
+  mLayer->editFormConfig()->setInitFunction( mInitFunctionLineEdit->text() );
+  mLayer->editFormConfig()->setInitCode( mInitCodeEditorPython->text() );
+  mLayer->editFormConfig()->setInitFilePath( mInitFilePathLineEdit->text() );
   mLayer->editFormConfig()->setInitCodeSource(( QgsEditFormConfig::PythonInitCodeSource )mInitCodeSourceComboBox->currentIndex() );
 
   mLayer->editFormConfig()->setSuppress(( QgsEditFormConfig::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );

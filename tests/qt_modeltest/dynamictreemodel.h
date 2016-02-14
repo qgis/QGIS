@@ -72,10 +72,10 @@ class DynamicTreeModel : public QAbstractItemModel
   protected slots:
 
     /**
-    Finds the parent id of the string with id @p searchId.
-
-    Returns -1 if not found.
-    */
+     * Finds the parent id of the string with id @p searchId.
+     *
+     * Returns -1 if not found.
+     */
     qint64 findParentId( qint64 searchId ) const;
 
   private:

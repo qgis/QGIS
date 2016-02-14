@@ -131,7 +131,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
 
     /** QColor wipes the hue information when it is ambiguous (eg, for saturation = 0). So
      * the hue is stored in mExplicit hue to keep it around, as it is useful when modifying colors
-    */
+     */
     int mExplicitHue;
 
     /** Returns the range of valid values for the color widget's component
@@ -325,7 +325,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
 
     /** Creates cache images for specified widget size
      * @param size widget size for images
-    */
+     */
     void createImages( const QSizeF size );
 
     /** Creates the hue wheel image*/
@@ -336,7 +336,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
 
     /** Sets the widget color based on a point in the widget
      * @param pos position for color
-    */
+     */
     void setColorFromPos( const QPointF pos );
 
 };
@@ -392,38 +392,38 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     bool mDirty;
 
     /** Creates the color box background cached image
-    */
+     */
     void createBox();
 
     /** Returns the range of permissible values along the x axis
      * @returns maximum color component value for x axis
-    */
+     */
     int valueRangeX() const;
 
     /** Returns the range of permissible values along the y axis
      * @returns maximum color component value for y axis
-    */
+     */
     int valueRangeY() const;
 
     /** Returns the color component which varies along the y axis
-    */
+     */
     QgsColorWidget::ColorComponent yComponent() const;
 
     /** Returns the value of the color component which varies along the y axis
-    */
+     */
     int yComponentValue() const;
 
     /** Returns the color component which varies along the x axis
-    */
+     */
     QgsColorWidget::ColorComponent xComponent() const;
 
     /** Returns the value of the color component which varies along the x axis
-    */
+     */
     int xComponentValue() const;
 
     /** Updates the widget's color based on a point within the widget
      * @param point point within the widget
-    */
+     */
     void setColorFromPoint( QPoint point );
 
 };
@@ -537,7 +537,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
 
     /** Updates the widget's color based on a point within the widget
      * @param point point within the widget
-    */
+     */
     void setColorFromPoint( QPointF point );
 
 };
@@ -580,28 +580,28 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
      * @param realValue actual value of the color component
      * @returns display value of color component
      * @see convertDisplayToReal
-    */
+     */
     int convertRealToDisplay( const int realValue ) const;
 
     /** Converts the display value of a color component to a real value.
      * @param displayValue friendly display value of the color component
      * @returns real value of color component
      * @see convertRealToDisplay
-    */
+     */
     int convertDisplayToReal( const int displayValue ) const;
 
   private slots:
 
     /** Called when the color for the ramp changes
-    */
+     */
     void rampColorChanged( const QColor &color );
 
     /** Called when the value of the spin box changes
-    */
+     */
     void spinChanged( int value );
 
     /** Called when the value for the ramp changes
-    */
+     */
     void rampChanged( int value );
 
 };
@@ -653,17 +653,17 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
     ColorTextFormat mFormat;
 
     /** Updates the text based on the current color
-    */
+     */
     void updateText();
 
   private slots:
 
     /** Called when the user enters text into the widget
-    */
+     */
     void textChanged();
 
     /** Called when the dropdown arrow is clicked to show the format selection menu
-    */
+     */
     void showMenu();
 };
 

@@ -76,8 +76,6 @@ class GUI_EXPORT QgsActionMenu : public QMenu
       QgsMapLayer* mapLayer;
     };
 
-
-  public:
     /**
      * Constructs a new QgsActionMenu
      *
@@ -86,7 +84,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      *                 for the lifetime of this object.
      * @param parent   The usual QWidget parent.
      */
-    explicit QgsActionMenu( QgsVectorLayer* layer, const QgsFeature* feature, QWidget*  parent = nullptr );
+    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeature *feature, QWidget *parent = nullptr );
 
     /**
      * Constructs a new QgsActionMenu
@@ -95,7 +93,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * @param fid      The feature id of the feature for which this action will be run.
      * @param parent   The usual QWidget parent.
      */
-    explicit QgsActionMenu( QgsVectorLayer* layer, const QgsFeatureId fid, QWidget*  parent = nullptr );
+    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, QWidget *parent = nullptr );
 
     /**
      * Destructor

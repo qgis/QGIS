@@ -25,13 +25,13 @@ class QgsPreviewEffect : QGraphicsEffect
      * @param mode PreviewMode to use to draw the widget
      * @note added in 2.3
      * @see mode
-    */
+     */
     void setMode( PreviewMode mode );
     /** Returns the mode used for the preview effect.
      * @returns PreviewMode currently used by the effect
      * @note added in 2.3
      * @see setMode
-    */
+     */
     PreviewMode mode() const;
 
   protected:

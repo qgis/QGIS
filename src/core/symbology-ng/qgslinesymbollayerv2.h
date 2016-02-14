@@ -52,7 +52,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context ) override;
 
-    //overriden so that clip path can be set when using draw inside polygon option
+    //overridden so that clip path can be set when using draw inside polygon option
     void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) override;
 
     QgsStringMap properties() const override;
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
      * @see setOffsetAlongLine
      * @see offsetAlongLineUnit
      * @see placement
-    */
+     */
     double offsetAlongLine() const { return mOffsetAlongLine; }
 
     /** Sets the the offset along the line for the marker placement. For Interval placements, this is the distance
@@ -259,21 +259,21 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
      * @see offsetAlongLine
      * @see setOffsetAlongLineUnit
      * @see setPlacement
-    */
+     */
     void setOffsetAlongLine( double offsetAlongLine ) { mOffsetAlongLine = offsetAlongLine; }
 
     /** Returns the unit used for calculating the offset along line for markers.
      * @returns Offset along line unit type.
      * @see setOffsetAlongLineUnit
      * @see offsetAlongLine
-    */
+     */
     QgsSymbolV2::OutputUnit offsetAlongLineUnit() const { return mOffsetAlongLineUnit; }
 
     /** Sets the unit used for calculating the offset along line for markers.
      * @param unit Offset along line unit type.
      * @see offsetAlongLineUnit
      * @see setOffsetAlongLine
-    */
+     */
     void setOffsetAlongLineUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetAlongLineUnit = unit; }
 
     /** Returns the map unit scale used for calculating the offset in map units along line for markers.
@@ -331,7 +331,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
      * @param context render context
      * @see setoffsetAlongLine
      * @see setOffsetAlongLineUnit
-    */
+     */
     void renderOffsetVertexAlongLine( const QPolygonF& points, int vertex, double distance, QgsSymbolV2RenderContext &context );
 };
 

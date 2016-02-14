@@ -27,9 +27,9 @@ class QString;
 class QgsMapLayer;
 
 /** \ingroup core
-* This class tracks map layers that are currently loaded and provides
-* a means to fetch a pointer to a map layer and delete it.
-*/
+ * This class tracks map layers that are currently loaded and provides
+ * a means to fetch a pointer to a map layer and delete it.
+ */
 class CORE_EXPORT QgsMapLayerRegistry : public QObject
 {
     Q_OBJECT
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      *         it will not be part of the returned QList.
      *
      * @note As a side-effect QgsProject is made dirty.
-     * @note takeOwner not available in python binding - always takes ownership
+     * @note takeOwnership not available in python binding - always takes ownership
      */
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer*>& theMapLayers,
                                        bool addToLegend = true,
@@ -278,8 +278,8 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
   protected:
 #if 0
     /** Debugging member
-        invoked when a connect() is made to this object
-    */
+     *  invoked when a connect() is made to this object
+     */
     void connectNotify( const char * signal ) override;
 #endif
 

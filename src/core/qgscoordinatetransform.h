@@ -57,9 +57,9 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     QgsCoordinateTransform();
 
     /** Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
-    * @param theSource CRS, typically of the layer's coordinate system
-    * @param theDest CRS, typically of the map canvas coordinate system
-    */
+     * @param theSource CRS, typically of the layer's coordinate system
+     * @param theDest CRS, typically of the map canvas coordinate system
+     */
     QgsCoordinateTransform( const QgsCoordinateReferenceSystem& theSource,
                             const QgsCoordinateReferenceSystem& theDest );
 
@@ -158,12 +158,14 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     // and y variables in place. The second one works with good old-fashioned
     // C style arrays.
     void transformInPlace( double& x, double& y, double &z, TransformDirection direction = ForwardTransform ) const;
-    void transformInPlace( float& x, float& y, double &z, TransformDirection direction = ForwardTransform ) const;
-    void transformInPlace( float& x, float& y, float& z, TransformDirection direction = ForwardTransform ) const;
 
+    // @note not available in python bindings
+    void transformInPlace( float& x, float& y, double &z, TransformDirection direction = ForwardTransform ) const;
+    // @note not available in python bindings
+    void transformInPlace( float& x, float& y, float& z, TransformDirection direction = ForwardTransform ) const;
+    // @note not available in python bindings
     void transformInPlace( QVector<float>& x, QVector<float>& y, QVector<float>& z,
                            TransformDirection direction = ForwardTransform ) const;
-
 
     //! @note not available in python bindings
     void transformInPlace( QVector<double>& x, QVector<double>& y, QVector<double>& z,
@@ -233,16 +235,16 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     void initialise();
 
     /** Restores state from the given Dom node.
-    * @param theNode The node from which state will be restored
-    * @return bool True on success, False on failure
-    */
+     * @param theNode The node from which state will be restored
+     * @return bool True on success, False on failure
+     */
     bool readXML( QDomNode & theNode );
 
     /** Stores state to the given Dom node in the given document
-    * @param theNode The node in which state will be restored
-    * @param theDoc The document in which state will be stored
-    * @return bool True on success, False on failure
-    */
+     * @param theNode The node in which state will be restored
+     * @param theDoc The document in which state will be stored
+     * @return bool True on success, False on failure
+     */
     bool writeXML( QDomNode & theNode, QDomDocument & theDoc );
 
   signals:

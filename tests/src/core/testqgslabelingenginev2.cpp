@@ -86,7 +86,7 @@ void TestQgsLabelingEngineV2::init()
 
 void TestQgsLabelingEngineV2::cleanup()
 {
-  QgsMapLayerRegistry::instance()->removeMapLayer( vl->id( ) );
+  QgsMapLayerRegistry::instance()->removeMapLayer( vl->id() );
   vl = 0;
 }
 

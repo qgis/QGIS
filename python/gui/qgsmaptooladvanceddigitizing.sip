@@ -27,14 +27,20 @@ class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
 #include "qgsmaptooladvanceddigitizing.h"
 %End
   public:
+    //! Different capture modes
     enum CaptureMode
     {
-      CaptureNone,
-      CapturePoint,
-      CaptureLine,
-      CapturePolygon
+      CaptureNone,    //!< Do not capture
+      CapturePoint,   //!< Capture points
+      CaptureLine,    //!< Capture lines
+      CapturePolygon  //!< Capture polygons
     };
 
+    /**
+     * Creates an advanced digitizing maptool
+     * @param canvas         The map canvas on which the tool works
+     * @param cadDockWidget  The cad dock widget which will be used to adjust mouse events
+     */
     explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget );
 
     ~QgsMapToolAdvancedDigitizing();
@@ -75,7 +81,7 @@ class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
 
   protected:
     /**
-     * this method when subclassing this class.
+     * Override this method when subclassing this class.
      * This will receive adapted events from the cad system whenever a
      * canvasPressEvent is triggered and it's not hidden by the cad's
      * construction mode.
@@ -86,7 +92,7 @@ class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
 
 
     /**
-     * this method when subclassing this class.
+     * Override this method when subclassing this class.
      * This will receive adapted events from the cad system whenever a
      * canvasReleaseEvent is triggered and it's not hidden by the cad's
      * construction mode.
@@ -97,7 +103,7 @@ class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
 
 
     /**
-     * this method when subclassing this class.
+     * Override this method when subclassing this class.
      * This will receive adapted events from the cad system whenever a
      * canvasMoveEvent is triggered and it's not hidden by the cad's
      * construction mode.

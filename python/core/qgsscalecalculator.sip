@@ -1,7 +1,6 @@
 
-/**
- * \class QgsScaleCalculator
- * \brief Calculates scale for a given combination of canvas size, map extent,
+/** \ingroup core
+ * Calculates scale for a given combination of canvas size, map extent,
  * and monitor dpi.
  */
 class QgsScaleCalculator
@@ -9,7 +8,6 @@ class QgsScaleCalculator
 %TypeHeaderCode
 #include <qgsscalecalculator.h>
 %End
-
   public:
 
     /**

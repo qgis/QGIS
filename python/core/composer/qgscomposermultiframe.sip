@@ -34,7 +34,7 @@ class QgsComposerMultiFrame: QgsComposerObject
   public:
 
     /** Specifies the behaviour for creating new frames to fit the multiframe's content
-    */
+     */
     enum ResizeMode
     {
       UseExistingFrames, /*!< don't automatically create new frames, just use existing frames */
@@ -66,7 +66,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @note added in version 2.5
      * @see minFrameSize
      * @see recalculateFrameRects
-    */
+     */
     virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
 
     /** Returns the minimum size for a frames, if desired. If the minimum
@@ -78,14 +78,14 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @note added in version 2.5
      * @see fixedFrameSize
      * @see recalculateFrameRects
-    */
+     */
     virtual QSizeF minFrameSize( const int frameIndex = -1 ) const;
 
     /** Renders a portion of the multiframe's content into a painter.
      * @param p destination painter
      * @param renderExtent visible extent of content to render into the painter.
      * @deprecated use render( QPainter* painter, const QRectF& renderExtent, const int frameIndex ) instead
-    */
+     */
     virtual void render( QPainter* p, const QRectF& renderExtent ) /Deprecated/;
 
     /** Renders a portion of the multiframe's content into a painter.
@@ -93,14 +93,14 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param renderExtent visible extent of content to render into the painter.
      * @param frameIndex frame number for content
      * @note added in version 2.5
-    */
+     */
     virtual void render( QPainter* painter, const QRectF& renderExtent, const int frameIndex );
 
     /** Adds a frame to the multiframe.
      * @param frame frame to add
      * @param recalcFrameSizes set to true to force recalculation of all existing frame sizes
      * @see removeFrame
-    */
+     */
     virtual void addFrame( QgsComposerFrame* frame /Transfer/, bool recalcFrameSizes = true ) = 0;
 
     /** Finds the optimal position to break a frame at.
@@ -108,7 +108,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @returns the optimal breakable position which occurs in the multi frame close
      * to and before the specified yPos
      * @note added in version 2.3
-    */
+     */
     virtual double findNearbyPageBreak( double yPos );
 
     /** Removes a frame from the multiframe. This method automatically removes the frame from the
@@ -117,24 +117,24 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param removeEmptyPages set to true to remove pages which are empty after the frame is removed
      * @see addFrame
      * @see deleteFrames
-    */
+     */
     void removeFrame( int i, const bool removeEmptyPages = false );
 
     /** Removes and deletes all child frames.
      * @see removeFrame
-    */
+     */
     void deleteFrames();
 
     /** Sets the resize mode for the multiframe, and recalculates frame sizes to match.
      * @param mode resize mode
      * @see resizeMode
-    */
+     */
     void setResizeMode( ResizeMode mode );
 
     /** Returns the resize mode for the multiframe.
      * @returns resize mode
      * @see setResizeMode
-    */
+     */
     ResizeMode resizeMode() const;
 
     /** Stores state information about multiframe in DOM element. Implementations of writeXML
@@ -223,7 +223,7 @@ class QgsComposerMultiFrame: QgsComposerObject
     /** Get multiframe display name.
      * @returns display name for item
      * @note added in version 2.5
-    */
+     */
     virtual QString displayName() const;
 
   public slots:
@@ -254,12 +254,12 @@ class QgsComposerMultiFrame: QgsComposerObject
 
     /** Emitted when the properties of a multi frame have changed, and the GUI item widget
      * must be updated.
-    */
+     */
     void changed();
 
     /** Emitted when the contents of the multi frame have changed and the frames
      * must be redrawn.
-    */
+     */
     void contentsChanged();
 
   protected slots:

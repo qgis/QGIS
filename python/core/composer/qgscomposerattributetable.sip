@@ -35,7 +35,7 @@ class QgsComposerAttributeTable : QgsComposerTable
     QgsComposerAttributeTable( QgsComposition* composition /TransferThis/ );
     ~QgsComposerAttributeTable();
 
-    /** Return correct graphics item type. Added in v1.7 */
+    /** Return correct graphics item type. */
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/

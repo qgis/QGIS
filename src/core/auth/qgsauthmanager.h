@@ -142,7 +142,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /** Whether there is a scheduled opitonal erase of authentication database.
      * @note not available in Python bindings
-    */
+     */
     bool scheduledAuthDbErase() { return mScheduledDbErase; }
 
     /** Schedule an optional erase of authentication database, starting when mutex is lockable.
@@ -164,7 +164,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * processing state is not ready for interacting with the user, e.g. project is still loading
      * @param emitted Setting to false will cause signal to be emitted by the schedule timer.
      * Setting to true will stop any emitting, but will not stop the schedule timer.
-     * @note not available in Python bindings
      */
     void setScheduledAuthDbEraseRequestEmitted( bool emitted ) { mScheduledDbEraseRequestEmitted = emitted; }
 
@@ -215,7 +214,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param authMethodKey Authentication method key
      * @param parent Parent widget
      */
-    QWidget *authMethodEditWidget( const QString &authMethodKey , QWidget *parent );
+    QWidget *authMethodEditWidget( const QString &authMethodKey, QWidget *parent );
 
     /**
      * Get supported authentication method expansion(s), e.g. NetworkRequest | DataSourceURI, as flags
@@ -347,7 +346,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /** Initialize various SSL authentication caches */
     bool initSslCaches();
 
-
     /** Store a certificate identity */
     bool storeCertIdentity( const QSslCertificate& cert, const QSslKey& key );
 
@@ -356,7 +354,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /** Get a certificate identity bundle by id (sha hash).
      * @note not available in Python bindings
-    */
+     */
     const QPair<QSslCertificate, QSslKey> getCertIdentityBundle( const QString& id );
 
     /** Get a certificate identity bundle by id (sha hash) returned as PEM text */
@@ -393,10 +391,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /** Remove an SSL certificate custom config */
     bool removeSslCertCustomConfig( const QString& id, const QString &hostport );
 
-
     /** Get ignored SSL error cache, keyed with cert/connection's sha:host:port.
      * @note not available in Python bindings
-    */
+     */
     QHash<QString, QSet<QSslError::SslError> > getIgnoredSslErrorCache() { return mIgnoredSslErrorsCache; }
 
     /** Utility function to dump the cache for debug purposes */
@@ -441,7 +438,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /** Get all CA certs mapped to their sha1 from cache.
      * @note not available in Python bindings
-    */
+     */
     const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource , QSslCertificate> > getCaCertsCache()
     {
       return mCaCertsCache;
@@ -455,7 +452,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /** Get a whether certificate is trusted by user
         @return DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
-    */
+     */
     QgsAuthCertUtils::CertTrustPolicy getCertTrustPolicy( const QSslCertificate& cert );
 
     /** Remove a group certificate authorities */
@@ -510,15 +507,15 @@ class CORE_EXPORT QgsAuthManager : public QObject
     void messageOut( const QString& message, const QString& tag = smAuthManTag, QgsAuthManager::MessageLevel level = INFO ) const;
 
     /**
-     * Emmitted when a password has been verify (or not)
+     * Emitted when a password has been verify (or not)
      * @param verified The state of password's verification
      */
     void masterPasswordVerified( bool verified ) const;
 
-    /** Emmitted when a user has indicated they may want to erase the authentication db. */
+    /** Emitted when a user has indicated they may want to erase the authentication db. */
     void authDatabaseEraseRequested() const;
 
-    /** Emmitted when the authentication db is significantly changed, e.g. large record removal, erased, etc. */
+    /** Emitted when the authentication db is significantly changed, e.g. large record removal, erased, etc. */
     void authDatabaseChanged() const;
 
   public slots:

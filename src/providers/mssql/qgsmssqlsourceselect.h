@@ -116,8 +116,8 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void buildQuery();
 
     /** Connects to the database using the stored connection parameters.
-    * Once connected, available layers are displayed.
-    */
+     * Once connected, available layers are displayed.
+     */
     void on_btnConnect_clicked();
     void on_cbxAllowGeometrylessTables_stateChanged( int );
     //! Opens the create connection dialog to build a new connection

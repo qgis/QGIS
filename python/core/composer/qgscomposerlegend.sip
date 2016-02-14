@@ -34,7 +34,7 @@ class QgsComposerLegend : QgsComposerItem
     QgsComposerLegend( QgsComposition* composition /TransferThis/);
     ~QgsComposerLegend();
 
-    /** Return correct graphics item type. Added in v1.7 */
+    /** Return correct graphics item type. */
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/
@@ -65,6 +65,10 @@ class QgsComposerLegend : QgsComposerItem
     //! @note added in 2.6
     bool legendFilterByMapEnabled() const;
 
+    //! Update() overloading. Use it rather than update()
+    //! @note added in 2.12
+    virtual void updateItem();
+
     //! When set to true, during an atlas rendering, it will filter out legend elements
     //! where features are outside the current atlas feature.
     //! @note added in 2.14
@@ -83,13 +87,13 @@ class QgsComposerLegend : QgsComposerItem
      * @returns Qt::AlignmentFlag for the legend title
      * @note added in 2.3
      * @see setTitleAlignment
-    */
+     */
     Qt::AlignmentFlag titleAlignment() const;
     /** Sets the alignment of the legend title
      * @param alignment Text alignment for drawing the legend title
      * @note added in 2.3
      * @see titleAlignment
-    */
+     */
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 
     /** Returns reference to modifiable style */
@@ -211,6 +215,9 @@ class QgsComposerLegend : QgsComposerItem
        * @param doc is Dom document
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+
+    //Overridden to show legend title
+    virtual QString displayName() const;
 
   public slots:
     /** Data changed*/

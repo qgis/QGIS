@@ -179,7 +179,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
         Plugins don't need to know about QgisApp, as we pass it as QWidget,
         it can be used for connecting slots and using as widget's parent
-    */
+     */
     QWidget * mainWindow() override;
 
     QgsMessageBar * messageBar() override;

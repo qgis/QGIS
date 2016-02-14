@@ -1,5 +1,11 @@
 class QgsRendererV2Widget /External/;
 
+/**
+ Stores metadata about one renderer class.
+
+ @note It's necessary to implement createRenderer() function.
+   In C++ you can use QgsRendererV2Metadata convenience class.
+ */
 class QgsRendererV2AbstractMetadata
 {
 %TypeHeaderCode
@@ -86,7 +92,6 @@ class QgsRendererV2Registry
     ~QgsRendererV2Registry();
 
   private:
-
     QgsRendererV2Registry( const QgsRendererV2Registry& rh );
 
 };

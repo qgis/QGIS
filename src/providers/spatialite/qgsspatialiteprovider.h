@@ -110,11 +110,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QGis::WkbType geometryType() const override;
 
     /** Return the number of layers for the current data source
-
-    @note
-
-    Should this be subLayerCount() instead?
-    */
+     *
+     * @note Should this be subLayerCount() instead?
+     */
     size_t layerCount() const;
 
     /**
@@ -123,11 +121,11 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     long featureCount() const override;
 
     /** Return the extent for this data layer
-    */
+     */
     virtual QgsRectangle extent() override;
 
     /** Update the extent for this data layer
-    */
+     */
     virtual void updateExtents() override;
 
     /**
@@ -151,7 +149,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     virtual void uniqueValues( int index, QList < QVariant > &uniqueValues, int limit = -1 ) override;
 
     /** Returns true if layer is valid
-    */
+     */
     bool isValid() override;
 
     /** Describes if provider has save and load style support
@@ -202,32 +200,32 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     }
 
     /** Return a provider name
-
-    Essentially just returns the provider key.  Should be used to build file
-    dialogs so that providers can be shown with their supported types. Thus
-    if more than one provider supports a given format, the user is able to
-    select a specific provider to open that file.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+     *
+     * Essentially just returns the provider key.  Should be used to build file
+     * dialogs so that providers can be shown with their supported types. Thus
+     * if more than one provider supports a given format, the user is able to
+     * select a specific provider to open that file.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     QString name() const override;
 
     /** Return description
-
-    Return a terse string describing what the provider is.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+     *
+     * Return a terse string describing what the provider is.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     QString description() const override;
 
     /**
@@ -370,8 +368,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     bool spatialIndexRTree;
     /**
-    * this Geometry is supported by an MBR cache spatial index
-    */
+     * this Geometry is supported by an MBR cache spatial index
+     */
     bool spatialIndexMbrCache;
 
     int enabledCapabilities;
@@ -391,8 +389,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     int mSpatialiteVersionMinor;
 
     /**
-    * internal utility functions used to handle common SQLite tasks
-    */
+     * internal utility functions used to handle common SQLite tasks
+     */
     //void sqliteOpen();
     void closeDb();
     bool checkLayerType();

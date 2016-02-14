@@ -581,12 +581,12 @@ void QgsGrassModule::run()
     }
 
     /* WARNING - TODO: there was a bug in GRASS 6.0.0 / 6.1.CVS (< 2005-04-29):
-    * db_start_driver set GISRC_MODE_MEMORY eviroment variable to 1 if
-    * G_get_gisrc_mode() == G_GISRC_MODE_MEMORY but the variable wasn't unset
-    * if  G_get_gisrc_mode() == G_GISRC_MODE_FILE. Because QGIS GRASS provider starts drivers in
-    * G_GISRC_MODE_MEMORY mode, the variable remains set in variable when a module is run
-    * -> unset GISRC_MODE_MEMORY. Remove later once 6.1.x / 6.0.1 is widespread.
-    */
+     * db_start_driver set GISRC_MODE_MEMORY eviroment variable to 1 if
+     * G_get_gisrc_mode() == G_GISRC_MODE_MEMORY but the variable wasn't unset
+     * if  G_get_gisrc_mode() == G_GISRC_MODE_FILE. Because QGIS GRASS provider starts drivers in
+     * G_GISRC_MODE_MEMORY mode, the variable remains set in variable when a module is run
+     * -> unset GISRC_MODE_MEMORY. Remove later once 6.1.x / 6.0.1 is widespread.
+    *   */
     putenv(( char* ) "GISRC_MODE_MEMORY" );  // unset
 
     mOutputTextBrowser->clear();

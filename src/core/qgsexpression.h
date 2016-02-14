@@ -280,7 +280,7 @@ class CORE_EXPORT QgsExpression
      * @see setGeomCalculator()
      * @see distanceUnits()
      */
-    QgsDistanceArea* geomCalculator();
+    QgsDistanceArea *geomCalculator();
 
     /** Sets the geometry calculator used for distance and area calculations in expressions.
      * (used by $length, $area and $perimeter functions only). By default, no geometry
@@ -306,40 +306,37 @@ class CORE_EXPORT QgsExpression
     void setDistanceUnits( QGis::UnitType unit );
 
     /** This function currently replaces each expression between [% and %]
-       in the string with the result of its evaluation on the feature
-       passed as argument.
-
-       Additional substitutions can be passed through the substitutionMap
-       parameter
-       @param action
-       @param feat
-       @param layer
-       @param substitutionMap
-       @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
-       and area conversion
-       @deprecated use QgsExpressionContext variant instead
-    */
+     * in the string with the result of its evaluation on the feature
+     * passed as argument.
+     *
+     * Additional substitutions can be passed through the substitutionMap
+     * parameter
+     * @param action
+     * @param feat
+     * @param layer
+     * @param substitutionMap
+     * @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance and area conversion
+     * @deprecated use QgsExpressionContext variant instead
+     */
     Q_DECL_DEPRECATED static QString replaceExpressionText( const QString &action, const QgsFeature *feat,
         QgsVectorLayer *layer,
         const QMap<QString, QVariant> *substitutionMap = nullptr,
-        const QgsDistanceArea* distanceArea = nullptr
-                                                          );
+        const QgsDistanceArea* distanceArea = nullptr );
 
     /** This function replaces each expression between [% and %]
-       in the string with the result of its evaluation with the specified context
-
-       Additional substitutions can be passed through the substitutionMap parameter
-       @param action
-       @param context expression context
-       @param substitutionMap
-       @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
-       and area conversion
-       @note added in QGIS 2.12
-    */
+     * in the string with the result of its evaluation with the specified context
+     *
+     * Additional substitutions can be passed through the substitutionMap parameter
+     * @param action
+     * @param context expression context
+     * @param substitutionMap
+     * @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
+     * and area conversion
+     * @note added in QGIS 2.12
+     */
     static QString replaceExpressionText( const QString &action, const QgsExpressionContext* context,
                                           const QMap<QString, QVariant> *substitutionMap = nullptr,
-                                          const QgsDistanceArea* distanceArea = nullptr
-                                        );
+                                          const QgsDistanceArea* distanceArea = nullptr );
 
     /** Attempts to evaluate a text string as an expression to a resultant double
      * value.
@@ -349,7 +346,7 @@ class CORE_EXPORT QgsExpression
      * @note added in QGIS 2.7
      * @note this method is inefficient for bulk evaluation of expressions, it is intended
      * for one-off evaluations only.
-    */
+     */
     static double evaluateToDouble( const QString& text, const double fallbackValue );
 
     /**
@@ -623,8 +620,8 @@ class CORE_EXPORT QgsExpression
     static int functionIndex( const QString& name );
 
     /** Returns the number of functions defined in the parser
-      *  @return The number of function defined in the parser.
-      */
+     *  @return The number of function defined in the parser.
+     */
     static int functionCount();
 
     /**
@@ -941,7 +938,6 @@ class CORE_EXPORT QgsExpression
         virtual Node* clone() const override;
 
       protected:
-        //QString mName;
         int mFnIndex;
         NodeList* mArgs;
 

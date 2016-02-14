@@ -16,20 +16,20 @@ class QgsUnitTypes
      */
     enum DistanceUnitType
     {
-      Standard, /*!< unit is a standard measurement unit */
-      Geographic, /*!< unit is a geographic (eg degree based) unit */
+      Standard,    /*!< unit is a standard measurement unit */
+      Geographic,  /*!< unit is a geographic (eg degree based) unit */
       UnknownType, /*!< unknown unit type */
     };
 
     /** Returns the type for a distance unit.
-    */
+     */
     static DistanceUnitType unitType( QGis::UnitType unit );
 
     /** Encodes a distance unit to a string.
      * @param unit unit to encode
      * @returns encoded string
      * @see decodeDistanceUnit()
-    */
+     */
     static QString encodeUnit( QGis::UnitType unit );
 
     /** Decodes a distance unit from a string.
@@ -37,7 +37,7 @@ class QgsUnitTypes
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @returns decoded units
      * @see encodeUnit()
-    */
+     */
     static QGis::UnitType decodeDistanceUnit( const QString& string, bool *ok = 0 );
 
     /** Returns a translated string representing a distance unit.
@@ -65,7 +65,7 @@ class QgsUnitTypes
      * @param unit unit to encode
      * @returns encoded string
      * @see decodeSymbolUnit()
-    */
+     */
     static QString encodeUnit( QgsSymbolV2::OutputUnit unit );
 
     /** Decodes a symbol unit from a string.
@@ -73,7 +73,7 @@ class QgsUnitTypes
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @returns decoded units
      * @see encodeUnit()
-    */
+     */
     static QgsSymbolV2::OutputUnit decodeSymbolUnit( const QString& string, bool *ok = 0 );
 
 };

@@ -45,14 +45,14 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
   public:
     // Region term is used in modules (g.region), internaly it is hold in structure
     // Cell_head, but variables keeping that struture are usually called window
-    /*
+#if 0
     class Region
     {
-      QgsRectangle extent;
-      double ewRes; // east-west resolution
-      double nsRes; // north south resolution
+        QgsRectangle extent;
+        double ewRes; // east-west resolution
+        double nsRes; // north south resolution
     };
-    */
+#endif
 
     class Raster
     {

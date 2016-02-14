@@ -97,11 +97,11 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
   private:
 
     /*!
-    * Populate the field list for the selected table
-    */
+     * Populate the field list for the selected table
+     */
     void populateFields();
     /*!
-       * Setup models for listviews
+     * Setup models for listviews
      */
     void setupListViews();
 

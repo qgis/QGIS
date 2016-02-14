@@ -61,6 +61,8 @@ class QgsFeatureRendererV2
     QString type() const;
 
     /** To be overridden
+     *
+     * Must be called between startRender() and stopRender() calls.
      * @param feature feature
      * @return returns pointer to symbol or 0 if symbol was not found
      * @deprecated use symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) instead
@@ -68,6 +70,8 @@ class QgsFeatureRendererV2
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) /Deprecated/;
 
     /** To be overridden
+     *
+     * Must be called between startRender() and stopRender() calls.
      * @param feature feature
      * @param context render context
      * @return returns pointer to symbol or 0 if symbol was not found
@@ -289,7 +293,7 @@ class QgsFeatureRendererV2
      * to use symbolForFeature()
      * @note added in QGIS 2.12
      * @note available in Python bindings as symbolsForFeature2
-    */
+     */
     //TODO - QGIS 3.0 change PyName to symbolsForFeature when deprecated method is removed
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=symbolsForFeature2/;
 
@@ -304,7 +308,7 @@ class QgsFeatureRendererV2
      * extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
      * @note added in 2.12
      * @note available in Python bindings as originalSymbolsForFeature2
-    */
+     */
     //TODO - QGIS 3.0 change PyName to symbolsForFeature when deprecated method is removed
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=originalSymbolsForFeature2/;
 

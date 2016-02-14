@@ -53,7 +53,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * to value. Valid options are lowercaseFieldNames (set to true to convert
      * field names to lowercase), dropStringConstraints (set to true to remove
      * length constraints on character fields).
-    */
+     */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
       const QgsFields &fields,
@@ -105,7 +105,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     /** Return the number of layers for the current data source
      * @note Should this be subLayerCount() instead?
-    */
+     */
     size_t layerCount() const;
 
     /**
@@ -125,19 +125,19 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void setExtent( QgsRectangle& newExtent );
 
     /** Return the extent for this data layer
-    */
+     */
     virtual QgsRectangle extent() override;
 
     /** Update the extent
-    */
+     */
     virtual void updateExtents() override;
 
     /** Determine the fields making up the primary key
-    */
+     */
     bool determinePrimaryKey();
 
     /** Determine the fields making up the primary key from the uri attribute keyColumn
-    */
+     */
     void determinePrimaryKeyFromUriKeyColumn();
 
     /**
@@ -172,7 +172,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     virtual void enumValues( int index, QStringList& enumList ) override;
 
     /** Returns true if layer is valid
-    */
+     */
     bool isValid() override;
 
 
@@ -259,32 +259,32 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
 
     /** Return a provider name
-
-    Essentially just returns the provider key.  Should be used to build file
-    dialogs so that providers can be shown with their supported types. Thus
-    if more than one provider supports a given format, the user is able to
-    select a specific provider to open that file.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+     *
+     * Essentially just returns the provider key.  Should be used to build file
+     * dialogs so that providers can be shown with their supported types. Thus
+     * if more than one provider supports a given format, the user is able to
+     * select a specific provider to open that file.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     QString name() const override;
 
     /** Return description
-
-    Return a terse string describing what the provider is.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+     *
+     * Return a terse string describing what the provider is.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     QString description() const override;
 
     /**
@@ -340,7 +340,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     const QgsField &field( int index ) const;
 
     /** Load the field list
-    */
+     */
     bool loadFields();
 
     /** Convert a QgsField to work with PG */
@@ -353,10 +353,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool parseEnumRange( QStringList& enumValues, const QString& attributeName ) const;
 
     /** Parses the possible enum values of a domain type (given in the check constraint of the domain type)
-    @param enumValues Reference to list that receives enum values
-    @param attributeName Name of the domain type attribute
-    @return true in case of success and false in case of error (e.g. if the attribute is not a domain type or does not have a check constraint)
-    */
+     * @param enumValues Reference to list that receives enum values
+     * @param attributeName Name of the domain type attribute
+     * @return true in case of success and false in case of error (e.g. if the attribute is not a domain type or does not have a check constraint)
+     */
     bool parseDomainCheckConstraint( QStringList& enumValues, const QString& attributeName ) const;
 
     QgsFields mAttributeFields;

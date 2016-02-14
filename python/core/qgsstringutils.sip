@@ -9,7 +9,6 @@ class QgsStringUtils
 %TypeHeaderCode
 #include <qgsstringutils.h>
 %End
-
   public:
     /** Returns the Levenshtein edit distance between two strings. This equates to the minimum
      * number of character edits (insertions, deletions or substitutions) required to change
@@ -47,5 +46,4 @@ class QgsStringUtils
      * @returns 4 letter Soundex code
      */
     static QString soundex( const QString &string );
-
 };

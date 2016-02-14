@@ -698,7 +698,7 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
   }
 }
 
-int QgsMapToolNodeTool::firstSelectedVertex( )
+int QgsMapToolNodeTool::firstSelectedVertex()
 {
   if ( mSelectedFeature )
   {

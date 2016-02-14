@@ -44,7 +44,7 @@ class CORE_EXPORT QgsImageOperation
   public:
 
     /** Modes for converting a QImage to grayscale
-    */
+     */
     enum GrayscaleMode
     {
       GrayscaleLightness, /*!< keep the lightness of the color, drops the saturation */
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsImageOperation
     };
 
     /** Flip operation types
-    */
+     */
     enum FlipType
     {
       FlipHorizontal, /*!< flip the image horizontally */
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsImageOperation
     /** Convert a QImage to a grayscale image. Alpha channel is preserved.
      * @param image QImage to convert
      * @param mode mode to use during grayscale conversion
-    */
+     */
     static void convertToGrayscale( QImage &image, const GrayscaleMode mode = GrayscaleLuminosity );
 
     /** Alter the brightness or contrast of a QImage.

@@ -64,7 +64,7 @@ This is a minor release increment with the following new features:
 - Tweaks to label properties dialog.
 - Support for non-latin scripts for curved labels.
 - "Follow point" alignment for multiline labels.
-- Support overriden layer styles also in the composer legend.
+- Support overridden layer styles also in the composer legend.
 - Add scalebar sizing mode to fit a desired scalebar width.
 - Plugins can now create their own entries in the browser.
 - More uniform and predictable names for processing outputs.

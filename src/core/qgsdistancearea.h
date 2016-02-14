@@ -224,14 +224,14 @@ class CORE_EXPORT QgsDistanceArea
     QgsConstWkbPtr measurePolygon( QgsConstWkbPtr feature, double* area, double* perimeter, bool hasZptr = false ) const;
 
     /**
-      calculates distance from two points on ellipsoid
-      based on inverse Vincenty's formulae
-
-      Points p1 and p2 are expected to be in degrees and in currently used ellipsoid
-
-      @note if course1 is not NULL, bearing (in radians) from first point is calculated
-            (the same for course2)
-      @return distance in meters
+     * calculates distance from two points on ellipsoid
+     * based on inverse Vincenty's formulae
+     *
+     * Points p1 and p2 are expected to be in degrees and in currently used ellipsoid
+     *
+     * @note if course1 is not NULL, bearing (in radians) from first point is calculated
+     * (the same for course2)
+     * @return distance in meters
      */
     double computeDistanceBearing( const QgsPoint& p1, const QgsPoint& p2,
                                    double* course1 = nullptr, double* course2 = nullptr ) const;
@@ -243,18 +243,17 @@ class CORE_EXPORT QgsDistanceArea
     double computeDistance( const QList<QgsPoint>& points ) const;
 
     /**
-     calculates area of polygon on ellipsoid
-     algorithm has been taken from GRASS: gis/area_poly1.c
-
-    */
+     * calculates area of polygon on ellipsoid
+     * algorithm has been taken from GRASS: gis/area_poly1.c
+     */
     double computePolygonArea( const QList<QgsPoint>& points ) const;
 
     double computePolygonFlatArea( const QList<QgsPoint>& points ) const;
 
     /**
-      precalculates some values
-      (must be called always when changing ellipsoid)
-    */
+     * precalculates some values
+     * (must be called always when changing ellipsoid)
+     */
     void computeAreaInit();
 
   private:

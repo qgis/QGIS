@@ -107,7 +107,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     /** Return the number of layers for the current data source
      * @note Should this be subLayerCount() instead?
-    */
+     */
     size_t layerCount() const;
 
     /**
@@ -132,15 +132,15 @@ class QgsOracleProvider : public QgsVectorDataProvider
     void setExtent( QgsRectangle& newExtent );
 
     /** Return the extent for this data layer
-    */
+     */
     virtual QgsRectangle extent();
 
     /** Update the extent
-    */
+     */
     virtual void updateExtents();
 
     /** Determine the fields making up the primary key
-    */
+     */
     bool determinePrimaryKey();
 
     /**
@@ -173,7 +173,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
 
     /** Returns true if layer is valid
-    */
+     */
     bool isValid();
 
     QgsAttributeList pkAttributeIndexes() { return mPrimaryKeyAttrs; }
@@ -236,32 +236,32 @@ class QgsOracleProvider : public QgsVectorDataProvider
     int capabilities() const;
 
     /** Return a provider name
-
-    Essentially just returns the provider key.  Should be used to build file
-    dialogs so that providers can be shown with their supported types. Thus
-    if more than one provider supports a given format, the user is able to
-    select a specific provider to open that file.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+     *
+     * Essentially just returns the provider key.  Should be used to build file
+     * dialogs so that providers can be shown with their supported types. Thus
+     * if more than one provider supports a given format, the user is able to
+     * select a specific provider to open that file.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     QString name() const;
 
     /** Return description
-
-    Return a terse string describing what the provider is.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+     *
+     * Return a terse string describing what the provider is.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     QString description() const;
 
     /**
@@ -283,7 +283,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     const QgsField &field( int index ) const;
 
     /** Load the field list
-    */
+     */
     bool loadFields();
 
     /** Convert a QgsField to work with Oracle */

@@ -223,7 +223,7 @@ void QgsGrassItemActions::renameGrassObject()
   }
 }
 
-void QgsGrassItemActions::deleteGrassObject( )
+void QgsGrassItemActions::deleteGrassObject()
 {
   QgsDebugMsg( "Entered" );
 

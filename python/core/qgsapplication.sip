@@ -63,7 +63,6 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
 
   public:
-
     static const char* QGIS_ORGANIZATION_NAME;
     static const char* QGIS_ORGANIZATION_DOMAIN;
     static const char* QGIS_APPLICATION_NAME;
@@ -159,7 +158,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
     /*!
       Returns the path to the licence file.
-    */
+     */
     static QString licenceFilePath();
 
     //! Returns the path to the help application.
@@ -292,7 +291,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static bool createDB( QString* errorMessage = 0 );
 
     //! Create the users theme folder
-    static bool createThemeFolder( );
+    static bool createThemeFolder();
 
     //! deletes provider registry and map layer registry
     static void exitQgis();

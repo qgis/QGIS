@@ -120,12 +120,27 @@ class QgsCollapsibleGroupBox : QgsCollapsibleGroupBoxBasic
     bool saveCollapsedState();
     bool saveCheckedState();
 
-    //! set this to a defined string to share save/restore states across different parent dialogs
+    //! Set this to a defined string to share save/restore states across different parent dialogs
     void setSettingGroup( const QString &group );
+    //! Returns the name of the setting group in which the collapsed state will be saved
     QString settingGroup() const;
 
   protected slots:
+    /**
+     * Will load the collapsed and checked state
+     *
+     * The configuration path from which it is loaded is defined by
+     *  * The object name
+     *  * The settingGroup
+     */
     void loadState();
+    /**
+     * Will save the collapsed and checked state
+     *
+     * The configuration path to which it is saved is defined by
+     *  * The object name
+     *  * The settingGroup
+     */
     void saveState();
 
   protected:

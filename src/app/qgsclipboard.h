@@ -55,8 +55,8 @@ class APP_EXPORT QgsClipboard : public QObject
     Q_OBJECT
   public:
     /**
-    * Constructor for the clipboard.
-    */
+     * Constructor for the clipboard.
+     */
     QgsClipboard();
 
     //! Destructor

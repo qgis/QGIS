@@ -80,7 +80,6 @@ class QgsNetworkAccessManager : QNetworkAccessManager
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
     void requestTimedOut( QNetworkReply * );
-
     /** Emitted when request was sent by request()
      * @param reply request reply
      * @param sender the object which called request() slot.

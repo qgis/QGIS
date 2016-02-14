@@ -52,9 +52,9 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual void setDefaultHeaders() override;
     virtual void setHeader( const QString &name, const QString &value ) override;
     virtual int removeHeader( const QString &name ) override;
-    virtual void clearHeaders( ) override;
+    virtual void clearHeaders() override;
     virtual void appendBody( const QByteArray &body ) override;
-    virtual void clearBody( ) override;
+    virtual void clearBody() override;
     virtual void setInfoFormat( const QString &format ) override;
     virtual bool responseReady() const override;
     virtual bool exceptionRaised() const override;
@@ -65,11 +65,11 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual void setPluginFilters( QgsServerFiltersMap pluginFilters ) override;
 #endif
     /** Return the response if capture output is activated */
-    QPair<QByteArray, QByteArray> getResponse( ) override;
+    QPair<QByteArray, QByteArray> getResponse() override;
 
   protected:
-    virtual void sendHeaders( ) override;
-    virtual void sendBody( ) override;
+    virtual void sendHeaders() override;
+    virtual void sendBody() override;
     void setHttpResponse( QByteArray *ba, const QString &format );
     /** Converts format to official mimetype (e.g. 'jpg' to 'image/jpeg')
       @return mime string (or the entered string if not found)*/

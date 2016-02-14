@@ -80,7 +80,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     void setContext( const QgsAttributeEditorContext& context );
 
     /**
-     * Use this inside your overriden classes to access the configuration.
+     * Use this inside your overridden classes to access the configuration.
      *
      * @param key         The configuration option you want to load
      * @param defaultVal  Default value

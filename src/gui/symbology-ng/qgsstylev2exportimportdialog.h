@@ -46,6 +46,7 @@ class GUI_EXPORT QgsStyleV2ExportImportDialog : public QDialog, private Ui::QgsS
     // mode argument must be 0 for saving and 1 for loading
     QgsStyleV2ExportImportDialog( QgsStyleV2* style, QWidget *parent = nullptr, Mode mode = Export );
     ~QgsStyleV2ExportImportDialog();
+
     /**
      * @brief selectSymbols select symbols by name
      * @param symbolNames list of symbol names

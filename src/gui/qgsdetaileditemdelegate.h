@@ -31,8 +31,7 @@ class QFont;
  * and detail sections.
  * @see also QgsDetailedItemData
  */
-class GUI_EXPORT QgsDetailedItemDelegate :
-      public QAbstractItemDelegate
+class GUI_EXPORT QgsDetailedItemDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
   public:

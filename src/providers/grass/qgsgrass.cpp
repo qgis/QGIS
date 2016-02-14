@@ -1302,12 +1302,12 @@ QStringList QgsGrass::vectors( const QString& mapsetPath )
   list.reserve( d.count() );
   for ( unsigned int i = 0; i < d.count(); ++i )
   {
-    /*
-    if ( QFile::exists ( mapsetPath + "/vector/" + d[i] + "/head" ) )
+#if 0
+    if ( QFile::exists( mapsetPath + "/vector/" + d[i] + "/head" ) )
     {
-    list.append(d[i]);
+      list.append( d[i] );
     }
-    */
+#endif
     list.append( d[i] );
   }
   return list;

@@ -516,10 +516,9 @@ bool QgsGrassVectorMap::mapOutdated()
   return false;
 }
 
-bool QgsGrassVectorMap::attributesOutdated( )
+bool QgsGrassVectorMap::attributesOutdated()
 {
   QgsDebugMsg( "entered" );
-
 
   QString dp = mGrassObject.mapsetPath() + "/vector/" + mGrassObject.name() + "/dbln";
   QFileInfo di( dp );

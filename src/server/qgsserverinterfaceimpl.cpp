@@ -42,7 +42,7 @@ QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
 }
 
 
-void QgsServerInterfaceImpl::clearRequestHandler( )
+void QgsServerInterfaceImpl::clearRequestHandler()
 {
   mRequestHandler = nullptr;
 }

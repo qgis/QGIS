@@ -51,6 +51,7 @@ class QgsDistanceArea
 
     //! returns source spatial reference system
     //! @deprecated use sourceCrsId() instead
+    // TODO QGIS 3.0 - make sourceCrs() return QgsCoordinateReferenceSystem
     long sourceCrs() const /Deprecated/;
 
     /** Returns the QgsCoordinateReferenceSystem::srsid() for the CRS used during calculations.
@@ -162,6 +163,7 @@ class QgsDistanceArea
     static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false );
 
     //! Helper for conversion between physical units
+    // TODO QGIS 3.0 - remove this method, as its behaviour is non-intuitive.
     void convertMeasurement( double &measure /In,Out/, QGis::UnitType &measureUnits /In,Out/, QGis::UnitType displayUnits, bool isArea ) const;
 
     /** Takes a length measurement calculated by this QgsDistanceArea object and converts it to a
@@ -174,25 +176,22 @@ class QgsDistanceArea
     double convertLengthMeasurement( double length, QGis::UnitType toUnits ) const;
 
   protected:
-    //! measures line distance, line points are extracted from WKB
-    // @note available in python bindings
-    // const unsigned char* measureLine( const unsigned char* feature, double* area, bool hasZptr = false ) const;
     //! measures polygon area and perimeter, vertices are extracted from WKB
     // @note not available in python bindings
-    // const unsigned char* measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr = false ) const;
+    // QgsConstWkbPtr measurePolygon( QgsConstWkbPtr feature, double* area, double* perimeter, bool hasZptr = false ) const;
 
     /**
-      calculates distance from two points on ellipsoid
-      based on inverse Vincenty's formulae
-
-      Points p1 and p2 are expected to be in degrees and in currently used ellipsoid
-
-      @note if course1 is not NULL, bearing (in radians) from first point is calculated
-            (the same for course2)
-      @return distance in meters
+     * calculates distance from two points on ellipsoid
+     * based on inverse Vincenty's formulae
+     *
+     * Points p1 and p2 are expected to be in degrees and in currently used ellipsoid
+     *
+     * @note if course1 is not NULL, bearing (in radians) from first point is calculated
+     * (the same for course2)
+     * @return distance in meters
      */
     double computeDistanceBearing( const QgsPoint& p1, const QgsPoint& p2,
-                                   double* course1 = NULL, double* course2 = NULL ) const;
+                                   double* course1 = 0, double* course2 = 0 ) const;
 
     //! uses flat / planimetric / Euclidean distance
     double computeDistanceFlat( const QgsPoint& p1, const QgsPoint& p2 ) const;
@@ -201,18 +200,17 @@ class QgsDistanceArea
     double computeDistance( const QList<QgsPoint>& points ) const;
 
     /**
-     calculates area of polygon on ellipsoid
-     algorithm has been taken from GRASS: gis/area_poly1.c
-
-    */
+     * calculates area of polygon on ellipsoid
+     * algorithm has been taken from GRASS: gis/area_poly1.c
+     */
     double computePolygonArea( const QList<QgsPoint>& points ) const;
 
     double computePolygonFlatArea( const QList<QgsPoint>& points ) const;
 
     /**
-      precalculates some values
-      (must be called always when changing ellipsoid)
-    */
+     * precalculates some values
+     * (must be called always when changing ellipsoid)
+     */
     void computeAreaInit();
 
 };
