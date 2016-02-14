@@ -619,8 +619,34 @@
                     </item>
                     <item>
                      <widget class="QCheckBox" name="cbxShowTips">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="text">
                        <string>Show tips at start up</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="Line" name="line_2">
+                      <property name="minimumSize">
+                       <size>
+                        <width>12</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="cbxCheckVersion">
+                      <property name="text">
+                       <string>Check QGIS version at startup</string>
                       </property>
                      </widget>
                     </item>

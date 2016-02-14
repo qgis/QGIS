@@ -27,6 +27,8 @@
 QgsWelcomePage::QgsWelcomePage( QWidget* parent )
     : QWidget( parent )
 {
+  QSettings settings;
+
   QVBoxLayout* mainLayout = new QVBoxLayout;
   mainLayout->setMargin( 0 );
   setLayout( mainLayout );
@@ -58,7 +60,7 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   mVersionInformation->setVisible( false );
 
   mVersionInfo = new QgsVersionInfo();
-  if ( !QgsApplication::isRunningFromBuildDir() )
+  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( "/qgis/checkVersion", true ).toBool() )
   {
     connect( mVersionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
     mVersionInfo->checkVersion();

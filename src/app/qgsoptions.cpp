@@ -590,6 +590,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mLegendGroupsBoldChkBx->setChecked( mSettings->value( "/qgis/legendGroupsBold", false ).toBool() );
   cbxHideSplash->setChecked( mSettings->value( "/qgis/hideSplash", false ).toBool() );
   cbxShowTips->setChecked( mSettings->value( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), true ).toBool() );
+  cbxCheckVersion->setChecked( mSettings->value( "/qgis/checkVersion", true ).toBool() );
   cbxAttributeTableDocked->setChecked( mSettings->value( "/qgis/dockAttributeTable", false ).toBool() );
   cbxSnappingOptionsDocked->setChecked( mSettings->value( "/qgis/dockSnapping", false ).toBool() );
   cbxAddPostgisDC->setChecked( mSettings->value( "/qgis/addPostgisDC", false ).toBool() );
@@ -1131,6 +1132,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( "/qgis/legendGroupsBold", mLegendGroupsBoldChkBx->isChecked() );
   mSettings->setValue( "/qgis/hideSplash", cbxHideSplash->isChecked() );
   mSettings->setValue( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), cbxShowTips->isChecked() );
+  mSettings->setValue( "/qgis/checkVersion", cbxCheckVersion->isChecked() );
   mSettings->setValue( "/qgis/dockAttributeTable", cbxAttributeTableDocked->isChecked() );
   mSettings->setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->itemData( cmbAttrTableBehaviour->currentIndex() ) );
   mSettings->setValue( "/qgis/attributeTableRowCache", spinBoxAttrTableRowCache->value() );
