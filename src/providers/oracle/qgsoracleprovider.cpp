@@ -70,7 +70,7 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
   mRequestedGeomType = mUri.wkbType();
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
 
-  mConnection = QgsOracleConnPool::instance()->acquireConnection( mUri.connectionInfo() );
+  mConnection = QgsOracleConn::connectDb( mUri.connectionInfo() );
   if ( !mConnection )
   {
     return;
@@ -211,7 +211,7 @@ QgsAbstractFeatureSource *QgsOracleProvider::featureSource() const
 void QgsOracleProvider::disconnectDb()
 {
   if ( mConnection )
-    QgsOracleConnPool::instance()->releaseConnection( mConnection );
+    mConnection->disconnect();
   mConnection = 0;
 }
 
