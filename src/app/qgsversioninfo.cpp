@@ -78,7 +78,7 @@ void QgsVersionInfo::versionReplyFinished()
       mErrorString = tr( "Connection refused - server may be down" );
       break;
     case QNetworkReply::HostNotFoundError:
-      mErrorString = tr( "The host name qgis.org could not be resolved. Check your DNS settings or contact your system administrator." );
+      mErrorString = tr( "The host name %1 could not be resolved. Check your DNS settings or contact your system administrator." ).arg( reply->request().url().host() );
       break;
     case QNetworkReply::NoError:
       mErrorString = "";
