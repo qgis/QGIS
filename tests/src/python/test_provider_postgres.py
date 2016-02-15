@@ -33,6 +33,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        os.close(0) # avoid credential requests
+
         cls.dbconn = u'dbname=\'qgis_test\''
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
