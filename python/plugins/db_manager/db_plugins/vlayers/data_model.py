@@ -73,7 +73,7 @@ class LSqlResultModel(BaseTableModel):
         tmp = tf.fileName()
         tf.close()
 
-        p = QgsVectorLayer("%s?query=%s" % (tmp, q), "vv", "virtual")
+        p = QgsVectorLayer("%s?query=%s" % (QUrl.fromLocalFile(tmp).toString(), q), "vv", "virtual")
         self._secs = t.elapsed() / 1000.0
 
         if not p.isValid():

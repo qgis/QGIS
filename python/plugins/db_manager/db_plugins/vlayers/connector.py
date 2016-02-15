@@ -126,7 +126,7 @@ class VLayerConnector(DBConnector):
         tf.close()
 
         q = QUrl.toPercentEncoding(c.sql)
-        p = QgsVectorLayer("%s?query=%s" % (tmp, q), "vv", "virtual")
+        p = QgsVectorLayer("%s?query=%s" % (QUrl.fromLocalFile(tmp).toString(), q), "vv", "virtual")
         if not p.isValid():
             return []
         f = [f.name() for f in p.fields()]

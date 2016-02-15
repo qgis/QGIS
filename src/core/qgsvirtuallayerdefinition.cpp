@@ -168,7 +168,8 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl& url )
 QUrl QgsVirtualLayerDefinition::toUrl() const
 {
   QUrl url;
-  url.setPath( filePath() );
+  if ( !filePath().isEmpty() )
+    url = QUrl::fromLocalFile( filePath() );
 
   Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer& l, sourceLayers() )
   {
