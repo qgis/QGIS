@@ -350,7 +350,7 @@
                 <grass name="v.extrude.fixed"/>
                 <grass name="v.extrude.attr"/>
             </section>
-            <section label="Reproject vector from another Location">
+            <section label="Transform or reproject vector from another Location">
                 <grass name="v.transform"/>
                 <grass name="v.proj"/>
             </section>
