@@ -66,6 +66,8 @@ class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     QList<QgsField> mAddedAttributes;
     QgsChangedAttributesMap mChangedAttributeValues;
     QgsAttributeList mDeletedAttributeIds;
+
+    long mCrsId;
 };
 
 
