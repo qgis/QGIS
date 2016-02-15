@@ -696,8 +696,8 @@ class Plugins(QObject):
                         # readOnly = not QFileInfo(pluginsPath).isWritable() # On windows testing the writable status isn't reliable.
                         readOnly = isTheSystemDir                            # Assume only the system plugins are not writable.
                         # only test those not yet loaded. Loaded plugins already proved they're o.k.
-                        failedToLoad = settings.value("/PythonPlugins/watchDog/" + key) is not None
-                        testLoadThis = testLoad and key not in qgis.utils.plugins and not failedToLoad
+                        # failedToLoad = settings.value("/PythonPlugins/watchDog/" + key) is not None
+                        testLoadThis = testLoad and key not in qgis.utils.plugins
                         plugin = self.getInstalledPlugin(key, path=path, readOnly=readOnly, testLoad=testLoadThis)
                         self.localCache[key] = plugin
                         if key in self.localCache.keys() and compareVersions(self.localCache[key]["version_installed"], plugin["version_installed"]) == 1:
