@@ -29,7 +29,10 @@ from qgis.core import (QGis,
                        QgsMapLayerRegistry,
                        QgsVectorJoinInfo,
                        QgsSymbolV2,
-                       QgsSingleSymbolRendererV2)
+                       QgsSingleSymbolRendererV2,
+                       QgsCoordinateReferenceSystem,
+                       QgsProject,
+                       QgsUnitTypes)
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -974,6 +977,66 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.removeExpressionField(idx)
 
         self.assertEquals(layer.pendingFields().count(), cnt)
+
+    def test_ExpressionFieldEllipsoidLengthCalculation(self):
+        #create a temporary layer
+        temp_layer = QgsVectorLayer("LineString?crs=epsg:3111&field=pk:int", "vl", "memory")
+        assert temp_layer.isValid()
+        f1 = QgsFeature(temp_layer.dataProvider().fields(), 1)
+        f1.setAttribute("pk", 1)
+        f1.setGeometry(QgsGeometry.fromPolyline([QgsPoint(2484588, 2425722), QgsPoint(2482767, 2398853)]))
+        temp_layer.dataProvider().addFeatures([f1])
+
+        # set project CRS and ellipsoid
+        srs = QgsCoordinateReferenceSystem(3111, QgsCoordinateReferenceSystem.EpsgCrsId)
+        QgsProject.instance().writeEntry("SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4())
+        QgsProject.instance().writeEntry("SpatialRefSys", "/ProjectCRSID", srs.srsid())
+        QgsProject.instance().writeEntry("SpatialRefSys", "/ProjectCrs", srs.authid())
+        QgsProject.instance().writeEntry("Measure", "/Ellipsoid", "WGS84")
+        QgsProject.instance().writeEntry("Measurement", "/DistanceUnits", QgsUnitTypes.encodeUnit(QGis.Meters))
+
+        idx = temp_layer.addExpressionField('$length', QgsField('length', QVariant.Double))
+
+        # check value
+        f = temp_layer.getFeatures().next()
+        expected = 26932.156
+        self.assertAlmostEqual(f['length'], expected, 3)
+
+        # change project length unit, check calculation respects unit
+        QgsProject.instance().writeEntry("Measurement", "/DistanceUnits", QgsUnitTypes.encodeUnit(QGis.Feet))
+        f = temp_layer.getFeatures().next()
+        expected = 88360.0918635
+        self.assertAlmostEqual(f['length'], expected, 3)
+
+    def test_ExpressionFieldEllipsoidAreaCalculation(self):
+        #create a temporary layer
+        temp_layer = QgsVectorLayer("Polygon?crs=epsg:3111&field=pk:int", "vl", "memory")
+        assert temp_layer.isValid()
+        f1 = QgsFeature(temp_layer.dataProvider().fields(), 1)
+        f1.setAttribute("pk", 1)
+        f1.setGeometry(QgsGeometry.fromPolygon([[QgsPoint(2484588, 2425722), QgsPoint(2482767, 2398853), QgsPoint(2520109, 2397715), QgsPoint(2520792, 2425494), QgsPoint(2484588, 2425722)]]))
+        temp_layer.dataProvider().addFeatures([f1])
+
+        # set project CRS and ellipsoid
+        srs = QgsCoordinateReferenceSystem(3111, QgsCoordinateReferenceSystem.EpsgCrsId)
+        QgsProject.instance().writeEntry("SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4())
+        QgsProject.instance().writeEntry("SpatialRefSys", "/ProjectCRSID", srs.srsid())
+        QgsProject.instance().writeEntry("SpatialRefSys", "/ProjectCrs", srs.authid())
+        QgsProject.instance().writeEntry("Measure", "/Ellipsoid", "WGS84")
+        QgsProject.instance().writeEntry("Measurement", "/AreaUnits", QgsUnitTypes.encodeUnit(QgsUnitTypes.SquareMeters))
+
+        idx = temp_layer.addExpressionField('$area', QgsField('area', QVariant.Double))
+
+        # check value
+        f = temp_layer.getFeatures().next()
+        expected = 1009089817.0
+        self.assertAlmostEqual(f['area'], expected, 0)
+
+        # change project area unit, check calculation respects unit
+        QgsProject.instance().writeEntry("Measurement", "/AreaUnits", QgsUnitTypes.encodeUnit(QgsUnitTypes.SquareMiles))
+        f = temp_layer.getFeatures().next()
+        expected = 389.6117565069
+        self.assertAlmostEqual(f['area'], expected, 3)
 
     def test_ExpressionFilter(self):
         layer = createLayerWithOnePoint()

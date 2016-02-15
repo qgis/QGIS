@@ -23,13 +23,17 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsexpressioncontext.h"
+#include "qgsdistancearea.h"
+#include "qgsproject.h"
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( QgsVectorLayer *layer )
+    : mCrsId( 0 )
 {
   mProviderFeatureSource = layer->dataProvider()->featureSource();
   mFields = layer->fields();
   mJoinBuffer = layer->mJoinBuffer->clone();
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer );
+  mCrsId = layer->crs().srsid();
 
   mCanBeSimplified = layer->hasGeometryType() && layer->geometryType() != QGis::Point;
 
@@ -544,6 +548,15 @@ void QgsVectorLayerFeatureIterator::prepareExpressions()
       {
         int oi = mSource->mFields.fieldOriginIndex( i );
         QgsExpression* exp = new QgsExpression( exps[oi].cachedExpression );
+
+        QgsDistanceArea da;
+        da.setSourceCrs( mSource->mCrsId );
+        da.setEllipsoidalMode( true );
+        da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+        exp->setGeomCalculator( da );
+        exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );
+        exp->setAreaUnits( QgsProject::instance()->areaUnits() );
+
         exp->prepare( mExpressionContext.data() );
         mExpressionFieldInfo.insert( i, exp );
 
