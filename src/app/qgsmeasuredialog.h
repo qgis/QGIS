@@ -42,10 +42,10 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void restorePosition( void );
 
     //! Add new point
-    void addPoint( QgsPoint &point );
+    void addPoint( const QgsPoint &point );
 
     //! Mose move
-    void mouseMove( QgsPoint &point );
+    void mouseMove( const QgsPoint &point );
 
     //! Remove last point
     void removeLastPoint();
@@ -74,18 +74,22 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
   private:
 
     //! formats distance to most appropriate units
-    QString formatDistance( double distance, bool convertUnits = true );
+    QString formatDistance( double distance, bool convertUnits = true ) const;
 
     //! formats area to most appropriate units
-    QString formatArea( double area );
+    QString formatArea( double area, bool convertUnits = true ) const;
 
     //! shows/hides table, shows correct units
     void updateUi();
 
-    //! Converts the measurement, depending on settings in options and current transformation
-    void convertMeasurement( double &measure, QGis::UnitType &u, bool isArea );
+    /** Resets the units combo box to display either distance or area units
+     * @param isArea set to true to populate with areal units, or false to show distance units
+     */
+    void repopulateComboBoxUnits( bool isArea );
 
-    double convertLength( double length, QGis::UnitType toUnit );
+    double convertLength( double length, QGis::UnitType toUnit ) const;
+
+    double convertArea( double area, QgsUnitTypes::AreaUnit toUnit ) const;
 
     double mTotal;
 
@@ -98,8 +102,11 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Current unit for input values
     QGis::UnitType mCanvasUnits;
 
-    //! Current unit for output values
-    QGis::UnitType mDisplayUnits;
+    //! Current unit for distance values
+    QGis::UnitType mDistanceUnits;
+
+    //! Current unit for area values
+    QgsUnitTypes::AreaUnit mAreaUnits;
 
     //! Our measurement object
     QgsDistanceArea mDa;
@@ -108,6 +115,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     QgsMeasureTool* mTool;
 
     QgsPoint mLastMousePoint;
+
+    friend class TestQgsMeasureTool;
 };
 
 #endif

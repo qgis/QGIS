@@ -213,7 +213,7 @@ void QgsMeasureTool::keyPressEvent( QKeyEvent* e )
 }
 
 
-void QgsMeasureTool::addPoint( QgsPoint &point )
+void QgsMeasureTool::addPoint( const QgsPoint &point )
 {
   QgsDebugMsg( "point=" + point.toString() );
 
