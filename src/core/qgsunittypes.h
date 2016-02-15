@@ -60,6 +60,18 @@ class CORE_EXPORT QgsUnitTypes
       UnknownAreaUnit, /*!< unknown areal unit */
     };
 
+    //! Units of angles
+    enum AngleUnit
+    {
+      AngleDegrees = 0, /*!< degrees */
+      Radians, /*!< square kilometers */
+      Gon, /*!< gon/gradian */
+      MinutesOfArc, /*!< minutes of arc */
+      SecondsOfArc, /*!< seconds of arc */
+      Turn, /*!< turn/revolutions */
+      UnknownAngleUnit, /*!< unknown angle unit */
+    };
+
     // DISTANCE UNITS
 
     /** Returns the type for a distance unit.
@@ -147,6 +159,43 @@ class CORE_EXPORT QgsUnitTypes
      * @return matching areal unit
      */
     static AreaUnit distanceToAreaUnit( QGis::UnitType distanceUnit );
+
+    // ANGULAR UNITS
+
+    /** Encodes an angular unit to a string.
+     * @param unit unit to encode
+     * @returns encoded string
+     * @see decodeAngleUnit()
+    */
+    static QString encodeUnit( AngleUnit unit );
+
+    /** Decodes an angular unit from a string.
+     * @param string string to decode
+     * @param ok optional boolean, will be set to true if string was converted successfully
+     * @returns decoded units
+     * @see encodeUnit()
+    */
+    static AngleUnit decodeAngleUnit( const QString& string, bool *ok = 0 );
+
+    /** Returns a translated string representing an angular unit.
+     * @param unit unit to convert to string
+     */
+    static QString toString( AngleUnit unit );
+
+    /** Returns the conversion factor between the specified angular units.
+     * @param fromUnit angle unit to convert from
+     * @param toUnit angle unit to convert to
+     * @returns multiplication factor to convert between units
+     */
+    static double fromUnitToUnitFactor( AngleUnit fromUnit, AngleUnit toUnit );
+
+    /** Returns an angle formatted as a friendly string.
+     * @param angle angle to format
+     * @param decimals number of decimal places to show
+     * @param unit unit of angle
+     * @returns formatted angle string
+     */
+    static QString formatAngle( double angle, int decimals, AngleUnit unit );
 
     //TODO QGIS 3.0 - enable and move symbol units here! Otherwise creates circular dependancies...
 #if 0

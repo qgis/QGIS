@@ -16,6 +16,7 @@
 
 #include "qgsunittypes.h"
 #include <QCoreApplication>
+#include <QLocale>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -696,6 +697,248 @@ QgsUnitTypes::AreaUnit QgsUnitTypes::distanceToAreaUnit( QGis::UnitType distance
   }
 
   return UnknownAreaUnit;
+}
+
+QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleUnit unit )
+{
+  switch ( unit )
+  {
+    case AngleDegrees:
+      return "degrees";
+    case Radians:
+      return "radians";
+    case Gon:
+      return "gon";
+    case MinutesOfArc:
+      return "moa";
+    case SecondsOfArc:
+      return "soa";
+    case Turn:
+      return "tr";
+    case UnknownAngleUnit:
+      return "<unknown>";
+  }
+  return QString();
+}
+
+QgsUnitTypes::AngleUnit QgsUnitTypes::decodeAngleUnit( const QString& string, bool* ok )
+{
+  QString normalized = string.trimmed().toLower();
+
+  if ( ok )
+    *ok = true;
+
+  if ( normalized == encodeUnit( AngleDegrees ) )
+    return AngleDegrees;
+  if ( normalized == encodeUnit( Radians ) )
+    return Radians;
+  if ( normalized == encodeUnit( Gon ) )
+    return Gon;
+  if ( normalized == encodeUnit( MinutesOfArc ) )
+    return MinutesOfArc;
+  if ( normalized == encodeUnit( SecondsOfArc ) )
+    return SecondsOfArc;
+  if ( normalized == encodeUnit( Turn ) )
+    return Turn;
+  if ( normalized == encodeUnit( UnknownAngleUnit ) )
+    return UnknownAngleUnit;
+  if ( ok )
+    *ok = false;
+
+  return UnknownAngleUnit;
+}
+
+QString QgsUnitTypes::toString( QgsUnitTypes::AngleUnit unit )
+{
+  switch ( unit )
+  {
+    case AngleDegrees:
+      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "degrees" );
+    case Radians:
+      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "radians" );
+    case Gon:
+      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "gon" );
+    case MinutesOfArc:
+      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "minutes of arc" );
+    case SecondsOfArc:
+      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "seconds of arc" );
+    case Turn:
+      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "turns" );
+    case UnknownAngleUnit:
+      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "<unknown>" );
+  }
+  return QString();
+}
+
+double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, QgsUnitTypes::AngleUnit toUnit )
+{
+  // Calculate the conversion factor between the specified units
+  if ( fromUnit != toUnit )
+  {
+    switch ( fromUnit )
+    {
+      case AngleDegrees:
+      {
+        switch ( toUnit )
+        {
+          case AngleDegrees:
+            return 1.0;
+          case Radians:
+            return M_PI / 180.0;
+          case Gon:
+            return 400.0 / 360.0;
+          case MinutesOfArc:
+            return 60;
+          case SecondsOfArc:
+            return 3600;
+          case Turn:
+            return 1.0 / 360.0;
+          case UnknownAngleUnit:
+            break;
+        }
+        break;
+      }
+      case Radians:
+      {
+        switch ( toUnit )
+        {
+          case AngleDegrees:
+            return 180.0 / M_PI;
+          case Radians:
+            return 1.0;
+          case Gon:
+            return 200.0 / M_PI;
+          case MinutesOfArc:
+            return 60 * 180.0 / M_PI;
+          case SecondsOfArc:
+            return 3600 * 180.0 / M_PI;
+          case Turn:
+            return 0.5 / M_PI;
+          case UnknownAngleUnit:
+            break;
+        }
+        break;
+      }
+      case Gon:
+      {
+        switch ( toUnit )
+        {
+          case AngleDegrees:
+            return 360.0 / 400.0;
+          case Radians:
+            return M_PI / 200.0;
+          case Gon:
+            return 1.0;
+          case MinutesOfArc:
+            return 60 * 360.0 / 400.0;
+          case SecondsOfArc:
+            return 3600 * 360.0 / 400.0;
+          case Turn:
+            return 1.0 / 400.0;
+          case UnknownAngleUnit:
+            break;
+        }
+        break;
+      }
+      case MinutesOfArc:
+      {
+        switch ( toUnit )
+        {
+          case AngleDegrees:
+            return 1 / 60.0;
+          case Radians:
+            return M_PI / 180.0 / 60.0;
+          case Gon:
+            return 400.0 / 360.0 / 60.0;
+          case MinutesOfArc:
+            return 1.0;
+          case SecondsOfArc:
+            return 60.0;
+          case Turn:
+            return 1.0 / 360.0 / 60.0;
+          case UnknownAngleUnit:
+            break;
+        }
+        break;
+      }
+      case SecondsOfArc:
+      {
+        switch ( toUnit )
+        {
+          case AngleDegrees:
+            return 1 / 3600.0;
+          case Radians:
+            return M_PI / 180.0 / 3600.0;
+          case Gon:
+            return 400.0 / 360.0 / 3600.0;
+          case MinutesOfArc:
+            return 1.0 / 60.0;
+          case SecondsOfArc:
+            return 1.0;
+          case Turn:
+            return 1.0 / 360.0 / 3600.0;
+          case UnknownAngleUnit:
+            break;
+        }
+        break;
+      }
+      case Turn:
+      {
+        switch ( toUnit )
+        {
+          case AngleDegrees:
+            return 360.0;
+          case Radians:
+            return 2 * M_PI;
+          case Gon:
+            return 400.0;
+          case MinutesOfArc:
+            return 360.0 * 60.0;
+          case SecondsOfArc:
+            return 360.0 * 3600.0;
+          case Turn:
+            return 1.0;
+          case UnknownAngleUnit:
+            break;
+        }
+        break;
+      }
+      case UnknownAngleUnit:
+        break;
+    }
+  }
+  return 1.0;
+}
+
+QString QgsUnitTypes::formatAngle( double angle, int decimals, QgsUnitTypes::AngleUnit unit )
+{
+  QString unitLabel;
+
+  switch ( unit )
+  {
+    case AngleDegrees:
+      unitLabel = QObject::trUtf8( "°" );
+      break;
+    case Radians:
+      unitLabel = QObject::trUtf8( " rad" );
+      break;
+    case Gon:
+      unitLabel = QObject::trUtf8( " gon" );
+      break;
+    case MinutesOfArc:
+      unitLabel = QObject::trUtf8( "′" );
+      break;
+    case SecondsOfArc:
+      unitLabel = QObject::trUtf8( "″" );
+      break;
+    case Turn:
+      unitLabel = QObject::trUtf8( " tr" );
+      break;
+    case UnknownAngleUnit:
+      break;
+  }
+
+  return QLocale::system().toString( angle, 'f', decimals ) + unitLabel;
 }
 
 // enable for QGIS 3.0

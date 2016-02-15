@@ -247,6 +247,86 @@ class TestQgsUnitTypes(unittest.TestCase):
         for t in expected.keys():
             self.assertEqual(QgsUnitTypes.distanceToAreaUnit(t), expected[t])
 
+    def testEncodeDecodeAngleUnits(self):
+        """Test encoding and decoding angle units"""
+        units = [QgsUnitTypes.AngleDegrees,
+                 QgsUnitTypes.Radians,
+                 QgsUnitTypes.Gon,
+                 QgsUnitTypes.MinutesOfArc,
+                 QgsUnitTypes.SecondsOfArc,
+                 QgsUnitTypes.Turn,
+                 QgsUnitTypes.UnknownAngleUnit]
+
+        for u in units:
+            res, ok = QgsUnitTypes.decodeAngleUnit(QgsUnitTypes.encodeUnit(u))
+            assert ok, 'could not decode unit {}'.format(QgsUnitTypes.toString(u))
+            self.assertEqual(res, u)
+
+        # Test decoding bad units
+        res, ok = QgsUnitTypes.decodeAngleUnit('bad')
+        self.assertFalse(ok)
+        self.assertEqual(res, QgsUnitTypes.UnknownAngleUnit)
+
+        # Test that string is cleaned before decoding
+        res, ok = QgsUnitTypes.decodeAngleUnit(' MoA  ')
+        assert ok
+        self.assertEqual(res, QgsUnitTypes.MinutesOfArc)
+
+    def testAngleToString(self):
+        """Test converting angle unit to string"""
+        units = [QgsUnitTypes.AngleDegrees,
+                 QgsUnitTypes.Radians,
+                 QgsUnitTypes.Gon,
+                 QgsUnitTypes.MinutesOfArc,
+                 QgsUnitTypes.SecondsOfArc,
+                 QgsUnitTypes.Turn,
+                 QgsUnitTypes.UnknownAngleUnit]
+
+        dupes = set()
+
+        # can't test result as it may be translated, so make sure it's non-empty and not a duplicate
+        for u in units:
+            s = QgsUnitTypes.toString(u)
+            assert len(s) > 0
+            self.assertFalse(s in dupes)
+            dupes.add(s)
+
+    def testAngleFromUnitToUnitFactor(self):
+        """Test calculation of conversion factor between angular units"""
+
+        expected = {QgsUnitTypes.AngleDegrees: {QgsUnitTypes.AngleDegrees: 1.0, QgsUnitTypes.Radians: 0.0174533, QgsUnitTypes.Gon: 1.1111111, QgsUnitTypes.MinutesOfArc: 60, QgsUnitTypes.SecondsOfArc: 3600, QgsUnitTypes.Turn: 0.00277777777778},
+                    QgsUnitTypes.Radians: {QgsUnitTypes.AngleDegrees: 57.2957795, QgsUnitTypes.Radians: 1.0, QgsUnitTypes.Gon: 63.6619772, QgsUnitTypes.MinutesOfArc: 3437.7467708, QgsUnitTypes.SecondsOfArc: 206264.8062471, QgsUnitTypes.Turn: 0.159154943092},
+                    QgsUnitTypes.Gon: {QgsUnitTypes.AngleDegrees: 0.9000000, QgsUnitTypes.Radians: 0.015707968623450838802, QgsUnitTypes.Gon: 1.0, QgsUnitTypes.MinutesOfArc: 54.0000000, QgsUnitTypes.SecondsOfArc: 3240.0000000, QgsUnitTypes.Turn: 0.0025},
+                    QgsUnitTypes.MinutesOfArc: {QgsUnitTypes.AngleDegrees: 0.016666672633390722247, QgsUnitTypes.Radians: 0.00029088831280398030638, QgsUnitTypes.Gon: 0.018518525464057963154, QgsUnitTypes.MinutesOfArc: 1.0, QgsUnitTypes.SecondsOfArc: 60.0, QgsUnitTypes.Turn: 4.62962962962963e-05},
+                    QgsUnitTypes.SecondsOfArc: {QgsUnitTypes.AngleDegrees: 0.00027777787722304257169, QgsUnitTypes.Radians: 4.848138546730629518e-6, QgsUnitTypes.Gon: 0.0003086420910674814405, QgsUnitTypes.MinutesOfArc: 0.016666672633325253783, QgsUnitTypes.SecondsOfArc: 1.0, QgsUnitTypes.Turn: 7.71604938271605e-07},
+                    QgsUnitTypes.Turn: {QgsUnitTypes.AngleDegrees: 360.0, QgsUnitTypes.Radians: 6.2831853071795, QgsUnitTypes.Gon: 400.0, QgsUnitTypes.MinutesOfArc: 21600, QgsUnitTypes.SecondsOfArc: 1296000, QgsUnitTypes.Turn: 1}
+                    }
+
+        for from_unit in expected.keys():
+            for to_unit in expected[from_unit].keys():
+                expected_factor = expected[from_unit][to_unit]
+                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, to_unit)
+                self.assertAlmostEqual(res,
+                                       expected_factor,
+                                       msg='got {:.7f}, expected {:.7f} when converting from {} to {}'.format(res, expected_factor,
+                                                                                                              QgsUnitTypes.toString(from_unit),
+                                                                                                              QgsUnitTypes.toString(to_unit)))
+                #test conversion to unknown units
+                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.UnknownAngleUnit)
+                self.assertAlmostEqual(res,
+                                       1.0,
+                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, expected_factor,
+                                                                                                                      QgsUnitTypes.toString(from_unit)))
+
+    def testFormatAngle(self):
+        """Test formatting angles"""
+        self.assertEqual(QgsUnitTypes.formatAngle(45, 3, QgsUnitTypes.AngleDegrees), u'45.000°')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.Radians), '1.00 rad')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, 0, QgsUnitTypes.Gon), u'1 gon')
+        self.assertEqual(QgsUnitTypes.formatAngle(1.11111111, 4, QgsUnitTypes.MinutesOfArc), u'1.1111′')
+        self.assertEqual(QgsUnitTypes.formatAngle(1.99999999, 2, QgsUnitTypes.SecondsOfArc), u'2.00″')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.Turn), u'1.00 tr')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.UnknownAngleUnit), u'1.00')
 
 if __name__ == "__main__":
     unittest.main()
