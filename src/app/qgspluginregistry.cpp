@@ -525,7 +525,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString& thePluginDirString
 
       if ( mySettings.value( "/PythonPlugins/watchDog/" + packageName ).isValid() )
       {
-        mQgisInterface->messageBar()->pushWarning( "Plugin " + packageName, "The plugin will be disabled because it crashed QGIS during last startup. Please report an issue and re-enable the plugin when the problem has been solved." );
+        mQgisInterface->messageBar()->pushWarning( QObject::tr( "Plugin %1" ).arg( packageName ), QObject::tr( "The plugin will be disabled because it crashed QGIS during last startup. Please report an issue and re-enable the plugin when the problem has been solved." ) );
         mySettings.setValue( "/PythonPlugins/" + packageName, false );
       }
       // check if the plugin was active on last session
