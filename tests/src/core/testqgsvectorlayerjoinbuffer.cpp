@@ -106,7 +106,7 @@ void TestVectorLayerJoinBuffer::initTestCase()
   QString dbConn = getenv( "QGIS_PGTEST_DB" );
   if ( dbConn.isEmpty() )
   {
-    dbConn = "dbname='qgis_test' host=localhost port=5432 user='postgres' password='postgres'";
+    dbConn = "dbname='qgis_test'";
   }
   QgsVectorLayer* vlA_PG = new QgsVectorLayer( QString( "%1 sslmode=disable key='id_a' table=\"qgis_test\".\"table_a\" sql=" ).arg( dbConn ), "A_PG", "postgres" );
   QgsVectorLayer* vlB_PG = new QgsVectorLayer( QString( "%1 sslmode=disable key='id_b' table=\"qgis_test\".\"table_b\" sql=" ).arg( dbConn ), "B_PG", "postgres" );
