@@ -953,6 +953,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *  5 no feature found where ring can be inserted
      *  6 layer not editable
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureId = nullptr );
 
     /** Adds a ring to polygon/multipolygon features (takes ownership)
@@ -965,6 +966,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *  6 layer not editable
      * @note available in python as addCurvedRing
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( QgsCurveV2* ring, QgsFeatureId* featureId = nullptr );
 
     /** Adds a new part polygon to a multipart feature
@@ -978,6 +980,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *   6 if selected geometry not found
      *   7 layer not editable
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QList<QgsPoint>& ring );
 
     /** Adds a new part polygon to a multipart feature
@@ -992,6 +995,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *   7 layer not editable
      * @note available in python bindings as addPartV2
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QList<QgsPointV2>& ring );
 
     //! @note available in python as addCurvedPart
@@ -1012,6 +1016,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *   0 in case of success,
      *   4 if there is a selection but no feature split
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitParts( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
     /** Splits features cut by the given line
@@ -1021,6 +1026,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *   0 in case of success,
      *   4 if there is a selection but no feature split
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
     /** Changes the specified geometry such that it has no intersections with other

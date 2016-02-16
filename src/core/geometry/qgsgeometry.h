@@ -321,11 +321,13 @@ class CORE_EXPORT QgsGeometry
     /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
      3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( const QList<QgsPoint>& ring );
 
     /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
      3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( QgsCurveV2* ring );
 
     /** Adds a new part to a the geometry.
@@ -334,6 +336,7 @@ class CORE_EXPORT QgsGeometry
      * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
 
     /** Adds a new part to a the geometry.
@@ -342,6 +345,7 @@ class CORE_EXPORT QgsGeometry
      * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QList<QgsPointV2> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
 
     /** Adds a new part to this geometry.
@@ -350,6 +354,7 @@ class CORE_EXPORT QgsGeometry
      * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( QgsAbstractGeometryV2* part, QGis::GeometryType geomType = QGis::UnknownGeometry );
 
     /** Adds a new island polygon to a multipolygon feature
@@ -358,6 +363,7 @@ class CORE_EXPORT QgsGeometry
      * not disjoint with existing polygons of the feature
      * @note not available in python bindings
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( GEOSGeometry *newPart );
 
     /** Adds a new island polygon to a multipolygon feature
@@ -365,6 +371,7 @@ class CORE_EXPORT QgsGeometry
      not disjoint with existing polygons of the feature
      @note available in python bindings as addPartGeometry (added in 2.2)
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QgsGeometry *newPart );
 
     /** Translate this geometry by dx, dy
@@ -393,6 +400,7 @@ class CORE_EXPORT QgsGeometry
     @param topological true if topological editing is enabled
     @param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
     @return 0 in case of success, 1 if geometry has not been split, error else*/
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitGeometry( const QList<QgsPoint>& splitLine,
                        QList<QgsGeometry*>&newGeometries,
                        bool topological,
