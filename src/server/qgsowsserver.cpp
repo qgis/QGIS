@@ -28,26 +28,22 @@ void QgsOWSServer::applyAccessControlLayerFilters( QgsMapLayer* mapLayer, QMap<Q
 {
   if ( QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mapLayer ) )
   {
-    if ( layer->setSubsetString( "" ) )
+    QString sql = mAccessControl->extraSubsetString( layer );
+    if ( !sql.isEmpty() )
     {
-      QString sql = mAccessControl->extraSubsetString( layer );
-      if ( !sql.isEmpty() )
+      if ( !originalLayerFilters.contains( layer->id() ) )
       {
-        if ( !originalLayerFilters.contains( layer->id() ) )
-        {
-          originalLayerFilters.insert( layer->id(), layer->subsetString() );
-        }
-        if ( !layer->subsetString().isEmpty() )
-        {
-          sql.prepend( " AND " );
-          sql.prepend( layer->subsetString() );
-        }
-        layer->setSubsetString( sql );
+        originalLayerFilters.insert( layer->id(), layer->subsetString() );
       }
-    }
-    else
-    {
-      QgsMessageLog::logMessage( "Layer does not support Subset String" );
+      if ( !layer->subsetString().isEmpty() )
+      {
+        sql.prepend( " AND " );
+        sql.prepend( layer->subsetString() );
+      }
+      if ( !layer->setSubsetString( sql ) )
+      {
+        QgsMessageLog::logMessage( "Layer does not support Subset String" );
+      }
     }
   }
 }
