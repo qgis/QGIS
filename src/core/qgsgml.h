@@ -170,7 +170,7 @@ class CORE_EXPORT QgsGml : public QObject
     int getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& ringCoordinates ) const;
     /** Creates a multiline from the information in mCurrentWKBFragments and
      * mCurrentWKBFragmentSizes. Assign the result. The multiline is in
-     * mCurrentWKB and mCurrentWKBSize. The function deletes the memory in
+     * mCurrentWKB. The function deletes the memory in
      * mCurrentWKBFragments. Returns 0 in case of success.
      */
     int createMultiLineFromFragments();
@@ -226,8 +226,6 @@ class CORE_EXPORT QgsGml : public QObject
     int mFeatureCount;
     /** The total WKB for a feature*/
     QgsWkbPtr mCurrentWKB;
-    /** The total WKB size for a feature*/
-    int mCurrentWKBSize;
     QgsRectangle mCurrentExtent;
     /** WKB intermediate storage during parsing. For points and lines, no
      * intermediate WKB is stored at all. For multipoints and multilines and

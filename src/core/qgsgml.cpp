@@ -377,10 +377,10 @@ void QgsGml::endElement( const XML_Char* el )
   else if ( theParseMode == feature && localName == mTypeName )
   {
     Q_ASSERT( mCurrentFeature );
-    if ( mCurrentWKBSize > 0 )
+    if ( mCurrentWKB.size() > 0 )
     {
       QgsGeometry *g = new QgsGeometry();
-      g->fromWkb( mCurrentWKB, mCurrentWKBSize );
+      g->fromWkb( mCurrentWKB, mCurrentWKB.size() );
       mCurrentFeature->setGeometry( g );
       mCurrentWKB = QgsWkbPtr( nullptr, 0 );
     }
@@ -767,10 +767,10 @@ int QgsGml::getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& ringCoordinate
 
 int QgsGml::createMultiLineFromFragments()
 {
-  mCurrentWKBSize = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
-  mCurrentWKB = QgsWkbPtr( new unsigned char[mCurrentWKBSize], mCurrentWKBSize );
+  int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
+  mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
-  QgsWkbPtr wkbPtr( mCurrentWKB, mCurrentWKBSize );
+  QgsWkbPtr wkbPtr( mCurrentWKB );
 
   wkbPtr << mEndian << QGis::WKBMultiLineString << mCurrentWKBFragments.constBegin()->size();
 
@@ -790,8 +790,8 @@ int QgsGml::createMultiLineFromFragments()
 
 int QgsGml::createMultiPointFromFragments()
 {
-  mCurrentWKBSize = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
-  mCurrentWKB = QgsWkbPtr( new unsigned char[mCurrentWKBSize], mCurrentWKBSize );
+  int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
+  mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
   wkbPtr << mEndian << QGis::WKBMultiPoint << mCurrentWKBFragments.constBegin()->size();
@@ -812,8 +812,8 @@ int QgsGml::createMultiPointFromFragments()
 
 int QgsGml::createPolygonFromFragments()
 {
-  mCurrentWKBSize = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
-  mCurrentWKB = QgsWkbPtr( new unsigned char[mCurrentWKBSize], mCurrentWKBSize );
+  int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
+  mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
   wkbPtr << mEndian << QGis::WKBPolygon << mCurrentWKBFragments.constBegin()->size();
@@ -833,12 +833,12 @@ int QgsGml::createPolygonFromFragments()
 
 int QgsGml::createMultiPolygonFromFragments()
 {
-  mCurrentWKBSize = 0;
-  mCurrentWKBSize += 1 + 2 * sizeof( int );
-  mCurrentWKBSize += totalWKBFragmentSize();
-  mCurrentWKBSize += mCurrentWKBFragments.size() * ( 1 + 2 * sizeof( int ) ); //fragments are just the rings
+  int size = 0;
+  size += 1 + 2 * sizeof( int );
+  size += totalWKBFragmentSize();
+  size += mCurrentWKBFragments.size() * ( 1 + 2 * sizeof( int ) ); //fragments are just the rings
 
-  mCurrentWKB = QgsWkbPtr( new unsigned char[mCurrentWKBSize], mCurrentWKBSize );
+  mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
   wkbPtr << ( char ) mEndian << QGis::WKBMultiPolygon << mCurrentWKBFragments.size();
