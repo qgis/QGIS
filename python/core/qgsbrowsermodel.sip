@@ -10,8 +10,8 @@ class QgsBrowserModel : QAbstractItemModel
 
     enum ItemDataRole
     {
-      // item path used to access path in the tree, see QgsDataItem::mPath
-      PathRole
+      PathRole, /*!< Item path used to access path in the tree, see QgsDataItem::mPath */
+      CommentRole, /*!< Item comment */
     };
     // implemented methods from QAbstractItemModel for read-only access
 
@@ -59,10 +59,10 @@ class QgsBrowserModel : QAbstractItemModel
 
     bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
-    // Refresh item specified by path
+    //! Refresh item specified by path
     void refresh( const QString& path );
 
-    // Refresh item childs
+    //! Refresh item children
     void refresh( const QModelIndex &index = QModelIndex() );
 
     /** Return index of item with given path. It only searches in currently fetched
@@ -73,7 +73,7 @@ class QgsBrowserModel : QAbstractItemModel
      * @return model index, invalid if item not found */
     QModelIndex findPath( const QString& path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
-    // @note not available in python bindings
+    //! @note not available in python bindings
     // static QModelIndex findPath( QAbstractItemModel *model, const QString& path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
     void connectItem( QgsDataItem *item );
@@ -86,7 +86,7 @@ class QgsBrowserModel : QAbstractItemModel
     void stateChanged( const QModelIndex & index, QgsDataItem::State oldState );
 
   public slots:
-    // Reload the whole model
+    //! Reload the whole model
     void reload();
     void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();
@@ -103,7 +103,7 @@ class QgsBrowserModel : QAbstractItemModel
     void hidePath( QgsDataItem *item );
 
   protected:
-    // populates the model
+    //! Populates the model
     void addRootItems();
     void removeRootItems();
 };
