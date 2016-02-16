@@ -2171,20 +2171,13 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   bool hasGeometry = addWktGeometry || featureBBox;
   fReq.setFlags((( hasGeometry ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect );
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-  mAccessControl->filterFeatures( layer, fReq );
   if ( ! searchRect.isEmpty() )
   {
-    if ( fReq.filterExpression() )
-    {
-      fReq.setFilterExpression( QString( "intersects( $geometry , geomFromWKT( '%1' ) ) AND ( %2 )" ).
-                                arg( searchRect.asWktPolygon(), fReq.filterExpression()->expression() ) );
-    }
-    else
-    {
-      fReq.setFilterRect( searchRect );
-    }
+    fReq.setFilterRect( searchRect );
   }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  mAccessControl->filterFeatures( layer, fReq );
 
   QStringList attributes;
   QgsField field;
@@ -2194,11 +2187,6 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   }
   attributes = mAccessControl->layerAttributes( layer, attributes );
   fReq.setSubsetOfAttributes( attributes, layer->pendingFields() );
-#else
-  if ( ! searchRect.isEmpty() )
-  {
-    fReq.setFilterRect( searchRect );
-  }
 #endif
 
   QgsFeatureIterator fit = layer->getFeatures( fReq );

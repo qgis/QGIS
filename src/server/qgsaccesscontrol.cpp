@@ -38,7 +38,7 @@ void QgsAccessControl::filterFeatures( const QgsVectorLayer* layer, QgsFeatureRe
   }
   if ( !expressions.isEmpty() )
   {
-    featureRequest.setFilterExpression( expressions.join( " AND " ) );
+    featureRequest.setFilterExpression( QString( "((" ).append( expressions.join( ") AND (" ) ).append( "))" ) );
   }
 }
 
@@ -61,7 +61,7 @@ QString QgsAccessControl::extraSubsetString( const QgsVectorLayer* layer ) const
       sqls.append( sql );
     }
   }
-  return sqls.isEmpty() ? QString::null : sqls.join( " AND " );
+  return sqls.isEmpty() ? QString() : QString( "((" ).append( sqls.join( ") AND (" ) ).append( "))" );
 }
 
 /** Return the layer read right */
