@@ -282,7 +282,7 @@ void QgsRendererV2PropertiesDialog::changeOrderBy( const QgsFeatureRequest::Orde
 {
   mOrderBy = orderBy;
   lineEditOrderBy->setText( mOrderBy.dump() );
-  checkboxEnableOrderBy->setChecked( orderBy.isEmpty() );
+  checkboxEnableOrderBy->setChecked( !orderBy.isEmpty() );
 }
 
 
