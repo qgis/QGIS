@@ -1289,7 +1289,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
         mPrimaryKeyAttrs << idx;
       }
 
-      mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && isInt ) ? pktInt : pktFidMap;
+      mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && isInt && 0 ) ? pktInt : pktFidMap;
 
       if (( mightBeNull || isParentTable ) && !mUseEstimatedMetadata && !uniqueData( primaryKey ) )
       {
@@ -1378,7 +1378,10 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
     {
       if ( mUseEstimatedMetadata || uniqueData( primaryKey ) )
       {
-        mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && ( mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).type() == QVariant::Int || mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).type() == QVariant::LongLong ) ) ? pktInt : pktFidMap;
+        mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && (
+                              mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).type() ==
+                              QVariant::Int || mAttributeFields.at( mPrimaryKeyAttrs.at( 0 )
+                                                                  ).type() == QVariant::LongLong ) && 0 ) ? pktInt : pktFidMap;
       }
       else
       {
