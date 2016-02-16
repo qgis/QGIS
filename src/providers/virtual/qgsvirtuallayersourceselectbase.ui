@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>885</width>
-    <height>619</height>
+    <width>906</width>
+    <height>661</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,6 +46,107 @@
     </layout>
    </item>
    <item>
+    <widget class="QgsCollapsibleGroupBox" name="mEmbeddedlLayersGroup">
+     <property name="title">
+      <string>Embedded layers</string>
+     </property>
+     <property name="collapsed">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
+       <widget class="QTableWidget" name="mLayersTable">
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <column>
+         <property name="text">
+          <string>Local name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Provider</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Encoding</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Source</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="mAddLayerBtn">
+          <property name="toolTip">
+           <string>Add a new embedded layer</string>
+          </property>
+          <property name="text">
+           <string>Add</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mImportLayerBtn">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="toolTip">
+           <string>Import layer definition from loaded layers of the current project</string>
+          </property>
+          <property name="text">
+           <string>Import</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mRemoveLayerBtn">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Remove the selected embedded layer</string>
+          </property>
+          <property name="text">
+           <string>Remove</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="mQueryBox">
      <property name="title">
       <string>Query</string>
@@ -62,6 +163,7 @@
         <property name="toolTip">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the SQL query editor.&lt;/p&gt;&lt;p&gt;Virtual layers rely on SQLite and Spatialite. Any functions from SQLite or Spatialite can then be used in the query.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Special comments:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Because it is not always possible to autodetect the data type of each column in a query, special comments can be used in the query to force a specific type.&lt;/p&gt;&lt;p&gt;Special comments must be placed on the right of a column name and have the form &lt;tt&gt;/*:type*/&lt;/tt&gt; where type can be any of &lt;span style=&quot; font-style:italic;&quot;&gt;int&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;real&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;text&lt;/span&gt;. They can also be used to specify the type and SRID of the geometry column with the following syntax: &lt;tt&gt;/*:gtype:srid*/&lt;/tt&gt; where &lt;span style=&quot; font-style:italic;&quot;&gt;gtype&lt;/span&gt; can be &lt;span style=&quot; font-style:italic;&quot;&gt;point&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;linestring&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;polygon&lt;/span&gt; (with an optional &lt;span style=&quot; font-style:italic;&quot;&gt;multi&lt;/span&gt; prefix) and &lt;span style=&quot; font-style:italic;&quot;&gt;srid&lt;/span&gt; is an integer identifier.&lt;/p&gt;&lt;p&gt;Example:&lt;/p&gt;&lt;p&gt;&lt;tt&gt;SELECT id + 1 as id /*:int*/, ST_Centroid(geometry) as geom /*:point:4326*/ FROM tab&lt;/tt&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
+        <zorder>mEmbeddedlLayersGroup</zorder>
        </widget>
       </item>
      </layout>
@@ -224,21 +326,25 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="mTestButton">
-     <property name="text">
-      <string>Test</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <item>
+      <widget class="QPushButton" name="mTestButton">
+       <property name="text">
+        <string>Test</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -265,7 +371,9 @@
   <tabstop>mCRS</tabstop>
   <tabstop>mBrowseCRSBtn</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
