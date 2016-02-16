@@ -19,24 +19,22 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributedialog.h"
-#include <qgsapplication.h>
+#include "qgisapp.h"
 
-#include <QMessageBox>
 #include <QMouseEvent>
 
 #include <limits>
 
-QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas* canvas ): QgsMapToolCapture( canvas, QgsMapToolCapture::CapturePolygon )
+QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas* canvas )
+    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
 {
-
 }
 
 QgsMapToolFillRing::~QgsMapToolFillRing()
 {
-
 }
 
-void QgsMapToolFillRing::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
 {
   //check if we operate on a vector layer
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -56,7 +54,7 @@ void QgsMapToolFillRing::canvasReleaseEvent( QMouseEvent * e )
   //add point to list and to rubber band
   if ( e->button() == Qt::LeftButton )
   {
-    int error = addVertex( e->pos() );
+    int error = addVertex( e->mapPoint() );
     if ( error == 1 )
     {
       //current layer is not a vector layer
@@ -65,8 +63,7 @@ void QgsMapToolFillRing::canvasReleaseEvent( QMouseEvent * e )
     else if ( error == 2 )
     {
       //problem with coordinate transformation
-      QMessageBox::information( 0, tr( "Coordinate transform error" ),
-                                tr( "Cannot transform the point to the layers coordinate system" ) );
+      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), QgsMessageBar::WARNING );
       return;
     }
 
@@ -74,41 +71,47 @@ void QgsMapToolFillRing::canvasReleaseEvent( QMouseEvent * e )
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( !isCapturing() )
+      return;
+
     deleteTempRubberBand();
 
     closePolygon();
 
     vlayer->beginEditCommand( tr( "Ring added and filled" ) );
-    int addRingReturnCode = vlayer->addRing( points() );
+    QList< QgsPoint > pointList = points();
+
+    QgsFeatureId modifiedFid;
+    int addRingReturnCode = vlayer->addRing( pointList, &modifiedFid );
     if ( addRingReturnCode != 0 )
     {
       QString errorMessage;
       //todo: open message box to communicate errors
       if ( addRingReturnCode == 1 )
       {
-        errorMessage = tr( "A problem with geometry type occured" );
+        errorMessage = tr( "a problem with geometry type occurred" );
       }
       else if ( addRingReturnCode == 2 )
       {
-        errorMessage = tr( "The inserted Ring is not closed" );
+        errorMessage = tr( "the inserted Ring is not closed" );
       }
       else if ( addRingReturnCode == 3 )
       {
-        errorMessage = tr( "The inserted Ring is not a valid geometry" );
+        errorMessage = tr( "the inserted Ring is not a valid geometry" );
       }
       else if ( addRingReturnCode == 4 )
       {
-        errorMessage = tr( "The inserted Ring crosses existing rings" );
+        errorMessage = tr( "the inserted Ring crosses existing rings" );
       }
       else if ( addRingReturnCode == 5 )
       {
-        errorMessage = tr( "The inserted Ring is not contained in a feature" );
+        errorMessage = tr( "the inserted Ring is not contained in a feature" );
       }
       else
       {
-        errorMessage = tr( "An unknown error occured" );
+        errorMessage = tr( "an unknown error occurred" );
       }
-      QMessageBox::critical( 0, tr( "Error, could not add ring" ), errorMessage );
+      emit messageEmitted( tr( "could not add ring since %1." ).arg( errorMessage ), QgsMessageBar::CRITICAL );
       vlayer->destroyEditCommand();
     }
     else
@@ -122,55 +125,40 @@ void QgsMapToolFillRing::canvasReleaseEvent( QMouseEvent * e )
       yMin = std::numeric_limits<double>::max();
       yMax = -std::numeric_limits<double>::max();
 
-      for ( QList<QgsPoint>::const_iterator it = points().constBegin(); it != points().constEnd(); ++it )
+      Q_FOREACH ( const QgsPoint& point, pointList )
       {
-        if ( it->x() < xMin )
-        {
-          xMin = it->x();
-        }
-        if ( it->x() > xMax )
-        {
-          xMax = it->x();
-        }
-        if ( it->y() < yMin )
-        {
-          yMin = it->y();
-        }
-        if ( it->y() > yMax )
-        {
-          yMax = it->y();
-        }
+        xMin = qMin( xMin, point.x() );
+        xMax = qMax( xMax, point.x() );
+        yMin = qMin( yMin, point.y() );
+        yMax = qMax( yMax, point.y() );
       }
+
       bBox.setXMinimum( xMin );
       bBox.setYMinimum( yMin );
       bBox.setXMaximum( xMax );
       bBox.setYMaximum( yMax );
 
-      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterFid( modifiedFid ) );
 
       QgsFeature f;
       bool res = false;
-      while ( fit.nextFeature( f ) )
+      if ( fit.nextFeature( f ) )
       {
         //create QgsFeature with wkb representation
-        QgsFeature* ft = new QgsFeature( vlayer->pendingFields(),  0 );
+        QgsFeature* ft = new QgsFeature( vlayer->fields(), 0 );
 
-        QgsGeometry *g;
-        g = QgsGeometry::fromPolygon( QgsPolygon() << points().toVector() );
-        ft->setGeometry( g );
+        ft->setGeometry( QgsGeometry::fromPolygon( QgsPolygon() << pointList.toVector() ) );
         ft->setAttributes( f.attributes() );
 
-        if ( QgsApplication::keyboardModifiers() == Qt::ControlModifier )
+        if ( QApplication::keyboardModifiers() == Qt::ControlModifier )
         {
           res = vlayer->addFeature( *ft );
         }
         else
         {
-          QgsAttributeDialog *dialog = new QgsAttributeDialog( vlayer, ft, false, NULL, true );
-          if ( dialog->exec() )
-          {
-            res = vlayer->addFeature( *ft );
-          }
+          QgsAttributeDialog *dialog = new QgsAttributeDialog( vlayer, ft, false, nullptr, true );
+          dialog->setIsAddDialog( true );
+          res = dialog->exec(); // will also add the feature
         }
 
         if ( res )

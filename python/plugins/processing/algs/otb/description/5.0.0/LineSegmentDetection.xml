@@ -1,0 +1,28 @@
+<root>
+  <key>LineSegmentDetection</key>
+  <exec>otbcli_LineSegmentDetection</exec>
+  <longname>Line segment detection</longname>
+  <group>Feature Extraction</group>
+  <description>Detect line segments in raster</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description> Input image on which lines will be detected.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputVectorData">OutputVector</parameter_type>
+    <key>out</key>
+    <name>Output Detected lines</name>
+    <description> Output detected line segments (vector data).</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Empty">ParameterBoolean</parameter_type>
+    <key>norescale</key>
+    <name>No rescaling in [0, 255]</name>
+    <description>By default, the input image amplitude is rescaled between [0,255]. Turn on this parameter to skip rescaling</description>
+    <default>True</default>
+  </parameter>
+</root>

@@ -24,7 +24,7 @@
 #include <QColorDialog>
 
 
-QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QWidget( parent, f ), mItem( item ), mMarkerSymbol( 0 )
+QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QWidget( parent, f ), mItem( item ), mMarkerSymbol( nullptr )
 {
   setupUi( this );
 
@@ -43,15 +43,21 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * par
     mFrameWidthSpinBox->setValue( mItem->frameBorderWidth() );
     mFrameColorButton->setColor( mItem->frameColor() );
     mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
-    mFrameColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+    mFrameColorButton->setAllowAlpha( true );
+    mFrameColorButton->setContext( "symbology" );
+    mFrameColorButton->setNoColorString( tr( "Transparent frame" ) );
+    mFrameColorButton->setShowNoColor( true );
     mBackgroundColorButton->setColor( mItem->frameBackgroundColor() );
     mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
-    mBackgroundColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+    mBackgroundColorButton->setAllowAlpha( true );
+    mBackgroundColorButton->setContext( "symbology" );
+    mBackgroundColorButton->setNoColorString( tr( "Transparent" ) );
+    mBackgroundColorButton->setShowNoColor( true );
 
     const QgsMarkerSymbolV2* symbol = mItem->markerSymbol();
     if ( symbol )
     {
-      mMarkerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( symbol->clone() );
+      mMarkerSymbol = symbol->clone();
       updateCenterIcon();
     }
 
@@ -73,7 +79,7 @@ void QgsAnnotationWidget::apply()
     mItem->setFrameColor( mFrameColorButton->color() );
     mItem->setFrameBackgroundColor( mBackgroundColorButton->color() );
     mItem->setMarkerSymbol( mMarkerSymbol );
-    mMarkerSymbol = 0; //item takes ownership
+    mMarkerSymbol = nullptr; //item takes ownership
     mItem->update();
   }
 }
@@ -92,8 +98,8 @@ void QgsAnnotationWidget::on_mMapMarkerButton_clicked()
   {
     return;
   }
-  QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mMarkerSymbol->clone() );
-  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  QgsMarkerSymbolV2* markerSymbol = mMarkerSymbol->clone();
+  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;

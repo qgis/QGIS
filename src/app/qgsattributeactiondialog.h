@@ -37,9 +37,9 @@ class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
   public:
     QgsAttributeActionDialog( QgsAttributeAction* actions,
                               const QgsFields& fields,
-                              QWidget* parent = 0 );
+                              QWidget* parent = nullptr );
 
-    ~QgsAttributeActionDialog() {};
+    ~QgsAttributeActionDialog() {}
 
     void init();
 
@@ -58,10 +58,11 @@ class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
 
   private slots:
     void updateButtons();
+    void chooseIcon();
 
   private:
 
-    void insertRow( int row, QgsAction::ActionType type, const QString &name, const QString &action, bool capture );
+    void insertRow( int row, QgsAction::ActionType type, const QString &name, const QString &action, const QString& iconPath, bool capture );
     void swapRows( int row1, int row2 );
 
     void insert( int pos );

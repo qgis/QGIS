@@ -17,15 +17,15 @@ class QgsVectorSimplifyMethod
     /** Simplification flags for fast rendering of features */
     enum SimplifyHint
     {
-      NoSimplification           = 0, //!< No simplification can be applied
-      GeometrySimplification     = 1, //!< The geometries can be simplified using the current map2pixel context state
-      AntialiasingSimplification = 2, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
-      FullSimplification         = 3, //!< All simplification hints can be applied ( Geometry + AA-disabling )
+      NoSimplification,           //!< No simplification can be applied
+      GeometrySimplification,     //!< The geometries can be simplified using the current map2pixel context state
+      AntialiasingSimplification, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
+      FullSimplification,         //!< All simplification hints can be applied ( Geometry + AA-disabling )
     };
     typedef QFlags<QgsVectorSimplifyMethod::SimplifyHint> SimplifyHints;
 
     /** Sets the simplification hints of the vector layer managed */
-    void setSimplifyHints( QFlags<QgsVectorSimplifyMethod::SimplifyHint> simplifyHints );
+    void setSimplifyHints( const QFlags<QgsVectorSimplifyMethod::SimplifyHint>& simplifyHints );
     /** Gets the simplification hints of the vector layer managed */
     QFlags<QgsVectorSimplifyMethod::SimplifyHint> simplifyHints() const;
 
@@ -37,7 +37,7 @@ class QgsVectorSimplifyMethod
     /** Sets where the simplification executes, after fetch the geometries from provider, or when supported, in provider before fetch the geometries */
     void setForceLocalOptimization( bool localOptimization );
     /** Gets where the simplification executes, after fetch the geometries from provider, or when supported, in provider before fetch the geometries */
-    bool forceLocalOptimization();
+    bool forceLocalOptimization() const;
 
     /** Sets the maximum scale at which the layer should be simplified */
     void setMaximumScale( float maximumScale );

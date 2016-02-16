@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 1.3.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
@@ -26,15 +27,17 @@ QgsRelationManager::QgsRelationManager( QgsProject* project )
 {
   connect( project, SIGNAL( readProject( const QDomDocument& ) ), SLOT( readProject( const QDomDocument& ) ) );
   connect( project, SIGNAL( writeProject( QDomDocument& ) ), SLOT( writeProject( QDomDocument& ) ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ), this, SLOT( layersRemoved( QStringList ) ) );
 }
 
 void QgsRelationManager::setRelations( const QList<QgsRelation>& relations )
 {
   mRelations.clear();
-  foreach ( const QgsRelation& rel, relations )
+  Q_FOREACH ( const QgsRelation& rel, relations )
   {
     addRelation( rel );
   }
+  emit changed();
 }
 
 const QMap<QString, QgsRelation>& QgsRelationManager::relations() const
@@ -50,16 +53,19 @@ void QgsRelationManager::addRelation( const QgsRelation& relation )
   mRelations.insert( relation.id(), relation );
 
   mProject->dirty( true );
+  emit changed();
 }
 
-void QgsRelationManager::removeRelation( const QString& name )
+void QgsRelationManager::removeRelation( const QString& id )
 {
-  mRelations.remove( name );
+  mRelations.remove( id );
+  emit changed();
 }
 
 void QgsRelationManager::removeRelation( const QgsRelation& relation )
 {
   mRelations.remove( relation.id() );
+  emit changed();
 }
 
 QgsRelation QgsRelationManager::relation( const QString& id ) const
@@ -70,6 +76,7 @@ QgsRelation QgsRelationManager::relation( const QString& id ) const
 void QgsRelationManager::clear()
 {
   mRelations.clear();
+  emit changed();
 }
 
 QList<QgsRelation> QgsRelationManager::referencingRelations( QgsVectorLayer* layer, int fieldIdx ) const
@@ -81,14 +88,14 @@ QList<QgsRelation> QgsRelationManager::referencingRelations( QgsVectorLayer* lay
 
   QList<QgsRelation> relations;
 
-  foreach ( const QgsRelation& rel, mRelations )
+  Q_FOREACH ( const QgsRelation& rel, mRelations )
   {
     if ( rel.referencingLayer() == layer )
     {
       if ( fieldIdx != -2 )
       {
         bool containsField = false;
-        foreach ( const QgsRelation::FieldPair& fp, rel.fieldPairs() )
+        Q_FOREACH ( const QgsRelation::FieldPair& fp, rel.fieldPairs() )
         {
           if ( fieldIdx == layer->fieldNameIndex( fp.referencingField() ) )
           {
@@ -118,7 +125,7 @@ QList<QgsRelation> QgsRelationManager::referencedRelations( QgsVectorLayer* laye
 
   QList<QgsRelation> relations;
 
-  foreach ( const QgsRelation& rel, mRelations )
+  Q_FOREACH ( const QgsRelation& rel, mRelations )
   {
     if ( rel.referencedLayer() == layer )
     {
@@ -149,7 +156,8 @@ void QgsRelationManager::readProject( const QDomDocument & doc )
     QgsDebugMsg( "No relations data present in this document" );
   }
 
-  emit( relationsLoaded() );
+  emit relationsLoaded();
+  emit changed();
 }
 
 void QgsRelationManager::writeProject( QDomDocument & doc )
@@ -165,8 +173,33 @@ void QgsRelationManager::writeProject( QDomDocument & doc )
   QDomElement relationsNode = doc.createElement( "relations" );
   qgisNode.appendChild( relationsNode );
 
-  foreach ( const QgsRelation& relation, mRelations )
+  Q_FOREACH ( const QgsRelation& relation, mRelations )
   {
     relation.writeXML( relationsNode, doc );
+  }
+}
+
+void QgsRelationManager::layersRemoved( const QStringList& layers )
+{
+  bool relationsChanged = false;
+  Q_FOREACH ( const QString& layer, layers )
+  {
+    QMapIterator<QString, QgsRelation> it( mRelations );
+
+    while ( it.hasNext() )
+    {
+      it.next();
+
+      if ( it.value().referencedLayerId() == layer
+           || it.value().referencingLayerId() == layer )
+      {
+        mRelations.remove( it.key() );
+        relationsChanged = true;
+      }
+    }
+  }
+  if ( relationsChanged )
+  {
+    emit changed();
   }
 }

@@ -1,17 +1,21 @@
-SET(GDAL_SRCS 
-  qgsgdalproviderbase.cpp 
-  qgsgdalprovider.cpp 
-  qgsgdaldataitems.cpp 
+SET(GDAL_SRCS
+  qgsgdalproviderbase.cpp
+  qgsgdalprovider.cpp
+  qgsgdaldataitems.cpp
 )
-SET(GDAL_MOC_HDRS  
-  qgsgdalprovider.h 
+SET(GDAL_MOC_HDRS
+  qgsgdalprovider.h
+  qgsgdaldataitems.h
 )
 
 INCLUDE_DIRECTORIES (
   ../../core
   ../../core/raster
+  ../../core/geometry
   ../../gui
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+)
+INCLUDE_DIRECTORIES (SYSTEM
   ${GDAL_INCLUDE_DIR}
 #  ${PROJ_INCLUDE_DIR}
 #  ${GEOS_INCLUDE_DIR}

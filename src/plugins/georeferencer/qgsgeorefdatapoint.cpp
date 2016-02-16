@@ -40,6 +40,10 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas* srcCanvas, QgsMapCanvas *d
 
 QgsGeorefDataPoint::QgsGeorefDataPoint( const QgsGeorefDataPoint &p )
     : QObject()
+    , mSrcCanvas( nullptr )
+    , mDstCanvas( nullptr )
+    , mGCPSourceItem( nullptr )
+    , mGCPDestinationItem( nullptr )
 {
   Q_UNUSED( p );
   // we share item representation on canvas between all points
@@ -100,7 +104,7 @@ void QgsGeorefDataPoint::setId( int id )
   }
 }
 
-void QgsGeorefDataPoint::setResidual( const QPointF& r )
+void QgsGeorefDataPoint::setResidual( QPointF r )
 {
   mResidual = r;
   if ( mGCPSourceItem )
@@ -123,7 +127,7 @@ void QgsGeorefDataPoint::updateCoords()
   }
 }
 
-bool QgsGeorefDataPoint::contains( const QPoint &p, bool isMapPlugin )
+bool QgsGeorefDataPoint::contains( QPoint p, bool isMapPlugin )
 {
   if ( isMapPlugin )
   {
@@ -137,7 +141,7 @@ bool QgsGeorefDataPoint::contains( const QPoint &p, bool isMapPlugin )
   }
 }
 
-void QgsGeorefDataPoint::moveTo( const QPoint &p, bool isMapPlugin )
+void QgsGeorefDataPoint::moveTo( QPoint p, bool isMapPlugin )
 {
   if ( isMapPlugin )
   {

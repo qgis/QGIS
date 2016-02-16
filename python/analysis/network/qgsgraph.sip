@@ -19,7 +19,7 @@ class QgsGraphArc
     QVariant property( int propertyIndex ) const;
 
     /**
-     * get array of proertyes
+     * get array of properties
      */
     QVector< QVariant > properties() const;
 
@@ -91,8 +91,6 @@ class QgsGraph
   public:
     QgsGraph();
 
-    ~QgsGraph();
-
     // begin graph constructing methods
     /**
      * add vertex to a grap
@@ -130,4 +128,3 @@ class QgsGraph
      */
     int findVertex( const QgsPoint& pt ) const;
 };
-

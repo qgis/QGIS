@@ -25,7 +25,7 @@
 
 //standard includes
 
-RgSettingsDlg::RgSettingsDlg( RgSettings *settings, QWidget* parent, Qt::WFlags fl )
+RgSettingsDlg::RgSettingsDlg( RgSettings *settings, QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mSettings( settings )
 {

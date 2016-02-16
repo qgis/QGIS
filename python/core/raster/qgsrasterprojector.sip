@@ -1,5 +1,5 @@
 
-/**  Raster projector */
+/** Raster projector */
 
 class QgsRasterProjector : QgsRasterInterface
 {
@@ -9,42 +9,48 @@ class QgsRasterProjector : QgsRasterInterface
 %End
 
   public:
+    /** Precison defines if each pixel is reprojected or approximate reprojection based
+     *  on an approximation matrix of reprojected points is used.
+     */
+    enum Precision
+    {
+      Approximate, //!< Approximate (default), fast but possibly inaccurate
+      Exact,   //!< Exact, precise but slow
+    };
+
     /** \brief QgsRasterProjector implements approximate projection support for
      * it calculates grid of points in source CRS for target CRS + extent
      * which are used to calculate affine transformation matrices.
      */
 
-    QgsRasterProjector(
-      QgsCoordinateReferenceSystem theSrcCRS,
-      QgsCoordinateReferenceSystem theDestCRS,
-      int theSrcDatumTransform,
-      int theDestDatumTransform,
-      QgsRectangle theDestExtent,
-      int theDestRows, int theDestCols,
-      double theMaxSrcXRes, double theMaxSrcYRes,
-      QgsRectangle theExtent
-    );
+    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
+                        const QgsCoordinateReferenceSystem& theDestCRS,
+                        int theSrcDatumTransform,
+                        int theDestDatumTransform,
+                        const QgsRectangle& theDestExtent,
+                        int theDestRows, int theDestCols,
+                        double theMaxSrcXRes, double theMaxSrcYRes,
+                        const QgsRectangle& theExtent
+                      );
 
-    QgsRasterProjector(
-      QgsCoordinateReferenceSystem theSrcCRS,
-      QgsCoordinateReferenceSystem theDestCRS,
-      QgsRectangle theDestExtent,
-      int theDestRows, int theDestCols,
-      double theMaxSrcXRes, double theMaxSrcYRes,
-      QgsRectangle theExtent
-    );
-    QgsRasterProjector(
-      QgsCoordinateReferenceSystem theSrcCRS,
-      QgsCoordinateReferenceSystem theDestCRS,
-      double theMaxSrcXRes, double theMaxSrcYRes,
-      QgsRectangle theExtent
-    );
+    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
+                        const QgsCoordinateReferenceSystem& theDestCRS,
+                        const QgsRectangle& theDestExtent,
+                        int theDestRows, int theDestCols,
+                        double theMaxSrcXRes, double theMaxSrcYRes,
+                        const QgsRectangle& theExtent
+                      );
+    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
+                        const QgsCoordinateReferenceSystem& theDestCRS,
+                        double theMaxSrcXRes, double theMaxSrcYRes,
+                        const QgsRectangle& theExtent
+                      );
     QgsRasterProjector();
 
     /** \brief The destructor */
     ~QgsRasterProjector();
 
-    QgsRasterInterface *clone() const /Factory/;
+    virtual QgsRasterProjector *clone() const /Factory/;
 
     int bandCount() const;
 
@@ -63,6 +69,19 @@ class QgsRasterProjector : QgsRasterInterface
     /** \brief set maximum source resolution */
     void setMaxSrcRes( double theMaxSrcXRes, double theMaxSrcYRes );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
-};
+    Precision precision() const;
+    void setPrecision( Precision precision );
+    // Translated precision mode, for use in ComboBox etc.
+    static QString precisionLabel( Precision precision );
 
+    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
+
+    /** Calculate destination extent and size from source extent and size */
+    bool destExtentSize( const QgsRectangle& theSrcExtent, int theSrcXSize, int theSrcYSize,
+                         QgsRectangle& theDestExtent, int& theDestXSize, int& theDestYSize );
+
+    /** Calculate destination extent and size from source extent and size */
+    static bool extentSize( const QgsCoordinateTransform* ct,
+                            const QgsRectangle& theSrcExtent, int theSrcXSize, int theSrcYSize,
+                            QgsRectangle& theDestExtent, int& theDestXSize, int& theDestYSize );
+};

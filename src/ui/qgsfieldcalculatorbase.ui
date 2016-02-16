@@ -21,6 +21,113 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="mInfoIcon">
+        <property name="minimumSize">
+         <size>
+          <width>64</width>
+          <height>64</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>64</width>
+          <height>64</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="mEditModeAutoTurnOnLabel">
+        <property name="text">
+         <string>You are editing information on this layer but the layer is currently not in edit mode. If you click Ok, edit mode will automatically be turned on.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="mOnlyVirtualFieldsInfoLabel">
+        <property name="text">
+         <string>This layer does not support adding new provider fields. You can only add virtual fields.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QGroupBox" name="mUpdateExistingGroupBox">
+     <property name="title">
+      <string>Update existing field</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>9</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QComboBox" name="mExistingFieldComboBox"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QgsExpressionBuilderWidget" name="builder" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>3</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QGroupBox" name="mNewFieldGroupBox">
      <property name="sizePolicy">
@@ -49,7 +156,7 @@
        <number>3</number>
       </property>
       <property name="topMargin">
-       <number>3</number>
+       <number>9</number>
       </property>
       <property name="rightMargin">
        <number>3</number>
@@ -60,7 +167,14 @@
       <property name="verticalSpacing">
        <number>3</number>
       </property>
-      <item row="0" column="0">
+      <item row="5" column="3">
+       <widget class="QSpinBox" name="mOutputFieldPrecisionSpinBox">
+        <property name="value">
+         <number>2</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
        <widget class="QLabel" name="mFieldNameLabel">
         <property name="text">
          <string>Output field name</string>
@@ -70,36 +184,23 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="3">
-       <widget class="QLineEdit" name="mOutputFieldNameLineEdit"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="mOutputFieldTypeLabel">
-        <property name="text">
-         <string>Output field type</string>
-        </property>
-        <property name="buddy">
-         <cstring>mOutputFieldTypeComboBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="3">
-       <widget class="QComboBox" name="mOutputFieldTypeComboBox"/>
-      </item>
-      <item row="2" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="mOutputFieldWidthLabel">
         <property name="text">
-         <string>Output field width</string>
+         <string>Output field length</string>
         </property>
         <property name="buddy">
          <cstring>mOutputFieldWidthSpinBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="4" column="1" colspan="3">
+       <widget class="QComboBox" name="mOutputFieldTypeComboBox"/>
+      </item>
+      <item row="5" column="1">
        <widget class="QSpinBox" name="mOutputFieldWidthSpinBox">
         <property name="toolTip">
-         <string>Width of complete output. For example 123,456 means 6 as field width.</string>
+         <string>Length of complete output. For example 123,456 means 6 as field length.</string>
         </property>
         <property name="minimum">
          <number>0</number>
@@ -109,7 +210,20 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
+      <item row="3" column="1" colspan="3">
+       <widget class="QLineEdit" name="mOutputFieldNameLineEdit"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="mOutputFieldTypeLabel">
+        <property name="text">
+         <string>Output field type</string>
+        </property>
+        <property name="buddy">
+         <cstring>mOutputFieldTypeComboBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2">
        <widget class="QLabel" name="mOutputFieldPrecisionLabel">
         <property name="text">
          <string>Precision</string>
@@ -119,58 +233,17 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
-       <widget class="QSpinBox" name="mOutputFieldPrecisionSpinBox">
-        <property name="value">
-         <number>2</number>
+      <item row="2" column="0" colspan="4">
+       <widget class="QCheckBox" name="mCreateVirtualFieldCheckbox">
+        <property name="toolTip">
+         <string>&lt;p&gt;A virtual field will be recalculated every time it is used. Its definition will be saved in the project file. It will not be saved in the dataprovider and therefore its values not be available in other software.&lt;/p&gt;</string>
+        </property>
+        <property name="text">
+         <string>Create virtual field</string>
         </property>
        </widget>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QGroupBox" name="mUpdateExistingGroupBox">
-     <property name="title">
-      <string>Update existing field</string>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QComboBox" name="mExistingFieldComboBox"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QgsExpressionBuilderWidget" name="builder" native="true">
-     <property name="autoFillBackground">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>3</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
     </widget>
    </item>
   </layout>
@@ -184,10 +257,15 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mOnlyUpdateSelectedCheckBox</tabstop>
+  <tabstop>mNewFieldGroupBox</tabstop>
+  <tabstop>mCreateVirtualFieldCheckbox</tabstop>
   <tabstop>mOutputFieldNameLineEdit</tabstop>
   <tabstop>mOutputFieldTypeComboBox</tabstop>
   <tabstop>mOutputFieldWidthSpinBox</tabstop>
   <tabstop>mOutputFieldPrecisionSpinBox</tabstop>
+  <tabstop>mUpdateExistingGroupBox</tabstop>
+  <tabstop>mExistingFieldComboBox</tabstop>
   <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>

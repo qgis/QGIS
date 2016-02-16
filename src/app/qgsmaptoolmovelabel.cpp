@@ -22,15 +22,19 @@
 #include "qgsvectorlayer.h"
 #include <QMouseEvent>
 
-QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas* canvas ): QgsMapToolLabel( canvas )
+QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas* canvas )
+    : QgsMapToolLabel( canvas )
+    , mClickOffsetX( 0 )
+    , mClickOffsetY( 0 )
 {
+  mToolName = tr( "Move label" );
 }
 
 QgsMapToolMoveLabel::~QgsMapToolMoveLabel()
 {
 }
 
-void QgsMapToolMoveLabel::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent* e )
 {
   deleteRubberBands();
 
@@ -61,7 +65,7 @@ void QgsMapToolMoveLabel::canvasPressEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolMoveLabel::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolMoveLabel::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( mLabelRubberBand )
   {
@@ -77,7 +81,7 @@ void QgsMapToolMoveLabel::canvasMoveEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolMoveLabel::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( !mLabelRubberBand )
   {
@@ -172,7 +176,8 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QMouseEvent * e )
   }
   vlayer->endEditCommand();
 
-  mCanvas->refresh();
+  if ( mCanvas )
+    mCanvas->refresh();
 }
 
 

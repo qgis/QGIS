@@ -26,22 +26,24 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
+from PyQt4.QtGui import QIcon
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerDialog import ModelerDialog
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 class CreateNewModelAction(ToolboxAction):
 
     def __init__(self):
-        self.name = 'Create new model'
-        self.group = 'Tools'
+        self.name = self.tr('Create new model', 'CreateNewModelAction')
+        self.group = self.tr('Tools', 'CreateNewModelAction')
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/model.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
 
     def execute(self):
         dlg = ModelerDialog()
         dlg.exec_()
         if dlg.update:
-            self.toolbox.updateTree()
+            self.toolbox.updateProvider('model')

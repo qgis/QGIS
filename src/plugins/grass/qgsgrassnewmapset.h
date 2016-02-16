@@ -30,7 +30,7 @@ extern "C"
 }
 
 
-/*! \class QgsGrassNewMapset
+/** \class QgsGrassNewMapset
  *  \brief GRASS vector edit.
  *
  */
@@ -53,13 +53,13 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     //! Constructor
     QgsGrassNewMapset( QgisInterface *iface,
                        QgsGrassPlugin *plugin,
-                       QWidget * parent = 0, Qt::WFlags f = 0 );
+                       QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
     //! Destructor
     ~QgsGrassNewMapset();
 
     //! Next page
-    int nextId() const;
+    int nextId() const override;
 
     //! Is running
     static bool isRunning();
@@ -79,15 +79,15 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
 
     /***************** LOCATION *****************/
     //! Set location page
-    void setLocationPage( );
+    void setLocationPage();
 
     //! Set locations
-    void setLocations( );
+    void setLocations();
 
     //! Location radio switched
     void on_mCreateLocationRadioButton_clicked() { locationRadioSwitched(); }
     void on_mSelectLocationRadioButton_clicked() { locationRadioSwitched(); }
-    void locationRadioSwitched( );
+    void locationRadioSwitched();
 
     //! Existing location selection
     void on_mLocationComboBox_textChanged( const QString &txt )
@@ -115,7 +115,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     //! Location radio switched
     void on_mNoProjRadioButton_clicked() { projRadioSwitched(); }
     void on_mProjRadioButton_clicked() { projRadioSwitched(); }
-    void projRadioSwitched( );
+    void projRadioSwitched();
 
     //! Set GRASS projection structures for currently selected projection
     // or CRS_XY if 'not defined' is selected
@@ -161,11 +161,13 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void mapsetChanged();
 
     /******************** FINISH ******************/
+    void on_mOpenNewMapsetCheckBox_stateChanged( int state );
+
     //! Set finish page
     void setFinishPage();
 
     //! Finish / accept
-    void accept();
+    void accept() override;
 
     //! Create new mapset
     void createMapset();
@@ -174,14 +176,20 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void pageSelected( int index );
 
     //! Close event
-    void closeEvent( QCloseEvent *e );
+    void closeEvent( QCloseEvent *e ) override;
 
     //! Key event
-    void keyPressEvent( QKeyEvent * e );
+    void keyPressEvent( QKeyEvent * e ) override;
 
     //! Set error line
-    void setError( QLabel *line, const QString &err );
+    void setError( QLabel *line, const QString &err = QString() );
   private:
+    //! Get current gisdbase
+    QString gisdbase();
+
+    //! Test if current gisdbase directory exists
+    bool gisdbaseExists();
+
     //! Pointer to the QGIS interface object
     QgisInterface *mIface;
 
@@ -218,11 +226,9 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     bool mRegionsInited;
 
     std::vector<QgsPoint> mRegionsPoints;
-    //std::vector<double> mRegionsPoints;
 
     //! Last projection used for region
-    QgsCoordinateReferenceSystem mSrs;
-    //bool mSrsSet;
+    QgsCoordinateReferenceSystem mCrs;
 };
 
 #endif // QGSGRASSNEWMAPSET_H

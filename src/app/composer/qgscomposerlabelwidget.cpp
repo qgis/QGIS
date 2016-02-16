@@ -25,7 +25,7 @@
 #include <QFontDialog>
 #include <QWidget>
 
-QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QWidget(), mComposerLabel( label )
+QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QgsComposerItemBaseWidget( nullptr, label ), mComposerLabel( label )
 {
   setupUi( this );
 
@@ -33,6 +33,11 @@ QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QWidg
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, label );
   mainLayout->addWidget( itemPropertiesWidget );
 
+  mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
+  mFontColorButton->setContext( "composer" );
+
+  mMarginXDoubleSpinBox->setClearValue( 0.0 );
+  mMarginYDoubleSpinBox->setClearValue( 0.0 );
 
   if ( mComposerLabel )
   {
@@ -49,13 +54,13 @@ void QgsComposerLabelWidget::on_mHtmlCheckBox_stateChanged( int state )
     {
       mFontButton->setEnabled( false );
       mFontColorButton->setEnabled( false );
-      mAlignementGroup->setEnabled( false );
+      mAppearanceGroup->setEnabled( false );
     }
     else
     {
       mFontButton->setEnabled( true );
       mFontColorButton->setEnabled( true );
-      mAlignementGroup->setEnabled( true );
+      mAppearanceGroup->setEnabled( true );
     }
 
     mComposerLabel->beginCommand( tr( "Label text HTML state changed" ), QgsComposerMergeCommand::ComposerLabelSetText );
@@ -86,12 +91,7 @@ void QgsComposerLabelWidget::on_mFontButton_clicked()
   if ( mComposerLabel )
   {
     bool ok;
-#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
-    // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font(), 0, QString(), QFontDialog::DontUseNativeDialog );
-#else
-    QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font() );
-#endif
+    QFont newFont = QgisGui::getFont( ok, mComposerLabel->font() );
     if ( ok )
     {
       mComposerLabel->beginCommand( tr( "Label font changed" ) );
@@ -102,30 +102,38 @@ void QgsComposerLabelWidget::on_mFontButton_clicked()
   }
 }
 
-void QgsComposerLabelWidget::on_mMarginDoubleSpinBox_valueChanged( double d )
+void QgsComposerLabelWidget::on_mMarginXDoubleSpinBox_valueChanged( double d )
 {
   if ( mComposerLabel )
   {
     mComposerLabel->beginCommand( tr( "Label margin changed" ) );
-    mComposerLabel->setMargin( d );
+    mComposerLabel->setMarginX( d );
     mComposerLabel->update();
     mComposerLabel->endCommand();
   }
 }
 
-void QgsComposerLabelWidget::on_mFontColorButton_clicked()
+void QgsComposerLabelWidget::on_mMarginYDoubleSpinBox_valueChanged( double d )
+{
+  if ( mComposerLabel )
+  {
+    mComposerLabel->beginCommand( tr( "Label margin changed" ) );
+    mComposerLabel->setMarginY( d );
+    mComposerLabel->update();
+    mComposerLabel->endCommand();
+  }
+}
+
+void QgsComposerLabelWidget::on_mFontColorButton_colorChanged( const QColor &newLabelColor )
 {
   if ( !mComposerLabel )
   {
     return;
   }
-  QColor newColor = QColorDialog::getColor( mComposerLabel->fontColor() );
-  if ( !newColor.isValid() )
-  {
-    return;
-  }
-  mComposerLabel->beginCommand( tr( "Label font changed" ) );
-  mComposerLabel->setFontColor( newColor );
+
+  mComposerLabel->beginCommand( tr( "Label color changed" ) );
+  mComposerLabel->setFontColor( newLabelColor );
+  mComposerLabel->update();
   mComposerLabel->endCommand();
 }
 
@@ -142,13 +150,11 @@ void QgsComposerLabelWidget::on_mInsertExpressionButton_clicked()
   if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
     selText = selText.mid( 2, selText.size() - 4 );
 
-  QgsVectorLayer* coverageLayer = 0;
   // use the atlas coverage layer, if any
-  if ( mComposerLabel->composition()->atlasComposition().enabled() )
-  {
-    coverageLayer = mComposerLabel->composition()->atlasComposition().coverageLayer();
-  }
-  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this );
+  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
+  QScopedPointer<QgsExpressionContext> context( mComposerLabel->createExpressionContext() );
+  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, "generic", *context );
+
   exprDlg.setWindowTitle( tr( "Insert expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
@@ -233,7 +239,8 @@ void QgsComposerLabelWidget::setGuiElementValues()
   blockAllSignals( true );
   mTextEdit->setPlainText( mComposerLabel->text() );
   mTextEdit->moveCursor( QTextCursor::End, QTextCursor::MoveAnchor );
-  mMarginDoubleSpinBox->setValue( mComposerLabel->margin() );
+  mMarginXDoubleSpinBox->setValue( mComposerLabel->marginX() );
+  mMarginYDoubleSpinBox->setValue( mComposerLabel->marginY() );
   mHtmlCheckBox->setChecked( mComposerLabel->htmlState() );
   mTopRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignTop );
   mMiddleRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignVCenter );
@@ -241,6 +248,7 @@ void QgsComposerLabelWidget::setGuiElementValues()
   mLeftRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignLeft );
   mCenterRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignHCenter );
   mRightRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignRight );
+  mFontColorButton->setColor( mComposerLabel->fontColor() );
   blockAllSignals( false );
 }
 
@@ -248,11 +256,13 @@ void QgsComposerLabelWidget::blockAllSignals( bool block )
 {
   mTextEdit->blockSignals( block );
   mHtmlCheckBox->blockSignals( block );
-  mMarginDoubleSpinBox->blockSignals( block );
+  mMarginXDoubleSpinBox->blockSignals( block );
+  mMarginYDoubleSpinBox->blockSignals( block );
   mTopRadioButton->blockSignals( block );
   mMiddleRadioButton->blockSignals( block );
   mBottomRadioButton->blockSignals( block );
   mLeftRadioButton->blockSignals( block );
   mCenterRadioButton->blockSignals( block );
   mRightRadioButton->blockSignals( block );
+  mFontColorButton->blockSignals( block );
 }

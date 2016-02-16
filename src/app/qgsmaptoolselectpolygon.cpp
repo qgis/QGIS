@@ -26,8 +26,10 @@ email                : jpalmer at linz dot govt dot nz
 QgsMapToolSelectPolygon::QgsMapToolSelectPolygon( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
 {
-  mRubberBand = 0;
+  mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
+  mFillColor = QColor( 254, 178, 76, 63 );
+  mBorderColour = QColor( 254, 58, 29, 100 );
 }
 
 QgsMapToolSelectPolygon::~QgsMapToolSelectPolygon()
@@ -35,11 +37,13 @@ QgsMapToolSelectPolygon::~QgsMapToolSelectPolygon()
   delete mRubberBand;
 }
 
-void QgsMapToolSelectPolygon::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent* e )
 {
-  if ( mRubberBand == NULL )
+  if ( !mRubberBand )
   {
     mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+    mRubberBand->setFillColor( mFillColor );
+    mRubberBand->setBorderColor( mBorderColour );
   }
   if ( e->button() == Qt::LeftButton )
   {
@@ -55,16 +59,15 @@ void QgsMapToolSelectPolygon::canvasPressEvent( QMouseEvent * e )
     }
     mRubberBand->reset( QGis::Polygon );
     delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand = nullptr;
   }
 }
 
-void QgsMapToolSelectPolygon::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolSelectPolygon::canvasMoveEvent( QgsMapMouseEvent* e )
 {
-  if ( mRubberBand == NULL )
-  {
+  if ( !mRubberBand )
     return;
-  }
+
   if ( mRubberBand->numberOfVertices() > 0 )
   {
     mRubberBand->removeLastPoint( 0 );

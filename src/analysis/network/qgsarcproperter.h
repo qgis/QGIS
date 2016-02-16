@@ -37,6 +37,8 @@ class ANALYSIS_EXPORT QgsArcProperter
      */
     QgsArcProperter() {}
 
+    virtual ~QgsArcProperter() {}
+
     /**
      * QgsGraphDirector call this method for fetching attribute from source layer
      * \return required attributes list

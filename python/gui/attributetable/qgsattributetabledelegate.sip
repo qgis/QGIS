@@ -9,7 +9,7 @@ class QgsAttributeTableDelegate : QItemDelegate
     /** Constructor
      * @param parent parent object
      */
-    QgsAttributeTableDelegate( QObject* parent = 0 );
+    QgsAttributeTableDelegate( QObject* parent /TransferThis/ = 0 );
     /** Used to create an editor for when the user tries to
      * change the contents of a cell */
     QWidget * createEditor(

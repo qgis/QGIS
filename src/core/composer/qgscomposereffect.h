@@ -18,8 +18,8 @@
 #ifndef QGSCOMPOSEREFFECT_H
 #define QGSCOMPOSEREFFECT_H
 
-#include <QtGui>
 #include <QGraphicsEffect>
+#include <QPainter>
 
 class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
 {
@@ -29,11 +29,11 @@ class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
     QgsComposerEffect();
     ~QgsComposerEffect();
 
-    void setCompositionMode( const QPainter::CompositionMode &compositionMode );
+    void setCompositionMode( QPainter::CompositionMode compositionMode );
 
   protected:
     /** Called whenever source needs to be drawn */
-    virtual void draw( QPainter *painter );
+    virtual void draw( QPainter *painter ) override;
 
   private:
 

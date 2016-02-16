@@ -1,6 +1,6 @@
 /***************************************************************************
-                              qgsvectorfieldsymbollayer.h
-                              -------------------------
+         qgsvectorfieldsymbollayer.h
+         -------------------------
   begin                : Octorer 25, 2011
   copyright            : (C) 2011 by Marco Hugentobler
   email                : marco dot hugentobler at sourcepole dot ch
@@ -20,7 +20,7 @@
 
 #include "qgssymbollayerv2.h"
 
-/**A symbol layer class for displaying displacement arrows based on point layer attributes*/
+/** A symbol layer class for displaying displacement arrows based on point layer attributes*/
 class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
 {
   public:
@@ -49,23 +49,23 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
     static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
-    QString layerType() const { return "VectorField"; }
+    QString layerType() const override { return "VectorField"; }
 
-    bool setSubSymbol( QgsSymbolV2* symbol );
-    QgsSymbolV2* subSymbol() { return mLineSymbol; }
+    bool setSubSymbol( QgsSymbolV2* symbol ) override;
+    QgsSymbolV2* subSymbol() override { return mLineSymbol; }
 
-    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context );
-    void startRender( QgsSymbolV2RenderContext& context );
-    void stopRender( QgsSymbolV2RenderContext& context );
+    void renderPoint( QPointF point, QgsSymbolV2RenderContext& context ) override;
+    void startRender( QgsSymbolV2RenderContext& context ) override;
+    void stopRender( QgsSymbolV2RenderContext& context ) override;
 
-    QgsSymbolLayerV2* clone() const;
-    QgsStringMap properties() const;
+    QgsVectorFieldSymbolLayer* clone() const override;
+    QgsStringMap properties() const override;
 
-    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;
 
-    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
+    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) override;
 
-    QSet<QString> usedAttributes() const;
+    QSet<QString> usedAttributes() const override;
 
     //setters and getters
     void setXAttribute( const QString& attribute ) { mXAttribute = attribute; }
@@ -81,16 +81,23 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     void setAngleUnits( AngleUnits units ) { mAngleUnits = units; }
     AngleUnits angleUnits() const { return mAngleUnits; }
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
+    QgsSymbolV2::OutputUnit outputUnit() const override;
+
+    void setMapUnitScale( const QgsMapUnitScale& scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
 
     void setDistanceUnit( QgsSymbolV2::OutputUnit unit ) { mDistanceUnit = unit; }
     QgsSymbolV2::OutputUnit distanceUnit() const { return mDistanceUnit; }
+
+    void setDistanceMapUnitScale( const QgsMapUnitScale& scale ) { mDistanceMapUnitScale = scale; }
+    const QgsMapUnitScale& distanceMapUnitScale() const { return mDistanceMapUnitScale; }
 
   private:
     QString mXAttribute;
     QString mYAttribute;
     QgsSymbolV2::OutputUnit mDistanceUnit;
+    QgsMapUnitScale mDistanceMapUnitScale;
     double mScale;
     VectorFieldType mVectorFieldType;
     AngleOrientation mAngleOrientation;
@@ -107,3 +114,5 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
 };
 
 #endif // QGSVECTORFIELDSYMBOLLAYER_H
+
+

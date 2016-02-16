@@ -26,12 +26,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
-from qgis.core import *
+from PyQt4 import QtGui, QtCore
+from qgis.core import QgsVectorFileWriter
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 
 
-class AlgorithmProvider:
+class AlgorithmProvider(object):
+
     """This is the base class for algorithms providers.
 
     An algorithm provider is a set of related algorithms, typically
@@ -50,13 +51,9 @@ class AlgorithmProvider:
 
     def loadAlgorithms(self):
         self.algs = []
-        name = 'ACTIVATE_' + self.getName().upper().replace(' ', '_')
-        if not ProcessingConfig.getSetting(name):
-            return
-        else:
-            self._loadAlgorithms()
-            for alg in self.algs:
-                alg.provider = self
+        self._loadAlgorithms()
+        for alg in self.algs:
+            alg.provider = self
 
     # Methods to be overridden.
     def _loadAlgorithms(self):
@@ -77,7 +74,7 @@ class AlgorithmProvider:
         ProcessingConfig.settingIcons[self.getDescription()] = self.getIcon()
         name = 'ACTIVATE_' + self.getName().upper().replace(' ', '_')
         ProcessingConfig.addSetting(Setting(self.getDescription(), name,
-                                    'Activate', self.activate))
+                                            self.tr('Activate'), self.activate))
 
     def unload(self):
         """Do here anything that you want to be done when the provider
@@ -98,7 +95,7 @@ class AlgorithmProvider:
     def getDescription(self):
         """Returns the full name of the provider.
         """
-        return 'Generic algorithm provider'
+        return self.tr('Generic algorithm provider')
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + '/../images/alg.png')
@@ -122,3 +119,11 @@ class AlgorithmProvider:
 
     def supportsNonFileBasedOutput(self):
         return False
+
+    def canBeActivated(self):
+        return True
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = self.__class__.__name__
+        return QtCore.QCoreApplication.translate(context, string)

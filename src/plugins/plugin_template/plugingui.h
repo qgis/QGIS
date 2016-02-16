@@ -22,7 +22,7 @@ class [pluginname]Gui : public QDialog, private Ui::[pluginname]GuiBase
 {
     Q_OBJECT
   public:
-    [pluginname]Gui( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    [pluginname]Gui( QWidget* parent = 0, Qt::WindowFlags fl = 0 );
     ~[pluginname]Gui();
 
   private:

@@ -118,6 +118,7 @@ class ASResource
 		static const string AS_CLASS, AS_STRUCT, AS_UNION, AS_INTERFACE, AS_NAMESPACE, AS_EXTERN;
 		static const string AS_STATIC;
 		static const string AS_CONST;
+		static const string AS_OVERRIDE;
 		static const string AS_SYNCHRONIZED;
 		static const string AS_OPERATOR, AS_TEMPLATE;
 		static const string AS_OPEN_BRACKET, AS_CLOSE_BRACKET;
@@ -135,9 +136,9 @@ class ASResource
 		static const string AS_NOT, AS_BIT_XOR, AS_BIT_OR, AS_BIT_AND, AS_BIT_NOT;
 		static const string AS_QUESTION, AS_COLON, AS_SEMICOLON, AS_COMMA;
 		static const string AS_ASM;
-		static const string AS_FOREACH, AS_LOCK, AS_UNSAFE, AS_FIXED;
+		static const string AS_FOREACH, AS_LOCK, AS_UNSAFE, AS_FIXED, AS_Q_FOREACH;
 		static const string AS_GET, AS_SET, AS_ADD, AS_REMOVE;
-		static const string AS_CONST_CAST, AS_DYNAMIC_CAST, AS_REINTERPRET_CAST, AS_STATIC_CAST;
+		static const string AS_CONST_CAST, AS_DYNAMIC_CAST, AS_REINTERPRET_CAST, AS_STATIC_CAST, AS_QOBJECT_CAST;
 };
 
 class ASBeautifier : protected ASResource

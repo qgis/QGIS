@@ -48,48 +48,55 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     QgsOfflineEditing();
     ~QgsOfflineEditing();
 
-    /** convert current project for offline editing
+    /** Convert current project for offline editing
      * @param offlineDataPath path to offline db file
      * @param offlineDbFile offline db file name
      * @param layerIds list of layer names to convert
      */
     bool convertToOfflineProject( const QString& offlineDataPath, const QString& offlineDbFile, const QStringList& layerIds );
 
-    /** return true if current project is offline */
+    /** Return true if current project is offline */
     bool isOfflineProject();
 
-    /** synchronize to remote layers */
+    /** Synchronize to remote layers */
     void synchronize();
 
   signals:
-    /** emit a signal that processing has started */
+    /** Emit a signal that processing has started */
     void progressStarted();
 
-    /** emit a signal that the next layer of numLayers has started processing
+    /** Emit a signal that the next layer of numLayers has started processing
      * @param layer current layer index
      * @param numLayers total number of layers
      */
     void layerProgressUpdated( int layer, int numLayers );
 
-    /** emit a signal that sets the mode for the progress of the current operation
+    /** Emit a signal that sets the mode for the progress of the current operation
      * @param mode progress mode
      * @param maximum total number of entities to process in the current operation
      */
     void progressModeSet( QgsOfflineEditing::ProgressMode mode, int maximum );
 
-    /** emit a signal with the progress of the current mode
+    /** Emit a signal with the progress of the current mode
      * @param progress current index of processed entities
      */
     void progressUpdated( int progress );
 
-    /** emit a signal that processing of all layers has finished */
+    /** Emit a signal that processing of all layers has finished */
     void progressStopped();
+
+    /**
+     * Emitted when a warning needs to be displayed.
+     * @param title title string for message
+     * @param message A descriptive message for the warning
+     */
+    void warning( const QString& title, const QString& message );
 
   private:
     void initializeSpatialMetadata( sqlite3 *sqlite_handle );
     bool createSpatialiteDB( const QString& offlineDbPath );
     void createLoggingTables( sqlite3* db );
-    void copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, const QString& offlineDbPath );
+    QgsVectorLayer* copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, const QString& offlineDbPath );
 
     void applyAttributesAdded( QgsVectorLayer* remoteLayer, sqlite3* db, int layerId, int commitNo );
     void applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVectorLayer* remoteLayer, sqlite3* db, int layerId );
@@ -97,7 +104,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void applyAttributeValueChanges( QgsVectorLayer* offlineLayer, QgsVectorLayer* remoteLayer, sqlite3* db, int layerId, int commitNo );
     void applyGeometryChanges( QgsVectorLayer* remoteLayer, sqlite3* db, int layerId, int commitNo );
     void updateFidLookup( QgsVectorLayer* remoteLayer, sqlite3* db, int layerId );
-    void copySymbology( const QgsVectorLayer* sourceLayer, QgsVectorLayer* targetLayer );
+    void copySymbology( QgsVectorLayer* sourceLayer, QgsVectorLayer* targetLayer );
     QMap<int, int> attributeLookup( QgsVectorLayer* offlineLayer, QgsVectorLayer* remoteLayer );
 
     void showWarning( const QString& message );

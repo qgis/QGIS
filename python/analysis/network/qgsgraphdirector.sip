@@ -15,15 +15,15 @@ class QgsGraphDirector : QObject
 
 %ConvertToSubClassCode
   if ( dynamic_cast< QgsLineVectorLayerDirector* > ( sipCpp ) != NULL )
-    sipClass = sipClass_QgsLineVectorLayerDirector;
+    sipType = sipType_QgsLineVectorLayerDirector;
   else
-    sipClass = NULL;
+    sipType = NULL;
 %End
 
 
   signals:
     void buildProgress( int, int ) const;
-    void buildMessage( QString ) const;
+    void buildMessage( const QString& ) const;
 
   public:
     //! Destructor
@@ -44,7 +44,7 @@ class QgsGraphDirector : QObject
                             const QVector< QgsPoint > &additionalPoints,
                             QVector< QgsPoint> &tiedPoints /Out/ );
 
-    void addProperter( QgsArcProperter* prop /Transfer/ ) ;
+    void addProperter( QgsArcProperter* prop /Transfer/ );
 
     /**
      * return Director name

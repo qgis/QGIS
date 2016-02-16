@@ -14,6 +14,7 @@
 #ifndef QGSGRASSMAPCALC_H
 #define QGSGRASSMAPCALC_H
 
+#include "qgsgrassmoduleinput.h"
 #include "ui_qgsgrassmapcalcbase.h"
 #include "qgsgrassmodule.h"
 
@@ -40,7 +41,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     QgsGrassMapcalc(
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface,
-      QWidget * parent = 0, Qt::WFlags f = 0 );
+      QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
     //! Destructor
     ~QgsGrassMapcalc();
@@ -56,29 +57,29 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     };
 
     //! Get module options as list of arguments for QProcess
-    QStringList arguments();
+    QStringList arguments() override;
 
     // Reimplemented methods
-    QStringList checkOutput();
-    QStringList ready() { return QStringList() ; }
-    bool requestsRegion() { return false; }
-    bool usesRegion() { return true; }
-    QStringList checkRegion();
-    bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all );
-    QStringList output( int type );
-    bool hasOutput( int type )
-    { Q_UNUSED( type ); return true; }
+    QStringList checkOutput() override;
+    QStringList ready() override { return QStringList() ; }
+    bool requestsRegion() override { return false; }
+    bool usesRegion() override { return true; }
+    QStringList checkRegion() override;
+    bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all ) override;
+    QStringList output( int type ) override;
+    bool hasOutput( int type ) override
+      { Q_UNUSED( type ); return true; }
 
-    /** \brief recieves contentsMousePressEvent from view */
-    void mousePressEvent( QMouseEvent* );
+    /** \brief receives contentsMousePressEvent from view */
+    void mousePressEvent( QMouseEvent* ) override;
 
-    /** \brief recieves contentsMouseReleaseEvent from view */
-    void mouseReleaseEvent( QMouseEvent* );
+    /** \brief receives contentsMouseReleaseEvent from view */
+    void mouseReleaseEvent( QMouseEvent* ) override;
 
-    /** \brief recieves contentsMouseMoveEvent from view */
-    void mouseMoveEvent( QMouseEvent* );
+    /** \brief receives contentsMouseMoveEvent from view */
+    void mouseMoveEvent( QMouseEvent* ) override;
 
-    void keyPressEvent( QKeyEvent * e );
+    void keyPressEvent( QKeyEvent * e ) override;
 
     /** Cut coordinates by current canvas extent */
     void limit( QPoint* );
@@ -123,8 +124,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     void setTool( int );
 
     //! Map selection changed
-    void on_mMapComboBox_activated() { mapChanged(); }
-    void mapChanged();
+    void mapChanged( const QString & text );
 
     //! Constant changed
     void on_mConstantLineEdit_textChanged() { constantChanged(); }
@@ -152,7 +152,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     QgsGrassMapcalcView *mView;
 
     // Canvas
-    QGraphicsScene *mCanvas;
+    QGraphicsScene *mCanvasScene;
 
     // Tool
     int mTool;
@@ -164,11 +164,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     // Pointer to current connector
     QgsGrassMapcalcConnector *mConnector;
 
-    // Update combobox with maps
-    void updateMaps();
-
-    //! Vector of map@mapset in the combobox
-    std::vector<QString> mMaps;
+    QgsGrassModuleInputComboBox *mMapComboBox;
 
     //! Last point position
     QPoint mLastPoint;
@@ -219,11 +215,11 @@ class QgsGrassMapcalcFunction
       Function
     };
 
-    QgsGrassMapcalcFunction() {};
+    QgsGrassMapcalcFunction();
     QgsGrassMapcalcFunction( int type, QString name, int count = 2,
                              QString description = "", QString label = "",
                              QString labels = "", bool drawLabel = true );
-    ~QgsGrassMapcalcFunction() {};
+    ~QgsGrassMapcalcFunction();
 
     QString name() { return mName; }
     int     type() { return mType; }
@@ -269,8 +265,8 @@ class QgsGrassMapcalcItem
     QgsGrassMapcalcItem();
     virtual ~QgsGrassMapcalcItem();
 
-    virtual void setSelected( bool s );
-    bool selected( void );
+    virtual void setSelected( bool s ) { mSelected = s; }
+    bool selected( void ) { return mSelected; }
 //    virtual void paint ( QPainter * painter,
 //      const QStyleOptionGraphicsItem * option, QWidget * widget );
 //
@@ -329,7 +325,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
       None
     };
 
-    QgsGrassMapcalcObject( int type );
+    explicit QgsGrassMapcalcObject( int type );
     ~QgsGrassMapcalcObject();
 
     // Set map name, constant value or function/operator
@@ -339,7 +335,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     void setFunction( QgsGrassMapcalcFunction f );
 
     void paint( QPainter * painter,
-                const QStyleOptionGraphicsItem * option, QWidget * widget );
+                const QStyleOptionGraphicsItem * option, QWidget * widget ) override;
 
     // Set object center
     void setCenter( int, int );
@@ -350,7 +346,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     // Recalculate size
     void resetSize();
 
-    void setSelected( bool s );
+    void setSelected( bool s ) override;
 
     // Try to connect connector end
     bool tryConnect( QgsGrassMapcalcConnector *, int );
@@ -363,7 +359,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
                        QgsGrassMapcalcConnector *connector = 0, int end = 0 );
 
     // Object type
-    virtual int type() const;
+    virtual int type() const override;
 
     // Value
     QString value() { return mValue; }
@@ -454,11 +450,11 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
 class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalcItem
 {
   public:
-    QgsGrassMapcalcConnector( QGraphicsScene * );
+    explicit QgsGrassMapcalcConnector( QGraphicsScene * );
     ~QgsGrassMapcalcConnector();
 
     void paint( QPainter * painter,
-                const QStyleOptionGraphicsItem * option, QWidget * widget );
+                const QStyleOptionGraphicsItem * option, QWidget * widget ) override;
 
     // Set connector end point coordinates
     void setPoint( int, QPoint );
@@ -468,7 +464,7 @@ class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalc
     // Recalculate size
     //void resetSize();
 
-    void setSelected( bool s );
+    void setSelected( bool s ) override;
 
     // Select end
     void selectEnd( QPoint );
@@ -525,13 +521,13 @@ class QgsGrassMapcalcView: public QGraphicsView
     Q_OBJECT
 
   public:
-    QgsGrassMapcalcView( QgsGrassMapcalc * mapcalc, QWidget * parent = 0, Qt::WFlags f = 0 );
+    QgsGrassMapcalcView( QgsGrassMapcalc * mapcalc, QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
   protected:
-    void mousePressEvent( QMouseEvent * e );
-    void mouseReleaseEvent( QMouseEvent * e );
-    void mouseMoveEvent( QMouseEvent * e );
-    void keyPressEvent( QKeyEvent * e );
+    void mousePressEvent( QMouseEvent * e ) override;
+    void mouseReleaseEvent( QMouseEvent * e ) override;
+    void mouseMoveEvent( QMouseEvent * e ) override;
+    void keyPressEvent( QKeyEvent * e ) override;
 
   private:
     QgsGrassMapcalc *mMapcalc;

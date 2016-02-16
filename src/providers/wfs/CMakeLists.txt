@@ -14,6 +14,7 @@ SET (WFS_MOC_HDRS
   qgswfscapabilities.h
   qgswfsdataitems.h
   qgswfsprovider.h
+  qgswfsfeatureiterator.h
   qgswfssourceselect.h
 )
 
@@ -24,11 +25,18 @@ QT4_WRAP_CPP(WFS_MOC_SRCS ${WFS_MOC_HDRS})
 
 INCLUDE_DIRECTORIES (
   ../../core
+  ../../core/auth
+  ../../core/geometry
   ../../gui
+  ../../gui/auth
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}/geos
   ${EXPAT_INCLUDE_DIR}
+  ${QSCINTILLA_INCLUDE_DIR}
+  ${QCA_INCLUDE_DIR}
 )
 
 ADD_LIBRARY (wfsprovider MODULE ${WFS_SRCS} ${WFS_MOC_SRCS})
@@ -42,7 +50,7 @@ TARGET_LINK_LIBRARIES (wfsprovider
 
 ########################################################
 # Install
-                
+
 INSTALL(TARGETS wfsprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

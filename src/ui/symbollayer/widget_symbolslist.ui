@@ -6,46 +6,41 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>375</width>
-    <height>429</height>
+    <width>747</width>
+    <height>539</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <property name="verticalSpacing">
     <number>4</number>
-   </property>
-   <property name="margin">
-    <number>0</number>
    </property>
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0">
-        <widget class="QLabel" name="mSymbolUnitLabel">
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_5">
          <property name="text">
-          <string>Unit</string>
+          <string>Color</string>
          </property>
          <property name="buddy">
-          <cstring>mSymbolUnitComboBox</cstring>
+          <cstring>btnColor</cstring>
          </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="mSymbolUnitComboBox">
-         <item>
-          <property name="text">
-           <string>Millimeter</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Map unit</string>
-          </property>
-         </item>
         </widget>
        </item>
        <item row="1" column="0">
@@ -55,6 +50,13 @@
          </property>
          <property name="buddy">
           <cstring>mTransparencySlider</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="mSymbolUnitLabel">
+         <property name="text">
+          <string>Unit</string>
          </property>
         </widget>
        </item>
@@ -74,27 +76,17 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>Color</string>
-         </property>
-         <property name="buddy">
-          <cstring>btnColor</cstring>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="1">
-        <widget class="QgsColorButton" name="btnColor">
+        <widget class="QgsColorButtonV2" name="btnColor">
          <property name="minimumSize">
           <size>
-           <width>100</width>
+           <width>120</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>120</width>
            <height>16777215</height>
           </size>
          </property>
@@ -102,6 +94,9 @@
           <string/>
          </property>
         </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QgsUnitSelectionWidget" name="mSymbolUnitWidget" native="true"/>
        </item>
       </layout>
      </item>
@@ -114,7 +109,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="pageMarker">
         <layout class="QGridLayout" name="gridLayout">
@@ -125,16 +120,33 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QDoubleSpinBox" name="spinSize">
+         <item row="0" column="3">
+          <widget class="QgsDataDefinedButton" name="mSizeDDBtn">
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QgsDataDefinedButton" name="mRotationDDBtn">
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QgsDoubleSpinBox" name="spinAngle">
+           <property name="suffix">
+            <string> °</string>
+           </property>
            <property name="decimals">
             <number>2</number>
            </property>
            <property name="maximum">
-            <double>99999.000000000000000</double>
+            <double>360.000000000000000</double>
            </property>
-           <property name="value">
-            <double>1.000000000000000</double>
+           <property name="singleStep">
+            <double>0.500000000000000</double>
            </property>
           </widget>
          </item>
@@ -145,19 +157,22 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QDoubleSpinBox" name="spinAngle">
-           <property name="suffix">
-            <string>°</string>
-           </property>
+         <item row="0" column="2">
+          <widget class="QgsDoubleSpinBox" name="spinSize">
            <property name="decimals">
-            <number>1</number>
+            <number>5</number>
            </property>
            <property name="maximum">
-            <double>360.000000000000000</double>
+            <double>99999999.989999994635582</double>
            </property>
            <property name="singleStep">
-            <double>5.000000000000000</double>
+            <double>0.200000000000000</double>
+           </property>
+           <property name="value">
+            <double>1.000000000000000</double>
+           </property>
+           <property name="showClearButton" stdset="0">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -165,6 +180,32 @@
        </widget>
        <widget class="QWidget" name="pageLine">
         <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="1">
+          <widget class="QgsDoubleSpinBox" name="spinWidth">
+           <property name="decimals">
+            <number>5</number>
+           </property>
+           <property name="maximum">
+            <double>99999.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.200000000000000</double>
+           </property>
+           <property name="value">
+            <double>1.000000000000000</double>
+           </property>
+           <property name="showClearButton" stdset="0">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QgsDataDefinedButton" name="mWidthDDBtn">
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
          <item row="0" column="0">
           <widget class="QLabel" name="label_4">
            <property name="text">
@@ -172,24 +213,20 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QDoubleSpinBox" name="spinWidth">
-           <property name="decimals">
-            <number>5</number>
-           </property>
-           <property name="maximum">
-            <double>99999.000000000000000</double>
-           </property>
-           <property name="value">
-            <double>1.000000000000000</double>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
        <widget class="QWidget" name="pageFill">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
         </layout>
@@ -198,7 +235,7 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <property name="spacing">
       <number>3</number>
@@ -206,22 +243,9 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Saved styles</string>
+        <string>Symbols in group</string>
        </property>
       </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>0</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
      <item>
       <widget class="QComboBox" name="groupsCombo">
@@ -242,9 +266,16 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="openStyleManagerButton">
+       <property name="text">
+        <string>Open Library</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <widget class="QListView" name="viewSymbols">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -281,7 +312,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <property name="topMargin">
       <number>2</number>
@@ -307,9 +338,18 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btnStyle">
+      <widget class="QPushButton" name="btnSaveSymbol">
+       <property name="maximumSize">
+        <size>
+         <width>70</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Save symbol</string>
+       </property>
        <property name="text">
-        <string>Symbol</string>
+        <string>Save</string>
        </property>
       </widget>
      </item>
@@ -322,15 +362,54 @@
      </item>
     </layout>
    </item>
+   <item row="1" column="0">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mTransparencySlider</tabstop>
+  <tabstop>btnColor</tabstop>
+  <tabstop>spinSize</tabstop>
+  <tabstop>mSizeDDBtn</tabstop>
+  <tabstop>spinAngle</tabstop>
+  <tabstop>mRotationDDBtn</tabstop>
+  <tabstop>spinWidth</tabstop>
+  <tabstop>mWidthDDBtn</tabstop>
+  <tabstop>groupsCombo</tabstop>
+  <tabstop>openStyleManagerButton</tabstop>
+  <tabstop>viewSymbols</tabstop>
+  <tabstop>btnSaveSymbol</tabstop>
+  <tabstop>btnAdvanced</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

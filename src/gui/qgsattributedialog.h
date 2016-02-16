@@ -19,9 +19,11 @@
 
 #include "qgsfeature.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgsattributeform.h"
 
-class QDialog;
-class QLayout;
+#include <QDialog>
+#include <QMenuBar>
+#include <QGridLayout>
 
 class QgsDistanceArea;
 class QgsFeature;
@@ -30,7 +32,7 @@ class QgsHighlight;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 
-class GUI_EXPORT QgsAttributeDialog : public QObject
+class GUI_EXPORT QgsAttributeDialog : public QDialog
 {
     Q_OBJECT
 
@@ -47,7 +49,7 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
      *
      * @deprecated
      */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QgsDistanceArea myDa, QWidget* parent = 0, bool showDialogButtons = true );
+    Q_DECL_DEPRECATED QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, const QgsDistanceArea& myDa, QWidget* parent = nullptr, bool showDialogButtons = true );
 
     /**
      * Create an attribute dialog for a given layer and feature
@@ -60,7 +62,7 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
      * @param context           The context in which this dialog is created
      *
      */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget* parent = 0, bool showDialogButtons = true, QgsAttributeEditorContext context = QgsAttributeEditorContext() );
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget* parent = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
     ~QgsAttributeDialog();
 
@@ -74,44 +76,75 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
      */
     void restoreGeometry();
 
+    /**
+     * @brief setHighlight
+     * @param h The highlight. Ownership is taken.
+     */
     void setHighlight( QgsHighlight *h );
 
-    QDialog *dialog() { return mDialog; }
+    /**
+     * @brief Returns reference to self. Only here for legacy compliance
+     *
+     * @return this
+     *
+     * @deprecated Do not use. Just use this object itself. Or QgsAttributeForm if you want to embed.
+     */
+    Q_DECL_DEPRECATED QDialog *dialog() { return this; }
 
-    QgsFeature* feature() { return mFeature; }
+    QgsAttributeForm *attributeForm() { return mAttributeForm; }
+
+    const QgsFeature *feature() { return &mAttributeForm->feature(); }
 
     /**
      * Is this dialog editable?
      *
      * @return returns true, if this dialog was created in an editable manner.
      */
-    bool editable() { return mEditable; }
+    bool editable() { return mAttributeForm->editable(); }
+
+    /**
+     * Toggles the form mode between edit feature and add feature.
+     * If set to true, the dialog will be editable even with an invalid feature.
+     * If set to true, the dialog will add a new feature when the form is accepted.
+     *
+     * @param isAddDialog If set to true, turn this dialog into an add feature dialog.
+     */
+    void setIsAddDialog( bool isAddDialog ) { mAttributeForm->setIsAddDialog( isAddDialog ); }
+
+    /**
+     * Sets the edit command message (Undo) that will be used when the dialog is accepted
+     *
+     * @param message The message
+     */
+    void setEditCommandMessage( const QString& message ) { mAttributeForm->setEditCommandMessage( message ); }
+
+    /**
+     * Intercept window activate/deactive events to show/hide the highlighted feature.
+     *
+     * @param e The event
+     *
+     * @return The same as the parent QDialog
+     */
+    virtual bool event( QEvent *e ) override;
 
   public slots:
-    void accept();
+    void accept() override;
 
-    int exec();
-    void show();
-
-    void dialogDestroyed();
-
-  protected:
-    bool eventFilter( QObject *obj, QEvent *event );
+    //! Show the dialog non-blocking. Reparents this dialog to be a child of the dialog form and is deleted when
+    //! closed.
+    void show( bool autoDelete = true );
 
   private:
-    void init();
+    void init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext& context );
 
-    QDialog *mDialog;
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field
-    QgsAttributeEditorContext mContext;
-    QgsVectorLayer *mLayer;
-    QgsFeature* mFeature;
-    bool mFeatureOwner;
     QgsHighlight *mHighlight;
     int mFormNr;
     bool mShowDialogButtons;
     QString mReturnvarname;
+    QgsAttributeForm* mAttributeForm;
+    QgsFeature *mOwnedFeature;
 
     // true if this dialog is editable
     bool mEditable;

@@ -22,6 +22,7 @@
 #include "qgsdbfilterproxymodel.h"
 #include "qgsoracletablemodel.h"
 #include "qgscontexthelp.h"
+#include "qgsoracleconnpool.h"
 
 #include <QMap>
 #include <QPair>
@@ -36,31 +37,43 @@ class QgsOracleSourceSelect;
 
 class QgsOracleSourceSelectDelegate : public QItemDelegate
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
-    QgsOracleSourceSelectDelegate( QObject *parent = NULL )
-        :  QItemDelegate( parent )
-        ,  mConn( 0 )
+    explicit QgsOracleSourceSelectDelegate( QObject *parent = nullptr )
+        : QItemDelegate( parent )
+        , mConn( nullptr )
     {}
 
     ~QgsOracleSourceSelectDelegate()
     {
-      setConn( 0 );
+      setConn( nullptr );
     }
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const;
 
-    void setConn( QgsOracleConn *conn ) { if ( mConn ) mConn->disconnect();  mConn = conn; }
+    void setConnectionInfo( const QgsDataSourceURI& connInfo ) { mConnInfo = connInfo; }
+
+  protected:
+    void setConn( QgsOracleConn *conn ) const { if ( mConn ) QgsOracleConnPool::instance()->releaseConnection( mConn ); mConn = conn; }
+
+    QgsOracleConn* conn() const
+    {
+      if ( !mConn )
+        setConn( QgsOracleConn::connectDb( mConnInfo ) );
+      return mConn;
+    }
 
   private:
-    QgsOracleConn *mConn;
+    QgsDataSourceURI mConnInfo;
+    //! lazily initialized connection (to detect possible primary keys)
+    mutable QgsOracleConn *mConn;
 };
 
 
-/*! \class QgsOracleSourceSelect
+/** \class QgsOracleSourceSelect
  * \brief Dialog to create connections and add tables from Oracle.
  *
  * This dialog allows the user to define and save connection information
@@ -73,15 +86,13 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
   public:
     //! Constructor
-    QgsOracleSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOracleSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsOracleSourceSelect();
     //! Populate the connection list combo box
     void populateConnectionList();
     //! String list containing the selected tables
     QStringList selectedTables();
-    //! Connection info (database, host, user, password)
-    QString connectionInfo();
 
   signals:
     void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
@@ -94,9 +105,9 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void addTables();
     void buildQuery();
 
-    /*! Connects to the database using the stored connection parameters.
-    * Once connected, available layers are displayed.
-    */
+    /** Connects to the database using the stored connection parameters.
+     * Once connected, available layers are displayed.
+     */
     void on_btnConnect_clicked();
     void on_cbxAllowGeometrylessTables_stateChanged( int );
     //! Opens the create connection dialog to build a new connection
@@ -136,6 +147,9 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //! Embedded mode, without 'Close'
     bool mEmbeddedMode;
 
+    //! try to load list of tables from local cache
+    void loadTableFromCache();
+
     // queue another query for the thread
     void addSearchGeometryColumn( QgsOracleLayerProperty layerProperty );
 
@@ -149,9 +163,8 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList mColumnLabels;
     // Our thread for doing long running queries
     QgsOracleColumnTypeThread *mColumnTypeThread;
-    QString mConnInfo;
+    QgsDataSourceURI mConnInfo;
     QStringList mSelectedTables;
-    bool mUseEstimatedMetadata;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
 

@@ -14,7 +14,6 @@
 #                                                                         #
 ###########################################################################
 
-
 for ASTYLE in $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle
 do
 	if type -p $ASTYLE >/dev/null; then
@@ -29,42 +28,81 @@ if [ -z "$ASTYLE" ]; then
 fi
 
 if ! type -p flip >/dev/null; then
-	flip() {
+	if type -p dos2unix >/dev/null; then
+		flip() {
+			dos2unix -k $2
+		}
+	else
+		echo "flip not found" >&2
+		flip() {
+			:
+		}
+	fi
+fi
+
+if ! type -p autopep8 >/dev/null; then
+	echo "autopep8 not found" >&2
+	autopep8() {
 		:
 	}
 fi
 
+ASTYLEOPTS=$(dirname $0)/astyle.options
+if type -p cygpath >/dev/null; then
+	ASTYLEOPTS="$(cygpath -w $ASTYLEOPTS)"
+fi
+
 set -e
 
-export ARTISTIC_STYLE_OPTIONS="\
---preserve-date \
---indent-preprocessor \
---brackets=break \
---convert-tabs \
---indent=spaces=2 \
---indent-classes \
---indent-labels \
---indent-namespaces \
---indent-switches \
---one-line=keep-blocks \
---one-line=keep-statements \
---max-instatement-indent=40 \
---min-conditional-indent=-1 \
---suffix=none"
-
-export ARTISTIC_STYLE_OPTIONS="\
-$ARTISTIC_STYLE_OPTIONS \
---pad=oper \
---pad=paren-in \
---unpad=paren"
+astyleit() {
+	$ASTYLE --options="$ASTYLEOPTS" "$1"
+	scripts/unify_includes.pl "$1"
+}
 
 for f in "$@"; do
+	case "$f" in
+		src/app/gps/qwtpolar-*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|src/astyle/*|python/ext-libs/*|src/providers/spatialite/qspatialite/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|python/ext-libs/*|*/ui_*.py)
+			echo -ne "$f skipped $elcr"
+			continue
+			;;
+
+		*.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp)
+			if [ -x "$f" ]; then
+							chmod a-x "$f"
+			fi
+			cmd=astyleit
+			;;
+
+		*.ui|*.qgm|*.txt|*.t2t|resources/context_help/*)
+			cmd=:
+			;;
+
+		*.py)
+			#cmd="autopep8 --in-place --ignore=E111,E128,E201,E202,E203,E211,E221,E222,E225,E226,E227,E231,E241,E261,E265,E272,E302,E303,E501,E701"
+			cmd="autopep8 --in-place --ignore=E261,E265,E402,E501"
+			;;
+
+		*.sip)
+			cmd="perl -i.prepare -pe 's/[\r\t ]+$//; s#^(\s*)/\*[*!]\s*([^\s*].*)\s*\$#\$1/** \u\$2\n#;'"
+			;;
+
+		*)
+			echo -ne "$f skipped $elcr"
+			continue
+			;;
+	esac
+
 	if ! [ -f "$f" ]; then
 		echo "$f not found" >&2
 		continue
-        fi
+	fi
 
-	flip -ub "$f" 
-	#qgsloggermig.pl "$f"
-	$ASTYLE $ARTISTIC_STYLE_OPTIONS "$f"
+	if [[ -f $f && `head -c 3 $f` == $'\xef\xbb\xbf' ]]; then
+		mv $f $f.bom
+		tail -c +4 $f.bom > $f
+		echo "removed BOM from $f"
+	fi
+
+	flip -ub "$f"
+	eval "$cmd '$f'"
 done

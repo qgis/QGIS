@@ -4,6 +4,8 @@ class QgsFeatureListViewDelegate : QItemDelegate
 #include <qgsfeaturelistviewdelegate.h>
 %End
   public:
+    static const int sIconSize;
+
     enum Element
     {
       EditElement,
@@ -14,9 +16,11 @@ class QgsFeatureListViewDelegate : QItemDelegate
 
     void setEditSelectionModel( QItemSelectionModel* editSelectionModel );
 
-    Element positionToElement( const QPoint& pos );
+    Element positionToElement( QPoint pos );
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
+
+    void setCurrentFeatureEdited( bool state );
 
   signals:
     void editButtonClicked( QModelIndex& index );

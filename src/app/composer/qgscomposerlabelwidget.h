@@ -19,25 +19,27 @@
 #define QGSCOMPOSERLABELWIDGET
 
 #include "ui_qgscomposerlabelwidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerLabel;
 
 /** \ingroup MapComposer
   * A widget to enter text, font size, box yes/no for composer labels
   */
-class QgsComposerLabelWidget: public QWidget, private Ui::QgsComposerLabelWidgetBase
+class QgsComposerLabelWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerLabelWidgetBase
 {
     Q_OBJECT
   public:
-    QgsComposerLabelWidget( QgsComposerLabel* label );
+    explicit QgsComposerLabelWidget( QgsComposerLabel* label );
 
   public slots:
     void on_mHtmlCheckBox_stateChanged( int i );
     void on_mTextEdit_textChanged();
     void on_mFontButton_clicked();
     void on_mInsertExpressionButton_clicked();
-    void on_mMarginDoubleSpinBox_valueChanged( double d );
-    void on_mFontColorButton_clicked();
+    void on_mMarginXDoubleSpinBox_valueChanged( double d );
+    void on_mMarginYDoubleSpinBox_valueChanged( double d );
+    void on_mFontColorButton_colorChanged( const QColor& newLabelColor );
     void on_mCenterRadioButton_clicked();
     void on_mLeftRadioButton_clicked();
     void on_mRightRadioButton_clicked();

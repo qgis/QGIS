@@ -1,5 +1,6 @@
 
-/** \brief The RasterBandStats struct is a container for statistics about a single
+/** \ingroup core
+ * The RasterBandStats struct is a container for statistics about a single
  * raster band.
  */
 class QgsRasterBandStats
@@ -11,20 +12,20 @@ class QgsRasterBandStats
   public:
     enum Stats
     {
-      None         = 0,
-      Min          = 1,
-      Max          = 2,
-      Range        = 4,
-      Sum          = 8,
-      Mean         = 16,
-      StdDev       = 32,
-      SumOfSquares = 64,
-      All          = 127
+      None,
+      Min,
+      Max,
+      Range,
+      Sum,
+      Mean,
+      StdDev,
+      SumOfSquares,
+      All
     };
 
     QgsRasterBandStats();
 
-    /*! Compares region, size etc. not collected statistics */
+    /** Compares region, size etc. not collected statistics */
     bool contains( const QgsRasterBandStats &s ) const;
 
     /** \brief The gdal band number (starts at 1)*/
@@ -69,4 +70,3 @@ class QgsRasterBandStats
     /** \brief Extent used to calc statistics */
     QgsRectangle extent;
 };
-

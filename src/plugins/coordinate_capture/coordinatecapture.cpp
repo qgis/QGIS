@@ -68,7 +68,15 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  */
 CoordinateCapture::CoordinateCapture( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+    , mpMapTool( nullptr )
+    , mpTrackMouseButton( nullptr )
+    , mpCaptureButton( nullptr )
+    , mypUserCrsToolButton( nullptr )
+    , mypCRSLabel( nullptr )
+    , mCanvasDisplayPrecision( 5 )
+    , mUserCrsDisplayPrecision( 5 )
     , mQGisIface( theQgisInterface )
+    , mQActionPointer( nullptr )
 {
 }
 
@@ -193,14 +201,14 @@ void CoordinateCapture::setSourceCrs()
   mCanvasDisplayPrecision = ( mQGisIface->mapCanvas()->mapSettings().destinationCrs().mapUnits() == QGis::Degrees ) ? 5 : 3; // for the map canvas coordinate display
 }
 
-void CoordinateCapture::mouseClicked( QgsPoint thePoint )
+void CoordinateCapture::mouseClicked( const QgsPoint& thePoint )
 {
   //clicking on the canvas will update the widgets and then disable
   //tracking so the user can copy the click point coords
   mpTrackMouseButton->setChecked( false );
   update( thePoint );
 }
-void CoordinateCapture::mouseMoved( QgsPoint thePoint )
+void CoordinateCapture::mouseMoved( const QgsPoint& thePoint )
 {
   //mouse movements will only update the widgets if the
   //tracking button is checked
@@ -209,14 +217,14 @@ void CoordinateCapture::mouseMoved( QgsPoint thePoint )
     update( thePoint );
   }
 }
-void CoordinateCapture::update( QgsPoint thePoint )
+void CoordinateCapture::update( const QgsPoint& thePoint )
 {
   //this is the coordinate resolved back to lat / lon
   QgsPoint myUserCrsPoint = mTransform.transform( thePoint );
-  mpUserCrsEdit->setText( QString::number( myUserCrsPoint.x(), 'f', mUserCrsDisplayPrecision ) + "," +
+  mpUserCrsEdit->setText( QString::number( myUserCrsPoint.x(), 'f', mUserCrsDisplayPrecision ) + ',' +
                           QString::number( myUserCrsPoint.y(), 'f', mUserCrsDisplayPrecision ) );
   // This is the coordinate space of the map canvas
-  mpCanvasEdit->setText( QString::number( thePoint.x(), 'f', mCanvasDisplayPrecision ) + "," +
+  mpCanvasEdit->setText( QString::number( thePoint.x(), 'f', mCanvasDisplayPrecision ) + ',' +
                          QString::number( thePoint.y(), 'f', mCanvasDisplayPrecision ) );
 }
 void CoordinateCapture::copy()
@@ -225,10 +233,10 @@ void CoordinateCapture::copy()
   //if we are on x11 system put text into selection ready for middle button pasting
   if ( myClipboard->supportsSelection() )
   {
-    myClipboard->setText( mpUserCrsEdit->text() + "," + mpCanvasEdit->text(), QClipboard::Selection );
+    myClipboard->setText( mpUserCrsEdit->text() + ',' + mpCanvasEdit->text(), QClipboard::Selection );
   }
 
-  myClipboard->setText( mpUserCrsEdit->text() + "," + mpCanvasEdit->text(), QClipboard::Clipboard );
+  myClipboard->setText( mpUserCrsEdit->text() + ',' + mpCanvasEdit->text(), QClipboard::Clipboard );
 }
 
 
@@ -264,15 +272,15 @@ void CoordinateCapture::unload()
   mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   mpMapTool->deactivate();
   delete mpMapTool;
-  mpMapTool = 0;
+  mpMapTool = nullptr;
   delete mpDockWidget;
-  mpDockWidget = 0;
+  mpDockWidget = nullptr;
   delete mQActionPointer;
-  mQActionPointer = 0;
+  mQActionPointer = nullptr;
 }
 
 // Set icons to the current theme
-void CoordinateCapture::setCurrentTheme( QString theThemeName )
+void CoordinateCapture::setCurrentTheme( const QString& theThemeName )
 {
   Q_UNUSED( theThemeName );
   if ( mQActionPointer )
@@ -287,7 +295,7 @@ void CoordinateCapture::setCurrentTheme( QString theThemeName )
 }
 
 // Get path to the best available icon file
-QString CoordinateCapture::getIconPath( const QString theName )
+QString CoordinateCapture::getIconPath( const QString& theName )
 {
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/coordinate_capture/" + theName;
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/coordinate_capture/" + theName;

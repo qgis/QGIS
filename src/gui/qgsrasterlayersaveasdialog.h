@@ -48,7 +48,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer,
                                 QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
                                 const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
-                                QWidget* parent = 0, Qt::WindowFlags f = 0 );
+                                QWidget* parent = nullptr, const Qt::WindowFlags& f = nullptr );
     ~QgsRasterLayerSaveAsDialog();
 
     Mode mode() const;
@@ -59,6 +59,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     int maximumTileSizeX() const;
     int maximumTileSizeY() const;
     bool tileMode() const;
+    bool addToCanvas() const;
     QString outputFileName() const;
     QString outputFormat() const;
     QgsCoordinateReferenceSystem outputCrs();
@@ -76,7 +77,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void hideOutput();
 
   public slots:
-    virtual void accept() { if ( validate() ) return QDialog::accept(); }
+    virtual void accept() override { if ( validate() ) return QDialog::accept(); }
 
   private slots:
     void on_mRawModeRadioButton_toggled( bool );
@@ -91,10 +92,6 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void on_mOriginalSizePushButton_clicked() { setOriginalSize(); }
     void on_mColumnsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
     void on_mRowsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
-
-    void on_mChangeCrsPushButton_clicked();
-
-    void on_mCrsComboBox_currentIndexChanged( int ) { crsChanged(); }
 
     void on_mAddNoDataManuallyToolButton_clicked();
     void on_mLoadTransparentNoDataToolButton_clicked();
@@ -112,7 +109,6 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     QgsRectangle mCurrentExtent;
     QgsCoordinateReferenceSystem mLayerCrs; // may differ from provider CRS
     QgsCoordinateReferenceSystem mCurrentCrs;
-    QgsCoordinateReferenceSystem mUserCrs;
     QgsCoordinateReferenceSystem mPreviousCrs;
     ResolutionState mResolutionState;
     QVector<bool> mNoDataToEdited;
@@ -126,14 +122,15 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void recalcResolution();
     void updateResolutionStateMsg();
     void recalcResolutionSize();
-    void crsChanged();
-    void updateCrsGroup();
 
     void addNoDataRow( double min, double max );
     void setNoDataToEdited( int row );
     double noDataCellValue( int row, int column ) const;
     void adjustNoDataCellWidth( int row, int column );
     bool validate() const;
+
+  private slots:
+    void crsChanged();
 };
 
 

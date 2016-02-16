@@ -1,0 +1,7 @@
+r.average
+Finds the average of values in a cover raster layer  within areas assigned the same category value in a user-specified base layer.
+Raster (r.*)
+ParameterRaster|base|Base raster layer|False
+ParameterRaster|cover|Cover raster layer|False
+ParameterBoolean|-c|Cover values extracted from the category labels of the cover map|False
+OutputRaster|output|Average

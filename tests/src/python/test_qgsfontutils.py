@@ -14,27 +14,20 @@ __copyright__ = 'Copyright 2014, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-
-from PyQt4.QtGui import *
-
-from qgis.core import (
-    QgsFontUtils
+from qgis.core import QgsFontUtils
+from qgis.testing import (
+    start_app,
+    unittest
 )
-
 from utilities import (
-    TestCase,
-    getQgisTestApp,
-    unittest,
-    expectedFailure,
-    unitTestDataPath,
     getTestFontFamily,
     loadTestFonts
 )
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
 
-class TestQgsFontUtils(TestCase):
+class TestQgsFontUtils(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

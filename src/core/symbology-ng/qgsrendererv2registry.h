@@ -36,7 +36,7 @@ class QgsRendererV2Widget;
 class CORE_EXPORT QgsRendererV2AbstractMetadata
 {
   public:
-    QgsRendererV2AbstractMetadata( QString name, QString visibleName, QIcon icon = QIcon() )
+    QgsRendererV2AbstractMetadata( const QString& name, const QString& visibleName, const QIcon& icon = QIcon() )
         : mName( name ), mVisibleName( visibleName ), mIcon( icon ) {}
     virtual ~QgsRendererV2AbstractMetadata() {}
 
@@ -49,12 +49,18 @@ class CORE_EXPORT QgsRendererV2AbstractMetadata
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
     virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) = 0;
-    /** Return new instance of settings widget for the renderer. Returns NULL on error. */
-    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    { Q_UNUSED( layer ); Q_UNUSED( style ); Q_UNUSED( renderer ); return NULL; }
+    /** Return new instance of settings widget for the renderer. Returns NULL on error.
+     *
+     * The \a oldRenderer argument may refer to previously used renderer (or it is null).
+     * If not null, it may be used to initialize GUI of the widget from the previous settings.
+     * The old renderer does not have to be of the same type as returned by createRenderer().
+     * When using \a oldRenderer make sure to make a copy of it - it will be deleted afterwards.
+     */
+    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* oldRenderer )
+    { Q_UNUSED( layer ); Q_UNUSED( style ); Q_UNUSED( oldRenderer ); return nullptr; }
 
     virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QGis::GeometryType geomType )
-    { Q_UNUSED( elem ); Q_UNUSED( geomType ); return NULL; }
+    { Q_UNUSED( elem ); Q_UNUSED( geomType ); return nullptr; }
 
   protected:
     //! name used within QGIS for identification (the same what renderer's type() returns)
@@ -77,26 +83,26 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
 {
   public:
 
-    /** construct metadata */
+    /** Construct metadata */
     //! @note not available in python bindings
-    QgsRendererV2Metadata( QString name,
-                           QString visibleName,
+    QgsRendererV2Metadata( const QString& name,
+                           const QString& visibleName,
                            QgsRendererV2CreateFunc pfCreate,
-                           QIcon icon = QIcon(),
-                           QgsRendererV2WidgetFunc pfWidget = NULL )
+                           const QIcon& icon = QIcon(),
+                           QgsRendererV2WidgetFunc pfWidget = nullptr )
         : QgsRendererV2AbstractMetadata( name, visibleName, icon )
         , mCreateFunc( pfCreate )
         , mWidgetFunc( pfWidget )
-        , mCreateFromSldFunc( NULL )
+        , mCreateFromSldFunc( nullptr )
     {}
 
     //! @note not available in python bindings
-    QgsRendererV2Metadata( QString name,
-                           QString visibleName,
+    QgsRendererV2Metadata( const QString& name,
+                           const QString& visibleName,
                            QgsRendererV2CreateFunc pfCreate,
                            QgsRendererV2CreateFromSldFunc pfCreateFromSld,
-                           QIcon icon = QIcon(),
-                           QgsRendererV2WidgetFunc pfWidget = NULL )
+                           const QIcon& icon = QIcon(),
+                           QgsRendererV2WidgetFunc pfWidget = nullptr )
         : QgsRendererV2AbstractMetadata( name, visibleName, icon )
         , mCreateFunc( pfCreate )
         , mWidgetFunc( pfWidget )
@@ -105,11 +111,11 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
 
     virtual ~QgsRendererV2Metadata();
 
-    virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) { return mCreateFunc ? mCreateFunc( elem ) : NULL; }
-    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : NULL; }
-    virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QGis::GeometryType geomType )
-    { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : NULL; }
+    virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) override { return mCreateFunc ? mCreateFunc( elem ) : nullptr; }
+    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) override
+      { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : nullptr; }
+    virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QGis::GeometryType geomType ) override
+      { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr; }
 
     //! @note not available in python bindings
     QgsRendererV2CreateFunc createFunction() const { return mCreateFunc; }
@@ -145,10 +151,10 @@ class CORE_EXPORT QgsRendererV2Registry
     bool addRenderer( QgsRendererV2AbstractMetadata* metadata );
 
     //! remove renderer from registry
-    bool removeRenderer( QString rendererName );
+    bool removeRenderer( const QString& rendererName );
 
     //! get metadata for particular renderer. Returns NULL if not found in registry.
-    QgsRendererV2AbstractMetadata* rendererMetadata( QString rendererName );
+    QgsRendererV2AbstractMetadata* rendererMetadata( const QString& rendererName );
 
     //! return a list of available renderers
     QStringList renderersList();
@@ -162,6 +168,10 @@ class CORE_EXPORT QgsRendererV2Registry
 
     //! list to keep order in which renderers have been added
     QStringList mRenderersOrder;
+
+  private:
+    QgsRendererV2Registry( const QgsRendererV2Registry& rh );
+    QgsRendererV2Registry& operator=( const QgsRendererV2Registry& rh );
 };
 
 #endif // QGSRENDERERV2REGISTRY_H

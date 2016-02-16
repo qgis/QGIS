@@ -131,7 +131,8 @@ _activeColor( osg::Vec4f(.4,.4,.4,1) ),
 _active( false ),
 _absorbEvents( false ),
 _hfill( false ),
-_vfill( false )
+_vfill( false ),
+_dirty( false )
 {
     //nop
 }
@@ -319,7 +320,7 @@ void
 Control::calcSize(const ControlContext& cx, osg::Vec2f& out_size)
 {
     Q_UNUSED( cx );
-    if ( visible() == true )
+    if ( visible() )
     {
         _renderSize.set( 
             width().value()  + padding().x(),
@@ -394,7 +395,7 @@ Control::draw(const ControlContext& cx, DrawableList& out )
 {
     // by default, rendering a Control directly results in a colored quad. Usually however
     // you will not render a Control directly, but rather one of its subclasses.
-    if ( visible() == true )
+    if ( visible() )
     {
         if ( !(_backColor.isSet() && _backColor->a() == 0) && _renderSize.x() > 0 && _renderSize.y() > 0 )
         {
@@ -499,7 +500,7 @@ void
 ImageControl::calcSize(const ControlContext& cx, osg::Vec2f& out_size)
 {
     Q_UNUSED( cx );
-    if ( visible() == true )
+    if ( visible() )
     {
         _renderSize.set( 0, 0 );
 
@@ -546,7 +547,7 @@ ImageControl::calcSize(const ControlContext& cx, osg::Vec2f& out_size)
 void
 ImageControl::draw( const ControlContext& cx, DrawableList& out )
 {
-    if ( visible() == true && _image.valid() )
+    if ( visible() && _image.valid() )
     {
         //TODO: this is not precisely correct..images get deformed slightly..
         osg::Geometry* g = new osg::Geometry();
@@ -558,7 +559,7 @@ ImageControl::draw( const ControlContext& cx, DrawableList& out )
         osg::Vec3Array* verts = new osg::Vec3Array(4);
         g->setVertexArray( verts );
 
-        if ( _rotation_rad != 0.0f || _fixSizeForRot == true )
+        if ( _rotation_rad != 0.0f || _fixSizeForRot )
         {
             osg::Vec2f rc( rx+_renderSize.x()/2, (vph-ry)-_renderSize.y()/2 );
             float ra = osg::PI - _rotation_rad;
@@ -711,7 +712,7 @@ HSliderControl::draw( const ControlContext& cx, DrawableList& out )
 {
     Control::draw( cx, out );
 
-    if ( visible() == true )
+    if ( visible() )
     {
         osg::ref_ptr<osg::Geometry> g = new osg::Geometry();
 
@@ -806,7 +807,7 @@ CheckBoxControl::draw( const ControlContext& cx, DrawableList& out )
 {
     Control::draw( cx, out );
 
-    if ( visible() == true )
+    if ( visible() )
     {
         osg::Geometry* g = new osg::Geometry();
 
@@ -909,7 +910,7 @@ RoundedFrame::RoundedFrame()
 void
 RoundedFrame::draw( const ControlContext& cx, DrawableList& out )
 {
-    /*
+#if 0
     if ( Geometry::hasBufferOperation() )
     {
         if ( !getImage() || getImage()->s() != _renderSize.x() || getImage()->t() != _renderSize.y() )
@@ -942,7 +943,7 @@ RoundedFrame::draw( const ControlContext& cx, DrawableList& out )
         // fallback: draw a non-rounded frame.
         Frame::draw( cx, out );
     }
-    */
+#endif
         Frame::draw( cx, out );
 }
 
@@ -1016,7 +1017,7 @@ void
 Container::calcSize(const ControlContext& cx, osg::Vec2f& out_size)
 {
     Q_UNUSED( out_size );
-    if ( visible() == true )
+    if ( visible() )
     {
         if ( _frame.valid() )
         {
@@ -1049,7 +1050,7 @@ Container::calcPos(const ControlContext& context, const osg::Vec2f& cursor, cons
     Control::calcPos( context, cursor, parentSize );
 
     // process the frame.. it's not a child of the container
-    if ( visible() == true && _frame.valid() )
+    if ( visible() && _frame.valid() )
     {
         _frame->calcPos( context, _renderPos - padding().offset(), parentSize );
     }
@@ -1058,7 +1059,7 @@ Container::calcPos(const ControlContext& context, const osg::Vec2f& cursor, cons
 void
 Container::draw( const ControlContext& cx, DrawableList& out )
 {
-    if ( visible() == true )
+    if ( visible() )
     {
         Control::draw( cx, out );
         if ( _frame.valid() )
@@ -1121,7 +1122,7 @@ VBox::clearControls()
 void
 VBox::calcSize(const ControlContext& cx, osg::Vec2f& out_size)
 {
-    if ( visible() == true )
+    if ( visible() )
     {
         _renderSize.set( 0, 0 );
 
@@ -1218,7 +1219,7 @@ VBox::calcPos(const ControlContext& cx, const osg::Vec2f& cursor, const osg::Vec
 void
 VBox::draw( const ControlContext& cx, DrawableList& out )
 {
-    if ( visible() == true )
+    if ( visible() )
     {
         Container::draw( cx, out );
         for( ControlList::const_iterator i = _controls.begin(); i != _controls.end(); ++i )
@@ -1257,7 +1258,7 @@ HBox::clearControls()
 void
 HBox::calcSize(const ControlContext& cx, osg::Vec2f& out_size)
 {
-    if ( visible() == true )
+    if ( visible() )
     {
         _renderSize.set( 0, 0 );
 
@@ -1451,7 +1452,7 @@ Grid::clearControls()
 void
 Grid::calcSize( const ControlContext& cx, osg::Vec2f& out_size )
 {
-    if ( visible() == true )
+    if ( visible() )
     {
         _renderSize.set( 0, 0 );
 
@@ -1560,7 +1561,7 @@ Grid::calcPos( const ControlContext& cx, const osg::Vec2f& cursor, const osg::Ve
 void
 Grid::draw( const ControlContext& cx, DrawableList& out )
 {
-    if (visible() == true)
+    if ( visible() )
     {
         Container::draw( cx, out );
         for( ControlList::const_iterator i = _children.begin(); i != _children.end(); ++i )
@@ -1576,7 +1577,7 @@ namespace osgEarth { namespace Util { namespace Controls21
     // We need this info since controls position from the upper-left corner.
     struct ViewportHandler : public osgGA::GUIEventHandler
     {
-        ViewportHandler( ControlCanvas* cs ) : _cs(cs), _width(0), _height(0), _first(true) { }
+        explicit ViewportHandler( ControlCanvas* cs ) : _cs(cs), _width(0), _height(0), _first(true) { }
 
         bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
         {
@@ -1614,7 +1615,7 @@ namespace osgEarth { namespace Util { namespace Controls21
 
     struct ControlCanvasEventHandler : public osgGA::GUIEventHandler
     {
-        ControlCanvasEventHandler( ControlCanvas* cs ) : _cs(cs) { }
+        explicit ControlCanvasEventHandler( ControlCanvas* cs ) : _cs(cs) { }
 
         bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
         {
@@ -1730,7 +1731,7 @@ ControlNode::traverse( osg::NodeVisitor& nv )
             {
                 data._obscured = true;
             }
-            else if ( data._obscured == true )
+            else if ( data._obscured )
             {
                 data._obscured = false;
                 data._visibleTime = cv->getFrameStamp()->getReferenceTime();
@@ -1747,7 +1748,8 @@ ControlNode::traverse( osg::NodeVisitor& nv )
 ControlNode::PerViewData::PerViewData() :
 _obscured   ( true ),
 _visibleTime( 0.0 ),
-_screenPos  ( 0.0, 0.0, 0.0 )
+_screenPos  ( 0.0, 0.0, 0.0 ),
+_visitFrame ( false )
 {
     //nop
 }
@@ -1799,18 +1801,19 @@ ControlNodeBin::draw( const ControlContext& context, bool newContext, int bin )
 
     if ( _sortingEnabled && _sortByDistance )
     {
-        for( ControlNodeCollection::iterator i = _controlNodes.begin(); i != _controlNodes.end(); ++i )
+        for( ControlNodeCollection::iterator i = _controlNodes.begin(); i != _controlNodes.end(); )
         {
             ControlNode* node = i->second.get();
             if ( node->getNumParents() == 0 )
             {
               _renderNodes.erase( node );
-              _controlNodes.erase( i );
+              _controlNodes.erase( i++ );
             }
             else
 	    {
 	      ControlNode::PerViewData& nodeData = node->getData( context._view );
 	      byDepth.insert( ControlNodePair(nodeData._screenPos.z(), node) );
+              ++i;
 	    }
         }
 
@@ -1848,7 +1851,7 @@ ControlNodeBin::draw( const ControlContext& context, bool newContext, int bin )
               visible = false;
           }
 
-          else if ( nodeData._obscured == false )
+          else if ( !nodeData._obscured )
           {
               const osg::Vec3f& nPos = nodeData._screenPos;
               const osg::Vec2f& size = control->renderSize();
@@ -1889,7 +1892,7 @@ ControlNodeBin::draw( const ControlContext& context, bool newContext, int bin )
                   }
               }
 
-              if ( nodeData._obscured == false )
+              if ( !nodeData._obscured )
               {
                   if ( _sortingEnabled )
                     _taken.push_back( bbox );

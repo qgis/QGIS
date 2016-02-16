@@ -28,7 +28,7 @@ QgsComposerLegendItemDialog::QgsComposerLegendItemDialog( const QStandardItem* i
   }
 }
 
-QgsComposerLegendItemDialog::QgsComposerLegendItemDialog(): QDialog( 0 )
+QgsComposerLegendItemDialog::QgsComposerLegendItemDialog(): QDialog( nullptr )
 {
 
 }

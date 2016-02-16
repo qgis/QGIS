@@ -8,7 +8,10 @@ class QgsVectorLayer;
 class QComboBox;
 
 
-
+/** \ingroup gui
+ * \class QgsDataDefinedSymbolDialog
+ * \deprecated no longer used and will be removed in QGIS 3.0
+ */
 class GUI_EXPORT QgsDataDefinedSymbolDialog: public QDialog, private Ui::QgsDataDefinedSymbolDialog
 {
     Q_OBJECT
@@ -24,31 +27,45 @@ class GUI_EXPORT QgsDataDefinedSymbolDialog: public QDialog, private Ui::QgsData
       QString helpText;
     };
 
-    QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent = nullptr, const Qt::WindowFlags& f = nullptr );
     ~QgsDataDefinedSymbolDialog();
-    QMap< QString, QString > dataDefinedProperties() const;
+
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED QMap< QString, QString > dataDefinedProperties() const;
 
     //common help texts
-    static QString doubleHelpText();
-    static QString colorHelpText();
-    static QString offsetHelpText();
-    static QString fileNameHelpText();
-    static QString horizontalAnchorHelpText();
-    static QString verticalAnchorHelpText();
-    static QString gradientTypeHelpText();
-    static QString gradientCoordModeHelpText();
-    static QString gradientSpreadHelpText();
-    static QString boolHelpText();
-
-  private slots:
-    void expressionButtonClicked();
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED static QString doubleHelpText();
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED static QString colorHelpText();
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED static QString offsetHelpText();
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED static QString fileNameHelpText();
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED static QString horizontalAnchorHelpText();
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED static QString verticalAnchorHelpText();
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED static QString gradientTypeHelpText();
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED static QString gradientCoordModeHelpText();
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED static QString gradientSpreadHelpText();
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED static QString boolHelpText();
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED static QString lineStyleHelpText();
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED static QString joinStyleHelpText();
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED static QString capStyleHelpText();
+    //! @deprecated will be removed in QGIS 3.0
+    Q_DECL_DEPRECATED static QString fillStyleHelpText();
 
   private:
     const QgsVectorLayer* mVectorLayer;
-
-    /**Tries to fiend a combo box field for an expression string (considering whitespaces, brackets around attribute names)
-        @return index or -1 in case not found*/
-    int comboIndexForExpressionString( const QString& expr, const QComboBox* cb );
 };
 
 #endif // QGSDATADEFINEDSYMBOLLAYERDIALOG_H

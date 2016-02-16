@@ -17,6 +17,7 @@
 
 #include "qgsfeaturerequest.h"
 #include "qgslogger.h"
+#include "qgsindexedfeature.h"
 
 class QgsAbstractGeometrySimplifier;
 
@@ -81,11 +82,24 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     /** Set to true, as soon as the iterator is closed. */
     bool mClosed;
 
+    /**
+     * A feature iterator may be closed already but still be serving features from the cache.
+     * This is done when we serve features which have been pre-fetched and the order by has
+     * been locally sorted.
+     * In such a scenario, all resources have been released (mClosed is true) but the deads
+     * are still alive.
+     */
+    bool mZombie;
+
     //! reference counting (to allow seamless copying of QgsFeatureIterator instances)
+    //! TODO QGIS3: make this private
     int refs;
     void ref(); //!< add reference
     void deref(); //!< remove reference, delete if refs == 0
     friend class QgsFeatureIterator;
+
+    //! Number of features already fetched by iterator
+    long mFetchedCount;
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
@@ -96,16 +110,40 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! this iterator runs local simplification
     bool mLocalSimplification;
 
+    bool mUseCachedFeatures;
+    QList<QgsIndexedFeature> mCachedFeatures;
+    QList<QgsIndexedFeature>::ConstIterator mFeatureIterator;
+
     //! returns whether the iterator supports simplify geometries on provider side
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const;
 
     //! simplify the specified geometry if it was configured
     virtual bool simplify( QgsFeature& feature );
+
+    /**
+     * Should be overwritten by providers which implement an own order by strategy
+     * If the own order by strategy is successful, return true, if not, return false
+     * and a local order by will be triggered instead.
+     * By default returns false
+     *
+     * @note added in QGIS 2.14
+     */
+    virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys );
+
+    /**
+     * Setup the orderby. Internally calls prepareOrderBy and if false is returned will
+     * cache all features and order them with local expression evaluation.
+     *
+     * @note added in QGIS 2.14
+     */
+    void setupOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys );
 };
 
 
 
-/** helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator */
+/** Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
+ * \note not available in Python bindings
+*/
 template<typename T>
 class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 {
@@ -167,7 +205,7 @@ class CORE_EXPORT QgsFeatureIterator
 ////////
 
 inline QgsFeatureIterator::QgsFeatureIterator()
-    : mIter( NULL )
+    : mIter( nullptr )
 {
 }
 
@@ -198,22 +236,28 @@ inline bool QgsFeatureIterator::nextFeature( QgsFeature& f )
 
 inline bool QgsFeatureIterator::rewind()
 {
+  if ( mIter )
+    mIter->mFetchedCount = 0;
+
   return mIter ? mIter->rewind() : false;
 }
 
 inline bool QgsFeatureIterator::close()
 {
+  if ( mIter )
+    mIter->mFetchedCount = 0;
+
   return mIter ? mIter->close() : false;
 }
 
 inline bool QgsFeatureIterator::isClosed() const
 {
-  return mIter ? mIter->mClosed : true;
+  return mIter ? mIter->mClosed && !mIter->mZombie : true;
 }
 
 inline bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
 {
-  return ( fi1.mIter == fi2.mIter );
+  return fi1.mIter == fi2.mIter;
 }
 
 inline bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )

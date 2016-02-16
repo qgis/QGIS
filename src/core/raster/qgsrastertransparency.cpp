@@ -82,7 +82,7 @@ void QgsRasterTransparency::initializeTransparentPixelList( double theRedValue, 
 /**
   Mutator for transparentSingleValuePixelList, replaces the whole list
 */
-void QgsRasterTransparency::setTransparentSingleValuePixelList( QList<QgsRasterTransparency::TransparentSingleValuePixel> theNewList )
+void QgsRasterTransparency::setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel>& theNewList )
 {
   mTransparentSingleValuePixelList = theNewList;
 }
@@ -90,7 +90,7 @@ void QgsRasterTransparency::setTransparentSingleValuePixelList( QList<QgsRasterT
 /**
   Mutator for transparentThreeValuePixelList, replaces the whole list
 */
-void QgsRasterTransparency::setTransparentThreeValuePixelList( QList<QgsRasterTransparency::TransparentThreeValuePixel> theNewList )
+void QgsRasterTransparency::setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel>& theNewList )
 {
   mTransparentThreeValuePixelList = theNewList;
 }
@@ -127,7 +127,7 @@ int QgsRasterTransparency::alphaValue( double theValue, int theGlobalTransparenc
   //if a match was found use the stored transparency percentage
   if ( myTransparentPixelFound )
   {
-    return ( int )(( float )theGlobalTransparency *( 1.0 - ( myTransparentPixel.percentTransparent / 100.0 ) ) );
+    return static_cast< int >( static_cast< float >( theGlobalTransparency ) *( 1.0 - ( myTransparentPixel.percentTransparent / 100.0 ) ) );
   }
 
   return theGlobalTransparency;
@@ -155,11 +155,11 @@ int QgsRasterTransparency::alphaValue( double theRedValue, double theGreenValue,
   for ( int myListRunner = 0; myListRunner < mTransparentThreeValuePixelList.count(); myListRunner++ )
   {
     myTransparentPixel = mTransparentThreeValuePixelList[myListRunner];
-    if ( myTransparentPixel.red == theRedValue )
+    if ( qgsDoubleNear( myTransparentPixel.red, theRedValue ) )
     {
-      if ( myTransparentPixel.green == theGreenValue )
+      if ( qgsDoubleNear( myTransparentPixel.green, theGreenValue ) )
       {
-        if ( myTransparentPixel.blue == theBlueValue )
+        if ( qgsDoubleNear( myTransparentPixel.blue, theBlueValue ) )
         {
           myTransparentPixelFound = true;
           break;
@@ -171,13 +171,13 @@ int QgsRasterTransparency::alphaValue( double theRedValue, double theGreenValue,
   //if a match was found use the stored transparency percentage
   if ( myTransparentPixelFound )
   {
-    return ( int )(( float )theGlobalTransparency *( 1.0 - ( myTransparentPixel.percentTransparent / 100.0 ) ) );
+    return static_cast< int >( static_cast< float >( theGlobalTransparency ) *( 1.0 - ( myTransparentPixel.percentTransparent / 100.0 ) ) );
   }
 
   return theGlobalTransparency;
 }
 
-bool QgsRasterTransparency::isEmpty( ) const
+bool QgsRasterTransparency::isEmpty() const
 {
   return mTransparentSingleValuePixelList.isEmpty() && mTransparentThreeValuePixelList.isEmpty();
 }
@@ -185,7 +185,7 @@ bool QgsRasterTransparency::isEmpty( ) const
 void QgsRasterTransparency::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
 {
   QDomElement rasterTransparencyElem = doc.createElement( "rasterTransparency" );
-  if ( mTransparentSingleValuePixelList.count() > 0 )
+  if ( !mTransparentSingleValuePixelList.isEmpty() )
   {
     QDomElement singleValuePixelListElement = doc.createElement( "singleValuePixelList" );
     QList<QgsRasterTransparency::TransparentSingleValuePixel>::const_iterator it = mTransparentSingleValuePixelList.constBegin();
@@ -200,7 +200,7 @@ void QgsRasterTransparency::writeXML( QDomDocument& doc, QDomElement& parentElem
     rasterTransparencyElem.appendChild( singleValuePixelListElement );
 
   }
-  if ( mTransparentThreeValuePixelList.count() > 0 )
+  if ( !mTransparentThreeValuePixelList.isEmpty() )
   {
     QDomElement threeValuePixelListElement = doc.createElement( "threeValuePixelList" );
     QList<QgsRasterTransparency::TransparentThreeValuePixel>::const_iterator it = mTransparentThreeValuePixelList.constBegin();

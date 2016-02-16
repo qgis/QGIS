@@ -16,11 +16,19 @@
 #ifndef QGSPYTHONUTILS_H
 #define QGSPYTHONUTILS_H
 
+// Needed for CMake variables defines
+#include "qgsconfig.h"
+
+
 #include <QString>
 #include <QStringList>
 
 
 class QgisInterface;
+#ifdef  HAVE_SERVER_PYTHON_PLUGINS
+class QgsServerInterface;
+#endif
+
 
 /**
  All calls to Python functions in QGIS come here.
@@ -44,17 +52,25 @@ class PYTHON_EXPORT QgsPythonUtils
     //! initialize python and import bindings
     virtual void initPython( QgisInterface* interface ) = 0;
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    //! initialize python and import server bindings
+    virtual void initServerPython( QgsServerInterface* interface ) = 0;
+
+    //! start server plugin: call plugin's classServerFactory(serverInterface) add to active plugins
+    virtual bool startServerPlugin( QString packageName ) = 0;
+#endif
+
     //! close python interpreter
     virtual void exitPython() = 0;
 
     /* console */
 
     //! run a statement, show an error message on error
-    //! @return true if no error occured
+    //! @return true if no error occurred
     virtual bool runString( const QString& command, QString msgOnError = QString(), bool single = true ) = 0;
 
     //! run a statement, error reporting is not done
-    //! @return true if no error occured
+    //! @return true if no error occurred
     virtual bool runStringUnsafe( const QString& command, bool single = true ) = 0;
 
     virtual bool evalString( const QString& command, QString& result ) = 0;
@@ -69,26 +85,26 @@ class PYTHON_EXPORT QgsPythonUtils
     virtual QStringList pluginList() = 0;
 
     //! return whether the plugin is loaded (active)
-    virtual bool isPluginLoaded( QString packageName ) = 0;
+    virtual bool isPluginLoaded( const QString& packageName ) = 0;
 
     //! return a list of active plugins
     virtual QStringList listActivePlugins() = 0;
 
     //! load python plugin (import)
-    virtual bool loadPlugin( QString packageName ) = 0;
+    virtual bool loadPlugin( const QString& packageName ) = 0;
 
     //! start plugin: add to active plugins and call initGui()
-    virtual bool startPlugin( QString packageName ) = 0;
+    virtual bool startPlugin( const QString& packageName ) = 0;
 
     //! helper function to get some information about plugin
     //! @param function one of these strings: name, tpye, version, description
-    virtual QString getPluginMetadata( QString pluginName, QString function ) = 0;
+    virtual QString getPluginMetadata( const QString& pluginName, const QString& function ) = 0;
 
     //! confirm that the plugin can be uninstalled
-    virtual bool canUninstallPlugin( QString packageName ) = 0;
+    virtual bool canUninstallPlugin( const QString& packageName ) = 0;
 
     //! unload plugin
-    virtual bool unloadPlugin( QString packageName ) = 0;
+    virtual bool unloadPlugin( const QString& packageName ) = 0;
 };
 
 #endif

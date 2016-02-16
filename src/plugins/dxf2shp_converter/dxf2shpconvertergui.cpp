@@ -16,7 +16,6 @@
 #include "qgscontexthelp.h"
 
 #include "builder.h"
-#include "getInsertions.h"
 #include "dxflib/src/dl_dxf.h"
 
 //qt includes
@@ -28,7 +27,7 @@
 
 #include "qgslogger.h"
 
-dxf2shpConverterGui::dxf2shpConverterGui( QWidget *parent, Qt::WFlags fl ):
+dxf2shpConverterGui::dxf2shpConverterGui( QWidget *parent, Qt::WindowFlags fl ):
     QDialog( parent, fl )
 {
   setupUi( this );
@@ -58,8 +57,9 @@ void dxf2shpConverterGui::on_buttonBox_accepted()
     return;
   }
 
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
   int type = SHPT_POINT;
-  bool convtexts = convertTextCheck->checkState();
 
   if ( polyline->isChecked() )
     type = SHPT_ARC;
@@ -70,50 +70,38 @@ void dxf2shpConverterGui::on_buttonBox_accepted()
   if ( point->isChecked() )
     type = SHPT_POINT;
 
-  InsertRetrClass *insertRetr = new InsertRetrClass();
-
-  DL_Dxf *dxf_inserts = new DL_Dxf();
-
-  if ( !dxf_inserts->in( inf.toStdString(), insertRetr ) )
-  {
-    // if file open failed
-    QgsDebugMsg( "Aborting: The input file could not be opened." );
-    return;
-  }
-
-  Builder *parser = new Builder(
-    outd.toStdString(),
-    type,
-    insertRetr->XVals, insertRetr->YVals,
-    insertRetr->Names,
-    insertRetr->countInserts,
-    convtexts );
-
-  QgsDebugMsg( QString( "Finished getting insertions. Count: %1" ).arg( insertRetr->countInserts ) );
+  Builder *parser = new Builder( outd, type, convertTextCheck->isChecked(), convertInsertCheck->isChecked() );
 
   DL_Dxf *dxf_Main = new DL_Dxf();
 
   if ( !dxf_Main->in( inf.toStdString(), parser ) )
   {
     // if file open failed
+    delete dxf_Main;
     QgsDebugMsg( "Aborting: The input file could not be opened." );
+    QApplication::restoreOverrideCursor();
     return;
   }
 
-  delete insertRetr;
-  delete dxf_inserts;
   delete dxf_Main;
 
   parser->print_shpObjects();
 
-  emit createLayer( QString(( parser->outputShp() ).c_str() ), QString( "Data layer" ) );
+  emit createLayer( parser->outputShp(), "Data layer" );
 
-  if ( convtexts && parser->textObjectsSize() > 0 )
+  if ( convertTextCheck->isChecked() && parser->textObjectsSize() > 0 )
   {
-    emit createLayer( QString(( parser->outputTShp() ).c_str() ), QString( "Text layer" ) );
+    emit createLayer( parser->outputTShp(), "Text layer" );
+  }
+
+  if ( convertInsertCheck->isChecked() && parser->insertObjectsSize() > 0 )
+  {
+    emit createLayer( parser->outputIShp(), "Insert layer" );
   }
 
   delete parser;
+
+  QApplication::restoreOverrideCursor();
 
   accept();
 }
@@ -130,7 +118,7 @@ void dxf2shpConverterGui::on_buttonBox_helpRequested()
                   "* Output Shp file: desired name of the shape file to be created\n"
                   "* Shp output file type: specifies the type of the output shape file\n"
                   "* Export text labels checkbox: if checked, an additional shp points layer will be created, "
-                  "  and the associated dbf table will contain information about the \"TEXT\" fields found"
+                  "and the associated dbf table will contain information about the \"TEXT\" fields found"
                   " in the dxf file, and the text strings themselves\n\n"
                   "---\n"
                   "Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula\n"
@@ -155,7 +143,7 @@ void dxf2shpConverterGui::getInputFileName()
   QSettings settings;
   QString s = QFileDialog::getOpenFileName( this,
               tr( "Choose a DXF file to open" ),
-              settings.value( "/Plugin-DXF/text_path", "./" ).toString(),
+              settings.value( "/Plugin-DXF/text_path", QDir::homePath() ).toString(),
               tr( "DXF files" ) + " (*.dxf)" );
 
   if ( !s.isEmpty() )
@@ -170,12 +158,12 @@ void dxf2shpConverterGui::getOutputDir()
   QSettings settings;
   QString s = QFileDialog::getSaveFileName( this,
               tr( "Choose a file name to save to" ),
-              settings.value( "/UI/lastShapefileDir", "./" ).toString(),
+              settings.value( "/UI/lastShapefileDir", QDir::homePath() ).toString(),
               tr( "Shapefile" ) + " (*.shp)" );
 
   if ( !s.isEmpty() )
   {
-    if ( !s.toLower().endsWith( ".shp" ) )
+    if ( !s.endsWith( ".shp", Qt::CaseInsensitive ) )
     {
       s += ".shp";
     }

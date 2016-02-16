@@ -4,5 +4,5 @@ MimeType=application/x-raster-aig
 Hidden=false
 Comment=AIG raster data
 Comment[de]=AIG-Rasterdaten
-Icon=qgis-mime-icon
+Icon=qgis-mime
 Patterns=*.aig;

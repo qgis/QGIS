@@ -5,7 +5,8 @@
 	<file key="input" label="Text file"/>
 	<option key="output"/>
 	<option key="format"/>
-        <option key="fs" label="Separator (| , \t etc.)" />
+        <option key="fs" label="Separator (| , \t etc.)" version_max="6.4" />
+        <option key="separator" label="Separator (| , \t etc.)" version_min="7.0" />
 	<option key="skip" label="Number of rows to be skipped"/>
 	<option key="x" label="Which column for the X coordinate? The first is 1"/>
         <option key="y" label="Which column for the Y coordinate?"/>

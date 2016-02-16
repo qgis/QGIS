@@ -24,17 +24,3 @@ QgsVectorSimplifyMethod::QgsVectorSimplifyMethod()
     , mMaximumScale( 1 )
 {
 }
-
-QgsVectorSimplifyMethod::QgsVectorSimplifyMethod( const QgsVectorSimplifyMethod &rh )
-{
-  operator=( rh );
-}
-
-QgsVectorSimplifyMethod& QgsVectorSimplifyMethod::operator=( const QgsVectorSimplifyMethod & rh )
-{
-  mSimplifyHints = rh.mSimplifyHints;
-  mThreshold = rh.mThreshold;
-  mLocalOptimization = rh.mLocalOptimization;
-  mMaximumScale = rh.mMaximumScale;
-  return *this;
-}

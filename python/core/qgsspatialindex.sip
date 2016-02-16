@@ -9,39 +9,52 @@ class QgsSpatialIndex
 
     /* creation of spatial index */
 
-    /** constructor - creates R-tree */
+    /** Constructor - creates R-tree */
     QgsSpatialIndex();
 
-    /** copy constructor */
+    /** Constructor - creates R-tree and bulk loads it with features from the iterator.
+     * This is much faster approach than creating an empty index and then inserting features one by one.
+     *
+     * @note added in 2.8
+     */
+    explicit QgsSpatialIndex( const QgsFeatureIterator& fi );
+
+    /** Copy constructor */
     QgsSpatialIndex( const QgsSpatialIndex& other );
 
-    /** destructor finalizes work with spatial index */
+    /** Destructor finalizes work with spatial index */
     ~QgsSpatialIndex();
 
-    /** implement assignment operator */
-    //QgsSpatialIndex& operator=( const QgsSpatialIndex& other );
+    /** Implement assignment operator */
+    // QgsSpatialIndex& operator=( const QgsSpatialIndex& other );
 
     /* operations */
 
-    /** add feature to index */
+    /** Add feature to index */
     bool insertFeature( const QgsFeature& f );
 
-    /** remove feature from index */
+    /** Remove feature from index */
     bool deleteFeature( const QgsFeature& f );
 
 
     /* queries */
 
-    /** returns features that intersect the specified rectangle */
-    QList<qint64> intersects( QgsRectangle rect ) const;
+    /** Returns features that intersect the specified rectangle */
+    QList<qint64> intersects( const QgsRectangle& rect ) const;
 
-    /** returns nearest neighbors (their count is specified by second parameter) */
-    QList<qint64> nearestNeighbor( QgsPoint point, int neighbors ) const;
+    /** Returns nearest neighbors (their count is specified by second parameter) */
+    QList<qint64> nearestNeighbor( const QgsPoint& point, int neighbors ) const;
 
+    /* debugging */
+
+    //! get reference count - just for debugging!
+    int refs() const;
 
   protected:
-    // static SpatialIndex::Region rectToRegion( QgsRectangle rect );
-    // bool featureInfo( QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id );
+    // @note not available in python bindings
+    // static SpatialIndex::Region rectToRegion( const QgsRectangle& rect );
+    // @note not available in python bindings
+    // bool featureInfo( const QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id );
 
 
 };

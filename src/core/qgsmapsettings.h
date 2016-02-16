@@ -1,14 +1,32 @@
+/***************************************************************************
+  qgsmapsettings.h
+  --------------------------------------
+  Date                 : December 2013
+  Copyright            : (C) 2013 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QGSMAPSETTINGS_H
 #define QGSMAPSETTINGS_H
 
 #include <QColor>
+#include <QImage>
 #include <QSize>
 #include <QStringList>
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdatumtransformstore.h"
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
 #include "qgsscalecalculator.h"
+#include "qgsexpressioncontext.h"
 
 class QPainter;
 
@@ -18,22 +36,69 @@ class QgsMapRendererJob;
 class QgsMapLayer;
 
 
+/**
+ * The QgsMapSettings class contains configuration for rendering of the map.
+ * The rendering itself is done by QgsMapRendererJob subclasses.
+ *
+ * In order to set up QgsMapSettings instance, it is necessary to set at least
+ * few members: extent, output size and layers.
+ *
+ * QgsMapSettings and QgsMapRendererJob (+subclasses) are intended to replace
+ * QgsMapRenderer class that existed before QGIS 2.4. The advantage of the new
+ * classes is that they separate the settings from the rendering and provide
+ * asynchronous API for map rendering.
+ *
+ * @note added in 2.4
+ */
 class CORE_EXPORT QgsMapSettings
 {
   public:
     QgsMapSettings();
 
+    //! Return geographical coordinates of the rectangle that should be rendered.
+    //! The actual visible extent used for rendering could be slightly different
+    //! since the given extent may be expanded in order to fit the aspect ratio
+    //! of output size. Use visibleExtent() to get the resulting extent.
     QgsRectangle extent() const;
+    //! Set coordinates of the rectangle which should be rendered.
+    //! The actual visible extent used for rendering could be slightly different
+    //! since the given extent may be expanded in order to fit the aspect ratio
+    //! of output size. Use visibleExtent() to get the resulting extent.
     void setExtent( const QgsRectangle& rect );
 
+    //! Return the size of the resulting map image
     QSize outputSize() const;
-    void setOutputSize( const QSize& size );
+    //! Set the size of the resulting map image
+    void setOutputSize( QSize size );
 
+    //! Return the rotation of the resulting map image
+    //! Units are clockwise degrees
+    //! @note added in 2.8
+    double rotation() const;
+    //! Set the rotation of the resulting map image
+    //! Units are clockwise degrees
+    //! @note added in 2.8
+    void setRotation( double degrees );
+
+    //! Return DPI used for conversion between real world units (e.g. mm) and pixels
+    //! Default value is 96
     int outputDpi() const;
+    //! Set DPI used for conversion between real world units (e.g. mm) and pixels
     void setOutputDpi( int dpi );
 
+    //! Get list of layer IDs for map rendering
+    //! The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
     QStringList layers() const;
+    //! Set list of layer IDs for map rendering. The layers must be registered in QgsMapLayerRegistry.
+    //! The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
     void setLayers( const QStringList& layers );
+
+    //! Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+    //! @note added in 2.8
+    QMap<QString, QString> layerStyleOverrides() const;
+    //! Set map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+    //! @note added in 2.8
+    void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
 
     //! sets whether to use projections for this layer set
     void setCrsTransformEnabled( bool enabled );
@@ -45,40 +110,91 @@ class CORE_EXPORT QgsMapSettings
     //! returns CRS of destination coordinate reference system
     const QgsCoordinateReferenceSystem& destinationCrs() const;
 
+    //! Get units of map's geographical coordinates - used for scale calculation
     QGis::UnitType mapUnits() const;
+    //! Set units of map's geographical coordinates - used for scale calculation
     void setMapUnits( QGis::UnitType u );
 
+    //! Set the background color of the map
     void setBackgroundColor( const QColor& color ) { mBackgroundColor = color; }
+    //! Get the background color of the map
     QColor backgroundColor() const { return mBackgroundColor; }
 
+    //! Set color that is used for drawing of selected vector features
     void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
+    //! Get color that is used for drawing of selected vector features
     QColor selectionColor() const { return mSelectionColor; }
 
+    //! Enumeration of flags that adjust the way how map is rendered
     enum Flag
     {
-      Antialiasing       = 0x01,
-      DrawEditingInfo    = 0x02,
-      ForceVectorOutput  = 0x04,
-      UseAdvancedEffects = 0x08,
-      DrawLabeling       = 0x10
-      // TODO: ignore scale-based visibiity (overview)
+      Antialiasing             = 0x01,  //!< Enable anti-aliasin for map rendering
+      DrawEditingInfo          = 0x02,  //!< Enable drawing of vertex markers for layers in editing mode
+      ForceVectorOutput        = 0x04,  //!< Vector graphics should not be cached and drawn as raster images
+      UseAdvancedEffects       = 0x08,  //!< Enable layer transparency and blending effects
+      DrawLabeling             = 0x10,  //!< Enable drawing of labels on top of the map
+      UseRenderingOptimization = 0x20,  //!< Enable vector simplification and other rendering optimizations
+      DrawSelection            = 0x40,  //!< Whether vector selections should be shown in the rendered map
+      DrawSymbolBounds         = 0x80,  //!< Draw bounds of symbols (for debugging/testing)
+      RenderMapTile            = 0x100  //!< Draw map such that there are no problems between adjacent tiles
+      // TODO: ignore scale-based visibility (overview)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    void setFlags( Flags flags );
+    //! Set combination of flags that will be used for rendering
+    void setFlags( const QgsMapSettings::Flags& flags );
+    //! Enable or disable a particular flag (other flags are not affected)
     void setFlag( Flag flag, bool on = true );
+    //! Return combination of flags used for rendering
     Flags flags() const;
+    //! Check whether a particular flag is enabled
     bool testFlag( Flag flag ) const;
 
+    //! sets format of internal QImage
+    void setOutputImageFormat( QImage::Format format ) { mImageFormat = format; }
+    //! format of internal QImage, default QImage::Format_ARGB32_Premultiplied
+    QImage::Format outputImageFormat() const { return mImageFormat; }
+
+    //! Check whether the map settings are valid and can be used for rendering
     bool hasValidSettings() const;
+    //! Return the actual extent derived from requested extent that takes takes output image size into account
     QgsRectangle visibleExtent() const;
+    //! Return the visible area as a polygon (may be rotated)
+    //! @note added in 2.8
+    QPolygonF visiblePolygon() const;
+    //! Return the distance in geographical coordinates that equals to one pixel in the map
     double mapUnitsPerPixel() const;
+    //! Return the calculated scale of the map
     double scale() const;
 
+    /** Sets the expression context. This context is used for all expression evaluation
+     * associated with this map settings.
+     * @see expressionContext()
+     * @note added in QGIS 2.12
+     */
+    void setExpressionContext( const QgsExpressionContext& context ) { mExpressionContext = context; }
+
+    /** Gets the expression context. This context should be used for all expression evaluation
+     * associated with this map settings.
+     * @see setExpressionContext()
+     * @note added in QGIS 2.12
+     */
+    const QgsExpressionContext& expressionContext() const { return mExpressionContext; }
 
     // -- utility functions --
 
+    //! @note not available in python bindings
+    const QgsDatumTransformStore& datumTransformStore() const { return mDatumTransformStore; }
+    QgsDatumTransformStore& datumTransformStore() { return mDatumTransformStore; }
+
     const QgsMapToPixel& mapToPixel() const { return mMapToPixel; }
+
+    /** Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
+     * @param theLayer The layer
+     * @param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
+     * @note added in QGIS 2.12
+     */
+    double layerToMapUnits( QgsMapLayer* theLayer, const QgsRectangle& referenceExtent = QgsRectangle() ) const;
 
     /**
      * @brief transform bounding box from layer's CRS to output CRS
@@ -120,6 +236,12 @@ class CORE_EXPORT QgsMapSettings
      */
     QgsRectangle mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRectangle rect ) const;
 
+    /**
+     * @brief Return coordinate transform from layer's CRS to destination CRS
+     * @param layer
+     * @return transform - may be null if the transform is not needed
+     */
+    const QgsCoordinateTransform* layerTransform( QgsMapLayer *layer ) const;
 
     //! returns current extent of layer set
     QgsRectangle fullExtent() const;
@@ -138,15 +260,22 @@ class CORE_EXPORT QgsMapSettings
 
     QgsRectangle mExtent;
 
+    double mRotation;
+
     QStringList mLayers;
+    QMap<QString, QString> mLayerStyleOverrides;
+    QgsExpressionContext mExpressionContext;
 
     bool mProjectionsEnabled;
     QgsCoordinateReferenceSystem mDestCRS;
+    QgsDatumTransformStore mDatumTransformStore;
 
     QColor mBackgroundColor;
     QColor mSelectionColor;
 
     Flags mFlags;
+
+    QImage::Format mImageFormat;
 
     // derived properties
     bool mValid; //!< whether the actual settings are valid (set in updateDerived())
@@ -159,10 +288,7 @@ class CORE_EXPORT QgsMapSettings
     QgsScaleCalculator mScaleCalculator;
     QgsMapToPixel mMapToPixel;
 
-
     void updateDerived();
-
-    const QgsCoordinateTransform* coordTransform( QgsMapLayer *layer ) const;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettings::Flags )

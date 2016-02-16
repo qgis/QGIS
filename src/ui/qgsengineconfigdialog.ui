@@ -215,7 +215,67 @@
      <property name="verticalSpacing">
       <number>6</number>
      </property>
-     <item row="2" column="0">
+     <item row="1" column="0" colspan="3">
+      <widget class="QCheckBox" name="chkShowPartialsLabels">
+       <property name="text">
+        <string>Show partials labels</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0" colspan="3">
+      <widget class="QCheckBox" name="mShadowDebugRectChkBox">
+       <property name="text">
+        <string>Show shadow rectangles (for debugging)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>0</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="4" column="0" colspan="3">
+      <widget class="QCheckBox" name="chkShowCandidates">
+       <property name="text">
+        <string>Show candidates (for debugging)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="label_6">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>(i.e. including colliding objects)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="3">
+      <widget class="QCheckBox" name="chkShowAllLabels">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Show all labels and features for all layers</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
       <spacer name="horizontalSpacer_3">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -231,63 +291,10 @@
        </property>
       </spacer>
      </item>
-     <item row="1" column="0" colspan="3">
-      <widget class="QCheckBox" name="chkShowAllLabels">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Show all labels and features for all layers</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0" colspan="3">
-      <widget class="QCheckBox" name="chkShowCandidates">
-       <property name="text">
-        <string>Show candidates (for debugging)</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLabel" name="label_6">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>(i.e. including colliding objects)</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <spacer name="horizontalSpacer_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>0</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="4" column="0" colspan="3">
-      <widget class="QCheckBox" name="mShadowDebugRectChkBox">
-       <property name="text">
-        <string>Show shadow rectangles (for debugging)</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="0" colspan="3">
-      <widget class="QCheckBox" name="chkShowPartialsLabels">
+      <widget class="QCheckBox" name="mDrawOutlinesChkBox">
        <property name="text">
-        <string>Show partials labels</string>
+        <string>Draw text as outlines (recommended)</string>
        </property>
       </widget>
      </item>
@@ -323,7 +330,11 @@
   <tabstop>spinCandPoint</tabstop>
   <tabstop>spinCandLine</tabstop>
   <tabstop>spinCandPolygon</tabstop>
+  <tabstop>mDrawOutlinesChkBox</tabstop>
+  <tabstop>chkShowPartialsLabels</tabstop>
+  <tabstop>chkShowAllLabels</tabstop>
   <tabstop>chkShowCandidates</tabstop>
+  <tabstop>mShadowDebugRectChkBox</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

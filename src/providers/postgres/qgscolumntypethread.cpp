@@ -16,6 +16,7 @@ email                : jef at norbit dot de
  ***************************************************************************/
 
 #include "qgscolumntypethread.h"
+#include "qgspostgresconnpool.h"
 #include "qgslogger.h"
 
 #include <QMetaType>
@@ -23,10 +24,11 @@ email                : jef at norbit dot de
 
 QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( QString name, bool useEstimatedMetaData, bool allowGeometrylessTables )
     : QThread()
-    , mConn( 0 )
+    , mConn( nullptr )
     , mName( name )
     , mUseEstimatedMetadata( useEstimatedMetaData )
     , mAllowGeometrylessTables( allowGeometrylessTables )
+    , mStopped( false )
 {
   qRegisterMetaType<QgsPostgresLayerProperty>( "QgsPostgresLayerProperty" );
 }
@@ -43,10 +45,10 @@ void QgsGeomColumnTypeThread::stop()
 void QgsGeomColumnTypeThread::run()
 {
   QgsDataSourceURI uri = QgsPostgresConn::connUri( mName );
-  mConn = QgsPostgresConn::connectDb( uri.connectionInfo(), true );
+  mConn = QgsPostgresConnPool::instance()->acquireConnection( uri.connectionInfo( false ) );
   if ( !mConn )
   {
-    QgsDebugMsg( "Connection failed - " + uri.connectionInfo() );
+    QgsDebugMsg( "Connection failed - " + uri.connectionInfo( false ) );
     return;
   }
 
@@ -62,8 +64,8 @@ void QgsGeomColumnTypeThread::run()
                                 mAllowGeometrylessTables ) ||
        layerProperties.isEmpty() )
   {
-    mConn->disconnect();
-    mConn = 0;
+    QgsPostgresConnPool::instance()->releaseConnection( mConn );
+    mConn = nullptr;
     return;
   }
 
@@ -77,9 +79,9 @@ void QgsGeomColumnTypeThread::run()
     {
       emit progress( i++, n );
       emit progressMessage( tr( "Scanning column %1.%2.%3..." )
-                            .arg( layerProperty.schemaName )
-                            .arg( layerProperty.tableName )
-                            .arg( layerProperty.geometryColName ) );
+                            .arg( layerProperty.schemaName,
+                                  layerProperty.tableName,
+                                  layerProperty.geometryColName ) );
 
       if ( !layerProperty.geometryColName.isNull() &&
            ( layerProperty.types.value( 0, QGis::WKBUnknown ) == QGis::WKBUnknown ||
@@ -87,7 +89,7 @@ void QgsGeomColumnTypeThread::run()
       {
         if ( dontResolveType )
         {
-          QgsDebugMsg( QString( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ) );
+          QgsDebugMsg( QString( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName, layerProperty.tableName ) );
           continue;
         }
 
@@ -99,6 +101,7 @@ void QgsGeomColumnTypeThread::run()
     {
       layerProperty.types.clear();
       layerProperty.srids.clear();
+      break;
     }
 
     // Now tell the layer list dialog box...
@@ -106,8 +109,8 @@ void QgsGeomColumnTypeThread::run()
   }
 
   emit progress( 0, 0 );
-  emit progressMessage( tr( "Table retrieval finished." ) );
+  emit progressMessage( mStopped ? tr( "Table retrieval stopped." ) : tr( "Table retrieval finished." ) );
 
-  mConn->disconnect();
-  mConn = 0;
+  QgsPostgresConnPool::instance()->releaseConnection( mConn );
+  mConn = nullptr;
 }

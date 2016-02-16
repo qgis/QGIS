@@ -45,14 +45,14 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
   public:
     // Region term is used in modules (g.region), internaly it is hold in structure
     // Cell_head, but variables keeping that struture are usually called window
-    /*
+#if 0
     class Region
     {
-      QgsRectangle extent;
-      double ewRes; // east-west resolution
-      double nsRes; // north south resolution
+        QgsRectangle extent;
+        double ewRes; // east-west resolution
+        double nsRes; // north south resolution
     };
-    */
+#endif
 
     class Raster
     {
@@ -65,8 +65,17 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
         QgsRasterInterface *input;
         int band;
         int row; // next row to be written
-        Raster() : provider( 0 ), projector( 0 ), input( 0 ), band( 1 ), row( 0 ) {}
         double noDataValue; // output no data value
+
+        Raster()
+            : provider( 0 )
+            , projector( 0 )
+            , input( 0 )
+            , band( 1 )
+            , row( 0 )
+            , fd( -1 )
+            , noDataValue( -1 )
+        {}
     };
 
     static QgsGrassGisLib* instance();
@@ -127,7 +136,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     void warning( QString msg );
 
   private:
-    /** pointer to canonical Singleton object */
+    /** Pointer to canonical Singleton object */
     static QgsGrassGisLib* _instance;
 
     /** Original GRASS library handle */
@@ -152,7 +161,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     /** Current coordinate reference system */
     QgsCoordinateReferenceSystem mCrs;
     QgsDistanceArea mDistanceArea;
-    /** lat1, lat2 used for geodesic distance calculation */
+    /** Lat1, lat2 used for geodesic distance calculation */
     double mLat1, mLat2;
 };
 

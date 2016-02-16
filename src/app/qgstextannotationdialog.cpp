@@ -21,7 +21,7 @@
 #include <QColorDialog>
 #include <QGraphicsScene>
 
-QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f ), mItem( item ), mTextDocument( 0 )
+QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f ), mItem( item ), mTextDocument( nullptr )
 {
   setupUi( this );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
@@ -34,7 +34,9 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, Q
     mTextEdit->setDocument( mTextDocument );
   }
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
-  mFontColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mFontColorButton->setAllowAlpha( true );
+  mFontColorButton->setContext( "symbology" );
+
   setCurrentFontPropertiesToGui();
 
   QObject::connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( applyTextToItem() ) );
@@ -137,6 +139,6 @@ void QgsTextAnnotationDialog::deleteItem()
     scene->removeItem( mItem );
   }
   delete mItem;
-  mItem = 0;
+  mItem = nullptr;
 }
 

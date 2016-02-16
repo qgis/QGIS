@@ -64,6 +64,10 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mBandComboBox</tabstop>
+  <tabstop>mTreeWidget</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

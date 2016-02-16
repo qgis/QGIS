@@ -10,24 +10,39 @@ class QgsAttributeEditorContext
 #include "qgsattributeeditorcontext.h"
 %End
   public:
-    QgsAttributeEditorContext();
+    /**
+     * Determines in which direction a relation was resolved.
+     */
+    enum RelationMode
+    {
+      Undefined,  //!< This context is not defined by a relation
+      Multiple,   //!< When showing a list of features (e.g. houses as an embedded form in a district form)
+      Single      //!< When showing a single feature (e.g. district information when looking at the form of a house)
+    };
 
-    QWidget* proxyWidget( QgsVectorLayer* vl, int fieldIdx );
-    //! @note not available in python bindings
-    // void addProxyWidgets( QgsVectorLayer* vl, QMap<int, QWidget*> proxyWidgets );
-    void addProxyWidget( QgsVectorLayer* vl, int idx, QWidget* widget );
+    enum FormMode
+    {
+      Embed,
+      StandaloneDialog,
+      Popup
+    };
+
+    QgsAttributeEditorContext();
+    QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, FormMode formMode );
+    QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, const QgsRelation& relation, RelationMode relationMode, FormMode formMode );
+
 
     void setDistanceArea( const QgsDistanceArea& distanceArea );
-    const QgsDistanceArea& distanceArea();
+    const QgsDistanceArea& distanceArea() const;
 
     void setVectorLayerTools( QgsVectorLayerTools* vlTools );
-    QgsVectorLayerTools* vectorLayerTools();
+    const QgsVectorLayerTools* vectorLayerTools() const;
 
-    /**
-     * When copying the context for another layer,  call this.
-     * Will adjast the distance area for this layer
-     *
-     * @param layer The layer to adjust for.
-     */
-    void adjustForLayer( QgsVectorLayer* layer );
+    void setRelation( const QgsRelation& relation, RelationMode mode );
+    const QgsRelation& relation() const;
+    RelationMode relationMode() const;
+
+    FormMode formMode() const;
+
+    const QgsAttributeEditorContext* parentContext() const;
 };

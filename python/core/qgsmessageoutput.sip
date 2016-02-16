@@ -1,16 +1,15 @@
 
 
-/**
-\brief Interface for showing messages from QGIS in GUI independent way
+/** \ingroup core
+ * Interface for showing messages from QGIS in GUI independent way.
+ * This class provides abstraction of a dialog for showing output to the user.
+ * By default QgsMessageConsoleOutput will be used if not overridden with other
+ * message output creator function.
 
-This class provides abstraction of a dialog for showing output to the user.
-By default QgsMessageConsoleOutput will be used if not overridden
-with other message output creator function.
+ * QGIS application uses QgsMessageView class for displaying a dialog to the user.
 
-QGIS application uses QgsMessageView class for displaying a dialog to the user.
-
-Object deletes itself when it's not needed anymore. Children should use
-signal destroyed() to notify the deletion
+ * Object deletes itself when it's not needed anymore. Children should use
+ * signal destroyed() to notify the deletion
 */
 class QgsMessageOutput
 {
@@ -38,13 +37,18 @@ class QgsMessageOutput
     //! display the message to the user
     virtual void showMessage( bool blocking = true ) = 0;
 
+    /** Display the blocking message to the user.
+     *  @note added in 2.10
+     */
+    static void showMessage( const QString& title, const QString& message, MessageType msgType );
+
     //! sets function that will be used to create message output
     //! @note not available in python bindings
     // TODO: implementation where python class could be passed
     // static void setMessageOutputCreator(MESSAGE_OUTPUT_CREATOR f);
 
     //! function that returns new class derived from QgsMessageOutput
-    //! (don't forget to delete it then)
+    //! (don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)
     static QgsMessageOutput* createMessageOutput();
 
 };

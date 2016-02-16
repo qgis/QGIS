@@ -26,9 +26,13 @@
 
 #include "qgsvectorlayer.h" // QgsAttributeList
 #include "qgsvectorlayercache.h"
+#include "qgsconditionalstyle.h"
+#include "qgsattributeeditorcontext.h"
 
 class QgsMapCanvas;
 class QgsMapLayerAction;
+class QgsEditorWidgetFactory;
+
 
 /**
  * A model backed by a {@link QgsVectorLayerCache} which is able to provide
@@ -58,27 +62,19 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param layerCache  A layer cache to use as backend
      * @param parent      The parent QObject (owner)
      */
-    QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = 0 );
-
-    virtual ~QgsAttributeTableModel();
-
-    /**
-     * Loads the layer into the model
-     * Preferably to be called, before basing any other models on this model
-     */
-    virtual void loadLayer();
+    QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = nullptr );
 
     /**
      * Returns the number of rows
      * @param parent parent index
      */
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     /**
      * Returns the number of columns
      * @param parent parent index
      */
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     /**
      * Returns header data
@@ -86,14 +82,14 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param orientation horizontal or vertical orientation
      * @param role data role
      */
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     /**
      * Returns data on the given index
      * @param index model index
      * @param role data role
      */
-    virtual QVariant data( const QModelIndex &index, int role ) const;
+    virtual QVariant data( const QModelIndex &index, int role ) const override;
 
     /**
      * Updates data on given index
@@ -101,13 +97,13 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param value new data value
      * @param role data role
      */
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     /**
      * Returns item flags for the index
      * @param index model index
      */
-    Qt::ItemFlags flags( const QModelIndex &index ) const;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * Reloads the model data between indices
@@ -119,12 +115,14 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Remove rows
      */
-    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     /**
      * Resets the model
+     *
+     * Alias to loadLayer()
      */
-    void resetModel();
+    inline void resetModel() { loadLayer(); }
 
     /**
      * Maps feature id to table row
@@ -162,7 +160,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Returns the layer this model uses as backend. Retrieved from the layer cache.
      */
-    inline QgsVectorLayer* layer() const { return mLayerCache ? mLayerCache->layer() : NULL; }
+    inline QgsVectorLayer* layer() const { return mLayerCache ? mLayerCache->layer() : nullptr; }
 
     /**
      * Returns the layer cache this model uses as backend.
@@ -194,7 +192,48 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     void prefetchColumnData( int column );
 
+    /**
+     * Set a request that will be used to fill this attribute table model.
+     * In contrast to a filter, the request will constrain the data shown without the possibility
+     * to dynamically adjust it.
+     *
+     * @param request The request to use to fill this table model.
+     */
     void setRequest( const QgsFeatureRequest& request );
+
+    /**
+     * Get the the feature request
+     */
+    const QgsFeatureRequest &request() const;
+
+    /**
+     * Sets the context in which this table is shown.
+     * Will be forwarded to any editor widget created when editing data on this model.
+     *
+     * @param context The context
+     */
+    void setEditorContext( const QgsAttributeEditorContext& context ) { mEditorContext = context; }
+
+    /**
+     * Returns the context in which this table is shown.
+     * Will be forwarded to any editor widget created when editing data on this model.
+     *
+     * @return The context
+     */
+    const QgsAttributeEditorContext& editorContext() const { return mEditorContext; }
+
+  public slots:
+    /**
+     * Loads the layer into the model
+     * Preferably to be called, before using this model as source for any other proxy model
+     */
+    virtual void loadLayer();
+
+    /** Handles updating the model when the conditional style for a field changes.
+     * @param fieldName name of field whose conditional style has changed
+     * @note added in QGIS 2.12
+     */
+    void fieldConditionalStyleChanged( const QString& fieldName );
 
   signals:
     /**
@@ -233,10 +272,10 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
     /**
-     * Launched when a feature has been deleted
-     * @param fid feature id
+     * Launched when eatures have been deleted
+     * @param fids feature ids
      */
-    virtual void featureDeleted( QgsFeatureId fid );
+    virtual void featuresDeleted( const QgsFeatureIds& fids );
     /**
      * Launched when a feature has been added
      * @param fid feature id
@@ -255,10 +294,15 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     mutable QgsFeature mFeat;
 
     QgsAttributeList mAttributes;
-    QMap< int, const QMap<QString, QVariant> * > mValueMaps;
+    QVector<QgsEditorWidgetFactory*> mWidgetFactories;
+    QVector<QVariant> mAttributeWidgetCaches;
+    QVector<QgsEditorWidgetConfig> mWidgetConfigs;
 
     QHash<QgsFeatureId, int> mIdRowMap;
     QHash<int, QgsFeatureId> mRowIdMap;
+    mutable QHash<int, QList<QgsConditionalStyle> > mRowStylesMap;
+
+    mutable QgsExpressionContext mExpressionContext;
 
     /**
       * Gets mFieldCount, mAttributes and mValueMaps
@@ -279,7 +323,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     /** The currently cached column */
     int mCachedField;
-    /** Allows to cache one specific column (used for sorting) */
+    /** Allows caching of one specific column (used for sorting) */
     QHash<QgsFeatureId, QVariant> mFieldCache;
 
     /**
@@ -290,6 +334,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * right  = max column
      */
     QRect mChangedCellBounds;
+
+    QgsAttributeEditorContext mEditorContext;
 };
 
 

@@ -35,12 +35,34 @@
       <number>3</number>
      </property>
      <item>
+      <widget class="QToolButton" name="btnOpen">
+       <property name="toolTip">
+        <string>Open script</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+O, Return</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="btnSave">
        <property name="toolTip">
         <string>Save</string>
        </property>
        <property name="text">
         <string>...</string>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+S</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -51,6 +73,12 @@
        </property>
        <property name="text">
         <string>...</string>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+Shift+S</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -69,6 +97,9 @@
        <property name="text">
         <string>...</string>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -85,6 +116,12 @@
        </property>
        <property name="text">
         <string>...</string>
+       </property>
+       <property name="shortcut">
+        <string>F5</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -103,6 +140,12 @@
        <property name="text">
         <string>...</string>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+X</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -113,6 +156,12 @@
        <property name="text">
         <string>...</string>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+C</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -122,6 +171,12 @@
        </property>
        <property name="text">
         <string>...</string>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+V</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -140,6 +195,12 @@
        <property name="text">
         <string>...</string>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+Z</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -149,6 +210,56 @@
        </property>
        <property name="text">
         <string>...</string>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+Shift+Z</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line_5">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnSnippets">
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line_6">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnIncreaseFont">
+       <property name="text">
+        <string>A+</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnDecreaseFont">
+       <property name="text">
+        <string>A-</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

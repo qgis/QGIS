@@ -16,12 +16,13 @@
 #ifndef QGSMAPTOOLDELETERING_H
 #define QGSMAPTOOLDELETERING_H
 
-#include "qgsmaptoolvertexedit.h"
+#include "qgsmaptooledit.h"
+#include "qgsrubberband.h"
 
 class QgsVertexMarker;
-/**Map tool to delete vertices from line/polygon features*/
+/** Map tool to delete vertices from line/polygon features*/
 
-class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolVertexEdit
+class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolEdit
 {
     Q_OBJECT
 
@@ -29,26 +30,39 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolVertexEdit
     QgsMapToolDeleteRing( QgsMapCanvas* canvas );
     virtual ~QgsMapToolDeleteRing();
 
-    void canvasMoveEvent( QMouseEvent * e );
+    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
-    void canvasPressEvent( QMouseEvent * e );
+    void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
-    void canvasReleaseEvent( QMouseEvent * e );
+    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     //! called when map tool is being deactivated
-    void deactivate();
+    void deactivate() override;
 
   private:
-    QgsVertexMarker* mCross;
+    QgsVectorLayer* vlayer;
 
     //! delete inner ring from the geometry
     void deleteRing( QgsFeatureId fId, int beforeVertexNr, QgsVectorLayer* vlayer );
 
     //! return ring number in polygon
-    int ringNumInPolygon( QgsGeometry* g, int vertexNr );
+    int ringNumInPolygon( const QgsGeometry* g, int vertexNr );
 
     //! return ring number in multipolygon and set parNum to index of the part
-    int ringNumInMultiPolygon( QgsGeometry* g, int vertexNr, int& partNum );
+    int ringNumInMultiPolygon( const QgsGeometry* g, int vertexNr, int& partNum );
+
+    /** Return the geometry of the ring under the point p and sets fid to the feature id,
+     * partNum to the part number in the feature and ringNum to the ring number in the part
+     */
+    QgsGeometry* ringUnderPoint( const QgsPoint& p, QgsFeatureId& fid, int& partNum, int& ringNum );
+
+    /* Rubberband that shows the ring being deleted*/
+    QgsRubberBand* mRubberBand;
+
+    //The feature, part and ring the mouse was pressed in, to  check we are still in the same ring at release
+    QgsFeatureId mPressedFid;
+    int mPressedPartNum;
+    int mPressedRingNum;
 };
 
 #endif

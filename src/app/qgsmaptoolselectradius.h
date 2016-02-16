@@ -33,13 +33,13 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
     virtual ~QgsMapToolSelectRadius();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
   private:
 
@@ -54,6 +54,10 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
     QgsPoint mRadiusCenter;
 
     bool mDragging;
+
+    QColor mFillColor;
+
+    QColor mBorderColour;
 };
 
 #endif

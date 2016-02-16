@@ -7,9 +7,10 @@ class QgsRasterCalcNode
     //! defines possible types of node
     enum Type
     {
-      tOperator = 1,
+      tOperator,
       tNumber,
-      tRasterRef
+      tRasterRef,
+      tMatrix
     };
 
     //! possible operators
@@ -35,11 +36,13 @@ class QgsRasterCalcNode
       opLE,         // <=
       opAND,
       opOR,
-      opSIGN    //change sign
+      opSIGN,       // change sign
+      opNONE,
     };
 
     QgsRasterCalcNode();
     QgsRasterCalcNode( double number );
+    QgsRasterCalcNode( QgsRasterMatrix* matrix );
     QgsRasterCalcNode( Operator op, QgsRasterCalcNode* left, QgsRasterCalcNode* right );
     QgsRasterCalcNode( const QString& rasterName );
     ~QgsRasterCalcNode();
@@ -50,8 +53,27 @@ class QgsRasterCalcNode
     void setLeft( QgsRasterCalcNode* left );
     void setRight( QgsRasterCalcNode* right );
 
-    /**Calculates result (might be real matrix or single number)*/
-    bool calculate( QMap<QString, QgsRasterMatrix*>& rasterData, QgsRasterMatrix& result ) const;
+    /** Calculates result (might be real matrix or single number)*/
+   // bool calculate( QMap<QString, QgsRasterCalculateInputMatrix*>& rasterData, QgsRasterMatrix& result ) const;
+
+    /** Calculates result of raster calculation (might be real matrix or single number).
+     * @param rasterData input raster data references, map of raster name to raster data block
+     * @param result destination raster matrix for calculation results
+     * @param row optional row number to calculate for calculating result by rows, or -1 to
+     * calculate entire result
+     * @note added in QGIS 2.10
+     * @note not available in Python bindings
+     */
+    //bool calculate( QMap<QString, QgsRasterBlock* >& rasterData, QgsRasterMatrix& result, int row = -1 ) const;
+
+    /** @deprecated use method which accepts QgsRasterBlocks instead
+     */
+    // bool calculate( QMap<QString, QgsRasterMatrix*>& rasterData, QgsRasterMatrix& result ) const /Deprecated/;
 
     static QgsRasterCalcNode* parseRasterCalcString( const QString& str, QString& parserErrorMsg ) /Factory/;
+
+  private:
+
+    QgsRasterCalcNode( const QgsRasterCalcNode& rh );
+
 };

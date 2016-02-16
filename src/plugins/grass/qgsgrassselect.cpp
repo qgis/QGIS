@@ -25,11 +25,19 @@
 
 extern "C"
 {
+#if GRASS_VERSION_MAJOR < 7
 #include <grass/Vect.h>
+#else
+#include <grass/vector.h>
+#define BOUND_BOX bound_box
+#endif
 }
 
 
-QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type ): QDialog( parent ), QgsGrassSelectBase()
+QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
+    : QDialog( parent )
+    , QgsGrassSelectBase()
+    , selectedType( 0 )
 {
   QgsDebugMsg( QString( "QgsGrassSelect() type = %1" ).arg( type ) );
 
@@ -337,9 +345,18 @@ void QgsGrassSelect::setLayers()
   if ( emap->count() < 1 )
     return;
 
-  QStringList layers = QgsGrass::vectorLayers( egisdbase->text(),
-                       elocation->currentText(), emapset->currentText(),
-                       emap->currentText().toUtf8() );
+  QStringList layers;
+  try
+  {
+    layers  = QgsGrass::vectorLayers( egisdbase->text(),
+                                      elocation->currentText(), emapset->currentText(),
+                                      emap->currentText().toUtf8() );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QgsDebugMsg( e.what() );
+    return;
+  }
 
   int idx = 0;
   int sel = -1;

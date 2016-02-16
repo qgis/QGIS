@@ -53,8 +53,8 @@ class QgsAbstractFeatureIterator
      */
     virtual bool nextFeatureFilterFids( QgsFeature & f );
 
-    void ref(); // add reference
-    void deref(); // remove reference, delete if refs == 0
+    void ref(); //!< add reference
+    void deref(); //!< remove reference, delete if refs == 0
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );

@@ -15,12 +15,9 @@
 
 #include "qgsspatialiteconnpool.h"
 
-QgsSpatiaLiteConnPool* QgsSpatiaLiteConnPool::mInstance = 0;
-
+QgsSpatiaLiteConnPool QgsSpatiaLiteConnPool::sInstance;
 
 QgsSpatiaLiteConnPool* QgsSpatiaLiteConnPool::instance()
 {
-  if ( !mInstance )
-    mInstance = new QgsSpatiaLiteConnPool;
-  return mInstance;
+  return &sInstance;
 }

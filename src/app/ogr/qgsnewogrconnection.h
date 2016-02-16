@@ -21,7 +21,7 @@
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
 
-/*! \class QgsNewOgrConnection
+/** \class QgsNewOgrConnection
  * \brief Dialog to allow the user to define, test and save connection
  * information for OGR databases
  */
@@ -31,13 +31,13 @@ class QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConnectionBase
 
   public:
     //! Constructor
-    QgsNewOgrConnection( QWidget *parent = 0, const QString& connType = QString::null, const QString& connName = QString::null, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewOgrConnection( QWidget *parent = nullptr, const QString& connType = QString::null, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsNewOgrConnection();
     //! Tests the connection using the parameters supplied
     void testConnection();
   public slots:
-    void accept();
+    void accept() override;
     void on_btnConnect_clicked();
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 

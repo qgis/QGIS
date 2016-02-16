@@ -30,7 +30,7 @@
 class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
 {
   public:
-    QgsRasterNuller( QgsRasterInterface* input = 0 );
+    QgsRasterNuller( QgsRasterInterface* input = nullptr );
     ~QgsRasterNuller();
 
     struct NoData
@@ -39,15 +39,15 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
       double max;
     };
 
-    QgsRasterInterface * clone() const;
+    QgsRasterNuller * clone() const override;
 
-    int bandCount() const;
+    int bandCount() const override;
 
-    QGis::DataType dataType( int bandNo ) const;
+    QGis::DataType dataType( int bandNo ) const override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height );
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) override;
 
-    void setNoData( int bandNo, QgsRasterRangeList noData );
+    void setNoData( int bandNo, const QgsRasterRangeList& noData );
 
     QgsRasterRangeList noData( int bandNo ) const { return mNoData.value( bandNo -1 ); }
 

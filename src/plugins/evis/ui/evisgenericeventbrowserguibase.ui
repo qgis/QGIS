@@ -701,7 +701,7 @@ Base Path (i.e. keep only filename from attribute)</string>
              <string/>
             </property>
             <property name="whatsThis">
-             <string>If checked, the  current check-box setting will be saved for the next session.</string>
+             <string>If checked, the current check-box setting will be saved for the next session.</string>
             </property>
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
@@ -765,7 +765,7 @@ Base Path (i.e. keep only filename from attribute)</string>
              <string/>
             </property>
             <property name="whatsThis">
-             <string>If checked, the  current check-box setting will be saved for the next session.</string>
+             <string>If checked, the current check-box setting will be saved for the next session.</string>
             </property>
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>

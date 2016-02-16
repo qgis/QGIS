@@ -18,7 +18,6 @@
 #define QGSMEASURETOOL_H
 
 #include "qgsmaptool.h"
-#include "qgsmapcanvassnapper.h"
 
 class QgsDistanceArea;
 class QgsMapCanvas;
@@ -41,14 +40,13 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     bool measureArea() { return mMeasureArea; }
 
     //! When we have added our last point, and not following
-    // Added in 2.0
     bool done() { return mDone; }
 
     //! Reset and start new
     void restart();
 
     //! Add new point
-    void addPoint( QgsPoint &point );
+    void addPoint( const QgsPoint &point );
 
     //! Returns reference to array of the points
     const QList<QgsPoint>& points();
@@ -56,19 +54,21 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     // Inherited from QgsMapTool
 
     //! Mouse move event for overriding
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     //! Mouse press event for overriding
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
     //! Mouse release event for overriding
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     //! called when set as currently active map tool
-    virtual void activate();
+    virtual void activate() override;
 
     //! called when map tool is being deactivated
-    virtual void deactivate();
+    virtual void deactivate() override;
+
+    virtual void keyPressEvent( QKeyEvent* e ) override;
 
   public slots:
     //! updates the projections we're using
@@ -83,6 +83,9 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     //! Rubberband widget tracking the lines being drawn
     QgsRubberBand *mRubberBand;
 
+    //! Rubberband widget tracking the added nodes to line
+    QgsRubberBand *mRubberBandPoints;
+
     //! indicates whether we're measuring distances or areas
     bool mMeasureArea;
 
@@ -93,12 +96,12 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     // project projection
     bool mWrongProjectProjection;
 
-    QgsMapCanvasSnapper mSnapper;
-
     //! Returns the snapped (map) coordinate
     //@param p (pixel) coordinate
     QgsPoint snapPoint( const QPoint& p );
 
+    /** Removes the last vertex from mRubberBand*/
+    void undo();
 };
 
 #endif

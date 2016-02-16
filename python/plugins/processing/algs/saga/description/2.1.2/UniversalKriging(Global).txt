@@ -1,0 +1,22 @@
+Universal Kriging (Global)
+statistics_kriging
+ParameterVector|POINTS|Points|0|False
+ParameterTableField|ZFIELD|Attribute|SHAPES|-1|False
+Hardcoded|-TARGET 0
+ParameterSelection|TQUALITY|Type of Quality Measure|[0] standard deviation;[1] variance
+ParameterBoolean|LOG|Logarithmic Transformation|True
+ParameterBoolean|BLOCK|Block Kriging|True
+ParameterNumber|DBLOCK|Block Size|1|None|100
+ParameterNumber|VAR_MAXDIST|Maximum Distance|None|None|-1.0
+ParameterNumber|VAR_NCLASSES|Lag Distance Classes|1|None|100
+ParameterNumber|VAR_NSKIP|Skip|1|None|1
+ParameterString|VAR_MODEL|Variogram Model|a + b * x
+ParameterMultipleInput|GRIDS|Input Grids|3|True
+ParameterSelection|INTERPOL|Grid Interpolation|[0] Nearest Neighbor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
+ParameterBoolean|COORDS|Coordinates|False
+ParameterBoolean|USER_BVARIANCE|Create Quality Grid|True
+Extent USER_XMIN USER_XMAX USER_YMIN USER_YMAX
+ParameterNumber|USER_SIZE|Grid Size|0|None|100.0
+ParameterSelection|USER_FIT|Search Direction|[0] nodes;[1] cells
+OutputRaster|USER_GRID|Grid
+OutputRaster|USER_VARIANCE|Variance

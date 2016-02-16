@@ -19,13 +19,14 @@
 #include "qgsattributeselectiondialog.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposerattributetable.h"
+#include "qgscomposertablecolumn.h"
 #include "qgscomposermap.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
-#include <QColorDialog>
-#include <QFontDialog>
+#include "qgsexpressionbuilderdialog.h"
+#include "qgisgui.h"
 
-QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table ): QWidget( 0 ), mComposerTable( table )
+QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table ): QgsComposerItemBaseWidget( nullptr, table ), mComposerTable( table )
 {
   setupUi( this );
   //add widget for general composer item properties
@@ -33,28 +34,26 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
   mainLayout->addWidget( itemPropertiesWidget );
 
   blockAllSignals( true );
-
-  //insert vector layers into combo
-  QMap<QString, QgsMapLayer*> layerMap =  QgsMapLayerRegistry::instance()->mapLayers();
-  QMap<QString, QgsMapLayer*>::const_iterator mapIt = layerMap.constBegin();
-
-  for ( ; mapIt != layerMap.constEnd(); ++mapIt )
-  {
-    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( mapIt.value() );
-    if ( vl )
-    {
-      mLayerComboBox->addItem( vl->name(), mapIt.key() );
-    }
-  }
+  mLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
+  connect( mLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( changeLayer( QgsMapLayer* ) ) );
 
   refreshMapComboBox();
+
+  mHeaderFontColorButton->setColorDialogTitle( tr( "Select header font color" ) );
+  mHeaderFontColorButton->setAllowAlpha( true );
+  mHeaderFontColorButton->setContext( "composer" );
+  mContentFontColorButton->setColorDialogTitle( tr( "Select content font color" ) );
+  mContentFontColorButton->setAllowAlpha( true );
+  mContentFontColorButton->setContext( "composer" );
+  mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
+  mGridColorButton->setAllowAlpha( true );
+  mGridColorButton->setContext( "composer" );
 
   updateGuiElements();
   on_mComposerMapComboBox_activated( mComposerMapComboBox->currentIndex() );
 
   if ( mComposerTable )
   {
-    QObject::connect( mComposerTable, SIGNAL( maximumNumberOfFeaturesChanged( int ) ), this, SLOT( setMaximumNumberOfFeatures( int ) ) );
     QObject::connect( mComposerTable, SIGNAL( itemChanged() ), this, SLOT( updateGuiElements() ) );
   }
 }
@@ -104,33 +103,14 @@ void QgsComposerTableWidget::refreshMapComboBox()
   }
 }
 
-void QgsComposerTableWidget::on_mLayerComboBox_currentIndexChanged( int index )
+void QgsComposerTableWidget::on_mRefreshPushButton_clicked()
 {
   if ( !mComposerTable )
   {
     return;
   }
 
-  //set new layer to table item
-  QVariant itemData = mLayerComboBox->itemData( index );
-  if ( itemData.type() == QVariant::Invalid )
-  {
-    return;
-  }
-
-  QString layerId = itemData.toString();
-  QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
-  if ( ml )
-  {
-    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( ml );
-    if ( vl )
-    {
-      mComposerTable->beginCommand( tr( "Table layer changed" ) );
-      mComposerTable->setVectorLayer( vl );
-      mComposerTable->update();
-      mComposerTable->endCommand();
-    }
-  }
+  mComposerTable->refreshAttributes();
 }
 
 void QgsComposerTableWidget::on_mAttributesPushButton_clicked()
@@ -140,16 +120,33 @@ void QgsComposerTableWidget::on_mAttributesPushButton_clicked()
     return;
   }
 
-  QgsAttributeSelectionDialog d( mComposerTable->vectorLayer(), mComposerTable->displayAttributes(), mComposerTable->fieldAliasMap(), mComposerTable->sortAttributes(), 0 );
+  //make deep copy of current columns, so we can restore them in case of cancellation
+  QList<QgsComposerTableColumn*> currentColumns;
+  QList<QgsComposerTableColumn*>::const_iterator it = mComposerTable->columns()->constBegin();
+  for ( ; it != mComposerTable->columns()->constEnd() ; ++it )
+  {
+    QgsComposerTableColumn* copy = ( *it )->clone();
+    currentColumns.append( copy );
+  }
+
+  mComposerTable->beginCommand( tr( "Table attribute settings" ) );
+
+  QgsAttributeSelectionDialog d( mComposerTable, mComposerTable->vectorLayer(), this );
   if ( d.exec() == QDialog::Accepted )
   {
-    //change displayAttributes and aliases
-    mComposerTable->beginCommand( tr( "Table attribute settings" ) );
-    mComposerTable->setDisplayAttributes( d.enabledAttributes() );
-    mComposerTable->setFieldAliasMap( d.aliasMap() );
-    mComposerTable->setSortAttributes( d.attributeSorting() );
+    mComposerTable->refreshAttributes();
     mComposerTable->update();
     mComposerTable->endCommand();
+
+    //clear currentColumns to free memory
+    qDeleteAll( currentColumns );
+    currentColumns.clear();
+  }
+  else
+  {
+    //undo changes
+    mComposerTable->setColumns( currentColumns );
+    mComposerTable->cancelCommand();
   }
 }
 
@@ -217,18 +214,26 @@ void QgsComposerTableWidget::on_mHeaderFontPushButton_clicked()
   }
 
   bool ok;
-#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->headerFont(), 0, tr( "Select Font" ), QFontDialog::DontUseNativeDialog );
-#else
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->headerFont(), 0, tr( "Select Font" ) );
-#endif
+  QFont newFont = QgisGui::getFont( ok, mComposerTable->headerFont(), tr( "Select Font" ) );
   if ( ok )
   {
     mComposerTable->beginCommand( tr( "Table header font" ) );
     mComposerTable->setHeaderFont( newFont );
     mComposerTable->endCommand();
   }
+}
+
+void QgsComposerTableWidget::on_mHeaderFontColorButton_colorChanged( const QColor &newColor )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  mComposerTable->beginCommand( tr( "Table header font color" ) );
+  mComposerTable->setHeaderFontColor( newColor );
+  mComposerTable->update();
+  mComposerTable->endCommand();
 }
 
 void QgsComposerTableWidget::on_mContentFontPushButton_clicked()
@@ -239,12 +244,7 @@ void QgsComposerTableWidget::on_mContentFontPushButton_clicked()
   }
 
   bool ok;
-#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->contentFont(), 0, tr( "Select Font" ), QFontDialog::DontUseNativeDialog );
-#else
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->contentFont(), 0, tr( "Select Font" ) );
-#endif
+  QFont newFont = QgisGui::getFont( ok, mComposerTable->contentFont(), tr( "Select Font" ) );
   if ( ok )
   {
     mComposerTable->beginCommand( tr( "Table content font" ) );
@@ -253,13 +253,26 @@ void QgsComposerTableWidget::on_mContentFontPushButton_clicked()
   }
 }
 
+void QgsComposerTableWidget::on_mContentFontColorButton_colorChanged( const QColor &newColor )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  mComposerTable->beginCommand( tr( "Table content font color" ) );
+  mComposerTable->setContentFontColor( newColor );
+  mComposerTable->update();
+  mComposerTable->endCommand();
+}
+
 void QgsComposerTableWidget::on_mGridStrokeWidthSpinBox_valueChanged( double d )
 {
   if ( !mComposerTable )
   {
     return;
   }
-  mComposerTable->beginCommand( tr( "Table grid stroke" ), QgsComposerMergeCommand::TableGridStrokeWidth );
+  mComposerTable->beginCommand( tr( "Table grid line" ), QgsComposerMergeCommand::TableGridStrokeWidth );
   mComposerTable->setGridStrokeWidth( d );
   mComposerTable->update();
   mComposerTable->endCommand();
@@ -302,13 +315,18 @@ void QgsComposerTableWidget::updateGuiElements()
   blockAllSignals( true );
 
   //layer combo box
-  const QgsVectorLayer* vl = mComposerTable->vectorLayer();
-  if ( vl )
+  if ( mComposerTable->vectorLayer() )
   {
-    int layerIndex = mLayerComboBox->findText( vl->name() );
-    if ( layerIndex != -1 )
+    mLayerComboBox->setLayer( mComposerTable->vectorLayer() );
+    if ( mComposerTable->vectorLayer()->geometryType() == QGis::NoGeometry )
     {
-      mLayerComboBox->setCurrentIndex( layerIndex );
+      //layer has no geometry, so uncheck & disable controls which require geometry
+      mShowOnlyVisibleFeaturesCheckBox->setChecked( false );
+      mShowOnlyVisibleFeaturesCheckBox->setEnabled( false );
+    }
+    else
+    {
+      mShowOnlyVisibleFeaturesCheckBox->setEnabled( true );
     }
   }
 
@@ -326,8 +344,6 @@ void QgsComposerTableWidget::updateGuiElements()
   mMarginSpinBox->setValue( mComposerTable->lineTextDistance() );
   mGridStrokeWidthSpinBox->setValue( mComposerTable->gridStrokeWidth() );
   mGridColorButton->setColor( mComposerTable->gridColor() );
-  mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
-  mGridColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   if ( mComposerTable->showGrid() )
   {
     mShowGridGroupCheckBox->setChecked( true );
@@ -337,14 +353,29 @@ void QgsComposerTableWidget::updateGuiElements()
     mShowGridGroupCheckBox->setChecked( false );
   }
 
-  if ( mComposerTable->displayOnlyVisibleFeatures() )
+  mHeaderFontColorButton->setColor( mComposerTable->headerFontColor() );
+  mContentFontColorButton->setColor( mComposerTable->contentFontColor() );
+
+  if ( mComposerTable->displayOnlyVisibleFeatures() && mShowOnlyVisibleFeaturesCheckBox->isEnabled() )
   {
     mShowOnlyVisibleFeaturesCheckBox->setCheckState( Qt::Checked );
+    mComposerMapComboBox->setEnabled( true );
+    mComposerMapLabel->setEnabled( true );
   }
   else
   {
     mShowOnlyVisibleFeaturesCheckBox->setCheckState( Qt::Unchecked );
+    mComposerMapComboBox->setEnabled( false );
+    mComposerMapLabel->setEnabled( false );
   }
+
+  mFeatureFilterEdit->setText( mComposerTable->featureFilter() );
+  mFeatureFilterCheckBox->setCheckState( mComposerTable->filterFeatures() ? Qt::Checked : Qt::Unchecked );
+  mFeatureFilterEdit->setEnabled( mComposerTable->filterFeatures() );
+  mFeatureFilterButton->setEnabled( mComposerTable->filterFeatures() );
+
+  mHeaderHAlignmentComboBox->setCurrentIndex(( int )mComposerTable->headerHAlignment() );
+
   blockAllSignals( false );
 }
 
@@ -358,6 +389,11 @@ void QgsComposerTableWidget::blockAllSignals( bool b )
   mGridStrokeWidthSpinBox->blockSignals( b );
   mShowGridGroupCheckBox->blockSignals( b );
   mShowOnlyVisibleFeaturesCheckBox->blockSignals( b );
+  mFeatureFilterEdit->blockSignals( b );
+  mFeatureFilterCheckBox->blockSignals( b );
+  mHeaderHAlignmentComboBox->blockSignals( b );
+  mHeaderFontColorButton->blockSignals( b );
+  mContentFontColorButton->blockSignals( b );
 }
 
 void QgsComposerTableWidget::setMaximumNumberOfFeatures( int n )
@@ -379,6 +415,111 @@ void QgsComposerTableWidget::on_mShowOnlyVisibleFeaturesCheckBox_stateChanged( i
   mComposerTable->setDisplayOnlyVisibleFeatures( showOnlyVisibleFeatures );
   mComposerTable->update();
   mComposerTable->endCommand();
+
+  //enable/disable map combobox based on state of checkbox
+  mComposerMapComboBox->setEnabled( state == Qt::Checked );
+  mComposerMapLabel->setEnabled( state == Qt::Checked );
 }
 
+void QgsComposerTableWidget::on_mFeatureFilterCheckBox_stateChanged( int state )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
 
+  if ( state == Qt::Checked )
+  {
+    mFeatureFilterEdit->setEnabled( true );
+    mFeatureFilterButton->setEnabled( true );
+  }
+  else
+  {
+    mFeatureFilterEdit->setEnabled( false );
+    mFeatureFilterButton->setEnabled( false );
+  }
+  mComposerTable->beginCommand( tr( "Table feature filter toggled" ) );
+  mComposerTable->setFilterFeatures( state == Qt::Checked );
+  mComposerTable->update();
+  mComposerTable->endCommand();
+}
+
+void QgsComposerTableWidget::on_mFeatureFilterEdit_editingFinished()
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  mComposerTable->beginCommand( tr( "Table feature filter modified" ) );
+  mComposerTable->setFeatureFilter( mFeatureFilterEdit->text() );
+  mComposerTable->update();
+  mComposerTable->endCommand();
+}
+
+void QgsComposerTableWidget::on_mFeatureFilterButton_clicked()
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QScopedPointer<QgsExpressionContext> context( mComposerTable->createExpressionContext() );
+  QgsExpressionBuilderDialog exprDlg( mComposerTable->vectorLayer(), mFeatureFilterEdit->text(), this, "generic", *context );
+
+  exprDlg.setWindowTitle( tr( "Expression based filter" ) );
+  if ( exprDlg.exec() == QDialog::Accepted )
+  {
+    QString expression =  exprDlg.expressionText();
+    if ( !expression.isEmpty() )
+    {
+      mFeatureFilterEdit->setText( expression );
+      mComposerTable->beginCommand( tr( "Table feature filter modified" ) );
+      mComposerTable->setFeatureFilter( mFeatureFilterEdit->text() );
+      mComposerTable->update();
+      mComposerTable->endCommand();
+    }
+  }
+}
+
+void QgsComposerTableWidget::on_mHeaderHAlignmentComboBox_currentIndexChanged( int index )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  mComposerTable->beginCommand( tr( "Table header alignment changed" ) );
+  mComposerTable->setHeaderHAlignment(( QgsComposerTable::HeaderHAlignment )index );
+  mComposerTable->endCommand();
+}
+
+void QgsComposerTableWidget::changeLayer( QgsMapLayer *layer )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
+  if ( !vl )
+  {
+    return;
+  }
+
+  mComposerTable->beginCommand( tr( "Table layer changed" ) );
+  mComposerTable->setVectorLayer( vl );
+  mComposerTable->update();
+  mComposerTable->endCommand();
+
+  if ( vl->geometryType() == QGis::NoGeometry )
+  {
+    //layer has no geometry, so uncheck & disable controls which require geometry
+    mShowOnlyVisibleFeaturesCheckBox->setChecked( false );
+    mShowOnlyVisibleFeaturesCheckBox->setEnabled( false );
+  }
+  else
+  {
+    mShowOnlyVisibleFeaturesCheckBox->setEnabled( true );
+  }
+}

@@ -17,8 +17,8 @@
 
 #include "qgsdialog.h"
 
-QgsDialog::QgsDialog( QWidget *parent, Qt::WFlags fl,
-                      QDialogButtonBox::StandardButtons buttons,
+QgsDialog::QgsDialog( QWidget *parent, const Qt::WindowFlags& fl,
+                      const QDialogButtonBox::StandardButtons& buttons,
                       Qt::Orientation orientation )
     : QDialog( parent, fl )
 {
@@ -28,7 +28,7 @@ QgsDialog::QgsDialog( QWidget *parent, Qt::WFlags fl,
   connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
   // layout
-  QLayout *layout = 0;
+  QLayout *layout = nullptr;
   if ( orientation == Qt::Horizontal )
     layout = new QVBoxLayout();
   else

@@ -48,7 +48,7 @@ QgsBrushStyleComboBox::QgsBrushStyleComboBox( QWidget* parent )
   {
     Qt::BrushStyle style = styles.at( i ).first;
     QString name = styles.at( i ).second;
-    addItem( iconForBrush( style ), name, QVariant( style ) );
+    addItem( iconForBrush( style ), name, QVariant(( int )style ) );
   }
 
   setCurrentIndex( 1 );
@@ -63,7 +63,7 @@ Qt::BrushStyle QgsBrushStyleComboBox::brushStyle() const
 
 void QgsBrushStyleComboBox::setBrushStyle( Qt::BrushStyle style )
 {
-  int idx = findData( QVariant( style ) );
+  int idx = findData( QVariant(( int )style ) );
   setCurrentIndex( idx == -1 ? 0 : idx );
 }
 

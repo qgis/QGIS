@@ -1,0 +1,18 @@
+Ordinary Kriging (Global)
+statistics_kriging
+ParameterVector|POINTS|Points|0|False
+ParameterTableField|ZFIELD|Attribute|POINTS|-1|False
+ParameterSelection|TQUALITY|Type of Quality Measure|[0] standard deviation;[1] variance
+ParameterBoolean|LOG|Logarithmic Transformation|True
+ParameterBoolean|BLOCK|Block Kriging|True
+ParameterNumber|DBLOCK|Block Size|0|None|100
+ParameterNumber|VAR_MAXDIST|Maximum Distance|None|None|-1.0
+ParameterNumber|VAR_NCLASSES|Lag Distance Classes|1|None|100
+ParameterNumber|VAR_NSKIP|Skip|1|None|1
+ParameterString|VAR_MODEL|Variogram Model|a + b * x
+Hardcoded|-TARGET_DEFINITION 0
+Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
+ParameterNumber|TARGET_USER_SIZE|Cellsize|None|None|100.0
+ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
+OutputRaster|TARGET_PREDICTION|Prediction
+OutputRaster|TARGET_VARIANCE|Quality Measure

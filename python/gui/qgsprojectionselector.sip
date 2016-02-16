@@ -11,7 +11,7 @@ class QgsProjectionSelector : QWidget
 %End
 
   public:
-    QgsProjectionSelector( QWidget* parent, const char *name = "", Qt::WFlags fl = 0 );
+    QgsProjectionSelector( QWidget* parent /TransferThis/, const char *name = "", const Qt::WindowFlags& fl = 0 );
 
     ~QgsProjectionSelector();
 
@@ -46,19 +46,19 @@ class QgsProjectionSelector : QWidget
      * \arg const QString in The input string to make safe.
      * \return The string made safe for SQL statements.
      */
-    const QString sqlSafeString( const QString theSQL );
+    const QString sqlSafeString( const QString& theSQL );
 
     //! Gets the current authority-style projection identifier
     QString selectedAuthId();
 
   public slots:
-    void setSelectedCrsName( QString theCRSName );
+    void setSelectedCrsName( const QString& theCRSName );
 
     QString selectedName();
 
     void setSelectedCrsId( long theCRSID );
 
-    void setSelectedAuthId( QString authId );
+    void setSelectedAuthId( const QString& authId );
 
     QString selectedProj4String();
 
@@ -80,11 +80,14 @@ class QgsProjectionSelector : QWidget
      *
      * \warning This function's behaviour is undefined if it is called after the widget is shown.
      */
-    void setOgcWmsCrsFilter( QSet<QString> crsFilter );
+    void setOgcWmsCrsFilter( const QSet<QString>& crsFilter );
     void on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
     void on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
     void on_cbxHideDeprecated_stateChanged();
     void on_leSearch_textChanged( const QString & );
+
+    //! mark selected projection for push to front
+    void pushProjectionToFront();
 
   protected:
     /** Used to ensure the projection list view is actually populated */
@@ -94,9 +97,15 @@ class QgsProjectionSelector : QWidget
     void resizeEvent( QResizeEvent * theEvent );
 
   signals:
-    void sridSelected( QString theSRID );
+    void sridSelected( const QString& theSRID );
     //! Refresh any listening canvases
     void refresh();
     //! Let listeners know if find has focus so they can adjust the default button
     void searchBoxHasFocus( bool );
+    //! Notify others that the widget is now fully initialized, including deferred selection of projection
+    //! @note added in 2.4
+    void initialized();
+    //! Apply projection on double click
+    //! @note added in 2.14
+    void projectionDoubleClicked();
 };

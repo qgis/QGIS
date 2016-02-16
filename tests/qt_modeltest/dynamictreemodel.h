@@ -58,7 +58,7 @@ class DynamicTreeModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-    DynamicTreeModel( QObject *parent = 0 );
+    explicit DynamicTreeModel( QObject *parent = 0 );
 
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
     QModelIndex parent( const QModelIndex &index ) const;
@@ -72,23 +72,22 @@ class DynamicTreeModel : public QAbstractItemModel
   protected slots:
 
     /**
-    Finds the parent id of the string with id @p searchId.
-
-    Returns -1 if not found.
-    */
+     * Finds the parent id of the string with id @p searchId.
+     *
+     * Returns -1 if not found.
+     */
     qint64 findParentId( qint64 searchId ) const;
 
   private:
     QHash<qint64, QString> m_items;
     QHash<qint64, QList<QList<qint64> > > m_childItems;
     qint64 nextId;
-    qint64 newId() { return nextId++; };
+    qint64 newId() { return nextId++; }
 
     QModelIndex m_nextParentIndex;
-    int m_nextRow;
-
-    int m_depth;
-    int maxDepth;
+    // int m_nextRow;
+    // int m_depth;
+    // int maxDepth;
 
     friend class ModelInsertCommand;
     friend class ModelMoveCommand;

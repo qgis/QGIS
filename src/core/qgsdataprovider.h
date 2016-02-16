@@ -22,7 +22,10 @@
 #include <QStringList>
 
 //#include "qgsdataitem.h"
+#include "qgsdatasourceuri.h"
 #include "qgserror.h"
+
+typedef int dataCapabilities_t();
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
@@ -65,10 +68,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * We need this so the subclass destructors get called
      */
-    virtual ~QgsDataProvider() {};
+    virtual ~QgsDataProvider() {}
 
 
-    /*! Get the QgsCoordinateReferenceSystem for this layer
+    /** Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
@@ -89,11 +92,23 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Get the data source specification. This may be a path or database
      * connection string
+     * @param expandAuthConfig Whether to expand any assigned authentication configuration
      * @return data source specification
+     * @note The default authentication configuration expansion is FALSE. This keeps credentials
+     * out of layer data source URIs and project files. Expansion should be specifically done
+     * only when needed within a provider
      */
-    virtual QString dataSourceUri() const
+    virtual QString dataSourceUri( bool expandAuthConfig = false ) const
     {
-      return mDataSourceURI;
+      if ( expandAuthConfig && mDataSourceURI.contains( "authcfg" ) )
+      {
+        QgsDataSourceURI uri( mDataSourceURI );
+        return uri.uri( expandAuthConfig );
+      }
+      else
+      {
+        return mDataSourceURI;
+      }
     }
 
 
@@ -126,7 +141,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * that can be used by the data provider to create a subset.
      * Must be implemented in the dataprovider.
      */
-    virtual bool setSubsetString( QString subset, bool updateFeatureCount = true )
+    virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true )
     {
       // NOP by default
       Q_UNUSED( subset );
@@ -135,10 +150,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
 
-    /**
-     * provider supports setting of subset strings
-     * @note added in 1.4
-     */
+    /** Provider supports setting of subset strings */
     virtual bool supportsSubsetString() { return false; }
 
     /**
@@ -217,72 +229,69 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
 
-    /** return a provider name
-
-    Essentially just returns the provider key.  Should be used to build file
-    dialogs so that providers can be shown with their supported types. Thus
-    if more than one provider supports a given format, the user is able to
-    select a specific provider to open that file.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+    /** Return a provider name
+     *
+     * Essentially just returns the provider key.  Should be used to build file
+     * dialogs so that providers can be shown with their supported types. Thus
+     * if more than one provider supports a given format, the user is able to
+     * select a specific provider to open that file.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     virtual QString name() const = 0;
 
 
-    /** return description
-
-      Return a terse string describing what the provider is.
-
-      @note
-
-      Instead of being pure virtual, might be better to generalize this
-      behavior and presume that none of the sub-classes are going to do
-      anything strange with regards to their name or description?
-
+    /** Return description
+     *
+     * Return a terse string describing what the provider is.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
      */
     virtual QString description() const = 0;
 
 
-    /** return vector file filter string
-
-      Returns a string suitable for a QFileDialog of vector file formats
-      supported by the data provider.  Naturally this will be an empty string
-      for those data providers that do not deal with plain files, such as
-      databases and servers.
-
-      @note
-
-      It'd be nice to eventually be raster/vector neutral.
-    */
+    /** Return vector file filter string
+     *
+     * Returns a string suitable for a QFileDialog of vector file formats
+     * supported by the data provider.  Naturally this will be an empty string
+     * for those data providers that do not deal with plain files, such as
+     * databases and servers.
+     *
+     * @note It'd be nice to eventually be raster/vector neutral.
+     */
     virtual QString fileVectorFilters() const
     {
       return "";
     }
 
 
-    /** return raster file filter string
-
-      Returns a string suitable for a QFileDialog of raster file formats
-      supported by the data provider.  Naturally this will be an empty string
-      for those data providers that do not deal with plain files, such as
-      databases and servers.
-
-      @note
-
-      It'd be nice to eventually be raster/vector neutral.
-    */
+    /** Return raster file filter string
+     *
+     * Returns a string suitable for a QFileDialog of raster file formats
+     * supported by the data provider.  Naturally this will be an empty string
+     * for those data providers that do not deal with plain files, such as
+     * databases and servers.
+     *
+     * @note It'd be nice to eventually be raster/vector neutral.
+     */
     virtual QString fileRasterFilters() const
     {
       return "";
     }
 
-    /**Reloads the data from the source. Needs to be implemented by providers with data caches to
-      synchronize with changes in the data source*/
+    /** Reloads the data from the source. Needs to be implemented by providers with data caches to
+     * synchronize with changes in the data source
+     */
     virtual void reloadData() {}
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
@@ -309,21 +318,22 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      *   This is emitted whenever an asynchronous operation has finished
      *   and the data should be redrawn
-     *   @note added in 1.5
+     *
+     *   When emitted from a QgsVectorDataProvider, any cached information such as
+     *   feature ids should be invalidated.
      */
     void dataChanged();
 
     /**
      *   This is emitted whenever data or metadata (e.g. color table, extent) has changed
      *   @param changed binary combination of changes
-     *   @note added in 1.7
      */
     void dataChanged( int changed );
 
   protected:
     /**
-    * Timestamp of data in the moment when the data were loaded by provider.
-    */
+     * Timestamp of data in the moment when the data were loaded by provider.
+     */
     QDateTime mTimestamp;
 
     /** \brief Error */

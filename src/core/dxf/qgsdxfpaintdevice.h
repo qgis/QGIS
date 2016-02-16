@@ -24,7 +24,9 @@
 class QgsDxfExport;
 class QPaintEngine;
 
-/**A paint device for drawing into dxf files*/
+/** A paint device for drawing into dxf files.
+ * @note not available in Python bindings
+*/
 
 class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
 {
@@ -32,25 +34,25 @@ class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
     QgsDxfPaintDevice( QgsDxfExport* dxf );
     ~QgsDxfPaintDevice();
 
-    QPaintEngine* paintEngine() const;
+    QPaintEngine* paintEngine() const override;
 
-    void setDrawingSize( const QSizeF& size ) { mDrawingSize = size; }
+    void setDrawingSize( QSizeF size ) { mDrawingSize = size; }
     void setOutputSize( const QRectF& r ) { mRectangle = r; }
 
-    /**Returns scale factor for line width*/
+    /** Returns scale factor for line width*/
     double widthScaleFactor() const;
 
-    /**Converts a point from device coordinates to dxf coordinates*/
-    QPointF dxfCoordinates( const QPointF& pt ) const;
+    /** Converts a point from device coordinates to dxf coordinates*/
+    QPointF dxfCoordinates( QPointF pt ) const;
 
     /*int height() const { return mDrawingSize.height(); }
     int width() const { return mDrawingSize.width(); }*/
 
-    int metric( PaintDeviceMetric metric ) const;
+    int metric( PaintDeviceMetric metric ) const override;
 
     void setLayer( const QString& layer );
 
-    void setShift( const QPointF& shift );
+    void setShift( QPointF shift );
 
 
   private:

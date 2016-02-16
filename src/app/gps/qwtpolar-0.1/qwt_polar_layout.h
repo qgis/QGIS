@@ -76,6 +76,7 @@ class QWT_POLAR_EXPORT QwtPolarLayout
   private:
     class PrivateData;
     PrivateData *d_data;
+    Q_DISABLE_COPY(QwtPolarLayout)
 };
 
 #endif

@@ -38,7 +38,7 @@
 #include <osg/DisplaySettings>
 
 //constructor
-QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, GlobePlugin* globe, Qt::WFlags fl )
+QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, GlobePlugin* globe, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mGlobe( globe )
 {
@@ -414,7 +414,7 @@ void QgsGlobePluginDialog::updatePointLayers()
 QgsVectorLayer* QgsGlobePluginDialog::modelLayer()
 {
   QList<QgsVectorLayer*> layers = pointLayers();
-  return ( modelLayerCombo->currentIndex() == -1 ) ? NULL : layers.at( modelLayerCombo->currentIndex() );
+  return ( modelLayerCombo->currentIndex() == -1 ) ? nullptr : layers.at( modelLayerCombo->currentIndex() );
 }
 
 void QgsGlobePluginDialog::on_modelBrowse_clicked()
@@ -525,7 +525,7 @@ void QgsGlobePluginDialog::setStereoMode()
   //http://www.openscenegraph.org/projects/osg/wiki/Support/UserGuides/StereoSettings
   //http://www.openscenegraph.org/documentation/OpenSceneGraphReferenceDocs/a00181.html
 
-  QString stereoMode = comboStereoMode->currentText() ;
+  QString stereoMode = comboStereoMode->currentText();
   if ( "OFF" == stereoMode )
   {
     osg::DisplaySettings::instance()->setStereo( false );
@@ -562,7 +562,7 @@ void QgsGlobePluginDialog::setStereoMode()
 
 void QgsGlobePluginDialog::loadVideoSettings()
 {
-  mAntiAliasingGroupBox->setChecked( settings.value( "/Plugin-Globe/anti-aliasing", true ).toBool() );
+  mAntiAliasingGroupBox->setChecked( settings.value( "/Plugin-Globe/anti-aliasing", false ).toBool() );
   mAANumSamples->setValidator( new QIntValidator( mAANumSamples ) );
   mAANumSamples->setText( settings.value( "/Plugin-Globe/anti-aliasing-level", "" ).toString() );
 }
@@ -654,7 +654,7 @@ void QgsGlobePluginDialog::saveStereoConfig()
 
 void QgsGlobePluginDialog::updateStereoDialog()
 {
-  QString stereoMode = comboStereoMode->currentText() ;
+  QString stereoMode = comboStereoMode->currentText();
   screenDistance->setEnabled( true );
   screenHeight->setEnabled( true );
   screenWidth->setEnabled( true );

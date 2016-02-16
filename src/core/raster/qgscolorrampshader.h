@@ -42,9 +42,9 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     struct ColorRampItem
     {
       //! default constructor
-      ColorRampItem() {}
-      //! convenience constructor - added in v1.6
-      ColorRampItem( double val, QColor col, QString lbl = QString() ) : label( lbl ), value( val ), color( col ) {}
+      ColorRampItem() : value( 0 ) {}
+      //! convenience constructor
+      ColorRampItem( double val, const QColor& col, const QString& lbl = QString() ) : label( lbl ), value( val ), color( col ) {}
 
       QString label;
       double value;
@@ -80,18 +80,18 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     void setColorRampType( QgsColorRampShader::ColorRamp_TYPE theColorRampType );
 
     /** \brief Set the color ramp type*/
-    void setColorRampType( QString );
+    void setColorRampType( const QString& theType );
 
     /** \brief Set the maximum size the color cache can be */
     void setMaximumColorCacheSize( int theSize ) { mMaximumColorCacheSize = theSize; }
 
     /** \brief Generates and new RGB value based on one input value */
-    bool shade( double, int*, int*, int*, int* );
+    bool shade( double, int*, int*, int*, int* ) override;
 
     /** \brief Generates and new RGB value based on original RGB value */
-    bool shade( double, double, double, double, int*, int*, int*, int* );
+    bool shade( double, double, double, double, int*, int*, int*, int* ) override;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const override;
 
     void setClip( bool clip ) { mClip = clip; }
     bool clip() const { return mClip; }

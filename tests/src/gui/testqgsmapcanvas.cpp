@@ -1,13 +1,42 @@
+/***************************************************************************
+    testqgsmapcanvas.cpp
+    ---------------------
+    begin                : December 2013
+    copyright            : (C) 2013 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
-#include <QtTest>
+#include <QtTest/QtTest>
 
 #include <qgsapplication.h>
 #include <qgsmapcanvas.h>
 #include <qgsmaprenderer.h>
 
+namespace QTest
+{
+  template<>
+  char* toString( const QgsRectangle& r )
+  {
+    QByteArray ba = r.toString().toLocal8Bit();
+    return qstrdup( ba.data() );
+  }
+}
+
 class TestQgsMapCanvas : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsMapCanvas()
+        : mCanvas( 0 )
+    {}
+
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
@@ -33,7 +62,9 @@ void TestQgsMapCanvas::cleanupTestCase()
 
 void TestQgsMapCanvas::testMapRendererInteraction()
 {
+  Q_NOWARN_DEPRECATED_PUSH
   QgsMapRenderer* mr = mCanvas->mapRenderer();
+  Q_NOWARN_DEPRECATED_POP
 
   // CRS transforms
 
@@ -55,14 +86,20 @@ void TestQgsMapCanvas::testMapRendererInteraction()
   QgsRectangle r1( 10, 10, 20, 20 );
   mr->setExtent( r1 );
   QgsRectangle r2 = mr->extent();
-  QCOMPARE( mCanvas->extent(), r2 );
+  QVERIFY( qgsDoubleNear( mCanvas->extent().xMinimum(), r2.xMinimum(), 0.0000000001 ) );
+  QVERIFY( qgsDoubleNear( mCanvas->extent().yMinimum(), r2.yMinimum(), 0.0000000001 ) );
+  QVERIFY( qgsDoubleNear( mCanvas->extent().xMaximum(), r2.xMaximum(), 0.0000000001 ) );
+  QVERIFY( qgsDoubleNear( mCanvas->extent().yMaximum(), r2.yMaximum(), 0.0000000001 ) );
   QCOMPARE( spy2.count(), 1 );
 
   QgsRectangle r3( 100, 100, 200, 200 );
   QSignalSpy spy3( mr, SIGNAL( extentsChanged() ) );
   mCanvas->setExtent( r3 );
   QgsRectangle r4 = mCanvas->extent();
-  QCOMPARE( mr->extent(), r4 );
+  QVERIFY( qgsDoubleNear( mr->extent().xMinimum(), r4.xMinimum(), 0.0000000001 ) );
+  QVERIFY( qgsDoubleNear( mr->extent().yMinimum(), r4.yMinimum(), 0.0000000001 ) );
+  QVERIFY( qgsDoubleNear( mr->extent().xMaximum(), r4.xMaximum(), 0.0000000001 ) );
+  QVERIFY( qgsDoubleNear( mr->extent().yMaximum(), r4.yMaximum(), 0.0000000001 ) );
   QCOMPARE( spy3.count(), 1 );
 
   // Destination CRS
@@ -89,4 +126,4 @@ void TestQgsMapCanvas::testMapRendererInteraction()
 
 
 QTEST_MAIN( TestQgsMapCanvas )
-#include "moc_testqgsmapcanvas.cxx"
+#include "testqgsmapcanvas.moc"

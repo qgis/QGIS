@@ -24,25 +24,29 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
       SelectionElement
     };
 
-    explicit QgsFeatureListViewDelegate( QgsFeatureListModel* listModel, QObject *parent = 0 );
+    explicit QgsFeatureListViewDelegate( QgsFeatureListModel* listModel, QObject *parent = nullptr );
 
     void setEditSelectionModel( QItemSelectionModel* editSelectionModel );
 
-    Element positionToElement( const QPoint& pos );
+    Element positionToElement( QPoint pos );
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
+
+    void setCurrentFeatureEdited( bool state );
 
   signals:
     void editButtonClicked( QModelIndex& index );
 
   protected:
-    virtual QSize sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const;
-    virtual void paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const;
+    virtual QSize sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const override;
+    virtual void paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const override;
 
   private:
     QgsFeatureSelectionModel* mFeatureSelectionModel;
     QItemSelectionModel* mEditSelectionModel;
     QgsFeatureListModel* mListModel;
+    //! Set to true if the current edit selection has been edited
+    bool mCurrentFeatureEdited;
 };
 
 #endif // QGSATTRIBUTELISTVIEWDELEGATE_H

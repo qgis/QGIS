@@ -8,7 +8,7 @@ class QgsFileDropEdit: QLineEdit
 #include <qgsfiledropedit.h>
 %End
   public:
-    QgsFileDropEdit( QWidget *parent = 0 );
+    QgsFileDropEdit( QWidget *parent /TransferThis/ = 0 );
     virtual ~QgsFileDropEdit();
 
     bool isDirOnly() const;
@@ -17,7 +17,7 @@ class QgsFileDropEdit: QLineEdit
     bool isFileOnly() const;
     void setFileOnly( bool isFileOnly );
 
-    const QString& suffixFilter() const;
+    QString suffixFilter() const;
     void setSuffixFilter( const QString& suffix );
 
   protected:

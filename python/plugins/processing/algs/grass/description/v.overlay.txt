@@ -1,0 +1,9 @@
+v.overlay
+Overlays two vector maps.
+Vector (v.*)
+ParameterVector|ainput|Input layer (A)|-1|False
+ParameterSelection|atype|Input layer (A) Type|area;line
+ParameterVector|binput|Input layer (B)|2|False
+ParameterSelection|operator|Operator to use|and;or;not;xor
+ParameterBoolean|-t|Do not create attribute table|False
+OutputVector|output|Overlay

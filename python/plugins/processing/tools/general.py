@@ -25,10 +25,9 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import *
 from processing.core.Processing import Processing
-from processing.gui.Postprocessing import Postprocessing
-from processing.parameters.ParameterSelection import ParameterSelection
+from processing.gui.Postprocessing import handleAlgorithmResults
+from processing.core.parameters import ParameterSelection
 
 
 def alglist(text=None):
@@ -51,7 +50,7 @@ def algoptions(name):
                 s += param.name + '(' + param.description + ')\n'
                 i = 0
                 for option in param.options:
-                    s += '\t' + str(i) + ' - ' + str(option) + '\n'
+                    s += '\t' + unicode(i) + ' - ' + unicode(option) + '\n'
                     i += 1
         print s
     else:
@@ -61,19 +60,18 @@ def algoptions(name):
 def alghelp(name):
     alg = Processing.getAlgorithm(name)
     if alg is not None:
-        print str(alg)
+        alg = alg.getCopy()
+        print unicode(alg)
         algoptions(name)
     else:
         print 'Algorithm not found'
 
 
-def runalg(algOrName, *args):
-    alg = Processing.runAlgorithm(algOrName, None, *args)
+def runalg(algOrName, *args, **kwargs):
+    alg = Processing.runAlgorithm(algOrName, None, *args, **kwargs)
     if alg is not None:
         return alg.getOutputValuesAsDictionary()
 
 
-def runandload(name, *args):
-    return Processing.runAlgorithm(name,
-                                   Postprocessing.handleAlgorithmResults,
-                                   *args)
+def runandload(name, *args, **kwargs):
+    return Processing.runAlgorithm(name, handleAlgorithmResults, *args, **kwargs)

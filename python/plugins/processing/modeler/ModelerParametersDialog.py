@@ -25,53 +25,40 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4 import QtCore, QtGui, QtWebKit
+from PyQt4.QtCore import Qt, QUrl, QMetaObject
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QLabel, QLineEdit, QFrame, QPushButton, QSizePolicy, QVBoxLayout, QHBoxLayout, QTabWidget, QWidget, QScrollArea, QComboBox, QTableWidgetItem, QMessageBox
+from PyQt4.QtWebKit import QWebView
 
-from processing.core.WrongHelpFileException import WrongHelpFileException
+from processing.modeler.ModelerAlgorithm import ValueFromInput, \
+    ValueFromOutput, Algorithm, ModelerOutput
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.RangePanel import RangePanel
-from processing.modeler.ModelerAlgorithm import AlgorithmAndParameter
+from processing.gui.GeometryPredicateSelectionPanel import \
+    GeometryPredicateSelectionPanel
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
-from processing.parameters.ParameterCrs import ParameterCrs
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.parameters.ParameterSelection import ParameterSelection
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.parameters.ParameterFixedTable import ParameterFixedTable
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterTableField import ParameterTableField
-from processing.parameters.ParameterTable import ParameterTable
-from processing.parameters.ParameterString import ParameterString
-from processing.parameters.ParameterRange import ParameterRange
-from processing.parameters.ParameterFile import ParameterFile
-from processing.parameters.ParameterExtent import ParameterExtent
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputVector import OutputVector
-from processing.outputs.OutputTable import OutputTable
-from processing.outputs.OutputExtent import OutputExtent
-from processing.outputs.OutputString import OutputString
-from processing.outputs.OutputNumber import OutputNumber
-from processing.outputs.OutputHTML import OutputHTML
-from processing.outputs.OutputFile import OutputFile
+from processing.core.parameters import ParameterExtent, ParameterRaster, ParameterVector, ParameterBoolean, ParameterTable, ParameterFixedTable, ParameterMultipleInput, ParameterSelection, ParameterRange, ParameterNumber, ParameterString, ParameterCrs, ParameterTableField, ParameterFile, ParameterGeometryPredicate
+from processing.core.outputs import OutputRaster, OutputVector, OutputTable, OutputHTML, OutputFile, OutputDirectory, OutputNumber, OutputString, OutputExtent
 
 
-class ModelerParametersDialog(QtGui.QDialog):
+class ModelerParametersDialog(QDialog):
 
     ENTER_NAME = '[Enter name if this is a final result]'
     NOT_SELECTED = '[Not selected]'
     USE_MIN_COVERING_EXTENT = '[Use min covering extent]'
 
-    def __init__(self, alg, model, algIndex=None):
-        QtGui.QDialog.__init__(self)
+    def __init__(self, alg, model, algName=None):
+        QDialog.__init__(self)
         self.setModal(True)
-        self.alg = alg
+        #The algorithm to define in this dialog. It is an instance of GeoAlgorithm
+        self._alg = alg
+        #The resulting algorithm after the user clicks on OK. it is an instance of the container Algorithm class
+        self.alg = None
+        #The model this algorithm is going to be added to
         self.model = model
-        self.algIndex = algIndex
+        #The name of the algorithm in the model, in case we are editing it and not defining it for the first time
+        self._algName = algName
         self.setupUi()
         self.params = None
 
@@ -83,33 +70,47 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.valueItems = {}
         self.dependentItems = {}
         self.resize(650, 450)
-        self.buttonBox = QtGui.QDialogButtonBox()
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel
-                | QtGui.QDialogButtonBox.Ok)
-        tooltips = self.alg.getParameterDescriptions()
-        self.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                           QtGui.QSizePolicy.Expanding)
-        self.verticalLayout = QtGui.QVBoxLayout()
+        self.buttonBox = QDialogButtonBox()
+        self.buttonBox.setOrientation(Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel
+                                          | QDialogButtonBox.Ok)
+        tooltips = self._alg.getParameterDescriptions()
+        self.setSizePolicy(QSizePolicy.Expanding,
+                           QSizePolicy.Expanding)
+        self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setSpacing(5)
         self.verticalLayout.setMargin(20)
-        for param in self.alg.parameters:
+
+        hLayout = QHBoxLayout()
+        hLayout.setSpacing(5)
+        hLayout.setMargin(0)
+        descriptionLabel = QLabel(self.tr("Description"))
+        self.descriptionBox = QLineEdit()
+        self.descriptionBox.setText(self._alg.name)
+        hLayout.addWidget(descriptionLabel)
+        hLayout.addWidget(self.descriptionBox)
+        self.verticalLayout.addLayout(hLayout)
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Sunken)
+        self.verticalLayout.addWidget(line)
+
+        for param in self._alg.parameters:
             if param.isAdvanced:
-                self.advancedButton = QtGui.QPushButton()
-                self.advancedButton.setText('Show advanced parameters')
+                self.advancedButton = QPushButton()
+                self.advancedButton.setText(self.tr('Show advanced parameters'))
                 self.advancedButton.setMaximumWidth(150)
-                QtCore.QObject.connect(self.advancedButton,
-                                       QtCore.SIGNAL('clicked()'),
-                                       self.showAdvancedParametersClicked)
+                self.advancedButton.clicked.connect(
+                    self.showAdvancedParametersClicked)
                 self.verticalLayout.addWidget(self.advancedButton)
                 break
-        for param in self.alg.parameters:
+        for param in self._alg.parameters:
             if param.hidden:
                 continue
             desc = param.description
             if isinstance(param, ParameterExtent):
                 desc += '(xmin, xmax, ymin, ymax)'
-            label = QtGui.QLabel(desc)
+            label = QLabel(desc)
             self.labels[param.name] = label
             widget = self.getWidgetFromParameter(param)
             self.valueItems[param.name] = widget
@@ -126,13 +127,13 @@ class ModelerParametersDialog(QtGui.QDialog):
             self.verticalLayout.addWidget(label)
             self.verticalLayout.addWidget(widget)
 
-        for output in self.alg.outputs:
+        for output in self._alg.outputs:
             if output.hidden:
                 continue
             if isinstance(output, (OutputRaster, OutputVector, OutputTable,
-                          OutputHTML, OutputFile)):
-                label = QtGui.QLabel(output.description + '<'
-                                     + output.__module__.split('.')[-1] + '>')
+                                   OutputHTML, OutputFile, OutputDirectory)):
+                label = QLabel(output.description + '<'
+                               + output.__class__.__name__ + '>')
                 item = QLineEdit()
                 if hasattr(item, 'setPlaceholderText'):
                     item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
@@ -140,9 +141,9 @@ class ModelerParametersDialog(QtGui.QDialog):
                 self.verticalLayout.addWidget(item)
                 self.valueItems[output.name] = item
 
-        label = QtGui.QLabel(' ')
+        label = QLabel(' ')
         self.verticalLayout.addWidget(label)
-        label = QtGui.QLabel('Parent algorithms')
+        label = QLabel(self.tr('Parent algorithms'))
         self.dependenciesPanel = self.getDependenciesPanel()
         self.verticalLayout.addWidget(label)
         self.verticalLayout.addWidget(self.dependenciesPanel)
@@ -151,440 +152,272 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.setLayout(self.verticalLayout)
 
         self.setPreviousValues()
-        self.setWindowTitle(self.alg.name)
-        self.verticalLayout2 = QtGui.QVBoxLayout()
+        self.setWindowTitle(self._alg.name)
+        self.verticalLayout2 = QVBoxLayout()
         self.verticalLayout2.setSpacing(2)
         self.verticalLayout2.setMargin(0)
-        self.tabWidget = QtGui.QTabWidget()
+        self.tabWidget = QTabWidget()
         self.tabWidget.setMinimumWidth(300)
-        self.paramPanel = QtGui.QWidget()
+        self.paramPanel = QWidget()
         self.paramPanel.setLayout(self.verticalLayout)
-        self.scrollArea = QtGui.QScrollArea()
+        self.scrollArea = QScrollArea()
         self.scrollArea.setWidget(self.paramPanel)
         self.scrollArea.setWidgetResizable(True)
-        self.tabWidget.addTab(self.scrollArea, 'Parameters')
-        self.webView = QtWebKit.QWebView()
+        self.tabWidget.addTab(self.scrollArea, self.tr('Parameters'))
+        self.webView = QWebView()
+
         html = None
-        try:
-            if self.alg.helpFile():
-                helpFile = self.alg.helpFile()
+        url = None
+        isText, help = self._alg.help()
+        if help is not None:
+            if isText:
+                html = help
             else:
-                html = \
-                    '<h2>Sorry, no help is available for this algorithm.</h2>'
-        except WrongHelpFileException, e:
-            html = e.msg
-            self.webView.setHtml('<h2>Could not open help file :-( </h2>')
+                url = QUrl(help)
+        else:
+            html = self.tr('<h2>Sorry, no help is available for this '
+                           'algorithm.</h2>')
         try:
             if html:
                 self.webView.setHtml(html)
-            else:
-                url = QtCore.QUrl(helpFile)
+            elif url:
                 self.webView.load(url)
         except:
-            self.webView.setHtml('<h2>Could not open help file :-( </h2>')
+            self.webView.setHtml(self.tr('<h2>Could not open help file :-( </h2>'))
         self.tabWidget.addTab(self.webView, 'Help')
         self.verticalLayout2.addWidget(self.tabWidget)
         self.verticalLayout2.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout2)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL('accepted()'),
-                               self.okPressed)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL('rejected()'),
-                               self.cancelPressed)
-        QtCore.QMetaObject.connectSlotsByName(self)
+        self.buttonBox.accepted.connect(self.okPressed)
+        self.buttonBox.rejected.connect(self.cancelPressed)
+        QMetaObject.connectSlotsByName(self)
 
     def getAvailableDependencies(self):
-        if self.algIndex is None:
+        if self._algName is None:
             dependent = []
         else:
-            dependent = self.model.getDependentAlgorithms(self.algIndex)
+            dependent = self.model.getDependentAlgorithms(self._algName)
         opts = []
-        i = 0
-        for alg in self.model.algs:
-            if i not in dependent:
-                opts.append(str(i + 1) + ':' + alg.name)
-            i += 1
+        for alg in self.model.algs.values():
+            if alg.name not in dependent:
+                opts.append(alg)
         return opts
 
     def getDependenciesPanel(self):
-        return MultipleInputPanel(self.getAvailableDependencies())
+        return MultipleInputPanel([alg.algorithm.name for alg in self.getAvailableDependencies()])
 
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
         if self.showAdvanced:
-            self.advancedButton.setText('Hide advanced parameters')
+            self.advancedButton.setText(self.tr('Hide advanced parameters'))
         else:
-            self.advancedButton.setText('Show advanced parameters')
-        for param in self.alg.parameters:
+            self.advancedButton.setText(self.tr('Show advanced parameters'))
+        for param in self._alg.parameters:
             if param.isAdvanced:
                 self.labels[param.name].setVisible(self.showAdvanced)
                 self.widgets[param.name].setVisible(self.showAdvanced)
 
-    def getRasterLayers(self):
-        layers = []
-        params = self.model.parameters
-        for param in params:
-            if isinstance(param, ParameterRaster):
-                layers.append(AlgorithmAndParameter(
-                        AlgorithmAndParameter.PARENT_MODEL_ALGORITHM,
-                        param.name, '', param.description))
-
-        if self.algIndex is None:
+    def getAvailableValuesOfType(self, paramType, outType=None):
+        values = []
+        inputs = self.model.inputs
+        for i in inputs.values():
+            param = i.param
+            if isinstance(param, paramType):
+                values.append(ValueFromInput(param.name))
+        if outType is None:
+            return values
+        if self._algName is None:
             dependent = []
         else:
-            dependent = self.model.getDependentAlgorithms(self.algIndex)
+            dependent = self.model.getDependentAlgorithms(self._algName)
+        for alg in self.model.algs.values():
+            if alg.name not in dependent:
+                for out in alg.algorithm.outputs:
+                    if isinstance(out, outType):
+                        values.append(ValueFromOutput(alg.name, out.name))
 
-        i = 0
-        for alg in self.model.algs:
-            if i not in dependent:
-                for out in alg.outputs:
-                    if isinstance(out, OutputRaster):
-                        layers.append(AlgorithmAndParameter(i, out.name,
-                                      alg.name, out.description))
-            i += 1
+        return values
 
-        return layers
-
-    def getVectorLayers(self):
-        layers = []
-        params = self.model.parameters
-        for param in params:
-            if isinstance(param, ParameterVector):
-                layers.append(AlgorithmAndParameter(
-                        AlgorithmAndParameter.PARENT_MODEL_ALGORITHM,
-                        param.name, '', param.description))
-
-        if self.algIndex is None:
-            dependent = []
+    def resolveValueDescription(self, value):
+        if isinstance(value, ValueFromInput):
+            return self.model.inputs[value.name].param.description
         else:
-            dependent = self.model.getDependentAlgorithms(self.algIndex)
-
-        i = 0
-        for alg in self.model.algs:
-            if i not in dependent:
-                for out in alg.outputs:
-                    if isinstance(out, OutputVector):
-                        layers.append(AlgorithmAndParameter(i, out.name,
-                                      alg.name, out.description))
-            i += 1
-
-        return layers
-
-    def getTables(self):
-        tables = []
-        params = self.model.parameters
-        for param in params:
-            if isinstance(param, ParameterTable):
-                tables.append(AlgorithmAndParameter(
-                        AlgorithmAndParameter.PARENT_MODEL_ALGORITHM,
-                        param.name, '', param.description))
-
-        if self.algIndex is None:
-            dependent = []
-        else:
-            dependent = self.model.getDependentAlgorithms(self.algIndex)
-
-        i = 0
-        for alg in self.model.algs:
-            if i not in dependent:
-                for out in alg.outputs:
-                    if isinstance(out, OutputTable):
-                        tables.append(AlgorithmAndParameter(i, out.name,
-                                      alg.name, out.description))
-            i += 1
-
-        return tables
-
-    def getExtents(self):
-        extents = []
-        params = self.model.parameters
-        for param in params:
-            if isinstance(param, ParameterExtent):
-                extents.append(AlgorithmAndParameter(
-                        AlgorithmAndParameter.PARENT_MODEL_ALGORITHM,
-                        param.name, '', param.description))
-
-        if self.algIndex is None:
-            dependent = []
-        else:
-            dependent = self.model.getDependentAlgorithms(self.algIndex)
-
-        i = 0
-        for alg in self.model.algs:
-            if i not in dependent:
-                for out in alg.outputs:
-                    if isinstance(out, OutputExtent):
-                        extents.append(AlgorithmAndParameter(i, out.name,
-                                       alg.name, out.description))
-            i += 1
-
-        return extents
-
-    def getNumbers(self):
-        numbers = []
-        params = self.model.parameters
-        for param in params:
-            if isinstance(param, ParameterNumber):
-                numbers.append(AlgorithmAndParameter(
-                        AlgorithmAndParameter.PARENT_MODEL_ALGORITHM,
-                        param.name, '', param.description))
-
-        if self.algIndex is None:
-            dependent = []
-        else:
-            dependent = self.model.getDependentAlgorithms(self.algIndex)
-
-        i = 0
-        for alg in self.model.algs:
-            if i not in dependent:
-                for out in alg.outputs:
-                    if isinstance(out, OutputNumber):
-                        numbers.append(AlgorithmAndParameter(i, out.name,
-                                       alg.name, out.description))
-            i += 1
-        return numbers
-
-    def getFiles(self):
-        files = []
-        params = self.model.parameters
-        for param in params:
-            if isinstance(param, ParameterFile):
-                files.append(AlgorithmAndParameter(
-                        AlgorithmAndParameter.PARENT_MODEL_ALGORITHM,
-                        param.name, '', param.description))
-
-        if self.algIndex is None:
-            dependent = []
-        else:
-            dependent = self.model.getDependentAlgorithms(self.algIndex)
-
-        i = 0
-        for alg in self.model.algs:
-            if i not in dependent:
-                for out in alg.outputs:
-                    if isinstance(out, OutputFile):
-                        files.append(AlgorithmAndParameter(i, out.name,
-                                     alg.name, out.description))
-            i += 1
-        return files
-
-    def getBooleans(self):
-        booleans = []
-        params = self.model.parameters
-        for param in params:
-            if isinstance(param, ParameterBoolean):
-                booleans.append(AlgorithmAndParameter(
-                        AlgorithmAndParameter.PARENT_MODEL_ALGORITHM,
-                        param.name, '', param.description))
-        return booleans
-
-    def getStrings(self):
-        strings = []
-        params = self.model.parameters
-        for param in params:
-            if isinstance(param, ParameterString):
-                strings.append(AlgorithmAndParameter(
-                        AlgorithmAndParameter.PARENT_MODEL_ALGORITHM,
-                        param.name, '', param.description))
-
-        if self.algIndex is None:
-            dependent = []
-        else:
-            dependent = self.model.getDependentAlgorithms(self.algIndex)
-
-        i = 0
-        for alg in self.model.algs:
-            if i not in dependent:
-                for out in alg.outputs:
-                    if isinstance(out, OutputString):
-                        strings.append(AlgorithmAndParameter(i, out.name,
-                                       alg.name, out.description))
-            i += 1
-        return strings
-
-    def getTableFields(self):
-        strings = []
-        params = self.model.parameters
-        for param in params:
-            if isinstance(param, ParameterTableField):
-                strings.append(AlgorithmAndParameter(
-                        AlgorithmAndParameter.PARENT_MODEL_ALGORITHM,
-                        param.name, '', param.description))
-        return strings
+            alg = self.model.algs[value.alg]
+            return self.tr("'%s' from algorithm '%s'") % (alg.algorithm.getOutputFromName(value.output).description, alg.description)
 
     def getWidgetFromParameter(self, param):
         if isinstance(param, ParameterRaster):
-            item = QtGui.QComboBox()
-
-            layers = self.getRasterLayers()
+            item = QComboBox()
+            layers = self.getAvailableValuesOfType(ParameterRaster, OutputRaster)
             if param.optional:
                 item.addItem(self.NOT_SELECTED, None)
             for layer in layers:
-                item.addItem(layer.name(), layer)
+                item.addItem(self.resolveValueDescription(layer), layer)
         elif isinstance(param, ParameterVector):
-            item = QtGui.QComboBox()
-
-            layers = self.getVectorLayers()
+            item = QComboBox()
+            layers = self.getAvailableValuesOfType(ParameterVector, OutputVector)
             if param.optional:
                 item.addItem(self.NOT_SELECTED, None)
             for layer in layers:
-                item.addItem(layer.name(), layer)
+                item.addItem(self.resolveValueDescription(layer), layer)
         elif isinstance(param, ParameterTable):
-            item = QtGui.QComboBox()
-            item.setEditable(True)
-            layers = self.getTables()
+            item = QComboBox()
+            tables = self.getAvailableValuesOfType(ParameterTable, OutputTable)
+            layers = self.getAvailableValuesOfType(ParameterVector, OutputVector)
             if param.optional:
                 item.addItem(self.NOT_SELECTED, None)
+            for table in tables:
+                item.addItem(self.resolveValueDescription(table), table)
             for layer in layers:
-                item.addItem(layer.name(), layer)
+                item.addItem(self.resolveValueDescription(layer), layer)
         elif isinstance(param, ParameterBoolean):
-            item = QtGui.QComboBox()
+            item = QComboBox()
             item.addItem('Yes')
             item.addItem('No')
-            bools = self.getBooleans()
+            bools = self.getAvailableValuesOfType(ParameterBoolean, None)
             for b in bools:
-                item.addItem(b.name(), b)
+                item.addItem(self.resolveValueDescription(b), b)
+            if param.default:
+                item.setCurrentIndex(0)
+            else:
+                item.setCurrentIndex(1)
         elif isinstance(param, ParameterSelection):
-            item = QtGui.QComboBox()
+            item = QComboBox()
             item.addItems(param.options)
+            item.setCurrentIndex(param.default or 1)
         elif isinstance(param, ParameterFixedTable):
             item = FixedTablePanel(param)
         elif isinstance(param, ParameterRange):
             item = RangePanel(param)
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-                options = self.getVectorLayers()
+                options = self.getAvailableValuesOfType(ParameterVector, OutputVector)
             else:
-                options = self.getRasterLayers()
+                options = self.getAvailableValuesOfType(ParameterRaster, OutputRaster)
             opts = []
             for opt in options:
-                opts.append(opt.name())
+                opts.append(self.resolveValueDescription(opt))
             item = MultipleInputPanel(opts)
         elif isinstance(param, ParameterString):
-            strings = self.getStrings()
+            strings = self.getAvailableValuesOfType(ParameterString, OutputString)
+            options = [(self.resolveValueDescription(s), s) for s in strings]
             if param.multiline:
-                item = MultilineTextPanel(strings, self.model)
-                item.setText(str(param.default))
+                item = MultilineTextPanel(options)
+                item.setText(unicode(param.default or ""))
             else:
-                item = QtGui.QComboBox()
+                item = QComboBox()
                 item.setEditable(True)
-                for s in strings:
-                    item.addItem(s.name(), s)
-                item.setEditText(str(param.default))
+                for desc, val in options:
+                    item.addItem(desc, val)
+                item.setEditText(unicode(param.default or ""))
         elif isinstance(param, ParameterTableField):
-            item = QtGui.QComboBox()
+            item = QComboBox()
             item.setEditable(True)
-            fields = self.getTableFields()
+            fields = self.getAvailableValuesOfType(ParameterTableField, None)
             for f in fields:
-                item.addItem(f.name(), f)
+                item.addItem(self.resolveValueDescription(f), f)
         elif isinstance(param, ParameterNumber):
-            item = QtGui.QComboBox()
+            item = QComboBox()
             item.setEditable(True)
-            numbers = self.getNumbers()
+            numbers = self.getAvailableValuesOfType(ParameterNumber, OutputNumber)
             for n in numbers:
-                item.addItem(n.name(), n)
-            item.setEditText(str(param.default))
+                item.addItem(self.resolveValueDescription(n), n)
+            item.setEditText(unicode(param.default))
         elif isinstance(param, ParameterCrs):
             item = CrsSelectionPanel(param.default)
         elif isinstance(param, ParameterExtent):
-            item = QtGui.QComboBox()
+            item = QComboBox()
             item.setEditable(True)
-            extents = self.getExtents()
+            extents = self.getAvailableValuesOfType(ParameterExtent, OutputExtent)
             if self.canUseAutoExtent():
                 item.addItem(self.USE_MIN_COVERING_EXTENT, None)
             for ex in extents:
-                item.addItem(ex.name(), ex)
+                item.addItem(self.resolveValueDescription(ex), ex)
             if not self.canUseAutoExtent():
-                item.setEditText(str(param.default))
+                item.setEditText(unicode(param.default))
         elif isinstance(param, ParameterFile):
-            item = QtGui.QComboBox()
+            item = QComboBox()
             item.setEditable(True)
-            files = self.getFiles()
+            files = self.getAvailableValuesOfType(ParameterFile, OutputFile)
             for f in files:
-                item.addItem(f.name(), f)
+                item.addItem(self.resolveValueDescription(f), f)
+        elif isinstance(param, ParameterGeometryPredicate):
+            item = GeometryPredicateSelectionPanel(param.enabledPredicates)
         else:
-            item = QtGui.QLineEdit()
+            item = QLineEdit()
             try:
-                item.setText(str(param.default))
+                item.setText(unicode(param.default))
             except:
                 pass
         return item
 
     def canUseAutoExtent(self):
-        for param in self.alg.parameters:
-            if isinstance(param, (ParameterRaster, ParameterVector)):
+        for param in self._alg.parameters:
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 return True
-            if isinstance(param, ParameterMultipleInput):
-                return True
+        return False
 
     def setTableContent(self):
-        params = self.alg.parameters
-        outputs = self.alg.outputs
-        numParams = 0
-        for param in params:
-            if not param.hidden:
-                numParams += 1
-        numOutputs = 0
-        for output in outputs:
-            if not output.hidden:
-                numOutputs += 1
-        self.tableWidget.setRowCount(numParams + numOutputs)
+        params = self._alg.parameters
+        outputs = self._alg.outputs
+        visibleParams = [p for p in params if not p.hidden]
+        visibleOutputs = [p for o in outputs if not o.hidden]
+        self.tableWidget.setRowCount(len(visibleParams) + len(visibleOutputs))
 
-        i = 0
-        for param in params:
-            if not param.hidden:
-                item = QtGui.QTableWidgetItem(param.description)
-                item.setFlags(QtCore.Qt.ItemIsEnabled)
-                self.tableWidget.setItem(i, 0, item)
-                item = self.getWidgetFromParameter(param)
-                self.valueItems[param.name] = item
-                self.tableWidget.setCellWidget(i, 1, item)
-                self.tableWidget.setRowHeight(i, 22)
-                i += 1
+        for i, param in visibleParams:
+            item = QTableWidgetItem(param.description)
+            item.setFlags(Qt.ItemIsEnabled)
+            self.tableWidget.setItem(i, 0, item)
+            item = self.getWidgetFromParameter(param)
+            self.valueItems[param.name] = item
+            self.tableWidget.setCellWidget(i, 1, item)
+            self.tableWidget.setRowHeight(i, 22)
 
-        for output in outputs:
-            if not output.hidden:
-                item = QtGui.QTableWidgetItem(output.description + '<'
-                        + output.__module__.split('.')[-1] + '>')
-                item.setFlags(QtCore.Qt.ItemIsEnabled)
-                self.tableWidget.setItem(i, 0, item)
-                item = QLineEdit()
-                if hasattr(item, 'setPlaceholderText'):
-                    item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
-                self.valueItems[output.name] = item
-                self.tableWidget.setCellWidget(i, 1, item)
-                self.tableWidget.setRowHeight(i, 22)
-                i += 1
+        for i, output in visibleOutputs:
+            item = QTableWidgetItem(output.description + '<'
+                                    + output.__module__.split('.')[-1] + '>')
+            item.setFlags(Qt.ItemIsEnabled)
+            self.tableWidget.setItem(i, 0, item)
+            item = QLineEdit()
+            if hasattr(item, 'setPlaceholderText'):
+                item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
+            self.valueItems[output.name] = item
+            self.tableWidget.setCellWidget(i, 1, item)
+            self.tableWidget.setRowHeight(i, 22)
 
     def setComboBoxValue(self, combo, value, param):
+        if isinstance(value, list):
+            value = value[0]
         items = [combo.itemData(i) for i in range(combo.count())]
-        idx = 0
-        for item in items:
-            if item and value:
-                if item.alg == value.alg and item.param == value.param:
-                    combo.setCurrentIndex(idx)
-                    return
-            idx += 1
+        try:
+            idx = items.index(value)
+            combo.setCurrentIndex(idx)
+            return
+        except ValueError:
+            pass
         if combo.isEditable():
-            value = self.model.getValueFromAlgorithmAndParameter(value)
-            if value:
-                combo.setEditText(str(value))
+            if value is not None:
+                combo.setEditText(unicode(value))
         elif isinstance(param, ParameterSelection):
-            value = self.model.getValueFromAlgorithmAndParameter(value)
             combo.setCurrentIndex(int(value))
         elif isinstance(param, ParameterBoolean):
-            value = self.model.getValueFromAlgorithmAndParameter(value) \
-                    == str(True)
             if value:
                 combo.setCurrentIndex(0)
             else:
                 combo.setCurrentIndex(1)
 
     def setPreviousValues(self):
-        if self.algIndex is not None:
-            for (name, value) in \
-                    self.model.algParameters[self.algIndex].items():
-                widget = self.valueItems[name]
-                param = self.alg.getParameterFromName(name)
+        if self._algName is not None:
+            alg = self.model.algs[self._algName]
+            self.descriptionBox.setText(alg.description)
+            for param in alg.algorithm.parameters:
+                if param.hidden:
+                    continue
+                widget = self.valueItems[param.name]
+                if param.name in alg.params:
+                    value = alg.params[param.name]
+                else:
+                    value = None
                 if isinstance(param, (
                         ParameterRaster,
                         ParameterVector,
@@ -594,7 +427,8 @@ class ModelerParametersDialog(QtGui.QDialog):
                         ParameterNumber,
                         ParameterBoolean,
                         ParameterExtent,
-                        )):
+                        ParameterFile
+                )):
                     self.setComboBoxValue(widget, value, param)
                 elif isinstance(param, ParameterString):
                     if param.multiline:
@@ -602,313 +436,228 @@ class ModelerParametersDialog(QtGui.QDialog):
                     else:
                         self.setComboBoxValue(widget, value, param)
                 elif isinstance(param, ParameterCrs):
-                    value = self.model.getValueFromAlgorithmAndParameter(value)
-                    widget.setAuthid(value)
+                    widget.setAuthId(value)
                 elif isinstance(param, ParameterFixedTable):
-                    pass
+                    pass  # TODO!
                 elif isinstance(param, ParameterMultipleInput):
-                    value = self.model.getValueFromAlgorithmAndParameter(value)
-                    values = value.split(';')
-                    selectedoptions = []
-                    if param.datatype \
-                            == ParameterMultipleInput.TYPE_VECTOR_ANY:
-                        options = self.getVectorLayers()
+                    if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                        options = self.getAvailableValuesOfType(ParameterVector, OutputVector)
                     else:
-                        options = self.getRasterLayers()
-                    for i in range(len(options)):
-                        option = options[i]
-                        for aap in values:
-                            if str(option) == aap:
-                                selectedoptions.append(i)
-                    widget.setSelectedItems(selectedoptions)
-                else:
-                    pass
+                        options = self.getAvailableValuesOfType(ParameterRaster, OutputRaster)
+                    selected = []
+                    for i, opt in enumerate(options):
+                        if opt in value:
+                            selected.append(i)
+                    widget.setSelectedItems(selected)
+                elif isinstance(param, ParameterGeometryPredicate):
+                    widget.setValue(value)
 
-            for out in self.alg.outputs:
-                if not out.hidden:
-                    value = self.model.algOutputs[self.algIndex][out.name]
-                    if value is not None:
-                        widget = \
-                            self.valueItems[out.name].setText(unicode(value))
+            for name, out in alg.outputs.iteritems():
+                widget = self.valueItems[name].setText(out.description)
 
             selected = []
             dependencies = self.getAvailableDependencies()
-            index = -1
-            for dependency in dependencies:
-                index += 1
-                n = int(dependency[:dependency.find(':')]) - 1
-                if n in self.model.dependencies[self.algIndex]:
-                    selected.append(index)
+            for idx, dependency in enumerate(dependencies):
+                if dependency.name in alg.dependencies:
+                    selected.append(idx)
 
             self.dependenciesPanel.setSelectedItems(selected)
 
-    def setParamValues(self):
-        self.params = {}
-        self.values = {}
-        self.outputs = {}
-
-        params = self.alg.parameters
-        outputs = self.alg.outputs
-
+    def createAlgorithm(self):
+        alg = Algorithm(self._alg.commandLineName())
+        alg.setName(self.model)
+        alg.description = self.descriptionBox.text()
+        params = self._alg.parameters
+        outputs = self._alg.outputs
         for param in params:
             if param.hidden:
                 continue
-            if not self.setParamValue(param, self.valueItems[param.name]):
-                return False
+            if not self.setParamValue(alg, param, self.valueItems[param.name]):
+                return None
         for output in outputs:
-            if output.hidden:
-                self.outputs[output.name] = None
-            else:
+            if not output.hidden:
                 name = unicode(self.valueItems[output.name].text())
-                if name.strip() != '' and name \
-                        != ModelerParametersDialog.ENTER_NAME:
-                    self.outputs[output.name] = name
-                else:
-                    self.outputs[output.name] = None
+                if name.strip() != '' and name != ModelerParametersDialog.ENTER_NAME:
+                    alg.outputs[output.name] = ModelerOutput(name)
 
         selectedOptions = self.dependenciesPanel.selectedoptions
-
-        # This index are based on the list of available dependencies.
-        # we translate them into indices based on the whole set of
-        # algorithm in the model. We just take the values in the
-        # beginning of the string representing the algorithm.
         availableDependencies = self.getAvailableDependencies()
-        self.dependencies = []
         for selected in selectedOptions:
-            s = availableDependencies[selected]
-            n = int(s[:s.find(':')]) - 1
-            self.dependencies.append(n)
+            alg.dependencies.append(availableDependencies[selected].name)
 
-        return True
+        return alg
 
-    def setParamValueLayerOrTable(self, param, widget):
+    def setParamValueLayerOrTable(self, alg, param, widget):
         idx = widget.currentIndex()
         if idx < 0:
             return False
         else:
             value = widget.itemData(widget.currentIndex())
-            self.params[param.name] = value
+            alg.params[param.name] = value
             return True
 
-    def setParamBooleanValue(self, param, widget):
-        if widget.currentIndex() < 2:
-            name = self.getSafeNameForHarcodedParameter(param)
-            value = AlgorithmAndParameter(
-                    AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-            self.params[param.name] = value
-            self.values[name] = str(widget.currentIndex() == 0)
-        else:
-            value = widget.itemData(widget.currentIndex())
-            self.params[param.name] = value
-        return True
-
-    def setParamTableFieldValue(self, param, widget):
+    def setParamTableFieldValue(self, alg, param, widget):
         idx = widget.findText(widget.currentText())
         if idx < 0:
-            name = self.getSafeNameForHarcodedParameter(param)
-            value = AlgorithmAndParameter(
-                    AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-            s = str(widget.currentText()).strip()
+            s = unicode(widget.currentText()).strip()
             if s == '':
                 if param.optional:
-                    self.params[param.name] = None
+                    alg.params[param.name] = None
                     return True
                 else:
                     return False
             else:
-                self.params[param.name] = value
-                self.values[name] = str(widget.currentText())
+                alg.params[param.name] = s
                 return True
         else:
-            value = widget.itemData(widget.currentIndex())
-            self.params[param.name] = value
+            alg.params[param.name] = widget.itemData(widget.currentIndex())
         return True
 
-    def setParamStringValue(self, param, widget):
+    def setParamStringValue(self, alg, param, widget):
         if param.multiline:
-            name = self.getSafeNameForHarcodedParameter(param)
-            paramValue = AlgorithmAndParameter(
-                    AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
             value = widget.getValue()
             option = widget.getOption()
             if option == MultilineTextPanel.USE_TEXT:
                 if value == '':
                     if param.optional:
-                        self.params[param.name] = None
+                        alg.params[param.name] = None
                         return True
                     else:
                         return False
                 else:
-                    self.values[name] = value
-
-                    self.params[param.name] = paramValue
+                    alg.params[param.name] = value
             else:
-                self.params[param.name] = value
+                alg.params[param.name] = value
         else:
-            if widget.currentText() == '':
-                return False
             idx = widget.findText(widget.currentText())
             if idx < 0:
-                name = self.getSafeNameForHarcodedParameter(param)
-                value = AlgorithmAndParameter(
-                        AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-                self.params[param.name] = value
-                value = str(widget.currentText()).strip()
+                value = widget.currentText().strip()
                 if value == '':
                     if param.optional:
-                        self.values[name] = None
+                        alg.params[param.name] = None
                         return True
                     else:
                         return False
                 else:
-                    self.values[name] = str(widget.currentText())
+                    alg.params[param.name] = value
+            else:
+                alg.params[param.name] = widget.itemData(widget.currentIndex())
+        return True
+
+    def setParamFileValue(self, alg, param, widget):
+        idx = widget.findText(widget.currentText())
+        if idx < 0:
+            value = widget.currentText()
+        else:
+            value = widget.itemData(widget.currentIndex())
+        alg.params[param.name] = value
+        return True
+
+    def setParamNumberValue(self, alg, param, widget):
+        idx = widget.findText(widget.currentText())
+        if idx < 0:
+            s = widget.currentText().strip()
+            if s:
+                try:
+                    value = float(s)
+                except:
+                    return False
+            elif param.optional:
+                value = None
+            else:
+                return False
+        else:
+            value = widget.itemData(widget.currentIndex())
+        alg.params[param.name] = value
+        return True
+
+    def setParamExtentValue(self, alg, param, widget):
+        idx = widget.findText(widget.currentText())
+        if idx < 0:
+            s = unicode(widget.currentText()).strip()
+            if s:
+                try:
+                    tokens = s.split(',')
+                    if len(tokens) != 4:
+                        return False
+                    for token in tokens:
+                        float(token)
+                except:
+                    return False
+            elif param.optional:
+                s = None
+            else:
+                return False
+            alg.params[param.name] = [s]
+        else:
+            value = widget.itemData(widget.currentIndex())
+            alg.params[param.name] = value
+        return True
+
+    def setParamValue(self, alg, param, widget):
+        if isinstance(param, (ParameterRaster, ParameterVector,
+                              ParameterTable)):
+            return self.setParamValueLayerOrTable(alg, param, widget)
+        elif isinstance(param, ParameterBoolean):
+            if widget.currentIndex() < 2:
+                value = widget.currentIndex() == 0
             else:
                 value = widget.itemData(widget.currentIndex())
-                self.params[param.name] = value
-        return True
-
-    def setParamFileValue(self, param, widget):
-        idx = widget.findText(widget.currentText())
-        if idx < 0:
-            name = self.getSafeNameForHarcodedParameter(param)
-            value = AlgorithmAndParameter(
-                    AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-            self.params[param.name] = value
-            s = str(widget.currentText())
-            self.values[name] = s
-        else:
-            value = widget.itemData(widget.currentIndex())
-            self.params[param.name] = value
-        return True
-
-    def setParamNumberValue(self, param, widget):
-        idx = widget.findText(widget.currentText())
-        if idx < 0:
-            name = self.getSafeNameForHarcodedParameter(param)
-            value = AlgorithmAndParameter(
-                    AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-            self.params[param.name] = value
-            s = str(widget.currentText())
-            try:
-                float(s)
-                self.values[name] = s
-            except:
-                return False
-        else:
-            value = widget.itemData(widget.currentIndex())
-            self.params[param.name] = value
-        return True
-
-    def setParamExtentValue(self, param, widget):
-        idx = widget.findText(widget.currentText())
-        if idx < 0:
-            name = self.getSafeNameForHarcodedParameter(param)
-            value = AlgorithmAndParameter(
-                    AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-            self.params[param.name] = value
-            s = str(widget.currentText())
-            try:
-                tokens = s.split(',')
-                if len(tokens) != 4:
-                    return False
-                for token in tokens:
-                    float(token)
-            except:
-                return False
-            self.values[name] = s
-        else:
-            value = widget.itemData(widget.currentIndex())
-            self.params[param.name] = value
-        return True
-
-    def setParamValue(self, param, widget):
-        if isinstance(param, (ParameterRaster, ParameterVector,
-                      ParameterTable)):
-            return self.setParamValueLayerOrTable(param, widget)
-        elif isinstance(param, ParameterBoolean):
-            return self.setParamBooleanValue(param, widget)
+            alg.params[param.name] = value
+            return True
         elif isinstance(param, ParameterString):
-            return self.setParamStringValue(param, widget)
+            return self.setParamStringValue(alg, param, widget)
         elif isinstance(param, ParameterNumber):
-            return self.setParamNumberValue(param, widget)
+            return self.setParamNumberValue(alg, param, widget)
         elif isinstance(param, ParameterExtent):
-            return self.setParamExtentValue(param, widget)
+            return self.setParamExtentValue(alg, param, widget)
         elif isinstance(param, ParameterFile):
-            return self.setParamFileValue(param, widget)
+            return self.setParamFileValue(alg, param, widget)
         elif isinstance(param, ParameterSelection):
-            name = self.getSafeNameForHarcodedParameter(param)
-            value = AlgorithmAndParameter(
-                    AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-            self.params[param.name] = value
-            self.values[name] = str(widget.currentIndex())
+            alg.params[param.name] = widget.currentIndex()
             return True
         elif isinstance(param, ParameterRange):
-            name = self.getSafeNameForHarcodedParameter(param)
-            value = AlgorithmAndParameter(
-                    AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-            self.params[param.name] = value
-            self.values[name] = str(widget.getValue())
+            alg.params[param.name] = widget.getValue()
             return True
         elif isinstance(param, ParameterCrs):
             authid = widget.getValue()
-            if authid is None:
-                self.params[param.name] = None
-            else:
-                name = self.getSafeNameForHarcodedParameter(param)
-                value = AlgorithmAndParameter(
-                        AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-                self.params[param.name] = value
-                self.values[name] = authid
+            if authid is None and not param.optional:
+                return False
+            alg.params[param.name] = authid
             return True
         elif isinstance(param, ParameterFixedTable):
-            name = self.getSafeNameForHarcodedParameter(param)
-            value = AlgorithmAndParameter(
-                    AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-            self.params[param.name] = value
-            self.values[name] = ParameterFixedTable.tableToString(widget.table)
+            table = widget.table
+            if not bool(table) and not param.optional:
+                return False
+            alg.params[param.name] = ParameterFixedTable.tableToString(table)
             return True
         elif isinstance(param, ParameterTableField):
-            return self.setParamTableFieldValue(param, widget)
+            return self.setParamTableFieldValue(alg, param, widget)
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-                options = self.getVectorLayers()
+                options = self.getAvailableValuesOfType(ParameterVector, OutputVector)
             else:
-                options = self.getRasterLayers()
-            values = []
-            for index in widget.selectedoptions:
-                values.append(options[index].serialize())
+                options = self.getAvailableValuesOfType(ParameterRaster, OutputRaster)
+            values = [options[i] for i in widget.selectedoptions]
             if len(values) == 0 and not param.optional:
                 return False
-            name = self.getSafeNameForHarcodedParameter(param)
-            value = AlgorithmAndParameter(
-                    AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-            self.params[param.name] = value
-            self.values[name] = ';'.join(values)
+            alg.params[param.name] = values
+            return True
+        elif isinstance(param, ParameterGeometryPredicate):
+            alg.params[param.name] = widget.value()
             return True
         else:
-            name = self.getSafeNameForHarcodedParameter(param)
-            value = AlgorithmAndParameter(
-                    AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-            self.params[param.name] = value
-            self.values[name] = unicode(widget.text())
+            alg.params[param.name] = unicode(widget.text())
             return True
-
-    def getSafeNameForHarcodedParameter(self, param):
-        if self.algIndex is None:
-            return 'HARDCODEDPARAMVALUE_' + param.name + '_' \
-                + str(len(self.model.algs))
-        else:
-            return 'HARDCODEDPARAMVALUE_' + param.name + '_' \
-                + str(self.algIndex)
 
     def okPressed(self):
-        if self.setParamValues():
+        self.alg = self.createAlgorithm()
+        if self.alg is not None:
             self.close()
         else:
-            QMessageBox.critical(self, 'Unable to add algorithm',
-                                 'Wrong or missing parameter values')
-            self.params = None
+            QMessageBox.warning(self, self.tr('Unable to add algorithm'),
+                                self.tr('Wrong or missing parameter values'))
 
     def cancelPressed(self):
-        self.params = None
+        self.alg = None
         self.close()

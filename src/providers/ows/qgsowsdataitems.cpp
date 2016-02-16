@@ -28,7 +28,7 @@
 QgsOWSConnectionItem::QgsOWSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconConnect.png" );
+  mIconName = "mIconConnect.png";
 }
 
 QgsOWSConnectionItem::~QgsOWSConnectionItem()
@@ -39,16 +39,19 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
 {
   QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> children;
-  QVector<QgsDataItem*> serviceItems;
+  QMap<QgsDataItem*, QString> serviceItems; // service/provider key
 
   int layerCount = 0;
   // Try to open with WMS,WFS,WCS
-  foreach ( QString key, QStringList() << "wms" << "WFS" << "gdal" )
+  Q_FOREACH ( const QString& key, QStringList() << "wms" << "WFS" << "wcs" )
   {
     QgsDebugMsg( "Add connection for provider " + key );
     QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
     if ( !library )
+    {
+      QgsDebugMsg( "Cannot get provider " + key );
       continue;
+    }
 
     dataItem_t * dItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
     if ( !dItem )
@@ -57,17 +60,22 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
       continue;
     }
 
-    QgsDataItem *item = dItem( mPath, this );  // empty path -> top level
+    QString path = key.toLower() + ":/" + name();
+    QgsDebugMsg( "path = " + path );
+    QgsDataItem *item = dItem( path, this );  // empty path -> top level
     if ( !item )
+    {
+      QgsDebugMsg( "Connection not found by provider" );
       continue;
+    }
 
-    item->populate();
+    item->populate( true ); // populate in foreground - this is already run in a thread
 
     layerCount += item->rowCount();
     if ( item->rowCount() > 0 )
     {
       QgsDebugMsg( "Add new item : " + item->name() );
-      serviceItems.append( item );
+      serviceItems.insert( item, key );
     }
     else
     {
@@ -75,27 +83,40 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
     }
   }
 
-  foreach ( QgsDataItem* item, serviceItems )
+  Q_FOREACH ( QgsDataItem* item, serviceItems.keys() )
   {
     QgsDebugMsg( QString( "serviceItems.size = %1 layerCount = %2 rowCount = %3" ).arg( serviceItems.size() ).arg( layerCount ).arg( item->rowCount() ) );
+    QString providerKey = serviceItems.value( item );
     if ( serviceItems.size() == 1 || layerCount <= 30 || item->rowCount() <= 10 )
     {
       // Add layers directly to OWS connection
-      foreach ( QgsDataItem* subItem, item->children() )
+      Q_FOREACH ( QgsDataItem* subItem, item->children() )
       {
         item->removeChildItem( subItem );
         subItem->setParent( this );
+        replacePath( subItem, providerKey.toLower() + ":/", "ows:/" );
         children.append( subItem );
       }
       delete item;
     }
     else // Add service
     {
+      replacePath( item, item->path(), path() + '/' + providerKey.toLower() );
       children.append( item );
     }
   }
 
   return children;
+}
+
+// reset path recursively
+void QgsOWSConnectionItem::replacePath( QgsDataItem* item, QString before, QString after )
+{
+  item->setPath( item->path().replace( before, after ) );
+  Q_FOREACH ( QgsDataItem* subItem, item->children() )
+  {
+    replacePath( subItem, before, after );
+  }
 }
 
 bool QgsOWSConnectionItem::equal( const QgsDataItem *other )
@@ -105,7 +126,7 @@ bool QgsOWSConnectionItem::equal( const QgsDataItem *other )
     return false;
   }
   const QgsOWSConnectionItem *o = dynamic_cast<const QgsOWSConnectionItem *>( other );
-  return ( mPath == o->mPath && mName == o->mName );
+  return ( o && mPath == o->mPath && mName == o->mName );
 }
 
 QList<QAction*> QgsOWSConnectionItem::actions()
@@ -152,8 +173,8 @@ void QgsOWSConnectionItem::deleteConnection()
 QgsOWSRootItem::QgsOWSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconOws.svg" );
-
+  mCapabilities |= Fast;
+  mIconName = "mIconOws.svg";
   populate();
 }
 
@@ -166,25 +187,20 @@ QVector<QgsDataItem*> QgsOWSRootItem::createChildren()
   QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> connections;
   // Combine all WMS,WFS,WCS connections
-  QMap<QString, QStringList> uris;
-  foreach ( QString service, QStringList() << "WMS" << "WFS" << "WCS" )
+  QStringList connNames;
+  Q_FOREACH ( const QString& service, QStringList() << "WMS" << "WFS" << "WCS" )
   {
-    foreach ( QString connName, QgsOWSConnection::connectionList( service ) )
+    Q_FOREACH ( const QString& connName, QgsOWSConnection::connectionList( service ) )
     {
-      QgsOWSConnection connection( service, connName );
-
-      QString encodedUri = connection.uri().encodedUri();
-      QStringList labels = uris.value( encodedUri );
-      if ( !labels.contains( connName ) )
+      if ( !connNames.contains( connName ) )
       {
-        labels << connName;
+        connNames << connName;
       }
-      uris[encodedUri] = labels;
     }
   }
-  foreach ( QString encodedUri, uris.keys() )
+  Q_FOREACH ( const QString& connName, connNames )
   {
-    QgsDataItem * conn = new QgsOWSConnectionItem( this, uris.value( encodedUri ).join( " / " ), encodedUri );
+    QgsDataItem * conn = new QgsOWSConnectionItem( this, connName, "ows:/" + connName );
     connections.append( conn );
   }
   return connections;
@@ -211,7 +227,7 @@ QWidget * QgsOWSRootItem::paramWidget()
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 #endif
-  return 0;
+  return nullptr;
 }
 void QgsOWSRootItem::connectionsChanged()
 {
@@ -247,14 +263,14 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   {
     return new QgsOWSRootItem( parentItem, "OWS", "ows:" );
   }
-  return 0;
+  return nullptr;
 }
 
-//QGISEXTERN QgsOWSSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
-QGISEXTERN QDialog * selectWidget( QWidget * parent, Qt::WFlags fl )
+//QGISEXTERN QgsOWSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
+QGISEXTERN QDialog * selectWidget( QWidget * parent, Qt::WindowFlags fl )
 {
   Q_UNUSED( parent );
   Q_UNUSED( fl );
   //return new QgsOWSSourceSelect( parent, fl );
-  return 0;
+  return nullptr;
 }

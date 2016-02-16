@@ -1,15 +1,18 @@
-SET(OWS_SRCS 
-  qgsowsprovider.cpp 
-  qgsowsdataitems.cpp 
+SET(OWS_SRCS
+  qgsowsprovider.cpp
+  qgsowsdataitems.cpp
 )
-SET(OWS_MOC_HDRS  
-  qgsowsprovider.h 
+SET(OWS_MOC_HDRS
+  qgsowsprovider.h
   qgsowsdataitems.h
 )
 
 INCLUDE_DIRECTORIES (
   ../../core
+  ../../core/geometry
+  ../../core/auth
   ../../gui
+  ../../gui/auth
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
 )
 

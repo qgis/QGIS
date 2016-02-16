@@ -1,0 +1,10 @@
+r.los
+Line-of-sight raster analysis program.
+Raster (r.*)
+ParameterRaster|input|Elevation|False
+ParameterString|coordinate|Coordinate identifying the viewing position|0,0
+ParameterRaster|patt_map|Binary (1/0) raster layer to use as a mask|True
+ParameterString|obs_elev|Viewing position height above the ground|1.75
+ParameterString|max_dist|Maximum distance from the viewing point (meters)|10000
+ParameterBoolean|-c|Consider earth curvature (current ellipsoid)|False
+OutputRaster|output|Intervisibility

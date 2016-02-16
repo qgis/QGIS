@@ -1,0 +1,9 @@
+r.kappa
+Calculate error matrix and kappa parameter for accuracy assessment of classification result.
+Raster (r.*)
+ParameterRaster|classification|Raster layer containing classification result|False
+ParameterRaster|reference|Raster layer containing reference classes|False
+ParameterString|title|Title for error matrix and kappa|ACCURACY ASSESSMENT
+ParameterBoolean|-h|No header in the report|False
+ParameterBoolean|-w|Wide report (132 columns)|False
+OutputFile|output|Error matrix and kappa

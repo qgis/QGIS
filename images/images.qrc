@@ -1,15 +1,19 @@
 <RCC>
     <qresource prefix="/images">
-        <file alias="last-hackfest.jpg">developers/essen-2012.jpg</file>
+        <file alias="last-hackfest.jpg">developers/essen-2014.jpg</file>
         <file>flags/af.png</file>
         <file>flags/ar.png</file>
         <file>flags/bg.png</file>
+        <file>flags/cy.png</file>
         <file>flags/de.png</file>
+        <file>flags/en_GB.png</file>
         <file>flags/en_US.png</file>
         <file>flags/es.png</file>
         <file>flags/fa.png</file>
         <file>flags/fi.png</file>
         <file>flags/fr.png</file>
+        <file>flags/ga.png</file>
+        <file>flags/gd.png</file>
         <file>flags/he.png</file>
         <file>flags/hu.png</file>
         <file>flags/id.png</file>
@@ -21,6 +25,7 @@
         <file>flags/lt.png</file>
         <file>flags/lv.png</file>
         <file>flags/mn.png</file>
+        <file>flags/mt.png</file>
         <file>flags/nl.png</file>
         <file>flags/pt_BR.png</file>
         <file>flags/pt_PT.png</file>
@@ -35,14 +40,14 @@
         <file>flags/uk.png</file>
         <file>flags/vi.png</file>
         <file>flags/xh.png</file>
-        <file>flags/zh_CN.png</file>
-        <file>flags/zh_TW.png</file>
         <file>icons/qgis-icon-16x16.png</file>
         <file>icons/qgis-icon-60x60.png</file>
+        <file>icons/qbrowser-icon-60x60.png</file>
         <file>north_arrows/default.png</file>
         <file>north_arrows/gpsarrow.svg</file>
         <file>north_arrows/gpsarrow2.svg</file>
         <file>splash/splash.png</file>
+        <file>composer/missing_image.svg</file>
         <file>themes/default/cap_flat.png</file>
         <file>themes/default/cap_round.png</file>
         <file>themes/default/cap_square.png</file>
@@ -92,6 +97,8 @@
         <file>themes/default/gpsicons/polarchart.svg</file>
         <file>themes/default/grass_location.png</file>
         <file>themes/default/grass_mapset.png</file>
+        <file>themes/default/grass_mapset_open.png</file>
+        <file>themes/default/grass_mapset_search.png</file>
         <file>themes/default/histogram.png</file>
         <file>themes/default/join_bevel.png</file>
         <file>themes/default/join_miter.png</file>
@@ -101,15 +108,25 @@
         <file>themes/default/mAction.svg</file>
         <file>themes/default/mActionAdd.png</file>
         <file>themes/default/mActionAdd.svg</file>
+        <file>themes/default/mActionAddLayer.svg</file>
         <file>themes/default/mActionAddAllToOverview.svg</file>
         <file>themes/default/mActionAddArrow.png</file>
+        <file>themes/default/mActionAddArrow.svg</file>
         <file>themes/default/mActionAddBasicShape.png</file>
+        <file>themes/default/mActionAddBasicShape.svg</file>
+        <file>themes/default/mActionAddBasicCircle.svg</file>
+        <file>themes/default/mActionAddBasicRectangle.svg</file>
+        <file>themes/default/mActionAddBasicTriangle.svg</file>
         <file>themes/default/mActionAddGPSLayer.png</file>
         <file>themes/default/mActionAddGroup.png</file>
-        <file>themes/default/mActionAddHtml.png</file>
+        <file>themes/default/mActionAddGroup.svg</file>
+        <file>themes/default/mActionAddHtml.svg</file>
         <file>themes/default/mActionAddImage.png</file>
+        <file>themes/default/mActionAddImage.svg</file>
         <file>themes/default/mActionAddLegend.png</file>
+        <file>themes/default/mActionAddLegend.svg</file>
         <file>themes/default/mActionAddMap.png</file>
+        <file>themes/default/mActionAddMap.svg</file>
         <file>themes/default/mActionAddMssqlLayer.svg</file>
         <file>themes/default/mActionAddNonDbLayer.png</file>
         <file>themes/default/mActionAddOgrLayer.svg</file>
@@ -124,6 +141,7 @@
         <file>themes/default/mActionAddWfsLayer.svg</file>
         <file>themes/default/mActionAddWmsLayer.svg</file>
         <file>themes/default/mActionAddDelimitedTextLayer.svg</file>
+        <file>themes/default/mActionAddVirtualLayer.svg</file>
         <file>themes/default/mActionAlignBottom.png</file>
         <file>themes/default/mActionAlignHCenter.png</file>
         <file>themes/default/mActionAlignLeft.png</file>
@@ -145,15 +163,20 @@
         <file>themes/default/mActionCancelAllEdits.svg</file>
         <file>themes/default/mActionCancelEdits.svg</file>
         <file>themes/default/mActionCaptureLine.png</file>
+        <file>themes/default/mActionCaptureLine.svg</file>
         <file>themes/default/mActionCapturePoint.png</file>
+        <file>themes/default/mActionCapturePoint.svg</file>
         <file>themes/default/mActionCapturePolygon.png</file>
+        <file>themes/default/mActionCapturePolygon.svg</file>
         <file>themes/default/mActionNewTableRow.png</file>
         <file>themes/default/mActionChangeLabelProperties.png</file>
         <file>themes/default/mActionCheckQgisVersion.png</file>
         <file>themes/default/mActionCollapseTree.png</file>
+        <file>themes/default/mActionCollapseTree.svg</file>
         <file>themes/default/mActionComposerManager.svg</file>
         <file>themes/default/mActionContextHelp.png</file>
         <file>themes/default/mActionCopySelected.png</file>
+        <file>themes/default/mActionCreateMemory.png</file>
         <file>themes/default/mActionCustomProjection.svg</file>
         <file>themes/default/mActionDecreaseBrightness.svg</file>
         <file>themes/default/mActionDecreaseContrast.svg</file>
@@ -170,7 +193,9 @@
         <file>themes/default/mActionEditCut.png</file>
         <file>themes/default/mActionEditPaste.png</file>
         <file>themes/default/mActionExpandNewTree.png</file>
+        <file>themes/default/mActionExpandNewTree.svg</file>
         <file>themes/default/mActionExpandTree.png</file>
+        <file>themes/default/mActionExpandTree.svg</file>
         <file>themes/default/mActionExportMapServer.png</file>
         <file>themes/default/mActionFileExit.png</file>
         <file>themes/default/mActionFileNew.svg</file>
@@ -182,7 +207,9 @@
         <file>themes/default/mActionFillRing.svg</file>
         <file>themes/default/mActionFilter.png</file>
         <file>themes/default/mActionFilter.svg</file>
+        <file>themes/default/mActionFilter2.svg</file>
         <file>themes/default/mActionFolder.png</file>
+        <file>themes/default/mActionFolder.svg</file>
         <file>themes/default/mActionFormAnnotation.png</file>
         <file>themes/default/mActionFromSelectedFeature.png</file>
         <file>themes/default/mActionFullCumulativeCutStretch.png</file>
@@ -193,12 +220,16 @@
         <file>themes/default/mActionHelpContents.svg</file>
         <file>themes/default/mActionHelpSponsors.png</file>
         <file>themes/default/mActionHideAllLayers.png</file>
+        <file>themes/default/mActionHideAllLayers.svg</file>
+        <file>themes/default/mActionHideSelectedLayers.png</file>
         <file>themes/default/mActionIdentify.svg</file>
         <file>themes/default/mActionIncreaseBrightness.svg</file>
         <file>themes/default/mActionIncreaseContrast.svg</file>
         <file>themes/default/mActionInOverview.svg</file>
         <file>themes/default/mActionInvertSelection.png</file>
+        <file>themes/default/mActionInvertSelection.svg</file>
         <file>themes/default/mActionLabel.png</file>
+        <file>themes/default/mActionLabel.svg</file>
         <file>themes/default/mActionLabeling.png</file>
         <file>themes/default/mActionLocalCumulativeCutStretch.png</file>
         <file>themes/default/mActionLocalHistogramStretch.png</file>
@@ -211,6 +242,7 @@
         <file>themes/default/mActionMergeFeatures.png</file>
         <file>themes/default/mActionMoveFeature.png</file>
         <file>themes/default/mActionMoveItemContent.png</file>
+        <file>themes/default/mActionMoveItemContent.svg</file>
         <file>themes/default/mActionMoveItemsToBottom.png</file>
         <file>themes/default/mActionMoveItemsToTop.png</file>
         <file>themes/default/mActionMoveLabel.png</file>
@@ -224,12 +256,17 @@
         <file>themes/default/mActionNodeTool.png</file>
         <file>themes/default/mActionOffsetCurve.png</file>
         <file>themes/default/mActionOpenTable.png</file>
+        <file>themes/default/mActionOpenTable.svg</file>
+        <file>themes/default/mActionAddTable.svg</file>
         <file>themes/default/mActionOptions.svg</file>
         <file>themes/default/mActionPan.svg</file>
         <file>themes/default/mActionPanToSelected.svg</file>
         <file>themes/default/mActionPinLabels.svg</file>
         <file>themes/default/mActionProjectProperties.png</file>
+        <file>themes/default/mActionPropertiesWidget.png</file>
+        <file>themes/default/mActionPropertiesWidget.svg</file>
         <file>themes/default/mActionPropertyItem.png</file>
+        <file>themes/default/mActionPropertyItem.svg</file>
         <file>themes/default/mActionQgisHomePage.png</file>
         <file>themes/default/mActionRaiseItems.png</file>
         <file>themes/default/mActionRedo.png</file>
@@ -251,20 +288,29 @@
         <file>themes/default/mActionSaveEdits.svg</file>
         <file>themes/default/mActionSaveMapAsImage.png</file>
         <file>themes/default/mActionScaleBar.png</file>
+        <file>themes/default/mActionScaleBar.svg</file>
         <file>themes/default/mActionSelect.svg</file>
+        <file>themes/default/mActionSelectAll.png</file>
+        <file>themes/default/mActionSelectAll.svg</file>
         <file>themes/default/mActionSelectedToTop.png</file>
         <file>themes/default/mActionSelectFreehand.svg</file>
         <file>themes/default/mActionSelectPan.png</file>
         <file>themes/default/mActionSelectPolygon.svg</file>
         <file>themes/default/mActionSelectRadius.svg</file>
         <file>themes/default/mActionSelectRectangle.svg</file>
+        <file>themes/default/mActionSelectAllTree.svg</file>
         <file>themes/default/mActionSetProjection.svg</file>
+        <file>themes/default/mActionSharing.svg</file>
+        <file>themes/default/mActionSharingExport.svg</file>
+        <file>themes/default/mActionSharingImport.svg</file>
         <file>themes/default/mActionShowAllLayers.png</file>
+        <file>themes/default/mActionShowAllLayers.svg</file>
         <file>themes/default/mActionShowBookmarks.png</file>
         <file>themes/default/mActionShowHideLabels.svg</file>
         <file>themes/default/mActionShowPinnedLabels.svg</file>
         <file>themes/default/mActionShowPluginManager.svg</file>
         <file>themes/default/mActionShowRasterCalculator.png</file>
+        <file>themes/default/mActionShowSelectedLayers.png</file>
         <file>themes/default/mActionSignMinus.png</file>
         <file>themes/default/mActionSignPlus.png</file>
         <file>themes/default/mActionSimplify.png</file>
@@ -290,9 +336,18 @@
         <file>themes/default/mActionZoomToSelected.svg</file>
         <file>themes/default/mIconAtlas.svg</file>
         <file>themes/default/mIconAutoPlacementSettings.svg</file>
+        <file>themes/default/mIconCertificate.svg</file>
+        <file>themes/default/mIconCertificateMissing.svg</file>
+        <file>themes/default/mIconCertificateTrusted.svg</file>
+        <file>themes/default/mIconCertificateUntrusted.svg</file>
         <file>themes/default/mIconClear.svg</file>
         <file>themes/default/mIconClose.png</file>
         <file>themes/default/mIconCollapse.png</file>
+        <file>themes/default/mIconCollapseSmall.svg</file>
+        <file>themes/default/mIconColorBox.svg</file>
+        <file>themes/default/mIconColorPicker.svg</file>
+        <file>themes/default/mIconColorSwatches.svg</file>
+        <file>themes/default/mIconColorWheel.svg</file>
         <file>themes/default/mIconConnect.png</file>
         <file>themes/default/mIconCritical.png</file>
         <file>themes/default/mIconDataDefine.svg</file>
@@ -304,24 +359,35 @@
         <file>themes/default/mIconDbSchema.png</file>
         <file>themes/default/mIconDelete.png</file>
         <file>themes/default/mIconDeselected.svg</file>
+        <file>themes/default/mIconDropDownMenu.svg</file>
         <file>themes/default/mIconEditable.png</file>
         <file>themes/default/mIconEditableEdits.png</file>
         <file>themes/default/mIconExpand.png</file>
+        <file>themes/default/mIconExpandSmall.svg</file>
         <file>themes/default/mIconExpression.svg</file>
         <file>themes/default/mIconExpressionEditorOpen.svg</file>
         <file>themes/default/mIconExpressionFilter.svg</file>
         <file>themes/default/mIconExpressionPreview.svg</file>
         <file>themes/default/mIconExpressionSelect.svg</file>
         <file>themes/default/mIconFavourites.png</file>
+        <file>themes/default/mIconFieldDate.svg</file>
+        <file>themes/default/mIconFieldDateTime.svg</file>
+        <file>themes/default/mIconFieldFloat.svg</file>
+        <file>themes/default/mIconFieldInteger.svg</file>
+        <file>themes/default/mIconFieldText.svg</file>
+        <file>themes/default/mIconFieldTime.svg</file>
         <file>themes/default/mIconFirst.png</file>
         <file>themes/default/mIconGeometryLayer.png</file>
         <file>themes/default/mIconInfo.png</file>
+        <file>themes/default/mIconImport.gif</file>
         <file>themes/default/mIconLabelQuadrantCenter.svg</file>
         <file>themes/default/mIconLabelQuadrantOffset.svg</file>
         <file>themes/default/mIconLast.png</file>
         <file>themes/default/mIconLayer.png</file>
         <file>themes/default/mIconLineLayer.svg</file>
+        <file>themes/default/mIconListView.png</file>
         <file>themes/default/mIconLock.png</file>
+        <file>themes/default/mIconLoading.gif</file>
         <file>themes/default/mIconMssql.svg</file>
         <file>themes/default/mIconNew.png</file>
         <file>themes/default/mIconNext.png</file>
@@ -338,6 +404,8 @@
         <file>themes/default/mIconProperties.svg</file>
         <file>themes/default/mIconPyramid.png</file>
         <file>themes/default/mIconRaster.svg</file>
+        <file>themes/default/mIconRasterGroup.svg</file>
+        <file>themes/default/mIconRasterLink.svg</file>
         <file>themes/default/mIconRasterLayer.svg</file>
         <file>themes/default/mIconRenderingDisabled.png</file>
         <file>themes/default/mIconRenderingEnabled.png</file>
@@ -351,6 +419,7 @@
         <file>themes/default/mIconTableLayer.png</file>
         <file>themes/default/mIconTimerContinue.png</file>
         <file>themes/default/mIconTimerPause.png</file>
+        <file>themes/default/mIconTreeView.png</file>
         <file>themes/default/mIconUnknownLayerType.png</file>
         <file>themes/default/mIconWaitingForLayerType.png</file>
         <file>themes/default/mIconWarn.png</file>
@@ -360,6 +429,8 @@
         <file>themes/default/mIconZip.png</file>
         <file>themes/default/mIconZoom.svg</file>
         <file>themes/default/mMapserverExport.png</file>
+        <file>themes/default/mMessageLog.svg</file>
+        <file>themes/default/mMessageLogRead.svg</file>
         <file>themes/default/north_arrow.png</file>
         <file>themes/default/pie-chart.png</file>
         <file>themes/default/plugin.png</file>
@@ -373,7 +444,7 @@
         <file>themes/default/propertyicons/diagram.png</file>
         <file>themes/default/propertyicons/digitising.png</file>
         <file>themes/default/propertyicons/display.svg</file>
-        <file>themes/default/propertyicons/gdal.png</file>
+        <file>themes/default/propertyicons/gdal.svg</file>
         <file>themes/default/propertyicons/general.svg</file>
         <file>themes/default/propertyicons/histogram.png</file>
         <file>themes/default/propertyicons/join.png</file>
@@ -405,21 +476,36 @@
         <file>themes/default/propertyicons/system.svg</file>
         <file>themes/default/propertyicons/transparency.png</file>
         <file>themes/default/rendererCategorizedSymbol.png</file>
+        <file>themes/default/rendererCategorizedSymbol.svg</file>
         <file>themes/default/rendererGraduatedSymbol.png</file>
+        <file>themes/default/rendererGraduatedSymbol.svg</file>
         <file>themes/default/rendererSingleSymbol.png</file>
+        <file>themes/default/rendererSingleSymbol.svg</file>
+        <file>themes/default/rendererRuleBasedSymbol.svg</file>
+        <file>themes/default/rendererPointDisplacementSymbol.svg</file>
+        <file>themes/default/rendererInvertedSymbol.svg</file>
+        <file>themes/default/rendererHeatmapSymbol.svg</file>
+        <file>themes/default/renderer25dSymbol.svg</file>
+        <file>themes/default/rendererGrassSymbol.svg</file>
         <file>themes/default/repositoryConnected.png</file>
         <file>themes/default/repositoryDisabled.png</file>
         <file>themes/default/repositoryUnavailable.png</file>
         <file>themes/default/scale_bar.png</file>
+        <file>themes/default/stars_empty.png</file>
+        <file>themes/default/stars_full.png</file>
         <file>themes/default/styleicons/color.png</file>
         <file>themes/default/styleicons/style-line.png</file>
         <file>themes/default/styleicons/style-point.png</file>
         <file>themes/default/styleicons/style-polygon.png</file>
         <file>themes/default/symbologyAdd.png</file>
+        <file>themes/default/symbologyAdd.svg</file>
         <file>themes/default/symbologyDown.png</file>
+        <file>themes/default/symbologyDown.svg</file>
         <file>themes/default/symbologyEdit.png</file>
         <file>themes/default/symbologyRemove.png</file>
+        <file>themes/default/symbologyRemove.svg</file>
         <file>themes/default/symbologyUp.png</file>
+        <file>themes/default/symbologyUp.svg</file>
         <file>themes/default/text.png</file>
         <file>themes/default/tracking.png</file>
         <file>themes/default/transformed.png</file>
@@ -450,9 +536,31 @@
         <file>flags/sq.png</file>
         <file>flags/nb.png</file>
         <file>flags/sr.png</file>
-        <file>flags/sr_Cyrl.png</file>
-        <file>flags/sr_Latn.png</file>
         <file>flags/te.png</file>
+        <file>flags/tl.png</file>
+        <file>themes/default/mActionZoomToArea.svg</file>
+        <file>themes/default/mActionMapIdentification.svg</file>
+        <file>themes/default/mActionHighlightFeature.svg</file>
+        <file>themes/default/mActionScaleHighlightFeature.svg</file>
+        <file>themes/default/mActionPanHighlightFeature.svg</file>
+        <file>themes/default/cadtools/construction.png</file>
+        <file>themes/default/cadtools/delta.png</file>
+        <file>themes/default/cadtools/cad.png</file>
+        <file>themes/default/cadtools/lock.png</file>
+        <file>themes/default/cadtools/parallel.png</file>
+        <file>themes/default/cadtools/perpendicular.png</file>
+        <file>themes/default/mIconSuccess.png</file>
+        <file>themes/default/mIconClear.png</file>
+        <file>themes/default/mIconWarning.svg</file>
+        <file>themes/default/mIconPaintEffects.svg</file>
+        <file>themes/default/mActionCircularStringCurvePoint.png</file>
+        <file>themes/default/mActionCircularStringCurvePoint.svg</file>
+        <file>themes/default/mActionCircularStringRadius.png</file>
+        <file>themes/default/mActionCircularStringRadius.svg</file>
+        <file>flags/zh.png</file>
+        <file>icons/qgis-icon-16x16_xmas.png</file>
+        <file>icons/qgis-icon-60x60_xmas.png</file>
+        <file>themes/default/mActionTracing.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

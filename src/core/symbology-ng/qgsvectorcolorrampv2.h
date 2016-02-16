@@ -25,12 +25,15 @@
 class CORE_EXPORT QgsVectorColorRampV2
 {
   public:
+
     virtual ~QgsVectorColorRampV2() {}
 
-    // Number of defined colors
+    /** Returns number of defined colors, or -1 if undefined
+     */
     virtual int count() const = 0;
 
-    // Relative value (0,1) of color at index
+    /** Returns relative value between [0,1] of color at specified index
+     */
     virtual double value( int index ) const = 0;
 
     virtual QColor color( double value ) const = 0;
@@ -58,29 +61,29 @@ typedef QList<QgsGradientStop> QgsGradientStopsList;
 class CORE_EXPORT QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
 {
   public:
-    QgsVectorGradientColorRampV2( QColor color1 = DEFAULT_GRADIENT_COLOR1,
-                                  QColor color2 = DEFAULT_GRADIENT_COLOR2,
+    QgsVectorGradientColorRampV2( const QColor& color1 = DEFAULT_GRADIENT_COLOR1,
+                                  const QColor& color2 = DEFAULT_GRADIENT_COLOR2,
                                   bool discrete = false,
-                                  QgsGradientStopsList stops = QgsGradientStopsList() );
+                                  const QgsGradientStopsList& stops = QgsGradientStopsList() );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() );
 
-    virtual int count() const { return mStops.count() + 2; }
+    virtual int count() const override { return mStops.count() + 2; }
 
-    virtual double value( int index ) const;
+    virtual double value( int index ) const override;
 
-    virtual QColor color( double value ) const;
+    virtual QColor color( double value ) const override;
 
-    virtual QString type() const { return "gradient"; }
+    virtual QString type() const override { return "gradient"; }
 
-    virtual QgsVectorColorRampV2* clone() const;
+    virtual QgsVectorGradientColorRampV2* clone() const override;
 
-    virtual QgsStringMap properties() const;
+    virtual QgsStringMap properties() const override;
 
     QColor color1() const { return mColor1; }
     QColor color2() const { return mColor2; }
-    void setColor1( QColor color ) { mColor1 = color; }
-    void setColor2( QColor color ) { mColor2 = color; }
+    void setColor1( const QColor& color ) { mColor1 = color; }
+    void setColor2( const QColor& color ) { mColor2 = color; }
 
     bool isDiscrete() const { return mDiscrete; }
     void setDiscrete( bool discrete ) { mDiscrete = discrete; }
@@ -92,9 +95,10 @@ class CORE_EXPORT QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
     QgsStringMap info() const { return mInfo; }
     void setInfo( const QgsStringMap& info ) { mInfo = info; }
 
-    /**copy color ramp stops to a QGradient
-    * @note added in 2.1 */
-    void addStopsToGradient( QGradient* gradient );
+    /** Copy color ramp stops to a QGradient
+     * @note added in 2.1
+     */
+    void addStopsToGradient( QGradient* gradient, double alpha = 1 );
 
   protected:
     QColor mColor1, mColor2;
@@ -121,19 +125,27 @@ class CORE_EXPORT QgsVectorRandomColorRampV2 : public QgsVectorColorRampV2
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() );
 
-    virtual double value( int index ) const;
+    virtual double value( int index ) const override;
 
-    virtual QColor color( double value ) const;
+    virtual QColor color( double value ) const override;
 
-    virtual QString type() const { return "random"; }
+    virtual QString type() const override { return "random"; }
 
-    virtual QgsVectorColorRampV2* clone() const;
+    virtual QgsVectorRandomColorRampV2* clone() const override;
 
-    virtual QgsStringMap properties() const;
+    virtual QgsStringMap properties() const override;
+
+    /** Get a list of random colors
+     * @note added in 2.4
+     */
+    static QList<QColor> randomColors( int count,
+                                       int hueMax = DEFAULT_RANDOM_HUE_MAX, int hueMin = DEFAULT_RANDOM_HUE_MIN,
+                                       int satMax = DEFAULT_RANDOM_SAT_MAX, int satMin = DEFAULT_RANDOM_SAT_MIN,
+                                       int valMax = DEFAULT_RANDOM_VAL_MAX, int valMin = DEFAULT_RANDOM_VAL_MIN );
 
     void updateColors();
 
-    int count() const { return mCount; }
+    int count() const override { return mCount; }
     int hueMin() const { return mHueMin; }
     int hueMax() const { return mHueMax; }
     int satMin() const { return mSatMin; }
@@ -161,17 +173,31 @@ class CORE_EXPORT QgsRandomColorsV2: public QgsVectorColorRampV2
     QgsRandomColorsV2();
     ~QgsRandomColorsV2();
 
-    int count() const;
+    int count() const override;
 
-    double value( int index ) const;
+    double value( int index ) const override;
 
-    QColor color( double value ) const;
+    QColor color( double value ) const override;
 
-    QString type() const;
+    /** Sets the desired total number of unique colors for the resultant ramp. Calling
+     * this method pregenerates a set of visually distinct colors which are returned
+     * by subsequent calls to color().
+     * @param colorCount number of unique colors
+     * @note added in QGIS 2.5
+     */
+    virtual void setTotalColorCount( const int colorCount );
 
-    QgsVectorColorRampV2* clone() const;
+    QString type() const override;
 
-    QgsStringMap properties() const;
+    QgsRandomColorsV2* clone() const override;
+
+    QgsStringMap properties() const override;
+
+  protected:
+
+    int mTotalColorCount;
+    QList<QColor> mPrecalculatedColors;
+
 };
 
 
@@ -181,30 +207,30 @@ class CORE_EXPORT QgsRandomColorsV2: public QgsVectorColorRampV2
 class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
 {
   public:
-    QgsVectorColorBrewerColorRampV2( QString schemeName = DEFAULT_COLORBREWER_SCHEMENAME,
+    QgsVectorColorBrewerColorRampV2( const QString& schemeName = DEFAULT_COLORBREWER_SCHEMENAME,
                                      int colors = DEFAULT_COLORBREWER_COLORS );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() );
 
-    virtual double value( int index ) const;
+    virtual double value( int index ) const override;
 
-    virtual QColor color( double value ) const;
+    virtual QColor color( double value ) const override;
 
-    virtual QString type() const { return "colorbrewer"; }
+    virtual QString type() const override { return "colorbrewer"; }
 
-    virtual QgsVectorColorRampV2* clone() const;
+    virtual QgsVectorColorBrewerColorRampV2* clone() const override;
 
-    virtual QgsStringMap properties() const;
+    virtual QgsStringMap properties() const override;
 
     QString schemeName() const { return mSchemeName; }
-    virtual int count() const { return mColors; }
+    virtual int count() const override { return mColors; }
     int colors() const { return mColors; }
 
-    void setSchemeName( QString schemeName ) { mSchemeName = schemeName; loadPalette(); }
+    void setSchemeName( const QString& schemeName ) { mSchemeName = schemeName; loadPalette(); }
     void setColors( int colors ) { mColors = colors; loadPalette(); }
 
     static QStringList listSchemeNames();
-    static QList<int> listSchemeVariants( QString schemeName );
+    static QList<int> listSchemeVariants( const QString& schemeName );
 
   protected:
 
@@ -222,31 +248,31 @@ class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
 class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorGradientColorRampV2
 {
   public:
-    QgsCptCityColorRampV2( QString schemeName = DEFAULT_CPTCITY_SCHEMENAME,
-                           QString variantName = DEFAULT_CPTCITY_VARIANTNAME,
+    QgsCptCityColorRampV2( const QString& schemeName = DEFAULT_CPTCITY_SCHEMENAME,
+                           const QString& variantName = DEFAULT_CPTCITY_VARIANTNAME,
                            bool doLoadFile = true );
-    QgsCptCityColorRampV2( QString schemeName, QStringList variantList,
-                           QString variantName = QString(), bool doLoadFile = true );
+    QgsCptCityColorRampV2( const QString& schemeName, const QStringList& variantList,
+                           const QString& variantName = QString(), bool doLoadFile = true );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() );
 
-    virtual QString type() const { return "cpt-city"; }
+    virtual QString type() const override { return "cpt-city"; }
 
-    virtual QgsVectorColorRampV2* clone() const;
+    virtual QgsCptCityColorRampV2* clone() const override;
     void copy( const QgsCptCityColorRampV2* other );
     QgsVectorGradientColorRampV2* cloneGradientRamp() const;
 
-    virtual QgsStringMap properties() const;
+    virtual QgsStringMap properties() const override;
 
     QString schemeName() const { return mSchemeName; }
     QString variantName() const { return mVariantName; }
     QStringList variantList() const { return mVariantList; }
 
     /* lazy loading - have to call loadPalette() explicitly */
-    void setSchemeName( QString schemeName ) { mSchemeName = schemeName; mFileLoaded = false; }
-    void setVariantName( QString variantName ) { mVariantName = variantName; mFileLoaded = false; }
-    void setVariantList( QStringList variantList ) { mVariantList = variantList; }
-    void setName( QString schemeName, QString variantName = "", QStringList variantList = QStringList() )
+    void setSchemeName( const QString& schemeName ) { mSchemeName = schemeName; mFileLoaded = false; }
+    void setVariantName( const QString& variantName ) { mVariantName = variantName; mFileLoaded = false; }
+    void setVariantList( const QStringList& variantList ) { mVariantList = variantList; }
+    void setName( const QString& schemeName, const QString& variantName = "", const QStringList& variantList = QStringList() )
     { mSchemeName = schemeName; mVariantName = variantName; mVariantList = variantList; mFileLoaded = false; }
 
     void loadPalette() { loadFile(); }

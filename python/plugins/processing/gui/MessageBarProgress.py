@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    SilentProgress.py
+    MessageBarProgress.py
     ---------------------
     Date                 : April 2013
     Copyright            : (C) 2013 by Victor Olaya
@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'April 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
@@ -25,29 +26,29 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4 import QtGui
-from processing import interface
-from qgis.gui import *
+from PyQt4.QtCore import Qt, QCoreApplication
+from PyQt4.QtGui import QProgressBar
+from qgis.utils import iface
+from qgis.gui import QgsMessageBar
+from processing.core.ProcessingLog import ProcessingLog
+from processing.gui.MessageDialog import MessageDialog
 
 
 class MessageBarProgress:
 
-    def __init__(self):
+    def __init__(self, algname=None):
+        self.msg = []
         self.progressMessageBar = \
-            interface.iface.messageBar().createMessage('Executing algorithm')
-        self.progress = QtGui.QProgressBar()
+            iface.messageBar().createMessage(self.tr('Executing algorithm <i>{0}</i>'.format(algname if algname else '')))
+        self.progress = QProgressBar()
         self.progress.setMaximum(100)
         self.progress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.progressMessageBar.layout().addWidget(self.progress)
-        interface.iface.messageBar().pushWidget(self.progressMessageBar,
-                interface.iface.messageBar().INFO)
+        iface.messageBar().pushWidget(self.progressMessageBar,
+                                      iface.messageBar().INFO)
 
     def error(self, msg):
-        interface.iface.messageBar().clearWidgets()
-        interface.iface.messageBar().pushMessage("Error", msg,
-                                                  level = QgsMessageBar.CRITICAL,
-                                                  duration = 3)
+        self.msg.append(msg)
 
     def setText(self, text):
         pass
@@ -68,4 +69,14 @@ class MessageBarProgress:
         pass
 
     def close(self):
-        interface.iface.messageBar().clearWidgets()
+        if self.msg:
+            dlg = MessageDialog()
+            dlg.setTitle(QCoreApplication.translate('MessageBarProgress', 'Problem executing algorithm'))
+            dlg.setMessage("<br>".join(self.msg))
+            dlg.exec_()
+        iface.messageBar().clearWidgets()
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'MessageBarProgress'
+        return QCoreApplication.translate(context, string)

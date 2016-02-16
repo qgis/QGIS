@@ -19,7 +19,9 @@
 #include "qgssinglebandgrayrenderer.h"
 #include "qgsrasterlayer.h"
 
-QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ): QgsRasterRendererWidget( layer, extent )
+QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )
+    : QgsRasterRendererWidget( layer, extent )
+    , mMinMaxWidget( nullptr )
 {
   setupUi( this );
 
@@ -73,12 +75,12 @@ QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
 {
   if ( !mRasterLayer )
   {
-    return 0;
+    return nullptr;
   }
   QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
   if ( !provider )
   {
-    return 0;
+    return nullptr;
   }
   int band = mGrayBandComboBox->itemData( mGrayBandComboBox->currentIndex() ).toInt();
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsInvertedPolygonRendererWidgetBase</class>
+ <widget class="QWidget" name="QgsInvertedPolygonRendererWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>316</width>
+    <height>75</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="mLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="mRendererLabel">
+       <property name="text">
+        <string>Sub renderer:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mRendererComboBox"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mMergePolygonsCheckBox">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string>Merge polygons before rendering (slow)</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>mRendererComboBox</tabstop>
+  <tabstop>mMergePolygonsCheckBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

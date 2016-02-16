@@ -24,6 +24,7 @@
 #include <qgisgui.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsproject.h>
+#include <qgsmessagebar.h>
 
 #include <QAction>
 
@@ -37,10 +38,10 @@ static const QString sPluginIcon = ":/offline_editing/offline_editing_copy.png";
 QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface* theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
-    , mActionConvertProject( 0 )
-    , mActionSynchronize( 0 )
-    , mOfflineEditing( 0 )
-    , mProgressDialog( 0 )
+    , mActionConvertProject( nullptr )
+    , mActionSynchronize( nullptr )
+    , mOfflineEditing( nullptr )
+    , mProgressDialog( nullptr )
 {
 }
 
@@ -81,6 +82,7 @@ void QgsOfflineEditingPlugin::initGui()
   connect( mOfflineEditing, SIGNAL( progressModeSet( QgsOfflineEditing::ProgressMode, int ) ), this, SLOT( setProgressMode( QgsOfflineEditing::ProgressMode, int ) ) );
   connect( mOfflineEditing, SIGNAL( progressUpdated( int ) ), this, SLOT( updateProgress( int ) ) );
   connect( mOfflineEditing, SIGNAL( progressStopped() ), this, SLOT( hideProgress() ) );
+  connect( mOfflineEditing, SIGNAL( warning( QString, QString ) ), mQGisIface->messageBar(), SLOT( pushWarning( QString, QString ) ) );
 
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( updateActions() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( newProject() ), this, SLOT( updateActions() ) );
@@ -203,7 +205,6 @@ void QgsOfflineEditingPlugin::hideProgress()
 {
   mProgressDialog->hide();
 }
-
 
 /**
  * Required extern functions needed  for every plugin

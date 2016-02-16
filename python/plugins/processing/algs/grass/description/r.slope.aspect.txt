@@ -1,0 +1,18 @@
+r.slope.aspect
+Generates raster layers of slope, aspect, curvatures and partial derivatives from a elevation raster layer.
+Raster (r.*)
+ParameterRaster|elevation|Elevation|False
+ParameterSelection|format|Format for reporting the slope|degrees;percent
+ParameterSelection|prec|Type of output aspect and slope layer|float;double;int
+ParameterBoolean|-a|Do not align the current region to the elevation layer|True
+ParameterNumber|zfactor|Multiplicative factor to convert elevation units to meters|None|None|1.0
+ParameterNumber|min_slp_allowed|Minimum slope val. (in percent) for which aspect is computed|None|None|0.0
+OutputRaster|slope|Slope
+OutputRaster|aspect|Aspect
+OutputRaster|pcurv|Profile curvature
+OutputRaster|tcurv|Tangential curvature
+OutputRaster|dx|First order partial derivative dx (E-W slope)
+OutputRaster|dy|First order partial derivative dy (N-S slope)
+OutputRaster|dxx|Second order partial derivative dxx
+OutputRaster|dyy|Second order partial derivative dyy
+OutputRaster|dxy|Second order partial derivative dxy

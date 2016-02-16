@@ -1,0 +1,4 @@
+markupsafe
+
+[i18n]
+Babel>=0.8

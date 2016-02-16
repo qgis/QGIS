@@ -1,9 +1,0 @@
-Bifurcation
-recreations_fractals
-ParameterNumber|ITERATIONS|Value Count|None|None|10
-ParameterNumber|NVALUES|Value Count|None|None|10
-ParameterNumber|SEED|Seed Value|None|None|1.0
-ParameterNumber|RANGE_MIN|Min|None|None|0.0
-ParameterNumber|RANGE_MAX|Max|None|None|1.0
-ParameterNumber|STEP|Number of Steps|None|None|1
-OutputTable|TABLE|Output

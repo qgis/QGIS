@@ -1,8 +1,0 @@
-Change Vector Analysis
-grid_analysis
-ParameterRaster|A1|Grid A. Init|False
-ParameterRaster|A2|Grid A. Final|False
-ParameterRaster|B1|Grid B. Init|False
-ParameterRaster|B2|Grid B. Final|False
-OutputRaster|DIST|Distance
-OutputRaster|ANGLE|Angle

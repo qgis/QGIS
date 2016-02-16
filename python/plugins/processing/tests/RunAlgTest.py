@@ -28,10 +28,9 @@ __revision__ = '$Format:%H$'
 import unittest
 import processing
 from processing.tools import dataobjects
-from processing.tools.system import *
+from processing.tools.system import getTempFilename
 
-from processing.tests.TestData import points, points2, polygons, polygons2, \
-    lines, union, table
+from processing.tests.TestData import points, polygons
 
 
 class ParametrizedTestCase(unittest.TestCase):
@@ -51,6 +50,7 @@ class ParametrizedTestCase(unittest.TestCase):
 
 
 class RunAlgTest(ParametrizedTestCase):
+
     """This test takes a reduced set of algorithms and executes them in
     different ways, changing parameters such as whether to use temp
     outputs, the output file format, etc.
@@ -74,8 +74,8 @@ class RunAlgTest(ParametrizedTestCase):
         fields = layer.pendingFields()
         expectednames = ['ID', 'POLY_NUM_A', 'POLY_ST_A', 'NUMPOINTS']
         expectedtypes = ['Integer', 'Real', 'String', 'Real']
-        names = [str(f.name()) for f in fields]
-        types = [str(f.typeName()) for f in fields]
+        names = [unicode(f.name()) for f in fields]
+        types = [unicode(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
         features = processing.features(layer)
@@ -83,7 +83,7 @@ class RunAlgTest(ParametrizedTestCase):
         feature = features.next()
         attrs = feature.attributes()
         expectedvalues = ['1', '1.1', 'string a', '6']
-        values = [str(attr) for attr in attrs]
+        values = [unicode(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
 
 

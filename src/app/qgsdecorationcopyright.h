@@ -35,20 +35,20 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
   public:
 
     //! Constructor
-    QgsDecorationCopyright( QObject* parent = NULL );
+    QgsDecorationCopyright( QObject* parent = nullptr );
     //! Destructor
     virtual ~QgsDecorationCopyright();
 
   public slots:
     //! set values on the gui when a project is read or the gui first loaded
-    void projectRead();
+    void projectRead() override;
     //! save values to the project
-    void saveToProject();
+    void saveToProject() override;
 
     //! Show the dialog box
-    void run();
+    void run() override;
     //! render the copyright label
-    void render( QPainter * );
+    void render( QPainter * ) override;
 
   private:
     //! This is the font that will be used for the copyright label
@@ -57,9 +57,9 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
     QString mLabelQString;
     //! This is the color for the copyright label
     QColor mLabelQColor;
-    //! Placement of the copyright label - index and translated label names
-    int mPlacementIndex;
-    QStringList mPlacementLabels;
+    //! enable or disable use of position percentage for placement
+    int mMarginHorizontal;
+    int mMarginVertical;
 
     friend class QgsDecorationCopyrightDialog;
 };

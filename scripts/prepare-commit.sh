@@ -15,7 +15,7 @@
 ###########################################################################
 
 
-PATH=$PATH:$(dirname $0)
+PATH=$(git rev-parse --show-toplevel)/scripts:$PATH
 
 if ! type -p astyle.sh >/dev/null; then
 	echo astyle.sh not found
@@ -31,7 +31,7 @@ fi
 
 if [ "$1" = "-c" ]; then
 	echo "Cleaning..."
-	find . \( -name "*.prepare" -o -name "*.astyle" -o -name "*.nocopyright" -o -name "astyle.*.diff" -o -name "sha-*.diff" \) -print -delete
+	remove_temporary_files.sh
 fi
 
 set -e
@@ -48,7 +48,7 @@ fi
 
 if [ -z "$MODIFIED" ]; then
 	echo nothing was modified
-	exit 1
+	exit 0
 fi
 
 # save original changes
@@ -66,29 +66,20 @@ ASTYLEDIFF=astyle.$REV.diff
 # reformat
 for f in $MODIFIED; do
 	case "$f" in
-	src/core/spatialite/*|src/core/gps/qextserialport/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
-                echo $f skipped
+	src/core/gps/qextserialport/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
+		echo $f skipped
 		continue
 		;;
 
-        *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H)
-                ;;
-
-	*.py)
-		perl -i.prepare -pe "s/[\t ]+$//;" $f
-		if diff -u $f.prepare $f >>$ASTYLEDIFF; then
-			# no difference found
-			rm $f.prepare
-		fi
-		continue
+	*.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.py)
 		;;
 
-        *)
-                continue
-                ;;
-        esac
+	*)
+		continue
+		;;
+	esac
 
-        m=$f.$REV.prepare
+	m=$f.$REV.prepare
 
 	cp $f $m
 	astyle.sh $f
@@ -111,3 +102,5 @@ else
 fi
 
 exit 0
+
+# vim: set ts=8 noexpandtab :

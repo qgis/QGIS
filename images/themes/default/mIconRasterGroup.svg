@@ -1,0 +1,33 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<!-- Created using Karbon, part of Calligra: http://www.calligra.org/karbon -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="19.2pt" height="19.2pt">
+<defs/>
+<g id="layer2">
+  <g id="group0" transform="translate(3.40276, 0.767879)" fill="none">
+   <rect id="rect6419" transform="translate(6.23337, 1.0389)" fill="#6e97c4" width="4.98669925886pt" height="4.90238315391pt"/>
+   <rect id="rect6419-6" transform="translate(12.4668, 1.0389)" fill="#2b3b4d" width="4.98669925886pt" height="4.90238315391pt"/>
+   <rect id="rect6419-6-9" transform="translate(6.23337, 7.16688)" fill="#2b3b4d" width="4.98669925886pt" height="4.90238315391pt"/>
+   <rect id="rect6419-0" transform="translate(12.4668, 7.16688)" fill="#6d97c4" width="4.98669925886pt" height="4.90238315391pt"/>
+   <rect id="rect6419-6-7" transform="translate(1.11022e-15, 1.0389)" fill="#2d3e4d" width="4.98669925886pt" height="4.90238315391pt"/>
+   <rect id="rect6419-3" transform="translate(0, 7.16688)" fill="#6d97c4" width="4.98669925886pt" height="4.90238315391pt"/>
+   <rect id="rect6419-5" transform="translate(6.23337, 13.2949)" fill="#6d97c4" width="4.98669925886pt" height="4.90238315391pt"/>
+   <rect id="rect6419-6-6" transform="translate(0, 13.2949)" fill="#2b3b4d" width="4.98669925886pt" height="4.90238315391pt"/>
+   <rect id="rect6419-61" transform="translate(12.4628, 13.291)" fill="#2b3b4d" width="4.98669925886pt" height="4.90238315391pt"/>
+   <rect id="rect6554" transform="translate(1.11022e-15, 1.0389)" fill="none" stroke="#ffffff" stroke-width="1.26248250207" stroke-linecap="butt" stroke-linejoin="round" width="14.96009839991pt" height="14.70715007453pt"/>
+  </g>
+  <g id="group1" transform="translate(1.11531, 2.38005)" fill="none">
+   <rect id="rect64191" transform="translate(6.29247, 2.73915)" fill="#6e97c4" width="4.52898297118pt" height="4.61731433191pt"/>
+   <rect id="rect6419-62" transform="translate(11.9537, 2.73915)" fill="#2b3b4d" width="4.52898297118pt" height="4.61731433191pt"/>
+   <rect id="rect6419-6-91" transform="translate(6.29247, 8.51079)" fill="#2b3b4d" width="4.52898297118pt" height="4.61731433191pt"/>
+   <rect id="rect6419-01" transform="translate(11.9537, 8.51079)" fill="#6d97c4" width="4.52898297118pt" height="4.61731433191pt"/>
+   <rect id="rect6419-6-71" transform="translate(0.631241, 2.73915)" fill="#2d3e4d" width="4.52898297118pt" height="4.61731433191pt"/>
+   <rect id="rect6419-31" transform="translate(0.631241, 8.51079)" fill="#6d97c4" width="4.52898297118pt" height="4.61731433191pt"/>
+   <rect id="rect6419-51" transform="translate(6.29247, 14.2824)" fill="#6d97c4" width="4.52898297118pt" height="4.61731433191pt"/>
+   <rect id="rect6419-6-61" transform="translate(0.631241, 14.2824)" fill="#2b3b4d" width="4.52898297118pt" height="4.61731433191pt"/>
+   <rect id="rect6419-63" transform="translate(11.9501, 14.2788)" fill="#2b3b4d" width="4.52898297118pt" height="4.61731433191pt"/>
+   <rect id="rect65541" transform="translate(0.631241, 2.73915)" fill="none" stroke="#ffffff" stroke-width="1.26248250207" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="0.00000000000" width="13.58694947965pt" height="13.85194357290pt"/>
+  </g>
+  <path id="shape0" transform="translate(9.15433, 1.50565)" fill="none" stroke="#ff7f50" stroke-width="2.53807526307" stroke-linecap="round" stroke-linejoin="round" d="M0 1.38778e-15C3.7918 0.0171509 5.56841 0.0171509 5.32981 0C5.3702 10.3588 5.3702 15.5383 5.32981 15.5383C5.28943 15.5383 3.5532 15.5376 0.121132 15.5362L0.121132 8.60389"/>
+ </g>
+</svg>

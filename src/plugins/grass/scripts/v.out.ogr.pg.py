@@ -126,15 +126,13 @@ __revision__ = '$Format:%H$'
 #% description: to export features with category (labeled) only. Otherwise all features are exported
 #%end
 
-import sys
-import os
-import string
 try:
     from grass.script import core as grass
 except ImportError:
     import grass
 except:
-    raise Exception ("Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4" )
+    raise Exception("Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4")
+
 
 def main():
     input = options['input']
@@ -150,13 +148,17 @@ def main():
 
     # Construct dsn string
     dsn = "PG:dbname=" + database
-    if host: dsn += " host=" + host
-    if port: dsn += " port=" + port
-    if user: dsn += " user=" + user
-    if password: dsn += " password=" + password
+    if host:
+        dsn += " host=" + host
+    if port:
+        dsn += " port=" + port
+    if user:
+        dsn += " user=" + user
+    if password:
+        dsn += " password=" + password
 
-    if grass.run_command('v.out.ogr', flags=flags_string, input=input, layer=layer, type=type, format="PostgreSQL", dsn=dsn, olayer=olayer ) != 0:
-         grass.fatal("Cannot export vector to database.")
+    if grass.run_command('v.out.ogr', flags=flags_string, input=input, layer=layer, type=type, format="PostgreSQL", dsn=dsn, olayer=olayer) != 0:
+        grass.fatal("Cannot export vector to database.")
 
 if __name__ == "__main__":
     options, flags = grass.parser()

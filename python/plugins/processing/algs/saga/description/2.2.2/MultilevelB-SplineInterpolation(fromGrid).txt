@@ -1,0 +1,13 @@
+Multilevel B-Spline Interpolation (from Grid)
+grid_spline
+ParameterRaster|GRID|Grid|False
+Hardcoded|-TARGET_DEFINITION 0
+ParameterSelection|METHOD|Method|[0] without B-spline refinement;[1] with B-spline refinement
+ParameterNumber|EPSILON|Threshold Error|0|None|0.0001
+ParameterNumber|LEVEL_MAX|Maximum Level|1|14|11.0
+ParameterBoolean|UPDATE|Update View|False
+ParameterSelection|DATATYPE|Data Type|[0] same as input grid;[1] floating point
+Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
+ParameterNumber|TARGET_USER_SIZE|Cellsize|None|None|100.0
+ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
+OutputRaster|TARGET_OUT_GRID|Grid

@@ -47,6 +47,10 @@ using namespace osgEarth::Util::Controls;
 #endif
 #include <osgEarth/Version>
 
+#if 0
+#include <iostream>
+#endif
+
 class QAction;
 class QToolBar;
 class QgisInterface;
@@ -59,12 +63,12 @@ class GlobePlugin : public QObject, public QgisPlugin
     Q_OBJECT
 
   public:
-    GlobePlugin( QgisInterface* theQgisInterface );
+    explicit GlobePlugin( QgisInterface* theQgisInterface );
     virtual ~GlobePlugin();
 
   public slots:
     //! init the gui
-    virtual void initGui();
+    virtual void initGui() override;
     //! Show the dialog box
     void run();
     //! Show the settings dialog box
@@ -72,7 +76,7 @@ class GlobePlugin : public QObject, public QgisPlugin
     //!  Reset globe
     void reset();
     //! unload the plugin
-    void unload();
+    void unload() override;
     //! show the help document
     void help();
 
@@ -80,7 +84,7 @@ class GlobePlugin : public QObject, public QgisPlugin
     void imageLayersChanged();
     //! Called when a new set of elevation layers has been received
     void elevationLayersChanged();
-    //! Set a different base map (QString::NULL will disable the base map)
+    //! Set a different base map (QString::null will disable the base map)
     void setBaseMap( QString url );
     //! Called when the extents of the map change
     void setSkyParameters( bool enabled, const QDateTime& dateTime, bool autoAmbience );
@@ -131,7 +135,6 @@ class GlobePlugin : public QObject, public QgisPlugin
     void setupControls();
 
   private://! Checks if the globe is open
-    int mPluginType;
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
     //!pointer to the qaction for this plugin
@@ -178,6 +181,10 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! coordinates of the right-clicked point on the globe
     double mSelectedLat, mSelectedLon, mSelectedElevation;
 
+#if 0
+    std::streambuf *mCoutRdBuf, *mCerrRdBuf;
+#endif
+
   signals:
     //! emits current mouse position
     void xyCoordinates( const QgsPoint & p );
@@ -188,9 +195,9 @@ class GlobePlugin : public QObject, public QgisPlugin
 class FlyToExtentHandler : public osgGA::GUIEventHandler
 {
   public:
-    FlyToExtentHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
+    explicit FlyToExtentHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
 
-    bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa );
+    bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa ) override;
 
   private:
     GlobePlugin* mGlobe;
@@ -221,9 +228,9 @@ class QueryCoordinatesHandler : public osgGA::GUIEventHandler
 class KeyboardControlHandler : public osgGA::GUIEventHandler
 {
   public:
-    KeyboardControlHandler( osgEarth::Util::EarthManipulator* manip ) : _manip( manip ) { }
+    explicit KeyboardControlHandler( osgEarth::Util::EarthManipulator* manip ) : _manip( manip ) { }
 
-    bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa );
+    bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa ) override;
 
   private:
     osg::observer_ptr<osgEarth::Util::EarthManipulator> _manip;
@@ -245,16 +252,16 @@ namespace osgEarth
         public:
           virtual void onMouseDown( class Control* control, int mouseButtonMask ) { Q_UNUSED( control ); Q_UNUSED( mouseButtonMask ); }
           virtual void onClick( class Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa ) { Q_UNUSED( control ); Q_UNUSED( mouseButtonMask ); Q_UNUSED( ea ); Q_UNUSED( aa ); }
-          virtual void onClick( class Control* control, int mouseButtonMask ) { Q_UNUSED( control ); Q_UNUSED( mouseButtonMask ); }
+          virtual void onClick( class Control* control, int mouseButtonMask ) override { Q_UNUSED( control ); Q_UNUSED( mouseButtonMask ); }
       };
 
       class NavigationControl : public ImageControl
       {
         public:
-          NavigationControl( osg::Image* image = 0L ) : ImageControl( image ),  _mouse_down_event( NULL ) {}
+          explicit NavigationControl( osg::Image* image = nullptr ) : ImageControl( image ), _mouse_down_event( nullptr ) {}
 
         protected:
-          virtual bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, ControlContext& cx );
+          virtual bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, ControlContext& cx ) override;
 
         private:
           osg::ref_ptr<const osgGA::GUIEventAdapter> _mouse_down_event;

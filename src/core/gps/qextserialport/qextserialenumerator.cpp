@@ -2,7 +2,7 @@
 #include <QDebug>
 #include <QMetaType>
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 #ifdef UNICODE
 #define TCHAR
 #else
@@ -166,7 +166,7 @@ QextSerialEnumerator::~QextSerialEnumerator( )
             {
                 PDEV_BROADCAST_DEVICEINTERFACE pDevInf = (PDEV_BROADCAST_DEVICEINTERFACE)pHdr;
                  // delimiters are different across APIs...change to backslash.  ugh.
-                QString deviceID = TCHARToQString(pDevInf->dbcc_name).toUpper().replace("#", "\\");
+                QString deviceID = TCHARToQString(pDevInf->dbcc_name).toUpper().replace('#', "\\");
 
                 matchAndDispatchChangedDevice(deviceID, GUID_DEVCLASS_PORTS, wParam);
             }
@@ -185,7 +185,7 @@ QextSerialEnumerator::~QextSerialEnumerator( )
             spDevInfoData.cbSize = sizeof(SP_DEVINFO_DATA);
             for(int i=0; SetupDiEnumDeviceInfo(devInfo, i, &spDevInfoData); i++)
             {
-                DWORD nSize=0 ;
+                DWORD nSize=0;
                 TCHAR buf[MAX_PATH];
                 if ( SetupDiGetDeviceInstanceId(devInfo, &spDevInfoData, buf, MAX_PATH, &nSize) &&
                         deviceID.contains(TCHARToQString(buf))) // we found a match

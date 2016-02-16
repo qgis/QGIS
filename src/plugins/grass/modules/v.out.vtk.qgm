@@ -3,6 +3,7 @@
 
 <qgisgrassmodule label="Export vector to VTK-ASCII" module="v.out.vtk">
 	<option key="input" layeroption="layer" typeoption="type" />
-	<option key="scale" />
+	<option key="scale" version_max="6.4"/>
+	<option key="zscale" version_min="7.0"/>
 	<file key="output" filters="VTK (*.vtk)"/>
 </qgisgrassmodule>

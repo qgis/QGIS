@@ -37,8 +37,8 @@ namespace QgsMapToolSelectUtils
     for any required geometry transformations
     @param selectGeometry The geometry to select the layers features. This geometry
     must be in terms of the canvas coordinate system.
-    @param doContains Features will only be selected if contained within the
-    selection rubber band.
+    @param doContains Features will only be selected if fully contained within
+    the selection rubber band (otherwise intersection is enough).
     @param doDifference Take the symmetric difference of the current selected
     features and the new features found within the provided selectGeometry.
     @param singleSelect Only selects the closest feature to the selectGeometry.
@@ -61,7 +61,7 @@ namespace QgsMapToolSelectUtils
   void setSelectFeatures( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, QMouseEvent * e );
 
   /**
-    Get the current selected canvas map layer. Returns NULL if it is not a vector layer
+    Get the current selected canvas map layer. Returns nullptr if it is not a vector layer
     @param canvas The map canvas used for getting the current layer
     @return QgsVectorLayer The layer
   */
@@ -73,7 +73,7 @@ namespace QgsMapToolSelectUtils
   @param vlayer The vector layer layer
   @param vlayer The point to expand the rectangle around
   */
-  void expandSelectRectangle( QRect& selectRect, QgsVectorLayer* vlayer, const QPoint &point );
+  void expandSelectRectangle( QRect& selectRect, QgsVectorLayer* vlayer, QPoint point );
 
   /**
   Sets a QgsRubberband to rectangle in map units using a rectangle defined in device coords

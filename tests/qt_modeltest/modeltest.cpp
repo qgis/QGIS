@@ -132,24 +132,24 @@ void ModelTest::nonDestructiveBasicTest()
   fetchingMore = false;
   Qt::ItemFlags flags = model->flags( QModelIndex() );
   Q_ASSERT( flags == Qt::ItemIsDropEnabled || flags == 0 );
-  model->hasChildren( QModelIndex() );
-  model->hasIndex( 0, 0 );
-  model->headerData( 0, Qt::Horizontal );
-  model->index( 0, 0 );
-  model->itemData( QModelIndex() );
+  ( void )model->hasChildren( QModelIndex() );
+  ( void )model->hasIndex( 0, 0 );
+  ( void )model->headerData( 0, Qt::Horizontal );
+  ( void )model->index( 0, 0 );
+  ( void )model->itemData( QModelIndex() );
   QVariant cache;
-  model->match( QModelIndex(), -1, cache );
-  model->mimeTypes();
+  ( void )model->match( QModelIndex(), -1, cache );
+  ( void )model->mimeTypes();
   Q_ASSERT( model->parent( QModelIndex() ) == QModelIndex() );
   Q_ASSERT( model->rowCount() >= 0 );
   QVariant variant;
-  model->setData( QModelIndex(), variant, -1 );
-  model->setHeaderData( -1, Qt::Horizontal, QVariant() );
-  model->setHeaderData( 999999, Qt::Horizontal, QVariant() );
+  ( void )model->setData( QModelIndex(), variant, -1 );
+  ( void )model->setHeaderData( -1, Qt::Horizontal, QVariant() );
+  ( void )model->setHeaderData( 999999, Qt::Horizontal, QVariant() );
   QMap<int, QVariant> roles;
-  model->sibling( 0, 0, QModelIndex() );
-  model->span( QModelIndex() );
-  model->supportedDropActions();
+  ( void )model->sibling( 0, 0, QModelIndex() );
+  ( void )model->span( QModelIndex() );
+  ( void )model->supportedDropActions();
 }
 
 /*!
@@ -165,7 +165,7 @@ void ModelTest::rowCount()
   int rows = model->rowCount( topIndex );
   Q_ASSERT( rows >= 0 );
   if ( rows > 0 )
-    Q_ASSERT( model->hasChildren( topIndex ) == true );
+    Q_ASSERT( model->hasChildren( topIndex ) );
 
   QModelIndex secondLevelIndex = model->index( 0, 0, topIndex );
   if ( secondLevelIndex.isValid() )   // not the top level
@@ -174,7 +174,7 @@ void ModelTest::rowCount()
     rows = model->rowCount( secondLevelIndex );
     Q_ASSERT( rows >= 0 );
     if ( rows > 0 )
-      Q_ASSERT( model->hasChildren( secondLevelIndex ) == true );
+      Q_ASSERT( model->hasChildren( secondLevelIndex ) );
   }
 
   // The models rowCount() is tested more extensively in checkChildren(),
@@ -206,19 +206,19 @@ void ModelTest::hasIndex()
 {
 //     qDebug() << "hi";
   // Make sure that invalid values returns an invalid index
-  Q_ASSERT( model->hasIndex( -2, -2 ) == false );
-  Q_ASSERT( model->hasIndex( -2, 0 ) == false );
-  Q_ASSERT( model->hasIndex( 0, -2 ) == false );
+  Q_ASSERT( !model->hasIndex( -2, -2 ) );
+  Q_ASSERT( !model->hasIndex( -2, 0 ) );
+  Q_ASSERT( !model->hasIndex( 0, -2 ) );
 
   int rows = model->rowCount();
   int columns = model->columnCount();
 
   // check out of bounds
-  Q_ASSERT( model->hasIndex( rows, columns ) == false );
-  Q_ASSERT( model->hasIndex( rows + 1, columns + 1 ) == false );
+  Q_ASSERT( !model->hasIndex( rows, columns ) );
+  Q_ASSERT( !model->hasIndex( rows + 1, columns + 1 ) );
 
   if ( rows > 0 )
-    Q_ASSERT( model->hasIndex( 0, 0 ) == true );
+    Q_ASSERT( model->hasIndex( 0, 0 ) );
 
   // hasIndex() is tested more extensively in checkChildren(),
   // but this catches the big mistakes
@@ -243,7 +243,7 @@ void ModelTest::index()
 
   // Catch off by one errors
   Q_ASSERT( model->index( rows, columns ) == QModelIndex() );
-  Q_ASSERT( model->index( 0, 0 ).isValid() == true );
+  Q_ASSERT( model->index( 0, 0 ).isValid() );
 
   // Make sure that the same index is *always* returned
   QModelIndex a = model->index( 0, 0 );
@@ -340,12 +340,12 @@ void ModelTest::checkChildren( const QModelIndex &parent, int currentDepth )
   Q_ASSERT( rows >= 0 );
   Q_ASSERT( columns >= 0 );
   if ( rows > 0 )
-    Q_ASSERT( model->hasChildren( parent ) == true );
+    Q_ASSERT( model->hasChildren( parent ) );
 
   //qDebug() << "parent:" << model->data(parent).toString() << "rows:" << rows
   //         << "columns:" << columns << "parent column:" << parent.column();
 
-  Q_ASSERT( model->hasIndex( rows + 1, 0, parent ) == false );
+  Q_ASSERT( !model->hasIndex( rows + 1, 0, parent ) );
   for ( int r = 0; r < rows; ++r )
   {
     if ( model->canFetchMore( parent ) )
@@ -354,13 +354,13 @@ void ModelTest::checkChildren( const QModelIndex &parent, int currentDepth )
       model->fetchMore( parent );
       fetchingMore = false;
     }
-    Q_ASSERT( model->hasIndex( r, columns + 1, parent ) == false );
+    Q_ASSERT( !model->hasIndex( r, columns + 1, parent ) );
     for ( int c = 0; c < columns; ++c )
     {
-      Q_ASSERT( model->hasIndex( r, c, parent ) == true );
+      Q_ASSERT( model->hasIndex( r, c, parent ) );
       QModelIndex index = model->index( r, c, parent );
       // rowCount() and columnCount() said that it existed...
-      Q_ASSERT( index.isValid() == true );
+      Q_ASSERT( index.isValid() );
 
       // index() should always return the same index when called twice in a row
       QModelIndex modifiedIndex = model->index( r, c, parent );
@@ -377,7 +377,7 @@ void ModelTest::checkChildren( const QModelIndex &parent, int currentDepth )
       Q_ASSERT( index.column() == c );
       // While you can technically return a QVariant usually this is a sign
       // of an bug in data()  Disable if this really is ok in your model.
-//            Q_ASSERT ( model->data ( index, Qt::DisplayRole ).isValid() == true );
+//            Q_ASSERT ( model->data ( index, Qt::DisplayRole ).isValid() );
 
       // If the next test fails here is some somewhat useful debug you play with.
 
@@ -393,7 +393,7 @@ void ModelTest::checkChildren( const QModelIndex &parent, int currentDepth )
       }
 
       // Check that we can get back our real parent.
-//            qDebug() << model->parent ( index ) << parent ;
+//            qDebug() << model->parent ( index ) << parent;
       Q_ASSERT( model->parent( index ) == parent );
 
       // recursively go down the children
@@ -425,7 +425,7 @@ void ModelTest::data()
   Q_ASSERT( model->index( 0, 0 ).isValid() );
 
   // shouldn't be able to set data on an invalid index
-  Q_ASSERT( model->setData( QModelIndex(), QLatin1String( "foo" ), Qt::DisplayRole ) == false );
+  Q_ASSERT( !model->setData( QModelIndex(), QLatin1String( "foo" ), Qt::DisplayRole ) );
 
   // General Purpose roles that should return a QString
   QVariant variant = model->data( model->index( 0, 0 ), Qt::ToolTipRole );
@@ -497,7 +497,7 @@ void ModelTest::data()
  */
 void ModelTest::rowsAboutToBeInserted( const QModelIndex &parent, int start, int end )
 {
-//     Q_UNUSED(end);
+  Q_UNUSED( end );
 //    qDebug() << "rowsAboutToBeInserted" << "start=" << start << "end=" << end << "parent=" << model->data ( parent ).toString()
 //    << "current count of parent=" << model->rowCount ( parent ); // << "display of last=" << model->data( model->index(start-1, 0, parent) );
 //     qDebug() << model->index(start-1, 0, parent) << model->data( model->index(start-1, 0, parent) );

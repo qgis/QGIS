@@ -8,11 +8,11 @@ class QgsAddRemoveMultiFrameCommand : QUndoCommand
 
     enum State
     {
-      Added = 0,
+      Added,
       Removed
     };
 
-    QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame* multiFrame, QgsComposition* c, const QString& text, QUndoCommand* parent = 0 );
+    QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame* multiFrame, QgsComposition* c, const QString& text, QUndoCommand* parent /TransferThis/ = 0 );
     ~QgsAddRemoveMultiFrameCommand();
     void redo();
     void undo();

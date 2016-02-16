@@ -9,7 +9,7 @@ class QgsFeatureListView : QListView
      *
      * @param parent   owner
      */
-    explicit QgsFeatureListView( QWidget* parent = 0 );
+    explicit QgsFeatureListView( QWidget* parent /TransferThis/ = 0 );
 
     /**
      * Destructor
@@ -68,11 +68,25 @@ class QgsFeatureListView : QListView
      */
     QgsFeatureIds currentEditSelection();
 
+    /**
+     * Sets if the currently shown form has received any edit events so far.
+     *
+     * @param state The state
+     */
+    void setCurrentFeatureEdited( bool state );
+
+    /**
+     * @brief setFeatureSelectionManager
+     * @param featureSelectionManager We will take ownership
+     */
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
+
   protected:
     virtual void mouseMoveEvent( QMouseEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
     virtual void mouseReleaseEvent( QMouseEvent *event );
     virtual void keyPressEvent( QKeyEvent *event );
+    virtual void contextMenuEvent( QContextMenuEvent *event );
 
   signals:
     /**
@@ -86,7 +100,9 @@ class QgsFeatureListView : QListView
      * Is emitted, whenever the display expression is successfully changed
      * @param expression The expression that was applied
      */
-    void displayExpressionChanged( const QString expression );
+    void displayExpressionChanged( const QString& expression );
+
+    //void aboutToChangeEditSelection( bool& ok );
 
   public slots:
     /**
@@ -95,6 +111,14 @@ class QgsFeatureListView : QListView
      * @param fids  A list of features to be edited
      */
     void setEditSelection( const QgsFeatureIds &fids );
+
+    /**
+     * Set the feature(s) to be edited
+     *
+     * @param index The selection to set
+     * @param command selection update mode
+     */
+    void setEditSelection( const QModelIndex& index, QItemSelectionModel::SelectionFlags command );
 
     /**
      * Select all currently visible features

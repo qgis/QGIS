@@ -61,6 +61,8 @@ public:
     QwtCurveFitter *curveFitter;
 
     QwtPolarCurve::LegendAttributes legendAttributes;
+private:
+    Q_DISABLE_COPY(PrivateData)
 };
 
 //! Constructor
@@ -433,7 +435,7 @@ void QwtPolarCurve::drawLines( QPainter *painter,
 
     if ( !clipRect.isEmpty() )
     {
-        double off = qCeil( qMax( 1.0, painter->pen().widthF() ) );
+        double off = qCeil( qMax((qreal)1.0,painter->pen().widthF() ) );
         clipRect = clipRect.toRect().adjusted( -off, -off, off, off );
         polyline = QwtClipper::clipPolygonF( clipRect, polyline );
     }

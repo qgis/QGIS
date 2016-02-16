@@ -39,18 +39,18 @@ it, just point the installer to c:\msys\mingw
 
 When Qt installation is complete:
 
-Edit C:\Qt\4.7.0\bin\qtvars.bat and add the following lines:
+Edit C:\Qt\4.8.0\bin\qtvars.bat and add the following lines:
 
 ``` 
 set PATH=%PATH%;C:\msys\local\bin;c:\msys\local\lib 
 set PATH=%PATH%;"C:\Program Files\Subversion\bin" 
 ```
 
-I suggest you also add C:\Qt\4.7.0\bin\ to your Environment Variables Path in
+I suggest you also add C:\Qt\4.8.0\bin\ to your Environment Variables Path in
 the windows system preferences.
 
 If you plan to do some debugging, you'll need to compile debug version of Qt:
-C:\Qt\4.7.0\bin\qtvars.bat compile_debug
+C:\Qt\4.8.0\bin\qtvars.bat compile_debug
 
 Note: there is a problem when compiling debug version of Qt 4.7, the script ends with
 this message  "mingw32-make: *** No rule to make target `debug'.  Stop.". To 
@@ -58,7 +58,7 @@ compile the debug version you have to go out of src directory and execute the
 following command:
 
 ``` 
-c:\Qt\4.7.0 make 
+c:\Qt\4.8.0 make 
 ```
 
 === Flex and Bison ===
@@ -90,7 +90,7 @@ to get versions that match your current Qt installed version.
 ==== Compile SIP ====
 
 ``` 
-c:\Qt\4.7.0\bin\qtvars.bat 
+c:\Qt\4.8.0\bin\qtvars.bat 
 python configure.py -p win32-g++ 
 make 
 make install 
@@ -99,7 +99,7 @@ make install
 ==== Compile PyQt ====
 
 ``` 
-c:\Qt\4.7.0\bin\qtvars.bat 
+c:\Qt\4.8.0\bin\qtvars.bat 
 python configure.py 
 make 
 make install 
@@ -148,10 +148,10 @@ Start a cmd.exe window ( Start -> Run -> cmd.exe ) if you don't have one
 already.  Add paths to compiler and our MSYS environment:
   
 ``` 
-c:\Qt\4.7.0\bin\qtvars.bat 
+c:\Qt\4.8.0\bin\qtvars.bat 
 ```
 
-For ease of use add c:\Qt\4.7.0\bin\ to your system path in system
+For ease of use add c:\Qt\4.8.0\bin\ to your system path in system
 properties so you can just type qtvars.bat when you open the cmd console.
 Create build directory and set it as current directory:
 

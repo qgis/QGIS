@@ -3,6 +3,7 @@ struct QgsDiagramLayerSettings
 %TypeHeaderCode
 #include <qgsdiagramrendererv2.h>
 %End
+  public:
     //avoid inclusion of QgsPalLabeling
     enum Placement
     {
@@ -16,25 +17,37 @@ struct QgsDiagramLayerSettings
 
     enum LinePlacementFlags
     {
-      OnLine    = 1,
-      AboveLine = 2,
-      BelowLine = 4,
-      MapOrientation = 8
+      OnLine,
+      AboveLine,
+      BelowLine,
+      MapOrientation,
     };
 
     QgsDiagramLayerSettings();
+    QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh );
 
     ~QgsDiagramLayerSettings();
 
     //pal placement properties
     Placement placement;
-    LinePlacementFlags placementFlags;
+    unsigned int placementFlags;
     int priority; // 0 = low, 10 = high
+
+    //! Z-index of diagrams, where diagrams with a higher z-index are drawn on top of diagrams with a lower z-index
+    double zIndex;
+
     bool obstacle; // whether it's an obstacle
     double dist; // distance from the feature (in mm)
-    QgsDiagramRendererV2* renderer;
+    QgsDiagramRendererV2* renderer; // if any renderer is assigned, it is owned by this class
+
+    //assigned when layer gets prepared
+    const QgsCoordinateTransform* ct;
+    const QgsMapToPixel* xform;
+    QgsFields fields;
+
     int xPosColumn; //attribute index for x coordinate (or -1 if position not data defined)
     int yPosColumn;//attribute index for y coordinate (or -1 if position not data defined)
+    bool showAll;
 
     void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
@@ -69,9 +82,12 @@ class QgsDiagramSettings
     };
 
     QgsDiagramSettings();
+    bool enabled;
     QFont font;
     QList< QColor > categoryColors;
     QList< QString > categoryAttributes;
+    //! @note added in 2.10
+    QList< QString > categoryLabels;
     QSizeF size; //size
     SizeType sizeType; //mm or map units
     QColor backgroundColor;
@@ -84,6 +100,7 @@ class QgsDiagramSettings
     bool scaleByArea;
     int angleOffset;
 
+    bool scaleBasedVisibility;
     //scale range (-1 if no lower / upper bound )
     double minScaleDenominator;
     double maxScaleDenominator;
@@ -93,6 +110,13 @@ class QgsDiagramSettings
 
     void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+
+    /** Returns list of legend nodes for the diagram
+     * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
+     * @note added in 2.10
+     */
+    QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const /Factory/;
+
 };
 
 //additional diagram settings for interpolated size rendering
@@ -106,13 +130,13 @@ class QgsDiagramInterpolationSettings
     QSizeF upperSize;
     double lowerValue;
     double upperValue;
-    /**Index of the classification attribute*/
+    /** Index of the classification attribute*/
     int classificationAttribute;
     QString classificationAttributeExpression;
     bool classificationAttributeIsExpression;
 };
 
-/**Returns diagram settings for a feature*/
+/** Returns diagram settings for a feature*/
 class QgsDiagramRendererV2
 {
 %TypeHeaderCode
@@ -125,43 +149,49 @@ class QgsDiagramRendererV2
 
     /** Returns new instance that is equivalent to this one
      * @note added in 2.4 */
-    virtual QgsDiagramRendererV2* clone() const = 0;
+    virtual QgsDiagramRendererV2* clone() const = 0 /Factory/;
 
-    /**Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error*/
+    /** Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error*/
     virtual QSizeF sizeMapUnits( const QgsFeature& feature, const QgsRenderContext& c );
 
     virtual QString rendererName() const = 0;
 
-    /**Returns attribute indices needed for diagram rendering*/
+    /** Returns attribute indices needed for diagram rendering*/
     virtual QList<QString> diagramAttributes() const = 0;
 
-    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QPointF& pos );
+    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos );
 
     void setDiagram( QgsDiagram* d /Transfer/ );
-    const QgsDiagram* diagram() const;
+    QgsDiagram* diagram() const;
 
-    /**Returns list with all diagram settings in the renderer*/
+    /** Returns list with all diagram settings in the renderer*/
     virtual QList<QgsDiagramSettings> diagramSettings() const = 0;
 
     virtual void readXML( const QDomElement& elem, const QgsVectorLayer* layer ) = 0;
     virtual void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const = 0;
 
+    /** Returns list of legend nodes for the diagram
+     * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
+     * @note added in 2.10
+     */
+    virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const /Factory/;
+
   protected:
 
-    /**Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
+    /** Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
      * @param feature the feature
      * @param c render context
      * @param s out: diagram settings for the feature
      */
     virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s ) = 0;
 
-    /**Returns size of the diagram (in painter units) or an invalid size in case of error*/
+    /** Returns size of the diagram (in painter units) or an invalid size in case of error*/
     virtual QSizeF diagramSize( const QgsFeature& features, const QgsRenderContext& c ) = 0;
 
-    /**Converts size from mm to map units*/
+    /** Converts size from mm to map units*/
     void convertSizeToMapUnits( QSizeF& size, const QgsRenderContext& context ) const;
 
-    /**Returns the paint device dpi (or -1 in case of error*/
+    /** Returns the paint device dpi (or -1 in case of error*/
     static int dpiPaintDevice( const QPainter* );
 
     //read / write diagram
@@ -169,7 +199,7 @@ class QgsDiagramRendererV2
     void _writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 };
 
-/**Renders the diagrams for all features with the same settings*/
+/** Renders the diagrams for all features with the same settings*/
 class QgsSingleCategoryDiagramRenderer : QgsDiagramRendererV2
 {
 %TypeHeaderCode
@@ -180,7 +210,7 @@ class QgsSingleCategoryDiagramRenderer : QgsDiagramRendererV2
     QgsSingleCategoryDiagramRenderer();
     ~QgsSingleCategoryDiagramRenderer();
 
-    QgsDiagramRendererV2* clone() const;
+    virtual QgsSingleCategoryDiagramRenderer* clone() const /Factory/;
 
     QString rendererName() const;
 
@@ -192,6 +222,8 @@ class QgsSingleCategoryDiagramRenderer : QgsDiagramRendererV2
 
     void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+
+    virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const /Factory/;
 
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s );
@@ -209,9 +241,9 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRendererV2
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();
 
-    QgsDiagramRendererV2* clone() const;
+    virtual QgsLinearlyInterpolatedDiagramRenderer* clone() const /Factory/;
 
-    /**Returns list with all diagram settings in the renderer*/
+    /** Returns list with all diagram settings in the renderer*/
     QList<QgsDiagramSettings> diagramSettings() const;
 
     void setDiagramSettings( const QgsDiagramSettings& s );
@@ -236,13 +268,15 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRendererV2
     void setClassificationAttribute( int index );
 
     QString classificationAttributeExpression() const;
-    void setClassificationAttributeExpression( QString expression );
+    void setClassificationAttributeExpression( const QString& expression );
 
     bool classificationAttributeIsExpression() const;
     void setClassificationAttributeIsExpression( bool isExpression );
 
     void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+
+    virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const /Factory/;
 
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s );

@@ -31,15 +31,19 @@ class APP_EXPORT QgsMapToolSelectPolygon : public QgsMapTool
     virtual ~QgsMapToolSelectPolygon();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
   private:
 
     //! used for storing all of the maps point for the polygon
     QgsRubberBand* mRubberBand;
+
+    QColor mFillColor;
+
+    QColor mBorderColour;
 };
 
 #endif

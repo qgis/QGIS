@@ -1,88 +1,75 @@
 #include "qgsdatadefinedsymboldialog.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsfieldexpressionwidget.h"
 #include "qgsvectorlayer.h"
-#include <QCheckBox>
-#include <QComboBox>
-#include <QPushButton>
+#include "qgslogger.h"
 
-QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f ), mVectorLayer( vl )
+#include <QCheckBox>
+#include <QSettings>
+
+
+QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent, const Qt::WindowFlags& f )
+    : QDialog( parent, f )
+    , mVectorLayer( vl )
 {
   setupUi( this );
 
   QgsFields attributeFields;
   if ( mVectorLayer )
   {
-    attributeFields = mVectorLayer->pendingFields();
+    attributeFields = mVectorLayer->fields();
   }
 
-  mTableWidget->setRowCount( entries.size() );
-
-  int i = 0;
   QList< DataDefinedSymbolEntry >::const_iterator entryIt = entries.constBegin();
   for ( ; entryIt != entries.constEnd(); ++entryIt )
   {
+    QTreeWidgetItem* item = new QTreeWidgetItem( mTreeWidget );
+
     //check box
-    QCheckBox* cb = new QCheckBox( this );
+    QCheckBox* cb = new QCheckBox( entryIt->title, this );
     cb->setChecked( !entryIt->initialValue.isEmpty() );
-    mTableWidget->setCellWidget( i, 0, cb );
-    mTableWidget->setColumnWidth( 0, cb->width() );
+    item->setData( 0, Qt::UserRole, entryIt->property );
+    mTreeWidget->setItemWidget( item, 0, cb );
 
-
-    //property name
-    QTableWidgetItem* propertyItem = new QTableWidgetItem( entryIt->title );
-    propertyItem->setData( Qt::UserRole, entryIt->property );
-    mTableWidget->setItem( i, 1, propertyItem );
-
-    //attribute list
-    QString expressionString = entryIt->initialValue;
-    QComboBox* attributeComboBox = new QComboBox( this );
-    attributeComboBox->addItem( QString() );
-    for ( int j = 0; j < attributeFields.count(); ++j )
-    {
-      attributeComboBox->addItem( attributeFields.at( j ).name() );
-    }
-
-    int attrComboIndex = comboIndexForExpressionString( expressionString, attributeComboBox );
-    if ( attrComboIndex >= 0 )
-    {
-      attributeComboBox->setCurrentIndex( attrComboIndex );
-    }
-    else
-    {
-      attributeComboBox->setItemText( 0, expressionString );
-    }
-
-    mTableWidget->setCellWidget( i, 2, attributeComboBox );
-
-    //expression button
-    QPushButton* expressionButton = new QPushButton( "...", this );
-    QObject::connect( expressionButton, SIGNAL( clicked() ), this, SLOT( expressionButtonClicked() ) );
-    mTableWidget->setCellWidget( i, 3, expressionButton );
+    // expression
+    QgsFieldExpressionWidget* few = new QgsFieldExpressionWidget( this );
+    few->setMaximumWidth( 350 );
+    few->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
+    few->setLayer( const_cast<QgsVectorLayer*>( vl ) );
+    few->setField( entryIt->initialValue );
+    mTreeWidget->setItemWidget( item, 1, few );
 
     //help text
-    QTableWidgetItem* helpItem = new QTableWidgetItem( entryIt->helpText );
-    mTableWidget->setItem( i, 4, helpItem );
+    item->setText( 2, entryIt->helpText );
 
-    ++i;
+    mTreeWidget->addTopLevelItem( item );
   }
+
+  for ( int c = 0; c != mTreeWidget->columnCount() - 1; c++ )
+    mTreeWidget->resizeColumnToContents( c );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/QgsDataDefinedSymbolDialog/geometry" ).toByteArray() );
 }
 
 QgsDataDefinedSymbolDialog::~QgsDataDefinedSymbolDialog()
 {
-
+  QSettings settings;
+  settings.setValue( "/Windows/QgsDataDefinedSymbolDialog/geometry", saveGeometry() );
 }
 
 QMap< QString, QString > QgsDataDefinedSymbolDialog::dataDefinedProperties() const
 {
   QMap< QString, QString > propertyMap;
-  int rowCount = mTableWidget->rowCount();
+  int rowCount = mTreeWidget->topLevelItemCount();
   for ( int i = 0; i < rowCount; ++i )
   {
+    QTreeWidgetItem* item = mTreeWidget->topLevelItem( i );
     //property
-    QString propertyKey = mTableWidget->item( i, 1 )->data( Qt::UserRole ).toString();
+    QString propertyKey = item->data( 0, Qt::UserRole ).toString();
     //checked?
     bool checked = false;
-    QCheckBox* cb = qobject_cast<QCheckBox*>( mTableWidget->cellWidget( i, 0 ) );
+    QCheckBox* cb = qobject_cast<QCheckBox*>( mTreeWidget->itemWidget( item, 0 ) );
     if ( cb )
     {
       checked = cb->isChecked();
@@ -90,77 +77,12 @@ QMap< QString, QString > QgsDataDefinedSymbolDialog::dataDefinedProperties() con
     QString expressionString;
     if ( checked )
     {
-      QComboBox* comboBox = qobject_cast<QComboBox*>( mTableWidget->cellWidget( i, 2 ) );
-      expressionString = comboBox->currentText();
-      if ( comboBox->currentIndex() > 0 )
-      {
-        expressionString.prepend( "\"" ).append( "\"" );
-      }
+      QgsFieldExpressionWidget* few = qobject_cast<QgsFieldExpressionWidget*>( mTreeWidget->itemWidget( item, 1 ) );
+      expressionString = few->currentField();
     }
     propertyMap.insert( propertyKey, expressionString );
   }
   return propertyMap;
-}
-
-void QgsDataDefinedSymbolDialog::expressionButtonClicked()
-{
-  qWarning( "Expression button clicked" );
-
-  //find out row
-  QObject* senderObj = sender();
-  int row = 0;
-  for ( ; row < mTableWidget->rowCount(); ++row )
-  {
-    if ( senderObj == mTableWidget->cellWidget( row, 3 ) )
-    {
-      break;
-    }
-  }
-
-  QComboBox* attributeCombo = qobject_cast<QComboBox*>( mTableWidget->cellWidget( row, 2 ) );
-  if ( !attributeCombo )
-  {
-    return;
-  }
-
-  QString previousText = attributeCombo->itemText( attributeCombo->currentIndex() );
-  if ( attributeCombo->currentIndex() > 0 )
-  {
-    previousText.prepend( "\"" ).append( "\"" );
-  }
-
-  QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer*>( mVectorLayer ), previousText );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    QString expressionString = d.expressionText();
-    int comboIndex = comboIndexForExpressionString( d.expressionText(), attributeCombo );
-
-    if ( comboIndex == -1 )
-    {
-      attributeCombo->setItemText( 0, d.expressionText() );
-      attributeCombo->setCurrentIndex( 0 );
-    }
-    else
-    {
-      if ( comboIndex != 0 )
-      {
-        attributeCombo->setItemText( 0, QString() );
-      }
-      attributeCombo->setCurrentIndex( comboIndex );
-    }
-  }
-}
-
-int QgsDataDefinedSymbolDialog::comboIndexForExpressionString( const QString& expr, const QComboBox* cb )
-{
-  QString attributeString = expr.trimmed();
-  int comboIndex = cb->findText( attributeString );
-  if ( comboIndex == -1 )
-  {
-    attributeString.remove( 0, 1 ).chop( 1 );
-    comboIndex = cb->findText( attributeString );
-  }
-  return comboIndex;
 }
 
 QString QgsDataDefinedSymbolDialog::doubleHelpText()
@@ -185,12 +107,14 @@ QString QgsDataDefinedSymbolDialog::fileNameHelpText()
 
 QString QgsDataDefinedSymbolDialog::horizontalAnchorHelpText()
 {
-  return tr( "'left'|'center'|'right'" );
+  // Don't translate, localized keywords are not supported.
+  return "'left'|'center'|'right'";
 }
 
 QString QgsDataDefinedSymbolDialog::verticalAnchorHelpText()
 {
-  return tr( "'top'|'center'|'bottom'" );
+  // Don't translate, localized keywords are not supported.
+  return "'top'|'center'|'bottom'";
 }
 
 QString QgsDataDefinedSymbolDialog::gradientTypeHelpText()
@@ -211,6 +135,28 @@ QString QgsDataDefinedSymbolDialog::gradientSpreadHelpText()
 QString QgsDataDefinedSymbolDialog::boolHelpText()
 {
   return tr( "0 (false)|1 (true)" );
+}
+
+QString QgsDataDefinedSymbolDialog::lineStyleHelpText()
+{
+  return "'no'|'solid'|'dash'|'dot'|'dash dot'|'dash dot dot'";
+}
+
+QString QgsDataDefinedSymbolDialog::joinStyleHelpText()
+{
+  return "'bevel'|'miter'|'round'";
+}
+
+QString QgsDataDefinedSymbolDialog::capStyleHelpText()
+{
+  return "'square'|'flat'|'round'";
+}
+
+QString QgsDataDefinedSymbolDialog::fillStyleHelpText()
+{
+  return "'solid'|'horizontal'|'vertical'|'cross'|'b_diagonal'|'f_diagonal'|"
+         "'diagonal_x'|'dense1'|'dense2'|'dense3'|'dense4'|'dense5'|"
+         "'dense6'|'dense7'|'no'";
 }
 
 

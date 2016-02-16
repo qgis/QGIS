@@ -22,22 +22,22 @@
 #include <QVector>
 
 class ANALYSIS_EXPORT ParametricLine
-      /**ParametricLine is an Interface for parametric lines. It is possible, that a parametric line is composed of several parametric lines (see the composite pattern in Gamma et al. 'Design Patterns'). Do not build instances of it since it is an abstract class.*/
+      /** ParametricLine is an Interface for parametric lines. It is possible, that a parametric line is composed of several parametric lines (see the composite pattern in Gamma et al. 'Design Patterns'). Do not build instances of it since it is an abstract class.*/
 {
   protected:
-    /**Degree of the parametric Line*/
+    /** Degree of the parametric Line*/
     int mDegree;
-    /**Pointer to the parent object. If there isn't one, mParent is 0*/
+    /** Pointer to the parent object. If there isn't one, mParent is 0*/
     ParametricLine* mParent;
-    /**mControlPoly stores the points of the control polygon*/
+    /** MControlPoly stores the points of the control polygon*/
     QVector<Point3D*>* mControlPoly;
   public:
-    /**Default constructor*/
+    /** Default constructor*/
     ParametricLine();
-    /**Constructor, par is a pointer to the parent object, controlpoly the controlpolygon
-      @note not available in python binding */
+    /** Constructor, par is a pointer to the parent object, controlpoly the controlpolygon
+      */
     ParametricLine( ParametricLine* par, QVector<Point3D*>* controlpoly );
-    /**Destructor*/
+    /** Destructor*/
     virtual ~ParametricLine();
     virtual void add( ParametricLine* pl ) = 0;
     virtual void calcFirstDer( float t, Vector3D* v ) = 0;
@@ -47,25 +47,23 @@ class ANALYSIS_EXPORT ParametricLine
     virtual void changeDirection() = 0;
     //virtual void draw(QPainter* p);
     virtual const Point3D* getControlPoint( int number ) const = 0;
-    //! @note not available in python binding
     virtual const QVector<Point3D*>* getControlPoly() const = 0;
     virtual int getDegree() const = 0;
     virtual ParametricLine* getParent() const = 0;
     //virtual bool intersects(ParametricLine* pal);
     virtual void remove( int i ) = 0;
-    //! @note not available in python binding
     virtual void setControlPoly( QVector<Point3D*>* cp ) = 0;
     virtual void setParent( ParametricLine* paral ) = 0;
 };
 
 //-----------------------------------------constructors and destructor----------------------
 
-inline ParametricLine::ParametricLine() : mParent( 0 ), mControlPoly( 0 )
+inline ParametricLine::ParametricLine() : mDegree( 0 ), mParent( nullptr ), mControlPoly( nullptr )
 {
 
 }
 
-inline ParametricLine::ParametricLine( ParametricLine* par, QVector<Point3D*>* controlpoly ) : mParent( par ), mControlPoly( controlpoly )
+inline ParametricLine::ParametricLine( ParametricLine* par, QVector<Point3D*>* controlpoly ) : mDegree( 0 ), mParent( par ), mControlPoly( controlpoly )
 {
 
 }

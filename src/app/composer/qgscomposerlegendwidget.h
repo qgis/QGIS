@@ -19,41 +19,34 @@
 #define QGSCOMPOSERLEGENDWIDGET_H
 
 #include "ui_qgscomposerlegendwidgetbase.h"
+#include "qgscomposeritemwidget.h"
 #include <QWidget>
 #include <QItemDelegate>
 
 class QgsComposerLegend;
 
-class QgsComposerLegendWidgetStyleDelegate : public QItemDelegate
-{
-    Q_OBJECT
-
-  public:
-    QgsComposerLegendWidgetStyleDelegate( QObject *parent = 0 );
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
-    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-};
 
 /** \ingroup MapComposer
  * A widget for setting properties relating to a composer legend.
  */
-class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidgetBase
+class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerLegendWidgetBase
 {
     Q_OBJECT
 
   public:
-    QgsComposerLegendWidget( QgsComposerLegend* legend );
+    explicit QgsComposerLegendWidget( QgsComposerLegend* legend );
     ~QgsComposerLegendWidget();
 
-    /**Updates the legend layers and groups*/
+    /** Updates the legend layers and groups*/
     void updateLegend();
+
+    QgsComposerLegend* legend() { return mLegend; }
 
   public slots:
 
     void on_mWrapCharLineEdit_textChanged( const QString& text );
     void on_mTitleLineEdit_textChanged( const QString& text );
+    void on_mTitleAlignCombo_currentIndexChanged( int index );
     void on_mColumnCountSpinBox_valueChanged( int c );
     void on_mSplitLayerCheckBox_toggled( bool checked );
     void on_mEqualColumnWidthCheckBox_toggled( bool checked );
@@ -70,11 +63,15 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mGroupFontButton_clicked();
     void on_mLayerFontButton_clicked();
     void on_mItemFontButton_clicked();
-    void on_mFontColorPushButton_clicked();
+    void on_mFontColorButton_colorChanged( const QColor& newFontColor );
     void on_mBoxSpaceSpinBox_valueChanged( double d );
     void on_mColumnSpaceSpinBox_valueChanged( double d );
     void on_mCheckBoxAutoUpdate_stateChanged( int state );
     void on_mMapComboBox_currentIndexChanged( int index );
+
+    void on_mRasterBorderGroupBox_toggled( bool state );
+    void on_mRasterBorderWidthSpinBox_valueChanged( double d );
+    void on_mRasterBorderColorButton_colorChanged( const QColor& newColor );
 
     //item manipulation
     void on_mMoveDownToolButton_clicked();
@@ -83,18 +80,27 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mAddToolButton_clicked();
     void on_mEditPushButton_clicked();
     void on_mCountToolButton_clicked( bool checked );
-    void on_mUpdatePushButton_clicked();
+    void on_mExpressionFilterButton_toggled( bool checked );
+    void on_mFilterByMapToolButton_toggled( bool checked );
+    void resetLayerNodeToDefaults();
     void on_mUpdateAllPushButton_clicked();
     void on_mAddGroupToolButton_clicked();
 
+    void on_mFilterLegendByAtlasCheckBox_toggled( bool checked );
+
     void selectedChanged( const QModelIndex & current, const QModelIndex & previous );
 
+    void setCurrentNodeStyleFromAction();
+
   protected:
-    void showEvent( QShowEvent * event );
+    void showEvent( QShowEvent * event ) override;
 
   private slots:
-    /**Sets GUI according to state of mLegend*/
+    /** Sets GUI according to state of mLegend*/
     void setGuiElements();
+
+    /** Update the enabling state of the filter by atlas button */
+    void updateFilterLegendByAtlasButton();
 
   private:
     QgsComposerLegendWidget();
@@ -105,4 +111,21 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     QgsComposerLegend* mLegend;
 };
 
+
+class QgsComposerLegendMenuProvider : public QObject, public QgsLayerTreeViewMenuProvider
+{
+    Q_OBJECT
+
+  public:
+    QgsComposerLegendMenuProvider( QgsLayerTreeView* view, QgsComposerLegendWidget* w );
+
+    virtual QMenu* createContextMenu() override;
+
+  protected:
+    QgsLayerTreeView* mView;
+    QgsComposerLegendWidget* mWidget;
+};
+
+
 #endif
+

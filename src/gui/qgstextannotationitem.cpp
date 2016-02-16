@@ -19,7 +19,7 @@
 #include <QDomDocument>
 #include <QPainter>
 
-QgsTextAnnotationItem::QgsTextAnnotationItem( QgsMapCanvas* canvas ): QgsAnnotationItem( canvas ), mDocument( new QTextDocument( QObject::tr( "QGIS rocks!" ) ) )
+QgsTextAnnotationItem::QgsTextAnnotationItem( QgsMapCanvas* canvas ): QgsAnnotationItem( canvas ), mDocument( new QTextDocument( QObject::tr( "" ) ) )
 {
   mDocument->setUseDesignMetrics( true );
 }
@@ -33,7 +33,7 @@ QTextDocument* QgsTextAnnotationItem::document() const
 {
   if ( !mDocument )
   {
-    return 0;
+    return nullptr;
   }
 
   return mDocument->clone();
@@ -64,8 +64,16 @@ void QgsTextAnnotationItem::paint( QPainter * painter )
   painter->translate( mOffsetFromReferencePoint.x() + frameWidth / 2.0,
                       mOffsetFromReferencePoint.y() + frameWidth / 2.0 );
 
+  QRectF clipRect = QRectF( 0, 0, mFrameSize.width() - frameWidth / 2.0, mFrameSize.height() - frameWidth / 2.0 );
+  if ( painter->hasClipping() )
+  {
+    //QTextDocument::drawContents will draw text outside of the painter's clip region
+    //when it is passed a clip rectangle. So, we need to intersect it with the
+    //painter's clip region to prevent text drawn outside clipped region (eg, outside composer maps, see #10400)
+    clipRect = clipRect.intersected( painter->clipRegion().boundingRect() );
+  }
   //draw text document
-  mDocument->drawContents( painter, QRectF( 0, 0, mFrameSize.width() - frameWidth / 2.0, mFrameSize.height() - frameWidth / 2.0 ) );
+  mDocument->drawContents( painter, clipRect );
   painter->restore();
   if ( isSelected() )
   {
@@ -93,7 +101,7 @@ void QgsTextAnnotationItem::readXML( const QDomDocument& doc, const QDomElement&
 {
   delete mDocument;
   mDocument = new QTextDocument;
-  mDocument->setHtml( itemElem.attribute( "document", QObject::tr( "<html>QGIS rocks!</html>" ) ) );
+  mDocument->setHtml( itemElem.attribute( "document", QObject::tr( "" ) ) );
   QDomElement annotationElem = itemElem.firstChildElement( "AnnotationItem" );
   if ( !annotationElem.isNull() )
   {

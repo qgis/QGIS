@@ -18,18 +18,19 @@
 #define QGSCOMPOSERSCALEBARWIDGET_H
 
 #include "ui_qgscomposerscalebarwidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerScaleBar;
 
 /** \ingroup MapComposer
  * A widget to define the properties of a QgsComposerScaleBarItem.
  */
-class QgsComposerScaleBarWidget: public QWidget, private Ui::QgsComposerScaleBarWidgetBase
+class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerScaleBarWidgetBase
 {
     Q_OBJECT
 
   public:
-    QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar );
+    explicit QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar );
     ~QgsComposerScaleBarWidget();
 
   public slots:
@@ -41,30 +42,37 @@ class QgsComposerScaleBarWidget: public QWidget, private Ui::QgsComposerScaleBar
     void on_mNumberOfSegmentsSpinBox_valueChanged( int i );
     void on_mUnitLabelLineEdit_textChanged( const QString& text );
     void on_mMapUnitsPerBarUnitSpinBox_valueChanged( double d );
-    void on_mColorPushButton_clicked();
-    void on_mStrokeColorPushButton_clicked();
     void on_mFontButton_clicked();
-    void on_mFontColorPushButton_clicked();
+    void on_mFontColorButton_colorChanged( const QColor& newColor );
+    void on_mFillColorButton_colorChanged( const QColor& newColor );
+    void on_mFillColor2Button_colorChanged( const QColor& newColor );
+    void on_mStrokeColorButton_colorChanged( const QColor& newColor );
     void on_mStyleComboBox_currentIndexChanged( const QString& text );
     void on_mLabelBarSpaceSpinBox_valueChanged( double d );
     void on_mBoxSizeSpinBox_valueChanged( double d );
     void on_mAlignmentComboBox_currentIndexChanged( int index );
     void on_mUnitsComboBox_currentIndexChanged( int index );
+    void on_mLineJoinStyleCombo_currentIndexChanged( int index );
+    void on_mLineCapStyleCombo_currentIndexChanged( int index );
+    void on_mMinWidthSpinBox_valueChanged( int i );
+    void on_mMaxWidthSpinBox_valueChanged( int i );
 
   private slots:
     void setGuiElements();
+    void segmentSizeRadioChanged( QAbstractButton*radio );
 
   protected:
-    void showEvent( QShowEvent * event );
+    void showEvent( QShowEvent * event ) override;
 
   private:
     QgsComposerScaleBar* mComposerScaleBar;
+    QButtonGroup mSegmentSizeRadioGroup;
 
     void refreshMapComboBox();
-    /**Enables/disables the signals of the input gui elements*/
+    /** Enables/disables the signals of the input gui elements*/
     void blockMemberSignals( bool enable );
 
-    /**Enables/disables controls based on scale bar style*/
+    /** Enables/disables controls based on scale bar style*/
     void toggleStyleSpecificControls( const QString& style );
 
     void connectUpdateSignal();

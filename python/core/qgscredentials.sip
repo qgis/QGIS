@@ -8,18 +8,48 @@ class QgsCredentials
     //! virtual destructor
     virtual ~QgsCredentials();
 
-    bool get( QString realm, QString &username /In,Out/, QString &password /In,Out/, QString message = QString::null );
-    void put( QString realm, QString username, QString password );
+    bool get( const QString& realm, QString &username /In,Out/, QString &password /In,Out/, const QString& message = QString::null );
+    void put( const QString& realm, const QString& username, const QString& password );
+
+    bool getMasterPassword( QString &password /In,Out/, bool stored = false );
 
     //! retrieves instance
     static QgsCredentials *instance();
 
+    /**
+     * Lock the instance against access from multiple threads. This does not really lock access to get/put methds,
+     * it will just prevent other threads to lock the instance and continue the execution. When the class is used
+     * from non-GUI threads, they should call lock() before the get/put calls to avoid race conditions.
+     * @note added in 2.4
+     */
+    void lock();
+
+    /**
+     * Unlock the instance after being locked.
+     * @note added in 2.4
+     */
+    void unlock();
+
+    /**
+     * Return pointer to mutex
+     * @note added in 2.4
+     */
+    QMutex *mutex();
+
   protected:
+    QgsCredentials();
+
     //! request a password
-    virtual bool request( QString realm, QString &username /In,Out/, QString &password /In,Out/, QString message = QString::null ) = 0;
+    virtual bool request( const QString& realm, QString &username /In,Out/, QString &password /In,Out/, const QString& message = QString::null ) = 0;
+
+    //! request a master password
+    virtual bool requestMasterPassword( QString &password /In,Out/, bool stored = false ) = 0;
 
     //! register instance
     void setInstance( QgsCredentials *theInstance );
+
+  private:
+    QgsCredentials( const QgsCredentials& );
 };
 
 
@@ -44,5 +74,6 @@ class QgsCredentialsConsole : QObject, QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( QString realm, QString &username /In,Out/, QString &password /In,Out/, QString message = QString::null );
+    virtual bool request( const QString& realm, QString &username /In,Out/, QString &password /In,Out/, const QString& message = QString::null );
+    virtual bool requestMasterPassword( QString &password /In,Out/, bool stored = false );
 };

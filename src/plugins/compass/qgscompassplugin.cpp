@@ -48,9 +48,11 @@ static const QString sPluginIcon = ":/compass.svn";
 QgsCompassPlugin::QgsCompassPlugin( QgisInterface *themQGisIface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( themQGisIface )
+    , mActionRunCompass( 0 )
+    , mActionAboutCompass( 0 )
+    , mQgsCompassPluginGui( 0 )
+    , mDock( 0 )
 {
-  /** Initialize the plugin */
-  mDock = NULL;
 }
 
 QgsCompassPlugin::~QgsCompassPlugin()
@@ -180,7 +182,7 @@ QIcon QgsCompassPlugin::getThemeIcon( const QString &theName )
   }
 }
 
-void QgsCompassPlugin::about( )
+void QgsCompassPlugin::about()
 {
   QString title = QString( "About Internal Compass" );
   // sort by date of contribution

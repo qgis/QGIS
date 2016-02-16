@@ -39,14 +39,14 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
     Q_OBJECT
 
   public:
-    QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent = 0 );
+    QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent = nullptr );
     ~QgsRasterHistogramWidget();
 
     /** Save the histogram as an image to disk */
     bool histoSaveAsImage( const QString& theFilename, int width = 600, int height = 600, int quality = -1 );
 
     /** Set the renderer widget (or just its name if there is no widget) */
-    void setRendererWidget( const QString& name, QgsRasterRendererWidget* rendererWidget = NULL );
+    void setRendererWidget( const QString& name, QgsRasterRendererWidget* rendererWidget = nullptr );
 
     /** Activate the histogram widget */
     void setActive( bool theActiveFlag );
@@ -55,7 +55,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
     bool computeHistogram( bool forceComputeFlag );
 
     /** Apply a histoActionTriggered() event. */
-    void histoAction( const QString actionName, bool actionFlag = true );
+    void histoAction( const QString &actionName, bool actionFlag = true );
 
     /** Apply a histoActionTriggered() event. */
     void setSelectedBand( int index );
@@ -70,17 +70,17 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
     /** Used when the histogram band selector changes, or when tab is loaded. */
     void on_cboHistoBand_currentIndexChanged( int );
     /** Applies the selected min/max values to the renderer widget. */
-    void applyHistoMin( );
-    void applyHistoMax( );
+    void applyHistoMin();
+    void applyHistoMax();
     /** Button to activate picking of the min/max value on the graph. */
     void on_btnHistoMin_toggled();
     void on_btnHistoMax_toggled();
     /** Called when a selection has been made using the plot picker. */
-    void histoPickerSelected( const QPointF & );
+    void histoPickerSelected( QPointF );
     /** Called when a selection has been made using the plot picker (for qwt5 only).
       @note not available in python bindings
       */
-    void histoPickerSelectedQwt5( const QwtDoublePoint & );
+    void histoPickerSelectedQwt5( QwtDoublePoint );
     /** Various actions that are stored in btnHistoActions. */
     void histoActionTriggered( QAction* );
     /** Draw the min/max markers on the histogram plot. */
@@ -114,6 +114,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
     bool mHistoShowMarkers;
     bool mHistoZoomToMinMax;
     bool mHistoUpdateStyleToMinMax;
+    bool mHistoDrawLines;
     /* bool mHistoLoadApplyAll; */
     HistoShowBands mHistoShowBands;
     /** \brief Returns a list of selected bands in the histogram widget- or empty if there is no selection restriction. */

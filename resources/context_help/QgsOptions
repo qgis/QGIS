@@ -39,7 +39,7 @@ The <label>Mode</label> setting determines which layers will be shown by the <la
 <h5>Measure tool</h5>
 Here you can set an ellipsoid for distance calculations, measurement units and preferred color of rubber band.
 <h5>Panning and zooming</h5>
-Allows to define mouse wheel action and zoom factor.
+Allows defining mouse wheel action and zoom factor.
 <a name="over">
 <h4>Overlay</h4>
 </a>

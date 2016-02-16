@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 24.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,8 +21,19 @@ class QgsEditorConfigWidget : QWidget
 
   public:
     explicit QgsEditorConfigWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent /TransferThis/ );
+
+    /**
+     * Returns the field for which this configuration widget applies
+     *
+     * @return The field index
+     */
     int field();
 
+    /**
+     * Returns the layer for which this configuration widget applies
+     *
+     * @return The layer
+     */
     QgsVectorLayer* layer();
 
     virtual QgsEditorWidgetConfig config() = 0;

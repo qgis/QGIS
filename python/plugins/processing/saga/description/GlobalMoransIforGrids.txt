@@ -1,5 +1,0 @@
-Global Moran's I for Grids
-geostatistics_grid
-ParameterRaster|GRID|Grid|False
-ParameterSelection|CONTIGUITY|Case of contiguity|[0] Rook;[1] Queen
-OutputTable|RESULT|Result

@@ -1,17 +1,22 @@
-SET (WMS_SRCS      
+IF (QT5_BUILD)
+  FIND_PACKAGE(Qt5XmlPatterns REQUIRED)
+ENDIF()
+
+
+SET (WMS_SRCS
   qgswmscapabilities.cpp
-  qgswmsprovider.cpp 
-  qgswmssourceselect.cpp 
-  qgswmsconnection.cpp 
+  qgswmsprovider.cpp
+  qgswmssourceselect.cpp
+  qgswmsconnection.cpp
   qgswmsdataitems.cpp
   qgstilescalewidget.cpp
   qgswmtsdimensions.cpp
 )
-SET (WMS_MOC_HDRS  
+SET (WMS_MOC_HDRS
   qgswmscapabilities.h
-  qgswmsprovider.h 
-  qgswmssourceselect.h 
-  qgswmsconnection.h 
+  qgswmsprovider.h
+  qgswmssourceselect.h
+  qgswmsconnection.h
   qgswmsdataitems.h
   qgstilescalewidget.h
   qgswmtsdimensions.h
@@ -19,11 +24,21 @@ SET (WMS_MOC_HDRS
 
 QT4_WRAP_CPP (WMS_MOC_SRCS ${WMS_MOC_HDRS})
 
-INCLUDE_DIRECTORIES( . ../../core ../../core/raster ../../gui
+INCLUDE_DIRECTORIES(
+  .
+  ../../core
+  ../../core/auth
+  ../../core/geometry
+  ../../core/raster
+  ../../gui
+  ../../gui/auth
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${QT_QTSCRIPT_INCLUDE_DIR}
+  ${QCA_INCLUDE_DIR}
 )
 
 ADD_LIBRARY(wmsprovider MODULE ${WMS_SRCS} ${WMS_MOC_SRCS})
@@ -37,4 +52,4 @@ TARGET_LINK_LIBRARIES(wmsprovider
 
 INSTALL (TARGETS wmsprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
-  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}) 
+  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

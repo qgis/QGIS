@@ -34,7 +34,8 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
       ICON_NONE,
       ICON_CROSS,
       ICON_X,
-      ICON_BOX
+      ICON_BOX,
+      ICON_CIRCLE
     };
 
     QgsVertexMarker( QgsMapCanvas* mapCanvas );
@@ -49,11 +50,11 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 
     void setPenWidth( int width );
 
-    void paint( QPainter* p );
+    void paint( QPainter* p ) override;
 
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
 
-    virtual void updatePosition();
+    virtual void updatePosition() override;
 
   protected:
 

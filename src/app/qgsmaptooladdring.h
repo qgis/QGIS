@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgsmaptoolcapture.h"
+#include "qgsmapmouseevent.h"
 
-/**A tool to cut holes into polygons and multipolygon features*/
+/** A tool to cut holes into polygons and multipolygon features*/
 class APP_EXPORT QgsMapToolAddRing: public QgsMapToolCapture
 {
     Q_OBJECT
   public:
     QgsMapToolAddRing( QgsMapCanvas* canvas );
     virtual ~QgsMapToolAddRing();
-    void canvasReleaseEvent( QMouseEvent * e );
+    void cadCanvasReleaseEvent( QgsMapMouseEvent * e ) override;
 };

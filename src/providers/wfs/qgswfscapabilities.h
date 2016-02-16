@@ -16,6 +16,7 @@
 #define QGSWFSCAPABILITIES_H
 
 #include <QObject>
+#include <QNetworkRequest>
 
 #include "qgsrectangle.h"
 #include "qgsdatasourceuri.h"
@@ -27,7 +28,7 @@ class QgsWFSCapabilities : public QObject
     Q_OBJECT
   public:
     //explicit QgsWFSCapabilities( QString connName, QObject *parent = 0 );
-    QgsWFSCapabilities( QString theUri );
+    explicit QgsWFSCapabilities( const QString& theUri );
 
     //! Append ? or & if necessary
     QString prepareUri( QString uri );
@@ -40,10 +41,10 @@ class QgsWFSCapabilities : public QObject
     QString uriDescribeFeatureType( const QString& typeName ) const;
     //! URI to get features
     //! @param filter can be an OGC filter xml or a QGIS expression (containing =,!=, <,>,<=, >=, AND, OR, NOT )
-    QString uriGetFeature( QString typeName,
+    QString uriGetFeature( const QString& typeName,
                            QString crs = QString(),
                            QString filter = QString(),
-                           QgsRectangle bBox = QgsRectangle() ) const;
+                           const QgsRectangle& bBox = QgsRectangle() ) const;
 
     //! start network connection to get capabilities
     void requestCapabilities();
@@ -72,6 +73,9 @@ class QgsWFSCapabilities : public QObject
     //! return parsed capabilities - requestCapabilities() must be called before
     GetCapabilities capabilities() { return mCaps; }
 
+    //! set authorization header
+    bool setAuthorization( QNetworkRequest &request ) const;
+
   signals:
     void gotCapabilities();
 
@@ -90,6 +94,12 @@ class QgsWFSCapabilities : public QObject
     GetCapabilities mCaps;
     ErrorCode mErrorCode;
     QString mErrorMessage;
+
+    //! Username for basic http authentication
+    QString mUserName;
+
+    //! Password for basic http authentication
+    QString mPassword;
 };
 
 #endif // QGSWFSCAPABILITIES_H

@@ -27,7 +27,7 @@
 
 #include <QWidget>
 
-QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget * parent, Qt::WFlags fl, bool managerMode, bool embeddedMode )
+QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
     : QgsOWSSourceSelect( "WCS", parent, fl, managerMode, embeddedMode )
 {
   // Hide irrelevant widgets
@@ -45,7 +45,7 @@ QgsWCSSourceSelect::~QgsWCSSourceSelect()
 {
 }
 
-void QgsWCSSourceSelect::populateLayerList( )
+void QgsWCSSourceSelect::populateLayerList()
 {
   QgsDebugMsg( "entered" );
 
@@ -89,7 +89,7 @@ void QgsWCSSourceSelect::populateLayerList( )
     lItem->setData( 0, Qt::UserRole + 1, "" );
 
     // Make only leaves selectable
-    if ( coverageParents.keys( coverage->orderId ).size() > 0 )
+    if ( !coverageParents.keys( coverage->orderId ).isEmpty() )
     {
       lItem->setFlags( Qt::ItemIsEnabled );
     }
@@ -113,7 +113,7 @@ QString QgsWCSSourceSelect::selectedIdentifier()
   return identifier;
 }
 
-void QgsWCSSourceSelect::addClicked( )
+void QgsWCSSourceSelect::addClicked()
 {
   QgsDebugMsg( "entered" );
   QgsDataSourceURI uri = mUri;
@@ -198,7 +198,7 @@ QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
   QList<SupportedFormat> formats;
 
   QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
-  foreach ( QString mime, mimes.keys() )
+  Q_FOREACH ( const QString& mime, mimes.keys() )
   {
     SupportedFormat format = { mime, mimes.value( mime ) };
 

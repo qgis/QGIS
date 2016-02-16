@@ -21,7 +21,7 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
      * @param sourceModel The QgsAttributeTableModel to use as source (mostly referred to as master model)
      * @param canvas  The mapCanvas. Used to identify the currently visible features.
      */
-    QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent = 0 );
+    QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent /TransferThis/ = 0 );
 
     void setSourceModel( QgsAttributeTableModel* sourceModel );
 
@@ -46,7 +46,9 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
      *
      * @param ids  The list of feature ids which will be accepted by the filter
      */
-    virtual void setFilteredFeatures( QgsFeatureIds ids );
+    virtual void setFilteredFeatures( const QgsFeatureIds& ids );
+
+    QgsFeatureIds filteredFeatures();
 
     /**
      * Set the filter mode the filter will use.
@@ -54,6 +56,8 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
      * @param filterMode Sets the current mode of the filter
      */
     void setFilterMode( FilterMode filterMode );
+
+    FilterMode filterMode();
 
     /**
      * Returns the layer this filter acts on.
@@ -91,6 +95,9 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
     virtual QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const;
 
     virtual QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const;
+
+    /** Returns the map canvas*/
+    QgsMapCanvas* mapCanvas() const;
 
   protected:
     /**

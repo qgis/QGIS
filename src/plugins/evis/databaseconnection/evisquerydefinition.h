@@ -43,67 +43,67 @@ class eVisQueryDefinition
 
   public:
     /** \brief Constructor */
-    eVisQueryDefinition( );
+    eVisQueryDefinition();
 
     /** \brief Accessor for query description */
-    QString description( ) { return mDescription; }
+    QString description() { return mDescription; }
 
     /** \brief Accessor for query short description */
-    QString shortDescription( ) { return mShortDescription; }
+    QString shortDescription() { return mShortDescription; }
 
     /** \brief Accessor for database type */
-    QString databaseType( ) { return mDatabaseType; }
+    QString databaseType() { return mDatabaseType; }
 
     /** \brief Accessor for database host name */
-    QString databaseHost( ) { return mDatabaseHost; }
+    QString databaseHost() { return mDatabaseHost; }
 
     /** \brief Accessor for database port */
-    int databasePort( ) { return mDatabasePort; }
+    int databasePort() { return mDatabasePort; }
 
     /** \brief Accessor for database name */
-    QString databaseName( ) { return mDatabaseName; }
+    QString databaseName() { return mDatabaseName; }
 
     /** \brief Accessor for database username */
-    QString databaseUsername( ) { return mDatabaseUsername; }
+    QString databaseUsername() { return mDatabaseUsername; }
 
     /** \brief Accessor for database password */
-    QString databasePassword( ) { return mDatabasePassword; }
+    QString databasePassword() { return mDatabasePassword; }
 
     /** \brief Accessor for SQL statement */
-    QString sqlStatement( ) { return mSqlStatement; }
+    QString sqlStatement() { return mSqlStatement; }
 
     /** \brief Accessor for auto connection flag */
-    bool autoConnect( ) { return mAutoConnect; }
+    bool autoConnect() { return mAutoConnect; }
 
     /** \brief Mutator for query description */
-    void setDescription( QString description ) { mDescription = description; }
+    void setDescription( const QString& description ) { mDescription = description; }
 
     /** \brief Mutator for query short description */
-    void setShortDescription( QString description ) { mShortDescription = description; }
+    void setShortDescription( const QString& description ) { mShortDescription = description; }
 
     /** \brief Mutator for database type */
-    void setDatabaseType( QString type ) { mDatabaseType = type; }
+    void setDatabaseType( const QString& type ) { mDatabaseType = type; }
 
     /** \brief Mutator for database host name */
-    void setDatabaseHost( QString host ) { mDatabaseHost = host; }
+    void setDatabaseHost( const QString& host ) { mDatabaseHost = host; }
 
     /** \brief Mutator for database port */
     void setDatabasePort( int port ) { mDatabasePort = port; }
 
     /** \brief Mutator for database name */
-    void setDatabaseName( QString name ) { mDatabaseName = name; }
+    void setDatabaseName( const QString& name ) { mDatabaseName = name; }
 
     /** \brief Mutator for database username */
-    void setDatabaseUsername( QString username ) { mDatabaseUsername = username; }
+    void setDatabaseUsername( const QString& username ) { mDatabaseUsername = username; }
 
     /** \brief Mutator for database password */
-    void setDatabasePassword( QString password ) { mDatabasePassword = password; }
+    void setDatabasePassword( const QString& password ) { mDatabasePassword = password; }
 
     /** \brief Mutator for SQL statement */
-    void setSqlStatement( QString statement ) { mSqlStatement = statement; }
+    void setSqlStatement( const QString& statement ) { mSqlStatement = statement; }
 
     /** \brief Mutator for auto connection flag */
-    void setAutoConnect( QString autoconnect )
+    void setAutoConnect( const QString& autoconnect )
     {
       if ( autoconnect.startsWith( "true", Qt::CaseInsensitive ) )
       {

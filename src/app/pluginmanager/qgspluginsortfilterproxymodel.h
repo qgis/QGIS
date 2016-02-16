@@ -42,22 +42,22 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-    QgsPluginSortFilterProxyModel( QObject *parent = 0 );
+    explicit QgsPluginSortFilterProxyModel( QObject *parent = nullptr );
 
     //! (Re)configire the status filter
-    void setAcceptedStatuses( QStringList statuses );
+    void setAcceptedStatuses( const QStringList& statuses );
 
     //! (Re)configire the spacer filter
-    void setAcceptedSpacers( QString spacers = "" );
+    void setAcceptedSpacers( const QString& spacers = "" );
 
     //! Return number of item with status filter matching (no other filters are considered)
-    int countWithCurrentStatus( );
+    int countWithCurrentStatus();
 
   public slots:
-    void sortPluginsByName( );
-    void sortPluginsByDownloads( );
-    void sortPluginsByVote( );
-    void sortPluginsByStatus( );
+    void sortPluginsByName();
+    void sortPluginsByDownloads();
+    void sortPluginsByVote();
+    void sortPluginsByStatus();
 
   protected:
     //! Filter by status: this method is used in both filterAcceptsRow and countWithCurrentStatus.
@@ -67,7 +67,7 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     bool filterByPhrase( QModelIndex &index ) const;
 
     //! The main filter method
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
     QStringList mAcceptedStatuses;

@@ -18,11 +18,17 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsmaprenderer.h"
+#include "qgsrendercontext.h"
 #include <QAction>
 #include <QAbstractButton>
 
 QgsMapTool::QgsMapTool( QgsMapCanvas* canvas )
-    : QObject( canvas ), mCanvas( canvas ), mCursor( Qt::CrossCursor ), mAction( NULL ), mButton( NULL )
+    : QObject( canvas )
+    , mCanvas( canvas )
+    , mCursor( Qt::CrossCursor )
+    , mAction( nullptr )
+    , mButton( nullptr )
+    , mToolName( QString() )
 {
 }
 
@@ -33,13 +39,19 @@ QgsMapTool::~QgsMapTool()
 }
 
 
-QgsPoint QgsMapTool::toMapCoordinates( const QPoint& point )
+QgsPoint QgsMapTool::toMapCoordinates( QPoint point )
 {
   return mCanvas->getCoordinateTransform()->toMapCoordinates( point );
 }
 
+QgsPointV2 QgsMapTool::toMapCoordinates( QgsMapLayer* layer, const QgsPointV2& point )
+{
+  QgsPoint result = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPoint( point.x(), point.y() ) );
+  return QgsPointV2( result.x(), result.y() );
+}
 
-QgsPoint QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, const QPoint& point )
+
+QgsPoint QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, QPoint point )
 {
   QgsPoint pt = toMapCoordinates( point );
   return toLayerCoordinates( layer, pt );
@@ -62,7 +74,7 @@ QgsRectangle QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, const QgsRectan
 
 QPoint QgsMapTool::toCanvasCoordinates( const QgsPoint& point )
 {
-  double x = point.x(), y = point.y();
+  qreal x = point.x(), y = point.y();
   mCanvas->getCoordinateTransform()->transformInPlace( x, y );
   return QPoint( qRound( x ), qRound( y ) );
 }
@@ -79,6 +91,8 @@ void QgsMapTool::activate()
   // set cursor (map tools usually set it in constructor)
   mCanvas->setCursor( mCursor );
   QgsDebugMsg( "Cursor has been set" );
+
+  emit activated();
 }
 
 
@@ -88,11 +102,23 @@ void QgsMapTool::deactivate()
     mAction->setChecked( false );
   if ( mButton )
     mButton->setChecked( false );
+
+  emit deactivated();
 }
 
 void QgsMapTool::setAction( QAction* action )
 {
+  if ( mAction )
+    disconnect( mAction, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
   mAction = action;
+  if ( mAction )
+    connect( mAction, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
+}
+
+void QgsMapTool::actionDestroyed()
+{
+  if ( mAction == sender() )
+    mAction = nullptr;
 }
 
 QAction* QgsMapTool::action()
@@ -110,28 +136,28 @@ QAbstractButton* QgsMapTool::button()
   return mButton;
 }
 
-void QgsMapTool::setCursor( QCursor cursor )
+void QgsMapTool::setCursor( const QCursor& cursor )
 {
   mCursor = cursor;
 }
 
 
-void QgsMapTool::canvasMoveEvent( QMouseEvent *e )
+void QgsMapTool::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapTool::canvasDoubleClickEvent( QMouseEvent *e )
+void QgsMapTool::canvasDoubleClickEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapTool::canvasPressEvent( QMouseEvent *e )
+void QgsMapTool::canvasPressEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapTool::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapTool::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
@@ -176,4 +202,32 @@ bool QgsMapTool::isEditTool()
 QgsMapCanvas* QgsMapTool::canvas()
 {
   return mCanvas;
+}
+
+double QgsMapTool::searchRadiusMM()
+{
+  QSettings settings;
+  double radius = settings.value( "/Map/searchRadiusMM", QGis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
+
+  if ( radius > 0 )
+  {
+    return radius;
+  }
+  return QGis::DEFAULT_SEARCH_RADIUS_MM;
+}
+
+double QgsMapTool::searchRadiusMU( const QgsRenderContext& context )
+{
+  return searchRadiusMM() * context.scaleFactor() * context.mapToPixel().mapUnitsPerPixel();
+}
+
+double QgsMapTool::searchRadiusMU( QgsMapCanvas * canvas )
+{
+  if ( !canvas )
+  {
+    return 0;
+  }
+  QgsMapSettings mapSettings = canvas->mapSettings();
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  return searchRadiusMU( context );
 }

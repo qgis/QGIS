@@ -15,11 +15,11 @@ class QgsMapCanvasMap : QgsMapCanvasItem
 %ConvertToSubClassCode
     if (dynamic_cast<QgsMapCanvasMap*>(sipCpp) != NULL)
     {
-        sipClass = sipClass_QgsMapCanvasMap;
+        sipType = sipType_QgsMapCanvasMap;
     }
   else
   {
-    sipClass = NULL;
+    sipType = NULL;
   }
 %End
 
@@ -37,6 +37,9 @@ class QgsMapCanvasMap : QgsMapCanvasItem
     virtual void paint( QPainter * painter );
 
     //! @deprecated in 2.4 - does nothing. Kept for API compatibility
+    void refresh() /Deprecated/;
+
+    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     void resize( QSize size ) /Deprecated/;
 
     //! @deprecated in 2.4 - does nothing. Kept for API compatibility
@@ -48,8 +51,8 @@ class QgsMapCanvasMap : QgsMapCanvasItem
     //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     void setBackgroundColor( const QColor& color ) /Deprecated/;
 
-    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
-    void setPanningOffset( const QPoint& point ) /Deprecated/;
+    //! @deprecated in 2.4 - not called by QgsMapCanvas anymore
+    void setPanningOffset( QPoint point ) /Deprecated/;
 
     //! @deprecated in 2.4
     QPaintDevice& paintDevice() /Deprecated/;

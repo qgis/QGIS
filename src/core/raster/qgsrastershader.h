@@ -55,10 +55,10 @@ class CORE_EXPORT QgsRasterShader
      *
      */
     /** \brief generates and new RGBA value based on one input value */
-    bool shade( double, int*, int*, int* , int* );
+    bool shade( double, int*, int*, int*, int* );
 
     /** \brief generates and new RGBA value based on original RGBA value */
-    bool shade( double, double, double, double, int*, int*, int* , int* );
+    bool shade( double, double, double, double, int*, int*, int*, int* );
 
     /** \brief A public method that allows the user to set their own shader function
       \note Raster shader takes ownership of the shader function instance */
@@ -83,5 +83,8 @@ class CORE_EXPORT QgsRasterShader
 
     /** \brief Pointer to the shader function */
     QgsRasterShaderFunction* mRasterShaderFunction;
+
+    QgsRasterShader( const QgsRasterShader& rh );
+    QgsRasterShader& operator=( const QgsRasterShader& rh );
 };
 #endif

@@ -28,7 +28,7 @@ QGIS supports a number of symbology renderers to control how vector features are
 Click <label>New symbology</label> button to use new symbology implementation for the layer.
 
 <h5>Vector transparency</h5>
-QGIS allows to set a transparency for every vector layer. This can be done with the slider <label>Transparency</label>. This is very useful for overlaying several vector layers.
+QGIS allows setting a transparency for every vector layer. This can be done with the slider <label>Transparency</label>. This is very useful for overlaying several vector layers.
 
 <h5>Saving styles</h5>
 Once you have styled your layer you also could save your layer-style to a separate file (with *.qml ending). To do this, use the button <label>Save Style...</label>. No need to say that <label>Load Style...</label> loads your saved layer-style-file.<br/>
@@ -73,9 +73,9 @@ Within the <label>Attributes</label> tab the attributes of the selected data set
 The <label>Toggle editing mode</label> button toggles this mode.<p>
 Within the Attributes tab you also find an edit widget column. This column can be used to define values or a range of values that are allowed to be added to the specific attribute table column. If you click on the <label>edit widget</label> button, a dialog opens, where you can define different widgets. These widgets are:<br/>
 <ul>
-<li><label>Line edit</label> an edit field which allows to enter simple text (or restrict to numbers for numeric attributes).
+<li><label>Line edit</label> an edit field which allows entering simple text (or restrict to numbers for numeric attributes).
 <li><label>Classification</label> Displays a combo box with the values used for classification, if you have chosen <label>unique value</label> as legend type in the symbology tab of the properties dialog.
-<li><label>Range</label> Allows to set numeric values from a specific range. The edit widget can be either a slider or a spin box.
+<li><label>Range</label> Allows setting of numeric values from a specific range. The edit widget can be either a slider or a spin box.
 <li><label>Unique value</label> The user can select one of the values already used in the attribute table. If <label>editable</label> is activated, a line edit is shown with auto completion support, but additional values are possible, otherwise a combo box is used.
 <li><label>File name</label> Simplifies the selection by adding a file chooser dialog.
 <li><label>Value map</label> a combo box with predefined items. The value is stored in the attribute, the description is shown in the combo box. You can define values manually or load them from a layer or a csv file.
@@ -108,7 +108,7 @@ Actions are useful when you frequently want to run an external application or vi
 
 The new implementation of actions uses the QGIS expression engine to do evaluations. Each expression is evaluated and replaced by its result at runtime.<p>
 An expression must be enclosed between <code>[%</code> and <code>%]</code> - the GUI has some buttons which do that for you automatically. 
-The <label>Insert expression...</label> button launches the <label>Expression builder</label> which allows to write an expression easily, the <label>Insert field</label> button inserts into the action a placeholder like <code>[% "fieldname" %]</code> where fieldname is the name of the field selected in the field dropdown list.<p>
+The <label>Insert expression...</label> button launches the <label>Expression builder</label> which allows writing an expression easily, the <label>Insert field</label> button inserts into the action a placeholder like <code>[% "fieldname" %]</code> where fieldname is the name of the field selected in the field dropdown list.<p>
 
 See the User Guide for further information.
 

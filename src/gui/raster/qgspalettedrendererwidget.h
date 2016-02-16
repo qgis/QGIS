@@ -32,7 +32,7 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsPalettedRendererWidget( layer, theExtent ); }
     ~QgsPalettedRendererWidget();
 
-    QgsRasterRenderer* renderer();
+    QgsRasterRenderer* renderer() override;
 
     void setFromRenderer( const QgsRasterRenderer* r );
 

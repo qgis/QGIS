@@ -25,27 +25,30 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os.path
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+import os
+
+from PyQt4.QtGui import QIcon
+
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.gui.EditScriptAction import EditScriptAction
 from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
-from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
-from processing.script.WrongScriptException import WrongScriptException
-import processing.resources_rc
+from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
+from processing.gui.GetScriptsAndModels import GetScriptsAction
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 class ScriptAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.actions.append(CreateNewScriptAction('Create new script',
-                            CreateNewScriptAction.SCRIPT_PYTHON))
+        self.actions.extend([CreateNewScriptAction(self.tr('Create new script', 'ScriptAlgorithmProvider'),
+                                                   CreateNewScriptAction.SCRIPT_PYTHON),
+                             AddScriptFromFileAction(),
+                             GetScriptsAction()])
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)]
@@ -53,42 +56,26 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    ScriptUtils.SCRIPTS_FOLDER,
-                                    'Scripts folder',
-                                    ScriptUtils.scriptsFolder()))
+                                            ScriptUtils.SCRIPTS_FOLDER,
+                                            self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
+                                            ScriptUtils.scriptsFolder(), valuetype=Setting.FOLDER))
 
     def unload(self):
         AlgorithmProvider.unload(self)
         ProcessingConfig.addSetting(ScriptUtils.SCRIPTS_FOLDER)
 
     def getIcon(self):
-        return QIcon(':/processing/images/script.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
 
     def getName(self):
         return 'script'
 
     def getDescription(self):
-        return 'Scripts'
+        return self.tr('Scripts', 'ScriptAlgorithmProvider')
 
     def _loadAlgorithms(self):
         folder = ScriptUtils.scriptsFolder()
-        self.loadFromFolder(folder)
-        folder = os.path.join(os.path.dirname(__file__), 'scripts')
-        self.loadFromFolder(folder)
+        self.algs = ScriptUtils.loadFromFolder(folder)
 
-    def loadFromFolder(self, folder):
-        if not os.path.exists(folder):
-            return
-        for descriptionFile in os.listdir(folder):
-            if descriptionFile.endswith('py'):
-                try:
-                    fullpath = os.path.join(folder, descriptionFile)
-                    alg = ScriptAlgorithm(fullpath)
-                    if alg.name.strip() != '':
-                        self.algs.append(alg)
-                except WrongScriptException, e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
-                except Exception, e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            'Could not load script:' + descriptionFile + '\n'
-                            + unicode(e))
+    def addAlgorithmsFromFolder(self, folder):
+        self.algs.extend(ScriptUtils.loadFromFolder(folder))

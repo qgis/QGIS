@@ -54,34 +54,34 @@ class eVisDatabaseConnection
     } mDatabaseType;
 
     /** \brief Constructor */
-    eVisDatabaseConnection( QString, int, QString, QString, QString, DATABASE_TYPE );
+    eVisDatabaseConnection( const QString&, int, const QString&, const QString&, const QString&, DATABASE_TYPE );
 
     /** \brief Public method that finalizes a connection to a databse */
-    bool connect( );
+    bool connect();
 
     /** \brief Public method that passes an SQL statement to the database for execution */
-    QSqlQuery* query( QString );
+    QSqlQuery* query( const QString& );
 
     /** \brief Public method for resetting the database connection parameters - equivalent to re running the constructor */
-    void resetConnectionParameters( QString, int, QString, QString, QString, DATABASE_TYPE );
+    void resetConnectionParameters( const QString&, int, const QString&, const QString&, const QString&, DATABASE_TYPE );
 
     /** \brief Returns a list of tables in the current database */
-    QStringList tables( );
+    QStringList tables();
 
     /** \brief Accessor to the database type */
-    DATABASE_TYPE databaseType( )
+    DATABASE_TYPE databaseType()
     {
       return mDatabaseType;
     }
 
     /** \brief Public method for closing the current database connection */
-    void close( )
+    void close()
     {
-      mDatabase.close( );
+      mDatabase.close();
     }
 
     /** \brief Public method for requesting the last error reported by the database connect or query */
-    QString lastError( )
+    QString lastError()
     {
       return mLastError;
     }
@@ -119,7 +119,7 @@ class eVisDatabaseConnection
     QSqlDatabase mDatabase;
 
     /** \brief Sets the error messages */
-    void setLastError( QString error )
+    void setLastError( const QString& error )
     {
       mLastError = error;
     }

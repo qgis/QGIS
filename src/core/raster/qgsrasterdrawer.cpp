@@ -28,13 +28,9 @@ QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator* iterator ): mIterator( iter
 {
 }
 
-QgsRasterDrawer::~QgsRasterDrawer()
-{
-}
-
 void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
   if ( !p || !mIterator || !viewPort || !theQgsMapToPixel )
   {
     return;
@@ -72,7 +68,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
     QPrinter *printer = dynamic_cast<QPrinter *>( p->device() );
     if ( printer && printer->outputFormat() == QPrinter::PdfFormat )
     {
-      QgsDebugMsg( "PdfFormat" );
+      QgsDebugMsgLevel( "PdfFormat", 4 );
 
       img = img.convertToFormat( QImage::Format_ARGB32 );
       QRgb transparentBlack = qRgba( 0, 0, 0, 0 );
@@ -89,13 +85,13 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
       }
     }
 
-    drawImage( p, viewPort, img, topLeftCol, topLeftRow );
+    drawImage( p, viewPort, img, topLeftCol, topLeftRow, theQgsMapToPixel );
 
     delete block;
   }
 }
 
-void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow ) const
+void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow, const QgsMapToPixel* theQgsMapToPixel ) const
 {
   if ( !p || !viewPort )
   {
@@ -112,7 +108,45 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
   // which should not harm anything
   p->setBrush( QBrush( QColor( Qt::white ), Qt::NoBrush ) );
 
+  if ( theQgsMapToPixel )
+  {
+    int w = theQgsMapToPixel->mapWidth();
+    int h = theQgsMapToPixel->mapHeight();
+
+    double rotation = theQgsMapToPixel->mapRotation();
+    if ( rotation )
+    {
+      // both viewPort and image sizes are dependent on scale
+      double cx = w / 2.0;
+      double cy = h / 2.0;
+      p->translate( cx, cy );
+      p->rotate( rotation );
+      p->translate( -cx, -cy );
+    }
+  }
+
   p->drawImage( tlPoint, img );
+
+#if 0
+  // For debugging:
+  QRectF br = QRectF( tlPoint, img.size() );
+  QPointF c = br.center();
+  double rad = std::max( br.width(), br.height() ) / 10;
+  p->drawRoundedRect( br, rad, rad );
+  p->drawLine( QLineF( br.x(), br.y(), br.x() + br.width(), br.y() + br.height() ) );
+  p->drawLine( QLineF( br.x() + br.width(), br.y(), br.x(), br.y() + br.height() ) );
+
+  double nw = br.width() * 0.5;
+  double nh = br.height() * 0.5;
+  br = QRectF( c - QPointF( nw / 2, nh / 2 ), QSize( nw, nh ) );
+  p->drawRoundedRect( br, rad, rad );
+
+  nw = br.width() * 0.5;
+  nh = br.height() * 0.5;
+  br = QRectF( c - QPointF( nw / 2, nh / 2 ), QSize( nw, nh ) );
+  p->drawRoundedRect( br, rad, rad );
+#endif
+
   p->restore();
 }
 

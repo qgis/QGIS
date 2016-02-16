@@ -1,3 +1,7 @@
+/** \ingroup gui
+ * \class QgsDataDefinedSymbolDialog
+ * \deprecated no longer used and will be removed in QGIS 3.0
+ */
 class QgsDataDefinedSymbolDialog : QDialog
 {
 %TypeHeaderCode
@@ -10,19 +14,40 @@ class QgsDataDefinedSymbolDialog : QDialog
       DataDefinedSymbolEntry( const QString& p, const QString& t, const QString& v, const QString& h );
     };
 
-    QgsDataDefinedSymbolDialog( const QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    //! @deprecated will be removed in QGIS 3.0
+    QgsDataDefinedSymbolDialog( const QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent /TransferThis/ = 0, const Qt::WindowFlags& f = 0 ) /Deprecated/;
     ~QgsDataDefinedSymbolDialog();
-    QMap< QString, QString > dataDefinedProperties() const;
+
+    //! @deprecated will be removed in QGIS 3.0
+    QMap< QString, QString > dataDefinedProperties() const /Deprecated/;
 
     //common help texts
-    static QString doubleHelpText();
-    static QString colorHelpText();
-    static QString offsetHelpText();
-    static QString fileNameHelpText();
-    static QString horizontalAnchorHelpText();
-    static QString verticalAnchorHelpText();
-    static QString gradientTypeHelpText();
-    static QString gradientCoordModeHelpText();
-    static QString gradientSpreadHelpText();
-    static QString boolHelpText();
+    //! @deprecated will be removed in QGIS 3.0
+    static QString doubleHelpText() /Deprecated/;
+    //! @deprecated will be removed in QGIS 3.0
+    static QString colorHelpText() /Deprecated/;
+    //! @deprecated will be removed in QGIS 3.0
+    static QString offsetHelpText() /Deprecated/;
+    //! @deprecated will be removed in QGIS 3.0
+    static QString fileNameHelpText() /Deprecated/;
+    //! @deprecated will be removed in QGIS 3.0
+    static QString horizontalAnchorHelpText() /Deprecated/;
+    //! @deprecated will be removed in QGIS 3.0
+    static QString verticalAnchorHelpText() /Deprecated/;
+    //! @deprecated will be removed in QGIS 3.0
+    static QString gradientTypeHelpText() /Deprecated/;
+    //! @deprecated will be removed in QGIS 3.0
+    static QString gradientCoordModeHelpText() /Deprecated/;
+    //! @deprecated will be removed in QGIS 3.0
+    static QString gradientSpreadHelpText() /Deprecated/;
+    //! @deprecated will be removed in QGIS 3.0
+    static QString boolHelpText() /Deprecated/;
+    //! @deprecated will be removed in QGIS 3.0
+    static QString lineStyleHelpText() /Deprecated/;
+    //! @deprecated will be removed in QGIS 3.0
+    static QString joinStyleHelpText() /Deprecated/;
+    //! @deprecated will be removed in QGIS 3.0
+    static QString capStyleHelpText() /Deprecated/;
+    //! @deprecated will be removed in QGIS 3.0
+    static QString fillStyleHelpText() /Deprecated/;
 };

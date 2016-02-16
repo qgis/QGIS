@@ -4,5 +4,5 @@ MimeType=application/x-qgis-layer-settings
 Hidden=false
 Comment=QGIS layer settings
 Comment[de]=QGIS Layer Einstellungen
-Icon=qgis-mime-icon
+Icon=qgis-mime
 Patterns=*.qml;

@@ -27,13 +27,14 @@ class QGraphicsView;
 /** \ingroup MapComposer
  * Handles drawing of selection outlines and mouse handles. Responsible for mouse
  * interactions such as resizing and moving selected items.
+ * \note not available in Python bindings
  * */
 class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectItem
 {
     Q_OBJECT
   public:
 
-    /**Describes the action (move or resize in different directon) to be done during mouse move*/
+    /** Describes the action (move or resize in different directon) to be done during mouse move*/
     enum MouseAction
     {
       MoveItem,
@@ -74,34 +75,35 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     void setComposition( QgsComposition* c ) { mComposition = c; }
     QgsComposition* composition() { return mComposition; }
 
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
-    /**Finds out which mouse move action to choose depending on the scene cursor position*/
-    QgsComposerMouseHandles::MouseAction mouseActionForScenePos( const QPointF& sceneCoordPos );
+    /** Finds out which mouse move action to choose depending on the scene cursor position*/
+    QgsComposerMouseHandles::MouseAction mouseActionForScenePos( QPointF sceneCoordPos );
 
-    /**Returns true is user is currently dragging the handles */
+    /** Returns true is user is currently dragging the handles */
     bool isDragging() { return mIsDragging; }
 
-    /**Returns true is user is currently resizing with the handles */
+    /** Returns true is user is currently resizing with the handles */
     bool isResizing() { return mIsResizing; }
 
   protected:
 
-    void mouseMoveEvent( QGraphicsSceneMouseEvent* event );
-    void mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
-    void mousePressEvent( QGraphicsSceneMouseEvent* event );
-    void hoverMoveEvent( QGraphicsSceneHoverEvent * event );
-    void hoverLeaveEvent( QGraphicsSceneHoverEvent * event );
+    void mouseMoveEvent( QGraphicsSceneMouseEvent* event ) override;
+    void mouseReleaseEvent( QGraphicsSceneMouseEvent* event ) override;
+    void mousePressEvent( QGraphicsSceneMouseEvent* event ) override;
+    void mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event ) override;
+    void hoverMoveEvent( QGraphicsSceneHoverEvent * event ) override;
+    void hoverLeaveEvent( QGraphicsSceneHoverEvent * event ) override;
 
   public slots:
 
-    /**Sets up listeners to sizeChanged signal for all selected items*/
+    /** Sets up listeners to sizeChanged signal for all selected items*/
     void selectionChanged();
 
-    /**Redraws handles when selected item size changes*/
+    /** Redraws handles when selected item size changes*/
     void selectedItemSizeChanged();
 
-    /**Redraws handles when selected item rotation changes*/
+    /** Redraws handles when selected item rotation changes*/
     void selectedItemRotationChanged();
 
   private:
@@ -110,15 +112,15 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     QGraphicsView* mGraphicsView; //reference to QGraphicsView
 
     QgsComposerMouseHandles::MouseAction mCurrentMouseMoveAction;
-    /**Start point of the last mouse move action (in scene coordinates)*/
+    /** Start point of the last mouse move action (in scene coordinates)*/
     QPointF mMouseMoveStartPos;
-    /**Position of the last mouse move event (in scene coordinates)*/
+    /** Position of the last mouse move event (in scene coordinates)*/
     QPointF mLastMouseEventPos;
-    /**Position of the mouse at beginning of move/resize (in scene coordinates)*/
+    /** Position of the mouse at beginning of move/resize (in scene coordinates)*/
     QPointF mBeginMouseEventPos;
-    /**Position of composer handles at beginning of move/resize (in scene coordinates)*/
+    /** Position of composer handles at beginning of move/resize (in scene coordinates)*/
     QPointF mBeginHandlePos;
-    /**Width and height of composer handles at beginning of resize*/
+    /** Width and height of composer handles at beginning of resize*/
     double mBeginHandleWidth;
     double mBeginHandleHeight;
 
@@ -126,68 +128,68 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     double mResizeMoveX;
     double mResizeMoveY;
 
-    /**True if user is currently dragging items*/
+    /** True if user is currently dragging items*/
     bool mIsDragging;
-    /**True is user is currently resizing items*/
+    /** True is user is currently resizing items*/
     bool mIsResizing;
 
-    /**Align snap lines*/
+    /** Align snap lines*/
     QGraphicsLineItem* mHAlignSnapItem;
     QGraphicsLineItem* mVAlignSnapItem;
 
     QSizeF mCursorOffset;
 
-    /**Returns the mouse handle bounds of current selection*/
+    /** Returns the mouse handle bounds of current selection*/
     QRectF selectionBounds() const;
 
-    /**Returns true if all selected items have same rotation, and if so, updates passed rotation variable*/
+    /** Returns true if all selected items have same rotation, and if so, updates passed rotation variable*/
     bool selectionRotation( double & rotation ) const;
 
-    /**Redraws or hides the handles based on the current selection*/
+    /** Redraws or hides the handles based on the current selection*/
     void updateHandles();
-    /**Draws the handles*/
+    /** Draws the handles*/
     void drawHandles( QPainter* painter, double rectHandlerSize );
-    /**Draw outlines for selected items*/
+    /** Draw outlines for selected items*/
     void drawSelectedItemBounds( QPainter* painter );
 
-    /**Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
+    /** Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
     item border for resizing*/
     double rectHandlerBorderTolerance();
 
-    /**Finds out the appropriate cursor for the current mouse position in the widget (e.g. move in the middle, resize at border)*/
-    Qt::CursorShape cursorForPosition( const QPointF& itemCoordPos );
+    /** Finds out the appropriate cursor for the current mouse position in the widget (e.g. move in the middle, resize at border)*/
+    Qt::CursorShape cursorForPosition( QPointF itemCoordPos );
 
-    /**Finds out which mouse move action to choose depending on the cursor position inside the widget*/
-    QgsComposerMouseHandles::MouseAction mouseActionForPosition( const QPointF& itemCoordPos );
+    /** Finds out which mouse move action to choose depending on the cursor position inside the widget*/
+    QgsComposerMouseHandles::MouseAction mouseActionForPosition( QPointF itemCoordPos );
 
-    /**Handles dragging of items during mouse move*/
-    void dragMouseMove( const QPointF& currentPosition, bool lockMovement, bool preventSnap );
+    /** Handles dragging of items during mouse move*/
+    void dragMouseMove( QPointF currentPosition, bool lockMovement, bool preventSnap );
 
-    /**Calculates the distance of the mouse cursor from thed edge of the mouse handles*/
-    QSizeF calcCursorEdgeOffset( const QPointF &cursorPos );
+    /** Calculates the distance of the mouse cursor from thed edge of the mouse handles*/
+    QSizeF calcCursorEdgeOffset( QPointF cursorPos );
 
-    /**Handles resizing of items during mouse move*/
-    void resizeMouseMove( const QPointF& currentPosition, bool lockAspect, bool fromCenter );
+    /** Handles resizing of items during mouse move*/
+    void resizeMouseMove( QPointF currentPosition, bool lockAspect, bool fromCenter );
 
-    /**Return horizontal align snap item. Creates a new graphics line if 0*/
+    /** Return horizontal align snap item. Creates a new graphics line if 0*/
     QGraphicsLineItem* hAlignSnapItem();
     void deleteHAlignSnapItem();
-    /**Return vertical align snap item. Creates a new graphics line if 0*/
+    /** Return vertical align snap item. Creates a new graphics line if 0*/
     QGraphicsLineItem* vAlignSnapItem();
     void deleteVAlignSnapItem();
     void deleteAlignItems();
 
-    /**Snaps an item or point (depending on mode) originating at originalPoint to the grid or align rulers*/
-    QPointF snapPoint( const QPointF& originalPoint, QgsComposerMouseHandles::SnapGuideMode mode );
-    /**Snaps an item originating at unalignedX, unalignedY to the grid or align rulers*/
+    /** Snaps an item or point (depending on mode) originating at originalPoint to the grid or align rulers*/
+    QPointF snapPoint( QPointF originalPoint, QgsComposerMouseHandles::SnapGuideMode mode );
+    /** Snaps an item originating at unalignedX, unalignedY to the grid or align rulers*/
     QPointF alignItem( double& alignX, double& alignY, double unalignedX, double unalignedY );
-    /**Snaps a point to to the grid or align rulers*/
-    QPointF alignPos( const QPointF& pos, double& alignX, double& alignY );
+    /** Snaps a point to to the grid or align rulers*/
+    QPointF alignPos( QPointF pos, double& alignX, double& alignY );
 
     //helper functions for item align
     void collectAlignCoordinates( QMap< double, const QgsComposerItem* >& alignCoordsX, QMap< double, const QgsComposerItem* >& alignCoordsY );
     bool nearestItem( const QMap< double, const QgsComposerItem* >& coords, double value, double& nearestValue ) const;
-    void checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff, double itemCoordOffset, double& itemCoord, double& alignCoord ) const;
+    void checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff, double itemCoordOffset, double& itemCoord, double& alignCoord );
 
     //tries to return the current QGraphicsView attached to the composition
     QGraphicsView* graphicsView();

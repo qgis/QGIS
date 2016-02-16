@@ -36,6 +36,12 @@
        <property name="text">
         <string>...</string>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+O</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -46,6 +52,12 @@
        <property name="text">
         <string>...</string>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+S</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -55,6 +67,12 @@
        </property>
        <property name="text">
         <string>...</string>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+Shift+S</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -73,6 +91,22 @@
        <property name="text">
         <string>...</string>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnExportPython">
+       <property name="toolTip">
+        <string>Export as Python script</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -90,6 +124,9 @@
        <property name="text">
         <string>...</string>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -106,6 +143,12 @@
        </property>
        <property name="text">
         <string>...</string>
+       </property>
+       <property name="shortcut">
+        <string>F5</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

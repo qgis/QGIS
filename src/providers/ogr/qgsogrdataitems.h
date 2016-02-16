@@ -19,6 +19,7 @@
 #include "qgsdataitem.h"
 #include "qgsogrprovider.h"
 
+Q_NOWARN_DEPRECATED_PUSH
 class QgsOgrLayerItem : public QgsLayerItem
 {
     Q_OBJECT
@@ -26,10 +27,12 @@ class QgsOgrLayerItem : public QgsLayerItem
     QgsOgrLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType );
     ~QgsOgrLayerItem();
 
-    bool setCrs( QgsCoordinateReferenceSystem crs );
-    Capability capabilities();
-    QString layerName() const;
+    bool setCrs( QgsCoordinateReferenceSystem crs ) override;
+
+    Q_DECL_DEPRECATED Capability capabilities() override;
+    QString layerName() const override;
 };
+Q_NOWARN_DEPRECATED_POP
 
 class QgsOgrDataCollectionItem : public QgsDataCollectionItem
 {
@@ -38,7 +41,7 @@ class QgsOgrDataCollectionItem : public QgsDataCollectionItem
     QgsOgrDataCollectionItem( QgsDataItem* parent, QString name, QString path );
     ~QgsOgrDataCollectionItem();
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() override;
 };
 
 #endif // QGSOGRDATAITEMS_H

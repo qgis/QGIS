@@ -6,20 +6,20 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayerV2
   public:
     enum VectorFieldType
     {
-      Cartesian = 0,
+      Cartesian,
       Polar,
       Height
     };
 
     enum AngleOrientation
     {
-      ClockwiseFromNorth = 0,
+      ClockwiseFromNorth,
       CounterclockwiseFromEast
     };
 
     enum AngleUnits
     {
-      Degrees = 0,
+      Degrees,
       Radians
     };
 
@@ -34,14 +34,14 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayerV2
     bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
     QgsSymbolV2* subSymbol();
 
-    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context );
+    void renderPoint( QPointF point, QgsSymbolV2RenderContext& context );
     void startRender( QgsSymbolV2RenderContext& context );
     void stopRender( QgsSymbolV2RenderContext& context );
 
-    QgsSymbolLayerV2* clone() const /Factory/;
+    virtual QgsVectorFieldSymbolLayer* clone() const /Factory/;
     QgsStringMap properties() const;
 
-    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 
@@ -64,6 +64,12 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
+    void setMapUnitScale( const QgsMapUnitScale& scale );
+    QgsMapUnitScale mapUnitScale() const;
+
     void setDistanceUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit distanceUnit() const;
+
+    void setDistanceMapUnitScale( const QgsMapUnitScale& scale );
+    const QgsMapUnitScale& distanceMapUnitScale() const;
 };

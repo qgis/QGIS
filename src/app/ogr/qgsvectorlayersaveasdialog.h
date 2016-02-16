@@ -38,8 +38,8 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
       AllOptions = ~0
     };
 
-    QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = 0,  Qt::WFlags fl = 0 );
-    QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, bool layerHasSelectedFeatures, int options = AllOptions, QWidget* parent = 0,  Qt::WFlags fl = 0 );
+    QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
+    QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, bool layerHasSelectedFeatures, int options = AllOptions, QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
     ~QgsVectorLayerSaveAsDialog();
 
     QString format() const;
@@ -50,7 +50,7 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     long crs() const;
     bool skipAttributeCreation() const;
     bool addToCanvas() const;
-    /**Returns type of symbology export.
+    /** Returns type of symbology export.
         0: No symbology
         1: Feature symbology
         2: Symbol level symbology*/
@@ -65,14 +65,45 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
 
     bool onlySelected() const;
 
+    /** Returns the selected flat geometry type for the export.
+     * @see automaticGeometryType()
+     * @see forceMulti()
+     * @see includeZ()
+     */
+    QgsWKBTypes::Type geometryType() const;
+
+    /** Returns true if geometry type is set to automatic.
+     * @see geometryType()
+     */
+    bool automaticGeometryType() const;
+
+    /** Returns true if force multi geometry type is checked.
+     * @see includeZ()
+     */
+    bool forceMulti() const;
+
+    /** Sets whether the force multi geometry checkbox should be checked.
+     */
+    void setForceMulti( bool checked );
+
+    /** Returns true if include z dimension is checked.
+     * @see forceMulti()
+     */
+    bool includeZ() const;
+
+    /** Sets whether the include z dimension checkbox should be checked.
+     */
+    void setIncludeZ( bool checked );
+
   private slots:
     void on_mFormatComboBox_currentIndexChanged( int idx );
-    void on_mCRSSelection_currentIndexChanged( int idx );
+    void on_leFilename_textChanged( const QString& text );
     void on_browseFilename_clicked();
-    void on_browseCRS_clicked();
+    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs );
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void on_mSymbologyExportComboBox_currentIndexChanged( const QString& text );
-    void accept();
+    void on_mGeometryTypeComboBox_currentIndexChanged( int index );
+    void accept() override;
 
   private:
     void setup();

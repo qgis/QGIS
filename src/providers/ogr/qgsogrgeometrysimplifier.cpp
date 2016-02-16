@@ -47,7 +47,7 @@ bool QgsOgrTopologyPreservingSimplifier::simplifyGeometry( OGRGeometryH geometry
   if ( !g )
     return false;
 
-  size_t wkbSize = OGR_G_WkbSize( g );
+  int wkbSize = OGR_G_WkbSize( g );
   unsigned char *wkb = new unsigned char[ wkbSize ];
   OGR_G_ExportToWkb( g, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
   OGR_G_ImportFromWkb( geometry, wkb, wkbSize );
@@ -65,7 +65,7 @@ bool QgsOgrTopologyPreservingSimplifier::simplifyGeometry( OGRGeometryH geometry
 
 QgsOgrMapToPixelSimplifier::QgsOgrMapToPixelSimplifier( int simplifyFlags, double tolerance )
     : QgsMapToPixelSimplifier( simplifyFlags, tolerance )
-    , mPointBufferPtr( NULL )
+    , mPointBufferPtr( nullptr )
     , mPointBufferCount( 0 )
 {
 }
@@ -75,7 +75,7 @@ QgsOgrMapToPixelSimplifier::~QgsOgrMapToPixelSimplifier()
   if ( mPointBufferPtr )
   {
     OGRFree( mPointBufferPtr );
-    mPointBufferPtr = NULL;
+    mPointBufferPtr = nullptr;
   }
 }
 
@@ -85,7 +85,7 @@ QgsPoint* QgsOgrMapToPixelSimplifier::mallocPoints( int numPoints )
   if ( mPointBufferPtr && mPointBufferCount < numPoints )
   {
     OGRFree( mPointBufferPtr );
-    mPointBufferPtr = NULL;
+    mPointBufferPtr = nullptr;
   }
   if ( !mPointBufferPtr )
   {
@@ -98,7 +98,7 @@ QgsPoint* QgsOgrMapToPixelSimplifier::mallocPoints( int numPoints )
 //! Returns a point buffer of the specified envelope
 QgsPoint* QgsOgrMapToPixelSimplifier::getEnvelopePoints( const QgsRectangle& envelope, int& numPoints, bool isaLinearRing )
 {
-  QgsPoint* points = NULL;
+  QgsPoint* points = nullptr;
 
   double x1 = envelope.xMinimum();
   double y1 = envelope.yMinimum();
@@ -131,10 +131,12 @@ QgsPoint* QgsOgrMapToPixelSimplifier::getEnvelopePoints( const QgsRectangle& env
 //! Simplifies the OGR-geometry (Removing duplicated points) when is applied the specified map2pixel context
 bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( QGis::GeometryType geometryType, double* xptr, int xStride, double* yptr, int yStride, int pointCount, int& pointSimplifiedCount )
 {
-  bool canbeGeneralizable = ( mSimplifyFlags & QgsMapToPixelSimplifier::SimplifyGeometry );
+  bool isGeneralizable = ( mSimplifyFlags & QgsMapToPixelSimplifier::SimplifyGeometry );
 
   pointSimplifiedCount = pointCount;
-  if ( geometryType == QGis::Point || geometryType == QGis::UnknownGeometry ) return false;
+  if ( geometryType == QGis::Point || geometryType == QGis::UnknownGeometry )
+    return false;
+
   pointSimplifiedCount = 0;
 
   double map2pixelTol = mTolerance * mTolerance; //-> Use mappixelTol for 'LengthSquare' calculations.
@@ -147,13 +149,22 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( QGis::GeometryType geometr
 
   for ( int i = 0, numPoints = geometryType == QGis::Polygon ? pointCount - 1 : pointCount; i < numPoints; ++i )
   {
-    memcpy( &x, xsourcePtr, sizeof( double ) ); xsourcePtr += xStride;
-    memcpy( &y, ysourcePtr, sizeof( double ) ); ysourcePtr += yStride;
+    memcpy( &x, xsourcePtr, sizeof( double ) );
+    xsourcePtr += xStride;
+    memcpy( &y, ysourcePtr, sizeof( double ) );
+    ysourcePtr += yStride;
 
-    if ( i == 0 || !canbeGeneralizable || QgsMapToPixelSimplifier::calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol || ( geometryType == QGis::Line && ( i == 1 || i >= numPoints - 2 ) ) )
+    if ( i == 0 ||
+         !isGeneralizable ||
+         calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol ||
+         ( geometryType == QGis::Line && ( i == 1 || i >= numPoints - 2 ) ) )
     {
-      memcpy( xtargetPtr, &x, sizeof( double ) ); lastX = x; xtargetPtr += xStride;
-      memcpy( ytargetPtr, &y, sizeof( double ) ); lastY = y; ytargetPtr += yStride;
+      memcpy( xtargetPtr, &x, sizeof( double ) );
+      lastX = x;
+      xtargetPtr += xStride;
+      memcpy( ytargetPtr, &y, sizeof( double ) );
+      lastY = y;
+      ytargetPtr += yStride;
       pointSimplifiedCount++;
     }
   }
@@ -184,7 +195,7 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometryH geometry, boo
     QgsRectangle envelope( env.MinX, env.MinY, env.MaxX, env.MaxY );
 
     // Can replace the geometry by its BBOX ?
-    if (( mSimplifyFlags & QgsMapToPixelSimplifier::SimplifyEnvelope ) && canbeGeneralizedByMapBoundingBox( envelope ) )
+    if (( mSimplifyFlags & QgsMapToPixelSimplifier::SimplifyEnvelope ) && isGeneralizableByMapBoundingBox( envelope ) )
     {
       QgsPoint* points = getEnvelopePoints( envelope, numPoints, isaLinearRing );
 
@@ -201,7 +212,7 @@ bool QgsOgrMapToPixelSimplifier::simplifyOgrGeometry( OGRGeometryH geometry, boo
       QgsPoint* points = mallocPoints( numPoints );
       double* xptr = ( double* )points;
       double* yptr = xptr + 1;
-      OGR_G_GetPoints( geometry, xptr, 16, yptr, 16, NULL, 0 );
+      OGR_G_GetPoints( geometry, xptr, 16, yptr, 16, nullptr, 0 );
 
       if ( simplifyOgrGeometry( geometryType, xptr, 16, yptr, 16, numPoints, numSimplifiedPoints ) )
       {
@@ -252,7 +263,7 @@ void QgsOgrMapToPixelSimplifier::setGeometryPoints( OGRGeometryH geometry, QgsPo
   double* xptr = ( double* )points;
   double* yptr = xptr + 1;
 
-  OGR_G_SetPoints( geometry, numPoints, xptr, 16, yptr, 16, NULL, 0 );
+  OGR_G_SetPoints( geometry, numPoints, xptr, 16, yptr, 16, nullptr, 0 );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////

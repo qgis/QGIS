@@ -25,25 +25,29 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+import os
 
-from processing import interface
+from PyQt4 import uic
+from PyQt4.QtGui import QDialog, QTreeWidgetItem, QMessageBox
+from qgis.core import QgsRasterLayer
+
+from qgis.utils import iface
 from processing.tools import dataobjects
 
-from processing.ui.ui_DlgNumberInput import Ui_DlgNumberInput
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgNumberInput.ui'))
 
 
-class NumberInputDialog(QDialog, Ui_DlgNumberInput):
+class NumberInputDialog(BASE, WIDGET):
 
     def __init__(self, isInteger):
-        QDialog.__init__(self)
+        super(NumberInputDialog, self).__init__(None)
         self.setupUi(self)
 
         if hasattr(self.leFormula, 'setPlaceholderText'):
             self.leFormula.setPlaceholderText(
-                    self.tr('[Enter your formula here]'))
+                self.tr('[Enter your formula here]'))
 
         self.treeValues.doubleClicked.connect(self.addValue)
 
@@ -64,13 +68,13 @@ class NumberInputDialog(QDialog, Ui_DlgNumberInput):
             layerItem = QTreeWidgetItem()
             layerItem.setText(0, unicode(layer.name()))
             layerItem.addChild(TreeValueItem(self.tr('Min X'),
-                               layer.extent().xMinimum()))
+                                             layer.extent().xMinimum()))
             layerItem.addChild(TreeValueItem(self.tr('Max X'),
-                               layer.extent().xMaximum()))
+                                             layer.extent().xMaximum()))
             layerItem.addChild(TreeValueItem(self.tr('Min Y'),
-                               layer.extent().yMinimum()))
+                                             layer.extent().yMinimum()))
             layerItem.addChild(TreeValueItem(self.tr('Max Y'),
-                               layer.extent().yMaximum()))
+                                             layer.extent().yMaximum()))
             if isinstance(layer, QgsRasterLayer):
                 cellsize = (layer.extent().xMaximum()
                             - layer.extent().xMinimum()) / layer.width()
@@ -89,17 +93,17 @@ class NumberInputDialog(QDialog, Ui_DlgNumberInput):
                 layerItem.setText(0, unicode(layer.name()))
                 layerItem.addChild(TreeValueItem(self.tr('Mean'), stats.mean))
                 layerItem.addChild(TreeValueItem(self.tr('Std. deviation'),
-                                   stats.stdDev))
+                                                 stats.stdDev))
                 layerItem.addChild(TreeValueItem(self.tr('Max value'),
-                                   stats.maximumValue))
+                                                 stats.maximumValue))
                 layerItem.addChild(TreeValueItem(self.tr('Min value'),
-                                   stats.minimumValue))
+                                                 stats.minimumValue))
                 layersItem.addChild(layerItem)
 
         canvasItem = QTreeWidgetItem()
         canvasItem.setText(0, self.tr('Values from QGIS map canvas'))
         self.treeValues.addTopLevelItem(canvasItem)
-        extent = interface.iface.mapCanvas().extent()
+        extent = iface.mapCanvas().extent()
         extentItem = QTreeWidgetItem()
         extentItem.setText(0, self.tr('Current extent'))
         extentItem.addChild(TreeValueItem(self.tr('Min X'), extent.xMinimum()))
@@ -108,10 +112,10 @@ class NumberInputDialog(QDialog, Ui_DlgNumberInput):
         extentItem.addChild(TreeValueItem(self.tr('Max Y'), extent.yMaximum()))
         canvasItem.addChild(extentItem)
 
-        extent = interface.iface.mapCanvas().fullExtent()
+        extent = iface.mapCanvas().fullExtent()
         extentItem = QTreeWidgetItem()
         extentItem.setText(0,
-                self.tr('Full extent of all layers in map canvas'))
+                           self.tr('Full extent of all layers in map canvas'))
         extentItem.addChild(TreeValueItem(self.tr('Min X'), extent.xMinimum()))
         extentItem.addChild(TreeValueItem(self.tr('Max X'), extent.xMaximum()))
         extentItem.addChild(TreeValueItem(self.tr('Min Y'), extent.yMinimum()))
@@ -121,18 +125,18 @@ class NumberInputDialog(QDialog, Ui_DlgNumberInput):
     def addValue(self):
         item = self.treeValues.currentItem()
         if isinstance(item, TreeValueItem):
-            formula = self.leFormula.text() + ' ' + str(item.value)
+            formula = self.leFormula.text() + ' ' + unicode(item.value)
             self.leFormula.setText(formula.strip())
 
     def accept(self):
         try:
-            self.value = float(eval(str(self.leFormula.text())))
+            self.value = float(eval(unicode(self.leFormula.text())))
             if self.isInteger:
                 self.value = int(round(self.value))
             QDialog.accept(self)
         except:
             QMessageBox.critical(self, self.tr('Wrong expression'),
-                    self.tr('The expression entered is not correct'))
+                                 self.tr('The expression entered is not correct'))
 
     def reject(self):
         self.value = None
@@ -144,4 +148,4 @@ class TreeValueItem(QTreeWidgetItem):
     def __init__(self, name, value):
         QTreeWidgetItem.__init__(self)
         self.value = value
-        self.setText(0, name + ': ' + str(value))
+        self.setText(0, name + ': ' + unicode(value))

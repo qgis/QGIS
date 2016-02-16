@@ -18,7 +18,7 @@
 #include "dockModel.h"
 #include "topolError.h"
 
-DockModel::DockModel( ErrorList& theErrorList, QObject *parent = 0 ) : mErrorlist( theErrorList )
+DockModel::DockModel( ErrorList& theErrorList, QObject *parent = nullptr ) : mErrorlist( theErrorList )
 {
   Q_UNUSED( parent );
   mHeader << QObject::tr( "Error" ) << QObject::tr( "Layer" ) << QObject::tr( "Feature ID" );
@@ -121,7 +121,8 @@ Qt::ItemFlags DockModel::flags( const QModelIndex &index ) const
 
 void DockModel::resetModel()
 {
-  reset();
+  beginResetModel();
+  endResetModel();
 }
 
 void DockModel::reload( const QModelIndex &index1, const QModelIndex &index2 )

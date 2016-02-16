@@ -12,10 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
 //header for class being tested
 #include <qgsrectangle.h>
 #include <qgspoint.h>
@@ -23,7 +22,7 @@
 
 class TestQgsRectangle: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void manipulate();
     void regression6194();
@@ -52,7 +51,7 @@ void TestQgsRectangle::manipulate()
   rect3.unionRect( rect2 );
   // Check union
   QVERIFY( rect3 == QgsRectangle( 1.0, 1.0, 7.0, 5.0 ) );
-};
+}
 
 void TestQgsRectangle::regression6194()
 {
@@ -84,10 +83,10 @@ void TestQgsRectangle::regression6194()
   QVERIFY( rect2.xMaximum() == rect1.xMaximum() );
   QVERIFY( rect2.yMaximum() == rect1.yMaximum() );
   QVERIFY( rect1 == rect2 );
-};
+}
 
 QTEST_MAIN( TestQgsRectangle )
-#include "moc_testqgsrectangle.cxx"
+#include "testqgsrectangle.moc"
 
 
 

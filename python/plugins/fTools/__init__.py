@@ -28,6 +28,7 @@
 #
 #---------------------------------------------------------------------
 
-def classFactory( iface ):
-  from .fTools import fToolsPlugin
-  return fToolsPlugin( iface )
+
+def classFactory(iface):
+    from .fTools import fToolsPlugin
+    return fToolsPlugin(iface)

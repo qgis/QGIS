@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QPair>
 #include <QMap>
+#include <QMutex>
 
 /** \ingroup core
  * Interface for requesting credentials in QGIS in GUI independent way.
@@ -39,30 +40,83 @@ class CORE_EXPORT QgsCredentials
     //! virtual destructor
     virtual ~QgsCredentials();
 
-    bool get( QString realm, QString &username, QString &password, QString message = QString::null );
-    void put( QString realm, QString username, QString password );
+    bool get( const QString& realm, QString &username, QString &password, const QString& message = QString::null );
+    void put( const QString& realm, const QString& username, const QString& password );
+
+    bool getMasterPassword( QString &password, bool stored = false );
 
     //! retrieves instance
     static QgsCredentials *instance();
 
+    /**
+     * Lock the instance against access from multiple threads. This does not really lock access to get/put methds,
+     * it will just prevent other threads to lock the instance and continue the execution. When the class is used
+     * from non-GUI threads, they should call lock() before the get/put calls to avoid race conditions.
+     * @note added in 2.4
+     */
+    void lock();
+
+    /**
+     * Unlock the instance after being locked.
+     * @note added in 2.4
+     */
+    void unlock();
+
+    /**
+     * Return pointer to mutex
+     * @note added in 2.4
+     */
+    QMutex *mutex() { return &mMutex; }
+
   protected:
+    QgsCredentials();
+
     //! request a password
-    virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null ) = 0;
+    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) = 0;
+
+    //! request a master password
+    virtual bool requestMasterPassword( QString &password, bool stored = false ) = 0;
 
     //! register instance
     void setInstance( QgsCredentials *theInstance );
 
   private:
+    Q_DISABLE_COPY( QgsCredentials )
+
     //! cache for already requested credentials in this session
     QMap< QString, QPair<QString, QString> > mCredentialCache;
 
     //! Pointer to the credential instance
     static QgsCredentials *smInstance;
+
+    QMutex mMutex;
 };
 
 
 /**
 \brief Default implementation of credentials interface
+
+This class doesn't prompt or return credentials
+*/
+class CORE_EXPORT QgsCredentialsNone : public QObject, public QgsCredentials
+{
+    Q_OBJECT
+
+  public:
+    QgsCredentialsNone();
+
+  signals:
+    //! signals that object will be destroyed and shouldn't be used anymore
+    void destroyed();
+
+  protected:
+    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) override;
+    virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
+};
+
+
+/**
+\brief Implementation of credentials interface for the console
 
 This class outputs message to the standard output and retrieves input from
 standard input. Therefore it won't be the right choice for apps without
@@ -80,7 +134,8 @@ class CORE_EXPORT QgsCredentialsConsole : public QObject, public QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null );
+    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) override;
+    virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
 };
 
 #endif

@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _QGSVECTORLAYERIMPORT_H_
-#define _QGSVECTORLAYERIMPORT_H_
+#ifndef QGSVECTORLAYERIMPORT_H
+#define QGSVECTORLAYERIMPORT_H
 
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -29,9 +29,6 @@ class QProgressDialog;
  There are two possibilities how to use this class:
  1. static call to QgsVectorFileWriter::writeAsShapefile(...) which saves the whole vector layer
  2. create an instance of the class and issue calls to addFeature(...)
-
- Currently supports only writing to shapefiles, but shouldn't be a problem to add capability
- to support other OGR-writable formats.
  */
 class CORE_EXPORT QgsVectorLayerImport
 {
@@ -50,7 +47,8 @@ class CORE_EXPORT QgsVectorLayerImport
       ErrInvalidLayer,
       ErrInvalidProvider,
       ErrProviderUnsupportedFeature,
-      ErrConnectionFailed
+      ErrConnectionFailed,
+      ErrUserCancelled, /*!< User cancelled the import*/
     };
 
     /** Write contents of vector layer to a different datasource */
@@ -59,45 +57,45 @@ class CORE_EXPORT QgsVectorLayerImport
                                     const QString& providerKey,
                                     const QgsCoordinateReferenceSystem *destCRS,
                                     bool onlySelected = false,
-                                    QString *errorMessage = 0,
+                                    QString *errorMessage = nullptr,
                                     bool skipAttributeCreation = false,
-                                    QMap<QString, QVariant> *options = 0,
-                                    QProgressDialog *progress = 0
+                                    QMap<QString, QVariant> *options = nullptr,
+                                    QProgressDialog *progress = nullptr
                                   );
 
-    /** create a empty layer and add fields to it */
+    /** Create a empty layer and add fields to it */
     QgsVectorLayerImport( const QString &uri,
                           const QString &provider,
                           const QgsFields &fields,
                           QGis::WkbType geometryType,
                           const QgsCoordinateReferenceSystem* crs,
                           bool overwrite = false,
-                          const QMap<QString, QVariant> *options = 0,
-                          QProgressDialog *progress = 0
+                          const QMap<QString, QVariant> *options = nullptr,
+                          QProgressDialog *progress = nullptr
                         );
 
-    /** checks whether there were any errors */
+    /** Checks whether there were any errors */
     ImportError hasError();
 
-    /** retrieves error message */
+    /** Retrieves error message */
     QString errorMessage();
 
     int errorCount() const { return mErrorCount; }
 
-    /** add feature to the new created layer */
+    /** Add feature to the new created layer */
     bool addFeature( QgsFeature& feature );
 
-    /** close the new created layer */
+    /** Close the new created layer */
     ~QgsVectorLayerImport();
 
   protected:
-    /** flush the buffer writing the features to the new layer */
+    /** Flush the buffer writing the features to the new layer */
     bool flushBuffer();
 
-    /** create index */
+    /** Create index */
     bool createSpatialIndex();
 
-    /** contains error value */
+    /** Contains error value */
     ImportError mError;
     QString mErrorMessage;
 
@@ -105,12 +103,17 @@ class CORE_EXPORT QgsVectorLayerImport
 
     QgsVectorDataProvider *mProvider;
 
-    /** map attribute indexes to new field indexes */
+    /** Map attribute indexes to new field indexes */
     QMap<int, int> mOldToNewAttrIdx;
     int mAttributeCount;
 
     QgsFeatureList mFeatureBuffer;
     QProgressDialog *mProgress;
+
+  private:
+
+    QgsVectorLayerImport( const QgsVectorLayerImport& rh );
+    QgsVectorLayerImport& operator=( const QgsVectorLayerImport& rh );
 };
 
 #endif

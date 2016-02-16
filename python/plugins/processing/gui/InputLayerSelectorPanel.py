@@ -26,32 +26,37 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui, QtCore
+
+from PyQt4 import uic
+from PyQt4.QtCore import QSettings
+from PyQt4.QtGui import QIcon, QFileDialog
+from processing.tools import dataobjects
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetLayerSelector.ui'))
 
 
-class InputLayerSelectorPanel(QtGui.QWidget):
+class InputLayerSelectorPanel(BASE, WIDGET):
 
-    def __init__(self, options):
+    def __init__(self, options, param):
         super(InputLayerSelectorPanel, self).__init__(None)
-        self.horizontalLayout = QtGui.QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.text = QtGui.QComboBox()
+        self.setupUi(self)
+
+        self.btnIterate.setIcon(
+            QIcon(os.path.join(pluginPath, 'images', 'iterate.png')))
+        self.btnIterate.hide()
+
+        self.param = param
+
         for (name, value) in options:
-            self.text.addItem(name, value)
-        self.text.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                QtGui.QSizePolicy.Expanding)
-        self.horizontalLayout.addWidget(self.text)
-        self.pushButton = QtGui.QPushButton()
-        self.pushButton.setText('...')
-        self.pushButton.clicked.connect(self.showSelectionDialog)
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.setLayout(self.horizontalLayout)
+            self.cmbText.addItem(name, value)
+
+        self.btnSelect.clicked.connect(self.showSelectionDialog)
 
     def showSelectionDialog(self):
-        # Find the file dialog's working directory
-        settings = QtCore.QSettings()
-        text = unicode(self.text.currentText())
+        settings = QSettings()
+        text = unicode(self.cmbText.currentText())
         if os.path.isdir(text):
             path = text
         elif os.path.isdir(os.path.dirname(text)):
@@ -61,13 +66,14 @@ class InputLayerSelectorPanel(QtGui.QWidget):
         else:
             path = ''
 
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'All files', path,
-                '*.*')
+        filename = QFileDialog.getOpenFileName(self, self.tr('Select file'),
+                                               path, self.tr('All files (*.*);;') + self.param.getFileFilter())
         if filename:
-            self.text.addItem(filename, filename)
-            self.text.setCurrentIndex(self.text.count() - 1)
             settings.setValue('/Processing/LastInputPath',
                               os.path.dirname(unicode(filename)))
+            filename = dataobjects.getRasterSublayer(filename, self.param)
+            self.cmbText.addItem(filename, filename)
+            self.cmbText.setCurrentIndex(self.cmbText.count() - 1)
 
     def getValue(self):
-        return self.text.itemData(self.text.currentIndex())
+        return self.cmbText.itemData(self.cmbText.currentIndex())

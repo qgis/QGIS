@@ -67,7 +67,7 @@ void QgsGCPCanvasItem::paint( QPainter* p )
   QString msg;
   if ( showIDs && showCoords )
   {
-    msg = QString( "%1\nX %2\nY %3" ).arg( QString::number( id ) ).arg( QString::number( worldCoords.x(), 'f' ) ).arg( QString::number( worldCoords.y(), 'f' ) );
+    msg = QString( "%1\nX %2\nY %3" ).arg( QString::number( id ), QString::number( worldCoords.x(), 'f' ), QString::number( worldCoords.y(), 'f' ) );
   }
   else if ( showIDs )
   {
@@ -75,7 +75,7 @@ void QgsGCPCanvasItem::paint( QPainter* p )
   }
   else if ( showCoords )
   {
-    msg = QString( "X %1\nY %2" ).arg( QString::number( worldCoords.x(), 'f' ) ).arg( QString::number( worldCoords.y(), 'f' ) );
+    msg = QString( "X %1\nY %2" ).arg( QString::number( worldCoords.x(), 'f' ), QString::number( worldCoords.y(), 'f' ) );
   }
 
   if ( !msg.isEmpty() )
@@ -187,7 +187,7 @@ double QgsGCPCanvasItem::residualToScreenFactor() const
   double mapUnitsPerRasterPixel = 1.0;
 
   QStringList canvasLayers = mMapCanvas->mapSettings().layers();
-  if ( canvasLayers.size() > 0 )
+  if ( !canvasLayers.isEmpty() )
   {
     QString layerId = canvasLayers.at( 0 );
     QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( layerId );

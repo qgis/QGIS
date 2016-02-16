@@ -25,13 +25,20 @@
 #include "qgslinesymbollayerv2.h"
 
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QColor>
 #include <QPainter>
 
-class TestQgsComposerPaper: public QObject
+class TestQgsComposerPaper : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsComposerPaper()
+        : mComposition( 0 )
+        , mMapSettings( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -41,14 +48,12 @@ class TestQgsComposerPaper: public QObject
     void transparentPaper(); //test totally transparent paper style
     void borderedPaper(); //test page with border
     void markerLinePaper(); //test page with marker line border
+    void hiddenPages(); //test hidden page boundaries
 
   private:
     QgsComposition* mComposition;
     QString mReport;
-    QgsSimpleFillSymbolLayerV2* mSimpleFill;
-    QgsMarkerLineSymbolLayerV2* mMarkerLine;
-    QgsFillSymbolV2* mFillSymbol;
-    QgsFillSymbolV2* mMarkerLineSymbol;
+    QgsMapSettings *mMapSettings;
     // QgsSingleSymbolRendererV2* mSymbolRenderer;
 
 };
@@ -59,18 +64,9 @@ void TestQgsComposerPaper::initTestCase()
   QgsApplication::initQgis();
 
   //create empty composition
-  mComposition = new QgsComposition( 0 );
+  mMapSettings = new QgsMapSettings();
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
-
-  //setup simple fill
-  mSimpleFill = new QgsSimpleFillSymbolLayerV2();
-  mFillSymbol = new QgsFillSymbolV2();
-  mFillSymbol->changeSymbolLayer( 0, mSimpleFill );
-
-  //setup marker line fill
-  mMarkerLine = new QgsMarkerLineSymbolLayerV2();
-  mMarkerLineSymbol = new QgsFillSymbolV2();
-  mMarkerLineSymbol->changeSymbolLayer( 0, mMarkerLine );
 
   mReport = "<h1>Composer Paper Tests</h1>\n";
 }
@@ -78,8 +74,9 @@ void TestQgsComposerPaper::initTestCase()
 void TestQgsComposerPaper::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -87,6 +84,7 @@ void TestQgsComposerPaper::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerPaper::init()
@@ -102,33 +100,71 @@ void TestQgsComposerPaper::cleanup()
 void TestQgsComposerPaper::defaultPaper()
 {
   QgsCompositionChecker checker( "composerpaper_default", mComposition );
+  checker.setControlPathPrefix( "composer_paper" );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
 void TestQgsComposerPaper::transparentPaper()
 {
-  mSimpleFill->setColor( Qt::transparent );
-  mSimpleFill->setBorderColor( Qt::transparent );
-  mComposition->setPageStyleSymbol( mFillSymbol );
+  QgsSimpleFillSymbolLayerV2* simpleFill = new QgsSimpleFillSymbolLayerV2();
+  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( Qt::transparent );
+  simpleFill->setBorderColor( Qt::transparent );
+  mComposition->setPageStyleSymbol( fillSymbol );
+  delete fillSymbol;
+
   QgsCompositionChecker checker( "composerpaper_transparent", mComposition );
+  checker.setControlPathPrefix( "composer_paper" );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
 void TestQgsComposerPaper::borderedPaper()
 {
-  mSimpleFill->setColor( Qt::white );
-  mSimpleFill->setBorderColor( Qt::black );
-  mSimpleFill->setBorderWidth( 6 );
+  QgsSimpleFillSymbolLayerV2* simpleFill = new QgsSimpleFillSymbolLayerV2();
+  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( Qt::white );
+  simpleFill->setBorderColor( Qt::black );
+  simpleFill->setBorderWidth( 6 );
+  mComposition->setPageStyleSymbol( fillSymbol );
+  delete fillSymbol;
+
   QgsCompositionChecker checker( "composerpaper_bordered", mComposition );
+  checker.setControlPathPrefix( "composer_paper" );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
 void TestQgsComposerPaper::markerLinePaper()
 {
-  mComposition->setPageStyleSymbol( mMarkerLineSymbol );
+  QgsMarkerLineSymbolLayerV2* markerLine = new QgsMarkerLineSymbolLayerV2();
+  QgsFillSymbolV2* markerLineSymbol = new QgsFillSymbolV2();
+  markerLineSymbol->changeSymbolLayer( 0, markerLine );
+  mComposition->setPageStyleSymbol( markerLineSymbol );
+  delete markerLineSymbol;
+
   QgsCompositionChecker checker( "composerpaper_markerborder", mComposition );
-  QVERIFY( checker.testComposition( mReport ) );
+  checker.setControlPathPrefix( "composer_paper" );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
+}
+
+void TestQgsComposerPaper::hiddenPages()
+{
+  QgsSimpleFillSymbolLayerV2* simpleFill = new QgsSimpleFillSymbolLayerV2();
+  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( Qt::blue );
+  simpleFill->setBorderColor( Qt::transparent );
+  mComposition->setPageStyleSymbol( fillSymbol );
+  delete fillSymbol;
+
+  mComposition->setPagesVisible( false );
+  QgsCompositionChecker checker( "composerpaper_hidden", mComposition );
+  checker.setControlPathPrefix( "composer_paper" );
+  bool result = checker.testComposition( mReport );
+  mComposition->setPagesVisible( true );
+  QVERIFY( result );
 }
 
 QTEST_MAIN( TestQgsComposerPaper )
-#include "moc_testqgscomposerpaper.cxx"
+#include "testqgscomposerpaper.moc"

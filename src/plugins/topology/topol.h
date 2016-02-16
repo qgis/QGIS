@@ -56,7 +56,7 @@ class checkDock;
 */
 class Topol: public QObject, public QgisPlugin
 {
-    Q_OBJECT;
+    Q_OBJECT
   public:
 
     //////////////////////////////////////////////////////////////////////
@@ -70,19 +70,19 @@ class Topol: public QObject, public QgisPlugin
     * QGIS when it attempts to instantiate the plugin.
     * @param theInterface Pointer to the QgisInterface object.
      */
-    Topol( QgisInterface * theInterface );
+    explicit Topol( QgisInterface * theInterface );
     //! Destructor
     virtual ~Topol();
 
   public slots:
     //! init the gui
-    virtual void initGui();
+    virtual void initGui() override;
     //! Create and show the dialog box
     void run();
     //! Show/hide the dialog box
     void showOrHide();
     //! unload the plugin
-    void unload();
+    void unload() override;
     //! show the help document
     void help();
 
@@ -94,7 +94,6 @@ class Topol: public QObject, public QgisPlugin
     //
     ////////////////////////////////////////////////////////////////////
 
-    int mPluginType;
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
     //!pointer to the qaction for this plugin

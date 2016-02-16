@@ -1,5 +1,5 @@
 
-/**  Base class for processing modules.
+/** Base class for processing modules.
  *
  */
 
@@ -7,37 +7,59 @@ class QgsRasterInterface
 {
 %TypeHeaderCode
 #include <qgsrasterinterface.h>
-#include <qgsrasterresamplefilter.h>
-//#include <qgsrasternuller.h>
-#include <qgsrasterrenderer.h>
-#include <qgsrasterprojector.h>
-#include <qgsrasterdataprovider.h>
 
-// QgsRasterRenderer subclass headers must be here because ConvertToSubClassCode
-// from QgsRasterRenderer is probably included
-#include <qgspalettedrasterrenderer.h>
+// QgsRasterInterface subclasses
+#include <qgsbrightnesscontrastfilter.h>
+#include <qgshuesaturationfilter.h>
+#include <qgsrasterdataprovider.h>
+#include <qgsrasternuller.h>
+#include <qgsrasterprojector.h>
+#include <qgsrasterrenderer.h>
+#include <qgsrasterresamplefilter.h>
+
+// QgsRasterRenderer subclasses
 #include <qgsmultibandcolorrenderer.h>
-#include <qgssinglebandpseudocolorrenderer.h>
-#include <qgssinglebandgrayrenderer.h>
+#include <qgspalettedrasterrenderer.h>
 #include <qgssinglebandcolordatarenderer.h>
+#include <qgssinglebandgrayrenderer.h>
+#include <qgssinglebandpseudocolorrenderer.h>
 %End
 
 %ConvertToSubClassCode
-  if (dynamic_cast<QgsRasterResampleFilter*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsRasterResampleFilter;
-//  if (dynamic_cast<QgsRasterNuller*>(sipCpp) != NULL)
-//    sipClass = sipClass_QgsRasterNuller;
-  if (dynamic_cast<QgsRasterRenderer*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsRasterRenderer;
-  if (dynamic_cast<QgsRasterProjector*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsRasterProjector;
-  if (dynamic_cast<QgsRasterDataProvider*>(sipCpp) != NULL)
+  if (     dynamic_cast<QgsBrightnessContrastFilter*>(sipCpp))
+    sipType = sipType_QgsBrightnessContrastFilter;
+  else if (dynamic_cast<QgsHueSaturationFilter*>(sipCpp))
+    sipType = sipType_QgsHueSaturationFilter;
+  else if (dynamic_cast<QgsRasterDataProvider*>(sipCpp))
   {
-    sipClass = sipClass_QgsRasterDataProvider;
+    sipType = sipType_QgsRasterDataProvider;
+    // use static cast because QgsRasterDataProvider has multiple inheritance
+    // and we would end up with bad pointer otherwise!
     *sipCppRet = static_cast<QgsRasterDataProvider*>(sipCpp);
   }
+  else if (dynamic_cast<QgsRasterNuller*>(sipCpp))
+    sipType = sipType_QgsRasterNuller;
+  else if (dynamic_cast<QgsRasterProjector*>(sipCpp))
+    sipType = sipType_QgsRasterProjector;
+  else if (dynamic_cast<QgsRasterRenderer*>(sipCpp))
+  {
+    if (     dynamic_cast<QgsMultiBandColorRenderer*>(sipCpp))
+      sipType = sipType_QgsMultiBandColorRenderer;
+    else if (dynamic_cast<QgsPalettedRasterRenderer*>(sipCpp))
+      sipType = sipType_QgsPalettedRasterRenderer;
+    else if (dynamic_cast<QgsSingleBandColorDataRenderer*>(sipCpp))
+      sipType = sipType_QgsSingleBandColorDataRenderer;
+    else if (dynamic_cast<QgsSingleBandGrayRenderer*>(sipCpp))
+      sipType = sipType_QgsSingleBandGrayRenderer;
+    else if (dynamic_cast<QgsSingleBandPseudoColorRenderer*>(sipCpp))
+      sipType = sipType_QgsSingleBandPseudoColorRenderer;
+    else
+      sipType = sipType_QgsRasterRenderer;
+  }
+  else if (dynamic_cast<QgsRasterResampleFilter*>(sipCpp))
+    sipType = sipType_QgsRasterResampleFilter;
   else
-    sipClass = 0;
+    sipType = 0;
 %End
 
   public:
@@ -84,7 +106,7 @@ class QgsRasterInterface
      */
     virtual QgsRectangle extent();
 
-    int dataTypeSize ( int bandNo );
+    int dataTypeSize( int bandNo );
 
     /** Get number of bands */
     virtual int bandCount() const = 0;
@@ -98,7 +120,7 @@ class QgsRasterInterface
     virtual int ySize() const;
 
     /** \brief helper function to create zero padded band names */
-    virtual QString  generateBandName( int theBandNumber ) const;
+    virtual QString generateBandName( int theBandNumber ) const;
 
     /** Read block of data using given extent and size.
      *  Returns pointer to data.
@@ -108,7 +130,7 @@ class QgsRasterInterface
      * @param width pixel width of block
      * @param height pixel height of block
      */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 / Factory /;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 /Factory/;
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */
@@ -201,5 +223,23 @@ class QgsRasterInterface
     /** Sets base class members from xml. Usually called from create() methods of subclasses */
     virtual void readXML( const QDomElement& filterElem );
 
+  protected:
+
+    /** Fill in histogram defaults if not specified
+     * @note theBinCount, theMinimun and theMaximum not optional in python bindings
+     */
+    void initHistogram( QgsRasterHistogram &theHistogram, int theBandNo,
+                        int theBinCount /* = 0 */,
+                        double theMinimum /*= std::numeric_limits<double>::quiet_NaN()*/,
+                        double theMaximum /*= std::numeric_limits<double>::quiet_NaN()*/,
+                        const QgsRectangle & theExtent = QgsRectangle(),
+                        int theSampleSize = 0,
+                        bool theIncludeOutOfRange = false );
+
+    /** Fill in statistics defaults if not specified */
+    void initStatistics( QgsRasterBandStats &theStatistics, int theBandNo,
+                         int theStats = QgsRasterBandStats::All,
+                         const QgsRectangle & theExtent = QgsRectangle(),
+                         int theBinCount = 0 );
 };
 

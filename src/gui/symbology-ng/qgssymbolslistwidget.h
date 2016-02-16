@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgssymbolslistwidget.h
-    ---------------------
-    begin                : June 2012
-    copyright            : (C) 2012 by Arunmozhi
-    email                : aruntheguy at gmail.com
+ qgssymbolslistwidget.h
+ ---------------------
+ begin                : June 2012
+ copyright            : (C) 2012 by Arunmozhi
+ email                : aruntheguy at gmail.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -30,22 +30,70 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     Q_OBJECT
 
   public:
-    QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent );
+    QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer = nullptr );
+
+    //! Destructor
+    virtual ~QgsSymbolsListWidget();
+
+    /** Returns the expression context used for the widget, if set. This expression context is used for
+     * evaluating data defined symbol properties and for populating based expression widgets in
+     * the list widget.
+     * @note added in QGIS 2.12
+     * @see setExpressionContext()
+     */
+    QgsExpressionContext* expressionContext() const { return mPresetExpressionContext; }
+
+    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @see mapCanvas()
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas );
+
+    /** Returns the map canvas associated with the widget.
+     * @see setMapCanvas
+     * @note added in QGIS 2.12
+     */
+    const QgsMapCanvas* mapCanvas() const;
+
+    /** Returns the vector layer associated with the widget.
+     * @note added in QGIS 2.12
+     */
+    const QgsVectorLayer* layer() const { return mLayer; }
 
   public slots:
+
+    /** Sets the optional expression context used for the widget. This expression context is used for
+     * evaluating data defined symbol properties and for populating based expression widgets in
+     * the properties widget.
+     * @param context expression context pointer. Ownership is not transferred and the object must
+     * be kept alive for the lifetime of the properties widget.
+     * @note added in QGIS 2.12
+     * @see expressionContext()
+     */
+    void setExpressionContext( QgsExpressionContext* context );
+
     void setSymbolFromStyle( const QModelIndex & index );
     void setSymbolColor( const QColor& color );
     void setMarkerAngle( double angle );
     void setMarkerSize( double size );
     void setLineWidth( double width );
     void addSymbolToStyle();
-    void on_mSymbolUnitComboBox_currentIndexChanged( const QString & text );
+    void saveSymbol();
+    void symbolAddedToStyle( const QString& name, QgsSymbolV2* symbol );
+    void on_mSymbolUnitWidget_changed();
     void on_mTransparencySlider_valueChanged( int value );
 
     void on_groupsCombo_currentIndexChanged( int index );
     void on_groupsCombo_editTextChanged( const QString &text );
 
     void openStyleManager();
+    void clipFeaturesToggled( bool checked );
+
+    void updateDataDefinedMarkerSize();
+    void updateDataDefinedMarkerAngle();
+    void updateDataDefinedLineWidth();
 
   signals:
     void changed();
@@ -53,18 +101,26 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
   protected:
     QgsSymbolV2* mSymbol;
     QgsStyleV2* mStyle;
+    QMenu* mAdvancedMenu;
+    QAction* mClipFeaturesAction;
+    const QgsVectorLayer* mLayer;
+    QgsMapCanvas* mMapCanvas;
 
     void populateSymbolView();
-    void populateSymbols( QStringList symbols );
+    void populateSymbols( const QStringList& symbols );
     void updateSymbolColor();
     void updateSymbolInfo();
 
   private:
-    /**Displays alpha value as transparency in mTransparencyLabel*/
+    /** Displays alpha value as transparency in mTransparencyLabel*/
     void displayTransparency( double alpha );
     /** Recursive function to create the group tree in the widget */
-    void populateGroups( QString parent = "", QString prepend = "" );
+    void populateGroups( const QString& parent = "", const QString& prepend = "" );
+
+    QgsExpressionContext* mPresetExpressionContext;
 };
 
 #endif //QGSSYMBOLSLISTWIDGET_H
+
+
 

@@ -25,8 +25,11 @@
   */
 class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExpressionBuilderDialogBase
 {
+    Q_OBJECT
+
   public:
-    QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent = NULL, QString key = "generic" );
+    QgsExpressionBuilderDialog( QgsVectorLayer* layer, const QString& startText = QString(), QWidget* parent = nullptr, const QString& key = "generic",
+                                const QgsExpressionContext& context = QgsExpressionContext() );
 
     /** The builder widget that is used by the dialog */
     QgsExpressionBuilderWidget* expressionBuilder();
@@ -35,9 +38,22 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
 
     QString expressionText();
 
-    /** Sets geometry calculator used in distance/area calculations.
-      * @note added in version 2.0
-      */
+    /** Returns the expression context for the dialog. The context is used for the expression
+     * preview result and for populating the list of available functions and variables.
+     * @see setExpressionContext
+     * @note added in QGIS 2.12
+     */
+    QgsExpressionContext expressionContext() const;
+
+    /** Sets the expression context for the dialog. The context is used for the expression
+     * preview result and for populating the list of available functions and variables.
+     * @param context expression context
+     * @see expressionContext
+     * @note added in QGIS 2.12
+     */
+    void setExpressionContext( const QgsExpressionContext& context );
+
+    /** Sets geometry calculator used in distance/area calculations. */
     void setGeomCalculator( const QgsDistanceArea & da );
 
   protected:
@@ -47,9 +63,9 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
      *
      * @param r result value (unused)
      */
-    virtual void done( int r );
+    virtual void done( int r ) override;
 
-    virtual void accept();
+    virtual void accept() override;
 
   private:
     QString mRecentKey;

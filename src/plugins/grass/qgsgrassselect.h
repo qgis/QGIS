@@ -17,7 +17,7 @@
 #define QGSGRASSSELECT_H
 #include "ui_qgsgrassselectbase.h"
 
-/*! \class QgsGrassSelect
+/** \class QgsGrassSelect
  * \brief Dialog to select GRASS layer.
  *
  */
@@ -49,7 +49,7 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
     int      selectedType;  // RASTER or GROUP
 
   public slots:
-    void accept();
+    void accept() override;
 
     //! Open dialog for Gisdbase
     void on_GisdbaseBrowse_clicked();

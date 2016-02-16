@@ -1,0 +1,72 @@
+<root>
+  <key>GrayScaleMorphologicalOperation-opening</key>
+  <exec>otbcli_GrayScaleMorphologicalOperation</exec>
+  <longname>GrayScaleMorphologicalOperation (opening)</longname>
+  <group>Feature Extraction</group>
+  <description>Performs morphological operations on a grayscale input image</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description>The input image to be filtered.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>Feature Output Image</name>
+    <description>Output image containing the filtered output image.</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>channel</key>
+    <name>Selected Channel</name>
+    <description>The selected channel index</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>structype</key>
+    <name>Structuring Element Type</name>
+    <description>Choice of the structuring element type</description>
+    <options>
+      <choices>
+        <choice>ball</choice>
+        </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>structype.ball.xradius</key>
+    <name>The Structuring Element Radius</name>
+    <description>The Structuring Element Radius</description>
+    <minValue />
+    <maxValue />
+    <default>5</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>filter</key>
+    <name>Morphological Operation</name>
+    <description>Choice of the morphological operation</description>
+    <options>
+      <choices>
+        <choice>opening</choice>
+        </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+</root>

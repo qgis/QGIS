@@ -28,19 +28,19 @@ class CORE_EXPORT QgsNumericScaleBarStyle: public QgsScaleBarStyle
     QgsNumericScaleBarStyle( QgsComposerScaleBar* bar );
     ~QgsNumericScaleBarStyle();
 
-    QString name() const;
+    QString name() const override;
 
-    void draw( QPainter* p, double xOffset = 0 ) const;
+    void draw( QPainter* p, double xOffset = 0 ) const override;
 
     //calculation of box size is different compared to segment based scale bars
-    QRectF calculateBoxSize() const;
+    QRectF calculateBoxSize() const override;
 
   private:
     QgsNumericScaleBarStyle(); //forbidden
-    /**Returns the text for the scale bar or an empty string in case of error*/
+    /** Returns the text for the scale bar or an empty string in case of error*/
     QString scaleText() const;
 
-    /**Store last width (in mm) to keep alignment to left/middle/right side*/
+    /** Store last width (in mm) to keep alignment to left/middle/right side*/
     mutable double mLastScaleBarWidth;
 };
 

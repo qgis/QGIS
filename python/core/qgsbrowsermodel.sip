@@ -8,6 +8,11 @@ class QgsBrowserModel : QAbstractItemModel
     explicit QgsBrowserModel( QObject *parent = 0 );
     ~QgsBrowserModel();
 
+    enum ItemDataRole
+    {
+      PathRole, /*!< Item path used to access path in the tree, see QgsDataItem::mPath */
+      CommentRole, /*!< Item comment */
+    };
     // implemented methods from QAbstractItemModel for read-only access
 
     /** Used by other components to obtain information about each item provided by the model.
@@ -54,35 +59,51 @@ class QgsBrowserModel : QAbstractItemModel
 
     bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
-    // Refresh item specified by path
-    void refresh( QString path );
+    //! Refresh item specified by path
+    void refresh( const QString& path );
 
-    // Refresh item childs
+    //! Refresh item children
     void refresh( const QModelIndex &index = QModelIndex() );
 
-    //! return index of a path
-    QModelIndex findPath( QString path );
+    /** Return index of item with given path. It only searches in currently fetched
+     * items, i.e. it does not fetch children.
+     * @param path item path
+     * @param matchFlag supported is Qt::MatchExactly and Qt::MatchStartsWith which has reverse meaning, i.e. find
+     *        item with the longest match from start with path (to get as close/deep as possible to deleted item).
+     * @return model index, invalid if item not found */
+    QModelIndex findPath( const QString& path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
+
+    //! @note not available in python bindings
+    // static QModelIndex findPath( QAbstractItemModel *model, const QString& path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
     void connectItem( QgsDataItem *item );
 
     bool canFetchMore( const QModelIndex & parent ) const;
     void fetchMore( const QModelIndex & parent );
 
+  signals:
+    /** Emitted when item children fetch was finished */
+    void stateChanged( const QModelIndex & index, QgsDataItem::State oldState );
+
   public slots:
-    // Reload the whole model
+    //! Reload the whole model
     void reload();
     void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
     void endRemoveItems();
+    void itemDataChanged( QgsDataItem * item );
+    void itemStateChanged( QgsDataItem * item, QgsDataItem::State oldState );
 
-    void addFavouriteDirectory( QString favDir );
+    void addFavouriteDirectory( const QString& favDir );
     void removeFavourite( const QModelIndex &index );
-
     void updateProjectHome();
 
+    /** Hide the given path in the browser model */
+    void hidePath( QgsDataItem *item );
+
   protected:
-    // populates the model
+    //! Populates the model
     void addRootItems();
     void removeRootItems();
 };

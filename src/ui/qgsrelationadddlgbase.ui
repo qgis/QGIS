@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>581</width>
-    <height>254</height>
+    <height>267</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Add relation</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="4" column="1" colspan="2">
@@ -79,14 +79,22 @@
     </widget>
    </item>
    <item row="8" column="1">
-    <widget class="QLineEdit" name="mTxtRelationId">
-    </widget>
+    <widget class="QLineEdit" name="mTxtRelationId"/>
    </item>
    <item row="1" column="1">
     <widget class="QLineEdit" name="mTxtRelationName"/>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mTxtRelationName</tabstop>
+  <tabstop>mCbxReferencingLayer</tabstop>
+  <tabstop>mCbxReferencingField</tabstop>
+  <tabstop>mCbxReferencedLayer</tabstop>
+  <tabstop>mCbxReferencedField</tabstop>
+  <tabstop>mTxtRelationId</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

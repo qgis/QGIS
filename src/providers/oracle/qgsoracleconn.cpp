@@ -67,23 +67,35 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
 
   mDatabase = QSqlDatabase::addDatabase( "QOCISPATIAL", QString( "oracle%1" ).arg( snConnections++ ) );
   mDatabase.setDatabaseName( database );
-  mDatabase.setConnectOptions( "OCI_ATTR_PREFETCH_ROWS=1000" );
+  QString options = uri.hasParam( "dboptions" ) ? uri.param( "dboptions" ) : "OCI_ATTR_PREFETCH_ROWS=1000";
+  mDatabase.setConnectOptions( options );
   mDatabase.setUserName( uri.username() );
   mDatabase.setPassword( uri.password() );
+
+  QgsDebugMsg( QString( "Connecting with options: " ) + options );
 
   if ( !mDatabase.open() )
   {
     QString username = uri.username();
     QString password = uri.password();
 
+    QString realm( database );
+    if ( !username.isEmpty() )
+      realm.prepend( username + "@" );
+
+    QgsCredentials::instance()->lock();
+
     while ( !mDatabase.open() )
     {
-      bool ok = QgsCredentials::instance()->get( database, username, password, mDatabase.lastError().text() );
+      bool ok = QgsCredentials::instance()->get( realm, username, password, mDatabase.lastError().text() );
       if ( !ok )
         break;
 
       if ( !username.isEmpty() )
+      {
         uri.setUsername( username );
+        realm = username + "@" + database;
+      }
 
       if ( !password.isEmpty() )
         uri.setPassword( password );
@@ -94,7 +106,9 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
     }
 
     if ( mDatabase.isOpen() )
-      QgsCredentials::instance()->put( database, username, password );
+      QgsCredentials::instance()->put( realm, username, password );
+
+    QgsCredentials::instance()->unlock();
   }
 
   if ( !mDatabase.isOpen() )
@@ -347,10 +361,21 @@ QString QgsOracleConn::fieldExpression( const QgsField &fld )
 
 void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes )
 {
+  QgsDebugMsg( "entering: " + layerProperty.toString() );
+
+  if ( layerProperty.isView )
+  {
+    layerProperty.pkCols = pkCandidates( layerProperty.ownerName, layerProperty.tableName );
+    if ( layerProperty.pkCols.isEmpty() )
+    {
+      QgsMessageLog::logMessage( tr( "View %1.%2 doesn't have integer columns for use as keys." )
+                                 .arg( layerProperty.ownerName ).arg( layerProperty.tableName ),
+                                 tr( "Oracle" ) );
+    }
+  }
+
   if ( layerProperty.geometryColName.isEmpty() )
     return;
-
-  QgsDebugMsg( "entering: " + layerProperty.toString() );
 
   QString table;
   QString where;
@@ -377,12 +402,35 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
     where = layerProperty.sql;
   }
 
+  QGis::WkbType detectedType = layerProperty.types.value( 0, QGis::WKBUnknown );
+  int detectedSrid = layerProperty.srids.value( 0, -1 );
+
+  Q_ASSERT( detectedType == QGis::WKBUnknown || detectedSrid <= 0 );
+
   QSqlQuery qry( mDatabase );
-  QString sql = QString( "SELECT DISTINCT t.%1.SDO_GTYPE,t.%1.SDO_SRID FROM %2 t WHERE NOT t.%1 IS NULL%3" )
-                .arg( quotedIdentifier( layerProperty.geometryColName ) )
-                .arg( table )
-                .arg( where.isEmpty() ? "" : QString( " AND (%1)" ).arg( where ) );
-  if ( !exec( qry, sql ) )
+  int idx = 0;
+  QString sql = "SELECT DISTINCT ";
+  if ( detectedType == QGis::WKBUnknown )
+  {
+    sql += "t.%1.SDO_GTYPE";
+    if ( detectedSrid <= 0 )
+    {
+      sql += ",";
+      idx = 1;
+    }
+  }
+
+  if ( detectedSrid <= 0 )
+  {
+    sql += "t.%1.SDO_SRID";
+  }
+
+  sql += " FROM %2 t WHERE NOT t.%1 IS NULL%3";
+
+  if ( !exec( qry, sql
+              .arg( quotedIdentifier( layerProperty.geometryColName ) )
+              .arg( table )
+              .arg( where.isEmpty() ? "" : QString( " AND (%1)" ).arg( where ) ) ) )
   {
     QgsMessageLog::logMessage( tr( "SQL:%1\nerror:%2\n" )
                                .arg( qry.lastQuery() )
@@ -397,19 +445,28 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
   QSet<int> srids;
   while ( qry.next() )
   {
-    QGis::WkbType type = wkbTypeFromDatabase( qry.value( 0 ).toInt() );
-    if ( type == QGis::WKBUnknown )
+    if ( detectedType == QGis::WKBUnknown )
     {
-      QgsMessageLog::logMessage( tr( "Unsupported geometry type %1 in %2.%3.%4 ignored" )
-                                 .arg( qry.value( 0 ).toInt() )
-                                 .arg( layerProperty.ownerName ).arg( layerProperty.tableName ).arg( layerProperty.geometryColName ),
-                                 tr( "Oracle" ) );
-      continue;
+      QGis::WkbType type = wkbTypeFromDatabase( qry.value( 0 ).toInt() );
+      if ( type == QGis::WKBUnknown )
+      {
+        QgsMessageLog::logMessage( tr( "Unsupported geometry type %1 in %2.%3.%4 ignored" )
+                                   .arg( qry.value( 0 ).toInt() )
+                                   .arg( layerProperty.ownerName ).arg( layerProperty.tableName ).arg( layerProperty.geometryColName ),
+                                   tr( "Oracle" ) );
+        continue;
+      }
+      QgsDebugMsg( QString( "add type %1" ).arg( type ) );
+      layerProperty.types << type;
     }
-    QgsDebugMsg( QString( "add type %1" ).arg( type ) );
-    layerProperty.types << type;
-    layerProperty.srids << ( qry.value( 1 ).isNull() ? 0 : qry.value( 1 ).toInt() );
-    srids << ( qry.value( 1 ).isNull() ? 0 : qry.value( 1 ).toInt() );
+    else
+    {
+      layerProperty.types << detectedType;
+    }
+
+    int srid = detectedSrid > 0 ? detectedSrid : ( qry.value( idx ).isNull() ? -1 : qry.value( idx ).toInt() );
+    layerProperty.srids << srid;
+    srids << srid;
   }
 
   qry.finish();
@@ -418,17 +475,6 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
   {
     layerProperty.types << QGis::WKBUnknown;
     layerProperty.srids << ( srids.size() == 1 ? *srids.constBegin() : 0 );
-  }
-
-  if ( layerProperty.isView )
-  {
-    layerProperty.pkCols = pkCandidates( layerProperty.ownerName, layerProperty.tableName );
-    if ( layerProperty.pkCols.isEmpty() )
-    {
-      QgsMessageLog::logMessage( tr( "View %1.%2 doesn't have integer columns for use as keys." )
-                                 .arg( layerProperty.ownerName ).arg( layerProperty.tableName ),
-                                 tr( "Oracle" ) );
-    }
   }
 
   QgsDebugMsg( "leaving." );
@@ -465,7 +511,6 @@ QString QgsOracleConn::databaseTypeFilter( QString alias, QString geomCol, QGis:
   Q_ASSERT( !"unexpected geomType" );
   return QString::null;
 }
-
 
 QGis::WkbType QgsOracleConn::wkbTypeFromDatabase( int gtype )
 {
@@ -664,6 +709,10 @@ QgsDataSourceURI QgsOracleConn::connUri( QString theConnName )
   QgsDataSourceURI uri;
   uri.setConnection( host, port, database, username, password );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
+  if ( !settings.value( key + "/dboptions" ).toString().isEmpty() )
+  {
+    uri.setParam( "dboptions", settings.value( key + "/dboptions" ).toString() );
+  }
 
   return uri;
 }

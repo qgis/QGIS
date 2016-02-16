@@ -28,6 +28,7 @@
 
 #include "qgscursors.h"
 #include "qgsmaptopixel.h"
+#include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
@@ -41,13 +42,14 @@
 */
 eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* theCanvas )
     : QgsMapTool( theCanvas )
+    , mBrowser( nullptr )
 {
   //set cursor
   QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
 
   //set the current tool to this object
-  if ( 0 != mCanvas )
+  if ( mCanvas )
   {
     mCanvas->setMapTool( this );
   }
@@ -57,18 +59,18 @@ eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* theCanvas )
 * Mouse release, i.e., select, event
 * @param theMouseEvent - Pointer to a QMouseEvent
 */
-void eVisEventIdTool::canvasReleaseEvent( QMouseEvent* theMouseEvent )
+void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent* theMouseEvent )
 {
-  if ( 0 == mCanvas || 0 == theMouseEvent )
+  if ( !mCanvas || !theMouseEvent )
     return;
 
-  //Check to see if there is a layer selected
-  if ( mCanvas->currentLayer( ) )
+//Check to see if there is a layer selected
+  if ( mCanvas->currentLayer() )
   {
     //Check to see if the current layer is a vector layer
-    if ( QgsMapLayer::VectorLayer == mCanvas->currentLayer( )->type( ) )
+    if ( QgsMapLayer::VectorLayer == mCanvas->currentLayer()->type() )
     {
-      select( mCanvas->getCoordinateTransform( )->toMapCoordinates( theMouseEvent->x( ), theMouseEvent->y( ) ) );
+      select( mCanvas->getCoordinateTransform()->toMapCoordinates( theMouseEvent->x(), theMouseEvent->y() ) );
     }
     else
     {
@@ -85,22 +87,22 @@ void eVisEventIdTool::canvasReleaseEvent( QMouseEvent* theMouseEvent )
 * Selection routine called by the mouse release event
 * @param thePoint = QgsPoint representing the x, y coordinates of the mouse release event
 */
-void eVisEventIdTool::select( QgsPoint thePoint )
+void eVisEventIdTool::select( const QgsPoint& thePoint )
 {
 
-  if ( 0 == mCanvas )
+  if ( !mCanvas )
     return;
 
-  QgsVectorLayer* myLayer = ( QgsVectorLayer* )mCanvas->currentLayer( );
+  QgsVectorLayer* myLayer = ( QgsVectorLayer* )mCanvas->currentLayer();
 
   // create the search rectangle. this was modeled after the QgsMapIdentifyTool in core QGIS application
-  double searchWidth = mCanvas->extent( ).width( ) * (( double )QGis::DEFAULT_IDENTIFY_RADIUS / 100.0 );
+  double searchWidth = QgsMapTool::searchRadiusMU( mCanvas );
 
   QgsRectangle myRectangle;
-  myRectangle.setXMinimum( thePoint.x( ) - searchWidth );
-  myRectangle.setXMaximum( thePoint.x( ) + searchWidth );
-  myRectangle.setYMinimum( thePoint.y( ) - searchWidth );
-  myRectangle.setYMaximum( thePoint.y( ) + searchWidth );
+  myRectangle.setXMinimum( thePoint.x() - searchWidth );
+  myRectangle.setXMaximum( thePoint.x() + searchWidth );
+  myRectangle.setYMinimum( thePoint.y() - searchWidth );
+  myRectangle.setYMaximum( thePoint.y() + searchWidth );
 
   //Transform rectange to map coordinates
   myRectangle = toLayerCoordinates( myLayer, myRectangle );
@@ -118,6 +120,6 @@ void eVisEventIdTool::select( QgsPoint thePoint )
   myLayer->setSelectedFeatures( newSelectedFeatures );
 
   //Launch a new event browser to view selected features
-  mBrowser = new eVisGenericEventBrowserGui( mCanvas, mCanvas, NULL );
+  mBrowser = new eVisGenericEventBrowserGui( mCanvas, mCanvas, nullptr );
   mBrowser->setAttribute( Qt::WA_DeleteOnClose );
 }

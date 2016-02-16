@@ -22,17 +22,24 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
-class TestProjectionIssues: public QObject
+class TestProjectionIssues : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+  public:
+    TestProjectionIssues()
+        : mRasterLayer( 0 )
+        , mMapCanvas( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void issue5895();// test for #5895
+
   private:
     QgsRasterLayer* mRasterLayer;
     QgsMapCanvas*   mMapCanvas;
@@ -44,7 +51,7 @@ void TestProjectionIssues::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayer from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "checker360by180.asc" );
+  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + '/' +  "checker360by180.asc" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   // Set to WGS84
@@ -61,7 +68,7 @@ void TestProjectionIssues::initTestCase()
 
   // Add all layers in registry to the canvas
   QList<QgsMapCanvasLayer> canvasLayers;
-  foreach ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     canvasLayers.append( QgsMapCanvasLayer( layer ) );
   }
@@ -76,30 +83,31 @@ void TestProjectionIssues::initTestCase()
   mMapCanvas->setDestinationCrs( destCRS );
   mMapCanvas->setCrsTransformEnabled( true );
 
-};
+}
 
 void TestProjectionIssues::cleanupTestCase()
 {
   delete mMapCanvas;
-  delete mRasterLayer;
-};
+
+  QgsApplication::exitQgis();
+}
 
 void TestProjectionIssues::init()
 {
 
-};
+}
 
 void TestProjectionIssues::cleanup()
 {
 
-};
+}
 
 void TestProjectionIssues::issue5895()
 {
   QgsRectangle largeExtent( -610861, 5101721, 2523921, 6795055 );
   mMapCanvas->setExtent( largeExtent );
   mMapCanvas->zoomByFactor( 2.0 ); // Zoom out. This should exceed the transform limits.
-};
+}
 
 QTEST_MAIN( TestProjectionIssues )
-#include "moc_testprojectionissues.cxx"
+#include "testprojectionissues.moc"

@@ -1,8 +1,6 @@
 #!/bin/bash
 
 for file in $*; do
-	file=$1
-
 	d=${file#*/}
 	d=${d%/*}
 	f=${file##*/}

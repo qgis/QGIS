@@ -39,7 +39,7 @@ class QgisApp;
 class QgisInterface;
 class checkDock;
 
-class checkDock : public QDockWidget, public Ui::checkDock
+class checkDock : public QDockWidget, private Ui::checkDock
 {
     Q_OBJECT
 
@@ -49,7 +49,7 @@ class checkDock : public QDockWidget, public Ui::checkDock
      * @param qIface  pointer to QgisInterface instance that is passed to the rulesDialog
      * @param parent parent object
      */
-    checkDock( QgisInterface* qIface, QWidget *parent = 0 );
+    checkDock( QgisInterface* qIface, QWidget *parent = nullptr );
     ~checkDock();
 
   private slots:
@@ -90,7 +90,7 @@ class checkDock : public QDockWidget, public Ui::checkDock
      * Filters all errors involving features from specified layer
      * @param layerId layer ID
      */
-    void parseErrorListByLayer( QString layerId );
+    void parseErrorListByLayer( const QString& layerId );
     /**
      * Clears rubberbands when window is hidden
      * @param visible true if the window is visible
@@ -100,7 +100,6 @@ class checkDock : public QDockWidget, public Ui::checkDock
 
   private:
     rulesDialog* mConfigureDialog;
-    QgisApp* mQgisApp;
 
     QgsRubberBand* mRBConflict;
     QgsRubberBand* mRBFeature1;
@@ -109,7 +108,6 @@ class checkDock : public QDockWidget, public Ui::checkDock
     QgsVertexMarker* mVMFeature1;
     QgsVertexMarker* mVMFeature2;
     QList<QgsRubberBand*> mRbErrorMarkers;
-    bool mMarkersVisible;
 
     ErrorList mErrorList;
     DockModel* mErrorListModel;

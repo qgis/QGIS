@@ -1,41 +1,56 @@
 Source: qgis
-Section: science
-Priority: extra
 Maintainer: QGIS developers <qgis-developer@lists.osgeo.org>
+Uploaders: Jürgen E. Fischer <jef@norbit.de>
+Section: science
+Priority: optional
 Build-Depends:
  bison,
  cmake (>= 2.8),
- debhelper (>= 5.0.51~),
+ debhelper (>= 7),
  flex,
  grass-dev,
  libexpat1-dev,
  libfcgi-dev,
- libgdal1-dev,
+ libgdal1-dev | libgdal-dev,
  libgeos-dev (>= 3.0.0),
  libgsl0-dev,
  libpq-dev,
- libqt4-dev (>=4.4.0),
+ libproj-dev,
+ libqt4-dev (>= 4.7.0),
+ libqt4-opengl-dev,
+ libqca2-dev, libqca2-plugin-ossl,
+ libqtwebkit-dev,
  libqwt5-qt4-dev | libqwt-dev,
+ libspatialite-dev,
  libsqlite3-dev,
- proj (<< 4.7.0) | libproj-dev (>= 4.7.0),
+ libspatialindex-dev,
+ pkg-config,
  pyqt4-dev-tools,
  python,
- python-central (>=0.5),
+ python-central (>=0.5) | python-all-dev,
  python-dev,
- python-qt4-dev (>=4.1.0),
+ python-qt4-dev (>= 4.1.0),
  python-sip-dev (>= 4.5.0) | python-sip4-dev (>= 4.5.0) | sip4 (>= 4.5),
- git-core | git,
+ git,
  txt2tags,
  doxygen
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.4
 XS-Python-Version: current
+Vcs-Browser: https://github.com/qgis/QGIS/
+Vcs-Git: https://github.com/qgis/QGIS.git
 Homepage: http://qgis.org/
 
 Package: qgis
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, qgis-providers (= ${binary:Version}), qgis-common (= ${source:Version})
-Recommends: qgis-plugin-grass, python-qgis
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ qgis-providers (= ${binary:Version}),
+ qgis-common (= ${source:Version})
+Recommends:
+ qgis-plugin-grass,
+ python-qgis
 Suggests: gpsbabel
 Conflicts: uim-qt3
 Description: Geographic Information System (GIS)
@@ -49,23 +64,92 @@ Description: Geographic Information System (GIS)
 
 Package: qgis-common
 Architecture: all
+Depends: ${misc:Depends}
 Description: QGIS - architecture-independent data
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains architecture-independent supporting data files for use 
+ This package contains architecture-independent supporting data files for use
  with QGIS.
 
-Package: libqgis1.8.0
+Package: libqgis-core2.3.0
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Replaces: qgis (<=0.9.2rc1), libqgis-core1, libqgis-gui1, libqgis0, libqgis1
-Description: QGIS - shared libraries
+Section: libs
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Replaces: libqgis2.3.0
+Description: QGIS - shared core library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the shared core and gui library that provide an
- interface for plugins and stand-alone applications.
+ This package contains the shared core library.
+
+Package: libqgis-gui2.3.0
+Architecture: any
+Section: libs
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Replaces:
+ libqgis2.3.0
+Description: QGIS - shared gui library
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the shared gui library.
+
+Package: libqgis-analysis2.3.0
+Architecture: any
+Section: libs
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Replaces: libqgis2.3.0
+Description: QGIS - shared analysis library
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the shared analysis library.
+
+Package: libqgis-networkanalysis2.3.0
+Architecture: any
+Section: libs
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Replaces: libqgis2.3.0
+Description: QGIS - shared network analysis library
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the shared network analysis library.
+
+Package: libqgisgrass2.3.0
+Architecture: any
+Section: libs
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Replaces: libqgis2.3.0
+Description: QGIS - shared grass library
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the shared grass library.
+
+Package: libqgispython2.3.0
+Architecture: any
+Section: libs
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Replaces: libqgis2.3.0
+Description: QGIS - shared Python library
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the shared Python library.
 
 Package: libqgis-dev
 Architecture: any
@@ -115,9 +199,14 @@ Description: GRASS plugin for QGIS - architecture-independent data
  with the QGIS GRASS plugin.
 
 Package: python-qgis
-Section: python
 Architecture: any
-Depends: python-qt4 (>=4.1.0), python-sip4 (>= 4.5.0), python-qgis-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
+Section: python
+Depends:
+ python-qt4,
+ python-sip,
+ python-qgis-common (= ${source:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to QGIS
@@ -127,10 +216,13 @@ Description: Python bindings to QGIS
  This package contains the files for the Python support.
 
 Package: python-qgis-common
-Section: python
 Architecture: all
+Section: python
 Provides: ${python:Provides}
-Depends: gdal-bin, python-gdal, python-matplotlib
+Depends:
+ gdal-bin,
+ python-gdal,
+ python-matplotlib
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
@@ -141,9 +233,14 @@ Description: Python bindings to QGIS - architecture-independent files
 
 Package: qgis-providers
 Architecture: any
-Depends: qgis-providers-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
-Replaces: qgis (<= 1.6)
+Pre-Depends: ${misc:Pre-Depends}
+Depends:
+ qgis-providers-common (= ${source:Version}),
+ libqt4-sql-sqlite,
+ ${shlibs:Depends},
+ ${misc:Depends}
 Breaks: qgis (<= 1.6)
+Replaces: qgis (<= 1.6)
 Description: collection of data providers to QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -152,6 +249,7 @@ Description: collection of data providers to QGIS
 
 Package: qgis-providers-common
 Architecture: all
+Depends: ${misc:Depends}
 Replaces: qgis-common (<= 1.6)
 Breaks: qgis-common (<= 1.6)
 Description: collection of data providers to QGIS - architecture-independent files
@@ -160,12 +258,28 @@ Description: collection of data providers to QGIS - architecture-independent fil
  .
  This package contains architecture-independent files for the QGIS providers.
 
-Package: qgis-mapserver
+Package: qgis-server
 Architecture: any
-Depends: qgis-providers (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
-Description: QGIS mapserver
- QGIS is a Geographic Information System (GIS) which manages, analyzes
- and display databases of geographic information.
+Provides: qgis-mapserver
+Replaces: qgis-mapserver
+Depends:
+ qgis-providers (= ${binary:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS server providing various OGC services
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
  .
- This package contains the QGIS mapserver.
+ This package contains the QGIS server.
 
+Package: libqgis-customwidgets
+Architecture: any
+Depends:
+ qt4-designer,
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS custom widgets for Qt Designer
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains a library to use specific QGIS widgets in Qt Designer.

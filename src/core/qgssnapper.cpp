@@ -27,21 +27,24 @@
 
 QgsSnapper::QgsSnapper( QgsMapRenderer* mapRenderer )
     : mMapSettings( mapRenderer->mapSettings() )
+    , mSnapMode( SnapWithOneResult )
 {
 
 }
 
 QgsSnapper::QgsSnapper( const QgsMapSettings& mapSettings )
     : mMapSettings( mapSettings )
+    , mSnapMode( SnapWithOneResult )
 {
 }
 
-QgsSnapper::~QgsSnapper()
+int QgsSnapper::snapPoint( QPoint startPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludePoints )
 {
-
+  QgsPoint mapCoordPoint = mMapSettings.mapToPixel().toMapCoordinates( startPoint.x(), startPoint.y() );
+  return snapMapPoint( mapCoordPoint, snappingResult, excludePoints );
 }
 
-int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludePoints )
+int QgsSnapper::snapMapPoint( const QgsPoint& mapCoordPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludePoints )
 {
   snappingResult.clear();
 
@@ -49,7 +52,7 @@ int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& s
   QMultiMap<double, QgsSnappingResult> currentResultList; //snapping results of examined layer
 
   //start point in (output) map coordinates
-  QgsPoint mapCoordPoint = mMapSettings.mapToPixel().toMapCoordinates( startPoint.x(), startPoint.y() );
+
   QgsPoint layerCoordPoint; //start point in layer coordinates
   QgsSnappingResult newResult;
 
@@ -59,6 +62,7 @@ int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& s
     if ( !snapLayerIt->mLayer->hasGeometryType() )
       continue;
 
+    currentResultList.clear();
     //transform point from map coordinates to layer coordinates
     layerCoordPoint = mMapSettings.mapToLayerCoordinates( snapLayerIt->mLayer, mapCoordPoint );
 
@@ -93,31 +97,44 @@ int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& s
     return 0;
   }
 
+
+  //Gives a priority to vertex snapping over segment snapping
+  QgsSnappingResult returnResult = evalIt.value();
+  for ( evalIt = snappingResultList.begin(); evalIt != snappingResultList.end(); ++evalIt )
+  {
+    if ( evalIt.value().snappedVertexNr != -1 )
+    {
+      returnResult = evalIt.value();
+      snappingResultList.erase( evalIt );
+      break;
+    }
+  }
+
+  //We return the preferred result
+  snappingResult.push_back( returnResult );
+
   if ( mSnapMode == QgsSnapper::SnapWithOneResult )
   {
-    //return only closest result
-    snappingResult.push_back( evalIt.value() );
+    //return only a single  result, nothing more to do
   }
   else if ( mSnapMode == QgsSnapper::SnapWithResultsForSamePosition )
   {
-    //take all snapping Results within a certain tolerance because rounding differences may occur
+    //take all snapping results within a certain tolerance because rounding differences may occur
     double tolerance = 0.000001;
-    double minDistance = evalIt.key();
 
     for ( evalIt = snappingResultList.begin(); evalIt != snappingResultList.end(); ++evalIt )
     {
-      if ( evalIt.key() > ( minDistance + tolerance ) )
+      if ( returnResult.snappedVertex.sqrDist( evalIt.value().snappedVertex ) < tolerance*tolerance )
       {
-        break;
+        snappingResult.push_back( evalIt.value() );
       }
-      snappingResult.push_back( evalIt.value() );
     }
 
   }
 
   else //take all results
   {
-    for ( ; evalIt != snappingResultList.end(); ++evalIt )
+    for ( evalIt = snappingResultList.begin(); evalIt != snappingResultList.end(); ++evalIt )
     {
       snappingResult.push_back( evalIt.value() );
     }

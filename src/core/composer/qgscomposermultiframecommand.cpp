@@ -24,7 +24,7 @@ QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand( QgsComposerMultiFram
 {
 }
 
-QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand(): QUndoCommand( "", 0 ), mMultiFrame( 0 ), mFirstRun( false )
+QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand(): QUndoCommand( "", nullptr ), mMultiFrame( nullptr ), mFirstRun( false )
 {
 }
 
@@ -89,4 +89,28 @@ bool QgsComposerMultiFrameCommand::checkFirstRun()
 bool QgsComposerMultiFrameCommand::containsChange() const
 {
   return !( mPreviousState.isNull() || mAfterState.isNull() || mPreviousState.toString() == mAfterState.toString() );
+}
+
+
+QgsComposerMultiFrameMergeCommand::QgsComposerMultiFrameMergeCommand( QgsComposerMultiFrameMergeCommand::Context c, QgsComposerMultiFrame *multiFrame, const QString &text )
+    : QgsComposerMultiFrameCommand( multiFrame, text )
+    , mContext( c )
+{
+
+}
+
+QgsComposerMultiFrameMergeCommand::~QgsComposerMultiFrameMergeCommand()
+{
+
+}
+
+bool QgsComposerMultiFrameMergeCommand::mergeWith( const QUndoCommand *command )
+{
+  const QgsComposerMultiFrameCommand* c = dynamic_cast<const QgsComposerMultiFrameCommand*>( command );
+  if ( !c || mMultiFrame != c->multiFrame() )
+  {
+    return false;
+  }
+  mAfterState = c->afterState();
+  return true;
 }

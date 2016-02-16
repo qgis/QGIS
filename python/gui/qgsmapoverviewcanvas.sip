@@ -6,7 +6,7 @@ class QgsMapOverviewCanvas : QWidget
 %End
 
   public:
-    QgsMapOverviewCanvas( QWidget * parent = 0, QgsMapCanvas* mapCanvas = NULL );
+    QgsMapOverviewCanvas( QWidget * parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = NULL );
 
     ~QgsMapOverviewCanvas();
 
@@ -27,15 +27,19 @@ class QgsMapOverviewCanvas : QWidget
 
   public slots:
 
+    // ### QGIS 3: make protected
     //! used for overview canvas to reflect changed extent in main map canvas
     void drawExtentRect();
 
+    // ### QGIS 3: rename so it does not look like getter, make protected
     void hasCrsTransformEnabled( bool flag );
 
+    // ### QGIS 3: rename Srs to Crs, make protected
     void destinationSrsChanged();
 
   protected slots:
     void mapRenderingFinished();
+    void layerRepaintRequested();
 
   protected:
 
@@ -55,6 +59,6 @@ class QgsMapOverviewCanvas : QWidget
     void mouseReleaseEvent( QMouseEvent * e );
 
     //! called when panning to reflect mouse movement
-    void updatePanningWidget( const QPoint& pos );
+    void updatePanningWidget( QPoint pos );
 };
 

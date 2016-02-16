@@ -23,7 +23,7 @@
 class QDomDocument;
 class QDomElement;
 
-/**Abstract base class for the legend item types*/
+/** Abstract base class for the legend item types*/
 class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
 {
   public:
@@ -42,13 +42,13 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
     };
 
     virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const = 0;
-    /**Read item content from xml
+    /** Read item content from xml
       @param itemElem item to read from
       @param xServerAvailable Read item icons if true (QIcon needs x-server)*/
     virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true ) = 0;
 
     virtual ItemType itemType() const = 0;
-    virtual QStandardItem* clone() const = 0;
+    virtual QStandardItem* clone() const override = 0;
 
     QgsComposerLegendStyle::Style style() const { return mStyle; }
     void setStyle( QgsComposerLegendStyle::Style style ) { mStyle = style; }
@@ -57,7 +57,6 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
     virtual QString userText() const { return mUserText; }
     // Set text defined by user
     virtual void setUserText( const QString & text ) { mUserText = text; }
-
 
   protected:
     void writeXMLChildren( QDomElement& elem, QDomDocument& doc ) const;
@@ -79,16 +78,16 @@ class CORE_EXPORT QgsComposerSymbolV2Item: public QgsComposerLegendItem
     QgsComposerSymbolV2Item( const QIcon& icon, const QString& text );
     virtual ~QgsComposerSymbolV2Item();
 
-    virtual QStandardItem* clone() const;
+    virtual QStandardItem* clone() const override;
 
-    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const;
-    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
+    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const override;
+    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true ) override;
 
-    /**Set symbol (takes ownership)*/
+    /** Set symbol (takes ownership)*/
     void setSymbolV2( QgsSymbolV2* s );
     QgsSymbolV2* symbolV2() {return mSymbolV2;}
 
-    ItemType itemType() const { return SymbologyV2Item; }
+    ItemType itemType() const override { return SymbologyV2Item; }
 
   private:
     QgsSymbolV2* mSymbolV2;
@@ -102,14 +101,14 @@ class CORE_EXPORT QgsComposerRasterSymbolItem : public QgsComposerLegendItem
     QgsComposerRasterSymbolItem( const QIcon& icon, const QString& text );
     virtual ~QgsComposerRasterSymbolItem();
 
-    virtual QStandardItem* clone() const;
+    virtual QStandardItem* clone() const override;
 
-    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const;
-    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
+    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const override;
+    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true ) override;
 
     void setLayerID( const QString& id ) { mLayerID = id; }
     QString layerID() const { return mLayerID; }
-    ItemType itemType() const { return RasterSymbolItem; }
+    ItemType itemType() const override { return RasterSymbolItem; }
 
     void setColor( const QColor& c ) { mColor = c; }
     QColor color() const { return mColor; }
@@ -125,12 +124,12 @@ class CORE_EXPORT QgsComposerLayerItem : public QgsComposerLegendItem
     QgsComposerLayerItem();
     QgsComposerLayerItem( const QString& text );
     virtual ~QgsComposerLayerItem();
-    virtual QStandardItem* clone() const;
+    virtual QStandardItem* clone() const override;
 
-    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const;
-    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
+    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const override;
+    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true ) override;
 
-    ItemType itemType() const { return LayerItem; }
+    ItemType itemType() const override { return LayerItem; }
 
     void setLayerID( const QString& id ) { mLayerID = id; }
     QString layerID() const { return mLayerID; }
@@ -138,7 +137,7 @@ class CORE_EXPORT QgsComposerLayerItem : public QgsComposerLegendItem
     void setShowFeatureCount( bool show ) { mShowFeatureCount = show; }
     bool showFeatureCount() const { return mShowFeatureCount; }
 
-    void setDefaultStyle( double scaleDenominator = -1, QString rule = "" );
+    void setDefaultStyle( double scaleDenominator = -1, const QString& rule = "" );
 
   private:
     QString mLayerID;
@@ -152,18 +151,18 @@ class CORE_EXPORT QgsComposerGroupItem: public QgsComposerLegendItem
     QgsComposerGroupItem();
     QgsComposerGroupItem( const QString& text );
     virtual ~QgsComposerGroupItem();
-    virtual QStandardItem* clone() const;
+    virtual QStandardItem* clone() const override;
 
-    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const;
-    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
+    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const override;
+    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true ) override;
 
-    ItemType itemType() const { return GroupItem; }
+    ItemType itemType() const override { return GroupItem; }
 };
 
 class CORE_EXPORT QgsComposerStyleItem: public QStandardItem
 {
   public:
-    QgsComposerStyleItem( );
+    QgsComposerStyleItem();
     QgsComposerStyleItem( QgsComposerLegendItem *item );
     ~QgsComposerStyleItem();
 };

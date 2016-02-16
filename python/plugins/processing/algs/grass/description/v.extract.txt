@@ -1,0 +1,7 @@
+v.extract
+Selects vector objects from a vector layer a new layer containing only the selected objects.
+Vector (v.*)
+ParameterVector|input|Vector layer|-1|False
+ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|
+ParameterBoolean|-d|Dissolve common boundaries|True
+OutputVector|output|Selected

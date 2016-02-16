@@ -43,7 +43,6 @@ class QSplitter;
  *    initOptionsBase( false ); // set up this class to use .ui objects, optionally restoring base ui
  *    ...
  *    restoreOptionsBaseUi(); // restore the base ui with initOptionsBase or use this later on
- * @note added in 1.9
  */
 
 class GUI_EXPORT QgsOptionsDialogBase : public QDialog
@@ -57,14 +56,14 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * @param fl widget flags
      * @param settings custom QSettings pointer
      */
-    QgsOptionsDialogBase( QString settingsKey, QWidget* parent = 0, Qt::WFlags fl = 0, QSettings* settings = 0 );
+    QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent = nullptr, const Qt::WindowFlags& fl = nullptr, QSettings* settings = nullptr );
     ~QgsOptionsDialogBase();
 
     /** Set up the base ui connections for vertical tabs.
      * @param restoreUi Whether to restore the base ui at this time.
      * @param title the window title
      */
-    void initOptionsBase( bool restoreUi = true, QString title = QString() );
+    void initOptionsBase( bool restoreUi = true, const QString& title = QString() );
 
     // set custom QSettings pointer if dialog used outside QGIS (in plugin)
     void setSettings( QSettings* settings );
@@ -73,9 +72,9 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * Sometimes useful to do at end of subclass's constructor.
      * @param title the window title (it does not need to be defined if previously given to initOptionsBase();
      */
-    void restoreOptionsBaseUi( QString title = QString() );
+    void restoreOptionsBaseUi( const QString& title = QString() );
 
-    /** determine if the options list is in icon only mode
+    /** Determine if the options list is in icon only mode
      */
     bool iconOnly() {return mIconOnly;}
 
@@ -86,8 +85,8 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     void warnAboutMissingObjects();
 
   protected:
-    void showEvent( QShowEvent* e );
-    void paintEvent( QPaintEvent* e );
+    void showEvent( QShowEvent* e ) override;
+    void paintEvent( QPaintEvent* e ) override;
 
     virtual void updateWindowTitle();
 

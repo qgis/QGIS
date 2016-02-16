@@ -36,11 +36,11 @@ class QgsMssqlRootItem : public QgsDataCollectionItem
     QgsMssqlRootItem( QgsDataItem* parent, QString name, QString path );
     ~QgsMssqlRootItem();
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() override;
 
-    virtual QWidget * paramWidget();
+    virtual QWidget * paramWidget() override;
 
-    virtual QList<QAction*> actions();
+    virtual QList<QAction*> actions() override;
 
   public slots:
     void connectionsChanged();
@@ -54,24 +54,31 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     QgsMssqlConnectionItem( QgsDataItem* parent, QString name, QString path );
     ~QgsMssqlConnectionItem();
 
-    QVector<QgsDataItem*> createChildren();
-    virtual bool equal( const QgsDataItem *other );
-    virtual QList<QAction*> actions();
+    QVector<QgsDataItem*> createChildren() override;
+    virtual bool equal( const QgsDataItem *other ) override;
+    virtual QList<QAction*> actions() override;
 
-    virtual bool acceptDrop() { return true; }
-    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action );
-    void refresh();
+    virtual bool acceptDrop() override { return true; }
+    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
 
-    QString connInfo() const { return mConnInfo; };
+    bool handleDrop( const QMimeData * data, const QString& toSchema );
+
+    QString connInfo() const { return mConnInfo; }
 
   signals:
-    void addGeometryColumn( QgsMssqlLayerProperty );
+    void addGeometryColumn( const QgsMssqlLayerProperty& );
 
   public slots:
     void editConnection();
     void deleteConnection();
+    void setAllowGeometrylessTables( bool allow );
 
     void setLayerType( QgsMssqlLayerProperty layerProperty );
+
+    void refresh() override;
+
+  private slots:
+    void setAsPopulated();
 
   private:
     QString mConnInfo;
@@ -83,6 +90,10 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     bool mUseGeometryColumns;
     bool mUseEstimatedMetadata;
     bool mAllowGeometrylessTables;
+    QgsMssqlGeomColumnTypeThread* mColumnTypeThread;
+
+    void readConnectionSettings();
+    void stop();
 };
 
 class QgsMssqlSchemaItem : public QgsDataCollectionItem
@@ -92,11 +103,13 @@ class QgsMssqlSchemaItem : public QgsDataCollectionItem
     QgsMssqlSchemaItem( QgsDataItem* parent, QString name, QString path );
     ~QgsMssqlSchemaItem();
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() override;
 
-    QgsMssqlLayerItem* addLayer( QgsMssqlLayerProperty layerProperty, bool refresh );
-    void refresh() {}; // do not refresh directly
+    QgsMssqlLayerItem* addLayer( const QgsMssqlLayerProperty& layerProperty, bool refresh );
+    void refresh() override {} // do not refresh directly
     void addLayers( QgsDataItem* newLayers );
+    virtual bool acceptDrop() override { return true; }
+    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
 };
 
 class QgsMssqlLayerItem : public QgsLayerItem
@@ -110,7 +123,6 @@ class QgsMssqlLayerItem : public QgsLayerItem
     QString createUri();
 
     QgsMssqlLayerItem* createClone();
-    bool Used;
 
   private:
     QgsMssqlLayerProperty mLayerProperty;

@@ -26,25 +26,23 @@ typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
   In order to be readable from project files, they should set these attributes in layer DOM node:
    "type" = "plugin"
    "name" = "your_layer_type"
-
-  \note added in v1.5
  */
 class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
 {
     Q_OBJECT
 
   public:
-    QgsPluginLayer( QString layerType, QString layerName = QString() );
+    QgsPluginLayer( const QString& layerType, const QString& layerName = QString() );
 
-    /** return plugin layer type (the same as used in QgsPluginLayerRegistry) */
+    /** Return plugin layer type (the same as used in QgsPluginLayerRegistry) */
     QString pluginLayerType();
 
-    void setExtent( const QgsRectangle &extent );
+    void setExtent( const QgsRectangle &extent ) override;
 
     //! return a list of symbology items for the legend
     //! (defult implementation returns nothing)
     //! @note Added in v2.1
-    virtual QgsLegendSymbologyList legendSymbologyItems( const QSize& iconSize );
+    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      *
@@ -55,7 +53,7 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
      *
      * @note added in 2.4
      */
-    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext );
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) override;
 
   protected:
     QString mPluginLayerType;

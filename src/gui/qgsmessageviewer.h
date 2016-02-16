@@ -31,16 +31,16 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
 {
     Q_OBJECT
   public:
-    QgsMessageViewer( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool deleteOnClose = true );
+    QgsMessageViewer( QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags, bool deleteOnClose = true );
     ~QgsMessageViewer();
 
-    virtual void setMessage( const QString& message, MessageType msgType );
+    virtual void setMessage( const QString& message, MessageType msgType ) override;
 
-    virtual void appendMessage( const QString& message );
+    virtual void appendMessage( const QString& message ) override;
 
-    virtual void showMessage( bool blocking = true );
+    virtual void showMessage( bool blocking = true ) override;
 
-    virtual void setTitle( const QString& title );
+    virtual void setTitle( const QString& title ) override;
 
     // Call one of the setMessage...() functions first.
     // Subsequent calls to appendMessage use the format as determined
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
     Qt::CheckState checkBoxState();
     // Specifies a QSettings tag to store/retrieve the checkbox
     // state to/from. Use an empty QString to disable this feature.
-    void setCheckBoxQSettingsLabel( QString label );
+    void setCheckBoxQSettingsLabel( const QString& label );
 
   private slots:
     void on_checkBox_toggled( bool );

@@ -21,19 +21,20 @@
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
-#include "qgslegend.h"
 #include "qgsvectorlayer.h"
 
 #include "qgsmaptoolselectutils.h"
-#include "qgshighlight.h"
 #include "qgsrubberband.h"
 #include <qgslogger.h>
 #include <QMouseEvent>
 
-QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas* canvas ): QgsMapToolLabel( canvas )
+QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas* canvas )
+    : QgsMapToolLabel( canvas )
+    , mDragging( false )
+    , mShowPinned( false )
+    , mRubberBand( nullptr )
 {
-  mRubberBand = 0;
-  mShowPinned = false;
+  mToolName = tr( "Pin labels" );
 
   connect( QgisApp::instance()->actionToggleEditing(), SIGNAL( triggered() ), this, SLOT( updatePinnedLabels() ) );
   connect( canvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( highlightPinnedLabels() ) );
@@ -45,7 +46,7 @@ QgsMapToolPinLabels::~QgsMapToolPinLabels()
   removePinnedHighlights();
 }
 
-void QgsMapToolPinLabels::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolPinLabels::canvasPressEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
   mSelectRect.setRect( 0, 0, 0, 0 );
@@ -54,7 +55,7 @@ void QgsMapToolPinLabels::canvasPressEvent( QMouseEvent * e )
   mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
 }
 
-void QgsMapToolPinLabels::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolPinLabels::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( e->buttons() != Qt::LeftButton )
     return;
@@ -68,7 +69,7 @@ void QgsMapToolPinLabels::canvasMoveEvent( QMouseEvent * e )
   QgsMapToolSelectUtils::setRubberBand( mCanvas, mSelectRect, mRubberBand );
 }
 
-void QgsMapToolPinLabels::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolPinLabels::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   //if the user simply clicked without dragging a rect
   //we will fabricate a small 1x1 pix rect and then continue
@@ -106,7 +107,7 @@ void QgsMapToolPinLabels::canvasReleaseEvent( QMouseEvent * e )
 
     mRubberBand->reset( QGis::Polygon );
     delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand = nullptr;
   }
 
   mDragging = false;
@@ -137,35 +138,22 @@ void QgsMapToolPinLabels::updatePinnedLabels()
   }
 }
 
-void QgsMapToolPinLabels::highlightLabel( QgsVectorLayer* vlayer,
-    const QgsLabelPosition& labelpos,
+void QgsMapToolPinLabels::highlightLabel( const QgsLabelPosition& labelpos,
     const QString& id,
     const QColor& color )
 {
   QgsRectangle rect = labelpos.labelRect;
+  QgsRubberBand *rb = new QgsRubberBand( mCanvas, QGis::Polygon );
+  rb->addPoint( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
+  rb->addPoint( QgsPoint( rect.xMinimum(), rect.yMaximum() ) );
+  rb->addPoint( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );
+  rb->addPoint( QgsPoint( rect.xMaximum(), rect.yMinimum() ) );
+  rb->addPoint( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
+  rb->setColor( color );
+  rb->setWidth( 0 );
+  rb->show();
 
-  const QgsMapSettings& ms = mCanvas->mapSettings();
-  if ( vlayer->crs().isValid() && ms.destinationCrs().isValid() )
-  {
-    // if label's layer is on-fly transformed, reverse-transform label rect
-    // QgsHighlight will convert it, yet again, to the correct map coords
-    if ( vlayer->crs() != ms.destinationCrs() )
-    {
-      rect = ms.mapToLayerCoordinates( vlayer, rect );
-      QgsDebugMsg( QString( "Reverse transform needed for highlight rectangle" ) );
-    }
-  }
-
-  QgsGeometry* highlightgeom = QgsGeometry::fromRect( rect );
-
-  QgsHighlight *h = new QgsHighlight( mCanvas, highlightgeom, vlayer );
-  if ( h )
-  {
-    h->setWidth( 0 );
-    h->setColor( color );
-    h->show();
-    mHighlights.insert( id, h );
-  }
+  mHighlights.insert( id, rb );
 }
 
 // public slot to render highlight rectangles around pinned labels
@@ -209,7 +197,7 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
         continue;
       }
 
-      QColor lblcolor = QColor( 54, 129, 255, 255 );
+      QColor lblcolor = QColor( 54, 129, 255, 63 );
       QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( mCurrentLabelPos.layerID );
       if ( !layer )
       {
@@ -223,10 +211,10 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
       }
       if ( vlayer->isEditable() )
       {
-        lblcolor = QColor( 54, 129, 0, 255 );
+        lblcolor = QColor( 54, 129, 0, 63 );
       }
 
-      highlightLabel( vlayer, ( *it ), labelStringID, lblcolor );
+      highlightLabel(( *it ), labelStringID, lblcolor );
     }
   }
   QApplication::restoreOverrideCursor();
@@ -235,9 +223,9 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
 void QgsMapToolPinLabels::removePinnedHighlights()
 {
   QApplication::setOverrideCursor( Qt::BusyCursor );
-  foreach ( QgsHighlight *h, mHighlights )
+  Q_FOREACH ( QgsRubberBand *rb, mHighlights )
   {
-    delete h;
+    delete rb;
   }
   mHighlights.clear();
   QApplication::restoreOverrideCursor();
@@ -245,9 +233,8 @@ void QgsMapToolPinLabels::removePinnedHighlights()
 
 void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent * e )
 {
-
-  bool doUnpin = e->modifiers() & Qt::ShiftModifier ? true : false;
-  bool toggleUnpinOrPin = e->modifiers() & Qt::ControlModifier ? true : false;
+  bool doUnpin = e->modifiers() & Qt::ShiftModifier;
+  bool toggleUnpinOrPin = e->modifiers() & Qt::ControlModifier;
 
   // get list of all drawn labels from all layers within, or touching, chosen extent
   bool labelChanged = false;

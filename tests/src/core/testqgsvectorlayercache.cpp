@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 20.2.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QTemporaryFile>
 
@@ -31,9 +31,15 @@
  *
  * @see QgsVectorLayerCache
  */
-class TestVectorLayerCache: public QObject
+class TestVectorLayerCache : public QObject
 {
     Q_OBJECT
+  public:
+    TestVectorLayerCache()
+        : mVectorLayerCache( 0 )
+        , mFeatureIdIndex( 0 )
+        , mPointsLayer( 0 )
+    {}
 
   private slots:
     void initTestCase();      // will be called before the first testfunction is executed.
@@ -46,7 +52,7 @@ class TestVectorLayerCache: public QObject
     void testFeatureActions();   // Test adding/removing features works
     void testSubsetRequest();
 
-    void onCommittedFeaturesAdded( QString, QgsFeatureList );
+    void onCommittedFeaturesAdded( const QString&, const QgsFeatureList& );
 
   private:
     QgsVectorLayerCache*           mVectorLayerCache;
@@ -65,15 +71,17 @@ void TestVectorLayerCache::initTestCase()
 
   // Backup test shape file and attributes
   QStringList backupFiles;
-  backupFiles << "points.shp" << "points.shx" << "points.dbf";
+  backupFiles << "points.shp" << "points.shx" << "points.dbf" << "points.prj";
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataDir = myDataDir + QDir::separator();
+  QString myTestDataDir = myDataDir + '/';
 
-  foreach ( QString f, backupFiles )
+  Q_FOREACH ( const QString& f, backupFiles )
   {
-    QString tmpFileName = QDir::tempPath() + QDir::separator() + f + "_" + QString::number( qApp->applicationPid() );
     QString origFileName = myTestDataDir + f;
+    QFileInfo origFileInfo( origFileName );
+
+    QString tmpFileName = QDir::tempPath() + '/' + origFileInfo.baseName() + '_' + QString::number( qApp->applicationPid() ) + '.' + origFileInfo.completeSuffix();
 
     qDebug() << "Copy " << origFileName << " " << tmpFileName;
 
@@ -84,7 +92,7 @@ void TestVectorLayerCache::initTestCase()
   //
   // load a vector layer
   //
-  QString myPointsFileName = myTestDataDir + "points.shp";
+  QString myPointsFileName = mTmpFiles.value( myTestDataDir + "points.shp" );
   QFileInfo myPointFileInfo( myPointsFileName );
   mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                      myPointFileInfo.completeBaseName(), "ogr" );
@@ -100,27 +108,12 @@ void TestVectorLayerCache::init()
 void TestVectorLayerCache::cleanup()
 {
   delete mVectorLayerCache;
-  delete mFeatureIdIndex;
 }
 
 //runs after all tests
 void TestVectorLayerCache::cleanupTestCase()
 {
-  // Clean added features
-  if ( mAddedFeatures.length() > 0 )
-  {
-    mPointsLayer->startEditing();
-    foreach ( QgsFeature f, mAddedFeatures )
-    {
-      mPointsLayer->deleteFeature( f.id() );
-    }
-    mPointsLayer->commitChanges();
-    mAddedFeatures.clear();
-  }
-
-
   delete mPointsLayer;
-  mPointsLayer = NULL;
 
   // Clean tmp files
   QMap<QString, QString>::const_iterator it;
@@ -128,16 +121,14 @@ void TestVectorLayerCache::cleanupTestCase()
   for ( it = mTmpFiles.constBegin(); it != mTmpFiles.constEnd(); ++it )
   {
     QString tmpFileName = it.value();
-    QString origFileName = it.key();
-
-    qDebug() << "Copy " << tmpFileName << " " << origFileName;
-    QFile( origFileName ).remove();
-    qDebug() << QFile::copy( tmpFileName, origFileName );
+    qDebug() << "Remove " << tmpFileName;
     QFile::remove( tmpFileName );
   }
 
   // also clean up newly created .qix file
-  QFile::remove( QString( TEST_DATA_DIR ) + QDir::separator() + "points.qix" );
+  QFile::remove( QString( TEST_DATA_DIR ) + "/points.qix" );
+
+  QgsApplication::exitQgis();
 }
 
 void TestVectorLayerCache::testCacheOverflow()
@@ -170,7 +161,7 @@ void TestVectorLayerCache::testCacheAttrActions()
   QVERIFY( mVectorLayerCache->featureAtId( 15, f ) );
   QVERIFY( f.attribute( "newAttr" ).isValid() );
 
-  QgsFields allFields = mPointsLayer->pendingFields();
+  QgsFields allFields = mPointsLayer->fields();
   int idx = allFields.indexFromName( "newAttr" );
 
   mPointsLayer->startEditing();
@@ -178,7 +169,7 @@ void TestVectorLayerCache::testCacheAttrActions()
   mPointsLayer->commitChanges();
 
   QVERIFY( mVectorLayerCache->featureAtId( 15, f ) );
-  QVERIFY( false == f.attribute( "newAttr" ).isValid() );
+  QVERIFY( !f.attribute( "newAttr" ).isValid() );
 }
 
 void TestVectorLayerCache::testFeatureActions()
@@ -204,7 +195,7 @@ void TestVectorLayerCache::testFeatureActions()
   mPointsLayer->startEditing();
   QVERIFY( mPointsLayer->deleteFeature( fid ) );
 
-  QVERIFY( false == mVectorLayerCache->featureAtId( fid, f ) );
+  QVERIFY( !mVectorLayerCache->featureAtId( fid, f ) );
   mPointsLayer->rollBack();
 }
 
@@ -212,7 +203,7 @@ void TestVectorLayerCache::testSubsetRequest()
 {
   QgsFeature f;
 
-  QgsFields fields = mPointsLayer->pendingFields();
+  QgsFields fields = mPointsLayer->fields();
   QStringList requiredFields;
   requiredFields << "Class" << "Cabin Crew";
 
@@ -227,12 +218,11 @@ void TestVectorLayerCache::testSubsetRequest()
   QVERIFY( a == f.attribute( 3 ) );
 }
 
-void TestVectorLayerCache::onCommittedFeaturesAdded( QString layerId, QgsFeatureList features )
+void TestVectorLayerCache::onCommittedFeaturesAdded( const QString& layerId, const QgsFeatureList& features )
 {
   Q_UNUSED( layerId )
   mAddedFeatures.append( features );
 }
 
 QTEST_MAIN( TestVectorLayerCache )
-#include "moc_testqgsvectorlayercache.cxx"
-
+#include "testqgsvectorlayercache.moc"

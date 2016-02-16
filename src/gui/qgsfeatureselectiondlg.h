@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 11.6.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -20,14 +20,25 @@ class QgsGenericFeatureSelectionManager;
 
 #include "ui_qgsfeatureselectiondlg.h"
 
-class QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeatureSelectionDlg
+class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeatureSelectionDlg
 {
     Q_OBJECT
 
   public:
-    explicit QgsFeatureSelectionDlg( QgsVectorLayer* vl, QWidget *parent = 0 );
+    explicit QgsFeatureSelectionDlg( QgsVectorLayer* vl, QgsAttributeEditorContext &context, QWidget *parent = nullptr );
 
+    /**
+     * Get the selected features
+     *
+     * @return The selected feature ids
+     */
     const QgsFeatureIds& selectedFeatures();
+
+    /**
+     * Set the selected features
+     * @param ids The feature ids to select
+     */
+    void setSelectedFeatures( const QgsFeatureIds& ids );
 
   private:
     QgsGenericFeatureSelectionManager* mFeatureSelection;

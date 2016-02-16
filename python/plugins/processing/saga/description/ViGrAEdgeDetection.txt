@@ -1,7 +1,0 @@
-ViGrA - Edge Detection
-vigra
-ParameterRaster|INPUT|Input|False
-OutputRaster|OUTPUT|Edges
-ParameterSelection|TYPE|Detector type|[0] Canny;[1] Shen-Castan
-ParameterNumber|SCALE|Operator scale|0|None|1
-ParameterNumber|THRESHOLD|Gradient threshold|0|None|1

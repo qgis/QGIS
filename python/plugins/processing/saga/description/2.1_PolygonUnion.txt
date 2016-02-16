@@ -1,6 +1,0 @@
-Union
-shapes_polygons
-ParameterVector|A|Layer A|2|False
-ParameterVector|B|Layer B|2|False
-ParameterBoolean|SPLIT|Split Parts|True
-OutputVector|RESULT|Intersection

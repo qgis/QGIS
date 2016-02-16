@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>891</width>
+    <width>837</width>
     <height>570</height>
    </rect>
   </property>
@@ -14,8 +14,20 @@
    <string>Attribute Table</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
+   <property name="leftMargin">
     <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
+    <number>3</number>
    </property>
    <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -43,7 +55,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionToggleEditing.svg</normaloff>:/images/themes/default/mActionToggleEditing.svg</iconset>
        </property>
        <property name="iconSize">
@@ -57,6 +69,9 @@
        </property>
        <property name="checkable">
         <bool>false</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -72,7 +87,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionSaveEdits.svg</normaloff>:/images/themes/default/mActionSaveEdits.svg</iconset>
        </property>
        <property name="iconSize">
@@ -82,10 +97,39 @@
         </size>
        </property>
        <property name="shortcut">
-        <string>Ctrl+E</string>
+        <string>Ctrl+S</string>
        </property>
        <property name="checkable">
         <bool>false</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mReloadButton">
+       <property name="toolTip">
+        <string>Reload the table</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -113,6 +157,9 @@
          <height>18</height>
         </size>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -124,7 +171,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
        </property>
        <property name="iconSize">
@@ -132,6 +179,9 @@
          <width>18</width>
          <height>18</height>
         </size>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -151,7 +201,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mIconExpressionSelect.svg</normaloff>:/images/themes/default/mIconExpressionSelect.svg</iconset>
        </property>
        <property name="iconSize">
@@ -160,18 +210,73 @@
          <height>18</height>
         </size>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mRemoveSelectionButton">
+      <widget class="QToolButton" name="mSelectAllButton">
        <property name="toolTip">
-        <string>Unselect all (Ctrl+U)</string>
+        <string>Select all (Ctrl+A)</string>
        </property>
        <property name="text">
         <string/>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionSelectAll.svg</normaloff>:/images/themes/default/mActionSelectAll.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+A</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mInvertSelectionButton">
+       <property name="toolTip">
+        <string>Invert selection (Ctrl+R)</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionInvertSelection.svg</normaloff>:/images/themes/default/mActionInvertSelection.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+R</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mRemoveSelectionButton">
+       <property name="toolTip">
+        <string>Deselect all (Ctrl+Shift+A)</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionUnselectAttributes.png</normaloff>:/images/themes/default/mActionUnselectAttributes.png</iconset>
        </property>
        <property name="iconSize">
@@ -181,7 +286,10 @@
         </size>
        </property>
        <property name="shortcut">
-        <string>Ctrl+U</string>
+        <string>Ctrl+Shift+A</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -194,7 +302,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionSelectedToTop.png</normaloff>:/images/themes/default/mActionSelectedToTop.png</iconset>
        </property>
        <property name="iconSize">
@@ -209,28 +317,8 @@
        <property name="checkable">
         <bool>true</bool>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mInvertSelectionButton">
-       <property name="toolTip">
-        <string>Invert selection (Ctrl+R)</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>:/images/themes/default/mActionInvertSelection.png</normaloff>:/images/themes/default/mActionInvertSelection.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>18</width>
-         <height>18</height>
-        </size>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+S</string>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -246,7 +334,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionPanToSelected.svg</normaloff>:/images/themes/default/mActionPanToSelected.svg</iconset>
        </property>
        <property name="iconSize">
@@ -257,6 +345,9 @@
        </property>
        <property name="shortcut">
         <string>Ctrl+P</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -272,7 +363,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionZoomToSelected.svg</normaloff>:/images/themes/default/mActionZoomToSelected.svg</iconset>
        </property>
        <property name="iconSize">
@@ -283,6 +374,9 @@
        </property>
        <property name="shortcut">
         <string>Ctrl+J</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -298,7 +392,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionEditCopy.png</normaloff>:/images/themes/default/mActionEditCopy.png</iconset>
        </property>
        <property name="iconSize">
@@ -309,6 +403,38 @@
        </property>
        <property name="shortcut">
         <string>Ctrl+C</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mPasteFeatures">
+       <property name="toolTip">
+        <string>Paste features from clipboard (Ctrl+V)</string>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionEditPaste.png</normaloff>:/images/themes/default/mActionEditPaste.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+V</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -322,13 +448,13 @@
      <item>
       <widget class="QToolButton" name="mRemoveAttribute">
        <property name="toolTip">
-        <string>Delete column (Ctrl+L)</string>
+        <string>Delete field (Ctrl+L)</string>
        </property>
        <property name="text">
         <string/>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionDeleteAttribute.png</normaloff>:/images/themes/default/mActionDeleteAttribute.png</iconset>
        </property>
        <property name="iconSize">
@@ -340,18 +466,21 @@
        <property name="shortcut">
         <string>Ctrl+L</string>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="mAddAttribute">
        <property name="toolTip">
-        <string>New column (Ctrl+W)</string>
+        <string>New field (Ctrl+W)</string>
        </property>
        <property name="text">
         <string/>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionNewAttribute.png</normaloff>:/images/themes/default/mActionNewAttribute.png</iconset>
        </property>
        <property name="iconSize">
@@ -362,6 +491,9 @@
        </property>
        <property name="shortcut">
         <string>Ctrl+W</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -374,7 +506,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionCalculateField.png</normaloff>:/images/themes/default/mActionCalculateField.png</iconset>
        </property>
        <property name="iconSize">
@@ -385,6 +517,9 @@
        </property>
        <property name="shortcut">
         <string>Ctrl+I</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -400,6 +535,26 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mSetStyles">
+       <property name="text">
+        <string>Cond</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/rendererCategorizedSymbol.png</normaloff>:/images/themes/default/rendererCategorizedSymbol.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoRepeat">
+        <bool>false</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="mHelpButton">
@@ -418,18 +573,21 @@
        <property name="text">
         <string>?</string>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="4" column="0">
+   <item row="7" column="0">
     <widget class="QgsDualView" name="mMainView">
      <property name="currentIndex">
       <number>-1</number>
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
+   <item row="9" column="0">
     <layout class="QHBoxLayout">
      <property name="leftMargin">
       <number>3</number>
@@ -452,7 +610,7 @@
         <string>Filter</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
        </property>
        <property name="popupMode">
@@ -464,10 +622,28 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsFilterLineEdit" name="mFilterQuery"/>
-     </item>
-     <item>
-      <widget class="QWidget" name="mSpacer" native="true"/>
+      <widget class="QWidget" name="mFilterContainer" native="true">
+       <layout class="QGridLayout" name="mFilterLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QgsFilterLineEdit" name="mFilterQuery"/>
+        </item>
+       </layout>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="mApplyFilterButton">
@@ -483,27 +659,20 @@
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="mCbxCaseSensitive">
-       <property name="text">
-        <string>Case sensitive</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <property name="spacing">
         <number>0</number>
        </property>
        <item>
         <widget class="QToolButton" name="mAttributeViewButton">
+         <property name="toolTip">
+          <string>Switch to form view</string>
+         </property>
          <property name="text">
           <string>Form View</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="../../images/images.qrc">
            <normaloff>:/images/themes/default/mActionPropertyItem.png</normaloff>:/images/themes/default/mActionPropertyItem.png</iconset>
          </property>
          <property name="checkable">
@@ -516,12 +685,15 @@
        </item>
        <item>
         <widget class="QToolButton" name="mTableViewButton">
+         <property name="toolTip">
+          <string>Switch to table view</string>
+         </property>
          <property name="text">
           <string>Table View</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/images/themes/default/mActionOpenTable.png</normaloff>:/images/themes/default/mActionOpenTable.png</iconset>
+          <iconset resource="../../images/images.qrc">
+           <normaloff>:/images/themes/default/mActionOpenTable.svg</normaloff>:/images/themes/default/mActionOpenTable.svg</iconset>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -538,10 +710,71 @@
      </item>
     </layout>
    </item>
+   <item row="6" column="0">
+    <widget class="QFrame" name="mUpdateExpressionBox">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>1</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <item>
+       <widget class="QComboBox" name="mFieldCombo"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>=</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="mRunFieldCalc">
+        <property name="text">
+         <string>Update All</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="mRunFieldCalcSelected">
+        <property name="text">
+         <string>Update Selected</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
   <action name="mActionAdvancedFilter">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
    </property>
    <property name="text">
@@ -556,7 +789,7 @@
   </action>
   <action name="mActionShowAllFilter">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
    </property>
    <property name="text">
@@ -565,7 +798,7 @@
   </action>
   <action name="mActionSelectedFilter">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
    </property>
    <property name="text">
@@ -574,7 +807,7 @@
   </action>
   <action name="mActionVisibleFilter">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
    </property>
    <property name="text">
@@ -583,12 +816,12 @@
   </action>
   <action name="mActionFilterColumnsMenu">
    <property name="text">
-    <string>Column Filter</string>
+    <string>Field Filter</string>
    </property>
   </action>
   <action name="mActionEditedFilter">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
    </property>
    <property name="text">
@@ -606,6 +839,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
@@ -618,14 +857,37 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mToggleEditingButton</tabstop>
+  <tabstop>mSaveEditsButton</tabstop>
+  <tabstop>mReloadButton</tabstop>
+  <tabstop>mAddFeature</tabstop>
+  <tabstop>mDeleteSelectedButton</tabstop>
+  <tabstop>mExpressionSelectButton</tabstop>
   <tabstop>mRemoveSelectionButton</tabstop>
+  <tabstop>mSelectAllButton</tabstop>
   <tabstop>mSelectedToTopButton</tabstop>
   <tabstop>mInvertSelectionButton</tabstop>
+  <tabstop>mPanMapToSelectedRowsButton</tabstop>
+  <tabstop>mZoomMapToSelectedRowsButton</tabstop>
   <tabstop>mCopySelectedRowsButton</tabstop>
+  <tabstop>mPasteFeatures</tabstop>
   <tabstop>mRemoveAttribute</tabstop>
+  <tabstop>mAddAttribute</tabstop>
   <tabstop>mOpenFieldCalculator</tabstop>
+  <tabstop>mSetStyles</tabstop>
+  <tabstop>mHelpButton</tabstop>
+  <tabstop>mFieldCombo</tabstop>
+  <tabstop>mRunFieldCalc</tabstop>
+  <tabstop>mRunFieldCalcSelected</tabstop>
+  <tabstop>mFilterButton</tabstop>
+  <tabstop>mFilterQuery</tabstop>
+  <tabstop>mApplyFilterButton</tabstop>
+  <tabstop>mAttributeViewButton</tabstop>
+  <tabstop>mTableViewButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>mToggleEditingButton</sender>
@@ -656,6 +918,22 @@
     <hint type="destinationlabel">
      <x>393</x>
      <y>266</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mToggleEditingButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mReloadButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>14</x>
+     <y>15</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>74</x>
+     <y>15</y>
     </hint>
    </hints>
   </connection>

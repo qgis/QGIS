@@ -39,28 +39,28 @@ class QgsOwsProvider : public QgsDataProvider
 
   public:
     /**
-    * Constructor for the provider.
-    *
-    * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
-    *                otherwise we contact the host directly.
-    *
-    */
-    QgsOwsProvider( QString const & uri = 0 );
+     * Constructor for the provider.
+     *
+     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
+     *                otherwise we contact the host directly.
+     *
+     */
+    explicit QgsOwsProvider( QString const & uri = nullptr );
 
     //! Destructor
     ~QgsOwsProvider();
 
     /* Pure virtuals */
 
-    QString name() const;
+    QString name() const override;
 
-    QString description() const;
+    QString description() const override;
 
-    QgsCoordinateReferenceSystem crs() { return QgsCoordinateReferenceSystem(); }
+    QgsCoordinateReferenceSystem crs() override { return QgsCoordinateReferenceSystem(); }
 
-    QgsRectangle extent() { return QgsRectangle(); }
+    QgsRectangle extent() override { return QgsRectangle(); }
 
-    bool isValid() { return false; }
+    bool isValid() override { return false; }
 };
 
 #endif // QGSOWSPROVIDER_H

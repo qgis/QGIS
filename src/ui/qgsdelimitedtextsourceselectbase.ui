@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>666</width>
-    <height>478</height>
+    <width>784</width>
+    <height>479</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -470,13 +470,13 @@
        <item>
         <widget class="QCheckBox" name="cbxUseHeader">
          <property name="toolTip">
-          <string>Field names are read from the first record.  If not selected then fields are numbered</string>
+          <string>Field names are read from the first record. If not selected then fields are numbered</string>
          </property>
          <property name="statusTip">
-          <string>Field names are read from the first record.  If not selected then fields are numbered</string>
+          <string>Field names are read from the first record. If not selected then fields are numbered</string>
          </property>
          <property name="whatsThis">
-          <string>Field names are read from the first record.  If not selected then fields are numbered</string>
+          <string>Field names are read from the first record. If not selected then fields are numbered</string>
          </property>
          <property name="text">
           <string>First record has field names</string>
@@ -594,13 +594,13 @@
        </item>
        <item>
         <widget class="QCheckBox" name="cbxSubsetIndex">
+         <property name="toolTip">
+          <string>Use an index to improve performance of subset filters (set in layer properties)</string>
+         </property>
          <property name="statusTip">
           <string>Use an index to improve performance of subset filters (set in layer properties)</string>
          </property>
          <property name="whatsThis">
-          <string>Use an index to improve performance of subset filters (set in layer properties)</string>
-         </property>
-         <property name="accessibleName">
           <string>Use an index to improve performance of subset filters (set in layer properties)</string>
          </property>
          <property name="text">
@@ -916,13 +916,13 @@
                  </size>
                 </property>
                 <property name="toolTip">
-                 <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
+                 <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character. These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
                 </property>
                 <property name="statusTip">
-                 <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
+                 <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character. These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
                 </property>
                 <property name="whatsThis">
-                 <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
+                 <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character. These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
                 </property>
                 <property name="maxLength">
                  <number>10</number>
@@ -965,13 +965,13 @@
               <item>
                <widget class="QLineEdit" name="txtEscapeChars">
                 <property name="toolTip">
-                 <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
+                 <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character). If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
                 </property>
                 <property name="statusTip">
-                 <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
+                 <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character). If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
                 </property>
                 <property name="whatsThis">
-                 <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
+                 <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character). If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
                 </property>
                 <property name="text">
                  <string>&quot;</string>
@@ -1111,14 +1111,6 @@
   <tabstop>delimiterCSV</tabstop>
   <tabstop>delimiterChars</tabstop>
   <tabstop>delimiterRegexp</tabstop>
-  <tabstop>cbxDelimComma</tabstop>
-  <tabstop>cbxDelimTab</tabstop>
-  <tabstop>cbxDelimSpace</tabstop>
-  <tabstop>cbxDelimColon</tabstop>
-  <tabstop>cbxDelimSemicolon</tabstop>
-  <tabstop>txtDelimiterOther</tabstop>
-  <tabstop>txtQuoteChars</tabstop>
-  <tabstop>txtEscapeChars</tabstop>
   <tabstop>txtDelimiterRegexp</tabstop>
   <tabstop>rowCounter</tabstop>
   <tabstop>cbxUseHeader</tabstop>
@@ -1131,13 +1123,21 @@
   <tabstop>cmbXField</tabstop>
   <tabstop>cmbYField</tabstop>
   <tabstop>cbxXyDms</tabstop>
-  <tabstop>cmbWktField</tabstop>
-  <tabstop>cmbGeometryType</tabstop>
   <tabstop>cbxSpatialIndex</tabstop>
   <tabstop>cbxSubsetIndex</tabstop>
   <tabstop>cbxWatchFile</tabstop>
   <tabstop>tblSample</tabstop>
   <tabstop>buttonBox</tabstop>
+  <tabstop>cbxDelimTab</tabstop>
+  <tabstop>cbxDelimSpace</tabstop>
+  <tabstop>cbxDelimColon</tabstop>
+  <tabstop>cmbWktField</tabstop>
+  <tabstop>cmbGeometryType</tabstop>
+  <tabstop>cbxDelimSemicolon</tabstop>
+  <tabstop>txtDelimiterOther</tabstop>
+  <tabstop>txtQuoteChars</tabstop>
+  <tabstop>txtEscapeChars</tabstop>
+  <tabstop>cbxDelimComma</tabstop>
  </tabstops>
  <resources/>
  <connections>

@@ -50,7 +50,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 
   public:
     //! Constructor
-    QgsWMSSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsWMSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsWMSSourceSelect();
 
@@ -67,9 +67,9 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     //! Loads connections from the file
     void on_btnLoad_clicked();
 
-    /*! Connects to the database using the stored connection parameters.
-    * Once connected, available layers are displayed.
-    */
+    /** Connects to the database using the stored connection parameters.
+     * Once connected, available layers are displayed.
+     */
     void on_btnConnect_clicked();
 
     //! Determines the layers the user selected
@@ -103,21 +103,6 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 
     //! Connection name
     QString connName();
-
-    //! Connection info (uri)
-    QString connectionInfo();
-
-    //! Connection Proxy Host
-    QString connProxyHost();
-
-    //! Connection Proxy Port
-    int connProxyPort();
-
-    //! Connection Proxy User
-    QString connProxyUser();
-
-    //! Connection Proxy Pass
-    QString connProxyPass();
 
     //! Set the server connection combo box to that stored in the config file.
     void setConnectionListPosition();
@@ -171,7 +156,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
         const QMap<int, QStringList> &layerParentNames );
 
     //! Returns a textual description for the authority id
-    QString descriptionForAuthId( QString authId );
+    QString descriptionForAuthId( const QString& authId );
 
     //! Keeps the layer order list up-to-date with changed layers and styles
     void updateLayerOrderTab( const QStringList& newLayerList, const QStringList& newStyleList, const QStringList &newTitleList );
@@ -180,7 +165,6 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     QString mConnName;
 
     //! URI for selected connection
-    QString mConnectionInfo;
     QgsDataSourceURI mUri;
 
     //! layer name derived from latest layer selection (updated as long it's not edited manually)

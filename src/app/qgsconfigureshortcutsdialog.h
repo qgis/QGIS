@@ -25,19 +25,19 @@ class APP_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     Q_OBJECT
 
   public:
-    QgsConfigureShortcutsDialog( QWidget* parent = NULL );
+    QgsConfigureShortcutsDialog( QWidget* parent = nullptr );
     ~QgsConfigureShortcutsDialog();
 
     void populateActions();
 
   protected:
-    void keyPressEvent( QKeyEvent * event );
-    void keyReleaseEvent( QKeyEvent * event );
+    void keyPressEvent( QKeyEvent * event ) override;
+    void keyReleaseEvent( QKeyEvent * event ) override;
 
     QAction* currentAction();
 
     void setGettingShortcut( bool getting );
-    void setCurrentActionShortcut( QKeySequence s );
+    void setCurrentActionShortcut( const QKeySequence& s );
     void updateShortcutText();
 
   public slots:

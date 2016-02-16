@@ -1,5 +1,9 @@
 
-/** Render class to display labels */
+/** \ingroup core
+  * A class to render labels.
+  * Label rendering properties can be either specified directly or
+  * in most cases determined dynamically based on the value of an attribute.
+  **/
 class QgsLabel
 {
 %TypeHeaderCode
@@ -14,7 +18,7 @@ class QgsLabel
     /* Fields */
     enum LabelField
     {
-      Text = 0,
+      Text,
       Family,
       Size,
       SizeType,
@@ -36,7 +40,7 @@ class QgsLabel
       BorderColor,
       BorderStyle,
       MultilineEnabled,
-      StrikeOut,     // added in 1.5
+      StrikeOut,
       LabelFieldCount
     };
 
@@ -51,13 +55,12 @@ class QgsLabel
      *  \param feature feature to render the label for
      *  \param selected feature is selected
      *  \param classAttributes attributes to create the label from
-     *  \note added in 1.2
      */
     void renderLabel( QgsRenderContext &renderContext, QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0 );
 
     /** Reads the renderer configuration from an XML file
-     @param node the Dom node to read
-    */
+     * @param node the Dom node to read
+     */
     void readXML( const QDomNode& node );
 
     /** Writes the contents of the renderer to a configuration file */
@@ -88,7 +91,7 @@ class QgsLabel
      *                       2) field exists
      *                       3) value is defined
      *  otherwise returns empty string
-    */
+     */
     QString fieldValue( int attr, QgsFeature& feature );
 
     /** Accessor and mutator for the minimum scale member */
@@ -105,4 +108,5 @@ class QgsLabel
 
   private:
     QgsLabel (); // pretend that constructor is private for now
+    QgsLabel( const QgsLabel& rh );
 };

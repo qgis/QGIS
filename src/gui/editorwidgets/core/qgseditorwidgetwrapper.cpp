@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 20.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -14,81 +14,81 @@
  ***************************************************************************/
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsfield.h"
 
 #include <QWidget>
 
 QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QObject( parent )
-    , mWidget( editor )
-    , mParent( parent )
-    , mLayer( vl )
+    : QgsWidgetWrapper( vl, editor, parent )
+    , mFieldIdx( fieldIdx )
 {
-  mField = fieldIdx;
 }
 
-QWidget* QgsEditorWidgetWrapper::widget()
+int QgsEditorWidgetWrapper::fieldIdx() const
 {
-  if ( !mWidget )
-  {
-    mWidget = createWidget( mParent );
-    mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue( this ) );
-    initWidget( mWidget );
-  }
-
-  return mWidget;
+  return mFieldIdx;
 }
 
-void QgsEditorWidgetWrapper::setConfig( const QgsEditorWidgetConfig& config )
+QgsField QgsEditorWidgetWrapper::field() const
 {
-  mConfig = config;
-  // If an editor widget was supplied, we can initialize this now
-  if ( mWidget )
-  {
-    mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue( this ) );
-    initWidget( mWidget );
-  }
+  if ( mFieldIdx < layer()->fields().count() )
+    return layer()->fields().at( mFieldIdx );
+  else
+    return QgsField();
 }
 
-QVariant QgsEditorWidgetWrapper::config( QString key, QVariant defaultVal )
+QVariant QgsEditorWidgetWrapper::defaultValue() const
 {
-  if ( mConfig.contains( key ) )
-  {
-    return mConfig[key];
-  }
-  return defaultVal;
-}
-
-QgsVectorLayer* QgsEditorWidgetWrapper::layer()
-{
-  return mLayer;
-}
-
-int QgsEditorWidgetWrapper::field()
-{
-  return mField;
+  return layer()->dataProvider()->defaultValue( mFieldIdx );
 }
 
 QgsEditorWidgetWrapper* QgsEditorWidgetWrapper::fromWidget( QWidget* widget )
 {
-  QVariant w = widget->property( "EWV2Wrapper" );
-
-  if ( w.isNull() )
-  {
-    return NULL;
-  }
-
-  return w.value<QgsEditorWidgetWrapper*>();
-}
-
-void QgsEditorWidgetWrapper::initWidget( QWidget* editor )
-{
-  Q_UNUSED( editor )
+  return qobject_cast<QgsEditorWidgetWrapper*>( widget->property( "EWV2Wrapper" ).value<QgsWidgetWrapper*>() );
 }
 
 void QgsEditorWidgetWrapper::setEnabled( bool enabled )
 {
-  if ( mWidget )
+  QWidget* wdg = widget();
+  if ( wdg )
   {
-    mWidget->setEnabled( enabled );
+    wdg->setEnabled( enabled );
   }
+}
+
+void QgsEditorWidgetWrapper::setFeature( const QgsFeature& feature )
+{
+  setValue( feature.attribute( mFieldIdx ) );
+}
+
+void QgsEditorWidgetWrapper::valueChanged( const QString& value )
+{
+  emit valueChanged( QVariant( value ) );
+}
+
+void QgsEditorWidgetWrapper::valueChanged( int value )
+{
+  emit valueChanged( QVariant( value ) );
+}
+
+void QgsEditorWidgetWrapper::valueChanged( double value )
+{
+  emit valueChanged( QVariant( value ) );
+}
+
+void QgsEditorWidgetWrapper::valueChanged( bool value )
+{
+  emit valueChanged( QVariant( value ) );
+}
+
+void QgsEditorWidgetWrapper::valueChanged( qlonglong value )
+{
+  emit valueChanged( QVariant( value ) );
+}
+
+void QgsEditorWidgetWrapper::valueChanged()
+{
+  emit valueChanged( value() );
 }

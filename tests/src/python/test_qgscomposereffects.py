@@ -12,30 +12,24 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import qgis
-from PyQt4.QtCore import QFileInfo
-from PyQt4.QtXml import QDomDocument
-from PyQt4.QtGui import (QPainter, QColor)
+from PyQt4.QtGui import QPainter, QColor
 
 from qgis.core import (QgsComposerShape,
-                       QgsRectangle,
                        QgsComposition,
                        QgsMapRenderer
-                     )
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest,
-                       expectedFailure
-                      )
+                       )
+from qgis.testing import (start_app,
+                          unittest
+                          )
+from utilities import unitTestDataPath
 from qgscompositionchecker import QgsCompositionChecker
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposerEffects(TestCase):
+class TestQgsComposerEffects(unittest.TestCase):
 
     def __init__(self, methodName):
         """Run once on class initialisation."""
@@ -62,24 +56,25 @@ class TestQgsComposerEffects(TestCase):
         self.mComposerRect2.setBlendMode(QPainter.CompositionMode_Multiply)
 
         checker = QgsCompositionChecker('composereffects_blend', self.mComposition)
+        checker.setControlPathPrefix("composer_effects")
         myTestResult, myMessage = checker.testComposition()
 
         self.mComposerRect2.setBlendMode(QPainter.CompositionMode_SourceOver)
 
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
     def testTransparency(self):
         """Test that transparency works for composer items."""
 
-        self.mComposerRect2.setTransparency( 50 )
+        self.mComposerRect2.setTransparency(50)
 
         checker = QgsCompositionChecker('composereffects_transparency', self.mComposition)
+        checker.setControlPathPrefix("composer_effects")
         myTestResult, myMessage = checker.testComposition()
 
-        self.mComposerRect2.setTransparency( 100 )
+        self.mComposerRect2.setTransparency(100)
 
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
 if __name__ == '__main__':
     unittest.main()
-

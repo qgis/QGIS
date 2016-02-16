@@ -1,0 +1,16 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>points</Name>
+    <ElementPath>points</ElementPath>
+    <!--POINT-->
+    <GeometryType>1</GeometryType>
+    <SRSName>EPSG:4326</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>9</FeatureCount>
+      <ExtentXMin>0.00000</ExtentXMin>
+      <ExtentXMax>8.00000</ExtentXMax>
+      <ExtentYMin>-5.00000</ExtentYMin>
+      <ExtentYMax>3.00000</ExtentYMax>
+    </DatasetSpecificInfo>
+  </GMLFeatureClass>
+</GMLFeatureClassList>

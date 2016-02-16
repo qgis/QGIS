@@ -27,12 +27,18 @@
 #include <QTimer>
 
 
-QgsOptionsDialogBase::QgsOptionsDialogBase( QString settingsKey, QWidget* parent, Qt::WFlags fl, QSettings* settings )
+QgsOptionsDialogBase::QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent, const Qt::WindowFlags& fl, QSettings* settings )
     : QDialog( parent, fl )
     , mOptsKey( settingsKey )
     , mInit( false )
+    , mOptListWidget( nullptr )
+    , mOptStackedWidget( nullptr )
+    , mOptSplitter( nullptr )
+    , mOptButtonBox( nullptr )
     , mDialogTitle( "" )
+    , mIconOnly( false )
     , mSettings( settings )
+    , mDelSettings( false )
 {
 }
 
@@ -50,10 +56,10 @@ QgsOptionsDialogBase::~QgsOptionsDialogBase()
     delete mSettings;
   }
 
-  mSettings = 0; // null the pointer (in case of outside settings obj)
+  mSettings = nullptr; // null the pointer (in case of outside settings obj)
 }
 
-void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, QString title )
+void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString& title )
 {
   // use pointer to app QSettings if no custom QSettings specified
   // custom QSettings object may be from Python plugin
@@ -141,7 +147,7 @@ void QgsOptionsDialogBase::setSettings( QSettings* settings )
   mDelSettings = false; // don't delete outside obj
 }
 
-void QgsOptionsDialogBase::restoreOptionsBaseUi( QString title )
+void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString& title )
 {
   if ( !mInit )
   {
@@ -218,7 +224,7 @@ void QgsOptionsDialogBase::updateWindowTitle()
   QListWidgetItem *curitem = mOptListWidget->currentItem();
   if ( curitem )
   {
-    setWindowTitle( QString( "%1 | %2" ).arg( mDialogTitle ).arg( curitem->text() ) );
+    setWindowTitle( QString( "%1 | %2" ).arg( mDialogTitle, curitem->text() ) );
   }
   else
   {
@@ -279,7 +285,7 @@ void QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved( int indx )
 
 void QgsOptionsDialogBase::warnAboutMissingObjects()
 {
-  QMessageBox::warning( 0, tr( "Missing objects" ),
+  QMessageBox::warning( nullptr, tr( "Missing objects" ),
                         tr( "Base options dialog could not be initialized.\n\n"
                             "Missing some of the .ui template objects:\n" )
                         + " mOptionsListWidget,\n mOptionsStackedWidget,\n mOptionsSplitter",

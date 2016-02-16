@@ -1,0 +1,53 @@
+<root>
+  <key>ImageClassifier</key>
+  <exec>otbcli_ImageClassifier</exec>
+  <longname>Image Classification</longname>
+  <group>Learning</group>
+  <description>Performs a classification of the input image according to a model file.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description>The input image to classify.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>mask</key>
+    <name>Input Mask</name>
+    <description>The mask allows restricting classification of the input image to the area where mask pixel values are greater than 0.</description>
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
+    <key>model</key>
+    <name>Model file</name>
+    <description>A model file (produced by TrainImagesClassifier application, maximal class label = 65535).</description>
+    <isFolder />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
+    <key>imstat</key>
+    <name>Statistics file</name>
+    <description>A XML file containing mean and standard deviation to center and reduce samples before classification (produced by ComputeImagesStatistics application).</description>
+    <isFolder />
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>Output Image</name>
+    <description>Output image containing class labels</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+</root>

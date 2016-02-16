@@ -1,4 +1,0 @@
-ViGrA - Fourier Transform (Real)
-vigra
-ParameterRaster|INPUT|Input|False
-OutputRaster|OUTPUT|Output

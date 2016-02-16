@@ -10,13 +10,13 @@ class QgsDetailedItemDelegate : QAbstractItemDelegate
 %End
 
   public:
-    QgsDetailedItemDelegate( QObject * parent = 0 );
+    QgsDetailedItemDelegate( QObject * parent /TransferThis/ = 0 );
     ~QgsDetailedItemDelegate();
-    /** reimplement for parent class */
+    /** Reimplement for parent class */
     void paint( QPainter * thePainter,
                 const QStyleOptionViewItem & theOption,
                 const QModelIndex & theIndex ) const;
-    /** reimplement for parent class */
+    /** Reimplement for parent class */
     QSize sizeHint( const QStyleOptionViewItem & theOption,
                     const QModelIndex & theIndex ) const;
 

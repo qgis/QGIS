@@ -20,22 +20,40 @@
 #define QGS_OFFLINE_EDITING_PLUGIN_GUI_H
 
 #include <QDialog>
-#include <ui_offline_editing_plugin_guibase.h>
+
+#include "ui_offline_editing_plugin_guibase.h"
+
+#include "qgslayertreemodel.h"
+
+class QgsSelectLayerTreeModel : public QgsLayerTreeModel
+{
+    Q_OBJECT
+  public:
+    QgsSelectLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
+    ~QgsSelectLayerTreeModel();
+
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    // bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+};
 
 class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditingPluginGuiBase
 {
     Q_OBJECT
 
   public:
-    QgsOfflineEditingPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    QgsOfflineEditingPluginGui( QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
     virtual ~QgsOfflineEditingPluginGui();
 
     QString offlineDataPath();
     QString offlineDbFile();
     QStringList& selectedLayerIds();
 
+  public slots:
+    /** Change the selection of layers in the list */
+    void selectAll();
+    void unSelectAll();
+
   private:
-    void updateLayerList( bool filterEditableLayers );
     void saveState();
     void restoreState();
 
@@ -44,8 +62,7 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     QStringList mSelectedLayerIds;
 
   private slots:
-    void on_butBrowse_clicked();
-    void on_checkboxShowEditableLayers_stateChanged( int state );
+    void on_mBrowseButton_clicked();
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested();

@@ -40,21 +40,21 @@ class CORE_EXPORT QgsProjectFileTransform
     //QgsProjectfiletransform() {}
     ~QgsProjectFileTransform() {}
 
-    /*! Create an instance from a Dom and a supplied version
+    /** Create an instance from a Dom and a supplied version
      * @param domDocument The Dom document to use as content
      * @param version Version number
      */
     QgsProjectFileTransform( QDomDocument & domDocument,
-                             QgsProjectVersion version )
+                             const QgsProjectVersion& version )
     {
       mDom = domDocument;
       mCurrentVersion = version;
     }
 
 
-    bool updateRevision( QgsProjectVersion version );
+    bool updateRevision( const QgsProjectVersion& version );
 
-    /*! Prints the contents via QgsDebugMsg()
+    /** Prints the contents via QgsDebugMsg()
      */
     void dump();
 
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsProjectFileTransform
     // Transformer functions below. Declare functions here,
     // define them in qgsprojectfiletransform.cpp and add them
     // to the transformArray with proper version number
-    void transformNull() {}; // Do absolutely nothing
+    void transformNull() {} // Do absolutely nothing
     void transform081to090();
     void transform091to0100();
     void transform0100to0110();
@@ -85,6 +85,7 @@ class CORE_EXPORT QgsProjectFileTransform
     void transform1100to1200();
     void transform1400to1500();
     void transform1800to1900();
+    void transform2200to2300();
 
     //helper functions
     static int rasterBandNumber( const QDomElement &rasterPropertiesElem, const QString &bandName, QgsRasterLayer *rlayer );

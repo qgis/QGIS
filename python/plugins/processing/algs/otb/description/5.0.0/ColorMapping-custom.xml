@@ -1,0 +1,65 @@
+<root>
+  <key>ColorMapping-custom</key>
+  <exec>otbcli_ColorMapping</exec>
+  <longname>ColorMapping (custom)</longname>
+  <group>Image Manipulation</group>
+  <description>Maps an input label image to 8-bits RGB using look-up tables.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description>Input image filename</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>Output Image</name>
+    <description>Output image filename</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>op</key>
+    <name>Operation</name>
+    <description>Selection of the operation to execute (default is : label to color).</description>
+    <options>
+      <choices>
+        <choice>labeltocolor</choice>
+        </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>method</key>
+    <name>Color mapping method</name>
+    <description>Selection of color mapping methods and their parameters.</description>
+    <options>
+      <choices>
+        <choice>custom</choice>
+        </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
+    <key>method.custom.lut</key>
+    <name>Look-up table file</name>
+    <description>An ASCII file containing the look-up table
+with one color per line
+(for instance the line '1 255 0 0' means that all pixels with label 1 will be replaced by RGB color 255 0 0)
+Lines beginning with a # are ignored</description>
+    <isFolder />
+    <optional>False</optional>
+  </parameter>
+  </root>

@@ -14,12 +14,12 @@
  ***************************************************************************/
 #include "qgsundowidget.h"
 
-#include "qgsmaplayer.h"
-#include "qgsmapcanvas.h"
-#include "qgslegend.h"
-
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgslayertreeview.h"
+#include "qgsmaplayer.h"
+#include "qgsmapcanvas.h"
+
 
 QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
     : QDockWidget( parent )
@@ -27,9 +27,9 @@ QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
   setupUi( this );
   setWidget( dockWidgetContents );
 
-  connect( undoButton, SIGNAL( clicked() ), this, SLOT( undo( ) ) );
-  connect( redoButton, SIGNAL( clicked() ), this, SLOT( redo( ) ) );
-  connect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
+  connect( undoButton, SIGNAL( clicked() ), this, SLOT( undo() ) );
+  connect( redoButton, SIGNAL( clicked() ), this, SLOT( redo() ) );
+  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
            this, SLOT( layerChanged( QgsMapLayer* ) ) );
 
   undoButton->setDisabled( true );
@@ -37,7 +37,7 @@ QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
   mMapCanvas = mapCanvas;
   mUndoView = new QUndoView( dockWidgetContents );
   gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
-  mUndoStack = NULL;
+  mUndoStack = nullptr;
   mPreviousIndex = 0;
   mPreviousCount = 0;
 }
@@ -45,7 +45,7 @@ QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
 
 void QgsUndoWidget::layerChanged( QgsMapLayer * layer )
 {
-  if ( layer != NULL )
+  if ( layer )
   {
     setUndoStack( layer->undoStack() );
   }
@@ -59,12 +59,12 @@ void QgsUndoWidget::layerChanged( QgsMapLayer * layer )
 
 void QgsUndoWidget::destroyStack()
 {
-  if ( mUndoStack != NULL )
+  if ( mUndoStack )
   {
     // do not clear undo stack here, just null pointer
-    mUndoStack = NULL;
+    mUndoStack = nullptr;
   }
-  if ( mUndoView != NULL )
+  if ( mUndoView )
   {
     mUndoView->close();
     delete mUndoView;
@@ -127,7 +127,7 @@ void QgsUndoWidget::indexChanged( int curIndx )
   mPreviousCount = curCount;
 }
 
-void QgsUndoWidget::undo( )
+void QgsUndoWidget::undo()
 {
   if ( mUndoStack )
     mUndoStack->undo();
@@ -141,11 +141,11 @@ void QgsUndoWidget::redo()
 
 void QgsUndoWidget::setUndoStack( QUndoStack* undoStack )
 {
-  if ( mUndoView != NULL )
+  if ( mUndoView )
   {
     mUndoView->close();
     delete mUndoView;
-    mUndoView = NULL;
+    mUndoView = nullptr;
   }
 
   mUndoStack = undoStack;
@@ -209,9 +209,9 @@ void QgsUndoWidget::setupUi( QDockWidget *UndoWidget )
 
 void QgsUndoWidget::retranslateUi( QDockWidget *UndoWidget )
 {
-  UndoWidget->setWindowTitle( QApplication::translate( "UndoWidget", "Undo/Redo", 0, QApplication::UnicodeUTF8 ) );
-  undoButton->setText( QApplication::translate( "UndoWidget", "Undo", 0, QApplication::UnicodeUTF8 ) );
-  redoButton->setText( QApplication::translate( "UndoWidget", "Redo", 0, QApplication::UnicodeUTF8 ) );
+  UndoWidget->setWindowTitle( QApplication::translate( "UndoWidget", "Undo/Redo Panel", nullptr, QApplication::UnicodeUTF8 ) );
+  undoButton->setText( QApplication::translate( "UndoWidget", "Undo", nullptr, QApplication::UnicodeUTF8 ) );
+  redoButton->setText( QApplication::translate( "UndoWidget", "Redo", nullptr, QApplication::UnicodeUTF8 ) );
   Q_UNUSED( UndoWidget );
 }
 

@@ -5,7 +5,7 @@ class QgsPenStyleComboBox : QComboBox
 %End
 
   public:
-    QgsPenStyleComboBox( QWidget* parent = NULL );
+    QgsPenStyleComboBox( QWidget* parent /TransferThis/ = NULL );
 
     Qt::PenStyle penStyle() const;
 
@@ -23,7 +23,7 @@ class QgsPenJoinStyleComboBox : QComboBox
 %End
 
   public:
-    QgsPenJoinStyleComboBox( QWidget* parent = NULL );
+    QgsPenJoinStyleComboBox( QWidget* parent /TransferThis/ = NULL );
 
     Qt::PenJoinStyle penJoinStyle() const;
 
@@ -37,7 +37,7 @@ class QgsPenCapStyleComboBox : QComboBox
 %End
 
   public:
-    QgsPenCapStyleComboBox( QWidget* parent = NULL );
+    QgsPenCapStyleComboBox( QWidget* parent /TransferThis/ = NULL );
 
     Qt::PenCapStyle penCapStyle() const;
 

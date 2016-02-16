@@ -9,7 +9,11 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual ~QgsSingleSymbolRendererV2();
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
+    //! @note available in python as symbolForFeature2
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
+
+    //! @note available in python as originalSymbolForFeature2
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
@@ -20,33 +24,27 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
     QgsSymbolV2* symbol() const;
     void setSymbol( QgsSymbolV2* s /Transfer/ );
 
-    //! @note added in 1.5
-    void setRotationField( QString fieldOrExpression );
-    //! @note added in 1.5
-    QString rotationField() const;
+    void setRotationField( const QString& fieldOrExpression ) /Deprecated/;
+    QString rotationField() const /Deprecated/;
 
-    //! @note added in 1.5
-    void setSizeScaleField( QString fieldOrExpression );
-    //! @note added in 1.5
+    void setSizeScaleField( const QString& fieldOrExpression );
     QString sizeScaleField() const;
 
-    //! @note added in 2.0
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
-    //! @note added in 2.0
     QgsSymbolV2::ScaleMethod scaleMethod() const;
 
     virtual QString dump() const;
 
-    virtual QgsFeatureRendererV2* clone() /Factory/;
+    virtual QgsSingleSymbolRendererV2* clone() const /Factory/;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
     static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType );
 
     //! returns bitwise OR-ed capabilities of the renderer
-    //! \note added in 2.0
     virtual int capabilities();
 
-    virtual QgsSymbolV2List symbols();
+    //! @note available in python as symbol2
+    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;
 
     //! create renderer from XML element
     static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
@@ -58,9 +56,19 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
     //! return a list of item text / symbol
-    //! @note: this method was added in version 1.5
     //! @note not available in python bindings
-    // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() );
+    // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = QString() );
+
+    //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
+    //! @note added in 2.6
+    virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
+
+    virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context );
+
+    //! creates a QgsSingleSymbolRendererV2 from an existing renderer.
+    //! @note added in 2.5
+    //! @returns a new renderer if the conversion was possible, otherwise 0.
+    static QgsSingleSymbolRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer ) /Factory/;
 
   private:
     QgsSingleSymbolRendererV2( const QgsSingleSymbolRendererV2 & );

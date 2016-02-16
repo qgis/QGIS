@@ -32,13 +32,14 @@ class GUI_EXPORT QgsSingleSymbolRendererV2Widget : public QgsRendererV2Widget
     QgsSingleSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
     ~QgsSingleSymbolRendererV2Widget();
 
-    virtual QgsFeatureRendererV2* renderer();
+    virtual QgsFeatureRendererV2* renderer() override;
+
+    virtual void setMapCanvas( QgsMapCanvas* canvas ) override;
 
   public slots:
     void changeSingleSymbol();
 
-    void rotationFieldChanged( QString fldName );
-    void sizeScaleFieldChanged( QString fldName );
+    void sizeScaleFieldChanged( const QString& fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
 
     void showSymbolLevels();
@@ -48,8 +49,6 @@ class GUI_EXPORT QgsSingleSymbolRendererV2Widget : public QgsRendererV2Widget
     QgsSingleSymbolRendererV2* mRenderer;
     QgsSymbolV2SelectorDialog* mSelector;
     QgsSymbolV2* mSingleSymbol;
-
-    QgsRendererV2DataDefinedMenus* mDataDefinedMenus;
 };
 
 

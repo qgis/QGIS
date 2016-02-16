@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _QGSVECTORFILEWRITER_H_
-#define _QGSVECTORFILEWRITER_H_
+#ifndef QGSVECTORFILEWRITER_H
+#define QGSVECTORFILEWRITER_H
 
 #include "qgsvectorlayer.h"
 #include "qgsfield.h"
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsVectorFileWriter
     class SetOption : public Option
     {
       public:
-        SetOption( const QString& docString, QStringList values, const QString& defaultValue, bool allowNone = false )
+        SetOption( const QString& docString, const QStringList& values, const QString& defaultValue, bool allowNone = false )
             : Option( docString, Set )
             , values( values.toSet() )
             , defaultValue( defaultValue )
@@ -107,10 +107,10 @@ class CORE_EXPORT QgsVectorFileWriter
         {}
     };
 
-    class HiddenOption: public Option
+    class HiddenOption : public Option
     {
       public:
-        HiddenOption( const QString& value )
+        explicit HiddenOption( const QString& value )
             : Option( "", Hidden )
             , mValue( value )
         {}
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsVectorFileWriter
       MetaData()
       {}
 
-      MetaData( QString longName, QString trLongName, QString glob, QString ext, QMap<QString, Option*> driverOptions, QMap<QString, Option*> layerOptions )
+      MetaData( const QString& longName, const QString& trLongName, const QString& glob, const QString& ext, const QMap<QString, Option*>& driverOptions, const QMap<QString, Option*>& layerOptions )
           : longName( longName )
           , trLongName( trLongName )
           , glob( glob )
@@ -148,12 +148,11 @@ class CORE_EXPORT QgsVectorFileWriter
       ErrCreateLayer,
       ErrAttributeTypeUnsupported,
       ErrAttributeCreationFailed,
-      ErrProjection,  // added in 1.5
-      ErrFeatureWriteFailed, // added in 1.6
-      ErrInvalidLayer, // added in 2.0
+      ErrProjection,
+      ErrFeatureWriteFailed,
+      ErrInvalidLayer,
     };
 
-    //added in 2.0
     enum SymbologyExport
     {
       NoSymbology = 0, //export only data
@@ -162,137 +161,186 @@ class CORE_EXPORT QgsVectorFileWriter
     };
 
     /** Write contents of vector layer to an (OGR supported) vector formt
-        @note: this method was added in version 1.5
-    @param layer layer to write
-    @param fileName file name to write to
-    @param fileEncoding encoding to use
-    @param destCRS pointer to CRS to reproject exported geometries to
-    @param driverName OGR driver to use
-    @param onlySelected write only selected features of layer
-    @param errorMessage pointer to buffer fo error message
-    @param datasourceOptions list of OGR data source creation options
-    @param layerOptions list of OGR layer creation options
-    @param skipAttributeCreation only write geometries
-    @param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
-    @param symbologyExport symbology to export
-    @param symbologyScale scale of symbology
-    @param filterExtent if not a null pointer, only features intersecting the extent will be saved
-    */
+     * @param layer layer to write
+     * @param fileName file name to write to
+     * @param fileEncoding encoding to use
+     * @param destCRS pointer to CRS to reproject exported geometries to
+     * @param driverName OGR driver to use
+     * @param onlySelected write only selected features of layer
+     * @param errorMessage pointer to buffer fo error message
+     * @param datasourceOptions list of OGR data source creation options
+     * @param layerOptions list of OGR layer creation options
+     * @param skipAttributeCreation only write geometries
+     * @param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
+     * @param symbologyExport symbology to export
+     * @param symbologyScale scale of symbology
+     * @param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
+     * @param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter
+     * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
+     * @param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
+     * @param includeZ set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
+     */
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,
                                             const QString& fileEncoding,
                                             const QgsCoordinateReferenceSystem *destCRS,
                                             const QString& driverName = "ESRI Shapefile",
                                             bool onlySelected = false,
-                                            QString *errorMessage = 0,
-                                            const QStringList &datasourceOptions = QStringList(),  // added in 1.6
-                                            const QStringList &layerOptions = QStringList(),  // added in 1.6
-                                            bool skipAttributeCreation = false, // added in 1.6
-                                            QString *newFilename = 0, // added in 1.9
-                                            SymbologyExport symbologyExport = NoSymbology, //added in 2.0
-                                            double symbologyScale = 1.0, // added in 2.0
-                                            const QgsRectangle* filterExtent = 0 // added in 2.4
+                                            QString *errorMessage = nullptr,
+                                            const QStringList &datasourceOptions = QStringList(),
+                                            const QStringList &layerOptions = QStringList(),
+                                            bool skipAttributeCreation = false,
+                                            QString *newFilename = nullptr,
+                                            SymbologyExport symbologyExport = NoSymbology,
+                                            double symbologyScale = 1.0,
+                                            const QgsRectangle* filterExtent = nullptr,
+                                            QgsWKBTypes::Type overrideGeometryType = QgsWKBTypes::Unknown,
+                                            bool forceMulti = false,
+                                            bool includeZ = false
                                           );
 
-    //! @note added in v2.2
+    /** Writes a layer out to a vector file.
+     * @param layer layer to write
+     * @param fileName file name to write to
+     * @param fileEncoding encoding to use
+     * @param ct
+     * @param driverName OGR driver to use
+     * @param onlySelected write only selected features of layer
+     * @param errorMessage pointer to buffer fo error message
+     * @param datasourceOptions list of OGR data source creation options
+     * @param layerOptions list of OGR layer creation options
+     * @param skipAttributeCreation only write geometries
+     * @param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
+     * @param symbologyExport symbology to export
+     * @param symbologyScale scale of symbology
+     * @param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
+     * @param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter
+     * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
+     * @param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
+     * @param includeZ set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
+     * @note added in v2.2
+     */
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,
                                             const QString& fileEncoding,
                                             const QgsCoordinateTransform* ct,
                                             const QString& driverName = "ESRI Shapefile",
                                             bool onlySelected = false,
-                                            QString *errorMessage = 0,
+                                            QString *errorMessage = nullptr,
                                             const QStringList &datasourceOptions = QStringList(),
                                             const QStringList &layerOptions = QStringList(),
                                             bool skipAttributeCreation = false,
-                                            QString *newFilename = 0,
+                                            QString *newFilename = nullptr,
                                             SymbologyExport symbologyExport = NoSymbology,
                                             double symbologyScale = 1.0,
-                                            const QgsRectangle* filterExtent = 0 // added in 2.4
+                                            const QgsRectangle* filterExtent = nullptr,
+                                            QgsWKBTypes::Type overrideGeometryType = QgsWKBTypes::Unknown,
+                                            bool forceMulti = false,
+                                            bool includeZ = false
                                           );
 
-    /** create shapefile and initialize it */
+    /** Create a new vector file writer */
     QgsVectorFileWriter( const QString& vectorFileName,
                          const QString& fileEncoding,
                          const QgsFields& fields,
                          QGis::WkbType geometryType,
                          const QgsCoordinateReferenceSystem* srs,
                          const QString& driverName = "ESRI Shapefile",
-                         const QStringList &datasourceOptions = QStringList(), // added in 1.6
-                         const QStringList &layerOptions = QStringList(), // added in 1.6
-                         QString *newFilename = 0, // added in 1.9
-                         SymbologyExport symbologyExport = NoSymbology//added in 2.0
+                         const QStringList &datasourceOptions = QStringList(),
+                         const QStringList &layerOptions = QStringList(),
+                         QString *newFilename = nullptr,
+                         SymbologyExport symbologyExport = NoSymbology
                        );
 
-    /**Returns map with format filter string as key and OGR format key as value*/
+    /** Create a new vector file writer */
+    QgsVectorFileWriter( const QString& vectorFileName,
+                         const QString& fileEncoding,
+                         const QgsFields& fields,
+                         QgsWKBTypes::Type geometryType,
+                         const QgsCoordinateReferenceSystem* srs,
+                         const QString& driverName = "ESRI Shapefile",
+                         const QStringList &datasourceOptions = QStringList(),
+                         const QStringList &layerOptions = QStringList(),
+                         QString *newFilename = nullptr,
+                         SymbologyExport symbologyExport = NoSymbology
+                       );
+
+    /** Returns map with format filter string as key and OGR format key as value*/
     static QMap< QString, QString> supportedFiltersAndFormats();
 
-    /**Returns driver list that can be used for dialogs. It contains all OGR drivers
+    /** Returns driver list that can be used for dialogs. It contains all OGR drivers
      * + some additional internal QGIS driver names to distinguish between more
      * supported formats of the same OGR driver
      */
     static QMap< QString, QString> ogrDriverList();
 
-    /**Returns filter string that can be used for dialogs*/
+    /** Returns filter string that can be used for dialogs*/
     static QString fileFilterString();
 
-    /**Creates a filter for an OGR driver key*/
+    /** Creates a filter for an OGR driver key*/
     static QString filterForDriver( const QString& driverName );
 
-    /**Converts codec name to string passed to ENCODING layer creation option of OGR Shapefile*/
+    /** Converts codec name to string passed to ENCODING layer creation option of OGR Shapefile*/
     static QString convertCodecNameForEncodingOption( const QString &codecName );
 
-    /** checks whether there were any errors in constructor */
+    /** Checks whether there were any errors in constructor */
     WriterError hasError();
 
-    /** retrieves error message
-     * @note added in 1.5
-     */
+    /** Retrieves error message */
     QString errorMessage();
 
-    /** add feature to the currently opened shapefile */
-    bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = 0, QGis::UnitType outputUnit = QGis::Meters );
+    /** Add feature to the currently opened data source */
+    bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = nullptr, QGis::UnitType outputUnit = QGis::Meters );
 
     //! @note not available in python bindings
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
 
-    /** close opened shapefile for writing */
+    /** Close opened shapefile for writing */
     ~QgsVectorFileWriter();
 
     /** Delete a shapefile (and its accompanying shx / dbf / prf)
      * @param theFileName /path/to/file.shp
      * @return bool true if the file was deleted successfully
      */
-    static bool deleteShapeFile( QString theFileName );
+    static bool deleteShapeFile( const QString& theFileName );
 
     SymbologyExport symbologyExport() const { return mSymbologyExport; }
     void setSymbologyExport( SymbologyExport symExport ) { mSymbologyExport = symExport; }
 
     double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
-    void setSymbologyScaleDenominator( double d ) { mSymbologyScaleDenominator = d; }
+    void setSymbologyScaleDenominator( double d );
 
     static bool driverMetadata( const QString& driverName, MetaData& driverMetadata );
 
+    /**
+     * Get the ogr geometry type from an internal QGIS wkb type enum.
+     *
+     * Will drop M values and convert Z to 2.5D where required.
+     * @note not available in python bindings
+     */
+    static OGRwkbGeometryType ogrTypeFromWkbType( QgsWKBTypes::Type type );
+
   protected:
     //! @note not available in python bindings
-    OGRGeometryH createEmptyGeometry( QGis::WkbType wkbType );
+    OGRGeometryH createEmptyGeometry( QgsWKBTypes::Type wkbType );
 
     OGRDataSourceH mDS;
     OGRLayerH mLayer;
+    OGRSpatialReferenceH mOgrRef;
     OGRGeometryH mGeom;
 
     QgsFields mFields;
 
-    /** contains error value if construction was not successful */
+    /** Contains error value if construction was not successful */
     WriterError mError;
     QString mErrorMessage;
 
     QTextCodec *mCodec;
 
-    /** geometry type which is being used */
-    QGis::WkbType mWkbType;
+    /** Geometry type which is being used */
+    QgsWKBTypes::Type mWkbType;
 
-    /** map attribute indizes to OGR field indexes */
+    /** Map attribute indizes to OGR field indexes */
     QMap<int, int> mAttrIdxToOgrIdx;
 
     SymbologyExport mSymbologyExport;
@@ -301,30 +349,39 @@ class CORE_EXPORT QgsVectorFileWriter
     QMap< QgsSymbolLayerV2*, QString > mSymbolLayerTable;
 #endif
 
-    /**Scale for symbology export (e.g. for symbols units in map units)*/
+    /** Scale for symbology export (e.g. for symbols units in map units)*/
     double mSymbologyScaleDenominator;
 
+    QString mOgrDriverName;
+
   private:
+    void init( QString vectorFileName, QString fileEncoding, const QgsFields& fields, QgsWKBTypes::Type geometryType, const QgsCoordinateReferenceSystem* srs, const QString& driverName, QStringList datasourceOptions, QStringList layerOptions, QString* newFilename );
+
+    QgsRenderContext mRenderContext;
+
     static QMap<QString, MetaData> initMetaData();
     /**
      * @deprecated
      */
-    static bool driverMetadata( QString driverName, QString &longName, QString &trLongName, QString &glob, QString &ext );
+    static bool driverMetadata( const QString& driverName, QString &longName, QString &trLongName, QString &glob, QString &ext );
     void createSymbolLayerTable( QgsVectorLayer* vl,  const QgsCoordinateTransform* ct, OGRDataSourceH ds );
     OGRFeatureH createFeature( QgsFeature& feature );
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
 
-    /**Writes features considering symbol level order*/
-    WriterError exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit, const QgsCoordinateTransform* ct, QString* errorMessage = 0 );
+    /** Writes features considering symbol level order*/
+    WriterError exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit, const QgsCoordinateTransform* ct, QString* errorMessage = nullptr );
     double mmScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
     double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
-    QgsRenderContext renderContext() const;
-    void startRender( QgsVectorLayer* vl ) const;
-    void stopRender( QgsVectorLayer* vl ) const;
+
+    void startRender( QgsVectorLayer* vl );
+    void stopRender( QgsVectorLayer* vl );
     QgsFeatureRendererV2* symbologyRenderer( QgsVectorLayer* vl ) const;
-    /**Adds attributes needed for classification*/
+    /** Adds attributes needed for classification*/
     void addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList );
     static QMap<QString, MetaData> sDriverMetadata;
+
+    QgsVectorFileWriter( const QgsVectorFileWriter& rh );
+    QgsVectorFileWriter& operator=( const QgsVectorFileWriter& rh );
 };
 
 #endif

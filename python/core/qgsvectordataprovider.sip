@@ -13,49 +13,58 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     enum Capability
     {
-      /** provider has no capabilities */
-      NoCapabilities =                     0,
-      /** allows adding features */
-      AddFeatures =                        1,
-      /** allows deletion of features */
-      DeleteFeatures =               2,
-      /** allows modification of attribute values */
-      ChangeAttributeValues =        4,
-      /** allows addition of new attributes (fields) */
-      AddAttributes =                8,
-      /** allows deletion of attributes (fields) */
-      DeleteAttributes =             16,
+      /** Provider has no capabilities */
+      NoCapabilities,
+      /** Allows adding features */
+      AddFeatures,
+      /** Allows deletion of features */
+      DeleteFeatures,
+      /** Allows modification of attribute values */
+      ChangeAttributeValues,
+      /** Allows addition of new attributes (fields) */
+      AddAttributes,
+      /** Allows deletion of attributes (fields) */
+      DeleteAttributes,
       /** DEPRECATED - do not use */
-      SaveAsShapefile =              32,
-      /** allows creation of spatial index */
-      CreateSpatialIndex =           64,
-      /** fast access to features using their ID */
-      SelectAtId =                   128,
-      /** allows modifications of geometries */
-      ChangeGeometries =             256,
+      SaveAsShapefile,
+      /** Allows creation of spatial index */
+      CreateSpatialIndex,
+      /** Fast access to features using their ID */
+      SelectAtId,
+      /** Allows modifications of geometries */
+      ChangeGeometries,
       /** DEPRECATED - do not use */
-      SelectGeometryAtId =           512,
+      SelectGeometryAtId,
       /** DEPRECATED - do not use */
-      RandomSelectGeometryAtId =     1024,
+      RandomSelectGeometryAtId,
       /** DEPRECATED - do not use */
-      SequentialSelectGeometryAtId = 2048,
-      CreateAttributeIndex =         4096,
-      /** allows user to select encoding */
-      SelectEncoding =               8192,
-      /** supports simplification of geometries on provider side according to a distance tolerance */
-      SimplifyGeometries =           32768,
-      /** supports topological simplification of geometries on provider side according to a distance tolerance */
-      SimplifyGeometriesWithTopologicalValidation = 65536,
+      SequentialSelectGeometryAtId,
+      /** DEPRECATED - do not use */
+      CreateAttributeIndex,
+      /** Allows user to select encoding */
+      SelectEncoding,
+      /** Supports simplification of geometries on provider side according to a distance tolerance */
+      SimplifyGeometries,
+      /** Supports topological simplification of geometries on provider side according to a distance tolerance */
+      SimplifyGeometriesWithTopologicalValidation,
+      /** Supports transactions*/
+      TransactionSupport,
+      /** Supports circular geometry types (circularstring, compoundcurve, curvepolygon)*/
+      CircularGeometries,
+      /** Supports joint updates for attributes and geometry
+       * Providers supporting this should still define ChangeGeometries | ChangeAttributeValues
+       */
+      ChangeFeatures
     };
 
-    /** bitmask of all provider's editing capabilities */
+    /** Bitmask of all provider's editing capabilities */
     static const int EditingCapabilities;
 
     /**
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    QgsVectorDataProvider( QString uri = QString() );
+    QgsVectorDataProvider( const QString& uri = QString() );
 
     /**
      * Destructor
@@ -105,7 +114,7 @@ class QgsVectorDataProvider : QgsDataProvider
     /**
      * Return a map of indexes with field names for this layer
      * @return map of fields
-     * @see QgsFieldMap
+     * @see QgsFields
      */
     virtual const QgsFields &fields() const = 0;
 
@@ -139,7 +148,7 @@ class QgsVectorDataProvider : QgsDataProvider
      * Return unique values of an attribute
      * @param index the index of the attribute
      * @param uniqueValues values reference to the list to fill
-     * @param limit maxmum number of the values to return (added in 1.4)
+     * @param limit maxmum number of the values to return
      *
      * Default implementation simply iterates the features
      */
@@ -150,7 +159,6 @@ class QgsVectorDataProvider : QgsDataProvider
      * or if the given attribute is not an enum type.
      * @param index the index of the attribute
      * @param enumList reference to the list to fill
-     * @note: added in version 1.2
      */
     virtual void enumValues( int index, QStringList& enumList /Out/ );
 
@@ -171,7 +179,6 @@ class QgsVectorDataProvider : QgsDataProvider
      * Adds new attributes
      * @param attributes list of new attributes
      * @return true in case of success and false in case of failure
-     * @note added in 1.2
      */
     virtual bool addAttributes( const QList<QgsField> &attributes );
 
@@ -190,6 +197,17 @@ class QgsVectorDataProvider : QgsDataProvider
     virtual bool changeAttributeValues( const QMap<qint64, QMap<int, QVariant> > &attr_map );
 
     /**
+     * Changes attribute values and geometries of existing features.
+     * @param attr_map a map containing changed attributes
+     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
+     *                       that will have their geometries changed.
+     *                       The second map parameter being the new geometries themselves
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool changeFeatures( const QMap<qint64, QMap<int, QVariant> > &attr_map,
+                                 const QMap<qint64, QgsGeometry> &geometry_map );
+
+    /**
      * Returns the default value for field specified by @c fieldId
      */
     virtual QVariant defaultValue( int fieldId );
@@ -201,7 +219,7 @@ class QgsVectorDataProvider : QgsDataProvider
      *                       The second map parameter being the new geometries themselves
      * @return               True in case of success and false in case of failure
      */
-    virtual bool changeGeometryValues( QMap<qint64, QgsGeometry> & geometry_map );
+    virtual bool changeGeometryValues( const QMap<qint64, QgsGeometry> &geometry_map );
 
     /**
      * Creates a spatial index on the datasource (if supported by the provider type).
@@ -209,7 +227,7 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual bool createSpatialIndex();
 
-    /**Create an attribute index on the datasource*/
+    /** Create an attribute index on the datasource*/
     virtual bool createAttributeIndex( int field );
 
     /** Returns a bitmask containing the supported capabilities
@@ -251,7 +269,6 @@ class QgsVectorDataProvider : QgsDataProvider
 
     /**
      * Return list of indexes of fields that make up the primary key
-     * @note added in 2.0
      */
     virtual QList<int> pkAttributeIndexes();
 
@@ -262,13 +279,12 @@ class QgsVectorDataProvider : QgsDataProvider
 
     /**
      * check if provider supports type of field
-     * @note added in 1.2
      */
     bool supportedType( const QgsField &field ) const;
 
     struct NativeType
     {
-      NativeType( QString typeDesc, QString typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0 );
+      NativeType( const QString& typeDesc, const QString& typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0 );
 
       QString mTypeDesc;
       QString mTypeName;
@@ -281,13 +297,13 @@ class QgsVectorDataProvider : QgsDataProvider
 
     /**
      * Returns the names of the supported types
-     * @note added in 1.2
      */
     const QList< QgsVectorDataProvider::NativeType > &nativeTypes() const;
 
-    /** Returns true if the provider is strict about the type of inserted features
-          (e.g. no multipolygon in a polygon layer)
-          @note: added in version 1.4*/
+    /**
+     * Returns true if the provider is strict about the type of inserted features
+     * (e.g. no multipolygon in a polygon layer)
+     */
     bool doesStrictFeatureTypeCheck() const;
 
     /** Returns a list of available encodings */
@@ -295,19 +311,16 @@ class QgsVectorDataProvider : QgsDataProvider
 
     /**
      * Provider has errors to report
-     * @note added in 1.7
      */
     bool hasErrors();
 
     /**
      * Clear recorded errors
-     * @note added in 1.7
      */
     void clearErrors();
 
     /**
      * Get recorded errors
-     * @note added in 1.7
      */
     QStringList errors();
 
@@ -318,11 +331,30 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual bool isSaveAndLoadStyleToDBSupported();
 
-    static QVariant convertValue( QVariant::Type type, QString value );
+    static QVariant convertValue( QVariant::Type type, const QString& value );
 
-protected:
+    /**
+     * Returns the transaction this data provider is included in, if any.
+     */
+    virtual QgsTransaction* transaction() const;
+
+    /**
+     * Forces a reload of the underlying datasource if the provider implements this
+     * method.
+     * In particular on the OGR provider, a pooled connection will be invalidated.
+     * This forces QGIS to reopen a file or connection.
+     * This can be required if the underlying file is replaced.
+     */
+    virtual void forceReload();
+
+    /**
+     * Get the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
+     */
+    virtual QSet<QString> layerDependencies() const;
+
+  protected:
     void clearMinMaxCache();
     void fillMinMaxCache();
 
-    void pushError( QString msg );
+    void pushError( const QString& msg );
 };

@@ -1,5 +1,5 @@
 
-/**  Raster pipe */
+/** Raster pipe */
 
 class QgsRasterPipe
 {
@@ -13,18 +13,19 @@ class QgsRasterPipe
     // Role of known interfaces
     enum Role
     {
-      UnknownRole   = 0,
-      ProviderRole  = 1,
-      RendererRole  = 2,
-      BrightnessRole = 3,
-      ResamplerRole = 4,
-      ProjectorRole = 5,
-      NullerRole = 6,
-      HueSaturationRole = 7
+      UnknownRole,
+      ProviderRole,
+      RendererRole,
+      BrightnessRole,
+      ResamplerRole,
+      ProjectorRole,
+      NullerRole,
+      HueSaturationRole,
     };
 
     QgsRasterPipe();
-    QgsRasterPipe( const QgsRasterPipe& thePipe );
+    //made private for python bindings
+    //QgsRasterPipe( const QgsRasterPipe& thePipe );
 
     ~QgsRasterPipe();
 
@@ -79,5 +80,9 @@ class QgsRasterPipe
     QgsHueSaturationFilter * hueSaturationFilter() const;
     QgsRasterProjector * projector() const;
     QgsRasterNuller * nuller() const;
+
+  private:
+
+    QgsRasterPipe( const QgsRasterPipe& thePipe );
 
 };

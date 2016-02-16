@@ -107,6 +107,11 @@
          </item>
          <item>
           <property name="text">
+           <string>Developers Map</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Translators</string>
           </property>
          </item>
@@ -168,7 +173,7 @@
                 </size>
                </property>
                <property name="pixmap">
-                <pixmap resource="../../images/images.qrc">:/images/icons/qgis-icon-60x60.png</pixmap>
+                <pixmap>:/images/icons/qgis-icon-60x60.png</pixmap>
                </property>
                <property name="scaledContents">
                 <bool>false</bool>
@@ -191,13 +196,14 @@ p, li { white-space: pre-wrap; }
             </layout>
            </item>
            <item>
-            <widget class="QWebView" name="txtVersion" native="true">
-             <property name="url" stdset="0">
-              <url>
-               <string>about:blank</string>
-              </url>
+            <widget class="QTextBrowser" name="txtVersion">
+             <property name="openExternalLinks">
+              <bool>true</bool>
              </property>
-            </widget>
+             <property name="openLinks">
+              <bool>true</bool>
+             </property>
+	    </widget>
            </item>
            <item>
             <spacer name="spacer_2">
@@ -318,7 +324,7 @@ p, li { white-space: pre-wrap; }
               <string/>
              </property>
              <property name="pixmap">
-              <pixmap resource="../../images/images.qrc">:/images/last-hackfest.jpg</pixmap>
+              <pixmap>:/images/last-hackfest.jpg</pixmap>
              </property>
              <property name="scaledContents">
               <bool>false</bool>
@@ -336,7 +342,7 @@ p, li { white-space: pre-wrap; }
               </font>
              </property>
              <property name="text">
-              <string>Essen (Germany), Developer meeting 2012</string>
+              <string>Essen (Germany), Developer meeting 2014</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
@@ -359,14 +365,24 @@ p, li { white-space: pre-wrap; }
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="developersMap">
+          <layout class="QGridLayout" name="gridLayout_2">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QgsWebView" name="developersMapView"/>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="page_5">
           <layout class="QVBoxLayout" name="verticalLayout_8">
            <property name="margin">
             <number>0</number>
            </property>
            <item>
-            <widget class="QWebView" name="txtTranslators" native="true">
-             <property name="url" stdset="0">
+            <widget class="QgsWebView" name="txtTranslators">
+             <property name="url">
               <url>
                <string>about:blank</string>
               </url>
@@ -443,14 +459,12 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
+   <class>QgsWebView</class>
    <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
+   <header>qgswebview.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>mOptionsListWidget</sender>

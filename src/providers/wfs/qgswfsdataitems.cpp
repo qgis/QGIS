@@ -25,11 +25,11 @@
 
 
 QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSourceURI uri, QString featureType, QString title, QString crsString )
-    : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Vector, "WFS" )
+    : QgsLayerItem( parent, title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, "WFS" )
 {
   mUri = QgsWFSCapabilities( uri.encodedUri() ).uriGetFeature( featureType, crsString );
-  mPopulated = true;
-  mIcon = QgsApplication::getThemeIcon( "mIconWfs.svg" );
+  setState( Populated );
+  mIconName = "mIconConnect.png";
 }
 
 QgsWFSLayerItem::~QgsWFSLayerItem()
@@ -38,10 +38,13 @@ QgsWFSLayerItem::~QgsWFSLayerItem()
 
 ////
 
-QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path ), mName( name ), mCapabilities( NULL )
+QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
+    : QgsDataCollectionItem( parent, name, path )
+    , mUri( uri )
+    , mCapabilities( nullptr )
+    , mGotCapabilities( false )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconWfs.svg" );
+  mIconName = "mIconWfs.svg";
 }
 
 QgsWFSConnectionItem::~QgsWFSConnectionItem()
@@ -52,12 +55,11 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
 {
   mGotCapabilities = false;
 
-  QString encodedUri = mPath;
   QgsDataSourceURI uri;
-  uri.setEncodedUri( encodedUri );
-  QgsDebugMsg( "encodedUri = " + encodedUri );
+  uri.setEncodedUri( mUri );
+  QgsDebugMsg( "mUri = " + mUri );
 
-  mCapabilities = new QgsWFSCapabilities( encodedUri );
+  mCapabilities = new QgsWFSCapabilities( mUri );
   connect( mCapabilities, SIGNAL( gotCapabilities() ), this, SLOT( gotCapabilities() ) );
 
   mCapabilities->requestCapabilities();
@@ -71,7 +73,7 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
   if ( mCapabilities->errorCode() == QgsWFSCapabilities::NoError )
   {
     QgsWFSCapabilities::GetCapabilities caps = mCapabilities->capabilities();
-    foreach ( const QgsWFSCapabilities::FeatureType& featureType, caps.featureTypes )
+    Q_FOREACH ( const QgsWFSCapabilities::FeatureType& featureType, caps.featureTypes )
     {
       //QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, featureType.name, featureType.title );
       QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, uri, featureType.name, featureType.title, featureType.crslist.first() );
@@ -85,7 +87,7 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
   }
 
   mCapabilities->deleteLater();
-  mCapabilities = NULL;
+  mCapabilities = nullptr;
 
   return layers;
 }
@@ -112,7 +114,7 @@ QList<QAction*> QgsWFSConnectionItem::actions()
 
 void QgsWFSConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-wfs/", mName );
+  QgsNewHttpConnection nc( nullptr, "/Qgis/connections-wfs/", mName );
   nc.setWindowTitle( tr( "Modify WFS connection" ) );
 
   if ( nc.exec() )
@@ -137,8 +139,8 @@ void QgsWFSConnectionItem::deleteConnection()
 QgsWFSRootItem::QgsWFSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconWfs.svg" );
-
+  mCapabilities |= Fast;
+  mIconName = "mIconWfs.svg";
   populate();
 }
 
@@ -150,11 +152,11 @@ QVector<QgsDataItem*> QgsWFSRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 
-  foreach ( QString connName, QgsOWSConnection::connectionList( "WFS" ) )
+  Q_FOREACH ( const QString& connName, QgsOWSConnection::connectionList( "WFS" ) )
   {
     QgsOWSConnection connection( "WFS", connName );
-    QgsDataItem * conn = new QgsWFSConnectionItem( this, connName, connection.uri().encodedUri() );
-    conn->setIcon( QgsApplication::getThemeIcon( "mIconConnect.png" ) );
+    QString path = "wfs:/" + connName;
+    QgsDataItem * conn = new QgsWFSConnectionItem( this, connName, path, connection.uri().encodedUri() );
     connections.append( conn );
   }
   return connections;
@@ -173,7 +175,7 @@ QList<QAction*> QgsWFSRootItem::actions()
 
 QWidget * QgsWFSRootItem::paramWidget()
 {
-  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( 0, 0, true );
+  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, nullptr, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }
@@ -185,7 +187,7 @@ void QgsWFSRootItem::connectionsChanged()
 
 void QgsWFSRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-wfs/" );
+  QgsNewHttpConnection nc( nullptr, "/Qgis/connections-wfs/" );
   nc.setWindowTitle( tr( "Create a new WFS connection" ) );
 
   if ( nc.exec() )
@@ -196,7 +198,7 @@ void QgsWFSRootItem::newConnection()
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN QgsWFSSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
+QGISEXTERN QgsWFSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
 {
   return new QgsWFSSourceSelect( parent, fl );
 }
@@ -214,5 +216,16 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     return new QgsWFSRootItem( parentItem, "WFS", "wfs:" );
   }
 
-  return new QgsWFSConnectionItem( parentItem, "WFS", thePath );
+  // path schema: wfs:/connection name (used by OWS)
+  if ( thePath.startsWith( "wfs:/" ) )
+  {
+    QString connectionName = thePath.split( '/' ).last();
+    if ( QgsOWSConnection::connectionList( "WFS" ).contains( connectionName ) )
+    {
+      QgsOWSConnection connection( "WFS", connectionName );
+      return new QgsWFSConnectionItem( parentItem, "WMS", thePath, connection.uri().encodedUri() );
+    }
+  }
+
+  return nullptr;
 }

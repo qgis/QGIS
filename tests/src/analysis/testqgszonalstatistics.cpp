@@ -14,23 +14,28 @@
  ***************************************************************************/
 
 #include <QDir>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgszonalstatistics.h"
+#include "qgsmaplayerregistry.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the zonal statistics class
  */
-class TestQgsZonalStatistics: public QObject
+class TestQgsZonalStatistics : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsZonalStatistics();
+
   private slots:
     void initTestCase();
-    void cleanupTestCase() {};
-    void init() {};
-    void cleanup() {};
+    void cleanupTestCase();
+    void init() {}
+    void cleanup() {}
 
     void testStatistics();
 
@@ -39,6 +44,12 @@ class TestQgsZonalStatistics: public QObject
     QString mRasterPath;
 };
 
+TestQgsZonalStatistics::TestQgsZonalStatistics()
+    : mVectorLayer( nullptr )
+{
+
+}
+
 void TestQgsZonalStatistics::initTestCase()
 {
   QgsApplication::init();
@@ -46,8 +57,8 @@ void TestQgsZonalStatistics::initTestCase()
   QgsApplication::showSettings();
 
   QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataPath = myDataPath + QDir::separator() + "zonalstatistics" + QDir::separator();
-  QString myTempPath = QDir::tempPath() + QDir::separator();
+  QString myTestDataPath = myDataPath + "/zonalstatistics/";
+  QString myTempPath = QDir::tempPath() + '/';
 
   // copy test data to temp directory
   QDir testDir( myTestDataPath );
@@ -59,13 +70,21 @@ void TestQgsZonalStatistics::initTestCase()
   }
 
   mVectorLayer = new QgsVectorLayer( myTempPath + "polys.shp", "poly", "ogr" );
+  QgsMapLayerRegistry::instance()->addMapLayers(
+    QList<QgsMapLayer *>() << mVectorLayer );
+
   mRasterPath = myTempPath + "edge_problem.asc";
+}
+
+void TestQgsZonalStatistics::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
 }
 
 void TestQgsZonalStatistics::testStatistics()
 {
   QgsZonalStatistics zs( mVectorLayer, mRasterPath, "", 1 );
-  zs.calculateStatistics( NULL );
+  zs.calculateStatistics( nullptr );
 
   QgsFeature f;
   QgsFeatureRequest request;
@@ -92,7 +111,7 @@ void TestQgsZonalStatistics::testStatistics()
 
   // same with long prefix to ensure that field name truncation handled correctly
   QgsZonalStatistics zsl( mVectorLayer, mRasterPath, "myqgis2_", 1 );
-  zsl.calculateStatistics( NULL );
+  zsl.calculateStatistics( nullptr );
 
   request.setFilterFid( 0 );
   fetched = mVectorLayer->getFeatures( request ).nextFeature( f );
@@ -117,4 +136,4 @@ void TestQgsZonalStatistics::testStatistics()
 }
 
 QTEST_MAIN( TestQgsZonalStatistics )
-#include "moc_testqgszonalstatistics.cxx"
+#include "testqgszonalstatistics.moc"

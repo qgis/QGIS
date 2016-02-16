@@ -1,0 +1,55 @@
+<root>
+  <key>LSMSSmallRegionsMerging</key>
+  <exec>otbcli_LSMSSmallRegionsMerging</exec>
+  <longname>Exact Large-Scale Mean-Shift segmentation, step 3 (optional)</longname>
+  <group>Segmentation</group>
+  <description>Third (optional) step of the exact Large-Scale Mean-Shift segmentation workflow.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input image</name>
+    <description>The input image.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>inseg</key>
+    <name>Segmented image</name>
+    <description> The segmented image input. Segmented image input is the segmentation of the input image.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>Output Image</name>
+    <description>The output image. The output image is the input image where the minimal regions have been merged.</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>minsize</key>
+    <name>Minimum Region Size</name>
+    <description>Minimum Region Size. If, after the segmentation, a region is of size lower than this criterion, the region is merged with the "nearest" region (radiometrically).</description>
+    <minValue />
+    <maxValue />
+    <default>50</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>tilesizex</key>
+    <name>Size of tiles in pixel (X-axis)</name>
+    <description>Size of tiles along the X-axis.</description>
+    <minValue />
+    <maxValue />
+    <default>500</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>tilesizey</key>
+    <name>Size of tiles in pixel (Y-axis)</name>
+    <description>Size of tiles along the Y-axis.</description>
+    <minValue />
+    <maxValue />
+    <default>500</default>
+  </parameter>
+</root>

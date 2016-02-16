@@ -4,5 +4,5 @@ MimeType=application/x-esri-crs
 Hidden=false
 Comment=ESRI coordinate reference system
 Comment[de]=ESRI-Koordinatenbezugssystem
-Icon=qgis-mime-icon
+Icon=qgis-mime
 Patterns=*.prj;

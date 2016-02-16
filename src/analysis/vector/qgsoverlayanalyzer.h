@@ -23,7 +23,6 @@
 #include "qgsspatialindex.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsfield.h"
 #include "qgsdistancearea.h"
 
 class QgsVectorFileWriter;
@@ -38,16 +37,16 @@ class ANALYSIS_EXPORT QgsOverlayAnalyzer
 {
   public:
 
-    /**Perform an intersection on two input vector layers and write output to a new shape file
+    /** Perform an intersection on two input vector layers and write output to a new shape file
       @param layerA input vector layer
       @param layerB input vector layer
       @param shapefileName path to the output shp
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
       @param p progress dialog (or 0 if no progress dialog is to be shown)
-      @note: added in version 1.4*/
+      */
     bool intersection( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
                        const QString& shapefileName, bool onlySelectedFeatures = false,
-                       QProgressDialog* p = 0 );
+                       QProgressDialog* p = nullptr );
 
   private:
 

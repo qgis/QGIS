@@ -32,27 +32,27 @@ class CoordinateCaptureMapTool : public QgsMapTool
     Q_OBJECT
 
   public:
-    CoordinateCaptureMapTool( QgsMapCanvas* thepCanvas );
+    explicit CoordinateCaptureMapTool( QgsMapCanvas* thepCanvas );
 
     ~CoordinateCaptureMapTool();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     //! called when map tool is being deactivated
-    virtual void deactivate();
+    virtual void deactivate() override;
 
   public slots:
 
   signals:
-    void mouseMoved( QgsPoint );
-    void mouseClicked( QgsPoint );
+    void mouseMoved( const QgsPoint& );
+    void mouseClicked( const QgsPoint& );
   private:
 
     //! Rubber band for highlighting identified feature

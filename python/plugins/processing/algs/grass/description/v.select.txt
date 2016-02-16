@@ -1,0 +1,10 @@
+v.select
+Selects features from vector map (A) by features from other vector map (B).
+Vector (v.*)
+ParameterVector|ainput|Input layer (A)|-1|False
+ParameterSelection|atype|Input layer (A) Type|area;line;point
+ParameterVector|binput|Input layer (B)|-1|False
+ParameterSelection|btype|Input layer (B) Type|area;line;point
+ParameterSelection|operator|Operator to use|overlap;equals;disjoint;intersects;touches;crosses;within;contains;relate
+ParameterBoolean|-r|Reverse selection|False
+OutputVector|output|Selected

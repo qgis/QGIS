@@ -21,22 +21,19 @@
 #include "qgslabel.h"
 #include "qgslabelattributes.h"
 #include "qgslogger.h"
+#include "qgisgui.h"
 
 #include <QColorDialog>
-#include <QFontDialog>
 #include <QTabWidget>
 #include <QDoubleValidator>
 
 
-const int PIXMAP_WIDTH = 200;
-const int PIXMAP_HEIGHT = 20;
-
-QgsLabelDialog::QgsLabelDialog( QgsLabel *label,  QWidget *parent )
-    : QWidget( parent ),
-    mLabel( label ),
-    mFontColor( Qt::black ),
-    mBufferColor( Qt::black ),
-    mFont( "Helvetica" )
+QgsLabelDialog::QgsLabelDialog( QgsLabel *label, QWidget *parent )
+    : QWidget( parent )
+    , mLabel( label )
+    , mFontColor( Qt::black )
+    , mBufferColor( Qt::black )
+    , mFont( "Helvetica" )
 {
   setupUi( this );
   QgsDebugMsg( "entering." );
@@ -54,7 +51,7 @@ QgsLabelDialog::QgsLabelDialog( QgsLabel *label,  QWidget *parent )
 }
 
 
-void QgsLabelDialog::init( )
+void QgsLabelDialog::init()
 {
   QgsDebugMsg( "entering." );
 
@@ -64,6 +61,7 @@ void QgsLabelDialog::init( )
   const QgsFields& myFields = mLabel->fields();
   QStringList myFieldStringList;
   myFieldStringList.append( "" );
+  myFieldStringList.reserve( 1 + myFields.count() );
   for ( int i = 0; i < myFields.count(); ++i )
   {
     myFieldStringList.append( myFields[i].name() );
@@ -238,15 +236,15 @@ void QgsLabelDialog::init( )
   //TODO investigate in QgsLabel why this needs to be the case
   //TODO add support for corners (e.g. bottom right) to xml serialiser
 
-  if ( myLabelAttributes->alignment() == ( Qt::AlignRight | Qt::AlignBottom ) ) radioAboveLeft->setChecked( true )   ;
-  if ( myLabelAttributes->alignment() == ( Qt::AlignRight | Qt::AlignTop ) ) radioBelowLeft->setChecked( true )   ;
-  if ( myLabelAttributes->alignment() == ( Qt::AlignLeft  | Qt::AlignBottom ) ) radioAboveRight->setChecked( true )  ;
-  if ( myLabelAttributes->alignment() == ( Qt::AlignLeft  | Qt::AlignTop ) ) radioBelowRight->setChecked( true )  ;
-  if ( myLabelAttributes->alignment() == ( Qt::AlignRight | Qt::AlignVCenter ) ) radioLeft->setChecked( true )        ;
-  if ( myLabelAttributes->alignment() == ( Qt::AlignLeft  | Qt::AlignVCenter ) ) radioRight->setChecked( true )       ;
-  if ( myLabelAttributes->alignment() == ( Qt::AlignBottom | Qt::AlignHCenter ) ) radioAbove->setChecked( true )       ;
-  if ( myLabelAttributes->alignment() == ( Qt::AlignTop   | Qt::AlignHCenter ) ) radioBelow->setChecked( true )       ;
-  if ( myLabelAttributes->alignment() == Qt::AlignCenter ) radioOver->setChecked( true )        ;
+  if ( myLabelAttributes->alignment() == ( Qt::AlignRight | Qt::AlignBottom ) ) radioAboveLeft->setChecked( true );
+  if ( myLabelAttributes->alignment() == ( Qt::AlignRight | Qt::AlignTop ) ) radioBelowLeft->setChecked( true );
+  if ( myLabelAttributes->alignment() == ( Qt::AlignLeft  | Qt::AlignBottom ) ) radioAboveRight->setChecked( true );
+  if ( myLabelAttributes->alignment() == ( Qt::AlignLeft  | Qt::AlignTop ) ) radioBelowRight->setChecked( true );
+  if ( myLabelAttributes->alignment() == ( Qt::AlignRight | Qt::AlignVCenter ) ) radioLeft->setChecked( true );
+  if ( myLabelAttributes->alignment() == ( Qt::AlignLeft  | Qt::AlignVCenter ) ) radioRight->setChecked( true );
+  if ( myLabelAttributes->alignment() == ( Qt::AlignBottom | Qt::AlignHCenter ) ) radioAbove->setChecked( true );
+  if ( myLabelAttributes->alignment() == ( Qt::AlignTop   | Qt::AlignHCenter ) ) radioBelow->setChecked( true );
+  if ( myLabelAttributes->alignment() == Qt::AlignCenter ) radioOver->setChecked( true );
 
   mBufferColor = myLabelAttributes->bufferColor();
   //note that it could be that buffer properties are set, but the bufer is disabled
@@ -280,12 +278,7 @@ void QgsLabelDialog::changeFont( void )
 
   qreal fontSize = mFont.pointSizeF();
   bool resultFlag;
-#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  mFont = QFontDialog::getFont( &resultFlag, mFont, 0, QString(), QFontDialog::DontUseNativeDialog );
-#else
-  mFont = QFontDialog::getFont( &resultFlag, mFont );
-#endif
+  QFont newFont = QgisGui::getFont( resultFlag, mFont );
   if ( !resultFlag )
     return;
 
@@ -326,7 +319,7 @@ void QgsLabelDialog::changeBufferColor( void )
 }
 
 
-int QgsLabelDialog::itemNoForField( QString theFieldName, QStringList theFieldList )
+int QgsLabelDialog::itemNoForField( const QString& theFieldName, const QStringList& theFieldList )
 {
   //if no matches assume first item in list is blank and return that
   return qMax( 0, theFieldList.indexOf( theFieldName ) );
@@ -380,23 +373,23 @@ void QgsLabelDialog::apply()
   //TODO - transparency attributes for buffers
 
   //set the label props that are data bound to a field in the attributes tbl
-  mLabel->setLabelField( QgsLabel::Text,  fieldIndexFromName( cboLabelField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Text, fieldIndexFromName( cboLabelField->currentText() ) );
   mLabel->setLabelField( QgsLabel::Family, fieldIndexFromName( cboFontField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::Bold,  fieldIndexFromName( cboBoldField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::Italic,  fieldIndexFromName( cboItalicField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::Underline,  fieldIndexFromName( cboUnderlineField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::StrikeOut,  fieldIndexFromName( cboStrikeOutField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::Size,  fieldIndexFromName( cboFontSizeField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::SizeType,  fieldIndexFromName( cboFontSizeTypeField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::Color,  fieldIndexFromName( cboFontColorField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::BufferSize,  fieldIndexFromName( cboBufferSizeField->currentText() ) );
-  //mLabel->setLabelField( QgsLabel::BufferTransparency,  cboBufferTransparencyField->currentText() );
-  mLabel->setLabelField( QgsLabel::XCoordinate,  fieldIndexFromName( cboXCoordinateField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::YCoordinate,  fieldIndexFromName( cboYCoordinateField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::XOffset,  fieldIndexFromName( cboXOffsetField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::YOffset,  fieldIndexFromName( cboYOffsetField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::Alignment,  fieldIndexFromName( cboAlignmentField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::Angle,  fieldIndexFromName( cboAngleField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Bold, fieldIndexFromName( cboBoldField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Italic, fieldIndexFromName( cboItalicField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Underline, fieldIndexFromName( cboUnderlineField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::StrikeOut, fieldIndexFromName( cboStrikeOutField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Size, fieldIndexFromName( cboFontSizeField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::SizeType, fieldIndexFromName( cboFontSizeTypeField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Color, fieldIndexFromName( cboFontColorField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::BufferSize, fieldIndexFromName( cboBufferSizeField->currentText() ) );
+  //mLabel->setLabelField( QgsLabel::BufferTransparency, cboBufferTransparencyField->currentText() );
+  mLabel->setLabelField( QgsLabel::XCoordinate, fieldIndexFromName( cboXCoordinateField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::YCoordinate, fieldIndexFromName( cboYCoordinateField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::XOffset, fieldIndexFromName( cboXOffsetField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::YOffset, fieldIndexFromName( cboYOffsetField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Alignment, fieldIndexFromName( cboAlignmentField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Angle, fieldIndexFromName( cboAngleField->currentText() ) );
 
   // set up the scale based layer visibility stuff....
   mLabel->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
@@ -404,7 +397,7 @@ void QgsLabelDialog::apply()
   mLabel->setMaxScale( leMaximumScale->text().toFloat() );
 }
 
-int QgsLabelDialog::fieldIndexFromName( QString name )
+int QgsLabelDialog::fieldIndexFromName( const QString& name )
 {
   const QgsFields& fields = mLabel->fields();
   for ( int i = 0; i < fields.count(); ++i )

@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import unittest
 import qgis
 
 from qgis.core import (QgsSpatialIndex,
@@ -21,11 +20,15 @@ from qgis.core import (QgsSpatialIndex,
                        QgsRectangle,
                        QgsPoint)
 
-from utilities import getQgisTestApp
+from qgis.testing import (start_app,
+                          unittest
+                          )
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
+
 
 class TestQgsSpatialIndex(unittest.TestCase):
+
     def testIndex(self):
         idx = QgsSpatialIndex()
         fid = 0

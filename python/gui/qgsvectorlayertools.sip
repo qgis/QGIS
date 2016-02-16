@@ -11,10 +11,10 @@ class QgsVectorLayerTools
      * @param layer           The layer to which the feature should be added
      * @param defaultValues   Default values for the feature to add
      * @param defaultGeometry A default geometry to add to the feature
+     * @param feature         Updated feature after adding will be written back to this
      * @return                True in case of success, False if the operation failed/was aborted
      */
-    virtual bool addFeature( QgsVectorLayer* layer, QgsAttributeMap defaultValues = QgsAttributeMap(), const QgsGeometry& defaultGeometry = QgsGeometry() ) = 0;
-
+    virtual bool addFeature( QgsVectorLayer* layer, const QgsAttributeMap& defaultValues = QgsAttributeMap(), const QgsGeometry& defaultGeometry = QgsGeometry(), QgsFeature* feature /Out/ = 0 ) const = 0;
 
     /**
      * This will be called, whenever a vector layer should be switched to edit mode. Check the providers
@@ -25,7 +25,7 @@ class QgsVectorLayerTools
      *
      * @return       True, if the editing session was started
      */
-    virtual bool startEditing( QgsVectorLayer* layer ) = 0;
+    virtual bool startEditing( QgsVectorLayer* layer ) const = 0;
 
     /**
      * Will be called, when an editing session is ended and the features should be commited.
@@ -35,6 +35,14 @@ class QgsVectorLayerTools
      * @param allowCancel True if a cancel button should be offered
      * @return            True if successful
      */
-    virtual bool stopEditing( QgsVectorLayer* layer, bool allowCancel = true ) = 0;
+    virtual bool stopEditing( QgsVectorLayer* layer, bool allowCancel = true ) const = 0;
+
+    /**
+     * Should be called, when the features should be commited but the editing session is not ended.
+     *
+     * @param layer       The layer to commit
+     * @return            True if successful
+     */
+    virtual bool saveEdits( QgsVectorLayer* layer ) const = 0;
 
 };

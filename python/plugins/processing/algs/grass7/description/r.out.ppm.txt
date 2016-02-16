@@ -1,0 +1,6 @@
+r.out.ppm
+Converts a raster layer to a PPM image file at the pixel resolution of the currently defined region.
+Raster (r.*)
+ParameterRaster|input|Input raster layer|False
+ParameterBoolean|-g|Output greyscale instead of color|True
+OutputFile|output|PPM

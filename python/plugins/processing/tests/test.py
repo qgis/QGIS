@@ -22,19 +22,14 @@ __copyright__ = \
 import os
 import sys
 import time
-import itertools
 import unittest
 
-from PyQt4.QtGui import QWidget
-from qgis.gui import QgsMapCanvas
-from qgis.core import *
+import qgis
 
 import processing
 from processing.ProcessingPlugin import ProcessingPlugin
 from processing.core.Processing import Processing
-from processing.core.ProcessingLog import ProcessingLog
-from processing.core.ProcessingConfig import ProcessingConfig
-from processing.gui.ParametersDialog import ParametersDialog
+from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.Providers import Providers
 from processing.parameters.ParameterRaster import ParameterRaster
@@ -42,10 +37,9 @@ from processing.parameters.ParameterVector import ParameterVector
 from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterBoolean import ParameterBoolean
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputVector import OutputVector
+from processing.core.outputs import OutputRaster
+from processing.core.outputs import OutputVector
 
-from qgis_interface import QgisInterface
 from utilities_test import getQgisTestApp
 
 # Add parent directory to path to make test aware of other modules
@@ -53,7 +47,7 @@ from utilities_test import getQgisTestApp
 pardir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 sys.path.append(pardir)
 
-sys.path.append( qgis.utils.sys_plugin_path )
+sys.path.append(qgis.utils.sys_plugin_path)
 
 (QGISAPP, CANVAS, IFACE, PARENT) = getQgisTestApp()
 
@@ -66,6 +60,7 @@ class bcolors:
 
 
 class ProcessingPluginTest(unittest.TestCase):
+
     """Test suite for Processing QGis plugin."""
 
     def test_createplugin(self):
@@ -90,12 +85,12 @@ class ProcessingProviderTestCase(unittest.TestCase):
         alg,
         threaded,
         dialog='none',
-        ):
+    ):
         self.algId = algId
         self.alg = alg
         self.threaded = threaded
         self.msg = 'ALG %s (%s %s)' % (self.algId, {True: 'threaded',
-                                       False: 'unthreaded'}[threaded], dialog)
+                                                    False: 'unthreaded'}[threaded], dialog)
         unittest.TestCase.__init__(self, 'runalg_%s' % dialog)
 
     def gen_test_parameters(self, alg, doSet=False):
@@ -177,10 +172,10 @@ class ProcessingProviderTestCase(unittest.TestCase):
     def runalg_parameters(self):
         dlg = self.alg.getCustomParametersDialog()
         if not dlg:
-            dlg = ParametersDialog(self.alg)
+            dlg = AlgorithmDialog(self.alg)
 
         # Hack to handle that hacky code...
-        dlg.setParamValues = lambda : True
+        dlg.setParamValues = lambda: True
         dlg.show()
         dlg.accept()
         while not dlg.executed:
@@ -226,7 +221,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Processing test suite.')
     parser.add_argument('-l', action='store_true',
-            help='Test processing loading only. Ignore further arguments.')
+                        help='Test processing loading only. Ignore further arguments.')
     parser.add_argument('-m', dest='model', help='Test a particular model.',
                         default=None)
     parser.add_argument('-d', dest='dialog', help='Test a particular dialog.',
@@ -259,9 +254,9 @@ if __name__ == '__main__':
             exit(1)
         if args.model:
             unittest.TextTestRunner(verbosity=2).run(modelSuite(args.model
-                    or 'data/model', args.dialog, threaded, unthreaded))
+                                                                or 'data/model', args.dialog, threaded, unthreaded))
             exit(0)
         unittest.TextTestRunner(verbosity=2).run(algSuite(args.dialog,
-                threaded, unthreaded, args.dialog))
+                                                          threaded, unthreaded, args.dialog))
     except KeyboardInterrupt:
         print bcolors.ENDC, 'Test interrupted.'

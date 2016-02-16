@@ -81,8 +81,8 @@ static const QString sPluginIcon = ":/icons/default/mGeorefRun.png";
 QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
-    , mActionRunGeoref( 0 )
-    , mPluginGui( 0 )
+    , mActionRunGeoref( nullptr )
+    , mPluginGui( nullptr )
 {
 }
 
@@ -98,7 +98,7 @@ void QgsGeorefPlugin::initGui()
   delete mActionRunGeoref;
 
   // Create the action for tool
-  mActionRunGeoref = new QAction( QIcon(), tr( "&Georeferencer" ), this );
+  mActionRunGeoref = new QAction( QIcon(), tr( "&Georeferencer..." ), this );
   mActionRunGeoref->setObjectName( "mActionRunGeoref" );
 
   // Connect the action to the run
@@ -129,14 +129,14 @@ void QgsGeorefPlugin::unload()
   mQGisIface->removeRasterToolBarIcon( mActionRunGeoref );
 
   delete mActionRunGeoref;
-  mActionRunGeoref = 0;
+  mActionRunGeoref = nullptr;
 
   delete mPluginGui;
-  mPluginGui = NULL;
+  mPluginGui = nullptr;
 }
 
 //! Set icons to the current theme
-void QgsGeorefPlugin::setCurrentTheme( QString )
+void QgsGeorefPlugin::setCurrentTheme( const QString& )
 {
   if ( mActionRunGeoref )
     mActionRunGeoref->setIcon( getThemeIcon( "/mGeorefRun.png" ) );

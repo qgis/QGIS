@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 30.5.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -29,18 +29,25 @@
 
 
 QgsGuiVectorLayerTools::QgsGuiVectorLayerTools()
-    : QObject( NULL )
+    : QObject( nullptr )
 {}
 
-bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer* layer, QgsAttributeMap defaultValues, const QgsGeometry& defaultGeometry )
+bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer* layer, const QgsAttributeMap& defaultValues, const QgsGeometry& defaultGeometry, QgsFeature* feat ) const
 {
-  QgsFeature f;
-  f.setGeometry( defaultGeometry );
-  QgsFeatureAction a( tr( "Add feature" ), f, layer );
-  return a.addFeature( defaultValues );
+  QgsFeature* f = feat;
+  if ( !feat )
+    f = new QgsFeature();
+
+  f->setGeometry( defaultGeometry );
+  QgsFeatureAction a( tr( "Add feature" ), *f, layer );
+  bool added = a.addFeature( defaultValues );
+  if ( !feat )
+    delete f;
+
+  return added;
 }
 
-bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer* layer )
+bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer* layer ) const
 {
   if ( !layer )
   {
@@ -65,7 +72,31 @@ bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer* layer )
   return res;
 }
 
-bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowCancel )
+bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer* layer ) const
+{
+  bool res = true;
+
+  if ( layer->isModified() )
+  {
+    if ( !layer->commitChanges() )
+    {
+      commitError( layer );
+      // Leave the in-memory editing state alone,
+      // to give the user a chance to enter different values
+      // and try the commit again later
+      res = false;
+    }
+    layer->startEditing();
+  }
+  else //layer not modified
+  {
+    res = true;
+  }
+  return res;
+}
+
+
+bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowCancel ) const
 {
   bool res = true;
 
@@ -75,7 +106,7 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowCance
     if ( allowCancel )
       buttons |= QMessageBox::Cancel;
 
-    switch ( QMessageBox::information( 0,
+    switch ( QMessageBox::information( nullptr,
                                        tr( "Stop editing" ),
                                        tr( "Do you want to save the changes to layer %1?" ).arg( layer->name() ),
                                        buttons ) )
@@ -127,7 +158,7 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowCance
   return res;
 }
 
-void QgsGuiVectorLayerTools::commitError( QgsVectorLayer* vlayer )
+void QgsGuiVectorLayerTools::commitError( QgsVectorLayer* vlayer ) const
 {
   QgsMessageViewer *mv = new QgsMessageViewer();
   mv->setWindowTitle( tr( "Commit errors" ) );

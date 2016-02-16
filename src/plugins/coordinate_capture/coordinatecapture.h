@@ -79,17 +79,17 @@ class CoordinateCapture: public QObject, public QgisPlugin
     * QGIS when it attempts to instantiate the plugin.
     * @param theInterface Pointer to the QgisInterface object.
      */
-    CoordinateCapture( QgisInterface * theInterface );
+    explicit CoordinateCapture( QgisInterface * theInterface );
     //! Destructor
     virtual ~CoordinateCapture();
 
   public slots:
     //! init the gui
-    virtual void initGui();
+    virtual void initGui() override;
     //! Show the dialog box
     void run();
     //! unload the plugin
-    void unload();
+    void unload() override;
     //! Show/hide the dockwidget
     void showOrHide();
     //! show the help document
@@ -97,18 +97,18 @@ class CoordinateCapture: public QObject, public QgisPlugin
     //! Set the Coordinate Reference System used for displaying non canvas CRS coord
     void setCRS();
     //! Called when mouse clicks on the canvas. Will populate text box with coords.
-    void mouseClicked( QgsPoint thePoint );
+    void mouseClicked( const QgsPoint& thePoint );
     /** Called when mouse moved over the canvas. If the tracking button is toggled,
      * the text box coords will be updated. */
-    void mouseMoved( QgsPoint thePoint );
+    void mouseMoved( const QgsPoint& thePoint );
     //! Called when mouse is clicked on the canvas
-    void update( QgsPoint thePoint );
+    void update( const QgsPoint& thePoint );
     //! Called when user clicks the copy button
     void copy();
     //! called when the project's CRS is changed
     void setSourceCrs();
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( QString theThemeName );
+    void setCurrentTheme( const QString& theThemeName );
 
   private:
     //! Container for the coordinate info
@@ -146,7 +146,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
     int mUserCrsDisplayPrecision;
 
     //! Get the path to the icon from the best available theme
-    QString getIconPath( const QString theName );
+    QString getIconPath( const QString& theName );
 
     ////////////////////////////////////////////////////////////////////
     //
@@ -154,7 +154,6 @@ class CoordinateCapture: public QObject, public QgisPlugin
     //
     ////////////////////////////////////////////////////////////////////
 
-    int mPluginType;
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
     //!pointer to the qaction for this plugin

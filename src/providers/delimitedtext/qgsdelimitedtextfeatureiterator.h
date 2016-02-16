@@ -18,20 +18,22 @@
 #include <QList>
 #include "qgsfeatureiterator.h"
 #include "qgsfeature.h"
+#include "qgsexpressioncontext.h"
 
 #include "qgsdelimitedtextprovider.h"
 
 class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p );
+    explicit QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p );
     ~QgsDelimitedTextFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
   protected:
     QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
     QgsExpression *mSubsetExpression;
+    QgsExpressionContext mExpressionContext;
     QgsRectangle mExtent;
     bool mUseSpatialIndex;
     QgsSpatialIndex *mSpatialIndex;
@@ -43,7 +45,6 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
     int mXFieldIndex;
     int mYFieldIndex;
     int mWktFieldIndex;
-    bool mWktHasZM;
     bool mWktHasPrefix;
     QGis::GeometryType mGeometryType;
     QString mDecimalPoint;
@@ -68,10 +69,10 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     ~QgsDelimitedTextFeatureIterator();
 
     //! reset the iterator to the starting position
-    virtual bool rewind();
+    virtual bool rewind() override;
 
     //! end of iterating: free the resources / lock
-    virtual bool close();
+    virtual bool close() override;
 
     // Tests whether the geometry is required, given that testGeometry is true.
     bool wantGeometry( const QgsPoint & point ) const;
@@ -79,13 +80,13 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
 
   protected:
     //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature );
+    virtual bool fetchFeature( QgsFeature& feature ) override;
 
     bool setNextFeatureId( qint64 fid );
 
     bool nextFeatureInternal( QgsFeature& feature );
-    QgsGeometry* loadGeometryWkt( const QStringList& tokens );
-    QgsGeometry* loadGeometryXY( const QStringList& tokens );
+    QgsGeometry* loadGeometryWkt( const QStringList& tokens, bool &isNull );
+    QgsGeometry* loadGeometryXY( const QStringList& tokens, bool &isNull );
     void fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens );
 
     QList<QgsFeatureId> mFeatureIds;

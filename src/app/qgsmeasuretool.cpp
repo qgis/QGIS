@@ -20,6 +20,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgssnappingutils.h"
 #include "qgstolerance.h"
 
 #include "qgsmeasuredialog.h"
@@ -32,10 +33,12 @@
 
 QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
     : QgsMapTool( canvas )
+    , mWrongProjectProjection( false )
 {
   mMeasureArea = measureArea;
 
   mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? QGis::Polygon : QGis::Line );
+  mRubberBandPoints = new QgsRubberBand( canvas, QGis::Point );
 
   QPixmap myCrossHairQPixmap = QPixmap(( const char ** ) cross_hair_cursor );
   mCursor = QCursor( myCrossHairQPixmap, 8, 8 );
@@ -45,7 +48,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
   mPoints.append( QgsPoint( 0, 0 ) );
 
   mDialog = new QgsMeasureDialog( this, Qt::WindowStaysOnTopHint );
-  mSnapper.setMapCanvas( canvas );
+  mDialog->restorePosition();
 
   connect( canvas, SIGNAL( destinationCrsChanged() ),
            this, SLOT( updateSettings() ) );
@@ -55,6 +58,7 @@ QgsMeasureTool::~QgsMeasureTool()
 {
   delete mDialog;
   delete mRubberBand;
+  delete mRubberBandPoints;
 }
 
 
@@ -66,7 +70,7 @@ const QList<QgsPoint>& QgsMeasureTool::points()
 
 void QgsMeasureTool::activate()
 {
-  mDialog->restorePosition();
+  mDialog->show();
   QgsMapTool::activate();
 
   // ensure that we have correct settings
@@ -78,7 +82,7 @@ void QgsMeasureTool::activate()
        ( mCanvas->extent().height() > 360 ||
          mCanvas->extent().width() > 720 ) )
   {
-    QMessageBox::warning( NULL, tr( "Incorrect measure results" ),
+    QMessageBox::warning( nullptr, tr( "Incorrect measure results" ),
                           tr( "<p>This map is defined with a geographic coordinate system "
                               "(latitude/longitude) "
                               "but the map extents suggests that it is actually a projected "
@@ -93,127 +97,147 @@ void QgsMeasureTool::activate()
 
 void QgsMeasureTool::deactivate()
 {
-  mDialog->close();
-  mRubberBand->reset();
+  mDialog->hide();
   QgsMapTool::deactivate();
 }
-
 
 void QgsMeasureTool::restart()
 {
   mPoints.clear();
 
   mRubberBand->reset( mMeasureArea ? QGis::Polygon : QGis::Line );
-
-  // re-read settings
-  updateSettings();
+  mRubberBandPoints->reset( QGis::Point );
 
   mDone = true;
   mWrongProjectProjection = false;
-
 }
 
 void QgsMeasureTool::updateSettings()
 {
   QSettings settings;
 
-  int myRed = settings.value( "/qgis/default_measure_color_red", 180 ).toInt();
-  int myGreen = settings.value( "/qgis/default_measure_color_green", 180 ).toInt();
-  int myBlue = settings.value( "/qgis/default_measure_color_blue", 180 ).toInt();
-  mRubberBand->setColor( QColor( myRed, myGreen, myBlue, 65 ) );
+  int myRed = settings.value( "/qgis/default_measure_color_red", 222 ).toInt();
+  int myGreen = settings.value( "/qgis/default_measure_color_green", 155 ).toInt();
+  int myBlue = settings.value( "/qgis/default_measure_color_blue", 67 ).toInt();
+  mRubberBand->setColor( QColor( myRed, myGreen, myBlue, 100 ) );
+  mRubberBand->setWidth( 3 );
+  mRubberBandPoints->setIcon( QgsRubberBand::ICON_CIRCLE );
+  mRubberBandPoints->setIconSize( 10 );
+  mRubberBandPoints->setColor( QColor( myRed, myGreen, myBlue, 150 ) );
   mDialog->updateSettings();
 }
 
 //////////////////////////
 
-void QgsMeasureTool::canvasPressEvent( QMouseEvent * e )
+void QgsMeasureTool::canvasPressEvent( QgsMapMouseEvent* e )
 {
-  if ( e->button() == Qt::LeftButton )
-  {
-    if ( mDone )
-    {
-      mDialog->restart();
-      QgsPoint point = snapPoint( e->pos() );
-      addPoint( point );
-      mDone = false;
-    }
-  }
+  Q_UNUSED( e );
 }
 
-void QgsMeasureTool::canvasMoveEvent( QMouseEvent * e )
+void QgsMeasureTool::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( ! mDone )
   {
     QgsPoint point = snapPoint( e->pos() );
 
     mRubberBand->movePoint( point );
-    if ( ! mPoints.isEmpty() )
-    {
-      // Update last point
-      mPoints.removeLast();
-      mPoints.append( point ) ;
-      mDialog->mouseMove( point );
-    }
+    mDialog->mouseMove( point );
   }
 }
 
 
-void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
+void QgsMeasureTool::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   QgsPoint point = snapPoint( e->pos() );
 
-  if ( e->button() == Qt::RightButton && ( e->buttons() & Qt::LeftButton ) == 0 ) // restart
+  if ( mDone ) // if we have stopped measuring any mouse click restart measuring
   {
-    if ( mDone )
+    mDialog->restart();
+  }
+
+  if ( e->button() == Qt::RightButton ) // if we clicked the right button we stop measuring
+  {
+    mDone = true;
+  }
+  else if ( e->button() == Qt::LeftButton )
+  {
+    mDone = false;
+  }
+
+  // we always add the clicked point to the measuring feature
+  addPoint( point );
+  mDialog->show();
+
+}
+
+void QgsMeasureTool::undo()
+{
+  if ( mRubberBand )
+  {
+    if ( mPoints.size() < 1 )
     {
+      return;
+    }
+
+    if ( mPoints.size() == 1 )
+    {
+      //removing first point, so restart everything
+      restart();
       mDialog->restart();
     }
     else
     {
-      // The figure is finished
-      mDone = true;
-      mDialog->show();
-    }
-  }
-  else if ( e->button() == Qt::LeftButton )
-  {
-    // Append point we will move
-    addPoint( point );
-    mDialog->show();
-  }
+      //remove second last point from line band, and last point from points band
+      mRubberBand->removePoint( -2, true );
+      mRubberBandPoints->removePoint( -1, true );
+      mPoints.removeLast();
 
+      mDialog->removeLastPoint();
+    }
+
+  }
+}
+
+void QgsMeasureTool::keyPressEvent( QKeyEvent* e )
+{
+  if (( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
+  {
+    if ( !mDone )
+    {
+      undo();
+    }
+
+    // Override default shortcut management in MapCanvas
+    e->ignore();
+  }
 }
 
 
-void QgsMeasureTool::addPoint( QgsPoint &point )
+void QgsMeasureTool::addPoint( const QgsPoint &point )
 {
   QgsDebugMsg( "point=" + point.toString() );
 
-  int last = mPoints.size() - 1;
   // don't add points with the same coordinates
-  if ( mPoints.size() > 1 && mPoints[ last ] == mPoints[ last - 1 ] )
+  if ( !mPoints.isEmpty() && mPoints.last() == point )
+  {
     return;
+  }
 
   QgsPoint pnt( point );
   // Append point that we will be moving.
   mPoints.append( pnt );
 
   mRubberBand->addPoint( point );
-  if ( ! mDone )
+  mRubberBandPoints->addPoint( point );
+  if ( ! mDone )    // Prevent the insertion of a new item in segments measure table
   {
     mDialog->addPoint( point );
   }
 }
 
+
 QgsPoint QgsMeasureTool::snapPoint( const QPoint& p )
 {
-  QList<QgsSnappingResult> snappingResults;
-  if ( mSnapper.snapToBackgroundLayers( p, snappingResults ) != 0 || snappingResults.size() < 1 )
-  {
-    return mCanvas->getCoordinateTransform()->toMapCoordinates( p );
-  }
-  else
-  {
-    return snappingResults.constBegin()->snappedVertex;
-  }
+  QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToMap( p );
+  return m.isValid() ? m.point() : mCanvas->getCoordinateTransform()->toMapCoordinates( p );
 }

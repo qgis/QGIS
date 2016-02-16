@@ -16,12 +16,13 @@
 #ifndef QGSMAPTOOLDELETEPART_H
 #define QGSMAPTOOLDELETEPART_H
 
-#include "qgsmaptoolvertexedit.h"
+#include "qgsmaptooledit.h"
+#include "qgsrubberband.h"
 
 class QgsVertexMarker;
 
-/**Map tool to delete vertices from line/polygon features*/
-class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolVertexEdit
+/** Map tool to delete vertices from line/polygon features*/
+class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolEdit
 {
     Q_OBJECT
 
@@ -29,24 +30,27 @@ class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolVertexEdit
     QgsMapToolDeletePart( QgsMapCanvas* canvas );
     virtual ~QgsMapToolDeletePart();
 
-    void canvasMoveEvent( QMouseEvent * e );
+    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
-    void canvasPressEvent( QMouseEvent * e );
+    void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
-    void canvasReleaseEvent( QMouseEvent * e );
+    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     //! called when map tool is being deactivated
-    void deactivate();
+    void deactivate() override;
 
   private:
-    QgsVertexMarker* mCross;
+    QgsVectorLayer* vlayer;
 
-    //! delete part of a geometry
-    void deletePart( QgsFeatureId fId, int beforeVertexNr, QgsVectorLayer* vlayer );
+    QgsGeometry* partUnderPoint( QPoint p, QgsFeatureId &fid, int &partNum );
 
-    //! find out part number of geometry given the snapped vertex number
-    int partNumberOfVertex( QgsGeometry* g, int beforeVertexNr );
+    /* Rubberband that shows the part being deleted*/
+    QgsRubberBand* mRubberBand;
 
+    //The feature and part where the mouse cursor was pressed
+    //This is used to check whether we are still in the same part at cursor release
+    QgsFeatureId mPressedFid;
+    int mPressedPartNum;
 };
 
 #endif

@@ -34,32 +34,52 @@
 
 QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
-  QPushButton *pb;
-
   setupUi( this );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/ComposerManager/geometry" ).toByteArray() );
 
+  mComposerListWidget->setItemDelegate( new QgsComposerNameDelegate( mComposerListWidget ) );
+
   connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
+  connect( QgisApp::instance(), SIGNAL( composerAdded( QgsComposerView* ) ), this, SLOT( refreshComposers() ) );
+  connect( QgisApp::instance(), SIGNAL( composerRemoved( QgsComposerView* ) ), this, SLOT( refreshComposers() ) );
 
-  pb = new QPushButton( tr( "&Show" ) );
-  mButtonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( show_clicked() ) );
+  connect( mComposerListWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( toggleButtons() ) );
 
-  pb = new QPushButton( tr( "&Duplicate" ) );
-  mButtonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( duplicate_clicked() ) );
+  mShowButton = mButtonBox->addButton( tr( "&Show" ), QDialogButtonBox::ActionRole );
+  connect( mShowButton, SIGNAL( clicked() ), this, SLOT( show_clicked() ) );
 
-  pb = new QPushButton( tr( "&Remove" ) );
-  mButtonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( remove_clicked() ) );
+  mDuplicateButton = mButtonBox->addButton( tr( "&Duplicate" ), QDialogButtonBox::ActionRole );
+  connect( mDuplicateButton, SIGNAL( clicked() ), this, SLOT( duplicate_clicked() ) );
 
-  pb = new QPushButton( tr( "Re&name" ) );
-  mButtonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( rename_clicked() ) );
+  mRemoveButton = mButtonBox->addButton( tr( "&Remove" ), QDialogButtonBox::ActionRole );
+  connect( mRemoveButton, SIGNAL( clicked() ), this, SLOT( remove_clicked() ) );
 
-  initialize();
+  mRenameButton = mButtonBox->addButton( tr( "Re&name" ), QDialogButtonBox::ActionRole );
+  connect( mRenameButton, SIGNAL( clicked() ), this, SLOT( rename_clicked() ) );
+
+#ifdef Q_OS_MAC
+  // Create action to select this window
+  mWindowAction = new QAction( windowTitle(), this );
+  connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
+#endif
+
+  mTemplate->addItem( tr( "Empty composer" ) );
+  mTemplate->addItem( tr( "Specific" ) );
+
+  mUserTemplatesDir = QgsApplication::qgisSettingsDirPath() + "/composer_templates";
+  QMap<QString, QString> userTemplateMap = defaultTemplates( true );
+  this->addTemplates( userTemplateMap );
+
+  mDefaultTemplatesDir = QgsApplication::pkgDataPath() + "/composer_templates";
+  QMap<QString, QString> defaultTemplateMap = defaultTemplates( false );
+  this->addTemplates( defaultTemplateMap );
+  this->addTemplates( this->otherTemplates() );
+
+  mTemplatePathLineEdit->setText( settings.value( "/UI/ComposerManager/templatePath", QString() ).toString() );
+
+  refreshComposers();
 }
 
 QgsComposerManager::~QgsComposerManager()
@@ -68,9 +88,22 @@ QgsComposerManager::~QgsComposerManager()
   settings.setValue( "/Windows/ComposerManager/geometry", saveGeometry() );
 }
 
-void QgsComposerManager::initialize()
+void QgsComposerManager::refreshComposers()
 {
-  QSettings settings;
+  // Backup selection
+  QSet<QgsComposer *> selectedComposers;
+  Q_FOREACH ( QListWidgetItem* item, mComposerListWidget->selectedItems() )
+  {
+    QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+    if ( it != mItemComposerMap.constEnd() )
+    {
+      selectedComposers << it.value();
+    }
+  }
+
+  mItemComposerMap.clear();
+  mComposerListWidget->clear();
+
   QSet<QgsComposer*> composers = QgisApp::instance()->printComposers();
   QSet<QgsComposer*>::const_iterator it = composers.constBegin();
   for ( ; it != composers.constEnd(); ++it )
@@ -81,53 +114,125 @@ void QgsComposerManager::initialize()
   }
   mComposerListWidget->sortItems();
 
-  mTemplate->addItem( tr( "Empty composer" ) );
-  mTemplate->addItem( tr( "Specific" ) );
+  // Restore selection
+  bool selectionRestored = false;
+  if ( !selectedComposers.isEmpty() )
+  {
+    QMap<QListWidgetItem*, QgsComposer*>::const_iterator i = mItemComposerMap.constBegin();
+    while ( i != mItemComposerMap.constEnd() )
+    {
+      // This composer was selected: reselect it !
+      if ( selectedComposers.contains( i.value() ) )
+      {
+        selectionRestored = true;
+        int index = mComposerListWidget->row( i.key() );
+        QModelIndex selectLine = mComposerListWidget->model()->index( index, 0, QModelIndex() );
+        mComposerListWidget->selectionModel()->select( selectLine, QItemSelectionModel::Select );
+      }
+      ++i;
+    }
+  }
+  // Select the first item by default
+  if ( !selectionRestored && mComposerListWidget->count() > 0 )
+  {
+    QModelIndex firstLine = mComposerListWidget->model()->index( 0, 0, QModelIndex() );
+    mComposerListWidget->selectionModel()->select( firstLine, QItemSelectionModel::Select );
+  }
 
-  mUserTemplatesDir = QgsApplication::qgisSettingsDirPath() + "/composer_templates";
-  QMap<QString, QString> userTemplateMap = defaultTemplates( true );
-  if ( userTemplateMap.size() > 0 )
+  // Update buttons
+  toggleButtons();
+}
+
+void QgsComposerManager::toggleButtons()
+{
+  // Nothing selected: no button.
+  if ( mComposerListWidget->selectedItems().isEmpty() )
+  {
+    mShowButton->setEnabled( false );
+    mRemoveButton->setEnabled( false );
+    mRenameButton->setEnabled( false );
+    mDuplicateButton->setEnabled( false );
+  }
+  // toggle everything if one composer is selected
+  else if ( mComposerListWidget->selectedItems().count() == 1 )
+  {
+    mShowButton->setEnabled( true );
+    mRemoveButton->setEnabled( true );
+    mRenameButton->setEnabled( true );
+    mDuplicateButton->setEnabled( true );
+  }
+  // toggle only show and remove buttons in other cases
+  else
+  {
+    mShowButton->setEnabled( true );
+    mRemoveButton->setEnabled( true );
+    mRenameButton->setEnabled( false );
+    mDuplicateButton->setEnabled( false );
+  }
+}
+
+void QgsComposerManager::addTemplates( const QMap<QString, QString>& templates )
+{
+  if ( !templates.isEmpty() )
   {
     mTemplate->insertSeparator( mTemplate->count() );
-    QMap<QString, QString>::const_iterator templateIt = userTemplateMap.constBegin();
-    for ( ; templateIt != userTemplateMap.constEnd(); ++templateIt )
+    QMap<QString, QString>::const_iterator templateIt = templates.constBegin();
+    for ( ; templateIt != templates.constEnd(); ++templateIt )
     {
       mTemplate->addItem( templateIt.key(), templateIt.value() );
     }
   }
 
-  mDefaultTemplatesDir = QgsApplication::pkgDataPath() + "/composer_templates";
-  QMap<QString, QString> defaultTemplateMap = defaultTemplates( false );
-  if ( defaultTemplateMap.size() > 0 )
-  {
-    mTemplate->insertSeparator( mTemplate->count() );
-    QMap<QString, QString>::const_iterator templateIt = defaultTemplateMap.constBegin();
-    for ( ; templateIt != defaultTemplateMap.constEnd(); ++templateIt )
-    {
-      mTemplate->addItem( templateIt.key(), templateIt.value() );
-    }
-  }
+}
 
-  mTemplatePathLineEdit->setText( settings.value( "/UI/ComposerManager/templatePath", QString( "" ) ).toString() );
+void QgsComposerManager::activate()
+{
+  raise();
+  setWindowState( windowState() & ~Qt::WindowMinimized );
+  activateWindow();
 }
 
 QMap<QString, QString> QgsComposerManager::defaultTemplates( bool fromUser ) const
 {
-  QMap<QString, QString> templateMap;
-
   //search for default templates in $pkgDataPath/composer_templates
   // user templates in $qgisSettingsDirPath/composer_templates
-  QDir defaultTemplateDir( fromUser ? mUserTemplatesDir : mDefaultTemplatesDir );
-  if ( !defaultTemplateDir.exists() )
+  return templatesFromPath( fromUser ? mUserTemplatesDir : mDefaultTemplatesDir );
+}
+
+QMap<QString, QString> QgsComposerManager::otherTemplates() const
+{
+  QMap<QString, QString> templateMap;
+  QStringList paths = QgsApplication::composerTemplatePaths();
+  Q_FOREACH ( const QString& path, paths )
+  {
+    QMap<QString, QString> templates = templatesFromPath( path );
+    QMap<QString, QString>::const_iterator templateIt = templates.constBegin();
+    for ( ; templateIt != templates.constEnd(); ++templateIt )
+    {
+      templateMap.insert( templateIt.key(), templateIt.value() );
+    }
+  }
+  return templateMap;
+}
+
+QMap<QString, QString> QgsComposerManager::templatesFromPath( const QString& path ) const
+{
+  QMap<QString, QString> templateMap;
+
+  QDir templateDir( path );
+  if ( !templateDir.exists() )
   {
     return templateMap;
   }
 
-  QFileInfoList fileInfoList = defaultTemplateDir.entryInfoList( QDir::Files );
+  QFileInfoList fileInfoList = templateDir.entryInfoList( QDir::Files );
   QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
   for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
   {
-    templateMap.insert( infoIt->baseName(), infoIt->absoluteFilePath() );
+    if ( infoIt->suffix().toLower() == "qpt" )
+    {
+      templateMap.insert( infoIt->baseName(), infoIt->absoluteFilePath() );
+    }
   }
   return templateMap;
 }
@@ -159,11 +264,11 @@ void QgsComposerManager::on_mAddButton_clicked()
     }
   }
 
-  QgsComposer* newComposer = 0;
+  QgsComposer* newComposer = nullptr;
   bool loadedOK = false;
 
-  QString title = QgisApp::instance()->uniqueComposerTitle( this, true );
-  if ( title.isNull() )
+  QString title;
+  if ( !QgisApp::instance()->uniqueComposerTitle( this, title, true ) )
   {
     return;
   }
@@ -191,34 +296,20 @@ void QgsComposerManager::on_mAddButton_clicked()
       dlg->show();
 
       newComposer->hide();
-      loadedOK = newComposer->composition()->loadFromTemplate( templateDoc, 0, false );
+      loadedOK = newComposer->composition()->loadFromTemplate( templateDoc, nullptr, false );
       newComposer->activate();
 
       dlg->close();
       delete dlg;
-      dlg = 0;
+      dlg = nullptr;
     }
   }
 
-  if ( loadedOK )
+  if ( !loadedOK )
   {
-    // do not close on Add, since user may want to add multiple composers from templates
-    QListWidgetItem* item = new QListWidgetItem( newComposer->title(), mComposerListWidget );
-    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
-    mItemComposerMap.insert( item, newComposer );
-
-    mComposerListWidget->sortItems();
-    mComposerListWidget->setCurrentItem( item );
-    mComposerListWidget->setFocus();
-  }
-  else
-  {
-    if ( newComposer )
-    {
-      newComposer->close();
-      QgisApp::instance()->deleteComposer( newComposer );
-      newComposer = 0;
-    }
+    newComposer->close();
+    QgisApp::instance()->deleteComposer( newComposer );
+    newComposer = nullptr;
     QMessageBox::warning( this, tr( "Template error" ), tr( "Error, could not load template file" ) );
   }
 }
@@ -233,12 +324,12 @@ void QgsComposerManager::on_mTemplate_currentIndexChanged( int indx )
 void QgsComposerManager::on_mTemplatePathBtn_pressed()
 {
   QSettings settings;
-  QString lastTmplDir = settings.value( "/UI/lastComposerTemplateDir", "." ).toString();
+  QString lastTmplDir = settings.value( "/UI/lastComposerTemplateDir", QDir::homePath() ).toString();
   QString tmplPath = QFileDialog::getOpenFileName( this,
                      tr( "Choose template" ),
                      lastTmplDir,
                      tr( "Composer templates" ) + " (*.qpt)" );
-  if ( !tmplPath.isNull() )
+  if ( !tmplPath.isEmpty() )
   {
     mTemplatePathLineEdit->setText( tmplPath );
     settings.setValue( "UI/ComposerManager/templatePath", tmplPath );
@@ -268,112 +359,117 @@ void QgsComposerManager::openLocalDirectory( const QString& localDirPath )
   QDesktopServices::openUrl( QUrl::fromLocalFile( localDirPath ) );
 }
 
+#ifdef Q_OS_MAC
+void QgsComposerManager::showEvent( QShowEvent* event )
+{
+  if ( !event->spontaneous() )
+  {
+    QgisApp::instance()->addWindow( mWindowAction );
+  }
+}
+
+void QgsComposerManager::changeEvent( QEvent* event )
+{
+  QDialog::changeEvent( event );
+  switch ( event->type() )
+  {
+    case QEvent::ActivationChange:
+      if ( QApplication::activeWindow() == this )
+      {
+        mWindowAction->setChecked( true );
+      }
+      break;
+
+    default:
+      break;
+  }
+}
+#endif
+
 void QgsComposerManager::remove_clicked()
 {
-  QListWidgetItem* item = mComposerListWidget->currentItem();
-  if ( !item )
+  QList<QgsComposer *> composerList;
+  QList<QListWidgetItem *> composerItems = mComposerListWidget->selectedItems();
+  QString title = tr( "Remove composers" );
+  QString message = tr( "Do you really want to remove all selected map composers?" );
+
+  if ( composerItems.isEmpty() )
   {
     return;
   }
 
-  //ask for confirmation
-  if ( QMessageBox::warning( this, tr( "Remove composer" ), tr( "Do you really want to remove the map composer '%1'?" ).arg( item->text() ), QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+  // Ask for confirmation
+  if ( composerItems.count() == 1 )
+  {
+    title = tr( "Remove composer" );
+    QListWidgetItem* uniqItem = composerItems.at( 0 );
+    message = tr( "Do you really want to remove the map composer '%1'?" ).arg( uniqItem->text() );
+  }
+
+  if ( QMessageBox::warning( this, title, message, QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
   {
     return;
   }
 
-  //delete composer
-  QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
-  if ( it != mItemComposerMap.end() )
+  // Find the QgsComposers that need to be deleted
+  Q_FOREACH ( QListWidgetItem* item, composerItems )
   {
-    QgisApp::instance()->deleteComposer( it.value() );
+    QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+    if ( it != mItemComposerMap.constEnd() )
+    {
+      composerList << it.value();
+    }
   }
-  mItemComposerMap.remove( item );
-  mComposerListWidget->removeItemWidget( item );
-  //and remove the list widget row
-  delete( mComposerListWidget->takeItem( mComposerListWidget->row( item ) ) );
+
+  // Once we have the composer list, we can delete all of them !
+  Q_FOREACH ( QgsComposer* c, composerList )
+  {
+    QgisApp::instance()->deleteComposer( c );
+  }
 }
 
 void QgsComposerManager::show_clicked()
 {
-  QListWidgetItem* item = mComposerListWidget->currentItem();
-  if ( !item )
+  Q_FOREACH ( QListWidgetItem* item, mComposerListWidget->selectedItems() )
   {
-    return;
-  }
-
-  QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
-  if ( it != mItemComposerMap.end() )
-  {
-    QgsComposer* c = 0;
-    if ( it.value() ) //a normal composer
+    QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+    if ( it != mItemComposerMap.constEnd() )
     {
-      c = it.value();
-      if ( c )
+      QgsComposer* c = nullptr;
+      if ( it.value() ) //a normal composer
       {
-        // extra activation steps for Windows
-        bool shown = c->isVisible();
-        hide();
-
-        c->activate();
-
-        // extra activation steps for Windows
-        if ( !shown )
+        c = it.value();
+        if ( c )
         {
-          c->on_mActionZoomAll_triggered();
+          // extra activation steps for Windows
+          bool shown = c->isVisible();
+
+          c->activate();
+
+          // extra activation steps for Windows
+          if ( !shown )
+          {
+            c->on_mActionZoomAll_triggered();
+          }
         }
       }
     }
   }
-#if 0
-  else //create composer from default template
-  {
-    QMap<QString, QString>::const_iterator templateIt = mDefaultTemplateMap.find( it.key()->text() );
-    if ( templateIt == mDefaultTemplateMap.constEnd() )
-    {
-      return;
-    }
-
-    QDomDocument templateDoc;
-    QFile templateFile( templateIt.value() );
-    if ( !templateFile.open( QIODevice::ReadOnly ) )
-    {
-      return;
-    }
-
-    if ( !templateDoc.setContent( &templateFile, false ) )
-    {
-      return;
-    }
-    c = QgisApp::instance()->createNewComposer();
-    c->setTitle( it.key()->text() );
-    if ( c )
-    {
-      c->readXML( templateDoc );
-      mItemComposerMap.insert( it.key(), c );
-    }
-  }
-
-  if ( c )
-  {
-    c->activate();
-  }
-#endif //0
-  close();
 }
 
 void QgsComposerManager::duplicate_clicked()
 {
-  QListWidgetItem* item = mComposerListWidget->currentItem();
-  if ( !item )
+  if ( mComposerListWidget->selectedItems().isEmpty() )
   {
     return;
   }
 
-  QgsComposer* currentComposer = 0;
+  QgsComposer* currentComposer = nullptr;
   QString currentTitle;
-  QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
-  if ( it != mItemComposerMap.end() )
+
+  QListWidgetItem* item = mComposerListWidget->selectedItems().at( 0 );
+  QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+  if ( it != mItemComposerMap.constEnd() )
   {
     currentComposer = it.value();
     currentTitle = it.value()->title();
@@ -383,8 +479,8 @@ void QgsComposerManager::duplicate_clicked()
     return;
   }
 
-  QString newTitle = QgisApp::instance()->uniqueComposerTitle( this, false, currentTitle + tr( " copy" ) );
-  if ( newTitle.isNull() )
+  QString newTitle;
+  if ( !QgisApp::instance()->uniqueComposerTitle( this, newTitle, false, currentTitle + tr( " copy" ) ) )
   {
     return;
   }
@@ -398,16 +494,12 @@ void QgsComposerManager::duplicate_clicked()
 
   dlg->close();
   delete dlg;
-  dlg = 0;
+  dlg = nullptr;
 
   if ( newComposer )
   {
     // extra activation steps for Windows
-    hide();
     newComposer->activate();
-
-    // no need to add new composer to list widget, if just closing this->exec();
-    close();
   }
   else
   {
@@ -418,16 +510,17 @@ void QgsComposerManager::duplicate_clicked()
 
 void QgsComposerManager::rename_clicked()
 {
-  QListWidgetItem* item = mComposerListWidget->currentItem();
-  if ( !item )
+  if ( mComposerListWidget->selectedItems().isEmpty() )
   {
     return;
   }
 
   QString currentTitle;
-  QgsComposer* currentComposer = 0;
-  QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
-  if ( it != mItemComposerMap.end() )
+  QgsComposer* currentComposer = nullptr;
+
+  QListWidgetItem* item = mComposerListWidget->selectedItems().at( 0 );
+  QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+  if ( it != mItemComposerMap.constEnd() )
   {
     currentComposer = it.value();
     currentTitle = it.value()->title();
@@ -436,8 +529,9 @@ void QgsComposerManager::rename_clicked()
   {
     return;
   }
-  QString newTitle = QgisApp::instance()->uniqueComposerTitle( this, false, currentTitle );
-  if ( newTitle.isNull() )
+
+  QString newTitle;
+  if ( !QgisApp::instance()->uniqueComposerTitle( this, newTitle, false, currentTitle ) )
   {
     return;
   }
@@ -449,10 +543,68 @@ void QgsComposerManager::rename_clicked()
 
 void QgsComposerManager::on_mComposerListWidget_itemChanged( QListWidgetItem * item )
 {
-  QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
-  if ( it != mItemComposerMap.end() )
+  QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+  if ( it != mItemComposerMap.constEnd() )
   {
     it.value()->setTitle( item->text() );
   }
   mComposerListWidget->sortItems();
+}
+
+
+//
+// QgsComposerNameDelegate
+//
+
+QgsComposerNameDelegate::QgsComposerNameDelegate( QObject *parent )
+    : QItemDelegate( parent )
+{
+
+}
+
+QWidget *QgsComposerNameDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  Q_UNUSED( option );
+  Q_UNUSED( index );
+
+  //create a line edit
+  QLineEdit *lineEdit = new QLineEdit( parent );
+  return lineEdit;
+}
+
+void QgsComposerNameDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+{
+  QString text = index.model()->data( index, Qt::EditRole ).toString();
+  QLineEdit *lineEdit = static_cast<QLineEdit*>( editor );
+  lineEdit->setText( text );
+}
+
+void QgsComposerNameDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+{
+  QLineEdit *lineEdit = static_cast<QLineEdit*>( editor );
+  QString value = lineEdit->text();
+
+  //has name changed?
+  bool changed = model->data( index, Qt::EditRole ).toString() != value;
+
+  //check if name already exists
+  QStringList cNames;
+  Q_FOREACH ( QgsComposer* c, QgisApp::instance()->printComposers() )
+  {
+    cNames << c->title();
+  }
+  if ( changed && cNames.contains( value ) )
+  {
+    //name exists!
+    QMessageBox::warning( nullptr, tr( "Rename composer" ), tr( "There is already a composer named \"%1\"" ).arg( value ) );
+    return;
+  }
+
+  model->setData( index, QVariant( value ), Qt::EditRole );
+}
+
+void QgsComposerNameDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  Q_UNUSED( index );
+  editor->setGeometry( option.rect );
 }

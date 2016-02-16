@@ -25,25 +25,29 @@ IF(EXISTS QSCINTILLA_VERSION_STR)
 ELSE(EXISTS QSCINTILLA_VERSION_STR)
 
   FIND_PATH(QSCINTILLA_INCLUDE_DIR
-    NAMES qsciglobal.h
+    NAMES Qsci/qsciglobal.h
     PATHS
+      ${Qt5Core_INCLUDE_DIRS}
       "${QT_INCLUDE_DIR}"
       /usr/local/include
       /usr/include
-    PATH_SUFFIXES Qsci
     )
 
-  FIND_LIBRARY(QSCINTILLA_LIBRARY
-    NAMES qscintilla2 libqscintilla2 libqscintilla2.dylib
+  if(ENABLE_QT5)
+    set(QSCINTILLA_LIBRARY_NAMES qscintilla2-qt5 libqscintilla2-qt5 qt5scintilla2 libqscintilla2-qt5.dylib)
+  else(ENABLE_QT5)
+    set(QSCINTILLA_LIBRARY_NAMES qscintilla2 libqscintilla2 libqscintilla2.dylib)
+  endif(ENABLE_QT5)
+
+  find_library(QSCINTILLA_LIBRARY
+    NAMES ${QSCINTILLA_LIBRARY_NAMES}
     PATHS
       "${QT_LIBRARY_DIR}"
       /usr/local/lib
       /usr/lib
-    )
+  )
 
-  IF(QSCINTILLA_LIBRARY)
-    # QSCINTILLA_INCLUDE_DIR is not required at this time (Oct 2012) since only
-    # Qsci PyQt4 module is used, though lib is needed for Mac bundling
+  IF(QSCINTILLA_LIBRARY AND QSCINTILLA_INCLUDE_DIR)
     SET(QSCINTILLA_FOUND TRUE)
 
     IF(CYGWIN)
@@ -53,12 +57,12 @@ ELSE(EXISTS QSCINTILLA_VERSION_STR)
         SET (QSCINTILLA_DEFINITIONS -DQSCINTILLA_STATIC)
       ENDIF(BUILD_SHARED_LIBS)
     ENDIF(CYGWIN)
-  ENDIF(QSCINTILLA_LIBRARY)
+  ENDIF(QSCINTILLA_LIBRARY AND QSCINTILLA_INCLUDE_DIR)
 
   IF(QSCINTILLA_INCLUDE_DIR AND NOT EXISTS QSCINTILLA_VERSION_STR)
     # get QScintilla2 version from header, is optinally retrieved via bindings
     # with Qsci PyQt4 module
-    FILE(READ ${QSCINTILLA_INCLUDE_DIR}/qsciglobal.h qsci_header)
+    FILE(READ ${QSCINTILLA_INCLUDE_DIR}/Qsci/qsciglobal.h qsci_header)
     STRING(REGEX REPLACE "^.*QSCINTILLA_VERSION_STR +\"([^\"]+)\".*$" "\\1" QSCINTILLA_VERSION_STR "${qsci_header}")
   ENDIF(QSCINTILLA_INCLUDE_DIR AND NOT EXISTS QSCINTILLA_VERSION_STR)
 

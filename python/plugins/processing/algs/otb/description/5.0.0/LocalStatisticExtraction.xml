@@ -1,0 +1,48 @@
+<root>
+  <key>LocalStatisticExtraction</key>
+  <exec>otbcli_LocalStatisticExtraction</exec>
+  <longname>Local Statistic Extraction</longname>
+  <group>Feature Extraction</group>
+  <description>Computes local statistical moments on every pixel in the selected channel of the input image</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description>The input image to compute the features on.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>channel</key>
+    <name>Selected Channel</name>
+    <description>The selected channel index</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>radius</key>
+    <name>Neighborhood radius</name>
+    <description>The computational window radius.</description>
+    <minValue />
+    <maxValue />
+    <default>3</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>Feature Output Image</name>
+    <description>Output image containing the local statistical moments.</description>
+    <hidden />
+  </parameter>
+</root>

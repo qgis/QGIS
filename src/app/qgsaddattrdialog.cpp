@@ -22,11 +22,14 @@
 
 #include <QMessageBox>
 
-QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WFlags fl )
+QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mIsShapeFile( vlayer && vlayer->providerType() == "ogr" && vlayer->storageType() == "ESRI Shapefile" )
 {
   setupUi( this );
+
+  if ( !vlayer )
+    return;
 
   //fill data types into the combo box
   const QList< QgsVectorDataProvider::NativeType > &typelist = vlayer->dataProvider()->nativeTypes();
@@ -94,6 +97,13 @@ void QgsAddAttrDialog::accept()
                           tr( "Invalid field name. This field name is reserved and cannot be used." ) );
     return;
   }
+  if ( mNameEdit->text().isEmpty() )
+  {
+    QMessageBox::warning( this, tr( "Warning" ),
+                          tr( "No name specified. Please specify a name to create a new field." ) );
+    return;
+  }
+
   QDialog::accept();
 }
 

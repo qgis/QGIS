@@ -7,14 +7,34 @@
     <x>0</x>
     <y>0</y>
     <width>514</width>
-    <height>304</height>
+    <height>253</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Export to vector file</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="editOutputFile">
+     <property name="text">
+      <string notr="true"/>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QComboBox" name="cboFileFormat"/>
+   </item>
+   <item row="1" column="0">
     <widget class="QLabel" name="label_5">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -23,78 +43,8 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Output file</string>
+      <string>Save as</string>
      </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="editOutputFile">
-     <property name="text">
-      <string notr="true"/>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QToolButton" name="btnChooseOutputFile">
-     <property name="text">
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="3">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Action</string>
-     </property>
-     <layout class="QVBoxLayout">
-      <item>
-       <widget class="QRadioButton" name="radCreate">
-        <property name="text">
-         <string>Create new file</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout">
-        <item>
-         <spacer>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="chkDropTable">
-          <property name="text">
-           <string>Drop existing one</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="radAppend">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Append data to file</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </widget>
    </item>
    <item row="2" column="0" colspan="3">
@@ -103,6 +53,13 @@
       <string>Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="0" colspan="2">
+       <widget class="QCheckBox" name="chkDropTable">
+        <property name="text">
+         <string>Replace destination file (if exists)</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
@@ -186,22 +143,23 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" colspan="3">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+   <item row="1" column="2">
+    <widget class="QToolButton" name="btnChooseOutputFile">
+     <property name="text">
+      <string>...</string>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Format</string>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <tabstops>
-  <tabstop>radCreate</tabstop>
-  <tabstop>chkDropTable</tabstop>
-  <tabstop>radAppend</tabstop>
   <tabstop>chkSourceSrid</tabstop>
   <tabstop>editSourceSrid</tabstop>
   <tabstop>chkEncoding</tabstop>
@@ -271,22 +229,6 @@
     <hint type="destinationlabel">
      <x>201</x>
      <y>414</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radCreate</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>chkDropTable</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>131</x>
-     <y>216</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>140</x>
-     <y>245</y>
     </hint>
    </hints>
   </connection>

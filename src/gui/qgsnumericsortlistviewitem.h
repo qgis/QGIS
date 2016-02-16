@@ -37,15 +37,15 @@ class GUI_EXPORT QgsNumericSortTreeWidgetItem : public QTreeWidgetItem
 {
   public:
     /**
-    * Constructor.
-    */
+     * Constructor.
+     */
     QgsNumericSortTreeWidgetItem( QTreeWidget * parent );
     QgsNumericSortTreeWidgetItem( QTreeWidgetItem * parent );
 
     //! Destructor
     virtual ~QgsNumericSortTreeWidgetItem();
 
-    virtual bool operator<( const QTreeWidgetItem &other ) const;
+    virtual bool operator<( const QTreeWidgetItem &other ) const override;
 
 };
 

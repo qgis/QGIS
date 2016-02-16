@@ -1,0 +1,5 @@
+{
+  "name": "Conditionals",
+  "type": "group",
+  "description": "This group contains functions to handle conditional checks in expressions."
+}

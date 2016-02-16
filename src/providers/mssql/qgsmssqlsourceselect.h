@@ -36,15 +36,15 @@ class QgisApp;
 
 class QgsMssqlSourceSelectDelegate : public QItemDelegate
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
-    QgsMssqlSourceSelectDelegate( QObject *parent = NULL )
+    explicit QgsMssqlSourceSelectDelegate( QObject *parent = nullptr )
         : QItemDelegate( parent )
     {}
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 };
 
 // A class that determines the geometry type of a given database
@@ -59,10 +59,10 @@ class QgsMssqlGeomColumnTypeThread : public QThread
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.
-    virtual void run();
+    virtual void run() override;
 
   signals:
-    void setLayerType( QgsMssqlLayerProperty layerProperty );
+    void setLayerType( const QgsMssqlLayerProperty& layerProperty );
 
   public slots:
     void addGeometryColumn( QgsMssqlLayerProperty layerProperty );
@@ -78,7 +78,7 @@ class QgsMssqlGeomColumnTypeThread : public QThread
 };
 
 
-/*! \class QgsMssqlSourceSelect
+/** \class QgsMssqlSourceSelect
  * \brief Dialog to create connections and add tables from MSSQL.
  *
  * This dialog allows the user to define and save connection information
@@ -92,10 +92,10 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
   public:
 
     //! static function to delete a connection
-    static void deleteConnection( QString key );
+    static void deleteConnection( const QString& key );
 
     //! Constructor
-    QgsMssqlSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsMssqlSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsMssqlSourceSelect();
     //! Populate the connection list combo box
@@ -108,16 +108,16 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
   signals:
     void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
     void connectionsChanged();
-    void addGeometryColumn( QgsMssqlLayerProperty );
+    void addGeometryColumn( const QgsMssqlLayerProperty& );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog
     void addTables();
     void buildQuery();
 
-    /*! Connects to the database using the stored connection parameters.
-    * Once connected, available layers are displayed.
-    */
+    /** Connects to the database using the stored connection parameters.
+     * Once connected, available layers are displayed.
+     */
     void on_btnConnect_clicked();
     void on_cbxAllowGeometrylessTables_stateChanged( int );
     //! Opens the create connection dialog to build a new connection
@@ -137,7 +137,7 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void setSql( const QModelIndex& index );
     //! Store the selected database
     void on_cmbConnections_activated( int );
-    void setLayerType( QgsMssqlLayerProperty layerProperty );
+    void setLayerType( const QgsMssqlLayerProperty& layerProperty );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
     //!Sets a new regular expression to the model
@@ -158,14 +158,14 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     bool mEmbeddedMode;
 
     // queue another query for the thread
-    void addSearchGeometryColumn( QString connectionName, QgsMssqlLayerProperty layerProperty , bool estimateMetadata );
+    void addSearchGeometryColumn( QString connectionName, QgsMssqlLayerProperty layerProperty, bool estimateMetadata );
 
     // Set the position of the database connection list to the last
     // used one.
     void setConnectionListPosition();
     // Combine the schema, table and column data into a single string
     // useful for display to the user
-    QString fullDescription( QString schema, QString table, QString column, QString type );
+    QString fullDescription( const QString& schema, const QString& table, const QString& column, const QString& type );
     // The column labels
     QStringList mColumnLabels;
     // Our thread for doing long running queries

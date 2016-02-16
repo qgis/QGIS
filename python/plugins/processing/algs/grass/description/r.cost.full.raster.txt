@@ -1,0 +1,8 @@
+r.cost
+r.cost.full.raster - Creates a raster layer of cumulative cost of moving across a raster layer whose cell values represent cost.
+Raster (r.*)
+ParameterRaster|input|Unit cost layer|False
+ParameterRaster|start_rast|Name of starting raster points map|False
+ParameterBoolean|-k|Use the 'Knight's move'; slower, but more accurate|False
+ParameterBoolean|-n|Keep null values in output raster layer|False
+OutputRaster|output|Cumulative cost

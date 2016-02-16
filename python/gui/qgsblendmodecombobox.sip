@@ -7,7 +7,7 @@ class QgsBlendModeComboBox : QComboBox
 #include <qgsblendmodecombobox.h>
 %End
   public:
-    QgsBlendModeComboBox( QWidget* parent = 0 );
+    QgsBlendModeComboBox( QWidget* parent /TransferThis/ = 0 );
     virtual ~QgsBlendModeComboBox();
 
     //! Function to read the selected blend mode as QPainter::CompositionMode
@@ -17,4 +17,5 @@ class QgsBlendModeComboBox : QComboBox
 
   public slots:
     void updateModes();
+
 };

@@ -25,14 +25,14 @@
 #include <QFileDialog>
 #include <QTextCodec>
 
-QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent, Qt::WFlags fl )
+QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mCRS( srsid )
 {
   setup();
 }
 
-QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, bool layerHasSelectedFeatures, int options, QWidget* parent, Qt::WFlags fl )
+QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, const QgsRectangle& layerExtent, bool layerHasSelectedFeatures, int options, QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mCRS( srsid )
     , mLayerExtent( layerExtent )
@@ -47,6 +47,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, const QgsRec
   }
 
   mSelectedOnly->setEnabled( layerHasSelectedFeatures );
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
 }
 
 void QgsVectorLayerSaveAsDialog::setup()
@@ -66,6 +67,15 @@ void QgsVectorLayerSaveAsDialog::setup()
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( format ) );
   mFormatComboBox->blockSignals( false );
 
+  //add geometry types to combobox
+  mGeometryTypeComboBox->addItem( tr( "Automatic" ), -1 );
+  mGeometryTypeComboBox->addItem( QgsWKBTypes::displayString( QgsWKBTypes::Point ), QgsWKBTypes::Point );
+  mGeometryTypeComboBox->addItem( QgsWKBTypes::displayString( QgsWKBTypes::LineString ), QgsWKBTypes::LineString );
+  mGeometryTypeComboBox->addItem( QgsWKBTypes::displayString( QgsWKBTypes::Polygon ), QgsWKBTypes::Polygon );
+  mGeometryTypeComboBox->addItem( QgsWKBTypes::displayString( QgsWKBTypes::GeometryCollection ), QgsWKBTypes::GeometryCollection );
+  mGeometryTypeComboBox->addItem( tr( "No geometry" ), QgsWKBTypes::NoGeometry );
+  mGeometryTypeComboBox->setCurrentIndex( mGeometryTypeComboBox->findData( -1 ) );
+
   mEncodingComboBox->addItems( QgsVectorDataProvider::availableEncodings() );
 
   QString enc = settings.value( "/UI/encoding", "System" ).toString();
@@ -76,11 +86,11 @@ void QgsVectorLayerSaveAsDialog::setup()
     idx = 0;
   }
 
-  mCRSSelection->clear();
-  mCRSSelection->addItems( QStringList() << tr( "Layer CRS" ) << tr( "Project CRS" ) << tr( "Selected CRS" ) );
-
   QgsCoordinateReferenceSystem srs( mCRS, QgsCoordinateReferenceSystem::InternalCrsId );
-  leCRS->setText( srs.description() );
+  mCrsSelector->setCrs( srs );
+  mCrsSelector->setLayerCrs( srs );
+  mCrsSelector->dialog()->setMessage( tr( "Select the coordinate reference system for the vector file. "
+                                          "The data points will be transformed from the layer coordinate reference system." ) );
 
   mEncodingComboBox->setCurrentIndex( idx );
   on_mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
@@ -109,49 +119,58 @@ QList<QPair<QLabel*, QWidget*> > QgsVectorLayerSaveAsDialog::createControls( con
   {
     QgsVectorFileWriter::Option *option = it.value();
     QLabel *label = new QLabel( it.key() );
-    QWidget *control = 0;
+    QWidget *control = nullptr;
     switch ( option->type )
     {
       case QgsVectorFileWriter::Int:
       {
-        QgsVectorFileWriter::IntOption* opt = dynamic_cast<QgsVectorFileWriter::IntOption*>( option );
-        QSpinBox* sb = new QSpinBox();
-        sb->setObjectName( it.key() );
-        sb->setValue( opt->defaultValue );
-        control = sb;
+        QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption*>( option );
+        if ( opt )
+        {
+          QSpinBox *sb = new QSpinBox();
+          sb->setObjectName( it.key() );
+          sb->setValue( opt->defaultValue );
+          control = sb;
+        }
         break;
       }
 
       case QgsVectorFileWriter::Set:
       {
-        QgsVectorFileWriter::SetOption* opt = dynamic_cast<QgsVectorFileWriter::SetOption*>( option );
-        QComboBox* cb = new QComboBox();
-        cb->setObjectName( it.key() );
-        Q_FOREACH( const QString& val, opt->values )
+        QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption*>( option );
+        if ( opt )
         {
-          cb->addItem( val, val );
+          QComboBox* cb = new QComboBox();
+          cb->setObjectName( it.key() );
+          Q_FOREACH ( const QString& val, opt->values )
+          {
+            cb->addItem( val, val );
+          }
+          if ( opt->allowNone )
+            cb->addItem( tr( "<Default>" ), QVariant( QVariant::String ) );
+          int idx = cb->findText( opt->defaultValue );
+          if ( idx == -1 )
+            idx = cb->findData( QVariant( QVariant::String ) );
+          cb->setCurrentIndex( idx );
+          control = cb;
         }
-        if ( opt->allowNone )
-          cb->addItem( tr( "<Default>" ), QVariant( QVariant::String ) );
-        int idx = cb->findText( opt->defaultValue );
-        if ( idx == -1 )
-          idx = cb->findData( QVariant( QVariant::String ) );
-        cb->setCurrentIndex( idx );
-        control = cb;
         break;
       }
 
       case QgsVectorFileWriter::String:
       {
-        QgsVectorFileWriter::StringOption* opt = dynamic_cast<QgsVectorFileWriter::StringOption*>( option );
-        QLineEdit* le = new QLineEdit( opt->defaultValue );
-        le->setObjectName( it.key() );
-        control = le;
+        QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption*>( option );
+        if ( opt )
+        {
+          QLineEdit* le = new QLineEdit( opt->defaultValue );
+          le->setObjectName( it.key() );
+          control = le;
+        }
         break;
       }
 
       case QgsVectorFileWriter::Hidden:
-        control = 0;
+        control = nullptr;
         break;
     }
 
@@ -181,26 +200,6 @@ void QgsVectorLayerSaveAsDialog::accept()
   settings.setValue( "/UI/lastVectorFormat", format() );
   settings.setValue( "/UI/encoding", encoding() );
   QDialog::accept();
-}
-
-void QgsVectorLayerSaveAsDialog::on_mCRSSelection_currentIndexChanged( int idx )
-{
-  leCRS->setEnabled( idx == 2 );
-
-  QgsCoordinateReferenceSystem crs;
-  if ( mCRSSelection->currentIndex() == 0 )
-  {
-    crs = mLayerCrs;
-  }
-  else if ( mCRSSelection->currentIndex() == 1 )
-  {
-    crs = mExtentGroupBox->currentCrs();
-  }
-  else // custom CRS
-  {
-    crs.createFromId( mCRS, QgsCoordinateReferenceSystem::InternalCrsId );
-  }
-  mExtentGroupBox->setOutputCrs( crs );
 }
 
 void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx )
@@ -255,7 +254,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
 
       QFormLayout* datasourceLayout = dynamic_cast<QFormLayout*>( mDatasourceOptionsGroupBox->layout() );
 
-      Q_FOREACH( const LabelControlPair& control, controls )
+      Q_FOREACH ( LabelControlPair control, controls )
       {
         datasourceLayout->addRow( control.first, control.second );
       }
@@ -272,7 +271,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
 
       QFormLayout* layerOptionsLayout = dynamic_cast<QFormLayout*>( mLayerOptionsGroupBox->layout() );
 
-      Q_FOREACH( const LabelControlPair& control, controls )
+      Q_FOREACH ( LabelControlPair control, controls )
       {
         layerOptionsLayout->addRow( control.first, control.second );
       }
@@ -284,37 +283,27 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
   }
 }
 
+void QgsVectorLayerSaveAsDialog::on_leFilename_textChanged( const QString& text )
+{
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( QFileInfo( text ).absoluteDir().exists() );
+}
+
 void QgsVectorLayerSaveAsDialog::on_browseFilename_clicked()
 {
   QSettings settings;
-  QString dirName = leFilename->text().isEmpty() ? settings.value( "/UI/lastVectorFileFilterDir", "." ).toString() : leFilename->text();
+  QString dirName = leFilename->text().isEmpty() ? settings.value( "/UI/lastVectorFileFilterDir", QDir::homePath() ).toString() : leFilename->text();
   QString filterString = QgsVectorFileWriter::filterForDriver( format() );
-  QString outputFile = QFileDialog::getSaveFileName( 0, tr( "Save layer as..." ), dirName, filterString );
+  QString outputFile = QFileDialog::getSaveFileName( nullptr, tr( "Save layer as..." ), dirName, filterString );
   if ( !outputFile.isNull() )
   {
     leFilename->setText( outputFile );
   }
 }
 
-void QgsVectorLayerSaveAsDialog::on_browseCRS_clicked()
+void QgsVectorLayerSaveAsDialog::on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs )
 {
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
-  if ( mCRS >= 0 )
-    mySelector->setSelectedCrsId( mCRS );
-  mySelector->setMessage( tr( "Select the coordinate reference system for the vector file. "
-                              "The data points will be transformed from the layer coordinate reference system." ) );
-
-  if ( mySelector->exec() )
-  {
-    QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
-    mCRS = srs.srsid();
-    leCRS->setText( srs.description() );
-    mCRSSelection->setCurrentIndex( 2 );
-
-    mExtentGroupBox->setOutputCrs( srs );
-  }
-
-  delete mySelector;
+  mCRS = crs.srsid();
+  mExtentGroupBox->setOutputCrs( crs );
 }
 
 QString QgsVectorLayerSaveAsDialog::filename() const
@@ -334,18 +323,7 @@ QString QgsVectorLayerSaveAsDialog::format() const
 
 long QgsVectorLayerSaveAsDialog::crs() const
 {
-  if ( mCRSSelection->currentIndex() == 0 )
-  {
-    return -1; // Layer CRS
-  }
-  else if ( mCRSSelection->currentIndex() == 1 )
-  {
-    return -2; // Project CRS
-  }
-  else
-  {
-    return mCRS;
-  }
+  return mCRS;
 }
 
 QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
@@ -374,7 +352,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         {
           QComboBox* cb = mDatasourceOptionsGroupBox->findChild<QComboBox*>( it.key() );
           if ( cb && !cb->itemData( cb->currentIndex() ).isNull() )
-            options << QString( "%1=%2" ).arg( it.key() ).arg( cb->currentText() );
+            options << QString( "%1=%2" ).arg( it.key(), cb->currentText() );
           break;
         }
 
@@ -382,7 +360,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         {
           QLineEdit* le = mDatasourceOptionsGroupBox->findChild<QLineEdit*>( it.key() );
           if ( le )
-            options << QString( "%1=%2" ).arg( it.key() ).arg( le->text() );
+            options << QString( "%1=%2" ).arg( it.key(), le->text() );
           break;
         }
 
@@ -390,14 +368,14 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         {
           QgsVectorFileWriter::HiddenOption *opt =
             dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
-          options << QString( "%1=%2" ).arg( it.key() ).arg( opt->mValue );
+          options << QString( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
         }
       }
     }
   }
 
-  return options + mOgrDatasourceOptions->toPlainText().split( "\n" );
+  return options + mOgrDatasourceOptions->toPlainText().split( '\n' );
 }
 
 QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
@@ -417,21 +395,24 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
         case QgsVectorFileWriter::Int:
         {
           QSpinBox* sb = mLayerOptionsGroupBox->findChild<QSpinBox*>( it.key() );
-          options << QString( "%1=%2" ).arg( it.key() ).arg( sb->value() );
+          if ( sb )
+            options << QString( "%1=%2" ).arg( it.key() ).arg( sb->value() );
           break;
         }
 
         case QgsVectorFileWriter::Set:
         {
           QComboBox* cb = mLayerOptionsGroupBox->findChild<QComboBox*>( it.key() );
-          options << QString( "%1=%2" ).arg( it.key() ).arg( cb->currentText() );
+          if ( cb && !cb->itemData( cb->currentIndex() ).isNull() )
+            options << QString( "%1=%2" ).arg( it.key(), cb->currentText() );
           break;
         }
 
         case QgsVectorFileWriter::String:
         {
           QLineEdit* le = mLayerOptionsGroupBox->findChild<QLineEdit*>( it.key() );
-          options << QString( "%1=%2" ).arg( it.key() ).arg( le->text() );
+          if ( le )
+            options << QString( "%1=%2" ).arg( it.key(), le->text() );
           break;
         }
 
@@ -439,14 +420,14 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
         {
           QgsVectorFileWriter::HiddenOption *opt =
             dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
-          options << QString( "%1=%2" ).arg( it.key() ).arg( opt->mValue );
+          options << QString( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
         }
       }
     }
   }
 
-  return options + mOgrLayerOptions->toPlainText().split( "\n" );
+  return options + mOgrLayerOptions->toPlainText().split( '\n' );
 }
 
 bool QgsVectorLayerSaveAsDialog::skipAttributeCreation() const
@@ -489,6 +470,44 @@ bool QgsVectorLayerSaveAsDialog::onlySelected() const
   return mSelectedOnly->isChecked();
 }
 
+QgsWKBTypes::Type QgsVectorLayerSaveAsDialog::geometryType() const
+{
+  int currentIndexData = mGeometryTypeComboBox->itemData( mGeometryTypeComboBox->currentIndex() ).toInt();
+  if ( currentIndexData == -1 )
+  {
+    //automatic
+    return QgsWKBTypes::Unknown;
+  }
+
+  return ( QgsWKBTypes::Type )currentIndexData;
+}
+
+bool QgsVectorLayerSaveAsDialog::automaticGeometryType() const
+{
+  int currentIndexData = mGeometryTypeComboBox->itemData( mGeometryTypeComboBox->currentIndex() ).toInt();
+  return currentIndexData == -1;
+}
+
+bool QgsVectorLayerSaveAsDialog::forceMulti() const
+{
+  return mForceMultiCheckBox->isChecked();
+}
+
+void QgsVectorLayerSaveAsDialog::setForceMulti( bool checked )
+{
+  mForceMultiCheckBox->setChecked( checked );
+}
+
+bool QgsVectorLayerSaveAsDialog::includeZ() const
+{
+  return mIncludeZCheckBox->isChecked();
+}
+
+void QgsVectorLayerSaveAsDialog::setIncludeZ( bool checked )
+{
+  mIncludeZCheckBox->setChecked( checked );
+}
+
 void QgsVectorLayerSaveAsDialog::on_mSymbologyExportComboBox_currentIndexChanged( const QString& text )
 {
   bool scaleEnabled = true;
@@ -498,4 +517,12 @@ void QgsVectorLayerSaveAsDialog::on_mSymbologyExportComboBox_currentIndexChanged
   }
   mScaleSpinBox->setEnabled( scaleEnabled );
   mScaleLabel->setEnabled( scaleEnabled );
+}
+
+void QgsVectorLayerSaveAsDialog::on_mGeometryTypeComboBox_currentIndexChanged( int index )
+{
+  int currentIndexData = mGeometryTypeComboBox->itemData( index ).toInt();
+
+  mForceMultiCheckBox->setEnabled( currentIndexData != -1 );
+  mIncludeZCheckBox->setEnabled( currentIndexData != -1 );
 }

@@ -159,7 +159,7 @@
            <number>1</number>
           </property>
           <property name="maximum">
-           <number>9999</number>
+           <number>1000000000</number>
           </property>
          </widget>
         </item>
@@ -230,6 +230,9 @@
     <widget class="QCheckBox" name="addToCanvasCheck">
      <property name="text">
       <string>Add result to canvas</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

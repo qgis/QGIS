@@ -3,20 +3,31 @@
 # the UI file won't be wrapped!
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/composer
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
-  ${CMAKE_BINARY_DIR}/src/ui
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/python
-  ${CMAKE_SOURCE_DIR}/src/app
-  ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/auth
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/composer
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/geometry
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/symbology-ng
+  ${CMAKE_CURRENT_BINARY_DIR}/../../../src/ui
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/editorwidgets
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/editorwidgets/core
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/attributetable
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/symbology-ng
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/raster
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/python
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app/pluginmanager
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/ui
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
-  )
+  ${QCA_INCLUDE_DIR}
+)
 
 #############################################################
 # Compiler defines
@@ -54,11 +65,9 @@ ENDIF (APPLE)
 
 MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
-  SET(qgis_${testname}_MOC_CPPS ${testsrc})
-  QT4_WRAP_CPP(qgis_${testname}_MOC_SRCS ${qgis_${testname}_MOC_CPPS})
   ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
   ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
+  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}
     ${QT_QTXML_LIBRARY}
     ${QT_QTCORE_LIBRARY}
@@ -69,11 +78,13 @@ MACRO (ADD_QGIS_TEST testname testsrc)
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
     ${QWT_LIBRARY}
-    ${QWTPOLAR_LIBRARY}
     qgis_core
     qgis_gui
     qgis_analysis
     qgis_app)
+  IF(WITH_QWTPOLAR AND NOT WITH_INTERNAL_QWTPOLAR)
+    TARGET_LINK_LIBRARIES(qgis_${testname} ${QWTPOLAR_LIBRARY})
+  ENDIF(WITH_QWTPOLAR AND NOT WITH_INTERNAL_QWTPOLAR)
   IF(WIN32)
     ADD_DEFINITIONS(-DQWT_DLL)
     TARGET_LINK_LIBRARIES(qgis_${testname} DbgHelp)
@@ -81,7 +92,7 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   IF (APPLE)
     TARGET_LINK_LIBRARIES(qgis_${testname} ${APP_SERVICES_LIBRARY} )
   ENDIF(APPLE)
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
+  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
   #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
   #  INSTALL_RPATH_USE_LINK_PATH true )
@@ -91,3 +102,7 @@ ENDMACRO (ADD_QGIS_TEST)
 # Tests:
 
 ADD_QGIS_TEST(qgisappclipboard testqgisappclipboard.cpp)
+ADD_QGIS_TEST(attributetabletest testqgsattributetable.cpp)
+ADD_QGIS_TEST(fieldcalculatortest testqgsfieldcalculator.cpp)
+ADD_QGIS_TEST(maptoolidentifyaction testqgsmaptoolidentifyaction.cpp)
+ADD_QGIS_TEST(measuretool testqgsmeasuretool.cpp)

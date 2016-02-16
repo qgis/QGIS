@@ -22,47 +22,79 @@
 #include "qgscomposeritem.h"
 
 class QgsComposerItem;
+class QgsAtlasComposition;
+class QgsDataDefinedButton;
 
-/**A class to enter generic properties for composer items (e.g. background, outline, frame).
+/** A base class for property widgets for composer items. All composer item widgets should inherit from
+ * this base class.
+*/
+class QgsComposerItemBaseWidget: public QWidget
+{
+    Q_OBJECT
+  public:
+    QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject* composerObject );
+    ~QgsComposerItemBaseWidget();
+
+  protected slots:
+    /** Must be called when a data defined button changes*/
+    void updateDataDefinedProperty();
+
+  protected:
+    /** Sets a data defined property for the item from its current data defined button settings*/
+    void setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty p );
+
+    /** Returns the data defined property corresponding to a data defined button widget*/
+    virtual QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton* widget );
+
+    /** Returns the current atlas coverage layer (if set)*/
+    QgsVectorLayer* atlasCoverageLayer() const;
+
+    /** Returns the atlas for the composition*/
+    QgsAtlasComposition *atlasComposition() const;
+
+    QgsComposerObject* mComposerObject;
+};
+
+/** A class to enter generic properties for composer items (e.g. background, outline, frame).
  This widget can be embedded into other item widgets*/
-class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBase
+class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerItemWidgetBase
 {
     Q_OBJECT
   public:
     QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item );
     ~QgsComposerItemWidget();
 
-    /**A combination of upper/middle/lower and left/middle/right*/
+    /** A combination of upper/middle/lower and left/middle/right*/
     QgsComposerItem::ItemPositionMode positionMode() const;
 
-    /**Toggles display of the background group*/
+    /** Toggles display of the background group*/
     void showBackgroundGroup( bool showGroup );
-    /**Toggles display of the frame group*/
+    /** Toggles display of the frame group*/
     void showFrameGroup( bool showGroup );
 
   public slots:
-    void on_mFrameColorButton_clicked();
+
     /** Set the frame color
-     * @note added in 1.9
      */
     void on_mFrameColorButton_colorChanged( const QColor& newFrameColor );
     void on_mBackgroundColorButton_clicked();
     /** Set the background color
-     * @note added in 1.9
      */
     void on_mBackgroundColorButton_colorChanged( const QColor& newBackgroundColor );
 //    void on_mTransparencySlider_valueChanged( int value );
 //    void on_mTransparencySpinBox_valueChanged( int value );
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mFrameGroupBox_toggled( bool state );
+    void on_mFrameJoinStyleCombo_currentIndexChanged( int index );
     void on_mBackgroundGroupBox_toggled( bool state );
     void on_mItemIdLineEdit_editingFinished();
 
     //adjust coordinates in line edits
-    void on_mXLineEdit_editingFinished() { changeItemPosition(); }
-    void on_mYLineEdit_editingFinished() { changeItemPosition(); }
-    void on_mWidthLineEdit_editingFinished() { changeItemPosition(); }
-    void on_mHeightLineEdit_editingFinished() { changeItemPosition(); }
+    void on_mPageSpinBox_valueChanged( int );
+    void on_mXPosSpin_valueChanged( double );
+    void on_mYPosSpin_valueChanged( double );
+    void on_mWidthSpin_valueChanged( double );
+    void on_mHeightSpin_valueChanged( double );
 
     void on_mUpperLeftCheckBox_stateChanged( int state );
     void on_mUpperMiddleCheckBox_stateChanged( int state );
@@ -75,19 +107,43 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void on_mLowerRightCheckBox_stateChanged( int state );
 
     void on_mBlendModeCombo_currentIndexChanged( int index );
-    void on_mTransparencySlider_valueChanged( int value );
+    void on_mTransparencySpnBx_valueChanged( int value );
 
     void on_mItemRotationSpinBox_valueChanged( double val );
+    void on_mExcludeFromPrintsCheckBox_toggled( bool checked );
 
     void setValuesForGuiElements();
+    //sets the values for all position related (x, y, width, height) elements
     void setValuesForGuiPositionElements();
+    //sets the values for all non-position related elements
+    void setValuesForGuiNonPositionElements();
+
+  protected:
+    QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget ) override;
+
+  protected slots:
+    /** Initializes data defined buttons to current atlas coverage layer*/
+    void populateDataDefinedButtons();
 
   private:
     QgsComposerItemWidget();
+
+    QgsComposerItem* mItem;
+
+    bool mFreezeXPosSpin;
+    bool mFreezeYPosSpin;
+    bool mFreezeWidthSpin;
+    bool mFreezeHeightSpin;
+    bool mFreezePageSpin;
+
 //    void changeItemTransparency( int value );
     void changeItemPosition();
 
-    QgsComposerItem* mItem;
+  private slots:
+
+    void variablesChanged();
+
+
 };
 
 #endif //QGSCOMPOSERITEMWIDGET_H

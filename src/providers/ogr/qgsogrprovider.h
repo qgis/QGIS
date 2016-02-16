@@ -49,7 +49,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
   public:
 
-    /** convert a vector layer to a vector file */
+    /** Convert a vector layer to a vector file */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
       const QgsFields &fields,
@@ -57,24 +57,24 @@ class QgsOgrProvider : public QgsVectorDataProvider
       const QgsCoordinateReferenceSystem *srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = 0,
-      const QMap<QString, QVariant> *options = 0
+      QString *errorMessage = nullptr,
+      const QMap<QString, QVariant> *options = nullptr
     );
 
     /**
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    QgsOgrProvider( QString const & uri = "" );
+    explicit QgsOgrProvider( QString const & uri = "" );
 
     /**
      * Destructor
      */
     virtual ~QgsOgrProvider();
 
-    virtual QgsAbstractFeatureSource* featureSource() const;
+    virtual QgsAbstractFeatureSource* featureSource() const override;
 
-    virtual QgsCoordinateReferenceSystem crs();
+    virtual QgsCoordinateReferenceSystem crs() override;
 
     /**
      * Sub-layers handled by this provider, in order from bottom to top
@@ -82,88 +82,87 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * Sub-layers are used when the provider's source can combine layers
      * it knows about in some way before it hands them off to the provider.
      */
-    virtual QStringList subLayers() const;
+    virtual QStringList subLayers() const override;
 
     /**
      *   Returns the permanent storage type for this layer as a friendly name.
      */
-    virtual QString storageType() const;
+    virtual QString storageType() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
     /** Accessor for sql where clause used to limit dataset */
-    virtual QString subsetString();
+    virtual QString subsetString() override;
 
-    virtual bool supportsSubsetString() { return true; }
+    virtual bool supportsSubsetString() override { return true; }
 
-    /** mutator for sql where clause used to limit dataset size */
-    virtual bool setSubsetString( QString theSQL, bool updateFeatureCount = true );
+    /** Mutator for sql where clause used to limit dataset size */
+    virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     /**
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual QGis::WkbType geometryType() const;
+    virtual QGis::WkbType geometryType() const override;
 
-    /** return the number of layers for the current data source
-
-    @note
-
-    Should this be subLayerCount() instead?
-    */
+    /** Return the number of layers for the current data source
+     *
+     * @note
+     *
+     * Should this be subLayerCount() instead?
+     */
     virtual size_t layerCount() const;
 
     /**
      * Get the number of features in the layer
      */
-    virtual long featureCount() const;
+    virtual long featureCount() const override;
 
     /**
      * Get the field information for the layer
      */
-    virtual const QgsFields & fields() const;
+    virtual const QgsFields & fields() const override;
 
     /** Return the extent for this data layer
      */
-    virtual QgsRectangle extent();
+    virtual QgsRectangle extent() override;
 
     /** Update the extents
      */
-    virtual void updateExtents();
+    virtual void updateExtents() override;
 
-    /**Writes a list of features to the file*/
-    virtual bool addFeatures( QgsFeatureList & flist );
+    /** Writes a list of features to the file*/
+    virtual bool addFeatures( QgsFeatureList & flist ) override;
 
-    /**Deletes a feature*/
-    virtual bool deleteFeatures( const QgsFeatureIds & id );
+    /** Deletes a feature*/
+    virtual bool deleteFeatures( const QgsFeatureIds & id ) override;
 
     /**
      * Adds new attributes
      * @param attributes list of new attributes
      * @return true in case of success and false in case of failure
-     * @note added in 1.2
      */
-    virtual bool addAttributes( const QList<QgsField> &attributes );
+    virtual bool addAttributes( const QList<QgsField> &attributes ) override;
 
     /**
      * Deletes existing attributes
      * @param attributes a set containing names of attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool deleteAttributes( const QgsAttributeIds &attributes );
+    virtual bool deleteAttributes( const QgsAttributeIds &attributes ) override;
 
-    /**Changes attribute values of existing features */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
+    /** Changes attribute values of existing features */
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
-    /**Changes existing geometries*/
-    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map );
+    /** Changes existing geometries*/
+    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
-    /**Tries to create a .qix index file for faster access if only a subset of the features is required
+    /** Tries to create a .qix index file for faster access if only a subset of the features is required
      @return true in case of success*/
-    virtual bool createSpatialIndex();
+    virtual bool createSpatialIndex() override;
 
-    /**Create an attribute index on the datasource*/
-    virtual bool createAttributeIndex( int field );
+    /** Create an attribute index on the datasource*/
+    virtual bool createAttributeIndex( int field ) override;
 
     /** Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on whether
@@ -171,85 +170,86 @@ class QgsOgrProvider : public QgsVectorDataProvider
         be prudent to check this value per intended operation.
         See the OGRLayer::TestCapability API for details.
       */
-    virtual int capabilities() const;
+    virtual int capabilities() const override;
 
-    virtual void setEncoding( const QString& e );
+    virtual void setEncoding( const QString& e ) override;
 
 
-    /** return vector file filter string
-
-      Returns a string suitable for a QFileDialog of vector file formats
-      supported by the data provider.  Naturally this will be an empty string
-      for those data providers that do not deal with plain files, such as
-      databases and servers.
-
-      @note
-
-      It'd be nice to eventually be raster/vector neutral.
-    */
+    /** Return vector file filter string
+     *
+     * Returns a string suitable for a QFileDialog of vector file formats
+     * supported by the data provider.  Naturally this will be an empty string
+     * for those data providers that do not deal with plain files, such as
+     * databases and servers.
+     *
+     * @note It'd be nice to eventually be raster/vector neutral.
+     */
     /* virtual */
-    QString fileVectorFilters() const;
-    /** return a string containing the available database drivers */
+    QString fileVectorFilters() const override;
+    /** Return a string containing the available database drivers */
     QString databaseDrivers() const;
-    /** return a string containing the available directory drivers */
+    /** Return a string containing the available directory drivers */
     QString protocolDrivers() const;
-    /** return a string containing the available protocol drivers */
+    /** Return a string containing the available protocol drivers */
     QString directoryDrivers() const;
 
-    /**Returns true if this is a valid shapefile
-    */
-    bool isValid();
+    /** Returns true if this is a valid shapefile
+     */
+    bool isValid() override;
 
     /** Returns the minimum value of an attribute
-     *  @param index the index of the attribute */
-    QVariant minimumValue( int index );
+     *  @param index the index of the attribute
+     */
+    QVariant minimumValue( int index ) override;
 
     /** Returns the maximum value of an attribute
-     *  @param index the index of the attribute */
-    QVariant maximumValue( int index );
+     *  @param index the index of the attribute
+     */
+    QVariant maximumValue( int index ) override;
 
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
-     *  @param values reference to the list of unique values */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
-
-    /** return a provider name
-
-    Essentially just returns the provider key.  Should be used to build file
-    dialogs so that providers can be shown with their supported types. Thus
-    if more than one provider supports a given format, the user is able to
-    select a specific provider to open that file.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
-    QString name() const;
-
-
-    /** return description
-
-      Return a terse string describing what the provider is.
-
-      @note
-
-      Instead of being pure virtual, might be better to generalize this
-      behavior and presume that none of the sub-classes are going to do
-      anything strange with regards to their name or description?
-
+     *  @param values reference to the list of unique values
      */
-    QString description() const;
+    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) override;
+
+    /** Return a provider name
+     *
+     * Essentially just returns the provider key.  Should be used to build file
+     * dialogs so that providers can be shown with their supported types. Thus
+     * if more than one provider supports a given format, the user is able to
+     * select a specific provider to open that file.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
+    QString name() const override;
+
+
+    /** Return description
+     *
+     * Return a terse string describing what the provider is.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
+    QString description() const override;
 
     /** Returns true if the provider is strict about the type of inserted features
-          (e.g. no multipolygon in a polygon layer)
-          @note: added in version 1.4*/
-    virtual bool doesStrictFeatureTypeCheck() const { return false;}
+     * (e.g. no multipolygon in a polygon layer)
+     */
+    virtual bool doesStrictFeatureTypeCheck() const override;
 
-    /** return OGR geometry type */
-    static int getOgrGeomType( OGRLayerH ogrLayer );
+    /** Return OGR geometry type */
+    static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer );
 
     /** Get single flatten geometry type */
     static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );
@@ -262,33 +262,43 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     QTextCodec* textEncoding() { return mEncoding; }
 
-    QByteArray quotedIdentifier( QByteArray field );
+    QByteArray quotedIdentifier( QByteArray field ) const;
+
+    /**
+     * A forced reload invalidates the underlying connection.
+     * E.g. in case a shapefile is replaced, the old file will be closed
+     * and the new file will be opened.
+     */
+    void forceReload() override;
 
   protected:
-    /** loads fields from input file to member attributeFields */
+    /** Loads fields from input file to member attributeFields */
     void loadFields();
 
-    /** find out the number of features of the whole layer */
+    /** Find out the number of features of the whole layer */
     void recalculateFeatureCount();
 
-    /** tell OGR, which fields to fetch in nextFeature/featureAtId (ie. which not to ignore) */
+    /** Tell OGR, which fields to fetch in nextFeature/featureAtId (ie. which not to ignore) */
     void setRelevantFields( OGRLayerH ogrLayer, bool fetchGeometry, const QgsAttributeList& fetchAttributes );
 
-    /** convert a QgsField to work with OGR */
+    /** Convert a QgsField to work with OGR */
     static bool convertField( QgsField &field, const QTextCodec &encoding );
 
     /** Clean shapefile from features which are marked as deleted */
     void repack();
 
+    void open();
+    void close();
+
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
     QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
-    OGRwkbGeometryType ogrWkbGeometryTypeFromName( QString typeName ) const;
+    OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString& typeName ) const;
     QgsFields mAttributeFields;
     OGRDataSourceH ogrDataSource;
-    void *extent_;
+    OGREnvelope* mExtent;
 
-    /**This member variable receives the same value as extent_
+    /** This member variable receives the same value as extent_
      in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
     QgsRectangle mExtentRect;
     OGRLayerH ogrLayer;
@@ -302,6 +312,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     //! layer index
     int mLayerIndex;
+
+    //! was a sub layer requested?
+    bool mIsSubLayer;
 
     /** Optional geometry type for layers with multiple geometries,
      *  otherwise wkbUnknown. This type is always flatten (2D) and single, it means
@@ -320,35 +333,40 @@ class QgsOgrProvider : public QgsVectorDataProvider
     // Friendly name of the OGR Driver that was actually used to open the layer
     QString ogrDriverName;
 
-    bool valid;
-    //! Flag to indicate that spatial intersect should be used in selecting features
-    bool mUseIntersect;
-    int geomType;
-    long featuresCounted;
+    bool mValid;
 
-    //! There are deleted feature - REPACK before creating a spatialindex
-    bool mDeletedFeatures;
+    OGRwkbGeometryType geomType;
+    long mFeaturesCounted;
 
     mutable QStringList mSubLayerList;
 
-    /**Adds one feature*/
+    /** Adds one feature*/
     bool addFeature( QgsFeature& f );
-    /**Deletes one feature*/
+    /** Deletes one feature*/
     bool deleteFeature( QgsFeatureId id );
 
-    /**Calls OGR_L_SyncToDisk and recreates the spatial index if present*/
+    /** Calls OGR_L_SyncToDisk and recreates the spatial index if present*/
     bool syncToDisc();
 
     OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds );
 
     friend class QgsOgrFeatureSource;
+
+    /** Whether the file is opened in write mode*/
+    bool mWriteAccess;
+
+    bool mShapefileMayBeCorrupted;
 };
 
 
 class QgsOgrUtils
 {
   public:
-    static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount,  bool fetchGeometry, const QgsAttributeList &fetchAttributes );
+    static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes );
     static OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec* encoding, const QString& subsetString );
     static QByteArray quotedIdentifier( QByteArray field, const QString& ogrDriverName );
+
+    /** Quote a value for placement in a SQL string.
+     */
+    static QString quotedValue( const QVariant& value );
 };

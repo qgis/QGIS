@@ -28,25 +28,62 @@ class QToolButton;
 class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 {
     Q_OBJECT
-  public:
-    QgsFilterLineEdit( QWidget* parent = 0, QString nullValue = QString::null );
+    Q_PROPERTY( QString nullValue READ nullValue WRITE setNullValue )
 
-    void setNullValue( QString nullValue ) { mNullValue = nullValue; }
+  public:
+    QgsFilterLineEdit( QWidget* parent = nullptr, const QString& nullValue = QString::null );
+
+    void setNullValue( const QString& nullValue ) { mNullValue = nullValue; }
+
+    QString nullValue() const { return mNullValue; }
+
+    /**
+     * Sets the current text with NULL support
+     *
+     * @param value The text to set. If a Null string is provided, the text will match the nullValue.
+     */
+    void setValue( const QString& value ) { setText( value.isNull() ? mNullValue : value ); }
+
+    /**
+     * Returns the text of this edit with NULL support
+     *
+     * @return Current text (Null string if it matches the nullValue property )
+     */
+    QString value() const { return isNull() ? QString::null : text(); }
+
+    /**
+     * Determine if the current text represents Null.
+     *
+     * @return True if the value is Null.
+     */
+    inline bool isNull() const { return text() == mNullValue; }
 
   signals:
     void cleared();
 
+    /**
+     * Same as textChanged(const QString& ) but with support for Null values.
+     *
+     * @param value The current text or Null string if it matches the nullValue property.
+     */
+    void valueChanged( const QString& value );
+
   protected:
-    void resizeEvent( QResizeEvent * );
-    void changeEvent( QEvent * );
+    void mousePressEvent( QMouseEvent* e ) override;
+    void focusInEvent( QFocusEvent* e ) override;
+    void resizeEvent( QResizeEvent* e ) override;
+    void changeEvent( QEvent* e ) override;
+    void paintEvent( QPaintEvent* e ) override;
 
   private slots:
     void clear();
-    void toggleClearButton( const QString &text );
+    void onTextChanged( const QString &text );
 
   private:
     QString mNullValue;
     QToolButton *btnClear;
+    QString mStyleSheet;
+    bool mFocusInEvent;
 };
 
 #endif // QGSFILTERLINEEDIT_H

@@ -31,7 +31,7 @@
 #include "qgslogger.h"
 
 QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer* layer,
-    QWidget *parent, Qt::WFlags fl )
+    QWidget *parent, const Qt::WindowFlags& fl )
     : QDialog( parent, fl ), mLayer( layer )
 {
   setupUi( this );
@@ -73,7 +73,7 @@ void QgsSearchQueryBuilder::populateFields()
     return;
 
   QgsDebugMsg( "entering." );
-  const QgsFields& fields = mLayer->pendingFields();
+  const QgsFields& fields = mLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     QString fieldName = fields[idx].name();
@@ -114,7 +114,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   // determine the field type
   QString fieldName = mModelFields->data( lstFields->currentIndex() ).toString();
   int fieldIndex = mFieldMap[fieldName];
-  QgsField field = mLayer->pendingFields()[fieldIndex];//provider->fields()[fieldIndex];
+  QgsField field = mLayer->fields().at( fieldIndex );//provider->fields().at( fieldIndex );
   bool numeric = ( field.type() == QVariant::Int || field.type() == QVariant::Double );
 
   QgsFeature feat;
@@ -130,7 +130,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   mModelValues->blockSignals( true );
   lstValues->setUpdatesEnabled( false );
 
-  /**MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems*/
+  /** MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems*/
   QSet<QString> insertedValues;
 
   while ( fit.nextFeature( feat ) &&
@@ -141,7 +141,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
     if ( !numeric )
     {
       // put string in single quotes and escape single quotes in the string
-      value = "'" + value.replace( "'", "''" ) + "'";
+      value = '\'' + value.replace( '\'', "''" ) + '\'';
     }
 
     // add item only if it's not there already
@@ -173,7 +173,7 @@ void QgsSearchQueryBuilder::on_btnGetAllValues_clicked()
 
 void QgsSearchQueryBuilder::on_btnTest_clicked()
 {
-  long count = countRecords( txtSQL->toPlainText() );
+  long count = countRecords( txtSQL->text() );
 
   // error?
   if ( count == -1 )
@@ -183,7 +183,7 @@ void QgsSearchQueryBuilder::on_btnTest_clicked()
 }
 
 // This method tests the number of records that would be returned
-long QgsSearchQueryBuilder::countRecords( QString searchString )
+long QgsSearchQueryBuilder::countRecords( const QString& searchString )
 {
   QgsExpression search( searchString );
   if ( search.hasParserError() )
@@ -199,9 +199,13 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
 
   int count = 0;
   QgsFeature feat;
-  const QgsFields& fields = mLayer->pendingFields();
 
-  if ( !search.prepare( fields ) )
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+
+  if ( !search.prepare( &context ) )
   {
     QMessageBox::critical( this, tr( "Evaluation error" ), search.evalErrorString() );
     return -1;
@@ -213,7 +217,8 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
 
   while ( fit.nextFeature( feat ) )
   {
-    QVariant value = search.evaluate( &feat );
+    context.setFeature( feat );
+    QVariant value = search.evaluate( &context );
     if ( value.toInt() != 0 )
     {
       count++;
@@ -239,14 +244,14 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
 void QgsSearchQueryBuilder::on_btnOk_clicked()
 {
   // if user hits Ok and there is no query, skip the validation
-  if ( txtSQL->toPlainText().trimmed().length() > 0 )
+  if ( txtSQL->text().trimmed().length() > 0 )
   {
     accept();
     return;
   }
 
   // test the query to see if it will result in a valid layer
-  long numRecs = countRecords( txtSQL->toPlainText() );
+  long numRecs = countRecords( txtSQL->text() );
   if ( numRecs == -1 )
   {
     // error shown in countRecords
@@ -264,87 +269,87 @@ void QgsSearchQueryBuilder::on_btnOk_clicked()
 
 void QgsSearchQueryBuilder::on_btnEqual_clicked()
 {
-  txtSQL->insertPlainText( " = " );
+  txtSQL->insertText( " = " );
 }
 
 void QgsSearchQueryBuilder::on_btnLessThan_clicked()
 {
-  txtSQL->insertPlainText( " < " );
+  txtSQL->insertText( " < " );
 }
 
 void QgsSearchQueryBuilder::on_btnGreaterThan_clicked()
 {
-  txtSQL->insertPlainText( " > " );
+  txtSQL->insertText( " > " );
 }
 
 void QgsSearchQueryBuilder::on_btnPct_clicked()
 {
-  txtSQL->insertPlainText( "%" );
+  txtSQL->insertText( "%" );
 }
 
 void QgsSearchQueryBuilder::on_btnIn_clicked()
 {
-  txtSQL->insertPlainText( " IN " );
+  txtSQL->insertText( " IN " );
 }
 
 void QgsSearchQueryBuilder::on_btnNotIn_clicked()
 {
-  txtSQL->insertPlainText( " NOT IN " );
+  txtSQL->insertText( " NOT IN " );
 }
 
 void QgsSearchQueryBuilder::on_btnLike_clicked()
 {
-  txtSQL->insertPlainText( " LIKE " );
+  txtSQL->insertText( " LIKE " );
 }
 
 QString QgsSearchQueryBuilder::searchString()
 {
-  return txtSQL->toPlainText();
+  return txtSQL->text();
 }
 
-void QgsSearchQueryBuilder::setSearchString( QString searchString )
+void QgsSearchQueryBuilder::setSearchString( const QString& searchString )
 {
-  txtSQL->setPlainText( searchString );
+  txtSQL->setText( searchString );
 }
 
 void QgsSearchQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insertPlainText( QgsExpression::quotedColumnRef( mModelFields->data( index ).toString() ) );
+  txtSQL->insertText( QgsExpression::quotedColumnRef( mModelFields->data( index ).toString() ) );
 }
 
 void QgsSearchQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insertPlainText( mModelValues->data( index ).toString() );
+  txtSQL->insertText( mModelValues->data( index ).toString() );
 }
 
 void QgsSearchQueryBuilder::on_btnLessEqual_clicked()
 {
-  txtSQL->insertPlainText( " <= " );
+  txtSQL->insertText( " <= " );
 }
 
 void QgsSearchQueryBuilder::on_btnGreaterEqual_clicked()
 {
-  txtSQL->insertPlainText( " >= " );
+  txtSQL->insertText( " >= " );
 }
 
 void QgsSearchQueryBuilder::on_btnNotEqual_clicked()
 {
-  txtSQL->insertPlainText( " != " );
+  txtSQL->insertText( " != " );
 }
 
 void QgsSearchQueryBuilder::on_btnAnd_clicked()
 {
-  txtSQL->insertPlainText( " AND " );
+  txtSQL->insertText( " AND " );
 }
 
 void QgsSearchQueryBuilder::on_btnNot_clicked()
 {
-  txtSQL->insertPlainText( " NOT " );
+  txtSQL->insertText( " NOT " );
 }
 
 void QgsSearchQueryBuilder::on_btnOr_clicked()
 {
-  txtSQL->insertPlainText( " OR " );
+  txtSQL->insertText( " OR " );
 }
 
 void QgsSearchQueryBuilder::on_btnClear_clicked()
@@ -354,15 +359,15 @@ void QgsSearchQueryBuilder::on_btnClear_clicked()
 
 void QgsSearchQueryBuilder::on_btnILike_clicked()
 {
-  txtSQL->insertPlainText( " ILIKE " );
+  txtSQL->insertText( " ILIKE " );
 }
 
 void QgsSearchQueryBuilder::saveQuery()
 {
   QSettings s;
-  QString lastQueryFileDir = s.value( "/UI/lastQueryFileDir", "" ).toString();
+  QString lastQueryFileDir = s.value( "/UI/lastQueryFileDir", QDir::homePath() ).toString();
   //save as qqt (QGIS query file)
-  QString saveFileName = QFileDialog::getSaveFileName( 0, tr( "Save query to file" ), lastQueryFileDir, "*.qqf" );
+  QString saveFileName = QFileDialog::getSaveFileName( nullptr, tr( "Save query to file" ), lastQueryFileDir, "*.qqf" );
   if ( saveFileName.isNull() )
   {
     return;
@@ -376,13 +381,13 @@ void QgsSearchQueryBuilder::saveQuery()
   QFile saveFile( saveFileName );
   if ( !saveFile.open( QIODevice::WriteOnly ) )
   {
-    QMessageBox::critical( 0, tr( "Error" ), tr( "Could not open file for writing" ) );
+    QMessageBox::critical( nullptr, tr( "Error" ), tr( "Could not open file for writing" ) );
     return;
   }
 
   QDomDocument xmlDoc;
   QDomElement queryElem = xmlDoc.createElement( "Query" );
-  QDomText queryTextNode = xmlDoc.createTextNode( txtSQL->toPlainText() );
+  QDomText queryTextNode = xmlDoc.createTextNode( txtSQL->text() );
   queryElem.appendChild( queryTextNode );
   xmlDoc.appendChild( queryElem );
 
@@ -396,9 +401,9 @@ void QgsSearchQueryBuilder::saveQuery()
 void QgsSearchQueryBuilder::loadQuery()
 {
   QSettings s;
-  QString lastQueryFileDir = s.value( "/UI/lastQueryFileDir", "" ).toString();
+  QString lastQueryFileDir = s.value( "/UI/lastQueryFileDir", QDir::homePath() ).toString();
 
-  QString queryFileName = QFileDialog::getOpenFileName( 0, tr( "Load query from file" ), lastQueryFileDir, tr( "Query files" ) + " (*.qqf);;" + tr( "All files" ) + " (*)" );
+  QString queryFileName = QFileDialog::getOpenFileName( nullptr, tr( "Load query from file" ), lastQueryFileDir, tr( "Query files" ) + " (*.qqf);;" + tr( "All files" ) + " (*)" );
   if ( queryFileName.isNull() )
   {
     return;
@@ -407,20 +412,20 @@ void QgsSearchQueryBuilder::loadQuery()
   QFile queryFile( queryFileName );
   if ( !queryFile.open( QIODevice::ReadOnly ) )
   {
-    QMessageBox::critical( 0, tr( "Error" ), tr( "Could not open file for reading" ) );
+    QMessageBox::critical( nullptr, tr( "Error" ), tr( "Could not open file for reading" ) );
     return;
   }
   QDomDocument queryDoc;
   if ( !queryDoc.setContent( &queryFile ) )
   {
-    QMessageBox::critical( 0, tr( "Error" ), tr( "File is not a valid xml document" ) );
+    QMessageBox::critical( nullptr, tr( "Error" ), tr( "File is not a valid xml document" ) );
     return;
   }
 
   QDomElement queryElem = queryDoc.firstChildElement( "Query" );
   if ( queryElem.isNull() )
   {
-    QMessageBox::critical( 0, tr( "Error" ), tr( "File is not a valid query document" ) );
+    QMessageBox::critical( nullptr, tr( "Error" ), tr( "File is not a valid query document" ) );
     return;
   }
 
@@ -487,6 +492,6 @@ void QgsSearchQueryBuilder::loadQuery()
 #endif
 
   txtSQL->clear();
-  txtSQL->insertPlainText( newQueryText );
+  txtSQL->insertText( newQueryText );
 }
 

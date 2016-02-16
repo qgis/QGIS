@@ -8,11 +8,11 @@ class QgsMultiBandColorRenderer: QgsRasterRenderer
                                QgsContrastEnhancement* redEnhancement = 0, QgsContrastEnhancement* greenEnhancement = 0,
                                QgsContrastEnhancement* blueEnhancement = 0 );
     ~QgsMultiBandColorRenderer();
-    QgsRasterInterface * clone() const /Factory/;
+    virtual QgsMultiBandColorRenderer * clone() const /Factory/;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
 
-    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
+    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height ) /Factory/;
 
     int redBand() const;
     void setRedBand( int band );
@@ -22,19 +22,23 @@ class QgsMultiBandColorRenderer: QgsRasterRenderer
     void setBlueBand( int band );
 
     const QgsContrastEnhancement* redContrastEnhancement() const;
-    /**Takes ownership*/
+    /** Takes ownership*/
     void setRedContrastEnhancement( QgsContrastEnhancement* ce /Transfer/ );
 
     const QgsContrastEnhancement* greenContrastEnhancement() const;
-    /**Takes ownership*/
+    /** Takes ownership*/
     void setGreenContrastEnhancement( QgsContrastEnhancement* ce /Transfer/ );
 
     const QgsContrastEnhancement* blueContrastEnhancement() const;
-    /**Takes ownership*/
+    /** Takes ownership*/
     void setBlueContrastEnhancement( QgsContrastEnhancement* ce /Transfer/ );
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
     QList<int> usesBands() const;
 
+  private:
+
+    QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer& );
+    const QgsMultiBandColorRenderer& operator=( const QgsMultiBandColorRenderer& );
 };

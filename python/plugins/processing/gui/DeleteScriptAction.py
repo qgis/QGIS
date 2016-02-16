@@ -27,11 +27,11 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QMessageBox
 
 from processing.gui.ContextAction import ContextAction
 
-from processing.r.RAlgorithm import RAlgorithm
+from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 
 
@@ -41,20 +41,25 @@ class DeleteScriptAction(ContextAction):
     SCRIPT_R = 1
 
     def __init__(self, scriptType):
-        self.name = 'Delete script'
+        self.name = self.tr('Delete script', 'DeleteScriptAction')
         self.scriptType = scriptType
 
     def isEnabled(self):
         if self.scriptType == self.SCRIPT_PYTHON:
-            return isinstance(self.alg, ScriptAlgorithm)
+            return isinstance(self.alg, ScriptAlgorithm) and self.alg.allowEdit
         elif self.scriptType == self.SCRIPT_R:
             return isinstance(self.alg, RAlgorithm)
 
     def execute(self, alg):
-        reply = QMessageBox.question(None, 'Confirmation',
-                'Are you sure you want to delete this script?',
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No)
+        reply = QMessageBox.question(None,
+                                     self.tr('Confirmation', 'DeleteScriptAction'),
+                                     self.tr('Are you sure you want to delete this script?',
+                                             'DeleteScriptAction'),
+                                     QMessageBox.Yes | QMessageBox.No,
+                                     QMessageBox.No)
         if reply == QMessageBox.Yes:
             os.remove(self.alg.descriptionFile)
-            self.toolbox.updateTree()
+            if self.scriptType == self.SCRIPT_PYTHON:
+                self.toolbox.updateProvider('script')
+            elif self.scriptType == self.SCRIPT_R:
+                self.toolbox.updateProvider('r')

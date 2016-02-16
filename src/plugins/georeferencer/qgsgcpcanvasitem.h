@@ -27,16 +27,16 @@ class QgsGCPCanvasItem : public QgsMapCanvasItem
     QgsGCPCanvasItem( QgsMapCanvas* mapCanvas, const QgsGeorefDataPoint* dataPoint, bool isGCPSource/* = true*/ );
 
     //! draws point information
-    void paint( QPainter* p );
+    void paint( QPainter* p ) override;
 
     //! handler for manual updating of position and size
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
 
-    QPainterPath shape() const;
+    QPainterPath shape() const override;
 
-    void updatePosition();
+    void updatePosition() override;
 
-    /**Calls prepareGeometryChange()*/
+    /** Calls prepareGeometryChange()*/
     void checkBoundingRectChange();
 
   private:
@@ -52,9 +52,9 @@ class QgsGCPCanvasItem : public QgsMapCanvasItem
     QRectF mTextBoxRect;
 
     void drawResidualArrow( QPainter* p, const QgsRenderContext& context );
-    /**Calculates scale factor for residual display*/
+    /** Calculates scale factor for residual display*/
     double residualToScreenFactor() const;
-    /**Calculates pixel size for a font point size*/
+    /** Calculates pixel size for a font point size*/
     double fontSizePainterUnits( double points, const QgsRenderContext& c );
 };
 

@@ -37,6 +37,8 @@ class QNetworkReply;
 /** CoverageSummary structure */
 struct QgsWcsCoverageSummary
 {
+  QgsWcsCoverageSummary() : orderId( 0 ), valid( false ), described( false ), width( 0 ), height( 0 ), hasSize( false ) { }
+
   int           orderId;
   QString       identifier;
   QString       title;
@@ -81,14 +83,14 @@ class QgsWcsCapabilities : public QObject
 
   public:
     /**
-    * Constructor for the provider.
-    *
-    * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
-    *                otherwise we contact the host directly.
-    *
-    */
-    QgsWcsCapabilities( QgsDataSourceURI const & theUri );
-    QgsWcsCapabilities( );
+     * Constructor for the provider.
+     *
+     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
+     *                otherwise we contact the host directly.
+     *
+     */
+    explicit QgsWcsCapabilities( QgsDataSourceURI const & theUri );
+    QgsWcsCapabilities();
 
     //! Destructor
     ~QgsWcsCapabilities();
@@ -127,7 +129,7 @@ class QgsWcsCapabilities : public QObject
 
     /** \brief Returns the GetCoverage full url
      *  \param version optional version, e.g. 1.0.0 or 1.1.0 */
-    QString getCapabilitiesUrl( const QString version ) const;
+    QString getCapabilitiesUrl( const QString& version ) const;
 
     /** \brief Returns the GetCoverage full url using current version  */
     QString getCapabilitiesUrl() const;
@@ -151,7 +153,7 @@ class QgsWcsCapabilities : public QObject
     bool parseDescribeCoverageDom11( QByteArray const &xml, QgsWcsCoverageSummary *coverage );
 
     //! set authorization header
-    void setAuthorization( QNetworkRequest &request ) const;
+    bool setAuthorization( QNetworkRequest &request ) const;
 
     QString version() const { return mCapabilities.version; }
 
@@ -219,10 +221,10 @@ class QgsWcsCapabilities : public QObject
     void parseUri();
 
     //! Get coverage summary for identifier
-    QgsWcsCoverageSummary * coverageSummary( QString const & theIdentifier, QgsWcsCoverageSummary* parent = 0 );
+    QgsWcsCoverageSummary * coverageSummary( QString const & theIdentifier, QgsWcsCoverageSummary* parent = nullptr );
 
     // ! Get list of all sub coverages
-    QList<QgsWcsCoverageSummary> coverageSummaries( QgsWcsCoverageSummary* parent = 0 );
+    QList<QgsWcsCoverageSummary> coverageSummaries( QgsWcsCoverageSummary* parent = nullptr );
 
     void initCoverageSummary( QgsWcsCoverageSummary &coverageSummary );
 
@@ -245,10 +247,10 @@ class QgsWcsCapabilities : public QObject
      *
      * TODO: Make network-timeout tolerant
      */
-    bool retrieveServerCapabilities( QString preferredVersion );
+    bool retrieveServerCapabilities( const QString& preferredVersion );
 
     /** Retrieve the best WCS version supported by server and QGIS */
-    bool retrieveServerCapabilities( );
+    bool retrieveServerCapabilities();
 
     //! \return false if the capabilities document could not be parsed - see lastError() for more info
     bool parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapabilitiesProperty &capabilities );
@@ -259,12 +261,12 @@ class QgsWcsCapabilities : public QObject
 
     //! parse the WCS Layer XML element
     void parseCoverageOfferingBrief( QDomElement const &e, QgsWcsCoverageSummary &coverageSummary,
-                                     QgsWcsCoverageSummary *parent = 0 );
+                                     QgsWcsCoverageSummary *parent = nullptr );
 
     // ------------- 1.1 --------------------
     //! parse the WCS Layer XML element
     void parseCoverageSummary( QDomElement const &e, QgsWcsCoverageSummary &coverageSummary,
-                               QgsWcsCoverageSummary *parent = 0 );
+                               QgsWcsCoverageSummary *parent = nullptr );
 
     //! Data source uri
     QgsDataSourceURI mUri;

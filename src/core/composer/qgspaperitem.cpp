@@ -20,6 +20,7 @@
 #include "qgsstylev2.h"
 #include "qgslogger.h"
 #include <QGraphicsRectItem>
+#include <QGraphicsView>
 #include <QPainter>
 
 //QgsPaperGrid
@@ -47,8 +48,8 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
     if ( mComposition->gridVisible() && mComposition->plotStyle() ==  QgsComposition::Preview
          && mComposition->snapGridResolution() > 0 )
     {
-      int gridMultiplyX = ( int )( mComposition->snapGridOffsetX() / mComposition->snapGridResolution() );
-      int gridMultiplyY = ( int )( mComposition->snapGridOffsetY() / mComposition->snapGridResolution() );
+      int gridMultiplyX = static_cast< int >( mComposition->snapGridOffsetX() / mComposition->snapGridResolution() );
+      int gridMultiplyY = static_cast< int >( mComposition->snapGridOffsetY() / mComposition->snapGridResolution() );
       double currentXCoord = mComposition->snapGridOffsetX() - gridMultiplyX * mComposition->snapGridResolution();
       double currentYCoord;
       double minYCoord = mComposition->snapGridOffsetY() - gridMultiplyY * mComposition->snapGridResolution();
@@ -87,7 +88,7 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
           if ( scene() )
           {
             QList<QGraphicsView*> viewList = scene()->views();
-            if ( viewList.size() > 0 )
+            if ( !viewList.isEmpty() )
             {
               QGraphicsView* currentView = viewList.at( 0 );
               if ( currentView->isVisible() )
@@ -122,19 +123,19 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
 //QgsPaperItem
 
 QgsPaperItem::QgsPaperItem( QgsComposition* c ): QgsComposerItem( c, false ),
-    mPageGrid( 0 )
+    mPageGrid( nullptr )
 {
   initialize();
 }
 
 QgsPaperItem::QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition, false ),
-    mPageGrid( 0 ), mPageMargin( 0 )
+    mPageGrid( nullptr ), mPageMargin( 0 )
 {
   initialize();
 }
 
-QgsPaperItem::QgsPaperItem(): QgsComposerItem( 0, false ),
-    mPageGrid( 0 ), mPageMargin( 0 )
+QgsPaperItem::QgsPaperItem(): QgsComposerItem( nullptr, false ),
+    mPageGrid( nullptr ), mPageMargin( 0 )
 {
   initialize();
 }
@@ -148,22 +149,24 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
-  if ( !painter )
+  if ( !painter || !mComposition || !mComposition->pagesVisible() )
   {
     return;
   }
 
-  QgsRenderContext context;
+  //setup painter scaling to dots so that raster symbology is drawn to scale
+  double dotsPerMM = painter->device()->logicalDpiX() / 25.4;
+
+  //setup render context
+  QgsMapSettings ms = mComposition->mapSettings();
+  //context units should be in dots
+  ms.setOutputDpi( painter->device()->logicalDpiX() );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setPainter( painter );
-  context.setScaleFactor( 1.0 );
-  if ( mComposition->plotStyle() ==  QgsComposition::Preview )
-  {
-    context.setRasterScaleFactor( horizontalViewScaleFactor() );
-  }
-  else
-  {
-    context.setRasterScaleFactor( mComposition->printResolution() / 25.4 );
-  }
+  context.setForceVectorOutput( true );
+  QgsExpressionContext* expressionContext = createExpressionContext();
+  context.setExpressionContext( *expressionContext );
+  delete expressionContext;
 
   painter->save();
 
@@ -184,25 +187,17 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
     painter->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
   }
 
+  painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+
   painter->setRenderHint( QPainter::Antialiasing );
   mComposition->pageStyleSymbol()->startRender( context );
 
   calculatePageMargin();
-  QPolygonF pagePolygon = QPolygonF( QRectF( mPageMargin, mPageMargin, rect().width() - 2 * mPageMargin, rect().height() - 2 * mPageMargin ) );
+  QPolygonF pagePolygon = QPolygonF( QRectF( mPageMargin * dotsPerMM, mPageMargin * dotsPerMM,
+                                     ( rect().width() - 2 * mPageMargin ) * dotsPerMM, ( rect().height() - 2 * mPageMargin ) * dotsPerMM ) );
   QList<QPolygonF> rings; //empty list
 
-  //need to render using atlas feature properties?
-  if ( mComposition->atlasComposition().enabled() && mComposition->atlasMode() != QgsComposition::AtlasOff )
-  {
-    //using an atlas, so render using current atlas feature
-    //since there may be data defined symbols using atlas feature properties
-    mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, mComposition->atlasComposition().currentFeature(), context );
-  }
-  else
-  {
-    mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, 0, context );
-  }
-
+  mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, nullptr, context );
   mComposition->pageStyleSymbol()->stopRender( context );
   painter->restore();
 }
@@ -251,7 +246,14 @@ void QgsPaperItem::initialize()
   //(QGraphicsRectItem considers the pen width when calculating an item's scene rect)
   setPen( QPen( QBrush( Qt::NoBrush ), 4 ) );
 
-  //create a new QgsPaperGrid for this page, and add it to the composition
-  mPageGrid = new QgsPaperGrid( pos().x(), pos().y(), rect().width(), rect().height(), mComposition );
-  mComposition->addItem( mPageGrid );
+  if ( mComposition )
+  {
+    //create a new QgsPaperGrid for this page, and add it to the composition
+    mPageGrid = new QgsPaperGrid( pos().x(), pos().y(), rect().width(), rect().height(), mComposition );
+    mComposition->addItem( mPageGrid );
+
+    //connect to atlas feature changes
+    //to update symbol style (in case of data-defined symbology)
+    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( repaint() ) );
+  }
 }

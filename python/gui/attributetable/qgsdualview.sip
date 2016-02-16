@@ -29,7 +29,7 @@ class QgsDualView : QStackedWidget
      * @brief Constructor
      * @param parent  The parent widget
      */
-    explicit QgsDualView( QWidget* parent = 0 );
+    explicit QgsDualView( QWidget* parent /TransferThis/ = 0 );
     virtual ~QgsDualView();
 
     /**
@@ -41,7 +41,7 @@ class QgsDualView : QStackedWidget
      * @param request    Use a modified request to limit the shown features
      * @param context    The context in which this view is shown
      */
-    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), QgsAttributeEditorContext context = QgsAttributeEditorContext() );
+    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
     /**
      * Change the current view mode.
@@ -56,6 +56,8 @@ class QgsDualView : QStackedWidget
      * @param filterMode
      */
     void setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode );
+
+    QgsAttributeTableFilterModel::FilterMode filterMode();
 
     /**
      * Toggle the selectedOnTop flag. If enabled, selected features will be moved to top.
@@ -86,7 +88,9 @@ class QgsDualView : QStackedWidget
      * @param filteredFeatures  A list of feature ids
      *
      */
-    void setFilteredFeatures( QgsFeatureIds filteredFeatures );
+    void setFilteredFeatures( const QgsFeatureIds& filteredFeatures );
+
+    QgsFeatureIds filteredFeatures();
 
     /**
      * Returns the model which has the information about all features (not only filtered)
@@ -124,18 +128,14 @@ class QgsDualView : QStackedWidget
      */
     bool saveEditChanges();
 
-    /**
-     * Update the shown feature if an attribute changed
-     */
-    void reloadAttribute( const int& attribute );
-
+    void openConditionalStyles();
 
   signals:
     /**
      * Is emitted, whenever the display expression is successfully changed
      * @param expression The expression that was applied
      */
-    void displayExpressionChanged( const QString expression );
+    void displayExpressionChanged( const QString& expression );
 
     /**
      * Is emitted, whenever the filter changes

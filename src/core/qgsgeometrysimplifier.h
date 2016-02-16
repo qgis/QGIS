@@ -35,9 +35,9 @@ class CORE_EXPORT QgsAbstractGeometrySimplifier
     // MapToPixel simplification helper methods
   public:
     //! Returns whether the device-envelope can be replaced by its BBOX when is applied the specified tolerance
-    static bool canbeGeneralizedByDeviceBoundingBox( const QgsRectangle&   envelope, float mapToPixelTol = 1.0f );
+    static bool isGeneralizableByDeviceBoundingBox( const QgsRectangle& envelope, float mapToPixelTol = 1.0f );
     //! Returns whether the device-geometry can be replaced by its BBOX when is applied the specified tolerance
-    static bool canbeGeneralizedByDeviceBoundingBox( const QVector<QPointF>& points, float mapToPixelTol = 1.0f );
+    static bool isGeneralizableByDeviceBoundingBox( const QVector<QPointF>& points, float mapToPixelTol = 1.0f );
 };
 
 /***************************************************************************/
@@ -53,15 +53,15 @@ class CORE_EXPORT QgsTopologyPreservingSimplifier : public QgsAbstractGeometrySi
     QgsTopologyPreservingSimplifier( double tolerance );
     virtual ~QgsTopologyPreservingSimplifier();
 
+    //! Returns a simplified version the specified geometry
+    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const override;
+    //! Simplifies the specified geometry
+    virtual bool simplifyGeometry( QgsGeometry* geometry ) const override;
+
   protected:
     //! Distance tolerance for the simplification
     double mTolerance;
 
-  public:
-    //! Returns a simplified version the specified geometry
-    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const;
-    //! Simplifies the specified geometry
-    virtual bool simplifyGeometry( QgsGeometry* geometry ) const;
 };
 
 #endif // QGSGEOMETRYSIMPLIFIER_H

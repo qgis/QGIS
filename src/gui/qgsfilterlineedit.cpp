@@ -20,10 +20,12 @@
 
 #include <QToolButton>
 #include <QStyle>
+#include <QFocusEvent>
 
-QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, QString nullValue )
+QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue )
     : QLineEdit( parent )
     , mNullValue( nullValue )
+    , mFocusInEvent( false )
 {
   btnClear = new QToolButton( this );
   btnClear->setIcon( QgsApplication::getThemeIcon( "/mIconClear.svg" ) );
@@ -35,15 +37,33 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, QString nullValue )
   connect( btnClear, SIGNAL( clicked() ), this, SLOT( clear() ) );
   connect( btnClear, SIGNAL( clicked() ), this, SIGNAL( cleared() ) );
   connect( this, SIGNAL( textChanged( const QString& ) ), this,
-           SLOT( toggleClearButton( const QString& ) ) );
+           SLOT( onTextChanged( const QString& ) ) );
 
   int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
-  setStyleSheet( QString( "QLineEdit { padding-right: %1px; } " )
-                 .arg( btnClear->sizeHint().width() + frameWidth + 1 ) );
+  mStyleSheet = QString( "QLineEdit { padding-right: %1px; } " )
+                .arg( btnClear->sizeHint().width() + frameWidth + 1 );
 
   QSize msz = minimumSizeHint();
   setMinimumSize( qMax( msz.width(), btnClear->sizeHint().height() + frameWidth * 2 + 2 ),
                   qMax( msz.height(), btnClear->sizeHint().height() + frameWidth * 2 + 2 ) );
+}
+
+void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
+{
+  if ( !mFocusInEvent )
+    QLineEdit::mousePressEvent( e );
+  else
+    mFocusInEvent = false;
+}
+
+void QgsFilterLineEdit::focusInEvent( QFocusEvent* e )
+{
+  QLineEdit::focusInEvent( e );
+  if ( e->reason() == Qt::MouseFocusReason && isNull() )
+  {
+    mFocusInEvent = true;
+    selectAll();
+  }
 }
 
 void QgsFilterLineEdit::resizeEvent( QResizeEvent * )
@@ -63,13 +83,28 @@ void QgsFilterLineEdit::clear()
 void QgsFilterLineEdit::changeEvent( QEvent *e )
 {
   QLineEdit::changeEvent( e );
-  if ( !isEnabled() )
-    btnClear->setVisible( false );
-  else
-    btnClear->setVisible( text() != mNullValue );
+  btnClear->setVisible( isEnabled() && !isReadOnly() && !isNull() );
 }
 
-void QgsFilterLineEdit::toggleClearButton( const QString &text )
+void QgsFilterLineEdit::paintEvent( QPaintEvent* e )
 {
-  btnClear->setVisible( !isReadOnly() && text != mNullValue );
+  QLineEdit::paintEvent( e );
+  btnClear->setVisible( isEnabled() && !isReadOnly() && !isNull() );
+}
+
+
+void QgsFilterLineEdit::onTextChanged( const QString &text )
+{
+  btnClear->setVisible( isEnabled() && !isReadOnly() && !isNull() );
+
+  if ( isNull() )
+  {
+    setStyleSheet( QString( "QLineEdit { font: italic; color: gray; } %1" ).arg( mStyleSheet ) );
+    emit valueChanged( QString::null );
+  }
+  else
+  {
+    setStyleSheet( mStyleSheet );
+    emit valueChanged( text );
+  }
 }

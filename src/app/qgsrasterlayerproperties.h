@@ -34,7 +34,7 @@ class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 class QgsRasterHistogramWidget;
 
-/**Property sheet for a raster map layer
+/** Property sheet for a raster map layer
   *@author Tim Sutton
   */
 
@@ -46,19 +46,18 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /** \brief Constructor
      * @param ml Map layer for which properties will be displayed
      */
-    QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas* theCanvas, QWidget *parent = 0, Qt::WFlags = QgisGui::ModalDialogFlags );
+    QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas* theCanvas, QWidget *parent = nullptr, Qt::WindowFlags = QgisGui::ModalDialogFlags );
     /** \brief Destructor */
     ~QgsRasterLayerProperties();
 
-    /** synchronize state with associated raster layer */
+    /** Synchronize state with associated raster layer */
     void sync();
 
   public slots:
     //TODO: Verify that these all need to be public
     /** \brief Applies the settings made in the dialog without closing the box */
     void apply();
-    /** \brief Slot to update layer display name as original is edited
-     * @note added in QGIS 1.9 */
+    /** \brief Slot to update layer display name as original is edited. */
     void on_mLayerOrigNameLineEd_textEdited( const QString& text );
     /** \brief this slot asks the rasterlayer to construct pyramids */
     void on_buttonBuildPyramids_clicked();
@@ -66,8 +65,8 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void on_pbnAddValuesFromDisplay_clicked();
     /** \brief slot executed when user presses "Add Values Manually" button on the transparency page */
     void on_pbnAddValuesManually_clicked();
-    /** Override the CRS specified when the layer was loaded */
-    void on_pbnChangeSpatialRefSys_clicked();
+    /** \brief slot executed when user changes the layer's CRS */
+    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs );
     /** \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value */
     void on_pbnDefaultValues_clicked();
     /** \brief slot executed when user wishes to export transparency values */
@@ -80,7 +79,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void on_pbnRemoveSelectedRow_clicked();
     /** \brief slot executed when the single band radio button is pressed. */
     /** \brief slot executed when the reset null value to file default icon is selected */
-    //void on_btnResetNull_clicked( );
+    //void on_btnResetNull_clicked();
 
     void pixelSelected( const QgsPoint& );
     /** \brief slot executed when the transparency level changes. */
@@ -89,38 +88,39 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
   private slots:
     void on_mRenderTypeComboBox_currentIndexChanged( int index );
     /** Load the default style when appropriate button is pressed. */
-    void on_pbnLoadDefaultStyle_clicked();
+    void loadDefaultStyle_clicked();
     /** Save the default style when appropriate button is pressed. */
-    void on_pbnSaveDefaultStyle_clicked();
+    void saveDefaultStyle_clicked();
     /** Load a saved style when appropriate button is pressed. */
-    void on_pbnLoadStyle_clicked();
+    void loadStyle_clicked();
     /** Save a style when appriate button is pressed. */
-    void on_pbnSaveStyleAs_clicked();
+    void saveStyleAs_clicked();
     /** Help button */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    void on_mMinimumScaleSetCurrentPushButton_clicked();
-    void on_mMaximumScaleSetCurrentPushButton_clicked();
 
-    /** Slot to reset all color rendering options to default
-     * @note added in 1.9
-     */
+    /** Slot to reset all color rendering options to default */
     void on_mResetColorRenderingBtn_clicked();
 
-    /**Enable or disable Build pyramids button depending on selection in pyramids list*/
+    /** Enable or disable Build pyramids button depending on selection in pyramids list*/
     void toggleBuildPyramidsButton();
 
-    /**Enable or disable saturation controls depending on choice of grayscale mode */
+    /** Enable or disable saturation controls depending on choice of grayscale mode */
     void toggleSaturationControls( int grayscaleMode );
 
-    /**Enable or disable colorize controls depending on checkbox */
+    /** Enable or disable colorize controls depending on checkbox */
     void toggleColorizeControls( bool colorizeEnabled );
 
     /** Transparency cell changed */
     void transparencyCellTextEdited( const QString & text );
 
+    void aboutToShowStyleMenu();
+
+    /** Make GUI reflect the layer's state */
+    void syncToLayer();
+
   signals:
-    /** emitted when changes to layer were saved to update legend */
-    void refreshLegend( QString layerID, bool expandItem );
+    /** Emitted when changes to layer were saved to update legend */
+    void refreshLegend( const QString& layerID, bool expandItem );
 
   private:
     /** \brief  A constant that signals property not used */

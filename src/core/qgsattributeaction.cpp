@@ -40,9 +40,14 @@
 #include <QFileInfo>
 
 
-void QgsAttributeAction::addAction( QgsAction::ActionType type, QString name, QString action, bool capture )
+void QgsAttributeAction::addAction( QgsAction::ActionType type, const QString& name, const QString& action, bool capture )
 {
   mActions << QgsAction( type, name, action, capture );
+}
+
+void QgsAttributeAction::addAction( QgsAction::ActionType type, const QString& name, const QString& action, const QString& icon, bool capture )
+{
+  mActions << QgsAction( type, name, action, icon, capture );
 }
 
 void QgsAttributeAction::removeAction( int index )
@@ -53,7 +58,7 @@ void QgsAttributeAction::removeAction( int index )
   }
 }
 
-void QgsAttributeAction::doAction( int index, QgsFeature &feat, int defaultValueIndex )
+void QgsAttributeAction::doAction( int index, const QgsFeature& feat, int defaultValueIndex )
 {
   QMap<QString, QVariant> substitutionMap;
   if ( defaultValueIndex >= 0 )
@@ -66,8 +71,7 @@ void QgsAttributeAction::doAction( int index, QgsFeature &feat, int defaultValue
   doAction( index, feat, &substitutionMap );
 }
 
-void QgsAttributeAction::doAction( int index, QgsFeature &feat,
-                                   const QMap<QString, QVariant> *substitutionMap )
+void QgsAttributeAction::doAction( int index, const QgsFeature &feat, const QMap<QString, QVariant> *substitutionMap )
 {
   if ( index < 0 || index >= size() )
     return;
@@ -77,7 +81,9 @@ void QgsAttributeAction::doAction( int index, QgsFeature &feat,
     return;
 
   // search for expressions while expanding actions
-  QString expandedAction = QgsExpression::replaceExpressionText( action.action(), &feat, mLayer , substitutionMap );
+  QgsExpressionContext context = createExpressionContext();
+  context.setFeature( feat );
+  QString expandedAction = QgsExpression::replaceExpressionText( action.action(), &context, substitutionMap );
   if ( expandedAction.isEmpty() )
     return;
 
@@ -121,6 +127,17 @@ void QgsAttributeAction::runAction( const QgsAction &action, void ( *executePyth
   }
 }
 
+QgsExpressionContext QgsAttributeAction::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+  if ( mLayer )
+    context << QgsExpressionContextUtils::layerScope( mLayer );
+
+  return context;
+}
+
 QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap &attributes,
     uint clickedOnValue )
 {
@@ -145,7 +162,7 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
   else
     expanded_action = action;
 
-  const QgsFields &fields = mLayer->pendingFields();
+  const QgsFields &fields = mLayer->fields();
 
   for ( int i = 0; i < 4; i++ )
   {
@@ -158,10 +175,18 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
       QString to_replace;
       switch ( i )
       {
-        case 0: to_replace = "[%" + fields[attrIdx].name() + "]"; break;
-        case 1: to_replace = "[%" + mLayer->attributeDisplayName( attrIdx ) + "]"; break;
-        case 2: to_replace = "%" + fields[attrIdx].name(); break;
-        case 3: to_replace = "%" + mLayer->attributeDisplayName( attrIdx ); break;
+        case 0:
+          to_replace = "[%" + fields[attrIdx].name() + ']';
+          break;
+        case 1:
+          to_replace = "[%" + mLayer->attributeDisplayName( attrIdx ) + ']';
+          break;
+        case 2:
+          to_replace = '%' + fields[attrIdx].name();
+          break;
+        case 3:
+          to_replace = '%' + mLayer->attributeDisplayName( attrIdx );
+          break;
       }
 
       expanded_action = expanded_action.replace( to_replace, it.value().toString() );
@@ -171,7 +196,7 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
   return expanded_action;
 }
 
-QString QgsAttributeAction::expandAction( QString action, QgsFeature &feat, const QMap<QString, QVariant> *substitutionMap )
+QString QgsAttributeAction::expandAction( const QString& action, QgsFeature &feat, const QMap<QString, QVariant> *substitutionMap )
 {
   // This function currently replaces each expression between [% and %]
   // in the action with the result of its evaluation on the feature
@@ -207,15 +232,18 @@ QString QgsAttributeAction::expandAction( QString action, QgsFeature &feat, cons
     if ( exp.hasParserError() )
     {
       QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
-      expr_action += action.mid( start, index - start );
+      expr_action += action.midRef( start, index - start );
       continue;
     }
 
-    QVariant result = exp.evaluate( &feat, mLayer->pendingFields() );
+    QgsExpressionContext context = createExpressionContext();
+    context.setFeature( feat );
+
+    QVariant result = exp.evaluate( &context );
     if ( exp.hasEvalError() )
     {
       QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
-      expr_action += action.mid( start, index - start );
+      expr_action += action.midRef( start, index - start );
       continue;
     }
 
@@ -223,7 +251,7 @@ QString QgsAttributeAction::expandAction( QString action, QgsFeature &feat, cons
     expr_action += action.mid( start, pos - start ) + result.toString();
   }
 
-  expr_action += action.mid( index );
+  expr_action += action.midRef( index );
   return expr_action;
 }
 
@@ -237,6 +265,7 @@ bool QgsAttributeAction::writeXML( QDomNode& layer_node, QDomDocument& doc ) con
     QDomElement actionSetting = doc.createElement( "actionsetting" );
     actionSetting.setAttribute( "type", mActions[i].type() );
     actionSetting.setAttribute( "name", mActions[i].name() );
+    actionSetting.setAttribute( "icon", mActions[i].iconPath() );
     actionSetting.setAttribute( "action", mActions[i].action() );
     actionSetting.setAttribute( "capture", mActions[i].capture() );
     aActions.appendChild( actionSetting );
@@ -255,19 +284,20 @@ bool QgsAttributeAction::readXML( const QDomNode& layer_node )
   if ( !aaNode.isNull() )
   {
     QDomNodeList actionsettings = aaNode.childNodes();
-    for ( unsigned int i = 0; i < actionsettings.length(); ++i )
+    for ( int i = 0; i < actionsettings.size(); ++i )
     {
       QDomElement setting = actionsettings.item( i ).toElement();
-      addAction(( QgsAction::ActionType ) setting.attributeNode( "type" ).value().toInt(),
-                setting.attributeNode( "name" ).value(),
-                setting.attributeNode( "action" ).value(),
-                setting.attributeNode( "capture" ).value().toInt() != 0 );
+      addAction( static_cast< QgsAction::ActionType >( setting.attributeNode( "type" ).value().toInt() ),
+                 setting.attributeNode( "name" ).value(),
+                 setting.attributeNode( "action" ).value(),
+                 setting.attributeNode( "icon" ).value(),
+                 setting.attributeNode( "capture" ).value().toInt() != 0 );
     }
   }
   return true;
 }
 
-void ( *QgsAttributeAction::smPythonExecute )( const QString & ) = 0;
+void ( *QgsAttributeAction::smPythonExecute )( const QString & ) = nullptr;
 
 void QgsAttributeAction::setPythonExecute( void ( *runPython )( const QString & ) )
 {

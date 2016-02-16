@@ -17,79 +17,131 @@
 
 #include "qgsdxfpallabeling.h"
 #include "qgsdxfexport.h"
-#include "qgsmaplayerregistry.h"
-#include "qgspalgeometry.h"
+#include "qgstextlabelfeature.h"
+#include "qgspallabeling.h"
+#include "qgsmapsettings.h"
+
+#include "pal/feature.h"
 #include "pal/pointset.h"
 #include "pal/labelposition.h"
 
-using namespace pal;
 
-QgsDxfPalLabeling::QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbox, double scale, QGis::UnitType mapUnits ): QgsPalLabeling(), mDxfExport( dxf )
+QgsDxfLabelProvider::QgsDxfLabelProvider( QgsVectorLayer* layer , QgsDxfExport* dxf )
+    : QgsVectorLayerLabelProvider( layer, false )
+    , mDxfExport( dxf )
 {
-  mMapRenderer.setExtent( bbox );
-
-  int dpi = 96;
-  double factor = 1000 * dpi / scale / 25.4 * QGis::fromUnitToUnitFactor( mapUnits, QGis::Meters );
-  mMapRenderer.setOutputSize( QSizeF( bbox.width() * factor, bbox.height() * factor ), dpi );
-  mMapRenderer.setScale( scale );
-  mMapRenderer.setOutputUnits( QgsMapRenderer::Pixels );
-  init( &mMapRenderer );
-
-  mImage = new QImage( 10, 10, QImage::Format_ARGB32_Premultiplied );
-  mImage->setDotsPerMeterX( 96 / 25.4 * 1000 );
-  mImage->setDotsPerMeterY( 96 / 25.4 * 1000 );
-  mPainter = new QPainter( mImage );
-  mRenderContext.setPainter( mPainter );
-  mRenderContext.setRendererScale( scale );
-  mRenderContext.setExtent( bbox );
-  mRenderContext.setScaleFactor( 96.0 / 25.4 );
-  mRenderContext.setMapToPixel( QgsMapToPixel( 1.0 / factor, bbox.xMinimum(), bbox.yMinimum(), bbox.height() * factor ) );
 }
 
-QgsDxfPalLabeling::~QgsDxfPalLabeling()
-{
-  delete mPainter;
-  delete mImage;
-}
-
-void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType, double dpiRatio )
+void QgsDxfLabelProvider::drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const
 {
   Q_UNUSED( context );
-  Q_UNUSED( drawType );
-  Q_UNUSED( dpiRatio );
+
   //debug: print label infos
   if ( mDxfExport )
   {
-    //label text
-    QString text = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->text();
-
-    //layer name
-    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( QString( label->getLayerName() ) );
-    if ( !layer )
-    {
+    QgsTextLabelFeature* lf = dynamic_cast<QgsTextLabelFeature*>( label->getFeaturePart()->feature() );
+    if ( !lf )
       return;
-    }
-    QString layerName = mDxfExport->dxfLayerName( layer->name() );
+
+    const QgsPalLayerSettings& tmpLyr = mSettings;
+
+    //label text
+    QString txt = lf->text( label->getPartId() );
 
     //angle
     double angle = label->getAlpha() * 180 / M_PI;
 
+    QgsFeatureId fid = label->getFeaturePart()->featureId();
+    QString dxfLayer = mDxfLayerNames[fid];
+
     //debug: show label rectangle
-    /*QgsPolyline line;
-    for( int i = 0; i < 4; ++i )
+#if 0
+    QgsPolyline line;
+    for ( int i = 0; i < 4; ++i )
     {
-        line.append( QgsPoint( label->getX( i ), label->getY( i ) ) );
+      line.append( QgsPoint( label->getX( i ), label->getY( i ) ) );
     }
-    mDxfExport->writePolyline( line, layerName, "CONTINUOUS", 1, 0.01, true );*/
+    mDxfExport->writePolyline( line, dxfLayer, "CONTINUOUS", 1, 0.01, true );
+#endif
 
-    QStringList textList = text.split( "\n" );
-    double textHeight = label->getHeight() / textList.size();
-    QFontMetricsF fm( tmpLyr.textFont );
-    double textAscent = textHeight * fm.ascent() / fm.height();
+    QString wrapchr = tmpLyr.wrapChar.isEmpty() ? "\n" : tmpLyr.wrapChar;
 
-    for ( int i = 0; i < textList.size(); ++i )
+    //add the direction symbol if needed
+    if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line && tmpLyr.addDirectionSymbol )
     {
-      mDxfExport->writeText( layerName, textList.at( i ), QgsPoint( label->getX(), label->getY() + ( textList.size() - 1 - i ) * textHeight ), textAscent, angle, mDxfExport->closestColorMatch( tmpLyr.textColor.rgb() ) );
+      bool prependSymb = false;
+      QString symb = tmpLyr.rightDirectionSymbol;
+
+      if ( label->getReversed() )
+      {
+        prependSymb = true;
+        symb = tmpLyr.leftDirectionSymbol;
+      }
+
+      if ( tmpLyr.reverseDirectionSymbol )
+      {
+        if ( symb == tmpLyr.rightDirectionSymbol )
+        {
+          prependSymb = true;
+          symb = tmpLyr.leftDirectionSymbol;
+        }
+        else
+        {
+          prependSymb = false;
+          symb = tmpLyr.rightDirectionSymbol;
+        }
+      }
+
+      if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolAbove )
+      {
+        prependSymb = true;
+        symb = symb + wrapchr;
+      }
+      else if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolBelow )
+      {
+        prependSymb = false;
+        symb = wrapchr + symb;
+      }
+
+      if ( prependSymb )
+      {
+        txt.prepend( symb );
+      }
+      else
+      {
+        txt.append( symb );
+      }
     }
+
+    txt = txt.replace( wrapchr, "\\P" );
+
+    if ( tmpLyr.textFont.underline() )
+    {
+      txt.prepend( "\\L" ).append( "\\l" );
+    }
+
+    if ( tmpLyr.textFont.overline() )
+    {
+      txt.prepend( "\\O" ).append( "\\o" );
+    }
+
+    if ( tmpLyr.textFont.strikeOut() )
+    {
+      txt.prepend( "\\K" ).append( "\\k" );
+    }
+
+    txt.prepend( QString( "\\f%1|i%2|b%3;\\H%4;\\W0.75;" )
+                 .arg( tmpLyr.textFont.family() )
+                 .arg( tmpLyr.textFont.italic() ? 1 : 0 )
+                 .arg( tmpLyr.textFont.bold() ? 1 : 0 )
+                 .arg( label->getHeight() / ( 1 + txt.count( "\\P" ) ) * 0.75 ) );
+
+    mDxfExport->writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth() * 1.1, angle, tmpLyr.textColor );
   }
+}
+
+void QgsDxfLabelProvider::registerDxfFeature( QgsFeature& feature, QgsRenderContext& context, const QString& dxfLayerName )
+{
+  registerFeature( feature, context );
+  mDxfLayerNames[feature.id()] = dxfLayerName;
 }

@@ -28,14 +28,17 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QObject, SIGNAL
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox
+from qgis.core import QGis
 
-from qgis.core import *
 import ftools_utils
 from ui_frmRandom import Ui_Dialog
 import random
+
+
 class Dialog(QDialog, Ui_Dialog):
+
     def __init__(self, iface):
         QDialog.__init__(self, iface.mainWindow())
         self.iface = iface
@@ -45,8 +48,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.setWindowTitle(self.tr("Random selection"))
         # populate layer list
         self.progressBar.setValue(0)
-        mapCanvas = self.iface.mapCanvas()
-        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
+        self.buttonOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
         self.inShape.addItems(layers)
 
@@ -57,7 +59,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.spnNumber.setMaximum(upperVal)
 
     def accept(self):
-        self.buttonOk.setEnabled( False )
+        self.buttonOk.setEnabled(False)
         if self.inShape.currentText() == "":
             QMessageBox.information(self, self.tr("Random Selection Tool"), self.tr("No input shapefile specified"))
             return
@@ -82,4 +84,4 @@ class Dialog(QDialog, Ui_Dialog):
         self.progressBar.setValue(100)
         layer.setSelectedFeatures(selran)
         self.progressBar.setValue(0)
-        self.buttonOk.setEnabled( True )
+        self.buttonOk.setEnabled(True)

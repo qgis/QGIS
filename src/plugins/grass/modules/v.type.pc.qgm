@@ -4,5 +4,7 @@
 <qgisgrassmodule label="Convert points to centroids" module="v.type">
 	<option key="input" typemask="point"/>
 	<option key="output"/>
-	<option key="type" answer="point,centroid" hidden="yes" />
+	<option key="type" answer="point,centroid" hidden="yes" version_max="6"/>
+	<option key="from_type" answer="point" hidden="yes" version_min="7"/>
+	<option key="to_type" answer="centroid" hidden="yes" version_min="7"/>
 </qgisgrassmodule>

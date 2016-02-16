@@ -23,8 +23,10 @@
  */
 class GUI_EXPORT QgsFileDropEdit: public QLineEdit
 {
+    Q_OBJECT
+
   public:
-    QgsFileDropEdit( QWidget *parent = 0 );
+    QgsFileDropEdit( QWidget *parent = nullptr );
     virtual ~QgsFileDropEdit();
 
     bool isDirOnly() const { return mDirOnly; }
@@ -33,15 +35,15 @@ class GUI_EXPORT QgsFileDropEdit: public QLineEdit
     bool isFileOnly() const { return mFileOnly; }
     void setFileOnly( bool isFileOnly );
 
-    const QString& suffixFilter() const { return mSuffix; }
+    QString suffixFilter() const { return mSuffix; }
     void setSuffixFilter( const QString& suffix );
 
   protected:
 
-    virtual void dragEnterEvent( QDragEnterEvent *event );
-    virtual void dragLeaveEvent( QDragLeaveEvent *event );
-    virtual void dropEvent( QDropEvent *event );
-    virtual void paintEvent( QPaintEvent *e );
+    virtual void dragEnterEvent( QDragEnterEvent *event ) override;
+    virtual void dragLeaveEvent( QDragLeaveEvent *event ) override;
+    virtual void dropEvent( QDropEvent *event ) override;
+    virtual void paintEvent( QPaintEvent *e ) override;
 
   private:
     QString acceptableFilePath( QDropEvent *event ) const;

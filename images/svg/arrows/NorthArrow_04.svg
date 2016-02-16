@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 61.06 96.62"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   width="100%"
+   height="100%"
+   sodipodi:docname="NorthArrow_04.svg">
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs88" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview86"
+     showgrid="false"
+     inkscape:zoom="2.4425585"
+     inkscape:cx="30.53"
+     inkscape:cy="48.31"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g4" />
+  <g
+     transform="translate(-1.438 30.744)"
+     id="g4">
+    <path
+       d="m32-9.453l28.938 73.826-29-29-29 29z"
+       fill="#fff"
+       stroke="#fff"
+       stroke-width="3"
+       id="path14" />
+    <path
+       d="m32-9.453l29 73.45-29-29-29 29z"
+       fill="none"
+       stroke="#000"
+       stroke-linecap="square"
+       id="path16" />
+    <text
+       x="22.71"
+       y="-10.854"
+       font-family="OPEN SANS"
+       word-spacing="0"
+       line-height="125%"
+       letter-spacing="0"
+       font-size="40"
+       id="text18">
+      <tspan
+         x="22.71"
+         y="-10.854"
+         font-family="Adobe Heiti Std R"
+         font-size="26"
+         id="tspan20">N</tspan>
+    </text>
+  </g>
+  <g
+     transform="translate(0-3.829)"
+     fill="none"
+     stroke="#000"
+     stroke-width=".25"
+     id="g22">
+    <path
+       d="m4 92.82l6.74-3.891"
+       id="path24" />
+    <path
+       d="m4.603 90.7l10.397-6"
+       id="path26" />
+    <path
+       d="m3 95.17l4-2.309"
+       id="path28" />
+    <path
+       d="m5.442 88.45l13.856-8"
+       id="path30" />
+    <path
+       d="m12 72.26l18.686-10.812"
+       id="path32" />
+    <path
+       d="m14.593 65.45l16.09-9.291"
+       id="path34" />
+    <path
+       d="m15.343 63.24l15.343-8.858"
+       id="path36" />
+    <path
+       d="m16.877 60.58l13.809-7.972"
+       id="path38" />
+    <path
+       d="m17.511 58.45l13.174-7.606"
+       id="path40" />
+    <path
+       d="m18.412 56.15l12.274-7.087"
+       id="path42" />
+    <path
+       d="m19 54.04l11.427-6.597"
+       id="path44" />
+    <path
+       d="m20 51.757l10.822-6.311"
+       id="path46" />
+    <path
+       d="m20.826 49.45l9.86-5.693"
+       id="path48" />
+    <path
+       d="m21.48 47.3l9.206-5.315"
+       id="path50" />
+    <path
+       d="m23 44.647l7.686-4.437"
+       id="path52" />
+    <path
+       d="m23.744 42.45l6.928-4"
+       id="path54" />
+    <path
+       d="m24.549 40.21l6.137-3.543"
+       id="path56" />
+    <path
+       d="m25 38.18l5.686-3.283"
+       id="path58" />
+    <path
+       d="m26.663 35.446l4.02-2.323"
+       id="path60" />
+    <path
+       d="m27.617 33.12l3.069-1.772"
+       id="path62" />
+    <path
+       d="m28 31.13l2.686-1.551"
+       id="path64" />
+    <path
+       d="m29.15 28.694l1.534-.886"
+       id="path66" />
+    <path
+       d="m13 69.909l17.686-10.211"
+       id="path68" />
+    <path
+       d="m9.206 79.19l21.48-12.402"
+       id="path70" />
+    <path
+       d="m8.36 81.45l22.326-12.89"
+       id="path72" />
+    <path
+       d="m7.671 83.62l19.946-11.516"
+       id="path74" />
+    <path
+       d="m6.137 86.27l17.02-9.827"
+       id="path76" />
+    <path
+       d="m10 76.956l20.686-11.943"
+       id="path78" />
+    <path
+       d="m11.279 74.45l19.407-11.205"
+       id="path80" />
+    <path
+       d="m14 67.56l16.686-9.634"
+       id="path82" />
+    <path
+       d="m30.562 65.744v-43.566"
+       transform="translate(0 3.829)"
+       id="path84" />
+  </g>
+</svg>

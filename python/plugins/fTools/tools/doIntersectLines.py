@@ -28,11 +28,12 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QObject, SIGNAL, QFile
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox
 import ftools_utils
-from qgis.core import *
+from qgis.core import QGis, QgsFields, QgsVectorFileWriter, QgsFeatureRequest, QgsFeature, QgsGeometry
 from ui_frmIntersectLines import Ui_Dialog
+
 
 class Dialog(QDialog, Ui_Dialog):
 
@@ -44,19 +45,19 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
         QObject.connect(self.inLine1, SIGNAL("currentIndexChanged(QString)"), self.update1)
         QObject.connect(self.inLine2, SIGNAL("currentIndexChanged(QString)"), self.update2)
-        self.setWindowTitle( self.tr("Line intersections") )
-        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
+        self.setWindowTitle(self.tr("Line intersections"))
+        self.buttonOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
         self.progressBar.setValue(0)
         self.populateLayers()
 
-    def populateLayers( self ):
+    def populateLayers(self):
         layers = ftools_utils.getLayerNames([QGis.Line])
-        self.inLine1.blockSignals( True )
-        self.inLine2.blockSignals( True )
+        self.inLine1.blockSignals(True)
+        self.inLine2.blockSignals(True)
         self.inLine1.clear()
         self.inLine2.clear()
-        self.inLine1.blockSignals( False )
-        self.inLine2.blockSignals( False )
+        self.inLine1.blockSignals(False)
+        self.inLine2.blockSignals(False)
         self.inLine1.addItems(layers)
         self.inLine2.addItems(layers)
 
@@ -75,17 +76,17 @@ class Dialog(QDialog, Ui_Dialog):
             self.inField2.addItem(unicode(f.name()))
 
     def accept(self):
-        self.buttonOk.setEnabled( False )
+        self.buttonOk.setEnabled(False)
         if self.inLine1.currentText() == "":
-            QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify input line layer") )
+            QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify input line layer"))
         elif self.outShape.text() == "":
-            QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify output shapefile") )
+            QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify output shapefile"))
         elif self.inLine2.currentText() == "":
-            QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify line intersect layer") )
+            QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify line intersect layer"))
         elif self.inField1.currentText() == "":
-            QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify input unique ID field") )
+            QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify input unique ID field"))
         elif self.inField2.currentText() == "":
-            QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify intersect unique ID field") )
+            QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify intersect unique ID field"))
         else:
             line1 = self.inLine1.currentText()
             line2 = self.inLine2.currentText()
@@ -98,19 +99,19 @@ class Dialog(QDialog, Ui_Dialog):
             if self.addToCanvasCheck.isChecked():
                 addCanvasCheck = ftools_utils.addShapeToCanvas(unicode(outPath))
                 if not addCanvasCheck:
-                    QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( outPath ) ))
+                    QMessageBox.warning(self, self.tr("Geoprocessing"), self.tr("Error loading output shapefile:\n%s") % (unicode(outPath)))
                 self.populateLayers()
             else:
-                QMessageBox.information(self, self.tr("Generate Centroids"),self.tr("Created output shapefile:\n%s" ) % ( unicode( outPath )))
+                QMessageBox.information(self, self.tr("Generate Centroids"), self.tr("Created output shapefile:\n%s") % (unicode(outPath)))
         self.progressBar.setValue(0)
-        self.buttonOk.setEnabled( True )
+        self.buttonOk.setEnabled(True)
 
     def outFile(self):
         self.outShape.clear()
-        ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
+        (self.shapefileName, self.encoding) = ftools_utils.saveDialog(self)
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( self.shapefileName )
+        self.outShape.setText(self.shapefileName)
 
     def compute(self, line1, line2, field1, field2, outPath, progressBar):
 
@@ -129,8 +130,8 @@ class Dialog(QDialog, Ui_Dialog):
         field2.setName(unicode(field2.name()) + "_2")
 
         fieldList = QgsFields()
-        fieldList.append( field1 )
-        fieldList.append( field2 )
+        fieldList.append(field1)
+        fieldList.append(field2)
         sRs = provider1.crs()
         check = QFile(self.shapefileName)
         if check.exists():
@@ -148,18 +149,18 @@ class Dialog(QDialog, Ui_Dialog):
         start = 15.00
         add = 85.00 / layer1.featureCount()
 
-        index = ftools_utils.createIndex( provider2 )
+        index = ftools_utils.createIndex(provider2)
 
         singlelayer_tempList = []
-        fit1 = provider1.getFeatures( QgsFeatureRequest().setSubsetOfAttributes([index1]) )
+        fit1 = provider1.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([index1]))
         while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
             v1 = inFeat.attributes()[index1]
 
-            lineList = index.intersects( inGeom.boundingBox() )
+            lineList = index.intersects(inGeom.boundingBox())
             for i in lineList:
-                provider2.getFeatures( QgsFeatureRequest().setFilterFid( int( i ) ).setSubsetOfAttributes([index2]) ).nextFeature( inFeatB )
-                tmpGeom = QgsGeometry( inFeatB.geometry() )
+                provider2.getFeatures(QgsFeatureRequest().setFilterFid(int(i)).setSubsetOfAttributes([index2])).nextFeature(inFeatB)
+                tmpGeom = QgsGeometry(inFeatB.geometry())
                 v2 = inFeatB.attributes()[index2]
 
                 if inGeom.intersects(tmpGeom):
@@ -174,7 +175,7 @@ class Dialog(QDialog, Ui_Dialog):
                         for j in tempList:
                             # if same layer, avoid insert duplicated points
                             if line1 == line2:
-                                if not j in singlelayer_tempList:
+                                if j not in singlelayer_tempList:
                                     singlelayer_tempList.append(j)
                                     outFeat.setGeometry(tempGeom.fromPoint(j))
                                     outFeat.setAttribute(0, v1)

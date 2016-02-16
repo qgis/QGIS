@@ -28,8 +28,8 @@
 
 void QgsGraphAnalyzer::dijkstra( const QgsGraph* source, int startPointIdx, int criterionNum, QVector<int>* resultTree, QVector<double>* resultCost )
 {
-  QVector< double > * result = NULL;
-  if ( resultCost != NULL )
+  QVector< double > * result = nullptr;
+  if ( resultCost )
   {
     result = resultCost;
   }
@@ -42,7 +42,7 @@ void QgsGraphAnalyzer::dijkstra( const QgsGraph* source, int startPointIdx, int 
   result->insert( result->begin(), source->vertexCount(), std::numeric_limits<double>::infinity() );
   ( *result )[ startPointIdx ] = 0.0;
 
-  if ( resultTree != NULL )
+  if ( resultTree )
   {
     resultTree->clear();
     resultTree->insert( resultTree->begin(), source->vertexCount(), -1 );
@@ -73,7 +73,7 @@ void QgsGraphAnalyzer::dijkstra( const QgsGraph* source, int startPointIdx, int 
       if ( cost < ( *result )[ arc.inVertex()] )
       {
         ( *result )[ arc.inVertex()] = cost;
-        if ( resultTree != NULL )
+        if ( resultTree )
         {
           ( *resultTree )[ arc.inVertex()] = *arcIt;
         }
@@ -81,7 +81,7 @@ void QgsGraphAnalyzer::dijkstra( const QgsGraph* source, int startPointIdx, int 
       }
     }
   }
-  if ( resultCost == NULL )
+  if ( !resultCost )
   {
     delete result;
   }

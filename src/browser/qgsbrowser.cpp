@@ -26,6 +26,7 @@
 #include "qgsencodingfiledialog.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
+#include "qgsconditionalstyle.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectorlayer.h"
@@ -41,14 +42,14 @@
 #define QGIS_ICON_SIZE 24
 #endif
 
-QgsBrowser::QgsBrowser( QWidget *parent, Qt::WFlags flags )
+QgsBrowser::QgsBrowser( QWidget *parent, const Qt::WindowFlags& flags )
     : QMainWindow( parent, flags )
     , mDirtyMetadata( true )
     , mDirtyPreview( true )
     , mDirtyAttributes( true )
-    , mLayer( 0 )
-    , mParamWidget( 0 )
-    , mAttributeTableFilterModel( 0 )
+    , mLayer( nullptr )
+    , mParamWidget( nullptr )
+    , mAttributeTableFilterModel( nullptr )
 {
   setupUi( this );
 
@@ -78,21 +79,14 @@ QgsBrowser::QgsBrowser( QWidget *parent, Qt::WFlags flags )
 
   mapCanvas->setCanvasColor( Qt::white );
 
-  QSettings settings;
-  QString lastPath =  settings.value( "/Browser/lastExpanded" ).toString();
-  QgsDebugMsg( "lastPath = " + lastPath );
-  if ( !lastPath.isEmpty() )
-  {
-    expandPath( lastPath );
-  }
-
   //Set the icon size of for all the toolbars created in the future.
+  QSettings settings;
   int size = settings.value( "/IconSize", QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
 
   //Change all current icon sizes.
   QList<QToolBar *> toolbars = findChildren<QToolBar *>();
-  foreach ( QToolBar * toolbar, toolbars )
+  Q_FOREACH ( QToolBar * toolbar, toolbars )
   {
     toolbar->setIconSize( QSize( size, size ) );
   }
@@ -106,7 +100,7 @@ QgsBrowser::~QgsBrowser()
 
 }
 
-void QgsBrowser::expandPath( QString path )
+void QgsBrowser::expandPath( const QString& path )
 {
   QModelIndex idx = mModel->findPath( path );
   if ( idx.isValid() )
@@ -137,7 +131,7 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
   mDirtyAttributes = true;
 
   // clear the previous stuff
-  setLayer( 0 );
+  setLayer( nullptr );
 
   QList<QgsMapCanvasLayer> nolayers;
   mapCanvas->setLayerSet( nolayers );
@@ -147,13 +141,13 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
     paramLayout->removeWidget( mParamWidget );
     mParamWidget->hide();
     delete mParamWidget;
-    mParamWidget = 0;
+    mParamWidget = nullptr;
   }
 
   // QgsMapLayerRegistry deletes the previous layer(s) for us
   // TODO: in future we could cache the layers in the registry
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
-  mLayer = 0;
+  mLayer = nullptr;
 
   // this should probably go to the model and only emit signal when a layer is clicked
   mParamWidget = item->paramWidget();
@@ -214,7 +208,7 @@ bool QgsBrowser::layerClicked( QgsLayerItem *item )
   if ( !item )
     return false;
 
-  mActionSetProjection->setEnabled( item->capabilities() & QgsLayerItem::SetCrs );
+  mActionSetProjection->setEnabled( item->capabilities2().testFlag( QgsLayerItem::SetCrs ) );
 
   QString uri = item->uri();
   if ( !uri.isEmpty() )
@@ -258,34 +252,18 @@ void QgsBrowser::itemDoubleClicked( const QModelIndex& index )
   QgsDebugMsg( QString( "%1 %2 %3" ).arg( index.row() ).arg( index.column() ).arg( item->name() ) );
 }
 
-void QgsBrowser::itemExpanded( const QModelIndex& index )
-{
-  QSettings settings;
-  QgsDataItem *item = mModel->dataItem( index );
-  if ( !item )
-    return;
-
-#if 0
-  if ( item->mType == QgsDataItem::Directory || item->mType == QgsDataItem::Collection )
-  {
-    QgsDirectoryItem *i = qobject_cast<QgsDirectoryItem*>( item );
-    settings.setValue( "/Browser/lastExpandedDir", i->mPath );
-  }
-#endif
-
-  // TODO: save separately each type (FS, WMS)
-  settings.setValue( "/Browser/lastExpanded", item->path() );
-  QgsDebugMsg( "last expanded: " + item->path() );
-}
-
 void QgsBrowser::newVectorLayer()
 {
   // Set file dialog to last selected dir
-  QSettings settings;
-  QString lastPath =  settings.value( "/Browser/lastExpanded" ).toString();
-  if ( !lastPath.isEmpty() )
+  QModelIndex selectedIndex = treeView->selectionModel()->currentIndex();
+  if ( selectedIndex.isValid() )
   {
-    settings.setValue( "/UI/lastVectorFileFilterDir", lastPath );
+    QgsDirectoryItem * dirItem = qobject_cast<QgsDirectoryItem *>( mModel->dataItem( selectedIndex ) );
+    if ( dirItem )
+    {
+      QSettings settings;
+      settings.setValue( "/UI/lastVectorFileFilterDir", dirItem->dirPath() );
+    }
   }
 
   QString fileName = QgsNewVectorLayerDialog::runAndCreateLayer( this );
@@ -357,8 +335,8 @@ void QgsBrowser::saveWindowState()
   QSettings settings;
   settings.setValue( "/Windows/Browser/state", saveState() );
   settings.setValue( "/Windows/Browser/geometry", saveGeometry() );
-  settings.setValue( "/Windows/Browser/sizes/0", splitter->sizes()[0] );
-  settings.setValue( "/Windows/Browser/sizes/1", splitter->sizes()[1] );
+  settings.setValue( "/Windows/Browser/sizes/0", splitter->sizes().at( 0 ) );
+  settings.setValue( "/Windows/Browser/sizes/1", splitter->sizes().at( 1 ) );
 }
 
 void QgsBrowser::restoreWindowState()
@@ -466,7 +444,7 @@ void QgsBrowser::updateCurrentTab()
       QgsRasterLayer *rlayer = qobject_cast< QgsRasterLayer * >( mLayer );
       if ( rlayer )
       {
-        connect( rlayer->dataProvider(), SIGNAL( dataChanged() ), rlayer, SLOT( clearCacheImage() ) );
+        connect( rlayer->dataProvider(), SIGNAL( dataChanged() ), rlayer, SLOT( triggerRepaint() ) );
         connect( rlayer->dataProvider(), SIGNAL( dataChanged() ), mapCanvas, SLOT( refresh() ) );
       }
     }
@@ -484,7 +462,7 @@ void QgsBrowser::updateCurrentTab()
     }
     else
     {
-      setLayer( 0 );
+      setLayer( nullptr );
     }
     mDirtyAttributes = false;
   }
@@ -541,13 +519,13 @@ void QgsBrowser::refresh( const QModelIndex& index )
 
 void QgsBrowser::setLayer( QgsVectorLayer* vLayer )
 {
-  attributeTable->setModel( NULL );
+  attributeTable->setModel( nullptr );
 
   if ( mAttributeTableFilterModel )
   {
     // Cleanup
     delete mAttributeTableFilterModel;
-    mAttributeTableFilterModel = NULL;
+    mAttributeTableFilterModel = nullptr;
   }
 
   if ( vLayer )
@@ -560,7 +538,7 @@ void QgsBrowser::setLayer( QgsVectorLayer* vLayer )
 
     QgsAttributeTableModel *tableModel = new QgsAttributeTableModel( layerCache );
 
-    mAttributeTableFilterModel = new QgsAttributeTableFilterModel( NULL, tableModel, this );
+    mAttributeTableFilterModel = new QgsAttributeTableFilterModel( nullptr, tableModel, this );
 
     // Let Qt do the garbage collection
     layerCache->setParent( tableModel );

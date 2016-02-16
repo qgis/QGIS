@@ -39,6 +39,7 @@ static const QString sPluginIcon = ":/oracleplugin/oracleraster.svg";
 QgsOraclePlugin::QgsOraclePlugin( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
+    , mQActionPointer( nullptr )
 {
 }
 
@@ -64,7 +65,7 @@ void QgsOraclePlugin::initGui()
   // Add the icon to the new layers toolbar
   mQGisIface->layerToolBar()->insertAction( mQGisIface->actionAddWmsLayer(), mQActionPointer );
   // Also add to Layer menu
-  mQGisIface->layerMenu()->insertAction( mQGisIface->actionAddWmsLayer(), mQActionPointer );
+  mQGisIface->insertAddLayerAction( mQActionPointer );
 }
 //method defined in interface
 
@@ -94,6 +95,7 @@ void QgsOraclePlugin::unload()
   mQGisIface->layerToolBar()->removeAction( mQActionPointer );
   mQGisIface->removeAddLayerAction( mQActionPointer );
   delete mQActionPointer;
+  mQActionPointer = nullptr;
 }
 
 

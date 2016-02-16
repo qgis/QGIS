@@ -1,5 +1,25 @@
-SET (MSSQL_SRCS qgsmssqlprovider.cpp qgsmssqlgeometryparser.cpp qgsmssqlsourceselect.cpp qgsmssqltablemodel.cpp qgsmssqlnewconnection.cpp qgsmssqldataitems.cpp qgsmssqlfeatureiterator.cpp)
-SET (MSSQL_MOC_HDRS qgsmssqlprovider.h qgsmssqlsourceselect.h qgsmssqltablemodel.h qgsmssqlnewconnection.h qgsmssqldataitems.h)
+SET(MSSQL_SRCS
+  qgsmssqlprovider.cpp
+  qgsmssqlgeometryparser.cpp
+  qgsmssqlsourceselect.cpp
+  qgsmssqltablemodel.cpp
+  qgsmssqlnewconnection.cpp
+  qgsmssqldataitems.cpp
+  qgsmssqlexpressioncompiler.cpp
+  qgsmssqlfeatureiterator.cpp
+)
+
+SET(MSSQL_MOC_HDRS
+  qgsmssqlprovider.h
+  qgsmssqlsourceselect.h
+  qgsmssqltablemodel.h
+  qgsmssqlnewconnection.h
+  qgsmssqldataitems.h
+)
+
+SET(MSSQL_HDRS
+  qgsmssqlexpressioncompiler.h
+)
 
 ########################################################
 # Build
@@ -9,15 +29,21 @@ QT4_WRAP_CPP(MSSQL_MOC_SRCS ${MSSQL_MOC_HDRS})
 INCLUDE_DIRECTORIES(
   .
   ../../core
+  ../../core/geometry
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${QT_INCLUDE_DIR}
+  ${QSCINTILLA_INCLUDE_DIR}
+)
+INCLUDE_DIRECTORIES(
   ../../gui
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
 )
 
 
-ADD_LIBRARY(mssqlprovider MODULE ${MSSQL_SRCS} ${MSSQL_MOC_SRCS})
+ADD_LIBRARY(mssqlprovider MODULE ${MSSQL_SRCS} ${MSSQL_MOC_SRCS} ${MSSQL_HDRS})
 
 TARGET_LINK_LIBRARIES(mssqlprovider
   qgis_core

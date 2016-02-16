@@ -297,7 +297,7 @@ EXTRACT_ALL            = YES
 # If the EXTRACT_PRIVATE tag is set to YES all private members of a class
 # will be included in the documentation.
 
-EXTRACT_PRIVATE        = YES
+EXTRACT_PRIVATE        = NO
 
 # If the EXTRACT_STATIC tag is set to YES all static members of a file
 # will be included in the documentation.
@@ -404,7 +404,7 @@ SORT_MEMBER_DOCS       = YES
 # by member name. If set to NO (the default) the members will appear in
 # declaration order.
 
-SORT_BRIEF_DOCS        = NO
+SORT_BRIEF_DOCS        = YES
 
 # If the SORT_MEMBERS_CTORS_1ST tag is set to YES then doxygen
 # will sort the (brief and detailed) documentation of class members so that
@@ -414,7 +414,7 @@ SORT_BRIEF_DOCS        = NO
 # This tag will be ignored for brief docs if SORT_BRIEF_DOCS is set to NO
 # and ignored for detailed docs if SORT_MEMBER_DOCS is set to NO.
 
-SORT_MEMBERS_CTORS_1ST = NO
+SORT_MEMBERS_CTORS_1ST = YES
 
 # If the SORT_GROUP_NAMES tag is set to YES then doxygen will sort the
 # hierarchy of group names into alphabetical order. If set to NO (the default)
@@ -572,17 +572,40 @@ WARN_LOGFILE           =
 
 INPUT                  = @CMAKE_SOURCE_DIR@/doc \
                          @CMAKE_SOURCE_DIR@/src/core \
+                         @CMAKE_SOURCE_DIR@/src/core/auth \
                          @CMAKE_SOURCE_DIR@/src/core/composer \
+                         @CMAKE_SOURCE_DIR@/src/core/diagram \
+                         @CMAKE_SOURCE_DIR@/src/core/dxf \
+                         @CMAKE_SOURCE_DIR@/src/core/effects \
+                         @CMAKE_SOURCE_DIR@/src/core/geometry \
+                         @CMAKE_SOURCE_DIR@/src/core/gps \
+                         @CMAKE_SOURCE_DIR@/src/core/layertree \
+                         @CMAKE_SOURCE_DIR@/src/core/pal \
                          @CMAKE_SOURCE_DIR@/src/core/raster \
                          @CMAKE_SOURCE_DIR@/src/core/symbology-ng \
-                         @CMAKE_SOURCE_DIR@/src/core/gps \
                          @CMAKE_SOURCE_DIR@/src/gui \
+                         @CMAKE_SOURCE_DIR@/src/gui/auth \
                          @CMAKE_SOURCE_DIR@/src/gui/attributetable \
+                         @CMAKE_SOURCE_DIR@/src/gui/editorwidgets \
+                         @CMAKE_SOURCE_DIR@/src/gui/editorwidgets/core \
+                         @CMAKE_SOURCE_DIR@/src/gui/effects \
+                         @CMAKE_SOURCE_DIR@/src/gui/layertree \
                          @CMAKE_SOURCE_DIR@/src/gui/raster \
+                         @CMAKE_SOURCE_DIR@/src/gui/symbology-ng \
+                         @CMAKE_SOURCE_DIR@/src/analysis \
                          @CMAKE_SOURCE_DIR@/src/analysis/interpolation \
+                         @CMAKE_SOURCE_DIR@/src/analysis/network \
+                         @CMAKE_SOURCE_DIR@/src/analysis/openstreetmap \
                          @CMAKE_SOURCE_DIR@/src/analysis/raster \
                          @CMAKE_SOURCE_DIR@/src/analysis/vector \
-                         @CMAKE_SOURCE_DIR@/src/plugins
+                         @CMAKE_SOURCE_DIR@/src/plugins \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsserver.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgscapabilitiescache.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsmapserviceexception.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsrequesthandler.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsserverfilter.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsaccesscontrolfilter.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsserverinterface.h
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -720,13 +743,13 @@ STRIP_CODE_COMMENTS    = YES
 # then for each documented function all documented
 # functions referencing it will be listed.
 
-REFERENCED_BY_RELATION = YES
+REFERENCED_BY_RELATION = NO
 
 # If the REFERENCES_RELATION tag is set to YES
 # then for each documented function all documented entities
 # called/used by that function will be listed.
 
-REFERENCES_RELATION    = YES
+REFERENCES_RELATION    = NO
 
 # If the REFERENCES_LINK_SOURCE tag is set to YES (the default)
 # and SOURCE_BROWSER tag is set to YES, then the hyperlinks from
@@ -1237,25 +1260,13 @@ MAN_LINKS              = NO
 # generate an XML file that captures the structure of
 # the code including all documentation.
 
-GENERATE_XML           = NO
+GENERATE_XML           = YES
 
 # The XML_OUTPUT tag is used to specify where the XML pages will be put.
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be
 # put in front of it. If left blank `xml' will be used as the default path.
 
 XML_OUTPUT             = xml
-
-# The XML_SCHEMA tag can be used to specify an XML schema,
-# which can be used by a validating XML parser to check the
-# syntax of the XML files.
-
-XML_SCHEMA             =
-
-# The XML_DTD tag can be used to specify an XML DTD,
-# which can be used by a validating XML parser to check the
-# syntax of the XML files.
-
-XML_DTD                =
 
 # If the XML_PROGRAMLISTING tag is set to YES Doxygen will
 # dump the program listings (including syntax highlighting
@@ -1398,7 +1409,7 @@ SKIP_FUNCTION_MACROS   = YES
 # If a tag file is not located in the directory in which doxygen
 # is run, you must also specify the path to the tagfile here.
 
-TAGFILES               =
+TAGFILES               = @DOXYGEN_TAGS@
 
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create
 # a tag file that is based on the input files it reads.
@@ -1500,7 +1511,7 @@ CLASS_GRAPH            = YES
 # indirect implementation dependencies (inheritance, containment, and
 # class references variables) of the class with other documented classes.
 
-COLLABORATION_GRAPH    = YES
+COLLABORATION_GRAPH    = NO
 
 # If the GROUP_GRAPHS and HAVE_DOT tags are set to YES then doxygen
 # will generate a graph for groups, showing the direct groups dependencies
@@ -1595,7 +1606,7 @@ DOT_GRAPH_MAX_NODES    = 50
 # code bases. Also note that the size of a graph can be further restricted by
 # DOT_GRAPH_MAX_NODES. Using a depth of 0 means no depth restriction.
 
-MAX_DOT_GRAPH_DEPTH    = 0
+MAX_DOT_GRAPH_DEPTH    = 2
 
 # Set the DOT_TRANSPARENT tag to YES to generate images with a transparent
 # background. This is disabled by default, because dot on Windows does not
@@ -1610,7 +1621,7 @@ DOT_TRANSPARENT        = NO
 # makes dot run faster, but since only newer versions of dot (>1.8.10)
 # support this, this feature is disabled by default.
 
-DOT_MULTI_TARGETS      = NO
+DOT_MULTI_TARGETS      = YES
 
 # If the GENERATE_LEGEND tag is set to YES (the default) Doxygen will
 # generate a legend page explaining the meaning of the various boxes and

@@ -23,13 +23,13 @@
 class QgsAnnotationItem;
 class QgsMarkerSymbolV2;
 
-/**A configuration widget to configure the annotation item properties. Usually embedded by QgsAnnotationItem
+/** A configuration widget to configure the annotation item properties. Usually embedded by QgsAnnotationItem
 subclass configuration dialogs*/
 class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationWidgetBase
 {
     Q_OBJECT
   public:
-    QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsAnnotationWidget();
 
     void apply();

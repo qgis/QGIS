@@ -1,0 +1,66 @@
+<root>
+  <key>ConnectedComponentSegmentation</key>
+  <exec>otbcli_ConnectedComponentSegmentation</exec>
+  <longname>Connected Component Segmentation</longname>
+  <group>Segmentation</group>
+  <description>Connected component segmentation and object based image filtering of the input image according to user-defined criterions.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description>The image to segment.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputVectorData">OutputVector</parameter_type>
+    <key>out</key>
+    <name>Output Shape</name>
+    <description>The segmentation shape.</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_String">ParameterString</parameter_type>
+    <key>mask</key>
+    <name>Mask expression</name>
+    <description>Mask mathematical expression (only if support image is given)</description>
+    <default />
+    <multiline />
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_String">ParameterString</parameter_type>
+    <key>expr</key>
+    <name>Connected Component Expression</name>
+    <description>Formula used for connected component segmentation</description>
+    <default />
+    <multiline />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>minsize</key>
+    <name>Minimum Object Size</name>
+    <description>Min object size (area in pixel)</description>
+    <minValue />
+    <maxValue />
+    <default>2</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_String">ParameterString</parameter_type>
+    <key>obia</key>
+    <name>OBIA Expression</name>
+    <description>OBIA mathematical expression</description>
+    <default />
+    <multiline />
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>elev.default</key>
+    <name>Default elevation</name>
+    <description>This parameter allows setting the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+</root>

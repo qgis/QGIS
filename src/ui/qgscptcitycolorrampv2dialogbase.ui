@@ -529,6 +529,19 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mTreeView</tabstop>
+  <tabstop>mListWidget</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>cboVariantName</tabstop>
+  <tabstop>lblSchemePath</tabstop>
+  <tabstop>lblLicensePreview</tabstop>
+  <tabstop>lblLicenseName</tabstop>
+  <tabstop>pbtnLicenseDetails</tabstop>
+  <tabstop>cboConvertStandard</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>mBrowserView</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

@@ -14,7 +14,16 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>1</number>
+   </property>
+   <property name="topMargin">
+    <number>1</number>
+   </property>
+   <property name="rightMargin">
+    <number>1</number>
+   </property>
+   <property name="bottomMargin">
     <number>1</number>
    </property>
    <item>
@@ -87,26 +96,6 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QComboBox" name="mDistanceUnitComboBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>3</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <item>
-        <property name="text">
-         <string>Millimeter</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Map unit</string>
-        </property>
-       </item>
-      </widget>
-     </item>
      <item row="3" column="0">
       <widget class="QLabel" name="mScaleLabel">
        <property name="sizePolicy">
@@ -121,17 +110,32 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QDoubleSpinBox" name="mScaleSpinBox">
+      <widget class="QgsDoubleSpinBox" name="mScaleSpinBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>3</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="decimals">
+        <number>2</number>
+       </property>
+       <property name="maximum">
+        <double>9999999.000000000000000</double>
+       </property>
        <property name="singleStep">
         <double>0.200000000000000</double>
        </property>
+       <property name="value">
+        <double>1.000000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>false</bool>
+       </property>
       </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QgsUnitSelectionWidget" name="mDistanceUnitWidget" native="true"/>
      </item>
     </layout>
    </item>
@@ -230,6 +234,31 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mXAttributeComboBox</tabstop>
+  <tabstop>mYAttributeComboBox</tabstop>
+  <tabstop>mScaleSpinBox</tabstop>
+  <tabstop>mCartesianRadioButton</tabstop>
+  <tabstop>mPolarRadioButton</tabstop>
+  <tabstop>mHeightRadioButton</tabstop>
+  <tabstop>mDegreesRadioButton</tabstop>
+  <tabstop>mRadiansRadioButton</tabstop>
+  <tabstop>mClockwiseFromNorthRadioButton</tabstop>
+  <tabstop>mCounterclockwiseFromEastRadioButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

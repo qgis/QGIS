@@ -16,12 +16,15 @@
 #include "qgsdisplayangle.h"
 #include "qgsmapcanvas.h"
 #include "qgslogger.h"
+#include "qgsunittypes.h"
 
 #include <QSettings>
 #include <cmath>
 
-QgsDisplayAngle::QgsDisplayAngle( QgsMapToolMeasureAngle * tool, Qt::WFlags f )
-    : QDialog( tool->canvas()->topLevelWidget(), f ), mTool( tool )
+QgsDisplayAngle::QgsDisplayAngle( QgsMapToolMeasureAngle * tool, Qt::WindowFlags f )
+    : QDialog( tool->canvas()->topLevelWidget(), f )
+    , mTool( tool )
+    , mValue( 0.0 )
 {
   setupUi( this );
 }
@@ -39,23 +42,7 @@ void QgsDisplayAngle::setValueInRadians( double value )
 void QgsDisplayAngle::updateUi()
 {
   QSettings settings;
-  QString unitString = settings.value( "/qgis/measure/angleunits", "degrees" ).toString();
+  QgsUnitTypes::AngleUnit unit = QgsUnitTypes::decodeAngleUnit( settings.value( "/qgis/measure/angleunits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleDegrees ) ).toString() );
   int decimals = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
-
-  if ( unitString == "degrees" )
-  {
-    mAngleLineEdit->setText( tr( "%1 degrees" ).arg( QLocale::system().toString( mValue * 180 / M_PI ),
-                             'f', decimals ) );
-  }
-  else if ( unitString == "radians" )
-  {
-    mAngleLineEdit->setText( tr( "%1 radians" ).arg( QLocale::system().toString( mValue ),
-                             'f', decimals ) );
-
-  }
-  else if ( unitString == "gon" )
-  {
-    mAngleLineEdit->setText( tr( "%1 gon" ).arg( QLocale::system().toString( mValue / M_PI * 200 ),
-                             'f', decimals ) );
-  }
+  mAngleLineEdit->setText( QgsUnitTypes::formatAngle( mValue * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::Radians, unit ), decimals, unit ) );
 }

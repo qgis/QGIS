@@ -1,0 +1,10 @@
+Statistics for Grids
+statistics_grid
+ParameterMultipleInput|GRIDS|Grids|3|False
+OutputRaster|MEAN|Arithmetic Mean
+OutputRaster|MIN|Minimum
+OutputRaster|MAX|Maximum
+OutputRaster|VAR|Variance
+OutputRaster|STDDEV|Standard Deviation
+OutputRaster|STDDEVLO|Mean less Standard Deviation
+OutputRaster|STDDEVHI|Mean plus Standard Deviation

@@ -56,7 +56,7 @@ void QgsVertexMarker::setPenWidth( int width )
 
 void QgsVertexMarker::paint( QPainter* p )
 {
-  qreal s = ( mIconSize - 1 ) / 2;
+  qreal s = ( mIconSize - 1 ) / 2.0;
 
   QPen pen( mColor );
   pen.setWidth( mPenWidth );
@@ -82,6 +82,10 @@ void QgsVertexMarker::paint( QPainter* p )
       p->drawLine( QLineF( s, -s, s, s ) );
       p->drawLine( QLineF( s, s, -s, s ) );
       p->drawLine( QLineF( -s, s, -s, -s ) );
+      break;
+
+    case ICON_CIRCLE:
+      p->drawEllipse( QPointF( 0, 0 ), s, s );
       break;
   }
 }

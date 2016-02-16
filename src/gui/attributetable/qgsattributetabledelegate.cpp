@@ -18,20 +18,18 @@
 #include <QComboBox>
 #include <QPainter>
 
-#include "qgsfeatureselectionmodel.h"
-#include "qgsattributetableview.h"
-#include "qgsattributetablemodel.h"
-#include "qgsattributetablefiltermodel.h"
-#include "qgsattributetabledelegate.h"
-#include "qgsvectordataprovider.h"
 #include "qgsattributeeditor.h"
+#include "qgsattributetabledelegate.h"
+#include "qgsattributetablefiltermodel.h"
+#include "qgsattributetablemodel.h"
+#include "qgsattributetableview.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgsfeatureselectionmodel.h"
 #include "qgslogger.h"
+#include "qgsvectordataprovider.h"
 
 
-
-// TODO: Remove this casting orgy
-
-QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *model ) const
+QgsVectorLayer* QgsAttributeTableDelegate::layer( const QAbstractItemModel *model )
 {
   const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( model );
   if ( tm )
@@ -41,7 +39,20 @@ QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *mode
   if ( fm )
     return fm->layer();
 
-  return NULL;
+  return nullptr;
+}
+
+const QgsAttributeTableModel* QgsAttributeTableDelegate::masterModel( const QAbstractItemModel* model )
+{
+  const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( model );
+  if ( tm )
+    return tm;
+
+  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( model );
+  if ( fm )
+    return fm->masterModel();
+
+  return nullptr;
 }
 
 QWidget *QgsAttributeTableDelegate::createEditor(
@@ -52,29 +63,19 @@ QWidget *QgsAttributeTableDelegate::createEditor(
   Q_UNUSED( option );
   QgsVectorLayer *vl = layer( index.model() );
   if ( !vl )
-    return NULL;
+    return nullptr;
 
   int fieldIdx = index.model()->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
 
-  QWidget *w = QgsAttributeEditor::createAttributeEditor( parent, 0, vl, fieldIdx, index.model()->data( index, Qt::EditRole ) );
+  QString widgetType = vl->editFormConfig()->widgetType( fieldIdx );
+  QgsEditorWidgetConfig cfg = vl->editFormConfig()->widgetConfig( fieldIdx );
+  QgsAttributeEditorContext context( masterModel( index.model() )->editorContext(), QgsAttributeEditorContext::Popup );
+  QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, vl, fieldIdx, cfg, nullptr, parent, context );
+  QWidget* w = eww->widget();
 
   w->setAutoFillBackground( true );
 
-  if ( parent )
-  {
-    QgsAttributeTableView *tv = dynamic_cast<QgsAttributeTableView *>( parent->parentWidget() );
-    w->setMinimumWidth( tv->columnWidth( index.column() ) );
-
-    if ( vl->editType( fieldIdx ) == QgsVectorLayer::FileName ||
-         vl->editType( fieldIdx ) == QgsVectorLayer::Calendar )
-    {
-      QLineEdit *le = w->findChild<QLineEdit*>();
-      le->adjustSize();
-      w->setMinimumHeight( le->height()*2 ); // FIXME: there must be a better way to do this
-    }
-  }
-
-  w->setEnabled( vl->fieldEditable( fieldIdx ) );
+  eww->setEnabled( !vl->editFormConfig()->readOnly( fieldIdx ) );
 
   return w;
 }
@@ -82,7 +83,7 @@ QWidget *QgsAttributeTableDelegate::createEditor(
 void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QgsVectorLayer *vl = layer( model );
-  if ( vl == NULL )
+  if ( !vl )
     return;
 
   int fieldIdx = model->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
@@ -90,22 +91,27 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
   QVariant oldValue = model->data( index, Qt::EditRole );
 
   QVariant newValue;
-  if ( !QgsAttributeEditor::retrieveValue( editor, vl, fieldIdx, newValue ) )
+  QgsEditorWidgetWrapper* eww = QgsEditorWidgetWrapper::fromWidget( editor );
+  if ( !eww )
     return;
 
-  vl->beginEditCommand( tr( "Attribute changed" ) );
-  vl->changeAttributeValue( fid, fieldIdx, newValue, oldValue );
-  vl->endEditCommand();
+  newValue = eww->value();
+
+  if (( oldValue != newValue && newValue.isValid() ) || oldValue.isNull() != newValue.isNull() )
+  {
+    vl->beginEditCommand( tr( "Attribute changed" ) );
+    vl->changeAttributeValue( fid, fieldIdx, newValue, oldValue );
+    vl->endEditCommand();
+  }
 }
 
 void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  QgsVectorLayer *vl = layer( index.model() );
-  if ( vl == NULL )
+  QgsEditorWidgetWrapper* eww =  QgsEditorWidgetWrapper::fromWidget( editor );
+  if ( !eww )
     return;
 
-  int fieldIdx = index.model()->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
-  QgsAttributeEditor::setValue( editor, vl, fieldIdx, index.model()->data( index, Qt::EditRole ) );
+  eww->setValue( index.model()->data( index, Qt::EditRole ) );
 }
 
 void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionModel *featureSelectionModel )
@@ -121,7 +127,13 @@ void QgsAttributeTableDelegate::paint( QPainter * painter,
 
   QStyleOptionViewItem myOpt = option;
 
-  if ( mFeatureSelectionModel->isSelected( fid ) )
+  if ( index.model()->data( index, Qt::EditRole ).isNull() )
+  {
+    myOpt.font.setItalic( true );
+    myOpt.palette.setColor( QPalette::Text, QColor( "gray" ) );
+  }
+
+  if ( mFeatureSelectionModel && mFeatureSelectionModel->isSelected( fid ) )
     myOpt.state |= QStyle::State_Selected;
 
   QItemDelegate::paint( painter, myOpt, index );

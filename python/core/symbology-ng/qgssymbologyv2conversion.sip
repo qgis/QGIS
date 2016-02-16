@@ -9,7 +9,7 @@ class QgsSymbologyV2Conversion
     static QgsFeatureRendererV2* readOldRenderer( const QDomNode& layerNode, QGis::GeometryType geomType );
 
     static QString penStyle2QString( Qt::PenStyle penstyle );
-    static Qt::PenStyle qString2PenStyle( QString string );
+    static Qt::PenStyle qString2PenStyle( const QString& string );
     static QString brushStyle2QString( Qt::BrushStyle brushstyle );
-    static Qt::BrushStyle qString2BrushStyle( QString string );
+    static Qt::BrushStyle qString2BrushStyle( const QString& string );
 };

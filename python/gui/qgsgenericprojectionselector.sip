@@ -1,7 +1,22 @@
 
 /**
- * \class QgsGenericProjectionSelector
- * \brief A generic dialog to prompt the user for a Coordinate Reference System
+ * \ingroup gui
+ * A generic dialog to prompt the user for a Coordinate Reference System.
+ *
+ * Typically you will use this when you want to prompt the user for
+ * a coordinate system identifier e.g. from a plugin you might do this
+ * to get an epsg code:
+ * \code
+ * QgsGenericProjectionSelector mySelector( mQGisIface->mainWindow() );
+ * mySelector.setSelectedEpsg( mEpsgId );
+ * if ( mySelector.exec() )
+ * {
+ *   mEpsgId = mySelector.selectedEpsg();
+ * }
+ * \endcode
+ *
+ * If you wish to embed the projection selector into an existing dialog
+ * the you probably want to look at QgsProjectionSelector rather.
  */
 class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectionSelectorBase
 {
@@ -13,8 +28,8 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
     /**
      * Constructor
      */
-    QgsGenericProjectionSelector( QWidget *parent = 0,
-                                  Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsGenericProjectionSelector( QWidget *parent /TransferThis/ = 0,
+                                  const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
 
     //! Destructor
     ~QgsGenericProjectionSelector();
@@ -27,9 +42,11 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
     long selectedCrsId();
     QString selectedAuthId();
 
-    void setSelectedCrsName( QString theName );
+    void setSelectedCrsName( const QString& theName );
     void setSelectedCrsId( long theID );
-    void setSelectedAuthId( QString authId );
+    void setSelectedAuthId( const QString& authId );
+
+    void on_mButtonBox_helpRequested();
 
     /**
      * \brief filters this dialog by the given CRSs
@@ -43,5 +60,5 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
      *
      * \warning This function's behaviour is undefined if it is called after the dialog is shown.
      */
-    void setOgcWmsCrsFilter( QSet<QString> crsFilter );
+    void setOgcWmsCrsFilter( const QSet<QString>& crsFilter );
 };

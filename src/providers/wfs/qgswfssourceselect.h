@@ -33,10 +33,9 @@ class QgsWFSItemDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
+    explicit QgsWFSItemDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) { }
 
-    QgsWFSItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
-
-    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
 };
 
@@ -46,20 +45,20 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 
   public:
 
-    QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool embeddedMode = false );
+    QgsWFSSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode = false );
     ~QgsWFSSourceSelect();
 
   signals:
-    void addWfsLayer( QString uri, QString typeName );
+    void addWfsLayer( const QString& uri, const QString& typeName );
     void connectionsChanged();
 
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden
     QgsGenericProjectionSelector* mProjectionSelector;
-    /**Stores the available CRS for a server connections.
+    /** Stores the available CRS for a server connections.
      The first string is the typename, the corresponding list
     stores the CRS for the typename in the form 'EPSG:XXXX'*/
-    std::map<QString, std::list<QString> > mAvailableCRS;
+    QMap<QString, QStringList > mAvailableCRS;
     QgsWFSCapabilities* mCapabilities;
     QString mUri;            // data source URI
     QgsWFSItemDelegate* mItemDelegate;
@@ -70,7 +69,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 
     void populateConnectionList();
 
-    /**Returns the best suited CRS from a set of authority ids
+    /** Returns the best suited CRS from a set of authority ids
        1. project CRS if contained in the set
        2. WGS84 if contained in the set
        3. the first entry in the set else
@@ -93,7 +92,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     void treeWidgetItemDoubleClicked( const QModelIndex & index );
     void treeWidgetCurrentRowChanged( const QModelIndex & current, const QModelIndex & previous );
     void buildQueryButtonClicked();
-    void filterChanged( QString text );
+    void filterChanged( const QString& text );
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 

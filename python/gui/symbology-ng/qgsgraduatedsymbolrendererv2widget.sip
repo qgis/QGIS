@@ -13,40 +13,47 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
 
   public slots:
     void changeGraduatedSymbol();
-    void graduatedColumnChanged();
-    void setExpression();
+    void graduatedColumnChanged( const QString& field );
     void classifyGraduated();
     void reapplyColorRamp();
+    void reapplySizes();
     void rangesDoubleClicked( const QModelIndex & idx );
     void rangesClicked( const QModelIndex & idx );
     void changeCurrentValue( QStandardItem * item );
 
-    /**Adds a class manually to the classification*/
+    /** Adds a class manually to the classification*/
     void addClass();
-    /**Removes currently selected classes */
+    /** Removes currently selected classes */
     void deleteClasses();
-    /**Removes all classes from the classification*/
+    /** Removes all classes from the classification*/
     void deleteAllClasses();
+    /** Toggle the link between classes boundaries */
+    void toggleBoundariesLink( bool linked );
 
-    void rotationFieldChanged( QString fldName );
-    void sizeScaleFieldChanged( QString fldName );
+    void sizeScaleFieldChanged( const QString& fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
+    void labelFormatChanged();
 
     void showSymbolLevels();
 
     void rowsMoved();
+    void modelDataChanged();
+
+    void on_mSizeUnitWidget_changed();
+    void on_methodComboBox_currentIndexChanged( int );
+    void refreshRanges( bool reset = false );
 
   protected:
-    void updateUiFromRenderer();
+    void updateUiFromRenderer( bool updateCount = true );
+    void connectUpdateHandlers();
+    void disconnectUpdateHandlers();
+    bool rowsOrdered();
 
     void updateGraduatedSymbolIcon();
 
     //! return a list of indexes for the classes under selection
     QList<int> selectedClasses();
     QgsRangeList selectedRanges();
-
-    //! populate column combos in categorized and graduated page
-    void populateColumns();
 
     void changeRangeSymbol( int rangeIdx );
     void changeRange( int rangeIdx );

@@ -47,6 +47,13 @@ struct QgsOracleLayerProperty
 
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
+  bool operator==( const QgsOracleLayerProperty& other )
+  {
+    return types == other.types && srids == other.srids && ownerName == other.ownerName &&
+           tableName == other.tableName && geometryColName == other.geometryColName &&
+           isView == other.isView && pkCols == other.pkCols && sql == other.sql;
+  }
+
   QgsOracleLayerProperty at( int i ) const
   {
     QgsOracleLayerProperty property;
@@ -69,14 +76,14 @@ struct QgsOracleLayerProperty
   QString toString() const
   {
     QString typeString;
-    foreach ( QGis::WkbType type, types )
+    Q_FOREACH ( QGis::WkbType type, types )
     {
       if ( !typeString.isEmpty() )
         typeString += "|";
       typeString += QString::number( type );
     }
     QString sridString;
-    foreach ( int srid, srids )
+    Q_FOREACH ( int srid, srids )
     {
       if ( !sridString.isEmpty() )
         sridString += "|";
@@ -98,7 +105,7 @@ struct QgsOracleLayerProperty
 
 class QgsOracleConn : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   public:
     static QgsOracleConn *connectDb( QgsDataSourceURI uri );
     void disconnect();
@@ -122,7 +129,7 @@ class QgsOracleConn : public QObject
     /** Gets information about the spatial tables */
     bool tableInfo( bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables );
 
-    /** get primary key candidates (all int4 columns) */
+    /** Get primary key candidates (all int4 columns) */
     QStringList pkCandidates( QString ownerName, QString viewName );
 
     static QString fieldExpression( const QgsField &fld );
@@ -157,7 +164,7 @@ class QgsOracleConn : public QObject
     operator QSqlDatabase() { return mDatabase; }
 
   private:
-    QgsOracleConn( QgsDataSourceURI uri );
+    explicit QgsOracleConn( QgsDataSourceURI uri );
     ~QgsOracleConn();
 
     bool exec( QSqlQuery &qry, QString sql );

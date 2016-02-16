@@ -20,6 +20,7 @@
 
 #include <QDomElement>
 #include "qgis.h"
+#include "qgsauthmanager.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
@@ -27,11 +28,46 @@
 #include "qgsvectorlayer.h"
 #include "qgswfsfeatureiterator.h"
 
+#include <QNetworkRequest>
+
 class QgsRectangle;
 class QgsSpatialIndex;
 
-/**A provider reading features from a WFS server*/
-class QgsWFSProvider: public QgsVectorDataProvider
+// TODO: merge with QgsWmsAuthorization?
+struct QgsWFSAuthorization
+{
+  QgsWFSAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& authcfg = QString() )
+      : mUserName( userName )
+      , mPassword( password )
+      , mAuthCfg( authcfg )
+  {}
+
+  //! set authorization header
+  bool setAuthorization( QNetworkRequest &request ) const
+  {
+    if ( !mAuthCfg.isEmpty() )
+    {
+      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
+    }
+    else if ( !mUserName.isNull() || !mPassword.isNull() )
+    {
+      request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName, mPassword ).toAscii().toBase64() );
+    }
+    return true;
+  }
+
+  //! Username for basic http authentication
+  QString mUserName;
+
+  //! Password for basic http authentication
+  QString mPassword;
+
+  //! Authentication configuration ID
+  QString mAuthCfg;
+};
+
+/** A provider reading features from a WFS server*/
+class QgsWFSProvider : public QgsVectorDataProvider
 {
     Q_OBJECT
   public:
@@ -42,39 +78,39 @@ class QgsWFSProvider: public QgsVectorDataProvider
       FILE  //reads from a file on disk
     };
 
-    QgsWFSProvider( const QString& uri );
+    explicit QgsWFSProvider( const QString& uri );
     ~QgsWFSProvider();
 
     /* Inherited from QgsVectorDataProvider */
 
-    virtual QgsAbstractFeatureSource* featureSource() const;
+    virtual QgsAbstractFeatureSource* featureSource() const override;
 
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) override;
 
-    QGis::WkbType geometryType() const;
-    long featureCount() const;
+    QGis::WkbType geometryType() const override;
+    long featureCount() const override;
 
-    const QgsFields& fields() const;
+    const QgsFields& fields() const override;
     void rewind();
 
-    virtual QgsCoordinateReferenceSystem crs();
+    virtual QgsCoordinateReferenceSystem crs() override;
 
     /* Inherited from QgsDataProvider */
 
-    QgsRectangle extent();
-    bool isValid();
-    QString name() const;
-    QString description() const;
+    QgsRectangle extent() override;
+    bool isValid() override;
+    QString name() const override;
+    QString description() const override;
 
-    virtual int capabilities() const;
+    virtual int capabilities() const override;
 
     /* new functions */
 
-    /**Sets the encoding type in which the provider makes requests and interprets
+    /** Sets the encoding type in which the provider makes requests and interprets
      results. Possibilities are GET, POST, SOAP*/
     void setRequestEncoding( QgsWFSProvider::REQUEST_ENCODING e ) {mRequestEncoding = e;}
 
-    /**Makes a GetFeatures, receives the features from the wfs server (as GML), converts them to QgsFeature and
+    /** Makes a GetFeatures, receives the features from the wfs server (as GML), converts them to QgsFeature and
        stores them in a vector*/
     int getFeature( const QString& uri );
 
@@ -83,14 +119,14 @@ class QgsWFSProvider: public QgsVectorDataProvider
      * Adds a list of features
      * @return true in case of success and false in case of failure
      */
-    virtual bool addFeatures( QgsFeatureList &flist );
+    virtual bool addFeatures( QgsFeatureList &flist ) override;
 
     /**
      * Deletes one or more features
      * @param id list containing feature ids to delete
      * @return true in case of success and false in case of failure
      */
-    virtual bool deleteFeatures( const QgsFeatureIds &id );
+    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
 
     /**
      * Changes geometries of existing features
@@ -99,79 +135,92 @@ class QgsWFSProvider: public QgsVectorDataProvider
      *                       The second map parameter being the new geometries themselves
      * @return               True in case of success and false in case of failure
      */
-    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map );
+    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
     /**
      * Changes attribute values of existing features.
      * @param attr_map a map containing changed attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
-    /**Reloads the data from the source. Needs to be implemented by providers with data caches to
-      synchronize with changes in the data source*/
-    virtual void reloadData();
-
-    /**Collects information about the field types. Is called internally from QgsWFSProvider ctor. The method delegates the work to request specific ones and gives back the name of the geometry attribute and the thematic attributes with their types*/
+    /** Collects information about the field types. Is called internally from QgsWFSProvider ctor. The method delegates the work to request specific ones and gives back the name of the geometry attribute and the thematic attributes with their types*/
     int describeFeatureType( const QString& uri, QString& geometryAttribute,
                              QgsFields& fields, QGis::WkbType& geomType );
 
+  public slots:
+    /** Reloads the data from the source. Needs to be implemented by providers with data caches to
+      synchronize with changes in the data source*/
+    virtual void reloadData() override;
+
   signals:
-    void dataReadProgressMessage( QString message );
+    void dataReadProgressMessage( const QString& message );
+
+    void dataChanged();
 
   private slots:
-    /**Receives the progress signals from QgsWFSData::dataReadProgress, generates a string
+    /** Receives the progress signals from QgsWFSData::dataReadProgress, generates a string
      and emits the dataReadProgressMessage signal*/
     void handleWFSProgressMessage( int done, int total );
 
-    /**Sets mNetworkRequestFinished flag to true*/
+    /** Sets mNetworkRequestFinished flag to true*/
     void networkRequestFinished();
+
+    void extendExtent( const QgsRectangle & );
 
   private:
     bool mNetworkRequestFinished;
     friend class QgsWFSFeatureSource;
 
+    //! http authorization details
+    QgsWFSAuthorization mAuth;
+
   protected:
-    /**Thematic attributes*/
+    /** Thematic attributes*/
     QgsFields mFields;
-    /**Name of geometry attribute*/
+    /** Name of geometry attribute*/
     QString mGeometryAttribute;
-    /**The encoding used for request/response. Can be GET, POST or SOAP*/
+    /** The encoding used for request/response. Can be GET, POST or SOAP*/
     REQUEST_ENCODING mRequestEncoding;
-    /**Bounding box for the layer*/
+    /** Bounding box for the layer*/
     QgsRectangle mExtent;
-    /**Spatial filter for the layer*/
+    /** Spatial filter for the layer*/
     QgsRectangle mSpatialFilter;
-    /**Flag if precise intersection test is needed. Otherwise, every feature is returned (even if a filter is set)*/
+    /** Flag if precise intersection test is needed. Otherwise, every feature is returned (even if a filter is set)*/
     bool mUseIntersect;
-    /**A spatial index for fast access to a feature subset*/
+    /** A spatial index for fast access to a feature subset*/
     QgsSpatialIndex *mSpatialIndex;
-    /**Vector where the ids of the selected features are inserted*/
+    /** Vector where the ids of the selected features are inserted*/
     QList<QgsFeatureId> mSelectedFeatures;
-    /**Iterator on the feature vector for use in rewind(), nextFeature(), etc...*/
+    /** Iterator on the feature vector for use in rewind(), nextFeature(), etc...*/
     QList<QgsFeatureId>::iterator mFeatureIterator;
-    /**Map <feature Id / feature> */
+    /** Map <feature Id / feature> */
     QMap<QgsFeatureId, QgsFeature* > mFeatures;
-    /**Stores the relation between provider ids and WFS server ids*/
+    /** Stores the relation between provider ids and WFS server ids*/
     QMap<QgsFeatureId, QString > mIdMap;
-    /**Geometry type of the features in this layer*/
+    /** Geometry type of the features in this layer*/
     mutable QGis::WkbType mWKBType;
-    /**Source CRS*/
+    /** Source CRS*/
     QgsCoordinateReferenceSystem mSourceCRS;
     int mFeatureCount;
-    /**Flag if provider is valid*/
+    int mMaxFeatureCount;
+    /** Flag if provider is valid*/
     bool mValid;
-    /**Namespace URL of the server (comes from DescribeFeatureDocument)*/
+    bool mCached;
+    bool mPendingRetrieval;
+    /** Namespace URL of the server (comes from DescribeFeatureDocument)*/
     QString mWfsNamespace;
-    /**Server capabilities for this layer (generated from capabilities document)*/
+    /** Server capabilities for this layer (generated from capabilities document)*/
     int mCapabilities;
-    /**GetRenderedOnly: layer asociated with this provider*/
+#if 0
+    /** GetRenderedOnly: layer asociated with this provider*/
     QgsVectorLayer *mLayer;
-    /**GetRenderedOnly: fetch only features within canvas extent to be rendered*/
+    /** GetRenderedOnly: fetch only features within canvas extent to be rendered*/
     bool mGetRenderedOnly;
-    /**GetRenderedOnly initializaiton flat*/
+    /** GetRenderedOnly initializaiton flat*/
     bool mInitGro;
-    /**if GetRenderedOnly, extent specified in WFS getFeatures; else empty (no constraint)*/
+#endif
+    /** If GetRenderedOnly, extent specified in WFS getFeatures; else empty (no constraint)*/
     QgsRectangle mGetExtent;
 
     //encoding specific methods of getFeature
@@ -185,57 +234,59 @@ class QgsWFSProvider: public QgsVectorDataProvider
     int describeFeatureTypeSOAP( const QString& uri, QString& geometryAttribute, QgsFields& fields );
     int describeFeatureTypeFile( const QString& uri, QString& geometryAttribute, QgsFields& fields, QGis::WkbType& geomType );
 
-    /**Reads the name of the geometry attribute, the thematic attributes and their types from a dom document. Returns 0 in case of success*/
+    /** Reads the name of the geometry attribute, the thematic attributes and their types from a dom document. Returns 0 in case of success*/
     int readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFields& fields, QGis::WkbType& geomType );
-    /**This method tries to guess the geometry attribute and the other attribute names from the .gml file if no schema is present. Returns 0 in case of success*/
-    int guessAttributesFromFile( const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes, QGis::WkbType& geomType ) const;
+    /** This method tries to guess the geometry attribute and the other attribute names from the .gml file if no schema is present. Returns 0 in case of success*/
+    int guessAttributesFromFile( const QString& uri, QString& geometryAttribute, QStringList &thematicAttributes, QGis::WkbType& geomType ) const;
 
     //GML2 specific methods
     int getExtentFromGML2( QgsRectangle* extent, const QDomElement& wfsCollectionElement ) const;
 
     int getFeaturesFromGML2( const QDomElement& wfsCollectionElement, const QString& geometryAttribute );
-    /**Reads the <gml:coordinates> element and extracts the coordinates as points
+    /** Reads the <gml:coordinates> element and extracts the coordinates as points
        @param coords list where the found coordinates are appended
        @param elem the <gml:coordinates> element
        @return 0 in case of success*/
-    int readGML2Coordinates( std::list<QgsPoint>& coords, const QDomElement elem ) const;
-    /**Tries to create a QgsCoordinateReferenceSystem object and assign it to mSourceCRS. Returns 0 in case of success*/
+    int readGML2Coordinates( QList<QgsPoint> &coords, const QDomElement& elem ) const;
+    /** Tries to create a QgsCoordinateReferenceSystem object and assign it to mSourceCRS. Returns 0 in case of success*/
     int setCRSFromGML2( const QDomElement& wfsCollectionElement );
 
     //helper methods for WFS-T
 
-    /**Returns HTTP parameter value from url (or empty string if it does not exist)*/
+    /** Returns HTTP parameter value from url (or empty string if it does not exist)*/
     QString parameterFromUrl( const QString& name ) const;
 
-    /**Removes a possible namespace prefix from a typename*/
+    /** Removes a possible namespace prefix from a typename*/
     void removeNamespacePrefix( QString& tname ) const;
-    /**Returns namespace prefix (or an empty string if there is no prefix)*/
+    /** Returns namespace prefix (or an empty string if there is no prefix)*/
     QString nameSpacePrefix( const QString& tname ) const;
 
-    /**Sends the transaction document to the server using HTTP POST
+    /** Sends the transaction document to the server using HTTP POST
       @return true if transmission to the server succeeded, otherwise false
         note: true does not automatically mean that the transaction succeeded*/
     bool sendTransactionDocument( const QDomDocument& doc, QDomDocument& serverResponse );
 
-    /**Creates a transaction element and adds it (normally as first element) to the document*/
+    /** Creates a transaction element and adds it (normally as first element) to the document*/
     QDomElement createTransactionElement( QDomDocument& doc ) const;
 
-    /**True if the server response means success*/
+    /** True if the server response means success*/
     bool transactionSuccess( const QDomDocument& serverResponse ) const;
-    /**Returns the inserted ids*/
+    /** Returns the inserted ids*/
     QStringList insertedFeatureIds( const QDomDocument& serverResponse ) const;
-    /**Returns a key suitable for new items*/
+    /** Returns a key suitable for new items*/
     QgsFeatureId findNewKey() const;
-    /**Retrieve capabilities for this layer from GetCapabilities document (will be stored in mCapabilites)*/
+    /** Retrieve capabilities for this layer from GetCapabilities document (will be stored in mCapabilites)*/
     void getLayerCapabilities();
-    /**Takes <Operations> element and updates the capabilities*/
+    /** Takes <Operations> element and updates the capabilities*/
     void appendSupportedOperations( const QDomElement& operationsElem, int& capabilities ) const;
-    /**records provider error*/
+    /** Records provider error*/
     void handleException( const QDomDocument& serverResponse );
-    /**Initializes "Cache Features" inactive processing*/
+#if 0
+    /** Initializes "Cache Features" inactive processing*/
     bool initGetRenderedOnly( const QgsRectangle &rect );
-    /**Converts DescribeFeatureType schema geometry property type to WKBType*/
-    QGis::WkbType geomTypeFromPropertyType( QString attName, QString propType );
+#endif
+    /** Converts DescribeFeatureType schema geometry property type to WKBType*/
+    QGis::WkbType geomTypeFromPropertyType( const QString& attName, const QString& propType );
 
     void deleteData();
 };

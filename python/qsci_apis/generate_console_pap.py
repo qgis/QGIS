@@ -28,6 +28,7 @@ from PyQt4.QtCore import QObject
 
 
 class PrepareAPIs(QObject):
+
     def __init__(self, api_lexer, api_files, pap_file):
         QObject.__init__(self)
         self._api = None
@@ -52,7 +53,7 @@ class PrepareAPIs(QObject):
             prepd = self._api.savePrepared(unicode(self._pap_file))
             self._api = None
             sys.exit(0 if prepd else 1)
-        except Exception, err:
+        except Exception as err:
             self._api = None
             sys.exit(1)
 
@@ -63,7 +64,7 @@ class PrepareAPIs(QObject):
             for api_file in self._api_files:
                 self._api.load(unicode(api_file))
             self._api.prepare()
-        except Exception, err:
+        except Exception as err:
             self._api = None
             sys.exit(1)
 

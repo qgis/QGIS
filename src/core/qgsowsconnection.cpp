@@ -43,13 +43,13 @@ QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & 
 
   QSettings settings;
 
-  QString key = "/Qgis/connections-" + mService.toLower() + "/" + mConnName;
-  QString credentialsKey = "/Qgis/" + mService + "/" + mConnName;
+  QString key = "/Qgis/connections-" + mService.toLower() + '/' + mConnName;
+  QString credentialsKey = "/Qgis/" + mService + '/' + mConnName;
 
   QStringList connStringParts;
 
   mConnectionInfo = settings.value( key + "/url" ).toString();
-  mUri.setParam( "url",  settings.value( key + "/url" ).toString() );
+  mUri.setParam( "url", settings.value( key + "/url" ).toString() );
 
   // Check for credentials and prepend to the connection info
   QString username = settings.value( credentialsKey + "/username" ).toString();
@@ -57,14 +57,16 @@ QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & 
   if ( !username.isEmpty() )
   {
     // check for a password, if none prompt to get it
-    if ( password.isEmpty() )
-    {
-      password = QInputDialog::getText( 0, tr( "WMS Password for %1" ).arg( mConnName ), tr( "Password" ), QLineEdit::Password );
-    }
-    mConnectionInfo = "username=" + username + ",password=" + password + ",url=" + mConnectionInfo;
     mUri.setParam( "username", username );
     mUri.setParam( "password", password );
   }
+
+  QString authcfg = settings.value( credentialsKey + "/authcfg" ).toString();
+  if ( !authcfg.isEmpty() )
+  {
+    mUri.setParam( "authcfg", authcfg );
+  }
+  mConnectionInfo.append( ",authcfg=" + authcfg );
 
   bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
   bool ignoreGetFeatureInfo = settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool();
@@ -87,7 +89,7 @@ QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & 
     mUri.setParam( "InvertAxisOrientation", "1" );
   }
 
-  QgsDebugMsg( QString( "Connection info: '%1'." ).arg( mConnectionInfo ) );
+  QgsDebugMsg( QString( "encoded uri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
 }
 
 QgsOWSConnection::~QgsOWSConnection()
@@ -95,7 +97,7 @@ QgsOWSConnection::~QgsOWSConnection()
 
 }
 
-QString QgsOWSConnection::connectionInfo( )
+QString QgsOWSConnection::connectionInfo()
 {
   return mConnectionInfo;
 }
@@ -104,24 +106,6 @@ QgsDataSourceURI QgsOWSConnection::uri()
 {
   return mUri;
 }
-
-#if 0
-QgsDataProvider * QgsOWSConnection::provider()
-{
-  // TODO: remove completely from this class?
-
-  // load the server data provider plugin
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-
-  //QMap<QString,QString> keys;
-
-  QgsDataProvider *provider =
-    ( QgsDataProvider* ) pReg->provider( "wms", mUri.encodedUri() );
-
-  return provider;
-}
-#endif
-
 
 QStringList QgsOWSConnection::connectionList( const QString & theService )
 {
@@ -145,6 +129,6 @@ void QgsOWSConnection::setSelectedConnection( const QString & theService, const 
 void QgsOWSConnection::deleteConnection( const QString & theService, const QString & name )
 {
   QSettings settings;
-  settings.remove( "/Qgis/connections-" + theService.toLower() + "/" + name );
-  settings.remove( "/Qgis/" + theService + "/" + name );
+  settings.remove( "/Qgis/connections-" + theService.toLower() + '/' + name );
+  settings.remove( "/Qgis/" + theService + '/' + name );
 }

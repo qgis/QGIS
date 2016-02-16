@@ -1,0 +1,7 @@
+r.out.vrml
+Export a raster layer to the Virtual Reality Modeling Language (VRML)
+Raster (r.*)
+ParameterRaster|elev|Elevation layer|False
+ParameterRaster|color|Color layer|False
+ParameterNumber|exag|Vertical exaggeration|None|None|1.0
+OutputFile|output|VRML

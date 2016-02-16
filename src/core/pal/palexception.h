@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef PAL_EXCEPTION_H
 #define PAL_EXCEPTION_H
 
@@ -50,7 +46,7 @@ namespace pal
       */
       class NotImplemented : public std::exception
       {
-          const char * what() const throw()
+          const char * what() const throw() override
           {
             return "Not yet implemented... sorry";
           }
@@ -60,7 +56,7 @@ namespace pal
       */
       class UnknownFeature : public std::exception
       {
-          const char * what() const throw()
+          const char * what() const throw() override
           {
             return "Feature not found";
           }
@@ -70,7 +66,7 @@ namespace pal
       */
       class UnknownLayer : public std::exception
       {
-          const char * what() const throw()
+          const char * what() const throw() override
           {
             return "Layer not found";
           }
@@ -80,7 +76,7 @@ namespace pal
       */
       class LayerExists : public std::exception
       {
-          const char * what() const throw()
+          const char * what() const throw() override
           {
             return "Layers names must be unique";
           }
@@ -90,7 +86,7 @@ namespace pal
       */
       class FeatureExists : public std::exception
       {
-          const char * what() const throw()
+          const char * what() const throw() override
           {
             return "Features IDs must be unique within a layer";
           }
@@ -106,7 +102,7 @@ namespace pal
        */
       class ValueNotInRange : public std::exception
       {
-          const char * what() const throw()
+          const char * what() const throw() override
           {
             return "value not allowed";
           }

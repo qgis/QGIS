@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssinglebandcolordatarenderer.h"
+#include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -31,12 +32,12 @@ QgsSingleBandColorDataRenderer::~QgsSingleBandColorDataRenderer()
 {
 }
 
-QgsRasterInterface * QgsSingleBandColorDataRenderer::clone() const
+QgsSingleBandColorDataRenderer* QgsSingleBandColorDataRenderer::clone() const
 {
-  QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( 0, mBand );
+  QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( nullptr, mBand );
   renderer->setOpacity( mOpacity );
   renderer->setAlphaBand( mAlphaBand );
-  renderer->setRasterTransparency( mRasterTransparency );
+  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : nullptr );
   return renderer;
 }
 
@@ -44,7 +45,7 @@ QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& el
 {
   if ( elem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   int band = elem.attribute( "band", "-1" ).toInt();
@@ -86,13 +87,15 @@ QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
     return outputBlock;
   }
 
+  // make sure input is also premultiplied!
+  inputBlock->convert( QGis::ARGB32_Premultiplied );
+
+  QRgb* inputBits = ( QRgb* )inputBlock->bits();
+  QRgb* outputBits = ( QRgb* )outputBlock->bits();
   for ( qgssize i = 0; i < ( qgssize )width*height; i++ )
   {
-    QRgb pixelColor;
-    QRgb c = inputBlock->color( i );
-    double alpha = qAlpha( c );
-    pixelColor = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * alpha );
-    outputBlock->setColor( i,  pixelColor );
+    QRgb c = inputBits[i];
+    outputBits[i] = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * qAlpha( c ) );
   }
 
   delete inputBlock;

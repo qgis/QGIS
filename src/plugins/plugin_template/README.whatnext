@@ -35,7 +35,7 @@ This is the generated CMake file that builds the plugin. You should add you
 application specific dependencies and source files to this file.
 
 [pluginlcasename].h
-[pluginlcasename].cpp  
+[pluginlcasename].cpp
 This is the class that provides the 'glue' between your custom application
 logic and the QGIS application. You will see that a number of methods are
 already implemented for you - including some examples of how to add a raster or
@@ -50,19 +50,19 @@ call the run() method in this class when selected. This default implementation
 provided for you by the plugin builder is well documented, so please refer to
 the code for further advice.
 
-[pluginlcasename]gui.ui  
+[pluginlcasename]gui.ui
 This is a Qt designer 'ui' file. It defines the look of the default plugin
 dialog without implementing any application logic. You can modify this form to
 suite your needs or completely remove it if your plugin does not need to
 display a user form (e.g. for custom MapTools).
 
 
-[pluginlcasename]gui.cpp  
-[pluginlcasename]gui.h  
+[pluginlcasename]gui.cpp
+[pluginlcasename]gui.h
 This is the concrete class where application logic for the above mentioned
 dialog should go. The world is your oyster here really....
 
-[pluginlcasename].qrc  
+[pluginlcasename].qrc
 This is the Qt4 resources file for your plugin. The Makefile generated for your
 plugin is all set up to compile the resource file so all you need to do is add
 your additional icons etc using the simple xml file format. Note the namespace
@@ -70,7 +70,7 @@ used for all your resources e.g. (":/[pluginname]/"). It is important to use
 this prefix for all your resources. We suggest you include any other images and
 run time data in this resurce file too.
 
-[pluginlcasename].png  
+[pluginlcasename].png
 This is the icon that will be used for your plugin menu entry and toolbar icon.
 Simply replace this icon with your own icon to make your plugin disctinctive
 from the rest.

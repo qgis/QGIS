@@ -16,31 +16,36 @@
 #include "qgsmaplayeractionregistry.h"
 
 
-QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent ) : QAction( name, parent ),
-    mSingleLayer( false ),
-    mActionLayer( 0 ),
-    mSpecificLayerType( false )
+QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, const Targets& targets, const QIcon& icon )
+    : QAction( icon, name, parent )
+    , mSingleLayer( false )
+    , mActionLayer( nullptr )
+    , mSpecificLayerType( false )
+    , mLayerType( QgsMapLayer::VectorLayer )
+    , mTargets( targets )
 {
-
 }
 
-/**Creates a map layer action which can run only on a specific layer*/
-QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer* layer ) : QAction( name, parent ),
-    mSingleLayer( true ),
-    mActionLayer( layer ),
-    mSpecificLayerType( false )
+/** Creates a map layer action which can run only on a specific layer*/
+QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, QgsMapLayer* layer, const Targets& targets, const QIcon& icon )
+    : QAction( icon, name, parent )
+    , mSingleLayer( true )
+    , mActionLayer( layer )
+    , mSpecificLayerType( false )
+    , mLayerType( QgsMapLayer::VectorLayer )
+    , mTargets( targets )
 {
-
 }
 
-/**Creates a map layer action which can run on a specific type of layer*/
-QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer::LayerType layerType ) : QAction( name, parent ),
-    mSingleLayer( false ),
-    mActionLayer( 0 ),
-    mSpecificLayerType( true ),
-    mLayerType( layerType )
+/** Creates a map layer action which can run on a specific type of layer*/
+QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, QgsMapLayer::LayerType layerType, const Targets& targets, const QIcon& icon )
+    : QAction( icon, name, parent )
+    , mSingleLayer( false )
+    , mActionLayer( nullptr )
+    , mSpecificLayerType( true )
+    , mLayerType( layerType )
+    , mTargets( targets )
 {
-
 }
 
 QgsMapLayerAction::~QgsMapLayerAction()
@@ -72,27 +77,28 @@ bool QgsMapLayerAction::canRunUsingLayer( QgsMapLayer* layer ) const
   return false;
 }
 
-void QgsMapLayerAction::triggerForFeature( QgsMapLayer* layer, QgsFeature* feature )
+void QgsMapLayerAction::triggerForFeatures( QgsMapLayer* layer, const QList<QgsFeature>& featureList )
 {
-  emit triggeredForFeature( layer, feature );
-  //also trigger this action for the specified layer
-  triggerForLayer( layer );
+  emit triggeredForFeatures( layer, featureList );
+}
+
+void QgsMapLayerAction::triggerForFeature( QgsMapLayer* layer, const QgsFeature* feature )
+{
+  emit triggeredForFeature( layer, *feature );
 }
 
 void QgsMapLayerAction::triggerForLayer( QgsMapLayer* layer )
 {
   emit triggeredForLayer( layer );
-  //also emit triggered signal
-  emit triggered();
 }
 
 //
 // Static calls to enforce singleton behaviour
 //
-QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::mInstance = 0;
+QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::mInstance = nullptr;
 QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::instance()
 {
-  if ( mInstance == 0 )
+  if ( !mInstance )
   {
     mInstance = new QgsMapLayerActionRegistry();
   }
@@ -119,13 +125,13 @@ void QgsMapLayerActionRegistry::addMapLayerAction( QgsMapLayerAction * action )
   emit changed();
 }
 
-QList< QgsMapLayerAction* > QgsMapLayerActionRegistry::mapLayerActions( QgsMapLayer* layer )
+QList< QgsMapLayerAction* > QgsMapLayerActionRegistry::mapLayerActions( QgsMapLayer* layer, const QgsMapLayerAction::Targets& targets )
 {
   QList< QgsMapLayerAction* > validActions;
   QList<QgsMapLayerAction*>::iterator actionIt;
   for ( actionIt = mMapLayerActionList.begin(); actionIt != mMapLayerActionList.end(); ++actionIt )
   {
-    if (( *actionIt )->canRunUsingLayer( layer ) )
+    if (( *actionIt )->canRunUsingLayer( layer ) && ( targets & ( *actionIt )->targets() ) )
     {
       validActions.append(( *actionIt ) );
     }
@@ -146,7 +152,7 @@ bool QgsMapLayerActionRegistry::removeMapLayerAction( QgsMapLayerAction* action 
     {
       if ( defaultIt.value() == action )
       {
-        defaultIt.value() = 0;
+        defaultIt.value() = nullptr;
       }
     }
     emit changed();
@@ -165,7 +171,7 @@ QgsMapLayerAction * QgsMapLayerActionRegistry::defaultActionForLayer( QgsMapLaye
 {
   if ( !mDefaultLayerActionMap.contains( layer ) )
   {
-    return 0;
+    return nullptr;
   }
 
   return mDefaultLayerActionMap[ layer ];

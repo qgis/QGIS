@@ -12,10 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 
@@ -38,9 +37,11 @@
 /** \ingroup UnitTests
  * This is a unit test to verify that raster histogram works
  */
-class TestRasterHistogram: public QObject
+class TestRasterHistogram : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+    TestRasterHistogram() {}
 
   private:
 
@@ -55,7 +56,7 @@ class TestRasterHistogram: public QObject
     QString mReport;
 
     bool openLayer( const QString& fileName );
-    void closeLayer( );
+    void closeLayer();
     bool saveImage( const QString& fileName );
     int testFile( QString testName,
                   QString rendererName,
@@ -101,7 +102,7 @@ void TestRasterHistogram::initTestCase()
 #endif
 
   // save data dir
-  mDataDir = QString( TEST_DATA_DIR ) + QDir::separator();
+  mDataDir = QString( TEST_DATA_DIR ) + "/";
   mWidth = mHeight = 400;
   mImageQuality = -1;
   // Set up the QSettings environment
@@ -120,7 +121,7 @@ void TestRasterHistogram::initTestCase()
   mReport += "<p>" + mySettings + "</p>";
 
   // remove .aux.xml file to make sure histogram computation is fresh
-  QFile::remove( mDataDir + QDir::separator() + "landsat.tif.aux.xml" );
+  QFile::remove( mDataDir + "/landsat.tif.aux.xml" );
   QVERIFY( openLayer( "landsat.tif" ) );
 }
 
@@ -128,8 +129,8 @@ void TestRasterHistogram::cleanupTestCase()
 {
   closeLayer();
   // remove .aux.xml file to make sure histogram computation is fresh
-  QFile::remove( mDataDir + QDir::separator() + "landsat.tif.aux.xml" );
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgishistotest.html";
+  QFile::remove( mDataDir + "/landsat.tif.aux.xml" );
+  QString myReportFile = QDir::tempPath() + "/qgishistotest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -141,42 +142,42 @@ void TestRasterHistogram::cleanupTestCase()
 }
 
 // grayscale, all bands
-void TestRasterHistogram::testGray1( )
+void TestRasterHistogram::testGray1()
 {
   QStringList actionsList;
   QVERIFY( testFile( "gray1", "singlebandgray", mGrayRendererWidget, actionsList ) >= 0 );
 }
 
 // grayscale, gray band
-void TestRasterHistogram::testGray2( )
+void TestRasterHistogram::testGray2()
 {
   QStringList actionsList( "Show RGB" );
   QVERIFY( testFile( "gray2", "singlebandgray", mGrayRendererWidget, actionsList ) >= 0 );
 }
 
 // RGB, all bands
-void TestRasterHistogram::testRGB1( )
+void TestRasterHistogram::testRGB1()
 {
   QStringList actionsList;
   QVERIFY( testFile( "rgb1", "multibandcolor", mRGBRendererWidget, actionsList ) >= 0 );
 }
 
 // RGB, RGB bands
-void TestRasterHistogram::testRGB2( )
+void TestRasterHistogram::testRGB2()
 {
   QStringList actionsList( "Show RGB" );
   QVERIFY( testFile( "rgb2", "multibandcolor", mRGBRendererWidget, actionsList ) >= 0 );
 }
 
 // RGB, band 5
-void TestRasterHistogram::testRGB3( )
+void TestRasterHistogram::testRGB3()
 {
   QStringList actionsList( "Show selected" );
   QVERIFY( testFile( "rgb3", "multibandcolor", mRGBRendererWidget, actionsList, 5 ) >= 0 );
 }
 
 // RGB, all bands + markers, load 1 stddev
-void TestRasterHistogram::testRGB4( )
+void TestRasterHistogram::testRGB4()
 {
   QStringList actionsList;
   actionsList << "Show selected" << "Show markers" << "Load 1 stddev";
@@ -184,7 +185,7 @@ void TestRasterHistogram::testRGB4( )
 }
 
 // pseudocolor, all bands
-void TestRasterHistogram::testPseudo1( )
+void TestRasterHistogram::testPseudo1()
 {
   QStringList actionsList;
   QVERIFY( testFile( "pseudo1", "singlebandpseudocolor", mPseudoRendererWidget, actionsList ) >= 0 );
@@ -194,7 +195,7 @@ void TestRasterHistogram::testPseudo1( )
 
 bool TestRasterHistogram::openLayer( const QString& fileName )
 {
-  mRasterLayer = new QgsRasterLayer( mDataDir + QDir::separator() + fileName, fileName );
+  mRasterLayer = new QgsRasterLayer( mDataDir + "/" + fileName, fileName );
   if ( ! mRasterLayer )
     return false;
   mGrayRendererWidget = new QgsSingleBandGrayRendererWidget( mRasterLayer );
@@ -205,7 +206,7 @@ bool TestRasterHistogram::openLayer( const QString& fileName )
   return true;
 }
 
-void TestRasterHistogram::closeLayer( )
+void TestRasterHistogram::closeLayer()
 {
   if ( mHistogramWidget )
   {
@@ -266,7 +267,7 @@ int TestRasterHistogram::testFile( QString theTestType,
   {
     mHistogramWidget->setSelectedBand( selectedBand );
   }
-  QString fileName = QDir::tempPath() + QDir::separator() +
+  QString fileName = QDir::tempPath() + "/" +
                      theTestType + "_result.png";
   if ( ! saveImage( fileName ) )
   {
@@ -293,4 +294,4 @@ int TestRasterHistogram::testFile( QString theTestType,
 
 
 QTEST_MAIN( TestRasterHistogram )
-#include "moc_testqgsrasterhistogram.cxx"
+#include "testqgsrasterhistogram.moc"

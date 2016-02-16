@@ -41,7 +41,7 @@ for i in $FILES; do
 		author=volayaf
 		;;
 
-	src/app/gps/qwtpolar-*|src/app/qtmain_android.cpp|src/core/spatialite/*|src/core/spatialindex/src/*|src/core/gps/qextserialport/*|src/astyle/*|python/pyspatialite/*|src/providers/sqlanywhere/sqlanyconnection/*)
+	src/app/gps/qwtpolar-*|src/app/qtmain_android.cpp|src/core/gps/qextserialport/*|src/astyle/*|python/pyspatialite/*)
 		# Skip third party files
                 echo $f skipped
                 continue
@@ -143,6 +143,51 @@ for i in $FILES; do
 	timlinux|"Tim Sutton")
 		authorname="Tim Sutton"
 		authoremail="tim at linfiniti dot com"
+		;;
+
+	"Matthias Kuhn")
+		authorname="Matthias Kuhn"
+		authoremail="matthias at opengis dot ch"
+		;;
+
+	"Emilio Loi")
+		authorname="Emilio Loi"
+		authoremail="loi at faunalia dot it"
+		;;
+
+	"Nathan Woodrow")
+		authorname="Nathan Woodrow"
+		authoremail="woodrow dot nathan at gmail dot com"
+		;;
+
+	"Sandro Mani")
+		authorname="Sandro Mani"
+		authoremail="smani at sourcepole dot ch"
+		;;
+
+	"Chris Crook")
+		authorname="Chris Crook"
+		authoremail="ccrook at linz dot govt dot nz"
+		;;
+
+	"Hugo Mercier")
+		authorname="Hugo Mercier"
+		authoremail="hugo dot mercier at oslandia dot com"
+		;;
+
+	"Larry Shaffer")
+		authorname="Larry Shaffer"
+		authoremail="larrys at dakotacarto dot com"
+		;;
+
+	"Victor Olaya"|volaya)
+		authorname="Victor Olaya"
+		authoremail="volayaf at gmail dot com"
+		;;
+
+	elpaso)
+		authorname="Alessandro Pasotti"
+		authoremail="elpaso at itopen dot it"
 		;;
 
 	*)

@@ -28,15 +28,14 @@ __revision__ = '$Format:%H$'
 import unittest
 
 import processing
-from processing.core import Processing
 from processing.tools.vector import values
-from processing.tools.dataobjects import *
+from processing.tools.dataobjects import getObjectFromName
 
-from processing.tests.TestData import points, points2, polygons, polygons2, \
-    lines, union, table, polygonsGeoJson, raster
+from processing.tests.TestData import points, polygons
 
 
 class ProcessingToolsTest(unittest.TestCase):
+
     '''Tests the method imported when doing an "import processing", and
     also in processing.tools. They are mostly convenience tools.
     '''

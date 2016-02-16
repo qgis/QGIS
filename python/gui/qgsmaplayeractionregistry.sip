@@ -5,33 +5,57 @@ class QgsMapLayerAction : QAction
 %End
 
   public:
-    /**Creates a map layer action which can run on any layer*/
-    QgsMapLayerAction( QString name, QObject *parent );
-    /**Creates a map layer action which can run only on a specific layer*/
-    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer* layer );
-    /**Creates a map layer action which can run on a specific type of layer*/
-    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer::LayerType layerType );
+    enum Target
+    {
+      Layer,
+      SingleFeature,
+      MultipleFeatures,
+      AllActions
+    };
+    typedef QFlags<QgsMapLayerAction::Target> Targets;
+
+    //! Creates a map layer action which can run on any layer
+    //! @note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatiblity reasons.
+    QgsMapLayerAction( const QString& name, QObject *parent /TransferThis/, const Targets& targets = AllActions, const QIcon& icon = QIcon() );
+
+    //! Creates a map layer action which can run only on a specific layer
+    QgsMapLayerAction( const QString& name, QObject *parent /TransferThis/, QgsMapLayer* layer, const Targets& targets = AllActions, const QIcon& icon = QIcon() );
+
+    //! Creates a map layer action which can run on a specific type of layer
+    QgsMapLayerAction( const QString& name, QObject *parent /TransferThis/, QgsMapLayer::LayerType layerType, const Targets& targets = AllActions, const QIcon& icon = QIcon() );
 
     ~QgsMapLayerAction();
 
     /** True if action can run using the specified layer */
     bool canRunUsingLayer( QgsMapLayer* layer ) const;
 
-    /** Triggers the action with the specified layer and feature. This also emits the triggeredForLayer( QgsMapLayer *)
-     * and triggered() slots */
-    void triggerForFeature( QgsMapLayer* layer, QgsFeature* feature );
+    /** Triggers the action with the specified layer and list of feature. */
+    void triggerForFeatures( QgsMapLayer* layer, const QList<QgsFeature>& featureList );
 
-    /** Triggers the action with the specified layer. This also emits the triggered() slot. */
+    /** Triggers the action with the specified layer and feature. */
+    void triggerForFeature( QgsMapLayer* layer, const QgsFeature* feature );
+
+    /** Triggers the action with the specified layer. */
     void triggerForLayer( QgsMapLayer* layer );
 
+    /** Define the targets of the action */
+    void setTargets( const Targets& targets );
+    /** Return availibity of action */
+    const Targets& targets() const;
+
   signals:
+    /** Triggered when action has been run for a specific list of features */
+    void triggeredForFeatures( QgsMapLayer* layer, const QList<QgsFeature>& featureList );
+
     /** Triggered when action has been run for a specific feature */
-    void triggeredForFeature( QgsMapLayer* layer, QgsFeature* feature );
+    void triggeredForFeature( QgsMapLayer* layer, const QgsFeature& feature );
 
     /** Triggered when action has been run for a specific layer */
     void triggeredForLayer( QgsMapLayer* layer );
 
 };
+
+QFlags<QgsMapLayerAction::Target> operator|(QgsMapLayerAction::Target f1, QFlags<QgsMapLayerAction::Target> f2);
 
 class QgsMapLayerActionRegistry : QObject
 {
@@ -45,18 +69,18 @@ class QgsMapLayerActionRegistry : QObject
 
     ~QgsMapLayerActionRegistry();
 
-    /**Adds a map layer action to the registry*/
+    /** Adds a map layer action to the registry*/
     void addMapLayerAction( QgsMapLayerAction * action );
 
-    /**Returns the map layer actions which can run on the specified layer*/
-    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer* layer );
+    /** Returns the map layer actions which can run on the specified layer*/
+    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer* layer, const QgsMapLayerAction::Targets& targets = QgsMapLayerAction::AllActions );
 
-    /**Removes a map layer action from the registry*/
+    /** Removes a map layer action from the registry*/
     bool removeMapLayerAction( QgsMapLayerAction *action );
 
-    /**Sets the default action for a layer*/
+    /** Sets the default action for a layer*/
     void setDefaultActionForLayer( QgsMapLayer* layer, QgsMapLayerAction* action );
-    /**Returns the default action for a layer*/
+    /** Returns the default action for a layer*/
     QgsMapLayerAction * defaultActionForLayer( QgsMapLayer* layer );
 
   protected:

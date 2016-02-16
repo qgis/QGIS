@@ -6,7 +6,7 @@
 class QgsComposition;
 class QGraphicsLineItem;
 
-/**A class to show paper scale and the current cursor position*/
+/** A class to show paper scale and the current cursor position*/
 class GUI_EXPORT QgsComposerRuler: public QWidget
 {
     Q_OBJECT
@@ -21,10 +21,10 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     QgsComposerRuler( QgsComposerRuler::Direction d );
     ~QgsComposerRuler();
 
-    QSize minimumSizeHint() const;
+    QSize minimumSizeHint() const override;
 
     void setSceneTransform( const QTransform& transform );
-    void updateMarker( const QPointF& pos ) { mMarkerPos = pos; repaint(); }
+    void updateMarker( QPointF pos ) { mMarkerPos = pos; repaint(); }
 
     void setComposition( QgsComposition* c ) { mComposition = c; }
     QgsComposition* composition() { return mComposition; }
@@ -32,10 +32,10 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     int rulerSize() { return mRulerMinSize; }
 
   protected:
-    void paintEvent( QPaintEvent* event );
-    void mouseMoveEvent( QMouseEvent* event );
-    void mouseReleaseEvent( QMouseEvent* event );
-    void mousePressEvent( QMouseEvent* event );
+    void paintEvent( QPaintEvent* event ) override;
+    void mouseMoveEvent( QMouseEvent* event ) override;
+    void mouseReleaseEvent( QMouseEvent* event ) override;
+    void mousePressEvent( QMouseEvent* event ) override;
 
   private:
     static const int validScaleMultiples[];
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     int mTextBaseline;
     int mMinSpacingVerticalLabels;
 
-    void setSnapLinePosition( const QPointF& pos );
+    void setSnapLinePosition( QPointF pos );
 
     //calculate optimum labeled units for ruler so that labels are a good distance apart
     int optimumScale( double minPixelDiff, int &magnitude, int &multiple );
@@ -79,7 +79,7 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     void drawMarkerPos( QPainter *painter );
 
   signals:
-    /**Is emitted when mouse cursor coordinates change*/
+    /** Is emitted when mouse cursor coordinates change*/
     void cursorPosChanged( QPointF );
 
 };

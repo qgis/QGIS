@@ -7,16 +7,14 @@
 #include "mersenne-twister.h"
 
 
-QgsPointSample::QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, QString nPointsAttribute, QString minDistAttribute ): mInputLayer( inputLayer ),
+QgsPointSample::QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, const QString& nPointsAttribute, const QString& minDistAttribute ): mInputLayer( inputLayer ),
     mOutputLayer( outputLayer ), mNumberOfPointsAttribute( nPointsAttribute ), mMinDistanceAttribute( minDistAttribute ), mNCreatedPoints( 0 )
 {
 }
 
 QgsPointSample::QgsPointSample()
-{
-}
-
-QgsPointSample::~QgsPointSample()
+    : mInputLayer( nullptr )
+    , mNCreatedPoints( 0 )
 {
 }
 
@@ -65,7 +63,7 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
   mNCreatedPoints = 0;
 
   QgsFeatureIterator fIt = mInputLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes(
-                             QStringList() << mNumberOfPointsAttribute << mMinDistanceAttribute, mInputLayer->pendingFields() ) );
+                             QStringList() << mNumberOfPointsAttribute << mMinDistanceAttribute, mInputLayer->fields() ) );
   while ( fIt.nextFeature( fet ) )
   {
     nPoints = fet.attribute( mNumberOfPointsAttribute ).toInt();
@@ -81,12 +79,10 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
 
 void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWriter& writer, int nPoints, double minDistance )
 {
-  QgsGeometry* geom = inputFeature.geometry();
-  if ( !geom )
-  {
+  if ( !inputFeature.constGeometry() )
     return;
-  }
 
+  const QgsGeometry* geom = inputFeature.constGeometry();
   QgsRectangle geomRect = geom->boundingBox();
   if ( geomRect.isEmpty() )
   {

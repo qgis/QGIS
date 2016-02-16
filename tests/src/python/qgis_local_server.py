@@ -19,7 +19,6 @@ import shutil
 import platform
 import subprocess
 import time
-import inspect
 import urllib
 import urllib2
 import tempfile
@@ -34,7 +33,7 @@ from utilities import (
 try:
     # noinspection PyUnresolvedReferences
     from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem
-except ImportError, e:
+except ImportError as e:
     raise ImportError(str(e) + '\n\nPlace path to pyqgis modules on sys.path,'
                                ' or assign to PYTHONPATH')
 
@@ -358,7 +357,7 @@ class QgisLocalServer(object):
                     shutil.copy2(path, self._web_dir)
                 elif os.path.isdir(path):
                     shutil.copytree(path, self._web_dir)
-            except Exception, err:
+            except Exception as err:
                 raise ServerProcessError('Failed to copy to web directory:',
                                          item,
                                          str(err))
@@ -371,7 +370,7 @@ class QgisLocalServer(object):
                     os.unlink(path)
                 else:
                     shutil.rmtree(path)
-            except Exception, err:
+            except Exception as err:
                 raise ServerProcessError('Failed to clear web directory', err)
 
     def temp_dir(self):
@@ -430,7 +429,7 @@ class QgisLocalServer(object):
             openInBrowserTab(url)
             return False, ''
 
-        success = ('perhaps you left off the .qgs extension' in xml or
+        success = ('error reading the project file' in xml or
                    'WMS_Capabilities' in xml)
         return success, xml
 
@@ -444,7 +443,7 @@ class QgisLocalServer(object):
         params = self._params_to_upper(params)
         try:
             proj = params['MAP']
-        except KeyError, err:
+        except KeyError as err:
             raise KeyError(str(err) + '\nMAP not found in parameters dict')
 
         if not os.path.exists(proj):
@@ -525,7 +524,7 @@ class QgisLocalServer(object):
                 'No valid PNG output'
             )
 
-        return success, filepath
+        return success, filepath, url
 
     def process_params(self, params):
         # set all keys to uppercase
@@ -565,10 +564,10 @@ class QgisLocalServer(object):
         self._web_dir = os.path.join(self._temp_dir, 'www', 'htdocs')
         cgi_bin = os.path.join(self._temp_dir, 'cgi-bin')
 
-        os.makedirs(cgi_bin, mode=0755)
-        os.makedirs(os.path.join(self._temp_dir, 'log'), mode=0755)
-        os.makedirs(os.path.join(self._temp_dir, 'var', 'run'), mode=0755)
-        os.makedirs(self._web_dir, mode=0755)
+        os.makedirs(cgi_bin, mode=0o755)
+        os.makedirs(os.path.join(self._temp_dir, 'log'), mode=0o755)
+        os.makedirs(os.path.join(self._temp_dir, 'var', 'run'), mode=0o755)
+        os.makedirs(self._web_dir, mode=0o755)
 
         # symlink or copy in components
         shutil.copy2(os.path.join(self._conf_dir, 'index.html'), self._web_dir)
@@ -757,7 +756,7 @@ def getLocalServer():
             assert not os.path.exists(srv.temp_dir()), msg
 
             MAPSERV = srv
-        except AssertionError, err:
+        except AssertionError as err:
             srv.shutdown()
             raise AssertionError(err)
 
@@ -821,7 +820,7 @@ if __name__ == '__main__':
     try:
         local_srv.check_server_capabilities()
         # open resultant png with system
-        result, png = local_srv.get_map(req_params)
+        result, png, url = local_srv.get_map(req_params)
     finally:
         local_srv.shutdown()
 

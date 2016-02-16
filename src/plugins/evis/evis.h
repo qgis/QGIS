@@ -42,7 +42,7 @@
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
- *   ( at your option ) any later version.                                   *
+ *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
 
@@ -51,8 +51,8 @@
  *
  *   mVariableName - a class level member variable
  *   sVariableName - a static class level member variable
- *   variableName( ) - accessor for a class member ( no 'get' in front of name )
- *   setVariableName( ) - mutator for a class member ( prefix with 'set' )
+ *   variableName() - accessor for a class member ( no 'get' in front of name )
+ *   setVariableName() - mutator for a class member ( prefix with 'set' )
  *
  *   Additional useful conventions:
  *
@@ -88,32 +88,32 @@ class eVisEventIdTool;
 */
 class eVis: public QObject, public QgisPlugin
 {
-    Q_OBJECT;
+    Q_OBJECT
   public:
 
     //! Constructor
-    eVis( QgisInterface * theInterface );
+    explicit eVis( QgisInterface * theInterface );
 
     //! Destructor */
-    ~eVis( );
+    ~eVis();
 
   public slots:
     //! init the gui
-    virtual void initGui( );
+    virtual void initGui() override;
 
     //! Main button actions
-    void launchDatabaseConnection( );
-    void launchEventIdTool( );
-    void launchEventBrowser( );
+    void launchDatabaseConnection();
+    void launchEventIdTool();
+    void launchEventBrowser();
 
     //! unload the plugin
-    void unload( );
+    void unload() override;
 
     //! show the help document
-    void help( );
+    void help();
 
     //! Add a vector layer given vectorLayerPath, baseName, providerKey ( "ogr" or "postgres" );
-    void drawVectorLayer( QString, QString, QString );
+    void drawVectorLayer( const QString&, const QString&, const QString& );
 
   private:
 

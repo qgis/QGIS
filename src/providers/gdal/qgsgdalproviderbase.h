@@ -40,9 +40,7 @@
 class QgsGdalProviderBase
 {
   public:
-    QgsGdalProviderBase( );
-
-    ~QgsGdalProviderBase();
+    QgsGdalProviderBase();
 
     /** \brief ensures that GDAL drivers are registered, but only once */
     static void registerGdalDrivers();
@@ -57,9 +55,9 @@ class QgsGdalProviderBase
     static int gdalGetOverviewCount( GDALRasterBandH hBand );
   protected:
 
-    QGis::DataType dataTypeFromGdal( int theGdalDataType ) const;
+    QGis::DataType dataTypeFromGdal( const GDALDataType theGdalDataType ) const;
 
-    int colorInterpretationFromGdal( int gdalColorInterpretation ) const;
+    int colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const;
 
     QList<QgsColorRampShader::ColorRampItem> colorTable( GDALDatasetH gdalDataset, int bandNo )const;
 

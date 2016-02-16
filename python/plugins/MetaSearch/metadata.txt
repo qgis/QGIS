@@ -1,0 +1,22 @@
+[general]
+name=MetaSearch Catalogue Client
+description=MetaSearch is a QGIS plugin to interact with metadata catalogue services (CSW).
+about=MetaSearch is a QGIS plugin to interact with metadata catalogue services, supporting the OGC Catalogue Service for the Web (CSW) standard. MetaSearch provides an easy and intuitive approach and user-friendly interface to searching metadata catalogues within QGIS.
+category=Web
+version=0.3.4
+qgisMinimumVersion=2.0
+icon=images/MetaSearch.png
+author=Tom Kralidis
+email=tomkralidis@gmail.com
+tags=web,catalogue,service,metadata,csw
+homepage=https://hub.qgis.org/wiki/quantum-gis/MetaSearch
+tracker=https://hub.qgis.org/projects/quantum-gis/issues?category_id=107&set_filter=1&status_id=o
+repository=https://github.com/qgis/QGIS/tree/master/python/plugins/MetaSearch
+experimental=False
+deprecated=False
+changelog=Version 0.3.4 (2015-09-28)
+    - fix crash due to CSW error causing crash (#12280)
+    - add error handling for paging workflows
+    - fix loading of custom CSW connections XML files
+    - update OWS connection naming to overwrite or serialize string (#12327)
+    - fix syntax errors in default connections list

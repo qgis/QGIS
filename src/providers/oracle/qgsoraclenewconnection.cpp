@@ -23,8 +23,9 @@
 #include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgsoracletablemodel.h"
+#include "qgsoracleconnpool.h"
 
-QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& connName, Qt::WFlags fl )
+QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
     : QDialog( parent, fl ), mOriginalConnName( connName )
 {
   setupUi( this );
@@ -44,6 +45,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& 
       port = "1521";
     }
     txtPort->setText( port );
+    txtOptions->setText( settings.value( key + "/dboptions" ).toString() );
     cb_userTablesOnly->setChecked( settings.value( key + "/userTablesOnly", false ).toBool() );
     cb_geometryColumnsOnly->setChecked( settings.value( key + "/geometryColumnsOnly", true ).toBool() );
     cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", false ).toBool() );
@@ -94,7 +96,7 @@ void QgsOracleNewConnection::accept()
   }
 
   // warn if entry was renamed to an existing connection
-  if (( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() ) &&
+  if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
       ( settings.contains( baseKey + txtName->text() + "/service" ) ||
         settings.contains( baseKey + txtName->text() + "/host" ) ) &&
       QMessageBox::question( this,
@@ -108,8 +110,8 @@ void QgsOracleNewConnection::accept()
   // on rename delete the original entry first
   if ( !mOriginalConnName.isNull() && mOriginalConnName != txtName->text() )
   {
-
     settings.remove( baseKey + mOriginalConnName );
+    settings.sync();
   }
 
   baseKey += txtName->text();
@@ -125,9 +127,7 @@ void QgsOracleNewConnection::accept()
   settings.setValue( baseKey + "/onlyExistingTypes", cb_onlyExistingTypes->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() ? "true" : "false" );
-
-  // remove old save setting
-  settings.remove( baseKey + "/save" );
+  settings.setValue( baseKey + "/dboptions", txtOptions->text() );
 
   QDialog::accept();
 }
@@ -136,8 +136,10 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
 {
   QgsDataSourceURI uri;
   uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), txtUsername->text(), txtPassword->text() );
+  if ( !txtOptions->text().isEmpty() )
+    uri.setParam( "dboptions", txtOptions->text() );
 
-  QgsOracleConn *conn = QgsOracleConn::connectDb( uri );
+  QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( uri.connectionInfo() );
 
   if ( conn )
   {
@@ -147,17 +149,17 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
                               tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ) );
 
     // free connection resources
-    conn->disconnect();
+    QgsOracleConnPool::instance()->releaseConnection( conn );
   }
   else
   {
     QMessageBox::information( this,
                               tr( "Test connection" ),
-                              tr( "Connection failed - Check settings and try again.\n\n" ) );
+                              tr( "Connection failed - consult message log for details.\n\n" ) );
   }
 }
 
-/** end  Autoconnected SLOTS **/
+/** End  Autoconnected SLOTS **/
 
 QgsOracleNewConnection::~QgsOracleNewConnection()
 {

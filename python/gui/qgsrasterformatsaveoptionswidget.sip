@@ -16,13 +16,13 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
       ProfileLineEdit // Profile + LineEdit
     };
 
-    QgsRasterFormatSaveOptionsWidget( QWidget* parent = 0, QString format = "GTiff",
+    QgsRasterFormatSaveOptionsWidget( QWidget* parent /TransferThis/ = 0, const QString& format = "GTiff",
                                       QgsRasterFormatSaveOptionsWidget::Type type = Default,
-                                      QString provider = "gdal" );
+                                      const QString& provider = "gdal" );
     ~QgsRasterFormatSaveOptionsWidget();
 
-    void setFormat( QString format );
-    void setProvider( QString provider );
+    void setFormat( const QString& format );
+    void setProvider( const QString& provider );
     void setRasterLayer( QgsRasterLayer* rasterLayer );
     void setRasterFileName( const QString& file );
     QStringList options() const;
@@ -50,6 +50,9 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
     void swapOptionsUI( int newIndex = -1 );
     void updateControls();
 
+  protected:
+    virtual void showEvent( QShowEvent * event );
+
   signals:
     void optionsChanged();
 
@@ -57,11 +60,11 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
 
     QString settingsKey( QString profile ) const;
     QString currentProfileKey() const;
-    QString createOptions( QString profile ) const;
-    void deleteCreateOptions( QString profile );
-    void setCreateOptions( );
-    void setCreateOptions( QString profile, QString options );
-    void setCreateOptions( QString profile, QStringList list );
+    QString createOptions( const QString& profile ) const;
+    void deleteCreateOptions( const QString& profile );
+    void setCreateOptions();
+    void setCreateOptions( const QString& profile, const QString& options );
+    void setCreateOptions( const QString& profile, const QStringList& list );
     QStringList profiles() const;
     bool eventFilter( QObject *obj, QEvent *event );
 

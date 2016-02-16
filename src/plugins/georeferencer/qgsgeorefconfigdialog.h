@@ -22,10 +22,11 @@ class QgsGeorefConfigDialog : public QDialog, private Ui::QgsGeorefConfigDialogB
 {
     Q_OBJECT
   public:
-    QgsGeorefConfigDialog( QWidget *parent = 0 );
+    explicit QgsGeorefConfigDialog( QWidget *parent = nullptr );
+    ~QgsGeorefConfigDialog();
 
   protected:
-    void changeEvent( QEvent *e );
+    void changeEvent( QEvent *e ) override;
 
   private slots:
     void on_buttonBox_accepted();

@@ -1,0 +1,7 @@
+r.bitpattern
+Compares bit patterns with a raster map.
+Raster (r.*)
+ParameterRaster|input|Input raster layer|False
+ParameterString|pattern|Bit pattern position(s)|
+ParameterString|patval|Bit pattern value|
+OutputRaster|output|Bit pattern comparison

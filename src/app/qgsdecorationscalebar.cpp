@@ -31,7 +31,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
-
+#include "qgsunittypes.h"
 
 #include <QPainter>
 #include <QAction>
@@ -51,10 +51,11 @@ email                : sbr00pwb@users.sourceforge.net
 
 QgsDecorationScaleBar::QgsDecorationScaleBar( QObject* parent )
     : QgsDecorationItem( parent )
+    , mMarginHorizontal( 0 )
+    , mMarginVertical( 0 )
 {
-  mPlacementLabels << tr( "Bottom Left" ) << tr( "Top Left" )
-  << tr( "Top Right" ) << tr( "Bottom Right" );
-  mPlacementIndex = 1;
+  mPlacement = TopLeft;
+  mMarginUnit = QgsSymbolV2::MM;
   mStyleLabels << tr( "Tick Down" ) << tr( "Tick Up" )
   << tr( "Bar" ) << tr( "Box" );
 
@@ -72,37 +73,33 @@ void QgsDecorationScaleBar::projectRead()
   QgsDecorationItem::projectRead();
   mPreferredSize = QgsProject::instance()->readNumEntry( mNameConfig, "/PreferredSize", 30 );
   mStyleIndex = QgsProject::instance()->readNumEntry( mNameConfig, "/Style", 0 );
-  mPlacementIndex = QgsProject::instance()->readNumEntry( mNameConfig, "/Placement", 2 );
-  // mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, "/Enabled", false );
   mSnapping = QgsProject::instance()->readBoolEntry( mNameConfig, "/Snapping", true );
   int myRedInt = QgsProject::instance()->readNumEntry( mNameConfig, "/ColorRedPart", 0 );
   int myGreenInt = QgsProject::instance()->readNumEntry( mNameConfig, "/ColorGreenPart", 0 );
   int myBlueInt = QgsProject::instance()->readNumEntry( mNameConfig, "/ColorBluePart", 0 );
   mColor = QColor( myRedInt, myGreenInt, myBlueInt );
+  mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, "/MarginH", 0 );
+  mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, "/MarginV", 0 );
 }
 
 void QgsDecorationScaleBar::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject::instance()->writeEntry( mNameConfig, "/Placement", mPlacementIndex );
   QgsProject::instance()->writeEntry( mNameConfig, "/PreferredSize", mPreferredSize );
   QgsProject::instance()->writeEntry( mNameConfig, "/Snapping", mSnapping );
-  // QgsProject::instance()->writeEntry( mNameConfig, "/Enabled", mEnabled );
   QgsProject::instance()->writeEntry( mNameConfig, "/Style", mStyleIndex );
   QgsProject::instance()->writeEntry( mNameConfig, "/ColorRedPart", mColor.red() );
   QgsProject::instance()->writeEntry( mNameConfig, "/ColorGreenPart", mColor.green() );
   QgsProject::instance()->writeEntry( mNameConfig, "/ColorBluePart", mColor.blue() );
+  QgsProject::instance()->writeEntry( mNameConfig, "/MarginH", mMarginHorizontal );
+  QgsProject::instance()->writeEntry( mNameConfig, "/MarginV", mMarginVertical );
 }
 
 
 void QgsDecorationScaleBar::run()
 {
   QgsDecorationScaleBarDialog dlg( *this, QgisApp::instance()->mapCanvas()->mapUnits(), QgisApp::instance() );
-
-  if ( dlg.exec() )
-  {
-    update();
-  }
+  dlg.exec();
 }
 
 
@@ -133,14 +130,16 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     // Hard coded sizes
     int myMajorTickSize = 8;
     int myTextOffsetX = 3;
-    int myMargin = 20;
 
     QSettings settings;
-    QGis::UnitType myPreferredUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+    bool ok = false;
+    QGis::UnitType myPreferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( "/qgis/measure/displayunits" ).toString(), &ok );
+    if ( !ok )
+      myPreferredUnits = QGis::Meters;
     QGis::UnitType myMapUnits = canvas->mapUnits();
 
     // Adjust units meter/feet/... or vice versa
-    myMapUnitsPerPixelDouble *= QGis::fromUnitToUnitFactor( myMapUnits, myPreferredUnits );
+    myMapUnitsPerPixelDouble *= QgsUnitTypes::fromUnitToUnitFactor( myMapUnits, myPreferredUnits );
     myMapUnits = myPreferredUnits;
 
     //Calculate size of scale bar for preferred number of map units
@@ -149,15 +148,15 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     //If scale bar is very small reset to 1/4 of the canvas wide
     if ( myScaleBarWidth < 30 )
     {
-      myScaleBarWidth = myCanvasWidth / 4; // pixels
+      myScaleBarWidth = myCanvasWidth / 4.0; // pixels
       myActualSize = myScaleBarWidth * myMapUnitsPerPixelDouble; // map units
-    };
+    }
 
     //if scale bar is more than half the canvas wide keep halving until not
-    while ( myScaleBarWidth > myCanvasWidth / 3 )
+    while ( myScaleBarWidth > myCanvasWidth / 3.0 )
     {
       myScaleBarWidth = myScaleBarWidth / 3;
-    };
+    }
     myActualSize = myScaleBarWidth * myMapUnitsPerPixelDouble;
 
     // Work out the exponent for the number - e.g, 1234 will give 3,
@@ -233,9 +232,11 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
         break;
       case QGis::UnknownUnit:
         myScaleBarUnitLabel = tr( " unknown" );
+        //intentional fall-through
+        FALLTHROUGH;
       default:
         QgsDebugMsg( QString( "Error: not picked up map units - actual value = %1" ).arg( myMapUnits ) );
-    };
+    }
 
     //Set font and calculate width of unit label
     int myFontSize = 10; //we use this later for buffering
@@ -251,26 +252,59 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     //Calculate total width of scale bar and label
     double myTotalScaleBarWidth = myScaleBarWidth + myFontWidth;
 
-    //determine the origin of scale bar depending on placement selected
-    int myOriginX = myMargin;
-    int myOriginY = myMargin;
-    switch ( mPlacementIndex )
+    int myMarginW = 10;
+    int myMarginH = 20;
+    int myOriginX = 0;
+    int myOriginY = 0;
+
+    // Set  margin according to selected units
+    switch ( mMarginUnit )
     {
-      case 0: // Bottom Left
-        myOriginX = myMargin;
-        myOriginY = myCanvasHeight - myMargin;
+      case QgsSymbolV2::MM:
+      {
+        int myPixelsInchX = theQPainter->device()->logicalDpiX();
+        int myPixelsInchY = theQPainter->device()->logicalDpiY();
+        myOriginX = myPixelsInchX * INCHES_TO_MM * mMarginHorizontal;
+        myOriginY = myPixelsInchY * INCHES_TO_MM * mMarginVertical;
         break;
-      case 1: // Top Left
-        myOriginX = myMargin;
-        myOriginY = myMargin;
+      }
+
+      case QgsSymbolV2::Pixel:
+        myOriginX = mMarginHorizontal - 5.; // Minus 5 to shift tight into corner
+        myOriginY = mMarginVertical - 5.;
         break;
-      case 2: // Top Right
-        myOriginX = myCanvasWidth - (( int ) myTotalScaleBarWidth ) - myMargin;
-        myOriginY = myMargin;
+
+      case QgsSymbolV2::Percentage:
+      {
+        float myMarginDoubledW = myMarginW * 2.0;
+        float myMarginDoubledH = myMarginH * 2.0;
+        myOriginX = (( myCanvasWidth - myMarginDoubledW - myTotalScaleBarWidth ) / 100. ) * mMarginHorizontal;
+        myOriginY = (( myCanvasHeight - myMarginDoubledH ) / 100. ) * mMarginVertical;
         break;
-      case 3: // Bottom Right
-        myOriginX = myCanvasWidth - (( int ) myTotalScaleBarWidth ) - myMargin;
-        myOriginY = myCanvasHeight - myMargin;
+      }
+
+      default:  // Use default of top left
+        break;
+    }
+
+    //Determine the origin of scale bar depending on placement selected
+    switch ( mPlacement )
+    {
+      case BottomLeft:
+        myOriginX += myMarginW;
+        myOriginY = myCanvasHeight - myOriginY - myMarginH;
+        break;
+      case TopLeft:
+        myOriginX += myMarginW;
+        myOriginY += myMarginH;
+        break;
+      case TopRight:
+        myOriginX = myCanvasWidth - myOriginX - myMarginW - ( static_cast< int >( myTotalScaleBarWidth ) );
+        myOriginY += myMarginH;
+        break;
+      case BottomRight:
+        myOriginX = myCanvasWidth - myOriginX - myMarginW - ( static_cast< int >( myTotalScaleBarWidth ) );
+        myOriginY = myCanvasHeight - myOriginY - myMarginH;
         break;
       default:
         QgsDebugMsg( "Unable to determine where to put scale bar so defaulting to top left" );
@@ -281,7 +315,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     QPen myBackgroundPen( Qt::white, 4 );
 
     //Cast myScaleBarWidth to int for drawing
-    int myScaleBarWidthInt = ( int ) myScaleBarWidth;
+    int myScaleBarWidthInt = static_cast< int >( myScaleBarWidth );
 
     //Create array of vertices for scale bar depending on style
     switch ( mStyleIndex )
@@ -292,19 +326,19 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
         //draw a buffer first so bar shows up on dark images
         theQPainter->setPen( myBackgroundPen );
         myTickDownArray.putPoints( 0, 4,
-                                   myOriginX                    , ( myOriginY + myMajorTickSize ) ,
-                                   myOriginX                    ,  myOriginY                    ,
-                                   ( myScaleBarWidthInt + myOriginX ),  myOriginY                    ,
-                                   ( myScaleBarWidthInt + myOriginX ), ( myOriginY + myMajorTickSize )
+                                   myOriginX,                      myOriginY + myMajorTickSize,
+                                   myOriginX,                      myOriginY,
+                                   myScaleBarWidthInt + myOriginX, myOriginY,
+                                   myScaleBarWidthInt + myOriginX, myOriginY + myMajorTickSize
                                  );
         theQPainter->drawPolyline( myTickDownArray );
         //now draw the bar itself in user selected color
         theQPainter->setPen( myForegroundPen );
         myTickDownArray.putPoints( 0, 4,
-                                   myOriginX                    , ( myOriginY + myMajorTickSize ) ,
-                                   myOriginX                    ,  myOriginY                    ,
-                                   ( myScaleBarWidthInt + myOriginX ),  myOriginY                    ,
-                                   ( myScaleBarWidthInt + myOriginX ), ( myOriginY + myMajorTickSize )
+                                   myOriginX,                      myOriginY + myMajorTickSize,
+                                   myOriginX,                      myOriginY,
+                                   myScaleBarWidthInt + myOriginX, myOriginY,
+                                   myScaleBarWidthInt + myOriginX, myOriginY + myMajorTickSize
                                  );
         theQPainter->drawPolyline( myTickDownArray );
         break;
@@ -315,19 +349,19 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
         //draw a buffer first so bar shows up on dark images
         theQPainter->setPen( myBackgroundPen );
         myTickUpArray.putPoints( 0, 4,
-                                 myOriginX                    ,  myOriginY                    ,
-                                 myOriginX                    ,  myOriginY + myMajorTickSize  ,
-                                 ( myScaleBarWidthInt + myOriginX ),  myOriginY + myMajorTickSize  ,
-                                 ( myScaleBarWidthInt + myOriginX ),  myOriginY
+                                 myOriginX,                      myOriginY,
+                                 myOriginX,                      myOriginY + myMajorTickSize,
+                                 myScaleBarWidthInt + myOriginX, myOriginY + myMajorTickSize,
+                                 myScaleBarWidthInt + myOriginX, myOriginY
                                );
         theQPainter->drawPolyline( myTickUpArray );
         //now draw the bar itself in user selected color
         theQPainter->setPen( myForegroundPen );
         myTickUpArray.putPoints( 0, 4,
-                                 myOriginX                    ,  myOriginY                    ,
-                                 myOriginX                    ,  myOriginY + myMajorTickSize  ,
-                                 ( myScaleBarWidthInt + myOriginX ),  myOriginY + myMajorTickSize  ,
-                                 ( myScaleBarWidthInt + myOriginX ),  myOriginY
+                                 myOriginX,                      myOriginY,
+                                 myOriginX,                      myOriginY + myMajorTickSize,
+                                 myScaleBarWidthInt + myOriginX, myOriginY + myMajorTickSize,
+                                 myScaleBarWidthInt + myOriginX, myOriginY
                                );
         theQPainter->drawPolyline( myTickUpArray );
         break;
@@ -338,15 +372,15 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
         //draw a buffer first so bar shows up on dark images
         theQPainter->setPen( myBackgroundPen );
         myBarArray.putPoints( 0, 2,
-                              myOriginX                    , ( myOriginY + ( myMajorTickSize / 2 ) ),
-                              ( myScaleBarWidthInt + myOriginX ), ( myOriginY + ( myMajorTickSize / 2 ) )
+                              myOriginX,                      myOriginY + ( myMajorTickSize / 2 ),
+                              myScaleBarWidthInt + myOriginX, myOriginY + ( myMajorTickSize / 2 )
                             );
         theQPainter->drawPolyline( myBarArray );
         //now draw the bar itself in user selected color
         theQPainter->setPen( myForegroundPen );
         myBarArray.putPoints( 0, 2,
-                              myOriginX                    , ( myOriginY + ( myMajorTickSize / 2 ) ),
-                              ( myScaleBarWidthInt + myOriginX ), ( myOriginY + ( myMajorTickSize / 2 ) )
+                              myOriginX,                      myOriginY + ( myMajorTickSize / 2 ),
+                              myScaleBarWidthInt + myOriginX, myOriginY + ( myMajorTickSize / 2 )
                             );
         theQPainter->drawPolyline( myBarArray );
         break;
@@ -360,11 +394,11 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
         //draw a buffer first so bar shows up on dark images
         theQPainter->setPen( myBackgroundPen );
         myBoxArray.putPoints( 0, 5,
-                              myOriginX                    ,  myOriginY,
-                              ( myScaleBarWidthInt + myOriginX ),  myOriginY,
-                              ( myScaleBarWidthInt + myOriginX ), ( myOriginY + myMajorTickSize ),
-                              myOriginX                    , ( myOriginY + myMajorTickSize ),
-                              myOriginX                    ,  myOriginY
+                              myOriginX,                      myOriginY,
+                              myScaleBarWidthInt + myOriginX, myOriginY,
+                              myScaleBarWidthInt + myOriginX, myOriginY + myMajorTickSize,
+                              myOriginX,                      myOriginY + myMajorTickSize,
+                              myOriginX,                      myOriginY
                             );
         theQPainter->drawPolyline( myBoxArray );
         //now draw the bar itself in user selected color
@@ -372,21 +406,21 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
         theQPainter->setBrush( QBrush( mColor, Qt::SolidPattern ) );
         int midPointX = myScaleBarWidthInt / 2 + myOriginX;
         myBoxArray.putPoints( 0, 5,
-                              myOriginX                    ,  myOriginY,
-                              midPointX,  myOriginY,
-                              midPointX, ( myOriginY + myMajorTickSize ),
-                              myOriginX                    , ( myOriginY + myMajorTickSize ),
-                              myOriginX                    ,  myOriginY
+                              myOriginX, myOriginY,
+                              midPointX, myOriginY,
+                              midPointX, myOriginY + myMajorTickSize,
+                              myOriginX, myOriginY + myMajorTickSize,
+                              myOriginX, myOriginY
                             );
         theQPainter->drawPolygon( myBoxArray );
 
         theQPainter->setBrush( Qt::NoBrush );
         myBoxArray.putPoints( 0, 5,
-                              midPointX                    ,  myOriginY,
-                              ( myScaleBarWidthInt + myOriginX ),  myOriginY,
-                              ( myScaleBarWidthInt + myOriginX ), ( myOriginY + myMajorTickSize ),
-                              midPointX                    , ( myOriginY + myMajorTickSize ),
-                              midPointX                    ,  myOriginY
+                              midPointX,                      myOriginY,
+                              myScaleBarWidthInt + myOriginX, myOriginY,
+                              myScaleBarWidthInt + myOriginX, myOriginY + myMajorTickSize,
+                              midPointX,                      myOriginY + myMajorTickSize,
+                              midPointX,                      myOriginY
                             );
         theQPainter->drawPolygon( myBoxArray );
         break;

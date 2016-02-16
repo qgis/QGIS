@@ -27,7 +27,7 @@ class GUI_EXPORT QgsVectorGradientColorRampV2Dialog : public QDialog, private Ui
     Q_OBJECT
 
   public:
-    QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent = NULL );
+    QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent = nullptr );
 
   public slots:
     void setColor1( const QColor& color );
@@ -48,7 +48,7 @@ class GUI_EXPORT QgsVectorGradientColorRampV2Dialog : public QDialog, private Ui
 
     void updateStops();
     void updatePreview();
-    void setStopColor( QTreeWidgetItem* item, QColor color );
+    void setStopColor( QTreeWidgetItem* item, const QColor& color );
 
     QgsVectorGradientColorRampV2* mRamp;
 

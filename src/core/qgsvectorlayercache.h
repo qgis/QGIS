@@ -4,7 +4,7 @@
   -------------------
          begin                : January 2013
          copyright            : (C) Matthias Kuhn
-         email                : matthias dot kuhn at gmx dot ch
+         email                : matthias at opengis dot ch
 
  ***************************************************************************
  *                                                                         *
@@ -75,10 +75,12 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
         QgsVectorLayerCache* mCache;
 
         friend class QgsVectorLayerCache;
+        Q_DISABLE_COPY( QgsCachedFeature )
     };
 
   public:
-    QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, QObject* parent = NULL );
+    QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, QObject* parent = nullptr );
+    ~QgsVectorLayerCache();
 
     /**
      * Sets the maximum number of features to keep in the cache. Some features will be removed from
@@ -136,6 +138,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @brief
      * Adds a {@link QgsAbstractCacheIndex} to this cache. Cache indices know about features present
      * in this cache and decide, if enough information is present in the cache to respond to a {@link QgsFeatureRequest}.
+     * The layer cache will take ownership of the index.
      *
      * @param cacheIndex  The cache index to add.
      */
@@ -189,7 +192,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @param featureRequest  The feature request that was answered
      * @param fids            The feature ids that have been returned
      */
-    void requestCompleted( QgsFeatureRequest featureRequest, QgsFeatureIds fids );
+    void requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids );
 
     /**
      * @brief
@@ -242,7 +245,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @brief Is emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
      *        You should connect to this signal, to be sure, to not get a cached value if querying the cache.
      */
-    void attributeValueChanged( const QgsFeatureId& fid, const int& field, const QVariant &value );
+    void attributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
 
     /**
      * Is emitted, when a new feature has been added to the layer and this cache.
@@ -253,6 +256,11 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      */
     void featureAdded( QgsFeatureId fid );
 
+    /**
+     * The cache has been invalidated and cleared.
+     */
+    void invalidated();
+
   private slots:
     void onAttributeValueChanged( QgsFeatureId fid, int field, const QVariant& value );
     void featureDeleted( QgsFeatureId fid );
@@ -261,7 +269,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void attributeDeleted( int field );
     void geometryChanged( QgsFeatureId fid, QgsGeometry& geom );
     void layerDeleted();
-    void updatedFields();
+    void invalidate();
 
   private:
 

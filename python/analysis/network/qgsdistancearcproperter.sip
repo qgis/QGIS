@@ -8,4 +8,3 @@ class QgsDistanceArcProperter : QgsArcProperter
   public:
     virtual QVariant property( double distance, const QgsFeature& ) const;
 };
-

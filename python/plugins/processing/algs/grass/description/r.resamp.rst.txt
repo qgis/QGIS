@@ -1,0 +1,9 @@
+r.resamp.rst
+Reinterpolates using regularized spline with tension and smoothing.
+Raster (r.*)
+ParameterRaster|input|Raster layer|False
+ParameterNumber|ew_res|Desired east-west resolution|0.0|None|1.0
+ParameterNumber|ns_res|Desired north-south resolution|0.0|None|1.0
+ParameterBoolean|-t|Use dnorm independent tension|False
+ParameterBoolean|-a_r.region|Align region to resolution (default = align to bounds) in r.region|False
+OutputRaster|elev|Resampled RST

@@ -26,9 +26,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.parameters.ParameterVector import ParameterVector
-from processing.outputs.OutputNumber import OutputNumber
-from processing.outputs.OutputExtent import OutputExtent
+from processing.core.parameters import ParameterVector
+from processing.core.outputs import OutputNumber
+from processing.core.outputs import OutputExtent
 from processing.tools import dataobjects
 
 
@@ -44,14 +44,14 @@ class VectorLayerBoundsAlgorithm(GeoAlgorithm):
     def defineCharacteristics(self):
         self.showInModeler = True
         self.showInToolbox = False
-        self.name = 'Vector layer bounds'
-        self.group = 'Modeler-only tools'
-        self.addParameter(ParameterVector(self.LAYER, 'Layer'))
-        self.addOutput(OutputNumber(self.XMIN, 'min X'))
-        self.addOutput(OutputNumber(self.XMAX, 'max X'))
-        self.addOutput(OutputNumber(self.YMIN, 'min Y'))
-        self.addOutput(OutputNumber(self.YMAX, 'max Y'))
-        self.addOutput(OutputExtent(self.EXTENT, 'Extent'))
+        self.name = self.tr('Vector layer bounds', 'VectorLayerBoundsAlgorithm')
+        self.group = self.tr('Modeler-only tools', 'VectorLayerBoundsAlgorithm')
+        self.addParameter(ParameterVector(self.LAYER, self.tr('Layer', 'VectorLayerBoundsAlgorithm')))
+        self.addOutput(OutputNumber(self.XMIN, self.tr('min X', 'VectorLayerBoundsAlgorithm')))
+        self.addOutput(OutputNumber(self.XMAX, self.tr('max X', 'VectorLayerBoundsAlgorithm')))
+        self.addOutput(OutputNumber(self.YMIN, self.tr('min Y', 'VectorLayerBoundsAlgorithm')))
+        self.addOutput(OutputNumber(self.YMAX, self.tr('max Y', 'VectorLayerBoundsAlgorithm')))
+        self.addOutput(OutputExtent(self.EXTENT, self.tr('Extent', 'VectorLayerBoundsAlgorithm')))
 
     def processAlgorithm(self, progress):
         uri = self.getParameterValue(self.LAYER)
@@ -61,6 +61,6 @@ class VectorLayerBoundsAlgorithm(GeoAlgorithm):
         self.setOutputValue(self.YMIN, layer.extent().yMinimum())
         self.setOutputValue(self.YMAX, layer.extent().yMaximum())
         self.setOutputValue(self.EXTENT, (layer.extent().xMinimum(),
-                            layer.extent().xMaximum(),
-                            layer.extent().yMinimum(),
-                            layer.extent().yMaximum()))
+                                          layer.extent().xMaximum(),
+                                          layer.extent().yMinimum(),
+                                          layer.extent().yMaximum()))

@@ -15,6 +15,7 @@
 #include <qcombobox.h>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QUuid>
 #include <qdialogbuttonbox.h>
 #include <qmessagebox.h>
 
@@ -27,7 +28,7 @@
 
 //standard includes
 
-RgExportDlg::RgExportDlg( QWidget* parent, Qt::WFlags fl )
+RgExportDlg::RgExportDlg( QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   // create base widgets;
@@ -70,25 +71,26 @@ RgExportDlg::~RgExportDlg()
 
 QgsVectorLayer* RgExportDlg::mapLayer() const
 {
-  QgsVectorLayer* myLayer = NULL;
+  QgsVectorLayer* myLayer = nullptr;
   QString layerId = mcbLayers->itemData( mcbLayers->currentIndex() ).toString();
 
-  if ( layerId == QString( "-1" ) )
+  if ( layerId == "-1" )
   {
     // create a temporary layer
-    myLayer = new QgsVectorLayer( "LineString", "shortest path", "memory" );
+    myLayer = new QgsVectorLayer( QString( "LineString?crs=epsg:4326&memoryid=%1" ).arg( QUuid::createUuid().toString() ), "shortest path", "memory" );
 
     QgsVectorDataProvider *prov = myLayer->dataProvider();
-    if ( prov == NULL )
-      return NULL;
+    if ( !prov )
+      return nullptr;
 
     QList<QgsField> attrList;
-    attrList.append( QgsField( "one", QVariant::Int ) );
+    attrList.append( QgsField( "length", QVariant::Double, "", 20, 8 ) );
+    attrList.append( QgsField( "time", QVariant::Double, "", 20, 8 ) );
     prov->addAttributes( attrList );
+    myLayer->updateFields();
     QList<QgsMapLayer *> myList;
     myList << myLayer;
     QgsMapLayerRegistry::instance()->addMapLayers( myList );
-
   }
   else
   {

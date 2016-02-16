@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsogcutils.h
+    ---------------------
+    begin                : March 2013
+    copyright            : (C) 2013 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSOGCUTILS_H
 #define QGSOGCUTILS_H
 
@@ -24,49 +38,47 @@ class QgsRectangle;
  *
  * Currently supported standards:
  * - GML2 - Geography Markup Language (import, export)
- *
- * @note added in 2.0
  */
 class CORE_EXPORT QgsOgcUtils
 {
   public:
 
-    /** static method that creates geometry from GML
+    /** Static method that creates geometry from GML
      @param xmlString xml representation of the geometry. GML elements are expected to be
        in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
        "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
      */
     static QgsGeometry* geometryFromGML( const QString& xmlString );
 
-    /** static method that creates geometry from GML
+    /** Static method that creates geometry from GML
       */
     static QgsGeometry* geometryFromGML( const QDomNode& geometryNode );
 
-    /** read rectangle from GML2 Box */
+    /** Read rectangle from GML2 Box */
     static QgsRectangle rectangleFromGMLBox( const QDomNode& boxNode );
 
-    /** read rectangle from GML3 Envelope */
+    /** Read rectangle from GML3 Envelope */
     static QgsRectangle rectangleFromGMLEnvelope( const QDomNode& envelopeNode );
 
     /** Exports the geometry to GML2 or GML3
         @return QDomElement
      */
-    static QDomElement geometryToGML( QgsGeometry* geometry, QDomDocument& doc, QString format );
+    static QDomElement geometryToGML( const QgsGeometry* geometry, QDomDocument& doc, const QString& format, int precision = 17 );
 
     /** Exports the geometry to GML2
         @return QDomElement
      */
-    static QDomElement geometryToGML( QgsGeometry* geometry, QDomDocument& doc );
+    static QDomElement geometryToGML( const QgsGeometry* geometry, QDomDocument& doc, int precision = 17 );
 
     /** Exports the rectangle to GML2 Box
         @return QDomElement
      */
-    static QDomElement rectangleToGMLBox( QgsRectangle* box, QDomDocument& doc );
+    static QDomElement rectangleToGMLBox( QgsRectangle* box, QDomDocument& doc, int precision = 17 );
 
     /** Exports the rectangle to GML2 Envelope
         @return QDomElement
      */
-    static QDomElement rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument& doc );
+    static QDomElement rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument& doc, int precision = 17 );
 
 
     /** Parse XML with OGC fill into QColor */
@@ -80,20 +92,20 @@ class CORE_EXPORT QgsOgcUtils
      * @return valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
      */
-    static QDomElement expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage = 0 );
+    static QDomElement expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage = nullptr );
 
   private:
-    /** static method that creates geometry from GML Point */
+    /** Static method that creates geometry from GML Point */
     static QgsGeometry* geometryFromGMLPoint( const QDomElement& geometryElement );
-    /** static method that creates geometry from GML LineString */
+    /** Static method that creates geometry from GML LineString */
     static QgsGeometry* geometryFromGMLLineString( const QDomElement& geometryElement );
-    /** static method that creates geometry from GML Polygon */
+    /** Static method that creates geometry from GML Polygon */
     static QgsGeometry* geometryFromGMLPolygon( const QDomElement& geometryElement );
-    /** static method that creates geometry from GML MultiPoint */
+    /** Static method that creates geometry from GML MultiPoint */
     static QgsGeometry* geometryFromGMLMultiPoint( const QDomElement& geometryElement );
-    /** static method that creates geometry from GML MultiLineString */
+    /** Static method that creates geometry from GML MultiLineString */
     static QgsGeometry* geometryFromGMLMultiLineString( const QDomElement& geometryElement );
-    /** static method that creates geometry from GML MultiPolygon */
+    /** Static method that creates geometry from GML MultiPolygon */
     static QgsGeometry* geometryFromGMLMultiPolygon( const QDomElement& geometryElement );
     /** Reads the \verbatim <gml:coordinates> \endverbatim element and extracts the coordinates as points
        @param coords list where the found coordinates are appended
@@ -109,13 +121,13 @@ class CORE_EXPORT QgsOgcUtils
     static bool readGMLPositions( QgsPolyline &coords, const QDomElement &elem );
 
 
-    /**Create a GML coordinates element from a point list.
+    /** Create a GML coordinates element from a point list.
       @param points list of data points
       @param doc the GML document
       @return QDomElement */
     static QDomElement createGMLCoordinates( const QgsPolyline &points, QDomDocument& doc );
 
-    /**Create a GML pos or posList element from a point list.
+    /** Create a GML pos or posList element from a point list.
       @param points list of data points
       @param doc the GML document
       @return QDomElement */

@@ -37,24 +37,23 @@ class QgsOraclePlugin : public QObject, public QgisPlugin
      * QGIS when it attempts to instantiate the plugin.
      * @param theInterface Pointer to the QgisInterface object.
      */
-    QgsOraclePlugin( QgisInterface * theInterface );
+    explicit QgsOraclePlugin( QgisInterface * theInterface );
     //! Destructor
     virtual ~QgsOraclePlugin();
 
   public slots:
 
     //! init the gui
-    virtual void initGui();
+    virtual void initGui() override;
     //! Show the dialog box
     void run();
     //! unload the plugin
-    void unload();
+    void unload() override;
     //! show the help document
     void help();
 
   private:
 
-    int mPluginType;
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
     //!pointer to the qaction for this plugin

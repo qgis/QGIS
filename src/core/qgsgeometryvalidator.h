@@ -21,33 +21,31 @@ email                : jef at norbit dot de
 
 class CORE_EXPORT QgsGeometryValidator : public QThread
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
     //! Constructor
-    QgsGeometryValidator( QgsGeometry *g, QList<QgsGeometry::Error> *errors = 0 );
+    QgsGeometryValidator( const QgsGeometry *g, QList<QgsGeometry::Error> *errors = nullptr );
     ~QgsGeometryValidator();
 
-    void run();
+    void run() override;
     void stop();
 
-    /** Validate geometry and produce a list of geometry errors
-     * @note added in 1.9
-     **/
-    static void validateGeometry( QgsGeometry *g, QList<QgsGeometry::Error> &errors );
+    /** Validate geometry and produce a list of geometry errors */
+    static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors );
 
   signals:
-    void errorFound( QgsGeometry::Error );
+    void errorFound( const QgsGeometry::Error& );
 
   public slots:
-    void addError( QgsGeometry::Error );
+    void addError( const QgsGeometry::Error& );
 
   private:
     void validatePolyline( int i, QgsPolyline polyline, bool ring = false );
     void validatePolygon( int i, const QgsPolygon &polygon );
     void checkRingIntersections( int p0, int i0, const QgsPolyline &ring0, int p1, int i1, const QgsPolyline &ring1 );
-    double distLine2Point( QgsPoint p, QgsVector v, QgsPoint q );
-    bool intersectLines( QgsPoint p, QgsVector v, QgsPoint q, QgsVector w, QgsPoint &s );
+    double distLine2Point( const QgsPoint& p, QgsVector v, const QgsPoint& q );
+    bool intersectLines( const QgsPoint& p, QgsVector v, const QgsPoint& q, QgsVector w, QgsPoint &s );
     bool ringInRing( const QgsPolyline &inside, const QgsPolyline &outside );
     bool pointInRing( const QgsPolyline &ring, const QgsPoint &p );
 

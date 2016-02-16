@@ -23,6 +23,7 @@
 #include "qgsgrass.h"
 #include "qgsconfig.h"
 
+#include "qgsgrassutils.h"
 #include "qgsgrassshell.h"
 
 extern "C"
@@ -31,11 +32,14 @@ extern "C"
 }
 
 QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const char *name )
-    : QFrame( parent ), mTools( tools ), mTabWidget( parent )
+    : QFrame( parent )
+    , mTerminal( 0 )
+    , mTools( tools )
+    , mTabWidget( parent )
 {
   Q_UNUSED( name );
   QVBoxLayout *mainLayout = new QVBoxLayout( this );
-  QTermWidget *mTerminal = new QTermWidget( 0, this );
+  mTerminal = new QTermWidget( 0, this );
   initTerminal( mTerminal );
   QShortcut *pasteShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+V" ) ), mTerminal );
   QShortcut *copyShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+C" ) ), mTerminal );
@@ -59,13 +63,20 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const ch
 #endif
 
   mTerminal->setSize( 80, 25 );
-  mTerminal->setColorScheme( COLOR_SCHEME_BLACK_ON_WHITE );
+  //mTerminal->setColorScheme( COLOR_SCHEME_BLACK_ON_WHITE );
+  mTerminal->setColorScheme( QgsApplication::pkgDataPath() + "/grass/qtermwidget/color-schemes/BlackOnWhite.schema" );
   mTerminal->startShellProgram();
   mTerminal->setFocus( Qt::MouseFocusReason );
+
+  // QTermWidget does set default font family Monospace, size 10 via QWidget::setFont()
+  // but QWidget::setFont() does not guarantee to really change the font (see doc)
+  // setStyleSheet() works (it is applied to QTermWidget children TerminalDisplay)
+  mTerminal->setStyleSheet( "font-family: Monospace; font-size: 10pt;" );
 }
 
 QgsGrassShell::~QgsGrassShell()
 {
+  QgsDebugMsg( "entered" );
 }
 
 void QgsGrassShell::closeShell()
@@ -94,10 +105,17 @@ void QgsGrassShell::initTerminal( QTermWidget *terminal )
   //QString shellProgram = QString( "%1/etc/Init.sh" ).arg( ::getenv( "GISBASE" ) );
 
   //terminal->setShellProgram( shellProgram );
+
+  QString path = getenv( "PATH" );
+  path += QgsGrass::pathSeparator() + QgsGrass::grassModulesPaths().join( QgsGrass::pathSeparator() );
+  QgsDebugMsg( "path = " + path );
+
+  env << "PATH=" + path;
+  env << "PYTHONPATH=" + QgsGrass::getPythonPath();
   env << "TERM=vt100";
   env << "GISRC_MODE_MEMORY";
   // TODO: we should check if these environment variable were set by user before QGIS was started
-  env << "GRASS_HTML_BROWSER=" + QgsApplication::libexecPath() + "grass/bin/qgis.g.browser";
+  env << "GRASS_HTML_BROWSER=" + QgsGrassUtils::htmlBrowserPath() ;
   env << "GRASS_WISH=wish";
   env << "GRASS_TCLSH=tclsh";
   env << "GRASS_PYTHON=python";

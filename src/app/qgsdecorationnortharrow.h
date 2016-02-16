@@ -33,20 +33,20 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
 
   public:
     //! Constructor
-    QgsDecorationNorthArrow( QObject* parent = NULL );
+    QgsDecorationNorthArrow( QObject* parent = nullptr );
     //! Destructor
     virtual ~QgsDecorationNorthArrow();
 
   public slots:
     //! set values on the gui when a project is read or the gui first loaded
-    void projectRead();
+    void projectRead() override;
     //! save values to the project
-    void saveToProject();
+    void saveToProject() override;
 
     //! Show the dialog box
-    void run();
+    void run() override;
     //! draw some arbitary text to the screen
-    void render( QPainter * );
+    void render( QPainter * ) override;
 
     //! try to calculate the direction for the north arrow. Sets the
     //! private class rotation variable. If unable to calculate the
@@ -62,12 +62,12 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
 
     // The amount of rotation for the north arrow
     int mRotationInt;
-    int pluginType;
+
     //! enable or disable the automatic setting of the arrow direction
     bool mAutomatic;
-    // The placement index and translated text
-    int mPlacementIndex;
-    QStringList mPlacementLabels;
+    //! margin values
+    int mMarginHorizontal;
+    int mMarginVertical;
 
     friend class QgsDecorationNorthArrowDialog;
 };

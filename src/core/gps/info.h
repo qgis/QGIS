@@ -24,10 +24,10 @@
  *
  */
 
-/*! \file */
+/** \file */
 
-#ifndef __NMEA_INFO_H__
-#define __NMEA_INFO_H__
+#ifndef NMEA_INFO_H
+#define NMEA_INFO_H
 
 #include "nmeatime.h"
 
@@ -94,7 +94,7 @@ extern "C"
    * Summary GPS information from all parsed packets,
    * used also for generating NMEA stream
    * @see nmea_parse
-   * @see nmea_GPGGA2info,  nmea_...2info
+   * @see nmea_GPGGA2info, nmea_...2info
    */
   typedef struct _nmeaINFO
   {
@@ -126,4 +126,4 @@ extern "C"
 }
 #endif
 
-#endif /* __NMEA_INFO_H__ */
+#endif /* NMEA_INFO_H */

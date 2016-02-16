@@ -28,10 +28,10 @@ class GUI_EXPORT QgsSvgAnnotationItem: public QgsAnnotationItem
     QgsSvgAnnotationItem( QgsMapCanvas* canvas );
     ~QgsSvgAnnotationItem();
 
-    void writeXML( QDomDocument& doc ) const;
-    void readXML( const QDomDocument& doc, const QDomElement& itemElem );
+    void writeXML( QDomDocument& doc ) const override;
+    void readXML( const QDomDocument& doc, const QDomElement& itemElem ) override;
 
-    void paint( QPainter* painter );
+    void paint( QPainter* painter ) override;
 
     void setFilePath( const QString& file );
     QString filePath() const { return mFilePath; }

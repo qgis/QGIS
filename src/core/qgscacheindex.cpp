@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 13.2.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,7 +24,7 @@ QgsAbstractCacheIndex::~QgsAbstractCacheIndex()
 {
 }
 
-void QgsAbstractCacheIndex::requestCompleted( QgsFeatureRequest featureRequest, QgsFeatureIds fids )
+void QgsAbstractCacheIndex::requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids )
 {
   Q_UNUSED( featureRequest )
   Q_UNUSED( fids )

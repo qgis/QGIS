@@ -32,12 +32,12 @@ class QgsGeomColumnTypeThread : public QThread
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.
-    virtual void run();
+    virtual void run() override;
 
   signals:
-    void setLayerType( QgsPostgresLayerProperty layerProperty );
+    void setLayerType( const QgsPostgresLayerProperty& layerProperty );
     void progress( int, int );
-    void progressMessage( QString );
+    void progressMessage( const QString& );
 
   public slots:
     void stop();

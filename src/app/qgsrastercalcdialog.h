@@ -21,24 +21,25 @@
 #include "ui_qgsrastercalcdialogbase.h"
 #include "qgsrastercalculator.h"
 
-/**A dialog to enter a raster calculation expression*/
+/** A dialog to enter a raster calculation expression*/
 class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcDialogBase
 {
     Q_OBJECT
   public:
-    QgsRasterCalcDialog( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsRasterCalcDialog( QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsRasterCalcDialog();
 
     QString formulaString() const;
     QString outputFile() const;
     QString outputFormat() const;
+    QgsCoordinateReferenceSystem outputCrs() const;
     bool addLayerToProject() const;
 
-    /**Bounding box for output raster*/
+    /** Bounding box for output raster*/
     QgsRectangle outputRectangle() const;
-    /**Number of pixels in x-direction*/
+    /** Number of pixels in x-direction*/
     int numberOfColumns() const;
-    /**Number of pixels in y-direction*/
+    /** Number of pixels in y-direction*/
     int numberOfRows() const;
 
     QVector<QgsRasterCalculatorEntry> rasterEntries() const;
@@ -50,7 +51,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     void on_mCurrentLayerExtentButton_clicked();
     void on_mExpressionTextEdit_textChanged();
     void on_mOutputLayerLineEdit_textChanged( const QString& text );
-    /**Enables ok button if calculator expression is valid and output file path exists*/
+    /** Enables ok button if calculator expression is valid and output file path exists*/
     void setAcceptButtonState();
 
     //calculator buttons
@@ -63,6 +64,9 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     void on_mSinButton_clicked();
     void on_mASinButton_clicked();
     void on_mExpButton_clicked();
+    void on_mLnButton_clicked();
+    void on_mLogButton_clicked();
+    void on_mNotEqualButton_clicked();
     void on_mTanButton_clicked();
     void on_mACosButton_clicked();
     void on_mATanButton_clicked();
@@ -79,17 +83,17 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
   private:
     //insert available GDAL drivers that support the create() option
     void insertAvailableOutputFormats();
-    /**Accesses the available raster layers/bands from the layer registry*/
+    /** Accesses the available raster layers/bands from the layer registry*/
     void insertAvailableRasterBands();
 
-    /**Returns true if raster calculator expression has valid syntax*/
+    /** Returns true if raster calculator expression has valid syntax*/
     bool expressionValid() const;
-    /**Returns true if output file directory exists*/
+    /** Returns true if output file directory exists*/
     bool filePathValid() const;
 
     static QString quoteBandEntry( const QString& layerName );
 
-    /**Stores relation between driver name and extension*/
+    /** Stores relation between driver name and extension*/
     QMap<QString, QString> mDriverExtensionMap;
 
     QList<QgsRasterCalculatorEntry> mAvailableRasterBands;

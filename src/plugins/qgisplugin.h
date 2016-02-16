@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*!  QGIS - Plugin API
+/** QGIS - Plugin API
  *
  *  \section about  About QGis Plugins
  * Plugins provide additional functionality to QGis. Plugins must
@@ -41,9 +41,9 @@ class QgisInterface;
 
 //#include "qgisplugingui.h"
 
-/*! \class QgisPlugin
+/** \class QgisPlugin
  * \brief Abstract base class from which all plugins must inherit
- *
+ * \note not available in Python bindings
  */
 class QgisPlugin
 {
@@ -52,15 +52,18 @@ class QgisPlugin
     //! Interface to gui element collection object
     //virtual QgisPluginGui *gui()=0;
     //! Element types that can be added to the interface
-    /* enum ELEMENTS {
-       MENU,
-       MENU_ITEM,
-       TOOLBAR,
-       TOOLBAR_BUTTON,
-       };
+#if 0
+    enum ELEMENTS
+    {
+      MENU,
+      MENU_ITEM,
+      TOOLBAR,
+      TOOLBAR_BUTTON,
+    };
 
-       @todo XXX this may be a hint that there should be subclasses
-       */
+    @todo XXX this may be a hint that there should be subclasses
+#endif
+
     enum PLUGINTYPE
     {
       UI = 1,                     /* user interface plug-in */
@@ -74,11 +77,11 @@ class QgisPlugin
                 QString const & category = "",
                 QString const & version = "",
                 PLUGINTYPE const & type = MAPLAYER )
-        : mName( name ),
-        mDescription( description ),
-        mCategory( category ),
-        mVersion( version ),
-        mType( type )
+        : mName( name )
+        , mDescription( description )
+        , mCategory( category )
+        , mVersion( version )
+        , mType( type )
     {}
 
     virtual ~QgisPlugin()
@@ -203,4 +206,4 @@ typedef QString icon_t();
 //! Typedef for getting the experimental status without instantiating the plugin
 typedef QString experimental_t();
 
-#endif //qgisplugin_h
+#endif // QGISPLUGIN_H

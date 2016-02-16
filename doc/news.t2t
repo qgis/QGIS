@@ -38,6 +38,149 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= What's new in Version 2.10 'Pisa'? =
+
+This is a minor release increment with the following new features:
+
+- New statistical summary dock widget.
+- Use logarithmic functions in the raster calculator.
+- New zonal statistics features.
+- New browser properties widget.
+- New browser icon.
+- PostGIS: support for Pointcloud layers.
+- PostGIS: provider side expression filters.
+- GRASS plugin/provider improvements.
+- DXF Export Improvements.
+- Virtual fields are now updatable.
+- Line edit with auto-completer for ValueRelation edit widget.
+- Improvements to DB Manager.
+- Filter chaining for relation reference widget.
+- Diagram improvements.
+- Improved geometry rotation tool.
+- New geometry engine.
+- Improved handling of potential project file overwrites.
+- Join parameters can now be edited.
+- Layers with joins can now be filtered.
+- Tweaks to label properties dialog.
+- Support for non-latin scripts for curved labels.
+- "Follow point" alignment for multiline labels.
+- Support overridden layer styles also in the composer legend.
+- Add scalebar sizing mode to fit a desired scalebar width.
+- Plugins can now create their own entries in the browser.
+- More uniform and predictable names for processing outputs.
+- Allow changing vector layer data source.
+- Implicit sharing of classes.
+- New QgsStatisticalSummary class for calculating statistics from a list of numbers.
+- Qt minimum increased to 4.8.
+- GetFeature without geometry.
+- Support for tolerance parameter in WMS GetFeatureInfo requests.
+- Data defined properties for font marker.
+- Size scale and rotation have been removed from the advanced menu.
+- Match categories to existing styles.
+- New option for preventing the automatic clipping of features to the map extent.
+- Size, rotation and stroke-width expressions at the symbollist level.
+- Live layer effects for layers and symbol layers.
+- Visualise and modify the graduated renderer using a histogram.
+- Vary symbol sizes using the graduated renderer.
+- User interface improvements.
+-
+
+= What's new in Version 2.8 'Wien'? =
+
+This is a minor release increment with the following feature:
+- QGIS 2.8 is the basis for a long term release (which will be maintained for a year).
+- >1000 issues which were flagged by static analysis tools have been fixed.
+- New code commits and pull requests are now automatically tested against our testing framework.
+- More responsive QGIS Browser thanks to multithreading support.
+- Support for contextual WMS legend graphics.
+- Custom prefixes for joins.
+- Creation of memory layers is now a core feature.
+- New field calculator bar in attribute table.
+- DXF export improvements.
+- Advanced digitizing tools.
+- Improved snapping options and behaviour.
+- Better simplify tool - including support for on the fly reprojection being enabled.
+- Qt5 support (optional - default packages are still currently built against Qt4).
+- Spatial bookmark import/export.
+- Composer user interface improvements.
+- Grid overlay improvements for composer maps.
+- Raster image fill type.
+- Live heatmap renderer.
+- You can now use multiple styles per layer.
+- Rotation of map canvas is now supported.
+- Improved user interface for data defined symbology.
+- New algorithms in processing.
+- Expressions are now extendable with custom python functions.
+- Comments are now supported in expressions.
+- QGIS server improvements: better caching, layer style support, value relations,
+  DescribeLayer, python plugins.
+-
+
+
+= What's new in Version 2.6.0 'Brighton'? =
+
+This is a minor release increment with the following new features:
+
+- Improved DXF export
+- Project filename in project properties
+- Allow removing last point while measuring via del/backspace keys
+- Select related feature on the canvas from the relation reference widget
+- Editor widgets support null and other improvements
+- Optionally use just a subset of fields from the joined layer
+- Expression field (virtual fields)
+- Can toggle display of classes within graduated and categorised renderers
+- Additional expressions types and options
+- Added icon support to actions
+- Classes within graduated and categorised renderers can be toggled
+- Legend improvements such as filtering, layer management icons etc.
+- Control over hiding print composer items from prints/exports
+- Control over page printing for empty composer frames
+- New Composer Item tree panel
+- More control over appearance of composer arrow/line items
+- Data defined control of composer items
+- Composer images can be specified as remote URLS
+- Composer Table improvements (header fonts / colors, better pagination support, filter to atlas feature etc.)
+- Composer improvements
+- Improved item snapping
+- Multiple overviews for a map item
+- HTML item improvements
+- Composer map grid improvements
+- Processing now has an online collection of models and scripts
+- Processing graphical modeller completely rewritten
+- API changes for QGIS widgets
+- Enhancements of searching with GetFeatureInfo request
+- Add a precision setting for GetFeatureInfo geometry attributes
+- Better random color choice
+- Symbology UI Improvements
+- Syntax highlighting code and expression editor
+- User defined color palettes
+- New color picker dialog
+- Single select feature tool merged into select by rectangle
+- Add layer to map canvas behavior
+- Support icon sizes of 48 and 64 pixels
+- New color buttons
+- Context menu for identify tool
+-
+
+= What's new in Version 2.4.0 'Chugiak'? =
+
+This is the minor release sports a number of great new features:
+
+- Multi-threaded rendering
+- Color preview modes in composer and map canvas
+- New expression functions (bounding box related functions, wordwrap)
+- Copy, paste and drag and drop colors
+- Label features multiple times
+- Improvements to composer picture items
+- Predefined scales mode for atlas maps
+- Improved attribute tables in composer
+- General composer improvements - join and capping styles, button to zoom to main map
+- Improvements to HTML frames in composer
+- Shapeburst fill style
+- Option to shift marker line placement
+- New Inverted Polygon renderer
+-
+
 = Whats new in Version 2.2.0 'Valmiera'? =
 
 This is the minor release sports a number of great new features:
@@ -61,7 +204,7 @@ This is the minor release sports a number of great new features:
 - QGIS Server can now deliver Web Coverage Service (WCS) maps.
 - Gradients can now be used for polygon fills.
 - Classes in paletted rasters can now be labelled.
-- Colour ramps can now be inverted.
+- Color ramps can now be inverted.
 - Rules in the rule based renderer can now be copied and pasted.
 - Support for on-the-fly feature generalisation has been added.
 - For marker layers you can now define the anchor points / origin of the marker.
@@ -163,7 +306,7 @@ key new features.
       Save As...' to save any raster layer as a new layer. In the process you
       can clip, resample, and reproject the layer to a new Coordinate Reference
       System. You can also save a raster layer as a rendered image so if you for
-      example have single band raster that you have applied a colour palette to,
+      example have single band raster that you have applied a color palette to,
       you can save the rendered layer out to a georeferenced RGB layer.
 - There are many, many more new features  in QGIS 2.0 - we invite
       you to explore the software and discover them all!
@@ -188,8 +331,8 @@ key new features.
 - GPS Tracking - The GPS live tracking user interface was overhauled and many fixes and improvements were added to it.
 - Menu Re-organisation - The menus were re-organised a little - we now have separate menus for Vector and Raster and many plugins were updated to place their menus in the new Vector and Raster top level menus.
 - Offset Curves - a new digitising tool for creating offset curves was added.
-- Terrain Analysis Plugin - a new core plugin was added for doing terrain analysis - and it can make really good looking coloured relief maps.
-- Ellipse renderer - symbollayer to render ellipse shapes (and also rectangles, triangles, crosses by specifying width and height). Moreover, the symbol layer allows to set all parameters (width, height, colors, rotation, outline with) from data fields, in mm or map units
+- Terrain Analysis Plugin - a new core plugin was added for doing terrain analysis - and it can make really good looking colored relief maps.
+- Ellipse renderer - symbollayer to render ellipse shapes (and also rectangles, triangles, crosses by specifying width and height). Moreover, the symbol layer allows setting all parameters (width, height, colors, rotation, outline with) from data fields, in mm or map units
 - New scale selector with predefined scales
 - Option to add layers to selected or active group
 - Pan To Selected tool

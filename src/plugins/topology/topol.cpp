@@ -30,13 +30,12 @@
 #include "topol.h"
 #include "checkDock.h"
 
-static const char * const sIdent = "$Id: plugin.cpp 8053 2008-01-26 13:59:53Z timlinux $";
 static const QString sName = QObject::tr( "Topology Checker" );
 static const QString sDescription = QObject::tr( "A Plugin for finding topological errors in vector layers" );
 static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = ":/topology/topol.png";
+static const QString sPluginIcon = ":/topology/mActionTopologyChecker.svg";
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -52,9 +51,9 @@ static const QString sPluginIcon = ":/topology/topol.png";
 Topol::Topol( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
-    , mQActionPointer( 0 )
+    , mQActionPointer( nullptr )
 {
-  mDock = 0;
+  mDock = nullptr;
 }
 
 Topol::~Topol()
@@ -69,7 +68,7 @@ void Topol::initGui()
 {
   delete mQActionPointer;
 
-  mQActionPointer = new QAction( QIcon( ":/topology/topol.png" ), tr( "TopologyChecker" ), this );
+  mQActionPointer = new QAction( QIcon( sPluginIcon ), sName, this );
   mQActionPointer->setObjectName( "mQActionPointer" );
   //mQActionPointer = new QAction( QIcon(), tr( "Topology Checker" ), this );
   mQActionPointer->setCheckable( true );

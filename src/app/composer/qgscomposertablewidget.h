@@ -19,28 +19,29 @@
 #define QGSCOMPOSERTABLEWIDGET_H
 
 #include "ui_qgscomposertablewidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerAttributeTable;
 
-class QgsComposerTableWidget: public QWidget, private Ui::QgsComposerTableWidgetBase
+class QgsComposerTableWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerTableWidgetBase
 {
     Q_OBJECT
   public:
-    QgsComposerTableWidget( QgsComposerAttributeTable* table );
+    explicit QgsComposerTableWidget( QgsComposerAttributeTable* table );
     ~QgsComposerTableWidget();
 
   protected:
-    void showEvent( QShowEvent * event );
+    void showEvent( QShowEvent * event ) override;
 
   private:
     QgsComposerAttributeTable* mComposerTable;
 
-    /**Blocks / unblocks the signals of all GUI elements*/
+    /** Blocks / unblocks the signals of all GUI elements*/
     void blockAllSignals( bool b );
     void refreshMapComboBox();
 
   private slots:
-    void on_mLayerComboBox_currentIndexChanged( int index );
+    void on_mRefreshPushButton_clicked();
     void on_mAttributesPushButton_clicked();
     void on_mComposerMapComboBox_activated( int index );
     void on_mMaximumColumnsSpinBox_valueChanged( int i );
@@ -48,15 +49,23 @@ class QgsComposerTableWidget: public QWidget, private Ui::QgsComposerTableWidget
     void on_mGridStrokeWidthSpinBox_valueChanged( double d );
     void on_mGridColorButton_colorChanged( const QColor& newColor );
     void on_mHeaderFontPushButton_clicked();
+    void on_mHeaderFontColorButton_colorChanged( const QColor& newColor );
     void on_mContentFontPushButton_clicked();
+    void on_mContentFontColorButton_colorChanged( const QColor& newColor );
     void on_mShowGridGroupCheckBox_toggled( bool state );
     void on_mShowOnlyVisibleFeaturesCheckBox_stateChanged( int state );
+    void on_mFeatureFilterCheckBox_stateChanged( int state );
+    void on_mFeatureFilterEdit_editingFinished();
+    void on_mFeatureFilterButton_clicked();
+    void on_mHeaderHAlignmentComboBox_currentIndexChanged( int index );
+    void changeLayer( QgsMapLayer* layer );
 
-    /**Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)*/
+    /** Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)*/
     void setMaximumNumberOfFeatures( int n );
 
-    /**Sets the GUI elements to the values of mComposerTable*/
+    /** Sets the GUI elements to the values of mComposerTable*/
     void updateGuiElements();
+
 };
 
 #endif // QGSCOMPOSERTABLEWIDGET_H

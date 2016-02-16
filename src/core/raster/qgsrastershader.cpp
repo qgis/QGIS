@@ -24,7 +24,7 @@ email                : ersts@amnh.org
 
 QgsRasterShader::QgsRasterShader( double theMinimumValue, double theMaximumValue )
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
 
   mMinimumValue = theMinimumValue;
   mMaximumValue = theMaximumValue;
@@ -46,9 +46,9 @@ QgsRasterShader::~QgsRasterShader()
   @param theReturnAlpha  The alpha component of the new RGBA value
   @return True if the return values are valid otherwise false
 */
-bool QgsRasterShader::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue , int *theReturnAlpha )
+bool QgsRasterShader::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int *theReturnAlpha )
 {
-  if ( 0 != mRasterShaderFunction )
+  if ( mRasterShaderFunction )
   {
     return mRasterShaderFunction->shade( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue, theReturnAlpha );
   }
@@ -71,7 +71,7 @@ bool QgsRasterShader::shade( double theValue, int* theReturnRedValue, int* theRe
 */
 bool QgsRasterShader::shade( double theRedValue, double theGreenValue, double theBlueValue, double theAlphaValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int* theReturnAlphaValue )
 {
-  if ( 0 != mRasterShaderFunction )
+  if ( mRasterShaderFunction )
   {
     return mRasterShaderFunction->shade( theRedValue, theGreenValue, theBlueValue, theAlphaValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue, theReturnAlphaValue );
   }
@@ -86,12 +86,12 @@ bool QgsRasterShader::shade( double theRedValue, double theGreenValue, double th
 */
 void QgsRasterShader::setRasterShaderFunction( QgsRasterShaderFunction* theFunction )
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
 
   if ( mRasterShaderFunction == theFunction )
     return;
 
-  if ( 0 != theFunction )
+  if ( theFunction )
   {
     delete mRasterShaderFunction;
     mRasterShaderFunction = theFunction;
@@ -105,10 +105,10 @@ void QgsRasterShader::setRasterShaderFunction( QgsRasterShaderFunction* theFunct
 */
 void QgsRasterShader::setMaximumValue( double theValue )
 {
-  QgsDebugMsg( "Value = " + QString::number( theValue ) );
+  QgsDebugMsgLevel( "Value = " + QString::number( theValue ), 4 );
 
   mMaximumValue = theValue;
-  if ( 0 != mRasterShaderFunction )
+  if ( mRasterShaderFunction )
   {
     mRasterShaderFunction->setMaximumValue( theValue );
   }
@@ -121,10 +121,10 @@ void QgsRasterShader::setMaximumValue( double theValue )
 */
 void QgsRasterShader::setMinimumValue( double theValue )
 {
-  QgsDebugMsg( "Value = " + QString::number( theValue ) );
+  QgsDebugMsgLevel( "Value = " + QString::number( theValue ), 4 );
 
   mMinimumValue = theValue;
-  if ( 0 != mRasterShaderFunction )
+  if ( mRasterShaderFunction )
   {
     mRasterShaderFunction->setMinimumValue( theValue );
   }
@@ -178,6 +178,7 @@ void QgsRasterShader::readXML( const QDomElement& elem )
     QColor itemColor;
 
     QDomNodeList itemNodeList = colorRampShaderElem.elementsByTagName( "item" );
+    itemList.reserve( itemNodeList.size() );
     for ( int i = 0; i < itemNodeList.size(); ++i )
     {
       itemElem = itemNodeList.at( i ).toElement();

@@ -27,8 +27,8 @@
 
 QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap& importers,
                                   std::map<QString, QgsGPSDevice*>& devices,
-                                  std::vector<QgsVectorLayer*> gpxMapLayers,
-                                  QWidget* parent, Qt::WFlags fl )
+                                  const std::vector<QgsVectorLayer*>& gpxMapLayers,
+                                  QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mGPXLayers( gpxMapLayers )
     , mImporters( importers )
@@ -69,7 +69,7 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap& importers,
            this, SLOT( enableRelevantControls() ) );
   connect( leDLBasename, SIGNAL( textChanged( const QString& ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( cmbULLayer, SIGNAL( textChanged( QString ) ),
+  connect( cmbULLayer, SIGNAL( editTextChanged( const QString& ) ),
            this, SLOT( enableRelevantControls() ) );
   connect( tabWidget, SIGNAL( currentChanged( int ) ),
            this, SLOT( enableRelevantControls() ) );
@@ -116,7 +116,7 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
       int featureType = cmbDLFeatureType->currentIndex();
 
       QString fileName = leDLOutput->text();
-      if ( !fileName.toLower().endsWith( ".gpx" ) )
+      if ( !fileName.endsWith( ".gpx", Qt::CaseInsensitive ) )
       {
         fileName += ".gpx";
       }
@@ -158,7 +158,7 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
 void QgsGPSPluginGui::on_pbnDLOutput_clicked()
 {
   QSettings settings;
-  QString dir = settings.value( "/Plugin-GPS/gpxdirectory", "." ).toString();
+  QString dir = settings.value( "/Plugin-GPS/gpxdirectory", QDir::homePath() ).toString();
   QString myFileNameQString =
     QFileDialog::getSaveFileName( this,
                                   tr( "Choose a file name to save under" ),
@@ -166,7 +166,7 @@ void QgsGPSPluginGui::on_pbnDLOutput_clicked()
                                   tr( "GPS eXchange format" ) + " (*.gpx)" );
   if ( !myFileNameQString.isEmpty() )
   {
-    if ( !myFileNameQString.toLower().endsWith( ".gpx" ) )
+    if ( !myFileNameQString.endsWith( ".gpx", Qt::CaseInsensitive ) )
     {
       myFileNameQString += ".gpx";
     }
@@ -251,7 +251,7 @@ void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
 {
   QgsLogger::debug( " GPS File Importer::pbnGPXSelectFile_clicked() " );
   QSettings settings;
-  QString dir = settings.value( "/Plugin-GPS/gpxdirectory", "." ).toString();
+  QString dir = settings.value( "/Plugin-GPS/gpxdirectory", QDir::homePath() ).toString();
   QString myFileNameQString = QFileDialog::getOpenFileName(
                                 this,
                                 tr( "Select GPX file" ),
@@ -267,7 +267,7 @@ void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
 void QgsGPSPluginGui::on_pbnIMPInput_clicked()
 {
   QSettings settings;
-  QString dir = settings.value( "/Plugin-GPS/importdirectory", "." ).toString();
+  QString dir = settings.value( "/Plugin-GPS/importdirectory", QDir::homePath() ).toString();
   QString tf = mBabelFilter.split( ";;" ).first();
   QString myFileType = settings.value( "/Plugin-GPS/lastImportFilter", tf ).toString();
   QString myFileName = QFileDialog::getOpenFileName(
@@ -308,7 +308,7 @@ void QgsGPSPluginGui::on_pbnIMPInput_clicked()
 void QgsGPSPluginGui::on_pbnIMPOutput_clicked()
 {
   QSettings settings;
-  QString dir = settings.value( "/Plugin-GPS/gpxdirectory", "." ).toString();
+  QString dir = settings.value( "/Plugin-GPS/gpxdirectory", QDir::homePath() ).toString();
   QString myFileNameQString =
     QFileDialog::getSaveFileName( this,
                                   tr( "Choose a file name to save under" ),
@@ -316,7 +316,7 @@ void QgsGPSPluginGui::on_pbnIMPOutput_clicked()
                                   tr( "GPS eXchange format" ) + " (*.gpx)" );
   if ( !myFileNameQString.isEmpty() )
   {
-    if ( !myFileNameQString.toLower().endsWith( ".gpx" ) )
+    if ( !myFileNameQString.endsWith( ".gpx", Qt::CaseInsensitive ) )
     {
       myFileNameQString += ".gpx";
     }
@@ -399,7 +399,7 @@ void QgsGPSPluginGui::populateIMPBabelFormats()
 void QgsGPSPluginGui::on_pbnCONVInput_clicked()
 {
   QSettings settings;
-  QString dir = settings.value( "/Plugin-GPS/gpxdirectory", "." ).toString();
+  QString dir = settings.value( "/Plugin-GPS/gpxdirectory", QDir::homePath() ).toString();
   QString myFileNameQString = QFileDialog::getOpenFileName(
                                 this,
                                 tr( "Select GPX file" ),
@@ -415,7 +415,7 @@ void QgsGPSPluginGui::on_pbnCONVInput_clicked()
 void QgsGPSPluginGui::on_pbnCONVOutput_clicked()
 {
   QSettings settings;
-  QString dir = settings.value( "/Plugin-GPS/gpxdirectory", "." ).toString();
+  QString dir = settings.value( "/Plugin-GPS/gpxdirectory", QDir::homePath() ).toString();
   QString myFileNameQString =
     QFileDialog::getSaveFileName( this,
                                   tr( "Choose a file name to save under" ),
@@ -423,7 +423,7 @@ void QgsGPSPluginGui::on_pbnCONVOutput_clicked()
                                   tr( "GPS eXchange format" ) + " (*.gpx)" );
   if ( !myFileNameQString.isEmpty() )
   {
-    if ( !myFileNameQString.toLower().endsWith( ".gpx" ) )
+    if ( !myFileNameQString.endsWith( ".gpx", Qt::CaseInsensitive ) )
     {
       myFileNameQString += ".gpx";
     }

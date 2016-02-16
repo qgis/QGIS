@@ -12,10 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 
@@ -34,7 +33,7 @@
  */
 class TestZipLayer: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   private:
 
@@ -44,23 +43,23 @@ class TestZipLayer: public QObject
     QString mSettingsKey;
 
     // get map layer using Passthru
-    QgsMapLayer * getLayer( QString myPath, QString myName, QString myProviderKey );
-    bool testZipItemPassthru( QString myFileName, QString myProviderKey );
+    QgsMapLayer * getLayer( const QString& myPath, const QString& myName, const QString& myProviderKey );
+    bool testZipItemPassthru( const QString& myFileName, const QString& myProviderKey );
     // get map layer using QgsZipItem (only 1 child)
-    QgsMapLayer * getZipLayer( QString myPath, QString myName );
+    QgsMapLayer * getZipLayer( const QString& myPath, const QString& myName );
     // test item(s) in zip item (supply name or test all)
-    bool testZipItem( QString myFileName, QString myChildName = "", QString myDriverName = "" );
+    bool testZipItem( const QString& myFileName, const QString& myChildName = "", const QString& myDriverName = "" );
     // get layer transparency to test for .qml loading
-    int getLayerTransparency( QString myFileName, QString myProviderKey, QString myScanZipSetting = "basic" );
-    bool testZipItemTransparency( QString myFileName, QString myProviderKey, int myTarget );
+    int getLayerTransparency( const QString& myFileName, const QString& myProviderKey, const QString& myScanZipSetting = "basic" );
+    bool testZipItemTransparency( const QString& myFileName, const QString& myProviderKey, int myTarget );
 
   private slots:
 
     // init / cleanup
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     // tests
     // test for .zip and .gz files using all options
@@ -95,32 +94,33 @@ class TestZipLayer: public QObject
 };
 
 
-QgsMapLayer *TestZipLayer::getLayer( QString myPath, QString myName, QString myProviderKey )
+QgsMapLayer *TestZipLayer::getLayer( const QString& myPath, const QString& myName, const QString& myProviderKey )
 {
-  if ( myName == "" )
+  QString fullName = myName;
+  if ( fullName == "" )
   {
     QFileInfo myFileInfo( myPath );
-    myName = myFileInfo.completeBaseName();
+    fullName = myFileInfo.completeBaseName();
   }
-  QgsMapLayer *myLayer = NULL;
+  QgsMapLayer *myLayer = nullptr;
 
   if ( myProviderKey == "ogr" )
   {
-    myLayer = new QgsVectorLayer( myPath, myName, "ogr" );
+    myLayer = new QgsVectorLayer( myPath, fullName, "ogr" );
   }
   else if ( myProviderKey == "gdal" )
   {
-    myLayer = new QgsRasterLayer( myPath, myName, "gdal" );
+    myLayer = new QgsRasterLayer( myPath, fullName, QString( "gdal" ) );
   }
-  // item should not have other provider key, but if it does will return NULL
 
+  // item should not have other provider key, but if it does will return nullptr
   return myLayer;
 }
 
-QgsMapLayer *TestZipLayer::getZipLayer( QString myPath, QString myName )
+QgsMapLayer *TestZipLayer::getZipLayer( const QString& myPath, const QString& myName )
 {
-  QgsMapLayer *myLayer = NULL;
-  QgsDirectoryItem *dirItem = new QgsDirectoryItem( NULL, "/", "" );
+  QgsMapLayer *myLayer = nullptr;
+  QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, "/", "" );
   QgsDataItem* myItem = QgsZipItem::itemFromPath( dirItem, myPath, myName );
   if ( myItem )
   {
@@ -128,11 +128,12 @@ QgsMapLayer *TestZipLayer::getZipLayer( QString myPath, QString myName )
     if ( layerItem )
       myLayer = getLayer( layerItem->path(), layerItem->name(), layerItem->providerKey() );
   }
+  delete myItem;
   delete dirItem;
   return myLayer;
 }
 
-bool TestZipLayer::testZipItemPassthru( QString myFileName, QString myProviderKey )
+bool TestZipLayer::testZipItemPassthru( const QString& myFileName, const QString& myProviderKey )
 {
   QgsMapLayer * myLayer = getLayer( myFileName, "", myProviderKey );
   bool ok = myLayer && myLayer->isValid();
@@ -141,31 +142,40 @@ bool TestZipLayer::testZipItemPassthru( QString myFileName, QString myProviderKe
   return ok;
 }
 
-bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString myProviderName )
+bool TestZipLayer::testZipItem( const QString& myFileName, const QString& myChildName, const QString& myProviderName )
 {
   QgsDebugMsg( QString( "\n=======================================\nfile = %1 name = %2 provider = %3"
-                      ).arg( myFileName ).arg( myChildName ).arg( myProviderName ) );
+                      ).arg( myFileName, myChildName, myProviderName ) );
   QFileInfo myFileInfo( myFileName );
-  QgsZipItem *myZipItem = new QgsZipItem( NULL, myFileInfo.fileName(), myFileName );
+  QgsZipItem *myZipItem = new QgsZipItem( nullptr, myFileInfo.fileName(), myFileName );
   myZipItem->populate();
+  // wait until populated in separate thread
+  QTime time;
+  time.start();
+  while ( myZipItem->state() != QgsDataItem::Populated && time.elapsed() < 5000 )
+  {
+    QTest::qSleep( 100 );
+    QCoreApplication::processEvents();
+  }
+  QgsDebugMsg( QString( "time.elapsed() = %1 ms" ).arg( time.elapsed() ) );
   bool ok = false;
-  QString driverName;
+
   QVector<QgsDataItem*> myChildren = myZipItem->children();
 
-  if ( myChildren.size() > 0 )
+  QgsDebugMsg( QString( "has %1 items" ).arg( myChildren.size() ) );
+  if ( !myChildren.isEmpty() )
   {
-    QgsDebugMsg( QString( "has %1 items" ).arg( myChildren.size() ) );
-    foreach ( QgsDataItem* item, myChildren )
+    Q_FOREACH ( QgsDataItem* item, myChildren )
     {
       QgsDebugMsg( QString( "child name=%1" ).arg( item->name() ) );
       QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem*>( item );
       if ( layerItem )
       {
-        QgsDebugMsg( QString( "child name=%1 provider=%2 path=%3" ).arg( layerItem->name() ).arg( layerItem->providerKey() ).arg( layerItem->path() ) );
+        QgsDebugMsg( QString( "child name=%1 provider=%2 path=%3" ).arg( layerItem->name(), layerItem->providerKey(), layerItem->path() ) );
         if ( myChildName == "" || myChildName == item->name() )
         {
           QgsMapLayer* layer = getLayer( layerItem->path(), layerItem->name(), layerItem->providerKey() );
-          if ( layer != NULL )
+          if ( layer )
           {
             // we got a layer, check if it is valid and exit
             // if no child name given in argument, then pass to next one (unless current child is invalid)
@@ -190,7 +200,7 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
                 if ( ! ok )
                 {
                   QWARN( QString( "Layer %1 opened by provider %2, expecting %3"
-                                ).arg( layerItem->path() ).arg( layerItem->providerKey() ).arg( myProviderName ).toLocal8Bit().data() );
+                                ).arg( layerItem->path(), layerItem->providerKey(), myProviderName ).toLocal8Bit().data() );
                 }
               }
               break;
@@ -205,7 +215,7 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
       }
       else
       {
-        QWARN( QString( "Invalid layer %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
+        QWARN( QString( "Invalid layer %1" ).arg( layerItem ? layerItem->path() : "(null)" ).toLocal8Bit().data() );
         break;
       }
     }
@@ -214,7 +224,7 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
   return ok;
 }
 
-int TestZipLayer::getLayerTransparency( QString myFileName, QString myProviderKey, QString myScanZipSetting )
+int TestZipLayer::getLayerTransparency( const QString& myFileName, const QString& myProviderKey, const QString& myScanZipSetting )
 {
   int myTransparency = -1;
   QSettings settings;
@@ -222,7 +232,7 @@ int TestZipLayer::getLayerTransparency( QString myFileName, QString myProviderKe
   if ( myScanZipSetting != settings.value( mSettingsKey ).toString() )
     return myTransparency;
 
-  QgsMapLayer * myLayer = NULL;
+  QgsMapLayer * myLayer = nullptr;
   if ( myFileName.endsWith( ".gz", Qt::CaseInsensitive ) )
     myLayer = getLayer( myFileName, "", myProviderKey );
   else
@@ -240,16 +250,16 @@ int TestZipLayer::getLayerTransparency( QString myFileName, QString myProviderKe
     }
   }
   else
-    QWARN( QString( "Could not open filename %1 using %2 provider" ).arg( myFileName ).arg( myProviderKey ).toLocal8Bit().data() );
+    QWARN( QString( "Could not open filename %1 using %2 provider" ).arg( myFileName, myProviderKey ).toLocal8Bit().data() );
   if ( myLayer )
     delete myLayer;
   return myTransparency;
 }
 
-bool TestZipLayer::testZipItemTransparency( QString myFileName, QString myProviderKey, int myTarget )
+bool TestZipLayer::testZipItemTransparency( const QString& myFileName, const QString& myProviderKey, int myTarget )
 {
   int myTransparency;
-  foreach ( QString s, mScanZipSettings )
+  Q_FOREACH ( const QString& s, mScanZipSettings )
   {
     myTransparency = getLayerTransparency( myFileName, myProviderKey, s );
     if ( myTransparency != myTarget )
@@ -275,8 +285,8 @@ void TestZipLayer::initTestCase()
 
   // save data dir
   QFile::remove( QDir::tempPath() + "/testzip.zip" );
-  QVERIFY( QFile::copy( QString( TEST_DATA_DIR ) + QDir::separator() + "zip" + QDir::separator() + "testzip.zip", QDir::tempPath() + "/testzip.zip" ) );
-  mDataDir = QString( TEST_DATA_DIR ) + QDir::separator() + "zip" + QDir::separator();
+  QVERIFY( QFile::copy( QString( TEST_DATA_DIR ) + "/zip/" + "testzip.zip", QDir::tempPath() + "/testzip.zip" ) );
+  mDataDir = QString( TEST_DATA_DIR ) + "/zip/";
   // Set up the QSettings environment
   QCoreApplication::setOrganizationName( "QGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );
@@ -291,6 +301,8 @@ void TestZipLayer::initTestCase()
 
 void TestZipLayer::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
+
   // restore zipSetting
   QSettings settings;
   settings.setValue( mSettingsKey, mScanZipSetting );
@@ -305,7 +317,7 @@ void TestZipLayer::testPassthruVectorZip()
   myFileName = "/vsizip/" + myFileName + "/points.shp";
 #endif
   QgsDebugMsg( "FILE: " + QString( myFileName ) );
-  foreach ( QString s, mScanZipSettings )
+  Q_FOREACH ( const QString& s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -320,7 +332,7 @@ void TestZipLayer::testPassthruVectorTar()
 #endif
   QSettings settings;
   QString myFileName = mDataDir + "points2.tar";
-  foreach ( QString s, mScanZipSettings )
+  Q_FOREACH ( const QString& s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -334,7 +346,7 @@ void TestZipLayer::testPassthruVectorGzip()
   QSKIP( "This test requires GDAL >= 1.7", SkipSingle );
 #endif
   QSettings settings;
-  foreach ( QString s, mScanZipSettings )
+  Q_FOREACH ( const QString& s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -345,7 +357,7 @@ void TestZipLayer::testPassthruVectorGzip()
 void TestZipLayer::testPassthruRasterZip()
 {
   QSettings settings;
-  foreach ( QString s, mScanZipSettings )
+  Q_FOREACH ( const QString& s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -359,7 +371,7 @@ void TestZipLayer::testPassthruRasterTar()
   QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
 #endif
   QSettings settings;
-  foreach ( QString s, mScanZipSettings )
+  Q_FOREACH ( const QString& s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -370,7 +382,7 @@ void TestZipLayer::testPassthruRasterTar()
 void TestZipLayer::testPassthruRasterGzip()
 {
   QSettings settings;
-  foreach ( QString s, mScanZipSettings )
+  Q_FOREACH ( const QString& s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -381,7 +393,7 @@ void TestZipLayer::testPassthruRasterGzip()
 void TestZipLayer::testZipItemRaster()
 {
   QSettings settings;
-  foreach ( QString s, mScanZipSettings )
+  Q_FOREACH ( const QString& s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -395,7 +407,7 @@ void TestZipLayer::testTarItemRaster()
   QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
 #endif
   QSettings settings;
-  foreach ( QString s, mScanZipSettings )
+  Q_FOREACH ( const QString& s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -406,7 +418,7 @@ void TestZipLayer::testTarItemRaster()
 void TestZipLayer::testZipItemVector()
 {
   QSettings settings;
-  foreach ( QString s, mScanZipSettings )
+  Q_FOREACH ( const QString& s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -420,7 +432,7 @@ void TestZipLayer::testTarItemVector()
   QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
 #endif
   QSettings settings;
-  foreach ( QString s, mScanZipSettings )
+  Q_FOREACH ( const QString& s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -498,7 +510,7 @@ void TestZipLayer::testGzipItemRasterTransparency()
 void TestZipLayer::testZipItemSubfolder()
 {
   QSettings settings;
-  foreach ( QString s, mScanZipSettings )
+  Q_FOREACH ( const QString& s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -512,7 +524,7 @@ void TestZipLayer::testTarItemSubfolder()
   QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
 #endif
   QSettings settings;
-  foreach ( QString s, mScanZipSettings )
+  Q_FOREACH ( const QString& s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -527,7 +539,7 @@ void TestZipLayer::testZipItemVRT()
   QSKIP( "This test requires GDAL >= 1.7", SkipSingle );
 #endif
   QSettings settings;
-  foreach ( QString s, mScanZipSettings )
+  Q_FOREACH ( const QString& s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
@@ -538,4 +550,4 @@ void TestZipLayer::testZipItemVRT()
 }
 
 QTEST_MAIN( TestZipLayer )
-#include "moc_testziplayer.cxx"
+#include "testziplayer.moc"

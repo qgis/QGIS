@@ -20,7 +20,10 @@
 
 #include "ui_qgssymbolv2selectordialogbase.h"
 
+#include "qgsdatadefined.h"
+
 #include <QStandardItemModel>
+#include <QScopedPointer>
 
 class QgsStyleV2;
 class QgsSymbolV2;
@@ -31,20 +34,81 @@ class QMenu;
 class QWidget;
 
 class SymbolLayerItem;
+class QgsMarkerSymbolV2;
+class QgsLineSymbolV2;
+class QgsMarkerSymbolLayerV2;
+class QgsLineSymbolLayerV2;
+
+class QgsMapCanvas;
+
+/// @cond PRIVATE
+
+class DataDefinedRestorer: public QObject
+{
+    Q_OBJECT
+  public:
+    DataDefinedRestorer( QgsSymbolV2* symbol, const QgsSymbolLayerV2* symbolLayer );
+
+  public slots:
+    void restore();
+
+  private:
+    QgsMarkerSymbolV2* mMarker;
+    const QgsMarkerSymbolLayerV2* mMarkerSymbolLayer;
+    double mSize;
+    double mAngle;
+    QPointF mMarkerOffset;
+    QgsDataDefined mDDSize;
+    QgsDataDefined mDDAngle;
+
+    QgsLineSymbolV2* mLine;
+    const QgsLineSymbolLayerV2* mLineSymbolLayer;
+    double mWidth;
+    double mLineOffset;
+    QgsDataDefined mDDWidth;
+
+    void save();
+};
+///@endcond
 
 class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymbolV2SelectorDialogBase
 {
     Q_OBJECT
 
   public:
-    QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = 0, bool embedded = false );
+    QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = nullptr, bool embedded = false );
+    ~QgsSymbolV2SelectorDialog();
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu* advancedMenu();
 
+    /** Sets the optional expression context used for the widget. This expression context is used for
+     * evaluating data defined symbol properties and for populating based expression widgets in
+     * the layer widget.
+     * @param context expression context pointer. Ownership is transferred to the dialog.
+     * @note added in QGIS 2.12
+     * @see expressionContext()
+     */
+    void setExpressionContext( QgsExpressionContext* context );
+
+    /** Returns the expression context used for the dialog, if set. This expression context is used for
+     * evaluating data defined symbol properties and for populating based expression widgets in
+     * the dialog.
+     * @note added in QGIS 2.12
+     * @see setExpressionContext()
+     */
+    QgsExpressionContext* expressionContext() const { return mPresetExpressionContext.data(); }
+
+    /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @note added in QGIS 2.12
+     */
+    void setMapCanvas( QgsMapCanvas* canvas );
+
   protected:
     //! Reimplements dialog keyPress event so we can ignore it
-    void keyPressEvent( QKeyEvent * event );
+    void keyPressEvent( QKeyEvent * event ) override;
 
     void loadSymbol();
     //! @note not available in python bindings
@@ -74,6 +138,12 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
 
     void lockLayer();
 
+    Q_DECL_DEPRECATED void saveSymbol();
+
+    //! Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
+    //! @note added in QGIS 2.14
+    void duplicateLayer();
+
     void layerChanged();
 
     void updateLayerPreview();
@@ -94,6 +164,12 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
 
     QStandardItemModel* model;
     QWidget *mPresentWidget;
+
+  private:
+    QScopedPointer<DataDefinedRestorer> mDataDefineRestorer;
+    QScopedPointer< QgsExpressionContext > mPresetExpressionContext;
+
+    QgsMapCanvas* mMapCanvas;
 };
 
 #endif

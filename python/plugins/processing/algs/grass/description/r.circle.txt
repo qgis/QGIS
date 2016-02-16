@@ -1,0 +1,9 @@
+r.circle
+Creates a raster map containing concentric rings around a given point.
+Raster (r.*)
+ParameterString|coordinate|The coordinate of the center (east,north)|0,0
+ParameterNumber|min|Minimum radius for ring/circle map (in meters)|None|None|10
+ParameterNumber|max|Maximum radius for ring/circle map (in meters)|None|None|20
+ParameterString|mult|Data value multiplier|1
+ParameterBoolean|-b|Generate binary raster map|False
+OutputRaster|output|Circles

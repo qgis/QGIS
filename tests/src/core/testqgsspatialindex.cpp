@@ -13,19 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
 
+#include <qgsapplication.h>
 #include <qgsgeometry.h>
 #include <qgsspatialindex.h>
-
-
-#if QT_VERSION < 0x40701
-// See http://hub.qgis.org/issues/4284
-Q_DECLARE_METATYPE( QVariant )
-#endif
+#include <qgsvectordataprovider.h>
+#include <qgsvectorlayer.h>
 
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {
@@ -58,10 +54,20 @@ class TestQgsSpatialIndex : public QObject
 
   private slots:
 
+    void initTestCase()
+    {
+      QgsApplication::init();
+      QgsApplication::initQgis();
+    }
+    void cleanupTestCase()
+    {
+      QgsApplication::exitQgis();
+    }
+
     void testQuery()
     {
       QgsSpatialIndex index;
-      foreach ( const QgsFeature& f, _pointFeatures() )
+      Q_FOREACH ( const QgsFeature& f, _pointFeatures() )
         index.insertFeature( f );
 
       QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 0, 0, 10, 10 ) );
@@ -77,7 +83,7 @@ class TestQgsSpatialIndex : public QObject
     void testCopy()
     {
       QgsSpatialIndex* index = new QgsSpatialIndex;
-      foreach ( const QgsFeature& f, _pointFeatures() )
+      Q_FOREACH ( const QgsFeature& f, _pointFeatures() )
         index->insertFeature( f );
 
       // create copy of the index
@@ -96,7 +102,7 @@ class TestQgsSpatialIndex : public QObject
       QVERIFY( indexCopy.refs() == 2 );
 
       // do a modification
-      QgsFeature f2( _pointFeatures()[1] );
+      QgsFeature f2( _pointFeatures().at( 1 ) );
       indexCopy.deleteFeature( f2 );
 
       // check that the index is not shared anymore
@@ -132,10 +138,71 @@ class TestQgsSpatialIndex : public QObject
       }
     }
 
+    void benchmarkBulkLoad()
+    {
+      QgsVectorLayer* vl = new QgsVectorLayer( "Point", "x", "memory" );
+      for ( int i = 0; i < 100; ++i )
+      {
+        QgsFeatureList flist;
+        for ( int k = 0; k < 500; ++k )
+        {
+          QgsFeature f( i*1000 + k );
+          f.setGeometry( QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) ) );
+          flist << f;
+        }
+        vl->dataProvider()->addFeatures( flist );
+      }
+
+      QTime t;
+      QgsSpatialIndex* indexBulk;
+      QgsSpatialIndex* indexInsert;
+
+      t.start();
+      {
+        QgsFeature f;
+        QgsFeatureIterator fi = vl->getFeatures();
+        while ( fi.nextFeature( f ) )
+          ;
+      }
+      qDebug( "iter only: %d ms", t.elapsed() );
+
+      t.start();
+      {
+        QgsFeatureIterator fi = vl->getFeatures();
+        indexBulk = new QgsSpatialIndex( fi );
+      }
+      qDebug( "bulk load: %d ms", t.elapsed() );
+
+      t.start();
+      {
+        QgsFeatureIterator fi = vl->getFeatures();
+        QgsFeature f;
+        indexInsert = new QgsSpatialIndex;
+        while ( fi.nextFeature( f ) )
+          indexInsert->insertFeature( f );
+      }
+      qDebug( "insert:    %d ms", t.elapsed() );
+
+      // test whether a query will give us the same results
+      QgsRectangle rect( 4.9, 4.9, 5.1, 5.1 );
+      QList<QgsFeatureId> resBulk = indexBulk->intersects( rect );
+      QList<QgsFeatureId> resInsert = indexInsert->intersects( rect );
+
+      QCOMPARE( resBulk.count(), 500 );
+      QCOMPARE( resInsert.count(), 500 );
+      // the trees are built differently so they will give also different order of fids
+      qSort( resBulk );
+      qSort( resInsert );
+      QCOMPARE( resBulk, resInsert );
+
+      delete indexBulk;
+      delete indexInsert;
+    }
+
 };
 
 QTEST_MAIN( TestQgsSpatialIndex )
 
-#include "moc_testqgsspatialindex.cxx"
+#include "testqgsspatialindex.moc"
 
 

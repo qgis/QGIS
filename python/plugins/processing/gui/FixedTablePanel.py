@@ -25,37 +25,42 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtGui
+import os
+
+from PyQt4 import uic
+
 from processing.gui.FixedTableDialog import FixedTableDialog
 
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
-class FixedTablePanel(QtGui.QWidget):
+
+class FixedTablePanel(BASE, WIDGET):
 
     def __init__(self, param, parent=None):
         super(FixedTablePanel, self).__init__(parent)
+        self.setupUi(self)
+
+        self.leText.setEnabled(False)
+
         self.param = param
         self.table = []
         for i in range(param.numRows):
             self.table.append(list())
             for j in range(len(param.cols)):
                 self.table[i].append('0')
-        self.horizontalLayout = QtGui.QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.label = QtGui.QLabel()
-        self.label.setText('Fixed table ' + str(len(param.cols)) + ' X '
-                           + str(param.numRows))
-        self.label.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                 QtGui.QSizePolicy.Expanding)
-        self.horizontalLayout.addWidget(self.label)
-        self.pushButton = QtGui.QPushButton()
-        self.pushButton.setText('...')
-        self.pushButton.clicked.connect(self.showFixedTableDialog)
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.setLayout(self.horizontalLayout)
+
+        self.leText.setText(
+            self.tr('Fixed table %dx%d' % (param.numRows, len(param.cols))))
+
+        self.btnSelect.clicked.connect(self.showFixedTableDialog)
 
     def showFixedTableDialog(self):
         dlg = FixedTableDialog(self.param, self.table)
         dlg.exec_()
         if dlg.rettable is not None:
             self.table = dlg.rettable
+
+        self.leText.setText(self.tr('Fixed table %dx%d' % (
+            len(self.table), len(self.param.cols))))

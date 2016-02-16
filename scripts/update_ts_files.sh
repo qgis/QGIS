@@ -4,7 +4,7 @@
 #    ---------------------
 #    Date                 : July 2007
 #    Copyright            : (C) 2007 by Tim Sutton
-#    Email                : tim dot linfiniti at com
+#    Email                : tim at linfiniti dot com
 ###########################################################################
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -20,6 +20,8 @@
 # 3. remove the .pro
 # Note the .pro file must NOT be named qgis.pro as this
 # name is reserved for the Windows qmake project file
+
+echo "deprecated - use push_ts.sh and pull_ts.sh" >&2
 
 set -e
 
@@ -71,8 +73,8 @@ else
 	LUPDATE=lupdate
 fi
 
-exclude=
-opts=
+exclude="--exclude i18n/qgis_en.ts"
+opts="-locations none"
 fast=
 while (( $# > 0 )); do
   arg=$1
@@ -98,9 +100,9 @@ done
 
 trap cleanup EXIT
 
-if [ -n "$exclude" -o -n "$add" ]; then
+if [ "$exclude" != "--exclude i18n/qgis_en.ts" -o -n "$add" ]; then
   echo Saving excluded translations
-  tar $fast -cf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude
+  tar $fast -cf i18n/qgis_ts.tar i18n/qgis_*.ts $exclude
 fi
 
 echo Updating python translations
@@ -134,7 +136,7 @@ if [ -n "$add" ]; then
 	done
 fi
 echo Updating translations
-$LUPDATE$opts -verbose qgis_ts.pro
+$LUPDATE $opts -verbose qgis_ts.pro
 
 if [ -z "$fast" ]; then
 	echo Updating TRANSLATORS File

@@ -154,7 +154,7 @@ void QgsOSMDownloadDialog::onCurrentLayerChanged( int index )
 void QgsOSMDownloadDialog::onBrowseClicked()
 {
   QSettings settings;
-  QString lastDir = settings.value( "/osm/lastDir" ).toString();
+  QString lastDir = settings.value( "/osm/lastDir", QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getSaveFileName( this, QString(), lastDir, tr( "OpenStreetMap files (*.osm)" ) );
   if ( fileName.isNull() )

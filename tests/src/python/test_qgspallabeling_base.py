@@ -1,24 +1,23 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsPalLabeling: base suite setup
 
-From build dir: ctest -R PyQgsPalLabelingBase -V
-Set the following env variables when manually running tests:
-  PAL_SUITE to run specific tests (define in __main__)
-  PAL_VERBOSE to output individual test summary
-  PAL_CONTROL_IMAGE to trigger building of new control images
-  PAL_REPORT to open any failed image check reports in web browser
+From build dir, run: ctest -R PyQgsPalLabelingBase -V
+
+See <qgis-src-dir>/tests/testdata/labeling/README.rst for description.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+
 __author__ = 'Larry Shaffer'
 __date__ = '07/09/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis
 import os
 import sys
 import datetime
@@ -27,34 +26,39 @@ import shutil
 import StringIO
 import tempfile
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QSize, qDebug
+from PyQt4.QtGui import QFont, QColor
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDataSourceURI,
     QgsMapLayerRegistry,
-    QgsMapRenderer,
     QgsMapSettings,
     QgsPalLabeling,
     QgsPalLayerSettings,
     QgsProviderRegistry,
     QgsVectorLayer,
-    QgsRenderChecker
+    QgsMultiRenderChecker
 )
 
+from qgis.testing import (
+    start_app,
+    unittest
+)
+
+from qgis.testing.mocked import get_iface
+
 from utilities import (
-    getQgisTestApp,
-    TestCase,
-    unittest,
     unitTestDataPath,
+    getTempfilePath,
+    renderMapToImage,
     loadTestFonts,
     getTestFont,
     openInBrowserTab
 )
 
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 FONTSLOADED = loadTestFonts()
 
 PALREPORT = 'PAL_REPORT' in os.environ
@@ -62,7 +66,7 @@ PALREPORTS = {}
 
 
 # noinspection PyPep8Naming,PyShadowingNames
-class TestQgsPalLabeling(TestCase):
+class TestQgsPalLabeling(unittest.TestCase):
 
     _TestDataDir = unitTestDataPath()
     _PalDataDir = os.path.join(_TestDataDir, 'labeling')
@@ -87,9 +91,9 @@ class TestQgsPalLabeling(TestCase):
     def setUpClass(cls):
         """Run before all tests"""
 
-        # qgis instances
-        cls._QgisApp, cls._Canvas, cls._Iface, cls._Parent = \
-            QGISAPP, CANVAS, IFACE, PARENT
+        # qgis iface
+        cls._Iface = get_iface()
+        cls._Canvas = cls._Iface.mapCanvas()
 
         # verify that spatialite provider is available
         msg = '\nSpatialite provider not found, SKIPPING TEST SUITE'
@@ -106,6 +110,8 @@ class TestQgsPalLabeling(TestCase):
         cls._TestMapSettings = None
         cls._Mismatch = 0
         cls._Mismatches = dict()
+        cls._ColorTol = 0
+        cls._ColorTols = dict()
 
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
         # noinspection PyArgumentList
@@ -143,8 +149,8 @@ class TestQgsPalLabeling(TestCase):
 
     @classmethod
     def removeAllLayers(cls):
-        cls._MapRegistry.removeAllMapLayers()
         cls._MapSettings.setLayers([])
+        cls._MapRegistry.removeAllMapLayers()
 
     @classmethod
     def removeMapLayer(cls, layer):
@@ -153,9 +159,8 @@ class TestQgsPalLabeling(TestCase):
         lyr_id = layer.id()
         cls._MapRegistry.removeMapLayer(lyr_id)
         ms_layers = cls._MapSettings.layers()
-        """:type: QStringList"""
-        if ms_layers.contains(lyr_id):
-            ms_layers.removeAt(ms_layers.indexOf(lyr_id))
+        if lyr_id in ms_layers:
+            ms_layers.remove(lyr_id)
             cls._MapSettings.setLayers(ms_layers)
 
     @classmethod
@@ -206,9 +211,11 @@ class TestQgsPalLabeling(TestCase):
         # default for labeling test data: WGS 84 / UTM zone 13N
         crs.createFromSrid(32613)
         ms.setBackgroundColor(QColor(152, 219, 249))
-        ms.setOutputSize(QSize(600, 400))
+        ms.setOutputSize(QSize(420, 280))
         ms.setOutputDpi(72)
-        ms.setFlag(QgsMapSettings.Antialiasing)
+        ms.setFlag(QgsMapSettings.Antialiasing, True)
+        ms.setFlag(QgsMapSettings.UseAdvancedEffects, False)
+        ms.setFlag(QgsMapSettings.ForceVectorOutput, False)  # no caching?
         ms.setDestinationCrs(crs)
         ms.setCrsTransformEnabled(False)
         ms.setMapUnits(crs.mapUnits())  # meters
@@ -217,7 +224,7 @@ class TestQgsPalLabeling(TestCase):
 
     def cloneMapSettings(self, oms):
         """
-        :param oms: QgsMapSettings
+        :param QgsMapSettings oms: Other QgsMapSettings
         :rtype: QgsMapSettings
         """
         ms = QgsMapSettings()
@@ -229,6 +236,7 @@ class TestQgsPalLabeling(TestCase):
         ms.setCrsTransformEnabled(oms.hasCrsTransformEnabled())
         ms.setMapUnits(oms.mapUnits())
         ms.setExtent(oms.extent())
+        ms.setOutputImageFormat(oms.outputImageFormat())
 
         ms.setLayers(oms.layers())
         return ms
@@ -256,7 +264,7 @@ class TestQgsPalLabeling(TestCase):
         lyr.enabled = True
         lyr.fieldName = 'text'  # default in test data sources
         font = self.getTestFont()
-        font.setPointSize(48)
+        font.setPointSize(32)
         lyr.textFont = font
         lyr.textNamedStyle = 'Roman'
         return lyr
@@ -292,107 +300,74 @@ class TestQgsPalLabeling(TestCase):
                 or 'Vs' in self._TestGroup):
             return
         imgpath = self.controlImagePath()
-        # print "saveControlImage: {0}".format(imgpath)
         testdir = os.path.dirname(imgpath)
         if not os.path.exists(testdir):
             os.makedirs(testdir)
         imgbasepath = \
             os.path.join(testdir,
                          os.path.splitext(os.path.basename(imgpath))[0])
+        # remove any existing control images
         for f in glob.glob(imgbasepath + '.*'):
             if os.path.exists(f):
                 os.remove(f)
-        if tmpimg and os.path.exists(tmpimg):
-            shutil.copyfile(tmpimg, imgpath)
-        else:
-            print '\nsaveControlImage.render(): entered'
-            print '{0}.{1}'.format(self._TestGroup, self._TestFunction)
+        qDebug('Control image for {0}.{1}'.format(self._TestGroup,
+                                                  self._TestFunction))
 
+        if not tmpimg:
+            # TODO: this can be deprecated, when per-base-test-class rendering
+            #       in checkTest() is verified OK for all classes
+            qDebug('Rendering control to: {0}'.format(imgpath))
             ms = self._MapSettings  # class settings
             """:type: QgsMapSettings"""
+            settings_type = 'Class'
             if self._TestMapSettings is not None:
                 ms = self._TestMapSettings  # per test settings
-            print 'self._MapSettings...'
-            print 'ms.layers(): {0}'.format(
-                [self._MapRegistry.mapLayer(i).name() for i in ms.layers()]
-            )
-            print 'ms.outputSize(): {0} x {1}'.format(
-                ms.outputSize().width(), ms.outputSize().height())
-            print 'ms.outputDpi(): {0}'.format(ms.outputDpi())
-            print 'ms.mapUnits(): {0}'.format(ms.mapUnits())
-            print 'ms.extent(): {0}'.format(ms.extent().toString())
-            print 'ms.hasCrsTransformEnabled(): {0}'.format(
-                ms.hasCrsTransformEnabled())
-            print 'ms.destinationCrs(): {0}'.format(
-                ms.destinationCrs().authid())
+                settings_type = 'Test'
+            qDebug('MapSettings type: {0}'.format(settings_type))
 
-            # pal = QgsPalLabeling()
-            pal = self._Pal.clone()  # or custom settings are lost
-            pal.init(ms)
-            r = QgsMapRenderer()
-            r.setLabelingEngine(pal)
+            img = renderMapToImage(ms, parallel=False)
+            """:type: QImage"""
+            tmpimg = getTempfilePath('png')
+            if not img.save(tmpimg, 'png'):
+                os.unlink(tmpimg)
+                raise OSError('Control not created for: {0}'.format(imgpath))
 
-            # this seems too redundant
-            r.setOutputSize(ms.outputSize(), ms.outputDpi())
-            r.setMapUnits(ms.mapUnits())
-            r.setExtent(ms.extent())
-            r.setProjectionsEnabled(ms.hasCrsTransformEnabled())
-            r.setDestinationCrs(ms.destinationCrs())
-            r.setLayerSet(ms.layers())
+        if tmpimg and os.path.exists(tmpimg):
+            qDebug('Copying control to: {0}'.format(imgpath))
+            shutil.copyfile(tmpimg, imgpath)
+        else:
+            raise OSError('Control not copied to: {0}'.format(imgpath))
 
-            ctx = r.rendererContext()
-            ctx.setDrawEditingInformation(
-                ms.testFlag(QgsMapSettings.DrawEditingInfo))
-            ctx.setForceVectorOutput(
-                ms.testFlag(QgsMapSettings.ForceVectorOutput))
-            ctx.setUseAdvancedEffects(
-                ms.testFlag(QgsMapSettings.UseAdvancedEffects))
-
-            image = QImage(ms.outputSize(), QImage.Format_ARGB32)
-            image.fill(ms.backgroundColor().rgb())
-            image.setDotsPerMeterX(ms.outputDpi() / 25.4 * 1000)
-            image.setDotsPerMeterY(ms.outputDpi() / 25.4 * 1000)
-
-            p = QPainter(image)
-            r.render(p)
-            p.end()
-
-            if not image.save(imgpath, 'png'):
-                os.unlink(imgpath)
-
-            # delete extraneous world file (always generated)
-            # wrld_file = imgbasepath + '.PNGw'
-            # if os.path.exists(wrld_file):
-            #     os.remove(wrld_file)
-
-        if not os.path.exists(imgpath):
-            raise OSError('Control image not created: {0}'.format(imgpath))
-
-    def renderCheck(self, mismatch=0, imgpath='', grpprefix=''):
+    def renderCheck(self, mismatch=0, colortol=0, imgpath='', grpprefix=''):
         """Check rendered map canvas or existing image against control image
 
-        mismatch: number of pixels different from control, and still valid check
-        imgpath: existing image; if present, skips rendering canvas
-        grpprefix: compare test image/rendering against different test group
+        :mismatch: number of pixels different from control, and still valid
+        :colortol: maximum difference for each color component including alpha
+        :imgpath: existing image; if present, skips rendering canvas
+        :grpprefix: compare test image/rendering against different test group
         """
         if not grpprefix:
             grpprefix = self._TestGroupPrefix
-        ctl_path = self.controlImagePath(grpprefix)
-        if not os.path.exists(ctl_path):
-            raise OSError('Missing control image: {0}'.format(ctl_path))
-        chk = QgsRenderChecker()
+        chk = QgsMultiRenderChecker()
+
         chk.setControlPathPrefix('expected_' + grpprefix)
+
         chk.setControlName(self._Test)
-        chk.setMapSettings(self._MapSettings)
-        # noinspection PyUnusedLocal
-        res = False
+
         if imgpath:
-            res = chk.compareImages(self._Test, mismatch, str(imgpath))
-        else:
-            res = chk.runTest(self._Test, mismatch)
+            chk.setRenderedImage(imgpath)
+
+        ms = self._MapSettings  # class settings
+        if self._TestMapSettings is not None:
+            ms = self._TestMapSettings  # per test settings
+        chk.setMapSettings(ms)
+
+        chk.setColorTolerance(colortol)
+        # noinspection PyUnusedLocal
+        res = chk.runTest(self._Test, mismatch)
         if PALREPORT and not res:  # don't report ok checks
             testname = self._TestGroup + ' . ' + self._Test
-            PALREPORTS[testname] = str(chk.report().toLocal8Bit())
+            PALREPORTS[testname] = chk.report()
         msg = '\nRender check failed for "{0}"'.format(self._Test)
         return res, msg
 
@@ -408,6 +383,10 @@ class TestPALConfig(TestQgsPalLabeling):
         TestQgsPalLabeling.setUpClass()
         cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
 
+    @classmethod
+    def tearDownClass(cls):
+        cls.removeMapLayer(cls.layer)
+
     def setUp(self):
         """Run before each test."""
         self.configTest('pal_base', 'base')
@@ -418,7 +397,7 @@ class TestPALConfig(TestQgsPalLabeling):
 
     def test_default_pal_disabled(self):
         # Verify PAL labeling is disabled for layer by default
-        palset = self.layer.customProperty('labeling', '').toString()
+        palset = self.layer.customProperty('labeling', '')
         msg = '\nExpected: Empty string\nGot: {0}'.format(palset)
         self.assertEqual(palset, '', msg)
 
@@ -426,7 +405,7 @@ class TestPALConfig(TestQgsPalLabeling):
         # Verify default PAL settings enable PAL labeling for layer
         lyr = QgsPalLayerSettings()
         lyr.writeToLayer(self.layer)
-        palset = self.layer.customProperty('labeling', '').toString()
+        palset = self.layer.customProperty('labeling', '')
         msg = '\nExpected: Empty string\nGot: {0}'.format(palset)
         self.assertEqual(palset, 'pal', msg)
 
@@ -461,7 +440,7 @@ class TestPALConfig(TestQgsPalLabeling):
 
     def test_partials_labels_activate(self):
         pal = QgsPalLabeling()
-         # Enable partials labels
+        # Enable partials labels
         pal.setShowingPartialsLabels(True)
         self.assertTrue(pal.isShowingPartialsLabels())
 

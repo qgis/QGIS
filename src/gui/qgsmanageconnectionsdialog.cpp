@@ -24,7 +24,7 @@
 
 #include "qgsmanageconnectionsdialog.h"
 
-QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, QString fileName )
+QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString& fileName )
     : QDialog( parent )
     , mFileName( fileName )
     , mDialogMode( mode )
@@ -83,6 +83,7 @@ void QgsManageConnectionsDialog::doExportImport()
   }
 
   QStringList items;
+  items.reserve( selection.size() );
   for ( int i = 0; i < selection.size(); ++i )
   {
     items.append( selection.at( i )->text() );
@@ -90,7 +91,7 @@ void QgsManageConnectionsDialog::doExportImport()
 
   if ( mDialogMode == Export )
   {
-    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save connections" ), ".",
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save connections" ), QDir::homePath(),
                        tr( "XML files (*.xml *.XML)" ) );
     if ( fileName.isEmpty() )
     {
@@ -98,7 +99,7 @@ void QgsManageConnectionsDialog::doExportImport()
     }
 
     // ensure the user never ommited the extension from the file name
-    if ( !fileName.toLower().endsWith( ".xml" ) )
+    if ( !fileName.endsWith( ".xml", Qt::CaseInsensitive ) )
     {
       fileName += ".xml";
     }
@@ -133,8 +134,8 @@ void QgsManageConnectionsDialog::doExportImport()
     {
       QMessageBox::warning( this, tr( "Saving connections" ),
                             tr( "Cannot write file %1:\n%2." )
-                            .arg( mFileName )
-                            .arg( file.errorString() ) );
+                            .arg( mFileName,
+                                  file.errorString() ) );
       return;
     }
 
@@ -148,8 +149,8 @@ void QgsManageConnectionsDialog::doExportImport()
     {
       QMessageBox::warning( this, tr( "Loading connections" ),
                             tr( "Cannot read file %1:\n%2." )
-                            .arg( mFileName )
-                            .arg( file.errorString() ) );
+                            .arg( mFileName,
+                                  file.errorString() ) );
       return;
     }
 
@@ -243,8 +244,8 @@ bool QgsManageConnectionsDialog::populateConnections()
     {
       QMessageBox::warning( this, tr( "Loading connections" ),
                             tr( "Cannot read file %1:\n%2." )
-                            .arg( mFileName )
-                            .arg( file.errorString() ) );
+                            .arg( mFileName,
+                                  file.errorString() ) );
       return false;
     }
 
@@ -343,7 +344,7 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = "/Qgis/connections-" + service.toLower() + "/";
+    path = "/Qgis/connections-" + service.toLower() + '/';
     QDomElement el = doc.createElement( service.toLower() );
     el.setAttribute( "name", connections[ i ] );
     el.setAttribute( "url", settings.value( path + connections[ i ] + "/url", "" ).toString() );
@@ -359,7 +360,7 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
       el.setAttribute( "dpiMode", settings.value( path + connections[i] + "/dpiMode", "7" ).toInt() );
     }
 
-    path = "/Qgis/" + service.toUpper() + "/";
+    path = "/Qgis/" + service.toUpper() + '/';
     el.setAttribute( "username", settings.value( path + connections[ i ] + "/username", "" ).toString() );
     el.setAttribute( "password", settings.value( path + connections[ i ] + "/password", "" ).toString() );
     root.appendChild( el );
@@ -494,6 +495,7 @@ QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringLis
     el.setAttribute( "host", settings.value( path + "/host", "" ).toString() );
     el.setAttribute( "port", settings.value( path + "/port", "" ).toString() );
     el.setAttribute( "database", settings.value( path + "/database", "" ).toString() );
+    el.setAttribute( "dboptions", settings.value( path + "/dboptions", "" ).toString() );
     el.setAttribute( "estimatedMetadata", settings.value( path + "/estimatedMetadata", "0" ).toString() );
     el.setAttribute( "userTablesOnly", settings.value( path + "/userTablesOnly", "0" ).toString() );
     el.setAttribute( "geometryColumnsOnly", settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
@@ -585,19 +587,19 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
 
     // no dups detected or overwrite is allowed
     settings.beginGroup( "/Qgis/connections-" + service.toLower() );
-    settings.setValue( QString( "/" + connectionName + "/url" ) , child.attribute( "url" ) );
-    settings.setValue( QString( "/" + connectionName + "/ignoreGetMapURI" ), child.attribute( "ignoreGetMapURI" ) == "true" );
-    settings.setValue( QString( "/" + connectionName + "/ignoreGetFeatureInfoURI" ), child.attribute( "ignoreGetFeatureInfoURI" ) == "true" );
-    settings.setValue( QString( "/" + connectionName + "/ignoreAxisOrientation" ), child.attribute( "ignoreAxisOrientation" ) == "true" );
-    settings.setValue( QString( "/" + connectionName + "/invertAxisOrientation" ), child.attribute( "invertAxisOrientation" ) == "true" );
-    settings.setValue( QString( "/" + connectionName + "/referer" ), child.attribute( "referer" ) );
-    settings.setValue( QString( "/" + connectionName + "/smoothPixmapTransform" ), child.attribute( "smoothPixmapTransform" ) == "true" );
-    settings.setValue( QString( "/" + connectionName + "/dpiMode" ), child.attribute( "dpiMode", "7" ).toInt() );
+    settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( "url" ) );
+    settings.setValue( QString( '/' + connectionName + "/ignoreGetMapURI" ), child.attribute( "ignoreGetMapURI" ) == "true" );
+    settings.setValue( QString( '/' + connectionName + "/ignoreGetFeatureInfoURI" ), child.attribute( "ignoreGetFeatureInfoURI" ) == "true" );
+    settings.setValue( QString( '/' + connectionName + "/ignoreAxisOrientation" ), child.attribute( "ignoreAxisOrientation" ) == "true" );
+    settings.setValue( QString( '/' + connectionName + "/invertAxisOrientation" ), child.attribute( "invertAxisOrientation" ) == "true" );
+    settings.setValue( QString( '/' + connectionName + "/referer" ), child.attribute( "referer" ) );
+    settings.setValue( QString( '/' + connectionName + "/smoothPixmapTransform" ), child.attribute( "smoothPixmapTransform" ) == "true" );
+    settings.setValue( QString( '/' + connectionName + "/dpiMode" ), child.attribute( "dpiMode", "7" ).toInt() );
     settings.endGroup();
 
     if ( !child.attribute( "username" ).isEmpty() )
     {
-      settings.beginGroup( "/Qgis/" + service.toUpper() + "/" + connectionName );
+      settings.beginGroup( "/Qgis/" + service.toUpper() + '/' + connectionName );
       settings.setValue( "/username", child.attribute( "username" ) );
       settings.setValue( "/password", child.attribute( "password" ) );
       settings.endGroup();
@@ -672,7 +674,7 @@ void QgsManageConnectionsDialog::loadWFSConnections( const QDomDocument &doc, co
 
     // no dups detected or overwrite is allowed
     settings.beginGroup( "/Qgis/connections-wfs" );
-    settings.setValue( QString( "/" + connectionName + "/url" ) , child.attribute( "url" ) );
+    settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( "url" ) );
     settings.endGroup();
 
     if ( !child.attribute( "username" ).isEmpty() )
@@ -937,6 +939,7 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
     settings.setValue( "/host", child.attribute( "host" ) );
     settings.setValue( "/port", child.attribute( "port" ) );
     settings.setValue( "/database", child.attribute( "database" ) );
+    settings.setValue( "/dboptions", child.attribute( "dboptions" ) );
     settings.setValue( "/estimatedMetadata", child.attribute( "estimatedMetadata" ) );
     settings.setValue( "/userTablesOnly", child.attribute( "userTablesOnly" ) );
     settings.setValue( "/geometryColumnsOnly", child.attribute( "geometryColumnsOnly" ) );

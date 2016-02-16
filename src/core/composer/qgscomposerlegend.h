@@ -21,50 +21,117 @@
 #include "qgscomposerlegendstyle.h"
 #include "qgscomposeritem.h"
 #include "qgscomposerlegenditem.h"
+#include "qgslayertreemodel.h"
 #include "qgslegendmodel.h"
+#include "qgslegendsettings.h"
 
+class QgsLayerTreeModel;
 class QgsSymbolV2;
 class QgsComposerGroupItem;
 class QgsComposerLayerItem;
 class QgsComposerMap;
+class QgsLegendRenderer;
+
+
+/** \ingroup MapComposer
+ * Item model implementation based on layer tree model for composer legend.
+ * Overrides some functionality of QgsLayerTreeModel to better fit the needs of composer legend.
+ *
+ * @note added in 2.6
+ */
+class CORE_EXPORT QgsLegendModelV2 : public QgsLayerTreeModel
+{
+    Q_OBJECT
+
+  public:
+    QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
+
+    QVariant data( const QModelIndex& index, int role ) const override;
+
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+};
+
 
 /** \ingroup MapComposer
  * A legend that can be placed onto a map composition
  */
 class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
     QgsComposerLegend( QgsComposition* composition );
     ~QgsComposerLegend();
 
-    /** return correct graphics item type. Added in v1.7 */
-    virtual int type() const { return ComposerLegend; }
+    /** Return correct graphics item type. */
+    virtual int type() const override { return ComposerLegend; }
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
-    /**Paints the legend and calculates its size. If painter is 0, only size is calculated*/
+    /** Paints the legend and calculates its size. If painter is 0, only size is calculated*/
     QSizeF paintAndDetermineSize( QPainter* painter );
 
-    /**Sets item box to the whole content*/
+    /** Sets item box to the whole content*/
     void adjustBoxSize();
 
-    /**Returns pointer to the legend model*/
-    QgsLegendModel* model() {return &mLegendModel;}
+    /** Returns pointer to the legend model*/
+    //! @deprecated in 2.6 - use modelV2()
+    Q_DECL_DEPRECATED QgsLegendModel* model() {return &mLegendModel;}
+
+    //! @note added in 2.6
+    QgsLegendModelV2* modelV2() { return mLegendModel2; }
+
+    //! @note added in 2.6
+    void setAutoUpdateModel( bool autoUpdate );
+    //! @note added in 2.6
+    bool autoUpdateModel() const;
+
+    //! Set whether legend items should be filtered to show just the ones visible in the associated map
+    //! @note added in 2.6
+    void setLegendFilterByMapEnabled( bool enabled );
+    //! Find out whether legend items are filtered to show just the ones visible in the associated map
+    //! @note added in 2.6
+    bool legendFilterByMapEnabled() const { return mLegendFilterByMap; }
+
+    //! Update() overloading. Use it rather than update()
+    //! @note added in 2.12
+    virtual void updateItem() override;
+
+    //! When set to true, during an atlas rendering, it will filter out legend elements
+    //! where features are outside the current atlas feature.
+    //! @note added in 2.14
+    void setLegendFilterOutAtlas( bool doFilter );
+
+    //! Whether to filter out legend elements outside of the current atlas feature
+    //! @see setLegendFilterOutAtlas()
+    //! @note added in 2.14
+    bool legendFilterOutAtlas() const;
 
     //setters and getters
-    void setTitle( const QString& t ) {mTitle = t;}
-    QString title() const {return mTitle;}
+    void setTitle( const QString& t );
+    QString title() const;
+
+    /** Returns the alignment of the legend title
+     * @returns Qt::AlignmentFlag for the legend title
+     * @note added in 2.3
+     * @see setTitleAlignment
+     */
+    Qt::AlignmentFlag titleAlignment() const;
+    /** Sets the alignment of the legend title
+     * @param alignment Text alignment for drawing the legend title
+     * @note added in 2.3
+     * @see titleAlignment
+     */
+    void setTitleAlignment( Qt::AlignmentFlag alignment );
 
     /** Returns reference to modifiable style */
-    QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s ) { return mStyleMap[s]; }
+    QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s );
     /** Returns style */
-    QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const { return mStyleMap.value( s ); }
-    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle style ) { mStyleMap[s] = style; }
+    QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const;
+    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style );
 
-    QFont styleFont( QgsComposerLegendStyle::Style s ) const { return style( s ).font(); }
+    QFont styleFont( QgsComposerLegendStyle::Style s ) const;
     /** Set style font */
     void setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f );
 
@@ -72,178 +139,161 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setStyleMargin( QgsComposerLegendStyle::Style s, double margin );
     void setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin );
 
-    double boxSpace() const {return mBoxSpace;}
-    void setBoxSpace( double s ) {mBoxSpace = s;}
+    double boxSpace() const;
+    void setBoxSpace( double s );
 
-    double columnSpace() const {return mColumnSpace;}
-    void setColumnSpace( double s ) { mColumnSpace = s;}
+    double columnSpace() const;
+    void setColumnSpace( double s );
 
-    QColor fontColor() const {return mFontColor;}
-    void setFontColor( const QColor& c ) {mFontColor = c;}
+    QColor fontColor() const;
+    void setFontColor( const QColor& c );
 
-    double symbolWidth() const {return mSymbolWidth;}
-    void setSymbolWidth( double w ) {mSymbolWidth = w;}
+    double symbolWidth() const;
+    void setSymbolWidth( double w );
 
-    double symbolHeight() const {return mSymbolHeight;}
-    void setSymbolHeight( double h ) {mSymbolHeight = h;}
+    double symbolHeight() const;
+    void setSymbolHeight( double h );
 
-    double wmsLegendWidth() const {return mWmsLegendWidth;}
-    void setWmsLegendWidth( double w ) {mWmsLegendWidth = w;}
+    double wmsLegendWidth() const;
+    void setWmsLegendWidth( double w );
 
-    double wmsLegendHeight() const {return mWmsLegendHeight;}
-    void setWmsLegendHeight( double h ) {mWmsLegendHeight = h;}
+    double wmsLegendHeight() const;
+    void setWmsLegendHeight( double h );
 
-    void setWrapChar( const QString& t ) {mWrapChar = t;}
-    QString wrapChar() const {return mWrapChar;}
+    void setWrapChar( const QString& t );
+    QString wrapChar() const;
 
-    int columnCount() const { return mColumnCount; }
-    void setColumnCount( int c ) { mColumnCount = c;}
+    int columnCount() const;
+    void setColumnCount( int c );
 
-    int splitLayer() const { return mSplitLayer; }
-    void setSplitLayer( bool s ) { mSplitLayer = s;}
+    bool splitLayer() const;
+    void setSplitLayer( bool s );
 
-    int equalColumnWidth() const { return mEqualColumnWidth; }
-    void setEqualColumnWidth( bool s ) { mEqualColumnWidth = s;}
+    bool equalColumnWidth() const;
+    void setEqualColumnWidth( bool s );
+
+    /** Returns whether a border will be drawn around raster symbol items.
+     * @see setDrawRasterBorder()
+     * @see rasterBorderColor()
+     * @see rasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    bool drawRasterBorder() const;
+
+    /** Sets whether a border will be drawn around raster symbol items.
+     * @param enabled set to true to draw borders
+     * @see drawRasterBorder()
+     * @see setRasterBorderColor()
+     * @see setRasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    void setDrawRasterBorder( bool enabled );
+
+    /** Returns the border color for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @see setRasterBorderColor()
+     * @see drawRasterBorder()
+     * @see rasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    QColor rasterBorderColor() const;
+
+    /** Sets the border color for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @param color border color
+     * @see rasterBorderColor()
+     * @see setDrawRasterBorder()
+     * @see setRasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    void setRasterBorderColor( const QColor& color );
+
+    /** Returns the border width (in millimeters) for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @see setRasterBorderWidth()
+     * @see drawRasterBorder()
+     * @see rasterBorderColor()
+     * @note added in QGIS 2.12
+     */
+    double rasterBorderWidth() const;
+
+    /** Sets the border width for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @param width border width in millimeters
+     * @see rasterBorderWidth()
+     * @see setDrawRasterBorder()
+     * @see setRasterBorderColor()
+     * @note added in QGIS 2.12
+     */
+    void setRasterBorderWidth( double width );
 
     void setComposerMap( const QgsComposerMap* map );
     const QgsComposerMap* composerMap() const { return mComposerMap;}
 
-    /**Updates the model and all legend entries*/
+    /** Updates the model and all legend entries*/
     void updateLegend();
 
-    /** stores state in Dom node
+    /** Stores state in Dom node
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
-    /** sets state from Dom document
+    /** Sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
        * @param doc is Dom document
        */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+
+    //Overridden to show legend title
+    virtual QString displayName() const override;
 
   public slots:
-    /**Data changed*/
+    /** Data changed*/
     void synchronizeWithModel();
-    /**Sets mCompositionMap to 0 if the map is deleted*/
+    /** Sets mCompositionMap to 0 if the map is deleted*/
     void invalidateCurrentMap();
 
-  protected:
-    QString mTitle;
-    QString mWrapChar;
+  private slots:
+    void updateFilterByMap();
 
-    QColor mFontColor;
+    //! update legend in case style of associated map has changed
+    void mapLayerStyleOverridesChanged();
 
-    /**Space between item box and contents*/
-    qreal mBoxSpace;
-    /**Space between columns*/
-    double mColumnSpace;
+    //! react to atlas
+    void onAtlasEnded();
+    void onAtlasFeature( QgsFeature* );
 
-    /**Width of symbol icon*/
-    double mSymbolWidth;
-    /**Height of symbol icon*/
-    double mSymbolHeight;
+    void nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key );
 
-    /**Width of WMS legendGraphic pixmap*/
-    double mWmsLegendWidth;
-    /**Height of WMS legendGraphic pixmap*/
-    double mWmsLegendHeight;
+  private:
+    QgsComposerLegend(); //forbidden
 
-    /** Spacing between lines when wrapped */
-    double mlineSpacing;
-
-    /** Number of legend columns */
-    int mColumnCount;
+    //! use new custom layer tree and update model. if new root is null pointer, will use project's tree
+    void setCustomLayerTree( QgsLayerTreeGroup* rootGroup );
 
     QgsLegendModel mLegendModel;
 
-    /**Reference to map (because symbols are sometimes in map units)*/
+    QgsLegendModelV2* mLegendModel2;
+    QgsLayerTreeGroup* mCustomLayerTree;
+
+    QgsLegendSettings mSettings;
+
     const QgsComposerMap* mComposerMap;
 
-    /** Allow splitting layers into multiple columns */
-    bool mSplitLayer;
+    bool mLegendFilterByMap;
+    bool mLegendFilterByExpression;
 
-    /** Use the same width (maximum) for all columns */
-    bool mEqualColumnWidth;
+    //! whether to filter out legend elements outside of the atlas feature
+    bool mFilterOutAtlas;
 
-  private:
-    /** Nucleon is either group title, layer title or layer child item.
-     *  Nucleon is similar to QgsComposerLegendItem but it does not have
-     *  the same hierarchy. E.g. layer title nucleon is just title, it does not
-     *  include all layer subitems, the same with groups.
-     */
-    class Nucleon
-    {
-      public:
-        QgsComposerLegendItem* item;
-        // Symbol size size without any space around for symbol item
-        QSizeF symbolSize;
-        // Label size without any space around for symbol item
-        QSizeF labelSize;
-        QSizeF size;
-        // Offset of symbol label, this offset is the same for all symbol labels
-        // of the same layer in the same column
-        double labelXOffset;
-    };
+    //! tag for update request
+    bool mFilterAskedForUpdate;
+    //! actual filter update
+    void doUpdateFilterByMap();
 
-    /** Atom is indivisible set (indivisible into more columns). It may consists
-     *  of one or more Nucleon, depending on layer splitting mode:
-     *  1) no layer split: [group_title ...] layer_title layer_item [layer_item ...]
-     *  2) layer split:    [group_title ...] layer_title layer_item
-     *              or:    layer_item
-     *  It means that group titles must not be split from layer title and layer title
-     *  must not be split from first item, because it would look bad and it would not
-     *  be readable to leave group or layer title at the bottom of column.
-     */
-    class Atom
-    {
-      public:
-        Atom(): size( QSizeF( 0, 0 ) ), column( 0 ) {}
-        QList<Nucleon> nucleons;
-        // Atom size including nucleons interspaces but without any space around atom.
-        QSizeF size;
-        int column;
-    };
-
-    /** Create list of atoms according to current layer splitting mode */
-    QList<Atom> createAtomList( QStandardItem* rootItem, bool splitLayer );
-
-    /** Divide atoms to columns and set columns on atoms */
-    void setColumns( QList<Atom>& atomList );
-
-    QgsComposerLegend(); //forbidden
-
-    QSizeF drawTitle( QPainter* painter = 0, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft );
-
-    /**Draws a group item and all subitems
-     * Returns list of sizes of layers and groups including this group.
-     */
-    QSizeF drawGroupItemTitle( QgsComposerGroupItem* groupItem, QPainter* painter = 0, QPointF point = QPointF() );
-    /**Draws a layer item and all subitems*/
-    QSizeF drawLayerItemTitle( QgsComposerLayerItem* layerItem, QPainter* painter = 0, QPointF point = QPointF() );
-
-    Nucleon drawSymbolItem( QgsComposerLegendItem* symbolItem, QPainter* painter = 0, QPointF point = QPointF(), double labelXOffset = 0. );
-
-    /**Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points,
-     it is possible that it differs from mSymbolHeight*/
-    void drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const;
-
-    /** Draw atom and return its actual size, the atom is drawn with the space above it
-     *  so that first atoms in column are all aligned to the same line regardles their
-     * style top space */
-    QSizeF drawAtom( Atom atom, QPainter* painter = 0, QPointF point = QPointF() );
-
-    double spaceAboveAtom( Atom atom );
-
-    /**Helper function that lists ids of layers contained in map canvas*/
-    QStringList layerIdList() const;
-
-    /** Splits a string using the wrap char taking into account handling empty
-      wrap char which means no wrapping */
-    QStringList splitStringForWrapping( QString stringToSplt );
-
-    QMap<QgsComposerLegendStyle::Style, QgsComposerLegendStyle> mStyleMap;
+    bool mInAtlas;
 };
 
 #endif
+

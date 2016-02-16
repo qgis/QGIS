@@ -30,7 +30,7 @@ class QgsRasterTerrainAnalysisDialog: public QDialog, private Ui::QgsRasterTerra
       ReliefInput
     };
 
-    QgsRasterTerrainAnalysisDialog( DisplayMode mode = NoParameter, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsRasterTerrainAnalysisDialog( DisplayMode mode = NoParameter, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsRasterTerrainAnalysisDialog();
 
     QList< QgsRelief::ReliefColor > reliefColors() const;
@@ -58,7 +58,7 @@ class QgsRasterTerrainAnalysisDialog: public QDialog, private Ui::QgsRasterTerra
     void on_mButtonBox_accepted();
 
   private:
-    /**Stores relation between driver name and extension*/
+    /** Stores relation between driver name and extension*/
     QMap<QString, QString> mDriverExtensionMap;
 };
 

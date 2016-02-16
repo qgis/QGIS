@@ -1,4 +1,4 @@
-<h1>Heatmap Plugin Help</h1>
+<h3>Heatmap Plugin Help</h3>
 <p>The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
 raster of an input point vector layer.  The density is calculated based on the
 number of points in a location, with larger numbers of clustered points resulting

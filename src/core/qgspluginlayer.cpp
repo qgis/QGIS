@@ -14,11 +14,13 @@
  ***************************************************************************/
 #include "qgspluginlayer.h"
 
+#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerrenderer.h"
 
-QgsPluginLayer::QgsPluginLayer( QString layerType, QString layerName )
+QgsPluginLayer::QgsPluginLayer( const QString& layerType, const QString& layerName )
     : QgsMapLayer( PluginLayer, layerName ), mPluginLayerType( layerType )
 {
+  setLegend( QgsMapLayerLegend::defaultPluginLegend( this ) );
 }
 
 QString QgsPluginLayer::pluginLayerType()
@@ -31,13 +33,17 @@ void QgsPluginLayer::setExtent( const QgsRectangle &extent )
   mExtent = extent;
 }
 
-QgsLegendSymbologyList QgsPluginLayer::legendSymbologyItems( const QSize& iconSize )
+QgsLegendSymbologyList QgsPluginLayer::legendSymbologyItems( QSize iconSize )
 {
   Q_UNUSED( iconSize );
   return QgsLegendSymbologyList();
 }
 
-/** Fallback layer renderer implementation for layer that do not support map renderer yet. */
+/** Fallback layer renderer implementation for layer that do not support map renderer yet.
+ *
+ * @note added in 2.4
+ * @note not available in Python bindings
+ */
 class QgsPluginLayerRenderer : public QgsMapLayerRenderer
 {
   public:
@@ -47,7 +53,7 @@ class QgsPluginLayerRenderer : public QgsMapLayerRenderer
         , mRendererContext( rendererContext )
     {}
 
-    virtual bool render()
+    virtual bool render() override
     {
       return mLayer->draw( mRendererContext );
     }

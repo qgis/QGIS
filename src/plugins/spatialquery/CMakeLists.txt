@@ -1,7 +1,7 @@
 ########################################################
 # Files
 
-SET (SPATIALQUERY_SRCS 
+SET (SPATIALQUERY_SRCS
      qgsspatialqueryplugin.cpp
      qgsspatialquerydialog.cpp
      qgsspatialquery.cpp
@@ -11,7 +11,7 @@ SET (SPATIALQUERY_SRCS
      qgsmngprogressbar.cpp
 )
 
-SET (SPATIALQUERY_MOC_HDRS 
+SET (SPATIALQUERY_MOC_HDRS
      qgsspatialqueryplugin.h
      qgsspatialquerydialog.h
 )
@@ -31,14 +31,18 @@ QT4_ADD_RESOURCES (SPATIALQUERY_RCC_SRCS ${SPATIALQUERY_RCCS})
 
 ADD_LIBRARY (spatialqueryplugin MODULE ${SPATIALQUERY_SRCS} ${SPATIALQUERY_MOC_SRCS} ${SPATIALQUERY_RCC_SRCS} ${SPATIALQUERY_UIS_H})
 
+INCLUDE_DIRECTORIES(SYSTEM
+     ${GEOS_INCLUDE_DIR}
+)
+
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}/../../ui/
      ../../core
+     ../../core/geometry
      ../../core/raster
      ../../gui
      ..
-     ${GEOS_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(spatialqueryplugin

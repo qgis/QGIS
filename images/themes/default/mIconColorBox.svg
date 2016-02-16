@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 16 16"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   width="100%"
+   height="100%"
+   sodipodi:docname="mIconColorBox.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1296"
+     inkscape:window-height="874"
+     id="namedview69"
+     showgrid="true"
+     inkscape:zoom="16.685714"
+     inkscape:cx="1.8318781"
+     inkscape:cy="8.4843315"
+     inkscape:window-x="323"
+     inkscape:window-y="34"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3002"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4">
+    <linearGradient
+       id="arcoiris"
+       x1="10"
+       y1="10"
+       x2="310"
+       y2="10"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.04037581,0,0,0.04392388,1.7650425,-14.683388)">
+      <stop
+         style="stop-color:#F00"
+         offset="0"
+         id="stop7" />
+      <stop
+         style="stop-color:#FF0"
+         offset=".1666"
+         id="stop9" />
+      <stop
+         style="stop-color:#0F0"
+         offset=".3333"
+         id="stop11" />
+      <stop
+         style="stop-color:#0FF"
+         offset=".5"
+         id="stop13" />
+      <stop
+         style="stop-color:#00F"
+         offset=".6666"
+         id="stop15" />
+      <stop
+         style="stop-color:#F0F"
+         offset=".8333"
+         id="stop17" />
+      <stop
+         style="stop-color:#F00"
+         offset="1"
+         id="stop19" />
+    </linearGradient>
+    <linearGradient
+       id="cinza"
+       y2="310"
+       x2="10"
+       x1="10"
+       y1="10"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.04037581,0,0,0.04392388,1.7650425,-14.683388)">
+      <stop
+         style="stop-color:#7F7F7F;stop-opacity:0"
+         offset="0"
+         id="stop22" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="1"
+         id="stop24" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#arcoiris"
+       id="linearGradient3797"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.04037581,0,0,0.04392388,1.7650425,-14.683388)"
+       x1="10"
+       y1="10"
+       x2="310"
+       y2="10" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#cinza"
+       id="linearGradient3799"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.04037581,0,0,0.04392388,1.7650425,-14.683388)"
+       x1="10"
+       y1="10"
+       x2="10"
+       y2="310" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#cinza"
+       id="linearGradient3802"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.04,0,0,0.04333333,1.6000001,-14.433341)"
+       x1="10"
+       y1="10"
+       x2="10"
+       y2="310" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#arcoiris"
+       id="linearGradient3805"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.0397351,0,0,0.04304635,1.642384,-14.387417)"
+       x1="10"
+       y1="10"
+       x2="310"
+       y2="10" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#arcoiris"
+       id="linearGradient3808"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.04,0,0,0.04333333,1.6000001,-14.433341)"
+       x1="10"
+       y1="10"
+       x2="310"
+       y2="10" />
+  </defs>
+  <script
+     type="text/javascript"
+     id="script35">var h = 0, s = 100, l = 50, Cr = 255, Cg = 0, Cb = 0;
+var arrastarHS = false, arrastarL = false;
+function $(id) { return document.getElementById(id); }
+function inic() {
+	$(&quot;doc&quot;).onmousemove = retornar;
+	$(&quot;doc&quot;).onmousedown = function(event) {
+		var x = event.clientX - 10, y = event.clientY - 10;
+		if(x &gt; 0 &amp;&amp; x &lt; 300 &amp;&amp; y &gt; 0 &amp;&amp; y &lt; 300) arrastarHS = true;
+		if(x &gt; 310 &amp;&amp; x &lt; 350 &amp;&amp; y &gt; 0 &amp;&amp; y &lt; 300) arrastarL = true;
+	}
+	$(&quot;doc&quot;).onmouseup = function() { arrastarHS = arrastarL = false; }
+	$(&quot;doc&quot;).onmouseout = function() { arrastarHS = arrastarL = false; }
+}
+function retornar(event) {
+	var x = event.clientX - 10;
+	var y = event.clientY - 10;
+	if(x &gt; 0 &amp;&amp; x &lt; 300 &amp;&amp; y &gt; 0 &amp;&amp; y &lt; 300) $(&quot;doc&quot;).style.cursor = &quot;crosshair&quot;;
+	else $(&quot;doc&quot;).style.cursor = &quot;auto&quot;;
+	if(arrastarHS) {
+		if(x &lt; 0) x = 0;
+		else if(x &gt; 300) x = 300;
+		if(y &lt; 0) y = 0;
+		else if(y &gt; 300) y = 300;
+		h = Math.round(x * 1.2);
+		s = Math.round(-(y / 3) + 100);
+		cor();
+		$(&quot;cic&quot;).setAttribute(&quot;cx&quot;, x + 10);
+		$(&quot;cic&quot;).setAttribute(&quot;cy&quot;, y + 10);
+	}
+	if(arrastarL) {
+		if(y &lt; 0) y = 0;
+		else if(y &gt; 300) y = 300;
+		l = Math.round(-(y / 3) + 100);
+		quad();
+		$(&quot;mar&quot;).setAttribute(&quot;transform&quot;, &quot;translate(0, &quot;+y+&quot;)&quot;);
+	}
+}
+function cor() {
+	var b = h / 60 - 3;
+	if(b &lt; 0) b = 6 + b;
+	Cr = Math.round((b&lt;1||b&gt;5?1:b&gt;2&amp;&amp;b&lt;4?0:b&lt;3?2-b:b-4) * 255);
+	Cg = Math.round((b&gt;1&amp;&amp;b&lt;3?1:b&gt;4?0:b&lt;2?b:4-b) * 255);
+	Cb = Math.round((b&gt;3&amp;&amp;b&lt;5?1:b&lt;2?0:b&lt;4?b-2:6-b) * 255);
+	Cr = Math.round(127.5 + (127.5 - Cr) * s / 100);
+	Cg = Math.round(127.5 + (127.5 - Cg) * s / 100);
+	Cb = Math.round(127.5 + (127.5 - Cb) * s / 100);
+	$(&quot;cic&quot;).style.fill = $(&quot;cor&quot;).style.fill = &quot;#&quot; + hex(Cr) + hex(Cg) + hex(Cb);
+	quad();
+}
+function quad() {
+	var b = h / 60 - 3;
+	if(b &lt; 0) b = 6 + b;
+	Cr = Math.round((b&lt;1||b&gt;5?1:b&gt;2&amp;&amp;b&lt;4?0:b&lt;3?2-b:b-4) * 255);
+	Cg = Math.round((b&gt;1&amp;&amp;b&lt;3?1:b&gt;4?0:b&lt;2?b:4-b) * 255);
+	Cb = Math.round((b&gt;3&amp;&amp;b&lt;5?1:b&lt;2?0:b&lt;4?b-2:6-b) * 255);
+	Cr = Math.round(127.5 + (127.5 - Cr) * s / 100);
+	Cg = Math.round(127.5 + (127.5 - Cg) * s / 100);
+	Cb = Math.round(127.5 + (127.5 - Cb) * s / 100);
+	Cr = Math.round(l &gt; 50 ? Cr + (l / 50 - 1) * (255 - Cr) : l / 50 * Cr);
+	Cg = Math.round(l &gt; 50 ? Cg + (l / 50 - 1) * (255 - Cg) : l / 50 * Cg);
+	Cb = Math.round(l &gt; 50 ? Cb + (l / 50 - 1) * (255 - Cb) : l / 50 * Cb);
+	$(&quot;RGB1&quot;).firstChild.nodeValue = Cr;
+	$(&quot;RGB2&quot;).firstChild.nodeValue = Cg;
+	$(&quot;RGB3&quot;).firstChild.nodeValue = Cb;
+	$(&quot;HSL1&quot;).firstChild.nodeValue = h + &quot;º&quot;;
+	$(&quot;HSL2&quot;).firstChild.nodeValue = s + &quot;%&quot;;
+	$(&quot;HSL3&quot;).firstChild.nodeValue = l + &quot;%&quot;;
+	$(&quot;quad&quot;).style.fill = $(&quot;HEX&quot;).firstChild.nodeValue = &quot;#&quot; + hex(Cr) + hex(Cg) + hex(Cb);
+}
+function hex(n) {
+	if(n &lt; 16) return &quot;0&quot; + n.toString(16).toUpperCase();
+	else return n.toString(16).toUpperCase();
+}
+window.onload = inic;</script>
+  <rect
+     y="-14"
+     x="2"
+     style="fill:url(#linearGradient3808)"
+     height="13"
+     width="12"
+     id="rect39"
+     transform="matrix(0,1,-1,0,0,0)" />
+  <rect
+     y="-14"
+     x="2"
+     style="fill:url(#linearGradient3802);fill-opacity:1"
+     height="13"
+     width="12"
+     id="rect41"
+     transform="matrix(0,1,-1,0,0,0)" />
+  <metadata
+     id="metadata67">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title />
+        <dc:date>2011-01-27T17:35:20</dc:date>
+        <dc:description>interactive, color, colors, color picker, javascript, drag and drop.
+\nTwo errors fixed:
+\nWrong color representation in Webkit and initial representation of red as rgb(255, 255, 255)</dc:description>
+        <dc:source>https://openclipart.org/detail/110227/cores2-by-guerreiro</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Guerreiro</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>color</rdf:li>
+            <rdf:li>color picker</rdf:li>
+            <rdf:li>colors</rdf:li>
+            <rdf:li>drag and drop</rdf:li>
+            <rdf:li>interactive</rdf:li>
+            <rdf:li>javascript</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <rect
+     style="fill:none;stroke:#f9f9f9;stroke-width:0.99329752;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+     id="rect3004-6"
+     width="14.006702"
+     height="13.006702"
+     x="0.49664885"
+     y="1.4966488" />
+  <rect
+     style="fill:none;stroke:#999999;stroke-width:1.00365841;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+     id="rect3004"
+     width="14.996342"
+     height="14.996342"
+     x="0.50182921"
+     y="0.50182909" />
+</svg>

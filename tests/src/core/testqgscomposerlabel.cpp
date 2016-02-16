@@ -24,11 +24,20 @@
 #include "qgsvectordataprovider.h"
 
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
-class TestQgsComposerLabel: public QObject
+class TestQgsComposerLabel : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsComposerLabel()
+        : mComposition( 0 )
+        , mComposerLabel( 0 )
+        , mMapSettings( 0 )
+        , mVectorLayer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -39,12 +48,15 @@ class TestQgsComposerLabel: public QObject
     void evaluation();
     // test expression evaluation when a feature is set
     void feature_evaluation();
-    // test "$page" expressions
+    // test page expressions
     void page_evaluation();
+
+    void marginMethods(); //tests getting/setting margins
+
   private:
     QgsComposition* mComposition;
     QgsComposerLabel* mComposerLabel;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
 };
 
@@ -53,18 +65,21 @@ void TestQgsComposerLabel::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "france_parts.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + '/' +  "france_parts.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
-  mMapSettings.setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setCrsTransformEnabled( false );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
+  mComposition->atlasComposition().setCoverageLayer( mVectorLayer );
 
   mComposerLabel = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( mComposerLabel );
@@ -75,15 +90,22 @@ void TestQgsComposerLabel::initTestCase()
 void TestQgsComposerLabel::cleanupTestCase()
 {
   delete mComposition;
-  delete mVectorLayer;
+  delete mMapSettings;
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerLabel::init()
 {
+  mComposerLabel = new QgsComposerLabel( mComposition );
+  mComposition->addComposerLabel( mComposerLabel );
 }
 
 void TestQgsComposerLabel::cleanup()
 {
+  mComposition->removeItem( mComposerLabel );
+  delete mComposerLabel;
+  mComposerLabel = 0;
 }
 
 void TestQgsComposerLabel::evaluation()
@@ -124,22 +146,20 @@ void TestQgsComposerLabel::evaluation()
 
 void TestQgsComposerLabel::feature_evaluation()
 {
-  QgsFeatureIterator fit = mVectorLayer->getFeatures();
-  QgsFeature feat;
-
-  fit.nextFeature( feat );
+  mComposition->atlasComposition().setEnabled( true );
+  mComposition->setAtlasMode( QgsComposition::ExportAtlas );
+  mComposition->atlasComposition().updateFeatures();
+  mComposition->atlasComposition().prepareForFeature( 0 );
   {
     // evaluation with a feature
-    mComposerLabel->setExpressionContext( &feat, mVectorLayer );
     mComposerLabel->setText( "[%\"NAME_1\"||'_ok'%]" );
     QString evaluated = mComposerLabel->displayText();
     QString expected = "Basse-Normandie_ok";
     QCOMPARE( evaluated, expected );
   }
-  fit.nextFeature( feat );
+  mComposition->atlasComposition().prepareForFeature( 1 );
   {
     // evaluation with a feature
-    mComposerLabel->setExpressionContext( &feat, mVectorLayer );
     mComposerLabel->setText( "[%\"NAME_1\"||'_ok'%]" );
     QString evaluated = mComposerLabel->displayText();
     QString expected = "Bretagne_ok";
@@ -149,20 +169,20 @@ void TestQgsComposerLabel::feature_evaluation()
     // evaluation with a feature and local variables
     QMap<QString, QVariant> locals;
     locals.insert( "$test", "OK" );
-
-    mComposerLabel->setExpressionContext( &feat, mVectorLayer, locals );
+    mComposerLabel->setSubstitutions( locals );
     mComposerLabel->setText( "[%\"NAME_1\"||$test%]" );
     QString evaluated = mComposerLabel->displayText();
     QString expected = "BretagneOK";
     QCOMPARE( evaluated, expected );
   }
+  mComposition->atlasComposition().setEnabled( false );
 }
 
 void TestQgsComposerLabel::page_evaluation()
 {
   mComposition->setNumPages( 2 );
   {
-    mComposerLabel->setText( "[%$page||'/'||$numpages%]" );
+    mComposerLabel->setText( "[%@layout_page||'/'||@layout_numpages%]" );
     QString evaluated = mComposerLabel->displayText();
     QString expected = "1/2";
     QCOMPARE( evaluated, expected );
@@ -173,5 +193,37 @@ void TestQgsComposerLabel::page_evaluation()
   }
 }
 
+void TestQgsComposerLabel::marginMethods()
+{
+  QgsComposerLabel label( mComposition );
+  //test setting margins separately
+  label.setMarginX( 3.0 );
+  label.setMarginY( 4.0 );
+  QCOMPARE( label.marginX(), 3.0 );
+  QCOMPARE( label.marginY(), 4.0 );
+  //test setting margins together
+  label.setMargin( 5.0 );
+  QCOMPARE( label.marginX(), 5.0 );
+  QCOMPARE( label.marginY(), 5.0 );
+
+  //test reading label margins from pre 2.7 projects
+  QDomDocument labelDoc;
+  QString labelXml;
+  labelXml = "<ComposerLabel margin=\"9\"><ComposerItem></ComposerItem></ComposerLabel";
+  labelDoc.setContent( labelXml );
+  QgsComposerLabel label2( mComposition );
+  label2.readXML( labelDoc.firstChildElement(), labelDoc );
+  QCOMPARE( label2.marginX(), 9.0 );
+  QCOMPARE( label2.marginY(), 9.0 );
+
+  //test reading label margins from >=2.7 projects
+  labelXml = "<ComposerLabel marginX=\"11\" marginY=\"12\"><ComposerItem></ComposerItem></ComposerLabel";
+  labelDoc.setContent( labelXml );
+  QgsComposerLabel label3( mComposition );
+  label3.readXML( labelDoc.firstChildElement(), labelDoc );
+  QCOMPARE( label3.marginX(), 11.0 );
+  QCOMPARE( label3.marginY(), 12.0 );
+}
+
 QTEST_MAIN( TestQgsComposerLabel )
-#include "moc_testqgscomposerlabel.cxx"
+#include "testqgscomposerlabel.moc"

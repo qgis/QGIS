@@ -37,31 +37,34 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand );
     ~QgsSingleBandGrayRenderer();
-    QgsRasterInterface * clone() const;
+    QgsSingleBandGrayRenderer * clone() const override;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    QgsRasterBlock *block( int bandNo, QgsRectangle  const & extent, int width, int height );
+    QgsRasterBlock *block( int bandNo, QgsRectangle  const & extent, int width, int height ) override;
 
     int grayBand() const { return mGrayBand; }
     void setGrayBand( int band ) { mGrayBand = band; }
     const QgsContrastEnhancement* contrastEnhancement() const { return mContrastEnhancement; }
-    /**Takes ownership*/
+    /** Takes ownership*/
     void setContrastEnhancement( QgsContrastEnhancement* ce );
 
     void setGradient( Gradient theGradient ) { mGradient = theGradient; }
     Gradient gradient() const { return mGradient; }
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const override;
 
-    QList<int> usesBands() const;
+    QList<int> usesBands() const override;
 
   private:
     int mGrayBand;
     Gradient mGradient;
     QgsContrastEnhancement* mContrastEnhancement;
+
+    QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer& );
+    const QgsSingleBandGrayRenderer& operator=( const QgsSingleBandGrayRenderer& );
 };
 
 #endif // QGSSINGLEBANDGRAYRENDERER_H

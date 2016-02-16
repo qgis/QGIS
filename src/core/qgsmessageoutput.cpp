@@ -42,11 +42,21 @@ QgsMessageOutput::~QgsMessageOutput()
 {
 }
 
+
+void QgsMessageOutput::showMessage( const QString& title, const QString& message, MessageType msgType )
+{
+  QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+  output->setTitle( title );
+  output->setMessage( message, msgType );
+  output->showMessage();
+}
+
 ////////////////////////////////
 // QgsMessageOutputConsole
 
 QgsMessageOutputConsole::QgsMessageOutputConsole()
     : mMessage( "" )
+    , mMsgType( MessageText )
 {
 }
 
@@ -78,3 +88,4 @@ void QgsMessageOutputConsole::setTitle( const QString& title )
 {
   mTitle = title;
 }
+

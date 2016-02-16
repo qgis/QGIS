@@ -1,0 +1,41 @@
+/*! \page api_break Backwards Incompatible Changes
+
+\tableofcontents
+
+The API of QGIS libraries is allowed to be changed just between major versions of QGIS. For example, there
+are various planned backwards incompatible changes between QGIS 1.8 and 2.0 because the version 2.0 is a new
+major version. After a release of a major version of QGIS (e.g. 2.0) the developer team is committed to maintain
+stable API for all subsequent minor releases (2.2, 2.4, ...). That roughly means we do not rename classes and methods,
+remove them nor change their semantics. Existing code should keep working when the user updates QGIS
+to another minor version (e.g. from 2.0 to 2.2), so all extensions of existing classes should be done in a manner that
+third party developers do not need to adjust their code to work properly with newer QGIS releases.
+
+Sometimes, however, we may need to break the API as a result of some code changes. These cases should be only exceptions
+and they should happen only after consideration and agreement of the development team. Backwards incompatible changes
+with too big impact should be deferred to a major version release.
+
+This page tries to maintain a list with incompatible changes that happened in previous releases.
+
+\section qgis_api_break_2_4 QGIS 2.4
+
+\subsection qgis_api_break_mtr Multi-threaded Rendering
+
+<ul>
+<li>QgsMapCanvas::refresh() only schedules a map refresh (in near feature) and returns immediately - before it would do the drawing immediately
+and return when the map is redrawn. A call to refresh() will have no effect if there is already a scheduled pending refresh.
+When map canvas does actual rendering, it will first emit renderStarting() signal, once done it will emit mapCanvasRefreshed().
+The client code doing refresh() in order to later save map image should be updated to use new QgsMapRendererJob API which is better suited for such task.
+<li>QgsPluginLayer::draw() is now run in a background thread. It is recommended to implement newly added QgsPluginLayer::createMapRenderer()
+method instead of using QgsPluginLayer::draw().
+</ul>
+
+\section qgis_api_break_2_6 QGIS 2.6
+
+\subsection qgis_api_break_legend_refactoring Legend Refactoring
+
+<ul>
+<li>QgsComposerLegend::model() - not being used anymore. The model was replaced by one based on QgsLayerTreeModel class
+and is available in QgsComposerLegend::modelV2()
+</ul>
+
+*/

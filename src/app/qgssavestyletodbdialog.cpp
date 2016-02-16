@@ -1,4 +1,10 @@
 /***************************************************************************
+    qgssavestyletodbdialog.cpp
+    ---------------------
+    begin                : April 2013
+    copyright            : (C) 2013 by Emilio Loi
+    email                : loi at faunalia dot it
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,8 +21,8 @@
 #include <QMessageBox>
 #include <QDateTime>
 
-QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent ) :
-    QDialog( parent )
+QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent )
+    : QDialog( parent )
 {
   setupUi( this );
   setWindowTitle( "Save style in database" );
@@ -25,19 +31,31 @@ QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent ) :
   setTabOrder( mDescriptionEdit, mUseAsDefault );
   setTabOrder( mUseAsDefault, buttonBox );
 
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/saveStyleToDb/geometry" ).toByteArray() );
 }
+
+QgsSaveStyleToDbDialog::~QgsSaveStyleToDbDialog()
+{
+  QSettings settings;
+  settings.setValue( "/Windows/saveStyleToDb/geometry", saveGeometry() );
+}
+
 QString QgsSaveStyleToDbDialog::getName()
 {
   return mNameEdit->text();
 }
+
 QString QgsSaveStyleToDbDialog::getDescription()
 {
   return mDescriptionEdit->toPlainText();
 }
+
 bool QgsSaveStyleToDbDialog::isDefault()
 {
   return mUseAsDefault->isChecked();
 }
+
 QString QgsSaveStyleToDbDialog::getUIFileContent()
 {
   return mUIFileContent;
@@ -56,17 +74,14 @@ void QgsSaveStyleToDbDialog::accept()
 void QgsSaveStyleToDbDialog::on_mFilePickButton_clicked()
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
+  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", QDir::homePath() ).toString();
 
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Attach Qt Designer UI file" ), myLastUsedDir, tr( "Qt Designer UI file .ui" ) + " (*.ui)" );
   if ( myFileName.isNull() )
   {
     return;
   }
-
-
   QFileInfo myFI( myFileName );
-
   QFile uiFile( myFI.filePath() );
 
   QString myPath = myFI.path();
@@ -86,6 +101,4 @@ void QgsSaveStyleToDbDialog::on_mFilePickButton_clicked()
     mUIFileContent = content;
     mFileNameLabel->setText( myFI.fileName() );
   }
-
 }
-

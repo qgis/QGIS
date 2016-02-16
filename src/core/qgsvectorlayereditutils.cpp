@@ -17,7 +17,12 @@
 #include "qgsvectordataprovider.h"
 #include "qgsgeometrycache.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgslinestringv2.h"
 #include "qgslogger.h"
+#include "qgspointv2.h"
+#include "qgsgeometryfactory.h"
+#include "qgis.h"
+#include "qgswkbtypes.h"
 
 #include <limits>
 
@@ -37,10 +42,10 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
   {
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.constGeometry() )
       return false; // geometry not found
 
-    geometry = *f.geometry();
+    geometry = *f.constGeometry();
   }
 
   geometry.insertVertex( x, y, beforeVertex );
@@ -52,6 +57,12 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
 
 bool QgsVectorLayerEditUtils::moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex )
 {
+  QgsPointV2 p( x, y );
+  return moveVertex( p, atFeatureId, atVertex );
+}
+
+bool QgsVectorLayerEditUtils::moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex )
+{
   if ( !L->hasGeometryType() )
     return false;
 
@@ -60,13 +71,13 @@ bool QgsVectorLayerEditUtils::moveVertex( double x, double y, QgsFeatureId atFea
   {
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.constGeometry() )
       return false; // geometry not found
 
-    geometry = *f.geometry();
+    geometry = *f.constGeometry();
   }
 
-  geometry.moveVertex( x, y, atVertex );
+  geometry.moveVertex( p, atVertex );
 
   L->editBuffer()->changeGeometry( atFeatureId, &geometry );
   return true;
@@ -75,90 +86,186 @@ bool QgsVectorLayerEditUtils::moveVertex( double x, double y, QgsFeatureId atFea
 
 bool QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId atFeatureId, int atVertex )
 {
+  QgsVectorLayer::EditResult res = deleteVertexV2( atFeatureId, atVertex );
+  return res == QgsVectorLayer::Success || res == QgsVectorLayer::EmptyGeometry;
+}
+
+QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertexV2( QgsFeatureId featureId, int vertex )
+{
   if ( !L->hasGeometryType() )
-    return false;
+    return QgsVectorLayer::InvalidLayer;
 
   QgsGeometry geometry;
-  if ( !cache()->geometry( atFeatureId, geometry ) )
+  if ( !cache()->geometry( featureId, geometry ) )
   {
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
-      return false; // geometry not found
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.constGeometry() )
+      return QgsVectorLayer::FetchFeatureFailed; // geometry not found
 
-    geometry = *f.geometry();
+    geometry = *f.constGeometry();
   }
 
-  if ( !geometry.deleteVertex( atVertex ) )
-    return false;
+  if ( !geometry.deleteVertex( vertex ) )
+    return QgsVectorLayer::EditFailed;
 
-  L->editBuffer()->changeGeometry( atFeatureId, &geometry );
-  return true;
+  if ( geometry.geometry() && geometry.geometry()->nCoordinates() == 0 )
+  {
+    //last vertex deleted, set geometry to null
+    geometry.setGeometry( nullptr );
+  }
+
+  L->editBuffer()->changeGeometry( featureId, &geometry );
+  return !geometry.isEmpty() ? QgsVectorLayer::Success : QgsVectorLayer::EmptyGeometry;
 }
 
+int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
+{
+  QgsLineStringV2* ringLine = new QgsLineStringV2();
+  QList< QgsPointV2 > ringPoints;
+  QList<QgsPoint>::const_iterator ringIt = ring.constBegin();
+  for ( ; ringIt != ring.constEnd(); ++ringIt )
+  {
+    ringPoints.append( QgsPointV2( ringIt->x(), ringIt->y() ) );
+  }
+  ringLine->setPoints( ringPoints );
+  return addRing( ringLine, targetFeatureIds,  modifiedFeatureId );
+}
 
-int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring )
+int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
 {
   if ( !L->hasGeometryType() )
+  {
+    delete ring;
     return 5;
+  }
 
   int addRingReturnCode = 5; //default: return code for 'ring not inserted'
-  double xMin, yMin, xMax, yMax;
-  QgsRectangle bBox;
+  QgsFeature f;
 
-  if ( boundingBoxFromPointList( ring, xMin, yMin, xMax, yMax ) == 0 )
+  QgsFeatureIterator fit;
+  if ( !targetFeatureIds.isEmpty() )
   {
-    bBox.setXMinimum( xMin ); bBox.setYMinimum( yMin );
-    bBox.setXMaximum( xMax ); bBox.setYMaximum( yMax );
+    //check only specified features
+    fit = L->getFeatures( QgsFeatureRequest().setFilterFids( targetFeatureIds ) );
   }
   else
   {
-    return 3; //ring not valid
+    //check all intersecting features
+    QgsRectangle bBox = ring->boundingBox();
+    fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
   }
 
-  QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
-
-  QgsFeature f;
+  //find first valid feature we can add the ring to
   while ( fit.nextFeature( f ) )
   {
-    addRingReturnCode = f.geometry()->addRing( ring );
+    if ( !f.constGeometry() )
+      continue;
+
+    //add ring takes ownership of ring, and deletes it if there's an error
+    addRingReturnCode = f.geometry()->addRing( static_cast< QgsCurveV2* >( ring->clone() ) );
     if ( addRingReturnCode == 0 )
     {
       L->editBuffer()->changeGeometry( f.id(), f.geometry() );
+      if ( modifiedFeatureId )
+        *modifiedFeatureId = f.id();
 
       //setModified( true, true );
       break;
     }
   }
 
+  delete ring;
   return addRingReturnCode;
 }
 
-
 int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureId featureId )
+{
+  QList<QgsPointV2> l;
+  for ( QList<QgsPoint>::const_iterator it = points.constBegin(); it != points.constEnd(); ++it )
+  {
+    l <<  QgsPointV2( *it );
+  }
+  return addPart( l, featureId );
+}
+
+int QgsVectorLayerEditUtils::addPart( const QList<QgsPointV2> &points, QgsFeatureId featureId )
 {
   if ( !L->hasGeometryType() )
     return 6;
 
   QgsGeometry geometry;
+  bool firstPart = false;
   if ( !cache()->geometry( featureId, geometry ) ) // maybe it's in cache
   {
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
-      return 6; //geometry not found
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
+      return 6; //not found
 
-    geometry = *f.geometry();
+    if ( !f.constGeometry() || f.constGeometry()->isEmpty() )
+    {
+      //no existing geometry, so adding first part to null geometry
+      firstPart = true;
+    }
+    else
+    {
+      geometry = *f.geometry();
+    }
   }
 
   int errorCode = geometry.addPart( points, L->geometryType() );
   if ( errorCode == 0 )
   {
+    if ( firstPart && QgsWKBTypes::isSingleType( QGis::fromOldWkbType( L->wkbType() ) )
+         && L->dataProvider()->doesStrictFeatureTypeCheck() )
+    {
+      //convert back to single part if required by layer
+      geometry.convertToSingleType();
+    }
     L->editBuffer()->changeGeometry( featureId, &geometry );
   }
   return errorCode;
 }
 
+int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
+{
+  if ( !L->hasGeometryType() )
+    return 6;
+
+  QgsGeometry geometry;
+  bool firstPart = false;
+  if ( !cache()->geometry( featureId, geometry ) ) // maybe it's in cache
+  {
+    // it's not in cache: let's fetch it from layer
+    QgsFeature f;
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
+      return 6; //not found
+
+    if ( !f.constGeometry() || f.constGeometry()->isEmpty() )
+    {
+      //no existing geometry, so adding first part to null geometry
+      firstPart = true;
+    }
+    else
+    {
+      geometry = *f.geometry();
+    }
+  }
+
+  int errorCode = geometry.addPart( ring, L->geometryType() );
+  if ( errorCode == 0 )
+  {
+    if ( firstPart && QgsWKBTypes::isSingleType( QGis::fromOldWkbType( L->wkbType() ) )
+         && L->dataProvider()->doesStrictFeatureTypeCheck() )
+    {
+      //convert back to single part if required by layer
+      geometry.convertToSingleType();
+    }
+    L->editBuffer()->changeGeometry( featureId, &geometry );
+  }
+  return errorCode;
+}
 
 
 int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx, double dy )
@@ -171,10 +278,10 @@ int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx
   {
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.constGeometry() )
       return 1; //geometry not found
 
-    geometry = *f.geometry();
+    geometry = *f.constGeometry();
   }
 
   int errorCode = geometry.translate( dx, dy );
@@ -198,19 +305,21 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
   int splitFunctionReturn; //return code of QgsGeometry::splitGeometry
   int numberOfSplittedFeatures = 0;
 
-  QgsFeatureList featureList;
+  QgsFeatureIterator features;
   const QgsFeatureIds selectedIds = L->selectedFeaturesIds();
 
-  if ( selectedIds.size() > 0 ) //consider only the selected features if there is a selection
+  if ( !selectedIds.isEmpty() ) //consider only the selected features if there is a selection
   {
-    featureList = L->selectedFeatures();
+    features = L->selectedFeaturesIterator();
   }
   else //else consider all the feature that intersect the bounding box of the split line
   {
     if ( boundingBoxFromPointList( splitLine, xMin, yMin, xMax, yMax ) == 0 )
     {
-      bBox.setXMinimum( xMin ); bBox.setYMinimum( yMin );
-      bBox.setXMaximum( xMax ); bBox.setYMaximum( yMax );
+      bBox.setXMinimum( xMin );
+      bBox.setYMinimum( yMin );
+      bBox.setXMaximum( xMax );
+      bBox.setYMaximum( yMax );
     }
     else
     {
@@ -232,32 +341,35 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
       }
       else
       {
-        return 2;
+        //If we have a single point, we still create a non-null box
+        double bufferDistance = 0.000001;
+        if ( L->crs().geographicFlag() )
+          bufferDistance = 0.00000001;
+        bBox.setXMinimum( bBox.xMinimum() - bufferDistance );
+        bBox.setXMaximum( bBox.xMaximum() + bufferDistance );
+        bBox.setYMinimum( bBox.yMinimum() - bufferDistance );
+        bBox.setYMaximum( bBox.yMaximum() + bufferDistance );
       }
     }
 
-    QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
-
-    QgsFeature f;
-    while ( fit.nextFeature( f ) )
-      featureList << QgsFeature( f );
+    features = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
   }
 
-  QgsFeatureList::iterator select_it = featureList.begin();
-  for ( ; select_it != featureList.end(); ++select_it )
+  QgsFeature feat;
+  while ( features.nextFeature( feat ) )
   {
-    if ( !select_it->geometry() )
+    if ( !feat.constGeometry() )
     {
       continue;
     }
     QList<QgsGeometry*> newGeometries;
     QList<QgsPoint> topologyTestPoints;
-    QgsGeometry* newGeometry = 0;
-    splitFunctionReturn = select_it->geometry()->splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
+    QgsGeometry* newGeometry = nullptr;
+    splitFunctionReturn = feat.geometry()->splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
     if ( splitFunctionReturn == 0 )
     {
       //change this geometry
-      L->editBuffer()->changeGeometry( select_it->id(), select_it->geometry() );
+      L->editBuffer()->changeGeometry( feat.id(), feat.geometry() );
 
       //insert new features
       for ( int i = 0; i < newGeometries.size(); ++i )
@@ -268,8 +380,8 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
 
         //use default value where possible for primary key (e.g. autoincrement),
         //and use the value from the original (split) feature if not primary key
-        QgsAttributes newAttributes = select_it->attributes();
-        foreach ( int pkIdx, L->dataProvider()->pkAttributeIndexes() )
+        QgsAttributes newAttributes = feat.attributes();
+        Q_FOREACH ( int pkIdx, L->dataProvider()->pkAttributeIndexes() )
         {
           const QVariant defaultValue = L->dataProvider()->defaultValue( pkIdx );
           if ( !defaultValue.isNull() )
@@ -303,7 +415,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
     }
   }
 
-  if ( numberOfSplittedFeatures == 0 && selectedIds.size() > 0 )
+  if ( numberOfSplittedFeatures == 0 && !selectedIds.isEmpty() )
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split
@@ -328,19 +440,20 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
   int splitFunctionReturn; //return code of QgsGeometry::splitGeometry
   int numberOfSplittedParts = 0;
 
-  QgsFeatureList featureList;
-  const QgsFeatureIds selectedIds = L->selectedFeaturesIds();
+  QgsFeatureIterator fit;
 
-  if ( selectedIds.size() > 0 ) //consider only the selected features if there is a selection
+  if ( L->selectedFeatureCount() > 0 ) //consider only the selected features if there is a selection
   {
-    featureList = L->selectedFeatures();
+    fit = L->selectedFeaturesIterator();
   }
   else //else consider all the feature that intersect the bounding box of the split line
   {
     if ( boundingBoxFromPointList( splitLine, xMin, yMin, xMax, yMax ) == 0 )
     {
-      bBox.setXMinimum( xMin ); bBox.setYMinimum( yMin );
-      bBox.setXMaximum( xMax ); bBox.setYMaximum( yMax );
+      bBox.setXMinimum( xMin );
+      bBox.setYMinimum( yMin );
+      bBox.setXMaximum( xMax );
+      bBox.setYMaximum( yMax );
     }
     else
     {
@@ -362,19 +475,24 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
       }
       else
       {
-        return 2;
+        //If we have a single point, we still create a non-null box
+        double bufferDistance = 0.000001;
+        if ( L->crs().geographicFlag() )
+          bufferDistance = 0.00000001;
+        bBox.setXMinimum( bBox.xMinimum() - bufferDistance );
+        bBox.setXMaximum( bBox.xMaximum() + bufferDistance );
+        bBox.setYMinimum( bBox.yMinimum() - bufferDistance );
+        bBox.setYMaximum( bBox.yMaximum() + bufferDistance );
       }
     }
 
-    QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
-
-    QgsFeature f;
-    while ( fit.nextFeature( f ) )
-      featureList << QgsFeature( f );
+    fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
   }
 
   int addPartRet = 0;
-  foreach ( const QgsFeature& feat, featureList )
+
+  QgsFeature feat;
+  while ( fit.nextFeature( feat ) )
   {
     QList<QgsGeometry*> newGeometries;
     QList<QgsPoint> topologyTestPoints;
@@ -382,6 +500,9 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
     if ( splitFunctionReturn == 0 )
     {
       //add new parts
+      if ( !newGeometries.isEmpty() )
+        feat.geometry()->convertToMultiType();
+
       for ( int i = 0; i < newGeometries.size(); ++i )
       {
         addPartRet = feat.geometry()->addPart( newGeometries.at( i ) );
@@ -434,7 +555,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
     qDeleteAll( newGeometries );
   }
 
-  if ( numberOfSplittedParts == 0 && selectedIds.size() > 0  && returnCode == 0 )
+  if ( numberOfSplittedParts == 0 && L->selectedFeatureCount() > 0  && returnCode == 0 )
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split
@@ -445,7 +566,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
 }
 
 
-int QgsVectorLayerEditUtils::addTopologicalPoints( QgsGeometry* geom )
+int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry* geom )
 {
   if ( !L->hasGeometryType() )
     return 1;

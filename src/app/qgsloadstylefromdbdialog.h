@@ -18,13 +18,14 @@ class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadS
 {
     QString mSelectedStyleId;
     int mSectionLimit;
-    QStringList mIds, mNames, mDescriptions;
     QString qmlStyle;
     Q_OBJECT
   public:
-    explicit QgsLoadStyleFromDBDialog( QWidget *parent = 0 );
+    explicit QgsLoadStyleFromDBDialog( QWidget *parent = nullptr );
 
-    void initializeLists( QStringList ids, QStringList names, QStringList descriptions, int sectionLimit );
+    ~QgsLoadStyleFromDBDialog();
+
+    void initializeLists( const QStringList& ids, const QStringList& names, const QStringList& descriptions, int sectionLimit );
     QString getSelectedStyleId();
 
   public slots:

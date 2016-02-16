@@ -205,7 +205,7 @@ void QgsNMEAConnection::processGSVSentence( const char* data, int len )
   nmeaGPGSV result;
   if ( nmea_parse_GPGSV( data, len, &result ) )
   {
-    //clear satellite informations when a new series of packs arrives
+    //clear satellite information when a new series of packs arrives
     if ( result.pack_index == 1 )
     {
       mLastGPSInformation.satellitesInView.clear();

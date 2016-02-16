@@ -28,7 +28,7 @@
 
 QgsMapCanvasSnapper::QgsMapCanvasSnapper( QgsMapCanvas* canvas )
     : mMapCanvas( canvas )
-    , mSnapper( 0 )
+    , mSnapper( nullptr )
 {
   if ( !canvas )
     return;
@@ -36,7 +36,7 @@ QgsMapCanvasSnapper::QgsMapCanvasSnapper( QgsMapCanvas* canvas )
   mSnapper = new QgsSnapper( canvas->mapSettings() );
 }
 
-QgsMapCanvasSnapper::QgsMapCanvasSnapper(): mMapCanvas( 0 ), mSnapper( 0 )
+QgsMapCanvasSnapper::QgsMapCanvasSnapper(): mMapCanvas( nullptr ), mSnapper( nullptr )
 {
 }
 
@@ -55,14 +55,15 @@ void QgsMapCanvasSnapper::setMapCanvas( QgsMapCanvas* canvas )
   }
   else
   {
-    mSnapper = 0;
+    mSnapper = nullptr;
   }
 }
 
-int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingResult>& results,
+int QgsMapCanvasSnapper::snapToCurrentLayer( QPoint p, QList<QgsSnappingResult>& results,
     QgsSnapper::SnappingType snap_to,
     double snappingTol,
-    const QList<QgsPoint>& excludePoints )
+    const QList<QgsPoint>& excludePoints,
+    bool allResutInTolerance )
 {
   results.clear();
 
@@ -71,7 +72,11 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
 
   //topological editing on?
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
-  if ( topologicalEditing == 0 )
+  if ( allResutInTolerance )
+  {
+    mSnapper->setSnapMode( QgsSnapper::SnapWithResultsWithinTolerances );
+  }
+  else if ( topologicalEditing == 0 )
   {
     mSnapper->setSnapMode( QgsSnapper::SnapWithOneResult );
   }
@@ -92,7 +97,7 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
   QgsSnapper::SnapLayer snapLayer;
   snapLayer.mLayer = vlayer;
   snapLayer.mSnapTo = snap_to;
-  snapLayer.mUnitType = QgsTolerance::MapUnits;
+  snapLayer.mUnitType = QgsTolerance::LayerUnits;
 
   if ( snappingTol < 0 )
   {
@@ -108,13 +113,20 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
   snapLayers.append( snapLayer );
   mSnapper->setSnapLayers( snapLayers );
 
-  if ( mSnapper->snapPoint( p, results, excludePoints ) != 0 )
+  QgsPoint mapPoint = mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( p );
+  if ( mSnapper->snapMapPoint( mapPoint, results, excludePoints ) != 0 )
     return 4;
 
   return 0;
 }
 
-int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints )
+int QgsMapCanvasSnapper::snapToBackgroundLayers( QPoint p, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints )
+{
+  const QgsPoint mapCoordPoint = mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( p.x(), p.y() );
+  return snapToBackgroundLayers( mapCoordPoint, results, excludePoints );
+}
+
+int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints )
 {
   results.clear();
 
@@ -143,13 +155,61 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
     mSnapper->setSnapMode( QgsSnapper::SnapWithResultsWithinTolerances );
   }
 
+  QgsVectorLayer* currentVectorLayer = dynamic_cast<QgsVectorLayer*>( mMapCanvas->currentLayer() );
+  if ( !currentVectorLayer )
+  {
+    return 1;
+  }
+
   //read snapping settings from project
-  bool snappingDefinedInProject, ok;
-  QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", QStringList(), &snappingDefinedInProject );
-  QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", QStringList(), &ok );
-  QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", QStringList(), &ok );
-  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", QStringList(), &ok );
-  QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", QStringList(), &ok );
+  QStringList layerIdList, enabledList, toleranceList, toleranceUnitList, snapToList;
+
+  bool ok, snappingDefinedInProject;
+
+  QSettings settings;
+  QString snappingMode = QgsProject::instance()->readEntry( "Digitizing", "/SnappingMode", "current_layer", &snappingDefinedInProject );
+  QString defaultSnapToleranceUnit = snappingDefinedInProject ? QgsProject::instance()->readEntry( "Digitizing", "/DefaultSnapToleranceUnit" ) : settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", "0" ).toString();
+  QString defaultSnapType = snappingDefinedInProject ? QgsProject::instance()->readEntry( "Digitizing", "/DefaultSnapType" ) : settings.value( "/qgis/digitizing/default_snap_mode", "off" ).toString();
+  QString defaultSnapTolerance = snappingDefinedInProject ? QString::number( QgsProject::instance()->readDoubleEntry( "Digitizing", "/DefaultSnapTolerance" ) ) : settings.value( "/qgis/digitizing/default_snapping_tolerance", "0" ).toString();
+
+  if ( !snappingDefinedInProject && defaultSnapType == "off" )
+  {
+    return 0;
+  }
+
+  if ( snappingMode == "current_layer" || !snappingDefinedInProject )
+  {
+    layerIdList.append( currentVectorLayer->id() );
+    enabledList.append( "enabled" );
+    toleranceList.append( defaultSnapTolerance );
+    toleranceUnitList.append( defaultSnapToleranceUnit );
+    snapToList.append( defaultSnapType );
+  }
+  else if ( snappingMode == "all_layers" )
+  {
+    QList<QgsMapLayer*> allLayers = mMapCanvas->layers();
+    QList<QgsMapLayer*>::const_iterator layerIt = allLayers.constBegin();
+    for ( ; layerIt != allLayers.constEnd(); ++layerIt )
+    {
+      if ( !( *layerIt ) )
+      {
+        continue;
+      }
+      layerIdList.append(( *layerIt )->id() );
+      enabledList.append( "enabled" );
+      toleranceList.append( defaultSnapTolerance );
+      toleranceUnitList.append( defaultSnapToleranceUnit );
+      snapToList.append( defaultSnapType );
+    }
+  }
+  else //advanced
+  {
+    layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", QStringList(), &ok );
+    enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", QStringList(), &ok );
+    toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", QStringList(), &ok );
+    toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", QStringList(), &ok );
+    snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", QStringList(), &ok );
+  }
 
   if ( !( layerIdList.size() == enabledList.size() &&
           layerIdList.size() == toleranceList.size() &&
@@ -163,102 +223,64 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
   QList<QgsSnapper::SnapLayer> snapLayers;
   QgsSnapper::SnapLayer snapLayer;
 
-  // Use snapping information from the project
-  if ( snappingDefinedInProject )
+
+
+  // set layers, tolerances, snap to segment/vertex to QgsSnapper
+  QStringList::const_iterator layerIt( layerIdList.constBegin() );
+  QStringList::const_iterator tolIt( toleranceList.constBegin() );
+  QStringList::const_iterator tolUnitIt( toleranceUnitList.constBegin() );
+  QStringList::const_iterator snapIt( snapToList.constBegin() );
+  QStringList::const_iterator enabledIt( enabledList.constBegin() );
+  for ( ; layerIt != layerIdList.constEnd(); ++layerIt, ++tolIt, ++tolUnitIt, ++snapIt, ++enabledIt )
   {
-    // set layers, tolerances, snap to segment/vertex to QgsSnapper
-    QStringList::const_iterator layerIt( layerIdList.constBegin() );
-    QStringList::const_iterator tolIt( toleranceList.constBegin() );
-    QStringList::const_iterator tolUnitIt( toleranceUnitList.constBegin() );
-    QStringList::const_iterator snapIt( snapToList.constBegin() );
-    QStringList::const_iterator enabledIt( enabledList.constBegin() );
-    for ( ; layerIt != layerIdList.constEnd(); ++layerIt, ++tolIt, ++tolUnitIt, ++snapIt, ++enabledIt )
+    if ( *enabledIt != "enabled" )
     {
-      if ( *enabledIt != "enabled" )
-      {
-        // skip layer if snapping is not enabled
-        continue;
-      }
-
-      //layer
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( *layerIt ) );
-      if ( !vlayer || !vlayer->hasGeometryType() )
-        continue;
-
-      snapLayer.mLayer = vlayer;
-
-      //tolerance
-      snapLayer.mTolerance = tolIt->toDouble();
-      snapLayer.mUnitType = ( QgsTolerance::UnitType ) tolUnitIt->toInt();
-
-      // segment or vertex
-      if ( *snapIt == "to_vertex" )
-      {
-        snapLayer.mSnapTo = QgsSnapper::SnapToVertex;
-      }
-      else if ( *snapIt == "to_segment" )
-      {
-        snapLayer.mSnapTo = QgsSnapper::SnapToSegment;
-      }
-      else
-      {
-        // to vertex and segment
-        snapLayer.mSnapTo = QgsSnapper::SnapToVertexAndSegment;
-      }
-
-      snapLayers.append( snapLayer );
+      // skip layer if snapping is not enabled
+      continue;
     }
-  }
-  else
-  {
-    // nothing in project. Use default snapping tolerance to vertex of current layer
-    QgsMapLayer* currentLayer = mMapCanvas->currentLayer();
-    if ( !currentLayer )
-      return 2;
 
-    QgsVectorLayer* currentVectorLayer = qobject_cast<QgsVectorLayer *>( currentLayer );
-    if ( !currentVectorLayer )
-      return 3;
+    //layer
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( *layerIt ) );
+    if ( !vlayer || !vlayer->hasGeometryType() )
+      continue;
 
-    snapLayer.mLayer = currentVectorLayer;
+    snapLayer.mLayer = vlayer;
 
-    //default snap mode
-    QSettings settings;
-    QString defaultSnapString = settings.value( "/qgis/digitizing/default_snap_mode", "off" ).toString();
-    if ( defaultSnapString == "to segment" )
-    {
-      snapLayer.mSnapTo = QgsSnapper::SnapToSegment;
-    }
-    else if ( defaultSnapString == "to vertex and segment" )
-    {
-      snapLayer.mSnapTo = QgsSnapper::SnapToVertexAndSegment;
-    }
-    else if ( defaultSnapString == "to vertex" )
+    //tolerance
+    snapLayer.mTolerance = tolIt->toDouble();
+    snapLayer.mUnitType = ( QgsTolerance::UnitType ) tolUnitIt->toInt();
+
+    // segment or vertex
+    if ( *snapIt == "to vertex" || *snapIt == "to_vertex" )
     {
       snapLayer.mSnapTo = QgsSnapper::SnapToVertex;
     }
-    else
+    else if ( *snapIt == "to segment" || *snapIt == "to_segment" )
     {
-      return 0;
+      snapLayer.mSnapTo = QgsSnapper::SnapToSegment;
     }
-
-    //default snapping tolerance (returned in map units)
-    snapLayer.mTolerance = QgsTolerance::defaultTolerance( currentVectorLayer, mMapCanvas->mapSettings() );
-    snapLayer.mUnitType = QgsTolerance::MapUnits;
+    else if ( *snapIt == "to vertex and segment" || *snapIt == "to_vertex_and_segment" )
+    {
+      snapLayer.mSnapTo = QgsSnapper::SnapToVertexAndSegment;
+    }
+    else //off
+    {
+      continue;
+    }
 
     snapLayers.append( snapLayer );
   }
 
   mSnapper->setSnapLayers( snapLayers );
 
-  if ( mSnapper->snapPoint( p, results, excludePoints ) != 0 )
+  if ( mSnapper->snapMapPoint( point, results, excludePoints ) != 0 )
     return 4;
 
   if ( intersectionSnapping != 1 )
     return 0;
 
-  QList<QgsSnappingResult> segments;
-  QList<QgsSnappingResult> points;
+  QVector<QgsSnappingResult> segments;
+  QVector<QgsSnappingResult> points;
   for ( QList<QgsSnappingResult>::const_iterator it = results.constBegin();
         it != results.constEnd();
         ++it )
@@ -275,12 +297,12 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
     }
   }
 
-  if ( segments.length() < 2 )
+  if ( segments.count() < 2 )
     return 0;
 
   QList<QgsSnappingResult> myResults;
 
-  for ( QList<QgsSnappingResult>::const_iterator oSegIt = segments.constBegin();
+  for ( QVector<QgsSnappingResult>::const_iterator oSegIt = segments.constBegin();
         oSegIt != segments.constEnd();
         ++oSegIt )
   {
@@ -292,22 +314,48 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
 
     QgsGeometry* lineA = QgsGeometry::fromPolyline( vertexPoints );
 
-    for ( QList<QgsSnappingResult>::iterator iSegIt = segments.begin();
+    for ( QVector<QgsSnappingResult>::iterator iSegIt = segments.begin();
           iSegIt != segments.end();
           ++iSegIt )
     {
       QVector<QgsPoint> vertexPoints;
       vertexPoints.append( iSegIt->beforeVertex );
       vertexPoints.append( iSegIt->afterVertex );
-      QgsGeometry* lineB = QgsGeometry::fromPolyline( vertexPoints );
 
+      QgsGeometry* lineB = QgsGeometry::fromPolyline( vertexPoints );
       QgsGeometry* intersectionPoint = lineA->intersection( lineB );
-      if ( intersectionPoint->type()  == QGis::Point )
+      delete lineB;
+
+      if ( intersectionPoint && intersectionPoint->type() == QGis::Point )
       {
-        iSegIt->snappedVertex = intersectionPoint->asPoint();
-        myResults.append( *iSegIt );
+        //We have to check the intersection point is inside the tolerance distance for both layers
+        double toleranceA = 0;
+        double toleranceB = 0;
+        for ( int i = 0 ;i < snapLayers.size();++i )
+        {
+          if ( snapLayers[i].mLayer == oSegIt->layer )
+          {
+            toleranceA = QgsTolerance::toleranceInMapUnits( snapLayers[i].mTolerance, snapLayers[i].mLayer, mMapCanvas->mapSettings(), snapLayers[i].mUnitType );
+          }
+          if ( snapLayers[i].mLayer == iSegIt->layer )
+          {
+            toleranceB = QgsTolerance::toleranceInMapUnits( snapLayers[i].mTolerance, snapLayers[i].mLayer, mMapCanvas->mapSettings(), snapLayers[i].mUnitType );
+          }
+        }
+        QgsGeometry* cursorPoint = QgsGeometry::fromPoint( point );
+        double distance = intersectionPoint->distance( *cursorPoint );
+        if ( distance < toleranceA && distance < toleranceB )
+        {
+          iSegIt->snappedVertex = intersectionPoint->asPoint();
+          myResults.append( *iSegIt );
+        }
+        delete cursorPoint;
       }
+      delete intersectionPoint;
+
     }
+
+    delete lineA;
   }
 
   if ( myResults.length() > 0 )

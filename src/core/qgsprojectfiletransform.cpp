@@ -52,10 +52,14 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] =
   {PFV( 1, 5, 0 ), PFV( 1, 6, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 1, 6, 0 ), PFV( 1, 7, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 1, 7, 0 ), PFV( 1, 8, 0 ), &QgsProjectFileTransform::transformNull},
-  {PFV( 1, 8, 0 ), PFV( 1, 9, 0 ), &QgsProjectFileTransform::transform1800to1900}
+  {PFV( 1, 8, 0 ), PFV( 1, 9, 0 ), &QgsProjectFileTransform::transform1800to1900},
+  {PFV( 1, 9, 0 ), PFV( 2, 0, 0 ), &QgsProjectFileTransform::transformNull},
+  {PFV( 2, 0, 0 ), PFV( 2, 1, 0 ), &QgsProjectFileTransform::transformNull},
+  {PFV( 2, 1, 0 ), PFV( 2, 2, 0 ), &QgsProjectFileTransform::transformNull},
+  {PFV( 2, 2, 0 ), PFV( 2, 3, 0 ), &QgsProjectFileTransform::transform2200to2300},
 };
 
-bool QgsProjectFileTransform::updateRevision( QgsProjectVersion newVersion )
+bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion& newVersion )
 {
   Q_UNUSED( newVersion );
   bool returnValue = false;
@@ -292,7 +296,7 @@ void QgsProjectFileTransform::transform0100to0110()
 
       //replace old text node
       QDomNode pointSizeTextNode = currentPointSizeElem.firstChild();
-      QDomText newPointSizeText = mDom.createTextNode( QString::number(( int )pointSize ) );
+      QDomText newPointSizeText = mDom.createTextNode( QString::number( static_cast< int >( pointSize ) ) );
       currentPointSizeElem.replaceChild( newPointSizeText, pointSizeTextNode );
     }
   }
@@ -351,7 +355,7 @@ void QgsProjectFileTransform::transform0110to1000()
         int fieldNumber = classificationFieldElem.text().toInt();
         if ( fieldNumber >= 0 && fieldNumber < theFields.count() )
         {
-          QDomText fieldName = mDom.createTextNode( theFields[fieldNumber].name() );
+          QDomText fieldName = mDom.createTextNode( theFields.at( fieldNumber ).name() );
           QDomNode nameNode = classificationFieldElem.firstChild();
           classificationFieldElem.replaceChild( fieldName, nameNode );
         }
@@ -440,7 +444,7 @@ void QgsProjectFileTransform::transform1400to1500()
       }
 
       QDomElement classificationElement;
-      if ( vectorClassificationList.size() > 0 ) //we guess it is a vector layer
+      if ( !vectorClassificationList.isEmpty() ) //we guess it is a vector layer
       {
         classificationElement = mDom.createElement( "VectorClassificationItem" );
       }
@@ -584,7 +588,7 @@ void QgsProjectFileTransform::transform1800to1900()
           QDomElement propElem = propList.at( k ).toElement();
           if ( propElem.attribute( "k" ) == "color" || propElem.attribute( "k" ) == "color_border" )
           {
-            propElem.setAttribute( "v", propElem.attribute( "v" ).section( ",", 0, 2 ) + ",255" );
+            propElem.setAttribute( "v", propElem.attribute( "v" ).section( ',', 0, 2 ) + ",255" );
           }
         }
       }
@@ -592,6 +596,17 @@ void QgsProjectFileTransform::transform1800to1900()
   }
 
   QgsDebugMsg( mDom.toString() );
+}
+
+void QgsProjectFileTransform::transform2200to2300()
+{
+  //composer: set placement for all picture items to middle, to mimic <=2.2 behaviour
+  QDomNodeList composerPictureList = mDom.elementsByTagName( "ComposerPicture" );
+  for ( int i = 0; i < composerPictureList.size(); ++i )
+  {
+    QDomElement picture = composerPictureList.at( i ).toElement();
+    picture.setAttribute( "anchorPoint", QString::number( 4 ) );
+  }
 }
 
 void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNode& parentNode,
@@ -666,7 +681,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
       QDomElement colorRampEntryElem = colorRampEntryList.at( i ).toElement();
       QString strValue = colorRampEntryElem.attribute( "value" );
       double value = strValue.toDouble();
-      if ( value < 0 || value > 10000 || value != ( int )value )
+      if ( value < 0 || value > 10000 || !qgsDoubleNear( value, static_cast< int >( value ) ) )
       {
         QgsDebugMsg( QString( "forcing SingleBandPseudoColor value = %1" ).arg( value ) );
         drawingStyle = "SingleBandPseudoColor";
@@ -768,7 +783,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
     {
       colorRampEntryElem = colorRampEntryList.at( i ).toElement();
       QDomElement newPaletteElem = doc.createElement( "paletteEntry" );
-      value = ( int )( colorRampEntryElem.attribute( "value" ).toDouble() );
+      value = static_cast< int >( colorRampEntryElem.attribute( "value" ).toDouble() );
       newPaletteElem.setAttribute( "value", value );
       red = colorRampEntryElem.attribute( "red" ).toInt();
       green = colorRampEntryElem.attribute( "green" ).toInt();

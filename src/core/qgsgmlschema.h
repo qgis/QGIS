@@ -39,10 +39,8 @@ class QgsCoordinateReferenceSystem;
 class CORE_EXPORT QgsGmlFeatureClass
 {
   public:
-    QgsGmlFeatureClass( );
-    QgsGmlFeatureClass( QString name, QString path );
-
-    ~QgsGmlFeatureClass();
+    QgsGmlFeatureClass();
+    QgsGmlFeatureClass( const QString& name, const QString& path );
 
     QList<QgsField> & fields() { return  mFields; }
 
@@ -115,7 +113,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
       geometry
     };
 
-    /**XML handler methods*/
+    /** XML handler methods*/
     void startElement( const XML_Char* el, const XML_Char** attr );
     void endElement( const XML_Char* el );
     void characters( const XML_Char* chars, int len );
@@ -131,14 +129,16 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     {
       static_cast<QgsGmlSchema*>( data )->characters( chars, len );
     }
+    // Add attribute or reset its type according to value of current feature
+    void addAttribute( const QString& name, const QString& value );
 
     //helper routines
 
-    /**Reads attribute as string
+    /** Reads attribute as string
       @return attribute value or an empty string if no such attribute*/
     QString readAttribute( const QString& attributeName, const XML_Char** attr ) const;
 
-    /**Returns pointer to main window or 0 if it does not exist*/
+    /** Returns pointer to main window or 0 if it does not exist*/
     QWidget* findMainWindow() const;
 
     /** Get dom elements by path */
@@ -173,18 +173,18 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     /** Safely (if empty) pop from mode stack */
     ParseMode modeStackPop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.pop(); }
 
-    /**Keep track about the most important nested elements*/
+    /** Keep track about the most important nested elements*/
     //std::stack<ParseMode> mParseModeStack;
     QStack<ParseMode> mParseModeStack;
-    /**This contains the character data if an important element has been encountered*/
+    /** This contains the character data if an important element has been encountered*/
     QString mStringCash;
     QgsFeature* mCurrentFeature;
     QString mCurrentFeatureId;
     int mFeatureCount;
     QString mAttributeName;
-    /**Coordinate separator for coordinate strings. Usually "," */
+    /** Coordinate separator for coordinate strings. Usually "," */
     QString mCoordinateSeparator;
-    /**Tuple separator for coordinate strings. Usually " " */
+    /** Tuple separator for coordinate strings. Usually " " */
     QString mTupleSeparator;
 
     /* Schema information guessed/parsed from GML in getSchema() */

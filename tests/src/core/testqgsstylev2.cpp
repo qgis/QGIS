@@ -12,50 +12,67 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 
 //qgis includes...
+#include "qgsmultirenderchecker.h"
 #include <qgsapplication.h>
 #include "qgsconfig.h"
 #include "qgslogger.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgscptcityarchive.h"
+#include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
+#include "qgslinesymbollayerv2.h"
+#include "qgsfillsymbollayerv2.h"
+#include "qgssinglesymbolrendererv2.h"
 
 #include "qgsstylev2.h"
 
 /** \ingroup UnitTests
  * This is a unit test to verify that styles are working correctly
  */
-class TestStyleV2: public QObject
+class TestStyleV2 : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestStyleV2();
 
   private:
+
+    QString mReport;
 
     QgsStyleV2 *mStyle;
     QString mTestDataDir;
 
-    bool testValidColor( QgsVectorColorRampV2 *ramp, double value, QColor expected );
+    bool testValidColor( QgsVectorColorRampV2 *ramp, double value, const QColor& expected );
+    bool imageCheck( QgsMapSettings &ms, const QString &testName );
 
   private slots:
 
     // init / cleanup
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {}// will be called before each testfunction is executed.
+    void cleanup() {}// will be called after every testfunction.
     // void initStyles();
 
     void testCreateColorRamps();
     void testLoadColorRamps();
     void testSaveLoad();
+
 };
 
+TestStyleV2::TestStyleV2()
+    : mStyle( nullptr )
+{
+
+}
 
 // slots
 void TestStyleV2::initTestCase()
@@ -64,7 +81,7 @@ void TestStyleV2::initTestCase()
   QgsApplication::init( QDir::tempPath() + "/dot-qgis" );
   QgsApplication::initQgis();
   QgsApplication::createDB();
-  mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   // output test environment
   QgsApplication::showSettings();
@@ -86,6 +103,8 @@ void TestStyleV2::initTestCase()
 
   // cpt-city ramp, small selection available in <testdir>/cpt-city
   QgsCptCityArchive::initArchives();
+
+  mReport += "<h1>StyleV2 Tests</h1>\n";
 }
 
 void TestStyleV2::cleanupTestCase()
@@ -93,15 +112,38 @@ void TestStyleV2::cleanupTestCase()
   // don't save
   // mStyle->save();
   delete mStyle;
+  QgsCptCityArchive::clearArchives();
+  QgsApplication::exitQgis();
+
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+    //QDesktopServices::openUrl( "file:///" + myReportFile );
+  }
 }
 
-bool TestStyleV2::testValidColor( QgsVectorColorRampV2 *ramp, double value, QColor expected )
+bool TestStyleV2::imageCheck( QgsMapSettings& ms, const QString& testName )
+{
+  QgsMultiRenderChecker checker;
+  ms.setOutputDpi( 96 );
+  checker.setControlName( "expected_" + testName );
+  checker.setMapSettings( ms );
+  bool result = checker.runTest( testName, 0 );
+  mReport += checker.report();
+  return result;
+}
+
+bool TestStyleV2::testValidColor( QgsVectorColorRampV2 *ramp, double value, const QColor& expected )
 {
   QColor result = ramp->color( value );
   if ( result != expected )
   {
     QWARN( QString( "value = %1 result = %2 expected = %3" ).arg( value ).arg(
-             result.name() ).arg( expected.name() ).toLocal8Bit().data() );
+             result.name(), expected.name() ).toLocal8Bit().data() );
     return false;
   }
   return true;
@@ -167,7 +209,7 @@ void TestStyleV2::testLoadColorRamps()
 
   QgsDebugMsg( "loaded colorRamps: " + colorRamps.join( " " ) );
 
-  foreach ( QString name, colorRampsTest )
+  Q_FOREACH ( const QString& name, colorRampsTest )
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
@@ -200,7 +242,7 @@ void TestStyleV2::testSaveLoad()
 
   QStringList colorRampsTest = QStringList() << "test_gradient";
 
-  foreach ( QString name, colorRampsTest )
+  Q_FOREACH ( const QString& name, colorRampsTest )
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
@@ -213,6 +255,5 @@ void TestStyleV2::testSaveLoad()
   testLoadColorRamps();
 }
 
-
 QTEST_MAIN( TestStyleV2 )
-#include "moc_testqgsstylev2.cxx"
+#include "testqgsstylev2.moc"

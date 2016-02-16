@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 29.5.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,10 +19,17 @@
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetfactory.h"
 
+class QgsMapCanvas;
+class QgsMessageBar;
+
+/** \class QgsRelationReferenceFactory
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsRelationReferenceFactory( QgsAttributeEditorContext context, QString name );
+    QgsRelationReferenceFactory( const QString& name, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
 
     /**
      * Override this in your implementation.
@@ -36,7 +43,7 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      *
      * @return         A new widget wrapper
      */
-    virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const;
+    virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
 
     /**
      * Override this in your implementation.
@@ -48,7 +55,7 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      *
      * @return         A configuration widget
      */
-    virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const;
+    virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
 
     /**
      * Read the config from an XML file and map it to a proper {@link QgsEditorWidgetConfig}.
@@ -59,7 +66,7 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      *
      * @return A configuration object. This will be passed to your widget wrapper later on
      */
-    virtual QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
+    virtual QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx ) override;
 
     /**
      * Serialize your configuration and save it in a xml doc.
@@ -70,10 +77,14 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      * @param layer         The layer for which this configuration applies
      * @param fieldIdx      The field on the layer for which this configuration applies
      */
-    virtual void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, const QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx );
+    virtual void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
+
+    virtual QMap<const char*, int> supportedWidgetTypes() override;
 
   private:
     QgsAttributeEditorContext mEditorContext;
+    QgsMapCanvas* mCanvas;
+    QgsMessageBar* mMessageBar;
 };
 
 #endif // QGSRELATIONREFERENCEFACTORY_H

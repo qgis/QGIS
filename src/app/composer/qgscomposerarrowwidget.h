@@ -19,14 +19,15 @@
 #define QGSCOMPOSERARROWWIDGET_H
 
 #include "ui_qgscomposerarrowwidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerArrow;
 
-class QgsComposerArrowWidget: public QWidget, private Ui::QgsComposerArrowWidgetBase
+class QgsComposerArrowWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerArrowWidgetBase
 {
     Q_OBJECT
   public:
-    QgsComposerArrowWidget( QgsComposerArrow* arrow );
+    explicit QgsComposerArrowWidget( QgsComposerArrow* arrow );
     ~QgsComposerArrowWidget();
 
   private:
@@ -36,13 +37,16 @@ class QgsComposerArrowWidget: public QWidget, private Ui::QgsComposerArrowWidget
 
     QButtonGroup* mRadioButtonGroup;
 
-    /**Enables / disables the SVG line inputs*/
+    /** Enables / disables the SVG line inputs*/
     void enableSvgInputElements( bool enable );
+
+    void updateLineSymbolMarker();
 
   private slots:
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mArrowHeadWidthSpinBox_valueChanged( double d );
-    void on_mArrowColorButton_colorChanged( const QColor& newColor );
+    void on_mArrowHeadFillColorButton_colorChanged( const QColor& newColor );
+    void on_mArrowHeadOutlineColorButton_colorChanged( const QColor& newColor );
     void on_mDefaultMarkerRadioButton_toggled( bool toggled );
     void on_mNoMarkerRadioButton_toggled( bool toggled );
     void on_mSvgMarkerRadioButton_toggled( bool toggled );
@@ -50,6 +54,7 @@ class QgsComposerArrowWidget: public QWidget, private Ui::QgsComposerArrowWidget
     void on_mEndMarkerLineEdit_textChanged( const QString & text );
     void on_mStartMarkerToolButton_clicked();
     void on_mEndMarkerToolButton_clicked();
+    void on_mLineStyleButton_clicked();
 
     void setGuiElementValues();
 };

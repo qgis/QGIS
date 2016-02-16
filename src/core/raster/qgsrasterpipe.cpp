@@ -34,7 +34,7 @@ QgsRasterPipe::QgsRasterPipe( const QgsRasterPipe& thePipe )
     QgsRasterInterface* clone = interface->clone();
 
     Role role = interfaceRole( clone );
-    QgsDebugMsg( QString( "cloned inerface with role %1" ).arg( role ) );
+    QgsDebugMsgLevel( QString( "cloned interface with role %1" ).arg( role ), 4 );
     if ( i > 0 )
     {
       clone->setInput( mInterfaces.at( i - 1 ) );
@@ -49,7 +49,7 @@ QgsRasterPipe::QgsRasterPipe( const QgsRasterPipe& thePipe )
 
 QgsRasterPipe::~QgsRasterPipe()
 {
-  foreach ( QgsRasterInterface* interface, mInterfaces )
+  Q_FOREACH ( QgsRasterInterface* interface, mInterfaces )
   {
     delete interface;
   }
@@ -57,12 +57,16 @@ QgsRasterPipe::~QgsRasterPipe()
 
 bool QgsRasterPipe::connect( QVector<QgsRasterInterface*> theInterfaces )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
   for ( int i = 1; i < theInterfaces.size(); i++ )
   {
     if ( ! theInterfaces[i]->setInput( theInterfaces[i-1] ) )
     {
-      QgsDebugMsg( QString( "cannot connect %1 to %2" ).arg( typeid( *( theInterfaces[i] ) ).name() ).arg( typeid( *( theInterfaces[i-1] ) ).name() ) );
+#ifdef QGISDEBUG
+      const QgsRasterInterface &a = *theInterfaces[i];
+      const QgsRasterInterface &b = *theInterfaces[i-1];
+      QgsDebugMsg( QString( "cannot connect %1 to %2" ).arg( typeid( a ).name(), typeid( b ).name() ) );
+#endif
       return false;
     }
   }
@@ -71,7 +75,7 @@ bool QgsRasterPipe::connect( QVector<QgsRasterInterface*> theInterfaces )
 
 bool QgsRasterPipe::insert( int idx, QgsRasterInterface* theInterface )
 {
-  QgsDebugMsg( QString( "insert %1 at %2" ).arg( typeid( *theInterface ).name() ).arg( idx ) );
+  QgsDebugMsgLevel( QString( "insert %1 at %2" ).arg( typeid( *theInterface ).name() ).arg( idx ), 4 );
   if ( idx > mInterfaces.size() )
   {
     idx = mInterfaces.size();
@@ -87,7 +91,7 @@ bool QgsRasterPipe::insert( int idx, QgsRasterInterface* theInterface )
     success = true;
     mInterfaces.insert( idx, theInterface );
     setRole( theInterface, idx );
-    QgsDebugMsg( "inserted ok" );
+    QgsDebugMsgLevel( "inserted ok", 4 );
   }
 
   // Connect or reconnect (after the test) interfaces
@@ -97,9 +101,10 @@ bool QgsRasterPipe::insert( int idx, QgsRasterInterface* theInterface )
 
 bool QgsRasterPipe::replace( int idx, QgsRasterInterface* theInterface )
 {
-  QgsDebugMsg( QString( "replace by %1 at %2" ).arg( typeid( *theInterface ).name() ).arg( idx ) );
-  if ( !checkBounds( idx ) ) return false;
   if ( !theInterface ) return false;
+
+  QgsDebugMsgLevel( QString( "replace by %1 at %2" ).arg( typeid( *theInterface ).name() ).arg( idx ), 4 );
+  if ( !checkBounds( idx ) ) return false;
 
   // make a copy of pipe to test connection, we test the connections
   // of the whole pipe, because the types and band numbers may change
@@ -110,10 +115,10 @@ bool QgsRasterPipe::replace( int idx, QgsRasterInterface* theInterface )
   if ( connect( interfaces ) )
   {
     success = true;
-    delete mInterfaces[idx];
+    delete mInterfaces.at( idx );
     mInterfaces[idx] = theInterface;
     setRole( theInterface, idx );
-    QgsDebugMsg( "replaced ok" );
+    QgsDebugMsgLevel( "replaced ok", 4 );
   }
 
   // Connect or reconnect (after the test) interfaces
@@ -132,7 +137,7 @@ QgsRasterPipe::Role QgsRasterPipe::interfaceRole( QgsRasterInterface * interface
   else if ( dynamic_cast<QgsRasterProjector *>( interface ) ) role = ProjectorRole;
   else if ( dynamic_cast<QgsRasterNuller *>( interface ) ) role = NullerRole;
 
-  QgsDebugMsg( QString( "%1 role = %2" ).arg( typeid( *interface ).name() ).arg( role ) );
+  QgsDebugMsgLevel( QString( "%1 role = %2" ).arg( typeid( *interface ).name() ).arg( role ), 4 );
   return role;
 }
 
@@ -152,10 +157,9 @@ void QgsRasterPipe::unsetRole( QgsRasterInterface * theInterface )
 
 bool QgsRasterPipe::set( QgsRasterInterface* theInterface )
 {
-  QgsDebugMsg( QString( "%1" ).arg( typeid( *theInterface ).name() ) );
-
   if ( !theInterface ) return false;
 
+  QgsDebugMsgLevel( QString( "%1" ).arg( typeid( *theInterface ).name() ), 4 );
   Role role = interfaceRole( theInterface );
 
   // We don't know where to place unknown interface
@@ -213,12 +217,12 @@ bool QgsRasterPipe::set( QgsRasterInterface* theInterface )
 
 QgsRasterInterface * QgsRasterPipe::interface( Role role ) const
   {
-    QgsDebugMsg( QString( "role = %1" ).arg( role ) );
+    QgsDebugMsgLevel( QString( "role = %1" ).arg( role ), 4 );
     if ( mRoleMap.contains( role ) )
     {
       return mInterfaces.value( mRoleMap.value( role ) );
     }
-    return 0;
+    return nullptr;
   }
 
 QgsRasterDataProvider * QgsRasterPipe::provider() const
@@ -258,7 +262,7 @@ QgsRasterNuller * QgsRasterPipe::nuller() const
 
 bool QgsRasterPipe::remove( int idx )
 {
-  QgsDebugMsg( QString( "remove at %1" ).arg( idx ) );
+  QgsDebugMsgLevel( QString( "remove at %1" ).arg( idx ), 4 );
 
   if ( !checkBounds( idx ) ) return false;
 
@@ -271,10 +275,10 @@ bool QgsRasterPipe::remove( int idx )
   if ( connect( interfaces ) )
   {
     success = true;
-    unsetRole( mInterfaces[idx] );
-    delete mInterfaces[idx];
+    unsetRole( mInterfaces.at( idx ) );
+    delete mInterfaces.at( idx );
     mInterfaces.remove( idx );
-    QgsDebugMsg( "removed ok" );
+    QgsDebugMsgLevel( "removed ok", 4 );
   }
 
   // Connect or reconnect (after the test) interfaces
@@ -291,38 +295,38 @@ bool QgsRasterPipe::remove( QgsRasterInterface * theInterface )
 
 bool QgsRasterPipe::canSetOn( int idx, bool on )
 {
-  QgsDebugMsg( QString( "idx = %1 on = %2" ).arg( idx ).arg( on ) );
+  QgsDebugMsgLevel( QString( "idx = %1 on = %2" ).arg( idx ).arg( on ), 4 );
   if ( !checkBounds( idx ) ) return false;
 
   // Because setting interface on/off may change its output we must check if
   // connection is OK after such switch
-  bool onOrig =  mInterfaces[idx]->on();
+  bool onOrig =  mInterfaces.at( idx )->on();
 
   if ( onOrig == on ) return true;
 
-  mInterfaces[idx]->setOn( on );
+  mInterfaces.at( idx )->setOn( on );
 
   bool success = connect( mInterfaces );
 
-  mInterfaces[idx]->setOn( onOrig );
+  mInterfaces.at( idx )->setOn( onOrig );
   connect( mInterfaces );
   return success;
 }
 
 bool QgsRasterPipe::setOn( int idx, bool on )
 {
-  QgsDebugMsg( QString( "idx = %1 on = %2" ).arg( idx ).arg( on ) );
+  QgsDebugMsgLevel( QString( "idx = %1 on = %2" ).arg( idx ).arg( on ), 4 );
   if ( !checkBounds( idx ) ) return false;
 
-  bool onOrig =  mInterfaces[idx]->on();
+  bool onOrig =  mInterfaces.at( idx )->on();
 
   if ( onOrig == on ) return true;
 
-  mInterfaces[idx]->setOn( on );
+  mInterfaces.at( idx )->setOn( on );
 
   if ( connect( mInterfaces ) ) return true;
 
-  mInterfaces[idx]->setOn( onOrig );
+  mInterfaces.at( idx )->setOn( onOrig );
   connect( mInterfaces );
 
   return false;

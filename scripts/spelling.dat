@@ -94,6 +94,7 @@ langugage:language
 taht:that
 developped:developed
 artifical:artificial
+artefact:artifact
 milliseonds:milliseconds
 pased:passed
 becomming:becoming
@@ -107,6 +108,8 @@ delemiter:delimiter
 delimeter:delimiter
 delemeter:delimiter
 emited:emitted
+emmitted:emitted
+emmited:emitted
 charcter:character
 compatable:compatible
 seperated:separated
@@ -130,6 +133,7 @@ incomming:incoming
 allpication:application
 compresion:compression
 informatiom:information
+informations:information
 remoote:remote
 accesing:accessing
 separatly:separately
@@ -471,3 +475,29 @@ teh:the
 an other:another
 swaped:swapped
 stoped:stopped
+tranform:transform
+wich:which
+comparaison:comparison
+sofware:software
+symetrical:symmetrical
+occurence:occurrence
+occured:occurred
+occuring:occurring
+occurence:occurrence
+overide:override
+overiden:overridden
+overidden:overridden
+overriden:overridden
+supress:suppress
+surpress:suppress
+artefact:artifact
+artefacts:artifacts
+metres:meters
+millimetre:millimeter
+millimetres:millimeters
+centimetre:centimeter
+centimetres:centimeters
+kilometre:kilometer
+kilometres:kilometers
+unselect:deselect
+

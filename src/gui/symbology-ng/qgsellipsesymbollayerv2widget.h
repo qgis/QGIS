@@ -25,13 +25,13 @@ class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerV2Widget, p
     Q_OBJECT
 
   public:
-    QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = 0 );
+    QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsEllipseSymbolLayerV2Widget( vl ); }
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) override;
+    virtual QgsSymbolLayerV2* symbolLayer() override;
 
   protected:
     QgsEllipseSymbolLayerV2* mLayer;
@@ -49,13 +49,12 @@ class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerV2Widget, p
     void on_btnChangeColorBorder_colorChanged( const QColor& newColor );
     void on_btnChangeColorFill_colorChanged( const QColor& newColor );
 
-    void on_mSymbolWidthUnitComboBox_currentIndexChanged( int index );
-    void on_mOutlineWidthUnitComboBox_currentIndexChanged( int index );
-    void on_mSymbolHeightUnitComboBox_currentIndexChanged( int index );
-    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mSymbolWidthUnitWidget_changed();
+    void on_mOutlineWidthUnitWidget_changed();
+    void on_mSymbolHeightUnitWidget_changed();
+    void on_mOffsetUnitWidget_changed();
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
-    void on_mDataDefinedPropertiesButton_clicked();
 
     void setOffset();
 };

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>444</width>
-    <height>543</height>
+    <height>578</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,6 +17,53 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout">
+   <item row="5" column="1" colspan="2">
+    <widget class="QComboBox" name="mFileEncoding">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="mFileFormatLabel">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>File format</string>
+     </property>
+     <property name="buddy">
+      <cstring>mFileFormatComboBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1" colspan="2">
+    <widget class="QComboBox" name="mFileFormatComboBox">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="mFileFormatLabel_2">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>File encoding</string>
+     </property>
+     <property name="buddy">
+      <cstring>mFileFormatComboBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0" colspan="3">
+    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0" colspan="3">
     <widget class="QGroupBox" name="buttonGroup1">
      <property name="title">
@@ -47,10 +94,20 @@
      </layout>
     </widget>
    </item>
-   <item row="9" column="0" colspan="3">
+   <item row="14" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="0" colspan="3">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>New attribute</string>
+      <string>New field</string>
      </property>
      <layout class="QGridLayout">
       <item row="0" column="0">
@@ -82,7 +139,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Width</string>
+         <string>Length</string>
         </property>
         <property name="buddy">
          <cstring>mWidth</cstring>
@@ -114,13 +171,13 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Add attribute to list</string>
+         <string>Add field to list</string>
         </property>
         <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="text">
-         <string>Add to attributes list</string>
+         <string>Add to fields list</string>
         </property>
         <property name="icon">
          <iconset>
@@ -134,10 +191,10 @@
      </layout>
     </widget>
    </item>
-   <item row="11" column="0" colspan="3">
+   <item row="12" column="0" colspan="3">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>Attributes list</string>
+      <string>Fields list</string>
      </property>
      <layout class="QGridLayout">
       <item row="2" column="0" colspan="2">
@@ -169,7 +226,7 @@
         </column>
         <column>
          <property name="text">
-          <string>Width</string>
+          <string>Length</string>
          </property>
         </column>
         <column>
@@ -201,10 +258,10 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Delete selected attribute</string>
+         <string>Delete selected field</string>
         </property>
         <property name="text">
-         <string>Remove attribute</string>
+         <string>Remove field</string>
         </property>
         <property name="icon">
          <iconset>
@@ -218,90 +275,31 @@
      </layout>
     </widget>
    </item>
-   <item row="13" column="0" colspan="3">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="2">
-    <widget class="QPushButton" name="pbnChangeSpatialRefSys">
-     <property name="toolTip">
-      <string>Specify the coordinate reference system of the layer's geometry.</string>
-     </property>
-     <property name="whatsThis">
-      <string>Specify the coordinate reference system of the layer's geometry.</string>
-     </property>
-     <property name="text">
-      <string>Specify CRS</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0" colspan="2">
-    <widget class="QLineEdit" name="leSpatialRefSys">
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="mFileFormatLabel">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="text">
-      <string>File format</string>
-     </property>
-     <property name="buddy">
-      <cstring>mFileFormatComboBox</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="mFileFormatLabel_2">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="text">
-      <string>File encoding</string>
-     </property>
-     <property name="buddy">
-      <cstring>mFileFormatComboBox</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1" colspan="2">
-    <widget class="QComboBox" name="mFileFormatComboBox">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1" colspan="2">
-    <widget class="QComboBox" name="mFileEncoding">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mPointRadioButton</tabstop>
   <tabstop>mLineRadioButton</tabstop>
   <tabstop>mPolygonRadioButton</tabstop>
-  <tabstop>leSpatialRefSys</tabstop>
-  <tabstop>pbnChangeSpatialRefSys</tabstop>
+  <tabstop>mFileEncoding</tabstop>
+  <tabstop>mFileFormatComboBox</tabstop>
+  <tabstop>mCrsSelector</tabstop>
   <tabstop>mNameEdit</tabstop>
   <tabstop>mTypeBox</tabstop>
   <tabstop>mWidth</tabstop>
   <tabstop>mPrecision</tabstop>
+  <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mAttributeView</tabstop>
+  <tabstop>mRemoveAttributeButton</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

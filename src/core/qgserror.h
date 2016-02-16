@@ -36,7 +36,7 @@ class CORE_EXPORT QgsErrorMessage
       Html
     };
 
-    QgsErrorMessage() {}
+    QgsErrorMessage() : mLine( 0 ), mFormat( Text ) {}
 
     /** Constructor.
      *  @param theMessage error message string
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsErrorMessage
     QString mFunction;
     int mLine;
 
-    /* Message format */
+    /** Message format */
     Format mFormat;
 };
 
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsError
      */
     QString message( QgsErrorMessage::Format theFormat = QgsErrorMessage::Html ) const;
 
-    /** Short error descriprion, usually the first error in chain, the real error.
+    /** Short error description, usually the first error in chain, the real error.
      *  @return error description
      */
     QString summary() const;

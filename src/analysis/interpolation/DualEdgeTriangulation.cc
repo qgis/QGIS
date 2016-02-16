@@ -26,7 +26,7 @@ double leftOfTresh = 0.00000001;
 DualEdgeTriangulation::~DualEdgeTriangulation()
 {
   //remove all the points
-  if ( mPointVector.count() > 0 )
+  if ( !mPointVector.isEmpty() )
   {
     for ( int i = 0; i < mPointVector.count(); i++ )
     {
@@ -35,7 +35,7 @@ DualEdgeTriangulation::~DualEdgeTriangulation()
   }
 
   //remove all the HalfEdge
-  if ( mHalfEdge.count() > 0 )
+  if ( !mHalfEdge.isEmpty() )
   {
     for ( int i = 0; i < mHalfEdge.count(); i++ )
     {
@@ -77,7 +77,9 @@ void DualEdgeTriangulation::addLine( Line3D* line, bool breakline )
     for ( i = 0; i < line->getSize(); i++ )
     {
       line->goToNext();
-      actpoint = mDecorator->addPoint( line->getPoint() );
+      // Use copy ctor since line can be deleted as well as its
+      // associated Node and Point3D
+      actpoint = mDecorator->addPoint( new Point3D( *line->getPoint() ) );
       if ( actpoint != -100 )
       {
         i++;
@@ -94,7 +96,7 @@ void DualEdgeTriangulation::addLine( Line3D* line, bool breakline )
     for ( ; i < line->getSize(); i++ )
     {
       line->goToNext();
-      currentpoint = mDecorator->addPoint( line->getPoint() );
+      currentpoint = mDecorator->addPoint( new Point3D( *line->getPoint() ) );
       if ( currentpoint != -100 && actpoint != -100 && currentpoint != actpoint )//-100 is the return value if the point could not be not inserted
       {
         insertForcedSegment( actpoint, currentpoint, breakline );
@@ -112,7 +114,7 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
 // QgsDebugMsg( QString("inserting point %1,%2//%3//%4").arg(mPointVector.count()).arg(p->getX()).arg(p->getY()).arg(p->getZ()));
 
     //first update the bounding box
-    if ( mPointVector.count() == 0 )//update bounding box when the first point is inserted
+    if ( mPointVector.isEmpty() )//update bounding box when the first point is inserted
     {
       xMin = ( *p ).getX();
       yMin = ( *p ).getY();
@@ -295,7 +297,7 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
         {
           toswap = index;
           index = mHalfEdge[mHalfEdge[mHalfEdge[index]->getNext()]->getDual()]->getNext();
-          checkSwap( toswap , 0 );
+          checkSwap( toswap, 0 );
           if ( toswap == cwedge )
           {
             break;
@@ -329,9 +331,9 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
         mHalfEdge.at( nextnextnumber )->setNext(( int )edge6 );
 
         //check, if there are swaps necessary
-        checkSwap( number , 0 );
-        checkSwap( nextnumber , 0 );
-        checkSwap( nextnextnumber , 0 );
+        checkSwap( number, 0 );
+        checkSwap( nextnumber, 0 );
+        checkSwap( nextnextnumber, 0 );
       }
 
       //the point is exactly on an existing edge (the number of the edge is stored in the variable 'mEdgeWithPoint'---------------
@@ -364,13 +366,13 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
         mHalfEdge[edgef]->setNext( nedge2 );
 
         //swap edges if necessary
-        checkSwap( edgec , 0 );
-        checkSwap( edged , 0 );
-        checkSwap( edgee , 0 );
-        checkSwap( edgef , 0 );
+        checkSwap( edgec, 0 );
+        checkSwap( edged, 0 );
+        checkSwap( edgee, 0 );
+        checkSwap( edgef, 0 );
       }
 
-      else if ( number == -100 || number == -5 )//this means unknown problems or a numerical error occured in 'baseEdgeOfTriangle'
+      else if ( number == -100 || number == -5 )//this means unknown problems or a numerical error occurred in 'baseEdgeOfTriangle'
       {
         // QgsDebugMsg("point has not been inserted because of unknown problems");
         Point3D* p = mPointVector[mPointVector.count()-1];
@@ -555,9 +557,9 @@ int DualEdgeTriangulation::baseEdgeOfTriangle( Point3D* point )
     runs++;
   }
 
-  if ( numinstabs > 0 )//we hit an existing point or a numerical instability occured
+  if ( numinstabs > 0 )//we hit an existing point or a numerical instability occurred
   {
-    // QgsDebugMsg("numerical instability occured");
+    // QgsDebugMsg("numerical instability occurred");
     mUnstableEdge = actedge;
     return -5;
   }
@@ -679,7 +681,7 @@ bool DualEdgeTriangulation::calcPoint( double x, double y, Point3D* result )
   }
 }
 
-bool DualEdgeTriangulation::checkSwap( unsigned int edge, unsigned int recursivDeep )
+bool DualEdgeTriangulation::checkSwap( unsigned int edge, unsigned int recursiveDeep )
 {
   if ( swapPossible( edge ) )
   {
@@ -687,9 +689,9 @@ bool DualEdgeTriangulation::checkSwap( unsigned int edge, unsigned int recursivD
     Point3D* ptb = mPointVector[mHalfEdge[mHalfEdge[edge]->getNext()]->getPoint()];
     Point3D* ptc = mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[edge]->getNext()]->getNext()]->getPoint()];
     Point3D* ptd = mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[edge]->getDual()]->getNext()]->getPoint()];
-    if ( MathUtils::inCircle( ptd, pta, ptb, ptc ) && recursivDeep < 100 )//empty circle criterion violated
+    if ( MathUtils::inCircle( ptd, pta, ptb, ptc ) && recursiveDeep < 100 )//empty circle criterion violated
     {
-      doSwap( edge , recursivDeep );//swap the edge (recursiv)
+      doSwap( edge, recursiveDeep );//swap the edge (recursive)
       return true;
     }
   }
@@ -714,7 +716,7 @@ void DualEdgeTriangulation::doOnlySwap( unsigned int edge )
   mHalfEdge[edge2]->setPoint( mHalfEdge[edge5]->getPoint() );
 }
 
-void DualEdgeTriangulation::doSwap( unsigned int edge, unsigned int recursivDeep )
+void DualEdgeTriangulation::doSwap( unsigned int edge, unsigned int recursiveDeep )
 {
   unsigned int edge1 = edge;
   unsigned int edge2 = mHalfEdge[edge]->getDual();
@@ -730,18 +732,18 @@ void DualEdgeTriangulation::doSwap( unsigned int edge, unsigned int recursivDeep
   mHalfEdge[edge6]->setNext( edge3 );
   mHalfEdge[edge1]->setPoint( mHalfEdge[edge3]->getPoint() );//change the points to which edge1 and edge2 point
   mHalfEdge[edge2]->setPoint( mHalfEdge[edge5]->getPoint() );
-  recursivDeep++;
-  checkSwap( edge3 , recursivDeep );
-  checkSwap( edge6 , recursivDeep );
-  checkSwap( edge4 , recursivDeep );
-  checkSwap( edge5 , recursivDeep );
+  recursiveDeep++;
+  checkSwap( edge3, recursiveDeep );
+  checkSwap( edge6, recursiveDeep );
+  checkSwap( edge4, recursiveDeep );
+  checkSwap( edge5, recursiveDeep );
 }
 
 #if 0
 void DualEdgeTriangulation::draw( QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height ) const
 {
   //if mPointVector is empty, there is nothing to do
-  if ( mPointVector.count() == 0 )
+  if ( mPointVector.isEmpty() )
   {
     return;
   }
@@ -926,9 +928,9 @@ QList<int>* DualEdgeTriangulation::getSurroundingTriangles( int pointno )
 {
   int firstedge = baseEdgeOfPoint( pointno );
 
-  if ( firstedge == -1 )//an error occured
+  if ( firstedge == -1 )//an error occurred
   {
-    return 0;
+    return nullptr;
   }
 
   QList<int>* vlist = new QList<int>();//create the value list on the heap
@@ -1386,7 +1388,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
         float frac = distpart / disttot;
         if ( frac == 0 || frac == 1 )
         {
-          break;//seems that a roundoff error occured. We found the endpoint
+          break;//seems that a roundoff error occurred. We found the endpoint
         }
         int newpoint = splitHalfEdge( mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext(), frac );
         insertForcedSegment( p1, newpoint, breakline );
@@ -1433,7 +1435,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
         float frac = distpart / disttot;
         if ( frac == 0 || frac == 1 )
         {
-          break;//seems that a roundoff error occured. We found the endpoint
+          break;//seems that a roundoff error occurred. We found the endpoint
         }
         int newpoint = splitHalfEdge( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext(), frac );
         insertForcedSegment( p1, newpoint, breakline );
@@ -1525,7 +1527,8 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
 
   //set the necessary nexts of leftPolygon(exept the first)
   int actedgel = leftPolygon[1];
-  leftiter = leftPolygon.constBegin(); leftiter += 2;
+  leftiter = leftPolygon.constBegin();
+  leftiter += 2;
   for ( ; leftiter != leftPolygon.constEnd(); ++leftiter )
   {
     mHalfEdge[actedgel]->setNext(( *leftiter ) );
@@ -1534,7 +1537,8 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
 
   //set all the necessary nexts of rightPolygon
   int actedger = rightPolygon[1];
-  rightiter = rightPolygon.constBegin(); rightiter += 2;
+  rightiter = rightPolygon.constBegin();
+  rightiter += 2;
   for ( ; rightiter != rightPolygon.constEnd(); ++rightiter )
   {
     mHalfEdge[actedger]->setNext(( *rightiter ) );
@@ -1556,7 +1560,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   //optimisation of the new edges
   for ( iter = crossedEdges.begin(); iter != crossedEdges.end(); ++iter )
   {
-    checkSwap(( *( iter ) ) , 0 );
+    checkSwap(( *( iter ) ), 0 );
   }
 
   return leftPolygon.first();
@@ -1594,7 +1598,7 @@ void DualEdgeTriangulation::eliminateHorizontalTriangles()
 
   while ( true )
   {
-    bool swapped = false;//flag which allows to exit the loop
+    bool swapped = false;//flag which allows exiting the loop
     bool* control = new bool[mHalfEdge.count()];//controlarray
 
     for ( int i = 0; i <= mHalfEdge.count() - 1; i++ )
@@ -1987,7 +1991,7 @@ void DualEdgeTriangulation::ruppertRefinement()
     //fast version. Maybe this does not work
     QSet<int> influenceedges;//begin fast method
     int baseedge = baseEdgeOfTriangle( &circumcenter );
-    if ( baseedge == -5 )//a numerical instability occured or the circumcenter already exists in the triangulation
+    if ( baseedge == -5 )//a numerical instability occurred or the circumcenter already exists in the triangulation
     {
       //delete minedge from edge_angle and minangle from angle_edge
       edge_angle.erase( minedge );
@@ -2524,7 +2528,8 @@ void DualEdgeTriangulation::triangulatePolygon( QList<int>* poly, QList<int>* fr
       mHalfEdge[( *( --poly->end() ) )]->setNext( inserta );
 
       QList<int> polya;
-      iterator = poly->constBegin(); iterator += 2;
+      iterator = poly->constBegin();
+      iterator += 2;
       while ( iterator != poly->constEnd() )
       {
         polya.append(( *iterator ) );
@@ -2658,7 +2663,7 @@ bool DualEdgeTriangulation::pointInside( double x, double y )
   {
     return true;
   }
-  if ( numinstabs > 0 )//a numerical instability occured
+  if ( numinstabs > 0 )//a numerical instability occurred
   {
     QgsDebugMsg( "numerical instabilities" );
     return true;
@@ -3068,13 +3073,13 @@ QList<int>* DualEdgeTriangulation::getPointsAroundEdge( double x, double y )
     else
     {
       QgsDebugMsg( "warning: null pointer" );
-      return 0;
+      return nullptr;
     }
   }
   else
   {
     QgsDebugMsg( "Edge number negative" );
-    return 0;
+    return nullptr;
   }
 }
 
@@ -3100,7 +3105,7 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
     }
   }
 
-  QgsVectorFileWriter writer( shapeFileName, "Utf-8", fields, QGis::WKBLineString, 0 );
+  QgsVectorFileWriter writer( shapeFileName, "Utf-8", fields, QGis::WKBLineString, nullptr );
   if ( writer.hasError() != QgsVectorFileWriter::NoError )
   {
     return false;
@@ -3244,11 +3249,11 @@ int DualEdgeTriangulation::splitHalfEdge( int edge, float position )
   mHalfEdge[edge]->setPoint( mPointVector.count() - 1 );
   mHalfEdge[mHalfEdge[edge3]->getNext()]->setNext( edge6 );
 
-  //test four times recursively for swaping
-  checkSwap( mHalfEdge[edge5]->getNext() , 0 );
-  checkSwap( mHalfEdge[edge2]->getNext() , 0 );
-  checkSwap( mHalfEdge[dualedge]->getNext() , 0 );
-  checkSwap( mHalfEdge[edge3]->getNext() , 0 );
+  //test four times recursively for swapping
+  checkSwap( mHalfEdge[edge5]->getNext(), 0 );
+  checkSwap( mHalfEdge[edge2]->getNext(), 0 );
+  checkSwap( mHalfEdge[dualedge]->getNext(), 0 );
+  checkSwap( mHalfEdge[edge3]->getNext(), 0 );
 
   mDecorator->addPoint( new Point3D( p->getX(), p->getY(), 0 ) );//dirty hack to enforce update of decorators
 

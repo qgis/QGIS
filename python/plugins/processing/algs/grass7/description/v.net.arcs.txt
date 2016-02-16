@@ -1,0 +1,7 @@
+v.net
+v.net.arcs - Creates arcs from a file of points
+Vector (v.*)
+ParameterVector|points|Input vector point layer (nodes)|0|False
+ParameterFile|file|Name of input arcs file|False|False
+Hardcoded|operation=arcs
+OutputVector|output|Arcs

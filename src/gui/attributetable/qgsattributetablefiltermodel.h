@@ -50,8 +50,15 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * @param sourceModel The QgsAttributeTableModel to use as source (mostly referred to as master model)
      * @param canvas  The mapCanvas. Used to identify the currently visible features.
      */
-    QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent = NULL );
+    QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent = nullptr );
 
+    /**
+     * Set the attribute table model that backs this model
+     *
+     * @param sourceModel The model
+     *
+     * @note added in 2.0
+     */
     void setSourceModel( QgsAttributeTableModel* sourceModel );
 
     /**
@@ -75,7 +82,14 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      *
      * @param ids  The list of feature ids which will be accepted by the filter
      */
-    virtual void setFilteredFeatures( QgsFeatureIds ids );
+    virtual void setFilteredFeatures( const QgsFeatureIds& ids );
+
+    /**
+     * Get a list of currently filtered feature ids
+     *
+     * @return A list of feature ids
+     */
+    QgsFeatureIds filteredFeatures();
 
     /**
      * Set the filter mode the filter will use.
@@ -83,6 +97,13 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * @param filterMode Sets the current mode of the filter
      */
     void setFilterMode( FilterMode filterMode );
+
+    /**
+     * The current filterModel
+     *
+     * @return Mode
+     */
+    FilterMode filterMode() { return mFilterMode; }
 
     /**
      * Returns the layer this filter acts on.
@@ -114,12 +135,24 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     QgsFeatureId rowToId( const QModelIndex& row );
 
-    QModelIndex fidToIndex( QgsFeatureId fid );
+    QModelIndex fidToIndex( QgsFeatureId fid ) override;
     QModelIndexList fidToIndexList( QgsFeatureId fid );
 
     virtual QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const;
 
     virtual QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const;
+
+    /**
+     * Sort by the given column using the given order.
+     * Prefetches all the data from the layer to speed up sorting.
+     *
+     * @param column The column which should be sorted
+     * @param order  The order ( Qt::AscendingOrder or Qt::DescendingOrder )
+     */
+    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
+
+    /** Returns the map canvas*/
+    QgsMapCanvas* mapCanvas() const { return mCanvas; }
 
   protected:
     /**
@@ -128,7 +161,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * @param sourceRow row from the source model
      * @param sourceParent parent index in the source model
      */
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
     /**
      * Updates the list of currently visible features on the map canvas.
@@ -140,16 +173,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * Used by the sorting algorithm. Compares the two model indices. Will also consider the
      * selection state of the feature in case selected features are to be shown on top.
      */
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
-
-    /**
-     * Sort by the given column using the given order.
-     * Prefetches all the data from the layer to speed up sorting.
-     *
-     * @param column The column which should be sorted
-     * @param order  The order ( Qt::AscendingOrder or Qt::DescendingOrder )
-     */
-    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   public slots:
     /**

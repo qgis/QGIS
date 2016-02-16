@@ -12,17 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
 
-#include <iostream>
 //qgis includes...
 #include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
@@ -40,14 +38,24 @@
 /** \ingroup UnitTests
  * This is a unit test for gradient fill types.
  */
-class TestQgsGradients: public QObject
+class TestQgsGradients : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsGradients()
+        : mTestHasError( false )
+        , mpPolysLayer( 0 )
+        , mGradientFill( 0 )
+        , mFillSymbol( 0 )
+        , mSymbolRenderer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void gradientSymbol();
     void gradientSymbolColors();
@@ -63,9 +71,9 @@ class TestQgsGradients: public QObject
     void gradientSymbolFromQml();
   private:
     bool mTestHasError;
-    bool setQml( QString theType );
-    bool imageCheck( QString theType );
-    QgsMapRenderer * mpMapRenderer;
+    bool setQml( const QString& theType );
+    bool imageCheck( const QString& theType );
+    QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
     QgsGradientFillSymbolLayerV2* mGradientFill;
     QgsFillSymbolV2* mFillSymbol;
@@ -85,7 +93,7 @@ void TestQgsGradients::initTestCase()
 
   //create some objects that will be used in all tests...
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + QDir::separator();
+  mTestDataDir = myDataDir + '/';
 
   //
   //create a poly layer that will be used in all tests...
@@ -114,16 +122,13 @@ void TestQgsGradients::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mpMapRenderer = new QgsMapRenderer();
-  QStringList myLayers;
-  myLayers << mpPolysLayer->id();
-  mpMapRenderer->setLayerSet( myLayers );
+  mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
   mReport += "<h1>Gradient Renderer Tests</h1>\n";
 
 }
 void TestQgsGradients::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -131,6 +136,8 @@ void TestQgsGradients::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsGradients::gradientSymbol()
@@ -261,7 +268,7 @@ void TestQgsGradients::gradientSymbolFromQml()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsGradients::setQml( QString theType )
+bool TestQgsGradients::setQml( const QString& theType )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
@@ -276,18 +283,19 @@ bool TestQgsGradients::setQml( QString theType )
   return myStyleFlag;
 }
 
-bool TestQgsGradients::imageCheck( QString theTestType )
+bool TestQgsGradients::imageCheck( const QString& theTestType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
-  mpMapRenderer->setExtent( mpPolysLayer->extent() );
+  mMapSettings.setExtent( mpPolysLayer->extent() );
   QgsRenderChecker myChecker;
+  myChecker.setControlPathPrefix( "symbol_gradient" );
   myChecker.setControlName( "expected_" + theTestType );
-  myChecker.setMapRenderer( mpMapRenderer );
+  myChecker.setMapSettings( mMapSettings );
   bool myResultFlag = myChecker.runTest( theTestType );
   mReport += myChecker.report();
   return myResultFlag;
 }
 
 QTEST_MAIN( TestQgsGradients )
-#include "moc_testqgsgradients.cxx"
+#include "testqgsgradients.moc"

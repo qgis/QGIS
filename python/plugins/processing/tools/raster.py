@@ -26,8 +26,9 @@ __copyright__ = '(C) 2013, Victor Olaya  and Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import struct
+import numpy
 from osgeo import gdal
-from osgeo.gdalconst import *
+from osgeo.gdalconst import GA_ReadOnly
 
 
 def scanraster(layer, progress):
@@ -35,11 +36,27 @@ def scanraster(layer, progress):
     dataset = gdal.Open(filename, GA_ReadOnly)
     band = dataset.GetRasterBand(1)
     nodata = band.GetNoDataValue()
+    bandtype = gdal.GetDataTypeName(band.DataType)
     for y in xrange(band.YSize):
         progress.setPercentage(y / float(band.YSize) * 100)
         scanline = band.ReadRaster(0, y, band.XSize, 1, band.XSize, 1,
                                    band.DataType)
-        values = struct.unpack('f' * band.XSize, scanline)
+        if bandtype == 'Byte':
+            values = struct.unpack('B' * band.XSize, scanline)
+        elif bandtype == 'Int16':
+            values = struct.unpack('h' * band.XSize, scanline)
+        elif bandtype == 'UInt16':
+            values = struct.unpack('H' * band.XSize, scanline)
+        elif bandtype == 'Int32':
+            values = struct.unpack('i' * band.XSize, scanline)
+        elif bandtype == 'UInt32':
+            values = struct.unpack('I' * band.XSize, scanline)
+        elif bandtype == 'Float32':
+            values = struct.unpack('f' * band.XSize, scanline)
+        elif bandtype == 'Float64':
+            values = struct.unpack('d' * band.XSize, scanline)
+        else:
+            raise GeoAlgorithmExecutionException('Raster format not supported')
         for value in values:
             if value == nodata:
                 value = None
@@ -47,77 +64,51 @@ def scanraster(layer, progress):
 
 
 def mapToPixel(mX, mY, geoTransform):
-    """Convert map coordinates to pixel coordinates.
-
-    @param mX              Input map X coordinate (double)
-    @param mY              Input map Y coordinate (double)
-    @param geoTransform    Input geotransform (six doubles)
-    @return pX, pY         Output coordinates (two doubles)
-    """
-
-    if geoTransform[2] + geoTransform[4] == 0:
-        pX = (mX - geoTransform[0]) / geoTransform[1]
-        pY = (mY - geoTransform[3]) / geoTransform[5]
-    else:
-        (pX, pY) = applyGeoTransform(mX, mY, invertGeoTransform(geoTransform))
+    (pX, pY) = gdal.ApplyGeoTransform(
+        gdal.InvGeoTransform(geoTransform)[1], mX, mY)
     return (int(pX), int(pY))
 
 
 def pixelToMap(pX, pY, geoTransform):
-    """Convert pixel coordinates to map coordinates.
-
-    @param pX              Input pixel X coordinate (double)
-    @param pY              Input pixel Y coordinate (double)
-    @param geoTransform    Input geotransform (six doubles)
-    @return mX, mY         Output coordinates (two doubles)
-    """
-
-    (mX, mY) = applyGeoTransform(pX + 0.5, pY + 0.5, geoTransform)
-    return (mX, mY)
+    return gdal.ApplyGeoTransform(geoTransform, pX + 0.5, pY + 0.5)
 
 
-def applyGeoTransform(inX, inY, geoTransform):
-    """Apply a geotransform to coordinates.
+class RasterWriter:
 
-    @param inX             Input coordinate (double)
-    @param inY             Input coordinate (double)
-    @param geoTransform    Input geotransform (six doubles)
-    @return outX, outY     Output coordinates (two doubles)
-    """
+    NODATA = -99999.0
 
-    outX = geoTransform[0] + inX * geoTransform[1] + inY * geoTransform[2]
-    outY = geoTransform[3] + inX * geoTransform[4] + inY * geoTransform[5]
-    return (outX, outY)
+    def __init__(self, fileName, minx, miny, maxx, maxy, cellsize,
+                 nbands, crs):
+        self.fileName = fileName
+        self.nx = int((maxx - minx) / float(cellsize))
+        self.ny = int((maxy - miny) / float(cellsize))
+        self.nbands = nbands
+        self.matrix = numpy.ones(shape=(self.ny, self.nx), dtype=numpy.float32)
+        self.matrix[:] = self.NODATA
+        self.cellsize = cellsize
+        self.crs = crs
+        self.minx = minx
+        self.maxy = maxy
 
+    def setValue(self, value, x, y, band=0):
+        try:
+            self.matrix[y, x] = value
+        except IndexError:
+            pass
 
-def invertGeoTransform(geoTransform):
-    """Invert standard 3x2 set of geotransform coefficients.
+    def getValue(self, x, y, band=0):
+        try:
+            return self.matrix[y, x]
+        except IndexError:
+            return self.NODATA
 
-    @param geoTransform        Input GeoTransform (six doubles - unaltered)
-    @return outGeoTransform    Output GeoTransform (six doubles - updated)
-                               on success, None if the equation is uninvertable
-    """
-
-    # We assume a 3rd row that is [1 0 0]
-    # Compute determinate
-    det = geoTransform[1] * geoTransform[5] - geoTransform[2] * geoTransform[4]
-
-    if abs(det) < 0.000000000000001:
-        return
-
-    invDet = 1.0 / det
-
-    # Compute adjoint and divide by determinate
-    outGeoTransform = [0, 0, 0, 0, 0, 0]
-    outGeoTransform[1] = geoTransform[5] * invDet
-    outGeoTransform[4] = -geoTransform[4] * invDet
-
-    outGeoTransform[2] = -geoTransform[2] * invDet
-    outGeoTransform[5] = geoTransform[1] * invDet
-
-    outGeoTransform[0] = (geoTransform[2] * geoTransform[3] - geoTransform[0]
-                          * geoTransform[5]) * invDet
-    outGeoTransform[3] = (-geoTransform[1] * geoTransform[3] + geoTransform[0]
-                          * geoTransform[4]) * invDet
-
-    return outGeoTransform
+    def close(self):
+        format = 'GTiff'
+        driver = gdal.GetDriverByName(format)
+        dst_ds = driver.Create(self.fileName, self.nx, self.ny, 1,
+                               gdal.GDT_Float32)
+        dst_ds.SetProjection(str(self.crs.toWkt()))
+        dst_ds.SetGeoTransform([self.minx, self.cellsize, 0,
+                                self.maxy, self.cellsize, 0])
+        dst_ds.GetRasterBand(1).WriteArray(self.matrix)
+        dst_ds = None

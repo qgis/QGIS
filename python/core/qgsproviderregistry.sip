@@ -1,9 +1,12 @@
-
-
 /** \ingroup core
   * A registry / canonical manager of data providers.
 
   This is a Singleton class that manages data provider access.
+
+  Loaded providers may be restricted using QGIS_PROVIDER_FILE environment variable.
+  QGIS_PROVIDER_FILE is regexp pattern applied to provider file name (not provider key).
+  For example, if the variable is set to gdal|ogr|postgres it will load only providers gdal,
+  ogr and postgres.
 */
 class QgsProviderRegistry
 {
@@ -13,8 +16,8 @@ class QgsProviderRegistry
 
   public:
 
-    /** means of accessing canonical single instance  */
-    static QgsProviderRegistry* instance( QString pluginPath = QString::null );
+    /** Means of accessing canonical single instance  */
+    static QgsProviderRegistry* instance( const QString& pluginPath = QString::null );
 
     /** Virtual dectructor */
     virtual ~QgsProviderRegistry();
@@ -25,7 +28,7 @@ class QgsProviderRegistry
     /** Return list of provider plugins found */
     QString pluginList( bool asHtml = false ) const;
 
-    /** return library directory where plugins are found */
+    /** Return library directory where plugins are found */
     const QDir & libraryDirectory() const;
 
     /** Set library directory where to search for plugins */
@@ -39,16 +42,24 @@ class QgsProviderRegistry
     QgsDataProvider *provider( const QString & providerKey,
                                const QString & dataSource );
 
-    QWidget *selectWidget( const QString & providerKey,
-                           QWidget * parent = 0, Qt::WFlags fl = 0 );
-
-    /** Get pointer to provider function
+    /** Return the provider capabilities
         @param providerKey identificator of the provider
-        @param functionName name of function
-        @return pointer to function or NULL on error
+        @note Added in 2.6
+     */
+    int providerCapabilities( const QString& providerKey ) const;
+
+    QWidget *selectWidget( const QString & providerKey,
+                           QWidget * parent = 0, const Qt::WindowFlags& fl = 0 );
+
+%If (!QT5_SUPPORT)
+    /** Get pointer to provider function
+     * @param providerKey identificator of the provider
+     * @param functionName name of function
+     * @return pointer to function or NULL on error
      */
     void *function( const QString & providerKey,
                     const QString & functionName );
+%End
 
     QLibrary *providerLibrary( const QString & providerKey ) const;
 
@@ -58,7 +69,7 @@ class QgsProviderRegistry
     /** Return metadata of the provider or NULL if not found */
     const QgsProviderMetadata* providerMetadata( const QString& providerKey ) const;
 
-    /** return vector file filter string
+    /** Return vector file filter string
 
       Returns a string suitable for a QFileDialog of vector file formats
       supported by all data providers.
@@ -69,9 +80,9 @@ class QgsProviderRegistry
       @note
 
       It'd be nice to eventually be raster/vector neutral.
-    */
+     */
     virtual QString fileVectorFilters() const;
-    /** return raster file filter string
+    /** Return raster file filter string
 
       Returns a string suitable for a QFileDialog of raster file formats
       supported by all data providers.
@@ -79,27 +90,19 @@ class QgsProviderRegistry
       This walks through all data providers appending calls to their
       buildSupportedRasterFileFilter to a string, which is then returned.
 
-      @note this method was added in QGIS 2.0
       @note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
-    */
+     */
     virtual QString fileRasterFilters() const;
-    /** return a string containing the available database drivers
-    * @note this method was added in QGIS 1.1
-    */
+    /** Return a string containing the available database drivers */
     virtual QString databaseDrivers() const;
-    /** return a string containing the available directory drivers
-     * @note this method was added in QGIS 1.1
-     */
+    /** Return a string containing the available directory drivers */
     virtual QString directoryDrivers() const;
-    /** return a string containing the available protocol drivers
-     * @note this method was added in QGIS 1.1
-     */
+    /** Return a string containing the available protocol drivers */
     virtual QString protocolDrivers() const;
 
     void registerGuis( QWidget *widget );
 
   private:
-    /** ctor private since instance() creates it */
+    /** Ctor private since instance() creates it */
     QgsProviderRegistry( QString pluginPath );
 }; // class QgsProviderRegistry
-

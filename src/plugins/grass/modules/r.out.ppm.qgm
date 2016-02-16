@@ -3,6 +3,7 @@
 
 <qgisgrassmodule label="Export raster to PPM image at the resolution of the current region" module="r.out.ppm">
 	<option key="input" />
-	<flag key="G" />
+	<flag key="G" version_max="6.4"/>
+	<flag key="g" version_min="7.0"/>
 	<file key="output" type="new" />
 </qgisgrassmodule>

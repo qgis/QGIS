@@ -12,23 +12,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 %option noyywrap
 %option case-insensitive
 %option never-interactive
 %option nounput
 %option prefix="exp_"
+ // this makes flex generate lexer with context + init/destroy functions
+%option reentrant
+ // this makes Bison send yylex another argument to use instead of using the global variable yylval
+%option bison-bridge
 
  // ensure that lexer will be 8-bit (and not just 7-bit)
 %option 8bit
 
 %{
-  
+
 #include <stdlib.h>  // atof()
 
 #include "qgsexpression.h"
+struct expression_parser_context;
 #include "qgsexpressionparser.hpp"
-#include <QRegExp>
 #include <QLocale>
 
 // if not defined, searches for isatty()
@@ -43,10 +47,10 @@
 #define YY_NO_UNISTD_H
 #endif
 
-#define B_OP(x) exp_lval.b_op = QgsExpression::x
-#define U_OP(x) exp_lval.u_op = QgsExpression::x
-#define TEXT                   exp_lval.text = new QString(); *exp_lval.text = QString::fromUtf8(yytext);
-#define TEXT_FILTER(filter_fn) exp_lval.text = new QString(); *exp_lval.text = filter_fn( QString::fromUtf8(yytext) );
+#define B_OP(x) yylval->b_op = QgsExpression::x
+#define U_OP(x) yylval->u_op = QgsExpression::x
+#define TEXT                   yylval->text = new QString( QString::fromUtf8(yytext) );
+#define TEXT_FILTER(filter_fn) yylval->text = new QString( filter_fn( QString::fromUtf8(yytext) ) );
 
 static QString stripText(QString text)
 {
@@ -54,7 +58,7 @@ static QString stripText(QString text)
   text = text.mid( 1, text.length() - 2 );
 
   // make single "single quotes" from double "single quotes"
-  text.replace( QRegExp( "''" ), "'" );
+  text.replace( "''", "'" );
 
   // strip \n \' etc.
   int index = 0;
@@ -81,7 +85,7 @@ static QString stripColumnRef(QString text)
   text = text.mid( 1, text.length() - 2 );
 
   // make single "double quotes" from double "double quotes"
-  text.replace( QRegExp( "\"\"" ), "\"" );
+  text.replace( "\"\"", "\"" );
   return text;
 }
 
@@ -89,6 +93,10 @@ static QString stripColumnRef(QString text)
 static QLocale cLocale("C");
 
 %}
+
+%s BLOCK_COMMENT
+
+line_comment \-\-[^\r\n]*[\r\n]?
 
 white       [ \t\r\n]+
 
@@ -99,91 +107,105 @@ col_next     [A-Za-z0-9_]|{non_ascii}
 column_ref  {col_first}{col_next}*
 
 special_col "$"{column_ref}
+variable "@"{column_ref}
 
 col_str_char  "\"\""|[^\"]
 column_ref_quoted  "\""{col_str_char}*"\""
 
 dig         [0-9]
 num_int     {dig}+
-num_float   {dig}*\.{dig}+([eE][-+]?{dig}+)?
+num_float   {dig}*(\.{dig}+([eE][-+]?{dig}+)?|[eE][-+]?{dig}+)
+boolean     "TRUE"|"FALSE"
 
 str_char    ('')|(\\.)|[^'\\]
 string      "'"{str_char}*"'"
 
 %%
 
-"NOT"   { U_OP(uoNot); return NOT; }
-"AND"   { B_OP(boAnd); return AND; }
-"OR"    { B_OP(boOr);  return OR;  }
+<INITIAL>{
+  "/*" BEGIN(BLOCK_COMMENT);
+}
+<BLOCK_COMMENT>{
+  "*/" BEGIN(INITIAL);
+  [^*\n]+   // eat comment in chunks
+  "*"       // eat the lone star
+  \n        yylineno++;
+}
 
-"="   {  B_OP(boEQ); return EQ; }
-"!="  {  B_OP(boNE); return NE; }
-"<="  {  B_OP(boLE); return LE; }
-">="  {  B_OP(boGE); return GE; }
-"<>"  {  B_OP(boNE); return NE; }
-"<"   {  B_OP(boLT); return LT; }
-">"   {  B_OP(boGT); return GT; }
+"NOT"               { U_OP(uoNot); return NOT; }
+"AND"               { B_OP(boAnd); return AND; }
+"OR"                { B_OP(boOr);  return OR;  }
 
-"~"         { B_OP(boRegexp); return REGEXP; }
-"LIKE"      { B_OP(boLike); return LIKE; }
-"NOT LIKE"  { B_OP(boNotLike); return LIKE; }
-"ILIKE"     { B_OP(boILike); return LIKE; }
-"NOT ILIKE" { B_OP(boNotILike); return LIKE; }
-"IS"        { B_OP(boIs); return IS; }
-"IS NOT"    { B_OP(boIsNot); return IS; }
-"||"        { B_OP(boConcat); return CONCAT; }
+"="                 { B_OP(boEQ); return EQ; }
+"!="                { B_OP(boNE); return NE; }
+"<="                { B_OP(boLE); return LE; }
+">="                { B_OP(boGE); return GE; }
+"<>"                { B_OP(boNE); return NE; }
+"<"                 { B_OP(boLT); return LT; }
+">"                 { B_OP(boGT); return GT; }
 
-"+"  { B_OP(boPlus); return PLUS; }
-"-"  { B_OP(boMinus); return MINUS; }
-"*"  { B_OP(boMul); return MUL; }
-"/"  { B_OP(boDiv); return DIV; }
-"%"  { B_OP(boMod); return MOD; }
-"^"  { B_OP(boPow); return POW; }
+"~"                 { B_OP(boRegexp); return REGEXP; }
+"LIKE"              { B_OP(boLike); return LIKE; }
+"NOT"{white}"LIKE"  { B_OP(boNotLike); return LIKE; }
+"ILIKE"             { B_OP(boILike); return LIKE; }
+"NOT"{white}"ILIKE" { B_OP(boNotILike); return LIKE; }
+"IS"                { B_OP(boIs); return IS; }
+"IS"{white}"NOT"    { B_OP(boIsNot); return IS; }
+"||"                { B_OP(boConcat); return CONCAT; }
 
-"IN"  {  return IN; }
+"+"                 { B_OP(boPlus); return PLUS; }
+"-"                 { B_OP(boMinus); return MINUS; }
+"*"                 { B_OP(boMul); return MUL; }
+"//"                { B_OP(boIntDiv); return INTDIV; }
+"/"                 { B_OP(boDiv); return DIV; }
+"%"                 { B_OP(boMod); return MOD; }
+"^"                 { B_OP(boPow); return POW; }
 
-"NULL"	{ return NULLVALUE; }
+"IN"                { return IN; }
 
-"CASE" { return CASE; }
-"WHEN" { return WHEN; }
-"THEN" { return THEN; }
-"ELSE" { return ELSE; }
-"END"  { return END;  }
+"NULL"              { return NULLVALUE; }
 
-[()]      { return yytext[0]; }
+"CASE"              { return CASE; }
+"WHEN"              { return WHEN; }
+"THEN"              { return THEN; }
+"ELSE"              { return ELSE; }
+"END"               { return END;  }
 
-","   { return COMMA; }
+[()]                { return yytext[0]; }
 
-{num_float}  { exp_lval.numberFloat  = cLocale.toDouble( QString::fromAscii(yytext) ); return NUMBER_FLOAT; }
+","                 { return COMMA; }
+
+{num_float}  { yylval->numberFloat = cLocale.toDouble( QString::fromAscii(yytext) ); return NUMBER_FLOAT; }
 {num_int}  {
 	bool ok;
-	exp_lval.numberInt = cLocale.toInt( QString::fromAscii(yytext), &ok, 10 );
+	yylval->numberInt = cLocale.toInt( QString::fromAscii(yytext), &ok );
 	if( ok )
 		return NUMBER_INT;
 
-	exp_lval.numberFloat  = cLocale.toDouble( QString::fromAscii(yytext), &ok );
+	yylval->numberFloat = cLocale.toDouble( QString::fromAscii(yytext), &ok );
 	if( ok )
 		return NUMBER_FLOAT;
 
 	return Unknown_CHARACTER;
 }
 
+{boolean} { yylval->boolVal = QString( yytext ).compare( "true", Qt::CaseInsensitive ) == 0; return BOOLEAN; }
+
 {string}  { TEXT_FILTER(stripText); return STRING; }
 
 {special_col}        { TEXT; return SPECIAL_COL; }
 
-{column_ref}         { TEXT; return QgsExpression::isFunctionName(*exp_lval.text) ? FUNCTION : COLUMN_REF; }
+{variable}        { TEXT; return VARIABLE; }
+
+{column_ref}         { TEXT; return QgsExpression::isFunctionName(*yylval->text) ? FUNCTION : COLUMN_REF; }
 
 {column_ref_quoted}  { TEXT_FILTER(stripColumnRef); return COLUMN_REF; }
 
 {white}    /* skip blanks and tabs */
 
+{line_comment} /* skip line comments */
+
 .       { return Unknown_CHARACTER; }
 
+
 %%
-
-void exp_set_input_buffer(const char* buffer)
-{
-  exp__scan_string(buffer);
-}
-

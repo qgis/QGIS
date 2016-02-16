@@ -22,6 +22,7 @@
 #include "qgsstylev2.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsexpressioncontext.h"
 #include <QColorDialog>
 #include <QWidget>
 #include <QPrinter> //for screen resolution
@@ -44,14 +45,33 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   //read with/height from composition and find suitable entries to display
   displayCompositionWidthHeight();
 
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::compositionScope( mComposition ) );
+  mVariableEditor->reloadContext();
+  mVariableEditor->setEditableScopeIndex( 2 );
+
+  connect( mVariableEditor, SIGNAL( scopeChanged() ), this, SLOT( variablesChanged() ) );
+
   if ( mComposition )
   {
     mNumPagesSpinBox->setValue( mComposition->numPages() );
+    connect( mComposition, SIGNAL( nPagesChanged() ), this, SLOT( setNumberPages() ) );
 
     updatePageStyle();
 
     //read printout resolution from composition
     mResolutionSpinBox->setValue( mComposition->printResolution() );
+
+    double topMargin = 0;
+    double rightMargin = 0;
+    double bottomMargin = 0;
+    double leftMargin = 0;
+    mComposition->resizeToContentsMargins( topMargin, rightMargin, bottomMargin, leftMargin );
+    mTopMarginSpinBox->setValue( topMargin );
+    mRightMarginSpinBox->setValue( rightMargin );
+    mBottomMarginSpinBox->setValue( bottomMargin );
+    mLeftMarginSpinBox->setValue( leftMargin );
 
     //print as raster
     mPrintAsRasterCheckBox->setChecked( mComposition->printAsRaster() );
@@ -78,19 +98,51 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     connect( mComposition, SIGNAL( composerMapAdded( QgsComposerMap* ) ), this, SLOT( onComposerMapAdded( QgsComposerMap* ) ) );
     connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( onItemRemoved( QgsComposerItem* ) ) );
 
-    mAlignmentToleranceSpinBox->setValue( mComposition->alignmentSnapTolerance() );
+    mSnapToleranceSpinBox->setValue( mComposition->snapTolerance() );
 
     //snap grid
     mGridResolutionSpinBox->setValue( mComposition->snapGridResolution() );
     mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
     mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
 
-    mGridToleranceSpinBox->setValue( mComposition->snapGridTolerance() );
+    QgsAtlasComposition* atlas = &mComposition->atlasComposition();
+    if ( atlas )
+    {
+      // repopulate data defined buttons if atlas layer changes
+      connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
+               this, SLOT( populateDataDefinedButtons() ) );
+      connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( populateDataDefinedButtons() ) );
+    }
   }
+
+  connect( mTopMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
+  connect( mRightMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
+  connect( mBottomMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
+  connect( mLeftMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
+
+  connect( mPaperSizeDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mPaperSizeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mPaperSizeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPaperSizeComboBox, SLOT( setDisabled( bool ) ) );
+  connect( mPaperWidthDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mPaperWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mPaperWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPaperWidthDoubleSpinBox, SLOT( setDisabled( bool ) ) );
+  connect( mPaperHeightDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mPaperHeightDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mPaperHeightDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPaperHeightDoubleSpinBox, SLOT( setDisabled( bool ) ) );
+  connect( mNumPagesDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mNumPagesDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mNumPagesDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mNumPagesSpinBox, SLOT( setDisabled( bool ) ) );
+  connect( mPaperOrientationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mPaperOrientationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mPaperOrientationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPaperOrientationComboBox, SLOT( setDisabled( bool ) ) );
+
+  //initialize data defined buttons
+  populateDataDefinedButtons();
+
   blockSignals( false );
 }
 
-QgsCompositionWidget::QgsCompositionWidget(): QWidget( 0 ), mComposition( 0 )
+QgsCompositionWidget::QgsCompositionWidget(): QWidget( nullptr ), mComposition( nullptr )
 {
   setupUi( this );
 }
@@ -98,6 +150,130 @@ QgsCompositionWidget::QgsCompositionWidget(): QWidget( 0 ), mComposition( 0 )
 QgsCompositionWidget::~QgsCompositionWidget()
 {
 
+}
+
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  const QgsComposition* composition = ( const QgsComposition* ) context;
+  if ( !composition )
+  {
+    return QgsExpressionContext();
+  }
+
+  QScopedPointer< QgsExpressionContext > expContext( composition->createExpressionContext() );
+  return QgsExpressionContext( *expContext );
+}
+
+void QgsCompositionWidget::populateDataDefinedButtons()
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  QgsVectorLayer* vl = nullptr;
+  QgsAtlasComposition* atlas = &mComposition->atlasComposition();
+
+  if ( atlas && atlas->enabled() )
+  {
+    vl = atlas->coverageLayer();
+  }
+
+  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  {
+    button->blockSignals( true );
+    button->registerGetExpressionContextCallback( &_getExpressionContext, mComposition );
+  }
+
+  mPaperSizeDDBtn->init( vl, mComposition->dataDefinedProperty( QgsComposerObject::PresetPaperSize ),
+                         QgsDataDefinedButton::String, QgsDataDefinedButton::paperSizeDesc() );
+  mPaperWidthDDBtn->init( vl, mComposition->dataDefinedProperty( QgsComposerObject::PaperWidth ),
+                          QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
+  mPaperHeightDDBtn->init( vl, mComposition->dataDefinedProperty( QgsComposerObject::PaperHeight ),
+                           QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
+  mNumPagesDDBtn->init( vl, mComposition->dataDefinedProperty( QgsComposerObject::NumPages ),
+                        QgsDataDefinedButton::Int, QgsDataDefinedButton::intPosOneDesc() );
+  mPaperOrientationDDBtn->init( vl, mComposition->dataDefinedProperty( QgsComposerObject::PaperOrientation ),
+                                QgsDataDefinedButton::String, QgsDataDefinedButton::paperOrientationDesc() );
+
+  //initial state of controls - disable related controls when dd buttons are active
+  mPaperSizeComboBox->setEnabled( !mPaperSizeDDBtn->isActive() );
+
+  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  {
+    button->blockSignals( false );
+  }
+}
+
+void QgsCompositionWidget::variablesChanged()
+{
+  QgsExpressionContextUtils::setCompositionVariables( mComposition, mVariableEditor->variablesInActiveScope() );
+}
+
+void QgsCompositionWidget::resizeMarginsChanged()
+{
+  if ( !mComposition )
+    return;
+
+  mComposition->setResizeToContentsMargins( mTopMarginSpinBox->value(),
+      mRightMarginSpinBox->value(),
+      mBottomMarginSpinBox->value(),
+      mLeftMarginSpinBox->value() );
+}
+
+void QgsCompositionWidget::setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsComposerObject::DataDefinedProperty property )
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  const QMap< QString, QString >& map = ddBtn->definedProperty();
+  mComposition->setDataDefinedProperty( property, map.value( "active" ).toInt(), map.value( "useexpr" ).toInt(), map.value( "expression" ), map.value( "field" ) );
+}
+
+QgsComposerObject::DataDefinedProperty QgsCompositionWidget::ddPropertyForWidget( QgsDataDefinedButton *widget )
+{
+  if ( widget == mPaperSizeDDBtn )
+  {
+    return QgsComposerObject::PresetPaperSize;
+  }
+  else if ( widget == mPaperWidthDDBtn )
+  {
+    return QgsComposerObject::PaperWidth;
+  }
+  else if ( widget == mPaperHeightDDBtn )
+  {
+    return QgsComposerObject::PaperHeight;
+  }
+  else if ( widget == mNumPagesDDBtn )
+  {
+    return QgsComposerObject::NumPages;
+  }
+  else if ( widget == mPaperOrientationDDBtn )
+  {
+    return QgsComposerObject::PaperOrientation;
+  }
+
+  return QgsComposerObject::NoProperty;
+}
+
+void QgsCompositionWidget::updateDataDefinedProperty()
+{
+  QgsDataDefinedButton* ddButton = dynamic_cast<QgsDataDefinedButton*>( sender() );
+  if ( !ddButton || !mComposition )
+  {
+    return;
+  }
+
+  QgsComposerObject::DataDefinedProperty property = ddPropertyForWidget( ddButton );
+  if ( property == QgsComposerObject::NoProperty )
+  {
+    return;
+  }
+
+  setDataDefinedProperty( ddButton, property );
+  mComposition->refreshDataDefinedProperty( property );
 }
 
 void QgsCompositionWidget::createPaperEntries()
@@ -139,7 +315,6 @@ void QgsCompositionWidget::createPaperEntries()
     mPaperSizeComboBox->addItem( it->mName );
     mPaperMap.insert( it->mName, *it );
   }
-  mPaperSizeComboBox->setCurrentIndex( 2 ); //A4
 }
 
 void QgsCompositionWidget::on_mPaperSizeComboBox_currentIndexChanged( const QString& text )
@@ -285,8 +460,8 @@ void QgsCompositionWidget::applyCurrentPaperSettings()
   if ( mComposition )
   {
     //find entry in mPaper map to set width and height
-    QMap<QString, QgsCompositionPaper>::iterator it = mPaperMap.find( mPaperSizeComboBox->currentText() );
-    if ( it == mPaperMap.end() )
+    QMap<QString, QgsCompositionPaper>::const_iterator it = mPaperMap.constFind( mPaperSizeComboBox->currentText() );
+    if ( it == mPaperMap.constEnd() )
     {
       return;
     }
@@ -380,6 +555,12 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
     //custom
     mPaperSizeComboBox->setCurrentIndex( 0 );
   }
+  else
+  {
+    mPaperWidthDoubleSpinBox->setEnabled( false );
+    mPaperHeightDoubleSpinBox->setEnabled( false );
+    mPaperUnitsComboBox->setEnabled( false );
+  }
 }
 
 void QgsCompositionWidget::on_mPageStyleButton_clicked()
@@ -389,18 +570,40 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
     return;
   }
 
-  QgsVectorLayer* coverageLayer = 0;
+  QgsVectorLayer* coverageLayer = nullptr;
   // use the atlas coverage layer, if any
   if ( mComposition->atlasComposition().enabled() )
   {
     coverageLayer = mComposition->atlasComposition().coverageLayer();
   }
-  QgsSymbolV2SelectorDialog d( mComposition->pageStyleSymbol(), QgsStyleV2::defaultStyle(), coverageLayer );
+
+  QgsFillSymbolV2* newSymbol = mComposition->pageStyleSymbol()->clone();
+  if ( !newSymbol )
+  {
+    newSymbol = new QgsFillSymbolV2();
+  }
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
+  d.setExpressionContext( mComposition->createExpressionContext() );
 
   if ( d.exec() == QDialog::Accepted )
   {
+    mComposition->setPageStyleSymbol( newSymbol );
     updatePageStyle();
   }
+  delete newSymbol;
+}
+
+void QgsCompositionWidget::on_mResizePageButton_clicked()
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  mComposition->resizePageToContents( mTopMarginSpinBox->value(),
+                                      mRightMarginSpinBox->value(),
+                                      mBottomMarginSpinBox->value(),
+                                      mLeftMarginSpinBox->value() );
 }
 
 void QgsCompositionWidget::updatePageStyle()
@@ -417,6 +620,18 @@ void QgsCompositionWidget::setPrintAsRasterCheckBox( bool state )
   mPrintAsRasterCheckBox->blockSignals( true );
   mPrintAsRasterCheckBox->setChecked( state );
   mPrintAsRasterCheckBox->blockSignals( false );
+}
+
+void QgsCompositionWidget::setNumberPages()
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  mNumPagesSpinBox->blockSignals( true );
+  mNumPagesSpinBox->setValue( mComposition->numPages() );
+  mNumPagesSpinBox->blockSignals( false );
 }
 
 void QgsCompositionWidget::displaySnapingSettings()
@@ -489,7 +704,7 @@ void QgsCompositionWidget::onItemRemoved( QgsComposerItem* item )
   }
   if ( mWorldFileMapComboBox->count() == 0 )
   {
-    mComposition->setWorldFileMap( 0 );
+    mComposition->setWorldFileMap( nullptr );
   }
 }
 
@@ -501,7 +716,7 @@ void QgsCompositionWidget::on_mWorldFileMapComboBox_currentIndexChanged( int ind
   }
   if ( index == -1 )
   {
-    mComposition->setWorldFileMap( 0 );
+    mComposition->setWorldFileMap( nullptr );
   }
   else
   {
@@ -534,19 +749,11 @@ void QgsCompositionWidget::on_mOffsetYSpinBox_valueChanged( double d )
   }
 }
 
-void QgsCompositionWidget::on_mGridToleranceSpinBox_valueChanged( double d )
+void QgsCompositionWidget::on_mSnapToleranceSpinBox_valueChanged( int tolerance )
 {
   if ( mComposition )
   {
-    mComposition->setSnapGridTolerance( d );
-  }
-}
-
-void QgsCompositionWidget::on_mAlignmentToleranceSpinBox_valueChanged( double d )
-{
-  if ( mComposition )
-  {
-    mComposition->setAlignmentSnapTolerance( d );
+    mComposition->setSnapTolerance( tolerance );
   }
 }
 
@@ -564,6 +771,6 @@ void QgsCompositionWidget::blockSignals( bool block )
   mGridResolutionSpinBox->blockSignals( block );
   mOffsetXSpinBox->blockSignals( block );
   mOffsetYSpinBox->blockSignals( block );
-  mGridToleranceSpinBox->blockSignals( block );
-  mAlignmentToleranceSpinBox->blockSignals( block );
+  mSnapToleranceSpinBox->blockSignals( block );
 }
+

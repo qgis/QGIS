@@ -12,17 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
 
-#include <iostream>
 //qgis includes...
 #include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
@@ -31,19 +29,33 @@
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
 //qgis test includes
-#include "qgsrenderchecker.h"
+#include "qgsmultirenderchecker.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
-class TestQgsRenderers: public QObject
+class TestQgsRenderers : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsRenderers()
+        : mTestHasError( false )
+        , mMapSettings( 0 )
+        , mpPointsLayer( 0 )
+        , mpLinesLayer( 0 )
+        , mpPolysLayer( 0 )
+    {}
+    ~TestQgsRenderers()
+    {
+      delete mMapSettings;
+    }
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void singleSymbol();
 //    void uniqueValue();
@@ -51,9 +63,9 @@ class TestQgsRenderers: public QObject
 //    void continuousSymbol();
   private:
     bool mTestHasError;
-    bool setQml( QString theType ); //uniquevalue / continuous / single /
-    bool imageCheck( QString theType ); //as above
-    QgsMapRenderer * mpMapRenderer;
+    bool setQml( const QString& theType ); //uniquevalue / continuous / single /
+    bool imageCheck( const QString& theType ); //as above
+    QgsMapSettings *mMapSettings;
     QgsMapLayer * mpPointsLayer;
     QgsMapLayer * mpLinesLayer;
     QgsMapLayer * mpPolysLayer;
@@ -70,6 +82,8 @@ void TestQgsRenderers::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
+  mMapSettings = new QgsMapSettings();
+
   //create some objects that will be used in all tests...
 
 
@@ -77,7 +91,7 @@ void TestQgsRenderers::initTestCase()
   //create a point layer that will be used in all tests...
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + QDir::separator();
+  mTestDataDir = myDataDir + '/';
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
@@ -113,17 +127,15 @@ void TestQgsRenderers::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mpMapRenderer = new QgsMapRenderer();
-  QStringList myLayers;
-  myLayers << mpPointsLayer->id();
-  myLayers << mpPolysLayer->id();
-  myLayers << mpLinesLayer->id();
-  mpMapRenderer->setLayerSet( myLayers );
+  mMapSettings->setLayers(
+    QStringList() << mpPointsLayer->id() << mpPolysLayer->id() << mpLinesLayer->id() );
   mReport += "<h1>Vector Renderer Tests</h1>\n";
 }
 void TestQgsRenderers::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QgsApplication::exitQgis();
+
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -132,7 +144,6 @@ void TestQgsRenderers::cleanupTestCase()
     myFile.close();
     //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
-
 }
 
 void TestQgsRenderers::singleSymbol()
@@ -169,7 +180,7 @@ void TestQgsRenderers::continuousSymbol()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsRenderers::setQml( QString theType )
+bool TestQgsRenderers::setQml( const QString& theType )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
@@ -205,7 +216,7 @@ bool TestQgsRenderers::setQml( QString theType )
   return myStyleFlag;
 }
 
-bool TestQgsRenderers::imageCheck( QString theTestType )
+bool TestQgsRenderers::imageCheck( const QString& theTestType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -214,16 +225,17 @@ bool TestQgsRenderers::imageCheck( QString theTestType )
   // the same wrong value is reported by ogrinfo). Since QGIS 2.1, the provider
   // gives correct extent. Forced to fixed extend however to avoid problems in future.
   QgsRectangle extent( -118.8888888888887720, 22.8002070393376783, -83.3333333333331581, 46.8719806763287536 );
-  mpMapRenderer->setExtent( extent );
-  mpMapRenderer->rendererContext()->setForceVectorOutput( true );
-  QgsRenderChecker myChecker;
+  mMapSettings->setExtent( extent );
+  mMapSettings->setFlag( QgsMapSettings::ForceVectorOutput );
+  mMapSettings->setOutputDpi( 96 );
+  QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
-  myChecker.setMapRenderer( mpMapRenderer );
+  myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 15 );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( theTestType, 200 );
   mReport += myChecker.report();
   return myResultFlag;
 }
 
 QTEST_MAIN( TestQgsRenderers )
-#include "moc_testqgsrenderers.cxx"
+#include "testqgsrenderers.moc"

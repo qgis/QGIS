@@ -7,9 +7,10 @@
 # whatever PYTHONPATH you want and then add the test as 'cmake -P python_test.cmake'
 #
 # Usage:
-# SET_SOURCE_FILES_PROPERTIES(test.py PROPERTIES PYTHONPATH
-#   "${LIBRARY_OUTPUT_PATH}:${VTK_DIR}")
 # ADD_PYTHON_TEST(PYTHON-TEST test.py)
+#
+# Optionally pass environment variables to your test
+# ADD_PYTHON_TEST(PYTHON-TEST test.py FOO="bar" BAZ="quux")
 #
 #  Copyright (c) 2006-2010 Mathieu Malaterre <mathieu.malaterre@gmail.com>
 #
@@ -32,35 +33,38 @@ MACRO(ADD_PYTHON_TEST TESTNAME FILENAME)
     STRING(REGEX REPLACE ";" " " wo_semicolon "${ARGN}")
   ENDIF(WIN32)
 
-  FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${TESTNAME}.cmake
-"
+  FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${TESTNAME}.cmake "
 IF(WIN32)
   SET(ENV{QGIS_PREFIX_PATH} \"${QGIS_OUTPUT_DIRECTORY}/bin/\${CMAKE_BUILD_TYPE}\")
   SET(ENV{PATH} \"${QGIS_OUTPUT_DIRECTORY}/bin/\${CMAKE_BUILD_TYPE};\$ENV{PATH}\")
-  SET(ENV{PYTHONPATH} \"${QGIS_OUTPUT_DIRECTORY}/python/;\$ENV{PYTHONPATH}\")
+  SET(ENV{PYTHONPATH} \"${QGIS_OUTPUT_DIRECTORY}/python/;${QGIS_OUTPUT_DIRECTORY}/python/plugins;${CMAKE_SOURCE_DIR}/tests/src/python;\$ENV{PYTHONPATH}\")
   MESSAGE(\"PATH:\$ENV{PATH}\")
 ELSE(WIN32)
   SET(ENV{QGIS_PREFIX_PATH} \"${QGIS_OUTPUT_DIRECTORY}\")
   SET(ENV{LD_LIBRARY_PATH} \"${pyenv}:${QGIS_OUTPUT_DIRECTORY}/lib:\$ENV{LD_LIBRARY_PATH}\")
-  SET(ENV{PYTHONPATH} \"${QGIS_OUTPUT_DIRECTORY}/python/:\$ENV{PYTHONPATH}\")
+  SET(ENV{PYTHONPATH} \"${QGIS_OUTPUT_DIRECTORY}/python/:${QGIS_OUTPUT_DIRECTORY}/python/plugins:${CMAKE_SOURCE_DIR}/tests/src/python:\$ENV{PYTHONPATH}\")
   MESSAGE(\"LD_LIBRARY_PATH:\$ENV{LD_LIBRARY_PATH}\")
 ENDIF(WIN32)
+")
 
+  FOREACH(_in ${ARGN})
+    STRING(REGEX MATCH "^([^=]+)=(.*)$" _out ${_in})
+    MESSAGE(STATUS "ENV: SET(ENV{${CMAKE_MATCH_1}} \"${CMAKE_MATCH_2}\")")
+    FILE(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${TESTNAME}.cmake "
+  SET(ENV{${CMAKE_MATCH_1}} \"${CMAKE_MATCH_2}\")
+")
+  ENDFOREACH(_in)
+
+  FILE(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${TESTNAME}.cmake "
 MESSAGE(\"PYTHONPATH:\$ENV{PYTHONPATH}\")
 MESSAGE(STATUS \"Running ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}\")
 EXECUTE_PROCESS(
-  COMMAND ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolumn}
-  #WORKING_DIRECTORY @LIBRARY_OUTPUT_PATH@
+  COMMAND ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}
   RESULT_VARIABLE import_res
-  OUTPUT_VARIABLE import_output
-  ERROR_VARIABLE  import_output
 )
 # Pass the output back to ctest
-IF(import_output)
-  MESSAGE(" \${import_output} ")
-ENDIF(import_output)
 IF(import_res)
-  MESSAGE(SEND_ERROR " \${import_res} ")
+  MESSAGE(FATAL_ERROR \"Test failed: \${import_res}\")
 ENDIF(import_res)
 "
 )

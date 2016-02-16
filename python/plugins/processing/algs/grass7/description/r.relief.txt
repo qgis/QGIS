@@ -1,0 +1,9 @@
+r.relief
+Creates shaded relief from an elevation layer (DEM).
+Raster (r.*)
+ParameterRaster|input|Input elevation layer
+ParameterNumber|altitude|Altitude of the sun in degrees above the horizon|0|90|30.0
+ParameterNumber|azimuth|Azimuth of the sun in degrees to the east of north|0|360|270.0
+ParameterNumber|zscale|Factor for exaggerating relief|None|None|1.0
+ParameterNumber|scale|Scale factor for converting horizontal units to elevation units|None|None|1.0
+OutputRaster|output|Output shaded relief layer

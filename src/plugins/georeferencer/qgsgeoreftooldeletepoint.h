@@ -28,13 +28,13 @@ class QgsGeorefToolDeletePoint : public QgsMapToolEmitPoint
     Q_OBJECT
 
   public:
-    QgsGeorefToolDeletePoint( QgsMapCanvas* canvas );
+    explicit QgsGeorefToolDeletePoint( QgsMapCanvas* canvas );
 
     // Mouse events for overriding
-    void canvasPressEvent( QMouseEvent * e );
+    void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
   signals:
-    void deleteDataPoint( const QPoint & );
+    void deleteDataPoint( QPoint );
 };
 
 #endif // QGSGEOREFTOOLDELETEPOINT_H

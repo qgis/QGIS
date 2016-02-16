@@ -23,38 +23,39 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import SIGNAL
+from PyQt4.QtGui import QDialog, QVBoxLayout, QDialogButtonBox
+from qgis.gui import QgsProjectionSelector
+
 
 class GdalToolsSRSDialog(QDialog):
-  def __init__(self, title, parent=None):
-      QDialog.__init__(self, parent)
-      self.setWindowTitle( title )
 
-      layout = QVBoxLayout()
-      self.selector = QgsProjectionSelector(self)
-      buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Close)
+    def __init__(self, title, parent=None):
+        QDialog.__init__(self, parent)
+        self.setWindowTitle(title)
 
-      layout.addWidget(self.selector)
-      layout.addWidget(buttonBox)
-      self.setLayout(layout)
+        layout = QVBoxLayout()
+        self.selector = QgsProjectionSelector(self)
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Close)
 
-      self.connect(buttonBox, SIGNAL("accepted()"), self.accept)
-      self.connect(buttonBox, SIGNAL("rejected()"), self.reject)
+        layout.addWidget(self.selector)
+        layout.addWidget(buttonBox)
+        self.setLayout(layout)
 
-  def authid(self):
-      return str(self.selector.selectedAuthId())
+        self.connect(buttonBox, SIGNAL("accepted()"), self.accept)
+        self.connect(buttonBox, SIGNAL("rejected()"), self.reject)
 
-  def proj4string(self):
-      return self.selector.selectedProj4String()
+    def authid(self):
+        return unicode(self.selector.selectedAuthId())
 
-  def getProjection(self):
-      if self.authid().upper().startswith("EPSG:"):
-        return self.authid()
+    def proj4string(self):
+        return self.selector.selectedProj4String()
 
-      if self.selector.selectedProj4String():
-        return self.proj4string()
+    def getProjection(self):
+        if self.authid().upper().startswith("EPSG:"):
+            return self.authid()
 
-      return ''
+        if self.selector.selectedProj4String():
+            return self.proj4string()
+
+        return ''

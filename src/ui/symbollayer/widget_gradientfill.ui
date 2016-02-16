@@ -6,101 +6,58 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>474</width>
-    <height>358</height>
+    <width>556</width>
+    <height>342</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
-   <property name="fieldGrowthPolicy">
-    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>1</number>
    </property>
-   <property name="labelAlignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   <property name="topMargin">
+    <number>1</number>
+   </property>
+   <property name="rightMargin">
+    <number>1</number>
+   </property>
+   <property name="bottomMargin">
+    <number>1</number>
    </property>
    <property name="horizontalSpacing">
     <number>28</number>
    </property>
-   <property name="margin">
-    <number>1</number>
-   </property>
-   <item row="0" column="0">
-    <widget class="QRadioButton" name="radioTwoColor">
-     <property name="text">
-      <string>Two color</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="spacing">
-      <number>12</number>
-     </property>
+   <item row="4" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
-      <widget class="QgsColorButton" name="btnChangeColor">
-       <property name="minimumSize">
-        <size>
-         <width>100</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>100</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
+      <widget class="QComboBox" name="cboGradientSpread">
+       <item>
+        <property name="text">
+         <string>Pad</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Repeat</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Reflect</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item>
-      <widget class="QgsColorButton" name="btnChangeColor2">
-       <property name="minimumSize">
-        <size>
-         <width>100</width>
-         <height>0</height>
-        </size>
-       </property>
+      <widget class="QgsDataDefinedButton" name="mSpreadDDBtn">
        <property name="text">
-        <string/>
+        <string>...</string>
        </property>
       </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
     </layout>
-   </item>
-   <item row="1" column="0">
-    <widget class="QRadioButton" name="radioColorRamp">
-     <property name="text">
-      <string>Color ramp</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QgsColorRampComboBox" name="cboGradientColorRamp"/>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Gradient type</string>
-     </property>
-    </widget>
    </item>
    <item row="2" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -123,69 +80,14 @@
        </item>
       </widget>
      </item>
-    </layout>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Coord mode</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QComboBox" name="cboCoordinateMode">
-       <item>
-        <property name="text">
-         <string>Object</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Viewport</string>
-        </property>
-       </item>
+      <widget class="QgsDataDefinedButton" name="mGradientTypeDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Spread</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_5">
-     <item>
-      <widget class="QComboBox" name="cboGradientSpread">
-       <item>
-        <property name="text">
-         <string>Pad</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Repeat</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Reflect</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Reference Point 1</string>
-     </property>
-    </widget>
    </item>
    <item row="5" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -213,6 +115,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QgsDataDefinedButton" name="mRefPoint1XDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="label_7">
        <property name="text">
         <string>y</string>
@@ -230,9 +139,23 @@
       </widget>
      </item>
      <item>
+      <widget class="QgsDataDefinedButton" name="mRefPoint1YDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QCheckBox" name="checkRefPoint1Centroid">
        <property name="text">
-        <string>Feature centroid</string>
+        <string>Centroid</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mRefPoint1CentroidDDBtn">
+       <property name="text">
+        <string>...</string>
        </property>
       </widget>
      </item>
@@ -251,14 +174,191 @@
      </item>
     </layout>
    </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="label_8">
+   <item row="10" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="label_6">
      <property name="text">
-      <string>Reference Point 2</string>
+      <string>Offset X,Y</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="9" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QgsDoubleSpinBox" name="spinOffsetX">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-999999999.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>999999999.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDoubleSpinBox" name="spinOffsetY">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-999999999.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>999999999.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Coord mode</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>12</number>
+     </property>
+     <item>
+      <widget class="QgsColorButtonV2" name="btnChangeColor">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>120</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mStartColorDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsColorButtonV2" name="btnChangeColor2">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>120</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mEndColorDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QRadioButton" name="radioColorRamp">
+     <property name="text">
+      <string>Color ramp</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_8">
+     <item>
+      <widget class="QgsColorRampComboBox" name="cboGradientColorRamp"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mButtonEditRamp">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Edit</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_7">
      <property name="spacing">
       <number>12</number>
@@ -284,6 +384,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QgsDataDefinedButton" name="mRefPoint2XDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="label_10">
        <property name="text">
         <string>y</string>
@@ -304,9 +411,23 @@
       </widget>
      </item>
      <item>
+      <widget class="QgsDataDefinedButton" name="mRefPoint2YDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QCheckBox" name="checkRefPoint2Centroid">
        <property name="text">
-        <string>Feature centroid</string>
+        <string>Centroid</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mRefPoint2CentroidDDBtn">
+       <property name="text">
+        <string>...</string>
        </property>
       </widget>
      </item>
@@ -325,105 +446,94 @@
      </item>
     </layout>
    </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="label_11">
+   <item row="5" column="0">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>Angle</string>
+      <string>Reference Point 1</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="1">
-    <widget class="QDoubleSpinBox" name="mSpinAngle">
-     <property name="suffix">
-      <string> °</string>
-     </property>
-     <property name="maximum">
-      <double>360.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.500000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="0" colspan="2">
-    <widget class="QPushButton" name="mDataDefinedPropertiesButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Data defined properties...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+   <item row="3" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QDoubleSpinBox" name="spinOffsetX">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>5</number>
-       </property>
-       <property name="minimum">
-        <double>-999.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>999.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QDoubleSpinBox" name="spinOffsetY">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>5</number>
-       </property>
-       <property name="minimum">
-        <double>-999.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>999.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="mOffsetUnitComboBox">
+      <widget class="QComboBox" name="cboCoordinateMode">
        <item>
         <property name="text">
-         <string>Millimeter</string>
+         <string>Object</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Map unit</string>
+         <string>Viewport</string>
         </property>
        </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mCoordinateModeDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="10" column="0">
-    <widget class="QLabel" name="label_6">
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Offset X,Y</string>
+      <string>Gradient type</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Reference Point 2</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QRadioButton" name="radioTwoColor">
+     <property name="text">
+      <string>Two color</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Spread</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_9">
+     <item>
+      <widget class="QgsDoubleSpinBox" name="mSpinAngle">
+       <property name="suffix">
+        <string> °</string>
+       </property>
+       <property name="maximum">
+        <double>360.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.500000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mAngleDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_11">
+     <property name="text">
+      <string>Angle</string>
      </property>
     </widget>
    </item>
@@ -431,9 +541,26 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorRampComboBox</class>
@@ -441,6 +568,38 @@
    <header>qgscolorrampcombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>radioTwoColor</tabstop>
+  <tabstop>btnChangeColor</tabstop>
+  <tabstop>mStartColorDDBtn</tabstop>
+  <tabstop>btnChangeColor2</tabstop>
+  <tabstop>mEndColorDDBtn</tabstop>
+  <tabstop>radioColorRamp</tabstop>
+  <tabstop>cboGradientColorRamp</tabstop>
+  <tabstop>mButtonEditRamp</tabstop>
+  <tabstop>cboGradientType</tabstop>
+  <tabstop>mGradientTypeDDBtn</tabstop>
+  <tabstop>cboCoordinateMode</tabstop>
+  <tabstop>mCoordinateModeDDBtn</tabstop>
+  <tabstop>cboGradientSpread</tabstop>
+  <tabstop>mSpreadDDBtn</tabstop>
+  <tabstop>spinRefPoint1X</tabstop>
+  <tabstop>mRefPoint1XDDBtn</tabstop>
+  <tabstop>spinRefPoint1Y</tabstop>
+  <tabstop>mRefPoint1YDDBtn</tabstop>
+  <tabstop>checkRefPoint1Centroid</tabstop>
+  <tabstop>mRefPoint1CentroidDDBtn</tabstop>
+  <tabstop>spinRefPoint2X</tabstop>
+  <tabstop>mRefPoint2XDDBtn</tabstop>
+  <tabstop>spinRefPoint2Y</tabstop>
+  <tabstop>mRefPoint2YDDBtn</tabstop>
+  <tabstop>checkRefPoint2Centroid</tabstop>
+  <tabstop>mRefPoint2CentroidDDBtn</tabstop>
+  <tabstop>mSpinAngle</tabstop>
+  <tabstop>mAngleDDBtn</tabstop>
+  <tabstop>spinOffsetX</tabstop>
+  <tabstop>spinOffsetY</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

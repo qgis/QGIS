@@ -46,7 +46,7 @@ class GUI_EXPORT QgsMapCanvasMap : public QgsMapCanvasItem  // public QObject, p
     //! @note added in 2.4
     QImage contentImage() const { return mImage; }
 
-    virtual void paint( QPainter * painter );
+    virtual void paint( QPainter * painter ) override;
 
     //! @deprecated in 2.4 - does nothing. Kept for API compatibility
     Q_DECL_DEPRECATED void refresh() {}
@@ -64,7 +64,7 @@ class GUI_EXPORT QgsMapCanvasMap : public QgsMapCanvasItem  // public QObject, p
     Q_DECL_DEPRECATED void setBackgroundColor( const QColor& color ) { Q_UNUSED( color ); }
 
     //! @deprecated in 2.4 - not called by QgsMapCanvas anymore
-    Q_DECL_DEPRECATED void setPanningOffset( const QPoint& point ) { Q_UNUSED( point ); }
+    Q_DECL_DEPRECATED void setPanningOffset( QPoint point ) { Q_UNUSED( point ); }
 
     //! @deprecated in 2.4
     Q_DECL_DEPRECATED QPaintDevice& paintDevice();

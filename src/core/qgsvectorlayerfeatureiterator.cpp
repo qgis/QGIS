@@ -14,20 +14,26 @@
  ***************************************************************************/
 #include "qgsvectorlayerfeatureiterator.h"
 
-#include "qgsmaplayerregistry.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayereditbuffer.h"
-#include "qgsvectorlayerjoinbuffer.h"
+#include "qgsexpressionfieldbuffer.h"
 #include "qgsgeometrysimplifier.h"
+#include "qgsmaplayerregistry.h"
 #include "qgssimplifymethod.h"
-
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoinbuffer.h"
+#include "qgsexpressioncontext.h"
+#include "qgsdistancearea.h"
+#include "qgsproject.h"
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( QgsVectorLayer *layer )
+    : mCrsId( 0 )
 {
   mProviderFeatureSource = layer->dataProvider()->featureSource();
-  mFields = layer->pendingFields();
-  mJoinBuffer = new QgsVectorLayerJoinBuffer( *layer->mJoinBuffer );
+  mFields = layer->fields();
+  mJoinBuffer = layer->mJoinBuffer->clone();
+  mExpressionFieldBuffer = new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer );
+  mCrsId = layer->crs().srsid();
 
   mCanBeSimplified = layer->hasGeometryType() && layer->geometryType() != QGis::Point;
 
@@ -73,6 +79,7 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( QgsVectorLayer *layer 
 QgsVectorLayerFeatureSource::~QgsVectorLayerFeatureSource()
 {
   delete mJoinBuffer;
+  delete mExpressionFieldBuffer;
   delete mProviderFeatureSource;
 }
 
@@ -84,13 +91,17 @@ QgsFeatureIterator QgsVectorLayerFeatureSource::getFeatures( const QgsFeatureReq
 
 
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
-    , mEditGeometrySimplifier( 0 )
+    : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
+    , mFetchedFid( false )
+    , mEditGeometrySimplifier( nullptr )
 {
+  prepareExpressions();
 
   // prepare joins: may add more attributes to fetch (in order to allow join)
   if ( mSource->mJoinBuffer->containsJoins() )
     prepareJoins();
+
+  mHasVirtualAttributes = !mFetchJoinInfo.isEmpty() || !mExpressionFieldInfo.isEmpty();
 
   // by default provider's request is the same
   mProviderRequest = mRequest;
@@ -98,17 +109,45 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   if ( mProviderRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
     // prepare list of attributes to match provider fields
-    QgsAttributeList providerSubset;
+    QSet<int> providerSubset;
     QgsAttributeList subset = mProviderRequest.subsetOfAttributes();
     int nPendingFields = mSource->mFields.count();
-    for ( int i = 0; i < subset.count(); ++i )
+    Q_FOREACH ( int attrIndex, subset )
     {
-      int attrIndex = subset[i];
       if ( attrIndex < 0 || attrIndex >= nPendingFields ) continue;
       if ( mSource->mFields.fieldOrigin( attrIndex ) == QgsFields::OriginProvider )
         providerSubset << mSource->mFields.fieldOriginIndex( attrIndex );
     }
-    mProviderRequest.setSubsetOfAttributes( providerSubset );
+
+    // This is done in order to be prepared to do fallback order bys
+    // and be sure we have the required columns.
+    // TODO:
+    // It would be nicer to first check if we can compile the order by
+    // and only modify the subset if we cannot.
+    if ( !mProviderRequest.orderBy().isEmpty() )
+    {
+      Q_FOREACH ( const QString& attr, mProviderRequest.orderBy().usedAttributes() )
+      {
+        providerSubset << mSource->mFields.fieldNameIndex( attr );
+      }
+    }
+
+    mProviderRequest.setSubsetOfAttributes( providerSubset.toList() );
+  }
+
+  if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression )
+  {
+    Q_FOREACH ( const QString& field, mProviderRequest.filterExpression()->referencedColumns() )
+    {
+      int idx = source->mFields.fieldNameIndex( field );
+
+      // If there are fields in the expression which are not of origin provider, the provider will not be able to filter based on them.
+      // In this case we disable the expression filter.
+      if ( source->mFields.fieldOrigin( idx ) != QgsFields::OriginProvider )
+      {
+        mProviderRequest.disableFilter();
+      }
+    }
   }
 
   if ( mSource->mHasEditBuffer )
@@ -137,7 +176,8 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    mRequest.filterExpression()->prepare( mSource->mFields );
+    mRequest.expressionContext()->setFields( mSource->mFields );
+    mRequest.filterExpression()->prepare( mRequest.expressionContext() );
   }
 }
 
@@ -145,7 +185,9 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
 QgsVectorLayerFeatureIterator::~QgsVectorLayerFeatureIterator()
 {
   delete mEditGeometrySimplifier;
-  mEditGeometrySimplifier = NULL;
+  mEditGeometrySimplifier = nullptr;
+
+  qDeleteAll( mExpressionFieldInfo );
 
   close();
 }
@@ -168,7 +210,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature& f )
     return res;
   }
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterRect )
+  if ( !mRequest.filterRect().isNull() )
   {
     if ( fetchNextChangedGeomFeature( f ) )
       return true;
@@ -202,13 +244,25 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature& f )
       continue;
 
     // TODO[MD]: just one resize of attributes
-    f.setFields( &mSource->mFields );
+    f.setFields( mSource->mFields );
 
     // update attributes
-    updateChangedAttributes( f );
+    if ( mSource->mHasEditBuffer )
+      updateChangedAttributes( f );
 
-    if ( !mFetchJoinInfo.isEmpty() )
-      addJoinedAttributes( f );
+    if ( mHasVirtualAttributes )
+      addVirtualAttributes( f );
+
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mProviderRequest.filterType() != QgsFeatureRequest::FilterExpression )
+    {
+      //filtering by expression, and couldn't do it on the provider side
+      mRequest.expressionContext()->setFeature( f );
+      if ( !mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() )
+      {
+        //feature did not match filter
+        continue;
+      }
+    }
 
     // update geometry
     // TODO[MK]: FilterRect check after updating the geometry
@@ -287,11 +341,11 @@ void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature& src, QgsF
 {
   f.setFeatureId( src.id() );
   f.setValid( true );
-  f.setFields( &mSource->mFields );
+  f.setFields( mSource->mFields );
 
-  if ( src.geometry() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  if ( src.constGeometry() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
-    f.setGeometry( *src.geometry() );
+    f.setGeometry( new QgsGeometry( *src.constGeometry() ) );
 
     // simplify the edited geometry using its simplifier configured
     if ( mEditGeometrySimplifier )
@@ -306,8 +360,8 @@ void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature& src, QgsF
 
   f.setAttributes( src.attributes() );
 
-  if ( !mFetchJoinInfo.isEmpty() )
-    addJoinedAttributes( f );
+  if ( mHasVirtualAttributes )
+    addVirtualAttributes( f );
 }
 
 
@@ -343,21 +397,19 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedAttributeFeature( QgsFeature
 {
   while ( mChangedFeaturesIterator.nextFeature( f ) )
   {
+    if ( mFetchConsidered.contains( f.id() ) )
+      // skip deleted features and those already handled by the geometry
+      continue;
+
     mFetchConsidered << f.id();
 
     updateChangedAttributes( f );
 
-    if ( !mFetchJoinInfo.isEmpty() )
-      addJoinedAttributes( f );
+    if ( mHasVirtualAttributes )
+      addVirtualAttributes( f );
 
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
-    {
-      if ( mRequest.filterExpression()->evaluate( &f ).toBool() )
-      {
-        return true;
-      }
-    }
-    else
+    mRequest.expressionContext()->setFeature( f );
+    if ( mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() )
     {
       return true;
     }
@@ -371,7 +423,7 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
 {
   f.setFeatureId( fid );
   f.setValid( true );
-  f.setFields( &mSource->mFields );
+  f.setFields( mSource->mFields );
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
@@ -387,7 +439,7 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
   }
 
   bool subsetAttrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes );
-  if ( !subsetAttrs || ( subsetAttrs && mRequest.subsetOfAttributes().count() > 0 ) )
+  if ( !subsetAttrs || !mRequest.subsetOfAttributes().isEmpty() )
   {
     // retrieve attributes from provider
     QgsFeature tmp;
@@ -401,13 +453,13 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
     QgsFeatureIterator fi = mSource->mProviderFeatureSource->getFeatures( request );
     if ( fi.nextFeature( tmp ) )
     {
-      updateChangedAttributes( tmp );
+      if ( mHasVirtualAttributes || mSource->mHasEditBuffer )
+        updateChangedAttributes( tmp );
       f.setAttributes( tmp.attributes() );
     }
   }
 
-  if ( !mFetchJoinInfo.isEmpty() )
-    addJoinedAttributes( f );
+  addVirtualAttributes( f );
 }
 
 
@@ -444,11 +496,12 @@ void QgsVectorLayerFeatureIterator::prepareJoins()
     QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinInfo->joinLayerId ) );
     Q_ASSERT( joinLayer );
 
-    if ( !mFetchJoinInfo.contains( joinLayer ) )
+    if ( !mFetchJoinInfo.contains( joinInfo ) )
     {
       FetchJoinInfo info;
       info.joinInfo = joinInfo;
       info.joinLayer = joinLayer;
+      info.indexOffset = mSource->mJoinBuffer->joinedFieldsOffset( joinInfo, mSource->mFields );
 
       if ( joinInfo->targetFieldName.isEmpty() )
         info.targetField = joinInfo->targetFieldIndex;    //for compatibility with 1.x
@@ -458,21 +511,17 @@ void QgsVectorLayerFeatureIterator::prepareJoins()
       if ( joinInfo->joinFieldName.isEmpty() )
         info.joinField = joinInfo->joinFieldIndex;      //for compatibility with 1.x
       else
-        info.joinField = joinLayer->pendingFields().indexFromName( joinInfo->joinFieldName );
-
-      info.indexOffset = *attIt - sourceLayerIndex;
-      if ( info.joinField < sourceLayerIndex )
-        info.indexOffset++;
+        info.joinField = joinLayer->fields().indexFromName( joinInfo->joinFieldName );
 
       // for joined fields, we always need to request the targetField from the provider too
       if ( !fetchAttributes.contains( info.targetField ) )
         sourceJoinFields << info.targetField;
 
-      mFetchJoinInfo.insert( joinLayer, info );
+      mFetchJoinInfo.insert( joinInfo, info );
     }
 
     // store field source index - we'll need it when fetching from provider
-    mFetchJoinInfo[ joinLayer ].attributes.push_back( sourceLayerIndex );
+    mFetchJoinInfo[ joinInfo ].attributes.push_back( sourceLayerIndex );
   }
 
   // add sourceJoinFields if we're using a subset
@@ -480,13 +529,60 @@ void QgsVectorLayerFeatureIterator::prepareJoins()
     mRequest.setSubsetOfAttributes( mRequest.subsetOfAttributes() + sourceJoinFields );
 }
 
+void QgsVectorLayerFeatureIterator::prepareExpressions()
+{
+  const QList<QgsExpressionFieldBuffer::ExpressionField> exps = mSource->mExpressionFieldBuffer->expressions();
+
+  mExpressionContext.reset( new QgsExpressionContext() );
+  mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
+  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope() );
+  mExpressionContext->setFields( mSource->mFields );
+
+  for ( int i = 0; i < mSource->mFields.count(); i++ )
+  {
+    if ( mSource->mFields.fieldOrigin( i ) == QgsFields::OriginExpression )
+    {
+      // Only prepare if there is no subset defined or the subset contains this field
+      if ( !( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+           || mRequest.subsetOfAttributes().contains( i ) )
+      {
+        int oi = mSource->mFields.fieldOriginIndex( i );
+        QgsExpression* exp = new QgsExpression( exps[oi].cachedExpression );
+
+        QgsDistanceArea da;
+        da.setSourceCrs( mSource->mCrsId );
+        da.setEllipsoidalMode( true );
+        da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+        exp->setGeomCalculator( da );
+        exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );
+        exp->setAreaUnits( QgsProject::instance()->areaUnits() );
+
+        exp->prepare( mExpressionContext.data() );
+        mExpressionFieldInfo.insert( i, exp );
+
+        if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+        {
+          QgsAttributeList attrs;
+          Q_FOREACH ( const QString& col, exp->referencedColumns() )
+          {
+            attrs.append( mSource->mFields.fieldNameIndex( col ) );
+          }
+
+          mRequest.setSubsetOfAttributes( mRequest.subsetOfAttributes() + attrs );
+        }
+
+        if ( exp->needsGeometry() )
+        {
+          mRequest.setFlags( mRequest.flags() & ~QgsFeatureRequest::NoGeometry );
+        }
+      }
+    }
+  }
+}
 
 void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
 {
-  // make sure we have space for newly added attributes
-  f.attributes().resize( mSource->mFields.count() );  // f.attributes().count() + mJoinedAttributesCount );
-
-  QMap<QgsVectorLayer*, FetchJoinInfo>::const_iterator joinIt = mFetchJoinInfo.constBegin();
+  QMap<const QgsVectorJoinInfo*, FetchJoinInfo>::const_iterator joinIt = mFetchJoinInfo.constBegin();
   for ( ; joinIt != mFetchJoinInfo.constEnd(); ++joinIt )
   {
     const FetchJoinInfo& info = joinIt.value();
@@ -504,22 +600,48 @@ void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
   }
 }
 
+void QgsVectorLayerFeatureIterator::addVirtualAttributes( QgsFeature& f )
+{
+  // make sure we have space for newly added attributes
+  QgsAttributes attr = f.attributes();
+  attr.resize( mSource->mFields.count() );  // Provider attrs count + joined attrs count + expression attrs count
+  f.setAttributes( attr );
+
+  if ( !mFetchJoinInfo.isEmpty() )
+    addJoinedAttributes( f );
+
+  if ( !mExpressionFieldInfo.isEmpty() )
+  {
+    QMap<int, QgsExpression*>::ConstIterator it = mExpressionFieldInfo.constBegin();
+
+    for ( ; it != mExpressionFieldInfo.constEnd(); ++it )
+    {
+      QgsExpression* exp = it.value();
+      mExpressionContext->setFeature( f );
+      QVariant val = exp->evaluate( mExpressionContext.data() );
+      mSource->mFields.at( it.key() ).convertCompatible( val );
+      f.setAttribute( it.key(), val );
+    }
+  }
+}
+
 bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
 {
   delete mEditGeometrySimplifier;
-  mEditGeometrySimplifier = NULL;
+  mEditGeometrySimplifier = nullptr;
 
   // setup simplification for edited geometries to fetch
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && mSource->mCanBeSimplified )
   {
     mEditGeometrySimplifier = QgsSimplifyMethod::createGeometrySimplifier( simplifyMethod );
-    return mEditGeometrySimplifier != NULL;
+    return nullptr != mEditGeometrySimplifier;
   }
   return false;
 }
 
 bool QgsVectorLayerFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
 {
+  Q_UNUSED( methodType );
 #if 0
   // TODO[MD]: after merge
   QgsVectorDataProvider* provider = L->dataProvider();
@@ -554,11 +676,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesCached( Qg
   const QgsAttributes& featureAttributes = it.value();
   for ( int i = 0; i < featureAttributes.count(); ++i )
   {
-    // skip the join field to avoid double field names (fields often have the same name)
-    if ( i == joinField )
-      continue;
-
-    f.setAttribute( index++, featureAttributes[i] );
+    f.setAttribute( index++, featureAttributes.at( i ) );
   }
 }
 
@@ -571,12 +689,12 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   QString bkSubsetString = subsetString;
   if ( !subsetString.isEmpty() )
   {
-    subsetString.prepend( "(" ).append( ") AND " );
+    subsetString.prepend( '(' ).append( ") AND " );
   }
 
   QString joinFieldName;
-  if ( joinInfo->joinFieldName.isEmpty() && joinInfo->joinFieldIndex >= 0 && joinInfo->joinFieldIndex < joinLayer->pendingFields().count() )
-    joinFieldName = joinLayer->pendingFields().field( joinInfo->joinFieldIndex ).name();   // for compatibility with 1.x
+  if ( joinInfo->joinFieldName.isEmpty() && joinInfo->joinFieldIndex >= 0 && joinInfo->joinFieldIndex < joinLayer->fields().count() )
+    joinFieldName = joinLayer->fields().field( joinInfo->joinFieldIndex ).name();   // for compatibility with 1.x
   else
     joinFieldName = joinInfo->joinFieldName;
 
@@ -598,14 +716,21 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
       default:
       case QVariant::String:
-        v.replace( "'", "''" );
-        v.prepend( "'" ).append( "'" );
+        v.replace( '\'', "''" );
+        v.prepend( '\'' ).append( '\'' );
         break;
     }
-    subsetString += "=" + v;
+    subsetString += '=' + v;
   }
 
   joinLayer->dataProvider()->setSubsetString( subsetString, false );
+
+  // maybe user requested just a subset of layer's attributes
+  // so we do not have to cache everything
+  bool hasSubset = joinInfo->joinFieldNamesSubset();
+  QVector<int> subsetIndices;
+  if ( hasSubset )
+    subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayer, *joinInfo->joinFieldNamesSubset() );
 
   // select (no geometry)
   QgsFeatureRequest request;
@@ -618,13 +743,22 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   if ( fi.nextFeature( fet ) )
   {
     int index = indexOffset;
-    const QgsAttributes& attr = fet.attributes();
-    for ( int i = 0; i < attr.count(); ++i )
+    QgsAttributes attr = fet.attributes();
+    if ( hasSubset )
     {
-      if ( i == joinField )
-        continue;
+      for ( int i = 0; i < subsetIndices.count(); ++i )
+        f.setAttribute( index++, attr.at( subsetIndices.at( i ) ) );
+    }
+    else
+    {
+      // use all fields except for the one used for join (has same value as exiting field in target layer)
+      for ( int i = 0; i < attr.count(); ++i )
+      {
+        if ( i == joinField )
+          continue;
 
-      f.setAttribute( index++, attr[i] );
+        f.setAttribute( index++, attr.at( i ) );
+      }
     }
   }
   else
@@ -667,10 +801,11 @@ bool QgsVectorLayerFeatureIterator::nextFeatureFid( QgsFeature& f )
   QgsFeatureIterator fi = mSource->mProviderFeatureSource->getFeatures( mProviderRequest );
   if ( fi.nextFeature( f ) )
   {
-    updateChangedAttributes( f );
+    if ( mSource->mHasEditBuffer )
+      updateChangedAttributes( f );
 
-    if ( !mFetchJoinInfo.isEmpty() )
-      addJoinedAttributes( f );
+    if ( mHasVirtualAttributes )
+      addVirtualAttributes( f );
 
     return true;
   }
@@ -680,7 +815,7 @@ bool QgsVectorLayerFeatureIterator::nextFeatureFid( QgsFeature& f )
 
 void QgsVectorLayerFeatureIterator::updateChangedAttributes( QgsFeature &f )
 {
-  QgsAttributes& attrs = f.attributes();
+  QgsAttributes attrs = f.attributes();
 
   // remove all attributes that will disappear - from higher indices to lower
   for ( int idx = mSource->mDeletedAttributeIds.count() - 1; idx >= 0; --idx )
@@ -698,11 +833,18 @@ void QgsVectorLayerFeatureIterator::updateChangedAttributes( QgsFeature &f )
     for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); ++it )
       attrs[it.key()] = it.value();
   }
+  f.setAttributes( attrs );
 }
 
 void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature &f )
 {
   if ( mSource->mChangedGeometries.contains( f.id() ) )
     f.setGeometry( mSource->mChangedGeometries[f.id()] );
+}
+
+bool QgsVectorLayerFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys )
+{
+  Q_UNUSED( orderBys );
+  return true;
 }
 

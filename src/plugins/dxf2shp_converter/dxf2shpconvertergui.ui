@@ -59,7 +59,14 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
+      <item row="2" column="0" colspan="3">
+       <widget class="QCheckBox" name="convertInsertCheck">
+        <property name="text">
+         <string extracomment="'insert' is the entity that inserts/references a symbol/block in DXF">Export inserts</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="3">
        <widget class="QCheckBox" name="convertTextCheck">
         <property name="text">
          <string>Export text labels</string>

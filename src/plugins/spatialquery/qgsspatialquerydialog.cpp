@@ -39,7 +39,7 @@ QgsSpatialQueryDialog::QgsSpatialQueryDialog( QWidget* parent, QgisInterface* if
   QSettings settings;
   restoreGeometry( settings.value( "SpatialQuery/geometry" ).toByteArray() );
 
-  mLayerReference = mLayerTarget = NULL;
+  mLayerReference = mLayerTarget = nullptr;
   mIface = iface;
   mRubberSelectId = new QgsRubberSelectId( iface->mapCanvas() );
 
@@ -65,8 +65,8 @@ bool QgsSpatialQueryDialog::hasPossibleQuery( QString &msg )
   // Count the number of vector layer
   QMap <QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
   QMapIterator <QString, QgsMapLayer*> item( layers );
-  QgsMapLayer * mapLayer = NULL;
-  QgsVectorLayer * lyr = NULL;
+  QgsMapLayer * mapLayer = nullptr;
+  QgsVectorLayer * lyr = nullptr;
   unsigned int totalVector = 0;
   while ( item.hasNext() )
   {
@@ -147,8 +147,8 @@ void QgsSpatialQueryDialog::setLayer( bool isTarget, int index )
 
 void QgsSpatialQueryDialog::evaluateCheckBoxLayer( bool isTarget )
 {
-  QgsVectorLayer* lyr = NULL;
-  QCheckBox* checkbox = NULL;
+  QgsVectorLayer* lyr = nullptr;
+  QCheckBox* checkbox = nullptr;
   if ( isTarget )
   {
     lyr = mLayerTarget;
@@ -159,8 +159,8 @@ void QgsSpatialQueryDialog::evaluateCheckBoxLayer( bool isTarget )
     lyr = mLayerReference;
     checkbox = ckbUsingSelectedReference;
   }
-  int selectedCount = lyr->selectedFeatureCount();
-  bool isCheckBoxValid = ( lyr != NULL &&  selectedCount > 0 );
+  int selectedCount = lyr ? lyr->selectedFeatureCount() : 0;
+  bool isCheckBoxValid = selectedCount > 0;
   checkbox->setChecked( isCheckBoxValid );
   checkbox->setEnabled( isCheckBoxValid );
   QString textCheckBox  = isCheckBoxValid
@@ -212,7 +212,7 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   teStatus->append( msg );
   msg = QString( "%1" ).arg( getDescriptionLayerShow( false ) );
   teStatus->append( msg );
-  msg = tr( "Total of features =  %1" ).arg( mFeatureResult.size() );
+  msg = tr( "Total of features = %1" ).arg( mFeatureResult.size() );
   teStatus->append( msg );
   teStatus->append( "" );
   teStatus->append( tr( "Total of invalid features:" ) );
@@ -231,7 +231,7 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   on_cbTypeItems_currentIndexChanged( index );
 
   // Result target
-  if ( mFeatureResult.size() > 0 )
+  if ( !mFeatureResult.isEmpty() )
   {
     // Select features
     TypeResultFor typeResultFor = ( TypeResultFor ) cbResultFor->itemData( cbResultFor->currentIndex() ).toInt();
@@ -252,11 +252,11 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   }
 } // void QgsSpatialQueryDialog::showResultQuery(QDateTime *datetimeStart, QDateTime *datetimeEnd)
 
-QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, QString fieldFID )
+QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, const QString& fieldFID )
 {
-  if ( fids->size() == 0 )
+  if ( fids->isEmpty() )
   {
-    return QString( "" );
+    return QString();
   }
   QSetIterator <QgsFeatureId> item( *fids );
   QStringList lstFID;
@@ -265,10 +265,10 @@ QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, QString
     lstFID.append( FID_TO_STRING( item.next() ) );
   }
   QString qFormat( "%1 in (%2)" );
-  QString qReturn  = qFormat.arg( fieldFID ).arg( lstFID.join( "," ) );
+  QString qReturn  = qFormat.arg( fieldFID, lstFID.join( "," ) );
   lstFID.clear();
   return qReturn;
-} // QString QgsSpatialQueryDialog::getSubsetFIDs( const QSet< int > *fids, QString fieldFID )
+} // QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, QString fieldFID )
 
 QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreateSubset( QString &msg, QString &fieldFID )
 {
@@ -290,7 +290,7 @@ QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreat
   return verifyImpossible;
 } // TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreateSubset(QString &msg, QString &fieldFID)
 
-bool QgsSpatialQueryDialog::addLayerSubset( QString name, QString subset )
+bool QgsSpatialQueryDialog::addLayerSubset( const QString& name, const QString& subset )
 {
   QgsVectorLayer *addLyr = new QgsVectorLayer( mLayerTarget->source(), name, mLayerTarget->providerType() );
   if ( ! addLyr->setSubsetString( subset ) )
@@ -305,8 +305,8 @@ bool QgsSpatialQueryDialog::addLayerSubset( QString name, QString subset )
 
 QString QgsSpatialQueryDialog::getDescriptionLayerShow( bool isTarget )
 {
-  QgsVectorLayer* lyr = NULL;
-  QCheckBox * checkBox = NULL;
+  QgsVectorLayer* lyr = nullptr;
+  QCheckBox * checkBox = nullptr;
   if ( isTarget )
   {
     lyr = mLayerTarget;
@@ -322,13 +322,13 @@ QString QgsSpatialQueryDialog::getDescriptionLayerShow( bool isTarget )
                           ? tr( "%1 of %2" ).arg( lyr->selectedFeatureCount() ).arg( lyr->featureCount() )
                           : tr( "all = %1" ).arg( lyr->featureCount() );
 
-  return QString( "%1 (%2)" ).arg( lyr->name() ).arg( sDescFeatures );
+  return QString( "%1 (%2)" ).arg( lyr->name(), sDescFeatures );
 } // QString QgsSpatialQueryDialog::getDescriptionLayerShow(bool isTarget)
 
 QString QgsSpatialQueryDialog::getDescriptionInvalidFeaturesShow( bool isTarget )
 {
-  QgsVectorLayer* lyr = NULL;
-  QCheckBox* checkBox = NULL;
+  QgsVectorLayer* lyr = nullptr;
+  QCheckBox* checkBox = nullptr;
   int totalInvalid = 0;
   if ( isTarget )
   {
@@ -347,13 +347,13 @@ QString QgsSpatialQueryDialog::getDescriptionInvalidFeaturesShow( bool isTarget 
                           ? tr( "%1 of %2(selected features)" ).arg( totalInvalid ).arg( lyr->selectedFeatureCount() )
                           : tr( "%1 of %2" ).arg( totalInvalid ).arg( lyr->featureCount() );
 
-  return QString( "%1: %2" ).arg( lyr->name() ).arg( sDescFeatures );
+  return QString( "%1: %2" ).arg( lyr->name(), sDescFeatures );
 } // QString QgsSpatialQueryDialog::getDescriptionInvalidFeatures(bool isTarget)
 
 void QgsSpatialQueryDialog::connectAll()
 {
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ),
-           this, SLOT( signal_qgis_layerWasAdded( QgsMapLayer* ) ) ) ;
+           this, SLOT( signal_qgis_layerWasAdded( QgsMapLayer* ) ) );
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
            this, SLOT( signal_qgis_layerWillBeRemoved( QString ) ) );
   connect( ckbLogProcessing, SIGNAL( clicked( bool ) ),
@@ -363,7 +363,7 @@ void QgsSpatialQueryDialog::connectAll()
 void QgsSpatialQueryDialog::disconnectAll()
 {
   disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ),
-              this, SLOT( signal_qgis_layerWasAdded( QgsMapLayer* ) ) ) ;
+              this, SLOT( signal_qgis_layerWasAdded( QgsMapLayer* ) ) );
   disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
               this, SLOT( signal_qgis_layerWillBeRemoved( QString ) ) );
 
@@ -385,7 +385,7 @@ void QgsSpatialQueryDialog::reject()
   disconnectAll();
 
   mRubberSelectId->reset();
-  mLayerTarget = mLayerReference = NULL;
+  mLayerTarget = mLayerReference = nullptr;
   mFeatureResult.clear();
   mFeatureInvalidTarget.clear();
   mFeatureInvalidReference.clear();
@@ -476,7 +476,7 @@ void QgsSpatialQueryDialog::removeLayer( bool isTarget, QgsVectorLayer* lyr )
   }
   if ( lyr == lyrThis )
   {
-    lyrThis = NULL;
+    lyrThis = nullptr;
     if ( cmb->count() > 0 )
     {
       cmb->setCurrentIndex( 0 );
@@ -534,8 +534,8 @@ void QgsSpatialQueryDialog::populateCbTargetLayer()
 
   QMap <QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
   QMapIterator <QString, QgsMapLayer*> item( layers );
-  QgsMapLayer * mapLayer = NULL;
-  QgsVectorLayer * lyr = NULL;
+  QgsMapLayer * mapLayer = nullptr;
+  QgsVectorLayer * lyr = nullptr;
   QString layerId;
   while ( item.hasNext() )
   {
@@ -567,7 +567,7 @@ void QgsSpatialQueryDialog::populateCbReferenceLayer()
   QString itemText;
   QVariant itemData;
   QIcon itemIcon;
-  QgsVectorLayer * lyr = NULL;
+  QgsVectorLayer * lyr = nullptr;
   int idNew = 0;
   for ( int id = 0; id < cbTargetLayer->count(); id++ )
   {
@@ -656,11 +656,11 @@ void QgsSpatialQueryDialog::changeLwFeature( QgsVectorLayer* lyr, QgsFeatureId f
   }
   lwFeatures->setEnabled( true );
   lwFeatures->setFocus();
-} // void QgsSpatialQueryDialog::changeLwFeature( QListWidget *listWidget, QgsVectorLayer* lyr, int fid )
+} // void QgsSpatialQueryDialog::changeLwFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 
 void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 {
-  static QgsVectorLayer* lyrCheck = NULL;
+  static QgsVectorLayer* lyrCheck = nullptr;
   static bool hasMsg = false;
   if ( ! lyrCheck || lyrCheck != lyr )
   {
@@ -677,7 +677,7 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
   {
     return;
   }
-  if ( !feat.geometry() )
+  if ( !feat.constGeometry() )
   {
     return;
   }
@@ -692,26 +692,26 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
       bool isFly = mIface->mapCanvas()->mapSettings().hasCrsTransformEnabled();
       QString msgFly = tr( "Map \"%1\" \"on the fly\" transformation." ).arg( isFly ? tr( "enable" ) : tr( "disable" ) );
       QString msg = tr( "Coordinate reference system(CRS) of\n\"%1\" is invalid(see CRS of provider)." ).arg( lyr->name() );
-      msg.append( tr( "\n\nCRS of map is %1.\n%2." ).arg( crsMapcanvas ).arg( msgFly ) );
+      msg.append( tr( "\n\nCRS of map is %1.\n%2." ).arg( crsMapcanvas, msgFly ) );
       msg.append( "\n\nUsing CRS of map for all features!" );
 
       QMessageBox::warning( this, tr( "Zoom to feature" ), msg, QMessageBox::Ok );
     }
-    mIface->mapCanvas()->setExtent( feat.geometry()->boundingBox() );
+    mIface->mapCanvas()->setExtent( feat.constGeometry()->boundingBox() );
   }
   else if ( srsSource == srcMapcanvas )
   {
-    mIface->mapCanvas()->setExtent( feat.geometry()->boundingBox() );
+    mIface->mapCanvas()->setExtent( feat.constGeometry()->boundingBox() );
   }
   else
   {
     QgsCoordinateTransform * coordTransform =  new QgsCoordinateTransform( srsSource, srcMapcanvas );
-    QgsRectangle rectExtent = coordTransform->transform( feat.geometry()->boundingBox() );
+    QgsRectangle rectExtent = coordTransform->transform( feat.constGeometry()->boundingBox() );
     delete coordTransform;
     mIface->mapCanvas()->setExtent( rectExtent );
   }
   mIface->mapCanvas()->refresh();
-} // void QgsSpatialQueryDialog::zoomFeatureTarget(QgsVectorLayer* lyr, int fid)
+} // void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 
 void QgsSpatialQueryDialog::showRubberFeature( QgsVectorLayer* lyr, QgsFeatureId id )
 {
@@ -734,12 +734,12 @@ void QgsSpatialQueryDialog::apply()
 {
   if ( ! mLayerReference )
   {
-    QMessageBox::warning( 0, tr( "Missing reference layer" ), tr( "Select reference layer!" ), QMessageBox::Ok );
+    QMessageBox::warning( nullptr, tr( "Missing reference layer" ), tr( "Select reference layer!" ), QMessageBox::Ok );
     return;
   }
   if ( ! mLayerTarget )
   {
-    QMessageBox::warning( 0, tr( "Missing target layer" ), tr( "Select target layer!" ), QMessageBox::Ok );
+    QMessageBox::warning( nullptr, tr( "Missing target layer" ), tr( "Select target layer!" ), QMessageBox::Ok );
     return;
   }
 
@@ -749,7 +749,7 @@ void QgsSpatialQueryDialog::apply()
   mIsSelectedOperator = true;
   runQuery();
   QDateTime datetimeEnd = QDateTime::currentDateTime();
-  if ( mFeatureResult.count() == 0 )
+  if ( mFeatureResult.isEmpty() )
   {
     mIsSelectedOperator = false;
   }
@@ -760,7 +760,7 @@ void QgsSpatialQueryDialog::apply()
 void QgsSpatialQueryDialog::visibleResult( bool show )
 {
   blockSignals( true );
-  if ( show == false )
+  if ( !show )
   {
     mRubberSelectId->reset();
   }
@@ -795,7 +795,7 @@ void QgsSpatialQueryDialog::on_bbMain_clicked( QAbstractButton * button )
 void QgsSpatialQueryDialog::on_pbCreateLayerItems_clicked()
 {
   TypeItems typeItem = ( TypeItems ) cbTypeItems->itemData( cbTypeItems->currentIndex() ).toInt();
-  QgsFeatureIds *fids = 0;
+  QgsFeatureIds *fids = nullptr;
   switch ( typeItem )
   {
     case itemsResult:
@@ -825,10 +825,10 @@ void QgsSpatialQueryDialog::on_pbCreateLayerItems_clicked()
   }
 
   QString subset = getSubsetFIDs( fids, fieldFID );
-  QString name = QString( "%1 < %2 > %3" ).arg( mLayerTarget->name() ).arg( cbOperation->currentText() ).arg( mLayerReference->name() );
+  QString name = QString( "%1 < %2 > %3" ).arg( mLayerTarget->name(), cbOperation->currentText(), mLayerReference->name() );
   if ( ! addLayerSubset( name, subset ) )
   {
-    msg = tr( "The query from \"%1\" using \"%2\" in field not possible." ).arg( mLayerTarget->name() ).arg( fieldFID );
+    msg = tr( "The query from \"%1\" using \"%2\" in field not possible." ).arg( mLayerTarget->name(), fieldFID );
     QMessageBox::critical( this, title, msg, QMessageBox::Ok );
   }
 } // void QgsSpatialQueryDialog::on_pbCreateLayerItems_clicked()
@@ -854,7 +854,7 @@ void QgsSpatialQueryDialog::on_pbCreateLayerSelected_clicked()
   QString name = QString( "%1 selected" ).arg( mLayerTarget->name() );
   if ( ! addLayerSubset( name, subset ) )
   {
-    msg = tr( "The query from \"%1\" using \"%2\" in field not possible." ).arg( mLayerTarget->name() ).arg( fieldFID );
+    msg = tr( "The query from \"%1\" using \"%2\" in field not possible." ).arg( mLayerTarget->name(), fieldFID );
     QMessageBox::critical( this, title, msg, QMessageBox::Ok );
   }
 } // void QgsSpatialQueryDialog::on_pbCreateLayerSelected_clicked()
@@ -899,7 +899,7 @@ void QgsSpatialQueryDialog::on_cbTypeItems_currentIndexChanged( int index )
   QVariant qtypItem = cbTypeItems->itemData( index );
   TypeItems typeItem = ( TypeItems ) qtypItem.toInt();
 
-  QgsFeatureIds *setItems = 0;
+  QgsFeatureIds *setItems = nullptr;
   int totalFeat = mLayerTarget->featureCount();
   switch ( typeItem )
   {
@@ -924,7 +924,7 @@ void QgsSpatialQueryDialog::on_cbTypeItems_currentIndexChanged( int index )
   {
     // Populate lwFeatures
     QSetIterator <QgsFeatureId> item( *setItems );
-    QListWidgetItem *lwItem = NULL;
+    QListWidgetItem *lwItem = nullptr;
     while ( item.hasNext() )
     {
       lwItem = new QListWidgetItem( lwFeatures );
@@ -1020,7 +1020,7 @@ void QgsSpatialQueryDialog::signal_qgis_layerWasAdded( QgsMapLayer* mapLayer )
   mMapIdVectorLayers.insert( lyr->id(), lyr );
 } // QgsSpatialQueryDialog::signal_qgis_layerWasAdded(QgsMapLayer* mapLayer)
 
-void QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved( QString idLayer )
+void QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved( const QString& idLayer )
 {
   // If Frozen: the QGis can be: Exit, Add Project, New Project
   if ( mIface->mapCanvas()->isFrozen() )
@@ -1029,8 +1029,8 @@ void QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved( QString idLayer )
   }
   // idLayer = QgsMapLayer::getLayerID()
   // Get Pointer layer removed
-  QMap<QString, QgsVectorLayer *>::const_iterator i = mMapIdVectorLayers.find( idLayer );
-  if ( i == mMapIdVectorLayers.end() )
+  QMap<QString, QgsVectorLayer *>::const_iterator i = mMapIdVectorLayers.constFind( idLayer );
+  if ( i == mMapIdVectorLayers.constEnd() )
   {
     return;
   }
@@ -1053,13 +1053,13 @@ void QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved( QString idLayer )
       visibleResult( false );
     }
 
-    mLayerReference = NULL;
+    mLayerReference = nullptr;
     if ( cbTargetLayer->count() < 1 )
     {
-      mLayerTarget = NULL;
+      mLayerTarget = nullptr;
     }
   }
-  else
+  else if ( mLayerTarget )
   {
     populateCbOperation();
   }

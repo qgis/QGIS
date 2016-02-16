@@ -29,10 +29,12 @@
 #include <string.h>
 #include <math.h>
 #include <assert.h>
+#include <limits.h>
 #ifdef WIN32
 #include <fcntl.h>
 #include <io.h>
 #endif
+#include <grass/version.h>
 #include <grass/gis.h>
 #include <grass/raster.h>
 #include <grass/display.h>
@@ -41,6 +43,24 @@
 #include <float.h>
 #define INFINITY (DBL_MAX+DBL_MAX)
 #define NAN (INFINITY-INFINITY)
+#endif
+
+#if GRASS_VERSION_MAJOR >= 7
+#define G_allocate_raster_buf Rast_allocate_buf
+#define G_close_cell Rast_close
+#define G_free_colors Rast_free_colors
+#define G_get_cellhd Rast_get_cellhd
+#define G_get_raster_map_type Rast_get_map_type
+#define G_get_raster_row Rast_get_row
+#define G_is_null_value Rast_is_null_value
+#define G_lookup_raster_colors Rast_lookup_colors
+#define G_open_cell_old Rast_open_old
+#define G_raster_map_type Rast_map_type
+#define G_raster_size Rast_cell_size
+#define G_read_colors Rast_read_colors
+#define G_window_cols Rast_window_cols
+#define G_window_rows Rast_window_rows
+#define G_suppress_masking Rast_suppress_masking
 #endif
 
 int display( char *name, char *mapset, RASTER_MAP_TYPE data_type, char *format );
@@ -60,7 +80,6 @@ int main( int argc, char **argv )
   G_gisinit( argv[0] );
 
   module = G_define_module();
-  module->keywords = ( "display, raster" );
   module->description = ( "Output raster map layers in a format suitable for display in QGIS" );
 
   map = G_define_standard_option( G_OPT_R_MAP );
@@ -84,9 +103,13 @@ int main( int argc, char **argv )
   name = map->answer;
 
   /* Make sure map is available */
+#if GRASS_VERSION_MAJOR < 7
   mapset = G_find_cell2( name, "" );
-  if ( mapset == NULL )
+  if ( !mapset )
     G_fatal_error(( "Raster map <%s> not found" ), name );
+#else
+  mapset = "";
+#endif
 
   /* It can happen that GRASS data set is 'corrupted' and zone differs in WIND and
    * cellhd, and G_open_cell_old fails, so it is better to read window from map */
@@ -100,6 +123,8 @@ int main( int argc, char **argv )
   window.rows = atoi( win->answers[5] );
   G_adjust_Cell_head( &window, 1, 1 );
   G_set_window( &window );
+
+  G_suppress_masking(); // must be after G_set_window()
 
   raster_type = G_raster_map_type( name, "" );
 
@@ -150,7 +175,7 @@ static int cell_draw( char *name,
   size_t raster_size;
 #ifdef NAN
   double dnul = NAN;
-  float fnul = NAN;
+  float fnul = ( float )( NAN );
 #else
   double dnul = strtod( "NAN", 0 );
   float fnul = strtof( "NAN", 0 );
@@ -178,6 +203,7 @@ static int cell_draw( char *name,
   set = G_malloc( ncols );
 
   /* some buggy C libraries require BOTH setmode() and fdopen(bin) */
+  // Do not use Q_OS_WIN, we are in C file, no Qt headers
 #ifdef WIN32
   if ( _setmode( _fileno( stdout ), _O_BINARY ) == -1 )
     G_fatal_error( "Cannot set stdout mode" );
@@ -234,18 +260,18 @@ static int cell_draw( char *name,
           if ( data_type == CELL_TYPE )
           {
             //int nul = -2000000000;
-            int nul = -2147483648;
-            fwrite( &nul , 4, 1, fo );
+            int nul = INT_MIN;
+            fwrite( &nul, 4, 1, fo );
           }
           else if ( data_type == DCELL_TYPE )
           {
             //double nul = -1e+300;
-            fwrite( &dnul , 8, 1, fo );
+            fwrite( &dnul, 8, 1, fo );
           }
           else if ( data_type == FCELL_TYPE )
           {
             //double nul = -1e+30;
-            fwrite( &fnul , 4, 1, fo );
+            fwrite( &fnul, 4, 1, fo );
           }
         }
         else
@@ -258,5 +284,7 @@ static int cell_draw( char *name,
   }
 
   G_close_cell( cellfile );
+  fclose( fo );
+
   return ( 0 );
 }

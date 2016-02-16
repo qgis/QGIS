@@ -28,20 +28,20 @@ class QgsGeometry;
 class QgsRubberBand;
 
 
-class APP_EXPORT QgsMapToolSelectRectangle : public QgsMapTool
+class APP_EXPORT QgsMapToolSelectFeatures : public QgsMapTool
 {
     Q_OBJECT
   public:
-    QgsMapToolSelectRectangle( QgsMapCanvas* canvas );
+    QgsMapToolSelectFeatures( QgsMapCanvas* canvas );
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
   private:
 
@@ -52,6 +52,10 @@ class APP_EXPORT QgsMapToolSelectRectangle : public QgsMapTool
     QRect mSelectRect;
 
     QgsRubberBand* mRubberBand;
+
+    QColor mFillColor;
+
+    QColor mBorderColour;
 };
 
 #endif

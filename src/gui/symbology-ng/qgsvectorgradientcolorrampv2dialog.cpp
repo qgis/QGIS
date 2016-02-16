@@ -28,15 +28,23 @@
 #include <QTextEdit>
 
 QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent )
-    : QDialog( parent ), mRamp( ramp ), mCurrentItem( 0 )
+    : QDialog( parent ), mRamp( ramp ), mCurrentItem( nullptr )
 {
   setupUi( this );
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
 
-  btnColor1->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
-  btnColor2->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  btnColor1->setAllowAlpha( true );
+  btnColor1->setColorDialogTitle( tr( "Select ramp color" ) );
+  btnColor1->setContext( "symbology" );
+  btnColor1->setShowNoColor( true );
+  btnColor1->setNoColorString( tr( "Transparent" ) );
+  btnColor2->setAllowAlpha( true );
+  btnColor2->setColorDialogTitle( tr( "Select ramp color" ) );
+  btnColor2->setContext( "symbology" );
+  btnColor2->setShowNoColor( true );
+  btnColor2->setNoColorString( tr( "Transparent" ) );
   connect( btnColor1, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor1( const QColor& ) ) );
   connect( btnColor2, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor2( const QColor& ) ) );
 
@@ -83,7 +91,7 @@ void QgsVectorGradientColorRampV2Dialog::on_btnInformation_pressed()
     return;
 
   QgsDialog *dlg = new QgsDialog( this );
-  QLabel *label = 0;
+  QLabel *label = nullptr;
 
   // information table
   QTableWidget *tableInfo = new QTableWidget( dlg );
@@ -92,8 +100,9 @@ void QgsVectorGradientColorRampV2Dialog::on_btnInformation_pressed()
   tableInfo->setRowCount( mRamp->info().count() );
   tableInfo->setColumnCount( 2 );
   int i = 0;
-  for ( QgsStringMap::const_iterator it = mRamp->info().constBegin();
-        it != mRamp->info().constEnd(); ++it )
+  QgsStringMap rampInfo = mRamp->info();
+  for ( QgsStringMap::const_iterator it = rampInfo.constBegin();
+        it != rampInfo.constEnd(); ++it )
   {
     if ( it.key().startsWith( "cpt-city" ) )
       continue;
@@ -196,6 +205,7 @@ void QgsVectorGradientColorRampV2Dialog::updatePreview()
   if ( groupStops->isChecked() )
   {
     int count = treeStops->topLevelItemCount();
+    stops.reserve( count );
     for ( int i = 0; i < count; i++ )
     {
       QTreeWidgetItem* item = treeStops->topLevelItem( i );
@@ -210,8 +220,12 @@ void QgsVectorGradientColorRampV2Dialog::updatePreview()
   QSize size( 300, 40 );
   lblPreview->setPixmap( QgsSymbolLayerV2Utils::colorRampPreviewPixmap( mRamp, size ) );
 
+  btnColor1->blockSignals( true );
   btnColor1->setColor( mRamp->color1() );
+  btnColor1->blockSignals( false );
+  btnColor2->blockSignals( true );
   btnColor2->setColor( mRamp->color2() );
+  btnColor2->blockSignals( false );
 }
 
 void QgsVectorGradientColorRampV2Dialog::setColor1( const QColor& color )
@@ -226,7 +240,7 @@ void QgsVectorGradientColorRampV2Dialog::setColor2( const QColor& color )
   updatePreview();
 }
 
-void QgsVectorGradientColorRampV2Dialog::setStopColor( QTreeWidgetItem* item, QColor color )
+void QgsVectorGradientColorRampV2Dialog::setStopColor( QTreeWidgetItem* item, const QColor& color )
 {
   QSize iconSize( 16, 16 );
   QPixmap pixmap( iconSize );
@@ -263,18 +277,29 @@ void QgsVectorGradientColorRampV2Dialog::stopDoubleClicked( QTreeWidgetItem* ite
     QColor color;
 
     QSettings settings;
+    //using native color dialogs?
+    bool useNative = settings.value( "/qgis/native_color_dialogs", false ).toBool();
     if ( settings.value( "/qgis/live_color_dialogs", false ).toBool() )
     {
       mCurrentItem = item;
-      color = QgsColorDialog::getLiveColor(
-                item->data( 0, StopColorRole ).value<QColor>(),
-                this, SLOT( setItemStopColor( const QColor& ) ),
-                this, tr( "Edit Stop Color" ), QColorDialog::ShowAlphaChannel );
-      mCurrentItem = 0;
+      if ( useNative )
+      {
+        color = QgsColorDialog::getLiveColor(
+                  item->data( 0, StopColorRole ).value<QColor>(),
+                  this, SLOT( setItemStopColor( const QColor& ) ),
+                  this, tr( "Edit Stop Color" ), QColorDialog::ShowAlphaChannel );
+      }
+      else
+      {
+        color = QgsColorDialogV2::getLiveColor(
+                  item->data( 0, StopColorRole ).value<QColor>(), this, SLOT( setItemStopColor( const QColor& ) ),
+                  this, tr( "Edit Stop Color" ), true );
+      }
+      mCurrentItem = nullptr;
     }
     else
     {
-      color = QColorDialog::getColor( item->data( 0, StopColorRole ).value<QColor>(), this, tr( "Edit Stop Color" ), QColorDialog::ShowAlphaChannel );
+      color = QgsColorDialogV2::getColor( item->data( 0, StopColorRole ).value<QColor>(), this, tr( "Edit Stop Color" ), true );
     }
     if ( !color.isValid() )
       return;
@@ -310,8 +335,8 @@ void QgsVectorGradientColorRampV2Dialog::addStop()
 // workaround: call QColorDialog::getColor below instead of here,
 // but not needed at this time because of the other Qt bug
 // FIXME need to also check max QT_VERSION when Qt bug(s) fixed
-#ifndef Q_WS_MAC
-  QColor color = QColorDialog::getColor( QColor(), this, tr( "Add Color Stop" ), QColorDialog::ShowAlphaChannel );
+#ifndef Q_OS_MAC
+  QColor color = QgsColorDialogV2::getColor( QColor(), this, tr( "Add Color Stop" ), true );
 
   if ( !color.isValid() )
     return;
@@ -331,8 +356,8 @@ void QgsVectorGradientColorRampV2Dialog::addStop()
   QStringList lst;
   lst << "." << QString(( val < 10 ) ? '0' + QString::number( val ) : QString::number( val ) );
 
-#ifdef Q_WS_MAC
-  QColor color = QColorDialog::getColor( QColor(), this, tr( "Add Color Stop" ), QColorDialog::ShowAlphaChannel );
+#ifdef Q_OS_MAC
+  QColor color = QgsColorDialogV2::getColor( QColor(), this, tr( "Add Color Stop" ), true );
 
   if ( !color.isValid() )
     return;

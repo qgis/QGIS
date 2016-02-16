@@ -16,21 +16,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsidentifyresultsdialog.h"
-#include "qgsapplication.h"
 #include "qgisapp.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgshighlight.h"
-#include "qgsgeometry.h"
-#include "qgsattributedialog.h"
-#include "qgsmapcanvas.h"
+#include "qgsapplication.h"
 #include "qgsattributeaction.h"
+#include "qgsattributedialog.h"
+#include "qgseditorwidgetregistry.h"
 #include "qgsfeatureaction.h"
+#include "qgsgeometry.h"
+#include "qgshighlight.h"
+#include "qgsidentifyresultsdialog.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayeractionregistry.h"
+#include "qgsmaplayer.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgsvectorlayer.h"
+#include "qgswebview.h"
+#include "qgswebframe.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -43,15 +47,21 @@
 #include <QDockWidget>
 #include <QMenuBar>
 #include <QPushButton>
-#include <QWebView>
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QComboBox>
-#include <QWebFrame>
 
-QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QWebView( parent )
+//graph
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
+#include <qwt_symbol.h>
+#include <qwt_legend.h>
+#include "qgsvectorcolorrampv2.h" // for random colors
+
+
+QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
 {
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
   page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
@@ -70,7 +80,7 @@ void QgsIdentifyResultsWebView::print( void )
   QPrintDialog *dialog = new QPrintDialog( &printer );
   if ( dialog->exec() == QDialog::Accepted )
   {
-    QWebView::print( &printer );
+    QgsWebView::print( &printer );
   }
 }
 
@@ -87,12 +97,12 @@ void QgsIdentifyResultsWebView::contextMenuEvent( QContextMenuEvent *e )
   delete menu;
 }
 
-QWebView *QgsIdentifyResultsWebView::createWindow( QWebPage::WebWindowType type )
+QgsWebView *QgsIdentifyResultsWebView::createWindow( QWebPage::WebWindowType type )
 {
   QDialog *d = new QDialog( this );
   QLayout *l = new QVBoxLayout( d );
 
-  QWebView *wv = new QWebView( d );
+  QgsWebView *wv = new QgsWebView( d );
   l->addWidget( wv );
 
   wv->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
@@ -164,7 +174,7 @@ QSize QgsIdentifyResultsWebView::sizeHint() const
   }
   else
   {
-    QgsDebugMsg( "parent not available" ) ;
+    QgsDebugMsg( "parent not available" );
   }
 
   // Always keep some minimum size, e.g. if page is not yet loaded
@@ -175,22 +185,6 @@ QSize QgsIdentifyResultsWebView::sizeHint() const
   QgsDebugMsg( QString( "size: %1 x %2" ).arg( s.width() ).arg( s.height() ) );
   return s;
 }
-
-class QgsIdentifyResultsDock : public QDockWidget
-{
-  public:
-    QgsIdentifyResultsDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
-        : QDockWidget( title, parent, flags )
-    {
-      setObjectName( "IdentifyResultsTableDock" ); // set object name so the position can be saved
-    }
-
-    virtual void closeEvent( QCloseEvent *e )
-    {
-      Q_UNUSED( e );
-      deleteLater();
-    }
-};
 
 QgsIdentifyResultsFeatureItem::QgsIdentifyResultsFeatureItem( const QgsFields &fields, const QgsFeature &feature, const QgsCoordinateReferenceSystem &crs, const QStringList & strings )
     : QTreeWidgetItem( strings )
@@ -242,6 +236,7 @@ void QgsIdentifyResultsWebViewItem::loadFinished( bool ok )
 //     actions (if any) [userrole: "actions"]
 //       edit [userrole: "edit"]
 //       action [userrole: "action", idx]
+//       action [userrole: "map_layer_action", QgsMapLayerAction]
 //     displayname [userroles: fieldIdx, original name] displayvalue [userrole: original value]
 //     displayname [userroles: fieldIdx, original name] displayvalue [userrole: original value]
 //     displayname [userroles: fieldIdx, original name] displayvalue [userrole: original value]
@@ -252,33 +247,45 @@ void QgsIdentifyResultsWebViewItem::loadFinished( bool ok )
 //       action
 //     name value
 
-QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent, Qt::WFlags f )
+QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
     : QDialog( parent, f )
-    , mActionPopup( 0 )
+    , mActionPopup( nullptr )
     , mCanvas( canvas )
-    , mDock( NULL )
+    , mDock( nullptr )
 {
   setupUi( this );
 
-  mExpandToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ) );
-  mCollapseToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ) );
-  mExpandNewToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionExpandNewTree.png" ) );
-  mCopyToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionEditCopy.png" ) );
-  mPrintToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionFilePrint.png" ) );
+  mOpenFormAction->setDisabled( true );
 
   QSettings mySettings;
-  restoreGeometry( mySettings.value( "/Windows/Identify/geometry" ).toByteArray() );
-  bool myDockFlag = mySettings.value( "/qgis/dockIdentifyResults", false ).toBool();
-  if ( myDockFlag )
+  mDock = new QDockWidget( tr( "Identify Results" ), QgisApp::instance() );
+  mDock->setObjectName( "IdentifyResultsDock" );
+  mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  mDock->setWidget( this );
+  if ( !QgisApp::instance()->restoreDockWidget( mDock ) )
+    QgisApp::instance()->addDockWidget( Qt::RightDockWidgetArea, mDock );
+  else
+    QgisApp::instance()->panelMenu()->addAction( mDock->toggleViewAction() );
+
+  int size = mySettings.value( "/IconSize", 16 ).toInt();
+  if ( size > 32 )
   {
-    mDock = new QgsIdentifyResultsDock( tr( "Identify Results" ) , QgisApp::instance() );
-    mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-    mDock->setWidget( this );
-    QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mDock );
+    size -= 16;
   }
-  mExpandNewToolButton->setChecked( mySettings.value( "/Map/identifyExpand", false ).toBool() );
-  mCopyToolButton->setEnabled( false );
+  else if ( size == 32 )
+  {
+    size = 24;
+  }
+  else
+  {
+    size = 16;
+  }
+  mIdentifyToolbar->setIconSize( QSize( size, size ) );
+
+  mExpandNewAction->setChecked( mySettings.value( "/Map/identifyExpand", false ).toBool() );
+  mActionCopy->setEnabled( false );
   lstResults->setColumnCount( 2 );
+  lstResults->sortByColumn( -1 );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
 
@@ -287,8 +294,38 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   {
     lstResults->setColumnWidth( 0, width );
   }
+  width = mySettings.value( "/Windows/Identify/columnWidthTable", "0" ).toInt();
+  if ( width > 0 )
+  {
+    tblResults->setColumnWidth( 0, width );
+  }
 
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
+  // retrieve mode before on_cmbIdentifyMode_currentIndexChanged resets it on addItem
+  int identifyMode = mySettings.value( "/Map/identifyMode", 0 ).toInt();
+
+  cmbIdentifyMode->addItem( tr( "Current layer" ), 0 );
+  cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), 1 );
+  cmbIdentifyMode->addItem( tr( "Top down" ), 2 );
+  cmbIdentifyMode->addItem( tr( "Layer selection" ), 3 );
+  cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
+  cbxAutoFeatureForm->setChecked( mySettings.value( "/Map/identifyAutoFeatureForm", false ).toBool() );
+
+  // view modes
+  cmbViewMode->addItem( tr( "Tree" ), 0 );
+  cmbViewMode->addItem( tr( "Table" ), 0 );
+  cmbViewMode->addItem( tr( "Graph" ), 0 );
+
+  // graph
+  mPlot->setVisible( false );
+  mPlot->setAutoFillBackground( false );
+  mPlot->setAutoDelete( true );
+  mPlot->insertLegend( new QwtLegend(), QwtPlot::TopLegend );
+  QSizePolicy sizePolicy = QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+  sizePolicy.setHorizontalStretch( 0 );
+  sizePolicy.setVerticalStretch( 0 );
+  sizePolicy.setHeightForWidth( mPlot->sizePolicy().hasHeightForWidth() );
+  mPlot->setSizePolicy( sizePolicy );
+  mPlot->updateGeometry();
 
   connect( lstResults, SIGNAL( itemExpanded( QTreeWidgetItem* ) ),
            this, SLOT( itemExpanded( QTreeWidgetItem* ) ) );
@@ -299,15 +336,24 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( lstResults, SIGNAL( itemClicked( QTreeWidgetItem*, int ) ),
            this, SLOT( itemClicked( QTreeWidgetItem*, int ) ) );
 
-  connect( mPrintToolButton, SIGNAL( clicked() ),
-           this, SLOT( printCurrentItem() ) );
+  connect( mActionPrint, SIGNAL( triggered( bool ) ), this, SLOT( printCurrentItem() ) );
+  connect( mOpenFormAction, SIGNAL( triggered( bool ) ), this, SLOT( featureForm() ) );
+  connect( mClearResultsAction, SIGNAL( triggered( bool ) ), this, SLOT( clear() ) );
+  connect( mHelpToolButton, SIGNAL( clicked() ), this, SLOT( helpRequested() ) );
 }
 
 QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
 {
   clearHighlights();
+
+  QSettings settings;
+  settings.setValue( "/Windows/Identify/columnWidth", lstResults->columnWidth( 0 ) );
+
   if ( mActionPopup )
     delete mActionPopup;
+  Q_FOREACH ( QgsIdentifyPlotCurve *curve, mPlotCurves )
+    delete curve;
+  mPlotCurves.clear();
 }
 
 QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QObject *object )
@@ -320,10 +366,10 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QObject *object )
       return item;
   }
 
-  return 0;
+  return nullptr;
 }
 
-void QgsIdentifyResultsDialog::addFeature( QgsMapToolIdentify::IdentifyResult result )
+void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyResult& result )
 {
   if ( result.mLayer->type() == QgsMapLayer::VectorLayer )
   {
@@ -331,7 +377,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsMapToolIdentify::IdentifyResult re
   }
   else if ( result.mLayer->type() == QgsMapLayer::RasterLayer )
   {
-    addFeature( qobject_cast<QgsRasterLayer *>( result.mLayer ), result.mLabel, result.mAttributes, result.mDerivedAttributes, result.mFields,  result.mFeature, result.mParams );
+    addFeature( qobject_cast<QgsRasterLayer *>( result.mLayer ), result.mLabel, result.mAttributes, result.mDerivedAttributes, result.mFields, result.mFeature, result.mParams );
   }
 }
 
@@ -339,9 +385,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 {
   QTreeWidgetItem *layItem = layerItem( vlayer );
 
-  if ( layItem == 0 )
+  if ( !layItem )
   {
-    layItem = new QTreeWidgetItem( QStringList() << QString::number( lstResults->topLevelItemCount() ) << vlayer->name() );
+    layItem = new QTreeWidgetItem( QStringList() << vlayer->name() );
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( vlayer ) ) );
     lstResults->addTopLevelItem( layItem );
 
@@ -349,64 +395,16 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     connect( vlayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerDestroyed() ) );
     connect( vlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
     connect( vlayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ),
-             this,   SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
+             this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
     connect( vlayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
     connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   }
 
-  //QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( fields, f, crs );
-  QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( vlayer->pendingFields(), f, vlayer->crs() );
+  QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( vlayer->fields(), f, vlayer->crs() );
   featItem->setData( 0, Qt::UserRole, FID_TO_STRING( f.id() ) );
   featItem->setData( 0, Qt::UserRole + 1, mFeatures.size() );
   mFeatures << f;
   layItem->addChild( featItem );
-
-  const QgsFields &fields = vlayer->pendingFields();
-  const QgsAttributes& attrs = f.attributes();
-  for ( int i = 0; i < attrs.count(); ++i )
-  {
-    if ( i >= fields.count() )
-      continue;
-
-    QString value = fields[i].displayString( attrs[i] );
-    QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << value );
-
-    attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
-    attrItem->setData( 0, Qt::UserRole, fields[i].name() );
-    attrItem->setData( 0, Qt::UserRole + 1, i );
-
-    attrItem->setData( 1, Qt::UserRole, value );
-
-    switch ( vlayer->editType( i ) )
-    {
-      case QgsVectorLayer::Hidden:
-        // skip the item
-        delete attrItem;
-        continue;
-
-      case QgsVectorLayer::ValueMap:
-        value = vlayer->valueMap( i ).key( value, QString( "(%1)" ).arg( value ) );
-        break;
-
-      case QgsVectorLayer::Calendar:
-        if ( attrs[i].canConvert( QVariant::Date ) )
-          value = attrs[i].toDate().toString( vlayer->dateFormat( i ) );
-        break;
-
-      default:
-        break;
-    }
-
-    attrItem->setData( 1, Qt::DisplayRole, value );
-
-    if ( fields[i].name() == vlayer->displayField() )
-    {
-      featItem->setText( 0, attrItem->text( 0 ) );
-      featItem->setText( 1, attrItem->text( 1 ) );
-    }
-
-    featItem->addChild( attrItem );
-  }
 
   if ( derivedAttributes.size() >= 0 )
   {
@@ -421,18 +419,18 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   }
 
   //get valid QgsMapLayerActions for this layer
-  mMapLayerActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
+  QList< QgsMapLayerAction* > registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
 
-  if ( vlayer->pendingFields().size() > 0 || vlayer->actions()->size() || mMapLayerActions.size() )
+  if ( !vlayer->fields().isEmpty() || vlayer->actions()->size() || !registeredActions.isEmpty() )
   {
     QTreeWidgetItem *actionItem = new QTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
     actionItem->setData( 0, Qt::UserRole, "actions" );
     featItem->addChild( actionItem );
 
-    if ( vlayer->pendingFields().size() > 0 )
+    if ( vlayer->fields().size() > 0 )
     {
       QTreeWidgetItem *editItem = new QTreeWidgetItem( QStringList() << "" << ( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) ) );
-      editItem->setIcon( 0, QgsApplication::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ) );
+      editItem->setIcon( 0, QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
       editItem->setData( 0, Qt::UserRole, "edit" );
       actionItem->addChild( editItem );
     }
@@ -452,22 +450,219 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     }
 
     //add actions from QgsMapLayerActionRegistry
-    for ( int i = 0; i < mMapLayerActions.size(); i++ )
+    for ( int i = 0; i < registeredActions.size(); i++ )
     {
-      QgsMapLayerAction* action = mMapLayerActions.at( i );
+      QgsMapLayerAction* action = registeredActions.at( i );
       QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << "" << action->text() );
       twi->setIcon( 0, QgsApplication::getThemeIcon( "/mAction.svg" ) );
       twi->setData( 0, Qt::UserRole, "map_layer_action" );
-      twi->setData( 0, Qt::UserRole + 1, QVariant::fromValue( i ) );
+      twi->setData( 0, Qt::UserRole + 1, qVariantFromValue( qobject_cast<QObject *>( action ) ) );
       actionItem->addChild( twi );
+
+      connect( action, SIGNAL( destroyed() ), this, SLOT( mapLayerActionDestroyed() ) );
     }
   }
+
+  const QgsFields &fields = vlayer->fields();
+  QgsAttributes attrs = f.attributes();
+  bool featureLabeled = false;
+  for ( int i = 0; i < attrs.count(); ++i )
+  {
+    if ( i >= fields.count() )
+      continue;
+
+    QString value = fields.at( i ).displayString( attrs.at( i ) );
+    QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << value );
+
+    attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
+    attrItem->setData( 0, Qt::UserRole, fields[i].name() );
+    attrItem->setData( 0, Qt::UserRole + 1, i );
+
+    attrItem->setData( 1, Qt::UserRole, value );
+
+    if ( vlayer->editFormConfig()->widgetType( i ) == "Hidden" )
+    {
+      delete attrItem;
+      continue;
+    }
+
+    value = representValue( vlayer, fields[i].name(), attrs.at( i ) );
+
+    attrItem->setData( 1, Qt::DisplayRole, value );
+
+    if ( fields[i].name() == vlayer->displayField() )
+    {
+      featItem->setText( 0, attrItem->text( 0 ) );
+      featItem->setText( 1, attrItem->text( 1 ) );
+      featureLabeled = true;
+    }
+
+    featItem->addChild( attrItem );
+  }
+
+  if ( !featureLabeled )
+  {
+    featItem->setText( 0, tr( "feature id" ) );
+    featItem->setText( 1, QString::number( f.id() ) );
+  }
+
+  // table
+  int j = tblResults->rowCount();
+  for ( int i = 0; i < attrs.count(); ++i )
+  {
+    if ( i >= fields.count() )
+      continue;
+
+    QString value = fields.at( i ).displayString( attrs.at( i ) );
+    QString value2 = representValue( vlayer, fields.at( i ).name(), value );
+
+    tblResults->setRowCount( j + 1 );
+
+    QgsDebugMsg( QString( "adding item #%1 / %2 / %3 / %4" ).arg( j ).arg( vlayer->name(), vlayer->attributeDisplayName( i ), value2 ) );
+
+    QTableWidgetItem *item = new QTableWidgetItem( vlayer->name() );
+    item->setData( Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( vlayer ) ) );
+    item->setData( Qt::UserRole + 1, vlayer->id() );
+    tblResults->setItem( j, 0, item );
+
+    item = new QTableWidgetItem( FID_TO_STRING( f.id() ) );
+    item->setData( Qt::UserRole, FID_TO_STRING( f.id() ) );
+    item->setData( Qt::UserRole + 1, mFeatures.size() );
+    tblResults->setItem( j, 1, item );
+
+    item = new QTableWidgetItem( QString::number( i ) );
+    if ( fields[i].name() == vlayer->displayField() )
+      item->setData( Qt::DisplayRole, vlayer->attributeDisplayName( i ) + " *" );
+    else
+      item->setData( Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
+    item->setData( Qt::UserRole, fields[i].name() );
+    item->setData( Qt::UserRole + 1, i );
+    tblResults->setItem( j, 2, item );
+
+    item = new QTableWidgetItem( value );
+    item->setData( Qt::UserRole, value );
+    item->setData( Qt::DisplayRole, value2 );
+    tblResults->setItem( j, 3, item );
+
+    // highlight first item
+    // if ( i==0 )
+    // {
+    //   QBrush b = tblResults->palette().brush( QPalette::AlternateBase );
+    //   for ( int k = 0; k <= 3; k++)
+    //  tblResults->item( j, k )->setBackground( b );
+    // }
+
+    tblResults->resizeRowToContents( j );
+    j++;
+  }
+  //tblResults->resizeColumnToContents( 1 );
 
   highlightFeature( featItem );
 }
 
+void QgsIdentifyResultsDialog::mapLayerActionDestroyed()
+{
+  QTreeWidgetItemIterator it( lstResults );
+  while ( *it )
+  {
+    if (( *it )->data( 0, Qt::UserRole ) == "map_layer_action" &&
+        ( *it )->data( 0, Qt::UserRole + 1 ).value< QObject *>() == sender() )
+      delete *it;
+    else
+      ++it;
+  }
+}
+
+QgsIdentifyPlotCurve::QgsIdentifyPlotCurve( const QMap<QString, QString> &attributes,
+    QwtPlot* plot, const QString &title, QColor color )
+{
+  mPlotCurve = new QwtPlotCurve( title );
+
+  if ( color == QColor() )
+  {
+    color = QgsVectorRandomColorRampV2::randomColors( 1 ).at( 0 );
+  }
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  mPlotCurve->setSymbol( new QwtSymbol( QwtSymbol::Ellipse, QBrush( Qt::white ),
+                                        QPen( color, 2 ), QSize( 9, 9 ) ) );
+  mPlotCurve->setPen( QPen( color, 2 ) ); // needed for legend
+#else
+  mPlotCurve->setSymbol( QwtSymbol( QwtSymbol::Ellipse, QBrush( Qt::white ),
+                                    QPen( color, 2 ), QSize( 9, 9 ) ) );
+  mPlotCurve->setPen( QPen( color, 2 ) );
+#endif
+
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  QVector<QPointF> myData;
+#else
+  QVector<double> myX2Data;
+  QVector<double> myY2Data;
+#endif
+  int i = 1;
+
+  for ( QMap<QString, QString>::const_iterator it = attributes.begin();
+        it != attributes.end(); ++it )
+  {
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+    myData << QPointF( double( i++ ), it.value().toDouble() );
+#else
+    myX2Data.append( double( i++ ) );
+    myY2Data.append( it.value().toDouble() );
+#endif
+  }
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  mPlotCurve->setSamples( myData );
+#else
+  mPlotCurve->setData( myX2Data, myY2Data );
+#endif
+
+  mPlotCurve->attach( plot );
+
+  plot->setAxisMaxMinor( QwtPlot::xBottom, 0 );
+  //mPlot->setAxisScale( QwtPlot::xBottom, 1, mPlotCurve->dataSize());
+  //mPlot->setAxisScale( QwtPlot::yLeft, ymin, ymax );
+
+  plot->replot();
+  plot->setVisible( true );
+}
+
+QgsIdentifyPlotCurve::~QgsIdentifyPlotCurve()
+{
+  if ( mPlotCurve )
+  {
+    mPlotCurve->detach();
+    delete mPlotCurve;
+  }
+}
+
+QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const QString& fieldName, const QVariant& value )
+{
+  QVariant cache;
+  QMap<QString, QVariant>& layerCaches = mWidgetCaches[vlayer->id()];
+
+  QString widgetType = vlayer->editFormConfig()->widgetType( fieldName );
+  QgsEditorWidgetFactory* factory = QgsEditorWidgetRegistry::instance()->factory( widgetType );
+
+  int idx = vlayer->fieldNameIndex( fieldName );
+
+  if ( !factory )
+    return value.toString();
+
+  if ( layerCaches.contains( fieldName ) )
+  {
+    cache = layerCaches[ fieldName ];
+  }
+  else
+  {
+    cache = factory->createCache( vlayer, idx, vlayer->editFormConfig()->widgetConfig( fieldName ) );
+    layerCaches.insert( fieldName, cache );
+  }
+
+  return factory->representValue( vlayer, idx, vlayer->editFormConfig()->widgetConfig( fieldName ), cache, value );
+}
+
 void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
-    QString label,
+    const QString& label,
     const QMap<QString, QString> &attributes,
     const QMap<QString, QString> &derivedAttributes,
     const QgsFields &fields,
@@ -479,7 +674,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
   QgsRaster::IdentifyFormat currentFormat = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( "identify/format" ).toString() );
 
-  if ( layItem == 0 )
+  if ( !layItem )
   {
     layItem = new QTreeWidgetItem( QStringList() << QString::number( lstResults->topLevelItemCount() ) << layer->name() );
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
@@ -489,14 +684,14 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     QComboBox *formatCombo = new QComboBox();
 
     // Add all supported formats, best first. HTML is considered the best because
-    // it usually holds most informations.
+    // it usually holds most information.
     int capabilities = layer->dataProvider()->capabilities();
     QList<QgsRaster::IdentifyFormat> formats;
     formats << QgsRaster::IdentifyFormatHtml
     << QgsRaster::IdentifyFormatFeature
     << QgsRaster::IdentifyFormatText
     << QgsRaster::IdentifyFormatValue;
-    foreach ( QgsRaster::IdentifyFormat f, formats )
+    Q_FOREACH ( QgsRaster::IdentifyFormat f, formats )
     {
       if ( !( QgsRasterDataProvider::identifyFormatToCapability( f ) & capabilities ) )
         continue;
@@ -510,7 +705,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     {
       // Add format combo box item
       // Space added before format to keep it first in ordered list: TODO better (user data)
-      QTreeWidgetItem *formatItem = new QTreeWidgetItem( QStringList() << " " + tr( "Format" ) );
+      QTreeWidgetItem *formatItem = new QTreeWidgetItem( QStringList() << ' ' + tr( "Format" ) );
       layItem->addChild( formatItem );
       lstResults->setItemWidget( formatItem, 1, formatCombo );
       connect( formatCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( formatChanged( int ) ) );
@@ -533,17 +728,17 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   if ( feature.isValid() )
   {
     QgsDebugMsg( QString( "fields size = %1 attributes size = %2" ).arg( fields.size() ).arg( feature.attributes().size() ) );
-    const QgsAttributes& attrs = feature.attributes();
+    QgsAttributes attrs = feature.attributes();
     for ( int i = 0; i < attrs.count(); ++i )
     {
       if ( i >= fields.count() )
         continue;
 
-      QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << attrs[i].toString() );
+      QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << attrs.at( i ).toString() );
 
       attrItem->setData( 0, Qt::DisplayRole, fields[i].name() );
 
-      QVariant value = attrs[i];
+      QVariant value = attrs.at( i );
       attrItem->setData( 1, Qt::DisplayRole, value );
       featItem->addChild( attrItem );
     }
@@ -553,7 +748,14 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   {
     QgsIdentifyResultsWebViewItem *attrItem = new QgsIdentifyResultsWebViewItem( lstResults );
     featItem->addChild( attrItem ); // before setHtml()!
-    attrItem->setContent( attributes.begin().value().toUtf8(), currentFormat == QgsRaster::IdentifyFormatHtml ? "text/html" : "text/plain" );
+    if ( !attributes.isEmpty() )
+    {
+      attrItem->setContent( attributes.begin().value().toUtf8(), currentFormat == QgsRaster::IdentifyFormatHtml ? "text/html" : "text/plain; charset=utf-8" );
+    }
+    else
+    {
+      attrItem->setContent( tr( "No attributes." ).toUtf8(), "text/plain; charset=utf-8" );
+    }
   }
   else
   {
@@ -573,6 +775,35 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     {
       derivedItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
     }
+  }
+
+  // table
+  int i = 0;
+  int j = tblResults->rowCount();
+  tblResults->setRowCount( j + attributes.count() );
+
+  for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+  {
+    QgsDebugMsg( QString( "adding item #%1 / %2 / %3 / %4" ).arg( j ).arg( layer->name(), it.key(), it.value() ) );
+    QTableWidgetItem *item = new QTableWidgetItem( layer->name() );
+    item->setData( Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
+    item->setData( Qt::UserRole + 1, layer->id() );
+    tblResults->setItem( j, 0, item );
+    tblResults->setItem( j, 1, new QTableWidgetItem( QString::number( i + 1 ) ) );
+    tblResults->setItem( j, 2, new QTableWidgetItem( it.key() ) );
+    tblResults->setItem( j, 3, new QTableWidgetItem( it.value() ) );
+
+    tblResults->resizeRowToContents( j );
+
+    j++;
+    i++;
+  }
+  //tblResults->resizeColumnToContents( 1 );
+
+  // graph
+  if ( !attributes.isEmpty() )
+  {
+    mPlotCurves.append( new QgsIdentifyPlotCurve( attributes, mPlot, layer->name() ) );
   }
 }
 
@@ -605,37 +836,34 @@ void QgsIdentifyResultsDialog::editingToggled()
       continue;
 
     QTreeWidgetItem *editItem = actions->child( j );
-    editItem->setIcon( 0, QgsApplication::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ) );
-    editItem->setText( 1, vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) );
+    mOpenFormAction->setToolTip( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) );
+    editItem->setText( 1, mOpenFormAction->toolTip() );
   }
 }
 
 // Call to show the dialog box.
 void QgsIdentifyResultsDialog::show()
 {
-  // Enforce a few things before showing the dialog box
-  lstResults->sortItems( 0, Qt::AscendingOrder );
-  // column width is now stored in settings
-  //expandColumnsToFit();
+  bool showFeatureForm = false;
 
   if ( lstResults->topLevelItemCount() > 0 )
   {
     QTreeWidgetItem *layItem = lstResults->topLevelItem( 0 );
     QTreeWidgetItem *featItem = layItem->child( 0 );
 
-    if ( lstResults->topLevelItemCount() == 1 &&
-         layItem->childCount() == 1 &&
-         QSettings().value( "/Map/identifyAutoFeatureForm", false ).toBool() )
+    if ( lstResults->topLevelItemCount() == 1 && layItem->childCount() == 1 )
     {
-      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
-      if ( layer )
+      lstResults->setCurrentItem( featItem );
+
+      if ( QSettings().value( "/Map/identifyAutoFeatureForm", false ).toBool() )
       {
-        // if this is the only feature and it's on a vector layer
-        // don't show the form dialog instead of the results window
-        lstResults->setCurrentItem( featItem );
-        featureForm();
-        clear();
-        return;
+        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
+        if ( layer )
+        {
+          // if this is the only feature and it's on a vector layer
+          // show the form dialog instead of the results window
+          showFeatureForm = true;
+        }
       }
     }
 
@@ -645,37 +873,26 @@ void QgsIdentifyResultsDialog::show()
   }
 
   // expand all if enabled
-  if ( mExpandNewToolButton->isChecked() )
+  if ( mExpandNewAction->isChecked() )
   {
     lstResults->expandAll();
   }
 
   QDialog::show();
-  raise();
-}
 
-// Slot called when user clicks the Close button
-// (saves the current window size/position)
-void QgsIdentifyResultsDialog::close()
-{
-  clear();
-
-  delete mActionPopup;
-  mActionPopup = 0;
-
-  saveWindowLocation();
-  done( 0 );
-  if ( mDock )
-    mDock->close();
-}
-
-// Save the current window size/position before closing
-// from window menu or X in titlebar
-void QgsIdentifyResultsDialog::closeEvent( QCloseEvent *e )
-{
-  // We'll close in our own good time thanks...
-  e->ignore();
-  close();
+  // when the feature form is opened don't show and raise the identify result.
+  // If it's not docked, the results would open after or possibly on top of the
+  // feature form and stay open (on top the canvas) after the feature form is
+  // closed.
+  if ( showFeatureForm )
+  {
+    featureForm();
+  }
+  else
+  {
+    mDock->show();
+    mDock->raise();
+  }
 }
 
 void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
@@ -692,11 +909,8 @@ void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
   }
   else if ( item->data( 0, Qt::UserRole ).toString() == "map_layer_action" )
   {
-    QgsMapLayerAction* action = mMapLayerActions.at( item->data( 0, Qt::UserRole + 1 ).toInt() );
-    if ( action )
-    {
-      doMapLayerAction( item, action );
-    }
+    QObject *action = item->data( 0, Qt::UserRole + 1 ).value<QObject *>();
+    doMapLayerAction( item, qobject_cast<QgsMapLayerAction *>( action ) );
   }
 }
 
@@ -707,6 +921,11 @@ void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
 void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
 {
   QgsDebugMsg( "Entered" );
+
+  // only handle context menu event if showing tree widget
+  if ( stackedWidget->currentIndex() != 0 )
+    return;
+
   QTreeWidgetItem *item = lstResults->itemAt( lstResults->viewport()->mapFrom( this, event->pos() ) );
   // if the user clicked below the end of the attribute list, just return
   if ( !item )
@@ -715,7 +934,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
   QgsMapLayer *layer = vectorLayer( item );
   QgsVectorLayer *vlayer = vectorLayer( item );
   QgsRasterLayer *rlayer = rasterLayer( item );
-  if ( vlayer == 0 && rlayer == 0 )
+  if ( !vlayer && !rlayer )
   {
     QgsDebugMsg( "Item does not belong to a layer." );
     return;
@@ -734,7 +953,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
     if ( vlayer )
     {
       mActionPopup->addAction(
-        QgsApplication::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ),
+        QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ),
         vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ),
         this, SLOT( featureForm() ) );
     }
@@ -743,6 +962,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
     {
       mActionPopup->addAction( tr( "Zoom to feature" ), this, SLOT( zoomToFeature() ) );
       mActionPopup->addAction( tr( "Copy feature" ), this, SLOT( copyFeature() ) );
+      mActionPopup->addAction( tr( "Toggle feature selection" ), this, SLOT( toggleFeatureSelection() ) );
     }
 
     mActionPopup->addAction( tr( "Copy attribute value" ), this, SLOT( copyAttributeValue() ) );
@@ -762,7 +982,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
       mActionPopup->addAction( tr( "Copy GetFeatureInfo request URL" ), this, SLOT( copyGetFeatureInfoUrl() ) );
     }
   }
-  if ( mActionPopup->children().size() > 0 )
+  if ( !mActionPopup->children().isEmpty() )
   {
     mActionPopup->addSeparator();
   }
@@ -808,9 +1028,9 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
     //get valid QgsMapLayerActions for this layer
     QList< QgsMapLayerAction* > registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
 
-    if ( registeredActions.size() > 0 )
+    if ( !registeredActions.isEmpty() )
     {
-      //add a seperator between user defined and standard actions
+      //add a separator between user defined and standard actions
       mActionPopup->addSeparator();
 
       int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
@@ -831,9 +1051,9 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
 void QgsIdentifyResultsDialog::saveWindowLocation()
 {
   QSettings settings;
-  settings.setValue( "/Windows/Identify/geometry", saveGeometry() );
   // first column width
   settings.setValue( "/Windows/Identify/columnWidth", lstResults->columnWidth( 0 ) );
+  settings.setValue( "/Windows/Identify/columnWidthTable", tblResults->columnWidth( 0 ) );
 }
 
 void QgsIdentifyResultsDialog::setColumnText( int column, const QString & label )
@@ -848,9 +1068,52 @@ void QgsIdentifyResultsDialog::expandColumnsToFit()
   lstResults->resizeColumnToContents( 1 );
 }
 
+void QgsIdentifyResultsDialog::clear()
+{
+  QgsDebugMsg( "Entered" );
+  for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
+  {
+    disconnectLayer( lstResults->topLevelItem( i )->data( 0, Qt::UserRole ).value<QObject *>() );
+  }
+
+  lstResults->clear();
+  lstResults->sortByColumn( -1 );
+  clearHighlights();
+
+  tblResults->clearContents();
+  tblResults->setRowCount( 0 );
+
+  mPlot->setVisible( false );
+  Q_FOREACH ( QgsIdentifyPlotCurve *curve, mPlotCurves )
+    delete curve;
+  mPlotCurves.clear();
+
+  // keep it visible but disabled, it can switch from disabled/enabled
+  // after raster format change
+  mActionPrint->setDisabled( true );
+}
+
+void QgsIdentifyResultsDialog::updateViewModes()
+{
+  // get # of identified vector and raster layers - there must be a better way involving caching
+  int vectorCount = 0, rasterCount = 0;
+  for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
+  {
+    QTreeWidgetItem *item = lstResults->topLevelItem( i );
+    if ( vectorLayer( item ) ) vectorCount++;
+    else if ( rasterLayer( item ) ) rasterCount++;
+  }
+
+  lblViewMode->setEnabled( rasterCount > 0 );
+  cmbViewMode->setEnabled( rasterCount > 0 );
+  if ( rasterCount == 0 )
+    cmbViewMode->setCurrentIndex( 0 );
+
+}
+
 void QgsIdentifyResultsDialog::clearHighlights()
 {
-  foreach ( QgsHighlight *h, mHighlights )
+  Q_FOREACH ( QgsHighlight *h, mHighlights )
   {
     delete h;
   }
@@ -858,45 +1121,25 @@ void QgsIdentifyResultsDialog::clearHighlights()
   mHighlights.clear();
 }
 
-void QgsIdentifyResultsDialog::clear()
-{
-  for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
-  {
-    disconnectLayer( lstResults->topLevelItem( i )->data( 0, Qt::UserRole ).value<QObject *>() );
-  }
-
-  lstResults->clear();
-  clearHighlights();
-
-  // keep it visible but disabled, it can switch from disabled/enabled
-  // after raster format change
-  mPrintToolButton->setDisabled( true );
-}
-
 void QgsIdentifyResultsDialog::activate()
 {
-#if 0
-  foreach ( QgsRubberBand *rb, mRubberBands )
+  Q_FOREACH ( QgsHighlight *h, mHighlights )
   {
-    rb->show();
+    h->show();
   }
-#endif
 
   if ( lstResults->topLevelItemCount() > 0 )
   {
-    show();
     raise();
   }
 }
 
 void QgsIdentifyResultsDialog::deactivate()
 {
-#if 0
-  foreach ( QgsRubberBand *rb, mRubberBands )
+  Q_FOREACH ( QgsHighlight *h, mHighlights )
   {
-    rb->hide();
+    h->hide();
   }
-#endif
 }
 
 void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, int action )
@@ -914,7 +1157,7 @@ void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, int action )
   {
     QString fieldName = item->data( 0, Qt::DisplayRole ).toString();
 
-    const QgsFields& fields = layer->pendingFields();
+    const QgsFields& fields = layer->fields();
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
       if ( fields[fldIdx].name() == fieldName )
@@ -939,6 +1182,9 @@ void QgsIdentifyResultsDialog::doMapLayerAction( QTreeWidgetItem *item, QgsMapLa
   if ( !layer )
     return;
 
+  if ( !action )
+    return;
+
   int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
   action->triggerForFeature( layer, &mFeatures[ featIdx ] );
 }
@@ -946,9 +1192,9 @@ void QgsIdentifyResultsDialog::doMapLayerAction( QTreeWidgetItem *item, QgsMapLa
 QTreeWidgetItem *QgsIdentifyResultsDialog::featureItem( QTreeWidgetItem *item )
 {
   if ( !item )
-    return 0;
+    return nullptr;
 
-  QTreeWidgetItem *featItem = 0;
+  QTreeWidgetItem *featItem = nullptr;
   if ( item->parent() )
   {
     if ( item->parent()->parent() )
@@ -993,7 +1239,7 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::featureItem( QTreeWidgetItem *item )
     }
 
     if ( count != 1 )
-      return 0;
+      return nullptr;
   }
 
   return featItem;
@@ -1013,7 +1259,7 @@ QgsMapLayer *QgsIdentifyResultsDialog::layer( QTreeWidgetItem *item )
 {
   item = layerItem( item );
   if ( !item )
-    return 0;
+    return nullptr;
   return qobject_cast<QgsMapLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
 }
 
@@ -1021,7 +1267,7 @@ QgsVectorLayer *QgsIdentifyResultsDialog::vectorLayer( QTreeWidgetItem *item )
 {
   item = layerItem( item );
   if ( !item )
-    return 0;
+    return nullptr;
   return qobject_cast<QgsVectorLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
 }
 
@@ -1029,7 +1275,7 @@ QgsRasterLayer *QgsIdentifyResultsDialog::rasterLayer( QTreeWidgetItem *item )
 {
   item = layerItem( item );
   if ( !item )
-    return 0;
+    return nullptr;
   return qobject_cast<QgsRasterLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
 }
 
@@ -1037,7 +1283,7 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::retrieveAttributes( QTreeWidgetItem *
 {
   QTreeWidgetItem *featItem = featureItem( item );
   if ( !featItem )
-    return 0;
+    return nullptr;
 
   idx = -1;
 
@@ -1066,14 +1312,21 @@ void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *curren
 {
   Q_UNUSED( previous );
 
-  mPrintToolButton->setEnabled( false );
+  mActionPrint->setEnabled( false );
 
   QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( current ) );
-  mCopyToolButton->setEnabled( featItem && featItem->feature().isValid() );
+  mActionCopy->setEnabled( featItem && featItem->feature().isValid() );
+  mOpenFormAction->setEnabled( featItem && featItem->feature().isValid() );
+
+  QgsVectorLayer *vlayer = vectorLayer( current );
+  if ( vlayer )
+  {
+    mOpenFormAction->setToolTip( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) );
+  }
 
   if ( !current )
   {
-    emit selectedFeatureChanged( 0, 0 );
+    emit selectedFeatureChanged( nullptr, 0 );
     return;
   }
 
@@ -1081,9 +1334,9 @@ void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *curren
   for ( int i = 0; i < current->childCount(); i++ )
   {
     QgsIdentifyResultsWebViewItem *wv = dynamic_cast<QgsIdentifyResultsWebViewItem*>( current->child( i ) );
-    if ( wv != 0 )
+    if ( wv )
     {
-      mPrintToolButton->setEnabled( true );
+      mActionPrint->setEnabled( true );
       break;
     }
   }
@@ -1112,7 +1365,7 @@ void QgsIdentifyResultsDialog::layerDestroyed()
     {
       for ( int j = 0; j < layItem->childCount(); j++ )
       {
-        delete mHighlights.take( layItem->child( i ) );
+        delete mHighlights.take( layItem->child( j ) );
       }
     }
   }
@@ -1120,9 +1373,16 @@ void QgsIdentifyResultsDialog::layerDestroyed()
   disconnectLayer( theSender );
   delete layerItem( theSender );
 
-  if ( lstResults->topLevelItemCount() == 0 )
+  // remove items, starting from last
+  for ( int i = tblResults->rowCount() - 1; i >= 0; i-- )
   {
-    close();
+    QgsDebugMsg( QString( "item %1 / %2" ).arg( i ).arg( tblResults->rowCount() ) );
+    QTableWidgetItem *layItem = tblResults->item( i, 0 );
+    if ( layItem && layItem->data( Qt::UserRole ).value<QObject *>() == sender() )
+    {
+      QgsDebugMsg( QString( "removing row %1" ).arg( i ) );
+      tblResults->removeRow( i );
+    }
   }
 }
 
@@ -1137,7 +1397,7 @@ void QgsIdentifyResultsDialog::disconnectLayer( QObject *layer )
     disconnect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
     disconnect( vlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
     disconnect( vlayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ),
-                this,   SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
+                this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
     disconnect( vlayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
     disconnect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   }
@@ -1171,9 +1431,17 @@ void QgsIdentifyResultsDialog::featureDeleted( QgsFeatureId fid )
     delete layItem;
   }
 
-  if ( lstResults->topLevelItemCount() == 0 )
+  for ( int i = tblResults->rowCount() - 1; i >= 0; i-- )
   {
-    close();
+    QgsDebugMsg( QString( "item %1 / %2" ).arg( i ).arg( tblResults->rowCount() ) );
+    QTableWidgetItem *layItem = tblResults->item( i, 0 );
+    QTableWidgetItem *featItem = tblResults->item( i, 1 );
+    if ( layItem && layItem->data( Qt::UserRole ).value<QObject *>() == sender() &&
+         featItem && STRING_TO_FID( featItem->data( Qt::UserRole ) ) == fid )
+    {
+      QgsDebugMsg( QString( "removing row %1" ).arg( i ) );
+      tblResults->removeRow( i );
+    }
   }
 }
 
@@ -1185,10 +1453,10 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
   if ( !layItem )
     return;
 
-  if ( idx >= vlayer->pendingFields().size() )
+  if ( idx >= vlayer->fields().size() )
     return;
 
-  const QgsField &fld = vlayer->pendingFields().at( idx );
+  QgsField fld = vlayer->fields().at( idx );
 
   for ( int i = 0; i < layItem->childCount(); i++ )
   {
@@ -1209,21 +1477,7 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
 
         if ( item->data( 0, Qt::UserRole + 1 ).toInt() == idx )
         {
-          switch ( vlayer->editType( idx ) )
-          {
-            case QgsVectorLayer::ValueMap:
-              value = vlayer->valueMap( idx ).key( val, QString( "(%1)" ).arg( value ) );
-              break;
-
-            case QgsVectorLayer::Calendar:
-              if ( val.canConvert( QVariant::Date ) )
-                value = val.toDate().toString( vlayer->dateFormat( idx ) );
-              break;
-
-            default:
-              break;
-          }
-
+          value = representValue( vlayer, fld.name(), val );
           item->setData( 1, Qt::DisplayRole, value );
           return;
         }
@@ -1246,31 +1500,36 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   if ( !featItem )
     return;
 
-
   if ( mHighlights.contains( featItem ) )
     return;
 
-  if ( !featItem->feature().geometry() || featItem->feature().geometry()->wkbType() == QGis::WKBUnknown )
+  if ( !featItem->feature().constGeometry() || featItem->feature().constGeometry()->wkbType() == QGis::WKBUnknown )
     return;
 
+  QgsHighlight *highlight = nullptr;
   if ( vlayer )
   {
-    QgsHighlight *h = new QgsHighlight( mCanvas, featItem->feature(), vlayer );
-    h->setColor( Qt::red );
-    h->show();
-    mHighlights.insert( featItem, h );
+    highlight = new QgsHighlight( mCanvas, featItem->feature(), vlayer );
   }
   else
   {
-    QgsHighlight *h = new QgsHighlight( mCanvas, featItem->feature().geometry(), layer );
-    if ( h )
-    {
-      h->setWidth( 2 );
-      h->setColor( Qt::red );
-      h->show();
-      mHighlights.insert( featItem, h );
-    }
+    highlight = new QgsHighlight( mCanvas, featItem->feature().constGeometry(), layer );
+    highlight->setWidth( 2 );
   }
+
+  QSettings settings;
+  QColor color = QColor( settings.value( "/Map/highlight/color", QGis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  int alpha = settings.value( "/Map/highlight/colorAlpha", QGis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
+  double buffer = settings.value( "/Map/highlight/buffer", QGis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
+  double minWidth = settings.value( "/Map/highlight/minWidth", QGis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
+
+  highlight->setColor( color ); // sets also fill with default alpha
+  color.setAlpha( alpha );
+  highlight->setFillColor( color ); // sets fill with alpha
+  highlight->setBuffer( buffer );
+  highlight->setMinWidth( minWidth );
+  highlight->show();
+  mHighlights.insert( featItem, highlight );
 }
 
 void QgsIdentifyResultsDialog::zoomToFeature()
@@ -1293,11 +1552,11 @@ void QgsIdentifyResultsDialog::zoomToFeature()
     return;
 
   QgsFeature feat = featItem->feature();
-  if ( !feat.geometry() )
+  if ( !feat.constGeometry() )
     return;
 
   // TODO: verify CRS for raster WMS features
-  QgsRectangle rect = mCanvas->mapSettings().layerExtentToOutputExtent( layer, feat.geometry()->boundingBox() );
+  QgsRectangle rect = mCanvas->mapSettings().layerExtentToOutputExtent( layer, feat.constGeometry()->boundingBox() );
 
   if ( rect.isEmpty() )
   {
@@ -1322,7 +1581,7 @@ void QgsIdentifyResultsDialog::featureForm()
   if ( !featItem )
     return;
 
-  int fid = STRING_TO_FID( featItem->data( 0, Qt::UserRole ) );
+  QgsFeatureId fid = STRING_TO_FID( featItem->data( 0, Qt::UserRole ) );
   int idx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
 
   QgsFeature f;
@@ -1332,10 +1591,7 @@ void QgsIdentifyResultsDialog::featureForm()
   QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, idx, -1, this );
   if ( vlayer->isEditable() )
   {
-    if ( action.editFeature() )
-    {
-      mCanvas->refresh();
-    }
+    action.editFeature( false );
   }
   else
   {
@@ -1433,7 +1689,7 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
     QgsAttributeMap attributes;
     retrieveAttributes( lstResults->currentItem(), attributes, idx );
 
-    const QgsFields &fields = vlayer->pendingFields();
+    const QgsFields &fields = vlayer->fields();
 
     for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
     {
@@ -1441,7 +1697,7 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
       if ( attrIdx < 0 || attrIdx >= fields.count() )
         continue;
 
-      text += QString( "%1: %2\n" ).arg( fields[attrIdx].name() ).arg( it.value().toString() );
+      text += QString( "%1: %2\n" ).arg( fields[attrIdx].name(), it.value().toString() );
     }
   }
   else if ( rlayer )
@@ -1455,7 +1711,7 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
       QTreeWidgetItem *item = featItem->child( i );
       if ( item->childCount() > 0 )
         continue;
-      text += QString( "%1: %2\n" ).arg( item->data( 0, Qt::DisplayRole ).toString() ).arg( item->data( 1, Qt::DisplayRole ).toString() );
+      text += QString( "%1: %2\n" ).arg( item->data( 0, Qt::DisplayRole ).toString(), item->data( 1, Qt::DisplayRole ).toString() );
     }
   }
 
@@ -1480,7 +1736,7 @@ void QgsIdentifyResultsDialog::printCurrentItem()
     return;
 
   // There should only be one HTML item / result
-  QgsIdentifyResultsWebViewItem *wv = 0;
+  QgsIdentifyResultsWebViewItem *wv = nullptr;
   for ( int i = 0; i < item->childCount() && !wv; i++ )
   {
     wv = dynamic_cast<QgsIdentifyResultsWebViewItem*>( item->child( i ) );
@@ -1495,13 +1751,30 @@ void QgsIdentifyResultsDialog::printCurrentItem()
   wv->webView()->print();
 }
 
-void QgsIdentifyResultsDialog::on_mExpandNewToolButton_toggled( bool checked )
+void QgsIdentifyResultsDialog::on_cmbIdentifyMode_currentIndexChanged( int index )
+{
+  QSettings settings;
+  settings.setValue( "/Map/identifyMode", cmbIdentifyMode->itemData( index ).toInt() );
+}
+
+void QgsIdentifyResultsDialog::on_cmbViewMode_currentIndexChanged( int index )
+{
+  stackedWidget->setCurrentIndex( index );
+}
+
+void QgsIdentifyResultsDialog::on_cbxAutoFeatureForm_toggled( bool checked )
+{
+  QSettings settings;
+  settings.setValue( "/Map/identifyAutoFeatureForm", checked );
+}
+
+void QgsIdentifyResultsDialog::on_mExpandNewAction_triggered( bool checked )
 {
   QSettings settings;
   settings.setValue( "/Map/identifyExpand", checked );
 }
 
-void QgsIdentifyResultsDialog::on_mCopyToolButton_clicked( bool checked )
+void QgsIdentifyResultsDialog::on_mActionCopy_triggered( bool checked )
 {
   Q_UNUSED( checked );
   copyFeature();
@@ -1522,6 +1795,28 @@ void QgsIdentifyResultsDialog::copyFeature()
   QgsFeatureStore featureStore( item->fields(), item->crs() );
   featureStore.features().append( item->feature() );
   emit copyToClipboard( featureStore );
+}
+
+void QgsIdentifyResultsDialog::toggleFeatureSelection()
+{
+  QgsDebugMsg( "Entered" );
+
+  QgsIdentifyResultsFeatureItem *item = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( lstResults->selectedItems().value( 0 ) ) );
+
+  if ( !item ) // should not happen
+  {
+    QgsDebugMsg( "Selected item is not feature" );
+    return;
+  }
+
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( layer( item ) );
+  if ( !vl )
+    return;
+
+  if ( vl->selectedFeaturesIds().contains( item->feature().id() ) )
+    vl->deselect( item->feature().id() );
+  else
+    vl->select( item->feature().id() );
 }
 
 void QgsIdentifyResultsDialog::formatChanged( int index )

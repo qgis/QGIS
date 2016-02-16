@@ -1,4 +1,4 @@
-/**\ingroup MapComposer
+/** \ingroup MapComposer
 Undo command to undo/redo all composer item related changes*/
 class QgsComposerItemCommand: QUndoCommand
 {
@@ -6,33 +6,36 @@ class QgsComposerItemCommand: QUndoCommand
   #include "qgscomposeritemcommand.h"
 %End
   public:
-    QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent = 0 );
+    QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent /TransferThis/ = 0 );
     virtual ~QgsComposerItemCommand();
 
-    /**Reverses the command*/
+    /** Reverses the command*/
     void undo();
-    /**Replays the command*/
+    /** Replays the command*/
     void redo();
 
-    /**Saves current item state as previous state*/
+    /** Saves current item state as previous state*/
     void savePreviousState();
-    /**Saves current item state as after state*/
+    /** Saves current item state as after state*/
     void saveAfterState();
 
     QDomDocument previousState() const;
     QDomDocument afterState() const;
 
-    /**Returns true if previous state and after state are valid and different*/
+    /** Returns true if previous state and after state are valid and different*/
     bool containsChange() const;
 
-    const QgsComposerItem* item() const;
+    /** Returns the target item the command applies to.
+     * @returns target composer item
+     */
+    QgsComposerItem *item() const;
 
   protected:
     void saveState( QDomDocument& stateDoc ) const;
     void restoreState( QDomDocument& stateDoc ) const;
 };
 
-/**A composer command that merges together with other commands having the same context (=id). Keeps the oldest previous state and uses the
+/** A composer command that merges together with other commands having the same context (=id). Keeps the oldest previous state and uses the
   newest after state. The purpose is to avoid too many micro changes in the history*/
 class QgsComposerMergeCommand : QgsComposerItemCommand
 {
@@ -42,7 +45,7 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
   public:
     enum Context
     {
-      Unknown = 0,
+      Unknown,
       //composer label
       ComposerLabelSetText,
       ComposerLabelSetId,
@@ -65,6 +68,7 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       LegendIconSymbolSpace,
       LegendBoxSpace,
       LegendColumnSpace,
+      LegendRasterBorderWidth,
       //composer picture
       ComposerPictureRotation,
       // composer scalebar
@@ -90,7 +94,9 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       //item
       ItemOutlineWidth,
       ItemMove,
-      ItemRotation
+      ItemRotation,
+      ItemTransparency,
+      ItemZoomContent
     };
 
     QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text );

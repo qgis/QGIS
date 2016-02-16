@@ -12,26 +12,20 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import qgis
 
 from qgis.core import QgsPoint
 
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest,
-                       expectedFailure
-                       )
+from qgis.testing import start_app, unittest
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
 
-class TestQgsPoint(TestCase):
+
+class TestQgsPoint(unittest.TestCase):
 
     def __init__(self, methodName):
         """Run once on class initialisation."""
         unittest.TestCase.__init__(self, methodName)
-
 
     def setUp(self):
         self.mPoint = QgsPoint(10.0, 10.0)
@@ -42,7 +36,6 @@ class TestQgsPoint(TestCase):
         myMessage = 'Expected: %s Got: %s' % (myExpectedValue, myActualValue)
         assert myExpectedValue == myActualValue, myMessage
 
-
     def test_pointToString(self):
         myExpectedValue = '10, 10'
         myActualValue = self.mPoint.toString()
@@ -50,16 +43,16 @@ class TestQgsPoint(TestCase):
         assert myExpectedValue == myActualValue, myMessage
 
     def test_hash(self):
-        a = QgsPoint( 2.0, 1.0 )
-        b = QgsPoint( 2.0, 2.0 )
-        c = QgsPoint( 1.0, 2.0 )
-        d = QgsPoint( 1.0, 1.0 )
-        e = QgsPoint( 2.0, 1.0 )
+        a = QgsPoint(2.0, 1.0)
+        b = QgsPoint(2.0, 2.0)
+        c = QgsPoint(1.0, 2.0)
+        d = QgsPoint(1.0, 1.0)
+        e = QgsPoint(2.0, 1.0)
         assert a.__hash__() != b.__hash__()
         assert e.__hash__() == a.__hash__()
 
-        mySet = set( [ a, b, c, d, e ] )
-        assert len( mySet ) == 4
+        mySet = set([a, b, c, d, e])
+        assert len(mySet) == 4
 
 if __name__ == '__main__':
     unittest.main()

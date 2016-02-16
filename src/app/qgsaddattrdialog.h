@@ -29,16 +29,16 @@ class APP_EXPORT QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogB
     Q_OBJECT
   public:
     QgsAddAttrDialog( QgsVectorLayer *vlayer,
-                      QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+                      QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     QgsAddAttrDialog( const std::list<QString>& typelist,
-                      QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+                      QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     QgsField field() const;
 
   public slots:
     void on_mTypeBox_currentIndexChanged( int idx );
     void on_mLength_editingFinished();
-    void accept();
+    void accept() override;
 
   private:
     bool mIsShapeFile;

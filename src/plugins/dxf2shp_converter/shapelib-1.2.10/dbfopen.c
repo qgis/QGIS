@@ -389,8 +389,7 @@ DBFOpen( const char * pszFilename, const char * pszAccess )
   /*  Read in Field Definitions                                           */
   /* -------------------------------------------------------------------- */
 
-  pabyBuf = ( unsigned char * ) SfRealloc( pabyBuf, nHeadLen );
-  psDBF->pszHeader = ( char * ) pabyBuf;
+  pabyBuf = psDBF->pszHeader = ( unsigned char * ) SfRealloc( pabyBuf, nHeadLen );
 
   fseek( psDBF->fp, 32, 0 );
   if ( fread( pabyBuf, nHeadLen - 32, 1, psDBF->fp ) != 1 )

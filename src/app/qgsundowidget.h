@@ -15,15 +15,15 @@
 #ifndef QGSUNDOWIDGET_H
 #define QGSUNDOWIDGET_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QDockWidget>
-#include <QtGui/QGridLayout>
-#include <QtGui/QPushButton>
-#include <QtGui/QSpacerItem>
-#include <QtGui/QWidget>
+#include <QVariant>
+#include <QAction>
+#include <QApplication>
+#include <QButtonGroup>
+#include <QDockWidget>
+#include <QGridLayout>
+#include <QPushButton>
+#include <QSpacerItem>
+#include <QWidget>
 #include <QUndoView>
 #include <QUndoStack>
 
@@ -58,10 +58,7 @@ class APP_EXPORT QgsUndoWidget : public QDockWidget
      */
     void destroyStack();
 
-    /**
-     * Access to dock's contents
-     * @note added in 1.9
-     */
+    /** Access to dock's contents */
     QWidget* dockContents() { return dockWidgetContents; }
 
   public slots:

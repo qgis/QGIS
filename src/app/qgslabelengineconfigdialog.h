@@ -24,11 +24,10 @@ class APP_EXPORT QgsLabelEngineConfigDialog : public QDialog, private Ui::QgsEng
 {
     Q_OBJECT
   public:
-    QgsLabelEngineConfigDialog( QWidget* parent = NULL );
+    QgsLabelEngineConfigDialog( QWidget* parent = nullptr );
 
   public slots:
     void onOK();
-    /** @note Added in QGIS 1.9 */
     void setDefaults();
 
   protected:

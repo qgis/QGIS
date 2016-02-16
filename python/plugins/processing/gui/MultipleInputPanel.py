@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -25,42 +26,62 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore, QtGui
+import os
+
+from PyQt4 import uic
+from PyQt4.QtCore import pyqtSignal
+
 from processing.gui.MultipleInputDialog import MultipleInputDialog
+from processing.gui.MultipleFileInputDialog import MultipleFileInputDialog
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
-class MultipleInputPanel(QtGui.QWidget):
+class MultipleInputPanel(BASE, WIDGET):
 
-    def __init__(self, options, datatype=None, parent=None):
-        super(MultipleInputPanel, self).__init__(parent)
+    selectionChanged = pyqtSignal()
+
+    def __init__(self, options=None, datatype=None):
+        super(MultipleInputPanel, self).__init__(None)
+        self.setupUi(self)
+
+        self.leText.setEnabled(False)
+        self.leText.setText(self.tr('0 elements selected'))
+
+        self.btnSelect.clicked.connect(self.showSelectionDialog)
+
         self.options = options
         self.datatype = datatype
         self.selectedoptions = []
-        self.horizontalLayout = QtGui.QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.label = QtGui.QLabel()
-        self.label.setText('0 elements selected')
-        self.label.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                 QtGui.QSizePolicy.Expanding)
-        self.horizontalLayout.addWidget(self.label)
-        self.pushButton = QtGui.QPushButton()
-        self.pushButton.setText('...')
-        self.pushButton.clicked.connect(self.showSelectionDialog)
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.setLayout(self.horizontalLayout)
 
     def setSelectedItems(self, selected):
         # No checking is performed!
         self.selectedoptions = selected
-        self.label.setText(str(len(self.selectedoptions))
-                           + ' elements selected')
+        self.leText.setText(
+            self.tr('%d elements selected') % len(self.selectedoptions))
 
     def showSelectionDialog(self):
-
-        dlg = MultipleInputDialog(self.options, self.selectedoptions)
+        if self.datatype is None:
+            dlg = MultipleInputDialog(self.options, self.selectedoptions)
+        else:
+            dlg = MultipleFileInputDialog(self.selectedoptions)
         dlg.exec_()
         if dlg.selectedoptions is not None:
             self.selectedoptions = dlg.selectedoptions
-            self.label.setText(str(len(self.selectedoptions))
-                               + ' elements selected')
+            self.leText.setText(
+                self.tr('%d elements selected') % len(self.selectedoptions))
+            self.selectionChanged.emit()
+
+    def updateForOptions(self, options):
+        selectedoptions = []
+        selected = [self.options[i] for i in self.selectedoptions]
+        for sel in selected:
+            try:
+                idx = options.index(sel)
+                selectedoptions.append(idx)
+            except ValueError:
+                pass
+        self.options = options
+        self.setSelectedItems(selectedoptions)

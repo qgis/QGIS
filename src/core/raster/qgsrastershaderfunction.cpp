@@ -21,7 +21,7 @@ email                : ersts@amnh.org
 
 QgsRasterShaderFunction::QgsRasterShaderFunction( double theMinimumValue, double theMaximumValue )
 {
-  QgsDebugMsg( "entered." );
+  QgsDebugMsgLevel( "entered.", 4 );
 
   mMinimumValue = theMinimumValue;
   mMaximumValue = theMaximumValue;
@@ -35,7 +35,7 @@ QgsRasterShaderFunction::QgsRasterShaderFunction( double theMinimumValue, double
 */
 void QgsRasterShaderFunction::setMaximumValue( double theValue )
 {
-  QgsDebugMsg( "value = " + QString::number( theValue ) );
+  QgsDebugMsgLevel( "value = " + QString::number( theValue ), 4 );
 
   mMaximumValue = theValue;
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;
@@ -48,7 +48,7 @@ void QgsRasterShaderFunction::setMaximumValue( double theValue )
 */
 void QgsRasterShaderFunction::setMinimumValue( double theValue )
 {
-  QgsDebugMsg( "value = " + QString::number( theValue ) );
+  QgsDebugMsgLevel( "value = " + QString::number( theValue ), 4 );
 
   mMinimumValue = theValue;
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;
@@ -90,7 +90,7 @@ bool QgsRasterShaderFunction::shade( double theValue, int* theReturnRedValue, in
   @param theReturnAlphaValue  The alpha component of the new RGBA value
   @return True if the return values are valid otherwise false
 */
-bool QgsRasterShaderFunction::shade( double theRedValue, double theGreenValue, double theBlueValue, double theAlphaValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue , int *theReturnAlphaValue )
+bool QgsRasterShaderFunction::shade( double theRedValue, double theGreenValue, double theBlueValue, double theAlphaValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int *theReturnAlphaValue )
 {
   Q_UNUSED( theRedValue );
   Q_UNUSED( theGreenValue );

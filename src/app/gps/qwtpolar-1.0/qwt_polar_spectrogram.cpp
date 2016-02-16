@@ -102,6 +102,7 @@ public:
 
     ~PrivateData()
     {
+        delete colorMap;
     }
 
     QwtRasterData *data;
@@ -110,6 +111,8 @@ public:
     uint renderThreadCount;
 
     QwtPolarSpectrogram::PaintAttributes paintAttributes;
+private:
+    Q_DISABLE_COPY(PrivateData)
 };
 
 //!  Constructor
@@ -294,7 +297,7 @@ void QwtPolarSpectrogram::draw( QPainter *painter,
         QRectF r( 0, 0, 2 * radius, 2 * radius );
         r.moveCenter( pole );
 
-        clipRegion &= QRegion( r.toRect(), QRegion::Ellipse );;
+        clipRegion &= QRegion( r.toRect(), QRegion::Ellipse );
 
         imageRect &= r.toRect();
     }

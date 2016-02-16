@@ -22,6 +22,8 @@
 
 #include <QSet>
 
+#include "qgscontexthelp.h"
+
 /**
  * \ingroup gui
  * A generic dialog to prompt the user for a Coordinate Reference System.
@@ -49,8 +51,8 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
     /**
      * Constructor
      */
-    QgsGenericProjectionSelector( QWidget *parent = 0,
-                                  Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsGenericProjectionSelector( QWidget *parent = nullptr,
+                                  const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
 
     //! Destructor
     ~QgsGenericProjectionSelector();
@@ -63,9 +65,11 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
     long selectedCrsId();
     QString selectedAuthId();
 
-    void setSelectedCrsName( QString theName );
+    void setSelectedCrsName( const QString& theName );
     void setSelectedCrsId( long theID );
-    void setSelectedAuthId( QString authId );
+    void setSelectedAuthId( const QString& authId );
+
+    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     /**
      * \brief filters this dialog by the given CRSs
@@ -79,7 +83,7 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
      *
      * \warning This function's behaviour is undefined if it is called after the dialog is shown.
      */
-    void setOgcWmsCrsFilter( QSet<QString> crsFilter );
+    void setOgcWmsCrsFilter( const QSet<QString>& crsFilter );
 };
 
 #endif // #ifndef QGSLAYERCRSSELECTOR_H

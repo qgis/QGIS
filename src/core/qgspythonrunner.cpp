@@ -15,17 +15,17 @@
 #include "qgspythonrunner.h"
 #include "qgslogger.h"
 
-QgsPythonRunner* QgsPythonRunner::mInstance = NULL;
+QgsPythonRunner* QgsPythonRunner::mInstance = nullptr;
 
 ///////////////////////////
 // static methods
 
 bool QgsPythonRunner::isValid()
 {
-  return mInstance != NULL;
+  return nullptr != mInstance;
 }
 
-bool QgsPythonRunner::run( QString command, QString messageOnError )
+bool QgsPythonRunner::run( const QString& command, const QString& messageOnError )
 {
   if ( mInstance )
   {
@@ -39,7 +39,7 @@ bool QgsPythonRunner::run( QString command, QString messageOnError )
   }
 }
 
-bool QgsPythonRunner::eval( QString command, QString& result )
+bool QgsPythonRunner::eval( const QString& command, QString& result )
 {
   if ( mInstance )
   {

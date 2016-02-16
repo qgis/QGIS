@@ -31,20 +31,19 @@ class QFont;
  * and detail sections.
  * @see also QgsDetailedItemData
  */
-class GUI_EXPORT QgsDetailedItemDelegate :
-      public QAbstractItemDelegate
+class GUI_EXPORT QgsDetailedItemDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
   public:
-    QgsDetailedItemDelegate( QObject * parent = 0 );
+    QgsDetailedItemDelegate( QObject * parent = nullptr );
     ~QgsDetailedItemDelegate();
-    /** reimplement for parent class */
+    /** Reimplement for parent class */
     void paint( QPainter * thePainter,
                 const QStyleOptionViewItem & theOption,
-                const QModelIndex & theIndex ) const;
-    /** reimplement for parent class */
+                const QModelIndex & theIndex ) const override;
+    /** Reimplement for parent class */
     QSize sizeHint( const QStyleOptionViewItem & theOption,
-                    const QModelIndex & theIndex ) const;
+                    const QModelIndex & theIndex ) const override;
 
     void setVerticalSpacing( int theValue );
 
@@ -62,17 +61,17 @@ class GUI_EXPORT QgsDetailedItemDelegate :
                         QPainter * thepPainter,
                         int theHeight ) const;
 
-    QStringList wordWrap( QString theString,
-                          QFontMetrics theMetrics,
+    QStringList wordWrap( const QString& theString,
+                          const QFontMetrics& theMetrics,
                           int theWidth ) const;
-    void paintManually( QPainter * thePainter,
-                        const QStyleOptionViewItem & theOption,
-                        const QgsDetailedItemData theData ) const;
-    void paintAsWidget( QPainter * thePainter,
-                        const QStyleOptionViewItem & theOption,
-                        const QgsDetailedItemData theData ) const;
-    int height( const QStyleOptionViewItem & theOption,
-                const QgsDetailedItemData theData ) const;
+    void paintManually( QPainter *thePainter,
+                        const QStyleOptionViewItem &theOption,
+                        const QgsDetailedItemData &theData ) const;
+    void paintAsWidget( QPainter *thePainter,
+                        const QStyleOptionViewItem &theOption,
+                        const QgsDetailedItemData &theData ) const;
+    int height( const QStyleOptionViewItem &theOption,
+                const QgsDetailedItemData &theData ) const;
     QgsDetailedItemWidget * mpWidget;
     QCheckBox * mpCheckBox;
     int mVerticalSpacing;

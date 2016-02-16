@@ -45,7 +45,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " the QGIS home page."
                       ) );
   addGenericTip( myTip );
-  myTip.setTitle( tr( "Become an QGIS translator" ) );
+  myTip.setTitle( tr( "Become a QGIS translator" ) );
   myTip.setContent( tr( "Would you like to see QGIS"
                         " in your native language? We are looking for more translators"
                         " and would appreciate your help! The translation process is"
@@ -56,15 +56,15 @@ QgsTipFactory::QgsTipFactory() : QObject()
   addGuiTip( myTip );
   myTip.setTitle( tr( "QGIS Mailing lists" ) );
   myTip.setContent( tr( "If you need help using QGIS"
-                        " we have a 'users'  mailing list where users help each other with issues"
-                        " related to using our sofware. We also have a 'developers' mailing list."
+                        " we have a 'users' mailing list where users help each other with issues"
+                        " related to using our software. We also have a 'developers' mailing list."
                         " for those wanting help and to discuss things relating to the QGIS code base."
                         " Details on how to subscribe are in the <a href=\"http://qgis.org/en/site/forusers/support.html#mailing-lists\">community section</a> of"
                         " the QGIS home page."
                       ) );
   addGuiTip( myTip );
   myTip.setTitle( tr( "Is it 'QGIS' or 'Quantum GIS'?" ) );
-  myTip.setContent( tr( "Both used to be correct, but we recently decided to just use 'QGIS'.  For articles we suggest you write 'QGIS is ....'"
+  myTip.setContent( tr( "Both used to be correct, but we recently decided to just use 'QGIS'. For articles we suggest you write 'QGIS is ....'"
                       ) );
   addGenericTip( myTip );
   myTip.setTitle( tr( "How do I refer to QGIS?" ) );
@@ -75,9 +75,9 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         "<ul>"
                         "<li>QGIS Library - this is the C++ library that contains"
                         " the core logic that is used to build the QGIS user interface and other applications.</li>"
-                        "<li>QGIS Application - this is the desktop application that you know and love so much :-).</li>"
-                        "<li>QGIS Mapserver - this is a server-side application based on the QGIS Library"
-                        " that will serve up your .qgs projects using the WMS protocol.</li>"
+                        "<li>QGIS Desktop - this is the desktop application that you know and love so much :-).</li>"
+                        "<li>QGIS Server - this is a server-side application based on the QGIS Library"
+                        " that will serve up your .qgs projects using OGC standard protocols.</li>"
                         "</ul>"
                       ) );
   addGenericTip( myTip );
@@ -192,6 +192,40 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " Check out the plugins and see what they can do for you."
                       ) );
   addGenericTip( myTip );
+  // by yjacolin
+  myTip.setTitle( tr( "Add an action to layer" ) );
+  myTip.setContent( tr( "Action in a layer allow user to trigger action when clicking on a geometry"
+                        " with 'Run Feature Action' tools."
+                        "For example, you can open a HTML page using the field value of the geometry "
+                        "as a parameter. Look at the <a href=\"http://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu\">documentation</a>."
+                      ) );
+  addGuiTip( myTip );
+  // by yjacolin
+  myTip.setTitle( tr( "Copy, paste and cut in QGIS" ) );
+  myTip.setContent( tr( "Copy, paste, and cut work as in another applications in QGIS. Select a "
+                        "feature (a geometry or an attribut row in the attribute table) and use "
+                        "one of this shortcuts: Ctrl+C to copy, Ctrl+X to cut, and Ctrl+V to paste."
+                      ) );
+  addGuiTip( myTip );
+  // by yjacolin
+  myTip.setTitle( tr( "Right click with identify tools" ) );
+  myTip.setContent( tr( "Right click with the identify tool to show a context menu from which you can "
+                        "choose the layer in which to identify a feature. A sub menu will list features "
+                        "identified and a third sub-menu will show the action link setup for the layer."
+                        "If one of this sub-menu doesn't contain any information, the next sub-menu"
+                        "will appear instead. For example, if you have just one layer, and click "
+                        "somewhere with several features, the first menu will list the feature list "
+                        "instead of layer list."
+                      ) );
+  addGuiTip( myTip );
+  // by Alister Hood
+  myTip.setTitle( tr( "Use VRT files" ) );
+  myTip.setContent( tr( "If you have a number of aerial photos spread across a wide area, instead of "
+                        "loading each file as a separate layer you can treat them all as a single layer "
+                        "by using a .vrt file. "
+                        "To create a .vrt, go to Raster -> Miscellaneous -> Build Virtual Raster (Catalog)."
+                      ) );
+  addGuiTip( myTip );
 
   /* Template for adding more tips
   myTip.setTitle(tr(""));
@@ -206,21 +240,20 @@ QgsTipFactory::~QgsTipFactory()
 
 }
 //private helper method
-void QgsTipFactory::addGuiTip( QgsTip theTip )
+void QgsTipFactory::addGuiTip( const QgsTip& theTip )
 {
   mGuiTips << theTip;
   mAllTips << theTip;
 }
 //private helper method
-void QgsTipFactory::addGenericTip( QgsTip theTip )
+void QgsTipFactory::addGenericTip( const QgsTip& theTip )
 {
   mGenericTips << theTip;
   mAllTips << theTip;
 }
 QgsTip QgsTipFactory::getTip()
 {
-  srand( QTime::currentTime().msec() );
-  int myRand = rand();
+  int myRand = qrand();
   int myValue = static_cast<int>( myRand % mAllTips.count() ); //range [0,(count-1)]
   QgsTip myTip = mAllTips.at( myValue );
   return myTip;
@@ -232,16 +265,14 @@ QgsTip QgsTipFactory::getTip( int thePosition )
 }
 QgsTip QgsTipFactory::getGenericTip()
 {
-  srand( QTime::currentTime().msec() );
-  int myRand = rand();
+  int myRand = qrand();
   int myValue = static_cast<int>( myRand % mGenericTips.count() ); //range [0,(count-1)]
   QgsTip myTip = mGenericTips.at( myValue );
   return myTip;
 }
 QgsTip QgsTipFactory::getGuiTip()
 {
-  srand( QTime::currentTime().msec() );
-  int myRand = rand();
+  int myRand = qrand();
   int myValue = static_cast<int>( myRand % mGuiTips.count() ); //range [0,(count-1)]
   QgsTip myTip = mGuiTips.at( myValue );
   return myTip;

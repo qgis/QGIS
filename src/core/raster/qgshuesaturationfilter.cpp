@@ -23,12 +23,15 @@
 
 
 QgsHueSaturationFilter::QgsHueSaturationFilter( QgsRasterInterface* input )
-    : QgsRasterInterface( input ),
-    mSaturation( 0 ),
-    mGrayscaleMode( QgsHueSaturationFilter::GrayscaleOff ),
-    mColorizeOn( false ),
-    mColorizeColor( QColor::fromRgb( 255, 128, 128 ) ),
-    mColorizeStrength( 100 )
+    : QgsRasterInterface( input )
+    , mSaturation( 0 )
+    , mSaturationScale( 1 )
+    , mGrayscaleMode( QgsHueSaturationFilter::GrayscaleOff )
+    , mColorizeOn( false )
+    , mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
+    , mColorizeH( 0 )
+    , mColorizeS( 50 )
+    , mColorizeStrength( 100 )
 {
 }
 
@@ -36,10 +39,10 @@ QgsHueSaturationFilter::~QgsHueSaturationFilter()
 {
 }
 
-QgsRasterInterface * QgsHueSaturationFilter::clone() const
+QgsHueSaturationFilter* QgsHueSaturationFilter::clone() const
 {
-  QgsDebugMsg( "Entered hue/saturation filter" );
-  QgsHueSaturationFilter * filter = new QgsHueSaturationFilter( 0 );
+  QgsDebugMsgLevel( "Entered hue/saturation filter", 4 );
+  QgsHueSaturationFilter * filter = new QgsHueSaturationFilter( nullptr );
   filter->setSaturation( mSaturation );
   filter->setGrayscaleMode( mGrayscaleMode );
   filter->setColorizeOn( mColorizeOn );
@@ -80,7 +83,7 @@ QGis::DataType QgsHueSaturationFilter::dataType( int bandNo ) const
 
 bool QgsHueSaturationFilter::setInput( QgsRasterInterface* input )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
 
   // Hue/saturation filter can only work with single band ARGB32_Premultiplied
   if ( !input )
@@ -92,7 +95,7 @@ bool QgsHueSaturationFilter::setInput( QgsRasterInterface* input )
   if ( !mOn )
   {
     // In off mode we can connect to anything
-    QgsDebugMsg( "OK" );
+    QgsDebugMsgLevel( "OK", 4 );
     mInput = input;
     return true;
   }
@@ -111,14 +114,14 @@ bool QgsHueSaturationFilter::setInput( QgsRasterInterface* input )
   }
 
   mInput = input;
-  QgsDebugMsg( "OK" );
+  QgsDebugMsgLevel( "OK", 4 );
   return true;
 }
 
 QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   Q_UNUSED( bandNo );
-  QgsDebugMsg( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ) );
+  QgsDebugMsgLevel( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
 
   QgsRasterBlock *outputBlock = new QgsRasterBlock();
   if ( !mInput )
@@ -138,7 +141,7 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
 
   if ( mSaturation == 0 && mGrayscaleMode == GrayscaleOff && !mColorizeOn )
   {
-    QgsDebugMsg( "No hue/saturation change." );
+    QgsDebugMsgLevel( "No hue/saturation change.", 4 );
     delete outputBlock;
     return inputBlock;
   }
@@ -312,7 +315,7 @@ void QgsHueSaturationFilter::processSaturation( int &r, int &g, int &b, int &h, 
       {
         // Raising the saturation. Use a saturation curve to prevent
         // clipping at maximum saturation with ugly results.
-        s = qMin(( int )( 255. * ( 1 - pow( 1 - ( s / 255. )  , pow( mSaturationScale, 2 ) ) ) ), 255 );
+        s = qMin(( int )( 255. * ( 1 - pow( 1 - ( s / 255. ), pow( mSaturationScale, 2 ) ) ) ), 255 );
       }
 
       // Saturation changed, so update rgb values
@@ -331,7 +334,7 @@ void QgsHueSaturationFilter::setSaturation( int saturation )
   mSaturationScale = (( double ) mSaturation / 100 ) + 1;
 }
 
-void QgsHueSaturationFilter::setColorizeColor( QColor colorizeColor )
+void QgsHueSaturationFilter::setColorizeColor( const QColor& colorizeColor )
 {
   mColorizeColor = colorizeColor;
 

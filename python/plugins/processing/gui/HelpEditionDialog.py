@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
+
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -26,31 +28,44 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import pickle
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from processing.ui.ui_DlgHelpEdition import Ui_DlgHelpEdition
+import json
+
+from PyQt4 import uic
+from PyQt4.QtGui import QDialog, QMessageBox, QTreeWidgetItem
+
+from processing.core.ProcessingLog import ProcessingLog
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgHelpEdition.ui'))
 
 
-class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
+class HelpEditionDialog(BASE, WIDGET):
 
     ALG_DESC = 'ALG_DESC'
     ALG_CREATOR = 'ALG_CREATOR'
     ALG_HELP_CREATOR = 'ALG_HELP_CREATOR'
+    ALG_VERSION = 'ALG_VERSION'
 
     def __init__(self, alg):
-        QDialog.__init__(self)
-
+        super(HelpEditionDialog, self).__init__(None)
         self.setupUi(self)
 
         self.alg = alg
         self.descriptions = {}
-        if self.alg.descriptionFile is not None:
-            helpfile = alg.descriptionFile + '.help'
-            if os.path.exists(helpfile):
-                f = open(helpfile, 'rb')
-                self.descriptions = pickle.load(f)
+        if isinstance(self.alg, ModelerAlgorithm):
+            self.descriptions = self.alg.helpContent
+        else:
+            if self.alg.descriptionFile is not None:
+                helpfile = alg.descriptionFile + '.help'
+                if os.path.exists(helpfile):
+                    try:
+                        with open(helpfile) as f:
+                            self.descriptions = json.load(f)
+                    except Exception as e:
+                        ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
+                                               self.tr('Cannot open help file: %s') % helpfile)
+
         self.currentName = self.ALG_DESC
         if self.ALG_DESC in self.descriptions:
             self.text.setText(self.descriptions[self.ALG_DESC])
@@ -65,39 +80,25 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
 
     def accept(self):
         self.descriptions[self.currentName] = unicode(self.text.toPlainText())
-        if self.alg.descriptionFile is not None:
-            try:
-                f = open(self.alg.descriptionFile + '.help', 'wb')
-                pickle.dump(self.descriptions, f)
-                f.close()
-            except Exception, e:
-                QMessageBox.warning(self, 'Error saving help file',
-                                    'Help file could not be saved. Check that \
-                                    you have permission to modify the help \
-                                    file. You might not have permission if \
-                                    you are editing an example model or \
-                                    script, since they are stored on the \
-                                    installation folder')
-
         QDialog.accept(self)
 
     def getHtml(self):
-        s = '<h2>Algorithm description</h2>\n'
+        s = self.tr('<h2>Algorithm description</h2>\n')
         s += '<p>' + self.getDescription(self.ALG_DESC) + '</p>\n'
-        s += '<h2>Input parameters</h2>\n'
+        s += self.tr('<h2>Input parameters</h2>\n')
         for param in self.alg.parameters:
             s += '<h3>' + param.description + '</h3>\n'
             s += '<p>' + self.getDescription(param.name) + '</p>\n'
-        s += '<h2>Outputs</h2>\n'
+        s += self.tr('<h2>Outputs</h2>\n')
         for out in self.alg.outputs:
             s += '<h3>' + out.description + '</h3>\n'
             s += '<p>' + self.getDescription(out.name) + '</p>\n'
         return s
 
     def fillTree(self):
-        item = TreeDescriptionItem('Algorithm description', self.ALG_DESC)
+        item = TreeDescriptionItem(self.tr('Algorithm description'), self.ALG_DESC)
         self.tree.addTopLevelItem(item)
-        parametersItem = TreeDescriptionItem('Input parameters', None)
+        parametersItem = TreeDescriptionItem(self.tr('Input parameters'), None)
         self.tree.addTopLevelItem(parametersItem)
         for param in self.alg.parameters:
             item = TreeDescriptionItem(param.description, param.name)
@@ -107,18 +108,20 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
         for out in self.alg.outputs:
             item = TreeDescriptionItem(out.description, out.name)
             outputsItem.addChild(item)
-        item = TreeDescriptionItem('Algorithm created by', self.ALG_CREATOR)
+        item = TreeDescriptionItem(self.tr('Algorithm created by'), self.ALG_CREATOR)
         self.tree.addTopLevelItem(item)
-        item = TreeDescriptionItem('Algorithm help written by',
+        item = TreeDescriptionItem(self.tr('Algorithm help written by'),
                                    self.ALG_HELP_CREATOR)
+        self.tree.addTopLevelItem(item)
+        item = TreeDescriptionItem(self.tr('Algorithm version'),
+                                   self.ALG_VERSION)
         self.tree.addTopLevelItem(item)
 
     def changeItem(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeDescriptionItem):
             if self.currentName:
-                self.descriptions[self.currentName] = \
-                    unicode(self.text.toPlainText())
+                self.descriptions[self.currentName] = unicode(self.text.toPlainText())
             name = item.name
             if name:
                 self.text.setEnabled(True)

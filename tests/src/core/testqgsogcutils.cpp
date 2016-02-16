@@ -14,12 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest>
+#include <QtTest/QtTest>
+#include <QSharedPointer>
 
 //qgis includes...
 #include <qgsgeometry.h>
 #include <qgsogcutils.h>
-
+#include "qgsapplication.h"
 
 /** \ingroup UnitTests
  * This is a unit test for OGC utilities
@@ -28,6 +29,21 @@ class TestQgsOgcUtils : public QObject
 {
     Q_OBJECT
   private slots:
+
+    void initTestCase()
+    {
+      //
+      // Runs once before any tests are run
+      //
+      // init QGIS's paths - true means that all path will be inited from prefix
+      QgsApplication::init();
+      QgsApplication::initQgis();
+    }
+
+    void cleanupTestCase()
+    {
+      QgsApplication::exitQgis();
+    }
 
     void testGeometryFromGML();
     void testGeometryToGML();
@@ -43,47 +59,46 @@ class TestQgsOgcUtils : public QObject
 void TestQgsOgcUtils::testGeometryFromGML()
 {
   // Test GML2
-  QgsGeometry* geom = QgsOgcUtils::geometryFromGML( "<Point><coordinates>123,456</coordinates></Point>" );
+  QSharedPointer<QgsGeometry> geom( QgsOgcUtils::geometryFromGML( "<Point><coordinates>123,456</coordinates></Point>" ) );
   QVERIFY( geom );
   QVERIFY( geom->wkbType() == QGis::WKBPoint );
   QVERIFY( geom->asPoint() == QgsPoint( 123, 456 ) );
+  geom.clear();
 
-  QgsGeometry* geomBox = QgsOgcUtils::geometryFromGML( "<gml:Box srsName=\"foo\"><gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>" );
+  QSharedPointer<QgsGeometry> geomBox( QgsOgcUtils::geometryFromGML( "<gml:Box srsName=\"foo\"><gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>" ) );
   QVERIFY( geomBox );
   QVERIFY( geomBox->wkbType() == QGis::WKBPolygon );
+
 
   // Test GML3
-  geom = QgsOgcUtils::geometryFromGML( "<Point><pos>123 456</pos></Point>" );
+  geom = QSharedPointer<QgsGeometry>( QgsOgcUtils::geometryFromGML( "<Point><pos>123 456</pos></Point>" ) );
   QVERIFY( geom );
   QVERIFY( geom->wkbType() == QGis::WKBPoint );
   QVERIFY( geom->asPoint() == QgsPoint( 123, 456 ) );
 
-  geomBox = QgsOgcUtils::geometryFromGML( "<gml:Envelope srsName=\"foo\"><gml:lowerCorner>135.2239 34.4879</gml:lowerCorner><gml:upperCorner>135.8578 34.8471</gml:upperCorner></gml:Envelope>" );
+  geomBox = QSharedPointer<QgsGeometry>( QgsOgcUtils::geometryFromGML( "<gml:Envelope srsName=\"foo\"><gml:lowerCorner>135.2239 34.4879</gml:lowerCorner><gml:upperCorner>135.8578 34.8471</gml:upperCorner></gml:Envelope>" ) );
   QVERIFY( geomBox );
   QVERIFY( geomBox->wkbType() == QGis::WKBPolygon );
-
-  delete geom;
-  delete geomBox;
 }
 
 void TestQgsOgcUtils::testGeometryToGML()
 {
   QDomDocument doc;
-  QgsGeometry* geomPoint = QgsGeometry::fromPoint( QgsPoint( 111, 222 ) );
-  QgsGeometry* geomLine = QgsGeometry::fromWkt( "LINESTRING(111 222, 222 222)" );
+  QSharedPointer<QgsGeometry> geomPoint( QgsGeometry::fromPoint( QgsPoint( 111, 222 ) ) );
+  QSharedPointer<QgsGeometry> geomLine( QgsGeometry::fromWkt( "LINESTRING(111 222, 222 222)" ) );
 
   // Test GML2
   QDomElement elemInvalid = QgsOgcUtils::geometryToGML( 0, doc );
   QVERIFY( elemInvalid.isNull() );
 
-  QDomElement elemPoint = QgsOgcUtils::geometryToGML( geomPoint, doc );
+  QDomElement elemPoint = QgsOgcUtils::geometryToGML( geomPoint.data(), doc );
   QVERIFY( !elemPoint.isNull() );
 
   doc.appendChild( elemPoint );
   QCOMPARE( doc.toString( -1 ), QString( "<gml:Point><gml:coordinates cs=\",\" ts=\" \">111,222</gml:coordinates></gml:Point>" ) );
   doc.removeChild( elemPoint );
 
-  QDomElement elemLine = QgsOgcUtils::geometryToGML( geomLine, doc );
+  QDomElement elemLine = QgsOgcUtils::geometryToGML( geomLine.data(), doc );
   QVERIFY( !elemLine.isNull() );
 
   doc.appendChild( elemLine );
@@ -94,22 +109,19 @@ void TestQgsOgcUtils::testGeometryToGML()
   elemInvalid = QgsOgcUtils::geometryToGML( 0, doc, "GML3" );
   QVERIFY( elemInvalid.isNull() );
 
-  elemPoint = QgsOgcUtils::geometryToGML( geomPoint, doc, "GML3" );
+  elemPoint = QgsOgcUtils::geometryToGML( geomPoint.data(), doc, "GML3" );
   QVERIFY( !elemPoint.isNull() );
 
   doc.appendChild( elemPoint );
   QCOMPARE( doc.toString( -1 ), QString( "<gml:Point><gml:pos srsDimension=\"2\">111 222</gml:pos></gml:Point>" ) );
   doc.removeChild( elemPoint );
 
-  elemLine = QgsOgcUtils::geometryToGML( geomLine, doc, "GML3" );
+  elemLine = QgsOgcUtils::geometryToGML( geomLine.data(), doc, "GML3" );
   QVERIFY( !elemLine.isNull() );
 
   doc.appendChild( elemLine );
   QCOMPARE( doc.toString( -1 ), QString( "<gml:LineString><gml:posList srsDimension=\"2\">111 222 222 222</gml:posList></gml:LineString>" ) );
   doc.removeChild( elemLine );
-
-  delete geomPoint;
-  delete geomLine;
 }
 
 
@@ -177,7 +189,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
     "<BBOX><PropertyName>Name>NAME</PropertyName><gml:Box srsName='foo'>"
     "<gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box></BBOX>"
     "</Filter>" )
-  << QString( "bbox($geometry, geomFromGML('<Box srsName=\"foo\"><coordinates>135.2239,34.4879 135.8578,34.8471</coordinates></Box>'))" );
+  << QString( "intersects_bbox($geometry, geom_from_gml('<Box srsName=\"foo\"><coordinates>135.2239,34.4879 135.8578,34.8471</coordinates></Box>'))" );
 
   QTest::newRow( "Intersects" ) << QString(
     "<Filter>"
@@ -188,7 +200,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
     "</gml:Point>"
     "</Intersects>"
     "</Filter>" )
-  << QString( "intersects($geometry, geomFromGML('<Point><coordinates>123,456</coordinates></Point>'))" );
+  << QString( "intersects($geometry, geom_from_gml('<Point><coordinates>123,456</coordinates></Point>'))" );
 }
 
 void TestQgsOgcUtils::testExpressionFromOgcFilter()
@@ -200,7 +212,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter()
   QVERIFY( doc.setContent( xmlText, true ) );
   QDomElement rootElem = doc.documentElement();
 
-  QgsExpression* expr = QgsOgcUtils::expressionFromOgcFilter( rootElem );
+  QSharedPointer<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem ) );
   QVERIFY( expr );
 
   qDebug( "OGC XML  : %s", xmlText.toAscii().data() );
@@ -211,8 +223,6 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter()
   QVERIFY( !expr->hasParserError() );
 
   QCOMPARE( dumpText, expr->expression() );
-
-  delete expr;
 }
 
 void TestQgsOgcUtils::testExpressionToOgcFilter()
@@ -279,18 +289,18 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "</ogc:And>"
     "</ogc:Filter>" );
 
-  QTest::newRow( "is null" ) << QString( "X IS NULL" ) << QString(
+  QTest::newRow( "is null" ) << QString( "A IS NULL" ) << QString(
     "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
     "<ogc:PropertyIsNull>"
-    "<ogc:PropertyName>X</ogc:PropertyName>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
     "</ogc:PropertyIsNull>"
     "</ogc:Filter>" );
 
-  QTest::newRow( "is not null" ) << QString( "X IS NOT NULL" ) << QString(
+  QTest::newRow( "is not null" ) << QString( "A IS NOT NULL" ) << QString(
     "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
     "<ogc:Not>"
     "<ogc:PropertyIsNull>"
-    "<ogc:PropertyName>X</ogc:PropertyName>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
     "</ogc:PropertyIsNull>"
     "</ogc:Not>"
     "</ogc:Filter>" );
@@ -331,7 +341,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
 
   /*
   QTest::newRow( "bbox with GML3 Envelope" )
-  << QString( "bbox($geometry, geomFromGML('<gml:Envelope><gml:lowerCorner>13.0983 31.5899</gml:lowerCorner><gml:upperCorner>35.5472 42.8143</gml:upperCorner></gml:Envelope>'))" )
+  << QString( "intersects_bbox($geometry, geomFromGML('<gml:Envelope><gml:lowerCorner>13.0983 31.5899</gml:lowerCorner><gml:upperCorner>35.5472 42.8143</gml:upperCorner></gml:Envelope>'))" )
   << QString(
   "<ogc:Filter>"
     "<ogc:BBOX>"
@@ -347,4 +357,4 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
 
 
 QTEST_MAIN( TestQgsOgcUtils )
-#include "moc_testqgsogcutils.cxx"
+#include "testqgsogcutils.moc"

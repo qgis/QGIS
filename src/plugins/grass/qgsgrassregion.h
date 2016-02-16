@@ -37,28 +37,28 @@ extern "C"
 #include <grass/gis.h>
 }
 
-/*! \class QgsGrassRegion
+/** \class QgsGrassRegion
  *  \brief GRASS attributes.
  *
  */
-class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
+class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsGrassRegion( QgsGrassPlugin *plugin, QgisInterface *iface,
-                    QWidget * parent = 0, Qt::WFlags f = 0 );
+    QgsGrassRegion( QgisInterface *iface,
+                    QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
     //! Destructor
     ~QgsGrassRegion();
 
   public slots:
-    //! OK
-    void accept( void );
+    void buttonClicked( QAbstractButton *button );
 
-    //! Cancel
-    void reject( void );
+    void mapsetChanged();
+
+    void reloadRegion();
 
     //! Mouse event receiver
     //void mouseEventReceiverMove ( QgsPoint & );
@@ -79,19 +79,17 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
     void rowsChanged();
     void colsChanged();
 
-    void radioChanged( void ) ;
-
-    void changeColor( const QColor& color ) ;
-    void changeWidth( void ) ;
-
-    void restorePosition( void );
+    void radioChanged( void );
 
     //! Called when the capture finished to refresh the mWindow values
     void onCaptureFinished();
 
+    void on_mDrawButton_clicked();
+
+    void canvasMapToolSet( QgsMapTool *tool );
   private:
     //! Pointer to plugin
-    QgsGrassPlugin *mPlugin;
+    //QgsGrassPlugin *mPlugin;
 
     //! Pointer to QGIS interface
     QgisInterface *mInterface;
@@ -104,8 +102,13 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
     //! Current new region
     struct Cell_head mWindow;
 
+    QgsCoordinateReferenceSystem mCrs;
+
     //! Display current state of new region in XOR mode
     void displayRegion( void );
+
+    void readRegion();
+
 
     // Set region values in GUI from mWindow
     void refreshGui();
@@ -117,37 +120,35 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
     //! Currently updating GUI, don't run *Changed methods
     bool mUpdatingGui;
 
-
-    void saveWindowLocation( void );
-
     // Format N, S, E, W value
-    QString formatEdge( double v );
+    QString formatExtent( double v );
+    QString formatResolution( double v );
 
     QgsGrassRegionEdit* mRegionEdit;
 };
 
-/** map tool which uses rubber band for changing grass region */
+/** Map tool which uses rubber band for changing grass region */
 class QgsGrassRegionEdit : public QgsMapTool
 {
     Q_OBJECT
 
   public:
-    QgsGrassRegionEdit( QgsMapCanvas* );
+    explicit QgsGrassRegionEdit( QgsMapCanvas* );
 
     ~QgsGrassRegionEdit();
 
     //! mouse pressed in map canvas
-    void canvasPressEvent( QMouseEvent * );
+    void canvasPressEvent( QgsMapMouseEvent * ) override;
 
     //! mouse movement in map canvas
-    void canvasMoveEvent( QMouseEvent * );
+    void canvasMoveEvent( QgsMapMouseEvent * ) override;
 
     //! mouse released
-    void canvasReleaseEvent( QMouseEvent * );
+    void canvasReleaseEvent( QgsMapMouseEvent * ) override;
 
 
     //! called when map tool is about to get inactive
-    void deactivate();
+    void deactivate() override;
 
     //! get the rectangle
     QgsRectangle getRegion();
@@ -156,7 +157,6 @@ class QgsGrassRegionEdit : public QgsMapTool
     void setRegion( const QgsPoint&, const QgsPoint& );
     void setSrcRegion( const QgsRectangle &rect );
 
-    void setTransform();
     static void drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubberBand, const QgsRectangle &rect, QgsCoordinateTransform *coordinateTransform = 0, bool isPolygon = false );
     void calcSrcRegion();
     static void transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, QgsCoordinateTransform *coordinateTransform, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform );
@@ -165,6 +165,8 @@ class QgsGrassRegionEdit : public QgsMapTool
     void captureStarted();
     void captureEnded();
 
+  public slots:
+    void setTransform();
 
   private:
     //! Rubber band for selecting grass region

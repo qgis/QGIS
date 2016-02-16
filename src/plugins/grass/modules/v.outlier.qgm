@@ -3,10 +3,15 @@
 
 <qgisgrassmodule label="Remove outliers from vector point data" module="v.outlier">
 	<option key="input" />
-	<option key="soe" ansewr="10" />
-	<option key="son" ansewr="10" />
-	<option key="lambda_i" ansewr="0.1" />
-	<option key="thres_o" ansewr="50" />
+	<option key="soe" ansewr="10" version_max="6"/>
+	<option key="ew_step" ansewr="10" version_min="7"/>
+	<option key="son" ansewr="10" version_max="6"/>
+	<option key="ns_step" ansewr="10" version_min="7"/>
+	<option key="lambda_i" ansewr="0.1" version_max="6"/>
+	<option key="lambda" ansewr="0.1" version_min="7"/>
+	<option key="thres_o" ansewr="50" version_max="6"/>
+	<option key="threshold" ansewr="50" version_min="7"/>
 	<option key="output" />
 	<option key="outlier" />
+		<option key="filter" ansewr="both" advanced="yes" version_min="7"/>
 </qgisgrassmodule>

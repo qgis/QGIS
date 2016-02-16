@@ -14,7 +14,16 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item row="1" column="1">
@@ -126,7 +135,11 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>mGroupsTreeView</tabstop>
   <tabstop>mImagesListView</tabstop>
+  <tabstop>mFileLineEdit</tabstop>
+  <tabstop>mFilePushButton</tabstop>
+  <tabstop>mRelativePathChkBx</tabstop>
  </tabstops>
  <resources/>
  <connections/>

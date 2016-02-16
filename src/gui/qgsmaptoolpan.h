@@ -26,17 +26,22 @@ class QgsMapCanvas;
  */
 class GUI_EXPORT QgsMapToolPan : public QgsMapTool
 {
+    Q_OBJECT
+
   public:
     //! constructor
     QgsMapToolPan( QgsMapCanvas* canvas );
 
+    //! Mouse press event
+    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
-    virtual bool isTransient() { return true; }
+    virtual bool isTransient() override { return true; }
 
   private:
 

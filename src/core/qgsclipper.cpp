@@ -17,6 +17,8 @@
  ***************************************************************************/
 
 #include "qgsclipper.h"
+#include "qgsgeometry.h"
+#include "qgswkbptr.h"
 
 // Where has all the code gone?
 
@@ -35,18 +37,14 @@ const double QgsClipper::MIN_Y = -16000;
 
 const double QgsClipper::SMALL_NUM = 1e-12;
 
-const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const QgsRectangle& clipExtent, QPolygonF& line )
+QgsConstWkbPtr QgsClipper::clippedLineWKB( QgsConstWkbPtr wkbPtr, const QgsRectangle& clipExtent, QPolygonF& line )
 {
-  wkb++; // jump over endian info
-  unsigned int wkbType = *(( int* ) wkb );
-  wkb += sizeof( unsigned int );
-  unsigned int nPoints = *(( int* ) wkb );
-  wkb += sizeof( unsigned int );
+  QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
 
-  bool hasZValue = ( wkbType == QGis::WKBLineString25D );
+  int nPoints;
+  wkbPtr >> nPoints;
 
-  int sizeOfDoubleX = sizeof( double );
-  int sizeOfDoubleY = hasZValue ? 2 * sizeof( double ) : sizeof( double );
+  int skipZM = ( QgsWKBTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
 
   double p0x, p0y, p1x = 0.0, p1y = 0.0; //original coordinates
   double p1x_c, p1y_c; //clipped end coordinates
@@ -55,13 +53,12 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
   line.clear();
   line.reserve( nPoints + 1 );
 
-  for ( unsigned int i = 0; i < nPoints; ++i )
+  for ( int i = 0; i < nPoints; ++i )
   {
     if ( i == 0 )
     {
-      memcpy( &p1x, wkb, sizeof( double ) ); wkb += sizeOfDoubleX;
-      memcpy( &p1y, wkb, sizeof( double ) ); wkb += sizeOfDoubleY;
-
+      wkbPtr >> p1x >> p1y;
+      wkbPtr += skipZM;
       continue;
     }
     else
@@ -69,14 +66,15 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
       p0x = p1x;
       p0y = p1y;
 
-      memcpy( &p1x, wkb, sizeof( double ) ); wkb += sizeOfDoubleX;
-      memcpy( &p1y, wkb, sizeof( double ) ); wkb += sizeOfDoubleY;
+      wkbPtr >> p1x >> p1y;
+      wkbPtr += skipZM;
 
-      p1x_c = p1x; p1y_c = p1y;
+      p1x_c = p1x;
+      p1y_c = p1y;
       if ( clipLineSegment( clipExtent.xMinimum(), clipExtent.xMaximum(), clipExtent.yMinimum(), clipExtent.yMaximum(),
                             p0x, p0y, p1x_c,  p1y_c ) )
       {
-        bool newLine = line.size() > 0 && ( p0x != lastClipX || p0y != lastClipY );
+        bool newLine = !line.isEmpty() && ( !qgsDoubleNear( p0x, lastClipX ) || !qgsDoubleNear( p0y, lastClipY ) );
         if ( newLine )
         {
           //add edge points to connect old and new line
@@ -89,12 +87,13 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
         }
 
         //add second point
-        lastClipX = p1x_c; lastClipY = p1y_c;
+        lastClipX = p1x_c;
+        lastClipY = p1y_c;
         line << QPointF( p1x_c,  p1y_c );
       }
     }
   }
-  return wkb;
+  return wkbPtr;
 }
 
 void QgsClipper::connectSeparatedLines( double x0, double y0, double x1, double y1,

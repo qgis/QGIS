@@ -13,28 +13,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptooladdring.h"
-#include "qgsgeometry.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include <QMessageBox>
 #include <QMouseEvent>
 
-QgsMapToolAddRing::QgsMapToolAddRing( QgsMapCanvas* canvas ): QgsMapToolCapture( canvas, QgsMapToolCapture::CapturePolygon )
-{
+#include "qgsmaptooladdring.h"
+#include "qgsgeometry.h"
+#include "qgslinestringv2.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgisapp.h"
 
+
+QgsMapToolAddRing::QgsMapToolAddRing( QgsMapCanvas* canvas )
+    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
+{
+  mToolName = tr( "Add ring" );
 }
 
 QgsMapToolAddRing::~QgsMapToolAddRing()
 {
-
 }
 
-void QgsMapToolAddRing::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
 {
+
+  emit messageDiscarded();
+
   //check if we operate on a vector layer
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer *vlayer = currentVectorLayer();
 
   if ( !vlayer )
   {
@@ -51,7 +58,7 @@ void QgsMapToolAddRing::canvasReleaseEvent( QMouseEvent * e )
   //add point to list and to rubber band
   if ( e->button() == Qt::LeftButton )
   {
-    int error = addVertex( e->pos() );
+    int error = addVertex( e->mapPoint(), e->mapPointMatch() );
     if ( error == 1 )
     {
       //current layer is not a vector layer
@@ -60,8 +67,7 @@ void QgsMapToolAddRing::canvasReleaseEvent( QMouseEvent * e )
     else if ( error == 2 )
     {
       //problem with coordinate transformation
-      QMessageBox::information( 0, tr( "Coordinate transform error" ),
-                                tr( "Cannot transform the point to the layers coordinate system" ) );
+      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), QgsMessageBar::WARNING );
       return;
     }
 
@@ -69,41 +75,60 @@ void QgsMapToolAddRing::canvasReleaseEvent( QMouseEvent * e )
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( !isCapturing() )
+      return;
+
     deleteTempRubberBand();
 
     closePolygon();
 
     vlayer->beginEditCommand( tr( "Ring added" ) );
-    int addRingReturnCode = vlayer->addRing( points() );
+
+    //does compoundcurve contain circular strings?
+    //does provider support circular strings?
+    bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
+    bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
+
+    QgsCurveV2* curveToAdd = nullptr;
+    if ( hasCurvedSegments && providerSupportsCurvedSegments )
+    {
+      curveToAdd = captureCurve()->clone();
+    }
+    else
+    {
+      curveToAdd = captureCurve()->curveToLine();
+    }
+
+    int addRingReturnCode = vlayer->addRing( curveToAdd );
     if ( addRingReturnCode != 0 )
     {
       QString errorMessage;
       //todo: open message box to communicate errors
       if ( addRingReturnCode == 1 )
       {
-        errorMessage = tr( "A problem with geometry type occured" );
+        errorMessage = tr( "a problem with geometry type occurred" );
       }
       else if ( addRingReturnCode == 2 )
       {
-        errorMessage = tr( "The inserted Ring is not closed" );
+        errorMessage = tr( "the inserted ring is not closed" );
       }
       else if ( addRingReturnCode == 3 )
       {
-        errorMessage = tr( "The inserted Ring is not a valid geometry" );
+        errorMessage = tr( "the inserted ring is not a valid geometry" );
       }
       else if ( addRingReturnCode == 4 )
       {
-        errorMessage = tr( "The inserted Ring crosses existing rings" );
+        errorMessage = tr( "the inserted ring crosses existing rings" );
       }
       else if ( addRingReturnCode == 5 )
       {
-        errorMessage = tr( "The inserted Ring is not contained in a feature" );
+        errorMessage = tr( "the inserted ring is not contained in a feature" );
       }
       else
       {
-        errorMessage = tr( "An unknown error occured" );
+        errorMessage = tr( "an unknown error occurred" );
       }
-      QMessageBox::critical( 0, tr( "Error, could not add ring" ), errorMessage );
+      emit messageEmitted( tr( "could not add ring since %1." ).arg( errorMessage ), QgsMessageBar::CRITICAL );
       vlayer->destroyEditCommand();
     }
     else

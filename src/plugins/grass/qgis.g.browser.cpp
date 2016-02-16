@@ -14,7 +14,6 @@
  ***************************************************************************/
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <iostream>
 #include <QUrl>
 #include <QDesktopServices>
@@ -22,6 +21,8 @@
 
 #ifdef Q_OS_WIN
 #include <windows.h>
+#else
+#include <unistd.h>
 #endif
 
 // Open a URL by default browser

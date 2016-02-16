@@ -29,9 +29,9 @@ class GUI_EXPORT QgsDetailedItemWidget :
 {
     Q_OBJECT
   public:
-    QgsDetailedItemWidget( QWidget * parent = 0 );
+    QgsDetailedItemWidget( QWidget * parent = nullptr );
     ~QgsDetailedItemWidget();
-    void setData( QgsDetailedItemData theData );
+    void setData( const QgsDetailedItemData& theData );
     void setChecked( bool theFlag );
   private:
     QgsDetailedItemData mData;

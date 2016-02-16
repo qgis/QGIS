@@ -33,7 +33,7 @@ from processing.modeler.ModelerDialog import ModelerDialog
 class EditModelAction(ContextAction):
 
     def __init__(self):
-        self.name = 'Edit model'
+        self.name = self.tr('Edit model', 'EditModelAction')
 
     def isEnabled(self):
         return isinstance(self.alg, ModelerAlgorithm)
@@ -42,4 +42,4 @@ class EditModelAction(ContextAction):
         dlg = ModelerDialog(self.alg.getCopy())
         dlg.exec_()
         if dlg.update:
-            self.toolbox.updateTree()
+            self.toolbox.updateProvider('model')

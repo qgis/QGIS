@@ -1,4 +1,4 @@
-/*! \class QgsRaster
+/** \class QgsRaster
  */
 
 class QgsRaster
@@ -11,24 +11,24 @@ class QgsRaster
     // This is modified copy of GDALColorInterp
     enum ColorInterpretation
     {
-      UndefinedColorInterpretation = 0,
-      /*! Greyscale */                                      GrayIndex = 1,
-      /*! Paletted (see associated color table) */          PaletteIndex = 2, // indexed color table
-      /*! Red band of RGBA image */                         RedBand = 3,
-      /*! Green band of RGBA image */                       GreenBand = 4,
-      /*! Blue band of RGBA image */                        BlueBand = 5,
-      /*! Alpha (0=transparent, 255=opaque) */              AlphaBand = 6,
-      /*! Hue band of HLS image */                          HueBand = 7,
-      /*! Saturation band of HLS image */                   SaturationBand = 8,
-      /*! Lightness band of HLS image */                    LightnessBand = 9,
-      /*! Cyan band of CMYK image */                        CyanBand = 10,
-      /*! Magenta band of CMYK image */                     MagentaBand = 11,
-      /*! Yellow band of CMYK image */                      YellowBand = 12,
-      /*! Black band of CMLY image */                       BlackBand = 13,
-      /*! Y Luminance */                                    YCbCr_YBand = 14,
-      /*! Cb Chroma */                                      YCbCr_CbBand = 15,
-      /*! Cr Chroma */                                      YCbCr_CrBand = 16,
-      /*! Continuous palette, QGIS addition, GRASS */       ContinuousPalette = 17
+      UndefinedColorInterpretation,
+      /** Greyscale */                                      GrayIndex,
+      /** Paletted (see associated color table) */          PaletteIndex, // indexed color table
+      /** Red band of RGBA image */                         RedBand,
+      /** Green band of RGBA image */                       GreenBand,
+      /** Blue band of RGBA image */                        BlueBand,
+      /** Alpha (0=transparent, 255=opaque) */              AlphaBand,
+      /** Hue band of HLS image */                          HueBand,
+      /** Saturation band of HLS image */                   SaturationBand,
+      /** Lightness band of HLS image */                    LightnessBand,
+      /** Cyan band of CMYK image */                        CyanBand,
+      /** Magenta band of CMYK image */                     MagentaBand,
+      /** Yellow band of CMYK image */                      YellowBand,
+      /** Black band of CMLY image */                       BlackBand,
+      /** Y Luminance */                                    YCbCr_YBand,
+      /** Cb Chroma */                                      YCbCr_CbBand,
+      /** Cr Chroma */                                      YCbCr_CrBand,
+      /** Continuous palette, QGIS addition, GRASS */       ContinuousPalette,
     };
 
     enum IdentifyFormat
@@ -43,23 +43,23 @@ class QgsRaster
     // Progress types
     enum RasterProgressType
     {
-      ProgressHistogram = 0,
-      ProgressPyramids  = 1,
-      ProgressStatistics = 2
+      ProgressHistogram,
+      ProgressPyramids,
+      ProgressStatistics,
     };
 
     enum RasterBuildPyramids
     {
-      PyramidsFlagNo = 0,
-      PyramidsFlagYes = 1,
-      PyramidsCopyExisting = 2
+      PyramidsFlagNo,
+      PyramidsFlagYes,
+      PyramidsCopyExisting,
     };
 
     enum RasterPyramidsFormat
     {
-      PyramidsGTiff = 0,
-      PyramidsInternal = 1,
-      PyramidsErdas = 2
+      PyramidsGTiff,
+      PyramidsInternal,
+      PyramidsErdas,
     };
 
     /** \brief Contrast enhancement limits */
@@ -88,7 +88,7 @@ class QgsRaster
     };
 
     static QString contrastEnhancementLimitsAsString( QgsRaster::ContrastEnhancementLimits theLimits );
-    static ContrastEnhancementLimits contrastEnhancementLimitsFromString( QString theLimits );
+    static ContrastEnhancementLimits contrastEnhancementLimitsFromString( const QString& theLimits );
 
     /** Get value representable by given data type.
      * Supported are numerical types Byte, UInt16, Int16, UInt32, Int32, Float32, Float64.

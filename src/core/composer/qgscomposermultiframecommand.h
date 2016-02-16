@@ -26,19 +26,24 @@ class QgsComposerMultiFrame;
 class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
 {
   public:
-    QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent = 0 );
+    QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent = nullptr );
     ~QgsComposerMultiFrameCommand();
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
     void savePreviousState();
     void saveAfterState();
 
-    /**Returns true if previous state and after state are valid and different*/
+    QDomDocument previousState() const { return mPreviousState.cloneNode().toDocument(); }
+    QDomDocument afterState() const { return mAfterState.cloneNode().toDocument(); }
+
+    /** Returns true if previous state and after state are valid and different*/
     bool containsChange() const;
 
-  private:
+    const QgsComposerMultiFrame* multiFrame() const { return mMultiFrame; }
+
+  protected:
     QgsComposerMultiFrame* mMultiFrame;
 
     QDomDocument mPreviousState;
@@ -50,6 +55,36 @@ class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
     void saveState( QDomDocument& stateDoc );
     void restoreState( QDomDocument& stateDoc );
     bool checkFirstRun();
+};
+
+/** A composer command that merges together with other commands having the same context (=id)
+ * for multi frame items. Keeps the oldest previous state and uses the newest after state.
+ * The purpose is to avoid too many micro changes in the history*/
+class CORE_EXPORT QgsComposerMultiFrameMergeCommand: public QgsComposerMultiFrameCommand
+{
+  public:
+    enum Context
+    {
+      Unknown = 0,
+      //composer html
+      HtmlSource,
+      HtmlStylesheet,
+      HtmlBreakDistance,
+      //attribute table
+      TableMaximumFeatures,
+      TableMargin,
+      TableGridStrokeWidth,
+      TableCellStyle
+    };
+
+    QgsComposerMultiFrameMergeCommand( Context c, QgsComposerMultiFrame* multiFrame, const QString& text );
+    ~QgsComposerMultiFrameMergeCommand();
+
+    bool mergeWith( const QUndoCommand * command ) override;
+    int id() const override { return static_cast< int >( mContext ); }
+
+  private:
+    Context mContext;
 };
 
 #endif // QGSCOMPOSERMULTIFRAMECOMMAND_H

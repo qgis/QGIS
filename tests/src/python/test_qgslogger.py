@@ -12,34 +12,35 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis
 import tempfile
 import os
-import qgis
+
+(myFileHandle, myFilename) = tempfile.mkstemp()
+os.environ['QGIS_DEBUG'] = '2'
+os.environ['QGIS_LOG_FILE'] = myFilename
+
 from qgis.core import QgsLogger
-from utilities import (TestCase,
-                       unittest
-                       #expectedFailure
-                       )
+from qgis.testing import TestCase, unittest
+
 # Convenience instances in case you may need them
 # not used in this test
-#from utilities import getQgisTestApp
-#QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+#from qgis.testing import start_app
+#start_app()
 
-class TestQgsLogger(TestCase):
+
+class TestQgsLogger(unittest.TestCase):
 
     def testLogger(self):
-        (myFileHandle, myFilename) = tempfile.mkstemp()
         try:
             myFile = os.fdopen(myFileHandle, "w")
             myFile.write("QGIS Logger Unit Test\n")
             myFile.close()
-            os.environ['QGIS_DEBUG'] = '2'
-            os.environ['QGIS_LOG_FILE'] = myFilename
             myLogger = QgsLogger()
             myLogger.debug('This is a debug')
             myLogger.warning('This is a warning')
             myLogger.critical('This is critical')
-            #myLogger.fatal('Aaaargh...fatal');  #kills QGIS not testable
+            # myLogger.fatal('Aaaargh...fatal');  #kills QGIS not testable
             myFile = open(myFilename, 'rt')
             myText = myFile.readlines()
             myFile.close()
@@ -48,7 +49,7 @@ class TestQgsLogger(TestCase):
                               'This is a warning\n',
                               'This is critical\n']
             myMessage = ('Expected:\n---\n%s\n---\nGot:\n---\n%s\n---\n' %
-                               (myExpectedText, myText))
+                         (myExpectedText, myText))
             self.assertEquals(myText, myExpectedText, myMessage)
         finally:
             pass
@@ -56,4 +57,3 @@ class TestQgsLogger(TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
