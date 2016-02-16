@@ -149,20 +149,22 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
     # See http://hub.qgis.org/issues/14262
     def testSignedIdentifiers(self):
-        def test_query_attribute(dbconn, query, att, val):
+        def test_query_attribute(dbconn, query, att, val, fidval):
             ql = QgsVectorLayer('%s table="%s" (g) key=\'%s\' sql=' % (dbconn, query.replace('"', '\\"'), att), "testgeom", "postgres")
             print query, att
             assert(ql.isValid())
             features = ql.getFeatures()
+            att_idx = ql.fieldNameIndex(att)
             count = 0
             for f in features:
                 count += 1
-                self.assertEqual(f.id(), val)
+                self.assertEqual(f.attributes()[att_idx], val)
+                #self.assertEqual(f.id(), val)
             self.assertEqual(count, 1)
-        test_query_attribute(self.dbconn, '(SELECT -1::int4 i, NULL::geometry(Point) g)', 'i', -1)
-        test_query_attribute(self.dbconn, '(SELECT -1::int2 i, NULL::geometry(Point) g)', 'i', -1)
-        test_query_attribute(self.dbconn, '(SELECT -1::int8 i, NULL::geometry(Point) g)', 'i', -1)
-        test_query_attribute(self.dbconn, '(SELECT -65535::int8 i, NULL::geometry(Point) g)', 'i', -65535)
+        test_query_attribute(self.dbconn, '(SELECT -1::int4 i, NULL::geometry(Point) g)', 'i', -1, 1)
+        test_query_attribute(self.dbconn, '(SELECT -1::int2 i, NULL::geometry(Point) g)', 'i', -1, 1)
+        test_query_attribute(self.dbconn, '(SELECT -1::int8 i, NULL::geometry(Point) g)', 'i', -1, 1)
+        test_query_attribute(self.dbconn, '(SELECT -65535::int8 i, NULL::geometry(Point) g)', 'i', -65535, 1)
 
 
 if __name__ == '__main__':
