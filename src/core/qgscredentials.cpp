@@ -35,7 +35,7 @@ QgsCredentials *QgsCredentials::instance()
   if ( smInstance )
     return smInstance;
 
-  return new QgsCredentialsConsole();
+  return new QgsCredentialsNone();
 }
 
 QgsCredentials::QgsCredentials()
@@ -97,6 +97,30 @@ void QgsCredentials::unlock()
   mMutex.unlock();
 }
 
+
+////////////////////////////////
+// QgsCredentialsNone
+
+QgsCredentialsNone::QgsCredentialsNone()
+{
+  setInstance( this );
+}
+
+bool QgsCredentialsNone::request( const QString& realm, QString &username, QString &password, const QString& message )
+{
+  Q_UNUSED( realm );
+  Q_UNUSED( username );
+  Q_UNUSED( password );
+  Q_UNUSED( message );
+  return false;
+}
+
+bool QgsCredentialsNone::requestMasterPassword( QString &password, bool stored )
+{
+  Q_UNUSED( password );
+  Q_UNUSED( stored );
+  return false;
+}
 
 ////////////////////////////////
 // QgsCredentialsConsole
