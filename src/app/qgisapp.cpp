@@ -9772,7 +9772,7 @@ void QgisApp::legendLayerSelectionChanged( void )
   if ( selectedLayers.size() == 1 )
   {
     QgsLayerTreeLayer* l = selectedLayers.front();
-    if ( l->layer()->type() == QgsMapLayer::VectorLayer )
+    if ( l->layer() && l->layer()->type() == QgsMapLayer::VectorLayer )
     {
       mLegendExpressionFilterButton->setEnabled( true );
       bool exprEnabled;
