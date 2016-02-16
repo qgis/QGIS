@@ -53,6 +53,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, const Qt::Win
   mFileFormatComboBox->addItem( tr( "ESRI Shapefile" ), "ESRI Shapefile" );
 #if 0
   // Disabled until provider properly supports editing the created file formats
+  // When enabling this, adapt the window-title of the dialog and the title of all actions showing this dialog.
   mFileFormatComboBox->addItem( tr( "Comma Separated Value" ), "Comma Separated Value" );
   mFileFormatComboBox->addItem( tr( "GML" ), "GML" );
   mFileFormatComboBox->addItem( tr( "Mapinfo File" ), "Mapinfo File" );
