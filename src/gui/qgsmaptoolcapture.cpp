@@ -376,13 +376,14 @@ int QgsMapToolCapture::fetchLayerPoint( QgsPointLocator::Match match , QgsPointV
   {
     QgsFeature f;
     QgsFeatureRequest request;
-    QgsPoint foundPoint;
     request.setFilterFid( match.featureId() );
     bool fetched = match.layer()->getFeatures( request ).nextFeature( f );
     if ( fetched )
     {
-      foundPoint = f.geometry()->vertexAt( match.vertexIndex() );
-      layerPoint = QgsPointV2( foundPoint.x(), foundPoint.y() );
+      QgsVertexId vId;
+      if ( !f.geometry()->vertexIdFromVertexNr( match.vertexIndex(), vId ) )
+        return 2;
+      layerPoint = f.geometry()->geometry()->vertexAt( vId );
       return 0;
     }
     else
