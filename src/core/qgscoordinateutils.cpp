@@ -29,7 +29,7 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
 
   if ( automatic )
   {
-    QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
+    QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "MU" );
     bool formatGeographic = ( format == "DM" || format == "DMS" || format == "D" );
 
     // we can only calculate an automatic precision if both map CRS and format are geographic or both not geographic
@@ -58,7 +58,7 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
 
 QString QgsCoordinateUtils::formatCoordinateForProject( const QgsPoint& point, const QgsCoordinateReferenceSystem& destCrs, int precision )
 {
-  QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
+  QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "MU" );
 
   QgsPoint geo = point;
   if ( format == "DM" || format == "DMS" || format == "D" )

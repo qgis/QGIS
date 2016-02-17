@@ -165,7 +165,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   // be overridden in the meanwhile by the projection selector
   populateEllipsoidList();
 
-  QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
+  QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "MU" );
   if ( format == "MU" && mCoordinateDisplayComboBox->findData( MapUnits ) >= 0 )
     mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( MapUnits ) );
   else if ( format == "DM" )
