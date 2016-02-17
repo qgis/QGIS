@@ -204,13 +204,13 @@ QString QgsVectorDataProvider::capabilitiesString() const
 
   if ( abilities & QgsVectorDataProvider::SimplifyGeometries )
   {
-    abilitiesList += tr( "Simplify Geometries" );
+    abilitiesList += tr( "Presimplify Geometries" );
     QgsDebugMsg( "Capability: Simplify Geometries before fetch the feature" );
   }
 
   if ( abilities & QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation )
   {
-    abilitiesList += tr( "Simplify Geometries with topological validation" );
+    abilitiesList += tr( "Presimplify Geometries keeping them valid" );
     QgsDebugMsg( "Capability: Simplify Geometries before fetch the feature ensuring that the result is a valid geometry" );
   }
 
