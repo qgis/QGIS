@@ -217,7 +217,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
   if ( abilities & QgsVectorDataProvider::ChangeFeatures )
   {
     abilitiesList += tr( "Joint Geometry and Attributes updates" );
-    QgsDebugMsg( "Capability: change attributes and geometries at once" );
+    QgsDebugMsg( "Capability: Change Attributes and geometries at once" );
   }
 
   return abilitiesList.join( ", " );
