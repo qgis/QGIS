@@ -52,9 +52,15 @@ If this does not match your setup you can set the environment variable
 on standard libpq environment variables to tweak host, port user and
 password (PGHOST, PGPORT, PGUSER, PGPASSWORD).
 
-Please note that the database needs to be initialized using the sql-script
+Please note that the database needs to be initialized using
+the sql-scripts:
 
     tests/testdata/provider/testdata_pg*.sql
 
 They take care of activating postgis for the test database and
 create some tables containing test data.
+
+For convenience, a shell script is provided to create the database
+and initialize it as needed:
+
+    tests/testdata/provider/testdata_pg.sh
