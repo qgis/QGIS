@@ -68,7 +68,14 @@ QString QgsCoordinateUtils::formatCoordinateForProject( const QgsPoint& point, c
     {
       // need to transform to geographic coordinates
       QgsCoordinateTransform ct( destCrs, QgsCoordinateReferenceSystem( GEOSRID ) );
-      geo = ct.transform( point );
+      try
+      {
+        geo = ct.transform( point );
+      }
+      catch ( QgsCsException& )
+      {
+        return QString();
+      }
     }
 
     if ( format == "DM" )
