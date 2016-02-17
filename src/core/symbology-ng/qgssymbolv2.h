@@ -45,11 +45,14 @@ class QgsLineSymbolLayerV2;
 class QgsFillSymbolLayerV2;
 class QgsDataDefined;
 class QgsSymbolV2RenderContext;
+class QgsFeatureRendererV2;
 
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
 
 class CORE_EXPORT QgsSymbolV2
 {
+    friend class QgsFeatureRendererV2;
+
   public:
 
     /**
@@ -271,6 +274,12 @@ class CORE_EXPORT QgsSymbolV2
 
       context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
     }
+
+    /**
+     * Creates a point in screen coordinates from a wkb string in map
+     * coordinates
+     */
+    static QgsConstWkbPtr _getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr wkb );
 
     /**
      * Creates a line string in screen coordinates from a wkb string in map

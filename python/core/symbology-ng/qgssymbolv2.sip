@@ -225,6 +225,12 @@ class QgsSymbolV2
     static void _getPoint( QPointF& pt /Out/, QgsRenderContext& context, const QgsPointV2* point );
 
     /**
+     * Creates a point in screen coordinates from a wkb string in map
+     * coordinates
+     */
+    static QgsConstWkbPtr _getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr wkb );
+
+    /**
      * Creates a line string in screen coordinates from a wkb string in map
      * coordinates
      */
