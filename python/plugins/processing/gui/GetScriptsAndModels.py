@@ -168,6 +168,9 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         else:
             reply.finished.connect(partial(loadFunction, reply))
 
+        while not reply.isFinished():
+            QCoreApplication.processEvents()
+
     def populateTree(self):
         self.uptodateItem = QTreeWidgetItem()
         self.uptodateItem.setText(0, self.tr('Installed'))
@@ -245,7 +248,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
                 return self.uptodateItem
 
     def cancelPressed(self):
-        self.close()
+        super(GetScriptsAndModelsDialog, self).reject()
 
     def storeFile(self, reply, filename):
         """store a script/model that has been downloaded"""
@@ -302,7 +305,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
                     os.remove(path)
 
         self.updateToolbox = len(toDownload) + len(toDelete) > 0
-        self.close()
+        super(GetScriptsAndModelsDialog, self).accept()
 
 
 class TreeItem(QTreeWidgetItem):
