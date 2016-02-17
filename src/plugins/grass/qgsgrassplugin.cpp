@@ -316,6 +316,7 @@ void QgsGrassPlugin::onGisbaseChanged()
     mOpenToolsAction->setDisabled( false ); // allow opening to see that tools are disabled
     mRegionAction->setDisabled( true );
     mOpenMapsetAction->setDisabled( true );
+    mNewMapsetAction->setDisabled( true );
     mCloseMapsetAction->setDisabled( true );
 
     mTools->setWindowTitle( error + " : " + QgsGrass::initError() );
