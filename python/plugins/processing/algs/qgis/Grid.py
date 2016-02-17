@@ -96,7 +96,8 @@ class Grid(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Vertical spacing is too small for the covered area'))
 
-        if self.types[idx].find('polygon') >= 0:
+        #if self.types[idx].find(self.tr('polygon')) >= 0:
+        if idx != 0:
             geometryType = QGis.WKBPolygon
         else:
             geometryType = QGis.WKBLineString
