@@ -177,6 +177,7 @@
         <file>themes/default/mActionContextHelp.png</file>
         <file>themes/default/mActionCopySelected.png</file>
         <file>themes/default/mActionCreateMemory.png</file>
+        <file>themes/default/mActionCreateMemory.svg</file>
         <file>themes/default/mActionCustomProjection.svg</file>
         <file>themes/default/mActionDecreaseBrightness.svg</file>
         <file>themes/default/mActionDecreaseContrast.svg</file>
