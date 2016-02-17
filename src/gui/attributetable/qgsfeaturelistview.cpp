@@ -315,8 +315,8 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
   {
     QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureRole ).value<QgsFeature>();
 
-    QgsActionMenu menu( mModel->layerCache()->layer(), &feature, this );
-    menu.exec( event->globalPos() );
+    QgsActionMenu* menu = new QgsActionMenu( mModel->layerCache()->layer(), &feature, this );
+    menu->exec( event->globalPos() );
   }
 }
 
