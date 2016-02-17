@@ -268,7 +268,7 @@ void QgsRendererV2PropertiesDialog::onOK()
 
 void QgsRendererV2PropertiesDialog::showOrderByDialog()
 {
-  QgsOrderByDialog dlg( mLayer );
+  QgsOrderByDialog dlg( mLayer, this );
 
   dlg.setOrderBy( mOrderBy );
   if ( dlg.exec() )
