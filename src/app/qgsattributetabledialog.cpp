@@ -326,7 +326,7 @@ void QgsAttributeTableDialog::columnBoxInit()
 
     if ( mLayer->editFormConfig()->widgetType( idx ) != "Hidden" )
     {
-      QIcon icon = QgsApplication::getThemeIcon( "/mActionNewAttribute.png" );
+      QIcon icon = mLayer->fields().iconForField( idx );
       QString alias = mLayer->attributeDisplayName( idx );
 
       // Generate action for the filter popup button

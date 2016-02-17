@@ -348,6 +348,22 @@ class QgsFields
     //! @note added in 2.6
     bool operator!=( const QgsFields& other ) const;
 
+    /** Returns an icon corresponding to a field index, based on the field's type and source
+     * @note added in QGIS 2.14
+     */
+    QIcon iconForField( int fieldIdx ) const /Factory/;
+    %MethodCode
+      if ( a0 < 0 || a0 >= sipCpp->count() )
+      {
+        PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
+        sipIsErr = 1;
+      }
+      else
+      {
+        sipRes = new QIcon( sipCpp->iconForField( a0 ) );
+      }
+    %End
+
 /*  SIP_PYOBJECT __getitem__(int key);
 %MethodCode
   if (a0 = sipConvertFromSequenceIndex(a0, sipCpp->count()) < 0)

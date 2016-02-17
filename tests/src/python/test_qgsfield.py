@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis
 import os
 
-from qgis.core import QgsField, QgsVectorLayer, NULL
+from qgis.core import QgsField, QgsFields, QgsVectorLayer, NULL
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -26,7 +26,7 @@ start_app()
 
 class TestQgsFields(unittest.TestCase):
 
-    def test_expections(self):
+    def test_exceptions(self):
         ml = QgsVectorLayer("Point?crs=epsg:4236&field=id:integer&field=value:double",
                             "test_data", "memory")
         assert ml.isValid()
@@ -78,6 +78,14 @@ class TestQgsFields(unittest.TestCase):
             fields.fieldOriginIndex(-1)
         with self.assertRaises(KeyError):
             fields.fieldOriginIndex(111)
+
+        # check no error
+        fields.iconForField(1)
+        # check exceptions raised
+        with self.assertRaises(KeyError):
+            fields.iconForField(-1)
+        with self.assertRaises(KeyError):
+            fields.iconForField(111)
 
 if __name__ == '__main__':
     unittest.main()

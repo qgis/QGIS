@@ -382,41 +382,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
     {
       if ( exprIdx < 0 )
       {
-        QgsField field = mFields[index.row()];
-        int fieldType = static_cast< int >( field.type() );
-
-        switch ( fieldType )
-        {
-          case QVariant::Int:
-          case QVariant::UInt:
-          case QVariant::LongLong:
-          case QVariant::ULongLong:
-          {
-            return intIcon;
-          }
-          case QVariant::Double:
-          {
-            return floatIcon;
-          }
-          case QVariant::String:
-          {
-            return stringIcon;
-          }
-          case QVariant::Date:
-          {
-            return dateIcon;
-          }
-          case QVariant::DateTime:
-          {
-            return dateTimeIcon;
-          }
-          case QVariant::Time:
-          {
-            return timeIcon;
-          }
-          default:
-            return QIcon();
-        }
+        return mFields.iconForField( index.row() );
       }
       return QIcon();
     }

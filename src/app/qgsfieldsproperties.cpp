@@ -274,7 +274,7 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
       break;
 
     default:
-      dataItem->setIcon( QgsApplication::getThemeIcon( "/propertyicons/attributes.png" ) );
+      dataItem->setIcon( mLayer->fields().iconForField( idx ) );
       break;
   }
   mFieldsList->setItem( row, attrIdCol, dataItem );

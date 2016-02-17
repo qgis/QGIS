@@ -17,10 +17,12 @@
 #include "qgsfield.h"
 #include "qgsfield_p.h"
 #include "qgis.h"
+#include "qgsapplication.h"
 
 #include <QSettings>
 #include <QDataStream>
 #include <QtCore/qmath.h>
+#include <QIcon>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -435,6 +437,61 @@ QList<QgsField> QgsFields::toList() const
 bool QgsFields::operator==( const QgsFields &other ) const
 {
   return d->fields == other.d->fields;
+}
+
+QIcon QgsFields::iconForField( int fieldIdx ) const
+{
+  static QIcon intIcon;
+  if ( intIcon.isNull() )
+    intIcon = QgsApplication::getThemeIcon( "/mIconFieldInteger.svg" );
+  static QIcon floatIcon;
+  if ( floatIcon.isNull() )
+    floatIcon = QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" );
+  static QIcon stringIcon;
+  if ( stringIcon.isNull() )
+    stringIcon = QgsApplication::getThemeIcon( "/mIconFieldText.svg" );
+  static QIcon dateIcon;
+  if ( dateIcon.isNull() )
+    dateIcon = QgsApplication::getThemeIcon( "/mIconFieldDate.svg" );
+  static QIcon dateTimeIcon;
+  if ( dateTimeIcon.isNull() )
+    dateTimeIcon = QgsApplication::getThemeIcon( "/mIconFieldDateTime.svg" );
+  static QIcon timeIcon;
+  if ( timeIcon.isNull() )
+    timeIcon = QgsApplication::getThemeIcon( "/mIconFieldTime.svg" );
+
+  switch ( d->fields.at( fieldIdx ).field.type() )
+  {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    {
+      return intIcon;
+    }
+    case QVariant::Double:
+    {
+      return floatIcon;
+    }
+    case QVariant::String:
+    {
+      return stringIcon;
+    }
+    case QVariant::Date:
+    {
+      return dateIcon;
+    }
+    case QVariant::DateTime:
+    {
+      return dateTimeIcon;
+    }
+    case QVariant::Time:
+    {
+      return timeIcon;
+    }
+    default:
+      return QIcon();
+  }
 }
 
 /***************************************************************************
