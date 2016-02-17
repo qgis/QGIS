@@ -61,13 +61,13 @@ class QgsOWSServer
      * @param originalLayerFilters the original layer filter
      *
      */
-    void applyAccessControlLayerFilters( QgsMapLayer* layer, QMap<QString, QString>& originalLayerFilters ) const;
+    void applyAccessControlLayerFilters( QgsMapLayer* layer, QHash<QgsMapLayer*, QString>& originalLayerFilters ) const;
 #endif
 
     /** Restores the original layer filters
      * @param filterMap the original layer filter
      */
-    void restoreLayerFilters( const QMap < QString, QString >& filterMap ) const;
+    void restoreLayerFilters( const QHash < QgsMapLayer*, QString >& filterMap ) const;
 };
 
 #endif // QGSOWSSERVER_H

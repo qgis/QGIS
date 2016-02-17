@@ -21,19 +21,18 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 /** Apply filter from AccessControl */
-void QgsOWSServer::applyAccessControlLayerFilters( QgsMapLayer* mapLayer, QMap<QString, QString>& originalLayerFilters ) const
+void QgsOWSServer::applyAccessControlLayerFilters( QgsMapLayer* mapLayer, QHash<QgsMapLayer*, QString>& originalLayerFilters ) const
 {
   if ( QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mapLayer ) )
   {
     QString sql = mAccessControl->extraSubsetString( layer );
     if ( !sql.isEmpty() )
     {
-      if ( !originalLayerFilters.contains( layer->id() ) )
+      if ( !originalLayerFilters.contains( layer ) )
       {
-        originalLayerFilters.insert( layer->id(), layer->subsetString() );
+        originalLayerFilters.insert( layer, layer->subsetString() );
       }
       if ( !layer->subsetString().isEmpty() )
       {
@@ -50,12 +49,12 @@ void QgsOWSServer::applyAccessControlLayerFilters( QgsMapLayer* mapLayer, QMap<Q
 #endif
 
 /** Restore layer filter as original */
-void QgsOWSServer::restoreLayerFilters( const QMap<QString, QString>& filterMap ) const
+void QgsOWSServer::restoreLayerFilters( const QHash<QgsMapLayer*, QString>& filterMap ) const
 {
-  QMap<QString, QString>::const_iterator filterIt = filterMap.constBegin();
+  QHash<QgsMapLayer*, QString>::const_iterator filterIt = filterMap.constBegin();
   for ( ; filterIt != filterMap.constEnd(); ++filterIt )
   {
-    QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( filterIt.key() ) );
+    QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( filterIt.key() );
     if ( filteredLayer )
     {
       QgsVectorDataProvider* dp = filteredLayer->dataProvider();

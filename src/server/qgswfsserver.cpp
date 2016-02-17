@@ -422,6 +422,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
   QDomDocument doc;
   QString errorMsg;
+  QHash<QgsMapLayer*, QString> originalLayerFilters;
   if ( doc.setContent( mParameters.value( "REQUEST_BODY" ), true, &errorMsg ) )
   {
     QDomElement docElem = doc.documentElement();
@@ -465,10 +466,9 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( !mAccessControl->layerReadPermission( currentLayer ) )
         {
+          restoreLayerFilters( originalLayerFilters );
           throw QgsMapServiceException( "Security", "Feature access permission denied" );
         }
-
-        QMap<QString, QString> originalLayerFilters;
         applyAccessControlLayerFilters( currentLayer, originalLayerFilters );
 #endif
 
@@ -646,6 +646,9 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             {
               if ( filter->hasParserError() )
               {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+                restoreLayerFilters( originalLayerFilters );
+#endif
                 throw QgsMapServiceException( "RequestNotWellFormed", filter->parserErrorString() );
               }
               while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat + startIndex ) )
@@ -655,6 +658,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
                 QVariant res = filter->evaluate( &expressionContext );
                 if ( filter->hasEvalError() )
                 {
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+                  restoreLayerFilters( originalLayerFilters );
+#endif
                   throw QgsMapServiceException( "RequestNotWellFormed", filter->evalErrorString() );
                 }
                 if ( res.toInt() != 0 )
@@ -688,10 +695,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             ++featureCounter;
           }
         }
-
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-        restoreLayerFilters( originalLayerFilters );
-#endif
       }
       else
       {
@@ -699,6 +702,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
 
     }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    restoreLayerFilters( originalLayerFilters );
+#endif
 
     QgsMessageLog::logMessage( mErrors.join( "\n" ) );
 

@@ -1247,8 +1247,6 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   }
   delete theImage;
 
-  QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
-
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
@@ -1257,7 +1255,11 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
       throw QgsMapServiceException( "Security", "You are not allowed to access to the layer: " + layer->name() );
     }
   }
+#endif
 
+  QHash<QgsMapLayer*, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
   applyAccessControlLayersFilters( layersList, originalLayerFilters );
 #endif
 
@@ -1266,6 +1268,8 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   //GetPrint request needs a template parameter
   if ( !mParameters.contains( "TEMPLATE" ) )
   {
+    restoreLayerFilters( originalLayerFilters );
+    clearFeatureSelections( selectedLayerIdList );
     throw QgsMapServiceException( "ParameterMissing", "The TEMPLATE parameter is required for the GetPrint request" );
   }
 
@@ -1340,6 +1344,8 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   }
   else //unknown format
   {
+    restoreLayerFilters( originalLayerFilters );
+    clearFeatureSelections( selectedLayerIdList );
     throw QgsMapServiceException( "InvalidFormat", "Output format '" + formatString + "' is not supported in the GetPrint request" );
   }
 
@@ -1381,8 +1387,6 @@ QImage* QgsWMSServer::getMap( HitTest* hitTest )
   QPainter thePainter( theImage );
   thePainter.setRenderHint( QPainter::Antialiasing ); //make it look nicer
 
-  QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
-
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
@@ -1391,7 +1395,11 @@ QImage* QgsWMSServer::getMap( HitTest* hitTest )
       throw QgsMapServiceException( "Security", "You are not allowed to access to the layer: " + layer->name() );
     }
   }
+#endif
 
+  QHash<QgsMapLayer*, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
   applyAccessControlLayersFilters( layersList, originalLayerFilters );
 #endif
 
@@ -1618,7 +1626,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
 
   //get the layer registered in QgsMapLayerRegistry and apply possible filters
   QStringList layerIds = layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
-  QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
+  QHash<QgsMapLayer*, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   applyAccessControlLayersFilters( layersList, originalLayerFilters );
 #endif
@@ -1702,6 +1710,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( !mAccessControl->layerReadPermission( currentLayer ) )
       {
+        restoreLayerFilters( originalLayerFilters );
         throw QgsMapServiceException( "Security", "You are not allowed to access to the layer: " + currentLayer->name() );
       }
 #endif
@@ -2486,9 +2495,9 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
 }
 
 
-QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringList& layerList ) const
+QHash<QgsMapLayer*, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringList& layerList ) const
 {
-  QMap<QString, QString> filterMap;
+  QHash<QgsMapLayer*, QString> filterMap;
 
   if ( layerList.isEmpty() )
   {
@@ -2539,7 +2548,7 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
         QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( filter );
         if ( filteredLayer )
         {
-          filterMap.insert( filteredLayer->id(), filteredLayer->subsetString() );
+          filterMap.insert( filteredLayer, filteredLayer->subsetString() );
           QString newSubsetString = eqSplit.at( 1 );
           if ( !filteredLayer->subsetString().isEmpty() )
           {
@@ -2556,10 +2565,10 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
     if ( mMapRenderer && mMapRenderer->extent().isEmpty() )
     {
       QgsRectangle filterExtent;
-      QMap<QString, QString>::const_iterator filterIt = filterMap.constBegin();
+      QHash<QgsMapLayer*, QString>::const_iterator filterIt = filterMap.constBegin();
       for ( ; filterIt != filterMap.constEnd(); ++filterIt )
       {
-        QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( filterIt.key() );
+        QgsMapLayer* mapLayer = filterIt.key();
         if ( !mapLayer )
         {
           continue;
@@ -2582,7 +2591,7 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
 }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-void QgsWMSServer::applyAccessControlLayersFilters( const QStringList& layerList, QMap<QString, QString>& originalLayerFilters ) const
+void QgsWMSServer::applyAccessControlLayersFilters( const QStringList& layerList, QHash<QgsMapLayer*, QString>& originalLayerFilters ) const
 {
   Q_FOREACH ( const QString& layerName, layerList )
   {

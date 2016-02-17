@@ -51,7 +51,7 @@ QgsFeatureFilterProvider* QgsAccessControl::clone() const
 /** Return an additional subset string (typically SQL) filter */
 QString QgsAccessControl::extraSubsetString( const QgsVectorLayer* layer ) const
 {
-  QStringList sqls = QStringList();
+  QStringList sqls;
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {

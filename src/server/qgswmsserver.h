@@ -188,13 +188,13 @@ class QgsWMSServer: public QgsOWSServer
 
     /** Apply filter (subset) strings from the request to the layers. Example: '&FILTER=<layer1>:"AND property > 100",<layer2>:"AND bla = 'hallo!'" '
        @return a map with the original filters ( layer id / filter string )*/
-    QMap<QString, QString> applyRequestedLayerFilters( const QStringList& layerList ) const;
+    QHash<QgsMapLayer*, QString> applyRequestedLayerFilters( const QStringList& layerList ) const;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     /** Apply filter strings from the access control to the layers.
      * @param layerList layers to filter
      * @param originalLayerFilters the original layers filter dictionary
      */
-    void applyAccessControlLayersFilters( const QStringList& layerList, QMap<QString, QString>& originalLayerFilters ) const;
+    void applyAccessControlLayersFilters( const QStringList& layerList, QHash<QgsMapLayer*, QString>& originalLayerFilters ) const;
 #endif
     /** Tests if a filter sql string is allowed (safe)
       @return true in case of success, false if string seems unsafe*/
