@@ -224,7 +224,7 @@ QgsScaleExpression *QgsSizeScaleWidget::createExpression() const
   return new QgsScaleExpression( QgsScaleExpression::Type( scaleMethodComboBox->itemData( scaleMethodComboBox->currentIndex() ).toInt() ),
                                  mExpressionWidget->isExpression() 
                                  ? mExpressionWidget->currentField()
-                                 : QgsExpression::quotedColumnRef(mExpressionWidget->currentField()),
+                                 : QgsExpression::quotedColumnRef( mExpressionWidget->currentField() ),
                                  minValueSpinBox->value(),
                                  maxValueSpinBox->value(),
                                  minSizeSpinBox->value(),
