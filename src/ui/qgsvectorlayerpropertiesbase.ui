@@ -273,7 +273,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>6</number>
          </property>
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -302,8 +302,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>730</width>
-                <height>537</height>
+                <width>331</width>
+                <height>431</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -600,8 +600,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>730</width>
-                <height>537</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -701,8 +701,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>730</width>
-                <height>537</height>
+                <width>123</width>
+                <height>38</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -783,8 +783,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>730</width>
-                <height>537</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -843,8 +843,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>730</width>
-                <height>537</height>
+                <width>721</width>
+                <height>199</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1022,7 +1022,7 @@
                <item>
                 <widget class="QGroupBox" name="groupBox_2">
                  <property name="title">
-                  <string>Map Tip display text</string>
+                  <string>Map tip display text</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">vectordisplay</string>
@@ -1066,7 +1066,7 @@
                      </spacer>
                     </item>
                     <item>
-                     <widget class="QComboBox" name="fieldComboBox">
+                     <widget class="QgsFieldComboBox" name="fieldComboBox">
                       <property name="enabled">
                        <bool>false</bool>
                       </property>
@@ -1139,7 +1139,7 @@
                    </layout>
                   </item>
                   <item row="1" column="2">
-                   <widget class="QComboBox" name="displayFieldComboBox">
+                   <widget class="QgsFieldComboBox" name="displayFieldComboBox">
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
@@ -1181,8 +1181,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>730</width>
-                <height>537</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1247,8 +1247,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>730</width>
-                <height>537</height>
+                <width>134</width>
+                <height>113</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1415,8 +1415,8 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-104</y>
-                <width>714</width>
+                <y>0</y>
+                <width>393</width>
                 <height>641</height>
                </rect>
               </property>
@@ -1914,6 +1914,12 @@
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

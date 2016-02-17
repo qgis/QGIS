@@ -111,6 +111,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   connect( mOptionsStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( mOptionsStackedWidget_CurrentChanged( int ) ) );
 
+  fieldComboBox->setLayer( lyr );
+  displayFieldComboBox->setLayer( lyr );
   connect( insertFieldButton, SIGNAL( clicked() ), this, SLOT( insertField() ) );
   connect( insertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertExpression() ) );
 
@@ -332,14 +334,10 @@ void QgsVectorLayerProperties::insertField()
 {
   // Convert the selected field to an expression and
   // insert it into the action at the cursor position
-
-  if ( !fieldComboBox->currentText().isNull() )
-  {
-    QString field = "[% \"";
-    field += fieldComboBox->currentText();
-    field += "\" %]";
-    htmlMapTip->insertPlainText( field );
-  }
+  QString field = "[% \"";
+  field += fieldComboBox->currentField();
+  field += "\" %]";
+  htmlMapTip->insertPlainText( field );
 }
 
 void QgsVectorLayerProperties::insertExpression()
@@ -373,8 +371,7 @@ void QgsVectorLayerProperties::insertExpression()
 
 void QgsVectorLayerProperties::setDisplayField( const QString& name )
 {
-  int idx = displayFieldComboBox->findText( name );
-  if ( idx == -1 )
+  if ( layer->fields().fieldNameIndex( name ) == -1 )
   {
     htmlRadio->setChecked( true );
     htmlMapTip->setPlainText( name );
@@ -382,7 +379,7 @@ void QgsVectorLayerProperties::setDisplayField( const QString& name )
   else
   {
     fieldComboRadio->setChecked( true );
-    displayFieldComboBox->setCurrentIndex( idx );
+    displayFieldComboBox->setField( name );
   }
 }
 
@@ -413,14 +410,6 @@ void QgsVectorLayerProperties::syncToLayer( void )
   if ( layer->isEditable() )
   {
     pbnQueryBuilder->setToolTip( tr( "Stop editing mode to enable this." ) );
-  }
-
-  //get field list for display field combo
-  const QgsFields& myFields = layer->fields();
-  for ( int idx = 0; idx < myFields.count(); ++idx )
-  {
-    displayFieldComboBox->addItem( myFields[idx].name() );
-    fieldComboBox->addItem( myFields[idx].name() );
   }
 
   setDisplayField( layer->displayField() );
@@ -573,7 +562,7 @@ void QgsVectorLayerProperties::apply()
 
   if ( fieldComboRadio->isChecked() )
   {
-    layer->setDisplayField( displayFieldComboBox->currentText() );
+    layer->setDisplayField( displayFieldComboBox->currentField() );
   }
 
   actionDialog->apply();
