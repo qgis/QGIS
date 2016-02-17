@@ -248,7 +248,9 @@ for %%g IN (%GRASS_VERSIONS%) do (
 )
 PATH %path%;%BUILDDIR%\output\plugins\%BUILDCONF%
 
+easy_install pip
 pip install mock
+
 cmake --build %BUILDDIR% --target %TESTTARGET% --config %BUILDCONF%
 set TESTRES=0
 if errorlevel 1 (
