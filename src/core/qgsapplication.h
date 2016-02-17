@@ -358,6 +358,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter( XEvent * event )
     {
+      Q_UNUSED( event );
       return 0;
     }
 #endif
