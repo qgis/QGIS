@@ -74,18 +74,11 @@ class Difference(GeoAlgorithm):
                                                geomType,
                                                layerA.dataProvider().crs())
 
-        inFeatA = QgsFeature()
-        inFeatB = QgsFeature()
         outFeat = QgsFeature()
-
         index = vector.spatialindex(layerB)
-
         selectionA = vector.features(layerA)
-
-        current = 0
-        total = 100.0 / float(len(selectionA))
-
-        for inFeatA in selectionA:
+        total = 100.0 / len(selectionA)
+        for current, inFeatA in enumerate(selectionA):
             add = True
             geom = QgsGeometry(inFeatA.geometry())
             diff_geom = QgsGeometry(geom)
@@ -115,7 +108,6 @@ class Difference(GeoAlgorithm):
                                            self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
                     continue
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

@@ -119,9 +119,8 @@ class HubDistance(GeoAlgorithm):
 
         # Scan source points, find nearest hub, and write to output file
         features = vector.features(layerPoints)
-        count = len(features)
-        total = 100.0 / float(count)
-        for count, f in enumerate(features):
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             src = f.geometry().boundingBox().center()
 
             closest = hubs[0]
@@ -157,7 +156,7 @@ class HubDistance(GeoAlgorithm):
                 feat.setGeometry(QgsGeometry.fromPolyline([src, closest.point]))
 
             writer.addFeature(feat)
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         del writer
 

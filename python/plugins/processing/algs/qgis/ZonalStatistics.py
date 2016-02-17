@@ -165,10 +165,9 @@ class ZonalStatistics(GeoAlgorithm):
         outFeat.initAttributes(len(fields))
         outFeat.setFields(fields)
 
-        current = 0
         features = vector.features(layer)
         total = 100.0 / len(features)
-        for f in features:
+        for current, f in enumerate(features):
             geom = f.geometry()
 
             intersectedGeom = rasterGeom.intersection(geom)
@@ -247,7 +246,6 @@ class ZonalStatistics(GeoAlgorithm):
             memVDS = None
             rasterizedDS = None
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         rasterDS = None

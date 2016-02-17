@@ -68,10 +68,9 @@ class Smooth(GeoAlgorithm):
         outFeat = QgsFeature()
 
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        current = 0
+        total = 100.0 / len(features)
 
-        for inFeat in features:
+        for current, inFeat in enumerate(features):
             inGeom = inFeat.constGeometry()
             attrs = inFeat.attributes()
 
@@ -83,7 +82,6 @@ class Smooth(GeoAlgorithm):
             outFeat.setGeometry(outGeom)
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

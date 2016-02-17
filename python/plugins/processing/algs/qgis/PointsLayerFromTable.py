@@ -42,6 +42,19 @@ class PointsLayerFromTable(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     TARGET_CRS = 'TARGET_CRS'
 
+    def defineCharacteristics(self):
+        self.name, self.i18n_name = self.trAlgorithm('Points layer from table')
+        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
+        self.addParameter(ParameterTable(self.INPUT,
+                                         self.tr('Input layer')))
+        self.addParameter(ParameterTableField(self.XFIELD,
+                                              self.tr('X field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterTableField(self.YFIELD,
+                                              self.tr('Y field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterCrs(self.TARGET_CRS,
+                                       self.tr('Target CRS'), 'EPSG:4326'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Points from table')))
+
     def processAlgorithm(self, progress):
         source = self.getParameterValue(self.INPUT)
         vlayer = dataobjects.getObjectFromUri(source)
@@ -58,12 +71,10 @@ class PointsLayerFromTable(GeoAlgorithm):
         self.crs = targetCrs
 
         outFeat = QgsFeature()
-        nElement = 0
         features = vector.features(vlayer)
-        nFeat = len(features)
-        for feature in features:
-            nElement += 1
-            progress.setPercentage(nElement * 100 / nFeat)
+        total = 100.0 / len(features)
+        for current, feature in enumerate(features):
+            progress.setPercentage(int(current * total))
             attrs = feature.attributes()
             try:
                 x = float(attrs[xfieldindex])
@@ -76,16 +87,3 @@ class PointsLayerFromTable(GeoAlgorithm):
             writer.addFeature(outFeat)
 
         del writer
-
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Points layer from table')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
-        self.addParameter(ParameterTable(self.INPUT,
-                                         self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.XFIELD,
-                                              self.tr('X field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.YFIELD,
-                                              self.tr('Y field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterCrs(self.TARGET_CRS,
-                                       self.tr('Target CRS'), 'EPSG:4326'))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Points from table')))

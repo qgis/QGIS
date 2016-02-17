@@ -81,11 +81,10 @@ class SumLines(GeoAlgorithm):
         outGeom = QgsGeometry()
         distArea = QgsDistanceArea()
 
-        current = 0
         features = vector.features(polyLayer)
-        total = 100.0 / float(len(features))
+        total = 100.0 / len(features)
         hasIntersections = False
-        for ftPoly in features:
+        for current, ftPoly in enumerate(features):
             inGeom = QgsGeometry(ftPoly.geometry())
             attrs = ftPoly.attributes()
             count = 0
@@ -117,7 +116,6 @@ class SumLines(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

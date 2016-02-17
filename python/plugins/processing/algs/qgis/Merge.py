@@ -81,7 +81,7 @@ class Merge(GeoAlgorithm):
                 if not found:
                     fields.append(sfield)
 
-        total = 100.0 / float(totalFeatureCount)
+        total = 100.0 / totalFeatureCount
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields.toList(), layers[0].dataProvider().geometryType(),
             layers[0].crs())

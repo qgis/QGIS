@@ -29,7 +29,8 @@ from random import seed, uniform
 from math import sqrt
 
 from PyQt4.QtCore import QVariant
-from qgis.core import QGis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import (QGis, QgsRectangle, QgsFields, QgsField, QgsFeature,
+                       QgsGeometry, QgsPoint)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -96,7 +97,7 @@ class RegularPoints(GeoAlgorithm):
         f.setFields(fields)
 
         count = 0
-        total = 100.00 / (area / pSpacing)
+        total = 100.0 / (area / pSpacing)
         y = extent.yMaximum() - inset
         while y >= extent.yMinimum():
             x = extent.xMinimum() + inset

@@ -59,12 +59,6 @@ class FieldsMapper(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Refactored')))
 
-    def getCustomParametersDialog(self):
-        return FieldsMapperParametersDialog(self)
-
-    def getCustomModelerParametersDialog(self, modelAlg, algName=None):
-        return FieldsMapperModelerParametersDialog(self, modelAlg, algName)
-
     def processAlgorithm(self, progress):
         layer = self.getParameterValue(self.INPUT_LAYER)
         mapping = self.getParameterValue(self.FIELDS_MAPPING)
@@ -104,7 +98,7 @@ class FieldsMapper(GeoAlgorithm):
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         features = vector.features(layer)
-        count = len(features)
+        total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
             rownum = current + 1
 
@@ -126,8 +120,7 @@ class FieldsMapper(GeoAlgorithm):
 
             writer.addFeature(outFeat)
 
-            current += 1
-            progress.setPercentage(100 * current / float(count))
+            progress.setPercentage(int(current * total))
 
         del writer
 
@@ -135,3 +128,9 @@ class FieldsMapper(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('An error occurred while evaluating the calculation'
                         ' string:\n') + error)
+
+    def getCustomParametersDialog(self):
+        return FieldsMapperParametersDialog(self)
+
+    def getCustomModelerParametersDialog(self, modelAlg, algName=None):
+        return FieldsMapperModelerParametersDialog(self, modelAlg, algName)

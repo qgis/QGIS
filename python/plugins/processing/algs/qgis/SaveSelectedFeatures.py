@@ -57,8 +57,8 @@ class SaveSelectedFeatures(GeoAlgorithm):
                                         provider.geometryType(), vectorLayer.crs())
 
         features = vector.features(vectorLayer)
-        total = len(features)
-        for (i, feat) in enumerate(features):
+        total = 100.0 / len(features)
+        for current, feat in enumerate(features):
             writer.addFeature(feat)
-            progress.setPercentage(100 * i / float(total))
+            progress.setPercentage(int(current * total))
         del writer

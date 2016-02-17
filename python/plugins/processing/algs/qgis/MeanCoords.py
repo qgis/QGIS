@@ -80,14 +80,11 @@ class MeanCoords(GeoAlgorithm):
             fieldList, QGis.WKBPoint, layer.crs()
         )
 
-        current = 0
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-
+        total = 100.0 / len(features)
         means = {}
-        for feat in features:
-            current += 1
-            progress.setPercentage(current * total)
+        for current, feat in enumerate(features):
+            progress.setPercentage(int(current * total))
             if uniqueIndex == -1:
                 clazz = "Single class"
             else:
@@ -111,6 +108,8 @@ class MeanCoords(GeoAlgorithm):
                 totalweight += weight
             means[clazz] = (cx, cy, totalweight)
 
+        current = 0
+        total = 100.0 / len(means)
         for (clazz, values) in means.iteritems():
             outFeat = QgsFeature()
             cx = values[0] / values[2]
@@ -120,5 +119,7 @@ class MeanCoords(GeoAlgorithm):
             outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
             outFeat.setAttributes([cx, cy, clazz])
             writer.addFeature(outFeat)
+            current += 1
+            progress.setPercentage(int(current * total))
 
         del writer

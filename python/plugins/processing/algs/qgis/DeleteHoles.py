@@ -32,6 +32,7 @@ from processing.tools import dataobjects, vector
 
 
 class DeleteHoles(GeoAlgorithm):
+
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
@@ -53,12 +54,10 @@ class DeleteHoles(GeoAlgorithm):
             layer.crs())
 
         features = vector.features(layer)
-        count = len(features)
-        total = 100.0 / float(count)
+        total = 100.0 / len(features)
 
         feat = QgsFeature()
-        for count, f in enumerate(features):
-
+        for current, f in enumerate(features):
             geometry = f.geometry()
             if geometry:
                 if geometry.isMultipart():
@@ -79,6 +78,6 @@ class DeleteHoles(GeoAlgorithm):
             feat.setGeometry(geometry)
             feat.setAttributes(f.attributes())
             writer.addFeature(feat)
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         del writer

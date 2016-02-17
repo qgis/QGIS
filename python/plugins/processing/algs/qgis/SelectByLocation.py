@@ -89,10 +89,9 @@ class SelectByLocation(GeoAlgorithm):
 
         geom = QgsGeometry()
         selectedSet = []
-        current = 0
         features = vector.features(selectLayer)
-        total = 100.0 / float(len(features))
-        for f in features:
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             geom = vector.snapToPrecision(f.geometry(), precision)
             bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)
             intersects = index.intersects(bbox)
@@ -129,7 +128,6 @@ class SelectByLocation(GeoAlgorithm):
                             selectedSet.append(feat.id())
                             break
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         if 'disjoint' in predicates:

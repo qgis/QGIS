@@ -64,45 +64,38 @@ class JoinAttributes(GeoAlgorithm):
         field = self.getParameterValue(self.TABLE_FIELD)
         field2 = self.getParameterValue(self.TABLE_FIELD_2)
 
-        # Layer 1
         layer = dataobjects.getObjectFromUri(input)
         provider = layer.dataProvider()
         joinField1Index = layer.fieldNameIndex(field)
 
-        # Layer 2
         layer2 = dataobjects.getObjectFromUri(input2)
-
         joinField2Index = layer2.fieldNameIndex(field2)
 
-        # Output
         outFields = vector.combineVectorFields(layer, layer2)
-
         writer = output.getVectorWriter(outFields, provider.geometryType(),
                                         layer.crs())
 
-        inFeat = QgsFeature()
-        inFeat2 = QgsFeature()
-        outFeat = QgsFeature()
-
         # Cache attributes of Layer 2
         cache = {}
-        features2 = vector.features(layer2)
-        for inFeat2 in features2:
-            attrs2 = inFeat2.attributes()
-            joinValue2 = unicode(attrs2[joinField2Index])
-            # Put the attributes into the dict if the join key is not contained in the keys of the dict.
-            # Note: This behavior is same as previous behavior of this function,
-            # but different from the attribute cache function of QGIS core.
+        features = vector.features(layer2)
+        total = 100.0 / len(features)
+        for current, feat in features:
+            attrs = feat.attributes()
+            joinValue2 = unicode(attrs[joinField2Index])
             if joinValue2 not in cache:
-                cache[joinValue2] = attrs2
+                cache[joinValue2] = attrs
+            progress.setPercentage(int(current * total))
 
         # Create output vector layer with additional attribute
+        outFeat = QgsFeature()
         features = vector.features(layer)
-        for inFeat in features:
-            outFeat.setGeometry(inFeat.geometry())
-            attrs = inFeat.attributes()
+        total = 100.0 / len(features)
+        for current, feat in enumerate(features):
+            outFeat.setGeometry(feat.geometry())
+            attrs = feat.attributes()
             joinValue1 = unicode(attrs[joinField1Index])
             attrs.extend(cache.get(joinValue1, []))
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
+            progress.setPercentage(int(current * total))
         del writer

@@ -116,12 +116,10 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         features = vector.features(layer)
         count = len(features)
         total = 100.0 / float(count)
-        current = 0
-        for ft in features:
+        for current, ft in enumerate(features):
             if ft.attributes()[index]:
                 values.append(float(ft.attributes()[index]))
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         stat = QgsStatisticalSummary()

@@ -66,9 +66,8 @@ class DensifyGeometriesInterval(GeoAlgorithm):
                                          layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        current = 0
-        for f in features:
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             featGeometry = QgsGeometry(f.geometry())
             attrs = f.attributes()
             newGeometry = self.densifyGeometry(featGeometry, interval,
@@ -78,7 +77,6 @@ class DensifyGeometriesInterval(GeoAlgorithm):
             feature.setAttributes(attrs)
             writer.addFeature(feature)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

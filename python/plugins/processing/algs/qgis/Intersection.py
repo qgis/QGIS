@@ -78,16 +78,12 @@ class Intersection(GeoAlgorithm):
         fields = vector.combineVectorFields(vlayerA, vlayerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                                                                      geomType, vproviderA.crs())
-        inFeatA = QgsFeature()
-        inFeatB = QgsFeature()
         outFeat = QgsFeature()
         index = vector.spatialindex(vlayerB)
-        nElement = 0
         selectionA = vector.features(vlayerA)
-        nFeat = len(selectionA)
-        for inFeatA in selectionA:
-            nElement += 1
-            progress.setPercentage(nElement / float(nFeat) * 100)
+        total = 100.0 / len(selectionA)
+        for current, inFeatA in enumerate(selectionA):
+            progress.setPercentage(int(current * total))
             geom = QgsGeometry(inFeatA.geometry())
             atMapA = inFeatA.attributes()
             intersects = index.intersects(geom.boundingBox())

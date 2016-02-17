@@ -34,6 +34,7 @@ from processing.tools import dataobjects, vector
 
 
 class DeleteColumn(GeoAlgorithm):
+
     INPUT = 'INPUT'
     COLUMN = 'COLUMN'
     OUTPUT = 'OUTPUT'
@@ -60,17 +61,16 @@ class DeleteColumn(GeoAlgorithm):
                                                                      layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
-        count = len(features)
-        total = 100.0 / float(count)
+        total = 100.0 / len(features)
 
         feat = QgsFeature()
-        for count, f in enumerate(features):
+        for current, f in enumerate(features):
             feat.setGeometry(f.geometry())
             attributes = f.attributes()
             del attributes[idx]
             feat.setAttributes(attributes)
             writer.addFeature(feat)
 
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         del writer

@@ -25,10 +25,18 @@ __copyright__ = '(C) 2016, Hugo Mercier'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsGeometry, QgsFeature, QgsVirtualLayerDefinition, QgsVectorLayer, QgsCoordinateReferenceSystem, QgsWKBTypes
+from qgis.core import (QGis, QgsGeometry, QgsFeature,
+                       QgsVirtualLayerDefinition, QgsVectorLayer,
+                       QgsCoordinateReferenceSystem, QgsWKBTypes)
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector, ParameterString, ParameterMultipleInput, ParameterBoolean, ParameterCrs, ParameterSelection
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterCrs
+from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -126,15 +134,17 @@ class ExecuteSQL(GeoAlgorithm):
 
         writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
             vLayer.pendingFields().toList(),
-            # create a point layer (without any points) if 'no geometry' is chosen
+            # Create a point layer (without any points) if 'no geometry' is chosen
             vLayer.wkbType() if geometry_type != 1 else 1,
             vLayer.crs())
 
         features = vector.features(vLayer)
+        total = 100.0 / len(features)
         outFeat = QgsFeature()
-        for inFeat in features:
+        for current, inFeat in enumerate(features):
             outFeat.setAttributes(inFeat.attributes())
             if geometry_type != 1:
                 outFeat.setGeometry(inFeat.geometry())
             writer.addFeature(outFeat)
+            progress.setPersentage(int(current * total))
         del writer

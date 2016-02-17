@@ -79,11 +79,10 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         A = layer.extent()
         A = float(A.width() * A.height())
 
-        current = 0
         features = vector.features(layer)
         count = len(features)
-        total = 100.0 / float(len(features))
-        for feat in features:
+        total = 100.0 / count
+        for current, feat in enumerate(features):
             neighbourID = spatialIndex.nearestNeighbor(
                 feat.geometry().asPoint(), 2)[1]
             request = QgsFeatureRequest().setFilterFid(neighbourID)
@@ -91,7 +90,6 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
             sumDist += distance.measureLine(neighbour.geometry().asPoint(),
                                             feat.geometry().asPoint())
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         do = float(sumDist) / count

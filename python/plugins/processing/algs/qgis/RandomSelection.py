@@ -79,7 +79,7 @@ class RandomSelection(GeoAlgorithm):
                 raise GeoAlgorithmExecutionException(
                     self.tr("Percentage can't be greater than 100. Set a "
                             "different value and try again."))
-            value = int(round(value / 100.0000, 4) * featureCount)
+            value = int(round(value / 100.0, 4) * featureCount)
 
         selran = random.sample(xrange(0, featureCount), value)
 

@@ -5,7 +5,7 @@
     SelectByExpression.py
     ---------------------
     Date                 : July 2014
-    Copyright            : (C) 2014 by Micha�l Douchin
+    Copyright            : (C) 2014 by Michael Douchin
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -63,7 +63,6 @@ class SelectByExpression(GeoAlgorithm):
         oldSelection = set(layer.selectedFeaturesIds())
         method = self.getParameterValue(self.METHOD)
 
-        # Build QGIS request with expression
         expression = self.getParameterValue(self.EXPRESSION)
         qExp = QgsExpression(expression)
         if not qExp.hasParserError():
@@ -77,7 +76,5 @@ class SelectByExpression(GeoAlgorithm):
         elif method == 2:
             selected = list(oldSelection.difference(selected))
 
-        # Set the selection
         layer.setSelectedFeatures(selected)
-
         self.setOutputValue(self.RESULT, filename)

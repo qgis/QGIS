@@ -63,17 +63,15 @@ class ReprojectLayer(GeoAlgorithm):
         crsTransform = QgsCoordinateTransform(layerCrs, targetCrs)
 
         outFeat = QgsFeature()
-        current = 0
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        for f in features:
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             geom = f.geometry()
             geom.transform(crsTransform)
             outFeat.setGeometry(geom)
             outFeat.setAttributes(f.attributes())
             writer.addFeature(outFeat)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

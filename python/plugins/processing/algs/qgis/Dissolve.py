@@ -47,6 +47,18 @@ class Dissolve(GeoAlgorithm):
     #   return QtGui.QIcon(os.path.dirname(__file__) + "/icons/dissolve.png")
     #==========================================================================
 
+    def defineCharacteristics(self):
+        self.name = 'Dissolve'
+        self.group = 'Vector geometry tools'
+        self.addParameter(ParameterVector(Dissolve.INPUT,
+                                          self.tr('Input layer'),
+                                          [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterBoolean(Dissolve.DISSOLVE_ALL,
+                                           self.tr('Dissolve all (do not use field)'), True))
+        self.addParameter(ParameterTableField(Dissolve.FIELD,
+                                              self.tr('Unique ID field'), Dissolve.INPUT, optional=True))
+        self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))
+
     def processAlgorithm(self, progress):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)
         fieldname = self.getParameterValue(Dissolve.FIELD)
@@ -59,15 +71,13 @@ class Dissolve(GeoAlgorithm):
                                              vproviderA.geometryType(),
                                              vproviderA.crs())
         outFeat = QgsFeature()
-        nElement = 0
         features = vector.features(vlayerA)
-        nFeat = len(features)
+        total = 100.0 / len(features)
 
         if not useField:
             first = True
-            for inFeat in features:
-                nElement += 1
-                progress.setPercentage(int(nElement * 100 / nFeat))
+            for current, inFeat in enumerate(features):
+                progress.setPercentage(int(current * total))
                 if first:
                     attrs = inFeat.attributes()
                     tmpInGeom = QgsGeometry(inFeat.geometry())
@@ -135,15 +145,3 @@ class Dissolve(GeoAlgorithm):
                 writer.addFeature(outFeat)
 
         del writer
-
-    def defineCharacteristics(self):
-        self.name = 'Dissolve'
-        self.group = 'Vector geometry tools'
-        self.addParameter(ParameterVector(Dissolve.INPUT,
-                                          self.tr('Input layer'),
-                                          [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
-        self.addParameter(ParameterBoolean(Dissolve.DISSOLVE_ALL,
-                                           self.tr('Dissolve all (do not use field)'), True))
-        self.addParameter(ParameterTableField(Dissolve.FIELD,
-                                              self.tr('Unique ID field'), Dissolve.INPUT, optional=True))
-        self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))

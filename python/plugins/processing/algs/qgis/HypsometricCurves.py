@@ -100,10 +100,9 @@ class HypsometricCurves(GeoAlgorithm):
         memRasterDriver = gdal.GetDriverByName('MEM')
 
         features = vector.features(layer)
-        count = len(features)
-        total = 100.0 / float(count)
+        total = 100.0 / len(features)
 
-        for count, f in enumerate(features):
+        for current, f in enumerate(features):
             geom = f.geometry()
             intersectedGeom = rasterGeom.intersection(geom)
 
@@ -171,7 +170,7 @@ class HypsometricCurves(GeoAlgorithm):
 
             memVDS = None
             rasterizedDS = None
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         rasterDS = None
 
@@ -195,7 +194,7 @@ class HypsometricCurves(GeoAlgorithm):
             tmpValue += step
 
         if percentage:
-            multiplier = 100.0 / float(len(d.flat))
+            multiplier = 100.0 / len(d.flat)
         else:
             multiplier = pX * pY
 
