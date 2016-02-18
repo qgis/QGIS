@@ -146,9 +146,9 @@
       <item row="3" column="0" colspan="4">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QCheckBox" name="checkboxEnableOrderBy">
+         <widget class="QLabel" name="lblFeatureRenderingOrder">
           <property name="text">
-           <string>Control feature rendering order</string>
+           <string>Feature rendering order</string>
           </property>
          </widget>
         </item>
