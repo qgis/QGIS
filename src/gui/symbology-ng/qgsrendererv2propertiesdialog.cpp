@@ -136,19 +136,7 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   // setup slot rendererChanged()
   connect( cboRenderers, SIGNAL( currentIndexChanged( int ) ), this, SLOT( rendererChanged() ) );
   //setup order by
-  if ( mOrderBy.isEmpty() )
-  {
-    btnOrderBy->setEnabled( false );
-    checkboxEnableOrderBy->setChecked( false );
-    lineEditOrderBy->setEnabled( false );
-  }
-  else
-  {
-    checkboxEnableOrderBy->setChecked( true );
-  }
   lineEditOrderBy->setReadOnly( true );
-  connect( checkboxEnableOrderBy, SIGNAL( toggled( bool ) ), btnOrderBy, SLOT( setEnabled( bool ) ) );
-  connect( checkboxEnableOrderBy, SIGNAL( toggled( bool ) ), lineEditOrderBy, SLOT( setEnabled( bool ) ) );
   connect( btnOrderBy, SIGNAL( clicked( bool ) ), this, SLOT( showOrderByDialog() ) );
   lineEditOrderBy->setText( mOrderBy.dump() );
 
@@ -282,7 +270,6 @@ void QgsRendererV2PropertiesDialog::changeOrderBy( const QgsFeatureRequest::Orde
 {
   mOrderBy = orderBy;
   lineEditOrderBy->setText( mOrderBy.dump() );
-  checkboxEnableOrderBy->setChecked( !orderBy.isEmpty() );
 }
 
 
