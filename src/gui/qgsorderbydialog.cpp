@@ -112,7 +112,7 @@ void QgsOrderByDialog::setRow( int row, const QgsFeatureRequest::OrderByClause& 
 
   QComboBox* ascComboBox = new QComboBox();
   ascComboBox->addItem( tr( "Ascending" ) );
-  ascComboBox->addItem( tr( "Descencing" ) );
+  ascComboBox->addItem( tr( "Descending" ) );
   ascComboBox->setCurrentIndex( orderByClause.ascending() ? 0 : 1 );
 
   QComboBox* nullsFirstComboBox = new QComboBox();
