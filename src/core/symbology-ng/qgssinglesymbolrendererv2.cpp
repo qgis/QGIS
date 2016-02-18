@@ -387,6 +387,8 @@ QDomElement QgsSingleSymbolRendererV2::save( QDomDocument& doc )
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
+  rendererElem.setAttribute( "enableorderby", ( mOrderByEnabled ? "1" : "0" ) );
+
   return rendererElem;
 }
 
@@ -481,6 +483,7 @@ QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::convertFromRenderer( const
   if ( r )
   {
     r->setOrderBy( renderer->orderBy() );
+    r->setOrderByEnabled( renderer->orderByEnabled() );
   }
 
   return r;

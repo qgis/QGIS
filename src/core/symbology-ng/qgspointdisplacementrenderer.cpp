@@ -426,6 +426,7 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
     mOrderBy.save( orderBy );
     rendererElement.appendChild( orderBy );
   }
+  rendererElement.setAttribute( "enableorderby", ( mOrderByEnabled ? "1" : "0" ) );
 
   return rendererElement;
 }

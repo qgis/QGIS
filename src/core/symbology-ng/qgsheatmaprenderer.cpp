@@ -361,6 +361,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument& doc )
     rendererElem.appendChild( colorRampElem );
   }
   rendererElem.setAttribute( "invert_ramp", QString::number( mInvertRamp ) );
+  rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
@@ -371,6 +372,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument& doc )
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
+  rendererElem.setAttribute( "enableorderby", ( mOrderByEnabled ? "1" : "0" ) );
 
   return rendererElem;
 }

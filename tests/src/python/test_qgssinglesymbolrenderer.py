@@ -81,14 +81,19 @@ class TestQgsSingleSymbolRenderer(unittest.TestCase):
 
     def testOrderBy(self):
         self.renderer.setOrderBy(QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('Value', False)]))
+        self.renderer.setOrderByEnabled(True)
 
         # Setup rendering check
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlName('expected_singlesymbol_orderby')
         result = renderchecker.runTest('singlesymbol_orderby')
-
         assert result
+
+        # disable order by and retest
+        self.renderer.setOrderByEnabled(False)
+        result = renderchecker.runTest('single')
+
 
 if __name__ == '__main__':
     unittest.main()

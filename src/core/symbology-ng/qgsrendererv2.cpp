@@ -195,6 +195,7 @@ void QgsFeatureRendererV2::copyRendererData( QgsFeatureRendererV2* destRenderer 
 
   destRenderer->setPaintEffect( mPaintEffect->clone() );
   destRenderer->mOrderBy = mOrderBy;
+  destRenderer->mOrderByEnabled = mOrderByEnabled;
 }
 
 void QgsFeatureRendererV2::copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const
@@ -212,6 +213,7 @@ QgsFeatureRendererV2::QgsFeatureRendererV2( const QString& type )
     , mCurrentVertexMarkerSize( 3 )
     , mPaintEffect( nullptr )
     , mForceRaster( false )
+    , mOrderByEnabled( false )
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
@@ -334,6 +336,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
     // restore order by
     QDomElement orderByElem = element.firstChildElement( "orderby" );
     r->mOrderBy.load( orderByElem );
+    r->setOrderByEnabled( element.attribute( "enableorderby", "0" ).toInt() );
   }
   return r;
 }
@@ -353,6 +356,7 @@ QDomElement QgsFeatureRendererV2::save( QDomDocument& doc )
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
+  rendererElem.setAttribute( "enableorderby", ( mOrderByEnabled ? "1" : "0" ) );
   return rendererElem;
 }
 
@@ -615,6 +619,16 @@ QgsFeatureRequest::OrderBy QgsFeatureRendererV2::orderBy() const
 void QgsFeatureRendererV2::setOrderBy( const QgsFeatureRequest::OrderBy& orderBy )
 {
   mOrderBy = orderBy;
+}
+
+bool QgsFeatureRendererV2::orderByEnabled() const
+{
+  return mOrderByEnabled;
+}
+
+void QgsFeatureRendererV2::setOrderByEnabled( bool enabled )
+{
+  mOrderByEnabled = enabled;
 }
 
 void QgsFeatureRendererV2::convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymbolV2::ScaleMethod method, const QString & field )
