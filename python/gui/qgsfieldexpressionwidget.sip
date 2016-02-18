@@ -78,7 +78,7 @@ class QgsFieldExpressionWidget : QWidget
     void setLayer( QgsMapLayer* layer );
 
     //! sets the current field or expression in the widget
-    void setField( const QString &fieldName );
+    void setField( const QString &fieldName, bool allowEmptyFieldName = false );
 
   protected slots:
     //! open the expression dialog to edit the current or add a new expression

@@ -107,7 +107,7 @@ void QgsOrderByDialog::setRow( int row, const QgsFeatureRequest::OrderByClause& 
 {
   QgsFieldExpressionWidget* fieldExpression = new QgsFieldExpressionWidget();
   fieldExpression->setLayer( mLayer );
-  fieldExpression->setField( orderByClause.expression().expression() );
+  fieldExpression->setField( orderByClause.expression().expression(), true );
   connect( fieldExpression, SIGNAL( fieldChanged( QString ) ), this, SLOT( onExpressionChanged( QString ) ) );
 
   QComboBox* ascComboBox = new QComboBox();
