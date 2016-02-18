@@ -19,6 +19,7 @@
 #include "qgsclipper.h"
 #include "qgsgeometry.h"
 #include "qgswkbptr.h"
+#include "qgslogger.h"
 
 // Where has all the code gone?
 
@@ -45,6 +46,12 @@ QgsConstWkbPtr QgsClipper::clippedLineWKB( QgsConstWkbPtr wkbPtr, const QgsRecta
   wkbPtr >> nPoints;
 
   int skipZM = ( QgsWKBTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
+
+  if ( static_cast<int>( nPoints * ( 2 * sizeof( double ) + skipZM ) ) > wkbPtr.remaining() )
+  {
+    QgsDebugMsg( QString( "%1 points exceed wkb length (%2>%3)" ).arg( nPoints ).arg( nPoints * ( 2 * sizeof( double ) + skipZM ) ).arg( wkbPtr.remaining() ) );
+    return QgsConstWkbPtr( nullptr, 0 );
+  }
 
   double p0x, p0y, p1x = 0.0, p1y = 0.0; //original coordinates
   double p1x_c, p1y_c; //clipped end coordinates

@@ -82,9 +82,15 @@ QgsConstWkbPtr QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
   }
   else
   {
-    pts.resize( nPoints );
-
     int skipZM = ( QgsWKBTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
+
+    if ( static_cast<int>( nPoints * ( 2 * sizeof( double ) + skipZM ) ) > wkbPtr.remaining() )
+    {
+      QgsDebugMsg( QString( "%1 points exceed wkb length (%2>%3)" ).arg( nPoints ).arg( nPoints * ( 2 * sizeof( double ) + skipZM ) ).arg( wkbPtr.remaining() ) );
+      return QgsConstWkbPtr( nullptr, 0 );
+    }
+
+    pts.resize( nPoints );
 
     QPointF* ptr = pts.data();
     for ( unsigned int i = 0; i < nPoints; ++i, ++ptr )
@@ -134,6 +140,12 @@ QgsConstWkbPtr QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
   {
     unsigned int nPoints;
     wkbPtr >> nPoints;
+
+    if ( static_cast<int>( nPoints * ( 2 * sizeof( double ) + skipZM ) ) > wkbPtr.remaining() )
+    {
+      QgsDebugMsg( QString( "%1 points exceed wkb length (%2>%3)" ).arg( nPoints ).arg( nPoints * ( 2 * sizeof( double ) + skipZM ) ).arg( wkbPtr.remaining() ) );
+      return QgsConstWkbPtr( nullptr, 0 );
+    }
 
     QPolygonF poly( nPoints );
 
