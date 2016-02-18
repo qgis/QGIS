@@ -49,7 +49,7 @@ void QgsOWSServer::applyAccessControlLayerFilters( QgsMapLayer* mapLayer, QHash<
 #endif
 
 /** Restore layer filter as original */
-void QgsOWSServer::restoreLayerFilters( const QHash<QgsMapLayer*, QString>& filterMap ) const
+void QgsOWSServer::restoreLayerFilters( const QHash<QgsMapLayer*, QString>& filterMap )
 {
   QHash<QgsMapLayer*, QString>::const_iterator filterIt = filterMap.constBegin();
   for ( ; filterIt != filterMap.constEnd(); ++filterIt )

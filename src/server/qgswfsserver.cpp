@@ -422,7 +422,11 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
   QDomDocument doc;
   QString errorMsg;
-  QHash<QgsMapLayer*, QString> originalLayerFilters;
+
+  //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
+  //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
+  QScopedPointer< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer() );
+
   if ( doc.setContent( mParameters.value( "REQUEST_BODY" ), true, &errorMsg ) )
   {
     QDomElement docElem = doc.documentElement();
@@ -466,10 +470,9 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( !mAccessControl->layerReadPermission( currentLayer ) )
         {
-          restoreLayerFilters( originalLayerFilters );
           throw QgsMapServiceException( "Security", "Feature access permission denied" );
         }
-        applyAccessControlLayerFilters( currentLayer, originalLayerFilters );
+        applyAccessControlLayerFilters( currentLayer, filterRestorer->originalFilters() );
 #endif
 
         expressionContext << QgsExpressionContextUtils::layerScope( layer );
@@ -646,9 +649,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             {
               if ( filter->hasParserError() )
               {
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-                restoreLayerFilters( originalLayerFilters );
-#endif
                 throw QgsMapServiceException( "RequestNotWellFormed", filter->parserErrorString() );
               }
               while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat + startIndex ) )
@@ -658,10 +658,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
                 QVariant res = filter->evaluate( &expressionContext );
                 if ( filter->hasEvalError() )
                 {
-
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-                  restoreLayerFilters( originalLayerFilters );
-#endif
                   throw QgsMapServiceException( "RequestNotWellFormed", filter->evalErrorString() );
                 }
                 if ( res.toInt() != 0 )
@@ -703,9 +699,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
     }
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    restoreLayerFilters( originalLayerFilters );
-#endif
+    //force restoration of original layer filters
+    filterRestorer.reset();
 
     QgsMessageLog::logMessage( mErrors.join( "\n" ) );
 

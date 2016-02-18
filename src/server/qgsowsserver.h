@@ -23,6 +23,8 @@
 #include "qgsaccesscontrol.h"
 #endif
 
+#include <QHash>
+
 class QgsOWSServer
 {
   public:
@@ -45,6 +47,11 @@ class QgsOWSServer
 
     virtual void executeRequest() = 0;
 
+    /** Restores the original layer filters
+     * @param filterMap the original layer filter
+     */
+    static void restoreLayerFilters( const QHash < QgsMapLayer*, QString >& filterMap );
+
   private:
     QgsOWSServer() {}
 
@@ -64,10 +71,32 @@ class QgsOWSServer
     void applyAccessControlLayerFilters( QgsMapLayer* layer, QHash<QgsMapLayer*, QString>& originalLayerFilters ) const;
 #endif
 
-    /** Restores the original layer filters
-     * @param filterMap the original layer filter
+};
+
+/** RAII class to restore layer filters on destruction
+ */
+class QgsOWSServerFilterRestorer
+{
+  public:
+
+    QgsOWSServerFilterRestorer()  {}
+
+    //! Destructor. When object is destroyed all original layer filters will be restored.
+    ~QgsOWSServerFilterRestorer()
+    {
+      QgsOWSServer::restoreLayerFilters( mOriginalLayerFilters );
+    }
+
+    /** Returns a reference to the object's hash of layers to original subsetString filters.
+     * Original layer subsetString filters MUST be inserted into this hash before modifying them.
      */
-    void restoreLayerFilters( const QHash < QgsMapLayer*, QString >& filterMap ) const;
+    QHash<QgsMapLayer*, QString>& originalFilters() { return mOriginalLayerFilters; }
+
+  private:
+    QHash<QgsMapLayer*, QString> mOriginalLayerFilters;
+
+    QgsOWSServerFilterRestorer( const QgsOWSServerFilterRestorer& rh );
+    QgsOWSServerFilterRestorer& operator=( const QgsOWSServerFilterRestorer& rh );
 };
 
 #endif // QGSOWSSERVER_H
