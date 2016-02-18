@@ -152,7 +152,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         widget = iface.messageBar().createMessage(self.tr('Connection problem', disambiguation),
                                                   self.tr('Could not connect to scripts/models repository', disambiguation))
         if error and url:
-            QgsMessageLog.logMessage(self.tr(u"Network error code: {} on URL: {}").format(error, url), u"Processing", QgsMessageLog.CRITICAL)
+            QgsMessageLog.logMessage(self.tr(u"Network error code: {} on URL: {}").format(error, url), self.tr(u"Processing"), QgsMessageLog.CRITICAL)
             button = QPushButton(QCoreApplication.translate("Python", "View message log"), pressed=show_message_log)
             widget.layout().addWidget(button)
 

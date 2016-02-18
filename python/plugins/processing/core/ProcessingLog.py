@@ -83,7 +83,7 @@ class ProcessingLog:
                 msgtypes = {ProcessingLog.LOG_ERROR: QgsMessageLog.CRITICAL,
                             ProcessingLog.LOG_INFO: QgsMessageLog.INFO,
                             ProcessingLog.LOG_WARNING: QgsMessageLog.WARNING, }
-                QgsMessageLog.logMessage(msg, "Processing", msgtypes[msgtype])
+                QgsMessageLog.logMessage(msg, ProcessingLog.tr("Processing"), msgtypes[msgtype])
         except:
             pass
 
@@ -136,6 +136,12 @@ class ProcessingLog:
             for k, v in entries.iteritems():
                 for entry in v:
                     f.write('%s|%s|%s\n' % (k, entry.date, entry.text))
+
+    @staticmethod
+    def tr(string, context=''):
+        if context == '':
+            context = 'ProcessingLog'
+        return QCoreApplication.translate(context, string)
 
 
 class LogEntry:
