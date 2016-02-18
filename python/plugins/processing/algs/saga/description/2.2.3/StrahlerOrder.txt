@@ -1,0 +1,4 @@
+Strahler Order
+ta_channels
+ParameterRaster|DEM|Elevation|False
+OutputRaster|STRAHLER|Strahler Order
