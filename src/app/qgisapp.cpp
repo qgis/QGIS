@@ -7886,16 +7886,6 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
       messageBar()->pushMessage( errMsg,
                                  tr( "Cannot copy style to duplicated layer." ),
                                  QgsMessageBar::CRITICAL, messageTimeout() );
-
-    QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( selectedLyr );
-    QgsVectorLayer* vDupLayer = dynamic_cast<QgsVectorLayer*>( dupLayer );
-    if ( vLayer && vDupLayer )
-    {
-      Q_FOREACH ( const QgsVectorJoinInfo& join, vLayer->vectorJoins() )
-      {
-        vDupLayer->addJoin( join );
-      }
-    }
   }
 
   dupLayer = nullptr;
