@@ -30,6 +30,7 @@ class QgsFeature;
 
 
 /**
+ * \ingroup server
  * \class QgsAccessControlFilter
  * \brief Class defining access control interface for QGIS Server plugins.
  *
