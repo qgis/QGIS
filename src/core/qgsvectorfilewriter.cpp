@@ -283,6 +283,13 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
   QString layerName = QFileInfo( vectorFileName ).baseName();
   OGRwkbGeometryType wkbType = ogrTypeFromWkbType( geometryType );
 
+  // Remove FEATURE_DATASET layer option (used for ESRI File GDB driver) if its value is not set
+  int optIndex = layerOptions.indexOf( "FEATURE_DATASET=" );
+  if ( optIndex != -1 )
+  {
+    layerOptions.removeAt( optIndex );
+  }
+
   if ( !layerOptions.isEmpty() )
   {
     options = new char *[ layerOptions.size()+1 ];
