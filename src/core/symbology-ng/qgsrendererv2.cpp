@@ -44,145 +44,17 @@
 
 QgsConstWkbPtr QgsFeatureRendererV2::_getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr wkbPtr )
 {
-  QgsDebugCall;
-  QgsWKBTypes::Type type = wkbPtr.readHeader();
-  wkbPtr >> pt.rx() >> pt.ry();
-  wkbPtr += ( QgsWKBTypes::coordDimensions( type ) - 2 ) * sizeof( double );
-
-  if ( context.coordinateTransform() )
-  {
-    double z = 0; // dummy variable for coordiante transform
-    context.coordinateTransform()->transformInPlace( pt.rx(), pt.ry(), z );
-  }
-
-  context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
-
-  return wkbPtr;
+  return QgsSymbolV2::_getPoint( pt, context, wkbPtr );
 }
 
 QgsConstWkbPtr QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderContext& context, QgsConstWkbPtr wkbPtr, bool clipToExtent )
 {
-  QgsDebugCall;
-  QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
-  unsigned int nPoints;
-  wkbPtr >> nPoints;
-
-  const QgsCoordinateTransform* ct = context.coordinateTransform();
-  const QgsMapToPixel& mtp = context.mapToPixel();
-
-  //apply clipping for large lines to achieve a better rendering performance
-  if ( clipToExtent && nPoints > 1 )
-  {
-    const QgsRectangle& e = context.extent();
-    double cw = e.width() / 10;
-    double ch = e.height() / 10;
-    QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
-    wkbPtr -= 1 + 2 * sizeof( int );
-    wkbPtr = QgsClipper::clippedLineWKB( wkbPtr, clipRect, pts );
-  }
-  else
-  {
-    int skipZM = ( QgsWKBTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
-
-    if ( static_cast<int>( nPoints * ( 2 * sizeof( double ) + skipZM ) ) > wkbPtr.remaining() )
-    {
-      QgsDebugMsg( QString( "%1 points exceed wkb length (%2>%3)" ).arg( nPoints ).arg( nPoints * ( 2 * sizeof( double ) + skipZM ) ).arg( wkbPtr.remaining() ) );
-      return QgsConstWkbPtr( nullptr, 0 );
-    }
-
-    pts.resize( nPoints );
-
-    QPointF* ptr = pts.data();
-    for ( unsigned int i = 0; i < nPoints; ++i, ++ptr )
-    {
-      wkbPtr >> ptr->rx() >> ptr->ry();
-      wkbPtr += skipZM;
-    }
-  }
-
-  //transform the QPolygonF to screen coordinates
-  if ( ct )
-  {
-    ct->transformPolygon( pts );
-  }
-
-  QPointF* ptr = pts.data();
-  for ( int i = 0; i < pts.size(); ++i, ++ptr )
-  {
-    mtp.transformInPlace( ptr->rx(), ptr->ry() );
-  }
-
-  return wkbPtr;
+  return QgsSymbolV2::_getLineString( pts, context, wkbPtr, clipToExtent );
 }
 
 QgsConstWkbPtr QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, QgsConstWkbPtr wkbPtr, bool clipToExtent )
 {
-  QgsDebugCall;
-  QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
-  unsigned int numRings;
-  wkbPtr >> numRings;
-
-  if ( numRings == 0 )  // sanity check for zero rings in polygon
-    return wkbPtr;
-
-  holes.clear();
-
-  const QgsCoordinateTransform* ct = context.coordinateTransform();
-  const QgsMapToPixel& mtp = context.mapToPixel();
-  const QgsRectangle& e = context.extent();
-  double cw = e.width() / 10;
-  double ch = e.height() / 10;
-  QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
-
-  int skipZM = ( QgsWKBTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
-
-  for ( unsigned int idx = 0; idx < numRings; idx++ )
-  {
-    unsigned int nPoints;
-    wkbPtr >> nPoints;
-
-    if ( static_cast<int>( nPoints * ( 2 * sizeof( double ) + skipZM ) ) > wkbPtr.remaining() )
-    {
-      QgsDebugMsg( QString( "%1 points exceed wkb length (%2>%3)" ).arg( nPoints ).arg( nPoints * ( 2 * sizeof( double ) + skipZM ) ).arg( wkbPtr.remaining() ) );
-      return QgsConstWkbPtr( nullptr, 0 );
-    }
-
-    QPolygonF poly( nPoints );
-
-    // Extract the points from the WKB and store in a pair of vectors.
-    QPointF* ptr = poly.data();
-    for ( unsigned int jdx = 0; jdx < nPoints; ++jdx, ++ptr )
-    {
-      wkbPtr >> ptr->rx() >> ptr->ry();
-      wkbPtr += skipZM;
-    }
-
-    if ( nPoints < 1 )
-      continue;
-
-    //clip close to view extent, if needed
-    QRectF ptsRect = poly.boundingRect();
-    if ( clipToExtent && !context.extent().contains( ptsRect ) ) QgsClipper::trimPolygon( poly, clipRect );
-
-    //transform the QPolygonF to screen coordinates
-    if ( ct )
-    {
-      ct->transformPolygon( poly );
-    }
-
-    ptr = poly.data();
-    for ( int i = 0; i < poly.size(); ++i, ++ptr )
-    {
-      mtp.transformInPlace( ptr->rx(), ptr->ry() );
-    }
-
-    if ( idx == 0 )
-      pts = poly;
-    else
-      holes.append( poly );
-  }
-
-  return wkbPtr;
+  return QgsSymbolV2::_getPolygon( pts, holes, context, wkbPtr, clipToExtent );
 }
 
 void QgsFeatureRendererV2::setScaleMethodToSymbol( QgsSymbolV2* symbol, int scaleMethod )
