@@ -108,7 +108,6 @@ QgsSymbolV2::QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers )
 
 QgsConstWkbPtr QgsSymbolV2::_getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr wkbPtr )
 {
-  QgsDebugCall;
   QgsWKBTypes::Type type = wkbPtr.readHeader();
   wkbPtr >> pt.rx() >> pt.ry();
   wkbPtr += ( QgsWKBTypes::coordDimensions( type ) - 2 ) * sizeof( double );
@@ -126,7 +125,6 @@ QgsConstWkbPtr QgsSymbolV2::_getPoint( QPointF& pt, QgsRenderContext& context, Q
 
 QgsConstWkbPtr QgsSymbolV2::_getLineString( QPolygonF& pts, QgsRenderContext& context, QgsConstWkbPtr wkbPtr, bool clipToExtent )
 {
-  QgsDebugCall;
   QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
   unsigned int nPoints;
   wkbPtr >> nPoints;
@@ -182,7 +180,6 @@ QgsConstWkbPtr QgsSymbolV2::_getLineString( QPolygonF& pts, QgsRenderContext& co
 
 QgsConstWkbPtr QgsSymbolV2::_getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, QgsConstWkbPtr wkbPtr, bool clipToExtent )
 {
-  QgsDebugCall;
   QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
   unsigned int numRings;
   wkbPtr >> numRings;
