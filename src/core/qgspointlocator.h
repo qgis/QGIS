@@ -23,10 +23,6 @@ class QgsVectorLayer;
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 
-
-#include <spatialindex/SpatialIndex.h>
-
-
 class QgsCoordinateTransform;
 class QgsCoordinateReferenceSystem;
 
@@ -34,6 +30,12 @@ class QgsPointLocator_VisitorNearestVertex;
 class QgsPointLocator_VisitorNearestEdge;
 class QgsPointLocator_VisitorArea;
 class QgsPointLocator_VisitorEdgesInRect;
+
+namespace SpatialIndex
+{
+  class IStorageManager;
+  class ISpatialIndex;
+}
 
 /**
  * @brief The class defines interface for querying point location:
