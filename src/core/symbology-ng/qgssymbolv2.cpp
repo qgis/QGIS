@@ -734,7 +734,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       const QgsPointV2* point = static_cast< const QgsPointV2* >( segmentizedGeometry->geometry() );
       _getPoint( pt, context, point );
-      ( static_cast<QgsMarkerSymbolV2*>( this ) )->renderPoint( pt, &feature, context, layer, selected );
+      static_cast<QgsMarkerSymbolV2*>( this )->renderPoint( pt, &feature, context, layer, selected );
 
       if ( context.testFlag( QgsRenderContext::DrawSymbolBounds ) )
       {

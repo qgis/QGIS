@@ -197,7 +197,7 @@ class CORE_EXPORT QgsUnitTypes
      */
     static QString formatAngle( double angle, int decimals, AngleUnit unit );
 
-    //TODO QGIS 3.0 - enable and move symbol units here! Otherwise creates circular dependancies...
+    //TODO QGIS 3.0 - enable and move symbol units here! Otherwise creates circular dependencies...
 #if 0
     // SYMBOL UNITS
 
