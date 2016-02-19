@@ -134,6 +134,8 @@ class rasterize(GdalAlgorithm):
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
         dimType = self.getParameterValue(self.DIMENSIONS)
+        arguments.append('-of')
+        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))        
         if dimType == 0:
             # size in pixels
             arguments.append('-ts')
