@@ -284,7 +284,7 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
   OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>( geometryType );
 
   // Remove FEATURE_DATASET layer option (used for ESRI File GDB driver) if its value is not set
-  int optIndex = layOptions.indexOf("FEATURE_DATASET=")
+  int optIndex = layOptions.indexOf("FEATURE_DATASET=");
   if ( optIndex != -1 )
   {
     layOptions.removeAt(optIndex);
