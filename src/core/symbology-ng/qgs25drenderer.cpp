@@ -106,6 +106,7 @@ Qgs25DRenderer::Qgs25DRenderer()
     false );
 
   setOrderBy( orderBy );
+  setOrderByEnabled( true );
 }
 
 QDomElement Qgs25DRenderer::save( QDomDocument& doc )
