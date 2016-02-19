@@ -26,7 +26,8 @@
 class QgsAccessControlPlugin;
 
 
-/** \ingroup server
+/**
+ * \ingroup server
  * \class QgsAccessControl
  * \brief A helper class that centralise the restrictions given by all the
  *        access control filter plugins.
