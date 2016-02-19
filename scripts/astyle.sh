@@ -56,7 +56,11 @@ set -e
 
 astyleit() {
 	$ASTYLE --options="$ASTYLEOPTS" "$1"
-	scripts/unify_includes.pl "$1"
+	modified=$1.unify_includes_modified
+	cp "$1" "$modified"
+	scripts/unify_includes.pl "$modified"
+	diff "$1" "$modified" >/dev/null || mv "$modified" "$1"
+	rm -f "$modified"
 }
 
 for f in "$@"; do
@@ -103,6 +107,10 @@ for f in "$@"; do
 		echo "removed BOM from $f"
 	fi
 
-	flip -ub "$f"
+	modified=$f.flip_modified
+	cp "$f" "$modified"
+	flip -ub "$modified"
+	diff "$f" "$modified" >/dev/null || mv "$modified" "$f"
+	rm -f "$modified"
 	eval "$cmd '$f'"
 done
