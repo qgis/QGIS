@@ -26,81 +26,61 @@ __copyright__ = '(C) 2015, Luigi Pirelli'
 __revision__ = '$Format:%H$'
 
 import os
+import codecs
+import xml.sax.saxutils
+
+from osgeo import ogr
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterMultipleInput, ParameterBoolean
-from processing.core.outputs import OutputFile, OutputString
-
-# algorithm specific imports
-from osgeo import ogr
-import xml.sax.saxutils
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterBoolean
+from processing.core.outputs import OutputFile
+from processing.core.outputs import OutputString
 
 
 class Datasources2Vrt(GeoAlgorithm):
+    DATASOURCES = 'DATASOURCES'
+    UNIONED = 'UNIONED'
 
-    """ This algorithm merge the layers of different data sources in
-    a single vrt file
-
-    This algo is especially useful in case an algo need multiple layers
-    but accept only one vrt in which the layers are specified
-    """
-
-    OUTPUT_VRT_FILE = 'OUTPUT_VRT_FILE'
-    OUTPUT_VRT_STRING = 'OUTPUT_VRT_STRING'
-    INPUT_DATASOURCES = 'INPUT_DATASOURCES'
-    INPUT_OVERWRITE_FLAG = 'INPUT_OVERWRITE_FLAG'
+    VRT_FILE = 'VRT_FILE'
+    VRT_STRING = 'VRT_STRING'
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Build virtual vector')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
-        self.addParameter(ParameterMultipleInput(name=self.INPUT_DATASOURCES,
-                                                 description=self.tr('Input datasources'),
-                                                 datatype=ParameterMultipleInput.TYPE_VECTOR_ANY,
-                                                 optional=False))
-        self.addParameter(ParameterBoolean(name=self.INPUT_OVERWRITE_FLAG,
-                                           description=self.tr('Overwrite output vrt'),
+        self.addParameter(ParameterMultipleInput(self.DATASOURCES,
+                                                 self.tr('Input datasources'),
+                                                 ParameterMultipleInput.TYPE_VECTOR_ANY))
+        self.addParameter(ParameterBoolean(self.UNIONED,
+                                           self.tr('Create "unioned" VRT'),
                                            default=False))
 
-        self.addOutput(OutputFile(self.OUTPUT_VRT_FILE,
+        self.addOutput(OutputFile(self.VRT_FILE,
                                   self.tr('Virtual vector'), ext='vrt'))
-        self.addOutput(OutputString(self.OUTPUT_VRT_STRING,
+        self.addOutput(OutputString(self.VRT_STRING,
                                     self.tr('Virtual string')))
 
     def processAlgorithm(self, progress):
-        input_layers = self.getParameterValue(self.INPUT_DATASOURCES)
-        overwrite = self.getParameterValue(self.INPUT_OVERWRITE_FLAG)
-        outVrtPath = self.getOutputValue(self.OUTPUT_VRT_FILE)
-        outVrtString = self.getOutputValue(self.OUTPUT_VRT_STRING)
+        input_layers = self.getParameterValue(self.DATASOURCES)
+        unioned = self.getParameterValue(self.UNIONED)
+        vrtPath = self.getOutputValue(self.VRT_FILE)
+        vrtString = self.getOutputValue(self.VRT_STRING)
 
-        ds = input_layers.split(";")
-        if not isinstance(ds, list):
-            msg = "Input datasources would be a ';' separated list of path strings"
-            raise GeoAlgorithmExecutionException(msg)
+        layers = input_layers.split(';')
 
-        if not ds:
-            msg = "Input data sources is empty"
-            raise GeoAlgorithmExecutionException(msg)
+        vrtString = self.mergeDataSources2Vrt(layers,
+                                              vrtPath,
+                                              union=unioned,
+                                              relative=False,
+                                              schema=False,
+                                              progress=progress)
 
-        if not overwrite and os.path.exists(outVrtPath):
-            msg = "Output vrt: %s already exist and choosed to avoid overwrite it" % outVrtPath
-            raise GeoAlgorithmExecutionException(msg)
+        self.setOutputValue(self.VRT_STRING, vrtString)
 
-        outVrtString = self.mergeDataSources2Vrt(data_sources=ds,
-                                                 outfile=outVrtPath,
-                                                 relative=False,
-                                                 schema=False,
-                                                 progress=progress)
-
-        self.setOutputValue(self.OUTPUT_VRT_STRING, outVrtString)
-
-    def mergeDataSources2Vrt(self,
-                             data_sources=[],
-                             outfile=None,
-                             relative=False,
-                             schema=False,
-                             progress=None):
+    def mergeDataSources2Vrt(self, dataSources, outFile, union=False, relative=False,
+                             schema=False, progress=None):
         '''Function to do the work of merging datasources in a single vrt format
 
         @param data_sources: Array of path strings
@@ -109,121 +89,115 @@ class Datasources2Vrt(GeoAlgorithm):
         @param schema: Schema flag
         @return: vrt in string format
         '''
-        if not data_sources or len(data_sources) == 0:
-            return None
+        vrt = '<OGRVRTDataSource>'
+        if union:
+            vrt += '<OGRVRTUnionLayer name="UnionedLayer">'
 
-        # Start the VRT file.
-        vrt = '<OGRVRTDataSource>\n'
+        total = 100.0 / len(dataSources)
+        for current, inFile in enumerate(dataSources):
+            progress.setPercentage(int(current * total))
 
-        # For each file open the datasource to read.
-        for i, infile in enumerate(data_sources):
-            progress.setPercentage(int(100 * i / len(data_sources)))
-
-            src_ds = ogr.Open(infile, update=0)
-
-            if src_ds is None:
-                msg = "Invalid datasource: %s" % infile
-                raise GeoAlgorithmExecutionException(msg)
+            srcDS = ogr.Open(inFile, 0)
+            if srcDS is None:
+                raise GeoAlgorithmExecutionException(
+                    self.tr('Invalid datasource: {}'.format(infile)))
 
             if schema:
-                infile = '@dummy@'
+                inFile = '@dummy@'
 
-            layer_list = []
-            for layer in src_ds:
-                layer_list.append(layer.GetLayerDefn().GetName())
+            for layer in srcDS:
+                layerDef = layer.GetLayerDefn()
+                layerName = layerDef.GetName()
 
-            # Process each source layer.
-            for name in layer_list:
-                layer = src_ds.GetLayerByName(name)
-                layerdef = layer.GetLayerDefn()
-
-                vrt += '  <OGRVRTLayer name="%s">\n' % self.XmlEsc(name)
-                vrt += '    <SrcDataSource relativeToVRT="%s" shared="%d">%s</SrcDataSource>\n' \
-                       % ('1' if relative else '0', not schema, self.XmlEsc(infile))
+                vrt += '<OGRVRTLayer name="{}">'.format(self.XmlEsc(layerName))
+                vrt += '<SrcDataSource relativeToVRT="{}" shared="{}">{}</SrcDataSource>'.format(1 if relative else 0, not schema, self.XmlEsc(inFile))
                 if schema:
-                    vrt += '    <SrcLayer>@dummy@</SrcLayer>\n'
+                    vrt += '<SrcLayer>@dummy@</SrcLayer>'
                 else:
-                    vrt += '    <SrcLayer>%s</SrcLayer>\n' % self.XmlEsc(name)
-                vrt += '    <GeometryType>%s</GeometryType>\n' \
-                       % self.GeomType2Name(layerdef.GetGeomType())
-                srs = layer.GetSpatialRef()
-                if srs is not None:
-                    vrt += '    <LayerSRS>%s</LayerSRS>\n' \
-                           % (self.XmlEsc(srs.ExportToWkt()))
+                    vrt += '<SrcLayer>{}</SrcLayer>'.format(self.XmlEsc(layerName))
+
+                vrt += '<GeometryType>{}</GeometryType>'.format(self.GeomType2Name(layerDef.GetGeomType()))
+
+                crs = layer.GetSpatialRef()
+                if crs is not None:
+                    vrt += '<LayerSRS>{}</LayerSRS>'.format(self.XmlEsc(crs.ExportToWkt()))
 
                 # Process all the fields.
-                for fld_index in range(layerdef.GetFieldCount()):
-                    src_fd = layerdef.GetFieldDefn(fld_index)
-                    if src_fd.GetType() == ogr.OFTInteger:
-                        type = 'Integer'
-                    elif src_fd.GetType() == ogr.OFTString:
-                        type = 'String'
-                    elif src_fd.GetType() == ogr.OFTReal:
-                        type = 'Real'
-                    elif src_fd.GetType() == ogr.OFTStringList:
-                        type = 'StringList'
-                    elif src_fd.GetType() == ogr.OFTIntegerList:
-                        type = 'IntegerList'
-                    elif src_fd.GetType() == ogr.OFTRealList:
-                        type = 'RealList'
-                    elif src_fd.GetType() == ogr.OFTBinary:
-                        type = 'Binary'
-                    elif src_fd.GetType() == ogr.OFTDate:
-                        type = 'Date'
-                    elif src_fd.GetType() == ogr.OFTTime:
-                        type = 'Time'
-                    elif src_fd.GetType() == ogr.OFTDateTime:
-                        type = 'DateTime'
-                    else:
-                        type = 'String'
-
-                    vrt += '    <Field name="%s" type="%s"' \
-                           % (self.XmlEsc(src_fd.GetName()), type)
+                for fieldIdx in xrange(layerDef.GetFieldCount()):
+                    fieldDef = layerDef.GetFieldDefn(fieldIdx)
+                    vrt += '<Field name="{}" type="{}"'.format(self.XmlEsc(fieldDef.GetName()), self.fieldType2Name(fieldDef.GetType()))
                     if not schema:
-                        vrt += ' src="%s"' % self.XmlEsc(src_fd.GetName())
-                    if src_fd.GetWidth() > 0:
-                        vrt += ' width="%d"' % src_fd.GetWidth()
-                    if src_fd.GetPrecision() > 0:
-                        vrt += ' precision="%d"' % src_fd.GetPrecision()
-                    vrt += '/>\n'
+                        vrt += ' src="{}"'.format(self.XmlEsc(fieldDef.GetName()))
+                    if fieldDef.GetWidth() > 0:
+                        vrt += ' width="{}"'.format(fieldDef.GetWidth())
+                    if fieldDef.GetPrecision() > 0:
+                        vrt += ' precision="{}"'.format(fieldDef.GetPrecision())
+                    vrt += '/>'
 
-                vrt += '  </OGRVRTLayer>\n'
+                vrt += '</OGRVRTLayer>'
 
-            # Сlose data source
-            src_ds.Destroy()
+            srcDS.Destroy()
 
-        vrt += '</OGRVRTDataSource>\n'
+        if union:
+            vrt += '</OGRVRTUnionLayer>'
 
-        if outfile is not None:
-            f = open(outfile, "w")
-            f.write(vrt)
-            f.close()
+        vrt += '</OGRVRTDataSource>'
+
+        #TODO: pretty-print XML
+
+        if outFile is not None:
+            with codecs.open(outFile, 'w') as f:
+                f.write(vrt)
 
         return vrt
 
-    def GeomType2Name(self, type):
-        if type == ogr.wkbUnknown:
+    def GeomType2Name(self, geomType):
+        if geomType == ogr.wkbUnknown:
             return 'wkbUnknown'
-        elif type == ogr.wkbPoint:
+        elif geomType == ogr.wkbPoint:
             return 'wkbPoint'
-        elif type == ogr.wkbLineString:
+        elif geomType == ogr.wkbLineString:
             return 'wkbLineString'
-        elif type == ogr.wkbPolygon:
+        elif geomType == ogr.wkbPolygon:
             return 'wkbPolygon'
-        elif type == ogr.wkbMultiPoint:
+        elif geomType == ogr.wkbMultiPoint:
             return 'wkbMultiPoint'
-        elif type == ogr.wkbMultiLineString:
+        elif geomType == ogr.wkbMultiLineString:
             return 'wkbMultiLineString'
-        elif type == ogr.wkbMultiPolygon:
+        elif geomType == ogr.wkbMultiPolygon:
             return 'wkbMultiPolygon'
-        elif type == ogr.wkbGeometryCollection:
+        elif geomType == ogr.wkbGeometryCollection:
             return 'wkbGeometryCollection'
-        elif type == ogr.wkbNone:
+        elif geomType == ogr.wkbNone:
             return 'wkbNone'
-        elif type == ogr.wkbLinearRing:
+        elif geomType == ogr.wkbLinearRing:
             return 'wkbLinearRing'
         else:
             return 'wkbUnknown'
 
-    def XmlEsc(self, x):
-        return xml.sax.saxutils.escape(x)
+    def fieldType2Name(self, fieldType):
+        if fieldType == ogr.OFTInteger:
+            return 'Integer'
+        elif fieldType == ogr.OFTString:
+            return 'String'
+        elif fieldType == ogr.OFTReal:
+            return 'Real'
+        elif fieldType == ogr.OFTStringList:
+            return 'StringList'
+        elif fieldType == ogr.OFTIntegerList:
+            return 'IntegerList'
+        elif fieldType == ogr.OFTRealList:
+            return 'RealList'
+        elif fieldType == ogr.OFTBinary:
+            return 'Binary'
+        elif fieldType == ogr.OFTDate:
+            return 'Date'
+        elif fieldType == ogr.OFTTime:
+            return 'Time'
+        elif fieldType == ogr.OFTDateTime:
+            return 'DateTime'
+        else:
+            return 'String'
+
+    def XmlEsc(self, text):
+        return xml.sax.saxutils.escape(text)
