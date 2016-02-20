@@ -44,24 +44,16 @@ QgsDb2Provider::QgsDb2Provider( QString uri )
   mValid = true;
   mSkipFailures = false;
 
-  mUserName = anUri.username();
-  mPassword = anUri.password();
-  mService = anUri.service();
-  mDatabaseName = anUri.database();
-  mHost = anUri.host();
-  mPort = anUri.port();
-  mDriver = anUri.param( "driver" );
   mFidColName = anUri.keyColumn();
   QgsDebugMsg( "mFidColName " + mFidColName );
   mExtents = anUri.param( "extents" );
   QgsDebugMsg( "mExtents " + mExtents );
-  bool convertIntOk;
-  int portNum = mPort.toInt( &convertIntOk, 10 );
 
   mUseEstimatedMetadata = anUri.useEstimatedMetadata();
   QgsDebugMsg(QString("mUseEstimatedMetadata: '%1'").arg(mUseEstimatedMetadata));
   mSqlWhereClause = anUri.sql();
-  mDatabase = GetDatabase( mService, mDriver, mHost, portNum, mDatabaseName, mUserName, mPassword );
+  mDatabase = GetDatabase( uri );
+  mConnInfo = anUri.connectionInfo();
 
   if ( !OpenDatabase( mDatabase ) )
   {
@@ -74,15 +66,7 @@ QgsDb2Provider::QgsDb2Provider( QString uri )
   // Create a query for default connection
   mQuery = QSqlQuery( mDatabase );
 
-  // Database successfully opened; we can now issue SQL commands.
-  if ( !anUri.schema().isEmpty() )
-  {
-    mSchemaName = anUri.schema();
-  }
-  else
-  {
-    mSchemaName = mUserName;
-  }
+  mSchemaName = anUri.schema();
 
   mTableName = anUri.table();
   QStringList sl = mTableName.split( '.' );
@@ -140,20 +124,44 @@ QgsDb2Provider::~QgsDb2Provider()
     mDatabase.close();
 }
 
-QSqlDatabase QgsDb2Provider::GetDatabase( QString service, QString driver, QString host, int port, QString location, QString username, QString password )
+
+QSqlDatabase QgsDb2Provider::GetDatabase( QString connInfo )
 {
   QSqlDatabase db;
+  QString service;
+  QString driver;  
+  QString host;  
+  QString databaseName;  
+  QString port;  
+  QString userName;  
+  QString password;  
   QString connectionName;
   QString connectionString;
-
+  
+  QgsDebugMsg("connInfo: " + connInfo);
+  QgsDataSourceURI uri( connInfo );
+  // Fill in the password if authentication is used
+  QString expandedConnectionInfo = uri.connectionInfo( true );  
+  QgsDebugMsg("expanded connInfo: " + expandedConnectionInfo);
+  QgsDataSourceURI uriExpanded( expandedConnectionInfo );
+   
+  userName = uriExpanded.username();
+  password = uriExpanded.password();
+  QgsDebugMsg(QString("user: '%1'; pwd: '%2'").arg(userName).arg(password));
+  service = uriExpanded.service();
+  databaseName = uriExpanded.database();
+  host = uriExpanded.host();
+  port = uriExpanded.port();
+  driver = uriExpanded.driver();
+  QgsDebugMsg(QString("driver: '%1'; host: '%2'; databaseName: '%3'").arg(driver).arg(password).arg(databaseName));
   if ( service.isEmpty() )
   {
-    if ( driver.isEmpty() || host.isEmpty() || location.isEmpty()  )
+    if ( driver.isEmpty() || host.isEmpty() || databaseName.isEmpty()  )
     {
       QgsDebugMsg( "DB2: service not provided, a required argument is empty." );
       return db;
     }
-    connectionName = location + ".";
+    connectionName = databaseName + ".";
   }
   else
   {
@@ -172,28 +180,28 @@ QSqlDatabase QgsDb2Provider::GetDatabase( QString service, QString driver, QStri
     db = QSqlDatabase::database( connectionName );
   }
   db.setHostName( host );
-  db.setPort( port );
+  db.setPort( port.toInt() );
 
-  if ( username.isEmpty() || password.isEmpty() )
+  if ( userName.isEmpty() || password.isEmpty() )
   {
   QgsCredentials::instance()->lock();
 
-  bool ok = QgsCredentials::instance()->get( location, username, password, QString("") );
+  bool ok = QgsCredentials::instance()->get( databaseName, userName, password, QString("") );
       if ( !ok ) // TODO - what if cancel?
         QgsDebugMsg("Cancel clicked");
 
-  QgsCredentials::instance()->put( location, username, password );
+  QgsCredentials::instance()->put( databaseName, userName, password );
   QgsCredentials::instance()->unlock();  
   }
   
-  db.setUserName( username );
+  db.setUserName( userName );
   db.setPassword( password );
 
   /* start building connection string */
   if ( service.isEmpty() )
   {
     connectionString = "Driver={%1};Hostname=%2;Port=%3;Protocol=TCPIP;Database=%4;Uid=%5;Pwd=%6;";
-    connectionString = connectionString.arg( driver ).arg( host ).arg( db.port() ).arg( location ).arg( username ).arg( password );
+    connectionString = connectionString.arg( driver ).arg( host ).arg( db.port() ).arg( databaseName ).arg( userName ).arg( password );
   }
   else
   {

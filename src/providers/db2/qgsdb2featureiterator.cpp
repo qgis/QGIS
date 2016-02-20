@@ -35,9 +35,7 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource* source, bool 
   BuildStatement( request );
 
   // connect to the database
-  bool convertIntOk;
-  int portNum = mSource->mPort.toInt( &convertIntOk, 10 );
-  mDatabase = QgsDb2Provider::GetDatabase( mSource->mService, mSource->mDriver, mSource->mHost, portNum, mSource->mDatabaseName, mSource->mUserName, mSource->mPassword );
+  mDatabase = QgsDb2Provider::GetDatabase( mSource->mConnInfo );
 
   if ( !mDatabase.open() )
   {
@@ -317,11 +315,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
     // and setGeometry accepts this wkb
     if ( mSource->isSpatial() )
     {
-#if 1
       QByteArray ar = record.value( mSource->mGeometryColName ).toByteArray();
-//      QString wkb( ar.toHex() );
-//      QgsDebugMsg( "wkb: " + wkb );
-//      QgsDebugMsg( "wkb size: " + QString( "%1" ).arg( ar.size() ) );
       size_t wkb_size = ar.size();
       if ( 0 < wkb_size )
       {
@@ -330,29 +324,11 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
         QgsGeometry *g = new QgsGeometry();
         g->fromWkb( db2data, wkb_size );
         feature.setGeometry( g );
-//        QgsDebugMsg( QString( "geometry type: %1" ).arg( g->wkbType() ) );
-//        QByteArray ar2(( const char * )g->asWkb(), wkb_size + 1 );
-//        QString wkb2( ar2.toHex() );
-//        QgsDebugMsg( "wkb2: " + wkb2 );
       }
       else
       {
         QgsDebugMsg( "Geometry is empty" );
       }
-#else
-      QByteArray ar = record.value( mSource->mGeometryColName ).toByteArray();
-      size_t wkt_size = ar.size();
-      char * wkt = new char[wkt_size + 1]; // allocate persistent storage
-      strcpy( wkt, ar.data() );
-      QgsDebugMsg( "wkt: " + QString( wkt ) );
-      QString hex( ar.toHex() );
-      QgsDebugMsg( "hex: " + hex );
-      QgsDebugMsg( "wkt size: " + QString( "%1" ).arg( ar.size() ) );
-      QgsGeometry *g = QgsGeometry::fromWkt( QString( wkt ) );
-      feature.setGeometry( g );
-      delete wkt;
-
-#endif
     }
 
     feature.setValid( true );
@@ -360,7 +336,6 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
   }
   return false;
 }
-
 
 bool QgsDb2FeatureIterator::rewind()
 {
@@ -427,15 +402,9 @@ QgsDb2FeatureSource::QgsDb2FeatureSource( const QgsDb2Provider* p )
     , mGeometryColType( p->mGeometryColType )
     , mSchemaName( p->mSchemaName )
     , mTableName( p->mTableName )
-    , mUserName( p->mUserName )
-    , mPassword( p->mPassword )
-    , mService( p->mService )
-    , mDatabaseName( p->mDatabaseName )
-    , mDriver( p->mDriver )
-    , mHost( p->mHost )
-    , mPort( p->mPort )
     , mSqlWhereClause( p->mSqlWhereClause )
-{   //TODO set mEnvironment to LUW or ZOS? -David
+    , mConnInfo( p->mConnInfo )
+{   
   mSRId = p->mSRId;
 }
 

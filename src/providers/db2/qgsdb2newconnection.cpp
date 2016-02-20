@@ -65,6 +65,7 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connNa
     }
 
     QString authcfg = settings.value( key + "/authcfg" ).toString();
+ QgsDebugMsg(QString("authcfg: %1").arg(authcfg));   
     mAuthConfigSelect->setConfigId( authcfg );
     if ( !authcfg.isEmpty() )
     {
@@ -84,7 +85,7 @@ void QgsDb2NewConnection::accept()
   QString baseKey = "/DB2/connections/";
   settings.setValue( baseKey + "selected", txtName->text() );
   bool hasAuthConfigID = !mAuthConfigSelect->configId().isEmpty();
-
+QgsDebugMsg(QString("hasAuthConfigID: %1").arg(hasAuthConfigID));
   if ( !hasAuthConfigID && chkStorePassword->isChecked() &&
        QMessageBox::question( this,
                               tr( "Saving passwords" ),
@@ -115,7 +116,7 @@ void QgsDb2NewConnection::accept()
 
   baseKey += txtName->text();
 
-  settings.setValue( baseKey + "/service", txtService->text() );
+  settings.setValue( baseKey + "/service", txtService->text().trimmed() );
   settings.setValue( baseKey + "/host", txtHost->text() );
   settings.setValue( baseKey + "/port", txtPort->text() );
   settings.setValue( baseKey + "/driver", txtDriver->text() );
@@ -124,7 +125,8 @@ void QgsDb2NewConnection::accept()
   settings.setValue( baseKey + "/password", chkStorePassword->isChecked() && !hasAuthConfigID ? txtPassword->text() : "" );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() && !hasAuthConfigID ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() && !hasAuthConfigID ? "true" : "false" );
-
+  settings.setValue( baseKey + "/authcfg", mAuthConfigSelect->configId() );
+  
   QDialog::accept();
 }
 
@@ -155,21 +157,13 @@ bool QgsDb2NewConnection::testConnection( QString testDatabase )
 {
   QSqlDatabase db;
 
-  QString dsn;
-  QString driver;
-  QString host;
-  QString port;
-  QString database;
-  QString userid;
-  QString password;
-
-  dsn =  txtService->text().trimmed();
-  driver = txtDriver->text().trimmed();
-  host = txtHost->text().trimmed();
-  port = txtPort->text().trimmed();
-  database = txtDatabase->text().trimmed();
-  userid = txtUsername->text().trimmed();
-  password = txtPassword->text().trimmed();
+  QString service =  txtService->text().trimmed();
+  QString driver = txtDriver->text().trimmed();
+  QString host = txtHost->text().trimmed();
+  QString port = txtPort->text().trimmed();
+  QString database = txtDatabase->text().trimmed();
+  QString username = txtUsername->text().trimmed();
+  QString password = txtPassword->text().trimmed();
   
   QgsDebugMsg("testDatabase: " + testDatabase);
   /* TODO - bar is not defined; works for mssql
@@ -178,10 +172,40 @@ bool QgsDb2NewConnection::testConnection( QString testDatabase )
   qApp->processEvents();
   */
   
-  // TODO - do we need tests on presence of needed parameters?
-  bool convertIntOk;
-  int portNum = port.toInt( &convertIntOk, 10 );
-  db = QgsDb2Provider::GetDatabase( dsn, driver, host, portNum, database, userid, password );
+  if ( username.isEmpty() || password.isEmpty() )
+  {
+    db2ConnectStatus -> setText( "DB2 connection failed : " + db.lastError().text() );  
+    return false;
+  }  
+  
+  if ( service.isEmpty() )
+  {
+    if ( driver.isEmpty() || host.isEmpty() || database.isEmpty() || port.isEmpty() )
+    {
+      QgsDebugMsg( "Host, port, driver and database must be specified if not using DSN" );
+      return false;
+    }
+  }
+  else
+  {
+    if ( database.isEmpty() )
+    {
+      QgsDebugMsg( "Database must be specified" );
+      return false;
+    }
+  }  
+
+  QString connInfo = "dbname='" + database +  + "'";  // always need dbname
+  connInfo +=  " user='" + username + "' password='" + password + "'";
+  if ( !service.isEmpty() ) {
+    connInfo += " service='" + service + "'";
+    }
+    else
+    {
+      connInfo += " driver='" + driver + "' host=" + host + " port=" + port;
+    }
+    
+  db = QgsDb2Provider::GetDatabase( connInfo );
   if ( db.open() )
   {
     QgsDebugMsg( "connection open succeeded on " + testDatabase );

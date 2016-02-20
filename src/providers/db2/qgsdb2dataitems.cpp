@@ -33,28 +33,66 @@ QgsDb2ConnectionItem::QgsDb2ConnectionItem( QgsDataItem *parent, const QString n
 QgsDb2ConnectionItem::~QgsDb2ConnectionItem()
 {
 }
-void QgsDb2ConnectionItem::readConnectionSettings()
+
+bool QgsDb2ConnectionItem::ConnInfoFromSettings(const QString connName,
+                                            QString &connInfo, QString &errorMsg)
 {
   QSettings settings;
-  QString key = "/DB2/connections/" + mName;
-  mService = settings.value( key + "/service" ).toString();
-  mDriver = settings.value( key + "/driver" ).toString();
-  mHost = settings.value( key + "/host" ).toString();
-  mPort = settings.value( key + "/port" ).toString();
-  mDatabase = settings.value( key + "/database" ).toString();
-  mUsername = settings.value( key + "/username" ).toString();
-  mPassword = settings.value( key + "/password" ).toString();
-  mEnvironment = settings.value( key + "/environment" ).toInt();
+  QString key = "/DB2/connections/" + connName;
 
-  //mUseEstimatedMetadata = settings.value( key + "/estimatedMetadata", false ).toBool();
-  //mAllowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", true ).toBool();
+  QString service = settings.value( key + "/service" ).toString();
+  QString driver = settings.value( key + "/driver" ).toString();
+  QString host = settings.value( key + "/host" ).toString();
+  QString port = settings.value( key + "/port" ).toString();
+  QString database = settings.value( key + "/database" ).toString();
+  QString username = settings.value( key + "/username" ).toString();
+  QString password = settings.value( key + "/password" ).toString();
+  QString authcfg = settings.value( key + "/authcfg" ).toString(); 
+   
+  if ( service.isEmpty() )
+  {
+    if ( driver.isEmpty() || host.isEmpty() || database.isEmpty() || port.isEmpty() )
+    {
+      QgsDebugMsg( "Host, port, driver or database missing" );
+      errorMsg = "Host, port, driver or database missing";
+      return false;
+    }
+    connInfo = "driver='" + driver + "' "
+             + "host='" + host + "' "
+             + "dbname='" + database + "' "
+             + "port='" + port + "' ";
+  }
+  else
+  {
+    if ( database.isEmpty() )
+    {
+      QgsDebugMsg( "Database must be specified" );
+      errorMsg = "Database must be specified";      
+      return false;
+    }
+    connInfo = "service='" + service + "' "
+             + "dbname='" + database + "' ";
+  }
 
-  mConnInfo =  "dbname='" + mDatabase + "' driver='" + mDriver + "' host=" + mHost + " port=" + mPort + " user='" + mUsername + "' password='" + mPassword + "'";
-  if ( !mService.isEmpty() )
-    mConnInfo += " service='" + mService + "' user='" + mUsername + "' password='" + mPassword + "'";
-  if ( mUseEstimatedMetadata )
-    mConnInfo += " estimatedmetadata=true";
-  QgsDebugMsg( "mConnInfo: '" + mConnInfo + "'" );
+  if ( !authcfg.isEmpty() )
+  {
+    username.clear();
+    password.clear();
+    connInfo += "authcfg='" + authcfg + "' ";
+  }   
+  
+  if ( !username.isEmpty() )
+  {
+    connInfo += "user='" + username + "' ";
+  }
+  
+  
+  if ( !password.isEmpty() )
+  {
+    connInfo += "password='" + password + "' ";
+  }
+    
+  return true;  
 }
 
 void QgsDb2ConnectionItem::refresh()
@@ -85,12 +123,17 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
 
   QVector<QgsDataItem*> children;
 //  QgsDb2GeomColumnTypeThread *columnTypeThread = 0; // TODO - what is this?
+  
+  QString connInfo;
+  QString errorMsg;
+  bool success = QgsDb2ConnectionItem::ConnInfoFromSettings(mName, connInfo, errorMsg);
+  if ( !success ) 
+  {
+    QgsDebugMsg("settings error: " + errorMsg);
+  }
+  QgsDebugMsg("connInfo: " + connInfo);
 
-  readConnectionSettings();
-
-  bool convertIntOk;
-  int portNum = mPort.toInt( &convertIntOk, 10 );
-  QSqlDatabase db = QgsDb2Provider::GetDatabase( mService, mDriver, mHost, portNum, mDatabase, mUsername, mPassword );
+  QSqlDatabase db = QgsDb2Provider::GetDatabase( connInfo );
   QgsDebugMsg( "back from GetDatabase" );
   if ( db.open() )
   {
@@ -206,10 +249,7 @@ void QgsDb2ConnectionItem::deleteConnection()
 
 void QgsDb2ConnectionItem::refreshConnection()
 {
-
-  bool convertIntOk;
-  int portNum = mPort.toInt( &convertIntOk, 10 );
-  QSqlDatabase db = QgsDb2Provider::GetDatabase( mService, mDriver, mHost, portNum, mDatabase, mUsername, mPassword );
+  QSqlDatabase db = QgsDb2Provider::GetDatabase( mConnInfo );  
   if ( db.open() )
   {
     QString connectionName = db.connectionName();

@@ -45,17 +45,8 @@ class QgsDb2FeatureSource : public QgsAbstractFeatureSource
     QString mSchemaName;
     QString mTableName;
 
-    // login
-    QString mUserName;
-    QString mPassword;
-
     // server access
-    QString mService;
-    QString mDatabaseName;
-    QString mHost;
-
-    QString mDriver;
-    QString mPort;
+    QString mConnInfo;
 
     // SQL statement used to limit the features retrieved
     QString mSqlWhereClause;

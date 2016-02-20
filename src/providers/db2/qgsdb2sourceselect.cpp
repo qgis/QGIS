@@ -477,46 +477,17 @@ void QgsDb2SourceSelect::on_btnConnect_clicked()
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
 
   // populate the table list
-  QSettings settings;
-  QString key = "/DB2/connections/" + cmbConnections->currentText();
 
-  QString service = settings.value( key + "/service" ).toString();
-  QString driver = settings.value( key + "/driver" ).toString();
-  QString host = settings.value( key + "/host" ).toString();
-  QString portString = settings.value( key + "/port" ).toString();
-  QString database = settings.value( key + "/database" ).toString();
-  QString username = settings.value( key + "/username" ).toString();
-  QString password = settings.value( key + "/password" ).toString();
-
-  if ( settings.value( key + "/saveUsername" ).toString() == "true" )
+  QString errorMsg;
+  bool success = QgsDb2ConnectionItem::ConnInfoFromSettings(cmbConnections->currentText(), mConnInfo, errorMsg);
+  if ( !success ) 
   {
-    username = settings.value( key + "/username" ).toString();
+    QgsDebugMsg("settings error: " + errorMsg);
+    QMessageBox::warning( this,
+                          tr( "DB2 Provider" ), errorMsg );
+    return;    
   }
-
-
-  if ( settings.value( key + "/savePassword" ).toString() == "true" )
-  {
-    password = settings.value( key + "/password" ).toString();
-  }
-
-  mConnInfo =  "dbname='" + database + "'";
-  if ( !host.isEmpty() )
-    mConnInfo += " host='" + host + "'";
-  if ( !username.isEmpty() )
-    mConnInfo += " user='" + username + "'";
-  if ( !password.isEmpty() )
-    mConnInfo += " password='" + password + "'";
-  if ( !service.isEmpty() )
-    mConnInfo += " service='" + service + "'";
-  if ( !portString.isEmpty() )
-    mConnInfo += " port='" + portString + "'";
-  if ( !driver.isEmpty() )
-    mConnInfo += " driver='" + driver + "'";
-
-  bool convertIntOk;
-  int portNum = portString.toInt( &convertIntOk, 10 );
-  QgsDebugMsg( "GetDatabase" );
-  QSqlDatabase db = QgsDb2Provider::GetDatabase( service, driver, host, portNum, database, username, password );
+  QSqlDatabase db = QgsDb2Provider::GetDatabase( mConnInfo );
 
   if ( !QgsDb2Provider::OpenDatabase( db ) )
   {

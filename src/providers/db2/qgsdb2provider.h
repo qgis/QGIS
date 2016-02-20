@@ -41,15 +41,9 @@ class QgsDb2Provider : public QgsVectorDataProvider
      * If service is provided, then username and password is required.
      * If service is not provided, the remaining arguments are required.
      *
-     * @param service The DSN name.
-     * @param driver The full driver name.
-     * @param host The host name.
-     * @param port The port number.
-     * @param location The database/location name.
-     * @param username The username.
-     * @param password The password.
+     * @param connInfo A string containing all connection information.
      */
-    static QSqlDatabase GetDatabase( QString service, QString driver, QString host, int port, QString location, QString username, QString password );
+    static QSqlDatabase GetDatabase( QString connInfo );
 
     static bool OpenDatabase( QSqlDatabase db );
 
@@ -148,9 +142,8 @@ class QgsDb2Provider : public QgsVectorDataProvider
     QgsCoordinateReferenceSystem mCrs; //coordinate reference system
     QGis::WkbType mWkbType;
     QSqlQuery mQuery; //current SQL query
+    QString mConnInfo; // full connection information
     QString mSchemaName, mTableName; //current layer schema/name
-    QString mUserName, mPassword; //login
-    QString mService, mDatabaseName, mDriver, mHost, mPort; //server access
     QString mSqlWhereClause; //SQL statement used to limit the features retrieved
     QSqlDatabase mDatabase; //the database object
     static int sConnectionId;
