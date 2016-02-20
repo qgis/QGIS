@@ -883,7 +883,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   //
   // Please make sure this is the last thing the ctor does so that we can ensure the
   // widgets are all initialized before trying to restore their state.
-  z /
+  //
   mSplash->showMessage( tr( "Restoring window state" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   restoreWindowState();
