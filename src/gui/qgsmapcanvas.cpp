@@ -1154,44 +1154,32 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
     // Don't want to interfer with mouse events
 
     QgsRectangle currentExtent = mapSettings().visibleExtent();
-    double dx = qAbs(( currentExtent.xMaximum() - currentExtent.xMinimum() ) / 4 );
-    double dy = qAbs(( currentExtent.yMaximum() - currentExtent.yMinimum() ) / 4 );
+    double dx = qAbs( currentExtent.width() / 4 );
+    double dy = qAbs( currentExtent.height() / 4 );
 
     switch ( e->key() )
     {
       case Qt::Key_Left:
         QgsDebugMsg( "Pan left" );
-
-        currentExtent.setXMinimum( currentExtent.xMinimum() - dx );
-        currentExtent.setXMaximum( currentExtent.xMaximum() - dx );
-        setExtent( currentExtent );
+        setCenter( center() - QgsVector( dx, 0 ).rotateBy( rotation() * M_PI / 180.0 ) );
         refresh();
         break;
 
       case Qt::Key_Right:
         QgsDebugMsg( "Pan right" );
-
-        currentExtent.setXMinimum( currentExtent.xMinimum() + dx );
-        currentExtent.setXMaximum( currentExtent.xMaximum() + dx );
-        setExtent( currentExtent );
+        setCenter( center() + QgsVector( dx, 0 ).rotateBy( rotation() * M_PI / 180.0 ) );
         refresh();
         break;
 
       case Qt::Key_Up:
         QgsDebugMsg( "Pan up" );
-
-        currentExtent.setYMaximum( currentExtent.yMaximum() + dy );
-        currentExtent.setYMinimum( currentExtent.yMinimum() + dy );
-        setExtent( currentExtent );
+        setCenter( center() + QgsVector( 0, dy ).rotateBy( rotation() * M_PI / 180.0 ) );
         refresh();
         break;
 
       case Qt::Key_Down:
         QgsDebugMsg( "Pan down" );
-
-        currentExtent.setYMaximum( currentExtent.yMaximum() - dy );
-        currentExtent.setYMinimum( currentExtent.yMinimum() - dy );
-        setExtent( currentExtent );
+        setCenter( center() - QgsVector( 0, dy ).rotateBy( rotation() * M_PI / 180.0 ) );
         refresh();
         break;
 
