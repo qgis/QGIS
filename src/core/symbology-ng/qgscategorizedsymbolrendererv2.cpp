@@ -585,6 +585,8 @@ QString QgsCategorizedSymbolRendererV2::filter( const QgsFields& fields )
     }
   }
 
+  QString attr = isExpression ? mAttrName : QString( "\"%1\"" ).arg( mAttrName );
+
   if ( allActive && hasDefault )
   {
     return QString();
@@ -595,11 +597,11 @@ QString QgsCategorizedSymbolRendererV2::filter( const QgsFields& fields )
   }
   else if ( defaultActive )
   {
-    return QString( "(\"%1\") NOT IN (%2) OR (\"%1\") IS NULL" ).arg( mAttrName, inactiveValues );
+    return QString( "(%1) NOT IN (%2) OR (%1) IS NULL" ).arg( attr, inactiveValues );
   }
   else
   {
-    return QString( "(\"%1\") IN (%2)" ).arg( mAttrName, activeValues );
+    return QString( "(%1) IN (%2)" ).arg( attr, activeValues );
   }
 }
 
@@ -782,6 +784,7 @@ QDomElement QgsCategorizedSymbolRendererV2::save( QDomDocument& doc )
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
+  rendererElem.setAttribute( "enableorderby", ( mOrderByEnabled ? "1" : "0" ) );
 
   return rendererElem;
 }
@@ -1050,6 +1053,7 @@ QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::convertFromRende
   }
 
   r->setOrderBy( renderer->orderBy() );
+  r->setOrderByEnabled( renderer->orderByEnabled() );
 
   return r;
 }

@@ -162,10 +162,8 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual QgsDataDefined* getDataDefinedProperty( const QString& property ) const;
 
     /** Sets a data defined property for the layer.
-     * @param property unique property key. Any existing data defined with the same
-     * key will be deleted and overriden.
-     * @param dataDefined data defined object to associate with property key. Ownership
-     * is transferred to the layer.
+     * @param property unique property key. Any existing data defined with the same key will be deleted and overridden.
+     * @param dataDefined data defined object to associate with property key. Ownership is transferred to the layer.
      * @note added in QGIS 2.9
      * @see getDataDefinedProperty
      * @see removeDataDefinedProperty
@@ -308,19 +306,19 @@ class CORE_EXPORT QgsSymbolLayerV2
     /** Saves all data defined properties to a string map.
      * @param stringMap destination string map
      * @see restoreDataDefinedProperties
-    */
+     */
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
 
     /** Restores all data defined properties from string map.
      * @param stringMap source string map
      * @note added in QGIS 2.9
      * @see saveDataDefinedProperties
-    */
+     */
     void restoreDataDefinedProperties( const QgsStringMap& stringMap );
 
     /** Copies all data defined properties of this layer to another symbol layer.
      * @param destLayer destination layer
-    */
+     */
     void copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) const;
 
     /** Copies paint effect of this layer to another symbol layer
@@ -423,7 +421,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
      * is usually used for orienting symbols to match a line's angle.
      * @param lineAngle Angle in degrees, valid values are between 0 and 360
      * @note added in QGIS 2.9
-    */
+     */
     void setLineAngle( double lineAngle ) { mLineAngle = lineAngle; }
 
     void setSize( double size ) { mSize = size; }

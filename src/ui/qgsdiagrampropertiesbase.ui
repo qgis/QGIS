@@ -306,7 +306,7 @@
           <item>
            <widget class="QStackedWidget" name="mDiagramStackedWidget">
             <property name="currentIndex">
-             <number>3</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="mDiagramPage_Attributes">
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1151,7 +1151,17 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QgsDoubleSpinBox" name="mIncreaseMinimumSizeSpinBox"/>
+                           <widget class="QgsDoubleSpinBox" name="mIncreaseMinimumSizeSpinBox">
+                            <property name="decimals">
+                             <number>6</number>
+                            </property>
+                            <property name="maximum">
+                             <double>100000.000000000000000</double>
+                            </property>
+                            <property name="singleStep">
+                             <double>0.200000000000000</double>
+                            </property>
+                           </widget>
                           </item>
                           <item>
                            <spacer name="horizontalSpacer_4">

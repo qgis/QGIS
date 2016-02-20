@@ -184,13 +184,14 @@ void QgsMapToolIdentifyAction::deactivate()
   QgsMapTool::deactivate();
 }
 
-QGis::UnitType QgsMapToolIdentifyAction::displayUnits()
+QGis::UnitType QgsMapToolIdentifyAction::displayDistanceUnits() const
 {
-  // Get the units for display
-  QSettings settings;
-  bool ok = false;
-  QGis::UnitType unit = QgsUnitTypes::decodeDistanceUnit( settings.value( "/qgis/measure/displayunits" ).toString(), &ok );
-  return ok ? unit : QGis::Meters;
+  return QgsProject::instance()->distanceUnits();
+}
+
+QgsUnitTypes::AreaUnit QgsMapToolIdentifyAction::displayAreaUnits() const
+{
+  return QgsProject::instance()->areaUnits();
 }
 
 void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore & featureStore )

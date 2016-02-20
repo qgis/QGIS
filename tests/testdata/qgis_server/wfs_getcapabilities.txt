@@ -6,7 +6,7 @@ Content-Type: text/xml; charset=utf-8
   <Name>WFS</Name>
   <Title>QGIS TestProject</Title>
   <Abstract>Some UTF8 text èòù</Abstract>
-  <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href=""/>
+  <OnlineResource></OnlineResource>
   <Fees>conditions unknown</Fees>
   <AccessConstraints>None</AccessConstraints>
  </Service>

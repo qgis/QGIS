@@ -64,6 +64,9 @@ class QgsSnappingUtils : QObject
     /** Query options used when the mode is snap to current layer or to all layers */
     void defaultSettings( int& type /Out/, double& tolerance /Out/, QgsTolerance::UnitType& unit /Out/ );
 
+    /**
+     * Configures how a certain layer should be handled in a snapping operation
+     */
     struct LayerConfig
     {
       LayerConfig( QgsVectorLayer* l, const QgsPointLocator::Types& t, double tol, QgsTolerance::UnitType u );
@@ -71,9 +74,13 @@ class QgsSnappingUtils : QObject
       bool operator==( const QgsSnappingUtils::LayerConfig& other ) const;
       bool operator!=( const QgsSnappingUtils::LayerConfig& other ) const;
 
+      //! The layer to configure.
       QgsVectorLayer* layer;
+      //! To which geometry properties of this layers a snapping should happen.
       QgsPointLocator::Types type;
+      //! The range around snapping targets in which snapping should occur.
       double tolerance;
+      //! The units in which the tolerance is specified.
       QgsTolerance::UnitType unit;
     };
 

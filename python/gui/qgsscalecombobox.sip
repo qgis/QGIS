@@ -26,7 +26,7 @@ class QgsScaleComboBox : QComboBox
     // be expected.
     static QString toString( double scale );
     //! Helper function to convert a scale string to double
-    static double toDouble( const QString& scaleString, bool *ok = NULL );
+    static double toDouble( const QString& scaleString, bool *ok = 0 );
 
   signals:
     //! Signal is emitted when *user* has finished editing/selecting a new scale.

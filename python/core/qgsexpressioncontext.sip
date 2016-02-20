@@ -32,6 +32,7 @@ class QgsScopedExpressionFunction : QgsExpression::Function
 
 };
 
+
 /** \ingroup core
  * \class QgsExpressionContextScope
  * \brief Single scope for storing variables and functions for use within a QgsExpressionContext.
@@ -190,7 +191,6 @@ class QgsExpressionContextScope
     void setFields( const QgsFields& fields );
 };
 
-
 /** \ingroup core
  * \class QgsExpressionContext
  * \brief Expression contexts are used to encapsulate the parameters around which a QgsExpression should
@@ -208,7 +208,7 @@ class QgsExpressionContext
 %End
   public:
 
-    QgsExpressionContext( );
+    QgsExpressionContext();
 
     /** Copy constructor
      */
@@ -262,6 +262,7 @@ class QgsExpressionContext
      * scope which contains a matching variable.
      * @param name variable name
      * @returns matching scope containing variable, or null if none found
+     * @note not available in python bindings
      */
     //const QgsExpressionContextScope* activeScopeForVariable( const QString& name ) const;
 
@@ -467,13 +468,7 @@ class QgsExpressionContextUtils
     /** Creates a new scope which contains variables and functions relating to a QgsMapLayer.
      * For instance, layer name, id and fields.
      */
-    static QgsExpressionContextScope* layerScope( const QgsMapLayer* layer ) /Factory/;
-
-    /** Helper function for creating an expression context which contains just a feature and fields
-     * collection. Generally this method should not be used as the created context does not include
-     * standard scopes such as the global and project scopes.
-     */
-    static QgsExpressionContext createFeatureBasedContext( const QgsFeature& feature, const QgsFields& fields );
+    static QgsExpressionContextScope* layerScope( const QgsMapLayer *layer ) /Factory/;
 
     /** Sets a layer context variable. This variable will be contained within scopes retrieved via
      * layerScope().
@@ -563,8 +558,15 @@ class QgsExpressionContextUtils
      */
     static void setComposerItemVariables( QgsComposerItem* composerItem, const QgsStringMap& variables );
 
+    /** Helper function for creating an expression context which contains just a feature and fields
+     * collection. Generally this method should not be used as the created context does not include
+     * standard scopes such as the global and project scopes.
+     */
+    static QgsExpressionContext createFeatureBasedContext( const QgsFeature& feature, const QgsFields& fields );
+
     /** Registers all known core functions provided by QgsExpressionContextScope objects.
      */
     static void registerContextFunctions();
+
 };
 

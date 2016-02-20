@@ -594,6 +594,7 @@ ENDIF (WIN32)
 IF (ANDROID)
     SET (DEFAULT_PLUGIN_SUBDIR  lib)
     SET (DEFAULT_DATA_SUBDIR    files/share)
+    string(REPLACE "<CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG><TARGET_SONAME>" "" CMAKE_CXX_CREATE_SHARED_MODULE "${CMAKE_CXX_CREATE_SHARED_MODULE}")
 ENDIF (ANDROID)
 
 #assume we have escaped compiler directives
@@ -680,9 +681,9 @@ ENDIF (UNIX AND NOT APPLE)
 # Python build dependency
 
 IF(ENABLE_QT5)
-  SET(PYTHON_VER 3)
+  SET(PYTHON_VER 3 CACHE STRING "Python version")
 ELSE(ENABLE_QT5)
-  SET(PYTHON_VER 2)
+  SET(PYTHON_VER 2.7 CACHE STRING "Python version")
 ENDIF(ENABLE_QT5)
 
 FIND_PACKAGE(PythonInterp ${PYTHON_VER} REQUIRED)
@@ -739,8 +740,7 @@ LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/src/core ${CMAKE_BINARY_DIR}/src/gui)
 
 #############################################################
 # create qgsversion.h
-FIND_FILE(GIT_MARKER index PATHS ${CMAKE_SOURCE_DIR}/.git)
-IF (GIT_MARKER)
+IF (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
   FIND_PROGRAM(GITCOMMAND git PATHS c:/cygwin/bin)
   IF(GITCOMMAND)
     IF(WIN32)
@@ -748,7 +748,7 @@ IF (GIT_MARKER)
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
         COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GITCOMMAND}\" log -n1 --oneline`)" do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
         COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
-        MAIN_DEPENDENCY ${GIT_MARKER}
+        MAIN_DEPENDENCY ${CMAKE_SOURCE_DIR}/.git/index
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
     ELSE(WIN32)
@@ -757,7 +757,7 @@ IF (GIT_MARKER)
         COMMAND ${GITCOMMAND} log -n1 --pretty=\#define\\ QGSVERSION\\ \\"%h\\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
         COMMAND ${GITCOMMAND} config remote.$$\(${GITCOMMAND} config branch.$$\(${GITCOMMAND} name-rev --name-only HEAD\).remote\).url | sed -e 's/^/\#define QGS_GIT_REMOTE_URL \"/' -e 's/$$/\"/' >>${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
         COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
-        MAIN_DEPENDENCY ${GIT_MARKER}
+        MAIN_DEPENDENCY ${CMAKE_SOURCE_DIR}/.git/index
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
     ENDIF(WIN32)
@@ -766,10 +766,10 @@ IF (GIT_MARKER)
     SET(REVISION "unknown")
     FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"unknown\"")
   ENDIF(GITCOMMAND)
-ELSE (GIT_MARKER)
+ELSE (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
   SET(REVISION "exported")
   FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"exported\"")
-ENDIF (GIT_MARKER)
+ENDIF (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
 
 ADD_CUSTOM_TARGET(version ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h)
 

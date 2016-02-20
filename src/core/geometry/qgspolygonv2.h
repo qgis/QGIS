@@ -39,8 +39,14 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygonV2
 
     virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
 
+    // inherited: bool fromWkt( const QString &wkt );
+
     int wkbSize() const override;
     unsigned char* asWkb( int& binarySize ) const override;
+    // inherited: QString asWkt( int precision = 17 ) const;
+    // inherited: QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
+    // inherited: QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
+    // inherited: QString asJSON( int precision = 17 ) const;
 
     QgsPolygonV2* surfaceToPolygon() const override;
 

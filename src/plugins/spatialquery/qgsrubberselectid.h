@@ -31,38 +31,38 @@ class QgsRubberSelectId
 {
   public:
     /**
-    * Constructor for a class RubberSelectedId.
-    * @param mapCanvas Pointer to the iface.mapCanvas().
-    */
+     * Constructor for a class RubberSelectedId.
+     * @param mapCanvas Pointer to the iface.mapCanvas().
+     */
     explicit QgsRubberSelectId( QgsMapCanvas* mapCanvas );
     /**
-    * \brief Destructor
-    */
+     * \brief Destructor
+     */
     ~QgsRubberSelectId();
 
     /**
-    * \brief Reset rubber band
-    */
+     * \brief Reset rubber band
+     */
     void reset();
 
     /**
-    * \brief Set color for rubber band
-    * \param colorRed     integer for value red (0 - 255)
-    * \param colorGreen   integer for value green (0 - 255)
-    * \param colorBlue    integer for value blue (0 - 255)
-    */
+     * \brief Set color for rubber band
+     * \param colorRed     integer for value red (0 - 255)
+     * \param colorGreen   integer for value green (0 - 255)
+     * \param colorBlue    integer for value blue (0 - 255)
+     */
     void setStyle( int colorRed, int colorGreen, int colorBlue, int width );
 
     /**
-    * \brief Create rubber band from geometry by feature
-    * \param mLayer    pointer to QgsVectorLayer
-    * \param fid       integer for ID for feature
-    */
+     * \brief Create rubber band from geometry by feature
+     * \param mLayer    pointer to QgsVectorLayer
+     * \param fid       integer for ID for feature
+     */
     void addFeature( QgsVectorLayer* lyr, QgsFeatureId fid );
 
     /**
-    * \brief Show rubber band
-    */
+     * \brief Show rubber band
+     */
     void show();
   private:
     //! Set Style

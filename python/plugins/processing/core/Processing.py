@@ -333,7 +333,7 @@ class Processing:
 
         msg = alg._checkParameterValuesBeforeExecuting()
         if msg:
-            print 'Unable to execute algorithm\n' + msg
+            print 'Unable to execute algorithm\n' + unicode(msg)
             QgsMessageLog.logMessage(Processing.tr('Unable to execute algorithm\n{0}').format(msg), Processing.tr("Processing"))
             return
 

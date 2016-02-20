@@ -95,22 +95,16 @@ class SelectByAttribute(GeoAlgorithm):
                 self.tr('Operators %s can be used only with string fields.' % op))
 
         if fieldType in [QVariant.Int, QVariant.Double]:
-            progress.setInfo(self.tr('Numeric field'))
             expr = '"%s" %s %s' % (fieldName, operator, value)
-            progress.setInfo(expr)
         elif fieldType == QVariant.String:
-            progress.setInfo(self.tr('String field'))
             if operator not in self.OPERATORS[-2:]:
                 expr = """"%s" %s '%s'""" % (fieldName, operator, value)
             elif operator == 'begins with':
                 expr = """"%s" LIKE '%s%%'""" % (fieldName, value)
             elif operator == 'contains':
                 expr = """"%s" LIKE '%%%s%%'""" % (fieldName, value)
-            progress.setInfo(expr)
         elif fieldType in [QVariant.Date, QVariant.DateTime]:
-            progress.setInfo(self.tr('Date field'))
             expr = """"%s" %s '%s'""" % (fieldName, operator, value)
-            progress.setInfo(expr)
         else:
             raise GeoAlgorithmExecutionException(
                 self.tr('Unsupported field type "%s"' % fields[idx].typeName()))

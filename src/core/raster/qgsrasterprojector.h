@@ -39,7 +39,8 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 {
   public:
     /** Precison defines if each pixel is reprojected or approximate reprojection based
-     *  on an approximation matrix of reprojected points is used. */
+     *  on an approximation matrix of reprojected points is used.
+     */
     enum Precision
     {
       Approximate = 0, //!< Approximate (default), fast but possibly inaccurate
@@ -95,10 +96,10 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
                  int srcDatumTransform = -1, int destDatumTransform = -1 );
 
     /** \brief Get source CRS */
-    QgsCoordinateReferenceSystem srcCrs() const  { return mSrcCRS; }
+    QgsCoordinateReferenceSystem srcCrs() const { return mSrcCRS; }
 
     /** \brief Get destination CRS */
-    QgsCoordinateReferenceSystem destCrs() const  { return mDestCRS; }
+    QgsCoordinateReferenceSystem destCrs() const { return mDestCRS; }
 
     /** \brief set maximum source resolution */
     void setMaxSrcRes( double theMaxSrcXRes, double theMaxSrcYRes )

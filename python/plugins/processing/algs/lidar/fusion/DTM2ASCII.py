@@ -37,15 +37,13 @@ class DTM2ASCII(FusionAlgorithm):
     INPUT = 'INPUT'
     SWITCH = 'SWITCH'
 
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('DTM to ASCII')
         self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-			self.INPUT, self.tr('Input canopy surface (.dtm)')))
+            self.INPUT, self.tr('Input canopy surface (.dtm)')))
         self.addParameter(ParameterSelection(
-			self.SWITCH, self.tr('Output format'), ['raster (ASCII)', 'csv']))
-
+            self.SWITCH, self.tr('Output format'), ['raster (ASCII)', 'csv']))
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'DTM2ASCII.exe')]

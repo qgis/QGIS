@@ -83,7 +83,7 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
     /** Calculates the area of the curve. Derived classes should override this
      * to return the correct area of the curve.
      */
-    virtual void sumUpArea( double& sum ) const  = 0;
+    virtual void sumUpArea( double& sum ) const = 0;
 
     virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const override;
     virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
@@ -101,6 +101,7 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
      */
     virtual QgsCurveV2* reversed() const = 0;
 
+    /** Returns a geometry without curves. Caller takes ownership*/
     QgsCurveV2* segmentize() const override;
 
     virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return numPoints(); }

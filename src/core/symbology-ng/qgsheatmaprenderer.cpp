@@ -31,7 +31,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsHeatmapRenderer::QgsHeatmapRenderer( )
+QgsHeatmapRenderer::QgsHeatmapRenderer()
     : QgsFeatureRendererV2( "heatmapRenderer" )
     , mCalculatedMaxValue( 0 )
     , mRadius( 10 )
@@ -167,7 +167,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
       for ( int y = qMax( pointY - mRadiusPixels, 0 ); y < qMin( pointY + mRadiusPixels, height ); ++y )
       {
         int index = y * width + x;
-        if ( index >= mValues.count( ) )
+        if ( index >= mValues.count() )
         {
           continue;
         }
@@ -361,6 +361,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument& doc )
     rendererElem.appendChild( colorRampElem );
   }
   rendererElem.setAttribute( "invert_ramp", QString::number( mInvertRamp ) );
+  rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
@@ -371,6 +372,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument& doc )
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
+  rendererElem.setAttribute( "enableorderby", ( mOrderByEnabled ? "1" : "0" ) );
 
   return rendererElem;
 }

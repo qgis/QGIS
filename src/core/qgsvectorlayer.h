@@ -81,8 +81,8 @@ struct CORE_EXPORT QgsVectorJoinInfo
   /** True if the join is cached in virtual memory*/
   bool memoryCache;
   /** Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
-    @note not available in python bindings
-    */
+   * @note not available in python bindings
+   */
   QHash< QString, QgsAttributes> cachedAttributes;
 
   /** Join field index in the target layer. For backward compatibility with 1.x (x>=7)*/
@@ -539,8 +539,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsVectorDataProvider* dataProvider();
 
     /** Returns the data provider in a const-correct manner
-        @note not available in python bindings
-      */
+     * @note not available in python bindings
+     */
     const QgsVectorDataProvider* dataProvider() const;
 
     /** Sets the textencoding of the data provider */
@@ -611,7 +611,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Get the label rendering properties associated with this layer */
     QgsLabel *label();
 
-    /** Get the label rendering properties associated with this layer */
+    /** Get the label rendering properties associated with this layer
+     * @note not available in python bindings
+     */
     const QgsLabel *label() const;
 
     QgsAttributeAction *actions() { return mActions; }
@@ -729,7 +731,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Return renderer V2. */
     QgsFeatureRendererV2* rendererV2() { return mRendererV2; }
 
-    /** Return const renderer V2. */
+    /** Return const renderer V2.
+     * @note not available in python bindings
+     */
     const QgsFeatureRendererV2* rendererV2() const { return mRendererV2; }
 
     /**
@@ -751,12 +755,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QString providerType() const;
 
     /** Reads vector layer specific state from project file Dom node.
-     *  @note Called by QgsMapLayer::readXML().
+     * @note Called by QgsMapLayer::readXML().
      */
     virtual bool readXml( const QDomNode& layer_node ) override;
 
     /** Write vector layer specific state to project file Dom node.
-     *  @note Called by QgsMapLayer::writeXML().
+     * @note Called by QgsMapLayer::writeXML().
      */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc ) override;
 
@@ -913,9 +917,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
 
     /** Moves the vertex at the given position number,
-     *  ring and item (first number is index 0), and feature
-     *  to the given coordinates
-     *  @note available in python as moveVertexV2
+     * ring and item (first number is index 0), and feature
+     * to the given coordinates
+     * @note available in python as moveVertexV2
      */
     bool moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex );
 
@@ -940,60 +944,69 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Adds a ring to polygon/multipolygon features
      * @param ring ring to add
      * @param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
-     @return
-       0 in case of success,
-       1 problem with feature type,
-       2 ring not closed,
-       3 ring not valid,
-       4 ring crosses existing rings,
-       5 no feature found where ring can be inserted
-       6 layer not editable */
+     * @return
+     *  0 in case of success,
+     *  1 problem with feature type,
+     *  2 ring not closed,
+     *  3 ring not valid,
+     *  4 ring crosses existing rings,
+     *  5 no feature found where ring can be inserted
+     *  6 layer not editable
+     */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureId = nullptr );
 
     /** Adds a ring to polygon/multipolygon features (takes ownership)
      * @param ring ring to add
      * @param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
-            @return
-            0 in case of success
-            1 problem with feature type
-            2 ring not closed
-            6 layer not editable
-       @note available in python as addCurvedRing
+     * @return
+     *  0 in case of success
+     *  1 problem with feature type
+     *  2 ring not closed
+     *  6 layer not editable
+     * @note available in python as addCurvedRing
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( QgsCurveV2* ring, QgsFeatureId* featureId = nullptr );
 
     /** Adds a new part polygon to a multipart feature
-     @return
-       0 in case of success,
-       1 if selected feature is not multipart,
-       2 if ring is not a valid geometry,
-       3 if new polygon ring not disjoint with existing rings,
-       4 if no feature was selected,
-       5 if several features are selected,
-       6 if selected geometry not found
-       7 layer not editable */
+     * @return
+     *   0 in case of success,
+     *   1 if selected feature is not multipart,
+     *   2 if ring is not a valid geometry,
+     *   3 if new polygon ring not disjoint with existing rings,
+     *   4 if no feature was selected,
+     *   5 if several features are selected,
+     *   6 if selected geometry not found
+     *   7 layer not editable
+     */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QList<QgsPoint>& ring );
 
     /** Adds a new part polygon to a multipart feature
-     @return
-       0 in case of success,
-       1 if selected feature is not multipart,
-       2 if ring is not a valid geometry,
-       3 if new polygon ring not disjoint with existing rings,
-       4 if no feature was selected,
-       5 if several features are selected,
-       6 if selected geometry not found
-       7 layer not editable */
+     * @return
+     *   0 in case of success,
+     *   1 if selected feature is not multipart,
+     *   2 if ring is not a valid geometry,
+     *   3 if new polygon ring not disjoint with existing rings,
+     *   4 if no feature was selected,
+     *   5 if several features are selected,
+     *   6 if selected geometry not found
+     *   7 layer not editable
+     * @note available in python bindings as addPartV2
+     */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QList<QgsPointV2>& ring );
 
     //! @note available in python as addCurvedPart
     int addPart( QgsCurveV2* ring );
 
     /** Translates feature by dx, dy
-       @param featureId id of the feature to translate
-       @param dx translation of x-coordinate
-       @param dy translation of y-coordinate
-       @return 0 in case of success*/
+     *  @param featureId id of the feature to translate
+     *  @param dx translation of x-coordinate
+     *  @param dy translation of y-coordinate
+     *  @return 0 in case of success
+     */
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
 
     /** Splits parts cut by the given line
@@ -1003,6 +1016,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *   0 in case of success,
      *   4 if there is a selection but no feature split
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitParts( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
     /** Splits features cut by the given line
@@ -1012,6 +1026,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *   0 in case of success,
      *   4 if there is a selection but no feature split
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
     /** Changes the specified geometry such that it has no intersections with other
@@ -1049,12 +1064,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Set labels on
      * @deprecated this method is for the old labeling engine
-    */
+     */
     Q_DECL_DEPRECATED void enableLabels( bool on );
 
     /** Label is on
      * @deprecated this method is for the old labeling engine, use labelsEnabled instead
-    */
+     */
     Q_DECL_DEPRECATED bool hasLabelsEnabled() const;
 
     /** Access to labeling configuration.
@@ -1113,7 +1128,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Draws the layer labels using the old labeling engine
      * @deprecated will be removed in QGIS 3.0
-    */
+     */
     Q_DECL_DEPRECATED void drawLabels( QgsRenderContext& rendererContext ) override;
 
     /** Return the extent of the layer */
@@ -1198,7 +1213,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
     /** Add an attribute field (but does not commit it)
-        returns true if the field was added */
+     * returns true if the field was added
+     */
     bool addAttribute( const QgsField &field );
 
     /** Sets an alias (a display name) for attributes to display in dialogs */
@@ -1324,19 +1340,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool deleteFeatures( const QgsFeatureIds& fids );
 
     /**
-      Attempts to commit any changes to disk.  Returns the result of the attempt.
-      If a commit fails, the in-memory changes are left alone.
-
-      This allows editing to continue if the commit failed on e.g. a
-      disallowed value in a Postgres database - the user can re-edit and try
-      again.
-
-      The commits occur in distinct stages,
-      (add attributes, add features, change attribute values, change
-      geometries, delete features, delete attributes)
-      so if a stage fails, it's difficult to roll back cleanly.
-      Therefore any error message also includes which stage failed so
-      that the user has some chance of repairing the damage cleanly.
+     * Attempts to commit any changes to disk.  Returns the result of the attempt.
+     * If a commit fails, the in-memory changes are left alone.
+     *
+     * This allows editing to continue if the commit failed on e.g. a
+     * disallowed value in a Postgres database - the user can re-edit and try
+     * again.
+     *
+     * The commits occur in distinct stages,
+     * (add attributes, add features, change attribute values, change
+     * geometries, delete features, delete attributes)
+     * so if a stage fails, it's difficult to roll back cleanly.
+     * Therefore any error message also includes which stage failed so
+     * that the user has some chance of repairing the damage cleanly.
      */
     bool commitChanges();
     const QStringList &commitErrors();
@@ -1574,9 +1590,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void createJoinCaches();
 
     /** Returns unique values for column
-      @param index column index for attribute
-      @param uniqueValues out: result list
-      @param limit maximum number of values to return (-1 if unlimited) */
+     * @param index column index for attribute
+     * @param uniqueValues out: result list
+     * @param limit maximum number of values to return (-1 if unlimited)
+     */
     void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
 
     /** Returns minimum value for an attribute column or invalid variant in case of error */
@@ -1899,22 +1916,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
 
     /** Bind layer to a specific data provider
-       @param provider should be "postgres", "ogr", or ??
-       @todo XXX should this return bool?  Throw exceptions?
-    */
+     * @param provider should be "postgres", "ogr", or ??
+     * @todo XXX should this return bool?  Throw exceptions?
+     */
     bool setDataProvider( QString const & provider );
 
     /** Goes through all features and finds a free id (e.g. to give it temporarily to a not-commited feature) */
     QgsFeatureId findFreeId();
 
     /** Snaps to a geometry and adds the result to the multimap if it is within the snapping result
-     @param startPoint start point of the snap
-     @param featureId id of feature
-     @param geom geometry to snap
-     @param sqrSnappingTolerance squared search tolerance of the snap
-     @param snappingResults list to which the result is appended
-     @param snap_to snap to vertex or to segment
-    */
+     * @param startPoint start point of the snap
+     * @param featureId id of feature
+     * @param geom geometry to snap
+     * @param sqrSnappingTolerance squared search tolerance of the snap
+     * @param snappingResults list to which the result is appended
+     * @param snap_to snap to vertex or to segment
+     */
     void snapToGeometry( const QgsPoint& startPoint,
                          QgsFeatureId featureId,
                          const QgsGeometry *geom,

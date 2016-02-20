@@ -92,9 +92,8 @@ class BasicStatisticsStrings(GeoAlgorithm):
 
         features = vector.features(layer)
         count = len(features)
-        total = 100.0 / float(count)
-        current = 0
-        for ft in features:
+        total = 100.0 / count
+        for current, ft in enumerate(features):
             length = float(len(ft.attributes()[index]))
 
             if isFirst:
@@ -115,7 +114,6 @@ class BasicStatisticsStrings(GeoAlgorithm):
             values.append(length)
             sumValue += length
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         n = float(len(values))

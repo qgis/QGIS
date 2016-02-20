@@ -1,6 +1,11 @@
 
 /** Raster checker for tests in python */
 
+/** \ingroup UnitTests
+ * This is a helper class for unit tests that need to
+ * write an image and compare it to an expected result
+ * or render time.
+ */
 class QgsRasterChecker
 {
 %TypeHeaderCode

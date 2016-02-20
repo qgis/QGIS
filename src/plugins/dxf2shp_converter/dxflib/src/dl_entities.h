@@ -906,9 +906,9 @@ struct DXFLIB_EXPORT DL_AttributeData : public DL_TextData {
  */
 struct DXFLIB_EXPORT DL_DimensionData {
     /**
-    * Constructor.
-    * Parameters: see member variables.
-    */
+     * Constructor.
+     * Parameters: see member variables.
+     */
     DL_DimensionData(double dpx, double dpy, double dpz,
                      double mpx, double mpy, double mpz,
                      int type,

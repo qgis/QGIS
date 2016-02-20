@@ -23,7 +23,7 @@
  * \class QgsSqlExpressionCompiler
  * \brief Generic expression compiler for translation to provider specific SQL WHERE clauses.
  *
- * This class is designed to be overriden by providers to take advantage of expression compilation,
+ * This class is designed to be overridden by providers to take advantage of expression compilation,
  * so that feature requests can take advantage of the provider's native filtering support.
  * \note Added in version 2.14
  * \note Not part of stable API, may change in future versions of QGIS

@@ -182,7 +182,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * @see colorType
      * @see setColor
      * @see setRamp
-    */
+     */
     void setColorType( GlowColorType colorType ) { mColorType = colorType; }
 
     /** Returns the color mode used for the glow. The glow can either be drawn using a QgsVectorColorRampV2
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * @see setColorType
      * @see color
      * @see ramp
-    */
+     */
     GlowColorType colorType() const { return mColorType; }
 
     QgsGlowEffect& operator=( const QgsGlowEffect& rhs );

@@ -69,8 +69,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
         current = 0
         features = vector.features(layer)
-        total = 100.0 / float(len(features) * len(unique))
-
+        total = 100.0 / (len(features) * len(unique))
         if not len(unique) == layer.featureCount():
             for i in unique:
                 multi_feature = []

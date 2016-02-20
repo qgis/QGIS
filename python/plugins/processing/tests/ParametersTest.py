@@ -308,6 +308,16 @@ class ParameterNumberTest(unittest.TestCase):
         self.assertFalse(parameter.setValue('not a number'))
         self.assertEqual(parameter.value, None)
 
+    def testIsInteger(self):
+        floatParameter = ParameterNumber('myname', 'myDescription', default=1.0)
+        self.assertFalse(floatParameter.isInteger)
+        intParameter = ParameterNumber('myname', 'myDescription', default=10)
+        self.assertTrue(intParameter.isInteger)
+        strFloatParameter = ParameterNumber('myname', 'myDescription', default="1.0")
+        self.assertFalse(strFloatParameter.isInteger)
+        strIntParameter = ParameterNumber('myname', 'myDescription', default="10")
+        self.assertTrue(strIntParameter.isInteger)
+
     def testMaxValue(self):
         parameter = ParameterNumber('myName', 'myDescription', maxValue=10)
         self.assertFalse(parameter.setValue(11))

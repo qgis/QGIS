@@ -88,6 +88,7 @@ SET(QGIS_CORE_SRCS
   qgscontexthelp_texts.cpp
   qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
+  qgscoordinateutils.cpp
   qgscredentials.cpp
   qgscrscache.cpp
   qgsdartmeasurement.cpp
@@ -585,6 +586,7 @@ SET(QGIS_CORE_HDRS
   qgscontexthelp.h
   qgsconditionalstyle.h
   qgscoordinatereferencesystem.h
+  qgscoordinateutils.h
   qgscrscache.h
   qgscsexception.h
   qgsdartmeasurement.h
@@ -795,11 +797,12 @@ SET(QGIS_CORE_HDRS
   layertree/qgslayertree.h
   layertree/qgslayertreeutils.h
 
+  geometry/qgsabstractgeometryv2.h
   geometry/qgsgeometry.h
   geometry/qgsinternalgeometryengine.h
-  geometry/qgsabstractgeometryv2.h
-  geometry/qgswkbtypes.h
   geometry/qgspointv2.h
+  geometry/qgswkbptr.h
+  geometry/qgswkbtypes.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)

@@ -8,9 +8,10 @@ QT4_WRAP_CPP(vlayer_provider_MOC_SRCS
   qgsvirtuallayerprovider.h
   qgsslottofunction.h
   qgsvirtuallayersourceselect.h
+  qgsembeddedlayerselectdialog.h
 )
 
-QT4_WRAP_UI(vlayer_provider_UI_H qgsvirtuallayersourceselectbase.ui)
+QT4_WRAP_UI(vlayer_provider_UI_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
 
 SET(QGIS_VLAYER_PROVIDER_SRCS
   ${vlayer_provider_MOC_SRCS}
@@ -23,6 +24,7 @@ SET(QGIS_VLAYER_PROVIDER_SRCS
   qgsvirtuallayersqlitehelper.cpp
   qgsvirtuallayerqueryparser.cpp
   qgsvirtuallayersourceselect.cpp
+  qgsembeddedlayerselectdialog.cpp
 )
 
 INCLUDE_DIRECTORIES(

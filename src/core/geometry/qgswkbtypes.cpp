@@ -32,12 +32,14 @@ QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry>* QgsWKBTypes::entries()
 QgsWKBTypes::Type QgsWKBTypes::parseType( const QString &wktStr )
 {
   QString typestr = wktStr.left( wktStr.indexOf( '(' ) ).simplified().remove( ' ' );
-  Q_FOREACH ( Type type, entries()->keys() )
+
+  QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry>* knownTypes = entries();
+  QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry>::const_iterator it = knownTypes->constBegin();
+  for ( ; it != knownTypes->constEnd(); ++it )
   {
-    QMap< Type, wkbEntry >::const_iterator it = entries()->constFind( type );
-    if ( it != entries()->constEnd() && it.value().mName.compare( typestr, Qt::CaseInsensitive ) == 0 )
+    if ( it.value().mName.compare( typestr, Qt::CaseInsensitive ) == 0 )
     {
-      return type;
+      return it.key();
     }
   }
   return Unknown;

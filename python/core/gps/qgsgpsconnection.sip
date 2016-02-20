@@ -39,7 +39,7 @@ struct QgsGPSInformation
 };
 
 /** Abstract base class for connection to a GPS device*/
-class QgsGPSConnection: QObject
+class QgsGPSConnection : QObject
 {
 %TypeHeaderCode
 #include <qgsgpsconnection.h>

@@ -78,9 +78,9 @@ class CORE_EXPORT QgsWkbPtr
     inline void operator+=( int n ) { verifyBound( n ); mP += n; }
 
     inline operator unsigned char *() const { return mP; }
-    inline int size() const { return mEnd -mStart; }
-    inline int remaining() const { return mEnd -mP; }
-    inline int writtenSize() const { return mP -mStart; }
+    inline int size() const { return mEnd - mStart; }
+    inline int remaining() const { return mEnd - mP; }
+    inline int writtenSize() const { return mP - mStart; }
 };
 
 /** \class QgsConstWkbPtr
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsConstWkbPtr
     inline void operator-=( int n ) { mP -= n; }
 
     inline operator const unsigned char *() const { return mP; }
-    inline int remaining() const { return mEnd -mP; }
+    inline int remaining() const { return mEnd - mP; }
 };
 
 #endif // QGSWKBPTR_H

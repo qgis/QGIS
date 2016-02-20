@@ -1201,6 +1201,7 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
+  rendererElem.setAttribute( "enableorderby", ( mOrderByEnabled ? "1" : "0" ) );
 
   return rendererElem;
 }
@@ -1745,6 +1746,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::convertFromRenderer(
   }
 
   r->setOrderBy( renderer->orderBy() );
+  r->setOrderByEnabled( renderer->orderByEnabled() );
 
   return r;
 }

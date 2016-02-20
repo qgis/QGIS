@@ -56,13 +56,13 @@ class CORE_EXPORT QgsRenderContext
      */
     enum Flag
     {
-      DrawEditingInfo    = 0x01,  //!< Enable drawing of vertex markers for layers in editing mode
-      ForceVectorOutput  = 0x02,  //!< Vector graphics should not be cached and drawn as raster images
-      UseAdvancedEffects = 0x04,  //!< Enable layer transparency and blending effects
-      UseRenderingOptimization = 0x08, //!< Enable vector simplification and other rendering optimizations
-      DrawSelection      = 0x10,  //!< Whether vector selections should be shown in the rendered map
-      DrawSymbolBounds   = 0x20,  //!< Draw bounds of symbols (for debugging/testing)
-      RenderMapTile = 0x40, //!< Draw map such that there are no problems between adjacent tiles
+      DrawEditingInfo          = 0x01,  //!< Enable drawing of vertex markers for layers in editing mode
+      ForceVectorOutput        = 0x02,  //!< Vector graphics should not be cached and drawn as raster images
+      UseAdvancedEffects       = 0x04,  //!< Enable layer transparency and blending effects
+      UseRenderingOptimization = 0x08,  //!< Enable vector simplification and other rendering optimizations
+      DrawSelection            = 0x10,  //!< Whether vector selections should be shown in the rendered map
+      DrawSymbolBounds         = 0x20,  //!< Draw bounds of symbols (for debugging/testing)
+      RenderMapTile            = 0x40,  //!< Draw map such that there are no problems between adjacent tiles
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -110,11 +110,11 @@ class CORE_EXPORT QgsRenderContext
     bool forceVectorOutput() const;
 
     /** Returns true if advanced effects such as blend modes such be used
-    */
+     */
     bool useAdvancedEffects() const;
 
     /** Used to enable or disable advanced effects such as blend modes
-    */
+     */
     void setUseAdvancedEffects( bool enabled );
 
     bool drawEditingInformation() const;
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsRenderContext
      * @see setShowSelection
      * @see selectionColor
      * @note Added in QGIS v2.4
-    */
+     */
     bool showSelection() const;
 
     //setters
@@ -165,11 +165,11 @@ class CORE_EXPORT QgsRenderContext
      * @see showSelection
      * @see setSelectionColor
      * @note Added in QGIS v2.4
-    */
+     */
     void setShowSelection( const bool showSelection );
 
     /** Returns true if the rendering optimization (geometry simplification) can be executed
-    */
+     */
     bool useRenderingOptimization() const;
 
     void setUseRenderingOptimization( bool enabled );

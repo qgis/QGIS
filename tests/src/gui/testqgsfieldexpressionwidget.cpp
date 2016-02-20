@@ -36,7 +36,8 @@ class TestQgsFieldExpressionWidget : public QObject
 
   public:
     TestQgsFieldExpressionWidget()
-        : mLayerA( nullptr )
+        : mWidget( nullptr )
+        , mLayerA( nullptr )
         , mLayerB( nullptr )
     {}
 

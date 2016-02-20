@@ -5,12 +5,21 @@ class QgsCodeEditor: QsciScintilla
 %End
 
   public:
+    /**
+     * Construct a new code editor.
+     *
+     * @param parent The parent QWidget
+     * @param title The title to show in the code editor dialog
+     * @param folding False: Enable margin for code editor
+     * @param margin False: Enable folding for code editor
+     * @note added in 2.6
+     */
     QgsCodeEditor( QWidget *parent /TransferThis/ = 0, const QString& title = "" , bool folding = false, bool margin = false );
     ~QgsCodeEditor();
 
     /** Set the widget title
      * @param title widget title
-    */
+     */
     void setTitle( const QString& title );
 
     /** Set margin visible state

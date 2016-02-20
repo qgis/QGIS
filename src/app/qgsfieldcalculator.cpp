@@ -164,6 +164,8 @@ void QgsFieldCalculator::accept()
   QString calcString = builder->expressionText();
   QgsExpression exp( calcString );
   exp.setGeomCalculator( myDa );
+  exp.setDistanceUnits( QgsProject::instance()->distanceUnits() );
+  exp.setAreaUnits( QgsProject::instance()->areaUnits() );
 
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()

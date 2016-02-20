@@ -42,15 +42,15 @@ class CORE_EXPORT QgsProjectVersion
     QString text();
 
     /** Boolean equal operator
-    */
+     */
     bool operator==( const QgsProjectVersion &other ) const;
 
     /** Boolean >= operator
-    */
+     */
     bool operator>=( const QgsProjectVersion &other ) const;
 
     /** Boolean > operator
-    */
+     */
     bool operator>( const QgsProjectVersion &other ) const;
 
   private:

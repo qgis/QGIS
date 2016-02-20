@@ -146,11 +146,11 @@ class topolTest: public QObject
 #endif
 
     /**
-    * Checks for short segments
-    * @param tolerance tolerance - not used
-    * @param layer1 pointer to the first layer
-    * @param layer2 pointer to the second layer
-    */
+     * Checks for short segments
+     * @param tolerance tolerance - not used
+     * @param layer1 pointer to the first layer
+     * @param layer2 pointer to the second layer
+     */
     ErrorList checkSegmentLength( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
     /**
      * Checks for dangling lines

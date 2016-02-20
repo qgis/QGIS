@@ -52,7 +52,6 @@ class QgsComposerTableStyle
 
 };
 
-
 /** A class to display a table in the print composer, and allow
  * the table to span over multiple frames
  * \ingroup MapComposer
@@ -404,7 +403,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * This also causes the column widths and size of the table to change to accommodate the
      * new data.
      * @see adjustFrameToSize
-    */
+     */
     virtual void refreshAttributes();
 
     void recalculateFrameSizes();

@@ -66,6 +66,8 @@ class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     QList<QgsField> mAddedAttributes;
     QgsChangedAttributesMap mChangedAttributeValues;
     QgsAttributeList mDeletedAttributeIds;
+
+    long mCrsId;
 };
 
 
@@ -127,17 +129,17 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     /** Update feature with uncommited attribute updates.
      * @note not available in Python bindings
-    */
+     */
     void updateChangedAttributes( QgsFeature& f );
 
     /** Update feature with uncommited geometry updates.
      * @note not available in Python bindings
-    */
+     */
     void updateFeatureGeometry( QgsFeature& f );
 
     /** Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
-      Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
-    */
+     * Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
+     */
     struct FetchJoinInfo
     {
       const QgsVectorJoinInfo* joinInfo;//!< cannonical source of information about the join

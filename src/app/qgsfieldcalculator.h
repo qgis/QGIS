@@ -71,6 +71,8 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
 
     /** Idx of changed attribute*/
     int mAttributeId;
+
+    friend class TestQgsFieldCalculator;
 };
 
 #endif // QGSFIELDCALCULATOR_H

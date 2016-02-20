@@ -51,10 +51,8 @@ class QgsSymbolLayerV2Utils
     static QString encodeSldRealVector( const QVector<qreal>& v );
     static QVector<qreal> decodeSldRealVector( const QString& s );
 
-    //! @deprecated use QgsUnitTypes::encodeUnit() instead
-    static QString encodeOutputUnit( QgsSymbolV2::OutputUnit unit ) /Deprecated/;
-    //! @deprecated use QgsUnitTypes::decodeSymbolUnit() instead
-    static QgsSymbolV2::OutputUnit decodeOutputUnit( const QString& str ) /Deprecated/;
+    static QString encodeOutputUnit( QgsSymbolV2::OutputUnit unit );
+    static QgsSymbolV2::OutputUnit decodeOutputUnit( const QString& str );
 
     static QString encodeSldUom( QgsSymbolV2::OutputUnit unit, double *scaleFactor );
     static QgsSymbolV2::OutputUnit decodeSldUom( const QString& str, double *scaleFactor );
@@ -287,7 +285,7 @@ class QgsSymbolLayerV2Utils
      * @param colors colors to export
      * @returns true if export was successful
      * @see importColorsFromGpl
-    */
+     */
     static bool saveColorsToGpl( QFile &file, const QString& paletteName, const QgsNamedColorList& colors );
 
     /**
@@ -297,7 +295,7 @@ class QgsSymbolLayerV2Utils
      * @param name will be set to palette name from gpl file, if present
      * @returns list of imported colors
      * @see saveColorsToGpl
-    */
+     */
     static QgsNamedColorList importColorsFromGpl( QFile &file, bool &ok, QString& name );
 
     /**
@@ -328,7 +326,7 @@ class QgsSymbolLayerV2Utils
      * @param u units to convert from
      * @param scale map unit scale, specifying limits for the map units to convert from
      * @see convertToPainterUnits()
-    */
+     */
     static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
     /** Converts a size from the specied units to painter units. The conversion respects the limits
@@ -344,8 +342,10 @@ class QgsSymbolLayerV2Utils
 
     /** Returns scale factor painter units -> pixel dimensions*/
     static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+
     /** Returns scale factor painter units -> map units*/
     static double mapUnitScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+
     /** Creates a render context for a pixel based device*/
     static QgsRenderContext createRenderContext( QPainter* p );
 

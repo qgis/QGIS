@@ -119,6 +119,7 @@ void usage( std::string const & appName )
             << "\t[--project projectfile]\tload the given QGIS project\n"
             << "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n"
             << "\t[--nologo]\thide splash screen\n"
+            << "\t[--noversioncheck]\tdon't check for new version of QGIS at startup"
             << "\t[--noplugins]\tdon't restore plugins on startup\n"
             << "\t[--nocustomization]\tdon't apply GUI customization\n"
             << "\t[--customizationfile]\tuse the given ini file as GUI customization\n"
@@ -476,6 +477,7 @@ int main( int argc, char *argv[] )
   int mySnapshotHeight = 600;
 
   bool myHideSplash = false;
+  bool mySkipVersionCheck = false;
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: Splash hidden" ) );
   myHideSplash = true;
@@ -542,6 +544,10 @@ int main( int argc, char *argv[] )
       else if ( arg == "--nologo" || arg == "-n" )
       {
         myHideSplash = true;
+      }
+      else if ( arg == "--noversioncheck" || arg == "-V" )
+      {
+        mySkipVersionCheck = true;
       }
       else if ( arg == "--noplugins" || arg == "-P" )
       {
@@ -1032,7 +1038,7 @@ int main( int argc, char *argv[] )
   // this should be done in QgsApplication::init() but it doesn't know the settings dir.
   QgsApplication::setMaxThreads( QSettings().value( "/qgis/max_threads", -1 ).toInt() );
 
-  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins ); // "QgisApp" used to find canonical instance
+  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipVersionCheck ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( "QgisApp" );
 
   myApp.connect(
@@ -1172,7 +1178,7 @@ int main( int argc, char *argv[] )
     }
     else
     {
-      Q_FOREACH ( QgsMapLayer *ml, QgsMapLayerRegistry::instance()->mapLayers().values() )
+      Q_FOREACH ( QgsMapLayer *ml, QgsMapLayerRegistry::instance()->mapLayers() )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( !vl )

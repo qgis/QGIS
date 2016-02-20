@@ -96,9 +96,11 @@ QgsExpression::Interval QgsExpression::Interval::fromString( const QString& stri
     }
 
     bool matched = false;
-    Q_FOREACH ( int duration, map.keys() )
+    QMap<int, QStringList>::const_iterator it = map.constBegin();
+    for ( ; it != map.constEnd(); ++it )
     {
-      Q_FOREACH ( const QString& name, map[duration] )
+      int duration = it.key();
+      Q_FOREACH ( const QString& name, it.value() )
       {
         if ( match.contains( name, Qt::CaseInsensitive ) )
         {
@@ -1658,7 +1660,16 @@ static QVariant fcnGeomArea( const QVariantList&, const QgsExpressionContext* co
   FEAT_FROM_CONTEXT( context, f );
   ENSURE_GEOM_TYPE( f, g, QGis::Polygon );
   QgsDistanceArea* calc = parent->geomCalculator();
-  return QVariant( calc->measureArea( f.constGeometry() ) );
+  if ( calc )
+  {
+    double area = calc->measureArea( f.constGeometry() );
+    area = calc->convertAreaMeasurement( area, parent->areaUnits() );
+    return QVariant( area );
+  }
+  else
+  {
+    return QVariant( f.constGeometry()->area() );
+  }
 }
 
 static QVariant fcnArea( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -1676,7 +1687,16 @@ static QVariant fcnGeomLength( const QVariantList&, const QgsExpressionContext* 
   FEAT_FROM_CONTEXT( context, f );
   ENSURE_GEOM_TYPE( f, g, QGis::Line );
   QgsDistanceArea* calc = parent->geomCalculator();
-  return QVariant( calc->measureLength( f.constGeometry() ) );
+  if ( calc )
+  {
+    double len = calc->measureLength( f.constGeometry() );
+    len = calc->convertLengthMeasurement( len, parent->distanceUnits() );
+    return QVariant( len );
+  }
+  else
+  {
+    return QVariant( f.constGeometry()->length() );
+  }
 }
 
 static QVariant fcnGeomPerimeter( const QVariantList&, const QgsExpressionContext* context, QgsExpression* parent )
@@ -1684,7 +1704,16 @@ static QVariant fcnGeomPerimeter( const QVariantList&, const QgsExpressionContex
   FEAT_FROM_CONTEXT( context, f );
   ENSURE_GEOM_TYPE( f, g, QGis::Polygon );
   QgsDistanceArea* calc = parent->geomCalculator();
-  return QVariant( calc->measurePerimeter( f.constGeometry() ) );
+  if ( calc )
+  {
+    double len = calc->measurePerimeter( f.constGeometry() );
+    len = calc->convertLengthMeasurement( len, parent->distanceUnits() );
+    return QVariant( len );
+  }
+  else
+  {
+    return f.constGeometry()->isEmpty() ? QVariant( 0 ) : QVariant( f.constGeometry()->geometry()->perimeter() );
+  }
 }
 
 static QVariant fcnPerimeter( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -3387,8 +3416,27 @@ QString QgsExpression::dump() const
 
 QgsDistanceArea* QgsExpression::geomCalculator()
 {
-  initGeomCalculator();
   return d->mCalc.data();
+}
+
+QGis::UnitType QgsExpression::distanceUnits() const
+{
+  return d->mDistanceUnit;
+}
+
+void QgsExpression::setDistanceUnits( QGis::UnitType unit )
+{
+  d->mDistanceUnit = unit;
+}
+
+QgsUnitTypes::AreaUnit QgsExpression::areaUnits() const
+{
+  return d->mAreaUnit;
+}
+
+void QgsExpression::setAreaUnits( QgsUnitTypes::AreaUnit unit )
+{
+  d->mAreaUnit = unit;
 }
 
 void QgsExpression::acceptVisitor( QgsExpression::Visitor& v ) const
@@ -3968,6 +4016,15 @@ QString QgsExpression::NodeBinaryOperator::dump() const
 {
   QgsExpression::NodeBinaryOperator *lOp = dynamic_cast<QgsExpression::NodeBinaryOperator *>( mOpLeft );
   QgsExpression::NodeBinaryOperator *rOp = dynamic_cast<QgsExpression::NodeBinaryOperator *>( mOpRight );
+  QgsExpression::NodeUnaryOperator *ruOp = dynamic_cast<QgsExpression::NodeUnaryOperator *>( mOpRight );
+
+  QString rdump( mOpRight->dump() );
+
+  // avoid dumping "IS (NOT ...)" as "IS NOT ..."
+  if ( mOp == boIs && ruOp && ruOp->op() == uoNot )
+  {
+    rdump.prepend( '(' ).append( ')' );
+  }
 
   QString fmt;
   if ( leftAssociative() )
@@ -3983,7 +4040,7 @@ QString QgsExpression::NodeBinaryOperator::dump() const
     fmt += rOp && ( rOp->precedence() < precedence() ) ? "(%3)" : "%3";
   }
 
-  return fmt.arg( mOpLeft->dump(), BinaryOperatorText[mOp], mOpRight->dump() );
+  return fmt.arg( mOpLeft->dump(), BinaryOperatorText[mOp], rdump );
 }
 
 QgsExpression::Node* QgsExpression::NodeBinaryOperator::clone() const

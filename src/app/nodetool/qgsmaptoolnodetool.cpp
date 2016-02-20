@@ -67,7 +67,7 @@ void QgsMapToolNodeTool::createTopologyRubberBands()
     // Snap vertex
     QMultiMap<double, QgsSnappingResult> snapResults;
     vlayer->snapWithContext( vertexEntry->pointV1(), ZERO_TOLERANCE, snapResults, QgsSnapper::SnapToVertex );
-    Q_FOREACH ( const QgsSnappingResult& snapResult, snapResults.values() )
+    Q_FOREACH ( const QgsSnappingResult& snapResult, snapResults )
     {
       // Get geometry of snapped feature
       QgsFeatureId snapFeatureId = snapResult.snappedAtGeometry;
@@ -698,7 +698,7 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
   }
 }
 
-int QgsMapToolNodeTool::firstSelectedVertex( )
+int QgsMapToolNodeTool::firstSelectedVertex()
 {
   if ( mSelectedFeature )
   {

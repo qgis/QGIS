@@ -36,25 +36,24 @@ class QgsExpression;
 class QgsSpatialIndex;
 
 /**
-\class QgsDelimitedTextProvider
-\brief Data provider for delimited text files.
-*
-* The provider needs to know both the path to the text file and
-* the delimiter to use. Since the means to add a layer is fairly
-* rigid, we must provide this information encoded in a form that
-* the provider can decipher and use.
-*
-* The uri must defines the file path and the parameters used to
-* interpret the contents of the file.
-*
-* Example uri = "/home/foo/delim.txt?delimiter=|"*
-*
-* For detailed information on the uri format see the QGSVectorLayer
-* documentation.  Note that the interpretation of the URI is split
-* between QgsDelimitedTextFile and QgsDelimitedTextProvider.
-*
-
-*/
+ * \class QgsDelimitedTextProvider
+ * \brief Data provider for delimited text files.
+ *
+ * The provider needs to know both the path to the text file and
+ * the delimiter to use. Since the means to add a layer is fairly
+ * rigid, we must provide this information encoded in a form that
+ * the provider can decipher and use.
+ *
+ * The uri must defines the file path and the parameters used to
+ * interpret the contents of the file.
+ *
+ * Example uri = "/home/foo/delim.txt?delimiter=|"*
+ *
+ * For detailed information on the uri format see the QGSVectorLayer
+ * documentation.  Note that the interpretation of the URI is split
+ * between QgsDelimitedTextFile and QgsDelimitedTextProvider.
+ *
+ */
 class QgsDelimitedTextProvider : public QgsVectorDataProvider
 {
     Q_OBJECT
@@ -64,7 +63,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     /**
      * Regular expression defining possible prefixes to WKT string,
      * (EWKT srid, Informix SRID)
-      */
+     */
     static QRegExp WktPrefixRegexp;
     static QRegExp CrdDmsRegexp;
 
@@ -109,43 +108,43 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     virtual const QgsFields & fields() const override;
 
     /** Returns a bitmask containing the supported capabilities
-        Note, some capabilities may change depending on whether
-        a spatial filter is active on this provider, so it may
-        be prudent to check this value per intended operation.
+     * Note, some capabilities may change depending on whether
+     * a spatial filter is active on this provider, so it may
+     * be prudent to check this value per intended operation.
      */
     virtual int capabilities() const override;
 
     /** Creates a spatial index on the data
-     *  @return indexCreated  Returns true if a spatial index is created
+     * @return indexCreated  Returns true if a spatial index is created
      */
     virtual bool createSpatialIndex() override;
 
     /* Implementation of functions from QgsDataProvider */
 
     /** Return a provider name
-
-        Essentially just returns the provider key.  Should be used to build file
-        dialogs so that providers can be shown with their supported types. Thus
-        if more than one provider supports a given format, the user is able to
-        select a specific provider to open that file.
-
-        @note
-
-        Instead of being pure virtual, might be better to generalize this
-        behavior and presume that none of the sub-classes are going to do
-        anything strange with regards to their name or description?
+     *
+     *  Essentially just returns the provider key.  Should be used to build file
+     *  dialogs so that providers can be shown with their supported types. Thus
+     *  if more than one provider supports a given format, the user is able to
+     *  select a specific provider to open that file.
+     *
+     *  @note
+     *
+     *  Instead of being pure virtual, might be better to generalize this
+     *  behavior and presume that none of the sub-classes are going to do
+     *  anything strange with regards to their name or description?
      */
     QString name() const override;
 
     /** Return description
-
-        Return a terse string describing what the provider is.
-
-        @note
-
-        Instead of being pure virtual, might be better to generalize this
-        behavior and presume that none of the sub-classes are going to do
-        anything strange with regards to their name or description?
+     *
+     *  Return a terse string describing what the provider is.
+     *
+     *  @note
+     *
+     *  Instead of being pure virtual, might be better to generalize this
+     *  behavior and presume that none of the sub-classes are going to do
+     *  anything strange with regards to their name or description?
      */
     QString description() const override;
 
@@ -168,7 +167,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     /**
      * provider supports setting of subset strings
-
      */
     virtual bool supportsSubsetString() override { return true; }
 
@@ -190,7 +188,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * @param x X value of point
      * @param y Y value of point
      * @return True if point is within the rectangle
-    */
+     */
     bool boundsCheck( double x, double y );
 
 
@@ -200,7 +198,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * @param geom geometry to test against bounds
      * @param y Y value of point
      * @return True if point is within the rectangle
-    */
+     */
     bool boundsCheck( QgsGeometry *geom );
 
     /**

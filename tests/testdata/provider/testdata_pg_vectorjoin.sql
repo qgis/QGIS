@@ -1,5 +1,5 @@
 ﻿
-CREATE SCHEMA IF NOT EXISTS qgis_test;
+--CREATE SCHEMA IF NOT EXISTS qgis_test;
 
 
 DROP TABLE IF EXISTS qgis_test.table_a;

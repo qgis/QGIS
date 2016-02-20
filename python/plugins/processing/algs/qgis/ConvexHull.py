@@ -94,13 +94,12 @@ class ConvexHull(GeoAlgorithm):
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
 
-        current = 0
-
         fid = 0
         val = None
         features = vector.features(layer)
         if useField:
             unique = layer.uniqueValues(index)
+            current = 0
             total = 100.0 / (len(features) * len(unique))
             for i in unique:
                 first = True
@@ -133,13 +132,12 @@ class ConvexHull(GeoAlgorithm):
                 fid += 1
         else:
             hull = []
-            total = 100.0 / float(layer.featureCount())
+            total = 100.0 / layer.featureCount()
             features = vector.features(layer)
-            for f in features:
+            for current, f in enumerate(features):
                 inGeom = QgsGeometry(f.geometry())
                 points = vector.extractPoints(inGeom)
                 hull.extend(points)
-                current += 1
                 progress.setPercentage(int(current * total))
 
             tmpGeom = QgsGeometry(outGeom.fromMultiPoint(hull))

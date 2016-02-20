@@ -53,11 +53,7 @@ QgsPaintEffectRegistry::QgsPaintEffectRegistry()
 
 QgsPaintEffectRegistry::~QgsPaintEffectRegistry()
 {
-  Q_FOREACH ( const QString& name, mMetadata.keys() )
-  {
-    delete mMetadata[name];
-  }
-  mMetadata.clear();
+  qDeleteAll( mMetadata );
 }
 
 QgsPaintEffectRegistry* QgsPaintEffectRegistry::instance()

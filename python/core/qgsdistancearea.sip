@@ -51,6 +51,7 @@ class QgsDistanceArea
 
     //! returns source spatial reference system
     //! @deprecated use sourceCrsId() instead
+    // TODO QGIS 3.0 - make sourceCrs() return QgsCoordinateReferenceSystem
     long sourceCrs() const /Deprecated/;
 
     /** Returns the QgsCoordinateReferenceSystem::srsid() for the CRS used during calculations.
@@ -104,10 +105,12 @@ class QgsDistanceArea
 
     /** Measures the area of a geometry.
      * @param geometry geometry to measure
-     * @returns area of geometry. For geometry collections, non surface geometries will be ignored
+     * @returns area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
+     * returned area can be retrieved by calling areaUnits().
      * @note added in QGIS 2.12
      * @see measureLength()
      * @see measurePerimeter()
+     * @see areaUnits()
      */
     double measureArea( const QgsGeometry* geometry ) const;
 
@@ -150,8 +153,15 @@ class QgsDistanceArea
 
     /** Returns the units of distance for length calculations made by this object.
      * @note added in QGIS 2.14
+     * @see areaUnits()
      */
     QGis::UnitType lengthUnits() const;
+
+    /** Returns the units of area for areal calculations made by this object.
+     * @note added in QGIS 2.14
+     * @see lengthUnits()
+     */
+    QgsUnitTypes::AreaUnit areaUnits() const;
 
     //! measures polygon area
     double measurePolygon( const QList<QgsPoint>& points ) const;
@@ -159,40 +169,74 @@ class QgsDistanceArea
     //! compute bearing - in radians
     double bearing( const QgsPoint& p1, const QgsPoint& p2 ) const;
 
+    /** Returns a measurement formatted as a friendly string
+     * @param value value of measurement
+     * @param decimals number of decimal places to show
+     * @param u unit of measurement
+     * @param isArea set to true if measurement is an area measurement
+     * @param keepBaseUnit set to false to allow conversion of large distances to more suitable units, eg meters
+     * to kilometers
+     * @return formatted measurement string
+     * @see formatArea()
+     */
+    //TODO QGIS 3.0 - remove isArea parameter (use AreaUnit variant instead), rename to formatDistance
     static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false );
 
+    /** Returns an area formatted as a friendly string.
+     * @param area area to format
+     * @param decimals number of decimal places to show
+     * @param unit unit of area
+     * @param keepBaseUnit set to false to allow conversion of large areas to more suitable units, eg square meters to
+     * square kilometers
+     * @returns formatted area string
+     * @note added in QGIS 2.14
+     * @see textUnit()
+     */
+    static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
+
     //! Helper for conversion between physical units
+    // TODO QGIS 3.0 - remove this method, as its behaviour is non-intuitive.
     void convertMeasurement( double &measure /In,Out/, QGis::UnitType &measureUnits /In,Out/, QGis::UnitType displayUnits, bool isArea ) const;
 
     /** Takes a length measurement calculated by this QgsDistanceArea object and converts it to a
      * different distance unit.
      * @param length length value calculated by this class to convert. It is assumed that the length
-     * was calculated by this class, ie that its unit of length is equal lengthUnits().
+     * was calculated by this class, ie that its unit of length is equal to lengthUnits().
      * @param toUnits distance unit to convert measurement to
      * @returns converted distance
+     * @see convertAreaMeasurement()
+     * @note added in QGIS 2.14
      */
     double convertLengthMeasurement( double length, QGis::UnitType toUnits ) const;
 
+    /** Takes an area measurement calculated by this QgsDistanceArea object and converts it to a
+     * different areal unit.
+     * @param area area value calculated by this class to convert. It is assumed that the area
+     * was calculated by this class, ie that its unit of area is equal to areaUnits().
+     * @param toUnits area unit to convert measurement to
+     * @returns converted area
+     * @see convertLengthMeasurement()
+     * @note added in QGIS 2.14
+     */
+    double convertAreaMeasurement( double area, QgsUnitTypes::AreaUnit toUnits ) const;
+
   protected:
-    //! measures line distance, line points are extracted from WKB
-    // @note available in python bindings
-    // const unsigned char* measureLine( const unsigned char* feature, double* area, bool hasZptr = false ) const;
     //! measures polygon area and perimeter, vertices are extracted from WKB
     // @note not available in python bindings
-    // const unsigned char* measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr = false ) const;
+    // QgsConstWkbPtr measurePolygon( QgsConstWkbPtr feature, double* area, double* perimeter, bool hasZptr = false ) const;
 
     /**
-      calculates distance from two points on ellipsoid
-      based on inverse Vincenty's formulae
-
-      Points p1 and p2 are expected to be in degrees and in currently used ellipsoid
-
-      @note if course1 is not NULL, bearing (in radians) from first point is calculated
-            (the same for course2)
-      @return distance in meters
+     * calculates distance from two points on ellipsoid
+     * based on inverse Vincenty's formulae
+     *
+     * Points p1 and p2 are expected to be in degrees and in currently used ellipsoid
+     *
+     * @note if course1 is not NULL, bearing (in radians) from first point is calculated
+     * (the same for course2)
+     * @return distance in meters
      */
     double computeDistanceBearing( const QgsPoint& p1, const QgsPoint& p2,
-                                   double* course1 = NULL, double* course2 = NULL ) const;
+                                   double* course1 = 0, double* course2 = 0 ) const;
 
     //! uses flat / planimetric / Euclidean distance
     double computeDistanceFlat( const QgsPoint& p1, const QgsPoint& p2 ) const;
@@ -201,18 +245,17 @@ class QgsDistanceArea
     double computeDistance( const QList<QgsPoint>& points ) const;
 
     /**
-     calculates area of polygon on ellipsoid
-     algorithm has been taken from GRASS: gis/area_poly1.c
-
-    */
+     * calculates area of polygon on ellipsoid
+     * algorithm has been taken from GRASS: gis/area_poly1.c
+     */
     double computePolygonArea( const QList<QgsPoint>& points ) const;
 
     double computePolygonFlatArea( const QList<QgsPoint>& points ) const;
 
     /**
-      precalculates some values
-      (must be called always when changing ellipsoid)
-    */
+     * precalculates some values
+     * (must be called always when changing ellipsoid)
+     */
     void computeAreaInit();
 
 };

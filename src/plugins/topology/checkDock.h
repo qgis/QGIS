@@ -24,7 +24,6 @@
 #include <qgsgeometry.h>
 //#include <qgsvertexmarker.h>
 #include "qgsspatialindex.h"
-//#include <spatialindex/qgsspatialindex.h>
 
 #include "ui_checkDock.h"
 #include "rulesDialog.h"

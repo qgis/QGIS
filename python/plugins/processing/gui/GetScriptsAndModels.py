@@ -152,7 +152,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         widget = iface.messageBar().createMessage(self.tr('Connection problem', disambiguation),
                                                   self.tr('Could not connect to scripts/models repository', disambiguation))
         if error and url:
-            QgsMessageLog.logMessage(self.tr(u"Network error code: {} on URL: {}").format(error, url), u"Processing", QgsMessageLog.CRITICAL)
+            QgsMessageLog.logMessage(self.tr(u"Network error code: {} on URL: {}").format(error, url), self.tr(u"Processing"), QgsMessageLog.CRITICAL)
             button = QPushButton(QCoreApplication.translate("Python", "View message log"), pressed=show_message_log)
             widget.layout().addWidget(button)
 
@@ -167,6 +167,9 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             reply.finished.connect(partial(loadFunction, reply, arguments))
         else:
             reply.finished.connect(partial(loadFunction, reply))
+
+        while not reply.isFinished():
+            QCoreApplication.processEvents()
 
     def populateTree(self):
         self.uptodateItem = QTreeWidgetItem()
@@ -245,7 +248,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
                 return self.uptodateItem
 
     def cancelPressed(self):
-        self.close()
+        super(GetScriptsAndModelsDialog, self).reject()
 
     def storeFile(self, reply, filename):
         """store a script/model that has been downloaded"""
@@ -302,7 +305,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
                     os.remove(path)
 
         self.updateToolbox = len(toDownload) + len(toDelete) > 0
-        self.close()
+        super(GetScriptsAndModelsDialog, self).accept()
 
 
 class TreeItem(QTreeWidgetItem):

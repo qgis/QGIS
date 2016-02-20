@@ -62,12 +62,11 @@ class QgsEditFormConfig : QObject
      */
     enum PythonInitCodeSource
     {
-      CodeSourceNone = 0,             //!< Do not use python code at all
-      CodeSourceFile = 1,             //!< Load the python code from a file
-      CodeSourceDialog = 2,           //!< Use the python code provided in the dialog
-      CodeSourceEnvironment = 3       //!< Use the python code available in the python environment
+      CodeSourceNone,             //!< Do not use python code at all
+      CodeSourceFile,             //!< Load the python code from an external file
+      CodeSourceDialog,           //!< Use the python code provided in the dialog
+      CodeSourceEnvironment       //!< Use the python code available in the python environment
     };
-
 
     /**
      * This is only useful in combination with EditorLayout::TabLayout.
@@ -151,8 +150,6 @@ class QgsEditFormConfig : QObject
      * @param fieldName  The name of the field
      *
      * @return The id for the editor widget or a NULL string if not applicable
-     *
-     * @note python method name editorWidgetV2ByName
      */
     QString widgetType( const QString& fieldName ) const;
 
@@ -163,15 +160,32 @@ class QgsEditFormConfig : QObject
      *
      * Example:
      * \code{.py}
-     *   layer.setEditorWidgetV2Config( 1, { 'Layer': 'otherlayerid_1234', 'Key': 'Keyfield', 'Value': 'ValueField' } )
+     *   layer.setWidgetConfig( 1, { 'Layer': 'otherlayerid_1234', 'Key': 'Keyfield', 'Value': 'ValueField' } )
      * \endcode
      *
      * @param attrIdx     Index of the field
      * @param config      The config to set for this field
      *
-     * @see setEditorWidgetV2() for a list of widgets and choose the widget to see the available options.
+     * @see setWidgetType() for a list of widgets and choose the widget to see the available options.
      */
     void setWidgetConfig( int attrIdx, const QgsEditorWidgetConfig& config );
+
+    /**
+     * Set the editor widget config for a widget.
+     *
+     * Example:
+     * \code{.py}
+     *   layer.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
+     * \endcode
+     *
+     * @param widgetName  The name of the widget or field to configure
+     * @param config      The config to set for this field
+     *
+     * @see setWidgetType() for a list of widgets and choose the widget to see the available options.
+     *
+     * @note not available in python bindings
+     */
+    // void setWidgetConfig( const QString& widgetName, const QgsEditorWidgetConfig& config );
 
     /**
      * Get the configuration for the editor widget used to represent the field at the given index
@@ -185,13 +199,11 @@ class QgsEditFormConfig : QObject
     /**
      * Get the configuration for the editor widget used to represent the field with the given name
      *
-     * @param fieldName The name of the field
+     * @param widgetName The name of the widget. This can be a field name or the name of an additional widget.
      *
      * @return The configuration for the editor widget or an empty config if the field does not exist
-     *
-     * @note python method name is editorWidgetV2ConfigByName
      */
-    QgsEditorWidgetConfig widgetConfig( const QString& fieldName ) const;
+    QgsEditorWidgetConfig widgetConfig( const QString& widgetName ) const;
 
     /**
      * This returns true if the field is manually set to read only or if the field
@@ -220,8 +232,7 @@ class QgsEditFormConfig : QObject
     void setLabelOnTop( int idx, bool onTop );
 
 
-    // Python stuff
-
+    // Python form init function stuff
 
     /**
      * Get python function for edit form initialization.
@@ -245,6 +256,13 @@ class QgsEditFormConfig : QObject
     QString initCode() const;
 
     /**
+     * Set python code for edit form initialization.
+     * Make sure that you also set the appropriate function name in
+     * @link setInitFunction @endlink
+     */
+    void setInitCode( const QString& code );
+
+    /**
      * Get python external file path for edit form initialization.
      */
     QString initFilePath() const;
@@ -256,27 +274,21 @@ class QgsEditFormConfig : QObject
      */
     void setInitFilePath( const QString& filePath );
 
-    /**
-     * Get python code for edit form initialization.
-     * Make sure that you also set the appropriate function name in
-     * @link setInitFunction @endlink
-     */
-    void setInitCode( const QString& code );
-
     /** Return python code source for edit form initialization
      *  (if it shall be loaded from a file, read from the
-     *  provided dialog editor or just read from the environment
+     *  provided dialog editor or inherited from the environment)
      */
     PythonInitCodeSource initCodeSource() const;
 
     /** Set if python code shall be used for edit form initialization */
     void setInitCodeSource( const PythonInitCodeSource initCodeSource );
 
-
     /** Type of feature form pop-up suppression after feature creation (overrides app setting) */
     FeatureFormSuppress suppress() const;
     /** Set type of feature form pop-up suppression after feature creation (overrides app setting) */
-    void setSuppress( FeatureFormSuppress s );
+    void setSuppress( QgsEditFormConfig::FeatureFormSuppress s );
+
+    // Serialization
 
     /**
      * Read XML information

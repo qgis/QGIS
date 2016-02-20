@@ -41,6 +41,8 @@ class TestQgsDistanceArea: public QObject
     void regression13601();
     void collections();
     void measureUnits();
+    void measureAreaAndUnits();
+
 };
 
 void TestQgsDistanceArea::initTestCase()
@@ -248,6 +250,98 @@ void TestQgsDistanceArea::measureUnits()
   //OTF, result will be in meters
   QCOMPARE( units, QGis::Meters );
   QVERIFY( qgsDoubleNear( result, 2328.0988253106957, 0.001 ) );
+}
+
+void TestQgsDistanceArea::measureAreaAndUnits()
+{
+  QgsDistanceArea da;
+  da.setSourceCrs( 3452 );
+  da.setEllipsoidalMode( false );
+  da.setEllipsoid( "NONE" );
+  QgsCoordinateReferenceSystem daCRS;
+  daCRS.createFromSrsId( da.sourceCrsId() );
+  QgsPolyline ring;
+  ring << QgsPoint( 0, 0 )
+  << QgsPoint( 1, 0 )
+  << QgsPoint( 1, 1 )
+  << QgsPoint( 2, 1 )
+  << QgsPoint( 2, 2 )
+  << QgsPoint( 0, 2 )
+  << QgsPoint( 0, 0 );
+  QgsPolygon poly;
+  poly << ring;
+
+  QScopedPointer< QgsGeometry > polygon( QgsGeometry::fromPolygon( poly ) );
+
+  // We check both the measured area AND the units, in case the logic regarding
+  // ellipsoids and units changes in future
+  double area = da.measureArea( polygon.data() );
+  QgsUnitTypes::AreaUnit units = da.areaUnits();
+
+  QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
+
+  QVERIFY(( qgsDoubleNear( area, 3.0, 0.00000001 ) && units == QgsUnitTypes::SquareDegrees )
+          || ( qgsDoubleNear( area, 37176087091.5, 0.1 ) && units == QgsUnitTypes::SquareMeters ) );
+
+  da.setEllipsoid( "WGS84" );
+  area = da.measureArea( polygon.data() );
+  units = da.areaUnits();
+
+  QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
+  QVERIFY(( qgsDoubleNear( area, 3.0, 0.00000001 ) && units == QgsUnitTypes::SquareDegrees )
+          || ( qgsDoubleNear( area, 37176087091.5, 0.1 ) && units == QgsUnitTypes::SquareMeters ) );
+
+  da.setEllipsoidalMode( true );
+  area = da.measureArea( polygon.data() );
+  units = da.areaUnits();
+
+  QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
+  // should always be in Meters Squared
+  QVERIFY( qgsDoubleNear( area, 37416879192.9, 0.1 ) );
+  QCOMPARE( units, QgsUnitTypes::SquareMeters );
+
+  // test converting the resultant area
+  area = da.convertAreaMeasurement( area, QgsUnitTypes::SquareMiles );
+  QVERIFY( qgsDoubleNear( area, 14446.7378, 0.001 ) );
+
+  // now try with a source CRS which is in feet
+  ring.clear();
+  ring << QgsPoint( 1850000, 4423000 )
+  << QgsPoint( 1851000, 4423000 )
+  << QgsPoint( 1851000, 4424000 )
+  << QgsPoint( 1852000, 4424000 )
+  << QgsPoint( 1852000, 4425000 )
+  << QgsPoint( 1851000, 4425000 )
+  << QgsPoint( 1850000, 4423000 );
+  poly.clear();
+  poly << ring;
+  polygon.reset( QgsGeometry::fromPolygon( poly ) );
+
+  da.setSourceCrs( 27469 );
+  da.setEllipsoidalMode( false );
+  // measurement should be in square feet
+  area = da.measureArea( polygon.data() );
+  units = da.areaUnits();
+  QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
+  QVERIFY( qgsDoubleNear( area, 2000000, 0.001 ) );
+  QCOMPARE( units, QgsUnitTypes::SquareFeet );
+
+  // test converting the resultant area
+  area = da.convertAreaMeasurement( area, QgsUnitTypes::SquareYards );
+  QVERIFY( qgsDoubleNear( area, 222222.2222, 0.001 ) );
+
+  da.setEllipsoidalMode( true );
+  // now should be in Square Meters again
+  area = da.measureArea( polygon.data() );
+  units = da.areaUnits();
+  QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
+  QVERIFY( qgsDoubleNear( area, 184149.37309564, 0.00001 ) );
+  QCOMPARE( units, QgsUnitTypes::SquareMeters );
+
+  // test converting the resultant area
+  area = da.convertAreaMeasurement( area, QgsUnitTypes::SquareYards );
+  QgsDebugMsg( QString( "measured %1 in sq yrds" ).arg( area ) );
+  QVERIFY( qgsDoubleNear( area, 220240.8172549, 0.00001 ) );
 }
 
 QTEST_MAIN( TestQgsDistanceArea )

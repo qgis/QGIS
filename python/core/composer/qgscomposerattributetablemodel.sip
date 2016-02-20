@@ -92,6 +92,9 @@ class QgsComposerAttributeTableColumnModel: QAbstractTableModel
 
 };
 
+
+//QgsComposerTableSortColumnsProxyModel
+
 /** Allows for filtering QgsComposerAttributeTable columns by columns which are sorted or unsorted*/
 class QgsComposerTableSortColumnsProxyModel : QSortFilterProxyModel
 {

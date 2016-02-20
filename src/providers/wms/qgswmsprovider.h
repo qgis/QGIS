@@ -52,7 +52,7 @@ class QgsWmsLegendDownloadHandler : public QgsImageFetcher
   public:
 
     QgsWmsLegendDownloadHandler( QgsNetworkAccessManager& networkAccessManager, const QgsWmsSettings& settings, const QUrl& url );
-    ~QgsWmsLegendDownloadHandler( );
+    ~QgsWmsLegendDownloadHandler();
 
     // Make sure to connect to "finish" before starting
     void start() override;
@@ -113,13 +113,13 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
   public:
     /**
-    * Constructor for the provider.
-    *
-    * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
-    *                otherwise we contact the host directly.
-    * \param   capabilities   Optionally existing parsed capabilities for the given URI
-    *
-    */
+     * Constructor for the provider.
+     *
+     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
+     *                otherwise we contact the host directly.
+     * \param   capabilities   Optionally existing parsed capabilities for the given URI
+     *
+     */
     QgsWmsProvider( QString const & uri = nullptr, const QgsWmsCapabilities* capabilities = nullptr );
 
     //! Destructor
@@ -173,7 +173,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
 
     /** Return the extent for this data layer
-    */
+     */
     virtual QgsRectangle extent() override;
 
     /** Returns true if layer is valid
@@ -303,37 +303,38 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString lastErrorFormat() override;
 
     /** Return a provider name
-
-    Essentially just returns the provider key.  Should be used to build file
-    dialogs so that providers can be shown with their supported types. Thus
-    if more than one provider supports a given format, the user is able to
-    select a specific provider to open that file.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+     *
+     * Essentially just returns the provider key.  Should be used to build file
+     * dialogs so that providers can be shown with their supported types. Thus
+     * if more than one provider supports a given format, the user is able to
+     * select a specific provider to open that file.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     QString name() const override;
 
 
     /** Return description
-
-    Return a terse string describing what the provider is.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+     *
+     * Return a terse string describing what the provider is.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     QString description() const override;
 
     /** Reloads the data from the source. Needs to be implemented by providers with data caches to
-      synchronize with changes in the data source*/
+     * synchronize with changes in the data source
+     */
     virtual void reloadData() override;
 
     static QVector<QgsWmsSupportedFormat> supportedFormats();

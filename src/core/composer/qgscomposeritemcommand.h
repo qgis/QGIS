@@ -49,7 +49,7 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 
     /** Returns the target item the command applies to.
      * @returns target composer item
-    */
+     */
     QgsComposerItem *item() const;
 
   protected:

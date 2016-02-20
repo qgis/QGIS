@@ -138,12 +138,12 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     };
 
     /** \brief Draw to paint device
-        @param painter painter
-        @param extent map extent
-        @param size size in scene coordinates
-        @param dpi scene dpi
-        @param forceWidthScale force wysiwyg line widths / marker sizes
-    */
+     *  @param painter painter
+     *  @param extent map extent
+     *  @param size size in scene coordinates
+     *  @param dpi scene dpi
+     *  @param forceWidthScale force wysiwyg line widths / marker sizes
+     */
     void draw( QPainter *painter, const QgsRectangle& extent, QSizeF size, double dpi, double* forceWidthScale = nullptr );
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
@@ -166,8 +166,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void resize( double dx, double dy );
 
     /** Move content of map
-       @param dx move in x-direction (item and canvas coordinates)
-       @param dy move in y-direction (item and canvas coordinates)*/
+     * @param dx move in x-direction (item and canvas coordinates)
+     * @param dy move in y-direction (item and canvas coordinates)
+     */
     void moveContent( double dx, double dy ) override;
 
     /** Zoom content of map
@@ -175,7 +176,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @param x x-position of mouse cursor (in item coordinates)
      * @param y y-position of mouse cursor (in item coordinates)
      * @deprecated use zoomContent( double, QPointF, ZoomMode ) instead
-    */
+     */
     Q_DECL_DEPRECATED void zoomContent( int delta, double x, double y ) override;
 
     /** Zoom content of item. Does nothing per default (but implemented in composer map)
@@ -183,7 +184,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @param point item point for zoom center
      * @param mode zoom mode
      * @note added in QGIS 2.5
-    */
+     */
     virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom ) override;
 
     /** Sets new scene rectangle bounds and recalculates hight and extent*/
@@ -200,7 +201,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * overlap or margin. This method implicitly alters the map scale.
      * @param extent new extent for the map
      * @see zoomToExtent
-    */
+     */
     void setNewExtent( const QgsRectangle& extent );
 
     /** Zooms the map so that the specified extent is fully visible within the map item.
@@ -210,17 +211,17 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @param extent new extent for the map
      * @see setNewExtent
      * @note added in QGIS 2.5
-    */
+     */
     void zoomToExtent( const QgsRectangle& extent );
 
     /** Sets new Extent for the current atlas preview and changes width, height (and implicitely also scale).
       Atlas preview extents are only temporary, and are regenerated whenever the atlas feature changes
-    */
+     */
     void setNewAtlasFeatureExtent( const QgsRectangle& extent );
 
     /** Called when atlas preview is toggled, to force map item to update its extent and redraw
      * @deprecated no longer required
-    */
+     */
     Q_DECL_DEPRECATED void toggleAtlasPreview() {}
 
     /** Returns a pointer to the current map extent, which is either the original user specified
@@ -228,9 +229,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * of the composition. Both a const and non-const version are included.
      * @returns pointer to current map extent
      * @see visibleExtentPolygon
-    */
-    QgsRectangle* currentMapExtent();
+     */
     const QgsRectangle* currentMapExtent() const;
+
+    //! @note not available in python bindings
+    QgsRectangle* currentMapExtent();
 
     PreviewMode previewMode() const {return mPreviewMode;}
     void setPreviewMode( PreviewMode m );
@@ -300,7 +303,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Sets coordinate grid style to solid or cross
      * @deprecated use grid()->setStyle() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridStyle( GridStyle style );
 
     /**
@@ -310,7 +313,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Sets coordinate interval in x-direction for composergrid.
      * @deprecated use grid()->setIntervalX() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridIntervalX( double interval );
 
     /**
@@ -320,7 +323,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Sets coordinate interval in y-direction for composergrid.
      * @deprecated use grid()->setIntervalY() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridIntervalY( double interval );
 
     /**
@@ -330,7 +333,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Sets x-coordinate offset for composer grid
      * @deprecated use grid()->setOffsetX() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridOffsetX( double offset );
 
     /**
@@ -340,7 +343,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Sets y-coordinate offset for composer grid
      * @deprecated use grid()->setOffsetY() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridOffsetY( double offset );
 
     /**
@@ -350,7 +353,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Sets the pen to draw composer grid
      * @deprecated use grid()->setPenWidth(), grid()->setPenColor() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridPen( const QPen& p );
 
     /**
@@ -360,17 +363,17 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Sets width of grid pen
      * @deprecated use grid()->setPenWidth() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridPenWidth( double w );
 
     /** Sets the color of the grid pen
      * @deprecated use grid()->setPenColor() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridPenColor( const QColor& c );
 
     /** Sets font for grid annotations
      * @deprecated use grid()->setAnnotationFont() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridAnnotationFont( const QFont& f );
 
     /**
@@ -380,17 +383,17 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Sets font color for grid annotations
      * @deprecated use grid()->setAnnotationFontColor() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setAnnotationFontColor( const QColor& c );
 
     /** Get font color for grid annotations
      * @deprecated use grid()->annotationFontColor() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED QColor annotationFontColor() const;
 
     /** Sets coordinate precision for grid annotations
      * @deprecated use grid()->setAnnotationPrecision or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridAnnotationPrecision( int p );
 
     /**
@@ -400,7 +403,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Sets flag if grid annotation should be shown
      * @deprecated use grid()->setAnnotationEnabled() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setShowGridAnnotation( bool show );
 
     /**
@@ -420,7 +423,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Sets distance between map frame and annotations
      * @deprecated use grid()->setAnnotationFrameDistance() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setAnnotationFrameDistance( double d );
 
     /**
@@ -450,7 +453,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Set grid frame style (NoGridFrame or Zebra)
      * @deprecated use grid()->setFrameStyle() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridFrameStyle( GridFrameStyle style );
 
     /**
@@ -460,7 +463,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Set grid frame width
      * @deprecated use grid()->setFrameWidth() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridFrameWidth( double w );
 
     /**
@@ -471,7 +474,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Set grid frame pen thickness
      * @note: this function was added in version 2.1
      * @deprecated use grid()->setFramePenSize() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridFramePenSize( double w );
 
     /**
@@ -482,42 +485,42 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Sets pen color for grid frame
      * @note: this function was added in version 2.1
      * @deprecated use grid()->setFramePenColor() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridFramePenColor( const QColor& c );
 
     /** Get pen color for grid frame
      * @note: this function was added in version 2.1
      * @deprecated use grid()->framePenColor() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED QColor gridFramePenColor() const;
 
     /** Sets first fill color for grid zebra frame
      * @note: this function was added in version 2.1
      * @deprecated use grid()->setFrameFillColor1() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridFrameFillColor1( const QColor& c );
 
     /** Get first fill color for grid zebra frame
      * @note: this function was added in version 2.1
      * @deprecated use grid()->frameFillColor1() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED QColor gridFrameFillColor1() const;
 
     /** Sets second fill color for grid zebra frame
      * @note: this function was added in version 2.1
      * @deprecated use grid()->setFrameFillColor2() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setGridFrameFillColor2( const QColor& c );
 
     /** Get second fill color for grid zebra frame
      * @note: this function was added in version 2.1
      * @deprecated use grid()->frameFillColor2() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED QColor gridFrameFillColor2() const;
 
     /** Sets length of the cross segments (if grid style is cross)
      * @deprecated use grid()->setCrossLength() or grids() instead
-    */
+     */
     Q_DECL_DEPRECATED void setCrossLength( double l );
 
     /**
@@ -593,8 +596,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_DECL_DEPRECATED double rotation() const { return mMapRotation;}
 
     /** Sets rotation for the map - this does not affect the composer item shape, only the
-      way the map is drawn within the item
-      @note this function was added in version 2.1*/
+     * way the map is drawn within the item
+     * @note this function was added in version 2.1
+     */
     void setMapRotation( double r );
 
     /** Returns the rotation used for drawing the map within the composer item
@@ -602,7 +606,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @param valueType controls whether the returned value is the user specified rotation,
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
-    */
+     */
     double mapRotation( QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 
     void updateItem() override;
@@ -618,27 +622,27 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Sets overview frame map. -1 disables the overview frame
      * @deprecated use overview()->setFrameMap() or overviews() instead
-    */
+     */
     Q_DECL_DEPRECATED void setOverviewFrameMap( int mapId );
 
     /** Returns id of overview frame (or -1 if no overfiew frame)
      * @deprecated use overview()->frameMapId() or overviews() instead
-    */
+     */
     Q_DECL_DEPRECATED int overviewFrameMapId() const;
 
     /**
      * @deprecated use overview()->setFrameSymbol() or overviews() instead
-    */
+     */
     Q_DECL_DEPRECATED void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol );
 
     /**
      * @deprecated use overview()->frameSymbol() or overviews() instead
-    */
+     */
     Q_DECL_DEPRECATED QgsFillSymbolV2* overviewFrameMapSymbol();
 
     /** Returns the overview's blending mode
      * @deprecated use overview()->blendMode() or overviews() instead
-    */
+     */
     Q_DECL_DEPRECATED QPainter::CompositionMode overviewBlendMode() const;
 
     /** Sets the overview's blending mode
@@ -648,22 +652,22 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Returns true if the overview frame is inverted
      * @deprecated use overview()->inverted() or overviews() instead
-    */
+     */
     Q_DECL_DEPRECATED bool overviewInverted() const;
 
     /** Sets the overview's inversion mode
      * @deprecated use overview()->setInverted() or overviews() instead
-    */
+     */
     Q_DECL_DEPRECATED void setOverviewInverted( bool inverted );
 
     /** Returns true if the extent is forced to center on the overview
      * @deprecated use overview()->centered() or overviews() instead
-    */
+     */
     Q_DECL_DEPRECATED bool overviewCentered() const;
 
     /** Set the overview's centering mode
      * @deprecated use overview()->setCentered() or overviews() instead
-    */
+     */
     Q_DECL_DEPRECATED void setOverviewCentered( bool centered );
 
     /** Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
@@ -681,33 +685,33 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     Q_DECL_DEPRECATED bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
     /** Calculates width / height of the bounding box of a rotated rectangle
-    * @deprecated Use QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
-    * instead
-    */
+     * @deprecated Use QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
+     * instead
+     */
     Q_DECL_DEPRECATED void sizeChangedByRotation( double& width, double& height );
 
     /** Returns whether the map extent is set to follow the current atlas feature.
      * @returns true if map will follow the current atlas feature.
      * @see setAtlasDriven
      * @see atlasScalingMode
-    */
+     */
     bool atlasDriven() const { return mAtlasDriven; }
 
     /** Sets whether the map extent will follow the current atlas feature.
      * @param enabled set to true if the map extents should be set by the current atlas feature.
      * @see atlasDriven
      * @see setAtlasScalingMode
-    */
+     */
     void setAtlasDriven( bool enabled );
 
     /** Returns true if the map uses a fixed scale when in atlas mode
      * @deprecated since 2.4 Use atlasScalingMode() instead
-    */
+     */
     Q_DECL_DEPRECATED bool atlasFixedScale() const;
 
     /** Set to true if the map should use a fixed scale when in atlas mode
      * @deprecated since 2.4 Use setAtlasScalingMode() instead
-    */
+     */
     Q_DECL_DEPRECATED void setAtlasFixedScale( bool fixed );
 
     /** Returns the current atlas scaling mode. This controls how the map's extents
@@ -717,7 +721,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @note this parameter is only used if atlasDriven() is true
      * @see setAtlasScalingMode
      * @see atlasDriven
-    */
+     */
     AtlasScalingMode atlasScalingMode() const { return mAtlasScalingMode; }
 
     /** Sets the current atlas scaling mode. This controls how the map's extents
@@ -727,7 +731,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @note this parameter is only used if atlasDriven() is true
      * @see atlasScalingMode
      * @see atlasDriven
-    */
+     */
     void setAtlasScalingMode( AtlasScalingMode mode ) { mAtlasScalingMode = mode; }
 
     /** Returns the margin size (percentage) used when the map is in atlas mode.
@@ -738,7 +742,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @note this is only used if atlasScalingMode() is Auto.
      * @see atlasScalingMode
      * @see setAtlasMargin
-    */
+     */
     double atlasMargin( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue );
 
     /** Sets the margin size (percentage) used when the map is in atlas mode.
@@ -746,7 +750,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @note this is only used if atlasScalingMode() is Auto.
      * @see atlasScalingMode
      * @see atlasMargin
-    */
+     */
     void setAtlasMargin( double margin ) { mAtlasMargin = margin; }
 
     /** Sets whether updates to the composer map are enabled. */
@@ -759,7 +763,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
      * @note this method was added in version 2.4
-    */
+     */
     int numberExportLayers() const override;
 
     /** Returns a polygon representing the current visible map extent, considering map extents and rotation.
@@ -767,10 +771,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @returns polygon with the four corner points representing the visible map extent. The points are
      * clockwise, starting at the top-left point
      * @see currentMapExtent
-    */
+     */
     QPolygonF visibleExtentPolygon() const;
 
-    //overriden to show "Map 1" type names
+    //overridden to show "Map 1" type names
     virtual QString displayName() const override;
 
     /** Returns extent that considers rotation and shift with mOffsetX / mOffsetY*/
@@ -810,7 +814,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Updates the cached map image if the map is set to Render mode
      * @see updateCachedImage
-    */
+     */
     void renderModeUpdateCachedImage();
 
     /** Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle */
@@ -826,7 +830,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Called when layers are added or removed from the layer registry. Updates the maps
      * layer set and redraws the map if required.
      * @note added in QGIS 2.9
-    */
+     */
     void layersChanged();
 
   private:

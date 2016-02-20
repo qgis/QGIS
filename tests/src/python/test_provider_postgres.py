@@ -33,7 +33,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = u'dbname=\'qgis_test\' host=localhost port=5432 user=\'postgres\' password=\'postgres\''
+        cls.dbconn = u'dbname=\'qgis_test\''
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layers
@@ -146,6 +146,25 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer('%s srid=4326 estimatedmetadata="true" table="qgis_test".%s (geom) sql=' % (self.dbconn, 'base_table_good'), "testgeom", "postgres")
         self.assertTrue(vl.isValid())
         test_unique([f for f in vl.getFeatures()], 4)
+
+    # See http://hub.qgis.org/issues/14262
+    def testSignedIdentifiers(self):
+        def test_query_attribute(dbconn, query, att, val, fidval):
+            ql = QgsVectorLayer('%s table="%s" (g) key=\'%s\' sql=' % (dbconn, query.replace('"', '\\"'), att), "testgeom", "postgres")
+            print query, att
+            assert(ql.isValid())
+            features = ql.getFeatures()
+            att_idx = ql.fieldNameIndex(att)
+            count = 0
+            for f in features:
+                count += 1
+                self.assertEqual(f.attributes()[att_idx], val)
+                #self.assertEqual(f.id(), val)
+            self.assertEqual(count, 1)
+        test_query_attribute(self.dbconn, '(SELECT -1::int4 i, NULL::geometry(Point) g)', 'i', -1, 1)
+        test_query_attribute(self.dbconn, '(SELECT -1::int2 i, NULL::geometry(Point) g)', 'i', -1, 1)
+        test_query_attribute(self.dbconn, '(SELECT -1::int8 i, NULL::geometry(Point) g)', 'i', -1, 1)
+        test_query_attribute(self.dbconn, '(SELECT -65535::int8 i, NULL::geometry(Point) g)', 'i', -65535, 1)
 
 
 if __name__ == '__main__':

@@ -125,7 +125,7 @@ class CheckValidity(GeoAlgorithm):
         error_count = 0
 
         features = vector.features(layer)
-        count = len(features)
+        total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
             geom = QgsGeometry(inFeat.geometry())
             attrs = inFeat.attributes()
@@ -166,7 +166,7 @@ class CheckValidity(GeoAlgorithm):
                 invalid_writer.addFeature(outFeat)
                 invalid_count += 1
 
-            progress.setPercentage(100 * current / float(count))
+            progress.setPercentage(int(current * total))
 
         del valid_writer
         del invalid_writer

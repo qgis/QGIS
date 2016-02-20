@@ -117,7 +117,7 @@ void QgsOfflineEditingPluginGui::on_mBrowseButton_clicked()
 
   if ( !fileName.isEmpty() )
   {
-    if ( !fileName.toLower().endsWith( ".sqlite" ) )
+    if ( !fileName.endsWith( ".sqlite", Qt::CaseInsensitive ) )
     {
       fileName += ".sqlite";
     }

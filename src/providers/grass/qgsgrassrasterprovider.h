@@ -86,12 +86,12 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
   public:
     /**
-    * Constructor for the provider.
-    *
-    * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
-    *                otherwise we contact the host directly.
-    *
-    */
+     * Constructor for the provider.
+     *
+     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
+     *                otherwise we contact the host directly.
+     *
+     */
     explicit QgsGrassRasterProvider( QString const & uri = 0 );
 
     //! Destructor
@@ -104,33 +104,33 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) override;
 
     /** Return a provider name
-
-    Essentially just returns the provider key.  Should be used to build file
-    dialogs so that providers can be shown with their supported types. Thus
-    if more than one provider supports a given format, the user is able to
-    select a specific provider to open that file.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+     *
+     * Essentially just returns the provider key.  Should be used to build file
+     * dialogs so that providers can be shown with their supported types. Thus
+     * if more than one provider supports a given format, the user is able to
+     * select a specific provider to open that file.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     QString name() const override;
 
 
     /** Return description
-
-    Return a terse string describing what the provider is.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+     *
+     * Return a terse string describing what the provider is.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     QString description() const override;
 
     /** Get the QgsCoordinateReferenceSystem for this layer
@@ -141,11 +141,11 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     virtual QgsCoordinateReferenceSystem crs() override;
 
     /** Return the extent for this data layer
-    */
+     */
     virtual QgsRectangle extent() override;
 
     /** Returns true if layer is valid
-    */
+     */
     bool isValid() override;
 
     QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 ) override;
@@ -221,8 +221,8 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     // append error if it is not empty
     void appendIfError( QString error );
     /**
-    * Flag indicating if the layer data source is a valid layer
-    */
+     * Flag indicating if the layer data source is a valid layer
+     */
     bool mValid;
 
     QString mGisdbase;      // map gisdabase

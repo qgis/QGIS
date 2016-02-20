@@ -106,6 +106,22 @@ QgsSymbolV2::QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers )
   }
 }
 
+QgsConstWkbPtr QgsSymbolV2::_getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr wkbPtr )
+{
+  QgsWKBTypes::Type type = wkbPtr.readHeader();
+  wkbPtr >> pt.rx() >> pt.ry();
+  wkbPtr += ( QgsWKBTypes::coordDimensions( type ) - 2 ) * sizeof( double );
+
+  if ( context.coordinateTransform() )
+  {
+    double z = 0; // dummy variable for coordiante transform
+    context.coordinateTransform()->transformInPlace( pt.rx(), pt.ry(), z );
+  }
+
+  context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
+
+  return wkbPtr;
+}
 
 QgsConstWkbPtr QgsSymbolV2::_getLineString( QPolygonF& pts, QgsRenderContext& context, QgsConstWkbPtr wkbPtr, bool clipToExtent )
 {
@@ -128,10 +144,16 @@ QgsConstWkbPtr QgsSymbolV2::_getLineString( QPolygonF& pts, QgsRenderContext& co
   }
   else
   {
-    pts.resize( nPoints );
-
     int skipZM = ( QgsWKBTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
     Q_ASSERT( skipZM >= 0 );
+
+    if ( static_cast<int>( nPoints * ( 2 * sizeof( double ) + skipZM ) ) > wkbPtr.remaining() )
+    {
+      QgsDebugMsg( QString( "%1 points exceed wkb length (%2>%3)" ).arg( nPoints ).arg( nPoints * ( 2 * sizeof( double ) + skipZM ) ).arg( wkbPtr.remaining() ) );
+      return QgsConstWkbPtr( nullptr, 0 );
+    }
+
+    pts.resize( nPoints );
 
     QPointF *ptr = pts.data();
     for ( unsigned int i = 0; i < nPoints; ++i, ++ptr )
@@ -159,7 +181,6 @@ QgsConstWkbPtr QgsSymbolV2::_getLineString( QPolygonF& pts, QgsRenderContext& co
 QgsConstWkbPtr QgsSymbolV2::_getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, QgsConstWkbPtr wkbPtr, bool clipToExtent )
 {
   QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
-  QgsDebugMsg( QString( "wkbType=%1" ).arg( wkbType ) );
   unsigned int numRings;
   wkbPtr >> numRings;
 
@@ -183,8 +204,15 @@ QgsConstWkbPtr QgsSymbolV2::_getPolygon( QPolygonF &pts, QList<QPolygonF> &holes
     unsigned int nPoints;
     wkbPtr >> nPoints;
 
+    if ( static_cast<int>( nPoints * ( 2 * sizeof( double ) + skipZM ) ) > wkbPtr.remaining() )
+    {
+      QgsDebugMsg( QString( "%1 points exceed wkb length (%2>%3)" ).arg( nPoints ).arg( nPoints * ( 2 * sizeof( double ) + skipZM ) ).arg( wkbPtr.remaining() ) );
+      return QgsConstWkbPtr( nullptr, 0 );
+    }
+
     QPolygonF poly( nPoints );
 
+    // Extract the points from the WKB and store in a pair of vectors.
     QPointF *ptr = poly.data();
     for ( unsigned int jdx = 0; jdx < nPoints; ++jdx, ++ptr )
     {
@@ -723,7 +751,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       const QgsPointV2* point = static_cast< const QgsPointV2* >( segmentizedGeometry->geometry() );
       _getPoint( pt, context, point );
-      ( static_cast<QgsMarkerSymbolV2*>( this ) )->renderPoint( pt, &feature, context, layer, selected );
+      static_cast<QgsMarkerSymbolV2*>( this )->renderPoint( pt, &feature, context, layer, selected );
 
       if ( context.testFlag( QgsRenderContext::DrawSymbolBounds ) )
       {
@@ -802,7 +830,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       const QgsGeometryCollectionV2* geomCollection = dynamic_cast<const QgsGeometryCollectionV2*>( geom->geometry() );
 
-      for ( unsigned int i = 0; i < num; ++i )
+      for ( unsigned int i = 0; i < num && wkbPtr; ++i )
       {
         mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
 
@@ -836,7 +864,7 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       const QgsGeometryCollectionV2* geomCollection = dynamic_cast<const QgsGeometryCollectionV2*>( geom->geometry() );
 
-      for ( unsigned int i = 0; i < num; ++i )
+      for ( unsigned int i = 0; i < num && wkbPtr; ++i )
       {
         mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
 
@@ -850,8 +878,27 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
       }
       break;
     }
+    case QgsWKBTypes::GeometryCollection:
+    {
+      QgsConstWkbPtr wkbPtr( segmentizedGeometry->asWkb(), segmentizedGeometry->wkbSize() );
+      wkbPtr.readHeader();
+
+      int nGeometries;
+      wkbPtr >> nGeometries;
+
+      if ( nGeometries == 0 )
+      {
+        // skip noise from empty geometry collections from simplification
+        break;
+      }
+
+      FALLTHROUGH;
+    }
     default:
-      QgsDebugMsg( QString( "feature %1: unsupported wkb type 0x%2 for rendering" ).arg( feature.id() ).arg( geom->wkbType(), 0, 16 ) );
+      QgsDebugMsg( QString( "feature %1: unsupported wkb type %2/%3 for rendering" )
+                   .arg( feature.id() )
+                   .arg( QgsWKBTypes::displayString( geom->geometry()->wkbType() ) )
+                   .arg( geom->wkbType(), 0, 16 ) );
   }
 
   if ( drawVertexMarker )

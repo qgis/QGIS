@@ -65,12 +65,10 @@ class StatisticsByCategories(GeoAlgorithm):
         categoriesField = layer.fieldNameIndex(categoriesFieldName)
 
         features = vector.features(layer)
-        nFeats = len(features)
+        total = 100.0 / len(features)
         values = {}
-        nFeat = 0
-        for feat in features:
-            nFeat += 1
-            progress.setPercentage(int(100 * nFeats / nFeat))
+        for current, feat in enumerate(features):
+            progress.setPercentage(int(current * total))
             attrs = feat.attributes()
             try:
                 value = float(attrs[valuesField])

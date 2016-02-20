@@ -316,13 +316,13 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       thePath = vsiPrefix + thePath;
     // if this is a /vsigzip/path_to_zip.zip/file_inside_zip remove the full path from the name
     // no need to change the name I believe
-    /*
+#if 0
     if (( is_vsizip || is_vsitar ) && ( thePath != vsiPrefix + parentItem->path() ) )
     {
       name = thePath;
       name = name.replace( vsiPrefix + parentItem->path() + '/', "" );
     }
-    */
+#endif
   }
 
   // return item without testing if:

@@ -2,6 +2,7 @@
  * A class to represent a vector.
  * Currently no Z axis / 2.5D support is implemented.
  */
+
 class QgsVector
 {
 %TypeHeaderCode
@@ -154,7 +155,7 @@ class QgsPoint
      * @param epsilon maximum difference for coordinates between the points
      * @returns true if points are equal within specified tolerance
      * @note added in QGIS 2.9
-    */
+     */
     bool compare( const QgsPoint &other, double epsilon = 4 * DBL_EPSILON ) const;
 
     //! equality operator

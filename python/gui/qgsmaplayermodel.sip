@@ -59,5 +59,3 @@ class QgsMapLayerModel : QAbstractItemModel
     bool setData( const QModelIndex &index, const QVariant &value, int role );
     Qt::ItemFlags flags( const QModelIndex &index ) const;
 };
-
-

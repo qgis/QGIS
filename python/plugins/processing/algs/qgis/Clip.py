@@ -78,10 +78,9 @@ class Clip(GeoAlgorithm):
 
         selectionA = vector.features(layerA)
 
-        current = 0
-        total = 100.0 / float(len(selectionA))
+        total = 100.0 / len(selectionA)
 
-        for inFeatA in selectionA:
+        for current, inFeatA in enumerate(selectionA):
             geom = QgsGeometry(inFeatA.geometry())
             attrs = inFeatA.attributes()
             intersects = index.intersects(geom.boundingBox())
@@ -132,7 +131,6 @@ class Clip(GeoAlgorithm):
                                                        'invalid geometry.'))
                         continue
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

@@ -54,7 +54,7 @@ class CORE_EXPORT QgsPaintEffect
     /** Drawing modes for effects. These modes are used only when effects are
      * drawn as part of an effects stack
      * @see QgsEffectStack
-    */
+     */
     enum DrawMode
     {
       Modifier, /*!< the result of the effect is not rendered, but is passed on to following effects in the stack */
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsPaintEffect
      * the source QPicture and draw the result using the context's painter.
      * @param context destination render context
      * @see drawSource
-    */
+     */
     virtual void draw( QgsRenderContext& context ) = 0;
 
     /** Draws the source QPicture onto the specified painter. Handles scaling of the picture

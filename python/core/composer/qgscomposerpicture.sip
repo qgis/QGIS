@@ -45,7 +45,7 @@ class QgsComposerPicture: QgsComposerItem
      * @see usePictureExpression
      * @see pictureFile
      * @deprecated use setPicturePath instead
-    */
+     */
     void setPictureFile( const QString& path ) /Deprecated/;
 
     /** Returns the path of the source image file. Data defined picture source may override
@@ -54,7 +54,7 @@ class QgsComposerPicture: QgsComposerItem
      * @see usePictureExpression
      * @see setPictureFile
      * @deprecated use picturePath instead
-    */
+     */
     QString pictureFile() const /Deprecated/;
 
     /** Sets the source path of the image (may be svg or a raster format). Data defined
@@ -64,7 +64,7 @@ class QgsComposerPicture: QgsComposerItem
      * @see usePictureExpression
      * @see picturePath
      * @note added in QGIS 2.5
-    */
+     */
     void setPicturePath( const QString& path );
 
     /** Returns the path of the source image. Data defined picture source may override
@@ -73,12 +73,12 @@ class QgsComposerPicture: QgsComposerItem
      * @see usePictureExpression
      * @see setPicturePath
      * @note added in QGIS 2.5
-    */
+     */
     QString picturePath() const;
 
     /** Sets this items bound in scene coordinates such that 1 item size units
      * corresponds to 1 scene size unit and resizes the svg symbol / image
-    */
+     */
     void setSceneRect( const QRectF& rectangle );
 
     /** Stores state in Dom element
@@ -103,7 +103,7 @@ class QgsComposerPicture: QgsComposerItem
      * @note added in 2.2
      * @see setPictureRotation
      * @see rotationMap
-    */
+     */
     double pictureRotation() const;
 
     /** Sets the map object for rotation (by id). A value of -1 disables the map

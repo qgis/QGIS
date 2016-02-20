@@ -94,7 +94,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         inFeat = QgsFeature()
 
         current = 0
-        total = 100.0 / float(featureCount * len(unique))
+        total = 100.0 / (featureCount * len(unique))
 
         if not len(unique) == featureCount:
             for i in unique:

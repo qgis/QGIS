@@ -65,7 +65,7 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
   private slots:
     void showOrderByDialog();
 
-    void changeOrderBy( const QgsFeatureRequest::OrderBy& orderBy );
+    void changeOrderBy( const QgsFeatureRequest::OrderBy& orderBy, bool orderByEnabled );
 
   protected:
 

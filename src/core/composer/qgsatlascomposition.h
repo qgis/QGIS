@@ -175,7 +175,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @returns a vector of doubles representing predefined scales
      * @see setPredefinedScales
      * @see QgsComposerMap::atlasScalingMode
-    */
+     */
     const QVector<qreal>& predefinedScales() const { return mPredefinedScales; }
 
     /** Sets the list of predefined scales for the atlas. This is used
@@ -199,12 +199,12 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @param i feature number
      * @param updateMaps set to true to redraw maps and recalculate their extent
      * @returns true if feature was successfully prepared
-    */
+     */
     bool prepareForFeature( const int i, const bool updateMaps = true );
 
     /** Prepare the atlas map for the given feature. Sets the extent and context variables
      * @returns true if feature was successfully prepared
-    */
+     */
     bool prepareForFeature( const QgsFeature *feat );
 
     /** Returns the current filename. Must be called after prepareForFeature() */
@@ -232,7 +232,8 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QgsComposition* composition() { return mComposition; }
 
     /** Requeries the current atlas coverage layer and applies filtering and sorting. Returns
-      number of matching features. Must be called after prepareForFeature() */
+     * number of matching features. Must be called after prepareForFeature()
+     */
     int updateFeatures();
 
     /** Returns the current atlas feature. Must be called after prepareForFeature().
@@ -293,7 +294,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Returns the current atlas feature. Must be called after prepareForFeature( i ).
      * @deprecated use feature() instead
-    */
+     */
     Q_DECL_DEPRECATED QgsFeature* currentFeature() { return &mCurrentFeature; }
 
     /** Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS) */
@@ -303,7 +304,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Refreshes the current atlas feature, by refetching its attributes from the vector layer provider
      * @note added in QGIS 2.5
-    */
+     */
     void refreshFeature();
 
     void nextFeature();
@@ -346,7 +347,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Evaluates filename for current feature
      * @returns true if feature filename was successfully evaluated
-    */
+     */
     bool evalFeatureFilename( const QgsExpressionContext &context );
 
     QgsComposition* mComposition;

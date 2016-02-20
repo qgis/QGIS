@@ -62,17 +62,11 @@ class SplitLinesWithLines(GeoAlgorithm):
 
         spatialIndex = vector.spatialindex(layerB)
 
-        inFeatA = QgsFeature()
-        inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        splitGeom = QgsGeometry()
-
         features = vector.features(layerA)
-        current = 0
         total = 100.0 / float(len(features))
 
-        for inFeatA in features:
+        for current, inFeatA in enumerate(features):
             inGeom = inFeatA.geometry()
             attrsA = inFeatA.attributes()
             outFeat.setAttributes(attrsA)
@@ -131,7 +125,6 @@ class SplitLinesWithLines(GeoAlgorithm):
                 outFeat.setGeometry(aLine)
                 writer.addFeature(outFeat)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

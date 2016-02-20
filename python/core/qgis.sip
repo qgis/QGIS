@@ -18,6 +18,9 @@
 %End
 
 
+/** \ingroup core
+ * The QGis class provides global constants for use throughout the application.
+ */
 class QGis
 {
 %TypeHeaderCode
@@ -59,17 +62,40 @@ class QGis
       WKBMultiPolygon25D,
     };
 
+    //! Map multi to single type
+    // @deprecated use QgsWKBTypes::singleType
+    /* Q_DECL_DEPRECATED */
     static WkbType singleType( WkbType type );
+
+    //! Map single to multitype type
+    // @deprecated use QgsWKBTypes::multiType
+    /* Q_DECL_DEPRECATED */
     static WkbType multiType( WkbType type );
+
+    //! Map 2d+ to 2d type
+    // @deprecated use QgsWKBTypes::flatType
+    /* Q_DECL_DEPRECATED */
     static WkbType flatType( WkbType type );
+
+    //! Return if type is a single type
+    // @deprecated use QgsWKBTypes::isSingleType
+    /* Q_DECL_DEPRECATED */
     static bool isSingleType( WkbType type );
+
+    //! Return if type is a multi type
+    // @deprecated use QgsWKBTypes::isMultiType
+    /* Q_DECL_DEPRECATED */
     static bool isMultiType( WkbType type );
+
+    // get dimension of points
+    // @deprecated use QgsWKBTypes::coordDimensions()
+    /* Q_DECL_DEPRECATED */
     static int wkbDimensions( WkbType type );
 
-    //! Converts from old (pre 2.10) WKB type to new WKB type
+    //! Converts from old (pre 2.10) WKB type (OGR) to new WKB type
     static QgsWKBTypes::Type fromOldWkbType(QGis::WkbType type);
 
-    //! Converts from new (post 2.10) WKB type to old WKB type
+    //! Converts from new (post 2.10) WKB type (OGC) to old WKB type
     static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
 
     enum GeometryType
@@ -115,6 +141,7 @@ class QGis
      * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
      * @note and QGIS >1.8 returns to that
      */
+    //TODO QGIS 3.0 - clean up and move to QgsUnitTypes and rename to DistanceUnit
     enum UnitType
     {
       Meters,
@@ -129,6 +156,7 @@ class QGis
       NauticalMiles
     };
 
+    //! Provides the canonical name of the type value
     //! @deprecated use QgsUnitTypes::encodeUnit() instead
     static QString toLiteral( QGis::UnitType unit ) /Deprecated/;
 

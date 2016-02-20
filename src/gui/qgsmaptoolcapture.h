@@ -22,6 +22,7 @@
 #include "qgspoint.h"
 #include "qgsgeometry.h"
 #include "qgslayertreeview.h"
+#include "qgspointlocator.h"
 
 #include <QPoint>
 #include <QList>
@@ -89,52 +90,73 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
   protected:
     /** Converts a map point to layer coordinates
-        @param mapPoint the point in map coordinates
-        @param[inout] layerPoint the point in layer coordinates
-        @return
-          0 in case of success
-          1 if the current layer is null or not a vector layer
-          2 if the transformation failed
-        @deprecated use nextPoint(const QgsPointV2&, QgsPointV2&)
-    */
+     * @param mapPoint the point in map coordinates
+     * @param[inout] layerPoint the point in layer coordinates
+     * @return
+     *  0 in case of success
+     *  1 if the current layer is null or not a vector layer
+     *  2 if the transformation failed
+     * @deprecated use nextPoint(const QgsPointV2&, QgsPointV2&)
+     */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     Q_DECL_DEPRECATED int nextPoint( const QgsPoint& mapPoint, QgsPoint& layerPoint );
 
     /** Converts a map point to layer coordinates
-        @param mapPoint the point in map coordinates
-        @param[inout] layerPoint the point in layer coordinates
-        @return
-          0 in case of success
-          1 if the current layer is null or not a vector layer
-          2 if the transformation failed
-    */
+     *  @param mapPoint the point in map coordinates
+     *  @param[inout] layerPoint the point in layer coordinates
+     *  @return
+     *   0 in case of success
+     *   1 if the current layer is null or not a vector layer
+     *   2 if the transformation failed
+     */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int nextPoint( const QgsPointV2& mapPoint, QgsPointV2& layerPoint );
 
     /** Converts a point to map coordinates and layer coordinates
-        @param p the input point
-        @param[inout] layerPoint the point in layer coordinates
-        @param[inout] mapPoint the point in map coordinates
-        @return
-          0 in case of success
-          1 if the current layer is null or not a vector layer
-          2 if the transformation failed
-        @deprecated use nextPoint( const QPoint&, QgsPointV2&, QgsPointV2& )
-    */
+     * @param p the input point
+     * @param[inout] layerPoint the point in layer coordinates
+     * @param[inout] mapPoint the point in map coordinates
+     * @return
+     *  0 in case of success
+     *  1 if the current layer is null or not a vector layer
+     *  2 if the transformation failed
+     * @deprecated use nextPoint( const QPoint&, QgsPointV2&, QgsPointV2& )
+     */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     Q_DECL_DEPRECATED int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );
 
     /** Converts a point to map coordinates and layer coordinates
-        @param p the input point
-        @param[inout] layerPoint the point in layer coordinates
-        @param[inout] mapPoint the point in map coordinates
-        @return
-          0 in case of success
-          1 if the current layer is null or not a vector layer
-          2 if the transformation failed
-    */
+     * @param p the input point
+     * @param[inout] layerPoint the point in layer coordinates
+     * @param[inout] mapPoint the point in map coordinates
+     * @return
+     *  0 in case of success
+     *  1 if the current layer is null or not a vector layer
+     *  2 if the transformation failed
+     */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int nextPoint( QPoint p, QgsPointV2 &layerPoint, QgsPointV2 &mapPoint );
 
+    /** Fetches the original point from the source layer if it has the same
+     * CRS as the current layer.
+     * @return 0 in case of success, 1 if not applicable (CRS mismatch), 2 in case of failure
+     * @note added in 2.14
+     */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
+    int fetchLayerPoint( QgsPointLocator::Match match, QgsPointV2& layerPoint );
+
     /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
-     @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
+     * @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
+     */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addVertex( const QgsPoint& point );
+
+    /** Variant to supply more information in the case of snapping
+     * @param mapPoint The vertex to add in map coordinates
+     * @param match Data about the snapping match. Can be an invalid match, if point not snapped.
+     * @note added in 2.14
+     */
+    int addVertex( const QgsPoint& mapPoint, QgsPointLocator::Match match );
 
     /** Removes the last vertex from mRubberBand and mCaptureList*/
     void undo();

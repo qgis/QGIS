@@ -160,7 +160,7 @@ class QgsGlowEffect : QgsPaintEffect
      * @see colorType
      * @see setColor
      * @see setRamp
-    */
+     */
     void setColorType( GlowColorType colorType );
 
     /** Returns the color mode used for the glow. The glow can either be drawn using a QgsVectorColorRampV2
@@ -169,7 +169,7 @@ class QgsGlowEffect : QgsPaintEffect
      * @see setColorType
      * @see color
      * @see ramp
-    */
+     */
     GlowColorType colorType() const;
 
   protected:
@@ -209,6 +209,7 @@ class QgsOuterGlowEffect : QgsGlowEffect
 
     QgsOuterGlowEffect();
     virtual ~QgsOuterGlowEffect();
+
     virtual QString type() const;
     virtual QgsOuterGlowEffect* clone() const /Factory/;
 

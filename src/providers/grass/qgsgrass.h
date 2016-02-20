@@ -82,7 +82,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
   public:
     //! Element type
     enum Type { None, Location, Mapset, Raster, Group, Vector, Region,
-                Strds, Stvds, Str3ds
+                Strds, Stvds, Str3ds, Stds
             };
 
     QgsGrassObject() : mType( None ) {}
@@ -158,12 +158,12 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // This does not work (gcc/Linux), such exception cannot be caught
     // so I have enabled the old version, if you are able to fix it, please
     // check first if it realy works, i.e. can be caught!
-    /*
+#if 0
     struct Exception : public QgsException
     {
       Exception( const QString &msg ) : QgsException( msg ) {}
     };
-    */
+#endif
     struct Exception : public std::runtime_error
     {
       //Exception( const std::string &msg ) : std::runtime_error( msg ) {}
@@ -211,27 +211,29 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Get default path to MAPSET (gisdbase/location/mapset) or empty string if not in active mode
     static QString getDefaultMapsetPath();
 
-    //! Init or reset GRASS library
-    /*!
-    \param gisdbase full path to GRASS GISDBASE.
-    \param location location name (not path!).
-    */
+    /** Init or reset GRASS library
+     *
+     * @param gisdbase full path to GRASS GISDBASE.
+     * @param location location name (not path!).
+     */
     static void setLocation( QString gisdbase, QString location );
 
     /*!
-    \param gisdbase full path to GRASS GISDBASE.
-    \param location location name (not path!).
-    \param mapset current mupset. Note that some variables depend on mapset and
-               may influence behaviour of some functions (e.g. search path etc.)
-    */
+     * @param gisdbase full path to GRASS GISDBASE.
+     * @param location location name (not path!).
+     * @param mapset current mupset. Note that some variables depend on mapset and
+     * may influence behaviour of some functions (e.g. search path etc.)
+     */
     static void setMapset( QString gisdbase, QString location, QString mapset );
 
     /** Set mapset according to object gisdbase, location and mapset
-     * @param grassObject */
+     * @param grassObject
+     */
     static void setMapset( QgsGrassObject grassObject );
 
     /** Check if mapset is in search pat set by g.mapsets
-     *  @return true if in search path */
+     *  @return true if in search path
+     */
     bool isMapsetInSearchPath( QString mapset );
 
     /** Add mapset to search path of currently open mapset */

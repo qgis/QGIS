@@ -96,12 +96,12 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
   public:
     /**
-    * Constructor for the provider.
-    *
-    * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
-    *                otherwise we contact the host directly.
-    *
-    */
+     * Constructor for the provider.
+     *
+     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
+     *                otherwise we contact the host directly.
+     *
+     */
     explicit QgsWcsProvider( QString const & uri = nullptr );
 
     //! Destructor
@@ -157,7 +157,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     void getCache( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QString crs = "" );
 
     /** Return the extent for this data layer
-    */
+     */
     virtual QgsRectangle extent() override;
 
     /** Returns true if layer is valid

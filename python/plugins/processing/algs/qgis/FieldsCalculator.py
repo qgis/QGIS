@@ -123,7 +123,6 @@ class FieldsCalculator(GeoAlgorithm):
         error = ''
         calculationSuccess = True
 
-        current = 0
         features = vector.features(layer)
         total = 100.0 / len(features)
 

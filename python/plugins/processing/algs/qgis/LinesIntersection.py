@@ -80,19 +80,12 @@ class LinesIntersection(GeoAlgorithm):
 
         spatialIndex = vector.spatialindex(layerB)
 
-        inFeatA = QgsFeature()
-        inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        tmpGeom = QgsGeometry()
-
         features = vector.features(layerA)
-
-        current = 0
-        total = 100.0 / float(len(features))
+        total = 100.0 / len(features)
         hasIntersections = False
 
-        for inFeatA in features:
+        for current, inFeatA in enumerate(features):
             inGeom = inFeatA.geometry()
             hasIntersections = False
             lines = spatialIndex.intersects(inGeom.boundingBox())
@@ -124,7 +117,6 @@ class LinesIntersection(GeoAlgorithm):
                                                        attrsB[idxB]])
                                 writer.addFeature(outFeat)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

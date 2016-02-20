@@ -136,15 +136,15 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   // setup slot rendererChanged()
   connect( cboRenderers, SIGNAL( currentIndexChanged( int ) ), this, SLOT( rendererChanged() ) );
   //setup order by
-  if ( mOrderBy.isEmpty() )
+  if ( mLayer->rendererV2()->orderByEnabled() )
+  {
+    checkboxEnableOrderBy->setChecked( true );
+  }
+  else
   {
     btnOrderBy->setEnabled( false );
     checkboxEnableOrderBy->setChecked( false );
     lineEditOrderBy->setEnabled( false );
-  }
-  else
-  {
-    checkboxEnableOrderBy->setChecked( true );
   }
   lineEditOrderBy->setReadOnly( true );
   connect( checkboxEnableOrderBy, SIGNAL( toggled( bool ) ), btnOrderBy, SLOT( setEnabled( bool ) ) );
@@ -222,7 +222,7 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
     {
       if ( mMapCanvas )
         mActiveWidget->setMapCanvas( mMapCanvas );
-      changeOrderBy( mActiveWidget->renderer()->orderBy() );
+      changeOrderBy( mActiveWidget->renderer()->orderBy(), mActiveWidget->renderer()->orderByEnabled() );
       connect( mActiveWidget, SIGNAL( layerVariablesChanged() ), this, SIGNAL( layerVariablesChanged() ) );
     }
   }
@@ -248,6 +248,7 @@ void QgsRendererV2PropertiesDialog::apply()
     renderer->setPaintEffect( mPaintEffect->clone() );
     // set the order by
     renderer->setOrderBy( mOrderBy );
+    renderer->setOrderByEnabled( checkboxEnableOrderBy->isChecked() );
 
     mLayer->setRendererV2( renderer->clone() );
   }
@@ -268,7 +269,7 @@ void QgsRendererV2PropertiesDialog::onOK()
 
 void QgsRendererV2PropertiesDialog::showOrderByDialog()
 {
-  QgsOrderByDialog dlg( mLayer );
+  QgsOrderByDialog dlg( mLayer, this );
 
   dlg.setOrderBy( mOrderBy );
   if ( dlg.exec() )
@@ -278,11 +279,11 @@ void QgsRendererV2PropertiesDialog::showOrderByDialog()
   }
 }
 
-void QgsRendererV2PropertiesDialog::changeOrderBy( const QgsFeatureRequest::OrderBy& orderBy )
+void QgsRendererV2PropertiesDialog::changeOrderBy( const QgsFeatureRequest::OrderBy& orderBy, bool orderByEnabled )
 {
   mOrderBy = orderBy;
   lineEditOrderBy->setText( mOrderBy.dump() );
-  checkboxEnableOrderBy->setChecked( orderBy.isEmpty() );
+  checkboxEnableOrderBy->setChecked( orderByEnabled );
 }
 
 

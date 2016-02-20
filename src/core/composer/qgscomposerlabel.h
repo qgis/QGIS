@@ -54,7 +54,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 
     /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions.
       * @deprecated use atlas features and setSubstitutions() instead
-     */
+      */
     Q_DECL_DEPRECATED void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, const QMap<QString, QVariant>& substitutions = ( QMap<QString, QVariant>() ) );
 
     /** Sets the list of local variable substitutions for evaluating expressions in label text.
@@ -86,21 +86,21 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /** Returns the margin between the edge of the frame and the label contents
      * @returns margin in mm
      * @deprecated use marginX and marginY instead
-    */
+     */
     Q_DECL_DEPRECATED double margin() { return mMarginX; }
 
     /** Returns the horizontal margin between the edge of the frame and the label
      * contents.
      * @returns horizontal margin in mm
      * @note added in QGIS 2.7
-    */
+     */
     double marginX() const { return mMarginX; }
 
     /** Returns the vertical margin between the edge of the frame and the label
      * contents.
      * @returns vertical margin in mm
      * @note added in QGIS 2.7
-    */
+     */
     double marginY() const { return mMarginY; }
 
     /** Sets the margin between the edge of the frame and the label contents.
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
      * @param m margin in mm
      * @see setMarginX
      * @see setMarginY
-    */
+     */
     void setMargin( const double m );
 
     /** Sets the horizontal margin between the edge of the frame and the label
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
      * @see setMargin
      * @see setMarginY
      * @note added in QGIS 2.7
-    */
+     */
     void setMarginX( const double margin );
 
     /** Sets the vertical margin between the edge of the frame and the label
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
      * @see setMargin
      * @see setMarginX
      * @note added in QGIS 2.7
-    */
+     */
     void setMarginY( const double margin );
 
     /** Sets text color */
@@ -137,15 +137,15 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     QColor fontColor() const { return mFontColor; }
 
     /** Stores state in Dom element
-       * @param elem is Dom element corresponding to 'Composer' tag
-       * @param doc document
-       */
+     * @param elem is Dom element corresponding to 'Composer' tag
+     * @param doc document
+     */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets state from Dom document
-       * @param itemElem is Dom element corresponding to 'ComposerLabel' tag
-       * @param doc document
-       */
+     * @param itemElem is Dom element corresponding to 'ComposerLabel' tag
+     * @param doc document
+     */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     //Overridden to contain part of label's text
@@ -153,15 +153,15 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 
     /** In case of negative margins, the bounding rect may be larger than the
      * label's frame
-    */
+     */
     QRectF boundingRect() const override;
 
     /** Reimplemented to call prepareGeometryChange after toggling frame
-    */
+     */
     virtual void setFrameEnabled( const bool drawFrame ) override;
 
     /** Reimplemented to call prepareGeometryChange after changing outline width
-    */
+     */
     virtual void setFrameOutlineWidth( const double outlineWidth ) override;
 
   public slots:
@@ -211,5 +211,3 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 };
 
 #endif
-
-

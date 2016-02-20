@@ -653,7 +653,14 @@ class ModelerAlgorithm(GeoAlgorithm):
                                     modelAlg.params[param.name] = None
                                 else:
                                     tokens = line.split('|')
-                                    algIdx = int(tokens[0])
+                                    try:
+                                        algIdx = int(tokens[0])
+                                    except:
+                                        raise WrongModelException(
+                                            _tr('Number of parameters in the '
+                                                '{} algorithm does not match '
+                                                'current Processing '
+                                                'implementation'.format(alg.name)))
                                     if algIdx == -1:
                                         if tokens[1] in modelParameters:
                                             modelAlg.params[param.name] = ValueFromInput(tokens[1])

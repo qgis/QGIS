@@ -20,14 +20,14 @@ class QgsLogger
     @param file file name where the message comes from
     @param function function where the message comes from
     @param line place in file where the message comes from*/
-    static void debug( const QString& msg, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1 );
+    static void debug( const QString& msg, int debuglevel = 1, const char* file = 0, const char* function = 0, int line = -1 );
 
     /** Similar to the previous method, but prints a variable int-value pair*/
-    static void debug( const QString& var, int val, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1 );
+    static void debug( const QString& var, int val, int debuglevel = 1, const char* file = 0, const char* function = 0, int line = -1 );
 
     /** Similar to the previous method, but prints a variable double-value pair*/
     // @note not available in python bindings
-    // static void debug( const QString& var, double val, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1 );
+    // static void debug( const QString& var, double val, int debuglevel = 1, const char* file = 0, const char* function = 0, int line = -1 );
 
     /** Prints out a variable/value pair for types with overloaded operator<<*/
     // @note not available in python bindings

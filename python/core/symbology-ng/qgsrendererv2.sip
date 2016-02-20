@@ -61,6 +61,8 @@ class QgsFeatureRendererV2
     QString type() const;
 
     /** To be overridden
+     *
+     * Must be called between startRender() and stopRender() calls.
      * @param feature feature
      * @return returns pointer to symbol or 0 if symbol was not found
      * @deprecated use symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) instead
@@ -68,6 +70,8 @@ class QgsFeatureRendererV2
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) /Deprecated/;
 
     /** To be overridden
+     *
+     * Must be called between startRender() and stopRender() calls.
      * @param feature feature
      * @param context render context
      * @return returns pointer to symbol or 0 if symbol was not found
@@ -289,7 +293,7 @@ class QgsFeatureRendererV2
      * to use symbolForFeature()
      * @note added in QGIS 2.12
      * @note available in Python bindings as symbolsForFeature2
-    */
+     */
     //TODO - QGIS 3.0 change PyName to symbolsForFeature when deprecated method is removed
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=symbolsForFeature2/;
 
@@ -304,7 +308,7 @@ class QgsFeatureRendererV2
      * extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
      * @note added in 2.12
      * @note available in Python bindings as originalSymbolsForFeature2
-    */
+     */
     //TODO - QGIS 3.0 change PyName to symbolsForFeature when deprecated method is removed
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=originalSymbolsForFeature2/;
 
@@ -348,14 +352,35 @@ class QgsFeatureRendererV2
     /**
      * Get the order in which features shall be processed by this renderer.
      * @note added in QGIS 2.14
+     * @note this property has no effect if orderByEnabled() is false
+     * @see orderByEnabled()
      */
     QgsFeatureRequest::OrderBy orderBy() const;
 
     /**
      * Define the order in which features shall be processed by this renderer.
+     * @note this property has no effect if orderByEnabled() is false
      * @note added in QGIS 2.14
+     * @see setOrderByEnabled()
      */
     void setOrderBy( const QgsFeatureRequest::OrderBy& orderBy );
+
+    /**
+     * Returns whether custom ordering will be applied before features are processed by this renderer.
+     * @note added in QGIS 2.14
+     * @see orderBy()
+     * @see setOrderByEnabled()
+     */
+    bool orderByEnabled() const;
+
+    /**
+     * Sets whether custom ordering should be applied before features are processed by this renderer.
+     * @param enabled set to true to enable custom feature ordering
+     * @note added in QGIS 2.14
+     * @see setOrderBy()
+     * @see orderByEnabled()
+     */
+    void setOrderByEnabled( bool enabled );
 
   protected:
     QgsFeatureRendererV2( const QString& type );

@@ -431,8 +431,6 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     /**
      * Set the editor widget config for a widget.
      *
-     * Python: Will accept a map
-     *
      * Example:
      * \code{.py}
      *   layer.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
@@ -442,8 +440,10 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
      * @param config      The config to set for this field
      *
      * @see setWidgetType() for a list of widgets and choose the widget to see the available options.
+     *
+     * @note not available in python bindings
      */
-    void setWidgetConfig( const QString& widgetName , const QgsEditorWidgetConfig& config );
+    void setWidgetConfig( const QString& widgetName, const QgsEditorWidgetConfig& config );
 
     /**
      * Get the configuration for the editor widget used to represent the field at the given index
@@ -545,10 +545,6 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     FeatureFormSuppress suppress() const { return mSuppressForm; }
     /** Set type of feature form pop-up suppression after feature creation (overrides app setting) */
     void setSuppress( FeatureFormSuppress s ) { mSuppressForm = s; }
-
-
-
-
 
     // Serialization
 

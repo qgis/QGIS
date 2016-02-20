@@ -75,11 +75,9 @@ class HubLines(GeoAlgorithm):
 
         spokes = vector.features(layerSpoke)
         hubs = vector.features(layerHub)
+        total = 100.0 / len(spokes)
 
-        count = len(spokes)
-        total = 100.0 / float(count)
-
-        for count, spokepoint in enumerate(spokes):
+        for current, spokepoint in enumerate(spokes):
             p = spokepoint.geometry().boundingBox().center()
             spokeX = p.x()
             spokeY = p.y()
@@ -100,6 +98,6 @@ class HubLines(GeoAlgorithm):
 
                     break
 
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         del writer

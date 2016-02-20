@@ -207,16 +207,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   }
   else if ( role == Qt::DisplayRole )
   {
-    if ( index.column() == 0 )
-    {
-      return item->name();
-    }
-    if ( item->type() == QgsDataItem::Layer )
-    {
-      QgsLayerItem* lyrItem = qobject_cast<QgsLayerItem*>( item );
-      return lyrItem->comments();
-    }
-    return "";
+    return item->name();
   }
   else if ( role == Qt::ToolTipRole )
   {
@@ -229,6 +220,15 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   else if ( role == QgsBrowserModel::PathRole )
   {
     return item->path();
+  }
+  else if ( role == QgsBrowserModel::CommentRole )
+  {
+    if ( item->type() == QgsDataItem::Layer )
+    {
+      QgsLayerItem* lyrItem = qobject_cast<QgsLayerItem*>( item );
+      return lyrItem->comments();
+    }
+    return QVariant();
   }
   else
   {
@@ -337,8 +337,7 @@ void QgsBrowserModel::reload()
 
 QModelIndex QgsBrowserModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  if ( column < 0 || column >= columnCount( parent ) ||
-       row < 0 || row >= rowCount( parent ) )
+  if ( column < 0 || column >= columnCount() || row < 0 )
     return QModelIndex();
 
   QgsDataItem *p = dataItem( parent );

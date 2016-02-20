@@ -19,12 +19,12 @@ class QgsStyleV2ExportImportDialog : QDialog
      * @brief selectSymbols select symbols by name
      * @param symbolNames list of symbol names
      */
-    void selectSymbols( const QStringList& symbolNames);
+    void selectSymbols( const QStringList& symbolNames );
     /**
      * @brief deselectSymbols deselect symbols by name
      * @param symbolNames list of symbol names
      */
-    void deselectSymbols( const QStringList& symbolNames);
+    void deselectSymbols( const QStringList& symbolNames );
 
   public slots:
     void doExportImport();
@@ -49,17 +49,17 @@ class QgsStyleV2ExportImportDialog : QDialog
      * Deselect the symbols belonging to the given group
      * @param groupName the name of the group to be deselected
      */
-    void deselectGroup( const QString& groupName);
+    void deselectGroup( const QString& groupName );
     /**
      * @brief selectSmartgroup selects all symbols from a smart group
      * @param groupName
      */
-    void selectSmartgroup( const QString& groupName);
+    void selectSmartgroup( const QString& groupName );
     /**
      * @brief deselectSmartgroup deselects all symbols from a smart group
      * @param groupName
      */
-    void deselectSmartgroup( const QString& groupName);
+    void deselectSmartgroup( const QString& groupName );
 
     void importTypeChanged( int );
     void browse();

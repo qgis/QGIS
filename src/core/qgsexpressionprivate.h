@@ -22,6 +22,7 @@
 
 #include "qgsexpression.h"
 #include "qgsdistancearea.h"
+#include "qgsunittypes.h"
 
 ///@cond
 /**
@@ -38,6 +39,8 @@ class QgsExpressionPrivate
         , mRowNumber( 0 )
         , mScale( 0 )
         , mCalc( nullptr )
+        , mDistanceUnit( QGis::UnknownUnit )
+        , mAreaUnit( QgsUnitTypes::UnknownAreaUnit )
     {}
 
     QgsExpressionPrivate( const QgsExpressionPrivate& other )
@@ -48,6 +51,8 @@ class QgsExpressionPrivate
         , mScale( other.mScale )
         , mExp( other.mExp )
         , mCalc( other.mCalc )
+        , mDistanceUnit( other.mDistanceUnit )
+        , mAreaUnit( other.mAreaUnit )
     {}
 
     ~QgsExpressionPrivate()
@@ -67,6 +72,8 @@ class QgsExpressionPrivate
     QString mExp;
 
     QSharedPointer<QgsDistanceArea> mCalc;
+    QGis::UnitType mDistanceUnit;
+    QgsUnitTypes::AreaUnit mAreaUnit;
 };
 ///@endcond
 

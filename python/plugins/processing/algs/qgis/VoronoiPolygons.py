@@ -63,7 +63,6 @@ class VoronoiPolygons(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.pendingFields().toList(), QGis.WKBPolygon, layer.crs())
 
-        inFeat = QgsFeature()
         outFeat = QgsFeature()
         extent = layer.extent()
         extraX = extent.height() * (buf / 100.0)
@@ -76,7 +75,8 @@ class VoronoiPolygons(GeoAlgorithm):
         ptNdx = -1
 
         features = vector.features(layer)
-        for inFeat in features:
+        total = 100.0 / len(features)
+        for current, inFeat in enumerate(features):
             geom = QgsGeometry(inFeat.geometry())
             point = geom.asPoint()
             x = point.x() - extent.xMinimum()
@@ -84,6 +84,7 @@ class VoronoiPolygons(GeoAlgorithm):
             pts.append((x, y))
             ptNdx += 1
             ptDict[ptNdx] = inFeat.id()
+            progress.setPercentage(int(current * total))
 
         if len(pts) < 3:
             raise GeoAlgorithmExecutionException(
@@ -98,7 +99,7 @@ class VoronoiPolygons(GeoAlgorithm):
         inFeat = QgsFeature()
 
         current = 0
-        total = 100.0 / float(len(c.polygons))
+        total = 100.0 / len(c.polygons)
 
         for (site, edges) in c.polygons.iteritems():
             request = QgsFeatureRequest().setFilterFid(ptDict[ids[site]])

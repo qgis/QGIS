@@ -27,7 +27,6 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
     Q_OBJECT
 
   public:
-
     QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height );
 
     ~QgsComposerFrame();
@@ -36,7 +35,7 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
      * this frame (relative to the total multiframe extent in mm).
      * @param section visible portion of content
      * @see extent
-    */
+     */
     void setContentSection( const QRectF& section ) { mSection = section; }
 
     /** Returns the parent multiframe for the frame.

@@ -9,9 +9,9 @@ class QgsRasterProjector : QgsRasterInterface
 %End
 
   public:
-
     /** Precison defines if each pixel is reprojected or approximate reprojection based
-     *  on an approximation matrix of reprojected points is used. */
+     *  on an approximation matrix of reprojected points is used.
+     */
     enum Precision
     {
       Approximate, //!< Approximate (default), fast but possibly inaccurate
@@ -23,31 +23,28 @@ class QgsRasterProjector : QgsRasterInterface
      * which are used to calculate affine transformation matrices.
      */
 
-    QgsRasterProjector(
-      const QgsCoordinateReferenceSystem& theSrcCRS,
-      const QgsCoordinateReferenceSystem& theDestCRS,
-      int theSrcDatumTransform,
-      int theDestDatumTransform,
-      const QgsRectangle& theDestExtent,
-      int theDestRows, int theDestCols,
-      double theMaxSrcXRes, double theMaxSrcYRes,
-      const QgsRectangle& theExtent
-    );
+    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
+                        const QgsCoordinateReferenceSystem& theDestCRS,
+                        int theSrcDatumTransform,
+                        int theDestDatumTransform,
+                        const QgsRectangle& theDestExtent,
+                        int theDestRows, int theDestCols,
+                        double theMaxSrcXRes, double theMaxSrcYRes,
+                        const QgsRectangle& theExtent
+                      );
 
-    QgsRasterProjector(
-      const QgsCoordinateReferenceSystem& theSrcCRS,
-      const QgsCoordinateReferenceSystem& theDestCRS,
-      const QgsRectangle& theDestExtent,
-      int theDestRows, int theDestCols,
-      double theMaxSrcXRes, double theMaxSrcYRes,
-      const QgsRectangle& theExtent
-    );
-    QgsRasterProjector(
-      const QgsCoordinateReferenceSystem& theSrcCRS,
-      const QgsCoordinateReferenceSystem& theDestCRS,
-      double theMaxSrcXRes, double theMaxSrcYRes,
-      const QgsRectangle& theExtent
-    );
+    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
+                        const QgsCoordinateReferenceSystem& theDestCRS,
+                        const QgsRectangle& theDestExtent,
+                        int theDestRows, int theDestCols,
+                        double theMaxSrcXRes, double theMaxSrcYRes,
+                        const QgsRectangle& theExtent
+                      );
+    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
+                        const QgsCoordinateReferenceSystem& theDestCRS,
+                        double theMaxSrcXRes, double theMaxSrcYRes,
+                        const QgsRectangle& theExtent
+                      );
     QgsRasterProjector();
 
     /** \brief The destructor */

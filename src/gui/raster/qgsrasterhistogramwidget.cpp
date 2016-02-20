@@ -877,13 +877,13 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
     myBands << cboHistoBand->currentIndex() + 1;
 
     // get stddev value once if needed
-    /*
+#if 0
     double myStdDev = 1.0;
     if ( actionName == "Load stddev" )
     {
       myStdDev = mRendererWidget->stdDev().toDouble();
     }
-    */
+#endif
 
     // don't update markers every time
     leHistoMin->blockSignals( true );

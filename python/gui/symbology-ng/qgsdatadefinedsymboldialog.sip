@@ -17,6 +17,8 @@ class QgsDataDefinedSymbolDialog : QDialog
     //! @deprecated will be removed in QGIS 3.0
     QgsDataDefinedSymbolDialog( const QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent /TransferThis/ = 0, const Qt::WindowFlags& f = 0 ) /Deprecated/;
     ~QgsDataDefinedSymbolDialog();
+
+    //! @deprecated will be removed in QGIS 3.0
     QMap< QString, QString > dataDefinedProperties() const /Deprecated/;
 
     //common help texts

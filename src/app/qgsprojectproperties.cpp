@@ -54,6 +54,7 @@
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
 #include "qgslayertreemodel.h"
+#include "qgsunittypes.h"
 
 #include "qgsmessagelog.h"
 
@@ -80,20 +81,38 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
 
+  mCoordinateDisplayComboBox->addItem( tr( "Decimal degrees" ), DecimalDegrees );
+  mCoordinateDisplayComboBox->addItem( tr( "Degrees, minutes" ), DegreesMinutes );
+  mCoordinateDisplayComboBox->addItem( tr( "Degrees, minutes, seconds" ), DegreesMinutesSeconds );
+
+  mDistanceUnitsCombo->addItem( tr( "Meters" ), QGis::Meters );
+  mDistanceUnitsCombo->addItem( tr( "Feet" ), QGis::Feet );
+  mDistanceUnitsCombo->addItem( tr( "Nautical miles" ), QGis::NauticalMiles );
+  mDistanceUnitsCombo->addItem( tr( "Degrees" ), QGis::Degrees );
+  mDistanceUnitsCombo->addItem( tr( "Map units" ), QGis::UnknownUnit );
+
+  mAreaUnitsCombo->addItem( tr( "Square meters" ), QgsUnitTypes::SquareMeters );
+  mAreaUnitsCombo->addItem( tr( "Square kilometers" ), QgsUnitTypes::SquareKilometers );
+  mAreaUnitsCombo->addItem( tr( "Square feet" ), QgsUnitTypes::SquareFeet );
+  mAreaUnitsCombo->addItem( tr( "Square yards" ), QgsUnitTypes::SquareYards );
+  mAreaUnitsCombo->addItem( tr( "Square miles" ), QgsUnitTypes::SquareMiles );
+  mAreaUnitsCombo->addItem( tr( "Hectares" ), QgsUnitTypes::Hectares );
+  mAreaUnitsCombo->addItem( tr( "Acres" ), QgsUnitTypes::Acres );
+  mAreaUnitsCombo->addItem( tr( "Square nautical miles" ), QgsUnitTypes::SquareNauticalMiles );
+  mAreaUnitsCombo->addItem( tr( "Square degrees" ), QgsUnitTypes::SquareDegrees );
+  mAreaUnitsCombo->addItem( tr( "Map units" ), QgsUnitTypes::UnknownAreaUnit );
+
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
-  connect( projectionSelector, SIGNAL( sridSelected( QString ) ), this, SLOT( setMapUnitsToCurrentProjection() ) );
+  connect( projectionSelector, SIGNAL( sridSelected( QString ) ), this, SLOT( srIdUpdated() ) );
   connect( projectionSelector, SIGNAL( initialized() ), this, SLOT( projectionSelectorInitialized() ) );
 
   connect( cmbEllipsoid, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateEllipsoidUI( int ) ) );
 
-  connect( radMeters, SIGNAL( toggled( bool ) ), btnGrpDegreeDisplay, SLOT( setDisabled( bool ) ) );
-  connect( radFeet, SIGNAL( toggled( bool ) ), btnGrpDegreeDisplay, SLOT( setDisabled( bool ) ) );
-  connect( radNMiles, SIGNAL( toggled( bool ) ), btnGrpDegreeDisplay, SLOT( setDisabled( bool ) ) );
-  connect( radDegrees, SIGNAL( toggled( bool ) ), btnGrpDegreeDisplay, SLOT( setEnabled( bool ) ) );
-
-  connect( radAutomatic, SIGNAL( toggled( bool ) ), mPrecisionFrame, SLOT( setDisabled( bool ) ) );
-  connect( radManual, SIGNAL( toggled( bool ) ), mPrecisionFrame, SLOT( setEnabled( bool ) ) );
+  connect( radAutomatic, SIGNAL( toggled( bool ) ), spinBoxDP, SLOT( setDisabled( bool ) ) );
+  connect( radAutomatic, SIGNAL( toggled( bool ) ), labelDP, SLOT( setDisabled( bool ) ) );
+  connect( radManual, SIGNAL( toggled( bool ) ), spinBoxDP, SLOT( setEnabled( bool ) ) );
+  connect( radManual, SIGNAL( toggled( bool ) ), labelDP, SLOT( setEnabled( bool ) ) );
 
   QSettings settings;
 
@@ -101,12 +120,12 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   // Properties stored in map canvas's QgsMapRenderer
   // these ones are propagated to QgsProject by a signal
 
-  QGis::UnitType myUnit = mMapCanvas->mapSettings().mapUnits();
-  setMapUnits( myUnit );
-
   // we need to initialize it, since the on_cbxProjectionEnabled_toggled()
   // slot triggered by setChecked() might use it.
   mProjectSrsId = mMapCanvas->mapSettings().destinationCrs().srsid();
+
+  QgsCoordinateReferenceSystem srs( mProjectSrsId, QgsCoordinateReferenceSystem::InternalCrsId );
+  updateGuiForMapUnits( srs.mapUnits() );
 
   QgsDebugMsg( "Read project CRSID: " + QString::number( mProjectSrsId ) );
   projectionSelector->setSelectedCrsId( mProjectSrsId );
@@ -127,13 +146,17 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   if ( automaticPrecision )
   {
     radAutomatic->setChecked( true );
-    mPrecisionFrame->setEnabled( false );
+    spinBoxDP->setEnabled( false );
+    labelDP->setEnabled( false );
   }
   else
   {
     radManual->setChecked( true );
-    mPrecisionFrame->setEnabled( true );
+    spinBoxDP->setEnabled( true );
+    labelDP->setEnabled( true );
   }
+  int dp = QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" );
+  spinBoxDP->setValue( dp );
 
   cbxAbsolutePath->setCurrentIndex( QgsProject::instance()->readBoolEntry( "Paths", "/Absolute", true ) ? 0 : 1 );
 
@@ -142,17 +165,18 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   // be overridden in the meanwhile by the projection selector
   populateEllipsoidList();
 
-
-  int dp = QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" );
-  spinBoxDP->setValue( dp );
-
-  QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
-  if ( format == "DM" )
-    radDM->setChecked( true );
+  QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "MU" );
+  if ( format == "MU" && mCoordinateDisplayComboBox->findData( MapUnits ) >= 0 )
+    mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( MapUnits ) );
+  else if ( format == "DM" )
+    mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( DegreesMinutes ) );
   else if ( format == "DMS" )
-    radDMS->setChecked( true );
+    mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( DegreesMinutesSeconds ) );
   else
-    radD->setChecked( true );
+    mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( DecimalDegrees ) );
+
+  mDistanceUnitsCombo->setCurrentIndex( mDistanceUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
+  mAreaUnitsCombo->setCurrentIndex( mAreaUnitsCombo->findData( QgsProject::instance()->areaUnits() ) );
 
   //get the color selections and set the button color accordingly
   int myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
@@ -643,7 +667,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mTabRelations->layout()->addWidget( mRelationManagerDlg );
 
   QList<QgsVectorLayer*> vectorLayers;
-  Q_FOREACH ( QgsMapLayer* mapLayer, mapLayers.values() )
+  Q_FOREACH ( QgsMapLayer* mapLayer, mapLayers )
   {
     if ( QgsMapLayer::VectorLayer == mapLayer->type() )
     {
@@ -692,11 +716,6 @@ void QgsProjectProperties::setMapUnits( QGis::UnitType unit )
     unit = QGis::Meters;
   }
 
-  radMeters->setChecked( unit == QGis::Meters );
-  radFeet->setChecked( unit == QGis::Feet );
-  radNMiles->setChecked( unit == QGis::NauticalMiles );
-  radDegrees->setChecked( unit == QGis::Degrees );
-
   mMapCanvas->setMapUnits( unit );
 }
 
@@ -714,28 +733,6 @@ void QgsProjectProperties::title( QString const & title )
 //when user clicks apply button
 void QgsProjectProperties::apply()
 {
-  // Set the map units
-  // Note. Qt 3.2.3 and greater have a function selectedId() that
-  // can be used instead of the two part technique here
-  QGis::UnitType mapUnit;
-  if ( radDegrees->isChecked() )
-  {
-    mapUnit = QGis::Degrees;
-  }
-  else if ( radFeet->isChecked() )
-  {
-    mapUnit = QGis::Feet;
-  }
-  else if ( radNMiles->isChecked() )
-  {
-    mapUnit = QGis::NauticalMiles;
-  }
-  else
-  {
-    mapUnit = QGis::Meters;
-  }
-
-  mMapCanvas->setMapUnits( mapUnit );
   mMapCanvas->setCrsTransformEnabled( cbxProjectionEnabled->isChecked() );
 
   mMapCanvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
@@ -781,11 +778,33 @@ void QgsProjectProperties::apply()
   // can be used instead of the two part technique here
   QgsProject::instance()->writeEntry( "PositionPrecision", "/Automatic", radAutomatic->isChecked() );
   QgsProject::instance()->writeEntry( "PositionPrecision", "/DecimalPlaces", spinBoxDP->value() );
-  QgsProject::instance()->writeEntry( "PositionPrecision", "/DegreeFormat",
-                                      QString( radDM->isChecked() ? "DM" : radDMS->isChecked() ? "DMS" : "D" ) );
+  QString degreeFormat;
+  switch ( static_cast< CoordinateFormat >( mCoordinateDisplayComboBox->itemData( mCoordinateDisplayComboBox->currentIndex() ).toInt() ) )
+  {
+    case DegreesMinutes:
+      degreeFormat = "DM";
+      break;
+    case DegreesMinutesSeconds:
+      degreeFormat = "DMS";
+      break;
+    case MapUnits:
+      degreeFormat = "MU";
+      break;
+    case DecimalDegrees:
+    default:
+      degreeFormat = "D";
+      break;
+  }
+  QgsProject::instance()->writeEntry( "PositionPrecision", "/DegreeFormat", degreeFormat );
 
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();
+
+  QGis::UnitType distanceUnits = static_cast< QGis::UnitType >( mDistanceUnitsCombo->itemData( mDistanceUnitsCombo->currentIndex() ).toInt() );
+  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( distanceUnits ) );
+
+  QgsUnitTypes::AreaUnit areaUnits = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsCombo->itemData( mAreaUnitsCombo->currentIndex() ).toInt() );
+  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( areaUnits ) );
 
   QgsProject::instance()->writeEntry( "Paths", "/Absolute", cbxAbsolutePath->currentIndex() == 0 );
 
@@ -1147,8 +1166,6 @@ void QgsProjectProperties::showProjectionsTab()
 
 void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
 {
-  QString measureOnFlyState = tr( "Measure tool (CRS transformation: %1)" );
-  QString unitsOnFlyState = tr( "Canvas units (CRS transformation: %1)" );
   if ( !onFlyEnabled )
   {
     // reset projection to default
@@ -1169,20 +1186,8 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
     mProjectSrsId = mLayerSrsId;
     projectionSelector->setSelectedCrsId( mLayerSrsId );
 
-    QgsCoordinateReferenceSystem srs( mLayerSrsId, QgsCoordinateReferenceSystem::InternalCrsId );
-    //set radio button to crs map unit type
-    QGis::UnitType units = srs.mapUnits();
-
-    radMeters->setChecked( units == QGis::Meters );
-    radFeet->setChecked( units == QGis::Feet );
-    radNMiles->setChecked( units == QGis::NauticalMiles );
-    radDegrees->setChecked( units == QGis::Degrees );
-
     // unset ellipsoid
     mEllipsoidIndex = 0;
-
-    btnGrpMeasureEllipsoid->setTitle( measureOnFlyState.arg( tr( "OFF" ) ) );
-    btnGrpMapUnits->setTitle( unitsOnFlyState.arg( tr( "OFF" ) ) );
   }
   else
   {
@@ -1191,16 +1196,12 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
       mLayerSrsId = projectionSelector->selectedCrsId();
     }
     projectionSelector->setSelectedCrsId( mProjectSrsId );
-
-    btnGrpMeasureEllipsoid->setTitle( measureOnFlyState.arg( tr( "ON" ) ) );
-    btnGrpMapUnits->setTitle( unitsOnFlyState.arg( tr( "ON" ) ) );
   }
 
-  setMapUnitsToCurrentProjection();
+  srIdUpdated();
 
   // Enable/Disable selector and update tool-tip
   updateEllipsoidUI( mEllipsoidIndex ); // maybe already done by setMapUnitsToCurrentProjection
-
 }
 
 void QgsProjectProperties::cbxWFSPubliedStateChanged( int aIdx )
@@ -1237,7 +1238,47 @@ void QgsProjectProperties::cbxWCSPubliedStateChanged( int aIdx )
   }
 }
 
-void QgsProjectProperties::setMapUnitsToCurrentProjection()
+void QgsProjectProperties::updateGuiForMapUnits( QGis::UnitType units )
+{
+  int idx = mCoordinateDisplayComboBox->findData( MapUnits );
+  if ( units == QGis::Degrees )
+  {
+    //remove map units option from coordinate display combo
+    if ( idx >= 0 )
+    {
+      mCoordinateDisplayComboBox->removeItem( idx );
+    }
+  }
+  else
+  {
+    //make sure map units option is shown in coordinate display combo
+    QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( units ) );
+    if ( idx < 0 )
+    {
+      mCoordinateDisplayComboBox->insertItem( 0, mapUnitString, MapUnits );
+    }
+    else
+    {
+      mCoordinateDisplayComboBox->setItemText( idx, mapUnitString );
+    }
+  }
+
+  //also update unit combo boxes
+  idx = mDistanceUnitsCombo->findData( QGis::UnknownUnit );
+  if ( idx >= 0 )
+  {
+    QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( units ) );
+    mDistanceUnitsCombo->setItemText( idx, mapUnitString );
+  }
+  idx = mAreaUnitsCombo->findData( QgsUnitTypes::UnknownAreaUnit );
+  if ( idx >= 0 )
+  {
+    QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( QgsUnitTypes::distanceToAreaUnit( units ) ) );
+    mAreaUnitsCombo->setItemText( idx, mapUnitString );
+  }
+}
+
+void QgsProjectProperties::srIdUpdated()
 {
   long myCRSID = projectionSelector->selectedCrsId();
   if ( !isProjected() || !myCRSID )
@@ -1247,10 +1288,7 @@ void QgsProjectProperties::setMapUnitsToCurrentProjection()
   //set radio button to crs map unit type
   QGis::UnitType units = srs.mapUnits();
 
-  radMeters->setChecked( units == QGis::Meters );
-  radFeet->setChecked( units == QGis::Feet );
-  radNMiles->setChecked( units == QGis::NauticalMiles );
-  radDegrees->setChecked( units == QGis::Degrees );
+  updateGuiForMapUnits( units );
 
   // attempt to reset the projection ellipsoid according to the srs
   int myIndex = 0;
@@ -1482,7 +1520,7 @@ void QgsProjectProperties::on_pbnLaunchOWSChecker_clicked()
 
   QStringList duplicateNames, regExpMessages;
   QRegExp snRegExp = QgsApplication::shortNameRegExp();
-  Q_FOREACH ( QString name, owsNames )
+  Q_FOREACH ( const QString& name, owsNames )
   {
     if ( !snRegExp.exactMatch( name ) )
       regExpMessages << tr( "Use short name for \"%1\"" ).arg( name );
@@ -1583,7 +1621,7 @@ void QgsProjectProperties::on_pbnExportScales_clicked()
   }
 
   // ensure the user never ommited the extension from the file name
-  if ( !fileName.toLower().endsWith( ".xml" ) )
+  if ( !fileName.endsWith( ".xml", Qt::CaseInsensitive ) )
   {
     fileName += ".xml";
   }
@@ -2015,7 +2053,7 @@ void QgsProjectProperties::on_mButtonExportColors_clicked()
   }
 
   // ensure filename contains extension
-  if ( !fileName.toLower().endsWith( ".gpl" ) )
+  if ( !fileName.endsWith( ".gpl", Qt::CaseInsensitive ) )
   {
     fileName += ".gpl";
   }

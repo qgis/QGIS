@@ -52,9 +52,10 @@ QgsExpressionContextScope::QgsExpressionContextScope( const QgsExpressionContext
     : mName( other.mName )
     , mVariables( other.mVariables )
 {
-  Q_FOREACH ( const QString& key, other.mFunctions.keys() )
+  QHash<QString, QgsScopedExpressionFunction* >::const_iterator it = other.mFunctions.constBegin();
+  for ( ; it != other.mFunctions.constEnd(); ++it )
   {
-    mFunctions.insert( key, other.mFunctions.value( key )->clone() );
+    mFunctions.insert( it.key(), it.value()->clone() );
   }
 }
 
@@ -65,9 +66,10 @@ QgsExpressionContextScope& QgsExpressionContextScope::operator=( const QgsExpres
 
   qDeleteAll( mFunctions );
   mFunctions.clear();
-  Q_FOREACH ( const QString& key, other.mFunctions.keys() )
+  QHash<QString, QgsScopedExpressionFunction* >::const_iterator it = other.mFunctions.constBegin();
+  for ( ; it != other.mFunctions.constEnd(); ++it )
   {
-    mFunctions.insert( key, other.mFunctions.value( key )->clone() );
+    mFunctions.insert( it.key(), it.value()->clone() );
   }
 
   return *this;
@@ -503,10 +505,11 @@ void QgsExpressionContextUtils::setGlobalVariables( const QgsStringMap &variable
   QList< QVariant > customVariableVariants;
   QList< QVariant > customVariableNames;
 
-  Q_FOREACH ( const QString& variable, variables.keys() )
+  QMap< QString, QString >::const_iterator it = variables.constBegin();
+  for ( ; it != variables.constEnd(); ++it )
   {
-    customVariableNames << variable;
-    customVariableVariants << variables.value( variable );
+    customVariableNames << it.key();
+    customVariableVariants << it.value();
   }
 
   settings.setValue( QString( "/variables/names" ), customVariableNames );
@@ -622,10 +625,11 @@ void QgsExpressionContextUtils::setProjectVariables( const QgsStringMap &variabl
   QStringList variableNames;
   QStringList variableValues;
 
-  Q_FOREACH ( const QString& variable, variables.keys() )
+  QMap< QString, QString >::const_iterator it = variables.constBegin();
+  for ( ; it != variables.constEnd(); ++it )
   {
-    variableNames << variable;
-    variableValues << variables.value( variable );
+    variableNames << it.key();
+    variableValues << it.value();
   }
 
   project->writeEntry( "Variables", "/variableNames", variableNames );
@@ -696,10 +700,11 @@ void QgsExpressionContextUtils::setLayerVariables( QgsMapLayer* layer, const Qgs
   QStringList variableNames;
   QStringList variableValues;
 
-  Q_FOREACH ( const QString& variable, variables.keys() )
+  QMap< QString, QString >::const_iterator it = variables.constBegin();
+  for ( ; it != variables.constEnd(); ++it )
   {
-    variableNames << variable;
-    variableValues << variables.value( variable );
+    variableNames << it.key();
+    variableValues << it.value();
   }
 
   layer->setCustomProperty( "variableNames", variableNames );
@@ -797,10 +802,11 @@ void QgsExpressionContextUtils::setCompositionVariables( QgsComposition* composi
   QStringList variableNames;
   QStringList variableValues;
 
-  Q_FOREACH ( const QString& variable, variables.keys() )
+  QMap< QString, QString >::const_iterator it = variables.constBegin();
+  for ( ; it != variables.constEnd(); ++it )
   {
-    variableNames << variable;
-    variableValues << variables.value( variable );
+    variableNames << it.key();
+    variableValues << it.value();
   }
 
   composition->setCustomProperty( "variableNames", variableNames );
@@ -899,10 +905,11 @@ void QgsExpressionContextUtils::setComposerItemVariables( QgsComposerItem* compo
   QStringList variableNames;
   QStringList variableValues;
 
-  Q_FOREACH ( const QString& variable, variables.keys() )
+  QMap< QString, QString >::const_iterator it = variables.constBegin();
+  for ( ; it != variables.constEnd(); ++it )
   {
-    variableNames << variable;
-    variableValues << variables.value( variable );
+    variableNames << it.key();
+    variableValues << it.value();
   }
 
   composerItem->setCustomProperty( "variableNames", variableNames );

@@ -297,6 +297,8 @@ MAPPING = {
             "QPoint",
             "QPointF",
             "QDirIterator",
+        ]),
+        (None, [
             "SIGNAL",
             "SLOT",
         ]),
@@ -397,19 +399,21 @@ class FixPyqt(FixImports):
         pref = mod_member.prefix
         member = results.get("member")
 
+        missing = False
+
         # Simple case with only a single member being imported
         if member:
             # this may be a list of length one, or just a node
             if isinstance(member, list):
                 member = member[0]
-            new_name = None
+            new_name = ''
             for change in MAPPING[mod_member.value]:
                 if member.value in change[1]:
                     new_name = change[0]
                     break
             if new_name:
                 mod_member.replace(Name(new_name, prefix=pref))
-            else:
+            elif new_name == '':
                 self.cannot_convert(node, "This is an invalid module element")
 
         # Multiple members being imported
@@ -430,14 +434,16 @@ class FixPyqt(FixImports):
                     found = False
                     for change in MAPPING[mod_member.value]:
                         if member_name in change[1]:
-                            if change[0] not in mod_dict:
-                                modules.append(change[0])
-                            mod_dict.setdefault(change[0], []).append(member)
+                            if change[0] is not None:
+                                if change[0] not in mod_dict:
+                                    modules.append(change[0])
+                                mod_dict.setdefault(change[0], []).append(member)
                             found = True
                     if not found:
                         f = open("/tmp/missing", "a+")
                         f.write("member %s of %s not found\n" % (member_name, mod_member.value))
                         f.close()
+                        missing = True
 
             new_nodes = []
             indentation = find_indentation(node)
@@ -450,6 +456,7 @@ class FixPyqt(FixImports):
                             name.children[2].clone()]
                     return [Node(syms.import_as_name, kids)]
                 return [Name(name.value, prefix=prefix)]
+
             for module in modules:
                 elts = mod_dict[module]
                 names = []
@@ -462,13 +469,18 @@ class FixPyqt(FixImports):
                     new.prefix = indentation
                 new_nodes.append(new)
                 first = False
+
             if new_nodes:
                 nodes = []
                 for new_node in new_nodes[:-1]:
                     nodes.extend([new_node, Newline()])
                 nodes.append(new_nodes[-1])
+
+                if node.prefix:
+                    nodes[0].prefix = node.prefix
+
                 node.replace(nodes)
-            else:
+            elif missing:
                 self.cannot_convert(node, "All module elements are invalid")
 
     def transform_dot(self, node, results):

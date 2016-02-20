@@ -68,39 +68,60 @@ class QgsSymbolLayerV2
 
     virtual ~QgsSymbolLayerV2();
 
-    // not necessarily supported by all symbol layers...
+    /**
+     * The fill color.
+     */
     virtual QColor color() const;
+    /**
+     * The fill color.
+     */
     virtual void setColor( const QColor& color );
+
     /** Set outline color. Supported by marker and fill layers.
      * @note added in 2.1 */
     virtual void setOutlineColor( const QColor& color );
+
     /** Get outline color. Supported by marker and fill layers.
      * @note added in 2.1 */
     virtual QColor outlineColor() const;
+
     /** Set fill color. Supported by marker and fill layers.
      * @note added in 2.1 */
     virtual void setFillColor( const QColor& color );
+
     /** Get fill color. Supported by marker and fill layers.
      * @note added in 2.1 */
     virtual QColor fillColor() const;
 
+    /**
+     * Returns a string that represents this layer type. Used for serialization.
+     * Should match with the string used to register this symbol layer in the registry.
+     */
     virtual QString layerType() const = 0;
 
     virtual void startRender( QgsSymbolV2RenderContext& context ) = 0;
     virtual void stopRender( QgsSymbolV2RenderContext& context ) = 0;
 
+    /**
+     * Shall be reimplemented by subclasses to create a deep copy of the instance.
+     */
     virtual QgsSymbolLayerV2* clone() const = 0 /Factory/;
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
+    /**
+     * Should be reimplemented by subclasses to return a string map that
+     * contains the configuration information for the symbol layer. This
+     * is used to serialize a symbol layer perstistently.
+     */
     virtual QgsStringMap properties() const = 0;
 
     virtual void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) = 0;
 
     virtual QgsSymbolV2* subSymbol();
-    // set layer's subsymbol. takes ownership of the passed symbol
+    //! set layer's subsymbol. takes ownership of the passed symbol
     virtual bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
 
     QgsSymbolV2::SymbolType type() const;
@@ -158,10 +179,8 @@ class QgsSymbolLayerV2
     virtual QgsDataDefined* getDataDefinedProperty( const QString& property ) const;
 
     /** Sets a data defined property for the layer.
-     * @param property unique property key. Any existing data defined with the same
-     * key will be deleted and overriden.
-     * @param dataDefined data defined object to associate with property key. Ownership
-     * is transferred to the layer.
+     * @param property unique property key. Any existing data defined with the same key will be deleted and overridden.
+     * @param dataDefined data defined object to associate with property key. Ownership is transferred to the layer.
      * @note added in QGIS 2.9
      * @see getDataDefinedProperty
      * @see removeDataDefinedProperty
@@ -267,7 +286,7 @@ class QgsSymbolLayerV2
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false );
 
-   /** Prepares all data defined property expressions for evaluation. This should
+    /** Prepares all data defined property expressions for evaluation. This should
      * be called prior to evaluating data defined properties.
      * @param fields associated layer fields
      * @param scale map scale
@@ -290,19 +309,19 @@ class QgsSymbolLayerV2
     /** Saves all data defined properties to a string map.
      * @param stringMap destination string map
      * @see restoreDataDefinedProperties
-    */
+     */
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
 
     /** Restores all data defined properties from string map.
      * @param stringMap source string map
      * @note added in QGIS 2.9
      * @see saveDataDefinedProperties
-    */
+     */
     void restoreDataDefinedProperties( const QgsStringMap& stringMap );
 
     /** Copies all data defined properties of this layer to another symbol layer.
      * @param destLayer destination layer
-    */
+     */
     void copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) const;
 
     /** Copies paint effect of this layer to another symbol layer
@@ -348,9 +367,9 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
     /** Sets the line angle modification for the symbol's angle. This angle is added to
      * the marker's rotation and data defined rotation before rendering the symbol, and
      * is usually used for orienting symbols to match a line's angle.
-     * @param lineangle Angle in degrees, valid values are between 0 and 360
+     * @param lineAngle Angle in degrees, valid values are between 0 and 360
      * @note added in QGIS 2.9
-    */
+     */
     void setLineAngle( double lineAngle );
 
     void setSize( double size );

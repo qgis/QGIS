@@ -18,6 +18,7 @@ class QgsScaleExpression : QgsExpression
       Linear,
       Area,
       Flannery,
+      Exponential,
       Unknown
     };
 

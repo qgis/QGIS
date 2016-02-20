@@ -232,7 +232,7 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
      * new data.
      * @note added in 2.3
      * @see adjustFrameToSize
-    */
+     */
     virtual void refreshAttributes();
 
     /** Adapts the size of the frame to match the content. First, the optimal width of the columns
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
      * that a re-query of the vector layer is not required.
      * @note added in 2.3
      * @see refreshAttributes
-    */
+     */
     virtual void adjustFrameToSize();
 
   protected:

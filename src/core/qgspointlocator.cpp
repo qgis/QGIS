@@ -20,7 +20,7 @@
 #include "qgswkbptr.h"
 #include "qgis.h"
 
-#include <spatialindex/SpatialIndex.h>
+#include <SpatialIndex.h>
 
 #include <QLinkedListIterator>
 

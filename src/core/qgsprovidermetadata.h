@@ -43,19 +43,19 @@ class CORE_EXPORT QgsProviderMetadata
     /** This returns the unique key associated with the provider
 
         This key string is used for the associative container in QgsProviderRegistry
-    */
+     */
     QString key() const;
 
     /** This returns descriptive text for the provider
 
         This is used to provide a descriptive list of available data providers.
-    */
+     */
     QString description() const;
 
     /** This returns the library file name
 
         This is used to QLibrary calls to load the data provider.
-    */
+     */
     QString library() const;
 
   private:

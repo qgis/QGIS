@@ -43,7 +43,6 @@ typedef QList< QgsComposerTableRow > QgsComposerTableContents;
 typedef QList<QgsComposerTableColumn*> QgsComposerTableColumns;
 
 
-
 /** \ingroup MapComposer
  *  \class QgsComposerTableStyle
  *  \brief Styling option for a composer table cell
@@ -429,7 +428,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * This also causes the column widths and size of the table to change to accommodate the
      * new data.
      * @see adjustFrameToSize
-    */
+     */
     virtual void refreshAttributes();
 
     void recalculateFrameSizes() override;

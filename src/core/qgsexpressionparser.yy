@@ -179,7 +179,6 @@ expression:
     | expression CONCAT expression    { $$ = BINOP($2, $1, $3); }
     | NOT expression                  { $$ = new QgsExpression::NodeUnaryOperator($1, $2); }
     | '(' expression ')'              { $$ = $2; }
-
     | FUNCTION '(' exp_list ')'
         {
           int fnIndex = QgsExpression::functionIndex(*$1);

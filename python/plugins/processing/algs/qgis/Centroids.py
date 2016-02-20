@@ -60,12 +60,10 @@ class Centroids(GeoAlgorithm):
         outFeat = QgsFeature()
 
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        current = 0
-
-        for inFeat in features:
-            inGeom = inFeat.geometry()
-            attrs = inFeat.attributes()
+        total = 100.0 / len(features)
+        for current, feat in enumerate(features):
+            inGeom = feat.geometry()
+            attrs = feat.attributes()
 
             if not inGeom:
                 outGeom = QgsGeometry(None)
@@ -78,7 +76,6 @@ class Centroids(GeoAlgorithm):
             outFeat.setGeometry(outGeom)
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

@@ -128,15 +128,15 @@ class CORE_EXPORT QgsMapSettings
     //! Enumeration of flags that adjust the way how map is rendered
     enum Flag
     {
-      Antialiasing       = 0x01,  //!< Enable anti-aliasin for map rendering
-      DrawEditingInfo    = 0x02,  //!< Enable drawing of vertex markers for layers in editing mode
-      ForceVectorOutput  = 0x04,  //!< Vector graphics should not be cached and drawn as raster images
-      UseAdvancedEffects = 0x08,  //!< Enable layer transparency and blending effects
-      DrawLabeling       = 0x10,  //!< Enable drawing of labels on top of the map
-      UseRenderingOptimization = 0x20, //!< Enable vector simplification and other rendering optimizations
-      DrawSelection      = 0x40,  //!< Whether vector selections should be shown in the rendered map
-      DrawSymbolBounds   = 0x80,  //!< Draw bounds of symbols (for debugging/testing)
-      RenderMapTile = 0x100, //!< Draw map such that there are no problems between adjacent tiles
+      Antialiasing             = 0x01,  //!< Enable anti-aliasin for map rendering
+      DrawEditingInfo          = 0x02,  //!< Enable drawing of vertex markers for layers in editing mode
+      ForceVectorOutput        = 0x04,  //!< Vector graphics should not be cached and drawn as raster images
+      UseAdvancedEffects       = 0x08,  //!< Enable layer transparency and blending effects
+      DrawLabeling             = 0x10,  //!< Enable drawing of labels on top of the map
+      UseRenderingOptimization = 0x20,  //!< Enable vector simplification and other rendering optimizations
+      DrawSelection            = 0x40,  //!< Whether vector selections should be shown in the rendered map
+      DrawSymbolBounds         = 0x80,  //!< Draw bounds of symbols (for debugging/testing)
+      RenderMapTile            = 0x100  //!< Draw map such that there are no problems between adjacent tiles
       // TODO: ignore scale-based visibility (overview)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -183,6 +183,7 @@ class CORE_EXPORT QgsMapSettings
 
     // -- utility functions --
 
+    //! @note not available in python bindings
     const QgsDatumTransformStore& datumTransformStore() const { return mDatumTransformStore; }
     QgsDatumTransformStore& datumTransformStore() { return mDatumTransformStore; }
 

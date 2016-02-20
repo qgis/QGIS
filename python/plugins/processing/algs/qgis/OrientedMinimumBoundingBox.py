@@ -25,6 +25,7 @@ __copyright__ = '(C) 2015, Loïc BARTOLETTI'
 
 __revision__ = '$Format:%H$'
 
+from math import degrees, atan2
 from PyQt4.QtCore import QVariant
 from qgis.core import QGis, QgsField, QgsPoint, QgsGeometry, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -33,7 +34,6 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
-from math import degrees, atan2
 
 
 class OrientedMinimumBoundingBox(GeoAlgorithm):
@@ -86,7 +86,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
 
         fit = vprovider.getFeatures()
         inFeat = QgsFeature()
-        total = 100.0 / float(vprovider.featureCount())
+        total = 100.0 / vprovider.featureCount()
         newgeometry = QgsGeometry()
         first = True
         while fit.nextFeature(inFeat):
@@ -112,12 +112,10 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
             writer.addFeature(outFeat)
 
     def featureOmbb(self, layer, writer, progress):
-        current = 0
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
+        total = 100.0 / len(features)
         outFeat = QgsFeature()
-        inFeat = QgsFeature()
-        for inFeat in features:
+        for current, inFeat in enumerate(features):
             geometry, area, perim, angle, width, height = self.OMBBox(
                 inFeat.geometry())
             if geometry:
@@ -130,7 +128,6 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
                 writer.addFeature(outFeat)
             else:
                 progress.setInfo(self.tr("Can't calculate an OMBB for feature {0}.").format(inFeat.id()))
-            current += 1
             progress.setPercentage(int(current * total))
 
     def GetAngleOfLineBetweenTwoPoints(self, p1, p2, angle_unit="degrees"):
@@ -142,7 +139,6 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
             return degrees(atan2(yDiff, xDiff))
 
     def OMBBox(self, geom):
-
         g = geom.convexHull()
 
         if g.type() != QGis.Polygon:

@@ -235,8 +235,6 @@ QgsGeometry* QgsGeometry::fromRect( const QgsRectangle& rect )
 
 void QgsGeometry::fromWkb( unsigned char *wkb, int length )
 {
-  Q_UNUSED( length );
-
   detach( false );
 
   if ( d->geometry )

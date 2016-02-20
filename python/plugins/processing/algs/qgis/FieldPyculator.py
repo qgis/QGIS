@@ -131,10 +131,9 @@ class FieldsPyculator(GeoAlgorithm):
 
         # Run
         features = vector.features(layer)
-        nFeatures = len(features)
-        nElement = 1
-        for feat in features:
-            progress.setPercentage(int(100 * nElement / nFeatures))
+        total = 100.0 / len(features)
+        for current, feat in enumerate(features):
+            progress.setPercentage(int(current * total))
             attrs = feat.attributes()
             feat_id = feat.id()
 
@@ -165,7 +164,6 @@ class FieldsPyculator(GeoAlgorithm):
                             "Please declare this variable in your code!" % self.RESULT_VAR_NAME))
 
             # Write feature
-            nElement += 1
             outFeat.setGeometry(feat.geometry())
             attrs.append(new_ns[self.RESULT_VAR_NAME])
             outFeat.setAttributes(attrs)

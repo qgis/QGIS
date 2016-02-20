@@ -463,7 +463,7 @@ class Database(DbItemObject):
 
     def prepareMenuMoveTableToSchemaActionSlot(self, item, menu, mainWindow):
         """ populate menu with schemas """
-        slot = lambda x: lambda: mainWindow.invokeCallback(self.moveTableToSchemaActionSlot, [x])
+        slot = lambda x: lambda: mainWindow.invokeCallback(self.moveTableToSchemaActionSlot, x)
 
         menu.clear()
         for schema in self.schemas():

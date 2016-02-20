@@ -35,9 +35,9 @@ class QgsGPSPlugin: public QObject, public QgisPlugin
     Q_OBJECT
   public:
     /** Constructor for a plugin. The QgisInterface pointer
-        is passed by QGIS when it attempts to instantiate the plugin.
-        @param qI Pointer to the QgisInterface object.
-    */
+     *  is passed by QGIS when it attempts to instantiate the plugin.
+     *  @param qI Pointer to the QgisInterface object.
+     */
     explicit QgsGPSPlugin( QgisInterface * );
 
     //! Destructor

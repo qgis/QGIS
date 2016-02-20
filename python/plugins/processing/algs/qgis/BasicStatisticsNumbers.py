@@ -57,6 +57,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     MAJORITY = 'MAJORITY'
     FIRSTQUARTILE = 'FIRSTQUARTILE'
     THIRDQUARTILE = 'THIRDQUARTILE'
+    NULLVALUES = 'NULLVALUES'
     IQR = 'IQR'
 
     def defineCharacteristics(self):
@@ -86,6 +87,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.addOutput(OutputNumber(self.MAJORITY, self.tr('Majority (most frequently occurring value)')))
         self.addOutput(OutputNumber(self.FIRSTQUARTILE, self.tr('First quartile')))
         self.addOutput(OutputNumber(self.THIRDQUARTILE, self.tr('Third quartile')))
+        self.addOutput(OutputNumber(self.NULLVALUES, self.tr('NULL (missed) values')))
         self.addOutput(OutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
 
     def processAlgorithm(self, progress):
@@ -94,8 +96,6 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         fieldName = self.getParameterValue(self.FIELD_NAME)
 
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
-
-        index = layer.fieldNameIndex(fieldName)
 
         cvValue = 0
         minValue = 0
@@ -108,6 +108,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         majority = 0
         firstQuartile = 0
         thirdQuartile = 0
+        nullValues = 0
         iqr = 0
 
         isFirst = True
@@ -116,12 +117,13 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         features = vector.features(layer)
         count = len(features)
         total = 100.0 / float(count)
-        current = 0
-        for ft in features:
-            if ft.attributes()[index]:
-                values.append(float(ft.attributes()[index]))
+        for current, ft in enumerate(features):
+            value = ft[fieldName]
+            if value or value == 0:
+                values.append(float(value))
+            else:
+                nullValues += 1
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         stat = QgsStatisticalSummary()
@@ -161,6 +163,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         data.append('Majority (most frequently occurring value): ' + unicode(majority))
         data.append('First quartile: ' + unicode(firstQuartile))
         data.append('Third quartile: ' + unicode(thirdQuartile))
+        data.append('NULL (missed) values: ' + unicode(nullValues))
         data.append('Interquartile Range (IQR): ' + unicode(iqr))
 
         self.createHTML(outputFile, data)
@@ -178,6 +181,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.setOutputValue(self.MAJORITY, majority)
         self.setOutputValue(self.FIRSTQUARTILE, firstQuartile)
         self.setOutputValue(self.THIRDQUARTILE, thirdQuartile)
+        self.setOutputValue(self.NULLVALUES, nullValues)
         self.setOutputValue(self.IQR, iqr)
 
     def createHTML(self, outputFile, algData):

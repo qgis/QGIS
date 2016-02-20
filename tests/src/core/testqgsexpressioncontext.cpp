@@ -394,7 +394,7 @@ void TestQgsExpressionContext::evaluate()
   //test with a function provided by a context
   QgsExpression::registerFunction( new ModifiableFunction( 0 ), true );
   QgsExpression testExpWContextFunction( "test_function(1)" );
-  QVERIFY( !testExpWContextFunction.evaluate( ).isValid() );
+  QVERIFY( !testExpWContextFunction.evaluate().isValid() );
 
   int val1 = 5;
   s->addFunction( "test_function", new ModifiableFunction( &val1 ) );

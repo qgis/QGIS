@@ -11,7 +11,6 @@ class QgsSymbolLayerV2Widget : QWidget
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) = 0;
     virtual QgsSymbolLayerV2* symbolLayer() = 0;
 
-
     /** Returns the expression context used for the widget, if set. This expression context is used for
      * evaluating data defined symbol properties and for populating based expression widgets in
      * the layer widget.
@@ -351,7 +350,7 @@ class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerV2Widget
      * svg file supports custom parameters.
      * @param resetValues set to true to overwrite existing layer fill color, border color and border width
      * with default values from svg file
-    */
+     */
     void updateParamGui( bool resetValues = true );
 };
 
@@ -397,6 +396,7 @@ class QgsFontMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
   public:
     QgsFontMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+
     ~QgsFontMarkerSymbolLayerV2Widget();
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
@@ -445,6 +445,9 @@ class QgsGeometryGeneratorSymbolLayerWidget : QgsSymbolLayerV2Widget
   public:
     QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = nullptr );
 
+    /**
+     * Will be registered as factory
+     */
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
     // from base class

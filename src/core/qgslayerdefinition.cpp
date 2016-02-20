@@ -230,15 +230,16 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument& doc )
     {
       sortedLayers << id;
       mSortedLayerNodes << node;
+      mSortedLayerIds << id;
     }
     else
       layersToSort << qMakePair( id, node );
   }
 
   // check that all dependencies are present
-  Q_FOREACH ( const QString& id, dependencies.keys() )
+  Q_FOREACH ( const QVector< QString >& ids, dependencies )
   {
-    Q_FOREACH ( const QString& depId, dependencies[id] )
+    Q_FOREACH ( const QString& depId, ids )
     {
       if ( !dependencies.contains( depId ) )
       {

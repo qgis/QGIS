@@ -108,7 +108,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
      * symbol for the renderer.
      * @param sym source symbol to use for categories. Ownership is not transferred.
      * @see setSourceSymbol()
-    */
+     */
     void updateSymbols( QgsSymbolV2 * sym );
 
     const QgsCategoryList& categories() const { return mCategories; }

@@ -68,8 +68,8 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     void on_btnLoad_clicked();
 
     /** Connects to the database using the stored connection parameters.
-    * Once connected, available layers are displayed.
-    */
+     * Once connected, available layers are displayed.
+     */
     void on_btnConnect_clicked();
 
     //! Determines the layers the user selected

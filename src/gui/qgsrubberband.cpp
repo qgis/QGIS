@@ -571,7 +571,7 @@ void QgsRubberBand::updateRect()
   setRect( rect );
 }
 
-void QgsRubberBand::updatePosition( )
+void QgsRubberBand::updatePosition()
 {
   // re-compute rectangle
   // See http://hub.qgis.org/issues/12392

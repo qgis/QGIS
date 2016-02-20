@@ -5,8 +5,8 @@ class QgsHttpTransaction : QObject
 %End
   public:
     /**
-    * Constructor.
-    */
+     * Constructor.
+     */
     QgsHttpTransaction( const QString& uri,
                         const QString& proxyHost = QString(),
                         int     proxyPort = 80,

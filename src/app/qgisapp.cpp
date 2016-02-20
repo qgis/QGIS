@@ -125,6 +125,7 @@
 #include "qgsstatusbarcoordinateswidget.h"
 #include "qgsconfigureshortcutsdialog.h"
 #include "qgscoordinatetransform.h"
+#include "qgscoordinateutils.h"
 #include "qgscredentialdialog.h"
 #include "qgscursors.h"
 #include "qgscustomization.h"
@@ -530,7 +531,7 @@ static bool cmpByText_( QAction* a, QAction* b )
 QgisApp *QgisApp::smInstance = nullptr;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, Qt::WindowFlags fl )
+QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, QWidget * parent, Qt::WindowFlags fl )
     : QMainWindow( parent, fl )
     , mNonEditMapTool( nullptr )
     , mScaleLabel( nullptr )
@@ -638,7 +639,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // what type of project to auto-open
   mProjOpen = settings.value( "/qgis/projOpenAtLaunch", 0 ).toInt();
 
-  mWelcomePage = new QgsWelcomePage;
+  mWelcomePage = new QgsWelcomePage( skipVersionCheck );
 
   mCentralContainer = new QStackedWidget;
   mCentralContainer->insertWidget( 0, mMapCanvas );
@@ -1409,7 +1410,7 @@ void QgisApp::createActions()
   connect( mActionSvgAnnotation, SIGNAL( triggered() ), this, SLOT( addSvgAnnotation() ) );
   connect( mActionAnnotation, SIGNAL( triggered() ), this, SLOT( modifyAnnotation() ) );
   connect( mActionLabeling, SIGNAL( triggered() ), this, SLOT( labeling() ) );
-  connect( mActionStatisticalSummary, SIGNAL( triggered( ) ), this, SLOT( showStatisticsDockWidget() ) );
+  connect( mActionStatisticalSummary, SIGNAL( triggered() ), this, SLOT( showStatisticsDockWidget() ) );
 
   // Layer Menu Items
 
@@ -2238,7 +2239,7 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionSetLayerCRS->setIcon( QgsApplication::getThemeIcon( "/mActionSetLayerCRS.png" ) );
   mActionSetProjectCRSFromLayer->setIcon( QgsApplication::getThemeIcon( "/mActionSetProjectCRSFromLayer.png" ) );
   mActionNewVectorLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewVectorLayer.svg" ) );
-  mActionNewMemoryLayer->setIcon( QgsApplication::getThemeIcon( "/mActionCreateMemory.png" ) );
+  mActionNewMemoryLayer->setIcon( QgsApplication::getThemeIcon( "/mActionCreateMemory.svg" ) );
   mActionAddAllToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionAddAllToOverview.svg" ) );
   mActionHideAllLayers->setIcon( QgsApplication::getThemeIcon( "/mActionHideAllLayers.png" ) );
   mActionShowAllLayers->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
@@ -4825,7 +4826,7 @@ bool QgisApp::openLayer( const QString & fileName, bool allowInteractive )
   if ( QgsRasterLayer::isValidRasterFileName( fileName ) )
   {
     // open .adf as a directory
-    if ( fileName.toLower().endsWith( ".adf" ) )
+    if ( fileName.endsWith( ".adf", Qt::CaseInsensitive ) )
     {
       QString dirName = fileInfo.path();
       ok  = addRasterLayer( dirName, QFileInfo( dirName ).completeBaseName() );
@@ -7912,16 +7913,6 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
       messageBar()->pushMessage( errMsg,
                                  tr( "Cannot copy style to duplicated layer." ),
                                  QgsMessageBar::CRITICAL, messageTimeout() );
-
-    QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( selectedLyr );
-    QgsVectorLayer* vDupLayer = dynamic_cast<QgsVectorLayer*>( dupLayer );
-    if ( vLayer && vDupLayer )
-    {
-      Q_FOREACH ( const QgsVectorJoinInfo& join, vLayer->vectorJoins() )
-      {
-        vDupLayer->addJoin( join );
-      }
-    }
   }
 
   dupLayer = nullptr;
@@ -9643,31 +9634,7 @@ void QgisApp::showRotation()
 
 void QgisApp::updateMouseCoordinatePrecision()
 {
-  // Work out what mouse display precision to use. This only needs to
-  // be when the settings change or the zoom level changes. This
-  // function needs to be called every time one of the above happens.
-
-  // Get the display precision from the project settings
-  bool automatic = QgsProject::instance()->readBoolEntry( "PositionPrecision", "/Automatic" );
-  int dp = 0;
-
-  if ( automatic )
-  {
-    // Work out a suitable number of decimal places for the mouse
-    // coordinates with the aim of always having enough decimal places
-    // to show the difference in position between adjacent pixels.
-    // Also avoid taking the log of 0.
-    if ( mapCanvas()->mapUnitsPerPixel() != 0.0 )
-      dp = static_cast<int>( ceil( -1.0 * log10( mapCanvas()->mapUnitsPerPixel() ) ) );
-  }
-  else
-    dp = QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" );
-
-  // Keep dp sensible
-  if ( dp < 0 )
-    dp = 0;
-
-  mCoordsEdit->setMouseCoordinatesPrecision( dp );
+  mCoordsEdit->setMouseCoordinatesPrecision( QgsCoordinateUtils::calculateCoordinatePrecision( mapCanvas()->mapUnitsPerPixel(), mapCanvas()->mapSettings().destinationCrs() ) );
 }
 
 void QgisApp::showStatusMessage( const QString& theMessage )
@@ -9822,7 +9789,7 @@ void QgisApp::legendLayerSelectionChanged( void )
   if ( selectedLayers.size() == 1 )
   {
     QgsLayerTreeLayer* l = selectedLayers.front();
-    if ( l->layer()->type() == QgsMapLayer::VectorLayer )
+    if ( l->layer() && l->layer()->type() == QgsMapLayer::VectorLayer )
     {
       mLegendExpressionFilterButton->setEnabled( true );
       bool exprEnabled;
@@ -10101,10 +10068,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCaptureLine.svg" ) );
 
-        mActionReshapeFeatures->setEnabled( isEditable && canAddFeatures );
+        mActionReshapeFeatures->setEnabled( isEditable && canChangeGeometry );
         mActionSplitFeatures->setEnabled( isEditable && canAddFeatures );
         mActionSplitParts->setEnabled( isEditable && canChangeGeometry && isMultiPart );
-        mActionSimplifyFeature->setEnabled( isEditable && canAddFeatures );
+        mActionSimplifyFeature->setEnabled( isEditable && canChangeGeometry );
         mActionOffsetCurve->setEnabled( isEditable && canAddFeatures && canChangeAttributes );
 
         mActionAddRing->setEnabled( false );
@@ -10364,7 +10331,7 @@ QgsRasterLayer* QgisApp::addRasterLayerPrivate(
   // XXX ya know QgsRasterLayer can snip out the basename on its own;
   // XXX why do we have to pass it in for it?
   // ET : we may not be getting "normal" files here, so we still need the baseName argument
-  if ( !providerKey.isEmpty() && uri.toLower().endsWith( ".adf" ) )
+  if ( !providerKey.isEmpty() && uri.endsWith( ".adf", Qt::CaseInsensitive ) )
   {
     QFileInfo fileInfo( uri );
     QString dirName = fileInfo.path();

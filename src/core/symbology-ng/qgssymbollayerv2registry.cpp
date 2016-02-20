@@ -64,11 +64,7 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
 
 QgsSymbolLayerV2Registry::~QgsSymbolLayerV2Registry()
 {
-  Q_FOREACH ( const QString& name, mMetadata.keys() )
-  {
-    delete mMetadata[name];
-  }
-  mMetadata.clear();
+  qDeleteAll( mMetadata );
 }
 
 bool QgsSymbolLayerV2Registry::addSymbolLayerType( QgsSymbolLayerV2AbstractMetadata* metadata )

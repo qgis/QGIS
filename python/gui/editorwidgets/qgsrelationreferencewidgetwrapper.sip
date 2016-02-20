@@ -16,6 +16,7 @@ class QgsRelationReferenceWidgetWrapper : QgsEditorWidgetWrapper
     virtual QWidget* createWidget( QWidget* parent );
     virtual void initWidget( QWidget* editor );
     virtual QVariant value();
+    bool valid() const;
 
   public slots:
     virtual void setValue( const QVariant& value );

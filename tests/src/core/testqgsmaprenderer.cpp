@@ -74,8 +74,8 @@ class TestQgsMapRenderer : public QObject
     void performanceTest();
 
     /** This unit test checks if rendering of adjacent tiles (e.g. to render images for tile caches)
-    * does not result in border effects
-    */
+     * does not result in border effects
+     */
     void testFourAdjacentTiles_data();
     void testFourAdjacentTiles();
 

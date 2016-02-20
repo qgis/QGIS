@@ -9,8 +9,6 @@
 #include <qgsmaptoolidentify.h>
 %End
 
-%Feature HAVE_TOUCH
-
 class QgsMapTool : QObject
 {
 %TypeHeaderCode
@@ -153,6 +151,10 @@ class QgsMapTool : QObject
 
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
     QgsPoint toMapCoordinates( QgsMapLayer* layer, const QgsPoint& point );
+
+    //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
+    //! @note available in python bindings as toMapCoordinatesV2
+    QgsPointV2 toMapCoordinates( QgsMapLayer* layer, const QgsPointV2 &point ) /PyName=toMapCoordinatesV2/;
 
     //! trnasformation of the rect from map coordinates to layer's coordinates
     QgsRectangle toLayerCoordinates( QgsMapLayer* layer, const QgsRectangle& rect );

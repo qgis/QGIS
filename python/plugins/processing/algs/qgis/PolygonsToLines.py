@@ -57,10 +57,9 @@ class PolygonsToLines(GeoAlgorithm):
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
 
-        current = 0
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        for f in features:
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             inGeom = f.geometry()
             attrs = f.attributes()
             lineList = self.extractAsLine(inGeom)
@@ -69,7 +68,6 @@ class PolygonsToLines(GeoAlgorithm):
                 outFeat.setGeometry(outGeom.fromPolyline(h))
                 writer.addFeature(outFeat)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

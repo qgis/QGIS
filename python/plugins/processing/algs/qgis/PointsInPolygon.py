@@ -75,11 +75,9 @@ class PointsInPolygon(GeoAlgorithm):
         outFeat = QgsFeature()
         geom = QgsGeometry()
 
-        current = 0
-
         features = vector.features(polyLayer)
-        total = 100.0 / float(len(features))
-        for ftPoly in features:
+        total = 100.0 / len(features)
+        for current, ftPoly in enumerate(features):
             geom = ftPoly.geometry()
             engine = QgsGeometry.createGeometryEngine(geom.geometry())
             engine.prepareGeometry()
@@ -105,7 +103,6 @@ class PointsInPolygon(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

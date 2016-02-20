@@ -34,7 +34,7 @@
 
 
 QgsHttpRequestHandler::QgsHttpRequestHandler( const bool captureOutput )
-    : QgsRequestHandler( )
+    : QgsRequestHandler()
 {
   mException = nullptr;
   mHeadersSent = FALSE;
@@ -96,7 +96,7 @@ void QgsHttpRequestHandler::setHeader( const QString &name, const QString &value
 }
 
 
-void QgsHttpRequestHandler::clearHeaders( )
+void QgsHttpRequestHandler::clearHeaders()
 {
   mHeaders.clear();
 }
@@ -111,7 +111,7 @@ void QgsHttpRequestHandler::appendBody( const QByteArray &body )
   mBody.append( body );
 }
 
-void QgsHttpRequestHandler::clearBody( )
+void QgsHttpRequestHandler::clearBody()
 {
   mBody.clear();
 }

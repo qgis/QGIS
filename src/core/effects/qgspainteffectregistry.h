@@ -60,13 +60,13 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
     /** Create a paint effect of this class given an encoded map of properties.
      * @param map properties string map
      * @returns new paint effect
-    */
+     */
     virtual QgsPaintEffect* createPaintEffect( const QgsStringMap& map ) = 0;
 
     /** Create configuration widget for paint effect of this class. Can return nullptr
      * if there's no GUI for the paint effect class.
      * @returns configuration widget
-    */
+     */
     virtual QgsPaintEffectWidget* createWidget() { return nullptr; }
 
   protected:

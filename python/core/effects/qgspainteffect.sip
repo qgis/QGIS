@@ -71,7 +71,7 @@ class QgsPaintEffect
     /** Drawing modes for effects. These modes are used only when effects are
      * drawn as part of an effects stack
      * @see QgsEffectStack
-    */
+     */
     enum DrawMode
     {
       Modifier, /*!< the result of the effect is not rendered, but is passed on to following effects in the stack */
@@ -181,7 +181,7 @@ class QgsPaintEffect
      * the source QPicture and draw the result using the context's painter.
      * @param context destination render context
      * @see drawSource
-    */
+     */
     virtual void draw( QgsRenderContext& context ) = 0;
 
     /** Draws the source QPicture onto the specified painter. Handles scaling of the picture
@@ -202,7 +202,7 @@ class QgsPaintEffect
 
     /** Returns the source QPicture rendered to a new QImage. The @link draw @endlink member can
      * utilise this when drawing the effect. The image will be padded or cropped from the original
-     * source QPicture by the results of the @link boundingRectFor @endlink member.
+     * source QPicture by the results of the @link boundingRect @endlink method.
      * The result is cached to speed up subsequent calls to sourceAsImage.
      * @returns source QPicture rendered to an image
      * @see drawSource

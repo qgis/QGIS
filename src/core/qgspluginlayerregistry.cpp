@@ -75,8 +75,11 @@ QgsPluginLayerRegistry::~QgsPluginLayerRegistry()
   if ( !mPluginLayerTypes.isEmpty() )
   {
     QgsDebugMsg( "QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty" );
-    Q_FOREACH ( const QString& typeName, mPluginLayerTypes.keys() )
-      removePluginLayerType( typeName );
+    PluginLayerTypes::const_iterator it = mPluginLayerTypes.constBegin();
+    for ( ; it != mPluginLayerTypes.constEnd(); ++it )
+    {
+      removePluginLayerType( it.key() );
+    }
   }
 }
 

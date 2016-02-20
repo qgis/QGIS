@@ -265,9 +265,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     // Accessors -----------------------------------
 
     /** Returns the SrsId, if available.
-    *  @return the internal sqlite3 srs.db primary key for this srs
-    * @see postgisSrid()
-    */
+     *  @return the internal sqlite3 srs.db primary key for this srs
+     * @see postgisSrid()
+     */
     long srsid() const;
 
     /** Returns PostGIS SRID for the CRS.
@@ -325,6 +325,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /** Returns whether the CRS is a geographic CRS.
      * @returns true if CRS is geographic, or false if it is a projected CRS
      */
+    //TODO QGIS 3.0 - rename to isGeographic
     bool geographicFlag() const;
 
     /** Returns whether axis is inverted (eg. for WMS 1.3) for the CRS.
@@ -371,9 +372,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     // a fully valid crs. Programmers should use the createFrom* methods rather
   private:
     /** A static helper function to find out the proj4 string for a srsid
-      * @param theSrsId The srsid used for the lookup
-      * @return QString The proj4 string
-    */
+     * @param theSrsId The srsid used for the lookup
+     * @return QString The proj4 string
+     */
     static QString proj4FromSrsId( const int theSrsId );
 
     /** Set the QGIS  SrsId

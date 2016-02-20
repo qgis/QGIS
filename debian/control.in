@@ -84,8 +84,7 @@ Recommends:
  qgis-provider-grass,
  qgis-plugin-globe
 Suggests: gpsbabel
-Replaces: qgis-plugin-grass (<< 1:2.13.0+git20160204)
-Conflicts: uim-qt3, qgis-plugin-grass (<< 1:2.13.0+git20160204)
+Conflicts: uim-qt3
 Description: Geographic Information System (GIS)
  A Geographic Information System (GIS) manages, analyzes, and displays
  databases of geographic information. QGIS supports shape file viewing and
@@ -381,6 +380,7 @@ Depends:
  python-dateutil,
  python-tz,
  python-six,
+ python-yaml,
 #sid stretch jessie trusty utopic vivid wily# python-pyspatialite,
 #jessie# liblwgeom-2.1.4,
 #stretch sid# liblwgeom-2.2-5,

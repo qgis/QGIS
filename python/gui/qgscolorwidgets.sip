@@ -203,6 +203,7 @@ class QgsColorWidgetAction: QWidgetAction
 };
 
 
+
 /** \ingroup gui
  * \class QgsColorWheel
  * A color wheel widget. This widget consists of an outer ring which allows for hue selection, and an

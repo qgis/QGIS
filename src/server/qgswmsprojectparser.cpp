@@ -783,11 +783,12 @@ void QgsWMSProjectParser::inspireCapabilities( QDomElement& parentElement, QDomD
     inspireCommonDefaultLanguageElem.appendChild( inspireCommonLanguageElem );
     inspireCommonSupportedLanguagesElem.appendChild( inspireCommonDefaultLanguageElem );
 
-    /* Supported language has to be different from default one
+#if 0
+    /* Supported language has to be different from default one */
     QDomElement inspireCommonSupportedLanguageElem = doc.createElement( "inspire_common:SupportedLanguage" );
     inspireCommonSupportedLanguageElem.appendChild( inspireCommonLanguageElem.cloneNode().toElement() );
     inspireCommonSupportedLanguagesElem.appendChild( inspireCommonSupportedLanguageElem );
-    */
+#endif
 
     inspireCapabilitiesElem.appendChild( inspireCommonSupportedLanguagesElem );
 

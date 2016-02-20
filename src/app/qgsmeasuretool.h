@@ -46,7 +46,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     void restart();
 
     //! Add new point
-    void addPoint( QgsPoint &point );
+    void addPoint( const QgsPoint &point );
 
     //! Returns reference to array of the points
     const QList<QgsPoint>& points();

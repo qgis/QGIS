@@ -33,7 +33,15 @@ try:
 except:
     hasMatplotlib = False
 
+try:
+    import shapely
+    hasShapely = True
+except:
+    hasShapely = False
+
 from PyQt4.QtGui import QIcon
+
+from qgis.core import QGis
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils
@@ -96,7 +104,6 @@ from HubLines import HubLines
 from Merge import Merge
 from GeometryConvert import GeometryConvert
 from ConcaveHull import ConcaveHull
-from Polygonize import Polygonize
 from RasterLayerStatistics import RasterLayerStatistics
 from StatisticsByCategories import StatisticsByCategories
 from EquivalentNumField import EquivalentNumField
@@ -133,7 +140,6 @@ from CheckValidity import CheckValidity
 from OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
 from Smooth import Smooth
 from ReverseLineDirection import ReverseLineDirection
-from ExecuteSQL import ExecuteSQL
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -170,7 +176,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SaveSelectedFeatures(), JoinAttributes(),
                         AutoincrementalField(), Explode(), FieldsPyculator(),
                         EquivalentNumField(), PointsLayerFromTable(),
-                        StatisticsByCategories(), ConcaveHull(), Polygonize(),
+                        StatisticsByCategories(), ConcaveHull(),
                         RasterLayerStatistics(), PointsDisplacement(),
                         ZonalStatistics(), PointsFromPolygons(),
                         PointsFromLines(), RandomPointsExtent(),
@@ -183,7 +189,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SplitLinesWithLines(), CreateConstantRaster(),
                         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
                         CheckValidity(), OrientedMinimumBoundingBox(), Smooth(),
-                        ReverseLineDirection(), ExecuteSQL()
+                        ReverseLineDirection()
                         ]
 
         if hasMatplotlib:
@@ -199,6 +205,14 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                 VectorLayerScatterplot(), MeanAndStdDevPlot(), BarPlot(),
                 PolarPlot(),
             ])
+
+        if hasShapely:
+            from Polygonize import Polygonize
+            self.alglist.extend([Polygonize()])
+
+        if QGis.QGIS_VERSION_INT >= 21400:
+            from ExecuteSQL import ExecuteSQL
+            self.alglist.extend([ExecuteSQL()])
 
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         scripts = ScriptUtils.loadFromFolder(folder)

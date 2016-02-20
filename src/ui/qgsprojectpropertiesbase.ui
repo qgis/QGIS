@@ -471,13 +471,13 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="btnGrpMeasureEllipsoid">
                  <property name="title">
-                  <string>Measure tool</string>
+                  <string>Measurements</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayoutMeasureTool">
-                  <item row="1" column="0">
+                  <item row="0" column="0">
                    <widget class="QLabel" name="textLabel1_8">
                     <property name="text">
                      <string>Ellipsoid
@@ -485,194 +485,113 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="1">
+                  <item row="2" column="1" colspan="4">
+                   <widget class="QComboBox" name="mDistanceUnitsCombo"/>
+                  </item>
+                  <item row="1" column="1">
                    <widget class="QLabel" name="label_41">
                     <property name="text">
                      <string>Semi-major</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="2">
-                   <widget class="QLineEdit" name="leSemiMajor"/>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_28">
+                    <property name="text">
+                     <string>Units for distance measurement</string>
+                    </property>
+                   </widget>
                   </item>
-                  <item row="2" column="4">
+                  <item row="0" column="1" colspan="4">
+                   <widget class="QComboBox" name="cmbEllipsoid"/>
+                  </item>
+                  <item row="1" column="4">
                    <widget class="QLineEdit" name="leSemiMinor"/>
                   </item>
-                  <item row="2" column="3">
+                  <item row="1" column="2">
+                   <widget class="QLineEdit" name="leSemiMajor"/>
+                  </item>
+                  <item row="1" column="3">
                    <widget class="QLabel" name="label_42">
                     <property name="text">
                      <string>Semi-minor</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="1" colspan="4">
-                   <widget class="QComboBox" name="cmbEllipsoid"/>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="label_29">
+                    <property name="text">
+                     <string>Units for area measurement</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1" colspan="4">
+                   <widget class="QComboBox" name="mAreaUnitsCombo"/>
                   </item>
                  </layout>
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="btnGrpMapUnits">
+                <widget class="QgsCollapsibleGroupBox" name="mCoordinateDisplayGroup">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
-                 <property name="toolTip">
-                  <string>Used when CRS transformation is turned off</string>
-                 </property>
                  <property name="title">
-                  <string>Canvas units</string>
+                  <string>Coordinate display</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_19">
-                  <item>
-                   <layout class="QGridLayout" name="gridLayout_2">
-                    <item row="1" column="0">
-                     <spacer name="verticalSpacer_4">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item row="0" column="3">
-                     <widget class="QRadioButton" name="radDegrees">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Degree</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="2">
-                     <widget class="QRadioButton" name="radNMiles">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Nautical miles</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="1">
-                     <widget class="QRadioButton" name="radFeet">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Feet</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="0">
-                     <widget class="QRadioButton" name="radMeters">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Meters</string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="4" rowspan="2">
-                     <widget class="QGroupBox" name="btnGrpDegreeDisplay">
-                      <property name="enabled">
-                       <bool>false</bool>
-                      </property>
-                      <property name="title">
-                       <string>Degree display</string>
-                      </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_20">
-                       <item>
-                        <widget class="QRadioButton" name="radD">
-                         <property name="text">
-                          <string>Decimal degrees</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QRadioButton" name="radDM">
-                         <property name="text">
-                          <string>Degrees, Minutes</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QRadioButton" name="radDMS">
-                         <property name="text">
-                          <string>Degrees, Minutes, Seconds</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                   </layout>
+                 <layout class="QGridLayout" name="gridLayout_18">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_26">
+                    <property name="text">
+                     <string>Precision</string>
+                    </property>
+                   </widget>
                   </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="btnGrpPrecision">
-                 <property name="title">
-                  <string>Precision</string>
-                 </property>
-                 <property name="syncGroup" stdset="0">
-                  <string notr="true">projgeneral</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_28">
-                  <item row="0" column="2">
-                   <widget class="QFrame" name="mPrecisionFrame">
-                    <property name="frameShape">
-                     <enum>QFrame::NoFrame</enum>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_25">
+                    <property name="text">
+                     <string>Display coordinates using</string>
                     </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_4">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QComboBox" name="mCoordinateDisplayComboBox"/>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QFrame" name="mFramePrecision">
+                    <layout class="QHBoxLayout" name="horizontalLayout_12">
+                     <item>
+                      <widget class="QRadioButton" name="radAutomatic">
+                       <property name="toolTip">
+                        <string>Automatically sets the number of decimal places to use when displaying coordinates</string>
+                       </property>
+                       <property name="text">
+                        <string>Automatic</string>
+                       </property>
+                       <property name="checked">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QRadioButton" name="radManual">
+                       <property name="toolTip">
+                        <string>Manually set the number of decimal places to use when displaying coordinates</string>
+                       </property>
+                       <property name="text">
+                        <string>Manual</string>
+                       </property>
+                      </widget>
+                     </item>
                      <item>
                       <widget class="QSpinBox" name="spinBoxDP">
                        <property name="toolTip">
-                        <string>The number of decimal places for the manual option</string>
-                       </property>
-                       <property name="whatsThis">
                         <string>The number of decimal places for the manual option</string>
                        </property>
                       </widget>
@@ -688,41 +607,9 @@
                        <property name="text">
                         <string>decimal places</string>
                        </property>
-                       <property name="buddy">
-                        <cstring>spinBoxDP</cstring>
-                       </property>
                       </widget>
                      </item>
                     </layout>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QRadioButton" name="radManual">
-                    <property name="toolTip">
-                     <string>Sets the number of decimal places to use for the mouse position display</string>
-                    </property>
-                    <property name="whatsThis">
-                     <string>Sets the number of decimal places to use for the mouse position display</string>
-                    </property>
-                    <property name="text">
-                     <string>Manual</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QRadioButton" name="radAutomatic">
-                    <property name="toolTip">
-                     <string>Automatically sets the number of decimal places in the mouse position display</string>
-                    </property>
-                    <property name="whatsThis">
-                     <string>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</string>
-                    </property>
-                    <property name="text">
-                     <string>Automatic</string>
-                    </property>
-                    <property name="checked">
-                     <bool>true</bool>
-                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -862,8 +749,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>779</height>
+                <width>326</width>
+                <height>46</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -921,8 +808,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>779</height>
+                <width>133</width>
+                <height>100</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1002,8 +889,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>779</height>
+                <width>379</width>
+                <height>582</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1426,8 +1313,8 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-1470</y>
-                <width>667</width>
+                <y>0</y>
+                <width>663</width>
                 <height>2249</height>
                </rect>
               </property>
@@ -2493,8 +2380,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>779</height>
+                <width>168</width>
+                <height>46</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2661,13 +2548,9 @@
   <tabstop>cmbEllipsoid</tabstop>
   <tabstop>leSemiMajor</tabstop>
   <tabstop>leSemiMinor</tabstop>
-  <tabstop>radMeters</tabstop>
-  <tabstop>radFeet</tabstop>
-  <tabstop>radNMiles</tabstop>
-  <tabstop>radDegrees</tabstop>
-  <tabstop>radD</tabstop>
-  <tabstop>radDM</tabstop>
-  <tabstop>radDMS</tabstop>
+  <tabstop>mDistanceUnitsCombo</tabstop>
+  <tabstop>mAreaUnitsCombo</tabstop>
+  <tabstop>mCoordinateDisplayComboBox</tabstop>
   <tabstop>radAutomatic</tabstop>
   <tabstop>radManual</tabstop>
   <tabstop>spinBoxDP</tabstop>

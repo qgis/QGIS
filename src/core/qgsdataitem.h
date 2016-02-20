@@ -273,7 +273,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     void emitBeginRemoveItems( QgsDataItem* parent, int first, int last );
     void emitEndRemoveItems();
     void emitDataChanged( QgsDataItem* item );
-    void emitDataChanged( );
+    void emitDataChanged();
     void emitStateChanged( QgsDataItem* item, QgsDataItem::State oldState );
     virtual void childrenCreated();
 

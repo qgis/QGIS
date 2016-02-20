@@ -252,7 +252,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      *                       The second map parameter being the new geometries themselves
      * @return true in case of success and false in case of failure
      */
-    virtual bool changeFeatures( const QgsChangedAttributesMap &attr_map, const QgsGeometryMap &geometry_map );
+    virtual bool changeFeatures( const QgsChangedAttributesMap &attr_map,
+                                 const QgsGeometryMap &geometry_map );
 
     /**
      * Returns the default value for field specified by @c fieldId

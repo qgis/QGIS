@@ -195,6 +195,8 @@ QString QgsGrassObject::elementShort( Type type )
     return "stvds";
   else if ( type == Str3ds )
     return "str3ds";
+  else if ( type == Stds )
+    return "stds";
   else
     return "";
 }
@@ -1300,12 +1302,12 @@ QStringList QgsGrass::vectors( const QString& mapsetPath )
   list.reserve( d.count() );
   for ( unsigned int i = 0; i < d.count(); ++i )
   {
-    /*
-    if ( QFile::exists ( mapsetPath + "/vector/" + d[i] + "/head" ) )
+#if 0
+    if ( QFile::exists( mapsetPath + "/vector/" + d[i] + "/head" ) )
     {
-    list.append(d[i]);
+      list.append( d[i] );
     }
-    */
+#endif
     list.append( d[i] );
   }
   return list;
@@ -1540,10 +1542,11 @@ QStringList QgsGrass::grassObjects( const QgsGrassObject& mapsetObject, QgsGrass
     QgsDebugMsg( "mapset is not readable" );
     return QStringList();
   }
-  else if ( type == QgsGrassObject::Strds || type == QgsGrassObject::Stvds || type == QgsGrassObject::Str3ds )
+  else if ( type == QgsGrassObject::Strds || type == QgsGrassObject::Stvds
+            || type == QgsGrassObject::Str3ds || type == QgsGrassObject::Stds )
   {
 #if GRASS_VERSION_MAJOR >= 7
-    QString cmd =  gisbase() + "/scripts/t.list";
+    QString cmd = "t.list";
 
     QStringList arguments;
 
@@ -1556,7 +1559,14 @@ QStringList QgsGrass::grassObjects( const QgsGrassObject& mapsetObject, QgsGrass
     }
     else
     {
-      arguments << "type=" + QgsGrassObject::elementShort( type );
+      if ( type == QgsGrassObject::Stds )
+      {
+        arguments << "type=strds,stvds,str3ds";
+      }
+      else
+      {
+        arguments << "type=" + QgsGrassObject::elementShort( type );
+      }
 
       int timeout = -1; // What timeout to use? It can take long time on network or database
       try
@@ -1991,7 +2001,11 @@ QString QgsGrass::findModule( QString module )
   {
     Q_FOREACH ( const QString& path, paths )
     {
-      QString full = path + "/" + module + ext;
+      QString full = module + ext;;
+      if ( !path.isEmpty() )
+      {
+        full.prepend( path + "/" );
+      }
       if ( QFile::exists( full ) )
       {
         QgsDebugMsg( "found " + full );

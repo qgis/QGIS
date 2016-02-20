@@ -61,7 +61,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     /** Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
      * @param g geometry to insert. Ownership is transferred to the collection.
      * @param index position to insert geometry before
-    */
+     */
     virtual bool insertGeometry( QgsAbstractGeometryV2* g, int index );
 
     /** Removes a geometry from the collection.
@@ -111,8 +111,9 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     QgsAbstractGeometryV2* segmentize() const override;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-        @param vertex the vertex id
-        @return rotation in radians, clockwise from north*/
+     * @param vertex the vertex id
+     * @return rotation in radians, clockwise from north
+     */
     double vertexAngle( QgsVertexId vertex ) const override;
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const override { return mGeometries[part]->vertexCount( 0, ring ); }

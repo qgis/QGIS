@@ -200,9 +200,12 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
         {
           QString element = promptElem.attribute( "element" );
           QString age = promptElem.attribute( "age" );
+
           //QgsDebugMsg("element = " + element + " age = " + age);
           if ( age == "old" && ( element == "vector" || element == "cell" ||
-                                 element == "strds" || element == "stvds" || element == "str3ds" ) )
+                                 element == "strds" || element == "stvds" ||
+                                 element == "str3ds" || element == "stds" )
+               &&  confDomElement.attribute( "widget" ) != "text" )
           {
             QgsGrassModuleInput *mi = new QgsGrassModuleInput(
               mModule, this, key, confDomElement, descDocElem, gnode, mDirect, this );

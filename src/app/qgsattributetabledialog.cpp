@@ -326,7 +326,7 @@ void QgsAttributeTableDialog::columnBoxInit()
 
     if ( mLayer->editFormConfig()->widgetType( idx ) != "Hidden" )
     {
-      QIcon icon = QgsApplication::getThemeIcon( "/mActionNewAttribute.png" );
+      QIcon icon = mLayer->fields().iconForField( idx );
       QString alias = mLayer->attributeDisplayName( idx );
 
       // Generate action for the filter popup button
@@ -366,6 +366,8 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, const 
 
   QgsExpression exp( expression );
   exp.setGeomCalculator( *myDa );
+  exp.setDistanceUnits( QgsProject::instance()->distanceUnits() );
+  exp.setAreaUnits( QgsProject::instance()->areaUnits() );
   bool useGeometry = exp.needsGeometry();
 
   QgsFeatureRequest request( mMainView->masterModel()->request() );
@@ -816,6 +818,8 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString )
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   filterExpression.setGeomCalculator( myDa );
+  filterExpression.setDistanceUnits( QgsProject::instance()->distanceUnits() );
+  filterExpression.setAreaUnits( QgsProject::instance()->areaUnits() );
   QgsFeatureRequest request( mMainView->masterModel()->request() );
   request.setSubsetOfAttributes( filterExpression.referencedColumns(), mLayer->fields() );
   if ( !fetchGeom )

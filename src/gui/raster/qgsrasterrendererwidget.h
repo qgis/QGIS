@@ -33,8 +33,8 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     QgsRasterRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ):
         mRasterLayer( layer )
         , mExtent( extent )
-    {
-    }
+    {}
+
     virtual ~QgsRasterRendererWidget() {}
 
     enum LoadMinMaxAlgo

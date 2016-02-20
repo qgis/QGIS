@@ -68,6 +68,7 @@ class QgsExpressionItemSearchProxy : QSortFilterProxyModel
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 };
 
+
 /** A reusable widget that can be used to build a expression string.
   * See QgsExpressionBuilderDialog for exmaple of usage.
   */
@@ -97,7 +98,7 @@ class QgsExpressionBuilderWidget : QWidget
      *  @note The field values must be quoted appropriately if they are strings.
      *  @note added in QGIS 2.12
      */
-    void loadFieldsAndValues(const QMap<QString, QStringList>& fieldValues );
+    void loadFieldsAndValues( const QMap<QString, QStringList>& fieldValues );
 
     /** Sets geometry calculator used in distance/area calculations. */
     void setGeomCalculator( const QgsDistanceArea & da );

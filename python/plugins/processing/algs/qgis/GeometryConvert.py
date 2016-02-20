@@ -81,10 +81,9 @@ class GeometryConvert(GeoAlgorithm):
             layer.pendingFields(), newType, layer.crs())
 
         features = vector.features(layer)
-        count = len(features)
-        total = 100.0 / float(count)
+        total = 100.0 / len(features)
 
-        for count, f in enumerate(features):
+        for current, f in enumerate(features):
             geom = f.geometry()
             geomType = geom.wkbType()
 
@@ -214,6 +213,6 @@ class GeometryConvert(GeoAlgorithm):
                     raise GeoAlgorithmExecutionException(
                         self.tr('Cannot convert from %s to %s', geomType, newType))
 
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         del writer

@@ -24,7 +24,7 @@
 #include <QCoreApplication>
 
 #include "qgis.h"
-
+#include "qgsunittypes.h"
 
 class QgsFeature;
 class QgsGeometry;
@@ -60,13 +60,6 @@ Usage:
   }
 \endcode
 
-Possible QVariant value types:
-- invalid (null)
-- int
-- double
-- string
-- geometry
-
 Three Value Logic
 =================
 
@@ -90,14 +83,10 @@ Type conversion
 Operators and functions that expect arguments to be of a particular
 type automatically convert the arguments to that type, e.g. sin('2.1') will convert
 the argument to a double, length(123) will first convert the number to a string.
-Explicit conversion can be achieved with toint, toreal, tostring functions.
+Explicit conversion can be achieved with to_int, to_real, to_string functions.
 If implicit or explicit conversion is invalid, the evaluation returns an error.
 Comparison operators do numeric comparison in case both operators are numeric (int/double)
 or they can be converted to numeric types.
-
-Arithmetic operators do integer arithmetics if both operands are integer. That is
-2+2 yields integer 4, but 2.0+2 returns real number 4.0. There are also two versions of
-division and modulo operators: 1.0/2 returns 0.5 while 1/2 returns 0.
 
 Implicit sharing
 ================
@@ -275,49 +264,87 @@ class CORE_EXPORT QgsExpression
     //! expression() instead.
     QString dump() const;
 
-    //! Return calculator used for distance and area calculations
-    //! (used by internal functions)
-    QgsDistanceArea* geomCalculator();
+    /** Return calculator used for distance and area calculations
+     * (used by $length, $area and $perimeter functions only)
+     * @see setGeomCalculator()
+     * @see distanceUnits()
+     * @see areaUnits()
+     */
+    QgsDistanceArea *geomCalculator();
 
-    //! Sets the geometry calculator used in evaluation of expressions,
-    //! instead of the default.
+    /** Sets the geometry calculator used for distance and area calculations in expressions.
+     * (used by $length, $area and $perimeter functions only). By default, no geometry
+     * calculator is set and all distance and area calculations are performed using simple
+     * cartesian methods (ie no ellipsoidal calculations).
+     * @see geomCalculator()
+     */
+    //TODO QGIS 3.0 change calc to a pointer, so that calculator can be cleared by passing nullptr
     void setGeomCalculator( const QgsDistanceArea &calc );
 
-    /** This function currently replaces each expression between [% and %]
-       in the string with the result of its evaluation on the feature
-       passed as argument.
+    /** Returns the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
+     * @note distances are only converted when a geomCalculator() has been set
+     * @note added in QGIS 2.14
+     * @see setDistanceUnits()
+     * @see areaUnits()
+     */
+    QGis::UnitType distanceUnits() const;
 
-       Additional substitutions can be passed through the substitutionMap
-       parameter
-       @param action
-       @param feat
-       @param layer
-       @param substitutionMap
-       @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
-       and area conversion
-       @deprecated use QgsExpressionContext variant instead
-    */
+    /** Sets the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
+     * @note distances are only converted when a geomCalculator() has been set
+     * @note added in QGIS 2.14
+     * @see distanceUnits()
+     * @see setAreaUnits()
+     */
+    void setDistanceUnits( QGis::UnitType unit );
+
+    /** Returns the desired areal units for calculations involving geomCalculator(), eg "$area".
+     * @note areas are only converted when a geomCalculator() has been set
+     * @note added in QGIS 2.14
+     * @see setAreaUnits()
+     * @see distanceUnits()
+     */
+    QgsUnitTypes::AreaUnit areaUnits() const;
+
+    /** Sets the desired areal units for calculations involving geomCalculator(), eg "$area".
+     * @note areas are only converted when a geomCalculator() has been set
+     * @note added in QGIS 2.14
+     * @see areaUnits()
+     * @see setDistanceUnits()
+     */
+    void setAreaUnits( QgsUnitTypes::AreaUnit unit );
+
+    /** This function currently replaces each expression between [% and %]
+     * in the string with the result of its evaluation on the feature
+     * passed as argument.
+     *
+     * Additional substitutions can be passed through the substitutionMap
+     * parameter
+     * @param action
+     * @param feat
+     * @param layer
+     * @param substitutionMap
+     * @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance and area conversion
+     * @deprecated use QgsExpressionContext variant instead
+     */
     Q_DECL_DEPRECATED static QString replaceExpressionText( const QString &action, const QgsFeature *feat,
         QgsVectorLayer *layer,
         const QMap<QString, QVariant> *substitutionMap = nullptr,
-        const QgsDistanceArea* distanceArea = nullptr
-                                                          );
+        const QgsDistanceArea* distanceArea = nullptr );
 
     /** This function replaces each expression between [% and %]
-       in the string with the result of its evaluation with the specified context
-
-       Additional substitutions can be passed through the substitutionMap parameter
-       @param action
-       @param context expression context
-       @param substitutionMap
-       @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
-       and area conversion
-       @note added in QGIS 2.12
-    */
+     * in the string with the result of its evaluation with the specified context
+     *
+     * Additional substitutions can be passed through the substitutionMap parameter
+     * @param action
+     * @param context expression context
+     * @param substitutionMap
+     * @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
+     * and area conversion
+     * @note added in QGIS 2.12
+     */
     static QString replaceExpressionText( const QString &action, const QgsExpressionContext* context,
                                           const QMap<QString, QVariant> *substitutionMap = nullptr,
-                                          const QgsDistanceArea* distanceArea = nullptr
-                                        );
+                                          const QgsDistanceArea* distanceArea = nullptr );
 
     /** Attempts to evaluate a text string as an expression to a resultant double
      * value.
@@ -327,7 +354,7 @@ class CORE_EXPORT QgsExpression
      * @note added in QGIS 2.7
      * @note this method is inefficient for bulk evaluation of expressions, it is intended
      * for one-off evaluations only.
-    */
+     */
     static double evaluateToDouble( const QString& text, const double fallbackValue );
 
     /**
@@ -601,8 +628,8 @@ class CORE_EXPORT QgsExpression
     static int functionIndex( const QString& name );
 
     /** Returns the number of functions defined in the parser
-      *  @return The number of function defined in the parser.
-      */
+     *  @return The number of function defined in the parser.
+     */
     static int functionCount();
 
     /**
@@ -919,7 +946,6 @@ class CORE_EXPORT QgsExpression
         virtual Node* clone() const override;
 
       protected:
-        //QString mName;
         int mFnIndex;
         NodeList* mArgs;
 

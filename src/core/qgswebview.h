@@ -34,9 +34,9 @@ class CORE_EXPORT QgsWebView : public QWebView
     {
       QDesktopWidget desktop;
       // Apply zoom factor for HiDPI screens
-      if ( desktop.physicalDpiX( ) > 96 )
+      if ( desktop.physicalDpiX() > 96 )
       {
-        setZoomFactor( desktop.physicalDpiX( ) / 96 );
+        setZoomFactor( desktop.physicalDpiX() / 96 );
       }
     }
 };

@@ -50,18 +50,18 @@ class QgsRequestHandler
 
   public:
 
-    QgsRequestHandler( )
+    QgsRequestHandler()
         : mHeadersSent( false )
         , mException( nullptr )
     {}
-    virtual ~QgsRequestHandler( ) {}
+    virtual ~QgsRequestHandler() {}
     /** Parses the input and creates a request neutral Parameter/Value map
      * @note not available in Python bindings
-    */
+     */
     virtual void parseInput() = 0;
     /** Sends the map image back to the client
      * @note not available in Python bindings
-    */
+     */
     virtual void setGetMapResponse( const QString& service, QImage* img, int imageQuality ) = 0;
     //! @note not available in Python bindings
     virtual void setGetCapabilitiesResponse( const QDomDocument& doc ) = 0;
@@ -90,11 +90,11 @@ class QgsRequestHandler
     /** Remove an HTTP header*/
     virtual int removeHeader( const QString &name ) = 0;
     /** Delete all HTTP headers*/
-    virtual void clearHeaders( ) = 0;
+    virtual void clearHeaders() = 0;
     /** Append the bytestream to response body*/
     virtual void appendBody( const QByteArray &body ) = 0;
     /** Clears the response body*/
-    virtual void clearBody( ) = 0;
+    virtual void clearBody() = 0;
     /** Return the response body*/
     virtual QByteArray body() { return mBody; }
     /** Set the info format string such as "text/xml"*/
@@ -102,7 +102,7 @@ class QgsRequestHandler
     /** Check whether there is any header set or the body is not empty*/
     virtual bool responseReady() const = 0;
     /** Send out HTTP headers and flush output buffer*/
-    virtual void sendResponse( ) = 0;
+    virtual void sendResponse() = 0;
     /** Pointer to last raised exception*/
     virtual bool exceptionRaised() const = 0;
     /** Return a copy of the parsed parameters as a key-value pair, to modify
@@ -124,20 +124,20 @@ class QgsRequestHandler
     bool headersSent() { return mHeadersSent; }
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     /** Allow core services to call plugin hooks through sendResponse()
-    * @note not available in Python bindings
-    */
+     * @note not available in Python bindings
+     */
     virtual void setPluginFilters( QgsServerFiltersMap pluginFilters ) = 0;
 #endif
 
     //! @note not availabe in Python bindings
-    virtual QPair<QByteArray, QByteArray> getResponse( ) = 0;
+    virtual QPair<QByteArray, QByteArray> getResponse() = 0;
 
   protected:
     //! @note not available in Python bindings
-    virtual void sendHeaders( ) = 0;
+    virtual void sendHeaders() = 0;
 
     //! @note not available in Python bindings
-    virtual void sendBody( ) = 0;
+    virtual void sendBody() = 0;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsServerFiltersMap mPluginFilters;
 #endif

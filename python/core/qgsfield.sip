@@ -18,14 +18,13 @@ class QgsField
      * @param name Field name
      * @param type Field variant type, currently supported: String / Int / Double
      * @param typeName Field type (eg. char, varchar, text, int, serial, double).
-     Field types are usually unique to the source and are stored exactly
-     as returned from the data store.
+     * Field types are usually unique to the source and are stored exactly
+     * as returned from the data store.
      * @param len Field length
      * @param prec Field precision. Usually decimal places but may also be
      * used in conjunction with other fields types (eg. variable character fields)
      * @param comment Comment for the field
      */
-
     QgsField( const QString& name = QString(),
               QVariant::Type type = QVariant::Invalid,
               const QString& typeName = QString(),
@@ -50,62 +49,62 @@ class QgsField
     QVariant::Type type() const;
 
     /**
-      Gets the field type. Field types vary depending on the data source. Examples
-      are char, int, double, blob, geometry, etc. The type is stored exactly as
-      the data store reports it, with no attempt to standardize the value.
-      @return QString containing the field type
+     * Gets the field type. Field types vary depending on the data source. Examples
+     * are char, int, double, blob, geometry, etc. The type is stored exactly as
+     * the data store reports it, with no attempt to standardize the value.
+     * @return QString containing the field type
      */
     QString typeName() const;
 
     /**
-      Gets the length of the field.
-      @return int containing the length of the field
+     * Gets the length of the field.
+     * @return int containing the length of the field
      */
     int length() const;
 
     /**
-      Gets the precision of the field. Not all field types have a related precision.
-      @return int containing the precision or zero if not applicable to the field type.
+     * Gets the precision of the field. Not all field types have a related precision.
+     * @return int containing the precision or zero if not applicable to the field type.
      */
     int precision() const;
 
     /**
-    Returns the field comment
-    */
+     * Returns the field comment
+     */
     QString comment() const;
 
     /**
-      Set the field name.
-      @param name Name of the field
+     * Set the field name.
+     * @param name Name of the field
      */
     void setName( const QString& name );
 
     /**
-      Set variant type.
+     * Set variant type.
      */
     void setType( QVariant::Type type );
 
     /**
-      Set the field type.
-      @param typeName Field type
+     * Set the field type.
+     * @param typeName Field type
      */
     void setTypeName( const QString& typeName );
 
     /**
-      Set the field length.
-      @param len Length of the field
+     * Set the field length.
+     * @param len Length of the field
      */
     void setLength( int len );
 
     /**
-      Set the field precision.
-      @param precision Precision of the field
+     * Set the field precision.
+     * @param precision Precision of the field
      */
     void setPrecision( int precision );
 
     /**
-      Set the field comment
-      */
+     * Set the field comment
+     */
     void setComment( const QString& comment );
 
     /** Formats string for display*/
@@ -348,6 +347,22 @@ class QgsFields
     bool operator==( const QgsFields& other ) const;
     //! @note added in 2.6
     bool operator!=( const QgsFields& other ) const;
+
+    /** Returns an icon corresponding to a field index, based on the field's type and source
+     * @note added in QGIS 2.14
+     */
+    QIcon iconForField( int fieldIdx ) const /Factory/;
+    %MethodCode
+      if ( a0 < 0 || a0 >= sipCpp->count() )
+      {
+        PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
+        sipIsErr = 1;
+      }
+      else
+      {
+        sipRes = new QIcon( sipCpp->iconForField( a0 ) );
+      }
+    %End
 
 /*  SIP_PYOBJECT __getitem__(int key);
 %MethodCode

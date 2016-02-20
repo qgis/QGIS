@@ -221,7 +221,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapStore
 
     static QgsGrassVectorMapStore *instance();
 
-    // Default instance may be overriden explicitly to avoid (temporarily) to share maps by providers
+    // Default instance may be overridden explicitly to avoid (temporarily) to share maps by providers
     // This is only used for editing test to have an independent map
     static void setStore( QgsGrassVectorMapStore * store ) { mStore = store; }
 

@@ -137,11 +137,12 @@ bool QgsComposerTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool i
 
   //cell styles
   QDomElement stylesElem = doc.createElement( "cellStyles" );
-  Q_FOREACH ( CellStyleGroup group, mCellStyleNames.keys() )
+  QMap< CellStyleGroup, QString >::const_iterator it = mCellStyleNames.constBegin();
+  for ( ; it != mCellStyleNames.constEnd(); ++it )
   {
-    QString styleName = mCellStyleNames.value( group );
+    QString styleName = it.value();
     QDomElement styleElem = doc.createElement( styleName );
-    mCellStyles.value( group )->writeXML( styleElem, doc );
+    mCellStyles.value( it.key() )->writeXML( styleElem, doc );
     stylesElem.appendChild( styleElem );
   }
   elem.appendChild( stylesElem );
@@ -209,14 +210,16 @@ bool QgsComposerTableV2::readXML( const QDomElement &itemElem, const QDomDocumen
   if ( !stylesList.isEmpty() )
   {
     QDomElement stylesElem = stylesList.at( 0 ).toElement();
-    Q_FOREACH ( CellStyleGroup group, mCellStyleNames.keys() )
+
+    QMap< CellStyleGroup, QString >::const_iterator it = mCellStyleNames.constBegin();
+    for ( ; it != mCellStyleNames.constEnd(); ++it )
     {
-      QString styleName  = mCellStyleNames.value( group );
+      QString styleName = it.value();
       QDomNodeList styleList = stylesElem.elementsByTagName( styleName );
       if ( !styleList.isEmpty() )
       {
         QDomElement styleElem = styleList.at( 0 ).toElement();
-        mCellStyles.value( group )->readXML( styleElem );
+        mCellStyles.value( it.key() )->readXML( styleElem );
       }
     }
   }

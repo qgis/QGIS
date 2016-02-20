@@ -45,11 +45,6 @@ WIDGET, BASE = uic.loadUiType(
 
 class AlgorithmDialogBase(BASE, WIDGET):
 
-    class InvalidParameterValue(Exception):
-
-        def __init__(self, param, widget):
-            (self.parameter, self.widget) = (param, widget)
-
     def __init__(self, alg):
         super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
         self.setupUi(self)
@@ -175,3 +170,8 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
     def finish(self):
         pass
+
+    class InvalidParameterValue(Exception):
+
+        def __init__(self, param, widget):
+            (self.parameter, self.widget) = (param, widget)

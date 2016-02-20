@@ -91,9 +91,9 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      */
     Q_DECL_DEPRECATED QDialog *dialog() { return this; }
 
-    QgsAttributeForm* attributeForm() { return mAttributeForm; }
+    QgsAttributeForm *attributeForm() { return mAttributeForm; }
 
-    const QgsFeature* feature() { return &mAttributeForm->feature(); }
+    const QgsFeature *feature() { return &mAttributeForm->feature(); }
 
     /**
      * Is this dialog editable?

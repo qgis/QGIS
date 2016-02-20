@@ -117,7 +117,7 @@ void QgsNewSpatialiteLayerDialog::on_toolButtonNewDatabase_clicked()
   if ( fileName.isEmpty() )
     return;
 
-  if ( !fileName.toLower().endsWith( ".sqlite" ) && !fileName.toLower().endsWith( ".db" ) )
+  if ( !fileName.endsWith( ".sqlite", Qt::CaseInsensitive ) && !fileName.endsWith( ".db", Qt::CaseInsensitive ) )
   {
     fileName += ".sqlite";
   }

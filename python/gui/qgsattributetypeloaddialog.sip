@@ -4,7 +4,6 @@ class QgsAttributeTypeLoadDialog : QDialog
 #include <qgsattributetypeloaddialog.h>
 %End
   public:
-
     QgsAttributeTypeLoadDialog( QgsVectorLayer *vl );
     ~QgsAttributeTypeLoadDialog();
 

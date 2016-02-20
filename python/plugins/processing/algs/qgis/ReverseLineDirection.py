@@ -60,10 +60,8 @@ class ReverseLineDirection(GeoAlgorithm):
         outFeat = QgsFeature()
 
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        current = 0
-
-        for inFeat in features:
+        total = 100.0 / len(features)
+        for current, inFeat in enumerate(features):
             inGeom = inFeat.constGeometry()
             attrs = inFeat.attributes()
 
@@ -78,7 +76,6 @@ class ReverseLineDirection(GeoAlgorithm):
             outFeat.setGeometry(outGeom)
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

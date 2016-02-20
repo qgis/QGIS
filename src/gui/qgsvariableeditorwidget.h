@@ -53,7 +53,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
 
     /** Overwrites the QgsExpressionContext for the widget. Setting a context
      * allows the widget to show all inherited variables for the context,
-     * and highlight any overriden variables within scopes.
+     * and highlight any overridden variables within scopes.
      * @param context expression context
      * @see context()
      */

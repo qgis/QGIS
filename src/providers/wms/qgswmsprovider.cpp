@@ -2542,7 +2542,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         {
           // guess from GML
           bool ok = gmlSchema.guessSchema( gmlByteArray );
-          if ( ! ok )
+          if ( !ok )
           {
             QgsError err = gmlSchema.error();
             err.append( tr( "Cannot identify" ) );
@@ -3040,14 +3040,18 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const 
   mError = "";
 
   QUrl url( getLegendGraphicFullURL( scale, mGetLegendGraphicExtent ) );
-  if ( ! url.isValid() ) return QImage();
-  Q_ASSERT( ! mLegendGraphicFetcher ); // or we could just remove it instead, hopefully will cancel download
+  if ( !url.isValid() )
+    return QImage();
+
+  Q_ASSERT( !mLegendGraphicFetcher ); // or we could just remove it instead, hopefully will cancel download
   mLegendGraphicFetcher.reset( new QgsWmsLegendDownloadHandler( *QgsNetworkAccessManager::instance(), mSettings, url ) );
-  if ( ! mLegendGraphicFetcher ) return QImage();
+  if ( !mLegendGraphicFetcher )
+    return QImage();
+
   connect( mLegendGraphicFetcher.data(), SIGNAL( finish( const QImage& ) ), this, SLOT( getLegendGraphicReplyFinished( const QImage& ) ) );
   connect( mLegendGraphicFetcher.data(), SIGNAL( error( const QString& ) ), this, SLOT( getLegendGraphicReplyErrored( const QString& ) ) );
   connect( mLegendGraphicFetcher.data(), SIGNAL( progress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
-  mLegendGraphicFetcher->start( );
+  mLegendGraphicFetcher->start();
 
   QEventLoop loop;
   mLegendGraphicFetcher->setProperty( "eventLoop", QVariant::fromValue( qobject_cast<QObject *>( &loop ) ) );
@@ -3076,11 +3080,12 @@ QgsImageFetcher* QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings* 
   }
 
   QUrl url = getLegendGraphicFullURL( scale, mapExtent );
-  if ( ! url.isValid() ) return nullptr;
+  if ( !url.isValid() )
+    return nullptr;
 
   if ( mapExtent == mGetLegendGraphicExtent &&
        scale == mGetLegendGraphicScale &&
-       ! mGetLegendGraphicImage.isNull() )
+       !mGetLegendGraphicImage.isNull() )
   {
     QgsDebugMsg( "Emitting cached image fetcher" );
     // return a cached image, skipping the load
@@ -3102,7 +3107,7 @@ void QgsWmsProvider::getLegendGraphicReplyFinished( const QImage& img )
 
   QObject* reply = sender();
 
-  if ( ! img.isNull() )
+  if ( !img.isNull() )
   {
     mGetLegendGraphicImage = img;
     mGetLegendGraphicExtent = QgsRectangle( reply->property( "legendExtent" ).toRectF() );
@@ -3667,7 +3672,7 @@ QgsWmsLegendDownloadHandler::~QgsWmsLegendDownloadHandler()
 
 /* public */
 void
-QgsWmsLegendDownloadHandler::start( )
+QgsWmsLegendDownloadHandler::start()
 {
   Q_ASSERT( mVisitedUrls.empty() );
   startUrl( mInitialUrl );
@@ -3725,15 +3730,17 @@ QgsWmsLegendDownloadHandler::sendSuccess( const QImage& img )
 void
 QgsWmsLegendDownloadHandler::errored( QNetworkReply::NetworkError /* code */ )
 {
-  if ( ! mReply ) return;
+  if ( !mReply )
+    return;
 
   sendError( mReply->errorString() );
 }
 
 void
-QgsWmsLegendDownloadHandler::finished( )
+QgsWmsLegendDownloadHandler::finished()
 {
-  if ( ! mReply ) return;
+  if ( !mReply )
+    return;
 
   // or ::errored() should have been called before ::finished
   Q_ASSERT( mReply->error() == QNetworkReply::NoError );

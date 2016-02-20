@@ -113,15 +113,11 @@ class PointDistance(GeoAlgorithm):
         inIdx = inLayer.fieldNameIndex(inField)
         outIdx = targetLayer.fieldNameIndex(targetField)
 
-        outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        outGeom = QgsGeometry()
         distArea = QgsDistanceArea()
 
         features = vector.features(inLayer)
-        current = 0
-        total = 100.0 / float(len(features))
-        for inFeat in features:
+        total = 100.0 / len(features)
+        for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
             inID = unicode(inFeat.attributes()[inIdx])
             featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
@@ -148,7 +144,6 @@ class PointDistance(GeoAlgorithm):
                                        unicode(vari), unicode(min(distList)),
                                        unicode(max(distList))])
 
-            current += 1
             progress.setPercentage(int(current * total))
 
     def regularMatrix(self, inLayer, inField, targetLayer, targetField,
@@ -157,17 +152,12 @@ class PointDistance(GeoAlgorithm):
 
         inIdx = inLayer.fieldNameIndex(inField)
 
-        outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        outGeom = QgsGeometry()
         distArea = QgsDistanceArea()
 
         first = True
-        current = 0
         features = vector.features(inLayer)
-        total = 100.0 / float(len(features))
-
-        for inFeat in features:
+        total = 100.0 / len(features)
+        for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
             inID = unicode(inFeat.attributes()[inIdx])
             featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
@@ -188,5 +178,4 @@ class PointDistance(GeoAlgorithm):
                 data.append(unicode(float(dist)))
             self.writer.addRecord(data)
 
-            current += 1
             progress.setPercentage(int(current * total))

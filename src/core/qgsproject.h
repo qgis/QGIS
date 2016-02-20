@@ -32,6 +32,7 @@
 //for the snap settings
 #include "qgssnapper.h"
 #include "qgstolerance.h"
+#include "qgsunittypes.h"
 
 //#include <QDomDocument>
 
@@ -73,23 +74,24 @@ class CORE_EXPORT QgsProject : public QObject
   public:
 
     /**
-       @todo XXX Should have semantics for saving project if dirty as last gasp?
-    */
+     * @todo XXX Should have semantics for saving project if dirty as last gasp?
+     */
     ~QgsProject();
 
     /// access to canonical QgsProject instance
     static QgsProject * instance();
 
     /**
-       Every project has an associated title string
-
-       @deprecated Use setTitle instead.
+     * Every project has an associated title string
+     *
+     * @deprecated Use setTitle instead.
      */
     //@{
     Q_DECL_DEPRECATED inline void title( const QString & title ) { setTitle( title ); }
 
     /** Set project title
-     *  @note added in 2.4 */
+     *  @note added in 2.4
+     */
     void setTitle( const QString& title );
 
     /** Returns title */
@@ -97,8 +99,8 @@ class CORE_EXPORT QgsProject : public QObject
     //@}
 
     /**
-       the dirty flag is true if the project has been modified since the last
-       write()
+     * the dirty flag is true if the project has been modified since the last
+     * write()
      */
     //@{
     bool isDirty() const;
@@ -113,7 +115,7 @@ class CORE_EXPORT QgsProject : public QObject
 
 
     /**
-       Every project has an associated file that contains its XML
+     * Every project has an associated file that contains its XML
      */
     //@{
     void setFileName( const QString & name );
@@ -134,20 +136,20 @@ class CORE_EXPORT QgsProject : public QObject
 
 
     /** Read project file
-
-       @note Any current plug-in state is erased
-
-       @note dirty set to false after successful invocation
-
-       @note file name argument implicitly sets file
-
-       @note
-
-       - Gets the extents
-       - Creates maplayers
-       - Registers maplayers
-
-       @note it's presumed that the caller has already reset the map canvas, map registry, and legend
+     *
+     * @note Any current plug-in state is erased
+     *
+     * @note dirty set to false after successful invocation
+     *
+     * @note file name argument implicitly sets file
+     *
+     * @note
+     *
+     * - Gets the extents
+     * - Creates maplayers
+     * - Registers maplayers
+     *
+     * @note it's presumed that the caller has already reset the map canvas, map registry, and legend
      */
     //@{
     bool read( const QFileInfo & file );
@@ -156,28 +158,28 @@ class CORE_EXPORT QgsProject : public QObject
 
 
     /** Read the layer described in the associated Dom node
-
-        @param layerNode   represents a QgsProject Dom node that maps to a specific layer.
-
-        QgsProject raises an exception when one of the QgsProject::read()
-        implementations fails.  Since the read()s are invoked from qgisapp,
-        then qgisapp handles the exception.  It prompts the user for the new
-        location of the data, if any.  If there is a new location, the Dom
-        node associated with the layer has its datasource tag corrected.
-        Then that node is passed to this member function to be re-opened.
-
+     *
+     * @param layerNode   represents a QgsProject Dom node that maps to a specific layer.
+     *
+     * QgsProject raises an exception when one of the QgsProject::read()
+     * implementations fails.  Since the read()s are invoked from qgisapp,
+     * then qgisapp handles the exception.  It prompts the user for the new
+     * location of the data, if any.  If there is a new location, the Dom
+     * node associated with the layer has its datasource tag corrected.
+     * Then that node is passed to this member function to be re-opened.
+     *
      */
     bool read( QDomNode & layerNode );
 
 
     /** Write project file
-
-       XXX How to best get read access to Qgis state?  Actually we can finagle
-       that by searching for qgisapp in object hiearchy.
-
-       @note file name argument implicitly sets file
-
-       @note dirty set to false after successful invocation
+     *
+     * XXX How to best get read access to Qgis state?  Actually we can finagle
+     * that by searching for qgisapp in object hiearchy.
+     *
+     * @note file name argument implicitly sets file
+     *
+     * @note dirty set to false after successful invocation
      */
     //@{
     bool write( const QFileInfo & file );
@@ -185,20 +187,20 @@ class CORE_EXPORT QgsProject : public QObject
     //@}
 
     /**
-       removes all project properties
-
-       ### QGIS 3: remove in favor of clear()
-    */
+     * removes all project properties
+     *
+     * ### QGIS 3: remove in favor of clear()
+     */
     void clearProperties();
 
 
     /* key value mutators
-
-      keys would be the familiar QSettings-like '/' delimited entries, implying
-      a hierarchy of keys and corresponding values
-
-      @note The key string must be valid xml tag names in order to be saved to the file.
-    */
+     *
+     * keys would be the familiar QSettings-like '/' delimited entries, implying
+     * a hierarchy of keys and corresponding values
+     *
+     * @note The key string must be valid xml tag names in order to be saved to the file.
+     */
     //@{
     //! @note available in python bindings as writeEntryBool
     bool writeEntry( const QString & scope, const QString & key, bool value );
@@ -210,11 +212,11 @@ class CORE_EXPORT QgsProject : public QObject
     //@}
 
     /** Key value accessors
-
-        keys would be the familiar QSettings-like '/' delimited entries,
-        implying a hierarchy of keys and corresponding values
-
-    */
+     *
+     * keys would be the familiar QSettings-like '/' delimited entries,
+     * implying a hierarchy of keys and corresponding values
+     *
+     */
     //@{
     QStringList readListEntry( const QString & scope, const QString & key, const QStringList& def = QStringList(), bool *ok = nullptr ) const;
 
@@ -230,23 +232,23 @@ class CORE_EXPORT QgsProject : public QObject
 
 
     /** Return keys with values -- do not return keys that contain other keys
-
-      @note equivalent to QSettings entryList()
-    */
+     *
+     * @note equivalent to QSettings entryList()
+     */
     QStringList entryList( const QString & scope, const QString & key ) const;
 
     /** Return keys with keys -- do not return keys that contain only values
-
-      @note equivalent to QSettings subkeyList()
-    */
+     *
+     * @note equivalent to QSettings subkeyList()
+     */
     QStringList subkeyList( const QString & scope, const QString & key ) const;
 
 
     /** Dump out current project properties to stderr
-
-      @todo XXX Now slightly broken since re-factoring.  Won't print out top-level key
-                and redundantly prints sub-keys.
-    */
+     *
+     * @todo XXX Now slightly broken since re-factoring.  Won't print out top-level key
+     *           and redundantly prints sub-keys.
+     */
     void dumpProperties() const;
 
     /** Prepare a filename to save it to the project file */
@@ -259,15 +261,16 @@ class CORE_EXPORT QgsProject : public QObject
     QString error() const;
 
     /** Change handler for missing layers.
-      Deletes old handler and takes ownership of the new one. */
+     * Deletes old handler and takes ownership of the new one.
+     */
     void setBadLayerHandler( QgsProjectBadLayerHandler* handler );
 
     /** Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded*/
     QString layerIsEmbedded( const QString& id ) const;
 
     /** Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
-      @return the layer or 0 in case of error
-      @note not available in Python bindings
+     * @return the layer or 0 in case of error
+     * @note not available in Python bindings
      */
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
@@ -290,6 +293,18 @@ class CORE_EXPORT QgsProject : public QObject
 
     /** Convenience function to query topological editing status */
     bool topologicalEditing() const;
+
+    /** Convenience function to query default distance measurement units for project.
+     * @note added in QGIS 2.14
+     * @see areaUnits()
+     */
+    QGis::UnitType distanceUnits() const;
+
+    /** Convenience function to query default area measurement units for project.
+     * @note added in QGIS 2.14
+     * @see distanceUnits()
+     */
+    QgsUnitTypes::AreaUnit areaUnits() const;
 
     /** Return project's home path
       @return home path of project (or QString::null if not set) */
@@ -316,12 +331,12 @@ class CORE_EXPORT QgsProject : public QObject
 
     /** Set error message from read/write operation
      * @note not available in Python bindings
-    */
+     */
     void setError( const QString& errorMessage );
 
     /** Clear error message
      * @note not available in Python bindings
-    */
+     */
     void clearError();
 
     //! Creates layer and adds it to maplayer registry
@@ -396,8 +411,9 @@ class CORE_EXPORT QgsProject : public QObject
     QgsProjectBadLayerHandler* mBadLayerHandler;
 
     /** Embeded layers which are defined in other projects. Key: layer id,
-    value: pair< project file path, save layer yes / no (e.g. if the layer is part of an embedded group, loading/saving is done by the legend)
-       If the project file path is empty, QgsProject is going to ignore the layer for saving (e.g. because it is part and managed by an embedded group)*/
+     * value: pair< project file path, save layer yes / no (e.g. if the layer is part of an embedded group, loading/saving is done by the legend)
+     *  If the project file path is empty, QgsProject is going to ignore the layer for saving (e.g. because it is part and managed by an embedded group)
+     */
     QHash< QString, QPair< QString, bool> > mEmbeddedLayers;
 
     void snapSettings( QStringList& layerIdList, QStringList& enabledList, QStringList& snapTypeList, QStringList& snapUnitList, QStringList& toleranceUnitList,

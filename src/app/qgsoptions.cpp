@@ -460,46 +460,43 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   }
 
   // Set the units for measuring
+  mDistanceUnitsComboBox->addItem( tr( "Meters" ), QGis::Meters );
+  mDistanceUnitsComboBox->addItem( tr( "Feet" ), QGis::Feet );
+  mDistanceUnitsComboBox->addItem( tr( "Nautical miles" ), QGis::NauticalMiles );
+  mDistanceUnitsComboBox->addItem( tr( "Degrees" ), QGis::Degrees );
+  mDistanceUnitsComboBox->addItem( tr( "Map units" ), QGis::UnknownUnit );
+
   bool ok = false;
-  QGis::UnitType myDisplayUnits = QgsUnitTypes::decodeDistanceUnit( mSettings->value( "/qgis/measure/displayunits" ).toString(), &ok );
+  QGis::UnitType distanceUnits = QgsUnitTypes::decodeDistanceUnit( mSettings->value( "/qgis/measure/displayunits" ).toString(), &ok );
   if ( !ok )
-    myDisplayUnits = QGis::Meters;
+    distanceUnits = QGis::Meters;
+  mDistanceUnitsComboBox->setCurrentIndex( mDistanceUnitsComboBox->findData( distanceUnits ) );
 
-  if ( myDisplayUnits == QGis::Feet )
-  {
-    radFeet->setChecked( true );
-  }
-  else if ( myDisplayUnits == QGis::NauticalMiles )
-  {
-    radNautical->setChecked( true );
-  }
-  else if ( myDisplayUnits == QGis::Degrees )
-  {
-    radDegrees->setChecked( true );
-  }
-  else
-  {
-    radMeters->setChecked( true );
-  }
+  mAreaUnitsComboBox->addItem( tr( "Square meters" ), QgsUnitTypes::SquareMeters );
+  mAreaUnitsComboBox->addItem( tr( "Square kilometers" ), QgsUnitTypes::SquareKilometers );
+  mAreaUnitsComboBox->addItem( tr( "Square feet" ), QgsUnitTypes::SquareFeet );
+  mAreaUnitsComboBox->addItem( tr( "Square yards" ), QgsUnitTypes::SquareYards );
+  mAreaUnitsComboBox->addItem( tr( "Square miles" ), QgsUnitTypes::SquareMiles );
+  mAreaUnitsComboBox->addItem( tr( "Hectares" ), QgsUnitTypes::Hectares );
+  mAreaUnitsComboBox->addItem( tr( "Acres" ), QgsUnitTypes::Acres );
+  mAreaUnitsComboBox->addItem( tr( "Square nautical miles" ), QgsUnitTypes::SquareNauticalMiles );
+  mAreaUnitsComboBox->addItem( tr( "Square degrees" ), QgsUnitTypes::SquareDegrees );
+  mAreaUnitsComboBox->addItem( tr( "Map units" ), QgsUnitTypes::UnknownAreaUnit );
 
-  QButtonGroup* angleButtonGroup = new QButtonGroup( this );
-  angleButtonGroup->addButton( mDegreesRadioButton );
-  angleButtonGroup->addButton( mRadiansRadioButton );
-  angleButtonGroup->addButton( mGonRadioButton );
+  QgsUnitTypes::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings->value( "/qgis/measure/areaunits" ).toString(), &ok );
+  if ( !ok )
+    areaUnits = QgsUnitTypes::SquareMeters;
+  mAreaUnitsComboBox->setCurrentIndex( mAreaUnitsComboBox->findData( areaUnits ) );
 
-  QString myAngleUnitsTxt = mSettings->value( "/qgis/measure/angleunits", "degrees" ).toString();
-  if ( myAngleUnitsTxt == "gon" )
-  {
-    mGonRadioButton->setChecked( true );
-  }
-  else if ( myAngleUnitsTxt == "radians" )
-  {
-    mRadiansRadioButton->setChecked( true );
-  }
-  else //degrees
-  {
-    mDegreesRadioButton->setChecked( true );
-  }
+  mAngleUnitsComboBox->addItem( tr( "Degrees" ), QgsUnitTypes::AngleDegrees );
+  mAngleUnitsComboBox->addItem( tr( "Radians" ), QgsUnitTypes::Radians );
+  mAngleUnitsComboBox->addItem( tr( "Gon/gradians" ), QgsUnitTypes::Gon );
+  mAngleUnitsComboBox->addItem( tr( "Minutes of arc" ), QgsUnitTypes::MinutesOfArc );
+  mAngleUnitsComboBox->addItem( tr( "Seconds of arc" ), QgsUnitTypes::SecondsOfArc );
+  mAngleUnitsComboBox->addItem( tr( "Turns/revolutions" ), QgsUnitTypes::Turn );
+
+  QgsUnitTypes::AngleUnit unit = QgsUnitTypes::decodeAngleUnit( mSettings->value( "/qgis/measure/angleunits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleDegrees ) ).toString() );
+  mAngleUnitsComboBox->setCurrentIndex( mAngleUnitsComboBox->findData( unit ) );
 
   // set decimal places of the measure tool
   int decimalPlaces = mSettings->value( "/qgis/measure/decimalplaces", "3" ).toInt();
@@ -590,6 +587,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mLegendGroupsBoldChkBx->setChecked( mSettings->value( "/qgis/legendGroupsBold", false ).toBool() );
   cbxHideSplash->setChecked( mSettings->value( "/qgis/hideSplash", false ).toBool() );
   cbxShowTips->setChecked( mSettings->value( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), true ).toBool() );
+  cbxCheckVersion->setChecked( mSettings->value( "/qgis/checkVersion", true ).toBool() );
   cbxAttributeTableDocked->setChecked( mSettings->value( "/qgis/dockAttributeTable", false ).toBool() );
   cbxSnappingOptionsDocked->setChecked( mSettings->value( "/qgis/dockSnapping", false ).toBool() );
   cbxAddPostgisDC->setChecked( mSettings->value( "/qgis/addPostgisDC", false ).toBool() );
@@ -1131,6 +1129,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( "/qgis/legendGroupsBold", mLegendGroupsBoldChkBx->isChecked() );
   mSettings->setValue( "/qgis/hideSplash", cbxHideSplash->isChecked() );
   mSettings->setValue( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), cbxShowTips->isChecked() );
+  mSettings->setValue( "/qgis/checkVersion", cbxCheckVersion->isChecked() );
   mSettings->setValue( "/qgis/dockAttributeTable", cbxAttributeTableDocked->isChecked() );
   mSettings->setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->itemData( cmbAttrTableBehaviour->currentIndex() ) );
   mSettings->setValue( "/qgis/attributeTableRowCache", spinBoxAttrTableRowCache->value() );
@@ -1244,33 +1243,16 @@ void QgsOptions::saveOptions()
 
   mSettings->setValue( "/Projections/showDatumTransformDialog", chkShowDatumTransformDialog->isChecked() );
 
-  if ( radFeet->isChecked() )
-  {
-    mSettings->setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QGis::Feet ) );
-  }
-  else if ( radNautical->isChecked() )
-  {
-    mSettings->setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QGis::NauticalMiles ) );
-  }
-  else if ( radDegrees->isChecked() )
-  {
-    mSettings->setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QGis::Degrees ) );
-  }
-  else
-  {
-    mSettings->setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QGis::Meters ) );
-  }
+  //measurement settings
 
-  QString angleUnitString = "degrees";
-  if ( mRadiansRadioButton->isChecked() )
-  {
-    angleUnitString = "radians";
-  }
-  else if ( mGonRadioButton->isChecked() )
-  {
-    angleUnitString = "gon";
-  }
-  mSettings->setValue( "/qgis/measure/angleunits", angleUnitString );
+  QGis::UnitType distanceUnit = static_cast< QGis::UnitType >( mDistanceUnitsComboBox->itemData( mDistanceUnitsComboBox->currentIndex() ).toInt() );
+  mSettings->setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( distanceUnit ) );
+
+  QgsUnitTypes::AreaUnit areaUnit = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsComboBox->itemData( mAreaUnitsComboBox->currentIndex() ).toInt() );
+  mSettings->setValue( "/qgis/measure/areaunits", QgsUnitTypes::encodeUnit( areaUnit ) );
+
+  QgsUnitTypes::AngleUnit angleUnit = static_cast< QgsUnitTypes::AngleUnit >( mAngleUnitsComboBox->itemData( mAngleUnitsComboBox->currentIndex() ).toInt() );
+  mSettings->setValue( "/qgis/measure/angleunits", QgsUnitTypes::encodeUnit( angleUnit ) );
 
   int decimalPlaces = mDecimalPlacesSpinBox->value();
   mSettings->setValue( "/qgis/measure/decimalplaces", decimalPlaces );
@@ -2001,7 +1983,7 @@ void QgsOptions::on_pbnExportScales_clicked()
   }
 
   // ensure the user never ommited the extension from the file name
-  if ( !fileName.toLower().endsWith( ".xml" ) )
+  if ( !fileName.endsWith( ".xml", Qt::CaseInsensitive ) )
   {
     fileName += ".xml";
   }
@@ -2160,7 +2142,7 @@ void QgsOptions::on_mButtonExportColors_clicked()
   }
 
   // ensure filename contains extension
-  if ( !fileName.toLower().endsWith( ".gpl" ) )
+  if ( !fileName.endsWith( ".gpl", Qt::CaseInsensitive ) )
   {
     fileName += ".gpl";
   }

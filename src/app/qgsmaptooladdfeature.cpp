@@ -113,7 +113,17 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
     QgsPoint savePoint; //point in layer coordinates
     try
     {
-      savePoint = toLayerCoordinates( vlayer, e->mapPoint() );
+      QgsPointV2 fetchPoint;
+      int res;
+      res = fetchLayerPoint( e->mapPointMatch(), fetchPoint );
+      if ( res == 0 )
+      {
+        savePoint = QgsPoint( fetchPoint.x(), fetchPoint.y() );
+      }
+      else
+      {
+        savePoint = toLayerCoordinates( vlayer, e->mapPoint() );
+      }
       QgsDebugMsg( "savePoint = " + savePoint.toString() );
     }
     catch ( QgsCsException &cse )
@@ -184,7 +194,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
     //add point to list and to rubber band
     if ( e->button() == Qt::LeftButton )
     {
-      int error = addVertex( e->mapPoint() );
+      int error = addVertex( e->mapPoint(), e->mapPointMatch() );
       if ( error == 1 )
       {
         //current layer is not a vector layer

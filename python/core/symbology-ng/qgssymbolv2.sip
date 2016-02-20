@@ -22,6 +22,7 @@ class QgsSymbolV2
     /**
      * The unit of the output
      */
+    //TODO QGIS 3.0 - move to QgsUnitTypes and rename to SymbolUnit
     enum OutputUnit
     {
       MM = 0,     //!< The output shall be in millimeters
@@ -222,6 +223,13 @@ class QgsSymbolV2
      * Creates a point in screen coordinates from a QgsPointV2 in map coordinates
      */
     static void _getPoint( QPointF& pt /Out/, QgsRenderContext& context, const QgsPointV2* point );
+
+    /**
+     * Creates a point in screen coordinates from a wkb string in map
+     * coordinates
+     */
+    static QgsConstWkbPtr _getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr wkb );
+
     /**
      * Creates a line string in screen coordinates from a wkb string in map
      * coordinates
@@ -350,7 +358,7 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
   public:
     /** Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
       This is a convenience method for easier creation of marker symbols.
-    */
+     */
     static QgsMarkerSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
 
     QgsMarkerSymbolV2( const QgsSymbolLayerV2List& layers /Transfer/ = QgsSymbolLayerV2List() );
@@ -378,7 +386,7 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
      * is usually used for orienting symbols to match a line's angle.
      * @param lineAngle Angle in degrees, valid values are between 0 and 360
      * @note added in QGIS 2.9
-    */
+     */
     void setLineAngle( double lineAngle );
 
     void setSize( double size );
@@ -423,8 +431,8 @@ class QgsLineSymbolV2 : QgsSymbolV2
 
   public:
     /** Create a line symbol with one symbol layer: SimpleLine with specified properties.
-      This is a convenience method for easier creation of line symbols.
-    */
+     * This is a convenience method for easier creation of line symbols.
+     */
     static QgsLineSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
 
     QgsLineSymbolV2( const QgsSymbolLayerV2List& layers /Transfer/ = QgsSymbolLayerV2List() );
@@ -462,8 +470,8 @@ class QgsFillSymbolV2 : QgsSymbolV2
 
   public:
     /** Create a fill symbol with one symbol layer: SimpleFill with specified properties.
-      This is a convenience method for easier creation of fill symbols.
-    */
+     * This is a convenience method for easier creation of fill symbols.
+     */
     static QgsFillSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
 
     QgsFillSymbolV2( const QgsSymbolLayerV2List& layers /Transfer/ = QgsSymbolLayerV2List() );

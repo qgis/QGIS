@@ -45,11 +45,14 @@ class QgsLineSymbolLayerV2;
 class QgsFillSymbolLayerV2;
 class QgsDataDefined;
 class QgsSymbolV2RenderContext;
+class QgsFeatureRendererV2;
 
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
 
 class CORE_EXPORT QgsSymbolV2
 {
+    friend class QgsFeatureRendererV2;
+
   public:
 
     /**
@@ -273,6 +276,12 @@ class CORE_EXPORT QgsSymbolV2
     }
 
     /**
+     * Creates a point in screen coordinates from a wkb string in map
+     * coordinates
+     */
+    static QgsConstWkbPtr _getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr wkb );
+
+    /**
      * Creates a line string in screen coordinates from a wkb string in map
      * coordinates
      */
@@ -416,8 +425,8 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
 {
   public:
     /** Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
-      This is a convenience method for easier creation of marker symbols.
-    */
+     * This is a convenience method for easier creation of marker symbols.
+     */
     static QgsMarkerSymbolV2* createSimple( const QgsStringMap& properties );
 
     QgsMarkerSymbolV2( const QgsSymbolLayerV2List& layers = QgsSymbolLayerV2List() );
@@ -445,7 +454,7 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
      * is usually used for orienting symbols to match a line's angle.
      * @param lineAngle Angle in degrees, valid values are between 0 and 360
      * @note added in QGIS 2.9
-    */
+     */
     void setLineAngle( double lineAngle );
 
     void setSize( double size );
@@ -491,8 +500,8 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
 {
   public:
     /** Create a line symbol with one symbol layer: SimpleLine with specified properties.
-      This is a convenience method for easier creation of line symbols.
-    */
+     * This is a convenience method for easier creation of line symbols.
+     */
     static QgsLineSymbolV2* createSimple( const QgsStringMap& properties );
 
     QgsLineSymbolV2( const QgsSymbolLayerV2List& layers = QgsSymbolLayerV2List() );
@@ -531,8 +540,8 @@ class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
 {
   public:
     /** Create a fill symbol with one symbol layer: SimpleFill with specified properties.
-      This is a convenience method for easier creation of fill symbols.
-    */
+     * This is a convenience method for easier creation of fill symbols.
+     */
     static QgsFillSymbolV2* createSimple( const QgsStringMap& properties );
 
     QgsFillSymbolV2( const QgsSymbolLayerV2List& layers = QgsSymbolLayerV2List() );

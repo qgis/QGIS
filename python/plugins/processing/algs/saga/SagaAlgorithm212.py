@@ -102,7 +102,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                 # An extent parameter that wraps 4 SAGA numerical parameters
                 self.extentParamNames = line[6:].strip().split(' ')
                 self.addParameter(ParameterExtent(self.OUTPUT_EXTENT,
-                                                  'Output extent', '0,1,0,1'))
+                                                  'Output extent', ''))
             else:
                 self.addOutput(getOutputFromString(line))
             line = lines.readline().strip('\n').strip()
@@ -162,7 +162,10 @@ class SagaAlgorithm212(GeoAlgorithm):
                             if exportCommand is not None:
                                 commands.append(exportCommand)
                         param.value = ";".join(layers)
-                elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                elif param.datatype in [ParameterMultipleInput.TYPE_VECTOR_ANY,
+                                        ParameterMultipleInput.TYPE_VECTOR_LINE,
+                                        ParameterMultipleInput.TYPE_VECTOR_POLYGON,
+                                        ParameterMultipleInput.TYPE_VECTOR_POINT]:
                     for layerfile in layers:
                         layer = dataobjects.getObjectFromUri(layerfile, False)
                         if layer:

@@ -27,7 +27,9 @@ from qgis.core import (QgsCategorizedSymbolRendererV2,
                        QgsPoint,
                        QgsSymbolV2,
                        QgsSymbolLayerV2Utils,
-                       QgsRenderContext
+                       QgsRenderContext,
+                       QgsField,
+                       QgsFields
                        )
 from PyQt4.QtCore import Qt, QVariant
 from PyQt4.QtXml import QDomDocument
@@ -58,58 +60,128 @@ class TestQgsCategorizedSymbolRendererV2(unittest.TestCase):
         # add default category
         renderer.addCategory(QgsRendererCategoryV2('', createMarkerSymbol(), 'default'))
 
-        self.assertEqual(renderer.filter(), '')
+        fields = QgsFields()
+        fields.append(QgsField('field', QVariant.String))
+        fields.append(QgsField('num', QVariant.Double))
+
+        self.assertEqual(renderer.filter(fields), '')
         # remove categories, leaving default
         assert renderer.updateCategoryRenderState(0, False)
-        self.assertEqual(renderer.filter(), "(\"field\") NOT IN ('a') OR (\"field\") IS NULL")
+        self.assertEqual(renderer.filter(fields), "(\"field\") NOT IN ('a') OR (\"field\") IS NULL")
         assert renderer.updateCategoryRenderState(1, False)
-        self.assertEqual(renderer.filter(), "(\"field\") NOT IN ('a','b') OR (\"field\") IS NULL")
+        self.assertEqual(renderer.filter(fields), "(\"field\") NOT IN ('a','b') OR (\"field\") IS NULL")
         assert renderer.updateCategoryRenderState(2, False)
-        self.assertEqual(renderer.filter(), "(\"field\") NOT IN ('a','b','c') OR (\"field\") IS NULL")
+        self.assertEqual(renderer.filter(fields), "(\"field\") NOT IN ('a','b','c') OR (\"field\") IS NULL")
         # remove default category
         assert renderer.updateCategoryRenderState(3, False)
-        self.assertEqual(renderer.filter(), "FALSE")
+        self.assertEqual(renderer.filter(fields), "FALSE")
         # add back other categories, leaving default disabled
         assert renderer.updateCategoryRenderState(0, True)
-        self.assertEqual(renderer.filter(), "(\"field\") IN ('a')")
+        self.assertEqual(renderer.filter(fields), "(\"field\") IN ('a')")
         assert renderer.updateCategoryRenderState(1, True)
-        self.assertEqual(renderer.filter(), "(\"field\") IN ('a','b')")
+        self.assertEqual(renderer.filter(fields), "(\"field\") IN ('a','b')")
         assert renderer.updateCategoryRenderState(2, True)
-        self.assertEqual(renderer.filter(), "(\"field\") IN ('a','b','c')")
+        self.assertEqual(renderer.filter(fields), "(\"field\") IN ('a','b','c')")
 
         renderer.deleteAllCategories()
         # just default category
         renderer.addCategory(QgsRendererCategoryV2('', createMarkerSymbol(), 'default'))
-        self.assertEqual(renderer.filter(), '')
+        self.assertEqual(renderer.filter(fields), '')
         assert renderer.updateCategoryRenderState(0, False)
-        self.assertEqual(renderer.filter(), 'FALSE')
+        self.assertEqual(renderer.filter(fields), 'FALSE')
 
         renderer.deleteAllCategories()
         # no default category
         renderer.addCategory(QgsRendererCategoryV2('a', createMarkerSymbol(), 'a'))
         renderer.addCategory(QgsRendererCategoryV2('b', createMarkerSymbol(), 'b'))
         renderer.addCategory(QgsRendererCategoryV2('c', createMarkerSymbol(), 'c'))
-        self.assertEqual(renderer.filter(), "(\"field\") IN ('a','b','c')")
+        self.assertEqual(renderer.filter(fields), "(\"field\") IN ('a','b','c')")
         assert renderer.updateCategoryRenderState(0, False)
-        self.assertEqual(renderer.filter(), "(\"field\") IN ('b','c')")
+        self.assertEqual(renderer.filter(fields), "(\"field\") IN ('b','c')")
         assert renderer.updateCategoryRenderState(2, False)
-        self.assertEqual(renderer.filter(), "(\"field\") IN ('b')")
+        self.assertEqual(renderer.filter(fields), "(\"field\") IN ('b')")
         assert renderer.updateCategoryRenderState(1, False)
-        self.assertEqual(renderer.filter(), "FALSE")
+        self.assertEqual(renderer.filter(fields), "FALSE")
+
+        renderer.deleteAllCategories()
+        renderer.setClassAttribute('num')
+        # numeric categories
+        renderer.addCategory(QgsRendererCategoryV2(1, createMarkerSymbol(), 'a'))
+        renderer.addCategory(QgsRendererCategoryV2(2, createMarkerSymbol(), 'b'))
+        renderer.addCategory(QgsRendererCategoryV2(3, createMarkerSymbol(), 'c'))
+        self.assertEqual(renderer.filter(fields), '(\"num\") IN (1,2,3)')
+        assert renderer.updateCategoryRenderState(0, False)
+        self.assertEqual(renderer.filter(fields), "(\"num\") IN (2,3)")
+        assert renderer.updateCategoryRenderState(2, False)
+        self.assertEqual(renderer.filter(fields), "(\"num\") IN (2)")
+        assert renderer.updateCategoryRenderState(1, False)
+        self.assertEqual(renderer.filter(fields), "FALSE")
+
+    def testFilterExpression(self):
+        """Test filter creation with expression"""
+        renderer = QgsCategorizedSymbolRendererV2()
+        renderer.setClassAttribute('field + field2')
+
+        renderer.addCategory(QgsRendererCategoryV2('a', createMarkerSymbol(), 'a'))
+        renderer.addCategory(QgsRendererCategoryV2('b', createMarkerSymbol(), 'b'))
+        renderer.addCategory(QgsRendererCategoryV2('c', createMarkerSymbol(), 'c'))
+        # add default category
+        renderer.addCategory(QgsRendererCategoryV2('', createMarkerSymbol(), 'default'))
+
+        fields = QgsFields()
+        fields.append(QgsField('field', QVariant.String))
+
+        self.assertEqual(renderer.filter(fields), '')
+        # remove categories, leaving default
+        assert renderer.updateCategoryRenderState(0, False)
+        self.assertEqual(renderer.filter(fields), "(field + field2) NOT IN ('a') OR (field + field2) IS NULL")
+        assert renderer.updateCategoryRenderState(1, False)
+        self.assertEqual(renderer.filter(fields), "(field + field2) NOT IN ('a','b') OR (field + field2) IS NULL")
+        assert renderer.updateCategoryRenderState(2, False)
+        self.assertEqual(renderer.filter(fields), "(field + field2) NOT IN ('a','b','c') OR (field + field2) IS NULL")
+        # remove default category
+        assert renderer.updateCategoryRenderState(3, False)
+        self.assertEqual(renderer.filter(fields), "FALSE")
+        # add back other categories, leaving default disabled
+        assert renderer.updateCategoryRenderState(0, True)
+        self.assertEqual(renderer.filter(fields), "(field + field2) IN ('a')")
+        assert renderer.updateCategoryRenderState(1, True)
+        self.assertEqual(renderer.filter(fields), "(field + field2) IN ('a','b')")
+        assert renderer.updateCategoryRenderState(2, True)
+        self.assertEqual(renderer.filter(fields), "(field + field2) IN ('a','b','c')")
+
+        renderer.deleteAllCategories()
+        # just default category
+        renderer.addCategory(QgsRendererCategoryV2('', createMarkerSymbol(), 'default'))
+        self.assertEqual(renderer.filter(fields), '')
+        assert renderer.updateCategoryRenderState(0, False)
+        self.assertEqual(renderer.filter(fields), 'FALSE')
+
+        renderer.deleteAllCategories()
+        # no default category
+        renderer.addCategory(QgsRendererCategoryV2('a', createMarkerSymbol(), 'a'))
+        renderer.addCategory(QgsRendererCategoryV2('b', createMarkerSymbol(), 'b'))
+        renderer.addCategory(QgsRendererCategoryV2('c', createMarkerSymbol(), 'c'))
+        self.assertEqual(renderer.filter(fields), "(field + field2) IN ('a','b','c')")
+        assert renderer.updateCategoryRenderState(0, False)
+        self.assertEqual(renderer.filter(fields), "(field + field2) IN ('b','c')")
+        assert renderer.updateCategoryRenderState(2, False)
+        self.assertEqual(renderer.filter(fields), "(field + field2) IN ('b')")
+        assert renderer.updateCategoryRenderState(1, False)
+        self.assertEqual(renderer.filter(fields), "FALSE")
 
         renderer.deleteAllCategories()
         # numeric categories
         renderer.addCategory(QgsRendererCategoryV2(1, createMarkerSymbol(), 'a'))
         renderer.addCategory(QgsRendererCategoryV2(2, createMarkerSymbol(), 'b'))
         renderer.addCategory(QgsRendererCategoryV2(3, createMarkerSymbol(), 'c'))
-        self.assertEqual(renderer.filter(), '(\"field\") IN (1,2,3)')
+        self.assertEqual(renderer.filter(fields), '(field + field2) IN (1,2,3)')
         assert renderer.updateCategoryRenderState(0, False)
-        self.assertEqual(renderer.filter(), "(\"field\") IN (2,3)")
+        self.assertEqual(renderer.filter(fields), "(field + field2) IN (2,3)")
         assert renderer.updateCategoryRenderState(2, False)
-        self.assertEqual(renderer.filter(), "(\"field\") IN (2)")
+        self.assertEqual(renderer.filter(fields), "(field + field2) IN (2)")
         assert renderer.updateCategoryRenderState(1, False)
-        self.assertEqual(renderer.filter(), "FALSE")
-
+        self.assertEqual(renderer.filter(fields), "FALSE")
 
 if __name__ == "__main__":
     unittest.main()

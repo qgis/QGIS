@@ -41,8 +41,8 @@ class QgsOWSSourceSelect : QDialog
     void on_mLoadButton_clicked();
 
     /** Connects to the database using the stored connection parameters.
-    * Once connected, available layers are displayed.
-    */
+     * Once connected, available layers are displayed.
+     */
     void on_mConnectButton_clicked();
 
     //! Determines the layers the user selected

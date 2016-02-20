@@ -26,7 +26,7 @@ class QgsRasterShaderFunction
     /** \brief Return the minimum value */
     virtual void setMinimumValue( double );
 
-    /** \brief generates and new RGB value based on one input value */
+    /** \brief generates and new RGBA value based on one input value */
     virtual bool shade( double, int* /Out/, int* /Out/, int* /Out/, int* /Out/ );
 
     /** \brief generates and new RGBA value based on original RGBA value */

@@ -61,12 +61,12 @@ class QgsVectorLayerFeatureIterator : QgsAbstractFeatureIterator
 
     /** Update feature with uncommited attribute updates.
      * @note not available in Python bindings
-    */
+     */
     //void updateChangedAttributes( QgsFeature& f );
 
     /** Update feature with uncommited geometry updates.
      * @note not available in Python bindings
-    */
+     */
     //void updateFeatureGeometry( QgsFeature& f );
 
   private:

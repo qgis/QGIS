@@ -48,7 +48,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
     /** Set the widget title
      * @param title widget title
-    */
+     */
     void setTitle( const QString& title );
 
     /** Set margin visible state

@@ -77,33 +77,33 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     /** Proxy that will call this method on the embedded renderer. */
     virtual int capabilities() override;
     /** Proxy that will call this method on the embedded renderer.
-      @note available in python bindings as symbol2
+     * @note available in python bindings as symbol2
      */
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer.
-      @note available in python bindings as symbolForFeature2
+     * @note available in python bindings as symbolForFeature2
      */
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer.
-      @note available in python bindings as originalSymbolForFeature2
+     * @note available in python bindings as originalSymbolForFeature2
      */
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer.
-      @note available in python bindings as symbolsForFeature
+     * @note available in python bindings as symbolsForFeature
      */
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer.
-      @note available in python bindings as originalSymbolsForFeature2
+     * @note available in python bindings as originalSymbolsForFeature2
      */
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer. */
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
     /** Proxy that will call this method on the embedded renderer.
-      @note not available in python bindings
+     * @note not available in python bindings
      */
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) override;
     /** Proxy that will call this method on the embedded renderer.
-      @note available in python bindings as willRenderFeature2
+     * @note available in python bindings as willRenderFeature2
      */
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) override;
 
@@ -127,17 +127,17 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     /** @returns true if the geometries are to be preprocessed (merged with an union) before rendering.*/
     bool preprocessingEnabled() const { return mPreprocessingEnabled; }
     /**
-        @param enabled enables or disables the preprocessing.
-        When enabled, geometries will be merged with an union before being rendered.
-        It allows fixing some rendering artifacts (when rendering overlapping polygons for instance).
-        This will involve some CPU-demanding computations and is thus disabled by default.
-    */
+     * @param enabled enables or disables the preprocessing.
+     * When enabled, geometries will be merged with an union before being rendered.
+     * It allows fixing some rendering artifacts (when rendering overlapping polygons for instance).
+     * This will involve some CPU-demanding computations and is thus disabled by default.
+     */
     void setPreprocessingEnabled( bool enabled ) { mPreprocessingEnabled = enabled; }
 
     /** Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
-        @note added in 2.5
-        @returns a new renderer if the conversion was possible, otherwise 0.
-        */
+     * @note added in 2.5
+     * @returns a new renderer if the conversion was possible, otherwise 0.
+     */
     static QgsInvertedPolygonRenderer* convertFromRenderer( const QgsFeatureRendererV2* renderer );
 
   private:
@@ -172,8 +172,8 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     QgsFields mFields;
 
     /** Class used to represent features that must be rendered
-        with decorations (selection, vertex markers)
-    */
+     *  with decorations (selection, vertex markers)
+     */
     struct FeatureDecoration
     {
       QgsFeature feature;

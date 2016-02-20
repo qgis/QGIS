@@ -299,7 +299,7 @@ class QgsPostgresConn : public QObject
      * @param allowGeometrylessTables
      * @param schema restrict tables to those within specified schema
      * @returns true if tables were successfully queried
-    */
+     */
     bool getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables,
                        const QString& schema = QString() );
 

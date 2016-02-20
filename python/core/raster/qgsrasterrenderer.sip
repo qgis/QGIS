@@ -6,7 +6,6 @@ class QgsRasterRenderer : QgsRasterInterface
 %End
 
   public:
-
     // Origin of min / max values
     enum MinMaxOrigin
     {

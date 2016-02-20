@@ -41,7 +41,6 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
      * @note added in QGIS 2.12
      * @see setExpressionContext()
      */
-
     QgsExpressionContext* expressionContext() const { return mPresetExpressionContext; }
 
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current

@@ -14,7 +14,7 @@ class QgsComposerFrame: QgsComposerItem
      * this frame (relative to the total multiframe extent in mm).
      * @param section visible portion of content
      * @see extent
-    */
+     */
     void setContentSection( const QRectF& section );
 
     /** Returns the parent multiframe for the frame.
@@ -78,4 +78,5 @@ class QgsComposerFrame: QgsComposerItem
      */
     bool isEmpty() const;
 
+    virtual QgsExpressionContext* createExpressionContext() const;
 };

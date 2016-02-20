@@ -116,6 +116,7 @@ class QgsDiagramSettings
      * @note added in 2.10
      */
     QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const /Factory/;
+
 };
 
 //additional diagram settings for interpolated size rendering

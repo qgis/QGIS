@@ -34,8 +34,6 @@ the rules and draws features with symbols from rules that match.
 class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 {
   public:
-
-
     // TODO: use QVarLengthArray instead of QList
 
     enum FeatureFlags { FeatIsSelected = 1, FeatDrawMarkers = 2 };

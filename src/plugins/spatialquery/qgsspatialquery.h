@@ -52,99 +52,99 @@ class QgsSpatialQuery
 {
   public:
     /**
-    * \brief Constructor for a Spatial query.
-    * \param pb Pointer to the MngProgressBar object.
-    */
+     * \brief Constructor for a Spatial query.
+     * \param pb Pointer to the MngProgressBar object.
+     */
     explicit QgsSpatialQuery( MngProgressBar *pb );
 
     /**
-    * \brief Destructor
-    */
+     * \brief Destructor
+     */
     ~QgsSpatialQuery();
 
     /**
-    * \brief Sets if using selected features in Target layer
-    * \param useSelected true if use selected.
-    */
+     * \brief Sets if using selected features in Target layer
+     * \param useSelected true if use selected.
+     */
     void setSelectedFeaturesTarget( bool useSelected );
 
     /**
-    * \brief Sets if using selected features in Reference layer
-    * \param useSelected true if use selected.
-    */
+     * \brief Sets if using selected features in Reference layer
+     * \param useSelected true if use selected.
+     */
     void setSelectedFeaturesReference( bool useSelected );
 
     /**
-    * \brief Execute the query
-    * \param qsetIndexResult    Reference to QSet contains the result query
-    * \param relation           Enum Topologic Relation
-    * \param lyrTarget          Pointer to Target Layer
-    * \param lyrReference       Pointer to Reference Layer
-    */
+     * \brief Execute the query
+     * \param qsetIndexResult    Reference to QSet contains the result query
+     * \param relation           Enum Topologic Relation
+     * \param lyrTarget          Pointer to Target Layer
+     * \param lyrReference       Pointer to Reference Layer
+     */
     void runQuery( QgsFeatureIds &qsetIndexResult,
                    QgsFeatureIds &qsetIndexInvalidTarget,
                    QgsFeatureIds &qsetIndexInvalidReference,
                    int relation, QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference );
 
     /**
-    * \brief Gets the possible topologic relations
-    * \param lyrTarget          Pointer to Target Layer
-    * \param lyrReference       Pointer to Reference Layer
-    * \returns QMap<QString, int> Nome inteligível and Topologic Relation
-    */
+     * \brief Gets the possible topologic relations
+     * \param lyrTarget          Pointer to Target Layer
+     * \param lyrReference       Pointer to Reference Layer
+     * \returns QMap<QString, int> Nome inteligível and Topologic Relation
+     */
     static QMap<QString, int> * getTypesOperations( QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference );
 
     /**
-    * \brief Gets the topologic dimension
-    * \param geomType          Geometry Type
-    * \returns short int       Topologic Dimension
-    */
+     * \brief Gets the topologic dimension
+     * \param geomType          Geometry Type
+     * \returns short int       Topologic Dimension
+     */
     static short int dimensionGeometry( QGis::GeometryType geomType );
 
   private:
 
     /**
-    * \brief Sets the target layer and reference layer
-    * \param layerTarget       Target Layer
-    * \param layerReference    Reference Layer
-    */
+     * \brief Sets the target layer and reference layer
+     * \param layerTarget       Target Layer
+     * \param layerReference    Reference Layer
+     */
     void setQuery( QgsVectorLayer *layerTarget, QgsVectorLayer *layerReference );
 
     /**
-    * \brief Verify has valid Geometry in feature
-    * \param QgsFeature       Feature
-    */
+     * \brief Verify has valid Geometry in feature
+     * \param QgsFeature       Feature
+     */
     bool hasValidGeometry( QgsFeature &feature );
 
     /**
-    * \brief Build the Spatial Index
-    */
+     * \brief Build the Spatial Index
+     */
     void setSpatialIndexReference( QgsFeatureIds &qsetIndexInvalidReference );
 
     /**
-    * \brief Execute query
-    * \param qsetIndexResult    Reference to QSet contains the result query
-    * \param relation           Enum Topologic Relation
-    */
+     * \brief Execute query
+     * \param qsetIndexResult    Reference to QSet contains the result query
+     * \param relation           Enum Topologic Relation
+     */
     void execQuery( QgsFeatureIds &qsetIndexResult, QgsFeatureIds &qsetIndexInvalidTarget, int relation );
 
     /**
-    * \brief Populate index Result
-    * \param qsetIndexResult    Reference to QSet contains the result query
-    * \param idTarget           Id of the feature Target
-    * \param geomTarget         Geometry the feature Target
-    * \param operation          Pointer to function of GEOS operation
-    */
+     * \brief Populate index Result
+     * \param qsetIndexResult    Reference to QSet contains the result query
+     * \param idTarget           Id of the feature Target
+     * \param geomTarget         Geometry the feature Target
+     * \param operation          Pointer to function of GEOS operation
+     */
     void populateIndexResult(
       QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, QgsGeometry *geomTarget,
       bool ( QgsGeometry::* operation )( const QgsGeometry * ) const );
     /**
-    * \brief Populate index Result Disjoint
-    * \param qsetIndexResult    Reference to QSet contains the result query
-    * \param idTarget           Id of the feature Target
-    * \param geomTarget         Geometry the feature Target
-    * \param operation          Pointer to function of GEOS operation
-    */
+     * \brief Populate index Result Disjoint
+     * \param qsetIndexResult    Reference to QSet contains the result query
+     * \param idTarget           Id of the feature Target
+     * \param geomTarget         Geometry the feature Target
+     * \param operation          Pointer to function of GEOS operation
+     */
     void populateIndexResultDisjoint(
       QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, QgsGeometry *geomTarget,
       bool ( QgsGeometry::* operation )( const QgsGeometry * ) const );

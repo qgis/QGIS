@@ -121,6 +121,7 @@ from fusion.ClipData import ClipData
 from fusion.CloudMetrics import CloudMetrics
 from fusion.Cover import Cover
 from fusion.DTM2TIF import DTM2TIF
+from fusion.DTM2ASCII import DTM2ASCII
 from fusion.FirstLastReturn import FirstLastReturn
 from fusion.GridMetrics import GridMetrics
 from fusion.GridSurfaceCreate import GridSurfaceCreate
@@ -200,7 +201,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 Catalog(), CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(),
                 Csv2Grid(), Cover(), FilterData(), GridMetrics(), GroundFilter(),
                 GridSurfaceCreate(), MergeData(), TinSurfaceCreate(), PolyClipData(),
-                DTM2TIF(), FirstLastReturn(), ASCII2DTM()
+                DTM2TIF(), DTM2ASCII(), FirstLastReturn(), ASCII2DTM()
             ]
             for alg in fusiontools:
                 alg.group, alg.i18n_group = alg.trAlgorithm('Fusion')

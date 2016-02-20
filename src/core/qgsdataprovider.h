@@ -230,47 +230,45 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /** Return a provider name
-
-    Essentially just returns the provider key.  Should be used to build file
-    dialogs so that providers can be shown with their supported types. Thus
-    if more than one provider supports a given format, the user is able to
-    select a specific provider to open that file.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+     *
+     * Essentially just returns the provider key.  Should be used to build file
+     * dialogs so that providers can be shown with their supported types. Thus
+     * if more than one provider supports a given format, the user is able to
+     * select a specific provider to open that file.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     virtual QString name() const = 0;
 
 
     /** Return description
-
-      Return a terse string describing what the provider is.
-
-      @note
-
-      Instead of being pure virtual, might be better to generalize this
-      behavior and presume that none of the sub-classes are going to do
-      anything strange with regards to their name or description?
-
+     *
+     * Return a terse string describing what the provider is.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
      */
     virtual QString description() const = 0;
 
 
     /** Return vector file filter string
-
-      Returns a string suitable for a QFileDialog of vector file formats
-      supported by the data provider.  Naturally this will be an empty string
-      for those data providers that do not deal with plain files, such as
-      databases and servers.
-
-      @note
-
-      It'd be nice to eventually be raster/vector neutral.
-    */
+     *
+     * Returns a string suitable for a QFileDialog of vector file formats
+     * supported by the data provider.  Naturally this will be an empty string
+     * for those data providers that do not deal with plain files, such as
+     * databases and servers.
+     *
+     * @note It'd be nice to eventually be raster/vector neutral.
+     */
     virtual QString fileVectorFilters() const
     {
       return "";
@@ -278,23 +276,22 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /** Return raster file filter string
-
-      Returns a string suitable for a QFileDialog of raster file formats
-      supported by the data provider.  Naturally this will be an empty string
-      for those data providers that do not deal with plain files, such as
-      databases and servers.
-
-      @note
-
-      It'd be nice to eventually be raster/vector neutral.
-    */
+     *
+     * Returns a string suitable for a QFileDialog of raster file formats
+     * supported by the data provider.  Naturally this will be an empty string
+     * for those data providers that do not deal with plain files, such as
+     * databases and servers.
+     *
+     * @note It'd be nice to eventually be raster/vector neutral.
+     */
     virtual QString fileRasterFilters() const
     {
       return "";
     }
 
     /** Reloads the data from the source. Needs to be implemented by providers with data caches to
-      synchronize with changes in the data source*/
+     * synchronize with changes in the data source
+     */
     virtual void reloadData() {}
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
@@ -335,8 +332,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
   protected:
     /**
-    * Timestamp of data in the moment when the data were loaded by provider.
-    */
+     * Timestamp of data in the moment when the data were loaded by provider.
+     */
     QDateTime mTimestamp;
 
     /** \brief Error */

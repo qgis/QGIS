@@ -69,7 +69,7 @@ class VectorSplit(GeoAlgorithm):
 
         total = 100.0 / len(uniqueValues)
 
-        for count, i in enumerate(uniqueValues):
+        for current, i in enumerate(uniqueValues):
             fName = u'{0}_{1}.shp'.format(baseName, unicode(i).strip())
 
             writer = vector.VectorWriter(fName, None, fields, geomType, crs)
@@ -78,4 +78,4 @@ class VectorSplit(GeoAlgorithm):
                     writer.addFeature(f)
             del writer
 
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))

@@ -30,6 +30,12 @@ class QgsGeometryGeneratorSymbolLayerV2 : QgsSymbolLayerV2
      */
     void setSymbolType( QgsSymbolV2::SymbolType symbolType );
 
+    /**
+     * Access the symbol type. This defines the type of geometry
+     * that is created by this generator.
+     *
+     * @return Symbol type
+     */
     QgsSymbolV2::SymbolType symbolType() const;
 
     void startRender( QgsSymbolV2RenderContext& context );
@@ -42,6 +48,9 @@ class QgsGeometryGeneratorSymbolLayerV2 : QgsSymbolLayerV2
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 
+    /**
+     * Set the expression to generate this geometry.
+     */
     void setGeometryExpression( const QString& exp );
 
     /**
@@ -60,7 +69,19 @@ class QgsGeometryGeneratorSymbolLayerV2 : QgsSymbolLayerV2
     //! care about the geometry of its parents.
     bool isCompatibleWithSymbol( QgsSymbolV2* symbol );
 
+    /**
+     * Will render this symbol layer using the context.
+     * In comparison to other symbols there is no geometry passed in, since
+     * the geometry will be created based on information from the context
+     * which contains a QgsRenderContext which in turn contains an expression
+     * context which is available to the evaluated expression.
+     *
+     * @param context The rendering context which will be used to render and to
+     *                construct a geometry.
+     */
     virtual void render( QgsSymbolV2RenderContext& context );
+
+    void setColor( const QColor& color );
 
   private:
     QgsGeometryGeneratorSymbolLayerV2( const QgsGeometryGeneratorSymbolLayerV2& copy );

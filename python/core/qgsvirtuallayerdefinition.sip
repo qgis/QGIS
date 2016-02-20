@@ -113,13 +113,13 @@ class QgsVirtualLayerDefinition
     //! Set field definitions
     void setFields( const QgsFields& fields );
 
-  //! Convenience method to test if a given source layer is part of the definition
-  bool hasSourceLayer( const QString& name ) const;
+    //! Convenience method to test if a given source layer is part of the definition
+    bool hasSourceLayer( const QString& name ) const;
 
-  //! Convenience method to test whether the definition has referenced (live) layers
-  bool hasReferencedLayers() const;
+    //! Convenience method to test whether the definition has referenced (live) layers
+    bool hasReferencedLayers() const;
 
-  //! Convenient method to test if the geometry is defined (not NoGeometry and not Unknown)
-  bool hasDefinedGeometry() const;
+    //! Convenient method to test if the geometry is defined (not NoGeometry and not Unknown)
+    bool hasDefinedGeometry() const;
 };
 

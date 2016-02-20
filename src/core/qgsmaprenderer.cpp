@@ -130,7 +130,7 @@ void QgsMapRenderer::setRotation( double rotation )
   emit rotationChanged( rotation );
 }
 
-double QgsMapRenderer::rotation( ) const
+double QgsMapRenderer::rotation() const
 {
   return mRotation;
 }

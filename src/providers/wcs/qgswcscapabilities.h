@@ -83,12 +83,12 @@ class QgsWcsCapabilities : public QObject
 
   public:
     /**
-    * Constructor for the provider.
-    *
-    * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
-    *                otherwise we contact the host directly.
-    *
-    */
+     * Constructor for the provider.
+     *
+     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
+     *                otherwise we contact the host directly.
+     *
+     */
     explicit QgsWcsCapabilities( QgsDataSourceURI const & theUri );
     QgsWcsCapabilities();
 

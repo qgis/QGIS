@@ -108,9 +108,9 @@ void TestQgsMapToPixelGeometrySimplifier::cleanup()
 
 void TestQgsMapToPixelGeometrySimplifier::testDefaultGeometry()
 {
-  QgsGeometry *g = new QgsGeometry();
+  QScopedPointer< QgsGeometry > g( new QgsGeometry() );
   int fl = QgsMapToPixelSimplifier::SimplifyGeometry;
-  bool ret = QgsMapToPixelSimplifier::simplifyGeometry( g, fl, 10.0 );
+  bool ret = QgsMapToPixelSimplifier::simplifyGeometry( g.data(), fl, 10.0 );
   QVERIFY( ! ret ); // not simplifiable
 }
 
@@ -118,13 +118,13 @@ void TestQgsMapToPixelGeometrySimplifier::testLine1()
 {
   // NOTE: we need more than 4 vertices, or the line will not be
   //       reduced at all by the algorithm
-  QgsGeometry *g = QgsGeometry::fromWkt( "LINESTRING(0 0,1 1,2 0,3 1,4 0,20 1,20 0,10 0,5 0)" );
+  QScopedPointer< QgsGeometry > g( QgsGeometry::fromWkt( "LINESTRING(0 0,1 1,2 0,3 1,4 0,20 1,20 0,10 0,5 0)" ) );
   int fl;
   bool ret;
   QString wkt;
 
   fl = QgsMapToPixelSimplifier::SimplifyGeometry;
-  ret = QgsMapToPixelSimplifier::simplifyGeometry( g, fl, 10.0 );
+  ret = QgsMapToPixelSimplifier::simplifyGeometry( g.data(), fl, 10.0 );
   QVERIFY( ret );
   wkt = g->exportToWkt();
   // NOTE: I don't think vertex 1,1 should be in this result,
@@ -132,10 +132,10 @@ void TestQgsMapToPixelGeometrySimplifier::testLine1()
   QCOMPARE( wkt, QString( "LineString (0 0, 1 1, 20 1, 10 0, 5 0)" ) );
 
   fl = QgsMapToPixelSimplifier::SimplifyEnvelope;
-  ret = QgsMapToPixelSimplifier::simplifyGeometry( g, fl, 20.0 );
+  ret = QgsMapToPixelSimplifier::simplifyGeometry( g.data(), fl, 20.0 );
   QVERIFY( ! ret );
 
-  ret = QgsMapToPixelSimplifier::simplifyGeometry( g, fl, 30.0 );
+  ret = QgsMapToPixelSimplifier::simplifyGeometry( g.data(), fl, 30.0 );
   QVERIFY( ret );
   wkt = g->exportToWkt();
   // NOTE: I don't understand this result either

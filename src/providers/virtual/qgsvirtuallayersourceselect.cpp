@@ -26,6 +26,9 @@ email                : hugo dot mercier at oslandia dot com
 #include <layertree/qgslayertreemodel.h>
 #include <layertree/qgslayertreegroup.h>
 #include <layertree/qgslayertreelayer.h>
+#include <qgsproviderregistry.h>
+
+#include "qgsembeddedlayerselectdialog.h"
 
 #include <QUrl>
 #include <Qsci/qscilexer.h>
@@ -40,6 +43,22 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
 
   QObject::connect( mTestButton, SIGNAL( clicked() ), this, SLOT( onTestQuery() ) );
   QObject::connect( mBrowseCRSBtn, SIGNAL( clicked() ), this, SLOT( onBrowseCRS() ) );
+  QObject::connect( mAddLayerBtn, SIGNAL( clicked() ), this, SLOT( onAddLayer() ) );
+  QObject::connect( mRemoveLayerBtn, SIGNAL( clicked() ), this, SLOT( onRemoveLayer() ) );
+  QObject::connect( mImportLayerBtn, SIGNAL( clicked() ), this, SLOT( onImportLayer() ) );
+  QObject::connect( mLayersTable->selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( onTableRowChanged( const QModelIndex&, const QModelIndex& ) ) );
+
+  // prepare provider list
+  Q_FOREACH ( QString pk, QgsProviderRegistry::instance()->providerList() )
+  {
+    // we cannot know before trying to actually load a dataset
+    // if the provider is raster or vector
+    // so we manually exclude well-known raster providers
+    if ( pk != "gdal" && pk != "ows" && pk != "wcs" && pk != "wms" )
+    {
+      mProviderList << pk;
+    }
+  }
 
   QgsLayerTreeView* treeView = parent->findChild<QgsLayerTreeView*>( "theLayerTreeView" );
   if ( treeView )
@@ -87,7 +106,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
   }
 
   // configure auto completion with table and column names
-  Q_FOREACH ( QgsMapLayer* l, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer* l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     if ( l->type() == QgsMapLayer::VectorLayer )
     {
@@ -104,10 +123,9 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
   mQueryEdit->lexer()->setAPIs( apis );
 
   mQueryEdit->setWrapMode( QsciScintilla::WrapWord );
-}
 
-QgsVirtualLayerSourceSelect::~QgsVirtualLayerSourceSelect()
-{
+  // prepare embedded layer selection dialog
+  mEmbeddedSelectionDialog = new QgsEmbeddedLayerSelectDialog( this, treeView );
 }
 
 void QgsVirtualLayerSourceSelect::onLayerComboChanged( int idx )
@@ -144,6 +162,15 @@ void QgsVirtualLayerSourceSelect::onLayerComboChanged( int idx )
     mCRS->setText( crs.authid() );
     mGeometryType->setCurrentIndex( static_cast<long>( def.geometryWkbType() ) - 1 );
     mGeometryField->setText( def.geometryField() );
+  }
+
+  // add embedded layers
+  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer& l, def.sourceLayers() )
+  {
+    if ( ! l.isReferenced() )
+    {
+      addEmbeddedLayer( l.name(), l.provider(), l.encoding(), l.source() );
+    }
   }
 }
 
@@ -184,6 +211,17 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
     def.setGeometryField( mGeometryField->text() );
     def.setGeometrySrid( mSrid );
   }
+
+  // add embedded layers
+  for ( int i = 0; i < mLayersTable->rowCount(); i++ )
+  {
+    QString name = mLayersTable->item( i, 0 )->text();
+    QString provider = static_cast<QComboBox*>( mLayersTable->cellWidget( i, 1 ) )->currentText();
+    QString encoding = static_cast<QComboBox*>( mLayersTable->cellWidget( i, 2 ) )->currentText();
+    QString source = mLayersTable->item( i, 3 )->text();
+    def.addSource( name, source, provider, encoding );
+  }
+
   return def;
 }
 
@@ -199,6 +237,67 @@ void QgsVirtualLayerSourceSelect::onTestQuery()
   else
   {
     QMessageBox::critical( nullptr, tr( "Virtual layer test" ), vl->dataProvider()->error().summary() );
+  }
+}
+
+void QgsVirtualLayerSourceSelect::onAddLayer()
+{
+  mLayersTable->insertRow( mLayersTable->rowCount() );
+
+  mLayersTable->setItem( mLayersTable->rowCount() - 1, 0, new QTableWidgetItem() );
+  mLayersTable->setItem( mLayersTable->rowCount() - 1, 3, new QTableWidgetItem() );
+
+  QComboBox* providerCombo = new QComboBox();
+  providerCombo->addItems( mProviderList );
+  mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, 1, providerCombo );
+
+  QComboBox* encodingCombo = new QComboBox();
+  encodingCombo->addItems( QgsVectorDataProvider::availableEncodings() );
+  QString defaultEnc = QSettings().value( "/UI/encoding", "System" ).toString();
+  encodingCombo->setCurrentIndex( encodingCombo->findText( defaultEnc ) );
+  mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, 2, encodingCombo );
+}
+
+void QgsVirtualLayerSourceSelect::onRemoveLayer()
+{
+  int currentRow = mLayersTable->selectionModel()->currentIndex().row();
+  if ( currentRow != -1 )
+    mLayersTable->removeRow( currentRow );
+}
+
+void QgsVirtualLayerSourceSelect::onTableRowChanged( const QModelIndex& current, const QModelIndex& previous )
+{
+  Q_UNUSED( previous );
+  mRemoveLayerBtn->setEnabled( current.row() != -1 );
+}
+
+void QgsVirtualLayerSourceSelect::addEmbeddedLayer( QString name, QString provider, QString encoding, QString source )
+{
+  // insert a new row
+  onAddLayer();
+  const int n = mLayersTable->rowCount() - 1;
+  // local name
+  mLayersTable->item( n, 0 )->setText( name );
+  // source
+  mLayersTable->item( n, 3 )->setText( source );
+  // provider
+  QComboBox* providerCombo = static_cast<QComboBox*>( mLayersTable->cellWidget( n, 1 ) );
+  providerCombo->setCurrentIndex( providerCombo->findText( provider ) );
+  // encoding
+  QComboBox* encodingCombo = static_cast<QComboBox*>( mLayersTable->cellWidget( n, 2 ) );
+  encodingCombo->setCurrentIndex( encodingCombo->findText( encoding ) );
+}
+
+void QgsVirtualLayerSourceSelect::onImportLayer()
+{
+  if ( mEmbeddedSelectionDialog->exec() == QDialog::Accepted )
+  {
+    QStringList ids = mEmbeddedSelectionDialog->layers();
+    Q_FOREACH ( QString id, ids )
+    {
+      QgsVectorLayer *vl = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
+      addEmbeddedLayer( vl->name(), vl->providerType(), vl->dataProvider()->encoding(), vl->source() );
+    }
   }
 }
 

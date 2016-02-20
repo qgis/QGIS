@@ -1,7 +1,6 @@
-
-/**
- * \class QgisInterface
- * \brief Abstract base class defining interfaces exposed by QgisApp and
+/** \ingroup gui
+ * QgisInterface
+ * Abstract base class defining interfaces exposed by QgisApp and
  * made available to plugins.
  *
  * Only functionality exposed by QgisInterface can be used in plugins.
@@ -159,7 +158,11 @@ class QgisInterface : QObject
     /** Return a pointer to the map canvas */
     virtual QgsMapCanvas * mapCanvas() = 0;
 
-    /** Returns a pointer to the layer tree canvas bridge */
+    /**
+     * Returns a pointer to the layer tree canvas bridge
+     *
+     * @note added in 2.12
+     */
     virtual QgsLayerTreeMapCanvasBridge* layerTreeCanvasBridge() = 0;
 
     /** Return a pointer to the main window (instance of QgisApp in case of QGIS) */
@@ -168,6 +171,7 @@ class QgisInterface : QObject
     /** Return the message bar of the main app */
     virtual QgsMessageBar * messageBar() = 0;
 
+    /** Open the message log dock widget **/
     virtual void openMessageLog() = 0;
 
     /** Adds a widget to the user input tool bar.*/
@@ -389,7 +393,7 @@ class QgisInterface : QObject
     virtual QAction *actionZoomLast() = 0;
     //! Get access to the native zoom next action. Call trigger() on it to zoom to next.
     virtual QAction *actionZoomNext() = 0;
-    //! Get access to the native zoom actual size action. Call trigger() on it to zoom to actual size.
+    //! Get access to the native zoom resolution (100%) action. Call trigger() on it to zoom to actual size.
     virtual QAction *actionZoomActualSize() = 0;
     //! Get access to the native map tips action. Call trigger() on it to toggle map tips.
     virtual QAction *actionMapTips() = 0;
@@ -515,7 +519,8 @@ class QgisInterface : QObject
     void composerWillBeRemoved( QgsComposerView* v );
 
     /** This signal is emitted when a composer instance has been removed
-       @note added in version 2.9 */
+     * @note added in version 2.9
+     */
     void composerRemoved( QgsComposerView* v );
 
     /**
@@ -523,25 +528,25 @@ class QgisInterface : QObject
      */
     void initializationCompleted();
     /** Emitted when a project file is successfully read
-        @note
-        This is useful for plug-ins that store properties with project files.  A
-        plug-in can connect to this signal.  When it is emitted, the plug-in
-        knows to then check the project properties for any relevant state.
+     * @note
+     * This is useful for plug-ins that store properties with project files.  A
+     * plug-in can connect to this signal.  When it is emitted, the plug-in
+     * knows to then check the project properties for any relevant state.
      */
     void projectRead();
     /** Emitted when starting an entirely new project
-        @note
-        This is similar to projectRead(); plug-ins might want to be notified
-        that they're in a new project.  Yes, projectRead() could have been
-        overloaded to be used in the case of new projects instead.  However,
-        it's probably more semantically correct to have an entirely separate
-        signal for when this happens.
-      */
+     * @note
+     * This is similar to projectRead(); plug-ins might want to be notified
+     * that they're in a new project.  Yes, projectRead() could have been
+     * overloaded to be used in the case of new projects instead.  However,
+     * it's probably more semantically correct to have an entirely separate
+     * signal for when this happens.
+     */
     void newProjectCreated();
 
     /** This signal is emitted when a layer has been saved using save as
-       @note
-       added in version 2.7
-    */
+     * @note
+     * added in version 2.7
+     */
     void layerSavedAs( QgsMapLayer* l, const QString& path );
 };

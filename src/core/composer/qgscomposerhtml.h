@@ -32,7 +32,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
   public:
 
     /** Source modes for the HTML content to render in the item
-    */
+     */
     enum ContentMode
     {
       Url, /*!< Using this mode item fetches its content via a url*/
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) override;
     void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) override;
-    //overriden to break frames without dividing lines of text
+    //overridden to break frames without dividing lines of text
     double findNearbyPageBreak( double yPos ) override;
 
   public slots:

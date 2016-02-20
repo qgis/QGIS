@@ -31,7 +31,7 @@ QgsRuleBasedLabelProvider::~QgsRuleBasedLabelProvider()
 
 bool QgsRuleBasedLabelProvider::prepare( const QgsRenderContext& context, QStringList& attributeNames )
 {
-  Q_FOREACH ( QgsVectorLayerLabelProvider* provider, mSubProviders.values() )
+  Q_FOREACH ( QgsVectorLayerLabelProvider* provider, mSubProviders )
     provider->setEngine( mEngine );
 
   // populate sub-providers
@@ -48,7 +48,7 @@ void QgsRuleBasedLabelProvider::registerFeature( QgsFeature& feature, QgsRenderC
 QList<QgsAbstractLabelProvider*> QgsRuleBasedLabelProvider::subProviders()
 {
   QList<QgsAbstractLabelProvider*> lst;
-  Q_FOREACH ( QgsVectorLayerLabelProvider* subprovider, mSubProviders.values() )
+  Q_FOREACH ( QgsVectorLayerLabelProvider* subprovider, mSubProviders )
     lst << subprovider;
   return lst;
 }

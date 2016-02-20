@@ -121,7 +121,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /*!
       Returns the path to the licence file.
-    */
+     */
     static QString licenceFilePath();
 
     //! Returns the path to the help application.
@@ -254,7 +254,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static bool createDB( QString* errorMessage = nullptr );
 
     //! Create the users theme folder
-    static bool createThemeFolder( );
+    static bool createThemeFolder();
 
     //! deletes provider registry and map layer registry
     static void exitQgis();
@@ -358,6 +358,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter( XEvent * event )
     {
+      Q_UNUSED( event );
       return 0;
     }
 #endif

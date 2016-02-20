@@ -4,11 +4,11 @@ struct QgsVertexId
 #include <qgsabstractgeometryv2.h>
 %End
 
-    enum VertexType
-    {
-      SegmentVertex, //start / endpoint of a segment
-      CurveVertex
-    };
+  enum VertexType
+  {
+    SegmentVertex, //start / endpoint of a segment
+    CurveVertex
+  };
 
   QgsVertexId();
   QgsVertexId( int _part, int _ring, int _vertex, VertexType _type);
@@ -27,6 +27,11 @@ struct QgsVertexId
   VertexType type;
 };
 
+/** \ingroup core
+ * \class QgsAbstractGeometryV2
+ * \brief Abstract base class for all geometries
+ * \note added in QGIS 2.10
+ */
 class QgsAbstractGeometryV2
 {
 %TypeHeaderCode
@@ -311,7 +316,7 @@ class QgsAbstractGeometryV2
      * geometry at the specified vertex.
      * @param vertex the vertex id
      * @return rotation in radians, clockwise from north
-    */
+     */
     virtual double vertexAngle( QgsVertexId vertex ) const = 0;
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const = 0;

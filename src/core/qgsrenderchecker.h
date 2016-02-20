@@ -59,14 +59,14 @@ class CORE_EXPORT QgsRenderChecker
     void setElapsedTimeTarget( int theTarget ) { mElapsedTimeTarget = theTarget; }
 
     /** Base directory name for the control image (with control image path
-      * suffixed) the path to the image will be constructed like this:
-      * controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
-      */
+     * suffixed) the path to the image will be constructed like this:
+     * controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
+     */
     void setControlName( const QString &theName );
 
     /** Prefix where the control images are kept.
      * This will be appended to controlImagePath
-      */
+     */
     void setControlPathPrefix( const QString &theName ) { mControlPathPrefix = theName + '/'; }
 
     void setControlPathSuffix( const QString& theName );
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsRenderChecker
     QString renderedImage() { return mRenderedImageFile; }
 
     //! @deprecated since 2.4 - use setMapSettings()
-    Q_DECL_DEPRECATED void setMapRenderer( QgsMapRenderer *  thepMapRenderer );
+    Q_DECL_DEPRECATED void setMapRenderer( QgsMapRenderer *thepMapRenderer );
 
     //! @note added in 2.4
     void setMapSettings( const QgsMapSettings& mapSettings );
@@ -130,12 +130,12 @@ class CORE_EXPORT QgsRenderChecker
      */
     bool compareImages( const QString& theTestName, unsigned int theMismatchCount = 0, const QString& theRenderedImageFile = "" );
     /** Get a list of all the anomalies. An anomaly is a rendered difference
-      * file where there is some red pixel content (indicating a render check
-      * mismatch), but where the output was still acceptible. If the render
-      * diff matches one of these anomalies we will still consider it to be
-      * acceptible.
-      * @return a bool indicating if the diff matched one of the anomaly files
-    */
+     * file where there is some red pixel content (indicating a render check
+     * mismatch), but where the output was still acceptible. If the render
+     * diff matches one of these anomalies we will still consider it to be
+     * acceptible.
+     * @return a bool indicating if the diff matched one of the anomaly files
+     */
     bool isKnownAnomaly( const QString& theDiffImageFile );
 
     /** Draws a checkboard pattern for image backgrounds, so that transparency is visible

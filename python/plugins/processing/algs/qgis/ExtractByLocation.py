@@ -78,12 +78,9 @@ class ExtractByLocation(GeoAlgorithm):
             for feat in vector.features(layer):
                 disjoinSet.append(feat.id())
 
-        geom = QgsGeometry()
         selectedSet = []
-        current = 0
         features = vector.features(selectLayer)
-        featureCount = len(features)
-        total = 100.0 / float(len(features))
+        total = 100.0 / len(features)
         for current, f in enumerate(features):
             geom = vector.snapToPrecision(f.geometry(), precision)
             bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)
@@ -124,8 +121,10 @@ class ExtractByLocation(GeoAlgorithm):
         if 'disjoint' in predicates:
             selectedSet = selectedSet + disjoinSet
 
-        for i, f in enumerate(vector.features(layer)):
+        features = vector.features(layer)
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
             if f.id() in selectedSet:
                 writer.addFeature(f)
-            progress.setPercentage(100 * i / float(featureCount))
+            progress.setPercentage(int(current * total))
         del writer

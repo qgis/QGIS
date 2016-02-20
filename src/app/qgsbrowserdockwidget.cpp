@@ -906,10 +906,7 @@ bool QgsBrowserTreeFilterProxyModel::filterAcceptsRow( int sourceRow, const QMod
   if ( mFilter == "" || !mModel ) return true;
 
   QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
-  // also look into the comment column
-  QModelIndex commentIndex = mModel->index( sourceRow, 1, sourceParent );
-  return filterAcceptsItem( sourceIndex ) || filterAcceptsAncestor( sourceIndex ) || filterAcceptsDescendant( sourceIndex ) ||
-         filterAcceptsItem( commentIndex ) || filterAcceptsAncestor( commentIndex ) || filterAcceptsDescendant( commentIndex );
+  return filterAcceptsItem( sourceIndex ) || filterAcceptsAncestor( sourceIndex ) || filterAcceptsDescendant( sourceIndex );
 }
 
 bool QgsBrowserTreeFilterProxyModel::filterAcceptsAncestor( const QModelIndex& sourceIndex ) const
@@ -939,11 +936,6 @@ bool QgsBrowserTreeFilterProxyModel::filterAcceptsDescendant( const QModelIndex&
       return true;
     if ( filterAcceptsDescendant( sourceChildIndex ) )
       return true;
-    sourceChildIndex = mModel->index( i, 1, sourceIndex );
-    if ( filterAcceptsItem( sourceChildIndex ) )
-      return true;
-    if ( filterAcceptsDescendant( sourceChildIndex ) )
-      return true;
   }
   return false;
 }
@@ -952,5 +944,8 @@ bool QgsBrowserTreeFilterProxyModel::filterAcceptsItem( const QModelIndex& sourc
 {
   if ( !mModel )
     return true;
-  return filterAcceptsString( mModel->data( sourceIndex, Qt::DisplayRole ).toString() );
+  //accept item if either displayed text or comment role matches string
+  QString comment = mModel->data( sourceIndex, QgsBrowserModel::CommentRole ).toString();
+  return ( filterAcceptsString( mModel->data( sourceIndex, Qt::DisplayRole ).toString() )
+           || ( !comment.isEmpty() && filterAcceptsString( comment ) ) );
 }

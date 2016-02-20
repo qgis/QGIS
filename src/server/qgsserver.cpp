@@ -71,12 +71,12 @@ QgsServerInterfaceImpl* QgsServer::mServerInterface = nullptr;
 #endif
 
 
-QgsServer::QgsServer( )
+QgsServer::QgsServer()
 {
 }
 
 
-QgsServer::~QgsServer( )
+QgsServer::~QgsServer()
 {
 }
 
@@ -296,7 +296,7 @@ bool QgsServer::init()
   {
     return false;
   }
-  mArgv[0] = mServerName.toUtf8( ).data( );
+  mArgv[0] = mServerName.toUtf8().data();
   mArgc = 1;
   mCaptureOutput = true;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -624,7 +624,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   }
   // We are done using theRequestHandler in plugins, make sure we don't access
   // to a deleted request handler from Python bindings
-  mServerInterface->clearRequestHandler( );
+  mServerInterface->clearRequestHandler();
 #endif
 
   theRequestHandler->sendResponse();
@@ -634,13 +634,14 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
     QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", "Server", QgsMessageLog::INFO );
   }
   // Returns the header and response bytestreams (to be used in Python bindings)
-  return theRequestHandler->getResponse( );
+  return theRequestHandler->getResponse();
 }
 
-/* The following code was used to test type conversion in python bindings
-QPair<QByteArray, QByteArray> QgsServer::testQPair(QPair<QByteArray, QByteArray> pair)
+#if 0
+// The following code was used to test type conversion in python bindings
+QPair<QByteArray, QByteArray> QgsServer::testQPair( QPair<QByteArray, QByteArray> pair )
 {
   return pair;
 }
-*/
+#endif
 

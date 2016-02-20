@@ -235,7 +235,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void clearExtentHistory();
 
     /** Zoom to the extent of the selected features of current (vector) layer.
-      @param layer optionally specify different than current layer */
+     * @param layer optionally specify different than current layer
+     */
     void zoomToSelected( QgsVectorLayer* layer = nullptr );
 
     /** Set canvas extent to the bounding box of a set of features
@@ -312,8 +313,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Set map units (needed by project properties dialog)
     void setMapUnits( QGis::UnitType mapUnits );
-    //! Get the current canvas map units
 
+    //! Get the current canvas map units
     QGis::UnitType mapUnits() const;
 
     //! Getter for stored overrides of styles for layers.
@@ -444,6 +445,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** Returns a const reference to the expression context scope for the map canvas.
      * @note added in QGIS 2.12
      * @see setExpressionContextScope()
+     * @note not available in python bindings
      */
     const QgsExpressionContextScope& expressionContextScope() const { return mExpressionContextScope; }
 
@@ -530,13 +532,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void rotationChanged( double );
 
     /** Emitted when the canvas has rendered.
-
-     Passes a pointer to the painter on which the map was drawn. This is
-     useful for plugins that wish to draw on the map after it has been
-     rendered.  Passing the painter allows plugins to work when the map is
-     being rendered onto a pixmap other than the mapCanvas own pixmap member.
-
-    */
+     * Passes a pointer to the painter on which the map was drawn. This is
+     * useful for plugins that wish to draw on the map after it has been
+     * rendered.  Passing the painter allows plugins to work when the map is
+     * being rendered onto a pixmap other than the mapCanvas own pixmap member.
+     *
+     */
     //! TODO: deprecate when decorations are reimplemented as map canvas items
     //! - anything related to rendering progress is not visible outside of map canvas
     //! - additional drawing shall be done directly within the renderer job or independently as a map canvas item
@@ -585,7 +586,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.4
     void destinationCrsChanged();
 
-    //! Emmitted when map units are changed
+    //! Emitted when map units are changed
     //! @note added in 2.4
     void mapUnitsChanged();
 
@@ -654,8 +655,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
 #if 0
     /** Debugging member
-       invoked when a connect() is made to this object
-    */
+     * invoked when a connect() is made to this object
+     */
     void connectNotify( const char * signal ) override;
 #endif
     //! Make sure the datum transform store is properly populated
