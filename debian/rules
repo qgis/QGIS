@@ -214,7 +214,7 @@ binary binary-arch binary-indep build build-arch build-indep clean install insta
 	dh $@ --with python2 --parallel --builddirectory=$(QGIS_BUILDDIR)
 
 override_dh_clean: cleantemplates
-	dh_clean
+	dh_clean qgis.bin.1 qbrowser.bin.1
 
 	# automatically generated files
 	-$(RM) $(CURDIR)/src/core/qgscontexthelp_texts.cpp
@@ -334,7 +334,10 @@ override_dh_installchangelogs:
 	dh_installchangelogs ChangeLog
 
 override_dh_installman:
-	dh_installman -pqgis qgis.1 qbrowser.1
+	cp qgis.1 qgis.bin.1
+	cp qbrowser.1 qbrowser.bin.1
+
+	dh_installman -pqgis qgis.1 qbrowser.1 qgis.bin.1 qbrowser.bin.1
 
 override_dh_installmime:
 	dh_installmime -pqgis
