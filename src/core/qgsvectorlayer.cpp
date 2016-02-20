@@ -731,9 +731,7 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   }
 
   long nFeatures = featureCount();
-  QProgressDialog progressDialog( tr( "Updating feature count for layer %1" ).arg( name() ), tr( "Abort" ), 0, nFeatures );
-  progressDialog.setWindowTitle( tr( "QGIS" ) );
-  progressDialog.setWindowModality( Qt::WindowModal );
+  emit countSymbolFeaturesStarted( nFeatures );
   int featuresCounted = 0;
 
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
@@ -762,22 +760,12 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
     {
       if ( featuresCounted % 50 == 0 )
       {
-        if ( featuresCounted > nFeatures ) //sometimes the feature count is not correct
-        {
-          progressDialog.setMaximum( 0 );
-        }
-        progressDialog.setValue( featuresCounted );
-        if ( progressDialog.wasCanceled() )
-        {
-          mSymbolFeatureCountMap.clear();
-          mRendererV2->stopRender( renderContext );
-          return false;
-        }
+        emit countSymbolFeaturesStarted( featuresCounted );
       }
     }
   }
   mRendererV2->stopRender( renderContext );
-  progressDialog.setValue( nFeatures );
+  emit countSymbolFeaturesStarted( featuresCounted );
   mSymbolFeatureCounted = true;
   return true;
 }
