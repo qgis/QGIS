@@ -1,0 +1,14 @@
+r.resamp.bspline
+Performs bilinear or bicubic spline interpolation with Tykhonov regularization.
+Raster (r.*)
+ParameterRaster|input|Input raster layer|False
+ParameterRaster|mask|Name of raster map to use for masking. Only cells that are not NULL and not zero are interpolated|True
+ParameterSelection|method|Sampling interpolation method|bilinear;bicubic|1|False
+ParameterString|ew_step|Length (float) of each spline step in the east-west direction|None|False|True
+ParameterString|ns_step|Length (float) of each spline step in the north-south direction|None|False|True
+ParameterNumber|lambda|Tykhonov regularization parameter (affects smoothing)|0.0|None|0.01|True
+ParameterNumber|memory|Maximum memory to be used (in MB). Cache size for raster rows|10|None|300|True
+*ParameterBoolean|-n|Only interpolate null cells in input raster map|False|True
+*ParameterBoolean|-c|Find the best Tykhonov regularizing parameter using a "leave-one-out" cross validation method|False|True
+OutputRaster|output|Resampled BSpline
+OutputVector|grid|Interpolation Grid
