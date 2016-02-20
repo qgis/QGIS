@@ -1524,6 +1524,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   //      version big-time with an abnormal termination error
   delete mDataProvider;
   mDataProvider = ( QgsVectorDataProvider* )( QgsProviderRegistry::instance()->provider( provider, mDataSource ) );
+  connect( mDataProvider, SIGNAL( raiseError( QString ) ), this, SIGNAL( raiseError( QString ) ) );
 
   if ( !mDataProvider )
   {

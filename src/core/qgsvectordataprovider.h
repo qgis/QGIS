@@ -404,6 +404,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     virtual QSet<QString> layerDependencies() const;
 
+  signals:
+    /** Signals an error in this provider */
+    void raiseError( const QString& msg );
+
   protected:
     void clearMinMaxCache();
     void fillMinMaxCache();

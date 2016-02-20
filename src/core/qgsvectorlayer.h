@@ -1831,6 +1831,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * This can be due to manually adding attributes or due to a join.
      */
     void updatedFields();
+
+    /**
+     * TODO QGIS3: remove in favor of QObject::destroyed
+     */
     void layerDeleted();
 
     void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant & );
@@ -1897,6 +1901,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param errorMessage Write error messages into this string.
      */
     void writeCustomSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage ) const;
+
+    /**
+     * Signals an error related to this vector layer.
+     */
+    void raiseError( const QString& msg );
 
   private slots:
     void onJoinedFieldsChanged();

@@ -9574,6 +9574,8 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *>& theLayers )
         }
       }
 
+      connect( vlayer, SIGNAL( raiseError( QString ) ), this, SLOT( onLayerError( QString ) ) );
+
       provider = vProvider;
     }
 
@@ -11223,6 +11225,15 @@ void QgisApp::showStatisticsDockWidget()
 {
   mStatisticalSummaryDockWidget->show();
   mStatisticalSummaryDockWidget->raise();
+}
+
+void QgisApp::onLayerError( const QString& msg )
+{
+  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( sender() );
+
+  Q_ASSERT( layer );
+
+  mInfoBar->pushCritical( tr( "Layer %1" ).arg( layer->name() ), msg );
 }
 
 
