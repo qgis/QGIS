@@ -53,7 +53,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
 {
     Q_OBJECT
   public:
-    /** Default constructor. Make sure you use initialised() manually if you use this one! */
+    /** Default constructor. Make sure you use initialized() manually if you use this one! */
     QgsCoordinateTransform();
 
     /** Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
@@ -195,8 +195,8 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const;
 
     /*!
-     * Flag to indicate whether the coordinate systems have been initialised
-     * @return true if initialised, otherwise false
+     * Flag to indicate whether the coordinate systems have been initialized
+     * @return true if initialized, otherwise false
      */
     bool isInitialised() const { return mInitialisedFlag; }
 
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     * @note This slot will usually be called if the
     * project properties change and a different coordinate system is
     * selected.
-    * @note This coord transform will be reinitialised when this slot is called
+    * @note This coord transform will be reinitialized when this slot is called
     * to check if short circuiting is needed or not etc.
     * @param theCRSID -  A long representing the srsid of the srs to be used */
     void setDestCRSID( long theCRSID );
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     void setDestinationDatumTransform( int dt ) { mDestinationDatumTransform = dt; }
 
   public slots:
-    //!initialise is used to actually create the Transformer instance
+    //!initialize is used to actually create the Transformer instance
     void initialise();
 
     /** Restores state from the given Dom node.
@@ -260,7 +260,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     bool mShortCircuit;
 
     /*!
-     * flag to show whether the transform is properly initialised or not
+     * flag to show whether the transform is properly initialized or not
      */
     bool mInitialisedFlag;
 

@@ -254,7 +254,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     // initialize CRS from wkt
     bool crsFromWkt( const char *wkt );
 
-    /** Do some initialisation on the dataset (e.g. handling of south-up datasets)*/
+    /** Do some initialization on the dataset (e.g. handling of south-up datasets)*/
     void initBaseDataset();
 
     /**

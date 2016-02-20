@@ -25,7 +25,7 @@
 
 // It's been inlined, so its in the qgsclipper.h file.
 
-// But the static members must be initialised outside the class! (or GCC 4 dies)
+// But the static members must be initialized outside the class! (or GCC 4 dies)
 
 // Qt also does clipping when the coordinates go over +/- 32767
 // moreover from Qt 4.6, Qt clips also when the width/height of a painter path

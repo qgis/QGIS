@@ -215,7 +215,7 @@ struct _CohenSutherland
 
   OutCode computeOutCode( double x, double y )
   {
-    OutCode code = INSIDE;  // initialised as being inside of clip window
+    OutCode code = INSIDE;  // initialized as being inside of clip window
     if ( x < mRect.xMinimum() )         // to the left of clip window
       code |= LEFT;
     else if ( x > mRect.xMaximum() )    // to the right of clip window

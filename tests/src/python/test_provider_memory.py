@@ -214,7 +214,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
             'test',
             'memory')
 
-        assert myMemoryLayer is not None, 'Provider not initialised'
+        assert myMemoryLayer is not None, 'Provider not initialized'
         myProvider = myMemoryLayer.dataProvider()
         assert myProvider is not None
 

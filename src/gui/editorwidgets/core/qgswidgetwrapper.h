@@ -136,7 +136,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     /**
      * This method should create a new widget with the provided parent. This will only be called
      * if the form did not already provide a widget, so it is not guaranteed to be called!
-     * You should not do initialisation stuff, which also has to be done for custom editor
+     * You should not do initialization stuff, which also has to be done for custom editor
      * widgets inside this method. Things like filling comboboxes and assigning other data which
      * will also be used to make widgets on forms created in the QtDesigner usable should be assigned
      * in {@link initWidget(QWidget*)}.

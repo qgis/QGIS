@@ -311,7 +311,7 @@ class QgsProject : QObject
     void writeProject( QDomDocument & );
 
     /**
-     * Emitted, after the basic initialisation of a layer from the project
+     * Emitted, after the basic initialization of a layer from the project
      * file is done. You can use this signal to read additional information
      * from the project file.
      *

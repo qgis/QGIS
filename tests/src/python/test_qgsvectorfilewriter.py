@@ -46,7 +46,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             'test',
             'memory')
 
-        assert self.mMemoryLayer is not None, 'Provider not initialised'
+        assert self.mMemoryLayer is not None, 'Provider not initialized'
         myProvider = self.mMemoryLayer.dataProvider()
         assert myProvider is not None
 
@@ -67,7 +67,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             'test',
             'memory')
 
-        assert ml is not None, 'Provider not initialised'
+        assert ml is not None, 'Provider not initialized'
         assert ml.isValid(), 'Source layer not valid'
         provider = ml.dataProvider()
         assert provider is not None
@@ -123,7 +123,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             'test',
             'memory')
 
-        assert ml is not None, 'Provider not initialised'
+        assert ml is not None, 'Provider not initialized'
         assert ml.isValid(), 'Source layer not valid'
         provider = ml.dataProvider()
         assert provider is not None

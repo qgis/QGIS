@@ -111,7 +111,7 @@ void QgsComposerScaleBarWidget::refreshMapComboBox()
 
     if ( saveCurrentComboText.isEmpty() && mComposerScaleBar->composerMap() )
     {
-      //combo box was not initialised before
+      //combo box was not initialized before
       mMapComboBox->setCurrentIndex( mMapComboBox->findText( tr( "Map %1" ).arg( mComposerScaleBar->composerMap()->id() ) ) );
     }
   }

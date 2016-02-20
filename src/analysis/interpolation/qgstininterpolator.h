@@ -53,7 +53,7 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
     TriangleInterpolator* mTriangleInterpolator;
     bool mIsInitialized;
     bool mShowProgressDialog;
-    /** If true: export triangulation to shapefile after initialisation*/
+    /** If true: export triangulation to shapefile after initialization*/
     bool mExportTriangulationToFile;
     /** File path to export the triangulation*/
     QString mTriangulationFilePath;

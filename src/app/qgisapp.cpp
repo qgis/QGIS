@@ -882,8 +882,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   setupConnections();
   //
   // Please make sure this is the last thing the ctor does so that we can ensure the
-  // widgets are all initialised before trying to restore their state.
-  //
+  // widgets are all initialized before trying to restore their state.
+  z /
   mSplash->showMessage( tr( "Restoring window state" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   restoreWindowState();
@@ -2559,7 +2559,7 @@ void QgisApp::createCanvasTools()
   mMapTools.mRotateLabel->setAction( mActionRotateLabel );
   mMapTools.mChangeLabelProperties = new QgsMapToolChangeLabelProperties( mMapCanvas );
   mMapTools.mChangeLabelProperties->setAction( mActionChangeLabelProperties );
-//ensure that non edit tool is initialised or we will get crashes in some situations
+//ensure that non edit tool is initialized or we will get crashes in some situations
   mNonEditMapTool = mMapTools.mPan;
 }
 

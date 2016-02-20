@@ -90,7 +90,7 @@ Qgs25DRenderer::Qgs25DRenderer()
   effectStack->appendEffect( glowEffect );
   floor->setPaintEffect( effectStack );
 
-  // These methods must only be used after the above initialisation!
+  // These methods must only be used after the above initialization!
 
   setRoofColor( QColor( "#fdbf6f" ) );
   setWallColor( QColor( "#777777" ) );

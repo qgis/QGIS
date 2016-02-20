@@ -37,7 +37,7 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsComposerMap(unittest.TestCase):
 
     def __init__(self, methodName):
-        """Run once on class initialisation."""
+        """Run once on class initialization."""
         unittest.TestCase.__init__(self, methodName)
 
         # create composition with composer map
