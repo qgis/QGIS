@@ -27,6 +27,7 @@ __revision__ = ':%H$'
 
 import os
 import sys
+import difflib
 
 from PyQt4.QtCore import QVariant
 from qgis.core import QgsApplication, QgsFeatureRequest, QgsVectorLayer
@@ -139,6 +140,19 @@ class TestCase(_TestCase):
                         repr(attr_result)
                     )
                 )
+
+    def assertFilesEqual(self, filepath_expected, filepath_result):
+        with open(filepath_expected, 'r') as file_expected:
+            with open(filepath_result, 'r') as file_result:
+                diff = difflib.unified_diff(
+                    file_expected.readlines(),
+                    file_result.readlines(),
+                    fromfile='expected',
+                    tofile='result',
+                )
+                diff = list(diff)
+                self.assertEqual(0, len(diff), ''.join(diff))
+
 
 # Patch unittest
 unittest.TestCase = TestCase
