@@ -221,9 +221,9 @@ class QgsAbstractGeometryV2
     virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const = 0;
 
     /** Retrieves the sequence of geometries, rings and nodes.
-     * @param coord destination for coordinate sequence.
+     * @return coordinate sequence
      */
-    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord /Out/ ) const = 0;
+    virtual QList< QList< QList< QgsPointV2 > > > coordinateSequence() const = 0;
 
     /** Returns the number of nodes contained in the geometry
      */

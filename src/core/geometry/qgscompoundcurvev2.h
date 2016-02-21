@@ -56,7 +56,7 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     virtual double length() const override;
     virtual QgsPointV2 startPoint() const override;
     virtual QgsPointV2 endPoint() const override;
-    virtual void points( QList<QgsPointV2>& pts ) const override;
+    virtual void points( QgsPointSequenceV2 &pts ) const override;
     virtual int numPoints() const override;
     virtual QgsLineStringV2* curveToLine() const override;
 

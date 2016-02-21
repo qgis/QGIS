@@ -32,6 +32,9 @@ class QgsPointV2;
 struct QgsVertexId;
 class QPainter;
 
+typedef QList< QgsPointV2 > QgsPointSequenceV2;
+typedef QList< QgsPointSequenceV2 > QgsRingSequenceV2;
+typedef QList< QgsRingSequenceV2 > QgsCoordinateSequenceV2;
 
 /** \ingroup core
  * \class QgsAbstractGeometryV2
@@ -204,9 +207,9 @@ class CORE_EXPORT QgsAbstractGeometryV2
     virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const = 0;
 
     /** Retrieves the sequence of geometries, rings and nodes.
-     * @param coord destination for coordinate sequence.
+     * @return coordinate sequence
      */
-    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const = 0;
+    virtual QgsCoordinateSequenceV2 coordinateSequence() const = 0;
 
     /** Returns the number of nodes contained in the geometry
      */

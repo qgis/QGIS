@@ -118,8 +118,8 @@ QgsRectangle QgsCircularStringV2::segmentBoundingBox( const QgsPointV2& pt1, con
   QgsRectangle bbox( pt1.x(), pt1.y(), pt1.x(), pt1.y() );
   bbox.combineExtentWith( pt3.x(), pt3.y() );
 
-  QList<QgsPointV2> compassPoints = compassPointsOnSegment( p1Angle, p2Angle, p3Angle, centerX, centerY, radius );
-  QList<QgsPointV2>::const_iterator cpIt = compassPoints.constBegin();
+  QgsPointSequenceV2 compassPoints = compassPointsOnSegment( p1Angle, p2Angle, p3Angle, centerX, centerY, radius );
+  QgsPointSequenceV2::const_iterator cpIt = compassPoints.constBegin();
   for ( ; cpIt != compassPoints.constEnd(); ++cpIt )
   {
     bbox.combineExtentWith( cpIt->x(), cpIt->y() );
@@ -127,9 +127,9 @@ QgsRectangle QgsCircularStringV2::segmentBoundingBox( const QgsPointV2& pt1, con
   return bbox;
 }
 
-QList<QgsPointV2> QgsCircularStringV2::compassPointsOnSegment( double p1Angle, double p2Angle, double p3Angle, double centerX, double centerY, double radius )
+QgsPointSequenceV2 QgsCircularStringV2::compassPointsOnSegment( double p1Angle, double p2Angle, double p3Angle, double centerX, double centerY, double radius )
 {
-  QList<QgsPointV2> pointList;
+  QgsPointSequenceV2 pointList;
 
   QgsPointV2 nPoint( centerX, centerY + radius );
   QgsPointV2 ePoint( centerX + radius, centerY );
@@ -274,7 +274,7 @@ unsigned char* QgsCircularStringV2::asWkb( int& binarySize ) const
   QgsWkbPtr wkb( geomPtr, binarySize );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   points( pts );
   QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure() );
   return geomPtr;
@@ -283,7 +283,7 @@ unsigned char* QgsCircularStringV2::asWkb( int& binarySize ) const
 QString QgsCircularStringV2::asWkt( int precision ) const
 {
   QString wkt = wktTypeStr() + ' ';
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   points( pts );
   wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );
   return wkt;
@@ -300,7 +300,7 @@ QDomElement QgsCircularStringV2::asGML2( QDomDocument& doc, int precision, const
 
 QDomElement QgsCircularStringV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   points( pts );
 
   QDomElement elemCurve = doc.createElementNS( ns, "Curve" );
@@ -354,7 +354,7 @@ QgsPointV2 QgsCircularStringV2::endPoint() const
 QgsLineStringV2* QgsCircularStringV2::curveToLine() const
 {
   QgsLineStringV2* line = new QgsLineStringV2();
-  QList<QgsPointV2> points;
+  QgsPointSequenceV2 points;
   int nPoints = numPoints();
 
   for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
@@ -408,7 +408,7 @@ QgsPointV2 QgsCircularStringV2::pointN( int i ) const
   return QgsPointV2( t, x, y, z, m );
 }
 
-void QgsCircularStringV2::points( QList<QgsPointV2>& pts ) const
+void QgsCircularStringV2::points( QgsPointSequenceV2 &pts ) const
 {
   pts.clear();
   int nPts = numPoints();
@@ -418,7 +418,7 @@ void QgsCircularStringV2::points( QList<QgsPointV2>& pts ) const
   }
 }
 
-void QgsCircularStringV2::setPoints( const QList<QgsPointV2>& points )
+void QgsCircularStringV2::setPoints( const QgsPointSequenceV2 &points )
 {
   clearCache();
 
@@ -473,7 +473,7 @@ void QgsCircularStringV2::setPoints( const QList<QgsPointV2>& points )
   }
 }
 
-void QgsCircularStringV2::segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QList<QgsPointV2>& points ) const
+void QgsCircularStringV2::segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QgsPointSequenceV2 &points ) const
 {
   //adapted code from postgis
   double radius = 0;
@@ -670,7 +670,7 @@ void QgsCircularStringV2::addToPainterPath( QPainterPath& path ) const
 
   for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
   {
-    QList<QgsPointV2> pt;
+    QgsPointSequenceV2 pt;
     segmentize( QgsPointV2( mX[i], mY[i] ), QgsPointV2( mX[i + 1], mY[i + 1] ), QgsPointV2( mX[i + 2], mY[i + 2] ), pt );
     for ( int j = 1; j < pt.size(); ++j )
     {

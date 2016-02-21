@@ -42,10 +42,9 @@ class CORE_EXPORT QgsSurfaceV2: public QgsAbstractGeometryV2
 
   protected:
 
-    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); QgsAbstractGeometryV2::clearCache(); }
+    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometryV2::clearCache(); }
 
-  private:
-
+    mutable QgsCoordinateSequenceV2 mCoordinateSequence;
     mutable QgsRectangle mBoundingBox;
 };
 

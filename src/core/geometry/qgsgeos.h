@@ -81,7 +81,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     int splitGeometry( const QgsLineStringV2& splitLine,
                        QList<QgsAbstractGeometryV2*>& newGeometries,
                        bool topological,
-                       QList<QgsPointV2> &topologyTestPoints,
+                       QgsPointSequenceV2 &topologyTestPoints,
                        QString* errorMsg = nullptr ) const override;
 
     QgsAbstractGeometryV2* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const override;
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static GEOSGeometry* createGeosPolygon( const QgsAbstractGeometryV2* poly, double precision );
 
     //utils for geometry split
-    int topologicalTestPointsSplit( const GEOSGeometry* splitLine, QList<QgsPointV2>& testPoints, QString* errorMsg = nullptr ) const;
+    int topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPointSequenceV2 &testPoints, QString* errorMsg = nullptr ) const;
     GEOSGeometry* linePointDifference( GEOSGeometry* GEOSsplitPoint ) const;
     int splitLinearGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometryV2*>& newGeometries ) const;
     int splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometryV2*>& newGeometries ) const;

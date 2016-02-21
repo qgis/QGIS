@@ -335,7 +335,7 @@ QString QgsCurvePolygonV2::asJSON( int precision ) const
   QString json = "{\"type\": \"Polygon\", \"coordinates\": [";
 
   QgsLineStringV2* exteriorLineString = exteriorRing()->curveToLine();
-  QList<QgsPointV2> exteriorPts;
+  QgsPointSequenceV2 exteriorPts;
   exteriorLineString->points( exteriorPts );
   json += QgsGeometryUtils::pointsToJSON( exteriorPts, precision ) + ", ";
   delete exteriorLineString;
@@ -343,7 +343,7 @@ QString QgsCurvePolygonV2::asJSON( int precision ) const
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
     QgsLineStringV2* interiorLineString = interiorRing( i )->curveToLine();
-    QList<QgsPointV2> interiorPts;
+    QgsPointSequenceV2 interiorPts;
     interiorLineString->points( interiorPts );
     json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + ", ";
     delete interiorLineString;
@@ -584,28 +584,30 @@ void QgsCurvePolygonV2::transform( const QTransform& t )
   clearCache();
 }
 
-void QgsCurvePolygonV2::coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const
+QgsCoordinateSequenceV2 QgsCurvePolygonV2::coordinateSequence() const
 {
-  coord.clear();
+  if ( !mCoordinateSequence.isEmpty() )
+    return mCoordinateSequence;
 
-  QList< QList< QgsPointV2 > > coordinates;
-  QList< QgsPointV2 > ringCoords;
+  mCoordinateSequence.append( QgsRingSequenceV2() );
+
   if ( mExteriorRing )
   {
-    mExteriorRing->points( ringCoords );
-    coordinates.append( ringCoords );
+    mCoordinateSequence.back().append( QgsPointSequenceV2() );
+    mExteriorRing->points( mCoordinateSequence.back().back() );
   }
 
   QList<QgsCurveV2*>::const_iterator it = mInteriorRings.constBegin();
   for ( ; it != mInteriorRings.constEnd(); ++it )
   {
-    ( *it )->points( ringCoords );
-    coordinates.append( ringCoords );
+    mCoordinateSequence.back().append( QgsPointSequenceV2() );
+    ( *it )->points( mCoordinateSequence.back().back() );
   }
-  coord.append( coordinates );
+
+  return mCoordinateSequence;
 }
 
-double QgsCurvePolygonV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
+double QgsCurvePolygonV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt, QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
 {
   if ( !mExteriorRing )
   {
@@ -675,6 +677,7 @@ bool QgsCurvePolygonV2::insertVertex( QgsVertexId vId, const QgsPointV2& vertex 
     ring->moveVertex( QgsVertexId( 0, 0, 0 ), vertex );
 
   clearCache();
+
   return true;
 }
 

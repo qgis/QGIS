@@ -81,7 +81,7 @@ QString QgsMultiCurveV2::asJSON( int precision ) const
     if ( dynamic_cast<const QgsCurveV2*>( geom ) )
     {
       QgsLineStringV2* lineString = static_cast<const QgsCurveV2*>( geom )->curveToLine();
-      QList<QgsPointV2> pts;
+      QgsPointSequenceV2 pts;
       lineString->points( pts );
       json += QgsGeometryUtils::pointsToJSON( pts, precision ) + ", ";
       delete lineString;

@@ -84,7 +84,7 @@ QString QgsMultiSurfaceV2::asJSON( int precision ) const
       QgsPolygonV2* polygon = static_cast<const QgsSurfaceV2*>( geom )->surfaceToPolygon();
 
       QgsLineStringV2* exteriorLineString = polygon->exteriorRing()->curveToLine();
-      QList<QgsPointV2> exteriorPts;
+      QgsPointSequenceV2 exteriorPts;
       exteriorLineString->points( exteriorPts );
       json += QgsGeometryUtils::pointsToJSON( exteriorPts, precision ) + ", ";
       delete exteriorLineString;
@@ -92,7 +92,7 @@ QString QgsMultiSurfaceV2::asJSON( int precision ) const
       for ( int i = 0, n = polygon->numInteriorRings(); i < n; ++i )
       {
         QgsLineStringV2* interiorLineString = polygon->interiorRing( i )->curveToLine();
-        QList<QgsPointV2> interiorPts;
+        QgsPointSequenceV2 interiorPts;
         interiorLineString->points( interiorPts );
         json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + ", ";
         delete interiorLineString;

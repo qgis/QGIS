@@ -90,7 +90,7 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
     virtual bool deleteVertex( QgsVertexId position ) override;
 
-    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const override;
+    virtual QgsCoordinateSequenceV2 coordinateSequence() const override;
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 

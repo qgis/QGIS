@@ -74,7 +74,7 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
 
     /** Returns a list of points within the curve.
      */
-    virtual void points( QList<QgsPointV2>& pt ) const = 0;
+    virtual void points( QgsPointSequenceV2 &pt ) const = 0;
 
     /** Returns the number of points in the curve.
      */
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
      */
     virtual void sumUpArea( double& sum ) const = 0;
 
-    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const override;
+    virtual QgsCoordinateSequenceV2 coordinateSequence() const override;
     virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
     /** Returns the point and vertex id of a point within the curve.
@@ -104,8 +104,8 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
     /** Returns a geometry without curves. Caller takes ownership*/
     QgsCurveV2* segmentize() const override;
 
-    virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return numPoints(); }
-    virtual int ringCount( int /*part*/ = 0 ) const override { return numPoints() > 0 ? 1 : 0; }
+    virtual int vertexCount( int part = 0, int ring = 0 ) const override { Q_UNUSED( part );  Q_UNUSED( ring ); return numPoints(); }
+    virtual int ringCount( int part = 0 ) const override { Q_UNUSED( part ); return numPoints() > 0 ? 1 : 0; }
     virtual int partCount() const override { return numPoints() > 0 ? 1 : 0; }
     virtual QgsPointV2 vertexAt( QgsVertexId id ) const override;
 
@@ -113,11 +113,12 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
 
   protected:
 
-    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); QgsAbstractGeometryV2::clearCache(); }
+    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometryV2::clearCache(); }
 
   private:
 
     mutable QgsRectangle mBoundingBox;
+    mutable QgsCoordinateSequenceV2 mCoordinateSequence;
 };
 
 #endif // QGSCURVEV2_H
