@@ -2195,7 +2195,7 @@ void TestQgsGeometry::polygonV2()
   QVERIFY( !p1.interiorRing( 0 ) );
 
   //retrieve exterior ring and check
-  QCOMPARE( *( static_cast< QgsLineStringV2* >( p1.exteriorRing() ) ), *ext );
+  QCOMPARE( *( static_cast< const QgsLineStringV2* >( p1.exteriorRing() ) ), *ext );
 
   //test that a non closed exterior ring will be automatically closed
   ext = new QgsLineStringV2();
@@ -2219,7 +2219,7 @@ void TestQgsGeometry::polygonV2()
   QCOMPARE( p2.wkbType(), QgsWKBTypes::PolygonZ );
   QCOMPARE( p2.wktTypeStr(), QString( "PolygonZ" ) );
   QCOMPARE( p2.geometryType(), QString( "Polygon" ) );
-  QCOMPARE( *( static_cast< QgsLineStringV2* >( p2.exteriorRing() ) ), *ext );
+  QCOMPARE( *( static_cast< const QgsLineStringV2* >( p2.exteriorRing() ) ), *ext );
   QgsPolygonV2 p3;
   ext = new QgsLineStringV2();
   ext->setPoints( QList< QgsPointV2 >() << QgsPointV2( QgsWKBTypes::PointM, 0, 0, 0, 1 )
@@ -2230,7 +2230,7 @@ void TestQgsGeometry::polygonV2()
   QVERIFY( p3.isMeasure() );
   QCOMPARE( p3.wkbType(), QgsWKBTypes::PolygonM );
   QCOMPARE( p3.wktTypeStr(), QString( "PolygonM" ) );
-  QCOMPARE( *( static_cast< QgsLineStringV2* >( p3.exteriorRing() ) ), *ext );
+  QCOMPARE( *( static_cast< const QgsLineStringV2* >( p3.exteriorRing() ) ), *ext );
   QgsPolygonV2 p4;
   ext = new QgsLineStringV2();
   ext->setPoints( QList< QgsPointV2 >() << QgsPointV2( QgsWKBTypes::PointZM, 0, 0, 2, 1 )
@@ -2241,7 +2241,7 @@ void TestQgsGeometry::polygonV2()
   QVERIFY( p4.isMeasure() );
   QCOMPARE( p4.wkbType(), QgsWKBTypes::PolygonZM );
   QCOMPARE( p4.wktTypeStr(), QString( "PolygonZM" ) );
-  QCOMPARE( *( static_cast< QgsLineStringV2* >( p4.exteriorRing() ) ), *ext );
+  QCOMPARE( *( static_cast< const QgsLineStringV2* >( p4.exteriorRing() ) ), *ext );
   QgsPolygonV2 p5;
   ext = new QgsLineStringV2();
   ext->setPoints( QList< QgsPointV2 >() << QgsPointV2( QgsWKBTypes::Point25D, 0, 0, 1 )
@@ -2252,7 +2252,7 @@ void TestQgsGeometry::polygonV2()
   QVERIFY( !p5.isMeasure() );
   QCOMPARE( p5.wkbType(), QgsWKBTypes::Polygon25D );
   QCOMPARE( p5.wktTypeStr(), QString( "PolygonZ" ) );
-  QCOMPARE( *( static_cast< QgsLineStringV2* >( p5.exteriorRing() ) ), *ext );
+  QCOMPARE( *( static_cast< const QgsLineStringV2* >( p5.exteriorRing() ) ), *ext );
 
   //setting curved exterior ring should be segmentized
   QgsCircularStringV2* circularRing = new QgsCircularStringV2();

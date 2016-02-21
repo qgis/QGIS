@@ -89,3 +89,13 @@ QgsPointV2 QgsCurveV2::vertexAt( QgsVertexId id ) const
   pointAt( id.vertex, v, type );
   return v;
 }
+
+QgsRectangle QgsCurveV2::boundingBox() const
+{
+  if ( mBoundingBox.isNull() )
+  {
+    mBoundingBox = calculateBoundingBox();
+  }
+  return mBoundingBox;
+}
+

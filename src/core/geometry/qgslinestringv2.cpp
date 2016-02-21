@@ -87,7 +87,7 @@ void QgsLineStringV2::clear()
   mZ.clear();
   mM.clear();
   mWkbType = QgsWKBTypes::Unknown;
-  mBoundingBox = QgsRectangle();
+  clearCache();
 }
 
 bool QgsLineStringV2::fromWkb( QgsConstWkbPtr wkbPtr )
@@ -111,6 +111,30 @@ void QgsLineStringV2::fromWkbPoints( QgsWKBTypes::Type type, const QgsConstWkbPt
 {
   mWkbType = type;
   importVerticesFromWkb( wkb );
+}
+
+QgsRectangle QgsLineStringV2::calculateBoundingBox() const
+{
+  double xmin = std::numeric_limits<double>::max();
+  double ymin = std::numeric_limits<double>::max();
+  double xmax = -std::numeric_limits<double>::max();
+  double ymax = -std::numeric_limits<double>::max();
+
+  Q_FOREACH ( double x, mX )
+  {
+    if ( x < xmin )
+      xmin = x;
+    if ( x > xmax )
+      xmax = x;
+  }
+  Q_FOREACH ( double y, mY )
+  {
+    if ( y < ymin )
+      ymin = y;
+    if ( y > ymax )
+      ymax = y;
+  }
+  return QgsRectangle( xmin, ymin, xmax, ymax );
 }
 
 /***************************************************************************
@@ -341,14 +365,14 @@ void QgsLineStringV2::setXAt( int index, double x )
 {
   if ( index >= 0 && index < mX.size() )
     mX[ index ] = x;
-  mBoundingBox = QgsRectangle();
+  clearCache();
 }
 
 void QgsLineStringV2::setYAt( int index, double y )
 {
   if ( index >= 0 && index < mY.size() )
     mY[ index ] = y;
-  mBoundingBox = QgsRectangle();
+  clearCache();
 }
 
 void QgsLineStringV2::setZAt( int index, double z )
@@ -381,7 +405,7 @@ void QgsLineStringV2::points( QList<QgsPointV2>& pts ) const
 
 void QgsLineStringV2::setPoints( const QList<QgsPointV2>& points )
 {
-  mBoundingBox = QgsRectangle(); //set bounding box invalid
+  clearCache(); //set bounding box invalid
 
   if ( points.isEmpty() )
   {
@@ -495,7 +519,7 @@ void QgsLineStringV2::append( const QgsLineStringV2* line )
     }
   }
 
-  mBoundingBox = QgsRectangle(); //set bounding box invalid
+  clearCache(); //set bounding box invalid
 }
 
 QgsLineStringV2* QgsLineStringV2::reversed() const
@@ -584,7 +608,7 @@ void QgsLineStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinate
   {
     delete[] zArray;
   }
-  mBoundingBox = QgsRectangle();
+  clearCache();
 }
 
 void QgsLineStringV2::transform( const QTransform& t )
@@ -597,7 +621,7 @@ void QgsLineStringV2::transform( const QTransform& t )
     mX[i] = x;
     mY[i] = y;
   }
-  mBoundingBox = QgsRectangle();
+  clearCache();
 }
 
 /***************************************************************************
@@ -628,7 +652,7 @@ bool QgsLineStringV2::insertVertex( QgsVertexId position, const QgsPointV2& vert
   {
     mM.insert( position.vertex, vertex.m() );
   }
-  mBoundingBox = QgsRectangle(); //set bounding box invalid
+  clearCache(); //set bounding box invalid
   return true;
 }
 
@@ -648,7 +672,7 @@ bool QgsLineStringV2::moveVertex( QgsVertexId position, const QgsPointV2& newPos
   {
     mM[position.vertex] = newPos.m();
   }
-  mBoundingBox = QgsRectangle(); //set bounding box invalid
+  clearCache(); //set bounding box invalid
   return true;
 }
 
@@ -675,7 +699,7 @@ bool QgsLineStringV2::deleteVertex( QgsVertexId position )
     clear();
   }
 
-  mBoundingBox = QgsRectangle(); //set bounding box invalid
+  clearCache(); //set bounding box invalid
   return true;
 }
 
@@ -702,7 +726,7 @@ void QgsLineStringV2::addVertex( const QgsPointV2& pt )
   {
     mM.append( pt.m() );
   }
-  mBoundingBox = QgsRectangle(); //set bounding box invalid
+  clearCache(); //set bounding box invalid
 }
 
 double QgsLineStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
@@ -843,7 +867,7 @@ void QgsLineStringV2::importVerticesFromWkb( const QgsConstWkbPtr& wkb )
       wkb >> mM[i];
     }
   }
-  mBoundingBox = QgsRectangle(); //set bounding box invalid
+  clearCache(); //set bounding box invalid
 }
 
 /***************************************************************************
@@ -915,6 +939,7 @@ bool QgsLineStringV2::addZValue( double zValue )
   if ( QgsWKBTypes::hasZ( mWkbType ) )
     return false;
 
+  clearCache();
   if ( mWkbType == QgsWKBTypes::Unknown )
   {
     mWkbType = QgsWKBTypes::LineStringZ;
@@ -938,6 +963,7 @@ bool QgsLineStringV2::addMValue( double mValue )
   if ( QgsWKBTypes::hasM( mWkbType ) )
     return false;
 
+  clearCache();
   if ( mWkbType == QgsWKBTypes::Unknown )
   {
     mWkbType = QgsWKBTypes::LineStringM;
@@ -968,6 +994,7 @@ bool QgsLineStringV2::dropZValue()
   if ( !is3D() )
     return false;
 
+  clearCache();
   mWkbType = QgsWKBTypes::dropZ( mWkbType );
   mZ.clear();
   return true;
@@ -978,6 +1005,7 @@ bool QgsLineStringV2::dropMValue()
   if ( !isMeasure() )
     return false;
 
+  clearCache();
   mWkbType = QgsWKBTypes::dropM( mWkbType );
   mM.clear();
   return true;
@@ -988,6 +1016,7 @@ bool QgsLineStringV2::convertTo( QgsWKBTypes::Type type )
   if ( type == mWkbType )
     return true;
 
+  clearCache();
   if ( type == QgsWKBTypes::LineString25D )
   {
     //special handling required for conversion to LineString25D

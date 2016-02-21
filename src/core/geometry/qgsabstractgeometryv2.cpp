@@ -45,15 +45,6 @@ QgsAbstractGeometryV2& QgsAbstractGeometryV2::operator=( const QgsAbstractGeomet
   return *this;
 }
 
-QgsRectangle QgsAbstractGeometryV2::boundingBox() const
-{
-  if ( mBoundingBox.isNull() )
-  {
-    mBoundingBox = calculateBoundingBox();
-  }
-  return mBoundingBox;
-}
-
 bool QgsAbstractGeometryV2::is3D() const
 {
   return QgsWKBTypes::hasZ( mWkbType );

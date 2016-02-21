@@ -81,6 +81,8 @@ class QgsCurveV2: public QgsAbstractGeometryV2
     virtual int partCount() const;
     virtual QgsPointV2 vertexAt( QgsVertexId id ) const;
 
+    virtual QgsRectangle boundingBox() const;
+
     /** Drops any Z dimensions which exist in the geometry.
      * @returns true if Z values were present and have been removed
      * @see dropMValue()
@@ -94,4 +96,9 @@ class QgsCurveV2: public QgsAbstractGeometryV2
      * @note added in QGIS 2.14
      */
     virtual bool dropMValue() = 0;
+
+  protected:
+
+    virtual void clearCache() const;
+
 };

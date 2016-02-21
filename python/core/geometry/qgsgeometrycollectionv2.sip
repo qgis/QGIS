@@ -66,7 +66,7 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     QString asJSON( int precision = 17 ) const;
 
-    virtual QgsRectangle calculateBoundingBox() const;
+    virtual QgsRectangle boundingBox() const;
 
     virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord /Out/ ) const;
     virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
@@ -112,5 +112,8 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     /** Reads a collection from a WKT string.
      */
     bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometryV2*>& subtypes, const QString& defaultChildWkbType = QString() );
+
+    virtual QgsRectangle calculateBoundingBox() const;
+    virtual void clearCache() const;
 
 };
