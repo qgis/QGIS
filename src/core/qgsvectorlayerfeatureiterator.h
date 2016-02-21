@@ -55,8 +55,6 @@ class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 
     bool mHasEditBuffer;
 
-    bool mCanBeSimplified;
-
     // A deep-copy is only performed, if the original maps change
     // see here https://github.com/qgis/Quantum-GIS/pull/673
     // for explanation
@@ -92,7 +90,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     //! Overrides default method as we only need to filter features in the edit buffer
     //! while for others filtering is left to the provider implementation.
-    inline virtual bool nextFeatureFilterExpression( QgsFeature &f ) override { return fetchFeature( f ); }
+    virtual bool nextFeatureFilterExpression( QgsFeature &f ) override { return fetchFeature( f ); }
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod ) override;
@@ -176,9 +174,6 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     bool mHasVirtualAttributes;
 
   private:
-    //! optional object to locally simplify edited (changed or added) geometries fetched by this feature iterator
-    QgsAbstractGeometrySimplifier* mEditGeometrySimplifier;
-
     QScopedPointer<QgsExpressionContext> mExpressionContext;
 
     QgsInterruptionChecker* mInterruptionChecker;
