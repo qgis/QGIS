@@ -436,7 +436,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &theWkt )
 
   if ( theWkt.isEmpty() )
   {
-    QgsDebugMsg( "theWkt is uninitialised, operation failed" );
+    QgsDebugMsg( "theWkt is uninitialized, operation failed" );
     return mIsValidFlag;
   }
   QgsDebugMsg( "wkt: " + theWkt );

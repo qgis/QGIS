@@ -1324,7 +1324,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
 bool QgsRasterLayer::readXml( const QDomNode& layer_node )
 {
   QgsDebugMsgLevel( "Entered", 4 );
-  //! @note Make sure to read the file first so stats etc are initialised properly!
+  //! @note Make sure to read the file first so stats etc are initialized properly!
 
   //process provider key
   QDomNode pkeyNode = layer_node.namedItem( "provider" );

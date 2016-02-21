@@ -161,7 +161,7 @@ void QgsMapToolAddCircularString::activate()
             mTempRubberBand->show();
           }
           QgsCircularStringV2* c = new QgsCircularStringV2();
-          QList< QgsPointV2 > rubberBandPoints = mPoints;
+          QgsPointSequenceV2 rubberBandPoints = mPoints;
           rubberBandPoints.append( QgsPointV2( mapPoint ) );
           c->setPoints( rubberBandPoints );
           mTempRubberBand->setGeometry( c );
@@ -208,7 +208,7 @@ void QgsMapToolAddCircularString::updateCenterPointRubberBand( const QgsPointV2&
 
   //create circular string
   QgsCircularStringV2* cs = new QgsCircularStringV2();
-  QList< QgsPointV2 > csPoints;
+  QgsPointSequenceV2 csPoints;
   csPoints.append( mPoints.at( mPoints.size() - 2 ) );
   csPoints.append( mPoints.at( mPoints.size() - 1 ) );
   csPoints.append( pt );

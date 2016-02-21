@@ -1786,6 +1786,10 @@ class QgsVectorLayer : QgsMapLayer
      */
     void writeCustomSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage ) const;
 
+    /**
+     * Signals an error related to this vector layer.
+     */
+    void raiseError( const QString& msg );
 
   protected:
     /** Set the extent */

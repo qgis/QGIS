@@ -24,7 +24,7 @@
 class QgsCoordinateTransform;
 
 /** Cache coordinate transform by authid of source/dest transformation to avoid the
-overhead of initialisation for each redraw*/
+overhead of initialization for each redraw*/
 class CORE_EXPORT QgsCoordinateTransformCache
 {
   public:
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsCRSCache
 
   private:
     QHash< QString, QgsCoordinateReferenceSystem > mCRS;
-    /** CRS that is not initialised (returned in case of error)*/
+    /** CRS that is not initialized (returned in case of error)*/
     QgsCoordinateReferenceSystem mInvalidCRS;
 };
 

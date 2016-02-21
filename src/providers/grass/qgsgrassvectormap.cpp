@@ -641,7 +641,7 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::lineGeometry( int id )
     return 0;
   }
 
-  QList<QgsPointV2> pointList;
+  QgsPointSequenceV2 pointList;
   pointList.reserve( points->n_points );
   for ( int i = 0; i < points->n_points; i++ )
   {
@@ -693,7 +693,7 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::areaGeometry( int id )
   QgsGrass::lock();
   Vect_get_area_points( mMap, id, points );
 
-  QList<QgsPointV2> pointList;
+  QgsPointSequenceV2 pointList;
   pointList.reserve( points->n_points );
   for ( int i = 0; i < points->n_points; i++ )
   {

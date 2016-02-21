@@ -139,6 +139,7 @@ class QgsPointV2: public QgsAbstractGeometryV2
     QPointF toQPointF() const;
 
     //implementation of inherited methods
+    virtual QgsRectangle boundingBox() const;
     virtual QString geometryType() const;
     virtual int dimension() const;
     virtual QgsPointV2* clone() const /Factory/;
@@ -151,11 +152,10 @@ class QgsPointV2: public QgsAbstractGeometryV2
     QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     QString asJSON( int precision = 17 ) const;
-    virtual QgsRectangle calculateBoundingBox() const;
     void draw( QPainter& p ) const;
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
     void transform( const QTransform& t );
-    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord /Out/ ) const;
+    virtual QList< QList< QList< QgsPointV2 > > > coordinateSequence() const;
 
     //low-level editing
     virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex );

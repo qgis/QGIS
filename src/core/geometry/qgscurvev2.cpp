@@ -42,14 +42,16 @@ bool QgsCurveV2::isRing() const
   return ( isClosed() && numPoints() >= 4 );
 }
 
-void QgsCurveV2::coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const
+QgsCoordinateSequenceV2 QgsCurveV2::coordinateSequence() const
 {
-  coord.clear();
-  QList<QgsPointV2> pts;
-  points( pts );
-  QList< QList<QgsPointV2> > ptsList;
-  ptsList.append( pts );
-  coord.append( ptsList );
+  if ( !mCoordinateSequence.isEmpty() )
+    return mCoordinateSequence;
+
+  mCoordinateSequence.append( QgsRingSequenceV2() );
+  mCoordinateSequence.back().append( QgsPointSequenceV2() );
+  points( mCoordinateSequence.back().back() );
+
+  return mCoordinateSequence;
 }
 
 bool QgsCurveV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
@@ -89,3 +91,13 @@ QgsPointV2 QgsCurveV2::vertexAt( QgsVertexId id ) const
   pointAt( id.vertex, v, type );
   return v;
 }
+
+QgsRectangle QgsCurveV2::boundingBox() const
+{
+  if ( mBoundingBox.isNull() )
+  {
+    mBoundingBox = calculateBoundingBox();
+  }
+  return mBoundingBox;
+}
+

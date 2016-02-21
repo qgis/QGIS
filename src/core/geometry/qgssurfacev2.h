@@ -28,6 +28,24 @@ class CORE_EXPORT QgsSurfaceV2: public QgsAbstractGeometryV2
   public:
 
     virtual QgsPolygonV2* surfaceToPolygon() const = 0;
+
+    /** Returns the minimal bounding box for the geometry
+     */
+    virtual QgsRectangle boundingBox() const override
+    {
+      if ( mBoundingBox.isNull() )
+      {
+        mBoundingBox = calculateBoundingBox();
+      }
+      return mBoundingBox;
+    }
+
+  protected:
+
+    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometryV2::clearCache(); }
+
+    mutable QgsCoordinateSequenceV2 mCoordinateSequence;
+    mutable QgsRectangle mBoundingBox;
 };
 
 #endif // QGSSURFACEV2_H

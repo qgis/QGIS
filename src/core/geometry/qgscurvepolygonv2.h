@@ -41,8 +41,6 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     virtual QgsCurvePolygonV2* clone() const override;
     void clear() override;
 
-
-    virtual QgsRectangle calculateBoundingBox() const override;
     virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
     virtual bool fromWkt( const QString& wkt ) override;
 
@@ -60,8 +58,8 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
 
     //curve polygon interface
     int numInteriorRings() const;
-    QgsCurveV2* exteriorRing() const;
-    QgsCurveV2* interiorRing( int i ) const;
+    const QgsCurveV2* exteriorRing() const;
+    const QgsCurveV2* interiorRing( int i ) const;
     virtual QgsPolygonV2* toPolygon() const;
 
     /** Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality
@@ -92,7 +90,7 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
     virtual bool deleteVertex( QgsVertexId position ) override;
 
-    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const override;
+    virtual QgsCoordinateSequenceV2 coordinateSequence() const override;
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
@@ -120,6 +118,7 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     QgsCurveV2* mExteriorRing;
     QList<QgsCurveV2*> mInteriorRings;
 
+    virtual QgsRectangle calculateBoundingBox() const override;
 };
 
 #endif // QGSCURVEPOLYGONV2_H

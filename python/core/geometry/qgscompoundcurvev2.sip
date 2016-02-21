@@ -18,8 +18,6 @@ class QgsCompoundCurveV2: public QgsCurveV2
     virtual QgsCompoundCurveV2* clone() const;
     virtual void clear();
 
-    virtual QgsRectangle calculateBoundingBox() const;
-
     virtual bool fromWkb( QgsConstWkbPtr wkb );
     virtual bool fromWkt( const QString& wkt );
 
@@ -95,5 +93,9 @@ class QgsCompoundCurveV2: public QgsCurveV2
 
     virtual bool dropZValue();
     virtual bool dropMValue();
+
+  protected:
+
+    virtual QgsRectangle calculateBoundingBox() const;
 
 };

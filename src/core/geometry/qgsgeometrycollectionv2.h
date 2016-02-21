@@ -90,9 +90,9 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
 
-    virtual QgsRectangle calculateBoundingBox() const override;
+    virtual QgsRectangle boundingBox() const override;
 
-    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const override;
+    virtual QgsCoordinateSequenceV2 coordinateSequence() const override;
     virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
@@ -138,6 +138,13 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
      */
     bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometryV2*>& subtypes, const QString& defaultChildWkbType = QString() );
 
+    virtual QgsRectangle calculateBoundingBox() const override;
+    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometryV2::clearCache(); }
+
+  private:
+
+    mutable QgsRectangle mBoundingBox;
+    mutable QgsCoordinateSequenceV2 mCoordinateSequence;
 };
 
 #endif // QGSGEOMETRYCOLLECTIONV2_H

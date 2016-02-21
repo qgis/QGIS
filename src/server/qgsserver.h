@@ -49,7 +49,7 @@ class SERVER_EXPORT QgsServer
   public:
     QgsServer();
     ~QgsServer();
-    /** Server initialisation: intialise QGIS ang QT core application.
+    /** Server initialization: intialise QGIS ang QT core application.
      * This method is automatically called by handleRequest if it wasn't
      * explicitly called before
      * @note Not available in Python bindings

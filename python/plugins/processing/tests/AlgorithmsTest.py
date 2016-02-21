@@ -137,10 +137,10 @@ class TestAlgorithms(unittest.TestCase):
 
     def load_result_param(self, param):
         """
-        Lodas a result parameter. Creates a temporary destination where the result should go to and returns this location
+        Loads a result parameter. Creates a temporary destination where the result should go to and returns this location
         so it can be sent to the algorithm as parameter.
         """
-        if param['type'] == 'vector':
+        if param['type'] in ['vector', 'file']:
             outdir = tempfile.mkdtemp()
             self.cleanup_paths.append(outdir)
             basename = os.path.basename(param['name'])
@@ -153,14 +153,7 @@ class TestAlgorithms(unittest.TestCase):
         """
         Loads a layer which was specified as parameter.
         """
-        prefix = processingTestDataPath()
-        try:
-            if param['location'] == 'qgs':
-                prefix = unitTestDataPath()
-        except KeyError:
-            pass
-
-        filepath = os.path.join(prefix, param['name'])
+        filepath = self.filepath_from_param(param)
 
         if param['type'] == 'vector':
             lyr = QgsVectorLayer(filepath, param['name'], 'ogr')
@@ -170,6 +163,16 @@ class TestAlgorithms(unittest.TestCase):
         self.assertTrue(lyr.isValid(), 'Could not load layer "{}"'.format(filepath))
         QgsMapLayerRegistry.instance().addMapLayer(lyr)
         return lyr
+
+    def filepath_from_param(self, param):
+        """
+        Creates a filepath from a param
+        """
+        prefix = processingTestDataPath()
+        if 'location' in param and param['location'] == 'qgs':
+            prefix = unitTestDataPath()
+
+        return os.path.join(prefix, param['name'])
 
     def check_results(self, results, expected):
         """
@@ -197,6 +200,11 @@ class TestAlgorithms(unittest.TestCase):
                 strhash = hashlib.sha224(dataset.ReadAsArray(0).data).hexdigest()
 
                 self.assertEqual(strhash, expected_result['hash'])
+            elif 'file' == expected_result['type']:
+                expected_filepath = self.filepath_from_param(expected_result)
+                result_filepath = results[id]
+
+                self.assertFilesEqual(expected_filepath, result_filepath)
 
 
 if __name__ == '__main__':

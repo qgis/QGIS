@@ -1411,12 +1411,9 @@ static QVariant fcnNodesToPoints( const QVariantList& values, const QgsExpressio
 
   QgsMultiPointV2* mp = new QgsMultiPointV2();
 
-  QList< QList< QList< QgsPointV2 > > > coords;
-  geom.geometry()->coordinateSequence( coords );
-
-  Q_FOREACH ( const QList< QList< QgsPointV2 > >& part, coords )
+  Q_FOREACH ( const QgsRingSequenceV2 &part, geom.geometry()->coordinateSequence() )
   {
-    Q_FOREACH ( const QList< QgsPointV2 >& ring, part )
+    Q_FOREACH ( const QgsPointSequenceV2 &ring, part )
     {
       bool skipLast = false;
       if ( ignoreClosing && ring.count() > 2 && ring.first() == ring.last() )
@@ -1450,7 +1447,7 @@ static QVariant fcnSegmentsToLines( const QVariantList& values, const QgsExpress
     for ( int i = 0; i < line->numPoints() - 1; ++i )
     {
       QgsLineStringV2* segment = new QgsLineStringV2();
-      segment->setPoints( QList<QgsPointV2>()
+      segment->setPoints( QgsPointSequenceV2()
                           << line->pointN( i )
                           << line->pointN( i + 1 ) );
       ml->addGeometry( segment );

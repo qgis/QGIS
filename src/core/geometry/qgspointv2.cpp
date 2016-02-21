@@ -113,7 +113,7 @@ bool QgsPointV2::fromWkb( QgsConstWkbPtr wkbPtr )
   if ( isMeasure() )
     wkbPtr >> mM;
 
-  mBoundingBox = QgsRectangle();
+  clearCache();
 
   return true;
 }
@@ -255,21 +255,23 @@ void QgsPointV2::clear()
 {
   mWkbType = QgsWKBTypes::Unknown;
   mX = mY = mZ = mM = 0.;
-  mBoundingBox = QgsRectangle();
+  clearCache();
 }
 
 void QgsPointV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
 {
-  mBoundingBox = QgsRectangle();
+  clearCache();
   ct.transformInPlace( mX, mY, mZ, d );
 }
 
-void QgsPointV2::coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const
+QgsCoordinateSequenceV2 QgsPointV2::coordinateSequence() const
 {
-  coord.clear();
-  QList< QList< QgsPointV2 > > featureCoord;
-  featureCoord.append( QList< QgsPointV2 >() << QgsPointV2( *this ) );
-  coord.append( featureCoord );
+  QgsCoordinateSequenceV2 cs;
+
+  cs.append( QgsRingSequenceV2() );
+  cs.back().append( QgsPointSequenceV2() << QgsPointV2( *this ) );
+
+  return cs;
 }
 
 /***************************************************************************
@@ -281,7 +283,7 @@ void QgsPointV2::coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coor
 bool QgsPointV2::moveVertex( QgsVertexId position, const QgsPointV2& newPos )
 {
   Q_UNUSED( position );
-  mBoundingBox = QgsRectangle();
+  clearCache();
   mX = newPos.mX;
   mY = newPos.mY;
   if ( is3D() && newPos.is3D() )
@@ -339,6 +341,7 @@ bool QgsPointV2::addZValue( double zValue )
 
   mWkbType = QgsWKBTypes::addZ( mWkbType );
   mZ = zValue;
+  clearCache();
   return true;
 }
 
@@ -349,12 +352,13 @@ bool QgsPointV2::addMValue( double mValue )
 
   mWkbType = QgsWKBTypes::addM( mWkbType );
   mM = mValue;
+  clearCache();
   return true;
 }
 
 void QgsPointV2::transform( const QTransform& t )
 {
-  mBoundingBox = QgsRectangle();
+  clearCache();
   qreal x, y;
   t.map( mX, mY, &x, &y );
   mX = x;
@@ -369,6 +373,7 @@ bool QgsPointV2::dropZValue()
 
   mWkbType = QgsWKBTypes::dropZ( mWkbType );
   mZ = 0.0;
+  clearCache();
   return true;
 }
 
@@ -379,6 +384,7 @@ bool QgsPointV2::dropMValue()
 
   mWkbType = QgsWKBTypes::dropM( mWkbType );
   mM = 0.0;
+  clearCache();
   return true;
 }
 
@@ -386,6 +392,8 @@ bool QgsPointV2::convertTo( QgsWKBTypes::Type type )
 {
   if ( type == mWkbType )
     return true;
+
+  clearCache();
 
   switch ( type )
   {

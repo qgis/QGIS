@@ -68,6 +68,7 @@ class QgsPointV2;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
+typedef QList<QgsPointV2> QgsPointSequenceV2;
 
 
 struct CORE_EXPORT QgsVectorJoinInfo
@@ -996,7 +997,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note available in python bindings as addPartV2
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPointV2>& ring );
+    int addPart( const QgsPointSequenceV2 &ring );
 
     //! @note available in python as addCurvedPart
     int addPart( QgsCurveV2* ring );
@@ -1831,6 +1832,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * This can be due to manually adding attributes or due to a join.
      */
     void updatedFields();
+
+    /**
+     * TODO QGIS3: remove in favor of QObject::destroyed
+     */
     void layerDeleted();
 
     void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant & );
@@ -1897,6 +1902,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param errorMessage Write error messages into this string.
      */
     void writeCustomSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage ) const;
+
+    /**
+     * Signals an error related to this vector layer.
+     */
+    void raiseError( const QString& msg );
 
   private slots:
     void onJoinedFieldsChanged();

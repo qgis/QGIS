@@ -344,6 +344,7 @@ QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& 
   {
     return QgsPoint( 0, 0 );
   }
+
   QgsPointV2 pt( point.x(), point.y() );
   QgsVertexId id;
 
@@ -563,13 +564,13 @@ double QgsGeometry::closestSegmentWithContext(
   return sqrDist;
 }
 
-int QgsGeometry::addRing( const QList<QgsPoint>& ring )
+int QgsGeometry::addRing( const QList<QgsPoint> &ring )
 {
   detach( true );
 
   removeWkbGeos();
   QgsLineStringV2* ringLine = new QgsLineStringV2();
-  QList< QgsPointV2 > ringPoints;
+  QgsPointSequenceV2 ringPoints;
   convertPointList( ring, ringPoints );
   ringLine->setPoints( ringPoints );
   return addRing( ringLine );
@@ -591,12 +592,12 @@ int QgsGeometry::addRing( QgsCurveV2* ring )
 
 int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType )
 {
-  QList<QgsPointV2> l;
+  QgsPointSequenceV2 l;
   convertPointList( points, l );
   return addPart( l, geomType );
 }
 
-int QgsGeometry::addPart( const QList<QgsPointV2> &points, QGis::GeometryType geomType )
+int QgsGeometry::addPart( const QgsPointSequenceV2 &points, QGis::GeometryType geomType )
 {
   QgsAbstractGeometryV2* partGeom = nullptr;
   if ( points.size() == 1 )
@@ -706,10 +707,10 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
 
   QList<QgsAbstractGeometryV2*> newGeoms;
   QgsLineStringV2 splitLineString;
-  QList<QgsPointV2> splitLinePointsV2;
+  QgsPointSequenceV2 splitLinePointsV2;
   convertPointList( splitLine, splitLinePointsV2 );
   splitLineString.setPoints( splitLinePointsV2 );
-  QList<QgsPointV2> tp;
+  QgsPointSequenceV2 tp;
 
   QgsGeos geos( d->geometry );
   int result = geos.splitGeometry( splitLineString, newGeoms, topological, tp );
@@ -739,7 +740,7 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
     return 0;
   }
 
-  QList<QgsPointV2> reshapeLine;
+  QgsPointSequenceV2 reshapeLine;
   convertPointList( reshapeWithLine, reshapeLine );
   QgsLineStringV2 reshapeLineString;
   reshapeLineString.setPoints( reshapeLine );
@@ -1140,7 +1141,7 @@ QgsMultiPolyline QgsGeometry::asMultiPolyline() const
       line = curve->curveToLine();
     }
 
-    QList< QgsPointV2 > lineCoords;
+    QgsPointSequenceV2 lineCoords;
     line->points( lineCoords );
     QgsPolyline polyLine;
     convertToPolyline( lineCoords, polyLine );
@@ -1690,16 +1691,15 @@ bool QgsGeometry::vertexIdFromVertexNr( int nr, QgsVertexId& id ) const
     return false;
   }
 
-  QList< QList< QList< QgsPointV2 > > > coords;
-  d->geometry->coordinateSequence( coords );
+  QgsCoordinateSequenceV2 coords = d->geometry->coordinateSequence();
 
   int vertexCount = 0;
   for ( int part = 0; part < coords.size(); ++part )
   {
-    const QList< QList< QgsPointV2 > >& featureCoords = coords.at( part );
+    const QgsRingSequenceV2 &featureCoords = coords.at( part );
     for ( int ring = 0; ring < featureCoords.size(); ++ring )
     {
-      const QList< QgsPointV2 >& ringCoords = featureCoords.at( ring );
+      const QgsPointSequenceV2 &ringCoords = featureCoords.at( ring );
       for ( int vertex = 0; vertex < ringCoords.size(); ++vertex )
       {
         if ( vertexCount == nr )
@@ -1723,16 +1723,15 @@ int QgsGeometry::vertexNrFromVertexId( QgsVertexId id ) const
     return -1;
   }
 
-  QList< QList< QList< QgsPointV2 > > > coords;
-  d->geometry->coordinateSequence( coords );
+  QgsCoordinateSequenceV2 coords = d->geometry->coordinateSequence();
 
   int vertexCount = 0;
   for ( int part = 0; part < coords.size(); ++part )
   {
-    const QList< QList< QgsPointV2 > >& featureCoords = coords.at( part );
+    const QgsRingSequenceV2 &featureCoords = coords.at( part );
     for ( int ring = 0; ring < featureCoords.size(); ++ring )
     {
-      const QList< QgsPointV2 >& ringCoords = featureCoords.at( ring );
+      const QgsPointSequenceV2 &ringCoords = featureCoords.at( ring );
       for ( int vertex = 0; vertex < ringCoords.size(); ++vertex )
       {
         if ( vertex == id.vertex && ring == id.ring && part == id.part )
@@ -1746,7 +1745,7 @@ int QgsGeometry::vertexNrFromVertexId( QgsVertexId id ) const
   return -1;
 }
 
-void QgsGeometry::convertPointList( const QList<QgsPoint>& input, QList<QgsPointV2>& output )
+void QgsGeometry::convertPointList( const QList<QgsPoint> &input, QgsPointSequenceV2 &output )
 {
   output.clear();
   QList<QgsPoint>::const_iterator it = input.constBegin();
@@ -1756,17 +1755,17 @@ void QgsGeometry::convertPointList( const QList<QgsPoint>& input, QList<QgsPoint
   }
 }
 
-void QgsGeometry::convertPointList( const QList<QgsPointV2>& input, QList<QgsPoint>& output )
+void QgsGeometry::convertPointList( const QgsPointSequenceV2 &input, QList<QgsPoint> &output )
 {
   output.clear();
-  QList<QgsPointV2>::const_iterator it = input.constBegin();
+  QgsPointSequenceV2::const_iterator it = input.constBegin();
   for ( ; it != input.constEnd(); ++it )
   {
     output.append( QgsPoint( it->x(), it->y() ) );
   }
 }
 
-void QgsGeometry::convertToPolyline( const QList<QgsPointV2>& input, QgsPolyline& output )
+void QgsGeometry::convertToPolyline( const QgsPointSequenceV2 &input, QgsPolyline& output )
 {
   output.clear();
   output.resize( input.size() );
@@ -1782,14 +1781,12 @@ void QgsGeometry::convertToPolyline( const QList<QgsPointV2>& input, QgsPolyline
 void QgsGeometry::convertPolygon( const QgsPolygonV2& input, QgsPolygon& output )
 {
   output.clear();
-  QList< QList< QList< QgsPointV2 > > > coord;
-  input.coordinateSequence( coord );
-  if ( coord.size() < 1 )
+  QgsCoordinateSequenceV2 coords = input.coordinateSequence();
+  if ( coords.size() < 1 )
   {
     return;
   }
-
-  const QList< QList< QgsPointV2 > >& rings = coord[0];
+  const QgsRingSequenceV2 &rings = coords[0];
   output.resize( rings.size() );
   for ( int i = 0; i < rings.size(); ++i )
   {

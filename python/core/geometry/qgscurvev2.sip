@@ -57,7 +57,7 @@ class QgsCurveV2: public QgsAbstractGeometryV2
      */
     virtual void sumUpArea( double& sum ) const = 0;
 
-    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord /Out/ ) const;
+    virtual QList< QList< QList< QgsPointV2 > > > coordinateSequence() const;
     virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
 
     /** Returns the point and vertex id of a point within the curve.
@@ -76,10 +76,12 @@ class QgsCurveV2: public QgsAbstractGeometryV2
     /** Returns a geometry without curves. Caller takes ownership*/
     virtual QgsCurveV2* segmentize() const /Factory/;
 
-    virtual int vertexCount(int part = 0, int ring = 0) const;
-    virtual int ringCount(int part = 0) const;
+    virtual int vertexCount( int part = 0, int ring = 0 ) const;
+    virtual int ringCount( int part = 0 ) const;
     virtual int partCount() const;
     virtual QgsPointV2 vertexAt( QgsVertexId id ) const;
+
+    virtual QgsRectangle boundingBox() const;
 
     /** Drops any Z dimensions which exist in the geometry.
      * @returns true if Z values were present and have been removed
@@ -94,4 +96,9 @@ class QgsCurveV2: public QgsAbstractGeometryV2
      * @note added in QGIS 2.14
      */
     virtual bool dropMValue() = 0;
+
+  protected:
+
+    virtual void clearCache() const;
+
 };

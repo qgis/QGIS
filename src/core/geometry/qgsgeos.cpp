@@ -378,7 +378,7 @@ double QgsGeos::length( QString* errorMsg ) const
 int QgsGeos::splitGeometry( const QgsLineStringV2& splitLine,
                             QList<QgsAbstractGeometryV2*>&newGeometries,
                             bool topological,
-                            QList<QgsPointV2> &topologyTestPoints,
+                            QgsPointSequenceV2 &topologyTestPoints,
                             QString* errorMsg ) const
 {
 
@@ -457,7 +457,7 @@ int QgsGeos::splitGeometry( const QgsLineStringV2& splitLine,
 
 
 
-int QgsGeos::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QList<QgsPointV2>& testPoints, QString* errorMsg ) const
+int QgsGeos::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPointSequenceV2 &testPoints, QString* errorMsg ) const
 {
   //Find out the intersection points between splitLineGeos and this geometry.
   //These points need to be tested for topological correctness by the calling function
@@ -983,7 +983,7 @@ QgsPolygonV2* QgsGeos::fromGeosPolygon( const GEOSGeometry* geos )
 
 QgsLineStringV2* QgsGeos::sequenceToLinestring( const GEOSGeometry* geos, bool hasZ, bool hasM )
 {
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   const GEOSCoordSequence* cs = GEOSGeom_getCoordSeq_r( geosinit.ctxt, geos );
   unsigned int nPoints;
   GEOSCoordSeq_getSize_r( geosinit.ctxt, cs, &nPoints );

@@ -16,8 +16,6 @@ class QgsCircularStringV2: public QgsCurveV2
     virtual QgsCircularStringV2* clone() const;
     virtual void clear();
 
-    virtual QgsRectangle calculateBoundingBox() const;
-
     virtual bool fromWkb( QgsConstWkbPtr wkb );
     virtual bool fromWkt( const QString& wkt );
 
@@ -84,7 +82,7 @@ class QgsCircularStringV2: public QgsCurveV2
     /**
      * @copydoc QgsCurveV2::pointAt()
      */
-    bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const;
+    bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const;
 
     /**
      * @copydoc QgsCurveV2::sumUpArea()
@@ -108,6 +106,10 @@ class QgsCircularStringV2: public QgsCurveV2
 
     virtual bool dropZValue();
     virtual bool dropMValue();
+
+  protected:
+
+    virtual QgsRectangle calculateBoundingBox() const;
 
   private:
     //helper methods for curveToLine

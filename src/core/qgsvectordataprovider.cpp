@@ -559,6 +559,7 @@ void QgsVectorDataProvider::pushError( const QString& msg )
 {
   QgsDebugMsg( msg );
   mErrors << msg;
+  emit raiseError( msg );
 }
 
 QSet<QString> QgsVectorDataProvider::layerDependencies() const

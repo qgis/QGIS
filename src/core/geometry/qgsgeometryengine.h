@@ -88,7 +88,7 @@ class CORE_EXPORT QgsGeometryEngine
     virtual int splitGeometry( const QgsLineStringV2& splitLine,
                                QList<QgsAbstractGeometryV2*>& newGeometries,
                                bool topological,
-                               QList<QgsPointV2> &topologyTestPoints, QString* errorMsg = nullptr ) const
+                               QgsPointSequenceV2 &topologyTestPoints, QString* errorMsg = nullptr ) const
     {
       Q_UNUSED( splitLine );
       Q_UNUSED( newGeometries );

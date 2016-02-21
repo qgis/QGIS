@@ -126,7 +126,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
   else if ( method == ToMultiObject || method == ToSingleObjects )
   {
     // Extract rings
-    QList<QgsPointV2> ring1, ring2;
+    QgsPointSequenceV2 ring1, ring2;
     bool ring1EndsWithS = false;
     bool ring2EndsWithS = false;
     for ( int i = 0; i < nVerts; ++i )

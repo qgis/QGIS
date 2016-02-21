@@ -62,6 +62,7 @@ void QgsCircularStringV2::clear()
   mZ.clear();
   mM.clear();
   mWkbType = QgsWKBTypes::Unknown;
+  clearCache();
 }
 
 QgsRectangle QgsCircularStringV2::calculateBoundingBox() const
@@ -117,8 +118,8 @@ QgsRectangle QgsCircularStringV2::segmentBoundingBox( const QgsPointV2& pt1, con
   QgsRectangle bbox( pt1.x(), pt1.y(), pt1.x(), pt1.y() );
   bbox.combineExtentWith( pt3.x(), pt3.y() );
 
-  QList<QgsPointV2> compassPoints = compassPointsOnSegment( p1Angle, p2Angle, p3Angle, centerX, centerY, radius );
-  QList<QgsPointV2>::const_iterator cpIt = compassPoints.constBegin();
+  QgsPointSequenceV2 compassPoints = compassPointsOnSegment( p1Angle, p2Angle, p3Angle, centerX, centerY, radius );
+  QgsPointSequenceV2::const_iterator cpIt = compassPoints.constBegin();
   for ( ; cpIt != compassPoints.constEnd(); ++cpIt )
   {
     bbox.combineExtentWith( cpIt->x(), cpIt->y() );
@@ -126,9 +127,9 @@ QgsRectangle QgsCircularStringV2::segmentBoundingBox( const QgsPointV2& pt1, con
   return bbox;
 }
 
-QList<QgsPointV2> QgsCircularStringV2::compassPointsOnSegment( double p1Angle, double p2Angle, double p3Angle, double centerX, double centerY, double radius )
+QgsPointSequenceV2 QgsCircularStringV2::compassPointsOnSegment( double p1Angle, double p2Angle, double p3Angle, double centerX, double centerY, double radius )
 {
-  QList<QgsPointV2> pointList;
+  QgsPointSequenceV2 pointList;
 
   QgsPointV2 nPoint( centerX, centerY + radius );
   QgsPointV2 ePoint( centerX + radius, centerY );
@@ -216,6 +217,7 @@ bool QgsCircularStringV2::fromWkb( QgsConstWkbPtr wkbPtr )
   {
     return false;
   }
+  clearCache();
   mWkbType = type;
 
   //type
@@ -272,7 +274,7 @@ unsigned char* QgsCircularStringV2::asWkb( int& binarySize ) const
   QgsWkbPtr wkb( geomPtr, binarySize );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   points( pts );
   QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure() );
   return geomPtr;
@@ -281,7 +283,7 @@ unsigned char* QgsCircularStringV2::asWkb( int& binarySize ) const
 QString QgsCircularStringV2::asWkt( int precision ) const
 {
   QString wkt = wktTypeStr() + ' ';
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   points( pts );
   wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );
   return wkt;
@@ -298,7 +300,7 @@ QDomElement QgsCircularStringV2::asGML2( QDomDocument& doc, int precision, const
 
 QDomElement QgsCircularStringV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   points( pts );
 
   QDomElement elemCurve = doc.createElementNS( ns, "Curve" );
@@ -352,7 +354,7 @@ QgsPointV2 QgsCircularStringV2::endPoint() const
 QgsLineStringV2* QgsCircularStringV2::curveToLine() const
 {
   QgsLineStringV2* line = new QgsLineStringV2();
-  QList<QgsPointV2> points;
+  QgsPointSequenceV2 points;
   int nPoints = numPoints();
 
   for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
@@ -406,7 +408,7 @@ QgsPointV2 QgsCircularStringV2::pointN( int i ) const
   return QgsPointV2( t, x, y, z, m );
 }
 
-void QgsCircularStringV2::points( QList<QgsPointV2>& pts ) const
+void QgsCircularStringV2::points( QgsPointSequenceV2 &pts ) const
 {
   pts.clear();
   int nPts = numPoints();
@@ -416,8 +418,10 @@ void QgsCircularStringV2::points( QList<QgsPointV2>& pts ) const
   }
 }
 
-void QgsCircularStringV2::setPoints( const QList<QgsPointV2>& points )
+void QgsCircularStringV2::setPoints( const QgsPointSequenceV2 &points )
 {
+  clearCache();
+
   if ( points.size() < 1 )
   {
     mWkbType = QgsWKBTypes::Unknown;
@@ -469,7 +473,7 @@ void QgsCircularStringV2::setPoints( const QList<QgsPointV2>& points )
   }
 }
 
-void QgsCircularStringV2::segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QList<QgsPointV2>& points ) const
+void QgsCircularStringV2::segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QgsPointSequenceV2 &points ) const
 {
   //adapted code from postgis
   double radius = 0;
@@ -609,6 +613,8 @@ void QgsCircularStringV2::draw( QPainter& p ) const
 
 void QgsCircularStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
 {
+  clearCache();
+
   double* zArray = mZ.data();
 
   bool hasZ = is3D();
@@ -630,6 +636,8 @@ void QgsCircularStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordi
 
 void QgsCircularStringV2::transform( const QTransform& t )
 {
+  clearCache();
+
   int nPoints = numPoints();
   for ( int i = 0; i < nPoints; ++i )
   {
@@ -662,7 +670,7 @@ void QgsCircularStringV2::addToPainterPath( QPainterPath& path ) const
 
   for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
   {
-    QList<QgsPointV2> pt;
+    QgsPointSequenceV2 pt;
     segmentize( QgsPointV2( mX[i], mY[i] ), QgsPointV2( mX[i + 1], mY[i + 1] ), QgsPointV2( mX[i + 2], mY[i + 2] ), pt );
     for ( int j = 1; j < pt.size(); ++j )
     {
@@ -723,7 +731,7 @@ bool QgsCircularStringV2::insertVertex( QgsVertexId position, const QgsPointV2& 
   {
     insertVertexBetween( position.vertex, position.vertex + 1, position.vertex - 1 );
   }
-  mBoundingBox = QgsRectangle(); //set bounding box invalid
+  clearCache(); //set bounding box invalid
   return true;
 }
 
@@ -744,7 +752,7 @@ bool QgsCircularStringV2::moveVertex( QgsVertexId position, const QgsPointV2& ne
   {
     mM[position.vertex] = newPos.m();
   }
-  mBoundingBox = QgsRectangle(); //set bounding box invalid
+  clearCache(); //set bounding box invalid
   return true;
 }
 
@@ -772,7 +780,7 @@ bool QgsCircularStringV2::deleteVertex( QgsVertexId position )
     deleteVertex( position.vertex - 1 );
   }
 
-  mBoundingBox = QgsRectangle(); //set bounding box invalid
+  clearCache(); //set bounding box invalid
   return true;
 }
 
@@ -788,6 +796,7 @@ void QgsCircularStringV2::deleteVertex( int i )
   {
     mM.remove( i );
   }
+  clearCache();
 }
 
 double QgsCircularStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
@@ -975,6 +984,7 @@ void QgsCircularStringV2::insertVertexBetween( int after, int before, int pointO
   {
     mM.insert( before, ( mM[after] + mM[before] ) / 2.0 );
   }
+  clearCache();
 }
 
 double QgsCircularStringV2::vertexAngle( QgsVertexId vId ) const
@@ -1053,6 +1063,7 @@ bool QgsCircularStringV2::addZValue( double zValue )
   if ( QgsWKBTypes::hasZ( mWkbType ) )
     return false;
 
+  clearCache();
   mWkbType = QgsWKBTypes::addZ( mWkbType );
 
   int nPoints = numPoints();
@@ -1070,6 +1081,7 @@ bool QgsCircularStringV2::addMValue( double mValue )
   if ( QgsWKBTypes::hasM( mWkbType ) )
     return false;
 
+  clearCache();
   mWkbType = QgsWKBTypes::addM( mWkbType );
 
   int nPoints = numPoints();
@@ -1087,6 +1099,8 @@ bool QgsCircularStringV2::dropZValue()
   if ( !QgsWKBTypes::hasZ( mWkbType ) )
     return false;
 
+  clearCache();
+
   mWkbType = QgsWKBTypes::dropZ( mWkbType );
   mZ.clear();
   return true;
@@ -1096,6 +1110,8 @@ bool QgsCircularStringV2::dropMValue()
 {
   if ( !QgsWKBTypes::hasM( mWkbType ) )
     return false;
+
+  clearCache();
 
   mWkbType = QgsWKBTypes::dropM( mWkbType );
   mM.clear();

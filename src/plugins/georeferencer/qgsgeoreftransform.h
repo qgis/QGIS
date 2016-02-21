@@ -101,7 +101,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     /** True for linear, Helmert, first order polynomial*/
     bool providesAccurateInverseTransformation() const;
 
-    //! \returns whether the parameters of this transform have been initialised by \ref updateParametersFromGCPs
+    //! \returns whether the parameters of this transform have been initialized by \ref updateParametersFromGCPs
     bool parametersInitialized() const;
 
     /**

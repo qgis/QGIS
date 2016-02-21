@@ -144,7 +144,7 @@ class QgsCoordinateReferenceSystem
      */
     static void setupESRIWktFix();
 
-    /** Returns whether this CRS is correctly initialised and usable */
+    /** Returns whether this CRS is correctly initialized and usable */
     bool isValid() const;
 
     /** Perform some validation on this CRS. If the sts doesn't validate the

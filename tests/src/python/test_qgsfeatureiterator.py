@@ -29,7 +29,7 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsFeatureIterator(unittest.TestCase):
 
     def __init__(self, methodName):
-        """Run once on class initialisation."""
+        """Run once on class initialization."""
         unittest.TestCase.__init__(self, methodName)
 
     def test_FilterExpression(self):

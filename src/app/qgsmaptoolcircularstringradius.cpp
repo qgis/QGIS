@@ -122,7 +122,7 @@ void QgsMapToolCircularStringRadius::recalculateRubberBand()
 
 void QgsMapToolCircularStringRadius::recalculateTempRubberBand( const QgsPoint& mousePosition )
 {
-  QList<QgsPointV2> rubberBandPoints;
+  QgsPointSequenceV2 rubberBandPoints;
   if ( !( mPoints.size() % 2 ) )
   {
     //recalculate midpoint on circle segment

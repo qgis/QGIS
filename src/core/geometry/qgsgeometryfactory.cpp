@@ -207,7 +207,7 @@ QgsLineStringV2* QgsGeometryFactory::linestringFromPolyline( const QgsPolyline& 
 {
   QgsLineStringV2* line = new QgsLineStringV2();
 
-  QList<QgsPointV2> points;
+  QgsPointSequenceV2 points;
   QgsPolyline::const_iterator it = polyline.constBegin();
   for ( ; it != polyline.constEnd(); ++it )
   {

@@ -53,6 +53,7 @@ QgsCurvePolygonV2& QgsCurvePolygonV2::operator=( const QgsCurvePolygonV2 & p )
 {
   if ( &p != this )
   {
+    clearCache();
     QgsSurfaceV2::operator=( p );
     if ( p.mExteriorRing )
     {
@@ -79,6 +80,7 @@ void QgsCurvePolygonV2::clear()
   qDeleteAll( mInteriorRings );
   mInteriorRings.clear();
   mWkbType = QgsWKBTypes::Unknown;
+  clearCache();
 }
 
 
@@ -209,7 +211,7 @@ QgsRectangle QgsCurvePolygonV2::calculateBoundingBox() const
 {
   if ( mExteriorRing )
   {
-    return mExteriorRing->calculateBoundingBox();
+    return mExteriorRing->boundingBox();
   }
   return QgsRectangle();
 }
@@ -333,7 +335,7 @@ QString QgsCurvePolygonV2::asJSON( int precision ) const
   QString json = "{\"type\": \"Polygon\", \"coordinates\": [";
 
   QgsLineStringV2* exteriorLineString = exteriorRing()->curveToLine();
-  QList<QgsPointV2> exteriorPts;
+  QgsPointSequenceV2 exteriorPts;
   exteriorLineString->points( exteriorPts );
   json += QgsGeometryUtils::pointsToJSON( exteriorPts, precision ) + ", ";
   delete exteriorLineString;
@@ -341,7 +343,7 @@ QString QgsCurvePolygonV2::asJSON( int precision ) const
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
     QgsLineStringV2* interiorLineString = interiorRing( i )->curveToLine();
-    QList<QgsPointV2> interiorPts;
+    QgsPointSequenceV2 interiorPts;
     interiorLineString->points( interiorPts );
     json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + ", ";
     delete interiorLineString;
@@ -438,12 +440,12 @@ int QgsCurvePolygonV2::numInteriorRings() const
   return mInteriorRings.size();
 }
 
-QgsCurveV2* QgsCurvePolygonV2::exteriorRing() const
+const QgsCurveV2* QgsCurvePolygonV2::exteriorRing() const
 {
   return mExteriorRing;
 }
 
-QgsCurveV2* QgsCurvePolygonV2::interiorRing( int i ) const
+const QgsCurveV2* QgsCurvePolygonV2::interiorRing( int i ) const
 {
   if ( i < 0 || i >= mInteriorRings.size() )
   {
@@ -484,6 +486,7 @@ void QgsCurvePolygonV2::setExteriorRing( QgsCurveV2* ring )
     else
       ring->dropMValue();
   }
+  clearCache();
 }
 
 void QgsCurvePolygonV2::setInteriorRings( const QList<QgsCurveV2*>& rings )
@@ -496,6 +499,7 @@ void QgsCurvePolygonV2::setInteriorRings( const QList<QgsCurveV2*>& rings )
   {
     addInteriorRing( ring );
   }
+  clearCache();
 }
 
 void QgsCurvePolygonV2::addInteriorRing( QgsCurveV2* ring )
@@ -515,6 +519,7 @@ void QgsCurvePolygonV2::addInteriorRing( QgsCurveV2* ring )
     ring->addMValue();
 
   mInteriorRings.append( ring );
+  clearCache();
 }
 
 bool QgsCurvePolygonV2::removeInteriorRing( int nr )
@@ -524,6 +529,7 @@ bool QgsCurvePolygonV2::removeInteriorRing( int nr )
     return false;
   }
   delete mInteriorRings.takeAt( nr );
+  clearCache();
   return true;
 }
 
@@ -561,6 +567,7 @@ void QgsCurvePolygonV2::transform( const QgsCoordinateTransform& ct, QgsCoordina
   {
     curve->transform( ct, d );
   }
+  clearCache();
 }
 
 void QgsCurvePolygonV2::transform( const QTransform& t )
@@ -574,30 +581,33 @@ void QgsCurvePolygonV2::transform( const QTransform& t )
   {
     curve->transform( t );
   }
+  clearCache();
 }
 
-void QgsCurvePolygonV2::coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const
+QgsCoordinateSequenceV2 QgsCurvePolygonV2::coordinateSequence() const
 {
-  coord.clear();
+  if ( !mCoordinateSequence.isEmpty() )
+    return mCoordinateSequence;
 
-  QList< QList< QgsPointV2 > > coordinates;
-  QList< QgsPointV2 > ringCoords;
+  mCoordinateSequence.append( QgsRingSequenceV2() );
+
   if ( mExteriorRing )
   {
-    mExteriorRing->points( ringCoords );
-    coordinates.append( ringCoords );
+    mCoordinateSequence.back().append( QgsPointSequenceV2() );
+    mExteriorRing->points( mCoordinateSequence.back().back() );
   }
 
   QList<QgsCurveV2*>::const_iterator it = mInteriorRings.constBegin();
   for ( ; it != mInteriorRings.constEnd(); ++it )
   {
-    ( *it )->points( ringCoords );
-    coordinates.append( ringCoords );
+    mCoordinateSequence.back().append( QgsPointSequenceV2() );
+    ( *it )->points( mCoordinateSequence.back().back() );
   }
-  coord.append( coordinates );
+
+  return mCoordinateSequence;
 }
 
-double QgsCurvePolygonV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
+double QgsCurvePolygonV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt, QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
 {
   if ( !mExteriorRing )
   {
@@ -666,7 +676,8 @@ bool QgsCurvePolygonV2::insertVertex( QgsVertexId vId, const QgsPointV2& vertex 
   else if ( vId.vertex == n )
     ring->moveVertex( QgsVertexId( 0, 0, 0 ), vertex );
 
-  mBoundingBox = QgsRectangle();
+  clearCache();
+
   return true;
 }
 
@@ -687,7 +698,7 @@ bool QgsCurvePolygonV2::moveVertex( QgsVertexId vId, const QgsPointV2& newPos )
       ring->moveVertex( QgsVertexId( vId.part, vId.ring, n - 1 ), newPos );
     else if ( vId.vertex == n - 1 )
       ring->moveVertex( QgsVertexId( vId.part, vId.ring, 0 ), newPos );
-    mBoundingBox = QgsRectangle();
+    clearCache();
   }
   return success;
 }
@@ -717,7 +728,7 @@ bool QgsCurvePolygonV2::deleteVertex( QgsVertexId vId )
     {
       removeInteriorRing( vId.ring - 1 );
     }
-    mBoundingBox = QgsRectangle();
+    clearCache();
     return true;
   }
 
@@ -729,7 +740,7 @@ bool QgsCurvePolygonV2::deleteVertex( QgsVertexId vId )
       ring->moveVertex( QgsVertexId( 0, 0, n - 2 ), ring->vertexAt( QgsVertexId( 0, 0, 0 ) ) );
     else if ( vId.vertex == n - 1 )
       ring->moveVertex( QgsVertexId( 0, 0, 0 ), ring->vertexAt( QgsVertexId( 0, 0, n - 2 ) ) );
-    mBoundingBox = QgsRectangle();
+    clearCache();
   }
   return success;
 }
@@ -792,6 +803,7 @@ bool QgsCurvePolygonV2::addZValue( double zValue )
   {
     curve->addZValue( zValue );
   }
+  clearCache();
   return true;
 }
 
@@ -808,6 +820,7 @@ bool QgsCurvePolygonV2::addMValue( double mValue )
   {
     curve->addMValue( mValue );
   }
+  clearCache();
   return true;
 }
 
@@ -823,6 +836,7 @@ bool QgsCurvePolygonV2::dropZValue()
   {
     curve->dropZValue();
   }
+  clearCache();
   return true;
 }
 
@@ -838,5 +852,6 @@ bool QgsCurvePolygonV2::dropMValue()
   {
     curve->dropMValue();
   }
+  clearCache();
   return true;
 }

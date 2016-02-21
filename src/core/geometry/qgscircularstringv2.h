@@ -41,8 +41,6 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     virtual QgsCircularStringV2* clone() const override;
     virtual void clear() override;
 
-    virtual QgsRectangle calculateBoundingBox() const override;
-
     virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
     virtual bool fromWkt( const QString& wkt ) override;
 
@@ -62,11 +60,11 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     /**
      * @copydoc QgsCurveV2::points()
      */
-    void points( QList<QgsPointV2>& pts ) const override;
+    void points( QgsPointSequenceV2 &pts ) const override;
 
     /** Sets the circular string's points
      */
-    void setPoints( const QList<QgsPointV2>& points );
+    void setPoints( const QgsPointSequenceV2 &points );
 
     /**
      * @copydoc QgsAbstractGeometryV2::length()
@@ -134,6 +132,10 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     virtual bool dropZValue() override;
     virtual bool dropMValue() override;
 
+  protected:
+
+    virtual QgsRectangle calculateBoundingBox() const override;
+
   private:
     QVector<double> mX;
     QVector<double> mY;
@@ -141,17 +143,18 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     QVector<double> mM;
 
     //helper methods for curveToLine
-    void segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QList<QgsPointV2>& points ) const;
+    void segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QgsPointSequenceV2 &points ) const;
     int segmentSide( const QgsPointV2& pt1, const QgsPointV2& pt3, const QgsPointV2& pt2 ) const;
     double interpolateArc( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) const;
     static void arcTo( QPainterPath& path, QPointF pt1, QPointF pt2, QPointF pt3 );
     //bounding box of a single segment
     static QgsRectangle segmentBoundingBox( const QgsPointV2& pt1, const QgsPointV2& pt2, const QgsPointV2& pt3 );
-    static QList<QgsPointV2> compassPointsOnSegment( double p1Angle, double p2Angle, double p3Angle, double centerX, double centerY, double radius );
+    static QgsPointSequenceV2 compassPointsOnSegment( double p1Angle, double p2Angle, double p3Angle, double centerX, double centerY, double radius );
     static double closestPointOnArc( double x1, double y1, double x2, double y2, double x3, double y3,
                                      const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon );
     void insertVertexBetween( int after, int before, int pointOnCircle );
     void deleteVertex( int i );
+
 };
 
 #endif // QGSCIRCULARSTRING_H

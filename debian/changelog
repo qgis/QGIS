@@ -1,8 +1,17 @@
 qgis (2.13.0) UNRELEASED; urgency=medium
 
   * New development version 2.13 after branch of 2.12
+  * add dependencies to python-psycopg2, python-yaml, python-mack and
+    python-node2 for tests
+  * update optional oracle dependency to 12.1
+  * upgrade python-qgis from Recommends to Depends
+  * downgrade liblwgeom dependency to Recommends
+  * remove coding documentation
+  * replace grass plugin diversion to wrapper in qgis package
+  * remove spit plugin
+  * add support for ubuntu xenial
 
- -- Jürgen E. Fischer <jef@norbit.de>  Fri, 23 Oct 2015 14:11:22 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 20 Feb 2016 16:55:08 +0100
 
 qgis (2.12.0) unstable; urgency=medium
 
