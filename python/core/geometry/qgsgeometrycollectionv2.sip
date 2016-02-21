@@ -68,7 +68,7 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     virtual QgsRectangle boundingBox() const;
 
-    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord /Out/ ) const;
+    virtual QList< QList< QList< QgsPointV2 > > > coordinateSequence() const;
     virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
 

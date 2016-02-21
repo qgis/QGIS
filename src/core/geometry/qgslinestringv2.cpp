@@ -171,7 +171,7 @@ unsigned char* QgsLineStringV2::asWkb( int& binarySize ) const
   QgsWkbPtr wkb( geomPtr, binarySize );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   points( pts );
   QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure() );
   return geomPtr;
@@ -186,7 +186,7 @@ unsigned char* QgsLineStringV2::asWkb( int& binarySize ) const
 QString QgsLineStringV2::asWkt( int precision ) const
 {
   QString wkt = wktTypeStr() + ' ';
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   points( pts );
   wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );
   return wkt;
@@ -194,7 +194,7 @@ QString QgsLineStringV2::asWkt( int precision ) const
 
 QDomElement QgsLineStringV2::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   points( pts );
 
   QDomElement elemLineString = doc.createElementNS( ns, "LineString" );
@@ -205,7 +205,7 @@ QDomElement QgsLineStringV2::asGML2( QDomDocument& doc, int precision, const QSt
 
 QDomElement QgsLineStringV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   points( pts );
 
   QDomElement elemCurve = doc.createElementNS( ns, "Curve" );
@@ -220,7 +220,7 @@ QDomElement QgsLineStringV2::asGML3( QDomDocument& doc, int precision, const QSt
 
 QString QgsLineStringV2::asJSON( int precision ) const
 {
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   points( pts );
 
   return "{\"type\": \"LineString\", \"coordinates\": " + QgsGeometryUtils::pointsToJSON( pts, precision ) + '}';
@@ -393,7 +393,7 @@ void QgsLineStringV2::setMAt( int index, double m )
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsLineStringV2::points( QList<QgsPointV2>& pts ) const
+void QgsLineStringV2::points( QgsPointSequenceV2 &pts ) const
 {
   pts.clear();
   int nPoints = numPoints();
@@ -403,7 +403,7 @@ void QgsLineStringV2::points( QList<QgsPointV2>& pts ) const
   }
 }
 
-void QgsLineStringV2::setPoints( const QList<QgsPointV2>& points )
+void QgsLineStringV2::setPoints( const QgsPointSequenceV2 &points )
 {
   clearCache(); //set bounding box invalid
 

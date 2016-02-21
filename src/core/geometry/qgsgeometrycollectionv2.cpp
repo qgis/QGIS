@@ -341,20 +341,24 @@ QgsRectangle QgsGeometryCollectionV2::calculateBoundingBox() const
   return bbox;
 }
 
-void QgsGeometryCollectionV2::coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const
+QgsCoordinateSequenceV2 QgsGeometryCollectionV2::coordinateSequence() const
 {
-  coord.clear();
+  if ( !mCoordinateSequence.isEmpty() )
+    return mCoordinateSequence;
+
   QVector< QgsAbstractGeometryV2* >::const_iterator geomIt = mGeometries.constBegin();
   for ( ; geomIt != mGeometries.constEnd(); ++geomIt )
   {
-    QList< QList< QList< QgsPointV2 > > > geomCoords;
-    ( *geomIt )->coordinateSequence( geomCoords );
-    QList< QList< QList< QgsPointV2 > > >::const_iterator cIt = geomCoords.constBegin();
+    QgsCoordinateSequenceV2 geomCoords = ( *geomIt )->coordinateSequence();
+
+    QgsCoordinateSequenceV2::const_iterator cIt = geomCoords.constBegin();
     for ( ; cIt != geomCoords.constEnd(); ++cIt )
     {
-      coord.push_back( *cIt );
+      mCoordinateSequence.push_back( *cIt );
     }
   }
+
+  return mCoordinateSequence;
 }
 
 double QgsGeometryCollectionV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const

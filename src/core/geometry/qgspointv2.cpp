@@ -264,12 +264,14 @@ void QgsPointV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTrans
   ct.transformInPlace( mX, mY, mZ, d );
 }
 
-void QgsPointV2::coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const
+QgsCoordinateSequenceV2 QgsPointV2::coordinateSequence() const
 {
-  coord.clear();
-  QList< QList< QgsPointV2 > > featureCoord;
-  featureCoord.append( QList< QgsPointV2 >() << QgsPointV2( *this ) );
-  coord.append( featureCoord );
+  QgsCoordinateSequenceV2 cs;
+
+  cs.append( QgsRingSequenceV2() );
+  cs.back().append( QgsPointSequenceV2() << QgsPointV2( *this ) );
+
+  return cs;
 }
 
 /***************************************************************************

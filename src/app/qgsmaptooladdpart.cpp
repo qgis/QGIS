@@ -85,7 +85,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       }
 
       vlayer->beginEditCommand( tr( "Part added" ) );
-      errorCode = vlayer->addPart( QList<QgsPointV2>() << layerPoint );
+      errorCode = vlayer->addPart( QgsPointSequenceV2() << layerPoint );
     }
     break;
 

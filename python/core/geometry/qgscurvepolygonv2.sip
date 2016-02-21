@@ -64,7 +64,7 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos );
     virtual bool deleteVertex( QgsVertexId position );
 
-    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord /Out/ ) const;
+    virtual QList< QList< QList< QgsPointV2 > > > coordinateSequence() const;
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
 

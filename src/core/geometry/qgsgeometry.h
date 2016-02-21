@@ -346,7 +346,7 @@ class CORE_EXPORT QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPointV2> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
+    int addPart( const QgsPointSequenceV2 &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
 
     /** Adds a new part to this geometry.
      * @param part part to add (ownership is transferred)
@@ -794,13 +794,13 @@ class CORE_EXPORT QgsGeometry
      * @param input list of QgsPoint objects to be upgraded
      * @param output destination for list of points converted to QgsPointV2
      */
-    static void convertPointList( const QList<QgsPoint>& input, QList<QgsPointV2>& output );
+    static void convertPointList( const QList<QgsPoint> &input, QgsPointSequenceV2 &output );
 
     /** Downgrades a point list from QgsPointV2 to QgsPoint
      * @param input list of QgsPointV2 objects to be downgraded
      * @param output destination for list of points converted to QgsPoint
      */
-    static void convertPointList( const QList<QgsPointV2>& input, QList<QgsPoint>& output );
+    static void convertPointList( const QgsPointSequenceV2 &input, QList<QgsPoint> &output );
 
   private:
 
@@ -809,7 +809,7 @@ class CORE_EXPORT QgsGeometry
     void detach( bool cloneGeom = true ); //make sure mGeometry only referenced from this instance
     void removeWkbGeos();
 
-    static void convertToPolyline( const QList<QgsPointV2>& input, QgsPolyline& output );
+    static void convertToPolyline( const QgsPointSequenceV2 &input, QgsPolyline& output );
     static void convertPolygon( const QgsPolygonV2& input, QgsPolygon& output );
 
     /** Try to convert the geometry to a point */

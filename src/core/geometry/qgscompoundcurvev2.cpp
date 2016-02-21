@@ -263,7 +263,7 @@ QDomElement QgsCompoundCurveV2::asGML3( QDomDocument& doc, int precision, const 
   {
     if ( dynamic_cast<const QgsLineStringV2*>( curve ) )
     {
-      QList<QgsPointV2> pts;
+      QgsPointSequenceV2 pts;
       curve->points( pts );
 
       QDomElement elemLineStringSegment = doc.createElementNS( ns, "LineStringSegment" );
@@ -272,7 +272,7 @@ QDomElement QgsCompoundCurveV2::asGML3( QDomDocument& doc, int precision, const 
     }
     else if ( dynamic_cast<const QgsCircularStringV2*>( curve ) )
     {
-      QList<QgsPointV2> pts;
+      QgsPointSequenceV2 pts;
       curve->points( pts );
 
       QDomElement elemArcString = doc.createElementNS( ns, "ArcString" );
@@ -322,7 +322,7 @@ QgsPointV2 QgsCompoundCurveV2::endPoint() const
   return mCurves.at( mCurves.size() - 1 )->endPoint();
 }
 
-void QgsCompoundCurveV2::points( QList<QgsPointV2>& pts ) const
+void QgsCompoundCurveV2::points( QgsPointSequenceV2 &pts ) const
 {
   pts.clear();
   if ( mCurves.size() < 1 )
@@ -333,7 +333,7 @@ void QgsCompoundCurveV2::points( QList<QgsPointV2>& pts ) const
   mCurves[0]->points( pts );
   for ( int i = 1; i < mCurves.size(); ++i )
   {
-    QList<QgsPointV2> pList;
+    QgsPointSequenceV2 pList;
     mCurves[i]->points( pList );
     pList.removeFirst(); //first vertex already added in previous line
     pts.append( pList );

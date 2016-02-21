@@ -167,7 +167,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
     void draw( QPainter& p ) const override;
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) override;
     void transform( const QTransform& t ) override;
-    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const override;
+    virtual QgsCoordinateSequenceV2 coordinateSequence() const override;
 
     //low-level editing
     virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }

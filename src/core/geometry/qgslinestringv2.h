@@ -113,7 +113,7 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
      * inherit the dimensionality of the first point in the list.
      * @param points new points for line string. If empty, line string will be cleared.
      */
-    void setPoints( const QList<QgsPointV2>& points );
+    void setPoints( const QgsPointSequenceV2 &points );
 
     /** Appends the contents of another line string to the end of this line string.
      * @param line line to append. Ownership is not transferred.
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     virtual QgsLineStringV2* curveToLine() const override;
 
     int numPoints() const override;
-    void points( QList<QgsPointV2>& pt ) const override;
+    void points( QgsPointSequenceV2 &pt ) const override;
 
     void draw( QPainter& p ) const override;
 

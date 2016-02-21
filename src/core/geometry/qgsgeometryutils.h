@@ -148,17 +148,17 @@ class CORE_EXPORT QgsGeometryUtils
 
     /** Returns a list of points contained in a WKT string.
      */
-    static QList<QgsPointV2> pointsFromWKT( const QString& wktCoordinateList, bool is3D, bool isMeasure );
+    static QgsPointSequenceV2 pointsFromWKT( const QString& wktCoordinateList, bool is3D, bool isMeasure );
     /** Returns a LinearRing { uint32 numPoints; Point points[numPoints]; } */
-    static void pointsToWKB( QgsWkbPtr &wkb, const QList<QgsPointV2>& points, bool is3D, bool isMeasure );
+    static void pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequenceV2 &points, bool is3D, bool isMeasure );
     /** Returns a WKT coordinate list */
-    static QString pointsToWKT( const QList<QgsPointV2>& points, int precision, bool is3D, bool isMeasure );
+    static QString pointsToWKT( const QgsPointSequenceV2 &points, int precision, bool is3D, bool isMeasure );
     /** Returns a gml::coordinates DOM element */
-    static QDomElement pointsToGML2( const QList<QgsPointV2>& points, QDomDocument &doc, int precision, const QString& ns );
+    static QDomElement pointsToGML2( const QgsPointSequenceV2 &points, QDomDocument &doc, int precision, const QString& ns );
     /** Returns a gml::posList DOM element */
-    static QDomElement pointsToGML3( const QList<QgsPointV2>& points, QDomDocument &doc, int precision, const QString& ns, bool is3D );
+    static QDomElement pointsToGML3( const QgsPointSequenceV2 &points, QDomDocument &doc, int precision, const QString& ns, bool is3D );
     /** Returns a geoJSON coordinates string */
-    static QString pointsToJSON( const QList<QgsPointV2>& points, int precision );
+    static QString pointsToJSON( const QgsPointSequenceV2 &points, int precision );
 
     /** Ensures that an angle is in the range 0 <= angle < 2 pi.
      * @param angle angle in radians

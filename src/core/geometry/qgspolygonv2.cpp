@@ -155,13 +155,13 @@ unsigned char* QgsPolygonV2::asWkb( int& binarySize ) const
   wkb << static_cast<quint32>(( nullptr != mExteriorRing ) + mInteriorRings.size() );
   if ( mExteriorRing )
   {
-    QList<QgsPointV2> pts;
+    QgsPointSequenceV2 pts;
     mExteriorRing->points( pts );
     QgsGeometryUtils::pointsToWKB( wkb, pts, mExteriorRing->is3D(), mExteriorRing->isMeasure() );
   }
   Q_FOREACH ( const QgsCurveV2* curve, mInteriorRings )
   {
-    QList<QgsPointV2> pts;
+    QgsPointSequenceV2 pts;
     curve->points( pts );
     QgsGeometryUtils::pointsToWKB( wkb, pts, curve->is3D(), curve->isMeasure() );
   }

@@ -442,7 +442,7 @@ double QgsDistanceArea::measureLine( const QgsCurveV2* curve ) const
     return 0.0;
   }
 
-  QList<QgsPointV2> linePointsV2;
+  QgsPointSequenceV2 linePointsV2;
   QList<QgsPoint> linePoints;
   curve->points( linePointsV2 );
   QgsGeometry::convertPointList( linePointsV2, linePoints );
@@ -646,7 +646,7 @@ double QgsDistanceArea::measurePolygon( const QgsCurveV2* curve ) const
     return 0.0;
   }
 
-  QList<QgsPointV2> linePointsV2;
+  QgsPointSequenceV2 linePointsV2;
   curve->points( linePointsV2 );
   QList<QgsPoint> linePoints;
   QgsGeometry::convertPointList( linePointsV2, linePoints );

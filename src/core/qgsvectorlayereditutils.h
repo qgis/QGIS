@@ -121,7 +121,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * @note available in python bindings as addPartV2
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPointV2>& ring, QgsFeatureId featureId );
+    int addPart( const QgsPointSequenceV2 &ring, QgsFeatureId featureId );
 
     // @note available in python bindings as addCurvedPart
     // TODO QGIS 3.0 returns an enum instead of a magic constant

@@ -233,7 +233,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point )
     return false; // ignore the vertex - can't find path to the end point!
 
   // transform points
-  QList<QgsPointV2> layerPoints;
+  QgsPointSequenceV2 layerPoints;
   QgsPointV2 lp; // in layer coords
   for ( int i = 1; i < points.count(); ++i )
   {
@@ -479,10 +479,10 @@ int QgsMapToolCapture::addCurve( QgsCurveV2* c )
   }
 
   QgsLineStringV2* lineString = c->curveToLine();
-  QList<QgsPointV2> linePoints;
+  QgsPointSequenceV2 linePoints;
   lineString->points( linePoints );
   delete lineString;
-  QList<QgsPointV2>::const_iterator ptIt = linePoints.constBegin();
+  QgsPointSequenceV2::const_iterator ptIt = linePoints.constBegin();
   for ( ; ptIt != linePoints.constEnd(); ++ptIt )
   {
     mRubberBand->addPoint( QgsPoint( ptIt->x(), ptIt->y() ) );
@@ -715,7 +715,7 @@ int QgsMapToolCapture::size()
 
 QList<QgsPoint> QgsMapToolCapture::points()
 {
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   QList<QgsPoint> points;
   mCaptureCurve.points( pts );
   QgsGeometry::convertPointList( pts, points );
@@ -724,7 +724,7 @@ QList<QgsPoint> QgsMapToolCapture::points()
 
 void QgsMapToolCapture::setPoints( const QList<QgsPoint>& pointList )
 {
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   QgsGeometry::convertPointList( pointList, pts );
 
   QgsLineStringV2* line = new QgsLineStringV2();

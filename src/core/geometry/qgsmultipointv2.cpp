@@ -75,7 +75,7 @@ QString QgsMultiPointV2::asJSON( int precision ) const
 {
   QString json = "{\"type\": \"MultiPoint\", \"coordinates\": ";
 
-  QList<QgsPointV2> pts;
+  QgsPointSequenceV2 pts;
   Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPointV2*>( geom ) )

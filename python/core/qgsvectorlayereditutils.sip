@@ -54,6 +54,7 @@ class QgsVectorLayerEditUtils
      *   4 ring crosses existing rings,
      *   5 no feature found where ring can be inserted
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = 0 );
 
     /** Adds a ring to polygon/multipolygon features
@@ -70,6 +71,7 @@ class QgsVectorLayerEditUtils
      *  5 no feature found where ring can be inserted
      * @note available in python bindings as addCurvedRing
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( QgsCurveV2* ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr ) /PyName=addCurvedRing/;
 
     /** Adds a new part polygon to a multipart feature
@@ -82,6 +84,7 @@ class QgsVectorLayerEditUtils
      *  5 if several features are selected,
      *  6 if selected geometry not found
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QList<QgsPoint>& ring, QgsFeatureId featureId );
 
     /** Adds a new part polygon to a multipart feature
@@ -95,9 +98,11 @@ class QgsVectorLayerEditUtils
      *  6 if selected geometry not found
      * @note available in python bindings as addPartV2
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QList<QgsPointV2>& ring, QgsFeatureId featureId ) /PyName=addPartV2/;
 
     // @note available in python bindings as addCurvedPart
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( QgsCurveV2* ring, QgsFeatureId featureId ) /PyName=addCurvedPart/;
 
     /** Translates feature by dx, dy
@@ -115,6 +120,7 @@ class QgsVectorLayerEditUtils
      *   0 in case of success,
      *   4 if there is a selection but no feature split
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitParts( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
     /** Splits features cut by the given line
@@ -124,6 +130,7 @@ class QgsVectorLayerEditUtils
      *   0 in case of success,
      *   4 if there is a selection but no feature split
      */
+    // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
     /** Adds topological points for every vertex of the geometry.

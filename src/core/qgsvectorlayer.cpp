@@ -1155,7 +1155,7 @@ int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
   return utils.addPart( points, *mSelectedFeatureIds.constBegin() );
 }
 
-int QgsVectorLayer::addPart( const QList<QgsPointV2> &points )
+int QgsVectorLayer::addPart( const QgsPointSequenceV2 &points )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return 7;

@@ -92,22 +92,23 @@ QgsPointV2 QgsGeometryUtils::closestVertex( const QgsAbstractGeometryV2& geom, c
 void QgsGeometryUtils::adjacentVertices( const QgsAbstractGeometryV2& geom, QgsVertexId atVertex, QgsVertexId& beforeVertex, QgsVertexId& afterVertex )
 {
   bool polygonType = ( geom.dimension()  == 2 );
-  QList< QList< QList< QgsPointV2 > > > coords;
-  geom.coordinateSequence( coords );
+
+  QgsCoordinateSequenceV2 coords = geom.coordinateSequence();
 
   //get feature
   if ( coords.size() <= atVertex.part )
   {
     return; //error, no such feature
   }
-  const QList< QList< QgsPointV2 > >& part = coords.at( atVertex.part );
+
+  const QgsRingSequenceV2 &part = coords.at( atVertex.part );
 
   //get ring
   if ( part.size() <= atVertex.ring )
   {
     return; //error, no such ring
   }
-  const QList< QgsPointV2 >& ring = part.at( atVertex.ring );
+  const QgsPointSequenceV2 &ring = part.at( atVertex.ring );
   if ( ring.size() <= atVertex.vertex )
   {
     return;
@@ -522,10 +523,10 @@ double QgsGeometryUtils::circleTangentDirection( const QgsPointV2& tangentPoint,
   }
 }
 
-QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateList, bool is3D, bool isMeasure )
+QgsPointSequenceV2 QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateList, bool is3D, bool isMeasure )
 {
   int dim = 2 + is3D + isMeasure;
-  QList<QgsPointV2> points;
+  QgsPointSequenceV2 points;
   QStringList coordList = wktCoordinateList.split( ',', QString::SkipEmptyParts );
 
   //first scan through for extra unexpected dimensions
@@ -589,7 +590,7 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
   return points;
 }
 
-void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QList<QgsPointV2> &points, bool is3D, bool isMeasure )
+void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QgsPointSequenceV2 &points, bool is3D, bool isMeasure )
 {
   wkb << static_cast<quint32>( points.size() );
   Q_FOREACH ( const QgsPointV2& point, points )
@@ -606,7 +607,7 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QList<QgsPointV2> &poi
   }
 }
 
-QString QgsGeometryUtils::pointsToWKT( const QList<QgsPointV2>& points, int precision, bool is3D, bool isMeasure )
+QString QgsGeometryUtils::pointsToWKT( const QgsPointSequenceV2 &points, int precision, bool is3D, bool isMeasure )
 {
   QString wkt = "(";
   Q_FOREACH ( const QgsPointV2& p, points )
@@ -625,7 +626,7 @@ QString QgsGeometryUtils::pointsToWKT( const QList<QgsPointV2>& points, int prec
   return wkt;
 }
 
-QDomElement QgsGeometryUtils::pointsToGML2( const QList<QgsPointV2>& points, QDomDocument& doc, int precision, const QString &ns )
+QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequenceV2 &points, QDomDocument& doc, int precision, const QString &ns )
 {
   QDomElement elemCoordinates = doc.createElementNS( ns, "coordinates" );
 
@@ -641,7 +642,7 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QList<QgsPointV2>& points, QDo
   return elemCoordinates;
 }
 
-QDomElement QgsGeometryUtils::pointsToGML3( const QList<QgsPointV2>& points, QDomDocument& doc, int precision, const QString &ns, bool is3D )
+QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequenceV2 &points, QDomDocument& doc, int precision, const QString &ns, bool is3D )
 {
   QDomElement elemPosList = doc.createElementNS( ns, "posList" );
   elemPosList.setAttribute( "srsDimension", is3D ? 3 : 2 );
@@ -660,7 +661,7 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QList<QgsPointV2>& points, QDo
   return elemPosList;
 }
 
-QString QgsGeometryUtils::pointsToJSON( const QList<QgsPointV2>& points, int precision )
+QString QgsGeometryUtils::pointsToJSON( const QgsPointSequenceV2 &points, int precision )
 {
   QString json = "[ ";
   Q_FOREACH ( const QgsPointV2& p, points )
