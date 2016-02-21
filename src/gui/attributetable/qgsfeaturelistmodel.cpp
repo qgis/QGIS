@@ -61,9 +61,13 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
     {
       return QSettings().value( "qgis/nullValue", "NULL" ).toString();
     }
-    else
+    else if ( role == QgsAttributeTableModel::FeatureIdRole )
     {
       return QVariant( QVariant::Int );
+    }
+    else
+    {
+      return QVariant( QVariant::Invalid );
     }
   }
 
@@ -122,7 +126,14 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
 
 Qt::ItemFlags QgsFeatureListModel::flags( const QModelIndex &index ) const
 {
-  return sourceModel()->flags( mapToSource( index ) ) & ~Qt::ItemIsEditable;
+  if ( mInjectNull && index.row() == 0 )
+  {
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+  }
+  else
+  {
+    return sourceModel()->flags( mapToSource( index ) ) & ~Qt::ItemIsEditable;
+  }
 }
 
 void QgsFeatureListModel::setInjectNull( bool injectNull )
