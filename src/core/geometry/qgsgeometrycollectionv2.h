@@ -139,7 +139,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometryV2*>& subtypes, const QString& defaultChildWkbType = QString() );
 
     virtual QgsRectangle calculateBoundingBox() const override;
-    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); }
+    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); QgsAbstractGeometryV2::clearCache(); }
 
   private:
 

@@ -939,6 +939,7 @@ bool QgsLineStringV2::addZValue( double zValue )
   if ( QgsWKBTypes::hasZ( mWkbType ) )
     return false;
 
+  clearCache();
   if ( mWkbType == QgsWKBTypes::Unknown )
   {
     mWkbType = QgsWKBTypes::LineStringZ;
@@ -962,6 +963,7 @@ bool QgsLineStringV2::addMValue( double mValue )
   if ( QgsWKBTypes::hasM( mWkbType ) )
     return false;
 
+  clearCache();
   if ( mWkbType == QgsWKBTypes::Unknown )
   {
     mWkbType = QgsWKBTypes::LineStringM;
@@ -992,6 +994,7 @@ bool QgsLineStringV2::dropZValue()
   if ( !is3D() )
     return false;
 
+  clearCache();
   mWkbType = QgsWKBTypes::dropZ( mWkbType );
   mZ.clear();
   return true;
@@ -1002,6 +1005,7 @@ bool QgsLineStringV2::dropMValue()
   if ( !isMeasure() )
     return false;
 
+  clearCache();
   mWkbType = QgsWKBTypes::dropM( mWkbType );
   mM.clear();
   return true;
@@ -1012,6 +1016,7 @@ bool QgsLineStringV2::convertTo( QgsWKBTypes::Type type )
   if ( type == mWkbType )
     return true;
 
+  clearCache();
   if ( type == QgsWKBTypes::LineString25D )
   {
     //special handling required for conversion to LineString25D

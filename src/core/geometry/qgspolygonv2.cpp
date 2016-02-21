@@ -197,6 +197,7 @@ void QgsPolygonV2::addInteriorRing( QgsCurveV2* ring )
   {
     QgsCurvePolygonV2::addInteriorRing( ring );
   }
+  clearCache();
 }
 
 void QgsPolygonV2::setExteriorRing( QgsCurveV2* ring )
@@ -231,6 +232,8 @@ void QgsPolygonV2::setExteriorRing( QgsCurveV2* ring )
   {
     ring->convertTo( mExteriorRing->wkbType() );
   }
+
+  clearCache();
 }
 
 QgsPolygonV2* QgsPolygonV2::surfaceToPolygon() const

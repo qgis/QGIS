@@ -32,8 +32,8 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
 
     //curve polygon interface
     int numInteriorRings() const;
-    QgsCurveV2* exteriorRing() const;
-    QgsCurveV2* interiorRing( int i ) const;
+    const QgsCurveV2* exteriorRing() const;
+    const QgsCurveV2* interiorRing( int i ) const;
     virtual QgsPolygonV2* toPolygon() const;
 
     /** Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality

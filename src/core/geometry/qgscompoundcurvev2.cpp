@@ -61,6 +61,7 @@ QgsCompoundCurveV2& QgsCompoundCurveV2::operator=( const QgsCompoundCurveV2 & cu
 {
   if ( &curve != this )
   {
+    clearCache();
     QgsCurveV2::operator=( curve );
     Q_FOREACH ( const QgsCurveV2* c, curve.mCurves )
     {
@@ -80,6 +81,7 @@ void QgsCompoundCurveV2::clear()
   qDeleteAll( mCurves );
   mCurves.clear();
   mWkbType = QgsWKBTypes::Unknown;
+  clearCache();
 }
 
 QgsRectangle QgsCompoundCurveV2::calculateBoundingBox() const
@@ -388,6 +390,7 @@ void QgsCompoundCurveV2::addCurve( QgsCurveV2* c )
     {
       setZMTypeFromSubGeometry( c, QgsWKBTypes::CompoundCurve );
     }
+    clearCache();
   }
 }
 
@@ -400,6 +403,7 @@ void QgsCompoundCurveV2::removeCurve( int i )
 
   delete( mCurves.at( i ) );
   mCurves.removeAt( i );
+  clearCache();
 }
 
 void QgsCompoundCurveV2::addVertex( const QgsPointV2& pt )
@@ -432,6 +436,7 @@ void QgsCompoundCurveV2::addVertex( const QgsPointV2& pt )
     line = static_cast<QgsLineStringV2*>( lastCurve );
   }
   line->addVertex( pt );
+  clearCache();
 }
 
 void QgsCompoundCurveV2::draw( QPainter& p ) const
@@ -449,6 +454,7 @@ void QgsCompoundCurveV2::transform( const QgsCoordinateTransform& ct, QgsCoordin
   {
     curve->transform( ct, d );
   }
+  clearCache();
 }
 
 void QgsCompoundCurveV2::transform( const QTransform& t )
@@ -457,6 +463,7 @@ void QgsCompoundCurveV2::transform( const QTransform& t )
   {
     curve->transform( t );
   }
+  clearCache();
 }
 
 void QgsCompoundCurveV2::addToPainterPath( QPainterPath& path ) const
@@ -659,6 +666,7 @@ bool QgsCompoundCurveV2::addZValue( double zValue )
   {
     curve->addZValue( zValue );
   }
+  clearCache();
   return true;
 }
 
@@ -673,6 +681,7 @@ bool QgsCompoundCurveV2::addMValue( double mValue )
   {
     curve->addMValue( mValue );
   }
+  clearCache();
   return true;
 }
 
@@ -686,6 +695,7 @@ bool QgsCompoundCurveV2::dropZValue()
   {
     curve->dropZValue();
   }
+  clearCache();
   return true;
 }
 
@@ -699,6 +709,7 @@ bool QgsCompoundCurveV2::dropMValue()
   {
     curve->dropMValue();
   }
+  clearCache();
   return true;
 }
 

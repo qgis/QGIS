@@ -339,6 +339,7 @@ bool QgsPointV2::addZValue( double zValue )
 
   mWkbType = QgsWKBTypes::addZ( mWkbType );
   mZ = zValue;
+  clearCache();
   return true;
 }
 
@@ -349,6 +350,7 @@ bool QgsPointV2::addMValue( double mValue )
 
   mWkbType = QgsWKBTypes::addM( mWkbType );
   mM = mValue;
+  clearCache();
   return true;
 }
 
@@ -369,6 +371,7 @@ bool QgsPointV2::dropZValue()
 
   mWkbType = QgsWKBTypes::dropZ( mWkbType );
   mZ = 0.0;
+  clearCache();
   return true;
 }
 
@@ -379,6 +382,7 @@ bool QgsPointV2::dropMValue()
 
   mWkbType = QgsWKBTypes::dropM( mWkbType );
   mM = 0.0;
+  clearCache();
   return true;
 }
 
@@ -386,6 +390,8 @@ bool QgsPointV2::convertTo( QgsWKBTypes::Type type )
 {
   if ( type == mWkbType )
     return true;
+
+  clearCache();
 
   switch ( type )
   {

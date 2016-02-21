@@ -113,7 +113,7 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
 
   protected:
 
-    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); }
+    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); QgsAbstractGeometryV2::clearCache(); }
 
   private:
 

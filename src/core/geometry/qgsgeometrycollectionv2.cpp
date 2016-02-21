@@ -46,6 +46,7 @@ QgsGeometryCollectionV2& QgsGeometryCollectionV2::operator=( const QgsGeometryCo
 {
   if ( &c != this )
   {
+    clearCache();
     QgsAbstractGeometryV2::operator=( c );
     int nGeoms = c.mGeometries.size();
     mGeometries.resize( nGeoms );
@@ -87,6 +88,7 @@ const QgsAbstractGeometryV2* QgsGeometryCollectionV2::geometryN( int n ) const
 
 QgsAbstractGeometryV2* QgsGeometryCollectionV2::geometryN( int n )
 {
+  clearCache();
   return mGeometries.value( n );
 }
 
@@ -590,6 +592,7 @@ bool QgsGeometryCollectionV2::addZValue( double zValue )
   {
     geom->addZValue( zValue );
   }
+  clearCache();
   return true;
 }
 
@@ -604,6 +607,7 @@ bool QgsGeometryCollectionV2::addMValue( double mValue )
   {
     geom->addMValue( mValue );
   }
+  clearCache();
   return true;
 }
 
@@ -618,6 +622,7 @@ bool QgsGeometryCollectionV2::dropZValue()
   {
     geom->dropZValue();
   }
+  clearCache();
   return true;
 }
 
@@ -631,5 +636,6 @@ bool QgsGeometryCollectionV2::dropMValue()
   {
     geom->dropMValue();
   }
+  clearCache();
   return true;
 }

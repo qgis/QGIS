@@ -107,7 +107,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
      * @see setZ()
      * @note not available in Python bindings
      */
-    double &rz() { return mZ; }
+    double &rz() { clearCache(); return mZ; }
 
     /** Returns a reference to the m value of this point.
      * Using a reference makes it possible to directly manipulate m in place.
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
      * @see setM()
      * @note not available in Python bindings
      */
-    double &rm() { return mM; }
+    double &rm() { clearCache(); return mM; }
 
     /** Sets the point's x-coordinate.
      * @see x()
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
      * @see z()
      * @see rz()
      */
-    void setZ( double z ) { mZ = z; }
+    void setZ( double z ) { clearCache(); mZ = z; }
 
     /** Sets the point's m-value.
      * @note calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
      * @see m()
      * @see rm()
      */
-    void setM( double m ) { mM = m; }
+    void setM( double m ) { clearCache(); mM = m; }
 
     /** Returns the point as a QPointF.
      * @note added in QGIS 2.14

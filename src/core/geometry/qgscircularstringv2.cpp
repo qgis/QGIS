@@ -62,6 +62,7 @@ void QgsCircularStringV2::clear()
   mZ.clear();
   mM.clear();
   mWkbType = QgsWKBTypes::Unknown;
+  clearCache();
 }
 
 QgsRectangle QgsCircularStringV2::calculateBoundingBox() const
@@ -216,6 +217,7 @@ bool QgsCircularStringV2::fromWkb( QgsConstWkbPtr wkbPtr )
   {
     return false;
   }
+  clearCache();
   mWkbType = type;
 
   //type
@@ -418,6 +420,8 @@ void QgsCircularStringV2::points( QList<QgsPointV2>& pts ) const
 
 void QgsCircularStringV2::setPoints( const QList<QgsPointV2>& points )
 {
+  clearCache();
+
   if ( points.size() < 1 )
   {
     mWkbType = QgsWKBTypes::Unknown;
@@ -609,6 +613,8 @@ void QgsCircularStringV2::draw( QPainter& p ) const
 
 void QgsCircularStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
 {
+  clearCache();
+
   double* zArray = mZ.data();
 
   bool hasZ = is3D();
@@ -630,6 +636,8 @@ void QgsCircularStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordi
 
 void QgsCircularStringV2::transform( const QTransform& t )
 {
+  clearCache();
+
   int nPoints = numPoints();
   for ( int i = 0; i < nPoints; ++i )
   {
@@ -788,6 +796,7 @@ void QgsCircularStringV2::deleteVertex( int i )
   {
     mM.remove( i );
   }
+  clearCache();
 }
 
 double QgsCircularStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
@@ -975,6 +984,7 @@ void QgsCircularStringV2::insertVertexBetween( int after, int before, int pointO
   {
     mM.insert( before, ( mM[after] + mM[before] ) / 2.0 );
   }
+  clearCache();
 }
 
 double QgsCircularStringV2::vertexAngle( QgsVertexId vId ) const
@@ -1053,6 +1063,7 @@ bool QgsCircularStringV2::addZValue( double zValue )
   if ( QgsWKBTypes::hasZ( mWkbType ) )
     return false;
 
+  clearCache();
   mWkbType = QgsWKBTypes::addZ( mWkbType );
 
   int nPoints = numPoints();
@@ -1070,6 +1081,7 @@ bool QgsCircularStringV2::addMValue( double mValue )
   if ( QgsWKBTypes::hasM( mWkbType ) )
     return false;
 
+  clearCache();
   mWkbType = QgsWKBTypes::addM( mWkbType );
 
   int nPoints = numPoints();
@@ -1087,6 +1099,8 @@ bool QgsCircularStringV2::dropZValue()
   if ( !QgsWKBTypes::hasZ( mWkbType ) )
     return false;
 
+  clearCache();
+
   mWkbType = QgsWKBTypes::dropZ( mWkbType );
   mZ.clear();
   return true;
@@ -1096,6 +1110,8 @@ bool QgsCircularStringV2::dropMValue()
 {
   if ( !QgsWKBTypes::hasM( mWkbType ) )
     return false;
+
+  clearCache();
 
   mWkbType = QgsWKBTypes::dropM( mWkbType );
   mM.clear();
