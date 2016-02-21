@@ -40,7 +40,8 @@ from processing.core.outputs import (
     OutputNumber,
     OutputString,
     OutputRaster,
-    OutputVector
+    OutputVector,
+    OutputHTML
 )
 
 from processing.core.parameters import (
@@ -156,8 +157,8 @@ def createTest(text):
 
     definition['params'] = params
 
-    for i, out in enumerate(alg.outputs):
-        token = tokens[i - len(alg.outputs)]
+    for i, out in enumerate([out for out in alg.outputs if not out.hidden]):
+        token = tokens[i - alg.getVisibleOutputsCount()]
 
         if isinstance(out, (OutputNumber, OutputString)):
             results[out.name] = unicode(out)
@@ -179,6 +180,15 @@ def createTest(text):
             }
             if not schema:
                 results[out.name]['location'] = '[The expected result data is not in the testdata directory. Please write it to processing/tests/testdata/expected. Prefer gml files.]'
+        elif isinstance(out, OutputHTML):
+            filename = token[1:-1]
+            schema, filepath = extractSchemaPath(filename)
+            results[out.name] = {
+                'type': 'file',
+                'name': filepath
+            }
+            if not schema:
+                results[out.name]['location'] = '[The expected result file is not in the testdata directory. Please redirect the output to processing/tests/testdata/expected.]'
 
     definition['results'] = results
 
