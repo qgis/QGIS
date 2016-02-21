@@ -395,8 +395,8 @@ QString QgsDb2TableModel::layerURI( const QModelIndex &index, const QString &con
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
-
-  return uri.uri();
+  QgsDebugMsg( "Layer URI: " + uri.uri(false) );
+  return uri.uri(false);
 }
 
 QGis::WkbType QgsDb2TableModel::wkbTypeFromDb2( QString type, int dim )
