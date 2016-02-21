@@ -109,6 +109,15 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
     virtual int partCount() const override { return numPoints() > 0 ? 1 : 0; }
     virtual QgsPointV2 vertexAt( QgsVertexId id ) const override;
 
+    virtual QgsRectangle boundingBox() const override;
+
+  protected:
+
+    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); }
+
+  private:
+
+    mutable QgsRectangle mBoundingBox;
 };
 
 #endif // QGSCURVEV2_H

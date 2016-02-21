@@ -91,7 +91,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
      * @see setX()
      * @note not available in Python bindings
      */
-    double &rx() { mBoundingBox = QgsRectangle(); return mX; }
+    double &rx() { clearCache(); return mX; }
 
     /** Returns a reference to the y-coordinate of this point.
      * Using a reference makes it possible to directly manipulate y in place.
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
      * @see setY()
      * @note not available in Python bindings
      */
-    double &ry() { mBoundingBox = QgsRectangle(); return mY; }
+    double &ry() { clearCache(); return mY; }
 
     /** Returns a reference to the z-coordinate of this point.
      * Using a reference makes it possible to directly manipulate z in place.
@@ -121,13 +121,13 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
      * @see x()
      * @see rx()
      */
-    void setX( double x ) { mX = x; mBoundingBox = QgsRectangle(); }
+    void setX( double x ) { clearCache(); mX = x; }
 
     /** Sets the point's y-coordinate.
      * @see y()
      * @see ry()
      */
-    void setY( double y ) { mY = y; mBoundingBox = QgsRectangle(); }
+    void setY( double y ) { clearCache(); mY = y; }
 
     /** Sets the point's z-coordinate.
      * @note calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
@@ -151,6 +151,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
     QPointF toQPointF() const;
 
     //implementation of inherited methods
+    virtual QgsRectangle boundingBox() const override { return QgsRectangle( mX, mY, mX, mY ); }
     virtual QString geometryType() const override { return "Point"; }
     virtual int dimension() const override { return 0; }
     virtual QgsPointV2* clone() const override;
@@ -163,7 +164,6 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
     QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
-    virtual QgsRectangle calculateBoundingBox() const override { return QgsRectangle( mX, mY, mX, mY );}
     void draw( QPainter& p ) const override;
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) override;
     void transform( const QTransform& t ) override;

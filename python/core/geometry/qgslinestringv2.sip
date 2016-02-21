@@ -162,4 +162,8 @@ class QgsLineStringV2: public QgsCurveV2
 
     virtual bool convertTo( QgsWKBTypes::Type type );
 
+  protected:
+
+    virtual QgsRectangle calculateBoundingBox() const;
+
 };

@@ -7,4 +7,11 @@ class QgsSurfaceV2: public QgsAbstractGeometryV2
   public:
 
     virtual QgsPolygonV2* surfaceToPolygon() const = 0;
+
+    virtual QgsRectangle boundingBox() const;
+
+  protected:
+
+    virtual void clearCache() const;
+
 };

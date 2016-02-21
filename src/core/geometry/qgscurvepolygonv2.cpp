@@ -209,7 +209,7 @@ QgsRectangle QgsCurvePolygonV2::calculateBoundingBox() const
 {
   if ( mExteriorRing )
   {
-    return mExteriorRing->calculateBoundingBox();
+    return mExteriorRing->boundingBox();
   }
   return QgsRectangle();
 }
@@ -666,7 +666,7 @@ bool QgsCurvePolygonV2::insertVertex( QgsVertexId vId, const QgsPointV2& vertex 
   else if ( vId.vertex == n )
     ring->moveVertex( QgsVertexId( 0, 0, 0 ), vertex );
 
-  mBoundingBox = QgsRectangle();
+  clearCache();
   return true;
 }
 
@@ -687,7 +687,7 @@ bool QgsCurvePolygonV2::moveVertex( QgsVertexId vId, const QgsPointV2& newPos )
       ring->moveVertex( QgsVertexId( vId.part, vId.ring, n - 1 ), newPos );
     else if ( vId.vertex == n - 1 )
       ring->moveVertex( QgsVertexId( vId.part, vId.ring, 0 ), newPos );
-    mBoundingBox = QgsRectangle();
+    clearCache();
   }
   return success;
 }
@@ -717,7 +717,7 @@ bool QgsCurvePolygonV2::deleteVertex( QgsVertexId vId )
     {
       removeInteriorRing( vId.ring - 1 );
     }
-    mBoundingBox = QgsRectangle();
+    clearCache();
     return true;
   }
 
@@ -729,7 +729,7 @@ bool QgsCurvePolygonV2::deleteVertex( QgsVertexId vId )
       ring->moveVertex( QgsVertexId( 0, 0, n - 2 ), ring->vertexAt( QgsVertexId( 0, 0, 0 ) ) );
     else if ( vId.vertex == n - 1 )
       ring->moveVertex( QgsVertexId( 0, 0, 0 ), ring->vertexAt( QgsVertexId( 0, 0, n - 2 ) ) );
-    mBoundingBox = QgsRectangle();
+    clearCache();
   }
   return success;
 }

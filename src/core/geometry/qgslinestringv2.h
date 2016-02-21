@@ -188,6 +188,10 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
 
     bool convertTo( QgsWKBTypes::Type type ) override;
 
+  protected:
+
+    virtual QgsRectangle calculateBoundingBox() const override;
+
   private:
     QVector<double> mX;
     QVector<double> mY;

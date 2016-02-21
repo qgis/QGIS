@@ -85,12 +85,7 @@ class QgsAbstractGeometryV2
 
     /** Returns the minimal bounding box for the geometry
      */
-    QgsRectangle boundingBox() const;
-
-    /** Calculates the minimal bounding box for the geometry. Derived classes should override this method
-     * to return the correct bounding box.
-     */
-    virtual QgsRectangle calculateBoundingBox() const;
+    virtual QgsRectangle boundingBox() const = 0;
 
     //mm-sql interface
     /** Returns the inherent dimension of the geometry. For example, this is 0 for a point geometry,
@@ -373,4 +368,13 @@ class QgsAbstractGeometryV2
     /** Updates the geometry type based on whether sub geometries contain z or m values.
      */
     void setZMTypeFromSubGeometry( const QgsAbstractGeometryV2* subggeom, QgsWKBTypes::Type baseGeomType );
+
+    /** Default calculator for the minimal bounding box for the geometry. Derived classes should override this method
+     * if a more efficient bounding box calculation is available.
+     */
+    virtual QgsRectangle calculateBoundingBox() const;
+
+    /** Clears any cached parameters associated with the geometry, eg bounding boxes
+     */
+    virtual void clearCache() const;
 };

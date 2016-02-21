@@ -41,8 +41,6 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     virtual QgsCircularStringV2* clone() const override;
     virtual void clear() override;
 
-    virtual QgsRectangle calculateBoundingBox() const override;
-
     virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
     virtual bool fromWkt( const QString& wkt ) override;
 
@@ -134,6 +132,10 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     virtual bool dropZValue() override;
     virtual bool dropMValue() override;
 
+  protected:
+
+    virtual QgsRectangle calculateBoundingBox() const override;
+
   private:
     QVector<double> mX;
     QVector<double> mY;
@@ -152,6 +154,7 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
                                      const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon );
     void insertVertexBetween( int after, int before, int pointOnCircle );
     void deleteVertex( int i );
+
 };
 
 #endif // QGSCIRCULARSTRING_H

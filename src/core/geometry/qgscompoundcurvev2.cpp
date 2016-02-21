@@ -89,10 +89,10 @@ QgsRectangle QgsCompoundCurveV2::calculateBoundingBox() const
     return QgsRectangle();
   }
 
-  QgsRectangle bbox = mCurves.at( 0 )->calculateBoundingBox();
+  QgsRectangle bbox = mCurves.at( 0 )->boundingBox();
   for ( int i = 1; i < mCurves.size(); ++i )
   {
-    QgsRectangle curveBox = mCurves.at( i )->calculateBoundingBox();
+    QgsRectangle curveBox = mCurves.at( i )->boundingBox();
     bbox.combineExtentWith( &curveBox );
   }
   return bbox;
@@ -497,7 +497,7 @@ bool QgsCompoundCurveV2::insertVertex( QgsVertexId position, const QgsPointV2& v
   bool success = mCurves.at( curveId )->insertVertex( curveIds.at( 0 ).second, vertex );
   if ( success )
   {
-    mBoundingBox = QgsRectangle(); //bbox changed
+    clearCache(); //bbox changed
   }
   return success;
 }
@@ -514,7 +514,7 @@ bool QgsCompoundCurveV2::moveVertex( QgsVertexId position, const QgsPointV2& new
   bool success = !curveIds.isEmpty();
   if ( success )
   {
-    mBoundingBox = QgsRectangle(); //bbox changed
+    clearCache(); //bbox changed
   }
   return success;
 }
@@ -531,7 +531,7 @@ bool QgsCompoundCurveV2::deleteVertex( QgsVertexId position )
   bool success = !curveIds.isEmpty();
   if ( success )
   {
-    mBoundingBox = QgsRectangle(); //bbox changed
+    clearCache(); //bbox changed
   }
   return success;
 }

@@ -41,8 +41,6 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     virtual QgsCurvePolygonV2* clone() const override;
     void clear() override;
 
-
-    virtual QgsRectangle calculateBoundingBox() const override;
     virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
     virtual bool fromWkt( const QString& wkt ) override;
 
@@ -120,6 +118,7 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     QgsCurveV2* mExteriorRing;
     QList<QgsCurveV2*> mInteriorRings;
 
+    virtual QgsRectangle calculateBoundingBox() const override;
 };
 
 #endif // QGSCURVEPOLYGONV2_H

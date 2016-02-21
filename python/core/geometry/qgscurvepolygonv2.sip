@@ -15,8 +15,6 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     virtual QgsCurvePolygonV2* clone() const;
     void clear();
 
-
-    virtual QgsRectangle calculateBoundingBox() const;
     virtual bool fromWkb( QgsConstWkbPtr wkb );
     virtual bool fromWkt( const QString& wkt );
 
@@ -88,4 +86,8 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     virtual bool addMValue( double mValue = 0 );
     virtual bool dropZValue();
     virtual bool dropMValue();
+
+  protected:
+
+    virtual QgsRectangle calculateBoundingBox() const;
 };
