@@ -103,7 +103,12 @@ class RestrictedAccessControl(QgsAccessControlFilter):
         if not self._active:
             return super(RestrictedAccessControl, self).layerFilterSubsetString(layer)
 
-        return "pk = 1" if layer.name() == "Hello_SubsetString" else None
+        if layer.name() == "Hello_SubsetString":
+            return "pk = 1"
+        elif layer.name() == "Hello_Project_SubsetString":
+            return "pkuid = 6 or pkuid = 7"
+        else:
+            return None
 
     def layerPermissions(self, layer):
         """ Return the layer rights """
@@ -861,6 +866,42 @@ class TestQgsServerAccessControl(unittest.TestCase):
         response, headers = self._get_restricted(query_string)
         self._img_diff_error(response, headers, "Restricted_WMS_GetMap")
 
+    def test_wms_getmap_projectsubsetstring(self):
+        """ test that project set layer subsetStrings are honored"""
+        query_string = "&".join(["%s=%s" % i for i in {
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Hello_Project_SubsetString",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857"
+        }.items()])
+
+        response, headers = self._get_fullaccess(query_string)
+        self._img_diff_error(response, headers, "WMS_GetMap_projectsubstring")
+
+        query_string = "&".join(["%s=%s" % i for i in {
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Hello_Project_SubsetString",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857"
+        }.items()])
+
+        response, headers = self._get_restricted(query_string)
+        self._img_diff_error(response, headers, "Restricted_WMS_GetMap_projectsubstring")
+
     def test_wms_getfeatureinfo_subsetstring(self):
         query_string = "&".join(["%s=%s" % i for i in {
             "SERVICE": "WMS",
@@ -930,6 +971,113 @@ class TestQgsServerAccessControl(unittest.TestCase):
             str(response).find("<qgs:pk>") != -1,
             "Unexpected result result in GetFeatureInfo Hello/2\n%s" % response)
 
+    def test_wms_getfeatureinfo_projectsubsetstring(self):
+        """test that layer subsetStrings set in projects are honored. This test checks for a feature which should be filtered
+        out by the project set layer subsetString
+        """
+        query_string = "&".join(["%s=%s" % i for i in {
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetFeatureInfo",
+            "LAYERS": "Hello_Project_SubsetString",
+            "QUERY_LAYERS": "Hello_Project_SubsetString",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857",
+            "FEATURE_COUNT": "10",
+            "INFO_FORMAT": "application/vnd.ogc.gml",
+            "X": "56",
+            "Y": "144",
+            "MAP": urllib.quote(self.projectPath)
+        }.items()])
+
+        response, headers = self._get_fullaccess(query_string)
+        self.assertFalse(
+            str(response).find("<qgs:pk>") != -1,
+            "Project set layer subsetString not honored in WMS GetFeatureInfo/1\n%s" % response)
+
+        response, headers = self._get_restricted(query_string)
+        self.assertFalse(
+            str(response).find("<qgs:pk>") != -1,
+            "Project set layer subsetString not honored in WMS GetFeatureInfo when access control applied/1\n%s" % response)
+
+    def test_wms_getfeatureinfo_projectsubsetstring2(self):
+        """test that layer subsetStrings set in projects are honored. This test checks for a feature which should be pass
+        both project set layer subsetString and access control filters
+        """
+        query_string = "&".join(["%s=%s" % i for i in {
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetFeatureInfo",
+            "LAYERS": "Hello_Project_SubsetString",
+            "QUERY_LAYERS": "Hello_Project_SubsetString",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1623412,3146330,-1603412,3166330",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857",
+            "FEATURE_COUNT": "10",
+            "INFO_FORMAT": "application/vnd.ogc.gml",
+            "X": "146",
+            "Y": "160",
+            "MAP": urllib.quote(self.projectPath)
+        }.items()])
+
+        response, headers = self._get_fullaccess(query_string)
+        self.assertTrue(
+            str(response).find("<qgs:pk>") != -1,
+            "No result result in GetFeatureInfo Hello/2\n%s" % response)
+        self.assertTrue(
+            str(response).find("<qgs:pk>7</qgs:pk>") != -1,
+            "No good result result in GetFeatureInfo Hello/2\n%s" % response)
+
+        response, headers = self._get_restricted(query_string)
+        self.assertTrue(
+            str(response).find("<qgs:pk>") != -1,
+            "No result result in GetFeatureInfo Hello/2\n%s" % response)
+        self.assertTrue(
+            str(response).find("<qgs:pk>7</qgs:pk>") != -1,
+            "No good result result in GetFeatureInfo Hello/2\n%s" % response)
+
+    def test_wms_getfeatureinfo_projectsubsetstring2(self):
+        """test that layer subsetStrings set in projects are honored. This test checks for a feature which should be pass
+        the project set layer subsetString but fail the access control checks
+        """
+        query_string = "&".join(["%s=%s" % i for i in {
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetFeatureInfo",
+            "LAYERS": "Hello_Project_SubsetString",
+            "QUERY_LAYERS": "Hello_Project_SubsetString",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "3415650,2018968,3415750,2019968",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857",
+            "FEATURE_COUNT": "10",
+            "INFO_FORMAT": "application/vnd.ogc.gml",
+            "X": "146",
+            "Y": "160",
+            "MAP": urllib.quote(self.projectPath)
+        }.items()])
+
+        response, headers = self._get_fullaccess(query_string)
+        self.assertTrue(
+            str(response).find("<qgs:pk>") != -1,
+            "No result result in GetFeatureInfo Hello/2\n%s" % response)
+        self.assertTrue(
+            str(response).find("<qgs:pk>8</qgs:pk>") != -1,
+            "No good result result in GetFeatureInfo Hello/2\n%s" % response)
+
+        response, headers = self._get_restricted(query_string)
+        self.assertFalse(
+            str(response).find("<qgs:pk>") != -1,
+            "Unexpected result from GetFeatureInfo Hello/2\n%s" % response)
 
 # # WFS # # WFS # # WFS # #
 
@@ -979,6 +1127,88 @@ class TestQgsServerAccessControl(unittest.TestCase):
         self.assertFalse(
             str(response).find("<qgs:pk>") != -1,
             "Unexpected result in GetFeature\n%s" % response)
+
+    def test_wfs_getfeature_project_subsetstring(self):
+        """Tests access control with a subset string already applied to a layer in a project
+           'Hello_Project_SubsetString' layer has a subsetString of "pkuid in (7,8)"
+           This test checks for retrieving a feature which should be available in with/without access control
+        """
+        data = """<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {xml_ns}>
+            <wfs:Query typeName="Hello_Project_SubsetString" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo>
+            <ogc:PropertyName>pkuid</ogc:PropertyName>
+            <ogc:Literal>7</ogc:Literal>
+            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(xml_ns=XML_NS)
+
+        # should be one result
+        response, headers = self._post_fullaccess(data)
+        self.assertTrue(
+            str(response).find("<qgs:pk>") != -1,
+            "No result in GetFeature\n%s" % response)
+        self.assertTrue(
+            str(response).find("<qgs:pk>7</qgs:pk>") != -1,
+            "Feature with pkuid=7 not found in GetFeature\n%s" % response)
+
+        response, headers = self._post_restricted(data)
+        self.assertTrue(
+            str(response).find("<qgs:pk>") != -1,
+            "No result in GetFeature\n%s" % response)
+        self.assertTrue(
+            str(response).find("<qgs:pk>7</qgs:pk>") != -1,
+            "Feature with pkuid=7 not found in GetFeature, has been incorrectly filtered out by access controls\n%s" % response)
+
+    def test_wfs_getfeature_project_subsetstring2(self):
+        """Tests access control with a subset string already applied to a layer in a project
+           'Hello_Project_SubsetString' layer has a subsetString of "pkuid in (7,8)"
+           This test checks for a feature which should be filtered out by access controls
+        """
+        data = """<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {xml_ns}>
+            <wfs:Query typeName="Hello_Project_SubsetString" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo>
+            <ogc:PropertyName>pkuid</ogc:PropertyName>
+            <ogc:Literal>8</ogc:Literal>
+            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(xml_ns=XML_NS)
+
+        # should be one result
+        response, headers = self._post_fullaccess(data)
+        self.assertTrue(
+            str(response).find("<qgs:pk>") != -1,
+            "No result in GetFeature\n%s" % response)
+        self.assertTrue(
+            str(response).find("<qgs:pk>8</qgs:pk>") != -1,
+            "Feature with pkuid=8 not found in GetFeature\n%s" % response)
+
+        response, headers = self._post_restricted(data)
+        self.assertFalse(
+            str(response).find("<qgs:pk>") != -1,
+            "Feature with pkuid=8 was found in GetFeature, but should have been filtered out by access controls\n%s" % response)
+
+    def test_wfs_getfeature_project_subsetstring3(self):
+        """Tests access control with a subset string already applied to a layer in a project
+           'Hello_Project_SubsetString' layer has a subsetString of "pkuid in (7,8)"
+           This test checks for a features which should be filtered out by project subsetStrings.
+           Eg pkuid 6 passes the access control checks, but should not be shown because of project layer subsetString
+        """
+        data = """<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {xml_ns}>
+            <wfs:Query typeName="Hello_Project_SubsetString" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo>
+            <ogc:PropertyName>pkuid</ogc:PropertyName>
+            <ogc:Literal>6</ogc:Literal>
+            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(xml_ns=XML_NS)
+
+        # should be no results, since pkuid 1 should be filtered out by project subsetString
+        response, headers = self._post_fullaccess(data)
+        self.assertTrue(
+            str(response).find("<qgs:pk>") == -1,
+            "Project based layer subsetString not respected in GetFeature\n%s" % response)
+
+        response, headers = self._post_restricted(data)
+        self.assertFalse(
+            str(response).find("<qgs:pk>") != -1,
+            "Project based layer subsetString not respected in GetFeature with restricted access\n%s" % response)
 
     def _handle_request(self, restricted, *args):
         accesscontrol._active = restricted
