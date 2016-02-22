@@ -26,8 +26,14 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QMessageBox, QApplication, QCursor, QColor, QPalette, QPushButton, QWidget,\
-    QVBoxLayout
+from PyQt4.QtGui import (QMessageBox,
+                         QApplication,
+                         QCursor,
+                         QColor,
+                         QPalette,
+                         QPushButton,
+                         QWidget,
+                         QVBoxLayout)
 
 from qgis.core import *
 
@@ -54,6 +60,7 @@ from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterCrs
+from processing.core.parameters import ParameterPoint
 from processing.core.parameters import ParameterGeometryPredicate
 
 from processing.core.outputs import OutputRaster
@@ -152,7 +159,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     options = dataobjects.getVectorLayers([param.datatype], sorting=False)
                 return param.setValue([options[i] for i in widget.selectedoptions])
         elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs,
-                                ParameterExtent)):
+                                ParameterExtent, ParameterPoint)):
             return param.setValue(widget.getValue())
         elif isinstance(param, ParameterString):
             if param.multiline:

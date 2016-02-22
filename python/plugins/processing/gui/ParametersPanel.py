@@ -36,7 +36,17 @@ from qgis.core import *
 
 from PyQt4 import uic
 from PyQt4.QtCore import QCoreApplication, QVariant
-from PyQt4.QtGui import QWidget, QLayout, QVBoxLayout, QHBoxLayout, QToolButton, QIcon, QLabel, QCheckBox, QComboBox, QLineEdit, QPlainTextEdit
+from PyQt4.QtGui import (QWidget,
+                         QLayout,
+                         QVBoxLayout,
+                         QHBoxLayout,
+                         QToolButton,
+                         QIcon,
+                         QLabel,
+                         QCheckBox,
+                         QComboBox,
+                         QLineEdit,
+                         QPlainTextEdit)
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -49,6 +59,7 @@ from processing.gui.NumberInputPanel import NumberInputPanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
+from processing.gui.PointSelectionPanel import PointSelectionPanel
 from processing.gui.GeometryPredicateSelectionPanel import \
     GeometryPredicateSelectionPanel
 
@@ -66,6 +77,7 @@ from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterPoint
 from processing.core.parameters import ParameterGeometryPredicate
 
 from processing.core.outputs import OutputRaster
@@ -184,6 +196,8 @@ class ParametersPanel(BASE, WIDGET):
             desc = param.description
             if isinstance(param, ParameterExtent):
                 desc += self.tr(' (xmin, xmax, ymin, ymax)')
+            if isinstance(param, ParameterPoint):
+                desc += self.tr(' (x, y)')
             try:
                 if param.optional:
                     desc += self.tr(' [optional]')
@@ -376,6 +390,8 @@ class ParametersPanel(BASE, WIDGET):
                                     param.isInteger)
         elif isinstance(param, ParameterExtent):
             item = ExtentSelectionPanel(self.parent, self.alg, param.default)
+        elif isinstance(param, ParameterPoint):
+            item = PointSelectionPanel(self.parent, param.default)
         elif isinstance(param, ParameterCrs):
             item = CrsSelectionPanel(param.default)
         elif isinstance(param, ParameterString):

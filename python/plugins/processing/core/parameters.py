@@ -215,6 +215,37 @@ class ParameterExtent(Parameter):
         return '##' + self.name + '=extent'
 
 
+class ParameterPoint(Parameter):
+
+    def __init__(self, name='', description='', default=None, optional=False):
+        Parameter.__init__(self, name, description, default, optional)
+        # The value is a string in the form "x, y"
+
+    def setValue(self, text):
+        if text is None:
+            if not self.optional:
+                return False
+            self.value = None
+            return True
+
+        tokens = unicode(text).split(',')
+        if len(tokens) != 2:
+            return False
+        try:
+            float(tokens[0])
+            float(tokens[1])
+            self.value = text
+            return True
+        except:
+            return False
+
+    def getValueAsCommandLineParameter(self):
+        return '"' + unicode(self.value) + '"'
+
+    def getAsScriptCode(self):
+        return '##' + self.name + '=point'
+
+
 class ParameterFile(Parameter):
 
     def __init__(self, name='', description='', isFolder=False, optional=True, ext=None):
