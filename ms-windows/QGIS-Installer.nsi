@@ -506,6 +506,9 @@ Section "Uninstall"
 	RMDir /r "$INSTDIR\share"
 	RMDir /r "$INSTDIR\icons"
 	RMDir /r "$INSTDIR\src"
+	RMDir /r "$INSTDIR\contrib"
+	RMDir /r "$INSTDIR\manifest"
+	RMDir /r "$INSTDIR\man"
 
 	;if empty, remove the install folder
 	RMDir "$INSTDIR"
