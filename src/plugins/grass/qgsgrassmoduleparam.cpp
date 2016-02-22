@@ -1581,7 +1581,7 @@ void QgsGrassModuleFile::browse()
       selectedFile = lastDir;
 
     if ( mType == New )
-      selectedFile = QFileDialog::getSaveFileName( this, 0, selectedFile );
+      selectedFile = QFileDialog::getSaveFileName( this, 0, selectedFile, mFilters );
     else if ( mType == Directory )
       selectedFile = QFileDialog::getExistingDirectory( this, 0, selectedFile );
     else
