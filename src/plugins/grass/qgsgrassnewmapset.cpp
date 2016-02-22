@@ -572,10 +572,7 @@ void QgsGrassNewMapset::setRegionPage()
 
     QgsRectangle ext = mIface->mapCanvas()->extent();
 
-    if ( ext.xMinimum() >= ext.xMaximum() || ext.yMinimum() >= ext.yMaximum() )
-    {
-      mCurrentRegionButton->setEnabled( false );
-    }
+    mCurrentRegionButton->setEnabled( !ext.isEmpty() );
   }
 
   checkRegion();
