@@ -207,7 +207,11 @@ void QgsExternalResourceConfigDlg::setConfig( const QgsEditorWidgetConfig& confi
   {
     QgsExternalResourceWidget::DocumentViewerContent content = ( QgsExternalResourceWidget::DocumentViewerContent )config.value( "DocumentViewer" ).toInt();
     mDocumentViewerGroupBox->setChecked( content != QgsExternalResourceWidget::NoContent );
-    mDocumentViewerContentComboBox->setCurrentIndex( mDocumentViewerContentComboBox->findData( content ) );
+    int idx = mDocumentViewerContentComboBox->findData( content );
+    if ( idx >= 0 )
+    {
+      mDocumentViewerContentComboBox->setCurrentIndex( idx );
+    }
     if ( config.contains( "DocumentViewerHeight" ) )
     {
       mDocumentViewerHeight->setValue( config.value( "DocumentViewerHeight" ).toInt() );
