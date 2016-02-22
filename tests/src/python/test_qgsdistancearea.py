@@ -293,12 +293,12 @@ class TestQgsDistanceArea(unittest.TestCase):
         area = da.measureArea(polygon)
         units = da.areaUnits()
         print "measured {} in {}".format(area, QgsUnitTypes.toString(units))
-        self.assertAlmostEqual(area, 184149.37309564, delta=0.000001)
+        self.assertAlmostEqual(area, 184149.37, delta=1.0)
         self.assertEqual(units, QgsUnitTypes.SquareMeters)
 
         # test converting the resultant area
         area = da.convertAreaMeasurement(area, QgsUnitTypes.SquareYards)
-        self.assertAlmostEqual(area, 220240.8172549, delta=0.0001)
+        self.assertAlmostEqual(area, 220240.8172549, delta=1.0)
 
 if __name__ == '__main__':
     unittest.main()

@@ -335,7 +335,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   area = da.measureArea( polygon.data() );
   units = da.areaUnits();
   QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
-  QVERIFY( qgsDoubleNear( area, 184149.37309564, 0.00001 ) );
+  QVERIFY( qgsDoubleNear( area, 184149.37, 0.1 ) );
   QCOMPARE( units, QgsUnitTypes::SquareMeters );
 
   // test converting the resultant area
