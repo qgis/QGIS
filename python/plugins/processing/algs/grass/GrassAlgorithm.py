@@ -42,8 +42,22 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
-from processing.core.parameters import getParameterFromString, ParameterVector, ParameterMultipleInput, ParameterExtent, ParameterNumber, ParameterSelection, ParameterRaster, ParameterTable, ParameterBoolean, ParameterString
-from processing.core.outputs import getOutputFromString, OutputRaster, OutputVector, OutputFile, OutputHTML
+from processing.core.parameters import (getParameterFromString,
+                                        ParameterVector,
+                                        ParameterMultipleInput,
+                                        ParameterExtent,
+                                        ParameterNumber,
+                                        ParameterSelection,
+                                        ParameterRaster,
+                                        ParameterTable,
+                                        ParameterBoolean,
+                                        ParameterString,
+                                        ParameterPoint)
+from processing.core.outputs import (getOutputFromString,
+                                     OutputRaster,
+                                     OutputVector,
+                                     OutputFile,
+                                     OutputHTML)
 
 from GrassUtils import GrassUtils
 
@@ -332,6 +346,8 @@ class GrassAlgorithm(GeoAlgorithm):
                 command += ' ' + param.name + '=' + unicode(param.options[idx])
             elif isinstance(param, ParameterString):
                 command += ' ' + param.name + '="' + unicode(param.value) + '"'
+            elif isinstance(param, ParameterPoint):
+                command += ' ' + param.name + '=' + unicode(param.value)
             else:
                 command += ' ' + param.name + '="' + unicode(param.value) + '"'
 

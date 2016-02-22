@@ -44,6 +44,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterPoint
 from processing.core.outputs import OutputTable
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputRaster
@@ -199,6 +200,8 @@ class RAlgorithm(GeoAlgorithm):
                 param = ParameterTableField(tokens[0], tokens[0], field)
         elif tokens[1].lower().strip() == 'extent':
             param = ParameterExtent(tokens[0], desc)
+        elif tokens[1].lower().strip() == 'point':
+            param = ParameterPoint(tokens[0], desc)
         elif tokens[1].lower().strip() == 'file':
             param = ParameterFile(tokens[0], desc, False)
         elif tokens[1].lower().strip() == 'folder':
