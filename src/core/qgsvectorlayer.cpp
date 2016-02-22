@@ -825,7 +825,9 @@ QgsRectangle QgsVectorLayer::extent()
     return rect;
   }
 
-  if ( !mEditBuffer || ( mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mChangedGeometries.isEmpty() ) )
+  if ( !mEditBuffer ||
+       ( mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mChangedGeometries.isEmpty() ) ||
+       QgsDataSourceURI( mDataProvider->dataSourceUri() ).useEstimatedMetadata() )
   {
     mDataProvider->updateExtents();
 
