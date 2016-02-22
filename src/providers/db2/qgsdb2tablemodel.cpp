@@ -392,7 +392,7 @@ QString QgsDb2TableModel::layerURI( const QModelIndex &index, const QString &con
   QgsDataSourceURI uri( connInfo );
   uri.setDataSource( schemaName, tableName, geomColumnName, sql, pkColumnName );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
-  uri.setWkbType( wkbType );
+  uri.setWkbType( QGis::fromOldWkbType( wkbType ) );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
   QgsDebugMsg( "Layer URI: " + uri.uri(false) );

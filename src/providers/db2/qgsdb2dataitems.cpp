@@ -347,7 +347,7 @@ QString QgsDb2LayerItem::createUri()
   QgsDataSourceURI uri = QgsDataSourceURI( connItem->connInfo() );
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, mLayerProperty.pkColumnName );
   uri.setSrid( mLayerProperty.srid );
-  uri.setWkbType( QgsDb2TableModel::wkbTypeFromDb2( mLayerProperty.type ) );
+  uri.setWkbType( QGis::fromOldWkbType(QgsDb2TableModel::wkbTypeFromDb2( mLayerProperty.type ) ));
   uri.setParam( "extents", mLayerProperty.extents );
   QString uriString = uri.uri(false);
     QgsDebugMsg( "Layer URI: " + uriString );

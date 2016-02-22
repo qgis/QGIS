@@ -39,8 +39,7 @@ QgsDb2Provider::QgsDb2Provider( QString uri )
   else
     mSRId = -1;
 
-  mWkbType = anUri.wkbType();
-
+  mWkbType = QGis::fromNewWkbType(anUri.newWkbType());
   mValid = true;
   mSkipFailures = false;
 
@@ -606,36 +605,42 @@ void QgsDb2Provider::db2WkbTypeAndDimension( QGis::WkbType wkbType, QString &geo
   {
     case QGis::WKBPoint25D:
       dim = 3;
+      FALLTHROUGH;
     case QGis::WKBPoint:
       geometryType = "ST_POINT";
       break;
 
     case QGis::WKBLineString25D:
       dim = 3;
+      FALLTHROUGH;
     case QGis::WKBLineString:
       geometryType = "ST_LINESTRING";
       break;
 
     case QGis::WKBPolygon25D:
       dim = 3;
+      FALLTHROUGH;
     case QGis::WKBPolygon:
       geometryType = "ST_POLYGON";
       break;
 
     case QGis::WKBMultiPoint25D:
       dim = 3;
+      FALLTHROUGH;
     case QGis::WKBMultiPoint:
       geometryType = "ST_MULTIPOINT";
       break;
 
     case QGis::WKBMultiLineString25D:
       dim = 3;
+      FALLTHROUGH;
     case QGis::WKBMultiLineString:
       geometryType = "ST_MULTILINESTRING";
       break;
 
     case QGis::WKBMultiPolygon25D:
       dim = 3;
+      FALLTHROUGH;
     case QGis::WKBMultiPolygon:
       geometryType = "ST_MULTIPOLYGON";
       break;
