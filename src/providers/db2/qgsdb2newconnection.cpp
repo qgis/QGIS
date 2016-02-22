@@ -153,7 +153,7 @@ QgsDb2NewConnection::~QgsDb2NewConnection()
 
 }
 
-bool QgsDb2NewConnection::testConnection( QString testDatabase )
+bool QgsDb2NewConnection::testConnection()
 {
   QSqlDatabase db;
 
@@ -165,7 +165,6 @@ bool QgsDb2NewConnection::testConnection( QString testDatabase )
   QString username = txtUsername->text().trimmed();
   QString password = txtPassword->text().trimmed();
   
-  QgsDebugMsg("testDatabase: " + testDatabase);
   /* TODO - bar is not defined; works for mssql
   bar->pushMessage( "Testing connection", "....." );
   // Gross but needed to show the last message.
@@ -208,13 +207,13 @@ bool QgsDb2NewConnection::testConnection( QString testDatabase )
   db = QgsDb2Provider::GetDatabase( connInfo );
   if ( db.open() )
   {
-    QgsDebugMsg( "connection open succeeded on " + testDatabase );
+    QgsDebugMsg( "connection open succeeded" + database );
     db2ConnectStatus -> setText( "DB2 connection open succeeded" );
     return true;
   }
   else
   {
-    QgsDebugMsg( "DB2: TestDatabase; connection open failed: " + db.lastError().text() );
+    QgsDebugMsg("connection open failed: " + db.lastError().text() );
     db2ConnectStatus -> setText( "DB2 connection failed : " + db.lastError().text() );
     return false;
   }

@@ -402,8 +402,8 @@ QgsDb2FeatureSource::QgsDb2FeatureSource( const QgsDb2Provider* p )
     , mGeometryColType( p->mGeometryColType )
     , mSchemaName( p->mSchemaName )
     , mTableName( p->mTableName )
+    , mConnInfo( p->mConnInfo )    
     , mSqlWhereClause( p->mSqlWhereClause )
-    , mConnInfo( p->mConnInfo )
 {   
   mSRId = p->mSRId;
 }
