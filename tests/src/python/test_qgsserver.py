@@ -140,14 +140,16 @@ class TestQgsServer(unittest.TestCase):
         self.assertEqual(response, expected)
 
     # WMS tests
-    def wms_request_compare(self, request):
+    def wms_request_compare(self, request, extra=None, reference_file=None):
         project = self.testdata_path + "test+project.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.quote(project), request)
+        if extra is not None:
+            query_string += extra
         header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
         response = header + body
-        f = open(self.testdata_path + request.lower() + '.txt')
+        f = open(self.testdata_path + (request.lower() if not reference_file else reference_file) + '.txt')
         expected = f.read()
         f.close()
         # Store the output for debug or to regenerate the reference documents:
@@ -168,8 +170,26 @@ class TestQgsServer(unittest.TestCase):
         for request in ('GetCapabilities', 'GetProjectSettings'):
             self.wms_request_compare(request)
 
-    # WMS INSPIRE tests
+        # Test getfeatureinfo response
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=text%2Fhtml&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
+                                 'wms_getfeatureinfo-text-html')
+
+        # Test getfeatureinfo default info_format
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
+                                 'wms_getfeatureinfo-text-plain')
+
     def wms_inspire_request_compare(self, request):
+        """WMS INSPIRE tests"""
         project = self.testdata_path + "test+project_inspire.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
