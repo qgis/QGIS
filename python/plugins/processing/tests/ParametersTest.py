@@ -35,7 +35,8 @@ from processing.core.parameters import (Parameter,
                                         ParameterFile,
                                         ParameterFixedTable,
                                         ParameterMultipleInput,
-                                        ParameterNumber)
+                                        ParameterNumber,
+                                        ParameterPoint)
 
 from qgis.core import (QgsRasterLayer,
                        QgsVectorLayer)
@@ -152,6 +153,36 @@ class ParameterExtentTest(unittest.TestCase):
         self.assertEqual(requiredParameter.value, '1,2,3,4')
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, '1,2,3,4')
+
+
+class ParameterPointTest(unittest.TestCase):
+
+    def testSetValue(self):
+        parameter = ParameterPoint('myName', 'myDesc')
+        self.assertTrue(parameter.setValue('0,2'))
+        self.assertEqual(parameter.value, '0,2')
+
+    def testSetInvalidValue(self):
+        parameter = ParameterPoint('myName', 'myDesc')
+        self.assertFalse(parameter.setValue('0'))
+        self.assertFalse(parameter.setValue('0,a'))
+
+    def testOptional(self):
+        optionalParameter = ParameterPoint('myName', 'myDesc', default='0,1', optional=True)
+        self.assertEqual(optionalParameter.value, '0,1')
+        optionalParameter.setValue('1,2')
+        self.assertEqual(optionalParameter.value, '1,2')
+        self.assertTrue(optionalParameter.setValue(None))
+        # Extent is unique in that it will let you set `None`, whereas other
+        # optional parameters become "default" when assigning None.
+        self.assertEqual(optionalParameter.value, None)
+
+        requiredParameter = ParameterPoint('myName', 'myDesc', default='0,1', optional=False)
+        self.assertEqual(requiredParameter.value, '0,1')
+        requiredParameter.setValue('1,2')
+        self.assertEqual(requiredParameter.value, '1,2')
+        self.assertFalse(requiredParameter.setValue(None))
+        self.assertEqual(requiredParameter.value, '1,2')
 
 
 class ParameterFileTest(unittest.TestCase):
