@@ -686,7 +686,7 @@
                     <item>
                      <widget class="QCheckBox" name="cbxCanvasRotation">
                       <property name="text">
-                       <string>Experimental canvas rotation support (restart required)</string>
+                       <string>Canvas rotation support (restart required)</string>
                       </property>
                      </widget>
                     </item>
