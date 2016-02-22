@@ -1286,6 +1286,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   QgsComposition* c = mConfigParser->createPrintComposition( mParameters[ "TEMPLATE" ], mMapRenderer, QMap<QString, QString>( mParameters ) );
   if ( !c )
   {
+    restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
     clearFeatureSelections( selectedLayerIdList );
     return nullptr;
   }
@@ -1334,6 +1335,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
     if ( !tempFile.open() )
     {
       delete c;
+      restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
       clearFeatureSelections( selectedLayerIdList );
       return nullptr;
     }
@@ -1344,6 +1346,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   }
   else //unknown format
   {
+    restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
     clearFeatureSelections( selectedLayerIdList );
     throw QgsMapServiceException( "InvalidFormat", "Output format '" + formatString + "' is not supported in the GetPrint request" );
   }
