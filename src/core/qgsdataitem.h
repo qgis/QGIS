@@ -507,6 +507,9 @@ class CORE_EXPORT QgsFavouritesItem : public QgsDataCollectionItem
     void removeDirectory( QgsDirectoryItem *item );
 
     static const QIcon &iconFavourites();
+
+  private:
+    QVector<QgsDataItem*> createChildren( const QString& favDir );
 };
 
 /** A zip file: contains layers, using GDAL/OGR VSIFILE mechanism */

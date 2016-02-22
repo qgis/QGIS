@@ -1139,12 +1139,7 @@ QVector<QgsDataItem*> QgsFavouritesItem::createChildren()
 
   Q_FOREACH ( const QString& favDir, favDirs )
   {
-    QString pathName = pathComponent( favDir );
-    QgsDataItem *item = new QgsDirectoryItem( this, favDir, favDir, mPath + '/' + pathName );
-    if ( item )
-    {
-      children.append( item );
-    }
+    children << createChildren( favDir );
   }
 
   return children;
@@ -1159,8 +1154,11 @@ void QgsFavouritesItem::addDirectory( const QString& favDir )
 
   if ( state() == Populated )
   {
-    QString pathName = pathComponent( favDir );
-    addChildItem( new QgsDirectoryItem( this, favDir, favDir, mPath + '/' + pathName ), true );
+    QVector<QgsDataItem*> items = createChildren( favDir );
+    Q_FOREACH ( QgsDataItem* item, items )
+    {
+      addChildItem( item, true );
+    }
   }
 }
 
@@ -1183,6 +1181,34 @@ void QgsFavouritesItem::removeDirectory( QgsDirectoryItem *item )
 
   if ( state() == Populated )
     deleteChildItem( mChildren.at( idx ) );
+}
+
+QVector<QgsDataItem*> QgsFavouritesItem::createChildren( const QString& favDir )
+{
+  QVector<QgsDataItem*> children;
+  QString pathName = pathComponent( favDir );
+  Q_FOREACH ( QgsDataItemProvider* provider, QgsDataItemProviderRegistry::instance()->providers() )
+  {
+    int capabilities = provider->capabilities();
+
+    if ( capabilities & QgsDataProvider::Dir )
+    {
+      QgsDataItem * item = provider->createDataItem( favDir, this );
+      if ( item )
+      {
+        children.append( item );
+      }
+    }
+  }
+  if ( children.isEmpty() )
+  {
+    QgsDataItem *item = new QgsDirectoryItem( this, favDir, favDir, mPath + '/' + pathName );
+    if ( item )
+    {
+      children.append( item );
+    }
+  }
+  return children;
 }
 
 //-----------------------------------------------------------------------
