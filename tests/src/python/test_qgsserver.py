@@ -153,14 +153,14 @@ class TestQgsServer(unittest.TestCase):
         expected = f.read()
         f.close()
         # Store the output for debug or to regenerate the reference documents:
-        #"""
+        """
         f = open(os.path.dirname(__file__) + '/expected.txt', 'w+')
         f.write(expected)
         f.close()
         f = open(os.path.dirname(__file__) + '/response.txt', 'w+')
         f.write(response)
         f.close()
-        #"""
+        """
         response = re.sub(RE_STRIP_PATH, '', response)
         expected = re.sub(RE_STRIP_PATH, '', expected)
         self.assertEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected, response))
