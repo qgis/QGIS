@@ -57,6 +57,22 @@ class TestQgsFeatureIterator(unittest.TestCase):
         myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
         assert ids == expectedIds, myMessage
 
+    def test_FilterExpressionWithAccents(self):
+        myShpFile = os.path.join(TEST_DATA_DIR, 'france_parts.shp')
+        layer = QgsVectorLayer(myShpFile, 'poly', 'ogr')
+
+        layer.setProviderEncoding("ISO-8859-1")
+        ids = [feat.id() for feat in layer.getFeatures(QgsFeatureRequest().setFilterExpression(u"TYPE_1 = 'Région'"))]
+        expectedIds = [0, 1, 2, 3]
+        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
+        assert ids == expectedIds, myMessage
+
+        layer.setProviderEncoding("UTF-8")
+        ids = [feat.id() for feat in layer.getFeatures(QgsFeatureRequest().setFilterExpression(u"TYPE_1 = 'Région'"))]
+        expectedIds = []
+        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
+        assert ids == expectedIds, myMessage
+
     def test_FilterFids(self):
         # create point layer
         myShpFile = os.path.join(TEST_DATA_DIR, 'points.shp')
