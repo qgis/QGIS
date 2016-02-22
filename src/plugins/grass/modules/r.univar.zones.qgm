@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Calculate univariate statistics from the non-null cells of raster" module="r.univar">
+	<option key="map" />
+	<option key="zones" />
+	<file key="output" label="Name for the output file" type="new"/>
+	<flag key="t" answer="off" advanced="yes"/>
+	<option key="separator" advanced="yes"/>
+</qgisgrassmodule>
