@@ -797,8 +797,22 @@ bool QgsExpressionItemSearchProxy::filterAcceptsRow( int source_row, const QMode
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
   QgsExpressionItem::ItemType itemType = QgsExpressionItem::ItemType( sourceModel()->data( index, QgsExpressionItem::ItemTypeRole ).toInt() );
 
-  if ( itemType == QgsExpressionItem::Header )
+  int count = sourceModel()->rowCount( index );
+  bool matchchild = false;
+  for ( int i = 0; i < count; ++i )
+  {
+    if ( filterAcceptsRow( i, index ) )
+    {
+      matchchild = true;
+      break;
+    }
+  }
+
+  if ( itemType == QgsExpressionItem::Header && matchchild )
     return true;
+
+  if ( itemType == QgsExpressionItem::Header )
+    return false;
 
   return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
 }
