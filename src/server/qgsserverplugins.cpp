@@ -26,14 +26,22 @@
 
 #include <QLibrary>
 
+
+// Initialize static members
+QgsPythonUtils* QgsServerPlugins::mPythonUtils;
+
+
 QgsServerPlugins::QgsServerPlugins()
 {
 }
 
+
 // Initialize static members
-QgsPythonUtils* QgsServerPlugins::mPythonUtils;
-// Initialize static members
-QStringList QgsServerPlugins::mServerPlugins;
+QStringList &QgsServerPlugins::serverPlugins()
+{
+  static QStringList* pluginList = new QStringList();
+  return *pluginList;
+}
 
 // This code is mainly borrowed from QGIS desktop Python plugin initialization
 bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
@@ -101,7 +109,7 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
         if ( mPythonUtils->startServerPlugin( pluginName ) )
         {
           atLeastOneEnabled = true;
-          mServerPlugins.append( pluginName );
+          serverPlugins().append( pluginName );
           QgsMessageLog::logMessage( QString( "Server plugin %1 loaded!" ).arg( pluginName ), "Server", QgsMessageLog::INFO );
         }
         else
@@ -117,4 +125,5 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
   }
   return mPythonUtils && mPythonUtils->isEnabled() && atLeastOneEnabled;
 }
+
 

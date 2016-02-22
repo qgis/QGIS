@@ -115,11 +115,12 @@ class SERVER_EXPORT QgsServer
     static bool mInitPython;
 #endif
     static bool mInitialised;
-    static QString mServerName;
     static char* mArgv[1];
     static int mArgc;
     static QgsApplication* mQgsApplication;
     static bool mCaptureOutput;
+    // Return the server name
+    static QString &serverName();
 };
 #endif // QGSSERVER_H
 

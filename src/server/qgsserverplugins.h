@@ -40,7 +40,7 @@ class SERVER_EXPORT QgsServerPlugins
     //! Pointer to QgsPythonUtils
     static QgsPythonUtils* mPythonUtils;
     //! List of available server plugin names
-    static QStringList mServerPlugins;
+    static QStringList& serverPlugins();
 };
 
 #endif // QGSSERVERPLUGINS_H

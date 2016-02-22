@@ -57,7 +57,6 @@
 // Static initialisers, default values for fcgi server
 QgsApplication* QgsServer::mQgsApplication = nullptr;
 bool QgsServer::mInitialised = false;
-QString QgsServer::mServerName( "qgis_server" );
 bool QgsServer::mCaptureOutput = false;
 char* QgsServer::mArgv[1];
 int QgsServer::mArgc = 1;
@@ -78,6 +77,13 @@ QgsServer::QgsServer()
 
 QgsServer::~QgsServer()
 {
+}
+
+
+QString& QgsServer::serverName()
+{
+  static QString* name = new QString( "qgis_server" );
+  return *name;
 }
 
 
@@ -296,7 +302,7 @@ bool QgsServer::init()
   {
     return false;
   }
-  mArgv[0] = mServerName.toUtf8().data();
+  mArgv[0] = serverName().toUtf8().data();
   mArgc = 1;
   mCaptureOutput = true;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
