@@ -613,7 +613,7 @@ int vtableFilter( sqlite3_vtab_cursor * cursor, int idxNum, const char *idxStr, 
       {
         int n = sqlite3_value_bytes( argv[0] );
         const char* t = reinterpret_cast<const char*>( sqlite3_value_text( argv[0] ) );
-        QString str( QByteArray::fromRawData( t, n ) );
+        QString str = QString::fromUtf8( t, n );
         expr += "'" + str.replace( "'", "''" ) + "'";
         break;
       }
@@ -738,7 +738,7 @@ void qgisFunctionWrapper( sqlite3_context* ctxt, int nArgs, sqlite3_value** args
       {
         int n = sqlite3_value_bytes( args[i] );
         const char* t = reinterpret_cast<const char*>( sqlite3_value_text( args[i] ) );
-        QString str( QByteArray::fromRawData( t, n ) ); // don't copy data
+        QString str = QString::fromUtf8( t, n );
         variants << QVariant( str );
         break;
       }
