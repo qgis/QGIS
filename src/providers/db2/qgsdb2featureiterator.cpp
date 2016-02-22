@@ -186,7 +186,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   QStringList orderByParts;
   mOrderByCompiled = true;
   QgsDebugMsg( QString( "compileExpressions: %1" ).arg( QSettings().value( "/qgis/compileExpressions", true ).toString() ) );
-  if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
+  if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() && limitAtProvider )
   {
     Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBy() )
     {
