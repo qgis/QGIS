@@ -446,7 +446,7 @@ void QgsHttpRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoD
   }
   else //unsupported format, set exception
   {
-    setServiceException( QgsMapServiceException( "InvalidFormat", "Feature info format '" + mFormat + "' is not supported. Possibilities are 'text/plain', 'text/html' or 'text/xml'." ) );
+    setServiceException( QgsMapServiceException( "InvalidFormat", "Feature info format '" + infoFormat + "' is not supported. Possibilities are 'text/plain', 'text/html' or 'text/xml'." ) );
     return;
   }
 

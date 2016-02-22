@@ -267,7 +267,7 @@ void QgsWMSServer::executeRequest()
       return;
     }
 
-    QString infoFormat = mParameters.value( "INFO_FORMAT" );
+    QString infoFormat = mParameters.value( "INFO_FORMAT",  "text/plain" );
     mRequestHandler->setGetFeatureInfoResponse( featureInfoDoc, infoFormat );
   }
   //GetContext
