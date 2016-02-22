@@ -63,6 +63,7 @@ tests:
       OUTPUT:
         name: expected/polys_to_lines.gml
         type: vector
+
   - algorithm: qgis:basicstatisticsfornumericfields
     name: Test (qgis:basicstatisticsfornumericfields)
     params:
@@ -72,4 +73,15 @@ tests:
     results:
       OUTPUT_HTML_FILE:
         name: expected/basic_statistics_numeric_float.html
+        type: file
+
+  - algorithm: qgis:basicstatisticsfortextfields
+    name: Test (qgis:basicstatisticsfortextfields)
+    params:
+    - name: multipolys.gml
+      type: vector
+    - 'Bname'
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/basic_statistics_string.html
         type: file
