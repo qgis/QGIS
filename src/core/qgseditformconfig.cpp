@@ -242,7 +242,15 @@ void QgsEditFormConfig::readXml( const QDomNode& node )
     for ( int j = 0; j < cfgElem.attributes().size(); ++j )
     {
       QDomAttr attr = cfgElem.attributes().item( j ).toAttr();
-      cfg[attr.name()] = attr.value();
+      cfg.insert( attr.name(), attr.value() );
+    }
+
+    QDomNodeList optionElements = cfgElem.elementsByTagName( "option" );
+    for ( int j = 0; j < optionElements.size(); ++j )
+    {
+      QString key = optionElements.at( j ).toElement().attribute( "key" );
+      QString value = optionElements.at( j ).toElement().attribute( "value" );
+      cfg.insert( key, value );
     }
 
     setWidgetConfig( wdgElem.attribute( "name" ), cfg );
@@ -337,7 +345,10 @@ void QgsEditFormConfig::writeXml( QDomNode& node ) const
 
       while ( cfgIt != configIt.value().constEnd() )
       {
-        configElem.setAttribute( cfgIt.key(), cfgIt.value().toString() );
+        QDomElement optionElem = doc.createElement( "option" );
+        optionElem.setAttribute( "key", cfgIt.key() );
+        optionElem.setAttribute( "value", cfgIt.value().toString() );
+        configElem.appendChild( optionElem );
         ++cfgIt;
       }
 
