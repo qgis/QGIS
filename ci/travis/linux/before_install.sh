@@ -11,6 +11,7 @@ sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
         cmake-data \
         doxygen \
         flex \
+        gdal-bin \
         git \
         graphviz \
         grass-dev \
