@@ -17,7 +17,6 @@
 #include <sqlite3.h>
 #include <QDir>
 #include <QString>
-#include <QLocale>
 #include <QObject>
 
 #include "qgis.h"
@@ -1094,7 +1093,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
       break;
   }
 
-  return QLocale::system().toString( value, 'f', decimals ) + unitLabel;
+  return QString( "%L1%2" ).arg( value, 0, 'f', decimals ).arg( unitLabel );
 }
 
 QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit )
@@ -1229,7 +1228,7 @@ QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::Ar
     }
   }
 
-  return QLocale::system().toString( area, 'f', decimals ) + unitLabel;
+  return QString( "%L1%2" ).arg( area, 0, 'f', decimals ).arg( unitLabel );
 }
 
 void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::UnitType displayUnits, bool isArea ) const
