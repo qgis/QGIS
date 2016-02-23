@@ -195,7 +195,7 @@ def load(fileName, name=None, crs=None, style=None):
             if prjSetting:
                 settings.setValue('/Projections/defaultBehaviour', prjSetting)
             raise RuntimeError('Could not load layer: ' + unicode(fileName)
-                               + '\nCheck the procesing framework log to look for errors')
+                               + '\nCheck the processing framework log to look for errors')
     if prjSetting:
         settings.setValue('/Projections/defaultBehaviour', prjSetting)
 
