@@ -6139,7 +6139,13 @@ bool QgisApp::loadComposersFromProject( const QDomDocument& doc )
   QDomNodeList composerNodes = doc.elementsByTagName( "Composer" );
   for ( int i = 0; i < composerNodes.size(); ++i )
   {
+    QString title( composerNodes.at( i ).toElement().attribute( "title" ) );
+    showStatusMessage( tr( "Loading composer %1" ).arg( title ) );
+    showProgress( i,  composerNodes.size() );
     ++mLastComposerId;
+
+    QTime t;
+    t.start();
     QgsComposer* composer = new QgsComposer( this, tr( "Composer %1" ).arg( mLastComposerId ) );
     composer->readXML( composerNodes.at( i ).toElement(), doc );
     mPrintComposers.insert( composer );
@@ -6162,7 +6168,12 @@ bool QgisApp::loadComposersFromProject( const QDomDocument& doc )
     connect( composer, SIGNAL( composerAdded( QgsComposerView* ) ), this, SIGNAL( composerAdded( QgsComposerView* ) ) );
     connect( composer, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ), this, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ) );
     connect( composer, SIGNAL( atlasPreviewFeatureChanged() ), this, SLOT( refreshMapCanvas() ) );
+
+    QgsDebugMsg( QString( "Loaded composer %1: %2ms" ).arg( title ).arg( t.elapsed() ) );
   }
+
+  showProgress( 0, 0 );
+
   return true;
 }
 
