@@ -331,7 +331,7 @@ QList<QAction*> QgsMssqlConnectionItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionShowNoGeom = new QAction( tr( "Show non-spatial tables" ), this );
+  QAction* actionShowNoGeom = new QAction( tr( "Show Non-Spatial Tables" ), this );
   actionShowNoGeom->setCheckable( true );
   actionShowNoGeom->setChecked( mAllowGeometrylessTables );
   connect( actionShowNoGeom, SIGNAL( toggled( bool ) ), this, SLOT( setAllowGeometrylessTables( bool ) ) );
