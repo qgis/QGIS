@@ -746,7 +746,7 @@ void QgsGrassModule::finished( int exitCode, QProcess::ExitStatus exitStatus )
     if ( exitCode == 0 )
     {
       mOutputTextBrowser->append( tr( "<B>Successfully finished</B>" ) );
-      mProgressBar->setValue( 100 );
+      setProgress( 100, true );
       mSuccess = true;
       mViewButton->setEnabled( !mOutputVector.isEmpty() || !mOutputRaster.isEmpty() );
       mOptions->freezeOutput( false );
@@ -784,7 +784,7 @@ void QgsGrassModule::readStdout()
     if ( rxpercent.indexIn( line ) != -1 )
     {
       int progress = rxpercent.cap( 1 ).toInt();
-      mProgressBar->setValue( progress );
+      setProgress( progress );
     }
     else
     {
@@ -810,13 +810,26 @@ void QgsGrassModule::readStderr()
     QgsGrass::ModuleOutput type =  QgsGrass::parseModuleOutput( line, text, html, percent );
     if ( type == QgsGrass::OutputPercent )
     {
-      mProgressBar->setValue( percent );
+      setProgress( percent );
     }
     else if ( type == QgsGrass::OutputMessage || type == QgsGrass::OutputWarning || type == QgsGrass::OutputError )
     {
       mOutputTextBrowser->append( html );
     }
   }
+}
+
+void QgsGrassModule::setProgress( int percent, bool force )
+{
+  int max = 100;
+  // Do not set 100% until module finished, see #3131
+  if ( percent >= 100 && !force )
+  {
+    max = 0; // busy indicator
+    percent = 0;
+  }
+  mProgressBar->setMaximum( max );
+  mProgressBar->setValue( percent );
 }
 
 void QgsGrassModule::close()
