@@ -240,7 +240,6 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
   if ( log )
   {
     QgsMessageLog::logMessage( tr( "Layer %1 job started" ).arg( job.layerId ), tr( "Rendering" ) );
-    Q_ASSERT( !running.contains( job.layerId ) );
     running << job.layerId;
   }
 #endif
