@@ -23,7 +23,7 @@ How To
 To add a new test you can follow these steps:
 
 Run the algorithm you want to test in QGIS from the processing toolbox. If the
-result is a vector layer prefer geojson as output for its support of mixed
+result is a vector layer prefer GML as output for its support of mixed
 geometry types and good readability. Redirect output to
 `python/plugins/processing/tests/testdata/expected`
 
@@ -114,7 +114,7 @@ applied to each vertex.
 
     OUTPUT:
       type: vector
-      name: expected/abcd.geojson
+      name: expected/abcd.gml
       compare:
         fields:
           __all__:
