@@ -58,7 +58,7 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "PointPatternFill", QObject::tr( "Point pattern fill" ), QgsSymbolV2::Fill,
                       QgsPointPatternFillSymbolLayer::create, QgsPointPatternFillSymbolLayer::createFromSld ) );
 
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "GeometryGenerator", QObject::tr( "Geometry Generator" ), QgsSymbolV2::Hybrid,
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "GeometryGenerator", QObject::tr( "Geometry generator" ), QgsSymbolV2::Hybrid,
                       QgsGeometryGeneratorSymbolLayerV2::create ) );
 }
 
