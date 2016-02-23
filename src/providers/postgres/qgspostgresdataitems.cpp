@@ -172,7 +172,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
     if ( srcLayer->isValid() )
     {
-      uri.setDataSource( QString(), u.name, "geom" );
+      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != QGis::NoGeometry ? "geom" : QString() );
       QgsDebugMsg( "URI " + uri.uri() );
       QgsVectorLayerImport::ImportError err;
       QString importError;
