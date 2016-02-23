@@ -43,6 +43,7 @@ QgsHttpRequestHandler::QgsHttpRequestHandler( const bool captureOutput )
 
 QgsHttpRequestHandler::~QgsHttpRequestHandler()
 {
+  delete mException;
 }
 
 void QgsHttpRequestHandler::setHttpResponse( QByteArray *ba, const QString &format )
@@ -455,7 +456,7 @@ void QgsHttpRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoD
 
 void QgsHttpRequestHandler::setServiceException( QgsMapServiceException ex )
 {
-  mException = &ex;
+  mException = new QgsMapServiceException( ex );
   //create Exception DOM document
   QDomDocument exceptionDoc;
   QDomElement serviceExceptionReportElem = exceptionDoc.createElement( "ServiceExceptionReport" );
