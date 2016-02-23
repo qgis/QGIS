@@ -539,7 +539,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
                                );
       if ( !p )
       {
-        theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", QString( "Error reading the project file: %1" ).arg( configFilePath ) ) );
+        theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
       }
       else
       {
@@ -565,7 +565,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
                                );
       if ( !p )
       {
-        theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", QString( "Error reading the project file: %1" ).arg( configFilePath ) ) );
+        theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
       }
       else
       {
