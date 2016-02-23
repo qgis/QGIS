@@ -633,9 +633,19 @@ void QgsExpressionBuilderWidget::on_txtSearchEdit_textChanged()
 {
   mProxyModel->setFilterWildcard( txtSearchEdit->text() );
   if ( txtSearchEdit->text().isEmpty() )
+  {
     expressionTree->collapseAll();
+  }
   else
+  {
     expressionTree->expandAll();
+    QModelIndex index = mProxyModel->index( 0, 0 );
+    if ( mProxyModel->hasChildren( index ) )
+    {
+      QModelIndex child = mProxyModel->index( 0, 0, index );
+      expressionTree->selectionModel()->setCurrentIndex( child, QItemSelectionModel::ClearAndSelect );
+    }
+  }
 }
 
 void QgsExpressionBuilderWidget::on_txtSearchEditValues_textChanged()
