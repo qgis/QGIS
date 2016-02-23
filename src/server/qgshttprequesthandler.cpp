@@ -456,6 +456,8 @@ void QgsHttpRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoD
 
 void QgsHttpRequestHandler::setServiceException( QgsMapServiceException ex )
 {
+  // Safety measure to avoid potential leaks if called repeatedly
+  delete mException;
   mException = new QgsMapServiceException( ex );
   //create Exception DOM document
   QDomDocument exceptionDoc;
