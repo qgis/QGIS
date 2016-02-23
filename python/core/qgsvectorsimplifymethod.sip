@@ -29,6 +29,11 @@ class QgsVectorSimplifyMethod
     /** Gets the simplification hints of the vector layer managed */
     QFlags<QgsVectorSimplifyMethod::SimplifyHint> simplifyHints() const;
 
+    /** Sets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal */
+    void setTolerance( double tolerance );
+    /** Gets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal */
+    double tolerance() const;
+
     /** Sets the simplification threshold of the vector layer managed */
     void setThreshold( float threshold );
     /** Gets the simplification threshold of the vector layer managed */
