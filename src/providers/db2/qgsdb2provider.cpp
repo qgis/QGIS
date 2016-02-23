@@ -39,7 +39,7 @@ QgsDb2Provider::QgsDb2Provider( QString uri )
   else
     mSRId = -1;
 
-  mWkbType = QGis::fromNewWkbType(anUri.newWkbType());
+  mWkbType = QGis::fromNewWkbType( anUri.newWkbType() );
   mValid = true;
   mSkipFailures = false;
 
@@ -49,7 +49,7 @@ QgsDb2Provider::QgsDb2Provider( QString uri )
   QgsDebugMsg( "mExtents " + mExtents );
 
   mUseEstimatedMetadata = anUri.useEstimatedMetadata();
-  QgsDebugMsg(QString("mUseEstimatedMetadata: '%1'").arg(mUseEstimatedMetadata));
+  QgsDebugMsg( QString( "mUseEstimatedMetadata: '%1'" ).arg( mUseEstimatedMetadata ) );
   mSqlWhereClause = anUri.sql();
   mDatabase = GetDatabase( uri );
   mConnInfo = anUri.connectionInfo();
@@ -128,34 +128,34 @@ QSqlDatabase QgsDb2Provider::GetDatabase( QString connInfo )
 {
   QSqlDatabase db;
   QString service;
-  QString driver;  
-  QString host;  
-  QString databaseName;  
-  QString port;  
-  QString userName;  
-  QString password;  
+  QString driver;
+  QString host;
+  QString databaseName;
+  QString port;
+  QString userName;
+  QString password;
   QString connectionName;
   QString connectionString;
-  
-  QgsDebugMsg("connInfo: " + connInfo);
+
+  QgsDebugMsg( "connInfo: " + connInfo );
   QgsDataSourceURI uri( connInfo );
   // Fill in the password if authentication is used
-  QString expandedConnectionInfo = uri.connectionInfo( true );  
-  QgsDebugMsg("expanded connInfo: " + expandedConnectionInfo);
+  QString expandedConnectionInfo = uri.connectionInfo( true );
+  QgsDebugMsg( "expanded connInfo: " + expandedConnectionInfo );
   QgsDataSourceURI uriExpanded( expandedConnectionInfo );
-   
+
   userName = uriExpanded.username();
   password = uriExpanded.password();
-  QgsDebugMsg(QString("user: '%1'; pwd: '%2'").arg(userName).arg(password));
+  QgsDebugMsg( QString( "user: '%1'; pwd: '%2'" ).arg( userName ).arg( password ) );
   service = uriExpanded.service();
   databaseName = uriExpanded.database();
   host = uriExpanded.host();
   port = uriExpanded.port();
   driver = uriExpanded.driver();
-  QgsDebugMsg(QString("driver: '%1'; host: '%2'; databaseName: '%3'").arg(driver).arg(password).arg(databaseName));
+  QgsDebugMsg( QString( "driver: '%1'; host: '%2'; databaseName: '%3'" ).arg( driver ).arg( password ).arg( databaseName ) );
   if ( service.isEmpty() )
   {
-    if ( driver.isEmpty() || host.isEmpty() || databaseName.isEmpty()  )
+    if ( driver.isEmpty() || host.isEmpty() || databaseName.isEmpty() )
     {
       QgsDebugMsg( "DB2: service not provided, a required argument is empty." );
       return db;
@@ -183,16 +183,16 @@ QSqlDatabase QgsDb2Provider::GetDatabase( QString connInfo )
 
   if ( userName.isEmpty() || password.isEmpty() )
   {
-  QgsCredentials::instance()->lock();
+    QgsCredentials::instance()->lock();
 
-  bool ok = QgsCredentials::instance()->get( databaseName, userName, password, QString("") );
-      if ( !ok ) // TODO - what if cancel?
-        QgsDebugMsg("Cancel clicked");
+    bool ok = QgsCredentials::instance()->get( databaseName, userName, password, QString( "" ) );
+    if ( !ok ) // TODO - what if cancel?
+      QgsDebugMsg( "Cancel clicked" );
 
-  QgsCredentials::instance()->put( databaseName, userName, password );
-  QgsCredentials::instance()->unlock();  
+    QgsCredentials::instance()->put( databaseName, userName, password );
+    QgsCredentials::instance()->unlock();
   }
-  
+
   db.setUserName( userName );
   db.setPassword( password );
 
@@ -655,6 +655,376 @@ void QgsDb2Provider::db2WkbTypeAndDimension( QGis::WkbType wkbType, QString &geo
       break;
   }
 }
+
+bool QgsDb2Provider::deleteFeatures( const QgsFeatureIds & id )
+{
+  if ( mFidColName.isEmpty() )
+    return false;
+
+  QString featureIds;
+  for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
+  {
+    if ( featureIds.isEmpty() )
+      featureIds = FID_TO_STRING( *it );
+    else
+      featureIds += ',' + FID_TO_STRING( *it );
+  }
+
+  if ( !mDatabase.isOpen() )
+  {
+    mDatabase = GetDatabase( mConnInfo );
+  }
+  QSqlQuery query = QSqlQuery( mDatabase );
+  query.setForwardOnly( true );
+  QString statement;
+  statement = QString( "DELETE FROM %1.%2 WHERE %3 IN (%4)" ).arg( mSchemaName,
+              mTableName, mFidColName, featureIds );
+  QgsDebugMsg( statement );
+  if ( !query.exec( statement ) )
+  {
+    QString msg = query.lastError().text();
+    QgsDebugMsg( msg );
+    return false;
+  }
+
+  return true;
+}
+
+
+bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
+{
+  if ( attr_map.isEmpty() )
+    return true;
+
+  if ( mFidColName.isEmpty() )
+    return false;
+
+  for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
+  {
+    QgsFeatureId fid = it.key();
+
+    // skip added features
+    if ( FID_IS_NEW( fid ) )
+      continue;
+
+    const QgsAttributeMap& attrs = it.value();
+    if ( attrs.isEmpty() )
+      continue;
+
+    QString statement = QString( "UPDATE %1.%2 SET " ).arg( mSchemaName, mTableName );
+
+    bool first = true;
+    if ( !mDatabase.isOpen() )
+    {
+      mDatabase = GetDatabase( mConnInfo );
+    }
+    QSqlQuery query = QSqlQuery( mDatabase );
+    query.setForwardOnly( true );
+
+    for ( QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2 )
+    {
+      QgsField fld = mAttributeFields.at( it2.key() );
+
+      if ( fld.typeName().endsWith( " identity", Qt::CaseInsensitive ) )
+        continue; // skip identity field
+
+      if ( fld.name().isEmpty() )
+        continue; // invalid
+
+      if ( !first )
+        statement += ',';
+      else
+        first = false;
+
+      statement += QString( "%1=?" ).arg( fld.name() );
+    }
+
+    if ( first )
+      return true; // no fields have been changed
+
+    // set attribute filter
+    statement += QString( " WHERE %1=%2" ).arg( mFidColName, FID_TO_STRING( fid ) );
+
+    // use prepared statement to prevent from sql injection
+    if ( !query.prepare( statement ) )
+    {
+      QString msg = query.lastError().text();
+      QgsDebugMsg( msg );
+      return false;
+    }
+    QgsDebugMsg( statement );
+    for ( QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2 )
+    {
+      QgsField fld = mAttributeFields.at( it2.key() );
+
+      if ( fld.typeName().endsWith( " identity", Qt::CaseInsensitive ) )
+        continue; // skip identity field
+
+      if ( fld.name().isEmpty() )
+        continue; // invalid
+
+      QVariant::Type type = fld.type();
+      if ( it2->isNull() || !it2->isValid() )
+      {
+        // binding null values
+        if ( type == QVariant::Date || type == QVariant::DateTime )
+          query.addBindValue( QVariant( QVariant::String ) );
+        else
+          query.addBindValue( QVariant( type ) );
+      }
+      else if ( type == QVariant::Int )
+      {
+        // binding an INTEGER value
+        query.addBindValue( it2->toInt() );
+      }
+      else if ( type == QVariant::Double )
+      {
+        // binding a DOUBLE value
+        query.addBindValue( it2->toDouble() );
+      }
+      else if ( type == QVariant::String )
+      {
+        // binding a TEXT value
+        query.addBindValue( it2->toString() );
+      }
+      else if ( type == QVariant::DateTime )
+      {
+        // binding a DATETIME value
+        query.addBindValue( it2->toDateTime().toString( Qt::ISODate ) );
+      }
+      else if ( type == QVariant::Date )
+      {
+        // binding a DATE value
+        query.addBindValue( it2->toDate().toString( Qt::ISODate ) );
+      }
+      else if ( type == QVariant::Time )
+      {
+        // binding a TIME value
+        query.addBindValue( it2->toTime().toString( Qt::ISODate ) );
+      }
+      else
+      {
+        query.addBindValue( *it2 );
+      }
+    }
+
+    if ( !query.exec() )
+    {
+      QString msg = query.lastError().text();
+      QgsDebugMsg( msg );
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
+{
+  for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
+  {
+    QString statement;
+    QString values;
+    statement = QString( "INSERT INTO %1.%2 (" ).arg( mSchemaName, mTableName );
+
+    bool first = true;
+    if ( !mDatabase.isOpen() )
+    {
+      mDatabase = GetDatabase( mConnInfo );
+    }
+    QSqlQuery query = QSqlQuery( mDatabase );
+    query.setForwardOnly( true );
+
+    QgsAttributes attrs = it->attributes();
+
+    for ( int i = 0; i < attrs.count(); ++i )
+    {
+      QgsField fld = mAttributeFields.at( i );
+
+      if ( fld.typeName().endsWith( " identity", Qt::CaseInsensitive ) )
+        continue; // skip identity field
+
+      if ( fld.name().isEmpty() )
+        continue; // invalid
+
+      if ( mDefaultValues.contains( i ) && mDefaultValues[i] == attrs.at( i ) )
+        continue; // skip fields having default values
+
+      if ( !first )
+      {
+        statement += ',';
+        values += ',';
+      }
+      else
+        first = false;
+
+      statement += QString( "%1" ).arg( fld.name() );
+      values += QString( "?" );
+    }
+
+    // append geometry column name
+    if ( !mGeometryColName.isEmpty() )
+    {
+      if ( !first )
+      {
+        statement += ',';
+        values += ',';
+      }
+
+      statement += QString( "%1" ).arg( mGeometryColName );
+
+      values += QString( "db2gse.st_geometry(%1,%2)" ).arg(
+                  QString( "?" ), QString::number( mSRId ) );
+    }
+
+    statement += ") VALUES (" + values + ')';
+
+    // use prepared statement to prevent from sql injection
+    if ( !query.prepare( statement ) )
+    {
+      QString msg = query.lastError().text();
+      QgsDebugMsg( msg );
+      if ( !mSkipFailures )
+      {
+        QString msg = query.lastError().text();
+        QgsDebugMsg( msg );
+        pushError( msg );
+        return false;
+      }
+      else
+        continue;
+    }
+
+    for ( int i = 0; i < attrs.count(); ++i )
+    {
+      QgsField fld = mAttributeFields.at( i );
+
+      if ( fld.typeName().endsWith( " identity", Qt::CaseInsensitive ) )
+        continue; // skip identity field
+
+      if ( fld.name().isEmpty() )
+        continue; // invalid
+
+      if ( mDefaultValues.contains( i ) && mDefaultValues[i] == attrs.at( i ) )
+        continue; // skip fields having default values
+
+      QVariant::Type type = fld.type();
+      if ( attrs.at( i ).isNull() || !attrs.at( i ).isValid() )
+      {
+        // binding null values
+        if ( type == QVariant::Date || type == QVariant::DateTime )
+          query.addBindValue( QVariant( QVariant::String ) );
+        else
+          query.addBindValue( QVariant( type ) );
+      }
+      else if ( type == QVariant::Int )
+      {
+        // binding an INTEGER value
+        query.addBindValue( attrs.at( i ).toInt() );
+      }
+      else if ( type == QVariant::Double )
+      {
+        // binding a DOUBLE value
+        query.addBindValue( attrs.at( i ).toDouble() );
+      }
+      else if ( type == QVariant::String )
+      {
+        // binding a TEXT value
+        query.addBindValue( attrs.at( i ).toString() );
+      }
+      else if ( type == QVariant::Time )
+      {
+        // binding a TIME value
+        query.addBindValue( attrs.at( i ).toTime().toString( Qt::ISODate ) );
+      }
+      else if ( type == QVariant::Date )
+      {
+        // binding a DATE value
+        query.addBindValue( attrs.at( i ).toDate().toString( Qt::ISODate ) );
+      }
+      else if ( type == QVariant::DateTime )
+      {
+        // binding a DATETIME value
+        query.addBindValue( attrs.at( i ).toDateTime().toString( Qt::ISODate ) );
+      }
+      else
+      {
+        query.addBindValue( attrs.at( i ) );
+      }
+    }
+
+    if ( !mGeometryColName.isEmpty() )
+    {
+      const QgsGeometry *geom = it->constGeometry();
+
+      QByteArray bytea = QByteArray(( char* )geom->asWkb(), ( int ) geom->wkbSize() );
+      query.addBindValue( bytea, QSql::In | QSql::Binary );
+    }
+
+    if ( !query.exec() )
+    {
+      QString msg = query.lastError().text();
+      QgsDebugMsg( msg );
+      if ( !mSkipFailures )
+      {
+        pushError( msg );
+        return false;
+      }
+    }
+
+
+    statement = QString( "SELECT IDENT_CURRENT('%1.%2')" ).arg( mSchemaName, mTableName );
+    QgsDebugMsg( statement );
+    if ( !query.exec( statement ) )
+    {
+      QString msg = query.lastError().text();
+      QgsDebugMsg( msg );
+      if ( !mSkipFailures )
+      {
+        pushError( msg );
+        return false;
+      }
+    }
+
+    if ( !query.next() )
+    {
+      QString msg = query.lastError().text();
+      QgsDebugMsg( msg );
+      if ( !mSkipFailures )
+      {
+        pushError( msg );
+        return false;
+      }
+    }
+    it->setFeatureId( query.value( 0 ).toLongLong() );
+  }
+
+  return true;
+}
+
+int QgsDb2Provider::capabilities() const
+{
+// TODO - don't think we support this
+  int cap = CreateAttributeIndex | AddFeatures | AddAttributes;
+  bool hasGeom = false;
+  if ( !mGeometryColName.isEmpty() )
+  {
+    hasGeom = true;
+//    cap |= CreateSpatialIndex;
+  }
+
+  if ( mFidColName.isEmpty() )
+    return cap;
+  else
+  {
+    if ( hasGeom )
+      cap |= ChangeGeometries | QgsVectorDataProvider::SelectGeometryAtId;
+
+    return cap | DeleteFeatures | ChangeAttributeValues | DeleteAttributes |
+           QgsVectorDataProvider::SelectAtId;
+  }
+}
+
 
 QString QgsDb2Provider::name() const
 {

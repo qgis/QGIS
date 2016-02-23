@@ -61,8 +61,8 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
     QgsDb2ConnectionItem( QgsDataItem* parent, QString name, QString path );
     ~QgsDb2ConnectionItem();
 
-    static bool ConnInfoFromSettings(const QString connName,
-                                            QString &connInfo, QString &errorMsg);
+    static bool ConnInfoFromSettings( const QString connName,
+                                      QString &connInfo, QString &errorMsg );
     /**
      * Fetch geometry column data from server and populate Browser Panel with
      * schemas and layers.
@@ -112,7 +112,7 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
     QString mDatabase;
     QString mUsername;
     QString mPassword;
-    QString mAuthcfg;    
+    QString mAuthcfg;
     int     mEnvironment;
     bool mUseGeometryColumns;
     bool mUseEstimatedMetadata;

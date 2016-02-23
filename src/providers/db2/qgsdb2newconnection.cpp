@@ -31,13 +31,13 @@
 
 QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
     : QDialog( parent, fl ), mOriginalConnName( connName )
-    , mAuthConfigSelect( nullptr )    
+    , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
-  
+
   mAuthConfigSelect = new QgsAuthConfigSelect( this, "db2" );
-  tabAuthentication->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );  
-    
+  tabAuthentication->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );
+
   if ( !connName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
@@ -51,7 +51,7 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connNa
     txtDriver->setText( settings.value( key + "/driver" ).toString() );
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
 
-    
+
     if ( settings.value( key + "/saveUsername" ).toString() == "true" )
     {
       txtUsername->setText( settings.value( key + "/username" ).toString() );
@@ -65,7 +65,7 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connNa
     }
 
     QString authcfg = settings.value( key + "/authcfg" ).toString();
- QgsDebugMsg(QString("authcfg: %1").arg(authcfg));   
+    QgsDebugMsg( QString( "authcfg: %1" ).arg( authcfg ) );
     mAuthConfigSelect->setConfigId( authcfg );
     if ( !authcfg.isEmpty() )
     {
@@ -85,7 +85,7 @@ void QgsDb2NewConnection::accept()
   QString baseKey = "/DB2/connections/";
   settings.setValue( baseKey + "selected", txtName->text() );
   bool hasAuthConfigID = !mAuthConfigSelect->configId().isEmpty();
-QgsDebugMsg(QString("hasAuthConfigID: %1").arg(hasAuthConfigID));
+  QgsDebugMsg( QString( "hasAuthConfigID: %1" ).arg( hasAuthConfigID ) );
   if ( !hasAuthConfigID && chkStorePassword->isChecked() &&
        QMessageBox::question( this,
                               tr( "Saving passwords" ),
@@ -94,7 +94,7 @@ QgsDebugMsg(QString("hasAuthConfigID: %1").arg(hasAuthConfigID));
   {
     return;
   }
-  
+
   // warn if entry was renamed to an existing connection
   if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
       ( settings.contains( baseKey + txtName->text() + "/service" ) ||
@@ -126,7 +126,7 @@ QgsDebugMsg(QString("hasAuthConfigID: %1").arg(hasAuthConfigID));
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() && !hasAuthConfigID ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() && !hasAuthConfigID ? "true" : "false" );
   settings.setValue( baseKey + "/authcfg", mAuthConfigSelect->configId() );
-  
+
   QDialog::accept();
 }
 
@@ -164,19 +164,19 @@ bool QgsDb2NewConnection::testConnection()
   QString database = txtDatabase->text().trimmed();
   QString username = txtUsername->text().trimmed();
   QString password = txtPassword->text().trimmed();
-  
+
   /* TODO - bar is not defined; works for mssql
   bar->pushMessage( "Testing connection", "....." );
   // Gross but needed to show the last message.
   qApp->processEvents();
   */
-  
+
   if ( username.isEmpty() || password.isEmpty() )
   {
-    db2ConnectStatus -> setText( "DB2 connection failed : " + db.lastError().text() );  
+    db2ConnectStatus -> setText( "DB2 connection failed : " + db.lastError().text() );
     return false;
-  }  
-  
+  }
+
   if ( service.isEmpty() )
   {
     if ( driver.isEmpty() || host.isEmpty() || database.isEmpty() || port.isEmpty() )
@@ -192,18 +192,19 @@ bool QgsDb2NewConnection::testConnection()
       QgsDebugMsg( "Database must be specified" );
       return false;
     }
-  }  
+  }
 
   QString connInfo = "dbname='" + database +  + "'";  // always need dbname
   connInfo +=  " user='" + username + "' password='" + password + "'";
-  if ( !service.isEmpty() ) {
+  if ( !service.isEmpty() )
+  {
     connInfo += " service='" + service + "'";
-    }
-    else
-    {
-      connInfo += " driver='" + driver + "' host=" + host + " port=" + port;
-    }
-    
+  }
+  else
+  {
+    connInfo += " driver='" + driver + "' host=" + host + " port=" + port;
+  }
+
   db = QgsDb2Provider::GetDatabase( connInfo );
   if ( db.open() )
   {
@@ -213,7 +214,7 @@ bool QgsDb2NewConnection::testConnection()
   }
   else
   {
-    QgsDebugMsg("connection open failed: " + db.lastError().text() );
+    QgsDebugMsg( "connection open failed: " + db.lastError().text() );
     db2ConnectStatus -> setText( "DB2 connection failed : " + db.lastError().text() );
     return false;
   }

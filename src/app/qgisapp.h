@@ -724,7 +724,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //#ifdef HAVE_DB2
     //! Add a DB2 layer to the map
     void addDb2Layer();
-    //#endif    
+    //#endif
     //#ifdef HAVE_ORACLE
     //! Add a Oracle layer to the map
     void addOracleLayer();

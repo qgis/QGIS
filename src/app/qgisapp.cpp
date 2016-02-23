@@ -1426,7 +1426,7 @@ void QgisApp::createActions()
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
   connect( mActionAddSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( addSpatiaLiteLayer() ) );
   connect( mActionAddMssqlLayer, SIGNAL( triggered() ), this, SLOT( addMssqlLayer() ) );
-  connect( mActionAddDb2Layer, SIGNAL( triggered() ), this, SLOT( addDb2Layer() ) );  
+  connect( mActionAddDb2Layer, SIGNAL( triggered() ), this, SLOT( addDb2Layer() ) );
   connect( mActionAddOracleLayer, SIGNAL( triggered() ), this, SLOT( addOracleLayer() ) );
   connect( mActionAddWmsLayer, SIGNAL( triggered() ), this, SLOT( addWmsLayer() ) );
   connect( mActionAddWcsLayer, SIGNAL( triggered() ), this, SLOT( addWcsLayer() ) );
@@ -3876,7 +3876,7 @@ void QgisApp::addDb2Layer()
 {
 #ifdef HAVE_DB2
   // show the DB2 dialog
-    QgsDebugMsg( "Show dialog for DB2 ");
+  QgsDebugMsg( "Show dialog for DB2 " );
   QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "DB2", this ) );
   if ( !dbs )
   {

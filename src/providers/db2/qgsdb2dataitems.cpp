@@ -34,8 +34,8 @@ QgsDb2ConnectionItem::~QgsDb2ConnectionItem()
 {
 }
 
-bool QgsDb2ConnectionItem::ConnInfoFromSettings(const QString connName,
-                                            QString &connInfo, QString &errorMsg)
+bool QgsDb2ConnectionItem::ConnInfoFromSettings( const QString connName,
+    QString &connInfo, QString &errorMsg )
 {
   QSettings settings;
   QString key = "/DB2/connections/" + connName;
@@ -47,8 +47,8 @@ bool QgsDb2ConnectionItem::ConnInfoFromSettings(const QString connName,
   QString database = settings.value( key + "/database" ).toString();
   QString username = settings.value( key + "/username" ).toString();
   QString password = settings.value( key + "/password" ).toString();
-  QString authcfg = settings.value( key + "/authcfg" ).toString(); 
-   
+  QString authcfg = settings.value( key + "/authcfg" ).toString();
+
   if ( service.isEmpty() )
   {
     if ( driver.isEmpty() || host.isEmpty() || database.isEmpty() || port.isEmpty() )
@@ -58,20 +58,20 @@ bool QgsDb2ConnectionItem::ConnInfoFromSettings(const QString connName,
       return false;
     }
     connInfo = "driver='" + driver + "' "
-             + "host='" + host + "' "
-             + "dbname='" + database + "' "
-             + "port='" + port + "' ";
+               + "host='" + host + "' "
+               + "dbname='" + database + "' "
+               + "port='" + port + "' ";
   }
   else
   {
     if ( database.isEmpty() )
     {
       QgsDebugMsg( "Database must be specified" );
-      errorMsg = "Database must be specified";      
+      errorMsg = "Database must be specified";
       return false;
     }
     connInfo = "service='" + service + "' "
-             + "dbname='" + database + "' ";
+               + "dbname='" + database + "' ";
   }
 
   if ( !authcfg.isEmpty() )
@@ -79,20 +79,20 @@ bool QgsDb2ConnectionItem::ConnInfoFromSettings(const QString connName,
     username.clear();
     password.clear();
     connInfo += "authcfg='" + authcfg + "' ";
-  }   
-  
+  }
+
   if ( !username.isEmpty() )  // will be empty if !authcfg.isEmpty()
   {
     connInfo += "user='" + username + "' ";
   }
-  
-  
+
+
   if ( !password.isEmpty() )
   {
     connInfo += "password='" + password + "' ";
   }
-  QgsDebugMsg("connInfo: '" + connInfo + "'");    
-  return true;  
+  QgsDebugMsg( "connInfo: '" + connInfo + "'" );
+  return true;
 }
 
 void QgsDb2ConnectionItem::refresh()
@@ -123,17 +123,17 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
 
   QVector<QgsDataItem*> children;
 //  QgsDb2GeomColumnTypeThread *columnTypeThread = 0; // TODO - what is this?
-  
+
   QString connInfo;
   QString errorMsg;
-  bool success = QgsDb2ConnectionItem::ConnInfoFromSettings(mName, connInfo, errorMsg);
-  if ( !success ) 
+  bool success = QgsDb2ConnectionItem::ConnInfoFromSettings( mName, connInfo, errorMsg );
+  if ( !success )
   {
-    QgsDebugMsg("settings error: " + errorMsg);
+    QgsDebugMsg( "settings error: " + errorMsg );
   }
-  QgsDebugMsg("connInfo: " + connInfo);
+  QgsDebugMsg( "connInfo: " + connInfo );
   mConnInfo = connInfo;
-    QgsDebugMsg("mConnInfo: '" + mConnInfo + "'");
+  QgsDebugMsg( "mConnInfo: '" + mConnInfo + "'" );
   QSqlDatabase db = QgsDb2Provider::GetDatabase( connInfo );
   QgsDebugMsg( "back from GetDatabase" );
   if ( db.open() )
@@ -250,7 +250,7 @@ void QgsDb2ConnectionItem::deleteConnection()
 
 void QgsDb2ConnectionItem::refreshConnection()
 {
-  QSqlDatabase db = QgsDb2Provider::GetDatabase( mConnInfo );  
+  QSqlDatabase db = QgsDb2Provider::GetDatabase( mConnInfo );
   if ( db.open() )
   {
     QString connectionName = db.connectionName();
@@ -343,14 +343,14 @@ QString QgsDb2LayerItem::createUri()
     QgsDebugMsg( "connection item not found." );
     return QString::null;
   }
-  QgsDebugMsg("connInfo: '" + connItem->connInfo() + "'");
+  QgsDebugMsg( "connInfo: '" + connItem->connInfo() + "'" );
   QgsDataSourceURI uri = QgsDataSourceURI( connItem->connInfo() );
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, mLayerProperty.pkColumnName );
   uri.setSrid( mLayerProperty.srid );
-  uri.setWkbType( QGis::fromOldWkbType(QgsDb2TableModel::wkbTypeFromDb2( mLayerProperty.type ) ));
+  uri.setWkbType( QGis::fromOldWkbType( QgsDb2TableModel::wkbTypeFromDb2( mLayerProperty.type ) ) );
   uri.setParam( "extents", mLayerProperty.extents );
-  QString uriString = uri.uri(false);
-    QgsDebugMsg( "Layer URI: " + uriString );
+  QString uriString = uri.uri( false );
+  QgsDebugMsg( "Layer URI: " + uriString );
   return uriString;
 }
 // ---------------------------------------------------------------------------

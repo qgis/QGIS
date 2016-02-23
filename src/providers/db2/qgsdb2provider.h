@@ -20,6 +20,7 @@
 
 #include <qgsvectordataprovider.h>
 #include <qgscoordinatereferencesystem.h>
+#include "qgsgeometry.h"
 #include <QtSql>
 
 /**
@@ -116,7 +117,23 @@ class QgsDb2Provider : public QgsVectorDataProvider
         Return a terse string describing what the provider is.
      */
     virtual QString description() const;
+ 
+    /** Returns a bitmask containing the supported capabilities
+        Note, some capabilities may change depending on whether
+        a spatial filter is active on this provider, so it may
+        be prudent to check this value per intended operation.
+     */
+    virtual int capabilities() const override;    
 
+    /** Writes a list of features to the database*/
+    virtual bool addFeatures( QgsFeatureList & flist ) override;
+
+    /** Deletes a feature*/
+    virtual bool deleteFeatures( const QgsFeatureIds & id ) override;    
+
+    /** Changes attribute values of existing features */
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+    
   protected:
     /** Loads fields from input file to member attributeFields */
     QVariant::Type DecodeSqlType( int typeId );
