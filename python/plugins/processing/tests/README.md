@@ -144,7 +144,7 @@ Or you can use one or more regular expressions that will be [matched](https://do
 content
 
     OUTPUT:
-      name: expected/gdal/layer_info.html
+      name: layer_info.html
       type: regex
       rules:
         - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
