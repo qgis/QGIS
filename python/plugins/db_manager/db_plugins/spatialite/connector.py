@@ -108,6 +108,9 @@ class SpatiaLiteDBConnector(DBConnector):
             result = self._execute(None, sql).fetchone()[0] == 1
         except ConnectionError:
             result = False
+        except Exception as e:
+            # SpatiaLite < 4.2 does not have HasGeoPackage() function
+            result = False
 
         if result:
             try:
