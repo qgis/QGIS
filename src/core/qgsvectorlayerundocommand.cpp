@@ -347,6 +347,7 @@ QgsVectorLayerUndoCommandDeleteAttribute::QgsVectorLayerUndoCommandDeleteAttribu
   QgsFields::FieldOrigin origin = fields.fieldOrigin( mFieldIndex );
   mOriginIndex = fields.fieldOriginIndex( mFieldIndex );
   mProviderField = ( origin == QgsFields::OriginProvider );
+  mOldEditorWidgetConfig = mBuffer->L->editFormConfig()->widgetConfig( mFieldIndex );
 
   if ( !mProviderField )
   {
@@ -401,6 +402,8 @@ void QgsVectorLayerUndoCommandDeleteAttribute::undo()
     }
   }
 
+  mBuffer->L->editFormConfig()->setWidgetConfig( mFieldIndex, mOldEditorWidgetConfig );
+
   emit mBuffer->attributeAdded( mFieldIndex );
 }
 
@@ -417,6 +420,7 @@ void QgsVectorLayerUndoCommandDeleteAttribute::redo()
     mBuffer->mAddedAttributes.removeAt( mOriginIndex ); // removing temporary attribute
   }
 
+  mBuffer->L->editFormConfig()->removeWidgetConfig( mFieldIndex );
   mBuffer->handleAttributeDeleted( mFieldIndex ); // update changed attributes + new features
   mBuffer->updateLayerFields();
   emit mBuffer->attributeDeleted( mFieldIndex );
