@@ -29,9 +29,28 @@ __revision__ = '$Format:%H$'
 import math
 
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox, QCheckBox, QDialogButtonBox, QMessageBox
+from PyQt4.QtGui import (QDialog,
+                         QVBoxLayout,
+                         QHBoxLayout,
+                         QLabel,
+                         QLineEdit,
+                         QComboBox,
+                         QCheckBox,
+                         QDialogButtonBox,
+                         QMessageBox)
 
-from processing.core.parameters import Parameter, ParameterBoolean, ParameterRaster, ParameterTable, ParameterVector, ParameterMultipleInput, ParameterNumber, ParameterString, ParameterTableField, ParameterExtent, ParameterFile
+from processing.core.parameters import (Parameter,
+                                        ParameterBoolean,
+                                        ParameterRaster,
+                                        ParameterTable,
+                                        ParameterVector,
+                                        ParameterMultipleInput,
+                                        ParameterNumber,
+                                        ParameterString,
+                                        ParameterTableField,
+                                        ParameterExtent,
+                                        ParameterFile,
+                                        ParameterPoint)
 
 
 class ModelerParameterDefinitionDialog(QDialog):
@@ -45,6 +64,7 @@ class ModelerParameterDefinitionDialog(QDialog):
     PARAMETER_TABLE_FIELD = 'Table field'
     PARAMETER_EXTENT = 'Extent'
     PARAMETER_FILE = 'File'
+    PARAMETER_POINT = 'Point'
 
     # To add
     PARAMETER_MULTIPLE = 'Multiple input'
@@ -60,6 +80,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         PARAMETER_TABLE,
         PARAMETER_TABLE_FIELD,
         PARAMETER_VECTOR,
+        PARAMETER_POINT
     ]
 
     def __init__(self, alg, paramType=None, param=None):
@@ -188,6 +209,14 @@ class ModelerParameterDefinitionDialog(QDialog):
                     1 if self.param.isFolder else 0)
             self.horizontalLayout3.addWidget(self.fileFolderCombo)
             self.verticalLayout.addLayout(self.horizontalLayout3)
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_POINT or \
+                isinstance(self.param, ParameterPoint):
+            self.horizontalLayout3.addWidget(QLabel(self.tr('Default value')))
+            self.defaultTextBox = QLineEdit()
+            if self.param is not None:
+                self.defaultTextBox.setText(self.param.default)
+            self.horizontalLayout3.addWidget(self.defaultTextBox)
+            self.verticalLayout.addLayout(self.horizontalLayout3)
 
         self.horizontalLayout2.addWidget(QLabel(self.tr('Required')))
         self.yesNoCombo = QComboBox()
@@ -292,6 +321,10 @@ class ModelerParameterDefinitionDialog(QDialog):
                 isinstance(self.param, ParameterFile):
             isFolder = self.fileFolderCombo.currentIndex() == 1
             self.param = ParameterFile(name, description, isFolder=isFolder)
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_POINT or \
+                isinstance(self.param, ParameterPoint):
+            self.param = ParameterPoint(name, description,
+                                        unicode(self.defaultTextBox.text()))
         self.param.optional = self.yesNoCombo.currentIndex() == 1
         self.close()
 
