@@ -2720,17 +2720,17 @@ QVariant QgsExpression::NodeColumnRef::eval( QgsExpression* /*parent*/, const Qg
 
 bool QgsExpression::NodeColumnRef::prepare( QgsExpression* parent, const QgsFields& fields )
 {
-  for ( int i = 0; i < fields.count(); ++i )
+  mIndex = fields.fieldNameIndex( mName );
+  if ( mIndex >= 0 )
   {
-    if ( QString::compare( fields[i].name(), mName, Qt::CaseInsensitive ) == 0 )
-    {
-      mIndex = i;
-      return true;
-    }
+    return true;
   }
-  parent->mEvalErrorString = QObject::tr( "Column '%1' not found" ).arg( mName );
-  mIndex = -1;
-  return false;
+  else
+  {
+    parent->mEvalErrorString = QObject::tr( "Column '%1' not found" ).arg( mName );
+    mIndex = -1;
+    return false;
+  }
 }
 
 QString QgsExpression::NodeColumnRef::dump() const
