@@ -3541,7 +3541,7 @@ QString QgsVectorLayer::metadata()
   myMetadata += QString::number( featureCount() );
   myMetadata += "</p>\n";
   //capabilities
-  myMetadata += "<p class=\"glossy\">" + tr( "Editing capabilities of this layer" ) + "</p>\n";
+  myMetadata += "<p class=\"glossy\">" + tr( "Capabilities of this layer" ) + "</p>\n";
   myMetadata += "<p>";
   myMetadata += capabilitiesString();
   myMetadata += "</p>\n";

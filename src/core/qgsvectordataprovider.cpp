@@ -204,20 +204,20 @@ QString QgsVectorDataProvider::capabilitiesString() const
 
   if ( abilities & QgsVectorDataProvider::SimplifyGeometries )
   {
-    abilitiesList += tr( "Simplify Geometries" );
-    QgsDebugMsg( "Capability: Simplify Geometries before fetch the feature" );
+    abilitiesList += tr( "Presimplify Geometries" );
+    QgsDebugMsg( "Capability: Simplify Geometries before fetching the feature" );
   }
 
   if ( abilities & QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation )
   {
-    abilitiesList += tr( "Simplify Geometries with topological validation" );
-    QgsDebugMsg( "Capability: Simplify Geometries before fetch the feature ensuring that the result is a valid geometry" );
+    abilitiesList += tr( "Presimplify Geometries while keeping them valid" );
+    QgsDebugMsg( "Capability: Simplify Geometries before fetching the feature ensuring that the result is a valid geometry" );
   }
 
   if ( abilities & QgsVectorDataProvider::ChangeFeatures )
   {
     abilitiesList += tr( "Joint Geometry and Attributes updates" );
-    QgsDebugMsg( "Capability: change attributes and geometries at once" );
+    QgsDebugMsg( "Capability: Change Attributes and geometries at once" );
   }
 
   return abilitiesList.join( ", " );
