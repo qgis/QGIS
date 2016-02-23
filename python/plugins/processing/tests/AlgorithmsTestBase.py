@@ -27,12 +27,12 @@ __revision__ = ':%H$'
 
 import qgis
 import os
-import shutil
 import yaml
 import nose2
 import gdal
 import hashlib
 import tempfile
+import re
 
 from osgeo.gdalconst import GA_ReadOnly
 
@@ -123,7 +123,7 @@ class AlgorithmsTest():
         Loads a result parameter. Creates a temporary destination where the result should go to and returns this location
         so it can be sent to the algorithm as parameter.
         """
-        if param['type'] in ['vector', 'file']:
+        if param['type'] in ['vector', 'file', 'regex']:
             outdir = tempfile.mkdtemp()
             self.cleanup_paths.append(outdir)
             basename = os.path.basename(param['name'])
@@ -191,6 +191,12 @@ class AlgorithmsTest():
                 result_filepath = results[id]
 
                 self.assertFilesEqual(expected_filepath, result_filepath)
+            elif 'regex' == expected_result['type']:
+                with open(results[id], 'r') as file:
+                    data = file.read()
+
+                for rule in expected_result.get('rules', []):
+                    self.assertRegexpMatches(data, rule)
 
 
 if __name__ == '__main__':
