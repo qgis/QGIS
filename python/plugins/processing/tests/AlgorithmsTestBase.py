@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    test_algorithms.py
+    AlgorithmsTest.py
     ---------------------
     Date                 : January 2016
     Copyright            : (C) 2016 by Matthias Kuhn
@@ -27,12 +27,12 @@ __revision__ = ':%H$'
 
 import qgis
 import os
-import shutil
 import yaml
 import nose2
 import gdal
 import hashlib
 import tempfile
+import re
 
 from osgeo.gdalconst import GA_ReadOnly
 
@@ -46,11 +46,6 @@ from qgis.core import (
     QgsMapLayerRegistry
 )
 
-from qgis.testing import (
-    start_app,
-    unittest
-)
-
 from utilities import (
     unitTestDataPath
 )
@@ -60,25 +55,13 @@ def processingTestDataPath():
     return os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class TestAlgorithms(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        start_app()
-        from processing.core.Processing import Processing
-        Processing.initialize()
-        cls.cleanup_paths = []
-
-    @classmethod
-    def tearDownClass(cls):
-        for path in cls.cleanup_paths:
-            shutil.rmtree(path)
+class AlgorithmsTest():
 
     def test_algorithms(self):
         """
         This is the main test function. All others will be executed based on the definitions in testdata/algorithm_tests.yaml
         """
-        with open(os.path.join(processingTestDataPath(), 'algorithm_tests.yaml'), 'r') as stream:
+        with open(os.path.join(processingTestDataPath(), self.test_definition_file()), 'r') as stream:
             algorithm_tests = yaml.load(stream)
 
         for algtest in algorithm_tests['tests']:
@@ -104,8 +87,8 @@ class TestAlgorithms(unittest.TestCase):
         for r, p in defs['results'].iteritems():
             alg.setOutputValue(r, self.load_result_param(p))
 
-        self.assertTrue(AlgorithmExecutor.runalg(alg))
         print(alg.getAsCommand())
+        self.assertTrue(AlgorithmExecutor.runalg(alg))
         self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
 
     def load_params(self, params):
@@ -133,21 +116,27 @@ class TestAlgorithms(unittest.TestCase):
             # No type specified, use whatever is there
             return param
 
-        raise KeyError("Unknown type '{}' specified for parameter '{}'".format(param['type'], param['name']))
+        raise KeyError("Unknown type '{}' specified for parameter".format(param['type']))
 
     def load_result_param(self, param):
         """
         Loads a result parameter. Creates a temporary destination where the result should go to and returns this location
         so it can be sent to the algorithm as parameter.
         """
-        if param['type'] in ['vector', 'file']:
+        if param['type'] in ['vector', 'file', 'regex']:
             outdir = tempfile.mkdtemp()
             self.cleanup_paths.append(outdir)
             basename = os.path.basename(param['name'])
             filepath = os.path.join(outdir, basename)
             return filepath
+        elif param['type'] == 'rasterhash':
+            outdir = tempfile.mkdtemp()
+            self.cleanup_paths.append(outdir)
+            basename = 'raster.tif'
+            filepath = os.path.join(outdir, basename)
+            return filepath
 
-        raise KeyError("Unknown type '{}' specified for parameter '{}'".format(param['type'], param['name']))
+        raise KeyError("Unknown type '{}' specified for parameter".format(param['type']))
 
     def load_layer(self, param):
         """
@@ -188,10 +177,7 @@ class TestAlgorithms(unittest.TestCase):
 
                 result_lyr = QgsVectorLayer(results[id], id, 'ogr')
 
-                try:
-                    compare = expected_result['compare']
-                except KeyError:
-                    compare = {}
+                compare = expected_result.get('compare', {})
 
                 self.assertLayersEqual(expected_lyr, result_lyr, compare=compare)
 
@@ -205,6 +191,12 @@ class TestAlgorithms(unittest.TestCase):
                 result_filepath = results[id]
 
                 self.assertFilesEqual(expected_filepath, result_filepath)
+            elif 'regex' == expected_result['type']:
+                with open(results[id], 'r') as file:
+                    data = file.read()
+
+                for rule in expected_result.get('rules', []):
+                    self.assertRegexpMatches(data, rule)
 
 
 if __name__ == '__main__':
