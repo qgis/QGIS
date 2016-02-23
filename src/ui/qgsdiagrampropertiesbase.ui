@@ -11,7 +11,16 @@
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -404,7 +413,16 @@
                  <enum>QFrame::Plain</enum>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_3">
-                 <property name="margin">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
                   <number>0</number>
                  </property>
                  <item>
@@ -422,7 +440,16 @@
                    <item>
                     <widget class="QWidget" name="mAttributeBasedScalingOptions" native="true">
                      <layout class="QHBoxLayout" name="horizontalLayout_2">
-                      <property name="margin">
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="bottomMargin">
                        <number>0</number>
                       </property>
                       <item>
@@ -529,7 +556,17 @@ Leave empty to automatically apply the maximum value.</string>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QDoubleSpinBox" name="mIncreaseMinimumSizeSpinBox"/>
+                     <widget class="QDoubleSpinBox" name="mIncreaseMinimumSizeSpinBox">
+                      <property name="decimals">
+                       <number>6</number>
+                      </property>
+                      <property name="maximum">
+                       <double>100000.000000000000000</double>
+                      </property>
+                      <property name="singleStep">
+                       <double>0.200000000000000</double>
+                      </property>
+                     </widget>
                     </item>
                     <item>
                      <spacer name="horizontalSpacer_5">
