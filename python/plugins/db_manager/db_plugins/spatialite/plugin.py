@@ -188,7 +188,7 @@ class SLTable(Table):
         if self.database().connector.isGpkg():
             # QGIS has no provider to load Geopackage vectors, let's use OGR
             return u"vector:ogr:%s:%s" % (self.name, self.ogrUri())
-        return VectorTable.mimeUri(self)
+        return Table.mimeUri(self)
 
     def toMapLayer(self):
         from qgis.core import QgsVectorLayer
