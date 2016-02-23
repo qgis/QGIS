@@ -47,11 +47,16 @@
 class SERVER_EXPORT QgsServer
 {
   public:
+    /**
+     * Standard ctor for CGI/FCGI
+     * @note Not available in Python bindings
+     */
+    QgsServer( int & argc, char ** argv );
+    //! The following is mainly for python bindings, that do not pass argc/argv
     QgsServer();
     ~QgsServer();
+
     /** Server initialization: intialise QGIS ang QT core application.
-     * This method is automatically called by handleRequest if it wasn't
-     * explicitly called before
      * @note Not available in Python bindings
      */
     static bool init( int & argc, char ** argv );
@@ -84,7 +89,7 @@ class SERVER_EXPORT QgsServer
 
     /** Returns a pointer to the server interface */
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsServerInterfaceImpl* serverInterface() { return mServerInterface; }
+    QgsServerInterfaceImpl* serverInterface() { return sServerInterface; }
 #endif
 
   private:
@@ -106,21 +111,23 @@ class SERVER_EXPORT QgsServer
     //! Create and return a request handler instance
     static QgsRequestHandler* createRequestHandler( const bool captureOutput = false );
 
-    // Server status
-    static QString mConfigFilePath;
-    static QgsCapabilitiesCache* mCapabilitiesCache;
-    static QgsMapRenderer* mMapRenderer;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    static QgsServerInterfaceImpl* mServerInterface;
-    static bool mInitPython;
-#endif
-    static bool mInitialised;
-    static char* mArgv[1];
-    static int mArgc;
-    static QgsApplication* mQgsApplication;
-    static bool mCaptureOutput;
     // Return the server name
     static QString &serverName();
+
+    // Status
+    static QString sConfigFilePath;
+    static QgsCapabilitiesCache* sCapabilitiesCache;
+    static QgsMapRenderer* sMapRenderer;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    static QgsServerInterfaceImpl* sServerInterface;
+    static bool sInitPython;
+#endif
+    //! Initialization must run once for all servers
+    static bool sInitialised;
+    static char* sArgv[1];
+    static int sArgc;
+    static QgsApplication* sQgsApplication;
+    static bool sCaptureOutput;
 };
 #endif // QGSSERVER_H
 
