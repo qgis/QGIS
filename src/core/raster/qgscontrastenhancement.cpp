@@ -271,34 +271,31 @@ void QgsContrastEnhancement::setContrastEnhancementAlgorithm( ContrastEnhancemen
 {
   QgsDebugMsg( "called algorithm: " + QString::number(( int )theAlgorithm ) + " generate lookup table: " + QString::number(( int )generateTable ) );
 
-  if ( theAlgorithm != mContrastEnhancementAlgorithm )
+  switch ( theAlgorithm )
   {
-    switch ( theAlgorithm )
-    {
-      case StretchToMinimumMaximum :
-        mContrastEnhancementFunction = new QgsLinearMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue );
-        break;
-      case StretchAndClipToMinimumMaximum :
-        mContrastEnhancementFunction = new QgsLinearMinMaxEnhancementWithClip( mRasterDataType, mMinimumValue, mMaximumValue );
-        break;
-      case ClipToMinimumMaximum :
-        mContrastEnhancementFunction = new QgsClipToMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue );
-        break;
-      case UserDefinedEnhancement :
-        //Do nothing
-        break;
-      default:
-        mContrastEnhancementFunction = new QgsContrastEnhancementFunction( mRasterDataType, mMinimumValue, mMaximumValue );
-        break;
-    }
+    case StretchToMinimumMaximum :
+      mContrastEnhancementFunction = new QgsLinearMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue );
+      break;
+    case StretchAndClipToMinimumMaximum :
+      mContrastEnhancementFunction = new QgsLinearMinMaxEnhancementWithClip( mRasterDataType, mMinimumValue, mMaximumValue );
+      break;
+    case ClipToMinimumMaximum :
+      mContrastEnhancementFunction = new QgsClipToMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue );
+      break;
+    case UserDefinedEnhancement :
+      //Do nothing
+      break;
+    default:
+      mContrastEnhancementFunction = new QgsContrastEnhancementFunction( mRasterDataType, mMinimumValue, mMaximumValue );
+      break;
+  }
 
-    mEnhancementDirty = true;
-    mContrastEnhancementAlgorithm = theAlgorithm;
+  mEnhancementDirty = true;
+  mContrastEnhancementAlgorithm = theAlgorithm;
 
-    if ( generateTable )
-    {
-      generateLookupTable();
-    }
+  if ( generateTable )
+  {
+    generateLookupTable();
   }
 }
 
