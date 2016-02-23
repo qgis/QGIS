@@ -409,7 +409,7 @@ QIcon QgsGrassMapsetItem::icon()
   }
   else if ( mGrassObject.locationIdentical( QgsGrass::getDefaultLocationObject() ) )
   {
-    if ( QgsGrass::instance()->isMapsetInSearchPath( mName ) )
+    if ( QgsGrass::instance()->isMapsetInSearchPath( mGrassObject.mapset() ) )
     {
       return QgsApplication::getThemeIcon( "/grass_mapset_search.png" );
     }
@@ -509,7 +509,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
     // if topo version does not match GRASS lib version
     int topoMajor = 0;
     int topoMinor = 0;
-    bool gotTopoVersion = QgsGrass::topoVersion( mGrassObject.gisdbase(), mGrassObject.location(), mName, name, topoMajor, topoMinor );
+    bool gotTopoVersion = QgsGrass::topoVersion( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset(), name, topoMajor, topoMinor );
     QgsDebugMsg( QString( "name = %1 topoMajor = %2 topoMinor = %3" ).arg( name ).arg( topoMajor ).arg( topoMinor ) );
     QString topoError;
     if ( !gotTopoVersion )
@@ -540,7 +540,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 
     try
     {
-      layerNames = QgsGrass::vectorLayers( mGrassObject.gisdbase(), mGrassObject.location(), mName, name );
+      layerNames = QgsGrass::vectorLayers( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset(), name );
     }
     catch ( QgsGrass::Exception &e )
     {
@@ -611,7 +611,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
     QString uri = mDirPath + "/" + "cellhd" + "/" + name;
     QgsDebugMsg( "uri = " + uri );
 
-    QgsGrassObject rasterObject( mGrassObject.gisdbase(), mGrassObject.location(), mName, name, QgsGrassObject::Raster );
+    QgsGrassObject rasterObject( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset(), name, QgsGrassObject::Raster );
     if ( objectInImports( rasterObject ) )
     {
       QgsDebugMsg( "skip currently being imported raster " + name );
@@ -634,7 +634,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
     QString uri = mDirPath + "/" + "group" + "/" + name;
     QgsDebugMsg( "uri = " + uri );
 
-    QgsGrassObject rasterObject( mGrassObject.gisdbase(), mGrassObject.location(), mName, name, QgsGrassObject::Group );
+    QgsGrassObject rasterObject( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset(), name, QgsGrassObject::Group );
     QgsGrassGroupItem *layer = new QgsGrassGroupItem( this, rasterObject, path, uri );
     items.append( layer );
   }
@@ -832,7 +832,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
       QgsDebugMsg( "mapsetCrs = " + mapsetCrs.toWkt() );
 
       bool settingsExternal = settings.value( "/GRASS/browser/import/external", true ).toBool();
-      QgsGrassObject rasterObject( mGrassObject.gisdbase(), mGrassObject.location(), mName, destName, QgsGrassObject::Raster );
+      QgsGrassObject rasterObject( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset(), destName, QgsGrassObject::Raster );
       if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs == mapsetCrs
            && rasterProvider->name() == "gdal" && settingsExternal )
       {
@@ -867,7 +867,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
     else if ( u.layerType == "vector" )
     {
       QString path = mPath + "/" + "raster" + "/" + u.name;
-      QgsGrassObject vectorObject( mGrassObject.gisdbase(), mGrassObject.location(), mName, destName, QgsGrassObject::Vector );
+      QgsGrassObject vectorObject( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset(), destName, QgsGrassObject::Vector );
       import = new QgsGrassVectorImport( vectorProvider, vectorObject ); // takes provider ownership
     }
 

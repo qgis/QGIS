@@ -1196,6 +1196,7 @@ QVector<QgsDataItem*> QgsFavouritesItem::createChildren( const QString& favDir )
       QgsDataItem * item = provider->createDataItem( favDir, this );
       if ( item )
       {
+        item->setName( favDir );
         children.append( item );
       }
     }
