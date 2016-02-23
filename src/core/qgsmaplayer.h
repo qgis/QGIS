@@ -759,4 +759,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsMapLayerStyleManager* mStyleManager;
 };
 
+Q_DECLARE_METATYPE( QgsMapLayer* )
+
 #endif
