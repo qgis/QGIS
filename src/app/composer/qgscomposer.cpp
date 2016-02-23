@@ -1192,7 +1192,10 @@ void QgsComposer::atlasPageComboEditingFinished()
   }
   else if ( page != mComposition->atlasComposition().currentFeatureNumber() + 1 )
   {
+    mapCanvas()->stopRendering();
+    loadAtlasPredefinedScalesFromProject();
     mComposition->atlasComposition().prepareForFeature( page - 1 );
+    emit atlasPreviewFeatureChanged();
   }
 }
 
