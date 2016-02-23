@@ -125,7 +125,7 @@ def run(item, action, mainwindow):
         sql = u'SELECT face_id, topology.ST_GetFaceGeometry(%s,' \
               'face_id)::geometry(polygon, %s) as geom ' \
               'FROM %s.face WHERE face_id > 0' % \
-              (quoteStr(toponame), quoteId(toponame), toposrid)
+              (quoteStr(toponame), toposrid, quoteId(toponame))
         uri.setDataSource('', u'(%s\n)' % sql, 'geom', '', 'face_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QGis.WKBPolygon)
@@ -142,7 +142,7 @@ def run(item, action, mainwindow):
               'topology.ST_GetFaceGeometry(%s,' \
               'face_id))::geometry(point, %s) as geom ' \
               'FROM %s.face WHERE face_id > 0' % \
-              (quoteStr(toponame), quoteId(toponame), toposrid)
+              (quoteStr(toponame), toposrid, quoteId(toponame))
         uri.setDataSource('', u'(%s)' % sql, 'geom', '', 'face_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QGis.WKBPoint)
