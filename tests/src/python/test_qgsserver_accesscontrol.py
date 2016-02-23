@@ -107,6 +107,8 @@ class RestrictedAccessControl(QgsAccessControlFilter):
             return "pk = 1"
         elif layer.name() == "Hello_Project_SubsetString":
             return "pkuid = 6 or pkuid = 7"
+        elif layer.name() == "Hello_Filter_SubsetString":
+            return "pkuid = 6 or pkuid = 7"
         else:
             return None
 
@@ -866,6 +868,47 @@ class TestQgsServerAccessControl(unittest.TestCase):
         response, headers = self._get_restricted(query_string)
         self._img_diff_error(response, headers, "Restricted_WMS_GetMap")
 
+    def test_wms_getmap_subsetstring_with_filter(self):
+        """ test that request filter and access control subsetStrings are correctly combined. Note that for this
+        test we reuse the projectsubsetstring reference images as we are using filter requests to set the same
+        filter " pkuid in (7,8) " as the project subsetstring uses for its test.
+        """
+        query_string = "&".join(["%s=%s" % i for i in {
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Hello_Filter_SubsetString",
+            "FILTER": "Hello_Filter_SubsetString:\"pkuid\" IN ( 7 , 8 )",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857"
+        }.items()])
+
+        response, headers = self._get_fullaccess(query_string)
+        self._img_diff_error(response, headers, "WMS_GetMap_projectsubstring")
+
+        query_string = "&".join(["%s=%s" % i for i in {
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Hello_Filter_SubsetString",
+            "FILTER": "Hello_Filter_SubsetString:\"pkuid\" IN ( 7 , 8 )",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857"
+        }.items()])
+
+        response, headers = self._get_restricted(query_string)
+        self._img_diff_error(response, headers, "Restricted_WMS_GetMap_projectsubstring")
+
     def test_wms_getmap_projectsubsetstring(self):
         """ test that project set layer subsetStrings are honored"""
         query_string = "&".join(["%s=%s" % i for i in {
@@ -1005,7 +1048,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "Project set layer subsetString not honored in WMS GetFeatureInfo when access control applied/1\n%s" % response)
 
     def test_wms_getfeatureinfo_projectsubsetstring2(self):
-        """test that layer subsetStrings set in projects are honored. This test checks for a feature which should be pass
+        """test that layer subsetStrings set in projects are honored. This test checks for a feature which should pass
         both project set layer subsetString and access control filters
         """
         query_string = "&".join(["%s=%s" % i for i in {
@@ -1043,8 +1086,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
             str(response).find("<qgs:pk>7</qgs:pk>") != -1,
             "No good result result in GetFeatureInfo Hello/2\n%s" % response)
 
-    def test_wms_getfeatureinfo_projectsubsetstring2(self):
-        """test that layer subsetStrings set in projects are honored. This test checks for a feature which should be pass
+    def test_wms_getfeatureinfo_projectsubsetstring3(self):
+        """test that layer subsetStrings set in projects are honored. This test checks for a feature which should pass
         the project set layer subsetString but fail the access control checks
         """
         query_string = "&".join(["%s=%s" % i for i in {
@@ -1053,6 +1096,117 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "REQUEST": "GetFeatureInfo",
             "LAYERS": "Hello_Project_SubsetString",
             "QUERY_LAYERS": "Hello_Project_SubsetString",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "3415650,2018968,3415750,2019968",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857",
+            "FEATURE_COUNT": "10",
+            "INFO_FORMAT": "application/vnd.ogc.gml",
+            "X": "146",
+            "Y": "160",
+            "MAP": urllib.quote(self.projectPath)
+        }.items()])
+
+        response, headers = self._get_fullaccess(query_string)
+        self.assertTrue(
+            str(response).find("<qgs:pk>") != -1,
+            "No result result in GetFeatureInfo Hello/2\n%s" % response)
+        self.assertTrue(
+            str(response).find("<qgs:pk>8</qgs:pk>") != -1,
+            "No good result result in GetFeatureInfo Hello/2\n%s" % response)
+
+        response, headers = self._get_restricted(query_string)
+        self.assertFalse(
+            str(response).find("<qgs:pk>") != -1,
+            "Unexpected result from GetFeatureInfo Hello/2\n%s" % response)
+
+    def test_wms_getfeatureinfo_subsetstring_with_filter(self):
+        """test that request filters are honored. This test checks for a feature which should be filtered
+        out by the request filter
+        """
+        query_string = "&".join(["%s=%s" % i for i in {
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetFeatureInfo",
+            "LAYERS": "Hello_Filter_SubsetString",
+            "QUERY_LAYERS": "Hello_Filter_SubsetString",
+            "FILTER": "Hello_Filter_SubsetString:\"pkuid\" IN ( 7 , 8 )",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857",
+            "FEATURE_COUNT": "10",
+            "INFO_FORMAT": "application/vnd.ogc.gml",
+            "X": "56",
+            "Y": "144",
+            "MAP": urllib.quote(self.projectPath)
+        }.items()])
+
+        response, headers = self._get_fullaccess(query_string)
+        self.assertFalse(
+            str(response).find("<qgs:pk>") != -1,
+            "Request filter not honored in WMS GetFeatureInfo/1\n%s" % response)
+
+        response, headers = self._get_restricted(query_string)
+        self.assertFalse(
+            str(response).find("<qgs:pk>") != -1,
+            "Request filter not honored in WMS GetFeatureInfo when access control applied/1\n%s" % response)
+
+    def test_wms_getfeatureinfo_projectsubsetstring2(self):
+        """test that request filters are honored. This test checks for a feature which should pass
+        both request filter and access control filters
+        """
+        query_string = "&".join(["%s=%s" % i for i in {
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetFeatureInfo",
+            "LAYERS": "Hello_Filter_SubsetString",
+            "QUERY_LAYERS": "Hello_Filter_SubsetString",
+            "FILTER": "Hello_Filter_SubsetString:\"pkuid\" IN ( 7 , 8 )",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1623412,3146330,-1603412,3166330",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857",
+            "FEATURE_COUNT": "10",
+            "INFO_FORMAT": "application/vnd.ogc.gml",
+            "X": "146",
+            "Y": "160",
+            "MAP": urllib.quote(self.projectPath)
+        }.items()])
+
+        response, headers = self._get_fullaccess(query_string)
+        self.assertTrue(
+            str(response).find("<qgs:pk>") != -1,
+            "No result result in GetFeatureInfo Hello/2\n%s" % response)
+        self.assertTrue(
+            str(response).find("<qgs:pk>7</qgs:pk>") != -1,
+            "No good result result in GetFeatureInfo Hello/2\n%s" % response)
+
+        response, headers = self._get_restricted(query_string)
+        self.assertTrue(
+            str(response).find("<qgs:pk>") != -1,
+            "No result result in GetFeatureInfo Hello/2\n%s" % response)
+        self.assertTrue(
+            str(response).find("<qgs:pk>7</qgs:pk>") != -1,
+            "No good result result in GetFeatureInfo Hello/2\n%s" % response)
+
+    def test_wms_getfeatureinfo_projectsubsetstring3(self):
+        """test that request filters are honored. This test checks for a feature which should pass
+        the request filter but fail the access control checks
+        """
+        query_string = "&".join(["%s=%s" % i for i in {
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetFeatureInfo",
+            "LAYERS": "Hello_Filter_SubsetString",
+            "QUERY_LAYERS": "Hello_Filter_SubsetString",
+            "FILTER": "Hello_Filter_SubsetString:\"pkuid\" IN ( 7 , 8 )",
             "STYLES": "",
             "FORMAT": "image/png",
             "BBOX": "3415650,2018968,3415750,2019968",
