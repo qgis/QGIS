@@ -536,7 +536,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
   QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
 
   QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
-  if ( !dlg.exec() )
+  if ( !dlg.exec() || !newSymbol )
   {
     delete newSymbol;
     return;

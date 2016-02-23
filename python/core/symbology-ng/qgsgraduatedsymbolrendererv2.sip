@@ -210,7 +210,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     void updateColorRamp( QgsVectorColorRampV2* ramp /Transfer/ = 0, bool inverted = false );
 
     /** Update all the symbols but leave breaks and colors. */
-    void updateSymbols( QgsSymbolV2* sym /Transfer/ );
+    void updateSymbols( QgsSymbolV2* sym );
 
     void setRotationField( QString fieldOrExpression );
     QString rotationField() const;
