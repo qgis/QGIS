@@ -433,6 +433,12 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
             geomElem.setAttribute( "type", "integer" );
           else if ( attributeType == QVariant::Double )
             geomElem.setAttribute( "type", "double" );
+          else if ( attributeType == QVariant::Bool )
+            geomElem.setAttribute( "type", "boolean" );
+          else if ( attributeType == QVariant::Date )
+            geomElem.setAttribute( "type", "date" );
+          else if ( attributeType == QVariant::DateTime )
+            geomElem.setAttribute( "type", "dateTime" );
           else
             geomElem.setAttribute( "type", "string" );
 
