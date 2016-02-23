@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Style Manager</string>
+   <string>Symbol Manager</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QToolButton { padding-left: 3px; padding-right: 3px; }
