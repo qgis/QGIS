@@ -21,6 +21,7 @@
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
+#include "qgsfiltertablefieldsdialog.h"
 
 #include <qgsapplication.h>
 #include <qgsvectordataprovider.h>
@@ -79,6 +80,11 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
     , mCurrentSearchWidgetWrapper( nullptr )
 {
   setupUi( this );
+
+  Q_FOREACH ( const QgsField& field, mLayer->fields() )
+  {
+    mVisibleFields.append( field.name() );
+  }
 
   // Fix selection color on loosing focus (Windows)
   setStyleSheet( QgisApp::instance()->styleSheet() );
@@ -760,6 +766,27 @@ void QgsAttributeTableDialog::on_mRemoveAttribute_clicked()
     // update model - a field has been added or updated
     masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
     columnBoxInit();
+  }
+}
+
+void QgsAttributeTableDialog::on_mFilterTableFields_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QgsFilterTableFieldsDialog dialog( mLayer, mVisibleFields );
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    mVisibleFields = dialog.selectedFields();
+
+    const QgsFields layerAttributes = mLayer->fields();
+    for ( int idx = 0; idx < layerAttributes.count(); ++idx )
+    {
+      mMainView->tableView()->setColumnHidden(
+        idx, !mVisibleFields.contains( layerAttributes[idx].name() ) );
+    }
   }
 }
 

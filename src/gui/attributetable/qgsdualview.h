@@ -103,6 +103,11 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode );
 
+    /**
+     * Get the filter mode
+     *
+     * @return the filter mode
+     */
     QgsAttributeTableFilterModel::FilterMode filterMode() { return mFilterModel->filterMode(); }
 
     /**
@@ -145,9 +150,26 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     QgsAttributeTableModel* masterModel() const { return mMasterModel; }
 
+    /**
+     * Set the request
+     *
+     * @param request The request
+     */
     void setRequest( const QgsFeatureRequest& request );
 
+    /**
+     * Set the feature selection model
+     *
+     * @param featureSelectionManager the feature selection model
+     */
     void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
+
+    /**
+     * Returns the table view
+     *
+     * @return The table view
+     */
+    QgsAttributeTableView* tableView() { return mTableView; };
 
   protected:
     /**

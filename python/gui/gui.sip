@@ -166,6 +166,7 @@
 %Include attributetable/qgsfeatureselectionmodel.sip
 %Include attributetable/qgsfieldconditionalformatwidget.sip
 %Include attributetable/qgsifeatureselectionmanager.sip
+%Include attributetable/qgsfiltertablefieldsdialog.sip
 
 %Include auth/qgsauthauthoritieseditor.sip
 %Include auth/qgsauthcertificateinfo.sip
