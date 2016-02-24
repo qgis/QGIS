@@ -48,6 +48,7 @@ class TestQgsFieldExpressionWidget : public QObject
     void cleanup();           // will be called after every testfunction.
 
     void testRemoveJoin();
+    void asExpression();
 
   private:
     QgsFieldExpressionWidget* mWidget;
@@ -131,6 +132,33 @@ void TestQgsFieldExpressionWidget::testRemoveJoin()
   QCOMPARE( mWidget->currentField( &isExpression, &isValid ), expr );
   QVERIFY( isExpression );
   // QVERIFY( !isValid ); TODO: the expression should not be valid anymore since the field doesn't exist anymore. Maybe we need a new expression method to get more details.
+}
+
+void TestQgsFieldExpressionWidget::asExpression()
+{
+  QgsVectorLayer* layer = new QgsVectorLayer( "point?field=fld:int&field=fld2:int&field=fld3:int", "x", "memory" );
+  QgsMapLayerRegistry::instance()->addMapLayer( layer );
+
+  QScopedPointer< QgsFieldExpressionWidget > widget( new QgsFieldExpressionWidget() );
+  widget->setLayer( layer );
+
+  // check with field set
+  widget->setField( "fld" );
+  QCOMPARE( widget->asExpression(), QString( "\"fld\"" ) );
+
+  // check with expressions set
+  widget->setField( "fld + 1" );
+  QCOMPARE( widget->asExpression(), QString( "fld + 1" ) );
+  widget->setField( "1" );
+  QCOMPARE( widget->asExpression(), QString( "1" ) );
+  widget->setField( "\"fld2\"" );
+  QCOMPARE( widget->asExpression(), QString( "\"fld2\"" ) );
+
+  // check switching back to a field
+  widget->setField( "fld3" );
+  QCOMPARE( widget->asExpression(), QString( "\"fld3\"" ) );
+
+  QgsMapLayerRegistry::instance()->removeMapLayer( layer );
 }
 
 
