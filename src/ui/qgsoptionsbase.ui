@@ -3012,7 +3012,7 @@
                     <item>
                      <widget class="QDoubleSpinBox" name="spinBoxIdentifyValue">
                       <property name="suffix">
-                       <string> mm</string>
+                       <string> %</string>
                       </property>
                       <property name="maximum">
                        <double>100.000000000000000</double>
