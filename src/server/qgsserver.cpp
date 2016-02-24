@@ -59,7 +59,7 @@
 // Default values are for C++, SIP bindings will override their
 // options in in init()
 
-QString QgsServer::sConfigFilePath = QString();
+QString* QgsServer::sConfigFilePath = nullptr;
 QgsCapabilitiesCache* QgsServer::sCapabilitiesCache = nullptr;
 QgsMapRenderer* QgsServer::sMapRenderer = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -403,10 +403,9 @@ bool QgsServer::init( int & argc, char ** argv )
       defaultConfigFilePath = adminSLDFileInfo.absoluteFilePath();
     }
   }
-  if ( !defaultConfigFilePath.isEmpty() )
-  {
-    sConfigFilePath = defaultConfigFilePath;
-  }
+  // Store the config file path
+  sConfigFilePath = new QString( defaultConfigFilePath );
+
 
   //create cache for capabilities XML
   sCapabilitiesCache = new QgsCapabilitiesCache();
@@ -514,7 +513,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   printRequestParameters( parameterMap, logLevel );
   QMap<QString, QString>::const_iterator paramIt;
   //Config file path
-  QString configFilePath = configPath( sConfigFilePath, parameterMap );
+  QString configFilePath = configPath( *sConfigFilePath, parameterMap );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   sServerInterface->setConfigFilePath( configFilePath );
 #endif

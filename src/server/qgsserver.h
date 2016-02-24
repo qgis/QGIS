@@ -115,7 +115,7 @@ class SERVER_EXPORT QgsServer
     static QString &serverName();
 
     // Status
-    static QString sConfigFilePath;
+    static QString* sConfigFilePath;
     static QgsCapabilitiesCache* sCapabilitiesCache;
     static QgsMapRenderer* sMapRenderer;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
