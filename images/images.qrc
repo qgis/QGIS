@@ -341,6 +341,7 @@
     <file>themes/default/mActionZoomOut.svg</file>
     <file>themes/default/mActionZoomToLayer.svg</file>
     <file>themes/default/mActionZoomToSelected.svg</file>
+    <file>themes/default/mActionFilterTableFields.svg</file>
     <file>themes/default/mIconAtlas.svg</file>
     <file>themes/default/mIconAutoPlacementSettings.svg</file>
     <file>themes/default/mIconCertificate.svg</file>

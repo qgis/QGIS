@@ -111,6 +111,8 @@ class QgsDualView : QStackedWidget
 
     void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
 
+    QgsAttributeTableView* tableView();
+
   protected:
     /**
      * Initializes widgets which depend on the attributes of this layer
