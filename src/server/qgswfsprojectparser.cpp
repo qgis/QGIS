@@ -464,6 +464,8 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
             geomElem.setAttribute( "type", "boolean" );
           else if ( attributeType == QVariant::Date )
             geomElem.setAttribute( "type", "date" );
+          else if ( attributeType == QVariant::Time )
+            geomElem.setAttribute( "type", "time" );
           else if ( attributeType == QVariant::DateTime )
             geomElem.setAttribute( "type", "dateTime" );
           else
