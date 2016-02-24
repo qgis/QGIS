@@ -2071,7 +2071,7 @@ void QgisApp::createStatusBar()
     mRotationLabel->setMargin( 3 );
     mRotationLabel->setAlignment( Qt::AlignCenter );
     mRotationLabel->setFrameStyle( QFrame::NoFrame );
-    mRotationLabel->setText( tr( "Rotation:" ) );
+    mRotationLabel->setText( tr( "Rotation" ) );
     mRotationLabel->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
     statusBar()->addPermanentWidget( mRotationLabel, 0 );
 
