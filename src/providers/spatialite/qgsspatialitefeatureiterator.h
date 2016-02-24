@@ -40,6 +40,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     QgsFields mFields;
     QString mQuery;
     bool isQuery;
+    bool mViewBased;
     bool mVShapeBased;
     QString mIndexTable;
     QString mIndexGeometry;
