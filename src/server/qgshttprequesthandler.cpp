@@ -76,7 +76,7 @@ void QgsHttpRequestHandler::setDefaultHeaders()
 {
   //format
   QString format = mInfoFormat;
-  if ( mInfoFormat.startsWith( "text/" ) )
+  if ( mInfoFormat.startsWith( "text/" ) || mInfoFormat.startsWith( "application/vnd.ogc.gml" ) )
   {
     format.append( "; charset=utf-8" );
   }
