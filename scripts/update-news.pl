@@ -47,7 +47,7 @@ for $_ (split /\n/, $content) {
 	print $news "$_\n";
 }
 
-print $news "\n";
+print $news "-\n\n";
 
 while(<$in>) {
 	print $news $_;
