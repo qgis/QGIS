@@ -4415,7 +4415,7 @@ QString QgsExpression::helptext( QString name )
       helpContents += QString( "<h3>%1</h3>\n<div class=\"description\">%2</p></div>" ).arg( v.mName, v.mDescription );
     }
 
-    if ( f.mType != tr( "group" ) )
+    if ( f.mType != tr( "group" ) && f.mType != tr( "expression" ) )
       helpContents += QString( "<h4>%1</h4>\n<div class=\"syntax\">\n" ).arg( tr( "Syntax" ) );
 
     if ( f.mType == tr( "operator" ) )
@@ -4431,7 +4431,7 @@ QString QgsExpression::helptext( QString name )
                         .arg( v.mArguments[0].mArg, name, v.mArguments[1].mArg );
       }
     }
-    else if ( f.mType != tr( "group" ) )
+    else if ( f.mType != tr( "group" ) && f.mType != tr( "expression" ) )
     {
       helpContents += QString( "<code><span class=\"functionname\">%1</span>" ).arg( name );
 
