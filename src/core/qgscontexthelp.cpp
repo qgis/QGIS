@@ -18,7 +18,6 @@
 
 #include <QString>
 #include <QProcess>
-#include <QTcpSocket>
 #include <QTextStream>
 
 #include "qgscontexthelp.h"
@@ -60,9 +59,6 @@ QProcess *QgsContextHelp::start()
 
   // Delete this object if the process terminates
   connect( process, SIGNAL( finished( int, QProcess::ExitStatus ) ), SLOT( processExited() ) );
-
-  // Delete the process if the application quits
-  connect( qApp, SIGNAL( aboutToQuit() ), process, SLOT( terminate() ) );
 
   connect( process, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( error( QProcess::ProcessError ) ) );
 
