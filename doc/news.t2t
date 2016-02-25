@@ -38,10 +38,12 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
-= What's new in QGIS 2.14.0 'Essen' =
+= What's new in Version 2.14 'Essen'? =
+
+This release has following new features:
 
 - Analysis tools : More statistics available in merge attributes tool
-- Analysis tools : z/m values are shown when using the identify tool 
+- Analysis tools : z/m values are shown when using the identify tool
 - Browser : Browser Improvements
 - Data Providers : Use ST_RemoveRepeatedPoints for simplification on PostGIS 2.2 or newer
 - Data Providers : Cache WMS capabililies
@@ -62,17 +64,18 @@ Last Change : %%mtime(%A %B %d, %Y)
 - Digitising : Autotrace
 - Digitising : Trace digitising tool
 - General : Changed behaviour of strpos function
-- General : Field calculator can be used to update feature&#39;s geometry 
+- General : Field calculator can be used to update feature's geometry
 - General : Virtual layers
 - General : Zoom to feature with right-click in attribute table
 - General : Speed improvements
 - General : More expression variables
 - General : New expression functions in 2.14
 - General : Better control over placement of map elements
-- Labelling : Actual rendered symbol is now considered as an obstacle for point feature labels 
-- Labelling : &quot;Cartographic&quot; placement mode for point labels
-- Labelling : Applying label distance from symbol bounds 
-- Labelling : Control over label rendering order 
+- General : Paid bugfixing programme
+- Labelling : Actual rendered symbol is now considered as an obstacle for point feature labels
+- Labelling : "Cartographic" placement mode for point labels
+- Labelling : Applying label distance from symbol bounds
+- Labelling : Control over label rendering order
 - Layer Legend : applying the same style to selected layers or to legend group
 - Layer Legend : New options for filtering legend elements
 - Layer Legend : Filter legend by expression
@@ -90,8 +93,8 @@ Last Change : %%mtime(%A %B %d, %Y)
 - Programmability : New filtering and sorting options for QgsFeatureRequest
 - Programmability : Custom feature form Python code options
 - Programmability : New PyQGIS classes in 2.14
-- QGIS Server : STARTINDEX param in WFS GetFeature Request 
-- QGIS Server : showFeatureCount in GetLegendGraphic 
+- QGIS Server : STARTINDEX param in WFS GetFeature Request
+- QGIS Server : showFeatureCount in GetLegendGraphic
 - QGIS Server : Enhance store project keyword list
 - QGIS Server : Option to avoid rendering artefacts at edges of tiles
 - QGIS Server : WMS INSPIRE Capabilities
@@ -100,7 +103,7 @@ Last Change : %%mtime(%A %B %d, %Y)
 - Symbology : Size assistant for varying line width
 - Symbology : Support for transparency in SVG color parameters
 - Symbology : Easy duplication of symbol layers
-- Symbology : 2.5D Renderer 
+- Symbology : 2.5D Renderer
 - Symbology : Geometry generator symbols
 - Symbology : Allow definition of rendering order for features
 - User Interface : Attribute table can be refreshed
@@ -110,7 +113,10 @@ Last Change : %%mtime(%A %B %d, %Y)
 - User Interface : Show/hide all legend items via the the context menu
 -
 
-= What's new in QGIS 2.12.0 'Lyon' =
+
+= What's new in Version 2.12 'Lyon'? =
+
+This release has following new features:
 
 - Analysis tools : Added number of vertices to derived fields in identify tool
 - Analysis tools : Raster alignment tool
@@ -120,7 +126,7 @@ Last Change : %%mtime(%A %B %d, %Y)
 - Data Providers : PostGIS provider improvements
 - Data management : DBManager Improvements
 - Data management : Conditional formatting for attribute table cells
-- Data management : Support for relative paths in widgets 
+- Data management : Support for relative paths in widgets
 - Digitising : Digitising improvements
 - General : New welcome screen
 - General : Ongoing improvements to code quality
@@ -130,7 +136,7 @@ Last Change : %%mtime(%A %B %d, %Y)
 - General : User Interface Theme support
 - General : New expression functions in 2.12
 - General : Variables in expressions
-- Labelling : Data defined quadrant when in &quot;around point&quot; mode
+- Labelling : Data defined quadrant when in "around point" mode
 - Labelling : Draw only labels which fit inside polygons
 - Labelling : Control priority of labeling obstacles
 - Labelling : New options to control how polygon layers act as obstacles
@@ -140,16 +146,16 @@ Last Change : %%mtime(%A %B %d, %Y)
 - Map Composer : Atlas navigation improvements
 - Map Composer : Custom format for grid annotations
 - Map Composer : Multiline text handling and automatic text wrapping in composer attribute tables
-- Map Composer : Advanced customisation of cell background color 
+- Map Composer : Advanced customisation of cell background color
 - Map Composer : Add fit page to contents option and options for cropping exports to contents
 - Map Composer : Force vector layers to render as a raster images
 - Map Composer : Data defined control over map layers and style presets
-- Map Composer : Option to hide pages from view/export 
+- Map Composer : Option to hide pages from view/export
 - Plugins : Update of the GRASS plugin
 - Programmability : Open scripts in external editor
-- Programmability : Maptools moved from app-&gt;gui
+- Programmability : Maptools moved from app->gui
 - Programmability : Editing layers via `with edit(layer):`
-- Programmability : New API for labeling engine (QgsLabelingEngineV2) 
+- Programmability : New API for labeling engine (QgsLabelingEngineV2)
 - Programmability : New classes for PyQGIS programs
 - QGIS Server : QGIS Server Python API
 - QGIS Server : getMap in dxf format
@@ -160,6 +166,7 @@ Last Change : %%mtime(%A %B %d, %Y)
 - Symbology : Improved handling of SVG marker outlines
 - Symbology : Add pixels as option for all symbology size unit choices
 -
+
 
 = What's new in Version 2.10 'Pisa'? =
 

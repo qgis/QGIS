@@ -1,12 +1,13 @@
 QGIS News
 Change history for the QGIS Project
-Wednesday February 24, 2016
+Thursday February 25, 2016
 
 
 ------------------------------------------------------------------------
 
-  1. What's new in QGIS 2.14.0 'Essen'
-  2. What's new in QGIS 2.12.0 'Lyon'
+
+  1. What's new in Version 2.14 'Essen'?
+  2. What's new in Version 2.12 'Lyon'?
   3. What's new in Version 2.10 'Pisa'?
   4. What's new in Version 2.8 'Wien'?
   5. What's new in Version 2.6.0 'Brighton'?
@@ -36,15 +37,18 @@ Wednesday February 24, 2016
 
 ------------------------------------------------------------------------
 
-Last Updated: Wednesday February 24, 2016
-Last Change : Wednesday February 24, 2016
+
+Last Updated: Thursday February 25, 2016
+Last Change : Thursday February 25, 2016
 
 
-  1. What's new in QGIS 2.14.0 'Essen'
-  ====================================
+  1. What's new in Version 2.14 'Essen'?
+  ======================================
+
+This release has following new features:
 
 - Analysis tools : More statistics available in merge attributes tool
-- Analysis tools : z/m values are shown when using the identify tool 
+- Analysis tools : z/m values are shown when using the identify tool
 - Browser : Browser Improvements
 - Data Providers : Use ST_RemoveRepeatedPoints for simplification on PostGIS 2.2 or newer
 - Data Providers : Cache WMS capabililies
@@ -65,17 +69,18 @@ Last Change : Wednesday February 24, 2016
 - Digitising : Autotrace
 - Digitising : Trace digitising tool
 - General : Changed behaviour of strpos function
-- General : Field calculator can be used to update feature&#39;s geometry 
+- General : Field calculator can be used to update feature's geometry
 - General : Virtual layers
 - General : Zoom to feature with right-click in attribute table
 - General : Speed improvements
 - General : More expression variables
 - General : New expression functions in 2.14
 - General : Better control over placement of map elements
-- Labelling : Actual rendered symbol is now considered as an obstacle for point feature labels 
-- Labelling : &quot;Cartographic&quot; placement mode for point labels
-- Labelling : Applying label distance from symbol bounds 
-- Labelling : Control over label rendering order 
+- General : Paid bugfixing programme
+- Labelling : Actual rendered symbol is now considered as an obstacle for point feature labels
+- Labelling : "Cartographic" placement mode for point labels
+- Labelling : Applying label distance from symbol bounds
+- Labelling : Control over label rendering order
 - Layer Legend : applying the same style to selected layers or to legend group
 - Layer Legend : New options for filtering legend elements
 - Layer Legend : Filter legend by expression
@@ -93,8 +98,8 @@ Last Change : Wednesday February 24, 2016
 - Programmability : New filtering and sorting options for QgsFeatureRequest
 - Programmability : Custom feature form Python code options
 - Programmability : New PyQGIS classes in 2.14
-- QGIS Server : STARTINDEX param in WFS GetFeature Request 
-- QGIS Server : showFeatureCount in GetLegendGraphic 
+- QGIS Server : STARTINDEX param in WFS GetFeature Request
+- QGIS Server : showFeatureCount in GetLegendGraphic
 - QGIS Server : Enhance store project keyword list
 - QGIS Server : Option to avoid rendering artefacts at edges of tiles
 - QGIS Server : WMS INSPIRE Capabilities
@@ -103,7 +108,7 @@ Last Change : Wednesday February 24, 2016
 - Symbology : Size assistant for varying line width
 - Symbology : Support for transparency in SVG color parameters
 - Symbology : Easy duplication of symbol layers
-- Symbology : 2.5D Renderer 
+- Symbology : 2.5D Renderer
 - Symbology : Geometry generator symbols
 - Symbology : Allow definition of rendering order for features
 - User Interface : Attribute table can be refreshed
@@ -113,9 +118,10 @@ Last Change : Wednesday February 24, 2016
 - User Interface : Show/hide all legend items via the the context menu
 
 
+  2. What's new in Version 2.12 'Lyon'?
+  =====================================
 
-  2. What's new in QGIS 2.12.0 'Lyon'
-  ===================================
+This release has following new features:
 
 - Analysis tools : Added number of vertices to derived fields in identify tool
 - Analysis tools : Raster alignment tool
@@ -125,7 +131,7 @@ Last Change : Wednesday February 24, 2016
 - Data Providers : PostGIS provider improvements
 - Data management : DBManager Improvements
 - Data management : Conditional formatting for attribute table cells
-- Data management : Support for relative paths in widgets 
+- Data management : Support for relative paths in widgets
 - Digitising : Digitising improvements
 - General : New welcome screen
 - General : Ongoing improvements to code quality
@@ -135,7 +141,7 @@ Last Change : Wednesday February 24, 2016
 - General : User Interface Theme support
 - General : New expression functions in 2.12
 - General : Variables in expressions
-- Labelling : Data defined quadrant when in &quot;around point&quot; mode
+- Labelling : Data defined quadrant when in "around point" mode
 - Labelling : Draw only labels which fit inside polygons
 - Labelling : Control priority of labeling obstacles
 - Labelling : New options to control how polygon layers act as obstacles
@@ -145,16 +151,16 @@ Last Change : Wednesday February 24, 2016
 - Map Composer : Atlas navigation improvements
 - Map Composer : Custom format for grid annotations
 - Map Composer : Multiline text handling and automatic text wrapping in composer attribute tables
-- Map Composer : Advanced customisation of cell background color 
+- Map Composer : Advanced customisation of cell background color
 - Map Composer : Add fit page to contents option and options for cropping exports to contents
 - Map Composer : Force vector layers to render as a raster images
 - Map Composer : Data defined control over map layers and style presets
-- Map Composer : Option to hide pages from view/export 
+- Map Composer : Option to hide pages from view/export
 - Plugins : Update of the GRASS plugin
 - Programmability : Open scripts in external editor
-- Programmability : Maptools moved from app-&gt;gui
+- Programmability : Maptools moved from app->gui
 - Programmability : Editing layers via `with edit(layer):`
-- Programmability : New API for labeling engine (QgsLabelingEngineV2) 
+- Programmability : New API for labeling engine (QgsLabelingEngineV2)
 - Programmability : New classes for PyQGIS programs
 - QGIS Server : QGIS Server Python API
 - QGIS Server : getMap in dxf format
@@ -164,7 +170,6 @@ Last Change : Wednesday February 24, 2016
 - Symbology : All color ramps can now be edited
 - Symbology : Improved handling of SVG marker outlines
 - Symbology : Add pixels as option for all symbology size unit choices
-
 
 
   3. What's new in Version 2.10 'Pisa'?
@@ -215,7 +220,6 @@ This is a minor release increment with the following new features:
 - User interface improvements.
 
 
-
   4. What's new in Version 2.8 'Wien'?
   ====================================
 
@@ -247,7 +251,6 @@ This is a minor release increment with the following feature:
 - Comments are now supported in expressions.
 - QGIS server improvements: better caching, layer style support, value relations,
   DescribeLayer, python plugins.
-
 
 
   5. What's new in Version 2.6.0 'Brighton'?
@@ -296,7 +299,6 @@ This is a minor release increment with the following new features:
 - Context menu for identify tool
 
 
-
   6. What's new in Version 2.4.0 'Chugiak'?
   =========================================
 
@@ -315,7 +317,6 @@ This is the minor release sports a number of great new features:
 - Shapeburst fill style
 - Option to shift marker line placement
 - New Inverted Polygon renderer
-
 
 
   7. Whats new in Version 2.2.0 'Valmiera'?
@@ -357,7 +358,6 @@ This is the minor release sports a number of great new features:
 - QGS now supports multiple datum transformations.
 - 'Processing' now has a script editor.
 - 'Processing' can be used headless in scripts.
-
 
 
   8. Whats new in Version 2.0.1 'Dufour'?
@@ -509,7 +509,6 @@ added gdal_fillnodata to GDALTools plugin
 - Support for nesting projects within other projects
 
 
-
   11. Whats new in Version 1.7.2 'Wroclaw'?
   =========================================
 
@@ -555,7 +554,6 @@ were made.
 - fTools: update layers lists after adding new layer to TOC (fix #4318)
 - Don't block QGIS main window when running Merge shapefiles tool. Partially addresses #4383
 - Fix broken Assign projection functionality in GDALTools and improve handling output file extension
-
 
 
   12. Whats new in Version 1.7.1 'Wroclaw'?
@@ -656,7 +654,6 @@ changed so we will just provide a bullet list of key new features here.
 - Move/rotate/change label edit tools to interactively change data defined label properties.
 
 
-
   13.2. New Tools
   ===============
 
@@ -687,7 +684,6 @@ changed so we will just provide a bullet list of key new features here.
 - Default to last selection when prompting for CRS.
 
 
-
   13.5. Rasters
   =============
 
@@ -695,7 +691,6 @@ changed so we will just provide a bullet list of key new features here.
 - On-the-fly reprojection of rasters added!
 - Proper implementation of raster providers.
 - Added raster toolbar with histogram stretch functions.
-
 
 
   13.6. Providers and Data Handling
@@ -722,7 +717,6 @@ changed so we will just provide a bullet list of key new features here.
  - Optionally re-use entered attribute values for next digitized feature.
  - Allow merging/assigning attribute values to a set of features.-
  - Allow OGR 'save as' without attributes (for eg. DGN/DXF).
-
 
 
   13.7. Api and Developer Centric
@@ -753,12 +747,10 @@ changed so we will just provide a bullet list of key new features here.
 - Removed ogr converter plugin - use 'save as' context menu rather.
 
 
-
   13.10. Printing
   ===============
 
 - Undo/Redo support for the print composer
-
 
 
   14. Whats new in Version 1.6.0 'Capiapo'?
@@ -807,7 +799,6 @@ caching providers (currently WMS and WFS) can synchronize with changes in
 the datasource.
 
 
-
   14.2. Table of contents (TOC) improvements
   ==========================================
 
@@ -816,7 +807,6 @@ layer using the min and max pixel values of the current extent.
 - When writing shape files using the table of contents context menu's 'Save
 as' option, you can now specify OGR creation options.
 - In the table of contents, it is now possible to select and remove several layers at once.
-
 
 
   14.3. Labelling (New generation only)
@@ -847,7 +837,6 @@ the transparency table in the raster layer properties dialog.
 the style manager more easily.
 
 
-
   14.5. Map Composer
   ==================
 
@@ -855,7 +844,6 @@ the style manager more easily.
 position dialog.
 - Composer items can now be deleted with the backspace key.
 - Sorting for composer attribute table (several columns and ascending / descending).
-
 
 
   15. Whats new in Version 1.5.0?
@@ -928,7 +916,6 @@ only visible features in composer table or all features
 closed and reappears when reactivated.
 
 
-
   15.2. WMS and WMS-C Support
   ===========================
 
@@ -940,7 +927,6 @@ IGNF definitions in srs.db
 - WMS has support for more mime types
 - Added load/save to WMS dialog
 - WMS-C scale slider gui added and more selection improvements
-
 
 
   15.3. API Updates
@@ -958,7 +944,6 @@ and dynamic authentication to website and proxies)
 variables. More paths can be passed, separated by semicolon.
 - Legend interface added to retrieve layers in legend order
 - Support more GEOS operators
-
 
 
   16. Whats new in Version 1.4.0 'Enceladus'?
@@ -1037,7 +1022,6 @@ This release includes over 30 bug fixes and several useful new features:
 - other OSM related bugfixes.
 
 
-
   17.2. Other notable features and improvements in this release
   =============================================================
 
@@ -1051,7 +1035,6 @@ This release includes over 30 bug fixes and several useful new features:
 - Added snapping to current layer in measure dialog.
 - Added ability to select the primary key for views.
 - Zoom to a coordinate by entering it in the status bar coordinate display.
-
 
 
   18. Version 1.2.0 'Daphnis'
@@ -1081,7 +1064,6 @@ includes the addition of new vector editing tools:
 - Added undo/redo functionality for vector layer editing.
 - Added option to show only markers of selected features in editing mode.
 - Change layer's icon in legend to reflext that the layer is editable.
-
 
 In addition, there are undo/redo actions in Edit menu, in Advanced digitizing toolbar
 and there is a new dock widget displaying undo stack of active layer.
@@ -1147,7 +1129,6 @@ be respected in the attribute table.
 - An new OpenStreetMap provider and plugin have been added to QGIS.
 
 
-
   18.6. Projects Management
   =========================
 
@@ -1172,7 +1153,6 @@ types and for setting of column comments.
 - add support for font symbol markers (only data defined - no gui yet)
 - add symbol size in map units (ie. symbols that keep the size in mapunits
   independent of the mapscale)
-
 
 
   18.9. Command line arguments
@@ -1246,7 +1226,6 @@ implementation based on the SQLITE database.
 layers based on attribute data.
 
 
-
   19. Version 1.0.0 'Kore'
   ========================
 
@@ -1276,7 +1255,6 @@ running will support a plugin that is being installed.
 - Ported all GDAL/OGR and GEOS usage to use C APIs only.
 
 
-
   20. Version 0.11.0 'Metis'
   ==========================
 
@@ -1291,7 +1269,6 @@ QGIS 0.10.0 release. In addition we have made the following changes:
 - List view and filter for Plugin Manager to find plugins more easily
 - Updated Spatial Reference System definitions
 - QML Style support for rasters and database layers
-
 
 
   21. Version 0.10.0 'Io'
@@ -1315,7 +1292,6 @@ improvements 'under the hood'.
 - Support for migration of old projects to work in newer QGIS versions.
 
 
-
   22. Version 0.9.2rc1 'Ganymede'
   ===============================
 
@@ -1333,7 +1309,6 @@ in raster layers. Support for color ramps in raster layers.
 improvements 'under the hood'.
 
 
-
   23. Version 0.9.1 'Ganymede'
   ============================
 
@@ -1345,7 +1320,6 @@ This is a bug fix release
 - Documentation updates
 - Improvements for building under MSVC
 - Python Plugin installer to install PyQGIS plugins from the repository
-
 
 
   24. Version 0.9 'Ganymede'
@@ -1361,7 +1335,6 @@ This is a bug fix release
 - Crash fix for 2.5D shapefiles
 - The QGIS libraries have been refactored and better organised.
 - Improvements to the GeoReferencer
-
 
 
   25. Version 0.8 'Joesephine' .... development version
@@ -1386,7 +1359,6 @@ over time,
 - 2005-11-10 [timlinux] 0.7.9.1 Merged in 0.7 branch changes with Tom Elwertowskis help
 - 2005-10-13 [timlinux] 0.7.9 Added capability to generate point and polygon based graticules to the
 grid_maker plugin
-
 
 
   26. Version 0.6 'Simon'
@@ -2289,7 +2261,6 @@ including:
 - currently this process IS NOT KNOWN TO BE REVERSIBLE so please backup data
 first before experimenting.
 
-
 2004-04-27 [ts] 0.2.0devel1
 
 Rejigged single marker symbol so directory, icon selector, preview and 
@@ -2523,7 +2494,9 @@ Search radius for identifying features on vector layers added to Preferences
 2004-02-23 [ts]
 Save current view to disk as a PNG image
 
+
 ------------------------------------------------------------------------------
+
 Version 0.1 'Moroz' February 25, 2004
 User interface improvements - menu and dialog cleanups and a new icon theme
   based on Everaldo's Crystal icon set.
@@ -2667,8 +2640,4 @@ July 6, 2002
   tables that could be loaded. 
 
   This is the initial import of the code base into CVS on Sourceforge.net.
-
-
-
-
 

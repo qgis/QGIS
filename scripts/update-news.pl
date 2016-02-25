@@ -14,6 +14,7 @@ use Pod::Usage;
 use LWP::Simple;
 use File::Temp qw/tempfile/;
 use File::Copy qw/copy/;
+use HTML::Entities qw/decode_entities/;
 
 pod2usage(1) if @ARGV!=3;
 
@@ -39,7 +40,8 @@ for $_ (split /\n/, $content) {
 	next if /^------/;
 	next if /^\s*$/;
 
-	s/^&quot;/"/g;
+	$_ = decode_entities($_);
+
 	s/^\*\s+/- /;
 	s/ : /: /;
 	s/\s+$//;
