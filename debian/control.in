@@ -18,6 +18,7 @@ Build-Depends:
 #precise# libgdal-dev (>= 1.9.0) | libgdal1-dev (<< 1.9.0),
 #saucy# libgdal-dev (>= 1.9.0),
 #wheezy# libgdal1-dev,
+ gdal-bin,
  python-gdal,
  libgeos-dev (>= 3.0.0),
  libgsl-dev | libgsl0-dev,
