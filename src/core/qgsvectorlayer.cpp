@@ -2310,6 +2310,10 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
     return false;
   }
 
+  bool rollbackExtent = !mEditBuffer->mDeletedFeatureIds.isEmpty() ||
+                        !mEditBuffer->mAddedFeatures.isEmpty() ||
+                        !mEditBuffer->mChangedGeometries.isEmpty();
+
   emit beforeRollBack();
 
   mEditBuffer->rollBack();
@@ -2335,6 +2339,9 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
   {
     mCache->deleteCachedGeometries();
   }
+
+  if ( rollbackExtent )
+    updateExtents();
 
   emit repaintRequested();
   return true;
