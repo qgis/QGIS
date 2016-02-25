@@ -99,7 +99,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         #shapefiles do not support time types, result should be string
         self.assertEqual(fields.at(fields.indexFromName('time_f')).type(), QVariant.String)
         #shapefiles do not support datetime types, result should be date
-        self.assertEqual(fields.at(fields.indexFromName('dt_f')).type(), QVariant.Date)
+        self.assertEqual(fields.at(fields.indexFromName('dt_f')).type(), QVariant.String)
 
         f = created_layer.getFeatures(QgsFeatureRequest()).next()
 
@@ -112,8 +112,8 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(f.attributes()[time_idx], '13:45:22')
         #shapefiles do not support datetime types
         datetime_idx = created_layer.fieldNameIndex('dt_f')
-        assert isinstance(f.attributes()[datetime_idx], QDate)
-        self.assertEqual(f.attributes()[datetime_idx], QDate(2014, 3, 5))
+        assert isinstance(f.attributes()[datetime_idx], basestring)
+        self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22)).toString("yyyy/MM/dd hh:mm:ss.zzz"))
 
     def testDateTimeWriteTabfile(self):
         """Check writing date and time fields to an MapInfo tabfile."""
