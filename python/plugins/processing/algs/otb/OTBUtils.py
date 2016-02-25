@@ -135,7 +135,7 @@ def getInstalledVersion(runOtb=False):
     if _installedVersionFound and not runOtb:
         return _installedVersion
 
-    if otbPath() is None:
+    if otbPath() is None or otbLibPath() is None:
         _installedVersionFound = False
         return None
     commands = [os.path.join(otbPath(), "otbcli_Smoothing")]
