@@ -1,8 +1,8 @@
 qgis (2.13.0) UNRELEASED; urgency=medium
 
   * New development version 2.13 after branch of 2.12
-  * add dependencies to gdal-bin, python-psycopg2, python-yaml, python-mack
-    and python-node2 for tests
+  * add dependencies to gdal-bin, python-psycopg2, python-yaml, python-mock
+    and python-nose2 for tests
   * update optional oracle dependency to 12.1
   * upgrade python-qgis from Recommends to Depends
   * downgrade liblwgeom dependency to Recommends
