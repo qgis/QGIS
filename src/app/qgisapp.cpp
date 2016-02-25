@@ -5650,7 +5650,6 @@ void QgisApp::saveAsFile()
 
 void QgisApp::saveAsLayerDefinition()
 {
-
   QString path = QFileDialog::getSaveFileName( this, "Save as Layer Definition File", QDir::home().path(), "*.qlr" );
   QgsDebugMsg( path );
   if ( path.isEmpty() )
