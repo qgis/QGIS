@@ -400,40 +400,50 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
         extensionElem.appendChild( sequenceElem );
 
         //xsd:element
-        QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
-        geomElem.setAttribute( "name", "geometry" );
-        QGis::WkbType wkbType = layer->wkbType();
-        if ( wkbType != QGis::WKBNoGeometry )
+        if ( layer->hasGeometryType() )
         {
-          switch ( wkbType )
+          QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
+          geomElem.setAttribute( "name", "geometry" );
+          if ( provider->name() == "ogr" )
           {
-            case QGis::WKBPoint25D:
-            case QGis::WKBPoint:
-              geomElem.setAttribute( "type", "gml:PointPropertyType" );
-              break;
-            case QGis::WKBLineString25D:
-            case QGis::WKBLineString:
-              geomElem.setAttribute( "type", "gml:LineStringPropertyType" );
-              break;
-            case QGis::WKBPolygon25D:
-            case QGis::WKBPolygon:
-              geomElem.setAttribute( "type", "gml:PolygonPropertyType" );
-              break;
-            case QGis::WKBMultiPoint25D:
-            case QGis::WKBMultiPoint:
-              geomElem.setAttribute( "type", "gml:MultiPointPropertyType" );
-              break;
-            case QGis::WKBMultiLineString25D:
-            case QGis::WKBMultiLineString:
-              geomElem.setAttribute( "type", "gml:MultiLineStringPropertyType" );
-              break;
-            case QGis::WKBMultiPolygon25D:
-            case QGis::WKBMultiPolygon:
-              geomElem.setAttribute( "type", "gml:MultiPolygonPropertyType" );
-              break;
-            default:
-              geomElem.setAttribute( "type", "gml:GeometryPropertyType" );
-              break;
+            // because some ogr drivers (e.g. ESRI ShapeFile, GML)
+            // are not able to determine the geometry type of a layer.
+            // we set to GeometryType
+            geomElem.setAttribute( "type", "gml:GeometryPropertyType" );
+          }
+          else
+          {
+            QGis::WkbType wkbType = layer->wkbType();
+            switch ( wkbType )
+            {
+              case QGis::WKBPoint25D:
+              case QGis::WKBPoint:
+                geomElem.setAttribute( "type", "gml:PointPropertyType" );
+                break;
+              case QGis::WKBLineString25D:
+              case QGis::WKBLineString:
+                geomElem.setAttribute( "type", "gml:LineStringPropertyType" );
+                break;
+              case QGis::WKBPolygon25D:
+              case QGis::WKBPolygon:
+                geomElem.setAttribute( "type", "gml:PolygonPropertyType" );
+                break;
+              case QGis::WKBMultiPoint25D:
+              case QGis::WKBMultiPoint:
+                geomElem.setAttribute( "type", "gml:MultiPointPropertyType" );
+                break;
+              case QGis::WKBMultiLineString25D:
+              case QGis::WKBMultiLineString:
+                geomElem.setAttribute( "type", "gml:MultiLineStringPropertyType" );
+                break;
+              case QGis::WKBMultiPolygon25D:
+              case QGis::WKBMultiPolygon:
+                geomElem.setAttribute( "type", "gml:MultiPolygonPropertyType" );
+                break;
+              default:
+                geomElem.setAttribute( "type", "gml:GeometryPropertyType" );
+                break;
+            }
           }
           geomElem.setAttribute( "minOccurs", "0" );
           geomElem.setAttribute( "maxOccurs", "1" );
@@ -453,30 +463,30 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
           }
 
           //xsd:element
-          QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
-          geomElem.setAttribute( "name", attributeName );
+          QDomElement attElem = doc.createElement( "element"/*xsd:element*/ );
+          attElem.setAttribute( "name", attributeName );
           QVariant::Type attributeType = fields[idx].type();
           if ( attributeType == QVariant::Int )
-            geomElem.setAttribute( "type", "integer" );
+            attElem.setAttribute( "type", "integer" );
           else if ( attributeType == QVariant::Double )
-            geomElem.setAttribute( "type", "double" );
+            attElem.setAttribute( "type", "double" );
           else if ( attributeType == QVariant::Bool )
-            geomElem.setAttribute( "type", "boolean" );
+            attElem.setAttribute( "type", "boolean" );
           else if ( attributeType == QVariant::Date )
-            geomElem.setAttribute( "type", "date" );
+            attElem.setAttribute( "type", "date" );
           else if ( attributeType == QVariant::Time )
-            geomElem.setAttribute( "type", "time" );
+            attElem.setAttribute( "type", "time" );
           else if ( attributeType == QVariant::DateTime )
-            geomElem.setAttribute( "type", "dateTime" );
+            attElem.setAttribute( "type", "dateTime" );
           else
-            geomElem.setAttribute( "type", "string" );
+            attElem.setAttribute( "type", "string" );
 
-          sequenceElem.appendChild( geomElem );
+          sequenceElem.appendChild( attElem );
 
           QString alias = layer->attributeAlias( idx );
           if ( !alias.isEmpty() )
           {
-            geomElem.setAttribute( "alias", alias );
+            attElem.setAttribute( "alias", alias );
           }
         }
       }

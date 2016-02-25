@@ -8,7 +8,7 @@ Content-Type: text/xml; charset=utf-8
   <complexContent>
    <extension base="gml:AbstractFeatureType">
     <sequence>
-     <element minOccurs="0" maxOccurs="1" type="gml:PointPropertyType" name="geometry"/>
+     <element minOccurs="0" maxOccurs="1" type="gml:GeometryPropertyType" name="geometry"/>
      <element type="integer" name="id"/>
      <element type="string" name="name"/>
      <element type="string" name="utf8nameè"/>
