@@ -32,7 +32,7 @@
       <string notr="true">padding: 2px; font-weight: bold; background-color: rgb(200, 200, 200);</string>
      </property>
      <property name="text">
-      <string>Arrow</string>
+      <string>Line</string>
      </property>
     </widget>
    </item>
@@ -94,16 +94,16 @@
           <item row="0" column="0" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <widget class="QRadioButton" name="mDefaultMarkerRadioButton">
+             <widget class="QRadioButton" name="mNoMarkerRadioButton">
               <property name="text">
-               <string>Default</string>
+               <string>None</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="mNoMarkerRadioButton">
+             <widget class="QRadioButton" name="mDefaultMarkerRadioButton">
               <property name="text">
-               <string>None</string>
+               <string>Simple Arrow</string>
               </property>
              </widget>
             </item>
@@ -295,8 +295,8 @@
   <tabstop>groupBox</tabstop>
   <tabstop>mLineStyleButton</tabstop>
   <tabstop>mArrowMarkersGroupBox</tabstop>
-  <tabstop>mDefaultMarkerRadioButton</tabstop>
   <tabstop>mNoMarkerRadioButton</tabstop>
+  <tabstop>mDefaultMarkerRadioButton</tabstop>
   <tabstop>mSvgMarkerRadioButton</tabstop>
   <tabstop>mArrowHeadOutlineColorButton</tabstop>
   <tabstop>mArrowHeadFillColorButton</tabstop>

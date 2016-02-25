@@ -29,8 +29,8 @@ QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QgsCo
 {
   setupUi( this );
   mRadioButtonGroup = new QButtonGroup( this );
-  mRadioButtonGroup->addButton( mDefaultMarkerRadioButton );
   mRadioButtonGroup->addButton( mNoMarkerRadioButton );
+  mRadioButtonGroup->addButton( mDefaultMarkerRadioButton );
   mRadioButtonGroup->addButton( mSvgMarkerRadioButton );
   mRadioButtonGroup->setExclusive( true );
 

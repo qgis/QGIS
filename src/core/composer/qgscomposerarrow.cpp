@@ -31,7 +31,7 @@ QgsComposerArrow::QgsComposerArrow( QgsComposition* c )
     , mStopPoint( 0, 0 )
     , mStartXIdx( 0 )
     , mStartYIdx( 0 )
-    , mMarkerMode( DefaultMarker )
+    , mMarkerMode( NoMarker )
     , mArrowHeadOutlineWidth( 1.0 )
     , mArrowHeadOutlineColor( Qt::black )
     , mArrowHeadFillColor( Qt::black )
@@ -45,7 +45,7 @@ QgsComposerArrow::QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsCo
     : QgsComposerItem( c )
     , mStartPoint( startPoint )
     , mStopPoint( stopPoint )
-    , mMarkerMode( DefaultMarker )
+    , mMarkerMode( NoMarker )
     , mArrowHeadOutlineWidth( 1.0 )
     , mArrowHeadOutlineColor( Qt::black )
     , mArrowHeadFillColor( Qt::black )
@@ -65,7 +65,7 @@ QgsComposerArrow::~QgsComposerArrow()
 
 void QgsComposerArrow::init()
 {
-  setArrowHeadWidth( 4 );
+  setArrowHeadWidth( 0 );
   mPen.setColor( mArrowHeadOutlineColor );
   mPen.setWidthF( 1 );
   mBrush.setColor( mArrowHeadFillColor );

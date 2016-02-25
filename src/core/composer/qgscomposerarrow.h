@@ -238,7 +238,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     QString mStartMarkerFile;
     /** Path to the end marker file*/
     QString mEndMarkerFile;
-    /** Default marker, no marker or svg marker*/
+    /** No marker, simple marker or svg marker*/
     MarkerMode mMarkerMode;
 
     double mArrowHeadOutlineWidth;
