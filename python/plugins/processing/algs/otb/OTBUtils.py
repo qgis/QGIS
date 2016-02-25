@@ -49,7 +49,7 @@ OTB_GEOID_FILE = "OTB_GEOID_FILE"
 
 
 def findOtbPath():
-    folder = None
+    folder = ""
     #try to configure the path automatically
     if isMac():
         testfolder = os.path.join(unicode(QgsApplication.prefixPath()), "bin")
@@ -72,14 +72,14 @@ def findOtbPath():
 
 
 def otbPath():
-    folder = findOtbPath()
+    folder = ProcessingConfig.getSetting(OTB_FOLDER)
     if folder is None:
-        folder = ProcessingConfig.getSetting(OTB_FOLDER)
+        folder = ""
     return folder
 
 
 def findOtbLibPath():
-    folder = None
+    folder = ""
     #try to configure the path automatically
     if isMac():
         testfolder = os.path.join(unicode(QgsApplication.prefixPath()), "lib/otb/applications")
@@ -101,9 +101,9 @@ def findOtbLibPath():
 
 
 def otbLibPath():
-    folder = findOtbLibPath()
+    folder = ProcessingConfig.getSetting(OTB_LIB_FOLDER)
     if folder is None:
-        folder = ProcessingConfig.getSetting(OTB_LIB_FOLDER)
+        folder = ""
     return folder
 
 
