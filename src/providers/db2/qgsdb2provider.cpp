@@ -42,6 +42,8 @@ QgsDb2Provider::QgsDb2Provider( QString uri )
   mWkbType = QGis::fromNewWkbType( anUri.newWkbType() );
   mValid = true;
   mSkipFailures = false;
+  int dim; // Not used
+  db2WkbTypeAndDimension( mWkbType, mGeometryColType, dim ); // Get DB2 geometry type name
 
   mFidColName = anUri.keyColumn();
   QgsDebugMsg( "mFidColName " + mFidColName );
@@ -187,7 +189,9 @@ QSqlDatabase QgsDb2Provider::GetDatabase( QString connInfo )
 
     bool ok = QgsCredentials::instance()->get( databaseName, userName, password, QString( "" ) );
     if ( !ok ) // TODO - what if cancel?
+    {
       QgsDebugMsg( "Cancel clicked" );
+    }
 
     QgsCredentials::instance()->put( databaseName, userName, password );
     QgsCredentials::instance()->unlock();
@@ -245,7 +249,9 @@ void QgsDb2Provider::loadMetadata()
     mGeometryColName = query.value( 0 ).toString();
     mGeometryColType = query.value( 3 ).toString();
     mSRId = query.value( 2 ).toInt();
-    mWkbType = QgsDb2TableModel::wkbTypeFromDb2( query.value( 3 ).toString(), query.value( 1 ).toInt() );
+    mWkbType = QgsDb2TableModel::wkbTypeFromDb2( mGeometryColType, query.value( 1 ).toInt() );
+    QgsDebugMsg(QString("mGeometryColType: %1; mWkbType: %2")
+                .arg(mGeometryColType).arg(mWkbType));
     QgsDebugMsg( "table: " + mTableName + " : " + mGeometryColName + " : " + query.value( 2 ).toString() );
   }
 }
@@ -263,11 +269,13 @@ void QgsDb2Provider::loadFields()
   for ( int i = 0; i < fieldCount; i++ )
   {
     QSqlField f = r.field( i );
-    int typeID = f.typeID(); // seems to be DB2 numeric type id (standard?)
+     int typeID = f.typeID(); // seems to be DB2 numeric type id (standard?)
     QString sqlTypeName = db2TypeName( typeID );
     QVariant::Type sqlType = f.type();
     QgsDebugMsg( "name: " + f.name() + "; sqlTypeID: " + QString::number( typeID ) + "; sqlTypeName: " + sqlTypeName );
-    if ( f.name() == mGeometryColName ) continue; // Got this with loadMeta(), just skip
+   QgsDebugMsg(QString("auto: %1; generated: %2").arg(f.isAutoValue()).arg(f.isGenerated()));
+
+    if ( f.name() == mGeometryColName ) continue; // Got this with uri, just skip
     if ( sqlType == QVariant::String )
     {
       mAttributeFields.append(
@@ -844,6 +852,9 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
       if ( fld.typeName().endsWith( " identity", Qt::CaseInsensitive ) )
         continue; // skip identity field
 
+      if (  mFidColName == fld.name())  // TODO - skip FID for now (and below)
+        continue; // skip identity field
+        
       if ( fld.name().isEmpty() )
         continue; // invalid
 
@@ -873,10 +884,14 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
 
       statement += QString( "%1" ).arg( mGeometryColName );
 
-      values += QString( "db2gse.st_geometry(%1,%2)" ).arg(
-                  QString( "?" ), QString::number( mSRId ) );
+      values += QString( "db2gse.%1(CAST (%2 AS BLOB(2M)),%3)" )
+                .arg(mGeometryColType)
+                .arg(QString( "?" ))
+                .arg(QString::number( mSRId ) );
     }
-
+ 
+    QgsDebugMsg(statement);
+    QgsDebugMsg(values);
     statement += ") VALUES (" + values + ')';
 
     // use prepared statement to prevent from sql injection
@@ -902,6 +917,9 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
       if ( fld.typeName().endsWith( " identity", Qt::CaseInsensitive ) )
         continue; // skip identity field
 
+      if (  mFidColName == fld.name())  // TODO - skip FID for now
+        continue; // skip identity field
+        
       if ( fld.name().isEmpty() )
         continue; // invalid
 
@@ -972,8 +990,8 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
       }
     }
 
-
-    statement = QString( "SELECT IDENT_CURRENT('%1.%2')" ).arg( mSchemaName, mTableName );
+    statement = QString( "select IDENTITY_VAL_LOCAL() AS IDENTITY "
+                            "FROM SYSIBM.SYSDUMMY1");
     QgsDebugMsg( statement );
     if ( !query.exec( statement ) )
     {

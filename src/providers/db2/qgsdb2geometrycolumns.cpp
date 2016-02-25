@@ -129,6 +129,7 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
       QString fidColName = pk.fieldName( 0 );
       layer.pkCols.append( fidColName );
       QgsDebugMsg( "pk is: " + fidColName );
+      QgsDebugMsg( QString( "auto: %1; generated: %2" ).arg( pkFld.isAutoValue() ).arg( pkFld.isGenerated() ) );
     }
   }
   else
