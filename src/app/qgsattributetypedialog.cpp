@@ -45,8 +45,6 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   setupUi( this );
   setWindowTitle( tr( "Edit Widget Properties - %1 (%2)" ).arg( vl->fields().at( fieldIdx ).name(), vl->name() ) );
 
-  connect( selectionListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( setStackPage( int ) ) );
-
   QMapIterator<QString, QgsEditorWidgetFactory*> it( QgsEditorWidgetRegistry::instance()->factories() );
   while ( it.hasNext() )
   {

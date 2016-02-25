@@ -31,7 +31,10 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer* vl, 
   mUseLink->setChecked( false );
   mFullUrl->setChecked( false );
   mDocumentViewerGroupBox->setChecked( false );
-  mRootPath->setPlaceholderText( QSettings().value( "/UI/lastExternalResourceWidgetDefaultPath", QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) ) ).toString() );
+
+  QString defpath = QgsProject::instance()->fileName().isEmpty() ? QDir::currentPath() : QgsProject::instance()->fileInfo().absolutePath();
+
+  mRootPath->setPlaceholderText( QSettings().value( "/UI/lastExternalResourceWidgetDefaultPath", QDir::toNativeSeparators( QDir::cleanPath( defpath ) ) ).toString() );
 
   // Add connection to button for choosing default path
   connect( mRootPathButton, SIGNAL( clicked() ), this, SLOT( chooseDefaultPath() ) );
