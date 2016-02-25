@@ -84,9 +84,12 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
 
   connect( mNameEdit, SIGNAL( textChanged( QString ) ), this, SLOT( nameChanged( QString ) ) );
   connect( mAttributeView, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
+  connect( leLayerName, SIGNAL( textChanged( const QString& text ) ), this, SLOT( checkOk() ) );
+  connect( checkBoxPrimaryKey, SIGNAL( clicked() ), this, SLOT( checkOk() ) );
 
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );
+
 }
 
 QgsNewSpatialiteLayerDialog::~QgsNewSpatialiteLayerDialog()
@@ -158,26 +161,25 @@ QString QgsNewSpatialiteLayerDialog::selectedType() const
   return "";
 }
 
-void QgsNewSpatialiteLayerDialog::on_leLayerName_textChanged( const QString& text )
+void QgsNewSpatialiteLayerDialog::checkOk()
 {
-  Q_UNUSED( text );
-  bool created  = leLayerName->text().length() > 0 && mAttributeView->topLevelItemCount() > 0 && createDb();
+  bool created  = !leLayerName->text().isEmpty() &&
+                  ( checkBoxPrimaryKey->isChecked() || mAttributeView->topLevelItemCount() > 0 ) &&
+                  createDb();
   mOkButton->setEnabled( created );
 }
 
 void QgsNewSpatialiteLayerDialog::on_mAddAttributeButton_clicked()
 {
-  if ( mNameEdit->text().length() > 0 )
+  if ( !mNameEdit->text().isEmpty() )
   {
     QString myName = mNameEdit->text();
     //use userrole to avoid translated type string
     QString myType = mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole ).toString();
     mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << myName << myType ) );
-    if ( mAttributeView->topLevelItemCount() > 0  && leLayerName->text().length() > 0 )
-    {
-      bool created = createDb();
-      mOkButton->setEnabled( created );
-    }
+
+    checkOk();
+
     mNameEdit->clear();
   }
 }
@@ -185,10 +187,8 @@ void QgsNewSpatialiteLayerDialog::on_mAddAttributeButton_clicked()
 void QgsNewSpatialiteLayerDialog::on_mRemoveAttributeButton_clicked()
 {
   delete mAttributeView->currentItem();
-  if ( mAttributeView->topLevelItemCount() == 0 )
-  {
-    mOkButton->setEnabled( false );
-  }
+
+  checkOk();
 }
 
 void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
@@ -347,16 +347,15 @@ bool QgsNewSpatialiteLayerDialog::apply()
 
   if ( checkBoxPrimaryKey->isChecked() )
   {
-    sql += "pkuid integer primary key autoincrement,";
+    sql += "pkuid integer primary key autoincrement";
+    delim = ",";
   }
 
   QTreeWidgetItemIterator it( mAttributeView );
   while ( *it )
   {
     sql += delim + QString( "%1 %2" ).arg( quotedIdentifier(( *it )->text( 0 ) ), ( *it )->text( 1 ) );
-
-    delim = ',';
-
+    delim = ",";
     ++it;
   }
 
