@@ -32,7 +32,7 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer* vl, 
   mFullUrl->setChecked( false );
   mDocumentViewerGroupBox->setChecked( false );
 
-  QString defpath = QgsProject::instance()->fileName().isEmpty() ? QDir::currentPath() : QgsProject::instance()->fileInfo().absolutePath();
+  QString defpath = QgsProject::instance()->fileName().isEmpty() ? QDir::homePath() : QgsProject::instance()->fileInfo().absolutePath();
 
   mRootPath->setPlaceholderText( QSettings().value( "/UI/lastExternalResourceWidgetDefaultPath", QDir::toNativeSeparators( QDir::cleanPath( defpath ) ) ).toString() );
 
