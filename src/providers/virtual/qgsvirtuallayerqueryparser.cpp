@@ -93,14 +93,6 @@ namespace QgsVirtualLayerQueryParser
     return defs;
   }
 
-  bool isValidColumnName( const QString& columnName )
-  {
-    // identifier name with possible accents
-    static QRegExp columnNameRx( "[a-zA-Z_\x80-\xFF][a-zA-Z0-9_\x80-\xFF]*" );
-
-    return columnNameRx.exactMatch( columnName );
-  }
-
 // set the type of the column type, given its text representation
   void setColumnDefType( const QString& columnType, ColumnDef& d )
   {
@@ -171,17 +163,6 @@ namespace QgsVirtualLayerQueryParser
       while ( q.step() == SQLITE_ROW )
       {
         QString columnName = q.columnText( 1 );
-
-        if ( !isValidColumnName( columnName ) )
-        {
-          qWarning() << "Invalid name: " << columnName;
-          hasInvalidName = true;
-
-          // add an unnamed column
-          ColumnDef d;
-          tableDef << d;
-          break;
-        }
 
         columns << columnName;
 

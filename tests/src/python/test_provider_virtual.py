@@ -508,10 +508,11 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         QgsMapLayerRegistry.instance().addMapLayer(l2)
 
         # unnamed column
-        query = QUrl.toPercentEncoding("SELECT 42")
+        query = QUrl.toPercentEncoding("SELECT count(*)")
         l4 = QgsVectorLayer("?query=%s" % query, "tt", "virtual", False)
-        self.assertEqual(l4.isValid(), False)
-        self.assertEqual("Result column #1 has no name" in l4.dataProvider().error().message(), True)
+        self.assertEqual(l4.isValid(), True)
+        self.assertEqual(l4.dataProvider().fields().at(0).name(), "count(*)")
+        self.assertEqual(l4.dataProvider().fields().at(0).type(), QVariant.Int)
 
     def test_sql_field_types(self):
         query = QUrl.toPercentEncoding("SELECT 42 as t, 'ok'||'ok' as t2, GeomFromText('') as t3, 3.14*2 as t4")
