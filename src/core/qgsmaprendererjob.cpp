@@ -29,6 +29,7 @@
 #include "qgsmaplayerrenderer.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaprenderercache.h"
+#include "qgsmessagelog.h"
 #include "qgspallabeling.h"
 #include "qgsvectorlayerrenderer.h"
 #include "qgsvectorlayer.h"
@@ -245,6 +246,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
     job.img = nullptr;
     job.blendMode = ml->blendMode();
     job.layerId = ml->id();
+    job.renderingTime = -1;
 
     job.context = QgsRenderContext::fromMapSettings( mSettings );
     job.context.setPainter( painter );
@@ -366,4 +368,23 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const La
 
   painter.end();
   return image;
+}
+
+void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs& jobs )
+{
+  QSettings settings;
+  if ( !settings.value( "/Map/logCanvasRefreshEvent", false ).toBool() )
+    return;
+
+  QMultiMap<int, QString> elapsed;
+  Q_FOREACH ( const LayerRenderJob& job, jobs )
+    elapsed.insert( job.renderingTime, job.layerId );
+
+  QList<int> tt( elapsed.uniqueKeys() );
+  qSort( tt.begin(), tt.end(), qGreater<int>() );
+  Q_FOREACH ( int t, tt )
+  {
+    QgsMessageLog::logMessage( tr( "%1 ms: %2" ).arg( t ).arg( QStringList( elapsed.values( t ) ).join( ", " ) ), tr( "Rendering" ) );
+  }
+  QgsMessageLog::logMessage( "---", tr( "Rendering" ) );
 }

@@ -200,6 +200,8 @@ void QgsMapRendererCustomPainterJob::futureFinished()
   mRenderingTime = mRenderingStart.elapsed();
   QgsDebugMsg( "QPAINTER futureFinished" );
 
+  logRenderingTime( mLayerJobs );
+
   // final cleanup
   cleanupJobs( mLayerJobs );
 
@@ -248,7 +250,14 @@ void QgsMapRendererCustomPainterJob::doRender()
     }
 
     if ( !job.cached )
+    {
+      QTime layerTime;
+      layerTime.start();
+
       job.renderer->render();
+
+      job.renderingTime = layerTime.elapsed();
+    }
 
     if ( job.img )
     {

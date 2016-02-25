@@ -47,6 +47,7 @@ struct LayerRenderJob
   QPainter::CompositionMode blendMode;
   bool cached; // if true, img already contains cached image from previous rendering
   QString layerId;
+  int renderingTime; //!< time it took to render the layer in ms (it is -1 if not rendered or still rendering)
 };
 
 typedef QList<LayerRenderJob> LayerRenderJobs;
@@ -154,6 +155,9 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     //! @note not available in python bindings
     void cleanupJobs( LayerRenderJobs& jobs );
+
+    //! @note not available in python bindings
+    void logRenderingTime( const LayerRenderJobs& jobs );
 
     static QImage composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs );
 
