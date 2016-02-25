@@ -133,6 +133,9 @@ class QgsDb2Provider : public QgsVectorDataProvider
 
     /** Changes attribute values of existing features */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+
+    /** Changes existing geometries*/
+    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     
   protected:
     /** Loads fields from input file to member attributeFields */

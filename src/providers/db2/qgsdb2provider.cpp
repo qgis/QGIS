@@ -139,7 +139,6 @@ QSqlDatabase QgsDb2Provider::GetDatabase( QString connInfo )
   QString connectionName;
   QString connectionString;
 
-  QgsDebugMsg( "connInfo: " + connInfo );
   QgsDataSourceURI uri( connInfo );
   // Fill in the password if authentication is used
   QString expandedConnectionInfo = uri.connectionInfo( true );
@@ -148,7 +147,6 @@ QSqlDatabase QgsDb2Provider::GetDatabase( QString connInfo )
 
   userName = uriExpanded.username();
   password = uriExpanded.password();
-  QgsDebugMsg( QString( "user: '%1'; pwd: '%2'" ).arg( userName ).arg( password ) );
   service = uriExpanded.service();
   databaseName = uriExpanded.database();
   host = uriExpanded.host();
@@ -159,7 +157,7 @@ QSqlDatabase QgsDb2Provider::GetDatabase( QString connInfo )
   {
     if ( driver.isEmpty() || host.isEmpty() || databaseName.isEmpty() )
     {
-      QgsDebugMsg( "DB2: service not provided, a required argument is empty." );
+      QgsDebugMsg( "service not provided, a required argument is empty." );
       return db;
     }
     connectionName = databaseName + ".";
@@ -172,12 +170,12 @@ QSqlDatabase QgsDb2Provider::GetDatabase( QString connInfo )
   /* if new database connection */
   if ( !QSqlDatabase::contains( connectionName ) )
   {
-    QgsDebugMsg( "new DB2 database. create new QODBC mapping" );
+    QgsDebugMsg( "new connection. create new QODBC mapping" );
     db = QSqlDatabase::addDatabase( "QODBC", connectionName );
   }
   else  /* if existing database connection */
   {
-    QgsDebugMsg( "DB2 found existing connection, use the existing one" );
+    QgsDebugMsg( "found existing connection, use the existing one" );
     db = QSqlDatabase::database( connectionName );
   }
   db.setHostName( host );
@@ -203,14 +201,20 @@ QSqlDatabase QgsDb2Provider::GetDatabase( QString connInfo )
   /* start building connection string */
   if ( service.isEmpty() )
   {
-    connectionString = "Driver={%1};Hostname=%2;Port=%3;Protocol=TCPIP;Database=%4;Uid=%5;Pwd=%6;";
-    connectionString = connectionString.arg( driver ).arg( host ).arg( db.port() ).arg( databaseName ).arg( userName ).arg( password );
+    connectionString = QString("Driver={%1};Hostname=%2;Port=%3;"
+                               "Protocol=TCPIP;Database=%4;Uid=%5;Pwd=%6;")
+                                       .arg( driver )
+                                       .arg( host )
+                                       .arg( db.port() )
+                                       .arg( databaseName )
+                                       .arg( userName )
+                                       .arg( password );                                       
   }
   else
   {
     connectionString = service;
   }
-  QgsDebugMsg( "DB2: GetDatabase; connection string: " + connectionString );
+  QgsDebugMsg( "ODBC connection string: " + connectionString );
 
   db.setDatabaseName( connectionString ); //for QODBC driver, the name can be a DSN or connection string
   return db;
@@ -1043,6 +1047,63 @@ int QgsDb2Provider::capabilities() const
   }
 }
 
+bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap &geometry_map )
+{
+  if ( geometry_map.isEmpty() )
+    return true;
+
+  if ( mFidColName.isEmpty() )
+    return false;
+
+  for ( QgsGeometryMap::const_iterator it = geometry_map.constBegin(); it != geometry_map.constEnd(); ++it )
+  {
+    QgsFeatureId fid = it.key();
+    // skip added features
+    if ( FID_IS_NEW( fid ) )
+    {
+      continue;
+    }
+
+    QString statement;
+    statement = QString( "UPDATE %1.%2 SET %3 = " )
+                        .arg( mSchemaName, mTableName, mGeometryColName );
+
+    if ( !mDatabase.isOpen() )
+    {
+      mDatabase = GetDatabase( mConnInfo );
+    }
+    QSqlQuery query = QSqlQuery( mDatabase );
+    query.setForwardOnly( true );
+
+      statement += QString( "db2gse.%1(CAST (%2 AS BLOB(2M)),%3)" )
+                .arg(mGeometryColType)
+                .arg(QString( "?" ))
+                .arg(QString::number( mSRId ) );
+
+    // set attribute filter
+    statement += QString( " WHERE %1=%2" ).arg( mFidColName, FID_TO_STRING( fid ) );
+    QgsDebugMsg(statement);
+    if ( !query.prepare( statement ) )
+    {
+      QString msg = query.lastError().text();
+      QgsDebugMsg( msg );
+      return false;
+    }
+
+    // add geometry param
+      QByteArray bytea = QByteArray(( char* )it->asWkb(), ( int ) it->wkbSize() );
+      query.addBindValue( bytea, QSql::In | QSql::Binary );
+ 
+    if ( !query.exec() )
+    {
+      QString msg = query.lastError().text();
+      QgsDebugMsg( msg );
+      return false;
+    }
+  }
+
+  return true;
+}
 
 QString QgsDb2Provider::name() const
 {
