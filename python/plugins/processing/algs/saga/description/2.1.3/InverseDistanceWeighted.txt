@@ -8,6 +8,8 @@ ParameterNumber|WEIGHT_BANDWIDTH|Exponential and Gaussian Weighting Bandwidth|0.
 ParameterSelection|SEARCH_RANGE|Search Range|[0] search radius (local);[1] no search radius (global)|1
 ParameterNumber|SEARCH_RADIUS|Search Radius|None|None|100.0
 ParameterSelection|SEARCH_DIRECTION|Search Mode|[0] all directions;[1] quadrants
+ParameterSelection|SEARCH_POINTS_ALL|Number of Points|[0] maximum number of nearest points;[1] all points
+ParameterNumber|SEARCH_POINTS_MAX|Maximum Number of Points|None|None|10
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
 ParameterNumber|TARGET_USER_SIZE|Cellsize|None|None|100.0
 ParameterSelection|TARGET_DEFINITION|Target Grid System|[0] user defined;[1] grid or grid system
