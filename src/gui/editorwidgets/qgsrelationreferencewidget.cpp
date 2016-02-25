@@ -234,7 +234,11 @@ void QgsRelationReferenceWidget::setRelationEditable( bool editable )
 
 void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
 {
-  if ( !value.isValid() || value.isNull() )
+  if ( !value.isValid() )
+  {
+    return;
+  }
+  if ( value.isNull() )
   {
     deleteForeignKey();
     return;
@@ -254,7 +258,6 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
 
   if ( !mFeature.isValid() )
   {
-    deleteForeignKey();
     return;
   }
 
