@@ -187,7 +187,7 @@ unless( $dopoint ) {
 }
 
 print "Producing archive...\n";
-run( "git archive --format tar --prefix=qgis-$version/ $reltag $ltrtag | bzip2 -c >qgis-$version.tar.bz2", "git archive failed" );
+run( "git archive --format tar --prefix=qgis-$version/ $reltag | bzip2 -c >qgis-$version.tar.bz2", "git archive failed" );
 run( "md5sum qgis-$version.tar.bz2 >qgis-$version.tar.bz2.md5", "md5sum failed" );
 
 unless( $dopoint ) {
