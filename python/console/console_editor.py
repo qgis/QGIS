@@ -297,9 +297,9 @@ class Editor(QsciScintilla):
         iconFind = QgsApplication.getThemeIcon("console/iconSearchEditorConsole.png")
         iconSyntaxCk = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
         iconObjInsp = QgsApplication.getThemeIcon("console/iconClassBrowserConsole.png")
-        iconCut = QgsApplication.getThemeIcon("console/iconCutEditorConsole.png")
-        iconCopy = QgsApplication.getThemeIcon("console/iconCopyEditorConsole.png")
-        iconPaste = QgsApplication.getThemeIcon("console/iconPasteEditorConsole.png")
+        iconCut = QgsApplication.getThemeIcon("mActionEditCut.png")
+        iconCopy = QgsApplication.getThemeIcon("mActionEditCopy.png")
+        iconPaste = QgsApplication.getThemeIcon("mActionEditPaste.png")
         menu.addAction(
             QCoreApplication.translate("PythonConsole", "Hide Editor"),
             self.hideEditor)
