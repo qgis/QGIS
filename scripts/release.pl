@@ -153,7 +153,7 @@ print "Updating changelog...\n";
 run( "scripts/create_changelog.sh", "create_changelog.sh failed" );
 
 unless( $dopoint ) {
-	run( "scripts/update-news.pl $newmajor $newminor '$release'" ) if $major>2 || ($major==2 && $minor>14);
+	run( "scripts/update-news.pl $newmajor $newminor '$release'", "could not update news" ) if $major>2 || ($major==2 && $minor>14);
 
 	run( "git commit -a -m \"changelog and news update for $release\"", "could not commit changelog and news update" );
 
