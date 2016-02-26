@@ -53,7 +53,7 @@ static const QString description_ = QObject::tr( "Tools for loading and importin
 static const QString category_ = QObject::tr( "Vector" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
-static const QString icon_ = ":/gps_importer.png";
+static const QString icon_ = ":/gps_importer.svg";
 
 
 /**
@@ -685,18 +685,18 @@ void QgsGPSPlugin::setCurrentTheme( const QString& theThemeName )
   {
     if ( QFile::exists( myCurThemePath ) )
     {
-      mQActionPointer->setIcon( QIcon( myCurThemePath + "import_gpx.png" ) );
-      mCreateGPXAction->setIcon( QIcon( myCurThemePath + "create_gpx.png" ) );
+      mQActionPointer->setIcon( QIcon( myCurThemePath + "import_gpx.svg" ) );
+      mCreateGPXAction->setIcon( QIcon( myCurThemePath + "create_gpx.svg" ) );
     }
     else if ( QFile::exists( myDefThemePath ) )
     {
-      mQActionPointer->setIcon( QIcon( myDefThemePath + "import_gpx.png" ) );
-      mCreateGPXAction->setIcon( QIcon( myDefThemePath + "create_gpx.png" ) );
+      mQActionPointer->setIcon( QIcon( myDefThemePath + "import_gpx.svg" ) );
+      mCreateGPXAction->setIcon( QIcon( myDefThemePath + "create_gpx.svg" ) );
     }
     else if ( QFile::exists( myQrcPath ) )
     {
-      mQActionPointer->setIcon( QIcon( myQrcPath + "import_gpx.png" ) );
-      mCreateGPXAction->setIcon( QIcon( myQrcPath + "create_gpx.png" ) );
+      mQActionPointer->setIcon( QIcon( myQrcPath + "import_gpx.svg" ) );
+      mCreateGPXAction->setIcon( QIcon( myQrcPath + "create_gpx.svg" ) );
     }
     else
     {
