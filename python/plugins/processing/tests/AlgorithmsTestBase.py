@@ -95,9 +95,9 @@ class AlgorithmsTest():
         """
         Loads an array of parameters
         """
-        if type(params) == list:
+        if isinstance(params, list):
             return [self.load_param(p) for p in params]
-        elif type(params) == dict:
+        elif isinstance(params, dict):
             return {key: self.load_param(p) for key, p in params.iteritems()}
         else:
             return params
