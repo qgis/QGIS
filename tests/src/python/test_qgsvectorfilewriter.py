@@ -98,7 +98,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(fields.at(fields.indexFromName('date_f')).type(), QVariant.Date)
         #shapefiles do not support time types, result should be string
         self.assertEqual(fields.at(fields.indexFromName('time_f')).type(), QVariant.String)
-        #shapefiles do not support datetime types, result should be date
+        #shapefiles do not support datetime types, result should be string
         self.assertEqual(fields.at(fields.indexFromName('dt_f')).type(), QVariant.String)
 
         f = created_layer.getFeatures(QgsFeatureRequest()).next()
