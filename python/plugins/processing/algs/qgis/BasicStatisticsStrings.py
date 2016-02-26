@@ -125,15 +125,15 @@ class BasicStatisticsStrings(GeoAlgorithm):
         uniqueValues = vector.getUniqueValuesCount(layer, index)
 
         data = []
-        data.append('Analyzed layer: ' + layer.name())
-        data.append('Analyzed field: ' + fieldName)
-        data.append('Minimum length: ' + unicode(minValue))
-        data.append('Maximum length: ' + unicode(maxValue))
-        data.append('Mean length: ' + unicode(meanValue))
-        data.append('Filled values: ' + unicode(filledValues))
-        data.append('NULL (missed) values: ' + unicode(nullValues))
-        data.append('Count: ' + unicode(count))
-        data.append('Unique: ' + unicode(uniqueValues))
+        data.append(self.tr('Analyzed layer: {}').format(layer.name()))
+        data.append(self.tr('Analyzed field: {}').format(fieldName))
+        data.append(self.tr('Minimum length: {}').format(minValue))
+        data.append(self.tr('Maximum length: {}').format(maxValue))
+        data.append(self.tr('Mean length: {}').format(meanValue))
+        data.append(self.tr('Filled values: {}').format(filledValues))
+        data.append(self.tr('NULL (missing) values: {}').format(nullValues))
+        data.append(self.tr('Count: {}').format(count))
+        data.append(self.tr('Unique: {}').format(uniqueValues))
 
         self.createHTML(outputFile, data)
 
