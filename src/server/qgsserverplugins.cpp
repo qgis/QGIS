@@ -26,14 +26,22 @@
 
 #include <QLibrary>
 
+
+// Initialize static members
+QgsPythonUtils* QgsServerPlugins::sPythonUtils;
+
+
 QgsServerPlugins::QgsServerPlugins()
 {
 }
 
-// Initialize static members
-QgsPythonUtils* QgsServerPlugins::mPythonUtils;
-// Initialize static members
-QStringList QgsServerPlugins::mServerPlugins;
+// Construct on first use
+QStringList &QgsServerPlugins::serverPlugins()
+{
+  static QStringList* pluginList = new QStringList();
+  return *pluginList;
+}
+
 
 // This code is mainly borrowed from QGIS desktop Python plugin initialization
 bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
@@ -73,10 +81,10 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
   }
 
   QgsDebugMsg( "Python support library's instance() symbol resolved." );
-  mPythonUtils = pythonlib_inst();
-  mPythonUtils->initServerPython( interface );
+  sPythonUtils = pythonlib_inst();
+  sPythonUtils->initServerPython( interface );
 
-  if ( mPythonUtils && mPythonUtils->isEnabled() )
+  if ( sPythonUtils && sPythonUtils->isEnabled() )
   {
     QgsDebugMsg( "Python support ENABLED :-)" );
   }
@@ -88,20 +96,20 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
 
   //Init plugins: loads a list of installed plugins and filter them
   //for "server" metadata
-  QListIterator<QString> plugins( mPythonUtils->pluginList() );
+  QListIterator<QString> plugins( sPythonUtils->pluginList() );
   bool atLeastOneEnabled = false;
   while ( plugins.hasNext() )
   {
     QString pluginName = plugins.next();
-    QString pluginService = mPythonUtils->getPluginMetadata( pluginName, "server" );
+    QString pluginService = sPythonUtils->getPluginMetadata( pluginName, "server" );
     if ( pluginService == "True" )
     {
-      if ( mPythonUtils->loadPlugin( pluginName ) )
+      if ( sPythonUtils->loadPlugin( pluginName ) )
       {
-        if ( mPythonUtils->startServerPlugin( pluginName ) )
+        if ( sPythonUtils->startServerPlugin( pluginName ) )
         {
           atLeastOneEnabled = true;
-          mServerPlugins.append( pluginName );
+          serverPlugins().append( pluginName );
           QgsMessageLog::logMessage( QString( "Server plugin %1 loaded!" ).arg( pluginName ), "Server", QgsMessageLog::INFO );
         }
         else
@@ -115,6 +123,7 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
       }
     }
   }
-  return mPythonUtils && mPythonUtils->isEnabled() && atLeastOneEnabled;
+  return sPythonUtils && sPythonUtils->isEnabled() && atLeastOneEnabled;
 }
+
 

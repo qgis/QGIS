@@ -124,8 +124,13 @@ QDomElement Qgs25DRenderer::save( QDomDocument& doc )
 
 QgsFeatureRendererV2* Qgs25DRenderer::create( QDomElement& element )
 {
-  Q_UNUSED( element )
   Qgs25DRenderer* renderer = new Qgs25DRenderer();
+
+  QDomNodeList symbols = element.elementsByTagName( "symbol" );
+  if ( symbols.size() )
+  {
+    renderer->mSymbol.reset( QgsSymbolLayerV2Utils::loadSymbol( symbols.at( 0 ).toElement() ) );
+  }
 
   return renderer;
 }

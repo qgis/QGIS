@@ -633,9 +633,19 @@ void QgsExpressionBuilderWidget::on_txtSearchEdit_textChanged()
 {
   mProxyModel->setFilterWildcard( txtSearchEdit->text() );
   if ( txtSearchEdit->text().isEmpty() )
+  {
     expressionTree->collapseAll();
+  }
   else
+  {
     expressionTree->expandAll();
+    QModelIndex index = mProxyModel->index( 0, 0 );
+    if ( mProxyModel->hasChildren( index ) )
+    {
+      QModelIndex child = mProxyModel->index( 0, 0, index );
+      expressionTree->selectionModel()->setCurrentIndex( child, QItemSelectionModel::ClearAndSelect );
+    }
+  }
 }
 
 void QgsExpressionBuilderWidget::on_txtSearchEditValues_textChanged()
@@ -797,8 +807,22 @@ bool QgsExpressionItemSearchProxy::filterAcceptsRow( int source_row, const QMode
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
   QgsExpressionItem::ItemType itemType = QgsExpressionItem::ItemType( sourceModel()->data( index, QgsExpressionItem::ItemTypeRole ).toInt() );
 
-  if ( itemType == QgsExpressionItem::Header )
+  int count = sourceModel()->rowCount( index );
+  bool matchchild = false;
+  for ( int i = 0; i < count; ++i )
+  {
+    if ( filterAcceptsRow( i, index ) )
+    {
+      matchchild = true;
+      break;
+    }
+  }
+
+  if ( itemType == QgsExpressionItem::Header && matchchild )
     return true;
+
+  if ( itemType == QgsExpressionItem::Header )
+    return false;
 
   return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
 }

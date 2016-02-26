@@ -32,8 +32,11 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
     QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "MU" );
     bool formatGeographic = ( format == "DM" || format == "DMS" || format == "D" );
 
-    // we can only calculate an automatic precision if both map CRS and format are geographic or both not geographic
-    if ( mapCrs.geographicFlag() == formatGeographic )
+    // we can only calculate an automatic precision if one of these is true:
+    // - both map CRS and format are geographic
+    // - both map CRS and format are not geographic
+    // - map CRS is geographic but format is not geographic (i.e. map units)
+    if ( mapCrs.geographicFlag() || !formatGeographic )
     {
       // Work out a suitable number of decimal places for the coordinates with the aim of always
       // having enough decimal places to show the difference in position between adjacent pixels.

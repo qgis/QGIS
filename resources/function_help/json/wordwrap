@@ -6,6 +6,6 @@
                  {"arg":"wrap_length","description":"an integer. If wrap_length is positive the number represents the ideal maximum number of characters to wrap; if negative, the number represents the minimum number of characters to wrap."},
                  {"arg":"delimiter_string","description":"the delimiter string to wrap to a new line (optional)."}
                  ],
-  "examples": [ { "expression":"wordwrap('UNIVERSITY OF QGIS',13)", "returns":"'UNIVERSITY OF\nQGIS'"},
-  { "expression":"wordwrap('UNIVERSITY OF QGIS',-3)", "returns":"'UNIVERSITY\nOF QGIS'"} ]
+  "examples": [ { "expression":"wordwrap('UNIVERSITY OF QGIS',13)", "returns":"'UNIVERSITY OF<br>QGIS'"},
+  { "expression":"wordwrap('UNIVERSITY OF QGIS',-3)", "returns":"'UNIVERSITY<br>OF QGIS'"} ]
 }

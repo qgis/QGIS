@@ -21,45 +21,40 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 /** Apply filter from AccessControl */
-void QgsOWSServer::applyAccessControlLayerFilters( QgsMapLayer* mapLayer, QMap<QString, QString>& originalLayerFilters ) const
+void QgsOWSServer::applyAccessControlLayerFilters( QgsMapLayer* mapLayer, QHash<QgsMapLayer*, QString>& originalLayerFilters ) const
 {
   if ( QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mapLayer ) )
   {
-    if ( layer->setSubsetString( "" ) )
+    QString sql = mAccessControl->extraSubsetString( layer );
+    if ( !sql.isEmpty() )
     {
-      QString sql = mAccessControl->extraSubsetString( layer );
-      if ( !sql.isEmpty() )
+      if ( !originalLayerFilters.contains( layer ) )
       {
-        if ( !originalLayerFilters.contains( layer->id() ) )
-        {
-          originalLayerFilters.insert( layer->id(), layer->subsetString() );
-        }
-        if ( !layer->subsetString().isEmpty() )
-        {
-          sql.prepend( " AND " );
-          sql.prepend( layer->subsetString() );
-        }
-        layer->setSubsetString( sql );
+        originalLayerFilters.insert( layer, layer->subsetString() );
       }
-    }
-    else
-    {
-      QgsMessageLog::logMessage( "Layer does not support Subset String" );
+      if ( !layer->subsetString().isEmpty() )
+      {
+        sql.prepend( " AND " );
+        sql.prepend( layer->subsetString() );
+      }
+      if ( !layer->setSubsetString( sql ) )
+      {
+        QgsMessageLog::logMessage( "Layer does not support Subset String" );
+      }
     }
   }
 }
 #endif
 
 /** Restore layer filter as original */
-void QgsOWSServer::restoreLayerFilters( const QMap<QString, QString>& filterMap ) const
+void QgsOWSServer::restoreLayerFilters( const QHash<QgsMapLayer*, QString>& filterMap )
 {
-  QMap<QString, QString>::const_iterator filterIt = filterMap.constBegin();
+  QHash<QgsMapLayer*, QString>::const_iterator filterIt = filterMap.constBegin();
   for ( ; filterIt != filterMap.constEnd(); ++filterIt )
   {
-    QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( filterIt.key() ) );
+    QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( filterIt.key() );
     if ( filteredLayer )
     {
       QgsVectorDataProvider* dp = filteredLayer->dataProvider();

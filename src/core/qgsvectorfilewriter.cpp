@@ -281,7 +281,7 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
 
   // datasource created, now create the output layer
   QString layerName = QFileInfo( vectorFileName ).baseName();
-  OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>( geometryType );
+  OGRwkbGeometryType wkbType = ogrTypeFromWkbType( geometryType );
 
   if ( !layerOptions.isEmpty() )
   {
@@ -392,7 +392,7 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
         if ( mOgrDriverName == "ESRI Shapefile" )
         {
           ogrType = OFTString;
-          ogrWidth = 12;
+          ogrWidth = 12; // %02d:%02d:%06.3f
         }
         else
         {
@@ -401,7 +401,15 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
         break;
 
       case QVariant::DateTime:
-        ogrType = OFTDateTime;
+        if ( mOgrDriverName == "ESRI Shapefile" )
+        {
+          ogrType = OFTString;
+          ogrWidth = 24; // "%04d/%02d/%02d %02d:%02d:%06.3f"
+        }
+        else
+        {
+          ogrType = OFTDateTime;
+        }
         break;
 
       default:
@@ -1794,14 +1802,21 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
                                 0, 0, 0, 0 );
         break;
       case QVariant::DateTime:
-        OGR_F_SetFieldDateTime( poFeature, ogrField,
-                                attrValue.toDateTime().date().year(),
-                                attrValue.toDateTime().date().month(),
-                                attrValue.toDateTime().date().day(),
-                                attrValue.toDateTime().time().hour(),
-                                attrValue.toDateTime().time().minute(),
-                                attrValue.toDateTime().time().second(),
-                                0 );
+        if ( mOgrDriverName == "ESRI Shapefile" )
+        {
+          OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toDateTime().toString( "yyyy/MM/dd hh:mm:ss.zzz" ) ).data() );
+        }
+        else
+        {
+          OGR_F_SetFieldDateTime( poFeature, ogrField,
+                                  attrValue.toDateTime().date().year(),
+                                  attrValue.toDateTime().date().month(),
+                                  attrValue.toDateTime().date().day(),
+                                  attrValue.toDateTime().time().hour(),
+                                  attrValue.toDateTime().time().minute(),
+                                  attrValue.toDateTime().time().second(),
+                                  0 );
+        }
         break;
       case QVariant::Time:
         if ( mOgrDriverName == "ESRI Shapefile" )
@@ -1839,8 +1854,8 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
       // build geometry from WKB
       QgsGeometry* geom = feature.geometry();
 
-      // turn single geoemetry to multi geometry if needed
-      if ( geom->geometry()->wkbType() != mWkbType &&
+      // turn single geometry to multi geometry if needed
+      if ( QgsWKBTypes::flatType( geom->geometry()->wkbType() ) != QgsWKBTypes::flatType( mWkbType ) &&
            QgsWKBTypes::flatType( geom->geometry()->wkbType() ) == QgsWKBTypes::flatType( QgsWKBTypes::singleType( mWkbType ) ) )
       {
         geom->convertToMultiType();

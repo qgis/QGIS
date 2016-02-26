@@ -69,6 +69,10 @@ void TestQgsMeasureTool::initTestCase()
 
   mQgisApp = new QgisApp();
   mCanvas = new QgsMapCanvas();
+
+  // enforce C locale because the tests expect it
+  // (decimal separators / thousand separators)
+  QLocale::setDefault( QLocale::c() );
 }
 
 //runs after all tests

@@ -85,9 +85,14 @@ class QgsSelectedFeature: public QObject
     /**
      * Inverts selection of vertex with number
      * @param vertexNr number of vertex which is to be inverted
-     * @param invert flag if vertex selection should be inverted or not
      */
     void invertVertexSelection( int vertexNr );
+
+    /**
+     * Inverts selection of a set of vertices at once.
+     * @param vertexIndices list of vertex indices to invert whether or not they are selected
+     */
+    void invertVertexSelection( QVector<int> vertexIndices );
 
     /**
      * Tells if vertex is selected

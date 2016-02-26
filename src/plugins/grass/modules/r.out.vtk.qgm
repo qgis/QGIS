@@ -12,5 +12,5 @@
 	<option key="z" version_min="7.0"/>
 	<option key="zscale" version_min="7.0"/>
 	<option key="precision" version_min="7.0"/>
-	<file key="output" type="new" filters="VTK (*.vtk)" />
+	<file key="output" type="new" filters="VTK (*.vtk *.VTK);;All files(*.*)" />
 </qgisgrassmodule>

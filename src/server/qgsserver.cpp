@@ -54,30 +54,48 @@
 #include <stdlib.h>
 
 
-// Static initialisers, default values for fcgi server
-QgsApplication* QgsServer::mQgsApplication = nullptr;
-bool QgsServer::mInitialised = false;
-QString QgsServer::mServerName( "qgis_server" );
-bool QgsServer::mCaptureOutput = false;
-char* QgsServer::mArgv[1];
-int QgsServer::mArgc = 1;
-QString QgsServer::mConfigFilePath;
-QgsMapRenderer* QgsServer::mMapRenderer = nullptr;
-QgsCapabilitiesCache* QgsServer::mCapabilitiesCache;
 
+// Server status static initialisers.
+// Default values are for C++, SIP bindings will override their
+// options in in init()
+
+QString* QgsServer::sConfigFilePath = nullptr;
+QgsCapabilitiesCache* QgsServer::sCapabilitiesCache = nullptr;
+QgsMapRenderer* QgsServer::sMapRenderer = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-bool QgsServer::mInitPython = true;
-QgsServerInterfaceImpl* QgsServer::mServerInterface = nullptr;
+QgsServerInterfaceImpl*QgsServer::sServerInterface = nullptr;
+bool QgsServer::sInitPython = true;
 #endif
+// Initialization must run once for all servers
+bool QgsServer::sInitialised =  false;
+char* QgsServer::sArgv[1];
+int QgsServer::sArgc;
+QgsApplication* QgsServer::sQgsApplication = nullptr;
+bool QgsServer::sCaptureOutput = false;
+
+
+
+QgsServer::QgsServer( int &argc, char **argv )
+{
+  init( argc, argv );
+}
 
 
 QgsServer::QgsServer()
 {
+  init();
 }
 
 
 QgsServer::~QgsServer()
 {
+}
+
+
+QString& QgsServer::serverName()
+{
+  static QString* name = new QString( "qgis_server" );
+  return *name;
 }
 
 
@@ -292,17 +310,18 @@ QString QgsServer::configPath( const QString& defaultConfigPath, const QMap<QStr
  */
 bool QgsServer::init()
 {
-  if ( mInitialised )
+  if ( sInitialised )
   {
     return false;
   }
-  mArgv[0] = mServerName.toUtf8().data();
-  mArgc = 1;
-  mCaptureOutput = true;
+
+  sArgv[0] = serverName().toUtf8().data();
+  sArgc = 1;
+  sCaptureOutput = true;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  mInitPython = false;
+  sInitPython = false;
 #endif
-  return init( mArgc , mArgv );
+  return init( sArgc , sArgv );
 }
 
 
@@ -311,7 +330,7 @@ bool QgsServer::init()
  */
 bool QgsServer::init( int & argc, char ** argv )
 {
-  if ( mInitialised )
+  if ( sInitialised )
   {
     return false;
   }
@@ -330,7 +349,7 @@ bool QgsServer::init( int & argc, char ** argv )
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionsPath );
   }
 
-  mQgsApplication = new QgsApplication( argc, argv, getenv( "DISPLAY" ), QString(), "server" );
+  sQgsApplication = new QgsApplication( argc, argv, getenv( "DISPLAY" ), QString(), "server" );
 
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
@@ -384,26 +403,25 @@ bool QgsServer::init( int & argc, char ** argv )
       defaultConfigFilePath = adminSLDFileInfo.absoluteFilePath();
     }
   }
-  if ( !defaultConfigFilePath.isEmpty() )
-  {
-    mConfigFilePath = defaultConfigFilePath;
-  }
+  // Store the config file path
+  sConfigFilePath = new QString( defaultConfigFilePath );
+
 
   //create cache for capabilities XML
-  mCapabilitiesCache = new QgsCapabilitiesCache();
-  mMapRenderer =  new QgsMapRenderer;
-  mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
+  sCapabilitiesCache = new QgsCapabilitiesCache();
+  sMapRenderer =  new QgsMapRenderer;
+  sMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
 #ifdef ENABLE_MS_TESTS
   QgsFontUtils::loadStandardTestFonts( QStringList() << "Roman" << "Bold" );
 #endif
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  mServerInterface = new QgsServerInterfaceImpl( mCapabilitiesCache );
-  if ( mInitPython )
+  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache );
+  if ( sInitPython )
   {
     // Init plugins
-    if ( ! QgsServerPlugins::initPlugins( mServerInterface ) )
+    if ( ! QgsServerPlugins::initPlugins( sServerInterface ) )
     {
       QgsMessageLog::logMessage( "No server python plugins are available", "Server", QgsMessageLog::INFO );
     }
@@ -415,7 +433,7 @@ bool QgsServer::init( int & argc, char ** argv )
 #endif
 
   QgsEditorWidgetRegistry::initEditors();
-  mInitialised = true;
+  sInitialised = true;
   QgsMessageLog::logMessage( "Server initialized", "Server", QgsMessageLog::INFO );
   return true;
 }
@@ -436,12 +454,6 @@ void QgsServer::putenv( const QString &var, const QString &val )
  */
 QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryString )
 {
-  // Run init if handleRequest was called without previously initialising
-  // the server
-  if ( ! mInitialised )
-  {
-    init();
-  }
 
   /*
    * This is mainly for python bindings, passing QUERY_STRING
@@ -453,7 +465,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   int logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
-  mQgsApplication->processEvents();
+  sQgsApplication->processEvents();
   if ( logLevel < 1 )
   {
     time.start();
@@ -461,7 +473,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   }
 
   //Request handler
-  QScopedPointer<QgsRequestHandler> theRequestHandler( createRequestHandler( mCaptureOutput ) );
+  QScopedPointer<QgsRequestHandler> theRequestHandler( createRequestHandler( sCaptureOutput ) );
 
   try
   {
@@ -476,10 +488,10 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   // Set the request handler into the interface for plugins to manipulate it
-  mServerInterface->setRequestHandler( theRequestHandler.data() );
+  sServerInterface->setRequestHandler( theRequestHandler.data() );
   // Iterate filters and call their requestReady() method
   QgsServerFiltersMap::const_iterator filtersIterator;
-  QgsServerFiltersMap filters = mServerInterface->filters();
+  QgsServerFiltersMap filters = sServerInterface->filters();
   for ( filtersIterator = filters.constBegin(); filtersIterator != filters.constEnd(); ++filtersIterator )
   {
     filtersIterator.value()->requestReady();
@@ -488,22 +500,22 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   //Pass the filters to the requestHandler, this is needed for the following reasons:
   // 1. allow core services to access plugin filters and implement thir own plugin hooks
   // 2. allow requestHandler to call sendResponse plugin hook
-  theRequestHandler->setPluginFilters( mServerInterface->filters() );
+  theRequestHandler->setPluginFilters( sServerInterface->filters() );
 #endif
 
   // Copy the parameters map
   QMap<QString, QString> parameterMap( theRequestHandler->parameterMap() );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   const QgsAccessControl* accessControl = nullptr;
-  accessControl = mServerInterface->accessControls();
+  accessControl = sServerInterface->accessControls();
 #endif
 
   printRequestParameters( parameterMap, logLevel );
   QMap<QString, QString>::const_iterator paramIt;
   //Config file path
-  QString configFilePath = configPath( mConfigFilePath, parameterMap );
+  QString configFilePath = configPath( *sConfigFilePath, parameterMap );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  mServerInterface->setConfigFilePath( configFilePath );
+  sServerInterface->setConfigFilePath( configFilePath );
 #endif
   //Service parameter
   QString serviceString = theRequestHandler->parameter( "SERVICE" );
@@ -539,7 +551,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
                                );
       if ( !p )
       {
-        theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", QString( "Error reading the project file: %1" ).arg( configFilePath ) ) );
+        theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
       }
       else
       {
@@ -565,7 +577,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
                                );
       if ( !p )
       {
-        theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", QString( "Error reading the project file: %1" ).arg( configFilePath ) ) );
+        theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
       }
       else
       {
@@ -600,8 +612,8 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
           , parameterMap
           , p
           , theRequestHandler.data()
-          , mMapRenderer
-          , mCapabilitiesCache
+          , sMapRenderer
+          , sCapabilitiesCache
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
           , accessControl
 #endif
@@ -617,14 +629,14 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   // Iterate filters and call their responseComplete() method
-  filters = mServerInterface->filters();
+  filters = sServerInterface->filters();
   for ( filtersIterator = filters.constBegin(); filtersIterator != filters.constEnd(); ++filtersIterator )
   {
     filtersIterator.value()->responseComplete();
   }
   // We are done using theRequestHandler in plugins, make sure we don't access
   // to a deleted request handler from Python bindings
-  mServerInterface->clearRequestHandler();
+  sServerInterface->clearRequestHandler();
 #endif
 
   theRequestHandler->sendResponse();

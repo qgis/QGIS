@@ -1030,7 +1030,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         # check value
         f = temp_layer.getFeatures().next()
         expected = 1009089817.0
-        self.assertAlmostEqual(f['area'], expected, 0)
+        self.assertAlmostEqual(f['area'], expected, delta=1.0)
 
         # change project area unit, check calculation respects unit
         QgsProject.instance().writeEntry("Measurement", "/AreaUnits", QgsUnitTypes.encodeUnit(QgsUnitTypes.SquareMiles))

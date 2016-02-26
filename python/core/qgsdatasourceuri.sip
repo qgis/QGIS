@@ -14,7 +14,7 @@ class QgsDataSourceURI
 %End
 
   public:
-    enum SSLmode { SSLprefer, SSLdisable, SSLallow, SSLrequire };
+    enum SSLmode { SSLprefer, SSLdisable, SSLallow, SSLrequire, SSLverifyCA };
 
     //! default constructor
     QgsDataSourceURI();

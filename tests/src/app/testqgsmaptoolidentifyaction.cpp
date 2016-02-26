@@ -55,6 +55,10 @@ void TestQgsMapToolIdentifyAction::initTestCase()
   QCoreApplication::setApplicationName( "QGIS-TEST" );
 
   QgsApplication::showSettings();
+
+  // enforce C locale because the tests expect it
+  // (decimal separators / thousand separators)
+  QLocale::setDefault( QLocale::c() );
 }
 
 void TestQgsMapToolIdentifyAction::cleanupTestCase()

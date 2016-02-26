@@ -43,6 +43,7 @@ QgsHttpRequestHandler::QgsHttpRequestHandler( const bool captureOutput )
 
 QgsHttpRequestHandler::~QgsHttpRequestHandler()
 {
+  delete mException;
 }
 
 void QgsHttpRequestHandler::setHttpResponse( QByteArray *ba, const QString &format )
@@ -76,7 +77,7 @@ void QgsHttpRequestHandler::setDefaultHeaders()
 {
   //format
   QString format = mInfoFormat;
-  if ( mInfoFormat.startsWith( "text/" ) )
+  if ( mInfoFormat.startsWith( "text/" ) || mInfoFormat.startsWith( "application/vnd.ogc.gml" ) )
   {
     format.append( "; charset=utf-8" );
   }
@@ -446,7 +447,7 @@ void QgsHttpRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoD
   }
   else //unsupported format, set exception
   {
-    setServiceException( QgsMapServiceException( "InvalidFormat", "Feature info format '" + mFormat + "' is not supported. Possibilities are 'text/plain', 'text/html' or 'text/xml'." ) );
+    setServiceException( QgsMapServiceException( "InvalidFormat", "Feature info format '" + infoFormat + "' is not supported. Possibilities are 'text/plain', 'text/html' or 'text/xml'." ) );
     return;
   }
 
@@ -455,7 +456,9 @@ void QgsHttpRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoD
 
 void QgsHttpRequestHandler::setServiceException( QgsMapServiceException ex )
 {
-  mException = &ex;
+  // Safety measure to avoid potential leaks if called repeatedly
+  delete mException;
+  mException = new QgsMapServiceException( ex );
   //create Exception DOM document
   QDomDocument exceptionDoc;
   QDomElement serviceExceptionReportElem = exceptionDoc.createElement( "ServiceExceptionReport" );

@@ -84,6 +84,12 @@ class QgsNodeEditor : public QDockWidget
     QTableView* mTableView;
     QgsNodeEditorModel* mNodeModel;
 
+  signals:
+    void deleteSelectedRequested( );
+
+  protected:
+    void keyPressEvent( QKeyEvent * event );
+
   private slots:
     void updateTableSelection();
     void updateNodeSelection( const QItemSelection& selected, const QItemSelection& deselected );

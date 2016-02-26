@@ -222,7 +222,7 @@ void QgsSizeScaleWidget::showEvent( QShowEvent* )
 QgsScaleExpression *QgsSizeScaleWidget::createExpression() const
 {
   return new QgsScaleExpression( QgsScaleExpression::Type( scaleMethodComboBox->itemData( scaleMethodComboBox->currentIndex() ).toInt() ),
-                                 mExpressionWidget->currentField(),
+                                 mExpressionWidget->asExpression(),
                                  minValueSpinBox->value(),
                                  maxValueSpinBox->value(),
                                  minSizeSpinBox->value(),

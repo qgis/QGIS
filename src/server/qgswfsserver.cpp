@@ -422,6 +422,11 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
   QDomDocument doc;
   QString errorMsg;
+
+  //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
+  //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
+  QScopedPointer< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer() );
+
   if ( doc.setContent( mParameters.value( "REQUEST_BODY" ), true, &errorMsg ) )
   {
     QDomElement docElem = doc.documentElement();
@@ -467,9 +472,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         {
           throw QgsMapServiceException( "Security", "Feature access permission denied" );
         }
-
-        QMap<QString, QString> originalLayerFilters;
-        applyAccessControlLayerFilters( currentLayer, originalLayerFilters );
+        applyAccessControlLayerFilters( currentLayer, filterRestorer->originalFilters() );
 #endif
 
         expressionContext << QgsExpressionContextUtils::layerScope( layer );
@@ -688,10 +691,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             ++featureCounter;
           }
         }
-
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-        restoreLayerFilters( originalLayerFilters );
-#endif
       }
       else
       {
@@ -699,6 +698,9 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
 
     }
+
+    //force restoration of original layer filters
+    filterRestorer.reset();
 
     QgsMessageLog::logMessage( mErrors.join( "\n" ) );
 

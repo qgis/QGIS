@@ -16,7 +16,6 @@
 
 #include "qgsunittypes.h"
 #include <QCoreApplication>
-#include <QLocale>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -938,7 +937,7 @@ QString QgsUnitTypes::formatAngle( double angle, int decimals, QgsUnitTypes::Ang
       break;
   }
 
-  return QLocale::system().toString( angle, 'f', decimals ) + unitLabel;
+  return QString( "%L1%2" ).arg( angle, 0, 'f', decimals ).arg( unitLabel );
 }
 
 // enable for QGIS 3.0

@@ -69,7 +69,7 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
   protected:
     /** Converts a map point to layer coordinates
      * @param mapPoint the point in map coordinates
-     * @param[inout] layerPoint the point in layer coordinates
+     * @param[in,out] layerPoint the point in layer coordinates
      * @return
      *  0 in case of success
      *  1 if the current layer is null or not a vector layer
@@ -80,7 +80,7 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     /** Converts a map point to layer coordinates
      *  @param mapPoint the point in map coordinates
-     *  @param[inout] layerPoint the point in layer coordinates
+     *  @param[in,out] layerPoint the point in layer coordinates
      *  @return
      *   0 in case of success
      *   1 if the current layer is null or not a vector layer
@@ -90,8 +90,8 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     /** Converts a point to map coordinates and layer coordinates
      * @param p the input point
-     * @param[inout] layerPoint the point in layer coordinates
-     * @param[inout] mapPoint the point in map coordinates
+     * @param[in,out] layerPoint the point in layer coordinates
+     * @param[in,out] mapPoint the point in map coordinates
      * @return
      *  0 in case of success
      *  1 if the current layer is null or not a vector layer
@@ -102,8 +102,8 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     /** Converts a point to map coordinates and layer coordinates
      * @param p the input point
-     * @param[inout] layerPoint the point in layer coordinates
-     * @param[inout] mapPoint the point in map coordinates
+     * @param[in,out] layerPoint the point in layer coordinates
+     * @param[in,out] mapPoint the point in map coordinates
      * @return
      *  0 in case of success
      *  1 if the current layer is null or not a vector layer

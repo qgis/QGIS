@@ -38,7 +38,7 @@ void QgsAccessControl::filterFeatures( const QgsVectorLayer* layer, QgsFeatureRe
   }
   if ( !expressions.isEmpty() )
   {
-    featureRequest.setFilterExpression( expressions.join( " AND " ) );
+    featureRequest.setFilterExpression( QString( "((" ).append( expressions.join( ") AND (" ) ).append( "))" ) );
   }
 }
 
@@ -51,7 +51,7 @@ QgsFeatureFilterProvider* QgsAccessControl::clone() const
 /** Return an additional subset string (typically SQL) filter */
 QString QgsAccessControl::extraSubsetString( const QgsVectorLayer* layer ) const
 {
-  QStringList sqls = QStringList();
+  QStringList sqls;
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
@@ -61,7 +61,7 @@ QString QgsAccessControl::extraSubsetString( const QgsVectorLayer* layer ) const
       sqls.append( sql );
     }
   }
-  return sqls.isEmpty() ? QString::null : sqls.join( " AND " );
+  return sqls.isEmpty() ? QString() : QString( "((" ).append( sqls.join( ") AND (" ) ).append( "))" );
 }
 
 /** Return the layer read right */

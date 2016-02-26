@@ -267,7 +267,7 @@ void QgsWMSServer::executeRequest()
       return;
     }
 
-    QString infoFormat = mParameters.value( "INFO_FORMAT" );
+    QString infoFormat = mParameters.value( "INFO_FORMAT",  "text/plain" );
     mRequestHandler->setGetFeatureInfoResponse( featureInfoDoc, infoFormat );
   }
   //GetContext
@@ -1239,15 +1239,12 @@ QDomDocument QgsWMSServer::describeLayer()
 QByteArray* QgsWMSServer::getPrint( const QString& formatString )
 {
   QStringList layersList, stylesList, layerIdList;
-  QString dummyFormat;
   QImage* theImage = initializeRendering( layersList, stylesList, layerIdList );
   if ( !theImage )
   {
     return nullptr;
   }
   delete theImage;
-
-  QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
@@ -1257,8 +1254,16 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
       throw QgsMapServiceException( "Security", "You are not allowed to access to the layer: " + layer->name() );
     }
   }
+#endif
 
-  applyAccessControlLayersFilters( layersList, originalLayerFilters );
+  //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
+  //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
+  QScopedPointer< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer() );
+
+  applyRequestedLayerFilters( layersList, filterRestorer->originalFilters() );
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  applyAccessControlLayersFilters( layersList, filterRestorer->originalFilters() );
 #endif
 
   QStringList selectedLayerIdList = applyFeatureSelections( layersList );
@@ -1266,6 +1271,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   //GetPrint request needs a template parameter
   if ( !mParameters.contains( "TEMPLATE" ) )
   {
+    clearFeatureSelections( selectedLayerIdList );
     throw QgsMapServiceException( "ParameterMissing", "The TEMPLATE parameter is required for the GetPrint request" );
   }
 
@@ -1280,7 +1286,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   QgsComposition* c = mConfigParser->createPrintComposition( mParameters[ "TEMPLATE" ], mMapRenderer, QMap<QString, QString>( mParameters ) );
   if ( !c )
   {
-    restoreLayerFilters( originalLayerFilters );
+    restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
     clearFeatureSelections( selectedLayerIdList );
     return nullptr;
   }
@@ -1329,7 +1335,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
     if ( !tempFile.open() )
     {
       delete c;
-      restoreLayerFilters( originalLayerFilters );
+      restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
       clearFeatureSelections( selectedLayerIdList );
       return nullptr;
     }
@@ -1340,11 +1346,12 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   }
   else //unknown format
   {
+    restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
+    clearFeatureSelections( selectedLayerIdList );
     throw QgsMapServiceException( "InvalidFormat", "Output format '" + formatString + "' is not supported in the GetPrint request" );
   }
 
   restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
-  restoreLayerFilters( originalLayerFilters );
   clearFeatureSelections( selectedLayerIdList );
 
   delete c;
@@ -1381,8 +1388,6 @@ QImage* QgsWMSServer::getMap( HitTest* hitTest )
   QPainter thePainter( theImage );
   thePainter.setRenderHint( QPainter::Antialiasing ); //make it look nicer
 
-  QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
-
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
@@ -1391,8 +1396,16 @@ QImage* QgsWMSServer::getMap( HitTest* hitTest )
       throw QgsMapServiceException( "Security", "You are not allowed to access to the layer: " + layer->name() );
     }
   }
+#endif
 
-  applyAccessControlLayersFilters( layersList, originalLayerFilters );
+  //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
+  //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
+  QScopedPointer< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer() );
+
+  applyRequestedLayerFilters( layersList, filterRestorer->originalFilters() );
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  applyAccessControlLayersFilters( layersList, filterRestorer->originalFilters() );
 #endif
 
   QStringList selectedLayerIdList = applyFeatureSelections( layersList );
@@ -1418,7 +1431,6 @@ QImage* QgsWMSServer::getMap( HitTest* hitTest )
   }
 
   restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
-  restoreLayerFilters( originalLayerFilters );
   clearFeatureSelections( selectedLayerIdList );
 
   // QgsMessageLog::logMessage( "clearing filters" );
@@ -1617,10 +1629,15 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
   }
 
   //get the layer registered in QgsMapLayerRegistry and apply possible filters
-  QStringList layerIds = layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
-  QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
+  ( void )layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
+
+  //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
+  //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
+  QScopedPointer< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer() );
+  applyRequestedLayerFilters( layersList, filterRestorer->originalFilters() );
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  applyAccessControlLayersFilters( layersList, originalLayerFilters );
+  applyAccessControlLayersFilters( layersList, filterRestorer->originalFilters() );
 #endif
 
   QDomElement getFeatureInfoElement;
@@ -1822,7 +1839,9 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
     convertFeatureInfoToSIA2045( result );
   }
 
-  restoreLayerFilters( originalLayerFilters );
+  //force restoration of original filters
+  filterRestorer.reset();
+
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
   delete featuresRect;
   return 0;
@@ -2171,20 +2190,13 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   bool hasGeometry = addWktGeometry || featureBBox;
   fReq.setFlags((( hasGeometry ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect );
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-  mAccessControl->filterFeatures( layer, fReq );
   if ( ! searchRect.isEmpty() )
   {
-    if ( fReq.filterExpression() )
-    {
-      fReq.setFilterExpression( QString( "intersects( $geometry , geomFromWKT( '%1' ) ) AND ( %2 )" ).
-                                arg( searchRect.asWktPolygon(), fReq.filterExpression()->expression() ) );
-    }
-    else
-    {
-      fReq.setFilterRect( searchRect );
-    }
+    fReq.setFilterRect( searchRect );
   }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  mAccessControl->filterFeatures( layer, fReq );
 
   QStringList attributes;
   QgsField field;
@@ -2194,11 +2206,6 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   }
   attributes = mAccessControl->layerAttributes( layer, attributes );
   fReq.setSubsetOfAttributes( attributes, layer->pendingFields() );
-#else
-  if ( ! searchRect.isEmpty() )
-  {
-    fReq.setFilterRect( searchRect );
-  }
 #endif
 
   QgsFeatureIterator fit = layer->getFeatures( fReq );
@@ -2498,13 +2505,11 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
 }
 
 
-QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringList& layerList ) const
+void QgsWMSServer::applyRequestedLayerFilters( const QStringList& layerList , QHash<QgsMapLayer*, QString>& originalFilters ) const
 {
-  QMap<QString, QString> filterMap;
-
   if ( layerList.isEmpty() )
   {
-    return filterMap;
+    return;
   }
 
   QString filterParameter = mParameters.value( "FILTER" );
@@ -2551,7 +2556,7 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
         QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( filter );
         if ( filteredLayer )
         {
-          filterMap.insert( filteredLayer->id(), filteredLayer->subsetString() );
+          originalFilters.insert( filteredLayer, filteredLayer->subsetString() );
           QString newSubsetString = eqSplit.at( 1 );
           if ( !filteredLayer->subsetString().isEmpty() )
           {
@@ -2568,10 +2573,10 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
     if ( mMapRenderer && mMapRenderer->extent().isEmpty() )
     {
       QgsRectangle filterExtent;
-      QMap<QString, QString>::const_iterator filterIt = filterMap.constBegin();
-      for ( ; filterIt != filterMap.constEnd(); ++filterIt )
+      QHash<QgsMapLayer*, QString>::const_iterator filterIt = originalFilters.constBegin();
+      for ( ; filterIt != originalFilters.constEnd(); ++filterIt )
       {
-        QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( filterIt.key() );
+        QgsMapLayer* mapLayer = filterIt.key();
         if ( !mapLayer )
         {
           continue;
@@ -2590,11 +2595,10 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
       mMapRenderer->setExtent( filterExtent );
     }
   }
-  return filterMap;
 }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-void QgsWMSServer::applyAccessControlLayersFilters( const QStringList& layerList, QMap<QString, QString>& originalLayerFilters ) const
+void QgsWMSServer::applyAccessControlLayersFilters( const QStringList& layerList, QHash<QgsMapLayer*, QString>& originalLayerFilters ) const
 {
   Q_FOREACH ( const QString& layerName, layerList )
   {

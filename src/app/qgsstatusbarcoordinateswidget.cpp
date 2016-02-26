@@ -43,7 +43,7 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   mLabel->setMargin( 3 );
   mLabel->setAlignment( Qt::AlignCenter );
   mLabel->setFrameStyle( QFrame::NoFrame );
-  mLabel->setText( tr( "Coordinate:" ) );
+  mLabel->setText( tr( "Coordinate" ) );
   mLabel->setToolTip( tr( "Current map coordinate" ) );
 
   mLineEdit = new QLineEdit( this );

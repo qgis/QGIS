@@ -312,7 +312,7 @@ QList<QAction*> QgsSLRootItem::actions()
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 
-  QAction* actionCreateDatabase = new QAction( tr( "Create database..." ), this );
+  QAction* actionCreateDatabase = new QAction( tr( "Create Database..." ), this );
   connect( actionCreateDatabase, SIGNAL( triggered() ), this, SLOT( createDatabase() ) );
   lst.append( actionCreateDatabase );
 

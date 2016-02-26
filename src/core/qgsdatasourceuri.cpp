@@ -203,6 +203,10 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
           mSSLmode = SSLprefer;
         else if ( pval == "require" )
           mSSLmode = SSLrequire;
+        else if ( pval == "verify-ca" )
+          mSSLmode = SSLverifyCA;
+        else if ( pval == "verify-full" )
+          mSSLmode = SSLverifyFull;
       }
       else if ( pname == "requiressl" )
       {
@@ -513,9 +517,13 @@ QString QgsDataSourceURI::connectionInfo( bool expandAuthConfig ) const
   else if ( mSSLmode == SSLrequire )
     connectionItems << "sslmode=require";
 #if 0
-  else if ( mSSLmode == SSLprefer )
+  else if ( mSSLmode == SSLprefer ) // no need to output the default
     connectionItems << "sslmode=prefer";
 #endif
+  else if ( mSSLmode == SSLverifyCA )
+    connectionItems << "sslmode=verify-ca";
+  else if ( mSSLmode == SSLverifyFull )
+    connectionItems << "sslmode=verify-full";
 
   if ( !mAuthConfigId.isEmpty() )
   {

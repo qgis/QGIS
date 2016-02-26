@@ -825,7 +825,9 @@ QgsRectangle QgsVectorLayer::extent()
     return rect;
   }
 
-  if ( !mEditBuffer || ( mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mChangedGeometries.isEmpty() ) )
+  if ( !mEditBuffer ||
+       ( mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mChangedGeometries.isEmpty() ) ||
+       QgsDataSourceURI( mDataProvider->dataSourceUri() ).useEstimatedMetadata() )
   {
     mDataProvider->updateExtents();
 
@@ -2308,6 +2310,10 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
     return false;
   }
 
+  bool rollbackExtent = !mEditBuffer->mDeletedFeatureIds.isEmpty() ||
+                        !mEditBuffer->mAddedFeatures.isEmpty() ||
+                        !mEditBuffer->mChangedGeometries.isEmpty();
+
   emit beforeRollBack();
 
   mEditBuffer->rollBack();
@@ -2333,6 +2339,9 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
   {
     mCache->deleteCachedGeometries();
   }
+
+  if ( rollbackExtent )
+    updateExtents();
 
   emit repaintRequested();
   return true;
@@ -3539,7 +3548,7 @@ QString QgsVectorLayer::metadata()
   myMetadata += QString::number( featureCount() );
   myMetadata += "</p>\n";
   //capabilities
-  myMetadata += "<p class=\"glossy\">" + tr( "Editing capabilities of this layer" ) + "</p>\n";
+  myMetadata += "<p class=\"glossy\">" + tr( "Capabilities of this layer" ) + "</p>\n";
   myMetadata += "<p>";
   myMetadata += capabilitiesString();
   myMetadata += "</p>\n";

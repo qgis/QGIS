@@ -81,6 +81,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
 
+  mCoordinateDisplayComboBox->addItem( tr( "Map units" ), MapUnits );
   mCoordinateDisplayComboBox->addItem( tr( "Decimal degrees" ), DecimalDegrees );
   mCoordinateDisplayComboBox->addItem( tr( "Degrees, minutes" ), DegreesMinutes );
   mCoordinateDisplayComboBox->addItem( tr( "Degrees, minutes, seconds" ), DegreesMinutesSeconds );
@@ -166,7 +167,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   populateEllipsoidList();
 
   QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "MU" );
-  if ( format == "MU" && mCoordinateDisplayComboBox->findData( MapUnits ) >= 0 )
+  if ( format == "MU" )
     mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( MapUnits ) );
   else if ( format == "DM" )
     mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( DegreesMinutes ) );
@@ -1240,28 +1241,10 @@ void QgsProjectProperties::cbxWCSPubliedStateChanged( int aIdx )
 
 void QgsProjectProperties::updateGuiForMapUnits( QGis::UnitType units )
 {
+  //make sure map units option is shown in coordinate display combo
   int idx = mCoordinateDisplayComboBox->findData( MapUnits );
-  if ( units == QGis::Degrees )
-  {
-    //remove map units option from coordinate display combo
-    if ( idx >= 0 )
-    {
-      mCoordinateDisplayComboBox->removeItem( idx );
-    }
-  }
-  else
-  {
-    //make sure map units option is shown in coordinate display combo
-    QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( units ) );
-    if ( idx < 0 )
-    {
-      mCoordinateDisplayComboBox->insertItem( 0, mapUnitString, MapUnits );
-    }
-    else
-    {
-      mCoordinateDisplayComboBox->setItemText( idx, mapUnitString );
-    }
-  }
+  QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( units ) );
+  mCoordinateDisplayComboBox->setItemText( idx, mapUnitString );
 
   //also update unit combo boxes
   idx = mDistanceUnitsCombo->findData( QGis::UnknownUnit );

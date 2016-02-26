@@ -28,6 +28,7 @@ __revision__ = ':%H$'
 import os
 import sys
 import difflib
+import functools
 
 from PyQt4.QtCore import QVariant
 from qgis.core import QgsApplication, QgsFeatureRequest, QgsVectorLayer
@@ -154,8 +155,71 @@ class TestCase(_TestCase):
                 self.assertEqual(0, len(diff), ''.join(diff))
 
 
+class _UnexpectedSuccess(Exception):
+    """
+    The test was supposed to fail, but it didn't!
+    """
+    pass
+
+
+def expectedFailure(*args):
+    """
+    Will decorate a unittest function as an expectedFailure. A function
+    flagged as expectedFailure will be succeed if it raises an exception.
+    If it does not raise an exception, this will throw an
+    `_UnexpectedSuccess` exception.
+
+        @expectedFailure
+        def my_test(self):
+            self.assertTrue(False)
+
+    The decorator also accepts a parameter to only expect a failure under
+    certain conditions.
+
+        @expectedFailure(time.localtime().tm_year < 2002)
+        def my_test(self):
+            self.assertTrue(qgisIsInvented())
+    """
+    if hasattr(args[0], '__call__'):
+        # We got a function as parameter: assume usage like
+        #   @expectedFailure
+        #   def testfunction():
+        func = args[0]
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                func(*args, **kwargs)
+            except Exception:
+                pass
+            else:
+                raise _UnexpectedSuccess
+        return wrapper
+    else:
+        # We got a function as parameter: assume usage like
+        #   @expectedFailure(failsOnThisPlatform)
+        #   def testfunction():
+        condition = args[0]
+
+        def realExpectedFailure(func):
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                if condition:
+                    try:
+                        func(*args, **kwargs)
+                    except Exception:
+                        pass
+                    else:
+                        raise _UnexpectedSuccess
+                else:
+                    func(*args, **kwargs)
+            return wrapper
+
+        return realExpectedFailure
+
 # Patch unittest
 unittest.TestCase = TestCase
+unittest.expectedFailure = expectedFailure
 
 
 def start_app():

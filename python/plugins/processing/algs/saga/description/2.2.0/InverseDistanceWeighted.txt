@@ -12,6 +12,8 @@ ParameterSelection|SEARCH_POINTS_ALL|Search Range|[0] maximum number of nearest 
 ParameterNumber|SEARCH_POINTS_MIN|Minimum|-1|None|-1
 ParameterNumber|SEARCH_POINTS_MAX|Maximum|1|20|1
 ParameterSelection|SEARCH_DIRECTION|Search Mode|[0] all directions;[1] quadrants
+ParameterSelection|SEARCH_POINTS_ALL|Number of Points|[0] maximum number of nearest points;[1] all points
+ParameterNumber|SEARCH_POINTS_MAX|Maximum Number of Points|None|None|10
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
 ParameterNumber|TARGET_USER_SIZE|Cellsize|None|None|100.0
 ParameterSelection|TARGET_DEFINITION|Target Grid System|[0] user defined;[1] grid or grid system

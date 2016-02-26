@@ -123,7 +123,6 @@ class TestPyQgsAppStartup(unittest.TestCase):
                                       testFile="qgis.db",
                                       timeOut=270), "config path %s" % p
 
-    @unittest.expectedFailure
     def testPluginPath(self):
         for t in ['test_plugins', 'test plugins', u'test_pluginsé€']:
 

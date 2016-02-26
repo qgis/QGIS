@@ -334,7 +334,6 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         QgsMapLayerRegistry.instance().removeMapLayer(l.id())
 
     def test_no_geometry(self):
-        source = QUrl.toPercentEncoding(os.path.join(self.testDataDir, "france_parts.shp"))
         df = QgsVirtualLayerDefinition()
         df.addSource("vtab", os.path.join(self.testDataDir, "france_parts.shp"), "ogr")
         df.setGeometryWkbType(QgsWKBTypes.NoGeometry)
@@ -509,10 +508,11 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         QgsMapLayerRegistry.instance().addMapLayer(l2)
 
         # unnamed column
-        query = QUrl.toPercentEncoding("SELECT 42")
+        query = QUrl.toPercentEncoding("SELECT count(*)")
         l4 = QgsVectorLayer("?query=%s" % query, "tt", "virtual", False)
-        self.assertEqual(l4.isValid(), False)
-        self.assertEqual("Result column #1 has no name" in l4.dataProvider().error().message(), True)
+        self.assertEqual(l4.isValid(), True)
+        self.assertEqual(l4.dataProvider().fields().at(0).name(), "count(*)")
+        self.assertEqual(l4.dataProvider().fields().at(0).type(), QVariant.Int)
 
     def test_sql_field_types(self):
         query = QUrl.toPercentEncoding("SELECT 42 as t, 'ok'||'ok' as t2, GeomFromText('') as t3, 3.14*2 as t4")
@@ -719,6 +719,24 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
         for f in l.getFeatures():
             self.assertEqual(f.attributes(), ['hello world', 2016, u'This', u'project'])
+
+    def test_query_with_accents(self):
+        # shapefile with accents and latin1 encoding
+        df = QgsVirtualLayerDefinition()
+        df.addSource("vtab", os.path.join(self.testDataDir, "france_parts.shp"), "ogr", "ISO-8859-1")
+        df.setQuery(u"SELECT * FROM vtab WHERE TYPE_1 = 'Région'")
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual(vl.isValid(), True)
+        ids = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(len(ids), 4)
+
+        # the same shapefile with a wrong encoding
+        df.addSource("vtab", os.path.join(self.testDataDir, "france_parts.shp"), "ogr", "UTF-8")
+        df.setQuery(u"SELECT * FROM vtab WHERE TYPE_1 = 'Région'")
+        vl2 = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual(vl2.isValid(), True)
+        ids = [f.id() for f in vl2.getFeatures()]
+        self.assertEqual(ids, [])
 
 
 if __name__ == '__main__':

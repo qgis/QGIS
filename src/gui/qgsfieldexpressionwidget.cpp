@@ -103,6 +103,11 @@ QString QgsFieldExpressionWidget::currentText() const
   return mCombo->currentText();
 }
 
+QString QgsFieldExpressionWidget::asExpression() const
+{
+  return isExpression() ? currentText() : QgsExpression::quotedColumnRef( currentText() );
+}
+
 bool QgsFieldExpressionWidget::isValidExpression( QString *expressionError ) const
 {
   QString temp;

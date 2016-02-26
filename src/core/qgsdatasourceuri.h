@@ -35,7 +35,7 @@
 class CORE_EXPORT QgsDataSourceURI
 {
   public:
-    enum SSLmode { SSLprefer, SSLdisable, SSLallow, SSLrequire };
+    enum SSLmode { SSLprefer, SSLdisable, SSLallow, SSLrequire, SSLverifyCA, SSLverifyFull };
 
     //! default constructor
     QgsDataSourceURI();

@@ -20,6 +20,11 @@ from qgis.core import (
     QGis,
     QgsSymbolV2
 )
+from PyQt4.QtCore import QLocale
+
+# enforce C locale because the tests expect it
+# (decimal separators / thousand separators)
+QLocale.setDefault(QLocale.c())
 
 
 class TestQgsUnitTypes(unittest.TestCase):

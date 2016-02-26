@@ -297,9 +297,9 @@ class Editor(QsciScintilla):
         iconFind = QgsApplication.getThemeIcon("console/iconSearchEditorConsole.png")
         iconSyntaxCk = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
         iconObjInsp = QgsApplication.getThemeIcon("console/iconClassBrowserConsole.png")
-        iconCut = QgsApplication.getThemeIcon("console/iconCutEditorConsole.png")
-        iconCopy = QgsApplication.getThemeIcon("console/iconCopyEditorConsole.png")
-        iconPaste = QgsApplication.getThemeIcon("console/iconPasteEditorConsole.png")
+        iconCut = QgsApplication.getThemeIcon("mActionEditCut.png")
+        iconCopy = QgsApplication.getThemeIcon("mActionEditCopy.png")
+        iconPaste = QgsApplication.getThemeIcon("mActionEditPaste.png")
         menu.addAction(
             QCoreApplication.translate("PythonConsole", "Hide Editor"),
             self.hideEditor)
@@ -307,9 +307,8 @@ class Editor(QsciScintilla):
         syntaxCheck = menu.addAction(iconSyntaxCk,
                                      QCoreApplication.translate("PythonConsole", "Check Syntax"),
                                      self.syntaxCheck, 'Ctrl+4')
-        menu.addSeparator()
         runSelected = menu.addAction(iconRun,
-                                     QCoreApplication.translate("PythonConsole", "Run selected"),
+                                     QCoreApplication.translate("PythonConsole", "Run Selected"),
                                      self.runSelectedCode, 'Ctrl+E')
         menu.addAction(iconRunScript,
                        QCoreApplication.translate("PythonConsole", "Run Script"),
@@ -325,7 +324,6 @@ class Editor(QsciScintilla):
         menu.addAction(iconFind,
                        QCoreApplication.translate("PythonConsole", "Find Text"),
                        self.showFindWidget)
-        menu.addSeparator()
         cutAction = menu.addAction(iconCut,
                                    QCoreApplication.translate("PythonConsole", "Cut"),
                                    self.cut, QKeySequence.Cut)
@@ -335,6 +333,9 @@ class Editor(QsciScintilla):
         pasteAction = menu.addAction(iconPaste,
                                      QCoreApplication.translate("PythonConsole", "Paste"),
                                      self.paste, QKeySequence.Paste)
+        selectAllAction = menu.addAction(
+            QCoreApplication.translate("PythonConsole", "Select All"),
+            self.selectAll, QKeySequence.SelectAll)
         menu.addSeparator()
         menu.addAction(iconCommentEditor,
                        QCoreApplication.translate("PythonConsole", "Comment"),
@@ -344,19 +345,14 @@ class Editor(QsciScintilla):
                        self.parent.pc.uncommentCode, 'Shift+Ctrl+3')
         menu.addSeparator()
         codePadAction = menu.addAction(iconCodePad,
-                                       QCoreApplication.translate("PythonConsole", "Share on codepad"),
+                                       QCoreApplication.translate("PythonConsole", "Share on Codepad"),
                                        self.codepad)
-        menu.addSeparator()
         showCodeInspection = menu.addAction(iconObjInsp,
                                             QCoreApplication.translate("PythonConsole", "Hide/Show Object Inspector"),
                                             self.objectListEditor)
         menu.addSeparator()
-        selectAllAction = menu.addAction(
-            QCoreApplication.translate("PythonConsole", "Select All"),
-            self.selectAll, QKeySequence.SelectAll)
-        menu.addSeparator()
         menu.addAction(iconSettings,
-                       QCoreApplication.translate("PythonConsole", "Settings"),
+                       QCoreApplication.translate("PythonConsole", "Options..."),
                        self.parent.pc.openSettings)
         syntaxCheck.setEnabled(False)
         pasteAction.setEnabled(False)

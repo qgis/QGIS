@@ -37,10 +37,10 @@ class SERVER_EXPORT QgsServerPlugins
      * @return bool true on success
      */
     static bool initPlugins( QgsServerInterface* interface );
-    //! Pointer to QgsPythonUtils
-    static QgsPythonUtils* mPythonUtils;
     //! List of available server plugin names
-    static QStringList mServerPlugins;
+    static QStringList& serverPlugins();
+    //! Pointer to QgsPythonUtils
+    static QgsPythonUtils* sPythonUtils;
 };
 
 #endif // QGSSERVERPLUGINS_H

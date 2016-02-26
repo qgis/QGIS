@@ -387,16 +387,16 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     if ( item->parent() && !inFavDirs )
     {
       // only non-root directories can be added as favourites
-      menu->addAction( tr( "Add as a favourite" ), this, SLOT( addFavourite() ) );
+      menu->addAction( tr( "Add as a Favourite" ), this, SLOT( addFavourite() ) );
     }
     else if ( inFavDirs )
     {
       // only favourites can be removed
-      menu->addAction( tr( "Remove favourite" ), this, SLOT( removeFavourite() ) );
+      menu->addAction( tr( "Remove Favourite" ), this, SLOT( removeFavourite() ) );
     }
-    menu->addAction( tr( "Properties" ), this, SLOT( showProperties() ) );
-    menu->addAction( tr( "Hide from browser" ), this, SLOT( hideItem() ) );
-    QAction *action = menu->addAction( tr( "Fast scan this dir." ), this, SLOT( toggleFastScan() ) );
+    menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
+    menu->addAction( tr( "Hide from Browser" ), this, SLOT( hideItem() ) );
+    QAction *action = menu->addAction( tr( "Fast Scan this Directory" ), this, SLOT( toggleFastScan() ) );
     action->setCheckable( true );
     action->setChecked( settings.value( "/qgis/scanItemsFastScanUris",
                                         QStringList() ).toStringList().contains( item->path() ) );
@@ -405,11 +405,11 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   {
     menu->addAction( tr( "Add Layer" ), this, SLOT( addCurrentLayer() ) );
     menu->addAction( tr( "Add Selected Layers" ), this, SLOT( addSelectedLayers() ) );
-    menu->addAction( tr( "Properties" ), this, SLOT( showProperties() ) );
+    menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
   }
   else if ( item->type() == QgsDataItem::Favourites )
   {
-    menu->addAction( tr( "Add a directory" ), this, SLOT( addFavouriteDirectory() ) );
+    menu->addAction( tr( "Add a Directory..." ), this, SLOT( addFavouriteDirectory() ) );
 
   }
 

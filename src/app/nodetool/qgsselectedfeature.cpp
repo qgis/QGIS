@@ -482,6 +482,19 @@ void QgsSelectedFeature::invertVertexSelection( int vertexNr )
   emit selectionChanged();
 }
 
+void QgsSelectedFeature::invertVertexSelection( QVector<int> vertexIndices )
+{
+  Q_FOREACH ( int index, vertexIndices )
+  {
+    if ( index < 0 || index >= mVertexMap.size() )
+      continue;
+
+    QgsVertexEntry *entry = mVertexMap.at( index );
+    entry->setSelected( !entry->isSelected() );
+  }
+  emit selectionChanged();
+}
+
 void QgsSelectedFeature::updateVertexMarkersPosition()
 {
   Q_FOREACH ( QgsVertexEntry* vertexEntry, mVertexMap )

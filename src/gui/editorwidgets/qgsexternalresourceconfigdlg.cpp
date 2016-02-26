@@ -31,7 +31,10 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer* vl, 
   mUseLink->setChecked( false );
   mFullUrl->setChecked( false );
   mDocumentViewerGroupBox->setChecked( false );
-  mRootPath->setPlaceholderText( QSettings().value( "/UI/lastExternalResourceWidgetDefaultPath", QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) ) ).toString() );
+
+  QString defpath = QgsProject::instance()->fileName().isEmpty() ? QDir::homePath() : QgsProject::instance()->fileInfo().absolutePath();
+
+  mRootPath->setPlaceholderText( QSettings().value( "/UI/lastExternalResourceWidgetDefaultPath", QDir::toNativeSeparators( QDir::cleanPath( defpath ) ) ).toString() );
 
   // Add connection to button for choosing default path
   connect( mRootPathButton, SIGNAL( clicked() ), this, SLOT( chooseDefaultPath() ) );
@@ -207,7 +210,11 @@ void QgsExternalResourceConfigDlg::setConfig( const QgsEditorWidgetConfig& confi
   {
     QgsExternalResourceWidget::DocumentViewerContent content = ( QgsExternalResourceWidget::DocumentViewerContent )config.value( "DocumentViewer" ).toInt();
     mDocumentViewerGroupBox->setChecked( content != QgsExternalResourceWidget::NoContent );
-    mDocumentViewerContentComboBox->setCurrentIndex( mDocumentViewerContentComboBox->findData( content ) );
+    int idx = mDocumentViewerContentComboBox->findData( content );
+    if ( idx >= 0 )
+    {
+      mDocumentViewerContentComboBox->setCurrentIndex( idx );
+    }
     if ( config.contains( "DocumentViewerHeight" ) )
     {
       mDocumentViewerHeight->setValue( config.value( "DocumentViewerHeight" ).toInt() );

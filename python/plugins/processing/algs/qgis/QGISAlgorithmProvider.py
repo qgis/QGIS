@@ -210,7 +210,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
             from Polygonize import Polygonize
             self.alglist.extend([Polygonize()])
 
-        if QGis.QGIS_VERSION_INT >= 21400:
+        if QGis.QGIS_VERSION_INT >= 21300:
             from ExecuteSQL import ExecuteSQL
             self.alglist.extend([ExecuteSQL()])
 

@@ -319,7 +319,7 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString& whereClause,
 
 QString QgsSpatiaLiteFeatureIterator::quotedPrimaryKey()
 {
-  return !mSource->isQuery ? "ROWID" : QgsSpatiaLiteProvider::quotedIdentifier( mSource->mPrimaryKey );
+  return !( mSource->isQuery || mSource->mViewBased ) ? "ROWID" : QgsSpatiaLiteProvider::quotedIdentifier( mSource->mPrimaryKey );
 }
 
 QString QgsSpatiaLiteFeatureIterator::whereClauseFid()
@@ -562,6 +562,7 @@ QgsSpatiaLiteFeatureSource::QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvi
     , mFields( p->attributeFields )
     , mQuery( p->mQuery )
     , isQuery( p->isQuery )
+    , mViewBased( p->mViewBased )
     , mVShapeBased( p->mVShapeBased )
     , mIndexTable( p->mIndexTable )
     , mIndexGeometry( p->mIndexGeometry )

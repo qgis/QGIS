@@ -5,5 +5,5 @@
 	<option key="input" layeroption="layer" typeoption="type" />
 	<option key="scale" version_max="6.4"/>
 	<option key="zscale" version_min="7.0"/>
-	<file key="output" filters="VTK (*.vtk)"/>
+	<file key="output" type="new" filters="VTK (*.vtk *.VTK);;All files(*.*)"/>
 </qgisgrassmodule>
