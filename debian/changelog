@@ -1,4 +1,10 @@
-qgis (2.13.0) UNRELEASED; urgency=medium
+qgis (2.14.0) UNRELEASED; urgency=medium
+
+  * Release of 2.14.0
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 26 Feb 2016 13:23:48 +0100
+
+qgis (2.13.0) unstable; urgency=medium
 
   * New development version 2.13 after branch of 2.12
   * add dependencies to gdal-bin, python-psycopg2, python-yaml, python-mock
@@ -11,7 +17,7 @@ qgis (2.13.0) UNRELEASED; urgency=medium
   * remove spit plugin
   * add support for ubuntu xenial
 
- -- Jürgen E. Fischer <jef@norbit.de>  Thu, 25 Feb 2016 09:29:24 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 26 Feb 2016 13:23:48 +0100
 
 qgis (2.12.0) unstable; urgency=medium
 
