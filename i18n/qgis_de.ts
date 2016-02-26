@@ -7538,7 +7538,7 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     </message>
     <message>
         <source>meters</source>
-        <translation>Meter</translation>
+        <translation type="obsolete">Meter</translation>
     </message>
     <message>
         <source>map units</source>
@@ -7587,6 +7587,10 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <message>
         <source>Advanced</source>
         <translation>Erweitert</translation>
+    </message>
+    <message>
+        <source>layer units</source>
+        <translation>Layereinheiten</translation>
     </message>
 </context>
 <context>
@@ -12857,7 +12861,7 @@ Nur %1 von %2 Objekten geschrieben.</translation>
     </message>
     <message>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be convered to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
-        <translation>Steuert ob Layer- und Feldnamen für die einfachere Verwendung in SQLite bereinigt werden sollen.  Bereinigte Feldnamen werden in Kleinschreibung umgewandelt und einige Sonderzeichen (&apos; - #) werden in Unterstriche geändert.</translation>
+        <translation type="obsolete">Steuert ob Layer- und Feldnamen für die einfachere Verwendung in SQLite bereinigt werden sollen.  Bereinigte Feldnamen werden in Kleinschreibung umgewandelt und einige Sonderzeichen (&apos; - #) werden in Unterstriche geändert.</translation>
     </message>
     <message>
         <source>column_name1[,column_name2, ...] A list of (String) columns that must be compressed with ZLib DEFLATE algorithm. This might be beneficial for databases that have big string blobs. However, use with care, since the value of such columns will be seen as compressed binary content with other SQLite utilities (or previous OGR versions). With OGR, when inserting, modifying or queryings compressed columns, compression/decompression is done transparently. However, such columns cannot be (easily) queried with an attribute filter or WHERE clause. Note: in table definition, such columns have the &apos;VARCHAR_deflate&apos; declaration type.</source>
@@ -15828,6 +15832,14 @@ Diese Fehler immer ignorieren?</translation>
         <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation>Ein Problem trat bei der Löschung von %1 Objekt(en) auf</translation>
     </message>
+    <message>
+        <source>Invalid result</source>
+        <translation>Ungültiges Ergebnis</translation>
+    </message>
+    <message>
+        <source>Could not store value &apos;%1&apos; in field of type %2</source>
+        <translation>Konnte Wert &apos;%1&apos; nicht in Feld vom Typ %2 speichern</translation>
+    </message>
 </context>
 <context>
     <name>QgisAppInterface</name>
@@ -16162,6 +16174,50 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>y</source>
         <translation>y</translation>
+    </message>
+    <message>
+        <source>X coordinate</source>
+        <translation>X-Koordinate</translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation>Abstand</translation>
+    </message>
+    <message>
+        <source>Lock distance</source>
+        <translation>Abstand einrasten</translation>
+    </message>
+    <message>
+        <source>Lock angle</source>
+        <translation>Winkel einrasten</translation>
+    </message>
+    <message>
+        <source>Lock y coordinate</source>
+        <translation>Y-Koordinate einrasten</translation>
+    </message>
+    <message>
+        <source>Toggles relative y to previous node</source>
+        <translation>Y relativ zu vorherigen Punkt umschalten</translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation>Winkel</translation>
+    </message>
+    <message>
+        <source>Y coordinate</source>
+        <translation>Y-Koordinate</translation>
+    </message>
+    <message>
+        <source>Toggles relative x to previous node</source>
+        <translation>X relativ zu vorherigen Punkt umschalten</translation>
+    </message>
+    <message>
+        <source>Lock x coordinate</source>
+        <translation>X-Koordinate einrasten</translation>
+    </message>
+    <message>
+        <source>Toggles relative angle to previous segment</source>
+        <translation>Winkel relativ zu vorherigen Punkt umschalten</translation>
     </message>
 </context>
 <context>
@@ -20611,7 +20667,7 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     </message>
     <message>
         <source>Allow to split layer items into multiple columns.</source>
-        <translation>Aufteilung der Layerelemente in mehrere Spalten erlauben.</translation>
+        <translation type="obsolete">Aufteilung der Layerelemente in mehrere Spalten erlauben.</translation>
     </message>
     <message>
         <source>Split layers</source>
@@ -20736,6 +20792,10 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     <message>
         <source>Title space</source>
         <translation>Titelzwischenraum</translation>
+    </message>
+    <message>
+        <source>Allow splitting layer items into multiple columns.</source>
+        <translation>Aufteilung der Layerelemente in mehrere Spalten erlauben.</translation>
     </message>
 </context>
 <context>
@@ -39929,6 +39989,10 @@ PostGIS %2</source>
 %1
 PostGIS %2</translation>
     </message>
+    <message>
+        <source>Primary key is ctid - changing of existing features disabled (%1; %2)</source>
+        <translation>Primärschlüssel ist ctid - Änderung von vorhandenen Objekten deaktiviert (%1; %2)</translation>
+    </message>
 </context>
 <context>
     <name>QgsProject</name>
@@ -57602,7 +57666,7 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Funktion lpad()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktion lpad()&lt;/h3&gt;
 Ergibt eine mit einem am Ende mit einem Zeichen auf eine bestimmte L&amp;auml;nge aufgef&amp;uuml;llte Zeichenkette.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -57808,7 +57872,7 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktion rpad()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktion rpad()&lt;/h3&gt;
 Ergibt eine mit einem am Anfang mit einem Zeichen auf eine bestimmte L&amp;auml;nge aufgef&amp;uuml;llte Zeichenkette.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62115,7 +62179,7 @@ None
 &lt;h4&gt;Note:&lt;/h4&gt;
 &lt;p&gt;To test for NULL use an &lt;pre&gt;IS NULL&lt;/pre&gt; or &lt;pre&gt;IS NOT NULL&lt;/pre&gt; expression.&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;NULL-Wert&lt;/h3&gt;
+        <translation>&lt;h3&gt;NULL-Wert&lt;/h3&gt;
 Entspricht dem Leerwert.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62129,6 +62193,79 @@ Keine
 
 &lt;h4&gt;Hinweis:&lt;/h4&gt;
 &lt;p&gt;Um auf einen NULL-Wert zu testen ist &lt;pre&gt;IS NULL&lt;/pre&gt; oder &lt;pre&gt;IS NOT NULL&lt;/pre&gt; in Ausdrücken zu verwendenj.&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;lpad() function&lt;/h3&gt;
+Returns a string with supplied width padded
+using the fill character.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;lpad(string, length, fill)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - is int. The length of the new string.
+&lt;br&gt;
+&lt;code&gt;fill&lt;/code&gt; - is char. The character to pad the remaining space with.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation>&lt;h3&gt;Funktion lpad()&lt;/h3&gt;
+Ergibt eine mit einem am Ende mit einem Zeichen auf eine bestimmte L&amp;auml;nge aufgef&amp;uuml;llte Zeichenkette.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;lpad(zeichenkette, laenge, fuellzeichen)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;zeichenkette&lt;/code&gt; - ist string. Die Zeichenkette.
+&lt;br&gt;
+&lt;code&gt;laenge&lt;/code&gt; - ist int. Die L&amp;auml;nge der neuen Zeichenkette.
+&lt;br&gt;
+&lt;code&gt;fuellzeichen&lt;/code&gt; - ist char. Das Zeichen mit dem die Zeichenkette am Ende aufgef&amp;uuml;llt werden soll. 
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;code&gt;lpad(&apos;Hallo&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHallo&apos;&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;rpad() function&lt;/h3&gt;
+Returns a string with supplied width padded
+using the fill character.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;rpad(string, width, fill)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;br&gt;
+&lt;code&gt;width&lt;/code&gt; - is int. The length of the new string.
+&lt;br&gt;
+&lt;code&gt;fill&lt;/code&gt; - is char. The character to pad the remaining space with.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
+
+</source>
+        <translation>&lt;h3&gt;Funktion rpad()&lt;/h3&gt;
+Ergibt eine mit einem am Anfang mit einem Zeichen auf eine bestimmte L&amp;auml;nge aufgef&amp;uuml;llte Zeichenkette.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;rpad(zeichenkette, laenge, fuellzeichen)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+&lt;code&gt;zeichenkette&lt;/code&gt; - ist string. Die Zeichenkette.  &lt;br&gt;
+&lt;code&gt;laenge&lt;/code&gt; - ist int. Die L&amp;auml;nge der neuen Zeichenkette.  &lt;br&gt;
+&lt;code&gt;fuellzeichen&lt;/code&gt; - ist char.  Das Zeichen mit dem die Zeichenkette aufgef&amp;uuml;llt werden soll.
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rpad(&apos;Hallo&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Halloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
+
 </translation>
     </message>
 </context>

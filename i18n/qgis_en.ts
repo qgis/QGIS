@@ -7570,7 +7570,7 @@ Please install it before running GRASS algorithms.</translation>
     </message>
     <message>
         <source>meters</source>
-        <translation>meters</translation>
+        <translation type="obsolete">meters</translation>
     </message>
     <message>
         <source>map units</source>
@@ -7619,6 +7619,10 @@ Please install it before running GRASS algorithms.</translation>
     <message>
         <source>Advanced</source>
         <translation>Advanced</translation>
+    </message>
+    <message>
+        <source>layer units</source>
+        <translation type="unfinished">layer units</translation>
     </message>
 </context>
 <context>
@@ -12897,7 +12901,7 @@ Only %1 of %2 features written.</translation>
     </message>
     <message>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be convered to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
-        <translation>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be convered to lower case and some special characters(&apos; - #) will be changed to underscores.</translation>
+        <translation type="obsolete">Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be convered to lower case and some special characters(&apos; - #) will be changed to underscores.</translation>
     </message>
     <message>
         <source>column_name1[,column_name2, ...] A list of (String) columns that must be compressed with ZLib DEFLATE algorithm. This might be beneficial for databases that have big string blobs. However, use with care, since the value of such columns will be seen as compressed binary content with other SQLite utilities (or previous OGR versions). With OGR, when inserting, modifying or queryings compressed columns, compression/decompression is done transparently. However, such columns cannot be (easily) queried with an attribute filter or WHERE clause. Note: in table definition, such columns have the &apos;VARCHAR_deflate&apos; declaration type.</source>
@@ -15878,6 +15882,14 @@ Always ignore these errors?</translation>
         <source>A problem occurred during deletion of %1 feature(s)</source>
         <translation>A problem occurred during deletion of %1 feature(s)</translation>
     </message>
+    <message>
+        <source>Invalid result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not store value &apos;%1&apos; in field of type %2</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppInterface</name>
@@ -16212,6 +16224,50 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>y</source>
         <translation>y</translation>
+    </message>
+    <message>
+        <source>X coordinate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation type="unfinished">Distance</translation>
+    </message>
+    <message>
+        <source>Lock distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lock angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lock y coordinate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggles relative y to previous node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation type="unfinished">Angle</translation>
+    </message>
+    <message>
+        <source>Y coordinate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggles relative x to previous node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lock x coordinate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggles relative angle to previous segment</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20669,7 +20725,7 @@ Please try a lower resolution or a smaller papersize</translation>
     </message>
     <message>
         <source>Allow to split layer items into multiple columns.</source>
-        <translation>Allow to split layer items into multiple columns.</translation>
+        <translation type="obsolete">Allow to split layer items into multiple columns.</translation>
     </message>
     <message>
         <source>Split layers</source>
@@ -20794,6 +20850,10 @@ Please try a lower resolution or a smaller papersize</translation>
     <message>
         <source>Title space</source>
         <translation>Title space</translation>
+    </message>
+    <message>
+        <source>Allow splitting layer items into multiple columns.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39936,6 +39996,10 @@ PostGIS %2</source>
 %1
 PostGIS %2</translation>
     </message>
+    <message>
+        <source>Primary key is ctid - changing of existing features disabled (%1; %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsProject</name>
@@ -57432,7 +57496,7 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;lpad() function&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;lpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
 
@@ -57643,7 +57707,7 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;rpad() function&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;rpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
 
@@ -61164,6 +61228,67 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.MM.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;NULL value&lt;/h3&gt;
+Equates to a null value.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;NULL&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; NULL &amp;rarr; returns a null value &lt;/pre&gt;
+
+&lt;h4&gt;Note:&lt;/h4&gt;
+&lt;p&gt;To test for NULL use an &lt;pre&gt;IS NULL&lt;/pre&gt; or &lt;pre&gt;IS NOT NULL&lt;/pre&gt; expression.&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;lpad() function&lt;/h3&gt;
+Returns a string with supplied width padded
+using the fill character.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;lpad(string, length, fill)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - is int. The length of the new string.
+&lt;br&gt;
+&lt;code&gt;fill&lt;/code&gt; - is char. The character to pad the remaining space with.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;rpad() function&lt;/h3&gt;
+Returns a string with supplied width padded
+using the fill character.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;rpad(string, width, fill)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;br&gt;
+&lt;code&gt;width&lt;/code&gt; - is int. The length of the new string.
+&lt;br&gt;
+&lt;code&gt;fill&lt;/code&gt; - is char. The character to pad the remaining space with.
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
+
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
