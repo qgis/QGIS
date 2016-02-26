@@ -366,7 +366,7 @@ bool QgsGrass::init( void )
   }
   G_CATCH( QgsGrass::Exception &e )
   {
-    mInitError = tr( "Problem in GRASS initialization, GRASS provider and plugin will not work" ) + " : " + e.what();
+    mInitError = tr( "Problem in GRASS initialization, GRASS provider and plugin will not work : %1" ).arg( e.what() );
     QgsDebugMsg( mInitError );
     mNonInitializable = true;
     unlock();
@@ -699,7 +699,7 @@ void QgsGrass::removeMapsetFromSearchPath( const QString & mapset, QString& erro
   }
   catch ( QgsGrass::Exception &e )
   {
-    error = tr( "Cannot remove mapset %1 from search path:" ).arg( mapset ) + " " + e.what();
+    error = tr( "Cannot remove mapset %1 from search path: %2" ).arg( mapset, e.what() );
   }
 }
 
@@ -959,7 +959,7 @@ QString QgsGrass::openMapset( const QString& gisdbase,
 
   if ( process.exitStatus() != QProcess::NormalExit || process.exitCode() != 0 )
   {
-    QString message = QObject::tr( "Mapset lock failed" ) + " (" + processResult + ")";
+    QString message = QObject::tr( "Mapset lock failed (%1)" ).arg( processResult );
     return message;
   }
 
@@ -1857,7 +1857,7 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,
   if ( type == QgsGrassObject::Raster )
   {
 
-    QString error = tr( "Cannot read raster map region" ) + " (" + gisdbase + "/" + location + "/" + mapset + ")";
+    QString error = tr( "Cannot read raster map region (%1/%2/%3)" ).arg( gisdbase, location, mapset );
 #if GRASS_VERSION_MAJOR < 7
     if ( G_get_cellhd( map.toUtf8().data(),
                        mapset.toUtf8().data(), window ) < 0 )
@@ -2173,7 +2173,7 @@ QgsCoordinateReferenceSystem QgsGrass::crs( const QString& gisdbase, const QStri
   }
   catch ( QgsGrass::Exception &e )
   {
-    error = tr( "Cannot get projection " ) + "\n" + e.what();
+    error = tr( "Cannot get projection" ) + "\n" + e.what();
     QgsDebugMsg( error );
   }
 
@@ -2583,8 +2583,7 @@ void QgsGrass::insertRow( dbDriver *driver, const QString tableName,
   db_free_string( &dbstr );
   if ( result != DB_OK )
   {
-    throw QgsGrass::Exception( QObject::tr( "Cannot insert, statement" ) + ": " + sql
-                               + QObject::tr( "error" ) + ": " + QString::fromLatin1( db_get_error_msg() ) );
+    throw QgsGrass::Exception( QObject::tr( "Cannot insert, statement: '%1' error: '%2'" ).arg( sql, QString::fromLatin1( db_get_error_msg() ) ) );
   }
 }
 
@@ -2621,7 +2620,7 @@ void QgsGrass::adjustCellHead( struct Cell_head *cellhd, int row_flag, int col_f
   char* err = G_adjust_Cell_head( cellhd, row_flag, col_flag );
   if ( err )
   {
-    throw QgsGrass::Exception( QObject::tr( "Cannot adjust region" ) + QString( err ) );
+    throw QgsGrass::Exception( QObject::tr( "Cannot adjust region, error: '%1'" ).arg( err ) );
   }
 #else
   G_FATAL_THROW( G_adjust_Cell_head( cellhd, row_flag, col_flag ) );
