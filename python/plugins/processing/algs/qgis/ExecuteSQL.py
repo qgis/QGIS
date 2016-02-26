@@ -146,5 +146,5 @@ class ExecuteSQL(GeoAlgorithm):
             if geometry_type != 1:
                 outFeat.setGeometry(inFeat.geometry())
             writer.addFeature(outFeat)
-            progress.setPersentage(int(current * total))
+            progress.setPercentage(int(current * total))
         del writer
