@@ -516,14 +516,16 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QgsMapMouseEvent* e )
         mSelectedFeature->deselectAllVertexes();
       }
 
+      QVector< int > toSelect;
       for ( int i = 0; i < vertexMap.size(); i++ )
       {
-        if ( r.contains( vertexMap[i]->pointV1() ) )
+        if ( r.contains( vertexMap.at( i )->pointV1() ) )
         {
-          // inverting selection is enough because all were deselected if ctrl is not pressed
-          mSelectedFeature->invertVertexSelection( i );
+          toSelect << i;
         }
       }
+      // inverting selection is enough because all were deselected if ctrl is not pressed
+      mSelectedFeature->invertVertexSelection( toSelect );
     }
   }
 
