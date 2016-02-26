@@ -172,12 +172,10 @@ class TestQgsVectorLayer(unittest.TestCase):
         assert isinstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22)))
 
+    # This test fails on Travis Linux build for unknown reason (probably GDAL version related)
+    @unittest.expectedFailure(os.environ.get('TRAVIS') and 'linux' in platform.system().lower())
     def testWriteShapefileWithZ(self):
         """Check writing geometries with Z dimension to an ESRI shapefile."""
-
-        if os.environ.get('TRAVIS') and 'linux' in platform.system().lower():
-            # This test fails on Travis Linux build for unknown reason (probably GDAL version related)
-            return
 
         #start by saving a memory layer and forcing z
         ml = QgsVectorLayer(
