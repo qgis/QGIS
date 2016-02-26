@@ -281,7 +281,7 @@ void QgsVectorFileWriter::init( QString vectorFileName, QString fileEncoding, co
 
   // datasource created, now create the output layer
   QString layerName = QFileInfo( vectorFileName ).baseName();
-  OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>( geometryType );
+  OGRwkbGeometryType wkbType = ogrTypeFromWkbType( geometryType );
 
   if ( !layerOptions.isEmpty() )
   {
@@ -1854,8 +1854,8 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
       // build geometry from WKB
       QgsGeometry* geom = feature.geometry();
 
-      // turn single geoemetry to multi geometry if needed
-      if ( geom->geometry()->wkbType() != mWkbType &&
+      // turn single geometry to multi geometry if needed
+      if ( QgsWKBTypes::flatType( geom->geometry()->wkbType() ) != QgsWKBTypes::flatType( mWkbType ) &&
            QgsWKBTypes::flatType( geom->geometry()->wkbType() ) == QgsWKBTypes::flatType( QgsWKBTypes::singleType( mWkbType ) ) )
       {
         geom->convertToMultiType();
