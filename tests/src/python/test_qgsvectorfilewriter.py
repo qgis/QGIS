@@ -25,6 +25,7 @@ from qgis.core import (QgsVectorLayer,
                        )
 from PyQt4.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 import os
+import platform
 from qgis.testing import (
     start_app,
     unittest
@@ -171,10 +172,14 @@ class TestQgsVectorLayer(unittest.TestCase):
         assert isinstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22)))
 
-    # Fails on Travis Linux build for some reason
-    @unittest.expectedFailure
     def testWriteShapefileWithZ(self):
         """Check writing geometries with Z dimension to an ESRI shapefile."""
+
+        if os.environ.get('TRAVIS') and 'linux' in platform.system().lower():
+            # This test fails on Travis Linux build for unknown reason (probably GDAL version related)
+            return
+
+        #start by saving a memory layer and forcing z
         ml = QgsVectorLayer(
             ('Point?crs=epsg:4326&field=id:int'),
             'test',
@@ -213,6 +218,28 @@ class TestQgsVectorLayer(unittest.TestCase):
             g = f.geometry()
             wkt = g.exportToWkt()
             expWkt = 'PointZ (1 2 3)'
+            assert compareWkt(expWkt, wkt), "saving geometry with Z failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+            #also try saving out the shapefile version again, as an extra test
+            #this tests that saving a layer with z WITHOUT explicitly telling the writer to keep z values,
+            #will stay retain the z values
+            dest_file_name = os.path.join(str(QDir.tempPath()), 'point_{}_copy.shp'.format(QgsWKBTypes.displayString(t)))
+            print(dest_file_name)
+            crs = QgsCoordinateReferenceSystem()
+            crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+            write_result = QgsVectorFileWriter.writeAsVectorFormat(
+                created_layer,
+                dest_file_name,
+                'utf-8',
+                crs,
+                'ESRI Shapefile')
+            self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+
+            # Open result and check
+            created_layer_from_shp = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+            f = created_layer_from_shp.getFeatures(QgsFeatureRequest()).next()
+            g = f.geometry()
+            wkt = g.exportToWkt()
             assert compareWkt(expWkt, wkt), "saving geometry with Z failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
     def testWriteShapefileWithMultiConversion(self):
