@@ -128,8 +128,11 @@ if( $domajor ) {
 	pod2usage("No version change");
 }
 
+my $splashwidth;
 unless( $dopoint ) {
 	pod2usage("Splash images/splash/splash-$newmajor.$newminor.png not found") unless -r "images/splash/splash-$newmajor.$newminor.png";
+	$splashwidth = `identify -format '%w' images/splash/splash-$newmajor.$newminor.png`;
+	print "WARNING: Splash images/splash/splash-$newmajor.$newminor.png is $splashwidth pixels wide - will be rescaled\n" if $splashwidth != 600;
 	pod2usage("NSIS image ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp not found") unless -r "ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp";
 }
 
@@ -169,7 +172,11 @@ run( "dch --newversion $version 'Release of $version'", "dch failed" );
 run( "cp debian/changelog /tmp", "backup changelog failed" );
 
 unless( $dopoint ) {
-	run( "cp -v images/splash/splash-$newmajor.$newminor.png images/splash/splash.png", "splash png switch failed" );
+	if( $splashwidth != 600 ) {
+		run( "convert -resize 600x300 images/splash/splash-$newmajor.$newminor.png images/splash/splash.png", "rescale of splash png failed" );
+	} else {
+		run( "cp -v images/splash/splash-$newmajor.$newminor.png images/splash/splash.png", "splash png switch failed" );
+	}
 	run( "cp -v ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp ms-windows/Installer-Files/WelcomeFinishPage.bmp", "installer bitmap switch failed" );
 
 	if( -f "images/splash/splash-release.xcf.bz2" ) {
