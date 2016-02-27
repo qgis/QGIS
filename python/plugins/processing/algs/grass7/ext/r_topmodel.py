@@ -39,4 +39,3 @@ def processCommand(alg):
         'topidxclass={}'.format(alg.getParameterValue('topidxclass')) if alg.getParameterValue('topidxclass') else ''
     )
     alg.commands.append(command)
-
