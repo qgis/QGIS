@@ -1,0 +1,21 @@
+r.spread
+Simulates elliptically anisotropic spread.
+Raster (r.*)
+ParameterRaster|base_ros|Raster map containing base ROS (cm/min)|False
+ParameterRaster|max_ros|Raster map containing maximal ROS (cm/min)|False
+ParameterRaster|direction_ros|Raster map containing directions of maximal ROS (degree)|False
+ParameterRaster|start|Raster map containing starting sources|False
+ParameterRaster|spotting_distance|Raster map containing maximal spotting distance (m, required with -s)|True
+ParameterRaster|wind_speed|Raster map containing midflame wind speed (ft/min, required with -s)|True
+ParameterRaster|fuel_moisture|Raster map containing fine fuel moisture of the cell receiving a spotting firebrand (%, required with -s)|True
+ParameterRaster|backdrop|Name of raster map as a display backdrop|True
+ParameterSelection|least_size|Basic sampling window size needed to meet certain accuracy (3)|3;5;7;9;11;13;15|0
+ParameterNumber|comp_dens|Sampling density for additional computing (range: 0.0 - 1.0 (0.5))|0.0|1.0|0.5|True
+ParameterNumber|init_time|Initial time for current simulation (0) (min)|0|None|0|True
+ParameterNumber|lag|Simulating time duration LAG (fill the region) (min)|0|None|0|True
+*ParameterBoolean|-s|Consider spotting effect (for wildfires)|False
+*ParameterBoolean|-i|Use start raster map values in output spread time raster map|False
+OutputRaster|output|Spread Time
+OutputRaster|x_output|X Back Coordinates
+OutputRaster|y_output|Y Back Coordinates
+
