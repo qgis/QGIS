@@ -177,10 +177,21 @@ class QgsDistanceArea
      * @param keepBaseUnit set to false to allow conversion of large distances to more suitable units, eg meters
      * to kilometers
      * @return formatted measurement string
+     * @deprecated use formatDistance() or formatArea() instead
+     */
+    static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false ) /Deprecated/;
+
+    /** Returns an distance formatted as a friendly string.
+     * @param distance distance to format
+     * @param decimals number of decimal places to show
+     * @param unit unit of distance
+     * @param keepBaseUnit set to false to allow conversion of large distances to more suitable units, eg meters to
+     * kilometers
+     * @returns formatted distance string
+     * @note added in QGIS 2.16
      * @see formatArea()
      */
-    //TODO QGIS 3.0 - remove isArea parameter (use AreaUnit variant instead), rename to formatDistance
-    static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false );
+    static QString formatDistance( double distance, int decimals, QGis::UnitType unit, bool keepBaseUnit = false );
 
     /** Returns an area formatted as a friendly string.
      * @param area area to format
@@ -190,9 +201,10 @@ class QgsDistanceArea
      * square kilometers
      * @returns formatted area string
      * @note added in QGIS 2.14
-     * @see textUnit()
+     * @see formatDistance()
      */
     static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
+
 
     //! Helper for conversion between physical units
     // TODO QGIS 3.0 - remove this method, as its behaviour is non-intuitive.

@@ -166,7 +166,6 @@ void TestQgsDistanceArea::unit_conversions()
   // First, convert from sq.meter to sq.feet
   Q_NOWARN_DEPRECATED_PUSH
   myDa.convertMeasurement( inputValue, inputUnit, outputUnit, true );
-  Q_NOWARN_DEPRECATED_POP
   QVERIFY( qAbs( inputValue - 107639.1041671 ) <= 0.0000001 );
 
   // The print a text unit. This is i18n, so we should ignore the unit
@@ -174,6 +173,7 @@ void TestQgsDistanceArea::unit_conversions()
   QString myTxt = QgsDistanceArea::textUnit( inputValue, 7, inputUnit, true, false );
   QString expectedTxt = QLocale::system().toString( 2.4710538146717, 'g', 1 + 7 );
   QVERIFY( myTxt.startsWith( expectedTxt ) ); // Ignore units for now.
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void TestQgsDistanceArea::regression13601()

@@ -1096,6 +1096,109 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
   return QString( "%L1%2" ).arg( value, 0, 'f', decimals ).arg( unitLabel );
 }
 
+QString QgsDistanceArea::formatDistance( double distance, int decimals, QGis::UnitType unit, bool keepBaseUnit )
+{
+  QString unitLabel;
+
+  switch ( unit )
+  {
+    case QGis::Meters:
+      if ( keepBaseUnit || qAbs( distance ) == 0.0 )
+      {
+        unitLabel = QObject::tr( " m" );
+      }
+      else if ( qAbs( distance ) > 1000.0 )
+      {
+        unitLabel = QObject::tr( " km" );
+        distance = distance / 1000;
+      }
+      else if ( qAbs( distance ) < 0.01 )
+      {
+        unitLabel = QObject::tr( " mm" );
+        distance = distance * 1000;
+      }
+      else if ( qAbs( distance ) < 0.1 )
+      {
+        unitLabel = QObject::tr( " cm" );
+        distance = distance * 100;
+      }
+      else
+      {
+        unitLabel = QObject::tr( " m" );
+      }
+      break;
+
+    case QGis::Kilometers:
+      if ( keepBaseUnit || qAbs( distance ) >= 1.0 )
+      {
+        unitLabel = QObject::tr( " km" );
+      }
+      else
+      {
+        unitLabel = QObject::tr( " m" );
+        distance = distance * 1000;
+      }
+      break;
+
+    case QGis::Feet:
+      if ( qAbs( distance ) <= 5280.0 || keepBaseUnit )
+      {
+        unitLabel = QObject::tr( " ft" );
+      }
+      else
+      {
+        unitLabel = QObject::tr( " mi" );
+        distance /= 5280.0;
+      }
+      break;
+
+    case QGis::Yards:
+      if ( qAbs( distance ) <= 1760.0 || keepBaseUnit )
+      {
+        unitLabel = QObject::tr( " yd" );
+      }
+      else
+      {
+        unitLabel = QObject::tr( " mi" );
+        distance /= 1760.0;
+      }
+      break;
+
+    case QGis::Miles:
+      if ( qAbs( distance ) >= 1.0 || keepBaseUnit )
+      {
+        unitLabel = QObject::tr( " mi" );
+      }
+      else
+      {
+        unitLabel = QObject::tr( " ft" );
+        distance *= 5280.0;
+      }
+      break;
+
+    case QGis::NauticalMiles:
+      unitLabel = QObject::tr( " NM" );
+      break;
+
+    case QGis::Degrees:
+
+      if ( qAbs( distance ) == 1.0 )
+        unitLabel = QObject::tr( " degree" );
+      else
+        unitLabel = QObject::tr( " degrees" );
+      break;
+
+    case QGis::UnknownUnit:
+      unitLabel.clear();
+      break;
+    default:
+      QgsDebugMsg( QString( "Error: not picked up map units - actual value = %1" ).arg( unit ) );
+      break;
+  }
+
+  return QString( "%L1%2" ).arg( distance, 0, 'f', decimals ).arg( unitLabel );
+}
+
 QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit )
 {
   QString unitLabel;

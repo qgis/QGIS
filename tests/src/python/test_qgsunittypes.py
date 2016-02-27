@@ -32,7 +32,10 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testDistanceUnitType(self):
         """Test QgsUnitTypes::unitType() """
         expected = {QGis.Meters: QgsUnitTypes.Standard,
+                    QGis.Kilometers: QgsUnitTypes.Standard,
                     QGis.Feet: QgsUnitTypes.Standard,
+                    QGis.Yards: QgsUnitTypes.Standard,
+                    QGis.Miles: QgsUnitTypes.Standard,
                     QGis.Degrees: QgsUnitTypes.Geographic,
                     QGis.UnknownUnit: QgsUnitTypes.UnknownType,
                     QGis.NauticalMiles: QgsUnitTypes.Standard
@@ -44,7 +47,10 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testEncodeDecodeDistanceUnits(self):
         """Test encoding and decoding distance units"""
         units = [QGis.Meters,
+                 QGis.Kilometers,
                  QGis.Feet,
+                 QGis.Yards,
+                 QGis.Miles,
                  QGis.Degrees,
                  QGis.UnknownUnit,
                  QGis.NauticalMiles]
@@ -67,7 +73,10 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testDistanceUnitsToFromString(self):
         """Test converting distance units to and from translated strings"""
         units = [QGis.Meters,
+                 QGis.Kilometers,
                  QGis.Feet,
+                 QGis.Yards,
+                 QGis.Miles,
                  QGis.Degrees,
                  QGis.UnknownUnit,
                  QGis.NauticalMiles]
@@ -188,11 +197,14 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between units"""
 
-        expected = {QGis.Meters: {QGis.Meters: 1.0, QGis.Feet: 3.28083989501, QGis.Degrees: 0.00000898315, QGis.NauticalMiles: 0.000539957},
-                    QGis.Feet: {QGis.Meters: 0.3048, QGis.Feet: 1.0, QGis.Degrees: 2.73806498599629E-06, QGis.NauticalMiles: 0.000164579},
-                    QGis.Degrees: {QGis.Meters: 111319.49079327358, QGis.Feet: 365221.4264871, QGis.Degrees: 1.0, QGis.NauticalMiles: 60.1077164},
-                    QGis.NauticalMiles: {QGis.Meters: 1852.0, QGis.Feet: 6076.1154856, QGis.Degrees: 0.0166367990650, QGis.NauticalMiles: 1.0},
-                    QGis.UnknownUnit: {QGis.Meters: 1.0, QGis.Feet: 1.0, QGis.Degrees: 1.0, QGis.NauticalMiles: 1.0}
+        expected = {QGis.Meters: {QGis.Meters: 1.0, QGis.Kilometers: 0.001, QGis.Feet: 3.28083989501, QGis.Yards: 1.0936133, QGis.Miles: 0.00062136931818182, QGis.Degrees: 0.00000898315, QGis.NauticalMiles: 0.000539957},
+                    QGis.Kilometers: {QGis.Meters: 1000.0, QGis.Kilometers: 1.0, QGis.Feet: 3280.8398950, QGis.Yards: 1093.6132983, QGis.Miles: 0.62137121212119317271, QGis.Degrees: 0.0089832, QGis.NauticalMiles: 0.53995682073432482717},
+                    QGis.Feet: {QGis.Meters: 0.3048, QGis.Kilometers: 0.0003048, QGis.Feet: 1.0, QGis.Yards: 0.3333333, QGis.Miles: 0.00018939375, QGis.Degrees: 2.73806498599629E-06, QGis.NauticalMiles: 0.000164579},
+                    QGis.Yards: {QGis.Meters: 0.9144, QGis.Kilometers: 0.0009144, QGis.Feet: 3.0, QGis.Yards: 1.0, QGis.Miles: 0.000568182, QGis.Degrees: 0.0000082, QGis.NauticalMiles: 0.0004937366590756},
+                    QGis.Degrees: {QGis.Meters: 111319.49079327358, QGis.Kilometers: 111.3194908, QGis.Feet: 365221.4264871, QGis.Yards: 121740.4754957, QGis.Miles: 69.1707247, QGis.Degrees: 1.0, QGis.NauticalMiles: 60.1077164},
+                    QGis.Miles: {QGis.Meters: 1609.3440000, QGis.Kilometers: 1.6093440, QGis.Feet: 5280.0000000, QGis.Yards: 1760.0000000, QGis.Miles: 1.0, QGis.Degrees: 0.0144570, QGis.NauticalMiles: 0.8689762},
+                    QGis.NauticalMiles: {QGis.Meters: 1852.0, QGis.Kilometers: 1.8520000, QGis.Feet: 6076.1154856, QGis.Yards: 2025.3718285, QGis.Miles: 1.1507794, QGis.Degrees: 0.0166367990650, QGis.NauticalMiles: 1.0},
+                    QGis.UnknownUnit: {QGis.Meters: 1.0, QGis.Kilometers: 1.0, QGis.Feet: 1.0, QGis.Yards: 1.0, QGis.Miles: 1.0, QGis.Degrees: 1.0, QGis.NauticalMiles: 1.0}
                     }
 
         for from_unit in expected.keys():
@@ -243,7 +255,10 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testDistanceToAreaUnit(self):
         """Test distanceToAreaUnit conversion"""
         expected = {QGis.Meters: QgsUnitTypes.SquareMeters,
+                    QGis.Kilometers: QgsUnitTypes.SquareKilometers,
                     QGis.Feet: QgsUnitTypes.SquareFeet,
+                    QGis.Yards: QgsUnitTypes.SquareYards,
+                    QGis.Miles: QgsUnitTypes.SquareMiles,
                     QGis.Degrees: QgsUnitTypes.SquareDegrees,
                     QGis.UnknownUnit: QgsUnitTypes.UnknownAreaUnit,
                     QGis.NauticalMiles: QgsUnitTypes.SquareNauticalMiles
