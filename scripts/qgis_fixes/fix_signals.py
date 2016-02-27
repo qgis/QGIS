@@ -38,6 +38,15 @@ class FixSignals(fixer_base.BaseFix):
       ')'
     >
   >
+  |
+  power<
+    emitter=any trailer< '.' 'emit' >
+    trailer<
+      '('
+        args=power< 'SIGNAL' trailer< '(' signal=any ')' > >
+      ')'
+    >
+  >
   )
 """
 

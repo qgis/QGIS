@@ -24,3 +24,4 @@ __copyright__ = '(C) 2015, Matthias Kuhn'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
+from PyQt4.QtGui import QItemSelectionModel, QSortFilterProxyModel
