@@ -1,0 +1,12 @@
+r.stats.quantile
+r.stats.quantile.out - Compute category quantiles using two passes and output statistics
+Raster (r.*)
+ParameterRaster|base|Name of base raster map|False
+ParameterRaster|cover|Name of cover raster map|False
+ParameterString|quantiles|Number of quantiles|None|False|True
+ParameterString|percentiles|List of percentiles|None|False|True
+ParameterNumber|bins|Number of bins to use|0|None|1000|True
+*ParameterBoolean|-r|Create reclass map with statistics as category labels|False
+Hardcoded|-p
+OutputFile|output|Statistics File
+
