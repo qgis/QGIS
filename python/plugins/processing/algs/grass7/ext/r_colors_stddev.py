@@ -2,8 +2,8 @@
 
 """
 ***************************************************************************
-    r_what_color.py
-    ---------------
+    r_colors_stddev.py
+    ------------------
     Date                 : February 2016
     Copyright            : (C) 2016 by Médéric Ribreux
     Email                : medspx at medspx dot fr
@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 
 def processInputs(alg):
-    # We need to import all the bands and color tables of the input rasters
-    raster = alg.getParameterValue('input')
+    # We need to import all the bands and to preserve color table
+    raster = alg.getParameterValue('map')
     if raster in alg.exportedLayers.keys():
         return
 
@@ -57,3 +57,24 @@ def processInputs(alg):
     if alignToResolution:
         command += ' -a'
     alg.commands.append(command)
+
+
+def processCommand(alg):
+    # We need to remove output
+    output = alg.getOutputFromName('output')
+    alg.exportedLayers[output.value] = output.name + alg.uniqueSufix
+    alg.removeOutputFromName('output')
+    alg.processCommand()
+    alg.addOutput(output)
+
+
+def processOutputs(alg):
+    # We need to export the raster with all its bands and its color table
+    output = alg.getOutputValue('output')
+    raster = alg.getParameterFromName('map')
+
+    # Get the list of rasters matching the basename
+    command = "r.out.gdal -t input={} output=\"{}\" createopt=\"TFW=YES,COMPRESS=LZW\"".format(
+        alg.exportedLayers[raster.value], output)
+    alg.commands.append(command)
+    alg.outputCommands.append(command)
