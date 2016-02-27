@@ -36,4 +36,3 @@ def processCommand(alg):
         out.value
     )
     alg.commands.append(command)
-
