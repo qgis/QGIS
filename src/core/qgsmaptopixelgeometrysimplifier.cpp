@@ -413,6 +413,7 @@ bool QgsMapToPixelSimplifier::simplifyGeometry( QgsGeometry *geometry, int simpl
   }
   catch ( const QgsWkbException &e )
   {
+    Q_UNUSED( e );
     QgsDebugMsg( QString( "Exception thrown by simplifier: %1" ) .arg( e.what() ) );
   }
   delete [] targetWkb;

@@ -671,6 +671,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       }
       catch ( const QgsException& e )
       {
+        Q_UNUSED( e );
         // See http://hub.qgis.org/issues/12634
         QgsDebugMsg( QString( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
       }
@@ -692,6 +693,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       }
       catch ( const QgsException& e )
       {
+        Q_UNUSED( e );
         // See http://hub.qgis.org/issues/12634
         QgsDebugMsg( QString( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
         continue;
@@ -770,6 +772,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
       }
       catch ( const QgsException& e )
       {
+        Q_UNUSED( e );
         // See http://hub.qgis.org/issues/12634
         QgsDebugMsg( QString( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
         return;

@@ -532,6 +532,7 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
       }
       catch ( QgsCsException &e )
       {
+        Q_UNUSED( e );
         QgsDebugMsg( QString( "Transform error caught: %1" ).arg( e.what() ) );
       }
     }

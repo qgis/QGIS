@@ -217,10 +217,12 @@ void QgsMapRendererCustomPainterJob::staticRender( QgsMapRendererCustomPainterJo
   }
   catch ( QgsException & e )
   {
+    Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
   }
   catch ( std::exception & e )
   {
+    Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
   }
   catch ( ... )

@@ -237,10 +237,12 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
   }
   catch ( QgsException & e )
   {
+    Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
   }
   catch ( std::exception & e )
   {
+    Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
   }
   catch ( ... )
@@ -263,10 +265,12 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob* s
   }
   catch ( QgsException & e )
   {
+    Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
   }
   catch ( std::exception & e )
   {
+    Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
   }
   catch ( ... )

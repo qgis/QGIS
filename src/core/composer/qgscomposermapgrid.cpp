@@ -1773,6 +1773,7 @@ int QgsComposerMapGrid::xGridLinesCRSTransform( const QgsRectangle& bbox, const 
       }
       catch ( QgsCsException & cse )
       {
+        Q_UNUSED( cse );
         QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
       }
 
@@ -1848,6 +1849,7 @@ int QgsComposerMapGrid::yGridLinesCRSTransform( const QgsRectangle& bbox, const 
       }
       catch ( QgsCsException & cse )
       {
+        Q_UNUSED( cse );
         QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
       }
 
@@ -2406,6 +2408,7 @@ int QgsComposerMapGrid::crsGridParams( QgsRectangle& crsRect, QgsCoordinateTrans
   }
   catch ( QgsCsException & cse )
   {
+    Q_UNUSED( cse );
     QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
     return 1;
   }

@@ -51,6 +51,7 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr wkbPtr )
     }
     catch ( const QgsWkbException &e )
     {
+      Q_UNUSED( e );
       QgsDebugMsg( "WKB exception: " + e.what() );
       delete geom;
       geom = nullptr;
