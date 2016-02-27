@@ -1,0 +1,10 @@
+r.univar
+Calculates univariate statistics from the non-null cells of a raster map.
+Raster (r.*)
+ParameterMultipleInput|map|Name of raster map(s)|3|False
+ParameterRaster|zones|Raster map used for zoning, must be of type CELL|True
+ParameterString|percentile|Percentile to calculate (comma separated list if multiple) (requires extended statistics flag)|None|False|True
+ParameterString|separator|Field separator. Special characters: pipe, comma, space, tab, newline|None|False|True
+*ParameterBoolean|-e|Calculate extended statistics|False
+Hardcoded|-t
+OutputFile|output|Univariate results
