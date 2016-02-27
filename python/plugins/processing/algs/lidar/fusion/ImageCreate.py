@@ -45,22 +45,22 @@ class ImageCreate(FusionAlgorithm):
     SWITCH = 'SWITCH'
     OUTPUT = 'OUTPUT'
 
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('ImageCreate')
         self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-			self.INPUT, self.tr('Input LAS')))
+            self.INPUT, self.tr('Input LAS')))
         self.addParameter(ParameterSelection(
-			self.COLOROPTION, self.tr('Method to assign colour'), ['Intensity', 'Elevation','Height']))
+            self.COLOROPTION, self.tr('Method to assign colour'),
+            ['Intensity', 'Elevation','Height']))
         self.addParameter(ParameterFile(
-			self.GROUND, self.tr("Ground file (used with 'Height' method)"),'dtm'))
+            self.GROUND, self.tr("Ground file (used with 'Height' method)"), 'dtm'))
         self.addParameter(ParameterBoolean(self.RGB,
-                                           self.tr('Use RGB colour model to create the colour ramp'), False))
+            self.tr('Use RGB colour model to create the colour ramp'), False))
         self.addParameter(ParameterNumber(
             self.PIXEL, self.tr('Pixel size'), 0, None, 1.0))
         self.addParameter(ParameterSelection(
-			self.SWITCH, self.tr('Output format'), ['JPEG', 'Bitmap']))
+            self.SWITCH, self.tr('Output format'), ['JPEG', 'Bitmap']))
         self.addOutput(OutputFile(self.OUTPUT, 'Output image'))
         self.addAdvancedModifiers()
 

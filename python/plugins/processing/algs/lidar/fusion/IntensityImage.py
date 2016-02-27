@@ -45,7 +45,6 @@ class IntensityImage(FusionAlgorithm):
     SWITCH = 'SWITCH'
     OUTPUT = 'OUTPUT'
 
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('IntensityImage')
         self.group, self.i18n_group = self.trAlgorithm('Points')
@@ -53,15 +52,15 @@ class IntensityImage(FusionAlgorithm):
 			self.INPUT, self.tr('Input file')))
 
         self.addParameter(ParameterBoolean(self.ALLRET,
-                                           self.tr('Use all returns instead of only first'), False))
+            self.tr('Use all returns instead of only first'), False))
         self.addParameter(ParameterBoolean(self.LOWEST,
-                                           self.tr('Use the lowest return in pixel area to assign the intensity value'), False))
+            self.tr('Use the lowest return in pixel area to assign the intensity value'), False))
         self.addParameter(ParameterBoolean(self.HIST,
-                                           self.tr('Produce a CSV intensity histogram data file'), False))
+            self.tr('Produce a CSV intensity histogram data file'), False))
         self.addParameter(ParameterNumber(
             self.PIXEL, self.tr('Pixel size'), 0, None, 1.0))
         self.addParameter(ParameterSelection(
-			self.SWITCH, self.tr('Output format'), ['Bitmap', 'JPEG']))
+            self.SWITCH, self.tr('Output format'), ['Bitmap', 'JPEG']))
         self.addOutput(OutputFile(self.OUTPUT, 'Output image'))
         self.addAdvancedModifiers()
 
