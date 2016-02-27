@@ -34,21 +34,18 @@ QgsDb2ConnectionItem::~QgsDb2ConnectionItem()
 {
 }
 
-bool QgsDb2ConnectionItem::ConnInfoFromSettings( const QString connName,
-    QString &connInfo, QString &errorMsg )
+bool QgsDb2ConnectionItem::ConnInfoFromParameters(
+  const QString &service,
+  const QString &driver,
+  const QString &host,
+  const QString &port,
+  const QString &database,
+  const QString &username,
+  const QString &password,
+  const QString &authcfg,
+  QString &connInfo,
+  QString &errorMsg )
 {
-  QSettings settings;
-  QString key = "/DB2/connections/" + connName;
-
-  QString service = settings.value( key + "/service" ).toString();
-  QString driver = settings.value( key + "/driver" ).toString();
-  QString host = settings.value( key + "/host" ).toString();
-  QString port = settings.value( key + "/port" ).toString();
-  QString database = settings.value( key + "/database" ).toString();
-  QString username = settings.value( key + "/username" ).toString();
-  QString password = settings.value( key + "/password" ).toString();
-  QString authcfg = settings.value( key + "/authcfg" ).toString();
-
   if ( service.isEmpty() )
   {
     if ( driver.isEmpty() || host.isEmpty() || database.isEmpty() || port.isEmpty() )
@@ -76,21 +73,48 @@ bool QgsDb2ConnectionItem::ConnInfoFromSettings( const QString connName,
 
   if ( !authcfg.isEmpty() )
   {
-    username.clear();
-    password.clear();
     connInfo += "authcfg='" + authcfg + "' ";
   }
-
-  if ( !username.isEmpty() )  // will be empty if !authcfg.isEmpty()
+  else  // include user and password if authcfg is empty
   {
-    connInfo += "user='" + username + "' ";
+    if ( !username.isEmpty() )
+    {
+      connInfo += "user='" + username + "' ";
+    }
+
+    if ( !password.isEmpty() )
+    {
+      connInfo += "password='" + password + "' ";
+    }
+  }
+  QgsDebugMsg( "connInfo: '" + connInfo + "'" );
+  return true;
+}
+
+bool QgsDb2ConnectionItem::ConnInfoFromSettings( const QString connName,
+    QString &connInfo, QString &errorMsg )
+{
+  QSettings settings;
+  QString key = "/DB2/connections/" + connName;
+
+  QString errMsg;
+  bool rc = QgsDb2ConnectionItem::ConnInfoFromParameters(
+              settings.value( key + "/service" ).toString(),
+              settings.value( key + "/driver" ).toString(),
+              settings.value( key + "/host" ).toString(),
+              settings.value( key + "/port" ).toString(),
+              settings.value( key + "/database" ).toString(),
+              settings.value( key + "/username" ).toString(),
+              settings.value( key + "/password" ).toString(),
+              settings.value( key + "/authcfg" ).toString(),
+              connInfo, errMsg );
+
+  if ( !rc )
+  {
+    QgsDebugMsg( "errMsg: " + errMsg );
+    return false;
   }
 
-
-  if ( !password.isEmpty() )
-  {
-    connInfo += "password='" + password + "' ";
-  }
   QgsDebugMsg( "connInfo: '" + connInfo + "'" );
   return true;
 }
@@ -130,13 +154,15 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
   if ( !success )
   {
     QgsDebugMsg( "settings error: " + errorMsg );
+    children.append( new QgsErrorItem( this, errorMsg, mPath + "/error" ) );
+    return children;
   }
-  QgsDebugMsg( "connInfo: " + connInfo );
+
   mConnInfo = connInfo;
   QgsDebugMsg( "mConnInfo: '" + mConnInfo + "'" );
-  QSqlDatabase db = QgsDb2Provider::GetDatabase( connInfo );
-  QgsDebugMsg( "back from GetDatabase" );
-  if ( db.open() )
+
+  QSqlDatabase db = QgsDb2Provider::GetDatabase( connInfo, errorMsg );
+  if ( errorMsg.isEmpty() )
   {
     QString connectionName = db.connectionName();
     //children.append( new QgsFavouritesItem(this, "connection successful", mPath + "/success"));
@@ -144,8 +170,8 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
   }
   else
   {
-    children.append( new QgsErrorItem( this, db.lastError().text(), mPath + "/error" ) );
-    QgsDebugMsg( "DB not open" + db.lastError().text() );
+    children.append( new QgsErrorItem( this, errorMsg, mPath + "/error" ) );
+    QgsDebugMsg( "DB not open " + errorMsg );
     return children;
   }
   QString connectionName = db.connectionName();
@@ -250,15 +276,17 @@ void QgsDb2ConnectionItem::deleteConnection()
 
 void QgsDb2ConnectionItem::refreshConnection()
 {
-  QSqlDatabase db = QgsDb2Provider::GetDatabase( mConnInfo );
-  if ( db.open() )
+  QString errMsg;
+  QSqlDatabase db = QgsDb2Provider::GetDatabase( mConnInfo, errMsg );
+
+  if ( !errMsg.isEmpty() )
   {
     QString connectionName = db.connectionName();
     QgsDebugMsg( "successful get db2 connection on refresh" );
   }
   else
   {
-    QgsDebugMsg( "failed get db2 connection on refresh " + db.lastError().text() + " " + mPath + "/error" );
+    QgsDebugMsg( "failed get db2 connection on refresh " + errMsg + " " + mPath + "/error" );
   }
   refresh();
 }

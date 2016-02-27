@@ -487,13 +487,14 @@ void QgsDb2SourceSelect::on_btnConnect_clicked()
                           tr( "DB2 Provider" ), errorMsg );
     return;    
   }
-  QSqlDatabase db = QgsDb2Provider::GetDatabase( mConnInfo );
 
-  if ( !QgsDb2Provider::OpenDatabase( db ) )
+  QSqlDatabase db = QgsDb2Provider::GetDatabase( mConnInfo, errorMsg );
+
+  if ( !errorMsg.isEmpty() )
   {
-    // Let user know we couldn't initialise the Db2 provider
+    // Let user know we couldn't initialize the DB2 provider
     QMessageBox::warning( this,
-                          tr( "DB2 Provider" ), db.lastError().text() );
+                          tr( "DB2 Provider" ), errorMsg );
     return;
   }
 

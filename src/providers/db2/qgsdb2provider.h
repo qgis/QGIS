@@ -44,7 +44,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
      *
      * @param connInfo A string containing all connection information.
      */
-    static QSqlDatabase GetDatabase( QString connInfo );
+    static QSqlDatabase GetDatabase( const QString &connInfo, QString &errMsg );
 
     static bool OpenDatabase( QSqlDatabase db );
 

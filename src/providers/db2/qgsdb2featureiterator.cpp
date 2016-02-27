@@ -35,13 +35,12 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource* source, bool 
   BuildStatement( request );
 
   // connect to the database
-  mDatabase = QgsDb2Provider::GetDatabase( mSource->mConnInfo );
+  QString errMsg;
+  mDatabase = QgsDb2Provider::GetDatabase( mSource->mConnInfo, errMsg );
 
-  if ( !mDatabase.open() )
+  if ( !errMsg.isEmpty() )
   {
-    QgsDebugMsg( "Failed to open database" );
-    QString msg = mDatabase.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( "Failed to open database: " + errMsg );
     return;
   }
 

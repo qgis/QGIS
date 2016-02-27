@@ -26,6 +26,7 @@
 #include <QtSql/QSqlError>
 
 #include "qgsdb2newconnection.h"
+#include "qgsdb2dataitems.h"
 #include "qgsdb2provider.h"
 #include "qgscontexthelp.h"
 
@@ -72,10 +73,8 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connNa
       tabAuthentication->setCurrentIndex( tabAuthentication->indexOf( mAuthConfigSelect ) );
     }
 
-
     txtName->setText( connName );
   }
-
 }
 
 /** Autoconnected SLOTS **/
@@ -157,13 +156,26 @@ bool QgsDb2NewConnection::testConnection()
 {
   QSqlDatabase db;
 
-  QString service =  txtService->text().trimmed();
-  QString driver = txtDriver->text().trimmed();
-  QString host = txtHost->text().trimmed();
-  QString port = txtPort->text().trimmed();
-  QString database = txtDatabase->text().trimmed();
-  QString username = txtUsername->text().trimmed();
-  QString password = txtPassword->text().trimmed();
+  QString authcfg;
+  QString connInfo;
+  QString errMsg;
+  bool rc = QgsDb2ConnectionItem::ConnInfoFromParameters(
+              txtService->text().trimmed(),
+              txtDriver->text().trimmed(),
+              txtHost->text().trimmed(),
+              txtPort->text().trimmed(),
+              txtDatabase->text().trimmed(),
+              txtUsername->text().trimmed(),
+              txtPassword->text().trimmed(),
+              authcfg,  // TODO - empty for now
+              connInfo, errMsg );
+
+  if ( !rc )
+  {
+    db2ConnectStatus -> setText( errMsg );
+    QgsDebugMsg( "errMsg: " + errMsg );
+    return false;
+  }
 
   /* TODO - bar is not defined; works for mssql
   bar->pushMessage( "Testing connection", "....." );
@@ -171,51 +183,17 @@ bool QgsDb2NewConnection::testConnection()
   qApp->processEvents();
   */
 
-  if ( username.isEmpty() || password.isEmpty() )
+  db = QgsDb2Provider::GetDatabase( connInfo, errMsg );
+  if ( errMsg.isEmpty() )
   {
-    db2ConnectStatus -> setText( "DB2 connection failed : " + db.lastError().text() );
-    return false;
-  }
-
-  if ( service.isEmpty() )
-  {
-    if ( driver.isEmpty() || host.isEmpty() || database.isEmpty() || port.isEmpty() )
-    {
-      QgsDebugMsg( "Host, port, driver and database must be specified if not using DSN" );
-      return false;
-    }
-  }
-  else
-  {
-    if ( database.isEmpty() )
-    {
-      QgsDebugMsg( "Database must be specified" );
-      return false;
-    }
-  }
-
-  QString connInfo = "dbname='" + database +  + "'";  // always need dbname
-  connInfo +=  " user='" + username + "' password='" + password + "'";
-  if ( !service.isEmpty() )
-  {
-    connInfo += " service='" + service + "'";
-  }
-  else
-  {
-    connInfo += " driver='" + driver + "' host=" + host + " port=" + port;
-  }
-
-  db = QgsDb2Provider::GetDatabase( connInfo );
-  if ( db.open() )
-  {
-    QgsDebugMsg( "connection open succeeded" + database );
+    QgsDebugMsg( "connection open succeeded " + connInfo );
     db2ConnectStatus -> setText( "DB2 connection open succeeded" );
     return true;
   }
   else
   {
-    QgsDebugMsg( "connection open failed: " + db.lastError().text() );
-    db2ConnectStatus -> setText( "DB2 connection failed : " + db.lastError().text() );
+    QgsDebugMsg( "connection open failed: " + errMsg );
+    db2ConnectStatus -> setText( "DB2 connection failed : " + errMsg );
     return false;
   }
 }
