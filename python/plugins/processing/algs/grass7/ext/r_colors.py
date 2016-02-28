@@ -30,7 +30,7 @@ import os
 
 def checkParameterValuesBeforeExecuting(alg):
     """ Verify if we have the right parameters """
-    if alg.getParameterValue(u'rules_txt') and alg.getParameterValue(u'rules'):
+    if alg.getParameterValue('rules_txt') and alg.getParameterValue('rules'):
         return alg.tr("You need to set either inline rules or a rules file !")
 
     return None
@@ -79,11 +79,26 @@ def processCommand(alg):
     if color.value == 0:
         alg.parameters.remove(color)
 
-    # TODO Handle rules
+    # Handle rules
+    txtRules = alg.getParameterFromName('rules_txt')
+    if txtRules.value:
+        # Creates a temporary txt file
+        tempRulesName = alg.getTempFilename()
+
+        # Inject rules into temporary txt file
+        with open(tempRulesName, "w") as tempRules:
+            tempRules.write(txtRules.value)
+
+        # Use temporary file as rules file
+        alg.setParameterValue('rules', tempRulesName)
+        alg.parameters.remove(txtRules)
+
     alg.processCommand()
 
     # re-add the previous output
     alg.addOutput(output)
+    alg.addParameter(color)
+    alg.addParameter(txtRules)
 
 
 def processOutputs(alg):
@@ -91,7 +106,7 @@ def processOutputs(alg):
     rasters = [alg.exportedLayers[f] for f in alg.getParameterValue('map').split(',')]
     output_dir = alg.getOutputValue('output_dir')
     for raster in rasters:
-        command = u"r.out.gdal createopt=\"TFW=YES,COMPRESS=LZW\" input={} output=\"{}\" --overwrite".format(
+        command = u"r.out.gdal -t createopt=\"TFW=YES,COMPRESS=LZW\" input={} output=\"{}\" --overwrite".format(
             raster,
             os.path.join(output_dir, raster + '.tif')
         )
