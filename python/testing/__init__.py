@@ -156,6 +156,7 @@ class TestCase(_TestCase):
 
 
 class _UnexpectedSuccess(Exception):
+
     """
     The test was supposed to fail, but it didn't!
     """

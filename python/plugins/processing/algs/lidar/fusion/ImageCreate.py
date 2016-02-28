@@ -52,7 +52,7 @@ class ImageCreate(FusionAlgorithm):
             self.INPUT, self.tr('Input LAS')))
         self.addParameter(ParameterSelection(
             self.COLOROPTION, self.tr('Method to assign colour'),
-            ['Intensity', 'Elevation','Height']))
+            ['Intensity', 'Elevation', 'Height']))
         self.addParameter(ParameterFile(
             self.GROUND, self.tr("Ground file (used with 'Height' method)"), 'dtm'))
         self.addParameter(ParameterBoolean(

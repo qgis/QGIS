@@ -41,7 +41,7 @@ class IntensityImage(FusionAlgorithm):
     ALLRET = 'ALLRET'
     LOWEST = 'LOWEST'
     HIST = 'HIST'
-    PIXEL ='PIXEL'
+    PIXEL = 'PIXEL'
     SWITCH = 'SWITCH'
     OUTPUT = 'OUTPUT'
 
