@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import QVariant
-from qgis.core import QgsExpression, QgsFeature, QgsField, QgsDistanceArea, QgsProject, GEO_NONE
+from qgis.core import QgsExpression, QgsExpressionContext, QgsExpressionContextUtils, QgsFeature, QgsField, QgsDistanceArea, QgsProject, GEO_NONE
 from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -111,8 +111,15 @@ class FieldsCalculator(GeoAlgorithm):
         da.setEllipsoid(QgsProject.instance().readEntry(
             'Measure', '/Ellipsoid', GEO_NONE)[0])
         exp.setGeomCalculator(da)
+        exp.setDistanceUnits(QgsProject.instance().distanceUnits())
+        exp.setAreaUnits(QgsProject.instance().areaUnits())
 
-        if not exp.prepare(layer.pendingFields()):
+        exp_context = QgsExpressionContext()
+        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
+        exp_context.appendScope(QgsExpressionContextUtils.projectScope())
+        exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+
+        if not exp.prepare(exp_context):
             raise GeoAlgorithmExecutionException(
                 self.tr('Evaluation error: %s' % exp.evalErrorString()))
 
@@ -129,8 +136,9 @@ class FieldsCalculator(GeoAlgorithm):
         rownum = 1
         for current, f in enumerate(features):
             rownum = current + 1
-            exp.setCurrentRowNumber(rownum)
-            value = exp.evaluate(f)
+            exp_context.setFeature(f)
+            exp_context.lastScope().setVariable("row_number", rownum)
+            value = exp.evaluate(exp_context)
             if exp.hasEvalError():
                 calculationSuccess = False
                 error = exp.evalErrorString()
