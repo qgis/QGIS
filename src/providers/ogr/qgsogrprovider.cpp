@@ -784,11 +784,11 @@ QString QgsOgrProvider::storageType() const
 
 void QgsOgrProvider::setRelevantFields( OGRLayerH ogrLayer, bool fetchGeometry, const QgsAttributeList &fetchAttributes )
 {
-  QgsOgrUtils::setRelevantFields( ogrLayer, mAttributeFields.count(), fetchGeometry, fetchAttributes );
+  QgsOgrProviderUtils::setRelevantFields( ogrLayer, mAttributeFields.count(), fetchGeometry, fetchAttributes );
 }
 
 
-void QgsOgrUtils::setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes )
+void QgsOgrProviderUtils::setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes )
 {
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
   if ( OGR_L_TestCapability( ogrLayer, OLCIgnoreFields ) )
@@ -2535,7 +2535,7 @@ QVariant QgsOgrProvider::maximumValue( int index )
 
 QByteArray QgsOgrProvider::quotedIdentifier( QByteArray field ) const
 {
-  return QgsOgrUtils::quotedIdentifier( field, ogrDriverName );
+  return QgsOgrProviderUtils::quotedIdentifier( field, ogrDriverName );
 }
 
 void QgsOgrProvider::forceReload()
@@ -2543,7 +2543,7 @@ void QgsOgrProvider::forceReload()
   QgsOgrConnPool::instance()->invalidateConnections( filePath() );
 }
 
-QByteArray QgsOgrUtils::quotedIdentifier( QByteArray field, const QString& ogrDriverName )
+QByteArray QgsOgrProviderUtils::quotedIdentifier( QByteArray field, const QString& ogrDriverName )
 {
   if ( ogrDriverName == "MySQL" )
   {
@@ -2560,7 +2560,7 @@ QByteArray QgsOgrUtils::quotedIdentifier( QByteArray field, const QString& ogrDr
   }
 }
 
-QString QgsOgrUtils::quotedValue( const QVariant& value )
+QString QgsOgrProviderUtils::quotedValue( const QVariant& value )
 {
   if ( value.isNull() )
     return "NULL";
@@ -2698,10 +2698,10 @@ OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type 
 
 OGRLayerH QgsOgrProvider::setSubsetString( OGRLayerH layer, OGRDataSourceH ds )
 {
-  return QgsOgrUtils::setSubsetString( layer, ds, mEncoding, mSubsetString );
+  return QgsOgrProviderUtils::setSubsetString( layer, ds, mEncoding, mSubsetString );
 }
 
-OGRLayerH QgsOgrUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec* encoding, const QString& subsetString )
+OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec* encoding, const QString& subsetString )
 {
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( layer ) );
   OGRSFDriverH ogrDriver = OGR_DS_GetDriver( ds );

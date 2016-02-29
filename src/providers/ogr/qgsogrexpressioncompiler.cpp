@@ -95,5 +95,5 @@ QString QgsOgrExpressionCompiler::quotedIdentifier( const QString& identifier )
 QString QgsOgrExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
 {
   ok = true;
-  return QgsOgrUtils::quotedValue( value );
+  return QgsOgrProviderUtils::quotedValue( value );
 }

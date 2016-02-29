@@ -154,6 +154,7 @@ SET(QGIS_CORE_SRCS
   qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
   qgsogcutils.cpp
+  qgsogrutils.cpp
   qgsowsconnection.cpp
   qgspaintenginehack.cpp
   qgspallabeling.cpp
