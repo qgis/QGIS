@@ -78,6 +78,8 @@ You will often need to specify layers as parameters. To specify a layer you will
  * a name
    * relative path like `expected/polys_centroid.gml`
 
+This is what it looks like in action:
+
     params:
       PAR: 2
       STR: string
