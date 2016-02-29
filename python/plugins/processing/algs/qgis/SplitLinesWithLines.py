@@ -5,6 +5,7 @@
     SplitLines.py
     ---------------------
     Date                 : November 2014
+    Revised              : February 2016
     Copyright            : (C) 2014 by Bernhard Ströbl
     Email                : bernhard dot stroebl at jena dot de
 ***************************************************************************
@@ -55,6 +56,7 @@ class SplitLinesWithLines(GeoAlgorithm):
         layerA = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_A))
         layerB = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_B))
 
+        sameLayer = self.getParameterValue(self.INPUT_A) == self.getParameterValue(self.INPUT_B)
         fieldList = layerA.pendingFields()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
@@ -79,6 +81,11 @@ class SplitLinesWithLines(GeoAlgorithm):
                 for i in lines:
                     request = QgsFeatureRequest().setFilterFid(i)
                     inFeatB = layerB.getFeatures(request).next()
+                    # check if trying to self-intersect
+                    if sameLayer:
+                        if inFeatA.id() == inFeatB.id():
+                            continue
+
                     splitGeom = QgsGeometry(inFeatB.geometry())
 
                     if inGeom.intersects(splitGeom):
