@@ -61,43 +61,43 @@ defaultMenuEntries.update({'qgis:definecurrentprojection':managementToolsMenu,
                             'qgis:splitvectorlayer':managementToolsMenu,
                             'qgis:mergevectorlayers':managementToolsMenu,
                             'qgis:createspatialindex':managementToolsMenu})
-rasterMenu = Processing.tr('&Raster')
-projectionsMenu = rasterMenu + "/" + Processing.tr('Projections')
-defaultMenuEntries.update({'gdalogr:warpreproject':projectionsMenu,
-                            'gdalogr:assignprojection':projectionsMenu,
-                            'gdalogr:extractprojection':projectionsMenu})
-conversionMenu = rasterMenu + "/" + Processing.tr('Conversion')
-defaultMenuEntries.update({'gdalogr:rasterize':conversionMenu,
-                            'gdalogr:rasterize_over':conversionMenu,
-                            'gdalogr:polygonize':conversionMenu,
-                            'gdalogr:translate':conversionMenu,
-                            'gdalogr:rgbtopct':conversionMenu,
-                            'gdalogr:pcttorgb':conversionMenu})
-extractionMenu = rasterMenu + "/" + Processing.tr('Extraction')
-defaultMenuEntries.update({'gdalogr:contour':extractionMenu,
-                           'gdalogr:cliprasterbyextent':extractionMenu,
-                           'gdalogr:cliprasterbymasklayer':extractionMenu})
-analysisMenu = rasterMenu + "/" + Processing.tr('Analysis')
-defaultMenuEntries.update({'gdalogr:sieve':analysisMenu, 'gdalogr:nearblack':analysisMenu,
-                            'gdalogr:fillnodata':analysisMenu,
-                            'gdalogr:proximity':analysisMenu,
-                            'gdalogr:griddatametrics':analysisMenu,
-                            'gdalogr:gridaverage':analysisMenu,
-                            'gdalogr:gridinvdist':analysisMenu,
-                            'gdalogr:gridnearestneighbor':analysisMenu,
-                            'gdalogr:aspect':analysisMenu,
-                            'gdalogr:hillshade':analysisMenu,
-                            'gdalogr:roughness':analysisMenu,
-                            'gdalogr:slope':analysisMenu,
-                            'gdalogr:tpi':analysisMenu,
-                            'gdalogr:tri':analysisMenu})
 
-miscMenu = rasterMenu + "/" + Processing.tr('Miscellaneous')
-defaultMenuEntries.update({'gdalogr:buildvirtualraster':miscMenu,
-                           'gdalogr:merge':miscMenu,
-                           'gdalogr:rasterinfo':miscMenu,
-                           'gdalogr:overviews':miscMenu,
-                           'gdalogr:tileindex':miscMenu})
+#~ rasterMenu = Processing.tr('&Raster')
+#~ projectionsMenu = rasterMenu + "/" + Processing.tr('Projections')
+#~ defaultMenuEntries.update({'gdalogr:warpreproject':projectionsMenu,
+                            #~ 'gdalogr:assignprojection':projectionsMenu,
+                            #~ 'gdalogr:extractprojection':projectionsMenu})
+#~ conversionMenu = rasterMenu + "/" + Processing.tr('Conversion')
+#~ defaultMenuEntries.update({'gdalogr:rasterize':conversionMenu,
+                            #~ 'gdalogr:rasterize_over':conversionMenu,
+                            #~ 'gdalogr:polygonize':conversionMenu,
+                            #~ 'gdalogr:translate':conversionMenu,
+                            #~ 'gdalogr:rgbtopct':conversionMenu,
+                            #~ 'gdalogr:pcttorgb':conversionMenu})
+#~ extractionMenu = rasterMenu + "/" + Processing.tr('Extraction')
+#~ defaultMenuEntries.update({'gdalogr:contour':extractionMenu,
+                           #~ 'gdalogr:cliprasterbyextent':extractionMenu,
+                           #~ 'gdalogr:cliprasterbymasklayer':extractionMenu})
+#~ analysisMenu = rasterMenu + "/" + Processing.tr('Analysis')
+#~ defaultMenuEntries.update({'gdalogr:sieve':analysisMenu, 'gdalogr:nearblack':analysisMenu,
+                            #~ 'gdalogr:fillnodata':analysisMenu,
+                            #~ 'gdalogr:proximity':analysisMenu,
+                            #~ 'gdalogr:griddatametrics':analysisMenu,
+                            #~ 'gdalogr:gridaverage':analysisMenu,
+                            #~ 'gdalogr:gridinvdist':analysisMenu,
+                            #~ 'gdalogr:gridnearestneighbor':analysisMenu,
+                            #~ 'gdalogr:aspect':analysisMenu,
+                            #~ 'gdalogr:hillshade':analysisMenu,
+                            #~ 'gdalogr:roughness':analysisMenu,
+                            #~ 'gdalogr:slope':analysisMenu,
+                            #~ 'gdalogr:tpi':analysisMenu,
+                            #~ 'gdalogr:tri':analysisMenu})
+#~ miscMenu = rasterMenu + "/" + Processing.tr('Miscellaneous')
+#~ defaultMenuEntries.update({'gdalogr:buildvirtualraster':miscMenu,
+                           #~ 'gdalogr:merge':miscMenu,
+                           #~ 'gdalogr:rasterinfo':miscMenu,
+                           #~ 'gdalogr:overviews':miscMenu,
+                           #~ 'gdalogr:tileindex':miscMenu})
 
 
 def initializeMenus():

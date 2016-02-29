@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GdalToolsWidget</class>
+ <widget class="QWidget" name="GdalToolsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>415</width>
+    <height>422</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Warp (Reproject)</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QCheckBox" name="batchCheck">
+     <property name="text">
+      <string>Batch mode (for processing whole directory)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>&amp;Input file</string>
+       </property>
+       <property name="buddy">
+        <cstring>inSelector</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>&amp;Output file</string>
+       </property>
+       <property name="buddy">
+        <cstring>outSelector</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QCheckBox" name="sourceSRSCheck">
+       <property name="text">
+        <string>&amp;Source SRS</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLineEdit" name="sourceSRSEdit">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="selectSourceSRSButton">
+         <property name="text">
+          <string>Select...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="0">
+      <widget class="QCheckBox" name="targetSRSCheck">
+       <property name="text">
+        <string>&amp;Target SRS</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLineEdit" name="targetSRSEdit">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="selectTargetSRSButton">
+         <property name="text">
+          <string>Select...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="4" column="0">
+      <widget class="QCheckBox" name="resamplingCheck">
+       <property name="text">
+        <string>&amp;Resampling method</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="resamplingCombo">
+       <item>
+        <property name="text">
+         <string>Near</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Bilinear</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Cubic</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Cubic spline</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Lanczos</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QCheckBox" name="noDataCheck">
+       <property name="text">
+        <string>No data values</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLineEdit" name="noDataEdit">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QCheckBox" name="cacheCheck">
+       <property name="text">
+        <string>&amp;Memory used for caching</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QSpinBox" name="cacheSpin">
+       <property name="suffix">
+        <string>MB</string>
+       </property>
+       <property name="minimum">
+        <number>20</number>
+       </property>
+       <property name="maximum">
+        <number>1024</number>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QCheckBox" name="maskCheck">
+       <property name="text">
+        <string>Mask layer</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="GdalToolsInOutSelector" name="inSelector" native="true"/>
+     </item>
+     <item row="1" column="1">
+      <widget class="GdalToolsInOutSelector" name="outSelector" native="true"/>
+     </item>
+     <item row="6" column="1">
+      <widget class="GdalToolsInOutSelector" name="maskSelector" native="true"/>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QGroupBox" name="resizeGroupBox">
+     <property name="title">
+      <string>Resize</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_7">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Width</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="widthSpin">
+        <property name="maximum">
+         <number>999999</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_12">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Height</string>
+        </property>
+        <property name="indent">
+         <number>40</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QSpinBox" name="heightSpin">
+        <property name="maximum">
+         <number>999999</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QProgressBar" name="progressBar"/>
+   </item>
+   <item row="4" column="0">
+    <widget class="QCheckBox" name="multithreadCheck">
+     <property name="text">
+      <string>Use m&amp;ultithreaded warping implementation</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GdalToolsInOutSelector</class>
+   <extends>QWidget</extends>
+   <header>inOutSelector</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/contour.png</file>
+        <file>icons/merge.png</file>
+        <file>icons/polygonize.png</file>
+        <file>icons/rasterize.png</file>
+        <file>icons/sieve.png</file>
+        <file>icons/vrt.png</file>
+        <file>icons/warp.png</file>
+        <file>icons/proximity.png</file>
+        <file>icons/nearblack.png</file>
+        <file>icons/grid.png</file>
+        <file>icons/translate.png</file>
+        <file>icons/raster-info.png</file>
+        <file>icons/projection-add.png</file>
+        <file>icons/raster-overview.png</file>
+        <file>icons/raster-clip.png</file>
+        <file>icons/raster-rgb.png</file>
+        <file>icons/tiles.png</file>
+        <file>icons/about.png</file>
+        <file>icons/dem.png</file>
+        <file>icons/projection-export.png</file>
+        <file>icons/fillnodata.png</file>
+        <file>icons/24-to-8-bits.png</file>
+        <file>icons/8-to-24-bits.png</file>
+        <file>icons/edit.png</file>
+        <file>icons/reset.png</file>
+        <file>icons/tooltip.png</file>
+    </qresource>
+</RCC>

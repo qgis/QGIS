@@ -490,6 +490,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString& thePluginDirString
     QgsDebugMsg( "Loading python plugins" );
 
     QStringList corePlugins = QStringList();
+    corePlugins << "GdalTools";
     corePlugins << "db_manager";
     corePlugins << "processing";
     corePlugins << "MetaSearch";

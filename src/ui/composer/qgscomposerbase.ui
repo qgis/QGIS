@@ -1059,7 +1059,6 @@
   </action>
  </widget>
  <resources>
-  <include location="../../../python/plugins/fTools/resources.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>
