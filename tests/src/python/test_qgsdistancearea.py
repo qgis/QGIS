@@ -25,6 +25,8 @@ from qgis.core import (QgsGeometry,
 from qgis.testing import (start_app,
                           unittest)
 
+from PyQt4.QtCore import QLocale
+
 # Convenience instances in case you may need them
 # not used in this test
 
@@ -302,6 +304,7 @@ class TestQgsDistanceArea(unittest.TestCase):
 
     def testFormatDistance(self):
         """Test formatting distances"""
+        QLocale.setDefault(QLocale.c())
         self.assertEqual(QgsDistanceArea.formatDistance(45, 3, QGis.Meters), u'45.000 m')
         self.assertEqual(QgsDistanceArea.formatDistance(1300, 1, QGis.Meters, False), u'1.3 km')
         self.assertEqual(QgsDistanceArea.formatDistance(.005, 1, QGis.Meters, False), u'5.0 mm')
@@ -329,6 +332,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertEqual(QgsDistanceArea.formatDistance(1.5, 1, QGis.Degrees, True), u'1.5 degrees')
         self.assertEqual(QgsDistanceArea.formatDistance(1.0, 1, QGis.Degrees, False), u'1.0 degree')
         self.assertEqual(QgsDistanceArea.formatDistance(1.0, 1, QGis.UnknownUnit, False), u'1.0')
+        QLocale.setDefault(QLocale.system())
 
 if __name__ == '__main__':
     unittest.main()
