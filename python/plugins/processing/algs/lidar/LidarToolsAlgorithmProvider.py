@@ -131,6 +131,8 @@ from fusion.GroundFilter import GroundFilter
 from fusion.MergeData import MergeData
 from fusion.FilterData import FilterData
 from fusion.PolyClipData import PolyClipData
+from fusion.ImageCreate import ImageCreate
+from fusion.IntensityImage import IntensityImage
 from fusion.FusionUtils import FusionUtils
 
 
@@ -201,7 +203,8 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 Catalog(), CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(),
                 Csv2Grid(), Cover(), FilterData(), GridMetrics(), GroundFilter(),
                 GridSurfaceCreate(), MergeData(), TinSurfaceCreate(), PolyClipData(),
-                DTM2TIF(), DTM2ASCII(), FirstLastReturn(), ASCII2DTM()
+                DTM2TIF(), DTM2ASCII(), FirstLastReturn(), ASCII2DTM(), ImageCreate(),
+                IntensityImage()
             ]
             for alg in fusiontools:
                 alg.group, alg.i18n_group = alg.trAlgorithm('Fusion')

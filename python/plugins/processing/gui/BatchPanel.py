@@ -38,6 +38,7 @@ from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
+from processing.gui.PointSelectionPanel import PointSelectionPanel
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 from processing.gui.GeometryPredicateSelectionPanel import GeometryPredicateSelectionPanel
@@ -48,6 +49,7 @@ from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterCrs
+from processing.core.parameters import ParameterPoint
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterFixedTable
@@ -155,6 +157,8 @@ class BatchPanel(BASE, WIDGET):
             item = FixedTablePanel(param)
         elif isinstance(param, ParameterExtent):
             item = ExtentSelectionPanel(self.parent, self.alg, param.default)
+        elif isinstance(param, ParameterPoint):
+            item = PointSelectionPanel(self.parent, param.default)
         elif isinstance(param, ParameterCrs):
             item = CrsSelectionPanel(param.default)
         elif isinstance(param, ParameterFile):

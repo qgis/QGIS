@@ -41,6 +41,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterPoint
 from processing.core.parameters import getParameterFromString
 from processing.core.outputs import OutputTable
 from processing.core.outputs import OutputVector
@@ -223,6 +224,8 @@ class ScriptAlgorithm(GeoAlgorithm):
                 param = ParameterBoolean(name, descName)
         elif token.lower().strip() == 'extent':
             param = ParameterExtent(name, descName)
+        elif token.lower().strip() == 'point':
+            param = ParameterPoint(name, descName)
         elif token.lower().strip() == 'file':
             param = ParameterFile(name, descName, False)
         elif token.lower().strip() == 'folder':

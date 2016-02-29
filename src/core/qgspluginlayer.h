@@ -37,7 +37,13 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     /** Return plugin layer type (the same as used in QgsPluginLayerRegistry) */
     QString pluginLayerType();
 
+    /** Set extent of the layer */
     void setExtent( const QgsRectangle &extent ) override;
+
+    /** Set source string. This is used for example in layer tree to show tooltip.
+     * @note added in 2.16
+     */
+    void setSource( const QString& source );
 
     //! return a list of symbology items for the legend
     //! (defult implementation returns nothing)

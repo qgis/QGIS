@@ -25,6 +25,8 @@ from qgis.core import (QgsGeometry,
 from qgis.testing import (start_app,
                           unittest)
 
+from PyQt4.QtCore import QLocale
+
 # Convenience instances in case you may need them
 # not used in this test
 
@@ -299,6 +301,38 @@ class TestQgsDistanceArea(unittest.TestCase):
         # test converting the resultant area
         area = da.convertAreaMeasurement(area, QgsUnitTypes.SquareYards)
         self.assertAlmostEqual(area, 220240.8172549, delta=1.0)
+
+    def testFormatDistance(self):
+        """Test formatting distances"""
+        QLocale.setDefault(QLocale.c())
+        self.assertEqual(QgsDistanceArea.formatDistance(45, 3, QGis.Meters), u'45.000 m')
+        self.assertEqual(QgsDistanceArea.formatDistance(1300, 1, QGis.Meters, False), u'1.3 km')
+        self.assertEqual(QgsDistanceArea.formatDistance(.005, 1, QGis.Meters, False), u'5.0 mm')
+        self.assertEqual(QgsDistanceArea.formatDistance(.05, 1, QGis.Meters, False), u'5.0 cm')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 3, QGis.Kilometers, True), u'1.500 km')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 3, QGis.Kilometers, False), u'1.500 km')
+        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 3, QGis.Kilometers, True), u'0.500 km')
+        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 3, QGis.Kilometers, False), u'500.000 m')
+        self.assertEqual(QgsDistanceArea.formatDistance(6000, 0, QGis.Feet, True), u'6,000 ft')
+        self.assertEqual(QgsDistanceArea.formatDistance(6000, 3, QGis.Feet, False), u'1.136 mi')
+        self.assertEqual(QgsDistanceArea.formatDistance(300, 0, QGis.Feet, True), u'300 ft')
+        self.assertEqual(QgsDistanceArea.formatDistance(300, 0, QGis.Feet, False), u'300 ft')
+        self.assertEqual(QgsDistanceArea.formatDistance(3000, 0, QGis.Yards, True), u'3,000 yd')
+        self.assertEqual(QgsDistanceArea.formatDistance(3000, 3, QGis.Yards, False), u'1.705 mi')
+        self.assertEqual(QgsDistanceArea.formatDistance(300, 0, QGis.Yards, True), u'300 yd')
+        self.assertEqual(QgsDistanceArea.formatDistance(300, 0, QGis.Yards, False), u'300 yd')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 3, QGis.Miles, True), u'1.500 mi')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 3, QGis.Miles, False), u'1.500 mi')
+        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 3, QGis.Miles, True), u'0.500 mi')
+        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 0, QGis.Miles, False), u'2,640 ft')
+        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 1, QGis.NauticalMiles, True), u'0.5 NM')
+        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 1, QGis.NauticalMiles, False), u'0.5 NM')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 1, QGis.NauticalMiles, True), u'1.5 NM')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 1, QGis.NauticalMiles, False), u'1.5 NM')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 1, QGis.Degrees, True), u'1.5 degrees')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.0, 1, QGis.Degrees, False), u'1.0 degree')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.0, 1, QGis.UnknownUnit, False), u'1.0')
+        QLocale.setDefault(QLocale.system())
 
 if __name__ == '__main__':
     unittest.main()

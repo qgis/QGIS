@@ -84,7 +84,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         def linkClicked(url):
             webbrowser.open(url.toString())
-        self.textShortHelp.connect(self.textShortHelp, SIGNAL("anchorClicked(const QUrl&)"), linkClicked)
+        self.textShortHelp.anchorClicked.connect(linkClicked)
 
         self.textHelp.page().setNetworkAccessManager(QgsNetworkAccessManager.instance())
 

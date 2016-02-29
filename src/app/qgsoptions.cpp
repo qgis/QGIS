@@ -461,7 +461,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
 
   // Set the units for measuring
   mDistanceUnitsComboBox->addItem( tr( "Meters" ), QGis::Meters );
+  mDistanceUnitsComboBox->addItem( tr( "Kilometers" ), QGis::Kilometers );
   mDistanceUnitsComboBox->addItem( tr( "Feet" ), QGis::Feet );
+  mDistanceUnitsComboBox->addItem( tr( "Yards" ), QGis::Yards );
+  mDistanceUnitsComboBox->addItem( tr( "Miles" ), QGis::Miles );
   mDistanceUnitsComboBox->addItem( tr( "Nautical miles" ), QGis::NauticalMiles );
   mDistanceUnitsComboBox->addItem( tr( "Degrees" ), QGis::Degrees );
   mDistanceUnitsComboBox->addItem( tr( "Map units" ), QGis::UnknownUnit );

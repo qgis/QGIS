@@ -87,7 +87,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mCoordinateDisplayComboBox->addItem( tr( "Degrees, minutes, seconds" ), DegreesMinutesSeconds );
 
   mDistanceUnitsCombo->addItem( tr( "Meters" ), QGis::Meters );
+  mDistanceUnitsCombo->addItem( tr( "Kilometers" ), QGis::Kilometers );
   mDistanceUnitsCombo->addItem( tr( "Feet" ), QGis::Feet );
+  mDistanceUnitsCombo->addItem( tr( "Yards" ), QGis::Yards );
+  mDistanceUnitsCombo->addItem( tr( "Miles" ), QGis::Miles );
   mDistanceUnitsCombo->addItem( tr( "Nautical miles" ), QGis::NauticalMiles );
   mDistanceUnitsCombo->addItem( tr( "Degrees" ), QGis::Degrees );
   mDistanceUnitsCombo->addItem( tr( "Map units" ), QGis::UnknownUnit );

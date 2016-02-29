@@ -42,7 +42,18 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.modeler.ModelerUtils import ModelerUtils
-from processing.core.parameters import getParameterFromString, ParameterRaster, ParameterVector, ParameterTable, ParameterTableField, ParameterBoolean, ParameterString, ParameterNumber, ParameterExtent, ParameterDataObject, ParameterMultipleInput
+from processing.core.parameters import (getParameterFromString,
+                                        ParameterRaster,
+                                        ParameterVector,
+                                        ParameterTable,
+                                        ParameterTableField,
+                                        ParameterBoolean,
+                                        ParameterString,
+                                        ParameterNumber,
+                                        ParameterExtent,
+                                        ParameterDataObject,
+                                        ParameterMultipleInput,
+                                        ParameterPoint)
 from processing.tools import dataobjects
 from processing.gui.Help2Html import getHtmlFromDescriptionsDict
 

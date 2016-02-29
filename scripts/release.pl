@@ -134,6 +134,8 @@ unless( $dopoint ) {
 	$splashwidth = `identify -format '%w' images/splash/splash-$newmajor.$newminor.png`;
 	print "WARNING: Splash images/splash/splash-$newmajor.$newminor.png is $splashwidth pixels wide - will be rescaled\n" if $splashwidth != 600;
 	pod2usage("NSIS image ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp not found") unless -r "ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp";
+	my $welcomeformat = `identify -format '%wx%h %m' ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp`;
+	pod2usage("NSIS Image ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp mis-sized [$welcomeformat vs. 164x314 BMP3]") unless $welcomeformat =~ /^164x314 /;
 }
 
 print "Last pull rebase...\n";
@@ -177,7 +179,7 @@ unless( $dopoint ) {
 	} else {
 		run( "cp -v images/splash/splash-$newmajor.$newminor.png images/splash/splash.png", "splash png switch failed" );
 	}
-	run( "cp -v ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp ms-windows/Installer-Files/WelcomeFinishPage.bmp", "installer bitmap switch failed" );
+	run( "convert -resize 164x314 ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp BMP3:ms-windows/Installer-Files/WelcomeFinishPage.bmp", "installer bitmap switch failed" );
 
 	if( -f "images/splash/splash-release.xcf.bz2" ) {
 		run( "cp -v images/splash/splash-$newmajor.$newminor.xcf.bz2 images/splash/splash.xcf.bz2", "splash xcf switch failed" );

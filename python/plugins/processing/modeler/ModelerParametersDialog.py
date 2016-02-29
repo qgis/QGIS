@@ -26,20 +26,60 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import Qt, QUrl, QMetaObject
-from PyQt4.QtGui import QDialog, QDialogButtonBox, QLabel, QLineEdit, QFrame, QPushButton, QSizePolicy, QVBoxLayout, QHBoxLayout, QTabWidget, QWidget, QScrollArea, QComboBox, QTableWidgetItem, QMessageBox
+from PyQt4.QtGui import (QDialog,
+                         QDialogButtonBox,
+                         QLabel,
+                         QLineEdit,
+                         QFrame,
+                         QPushButton,
+                         QSizePolicy,
+                         QVBoxLayout,
+                         QHBoxLayout,
+                         QTabWidget,
+                         QWidget,
+                         QScrollArea,
+                         QComboBox,
+                         QTableWidgetItem,
+                         QMessageBox)
 from PyQt4.QtWebKit import QWebView
 
-from processing.modeler.ModelerAlgorithm import ValueFromInput, \
-    ValueFromOutput, Algorithm, ModelerOutput
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.RangePanel import RangePanel
 from processing.gui.GeometryPredicateSelectionPanel import \
     GeometryPredicateSelectionPanel
+from processing.core.parameters import (ParameterExtent,
+                                        ParameterRaster,
+                                        ParameterVector,
+                                        ParameterBoolean,
+                                        ParameterTable,
+                                        ParameterFixedTable,
+                                        ParameterMultipleInput,
+                                        ParameterSelection,
+                                        ParameterRange,
+                                        ParameterNumber,
+                                        ParameterString,
+                                        ParameterCrs,
+                                        ParameterTableField,
+                                        ParameterFile,
+                                        ParameterPoint,
+                                        ParameterGeometryPredicate)
+from processing.core.outputs import (OutputRaster,
+                                     OutputVector,
+                                     OutputTable,
+                                     OutputHTML,
+                                     OutputFile,
+                                     OutputDirectory,
+                                     OutputNumber,
+                                     OutputString,
+                                     OutputExtent)
+
+from processing.modeler.ModelerAlgorithm import (ValueFromInput,
+                                                 ValueFromOutput,
+                                                 Algorithm,
+                                                 ModelerOutput)
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
-from processing.core.parameters import ParameterExtent, ParameterRaster, ParameterVector, ParameterBoolean, ParameterTable, ParameterFixedTable, ParameterMultipleInput, ParameterSelection, ParameterRange, ParameterNumber, ParameterString, ParameterCrs, ParameterTableField, ParameterFile, ParameterGeometryPredicate
-from processing.core.outputs import OutputRaster, OutputVector, OutputTable, OutputHTML, OutputFile, OutputDirectory, OutputNumber, OutputString, OutputExtent
 
 
 class ModelerParametersDialog(QDialog):
@@ -109,7 +149,9 @@ class ModelerParametersDialog(QDialog):
                 continue
             desc = param.description
             if isinstance(param, ParameterExtent):
-                desc += '(xmin, xmax, ymin, ymax)'
+                desc += self.tr('(xmin, xmax, ymin, ymax)')
+            if isinstance(param, ParameterPoint):
+                desc += self.tr('(x, y)')
             label = QLabel(desc)
             self.labels[param.name] = label
             widget = self.getWidgetFromParameter(param)
@@ -335,6 +377,13 @@ class ModelerParametersDialog(QDialog):
                 item.addItem(self.resolveValueDescription(ex), ex)
             if not self.canUseAutoExtent():
                 item.setEditText(unicode(param.default))
+        elif isinstance(param, ParameterPoint):
+            item = QComboBox()
+            item.setEditable(True)
+            points = self.getAvailableValuesOfType(ParameterPoint)
+            for p in points:
+                item.addItem(self.resolveValueDescription(p), p)
+            item.setEditText(unicode(param.default))
         elif isinstance(param, ParameterFile):
             item = QComboBox()
             item.setEditable(True)
@@ -427,7 +476,8 @@ class ModelerParametersDialog(QDialog):
                         ParameterNumber,
                         ParameterBoolean,
                         ParameterExtent,
-                        ParameterFile
+                        ParameterFile,
+                        ParameterPoint
                 )):
                     self.setComboBoxValue(widget, value, param)
                 elif isinstance(param, ParameterString):
@@ -594,6 +644,29 @@ class ModelerParametersDialog(QDialog):
             alg.params[param.name] = value
         return True
 
+    def setParamPointValue(self, alg, param, widget):
+        idx = widget.findText(widget.currentText())
+        if idx < 0:
+            s = unicode(widget.currentText()).strip()
+            if s:
+                try:
+                    tokens = s.split(',')
+                    if len(tokens) != 2:
+                        return False
+                    for token in tokens:
+                        float(token)
+                except:
+                    return False
+            elif param.optional:
+                s = None
+            else:
+                return False
+            alg.params[param.name] = [s]
+        else:
+            value = widget.itemData(widget.currentIndex())
+            alg.params[param.name] = value
+        return True
+
     def setParamValue(self, alg, param, widget):
         if isinstance(param, (ParameterRaster, ParameterVector,
                               ParameterTable)):
@@ -611,6 +684,8 @@ class ModelerParametersDialog(QDialog):
             return self.setParamNumberValue(alg, param, widget)
         elif isinstance(param, ParameterExtent):
             return self.setParamExtentValue(alg, param, widget)
+        elif isinstance(param, ParameterPoint):
+            return self.setParamPointValue(alg, param, widget)
         elif isinstance(param, ParameterFile):
             return self.setParamFileValue(alg, param, widget)
         elif isinstance(param, ParameterSelection):

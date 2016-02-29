@@ -67,7 +67,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
         {
           reset();
         }
-        void reset() { sum = 0; count = 0; max = FLT_MIN; min = FLT_MAX; valueCount.clear(); values.clear(); }
+        void reset() { sum = 0; count = 0; max = -FLT_MAX; min = FLT_MAX; valueCount.clear(); values.clear(); }
         void addValue( float value, double weight = 1.0 )
         {
           if ( weight < 1.0 )

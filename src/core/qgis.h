@@ -154,16 +154,20 @@ class CORE_EXPORT QGis
     //TODO QGIS 3.0 - clean up and move to QgsUnitTypes and rename to DistanceUnit
     enum UnitType
     {
-      Meters = 0,
-      Feet = 1,
-      Degrees = 2, //for 1.0 api backwards compatibility
-      UnknownUnit = 3,
+      Meters = 0, /*!< meters */
+      Feet = 1, /*!< imperial feet */
+      Degrees = 2, /*!< degrees, for planar geographic CRS distance measurements */ //for 1.0 api backwards compatibility
+      NauticalMiles = 7, /*!< nautical miles */
+      Kilometers = 8, /*!< kilometers */
+      Yards = 9, /*!< imperial yards */
+      Miles = 10, /*!< terrestial miles */
+
+      UnknownUnit = 3, /*!< unknown distance unit */
 
       // for [1.4;1.8] api compatibility
       DecimalDegrees = 2,         // was 2
       DegreesMinutesSeconds = 2,  // was 4
       DegreesDecimalMinutes = 2,  // was 5
-      NauticalMiles = 7
     };
 
     //! Provides the canonical name of the type value
