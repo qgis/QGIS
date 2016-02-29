@@ -6837,11 +6837,11 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   int nTotalFeatures = features.count();
 
   QHash<int, int> remap;
-  const QgsFields &fields = clipboard()->fields();
+  QgsFields fields = clipboard()->fields();
   QgsAttributeList pkAttrList = pasteVectorLayer->pkAttributeList();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    int dst = pasteVectorLayer->fieldNameIndex( fields[idx].name() );
+    int dst = pasteVectorLayer->fieldNameIndex( fields.at( idx ).name() );
     if ( dst < 0 )
       continue;
 
@@ -6984,9 +6984,11 @@ QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
 
 QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
 {
+  QgsFields fields = clipboard()->fields();
+
   // Decide geometry type from features, switch to multi type if at least one multi is found
   QMap<QGis::WkbType, int> typeCounts;
-  QgsFeatureList features = clipboard()->copyOf();
+  QgsFeatureList features = clipboard()->copyOf( fields );
   for ( int i = 0; i < features.size(); i++ )
   {
     QgsFeature &feature = features[i];

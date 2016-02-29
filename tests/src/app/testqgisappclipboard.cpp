@@ -26,6 +26,8 @@
 #include <qgsclipboard.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsvectorlayer.h>
+#include "qgsgeometry.h"
+#include "qgspointv2.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the QgisApp clipboard.
@@ -44,6 +46,9 @@ class TestQgisAppClipboard : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void copyPaste();
+    void pasteWkt();
+    void pasteGeoJson();
+    void retrieveFields();
 
   private:
     QgisApp * mQgisApp;
@@ -105,6 +110,67 @@ void TestQgisAppClipboard::copyPaste()
     qDebug() << pastedLayer->featureCount() << " features in pasted layer";
     QVERIFY( pastedLayer->featureCount() == filesCounts.value( fileName ) );
   }
+}
+
+void TestQgisAppClipboard::pasteWkt()
+{
+  mQgisApp->clipboard()->clear();
+  mQgisApp->clipboard()->setText( "POINT (125 10)\nPOINT (111 30)" );
+
+  QgsFeatureList features = mQgisApp->clipboard()->copyOf();
+  QCOMPARE( features.length(), 2 );
+  QVERIFY( features.at( 0 ).constGeometry() && !features.at( 0 ).constGeometry()->isEmpty() );
+  QCOMPARE( features.at( 0 ).constGeometry()->geometry()->wkbType(), QgsWKBTypes::Point );
+  const QgsPointV2* point = dynamic_cast< QgsPointV2* >( features.at( 0 ).constGeometry()->geometry() );
+  QCOMPARE( point->x(), 125.0 );
+  QCOMPARE( point->y(), 10.0 );
+  QVERIFY( features.at( 1 ).constGeometry() && !features.at( 1 ).constGeometry()->isEmpty() );
+  QCOMPARE( features.at( 1 ).constGeometry()->geometry()->wkbType(), QgsWKBTypes::Point );
+  point = dynamic_cast< QgsPointV2* >( features.at( 1 ).constGeometry()->geometry() );
+  QCOMPARE( point->x(), 111.0 );
+  QCOMPARE( point->y(), 30.0 );
+}
+
+void TestQgisAppClipboard::pasteGeoJson()
+{
+  mQgisApp->clipboard()->clear();
+  QgsFields fields;
+  fields.append( QgsField( "name", QVariant::String ) );
+  mQgisApp->clipboard()->setText( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}" );
+
+  QgsFeatureList features = mQgisApp->clipboard()->copyOf( fields );
+  QCOMPARE( features.length(), 1 );
+  QVERIFY( features.at( 0 ).constGeometry() && !features.at( 0 ).constGeometry()->isEmpty() );
+  QCOMPARE( features.at( 0 ).constGeometry()->geometry()->wkbType(), QgsWKBTypes::Point );
+  const QgsPointV2* point = dynamic_cast< QgsPointV2* >( features.at( 0 ).constGeometry()->geometry() );
+  QCOMPARE( point->x(), 125.0 );
+  QCOMPARE( point->y(), 10.0 );
+  QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
+}
+
+void TestQgisAppClipboard::retrieveFields()
+{
+  mQgisApp->clipboard()->clear();
+
+  //empty string
+  mQgisApp->clipboard()->setText( "" );
+
+  QgsFields fields = mQgisApp->clipboard()->fields();
+  QCOMPARE( fields.count(), 0 );
+
+  // bad string
+  mQgisApp->clipboard()->setText( "asdasdas" );
+  fields = mQgisApp->clipboard()->fields();
+  QCOMPARE( fields.count(), 0 );
+
+  // geojson string
+  mQgisApp->clipboard()->setText( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\",\"height\":5.5}}" );
+  fields = mQgisApp->clipboard()->fields();
+  QCOMPARE( fields.count(), 2 );
+  QCOMPARE( fields.at( 0 ).name(), QString( "name" ) );
+  QCOMPARE( fields.at( 0 ).type(), QVariant::String );
+  QCOMPARE( fields.at( 1 ).name(), QString( "height" ) );
+  QCOMPARE( fields.at( 1 ).type(), QVariant::Double );
 }
 
 QTEST_MAIN( TestQgisAppClipboard )

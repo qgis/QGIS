@@ -24,6 +24,7 @@
 #include <QClipboard>
 #include <QSettings>
 #include <QMimeData>
+#include <QTextCodec>
 
 #include "qgsclipboard.h"
 #include "qgsfeature.h"
@@ -32,6 +33,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
+#include "qgsogrutils.h"
 
 QgsClipboard::QgsClipboard()
     : QObject()
@@ -143,25 +145,19 @@ void QgsClipboard::setSystemClipboard()
   QgsDebugMsg( QString( "replaced system clipboard with: %1." ).arg( textCopy ) );
 }
 
-QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
+QgsFeatureList QgsClipboard::stringToFeatureList( const QString& string, const QgsFields& fields ) const
 {
-  QgsDebugMsg( "returning clipboard." );
-  if ( !mUseSystemClipboard )
-    return mFeatureClipboard;
+  //first try using OGR to read string
+  QgsFeatureList features = QgsOgrUtils::stringToFeatureList( string, fields, QTextCodec::codecForName( "System" ) );
 
-  QClipboard *cb = QApplication::clipboard();
+  if ( !features.isEmpty() )
+    return features;
 
-#ifndef Q_OS_WIN
-  QString text = cb->text( QClipboard::Selection );
-#else
-  QString text = cb->text( QClipboard::Clipboard );
-#endif
+  // otherwise try to read in as WKT
+  QStringList values = string.split( '\n' );
+  if ( values.isEmpty() || string.isEmpty() )
+    return features;
 
-  QStringList values = text.split( '\n' );
-  if ( values.isEmpty() || text.isEmpty() )
-    return mFeatureClipboard;
-
-  QgsFeatureList features;
   Q_FOREACH ( const QString& row, values )
   {
     // Assume that it's just WKT for now.
@@ -176,6 +172,38 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
     feature.setGeometry( geometry );
     features.append( feature );
   }
+
+  return features;
+}
+
+QgsFields QgsClipboard::retrieveFields() const
+{
+  QClipboard *cb = QApplication::clipboard();
+
+#ifndef Q_OS_WIN
+  QString string = cb->text( QClipboard::Selection );
+#else
+  QString string = cb->text( QClipboard::Clipboard );
+#endif
+
+  return QgsOgrUtils::stringToFields( string, QTextCodec::codecForName( "System" ) );
+}
+
+QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
+{
+  QgsDebugMsg( "returning clipboard." );
+  if ( !mUseSystemClipboard )
+    return mFeatureClipboard;
+
+  QClipboard *cb = QApplication::clipboard();
+
+#ifndef Q_OS_WIN
+  QString text = cb->text( QClipboard::Selection );
+#else
+  QString text = cb->text( QClipboard::Clipboard );
+#endif
+
+  QgsFeatureList features = stringToFeatureList( text, fields );
 
   if ( features.isEmpty() )
     return mFeatureClipboard;
@@ -256,6 +284,11 @@ void QgsClipboard::setData( const QString& mimeType, const QByteArray& data, con
 void QgsClipboard::setData( const QString& mimeType, const QByteArray& data )
 {
   setData( mimeType, data, nullptr );
+}
+
+void QgsClipboard::setText( const QString& text )
+{
+  setData( "text/plain", text.toLocal8Bit(), nullptr );
 }
 
 bool QgsClipboard::hasFormat( const QString& mimeType )
