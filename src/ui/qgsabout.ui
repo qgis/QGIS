@@ -239,6 +239,16 @@ p, li { white-space: pre-wrap; }
             </widget>
            </item>
            <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>&lt;p&gt;QGIS Splash screen map courtesy of Stadt Essen&lt;/p&gt;&lt;p&gt;Thanks to the Linux hotel (Essen) for hosting the 2012 and 2014 developer meetings&lt;/p&gt;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
             <spacer name="spacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
