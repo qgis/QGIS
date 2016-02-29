@@ -97,7 +97,6 @@ bool QgsDb2ConnectionItem::ConnInfoFromSettings( const QString connName,
   QSettings settings;
   QString key = "/DB2/connections/" + connName;
 
-  QString errMsg;
   bool rc = QgsDb2ConnectionItem::ConnInfoFromParameters(
               settings.value( key + "/service" ).toString(),
               settings.value( key + "/driver" ).toString(),
@@ -107,11 +106,11 @@ bool QgsDb2ConnectionItem::ConnInfoFromSettings( const QString connName,
               settings.value( key + "/username" ).toString(),
               settings.value( key + "/password" ).toString(),
               settings.value( key + "/authcfg" ).toString(),
-              connInfo, errMsg );
+              connInfo, errorMsg );
 
   if ( !rc )
   {
-    QgsDebugMsg( "errMsg: " + errMsg );
+    QgsDebugMsg( "errMsg: " + errorMsg );
     return false;
   }
 
