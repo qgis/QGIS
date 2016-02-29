@@ -7023,9 +7023,9 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
     }
   }
 
-  QGis::WkbType wkbType = !typeCounts.isEmpty() ? typeCounts.keys().value( 0 ) : QGis::WKBPoint;
+  QGis::WkbType wkbType = !typeCounts.isEmpty() ? typeCounts.keys().value( 0 ) : QGis::WKBNoGeometry;
 
-  QString typeName = QString( QGis::featureType( wkbType ) ).remove( "WKB" );
+  QString typeName = wkbType != QGis::WKBNoGeometry ? QString( QGis::featureType( wkbType ) ).remove( "WKB" ) : "none";
 
   typeName += QString( "?memoryid=%1" ).arg( QUuid::createUuid().toString() );
 
@@ -7036,10 +7036,6 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   if ( features.isEmpty() )
   {
     message = tr( "No features in clipboard." ); // should not happen
-  }
-  else if ( typeCounts.isEmpty() )
-  {
-    message = tr( "No features with geometry found, point type layer will be created." );
   }
   else if ( typeCounts.size() > 1 )
   {
@@ -7062,7 +7058,8 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   }
 
   layer->startEditing();
-  layer->setCrs( clipboard()->crs(), false );
+  if ( wkbType != QGis::WKBNoGeometry )
+    layer->setCrs( clipboard()->crs(), false );
 
   Q_FOREACH ( QgsField f, clipboard()->fields().toList() )
   {
@@ -7098,13 +7095,12 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
       feature.geometry()->convertToMultiType();
     }
   }
-  if ( ! layer->addFeatures( features ) || !layer->commitChanges() )
+  if ( ! layer->addFeatures( features, false ) || !layer->commitChanges() )
   {
     QgsDebugMsg( "Cannot add features or commit changes" );
     delete layer;
     return nullptr;
   }
-  layer->removeSelection();
 
   QgsDebugMsg( QString( "%1 features pasted to temporary scratch layer" ).arg( layer->featureCount() ) );
   return layer;
