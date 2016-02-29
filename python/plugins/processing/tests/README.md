@@ -7,15 +7,15 @@ This file is structured with [yaml syntax](http://www.yaml.org/start.html).
 
 A basic test appears under the toplevel key `tests` and looks like this:
 
-  - name: centroid
-    algorithm: qgis:polygoncentroids
-    params:
-      - type: vector
-        name: polys.gml
-    results:
-       OUTPUT_LAYER:
-        type: vector
-        name: expected/polys_centroid.gml
+    - name: centroid
+      algorithm: qgis:polygoncentroids
+      params:
+        - type: vector
+          name: polys.gml
+      results:
+        OUTPUT_LAYER:
+          type: vector
+          name: expected/polys_centroid.gml
 
 How To
 ------
