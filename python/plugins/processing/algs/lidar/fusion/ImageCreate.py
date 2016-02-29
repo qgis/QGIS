@@ -51,12 +51,12 @@ class ImageCreate(FusionAlgorithm):
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input LAS')))
         self.addParameter(ParameterSelection(
-            self.COLOROPTION, self.tr('Method to assign colour'),
+            self.COLOROPTION, self.tr('Method to assign color'),
             ['Intensity', 'Elevation', 'Height']))
         self.addParameter(ParameterFile(
             self.GROUND, self.tr("Ground file (used with 'Height' method)"), 'dtm'))
         self.addParameter(ParameterBoolean(
-            self.RGB, self.tr('Use RGB colour model to create the colour ramp'), False))
+            self.RGB, self.tr('Use RGB color model to create the color ramp'), False))
         self.addParameter(ParameterNumber(
             self.PIXEL, self.tr('Pixel size'), 0, None, 1.0))
         self.addParameter(ParameterSelection(

@@ -29,7 +29,7 @@ class QgsSlopeFilter;
 class QgsHillshadeFilter;
 class QProgressDialog;
 
-/** Produces coloured relief rasters from DEM*/
+/** Produces colored relief rasters from DEM*/
 class ANALYSIS_EXPORT QgsRelief
 {
   public:
