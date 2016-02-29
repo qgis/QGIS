@@ -33,6 +33,11 @@ void QgsPluginLayer::setExtent( const QgsRectangle &extent )
   mExtent = extent;
 }
 
+void QgsPluginLayer::setSource( const QString& source )
+{
+  mDataSource = source;
+}
+
 QgsLegendSymbologyList QgsPluginLayer::legendSymbologyItems( QSize iconSize )
 {
   Q_UNUSED( iconSize );
