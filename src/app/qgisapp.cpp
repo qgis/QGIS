@@ -7027,33 +7027,32 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
 
   QString typeName = wkbType != QGis::WKBNoGeometry ? QString( QGis::featureType( wkbType ) ).remove( "WKB" ) : "none";
 
-  typeName += QString( "?memoryid=%1" ).arg( QUuid::createUuid().toString() );
-
-  QgsDebugMsg( QString( "output wkbType = %1 typeName = %2" ).arg( wkbType ).arg( typeName ) );
-
-  QString message;
-
   if ( features.isEmpty() )
   {
-    message = tr( "No features in clipboard." ); // should not happen
+    // should not happen
+    messageBar()->pushMessage( tr( "Paste features" ),
+                               tr( "No features in clipboard." ),
+                               QgsMessageBar::WARNING, messageTimeout() );
+    return nullptr;
   }
   else if ( typeCounts.size() > 1 )
   {
-    message = tr( "Multiple geometry types found, features with geometry different from %1 will be created without geometry." ).arg( typeName );
+    messageBar()->pushMessage( tr( "Paste features" ),
+                               tr( "Multiple geometry types found, features with geometry different from %1 will be created without geometry." ).arg( typeName ),
+                               QgsMessageBar::INFO, messageTimeout() );
   }
 
-  if ( !message.isEmpty() )
-  {
-    QMessageBox::warning( this, tr( "Warning" ), message, QMessageBox::Ok );
-    return nullptr;
-  }
+  typeName += QString( "?memoryid=%1" ).arg( QUuid::createUuid().toString() );
+  QgsDebugMsg( QString( "output wkbType = %1 typeName = %2" ).arg( wkbType ).arg( typeName ) );
 
   QgsVectorLayer *layer = new QgsVectorLayer( typeName, "pasted_features", "memory" );
 
   if ( !layer->isValid() || !layer->dataProvider() )
   {
     delete layer;
-    QMessageBox::warning( this, tr( "Warning" ), tr( "Cannot create new layer" ), QMessageBox::Ok );
+    messageBar()->pushMessage( tr( "Paste features" ),
+                               tr( "Cannot create new layer." ),
+                               QgsMessageBar::WARNING, messageTimeout() );
     return nullptr;
   }
 
@@ -7066,9 +7065,9 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
     QgsDebugMsg( QString( "field %1 (%2)" ).arg( f.name(), QVariant::typeToName( f.type() ) ) );
     if ( !layer->addAttribute( f ) )
     {
-      QMessageBox::warning( this, tr( "Warning" ),
-                            tr( "Cannot create field %1 (%2,%3)" ).arg( f.name(), f.typeName(), QVariant::typeToName( f.type() ) ),
-                            QMessageBox::Ok );
+      messageBar()->pushMessage( tr( "Paste features" ),
+                                 tr( "Cannot create field %1 (%2,%3)" ).arg( f.name(), f.typeName(), QVariant::typeToName( f.type() ) ),
+                                 QgsMessageBar::WARNING, messageTimeout() );
       delete layer;
       return nullptr;
     }
