@@ -342,8 +342,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>630</width>
-                   <height>376</height>
+                   <width>337</width>
+                   <height>113</height>
                   </rect>
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -765,7 +765,7 @@
                        <item row="5" column="0">
                         <widget class="QLabel" name="mAngleOffsetLabel">
                          <property name="text">
-                          <string>Start Angle</string>
+                          <string>Start angle</string>
                          </property>
                         </widget>
                        </item>
@@ -941,8 +941,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>630</width>
-                   <height>376</height>
+                   <width>525</width>
+                   <height>283</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
@@ -1247,8 +1247,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>630</width>
-                   <height>376</height>
+                   <width>296</width>
+                   <height>303</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
@@ -1609,8 +1609,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>630</width>
-                   <height>376</height>
+                   <width>106</width>
+                   <height>161</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
