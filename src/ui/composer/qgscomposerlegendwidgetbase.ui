@@ -63,9 +63,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-334</y>
+        <y>0</y>
         <width>375</width>
-        <height>1306</height>
+        <height>1478</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -210,6 +210,12 @@
           </item>
           <item>
            <widget class="QgsLayerTreeView" name="mItemTreeView">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>250</height>
+             </size>
+            </property>
             <property name="selectionMode">
              <enum>QAbstractItemView::ContiguousSelection</enum>
             </property>
