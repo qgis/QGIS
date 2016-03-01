@@ -1,9 +1,13 @@
 export DEBIAN_FRONTEND=noninteractive
 
+wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
+sudo add-apt-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise main' -y
+
 sudo add-apt-repository ppa:ubuntugis/ppa -y
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable -y # For postgresql-9.1-postgis-2.1
 sudo add-apt-repository ppa:smspillaz/cmake-3.0.2 -y
 sudo add-apt-repository ppa:kedazo/doxygen-updates-precise -y # For doxygen 1.8.8
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
 sudo apt-get update -qq
 sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
         bison \
@@ -63,3 +67,7 @@ sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
 
 sudo -H pip install autopep8 # TODO when switching to trusty or above: replace python-pip with python-autopep8
 sudo -H pip install nose2 pyyaml mock
+
+#update clang
+sudo apt-get install --force-yes llvm-3.8 llvm-3.8-dev clang-3.8 libstdc++-4.9-dev
+
