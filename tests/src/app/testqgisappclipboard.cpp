@@ -114,7 +114,6 @@ void TestQgisAppClipboard::copyPaste()
 
 void TestQgisAppClipboard::pasteWkt()
 {
-  mQgisApp->clipboard()->clear();
   mQgisApp->clipboard()->setText( "POINT (125 10)\nPOINT (111 30)" );
 
   QgsFeatureList features = mQgisApp->clipboard()->copyOf();
@@ -133,7 +132,6 @@ void TestQgisAppClipboard::pasteWkt()
 
 void TestQgisAppClipboard::pasteGeoJson()
 {
-  mQgisApp->clipboard()->clear();
   QgsFields fields;
   fields.append( QgsField( "name", QVariant::String ) );
   mQgisApp->clipboard()->setText( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}" );
@@ -150,8 +148,6 @@ void TestQgisAppClipboard::pasteGeoJson()
 
 void TestQgisAppClipboard::retrieveFields()
 {
-  mQgisApp->clipboard()->clear();
-
   //empty string
   mQgisApp->clipboard()->setText( "" );
 

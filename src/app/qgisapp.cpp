@@ -9840,9 +9840,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   mActionRotateLabel->setEnabled( enableRotate );
   mActionChangeLabelProperties->setEnabled( enableChange );
 
-  mMenuPasteAs->setEnabled( clipboard() && !clipboard()->empty() );
-  mActionPasteAsNewVector->setEnabled( clipboard() && !clipboard()->empty() );
-  mActionPasteAsNewMemoryVector->setEnabled( clipboard() && !clipboard()->empty() );
+  mMenuPasteAs->setEnabled( clipboard() && !clipboard()->isEmpty() );
+  mActionPasteAsNewVector->setEnabled( clipboard() && !clipboard()->isEmpty() );
+  mActionPasteAsNewMemoryVector->setEnabled( clipboard() && !clipboard()->isEmpty() );
 
   updateLayerModifiedActions();
 
@@ -9990,7 +9990,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         updateUndoActions();
       }
 
-      mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->empty() );
+      mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->isEmpty() );
 
       mActionAddFeature->setEnabled( isEditable && canAddFeatures );
       mActionCircularStringCurvePoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) && vlayer->geometryType() != QGis::Point );

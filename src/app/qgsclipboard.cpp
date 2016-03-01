@@ -137,7 +137,7 @@ void QgsClipboard::setSystemClipboard()
   // docs). With a Linux X server, ::Clipboard was required.
   // The simple solution was to put the text into both clipboards.
 
-#ifndef Q_OS_WIN
+#ifdef Q_OS_LINUX
   cb->setText( textCopy, QClipboard::Selection );
 #endif
   cb->setText( textCopy, QClipboard::Clipboard );
@@ -180,7 +180,7 @@ QgsFields QgsClipboard::retrieveFields() const
 {
   QClipboard *cb = QApplication::clipboard();
 
-#ifndef Q_OS_WIN
+#ifdef Q_OS_LINUX
   QString string = cb->text( QClipboard::Selection );
 #else
   QString string = cb->text( QClipboard::Clipboard );
@@ -189,7 +189,7 @@ QgsFields QgsClipboard::retrieveFields() const
   return QgsOgrUtils::stringToFields( string, QTextCodec::codecForName( "System" ) );
 }
 
-QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
+QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields ) const
 {
   QgsDebugMsg( "returning clipboard." );
   if ( !mUseSystemClipboard )
@@ -197,21 +197,13 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
 
   QClipboard *cb = QApplication::clipboard();
 
-#ifndef Q_OS_WIN
+#ifdef Q_OS_LINUX
   QString text = cb->text( QClipboard::Selection );
 #else
   QString text = cb->text( QClipboard::Clipboard );
 #endif
 
-  QgsFeatureList features = stringToFeatureList( text, fields );
-
-  if ( features.isEmpty() )
-    return mFeatureClipboard;
-
-  if ( !fields.isEmpty() )
-    mFeatureFields = fields;
-
-  return features;
+  return stringToFeatureList( text, fields );
 }
 
 void QgsClipboard::clear()
@@ -222,7 +214,7 @@ void QgsClipboard::clear()
   emit changed();
 }
 
-void QgsClipboard::insert( QgsFeature& feature )
+void QgsClipboard::insert( const QgsFeature& feature )
 {
   mFeatureClipboard.push_back( feature );
 
@@ -231,10 +223,10 @@ void QgsClipboard::insert( QgsFeature& feature )
   emit changed();
 }
 
-bool QgsClipboard::empty()
+bool QgsClipboard::isEmpty() const
 {
   QClipboard *cb = QApplication::clipboard();
-#ifndef Q_OS_WIN
+#ifdef Q_OS_LINUX
   QString text = cb->text( QClipboard::Selection );
 #else
   QString text = cb->text( QClipboard::Clipboard );
@@ -242,7 +234,7 @@ bool QgsClipboard::empty()
   return text.isEmpty() && mFeatureClipboard.empty();
 }
 
-QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSystem& destCRS, const QgsFields &fields )
+QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSystem& destCRS, const QgsFields &fields ) const
 {
   QgsFeatureList featureList = copyOf( fields );
   QgsCoordinateTransform ct( crs(), destCRS );
@@ -256,47 +248,41 @@ QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSyst
   return featureList;
 }
 
-QgsCoordinateReferenceSystem QgsClipboard::crs()
+QgsCoordinateReferenceSystem QgsClipboard::crs() const
 {
   return mCRS;
 }
 
-void QgsClipboard::setData( const QString& mimeType, const QByteArray& data, const QString* text )
+void QgsClipboard::setData( const QString& mimeType, const QByteArray& data, const QString& text )
 {
+  mUseSystemClipboard = true;
   QMimeData *mdata = new QMimeData();
   mdata->setData( mimeType, data );
-  if ( text )
+  if ( !text.isEmpty() )
   {
-    mdata->setText( *text );
+    mdata->setText( text );
   }
   // Transfers ownership to the clipboard object
-#ifndef Q_OS_WIN
+#ifdef Q_OS_LINUX
   QApplication::clipboard()->setMimeData( mdata, QClipboard::Selection );
 #endif
   QApplication::clipboard()->setMimeData( mdata, QClipboard::Clipboard );
 }
 
-void QgsClipboard::setData( const QString& mimeType, const QByteArray& data, const QString& text )
-{
-  setData( mimeType, data, &text );
-}
-
-void QgsClipboard::setData( const QString& mimeType, const QByteArray& data )
-{
-  setData( mimeType, data, nullptr );
-}
-
 void QgsClipboard::setText( const QString& text )
 {
-  setData( "text/plain", text.toLocal8Bit(), nullptr );
+#ifdef Q_OS_LINUX
+  QApplication::clipboard()->setText( text, QClipboard::Selection );
+#endif
+  QApplication::clipboard()->setText( text, QClipboard::Clipboard );
 }
 
-bool QgsClipboard::hasFormat( const QString& mimeType )
+bool QgsClipboard::hasFormat( const QString& mimeType ) const
 {
   return QApplication::clipboard()->mimeData()->hasFormat( mimeType );
 }
 
-QByteArray QgsClipboard::data( const QString& mimeType )
+QByteArray QgsClipboard::data( const QString& mimeType ) const
 {
   return QApplication::clipboard()->mimeData()->data( mimeType );
 }
