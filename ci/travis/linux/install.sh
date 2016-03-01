@@ -1,6 +1,12 @@
 mkdir build
 cd build
 
+export CXX="clang++-3.8"
+export CC="clang-3.8"
+
+cmake --version
+${CC} --version
+
 CLANG_WARNINGS="-Wimplicit-fallthrough"
 
 cmake -DWITH_SERVER=ON \
