@@ -32,8 +32,9 @@
 
 #include <QPicture>
 #include <QTextDocument>
-#include <QWebPage>
-#include <QWebFrame>
+#include <QAbstractTextDocumentLayout>
+#include <QSize>
+
 
 using namespace pal;
 
@@ -635,8 +636,6 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
       }
     }
 
-    tmpLyr.renderAsHTML = true;
-
     //QgsDebugMsgLevel( "drawLabel " + txt, 4 );
     QStringList multiLineList;
     if ( tmpLyr.renderAsHTML )
@@ -732,6 +731,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
       }
       else
       {
+        QTextDocument doc;
         // draw label's text, QPainterPath method
         // store text's drawing in QPicture for drop shadow call
         QPicture textPict;
@@ -743,8 +743,9 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
         if ( tmpLyr.renderAsHTML )
         {
           QTextDocument doc;
+          doc.setDocumentMargin(0);
           doc.setHtml( component.text() );
-          doc.drawContents( &textp );
+          doc.drawContents( &textp);
         }
         else
         {
@@ -783,7 +784,13 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
         {
           // draw outlined text
           _fixQPictureDPI( painter );
-          painter->drawPicture( 0, 0, textPict );
+          int y = 0;
+          if ( tmpLyr.renderAsHTML )
+            {
+                painter->translate( QPointF( 0, 0 - doc.size().height() ) );
+                y -= doc.size().height();
+            }
+          painter->drawPicture( 0, y, textPict );
         }
         else
         {

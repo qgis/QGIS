@@ -118,6 +118,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   drawLabels = true;
   isExpression = false;
   fieldIndex = 0;
+  renderAsHTML = false;
 
   // text style
   textFont = QApplication::font();
@@ -805,6 +806,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
 
   // text style
   fieldName = layer->customProperty( "labeling/fieldName" ).toString();
+  renderAsHTML = layer->customProperty( "labeling/renderAsHTML" ).toBool();
   isExpression = layer->customProperty( "labeling/isExpression" ).toBool();
   QFont appFont = QApplication::font();
   mTextFontFamily = layer->customProperty( "labeling/fontFamily", QVariant( appFont.family() ) ).toString();
@@ -1024,6 +1026,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
 
   // text style
   layer->setCustomProperty( "labeling/fieldName", fieldName );
+  layer->setCustomProperty( "labeling/renderAsHTML", renderAsHTML );
   layer->setCustomProperty( "labeling/isExpression", isExpression );
   layer->setCustomProperty( "labeling/fontFamily", textFont.family() );
   layer->setCustomProperty( "labeling/namedStyle", QgsFontUtils::untranslateNamedStyle( textNamedStyle ) );
@@ -1915,13 +1918,13 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   if ( renderAsHTML )
   {
     QTextDocument doc;
+    doc.setDocumentMargin( 0 );
     doc.setHtml( text );
-    h += doc.size().height();
-    w += doc.size().width();
+    h = doc.size().height();
+    w = doc.size().width();
   }
   else
   {
-
     QStringList multiLineSplit = QgsPalLabeling::splitToLines( text, wrapchr );
     int lines = multiLineSplit.size();
 
