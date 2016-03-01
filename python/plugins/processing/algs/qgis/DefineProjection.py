@@ -63,7 +63,6 @@ class DefineProjection(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Layer with projection'), True))
 
-
     def processAlgorithm(self, progress):
         fileName = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(fileName)

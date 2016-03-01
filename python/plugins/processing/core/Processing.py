@@ -375,7 +375,6 @@ class Processing:
             progress.close()
         return alg
 
-
     @staticmethod
     def tr(string, context=''):
         if context == '':
