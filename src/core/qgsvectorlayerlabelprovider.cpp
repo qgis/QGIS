@@ -31,6 +31,9 @@
 #include "labelposition.h"
 
 #include <QPicture>
+#include <QTextDocument>
+#include <QWebPage>
+#include <QWebFrame>
 
 using namespace pal;
 
@@ -632,8 +635,19 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
       }
     }
 
+    tmpLyr.renderAsHTML = true;
+
     //QgsDebugMsgLevel( "drawLabel " + txt, 4 );
-    QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar );
+    QStringList multiLineList;
+    if ( tmpLyr.renderAsHTML )
+    {
+      multiLineList << txt;
+    }
+    else
+    {
+      multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar );
+    }
+
     int lines = multiLineList.size();
 
     double labelWidest = 0.0;
@@ -719,17 +733,27 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
       else
       {
         // draw label's text, QPainterPath method
-        QPainterPath path;
-        path.setFillRule( Qt::WindingFill );
-        path.addText( 0, 0, tmpLyr.textFont, component.text() );
-
         // store text's drawing in QPicture for drop shadow call
         QPicture textPict;
         QPainter textp;
         textp.begin( &textPict );
         textp.setPen( Qt::NoPen );
         textp.setBrush( tmpLyr.textColor );
-        textp.drawPath( path );
+
+        if ( tmpLyr.renderAsHTML )
+        {
+          QTextDocument doc;
+          doc.setHtml( component.text() );
+          doc.drawContents( &textp );
+        }
+        else
+        {
+          QPainterPath path;
+          path.setFillRule( Qt::WindingFill );
+          path.addText( 0, 0, tmpLyr.textFont, component.text() );
+          textp.drawPath( path );
+        }
+
         // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
         //       e.g. some capitalization options, but not others
         //textp.setFont( tmpLyr.textFont );

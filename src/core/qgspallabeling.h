@@ -356,6 +356,8 @@ class CORE_EXPORT QgsPalLayerSettings
       */
     bool isExpression;
 
+    bool renderAsHTML;
+
     /** Returns the QgsExpression for this label settings.
       */
     QgsExpression* getLabelExpression();
