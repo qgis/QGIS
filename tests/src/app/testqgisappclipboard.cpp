@@ -49,6 +49,7 @@ class TestQgisAppClipboard : public QObject
     void pasteWkt();
     void pasteGeoJson();
     void retrieveFields();
+    void clipboardLogic(); //test clipboard logic
 
   private:
     QgisApp * mQgisApp;
@@ -167,6 +168,64 @@ void TestQgisAppClipboard::retrieveFields()
   QCOMPARE( fields.at( 0 ).type(), QVariant::String );
   QCOMPARE( fields.at( 1 ).name(), QString( "height" ) );
   QCOMPARE( fields.at( 1 ).type(), QVariant::Double );
+}
+
+void TestQgisAppClipboard::clipboardLogic()
+{
+  //start by setting clipboard contents as text
+  mQgisApp->clipboard()->setText( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}" );
+  QgsFields fields = mQgisApp->clipboard()->fields();
+  QCOMPARE( fields.count(), 1 );
+  QCOMPARE( fields.at( 0 ).name(), QString( "name" ) );
+  QCOMPARE( fields.at( 0 ).type(), QVariant::String );
+  QgsFeatureList features = mQgisApp->clipboard()->copyOf( mQgisApp->clipboard()->fields() );
+  QCOMPARE( features.length(), 1 );
+  QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
+
+  //set clipboard to some QgsFeatures
+  fields = QgsFields();
+  fields.append( QgsField( "int_field", QVariant::Int ) );
+  fields.append( QgsField( "date_field", QVariant::Date ) );
+  QgsFeature feat( fields, 5 );
+  feat.setAttribute( "int_field", 9 );
+  feat.setAttribute( "date_field", QVariant( QDate( 2010, 9, 5 ) ) );
+  QgsFeature feat2( fields, 6 );
+  feat2.setAttribute( "int_field", 19 );
+  feat2.setAttribute( "date_field", QVariant( QDate( 2011, 9, 5 ) ) );
+  QgsFeatureStore feats;
+  feats.addFeature( feat );
+  feats.addFeature( feat2 );
+  feats.setFields( fields );
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromSrsId( 3452 );
+  feats.setCrs( crs );
+  mQgisApp->clipboard()->replaceWithCopyOf( feats );
+
+  //test result
+  fields = mQgisApp->clipboard()->fields();
+  QCOMPARE( fields.count(), 2 );
+  QCOMPARE( fields.at( 0 ).name(), QString( "int_field" ) );
+  QCOMPARE( fields.at( 0 ).type(), QVariant::Int );
+  QCOMPARE( fields.at( 1 ).name(), QString( "date_field" ) );
+  QCOMPARE( fields.at( 1 ).type(), QVariant::Date );
+  features = mQgisApp->clipboard()->copyOf( mQgisApp->clipboard()->fields() );
+  QCOMPARE( features.length(), 2 );
+  QCOMPARE( features.at( 0 ).id(), 5LL );
+  QCOMPARE( features.at( 0 ).attribute( "int_field" ).toInt(), 9 );
+  QCOMPARE( features.at( 0 ).attribute( "date_field" ).toDate(), QDate( 2010, 9, 5 ) );
+  QCOMPARE( features.at( 1 ).id(), 6LL );
+  QCOMPARE( features.at( 1 ).attribute( "int_field" ).toInt(), 19 );
+  QCOMPARE( features.at( 1 ).attribute( "date_field" ).toDate(), QDate( 2011, 9, 5 ) );
+
+  //replace with text again, make sure system clipboard is used rather than internal clipboard
+  mQgisApp->clipboard()->setText( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}" );
+  fields = mQgisApp->clipboard()->fields();
+  QCOMPARE( fields.count(), 1 );
+  QCOMPARE( fields.at( 0 ).name(), QString( "name" ) );
+  QCOMPARE( fields.at( 0 ).type(), QVariant::String );
+  features = mQgisApp->clipboard()->copyOf( mQgisApp->clipboard()->fields() );
+  QCOMPARE( features.length(), 1 );
+  QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
 }
 
 QTEST_MAIN( TestQgisAppClipboard )

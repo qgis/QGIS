@@ -142,7 +142,7 @@ void QgsClipboard::setSystemClipboard()
 #endif
   cb->setText( textCopy, QClipboard::Clipboard );
 
-  QgsDebugMsg( QString( "replaced system clipboard with: %1." ).arg( textCopy ) );
+  QgsDebugMsgLevel( QString( "replaced system clipboard with: %1." ).arg( textCopy ), 4 );
 }
 
 QgsFeatureList QgsClipboard::stringToFeatureList( const QString& string, const QgsFields& fields ) const
@@ -218,7 +218,7 @@ void QgsClipboard::insert( const QgsFeature& feature )
 {
   mFeatureClipboard.push_back( feature );
 
-  QgsDebugMsg( "inserted " + feature.constGeometry()->exportToWkt() );
+  QgsDebugMsgLevel( "inserted " + feature.constGeometry()->exportToWkt(), 4 );
   mUseSystemClipboard = false;
   emit changed();
 }
