@@ -7035,7 +7035,9 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   }
   else if ( typeCounts.isEmpty() )
   {
-    message = tr( "No features with geometry found, point type layer will be created." );
+    messageBar()->pushMessage( tr( "Paste features" ),
+                               tr( "No features with geometry found, point type layer will be created." ),
+                               QgsMessageBar::INFO, messageTimeout() );
   }
   else if ( typeCounts.size() > 1 )
   {
