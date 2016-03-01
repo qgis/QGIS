@@ -31,6 +31,7 @@ import re
 from PyQt4 import uic
 from PyQt4.QtCore import Qt, QSettings
 from PyQt4.QtGui import QDialog, QFileDialog, QApplication, QCursor, QMessageBox
+from qgis.core import QgsExpressionContext, QgsExpressionContextUtils
 from qgis.gui import QgsEncodingFileDialog
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -94,6 +95,14 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
         self.builder.setLayer(self.layer)
         self.builder.loadFieldNames()
+
+        exp_context = QgsExpressionContext()
+        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
+        exp_context.appendScope(QgsExpressionContextUtils.projectScope())
+        exp_context.appendScope(QgsExpressionContextUtils.layerScope(self.layer))
+        exp_context.lastScope().setVariable("row_number", 1)
+        exp_context.setHighlightedVariables(["row_number"])
+        self.builder.setExpressionContext(exp_context)
 
         self.populateFields()
 
