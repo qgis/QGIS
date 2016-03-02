@@ -637,173 +637,171 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
     }
 
     //QgsDebugMsgLevel( "drawLabel " + txt, 4 );
-    QStringList multiLineList;
     if ( tmpLyr.renderAsHTML )
     {
-      multiLineList << txt;
+      painter->save();
+      painter->translate( QPointF( outPt.x(), outPt.y() ) );
+      painter->rotate( -label->getAlpha() * 180 / M_PI );
+      QTextDocument doc;
+      doc.setDocumentMargin( 0 );
+      doc.setHtml( txt );
+      QPicture textPict;
+      QPainter textp;
+      textp.begin( &textPict );
+      doc.drawContents( &textp );
+      textp.end();
+
+      painter->translate( QPointF( 0, -doc.size().height() ) );
+      int y = -doc.size().height();
+      _fixQPictureDPI( painter );
+      painter->drawPicture( 0, 0, textPict );
+      painter->restore();
     }
     else
     {
-      multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar );
-    }
+      QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar );
+      int lines = multiLineList.size();
 
-    int lines = multiLineList.size();
-
-    double labelWidest = 0.0;
-    for ( int i = 0; i < lines; ++i )
-    {
-      double labelWidth = labelfm->width( multiLineList.at( i ) );
-      if ( labelWidth > labelWidest )
+      double labelWidest = 0.0;
+      for ( int i = 0; i < lines; ++i )
       {
-        labelWidest = labelWidth;
-      }
-    }
-
-    double labelHeight = labelfm->ascent() + labelfm->descent(); // ignore +1 for baseline
-    //  double labelHighest = labelfm->height() + ( double )(( lines - 1 ) * labelHeight * tmpLyr.multilineHeight );
-
-    // needed to move bottom of text's descender to within bottom edge of label
-    double ascentOffset = 0.25 * labelfm->ascent(); // labelfm->descent() is not enough
-
-    for ( int i = 0; i < lines; ++i )
-    {
-      painter->save();
-#if 0 // TODO: generalize some of this
-      LabelPosition* lp = label;
-      double w = lp->getWidth();
-      double h = lp->getHeight();
-      double cx = lp->getX() + w / 2.0;
-      double cy = lp->getY() + h / 2.0;
-      double scale = 1.0 / xform->mapUnitsPerPixel();
-      double rotation = xform->mapRotation();
-      double sw = w * scale;
-      double sh = h * scale;
-      QRectF rect( -sw / 2, -sh / 2, sw, sh );
-      painter->translate( xform->transform( QPointF( cx, cy ) ).toQPointF() );
-      if ( rotation )
-      {
-        // Only if not horizontal
-        if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT &&
-             lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT_OVER &&
-             lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ )
+        double labelWidth = labelfm->width( multiLineList.at( i ) );
+        if ( labelWidth > labelWidest )
         {
-          painter->rotate( rotation );
+          labelWidest = labelWidth;
         }
       }
-      painter->translate( rect.bottomLeft() );
-      painter->rotate( -lp->getAlpha() * 180 / M_PI );
+
+      double labelHeight = labelfm->ascent() + labelfm->descent(); // ignore +1 for baseline
+      //  double labelHighest = labelfm->height() + ( double )(( lines - 1 ) * labelHeight * tmpLyr.multilineHeight );
+
+      // needed to move bottom of text's descender to within bottom edge of label
+      double ascentOffset = 0.25 * labelfm->ascent(); // labelfm->descent() is not enough
+
+      for ( int i = 0; i < lines; ++i )
+      {
+        painter->save();
+#if 0 // TODO: generalize some of this
+        LabelPosition* lp = label;
+        double w = lp->getWidth();
+        double h = lp->getHeight();
+        double cx = lp->getX() + w / 2.0;
+        double cy = lp->getY() + h / 2.0;
+        double scale = 1.0 / xform->mapUnitsPerPixel();
+        double rotation = xform->mapRotation();
+        double sw = w * scale;
+        double sh = h * scale;
+        QRectF rect( -sw / 2, -sh / 2, sw, sh );
+        painter->translate( xform->transform( QPointF( cx, cy ) ).toQPointF() );
+        if ( rotation )
+        {
+          // Only if not horizontal
+          if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT &&
+               lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT_OVER &&
+               lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ )
+          {
+            painter->rotate( rotation );
+          }
+        }
+        painter->translate( rect.bottomLeft() );
+        painter->rotate( -lp->getAlpha() * 180 / M_PI );
 #else
-      painter->translate( QPointF( outPt.x(), outPt.y() ) );
-      painter->rotate( -label->getAlpha() * 180 / M_PI );
+        painter->translate( QPointF( outPt.x(), outPt.y() ) );
+        painter->rotate( -label->getAlpha() * 180 / M_PI );
 #endif
 
-      // scale down painter: the font size has been multiplied by raster scale factor
-      // to workaround a Qt font scaling bug with small font sizes
-      painter->scale( 1.0 / tmpLyr.rasterCompressFactor, 1.0 / tmpLyr.rasterCompressFactor );
+        // scale down painter: the font size has been multiplied by raster scale factor
+        // to workaround a Qt font scaling bug with small font sizes
+        painter->scale( 1.0 / tmpLyr.rasterCompressFactor, 1.0 / tmpLyr.rasterCompressFactor );
 
-      // figure x offset for horizontal alignment of multiple lines
-      double xMultiLineOffset = 0.0;
-      double labelWidth = labelfm->width( multiLineList.at( i ) );
-      if ( lines > 1 && tmpLyr.multilineAlign != QgsPalLayerSettings::MultiLeft )
-      {
-        double labelWidthDiff = labelWidest - labelWidth;
-        if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiCenter )
+        // figure x offset for horizontal alignment of multiple lines
+        double xMultiLineOffset = 0.0;
+        double labelWidth = labelfm->width( multiLineList.at( i ) );
+        if ( lines > 1 && tmpLyr.multilineAlign != QgsPalLayerSettings::MultiLeft )
         {
-          labelWidthDiff /= 2;
+          double labelWidthDiff = labelWidest - labelWidth;
+          if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiCenter )
+          {
+            labelWidthDiff /= 2;
+          }
+          xMultiLineOffset = labelWidthDiff;
+          //QgsDebugMsgLevel( QString( "xMultiLineOffset: %1" ).arg( xMultiLineOffset ), 4 );
         }
-        xMultiLineOffset = labelWidthDiff;
-        //QgsDebugMsgLevel( QString( "xMultiLineOffset: %1" ).arg( xMultiLineOffset ), 4 );
-      }
 
-      double yMultiLineOffset = ( lines - 1 - i ) * labelHeight * tmpLyr.multilineHeight;
-      painter->translate( QPointF( xMultiLineOffset, - ascentOffset - yMultiLineOffset ) );
+        double yMultiLineOffset = ( lines - 1 - i ) * labelHeight * tmpLyr.multilineHeight;
+        painter->translate( QPointF( xMultiLineOffset, - ascentOffset - yMultiLineOffset ) );
 
-      component.setText( multiLineList.at( i ) );
-      component.setSize( QgsPoint( labelWidth, labelHeight ) );
-      component.setOffset( QgsPoint( 0.0, -ascentOffset ) );
-      component.setRotation( -component.rotation() * 180 / M_PI );
-      component.setRotationOffset( 0.0 );
+        component.setText( multiLineList.at( i ) );
+        component.setSize( QgsPoint( labelWidth, labelHeight ) );
+        component.setOffset( QgsPoint( 0.0, -ascentOffset ) );
+        component.setRotation( -component.rotation() * 180 / M_PI );
+        component.setRotationOffset( 0.0 );
 
-      if ( drawType == QgsPalLabeling::LabelBuffer )
-      {
-        // draw label's buffer
-        QgsPalLabeling::drawLabelBuffer( context, component, tmpLyr );
-      }
-      else
-      {
-        QTextDocument doc;
-        // draw label's text, QPainterPath method
-        // store text's drawing in QPicture for drop shadow call
-        QPicture textPict;
-        QPainter textp;
-        textp.begin( &textPict );
-        textp.setPen( Qt::NoPen );
-        textp.setBrush( tmpLyr.textColor );
-
-        if ( tmpLyr.renderAsHTML )
+        if ( drawType == QgsPalLabeling::LabelBuffer )
         {
-          QTextDocument doc;
-          doc.setDocumentMargin(0);
-          doc.setHtml( component.text() );
-          doc.drawContents( &textp);
+          // draw label's buffer
+          QgsPalLabeling::drawLabelBuffer( context, component, tmpLyr );
         }
         else
         {
+          // draw label's text, QPainterPath method
+          // store text's drawing in QPicture for drop shadow call
+          QPicture textPict;
+          QPainter textp;
+          textp.begin( &textPict );
+          textp.setPen( Qt::NoPen );
+          textp.setBrush( tmpLyr.textColor );
+
           QPainterPath path;
           path.setFillRule( Qt::WindingFill );
           path.addText( 0, 0, tmpLyr.textFont, component.text() );
           textp.drawPath( path );
+
+          // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
+          //       e.g. some capitalization options, but not others
+          //textp.setFont( tmpLyr.textFont );
+          //textp.setPen( tmpLyr.textColor );
+          //textp.drawText( 0, 0, component.text() );
+          textp.end();
+
+          if ( tmpLyr.shadowDraw && tmpLyr.shadowUnder == QgsPalLayerSettings::ShadowText )
+          {
+            component.setPicture( &textPict );
+            component.setPictureBuffer( 0.0 ); // no pen width to deal with
+            component.setOrigin( QgsPoint( 0.0, 0.0 ) );
+
+            QgsPalLabeling::drawLabelShadow( context, component, tmpLyr );
+          }
+
+          // paint the text
+          if ( context.useAdvancedEffects() )
+          {
+            painter->setCompositionMode( tmpLyr.blendMode );
+          }
+
+          // scale for any print output or image saving @ specific dpi
+          painter->scale( component.dpiRatio(), component.dpiRatio() );
+
+          if ( mEngine->testFlag( QgsLabelingEngineV2::RenderOutlineLabels ) )
+          {
+            // draw outlined text
+            _fixQPictureDPI( painter );
+            painter->drawPicture( 0, 0, textPict );
+          }
+          else
+          {
+            // draw text as text (for SVG and PDF exports)
+            painter->setFont( tmpLyr.textFont );
+            painter->setPen( tmpLyr.textColor );
+            painter->setRenderHint( QPainter::TextAntialiasing );
+            painter->drawText( 0, 0, component.text() );
+          }
         }
-
-        // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
-        //       e.g. some capitalization options, but not others
-        //textp.setFont( tmpLyr.textFont );
-        //textp.setPen( tmpLyr.textColor );
-        //textp.drawText( 0, 0, component.text() );
-        textp.end();
-
-        if ( tmpLyr.shadowDraw && tmpLyr.shadowUnder == QgsPalLayerSettings::ShadowText )
-        {
-          component.setPicture( &textPict );
-          component.setPictureBuffer( 0.0 ); // no pen width to deal with
-          component.setOrigin( QgsPoint( 0.0, 0.0 ) );
-
-          QgsPalLabeling::drawLabelShadow( context, component, tmpLyr );
-        }
-
-        // paint the text
-        if ( context.useAdvancedEffects() )
-        {
-          painter->setCompositionMode( tmpLyr.blendMode );
-        }
-
-        // scale for any print output or image saving @ specific dpi
-        painter->scale( component.dpiRatio(), component.dpiRatio() );
-
-        if ( mEngine->testFlag( QgsLabelingEngineV2::RenderOutlineLabels ) )
-        {
-          // draw outlined text
-          _fixQPictureDPI( painter );
-          int y = 0;
-          if ( tmpLyr.renderAsHTML )
-            {
-                painter->translate( QPointF( 0, 0 - doc.size().height() ) );
-                y -= doc.size().height();
-            }
-          painter->drawPicture( 0, y, textPict );
-        }
-        else
-        {
-          // draw text as text (for SVG and PDF exports)
-          painter->setFont( tmpLyr.textFont );
-          painter->setPen( tmpLyr.textColor );
-          painter->setRenderHint( QPainter::TextAntialiasing );
-          painter->drawText( 0, 0, component.text() );
-        }
+        painter->restore();
       }
-      painter->restore();
     }
   }
+
 
   // NOTE: this used to be within above multi-line loop block, at end. (a mistake since 2010? [LS])
   if ( label->getNextPart() )
