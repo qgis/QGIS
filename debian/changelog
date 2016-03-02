@@ -1,6 +1,8 @@
 qgis (2.15.0) UNRELEASED; urgency=medium
 
   * New development version 2.15 after branch of 2.14
+  * drop ubuntu utopic
+  * refine GSL build dependency
 
  -- Jürgen E. Fischer <jef@norbit.de>  Fri, 26 Feb 2016 13:23:49 +0100
 
