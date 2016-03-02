@@ -36,6 +36,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * @param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
      */
     QgsGeos( const QgsAbstractGeometryV2* geometry, double precision = 0 );
+
+    /** GEOS geometry engine constructor
+     * @param geometry The geometry
+     * @param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
+     */
+    QgsGeos( const QgsGeometry* geometry, double precision = 0 );
+
     ~QgsGeos();
 
     /** Removes caches*/
@@ -70,6 +77,22 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool isValid( QString* errorMsg = nullptr ) const override;
     bool isEqual( const QgsAbstractGeometryV2& geom, QString* errorMsg = nullptr ) const override;
     bool isEmpty( QString* errorMsg = nullptr ) const override;
+
+    QgsAbstractGeometryV2* intersection( const QgsGeometry* geometry, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* difference( const QgsGeometry* geometry, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* combine( const QgsGeometry* geometry, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* symDifference( const QgsGeometry* geometry, QString* errorMsg = nullptr ) const;
+    double distance( const QgsGeometry* geometry, QString* errorMsg = nullptr ) const;
+    bool intersects( const QgsGeometry* geometry, QString* errorMsg = nullptr ) const;
+    bool touches( const QgsGeometry* geometry, QString* errorMsg = nullptr ) const;
+    bool crosses( const QgsGeometry* geometry, QString* errorMsg = nullptr ) const;
+    bool within( const QgsGeometry* geometry, QString* errorMsg = nullptr ) const;
+    bool overlaps( const QgsGeometry* geometry, QString* errorMsg = nullptr ) const;
+    bool contains( const QgsGeometry* geometry, QString* errorMsg = nullptr ) const;
+    bool disjoint( const QgsGeometry* geometry, QString* errorMsg = nullptr ) const;
+    QString relate( const QgsGeometry* geometry, QString* errorMsg = nullptr ) const;
+    bool relatePattern( const QgsGeometry* geometry, const QString& pattern, QString* errorMsg = nullptr ) const;
+    bool isEqual( const QgsGeometry* geometry, QString* errorMsg = nullptr ) const;
 
     /** Splits this geometry according to a given line.
     @param splitLine the line that splits the geometry
@@ -113,6 +136,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     mutable GEOSGeometry* mGeos;
     const GEOSPreparedGeometry* mGeosPrepared;
     double mPrecision;
+    mutable bool mDeleteGeos;
 
     enum Overlay
     {
@@ -135,13 +159,29 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     //geos util functions
     void cacheGeos() const;
-    QgsAbstractGeometryV2* overlay( const QgsAbstractGeometryV2& geom, Overlay op, QString* errorMsg = nullptr ) const;
-    bool relation( const QgsAbstractGeometryV2& geom, Relation r, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* overlay( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, Overlay op, QString* errorMsg = nullptr ) const;
+    bool relation( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, Relation r, QString* errorMsg = nullptr ) const;
     static GEOSCoordSequence* createCoordinateSequence( const QgsCurveV2* curve , double precision );
     static QgsLineStringV2* sequenceToLinestring( const GEOSGeometry* geos, bool hasZ, bool hasM );
     static int numberOfGeometries( GEOSGeometry* g );
     static GEOSGeometry* nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );
     int mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult ) const;
+
+    QgsAbstractGeometryV2* intersection( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* difference( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* combine( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometryV2* symDifference( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg = nullptr ) const;
+    double distance( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg = nullptr ) const;
+    bool intersects( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg = nullptr ) const;
+    bool touches( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg = nullptr ) const;
+    bool crosses( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg = nullptr ) const;
+    bool within( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg = nullptr ) const;
+    bool overlaps( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg = nullptr ) const;
+    bool contains( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg = nullptr ) const;
+    bool disjoint( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg = nullptr ) const;
+    QString relate( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg = nullptr ) const;
+    bool relatePattern( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, const QString& pattern, QString* errorMsg = nullptr ) const;
+    bool isEqual( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg = nullptr ) const;
 
     /** Ownership of geoms is transferred
      */
