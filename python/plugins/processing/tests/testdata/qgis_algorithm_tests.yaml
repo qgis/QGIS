@@ -85,3 +85,34 @@ tests:
       OUTPUT_HTML_FILE:
         name: expected/basic_statistics_string.html
         type: file
+
+  # Split lines with lines considers two cases
+  # case 1: two different layers
+  - name: Split lines with lines
+    algorithm: qgis:splitlineswithlines
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      INPUT2:
+        name: lines2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_split_with_lines.gml
+        type: vector
+
+  # case 2 split line layer with iself
+  - name: Split lines with same lines
+    algorithm: qgis:splitlineswithlines
+    params:
+      INPUT:
+        name: lines2.gml
+        type: vector
+      INPUT2:
+        name: lines2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_split_with_same_lines.gml
+        type: vector
