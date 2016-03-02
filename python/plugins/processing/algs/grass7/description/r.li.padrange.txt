@@ -1,0 +1,7 @@
+r.li.padrange
+Calculates range of patch area size on a raster map
+Raster (r.*)
+ParameterRaster|input|Name of input raster map|False
+ParameterString|config_txt|Landscape structure configuration|None|True|True
+ParameterFile|config|Landscape structure configuration file|False|True
+OutputRaster|output|Pad Range
