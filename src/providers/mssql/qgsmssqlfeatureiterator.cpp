@@ -284,7 +284,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature& feature )
     for ( int i = 0; i < mAttributesToFetch.count(); i++ )
     {
       QVariant v = mQuery->value( i );
-      const QgsField &fld = mSource->mFields.at( i );
+      const QgsField &fld = mSource->mFields.at( mAttributesToFetch.at( i ) );
       if ( v.type() != fld.type() )
         v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
       feature.setAttribute( mAttributesToFetch.at( i ), v );
