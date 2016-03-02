@@ -128,9 +128,13 @@ class SplitLinesWithLines(GeoAlgorithm):
 
                         inLines = outLines
 
+
             for aLine in inLines:
-                outFeat.setGeometry(aLine)
-                writer.addFeature(outFeat)
+                if round(aLine.length(), 6) > 0:
+                    # sometimes splitting results in lines of almost zero lenght,
+                    # we filter out anything with a lenght of less than 0.00001
+                    outFeat.setGeometry(aLine)
+                    writer.addFeature(outFeat)
 
             progress.setPercentage(int(current * total))
 
