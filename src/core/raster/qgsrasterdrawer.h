@@ -24,6 +24,7 @@
 class QPainter;
 class QImage;
 class QgsMapToPixel;
+class QgsRenderContext;
 struct QgsRasterViewPort;
 class QgsRasterIterator;
 
@@ -35,7 +36,13 @@ class CORE_EXPORT QgsRasterDrawer
   public:
     QgsRasterDrawer( QgsRasterIterator *iterator );
 
-    void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
+    /** Draws raster data.
+     * @param p destination QPainter
+     * @param viewPort viewport to render
+     * @param theQgsMapToPixel map to pixel convertor
+     * @param ctx render context
+     */
+    void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel, const QgsRenderContext *ctx = nullptr );
 
   protected:
     /** Draws raster part
