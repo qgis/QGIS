@@ -10,7 +10,7 @@
       <gml:coord><gml:X>11</gml:X><gml:Y>5</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
-
+                                                                                                                                                             
   <gml:featureMember>
     <ogr:lines fid="lines.0">
       <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>6,2 9,2 9,3 11,5</gml:coordinates></gml:LineString></ogr:geometryProperty>
@@ -39,6 +39,10 @@
   <gml:featureMember>
     <ogr:lines fid="lines.5">
       <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>6,-3 10,1</gml:coordinates></gml:LineString></ogr:geometryProperty>
+    </ogr:lines>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:lines fid="lines.6">
     </ogr:lines>
   </gml:featureMember>
 </ogr:FeatureCollection>
