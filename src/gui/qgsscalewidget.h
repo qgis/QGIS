@@ -32,6 +32,8 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY( bool showCurrentScaleButton READ showCurrentScaleButton WRITE setShowCurrentScaleButton )
+    Q_PROPERTY( bool scale READ scale WRITE setScale NOTIFY scaleChanged )
+    Q_PROPERTY( bool minScale READ minScale WRITE setMinScale )
 
   public:
     explicit QgsScaleWidget( QWidget *parent = nullptr );
@@ -51,9 +53,11 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
     //! Function to set the selected scale from text
     bool setScaleString( const QString& scaleTxt ) { return mScaleComboBox->setScaleString( scaleTxt ); }
     //! Function to read the selected scale as double
-    double scale() { return mScaleComboBox->scale();}
+    double scale() const { return mScaleComboBox->scale();}
     //! Function to set the selected scale from double
     void setScale( double scale ) { return mScaleComboBox->setScale( scale ); }
+    //! Function to read the min scale
+    double minScale() const { return mScaleComboBox->minScale(); }
 
     //! Helper function to convert a double to scale string
     // Performs rounding, so an exact representation is not to
@@ -68,9 +72,12 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
     //! assign the current scale from the map canvas
     void setScaleFromCanvas();
 
+    //! Function to set the min scale
+    void setMinScale( double scale ) { mScaleComboBox->setMinScale( scale ); }
+
   signals:
     //! Signal is emitted when *user* has finished editing/selecting a new scale.
-    void scaleChanged();
+    void scaleChanged( double scale );
 
   private:
     QgsScaleComboBox* mScaleComboBox;
