@@ -25,7 +25,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from qgis.core import QgsFeature, QgsGeometry
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -33,6 +38,8 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 from processing.tools import vector, dataobjects
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class Dissolve(GeoAlgorithm):
@@ -42,10 +49,8 @@ class Dissolve(GeoAlgorithm):
     FIELD = 'FIELD'
     DISSOLVE_ALL = 'DISSOLVE_ALL'
 
-    #==========================================================================
-    #def getIcon(self):
-    #   return QtGui.QIcon(os.path.dirname(__file__) + "/icons/dissolve.png")
-    #==========================================================================
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'dissolve.png'))
 
     def defineCharacteristics(self):
         self.name = 'Dissolve'

@@ -25,8 +25,10 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
 import random
 
+from PyQt4.QtGui import QIcon
 from PyQt4.QtCore import QVariant
 from qgis.core import (QGis, QgsGeometry, QgsRectangle, QgsFeature, QgsFields,
                        QgsField, QgsSpatialIndex, QgsPoint)
@@ -39,6 +41,8 @@ from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import vector
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class RandomPointsExtent(GeoAlgorithm):
 
@@ -46,6 +50,9 @@ class RandomPointsExtent(GeoAlgorithm):
     POINT_NUMBER = 'POINT_NUMBER'
     MIN_DISTANCE = 'MIN_DISTANCE'
     OUTPUT = 'OUTPUT'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Random points in extent')

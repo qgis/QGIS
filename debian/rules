@@ -31,7 +31,7 @@ ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	WITH_ORACLE=1
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"wheezy jessie stretch precise trusty utopic vivid wily xenial"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"wheezy jessie stretch precise trusty vivid wily xenial"))
 	DISTRIBUTION := sid
 endif
 
@@ -109,7 +109,7 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid"))
 	CMAKE_OPTS += -DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty utopic vivid wily xenial sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty vivid wily xenial sid"))
 	CMAKE_OPTS += -DPYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 

@@ -25,9 +25,12 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
 import math
 
+from PyQt4.QtGui import QIcon
 from PyQt4.QtCore import QVariant
+
 from qgis.core import QGis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint
 from qgis.utils import iface
 
@@ -37,6 +40,8 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class VectorGrid(GeoAlgorithm):
 
@@ -45,6 +50,9 @@ class VectorGrid(GeoAlgorithm):
     STEP_Y = 'STEP_Y'
     TYPE = 'TYPE'
     OUTPUT = 'OUTPUT'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Vector grid')

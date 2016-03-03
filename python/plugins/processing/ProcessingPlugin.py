@@ -41,6 +41,7 @@ from processing.gui.ResultsDialog import ResultsDialog
 from processing.gui.CommanderWindow import CommanderWindow
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempFolder
+from processing.gui.menus import removeMenus, initializeMenus, createMenus
 
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
@@ -119,6 +120,9 @@ class ProcessingPlugin:
         self.iface.registerMainWindowAction(self.commanderAction,
                                             self.tr('Ctrl+Alt+M'))
 
+        initializeMenus()
+        createMenus()
+
     def unload(self):
         self.toolbox.setVisible(False)
         self.menu.deleteLater()
@@ -134,6 +138,8 @@ class ProcessingPlugin:
         self.iface.unregisterMainWindowAction(self.configAction)
         self.iface.unregisterMainWindowAction(self.resultsAction)
         self.iface.unregisterMainWindowAction(self.commanderAction)
+
+        removeMenus()
 
     def openCommander(self):
         if self.commander is None:

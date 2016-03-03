@@ -361,8 +361,8 @@
   </action>
   <action name="mActionShowGrid">
    <property name="icon">
-    <iconset resource="../../../python/plugins/fTools/resources.qrc">
-     <normaloff>:/icons/default/vector_grid.png</normaloff>:/icons/default/vector_grid.png</iconset>
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/vector_grid.png</normaloff>:/images/themes/default/vector_grid.png</iconset>
    </property>
    <property name="text">
     <string>Show &amp;Grid</string>
@@ -1059,7 +1059,6 @@
   </action>
  </widget>
  <resources>
-  <include location="../../../python/plugins/fTools/resources.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

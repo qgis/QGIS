@@ -27,17 +27,24 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from PyQt4.QtGui import QIcon
+
 from osgeo import gdal, osr
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterBoolean
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class ExtractProjection(GdalAlgorithm):
 
     INPUT = 'INPUT'
     PRJ_FILE = 'PRJ_FILE'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'projection-export.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Extract projection')

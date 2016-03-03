@@ -27,6 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from PyQt4.QtGui import QIcon
+
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterTableField
@@ -38,12 +40,17 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools.vector import ogrConnectionString, ogrLayerName
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class rasterize_over(GdalAlgorithm):
 
     INPUT = 'INPUT'
     INPUT_RASTER = 'INPUT_RASTER'
     FIELD = 'FIELD'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
 
     def commandLineName(self):
         return "gdalogr:rasterize_over"

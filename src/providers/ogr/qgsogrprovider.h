@@ -359,7 +359,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 };
 
 
-class QgsOgrUtils
+class QgsOgrProviderUtils
 {
   public:
     static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes );

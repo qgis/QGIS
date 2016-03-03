@@ -2061,14 +2061,20 @@ QProcess *QgsGrass::startModule( const QString& gisdbase, const QString&  locati
   out.flush();
   QgsDebugMsg( gisrcFile.fileName() );
   gisrcFile.close();
-  QStringList environment = QProcess::systemEnvironment();
-  environment.append( "GISRC=" + gisrcFile.fileName() );
-  environment.append( "GRASS_MESSAGE_FORMAT=gui" );
+  QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
+  QStringList paths = QgsGrass::grassModulesPaths();
+  // PYTHONPATH necessary for t.list.py
+  // PATH necessary for g.parser called by t.list.py
+  paths += environment.value( "PATH" ).split( QgsGrass::pathSeparator() );
+  environment.insert( "PATH", paths.join( QgsGrass::pathSeparator() ) );
+  environment.insert( "PYTHONPATH", QgsGrass::getPythonPath() );
+  environment.insert( "GISRC", gisrcFile.fileName() );
+  environment.insert( "GRASS_MESSAGE_FORMAT", "gui" );
   // Normaly modules must be run in a mapset owned by user, because each module calls G_gisinit()
   // which checks if G_mapset() is owned by user. The check is disabled by GRASS_SKIP_MAPSET_OWNER_CHECK.
-  environment.append( "GRASS_SKIP_MAPSET_OWNER_CHECK=1" );
+  environment.insert( "GRASS_SKIP_MAPSET_OWNER_CHECK", "1" );
 
-  process->setEnvironment( environment );
+  process->setProcessEnvironment( environment );
 
   QgsDebugMsg( modulePath + " " + arguments.join( " " ) );
   process->start( modulePath, arguments );

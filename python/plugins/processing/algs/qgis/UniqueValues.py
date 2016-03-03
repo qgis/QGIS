@@ -25,7 +25,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 import codecs
+
+from PyQt4.QtGui import QIcon
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -33,6 +37,8 @@ from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
 from processing.core.outputs import OutputString
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class UniqueValues(GeoAlgorithm):
@@ -42,6 +48,9 @@ class UniqueValues(GeoAlgorithm):
     TOTAL_VALUES = 'TOTAL_VALUES'
     UNIQUE_VALUES = 'UNIQUE_VALUES'
     OUTPUT = 'OUTPUT'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'unique.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('List unique values')

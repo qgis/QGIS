@@ -18,6 +18,7 @@
 #include "qgsogrgeometrysimplifier.h"
 #include "qgsogrexpressioncompiler.h"
 
+#include "qgsogrutils.h"
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
@@ -56,7 +57,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
 
   if ( !mSource->mSubsetString.isEmpty() )
   {
-    ogrLayer = QgsOgrUtils::setSubsetString( ogrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString );
+    ogrLayer = QgsOgrProviderUtils::setSubsetString( ogrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString );
     mSubsetStringSet = true;
   }
 
@@ -69,7 +70,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
   // filter if we choose to ignore them (fixes #11223)
   if (( mSource->mDriverName != "VRT" && mSource->mDriverName != "OGR_VRT" ) || mRequest.filterRect().isNull() )
   {
-    QgsOgrUtils::setRelevantFields( ogrLayer, mSource->mFields.count(), mFetchGeometry, attrs );
+    QgsOgrProviderUtils::setRelevantFields( ogrLayer, mSource->mFields.count(), mFetchGeometry, attrs );
   }
 
   // spatial query to select features
@@ -265,57 +266,10 @@ bool QgsOgrFeatureIterator::close()
 
 void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex )
 {
-  OGRFieldDefnH fldDef = OGR_F_GetFieldDefnRef( ogrFet, attindex );
-
-  if ( ! fldDef )
-  {
-    QgsDebugMsg( "ogrFet->GetFieldDefnRef(attindex) returns NULL" );
+  bool ok = false;
+  QVariant value = QgsOgrUtils::getOgrFeatureAttribute( ogrFet, mSource->mFields, attindex, mSource->mEncoding, &ok );
+  if ( !ok )
     return;
-  }
-
-  QVariant value;
-
-  if ( OGR_F_IsFieldSet( ogrFet, attindex ) )
-  {
-    switch ( mSource->mFields.at( attindex ).type() )
-    {
-      case QVariant::String:
-        value = QVariant( mSource->mEncoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attindex ) ) );
-        break;
-      case QVariant::Int:
-        value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attindex ) );
-        break;
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
-      case QVariant::LongLong:
-        value = QVariant( OGR_F_GetFieldAsInteger64( ogrFet, attindex ) );
-        break;
-#endif
-      case QVariant::Double:
-        value = QVariant( OGR_F_GetFieldAsDouble( ogrFet, attindex ) );
-        break;
-      case QVariant::Date:
-      case QVariant::DateTime:
-      case QVariant::Time:
-      {
-        int year, month, day, hour, minute, second, tzf;
-
-        OGR_F_GetFieldAsDateTime( ogrFet, attindex, &year, &month, &day, &hour, &minute, &second, &tzf );
-        if ( mSource->mFields.at( attindex ).type() == QVariant::Date )
-          value = QDate( year, month, day );
-        else if ( mSource->mFields.at( attindex ).type() == QVariant::Time )
-          value = QTime( hour, minute, second );
-        else
-          value = QDateTime( QDate( year, month, day ), QTime( hour, minute, second ) );
-      }
-      break;
-      default:
-        assert( 0 && "unsupported field type" );
-    }
-  }
-  else
-  {
-    value = QVariant( QString::null );
-  }
 
   f.setAttribute( attindex, value );
 }
@@ -338,22 +292,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
       if ( mGeometrySimplifier )
         mGeometrySimplifier->simplifyGeometry( geom );
 
-      // get the wkb representation
-      int memorySize = OGR_G_WkbSize( geom );
-      unsigned char *wkb = new unsigned char[memorySize];
-      OGR_G_ExportToWkb( geom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
-
-      QgsGeometry* geometry = feature.geometry();
-      if ( !geometry )
-      {
-        QgsGeometry *g = new QgsGeometry();
-        g->fromWkb( wkb, memorySize );
-        feature.setGeometry( g );
-      }
-      else
-      {
-        geometry->fromWkb( wkb, memorySize );
-      }
+      feature.setGeometry( QgsOgrUtils::ogrGeometryToQgsGeometry( geom ) );
     }
     else
       feature.setGeometry( nullptr );

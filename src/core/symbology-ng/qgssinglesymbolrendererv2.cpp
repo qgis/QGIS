@@ -450,6 +450,12 @@ QSet< QString > QgsSingleSymbolRendererV2::legendKeysForFeature( QgsFeature& fea
   return QSet< QString >() << QString();
 }
 
+void QgsSingleSymbolRendererV2::setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol )
+{
+  Q_UNUSED( key );
+  setSymbol( symbol );
+}
+
 QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::convertFromRenderer( const QgsFeatureRendererV2 *renderer )
 {
   QgsSingleSymbolRendererV2* r = nullptr;

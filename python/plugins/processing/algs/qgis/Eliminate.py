@@ -25,8 +25,13 @@ __copyright__ = '(C) 2013, Bernhard Ströbl'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
 from PyQt4.QtCore import QLocale, QDate
+
 from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
@@ -37,6 +42,8 @@ from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class Eliminate(GeoAlgorithm):
@@ -52,6 +59,9 @@ class Eliminate(GeoAlgorithm):
     MODE_LARGEST_AREA = 0
     MODE_SMALLEST_AREA = 1
     MODE_BOUNDARY = 2
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'eliminate.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Eliminate sliver polygons')

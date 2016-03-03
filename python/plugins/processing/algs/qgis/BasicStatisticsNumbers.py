@@ -25,16 +25,23 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 import math
 import codecs
 
+from PyQt4.QtGui import QIcon
+
 from qgis.core import QgsStatisticalSummary
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
 from processing.tools import dataobjects, vector
+
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class BasicStatisticsNumbers(GeoAlgorithm):
@@ -59,6 +66,9 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     THIRDQUARTILE = 'THIRDQUARTILE'
     NULLVALUES = 'NULLVALUES'
     IQR = 'IQR'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Basic statistics for numeric fields')

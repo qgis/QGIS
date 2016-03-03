@@ -6864,11 +6864,11 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   int nTotalFeatures = features.count();
 
   QHash<int, int> remap;
-  const QgsFields &fields = clipboard()->fields();
+  QgsFields fields = clipboard()->fields();
   QgsAttributeList pkAttrList = pasteVectorLayer->pkAttributeList();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    int dst = pasteVectorLayer->fieldNameIndex( fields[idx].name() );
+    int dst = pasteVectorLayer->fieldNameIndex( fields.at( idx ).name() );
     if ( dst < 0 )
       continue;
 
@@ -7011,9 +7011,11 @@ QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
 
 QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
 {
+  QgsFields fields = clipboard()->fields();
+
   // Decide geometry type from features, switch to multi type if at least one multi is found
   QMap<QGis::WkbType, int> typeCounts;
-  QgsFeatureList features = clipboard()->copyOf();
+  QgsFeatureList features = clipboard()->copyOf( fields );
   for ( int i = 0; i < features.size(); i++ )
   {
     QgsFeature &feature = features[i];
@@ -7048,55 +7050,51 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
     }
   }
 
-  QGis::WkbType wkbType = !typeCounts.isEmpty() ? typeCounts.keys().value( 0 ) : QGis::WKBPoint;
+  QGis::WkbType wkbType = !typeCounts.isEmpty() ? typeCounts.keys().value( 0 ) : QGis::WKBNoGeometry;
 
-  QString typeName = QString( QGis::featureType( wkbType ) ).remove( "WKB" );
-
-  typeName += QString( "?memoryid=%1" ).arg( QUuid::createUuid().toString() );
-
-  QgsDebugMsg( QString( "output wkbType = %1 typeName = %2" ).arg( wkbType ).arg( typeName ) );
-
-  QString message;
+  QString typeName = wkbType != QGis::WKBNoGeometry ? QString( QGis::featureType( wkbType ) ).remove( "WKB" ) : "none";
 
   if ( features.isEmpty() )
   {
-    message = tr( "No features in clipboard." ); // should not happen
-  }
-  else if ( typeCounts.isEmpty() )
-  {
-    message = tr( "No features with geometry found, point type layer will be created." );
+    // should not happen
+    messageBar()->pushMessage( tr( "Paste features" ),
+                               tr( "No features in clipboard." ),
+                               QgsMessageBar::WARNING, messageTimeout() );
+    return nullptr;
   }
   else if ( typeCounts.size() > 1 )
   {
-    message = tr( "Multiple geometry types found, features with geometry different from %1 will be created without geometry." ).arg( typeName );
+    messageBar()->pushMessage( tr( "Paste features" ),
+                               tr( "Multiple geometry types found, features with geometry different from %1 will be created without geometry." ).arg( typeName ),
+                               QgsMessageBar::INFO, messageTimeout() );
   }
 
-  if ( !message.isEmpty() )
-  {
-    QMessageBox::warning( this, tr( "Warning" ), message, QMessageBox::Ok );
-    return nullptr;
-  }
+  typeName += QString( "?memoryid=%1" ).arg( QUuid::createUuid().toString() );
+  QgsDebugMsg( QString( "output wkbType = %1 typeName = %2" ).arg( wkbType ).arg( typeName ) );
 
   QgsVectorLayer *layer = new QgsVectorLayer( typeName, "pasted_features", "memory" );
 
   if ( !layer->isValid() || !layer->dataProvider() )
   {
     delete layer;
-    QMessageBox::warning( this, tr( "Warning" ), tr( "Cannot create new layer" ), QMessageBox::Ok );
+    messageBar()->pushMessage( tr( "Paste features" ),
+                               tr( "Cannot create new layer." ),
+                               QgsMessageBar::WARNING, messageTimeout() );
     return nullptr;
   }
 
   layer->startEditing();
-  layer->setCrs( clipboard()->crs(), false );
+  if ( wkbType != QGis::WKBNoGeometry )
+    layer->setCrs( clipboard()->crs(), false );
 
   Q_FOREACH ( QgsField f, clipboard()->fields().toList() )
   {
     QgsDebugMsg( QString( "field %1 (%2)" ).arg( f.name(), QVariant::typeToName( f.type() ) ) );
     if ( !layer->addAttribute( f ) )
     {
-      QMessageBox::warning( this, tr( "Warning" ),
-                            tr( "Cannot create field %1 (%2,%3)" ).arg( f.name(), f.typeName(), QVariant::typeToName( f.type() ) ),
-                            QMessageBox::Ok );
+      messageBar()->pushMessage( tr( "Paste features" ),
+                                 tr( "Cannot create field %1 (%2,%3)" ).arg( f.name(), f.typeName(), QVariant::typeToName( f.type() ) ),
+                                 QgsMessageBar::WARNING, messageTimeout() );
       delete layer;
       return nullptr;
     }
@@ -7123,13 +7121,12 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
       feature.geometry()->convertToMultiType();
     }
   }
-  if ( ! layer->addFeatures( features ) || !layer->commitChanges() )
+  if ( ! layer->addFeatures( features, false ) || !layer->commitChanges() )
   {
     QgsDebugMsg( "Cannot add features or commit changes" );
     delete layer;
     return nullptr;
   }
-  layer->removeSelection();
 
   QgsDebugMsg( QString( "%1 features pasted to temporary scratch layer" ).arg( layer->featureCount() ) );
   return layer;
@@ -9870,9 +9867,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   mActionRotateLabel->setEnabled( enableRotate );
   mActionChangeLabelProperties->setEnabled( enableChange );
 
-  mMenuPasteAs->setEnabled( clipboard() && !clipboard()->empty() );
-  mActionPasteAsNewVector->setEnabled( clipboard() && !clipboard()->empty() );
-  mActionPasteAsNewMemoryVector->setEnabled( clipboard() && !clipboard()->empty() );
+  mMenuPasteAs->setEnabled( clipboard() && !clipboard()->isEmpty() );
+  mActionPasteAsNewVector->setEnabled( clipboard() && !clipboard()->isEmpty() );
+  mActionPasteAsNewMemoryVector->setEnabled( clipboard() && !clipboard()->isEmpty() );
 
   updateLayerModifiedActions();
 
@@ -10020,7 +10017,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         updateUndoActions();
       }
 
-      mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->empty() );
+      mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->isEmpty() );
 
       mActionAddFeature->setEnabled( isEditable && canAddFeatures );
       mActionCircularStringCurvePoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) && vlayer->geometryType() != QGis::Point );

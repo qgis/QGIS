@@ -25,6 +25,10 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
 from processing.core.parameters import ParameterRaster
@@ -35,6 +39,8 @@ from processing.core.outputs import OutputVector
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class contour(GdalAlgorithm):
 
@@ -43,6 +49,9 @@ class contour(GdalAlgorithm):
     INTERVAL = 'INTERVAL'
     FIELD_NAME = 'FIELD_NAME'
     EXTRA = 'EXTRA'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'contour.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Contour')
