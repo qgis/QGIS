@@ -341,8 +341,9 @@ class Repositories(QObject):
         self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
         authcfg = self.mRepositories[key]["authcfg"]
         if authcfg and isinstance(authcfg, basestring):
+            authcfg = authcfg.strip()
             if not QgsAuthManager.instance().updateNetworkRequest(
-                    self.mRepositories[key]["QRequest"], authcfg.strip()):
+                    self.mRepositories[key]["QRequest"], authcfg):
                 msg = QCoreApplication.translate(
                     "QgsPluginInstaller",
                     "Update of network request with authentication "
@@ -353,6 +354,7 @@ class Repositories(QObject):
         self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.User, key)
         self.mRepositories[key]["xmlData"] = QgsNetworkAccessManager.instance().get(self.mRepositories[key]["QRequest"])
         self.mRepositories[key]["xmlData"].setProperty('reposName', key)
+        self.mRepositories[key]["xmlData"].setProperty('authcfg', authcfg)
         self.mRepositories[key]["xmlData"].downloadProgress.connect(self.mRepositories[key]["Relay"].dataReadProgress)
         self.mRepositories[key]["xmlData"].finished.connect(self.xmlDownloaded)
 
@@ -376,6 +378,7 @@ class Repositories(QObject):
         """ populate the plugins object with the fetched data """
         reply = self.sender()
         reposName = reply.property('reposName')
+        authcfg = reply.property('authcfg')
         if reply.error() != QNetworkReply.NoError:                             # fetching failed
             self.mRepositories[reposName]["state"] = 3
             self.mRepositories[reposName]["error"] = reply.errorString()
@@ -439,7 +442,8 @@ class Repositories(QObject):
                         "version_installed": "",
                         "zip_repository": reposName,
                         "library": "",
-                        "readonly": False
+                        "readonly": False,
+                        "authcfg": authcfg
                     }
                     qgisMinimumVersion = pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().strip()
                     if not qgisMinimumVersion:
