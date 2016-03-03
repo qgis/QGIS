@@ -86,6 +86,7 @@ class GUI_EXPORT QgsMapLayerModel : public QAbstractItemModel
     int rowCount( const QModelIndex &parent ) const override;
     int columnCount( const QModelIndex &parent ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
+///@cond PRIVATE
 #if QT_VERSION >= 0x050000
     /**
      * Returns strings for all roles supported by this model.
@@ -94,6 +95,7 @@ class GUI_EXPORT QgsMapLayerModel : public QAbstractItemModel
      */
     QHash<int, QByteArray> roleNames() const override;
 #endif
+///@endcond
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 };
