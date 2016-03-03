@@ -384,3 +384,14 @@ class ProviderTestCase(object):
 
         # Test rewinding closed iterator
         self.assertFalse(f_it.rewind(), 'Rewinding closed iterator successful, should not be allowed')
+
+    def testGetFeaturesSubsetAttributes(self):
+        """ Test that expected results are returned when using subsets of attributes """
+
+        tests = {'pk': set([1, 2, 3, 4, 5]),
+                 'cnt': set([-200, 300, 100, 200, 400]),
+                 'name': set(['Pear', 'Orange', 'Apple', 'Honey', NULL]),
+                 'name2': set(['NuLl', 'PEaR', 'oranGe', 'Apple', 'Honey'])}
+        for field, expected in tests.iteritems():
+            result = set([f[field] for f in self.provider.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([field], self.provider.fields()))])
+            self.assertEqual(result, expected, 'Expected {}, got {}'.format(expected, result))
