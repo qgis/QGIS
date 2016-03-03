@@ -24,9 +24,34 @@ QgsDb2ExpressionCompiler::QgsDb2ExpressionCompiler( QgsDb2FeatureSource* source 
 
 }
 
+QString nodeType( const QgsExpression::Node* node )
+{
+  QString opString = "?";
+  if ( node->nodeType() == QgsExpression::ntUnaryOperator ) opString =  "ntUnaryOperator";
+  if ( node->nodeType() == QgsExpression::ntBinaryOperator ) opString =  "ntBinaryOperator";
+  if ( node->nodeType() == QgsExpression::ntInOperator ) opString =  "ntInOperator";
+  if ( node->nodeType() == QgsExpression::ntFunction ) opString =  "ntFunction";
+  if ( node->nodeType() == QgsExpression::ntLiteral ) opString =  "ntLiteral";
+  if ( node->nodeType() == QgsExpression::ntColumnRef ) opString =  "ntColumnRef";
+  if ( node->nodeType() == QgsExpression::ntCondition ) opString =  "ntCondition";
+  QString result = QString( "%1 - " ).arg( node->nodeType() ) + opString;
+  return result;
+
+}
+
+QString resultType( QgsSqlExpressionCompiler::Result result )
+{
+  if ( result == QgsSqlExpressionCompiler::None ) return "None";
+  if ( result == QgsSqlExpressionCompiler::Complete ) return "Complete";
+  if ( result == QgsSqlExpressionCompiler::Partial ) return "Partial";
+  if ( result == QgsSqlExpressionCompiler::Fail ) return "Fail";
+  return "Other result";
+
+}
+
 QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
 {
-  QgsDebugMsg( QString( "nodeType: %1" ).arg( node->nodeType() ) );
+  QgsDebugMsg( QString( "nodeType: %1" ).arg( nodeType( node ) ) );
   if ( node->nodeType() == QgsExpression::ntColumnRef )
   {
     const QgsExpression::NodeColumnRef *n( static_cast<const QgsExpression::NodeColumnRef*>( node ) );
@@ -34,11 +59,14 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
     // TODO - consider escaped names - not sure how to handle
     QString upperName = n->name().toUpper();
     int idx = mFields.indexFromName( upperName );
+    QgsDebugMsg( QString( "%1 - %2" ).arg( idx ).arg( upperName ) );
     if ( idx > -1 )
     {
       result = upperName;
+      QgsDebugMsg( "return Complete" );
       return Complete;
     }
+    QgsDebugMsg( "return Fail" );
     return Fail;
   }
   if ( node->nodeType() == QgsExpression::ntLiteral )
@@ -58,7 +86,58 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
     QgsDebugMsg( QString( "ok: %1; literal node: " ).arg( ok ) + n->value().toString() + "; result: " + result );
     QgsDebugMsg( QString( "n->dump: " ) + n->dump() );
     QgsDebugMsg( QString( "type: %1; typeName: %2" ).arg( n->value().type() ).arg( n->value().typeName() ) );
-    return ok ? Complete : Fail;
+    if ( ok )
+    {
+      QgsDebugMsg( "return Complete" );
+      return Complete;
+    }
+    else
+    {
+      QgsDebugMsg( "return Fail" );
+      return Fail;
+    }
+
+  }
+
+  if ( node->nodeType() == QgsExpression::ntUnaryOperator )
+  {
+    const QgsExpression::NodeUnaryOperator* n = static_cast<const QgsExpression::NodeUnaryOperator*>( node );
+    Result rr = Fail;
+    switch ( n->op() )
+    {
+      case QgsExpression::uoNot:
+        rr = compileNode( n->operand(), result );
+        if ( "NULL" == result.toUpper() )
+        {
+          result = "";
+          return Fail;
+        }
+
+        result = "NOT " + result;
+        QgsDebugMsg( QString( "NOT; result: %1; right: %2" ).arg( resultType( rr ) ).arg( result ) );
+        return rr;
+
+      case QgsExpression::uoMinus:
+        break;
+    }
+  }
+
+
+  if ( node->nodeType() == QgsExpression::ntInOperator )
+  {
+    const QgsExpression::NodeInOperator *bin( static_cast<const QgsExpression::NodeInOperator*>( node ) );
+    QString left, right;
+
+    QgsDebugMsg( QString( "IN operator - fall through; isNotIn: %1" ).arg( bin->isNotIn() ) );
+    /*
+    Result lr = compileNode( bin->opLeft(), left );
+    Result rr = compileNode( bin->opRight(), right );
+    Result compileResult;
+    QgsDebugMsg( "left: '" + left + "'; right: '" + right +
+                 QString( "'; op: %1; lr: %2; rr: %3" ).arg( bin->op() ).arg( lr ).arg( rr ) );
+    if ( lr == Fail || rr == Fail )
+      return Fail;
+    */
   }
 
   if ( node->nodeType() == QgsExpression::ntBinaryOperator )
@@ -151,7 +230,11 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
   }
 
   //fallback to default handling
-  return QgsSqlExpressionCompiler::compileNode( node, result );
+  QgsDebugMsg( QString( "fallback: %1 - " ).arg( nodeType( node ) ) );
+  QgsSqlExpressionCompiler::Result rc = QgsSqlExpressionCompiler::compileNode( node, result );
+  QgsDebugMsg( QString( "fallback: %1 - " ).arg( resultType( rc ) ) + result );
+  return rc;
+  // return QgsSqlExpressionCompiler::compileNode( node, result );
 }
 
 QString QgsDb2ExpressionCompiler::quotedValue( const QVariant& value, bool& ok )

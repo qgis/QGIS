@@ -157,6 +157,8 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
     {
       QgsDb2ExpressionCompiler compiler = QgsDb2ExpressionCompiler( mSource );
+      QgsDebugMsg( "expression dump: " + request.filterExpression()->dump() );
+      QgsDebugMsg( "expression expression: " + request.filterExpression()->expression() );
       QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
       QgsDebugMsg( QString( "compiler result: %1" ).arg( result ) + "; query: " + compiler.result() );
       if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
@@ -214,12 +216,10 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest& request )
       else
       {
         QgsDebugMsg( "compile of '" + expression.dump() + "' failed" );
-        // Bail out on first non-complete compilation.
         // Most important clauses at the beginning of the list
         // will still be sent and used to pre-sort so the local
         // CPU can use its cycles for fine-tuning.
         mOrderByCompiled = false;
-        break;
       }
     }
   }
@@ -268,10 +268,19 @@ bool QgsDb2FeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
 
 bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
 {
+  QgsDebugMsg( "Entering" );
   feature.setValid( false );
+  if ( mClosed )
+  {
+    QgsDebugMsg( "iterator closed" );
+    return false;
+  }
 
   if ( !mQuery )
+  {
+    QgsDebugMsg( "Read attempt on no query" );
     return false;
+  }
 
   if ( !mQuery->isActive() )
   {
@@ -310,8 +319,6 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
     QgsDebugMsg( QString( "Fid: %1; value: %2" ).arg( mSource->mFidColName ).arg( record.value( mSource->mFidColName ).toLongLong() ) );
     feature.setFeatureId( mQuery->record().value( mSource->mFidColName ).toLongLong() );
 
-    // David Adler - assumes ST_AsBinary returns expected wkb
-    // and setGeometry accepts this wkb
     if ( mSource->isSpatial() )
     {
       QByteArray ar = record.value( mSource->mGeometryColName ).toByteArray();
@@ -331,8 +338,11 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
     }
 
     feature.setValid( true );
+    QgsDebugMsg( "return feature" );
     return true;
   }
+  QgsDebugMsg( "don't return feature" );
+  QgsDebugMsg( mQuery->lastError().text() );
   return false;
 }
 
@@ -360,7 +370,8 @@ bool QgsDb2FeatureIterator::rewind()
     close();
     return false;
   }
-
+  QgsDebugMsg( "leaving rewind" );
+  QgsDebugMsg( mQuery->lastError().text() );
   return true;
 }
 

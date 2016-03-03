@@ -57,7 +57,7 @@ QgsDb2Provider::QgsDb2Provider( QString uri )
   mDatabase = GetDatabase( uri, errMsg );
   mConnInfo = anUri.connectionInfo();
 
-  if ( !errMsg.isEmpty() ) 
+  if ( !errMsg.isEmpty() )
   {
     setLastError( errMsg );
     QgsDebugMsg( mLastError );
@@ -183,14 +183,15 @@ QSqlDatabase QgsDb2Provider::GetDatabase( const QString &connInfo, QString &errM
   while ( !connected && i < 1 )
   {
     i++;
-    if ( userName.isEmpty() || password.isEmpty() ) {
-    bool ok = QgsCredentials::instance()->get( databaseName, userName, password, QString( "" ) );
-    if ( !ok ) // TODO - what if cancel?
+    if ( userName.isEmpty() || password.isEmpty() )
     {
-      errMsg = "Cancel clicked";
-      QgsDebugMsg( errMsg );
-      break;
-    }
+      bool ok = QgsCredentials::instance()->get( databaseName, userName, password, QString( "" ) );
+      if ( !ok ) // TODO - what if cancel?
+      {
+        errMsg = "Cancel clicked";
+        QgsDebugMsg( errMsg );
+        break;
+      }
     }
 
     db.setUserName( userName );
@@ -455,13 +456,16 @@ long QgsDb2Provider::featureCount() const
 
   QString sql = "SELECT COUNT(*) FROM %1.%2";
   QString statement = QString( sql ).arg( mSchemaName, mTableName );
-
+  QgsDebugMsg(statement);
   if ( query.exec( statement ) && query.next() )
   {
+    QgsDebugMsg(QString("count: %1").arg(query.value( 0 ).toInt()));
     return query.value( 0 ).toInt();
   }
   else
   {
+  QgsDebugMsg("Failed");
+      QgsDebugMsg(query.lastError().text());
     return -1;
   }
 }
@@ -557,7 +561,7 @@ QString QgsDb2Provider::subsetString()
 bool QgsDb2Provider::setSubsetString( const QString& theSQL, bool )
 {
   QString prevWhere = mSqlWhereClause;
-
+    QgsDebugMsg(theSQL);
   mSqlWhereClause = theSQL.trimmed();
 
   QString sql = QString( "SELECT COUNT(*) FROM " );
@@ -576,16 +580,26 @@ bool QgsDb2Provider::setSubsetString( const QString& theSQL, bool )
 
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
+    QgsDebugMsg(sql);
   if ( !query.exec( sql ) )
   {
-    QgsDebugMsg( sql );
     pushError( query.lastError().text() );
     mSqlWhereClause = prevWhere;
+          QgsDebugMsg(query.lastError().text()); 
     return false;
   }
 
   if ( query.isActive() && query.next() )
+  {
     mNumberFeatures = query.value( 0 ).toInt();
+    QgsDebugMsg(QString("count: %1").arg(mNumberFeatures));
+   } 
+   else {
+       pushError( query.lastError().text() );
+    mSqlWhereClause = prevWhere;
+      QgsDebugMsg(query.lastError().text());       
+   return false;
+   }
 
   QgsDataSourceURI anUri = QgsDataSourceURI( dataSourceUri() );
   anUri.setSql( mSqlWhereClause );
@@ -723,10 +737,10 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     {
       QString errMsg;
       mDatabase = GetDatabase( mConnInfo, errMsg );
-    if ( !errMsg.isEmpty() )
-    {
-      return false;
-    }      
+      if ( !errMsg.isEmpty() )
+      {
+        return false;
+      }
     }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
@@ -842,10 +856,10 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
     {
       QString errMsg;
       mDatabase = GetDatabase( mConnInfo, errMsg );
-    if ( !errMsg.isEmpty() )
-    {
-      return false;
-    }      
+      if ( !errMsg.isEmpty() )
+      {
+        return false;
+      }
     }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
@@ -1075,10 +1089,10 @@ bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     {
       QString errMsg;
       mDatabase = GetDatabase( mConnInfo, errMsg );
-    if ( !errMsg.isEmpty() )
-    {
-      return false;
-    }      
+      if ( !errMsg.isEmpty() )
+      {
+        return false;
+      }
     }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
