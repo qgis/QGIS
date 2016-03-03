@@ -17,7 +17,7 @@
 #include "qgsogrprovider.h"
 
 QgsOgrExpressionCompiler::QgsOgrExpressionCompiler( QgsOgrFeatureSource* source )
-    : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::CaseInsensitiveStringMatch )
+    : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::NoNullInBooleanLogic )
     , mSource( source )
 {
 }
@@ -95,5 +95,12 @@ QString QgsOgrExpressionCompiler::quotedIdentifier( const QString& identifier )
 QString QgsOgrExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
 {
   ok = true;
+
+  if ( value.type() == QVariant::Bool )
+  {
+    // No support for boolean literals, so fake them
+    return value.toBool() ? "(1=1)" : "(1=0)";
+  }
+
   return QgsOgrProviderUtils::quotedValue( value );
 }

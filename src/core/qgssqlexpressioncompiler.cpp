@@ -162,10 +162,22 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
           break;
 
         case QgsExpression::boOr:
+          if ( mFlags.testFlag( NoNullInBooleanLogic ) )
+          {
+            if ( nodeIsNullLiteral( n->opLeft() ) || nodeIsNullLiteral( n->opRight() ) )
+              return Fail;
+          }
+
           op = "OR";
           break;
 
         case QgsExpression::boAnd:
+          if ( mFlags.testFlag( NoNullInBooleanLogic ) )
+          {
+            if ( nodeIsNullLiteral( n->opLeft() ) || nodeIsNullLiteral( n->opRight() ) )
+              return Fail;
+          }
+
           op = "AND";
           break;
 
@@ -296,4 +308,13 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
   }
 
   return Fail;
+}
+
+bool QgsSqlExpressionCompiler::nodeIsNullLiteral( const QgsExpression::Node* node ) const
+{
+  if ( node->nodeType() != QgsExpression::ntLiteral )
+    return false;
+
+  const QgsExpression::NodeLiteral* nLit = static_cast<const QgsExpression::NodeLiteral*>( node );
+  return nLit->value().isNull();
 }
