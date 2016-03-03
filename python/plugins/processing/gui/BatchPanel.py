@@ -30,7 +30,7 @@ import json
 
 from PyQt4 import uic
 from PyQt4.QtGui import (QWidget, QIcon, QTableWidgetItem, QComboBox, QLineEdit,
-                         QHeaderView, QFileDialog)
+                         QHeaderView, QFileDialog, QMessageBox)
 
 from qgis.core import QgsApplication
 
@@ -184,30 +184,39 @@ class BatchPanel(BASE, WIDGET):
         if filename:
             with open(filename) as f:
                 values = json.load(f)
+        else:
+            # If the user clicked on the cancel button.
+            return
 
         self.tblParameters.setRowCount(0)
-        for row, alg in enumerate(values):
-            self.addRow()
-            params = alg[self.PARAMETERS]
-            outputs = alg[self.OUTPUTS]
-            column = 0
-            for param in self.alg.parameters:
-                if param.hidden:
-                    continue
-                widget = self.tblParameters.cellWidget(row, column)
-                if param.name in params:
-                    value = params[param.name]
-                    self.setValueInWidget(widget, value)
-                column += 1
+        try:
+            for row, alg in enumerate(values):
+                self.addRow()
+                params = alg[self.PARAMETERS]
+                outputs = alg[self.OUTPUTS]
+                column = 0
+                for param in self.alg.parameters:
+                    if param.hidden:
+                        continue
+                    widget = self.tblParameters.cellWidget(row, column)
+                    if param.name in params:
+                        value = params[param.name]
+                        self.setValueInWidget(widget, value)
+                    column += 1
 
-            for out in self.alg.outputs:
-                if out.hidden:
-                    continue
-                widget = self.tblParameters.cellWidget(row, column)
-                if out.name in outputs:
-                    value = outputs[out.name]
-                    self.setValueInWidget(widget, value)
-                column += 1
+                for out in self.alg.outputs:
+                    if out.hidden:
+                        continue
+                    widget = self.tblParameters.cellWidget(row, column)
+                    if out.name in outputs:
+                        value = outputs[out.name]
+                        self.setValueInWidget(widget, value)
+                    column += 1
+        except TypeError:
+            QMessageBox.critical(
+                self,
+                self.tr('Error'),
+                self.tr('An error occured while reading your file.'))
 
     def setValueInWidget(self, widget, value):
         if isinstance(widget, (BatchInputSelectionPanel, QLineEdit, FileSelectionPanel)):

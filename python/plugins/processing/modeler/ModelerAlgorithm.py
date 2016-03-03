@@ -397,7 +397,9 @@ class ModelerAlgorithm(GeoAlgorithm):
                 if not param.setValue(value) and not isinstance(param,
                                                                 ParameterDataObject):
                     raise GeoAlgorithmExecutionException(
-                        self.tr('Wrong value: %s', 'ModelerAlgorithm') % value)
+                        self.tr('Wrong value %s for %s %s', 'ModelerAlgorithm')
+                        % (value, param.__class__.__name__, param.name))
+
         for out in algInstance.outputs:
             if not out.hidden:
                 if out.name in alg.outputs:
