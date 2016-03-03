@@ -122,25 +122,25 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
     }
   }
 
+  /*  For reasons unknown, compiler thinks bin is unused
+    if ( node->nodeType() == QgsExpression::ntInOperator )
+    {
 
-  if ( node->nodeType() == QgsExpression::ntInOperator )
-  {
-/*  
-    const QgsExpression::NodeInOperator *bin( static_cast<const QgsExpression::NodeInOperator*>( node ) );
-    QString left, right;
+      const QgsExpression::NodeInOperator *bin( static_cast<const QgsExpression::NodeInOperator*>( node ) );
+      QString left, right;
 
-    QgsDebugMsg( QString( "IN operator - fall through; isNotIn: %1" ).arg( bin->isNotIn() ) );
-    /*
-    Result lr = compileNode( bin->opLeft(), left );
-    Result rr = compileNode( bin->opRight(), right );
-    Result compileResult;
-    QgsDebugMsg( "left: '" + left + "'; right: '" + right +
-                 QString( "'; op: %1; lr: %2; rr: %3" ).arg( bin->op() ).arg( lr ).arg( rr ) );
-    if ( lr == Fail || rr == Fail )
-      return Fail;
-    */
-  }
+      QgsDebugMsg( QString( "IN operator - fall through; isNotIn: %1" ).arg( bin->isNotIn() ) );
 
+      Result lr = compileNode( bin->opLeft(), left );
+      Result rr = compileNode( bin->opRight(), right );
+      Result compileResult;
+      QgsDebugMsg( "left: '" + left + "'; right: '" + right +
+                   QString( "'; op: %1; lr: %2; rr: %3" ).arg( bin->op() ).arg( lr ).arg( rr ) );
+      if ( lr == Fail || rr == Fail )
+        return Fail;
+
+    }
+      */
   if ( node->nodeType() == QgsExpression::ntBinaryOperator )
   {
     const QgsExpression::NodeBinaryOperator *bin( static_cast<const QgsExpression::NodeBinaryOperator*>( node ) );
