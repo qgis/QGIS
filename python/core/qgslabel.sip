@@ -106,6 +106,9 @@ class QgsLabel
     void setScaleBasedVisibility( bool theVisibilityFlag );
     bool scaleBasedVisibility() const;
 
+    /** Return true if the label is visible at the given scale */
+    bool isInScaleRange( double scale ) const;
+
   private:
     QgsLabel (); // pretend that constructor is private for now
     QgsLabel( const QgsLabel& rh );

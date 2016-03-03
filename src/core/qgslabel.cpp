@@ -1414,3 +1414,9 @@ float QgsLabel::maxScale() const
 {
   return mMaxScale;
 }
+
+bool QgsLabel::isInScaleRange( double scale ) const
+{
+  return !mScaleBasedVisibility ||
+         ( mMinScale * QGis::SCALE_PRECISION < scale && scale * QGis::SCALE_PRECISION < mMaxScale );
+}
