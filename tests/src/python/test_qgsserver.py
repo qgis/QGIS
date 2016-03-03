@@ -21,6 +21,7 @@ from qgis.server import QgsServer
 from qgis.core import QgsMessageLog
 from qgis.testing import unittest
 from utilities import unitTestDataPath
+import osgeo.gdal
 
 # Strip path and content length because path may vary
 RE_STRIP_PATH = r'MAP=[^&]+|Content-Length: \d+'
@@ -163,6 +164,11 @@ class TestQgsServer(unittest.TestCase):
         """
         response = re.sub(RE_STRIP_PATH, '', response)
         expected = re.sub(RE_STRIP_PATH, '', expected)
+
+        # for older GDAL versions (<2.0), id field will be integer type
+        if int(osgeo.gdal.VersionInfo()[:1]) < 2:
+            expected = expected.replace('typeName="Integer64" precision="0" length="10" editType="TextEdit" type="qlonglong"', 'typeName="Integer" precision="0" length="10" editType="TextEdit" type="int"')
+
         self.assertEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected, response))
 
     def test_project_wms(self):
@@ -240,10 +246,15 @@ class TestQgsServer(unittest.TestCase):
         """
         response = re.sub(RE_STRIP_PATH, '', response)
         expected = re.sub(RE_STRIP_PATH, '', expected)
+
+        # for older GDAL versions (<2.0), id field will be integer type
+        if int(osgeo.gdal.VersionInfo()[:1]) < 2:
+            expected = expected.replace('<element type="long" name="id"/>', '<element type="integer" name="id"/>')
+
         self.assertEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected, response))
 
     def test_project_wfs(self):
-        """Test some WMS request"""
+        """Test some WFS request"""
         for request in ('GetCapabilities', 'DescribeFeatureType'):
             self.wfs_request_compare(request)
 
