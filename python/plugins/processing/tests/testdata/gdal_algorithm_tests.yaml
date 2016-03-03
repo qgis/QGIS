@@ -40,4 +40,4 @@ tests:
         rules:
           - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
           - 'Geometry: Line String'
-          - 'Feature Count: 6'
+          - 'Feature Count: 7'
