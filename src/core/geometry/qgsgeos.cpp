@@ -114,18 +114,24 @@ static GEOSInit geosinit;
 class GEOSGeomScopedPtr
 {
   public:
-    explicit GEOSGeomScopedPtr( GEOSGeometry* geom = nullptr ) : mGeom( geom ) {}
-    ~GEOSGeomScopedPtr() { GEOSGeom_destroy_r( geosinit.ctxt, mGeom ); }
+    explicit GEOSGeomScopedPtr( GEOSGeometry* geom = nullptr, bool destroyGeom = true ) : mGeom( geom ), mDestroyGeom( destroyGeom ) {}
+    explicit GEOSGeomScopedPtr( const GEOSGeometry* geom, bool destroyGeom ) : mGeom( ( GEOSGeometry* ) ( geom ) ), mDestroyGeom( destroyGeom ) {}
+    ~GEOSGeomScopedPtr() { if ( mDestroyGeom ) GEOSGeom_destroy_r( geosinit.ctxt, mGeom ); }
     GEOSGeometry* get() const { return mGeom; }
     operator bool() const { return nullptr != mGeom; }
     void reset( GEOSGeometry* geom )
     {
-      GEOSGeom_destroy_r( geosinit.ctxt, mGeom );
+      if ( mDestroyGeom )
+      {
+        GEOSGeom_destroy_r( geosinit.ctxt, mGeom );
+      }
       mGeom = geom;
+      mDestroyGeom = true;
     }
 
   private:
     GEOSGeometry* mGeom;
+    bool mDestroyGeom;
 
   private:
     GEOSGeomScopedPtr( const GEOSGeomScopedPtr& rh );
@@ -133,14 +139,31 @@ class GEOSGeomScopedPtr
 };
 
 QgsGeos::QgsGeos( const QgsAbstractGeometryV2* geometry, double precision )
-    : QgsGeometryEngine( geometry ), mGeos( nullptr ), mGeosPrepared( nullptr ), mPrecision( precision )
+    : QgsGeometryEngine( geometry ), mGeos( nullptr ), mGeosPrepared( nullptr ), mPrecision( precision ), mDeleteGeos( true )
 {
   cacheGeos();
 }
 
+QgsGeos::QgsGeos( const QgsGeometry* geometry, double precision )
+    : QgsGeometryEngine( geometry != nullptr ? geometry->geometry() : nullptr ), mGeos( nullptr ), mGeosPrepared( nullptr ), mPrecision( precision ), mDeleteGeos( true )
+{
+  if ( geometry )
+  {
+    mGeos = (GEOSGeometry *)( geometry->asGeos() );
+    mDeleteGeos = false;
+  }
+  else
+  {
+    cacheGeos();
+  }
+}
+
 QgsGeos::~QgsGeos()
 {
-  GEOSGeom_destroy_r( geosinit.ctxt, mGeos );
+  if ( mDeleteGeos )
+  {
+    GEOSGeom_destroy_r( geosinit.ctxt, mGeos );
+  }
   mGeos = nullptr;
   GEOSPreparedGeom_destroy_r( geosinit.ctxt, mGeosPrepared );
   mGeosPrepared = nullptr;
@@ -148,7 +171,10 @@ QgsGeos::~QgsGeos()
 
 void QgsGeos::geometryChanged()
 {
-  GEOSGeom_destroy_r( geosinit.ctxt, mGeos );
+  if ( mDeleteGeos )
+  {
+    GEOSGeom_destroy_r( geosinit.ctxt, mGeos );
+  }
   mGeos = nullptr;
   GEOSPreparedGeom_destroy_r( geosinit.ctxt, mGeosPrepared );
   mGeosPrepared = nullptr;
@@ -173,21 +199,46 @@ void QgsGeos::cacheGeos() const
   }
 
   mGeos = asGeos( mGeometry, mPrecision );
+  mDeleteGeos = true;
 }
 
+QgsAbstractGeometryV2* QgsGeos::intersection( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg ) const
+{
+  return overlay( geom, geos, INTERSECTION, errorMsg );
+}
 QgsAbstractGeometryV2* QgsGeos::intersection( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
 {
-  return overlay( geom, INTERSECTION, errorMsg );
+  return overlay( geom, nullptr, INTERSECTION, errorMsg );
+}
+QgsAbstractGeometryV2* QgsGeos::intersection( const QgsGeometry* geometry, QString* errorMsg ) const
+{
+  return overlay( *geometry->geometry(), geometry->asGeos(), INTERSECTION, errorMsg );
 }
 
+QgsAbstractGeometryV2* QgsGeos::difference( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg ) const
+{
+  return overlay( geom, geos, DIFFERENCE, errorMsg );
+}
 QgsAbstractGeometryV2* QgsGeos::difference( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
 {
-  return overlay( geom, DIFFERENCE, errorMsg );
+  return overlay( geom, nullptr, DIFFERENCE, errorMsg );
+}
+QgsAbstractGeometryV2* QgsGeos::difference( const QgsGeometry* geometry, QString* errorMsg ) const
+{
+  return overlay( *geometry->geometry(), geometry->asGeos(), DIFFERENCE, errorMsg );
 }
 
+QgsAbstractGeometryV2* QgsGeos::combine( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg ) const
+{
+  return overlay( geom, geos, UNION, errorMsg );
+}
 QgsAbstractGeometryV2* QgsGeos::combine( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
 {
-  return overlay( geom, UNION, errorMsg );
+  return overlay( geom, nullptr, UNION, errorMsg );
+}
+QgsAbstractGeometryV2* QgsGeos::combine( const QgsGeometry* geometry, QString* errorMsg ) const
+{
+  return overlay( *geometry->geometry(), geometry->asGeos(), UNION, errorMsg );
 }
 
 QgsAbstractGeometryV2* QgsGeos::combine( const QList<QgsAbstractGeometryV2*>& geomList, QString* errorMsg ) const
@@ -214,12 +265,20 @@ QgsAbstractGeometryV2* QgsGeos::combine( const QList<QgsAbstractGeometryV2*>& ge
   return result;
 }
 
+QgsAbstractGeometryV2* QgsGeos::symDifference( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg ) const
+{
+  return overlay( geom, geos, SYMDIFFERENCE, errorMsg );
+}
 QgsAbstractGeometryV2* QgsGeos::symDifference( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
 {
-  return overlay( geom, SYMDIFFERENCE, errorMsg );
+  return overlay( geom, nullptr, SYMDIFFERENCE, errorMsg );
+}
+QgsAbstractGeometryV2* QgsGeos::symDifference( const QgsGeometry* geometry, QString* errorMsg ) const
+{
+  return overlay( *geometry->geometry(), geometry->asGeos(), SYMDIFFERENCE, errorMsg );
 }
 
-double QgsGeos::distance( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
+double QgsGeos::distance( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg ) const
 {
   double distance = -1.0;
   if ( !mGeos )
@@ -227,66 +286,128 @@ double QgsGeos::distance( const QgsAbstractGeometryV2& geom, QString* errorMsg )
     return distance;
   }
 
-  GEOSGeometry* otherGeosGeom = asGeos( &geom, mPrecision );
-  if ( !otherGeosGeom )
+  GEOSGeomScopedPtr geosGeom( geos != nullptr ? geos : asGeos( &geom, mPrecision ), geos == nullptr );
+  if ( !geosGeom )
   {
     return distance;
   }
 
   try
   {
-    GEOSDistance_r( geosinit.ctxt, mGeos, otherGeosGeom, &distance );
+    GEOSDistance_r( geosinit.ctxt, mGeos, geosGeom.get(), &distance );
   }
   CATCH_GEOS_WITH_ERRMSG( -1.0 )
 
-  GEOSGeom_destroy_r( geosinit.ctxt, otherGeosGeom );
-
   return distance;
 }
+double QgsGeos::distance( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
+{
+  return distance( geom, nullptr, errorMsg );
+}
+double QgsGeos::distance( const QgsGeometry* geometry, QString* errorMsg ) const
+{
+  return distance( *geometry->geometry(), geometry->asGeos(), errorMsg );
+}
 
+bool QgsGeos::intersects( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg ) const
+{
+  return relation( geom, geos, INTERSECTS, errorMsg );
+}
 bool QgsGeos::intersects( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
 {
-  return relation( geom, INTERSECTS, errorMsg );
+  return relation( geom, nullptr, INTERSECTS, errorMsg );
+}
+bool QgsGeos::intersects( const QgsGeometry* geometry, QString* errorMsg ) const
+{
+  return relation( *geometry->geometry(), geometry->asGeos(), INTERSECTS, errorMsg );
 }
 
+bool QgsGeos::touches( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg ) const
+{
+  return relation( geom, geos, TOUCHES, errorMsg );
+}
 bool QgsGeos::touches( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
 {
-  return relation( geom, TOUCHES, errorMsg );
+  return relation( geom, nullptr, TOUCHES, errorMsg );
+}
+bool QgsGeos::touches( const QgsGeometry* geometry, QString* errorMsg ) const
+{
+  return relation( *geometry->geometry(), geometry->asGeos(), TOUCHES, errorMsg );
 }
 
+bool QgsGeos::crosses( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg ) const
+{
+  return relation( geom, geos, CROSSES, errorMsg );
+}
 bool QgsGeos::crosses( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
 {
-  return relation( geom, CROSSES, errorMsg );
+  return relation( geom, nullptr, CROSSES, errorMsg );
+}
+bool QgsGeos::crosses( const QgsGeometry* geometry, QString* errorMsg ) const
+{
+  return relation( *geometry->geometry(), geometry->asGeos(), CROSSES, errorMsg );
 }
 
+bool QgsGeos::within( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg ) const
+{
+  return relation( geom, geos, WITHIN, errorMsg );
+}
 bool QgsGeos::within( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
 {
-  return relation( geom, WITHIN, errorMsg );
+  return relation( geom, nullptr, WITHIN, errorMsg );
+}
+bool QgsGeos::within( const QgsGeometry* geometry, QString* errorMsg ) const
+{
+  return relation( *geometry->geometry(), geometry->asGeos(), WITHIN, errorMsg );
 }
 
+bool QgsGeos::overlaps( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg ) const
+{
+  return relation( geom, geos, OVERLAPS, errorMsg );
+}
 bool QgsGeos::overlaps( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
 {
-  return relation( geom, OVERLAPS, errorMsg );
+  return relation( geom, nullptr, OVERLAPS, errorMsg );
+}
+bool QgsGeos::overlaps( const QgsGeometry* geometry, QString* errorMsg ) const
+{
+  return relation( *geometry->geometry(), geometry->asGeos(), OVERLAPS, errorMsg );
 }
 
+bool QgsGeos::contains( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg ) const
+{
+  return relation( geom, geos, CONTAINS, errorMsg );
+}
 bool QgsGeos::contains( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
 {
-  return relation( geom, CONTAINS, errorMsg );
+  return relation( geom, nullptr, CONTAINS, errorMsg );
+}
+bool QgsGeos::contains( const QgsGeometry* geometry, QString* errorMsg ) const
+{
+  return relation( *geometry->geometry(), geometry->asGeos(), CONTAINS, errorMsg );
 }
 
+bool QgsGeos::disjoint( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg ) const
+{
+  return relation( geom, geos, DISJOINT, errorMsg );
+}
 bool QgsGeos::disjoint( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
 {
-  return relation( geom, DISJOINT, errorMsg );
+  return relation( geom, nullptr, DISJOINT, errorMsg );
+}
+bool QgsGeos::disjoint( const QgsGeometry* geometry, QString* errorMsg ) const
+{
+  return relation( *geometry->geometry(), geometry->asGeos(), DISJOINT, errorMsg );
 }
 
-QString QgsGeos::relate( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
+QString QgsGeos::relate( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg ) const
 {
   if ( !mGeos )
   {
     return QString();
   }
 
-  GEOSGeomScopedPtr geosGeom( asGeos( &geom, mPrecision ) );
+  GEOSGeomScopedPtr geosGeom( geos != nullptr ? geos : asGeos( &geom, mPrecision ), geos == nullptr );
   if ( !geosGeom )
   {
     return QString();
@@ -312,15 +433,23 @@ QString QgsGeos::relate( const QgsAbstractGeometryV2& geom, QString* errorMsg ) 
 
   return result;
 }
+QString QgsGeos::relate( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
+{
+  return relate( geom, nullptr, errorMsg );
+}
+QString QgsGeos::relate( const QgsGeometry* geometry, QString* errorMsg ) const
+{
+  return relate( *geometry->geometry(), geometry->asGeos(), errorMsg );
+}
 
-bool QgsGeos::relatePattern( const QgsAbstractGeometryV2& geom, const QString& pattern, QString* errorMsg ) const
+bool QgsGeos::relatePattern( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, const QString& pattern, QString* errorMsg ) const
 {
   if ( !mGeos )
   {
     return false;
   }
 
-  GEOSGeomScopedPtr geosGeom( asGeos( &geom, mPrecision ) );
+  GEOSGeomScopedPtr geosGeom( geos != nullptr ? geos : asGeos( &geom, mPrecision ), geos == nullptr );
   if ( !geosGeom )
   {
     return false;
@@ -340,6 +469,10 @@ bool QgsGeos::relatePattern( const QgsAbstractGeometryV2& geom, const QString& p
   }
 
   return result;
+}
+bool QgsGeos::relatePattern( const QgsAbstractGeometryV2& geom, const QString& pattern, QString* errorMsg ) const
+{
+  return relatePattern( geom, nullptr, pattern, errorMsg );
 }
 
 double QgsGeos::area( QString* errorMsg ) const
@@ -1114,14 +1247,14 @@ GEOSGeometry* QgsGeos::asGeos( const QgsAbstractGeometryV2* geom, double precisi
   return nullptr;
 }
 
-QgsAbstractGeometryV2* QgsGeos::overlay( const QgsAbstractGeometryV2& geom, Overlay op, QString* errorMsg ) const
+QgsAbstractGeometryV2* QgsGeos::overlay( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, Overlay op, QString* errorMsg ) const
 {
   if ( !mGeos )
   {
     return nullptr;
   }
 
-  GEOSGeomScopedPtr geosGeom( asGeos( &geom, mPrecision ) );
+  GEOSGeomScopedPtr geosGeom( geos != nullptr ? geos : asGeos( &geom, mPrecision ), geos == nullptr );
   if ( !geosGeom )
   {
     return nullptr;
@@ -1174,14 +1307,14 @@ QgsAbstractGeometryV2* QgsGeos::overlay( const QgsAbstractGeometryV2& geom, Over
   }
 }
 
-bool QgsGeos::relation( const QgsAbstractGeometryV2& geom, Relation r, QString* errorMsg ) const
+bool QgsGeos::relation( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, Relation r, QString* errorMsg ) const
 {
   if ( !mGeos )
   {
     return false;
   }
 
-  GEOSGeomScopedPtr geosGeom( asGeos( &geom, mPrecision ) );
+  GEOSGeomScopedPtr geosGeom( geos != nullptr ? geos : asGeos( &geom, mPrecision ), geos == nullptr );
   if ( !geosGeom )
   {
     return false;
@@ -1430,7 +1563,7 @@ bool QgsGeos::isValid( QString* errorMsg ) const
   CATCH_GEOS_WITH_ERRMSG( false );
 }
 
-bool QgsGeos::isEqual( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
+bool QgsGeos::isEqual( const QgsAbstractGeometryV2& geom, const GEOSGeometry* geos, QString* errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1439,7 +1572,7 @@ bool QgsGeos::isEqual( const QgsAbstractGeometryV2& geom, QString* errorMsg ) co
 
   try
   {
-    GEOSGeomScopedPtr geosGeom( asGeos( &geom, mPrecision ) );
+    GEOSGeomScopedPtr geosGeom( geos != nullptr ? geos : asGeos( &geom, mPrecision ), geos == nullptr );
     if ( !geosGeom )
     {
       return false;
@@ -1448,6 +1581,14 @@ bool QgsGeos::isEqual( const QgsAbstractGeometryV2& geom, QString* errorMsg ) co
     return equal;
   }
   CATCH_GEOS_WITH_ERRMSG( false );
+}
+bool QgsGeos::isEqual( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
+{
+  return isEqual( geom, nullptr, errorMsg );
+}
+bool QgsGeos::isEqual( const QgsGeometry* geometry, QString* errorMsg ) const
+{
+  return isEqual( *geometry->geometry(), geometry->asGeos(), errorMsg );
 }
 
 bool QgsGeos::isEmpty( QString* errorMsg ) const
