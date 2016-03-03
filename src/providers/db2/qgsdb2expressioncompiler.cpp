@@ -125,6 +125,7 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
 
   if ( node->nodeType() == QgsExpression::ntInOperator )
   {
+/*  
     const QgsExpression::NodeInOperator *bin( static_cast<const QgsExpression::NodeInOperator*>( node ) );
     QString left, right;
 
