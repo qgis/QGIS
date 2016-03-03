@@ -227,6 +227,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
         # Add some fields to the layer
         myFields = [QgsField('TestInt', QVariant.Int, 'integer', 2, 0),
+                    QgsField('TestLong', QVariant.LongLong, 'long', -1, 0),
                     QgsField('TestDbl', QVariant.Double, 'double', 8, 6),
                     QgsField('TestString', QVariant.String, 'string', 50, 0),
                     QgsField('TestDate', QVariant.Date, 'date'),
