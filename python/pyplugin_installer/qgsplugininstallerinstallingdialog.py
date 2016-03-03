@@ -24,12 +24,12 @@
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import QDir, QUrl, QFile, QCoreApplication, QgsAuthManager, QTimer
+from PyQt4.QtCore import QDir, QUrl, QFile, QCoreApplication, QTimer
 from PyQt4.QtGui import QDialog
 from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply
 
 import qgis
-from qgis.core import QgsNetworkAccessManager
+from qgis.core import QgsNetworkAccessManager, QgsAuthManager
 
 from ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
 from installer_data import removeDir
