@@ -58,6 +58,7 @@ QgsMapRenderer::QgsMapRenderer()
   mDestCRS = new QgsCoordinateReferenceSystem( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId ); //WGS 84
 
   mOutputUnits = QgsMapRenderer::Millimeters;
+  mFullExtent.setMinimal();
 
   mLabelingEngine = nullptr;
 }
@@ -928,15 +929,19 @@ QgsRectangle QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRe
   return rect;
 }
 
-
 void QgsMapRenderer::updateFullExtent()
 {
-  QgsDebugMsg( "called." );
-  QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
-
-  // reset the map canvas extent since the extent may now be smaller
-  // We can't use a constructor since QgsRectangle normalizes the rectangle upon construction
   mFullExtent.setMinimal();
+}
+
+QgsRectangle QgsMapRenderer::fullExtent()
+{
+  QgsDebugMsg( "called." );
+
+  if ( !mFullExtent.isNull() )
+    return mFullExtent;
+
+  QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
 
   // iterate through the map layers and test each layers extent
   // against the current min and max values
@@ -993,11 +998,7 @@ void QgsMapRenderer::updateFullExtent()
   }
 
   QgsDebugMsg( "Full extent: " + mFullExtent.toString() );
-}
 
-QgsRectangle QgsMapRenderer::fullExtent()
-{
-  updateFullExtent();
   return mFullExtent;
 }
 
@@ -1012,7 +1013,6 @@ QStringList& QgsMapRenderer::layerSet()
 {
   return mLayerSet;
 }
-
 
 bool QgsMapRenderer::readXML( QDomNode & theNode )
 {
