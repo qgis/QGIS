@@ -46,6 +46,8 @@ from qgis.core import (
     QgsMapLayerRegistry
 )
 
+from qgis.testing import _UnexpectedSuccess
+
 from utilities import (
     unitTestDataPath
 )
@@ -65,7 +67,19 @@ class AlgorithmsTest():
             algorithm_tests = yaml.load(stream)
 
         for algtest in algorithm_tests['tests']:
-            yield self.check_algorithm, algtest['name'], algtest
+            expectFailure = False
+            if 'expectedFailure' in algtest:
+                exec('\n'.join(algtest['expectedFailure'][:-1]))
+                expectFailure = eval(algtest['expectedFailure'][-1])
+            if expectFailure:
+                try:
+                    yield self.check_algorithm, algtest['name'], algtest
+                except Exception:
+                    pass
+                else:
+                    raise _UnexpectedSuccess
+            else:
+                yield self.check_algorithm, algtest['name'], algtest
 
     def check_algorithm(self, name, defs):
         """
