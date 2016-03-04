@@ -67,19 +67,7 @@ class AlgorithmsTest():
             algorithm_tests = yaml.load(stream)
 
         for algtest in algorithm_tests['tests']:
-            expectFailure = False
-            if 'expectedFailure' in algtest:
-                exec('\n'.join(algtest['expectedFailure'][:-1]))
-                expectFailure = eval(algtest['expectedFailure'][-1])
-            if expectFailure:
-                try:
-                    yield self.check_algorithm, algtest['name'], algtest
-                except Exception:
-                    pass
-                else:
-                    raise _UnexpectedSuccess
-            else:
-                yield self.check_algorithm, algtest['name'], algtest
+            yield self.check_algorithm, algtest['name'], algtest
 
     def check_algorithm(self, name, defs):
         """
@@ -101,9 +89,25 @@ class AlgorithmsTest():
         for r, p in defs['results'].iteritems():
             alg.setOutputValue(r, self.load_result_param(p))
 
-        print(alg.getAsCommand())
-        self.assertTrue(AlgorithmExecutor.runalg(alg))
-        self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
+        expectFailure = False
+        if 'expectedFailure' in defs:
+            exec('\n'.join(defs['expectedFailure'][:-1])) in globals(), locals()
+            expectFailure = eval(defs['expectedFailure'][-1])
+
+        def doCheck():
+            print(alg.getAsCommand())
+            self.assertTrue(AlgorithmExecutor.runalg(alg))
+            self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
+
+        if expectFailure:
+            try:
+                doCheck()
+            except Exception:
+                pass
+            else:
+                raise _UnexpectedSuccess
+        else:
+            doCheck()
 
     def load_params(self, params):
         """
