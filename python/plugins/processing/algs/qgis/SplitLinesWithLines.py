@@ -128,7 +128,6 @@ class SplitLinesWithLines(GeoAlgorithm):
 
                         inLines = outLines
 
-
             for aLine in inLines:
                 if len(aLine.asPolyline()) > 2 or aLine.asPolyline()[0] != aLine.asPolyline()[1]:
                     # sometimes splitting results in lines of zero length
