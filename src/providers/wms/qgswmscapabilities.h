@@ -685,11 +685,6 @@ class QgsWmsCapabilities
 
 
 /** Class that handles download of capabilities.
- * Methods of this class may only be called directly from the thread to which instance of the class has affinity.
- * It is possible to connect to abort() slot from another thread however.
- */
-/* The requirement to call methods only from the thread to which this class instance has affinity guarantees that
- * abort() cannot be called in the middle of another method and makes it simple to check if the request was aborted.
  */
 class QgsWmsCapabilitiesDownload : public QObject
 {
@@ -710,8 +705,7 @@ class QgsWmsCapabilitiesDownload : public QObject
 
     QByteArray response() const { return mHttpCapabilitiesResponse; }
 
-  public slots:
-    /** Abort network request immediately */
+    //! Abort network request immediately
     void abort();
 
   signals:
@@ -721,14 +715,7 @@ class QgsWmsCapabilitiesDownload : public QObject
     /** \brief emit a signal once the download is finished */
     void downloadFinished();
 
-    /** Send request via signal/slot to main another thread */
-    void sendRequest( const QNetworkRequest & request );
-
-    /** Abort request through QgsNetworkAccessManager */
-    void deleteReply( QNetworkReply * reply );
-
   protected slots:
-    void requestSent( QNetworkReply * reply, QObject *sender );
     void capabilitiesReplyFinished();
     void capabilitiesReplyProgress( qint64, qint64 );
 
@@ -752,9 +739,6 @@ class QgsWmsCapabilitiesDownload : public QObject
 
     bool mIsAborted;
     bool mForceRefresh;
-
-  private:
-    void connectManager();
 };
 
 
