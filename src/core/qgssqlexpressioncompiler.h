@@ -49,6 +49,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
     {
       CaseInsensitiveStringMatch = 0x01,  //!< Provider performs case-insensitive string matching for all strings
       LikeIsCaseInsensitive = 0x02, //!< Provider treats LIKE as case-insensitive
+      NoNullInBooleanLogic = 0x04, //!< Provider does not support using NULL with boolean logic, eg "(...) OR NULL"
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -97,6 +98,8 @@ class CORE_EXPORT QgsSqlExpressionCompiler
   private:
 
     Flags mFlags;
+
+    bool nodeIsNullLiteral( const QgsExpression::Node* node ) const;
 
 };
 
