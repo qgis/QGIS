@@ -24,12 +24,12 @@
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import QDir, QUrl, QFile, QCoreApplication
+from PyQt4.QtCore import QDir, QUrl, QFile, QCoreApplication, QTimer
 from PyQt4.QtGui import QDialog
 from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply
 
 import qgis
-from qgis.core import QgsNetworkAccessManager
+from qgis.core import QgsNetworkAccessManager, QgsAuthManager
 
 from ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
 from installer_data import removeDir
@@ -57,11 +57,24 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
         self.file = QFile(tmpPath)
 
         self.request = QNetworkRequest(url)
-        self.reply = QgsNetworkAccessManager.instance().get(self.request)
-        self.reply.downloadProgress.connect(self.readProgress)
-        self.reply.finished.connect(self.requestFinished)
+        authcfg = plugin["authcfg"] if 'authcfg' in plugin else None
+        authfailed = False
+        if authcfg and not QgsAuthManager.instance().updateNetworkRequest(
+                self.request, authcfg):
+            authfailed = True
+            self.mResult = self.tr(
+                "QgsPluginInstaller",
+                "Update of network request with authentication "
+                "credentials FAILED for configuration '{0}'").format(authcfg)
 
-        self.stateChanged(4)
+        if authfailed:
+            QTimer.singleShot(0, self.reject)
+        else:
+            self.reply = QgsNetworkAccessManager.instance().get(self.request)
+            self.reply.downloadProgress.connect(self.readProgress)
+            self.reply.finished.connect(self.requestFinished)
+
+            self.stateChanged(4)
 
     # ----------------------------------------- #
     def result(self):
