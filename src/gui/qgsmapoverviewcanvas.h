@@ -81,6 +81,9 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     //! Overridden paint event
     void paintEvent( QPaintEvent * pe ) override;
 
+    //! Overridden show event
+    void showEvent( QShowEvent * e ) override;
+
     //! Overridden resize event
     void resizeEvent( QResizeEvent * e ) override;
 

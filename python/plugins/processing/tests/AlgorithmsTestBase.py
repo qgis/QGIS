@@ -46,6 +46,8 @@ from qgis.core import (
     QgsMapLayerRegistry
 )
 
+from qgis.testing import _UnexpectedSuccess
+
 from utilities import (
     unitTestDataPath
 )
@@ -87,9 +89,25 @@ class AlgorithmsTest():
         for r, p in defs['results'].iteritems():
             alg.setOutputValue(r, self.load_result_param(p))
 
-        print(alg.getAsCommand())
-        self.assertTrue(AlgorithmExecutor.runalg(alg))
-        self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
+        expectFailure = False
+        if 'expectedFailure' in defs:
+            exec('\n'.join(defs['expectedFailure'][:-1])) in globals(), locals()
+            expectFailure = eval(defs['expectedFailure'][-1])
+
+        def doCheck():
+            print(alg.getAsCommand())
+            self.assertTrue(AlgorithmExecutor.runalg(alg))
+            self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
+
+        if expectFailure:
+            try:
+                doCheck()
+            except Exception:
+                pass
+            else:
+                raise _UnexpectedSuccess
+        else:
+            doCheck()
 
     def load_params(self, params):
         """

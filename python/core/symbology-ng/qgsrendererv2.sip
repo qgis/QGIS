@@ -48,6 +48,8 @@ class QgsFeatureRendererV2
     sipType = sipType_QgsInvertedPolygonRenderer;
   else if (sipCpp->type() == "pointDisplacement")
     sipType = sipType_QgsPointDisplacementRenderer;
+  else if (sipCpp->type() == "25dRenderer")
+    sipType = sipType_Qgs25DRenderer;
   else
     sipType = 0;
 %End

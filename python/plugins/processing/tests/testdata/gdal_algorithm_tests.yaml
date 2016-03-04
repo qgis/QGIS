@@ -26,8 +26,14 @@ tests:
 #      OUTPUT:
 #        hash: f1fedeb6782f9389cf43590d4c85ada9155ab61fef6dc285aaeb54d6
 #        type: rasterhash
-  - algorithm: gdalogr:information
-    name: GDAL ogrinfo
+
+
+  - name: GDAL ogrinfo
+    algorithm: gdalogr:information
+    # GDAL before 2.0 would ignore NULL features
+    expectedFailure:
+      - import osgeo.gdal
+      - int((osgeo.gdal.__version__.split(".")[0]))<2
     params:
       INPUT:
         name: lines.gml
@@ -40,4 +46,4 @@ tests:
         rules:
           - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
           - 'Geometry: Line String'
-          - 'Feature Count: 6'
+          - 'Feature Count: 7'

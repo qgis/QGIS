@@ -62,6 +62,12 @@ void QgsMapOverviewCanvas::resizeEvent( QResizeEvent* e )
   QWidget::resizeEvent( e );
 }
 
+void QgsMapOverviewCanvas::showEvent( QShowEvent* e )
+{
+  refresh();
+  QWidget::showEvent( e );
+}
+
 void QgsMapOverviewCanvas::paintEvent( QPaintEvent* pe )
 {
   if ( !mPixmap.isNull() )
@@ -155,6 +161,9 @@ void QgsMapOverviewCanvas::updatePanningWidget( QPoint pos )
 
 void QgsMapOverviewCanvas::refresh()
 {
+  if ( !isVisible() )
+    return;
+
   updateFullExtent();
 
   if ( !mSettings.hasValidSettings() )
