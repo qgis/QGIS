@@ -262,15 +262,26 @@ static void dumpBacktrace( unsigned int depth )
   SYMBOL_INFO *symbol = ( SYMBOL_INFO * ) qgsMalloc( sizeof( SYMBOL_INFO ) + 256 );
   symbol->MaxNameLen = 255;
   symbol->SizeOfStruct = sizeof( SYMBOL_INFO );
+  IMAGEHLP_LINE *line = ( IMAGEHLP_LINE * ) qgsMalloc( sizeof( IMAGEHLP_LINE ) );
+  line->SizeOfStruct = sizeof( IMAGEHLP_LINE );
 
   for ( int i = 0; i < nFrames; i++ )
   {
+    DWORD dwDisplacement;
     SymFromAddr( GetCurrentProcess(), ( DWORD64 )( buffer[ i ] ), 0, symbol );
     symbol->Name[ 255 ] = 0;
-    myPrint( "%d: %s [%x]\n", i, symbol->Name, symbol->Address );
+    if ( SymGetLineFromAddr( GetCurrentProcess(), ( DWORD64 )( buffer[i] ), &dwDisplacement, line ) )
+    {
+      myPrint( "%s(%d) : (%s) frame %d, address %x\n", line->FileName, line->LineNumber, symbol->Name, i, symbol->Address );
+    }
+    else
+    {
+      myPrint( "%s(%d) : (%s) unknown source location, frame %d, address %x [GetLastError()=%d]\n", __FILE__, __LINE__, symbol->Name, i, symbol->Address, GetLastError() );
+    }
   }
 
   qgsFree( symbol );
+  qgsFree( line );
 #else
   Q_UNUSED( depth );
 #endif
