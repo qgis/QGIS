@@ -52,8 +52,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>118</width>
-          <height>78</height>
+          <width>116</width>
+          <height>76</height>
          </rect>
         </property>
        </widget>
@@ -1055,6 +1055,72 @@
    </property>
    <property name="toolTip">
     <string>Show pages</string>
+   </property>
+  </action>
+  <action name="mActionAddPolygon">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Polygon</string>
+   </property>
+   <property name="toolTip">
+    <string>Add polygon</string>
+   </property>
+  </action>
+  <action name="mActionPointsBasedShape">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Points Based Shape</string>
+   </property>
+   <property name="toolTip">
+    <string>Points based shape</string>
+   </property>
+  </action>
+  <action name="mActionRemoveItemPoint">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Remove Item Point</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove point</string>
+   </property>
+  </action>
+  <action name="mActionAddItemPoint">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Item Point</string>
+   </property>
+   <property name="toolTip">
+    <string>Add point</string>
+   </property>
+  </action>
+  <action name="mActionAddPolyline">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Polyline</string>
+   </property>
+   <property name="toolTip">
+    <string>Add polyline</string>
+   </property>
+  </action>
+  <action name="mActionMoveItemPoint">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Move Item Point</string>
+   </property>
+   <property name="toolTip">
+    <string>Move item point</string>
    </property>
   </action>
  </widget>

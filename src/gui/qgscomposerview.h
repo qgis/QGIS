@@ -20,6 +20,7 @@
 #include <QGraphicsView>
 #include "qgsaddremoveitemcommand.h"
 #include "qgsprevieweffect.h" // for QgsPreviewEffect::PreviewMode
+#include <QGraphicsPolygonItem>
 
 class QDomDocument;
 class QDomElement;
@@ -36,6 +37,7 @@ class QgsComposerPicture;
 class QgsComposerRuler;
 class QgsComposerScaleBar;
 class QgsComposerShape;
+class QgsComposerPointsBasedShape;
 class QgsComposerAttributeTableV2;
 
 /** \ingroup MapComposer
@@ -63,10 +65,15 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
       AddPicture,      // add raster/vector picture
       AddRectangle,
       AddEllipse,
+      AddPolygon,
+      AddPolyline,
       AddTriangle,
       AddTable,        // add attribute table
       AddAttributeTable,
       MoveItemContent, // move content of item (e.g. content of map)
+      MoveItemPoint,
+      RemoveItemPoint,
+      AddItemPoint,
       Pan,
       Zoom
     };
@@ -207,6 +214,19 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     /** Draw a shape on the canvas */
     void addShape( Tool currentTool );
+
+    /** Point based shape stuff */
+    void addPolygonPoint( const QPointF & scenePoint );
+    void movePolygonPoint( const QPointF & scenePoint );
+    void displayPoints( const bool display = true );
+    void setSelectedPoint( QgsComposerPointsBasedShape *shape, const int index );
+    void unselectPoint();
+
+    float mMoveContentSearchRadius;
+    QgsComposerPointsBasedShape* mPointsBasedShapeItem;
+    int mPointsBasedShapeItemIndex;
+    QScopedPointer<QGraphicsPolygonItem> mPolygonItem;
+    QScopedPointer<QGraphicsPathItem> mPolylineItem;
 
     /** True if user is currently panning by clicking and dragging with the pan tool*/
     bool mToolPanning;

@@ -186,6 +186,9 @@
 %Include composer/qgscomposerpicture.sip
 %Include composer/qgscomposerscalebar.sip
 %Include composer/qgscomposershape.sip
+%Include composer/qgscomposerpointsbasedshape.sip
+%Include composer/qgscomposerpolygon.sip
+%Include composer/qgscomposerpolyline.sip
 %Include composer/qgscomposertable.sip
 %Include composer/qgscomposertablecolumn.sip
 %Include composer/qgscomposertablev2.sip

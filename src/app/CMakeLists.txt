@@ -135,6 +135,8 @@ SET(QGIS_APP_SRCS
   composer/qgscomposermapwidget.cpp
   composer/qgscomposerscalebarwidget.cpp
   composer/qgscomposershapewidget.cpp
+  composer/qgscomposerpolygonwidget.cpp
+  composer/qgscomposerpolylinewidget.cpp
   composer/qgscomposertablewidget.cpp
   composer/qgscomposertablebackgroundcolorsdialog.cpp
   composer/qgscomposerlegenditemdialog.cpp
@@ -306,6 +308,8 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscomposertablewidget.h
   composer/qgscomposertablebackgroundcolorsdialog.h
   composer/qgscomposershapewidget.h
+  composer/qgscomposerpolygonwidget.h
+  composer/qgscomposerpolylinewidget.h
   composer/qgscompositionwidget.h
   composer/qgsatlascompositionwidget.h
 

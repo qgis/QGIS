@@ -23,6 +23,8 @@
 
 class QgisApp;
 class QgsComposerArrow;
+class QgsComposerPolygon;
+class QgsComposerPolyline;
 class QgsComposerFrame;
 class QgsComposerHtml;
 class QgsComposerLabel;
@@ -188,6 +190,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     void on_mActionAddEllipse_triggered();
 
+    //! Points based shape
+    void on_mActionAddPolygon_triggered();
+    void on_mActionAddPolyline_triggered();
+
     //! Add attribute table
     void on_mActionAddTable_triggered();
 
@@ -216,6 +222,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Set tool to move item content
     void on_mActionMoveItemContent_triggered();
+
+    //! Set tool for points based shae
+    void on_mActionMoveItemPoint_triggered();
+    void on_mActionRemoveItemPoint_triggered();
+    void on_mActionAddItemPoint_triggered();
 
     //! Set tool to move item content
     void on_mActionPan_triggered();
@@ -375,6 +386,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     /** Add a composer arrow to the item/widget map and creates a configuration widget for it*/
     void addComposerArrow( QgsComposerArrow* arrow );
+
+    /** Add a composer polygon to the item/widget map and creates a configuration widget for it*/
+    void addComposerPolygon( QgsComposerPolygon* polygon );
+
+    /** Add a composer polyline to the item/widget map and creates a configuration widget for it*/
+    void addComposerPolyline( QgsComposerPolyline* polyline );
 
     /** Add a composer map to the item/widget map and creates a configuration widget for it*/
     void addComposerMap( QgsComposerMap* map );

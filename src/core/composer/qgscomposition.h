@@ -44,6 +44,8 @@ class QGraphicsRectItem;
 class QgsMapRenderer;
 class QDomElement;
 class QgsComposerArrow;
+class QgsComposerPolygon;
+class QgsComposerPolyline;
 class QgsComposerMouseHandles;
 class QgsComposerHtml;
 class QgsComposerTableV2;
@@ -624,6 +626,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void addComposerPicture( QgsComposerPicture* picture );
     /** Adds a composer shape to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerShape( QgsComposerShape* shape );
+    /** Adds a composer polygon and advices composer to create a widget for it (through signal)*/
+    void addComposerPolygon( QgsComposerPolygon* polygon );
+    /** Adds a composer polyline and advices composer to create a widget for it (through signal)*/
+    void addComposerPolyline( QgsComposerPolyline* polyline );
     /** Adds a composer table to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerTable( QgsComposerAttributeTable* table );
     /** Adds composer html frame and advises composer to create a widget for it (through signal)*/
@@ -1059,6 +1065,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void selectedItemChanged( QgsComposerItem* selected );
     /** Is emitted when new composer arrow has been added to the view*/
     void composerArrowAdded( QgsComposerArrow* arrow );
+    /** Is emitted when new composer polygon has been added to the view*/
+    void composerPolygonAdded( QgsComposerPolygon* polygon );
+    /** Is emitted when new composer polyline has been added to the view*/
+    void composerPolylineAdded( QgsComposerPolyline* polyline );
     /** Is emitted when a new composer html has been added to the view*/
     void composerHtmlFrameAdded( QgsComposerHtml* html, QgsComposerFrame* frame );
     /** Is emitted when new composer label has been added to the view*/

@@ -56,6 +56,8 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
       ComposerPicture,
       ComposerScaleBar,
       ComposerShape,
+      ComposerPolygon,
+      ComposerPolyline,
       ComposerTable,
       ComposerAttributeTable,
       ComposerTextTable,

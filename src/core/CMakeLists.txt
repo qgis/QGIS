@@ -247,6 +247,9 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposerpicture.cpp
   composer/qgscomposerscalebar.cpp
   composer/qgscomposershape.cpp
+  composer/qgscomposerpointsbasedshape.cpp
+  composer/qgscomposerpolygon.cpp
+  composer/qgscomposerpolyline.cpp
   composer/qgscomposertable.cpp
   composer/qgscomposertablecolumn.cpp
   composer/qgscomposertablev2.cpp
@@ -504,6 +507,9 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerpicture.h
   composer/qgscomposerscalebar.h
   composer/qgscomposershape.h
+  composer/qgscomposerpointsbasedshape.h
+  composer/qgscomposerpolygon.h
+  composer/qgscomposerpolyline.h
   composer/qgscomposertablecolumn.h
   composer/qgscomposertable.h
   composer/qgscomposertablev2.h

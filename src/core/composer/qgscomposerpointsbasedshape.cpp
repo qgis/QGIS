@@ -1,0 +1,404 @@
+/***************************************************************************
+                         qgscomposerpointsbasedshape.cpp
+    begin                : March 2016
+    copyright            : (C) 2016 Paul Blottiere, Oslandia
+    email                : paul dot blottiere at oslandia dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgscomposerpointsbasedshape.h"
+#include "qgscomposition.h"
+#include "qgscomposerutils.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgssymbolv2.h"
+#include <limits>
+
+QgsComposerPointsBasedShape::QgsComposerPointsBasedShape( QString tagName,
+    QgsComposition* c )
+    : QgsComposerItem( c ),
+    mTagName( tagName ),
+    mSelectedPoint( -1 ),
+    mDrawPoints( false )
+{
+}
+
+QgsComposerPointsBasedShape::QgsComposerPointsBasedShape( QString tagName,
+    QPolygonF polygon,
+    QgsComposition* c )
+    : QgsComposerItem( c ),
+    mTagName( tagName ),
+    mSelectedPoint( -1 ),
+    mDrawPoints( false )
+{
+  const QRectF boundingRect = polygon.boundingRect();
+  setSceneRect( boundingRect );
+
+  // change polygon coordinate in bounding area reference system
+  const QPointF topLeft = boundingRect.topLeft();
+
+  QVector<QPointF>::iterator it = polygon.begin();
+  for ( ; it != polygon.end(); ++it )
+  {
+    QPointF nextPt = *it;
+    nextPt.setX( nextPt.x() - topLeft.x() );
+    nextPt.setY( nextPt.y() - topLeft.y() );
+    mPolygon.append( nextPt );
+  }
+}
+
+QgsComposerPointsBasedShape::~QgsComposerPointsBasedShape()
+{
+}
+
+double QgsComposerPointsBasedShape::computeDistance( const QPointF &pt1,
+    const QPointF &pt2 ) const
+{
+  return sqrt( pow( pt1.x() - pt2.x(), 2 ) + pow( pt1.y() - pt2.y(), 2 ) );
+}
+
+bool QgsComposerPointsBasedShape::addPoint( const QPointF &pt,
+    const bool checkArea,
+    const double radius )
+{
+  const QPointF start = convertToItemCoordinate( pt );
+  double min_distance = std::numeric_limits<double>::max();
+  double max_distance = ( checkArea ) ? radius : min_distance;
+  bool rc = false;
+  int idx = -1;
+
+  for ( int i = 0; i != mPolygon.size(); i++ )
+  {
+    // get points of polyline
+    const QPointF pt1 = mPolygon[i];
+    QPointF pt2 = mPolygon[0];
+    if (( i + 1 ) != mPolygon.size() )
+      pt2 = mPolygon[i+1];
+
+    // compute line eq
+    const double coef = ( pt2.y() - pt1.y() ) / ( pt2.x() - pt1.x() );
+    const double b = pt1.y() - coef * pt1.x();
+
+    double distance = std::numeric_limits<double>::max();
+    if ( isinf( coef ) )
+      distance = qAbs( pt1.x() - start.x() );
+    else
+    {
+      const double coef2 = ( -1 / coef );
+      const double b2 = start.y() - coef2 * start.x();
+
+      QPointF inter;
+      if ( isinf( coef2 ) )
+      {
+        distance = qAbs( pt1.y() - start.y() );
+        inter.setX( start.x() );
+        inter.setY( pt1.y() );
+      }
+      else
+      {
+        const double interx = ( b - b2 ) / ( coef2 - coef );
+        const double intery = interx * coef2 + b2;
+        inter.setX( interx );
+        inter.setY( intery );
+      }
+
+      // check if intersection is within the line
+      const double length1 = computeDistance( inter, pt1 );
+      const double length2 = computeDistance( inter, pt2 );
+      const double length3 = computeDistance( pt1, pt2 );
+      const double length4 = length1 + length2;
+
+      if ( qAbs( length3 - length4 ) < std::numeric_limits<float>::epsilon() )
+        distance = computeDistance( inter, start );
+    }
+
+    if ( distance < min_distance && distance < max_distance )
+    {
+      min_distance = distance;
+      idx = i;
+    }
+  }
+
+  if ( idx >= 0 )
+  {
+    rc = _addPoint( idx, start, max_distance );
+    updateSceneRect();
+  }
+
+  return rc;
+}
+
+QPointF QgsComposerPointsBasedShape::convertToItemCoordinate( const QPointF &point )
+{
+  QPointF pt;
+  pt.setX( point.x() - scenePos().x() );
+  pt.setY( point.y() - scenePos().y() );
+
+  return pt;
+}
+
+void QgsComposerPointsBasedShape::drawPoints( QPainter *painter ) const
+{
+  double rectSize = 3.0 / horizontalViewScaleFactor();
+
+  QgsStringMap properties;
+  properties.insert( "name", "cross" );
+  properties.insert( "color_border", "red" );
+
+  QScopedPointer<QgsMarkerSymbolV2> symbol;
+  symbol.reset( QgsMarkerSymbolV2::createSimple( properties ) );
+  symbol.data()->setSize( rectSize );
+  symbol.data()->setAngle( 45 );
+
+  QgsMapSettings ms = mComposition->mapSettings();
+  ms.setOutputDpi( painter->device()->logicalDpiX() );
+
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
+  context.setPainter( painter );
+  context.setForceVectorOutput( true );
+
+  QScopedPointer<QgsExpressionContext> expressionContext;
+  expressionContext.reset( createExpressionContext() );
+  context.setExpressionContext( *expressionContext.data() );
+
+  symbol.data()->startRender( context );
+  QVector<QPointF>::const_iterator itnode = mPolygon.begin();
+  for ( ; itnode != mPolygon.end(); ++itnode )
+  {
+    double x = ( *itnode ).x();
+    double y = ( *itnode ).y();
+    symbol.data()->renderPoint( QPointF( x, y ), nullptr, context );
+  }
+
+  symbol.data()->stopRender( context );
+
+  if ( mSelectedPoint >= 0 && mSelectedPoint < mPolygon.size() )
+    drawSelectedPoint( painter );
+}
+
+void QgsComposerPointsBasedShape::drawSelectedPoint( QPainter *painter ) const
+{
+  double rectSize = 3.0 / horizontalViewScaleFactor();
+
+  QgsStringMap properties;
+  properties.insert( "name", "square" );
+  properties.insert( "color", "0, 0, 0, 0" );
+  properties.insert( "color_border", "blue" );
+  properties.insert( "width_border", "4" );
+
+  QScopedPointer<QgsMarkerSymbolV2> symbol;
+  symbol.reset( QgsMarkerSymbolV2::createSimple( properties ) );
+  symbol.data()->setSize( rectSize );
+
+  QgsMapSettings ms = mComposition->mapSettings();
+  ms.setOutputDpi( painter->device()->logicalDpiX() );
+
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
+  context.setPainter( painter );
+  context.setForceVectorOutput( true );
+
+  QScopedPointer<QgsExpressionContext> expressionContext;
+  expressionContext.reset( createExpressionContext() );
+  context.setExpressionContext( *expressionContext.data() );
+
+  symbol.data()->startRender( context );
+  symbol.data()->renderPoint( mPolygon[mSelectedPoint], nullptr, context );
+  symbol.data()->stopRender( context );
+}
+
+void QgsComposerPointsBasedShape::paint( QPainter* painter,
+    const QStyleOptionGraphicsItem* itemStyle,
+    QWidget* pWidget )
+{
+  Q_UNUSED( itemStyle );
+  Q_UNUSED( pWidget );
+
+  if ( !painter )
+    return;
+
+  painter->save();
+  painter->setPen( Qt::NoPen );
+  painter->setBrush( brush() );
+  painter->setRenderHint( QPainter::Antialiasing, true );
+
+  rescaleToFitBoundingBox();
+  _draw( painter );
+
+  if ( mDrawPoints )
+    drawPoints( painter );
+
+  painter->restore();
+}
+
+int QgsComposerPointsBasedShape::pointAtPosition( const QPointF &point,
+    const bool searchInRadius,
+    const double radius )
+{
+  const QPointF pt = convertToItemCoordinate( point );
+  double nearest_distance = std::numeric_limits<double>::max();
+  double max_distance = ( searchInRadius ) ? radius : nearest_distance;
+  double distance = 0;
+  int idx = -1;
+
+  QVector<const QPointF>::iterator it = mPolygon.begin();
+  for ( ; it != mPolygon.end(); ++it )
+  {
+    distance = computeDistance( pt, *it );
+    if ( distance < nearest_distance && distance < max_distance )
+    {
+      nearest_distance = distance;
+      idx = it - mPolygon.begin();
+    }
+  }
+
+  return idx;
+}
+
+bool QgsComposerPointsBasedShape::removePoint( const int index )
+{
+  bool rc( false );
+
+  if ( index >= 0 && index < mPolygon.size() )
+  {
+    mPolygon.remove( index );
+
+    if ( mPolygon.size() < 3 )
+      mPolygon.clear();
+
+    unselectPoint();
+    updateSceneRect();
+
+    rc = true;
+  }
+
+  return rc;
+}
+
+bool QgsComposerPointsBasedShape::movePoint( const int index, const QPointF &pt )
+{
+  bool rc( false );
+
+  if ( index >= 0 && index < mPolygon.size() )
+  {
+    QPointF pointItem = convertToItemCoordinate( pt );
+    mPolygon.replace( index, pointItem );
+    updateSceneRect();
+
+    rc = true;
+  }
+
+  return rc;
+}
+
+bool QgsComposerPointsBasedShape::readXML( const QDomElement& itemElem,
+    const QDomDocument& doc )
+{
+  // restore general composer item properties
+  const QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
+  if ( !composerItemList.isEmpty() )
+  {
+    QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
+
+    if ( !qgsDoubleNear( composerItemElem.attribute( "rotation", "0" ).toDouble(), 0.0 ) )
+      setItemRotation( composerItemElem.attribute( "rotation", "0" ).toDouble() );
+
+    _readXML( composerItemElem, doc );
+  }
+
+  // restore style
+  QDomElement styleSymbolElem = itemElem.firstChildElement( "symbol" );
+  if ( !styleSymbolElem.isNull() )
+    _readXMLStyle( styleSymbolElem );
+
+  // restore points
+  mPolygon.clear();
+  QDomNodeList pointsList = itemElem.elementsByTagName( "point" );
+  for ( int i = 0; i < pointsList.size(); i++ )
+  {
+    QDomElement pointElem = pointsList.at( i ).toElement();
+    QPointF newPt;
+    newPt.setX( pointElem.attribute( "x" ).toDouble() );
+    newPt.setY( pointElem.attribute( "y" ).toDouble() );
+    mPolygon.append( newPt );
+  }
+
+  emit itemChanged();
+  return true;
+}
+
+void QgsComposerPointsBasedShape::rescaleToFitBoundingBox()
+{
+  // get the bounding rect for the polygon currently displayed
+  const QRectF boundingRect = mPolygon.boundingRect();
+
+  // compute x/y ratio
+  const float ratio_x =  rect().width() / boundingRect.width();
+  const float ratio_y =  rect().height() / boundingRect.height();
+
+  // scaling
+  QTransform trans;
+  trans = trans.scale( ratio_x, ratio_y );
+  mPolygon = trans.map( mPolygon );
+}
+
+bool QgsComposerPointsBasedShape::setSelectedPoint( const int index )
+{
+  bool rc = false;
+
+  if ( index >= 0 && index < mPolygon.size() )
+  {
+    mSelectedPoint = index;
+    rc = true;
+  }
+
+  return rc;
+}
+
+void QgsComposerPointsBasedShape::updateSceneRect()
+{
+  // set the new scene rectangle
+  const QRectF boundingRect = mPolygon.boundingRect();
+
+  QRectF sceneRect = boundingRect;
+  sceneRect.translate( scenePos() );
+  setSceneRect( sceneRect );
+
+  // translate the polygon to keep its consistency with the new scene rect
+  mPolygon.translate( -boundingRect.topLeft().x(), -boundingRect.topLeft().y() );
+
+  // update
+  prepareGeometryChange();
+  update();
+  emit itemChanged();
+}
+
+bool QgsComposerPointsBasedShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
+{
+  QDomElement composerPolygonElem = doc.createElement( mTagName );
+
+  // style
+  _writeXMLStyle( doc, composerPolygonElem );
+
+  // write points
+  QDomElement pointsElem = doc.createElement( "points" );
+  QVector<const QPointF>::iterator it = mPolygon.begin();
+  for ( ; it != mPolygon.end(); ++it )
+  {
+    QDomElement pointElem = doc.createElement( "point" );
+    pointElem.setAttribute( "x", QString::number(( *it ).x() ) );
+    pointElem.setAttribute( "y", QString::number(( *it ).y() ) );
+    pointsElem.appendChild( pointElem );
+  }
+  composerPolygonElem.appendChild( pointsElem );
+
+  elem.appendChild( composerPolygonElem );
+
+  return _writeXML( composerPolygonElem, doc );
+}

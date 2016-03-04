@@ -115,6 +115,9 @@
         <file>themes/default/mActionAddBasicShape.png</file>
         <file>themes/default/mActionAddBasicShape.svg</file>
         <file>themes/default/mActionAddBasicCircle.svg</file>
+        <file>themes/default/mActionAddPointsBasedShape.svg</file>
+        <file>themes/default/mActionAddPolygon.svg</file>
+        <file>themes/default/mActionAddPolyline.svg</file>
         <file>themes/default/mActionAddBasicRectangle.svg</file>
         <file>themes/default/mActionAddBasicTriangle.svg</file>
         <file>themes/default/mActionAddGPSLayer.png</file>
@@ -243,6 +246,9 @@
         <file>themes/default/mActionMergeFeatures.png</file>
         <file>themes/default/mActionMoveFeature.png</file>
         <file>themes/default/mActionMoveItemContent.png</file>
+        <file>themes/default/mActionMoveItemPoint.svg</file>
+        <file>themes/default/mActionAddItemPoint.svg</file>
+        <file>themes/default/mActionRemoveItemPoint.svg</file>
         <file>themes/default/mActionMoveItemContent.svg</file>
         <file>themes/default/mActionMoveItemsToBottom.png</file>
         <file>themes/default/mActionMoveItemsToTop.png</file>
