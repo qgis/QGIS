@@ -206,12 +206,13 @@ class QgsWcsCapabilities : public QObject
     static QStringList domElementsTexts( const QDomElement &element, const QString &path );
 
   signals:
-
     /** \brief emit a signal to notify of a progress event */
     void progressChanged( int theProgress, int theTotalSteps );
 
     /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( QString const &  theStatusQString );
+
+    void downloadFinished();
 
   private slots:
     void capabilitiesReplyFinished();

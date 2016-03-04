@@ -589,7 +589,6 @@ class QgsWmsImageDownloadHandler : public QObject
     QImage* mCachedImage;
 
     QEventLoop* mEventLoop;
-    QgsNetworkAccessManager* mNAM;
 };
 
 
@@ -635,7 +634,6 @@ class QgsWmsTiledImageDownloadHandler : public QObject
     QgsRectangle mCachedViewExtent;
 
     QEventLoop* mEventLoop;
-    QgsNetworkAccessManager* mNAM;
 
     int mTileReqNo;
     bool mSmoothPixmapTransform;

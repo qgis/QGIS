@@ -22,6 +22,7 @@
 
 #include <QSettings>
 #include <QCoreApplication>
+#include <QEventLoop>
 
 
 QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSourceURI uri, QString featureType, QString title, QString crsString )
@@ -42,7 +43,6 @@ QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, QString name, Q
     : QgsDataCollectionItem( parent, name, path )
     , mUri( uri )
     , mCapabilities( nullptr )
-    , mGotCapabilities( false )
 {
   mIconName = "mIconWfs.svg";
 }
@@ -53,21 +53,17 @@ QgsWFSConnectionItem::~QgsWFSConnectionItem()
 
 QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
 {
-  mGotCapabilities = false;
-
   QgsDataSourceURI uri;
   uri.setEncodedUri( mUri );
   QgsDebugMsg( "mUri = " + mUri );
 
   mCapabilities = new QgsWFSCapabilities( mUri );
-  connect( mCapabilities, SIGNAL( gotCapabilities() ), this, SLOT( gotCapabilities() ) );
 
   mCapabilities->requestCapabilities();
 
-  while ( !mGotCapabilities )
-  {
-    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
-  }
+  QEventLoop loop;
+  connect( mCapabilities, SIGNAL( gotCapabilities() ), &loop, SLOT( quit() ) );
+  loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   QVector<QgsDataItem*> layers;
   if ( mCapabilities->errorCode() == QgsWFSCapabilities::NoError )
@@ -90,11 +86,6 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
   mCapabilities = nullptr;
 
   return layers;
-}
-
-void QgsWFSConnectionItem::gotCapabilities()
-{
-  mGotCapabilities = true;
 }
 
 QList<QAction*> QgsWFSConnectionItem::actions()

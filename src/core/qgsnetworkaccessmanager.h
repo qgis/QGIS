@@ -82,31 +82,13 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     //! Setup the NAM according to the user's settings
     void setupDefaultProxyAndCache();
 
+    //! return whether the system proxy should be used
     bool useSystemProxy() { return mUseSystemProxy; }
-
-  public slots:
-    /** Send GET request, calls get().
-     * Emits requestSent().
-     * @param request request to be sent
-     */
-    void sendGet( const QNetworkRequest & request );
-    /** Abort and delete reply. This slot may be used to abort reply created by instance of this class
-     * (and which was not moved to another thread) from a different thread. Such reply cannot
-     * be aborted directly from a different thread. The reply must be also deleted
-     * in this slot, otherwise it could happen that abort signal comes after the reply was deleted.
-     * @param reply reply to be aborted.
-     */
-    void deleteReply( QNetworkReply * reply );
 
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
     void requestTimedOut( QNetworkReply * );
-    /** Emitted when request was sent by request()
-     * @param reply request reply
-     * @param sender the object which called request() slot.
-     */
-    void requestSent( QNetworkReply * reply, QObject *sender );
 
   private slots:
     void abortRequest();
@@ -119,6 +101,8 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
     bool mUseSystemProxy;
+    bool mInitialized;
+    static QgsNetworkAccessManager *smMainNAM;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H

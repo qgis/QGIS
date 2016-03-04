@@ -67,6 +67,7 @@ bool QgsCredentialDialog::request( const QString& realm, QString &username, QStr
 
 void QgsCredentialDialog::requestCredentials( const QString& realm, QString *username, QString *password, const QString& message, bool *ok )
 {
+  Q_ASSERT( qApp->thread() == thread() && thread() == QThread::currentThread() );
   QgsDebugMsg( "Entering." );
   stackedWidget->setCurrentIndex( 0 );
 

@@ -1872,7 +1872,6 @@ QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( bool forceRefresh, QObje
     , mIsAborted( false )
     , mForceRefresh( forceRefresh )
 {
-  connectManager();
 }
 
 QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, bool forceRefresh, QObject *parent )
@@ -1883,17 +1882,6 @@ QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString& baseUrl, 
     , mIsAborted( false )
     , mForceRefresh( forceRefresh )
 {
-  connectManager();
-}
-
-void QgsWmsCapabilitiesDownload::connectManager()
-{
-  // The instance of this class may live on a thread different from QgsNetworkAccessManager instance's thread,
-  // so we cannot call QgsNetworkAccessManager::get() directly and we must send a signal instead.
-  connect( this, SIGNAL( sendRequest( const QNetworkRequest & ) ),
-           QgsNetworkAccessManager::instance(), SLOT( sendGet( const QNetworkRequest & ) ) );
-  connect( this, SIGNAL( deleteReply( QNetworkReply * ) ),
-           QgsNetworkAccessManager::instance(), SLOT( deleteReply( QNetworkReply * ) ) );
 }
 
 QgsWmsCapabilitiesDownload::~QgsWmsCapabilitiesDownload()
@@ -1934,9 +1922,9 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-  connect( QgsNetworkAccessManager::instance(), SIGNAL( requestSent( QNetworkReply *, QObject * ) ),
-           SLOT( requestSent( QNetworkReply *, QObject * ) ) );
-  emit sendRequest( request );
+  mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+  connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
+  connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
 
   QEventLoop loop;
   connect( this, SIGNAL( downloadFinished() ), &loop, SLOT( quit() ) );
@@ -1945,40 +1933,13 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   return mError.isEmpty();
 }
 
-void QgsWmsCapabilitiesDownload::requestSent( QNetworkReply * reply, QObject *sender )
-{
-  QgsDebugMsg( "Entered" );
-  if ( sender != this ) // it is not our reply
-  {
-    return;
-  }
-  disconnect( QgsNetworkAccessManager::instance(), SIGNAL( requestSent( QNetworkReply *, QObject * ) ),
-              this, SLOT( requestSent( QNetworkReply *, QObject * ) ) );
-
-  if ( !reply )
-  {
-    emit downloadFinished();
-    return;
-  }
-  if ( mIsAborted )
-  {
-    emit deleteReply( reply );
-    emit downloadFinished();
-    return;
-  }
-  // Note: the reply was created on QgsNetworkAccessManager's thread
-  mCapabilitiesReply = reply;
-  connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
-  connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
-}
-
 void QgsWmsCapabilitiesDownload::abort()
 {
   QgsDebugMsg( "Entered" );
   mIsAborted = true;
   if ( mCapabilitiesReply )
   {
-    emit deleteReply( mCapabilitiesReply );
+    mCapabilitiesReply->deleteLater();
     mCapabilitiesReply = nullptr;
   }
 }
@@ -2029,11 +1990,9 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           mCapabilitiesReply = nullptr;
 
           QgsDebugMsg( QString( "redirected getcapabilities: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ) );
-          //mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
-          connect( QgsNetworkAccessManager::instance(),
-                   SIGNAL( requestSent( QNetworkReply *, QObject * ) ),
-                   SLOT( requestSent( QNetworkReply *, QObject * ) ) );
-          emit sendRequest( request );
+          mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+          connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
+          connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
           return;
         }
       }

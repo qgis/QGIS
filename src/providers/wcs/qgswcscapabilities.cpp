@@ -17,8 +17,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <typeinfo>
-
 #include "qgslogger.h"
 #include "qgswcscapabilities.h"
 #include "qgsowsconnection.h"
@@ -32,25 +30,13 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsnetworkaccessmanager.h"
-#include <qgsmessageoutput.h>
-#include <qgsmessagelog.h>
+#include "qgsmessageoutput.h"
+#include "qgsmessagelog.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QNetworkProxy>
-#include <QNetworkDiskCache>
-
-#include <QUrl>
-#include <QIcon>
-#include <QImage>
-#include <QImageReader>
-#include <QPainter>
-#include <QPixmap>
 #include <QSet>
-#include <QSettings>
 #include <QEventLoop>
-#include <QCoreApplication>
-#include <QTime>
 
 #ifdef _MSC_VER
 #include <float.h>
@@ -175,10 +161,9 @@ bool QgsWcsCapabilities::sendRequest( QString const & url )
   connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
   connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
 
-  while ( mCapabilitiesReply )
-  {
-    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
-  }
+  QEventLoop loop;
+  connect( this, SIGNAL( downloadFinished() ), &loop, SLOT( quit() ) );
+  loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   if ( mCapabilitiesResponse.isEmpty() )
   {
@@ -271,7 +256,10 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( const QString& preferredVer
 
   QString url = getCapabilitiesUrl( preferredVersion );
 
-  if ( ! sendRequest( url ) ) { return false; }
+  if ( !sendRequest( url ) )
+  {
+    return false;
+  }
 
   QgsDebugMsg( "Converting to Dom." );
 
@@ -325,7 +313,10 @@ bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool force
 
   QString url = getDescribeCoverageUrl( coverage->identifier );
 
-  if ( ! sendRequest( url ) ) { return false; }
+  if ( !sendRequest( url ) )
+  {
+    return false;
+  }
 
   QgsDebugMsg( "Converting to Dom." );
 
@@ -416,6 +407,8 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
 
   mCapabilitiesReply->deleteLater();
   mCapabilitiesReply = nullptr;
+
+  emit downloadFinished();
 }
 
 void QgsWcsCapabilities::capabilitiesReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
