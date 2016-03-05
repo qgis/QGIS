@@ -168,7 +168,7 @@ class Grass7Utils:
                                 location, gisdbase)
             output.write(command.encode(encoding))
             for command in commands:
-                output.write(u'{}\n'.format(command.encode(encoding)))
+                output.write(command.encode(encoding) + '\n')
             output.write(u'\nexit\n'.encode(encoding))
 
     @staticmethod
