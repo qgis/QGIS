@@ -106,6 +106,18 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
     def tearDownClass(cls):
         """Run after all tests"""
 
+    def testGetFeaturesSubsetAttributes2(self):
+        """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
+        its features as direct copies (due to implicit sharing of QgsFeature) 
+        """
+        pass
+
+    def testGetFeaturesNoGeometry(self):
+        """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
+        its features as direct copies (due to implicit sharing of QgsFeature) 
+        """
+        pass
+
     def testCtors(self):
         testVectors = ["Point", "LineString", "Polygon", "MultiPoint", "MultiLineString", "MultiPolygon", "None"]
         for v in testVectors:
@@ -316,6 +328,18 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+
+    def testGetFeaturesSubsetAttributes2(self):
+        """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
+        its features as direct copies (due to implicit sharing of QgsFeature) 
+        """
+        pass
+
+    def testGetFeaturesNoGeometry(self):
+        """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
+        its features as direct copies (due to implicit sharing of QgsFeature) 
+        """
+        pass
 
 if __name__ == '__main__':
     unittest.main()
