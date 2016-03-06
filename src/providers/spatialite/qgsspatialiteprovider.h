@@ -258,6 +258,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** Loads fields from input file to member attributeFields */
     void loadFields();
 
+    /** For views, try to get primary key from a dedicated meta table */
+    void determineViewPrimaryKey();
+
     /** Check if a table/view has any triggers.  Triggers can be used on views to make them editable.*/
     bool hasTriggers();
 
