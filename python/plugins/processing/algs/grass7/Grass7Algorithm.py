@@ -30,7 +30,7 @@ import time
 import uuid
 import importlib
 
-from PyQt4.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication, QUrl
 from PyQt4.QtGui import QIcon
 
 from qgis.core import QgsRasterLayer
@@ -101,6 +101,33 @@ class Grass7Algorithm(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
 
     def help(self):
+        localDoc = None
+        html = self.grass7Name + '.html'
+        if system.isWindows():
+            # For MS-Windows, use the configured GRASS7 path
+            localPath = os.path.join(Grass7Utils.grassPath(), 'docs/html', html)
+            if os.path.exists(localPath):
+                localDoc = os.path.abspath(localPath)
+        elif system.isMac():
+            # For MacOSX official package
+            localPath = os.path.join('/Applications/GRASS-7.0.app/Contents/MacOS/docs/html', html)
+            if os.path.exists(localPath):
+                localDoc = os.path.abspath(localPath)
+        else:
+            # For GNU/Linux distributions
+            searchPaths = ['/usr/share/doc/grass-doc/html', '/opt/grass/docs/html',
+                           '/usr/share/doc/grass/docs/html']
+            for path in searchPaths:
+                localPath = os.path.join(path, html)
+                if os.path.exists(localPath):
+                    localDoc = os.path.abspath(localPath)
+
+        # Found the local documentation
+        if localDoc:
+            localDoc = QUrl.fromLocalFile(localDoc).toString()
+            return False, localDoc
+
+        # Return the URL if local doc is not found
         return False, 'http://grass.osgeo.org/grass70/manuals/' + self.grass7Name + '.html'
 
     def getParameterDescriptions(self):
