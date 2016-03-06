@@ -249,6 +249,7 @@ bool QgsDb2Provider::OpenDatabase( QSqlDatabase db )
   return true;
 }
 
+// loadFields() gets the type from the field record
 void QgsDb2Provider::loadFields()
 {
   mAttributeFields.clear();
@@ -266,7 +267,6 @@ void QgsDb2Provider::loadFields()
     QString sqlTypeName = db2TypeName( typeID );
     QVariant::Type sqlType = f.type();
     QgsDebugMsg( "name: " + f.name() + "; sqlTypeID: " + QString::number( typeID ) + "; sqlTypeName: " + sqlTypeName );
-    QgsDebugMsg( QString( "auto: %1; generated: %2" ).arg( f.isAutoValue() ).arg( f.isGenerated() ) );
 
     if ( f.name() == mGeometryColName ) continue; // Got this with uri, just skip
     if ( sqlType == QVariant::String )
@@ -314,7 +314,6 @@ void QgsDb2Provider::loadFields()
   }
 }
 
-// loadFields() gets the type from the field record
 QVariant::Type QgsDb2Provider::DecodeSqlType( int typeId )
 {
   QVariant::Type type = QVariant::Invalid;
@@ -481,7 +480,9 @@ QgsCoordinateReferenceSystem QgsDb2Provider::crs()
   {
     mCrs.createFromSrid( mSRId );
     if ( mCrs.isValid() )
+    {
       return mCrs;
+    }
 
     // try to load crs from the database tables as a fallback
     QSqlQuery query = QSqlQuery( mDatabase );
@@ -490,9 +491,9 @@ QgsCoordinateReferenceSystem QgsDb2Provider::crs()
     if ( execOk && query.isActive() )
     {
       if ( query.next() && mCrs.createFromWkt( query.value( 0 ).toString() ) )
+      {
         return mCrs;
-
-      query.finish();
+      }
     }
   }
   return mCrs;
@@ -519,7 +520,6 @@ void QgsDb2Provider::UpdateStatistics()
 
   if ( !query.exec( statement ) )
   {
-    QgsDebugMsg( statement );
     QString msg = query.lastError().text();
     QgsDebugMsg( msg );
   }
@@ -712,6 +712,7 @@ bool QgsDb2Provider::deleteFeatures( const QgsFeatureIds & id )
 
 bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
+QgsDebugMsg("Entering");
   if ( attr_map.isEmpty() )
     return true;
 
@@ -839,7 +840,6 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       return false;
     }
   }
-
   return true;
 }
 

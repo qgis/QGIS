@@ -268,7 +268,6 @@ bool QgsDb2FeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
 
 bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
 {
-  QgsDebugMsg( "Entering" );
   feature.setValid( false );
   if ( mClosed )
   {
@@ -336,13 +335,10 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
         QgsDebugMsg( "Geometry is empty" );
       }
     }
-
     feature.setValid( true );
-    QgsDebugMsg( "return feature" );
     return true;
   }
-  QgsDebugMsg( "don't return feature" );
-  QgsDebugMsg( mQuery->lastError().text() );
+  QgsDebugMsg( QString( "No feature; lastError: '%1'" ).arg( mQuery->lastError().text() ) );
   return false;
 }
 
