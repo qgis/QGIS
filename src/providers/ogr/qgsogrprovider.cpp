@@ -874,8 +874,8 @@ QgsRectangle QgsOgrProvider::extent()
 
           mExtent->MinX = qMin( mExtent->MinX, env.MinX );
           mExtent->MinY = qMin( mExtent->MinY, env.MinY );
-          mExtent->MaxX = qMin( mExtent->MaxX, env.MaxX );
-          mExtent->MaxY = qMin( mExtent->MaxY, env.MaxY );
+          mExtent->MaxX = qMax( mExtent->MaxX, env.MaxX );
+          mExtent->MaxY = qMax( mExtent->MaxY, env.MaxY );
         }
 
         OGR_F_Destroy( f );
