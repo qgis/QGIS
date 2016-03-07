@@ -3827,17 +3827,17 @@ bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry* geometry, Q
   if ( ct )
     return true;
 
-  //requires fixing
-  if ( geometry->type() == QGis::Polygon && !geometry->isGeosValid() )
-    return true;
-
   //requires rotation
   const QgsMapToPixel& m2p = context.mapToPixel();
   if ( !qgsDoubleNear( m2p.mapRotation(), 0 ) )
     return true;
 
   //requires clip
-  if ( clipGeometry && !clipGeometry->contains( geometry ) )
+  if ( clipGeometry && !clipGeometry->boundingBox().contains( geometry->boundingBox() ) )
+    return true;
+
+  //requires fixing
+  if ( geometry->type() == QGis::Polygon && !geometry->isGeosValid() )
     return true;
 
   return false;
@@ -3944,7 +3944,9 @@ QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, QgsRe
     clonedGeometry.reset( geom );
   }
 
-  if ( clipGeometry && !clipGeometry->contains( geom ) )
+  if ( clipGeometry &&
+       (( qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry->boundingBox().contains( geom->boundingBox() ) )
+        || ( !qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry->contains( geom ) ) ) )
   {
     QgsGeometry* clipGeom = geom->intersection( clipGeometry ); // creates new geometry
     if ( !clipGeom )
