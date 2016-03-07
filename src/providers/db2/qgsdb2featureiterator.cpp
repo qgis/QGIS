@@ -356,7 +356,9 @@ bool QgsDb2FeatureIterator::rewind()
   if ( !mQuery )
     return false;
 
-  mQuery->clear();
+  //mQuery->clear();
+  delete mQuery;
+  mQuery = new QSqlQuery( mDatabase );
   mQuery->setForwardOnly( true );
   QgsDebugMsg( "Execute mStatement: " + mStatement );
   if ( !mQuery->exec( mStatement ) )

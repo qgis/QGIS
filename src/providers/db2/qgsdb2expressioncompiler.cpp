@@ -183,7 +183,7 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
         return compileResult;
 
       case QgsExpression::boILike:
-        QgsDebugMsg( "ILIKE is not supported by SQL" );
+        QgsDebugMsg( "ILIKE is not supported by DB2" );
         return Fail;
         /*
           result = QString( "%1 LIKE %2" ).arg( left, right );
@@ -193,7 +193,7 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
           */
 
       case QgsExpression::boNotILike:
-        QgsDebugMsg( "NOT ILIKE is not supported by SQL" );
+        QgsDebugMsg( "NOT ILIKE is not supported by DB2" );
         return Fail;
         /*
           result = QString( "%1 NOT LIKE %2" ).arg( left, right );
@@ -235,7 +235,6 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
   QgsSqlExpressionCompiler::Result rc = QgsSqlExpressionCompiler::compileNode( node, result );
   QgsDebugMsg( QString( "fallback: %1 - " ).arg( resultType( rc ) ) + result );
   return rc;
-  // return QgsSqlExpressionCompiler::compileNode( node, result );
 }
 
 QString QgsDb2ExpressionCompiler::quotedValue( const QVariant& value, bool& ok )

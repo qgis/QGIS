@@ -94,6 +94,7 @@ bool QgsDb2ConnectionItem::ConnInfoFromParameters(
 bool QgsDb2ConnectionItem::ConnInfoFromSettings( const QString connName,
     QString &connInfo, QString &errorMsg )
 {
+  QgsDebugMsg( QString( "Get settings for connection '%1'" ).arg( connInfo ) );
   QSettings settings;
   QString key = "/DB2/connections/" + connName;
 
