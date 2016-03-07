@@ -336,7 +336,7 @@ class ORTable(Table):
 
             msg = QApplication.translate(
                 "DBManagerPlugin",
-                "Do you want to {} index {} ?".format(
+                "Do you want to {} index {}?".format(
                     index_action, index_name))
             QApplication.restoreOverrideCursor()
             try:

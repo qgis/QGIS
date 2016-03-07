@@ -228,7 +228,7 @@ def get_xml_description_from_application_name(our_app, criteria=None):
         real_criteria = criteria
 
     if len(our_app) == 0:
-        raise Exception("App name is empty !")
+        raise Exception("App name is empty!")
 
     # get parameters
     param_keys = [param_key for param_key in app_instance.GetParametersKeys()]

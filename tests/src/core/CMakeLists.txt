@@ -1,5 +1,5 @@
 # Standard includes and utils to compile into all tests.
-SET (util_SRCS qgscompositionchecker.cpp)
+#SET (util_SRCS qgscompositionchecker.cpp)
 
 
 #####################################################
@@ -165,8 +165,6 @@ ADD_QGIS_TEST(rasterfilltest testqgsrasterfill.cpp )
 ADD_QGIS_TEST(rasterlayertest testqgsrasterlayer.cpp)
 ADD_QGIS_TEST(rastersublayertest testqgsrastersublayer.cpp)
 ADD_QGIS_TEST(rectangletest testqgsrectangle.cpp)
-ADD_QGIS_TEST(regression1141 regression1141.cpp)
-ADD_QGIS_TEST(regression992 regression992.cpp)
 ADD_QGIS_TEST(rendererstest testqgsrenderers.cpp)
 ADD_QGIS_TEST(rulebasedrenderertest testqgsrulebasedrenderer.cpp)
 ADD_QGIS_TEST(scaleexpressiontest testqgsscaleexpression.cpp)

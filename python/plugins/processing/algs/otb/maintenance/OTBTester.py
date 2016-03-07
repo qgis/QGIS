@@ -236,7 +236,7 @@ class MakefileParser(object):
         result.extend(["otbcli_%s" % each for each in itemz[1]])
 
         if len(result[0]) == 7:
-            raise Exception("App name is empty !")
+            raise Exception("App name is empty!")
 
         result.extend(itemz[2])
         result.append("-testenv")

@@ -1088,7 +1088,13 @@ void QgsRasterLayerProperties::on_pbnAddValuesFromDisplay_clicked()
     mMapCanvas->setMapTool( mPixelSelectorTool );
     //Need to work around the modality of the dialog but can not just hide() it.
     setModal( false );
-    lower();
+
+    showMinimized();
+
+    //Q_ASSERT( parentWidget()->parentWidget() );
+    parentWidget()->activateWindow();
+    parentWidget()->raise();
+    //lower();
   }
 }
 

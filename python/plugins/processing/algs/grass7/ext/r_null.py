@@ -33,7 +33,7 @@ def checkParameterValuesBeforeExecuting(alg):
     if alg.getParameterValue(u'setnull') or alg.getParameterValue(u'null'):
         return None
 
-    return alg.tr("You need to set at least 'setnull' or 'null' parameters for this algorithm !")
+    return alg.tr("You need to set at least 'setnull' or 'null' parameters for this algorithm!")
 
 
 def processInputs(alg):

@@ -54,6 +54,7 @@ class TestQgsRasterLayer : public QObject
         , mpLandsatRasterLayer( nullptr )
         , mpFloat32RasterLayer( nullptr )
         , mPngRasterLayer( nullptr )
+        , mGeoJp2RasterLayer( nullptr )
         , mMapSettings( nullptr )
     {}
     ~TestQgsRasterLayer()
@@ -83,8 +84,11 @@ class TestQgsRasterLayer : public QObject
     void transparency();
     void multiBandColorRenderer();
     void setRenderer();
+    void regression992(); //test for issue #992 - GeoJP2 images improperly displayed as all black
+
+
   private:
-    bool render( const QString& theFileName );
+    bool render( const QString& theFileName, int mismatchCount = 0 );
     bool setQml( const QString& theType, QString& msg );
     void populateColorRampShader( QgsColorRampShader* colorRampShader,
                                   QgsVectorColorRampV2* colorRamp,
@@ -96,6 +100,8 @@ class TestQgsRasterLayer : public QObject
     QgsRasterLayer * mpLandsatRasterLayer;
     QgsRasterLayer * mpFloat32RasterLayer;
     QgsRasterLayer * mPngRasterLayer;
+    QgsRasterLayer * mGeoJp2RasterLayer;
+
     QgsMapSettings * mMapSettings;
     QString mReport;
 };
@@ -137,6 +143,7 @@ void TestQgsRasterLayer::initTestCase()
   QString myLandsatFileName = mTestDataDir + "landsat.tif";
   QString myFloat32FileName = mTestDataDir + "/raster/band1_float32_noct_epsg4326.tif";
   QString pngRasterFileName = mTestDataDir + "rgb256x256.png";
+  QString geoJp2RasterFileName = mTestDataDir + "rgbwcmyk01_YeGeo.jp2";
 
   QFileInfo myRasterFileInfo( myFileName );
   mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
@@ -157,12 +164,17 @@ void TestQgsRasterLayer::initTestCase()
   mPngRasterLayer = new QgsRasterLayer( pngRasterFileInfo.filePath(),
                                         pngRasterFileInfo.completeBaseName() );
 
+  QFileInfo geoJp2RasterFileInfo( geoJp2RasterFileName );
+  mGeoJp2RasterLayer = new QgsRasterLayer( geoJp2RasterFileInfo.filePath(),
+      geoJp2RasterFileInfo.completeBaseName() );
+
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpRasterLayer
     << mpLandsatRasterLayer
     << mpFloat32RasterLayer
-    << mPngRasterLayer );
+    << mPngRasterLayer
+    << mGeoJp2RasterLayer );
 
   // add the test layer to the maprender
   mMapSettings->setLayers( QStringList() << mpRasterLayer->id() );
@@ -537,13 +549,13 @@ void TestQgsRasterLayer::registry()
 //
 
 
-bool TestQgsRasterLayer::render( const QString& theTestType )
+bool TestQgsRasterLayer::render( const QString& theTestType, int mismatchCount )
 {
   mReport += "<h2>" + theTestType + "</h2>\n";
   QgsRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( *mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( theTestType, mismatchCount );
   mReport += "\n\n\n" + myChecker.report();
   return myResultFlag;
 }
@@ -624,6 +636,18 @@ void TestQgsRasterLayer::setRenderer()
   mpRasterLayer->setRenderer( renderer );
   QCOMPARE( receiver.rendererChanged, true );
   QCOMPARE( mpRasterLayer->renderer(), renderer );
+}
+
+void TestQgsRasterLayer::regression992()
+{
+  if ( ! mGeoJp2RasterLayer->isValid() )
+  {
+    QSKIP( "This test requires the JPEG2000 GDAL driver", SkipAll );
+  }
+
+  mMapSettings->setExtent( mGeoJp2RasterLayer->extent() );
+  mMapSettings->setLayers( QStringList() << mGeoJp2RasterLayer->id() );
+  QVERIFY( render( "raster_geojp2", 400 ) );
 }
 
 QTEST_MAIN( TestQgsRasterLayer )

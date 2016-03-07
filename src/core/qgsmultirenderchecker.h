@@ -128,4 +128,29 @@ class CORE_EXPORT QgsMultiRenderChecker
     QgsMapSettings mMapSettings;
 };
 
+#ifdef ENABLE_TESTS
+// Renders a composition to an image and compares with an expected output
+///@cond PRIVATE
+class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
+{
+  public:
+    QgsCompositionChecker( const QString& testName, QgsComposition* composition );
+    ~QgsCompositionChecker();
+
+    void setSize( QSize size ) { mSize = size; }
+
+    bool testComposition( QString &theReport, int page = 0, int pixelDiff = 0 );
+
+  private:
+    QgsCompositionChecker(); //forbidden
+
+    QString mTestName;
+    QgsComposition* mComposition;
+    QSize mSize;
+    int mDotsPerMeter;
+};
+///@endcond
+#endif
+
+
 #endif // QGSMULTIRENDERCHECKER_H

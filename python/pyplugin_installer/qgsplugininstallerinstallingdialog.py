@@ -29,10 +29,10 @@ from PyQt4.QtGui import QDialog
 from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply
 
 import qgis
-from qgis.core import QgsNetworkAccessManager
+from qgis.core import QgsNetworkAccessManager, QgsAuthManager
 
 from ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
-from installer_data import removeDir
+from installer_data import removeDir, repositories
 from unzip import unzip
 
 
@@ -57,11 +57,27 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
         self.file = QFile(tmpPath)
 
         self.request = QNetworkRequest(url)
-        self.reply = QgsNetworkAccessManager.instance().get(self.request)
-        self.reply.downloadProgress.connect(self.readProgress)
-        self.reply.finished.connect(self.requestFinished)
+        authcfg = repositories.all()[plugin["zip_repository"]]["authcfg"]
+        if authcfg and isinstance(authcfg, basestring):
+            if not QgsAuthManager.instance().updateNetworkRequest(
+                    self.request, authcfg.strip()):
+                self.mResult = self.tr(
+                    "Update of network request with authentication "
+                    "credentials FAILED for configuration '{0}'").format(authcfg)
+                self.request = None
 
-        self.stateChanged(4)
+        if self.request is not None:
+            self.reply = QgsNetworkAccessManager.instance().get(self.request)
+            self.reply.downloadProgress.connect(self.readProgress)
+            self.reply.finished.connect(self.requestFinished)
+
+            self.stateChanged(4)
+
+    def exec_(self):
+        if self.request is None:
+            return QDialog.Rejected
+
+        QDialog.exec_(self)
 
     # ----------------------------------------- #
     def result(self):

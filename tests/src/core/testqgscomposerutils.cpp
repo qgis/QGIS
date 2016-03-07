@@ -18,7 +18,7 @@
 #include "qgsapplication.h" //for standard test font
 #include "qgscomposerutils.h"
 #include "qgscomposition.h"
-#include "qgscompositionchecker.h"
+#include "qgsmultirenderchecker.h"
 #include "qgsdatadefined.h"
 #include "qgsfontutils.h"
 #include <QObject>

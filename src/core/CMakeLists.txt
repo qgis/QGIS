@@ -149,6 +149,7 @@ SET(QGIS_CORE_SRCS
   qgsmimedatautils.cpp
   qgsmultirenderchecker.cpp
   qgsnetworkaccessmanager.cpp
+  qgsnetworkdiskcache.cpp
   qgsnetworkcontentfetcher.cpp
   qgsnetworkreplyparser.cpp
   qgsobjectcustomproperties.cpp
@@ -452,6 +453,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmessagelog.h
   qgsmessageoutput.h
   qgsnetworkaccessmanager.h
+  qgsnetworkdiskcache.h
   qgsnetworkcontentfetcher.h
   qgsnetworkreplyparser.h
   qgsofflineediting.h

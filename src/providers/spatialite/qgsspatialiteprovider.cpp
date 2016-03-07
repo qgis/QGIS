@@ -674,6 +674,12 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
     }
   }
 
+  // for views try to get the primary key from the meta table
+  if ( mViewBased && mPrimaryKey.isEmpty() )
+  {
+    determineViewPrimaryKey();
+  }
+
   updatePrimaryKeyCapabilities();
 
   sqlite3_free_table( results );
@@ -798,25 +804,8 @@ void QgsSpatiaLiteProvider::loadFields()
     // for views try to get the primary key from the meta table
     if ( mViewBased && mPrimaryKey.isEmpty() )
     {
-      QString sql = QString( "SELECT view_rowid"
-                             " FROM views_geometry_columns"
-                             " WHERE upper(view_name) = upper(%1) and upper(view_geometry) = upper(%2)" ).arg( quotedValue( mTableName ),
-                                 quotedValue( mGeometryColumn ) );
-
-      ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
-      if ( ret == SQLITE_OK )
-      {
-        if ( rows > 0 )
-        {
-          mPrimaryKey = results[1 * columns];
-          int idx = attributeFields.fieldNameIndex( mPrimaryKey );
-          if ( idx != -1 )
-            mPrimaryKeyAttrs << idx;
-        }
-        sqlite3_free_table( results );
-      }
+      determineViewPrimaryKey();
     }
-
 
   }
   else
@@ -905,6 +894,33 @@ error:
     sqlite3_free( errMsg );
   }
 }
+
+
+void QgsSpatiaLiteProvider::determineViewPrimaryKey()
+{
+  QString sql = QString( "SELECT view_rowid"
+                         " FROM views_geometry_columns"
+                         " WHERE upper(view_name) = upper(%1) and upper(view_geometry) = upper(%2)" ).arg( quotedValue( mTableName ),
+                             quotedValue( mGeometryColumn ) );
+
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = nullptr;
+  int ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  if ( ret == SQLITE_OK )
+  {
+    if ( rows > 0 )
+    {
+      mPrimaryKey = results[1 * columns];
+      int idx = attributeFields.fieldNameIndex( mPrimaryKey );
+      if ( idx != -1 )
+        mPrimaryKeyAttrs << idx;
+    }
+    sqlite3_free_table( results );
+  }
+}
+
 
 bool QgsSpatiaLiteProvider::hasTriggers()
 {
@@ -4025,7 +4041,7 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( const QgsGeometryMap &geometry
   toCommit = true;
 
   sql =
-    QString( "UPDATE %1 SET %2=GeomFromWKB(?, %3) WHERE ROWID = ?" )
+    QString( "UPDATE %1 SET %2=GeomFromWKB(?, %3) WHERE ROWID=?" )
     .arg( quotedIdentifier( mTableName ),
           quotedIdentifier( mGeometryColumn ) )
     .arg( mSrid );

@@ -650,7 +650,7 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
                         "DBManagerPlugin",
                         (u'<warning> Metadata extent is different from'
                          u'real extent. You should <a href="action:extent'
-                         u'/update">update it</a> !'))))
+                         u'/update">update it</a>!'))))
 
         # is there an entry in geometry_columns?
         if self.table.geomType.lower() == 'geometry':

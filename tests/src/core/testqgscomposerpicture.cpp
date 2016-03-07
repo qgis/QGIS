@@ -17,7 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgscomposition.h"
-#include "qgscompositionchecker.h"
+#include "qgsmultirenderchecker.h"
 #include "qgscomposerpicture.h"
 #include <QObject>
 #include <QtTest/QtTest>
@@ -56,6 +56,8 @@ class TestQgsComposerPicture : public QObject
     void pictureSvgZoomAndResize();
     void pictureSvgFrameToImage();
 
+    void svgParameters();
+
     void pictureExpression();
     void pictureInvalidExpression();
 
@@ -66,6 +68,7 @@ class TestQgsComposerPicture : public QObject
     QString mReport;
     QString mPngImage;
     QString mSvgImage;
+    QString mSvgParamsImage;
 };
 
 TestQgsComposerPicture::TestQgsComposerPicture()
@@ -85,6 +88,7 @@ void TestQgsComposerPicture::initTestCase()
 
   mPngImage = QString( TEST_DATA_DIR ) + "/sample_image.png";
   mSvgImage = QString( TEST_DATA_DIR ) + "/sample_svg.svg";
+  mSvgParamsImage = QString( TEST_DATA_DIR ) + "/svg_params.svg";
 
   mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
@@ -360,6 +364,25 @@ void TestQgsComposerPicture::pictureSvgFrameToImage()
 
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
+  mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
+  mComposerPicture->setPicturePath( mPngImage );
+}
+
+void TestQgsComposerPicture::svgParameters()
+{
+  //test rendering an SVG file with parameters
+  mComposition->addComposerPicture( mComposerPicture );
+  mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
+  mComposerPicture->setPicturePath( mSvgParamsImage );
+  mComposerPicture->setSvgFillColor( QColor( 30, 90, 200, 100 ) );
+  mComposerPicture->setSvgBorderColor( QColor( 255, 45, 20, 200 ) );
+  mComposerPicture->setSvgBorderWidth( 2.2 );
+
+  QgsCompositionChecker checker( "composerpicture_svg_params", mComposition );
+  checker.setControlPathPrefix( "composer_picture" );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
+
+  mComposition->removeItem( mComposerPicture );
   mComposerPicture->setSceneRect( QRectF( 70, 70, 100, 100 ) );
   mComposerPicture->setPicturePath( mPngImage );
 }

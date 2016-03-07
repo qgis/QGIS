@@ -26,6 +26,8 @@
 #include "qgsmessagelog.h"
 #include "qgsdatadefined.h"
 #include "qgsnetworkcontentfetcher.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgssvgcache.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFileInfo>
@@ -44,19 +46,28 @@ QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
     , mRotationMap( nullptr )
     , mResizeMode( QgsComposerPicture::Zoom )
     , mPictureAnchor( UpperLeft )
+    , mSvgFillColor( QColor( 255, 255, 255 ) )
+    , mSvgBorderColor( QColor( 0, 0, 0 ) )
+    , mSvgBorderWidth( 0.2 )
     , mHasExpressionError( false )
+    , mLoadingSvg( false )
 {
   mPictureWidth = rect().width();
   init();
 }
 
-QgsComposerPicture::QgsComposerPicture() : QgsComposerItem( nullptr ),
-    mMode( Unknown ),
-    mPictureRotation( 0 ),
-    mRotationMap( nullptr ),
-    mResizeMode( QgsComposerPicture::Zoom ),
-    mPictureAnchor( UpperLeft ),
-    mHasExpressionError( false )
+QgsComposerPicture::QgsComposerPicture()
+    : QgsComposerItem( nullptr )
+    , mMode( Unknown )
+    , mPictureRotation( 0 )
+    , mRotationMap( nullptr )
+    , mResizeMode( QgsComposerPicture::Zoom )
+    , mPictureAnchor( UpperLeft )
+    , mSvgFillColor( QColor( 255, 255, 255 ) )
+    , mSvgBorderColor( QColor( 0, 0, 0 ) )
+    , mSvgBorderWidth( 0.2 )
+    , mHasExpressionError( false )
+    , mLoadingSvg( false )
 {
   mPictureHeight = rect().height();
   init();
@@ -371,7 +382,9 @@ void QgsComposerPicture::loadLocalPicture( const QString &path )
     if ( sourceFileSuffix.compare( "svg", Qt::CaseInsensitive ) == 0 )
     {
       //try to open svg
-      mSVG.load( pic.fileName() );
+      const QByteArray &svgContent = QgsSvgCache::instance()->svgContent( pic.fileName(), rect().width(), mSvgFillColor, mSvgBorderColor, mSvgBorderWidth,
+                                     1.0, 1.0 );
+      mSVG.load( svgContent );
       if ( mSVG.isValid() )
       {
         mMode = SVG;
@@ -512,7 +525,6 @@ QRectF QgsComposerPicture::boundedSVGRect( double deviceWidth, double deviceHeig
 
 void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
 {
-
   QSizeF currentPictureSize = pictureSize();
 
   if ( mResizeMode == QgsComposerPicture::Clip )
@@ -520,63 +532,71 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
     QgsComposerItem::setSceneRect( rectangle );
     mPictureWidth = rectangle.width();
     mPictureHeight = rectangle.height();
-    return;
-  }
-
-  QRectF newRect = rectangle;
-
-  if ( mResizeMode == ZoomResizeFrame && !rect().isEmpty() && !( currentPictureSize.isEmpty() ) )
-  {
-    QSizeF targetImageSize;
-    if ( qgsDoubleNear( mPictureRotation, 0.0 ) )
-    {
-      targetImageSize = currentPictureSize;
-    }
-    else
-    {
-      //calculate aspect ratio of bounds of rotated image
-      QTransform tr;
-      tr.rotate( mPictureRotation );
-      QRectF rotatedBounds = tr.mapRect( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ) );
-      targetImageSize = QSizeF( rotatedBounds.width(), rotatedBounds.height() );
-    }
-
-    //if height has changed more than width, then fix width and set height correspondingly
-    //else, do the opposite
-    if ( qAbs( rect().width() - rectangle.width() ) <
-         qAbs( rect().height() - rectangle.height() ) )
-    {
-      newRect.setHeight( targetImageSize.height() * newRect.width() / targetImageSize.width() );
-    }
-    else
-    {
-      newRect.setWidth( targetImageSize.width() * newRect.height() / targetImageSize.height() );
-    }
-  }
-  else if ( mResizeMode == FrameToImageSize )
-  {
-    if ( !( currentPictureSize.isEmpty() ) )
-    {
-      newRect.setWidth( currentPictureSize.width() * 25.4 / mComposition->printResolution() );
-      newRect.setHeight( currentPictureSize.height() * 25.4 / mComposition->printResolution() );
-    }
-  }
-
-  //find largest scaling of picture with this rotation which fits in item
-  if ( mResizeMode == Zoom || mResizeMode == ZoomResizeFrame )
-  {
-    QRectF rotatedImageRect = QgsComposerUtils::largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), newRect, mPictureRotation );
-    mPictureWidth = rotatedImageRect.width();
-    mPictureHeight = rotatedImageRect.height();
   }
   else
   {
-    mPictureWidth = newRect.width();
-    mPictureHeight = newRect.height();
+    QRectF newRect = rectangle;
+
+    if ( mResizeMode == ZoomResizeFrame && !rect().isEmpty() && !( currentPictureSize.isEmpty() ) )
+    {
+      QSizeF targetImageSize;
+      if ( qgsDoubleNear( mPictureRotation, 0.0 ) )
+      {
+        targetImageSize = currentPictureSize;
+      }
+      else
+      {
+        //calculate aspect ratio of bounds of rotated image
+        QTransform tr;
+        tr.rotate( mPictureRotation );
+        QRectF rotatedBounds = tr.mapRect( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ) );
+        targetImageSize = QSizeF( rotatedBounds.width(), rotatedBounds.height() );
+      }
+
+      //if height has changed more than width, then fix width and set height correspondingly
+      //else, do the opposite
+      if ( qAbs( rect().width() - rectangle.width() ) <
+           qAbs( rect().height() - rectangle.height() ) )
+      {
+        newRect.setHeight( targetImageSize.height() * newRect.width() / targetImageSize.width() );
+      }
+      else
+      {
+        newRect.setWidth( targetImageSize.width() * newRect.height() / targetImageSize.height() );
+      }
+    }
+    else if ( mResizeMode == FrameToImageSize )
+    {
+      if ( !( currentPictureSize.isEmpty() ) )
+      {
+        newRect.setWidth( currentPictureSize.width() * 25.4 / mComposition->printResolution() );
+        newRect.setHeight( currentPictureSize.height() * 25.4 / mComposition->printResolution() );
+      }
+    }
+
+    //find largest scaling of picture with this rotation which fits in item
+    if ( mResizeMode == Zoom || mResizeMode == ZoomResizeFrame )
+    {
+      QRectF rotatedImageRect = QgsComposerUtils::largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), newRect, mPictureRotation );
+      mPictureWidth = rotatedImageRect.width();
+      mPictureHeight = rotatedImageRect.height();
+    }
+    else
+    {
+      mPictureWidth = newRect.width();
+      mPictureHeight = newRect.height();
+    }
+
+    QgsComposerItem::setSceneRect( newRect );
+    emit itemChanged();
   }
 
-  QgsComposerItem::setSceneRect( newRect );
-  emit itemChanged();
+  if ( mMode == SVG && !mLoadingSvg )
+  {
+    mLoadingSvg = true;
+    refreshPicture();
+    mLoadingSvg = false;
+  }
 }
 
 void QgsComposerPicture::setRotation( double r )
@@ -727,6 +747,9 @@ bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerPictureElem.setAttribute( "pictureHeight", QString::number( mPictureHeight ) );
   composerPictureElem.setAttribute( "resizeMode", QString::number( static_cast< int >( mResizeMode ) ) );
   composerPictureElem.setAttribute( "anchorPoint", QString::number( static_cast< int >( mPictureAnchor ) ) );
+  composerPictureElem.setAttribute( "svgFillColor", QgsSymbolLayerV2Utils::encodeColor( mSvgFillColor ) );
+  composerPictureElem.setAttribute( "svgBorderColor", QgsSymbolLayerV2Utils::encodeColor( mSvgBorderColor ) );
+  composerPictureElem.setAttribute( "svgBorderWidth", QString::number( mSvgBorderWidth ) );
 
   //rotation
   composerPictureElem.setAttribute( "pictureRotation", QString::number( mPictureRotation ) );
@@ -756,6 +779,10 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   mResizeMode = QgsComposerPicture::ResizeMode( itemElem.attribute( "resizeMode", "0" ).toInt() );
   //when loading from xml, default to anchor point of middle to match pre 2.4 behaviour
   mPictureAnchor = static_cast< QgsComposerItem::ItemPositionMode >( itemElem.attribute( "anchorPoint", QString::number( QgsComposerItem::Middle ) ).toInt() );
+
+  mSvgFillColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "svgFillColor", QgsSymbolLayerV2Utils::encodeColor( QColor( 255, 255, 255 ) ) ) );
+  mSvgBorderColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "svgBorderColor", QgsSymbolLayerV2Utils::encodeColor( QColor( 0, 0, 0 ) ) ) );
+  mSvgBorderWidth = itemElem.attribute( "svgBorderWidth", "0.2" ).toDouble();
 
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
   if ( !composerItemList.isEmpty() )
@@ -838,6 +865,24 @@ void QgsComposerPicture::setPictureAnchor( QgsComposerItem::ItemPositionMode anc
 {
   mPictureAnchor = anchor;
   update();
+}
+
+void QgsComposerPicture::setSvgFillColor( const QColor& color )
+{
+  mSvgFillColor = color;
+  refreshPicture();
+}
+
+void QgsComposerPicture::setSvgBorderColor( const QColor& color )
+{
+  mSvgBorderColor = color;
+  refreshPicture();
+}
+
+void QgsComposerPicture::setSvgBorderWidth( double width )
+{
+  mSvgBorderWidth = width;
+  refreshPicture();
 }
 
 bool QgsComposerPicture::usePictureExpression() const

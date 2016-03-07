@@ -34,6 +34,7 @@
 #include "qgslinestringv2.h"
 #include "qgspolygonv2.h"
 #include "qgscircularstringv2.h"
+#include "qgsgeometrycollectionv2.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -360,6 +361,9 @@ void TestQgsGeometry::isEmpty()
 
   geom.setGeometry( 0 );
   QVERIFY( geom.isEmpty() );
+
+  QgsGeometryCollectionV2 collection;
+  QVERIFY( collection.isEmpty() );
 }
 
 void TestQgsGeometry::pointV2()
