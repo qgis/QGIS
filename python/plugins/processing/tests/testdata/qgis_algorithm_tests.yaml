@@ -101,6 +101,9 @@ tests:
       OUTPUT:
         name: expected/lines_split_with_lines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   # case 2 split line layer with iself
   - algorithm: qgis:splitlineswithlines
@@ -116,3 +119,6 @@ tests:
       OUTPUT:
         name: expected/lines_split_with_same_lines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
