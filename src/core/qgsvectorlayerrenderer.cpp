@@ -295,14 +295,14 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
   {
     try
     {
-      if ( !fet.constGeometry() )
-        continue; // skip features without geometry
-
       if ( mContext.renderingStopped() )
       {
         QgsDebugMsg( QString( "Drawing of vector layer %1 cancelled." ).arg( layerID() ) );
         break;
       }
+
+      if ( !fet.constGeometry() )
+        continue; // skip features without geometry
 
       mContext.expressionContext().setFeature( fet );
 
