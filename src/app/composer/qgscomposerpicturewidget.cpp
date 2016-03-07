@@ -22,6 +22,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgssvgcache.h"
 #include <QDoubleValidator>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -452,6 +453,35 @@ void QgsComposerPictureWidget::setGuiElementValues()
   }
 }
 
+QIcon QgsComposerPictureWidget::svgToIcon( const QString& filePath ) const
+{
+  QColor fill, outline;
+  double outlineWidth, fillOpacity, outlineOpacity;
+  bool fillParam, fillOpacityParam, outlineParam, outlineWidthParam, outlineOpacityParam;
+  bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false,
+                             hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
+  QgsSvgCache::instance()->containsParams( filePath, fillParam, hasDefaultFillColor, fill,
+      fillOpacityParam, hasDefaultFillOpacity, fillOpacity,
+      outlineParam, hasDefaultOutlineColor, outline,
+      outlineWidthParam, hasDefaultOutlineWidth, outlineWidth,
+      outlineOpacityParam, hasDefaultOutlineOpacity, outlineOpacity );
+
+  //if defaults not set in symbol, use these values
+  if ( !hasDefaultFillColor )
+    fill = QColor( 200, 200, 200 );
+  fill.setAlphaF( hasDefaultFillOpacity ? fillOpacity : 1.0 );
+  if ( !hasDefaultOutlineColor )
+    outline = Qt::black;
+  outline.setAlphaF( hasDefaultOutlineOpacity ? outlineOpacity : 1.0 );
+  if ( !hasDefaultOutlineWidth )
+    outlineWidth = 0.6;
+
+  bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
+  const QImage& img = QgsSvgCache::instance()->svgAsImage( filePath, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
+
+  return QIcon( QPixmap::fromImage( img ) );
+}
+
 int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
 {
   //go through all files of a directory
@@ -501,7 +531,8 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
 
     if ( fileIsSvg )
     {
-      QIcon icon( filePath );
+      // render SVG file
+      QIcon icon = svgToIcon( filePath );
       listItem->setIcon( icon );
     }
     else //for pixel formats: create icon from scaled pixmap
