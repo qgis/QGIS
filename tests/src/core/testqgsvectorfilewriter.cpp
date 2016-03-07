@@ -28,6 +28,10 @@
 #include <qgsfield.h>
 #include <qgis.h> //defines GEOWkt
 
+#if defined(linux)
+#include <langinfo.h>
+#endif
+
 /** \ingroup UnitTests
  * This is a unit test for the QgsVectorFileWriter class.
  *
