@@ -84,6 +84,9 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     bool testImageFile( const QString& filename ) const;
     /** Updates the map combo box with the current composer map ids*/
     void refreshMapComboBox();
+
+    //! Renders an svg file to a QIcon, correctly handling any SVG parameters present in the file
+    QIcon svgToIcon( const QString& filePath ) const;
 };
 
 #endif
