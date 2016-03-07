@@ -36,6 +36,13 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
 {
   setupUi( this );
 
+  mFillColorButton->setAllowAlpha( true );
+  mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
+  mFillColorButton->setContext( "composer" );
+  mOutlineColorButton->setAllowAlpha( true );
+  mOutlineColorButton->setColorDialogTitle( tr( "Select outline color" ) );
+  mOutlineColorButton->setContext( "composer" );
+
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, picture );
   mainLayout->addWidget( itemPropertiesWidget );
@@ -382,6 +389,9 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mRotationFromComposerMapCheckBox->blockSignals( true );
     mResizeModeComboBox->blockSignals( true );
     mAnchorPointComboBox->blockSignals( true );
+    mFillColorButton->blockSignals( true );
+    mOutlineColorButton->blockSignals( true );
+    mOutlineWidthSpinBox->blockSignals( true );
 
     mPictureLineEdit->setText( mPicture->picturePath() );
     mPictureRotationSpinBox->setValue( mPicture->pictureRotation() );
@@ -424,12 +434,19 @@ void QgsComposerPictureWidget::setGuiElementValues()
       mAnchorPointComboBox->setEnabled( false );
     }
 
+    mFillColorButton->setColor( mPicture->svgFillColor() );
+    mOutlineColorButton->setColor( mPicture->svgBorderColor() );
+    mOutlineWidthSpinBox->setValue( mPicture->svgBorderWidth() );
+
     mRotationFromComposerMapCheckBox->blockSignals( false );
     mPictureRotationSpinBox->blockSignals( false );
     mPictureLineEdit->blockSignals( false );
     mComposerMapComboBox->blockSignals( false );
     mResizeModeComboBox->blockSignals( false );
     mAnchorPointComboBox->blockSignals( false );
+    mFillColorButton->blockSignals( false );
+    mOutlineColorButton->blockSignals( false );
+    mOutlineWidthSpinBox->blockSignals( false );
 
     populateDataDefinedButtons();
   }
@@ -587,6 +604,30 @@ void QgsComposerPictureWidget::loadPicturePreviews( bool collapsed )
     mPreviewsLoadingLabel->hide();
     mPreviewListWidget->show();
   }
+}
+
+void QgsComposerPictureWidget::on_mFillColorButton_colorChanged( const QColor& color )
+{
+  mPicture->beginCommand( tr( "Picture fill color changed" ) );
+  mPicture->setSvgFillColor( color );
+  mPicture->endCommand();
+  mPicture->update();
+}
+
+void QgsComposerPictureWidget::on_mOutlineColorButton_colorChanged( const QColor& color )
+{
+  mPicture->beginCommand( tr( "Picture border color changed" ) );
+  mPicture->setSvgBorderColor( color );
+  mPicture->endCommand();
+  mPicture->update();
+}
+
+void QgsComposerPictureWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
+{
+  mPicture->beginCommand( tr( "Picture border width changed" ) );
+  mPicture->setSvgBorderWidth( d );
+  mPicture->endCommand();
+  mPicture->update();
 }
 
 void QgsComposerPictureWidget::showEvent( QShowEvent * event )
