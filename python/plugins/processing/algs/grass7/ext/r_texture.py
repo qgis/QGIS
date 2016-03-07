@@ -57,9 +57,9 @@ def processOutputs(alg):
     for method in methodList:
         out = alg.getOutputValue(u'output')
         for angle in angles:
-                inputRaster = "{}_{}{}".format(alg.exportedLayers[out], methodRef[method], angle)
-                outputFile = "{}/{}.{}".format(out, inputRaster, ext)
-                command = u"r.out.gdal --overwrite -c createopt=\"TFW=YES,COMPRESS=LZW\" input={} output=\"{}\"".format(
-                    inputRaster, outputFile)
-                alg.commands.append(command)
-                alg.outputCommands.append(command)
+            inputRaster = "{}_{}{}".format(alg.exportedLayers[out], methodRef[method], angle)
+            outputFile = "{}/{}.{}".format(out, inputRaster, ext)
+            command = u"r.out.gdal --overwrite -c createopt=\"TFW=YES,COMPRESS=LZW\" input={} output=\"{}\"".format(
+                inputRaster, outputFile)
+            alg.commands.append(command)
+            alg.outputCommands.append(command)

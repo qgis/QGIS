@@ -28,18 +28,20 @@ __revision__ = '$Format:%H$'
 import codecs
 from processing.tools.system import getTempFilename
 
+
 def checkParameterValuesBeforeExecuting(alg):
     """ Verify if we have the right parameters """
     rules = alg.getParameterValue(u'rules')
     txtrules = alg.getParameterValue(u'txtrules')
     raster = alg.getParameterValue(u'raster')
-    
+
     if rules and txtrules:
         return alg.tr("You need to set either a rules file or write directly the rules !")
     elif (rules and raster) or (txtrules and raster):
         return alg.tr("You need to set either rules or a raster from which to copy categories !")
-    
+
     return None
+
 
 def processInputs(alg):
     # If there is another raster to copy categories from
@@ -49,17 +51,17 @@ def processInputs(alg):
     if copyRaster:
         if copyRaster in alg.exportedLayers.keys():
             return
-        
-        for raster,method in (inputRaster, 'r.external'),(copyRaster, 'r.in.gdal'):
+
+        for raster, method in (inputRaster, 'r.external'), (copyRaster, 'r.in.gdal'):
             alg.setSessionProjectionFromLayer(raster, alg.commands)
-        
+
             destFilename = alg.getTempFilename()
             alg.exportedLayers[raster] = destFilename
             command = '{} input={} output={} band=1 --overwrite -o'.format(method, raster, destFilename)
             alg.commands.append(command)
-    
+
         alg.setSessionProjectionFromProject(alg.commands)
-    
+
         region = unicode(alg.getParameterValue(alg.GRASS_REGION_EXTENT_PARAMETER))
         regionCoords = region.split(',')
         command = 'g.region'
@@ -94,7 +96,7 @@ def processCommand(alg):
     if txtRulesParam.value:
         # Creates a temporary txt file
         tempRulesName = getTempFilename('txt')
-        
+
         # Inject rules into temporary txt file
         with codecs.open(tempRulesName, 'w', 'utf-8') as tempRules:
             tempRules.write(txtRulesParam.value)
@@ -102,7 +104,7 @@ def processCommand(alg):
         # Replace rules with temporary file
         rules.value = tempRulesName
         alg.parameters.remove(txtRulesParam)
-                
+
     alg.processCommand()
 
     # We re-add the new output
