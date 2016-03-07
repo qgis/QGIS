@@ -60,9 +60,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-127</y>
+        <y>0</y>
         <width>314</width>
-        <height>683</height>
+        <height>805</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -254,6 +254,12 @@
           </item>
           <item>
            <widget class="QListWidget" name="mPreviewListWidget">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>200</height>
+             </size>
+            </property>
             <property name="showDropIndicator" stdset="0">
              <bool>false</bool>
             </property>
