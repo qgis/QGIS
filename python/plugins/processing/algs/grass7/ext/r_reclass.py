@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 def checkParameterValuesBeforeExecuting(alg):
     """ Verify if we have the right parameters """
     if alg.getParameterValue(u'rules') and alg.getParameterValue(u'txtrules'):
-        return alg.tr("You need to set either a rules file or write directly the rules !")
+        return alg.tr("You need to set either a rules file or write directly the rules!")
 
     return None
 

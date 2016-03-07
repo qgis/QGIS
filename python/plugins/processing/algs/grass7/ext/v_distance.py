@@ -39,7 +39,7 @@ def checkParameterValuesBeforeExecuting(alg):
         # Verifiy that we have the good number of columns
         column = alg.getParameterValue(u'column')
         if ((column is None or len(column) == 0) and upload) or (len(column.split(",")) != len(upload.split(","))):
-            return alg.tr(u"The number of columns and the number of upload parameters should be equal !")
+            return alg.tr(u"The number of columns and the number of upload parameters should be equal!")
 
     # Verify from_type and to_type values
     for geom in [u'from', u'to']:

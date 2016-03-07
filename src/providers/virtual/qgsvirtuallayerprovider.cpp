@@ -151,7 +151,7 @@ bool QgsVirtualLayerProvider::openIt()
     Sqlite::Query q( mSqlite.get(), "SELECT name FROM sqlite_master WHERE name='_meta'" );
     if ( q.step() != SQLITE_ROW )
     {
-      PROVIDER_ERROR( "No metadata tables !" );
+      PROVIDER_ERROR( "No metadata tables!" );
       return false;
     }
   }
@@ -164,7 +164,7 @@ bool QgsVirtualLayerProvider::openIt()
       version = q.columnInt( 0 );
       if ( version != VIRTUAL_LAYER_VERSION )
       {
-        PROVIDER_ERROR( "Wrong virtual layer version !" );
+        PROVIDER_ERROR( "Wrong virtual layer version!" );
         return false;
       }
       mDefinition = QgsVirtualLayerDefinition::fromUrl( QUrl( q.columnText( 1 ) ) );
@@ -324,7 +324,7 @@ bool QgsVirtualLayerProvider::createIt()
 
       if ( c.name().isEmpty() )
       {
-        PROVIDER_ERROR( QString( "Result column #%1 has no name !" ).arg( i + 1 ) );
+        PROVIDER_ERROR( QString( "Result column #%1 has no name!" ).arg( i + 1 ) );
         return false;
       }
 
@@ -390,14 +390,14 @@ bool QgsVirtualLayerProvider::createIt()
         }
         if ( !found )
         {
-          PROVIDER_ERROR( "Cannot find the specified geometry field !" );
+          PROVIDER_ERROR( "Cannot find the specified geometry field!" );
           return false;
         }
       }
 
       if ( !mDefinition.geometryField().isEmpty() && !mDefinition.hasDefinedGeometry() )
       {
-        PROVIDER_ERROR( "Can't deduce the geometry type of the geometry field !" );
+        PROVIDER_ERROR( "Can't deduce the geometry type of the geometry field!" );
         return false;
       }
     }

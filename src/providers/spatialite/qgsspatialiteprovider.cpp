@@ -4041,7 +4041,7 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( const QgsGeometryMap &geometry
   toCommit = true;
 
   sql =
-    QString( "UPDATE %1 SET %2=GeomFromWKB(?, %3) WHERE ROWID = ?" )
+    QString( "UPDATE %1 SET %2=GeomFromWKB(?, %3) WHERE ROWID=?" )
     .arg( quotedIdentifier( mTableName ),
           quotedIdentifier( mGeometryColumn ) )
     .arg( mSrid );

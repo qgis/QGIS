@@ -615,7 +615,7 @@ const QImage& QgsWMSLegendNode::getLegendGraphic() const
       connect( mFetcher.data(), SIGNAL( error( const QString& ) ), this, SLOT( getLegendGraphicErrored( const QString& ) ) );
       connect( mFetcher.data(), SIGNAL( progress( qint64, qint64 ) ), this, SLOT( getLegendGraphicProgress( qint64, qint64 ) ) );
       mFetcher->start();
-    } // else QgsDebugMsg("XXX No legend supported ?");
+    } // else QgsDebugMsg("XXX No legend supported?");
 
   }
 

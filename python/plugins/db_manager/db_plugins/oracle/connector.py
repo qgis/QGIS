@@ -190,7 +190,7 @@ class OracleDBConnector(DBConnector):
         return self.has_spatial
 
     def hasRasterSupport(self):
-        """No raster support for the moment !"""
+        """No raster support for the moment!"""
         # return self.has_raster
         return False
 
