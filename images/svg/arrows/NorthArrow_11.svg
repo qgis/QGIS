@@ -58,19 +58,19 @@
        d="m 32,-9.453 28.938,73.826 -29,-29 -29,29 z"
        id="path14"
        inkscape:connector-curvature="0"
-       fill="param(fill) #fff" fill-opacity="param(fill-opacity)" stroke="param(fill) #fff" stroke-opacity="param(fill-opacity)"
+       fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(fill)" stroke-opacity="param(fill-opacity)"
        style="stroke-width:3" />
     <path
        d="m 32,-9.453 29,73.45 -29,-29 -29,29 z"
        id="path16"
        inkscape:connector-curvature="0"
-       stroke="param(outline) #000" stroke-opacity="param(outline-opacity)"
+       stroke="param(outline)" stroke-opacity="param(outline-opacity)"
        style="fill:none;stroke-linecap:square" />
   </g>
   <g
      transform="translate(0,-23.62)"
      id="g22"
-       stroke="param(outline) #000" stroke-opacity="param(outline-opacity)"
+       stroke="param(outline)" stroke-opacity="param(outline-opacity)"
      style="fill:none;stroke-width:0.25">
     <path
        d="m 4,92.82 6.74,-3.891"
