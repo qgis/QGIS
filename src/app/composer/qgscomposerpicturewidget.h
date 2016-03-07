@@ -91,6 +91,8 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
 
     //! Renders an svg file to a QIcon, correctly handling any SVG parameters present in the file
     QIcon svgToIcon( const QString& filePath ) const;
+
+    void updateSvgParamGui( bool resetValues = true );
 };
 
 #endif
