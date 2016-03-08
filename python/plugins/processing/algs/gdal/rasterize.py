@@ -68,7 +68,7 @@ class rasterize(GdalAlgorithm):
     COMPRESSTYPE = ['NONE', 'JPEG', 'LZW', 'PACKBITS', 'DEFLATE']
     TFW = 'TFW'
     RAST_EXT = 'RAST_EXT'
-	
+
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
 
