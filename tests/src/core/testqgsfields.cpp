@@ -51,6 +51,9 @@ class TestQgsFields: public QObject
     void appendExpressionField();
     void dataStream();
     void field(); //test QgsFields::Field
+    void qforeach();
+    void iterator();
+    void constIterator();
 
   private:
 };
@@ -470,6 +473,83 @@ void TestQgsFields::field()
   QVERIFY( field1 != field3 );
   QgsFields::Field field4( original, QgsFields::OriginJoin, 6 );
   QVERIFY( field1 != field4 );
+}
+
+void TestQgsFields::qforeach()
+{
+  QgsFields fields;
+  QgsField field( QString( "1" ) );
+  fields.append( field );
+  QgsField field2( QString( "2" ) );
+  fields.append( field2 );
+
+  int i = 0;
+  Q_FOREACH ( const QgsField& field, fields )
+  {
+    QCOMPARE( field, fields.at( i ) );
+    ++i;
+  }
+}
+
+void TestQgsFields::iterator()
+{
+  QgsFields fields;
+  QgsField field( QString( "1" ) );
+  fields.append( field );
+  QgsField field2( QString( "2" ) );
+  fields.append( field2 );
+
+  QgsFields::iterator it = fields.begin();
+
+  QCOMPARE( it->name(), QString( "1" ) );
+  QCOMPARE(( ++it )->name(), QString( "2" ) );
+  QCOMPARE(( --it )->name(), QString( "1" ) );
+  QCOMPARE(( it++ )->name(), QString( "1" ) );
+  QCOMPARE( it->name(), QString( "2" ) );
+  it->setName( "Test" );
+  QCOMPARE(( it-- )->name(), QString( "Test" ) );
+  QCOMPARE( it->name(), QString( "1" ) );
+  QCOMPARE( it[1].name(), QString( "Test" ) );
+  it += 2;
+  QCOMPARE( it, fields.end() );
+}
+
+
+void TestQgsFields::constIterator()
+{
+  QgsFields fields;
+  QgsField field( QString( QString( "1" ) ) );
+  fields.append( field );
+  QgsField field2( QString( QString( "2" ) ) );
+  fields.append( field2 );
+
+  const QgsFields constFields( fields );
+
+  QgsFields::const_iterator it = constFields.begin();
+
+  QCOMPARE( it->name(), QString( "1" ) );
+  QCOMPARE(( ++it )->name(), QString( "2" ) );
+  QCOMPARE(( --it )->name(), QString( "1" ) );
+  QCOMPARE(( it++ )->name(), QString( "1" ) );
+  QCOMPARE( it->name(), QString( "2" ) );
+  QCOMPARE(( it-- )->name(), QString( "2" ) );
+  QCOMPARE( it->name(), QString( "1" ) );
+  QCOMPARE( it[1].name(), QString( "2" ) );
+  it += 2;
+  QCOMPARE( it, constFields.end() );
+
+  QgsFields::const_iterator it2 = fields.constBegin();
+
+  QCOMPARE( it2->name(), QString( "1" ) );
+  QCOMPARE(( ++it2 )->name(), QString( "2" ) );
+  QCOMPARE(( --it2 )->name(), QString( "1" ) );
+  QCOMPARE(( it2++ )->name(), QString( "1" ) );
+  QCOMPARE( it2->name(), QString( "2" ) );
+  QCOMPARE(( it2-- )->name(), QString( "2" ) );
+  QCOMPARE( it2->name(), QString( "1" ) );
+  QCOMPARE( it2[1].name(), QString( "2" ) );
+  it2 += 2;
+  QCOMPARE( it2, fields.constEnd() );
 }
 
 QTEST_MAIN( TestQgsFields )

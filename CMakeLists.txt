@@ -383,6 +383,7 @@ ENDIF()
 #allow override keyword if available
 IF (NOT USE_CXX_11)
   ADD_DEFINITIONS("-Doverride=")
+  ADD_DEFINITIONS("-Dnoexcept=")
   ADD_DEFINITIONS("-Dnullptr=0")
 ENDIF()
 
