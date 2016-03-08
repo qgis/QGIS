@@ -30,6 +30,7 @@ import os
 from PyQt4.QtGui import QIcon
 
 from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
@@ -66,6 +67,7 @@ class rasterize(GdalAlgorithm):
     BIGTIFFTYPE = ['', 'YES', 'NO', 'IF_NEEDED', 'IF_SAFER']
     COMPRESSTYPE = ['NONE', 'JPEG', 'LZW', 'PACKBITS', 'DEFLATE']
     TFW = 'TFW'
+    RAST_EXT = 'RAST_EXT'
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
@@ -86,6 +88,7 @@ class rasterize(GdalAlgorithm):
                                           self.tr('Horizontal'), 0.0, 99999999.999999, 100.0))
         self.addParameter(ParameterNumber(self.HEIGHT,
                                           self.tr('Vertical'), 0.0, 99999999.999999, 100.0))
+        self.addParameter(ParameterExtent(self.RAST_EXT, self.tr('Raster extent')))
 
         params = []
         params.append(ParameterSelection(self.RTYPE, self.tr('Raster type'),
@@ -133,6 +136,7 @@ class rasterize(GdalAlgorithm):
         tfw = unicode(self.getParameterValue(self.TFW))
         out = self.getOutputValue(self.OUTPUT)
         extra = unicode(self.getParameterValue(self.EXTRA))
+        rastext = unicode(self.getParameterValue(self.RAST_EXT))
 
         arguments = []
         arguments.append('-a')
@@ -143,6 +147,20 @@ class rasterize(GdalAlgorithm):
         dimType = self.getParameterValue(self.DIMENSIONS)
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
+
+        regionCoords = rastext.split(',')
+        try:
+            rastext = []
+            rastext.append('-te')
+            rastext.append(regionCoords[0])
+            rastext.append(regionCoords[2])
+            rastext.append(regionCoords[1])
+            rastext.append(regionCoords[3])
+        except IndexError:
+            rastext = []
+        if rastext:
+            arguments.extend(rastext)
+
         if dimType == 0:
             # size in pixels
             arguments.append('-ts')
