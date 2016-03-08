@@ -271,6 +271,19 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       f.setUnderline( true );
     return f;
   }
+  else if ( role == Qt::ForegroundRole )
+  {
+    QBrush brush( Qt::black, Qt::SolidPattern );
+    if ( QgsLayerTree::isLayer( node ) )
+    {
+      const QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
+      if ( layer && !layer->isInScaleRange( mLegendMapViewScale ) )
+      {
+        brush.setColor( Qt::lightGray );
+      }
+    }
+    return brush;
+  }
   else if ( role == Qt::ToolTipRole )
   {
     if ( QgsLayerTree::isLayer( node ) )
@@ -633,6 +646,8 @@ void QgsLayerTreeModel::setLegendMapViewData( double mapUnitsPerPixel, int dpi, 
 
   // now invalidate legend nodes!
   legendInvalidateMapBasedData();
+
+  refreshScaleBasedLayers();
 }
 
 void QgsLayerTreeModel::legendMapViewData( double* mapUnitsPerPixel, int* dpi, double* scale )
@@ -919,6 +934,24 @@ void QgsLayerTreeModel::recursivelyEmitDataChanged( const QModelIndex& idx )
     recursivelyEmitDataChanged( index( i, 0, idx ) );
 }
 
+void QgsLayerTreeModel::refreshScaleBasedLayers( const QModelIndex& idx )
+{
+  QgsLayerTreeNode* node = index2node( idx );
+  if ( !node )
+    return;
+
+  if ( node->nodeType() == QgsLayerTreeNode::NodeLayer )
+  {
+    const QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
+    if ( layer->hasScaleBasedVisibility() )
+    {
+      emit dataChanged( idx, idx );
+    }
+  }
+  int count = node->children().count();
+  for ( int i = 0; i < count; ++i )
+    refreshScaleBasedLayers( index( i, 0, idx ) );
+}
 
 Qt::DropActions QgsLayerTreeModel::supportedDropActions() const
 {
