@@ -439,6 +439,38 @@ bool QgsFields::operator==( const QgsFields &other ) const
   return d->fields == other.d->fields;
 }
 
+QgsFields::const_iterator QgsFields::constBegin() const noexcept
+{
+  return const_iterator( &d->fields.first() );
+}
+
+QgsFields::const_iterator QgsFields::constEnd() const noexcept
+{
+  return const_iterator( &d->fields.last() + 1 );
+}
+
+QgsFields::const_iterator QgsFields::begin() const noexcept
+{
+  return const_iterator( &d->fields.first() );
+}
+
+QgsFields::const_iterator QgsFields::end() const noexcept
+{
+  return const_iterator( &d->fields.last() + 1 );
+}
+
+QgsFields::iterator QgsFields::begin()
+{
+  d.detach();
+  return iterator( &d->fields.first() );
+}
+
+QgsFields::iterator QgsFields::end()
+{
+  d.detach();
+  return iterator( &d->fields.last() + 1 );
+}
+
 QIcon QgsFields::iconForField( int fieldIdx ) const
 {
   static QIcon intIcon;
