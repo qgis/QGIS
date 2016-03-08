@@ -31,6 +31,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <QSettings>
 
 QgsDualView::QgsDualView( QWidget* parent )
     : QStackedWidget( parent )
