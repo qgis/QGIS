@@ -13,10 +13,12 @@ class QgsMapLayerModel : QAbstractItemModel
 %End
 
   public:
-    enum
+
+    //! Item data roles
+    enum ItemDataRole
     {
-      LayerIdRole,
-      LayerRole
+      LayerIdRole, /*!< Stores the map layer ID */
+      LayerRole, /*!< Stores pointer to the map layer itself */
     };
 
     /**
