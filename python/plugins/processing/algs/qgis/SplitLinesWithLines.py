@@ -26,6 +26,7 @@ __copyright__ = '(C) 2014, Bernhard Ströbl'
 
 __revision__ = '$Format:%H$'
 
+
 from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -127,7 +128,6 @@ class SplitLinesWithLines(GeoAlgorithm):
                                 outLines.append(inGeom)
 
                         inLines = outLines
-
 
             for aLine in inLines:
                 if len(aLine.asPolyline()) > 2 or aLine.asPolyline()[0] != aLine.asPolyline()[1]:
