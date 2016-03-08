@@ -341,7 +341,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mAttrTableViewComboBox->addItem( tr( "Remember last view" ), -1 );
   mAttrTableViewComboBox->addItem( tr( "Table view" ), QgsDualView::AttributeTable );
   mAttrTableViewComboBox->addItem( tr( "Form view" ), QgsDualView::AttributeEditor );
-  mAttrTableViewComboBox->setCurrentIndex( mAttrTableViewComboBox->findData( mSettings->value( "/qgis/attributeTableView", QgsDualView::AttributeTable ).toInt() ) );
+  mAttrTableViewComboBox->setCurrentIndex( mAttrTableViewComboBox->findData( mSettings->value( "/qgis/attributeTableView", -1 ).toInt() ) );
 
   spinBoxAttrTableRowCache->setValue( mSettings->value( "/qgis/attributeTableRowCache", 10000 ).toInt() );
   spinBoxAttrTableRowCache->setSpecialValueText( tr( "All" ) );

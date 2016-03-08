@@ -238,7 +238,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mUpdateExpressionText->setLayer( mLayer );
   mUpdateExpressionText->setLeftHandButtonStyle( true );
 
-  int initialView = settings.value( "/qgis/attributeTableView", QgsDualView::AttributeTable ).toInt();
+  int initialView = settings.value( "/qgis/attributeTableView", -1 ).toInt();
   if ( initialView < 0 )
   {
     initialView = settings.value( "/qgis/attributeTableLastView", QgsDualView::AttributeTable ).toInt();
