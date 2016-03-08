@@ -74,8 +74,16 @@ class QgsAttributeDialog : QDialog
      * If set to true, the dialog will add a new feature when the form is accepted.
      *
      * @param isAddDialog If set to true, turn this dialog into an add feature dialog.
+     * @deprecated use setMode() instead
      */
-    void setIsAddDialog( bool isAddDialog );
+    void setIsAddDialog( bool isAddDialog ) /Deprecated/;
+
+    /**
+     * Toggles the form mode.
+     * @param mode form mode. Eg if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
+     * will add a new feature when the form is accepted.
+     */
+    void setMode( QgsAttributeForm::Mode mode );
 
     /**
      * Sets the edit command message (Undo) that will be used when the dialog is accepted

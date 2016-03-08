@@ -203,6 +203,11 @@ void QgsDualView::setView( QgsDualView::ViewMode view )
   setCurrentIndex( view );
 }
 
+QgsDualView::ViewMode QgsDualView::view() const
+{
+  return static_cast< QgsDualView::ViewMode >( currentIndex() );
+}
+
 void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode )
 {
   mFilterModel->setFilterMode( filterMode );
@@ -288,6 +293,14 @@ void QgsDualView::openConditionalStyles()
 {
   mConditionalFormatWidget->setVisible( !mConditionalFormatWidget->isVisible() );
   mConditionalFormatWidget->viewRules();
+}
+
+void QgsDualView::setMultiEditEnabled( bool enabled )
+{
+  if ( enabled )
+    setView( AttributeEditor );
+
+  mAttributeForm->setMode( enabled ? QgsAttributeForm::MultiEditMode : QgsAttributeForm::SingleEditMode );
 }
 
 void QgsDualView::previewExpressionBuilder()

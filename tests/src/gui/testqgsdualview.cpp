@@ -19,8 +19,10 @@
 #include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include <attributetable/qgsattributetableview.h>
 #include <attributetable/qgsdualview.h>
+#include "qgsattributeform.h"
 #include <qgsapplication.h>
 #include <qgsvectorlayer.h>
+#include "qgsvectordataprovider.h"
 #include <qgsmapcanvas.h>
 #include <qgsfeature.h>
 
@@ -41,6 +43,8 @@ class TestQgsDualView : public QObject
     void cleanup(); // will be called after every testfunction.
 
     void testSelectAll();
+
+    void testAttributeFormSharedValueScanning();
 
   private:
     QgsMapCanvas* mCanvas;
@@ -101,6 +105,72 @@ void TestQgsDualView::testSelectAll()
   mCanvas->setExtent( QgsRectangle( -110, 40, -100, 48 ) );
   mDualView->mTableView->selectAll();
   QVERIFY( mPointsLayer->selectedFeatureCount() == 1 );
+}
+
+void TestQgsDualView::testAttributeFormSharedValueScanning()
+{
+  // test QgsAttributeForm::scanForEqualAttributes
+
+  QSet< int > mixedValueFields;
+  QHash< int, QVariant > fieldSharedValues;
+
+  // make a temporary layer to check through
+  QgsVectorLayer* layer = new QgsVectorLayer( "Point?field=col1:integer&field=col2:integer&field=col3:integer&field=col4:integer", "test", "memory" );
+  QVERIFY( layer->isValid() );
+  QgsFeature f1( layer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", 1 );
+  f1.setAttribute( "col2", 1 );
+  f1.setAttribute( "col3", 3 );
+  f1.setAttribute( "col4", 1 );
+  QgsFeature f2( layer->dataProvider()->fields(), 2 );
+  f2.setAttribute( "col1", 1 );
+  f2.setAttribute( "col2", 2 );
+  f2.setAttribute( "col3", 3 );
+  f2.setAttribute( "col4", 2 );
+  QgsFeature f3( layer->dataProvider()->fields(), 3 );
+  f3.setAttribute( "col1", 1 );
+  f3.setAttribute( "col2", 2 );
+  f3.setAttribute( "col3", 3 );
+  f3.setAttribute( "col4", 2 );
+  QgsFeature f4( layer->dataProvider()->fields(), 4 );
+  f4.setAttribute( "col1", 1 );
+  f4.setAttribute( "col2", 1 );
+  f4.setAttribute( "col3", 3 );
+  f4.setAttribute( "col4", 2 );
+  layer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
+
+  QgsAttributeForm form( layer );
+
+  QgsFeatureIterator it = layer->getFeatures();
+
+  form.scanForEqualAttributes( it, mixedValueFields, fieldSharedValues );
+
+  QCOMPARE( mixedValueFields, QSet< int >() << 1 << 3 );
+  QCOMPARE( fieldSharedValues.value( 0 ).toInt(), 1 );
+  QCOMPARE( fieldSharedValues.value( 2 ).toInt(), 3 );
+
+  // add another feature so all attributes are different
+  QgsFeature f5( layer->dataProvider()->fields(), 5 );
+  f5.setAttribute( "col1", 11 );
+  f5.setAttribute( "col2", 11 );
+  f5.setAttribute( "col3", 13 );
+  f5.setAttribute( "col4", 12 );
+  layer->dataProvider()->addFeatures( QgsFeatureList() << f5 );
+
+  it = layer->getFeatures();
+
+  form.scanForEqualAttributes( it, mixedValueFields, fieldSharedValues );
+  QCOMPARE( mixedValueFields, QSet< int >() << 0 << 1 << 2 << 3 );
+  QVERIFY( fieldSharedValues.isEmpty() );
+
+  // single feature, all attributes should be shared
+  it = layer->getFeatures( QgsFeatureRequest().setFilterFid( 4 ) );
+  form.scanForEqualAttributes( it, mixedValueFields, fieldSharedValues );
+  QCOMPARE( fieldSharedValues.value( 0 ).toInt(), 1 );
+  QCOMPARE( fieldSharedValues.value( 1 ).toInt(), 1 );
+  QCOMPARE( fieldSharedValues.value( 2 ).toInt(), 3 );
+  QCOMPARE( fieldSharedValues.value( 3 ).toInt(), 2 );
+  QVERIFY( mixedValueFields.isEmpty() );
 }
 
 QTEST_MAIN( TestQgsDualView )

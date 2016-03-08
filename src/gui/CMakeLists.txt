@@ -112,6 +112,7 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsfilenamewidgetfactory.cpp
   editorwidgets/qgshiddenwidgetwrapper.cpp
   editorwidgets/qgshiddenwidgetfactory.cpp
+  editorwidgets/qgsmultiedittoolbutton.cpp
   editorwidgets/qgsphotoconfigdlg.cpp
   editorwidgets/qgsphotowidgetwrapper.cpp
   editorwidgets/qgsphotowidgetfactory.cpp
@@ -155,6 +156,7 @@ SET(QGIS_GUI_SRCS
   qgsattributedialog.cpp
   qgsattributeeditor.cpp
   qgsattributeform.cpp
+  qgsattributeformeditorwidget.cpp
   qgsattributeforminterface.cpp
   qgsattributeformlegacyinterface.cpp
   qgsattributetypeloaddialog.cpp
@@ -301,6 +303,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsattributedialog.h
   qgsattributeeditor.h
   qgsattributeform.h
+  qgsattributeformeditorwidget.h
   qgsattributetypeloaddialog.h
   qgsblendmodecombobox.h
   qgsbrowsertreeview.h
@@ -514,6 +517,7 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsexternalresourcewidgetwrapper.h
   editorwidgets/qgsfilenamewidgetwrapper.h
   editorwidgets/qgshiddenwidgetwrapper.h
+  editorwidgets/qgsmultiedittoolbutton.h
   editorwidgets/qgsphotoconfigdlg.h
   editorwidgets/qgsphotowidgetwrapper.h
   editorwidgets/qgsrangeconfigdlg.h

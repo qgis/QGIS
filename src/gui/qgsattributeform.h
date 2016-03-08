@@ -25,12 +25,26 @@
 #include <QDialogButtonBox>
 
 class QgsAttributeFormInterface;
+class QgsAttributeFormEditorWidget;
+class QgsMessageBar;
+class QgsMessageBarItem;
 
 class GUI_EXPORT QgsAttributeForm : public QWidget
 {
     Q_OBJECT
 
   public:
+
+    //! Form modes
+    enum Mode
+    {
+      SingleEditMode, /*!< Single edit mode, for editing a single feature */
+      AddFeatureMode, /*!< Add feature mode, for setting attributes for a new feature. In this mode the dialog will be editable even with an invalid feature and
+      will add a new feature when the form is accepted. */
+      MultiEditMode, /*!< Multi edit mode, for editing fields of multiple features at once */
+      // TODO: SearchMode, /*!< Form values are used for searching/filtering the layer */
+    };
+
     explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent = nullptr );
     ~QgsAttributeForm();
 
@@ -72,14 +86,28 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     bool editable();
 
+    /** Returns the current mode of the form.
+     * @note added in QGIS 2.16
+     * @see setMode()
+     */
+    Mode mode() const { return mMode; }
+
+    /** Sets the current mode of the form.
+     * @param mode form mode
+     * @note added in QGIS 2.16
+     * @see mode()
+     */
+    void setMode( Mode mode );
+
     /**
      * Toggles the form mode between edit feature and add feature.
      * If set to true, the dialog will be editable even with an invalid feature.
      * If set to true, the dialog will add a new feature when the form is accepted.
      *
      * @param isAddDialog If set to true, turn this dialog into an add feature dialog.
+     * @deprecated use setMode() instead
      */
-    void setIsAddDialog( bool isAddDialog );
+    Q_DECL_DEPRECATED void setIsAddDialog( bool isAddDialog );
 
     /**
      * Sets the edit command message (Undo) that will be used when the dialog is accepted
@@ -97,6 +125,12 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * @return         true if the event has been handled (key was ESC)
      */
     bool eventFilter( QObject* object, QEvent* event ) override;
+
+    /** Sets all feature IDs which are to be edited if the form is in multiedit mode
+     * @param fids feature ID list
+     * @note added in QGIS 2.16
+     */
+    void setMultiEditFeatureIds( const QgsFeatureIds& fids );
 
   signals:
     /**
@@ -177,6 +211,13 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     void preventFeatureRefresh();
     void synchronizeEnabledState();
+    void layerSelectionChanged();
+
+    //! Save multi edit changes
+    bool saveMultiEdits();
+    void resetMultiEdit( bool promptToSave = false );
+    void multiEditMessageClicked( const QString& link );
+
 
   private:
     void init();
@@ -210,12 +251,24 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void createWrappers();
     void connectWrappers();
 
+    void scanForEqualAttributes( QgsFeatureIterator& fit, QSet< int >& mixedValueFields, QHash< int, QVariant >& fieldSharedValues ) const;
+
+    //! Save single feature or add feature edits
+    bool saveEdits();
+
+    int messageTimeout();
+    void clearMultiEditMessages();
+
     QgsVectorLayer* mLayer;
     QgsFeature mFeature;
+    QgsMessageBar* mMessageBar;
+    QgsMessageBarItem* mMultiEditUnsavedMessageBarItem;
+    QgsMessageBarItem* mMultiEditMessageBarItem;
     QList<QgsWidgetWrapper*> mWidgets;
     QgsAttributeEditorContext mContext;
     QDialogButtonBox* mButtonBox;
     QList<QgsAttributeFormInterface*> mInterfaces;
+    QMap< int, QgsAttributeFormEditorWidget* > mFormEditorWidgets;
 
     // Variables below are used for python
     static int sFormCounter;
@@ -224,12 +277,22 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     //! Set to true while saving to prevent recursive saves
     bool mIsSaving;
-    bool mIsAddDialog;
 
     //! Flag to prevent refreshFeature() to change mFeature
     bool mPreventFeatureRefresh;
 
+    //! Set to true while setting feature to prevent attributeChanged signal
+    bool mIsSettingFeature;
+    bool mIsSettingMultiEditFeatures;
+
+    QgsFeatureIds mMultiEditFeatureIds;
+
     QString mEditCommandMessage;
+
+    Mode mMode;
+
+    friend class TestQgsDualView;
 };
 
 #endif // QGSATTRIBUTEFORM_H
+

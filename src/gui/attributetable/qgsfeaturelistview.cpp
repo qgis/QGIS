@@ -82,6 +82,7 @@ void QgsFeatureListView::setModel( QgsFeatureListModel* featureListModel )
 
   connect( mCurrentEditSelectionModel, SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), SLOT( editSelectionChanged( QItemSelection, QItemSelection ) ) );
 
+  connect( mModel->layerCache()->layer(), SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SLOT( repaintRequested() ) );
 }
 
 bool QgsFeatureListView::setDisplayExpression( const QString& expression )

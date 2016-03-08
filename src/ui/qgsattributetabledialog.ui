@@ -76,6 +76,35 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="mToggleMultiEditButton">
+       <property name="toolTip">
+        <string>Toggle multi edit mode</string>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionAllEdits.svg</normaloff>:/images/themes/default/mActionAllEdits.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="mSaveEditsButton">
        <property name="toolTip">
         <string>Save Edits (Ctrl+S)</string>
@@ -858,6 +887,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>mToggleEditingButton</tabstop>
+  <tabstop>mToggleMultiEditButton</tabstop>
   <tabstop>mSaveEditsButton</tabstop>
   <tabstop>mReloadButton</tabstop>
   <tabstop>mAddFeature</tabstop>

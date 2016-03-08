@@ -62,6 +62,15 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   return expContext;
 }
 
+void QgsAttributeTableDialog::updateMultiEditButtonState()
+{
+  mToggleMultiEditButton->setEnabled( mLayer->isEditable() );
+  if ( mLayer->isEditable() && mMainView->view() != QgsDualView::AttributeEditor )
+  {
+    mToggleMultiEditButton->setChecked( false );
+  }
+}
+
 QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFlags flags )
     : QDialog( parent, flags )
     , mDock( nullptr )
@@ -245,6 +254,9 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   }
   mMainView->setView( static_cast< QgsDualView::ViewMode >( initialView ) );
   mMainViewButtonGroup->button( initialView )->setChecked( true );
+
+  connect( mToggleMultiEditButton, SIGNAL( toggled( bool ) ), mMainView, SLOT( setMultiEditEnabled( bool ) ) );
+  updateMultiEditButtonState();
 
   editingToggled();
 }
@@ -648,6 +660,7 @@ void QgsAttributeTableDialog::on_mDeleteSelectedButton_clicked()
 void QgsAttributeTableDialog::on_mMainView_currentChanged( int viewMode )
 {
   mMainViewButtonGroup->button( viewMode )->click();
+  updateMultiEditButtonState();
 
   QSettings s;
   s.setValue( "/qgis/attributeTableLastView", static_cast< int >( viewMode ) );
@@ -670,6 +683,7 @@ void QgsAttributeTableDialog::editingToggled()
   mToggleEditingButton->setChecked( mLayer->isEditable() );
   mSaveEditsButton->setEnabled( mLayer->isEditable() );
   mReloadButton->setEnabled( ! mLayer->isEditable() );
+  updateMultiEditButtonState();
   mToggleEditingButton->blockSignals( false );
 
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
