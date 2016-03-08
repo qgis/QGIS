@@ -60,7 +60,7 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
                                "current cursor position. The display is continuously updated "
                                "as the mouse is moved. It also allows editing to set the canvas "
                                "center to a given position. The format is lat,lon or east,north" ) );
-  mLineEdit->setToolTip( tr( "Current map coordinate (lat,lon or east,north)" ) );
+  mLineEdit->setToolTip( tr( "Current map coordinate (longitude,latitude or east,north)" ) );
 
   //toggle to switch between mouse pos and extents display in status bar widget
   mToggleExtentsViewButton = new QToolButton( this );
